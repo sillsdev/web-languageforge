@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="SFWeb" default="build" basedir="..">
+
+	<property name="application.name" value="scriptureforge" />
+
+	<property name="build.number" value="0.0.0.0" />
+	<property name="build.output" value="output" />
+	<property name="build.packageFile" value="${build.output}/${application.name}.tgz" />
+	<property name="build.installPath" value="/var/www/scriptureforge.org_dev" />
+
+	<!--
+	<property name="mysql.db" value="lfweb" />
+	<property name="mysql.username" value="lfweb" />
+	<property name="mysql.password" value="secret" />
+	-->
+	
+	<target name="clean" depends="cleanLibs">
+		<delete dir="${build.output}" quiet="true" />
+	</target>
+		
+	<target name="cleanLibs">
+	</target>
+
+	<target name="cleanInstall" depends="">
+		<delete dir="${build.installPath}" quiet="true" />
+	</target>
+
+	<target name="version">
+		<script language="javascript">
+			<![CDATA[depends
+			// getting the value
+			buildnumber = project.getProperty("build.number");
+			index = buildnumber.lastIndexOf(".");
+			project.setProperty("version", buildnumber.substring(0, index));
+			]]>
+		</script>
+		<echo>${version}</echo>
+	</target>
+	
+	<target name="prepare">
+		<mkdir dir="${build.output}" />
+	</target>
+
+	<target name="build" />
+
+	<target name="copyWeb">
+		<copy todir="${build.output}/package/htdocs">
+			<fileset dir="src"/>
+		</copy>
+		<copy todir="${build.output}/package/lib">
+			<fileset dir="lib"/>
+		</copy>
+	</target>
+	
+	<target name="package" depends="prepare,copyWeb" >
+		<tar 
+			destfile="${build.packageFile}"
+			basedir="${build.output}/package"
+			excludes="${build.packageFile}"
+			longfile="gnu"
+			compression="gzip" />
+	</target>
+
+	<target name="install" depends="package,cleanInstall">
+		<untar src="${build.packageFile}" dest="${build.installPath}" compression="gzip" />
+		<!--
+		<chgrp type="both" group="www-data">
+			<dirset dir="${build.installPath}/web/sites/default/files/" />
+			<fileset dir="${build.installPath}/web/sites/default/files/">
+			    <include name="**/*"/>
+			</fileset>
+		</chgrp>
+		<chmod type="both" perm="g+w">
+			<dirset dir="${build.installPath}/web/sites/default/files/" />
+			<fileset dir="${build.installPath}/web/sites/default/files/">
+			    <include name="**/*"/>
+			</fileset>
+		</chmod>
+		-->
+		<antcall target="restartWebServer" />
+	</target>
+	
+	<target name="restartWebServer">
+		<exec executable="/etc/init.d/apache2">
+			<arg value="restart" />
+		</exec>
+	</target>
+	
+	<!-- Development targets to help developers, not used for production -->
+	
+</project>
