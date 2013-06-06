@@ -56,7 +56,7 @@ if (defined('ENVIRONMENT'))
  * as this file.
  *
  */
-	$system_path = '/var/www/scriptureforge/lib/CodeIgniter_2.1.3/system';
+	$system_path = '/var/www/scriptureforge.org_dev/lib/CodeIgniter_2.1.3/system';
 
 /*
  *---------------------------------------------------------------
@@ -72,7 +72,7 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  */
-	$application_folder = '/var/www/scriptureforge/src';
+	$application_folder = '/var/www/scriptureforge.org_dev/htdocs';
 
 /*
  * --------------------------------------------------------------------
