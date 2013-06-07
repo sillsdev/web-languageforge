@@ -7,6 +7,7 @@
 	<property name="build.output" value="output" />
 	<property name="build.packageFile" value="${build.output}/${application.name}.tgz" />
 	<property name="build.installPath" value="/var/www/scriptureforge.org_dev" />
+	<property name="build.uploadPath" value="/var/www/scriptureforge.org" />
 
 	<!--
 	<property name="mysql.db" value="lfweb" />
@@ -23,6 +24,10 @@
 
 	<target name="cleanInstall" depends="">
 		<delete dir="${build.installPath}" quiet="true" />
+	</target>
+
+	<target name="cleanUpload" depends="">
+		<delete dir="${build.uploadPath}" quiet="true" />
 	</target>
 
 	<target name="version">
@@ -77,12 +82,23 @@
 			</fileset>
 		</chmod>
 		-->
-		<antcall target="restartWebServer" />
+		<antcall target="restartWebServer" /> 
 	</target>
 	
 	<target name="restartWebServer">
 		<exec executable="/etc/init.d/apache2">
 			<arg value="restart" />
+		</exec>
+	</target>
+	
+	<target name="upload" depends="package,cleanUpload">
+		<untar src="${build.packageFile}" dest="${build.uploadPath}" compression="gzip" />
+		<exec dir="${build.installPath}" executable="rsync" failonerror="true">
+			<arg value="-vazHAX" />
+			<arg value="--delete-during" />
+			<arg value='--rsh=ssh -i ${upload.credentials}' />
+			<arg value="${build.uploadPath}/" />
+			<arg value="${upload.destination}" />
 		</exec>
 	</target>
 	
