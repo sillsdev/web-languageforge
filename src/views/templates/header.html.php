@@ -21,7 +21,7 @@
 				
 				<div id="header-nav" class="left">
 					<ul class="sf-menu">
-						<li><a href="#">Home</a></li>
+						<li><a href="/">Home</a></li>
 						<li><a href="#">Explore</a>
 							<ul>
 								<li><a href="#">Sub Menu Item 1</a></li>
@@ -37,20 +37,20 @@
 								<li><a href="#">Sub Menu Item 5</a></li>
 							</ul>
 						</li>
-						<li><a href="#">Learn</a>
+						<li><a href="/learn_scripture_forge">Learn</a>
 							<ul>
-								<li><a href="#">Sub Menu Item 1</a></li>
-								<li><a href="#">Sub Menu Item 2</a></li>
-								<li><a href="#">Sub Menu Item 3</a></li>
+								<li><a href="/learn_scripture_forge">About Scripture Forge</a></li>
+								<li><a href="/learn_expand_your_team">Expand Your Team</a></li>
+								<li><a href="/learn_contribute">Contribute</a></li>
 							</ul>
 						</li>
-						<li><a href="#">Contribute</a></li>
-						<li><a href="#">Discuss</a></li>
+						<li><a href="/contribute">Contribute</a></li>
+						<li><a href="/discuss">Discuss</a></li>
 					</ul>
 				</div>
 				
 				<div id="account" class="right">
-					<input type="button" value="Login" class="login-btn left" /> &nbsp; or &nbsp; <a href="#">Create an Account</a>
+					<input type="button" value="Login" class="login-btn left" /> &nbsp; or &nbsp; <a href="/new_account">Create an Account</a>
 				</div>
 				
 			</div>
