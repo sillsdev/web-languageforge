@@ -29,30 +29,28 @@
 			$data['columns'] = array(
 				array(
 					"title" => "Scripture Forge",
-					"summary" => "summary",
-					"target_url" => ""
+					"summary" => "Take your scripture-checking project to the next level by involving tens or hundreds more in the scripture review process.  Engage your language's diaspora speakers on the web or their phone, wherever they are.",
+					"target_url" => "/learn_scripture_forge"
 					),
 				array(
 					"title" => "Expand Your Team",
-					"summary" => "summary",
+					"summary" => "Give your Scripture project a boost during the checking phase.  Sign-up is easy and free.  As the project manager, you can control who joins your \"extended team\" of scripture checkers.",
 					"target_url" => "/learn_expand_your_team"
 					),
 				array(
 					"title" => "Contribute",
-					"summary" => "summary",
+					"summary" => "Your ability to think and speak in your mother tongue is a powerful gift.  You could make an eternal difference by bringing God's Word into your own language through participating as a Scripture reviewer.  You can comment on text, answer questions, and follow up on other comments.  What are you waiting for?  Sign up today!",
 					"target_url" => "/learn_contribute"
 					)
 			);
 			$this->load->view("templates/3column.html.php", $data);
-			
-			
 			?>
 			
 		<div class="sub-promotion container cf">
 			<img src="/images/girlsmiling.jpg" alt="girl smiling" width="299" height="182" class="left">
 			<h2>The Power of Collaboration</h2>
-			<p>Vestibulum id ligula porta felis euismod semper. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam quis risus eget urna mollis ornare vel eu leo. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-			<p><a href="#" class="arrowed">Get Involved Today</a></p>
+			<p>When everyone plays their part in getting Scripture translated and into the right hands, everyone benefits.  It's the power of collaboration that gets Scripture checking done faster and better.  Our technology brings Scripture checking to the masses, in a positive environment that focuses participants on the task and works wherever they are.  On the tablet, phone or web, Scripture Forge is there.</p>
+			<p><a href="/create_account" class="arrowed">Get Involved Today</a></p>
 		</div>
 		
 		<!--
