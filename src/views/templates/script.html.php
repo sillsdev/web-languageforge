@@ -1,8 +1,8 @@
-		<script src="/js/jquery-1.8.0.min.js"></script>
-		<script src="/js/jquery-ui-1.8.23.custom.min.js"></script>
-		<script src="/js/superfish/superfish.js"></script>
-		<script src="/js/superfish/hoverIntent.js"></script>
-		<script src="/js/slides.min.jquery.js"></script>
+		<script src="/js/lib/jquery-1.8.0.min.js"></script>
+		<script src="/js/lib/jquery-ui-1.8.23.custom.min.js"></script>
+		<script src="/js/lib/superfish/superfish.js"></script>
+		<script src="/js/lib/superfish/hoverIntent.js"></script>
+		<script src="/js/lib/slides.min.jquery.js"></script>
 		<script>
 			$(document).ready(function(){
 				// Superfish menu delay
@@ -32,7 +32,7 @@
 			});	
 		</script>
 		<!--[if IE 6]>
-		<script src="/js/DD_belatedPNG.js"></script>
+		<script src="/js/lib/DD_belatedPNG.js"></script>
 		<script>
 			$(document).ready(function(){ 
 				setTimeout(function(){ DD_belatedPNG.fix('.png_bg') }, 100);
