@@ -11,7 +11,8 @@
 						<li><a href="/">Home</a></li>
 						<li><a href="#">Explore</a>
 							<ul>
-								<li><a href="#">Sub Menu Item 1</a></li>
+								<li><a href="#">Jamaica Project 1</a></li>
+								<!--
 								<li><a href="#">Sub Menu Item 2</a>
 									<ul>
 										<li><a href="#">Another Sub Menu Item 1</a></li>
@@ -19,9 +20,9 @@
 										<li><a href="#">Another Sub Menu Item 3</a></li>
 									</ul>
 								</li>
-								<li><a href="#">Sub Menu Item 3</a></li>
-								<li><a href="#">Sub Menu Item 4</a></li>
-								<li><a href="#">Sub Menu Item 5</a></li>
+								-->
+								<li><a href="#">Jamaica Project 2</a></li>
+								<li><a href="#">Jamaica Project 3</a></li>
 							</ul>
 						</li>
 						<li><a href="/learn_scripture_forge">Learn</a>
@@ -37,7 +38,7 @@
 				</div>
 				
 				<div id="account" class="right">
-					<input type="button" value="Login" class="login-btn left" /> &nbsp; or &nbsp; <a href="/new_account">Create an Account</a>
+					<input type="button" value="Login" class="login-btn left" onclick="window.location='/login'"/> &nbsp; or &nbsp; <a href="/new_account">Create an Account</a>
 				</div>
 				
 			</div>
