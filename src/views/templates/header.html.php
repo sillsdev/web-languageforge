@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html lang="en-GB">
-	<head>
-		<meta charset="utf-8" />
-		<title>Scripture Forge Homepage Template</title>
-		<link rel="stylesheet" href="/css/sf.css" />
-		<link rel="stylesheet" media="screen" href="/css/superfish.css" />
-		<link rel="stylesheet" media="screen" href="/css/slides.css" />
-		<link rel="icon" href="favicon.ico" type="image/x-icon" />
-		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700' rel='stylesheet' type='text/css'>
-	</head>
-	<body>
-		
 		<div id="header" class="png_bg">
 			
 			<div class="container">
@@ -21,10 +8,11 @@
 				
 				<div id="header-nav" class="left">
 					<ul class="sf-menu">
-						<li><a href="#">Home</a></li>
+						<li><a href="/">Home</a></li>
 						<li><a href="#">Explore</a>
 							<ul>
-								<li><a href="#">Sub Menu Item 1</a></li>
+								<li><a href="#">Jamaica Project 1</a></li>
+								<!--
 								<li><a href="#">Sub Menu Item 2</a>
 									<ul>
 										<li><a href="#">Another Sub Menu Item 1</a></li>
@@ -32,20 +20,20 @@
 										<li><a href="#">Another Sub Menu Item 3</a></li>
 									</ul>
 								</li>
-								<li><a href="#">Sub Menu Item 3</a></li>
-								<li><a href="#">Sub Menu Item 4</a></li>
-								<li><a href="#">Sub Menu Item 5</a></li>
+								-->
+								<li><a href="#">Jamaica Project 2</a></li>
+								<li><a href="#">Jamaica Project 3</a></li>
 							</ul>
 						</li>
-						<li><a href="#">Learn</a>
+						<li><a href="/learn_scripture_forge">Learn</a>
 							<ul>
-								<li><a href="#">Sub Menu Item 1</a></li>
-								<li><a href="#">Sub Menu Item 2</a></li>
-								<li><a href="#">Sub Menu Item 3</a></li>
+								<li><a href="/learn_scripture_forge">About Scripture Forge</a></li>
+								<li><a href="/learn_expand_your_team">Expand Your Team</a></li>
+								<li><a href="/learn_contribute">Contribute</a></li>
 							</ul>
 						</li>
-						<li><a href="#">Contribute</a></li>
-						<li><a href="#">Discuss</a></li>
+						<li><a href="/contribute">Contribute</a></li>
+						<li><a href="/discuss">Discuss</a></li>
 					</ul>
 				</div>
 				
