@@ -37,9 +37,18 @@
 					</ul>
 				</div>
 				
-				<div id="account" class="right">
-					<input type="button" value="Login" class="login-btn left" onclick="window.location='auth/login'"/> &nbsp; or &nbsp; <a href="#">Create an Account</a>
-				</div>
+				<?php if ($logged_in):?>
+					<div id="account" class="right">
+						<img src="<?php echo $small_gravatar_url; ?>" style="float:left; position:relative; top:-4px; border:1px solid white; margin-right:10px" />
+						<span><a href="/account">Welcome, <?php echo $user_name; ?></a></span>
+						<span> | <a href="/auth/logout">Logout</a></span>
+					</div>
+				
+				<?php else:?>
+					<div id="account" class="right">
+						<input type="button" value="Login" class="login-btn left" onclick="window.location='auth/login'"/> &nbsp; or &nbsp; <a href="#">Create an Account</a>
+					</div>
+				<?php endif;?>
 				
 			</div>
 		</div>

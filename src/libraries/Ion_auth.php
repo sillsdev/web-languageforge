@@ -512,5 +512,24 @@ class Ion_auth
 		 */
 		return $check_all;
 	}
-
+	
+	/**
+	 * Get either a Gravatar URL or return an empty string if not logged in
+	 *
+	 * @param string $size Size in pixels, defaults to 80px [ 1 - 2048 ]
+	 * @return String containing either a gravatar image URL or an empty string if the user is not logged in
+	 */
+	function get_gravatar($size = 80) {
+		if (!$this->ion_auth->logged_in()) {
+			return "";
+		}
+		//$email = $this->ion_auth->get_user_id();
+		$email = $this->session->userdata("email");
+		$maxrating = "g";
+		$default_image = "mm";
+		$url = 'http://www.gravatar.com/avatar/';
+		$url .= md5( strtolower( trim( $email ) ) );
+		$url .= "?s=$size&d=$default_image&r=$maxrating";
+		return $url;
+	}
 }
