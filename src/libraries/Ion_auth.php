@@ -466,6 +466,7 @@ class Ion_auth
 		$this->ion_auth_model->trigger_events('in_group');
 
 		$id || $id = $this->session->userdata('user_id');
+		$id = $id->{'$id'}; // https://github.com/benedmunds/CodeIgniter-Ion-Auth/issues/458
 
 		if (!is_array($check_group))
 		{
@@ -482,7 +483,8 @@ class Ion_auth
 			$groups_array = array();
 			foreach ($users_groups as $group)
 			{
-				$groups_array[$group->id] = $group->name;
+				//$groups_array[$group->id] = $group->name; // https://github.com/benedmunds/CodeIgniter-Ion-Auth/issues/458
+				$groups_array[$group->_id->{'$id'}] = $group->name; // https://github.com/benedmunds/CodeIgniter-Ion-Auth/issues/458
 			}
 			$this->_cache_user_in_group[$id] = $groups_array;
 		}
