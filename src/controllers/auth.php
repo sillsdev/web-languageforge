@@ -97,6 +97,8 @@ class Auth extends CI_Controller {
 				'type' => 'password',
 			);
 
+			//$this->data["page"] = "login";
+			//$this->load->view("auth/container", $this->data);
 			$this->_render_page('auth/login', $this->data);
 		}
 	}
@@ -737,7 +739,8 @@ class Auth extends CI_Controller {
 
 		$this->viewdata = (empty($data)) ? $this->data: $data;
 
-		$view_html = $this->load->view($view, $this->viewdata, $render);
+		$this->viewdata["page"] = $view;
+		$view_html = $this->load->view('auth/container', $this->viewdata, $render);
 
 		if (!$render) return $view_html;
 	}
