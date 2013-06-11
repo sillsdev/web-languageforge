@@ -17,7 +17,7 @@
  */
 
 $config['default']['mongo_hostbase'] = 'localhost:27017';
-$config['default']['mongo_database'] = 'mongo';
+$config['default']['mongo_database'] = 'scriptureforge';
 $config['default']['mongo_username'] = '';
 $config['default']['mongo_password'] = '';
 $config['default']['mongo_persist']  = FALSE; // RM - No longer needed, see http://stackoverflow.com/q/7420522/
