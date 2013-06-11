@@ -11,7 +11,7 @@
 |   CodeIgniter MongoDB Active Record Library - http://github.com/alexbilbie/codeigniter-mongodb-library/tree/v2
 |   CodeIgniter MongoDB Session Library - http://github.com/sepehr/ci-mongodb-session
 */
-$config['use_mongodb'] = FALSE;
+$config['use_mongodb'] = TRUE;
 
 /*
 | -------------------------------------------------------------------------
