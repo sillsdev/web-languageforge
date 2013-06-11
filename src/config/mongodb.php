@@ -24,5 +24,5 @@ $config['default']['mongo_persist']  = FALSE; // RM - No longer needed, see http
 $config['default']['mongo_persist_key']	 = 'ci_persist';
 $config['default']['mongo_replica_set']  = FALSE;
 $config['default']['mongo_query_safety'] = 'safe';
-$config['default']['mongo_suppress_connect_error'] = TRUE;
+$config['default']['mongo_suppress_connect_error'] = FALSE;
 $config['default']['mongo_host_db_flag']   = FALSE;
