@@ -43,6 +43,13 @@ class MongoMapper
 	public function decode($model, $values)
 	{
 		$properties = get_object_vars($model);
+		$idKey = $this->_idKey;
+		// Map the Mongo _id to the property $idKey
+		if (array_key_exists($idKey, $properties))
+		{
+			$model->$idKey = $values['_id'];
+			unset($properties[$idKey]);
+		}
 		foreach ($properties as $key => $value)
 		{
 			if (!array_key_exists($key, $values))
@@ -51,8 +58,6 @@ class MongoMapper
 				continue;
 			}
 			$model->$key = $values[$key];
-// 			$model[$key] = $values[$key];
-// 			$model->__set($key, $values[$key]);
 		}
 	}
 
@@ -65,6 +70,12 @@ class MongoMapper
 	{
 		$data = array();
 		$properties = get_object_vars($model);
+		$idKey = $this->_idKey;
+		// We don't want the 'idKey' in the data so remove that from the properties 
+		if (array_key_exists($idKey, $properties))
+		{
+			unset($properties[$idKey]);
+		}
 		foreach ($properties as $key => $value)
 		{
 			$data[$key] = $value;
@@ -77,12 +88,13 @@ class MongoMapper
 	 * @param MongoCollection $collection
 	 * @param array $data
 	 * @param MongoId $id
+	 * @return MongoId
 	 */
 	protected function update($collection, $data, $id)
 	{
-		assert(is_a($id, 'MongoId'));
+		assert($id === NULL || is_a($id, 'MongoId'));
 		$result = $collection->update(
-				array('_id' => "ObjectId($id)"),
+				array('_id' => $id),
 				$data,
 				array('upsert' => true, 'multiple' => false, 'safe' => true)
 		);

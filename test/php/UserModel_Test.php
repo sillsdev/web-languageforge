@@ -16,6 +16,7 @@ class TestUserModel extends UnitTestCase {
 		$model->userName = "SomeUser";
 		$id = $model->write();
 		$this->assertNotNull($id);
+		$this->assertIsA($id, 'MongoId');
 		$otherModel = new UserModel($id);
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('user@example.com', $otherModel->email);
