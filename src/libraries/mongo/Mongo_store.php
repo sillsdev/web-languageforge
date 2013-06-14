@@ -37,7 +37,7 @@ class MongoStore
 	
 }
 
-class ModelMapper /*extends CI_Model*/
+class MapperModel /*extends CI_Model*/
 {
 	protected $_mapper;
 
