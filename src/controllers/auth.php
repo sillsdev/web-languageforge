@@ -1,6 +1,8 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Auth extends CI_Controller {
+require_once 'base.php';
+
+class Auth extends Base {
 
 	function __construct()
 	{
@@ -733,25 +735,4 @@ class Auth extends CI_Controller {
 			return FALSE;
 		}
 	}
-
-	function _render_page($view, $data=null, $render=false)
-	{
-
-		$this->viewdata = (empty($data)) ? $this->data: $data;
-
-		$this->viewdata["page"] = $view;
-		$this->viewdata['logged_in'] = $this->ion_auth->logged_in();
-		if ($this->viewdata['logged_in']) {
-			$this->viewdata['user_email'] = $this->ion_auth->get_user_id();
-			$user_query = $this->ion_auth_model->user($this->ion_auth->get_user_id());
-			$user = $user_query->row();
-			$this->viewdata['user_name'] = $user->first_name;
-			$this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
-			
-		}
-		$view_html = $this->load->view('auth/container', $this->viewdata, $render);
-
-		if (!$render) return $view_html;
-	}
-	
 }
