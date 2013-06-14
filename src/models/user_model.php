@@ -33,7 +33,7 @@ class UserModel_MongoMapper extends MongoMapper
 	
 }
 
-class UserModel extends ModelMapper
+class UserModel extends MapperModel
 {
 	public $id;
 	
