@@ -96,7 +96,7 @@ class MongoMapper
 		// Map the Mongo _id to the property $idKey
 		if (array_key_exists($idKey, $properties))
 		{
-			$model->$idKey = $values['_id'];
+			$model->$idKey = strval($values['_id']);
 			unset($properties[$idKey]);
 		}
 		foreach ($properties as $key => $value)
@@ -141,13 +141,16 @@ class MongoMapper
 	 */
 	protected function update($collection, $data, $id)
 	{
-		assert($id === NULL || is_a($id, 'MongoId'));
+		if (!$id) {
+			$id = NULL;
+		}
+		assert($id === NULL || is_string($id));
 		$result = $collection->update(
-				array('_id' => $id),
+				array('_id' => new MongoId($id)),
 				$data,
 				array('upsert' => true, 'multiple' => false, 'safe' => true)
 		);
-		return isset($result['upserted']) ? $result['upserted'] : $id;
+		return isset($result['upserted']) ? $result['upserted'].$id : $id;
 	}
 
 }
