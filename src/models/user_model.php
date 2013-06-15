@@ -1,6 +1,8 @@
 <?php
 
-class UserModel_MongoMapper extends MongoMapper
+require_once(APPPATH . 'libraries/mongo/Mongo_store.php');
+
+class User_model_MongoMapper extends MongoMapper
 {
 	function __construct()
 	{ 
@@ -8,14 +10,14 @@ class UserModel_MongoMapper extends MongoMapper
 	}
 	
 	/**
-	 * @param UserModel $model
+	 * @param User_model $model
 	 * @param MongoId $id
 	 */
 	public function read($model, $id)
 	{
-		assert(is_a($id, 'MongoId'));
+		assert(is_string($id));
 		$collection = $this->_db->users;
-		$data = $collection->findOne(array("_id" => $id));
+		$data = $collection->findOne(array("_id" => new MongoId($id)));
 		if ($data === NULL)
 		{
 			throw new Exception("Could not find id '$id'");
@@ -33,7 +35,7 @@ class UserModel_MongoMapper extends MongoMapper
 	
 }
 
-class UserModel extends MapperModel
+class User_model extends MapperModel
 {
 	public $id;
 	
@@ -43,7 +45,7 @@ class UserModel extends MapperModel
 	
 	public function __construct($id = NULL)
 	{
-		parent::__construct(new UserModel_MongoMapper(), $id);
+		parent::__construct(new User_model_MongoMapper(), $id);
 	}
 	
 }
