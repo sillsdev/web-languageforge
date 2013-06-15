@@ -35,8 +35,8 @@ class TestUserAPI extends UnitTestCase {
 		$this->assertEqual($result['id'], $id);
 		
 		// Delete
-		$result = $api->user_delete($id);
-		$this->assertTrue($result);
+// 		$result = $api->user_delete($id);
+// 		$this->assertTrue($result);
 		
 		
 	}
