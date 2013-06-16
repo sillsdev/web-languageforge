@@ -39,23 +39,37 @@ class MongoStore
 
 class MapperModel /*extends CI_Model*/
 {
-	protected $_mapper;
+	protected static $_mapper;
 
-	function __construct($mapper, $id)
+	public static function init($mapper)
 	{
-		$this->_mapper = $mapper;
+		self::$_mapper = $mapper;
+	}
+	
+	function __construct($id = NULL)
+	{
 		if (!empty($id))
 		{
-			$this->_mapper->read($this, $id);
+			self::$_mapper->read($this, $id);
 		}
 	}
 
+	function read()
+	{
+		return self::$_mapper->read($this);
+	}
+	
 	/**
 	 * @return string The unique id of the object written
 	 */
 	function write()
 	{
-		return $this->_mapper->write($this);
+		return self::$_mapper->write($this);
+	}
+	
+	public static function remove($id)
+	{
+		return self::$_mapper->remove($id);
 	}
 
 }
@@ -63,11 +77,15 @@ class MapperModel /*extends CI_Model*/
 class MongoMapper
 {
 	/**
-	 *
 	 * @var MongoDB
 	 */
 	protected $_db;
 
+	/**
+	 * @var MongoCollection
+	 */
+	protected $_collection;
+	
 	/**
 	 * @var string
 	 */
@@ -78,10 +96,32 @@ class MongoMapper
 	 * @param string $collection
 	 * @param string $idKey defaults to id
 	 */
-	public function __construct($database, $idKey = 'id')
+	public function __construct($database, $collection, $idKey = 'id')
 	{
 		$this->_db = MongoStore::connect($database);
+		$this->_collection = $this->_db->$collection;
 		$this->_idKey = $idKey;
+	}
+	
+	/**
+	 * @param User_model $model
+	 * @param MongoId $id
+	 */
+	public function read($model, $id)
+	{
+		assert(is_string($id) && !empty($id));
+		$data = $this->_collection->findOne(array("_id" => new MongoId($id)));
+		if ($data === NULL)
+		{
+			throw new Exception("Could not find id '$id'");
+		}
+		$this->decode($model, $data);
+	}
+	
+	public function write($model)
+	{
+		$data = $this->encode($model);
+		return $this->update($this->_collection, $data, $model->id);
 	}
 
 	/**
@@ -132,6 +172,16 @@ class MongoMapper
 		return $data;
 	}
 
+	public function remove($id)
+	{
+		assert(is_string($id) && !empty($id));
+		$result = $this->_collection->remove(
+			array('_id' => new MongoId($id)),
+			array('safe' => true)
+		);
+		return $result;
+	}
+	
 	/**
 	 *
 	 * @param MongoCollection $collection
