@@ -6,10 +6,12 @@ require_once(SourcePath . "models/user_model.php");
 
 class TestUserModel extends UnitTestCase {
 
-	function __construct() {
+	function __construct()
+	{
 	}
 	
-	function testWrite_ReadBackSame() {
+	function testWrite_ReadBackSame()
+	{
 		$model = new User_model();
 		$model->email = "user@example.com";
 		$model->userName = "SomeUser";
@@ -20,6 +22,16 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('user@example.com', $otherModel->email);
 		$this->assertEqual('SomeUser', $otherModel->userName);
+	}
+
+	function testUserList_HadCountAndEntries()
+	{
+		$model = new User_list_model();
+		$model->read();
+		
+		$this->assertNotEqual(0, $model->count);
+		$this->assertNotNull($model->entries);
+		
 	}
 	
 }

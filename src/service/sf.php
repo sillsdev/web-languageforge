@@ -23,7 +23,7 @@ class Sf
 
 	/**
 	 * Read a user from the given $id
-	 * @param unknown_type $id
+	 * @param string $id
 	 */
 	public function user_read($id) {
 		$user = new User_model($id);
@@ -33,9 +33,12 @@ class Sf
 // 	public function user_delete($id) {
 //		
 // 	}
-	
-	public function doSomething($params) {
-		
+
+	// TODO Pretty sure this is going to want some paging params
+	public function user_list() {
+		$list = new User_list_model();
+		$list->read();
+		return $list;
 	}
 	
 }
