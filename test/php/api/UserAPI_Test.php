@@ -41,6 +41,14 @@ class TestUserAPI extends UnitTestCase {
 		
 	}
 	
+	function testUserList_Ok() {
+		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
+		$result = $api->user_list();
+		
+		$this->assertTrue($result['count'] > 0);
+		
+	}
+	
 }
 
 ?>
