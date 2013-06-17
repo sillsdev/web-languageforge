@@ -74,6 +74,53 @@ class MapperModel /*extends CI_Model*/
 
 }
 
+class MapperListModel /*extends CI_Model*/
+{
+	/**
+	 * @var int
+	 */
+	public $count;
+	
+	/**
+	 * @var array
+	 */
+	public $entries;
+	
+	protected static $_mapper;
+
+	/**
+	 * @var array
+	 */
+	protected $_query;
+
+	/**
+	 * @var array
+	 */
+	protected $_fields;
+	
+	public static function init($mapper)
+	{
+		self::$_mapper = $mapper;
+	}
+	
+	function __construct($query, $fields = array())
+	{
+		$this->_query = $query;
+		$this->_fields = $fields;
+	}
+
+	function read()
+	{
+		return self::$_mapper->readList($this, $this->_query, $this->_fields);
+	}
+	
+	public static function remove($id)
+	{
+		return self::$_mapper->remove($id);
+	}
+
+}
+
 class MongoMapper
 {
 	/**
@@ -101,6 +148,19 @@ class MongoMapper
 		$this->_db = MongoStore::connect($database);
 		$this->_collection = $this->_db->$collection;
 		$this->_idKey = $idKey;
+	}
+	
+	public function readList($model, $query, $fields = array())
+	{
+		$cursor = $this->_collection->find($query, $fields);
+		$model->count = $cursor->count();
+		$model->entries = array();
+		foreach ($cursor as $item) {
+			$id = strval($item['_id']);
+			$item[$this->_idKey] = $id;
+			unset($item['_id']);
+			$model->entries[] = $item;
+		}
 	}
 	
 	/**
