@@ -16,7 +16,7 @@ var app = angular.module('myApp', ['jsonRpc']).
 		$scope.data.message = "Hello ";*/
 		
 		// How to use my JSON-RPC helper:
-		jsonRpc.connect("/api/sf/user_list");
+		jsonRpc.connect("/api/sf");
 		var promise = jsonRpc.call("user_list", {}, function(result) {
 			if (result.ok) {
 				$scope.data = result.data;
@@ -39,7 +39,45 @@ var app = angular.module('myApp', ['jsonRpc']).
 		promise.then(function() {
 			$scope.data.message = "Hello ";
 		});
+		
+		// A function to use in ng-click attributes
+		$scope.setVar = function(varName, newValue) {
+			// This may be way more complicated than it needs; we'll see...
+			$scope[varName] = newValue;
+		};
 		})
   .controller('MyCtrl2', [function() {
 
+  }])
+  .directive('enter', function() {
+	  return function(scope, elem, attrs) {
+		  elem.bind('mouseenter', function() {
+			  console.log("Setting userid to " + attrs.enter);
+			  scope.userid = attrs.enter;
+		  })
+	  }
+  })
+  .directive('userData', ['jsonRpc', function(jsonRpc) {
+	  return {
+		  // templateUrl = "",  // Eventually we'll move this out to its own template file
+		  restrict: "E",
+		  scope: {
+			  userid: "@"
+		  },
+		  link: function(scope, elem, attrs) {
+			  scope.$watch("userid", function(newval, oldval) {
+				  if (newval) {
+					  get_user_by_id(newval);
+				  }
+			  });
+			  
+			  function get_user_by_id(userid) {
+				  jsonRpc.connect("/api/sf");
+				  jsonRpc.call("user_read", {"id": userid}, function(result) {
+					  scope.result = result.data.result;
+				  });
+			  }
+		  },
+		  template: '<div class="details">{{userid}}: {{result}}</div>',
+	  };
   }]);
