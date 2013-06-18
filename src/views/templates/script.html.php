@@ -3,7 +3,7 @@
 		<script src="/js/lib/superfish/superfish.js"></script>
 		<script src="/js/lib/superfish/hoverIntent.js"></script>
 		<script src="/js/lib/slides.min.jquery.js"></script>
-		<script src="js/lib/foundation/foundation.min.js"></script>
+		<script src="/js/lib/foundation/foundation.min.js"></script>
 		<script>
 			$(document).foundation();
 			
