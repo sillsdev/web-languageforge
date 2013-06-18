@@ -10,7 +10,15 @@
 		<br/>
 		Enter message: <input type="text" ng-model="data.message">
 		<h3>{{data.message}} world</h3>
-		Some JSON-RPC data: {{data}}
+		Returned data: {{data}}<br/>
+		Found {{data.result.count}} users:
+		<table class="userlist">
+			<tr ng-repeat="user in data.result.entries">
+				<td><a href="#{{user.id}}" enter="{{user.id}}">{{user.email}}</a></td>
+				<td><span user-data="{{user.id}}"></span></td>
+			</tr>
+		</table>
+		<user-data userid="{{data.result.entries[0].id}}"/>
 			
 		</div>
 	</div>
@@ -22,14 +30,6 @@
 	<!-- In production use:
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 	-->
-	<script src="/js/lib/angular_stable_1.0.7/angular.js"></script>
-	<script src="/angular-app/admin/js/app.js"></script>
-	<script src="/angular-app/admin/js/services.js"></script>
-	<script src="/angular-app/admin/js/controllers.js"></script>
-	<script src="/angular-app/admin/js/filters.js"></script>
-	<script src="/angular-app/admin/js/directives.js"></script>
-
-
 	<script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
 	<script	src="/js/jsonrpc.js"></script>
 	<script	src="/angular-app/admin/js/controllers.js"></script>
