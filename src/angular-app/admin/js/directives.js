@@ -30,6 +30,6 @@ angular.module('myApp.directives', ["jsonRpc"]).
 				  });
 			  }
 		  },
-		  template: '<div class="details">{{vars.userid}}: {{result}}</div>',
+		  templateUrl: '/partials/userdata.html',
 	  };
   }]);
