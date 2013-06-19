@@ -1,6 +1,9 @@
-		<table class="userlist">
-			<tr ng-repeat="user in data.result.entries">
-				<td><a href="#{{user.id}}" ng-click="vars.userid = user.id">{{user.email}}</a></td>
-				<td><span user-data="{{user.id}}"></span></td>
-			</tr>
-		</table>
+<fieldset>
+	<legend>Users (total: {{data.result.entries.length}})</legend>
+	<table>
+		<tr ng-repeat="user in data.result.entries">
+			<td><a ng-click="vars.userid = user.id">{{user.email}}</a></td>
+			<td>{{user.userName}}</td>
+		</tr>
+	</table>
+</fieldset>
