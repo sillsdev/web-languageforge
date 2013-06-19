@@ -1,16 +1,8 @@
 <div ng-app="myApp">
 	<div style="margin-top: 150px"><!-- Spacer --></div>
 	<div class="container">
-		<div class="application" style="padding: 10px" ng-controller="MyCtrl1">
-			
-		<ul class="menu">
-		<li><a href="#/view1">view1</a></li>
-		<li><a href="#/view2">view2</a></li>
-		</ul>
-		<br/>
-		Enter message: <input type="text" ng-model="data.message">
-		<h3>{{data.message}} world</h3>
-		Returned data: {{data}}<br/>
+		<div class="application" style="padding: 10px" ng-controller="AdminCtrl">
+
 		Found {{data.result.count}} users:
 		<table class="userlist">
 			<tr ng-repeat="user in data.result.entries">
