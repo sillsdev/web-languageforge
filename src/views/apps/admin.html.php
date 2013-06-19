@@ -14,11 +14,11 @@
 		Found {{data.result.count}} users:
 		<table class="userlist">
 			<tr ng-repeat="user in data.result.entries">
-				<td><a href="#{{user.id}}" enter="{{user.id}}">{{user.email}}</a></td>
+				<td><a href="#{{user.id}}" ng-click="vars.userid = user.id">{{user.email}}</a></td>
 				<td><span user-data="{{user.id}}"></span></td>
 			</tr>
 		</table>
-		<user-data userid="{{data.result.entries[0].id}}"/>
+		<user-data/>
 			
 		</div>
 	</div>
