@@ -40,10 +40,12 @@ var app = angular.module('myApp', ['jsonRpc']).
 			$scope.data.message = "Hello ";
 		});
 		
+		$scope.vars = {};
+		
 		// A function to use in ng-click attributes
 		$scope.setVar = function(varName, newValue) {
 			// This may be way more complicated than it needs; we'll see...
-			$scope[varName] = newValue;
+			$scope.vars[varName] = newValue;
 		};
 		})
   .controller('MyCtrl2', [function() {
@@ -52,32 +54,32 @@ var app = angular.module('myApp', ['jsonRpc']).
   .directive('enter', function() {
 	  return function(scope, elem, attrs) {
 		  elem.bind('mouseenter', function() {
-			  console.log("Setting userid to " + attrs.enter);
-			  scope.userid = attrs.enter;
-		  })
-	  }
+			  console.log("Setting vars.userid to " + attrs.enter);
+			  scope.vars.userid = attrs.enter;
+		  });
+	  };
   })
   .directive('userData', ['jsonRpc', function(jsonRpc) {
 	  return {
 		  // templateUrl = "",  // Eventually we'll move this out to its own template file
 		  restrict: "E",
-		  scope: {
-			  userid: "@"
-		  },
 		  link: function(scope, elem, attrs) {
-			  scope.$watch("userid", function(newval, oldval) {
+			  scope.$watch("vars.userid", function(newval, oldval) {
+			  //attrs.$observe("userid", function(newval, oldval) {
+				  console.log("Watch triggered with oldval '" + oldval + "' and newval '" + newval + "'");
 				  if (newval) {
 					  get_user_by_id(newval);
 				  }
 			  });
 			  
 			  function get_user_by_id(userid) {
+				  console.log("Fetching id: " + userid);
 				  jsonRpc.connect("/api/sf");
 				  jsonRpc.call("user_read", {"id": userid}, function(result) {
 					  scope.result = result.data.result;
 				  });
 			  }
 		  },
-		  template: '<div class="details">{{userid}}: {{result}}</div>',
+		  template: '<div class="details">{{vars.userid}}: {{result}}</div>',
 	  };
   }]);
