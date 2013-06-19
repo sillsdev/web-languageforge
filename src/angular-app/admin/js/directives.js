@@ -11,7 +11,7 @@ angular.module('myApp.directives', ["jsonRpc"]).
   }])
   .directive('userData', ['jsonRpc', function(jsonRpc) {
 	  return {
-		  // templateUrl = "",  // Eventually we'll move this out to its own template file
+		  templateUrl: "/partials/userdata.html",
 		  restrict: "E",
 		  link: function(scope, elem, attrs) {
 			  scope.$watch("vars.userid", function(newval, oldval) {
@@ -30,6 +30,5 @@ angular.module('myApp.directives', ["jsonRpc"]).
 				  });
 			  }
 		  },
-		  templateUrl: '/partials/userdata.html',
 	  };
   }]);
