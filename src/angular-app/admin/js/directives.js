@@ -31,4 +31,9 @@ angular.module('myApp.directives', ["jsonRpc"]).
 			  }
 		  },
 	  };
-  }]);
+  }])
+  .directive('userList', function() {
+	  return {
+		  restrict: "E",
+		  templateUrl: "/partials/userlist.html",
+  }});
