@@ -3,7 +3,7 @@
 /* Controllers */
 
 var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
-	controller('MyCtrl1', function($scope, $http, jsonRpc) {
+	controller('AdminCtrl', function($scope, $http, jsonRpc) {
 		// How to create the JSON-RPC request by hand:
 /*		var request = {
 			"version": "2.0",
