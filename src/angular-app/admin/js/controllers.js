@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-var app = angular.module('myApp', ['jsonRpc']).
+var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 	controller('MyCtrl1', function($scope, $http, jsonRpc) {
 		// How to create the JSON-RPC request by hand:
 /*		var request = {
@@ -50,36 +50,4 @@ var app = angular.module('myApp', ['jsonRpc']).
 		})
   .controller('MyCtrl2', [function() {
 
-  }])
-  .directive('enter', function() {
-	  return function(scope, elem, attrs) {
-		  elem.bind('mouseenter', function() {
-			  console.log("Setting vars.userid to " + attrs.enter);
-			  scope.vars.userid = attrs.enter;
-		  });
-	  };
-  })
-  .directive('userData', ['jsonRpc', function(jsonRpc) {
-	  return {
-		  // templateUrl = "",  // Eventually we'll move this out to its own template file
-		  restrict: "E",
-		  link: function(scope, elem, attrs) {
-			  scope.$watch("vars.userid", function(newval, oldval) {
-			  //attrs.$observe("userid", function(newval, oldval) {
-				  console.log("Watch triggered with oldval '" + oldval + "' and newval '" + newval + "'");
-				  if (newval) {
-					  get_user_by_id(newval);
-				  }
-			  });
-			  
-			  function get_user_by_id(userid) {
-				  console.log("Fetching id: " + userid);
-				  jsonRpc.connect("/api/sf");
-				  jsonRpc.call("user_read", {"id": userid}, function(result) {
-					  scope.result = result.data.result;
-				  });
-			  }
-		  },
-		  template: '<div class="details">{{vars.userid}}: {{result}}</div>',
-	  };
   }]);
