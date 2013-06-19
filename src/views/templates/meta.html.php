@@ -2,9 +2,7 @@
 		<meta name="viewport" content="width=device-width" />
 		<title><?php echo $title; ?></title>
 		
-		<!--
-		<link rel="stylesheet" href="css/foundation.css" />
-		  -->
+		<link rel="stylesheet" href="/css/foundation.css" />
 		<link rel="stylesheet" media="screen" href="/css/superfish.css" />
 		<link rel="stylesheet" media="screen" href="/css/slides.css" />
 		<link rel="stylesheet" href="/css/sf.css" />
