@@ -1,0 +1,6 @@
+		<table class="userlist">
+			<tr ng-repeat="user in data.result.entries">
+				<td><a href="#{{user.id}}" ng-click="vars.userid = user.id">{{user.email}}</a></td>
+				<td><span user-data="{{user.id}}"></span></td>
+			</tr>
+		</table>

@@ -4,15 +4,9 @@
 		<div class="application" style="padding: 10px" ng-controller="AdminCtrl">
 
 		Found {{data.result.count}} users:
-		<table class="userlist">
-			<tr ng-repeat="user in data.result.entries">
-				<td><a href="#{{user.id}}" ng-click="vars.userid = user.id">{{user.email}}</a></td>
-				<td><span user-data="{{user.id}}"></span></td>
-			</tr>
-		</table>
-		<user-data/>
-			
-		</div>
+		<div><user-list/></div>
+		
+		<div><user-data/></div>
 	</div>
 	
 	<div ng-view></div>
