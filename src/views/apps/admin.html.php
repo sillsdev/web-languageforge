@@ -32,11 +32,11 @@
 	-->
 	<script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
 	<script	src="/js/jsonrpc.js"></script>
+	<script	src="/angular-app/admin/js/app.js"></script>
+	<script	src="/angular-app/admin/js/services.js"></script>
 	<script	src="/angular-app/admin/js/controllers.js"></script>
-	<!-- <script	src="/angular-app/admin/js/app.js"></script>
-	<script	src="/angular-app/admin/js/services.js"></script> -->
-	<!-- <script	src="/angular-app/admin/js/filters.js"></script>
-	<script	src="/angular-app/admin/js/directives.js"></script> -->
+	<script	src="/angular-app/admin/js/filters.js"></script>
+	<script	src="/angular-app/admin/js/directives.js"></script>
 	
 	  
 </div>
