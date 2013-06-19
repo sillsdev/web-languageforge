@@ -1,11 +1,15 @@
-<table class="userdata">
-	<tr>
-		<td>Username</td>
-		<td>Email</td>
-	</tr>
-	<tr>
-		<td><input type="text" ng-model="result.userName"></input></td>
-		<td><input type="text" ng-model="result.email"></input></td>
-	</tr>
-</table>
-<a class="btn"><i class="icon-pencil"></i>Edit</a>
+<form>
+	<fieldset>
+		<legend>User data</legend>
+		<div class="row">
+			<div class="large-4 columns">
+				<label>Username</label>
+				<input type="text" placeholder="(no username)" ng-model="result.userName"/>
+			</div>
+			<div class="large-8 columns">
+				<label>Email</label>
+				<input type="text" placeholder="(no email)" ng-model="result.email"/>
+			</div>
+		</div>
+	</fieldset>
+</form>
