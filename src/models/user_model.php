@@ -15,7 +15,7 @@ class User_model extends MapperModel
 {
 	public $id;
 	
-	public $userName;
+	public $username;
 	
 	public $email;
 	
@@ -26,7 +26,7 @@ class User_list_model extends MapperListModel
 {
 	function __construct()
 	{
-		parent::__construct(array('email' => array('$regex' => '')), array('userName', 'email'));
+		parent::__construct(array('email' => array('$regex' => '')), array('username', 'email'));
 	}
 }
 User_list_model::init(new User_model_MongoMapper());
