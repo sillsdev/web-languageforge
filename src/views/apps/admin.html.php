@@ -1,12 +1,11 @@
 <div ng-app="myApp">
 	<div style="margin-top: 150px"><!-- Spacer --></div>
-	<div class="container">
-		<div class="application" style="padding: 10px" ng-controller="AdminCtrl">
+	<div class="container" ng-controller="AdminCtrl" style="overflow:hidden">
+		<div style="padding:10px">
 
-		Found {{data.result.count}} users:
-		<div><user-list/></div>
+		<div class="large-4 column"><user-list/></div>
 		
-		<div><user-data/></div>
+		<div class="large-8 column"><user-data/></div>
 	</div>
 	
 	<div ng-view></div>
