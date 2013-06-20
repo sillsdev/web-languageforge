@@ -1,6 +1,10 @@
 <fieldset>
 	<legend>Users (total: {{data.result.entries.length}})</legend>
-	<table>
+	<table style="width: 100%">
+		<tr>
+			<th>Username <span class="right"><i class="icon-sort-by-alphabet"></i>&nbsp;<i class="icon-sort-by-alphabet-alt"></i></span></th>
+			<th>Email<span class="right"><i class="icon-sort-by-alphabet"></i>&nbsp;<i class="icon-sort-by-alphabet-alt"></i></span></th>
+		</tr>
 		<tr ng-repeat="user in data.result.entries">
 			<td><a ng-click="vars.userid = user.id">{{user.username}}</a></td>
 			<td>{{user.email}}</td>
