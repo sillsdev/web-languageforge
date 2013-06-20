@@ -29,11 +29,36 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 		};
 		$scope.fetchUserList();  // And run it right away to fetch the data for our list.
 		$scope.vars = {selectedIndex: -1};
+		$scope.selectRow = function(index, record) {
+			console.log("Called selectRow(", index, ", ", record, ")");
+			$scope.vars.selectedIndex = index;
+			if (index < 0) {
+				$scope.vars.userid = undefined;
+				$scope.vars.user = {};
+			} else {
+				$scope.vars.userid = record.id;
+				$scope.vars.user = record; // Not using this yet, but we might soon
+			}
+		};
 		$scope.updateUser = function(record) {
 			console.log("updateUser() called with ", record);
 			jsonRpc.connect("/api/sf");
 			var promise = jsonRpc.call("user_update", {"params": record}, function(result) {
 				$scope.fetchUserList();
+			});
+			return promise;
+		};
+		$scope.deleteUser = function(record) {
+			console.log("deleteUser() called with ", record);
+			if ($scope.vars.selectedIndex < 0) {
+				// TODO: It would be better to really disable the button, but this quick hack will work for now
+				console.log("Deleting nothing since nothing is really selected")
+				return null;
+			}
+			jsonRpc.connect("/api/sf");
+			var promise = jsonRpc.call("user_delete", {"id": record.id}, function(result) {
+				$scope.fetchUserList();
+				$scope.selectRow(-1);
 			});
 			return promise;
 		};

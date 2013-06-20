@@ -19,6 +19,9 @@ angular.module('myApp.directives', ["jsonRpc"]).
 				  console.log("Watch triggered with oldval '" + oldval + "' and newval '" + newval + "'");
 				  if (newval) {
 					  get_user_by_id(newval);
+				  } else {
+					  // Clear data table
+					  scope.record = {};
 				  }
 			  });
 			  
