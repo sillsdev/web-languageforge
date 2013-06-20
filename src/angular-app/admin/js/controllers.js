@@ -13,7 +13,7 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 		};
 		var requestbody = JSON.stringify(request);
 		$scope.data = $http({"url": "/api/sf/user_list", "method": "POST", "data": requestbody, "headers": {"Content-Type": "application/json"}});
-		$scope.data.message = "Hello ";*/
+*/
 		
 		// How to use my JSON-RPC helper:
 		$scope.fetchUserList = function() {
@@ -27,6 +27,8 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 			});
 			return promise;
 		};
+		$scope.fetchUserList();  // And run it right away to fetch the data for our list.
+		$scope.vars = {selectedIndex: -1};
 		$scope.updateUser = function(record) {
 			console.log("updateUser() called with ", record);
 			jsonRpc.connect("/api/sf");
@@ -47,12 +49,7 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 		 * happen. You can also chain these then() calls if several things need to
 		 * happen in sequence.
 		 */
-		var promise = $scope.fetchUserList();
-		promise.then(function() {
-			$scope.data.message = "Hello ";
-		});
-		
-		$scope.vars = {};
+	
 		
 		// A function to use in ng-click attributes
 		$scope.setVar = function(varName, newValue) {
