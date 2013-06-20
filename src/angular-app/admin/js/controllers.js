@@ -40,12 +40,25 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 				$scope.vars.user = record; // Not using this yet, but we might soon
 			}
 		};
+		$scope.addUser = function() {
+			$scope.selectRow(-1); // Make a blank entry in the "User data" area
+			// TODO: Signal the user somehow that he should type in the user data area and hit Save
+			// Right now this is not intuitive, so we need some kind of visual signal
+		};
 		$scope.updateUser = function(record) {
 			console.log("updateUser() called with ", record);
+			if (record === undefined || record === {}) {
+				// Avoid adding blank records to the database
+				return null; // TODO: Or maybe just return a promise object that will do nothing...?
+			}
 			jsonRpc.connect("/api/sf");
 			var promise = jsonRpc.call("user_update", {"params": record}, function(result) {
 				$scope.fetchUserList();
 			});
+			if (record.id === undefined) {
+				// We just added a record... so clear the user data area so we can add a new one later
+				$scope.record = {};
+			}
 			return promise;
 		};
 		$scope.deleteUser = function(record) {
