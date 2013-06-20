@@ -30,9 +30,16 @@ class Sf
 		return $user;
 	}
 	
-// 	public function user_delete($id) {
-//		
-// 	}
+	/**
+	 * Delete a user record
+	 * @param string $id
+	 * @return string Id of deleted record
+	 */
+ 	public function user_delete($id) {
+		$user = new User_model();
+		$user->remove($id);
+		return $id;
+ 	}
 
 	// TODO Pretty sure this is going to want some paging params
 	public function user_list() {
