@@ -16,14 +16,25 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 		$scope.data.message = "Hello ";*/
 		
 		// How to use my JSON-RPC helper:
-		jsonRpc.connect("/api/sf");
-		var promise = jsonRpc.call("user_list", {}, function(result) {
-			if (result.ok) {
-				$scope.data = result.data;
-			} else {
-				$scope.data = {};
-			}
-		});
+		$scope.fetchUserList = function() {
+			jsonRpc.connect("/api/sf");
+			var promise = jsonRpc.call("user_list", {}, function(result) {
+				if (result.ok) {
+					$scope.data = result.data;
+				} else {
+					$scope.data = {};
+				}
+			});
+			return promise;
+		};
+		$scope.updateUser = function(record) {
+			console.log("updateUser() called with ", record);
+			jsonRpc.connect("/api/sf");
+			var promise = jsonRpc.call("user_update", {"params": record}, function(result) {
+				$scope.fetchUserList();
+			});
+			return promise;
+		};
 		/* Now, note that the following line will NOT work yet: */
 		// $scope.data.message = "Hello ";
 		/* This is because jsonRpc.call() uses $http, which is asynchronous. By this
@@ -36,6 +47,7 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 		 * happen. You can also chain these then() calls if several things need to
 		 * happen in sequence.
 		 */
+		var promise = $scope.fetchUserList();
 		promise.then(function() {
 			$scope.data.message = "Hello ";
 		});
