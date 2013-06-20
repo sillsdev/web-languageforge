@@ -454,7 +454,7 @@ table th, table td {
 	padding: 0.7em 1.2em;
 }
 
-table th {
+table th, table tr th {
 	background-color: #404040;
 	color: #f4f4f6;
 	font-size: 0.9em;
