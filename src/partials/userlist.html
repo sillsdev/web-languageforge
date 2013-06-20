@@ -2,8 +2,8 @@
 	<legend>Users (total: {{data.result.entries.length}})</legend>
 	<table>
 		<tr ng-repeat="user in data.result.entries">
-			<td><a ng-click="vars.userid = user.id">{{user.email}}</a></td>
-			<td>{{user.username}}</td>
+			<td><a ng-click="vars.userid = user.id">{{user.username}}</a></td>
+			<td>{{user.email}}</td>
 		</tr>
 	</table>
 </fieldset>
