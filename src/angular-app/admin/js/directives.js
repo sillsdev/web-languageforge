@@ -26,7 +26,7 @@ angular.module('myApp.directives', ["jsonRpc"]).
 				  console.log("Fetching id: " + userid);
 				  jsonRpc.connect("/api/sf");
 				  jsonRpc.call("user_read", {"id": userid}, function(result) {
-					  scope.result = result.data.result;
+					  scope.record = result.data.result;
 				  });
 			  }
 		  },
