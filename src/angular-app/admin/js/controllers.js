@@ -8,6 +8,15 @@ function makeDataController(tableName) {
 		$scope.vars = {
 			selectedIndex: -1,
 			recordType: tableName,
+			inputfocus: false,
+		};
+		
+		$scope.focusInput = function() {
+			$scope.vars.inputfocus = true;
+		};
+
+		$scope.blurInput = function() {
+			$scope.vars.inputfocus = false;
 		};
 
 		$scope.fetchRecordList = function() {
@@ -37,6 +46,7 @@ function makeDataController(tableName) {
 			$scope.selectRow(-1); // Make a blank entry in the "User data" area
 			// TODO: Signal the user somehow that he should type in the user data area and hit Save
 			// Right now this is not intuitive, so we need some kind of visual signal
+			$scope.focusInput();
 		};
 
 		$scope.updateRecord = function(record) {
@@ -52,6 +62,8 @@ function makeDataController(tableName) {
 			if (record.id === undefined) {
 				// We just added a record... so clear the user data area so we can add a new one later
 				$scope.record = {};
+				// And focus the input box so the user can just keep typing
+				$scope.focusInput();
 			}
 			return promise;
 		};
