@@ -7,6 +7,8 @@ function makeDataController(tableName) {
 
 		$scope.vars = {
 			selectedIndex: -1,
+			editButtonName: "",
+			editButtonIcon: "",
 			recordType: tableName,
 			inputfocus: false,
 		};
@@ -39,6 +41,8 @@ function makeDataController(tableName) {
 				$scope.vars.record = {};
 			} else {
 				$scope.vars.record = record;
+				$scope.vars.editButtonName = "Edit";
+				$scope.vars.editButtonIcon = "pencil";
 			}
 		};
 
@@ -46,6 +50,8 @@ function makeDataController(tableName) {
 			$scope.selectRow(-1); // Make a blank entry in the "User data" area
 			// TODO: Signal the user somehow that he should type in the user data area and hit Save
 			// Right now this is not intuitive, so we need some kind of visual signal
+			$scope.vars.editButtonName = "Add";
+			$scope.vars.editButtonIcon = "plus";
 			$scope.focusInput();
 		};
 
@@ -64,6 +70,9 @@ function makeDataController(tableName) {
 				$scope.record = {};
 				// And focus the input box so the user can just keep typing
 				$scope.focusInput();
+			} else {
+				// We just edited a record, so remove focus from the user data area
+				$scope.blurInput();
 			}
 			return promise;
 		};
@@ -80,6 +89,8 @@ function makeDataController(tableName) {
 				$scope.fetchRecordList();
 				$scope.selectRow(-1);
 			});
+			$scope.vars.editButtonName = "";
+			$scope.vars.editButtonIcon = "";
 			return promise;
 		};
 
