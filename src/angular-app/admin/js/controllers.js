@@ -4,18 +4,9 @@
 
 var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 	controller('AdminCtrl', function($scope, $http, jsonRpc) {
-		// How to create the JSON-RPC request by hand:
-/*		var request = {
-			"version": "2.0",
-			"method": "user_list",
-			"params": {},
-			"id": 1
-		};
-		var requestbody = JSON.stringify(request);
-		$scope.data = $http({"url": "/api/sf/user_list", "method": "POST", "data": requestbody, "headers": {"Content-Type": "application/json"}});
-*/
-		
-		// How to use my JSON-RPC helper:
+
+		$scope.vars = {selectedIndex: -1};
+
 		$scope.fetchUserList = function() {
 			jsonRpc.connect("/api/sf");
 			var promise = jsonRpc.call("user_list", {}, function(result) {
@@ -28,7 +19,7 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 			return promise;
 		};
 		$scope.fetchUserList();  // And run it right away to fetch the data for our list.
-		$scope.vars = {selectedIndex: -1};
+
 		$scope.selectRow = function(index, record) {
 			console.log("Called selectRow(", index, ", ", record, ")");
 			$scope.vars.selectedIndex = index;
@@ -40,11 +31,13 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 				$scope.vars.user = record; // Not using this yet, but we might soon
 			}
 		};
+
 		$scope.addUser = function() {
 			$scope.selectRow(-1); // Make a blank entry in the "User data" area
 			// TODO: Signal the user somehow that he should type in the user data area and hit Save
 			// Right now this is not intuitive, so we need some kind of visual signal
 		};
+
 		$scope.updateUser = function(record) {
 			console.log("updateUser() called with ", record);
 			if (record === undefined || record === {}) {
@@ -61,6 +54,7 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 			}
 			return promise;
 		};
+
 		$scope.deleteUser = function(record) {
 			console.log("deleteUser() called with ", record);
 			if ($scope.vars.selectedIndex < 0) {
@@ -75,26 +69,8 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 			});
 			return promise;
 		};
-		/* Now, note that the following line will NOT work yet: */
-		// $scope.data.message = "Hello ";
-		/* This is because jsonRpc.call() uses $http, which is asynchronous. By this
-		 * point, the HTTP request has been sent off but has not yet returned. The
-		 * callback function will create $scope.data once the HTTP request returns,
-		 * but that hasn't happened yet. So to guarantee that $scope.data exists
-		 * before we try to set its message attribute, we need to use the then()
-		 * method of promises (http://docs.angularjs.org/api/ng.$q). This will ensure
-		 * that the callback will have been called first, then the following code will
-		 * happen. You can also chain these then() calls if several things need to
-		 * happen in sequence.
-		 */
-	
-		
-		// A function to use in ng-click attributes
-		$scope.setVar = function(varName, newValue) {
-			// This may be way more complicated than it needs; we'll see...
-			$scope.vars[varName] = newValue;
-		};
-		})
-  .controller('MyCtrl2', [function() {
 
-  }]);
+	})
+	.controller('MyCtrl2', [function() {
+		
+	}]);
