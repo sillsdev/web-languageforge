@@ -1,4 +1,4 @@
-<form ng-submit="updateRecord(record)">
+<form ng-submit="updateRecord(record)" ng-hide="(vars.editButtonName=='')">
 	<fieldset>
 		<legend>User data</legend>
 		<div class="row">
@@ -14,7 +14,7 @@
 		<ul class="button-group">
 			<li>
 				<a href="#" class="small button round" ng-click="updateRecord(record)">
-					<i class="icon-pencil"></i>Save
+					<i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
 				</a>
 			</li>
 		</ul>
