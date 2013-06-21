@@ -40,6 +40,7 @@ angular.module('myApp.directives', ["jsonRpc"]).
 		  restrict: "E",
 		  templateUrl: "/partials/userlist.html",
   }})
+// This directive's code is from http://stackoverflow.com/q/16016570/
 .directive('ngFocus', function($parse, $timeout) {
 	return function(scope, elem, attrs) {
 		var ngFocusGet = $parse(attrs.ngFocus);
