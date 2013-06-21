@@ -2,12 +2,12 @@
 
 /* Controllers */
 
-var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
-	controller('AdminCtrl', function($scope, $http, jsonRpc) {
+function makeDataController(tableName) {
+	return function($scope, $http, jsonRpc) {
 
 		$scope.vars = {
 			selectedIndex: -1,
-			recordType: 'user',
+			recordType: tableName,
 		};
 
 		$scope.fetchRecordList = function() {
@@ -17,7 +17,7 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 					$scope.data = result.data;
 				} else {
 					$scope.data = {};
-				}
+				};
 			});
 			return promise;
 		};
@@ -71,7 +71,11 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 			return promise;
 		};
 
-	})
+	};
+}
+
+var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
+	controller('AdminCtrl', makeDataController('user'))
 	.controller('MyCtrl2', [function() {
 		
 	}]);
