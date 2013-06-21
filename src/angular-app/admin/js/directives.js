@@ -14,7 +14,7 @@ angular.module('myApp.directives', ["jsonRpc"]).
 		  templateUrl: "/partials/userdata.html",
 		  restrict: "E",
 		  link: function(scope, elem, attrs) {
-			  scope.$watch("vars.userid", function(newval, oldval) {
+			  scope.$watch("vars.record.id", function(newval, oldval) {
 			  //attrs.$observe("userid", function(newval, oldval) {
 				  console.log("Watch triggered with oldval '" + oldval + "' and newval '" + newval + "'");
 				  if (newval) {

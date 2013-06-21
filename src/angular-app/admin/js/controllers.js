@@ -24,11 +24,9 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 			console.log("Called selectRow(", index, ", ", record, ")");
 			$scope.vars.selectedIndex = index;
 			if (index < 0) {
-				$scope.vars.userid = undefined;
-				$scope.vars.user = {};
+				$scope.vars.record = {};
 			} else {
-				$scope.vars.userid = record.id;
-				$scope.vars.user = record; // Not using this yet, but we might soon
+				$scope.vars.record = record;
 			}
 		};
 
