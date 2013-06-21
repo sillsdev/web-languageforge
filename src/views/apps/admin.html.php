@@ -1,6 +1,6 @@
 <div ng-app="myApp">
 	<div style="margin-top: 150px"><!-- Spacer --></div>
-	<div class="container" ng-controller="AdminCtrl" style="overflow:hidden">
+	<div class="container" ng-controller="UserCtrl" style="overflow:hidden">
 		<div style="padding:10px">
 
 		<div class="large-4 column"><user-list/></div>
