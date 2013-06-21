@@ -74,8 +74,9 @@ function makeDataController(tableName) {
 	};
 }
 
-var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
-	controller('AdminCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('user')])
+var app = angular.module('myApp', ['jsonRpc', 'myApp.directives'])
+	.controller('AdminCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('user')])
 	.controller('MyCtrl2', [function() {
 		
-	}]);
+	}])
+	;
