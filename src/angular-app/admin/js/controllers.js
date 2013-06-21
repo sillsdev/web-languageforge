@@ -5,11 +5,14 @@
 var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 	controller('AdminCtrl', function($scope, $http, jsonRpc) {
 
-		$scope.vars = {selectedIndex: -1};
+		$scope.vars = {
+			selectedIndex: -1,
+			recordType: 'user',
+		};
 
-		$scope.fetchUserList = function() {
+		$scope.fetchRecordList = function() {
 			jsonRpc.connect("/api/sf");
-			var promise = jsonRpc.call("user_list", {}, function(result) {
+			var promise = jsonRpc.call($scope.vars.recordType + "_list", {}, function(result) {
 				if (result.ok) {
 					$scope.data = result.data;
 				} else {
@@ -18,7 +21,7 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 			});
 			return promise;
 		};
-		$scope.fetchUserList();  // And run it right away to fetch the data for our list.
+		$scope.fetchRecordList();  // And run it right away to fetch the data for our list.
 
 		$scope.selectRow = function(index, record) {
 			console.log("Called selectRow(", index, ", ", record, ")");
@@ -30,21 +33,21 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 			}
 		};
 
-		$scope.addUser = function() {
+		$scope.addRecord = function() {
 			$scope.selectRow(-1); // Make a blank entry in the "User data" area
 			// TODO: Signal the user somehow that he should type in the user data area and hit Save
 			// Right now this is not intuitive, so we need some kind of visual signal
 		};
 
-		$scope.updateUser = function(record) {
-			console.log("updateUser() called with ", record);
+		$scope.updateRecord = function(record) {
+			console.log("updateRecord() called with ", record);
 			if (record === undefined || record === {}) {
 				// Avoid adding blank records to the database
 				return null; // TODO: Or maybe just return a promise object that will do nothing...?
 			}
 			jsonRpc.connect("/api/sf");
-			var promise = jsonRpc.call("user_update", {"params": record}, function(result) {
-				$scope.fetchUserList();
+			var promise = jsonRpc.call($scope.vars.recordType + "_update", {"params": record}, function(result) {
+				$scope.fetchRecordList();
 			});
 			if (record.id === undefined) {
 				// We just added a record... so clear the user data area so we can add a new one later
@@ -53,16 +56,16 @@ var app = angular.module('myApp', ['jsonRpc', 'myApp.directives']).
 			return promise;
 		};
 
-		$scope.deleteUser = function(record) {
-			console.log("deleteUser() called with ", record);
+		$scope.deleteRecord = function(record) {
+			console.log("deleteRecord() called with ", record);
 			if ($scope.vars.selectedIndex < 0) {
 				// TODO: It would be better to really disable the button, but this quick hack will work for now
-				console.log("Deleting nothing since nothing is really selected")
+				console.log("Deleting nothing since nothing is really selected");
 				return null;
 			}
 			jsonRpc.connect("/api/sf");
-			var promise = jsonRpc.call("user_delete", {"id": record.id}, function(result) {
-				$scope.fetchUserList();
+			var promise = jsonRpc.call($scope.vars.recordType + "_delete", {"id": record.id}, function(result) {
+				$scope.fetchRecordList();
 				$scope.selectRow(-1);
 			});
 			return promise;
