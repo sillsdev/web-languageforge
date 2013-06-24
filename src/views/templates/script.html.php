@@ -20,7 +20,8 @@
 					play: 5000,
 					pause: 2500,
 					hoverPause: true,
-					prependPagination: true
+					prependPagination: true,
+					paginationClass: 'slide_pagination'	
 				});
 				
 				/* Workaround for IE image loading with black edges */
