@@ -11,7 +11,7 @@ angular.module('myApp.directives', ["jsonRpc"]).
   }])
   .directive('userData', ['jsonRpc', function(jsonRpc) {
 	  return {
-		  templateUrl: "/partials/userdata.html",
+		  templateUrl: "/angular-app/admin/partials/userdata.html",
 		  restrict: "E",
 		  link: function(scope, elem, attrs) {
 			  scope.$watch("vars.record.id", function(newval, oldval) {
@@ -38,7 +38,7 @@ angular.module('myApp.directives', ["jsonRpc"]).
   .directive('userList', function() {
 	  return {
 		  restrict: "E",
-		  templateUrl: "/partials/userlist.html",
+		  templateUrl: "/angular-app/admin/partials/userlist.html",
   }})
 // This directive's code is from http://stackoverflow.com/q/16016570/
 .directive('ngFocus', function($parse, $timeout) {
