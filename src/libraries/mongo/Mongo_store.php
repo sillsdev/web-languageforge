@@ -257,7 +257,7 @@ class MongoMapper
 		assert($id === NULL || is_string($id));
 		$result = $collection->update(
 				array('_id' => new MongoId($id)),
-				$data,
+				array('$set' => $data),
 				array('upsert' => true, 'multiple' => false, 'safe' => true)
 		);
 		return isset($result['upserted']) ? $result['upserted'].$id : $id;
