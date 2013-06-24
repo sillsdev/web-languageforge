@@ -3,7 +3,9 @@
 <h1><?php echo lang('login_heading');?></h1>
 <p><?php echo lang('login_subheading');?></p>
 
-<div id="infoMessage"><?php echo $message;?></div>
+<?php if ($message):?>
+<div class="notification errorMessage"><?php echo $message;?></div>
+<?php endif;?>
 
 <?php echo form_open("auth/login");?>
 
