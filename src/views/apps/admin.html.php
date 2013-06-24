@@ -3,9 +3,9 @@
 	<div class="container" ng-controller="UserCtrl" style="overflow:hidden">
 		<div style="padding:10px">
 
-		<div class="large-4 column"><user-list/></div>
+		<div class="large-8 column"><user-list/></div>
 		
-		<div class="large-8 column"><user-data/></div>
+		<div class="large-4 column"><user-data/></div>
 	</div>
 	
 	<div ng-view></div>
