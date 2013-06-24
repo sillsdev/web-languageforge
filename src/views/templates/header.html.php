@@ -35,6 +35,15 @@
 						<li><a href="/contribute">Contribute</a></li>
 						<li><a href="/discuss">Discuss</a></li>
 					</ul>
+						<?php if ($is_admin):?>
+							<ul style="margin-left: 100px" class="sf-menu">
+								<li><a href="#">Administration</a>
+									<ul>
+										<li><a href="/app/admin">Users and Projects</a></li>
+									</ul>
+								</li>
+							</ul>
+						<?php endif;?>
 				</div>
 				
 				<?php if ($logged_in):?>

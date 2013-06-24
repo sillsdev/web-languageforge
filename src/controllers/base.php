@@ -13,10 +13,12 @@ class Base extends CI_Controller {
 		}
 		
 		$this->viewdata["page"] = $view;
+		$this->viewdata['is_admin'] = false;
 		
 		// setup specific variables for header
 		$this->viewdata['logged_in'] = $this->ion_auth->logged_in();
 		if ($this->viewdata['logged_in']) {
+			$this->viewdata['is_admin'] = $this->ion_auth->is_admin();
 			$this->viewdata['user_email'] = $this->ion_auth->get_user_id();
 			$user_query = $this->ion_auth_model->user($this->ion_auth->get_user_id());
 			$user = $user_query->row();
