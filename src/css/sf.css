@@ -583,3 +583,7 @@ div.applicationTitle {
 p.applicationContent {
 	padding: .7em;
 }
+
+.banner {
+	padding: 30px 0 30px 0;
+}
