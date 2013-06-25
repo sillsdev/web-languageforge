@@ -1,11 +1,11 @@
 <div ng-app="myApp">
 	<div style="margin-top: 150px"><!-- Spacer --></div>
-	<div class="container" ng-controller="UserCtrl" style="overflow:hidden">
+	<div class="container" ng-controller="ProjectCtrl" style="overflow:hidden">
 		<div style="padding:10px">
 
-		<div class="large-8 column"><user-list/></div>
+		<div class="large-8 column"><project-list/></div>
 		
-		<div class="large-4 column"><user-data/></div>
+		<div class="large-4 column"><project-data/></div>
 	</div>
 	
 	<div ng-view></div>
