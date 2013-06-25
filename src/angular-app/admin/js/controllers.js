@@ -99,6 +99,7 @@ function makeDataController(tableName) {
 
 var app = angular.module('myApp', ['jsonRpc', 'myApp.directives'])
 	.controller('UserCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('user')])
+	.controller('ProjectCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('project')])
 	.controller('MyCtrl2', [function() {
 		
 	}])
