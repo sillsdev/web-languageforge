@@ -73,7 +73,16 @@ class Auth extends Base {
 				//if the login is successful
 				//redirect them back to the home page
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
-				redirect('/', 'refresh');
+				
+				$referer = $this->session->userdata('referer_url');
+				$this->session->unset_userdata('referer_url');
+				if ($referer && strpos($referer, "/auth") === false) {
+					redirect($referer, 'location');
+				} 
+				else
+				{
+					redirect('/', 'location');
+				}
 			}
 			else
 			{
@@ -85,6 +94,13 @@ class Auth extends Base {
 		}
 		else
 		{
+			if (!$this->session->userdata('referer_url')) {
+				$referer = $this->input->server('HTTP_REFERER');
+				if (strpos($referer, '/auth') === false) {
+					$this->session->set_userdata('referer_url', $this->input->server('HTTP_REFERER'));
+				}
+			}
+			
 			//the user is not logging in so display the login page
 			//set the flash data error message if there is one
 			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
