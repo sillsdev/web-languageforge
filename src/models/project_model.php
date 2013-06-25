@@ -13,6 +13,8 @@ class Project_model_MongoMapper extends MongoMapper
 
 class Project_model extends MapperModel
 {
+	protected static $_mapper;
+	
 	public $id;
 	
 	public $projectname;
@@ -25,6 +27,8 @@ Project_model::init(new Project_model_MongoMapper());
 
 class Project_list_model extends MapperListModel
 {
+	protected static $_mapper;
+
 	function __construct()
 	{
 		parent::__construct(array(), array('projectname', 'language'));
