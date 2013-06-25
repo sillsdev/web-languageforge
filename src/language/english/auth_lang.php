@@ -55,7 +55,7 @@ $lang['deactivate_validation_user_id_label'] = 'user ID';
 // Create User
 $lang['create_user_heading']                           = 'Create User';
 $lang['create_user_subheading']                        = 'Please enter the users information below.';
-$lang['create_user_fname_label']                       = 'First Name:';
+$lang['create_user_fname_label']                       = 'Name:';
 $lang['create_user_lname_label']                       = 'Last Name:';
 $lang['create_user_company_label']                     = 'Company Name:';
 $lang['create_user_email_label']                       = 'Email:';
@@ -76,7 +76,7 @@ $lang['create_user_validation_password_confirm_label'] = 'Password Confirmation'
 // Edit User
 $lang['edit_user_heading']                           = 'Edit User';
 $lang['edit_user_subheading']                        = 'Please enter the users information below.';
-$lang['edit_user_fname_label']                       = 'First Name:';
+$lang['edit_user_fname_label']                       = 'Name:';
 $lang['edit_user_lname_label']                       = 'Last Name:';
 $lang['edit_user_company_label']                     = 'Company Name:';
 $lang['edit_user_email_label']                       = 'Email:';
