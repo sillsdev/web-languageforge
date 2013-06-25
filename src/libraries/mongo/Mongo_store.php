@@ -18,10 +18,10 @@ class MongoStore
 	 * @return MongoDB
 	 */
 	public static function connect($databaseName) {
-		if (!isset(self::$_pool[$databaseName])) {
-			self::$_pool[$databaseName] = self::connectMongo($databaseName);
+		if (!isset(static::$_pool[$databaseName])) {
+			static::$_pool[$databaseName] = static::connectMongo($databaseName);
 		}
-		return self::$_pool[$databaseName];
+		return static::$_pool[$databaseName];
 	}
 	
 	/**
@@ -29,10 +29,10 @@ class MongoStore
 	 * @return MongoDB
 	 */
 	private static function connectMongo($databaseName) {
-		if (self::$_mongo == null) {
-			self::$_mongo = new Mongo();
+		if (static::$_mongo == null) {
+			static::$_mongo = new Mongo();
 		}
-		return self::$_mongo->selectDB($databaseName);
+		return static::$_mongo->selectDB($databaseName);
 	}
 	
 }
@@ -43,20 +43,20 @@ class MapperModel /*extends CI_Model*/
 
 	public static function init($mapper)
 	{
-		self::$_mapper = $mapper;
+		static::$_mapper = $mapper;
 	}
 	
 	function __construct($id = NULL)
 	{
 		if (!empty($id))
 		{
-			self::$_mapper->read($this, $id);
+			static::$_mapper->read($this, $id);
 		}
 	}
 
 	function read()
 	{
-		return self::$_mapper->read($this);
+		return static::$_mapper->read($this);
 	}
 	
 	/**
@@ -64,12 +64,12 @@ class MapperModel /*extends CI_Model*/
 	 */
 	function write()
 	{
-		return self::$_mapper->write($this);
+		return static::$_mapper->write($this);
 	}
 	
 	public static function remove($id)
 	{
-		return self::$_mapper->remove($id);
+		return static::$_mapper->remove($id);
 	}
 
 }
@@ -100,7 +100,7 @@ class MapperListModel /*extends CI_Model*/
 	
 	public static function init($mapper)
 	{
-		self::$_mapper = $mapper;
+		static::$_mapper = $mapper;
 	}
 	
 	function __construct($query, $fields = array())
@@ -111,12 +111,12 @@ class MapperListModel /*extends CI_Model*/
 
 	function read()
 	{
-		return self::$_mapper->readList($this, $this->_query, $this->_fields);
+		return static::$_mapper->readList($this, $this->_query, $this->_fields);
 	}
 	
 	public static function remove($id)
 	{
-		return self::$_mapper->remove($id);
+		return static::$_mapper->remove($id);
 	}
 
 }
