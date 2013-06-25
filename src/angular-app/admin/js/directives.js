@@ -40,6 +40,37 @@ angular.module('myApp.directives', ["jsonRpc"]).
 		  restrict: "E",
 		  templateUrl: "/angular-app/admin/partials/userlist.html",
   }})
+  .directive('projectData', ['jsonRpc', function(jsonRpc) {
+	  return {
+		  templateUrl: "/angular-app/admin/partials/projectdata.html",
+		  restrict: "E",
+		  link: function(scope, elem, attrs) {
+			  scope.$watch("vars.record.id", function(newval, oldval) {
+			  //attrs.$observe("userid", function(newval, oldval) {
+				  console.log("Watch triggered with oldval '" + oldval + "' and newval '" + newval + "'");
+				  if (newval) {
+					  get_project_by_id(newval);
+				  } else {
+					  // Clear data table
+					  scope.record = {};
+				  }
+			  });
+			  
+			  function get_project_by_id(recordid) {
+				  console.log("Fetching id: " + recordid);
+				  jsonRpc.connect("/api/sf");
+				  jsonRpc.call("project_read", {"id": recordid}, function(result) {
+					  scope.record = result.data.result;
+				  });
+			  }
+		  },
+	  };
+  }])
+  .directive('projectList', function() {
+	  return {
+		  restrict: "E",
+		  templateUrl: "/angular-app/admin/partials/projectlist.html",
+  }})
 // This directive's code is from http://stackoverflow.com/q/16016570/
 .directive('ngFocus', function($parse, $timeout) {
 	return function(scope, elem, attrs) {
