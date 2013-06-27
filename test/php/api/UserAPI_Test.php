@@ -15,7 +15,7 @@ class TestUserAPI extends UnitTestCase {
 		// Create
 		$param = array(
 			'id' => '',
-			'userName' =>'SomeUser',
+			'username' =>'SomeUser',
 			'email' => 'user@example.com'
 		);
 		$id = $api->user_update($param);
@@ -25,7 +25,7 @@ class TestUserAPI extends UnitTestCase {
 		// Read
 		$result = $api->user_read($id);
 		$this->assertNotNull($result['id']);
-		$this->assertEqual('SomeUser', $result['userName']);
+		$this->assertEqual('SomeUser', $result['username']);
 		$this->assertEqual('user@example.com', $result['email']);
 		
 		// Update

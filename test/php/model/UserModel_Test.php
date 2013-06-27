@@ -14,14 +14,14 @@ class TestUserModel extends UnitTestCase {
 	{
 		$model = new User_model();
 		$model->email = "user@example.com";
-		$model->userName = "SomeUser";
+		$model->username = "SomeUser";
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
 		$otherModel = new User_model($id);
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('user@example.com', $otherModel->email);
-		$this->assertEqual('SomeUser', $otherModel->userName);
+		$this->assertEqual('SomeUser', $otherModel->username);
 	}
 
 	function testUserList_HadCountAndEntries()
