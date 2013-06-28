@@ -218,7 +218,7 @@
 				/* Workaround for IE image loading with black edges */
 				if ($.browser.msie){
 					if (parseInt($.browser.version, 10) != 6){
-						setTimeout(function(){ $('.slides_container img').css('visibility','visible') }, 400);
+						setTimeout(function(){ $('.slides_container img').css('visibility','visible'); }, 400);
 					}
 				} else {
 					$('.slides_container img').css('visibility','visible');

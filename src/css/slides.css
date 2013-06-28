@@ -33,7 +33,7 @@
 
 .slides_container a, .slides_container div {
 	width: 950px;
-	height: 440px;
+	height: 390px;
 	display:block;
 }
 
@@ -71,7 +71,7 @@
 	Pagination
 */
 
-.pagination {
+.slide_pagination {
 	position: absolute;
 	display: block;
 	width:50px;
@@ -81,13 +81,13 @@
 	z-index: 5;
 }
 
-.pagination li {
+.slide_pagination li {
 	float:left;
 	margin:0 1px;
 	list-style:none;
 }
 
-.pagination li a {
+.slide_pagination li a {
 	display: block;
 	width: 10px;
 	height: 0;
@@ -101,6 +101,6 @@
 	overflow: hidden;
 }
 
-.pagination li.current a {
+.slide_pagination li.current a {
 	background-position: -12px 0;
 }
