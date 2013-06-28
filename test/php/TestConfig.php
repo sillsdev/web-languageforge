@@ -13,7 +13,6 @@ define('SourcePath', $rootPath . 'src/');
 define('APPPATH', $rootPath . 'src/');
 define('BASEPATH', $rootPath . 'lib/CodeIgniter_2.1.3/system/');
 
-require_once(APPPATH . 'config/mongodb.php');
-$config['default']['mongo_database'] = 'scriptureforge_test';
+define('SF_DATABASE', 'scriptureforge_test');
 
 ?>
