@@ -1,5 +1,7 @@
 <?php
 
+require_once(APPPATH . 'config/mongodb.php');
+
 class MongoStore
 {
 	/**
@@ -39,24 +41,20 @@ class MongoStore
 
 class MapperModel /*extends CI_Model*/
 {
-	protected static $_mapper;
+	protected $_mapper;
 
-	public static function init($mapper)
+	protected function __construct($mapper, $id = NULL)
 	{
-		static::$_mapper = $mapper;
-	}
-	
-	function __construct($id = NULL)
-	{
+		$this->_mapper = $mapper;
 		if (!empty($id))
 		{
-			static::$_mapper->read($this, $id);
+			$this->_mapper->read($this, $id);
 		}
 	}
-
+	
 	function read()
 	{
-		return static::$_mapper->read($this);
+		return $this->_mapper->read($this);
 	}
 	
 	/**
@@ -64,14 +62,9 @@ class MapperModel /*extends CI_Model*/
 	 */
 	function write()
 	{
-		return static::$_mapper->write($this);
+		return $this->_mapper->write($this);
 	}
 	
-	public static function remove($id)
-	{
-		return static::$_mapper->remove($id);
-	}
-
 }
 
 class MapperListModel /*extends CI_Model*/
@@ -86,7 +79,10 @@ class MapperListModel /*extends CI_Model*/
 	 */
 	public $entries;
 	
-	protected static $_mapper;
+	/**
+	 * @var MongoMapper
+	 */
+	protected $_mapper;
 
 	/**
 	 * @var array
@@ -98,27 +94,23 @@ class MapperListModel /*extends CI_Model*/
 	 */
 	protected $_fields;
 	
-	public static function init($mapper)
+	/**
+	 * @param MongoMapper $mapper
+	 * @param array $query
+	 * @param array $fields
+	 */
+	protected function __construct($mapper, $query, $fields = array())
 	{
-		static::$_mapper = $mapper;
-	}
-	
-	function __construct($query, $fields = array())
-	{
+		$this->_mapper = $mapper;
 		$this->_query = $query;
 		$this->_fields = $fields;
 	}
 
 	function read()
 	{
-		return static::$_mapper->readList($this, $this->_query, $this->_fields);
+		return $this->_mapper->readList($this, $this->_query, $this->_fields);
 	}
 	
-	public static function remove($id)
-	{
-		return static::$_mapper->remove($id);
-	}
-
 }
 
 class MongoMapper
@@ -139,15 +131,22 @@ class MongoMapper
 	private $_idKey;
 
 	/**
-	 * @param string $database
 	 * @param string $collection
 	 * @param string $idKey defaults to id
 	 */
-	public function __construct($database, $collection, $idKey = 'id')
+	protected function __construct($collection, $idKey = 'id')
 	{
-		$this->_db = MongoStore::connect($database);
+		global $config;
+		$this->_db = MongoStore::connect($config['default']['mongo_database']);
 		$this->_collection = $this->_db->$collection;
 		$this->_idKey = $idKey;
+	}
+	
+	/**
+	 * Private clone to prevent copies of the singleton.
+	 */
+	private function __clone()
+	{
 	}
 	
 	public function readList($model, $query, $fields = array())
