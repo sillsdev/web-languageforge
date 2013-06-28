@@ -25,8 +25,10 @@
 			<div class="large-12">
 				<label><input type="checkbox" ng-model="record.active"/> Is Active</label>
 			</div>
-			<div ng-show="record.created_on" class="large-12"><label>Created On: {{ record.created_on * 1000 | date:shortDate }}</label></div>
-			<div ng-show="record.last_login" class="large-12"><label>Last Login: {{record.last_login * 1000 | date:shortDate}}</label></div>
+			<div class="panel">
+			<div ng-show="record.created_on" class="large-12"><label style="cursor:default">Created On: {{ record.created_on * 1000 | date:shortDate }}</label></div>
+			<div ng-show="record.last_login" class="large-12"><label style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label></div>
+			</div>
 		</div>
 		<ul style="margin-top:20px" class="button-group">
 			<li>
