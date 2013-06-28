@@ -39,8 +39,13 @@
 */
 
 $route['default_controller'] = "/pages/view/frontpage";
-$route['(:any)'] = "pages/view/$1";
 $route['404_override'] = '';
+$route['login'] = 'auth/login';
+$route['auth'] = 'auth/index';
+$route['auth/(:any)'] = 'auth/$1';
+$route['api/(:any)'] = 'api/service/$1';
+$route['app/(:any)'] = 'app/view/$1';
+$route['(:any)'] = "pages/view/$1";
 
 
 /* End of file routes.php */
