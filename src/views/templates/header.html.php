@@ -44,7 +44,8 @@
 							<ul style="margin-left: 50px" class="sf-menu">
 								<li><a href="#">Administration</a>
 									<ul>
-										<li><a href="/app/admin">Users/Projects/Texts/Questions</a></li>
+										<li><a href="/app/sfadmin">Users and Projects</a></li>
+										<li><a href="/app/projectadmin/p1">My First Project</a></li>
 									</ul>
 								</li>
 							</ul>
