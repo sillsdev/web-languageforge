@@ -2,12 +2,16 @@
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
+require_once(TestPath . 'common/MongoTestEnvironment.php');
+
 require_once(SourcePath . "models/project_model.php");
 
 class TestProjectModel extends UnitTestCase {
 
 	function __construct()
 	{
+		$e = new MongoTestEnvironment();
+		$e->clean();
 	}
 	
 	function testWrite_ReadBackSame()

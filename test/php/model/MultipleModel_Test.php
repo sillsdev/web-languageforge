@@ -2,6 +2,8 @@
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
+require_once(TestPath . 'common/MongoTestEnvironment.php');
+
 require_once(SourcePath . "models/project_model.php");
 require_once(SourcePath . "models/user_model.php");
 
@@ -9,6 +11,8 @@ class TestMultipleModel extends UnitTestCase {
 
 	function __construct()
 	{
+		$e = new MongoTestEnvironment();
+		$e->clean();
 	}
 	
 	function testWrite_TwoModels_ReadBackBothModelsOk()
