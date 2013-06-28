@@ -21,6 +21,11 @@ class Project_model extends MapperModel
 	{
 		parent::__construct(Project_model_MongoMapper::instance(), $id);
 	}
+
+	public static function remove($id)
+	{
+		Project_model_MongoMapper::instance()->remove($id);
+	}
 	
 	public $id;
 	
