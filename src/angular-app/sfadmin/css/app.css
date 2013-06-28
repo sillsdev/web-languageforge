@@ -28,3 +28,10 @@
   content: "";
   padding: 0;
 }
+
+.useractive-true {
+}
+
+.useractive-false {
+	text-decoration:line-through;
+}
