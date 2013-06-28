@@ -3,12 +3,24 @@
 		<legend>User data</legend>
 		<div class="row">
 			<div class="large-12">
+				<label>User Name</label>
+				<input type="text" placeholder="(username)" ng-model="record.username" ng-focus="vars.inputfocus"/>
+			</div>
+			<div class="large-12">
 				<label>Name</label>
 				<input type="text" placeholder="(your name here)" ng-model="record.name" ng-focus="vars.inputfocus"/>
 			</div>
 			<div class="large-12">
 				<label>Email</label>
 				<input type="text" placeholder="(no email)" ng-model="record.email"/>
+			</div>
+			<div class="large-12">
+				<label>Password</label>
+				<input type="text" placeholder="(enter new password)" ng-model="record.password"/>
+			</div>
+			<div class="large-12">
+				<label>Confirm Password</label>
+				<input type="text" placeholder="(confirm password)" ng-model="record.password_confirm"/>
 			</div>
 		</div>
 		<ul class="button-group">
