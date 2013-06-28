@@ -3,7 +3,7 @@
 		<script src="/js/lib/superfish/superfish.js"></script>
 		<script src="/js/lib/superfish/hoverIntent.js"></script>
 		<script src="/js/lib/slides.min.jquery.js"></script>
-		<script src="js/lib/foundation/foundation.min.js"></script>
+		<script src="/js/lib/foundation/foundation.min.js"></script>
 		<script>
 			$(document).foundation();
 			
@@ -20,7 +20,8 @@
 					play: 5000,
 					pause: 2500,
 					hoverPause: true,
-					prependPagination: true
+					prependPagination: true,
+					paginationClass: 'slide_pagination'	
 				});
 				
 				/* Workaround for IE image loading with black edges */

@@ -1,0 +1,18 @@
+<fieldset>
+	<style type="text/css">
+		tr.active {background-color: #5da423 !important;}
+	</style>
+	<legend>Users (total: {{data.result.entries.length}})</legend>
+	<table style="width: 100%">
+		<tr>
+			<th>User Name <span class="right"><i class="icon-sort-by-alphabet"></i>&nbsp;<i class="icon-sort-by-alphabet-alt"></i></span></th>
+			<th>Full Name <span class="right"><i class="icon-sort-by-alphabet"></i>&nbsp;<i class="icon-sort-by-alphabet-alt"></i></span></th>
+		</tr>
+		<tr ng-repeat="user in data.result.entries" ng-class="{active: $index==vars.selectedIndex}" ng-click="selectRow($index, user)">
+			<td>{{user.username}}</td>
+			<td>{{user.name}}</td>
+		</tr>
+	</table>
+	<div class="left"><a href="#" ng-click="addRecord()" class="small button"><i class="icon-plus"></i></a></div>
+	<div class="right"><a href="#" ng-click="deleteRecord(vars.record)" class="small button" ng-class="{disabled: vars.selectedIndex == -1}"><i class="icon-minus"></i></a></div>
+</fieldset>
