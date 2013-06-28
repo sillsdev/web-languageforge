@@ -7,10 +7,12 @@
 		<tr>
 			<th>Project <span class="right"><i class="icon-sort-by-alphabet"></i>&nbsp;<i class="icon-sort-by-alphabet-alt"></i></span></th>
 			<th>Language<span class="right"><i class="icon-sort-by-alphabet"></i>&nbsp;<i class="icon-sort-by-alphabet-alt"></i></span></th>
+			<th>Options</th>
 		</tr>
 		<tr ng-repeat="project in data.result.entries" ng-class="{active: $index==vars.selectedIndex}" ng-click="selectRow($index, project)">
 			<td>{{project.projectname}}</td>
 			<td>{{project.language}}</td>
+			<td><a href="/app/projectadmin/{{project.id}}">Manage</a></td>
 		</tr>
 	</table>
 	<div class="left"><a href="#" ng-click="addRecord()" class="small button"><i class="icon-plus"></i></a></div>
