@@ -9,7 +9,7 @@ class Project_model_MongoMapper extends MongoMapper
 		static $instance = null;
 		if (null === $instance)
 		{
-			$instance = new Project_model_MongoMapper('projects');
+			$instance = new Project_model_MongoMapper(SF_DATABASE, 'projects');
 		}
 		return $instance;
 	}

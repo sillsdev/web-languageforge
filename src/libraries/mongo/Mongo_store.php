@@ -1,6 +1,9 @@
 <?php
 
-require_once(APPPATH . 'config/mongodb.php');
+if (!defined('SF_DATABASE'))
+{
+	define('SF_DATABASE', 'scriptureforge');
+}
 
 class MongoStore
 {
@@ -131,13 +134,13 @@ class MongoMapper
 	private $_idKey;
 
 	/**
+	 * @param string $database
 	 * @param string $collection
 	 * @param string $idKey defaults to id
 	 */
-	protected function __construct($collection, $idKey = 'id')
+	protected function __construct($database, $collection, $idKey = 'id')
 	{
-		global $config;
-		$this->_db = MongoStore::connect($config['default']['mongo_database']);
+		$this->_db = MongoStore::connect($database);
 		$this->_collection = $this->_db->$collection;
 		$this->_idKey = $idKey;
 	}
