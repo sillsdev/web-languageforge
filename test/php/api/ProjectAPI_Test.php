@@ -4,45 +4,45 @@ require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestLibPath . 'jsonRPCClient.php');
 
-class TestUserAPI extends UnitTestCase {
+class TestProjectAPI extends UnitTestCase {
 
 	function __construct() {
 	}
 	
-	function testUserCRUD_CRUDOK() {
+	function testProjectCRUD_CRUDOK() {
 		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
 		
 		// Create
 		$param = array(
 			'id' => '',
-			'username' =>'SomeUser',
-			'email' => 'user@example.com'
+			'projectname' =>'SomeProject',
+			'language' => 'SomeLanguage'
 		);
-		$id = $api->user_update($param);
+		$id = $api->project_update($param);
 		$this->assertNotNull($id);
 		$this->assertEqual(24, strlen($id));
 		
 		// Read
-		$result = $api->user_read($id);
+		$result = $api->project_read($id);
 		$this->assertNotNull($result['id']);
-		$this->assertEqual('SomeUser', $result['username']);
-		$this->assertEqual('user@example.com', $result['email']);
+		$this->assertEqual('SomeProject', $result['projectname']);
+		$this->assertEqual('SomeLanguage', $result['language']);
 		
 		// Update
-		$result['email'] = 'other@example.com';
-		$id = $api->user_update($result);
+		$result['language'] = 'AnotherLanguage';
+		$id = $api->project_update($result);
 		$this->assertNotNull($id);
 		$this->assertEqual($result['id'], $id);
 		
 		// Delete
- 		$result = $api->user_delete($id);
+ 		$result = $api->project_delete($id);
  		$this->assertTrue($result);
-	 			
+		
 	}
 	
-	function testUserList_Ok() {
+	function testProjectList_Ok() {
 		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
-		$result = $api->user_list();
+		$result = $api->project_list();
 		
 		$this->assertTrue($result['count'] > 0);
 		

@@ -1,5 +1,10 @@
 <?php
 
+if (!defined('SF_DATABASE'))
+{
+	define('SF_DATABASE', 'scriptureforge');
+}
+
 class MongoStore
 {
 	/**
@@ -18,10 +23,10 @@ class MongoStore
 	 * @return MongoDB
 	 */
 	public static function connect($databaseName) {
-		if (!isset(self::$_pool[$databaseName])) {
-			self::$_pool[$databaseName] = self::connectMongo($databaseName);
+		if (!isset(static::$_pool[$databaseName])) {
+			static::$_pool[$databaseName] = static::connectMongo($databaseName);
 		}
-		return self::$_pool[$databaseName];
+		return static::$_pool[$databaseName];
 	}
 	
 	/**
@@ -29,10 +34,10 @@ class MongoStore
 	 * @return MongoDB
 	 */
 	private static function connectMongo($databaseName) {
-		if (self::$_mongo == null) {
-			self::$_mongo = new Mongo();
+		if (static::$_mongo == null) {
+			static::$_mongo = new Mongo();
 		}
-		return self::$_mongo->selectDB($databaseName);
+		return static::$_mongo->selectDB($databaseName);
 	}
 	
 }
@@ -41,7 +46,7 @@ class MapperModel /*extends CI_Model*/
 {
 	protected $_mapper;
 
-	function __construct($mapper, $id)
+	protected function __construct($mapper, $id = NULL)
 	{
 		$this->_mapper = $mapper;
 		if (!empty($id))
@@ -49,7 +54,12 @@ class MapperModel /*extends CI_Model*/
 			$this->_mapper->read($this, $id);
 		}
 	}
-
+	
+	function read()
+	{
+		return $this->_mapper->read($this);
+	}
+	
 	/**
 	 * @return string The unique id of the object written
 	 */
@@ -57,17 +67,67 @@ class MapperModel /*extends CI_Model*/
 	{
 		return $this->_mapper->write($this);
 	}
+	
+}
 
+class MapperListModel /*extends CI_Model*/
+{
+	/**
+	 * @var int
+	 */
+	public $count;
+	
+	/**
+	 * @var array
+	 */
+	public $entries;
+	
+	/**
+	 * @var MongoMapper
+	 */
+	protected $_mapper;
+
+	/**
+	 * @var array
+	 */
+	protected $_query;
+
+	/**
+	 * @var array
+	 */
+	protected $_fields;
+	
+	/**
+	 * @param MongoMapper $mapper
+	 * @param array $query
+	 * @param array $fields
+	 */
+	protected function __construct($mapper, $query, $fields = array())
+	{
+		$this->_mapper = $mapper;
+		$this->_query = $query;
+		$this->_fields = $fields;
+	}
+
+	function read()
+	{
+		return $this->_mapper->readList($this, $this->_query, $this->_fields);
+	}
+	
 }
 
 class MongoMapper
 {
 	/**
-	 *
 	 * @var MongoDB
 	 */
 	protected $_db;
 
+	/**
+	 * @var MongoCollection
+	 */
+	protected $_collection;
+	
 	/**
 	 * @var string
 	 */
@@ -78,10 +138,52 @@ class MongoMapper
 	 * @param string $collection
 	 * @param string $idKey defaults to id
 	 */
-	public function __construct($database, $idKey = 'id')
+	protected function __construct($database, $collection, $idKey = 'id')
 	{
 		$this->_db = MongoStore::connect($database);
+		$this->_collection = $this->_db->$collection;
 		$this->_idKey = $idKey;
+	}
+	
+	/**
+	 * Private clone to prevent copies of the singleton.
+	 */
+	private function __clone()
+	{
+	}
+	
+	public function readList($model, $query, $fields = array())
+	{
+		$cursor = $this->_collection->find($query, $fields);
+		$model->count = $cursor->count();
+		$model->entries = array();
+		foreach ($cursor as $item) {
+			$id = strval($item['_id']);
+			$item[$this->_idKey] = $id;
+			unset($item['_id']);
+			$model->entries[] = $item;
+		}
+	}
+	
+	/**
+	 * @param User_model $model
+	 * @param MongoId $id
+	 */
+	public function read($model, $id)
+	{
+		assert(is_string($id) && !empty($id));
+		$data = $this->_collection->findOne(array("_id" => new MongoId($id)));
+		if ($data === NULL)
+		{
+			throw new Exception("Could not find id '$id'");
+		}
+		$this->decode($model, $data);
+	}
+	
+	public function write($model)
+	{
+		$data = $this->encode($model);
+		return $this->update($this->_collection, $data, $model->id);
 	}
 
 	/**
@@ -132,6 +234,16 @@ class MongoMapper
 		return $data;
 	}
 
+	public function remove($id)
+	{
+		assert(is_string($id) && !empty($id));
+		$result = $this->_collection->remove(
+			array('_id' => new MongoId($id)),
+			array('safe' => true)
+		);
+		return $result;
+	}
+	
 	/**
 	 *
 	 * @param MongoCollection $collection
@@ -147,7 +259,7 @@ class MongoMapper
 		assert($id === NULL || is_string($id));
 		$result = $collection->update(
 				array('_id' => new MongoId($id)),
-				$data,
+				array('$set' => $data),
 				array('upsert' => true, 'multiple' => false, 'safe' => true)
 		);
 		return isset($result['upserted']) ? $result['upserted'].$id : $id;

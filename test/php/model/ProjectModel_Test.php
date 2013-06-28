@@ -4,9 +4,9 @@ require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-require_once(SourcePath . "models/user_model.php");
+require_once(SourcePath . "models/project_model.php");
 
-class TestUserModel extends UnitTestCase {
+class TestProjectModel extends UnitTestCase {
 
 	function __construct()
 	{
@@ -16,21 +16,21 @@ class TestUserModel extends UnitTestCase {
 	
 	function testWrite_ReadBackSame()
 	{
-		$model = new User_model();
-		$model->email = "user@example.com";
-		$model->username = "SomeUser";
+		$model = new Project_model();
+		$model->language = "SomeLanguage";
+		$model->projectname = "SomeProject";
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$otherModel = new User_model($id);
+		$otherModel = new Project_model($id);
 		$this->assertEqual($id, $otherModel->id);
-		$this->assertEqual('user@example.com', $otherModel->email);
-		$this->assertEqual('SomeUser', $otherModel->username);
+		$this->assertEqual('SomeLanguage', $otherModel->language);
+		$this->assertEqual('SomeProject', $otherModel->projectname);
 	}
 
-	function testUserList_HadCountAndEntries()
+	function testProjectList_HadCountAndEntries()
 	{
-		$model = new User_list_model();
+		$model = new Project_list_model();
 		$model->read();
 		
 		$this->assertNotEqual(0, $model->count);
