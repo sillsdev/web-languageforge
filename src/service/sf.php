@@ -37,9 +37,8 @@ class Sf
 	 * @return string Id of deleted record
 	 */
  	public function user_delete($id) {
-		$user = new User_model();
-		$user->remove($id);
-		return $id;
+ 		User_model::remove($id);
+		return true;
  	}
 
 	// TODO Pretty sure this is going to want some paging params
@@ -76,9 +75,8 @@ class Sf
 	 * @return string Id of deleted record
 	 */
  	public function project_delete($id) {
-		$project = new Project_model();
-		$project->remove($id);
-		return $id;
+ 		Project_model::remove($id);
+		return true;
  	}
 
 	// TODO Pretty sure this is going to want some paging params

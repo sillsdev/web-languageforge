@@ -35,9 +35,8 @@ class TestProjectAPI extends UnitTestCase {
 		$this->assertEqual($result['id'], $id);
 		
 		// Delete
-// 		$result = $api->project_delete($id);
-// 		$this->assertTrue($result);
-		
+ 		$result = $api->project_delete($id);
+ 		$this->assertTrue($result);
 		
 	}
 	

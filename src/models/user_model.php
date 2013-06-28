@@ -22,6 +22,11 @@ class User_model extends MapperModel
 	{
 		parent::__construct(User_model_MongoMapper::instance(), $id);
 	}
+	
+	public static function remove($id)
+	{
+		User_model_MongoMapper::instance()->remove($id);
+	}
 
 	public $id;
 	
