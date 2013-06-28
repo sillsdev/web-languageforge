@@ -10,8 +10,8 @@ class TestMultipleModel extends UnitTestCase {
 	function __construct()
 	{
 	}
-
-	function testWrite_ReadBackSameMultiple()
+	
+	function testWrite_TwoModels_ReadBackBothModelsOk()
 	{
 		$model = new User_model();
 		$model->email = "user@example.com";
@@ -40,9 +40,9 @@ class TestMultipleModel extends UnitTestCase {
 	{
 		$model = new User_list_model();
 		$model->read();
-
+		
 		foreach ($model->entries as $entry) {
-			$this->assertTrue(array_key_exists("username", $entry));
+			$this->assertTrue(array_key_exists("username", $entry), "Key 'username' not found " . print_r($entry, true));
 		}
 	}
 
