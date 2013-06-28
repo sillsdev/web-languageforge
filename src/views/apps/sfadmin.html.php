@@ -19,7 +19,12 @@
   <section>
     <p class="title" data-section-title><a href="#">Projects</a></p>
     <div class="content" data-section-content>
-      <p>Project Administration</p>
+		<div class="row" ng-controller="ProjectCtrl" style="overflow:hidden">
+		
+			<div class="large-8 column"><project-list/></div>
+			
+			<div class="large-4 column"><project-data/></div>
+		</div>
     </div>
   </section>
   
