@@ -22,7 +22,7 @@ class Base extends CI_Controller {
 			$this->viewdata['user_email'] = $this->ion_auth->get_user_id();
 			$user_query = $this->ion_auth_model->user($this->ion_auth->get_user_id());
 			$user = $user_query->row();
-			$this->viewdata['user_name'] = $user->first_name;
+			$this->viewdata['user_name'] = $user->name;
 			$this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
 			
 		}
