@@ -10,8 +10,7 @@ class MongoTestEnvironment
 	
 	public function __construct()
 	{
-		global $config;
-		$this->_db = MongoStore::connect($config['default']['mongo_database']);
+		$this->_db = MongoStore::connect(SF_DATABASE);
 	}
 	
 	public function clean()
