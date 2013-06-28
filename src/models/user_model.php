@@ -4,17 +4,25 @@ require_once(APPPATH . 'libraries/mongo/Mongo_store.php');
 
 class User_model_MongoMapper extends MongoMapper
 {
-	function __construct()
-	{ 
-		parent::__construct('scriptureforge', 'users');
+	public static function instance()
+	{
+		static $instance = null;
+		if (null === $instance)
+		{
+			$instance = new User_model_MongoMapper('users');
+		}
+		return $instance;
 	}
 	
 }
 
 class User_model extends MapperModel
 {
-	protected static $_mapper;
-	
+	public function __construct($id = NULL)
+	{
+		parent::__construct(User_model_MongoMapper::instance(), $id);
+	}
+
 	public $id;
 	
 	public $name;
@@ -22,17 +30,19 @@ class User_model extends MapperModel
 	public $email;
 	
 }
-User_model::init(new User_model_MongoMapper());
 
 class User_list_model extends MapperListModel
 {
-	protected static $_mapper;
 
-	function __construct()
+	public function __construct()
 	{
-		parent::__construct(array('email' => array('$regex' => '')), array('name', 'email'));
+		parent::__construct(
+			User_model_MongoMapper::instance(),
+			array('email' => array('$regex' => '')),
+			array('username', 'email')
+		);
 	}
+	
 }
-User_list_model::init(new User_model_MongoMapper());
 
 ?>

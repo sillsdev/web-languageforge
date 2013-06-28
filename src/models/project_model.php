@@ -4,16 +4,23 @@ require_once(APPPATH . 'libraries/mongo/Mongo_store.php');
 
 class Project_model_MongoMapper extends MongoMapper
 {
-	function __construct()
-	{ 
-		parent::__construct('scriptureforge', 'projects');
+	public static function instance()
+	{
+		static $instance = null;
+		if (null === $instance)
+		{
+			$instance = new Project_model_MongoMapper('projects');
+		}
+		return $instance;
 	}
-	
 }
 
 class Project_model extends MapperModel
 {
-	protected static $_mapper;
+	public function __construct($id = NULL)
+	{
+		parent::__construct(Project_model_MongoMapper::instance(), $id);
+	}
 	
 	public $id;
 	
@@ -23,17 +30,17 @@ class Project_model extends MapperModel
 	// What else needs to be in the model?
 	
 }
-Project_model::init(new Project_model_MongoMapper());
 
 class Project_list_model extends MapperListModel
 {
-	protected static $_mapper;
-
-	function __construct()
+	public function __construct()
 	{
-		parent::__construct(array(), array('projectname', 'language'));
+		parent::__construct(
+			Project_model_MongoMapper::instance(),
+			array(),
+			array('projectname', 'language')
+		);
 	}
 }
-Project_list_model::init(new Project_model_MongoMapper());
 
 ?>
