@@ -1,12 +1,46 @@
-<div ng-app="myApp">
-	<div style="margin-top: 150px"><!-- Spacer --></div>
-	<div class="container" ng-controller="UserCtrl" style="overflow:hidden">
-		<div style="padding:10px">
-
-		<div class="large-8 column"><user-list/></div>
+<div class="row" ng-app="myApp">
+	<div style="margin-top: 50px"><h2>SF Administration</h2></div>
+	
+<div class="section-container auto" data-section>
+  <section>
+    <p class="title" data-section-title><a href="#">Users</a></p>
+    <div class="content" data-section-content>
+    
+		<div class="row" ng-controller="UserCtrl" style="overflow:hidden">
 		
-		<div class="large-4 column"><user-data/></div>
-	</div>
+			<div class="large-8 column"><user-list/></div>
+			
+			<div class="large-4 column"><user-data/></div>
+		</div>
+		
+    </div>
+  </section>
+  
+  <section>
+    <p class="title" data-section-title><a href="#">Projects</a></p>
+    <div class="content" data-section-content>
+      <p>Project Administration</p>
+    </div>
+  </section>
+  
+  <section>
+    <p class="title" data-section-title><a href="#">Texts</a></p>
+    <div class="content" data-section-content>
+      <p>Texts Administration</p>
+    </div>
+  </section>
+  
+  <section>
+    <p class="title" data-section-title><a href="#">Questions</a></p>
+    <div class="content" data-section-content>
+      <p>Questions Administration</p>
+    </div>
+  </section>
+</div>
+	
+	
+	
+	
 	
 	<div ng-view></div>
 	
