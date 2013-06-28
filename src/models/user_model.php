@@ -27,6 +27,8 @@ class User_model extends MapperModel
 	
 	public $name;
 	
+	public $username;
+	
 	public $email;
 	
 }
