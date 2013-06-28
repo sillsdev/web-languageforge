@@ -41,10 +41,10 @@
 						<li><a href="/discuss">Discuss</a></li>
 					</ul>
 						<?php if ($is_admin):?>
-							<ul style="margin-left: 100px" class="sf-menu">
+							<ul style="margin-left: 50px" class="sf-menu">
 								<li><a href="#">Administration</a>
 									<ul>
-										<li><a href="/app/admin">Users and Projects</a></li>
+										<li><a href="/app/admin">Users/Projects/Texts/Questions</a></li>
 									</ul>
 								</li>
 							</ul>
@@ -54,8 +54,17 @@
 				<?php if ($logged_in):?>
 					<div id="account" class="right">
 						<img src="<?php echo $small_gravatar_url; ?>" style="float:left; position:relative; top:-4px; border:1px solid white; margin-right:10px" />
-						<span><a href="/account">Welcome, <?php echo $user_name; ?></a></span>
-						<span> | <a href="/auth/logout">Logout</a></span>
+						
+						<ul class="sf-menu">
+							<li><a href="#">Welcome, <?php echo $user_name; ?></a>
+								<ul>
+									<li><a href="/app/userprofile">My Profile</a></li>
+									<li><a href="/auth/change_password">Change Password</a></li>
+								</ul>
+							</li>
+						</ul>
+						
+						<span style="margin-left:10px" ><a href="/auth/logout">Logout</a></span>
 					</div>
 				
 				<?php else:?>
