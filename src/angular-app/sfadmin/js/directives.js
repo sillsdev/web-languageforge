@@ -3,7 +3,7 @@
 /* Directives */
 
 
-angular.module('sfAdmin.directives', ["jsonRpc"]).
+angular.module('sfAdmin.directives', ["jsonRpc", "sfAdmin.filters"]).
   directive('appVersion', ['version', function(version) {
     return function(scope, elm, attrs) {
       elm.text(version);
