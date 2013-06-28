@@ -1,4 +1,4 @@
-<div class="row" ng-app="myApp">
+<div class="row" ng-app="sfAdmin">
 	<div style="margin-top: 50px"><h2>SF Administration</h2></div>
 	
 <div class="section-container auto" data-section>
@@ -51,11 +51,11 @@
 	-->
 	<script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
 	<script	src="/js/jsonrpc.js"></script>
-	<script	src="/angular-app/admin/js/app.js"></script>
-	<script	src="/angular-app/admin/js/services.js"></script>
-	<script	src="/angular-app/admin/js/controllers.js"></script>
-	<script	src="/angular-app/admin/js/filters.js"></script>
-	<script	src="/angular-app/admin/js/directives.js"></script>
+	<script	src="/angular-app/sfadmin/js/app.js"></script>
+	<script	src="/angular-app/sfadmin/js/services.js"></script>
+	<script	src="/angular-app/sfadmin/js/controllers.js"></script>
+	<script	src="/angular-app/sfadmin/js/filters.js"></script>
+	<script	src="/angular-app/sfadmin/js/directives.js"></script>
 	
 	  
 </div>

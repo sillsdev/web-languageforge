@@ -3,7 +3,7 @@
 /* Directives */
 
 
-angular.module('myApp.directives', ["jsonRpc"]).
+angular.module('sfAdmin.directives', ["jsonRpc"]).
   directive('appVersion', ['version', function(version) {
     return function(scope, elm, attrs) {
       elm.text(version);
@@ -11,7 +11,7 @@ angular.module('myApp.directives', ["jsonRpc"]).
   }])
   .directive('userData', ['jsonRpc', function(jsonRpc) {
 	  return {
-		  templateUrl: "/angular-app/admin/partials/userdata.html",
+		  templateUrl: "/angular-app/sfadmin/partials/userdata.html",
 		  restrict: "E",
 		  link: function(scope, elem, attrs) {
 			  scope.$watch("vars.record.id", function(newval, oldval) {
@@ -38,11 +38,11 @@ angular.module('myApp.directives', ["jsonRpc"]).
   .directive('userList', function() {
 	  return {
 		  restrict: "E",
-		  templateUrl: "/angular-app/admin/partials/userlist.html",
+		  templateUrl: "/angular-app/sfadmin/partials/userlist.html",
   }})
   .directive('projectData', ['jsonRpc', function(jsonRpc) {
 	  return {
-		  templateUrl: "/angular-app/admin/partials/projectdata.html",
+		  templateUrl: "/angular-app/sfadmin/partials/projectdata.html",
 		  restrict: "E",
 		  link: function(scope, elem, attrs) {
 			  scope.$watch("vars.record.id", function(newval, oldval) {
@@ -69,7 +69,7 @@ angular.module('myApp.directives', ["jsonRpc"]).
   .directive('projectList', function() {
 	  return {
 		  restrict: "E",
-		  templateUrl: "/angular-app/admin/partials/projectlist.html",
+		  templateUrl: "/angular-app/sfadmin/partials/projectlist.html",
   }})
 // This directive's code is from http://stackoverflow.com/q/16016570/
 .directive('ngFocus', function($parse, $timeout) {
