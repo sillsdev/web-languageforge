@@ -22,8 +22,13 @@
 				<label>Confirm Password</label>
 				<input type="text" placeholder="(confirm password)" ng-model="record.password_confirm"/>
 			</div>
+			<div class="large-12">
+				<label><input type="checkbox" ng-model="record.active"/> Is Active</label>
+			</div>
+			<div ng-show="record.created_on" class="large-12"><label>Created On: {{ record.created_on * 1000 | date:shortDate }}</label></div>
+			<div ng-show="record.last_login" class="large-12"><label>Last Login: {{record.last_login * 1000 | date:shortDate}}</label></div>
 		</div>
-		<ul class="button-group">
+		<ul style="margin-top:20px" class="button-group">
 			<li>
 				<a href="#" class="small button round" ng-click="updateRecord(record)">
 					<i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
