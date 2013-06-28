@@ -4,48 +4,50 @@ require_once(APPPATH . 'libraries/mongo/Mongo_store.php');
 
 class User_model_MongoMapper extends MongoMapper
 {
-	function __construct()
-	{ 
-		parent::__construct('scriptureforge');
-	}
-	
-	/**
-	 * @param User_model $model
-	 * @param MongoId $id
-	 */
-	public function read($model, $id)
+	public static function instance()
 	{
-		assert(is_string($id));
-		$collection = $this->_db->users;
-		$data = $collection->findOne(array("_id" => new MongoId($id)));
-		if ($data === NULL)
+		static $instance = null;
+		if (null === $instance)
 		{
-			throw new Exception("Could not find id '$id'");
-		}	
-		$this->decode($model, $data);
+			$instance = new User_model_MongoMapper(SF_DATABASE, 'users');
+		}
+		return $instance;
 	}
-	
-	public function write($model)
-	{
-		$collection = $this->_db->users;
-		$data = $this->encode($model);
-		return $this->update($collection, $data, $model->id);
-	}
-	
 	
 }
 
 class User_model extends MapperModel
 {
+	public function __construct($id = NULL)
+	{
+		parent::__construct(User_model_MongoMapper::instance(), $id);
+	}
+	
+	public static function remove($id)
+	{
+		User_model_MongoMapper::instance()->remove($id);
+	}
+
 	public $id;
 	
-	public $userName;
+	public $name;
+	
+	public $username;
 	
 	public $email;
 	
-	public function __construct($id = NULL)
+}
+
+class User_list_model extends MapperListModel
+{
+
+	public function __construct()
 	{
-		parent::__construct(new User_model_MongoMapper(), $id);
+		parent::__construct(
+			User_model_MongoMapper::instance(),
+			array('email' => array('$regex' => '')),
+			array('username', 'email', 'name')
+		);
 	}
 	
 }
