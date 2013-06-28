@@ -23,19 +23,6 @@
     </div>
   </section>
   
-  <section>
-    <p class="title" data-section-title><a href="#">Texts</a></p>
-    <div class="content" data-section-content>
-      <p>Texts Administration</p>
-    </div>
-  </section>
-  
-  <section>
-    <p class="title" data-section-title><a href="#">Questions</a></p>
-    <div class="content" data-section-content>
-      <p>Questions Administration</p>
-    </div>
-  </section>
 </div>
 	
 	
