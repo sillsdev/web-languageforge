@@ -2,7 +2,7 @@
 
 /* Filters */
 
-angular.module('sfAdmin.filters', []).
+angular.module('projectAdmin.filters', []).
   filter('interpolate', ['version', function(version) {
     return function(text) {
       return String(text).replace(/\%VERSION\%/mg, version);

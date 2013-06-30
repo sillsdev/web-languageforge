@@ -97,7 +97,25 @@ function makeDataController(tableName) {
 	};
 }
 
-var app = angular.module('sfAdmin', ['jsonRpc', 'sfAdmin.directives'])
+var app = angular.module('projectAdmin', ['jsonRpc', 'projectAdmin.directives', 'projectAdmin.services'])
 	.controller('UserCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('user')])
 	.controller('ProjectCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('project')])
+	.controller('UserSearchCtrl', ['$scope', 'users', function($scope, users) {
+	    $scope.users = [];
+		
+		$scope.searchUser = function(term) {
+			console.log('searching for ', term);
+			$scope.users = users;
+		};
+	
+		$scope.selectUser = function(item) {
+			console.log('user selected', item);
+			$scope.term = item.name;
+		};
+	
+		$scope.imageSource = function(item) {
+			return '';//item.images['medium'];
+		};
+	
+	}])
 	;
