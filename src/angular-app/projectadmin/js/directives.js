@@ -3,76 +3,179 @@
 /* Directives */
 
 
-angular.module('sfAdmin.directives', ["jsonRpc"]).
+angular.module('projectAdmin.directives', ["jsonRpc"]).
   directive('appVersion', ['version', function(version) {
     return function(scope, elm, attrs) {
       elm.text(version);
     };
   }])
-  .directive('userData', ['jsonRpc', function(jsonRpc) {
-	  return {
-		  templateUrl: "/angular-app/sfadmin/partials/userdata.html",
-		  restrict: "E",
-		  link: function(scope, elem, attrs) {
-			  scope.$watch("vars.record.id", function(newval, oldval) {
-			  //attrs.$observe("userid", function(newval, oldval) {
-				  console.log("Watch triggered with oldval '" + oldval + "' and newval '" + newval + "'");
-				  if (newval) {
-					  get_user_by_id(newval);
-				  } else {
-					  // Clear data table
-					  scope.record = {};
-				  }
-			  });
-			  
-			  function get_user_by_id(userid) {
-				  console.log("Fetching id: " + userid);
-				  jsonRpc.connect("/api/sf");
-				  jsonRpc.call("user_read", {"id": userid}, function(result) {
-					  scope.record = result.data.result;
-				  });
-			  }
-		  },
-	  };
+  // Typeahead
+  .directive('typeahead', ["$timeout", function($timeout) {
+		return {
+			restrict : 'E',
+			transclude : true,
+			replace : true,
+			template : '<div><form><input ng-model="term" ng-change="query()" type="text" autocomplete="off" /></form><div ng-transclude></div></div>',
+			scope : {
+				search : "&",
+				select : "&",
+				items : "=",
+				term : "="
+			},
+			controller : [
+				"$scope",	
+				function($scope) {
+					$scope.items = [];
+					$scope.hide = false;
+					this.activate = function(item) {
+						$scope.active = item;
+					};
+					this.activateNextItem = function() {
+						var index = $scope.items.indexOf($scope.active);
+						this.activate($scope.items[(index + 1) % $scope.items.length]);
+					};
+					this.activatePreviousItem = function() {
+						var index = $scope.items.indexOf($scope.active);
+						this.activate($scope.items[index === 0 ? $scope.items.length - 1 : index - 1]);
+					};
+					this.isActive = function(item) {
+						return $scope.active === item;
+					};
+					this.selectActive = function() {
+						this.select($scope.active);
+					};
+					this.select = function(item) {
+						$scope.hide = true;
+						$scope.focused = true;
+						$scope.select({
+							item : item
+						});
+					};
+					$scope.isVisible = function() {
+						return !$scope.hide && ($scope.focused || $scope.mousedOver);
+					};
+					$scope.query = function() {
+						$scope.hide = false;
+						$scope.search({
+							term : $scope.term
+						});
+					};
+				}
+			],
+			link : function(scope, element, attrs, controller) {
+				var $input = element.find('form > input');
+				var $list = element.find('> div');
+				$input.bind('focus', function() {
+					scope.$apply(function() {
+						scope.focused = true;
+					});
+				});
+				$input.bind('blur', function() {
+					scope.$apply(function() {
+						scope.focused = false;
+					});
+				});
+				$list.bind('mouseover', function() {
+					scope.$apply(function() {
+						scope.mousedOver = true;
+					});
+				});
+				$list.bind('mouseleave', function() {
+					scope.$apply(function() {
+						scope.mousedOver = false;
+					});
+				});
+				$input.bind('keyup', function(e) {
+					if (e.keyCode === 9 || e.keyCode === 13) {
+						scope.$apply(function() {
+							controller.selectActive();
+						});
+					}
+					if (e.keyCode === 27) {
+						scope.$apply(function() {
+							scope.hide = true;
+						});
+					}
+				});
+				$input.bind('keydown', function(e) {
+					if (e.keyCode === 9
+					||  e.keyCode === 13
+					||  e.keyCode === 27) {
+						e.preventDefault();
+					}
+					if (e.keyCode === 40) {
+						e.preventDefault();
+						scope.$apply(function() {
+							controller.activateNextItem();
+						});
+					}
+					if (e.keyCode === 38) {
+						e.preventDefault();
+						scope.$apply(function() {
+							controller.activatePreviousItem();
+						});
+					}
+				});
+				scope.$watch('items', function(items) {
+					controller.activate(items.length ? items[0] : null);
+				});
+				scope.$watch('focused', function(focused) {
+					if (focused) {
+						$timeout(function() {
+							$input.focus();
+						}, 0, false);
+					}
+				});
+				scope.$watch('isVisible()',function(visible) {
+					if (visible) {
+						var pos = $input.position();
+						var height = $input[0].offsetHeight;
+						$list.css({
+							top : pos.top + height,
+							left : pos.left,
+							position : 'absolute',
+							display : 'block'
+						});
+					} else {
+						$list.css('display', 'none');
+					}
+				});
+			}
+		};
   }])
-  .directive('userList', function() {
-	  return {
-		  restrict: "E",
-		  templateUrl: "/angular-app/sfadmin/partials/userlist.html",
-  }})
-  .directive('projectData', ['jsonRpc', function(jsonRpc) {
-	  return {
-		  templateUrl: "/angular-app/sfadmin/partials/projectdata.html",
-		  restrict: "E",
-		  link: function(scope, elem, attrs) {
-			  scope.$watch("vars.record.id", function(newval, oldval) {
-			  //attrs.$observe("userid", function(newval, oldval) {
-				  console.log("Watch triggered with oldval '" + oldval + "' and newval '" + newval + "'");
-				  if (newval) {
-					  get_project_by_id(newval);
-				  } else {
-					  // Clear data table
-					  scope.record = {};
-				  }
-			  });
-			  
-			  function get_project_by_id(recordid) {
-				  console.log("Fetching id: " + recordid);
-				  jsonRpc.connect("/api/sf");
-				  jsonRpc.call("project_read", {"id": recordid}, function(result) {
-					  scope.record = result.data.result;
-				  });
-			  }
-		  },
-	  };
-  }])
-  .directive('projectList', function() {
-	  return {
-		  restrict: "E",
-		  templateUrl: "/angular-app/sfadmin/partials/projectlist.html",
-  }})
-// This directive's code is from http://stackoverflow.com/q/16016570/
-.directive('ngFocus', function($parse, $timeout) {
+  .directive('typeaheadItem', function() {
+	return {
+		require : '^typeahead',
+		link : function(scope, element, attrs, controller) {
+
+			var item = scope.$eval(attrs.typeaheadItem);
+
+			scope.$watch(function() {
+				return controller.isActive(item);
+			}, function(active) {
+				if (active) {
+					element.addClass('active');
+				} else {
+					element.removeClass('active');
+				}
+			});
+
+			element.bind('mouseenter', function(e) {
+				scope.$apply(function() {
+					controller.activate(item);
+				});
+			});
+
+			element.bind('click', function(e) {
+				scope.$apply(function() {
+					controller.select(item);
+				});
+			});
+		}
+	};
+  })
+  // This directive's code is from http://stackoverflow.com/q/16016570/
+  .directive('ngFocus', function($parse, $timeout) {
 	return function(scope, elem, attrs) {
 		var ngFocusGet = $parse(attrs.ngFocus);
 		var ngFocusSet = ngFocusGet.assign;
