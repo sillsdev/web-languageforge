@@ -42,7 +42,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 	-->
 	<script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
-	<script	src="/js/jsonrpc.js"></script>
+	<script	src="/angular-app/common/js/jsonrpc.js"></script>
 	<script	src="/angular-app/sfadmin/js/app.js"></script>
 	<script	src="/angular-app/sfadmin/js/services.js"></script>
 	<script	src="/angular-app/sfadmin/js/controllers.js"></script>
