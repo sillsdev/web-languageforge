@@ -1,31 +1,38 @@
 <form ng-submit="updateRecord(record)" ng-hide="(vars.editButtonName=='')">
 	<fieldset>
 		<legend>User data</legend>
-		<div class="row">
-			<div class="large-12">
+		<div class="well">
+			<div>
 				<label>User Name</label>
 				<input type="text" placeholder="(username)" ng-model="record.username" ng-focus="vars.inputfocus"/>
 			</div>
-			<div class="large-12">
+			<div>
 				<label>Name</label>
 				<input type="text" placeholder="(your name here)" ng-model="record.name" ng-focus="vars.inputfocus"/>
 			</div>
-			<div class="large-12">
+			<div>
 				<label>Email</label>
 				<input type="text" placeholder="(no email)" ng-model="record.email"/>
 			</div>
-			<div class="large-12">
+			<div>
 				<label>Password</label>
 				<input type="text" placeholder="(enter new password)" ng-model="record.password"/>
 			</div>
-			<div class="large-12">
+			<div>
 				<label>Confirm Password</label>
 				<input type="text" placeholder="(confirm password)" ng-model="record.password_confirm"/>
 			</div>
+			<div>
+				<label style="margin-bottom:20px"><input type="checkbox" ng-model="record.active"/> Is Active</label>
+			</div>
+			<table class="table">
+			<tr ng-show="record.created_on"><td><label style="cursor:default">Created On: {{ record.created_on * 1000 | date:shortDate }}</label></td></tr>
+			<tr ng-show="record.last_login"><td><label style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label></td></tr>
+			</table>
 		</div>
-		<ul class="button-group">
+		<ul style="margin-top:20px" class="button-group">
 			<li>
-				<a href="#" class="small button round" ng-click="updateRecord(record)">
+				<a href="#" class="btn btn-small" ng-click="updateRecord(record)">
 					<i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
 				</a>
 			</li>

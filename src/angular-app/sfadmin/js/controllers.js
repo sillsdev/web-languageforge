@@ -41,7 +41,7 @@ function makeDataController(tableName) {
 				$scope.vars.record = {};
 			} else {
 				$scope.vars.record = record;
-				$scope.vars.editButtonName = "Edit";
+				$scope.vars.editButtonName = "Save";
 				$scope.vars.editButtonIcon = "pencil";
 			}
 		};
