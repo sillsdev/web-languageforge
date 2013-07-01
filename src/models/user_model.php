@@ -36,6 +36,8 @@ class User_model extends MapperModel
 	
 	public $email;
 	
+	public $imageRef;
+	
 }
 
 class User_list_model extends MapperListModel
@@ -49,6 +51,19 @@ class User_list_model extends MapperListModel
 			array('username', 'email', 'name')
 		);
 	}
+	
+}
+
+class User_typeahead_model extends MapperListModel
+{
+	public function __construct($term)
+	{
+		parent::__construct(
+				User_model_MongoMapper::instance(),
+				array('name' => array('$regex' => $term)),
+				array('username', 'email', 'name', 'imageRef')
+		);
+	}	
 	
 }
 
