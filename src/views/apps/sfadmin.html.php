@@ -1,32 +1,28 @@
-<div class="row" ng-app="sfAdmin">
+<div class="container" ng-app="sfAdmin">
 	<div style="margin-top: 50px"><h2>SF Administration</h2></div>
 	
-<div class="section-container auto" data-section>
-  <section>
-    <p class="title" data-section-title><a href="#">Users</a></p>
-    <div class="content" data-section-content>
-    
+<ul class="nav nav-tabs">
+	<li class="active">
+		<a href="#">Users</a>
+	</li>
+	<li>
+		<a href="#">Projects</a>
+	</li>
+</ul>
+
 		<div class="row" ng-controller="UserCtrl" style="overflow:hidden">
 		
-			<div class="large-8 column"><user-list/></div>
+			<div class="span8"><user-list/></div>
 			
-			<div class="large-4 column"><user-data/></div>
+			<div class="span4"><user-data/></div>
 		</div>
 		
-    </div>
-  </section>
-  
-  <section>
-    <p class="title" data-section-title><a href="#">Projects</a></p>
-    <div class="content" data-section-content>
 		<div class="row" ng-controller="ProjectCtrl" style="overflow:hidden">
 		
-			<div class="large-8 column"><project-list/></div>
+			<div class="span8"><project-list/></div>
 			
-			<div class="large-4 column"><project-data/></div>
+			<div class="span4"><project-data/></div>
 		</div>
-    </div>
-  </section>
   
 </div>
 	
@@ -42,6 +38,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 	-->
 	<script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
+	<script	src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
 	<script	src="/js/jsonrpc.js"></script>
 	<script	src="/angular-app/sfadmin/js/app.js"></script>
 	<script	src="/angular-app/sfadmin/js/services.js"></script>
