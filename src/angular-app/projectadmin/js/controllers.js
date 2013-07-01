@@ -100,12 +100,17 @@ function makeDataController(tableName) {
 var app = angular.module('projectAdmin', ['jsonRpc', 'projectAdmin.directives', 'projectAdmin.services'])
 	.controller('UserCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('user')])
 	.controller('ProjectCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('project')])
-	.controller('UserSearchCtrl', ['$scope', 'users', function($scope, users) {
+	.controller('UserSearchCtrl', ['$scope', 'userService', function($scope, userService) {
 	    $scope.users = [];
 		
 		$scope.searchUser = function(term) {
 			console.log('searching for ', term);
-			$scope.users = users;
+			userService.typeadhead(term, function(result) {
+				// TODO Check term == controller view value (cf bootstrap typeahead) else abandon.
+				if (result.ok) {
+					$scope.users = result.data;
+				}
+			});
 		};
 	
 		$scope.selectUser = function(item) {
