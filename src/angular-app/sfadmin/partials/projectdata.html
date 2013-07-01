@@ -1,12 +1,12 @@
 <form ng-submit="updateRecord(record)" ng-hide="(vars.editButtonName=='')">
 	<fieldset>
 		<legend>Project data</legend>
-		<div class="row">
-			<div class="large-12">
+		<div class="well">
+			<div>
 				<label>Project name</label>
 				<input type="text" placeholder="(unnamed)" ng-model="record.projectname" ng-focus="vars.inputfocus"/>
 			</div>
-			<div class="large-12">
+			<div>
 				<label>Language</label>
 				<!-- TODO: This needs to be validated. -->
 				<input type="text" placeholder="(unknown)" ng-model="record.language"/>
@@ -14,7 +14,7 @@
 		</div>
 		<ul class="button-group">
 			<li>
-				<a href="#" class="small button round" ng-click="updateRecord(record)">
+				<a href="#" class="btn btn-small" ng-click="updateRecord(record)">
 					<i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
 				</a>
 			</li>
