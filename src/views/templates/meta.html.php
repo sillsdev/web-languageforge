@@ -10,3 +10,4 @@
 		<link rel="icon" href="favicon.ico" type="image/x-icon" />
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700' rel='stylesheet' type='text/css'>
 		<script src="/js/lib/foundation/custom.modernizr.js"></script>
+		<script src="/js/lib/jquery-1.8.0.min.js"></script>
