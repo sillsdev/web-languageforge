@@ -36,6 +36,12 @@ class User_model extends MapperModel
 	
 	public $email;
 	
+	public $active;
+	
+	public $created_on;
+	
+	public $last_login; // read only field
+	
 }
 
 class User_list_model extends MapperListModel

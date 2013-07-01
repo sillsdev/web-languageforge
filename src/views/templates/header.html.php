@@ -53,19 +53,18 @@
 				</div>
 				
 				<?php if ($logged_in):?>
-					<div id="account" class="right">
-						<img src="<?php echo $small_gravatar_url; ?>" style="float:left; position:relative; top:-4px; border:1px solid white; margin-right:10px" />
+					<div class="right">
 						
 						<ul class="sf-menu">
-							<li><a href="#">Welcome, <?php echo $user_name; ?></a>
+							<li>
+							<a href="#"><img src="<?php echo $small_gravatar_url; ?>" style="float:left; position:relative; top:-6px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
 								<ul>
 									<li><a href="/app/userprofile">My Profile</a></li>
 									<li><a href="/auth/change_password">Change Password</a></li>
+									<li><a href="/auth/logout">Logout</a></li>
 								</ul>
 							</li>
 						</ul>
-						
-						<span style="margin-left:10px" ><a href="/auth/logout">Logout</a></span>
 					</div>
 				
 				<?php else:?>
