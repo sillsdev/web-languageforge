@@ -108,7 +108,7 @@ var app = angular.module('projectAdmin', ['jsonRpc', 'projectAdmin.directives', 
 			userService.typeadhead(term, function(result) {
 				// TODO Check term == controller view value (cf bootstrap typeahead) else abandon.
 				if (result.ok) {
-					$scope.users = result.data;
+					$scope.users = result.data.entries;
 				}
 			});
 		};
