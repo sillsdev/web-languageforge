@@ -18,7 +18,7 @@ angular.module('projectAdmin.services', [])
 		this.remove = function(id) {
 	
 		};
-		this.typeadhead = function(term, callback) {
+		this.typeahead = function(term, callback) {
 			jsonRpc.call('user_typeahead', [term], callback);
 		};
 	}])
