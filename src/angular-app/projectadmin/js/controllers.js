@@ -103,6 +103,32 @@ var app = angular.module(
 	)
 	.controller('UserCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('user')])
 	.controller('ProjectCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('project')])
+	.controller('UserListCtrl', ['$scope', 'userService', function($scope, userService) {
+		$scope.noOfPages = 1;
+		$scope.currentPage = 1;
+		$scope.maxSize = 5;		
+		$scope.users = [];
+		
+		$scope.fetchList = function() {
+			userService.list(function(result) {
+				if (result.ok) {
+					$scope.users = result.data.entries;
+				}
+			});
+		};
+		$scope.selectRow = function(index, item) {
+			console.log("Called selectRow(", index, ", ", item, ")");
+			$scope.selectedIndex = index;
+			if (index < 0) {
+				$scope.item = {};
+			} else {
+				$scope.item = item;
+			}
+
+		};
+		$scope.fetchList();
+		
+	}])
 	.controller('UserSearchCtrl', ['$scope', 'userService', function($scope, userService) {
 	    $scope.users = [];
 		
