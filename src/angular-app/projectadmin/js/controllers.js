@@ -118,8 +118,8 @@ var app = angular.module('projectAdmin', ['jsonRpc', 'projectAdmin.directives', 
 			$scope.term = item.name;
 		};
 	
-		$scope.imageSource = function(item) {
-			return '';//item.images['medium'];
+		$scope.imageSource = function(avatarRef) {
+			return avatarRef ? '/images/avatar/' + avatarRef : '/images/avatar/anonymous02.png';
 		};
 	
 	}])
