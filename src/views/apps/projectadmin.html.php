@@ -16,6 +16,8 @@
 		</typeahead>
 		</div>
 	</tab>
+	<tab heading="Texts">
+	</tab>
 	</tabset>
 	
 	<!-- Not yet implemented: <div>Angular seed app: v<span app-version></span></div> -->
@@ -27,6 +29,7 @@
 	<script	src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
 	<script	src="/angular-app/common/js/jsonrpc.js"></script>
 	<script	src="/angular-app/common/js/typeahead.js"></script>
+	<script	src="/angular-app/common/js/services.js"></script>
 	<!-- 	<script	src="/angular-app/projectadmin/js/app.js"></script> -->
 	<script	src="/angular-app/projectadmin/js/controllers.js"></script>
 	<script	src="/angular-app/projectadmin/js/services.js"></script>

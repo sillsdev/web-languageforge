@@ -97,7 +97,10 @@ function makeDataController(tableName) {
 	};
 }
 
-var app = angular.module('projectAdmin', ['jsonRpc', 'projectAdmin.directives', 'projectAdmin.services', 'palaso.ui', 'ui.bootstrap'])
+var app = angular.module(
+		'projectAdmin',
+		[ 'jsonRpc', 'projectAdmin.directives', 'projectAdmin.services', 'sf.services', 'palaso.ui', 'ui.bootstrap' ]
+	)
 	.controller('UserCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('user')])
 	.controller('ProjectCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('project')])
 	.controller('UserSearchCtrl', ['$scope', 'userService', function($scope, userService) {
