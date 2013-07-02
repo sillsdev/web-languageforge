@@ -75,9 +75,9 @@
 	position: absolute;
 	display: block;
 	width:50px;
-	bottom: -2px;
+	bottom: -10px;
 	*bottom: -21px; /* IE6-7 hack */
-	right: -13px;
+	right: -12px;
 	z-index: 5;
 }
 
