@@ -97,7 +97,7 @@ function makeDataController(tableName) {
 	};
 }
 
-var app = angular.module('sfAdmin', ['jsonRpc', 'sfAdmin.directives'])
+var app = angular.module('sfAdmin', ['jsonRpc', 'sfAdmin.directives', 'ui.bootstrap'])
 	.controller('UserCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('user')])
 	.controller('ProjectCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('project')])
 	;
