@@ -1,6 +1,6 @@
 		<div id="header" class="png_bg">
 			
-			<div class="container">
+			<div class="sfcontainer">
 				
 				<?php if (isset($is_static_page)):?>
 				<div class="sf-logo-large">

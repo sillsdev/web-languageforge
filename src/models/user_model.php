@@ -36,9 +36,11 @@ class User_model extends MapperModel
 	
 	public $email;
 	
+	public $avatarRef;
+
 	public $active;
 	
-	public $created_on;
+	public $created_on;	
 	
 	public $last_login; // read only field
 	
@@ -55,6 +57,19 @@ class User_list_model extends MapperListModel
 			array('username', 'email', 'name')
 		);
 	}
+	
+}
+
+class User_typeahead_model extends MapperListModel
+{
+	public function __construct($term)
+	{
+		parent::__construct(
+				User_model_MongoMapper::instance(),
+				array('name' => array('$regex' => $term)),
+				array('username', 'email', 'name', 'avatarRef')
+		);
+	}	
 	
 }
 
