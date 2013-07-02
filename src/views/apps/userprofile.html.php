@@ -1,6 +1,6 @@
 <div class="container" ng-app="userProfile">
 	<div ng-show="error"><h1>Error: {{error.message}}</h1></div>
-	<div ng-controller="userProfileCtrl" ng-show="user.id">
+	<div ng-controller="userProfileCtrl">
 		<form>
 			<fieldset>
 				<legend>{{user.name}}'s User Profile</legend>
@@ -21,6 +21,9 @@
 	</div>
 </div>
 	
+<script type="text/javascript">
+window.session = <?php echo $jsSessionVars; ?>
+</script>
 	
 	
 	
@@ -28,5 +31,6 @@
 	
 <script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
 <script	src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
-<script	src="/js/jsonrpc.js"></script>
+<script	src="/angular-app/common/js/jsonrpc.js"></script>
+<script	src="/angular-app/common/js/services.js"></script>
 <script	src="/angular-app/userprofile/js/app.js"></script>
