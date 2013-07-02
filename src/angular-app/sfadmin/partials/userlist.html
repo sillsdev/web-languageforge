@@ -13,6 +13,6 @@
 			<td class="useractive-{{user.active}}">{{user.name}}</td>
 		</tr>
 	</table>
-	<div class="left"><a href="#" ng-click="addRecord()" class="small button"><i class="icon-plus"></i></a></div>
-	<div class="right"><a href="#" ng-click="deleteRecord(vars.record)" class="small button" ng-class="{disabled: vars.selectedIndex == -1}"><i class="icon-minus"></i></a></div>
+	<div class="left"><a href="#" ng-click="addRecord()" class="btn btn-small"><i class="icon-plus"></i> Add New</a></div>
+	<div class="right"><a href="#" ng-click="deleteRecord(vars.record)" class="btn btn-small" ng-class="{disabled: vars.selectedIndex == -1}"><i class="icon-minus"></i> Delete</a></div>
 </fieldset>
