@@ -15,6 +15,27 @@
 			</ul>
 		</typeahead>
 		</div>
+		<legend>Users (total: {{data.entries.length}})</legend>
+		<div ng-controller="UserListCtrl">
+		<table class="table" style="width: 100%">
+			<thead>
+			<tr>
+				<th>Username</th>
+				<th>Full Name</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="user in users" ng-class="{info: $index==selectedIndex}" ng-click="selectRow($index, user)">
+				<td>{{user.username}}</td>
+				<td>{{user.name}}</td>
+			</tr>
+			</tbody>
+		</table>
+		<pagination boundary-links="true" num-pages="noOfPages" current-page="currentPage" previous-text="'&lsaquo;'" next-text="'&rsaquo;'" first-text="'&laquo;'" last-text="'&raquo;'"></pagination>
+		<div class="left"><a href="#" ng-click="addRecord()" class="btn btn-small"><i class="icon-plus"></i> Add New</a></div>
+		<div class="right"><a href="#" ng-click="deleteRecord(vars.record)" class="btn btn-small" ng-class="{disabled: vars.selectedIndex == -1}"><i class="icon-minus"></i> Delete</a></div>
+		</div>
+		
 	</tab>
 	<tab heading="Texts">
 	</tab>
