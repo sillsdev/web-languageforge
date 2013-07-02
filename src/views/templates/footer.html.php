@@ -1,5 +1,5 @@
 		<div id="footer" class="png_bg">
-			<div class="container cf">
+			<div class="sfcontainer cf">
 			
 				<div class="three-col">
 					<div class="three-col-1">
@@ -35,7 +35,7 @@
 		</div>
 		
 		<div id="footerBaseline">
-			<div class="container">
+			<div class="sfcontainer">
 				<div class="darkTextLogo png_bg"></div>
 			</div>
 		</div>
