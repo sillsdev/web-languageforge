@@ -5,15 +5,15 @@
 	<tab heading="Users">
 		<div ng-controller="UserSearchCtrl" style="overflow:hidden">
 		<label>User</label>
-		<typeahead2 class="typeahead" items="user" term="term" search="searchUser(term)" select="selectUser(item)">
+		<typeahead class="typeahead" items="user" term="term" search="searchUser(term)" select="selectUser(item)">
 			<ul>
-				<li typeahead-item="user" ng-repeat="user in users" class="results">
-					<img ng-src="{{imageSource(user)}}">
+				<li typeahead-item="user" ng-repeat="user in users" class="typeahead-item">
+					<img width="32px" ng-src="{{imageSource(user.avatarRef)}}" class="left">
 					<p class="name">{{user.name}}</p>
 					<p class="email">{{user.email}}</p>
 				</li>
 			</ul>
-		</typeahead2>
+		</typeahead>
 		</div>
 	</tab>
 	</tabset>

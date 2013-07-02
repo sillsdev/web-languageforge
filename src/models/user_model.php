@@ -36,7 +36,7 @@ class User_model extends MapperModel
 	
 	public $email;
 	
-	public $imageRef;
+	public $avatarRef;
 
 	public $active;
 	
@@ -67,7 +67,7 @@ class User_typeahead_model extends MapperListModel
 		parent::__construct(
 				User_model_MongoMapper::instance(),
 				array('name' => array('$regex' => $term)),
-				array('username', 'email', 'name', 'imageRef')
+				array('username', 'email', 'name', 'avatarRef')
 		);
 	}	
 	
