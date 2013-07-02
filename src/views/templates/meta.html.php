@@ -3,6 +3,7 @@
 		<title><?php echo $title; ?></title>
 		
 		<link rel="stylesheet" href="/css/bootstrap.css" />
+		<link rel="stylesheet" href="/angular-app/common/css/palaso-ui.css" />
 		<link rel="stylesheet" media="screen" href="/css/superfish.css" />
 		<link rel="stylesheet" media="screen" href="/css/slides.css" />
 		<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
