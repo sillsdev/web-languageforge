@@ -97,7 +97,7 @@ function makeDataController(tableName) {
 	};
 }
 
-var app = angular.module('projectAdmin', ['jsonRpc', 'projectAdmin.directives', 'projectAdmin.services'])
+var app = angular.module('projectAdmin', ['jsonRpc', 'projectAdmin.directives', 'projectAdmin.services', 'ui.bootstrap'])
 	.controller('UserCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('user')])
 	.controller('ProjectCtrl', ['$scope', '$http', 'jsonRpc', makeDataController('project')])
 	.controller('UserSearchCtrl', ['$scope', 'userService', function($scope, userService) {
@@ -105,7 +105,7 @@ var app = angular.module('projectAdmin', ['jsonRpc', 'projectAdmin.directives', 
 		
 		$scope.searchUser = function(term) {
 			console.log('searching for ', term);
-			userService.typeadhead(term, function(result) {
+			userService.typeahead(term, function(result) {
 				// TODO Check term == controller view value (cf bootstrap typeahead) else abandon.
 				if (result.ok) {
 					$scope.users = result.data.entries;
