@@ -4175,7 +4175,12 @@ input[type="submit"].btn.btn-mini {
 }
 
 .tab-content {
-  overflow: auto;
+	/*overflow: auto;*/
+	/* Changed as per this issue. Without this change it has a vertical scroller in error. CP 2013-07 */
+	/* https://github.com/twitter/bootstrap/issues/3661 */
+	/*display: inline-block;*/ /* Seems to be not needed CP 2013-07 */
+    overflow: visible;
+	width: 100%;
 }
 
 .tabs-below > .nav-tabs,
