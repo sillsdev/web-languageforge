@@ -7,9 +7,9 @@ var app = angular.module(
 	)
 	.controller('UserListCtrl', ['$scope', 'userService', function($scope, userService) {
 		$scope.selected = [];
-		$scope.updateSelection = function(src, item) {
+		$scope.updateSelection = function(event, item) {
 			var selectedIndex = $scope.selected.indexOf(item);
-			var checkbox = src.target;
+			var checkbox = event.target;
 			if (checkbox.checked && selectedIndex == -1) {
 				$scope.selected.push(item);
 			} else if (!checkbox.checked && selectedIndex != -1) {
