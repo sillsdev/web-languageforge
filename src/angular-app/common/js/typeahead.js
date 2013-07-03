@@ -1,5 +1,5 @@
 
-angular.module('palaso.ui', [])
+angular.module('palaso.ui.typeahead', [])
   // Typeahead
   .directive('typeahead', ["$timeout", function($timeout) {
 		return {

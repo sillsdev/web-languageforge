@@ -3,8 +3,8 @@
 /* Directives */
 
 
-angular.module('projectAdmin.directives', ["jsonRpc"]).
-  directive('appVersion', ['version', function(version) {
+angular.module('projectAdmin.directives', [])
+	.directive('appVersion', ['version', function(version) {
     return function(scope, elm, attrs) {
       elm.text(version);
     };

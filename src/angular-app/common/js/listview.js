@@ -1,5 +1,5 @@
 
-angular.module('palaso.ui', [])
+angular.module('palaso.ui.listview', [])
   // Typeahead
   .directive('listview', ["$timeout", function($timeout) {
 		return {
@@ -10,16 +10,14 @@ angular.module('palaso.ui', [])
 			scope : {
 				search : "&",
 				select : "&",
-				items : "=",
 				item: "="
 			},
 			controller: ["$scope", function($scope) {
 				$scope.noOfPages = 3;
 				$scope.currentPage = 1;
 				$scope.maxSize = 5;
-				$scope.selectedIndex = -1;
 				$scope.items = [];
-				$scope.hide = false;
+				
 				this.activate = function(item) {
 					$scope.active = item;
 					$scope.select({
@@ -51,12 +49,10 @@ angular.module('palaso.ui', [])
 				scope.$watch('currentPage', function(currentPage) {
 					controller.query(currentPage);
 				});
-				scope.$watch('items', function(items) {
-					controller.activate(items.length ? items[0] : null);
-				});
 			}
 		};
   }])
+  /*
   .directive('listviewItem', function() {
 	return {
 		require : '^listview',
@@ -68,17 +64,11 @@ angular.module('palaso.ui', [])
 				return controller.isActive(item);
 			}, function(active) {
 				if (active) {
-					element.addClass('active');
+					element.addClass('last-clicked');
 				} else {
-					element.removeClass('active');
+					element.removeClass('last-clicked');
 				}
 			});
-
-//			element.bind('mouseenter', function(e) {
-//				scope.$apply(function() {
-//					controller.activate(item);
-//				});
-//			});
 
 			element.bind('click', function(e) {
 				scope.$apply(function() {
@@ -87,5 +77,5 @@ angular.module('palaso.ui', [])
 			});
 		}
 	};
-  })
+  })*/
   ;
