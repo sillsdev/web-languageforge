@@ -13,46 +13,43 @@ angular.module('palaso.ui', [])
 				items : "=",
 				term : "="
 			},
-			controller : [
-				"$scope",	
-				function($scope) {
-					$scope.items = [];
+			controller : ["$scope", function($scope) {
+				$scope.items = [];
+				$scope.hide = false;
+				this.activate = function(item) {
+					$scope.active = item;
+				};
+				this.activateNextItem = function() {
+					var index = $scope.items.indexOf($scope.active);
+					this.activate($scope.items[(index + 1) % $scope.items.length]);
+				};
+				this.activatePreviousItem = function() {
+					var index = $scope.items.indexOf($scope.active);
+					this.activate($scope.items[index === 0 ? $scope.items.length - 1 : index - 1]);
+				};
+				this.isActive = function(item) {
+					return $scope.active === item;
+				};
+				this.selectActive = function() {
+					this.select($scope.active);
+				};
+				this.select = function(item) {
+					$scope.hide = true;
+					$scope.focused = true;
+					$scope.select({
+						item : item
+					});
+				};
+				$scope.isVisible = function() {
+					return !$scope.hide && ($scope.focused || $scope.mousedOver);
+				};
+				$scope.query = function() {
 					$scope.hide = false;
-					this.activate = function(item) {
-						$scope.active = item;
-					};
-					this.activateNextItem = function() {
-						var index = $scope.items.indexOf($scope.active);
-						this.activate($scope.items[(index + 1) % $scope.items.length]);
-					};
-					this.activatePreviousItem = function() {
-						var index = $scope.items.indexOf($scope.active);
-						this.activate($scope.items[index === 0 ? $scope.items.length - 1 : index - 1]);
-					};
-					this.isActive = function(item) {
-						return $scope.active === item;
-					};
-					this.selectActive = function() {
-						this.select($scope.active);
-					};
-					this.select = function(item) {
-						$scope.hide = true;
-						$scope.focused = true;
-						$scope.select({
-							item : item
-						});
-					};
-					$scope.isVisible = function() {
-						return !$scope.hide && ($scope.focused || $scope.mousedOver);
-					};
-					$scope.query = function() {
-						$scope.hide = false;
-						$scope.search({
-							term : $scope.term
-						});
-					};
-				}
-			],
+					$scope.search({
+						term : $scope.term
+					});
+				};
+			}],
 			link : function(scope, element, attrs, controller) {
 				var $input = element.find('form > input');
 				var $list = element.find('> div');
