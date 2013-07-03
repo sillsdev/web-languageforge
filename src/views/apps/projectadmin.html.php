@@ -14,11 +14,11 @@
 				</li>
 			</ul>
 		</typeahead>
-		<button class="btn span-2">Add</button>
+		<button ng-model="addMode" class="btn span-2" ng-click="addUser()"><i ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
 		</div>
 		<legend class="">Users</legend>
 		<div ng-controller="UserListCtrl">
-		<button class="btn"><i class="icon-remove"></i>Remove Users</button>
+		<button class="btn" ng-click="removeUsers()"><i class="icon-remove"></i>Remove Users</button>
 		<div listview search="queryUsers()" select="">
 		<table class="table" style="width: 100%">
 			<thead>
@@ -39,8 +39,6 @@
 			</tbody>
 		</table>		
 		</div>
-		<div class="left"><a href="#" ng-click="addRecord()" class="btn btn-small"><i class="icon-plus"></i> Add New</a></div>
-		<div class="right"><a href="#" ng-click="deleteRecord(vars.record)" class="btn btn-small" ng-class="{disabled: vars.selectedIndex == -1}"><i class="icon-minus"></i> Delete</a></div>
 		</div>
 		
 	</tab>
@@ -55,6 +53,7 @@
 	-->
 	<script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
 	<script	src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
+	<script	src="/angular-app/common/js/error.js"></script>
 	<script	src="/angular-app/common/js/jsonrpc.js"></script>
 	<script	src="/angular-app/common/js/listview.js"></script>
 	<script	src="/angular-app/common/js/typeahead.js"></script>
