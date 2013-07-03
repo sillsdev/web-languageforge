@@ -112,7 +112,7 @@ var app = angular.module(
 		$scope.selectUser = function(item) {
 			console.log('user selected', item);
 			$scope.user = item;
-			//$scope.term = item.name;
+			$scope.term = item.name;
 		};
 	
 		$scope.imageSource = function(avatarRef) {
