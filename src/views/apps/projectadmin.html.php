@@ -3,7 +3,6 @@
 
 	<tabset ng-cloak>
 	<tab heading="Users">
-	<!-- 
 		<div ng-controller="UserSearchCtrl" style="overflow:hidden">
 		<label>User</label>
 		<typeahead class="typeahead" items="user" term="term" search="searchUser(term)" select="selectUser(item)">
@@ -16,20 +15,21 @@
 			</ul>
 		</typeahead>
 		</div>
-		 -->
 		<legend>Users (total: {{data.entries.length}})</legend>
 		<div ng-controller="UserListCtrl">
-		<div listview items="user" search="queryUsers()" select="selectUser(item)">
+		<div listview search="queryUsers()" select="">
 		<table class="table" style="width: 100%">
 			<thead>
 			<tr>
+				<th></th>
 				<th>Username</th>
 				<th>Full Name</th>
 				<th>Role</th>
 				</tr>
 			</thead>
 			<tbody>
-			<tr listview-item="user" ng-repeat="user in users"	>
+			<tr ng-repeat="user in users"	ng-class="{active: isSelected(user)}" ng-click="updateSelection($event, user)" >
+				<td><input type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
 				<td>{{user.username}}</td>
 				<td>{{user.name}}</td>
 				<td>&nbsp;</td>
@@ -54,12 +54,12 @@
 	<script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
 	<script	src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
 	<script	src="/angular-app/common/js/jsonrpc.js"></script>
-	<script	src="/angular-app/common/js/typeahead.js"></script>
 	<script	src="/angular-app/common/js/listview.js"></script>
+	<script	src="/angular-app/common/js/typeahead.js"></script>
 	<script	src="/angular-app/common/js/services.js"></script>
-	<!-- 	<script	src="/angular-app/projectadmin/js/app.js"></script> -->
+	<script	src="/angular-app/projectadmin/js/app.js"></script>
 	<script	src="/angular-app/projectadmin/js/controllers.js"></script>
+	<script	src="/angular-app/projectadmin/js/directives.js"></script>
 	<script	src="/angular-app/projectadmin/js/services.js"></script>
 	<script	src="/angular-app/projectadmin/js/filters.js"></script>
-	<script	src="/angular-app/projectadmin/js/directives.js"></script>
 </div>

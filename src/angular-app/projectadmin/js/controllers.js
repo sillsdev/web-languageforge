@@ -2,12 +2,25 @@
 
 /* Controllers */
 var app = angular.module(
-		'projectAdmin',
-		[ 'jsonRpc', 'projectAdmin.directives', 'projectAdmin.services', 'sf.services', 'palaso.ui', 'ui.bootstrap' ]
+		'projectAdmin.controllers',
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
 	.controller('UserListCtrl', ['$scope', 'userService', function($scope, userService) {
-		$scope.users = [];
+		$scope.selected = [];
+		$scope.updateSelection = function(src, item) {
+			var selectedIndex = $scope.selected.indexOf(item);
+			var checkbox = src.target;
+			if (checkbox.checked && selectedIndex == -1) {
+				$scope.selected.push(item);
+			} else if (!checkbox.checked && selectedIndex != -1) {
+				$scope.selected.splice(selectedIndex, 1);
+			}
+		};
+		$scope.isSelected = function(item) {
+			return item != null && $scope.selected.indexOf(item) >= 0;
+		};
 		
+		$scope.users = [];
 		$scope.queryUsers = function() {
 			userService.list(function(result) {
 				if (result.ok) {
@@ -15,6 +28,8 @@ var app = angular.module(
 				}
 			});
 		};
+		
+		
 		$scope.selectUser = function(item) {
 			console.log("Called selectUser(", item, ")");
 		};

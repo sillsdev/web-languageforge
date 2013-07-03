@@ -2,7 +2,7 @@
 
 // Services
 // ScriptureForge common services
-angular.module('sf.services', [])
+angular.module('sf.services', ['jsonRpc'])
 	.service('userService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
 
