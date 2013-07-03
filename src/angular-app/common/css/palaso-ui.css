@@ -1,8 +1,8 @@
 
-
+/* Typeahead */
 div.typeahead > div {
 	z-index: 10;
-	background-color: #ffffff;
+	background-color: #fff;
 }
 
 div.typeahead ul {
@@ -35,4 +35,9 @@ li.typeahead-item p.name {
 li.typeahead-item p.email {
 	font-size: 0.8em;
 	color: #666666;
+}
+
+/* listview */
+div.listview tr.active {
+	background-color: #ffc;
 }
