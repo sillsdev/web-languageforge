@@ -52,30 +52,4 @@ angular.module('palaso.ui.listview', [])
 			}
 		};
   }])
-  /*
-  .directive('listviewItem', function() {
-	return {
-		require : '^listview',
-		link : function(scope, element, attrs, controller) {
-
-			var item = scope.$eval(attrs.listviewItem);
-
-			scope.$watch(function() {
-				return controller.isActive(item);
-			}, function(active) {
-				if (active) {
-					element.addClass('last-clicked');
-				} else {
-					element.removeClass('last-clicked');
-				}
-			});
-
-			element.bind('click', function(e) {
-				scope.$apply(function() {
-					controller.activate(item);
-				});
-			});
-		}
-	};
-  })*/
   ;
