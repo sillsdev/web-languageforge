@@ -18,7 +18,7 @@
 		</div>
 		<legend class="">Users</legend>
 		<div ng-controller="UserListCtrl">
-		<button class="btn"><i class="icon-remove"></i>Remove</button>
+		<button class="btn"><i class="icon-remove"></i>Remove Users</button>
 		<div listview search="queryUsers()" select="">
 		<table class="table" style="width: 100%">
 			<thead>
@@ -31,7 +31,7 @@
 			</thead>
 			<tbody>
 			<tr ng-repeat="user in users"	ng-class="{active: isSelected(user)}" >
-				<td><input type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
+				<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
 				<td>{{user.username}}</td>
 				<td>{{user.name}}</td>
 				<td>&nbsp;</td>
