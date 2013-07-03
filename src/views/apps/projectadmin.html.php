@@ -3,9 +3,9 @@
 
 	<tabset ng-cloak>
 	<tab heading="Users">
-		<div ng-controller="UserSearchCtrl" style="overflow:hidden">
-		<label>User</label>
-		<typeahead class="typeahead" items="user" term="term" search="searchUser(term)" select="selectUser(item)">
+		<legend>Add User</legend>
+		<div ng-controller="UserSearchCtrl">
+		<typeahead class="typeahead left span-2" items="user" term="term" search="searchUser(term)" select="selectUser(item)">
 			<ul>
 				<li typeahead-item="user" ng-repeat="user in users" class="typeahead-item">
 					<img width="32px" ng-src="{{imageSource(user.avatarRef)}}" class="left">
@@ -14,9 +14,11 @@
 				</li>
 			</ul>
 		</typeahead>
+		<button class="btn span-2">Add</button>
 		</div>
-		<legend>Users (total: {{data.entries.length}})</legend>
+		<legend class="">Users</legend>
 		<div ng-controller="UserListCtrl">
+		<button class="btn"><i class="icon-remove"></i>Remove</button>
 		<div listview search="queryUsers()" select="">
 		<table class="table" style="width: 100%">
 			<thead>
@@ -28,7 +30,7 @@
 				</tr>
 			</thead>
 			<tbody>
-			<tr ng-repeat="user in users"	ng-class="{active: isSelected(user)}" ng-click="updateSelection($event, user)" >
+			<tr ng-repeat="user in users"	ng-class="{active: isSelected(user)}" >
 				<td><input type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
 				<td>{{user.username}}</td>
 				<td>{{user.name}}</td>
