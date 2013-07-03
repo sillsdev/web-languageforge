@@ -25,6 +25,7 @@ var app = angular.module(
 			userService.list(function(result) {
 				if (result.ok) {
 					$scope.users = result.data.entries;
+					$scope.userCount = result.data.count;
 				}
 			});
 		};
