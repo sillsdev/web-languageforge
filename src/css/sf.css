@@ -596,3 +596,12 @@ p.applicationContent {
 .banner {
 	padding: 30px 0 30px 0;
 }
+
+/* icons */
+button i {
+	margin-right: 8px;
+}
+
+i.icon-remove {
+	color: #f66
+}
