@@ -4,9 +4,9 @@
 // from scratch since that project doesn't specify a license. It's pretty
 // simple code anyway.
 
-var json_rpc = angular.module('jsonRpc', []);
+var json_rpc = angular.module('jsonRpc', ['sf.error']);
 
-json_rpc.factory("jsonRpc", ["$http", function($http) {
+json_rpc.factory('jsonRpc', ['$http', 'error', function($http, error) {
 	this.params = {};
 	this.last_id = 0;
 	
@@ -63,6 +63,8 @@ json_rpc.factory("jsonRpc", ["$http", function($http) {
 			}
 			if (data.error != null) {
 				// TODO error handling for jsonRpc CP 2013-07
+				error.error('RPC Error', data.error);
+				return;
 			}
 			if (data.error == null) {
 				result.ok = true;
