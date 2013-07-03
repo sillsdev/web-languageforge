@@ -66,7 +66,7 @@ class User_typeahead_model extends MapperListModel
 	{
 		parent::__construct(
 				User_model_MongoMapper::instance(),
-				array('name' => array('$regex' => $term)),
+				array('name' => array('$regex' => $term, '$options' => '-i')),
 				array('username', 'email', 'name', 'avatarRef')
 		);
 	}	
