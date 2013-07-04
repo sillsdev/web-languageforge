@@ -113,4 +113,19 @@ class Project_list_model extends MapperListModel
 	}
 }
 
+class Project_list_users_model extends MapperListModel
+{
+
+	public function __construct($userId)
+	{
+		parent::__construct(
+				Project_model_MongoMapper::instance(),
+				array('users' => array('$in' => array($userId))),
+				array('projectname')
+		);
+	}
+
+}
+
+
 ?>
