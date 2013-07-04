@@ -9,6 +9,7 @@ function UserCtrl($scope, $http, jsonRpc) {
 		editButtonName: "",
 		editButtonIcon: "",
 		inputfocus: false,
+		showPasswordForm: false,
 	};
 	
 	$scope.focusInput = function() {
@@ -59,11 +60,26 @@ function UserCtrl($scope, $http, jsonRpc) {
 			// Avoid adding blank records to the database
 			return null; // TODO: Or maybe just return a promise object that will do nothing...?
 		}
+		
+		var isNewRecord = false;
+		if (record.id === undefined) {
+			isNewRecord = true; // Will be used below
+			if (record.groups === undefined) {
+				record.groups = [null]; // TODO: Should we put something into the form to allow setting gropus? ... Later, not now.
+			}
+		}
 		jsonRpc.connect("/api/sf");
 		var promise = jsonRpc.call("user_update", {"params": record}, function(result) {
 			$scope.fetchRecordList();
+			console.log("Result of promise: ", result.data.result);
 		});
-		if (record.id === undefined) {
+		if (record.password) {
+			promise = promise.then(function(result) {
+				record.id = result.data.result;
+				$scope.changePassword(record);
+			});
+		}
+		if (isNewRecord) {
 			// We just added a record... so clear the user data area so we can add a new one later
 			$scope.record = {};
 			// And focus the input box so the user can just keep typing
@@ -91,6 +107,28 @@ function UserCtrl($scope, $http, jsonRpc) {
 		$scope.vars.editButtonIcon = "";
 		return promise;
 	};
+	
+	$scope.changePassword = function(record) {
+		console.log("changePassword() called with ", record);
+		jsonRpc.connect("/api/sf");
+		var params = {
+			"userid": record.id,
+			"newPassword": record.password
+		};
+		jsonRpc.call("change_password", params, function(result) {
+			console.log("Password successfully changed.");
+		});
+	};
+	
+	$scope.showPasswordForm = function() {
+		$scope.vars.showPasswordForm = true;
+	};
+	$scope.hidePasswordForm = function() {
+		$scope.vars.showPasswordForm = false;
+	};
+	$scope.togglePasswordForm = function() {
+		$scope.vars.showPasswordForm = !$scope.vars.showPasswordForm;
+	}
 
 }
 
@@ -188,4 +226,19 @@ function ProjectCtrl($scope, $http, jsonRpc) {
 var app = angular.module('sfAdmin', ['jsonRpc', 'sfAdmin.directives'])
 .controller('UserCtrl', ['$scope', '$http', 'jsonRpc', UserCtrl])
 .controller('ProjectCtrl', ['$scope', '$http', 'jsonRpc', ProjectCtrl])
+.controller('PasswordCtrl', ['$scope', 'jsonRpc', function($scope, jsonRpc) {
+	$scope.changePassword = function(record) {
+		// Validation
+		if (record.password != record.confirmPassword) {
+			console.log("Error: passwords do not match");
+			// TODO: Learn how to do Angular validation so I can give control back to the user. RM 2013-07
+			return null;
+		}
+		jsonRpc.connct("/api/sf");
+		params = {
+			"userid": record.id,
+			"newPassword": record.password,
+		};
+	};
+}])
 ;
