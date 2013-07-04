@@ -223,7 +223,7 @@ function ProjectCtrl($scope, $http, jsonRpc) {
 	};
 }
 
-var app = angular.module('sfAdmin', ['jsonRpc', 'sfAdmin.directives'])
+angular.module('sfAdmin.controllers', ['jsonRpc'])
 .controller('UserCtrl', ['$scope', '$http', 'jsonRpc', UserCtrl])
 .controller('ProjectCtrl', ['$scope', '$http', 'jsonRpc', ProjectCtrl])
 .controller('PasswordCtrl', ['$scope', 'jsonRpc', function($scope, jsonRpc) {
