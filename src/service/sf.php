@@ -8,6 +8,9 @@ class Sf
 		$CI =& get_instance();
 		$CI->load->model('User_model');
 		$CI->load->model('Project_model');
+		
+		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
+		ini_set('display_errors', 0);
 	}
 
 	/**
@@ -59,9 +62,9 @@ class Sf
 	 * @param Project_model $json
 	 * @return string Id of written object
 	 */
-	public function project_update($params) {
+	public function project_update($object) {
 		$project = new Project_model();
-		Jsonrpc_server::decode($project, $params);
+		Jsonrpc_server::decode($project, $object);
 		$result = $project->write();
 		return $result;
 	}
@@ -91,4 +94,21 @@ class Sf
 		$list->read();
 		return $list;
 	}
+	
+	public function project_readUser($projectId, $userId) {
+		
+	}
+	
+	public function project_updateUser($projectId, $object) {
+		throw new Exception("NYI");
+	}
+	
+	public function project_deleteUser($projectId, $userId) {
+		
+	}
+	
+	public function project_listUsers($projectId) {
+		
+	}
+	
 }
