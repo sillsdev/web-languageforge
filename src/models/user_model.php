@@ -37,6 +37,7 @@ class User_model extends MapperModel
 	public $email;
 	
 	public $avatarRef;
+	public $avatarColor;
 
 	public $active;
 	
@@ -44,6 +45,16 @@ class User_model extends MapperModel
 	
 	public $last_login; // read only field
 	
+	public $mobile_phone;
+	public $communicate_via_email; // bool
+	public $communicate_via_sms; // bool
+	public $age;
+	public $gender;
+	public $city;
+	public $preferred_bible_version;
+	public $religious_affiliation;
+	public $study_group;
+	public $feedback_group;
 }
 
 class User_list_model extends MapperListModel
