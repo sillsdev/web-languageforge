@@ -20,7 +20,7 @@ class TestUserModel extends UnitTestCase {
 		$model->email = "user@example.com";
 		$model->username = "SomeUser";
 		$model->name = "Some User";
-		$model->imageRef = "images/avatar/pinkbat.png";
+		$model->avatarRef = "images/avatar/pinkbat.png";
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
@@ -29,7 +29,7 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual('user@example.com', $otherModel->email);
 		$this->assertEqual('SomeUser', $otherModel->username);
 		$this->assertEqual('Some User', $otherModel->name);
-		$this->assertEqual('images/avatar/pinkbat.png', $otherModel->imageRef);
+		$this->assertEqual('images/avatar/pinkbat.png', $otherModel->avatarRef);
 	}
 
 	function testUserList_HasCountAndEntries()
