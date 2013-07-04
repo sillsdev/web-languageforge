@@ -64,9 +64,9 @@ function UserCtrl($scope, $http, jsonRpc) {
 		var isNewRecord = false;
 		if (record.id === undefined) {
 			isNewRecord = true; // Will be used below
-			if (record.groups === undefined) {
-				record.groups = [null]; // TODO: Should we put something into the form to allow setting gropus? ... Later, not now.
-			}
+//			if (record.groups === undefined) {
+//				record.groups = [null]; // TODO: Should we put something into the form to allow setting gropus? ... Later, not now.
+//			}
 		}
 		jsonRpc.connect("/api/sf");
 		var promise = jsonRpc.call("user_update", {"params": record}, function(result) {
