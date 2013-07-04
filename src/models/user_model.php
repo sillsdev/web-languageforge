@@ -57,7 +57,9 @@ class User_model extends MapperModel
 	
 	public function listProjects() {
 		assert(is_array($this->projects));
-		throw new Exception("User_model::listProjects NYI");
+		$projectList = new Project_list_users_model($this->id);
+		$projectList->read();
+		return $projectList;
 	}
 	
 	public $id;
