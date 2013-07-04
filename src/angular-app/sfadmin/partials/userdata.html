@@ -14,6 +14,9 @@
 				<label>Email</label>
 				<input type="text" placeholder="(no email)" ng-model="record.email"/>
 			</div>
+			<div class="large-12">
+				<label><input type="checkbox" ng-model="record.active"/> Is Active</label>
+			</div>
 			<a href="" ng-click="togglePasswordForm(); vars.inputfocus = false">Click to change password</a>
 			<div class="large-12" ng-show="vars.showPasswordForm">
 				<label>Password</label>
@@ -23,9 +26,6 @@
 				<label>Confirm password</label>
 				<input type="password" ng-model="record.confirm_password" require-equal="record.password" name="confirmPassword"/>
 				<label ng-show="passwordForm.confirmPassword.$error.match">Passwords do not match</label>
-			</div>
-			<div class="large-12">
-				<label><input type="checkbox" ng-model="record.active"/> Is Active</label>
 			</div>
 			<div class="panel">
 			<div ng-show="record.created_on" class="large-12"><label style="cursor:default">Created On: {{ record.created_on * 1000 | date:shortDate }}</label></div>
