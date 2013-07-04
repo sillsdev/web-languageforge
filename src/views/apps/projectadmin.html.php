@@ -1,7 +1,7 @@
-<div class="container" ng-app="projectAdmin">
+<div class="container" ng-app="projectAdmin" ng-cloak>
 	<legend>Project Administration</legend>
 
-	<tabset ng-cloak>
+	<tabset>
 	<tab heading="Users">
 		<legend>Add User</legend>
 		<div ng-controller="UserSearchCtrl">
