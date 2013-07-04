@@ -6,6 +6,7 @@ class App extends Secure_base {
 	
 	public function view($app = 'main') {
 		$data = array();
+		$data['jsSessionVars'] = '{"userid": "' . $this->session->userdata('user_id') . '"}';
 		$data['title'] = "Scripture Forge";
 		if ( ! file_exists('views/apps/'.$app.'.html.php'))
 		{

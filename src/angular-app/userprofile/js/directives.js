@@ -29,7 +29,7 @@ angular.module('sfAdmin.directives', ["jsonRpc", "sfAdmin.filters"]).
 				  console.log("Fetching id: " + userid);
 				  jsonRpc.connect("/api/sf");
 				  jsonRpc.call("user_read", {"id": userid}, function(result) {
-					  scope.record = result.data;
+					  scope.record = result.data.result;
 				  });
 			  }
 		  },
@@ -60,7 +60,7 @@ angular.module('sfAdmin.directives', ["jsonRpc", "sfAdmin.filters"]).
 				  console.log("Fetching id: " + recordid);
 				  jsonRpc.connect("/api/sf");
 				  jsonRpc.call("project_read", {"id": recordid}, function(result) {
-					  scope.record = result.data;
+					  scope.record = result.data.result;
 				  });
 			  }
 		  },
