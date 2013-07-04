@@ -7,27 +7,32 @@
  */
 
 /* Reset */
+/* Bootstrap
 body, html, div, img, label, p, h1, h2, h3, h4, h5, h6, pre, ul, ol, li, a, input, th, td {  
 	margin: 0; 
 	padding: 0; 
 	border: 0; 
 	outline: none; 
 }  
-  
+*/
+/* Bootstrap
 body {  
 	line-height: 1;  
 	font-size: 87.5%;
 	font-family: "Open Sans", Arial, Helvetica, Verdana, sans-serif;
 	color: #404040 !important;
 }  
-  
+*/
+/* Bootstrap
 h1, h2, h3, h4, h5, h6 {  
 	font-size: 100%; 
-}  
-  
+}
+*/
+/* Bootstrap
 ul, ol {  
 	list-style: none;  
 }
+*/
   
 a {  
 	color: #04abe1;  
@@ -140,13 +145,14 @@ div#account{
 	font-size: 0.85em; 
 	line-height: 24px;
 }
-
-div.container {
+div.sfcontainer {
 	position: relative;
 	width: 960px;
 	height: auto;
 	margin: 0 auto;
 }
+/* Bootstrap
+*/
 
 div.sf-logo-large {
 	position: absolute;
@@ -313,6 +319,7 @@ input.error, textarea.error {
 	color: #c9262d;
 }
 
+/* Bootstrap
 .btn {
 	width: auto;
 	height: auto;
@@ -324,7 +331,8 @@ input.error, textarea.error {
 	-moz-border-radius: 4px 4px 4px 4px;
 	border-radius: 4px 4px 4px 4px;
 }
-
+*/
+/* Bootstrap
 .standard-btn {
 	width: auto;
 	height: auto;
@@ -342,20 +350,22 @@ input.error, textarea.error {
 	-moz-box-shadow: 0 0 3px #eee, inset 0 0 1px #fff;
 	box-shadow: 0 0 3px #eee, inset 0 0 1px #fff;
 }
-
+*/
+/* Bootstrap
 .standard-btn-big {
 	color: #04abe1;
 	font-size: 1.3em;
 	margin: 15px 0;
 }
-
+*/
+/*
 .standard-btn:hover {
 	border: 1px solid #a4a4a5;
 	-webkit-box-shadow: 0 0 3px #ccc, inset 0 0 1px #fff;
 	-moz-box-shadow: 0 0 3px #ccc, inset 0 0 1px #fff;
 	box-shadow: 0 0 3px #ccc, inset 0 0 1px #fff;
 }
-
+*/
 .darker-btn {
 	width: auto;
 	height: auto;

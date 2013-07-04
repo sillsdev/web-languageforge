@@ -48,6 +48,12 @@ class Sf
 		return $list;
 	}
 	
+	public function user_typeahead($term) {
+		$list = new User_typeahead_model($term);
+		$list->read();
+		return $list;
+	}
+	
 	/**
 	 * Create/Update a Project
 	 * @param Project_model $json

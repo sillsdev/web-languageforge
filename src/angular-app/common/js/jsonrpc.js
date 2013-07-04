@@ -57,12 +57,22 @@ json_rpc.factory("jsonRpc", ["$http", function($http) {
 		var result = {};
 		var request = $http(http_request);
 		request.success(function(data, status, headers, config) {
-			result.ok = true;
-			result.data = data;
-			result.status = status;
-			result.headers = headers;
-			result.config = config;
-			callback(result);
+			if (data == null) {
+				// TODO error handling for jsonRpc CP 2013-07
+				return;
+			}
+			if (data.error != null) {
+				// TODO error handling for jsonRpc CP 2013-07
+			}
+			if (data.error == null) {
+				result.ok = true;
+				result.data = data.result;
+				result.status = status;
+				result.headers = headers;
+				result.config = config;
+				callback(result);
+			}
+			
 		});
 		request.error(function(data, status, headers, config) {
 			result.ok = false;

@@ -10,7 +10,7 @@
 				<div class="span4"><user-data/></div>
 			</div>
 		</tab>
-		<tab heading="Project">
+		<tab heading="Projects">
 			<div class="row" ng-controller="ProjectCtrl" style="overflow:hidden">
 			
 				<div class="span8"><project-list/></div>
@@ -34,7 +34,7 @@
 	-->
 	<script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
 	<script	src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
-	<script	src="/js/jsonrpc.js"></script>
+	<script	src="/angular-app/common/js/jsonrpc.js"></script>
 	<script	src="/angular-app/sfadmin/js/app.js"></script>
 	<script	src="/angular-app/sfadmin/js/services.js"></script>
 	<script	src="/angular-app/sfadmin/js/controllers.js"></script>

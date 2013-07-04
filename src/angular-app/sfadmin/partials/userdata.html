@@ -30,13 +30,9 @@
 			<tr ng-show="record.last_login"><td><label style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label></td></tr>
 			</table>
 		</div>
-		<ul style="margin-top:20px" class="button-group">
-			<li>
-				<a href="#" class="btn btn-small" ng-click="updateRecord(record)">
+				<button class="btn btn-small" ng-click="updateRecord(record)">
 					<i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
-				</a>
-			</li>
-		</ul>
+				</button>
 	</fieldset>
 	<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 </form>
