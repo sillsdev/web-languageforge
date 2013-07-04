@@ -1,4 +1,4 @@
-<form ng-submit="updateRecord(record)" ng-hide="(vars.editButtonName=='')">
+<form ng-submit="updateRecord(record)" ng-hide="(vars.editButtonName=='')" name="userForm">
 	<fieldset>
 		<legend>User data</legend>
 		<div class="well">
@@ -32,9 +32,9 @@
 			<tr ng-show="record.last_login"><td><label style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label></td></tr>
 			</table>
 		</div>
-				<button class="btn btn-small" ng-click="updateRecord(record)" ng-disabled="(passwordForm.password.$pristine != passwordForm.confirmPassword.$pristine) || passwordForm.$invalid">
+				<button class="btn btn-small" ng-click="updateRecord(record)" ng-disabled="(userForm.password.$pristine != userForm.confirmPassword.$pristine) || userForm.$invalid">
 					<i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
 				</button>
 	</fieldset>
-	<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" ng-disabled="(passwordForm.password.$pristine != passwordForm.confirmPassword.$pristine) || passwordForm.$invalid"/>
+	<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" ng-disabled="(userForm.password.$pristine != userForm.confirmPassword.$pristine) || userForm.$invalid"/>
 </form>
