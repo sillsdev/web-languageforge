@@ -12,6 +12,8 @@ class Sf
 		$CI->load->model('Password_model');
 		$CI->load->model('Project_model');
 		$CI->load->library('bcrypt',8); // Might increase this at some future date to increase PW hashing time
+		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
+		ini_set('display_errors', 0);
 	}
 
 	/**
@@ -52,14 +54,20 @@ class Sf
 		return $list;
 	}
 	
+	public function user_typeahead($term) {
+		$list = new User_typeahead_model($term);
+		$list->read();
+		return $list;
+	}
+	
 	/**
 	 * Create/Update a Project
 	 * @param Project_model $json
 	 * @return string Id of written object
 	 */
-	public function project_update($params) {
+	public function project_update($object) {
 		$project = new Project_model();
-		Jsonrpc_server::decode($project, $params);
+		Jsonrpc_server::decode($project, $object);
 		$result = $project->write();
 		return $result;
 	}
@@ -97,4 +105,27 @@ class Sf
 		$user->remember_code = null;
 		$user->write();
 	}
+	
+	public function project_readUser($projectId, $userId) {
+		throw new Exception("project_readUser NYI");
+	}
+	
+	public function project_updateUser($projectId, $object) {
+		$projectModel = new Project_model($projectId);
+		$command = new Project_user_commands($projectModel);
+		return $command->addUser($object);
+	}
+	
+	public function project_deleteUser($projectId, $userId) {
+		// This removes the user from the project.
+		$projectModel = new Project_model($projectId);
+		$projectModel->removeUser($userId);
+		$projectModel->write();
+	}
+	
+	public function project_listUsers($projectId) {
+		$projectModel = new Project_model($projectId);
+		return $projectModel->listUsers();
+	}
+	
 }
