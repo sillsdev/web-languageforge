@@ -121,7 +121,7 @@ class TestProjectModel extends UnitTestCase {
 		$project->write();
 		
 		$otherProject = new Project_model($this->_someProjectId);
-		$result = $project->listUsers();
+		$result = $otherProject->listUsers();
 		$this->assertEqual(2, $result->count);
 		$this->assertEqual(
 			array(
