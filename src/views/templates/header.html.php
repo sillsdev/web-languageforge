@@ -40,25 +40,26 @@
 						<li><a href="/contribute">Contribute</a></li>
 						<li><a href="/discuss">Discuss</a></li>
 					</ul>
-						<?php if ($is_admin):?>
-							<ul style="margin-left: 50px" class="sf-menu">
-								<li><a href="#">Administration</a>
-									<ul>
-										<li><a href="/app/sfadmin">Users and Projects</a></li>
-										<li><a href="/app/projectadmin/p1">My First Project</a></li>
-									</ul>
-								</li>
-							</ul>
-						<?php endif;?>
 				</div>
 				
 				<?php if ($logged_in):?>
 					<div class="right">
-						
-						<ul class="sf-menu">
+							<ul class="sf-menu">
+								<li><a href="#">My Projects</a>
+									<ul>
+										<li><a href="/app/projectadmin/p1">Jamaican Psalms</a></li>
+										<li><a href="/app/projectadmin/p1">Northern Thai</a></li>
+										<li><a href="/app/projectadmin/p1">English Acts</a></li>
+									</ul>
+								</li>
+							</ul>
+							<ul class="sf-menu">
 							<li>
 							<a href="#"><img src="<?php echo $small_gravatar_url; ?>" style="float:left; position:relative; top:-6px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
 								<ul>
+									<?php if ($is_admin):?>
+									<li><a href="/app/sfadmin">Site Administration</a></li>
+									<?php endif;?>
 									<li><a href="/app/userprofile">My Profile</a></li>
 									<li><a href="/auth/change_password">Change Password</a></li>
 									<li><a href="/auth/logout">Logout</a></li>
