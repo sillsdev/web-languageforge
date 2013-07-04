@@ -51,5 +51,8 @@ angular.module('sf.services', ['jsonRpc'])
 			// TODO Paging CP 2013-07
 			jsonRpc.call('project_listUsers', [projectId], callback);
 		};
+		this.updatePassword = function(password, callback) {
+			jsonRpc.call('user_updatePassword', [password], callback);
+		}
 	}])
 	;
