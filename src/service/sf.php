@@ -1,5 +1,7 @@
 <?php
 
+require_once(APPPATH . 'libraries/Bcrypt.php');
+
 class Sf
 {
 	
@@ -7,8 +9,9 @@ class Sf
 	{
 		$CI =& get_instance();
 		$CI->load->model('User_model');
+		$CI->load->model('Password_model');
 		$CI->load->model('Project_model');
-		
+		$CI->load->library('bcrypt',8); // Might increase this at some future date to increase PW hashing time
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
 		ini_set('display_errors', 0);
 	}
@@ -93,6 +96,14 @@ class Sf
 		$list = new Project_list_model();
 		$list->read();
 		return $list;
+	}
+	
+	public function change_password($userid, $newPassword) {
+		$user = new Password_model($userid);
+		$bcrypt = new Bcrypt();
+		$user->password = $bcrypt->hash($newPassword);
+		$user->remember_code = null;
+		$user->write();
 	}
 	
 	public function project_readUser($projectId, $userId) {
