@@ -4,6 +4,45 @@ require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestLibPath . 'jsonRPCClient.php');
 
+class UserAPITestEnvironment
+{
+	/**
+	 * @var jsonRPCClient
+	 */
+	private $_api;
+	
+	/**
+	 * @var array
+	 */
+	private $_idAdded = array();
+	
+	function __construct() {
+		$this->_api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
+	}
+	
+	/**
+	 * @param string $name
+	 * @param string $username
+	 * @param string $email
+	 */
+	function addUser($name = 'Some User', $username = 'someuser', $email = 'someuser@example.com') {
+		$param = array(
+			'id' => '',
+			'name' => $name,
+			'username' => $username,
+			'email' => $email
+		);
+		$id = $this->_api->user_update($param);
+		$this->_idAdded[] = $id;
+	}
+	
+	function dispose() {
+		foreach($this->_idAdded as $id) {
+			$this->_api->user_delete($id);
+		}
+	}
+}
+
 class TestUserAPI extends UnitTestCase {
 
 	function __construct() {
@@ -37,7 +76,6 @@ class TestUserAPI extends UnitTestCase {
 		// Delete
  		$result = $api->user_delete($id);
  		$this->assertTrue($result);
-	 			
 	}
 	
 	function testUserList_Ok() {
@@ -45,7 +83,18 @@ class TestUserAPI extends UnitTestCase {
 		$result = $api->user_list();
 		
 		$this->assertTrue($result['count'] > 0);
+	}
+	
+	function testUserTypeahead_Ok() {
+		$e = new UserAPITestEnvironment();
+		$e->addUser('Some User');
 		
+		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
+		$result = $api->user_typeahead('ome');
+		
+		$this->assertTrue($result['count'] > 0);
+		
+		$e->dispose();
 	}
 	
 }

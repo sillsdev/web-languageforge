@@ -2,13 +2,13 @@
 	<style type="text/css">
 		tr.active {background-color: #5da423 !important;}
 	</style>
-	<legend>Users (total: {{data.result.entries.length}})</legend>
+	<legend>Users (total: {{data.entries.length}})</legend>
 	<table style="width: 100%">
 		<tr>
 			<th>Username <span class="right"><i class="icon-sort-by-alphabet"></i>&nbsp;<i class="icon-sort-by-alphabet-alt"></i></span></th>
 			<th>Full Name <span class="right"><i class="icon-sort-by-alphabet"></i>&nbsp;<i class="icon-sort-by-alphabet-alt"></i></span></th>
 		</tr>
-		<tr ng-repeat="user in data.result.entries" ng-class="{active: $index==vars.selectedIndex}" ng-click="selectRow($index, user)">
+		<tr ng-repeat="user in data.entries" ng-class="{active: $index==vars.selectedIndex}" ng-click="selectRow($index, user)">
 			<td class="useractive-{{user.active}}">{{user.username}}</td>
 			<td class="useractive-{{user.active}}">{{user.name}}</td>
 		</tr>
