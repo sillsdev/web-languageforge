@@ -36,6 +36,8 @@ class User_model extends MapperModel
 	
 	public $email;
 	
+	public $groups;
+	
 	public $active;
 	
 	public $created_on;
