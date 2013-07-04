@@ -96,19 +96,25 @@ class Sf
 	}
 	
 	public function project_readUser($projectId, $userId) {
-		
+		throw new Exception("project_readUser NYI");
 	}
 	
 	public function project_updateUser($projectId, $object) {
-		throw new Exception("NYI");
+		$projectModel = new Project_model($projectId);
+		$command = new Project_user_commands($projectModel);
+		return $command->addUser($object);
 	}
 	
 	public function project_deleteUser($projectId, $userId) {
-		
+		// This removes the user from the project.
+		$projectModel = new Project_model($projectId);
+		$projectModel->removeUser($userId);
+		$projectModel->write();
 	}
 	
 	public function project_listUsers($projectId) {
-		
+		$projectModel = new Project_model($projectId);
+		return $projectModel->listUsers();
 	}
 	
 }
