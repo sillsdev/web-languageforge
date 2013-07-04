@@ -1,25 +1,25 @@
 <div class="container" ng-app="sfAdmin">
 	<div style="margin-top: 50px"><h2>SF Administration</h2></div>
 	
-
-<tabset>
-	<tab heading="users">
-		<div class="row" ng-controller="UserCtrl" style="overflow:hidden">
-		
-			<div class="span8"><user-list/></div>
+	<tabset>
+		<tab heading="Users">
+			<div class="row" ng-controller="UserCtrl" style="overflow:hidden">
 			
-			<div class="span4"><user-data/></div>
-		</div>
-	</tab>
-	<tab heading="projects">
-		<div class="row" ng-controller="ProjectCtrl" style="overflow:hidden">
-		
-			<div class="span8"><project-list/></div>
+				<div class="span8"><user-list/></div>
+				
+				<div class="span4"><user-data/></div>
+			</div>
+		</tab>
+		<tab heading="Projects">
+			<div class="row" ng-controller="ProjectCtrl" style="overflow:hidden">
 			
-			<div class="span4"><project-data/></div>
-		</div>
-	</tab>
-</tabset>
+				<div class="span8"><project-list/></div>
+				
+				<div class="span4"><project-data/></div>
+			</div>
+		</tab>
+	</tabset>
+</div>
 	
 	
 	
