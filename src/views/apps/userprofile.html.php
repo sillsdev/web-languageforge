@@ -1,8 +1,8 @@
 <div class="container" ng-app="userProfile" ng-cloak>
 	<div ng-controller="userProfileCtrl">
-				<form ng-submit="updateUser()">
+	<legend>{{user.name}}'s User Profile</legend>
+	<form ng-submit="updateUser()">
 					<fieldset>
-						<legend>{{user.name}}'s User Profile</legend>
 						<div ng-show="notify.error" class="notification errorMessage">Error: {{notify.error}}</div>
 						<div ng-show="notify.message" class="notification informationMessage">{{notify.message}}</div>
 						<tabset>
@@ -69,6 +69,7 @@ window.session = <?php echo $jsSessionVars; ?>
 	
 <script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
 <script	src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
+<script	src="/angular-app/common/js/error.js"></script>
 <script	src="/angular-app/common/js/jsonrpc.js"></script>
 <script	src="/angular-app/common/js/services.js"></script>
 <script	src="/angular-app/userprofile/js/app.js"></script>

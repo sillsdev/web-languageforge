@@ -1,5 +1,5 @@
 <div class="container" ng-app="projectAdmin">
-	<div style="margin-top: 50px"><h2>Project Administration</h2></div>
+	<legend>Project Administration</legend>
 
 	<tabset ng-cloak>
 	<tab heading="Users">
