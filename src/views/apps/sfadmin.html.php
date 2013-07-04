@@ -1,6 +1,6 @@
-<div class="container" ng-app="sfAdmin">
-	<div style="margin-top: 50px"><h2>SF Administration</h2></div>
-	
+<div class="container" ng-app="sfAdmin" ng-cloak>
+	<legend>Site Administration</legend>
+
 	<tabset>
 		<tab heading="Users">
 			<div class="row" ng-controller="UserCtrl" style="overflow:hidden">
