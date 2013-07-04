@@ -4,6 +4,8 @@ require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
+require_once(SourcePath . "models/project_model.php");
+
 require_once(SourcePath . "models/user_model.php");
 
 class TestUserModel extends UnitTestCase {
@@ -135,32 +137,42 @@ class TestUserModel extends UnitTestCase {
 		$e->restoreErrorDisplay();
 	}
 	
-	/*
-	function testUserListUsers_TwoUsers_ListHasDetails() {
+	function testUserListProjects_TwoProjects_ListHasDetails() {
 		$e = new MongoTestEnvironment();
+		$e->clean();
+		
 		$userId1 = $e->createUser('user1', 'User One', 'user1@example.com');
 		$userId2 = $e->createUser('user2', 'User Two', 'user2@example.com');
-	
-		$project = new User_model($this->_someUserId);
-	
+		
+		$projectId = $e->createProject("Project One");
+		$project = new Project_model($projectId);
+		
 		// Check the list users is empty
 		$result = $project->listUsers();
-		$this->assertEqual(array(), $result);
-	
+		$this->assertEqual(0, $result->count);
+		$this->assertEqual(array(), $result->entries);
+				
 		// Add our two users
-		$project->_addProject($userId1);
-		$project->_addProject($userId2);
+		$project->addUser($userId1);
+		$project->addUser($userId2);
 		$project->write();
-	
-		$otherProject = new User_model($this->_someUserId);
-		$result = $project->listUsers();
-		$this->assertEqual(array('Bogus'), $result);
-	
-		User_model::remove($userId1);
-		User_model::remove($userId2);
+				
+		$otherUser = new User_model($userId1);
+		$result = $otherUser->listProjects();
+		$this->assertEqual(1, $result->count);
+		$this->assertEqual(
+			array(
+				array(
+		          'projectname' => 'Project One',
+		          'id' => $projectId
+				)
+			), $result->entries
+		);
+
+ 		User_model::remove($userId1);
+ 		User_model::remove($userId2);
+ 		Project_model::remove($projectId);
 	}
-	*/
-	
 	
 }
 

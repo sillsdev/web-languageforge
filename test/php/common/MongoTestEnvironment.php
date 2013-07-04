@@ -52,6 +52,17 @@ class MongoTestEnvironment
 		return $userModel->write();
 	}
 	
+	/**
+	 * Writes a project to the projects collection.
+	 * @param strinbg $name
+	 * @return string id
+	 */
+	public function createProject($name) {
+		$projectModel = new Project_model();
+		$projectModel->projectname = $name;
+		return $projectModel->write();
+	}
+	
 	public function inhibitErrorDisplay() {
 		$this->_display = ini_get('display_errors');
 		ini_set('display_errors', false);
