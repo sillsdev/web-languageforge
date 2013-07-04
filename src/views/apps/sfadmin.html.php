@@ -34,7 +34,11 @@
 	-->
 	<script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
 	<script	src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
+	<script	src="/angular-app/common/js/error.js"></script>
 	<script	src="/angular-app/common/js/jsonrpc.js"></script>
+	<script	src="/angular-app/common/js/listview.js"></script>
+	<script	src="/angular-app/common/js/typeahead.js"></script>
+	<script	src="/angular-app/common/js/services.js"></script>
 	<script	src="/angular-app/sfadmin/js/app.js"></script>
 	<script	src="/angular-app/sfadmin/js/services.js"></script>
 	<script	src="/angular-app/sfadmin/js/controllers.js"></script>
