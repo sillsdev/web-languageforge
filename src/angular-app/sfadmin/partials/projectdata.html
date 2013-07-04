@@ -12,13 +12,9 @@
 				<input type="text" placeholder="(unknown)" ng-model="record.language"/>
 			</div>
 		</div>
-		<ul class="button-group">
-			<li>
-				<a href="#" class="btn btn-small" ng-click="updateRecord(record)">
-					<i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
-				</a>
-			</li>
-		</ul>
+		<button class="btn btn-small" ng-click="updateRecord(record)">
+			<i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
+		</button>
 	</fieldset>
 	<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 </form>

@@ -1,4 +1,4 @@
-		<div class="container cf">
+		<div class="sfcontainer cf">
 		<?php foreach ($columns as $num => $column): ?>
 			<div class="three-col">
 				<div class="three-col-<?php echo $num + 1 ?>">
