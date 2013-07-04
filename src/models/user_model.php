@@ -68,7 +68,7 @@ class User_model extends MapperModel
 	
 	public $email;
 	
-	public $groups;
+	//public $groups;
 	
 	public $avatarRef;
 	public $avatarColor;
