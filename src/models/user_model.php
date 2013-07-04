@@ -20,6 +20,7 @@ class User_model extends MapperModel
 {
 	public function __construct($id = NULL)
 	{
+		$this->projects = array();
 		parent::__construct(User_model_MongoMapper::instance(), $id);
 	}
 	
@@ -28,6 +29,37 @@ class User_model extends MapperModel
 		User_model_MongoMapper::instance()->remove($id);
 	}
 
+	/**
+	 * Adds the $projectId as a member of this user.
+	 * Note that you still need to call write() to persist the model.
+	 * @param string $userId
+	 */
+	public function _addProject($projectId) {
+		assert(is_array($this->projects));
+		if (in_array($projectId, $this->projects)) {
+			return;
+		}
+		$this->projects[] = $projectId;
+	}
+	
+	/**
+	 * Removes the $projectId from this user.
+	 * Note that you still need to call write() to persist the model.
+	 * @param string $userId
+	 */
+	public function _removeProject($projectId) {
+		assert(is_array($this->projects));
+		if (!in_array($projectId, $this->projects)) {
+			throw new Exception("Project '$projectId' is not a member of user '$this->id'");
+		}
+		$this->projects = array_diff($this->projects, array($projectId));
+	}
+	
+	public function listProjects() {
+		assert(is_array($this->projects));
+		throw new Exception("User_model::listProjects NYI");
+	}
+	
 	public $id;
 	
 	public $name;
@@ -44,6 +76,8 @@ class User_model extends MapperModel
 	
 	public $last_login; // read only field
 	
+	public $projects;
+	
 }
 
 class User_list_model extends MapperListModel
@@ -54,7 +88,7 @@ class User_list_model extends MapperListModel
 		parent::__construct(
 			User_model_MongoMapper::instance(),
 			array('email' => array('$regex' => '')),
-			array('username', 'email', 'name')
+			array('username', 'email', 'name', 'avatarRef')
 		);
 	}
 	
@@ -72,5 +106,21 @@ class User_typeahead_model extends MapperListModel
 	}	
 	
 }
+
+class User_list_projects_model extends MapperListModel
+{
+
+	public function __construct($projectId)
+	{
+		parent::__construct(
+				User_model_MongoMapper::instance(),
+				array('projects' => array('$in' => array($projectId))),
+				array('username', 'email', 'name')
+		);
+	}
+
+}
+
+
 
 ?>
