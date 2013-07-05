@@ -23,9 +23,8 @@ class Base extends CI_Controller {
 		$isLoggedIn = $this->ion_auth->logged_in();
 		$this->viewdata['logged_in'] = $isLoggedIn;
 		if ($isLoggedIn) {
-			require_once(APPPATH . 'models/user_model.php');
 			$userId = (string)$this->session->userdata('user_id');
-			$user = new User_model($userId);
+			$user = new \models\UserModel($userId);
 			$isAdmin = $this->ion_auth->is_admin();
 			$this->viewdata['is_admin'] = $isAdmin;
 			$this->viewdata['user_name'] = $user->name;
@@ -34,7 +33,7 @@ class Base extends CI_Controller {
 			$this->viewdata['projects_count'] = $projects->count;
 			$this->viewdata['projects'] = $projects->entries;
 			if ($isAdmin) {
-				$projectList = new Project_list_model();
+				$projectList = new models\ProjectListModel();
 				$projectList->read();
 				$this->viewdata['all_projects_count'] = $projectList->count;
 				$this->viewdata['all_projects'] = $projectList->entries;
