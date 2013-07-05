@@ -186,7 +186,7 @@ class MongoMapper
 		$data = $this->_collection->findOne(array("_id" => new \MongoId($id)));
 		if ($data === NULL)
 		{
-			throw new Exception("Could not find id '$id'");
+			throw new \Exception("Could not find id '$id'");
 		}
 		$this->decode($model, $data);
 	}
