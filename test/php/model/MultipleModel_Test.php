@@ -4,8 +4,11 @@ require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-require_once(SourcePath . "models/project_model.php");
-require_once(SourcePath . "models/user_model.php");
+require_once(SourcePath . "models/ProjectModel.php");
+require_once(SourcePath . "models/UserModel.php");
+
+use models\UserModel;
+use models\ProjectModel;
 
 class TestMultipleModel extends UnitTestCase {
 
@@ -17,24 +20,24 @@ class TestMultipleModel extends UnitTestCase {
 	
 	function testWrite_TwoModels_ReadBackBothModelsOk()
 	{
-		$model = new User_model();
+		$model = new UserModel();
 		$model->email = "user@example.com";
 		$model->username = "SomeUser";
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$otherModel = new User_model($id);
+		$otherModel = new UserModel($id);
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('user@example.com', $otherModel->email);
 		$this->assertEqual('SomeUser', $otherModel->username);
 
-		$model = new Project_model();
+		$model = new ProjectModel();
 		$model->language = "SomeLanguage";
 		$model->projectname = "SomeProject";
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$otherModel = new Project_model($id);
+		$otherModel = new ProjectModel($id);
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('SomeLanguage', $otherModel->language);
 		$this->assertEqual('SomeProject', $otherModel->projectname);
@@ -42,7 +45,7 @@ class TestMultipleModel extends UnitTestCase {
 
 	function testUserList_HadOnlyUsers()
 	{
-		$model = new User_list_model();
+		$model = new models\UserListModel();
 		$model->read();
 		
 		foreach ($model->entries as $entry) {
@@ -52,7 +55,7 @@ class TestMultipleModel extends UnitTestCase {
 
 	function testProjectList_HadOnlyProjects()
 	{
-		$model = new Project_list_model();
+		$model = new models\ProjectListModel();
 		$model->read();
 		
 		foreach ($model->entries as $entry) {
