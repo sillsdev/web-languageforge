@@ -1,0 +1,22 @@
+<div class="container" ng-app="sfAdmin" ng-cloak>
+	<legend>Site Administration</legend>
+
+	<tabset>
+		<tab heading="Users">
+			<div class="row" ng-controller="UserCtrl" style="overflow:hidden">
+			
+				<div class="span8"><user-list/></div>
+				
+				<div class="span4"><user-data/></div>
+			</div>
+		</tab>
+		<tab heading="Projects">
+			<div class="row" ng-controller="ProjectCtrl" style="overflow:hidden">
+			
+				<div class="span8"><project-list/></div>
+				
+				<div class="span4"><project-data/></div>
+			</div>
+		</tab>
+	</tabset>
+</div>
