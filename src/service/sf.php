@@ -119,11 +119,13 @@ class Sf
 		return $command->addUser($object);
 	}
 	
-	public function project_deleteUser($projectId, $userId) {
+	public function project_deleteUsers($projectId, $userIds) {
 		// This removes the user from the project.
 		$projectModel = new \models\ProjectModel($projectId);
-		$projectModel->removeUser($userId);
-		$projectModel->write();
+		foreach ($userIds as $userId) {
+			$projectModel->removeUser($userId);
+			$projectModel->write();
+		}
 	}
 	
 	public function project_listUsers($projectId) {

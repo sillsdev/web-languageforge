@@ -6,6 +6,7 @@ div.typeahead {
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
+	display: inline-block;
 }
 
 div.typeahead > div {
@@ -56,4 +57,9 @@ div.listview {
 
 div.listview tr.active {
 	background-color: #ffc;
+}
+
+/* Control bar for use at top of listview */
+form.control-bar {
+	margin-bottom: 0px;
 }
