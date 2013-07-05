@@ -1,6 +1,7 @@
 <?php
 
 require_once(APPPATH . 'libraries/mongo/Mongo_store.php');
+require_once(APPPATH . 'models/project_model.php');
 
 class User_model_MongoMapper extends MongoMapper
 {

@@ -172,12 +172,15 @@ class MongoMapper
 	}
 	
 	/**
-	 * @param User_model $model
-	 * @param MongoId $id
+	 * @param Object $model
+	 * @param string $id
 	 */
 	public function read($model, $id)
 	{
-		assert(is_string($id) && !empty($id));
+		if (!is_string($id) || empty($id)) {
+			$type = get_class($id);
+			throw new Exception("Bad id '$id' ($type)");
+		}		
 		$data = $this->_collection->findOne(array("_id" => new MongoId($id)));
 		if ($data === NULL)
 		{
