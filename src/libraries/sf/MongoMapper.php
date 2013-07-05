@@ -1,5 +1,7 @@
 <?php
 
+namespace libraries\sf;
+
 if (!defined('SF_DATABASE'))
 {
 	define('SF_DATABASE', 'scriptureforge');
@@ -35,7 +37,7 @@ class MongoStore
 	 */
 	private static function connectMongo($databaseName) {
 		if (static::$_mongo == null) {
-			static::$_mongo = new Mongo();
+			static::$_mongo = new \Mongo();
 		}
 		return static::$_mongo->selectDB($databaseName);
 	}
@@ -172,13 +174,16 @@ class MongoMapper
 	}
 	
 	/**
-	 * @param User_model $model
-	 * @param MongoId $id
+	 * @param Object $model
+	 * @param string $id
 	 */
 	public function read($model, $id)
 	{
-		assert(is_string($id) && !empty($id));
-		$data = $this->_collection->findOne(array("_id" => new MongoId($id)));
+		if (!is_string($id) || empty($id)) {
+			$type = get_class($id);
+			throw new Exception("Bad id '$id' ($type)");
+		}		
+		$data = $this->_collection->findOne(array("_id" => new \MongoId($id)));
 		if ($data === NULL)
 		{
 			throw new Exception("Could not find id '$id'");
@@ -244,7 +249,7 @@ class MongoMapper
 	{
 		assert(is_string($id) && !empty($id));
 		$result = $this->_collection->remove(
-			array('_id' => new MongoId($id)),
+			array('_id' => new \MongoId($id)),
 			array('safe' => true)
 		);
 		return $result;
@@ -264,7 +269,7 @@ class MongoMapper
 		}
 		assert($id === NULL || is_string($id));
 		$result = $collection->update(
-				array('_id' => new MongoId($id)),
+				array('_id' => new \MongoId($id)),
 				array('$set' => $data),
 				array('upsert' => true, 'multiple' => false, 'safe' => true)
 		);

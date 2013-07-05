@@ -1,8 +1,8 @@
 <?php
 
-require_once(APPPATH . 'libraries/mongo/Mongo_store.php');
+namespace libraries\api;
 
-class Project_user_commands {
+class ProjectUserCommands {
 	
 	private $_projectModel;
 	
@@ -29,10 +29,10 @@ class Project_user_commands {
 			// TODO Check user exists? CP 2013-07
 			$userId = $object['id'];
 		} else if (array_key_exists('email', $object)) {
-			throw new Exception("Project_user_commands::addUser with email NYI");
+			throw new \Exception("Project_user_commands::addUser with email NYI");
 		} else if (array_key_exists('name', $object)) {
 			// No key, so create a new user.
-			$user = new User_model();
+			$user = new \models\UserModel();
 			$user->name = $object['name'];
 			// TODO passwords, how to notify, email? CP 2013-07
 			$userId = $user->write();
@@ -46,7 +46,7 @@ class Project_user_commands {
 	}
 	
 	public function deleteProject() {
-		throw new Exception("Project_user_commands::deleteProject NYI");
+		throw new \Exception("Project_user_commands::deleteProject NYI");
 	}
 	
 }
