@@ -15,7 +15,7 @@ class Sf
 		$CI =& get_instance();
 		$CI->load->library('bcrypt',8); // Might increase this at some future date to increase PW hashing time
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
-//		ini_set('display_errors', 0);
+		ini_set('display_errors', 0);
 	}
 
 	/**
