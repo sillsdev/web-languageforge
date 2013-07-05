@@ -1,5 +1,7 @@
 <?php
 
+require_once(APPPATH . 'libraries/sf/MongoMapper.php');
+
 class MongoTestEnvironment
 {
 	
@@ -10,7 +12,7 @@ class MongoTestEnvironment
 	
 	public function __construct()
 	{
-		$this->_db = MongoStore::connect(SF_DATABASE);
+		$this->_db = \libraries\sf\MongoStore::connect(SF_DATABASE);
 	}
 
 	/**
@@ -45,7 +47,7 @@ class MongoTestEnvironment
 	 * @return string id
 	 */
 	public function createUser($username, $name, $email) {
-		$userModel = new User_model();
+		$userModel = new models\UserModel();
 		$userModel->username = $username;
 		$userModel->name = $name;
 		$userModel->email = $email;
@@ -58,7 +60,7 @@ class MongoTestEnvironment
 	 * @return string id
 	 */
 	public function createProject($name) {
-		$projectModel = new Project_model();
+		$projectModel = new models\ProjectModel();
 		$projectModel->projectname = $name;
 		return $projectModel->write();
 	}

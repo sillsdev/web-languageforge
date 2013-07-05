@@ -4,9 +4,11 @@ require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-require_once(SourcePath . "models/project_model.php");
+require_once(SourcePath . "models/ProjectModel.php");
+require_once(SourcePath . "models/UserModel.php");
 
-require_once(SourcePath . "models/user_model.php");
+use models\UserModel;
+use models\ProjectModel;
 
 class TestUserModel extends UnitTestCase {
 
@@ -20,7 +22,7 @@ class TestUserModel extends UnitTestCase {
 	
 	function testWrite_ReadBackSame()
 	{
-		$model = new User_model();
+		$model = new UserModel();
 		$model->email = "user@example.com";
 		$model->username = "SomeUser";
 		$model->name = "Some User";
@@ -28,7 +30,7 @@ class TestUserModel extends UnitTestCase {
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$otherModel = new User_model($id);
+		$otherModel = new UserModel($id);
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('user@example.com', $otherModel->email);
 		$this->assertEqual('SomeUser', $otherModel->username);
@@ -40,7 +42,7 @@ class TestUserModel extends UnitTestCase {
 
 	function testUserList_HasCountAndEntries()
 	{
-		$model = new User_list_model();
+		$model = new models\UserListModel();
 		$model->read();
 		
 		$this->assertEqual(1, $model->count);
@@ -50,7 +52,7 @@ class TestUserModel extends UnitTestCase {
 	
 	function testUserTypeahead_HasSomeEntries()
 	{
-		$model = new User_typeahead_model('');
+		$model = new models\UserTypeaheadModel('');
 		$model->read();
 		
 		$this->assertEqual(1, $model->count);
@@ -60,7 +62,7 @@ class TestUserModel extends UnitTestCase {
 	
 	function testUserTypeahead_HasMatchingEntries()
 	{
-		$model = new User_typeahead_model('ome');
+		$model = new models\UserTypeaheadModel('ome');
 		$model->read();
 		
 		$this->assertEqual(1, $model->count);
@@ -70,7 +72,7 @@ class TestUserModel extends UnitTestCase {
 	
 	function testUserTypeahead_HasNoMatchingEntries()
 	{
-		$model = new User_typeahead_model('Bogus');
+		$model = new models\UserTypeaheadModel('Bogus');
 		$model->read();
 		
 		$this->assertEqual(0, $model->count);
@@ -78,26 +80,26 @@ class TestUserModel extends UnitTestCase {
 	}
 	
 	function testUserAddProject_ExistingUser_ReadBackAdded() {
-		$user = new User_model($this->_someUserId);
+		$user = new UserModel($this->_someUserId);
 	
 		$projectId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
 		$user->_addProject($projectId);
 		$user->write();
 	
 		$this->assertTrue(in_array($projectId, $user->projects));
-		$otherUser = new User_model($this->_someUserId);
+		$otherUser = new UserModel($this->_someUserId);
 		$this->assertTrue(in_array($projectId, $otherUser->projects), "'$projectId' not found in user.");
 	}
 	
 	function testUserRemoveProject_ExistingUser_Removed() {
-		$user = new User_model($this->_someUserId);
+		$user = new UserModel($this->_someUserId);
 	
 		$projectId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
 		$user->_addProject($projectId);
 		$user->write();
 	
 		$this->assertTrue(in_array($projectId, $user->projects));
-		$otherUser = new User_model($this->_someUserId);
+		$otherUser = new UserModel($this->_someUserId);
 		$this->assertTrue(in_array($projectId, $otherUser->projects), "'$projectId' not found in user.");
 	
 		// Test really starts here.
@@ -105,13 +107,13 @@ class TestUserModel extends UnitTestCase {
 		$user->write();
 	
 		$this->assertFalse(in_array($projectId, $user->projects));
-		$otherUser = new User_model($this->_someUserId);
+		$otherUser = new UserModel($this->_someUserId);
 		$this->assertFalse(in_array($projectId, $otherUser->projects), "'$projectId' should not be found in user.");
 	
 	}
 	
 	function testUserAddProject_TwiceToSameUser_AddedOnce() {
-		$user = new User_model($this->_someUserId);
+		$user = new UserModel($this->_someUserId);
 	
 		$projectId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
 		$user->_addProject($projectId);
@@ -124,13 +126,13 @@ class TestUserModel extends UnitTestCase {
 	
 	function testUserRemoveProject_NonExistingProject_Throws() {
 		$e = new MongoTestEnvironment();
-		$user = new User_model($this->_someUserId);
+		$user = new UserModel($this->_someUserId);
 	
 		$projectId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
 		$e->inhibitErrorDisplay();
 		try {
 			$user->_removeProject($projectId);
-		} catch (Exception $ex) {
+		} catch (\Exception $ex) {
 			$caught = true;
 		}
 		$this->assertTrue($caught);
@@ -145,7 +147,7 @@ class TestUserModel extends UnitTestCase {
 		$userId2 = $e->createUser('user2', 'User Two', 'user2@example.com');
 		
 		$projectId = $e->createProject("Project One");
-		$project = new Project_model($projectId);
+		$project = new ProjectModel($projectId);
 		
 		// Check the list users is empty
 		$result = $project->listUsers();
@@ -157,7 +159,7 @@ class TestUserModel extends UnitTestCase {
 		$project->addUser($userId2);
 		$project->write();
 				
-		$otherUser = new User_model($userId1);
+		$otherUser = new UserModel($userId1);
 		$result = $otherUser->listProjects();
 		$this->assertEqual(1, $result->count);
 		$this->assertEqual(
@@ -169,9 +171,9 @@ class TestUserModel extends UnitTestCase {
 			), $result->entries
 		);
 
- 		User_model::remove($userId1);
- 		User_model::remove($userId2);
- 		Project_model::remove($projectId);
+ 		UserModel::remove($userId1);
+ 		UserModel::remove($userId2);
+ 		ProjectModel::remove($projectId);
 	}
 	
 }
