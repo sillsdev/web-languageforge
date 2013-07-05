@@ -11,7 +11,7 @@ var app = angular.module(
 		'projectAdmin.controllers',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('UserListCtrl', ['$scope', '$location', 'projectService', function($scope, $location, projectService) {
+	.controller('ProjectUsersCtrl', ['$scope', '$location', 'userService', 'projectService', function($scope, $location, userService, projectService) {
 		$scope.projectId = projectIdFromLocation($location);
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
@@ -28,16 +28,16 @@ var app = angular.module(
 		};
 		
 		$scope.users = [];
-		$scope.queryUsers = function() {
+		$scope.queryProjectUsers = function() {
 			projectService.listUsers($scope.projectId, function(result) {
 				if (result.ok) {
-					$scope.users = result.data.entries;
-					$scope.userCount = result.data.count;
+					$scope.projectusers = result.data.entries;
+					$scope.projectUserCount = result.data.count;
 				}
 			});
 		};
 		
-		$scope.removeUsers = function() {
+		$scope.removeProjectUsers = function() {
 			console.log("removeUsers");
 			var userIds = [];
 			for(var i = 0, l = $scope.selected.length; i < l; i++) {
@@ -47,8 +47,9 @@ var app = angular.module(
 				// TODO ERROR
 				return;
 			}
-			projectService.remove($scope.projectId, userIds, function(result) {
+			projectService.removeUsers($scope.projectId, userIds, function(result) {
 				if (result.ok) {
+					$scope.queryProjectUsers();
 					// TODO
 				}
 			});
@@ -58,9 +59,6 @@ var app = angular.module(
 			console.log("Called selectUser(", item, ")");
 		};
 		
-	}])
-	.controller('UserSearchCtrl', ['$scope', '$location', 'userService', 'projectService', function($scope, $location, userService, projectService) {
-		$scope.projectId = projectIdFromLocation($location);
 	    $scope.users = [];
 	    $scope.addModes = {
 	    	'addNew': { 'en': 'Create New', 'icon': 'icon-user'},
@@ -69,7 +67,7 @@ var app = angular.module(
 	    };
 	    $scope.addMode = 'addNew';
 		
-		$scope.searchUser = function(term) {
+		$scope.queryUser = function(term) {
 			console.log('searching for ', term);
 			userService.typeahead(term, function(result) {
 				// TODO Check term == controller view value (cf bootstrap typeahead) else abandon.
@@ -94,7 +92,7 @@ var app = angular.module(
 			}
 		};
 		
-		$scope.addUser = function() {
+		$scope.addProjectUser = function() {
 			var model = {};
 			if ($scope.addMode == 'addNew') {
 				model.name = $scope.term;
@@ -107,6 +105,7 @@ var app = angular.module(
 			projectService.updateUser($scope.projectId, model, function(result) {
 				if (result.ok) {
 					// TODO broadcast notice and add
+					$scope.queryProjectUsers();
 				}
 			});
 		};
