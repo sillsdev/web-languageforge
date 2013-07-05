@@ -5,7 +5,6 @@ class Api extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->library('jsonrpc_server');
 	}
 	
 	// TODO add in security controller when that's available CP 2013-06
@@ -21,7 +20,7 @@ class Api extends CI_Controller {
 			throw new Exception(sprintf("Service class '%s' not found in file '%s'", $serviceClassName, $filePath));
 		}
 		$service = new $serviceClassName;
-		Jsonrpc_server::handle($service, $this->output);
+		libraries\sf\JsonRpcServer::handle($service, $this->output);
 	}
 	
 }

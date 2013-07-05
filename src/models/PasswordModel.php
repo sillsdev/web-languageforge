@@ -1,6 +1,8 @@
 <?php
 
-require_once(APPPATH . 'libraries/mongo/Mongo_store.php');
+namespace models;
+
+use libraries\sf;
 
 class Password_model_MongoMapper extends MongoMapper
 {
