@@ -1,7 +1,9 @@
 'use strict';
 
 function projectIdFromLocation(location) {
-	return location.path;
+	var url = location.absUrl();
+	var slashIndex = url.lastIndexOf('/');
+	return url.substr(slashIndex + 1);
 }
 
 /* Controllers */
