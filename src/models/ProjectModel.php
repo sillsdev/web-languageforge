@@ -1,26 +1,28 @@
 <?php
 
-require_once(APPPATH . 'libraries/mongo/Mongo_store.php');
+namespace models;
 
-class Project_model_MongoMapper extends MongoMapper
+use models\UserModel;
+
+class ProjectModelMongoMapper extends \libraries\sf\MongoMapper
 {
 	public static function instance()
 	{
 		static $instance = null;
 		if (null === $instance)
 		{
-			$instance = new Project_model_MongoMapper(SF_DATABASE, 'projects');
+			$instance = new ProjectModelMongoMapper(SF_DATABASE, 'projects');
 		}
 		return $instance;
 	}
 }
 
-class Project_model extends MapperModel
+class ProjectModel extends \libraries\sf\MapperModel
 {
 	public function __construct($id = NULL)
 	{
 		$this->users = array();
-		parent::__construct(Project_model_MongoMapper::instance(), $id);
+		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
 
 	/**
@@ -29,14 +31,14 @@ class Project_model extends MapperModel
 	 */
 	public static function remove($id)
 	{
-		Project_model_MongoMapper::instance()->remove($id);
+		ProjectModelMongoMapper::instance()->remove($id);
 	}
 	
 	/**
 	 * Adds the $userId as a member of this project.
 	 * Does not add the reciprocal relationship.
 	 * @param string $userId
-	 * @see Project_model::addUser
+	 * @see ProjectModel::addUser
 	 */
 	public function _addUser($userId) {
 		assert(is_array($this->users));
@@ -53,7 +55,7 @@ class Project_model extends MapperModel
 	 */
 	public function addUser($userId) {
 		$this->_addUser($userId);
-		$userModel = new User_model($userId);
+		$userModel = new UserModel($userId);
 		$userModel->_addProject($this->id);
 		$userModel->write();
 	}
@@ -62,12 +64,12 @@ class Project_model extends MapperModel
 	 * Removes the $userId from this project.
 	 * Does not remove the reciprocal relationship.
 	 * @param string $userId
-	 * @see Project_model::removeUser
+	 * @see ProjectModel::removeUser
 	 */
 	public function _removeUser($userId) {
 		assert(is_array($this->users));
 		if (!in_array($userId, $this->users)) {
-			throw new Exception("User '$userId' is not a member of project '$this->id'");
+			throw new \Exception("User '$userId' is not a member of project '$this->id'");
 		}
 		$this->users = array_diff($this->users, array($userId));
 	}
@@ -79,7 +81,7 @@ class Project_model extends MapperModel
 	 */
 	public function removeUser($userId) {
 		$this->_removeUser($userId);
-		$userModel = new User_model($userId);
+		$userModel = new UserModel($userId);
 		$userModel->_removeProject($this->id);
 		$userModel->write();
 	}
@@ -101,25 +103,25 @@ class Project_model extends MapperModel
 	
 }
 
-class Project_list_model extends MapperListModel
+class ProjectListModel extends \libraries\sf\MapperListModel
 {
 	public function __construct()
 	{
 		parent::__construct(
-			Project_model_MongoMapper::instance(),
+			ProjectModelMongoMapper::instance(),
 			array(),
 			array('projectname', 'language')
 		);
 	}
 }
 
-class Project_list_users_model extends MapperListModel
+class ProjectListUsersModel extends \libraries\sf\MapperListModel
 {
 
 	public function __construct($userId)
 	{
 		parent::__construct(
-				Project_model_MongoMapper::instance(),
+				ProjectModelMongoMapper::instance(),
 				array('users' => array('$in' => array($userId))),
 				array('projectname')
 		);
