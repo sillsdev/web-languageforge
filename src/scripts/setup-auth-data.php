@@ -53,6 +53,7 @@
 
 	$users_data = [array(
 		"username" => "admin",
+		"name" => "Admin",
 		// Default password is "password"; both of the below are hashes of that password
 		//"password" => "59beecdf7fc966e2f17fd8f65a4a9aeb09d4a3d4", // If using SHA1
 		"password" => '$2a$07$SeBknntpZror9uyftVopmu61qg0ms8Qv1yV6FG.kQOSM.9QhmTo36', // If using bcrypt

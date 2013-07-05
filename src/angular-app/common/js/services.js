@@ -55,4 +55,13 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('user_updatePassword', [password], callback);
 		};
 	}])
+	.service('CIService', function() {
+		this.currentUserId = function() {
+			return window.session.userid;
+		};
+		
+		this.session = function() {
+			return window.session;
+		};
+	})
 	;
