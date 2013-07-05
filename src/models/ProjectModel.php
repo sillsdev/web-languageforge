@@ -2,7 +2,7 @@
 
 namespace models;
 
-use models\UserModel;
+require_once(APPPATH . '/models/ProjectModel.php');
 
 class ProjectModelMongoMapper extends \libraries\sf\MongoMapper
 {
