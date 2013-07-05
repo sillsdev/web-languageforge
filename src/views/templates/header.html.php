@@ -47,9 +47,18 @@
 							<ul class="sf-menu">
 								<li><a href="#">My Projects</a>
 									<ul>
-										<li><a href="/app/projectadmin/p1">Jamaican Psalms</a></li>
-										<li><a href="/app/projectadmin/p1">Northern Thai</a></li>
-										<li><a href="/app/projectadmin/p1">English Acts</a></li>
+									<?php foreach($projects as $project): ?>
+										<li><a href="<?php echo "/app/projectadmin/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+									<?php endforeach;?>
+									<?php if ($is_admin): ?>
+										<?php if ($projects_count > 0): ?>
+										<li>---</li>
+										<?php endif; ?>
+										<?php foreach($all_projects as $project): ?>
+											<li><a href="<?php echo "/app/projectadmin/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+										<?php endforeach;?>
+										
+									<?php endif; ?>
 									</ul>
 								</li>
 							</ul>
