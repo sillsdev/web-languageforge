@@ -69,7 +69,8 @@ class ProjectModel extends \libraries\sf\MapperModel
 	public function _removeUser($userId) {
 		assert(is_array($this->users));
 		if (!in_array($userId, $this->users)) {
-			throw new \Exception("User '$userId' is not a member of project '$this->id'");
+			return;
+// 			throw new \Exception("User '$userId' is not a member of project '$this->id'");
 		}
 		$this->users = array_diff($this->users, array($userId));
 	}
