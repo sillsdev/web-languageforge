@@ -1,0 +1,18 @@
+<legend>Project</legend>
+<legend>Texts</legend>
+<div listview search="queryProjectTexts()" select="">
+<table class="table" style="width: 100%">
+	<thead>
+	<tr>
+		<th></th>
+		<th>Texts</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr ng-repeat="text in texts" ng-class="{active: isSelected(text)}" >
+		<td width="16px" align="center"><input type="checkbox" ng-checked="text" ng-click="updateSelection($event, text)" /></td>
+		<td><a href="#/project/{{project.id}}">{{project.projectname}}</a></td>
+	</tr>
+	</tbody>
+</table>		
+</div>
