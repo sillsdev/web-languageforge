@@ -55,10 +55,6 @@ var app = angular.module(
 			});
 		};
 		
-		$scope.selectUser = function(item) {
-			console.log("Called selectUser(", item, ")");
-		};
-		
 	    $scope.users = [];
 	    $scope.addModes = {
 	    	'addNew': { 'en': 'Create New', 'icon': 'icon-user'},
