@@ -42,6 +42,12 @@ class MongoStore
 		return static::$_mongo->selectDB($databaseName);
 	}
 	
+	public static function hasDB($databaseName) {
+		$databases = static::$_mongo->listDBs();
+		$result = array_filter($databases['databases'], function($item) use($databaseName) { return $item['name'] == $databaseName; } );
+		return count($result) != 0;
+	}
+	
 }
 
 class MapperModel /*extends CI_Model*/
@@ -158,6 +164,14 @@ class MongoMapper
 	 */
 	private function __clone()
 	{
+	}
+
+	/**
+	 * Returns the name of the database.
+	 * @return string
+	 */
+	public function databaseName() {
+		return (string)$this->_db;
 	}
 	
 	public function readList($model, $query, $fields = array())

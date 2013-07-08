@@ -25,6 +25,8 @@ class MongoTestEnvironment
 		{
 			$collection->drop();
 		}
+		$projectDb = \libraries\sf\MongoStore::connect(SF_TESTPROJECT);
+		$projectDb->drop();
 	}
 
 	/**

@@ -89,7 +89,8 @@ class Sf
 	 * @return string Id of deleted record
 	 */
  	public function project_delete($id) {
- 		\models\ProjectModel::remove($id);
+ 		$project = new \models\ProjectModel($id);
+ 		$project->remove();
 		return true;
  	}
 
