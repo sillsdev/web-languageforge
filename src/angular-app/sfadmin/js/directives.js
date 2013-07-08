@@ -9,37 +9,6 @@ angular.module('sfAdmin.directives', ["jsonRpc", "sfAdmin.filters"]).
       elm.text(version);
     };
   }])
-  .directive('userData', ['jsonRpc', function(jsonRpc) {
-	  return {
-		  templateUrl: "/angular-app/sfadmin/partials/userdata.html",
-		  restrict: "E",
-		  link: function(scope, elem, attrs) {
-			  scope.$watch("vars.record.id", function(newval, oldval) {
-			  //attrs.$observe("userid", function(newval, oldval) {
-				  console.log("Watch triggered with oldval '" + oldval + "' and newval '" + newval + "'");
-				  if (newval) {
-					  get_user_by_id(newval);
-				  } else {
-					  // Clear data table
-					  scope.record = {};
-				  }
-			  });
-			  
-			  function get_user_by_id(userid) {
-				  console.log("Fetching id: " + userid);
-				  jsonRpc.connect("/api/sf");
-				  jsonRpc.call("user_read", {"id": userid}, function(result) {
-					  scope.record = result.data;
-				  });
-			  }
-		  },
-	  };
-  }])
-  .directive('userList', function() {
-	  return {
-		  restrict: "E",
-		  templateUrl: "/angular-app/sfadmin/partials/userlist.html",
-  }})
   .directive('projectData', ['jsonRpc', function(jsonRpc) {
 	  return {
 		  templateUrl: "/angular-app/sfadmin/partials/projectdata.html",
@@ -70,8 +39,9 @@ angular.module('sfAdmin.directives', ["jsonRpc", "sfAdmin.filters"]).
 	  return {
 		  restrict: "E",
 		  templateUrl: "/angular-app/sfadmin/partials/projectlist.html",
-  }})
-.directive("requireEqual", function() {
+	  };
+  })
+  .directive("requireEqual", function() {
 	return {
 		restrict: "A",
 		require: "ngModel",

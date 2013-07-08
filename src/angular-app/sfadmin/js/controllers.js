@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-function UserCtrl($scope, $http, jsonRpc) {
+function UserCtrl($scope, userService) {
 
 	$scope.vars = {
 		selectedIndex: -1,
@@ -20,18 +20,32 @@ function UserCtrl($scope, $http, jsonRpc) {
 		$scope.vars.inputfocus = false;
 	};
 
-	$scope.fetchRecordList = function() {
-		jsonRpc.connect("/api/sf");
-		var promise = jsonRpc.call("user_list", {}, function(result) {
+	$scope.selected = [];
+	$scope.updateSelection = function(event, item) {
+		var selectedIndex = $scope.selected.indexOf(item);
+		var checkbox = event.target;
+		if (checkbox.checked && selectedIndex == -1) {
+			$scope.selected.push(item);
+		} else if (!checkbox.checked && selectedIndex != -1) {
+			$scope.selected.splice(selectedIndex, 1);
+		}
+	};
+	$scope.isSelected = function(item) {
+		return item != null && $scope.selected.indexOf(item) >= 0;
+	};
+
+	$scope.users = [];
+	$scope.queryUsers = function() {
+		userService.list(function(result) {
 			if (result.ok) {
-				$scope.data = result.data;
+				$scope.users = result.data.entries;
+				$scope.userCount = result.data.count;
 			} else {
-				$scope.data = {};
+				$scope.users = [];
 			};
 		});
-		return promise;
 	};
-	$scope.fetchRecordList();  // And run it right away to fetch the data for our list.
+	//$scope.queryUsers();  // And run it right away to fetch the data for our list.
 
 	$scope.selectRow = function(index, record) {
 		console.log("Called selectRow(", index, ", ", record, ")");
@@ -44,6 +58,19 @@ function UserCtrl($scope, $http, jsonRpc) {
 			$scope.vars.editButtonIcon = "pencil";
 		}
 	};
+
+	$scope.$watch("vars.record.id", function(newId, oldId) {
+		// attrs.$observe("userid", function(newval, oldval) {
+		console.log("Watch triggered with oldval '" + oldId + "' and newval '" + newId + "'");
+		if (newId) {
+			userService.read(newId, function(result) {
+				$scope.record = result.data;
+			});
+		} else {
+			// Clear data table
+			$scope.record = {};
+		}
+	});
 
 	$scope.addRecord = function() {
 		$scope.selectRow(-1); // Make a blank entry in the "User data" area
@@ -91,23 +118,24 @@ function UserCtrl($scope, $http, jsonRpc) {
 		return promise;
 	};
 
-	$scope.deleteRecord = function(record) {
-		console.log("deleteRecord() called with ", record);
-		if ($scope.vars.selectedIndex < 0) {
-			// TODO: It would be better to really disable the button, but this quick hack will work for now
-			console.log("Deleting nothing since nothing is really selected");
-			return null;
+	$scope.removeUsers = function() {
+		console.log("removeUsers");
+		var userIds = [];
+		for(var i = 0, l = $scope.selected.length; i < l; i++) {
+			userIds.push($scope.selected[i].id);
 		}
-		jsonRpc.connect("/api/sf");
-		var promise = jsonRpc.call("user_delete", {"id": record.id}, function(result) {
-			$scope.fetchRecordList();
-			$scope.selectRow(-1);
+		if (l == 0) {
+			// TODO ERROR
+			return;
+		}
+		projectService.removeUsers($scope.projectId, userIds, function(result) {
+			if (result.ok) {
+				$scope.queryProjectUsers();
+				// TODO
+			}
 		});
-		$scope.vars.editButtonName = "";
-		$scope.vars.editButtonIcon = "";
-		return promise;
 	};
-	
+
 	$scope.changePassword = function(record) {
 		console.log("changePassword() called with ", record);
 		jsonRpc.connect("/api/sf");
@@ -223,8 +251,11 @@ function ProjectCtrl($scope, $http, jsonRpc) {
 	};
 }
 
-angular.module('sfAdmin.controllers', ['jsonRpc'])
-.controller('UserCtrl', ['$scope', '$http', 'jsonRpc', UserCtrl])
+angular.module(
+	'sfAdmin.controllers',
+	[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
+)
+.controller('UserCtrl', ['$scope', 'userService', UserCtrl])
 .controller('ProjectCtrl', ['$scope', '$http', 'jsonRpc', ProjectCtrl])
 .controller('PasswordCtrl', ['$scope', 'jsonRpc', function($scope, jsonRpc) {
 	$scope.changePassword = function(record) {
