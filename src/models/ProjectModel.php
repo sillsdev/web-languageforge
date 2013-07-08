@@ -2,6 +2,8 @@
 
 namespace models;
 
+use libraries\sf\MongoStore;
+
 require_once(APPPATH . '/models/ProjectModel.php');
 
 class ProjectModelMongoMapper extends \libraries\sf\MongoMapper
@@ -15,6 +17,13 @@ class ProjectModelMongoMapper extends \libraries\sf\MongoMapper
 		}
 		return $instance;
 	}
+	
+	public function drop($databaseName) {
+		if (MongoStore::hasDB($databaseName)) {
+			$db = MongoStore::connect($databaseName);
+			$db->drop();
+		}
+	}
 }
 
 class ProjectModel extends \libraries\sf\MapperModel
@@ -27,11 +36,11 @@ class ProjectModel extends \libraries\sf\MapperModel
 
 	/**
 	 * Removes this project from the collection.
-	 * @param string $id
 	 */
-	public static function remove($id)
+	public function remove()
 	{
-		ProjectModelMongoMapper::instance()->remove($id);
+		ProjectModelMongoMapper::instance()->drop($this->projectname);
+		ProjectModelMongoMapper::instance()->remove($this->id);
 	}
 	
 	/**
