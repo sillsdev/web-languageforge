@@ -17,7 +17,7 @@ class QuestionModelMongoMapper extends \libraries\sf\MongoMapper
 	 */
 	public static function connect($databaseName) {
 		if (!isset(static::$_pool[$databaseName])) {
-			static::$_pool[$databaseName] = new QuestionModelMongoMapper($databaseName, 'texts');
+			static::$_pool[$databaseName] = new QuestionModelMongoMapper($databaseName, 'questions');
 		}
 		return static::$_pool[$databaseName];
 	}
@@ -37,18 +37,10 @@ class QuestionModel extends \libraries\sf\MapperModel
 		QuestionModelMongoMapper::connect($databaseName)->remove($id);
 	}
 
-	public function listQuestions() {
-		$questionList = new QuestionListQuestionsModel($this->_mapper->databaseName(), $this->id);
-		$questionList->read();
-		return $questionList;
-	}
-	
 	public $id;
 	
-	public $name;
-	
-	public $content;
-	
+	public $question;
+		
 }
 
 class QuestionListModel extends \libraries\sf\MapperListModel
@@ -58,8 +50,8 @@ class QuestionListModel extends \libraries\sf\MapperListModel
 	{
 		parent::__construct(
 			QuestionModelMongoMapper::instance(),
-			array('name' => array('$regex' => '')),
-			array('name')
+			array('question' => array('$regex' => '')),
+			array('question')
 		);
 	}
 	
