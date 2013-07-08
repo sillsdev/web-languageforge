@@ -1,4 +1,6 @@
 <?php
+use libraries\sf\MongoStore;
+
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
@@ -90,21 +92,6 @@ class TestProjectModel extends UnitTestCase {
 		$this->assertEqual(1, count($project->users));
 	}
 	
-	function testProjectRemoveUser_NonExistingUser_Throws() {
-		$e = new MongoTestEnvironment();
-		$project = new ProjectModel($this->_someProjectId);
-		
-		$userId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
-		$e->inhibitErrorDisplay();
-		try {
-			$project->_removeUser($userId);
-		} catch (Exception $ex) {
-			$caught = true; 
-		}
-		$this->assertTrue($caught);
-		$e->restoreErrorDisplay();
-	}
-	
 	function testProjectListUsers_TwoUsers_ListHasDetails() {
 		$e = new MongoTestEnvironment();
 		$userId1 = $e->createUser('user1', 'User One', 'user1@example.com');
@@ -143,6 +130,19 @@ class TestProjectModel extends UnitTestCase {
 		);
 		
 	}
+	
+	function testRemove_RemovesProject() {
+		$e = new MongoTestEnvironment();
+		$project = new ProjectModel($this->_someProjectId);
+		$project->remove();
+		
+		$e->inhibitErrorDisplay();
+		$this->expectException(new \Exception("Could not find id '$this->_someProjectId'"));
+		$project = new ProjectModel($this->_someProjectId);
+		$e->resotreErrorDisplay();
+		
+	}
+		
 }
 
 ?>

@@ -124,21 +124,6 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(1, count($user->projects));
 	}
 	
-	function testUserRemoveProject_NonExistingProject_Throws() {
-		$e = new MongoTestEnvironment();
-		$user = new UserModel($this->_someUserId);
-	
-		$projectId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
-		$e->inhibitErrorDisplay();
-		try {
-			$user->_removeProject($projectId);
-		} catch (\Exception $ex) {
-			$caught = true;
-		}
-		$this->assertTrue($caught);
-		$e->restoreErrorDisplay();
-	}
-	
 	function testUserListProjects_TwoProjects_ListHasDetails() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
@@ -173,7 +158,7 @@ class TestUserModel extends UnitTestCase {
 
  		UserModel::remove($userId1);
  		UserModel::remove($userId2);
- 		ProjectModel::remove($projectId);
+ 		$project->remove();
 	}
 	
 }
