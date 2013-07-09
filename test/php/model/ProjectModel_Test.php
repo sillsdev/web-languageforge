@@ -25,6 +25,7 @@ class TestProjectModel extends UnitTestCase {
 		$model = new ProjectModel();
 		$model->language = "SomeLanguage";
 		$model->projectname = "SomeProject";
+		//$model->users->refs = array('1234');
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
@@ -32,6 +33,7 @@ class TestProjectModel extends UnitTestCase {
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('SomeLanguage', $otherModel->language);
 		$this->assertEqual('SomeProject', $otherModel->projectname);
+		//$this->assertEqual(array('1234'), $otherModel->users->refs);
 		
 		$this->_someProjectId = $id;
 	}
@@ -46,18 +48,52 @@ class TestProjectModel extends UnitTestCase {
 	}
 	
 	function testProjectAddUser_ExistingProject_ReadBackAdded() {
-		$project = new ProjectModel($this->_someProjectId);
+		$e = new MongoTestEnvironment();
 		
-		$userId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
-		$project->_addUser($userId);
-		$project->write();
+		// setup user and projects
+		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
+		$userModel = new UserModel($userId);
+		$projectId = $e->createProject('new project');
+		$projectModel = new ProjectModel($projectId);
 		
-		$this->assertTrue(in_array($userId, $project->users));
-		$otherProject = new ProjectModel($this->_someProjectId);
-		$this->assertTrue(in_array($userId, $otherProject->users), "'$userId' not found in project.");
+		// create the reference
+		$projectModel->users->addRef($userId, $userModel->projects, $projectId);
+		$projectModel->write();
+		$userModel->write();
+		
+		
+		$this->assertTrue(in_array($userId, $project->users->refs));
+		$otherProject = new ProjectModel($projectId);
+		$this->assertTrue(in_array($userId, $otherProject->users-refs), "'$userId' not found in project.");
 	}
 	
-	function testProjectRemoveUser_ExistingProject_Removed() {
+	function testProjectRemoveUser_ExistingProject_RemovedInBothUserAndProjectRefs() {
+		$e = new MongoTestEnvironment();
+		
+		// setup user and projects
+		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
+		$userModel = new UserModel($userId);
+		$projectId = $e->createProject('new project');
+		$projectModel = new ProjectModel($projectId);
+		
+		// create the reference
+		$projectModel->users->addRef($userId, $userModel->projects, $projectId);
+		$projectModel->write();
+		$userModel->write();
+		
+		// assert the reference is there		
+		$this->assertTrue(in_array($userId, $project->users->refs));
+		$otherProject = new ProjectModel($projectId);
+		$this->assertTrue(in_array($userId, $otherProject->users-refs), "'$userId' not found in project.");
+		
+		// remove the reference
+		$projectModel->removeUser($userId);
+		$projectModel->
+		
+		
+		
+		
+		
 		$project = new ProjectModel($this->_someProjectId);
 		
 		$userId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
