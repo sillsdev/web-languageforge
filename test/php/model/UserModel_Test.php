@@ -80,6 +80,8 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(array(), $model->entries);
 	}
 	
+	// TODO move Project <--> User operations to a separate ProjectUserCommands tests
+	
 	function testUserAddProject_ExistingUser_ReadBackAdded() {
 		$e = new MongoTestEnvironment();
 		
@@ -176,6 +178,7 @@ class TestUserModel extends UnitTestCase {
 	
 	function testUserListProjects_TwoProjects_ListHasDetails() {
 		$e = new MongoTestEnvironment();
+		$e->clean();
 		
 		$p1 = $e->createProject('p1');
 		$p1m = new ProjectModel($p1);
@@ -196,7 +199,12 @@ class TestUserModel extends UnitTestCase {
 				
 		// Add our two projects
 		$userModel->addProject($p1);
+		$p1m->addUser($userId);
+		$p1m->write();
 		$userModel->addProject($p2);
+		$p2m->addUser($userId);
+		$p2m->write();
+		$userModel->write();
 		$result = $userModel->listProjects();
 		$this->assertEqual(2, $result->count);
 		$this->assertEqual(
