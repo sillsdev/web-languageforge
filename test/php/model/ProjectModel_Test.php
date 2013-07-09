@@ -140,7 +140,13 @@ class TestProjectModel extends UnitTestCase {
 		$this->expectException(new \Exception("Could not find id '$this->_someProjectId'"));
 		$project = new ProjectModel($this->_someProjectId);
 		$e->resotreErrorDisplay();
-		
+	}
+	
+	function testDatabaseName_Ok() {
+		$project = new ProjectModel();
+		$project->projectname = 'Some Project';
+		$result = $project->databaseName();
+		$this->assertEqual('sf_some_project');
 	}
 		
 }

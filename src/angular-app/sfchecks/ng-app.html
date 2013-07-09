@@ -1,11 +1,12 @@
 <div class="container" ng-app="sfchecks" ng-cloak>
-	<legend>Checks App</legend>
+	<div id="sfchecks-hmenu" class="hdrnav">
+	<img src="/images/sf_logo_medium.png" class="left" width="48px" height="60px" />
+	<ul>
+	<li class="here"><a href="#/projects">My Projects</a></li>
+	<li><a href="/app/activity">Activity</a></li>
+	</ul>
+	</div>
 	<div ng-controller="MainCtrl">
-	<a href="#/projects">projects</a> | 
-	<a href="#/project/1">project</a> |
-	<a href="#/project/1/questions">project x questions</a> |
-	<a href="#/project/1/question/23">project x question y</a>
-	<hr/>
 	<div ng-view></div>
 	<hr/>
 	<pre>$location.path() = {{location.path()}}</pre>
@@ -13,6 +14,10 @@
     <pre>$route.current.params = {{route.current.params}}</pre>
     <pre>$route.current.scope.name = {{route.current.scope.name}}</pre>
     <pre>$routeParams = {{routeParams}}</pre>
+	<a href="#/projects">projects</a> | 
+	<a href="#/project/1">project</a> |
+	<a href="#/project/1/questions">project x questions</a> |
+	<a href="#/project/1/question/23">project x question y</a>
 	</div>
 	
 </div>
