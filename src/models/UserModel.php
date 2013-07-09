@@ -45,9 +45,9 @@ class UserModel extends \libraries\sf\MapperModel
 	 * @param string $projectId
 	 */
 	public function addProject($projectId) {
-		$projectModel = new ProjectModel($projectId);
+		//$projectModel = new ProjectModel($projectId);
 		$this->projects->_addRef($projectId);
-		$projectModel->users->_addRef($this->id);
+		//$projectModel->users->_addRef($this->id);
 	}
 	
 	/**
@@ -56,14 +56,13 @@ class UserModel extends \libraries\sf\MapperModel
 	 * @param string $projectId
 	 */
 	public function removeProject($projectId) {
-		$projectModel = new ProjectModel($projectId);
+		//$projectModel = new ProjectModel($projectId);
 		$this->projects->_removeRef($projectId);
-		$projectModel->users->_removeRef($this->id);
+		//$projectModel->users->_removeRef($this->id);
 	}
 	
 	public function listProjects() {
-		assert(is_array($this->projects));
-		$projectList = new ProjectListUsersModel($this->id);
+		$projectList = new ProjectList_UserModel($this->id);
 		$projectList->read();
 		return $projectList;
 	}
@@ -187,14 +186,14 @@ class UserTypeaheadModel extends \libraries\sf\MapperListModel
 	
 }
 
-class User_list_projects_model extends \libraries\sf\MapperListModel
+class UserList_ProjectModel extends \libraries\sf\MapperListModel
 {
 
 	public function __construct($projectId)
 	{
 		parent::__construct(
 				UserModelMongoMapper::instance(),
-				array('projects' => array('$in' => array($projectId))),
+				array('projects' => array('$in' => array(new \MongoId($projectId)))),
 				array('username', 'email', 'name')
 		);
 	}

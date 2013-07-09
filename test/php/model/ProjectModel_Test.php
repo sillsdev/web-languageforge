@@ -63,10 +63,13 @@ class TestProjectModel extends UnitTestCase {
 		$userModel->write();
 		
 		
-		$this->assertTrue(in_array($userId, $project->users->refs));
+		$this->assertTrue(in_array($userId, $projectModel->users->refs));
 		$otherProject = new ProjectModel($projectId);
-		$this->assertTrue(in_array($userId, $otherProject->users-refs), "'$userId' not found in project.");
+		$this->assertTrue(in_array($userId, $otherProject->users->refs), "'$userId' not found in project.");
 	}
+	
+	
+	// TODO move Project <--> User operations to a separate ProjectUserCommands tests
 	
 	function testProjectRemoveUser_ExistingProject_Removed() {
 		$e = new MongoTestEnvironment();
@@ -84,9 +87,9 @@ class TestProjectModel extends UnitTestCase {
 		$userModel->write();
 		
 		// assert the reference is there		
-		$this->assertTrue(in_array($userId, $project->users->refs));
+		$this->assertTrue(in_array($userId, $projectModel->users->refs));
 		$otherProject = new ProjectModel($projectId);
-		$this->assertTrue(in_array($userId, $otherProject->users-refs), "'$userId' not found in project.");
+		$this->assertTrue(in_array($userId, $otherProject->users->refs), "'$userId' not found in project.");
 		
 		// remove the reference
 		$projectModel->removeUser($userId);
@@ -95,9 +98,9 @@ class TestProjectModel extends UnitTestCase {
 		$userModel->write();
 		
 		// testing
-		$this->assertFalse(in_array($userId, $project->users));
+		$this->assertFalse(in_array($userId, $projectModel->users->refs));
 		$otherProject = new ProjectModel($this->_someProjectId);
-		$this->assertFalse(in_array($userId, $otherProject->users), "'$userId' should not be found in project.");
+		$this->assertFalse(in_array($userId, $otherProject->users->refs), "'$userId' should not be found in project.");
 		$project = new ProjectModel($this->_someProjectId);
 	}
 	
@@ -120,7 +123,9 @@ class TestProjectModel extends UnitTestCase {
 	function testProjectListUsers_TwoUsers_ListHasDetails() {
 		$e = new MongoTestEnvironment();
 		$userId1 = $e->createUser('user1', 'User One', 'user1@example.com');
+		$um1 = new UserModel($userId1);
 		$userId2 = $e->createUser('user2', 'User Two', 'user2@example.com');
+		$um2 = new UserModel($userId2);
 		$projectId = $e->createProject('new proj');
 		
 		$project = new ProjectModel($projectId);
@@ -132,7 +137,12 @@ class TestProjectModel extends UnitTestCase {
 				
 		// Add our two users
 		$project->addUser($userId1);
+		$um1->addProject($projectId);
+		$um1->write();
+		
 		$project->addUser($userId2);
+		$um2->addProject($projectId);
+		$um2->write();
 		$project->write();
 		
 		$otherProject = new ProjectModel($projectId);

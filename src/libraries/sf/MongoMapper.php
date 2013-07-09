@@ -63,7 +63,7 @@ class MapperModel /*extends CI_Model*/
 	 */
 	function read()
 	{
-		return $this->_mapper->read($this);
+		return $this->_mapper->read($this, $this->id);
 	}
 	
 	/**
@@ -146,7 +146,7 @@ class ReferenceList {
 	 */
 	public function _addRef($id) {
 		if (!in_array($id, $this->refs)) {
-			$this->$refs[] = $id;
+			$this->refs[] = $id;
 		}
 		// TODO log if ref already exists?
 	}
@@ -247,12 +247,12 @@ class MongoMapper
 	{
 		if (!is_string($id) || empty($id)) {
 			$type = get_class($id);
-			throw new Exception("Bad id '$id' ($type)");
+			throw new \Exception("Bad id '$id' ($type)");
 		}		
 		$data = $this->_collection->findOne(array("_id" => new \MongoId($id)));
 		if ($data === NULL)
 		{
-			throw new Exception("Could not find id '$id'");
+			throw new \Exception("Could not find id '$id'");
 		}
 		$this->decode($model, $data);
 	}
@@ -285,7 +285,7 @@ class MongoMapper
 				// oops // TODO Add to list, throw at end CP 2013-06
 				continue;
 			}
-			if (is_a($value, 'ReferenceList')) {
+			if (is_a($value, 'libraries\sf\ReferenceList')) {
 				$modelRefList = $model->$key;
 				$modelRefList->refs = array();
 				foreach ($data[$key] as $objectId) {
@@ -314,8 +314,8 @@ class MongoMapper
 		}
 		foreach ($properties as $key => $value)
 		{
-			if (is_a($value, 'ReferenceList')) {
-				$toMongoId = function($id) { return \MongoId($id); };
+			if (is_a($value, 'libraries\sf\ReferenceList')) {
+				$toMongoId = function($id) { return new \MongoId($id); };
 				$modelRefList = $model->$key;
 				$data[$key] = array_map($toMongoId, $modelRefList->refs);
 			} else {
