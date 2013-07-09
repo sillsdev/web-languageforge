@@ -134,4 +134,20 @@ class Sf
 		return $projectModel->listUsers();
 	}
 	
+	public function text_update($projectId, $object) {
+		
+	}
+	
+	public function text_read($projectId, $textId) {
+		
+	}
+	
+	public function text_delete($projectId, $textId) {
+		
+	}
+	
+	public function text_list($projectId) {
+		
+	}
+	
 }
