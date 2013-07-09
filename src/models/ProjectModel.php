@@ -46,11 +46,8 @@ class ProjectModel extends \libraries\sf\MapperModel
 	 */
 	public function addUser($userId) {
 		$userModel = new UserModel($userId);
-		$this->users->addRef($userId, $userModel->projects, $this->id);
-		
-		// TODO CJH should we really do an auto-write inside this method?
-		//$this->write();
-		//$userModel->write();
+		$this->users->_addRef($userId);
+		$userModel->projects->_addRef($this->id);
 	}
 	
 	
@@ -61,13 +58,8 @@ class ProjectModel extends \libraries\sf\MapperModel
 	 */
 	public function removeUser($userId) {
 		$userModel = new UserModel($userId);
-		$this->users->removeRef($userId, $userModel->projects, $this->id);
-		
-		// TODO CJH should we really do an auto-write inside this method?
-		/*
-		$this->write();
-		$userModel->write();
-		*/
+		$this->users->_removeRef($userId);
+		$userModel->projects->_removeRef($this->id);
 	}
 
 	public function listUsers() {

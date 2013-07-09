@@ -89,9 +89,9 @@ class TestUserModel extends UnitTestCase {
 		$projectId = $e->createProject('new project');
 		$projectModel = new ProjectModel($projectId);
 		
-		// create the reference
+		// create references
 		$userModel->addProject($projectId);
-		$userModel->projects->addRef($projectId, $projectModel->users, $userId);
+		$projectModel->addUser($userId);
 		$userModel->write();
 		$projectModel->write();
 		
@@ -113,7 +113,8 @@ class TestUserModel extends UnitTestCase {
 		$projectModel = new ProjectModel($projectId);
 		
 		// create the reference
-		$userModel->projects->addRef($projectId, $projectModel->users, $userId);
+		$userModel->addProject($projectId);
+		$projectModel->addUser($userId);
 		$userModel->write();
 		$projectModel->write();
 		
@@ -122,7 +123,8 @@ class TestUserModel extends UnitTestCase {
 		$this->assertTrue(in_array($userId, $projectModel->users->refs), "user $userId not found in project->users");
 		
 		// remove the reference
-		$userModel->projects->removeRef($projectId, $projectModel->users, $userId);
+		$userModel->removeProject($projectId);
+		$projectModel->removeUser($userId);
 		$userModel->write();
 		$projectModel->write();
 		
@@ -145,7 +147,8 @@ class TestUserModel extends UnitTestCase {
 		$projectModel = new ProjectModel($projectId);
 		
 		// create the reference
-		$userModel->projects->addRef($projectId, $projectModel->users, $userId);
+		$userModel->addProject($projectId);
+		$projectModel->addUser($userId);
 		$userModel->write();
 		$projectModel->write();
 		
@@ -157,7 +160,8 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(1, count($otherProject->users->refs));
 		
 		// create the same reference again
-		$userModel->projects->addRef($projectId, $projectModel->users, $userId);
+		$userModel->addProject($projectId);
+		$projectModel->addUser($userId);
 		$userModel->write();
 		$projectModel->write();
 		
