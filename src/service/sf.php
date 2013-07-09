@@ -1,11 +1,12 @@
 <?php
 
+use libraries\sf\JsonRpcServer;
+
 require_once(APPPATH . 'libraries/Bcrypt.php');
 
 require_once(APPPATH . 'models/UserModel.php');
 require_once(APPPATH . 'models/ProjectModel.php');
 
-use libraries\sf\JsonRpcServer;
 
 class Sf
 {
