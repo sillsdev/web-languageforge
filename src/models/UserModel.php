@@ -2,6 +2,8 @@
 
 namespace models;
 
+use libraries\sf\ReferenceList;
+
 require_once(APPPATH . '/models/ProjectModel.php');
 
 class UserModelMongoMapper extends \libraries\sf\MongoMapper
@@ -22,39 +24,47 @@ class UserModel extends \libraries\sf\MapperModel
 {
 	public function __construct($id = NULL)
 	{
-		$this->projects = array();
+		$this->projects = new ReferenceList();
 		parent::__construct(UserModelMongoMapper::instance(), $id);
 	}
 	
+	/**
+	 *	Removes an user from the collection
+	 *  Project references to this user are also removed
+	 * @param string $projectId
+	 */
 	public static function remove($id)
 	{
 		UserModelMongoMapper::instance()->remove($id);
-	}
-
-	/**
-	 * Adds the $projectId as a member of this user.
-	 * Note that you still need to call write() to persist the model.
-	 * @param string $userId
-	 */
-	public function _addProject($projectId) {
-		assert(is_array($this->projects));
-		if (in_array($projectId, $this->projects)) {
-			return;
-		}
-		$this->projects[] = $projectId;
+		$this->projects->removeOtherRefs($id, 'ProjectModel', 'users');
 	}
 	
 	/**
-	 * Removes the $projectId from this user.
-	 * Note that you still need to call write() to persist the model.
-	 * @param string $userId
+	 *	Adds the user as a member of $projectId
+	 *  You do must call write() as both the user model and the project model!!!
+	 * @param string $projectId
 	 */
-	public function _removeProject($projectId) {
-		assert(is_array($this->projects));
-		if (!in_array($projectId, $this->projects)) {
-			throw new \Exception("Project '$projectId' is not a member of user '$this->id'");
-		}
-		$this->projects = array_diff($this->projects, array($projectId));
+	public function addProject($projectId) {
+		$projectModel = new ProjectModel($projectId);
+		$this->projects->addRef($projectId, $projectModel->users, $this->id);
+		
+		// TODO CJH should we really do an auto-write inside this method?
+		//$this->write();
+		//$projectModel->write();
+	}
+	
+	/**
+	 *	Removes the user as a member of $projectId
+	 *  You must call write() on both the user model and the project model!!!
+	 * @param string $projectId
+	 */
+	public function removeProject($projectId) {
+		$projectModel = new ProjectModel($projectId);
+		$this->projects->removeRef($projectId, $projectModel->users, $this->id);
+		
+		// TODO CJH should we really do an auto-write inside this method?
+		//$this->write();
+		//$projectModel->write();
 	}
 	
 	public function listProjects() {
@@ -64,36 +74,95 @@ class UserModel extends \libraries\sf\MapperModel
 		return $projectList;
 	}
 	
+	/**
+	 * @var string
+	 */
 	public $id;
 	
+	/**
+	 * @var string
+	 */
 	public $name;
 	
+	
+	/**
+	 * @var string
+	 */
 	public $username;
 	
+	/**
+	 * @var string
+	 */
 	public $email;
 	
 	//public $groups;
 	
+	/**
+	 * @var string
+	 */
 	public $avatarRef;
+	
+	/**
+	 * @var string
+	 */
 	public $avatarColor;
 
+	/**
+	 * @var bool
+	 */
 	public $active;
 	
+	/**
+	 * @var int
+	 */
 	public $created_on;	
 	
 	public $last_login; // read only field
 	
+	/**
+	 * @var ReferenceList
+	 */
 	public $projects;
 	
+	/**
+	 * @var string
+	 */
 	public $mobile_phone;
-	public $communicate_via_email; // bool
-	public $communicate_via_sms; // bool
+	/**
+	 * @var bool
+	 */
+	public $communicate_via_email;
+	/**
+	 * @var bool
+	 */
+	public $communicate_via_sms;
+	/**
+	 * @var string
+	 */
 	public $age;
+	/**
+	 * @var string
+	 */
 	public $gender;
+	/**
+	 * @var string
+	 */
 	public $city;
+	/**
+	 * @var string
+	 */
 	public $preferred_bible_version;
+	/**
+	 * @var string
+	 */
 	public $religious_affiliation;
+	/**
+	 * @var string
+	 */
 	public $study_group;
+	/**
+	 * @var string
+	 */
 	public $feedback_group;
 }
 
