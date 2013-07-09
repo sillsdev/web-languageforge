@@ -46,27 +46,14 @@ class QuestionModel extends \libraries\sf\MapperModel
 class QuestionListModel extends \libraries\sf\MapperListModel
 {
 
-	public function __construct()
+	public function __construct($databaseName)
 	{
 		parent::__construct(
-			QuestionModelMongoMapper::instance(),
+			QuestionModelMongoMapper::connect($databaseName),
 			array('question' => array('$regex' => '')),
 			array('question')
 		);
 	}
-	
-}
-
-class QuestionTypeaheadModel extends \libraries\sf\MapperListModel
-{
-	public function __construct($search)
-	{
-		parent::__construct(
-				QuestionModelMongoMapper::instance(),
-				array('name' => array('$regex' => $search, '$options' => '-i')),
-				array('name')
-		);
-	}	
 	
 }
 
