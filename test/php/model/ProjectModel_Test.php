@@ -57,7 +57,8 @@ class TestProjectModel extends UnitTestCase {
 		$projectModel = new ProjectModel($projectId);
 		
 		// create the reference
-		$projectModel->users->addRef($userId, $userModel->projects, $projectId);
+		$projectModel->addUser($userId);
+		$userModel->addProject($projectId);
 		$projectModel->write();
 		$userModel->write();
 		
@@ -67,7 +68,7 @@ class TestProjectModel extends UnitTestCase {
 		$this->assertTrue(in_array($userId, $otherProject->users-refs), "'$userId' not found in project.");
 	}
 	
-	function testProjectRemoveUser_ExistingProject_RemovedInBothUserAndProjectRefs() {
+	function testProjectRemoveUser_ExistingProject_Removed() {
 		$e = new MongoTestEnvironment();
 		
 		// setup user and projects
@@ -77,7 +78,8 @@ class TestProjectModel extends UnitTestCase {
 		$projectModel = new ProjectModel($projectId);
 		
 		// create the reference
-		$projectModel->users->addRef($userId, $userModel->projects, $projectId);
+		$projectModel->addUser($userId);
+		$userModel->addProject($projectId);
 		$projectModel->write();
 		$userModel->write();
 		
@@ -88,65 +90,40 @@ class TestProjectModel extends UnitTestCase {
 		
 		// remove the reference
 		$projectModel->removeUser($userId);
-		$projectModel->
+		$userModel->removeProject($projectId);
+		$projectModel->write();
+		$userModel->write();
 		
-		
-		
-		
-		
-		$project = new ProjectModel($this->_someProjectId);
-		
-		$userId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
-		$project->_addUser($userId);
-		$project->write();
-		
-		$this->assertTrue(in_array($userId, $project->users));
-		$otherProject = new ProjectModel($this->_someProjectId);
-		$this->assertTrue(in_array($userId, $otherProject->users), "'$userId' not found in project.");
-		
-		// Test really starts here.
-		$project->_removeUser($userId);
-		$project->write();
-
+		// testing
 		$this->assertFalse(in_array($userId, $project->users));
 		$otherProject = new ProjectModel($this->_someProjectId);
 		$this->assertFalse(in_array($userId, $otherProject->users), "'$userId' should not be found in project.");
-		
+		$project = new ProjectModel($this->_someProjectId);
 	}
 	
 	function testProjectAddUser_TwiceToSameProject_AddedOnce() {
-		$project = new ProjectModel($this->_someProjectId);
-		
-		$userId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
-		$project->_addUser($userId);
-		// Note: We intentionall don't write for this test. It is unnecessary for this test.
-		
-		$this->assertEqual(1, count($project->users));
-		$project->_addUser($userId);
-		$this->assertEqual(1, count($project->users));
-	}
-	
-	function testProjectRemoveUser_NonExistingUser_Throws() {
+		// note I am not testing the reciprocal reference here - 2013-07-09 CJH
 		$e = new MongoTestEnvironment();
-		$project = new ProjectModel($this->_someProjectId);
 		
-		$userId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
-		$e->inhibitErrorDisplay();
-		try {
-			$project->_removeUser($userId);
-		} catch (Exception $ex) {
-			$caught = true; 
-		}
-		$this->assertTrue($caught);
-		$e->restoreErrorDisplay();
+		// setup user and projects
+		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
+		$userModel = new UserModel($userId);
+		$projectId = $e->createProject('new project');
+		$projectModel = new ProjectModel($projectId);
+		
+		$projectModel->addUser($userId);
+		$this->assertEqual(1, count($projectModel->users));
+		$projectModel->addUser($userId);
+		$this->assertEqual(1, count($projectModel->users));
 	}
 	
 	function testProjectListUsers_TwoUsers_ListHasDetails() {
 		$e = new MongoTestEnvironment();
 		$userId1 = $e->createUser('user1', 'User One', 'user1@example.com');
 		$userId2 = $e->createUser('user2', 'User Two', 'user2@example.com');
+		$projectId = $e->createProject('new proj');
 		
-		$project = new ProjectModel($this->_someProjectId);
+		$project = new ProjectModel($projectId);
 		
 		// Check the list users is empty
 		$result = $project->listUsers();
@@ -158,7 +135,7 @@ class TestProjectModel extends UnitTestCase {
 		$project->addUser($userId2);
 		$project->write();
 		
-		$otherProject = new ProjectModel($this->_someProjectId);
+		$otherProject = new ProjectModel($projectId);
 		$result = $otherProject->listUsers();
 		$this->assertEqual(2, $result->count);
 		$this->assertEqual(
