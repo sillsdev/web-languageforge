@@ -100,6 +100,25 @@ class JsonRpcServer {
 		return true;
 	}
 	
+	/**
+	 * Sets the public properties of $model to values from $values[propertyName]
+	 * @param object $model
+	 * @param array $values
+	 */
+	public static function decode($model, $values)
+	{
+		$properties = get_object_vars($model);
+		foreach ($properties as $key => $value)
+		{
+			if (!array_key_exists($key, $values))
+			{
+				// oops // TODO Add to list, throw at end CP 2013-06
+				continue;
+			}
+			$model->$key = $values[$key];
+		}
+	}
+	
 }
 
 ?>
