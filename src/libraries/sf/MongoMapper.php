@@ -254,6 +254,19 @@ class MongoMapper
 		);
 		return $result;
 	}
+
+	public function bulkRemove($ids)
+	{
+		// Is there a "bulk remove" function in the PHP Mongo driver that
+		// takes a list of ids to remove? I can't find it. For now, this
+		// should work, even if it's not quite as efficient as it could be.
+		// RM 2013-07
+		$result = array();
+		foreach ($ids as $id) {
+			$result[] = $this->remove($id);
+		}
+		return $result;
+	}
 	
 	/**
 	 *
