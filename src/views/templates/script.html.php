@@ -1,11 +1,8 @@
-		<script src="/js/lib/jquery-1.8.0.min.js"></script>
 		<script src="/js/lib/jquery-ui-1.8.23.custom.min.js"></script>
 		<script src="/js/lib/superfish/superfish.js"></script>
 		<script src="/js/lib/superfish/hoverIntent.js"></script>
 		<script src="/js/lib/slides.min.jquery.js"></script>
-		<script src="/js/lib/foundation/foundation.min.js"></script>
 		<script>
-			$(document).foundation();
 			
 			$(document).ready(function(){
 				// Superfish menu delay
