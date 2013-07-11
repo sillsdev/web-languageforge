@@ -24,14 +24,14 @@ angular.module('sfchecks',
     		}
     	);
 	    $routeProvider.when(
-    		'/project/:projectId/questions', 
+    		'/project/:projectId/:textId', 
     		{
     			templateUrl: '/angular-app/sfchecks/partials/questions.html', 
     			controller: 'QuestionsCtrl'
     		}
     	);
 	    $routeProvider.when(
-    		'/project/:projectId/question/:questionId', 
+    		'/project/:projectId/:textId/:questionId', 
     		{
     			templateUrl: '/angular-app/sfchecks/partials/question.html', 
     			controller: 'QuestionCtrl'
