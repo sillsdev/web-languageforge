@@ -12,7 +12,8 @@ class UserCommands
 	public static function deleteUsers($userIds) {
 		$count = 0;
 		foreach ($userIds as $userId) {
-			\models\UserModel::remove($userId);
+			$userModel = new \models\UserModel($userId);
+			$userModel->remove();
 			$count++;
 		}
 		return $count;
