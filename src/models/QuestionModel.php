@@ -58,4 +58,15 @@ class QuestionListModel extends \libraries\sf\MapperListModel
 	
 }
 
+class Comment {
+	
+	
+	public $comment;
+	
+	public $authorUserId;
+	
+// 	public $authorDate; // TODO CP 2013-07
+}
+
+
 ?>
