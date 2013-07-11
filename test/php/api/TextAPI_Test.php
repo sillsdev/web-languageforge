@@ -48,7 +48,7 @@ class TestTextAPI extends UnitTestCase {
 	
 	function testTextCRUD_CRUDOK() {
 		$e = new TextAPITestEnvironment();
-		$projectId = $e->createProject(SF_TESTPROJECT);
+		$projectId = $e->createProject('project');
 		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
 		
 		// List
