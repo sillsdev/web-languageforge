@@ -11,7 +11,7 @@
 		<button class="btn" ng-click="removeUsers()"><i class="icon-remove"></i>Remove Users</button>
 		<button class="btn" ng-click="addRecord()"><i class="icon-plus"></i>Add New</button>
 		</form>
-		<div listview search="queryUsers()" select="">
+		<div listview search="queryUsers(currentPage, itemsPerPage)" select="">
 		<table style="width: 100%">
 			<tr>
 				<th></th>
