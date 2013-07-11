@@ -5,16 +5,32 @@ require_once 'secure_base.php';
 class App extends Secure_base {
 	
 	public function view($app = 'main') {
-		$data = array();
-		$data['title'] = "Scripture Forge";
-		if ( ! file_exists('views/apps/'.$app.'.html.php'))
-		{
+		if ( ! file_exists("angular-app/$app")) {
 			show_404();
 		} else {
-			$this->_render_page("apps/$app", $data);
+			$data = array();
+			$data['appName'] = $app;
+			$data['jsSessionVars'] = '{"userid": "' . $this->session->userdata('user_id') . '"}';
+			$data['jsCommonFiles'] = $this->getCommonJSFiles();
+			$data['jsProjectFiles'] = $this->getProjectJSFiles($app);
+			$data['title'] = "Scripture Forge";
+			$this->_render_page("angular-app", $data);
 		}
+	}
+	
+	private function getCommonJSFiles() {
+		$allfiles = scandir("angular-app/common/js");
+		return array_filter($allfiles, "filterForJS");
+	}
+	
+	private function getProjectJSFiles($appName) {
+		$allfiles = scandir("angular-app/$appName/js");
+		return array_filter($allfiles, "filterForJS");
 	}
 }
 
+function filterForJS($filename) {
+	return (bool)preg_match('/\.js$/', $filename);
+}
 
 ?>

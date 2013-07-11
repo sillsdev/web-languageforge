@@ -2,6 +2,10 @@
 
 class Base extends CI_Controller {
 	
+	public function __construct() {
+		parent::__construct();
+	}
+	
 	// all child classes should use this method to render their pages
 	protected function _render_page($view, $data=null, $render=true)
 	{
@@ -16,14 +20,24 @@ class Base extends CI_Controller {
 		$this->viewdata['is_admin'] = false;
 		
 		// setup specific variables for header
-		$this->viewdata['logged_in'] = $this->ion_auth->logged_in();
-		if ($this->viewdata['logged_in']) {
-			$this->viewdata['is_admin'] = $this->ion_auth->is_admin();
-			$this->viewdata['user_email'] = $this->ion_auth->get_user_id();
-			$user_query = $this->ion_auth_model->user($this->ion_auth->get_user_id());
-			$user = $user_query->row();
-			$this->viewdata['user_name'] = $user->first_name;
+		$isLoggedIn = $this->ion_auth->logged_in();
+		$this->viewdata['logged_in'] = $isLoggedIn;
+		if ($isLoggedIn) {
+			$userId = (string)$this->session->userdata('user_id');
+			$user = new \models\UserModel($userId);
+			$isAdmin = $this->ion_auth->is_admin();
+			$this->viewdata['is_admin'] = $isAdmin;
+			$this->viewdata['user_name'] = $user->name;
 			$this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
+			$projects = $user->listProjects();
+			$this->viewdata['projects_count'] = $projects->count;
+			$this->viewdata['projects'] = $projects->entries;
+			if ($isAdmin) {
+				$projectList = new models\ProjectListModel();
+				$projectList->read();
+				$this->viewdata['all_projects_count'] = $projectList->count;
+				$this->viewdata['all_projects'] = $projectList->entries;
+			}
 			
 		}
 		$view_html = $this->load->view('templates/container.html.php', $this->viewdata, !$render);

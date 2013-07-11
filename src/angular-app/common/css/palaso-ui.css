@@ -1,0 +1,65 @@
+
+/* Typeahead */
+div.typeahead {
+	z-index: 1051;
+	margin-top: 0px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	display: inline-block;
+}
+
+div.typeahead > div {
+	z-index: 10;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+div.typeahead ul {
+	margin: 0 2px 2px 2px;
+}
+
+li.typeahead-item {
+	display: block;
+	padding: 5px;
+	color: #000;
+	xtext-decoration: none;
+	xfont-weight: bold;
+	cursor: pointer;
+	line-height: 1.0em;
+	margin: 0 0 4px 0;
+}
+
+li.typeahead-item p {
+	line-height: 1.2em;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 2px;
+	margin-left: 36px;
+}
+
+li.typeahead-item p.name {
+	font-size: 1.0em;
+}
+
+li.typeahead-item p.email {
+	font-size: 0.8em;
+	color: #666666;
+}
+
+/* listview */
+div.listview {
+	margin-top: 8px;
+}
+
+div.listview tr.active {
+	background-color: #ffc;
+}
+
+/* Control bar for use at top of listview */
+form.control-bar {
+	margin-bottom: 0px;
+}
