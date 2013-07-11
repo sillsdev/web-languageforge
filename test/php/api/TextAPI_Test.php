@@ -51,10 +51,14 @@ class TestTextAPI extends UnitTestCase {
 		$projectId = $e->createProject(SF_TESTPROJECT);
 		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
 		
+		// List
+		$result = $api->text_list($projectId);
+		$count = $result['count'];
+		
 		// Create
 		$param = array(
 			'id' => '',
-			'name' =>'SomeText'
+			'title' =>'SomeText'
 		);
 		$id = $api->text_update($projectId, $param);
 		$this->assertNotNull($id);
@@ -63,31 +67,29 @@ class TestTextAPI extends UnitTestCase {
 		// Read
 		$result = $api->text_read($projectId, $id);
 		$this->assertNotNull($result['id']);
-		$this->assertEqual('SomeText', $result['name']);
+		$this->assertEqual('SomeText', $result['title']);
 		
 		// Update
-		$result['name'] = 'OtherText';
+		$result['title'] = 'OtherText';
 		$id = $api->text_update($projectId, $result);
 		$this->assertNotNull($id);
 		$this->assertEqual($result['id'], $id);
 		
 		// Read back
 		$result = $api->text_read($projectId, $id);
-		$this->assertEqual('OtherText', $result['name']);
+		$this->assertEqual('OtherText', $result['title']);
 		
 		// List
 		$result = $api->text_list($projectId);
-		$this->assertEqual(1, $result['count']);
-		$this->assertEqual(array(), $result['entries']);
+		$this->assertEqual($count + 1, $result['count']);
 		
 		// Delete
- 		$result = $api->text_delete($projectId, $id);
+ 		$result = $api->text_delete($projectId, array($id));
  		$this->assertTrue($result);
 
  		// List to confirm delete
  		$result = $api->text_list($projectId);
-		$this->assertEqual(0, $result['count']);
-		$this->assertEqual(array(), $result['entries']);
+		$this->assertEqual($count, $result['count']);
 	}
 	
 }

@@ -26,10 +26,10 @@ class QuestionModelMongoMapper extends \libraries\sf\MongoMapper
 
 class QuestionModel extends \libraries\sf\MapperModel
 {
-	public function __construct($databaseName, $id = NULL)
+	public function __construct($projectModel, $id = NULL)
 	{
 		$this->projects = array();
-		parent::__construct(QuestionModelMongoMapper::connect($databaseName), $id);
+		parent::__construct(QuestionModelMongoMapper::connect($projectModel->databaseName()), $id);
 	}
 	
 	public static function remove($databaseName, $id)
@@ -40,16 +40,18 @@ class QuestionModel extends \libraries\sf\MapperModel
 	public $id;
 	
 	public $question;
+	
+	public $answers;
 		
 }
 
 class QuestionListModel extends \libraries\sf\MapperListModel
 {
 
-	public function __construct($databaseName)
+	public function __construct($projectModel)
 	{
 		parent::__construct(
-			QuestionModelMongoMapper::connect($databaseName),
+			QuestionModelMongoMapper::connect($projectModel->databaseName()),
 			array('question' => array('$regex' => '')),
 			array('question')
 		);

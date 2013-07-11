@@ -27,12 +27,13 @@ class TestQuestionModel extends UnitTestCase {
 
 	function testWrite_ReadBackSame()
 	{
-		$model = new QuestionModel(SF_TESTPROJECT);
+		$model = new QuestionModel(new MockProjectModel());
 		$model->question = "SomeQuestion";
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$otherModel = new QuestionModel(SF_TESTPROJECT, $id);
+		$this->assertEqual($id, $model->id);
+		$otherModel = new QuestionModel(new MockProjectModel(), $id);
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('SomeQuestion', $otherModel->question);
 
@@ -41,7 +42,7 @@ class TestQuestionModel extends UnitTestCase {
 
 	function testProjectList_HasCountAndEntries()
 	{
-		$model = new QuestionListModel(SF_TESTPROJECT);
+		$model = new QuestionListModel(new MockProjectModel());
 		$model->read();
 
 		$this->assertNotEqual(0, $model->count);

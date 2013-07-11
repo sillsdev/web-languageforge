@@ -79,7 +79,8 @@ class MapperModel /*extends CI_Model*/
 	 */
 	function write()
 	{
-		return $this->_mapper->write($this);
+		$this->id = $this->_mapper->write($this); 
+		return $this->id;
 	}
 	
 }
@@ -195,7 +196,7 @@ class MongoMapper
 	{
 		if (!is_string($id) || empty($id)) {
 			$type = get_class($id);
-			throw new Exception("Bad id '$id' ($type)");
+			throw new \Exception("Bad id '$id' ($type)");
 		}		
 		$data = $this->_collection->findOne(array("_id" => new \MongoId($id)));
 		if ($data === NULL)
@@ -261,7 +262,10 @@ class MongoMapper
 
 	public function remove($id)
 	{
-		assert(is_string($id) && !empty($id));
+		if (!is_string($id) || empty($id)) {
+			throw new \Exception("Bad id '$id'");
+		}
+// 		assert(is_string($id) && !empty($id));
 		$result = $this->_collection->remove(
 			array('_id' => new \MongoId($id)),
 			array('safe' => true)
