@@ -28,7 +28,6 @@ class QuestionModel extends \libraries\sf\MapperModel
 {
 	public function __construct($projectModel, $id = NULL)
 	{
-		$this->projects = array();
 		parent::__construct(QuestionModelMongoMapper::connect($projectModel->databaseName()), $id);
 	}
 	

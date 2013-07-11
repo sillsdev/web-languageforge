@@ -28,7 +28,7 @@ class TestLinkCommands extends UnitTestCase {
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
-		$projectModel = $e->createProject('new project');
+		$projectModel = $e->createProject(SF_TESTPROJECT);
 		$projectId = $projectModel->id;
 		
 		// link project and user
@@ -41,14 +41,14 @@ class TestLinkCommands extends UnitTestCase {
 		$this->assertTrue(in_array($projectId, $otherUser->projects->refs), "project $projectId not found in user->projects");
 		$this->assertTrue(in_array($userId, $otherProject->users->refs), "user $userId not found in project->users");
 	}
-	
+
 	function testUnlinkUserAndProject_UserInProject_Unlinked() {
 		$e = new MongoTestEnvironment();
 		
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
-		$projectModel = $e->createProject('new project');
+		$projectModel = $e->createProject(SF_TESTPROJECT);
 		$projectId = $projectModel->id;
 		
 		// create the link
@@ -76,7 +76,7 @@ class TestLinkCommands extends UnitTestCase {
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
-		$projectModel = $e->createProject('new project');
+		$projectModel = $e->createProject(SF_TESTPROJECT);
 		$projectId = $projectModel->id;
 		
 		// link once
@@ -101,7 +101,6 @@ class TestLinkCommands extends UnitTestCase {
 		
 	}
 	
-
 }
 
 ?>
