@@ -49,6 +49,15 @@ class Sf
 	 * @return int Count of deleted users
 	 */
  	public function user_delete($userIds) {
+ 		if (!is_array($userIds)) {
+ 			throw new \Exception("userIds must be an array.");
+ 		}
+ 		foreach ($userIds as $userId) {
+ 			if (!is_string($userId)) {
+ 				throw new \Exception("'$userId' is not a string.");
+ 			}
+ 		}
+ 		
  		return UserCommands::deleteUsers($userIds);
  	}
 
