@@ -1,1 +1,33 @@
 <legend>Questions</legend>
+<p>
+<a ng-click="newQuestionCollapsed = !newQuestionCollapsed">Add New Question</a>
+</p>
+<div collapse="newQuestionCollapsed">
+	<form class="well">
+	<fieldset>
+	<label>Question</label>
+	<textarea ng-model="question" class="span4" rows="4" place-holder="Question"></textarea>
+	<label></label>
+	<button type="submit" class="btn" ng-click="addQuestion()"><i class="icon-plus"></i>Add Question</button>
+	</fieldset>
+	</form>
+</div>
+<form class="control-bar form-inline">
+<button class="btn" ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
+</form>
+<div listview search="queryQuestions()" select="">
+<table class="table" style="width: 100%">
+	<thead>
+	<tr>
+		<th></th>
+		<th>Questions</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr ng-repeat="question in questions" ng-class="{active: isSelected(question)}" >
+		<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(question)" ng-click="updateSelection($event, question)" /></td>
+		<td><a href="#/project/{{projectId}}/{{textId}}/{{question.id}}">{{question.comment}}</a></td>
+	</tr>
+	</tbody>
+</table>		
+</div>
