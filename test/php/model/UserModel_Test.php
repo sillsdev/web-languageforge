@@ -1,4 +1,6 @@
 <?php
+use libraries\api\LinkCommands;
+
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
@@ -8,11 +10,13 @@ require_once(SourcePath . "models/ProjectModel.php");
 require_once(SourcePath . "models/UserModel.php");
 
 use models\UserModel;
+use models\UserListModel;
 use models\ProjectModel;
 
 class TestUserModel extends UnitTestCase {
 
 	private $_someUserId;
+	private $_e;
 	
 	function __construct()
 	{
@@ -30,6 +34,7 @@ class TestUserModel extends UnitTestCase {
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
+		$this->assertEqual($id, $model->id);
 		$otherModel = new UserModel($id);
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('user@example.com', $otherModel->email);
@@ -40,16 +45,6 @@ class TestUserModel extends UnitTestCase {
 		$this->_someUserId = $id;
 	}
 
-	function testUserList_HasCountAndEntries()
-	{
-		$model = new models\UserListModel();
-		$model->read();
-		
-		$this->assertEqual(1, $model->count);
-		$this->assertNotNull($model->entries);
-		
-	}
-	
 	function testUserTypeahead_HasSomeEntries()
 	{
 		$model = new models\UserTypeaheadModel('');
@@ -79,101 +74,77 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(array(), $model->entries);
 	}
 	
-	function testUserAddProject_ExistingUser_ReadBackAdded() {
-		$user = new UserModel($this->_someUserId);
-	
-		$projectId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
-		$user->_addProject($projectId);
-		$user->write();
-	
-		$this->assertTrue(in_array($projectId, $user->projects));
-		$otherUser = new UserModel($this->_someUserId);
-		$this->assertTrue(in_array($projectId, $otherUser->projects), "'$projectId' not found in user.");
-	}
-	
-	function testUserRemoveProject_ExistingUser_Removed() {
-		$user = new UserModel($this->_someUserId);
-	
-		$projectId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
-		$user->_addProject($projectId);
-		$user->write();
-	
-		$this->assertTrue(in_array($projectId, $user->projects));
-		$otherUser = new UserModel($this->_someUserId);
-		$this->assertTrue(in_array($projectId, $otherUser->projects), "'$projectId' not found in user.");
-	
-		// Test really starts here.
-		$user->_removeProject($projectId);
-		$user->write();
-	
-		$this->assertFalse(in_array($projectId, $user->projects));
-		$otherUser = new UserModel($this->_someUserId);
-		$this->assertFalse(in_array($projectId, $otherUser->projects), "'$projectId' should not be found in user.");
-	
-	}
-	
-	function testUserAddProject_TwiceToSameUser_AddedOnce() {
-		$user = new UserModel($this->_someUserId);
-	
-		$projectId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
-		$user->_addProject($projectId);
-		// Note: We intentionall don't write for this test. It is unnecessary for this test.
-	
-		$this->assertEqual(1, count($user->projects));
-		$user->_addProject($projectId);
-		$this->assertEqual(1, count($user->projects));
-	}
-	
-	function testUserRemoveProject_NonExistingProject_Throws() {
-		$e = new MongoTestEnvironment();
-		$user = new UserModel($this->_someUserId);
-	
-		$projectId = 'BogusId'; // Note: The user doesn't really need to exist for this test.
-		$e->inhibitErrorDisplay();
-		try {
-			$user->_removeProject($projectId);
-		} catch (\Exception $ex) {
-			$caught = true;
-		}
-		$this->assertTrue($caught);
-		$e->restoreErrorDisplay();
-	}
 	
 	function testUserListProjects_TwoProjects_ListHasDetails() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$userId1 = $e->createUser('user1', 'User One', 'user1@example.com');
-		$userId2 = $e->createUser('user2', 'User Two', 'user2@example.com');
+		$p1m = $e->createProject('p1');
+		$p1 = $p1m->id;
+		$p1m = new ProjectModel($p1);
+		$p2m = $e->createProject('p2');
+		$p2 = $p2m->id;
 		
-		$projectId = $e->createProject("Project One");
-		$project = new ProjectModel($projectId);
+		$userId = $e->createUser('jsmith', 'joe smith', 'joe@smith.com');
+		$userModel = new UserModel($userId);
 		
-		// Check the list users is empty
-		$result = $project->listUsers();
+		// Check that list projects is empty
+		$result = $userModel->listProjects();
 		$this->assertEqual(0, $result->count);
 		$this->assertEqual(array(), $result->entries);
 				
-		// Add our two users
-		$project->addUser($userId1);
-		$project->addUser($userId2);
-		$project->write();
-				
-		$otherUser = new UserModel($userId1);
-		$result = $otherUser->listProjects();
-		$this->assertEqual(1, $result->count);
+		// Add our two projects
+		LinkCommands::LinkUserAndProject($p1m, $userModel);
+		LinkCommands::LinkUserAndProject($p2m, $userModel);
+		
+		$result = $userModel->listProjects();
+		$this->assertEqual(2, $result->count);
 		$this->assertEqual(
 			array(
 				array(
-		          'projectname' => 'Project One',
-		          'id' => $projectId
+		          'projectname' => 'p1',
+		          'id' => $p1
+				),
+				array(
+		          'projectname' => 'p2',
+		          'id' => $p2
 				)
 			), $result->entries
 		);
+	}
 
- 		UserModel::remove($userId1);
- 		UserModel::remove($userId2);
- 		ProjectModel::remove($projectId);
+	function testWriteRemove_ListCorrect() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+	
+		$list = new UserListModel();
+		$list->read();
+		$this->assertEqual(0, $list->count);
+		$this->assertEqual(null, $list->entries);
+	
+		$user = new UserModel();
+		$user->name = "Some Name";
+		$id = $user->write();
+	
+		$list = new UserListModel();
+		$list->read();
+		$this->assertEqual(1, $list->count);
+		$this->assertEqual(
+			array(array(
+				'avatarRef' => null,
+				'email' => null,
+				'name' => 'Some Name',
+				'username' => null,
+				'id' => $id
+			)),
+			$list->entries
+		);
+		$user->remove();
+	
+		$list = new UserListModel();
+		$list->read();
+		$this->assertEqual(0, $list->count);
+		$this->assertEqual(null, $list->entries);
 	}
 	
 }

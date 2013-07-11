@@ -3,6 +3,7 @@ require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestLibPath . 'jsonRPCClient.php');
+require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class UserAPITestEnvironment
 {
@@ -18,6 +19,8 @@ class UserAPITestEnvironment
 	
 	function __construct() {
 		$this->_api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
+		$e = new MongoTestEnvironment();
+		$e->clean();
 	}
 	
 	/**
@@ -37,9 +40,7 @@ class UserAPITestEnvironment
 	}
 	
 	function dispose() {
-		foreach($this->_idAdded as $id) {
-			$this->_api->user_delete($id);
-		}
+		$this->_api->user_delete($this->_idAdded);
 	}
 }
 
@@ -74,7 +75,7 @@ class TestUserAPI extends UnitTestCase {
 		$this->assertEqual($result['id'], $id);
 		
 		// Delete
- 		$result = $api->user_delete($id);
+ 		$result = $api->user_delete(array($id));
  		$this->assertTrue($result);
 	}
 	
@@ -96,7 +97,7 @@ class TestUserAPI extends UnitTestCase {
 		
 		$e->dispose();
 	}
-	
+
 }
 
 ?>
