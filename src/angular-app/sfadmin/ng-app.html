@@ -1,0 +1,85 @@
+<div class="container" ng-app="sfAdmin" ng-cloak>
+	<legend>Site Administration</legend>
+
+	<tabset>
+	<tab heading="Users">
+	<div class="row" ng-controller="UserCtrl" style="overflow:hidden">
+	<div class="span8">
+		<fieldset>
+		<legend>Users (total: {{userCount}})</legend>
+		<form class="control-bar form-inline">
+		<button class="btn" ng-click="removeUsers()"><i class="icon-remove"></i>Remove Users</button>
+		<button class="btn" ng-click="addRecord()"><i class="icon-plus"></i>Add New</button>
+		</form>
+		<div listview search="queryUsers()" select="">
+		<table style="width: 100%">
+			<tr>
+				<th></th>
+				<th>Username</th>
+				<th>Full Name</th>
+			</tr>
+			<tr ng-repeat="user in users" ng-class="{active: isSelected(user)}" ng-click="selectRow($index, user)" >
+				<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
+				<td>{{user.username}}</td>
+				<td>{{user.name}}</td>
+			</tr>
+		</table>
+		</div>
+		</fieldset>
+	</div>
+				
+	<div class="span4">
+		<form ng-submit="updateRecord(record)" ng-hide="(vars.editButtonName=='')" name="userForm">
+		<fieldset>
+			<legend>User data</legend>
+			<div class="well">
+				<div>
+					<label>User Name</label>
+					<input type="text" placeholder="(username)" ng-model="record.username"/>
+				</div>
+				<div>
+					<label>Name</label>
+					<input type="text" placeholder="(your name here)" ng-model="record.name"/>
+				</div>
+				<div>
+					<label>Email</label>
+					<input type="text" placeholder="(no email)" ng-model="record.email"/>
+				</div>
+				<div>
+					<label style="margin-bottom:20px"><input type="checkbox" ng-model="record.active"/> Is Active</label>
+				</div>
+				<a href="" ng-click="togglePasswordForm(); vars.inputfocus = false">Click to change password</a>
+				<div ng-show="vars.showPasswordForm">
+					<label>Password</label>
+					<input type="password" ng-model="record.password" ng-focus="vars.inputfocus" name="password"/>
+				</div>
+				<div class="large-12" ng-show="vars.showPasswordForm">
+					<label>Confirm password</label>
+					<input type="password" ng-model="record.confirm_password" require-equal="record.password" name="confirmPassword"/>
+					<label ng-show="passwordForm.confirmPassword.$error.match">Passwords do not match</label>
+				</div>
+				<table class="table">
+				<tr ng-show="record.created_on"><td><label style="cursor:default">Created On: {{ record.created_on * 1000 | date:shortDate }}</label></td></tr>
+				<tr ng-show="record.last_login"><td><label style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label></td></tr>
+				</table>
+			</div>
+					<button class="btn btn-small" ng-click="updateRecord(record)" ng-disabled="(userForm.password.$pristine != userForm.confirmPassword.$pristine) || userForm.$invalid">
+						<i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
+					</button>
+		</fieldset>
+		<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" ng-disabled="(userForm.password.$pristine != userForm.confirmPassword.$pristine) || userForm.$invalid"/>
+		</form>
+				
+	</div>
+	</div>
+	</tab>
+	<!-- 
+	<tab heading="Projects">
+		<div class="row" ng-controller="ProjectCtrl" style="overflow:hidden">
+		<div class="span8"><project-list/></div>
+		<div class="span4"><project-data/></div>
+		</div>
+	</tab>
+	-->
+	</tabset>
+</div>

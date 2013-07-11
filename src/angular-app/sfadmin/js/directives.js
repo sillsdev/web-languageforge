@@ -3,43 +3,12 @@
 /* Directives */
 
 
-angular.module('sfAdmin.directives', ["jsonRpc"]).
+angular.module('sfAdmin.directives', ["jsonRpc", "sfAdmin.filters"]).
   directive('appVersion', ['version', function(version) {
     return function(scope, elm, attrs) {
       elm.text(version);
     };
   }])
-  .directive('userData', ['jsonRpc', function(jsonRpc) {
-	  return {
-		  templateUrl: "/angular-app/sfadmin/partials/userdata.html",
-		  restrict: "E",
-		  link: function(scope, elem, attrs) {
-			  scope.$watch("vars.record.id", function(newval, oldval) {
-			  //attrs.$observe("userid", function(newval, oldval) {
-				  console.log("Watch triggered with oldval '" + oldval + "' and newval '" + newval + "'");
-				  if (newval) {
-					  get_user_by_id(newval);
-				  } else {
-					  // Clear data table
-					  scope.record = {};
-				  }
-			  });
-			  
-			  function get_user_by_id(userid) {
-				  console.log("Fetching id: " + userid);
-				  jsonRpc.connect("/api/sf");
-				  jsonRpc.call("user_read", {"id": userid}, function(result) {
-					  scope.record = result.data.result;
-				  });
-			  }
-		  },
-	  };
-  }])
-  .directive('userList', function() {
-	  return {
-		  restrict: "E",
-		  templateUrl: "/angular-app/sfadmin/partials/userlist.html",
-  }})
   .directive('projectData', ['jsonRpc', function(jsonRpc) {
 	  return {
 		  templateUrl: "/angular-app/sfadmin/partials/projectdata.html",
@@ -60,7 +29,7 @@ angular.module('sfAdmin.directives', ["jsonRpc"]).
 				  console.log("Fetching id: " + recordid);
 				  jsonRpc.connect("/api/sf");
 				  jsonRpc.call("project_read", {"id": recordid}, function(result) {
-					  scope.record = result.data.result;
+					  scope.record = result.data;
 				  });
 			  }
 		  },
@@ -70,7 +39,32 @@ angular.module('sfAdmin.directives', ["jsonRpc"]).
 	  return {
 		  restrict: "E",
 		  templateUrl: "/angular-app/sfadmin/partials/projectlist.html",
-  }})
+	  };
+  })
+  .directive("requireEqual", function() {
+	return {
+		restrict: "A",
+		require: "ngModel",
+		scope: {
+			requireEqual: "=",
+		},
+		// Basic idea is it's a directive to do validation, used like this:
+		// <input type="password" ng-model="record.password"/>
+		// <input type="password" ng-model="record.confirmPassword" require-equal="record.password"/>
+		link: function(scope, elem, attrs, ngModelCtrl) {
+			// If for some reason we're getting called early, when ngModelCtrl
+			// is not yet available, then do nothing.
+			if (!ngModelCtrl) return;			
+			ngModelCtrl.$parsers.unshift(function(newValue) {
+				if (newValue == scope.requireEqual) {
+					ngModelCtrl.$setValidity("match", true);
+				} else {
+					ngModelCtrl.$setValidity("match", false);
+				}
+			});
+		},
+	};
+})
 // This directive's code is from http://stackoverflow.com/q/16016570/
 .directive('ngFocus', function($parse, $timeout) {
 	return function(scope, elem, attrs) {
