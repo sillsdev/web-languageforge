@@ -41,14 +41,29 @@ class ProjectUserCommands {
 		}
 		// Add the user to the project.
 		assert($userId != null);
-		$this->_projectModel->addUser($userId);
+		LinkCommands::LinkUserAndProject($this->_projectModel, new \models\UserModel($userId));
 		return $userId;
+	}
+
+	// TODO
+	public function removeUsers($userIds) {
+		
+	}
+	
+	// TODO
+	public function createUserProjectLink($userModel) {
+		
+	}
+	
+	// TODO
+	public function removeUserProjectLink($userModel) {
+		
 	}
 	
 	public function deleteProject() {
 		throw new \Exception("Project_user_commands::deleteProject NYI");
 	}
-	
 }
+
 
 ?>

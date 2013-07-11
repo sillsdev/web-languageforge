@@ -1,0 +1,29 @@
+<legend>My Projects</legend>
+<p>
+<a ng-click="newProjectCollapsed = !newProjectCollapsed">Create New Project</a>
+</p>
+<div collapse="!newProjectCollapsed">
+	<form class="well form-inline">
+	<input type="text" ng-model="projectName" placeholder="Project Name"/>
+	<button type="submit" class="btn" ng-click="addProject()"><i class="icon-plus"></i>Add Project</button>
+	</form>
+</div>
+<form class="control-bar form-inline">
+<button class="btn" ng-click="removeProject()"><i class="icon-remove"></i>Remove Projects</button>
+</form>
+<div listview search="queryProjectsForUser()" select="">
+<table class="table" style="width: 100%">
+	<thead>
+	<tr>
+		<th></th>
+		<th>Project</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr ng-repeat="project in projects" ng-class="{active: isSelected(project)}" >
+		<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(project)" ng-click="updateSelection($event, project)" /></td>
+		<td><a href="#/project/{{project.id}}">{{project.projectname}}</a></td>
+	</tr>
+	</tbody>
+</table>		
+</div>
