@@ -1,4 +1,6 @@
 <?php
+use libraries\api\LinkCommands;
+
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
@@ -62,7 +64,6 @@ class TestMultipleModel extends UnitTestCase {
 			$this->assertTrue(array_key_exists("projectname", $entry));
 		}
 	}
-	
 }
 
 ?>

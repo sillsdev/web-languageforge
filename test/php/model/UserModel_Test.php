@@ -1,4 +1,6 @@
 <?php
+use libraries\api\LinkCommands;
+
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
@@ -72,101 +74,6 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(array(), $model->entries);
 	}
 	
-	// TODO move Project <--> User operations to a separate ProjectUserCommands tests
-	
-	function testUserAddProject_ExistingUser_ReadBackAdded() {
-		$e = new MongoTestEnvironment();
-		
-		// setup user and projects
-		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
-		$userModel = new UserModel($userId);
-		$projectModel = $e->createProject(SF_TESTPROJECT);
-		$projectId = $projectModel->id;
-		
-		// create references
-		$userModel->addProject($projectId);
-		$projectModel->addUser($userId);
-		$userModel->write();
-		$projectModel->write();
-		
-		// read from disk
-		$otherUser = new UserModel($userId);
-		$otherProject = new ProjectModel($projectId);
-		
-		$this->assertTrue(in_array($projectId, $otherUser->projects->refs), "project $projectId not found in user->projects");
-		$this->assertTrue(in_array($userId, $otherProject->users->refs), "user $userId not found in project->users");
-	}
-	
-	function testUserRemoveProject_ExistingUser_Removed() {
-		$e = new MongoTestEnvironment();
-		
-		// setup user and projects
-		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
-		$userModel = new UserModel($userId);
-		$projectModel = $e->createProject('new project');
-		$projectId = $projectModel->id;
-		
-		// create the reference
-		$userModel->addProject($projectId);
-		$projectModel->addUser($userId);
-		$userModel->write();
-		$projectModel->write();
-		
-		// assert that the reference is there
-		$this->assertTrue(in_array($projectId, $userModel->projects->refs), "project $projectId not found in user->projects");
-		$this->assertTrue(in_array($userId, $projectModel->users->refs), "user $userId not found in project->users");
-		
-		// remove the reference
-		$userModel->removeProject($projectId);
-		$projectModel->removeUser($userId);
-		$userModel->write();
-		$projectModel->write();
-		
-		// read from disk
-		$otherUser = new UserModel($userId);
-		$otherProject = new ProjectModel($projectId);
-		
-		$this->assertFalse(in_array($projectId, $otherUser->projects->refs), "project $projectId is still in user->projects");
-		$this->assertFalse(in_array($userId, $otherProject->users->refs), "user $userId is still in project->users");
-		
-	}
-	
-	function testUserAddProject_TwiceToSameUser_AddedOnce() {
-		$e = new MongoTestEnvironment();
-		
-		// setup user and projects
-		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
-		$userModel = new UserModel($userId);
-		$projectModel = $e->createProject('new project');
-		$projectId = $projectModel->id;
-
-		// create the reference
-		$userModel->addProject($projectId);
-		$projectModel->addUser($userId);
-		$userModel->write();
-		$projectModel->write();
-		
-		// read from disk
-		$otherUser = new UserModel($userId);
-		$otherProject = new ProjectModel($projectId);
-		
-		$this->assertEqual(1, count($otherUser->projects->refs));
-		$this->assertEqual(1, count($otherProject->users->refs));
-		
-		// create the same reference again
-		$userModel->addProject($projectId);
-		$projectModel->addUser($userId);
-		$userModel->write();
-		$projectModel->write();
-		
-		// read from disk again
-		$otherProject->read();
-		$otherUser->read();
-		
-		$this->assertEqual(1, count($otherUser->projects->refs));
-		$this->assertEqual(1, count($otherProject->users->refs));
-		
-	}
 	
 	function testUserListProjects_TwoProjects_ListHasDetails() {
 		$e = new MongoTestEnvironment();
@@ -187,13 +94,9 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(array(), $result->entries);
 				
 		// Add our two projects
-		$userModel->addProject($p1);
-		$p1m->addUser($userId);
-		$p1m->write();
-		$userModel->addProject($p2);
-		$p2m->addUser($userId);
-		$p2m->write();
-		$userModel->write();
+		LinkCommands::LinkUserAndProject($p1m, $userModel);
+		LinkCommands::LinkUserAndProject($p2m, $userModel);
+		
 		$result = $userModel->listProjects();
 		$this->assertEqual(2, $result->count);
 		$this->assertEqual(
@@ -243,7 +146,6 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(0, $list->count);
 		$this->assertEqual(null, $list->entries);
 	}
-	
 	
 }
 

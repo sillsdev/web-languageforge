@@ -49,7 +49,6 @@ class ProjectModel extends \libraries\sf\MapperModel
 	{
 		ProjectModelMongoMapper::instance()->drop($this->databaseName());
 		ProjectModelMongoMapper::instance()->remove($this->id);
-		$this->users->removeOtherRefs($this->id, 'UserModel', 'projects');
 	}
 	
 	
