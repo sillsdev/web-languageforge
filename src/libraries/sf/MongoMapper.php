@@ -275,7 +275,11 @@ class MongoMapper
 		{
 			throw new \Exception("Could not find id '$id'");
 		}
-		$this->decode($model, $data);
+		try {
+			$this->decode($model, $data);
+		} catch (\Exception $ex) {
+			throw new \Exception("Exception thrown while reading '$id'", $ex->getCode(), $ex);
+		}
 	}
 	
 	public function write($model)
@@ -287,7 +291,7 @@ class MongoMapper
 	/**
 	 * Sets the public properties of $model to values from $values[propertyName]
 	 * @param object $model
-	 * @param array $values
+	 * @param array $data
 	 */
 	public function decode($model, $data)
 	{
@@ -307,14 +311,35 @@ class MongoMapper
 				continue;
 			}
 			if (is_a($value, 'libraries\sf\ReferenceList')) {
-				$modelRefList = $model->$key;
-				$modelRefList->refs = array();
-				foreach ($data[$key] as $objectId) {
-					array_push( $modelRefList->refs, (string)$objectId );
-				}
+				$this->decodeReferenceList($model->$key, $data[$key]);
 			} else {
 				$model->$key = $data[$key];
 			}
+		}
+	}
+	
+	/**
+	 * Decodes the mongo array into the ReferenceList $model
+	 * @param ReferenceList $model
+	 * @param array $data
+	 * @throws \Exception
+	 */
+	public function decodeReferenceList($model, $data) {
+		$model->refs = array();
+		if (array_key_exists('refs', $data)) {
+			// This is bogus data who put that here.
+			throw new \Exception(
+				"Bad refs structure 'refs'"
+			);
+		}
+		$refsArray = $data;
+		foreach ($refsArray as $objectId) {
+			if (!is_a($objectId, 'MongoId')) {
+				throw new \Exception(
+					"Invalid type '" . gettype($objectId) . "' in ref collection '$key'"
+				);
+			}
+			array_push( $model->refs, (string)$objectId );
 		}
 	}
 
@@ -336,14 +361,25 @@ class MongoMapper
 		foreach ($properties as $key => $value)
 		{
 			if (is_a($value, 'libraries\sf\ReferenceList')) {
-				$toMongoId = function($id) { return new \MongoId($id); };
-				$modelRefList = $model->$key;
-				$data[$key] = array_map($toMongoId, $modelRefList->refs);
+				$data[$key] = $this->encodeReferenceList($model->$key);
 			} else {
+				if ($key == 'projects' || $key == 'users') {
+					throw new \Exception("Possible bad write of '$key'\n" . var_export($model, true));
+				}
 				$data[$key] = $value;
 			}
 		}
 		return $data;
+	}
+	
+	public function encodeReferenceList($model) {
+		$result = array_map(
+			function($id) {
+				return new \MongoId($id);
+			},
+			$model->refs
+		);
+		return $result;
 	}
 
 	public function remove($id)

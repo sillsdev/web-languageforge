@@ -101,21 +101,42 @@ class JsonRpcServer {
 	}
 	
 	/**
-	 * Sets the public properties of $model to values from $values[propertyName]
+	 * Sets the public properties of $model to values from $data[propertyName]
 	 * @param object $model
-	 * @param array $values
+	 * @param array $data
 	 */
-	public static function decode($model, $values)
+	public static function decode($model, $data)
 	{
 		$properties = get_object_vars($model);
 		foreach ($properties as $key => $value)
 		{
-			if (!array_key_exists($key, $values))
+			if (!array_key_exists($key, $data))
 			{
 				// oops // TODO Add to list, throw at end CP 2013-06
 				continue;
 			}
-			$model->$key = $values[$key];
+			if (is_a($value, 'libraries\sf\ReferenceList')) {
+				// Do nothing.  We don't accept ReferenceList being updated via properties.
+				// Users should call the appropriate API method to create a reference.
+			} else {
+				$model->$key = $data[$key];
+			}
+		}
+	}
+	
+	public static function decodeReferenceList($model, $data) {
+		$model->refs = array();
+		if (!array_key_exists('refs', $data)) {
+			return;
+		}
+		$refsArray = $data['refs'];
+		foreach ($refsArray as $objectId) {
+			if (!is_a($objectId, 'MongoId')) {
+				throw new \Exception(
+						"Invalid type '" . gettype($objectId) . "' in ref collection '$key'"
+				);
+			}
+			array_push( $model->refs, (string)$objectId );
 		}
 	}
 	
