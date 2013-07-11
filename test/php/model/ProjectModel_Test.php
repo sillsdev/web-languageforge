@@ -30,6 +30,7 @@ class TestProjectModel extends UnitTestCase {
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
+		$this->assertEqual($id, $model->id);
 		$otherModel = new ProjectModel($id);
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('SomeLanguage', $otherModel->language);

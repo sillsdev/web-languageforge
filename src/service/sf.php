@@ -1,11 +1,15 @@
 <?php
 
+use libraries\sf\JsonRpcServer;
+use libraries\api\ProjectCommands;
+use libraries\api\TextCommands;
+use libraries\api\UserCommands;
+
 require_once(APPPATH . 'libraries/Bcrypt.php');
 
 require_once(APPPATH . 'models/UserModel.php');
 require_once(APPPATH . 'models/ProjectModel.php');
-
-use libraries\sf\JsonRpcServer;
+require_once(APPPATH . 'models/TextModel.php');
 
 class Sf
 {
@@ -40,13 +44,12 @@ class Sf
 	}
 	
 	/**
-	 * Delete a user record
-	 * @param string $id
-	 * @return string Id of deleted record
+	 * Delete users
+	 * @param array<string> $userIds
+	 * @return int Count of deleted users
 	 */
- 	public function user_delete($id) {
- 		\models\UserModel::remove($id);
-		return true;
+ 	public function user_delete($userIds) {
+ 		return UserCommands::deleteUsers($userIds);
  	}
 
 	// TODO Pretty sure this is going to want some paging params
@@ -84,14 +87,12 @@ class Sf
 	}
 	
 	/**
-	 * Delete a project record
-	 * @param string $id
-	 * @return string Id of deleted record
+	 * Delete projects
+	 * @param array<string> $projectIds
+	 * @return int Count of deleted projects
 	 */
- 	public function project_delete($id) {
- 		$project = new \models\ProjectModel($id);
- 		$project->remove();
-		return true;
+ 	public function project_delete($projectIds) {
+ 		return ProjectCommands::deleteProjects($projectIds);
  	}
 
 	// TODO Pretty sure this is going to want some paging params
@@ -135,19 +136,27 @@ class Sf
 	}
 	
 	public function text_update($projectId, $object) {
-		
+		$projectModel = new \models\ProjectModel($projectId);
+		$textModel = new \models\TextModel($projectModel);
+		JsonRpcServer::decode($textModel, $object);
+		return $textModel->write();
 	}
 	
 	public function text_read($projectId, $textId) {
-		
+		$projectModel = new \models\ProjectModel($projectId);
+		$textModel = new \models\TextModel($projectModel, $textId);
+		return $textModel;
 	}
 	
-	public function text_delete($projectId, $textId) {
-		
+	public function text_delete($projectId, $textIds) {
+		return TextCommands::deleteTexts($projectId, $textIds);
 	}
 	
 	public function text_list($projectId) {
-		
+		$projectModel = new \models\ProjectModel($projectId);
+		$textListModel = new \models\TextListModel($projectModel);
+		$textListModel->read();
+		return $textListModel;
 	}
 	
 }
