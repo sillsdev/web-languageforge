@@ -132,9 +132,9 @@ function UserCtrl($scope, userService) {
 			// TODO ERROR
 			return;
 		}
-		projectService.removeUsers($scope.projectId, userIds, function(result) {
+		userService.bulkRemove(userIds, function(result) {
 			if (result.ok) {
-				$scope.queryProjectUsers();
+				$scope.queryUsers();
 				// TODO
 			}
 		});

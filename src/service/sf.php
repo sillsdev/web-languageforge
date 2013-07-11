@@ -49,6 +49,16 @@ class Sf
 		return true;
  	}
 
+	/**
+	 * Bulk delete user records
+	 * @param list $ids
+	 */
+	public function user_bulkdelete($ids) {
+		\models\UserModel::bulkRemove($ids);
+		// TODO: Check return value for any errors
+		return true;
+	}
+
 	// TODO Pretty sure this is going to want some paging params
 	public function user_list() {
 		$list = new \models\UserListModel();
