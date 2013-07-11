@@ -1,24 +1,29 @@
 <?php
-use libraries\api\ProjectCommands;
+
+use libraries\api\QuestionCommands;
+use models\QuestionModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-class TestProjectCommands extends UnitTestCase {
+class TestQuestionCommands extends UnitTestCase {
 
 	function __construct()
 	{
 	}
 	
-	function testDeleteProjects_NoThrow() {
+	function testDeleteQuestions_NoThrow() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
 		$project = $e->createProject(SF_TESTPROJECT);
+		$question = new QuestionModel($project);
+		$question->write();
 		
-		ProjectCommands::deleteProjects(array($project->id));
+		QuestionCommands::deleteQuestions($project->id, array($question->id));
+		
 	}
 	
 }

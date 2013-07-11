@@ -68,6 +68,22 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('text_list', [projectId], callback);
 		};
 	}])
+	.service('questionService', ['jsonRpc', function(jsonRpc) {
+		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
+		
+		this.read = function(projectId, questionId, callback) {
+			jsonRpc.call('question_read', [projectId, questionId], callback);
+		};
+		this.update = function(projectId, model, callback) {
+			jsonRpc.call('question_update', [projectId, model], callback);
+		};
+		this.remove = function(projectId, questionIds, callback) {
+			jsonRpc.call('question_delete', [projectId, questionIds], callback);
+		};
+		this.list = function(projectId, textId, callback) {
+			jsonRpc.call('question_list', [projectId, textId], callback);
+		};
+	}])
 	.service('CIService', function() {
 		this.currentUserId = function() {
 			return window.session.userid;

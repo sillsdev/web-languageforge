@@ -28,14 +28,14 @@ class TestQuestionModel extends UnitTestCase {
 	function testWrite_ReadBackSame()
 	{
 		$model = new QuestionModel(new MockProjectModel());
-		$model->question = "SomeQuestion";
+		$model->comment = "SomeQuestion";
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
 		$this->assertEqual($id, $model->id);
 		$otherModel = new QuestionModel(new MockProjectModel(), $id);
 		$this->assertEqual($id, $otherModel->id);
-		$this->assertEqual('SomeQuestion', $otherModel->question);
+		$this->assertEqual('SomeQuestion', $otherModel->comment);
 
 		$this->_someQuestionId = $id;
 	}
