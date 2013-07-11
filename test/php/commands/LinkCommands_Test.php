@@ -28,8 +28,8 @@ class TestLinkCommands extends UnitTestCase {
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
-		$projectId = $e->createProject('new project');
-		$projectModel = new ProjectModel($projectId);
+		$projectModel = $e->createProject('new project');
+		$projectId = $projectModel->id;
 		
 		// link project and user
 		LinkCommands::LinkUserAndProject($projectModel, $userModel);
@@ -48,8 +48,8 @@ class TestLinkCommands extends UnitTestCase {
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
-		$projectId = $e->createProject('new project');
-		$projectModel = new ProjectModel($projectId);
+		$projectModel = $e->createProject('new project');
+		$projectId = $projectModel->id;
 		
 		// create the link
 		LinkCommands::LinkUserAndProject($projectModel, $userModel);
@@ -76,8 +76,8 @@ class TestLinkCommands extends UnitTestCase {
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
-		$projectId = $e->createProject('new project');
-		$projectModel = new ProjectModel($projectId);
+		$projectModel = $e->createProject('new project');
+		$projectId = $projectModel->id;
 		
 		// link once
 		LinkCommands::LinkUserAndProject($projectModel, $userModel);
