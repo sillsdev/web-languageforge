@@ -146,7 +146,7 @@ class TestProjectModel extends UnitTestCase {
 		$project = new ProjectModel();
 		$project->projectname = 'Some Project';
 		$result = $project->databaseName();
-		$this->assertEqual('sf_some_project');
+		$this->assertEqual('sf_some_project', $result);
 	}
 		
 }
