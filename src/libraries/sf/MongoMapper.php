@@ -42,6 +42,12 @@ class MongoStore
 		return static::$_mongo->selectDB($databaseName);
 	}
 	
+	public static function hasDB($databaseName) {
+		$databases = static::$_mongo->listDBs();
+		$result = array_filter($databases['databases'], function($item) use($databaseName) { return $item['name'] == $databaseName; } );
+		return count($result) != 0;
+	}
+	
 }
 
 class MapperModel /*extends CI_Model*/
@@ -73,7 +79,8 @@ class MapperModel /*extends CI_Model*/
 	 */
 	function write()
 	{
-		return $this->_mapper->write($this);
+		$this->id = $this->_mapper->write($this); 
+		return $this->id;
 	}
 }
 
@@ -231,6 +238,14 @@ class MongoMapper
 	private function __clone()
 	{
 	}
+
+	/**
+	 * Returns the name of the database.
+	 * @return string
+	 */
+	public function databaseName() {
+		return (string)$this->_db;
+	}
 	
 	public function readList($model, $query, $fields = array())
 	{
@@ -333,7 +348,10 @@ class MongoMapper
 
 	public function remove($id)
 	{
-		assert(is_string($id) && !empty($id));
+		if (!is_string($id) || empty($id)) {
+			throw new \Exception("Bad id '$id'");
+		}
+// 		assert(is_string($id) && !empty($id));
 		$result = $this->_collection->remove(
 			array('_id' => new \MongoId($id)),
 			array('safe' => true)

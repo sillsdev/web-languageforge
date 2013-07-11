@@ -2,6 +2,7 @@
 
 namespace models;
 
+use libraries\sf\MongoStore;
 use libraries\sf\ReferenceList;
 
 require_once(APPPATH . '/models/ProjectModel.php');
@@ -17,6 +18,13 @@ class ProjectModelMongoMapper extends \libraries\sf\MongoMapper
 		}
 		return $instance;
 	}
+	
+	public function drop($databaseName) {
+		if (MongoStore::hasDB($databaseName)) {
+			$db = MongoStore::connect($databaseName);
+			$db->drop();
+		}
+	}
 }
 
 class ProjectModel extends \libraries\sf\MapperModel
@@ -26,17 +34,21 @@ class ProjectModel extends \libraries\sf\MapperModel
 		$this->users = new ReferenceList();
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
+	
+	public function databaseName() {
+		$name = strtolower($this->projectname);
+		$name = str_replace(' ', '_', $name);
+		return 'sf_' . $name;
+	}
 
 	/**
 	 * Removes this project from the collection.
 	 * User references to this project are also removed
-	 * @param string $id
 	 */
-	public static function remove($id)
+	public function remove()
 	{
-		// CJH not convinced that this should be part of the model
-		//$this->users->removeOtherRefs($id, 'UserModel', 'projects');
-		ProjectModelMongoMapper::instance()->remove($id);
+		ProjectModelMongoMapper::instance()->drop($this->databaseName());
+		ProjectModelMongoMapper::instance()->remove($this->id);
 	}
 	
 	
@@ -46,9 +58,8 @@ class ProjectModel extends \libraries\sf\MapperModel
 	 * @param string $userId
 	 */
 	public function addUser($userId) {
-		//$userModel = new UserModel($userId);
 		$this->users->_addRef($userId);
-		//$userModel->projects->_addRef($this->id);
+
 	}
 	
 	

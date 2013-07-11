@@ -1,4 +1,6 @@
 <?php
+use libraries\sf\MongoStore;
+
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
@@ -29,6 +31,7 @@ class TestProjectModel extends UnitTestCase {
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
+		$this->assertEqual($id, $model->id);
 		$otherModel = new ProjectModel($id);
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('SomeLanguage', $otherModel->language);
@@ -53,15 +56,14 @@ class TestProjectModel extends UnitTestCase {
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
-		$projectId = $e->createProject('new project');
-		$projectModel = new ProjectModel($projectId);
+		$projectModel = $e->createProject('new project');
+		$projectId = $projectModel->id;
 		
 		// create the reference
 		$projectModel->addUser($userId);
 		$userModel->addProject($projectId);
 		$projectModel->write();
 		$userModel->write();
-		
 		
 		$this->assertTrue(in_array($userId, $projectModel->users->refs));
 		$otherProject = new ProjectModel($projectId);
@@ -77,9 +79,9 @@ class TestProjectModel extends UnitTestCase {
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
-		$projectId = $e->createProject('new project');
-		$projectModel = new ProjectModel($projectId);
-		
+		$projectModel = $e->createProject('new project');
+		$projectId = $projectModel->id;
+
 		// create the reference
 		$projectModel->addUser($userId);
 		$userModel->addProject($projectId);
@@ -111,8 +113,8 @@ class TestProjectModel extends UnitTestCase {
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
-		$projectId = $e->createProject('new project');
-		$projectModel = new ProjectModel($projectId);
+		$projectModel = $e->createProject('new project');
+		$projectId = $projectModel->id;
 		
 		$projectModel->addUser($userId);
 		$this->assertEqual(1, count($projectModel->users));
@@ -126,9 +128,8 @@ class TestProjectModel extends UnitTestCase {
 		$um1 = new UserModel($userId1);
 		$userId2 = $e->createUser('user2', 'User Two', 'user2@example.com');
 		$um2 = new UserModel($userId2);
-		$projectId = $e->createProject('new proj');
-		
-		$project = new ProjectModel($projectId);
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id;
 		
 		// Check the list users is empty
 		$result = $project->listUsers();
@@ -166,6 +167,25 @@ class TestProjectModel extends UnitTestCase {
 		);
 		
 	}
+	
+	function testRemove_RemovesProject() {
+		$e = new MongoTestEnvironment();
+		$project = new ProjectModel($this->_someProjectId);
+		$project->remove();
+		
+		$e->inhibitErrorDisplay();
+		$this->expectException(new \Exception("Could not find id '$this->_someProjectId'"));
+		$project = new ProjectModel($this->_someProjectId);
+		$e->resotreErrorDisplay();
+	}
+	
+	function testDatabaseName_Ok() {
+		$project = new ProjectModel();
+		$project->projectname = 'Some Project';
+		$result = $project->databaseName();
+		$this->assertEqual('sf_some_project', $result);
+	}
+		
 }
 
 ?>
