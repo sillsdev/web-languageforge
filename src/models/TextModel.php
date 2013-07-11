@@ -26,14 +26,19 @@ class TextModelMongoMapper extends \libraries\sf\MongoMapper
 
 class TextModel extends \libraries\sf\MapperModel
 {
-	public function __construct($databaseName, $id = NULL)
+	/**
+	 * @var ProjectModel;
+	 */
+	private $_projectModel;
+	
+	public function __construct($projectModel, $id = NULL)
 	{
-		$this->projects = array();
+		$this->_projectModel = $projectModel;
+		$databaseName = $projectModel->databaseName();
 		parent::__construct(TextModelMongoMapper::connect($databaseName), $id);
 	}
-	
-	public static function remove($databaseName, $id)
-	{
+
+	public static function remove($databaseName, $id) {
 		TextModelMongoMapper::connect($databaseName)->remove($id);
 	}
 
@@ -45,7 +50,7 @@ class TextModel extends \libraries\sf\MapperModel
 	
 	public $id;
 	
-	public $name;
+	public $title;
 	
 	public $content;
 	
@@ -54,27 +59,14 @@ class TextModel extends \libraries\sf\MapperModel
 class TextListModel extends \libraries\sf\MapperListModel
 {
 
-	public function __construct($databaseName)
+	public function __construct($projectModel)
 	{
 		parent::__construct(
-			TextModelMongoMapper::connect($databaseName),
-			array('name' => array('$regex' => '')),
-			array('name')
+			TextModelMongoMapper::connect($projectModel->databaseName()),
+			array('title' => array('$regex' => '')),
+			array('title')
 		);
 	}
-	
-}
-
-class TextTypeaheadModel extends \libraries\sf\MapperListModel
-{
-	public function __construct($search)
-	{
-		parent::__construct(
-				TextModelMongoMapper::instance(),
-				array('name' => array('$regex' => $search, '$options' => '-i')),
-				array('name')
-		);
-	}	
 	
 }
 

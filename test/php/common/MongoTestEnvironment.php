@@ -1,6 +1,7 @@
 <?php
 
 require_once(APPPATH . 'libraries/sf/MongoMapper.php');
+require_once(TestPath . 'common/MockProjectModel.php');
 
 class MongoTestEnvironment
 {
@@ -25,7 +26,8 @@ class MongoTestEnvironment
 		{
 			$collection->drop();
 		}
-		$projectDb = \libraries\sf\MongoStore::connect(SF_TESTPROJECT);
+		$projectModel = new MockProjectModel();
+		$projectDb = \libraries\sf\MongoStore::connect($projectModel->databaseName());
 		$projectDb->drop();
 	}
 
@@ -58,13 +60,14 @@ class MongoTestEnvironment
 	
 	/**
 	 * Writes a project to the projects collection.
-	 * @param strinbg $name
-	 * @return string id
+	 * @param string $name
+	 * @return ProjectModel
 	 */
 	public function createProject($name) {
 		$projectModel = new models\ProjectModel();
 		$projectModel->projectname = $name;
-		return $projectModel->write();
+		$projectModel->write();
+		return $projectModel;
 	}
 	
 	public function inhibitErrorDisplay() {

@@ -16,6 +16,6 @@ define('BASEPATH', $rootPath . 'lib/CodeIgniter_2.1.3/system/');
 require_once(APPPATH . 'helpers/loader_helper.php');
 
 define('SF_DATABASE', 'scriptureforge_test');
-define('SF_TESTPROJECT', 'sftest_project');
+define('SF_TESTPROJECT', 'Test Project');
 
 ?>

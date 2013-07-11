@@ -10,10 +10,10 @@ require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
+require_once(TestPath . 'common/MockProjectModel.php');
 
 require_once(SourcePath . "models/ProjectModel.php");
 require_once(SourcePath . "models/TextModel.php");
-
 
 class TestTextModel extends UnitTestCase {
 
@@ -27,46 +27,62 @@ class TestTextModel extends UnitTestCase {
 
 	function testUpdateThenRemove_NewProject_CreatesThenRemovesProjectDatabase() {
 		$e = new MongoTestEnvironment();
-		$projectId = $e->createProject(SF_TESTPROJECT);
+		$projectModel = $e->createProject(SF_TESTPROJECT);
+		$databaseName = $projectModel->databaseName();
 		
-		$mongo = new \Mongo();
-		$mongoDatabases = $mongo->listDBs();
-		$result = array_filter($mongoDatabases['databases'], function($item) { return $item['name'] == SF_TESTPROJECT; });
-		$this->assertEqual(array(), $result);
-			
-		$text = new TextModel(SF_TESTPROJECT);
-		$text->name = 'SomeTextName';
+		$this->assertFalse(MongoStore::hasDB($databaseName));
+					
+		$text = new TextModel($projectModel);
+		$text->title = 'Some Title';
 		$text->write();
 		
-		$this->assertTrue(MongoStore::hasDB(SF_TESTPROJECT));
+		$this->assertTrue(MongoStore::hasDB($databaseName));
 		
-		$project = new ProjectModel($projectId);
-		$project->remove();
-	
-		$this->assertFalse(MongoStore::hasDB(SF_TESTPROJECT));
+		$projectModel->remove();
+		
+		$this->assertFalse(MongoStore::hasDB($databaseName));
 	}
 
 	function testWrite_ReadBackSame()
 	{
-		$model = new TextModel(SF_TESTPROJECT);
-		$model->name = "SomeName";
+		$model = new TextModel(new MockProjectModel());
+		$model->title = "Some Title";
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$otherModel = new TextModel(SF_TESTPROJECT, $id);
+		$this->assertEqual($id, $model->id);
+		$otherModel = new TextModel(new MockProjectModel(), $id);
 		$this->assertEqual($id, $otherModel->id);
-		$this->assertEqual('SomeName', $otherModel->name);
+		$this->assertEqual('Some Title', $otherModel->title);
 
 		$this->_someTextId = $id;
 	}
+	
+	function testWriteRemove_ListCorrect() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		$projectModel = new MockProjectModel();
 
-	function testProjectList_HasCountAndEntries()
-	{
-		$model = new TextListModel(SF_TESTPROJECT);
-		$model->read();
+		$list = new TextListModel($projectModel);
+		$list->read();
+		$this->assertEqual(0, $list->count);
+		$this->assertEqual(null, $list->entries);
+		
+		$text = new TextModel($projectModel);
+		$text->title = "Some Title";
+		$id = $text->write();
 
-		$this->assertNotEqual(0, $model->count);
-		$this->assertNotNull($model->entries);
+		$list = new TextListModel($projectModel);
+		$list->read();
+		$this->assertEqual(1, $list->count);
+		$this->assertEqual(array(array('title' => 'Some Title', 'id' => $id)), $list->entries);
+
+		TextModel::remove($projectModel->databaseName(), $id);
+		
+		$list = new TextListModel($projectModel);
+		$list->read();
+		$this->assertEqual(0, $list->count);
+		$this->assertEqual(null, $list->entries);
 	}
 
 }

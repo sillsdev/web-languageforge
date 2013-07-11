@@ -105,7 +105,7 @@ class UserListModel extends \libraries\sf\MapperListModel
 	{
 		parent::__construct(
 			UserModelMongoMapper::instance(),
-			array('email' => array('$regex' => '')),
+			array('name' => array('$regex' => '')),
 			array('username', 'email', 'name', 'avatarRef')
 		);
 	}

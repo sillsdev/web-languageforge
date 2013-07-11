@@ -44,6 +44,21 @@ class ProjectUserCommands {
 		$this->_projectModel->addUser($userId);
 		return $userId;
 	}
+
+	// TODO
+	public function removeUsers($userIds) {
+		
+	}
+	
+	// TODO
+	public function createUserProjectLink($userModel) {
+		
+	}
+	
+	// TODO
+	public function removeUserProjectLink($userModel) {
+		
+	}
 	
 	public function deleteProject() {
 		throw new \Exception("Project_user_commands::deleteProject NYI");

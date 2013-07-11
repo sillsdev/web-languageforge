@@ -8,6 +8,7 @@ require_once(SourcePath . "models/ProjectModel.php");
 require_once(SourcePath . "models/UserModel.php");
 
 use models\UserModel;
+use models\UserListModel;
 use models\ProjectModel;
 
 class TestUserModel extends UnitTestCase {
@@ -30,6 +31,7 @@ class TestUserModel extends UnitTestCase {
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
+		$this->assertEqual($id, $model->id);
 		$otherModel = new UserModel($id);
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('user@example.com', $otherModel->email);
@@ -40,16 +42,6 @@ class TestUserModel extends UnitTestCase {
 		$this->_someUserId = $id;
 	}
 
-	function testUserList_HasCountAndEntries()
-	{
-		$model = new models\UserListModel();
-		$model->read();
-		
-		$this->assertEqual(1, $model->count);
-		$this->assertNotNull($model->entries);
-		
-	}
-	
 	function testUserTypeahead_HasSomeEntries()
 	{
 		$model = new models\UserTypeaheadModel('');
@@ -131,8 +123,7 @@ class TestUserModel extends UnitTestCase {
 		$userId1 = $e->createUser('user1', 'User One', 'user1@example.com');
 		$userId2 = $e->createUser('user2', 'User Two', 'user2@example.com');
 		
-		$projectId = $e->createProject("Project One");
-		$project = new ProjectModel($projectId);
+		$project = $e->createProject("Project One");
 		
 		// Check the list users is empty
 		$result = $project->listUsers();
@@ -151,7 +142,7 @@ class TestUserModel extends UnitTestCase {
 			array(
 				array(
 		          'projectname' => 'Project One',
-		          'id' => $projectId
+		          'id' => $project->id
 				)
 			), $result->entries
 		);
@@ -160,6 +151,41 @@ class TestUserModel extends UnitTestCase {
  		UserModel::remove($userId2);
  		$project->remove();
 	}
+
+	function testWriteRemove_ListCorrect() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+	
+		$list = new UserListModel();
+		$list->read();
+		$this->assertEqual(0, $list->count);
+		$this->assertEqual(null, $list->entries);
+	
+		$user = new UserModel();
+		$user->name = "Some Name";
+		$id = $user->write();
+	
+		$list = new UserListModel();
+		$list->read();
+		$this->assertEqual(1, $list->count);
+		$this->assertEqual(
+			array(array(
+				'avatarRef' => null,
+				'email' => null,
+				'name' => 'Some Name',
+				'username' => null,
+				'id' => $id
+			)),
+			$list->entries
+		);
+		UserModel::remove($id);
+	
+		$list = new UserListModel();
+		$list->read();
+		$this->assertEqual(0, $list->count);
+		$this->assertEqual(null, $list->entries);
+	}
+	
 	
 }
 
