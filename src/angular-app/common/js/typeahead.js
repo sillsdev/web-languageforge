@@ -6,7 +6,7 @@ angular.module('palaso.ui.typeahead', [])
 			restrict : 'E',
 			transclude : true,
 			replace : true,
-			template : '<div><form><input ng-model="term" ng-change="query()" type="text" autocomplete="off" /></form><div ng-transclude></div></div>',
+			template : '<div><input ng-model="term" ng-change="query()" type="text" autocomplete="off" /><div ng-transclude></div></div>',
 			scope : {
 				search : "&",
 				select : "&",
@@ -51,7 +51,7 @@ angular.module('palaso.ui.typeahead', [])
 				};
 			}],
 			link : function(scope, element, attrs, controller) {
-				var $input = element.find('form > input');
+				var $input = element.find('> input');
 				var $list = element.find('> div');
 				$input.bind('focus', function() {
 					scope.$apply(function() {
