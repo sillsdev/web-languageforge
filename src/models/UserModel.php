@@ -31,6 +31,11 @@ class UserModel extends \libraries\sf\MapperModel
 		UserModelMongoMapper::instance()->remove($id);
 	}
 
+	public static function bulkRemove($ids)
+	{
+		UserModelMongoMapper::instance()->bulkRemove($ids);
+	}
+
 	/**
 	 * Adds the $projectId as a member of this user.
 	 * Note that you still need to call write() to persist the model.
