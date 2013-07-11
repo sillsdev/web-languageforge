@@ -1,0 +1,35 @@
+<legend>Texts to Check</legend>
+<p>
+<a ng-click="newTextCollapsed = !newTextCollapsed">Add New Text</a>
+</p>
+<div collapse="!newTextCollapsed">
+	<form class="well">
+	<fieldset>
+	<label>Title</label>
+	<input ng-model="title" class="span4" type="text" />
+	<label>Text</label>
+	<textarea ng-model="content" class="span4" rows="4"></textarea>
+	<label></label>
+	<button type="submit" ng-model="addMode" class="btn" ng-click="addText()"><i class="icon-plus"></i>Add Text to Check</button>
+	</fieldset>
+	</form>
+</div>
+<form class="control-bar form-inline">
+<button class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
+</form>
+<div listview search="queryTexts()" select="">
+<table class="table" style="width: 100%">
+	<thead>
+	<tr>
+		<th></th>
+		<th>Texts</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr ng-repeat="text in texts" ng-class="{active: isSelected(text)}" >
+		<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(text)" ng-click="updateSelection($event, text)" /></td>
+		<td><a href="#/project/{{projectId}}/{{text.id}}">{{text.title}}</a></td>
+	</tr>
+	</tbody>
+</table>		
+</div>

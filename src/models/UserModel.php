@@ -29,14 +29,12 @@ class UserModel extends \libraries\sf\MapperModel
 	}
 	
 	/**
-	 *	Removes an user from the collection
+	 *	Removes a user from the collection
 	 *  Project references to this user are also removed
-	 * @param string $projectId
 	 */
-	public static function remove($id)
+	public function remove()
 	{
-		UserModelMongoMapper::instance()->remove($id);
-		//$this->projects->removeOtherRefs($id, 'ProjectModel', 'users');
+		UserModelMongoMapper::instance()->remove($this->id);
 	}
 	
 	/**
@@ -166,7 +164,7 @@ class UserListModel extends \libraries\sf\MapperListModel
 	{
 		parent::__construct(
 			UserModelMongoMapper::instance(),
-			array('email' => array('$regex' => '')),
+			array('name' => array('$regex' => '')),
 			array('username', 'email', 'name', 'avatarRef')
 		);
 	}

@@ -13,7 +13,7 @@ class Loader
 		if ($prefix == 'CI_' || $prefix == 'MY_') {
 			return;
 		}
-		error_log("Loader: Loading $classPath");
+		//error_log("Loader: Loading $classPath");
 
 		// we assume the class AAA\BBB\CCC is placed in /AAA/BBB/CCC.php
 		$classPath = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $classPath);
@@ -44,7 +44,7 @@ class Loader
 		} else {
 			require($load);
 		}
-		error_log(sprintf("Loader: exists %s %d", $className, class_exists($className, false)));
+		//error_log(sprintf("Loader: exists %s %d", $className, class_exists($className, false)));
 		return class_exists($className, false);
 	}
 

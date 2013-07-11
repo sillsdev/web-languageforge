@@ -40,9 +40,7 @@ class UserAPITestEnvironment
 	}
 	
 	function dispose() {
-		foreach($this->_idAdded as $id) {
-			$this->_api->user_delete($id);
-		}
+		$this->_api->user_delete($this->_idAdded);
 	}
 }
 
@@ -77,7 +75,7 @@ class TestUserAPI extends UnitTestCase {
 		$this->assertEqual($result['id'], $id);
 		
 		// Delete
- 		$result = $api->user_delete($id);
+ 		$result = $api->user_delete(array($id));
  		$this->assertTrue($result);
 	}
 	
@@ -99,7 +97,7 @@ class TestUserAPI extends UnitTestCase {
 		
 		$e->dispose();
 	}
-	
+
 }
 
 ?>
