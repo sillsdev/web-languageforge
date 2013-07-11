@@ -6,8 +6,11 @@ require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-require_once(SourcePath . "models/UserModel.php");
-require_once(SourcePath . "models/ProjectModel.php");
+use models\UserModel;
+use models\ProjectModel;
+
+//require_once(SourcePath . "models/UserModel.php");
+//require_once(SourcePath . "models/ProjectModel.php");
 
 class TestLinkCommands extends UnitTestCase {
 

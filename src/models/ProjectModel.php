@@ -34,8 +34,9 @@ class ProjectModel extends \libraries\sf\MapperModel
 	 */
 	public static function remove($id)
 	{
+		// CJH not convinced that this should be part of the model
+		//$this->users->removeOtherRefs($id, 'UserModel', 'projects');
 		ProjectModelMongoMapper::instance()->remove($id);
-		$this->users->removeOtherRefs($id, 'UserModel', 'projects');
 	}
 	
 	
