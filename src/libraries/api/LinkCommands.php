@@ -27,45 +27,6 @@ class LinkCommands {
 		$user->write();
 	}
 	
-	/**
-	 * 
-	 * @param ProjectModel $project
-	 * @param string $textId
-	 */
-	static function LinkProjectAndText($project, $textId) {
-		$project->addText($textId);
-		$project->write();
-	}
-	
-	/**
-	 * 
-	 * @param ProjectModel $project
-	 * @param string $textId
-	 */
-	static function UnlinkProjectAndText($project, $textId) {
-		$project->RemoveText($textId);
-		$project->write();
-	}
-	
-	/**
-	 * 
-	 * @param TextModel $text
-	 * @param string $questionId
-	 */
-	static function LinkTextAndQuestion($text, $questionId) {
-		$text->addQuestion($questionId);
-		$text->write();
-	}
-	
-	/**
-	 * 
-	 * @param TextModel $text
-	 * @param string $questionId
-	 */
-	static function UnLinkTextAndQuestion($text, $questionId) {
-		$text->removeQuestion($questionId);
-		$text->write();
-	}
 }
 
 
