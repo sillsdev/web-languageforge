@@ -36,7 +36,7 @@ class UserModel extends \libraries\sf\MapperModel
 	public static function remove($id)
 	{
 		UserModelMongoMapper::instance()->remove($id);
-		$this->projects->removeOtherRefs($id, 'ProjectModel', 'users');
+		//$this->projects->removeOtherRefs($id, 'ProjectModel', 'users');
 	}
 	
 	/**

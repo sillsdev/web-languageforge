@@ -41,7 +41,7 @@ class ProjectUserCommands {
 		}
 		// Add the user to the project.
 		assert($userId != null);
-		LinkCommands::LinkUserAndProject($this->_projectModel->id, $userId);
+		LinkCommands::LinkUserAndProject($this->_projectModel, new \models\UserModel($userId));
 		return $userId;
 	}
 	
