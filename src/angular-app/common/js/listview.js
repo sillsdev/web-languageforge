@@ -16,6 +16,7 @@ angular.module('palaso.ui.listview', [])
 				$scope.noOfPages = 3;
 				$scope.currentPage = 1;
 				$scope.maxSize = 5;
+				$scope.itemsPerPage = 50;  // TODO: Add a control to change this RM 2013-07
 				$scope.items = [];
 				
 				this.activate = function(item) {
@@ -38,8 +39,8 @@ angular.module('palaso.ui.listview', [])
 				this.selectActive = function() {
 					this.select($scope.active);
 				};
-				this.query = function(currentPage) {
-					$scope.search();
+				this.query = function(currentPage, itemsPerPage) {
+					$scope.search({currentPage: currentPage, itemsPerPage: itemsPerPage});
 //					$scope.search({
 //						term : $scope.term
 //					});
@@ -47,7 +48,7 @@ angular.module('palaso.ui.listview', [])
 			}],
 			link : function(scope, element, attrs, controller) {
 				scope.$watch('currentPage', function(currentPage) {
-					controller.query(currentPage);
+					controller.query(currentPage, scope.itemsPerPage);
 				});
 			}
 		};

@@ -35,11 +35,15 @@ function UserCtrl($scope, userService) {
 	};
 
 	$scope.users = [];
-	$scope.queryUsers = function() {
+	$scope.queryUsers = function(currentPage, itemsPerPage) {
 		userService.list(function(result) {
 			if (result.ok) {
-				$scope.users = result.data.entries;
+				$scope.allUsers = result.data.entries;
 				$scope.userCount = result.data.count;
+				var sliceStart = (currentPage-1) * itemsPerPage; // currentPage is 1-based
+				var sliceEnd = currentPage * itemsPerPage;
+				$scope.users = $scope.allUsers.slice(sliceStart, sliceEnd);
+				//$scope.users = result.data.entries;
 			} else {
 				$scope.users = [];
 			};
