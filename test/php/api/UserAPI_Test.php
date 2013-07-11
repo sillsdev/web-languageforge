@@ -3,6 +3,7 @@ require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestLibPath . 'jsonRPCClient.php');
+require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class UserAPITestEnvironment
 {
@@ -18,6 +19,8 @@ class UserAPITestEnvironment
 	
 	function __construct() {
 		$this->_api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
+		$e = new MongoTestEnvironment();
+		$e->clean();
 	}
 	
 	/**
