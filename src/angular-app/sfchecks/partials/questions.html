@@ -1,12 +1,12 @@
 <legend>Questions</legend>
 <p>
-<a ng-click="newQuestionCollapsed = !newQuestionCollapsed">Add New Question</a>
+<a ng-click="newQuestionCollapsed = !newQuestionCollapsed">Add a New Question</a>
 </p>
-<div collapse="newQuestionCollapsed">
+<div collapse="!newQuestionCollapsed">
 	<form class="well">
 	<fieldset>
 	<label>Question</label>
-	<textarea ng-model="question" class="span4" rows="4" place-holder="Question"></textarea>
+	<textarea ng-model="question" class="span4" rows="4" placeholder="Question"></textarea>
 	<label></label>
 	<button type="submit" class="btn" ng-click="addQuestion()"><i class="icon-plus"></i>Add Question</button>
 	</fieldset>
@@ -19,7 +19,7 @@
 <table class="table" style="width: 100%">
 	<thead>
 	<tr>
-		<th></th>
+		<th width="16px"></th>
 		<th>Questions</th>
 	</tr>
 	</thead>

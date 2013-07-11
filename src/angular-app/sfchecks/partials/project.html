@@ -6,9 +6,9 @@
 	<form class="well">
 	<fieldset>
 	<label>Title</label>
-	<input ng-model="title" class="span4" type="text" />
+	<input ng-model="title" class="span4" type="text" placeholder="Title"/>
 	<label>Text</label>
-	<textarea ng-model="content" class="span4" rows="4"></textarea>
+	<textarea ng-model="content" class="span4" rows="4" placeholder="Paste the USX text here"></textarea>
 	<label></label>
 	<button type="submit" class="btn" ng-click="addText()"><i class="icon-plus"></i>Add Text to Check</button>
 	</fieldset>
@@ -21,7 +21,7 @@
 <table class="table" style="width: 100%">
 	<thead>
 	<tr>
-		<th></th>
+		<th width="16px"></th>
 		<th>Texts</th>
 	</tr>
 	</thead>
