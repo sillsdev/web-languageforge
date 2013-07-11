@@ -33,13 +33,19 @@ class ProjectModel extends \libraries\sf\MapperModel
 		$this->users = array();
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
+	
+	public function databaseName() {
+		$name = strtolower($this->projectname);
+		$name = str_replace(' ', '_', $name);
+		return 'sf_' . $name;
+	}
 
 	/**
 	 * Removes this project from the collection.
 	 */
 	public function remove()
 	{
-		ProjectModelMongoMapper::instance()->drop($this->projectname);
+		ProjectModelMongoMapper::instance()->drop($this->databaseName());
 		ProjectModelMongoMapper::instance()->remove($this->id);
 	}
 	
