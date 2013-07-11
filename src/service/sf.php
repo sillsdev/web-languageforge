@@ -2,14 +2,16 @@
 
 use libraries\sf\JsonRpcServer;
 use libraries\api\ProjectCommands;
+use libraries\api\QuestionCommands;
 use libraries\api\TextCommands;
 use libraries\api\UserCommands;
 
 require_once(APPPATH . 'libraries/Bcrypt.php');
 
-require_once(APPPATH . 'models/UserModel.php');
 require_once(APPPATH . 'models/ProjectModel.php');
+require_once(APPPATH . 'models/QuestionModel.php');
 require_once(APPPATH . 'models/TextModel.php');
+require_once(APPPATH . 'models/UserModel.php');
 
 class Sf
 {
@@ -21,7 +23,11 @@ class Sf
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
 		ini_set('display_errors', 0);
 	}
-
+	
+	//---------------------------------------------------------------
+	// USER API
+	//---------------------------------------------------------------
+	
 	/**
 	 * Create/Update a User
 	 * @param UserModel $json
@@ -73,6 +79,10 @@ class Sf
 		$list->read();
 		return $list;
 	}
+	
+	//---------------------------------------------------------------
+	// PROJECT API
+	//---------------------------------------------------------------
 	
 	/**
 	 * Create/Update a Project
@@ -144,6 +154,10 @@ class Sf
 		return $projectModel->listUsers();
 	}
 	
+	//---------------------------------------------------------------
+	// TEXT API
+	//---------------------------------------------------------------
+	
 	public function text_update($projectId, $object) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel);
@@ -166,6 +180,35 @@ class Sf
 		$textListModel = new \models\TextListModel($projectModel);
 		$textListModel->read();
 		return $textListModel;
+	}
+	
+	//---------------------------------------------------------------
+	// Question / Answer / Comment API
+	//---------------------------------------------------------------
+	
+	public function question_update($projectId, $object) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionModel = new \models\QuestionModel($projectModel);
+		// TODO Watch the decode below. QuestionModel contains a textRef which needs to be decoded correctly. CP 2013-07
+		JsonRpcServer::decode($questionModel, $object);
+		return $questionModel->write();
+	}
+	
+	public function question_read($projectId, $questionId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionModel = new \models\QuestionModel($projectModel, $questionId);
+		return $questionModel;
+	}
+	
+	public function question_delete($projectId, $questionIds) {
+		return QuestionCommands::deleteQuestions($projectId, $questionIds);
+	}
+	
+	public function question_list($projectId, $textId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionListModel = new \models\QuestionListModel($projectModel, $textId);
+		$questionListModel->read();
+		return $questionListModel;
 	}
 	
 }

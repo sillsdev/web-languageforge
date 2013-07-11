@@ -6,8 +6,6 @@ require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-require_once(SourcePath . "libraries/api/UserCommands.php");
-
 class TestUserCommands extends UnitTestCase {
 
 	function __construct()
