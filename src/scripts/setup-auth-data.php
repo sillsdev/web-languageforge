@@ -29,7 +29,7 @@
 	$m = new MongoClient();
 	$db = $m->$dbname;
 
-	$group_data = [
+	$group_data = array(
 		array(
 			"name" => "admin",
 			"description" => "Administrators"
@@ -38,7 +38,7 @@
 			"name" => "users",
 			"description" => "Normal Users"
 		),
-	];
+	);
 
 	$groups_coll = $db->groups;
 	if ($drop_old) {
@@ -51,7 +51,7 @@
 	$admin_id = $admin_group["_id"];
 	$users_id = $users_group["_id"];
 
-	$users_data = [array(
+	$users_data = array(array(
 		"username" => "admin",
 		"name" => "Admin",
 		// Default password is "password"; both of the below are hashes of that password
@@ -59,7 +59,7 @@
 		"password" => '$2a$07$SeBknntpZror9uyftVopmu61qg0ms8Qv1yV6FG.kQOSM.9QhmTo36', // If using bcrypt
 		"email" => "admin@admin.com",
 		"active" => 1,
-		"groups" => [ $admin_id, $users_id ],
+		"groups" => array( $admin_id, $users_id ),
 		"first_name" => "Admin",
 		"last_name" => "istrator",
 		"created_on" => null,
@@ -71,7 +71,7 @@
 		"last_login" => null,
 		"company" => "Achme",
 		"phone" => "111-111-1111"
-	)];
+	));
 
 	$users_coll = $db->users;
 	if ($drop_old) {
