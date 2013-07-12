@@ -91,12 +91,14 @@ class UserModel extends \libraries\sf\MapperModel
 	/**
 	 * @var string
 	 */
-	public $avatarRef;
+	public $avatar_shape;
 	
 	/**
 	 * @var string
 	 */
-	public $avatarColor;
+	public $avatar_color;
+	
+	public $avatar_ref;
 
 	/**
 	 * @var bool
