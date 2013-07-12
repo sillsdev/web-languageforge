@@ -28,7 +28,7 @@ do
         done
         for color in `cat dark-colors.txt`
         do
-            convert $inputfile -negate -background $color -flatten -resize $size -gravity center -extent $size ${OUTDIR}${color}-${animal}-${size}.png
+            convert $inputfile -negate -background $color -flatten -resize $size -gravity center -extent $size ${OUTDIR}/${color}-${animal}-${size}.png
         done
     done
 done
