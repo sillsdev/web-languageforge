@@ -121,8 +121,11 @@ class Sf
 		return $list;
 	}
 	
-	public function change_password($userid, $newPassword) {
-		$user = new \models\PasswordModel($userid);
+	public function change_password($userId, $newPassword) {
+		if (!is_string($userId) && !is_string($newPassword)) {
+			throw new \Exception("Invalid args\n" . var_export($userId, true) . "\n" . var_export($newPassword, true));
+		}
+		$user = new \models\PasswordModel($userId);
 		$bcrypt = new Bcrypt();
 		$user->password = $bcrypt->hash($newPassword);
 		$user->remember_code = null;
