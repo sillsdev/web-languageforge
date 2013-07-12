@@ -2,5 +2,3 @@
 .settings
 .externalToolBuilders
 /output
-src/images/avatar/*-48x48.png
-src/images/avatar/*-8x8.png
