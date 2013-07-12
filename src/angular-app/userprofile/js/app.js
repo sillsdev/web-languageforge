@@ -32,8 +32,29 @@ function setUserModelContactMethod($scope) {
 	}
 }
 
+function getAvatarUrl(color, shape) {
+	var imgPath = "/images/avatar";
+	if (color == "" || shape == "") {
+		return imgPath + "/anonymoose.png";
+	}
+	return imgPath + "/" + color + "-" + shape + "-48x48.png";
+}
+
 function userProfileCtrl($scope, userService) {
 	$scope.notify = {};
+	
+	/*
+	$scope.avatar = {"filename": "anonymoose.jpg",
+					 "color": "",
+					 "shape": ""
+					 };
+					 
+	$scope.$watch(function () { return $scope.avatar.color + $scope.avatar.shape; }, function() {
+		$if ($scope.avatar.color != "" && $scope.avatar.shape != "") {
+			$scope.avatar.filename = $scope.avatar.color + "-" + $scope.avatar.shape + "-48x48.png";
+		}
+	});
+	*/
 	
 	
 	var loadUser = function() {
@@ -48,8 +69,13 @@ function userProfileCtrl($scope, userService) {
 		});
 	};	
 	
+	$scope.avatarUrl = function() {
+		return getAvatarUrl($scope.user.avatar_color, $scope.user.avatar_shape);
+	}
+	
 	$scope.updateUser = function() {
 		setUserModelContactMethod($scope);
+		$scope.user.avatar_ref = getAvatarUrl($scope.user.avatar_color, $scope.user.avatar_shape);
 		userService.update($scope.user, function(result) {
 			if (result.ok) {
 				console.log("updated user profile successfully.");

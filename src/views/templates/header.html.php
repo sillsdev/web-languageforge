@@ -70,7 +70,7 @@
 									<li><a href="/app/sfadmin">Site Administration</a></li>
 									<?php endif;?>
 									<li><a href="/app/userprofile">My Profile</a></li>
-									<li><a href="/auth/change_password">Change Password</a></li>
+									<li><a href="/app/changepassword">Change Password</a></li>
 									<li><a href="/auth/logout">Logout</a></li>
 								</ul>
 							</li>
