@@ -22,6 +22,9 @@ angular.module('sf.services', ['jsonRpc'])
 		this.typeahead = function(term, callback) {
 			jsonRpc.call('user_typeahead', [term], callback);
 		};
+		this.changePassword = function(id, password, callback) {
+			jsonRpc.call('change_password', [id, password], callback);
+		};
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
@@ -84,7 +87,7 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('question_list', [projectId, textId], callback);
 		};
 	}])
-	.service('CIService', function() {
+	.service('sessionService', function() {
 		this.currentUserId = function() {
 			return window.session.userid;
 		};
