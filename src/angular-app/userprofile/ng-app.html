@@ -10,9 +10,9 @@
 								<label>Username</label>
 								<input type="text" placeholder="(username)" ng-model="user.username"/>
 								<label>Picture</label>
-								<select ng-model="user.avatar_color" ng-include src=" '/angular-app/userprofile/avatar_color.html' "/></select>
-								<select ng-model="user.avatar_shape" ng-include src=" '/angular-app/userprofile/avatar_shape.html' "/></select>
-								<img class="img-polaroid" src="/images/avatar/anonymous02.png" />
+								<div><select ng-model="user.avatar_color" ng-include src=" '/angular-app/userprofile/avatar_color.html' "/></select></div>
+								<div><select ng-model="user.avatar_shape" ng-include src=" '/angular-app/userprofile/avatar_shape.html' "/></select></div>
+								<div style="margin-bottom:20px"><img class="img-polaroid" src="{{avatarUrl()}}" /></div>
 								<label>Email Address</label>
 								<input type="text" placeholder="(email)" ng-model="user.email"/>
 								<label>Jamaica Mobile Phone Number</label>
