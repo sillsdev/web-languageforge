@@ -34,7 +34,7 @@ function setUserModelContactMethod($scope) {
 
 function getAvatarUrl(color, shape) {
 	var imgPath = "/images/avatar";
-	if (color == "" || shape == "") {
+	if (!color || !shape) {
 		return imgPath + "/anonymoose.png";
 	}
 	return imgPath + "/" + color + "-" + shape + "-48x48.png";
@@ -42,20 +42,17 @@ function getAvatarUrl(color, shape) {
 
 function userProfileCtrl($scope, userService) {
 	$scope.notify = {};
+	$scope.user = {};
+	$scope.user.avatar_color = '';
+	$scope.user.avatar_shape = '';
+	$scope.user.avatar_ref = getAvatarUrl('', '');
 	
-	/*
-	$scope.avatar = {"filename": "anonymoose.jpg",
-					 "color": "",
-					 "shape": ""
-					 };
-					 
-	$scope.$watch(function () { return $scope.avatar.color + $scope.avatar.shape; }, function() {
-		$if ($scope.avatar.color != "" && $scope.avatar.shape != "") {
-			$scope.avatar.filename = $scope.avatar.color + "-" + $scope.avatar.shape + "-48x48.png";
-		}
+	$scope.$watch('user.avatar_color', function() {
+		$scope.user.avatar_ref = getAvatarUrl($scope.user.avatar_color, $scope.user.avatar_shape);
 	});
-	*/
-	
+	$scope.$watch('user.avatar_shape', function() {
+		$scope.user.avatar_ref = getAvatarUrl($scope.user.avatar_color, $scope.user.avatar_shape);
+	});
 	
 	var loadUser = function() {
 		userService.read(window.session.userid, function(result) {
@@ -69,13 +66,8 @@ function userProfileCtrl($scope, userService) {
 		});
 	};	
 	
-	$scope.avatarUrl = function() {
-		return getAvatarUrl($scope.user.avatar_color, $scope.user.avatar_shape);
-	}
-	
 	$scope.updateUser = function() {
 		setUserModelContactMethod($scope);
-		$scope.user.avatar_ref = getAvatarUrl($scope.user.avatar_color, $scope.user.avatar_shape);
 		userService.update($scope.user, function(result) {
 			if (result.ok) {
 				console.log("updated user profile successfully.");
@@ -88,8 +80,7 @@ function userProfileCtrl($scope, userService) {
 		});
 	}
 	
-	// load the user data right away
-	loadUser();
+	loadUser(); // load the user data right away
 }
 
 angular.module('userProfile', ['jsonRpc', 'ui.bootstrap', 'sf.services']).

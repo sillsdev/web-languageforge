@@ -24,9 +24,6 @@ class TestPasswordModel extends UnitTestCase {
 		$passwordModel->password = $someRandomPassword;
 		$passwordModel->write();
 		
-		
-		
-		
 		// change the password to 12345
 		$password = '12345';
 		$passwordModel->changePassword($password);
