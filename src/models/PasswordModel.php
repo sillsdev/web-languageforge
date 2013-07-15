@@ -2,11 +2,9 @@
 
 namespace models;
 
-//require_once(APPPATH . 'libraries/Bcrypt.php');
 use libraries\sf\MongoMapper;
 use libraries\sf\MapperModel;
 use libraries\BCrypt;
-
 
 class PasswordModel_MongoMapper extends MongoMapper
 {
