@@ -95,17 +95,14 @@ function UserCtrl($scope, userService) {
 //				record.groups = [null]; // TODO: Should we put something into the form to allow setting gropus? ... Later, not now.
 //			}
 		}
-		jsonRpc.connect("/api/sf");
-		var promise = jsonRpc.call("user_update", {"params": record}, function(result) {
-			$scope.fetchRecordList();
-			console.log("Result of promise: ", result.data.result);
+		
+		userService.update(record, function(result) {
+			$scope.queryUsers();
+			record.id = result.data;
+			// TODO Don't do this as a separate API call here. CP 2013-07
+			$scope.changePassword(record);
 		});
-		if (record.password) {
-			promise = promise.then(function(result) {
-				record.id = result.data.result;
-				$scope.changePassword(record);
-			});
-		}
+		
 		if (isNewRecord) {
 			// We just added a record... so clear the user data area so we can add a new one later
 			$scope.record = {};
@@ -115,7 +112,6 @@ function UserCtrl($scope, userService) {
 			// We just edited a record, so remove focus from the user data area
 			$scope.blurInput();
 		}
-		return promise;
 	};
 
 	$scope.removeUsers = function() {
@@ -128,9 +124,9 @@ function UserCtrl($scope, userService) {
 			// TODO ERROR
 			return;
 		}
-		projectService.removeUsers($scope.projectId, userIds, function(result) {
+		userService.remove(userIds, function(result) {
 			if (result.ok) {
-				$scope.queryProjectUsers();
+				$scope.queryUsers();
 				// TODO
 			}
 		});
@@ -138,12 +134,7 @@ function UserCtrl($scope, userService) {
 
 	$scope.changePassword = function(record) {
 		console.log("changePassword() called with ", record);
-		jsonRpc.connect("/api/sf");
-		var params = {
-			"userid": record.id,
-			"newPassword": record.password
-		};
-		jsonRpc.call("change_password", params, function(result) {
+		userService.changePassword(record.id, record.password, function(result) {
 			console.log("Password successfully changed.");
 		});
 	};
