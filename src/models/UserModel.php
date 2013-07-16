@@ -37,6 +37,14 @@ class UserModel extends \libraries\sf\MapperModel
 		UserModelMongoMapper::instance()->remove($this->id);
 	}
 	
+	public function read() {
+		parent::read();
+		if (!$this->avatar_ref) {
+			$default_avatar = "/images/avatar/anonymoose.png";
+			$this->avatar_ref = $default_avatar;
+		}
+	}
+	
 	/**
 	 *	Adds the user as a member of $projectId
 	 *  You do must call write() as both the user model and the project model!!!
