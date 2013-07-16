@@ -7,10 +7,10 @@
                 <div ng-show="notify.message" class="notification informationMessage">{{notify.message}}</div>
 
                 <label>Password</label>
-                <input required placehoolder="password" type="password" ng-model="password" name="password"/>
+                <input required type="password" ng-model="vars.password" name="password"/>
                 <label>Confirm password</label>
-                <input required type="password" placeholder="password again" ng-model="confirm_password" ui-validate=" '$value==password' " ui-validate-watch=" 'password' " name="confirm_password"/>
-                <span ng-show='passwordForm.confirm_password.$error.validator'>Passwords do not match</span>
+                <input required type="password" ng-model="vars.confirm_password" ui-validate=" '$value==vars.password' " ui-validate-watch=" 'password' " name="confirm_password"/>
+                <span style="color:red" ng-show='passwordForm.confirm_password.$error.validator'>Passwords do not match</span>
                 <div>
                 	<input type="submit" value="Change Password" />
                 </div>
