@@ -77,6 +77,7 @@ var app = angular.module(
 	.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', function($scope, textService, $routeParams) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
+		$scope.projectName = $routeParams.projectName;
 		// Listview Selection
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
@@ -139,7 +140,9 @@ var app = angular.module(
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
+		$scope.projectName = $routeParams.projectName;
 		$scope.textId = textId;
+		$scope.textName = $routeParams.textName;
 		// Listview Selection
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
