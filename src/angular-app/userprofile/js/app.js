@@ -32,9 +32,27 @@ function setUserModelContactMethod($scope) {
 	}
 }
 
+function getAvatarUrl(color, shape) {
+	var imgPath = "/images/avatar";
+	if (!color || !shape) {
+		return imgPath + "/anonymoose.png";
+	}
+	return imgPath + "/" + color + "-" + shape + "-48x48.png";
+}
+
 function userProfileCtrl($scope, userService) {
 	$scope.notify = {};
+	$scope.user = {};
+	$scope.user.avatar_color = '';
+	$scope.user.avatar_shape = '';
+	$scope.user.avatar_ref = getAvatarUrl('', '');
 	
+	$scope.$watch('user.avatar_color', function() {
+		$scope.user.avatar_ref = getAvatarUrl($scope.user.avatar_color, $scope.user.avatar_shape);
+	});
+	$scope.$watch('user.avatar_shape', function() {
+		$scope.user.avatar_ref = getAvatarUrl($scope.user.avatar_color, $scope.user.avatar_shape);
+	});
 	
 	var loadUser = function() {
 		userService.read(window.session.userid, function(result) {
@@ -62,8 +80,7 @@ function userProfileCtrl($scope, userService) {
 		});
 	}
 	
-	// load the user data right away
-	loadUser();
+	loadUser(); // load the user data right away
 }
 
 angular.module('userProfile', ['jsonRpc', 'ui.bootstrap', 'sf.services']).

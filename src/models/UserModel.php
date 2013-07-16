@@ -37,6 +37,14 @@ class UserModel extends \libraries\sf\MapperModel
 		UserModelMongoMapper::instance()->remove($this->id);
 	}
 	
+	public function read() {
+		parent::read();
+		if (!$this->avatar_ref) {
+			$default_avatar = "/images/avatar/anonymoose.png";
+			$this->avatar_ref = $default_avatar;
+		}
+	}
+	
 	/**
 	 *	Adds the user as a member of $projectId
 	 *  You do must call write() as both the user model and the project model!!!
@@ -91,12 +99,14 @@ class UserModel extends \libraries\sf\MapperModel
 	/**
 	 * @var string
 	 */
-	public $avatarRef;
+	public $avatar_shape;
 	
 	/**
 	 * @var string
 	 */
-	public $avatarColor;
+	public $avatar_color;
+	
+	public $avatar_ref;
 
 	/**
 	 * @var bool
@@ -165,7 +175,7 @@ class UserListModel extends \libraries\sf\MapperListModel
 		parent::__construct(
 			UserModelMongoMapper::instance(),
 			array('name' => array('$regex' => '')),
-			array('username', 'email', 'name', 'avatarRef')
+			array('username', 'email', 'name', 'avatar_ref')
 		);
 	}
 	

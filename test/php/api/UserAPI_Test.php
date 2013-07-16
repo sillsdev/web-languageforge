@@ -37,6 +37,7 @@ class UserAPITestEnvironment
 		);
 		$id = $this->_api->user_update($param);
 		$this->_idAdded[] = $id;
+		return $id;
 	}
 	
 	function dispose() {
@@ -96,6 +97,16 @@ class TestUserAPI extends UnitTestCase {
 		$this->assertTrue($result['count'] > 0);
 		
 		$e->dispose();
+	}
+	
+	function testChangePassword_Ok() {
+		$e = new UserAPITestEnvironment();
+		$userId = $e->addUser('Some User');
+		
+		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
+		$result = $api->change_password($userId, '12345');
+		$e->dispose();
+		
 	}
 
 }

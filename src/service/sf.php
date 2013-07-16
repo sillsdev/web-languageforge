@@ -6,7 +6,6 @@ use libraries\api\QuestionCommands;
 use libraries\api\TextCommands;
 use libraries\api\UserCommands;
 
-require_once(APPPATH . 'libraries/Bcrypt.php');
 
 require_once(APPPATH . 'models/ProjectModel.php');
 require_once(APPPATH . 'models/QuestionModel.php');
@@ -18,8 +17,6 @@ class Sf
 	
 	public function __construct()
 	{
-		$CI =& get_instance();
-		$CI->load->library('bcrypt',8); // Might increase this at some future date to increase PW hashing time
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
 		ini_set('display_errors', 0);
 	}
@@ -80,6 +77,16 @@ class Sf
 		return $list;
 	}
 	
+	public function change_password($userId, $newPassword) {
+		if (!is_string($userId) && !is_string($newPassword)) {
+			throw new \Exception("Invalid args\n" . var_export($userId, true) . "\n" . var_export($newPassword, true));
+		}
+		$user = new \models\PasswordModel($userId);
+		$user->changePassword($newPassword);
+		$user->write();
+	}
+	
+	
 	//---------------------------------------------------------------
 	// PROJECT API
 	//---------------------------------------------------------------
@@ -119,17 +126,6 @@ class Sf
 		$list = new \models\ProjectListModel();
 		$list->read();
 		return $list;
-	}
-	
-	public function change_password($userId, $newPassword) {
-		if (!is_string($userId) && !is_string($newPassword)) {
-			throw new \Exception("Invalid args\n" . var_export($userId, true) . "\n" . var_export($newPassword, true));
-		}
-		$user = new \models\PasswordModel($userId);
-		$bcrypt = new Bcrypt();
-		$user->password = $bcrypt->hash($newPassword);
-		$user->remember_code = null;
-		$user->write();
 	}
 	
 	public function project_readUser($projectId, $userId) {
