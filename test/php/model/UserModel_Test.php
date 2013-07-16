@@ -30,7 +30,7 @@ class TestUserModel extends UnitTestCase {
 		$model->email = "user@example.com";
 		$model->username = "SomeUser";
 		$model->name = "Some User";
-		$model->avatarRef = "images/avatar/pinkbat.png";
+		$model->avatar_ref = "images/avatar/pinkbat.png";
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
@@ -40,7 +40,7 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual('user@example.com', $otherModel->email);
 		$this->assertEqual('SomeUser', $otherModel->username);
 		$this->assertEqual('Some User', $otherModel->name);
-		$this->assertEqual('images/avatar/pinkbat.png', $otherModel->avatarRef);
+		$this->assertEqual('images/avatar/pinkbat.png', $otherModel->avatar_ref);
 		
 		$this->_someUserId = $id;
 	}
@@ -131,7 +131,7 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(1, $list->count);
 		$this->assertEqual(
 			array(array(
-				'avatarRef' => null,
+				'avatar_ref' => null,
 				'email' => null,
 				'name' => 'Some Name',
 				'username' => null,

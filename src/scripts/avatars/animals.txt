@@ -1,0 +1,16 @@
+camel
+cow
+dog
+elephant
+frog
+gorilla
+hippo
+horse
+kangaroo
+mouse
+otter
+pig
+rabbit
+rhino
+sheep
+tortoise

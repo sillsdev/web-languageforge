@@ -87,7 +87,7 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('question_list', [projectId, textId], callback);
 		};
 	}])
-	.service('CIService', function() {
+	.service('sessionService', function() {
 		this.currentUserId = function() {
 			return window.session.userid;
 		};
