@@ -1,37 +1,5 @@
 'use strict';
 
-function updateContactMethodUI($scope) {
-	if ($scope.user) {
-		if ($scope.user.communicate_via_email && $scope.user.communicate_via_sms) {
-			$scope.contact_method = 'both';
-		}
-		else if ($scope.user.communicate_via_sms) {
-			$scope.contact_method = 'sms';
-		}
-		else {
-			// default case when not set
-			$scope.contact_method = 'email';
-		}
-	}
-}
-
-function setUserModelContactMethod($scope) {
-	if ($scope.user) {
-		if ($scope.contact_method == 'both') {
-			$scope.user.communicate_via_email = true;
-			$scope.user.communicate_via_sms = true;
-		}
-		else if ($scope.contact_method == 'sms') {
-			$scope.user.communicate_via_email = false;
-			$scope.user.communicate_via_sms = true;
-		}
-		else if ($scope.contact_method == 'email') {
-			$scope.user.communicate_via_email = true;
-			$scope.user.communicate_via_sms = false;
-		}
-	}
-}
-
 function getAvatarUrl(color, shape) {
 	var imgPath = "/images/avatar";
 	if (!color || !shape) {
@@ -58,7 +26,6 @@ function userProfileCtrl($scope, userService) {
 		userService.read(window.session.userid, function(result) {
 			if (result.ok) {
 				$scope.user = result.data;
-				updateContactMethodUI($scope);
 			} else {
 				// TODO report the real error
 				$scope.notify.error = 'something went wrong';
@@ -67,7 +34,6 @@ function userProfileCtrl($scope, userService) {
 	};	
 	
 	$scope.updateUser = function() {
-		setUserModelContactMethod($scope);
 		userService.update($scope.user, function(result) {
 			if (result.ok) {
 				console.log("updated user profile successfully.");

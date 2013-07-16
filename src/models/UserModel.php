@@ -130,13 +130,9 @@ class UserModel extends \libraries\sf\MapperModel
 	 */
 	public $mobile_phone;
 	/**
-	 * @var bool
+	 * @var string - possible values are "email", "sms" or "both"
 	 */
-	public $communicate_via_email;
-	/**
-	 * @var bool
-	 */
-	public $communicate_via_sms;
+	public $communicate_via;
 	/**
 	 * @var string
 	 */
