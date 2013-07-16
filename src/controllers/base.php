@@ -27,8 +27,9 @@ class Base extends CI_Controller {
 			$user = new \models\UserModel($userId);
 			$isAdmin = $this->ion_auth->is_admin();
 			$this->viewdata['is_admin'] = $isAdmin;
-			$this->viewdata['user_name'] = $user->name;
+			$this->viewdata['user_name'] = $user->username;
 			$this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
+			$this->viewdata['small_avatar_url'] = $user->avatar_ref;
 			$projects = $user->listProjects();
 			$this->viewdata['projects_count'] = $projects->count;
 			$this->viewdata['projects'] = $projects->entries;
