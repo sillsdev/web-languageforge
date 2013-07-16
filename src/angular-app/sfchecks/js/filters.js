@@ -3,8 +3,13 @@
 /* Filters */
 
 angular.module('sfchecks.filters', []).
-  filter('interpolate', ['version', function(version) {
-    return function(text) {
-      return String(text).replace(/\%VERSION\%/mg, version);
-    }
-  }]);
+  filter('urlencode', function() {
+  	return function(text) {
+  		return encodeURIComponent(text);
+  	}
+  }).
+  filter('urldecode', function() {
+  	return function(text) {
+  		return decodeURIComponent(text);
+  	}
+  });
