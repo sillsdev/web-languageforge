@@ -17,21 +17,21 @@ angular.module('sfchecks',
     		}
 	    );
 	    $routeProvider.when(
-    		'/project/:projectId', 
+    		'/project/:projectName/:projectId', 
     		{
     			templateUrl: '/angular-app/sfchecks/partials/project.html', 
     			controller: 'ProjectCtrl'
     		}
     	);
 	    $routeProvider.when(
-    		'/project/:projectId/:textId', 
+    		'/project/:projectName/:projectId/:textName/:textId', 
     		{
     			templateUrl: '/angular-app/sfchecks/partials/questions.html', 
     			controller: 'QuestionsCtrl'
     		}
     	);
 	    $routeProvider.when(
-    		'/project/:projectId/:textId/:questionId', 
+    		'/project/:projectName/:projectId/:textName/:textId/:questionName/:questionId',
     		{
     			templateUrl: '/angular-app/sfchecks/partials/question.html', 
     			controller: 'QuestionCtrl'
