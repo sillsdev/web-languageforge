@@ -35,27 +35,37 @@ function UserCtrl($scope, userService) {
 	};
 
 	$scope.users = [];
+
+	$scope.getSlice = function(items, currentPage, itemsPerPage) {
+		var sliceStart;
+		var sliceEnd;
+		if (currentPage) {
+			sliceStart = (currentPage-1) * itemsPerPage; // currentPage is 1-based
+			sliceEnd = currentPage * itemsPerPage;
+		} else {
+			sliceStart = 0;
+			sliceEnd = undefined;
+		}
+		return items.slice(sliceStart, sliceEnd);
+	}
 	//$scope.queryUsers = function(currentPage, itemsPerPage) {
-	$scope.queryUsers = function() {
-		userService.list(function(result) {
-			if (result.ok) {
-				$scope.allUsers = result.data.entries;
-				$scope.userCount = result.data.count;
-				var sliceStart;
-				var sliceEnd;
-				if ($scope.currentPage) {
-					sliceStart = ($scope.currentPage-1) * $scope.itemsPerPage; // currentPage is 1-based
-					sliceEnd = $scope.currentPage * $scope.itemsPerPage;
+	$scope.queryUsers = function(invalidateCache) {
+		var forceReload = (invalidateCache || (!$scope.users) || ($scope.users.length == 0));
+		if (forceReload) {
+			userService.list(function(result) {
+				if (result.ok) {
+					$scope.allUsers = result.data.entries;
+					$scope.userCount = result.data.count;
+					$scope.users = $scope.getSlice($scope.allUsers, $scope.currentPage, $scope.itemsPerPage);
+					//$scope.users = result.data.entries;
 				} else {
-					sliceStart = 0;
-					sliceEnd = undefined;
-				}
-				$scope.users = $scope.allUsers.slice(sliceStart, sliceEnd);
-				//$scope.users = result.data.entries;
-			} else {
-				$scope.users = [];
-			};
-		});
+					$scope.users = [];
+				};
+			});
+		} else {
+			// Don't reload from the DB, just update the current view
+			$scope.users = $scope.getSlice($scope.allUsers, $scope.currentPage, $scope.itemsPerPage);
+		}
 	};
 	//$scope.queryUsers();  // And run it right away to fetch the data for our list.
 
@@ -120,7 +130,7 @@ function UserCtrl($scope, userService) {
 		}
 		userService.update(record, function(result) {
 			afterUpdate(result);
-			$scope.queryUsers();
+			$scope.queryUsers(true);
 			if (isNewRecord) {
 				$scope.record = {};
 				$scope.focusInput();
@@ -143,10 +153,10 @@ function UserCtrl($scope, userService) {
 		}
 		userService.bulkRemove(userIds, function(result) {
 			if (result.ok) {
-				//$scope.queryUsers();
+				//$scope.queryUsers(true);
 				// TODO
 			}
-			$scope.queryUsers(); // In all cases
+			$scope.queryUsers(true); // In all cases
 		});
 	};
 
