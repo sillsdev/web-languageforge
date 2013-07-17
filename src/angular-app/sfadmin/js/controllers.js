@@ -87,7 +87,7 @@ function UserCtrl($scope, userService) {
 
 	$scope.updateRecord = function(record) {
 		console.log("updateRecord() called with ", record);
-		if (record === undefined || record === {}) {
+		if (record === undefined || JSON.stringify(record) == "{}") {
 			// Avoid adding blank records to the database
 			return null; // TODO: Or maybe just return a promise object that will do nothing...?
 		}
