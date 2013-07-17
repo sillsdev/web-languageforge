@@ -99,27 +99,28 @@ function UserCtrl($scope, userService) {
 //				record.groups = [null]; // TODO: Should we put something into the form to allow setting gropus? ... Later, not now.
 //			}
 		}
-		jsonRpc.connect("/api/sf");
-		var promise = jsonRpc.call("user_update", {"params": record}, function(result) {
-			$scope.fetchRecordList();
-			console.log("Result of promise: ", result.data.result);
-		});
+		var afterUpdate;
 		if (record.password) {
-			promise = promise.then(function(result) {
-				record.id = result.data.result;
+			afterUpdate = function(result) {
+				record.id = result.data;
 				$scope.changePassword(record);
-			});
-		}
-		if (isNewRecord) {
-			// We just added a record... so clear the user data area so we can add a new one later
-			$scope.record = {};
-			// And focus the input box so the user can just keep typing
-			$scope.focusInput();
+			}
 		} else {
-			// We just edited a record, so remove focus from the user data area
-			$scope.blurInput();
+			afterUpdate = function(result) {
+				// Do nothing
+			}
 		}
-		return promise;
+		userService.update(record, function(result) {
+			afterUpdate(result);
+			$scope.queryUsers(1, 50); // TODO: Change this to use "old" variables
+			if (isNewRecord) {
+				$scope.record = {};
+				$scope.focusInput();
+			} else {
+				$scope.blurInput();
+			}
+		});
+		return true;
 	};
 
 	$scope.removeUsers = function() {
@@ -142,12 +143,7 @@ function UserCtrl($scope, userService) {
 
 	$scope.changePassword = function(record) {
 		console.log("changePassword() called with ", record);
-		jsonRpc.connect("/api/sf");
-		var params = {
-			"userid": record.id,
-			"newPassword": record.password
-		};
-		jsonRpc.call("change_password", params, function(result) {
+		userService.changePassword(record.id, record.password, function(result) {
 			console.log("Password successfully changed.");
 		});
 	};
