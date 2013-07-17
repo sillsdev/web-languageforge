@@ -10,6 +10,8 @@ angular.module('palaso.ui.listview', [])
 			scope : {
 				search : "&",
 				select : "&",
+				itemsPerPage: "=",
+				currentPage: "=",
 				item: "="
 			},
 			controller: ["$scope", function($scope) {
@@ -40,7 +42,7 @@ angular.module('palaso.ui.listview', [])
 					this.select($scope.active);
 				};
 				this.query = function(currentPage, itemsPerPage) {
-					$scope.search({currentPage: currentPage, itemsPerPage: itemsPerPage});
+					$scope.search();
 //					$scope.search({
 //						term : $scope.term
 //					});
