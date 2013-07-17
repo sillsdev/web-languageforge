@@ -12,6 +12,7 @@ angular.module('palaso.ui.listview', [])
 				select : "&",
 				itemsPerPage: "=",
 				currentPage: "=",
+				itemCount: "=",
 				item: "="
 			},
 			controller: ["$scope", function($scope) {
@@ -43,13 +44,19 @@ angular.module('palaso.ui.listview', [])
 				};
 				this.query = function(currentPage, itemsPerPage) {
 					$scope.search();
+					console.log($scope.itemCount, "items in list view.");
+					$scope.noOfPages = Math.ceil($scope.itemCount / $scope.itemsPerPage);
+					if ($scope.currentPage > $scope.noOfPages) {
+						// This can happen if items have been deleted, for example
+						$scope.currentPage = $scope.noOfPages;
+					}
 //					$scope.search({
 //						term : $scope.term
 //					});
 				};
 			}],
 			link : function(scope, element, attrs, controller) {
-				scope.$watch('currentPage + itemsPerPage', function(currentPage, itemsPerPage) {
+				scope.$watch('currentPage + itemsPerPage + itemCount', function(currentPage, itemsPerPage) {
 					controller.query(currentPage, itemsPerPage);
 				});
 			}

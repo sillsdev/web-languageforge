@@ -35,16 +35,19 @@ function UserCtrl($scope, userService) {
 	};
 
 	$scope.users = [];
+	$scope.userCount = 0;
 
 	$scope.getSlice = function(items, currentPage, itemsPerPage) {
+		console.log("Getting slice for page", currentPage, "at", itemsPerPage, "per page");
 		var sliceStart;
 		var sliceEnd;
 		if (currentPage) {
 			sliceStart = (currentPage-1) * itemsPerPage; // currentPage is 1-based
 			sliceEnd = currentPage * itemsPerPage;
 		} else {
+			// Default to page 1 if undefined
 			sliceStart = 0;
-			sliceEnd = undefined;
+			sliceEnd = itemsPerPage;
 		}
 		return items.slice(sliceStart, sliceEnd);
 	}
