@@ -2,6 +2,7 @@
 
 require_once(APPPATH . 'libraries/Bcrypt.php');
 
+require_once(APPPATH . 'models/PasswordModel.php');
 require_once(APPPATH . 'models/UserModel.php');
 require_once(APPPATH . 'models/ProjectModel.php');
 
@@ -116,6 +117,7 @@ class Sf
 		$user->password = $bcrypt->hash($newPassword);
 		$user->remember_code = null;
 		$user->write();
+		return $userid;
 	}
 	
 	public function project_readUser($projectId, $userId) {
