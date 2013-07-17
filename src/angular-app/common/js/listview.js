@@ -50,6 +50,9 @@ angular.module('palaso.ui.listview', [])
 						// This can happen if items have been deleted, for example
 						$scope.currentPage = $scope.noOfPages;
 					}
+					if ($scope.currentPage < 1) {
+						$scope.currentPage = 1;
+					}
 //					$scope.search({
 //						term : $scope.term
 //					});
