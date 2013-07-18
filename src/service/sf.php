@@ -1,24 +1,30 @@
 <?php
 
-require_once(APPPATH . 'libraries/Bcrypt.php');
-
-require_once(APPPATH . 'models/PasswordModel.php');
-require_once(APPPATH . 'models/UserModel.php');
-require_once(APPPATH . 'models/ProjectModel.php');
-
 use libraries\sf\JsonRpcServer;
+use libraries\api\ProjectCommands;
+use libraries\api\QuestionCommands;
+use libraries\api\TextCommands;
+use libraries\api\UserCommands;
+
+
+require_once(APPPATH . 'models/ProjectModel.php');
+require_once(APPPATH . 'models/QuestionModel.php');
+require_once(APPPATH . 'models/TextModel.php');
+require_once(APPPATH . 'models/UserModel.php');
 
 class Sf
 {
 	
 	public function __construct()
 	{
-		$CI =& get_instance();
-		$CI->load->library('bcrypt',8); // Might increase this at some future date to increase PW hashing time
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
 		ini_set('display_errors', 0);
 	}
-
+	
+	//---------------------------------------------------------------
+	// USER API
+	//---------------------------------------------------------------
+	
 	/**
 	 * Create/Update a User
 	 * @param UserModel $json
@@ -41,24 +47,22 @@ class Sf
 	}
 	
 	/**
-	 * Delete a user record
-	 * @param string $id
-	 * @return string Id of deleted record
+	 * Delete users
+	 * @param array<string> $userIds
+	 * @return int Count of deleted users
 	 */
- 	public function user_delete($id) {
- 		\models\UserModel::remove($id);
-		return true;
+ 	public function user_delete($userIds) {
+ 		if (!is_array($userIds)) {
+ 			throw new \Exception("userIds must be an array.");
+ 		}
+ 		foreach ($userIds as $userId) {
+ 			if (!is_string($userId)) {
+ 				throw new \Exception("'$userId' is not a string.");
+ 			}
+ 		}
+ 		
+ 		return UserCommands::deleteUsers($userIds);
  	}
-
-	/**
-	 * Bulk delete user records
-	 * @param list $ids
-	 */
-	public function user_bulkdelete($ids) {
-		\models\UserModel::bulkRemove($ids);
-		// TODO: Check return value for any errors
-		return true;
-	}
 
 	// TODO Pretty sure this is going to want some paging params
 	public function user_list() {
@@ -72,6 +76,20 @@ class Sf
 		$list->read();
 		return $list;
 	}
+	
+	public function change_password($userId, $newPassword) {
+		if (!is_string($userId) && !is_string($newPassword)) {
+			throw new \Exception("Invalid args\n" . var_export($userId, true) . "\n" . var_export($newPassword, true));
+		}
+		$user = new \models\PasswordModel($userId);
+		$user->changePassword($newPassword);
+		$user->write();
+	}
+	
+	
+	//---------------------------------------------------------------
+	// PROJECT API
+	//---------------------------------------------------------------
 	
 	/**
 	 * Create/Update a Project
@@ -95,13 +113,12 @@ class Sf
 	}
 	
 	/**
-	 * Delete a project record
-	 * @param string $id
-	 * @return string Id of deleted record
+	 * Delete projects
+	 * @param array<string> $projectIds
+	 * @return int Count of deleted projects
 	 */
- 	public function project_delete($id) {
- 		\models\ProjectModel::remove($id);
-		return true;
+ 	public function project_delete($projectIds) {
+ 		return ProjectCommands::deleteProjects($projectIds);
  	}
 
 	// TODO Pretty sure this is going to want some paging params
@@ -109,15 +126,6 @@ class Sf
 		$list = new \models\ProjectListModel();
 		$list->read();
 		return $list;
-	}
-	
-	public function change_password($userid, $newPassword) {
-		$user = new \models\PasswordModel($userid);
-		$bcrypt = new Bcrypt();
-		$user->password = $bcrypt->hash($newPassword);
-		$user->remember_code = null;
-		$user->write();
-		return $userid;
 	}
 	
 	public function project_readUser($projectId, $userId) {
@@ -145,4 +153,63 @@ class Sf
 		return $projectModel->listUsers();
 	}
 	
+	//---------------------------------------------------------------
+	// TEXT API
+	//---------------------------------------------------------------
+	
+	public function text_update($projectId, $object) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$textModel = new \models\TextModel($projectModel);
+		JsonRpcServer::decode($textModel, $object);
+		return $textModel->write();
+	}
+	
+	public function text_read($projectId, $textId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$textModel = new \models\TextModel($projectModel, $textId);
+		return $textModel;
+	}
+	
+	public function text_delete($projectId, $textIds) {
+		return TextCommands::deleteTexts($projectId, $textIds);
+	}
+	
+	public function text_list($projectId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$textListModel = new \models\TextListModel($projectModel);
+		$textListModel->read();
+		return $textListModel;
+	}
+	
+	//---------------------------------------------------------------
+	// Question / Answer / Comment API
+	//---------------------------------------------------------------
+	
+	public function question_update($projectId, $object) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionModel = new \models\QuestionModel($projectModel);
+		// TODO Watch the decode below. QuestionModel contains a textRef which needs to be decoded correctly. CP 2013-07
+		JsonRpcServer::decode($questionModel, $object);
+		return $questionModel->write();
+	}
+	
+	public function question_read($projectId, $questionId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionModel = new \models\QuestionModel($projectModel, $questionId);
+		return $questionModel;
+	}
+	
+	public function question_delete($projectId, $questionIds) {
+		return QuestionCommands::deleteQuestions($projectId, $questionIds);
+	}
+	
+	public function question_list($projectId, $textId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionListModel = new \models\QuestionListModel($projectModel, $textId);
+		$questionListModel->read();
+		return $questionListModel;
+	}
+	
 }
+
+?>

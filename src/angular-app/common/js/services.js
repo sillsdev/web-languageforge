@@ -12,11 +12,8 @@ angular.module('sf.services', ['jsonRpc'])
 		this.update = function(model, callback) {
 			jsonRpc.call('user_update', [model], callback);
 		};
-		this.remove = function(id, callback) {
-			jsonRpc.call('user_delete', [id], callback);
-		};
-		this.bulkRemove = function(ids, callback) {
-			jsonRpc.call('user_bulkdelete', [ids], callback);
+		this.remove = function(userIds, callback) {
+			jsonRpc.call('user_delete', [userIds], callback);
 		};
 		this.changePassword = function(id, password, callback) {
 			jsonRpc.call('change_password', [id, password], callback);
@@ -28,6 +25,9 @@ angular.module('sf.services', ['jsonRpc'])
 		this.typeahead = function(term, callback) {
 			jsonRpc.call('user_typeahead', [term], callback);
 		};
+		this.changePassword = function(userId, newPassword, callback) {
+			jsonRpc.call('change_password', [userId, newPassword], callback);
+		}
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
@@ -38,8 +38,8 @@ angular.module('sf.services', ['jsonRpc'])
 		this.update = function(model, callback) {
 			jsonRpc.call('project_update', [model], callback);
 		};
-		this.remove = function(projectId, callback) {
-			jsonRpc.call('project_delete', [projectId], callback);
+		this.remove = function(projectIds, callback) {
+			jsonRpc.call('project_delete', [projectIds], callback);
 		};
 		this.list = function(callback) {
 			jsonRpc.call('project_list', [], callback);
@@ -57,11 +57,40 @@ angular.module('sf.services', ['jsonRpc'])
 			// TODO Paging CP 2013-07
 			jsonRpc.call('project_listUsers', [projectId], callback);
 		};
-		this.updatePassword = function(password, callback) {
-			jsonRpc.call('user_updatePassword', [password], callback);
+	}])
+	.service('textService', ['jsonRpc', function(jsonRpc) {
+		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
+		
+		this.read = function(projectId, textId, callback) {
+			jsonRpc.call('text_read', [projectId, textId], callback);
+		};
+		this.update = function(projectId, model, callback) {
+			jsonRpc.call('text_update', [projectId, model], callback);
+		};
+		this.remove = function(projectId, textIds, callback) {
+			jsonRpc.call('text_delete', [projectId, textIds], callback);
+		};
+		this.list = function(projectId, callback) {
+			jsonRpc.call('text_list', [projectId], callback);
 		};
 	}])
-	.service('CIService', function() {
+	.service('questionService', ['jsonRpc', function(jsonRpc) {
+		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
+		
+		this.read = function(projectId, questionId, callback) {
+			jsonRpc.call('question_read', [projectId, questionId], callback);
+		};
+		this.update = function(projectId, model, callback) {
+			jsonRpc.call('question_update', [projectId, model], callback);
+		};
+		this.remove = function(projectId, questionIds, callback) {
+			jsonRpc.call('question_delete', [projectId, questionIds], callback);
+		};
+		this.list = function(projectId, textId, callback) {
+			jsonRpc.call('question_list', [projectId, textId], callback);
+		};
+	}])
+	.service('sessionService', function() {
 		this.currentUserId = function() {
 			return window.session.userid;
 		};
