@@ -1,0 +1,11 @@
+DarkOrange
+HotPink
+DodgerBlue
+plum
+red
+gold
+salmon
+DarkGoldenrod3
+chartreuse
+LightBlue
+LightYellow

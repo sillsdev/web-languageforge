@@ -124,6 +124,7 @@ function UserCtrl($scope, userService) {
 		if (record.password) {
 			afterUpdate = function(result) {
 				record.id = result.data;
+				// TODO Don't do this as a separate API call here. CP 2013-07
 				$scope.changePassword(record);
 			}
 		} else {
@@ -154,12 +155,8 @@ function UserCtrl($scope, userService) {
 			// TODO ERROR
 			return;
 		}
-		userService.bulkRemove(userIds, function(result) {
-			if (result.ok) {
-				//$scope.queryUsers(true);
-				// TODO
-			}
-			$scope.queryUsers(true); // In all cases
+		userService.remove(userIds, function(result) {
+			$scope.queryUsers(true); // Reload data whether result OK or error
 		});
 	};
 
