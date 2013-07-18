@@ -637,3 +637,21 @@ div#logo-small {
 	height: 36px;
 	background: url(../images/sf_logo_small.png) no-repeat;
 }
+
+/* Question Page */
+div#text {
+	overflow: auto;
+	min-height: 400px;
+	max-height: 600px;
+	border: 1px solid red;
+}
+
+div#comments {
+	width: 512px;
+	min-height: 400px;
+	border: 1px solid blue;
+}
+
+div.vote a {
+	display: block;
+}
