@@ -11,7 +11,7 @@
 		<button class="btn" ng-click="removeUsers()"><i class="icon-remove"></i>Remove Users</button>
 		<button class="btn" ng-click="addRecord()"><i class="icon-plus"></i>Add New</button>
 		</form>
-		<div listview search="queryUsers()" select="">
+		<div listview search="queryUsers()" item-count="userCount" items-per-page="itemsPerPage" current-page="currentPage" select="">
 		<table style="width: 100%">
 			<tr>
 				<th></th>
@@ -63,11 +63,10 @@
 				<tr ng-show="record.last_login"><td><label style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label></td></tr>
 				</table>
 			</div>
-					<button class="btn btn-small" ng-click="updateRecord(record)" ng-disabled="(userForm.password.$pristine != userForm.confirmPassword.$pristine) || userForm.$invalid">
+					<button class="btn btn-small" type="submit" ng-disabled="(userForm.password.$pristine != userForm.confirmPassword.$pristine) || userForm.$invalid">
 						<i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
 					</button>
 		</fieldset>
-		<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" ng-disabled="(userForm.password.$pristine != userForm.confirmPassword.$pristine) || userForm.$invalid"/>
 		</form>
 				
 	</div>

@@ -15,6 +15,9 @@ angular.module('sf.services', ['jsonRpc'])
 		this.remove = function(userIds, callback) {
 			jsonRpc.call('user_delete', [userIds], callback);
 		};
+		this.changePassword = function(id, password, callback) {
+			jsonRpc.call('change_password', [id, password], callback);
+		}
 		this.list = function(callback) {
 			// TODO Paging CP 2013-07
 			jsonRpc.call('user_list', [], callback);
