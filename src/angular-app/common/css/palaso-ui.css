@@ -55,6 +55,10 @@ div.listview {
 	margin-top: 8px;
 }
 
+div.listview div.paginationblock div {
+	display: inline-block;
+}
+
 div.listview tr.active {
 	background-color: #ffc;
 }
