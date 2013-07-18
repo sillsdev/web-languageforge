@@ -16,6 +16,11 @@ var app = angular.module(
 		$scope.location = $location;
 		$scope.routeParams = $routeParams;
 	}])
+	.controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService', function($scope, $rootScope, breadcrumbService) {
+		$rootScope.$on('$routeChangeSuccess', function(event, current) {
+			$scope.breadcrumbs = breadcrumbService.read();
+		});
+	}])
 	.controller('ProjectsCtrl', ['$scope', 'projectService', function($scope, projectService) {
 		// Listview Selection
 		$scope.selected = [];
@@ -201,6 +206,7 @@ var app = angular.module(
 			});
 		};
 	}])
-	.controller('QuestionCtrl', ['$scope', 'projectService', function($scope, projectService) {
+	.controller('QuestionCtrl', ['$scope', 'projectService', '$routeParams', function($scope, projectService, $routeParams) {
+		$scope.questionName = $routeParams.questionName;
 	}])
 	;
