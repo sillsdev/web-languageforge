@@ -64,13 +64,13 @@
 							</ul>
 							<ul class="sf-menu">
 							<li>
-							<a href="#"><img src="<?php echo $small_gravatar_url; ?>" style="float:left; position:relative; top:-6px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
+							<a href="#"><img src="<?php echo $small_avatar_url; ?>" width="30px" height="30px" style="float:left; position:relative; top:-6px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
 								<ul>
 									<?php if ($is_admin):?>
 									<li><a href="/app/sfadmin">Site Administration</a></li>
 									<?php endif;?>
 									<li><a href="/app/userprofile">My Profile</a></li>
-									<li><a href="/auth/change_password">Change Password</a></li>
+									<li><a href="/app/changepassword">Change Password</a></li>
 									<li><a href="/auth/logout">Logout</a></li>
 								</ul>
 							</li>
