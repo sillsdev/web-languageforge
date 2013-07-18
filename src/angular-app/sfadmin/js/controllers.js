@@ -156,7 +156,10 @@ function UserCtrl($scope, userService) {
 			return;
 		}
 		userService.remove(userIds, function(result) {
-			$scope.queryUsers(true); // Reload data whether result OK or error
+			// Whether result was OK or error, wipe selected list and reload data
+			$scope.selected = [];
+			$scope.vars.selectedIndex = -1;
+			$scope.queryUsers(true);
 		});
 	};
 
