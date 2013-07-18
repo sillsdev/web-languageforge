@@ -11,9 +11,10 @@ window.session = <?php echo $jsSessionVars; ?>
 <script src="/js/lib/ng-ui-utils-validate.js"></script>
 
 <?php foreach($jsCommonFiles as $filename): ?>
-    <script	src="/angular-app/common/js/<?php echo $filename; ?>"></script>
+<script src="/<?php echo $filename; ?>"></script>
 <?php endforeach; ?>
 
 <?php foreach($jsProjectFiles as $filename): ?>
-<script	src="/angular-app/<?php echo $appName; ?>/js/<?php echo $filename; ?>"></script>
+<script src="/<?php echo $filename; ?>"></script>
 <?php endforeach; ?>
+
