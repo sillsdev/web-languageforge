@@ -45,17 +45,17 @@
 				<?php if ($logged_in):?>
 					<div class="right">
 							<ul class="sf-menu">
-								<li><a href="#">My Projects</a>
+								<li><a href="/app/sfchecks#/projects">My Projects</a>
 									<ul>
 									<?php foreach($projects as $project): ?>
-										<li><a href="<?php echo "/app/projectadmin/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+										<li><a href="<?php echo "/app/sfchecks#/project/" . urlencode($project['projectname']) . "/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
 									<?php endforeach;?>
 									<?php if ($is_admin): ?>
 										<?php if ($projects_count > 0): ?>
 										<li>---</li>
 										<?php endif; ?>
 										<?php foreach($all_projects as $project): ?>
-											<li><a href="<?php echo "/app/projectadmin/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+											<li><a href="<?php echo "/app/sfchecks#/project/" . urlencode($project['projectname']) . "/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
 										<?php endforeach;?>
 										
 									<?php endif; ?>
