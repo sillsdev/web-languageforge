@@ -1,4 +1,4 @@
-<legend>Texts to Check</legend>
+<h2 style="font-weight:normal">Texts for {{projectName}}</h2>
 <p>
 <a ng-click="newTextCollapsed = !newTextCollapsed">Add New Text</a>
 </p>
@@ -28,7 +28,7 @@
 	<tbody>
 	<tr ng-repeat="text in texts" ng-class="{active: isSelected(text)}" >
 		<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(text)" ng-click="updateSelection($event, text)" /></td>
-		<td><a href="#/project/{{projectId}}/{{text.id}}">{{text.title}}</a></td>
+		<td><a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{text.title|urlencode}}/{{text.id}}">{{text.title}}</a></td>
 	</tr>
 	</tbody>
 </table>		

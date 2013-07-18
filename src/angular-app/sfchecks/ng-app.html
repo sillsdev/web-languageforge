@@ -1,26 +1,19 @@
-<div class="container" ng-app="sfchecks" ng-cloak>
+<div class="container" ng-app="sfchecks" ng-cloak style="margin-top:10px">
 	<div id="sfchecks-hmenu" class="hdrnav">
-	<img src="/images/sf_logo_medium.png" class="left" width="48px" height="60px" />
-	<ul>
-	<li class="here"><a href="#/projects">My Projects</a></li>
-	<li><a href="/app/activity">Activity</a></li>
-	</ul>
+		<img src="/images/sf_logo_medium.png" class="left" width="48px" height="60px" />
+		<ul style="margin:0; clear:right; overflow:auto">
+			<li class="here"><a href="#/projects">My Projects</a></li>
+			<li><a href="/app/activity">Activity</a></li>
+		</ul>
+		<div class="sf-breadcrumbs" ng-controller="BreadcrumbCtrl">
+			<span><a href="#/projects">My Projects</a></span>
+			<span ng-repeat="breadcrumb in breadcrumbs"> &gt;
+				 <a ng-hide="$last" href="{{breadcrumb.url}}">{{breadcrumb.label}}</a>
+				 <span ng-show="$last" class="here">{{breadcrumb.label}}</a>
+			</span>
+		</div>
 	</div>
 	<div ng-controller="MainCtrl">
 	<div ng-view></div>
-	<!-- 
-	<hr/>
-	<pre>$location.path() = {{location.path()}}</pre>
-    <pre>$route.current.templateUrl = {{route.current.templateUrl}}</pre>
-    <pre>$route.current.params = {{route.current.params}}</pre>
-    <pre>$route.current.scope.name = {{route.current.scope.name}}</pre>
-    <pre>$routeParams = {{routeParams}}</pre>
-	<a href="#/projects">projects</a> | 
-	<a href="#/project/1">project</a> |
-	<a href="#/project/1/questions">project x questions</a> |
-	<a href="#/project/1/question/23">project x question y</a>
-	 -->
 	</div>
-	
 </div>
-
