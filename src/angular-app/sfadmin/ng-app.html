@@ -6,19 +6,19 @@
 	<div class="row" ng-controller="UserCtrl" style="overflow:hidden">
 	<div class="span8">
 		<fieldset>
-		<legend>Users (total: {{userCount}})</legend>
+		<legend>Users (total: {{users.length}})</legend>
 		<form class="control-bar form-inline">
 		<button class="btn" ng-click="removeUsers()"><i class="icon-remove"></i>Remove Users</button>
 		<button class="btn" ng-click="addRecord()"><i class="icon-plus"></i>Add New</button>
 		</form>
-		<div listview search="queryUsers()" item-count="userCount" items-per-page="itemsPerPage" current-page="currentPage" select="">
+		<div listview search="queryUsers()" items="users" visible-items="visibleUsers" select="">
 		<table style="width: 100%">
 			<tr>
 				<th></th>
 				<th>Username</th>
 				<th>Full Name</th>
 			</tr>
-			<tr ng-repeat="user in users" ng-class="{active: isSelected(user)}" ng-click="selectRow($index, user)" >
+			<tr ng-repeat="user in visibleUsers" ng-class="{active: isSelected(user)}" ng-click="selectRow($index, user)" >
 				<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
 				<td>{{user.username}}</td>
 				<td>{{user.name}}</td>
