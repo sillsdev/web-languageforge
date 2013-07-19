@@ -10,10 +10,8 @@ angular.module('palaso.ui.listview', [])
 			scope : {
 				search : "&",
 				select : "&",
-				itemsPerPage: "=",
-				currentPage: "=",
-				itemCount: "=",
-				item: "="
+				items: "=",
+				visibleItems: "=",
 			},
 			controller: ["$scope", function($scope) {
 				$scope.noOfPages = 3;  // TODO: calculate this automatically
@@ -42,10 +40,21 @@ angular.module('palaso.ui.listview', [])
 				this.selectActive = function() {
 					this.select($scope.active);
 				};
-				this.query = function(currentPage, itemsPerPage) {
-					$scope.search();
-					console.log($scope.itemCount, "items in list view.");
-					$scope.noOfPages = Math.ceil($scope.itemCount / $scope.itemsPerPage);
+				this.updateVisibleItems = function() {
+					var sliceStart;
+					var sliceEnd;
+					if ($scope.currentPage) {
+						sliceStart = ($scope.currentPage-1) * $scope.itemsPerPage; // currentPage is 1-based
+						sliceEnd = $scope.currentPage * $scope.itemsPerPage;
+					} else {
+						// Default to page 1 if undefined
+						sliceStart = 0;
+						sliceEnd = $scope.itemsPerPage;
+					}
+					$scope.visibleItems = $scope.items.slice(sliceStart, sliceEnd);
+				}
+				this.updatePages = function() {
+					$scope.noOfPages = Math.ceil($scope.items.length / $scope.itemsPerPage);
 					if ($scope.currentPage > $scope.noOfPages) {
 						// This can happen if items have been deleted, for example
 						$scope.currentPage = $scope.noOfPages;
@@ -53,15 +62,28 @@ angular.module('palaso.ui.listview', [])
 					if ($scope.currentPage < 1) {
 						$scope.currentPage = 1;
 					}
+				}
+				this.query = function() {
+					$scope.search();
+					this.updatePages();
 //					$scope.search({
 //						term : $scope.term
 //					});
 				};
 			}],
 			link : function(scope, element, attrs, controller) {
-				scope.$watch('currentPage + itemsPerPage + itemCount', function(currentPage, itemsPerPage) {
-					controller.query(currentPage, itemsPerPage);
+				scope.$watch('currentPage', function() {
+					controller.updateVisibleItems();
 				});
+				scope.$watch('itemsPerPage', function() {
+					controller.updatePages();
+					controller.updateVisibleItems();
+				});
+				scope.$watch('items', function() {
+					controller.updatePages();
+					controller.updateVisibleItems();
+				}, true)
+				controller.query();
 			}
 		};
   }])

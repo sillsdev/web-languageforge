@@ -35,39 +35,19 @@ function UserCtrl($scope, userService) {
 	};
 
 	$scope.users = [];
-	$scope.userCount = 0;
 
-	$scope.getSlice = function(items, currentPage, itemsPerPage) {
-		console.log("Getting slice for page", currentPage, "at", itemsPerPage, "per page");
-		var sliceStart;
-		var sliceEnd;
-		if (currentPage) {
-			sliceStart = (currentPage-1) * itemsPerPage; // currentPage is 1-based
-			sliceEnd = currentPage * itemsPerPage;
-		} else {
-			// Default to page 1 if undefined
-			sliceStart = 0;
-			sliceEnd = itemsPerPage;
-		}
-		return items.slice(sliceStart, sliceEnd);
-	}
-	//$scope.queryUsers = function(currentPage, itemsPerPage) {
 	$scope.queryUsers = function(invalidateCache) {
 		var forceReload = (invalidateCache || (!$scope.users) || ($scope.users.length == 0));
 		if (forceReload) {
 			userService.list(function(result) {
 				if (result.ok) {
-					$scope.allUsers = result.data.entries;
-					$scope.userCount = result.data.count;
-					$scope.users = $scope.getSlice($scope.allUsers, $scope.currentPage, $scope.itemsPerPage);
-					//$scope.users = result.data.entries;
+					$scope.users = result.data.entries;
 				} else {
 					$scope.users = [];
 				};
 			});
 		} else {
-			// Don't reload from the DB, just update the current view
-			$scope.users = $scope.getSlice($scope.allUsers, $scope.currentPage, $scope.itemsPerPage);
+			// No need to refresh the cache: do nothing
 		}
 	};
 	//$scope.queryUsers();  // And run it right away to fetch the data for our list.
