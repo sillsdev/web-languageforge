@@ -7,6 +7,7 @@ angular.module(
 	.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', function($scope, textService, $routeParams) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
+		$scope.projectName = $routeParams.projectName;
 		// Listview Selection
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {

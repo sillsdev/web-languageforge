@@ -658,6 +658,10 @@ div.sf-breadcrumbs a:hover {
 	text-decoration: underline;
 }
 
+div.sf-breadcrumbs .here {
+	color: #202020;
+}
+
 /* Question Page */
 div#text {
 	overflow: auto;
