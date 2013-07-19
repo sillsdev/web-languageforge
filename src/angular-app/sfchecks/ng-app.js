@@ -3,10 +3,12 @@
 // Declare app level module which depends on filters, and services
 angular.module('sfchecks', 
 		[
-		 'sfchecks.filters', 
-		 'sfchecks.services', 
-		 'sfchecks.directives', 
-		 'sfchecks.controllers'
+		 'sfchecks.projects',
+		 'sfchecks.project',
+		 'sfchecks.questions',
+		 'sfchecks.question',
+		 'sfchecks.filters',
+		 'sfchecks.services'
 		])
 	.config(['$routeProvider', function($routeProvider) {
 	    $routeProvider.when(
@@ -38,5 +40,15 @@ angular.module('sfchecks',
 			}
 		);
 	    $routeProvider.otherwise({redirectTo: 'projects'});
+	}])
+	.controller('MainCtrl', ['$scope', '$route', '$routeParams', '$location', function($scope, $route, $routeParams, $location) {
+		$scope.route = $route;
+		$scope.location = $location;
+		$scope.routeParams = $routeParams;
+	}])
+	.controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService', function($scope, $rootScope, breadcrumbService) {
+		$rootScope.$on('$routeChangeSuccess', function(event, current) {
+			$scope.breadcrumbs = breadcrumbService.read();
+		});
 	}])
 	;
