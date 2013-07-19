@@ -35,15 +35,40 @@ function UserCtrl($scope, userService) {
 	};
 
 	$scope.users = [];
-	$scope.queryUsers = function() {
-		userService.list(function(result) {
-			if (result.ok) {
-				$scope.users = result.data.entries;
-				$scope.userCount = result.data.count;
-			} else {
-				$scope.users = [];
-			};
-		});
+	$scope.userCount = 0;
+
+	$scope.getSlice = function(items, currentPage, itemsPerPage) {
+		console.log("Getting slice for page", currentPage, "at", itemsPerPage, "per page");
+		var sliceStart;
+		var sliceEnd;
+		if (currentPage) {
+			sliceStart = (currentPage-1) * itemsPerPage; // currentPage is 1-based
+			sliceEnd = currentPage * itemsPerPage;
+		} else {
+			// Default to page 1 if undefined
+			sliceStart = 0;
+			sliceEnd = itemsPerPage;
+		}
+		return items.slice(sliceStart, sliceEnd);
+	}
+	//$scope.queryUsers = function(currentPage, itemsPerPage) {
+	$scope.queryUsers = function(invalidateCache) {
+		var forceReload = (invalidateCache || (!$scope.users) || ($scope.users.length == 0));
+		if (forceReload) {
+			userService.list(function(result) {
+				if (result.ok) {
+					$scope.allUsers = result.data.entries;
+					$scope.userCount = result.data.count;
+					$scope.users = $scope.getSlice($scope.allUsers, $scope.currentPage, $scope.itemsPerPage);
+					//$scope.users = result.data.entries;
+				} else {
+					$scope.users = [];
+				};
+			});
+		} else {
+			// Don't reload from the DB, just update the current view
+			$scope.users = $scope.getSlice($scope.allUsers, $scope.currentPage, $scope.itemsPerPage);
+		}
 	};
 	//$scope.queryUsers();  // And run it right away to fetch the data for our list.
 
@@ -83,7 +108,7 @@ function UserCtrl($scope, userService) {
 
 	$scope.updateRecord = function(record) {
 		console.log("updateRecord() called with ", record);
-		if (record === undefined || record === {}) {
+		if (record === undefined || JSON.stringify(record) == "{}") {
 			// Avoid adding blank records to the database
 			return null; // TODO: Or maybe just return a promise object that will do nothing...?
 		}
@@ -95,23 +120,29 @@ function UserCtrl($scope, userService) {
 //				record.groups = [null]; // TODO: Should we put something into the form to allow setting gropus? ... Later, not now.
 //			}
 		}
-		
-		userService.update(record, function(result) {
-			$scope.queryUsers();
-			record.id = result.data;
-			// TODO Don't do this as a separate API call here. CP 2013-07
-			$scope.changePassword(record);
-		});
-		
-		if (isNewRecord) {
-			// We just added a record... so clear the user data area so we can add a new one later
-			$scope.record = {};
-			// And focus the input box so the user can just keep typing
-			$scope.focusInput();
+		var afterUpdate;
+		if (record.password) {
+			afterUpdate = function(result) {
+				record.id = result.data;
+				// TODO Don't do this as a separate API call here. CP 2013-07
+				$scope.changePassword(record);
+			}
 		} else {
-			// We just edited a record, so remove focus from the user data area
-			$scope.blurInput();
+			afterUpdate = function(result) {
+				// Do nothing
+			}
 		}
+		userService.update(record, function(result) {
+			afterUpdate(result);
+			$scope.queryUsers(true);
+			if (isNewRecord) {
+				$scope.record = {};
+				$scope.focusInput();
+			} else {
+				$scope.blurInput();
+			}
+		});
+		return true;
 	};
 
 	$scope.removeUsers = function() {
@@ -125,10 +156,10 @@ function UserCtrl($scope, userService) {
 			return;
 		}
 		userService.remove(userIds, function(result) {
-			if (result.ok) {
-				$scope.queryUsers();
-				// TODO
-			}
+			// Whether result was OK or error, wipe selected list and reload data
+			$scope.selected = [];
+			$scope.vars.selectedIndex = -1;
+			$scope.queryUsers(true);
 		});
 	};
 

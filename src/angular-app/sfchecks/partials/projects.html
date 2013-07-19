@@ -1,4 +1,4 @@
-<legend>My Projects</legend>
+<h2 style="font-weight:normal">My Projects</h2>
 <p>
 <a ng-click="newProjectCollapsed = !newProjectCollapsed">Create New Project</a>
 </p>
@@ -22,7 +22,7 @@
 	<tbody>
 	<tr ng-repeat="project in projects" ng-class="{active: isSelected(project)}" >
 		<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(project)" ng-click="updateSelection($event, project)" /></td>
-		<td><a href="#/project/{{project.id}}">{{project.projectname}}</a></td>
+		<td><a href="#/project/{{project.projectname|urlencode}}/{{project.id}}">{{project.projectname}}</a></td>
 	</tr>
 	</tbody>
 </table>		

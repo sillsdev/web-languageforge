@@ -36,7 +36,7 @@ class UserModel extends \libraries\sf\MapperModel
 	{
 		UserModelMongoMapper::instance()->remove($this->id);
 	}
-	
+
 	public function read() {
 		parent::read();
 		if (!$this->avatar_ref) {
