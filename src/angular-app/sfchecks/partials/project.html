@@ -17,7 +17,7 @@
 <form class="control-bar form-inline">
 <button class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
 </form>
-<div listview search="queryTexts()" select="">
+<div listview search="queryTexts()" items="texts" visible-items="visibleTexts" select="">
 <table class="table" style="width: 100%">
 	<thead>
 	<tr>
@@ -26,7 +26,7 @@
 	</tr>
 	</thead>
 	<tbody>
-	<tr ng-repeat="text in texts" ng-class="{active: isSelected(text)}" >
+	<tr ng-repeat="text in visibleTexts" ng-class="{active: isSelected(text)}" >
 		<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(text)" ng-click="updateSelection($event, text)" /></td>
 		<td><a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{text.title|urlencode}}/{{text.id}}">{{text.title}}</a></td>
 	</tr>
