@@ -23,7 +23,7 @@ angular.module('sfchecks.services', [])
 				crumbs.push({"label": $r.questionName, "url": url});
 			}
 			return crumbs;
-		}
+		};
 		
 		return breadcrumbService;
 		
