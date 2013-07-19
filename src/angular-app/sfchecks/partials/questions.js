@@ -9,6 +9,8 @@ angular.module(
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
 		$scope.textId = textId;
+		$scope.projectName = $routeParams.projectName;
+		$scope.textName = $routeParams.textName;
 		// Listview Selection
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
