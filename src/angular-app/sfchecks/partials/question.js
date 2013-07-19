@@ -29,9 +29,11 @@ angular.module(
 		};
 		$scope.answers = 
 			[{
-				'content': 'Some relevant answer',
+				'content': 'Clearly Sherlock is referring to "the woman", but who the woman is I have no idea.',
 				'by': 'Robin',
+				'date': '17 July 2013',
 				'score': '6',
+				'avatarRef': '/images/avatar/turquoise4-otter-48x48.png',
 				'comments':
 				[{
 					'content': 'Some engaging comment',
@@ -43,7 +45,9 @@ angular.module(
 			}, {
 				'content': 'Some relevant answer',
 				'by': 'Cambell',
+				'date': '18 November 2013',
 				'score': '3',
+				'avatarRef': '/images/avatar/salmon-camel-48x48.png',
 				'comments':
 				[{
 					'content': 'Some engaging comment'
