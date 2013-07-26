@@ -57,12 +57,12 @@ angular.module(
 				'avatarRef': '/images/avatar/salmon-camel-48x48.png',
 				'comments':
 				[{
-					'content': 'Some engaging comment'
+					'content': 'Some engaging comment',
 					'by': 'Cambell',
 					'userid': '12345',
 					'date': '18 July 2013'
 				}, {
-					'content': 'Some dispute'
+					'content': 'Some dispute',
 					'by': 'Chris',
 					'userid': '12345',
 					'date': '18 July 2013'
