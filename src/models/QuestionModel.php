@@ -83,7 +83,7 @@ class AnswerModel extends CommentModel
 class QuestionListModel extends \libraries\sf\MapperListModel
 {
 
-	public function __construct($projectModel, $textId)
+	public function __construct($projectModel/*, $textId*/)
 	{
 		// TODO Include $textId in the query CP 2013-07
 		parent::__construct(
