@@ -4,7 +4,7 @@ namespace models;
 
 use libraries\sf\MongoMapper;
 use libraries\sf\MapperModel;
-use libraries\BCrypt;
+use libraries\Bcrypt;
 
 class PasswordModel_MongoMapper extends MongoMapper
 {
