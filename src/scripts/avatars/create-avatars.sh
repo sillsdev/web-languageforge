@@ -24,11 +24,13 @@ do
     do
         for color in `cat light-colors.txt`
         do
-            convert $inputfile -background $color -flatten -resize $size -gravity center -extent $size ${OUTDIR}/${color}-${animal}-${size}.png
+            convert $inputfile -background $color -flatten -resize $size -gravity center -extent $size -depth 8 -colors 64 ${OUTDIR}/${color}-${animal}-${size}.png
+            optipng -q -o7 ${OUTDIR}/${color}-${animal}-${size}.png
         done
         for color in `cat dark-colors.txt`
         do
-            convert $inputfile -negate -background $color -flatten -resize $size -gravity center -extent $size ${OUTDIR}/${color}-${animal}-${size}.png
+            convert $inputfile -negate -background $color -flatten -resize $size -gravity center -extent $size -depth 8 -colors 64 ${OUTDIR}/${color}-${animal}-${size}.png
+            optipng -q -o7 ${OUTDIR}/${color}-${animal}-${size}.png
         done
     done
 done
