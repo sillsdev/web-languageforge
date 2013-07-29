@@ -1,11 +1,14 @@
 <?php
 
-use libraries\sf\JsonRpcServer;
-use libraries\api\ProjectCommands;
-use libraries\api\QuestionCommands;
-use libraries\api\TextCommands;
-use libraries\api\UserCommands;
+use models\mapper\JsonDecoder;
 
+use libraries\palaso\JsonRpcServer;
+use models\commands\ProjectCommands;
+use models\commands\QuestionCommands;
+use models\commands\TextCommands;
+use models\commands\UserCommands;
+
+require_once(APPPATH . 'config/sf_config.php');
 
 require_once(APPPATH . 'models/ProjectModel.php');
 require_once(APPPATH . 'models/QuestionModel.php');
@@ -21,6 +24,11 @@ class Sf
 		ini_set('display_errors', 0);
 	}
 	
+	private function decode($model, $data) {
+		$decoder = new JsonDecoder('id');
+		$decoder->decode($model, $data);
+	}
+	
 	//---------------------------------------------------------------
 	// USER API
 	//---------------------------------------------------------------
@@ -32,7 +40,7 @@ class Sf
 	 */
 	public function user_update($params) {
 		$user = new \models\UserModel();
-		JsonRpcServer::decode($user, $params);
+		$this->decode($user, $params);
 		$result = $user->write();
 		return $result;
 	}
@@ -98,7 +106,7 @@ class Sf
 	 */
 	public function project_update($object) {
 		$project = new \models\ProjectModel();
-		JsonRpcServer::decode($project, $object);
+		$this->decode($project, $object);
 		$result = $project->write();
 		return $result;
 	}
@@ -135,7 +143,7 @@ class Sf
 	public function project_updateUser($projectId, $object) {
 		
 		$projectModel = new \models\ProjectModel($projectId);
-		$command = new \libraries\api\ProjectUserCommands($projectModel);
+		$command = new \models\commands\ProjectUserCommands($projectModel);
 		return $command->addUser($object);
 	}
 	
@@ -160,7 +168,7 @@ class Sf
 	public function text_update($projectId, $object) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel);
-		JsonRpcServer::decode($textModel, $object);
+		$this->decode($textModel, $object);
 		return $textModel->write();
 	}
 	
@@ -189,7 +197,7 @@ class Sf
 		$projectModel = new \models\ProjectModel($projectId);
 		$questionModel = new \models\QuestionModel($projectModel);
 		// TODO Watch the decode below. QuestionModel contains a textRef which needs to be decoded correctly. CP 2013-07
-		JsonRpcServer::decode($questionModel, $object);
+		$this->decode($questionModel, $object);
 		return $questionModel->write();
 	}
 	

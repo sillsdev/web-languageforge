@@ -80,7 +80,7 @@ $autoload['helper'] = array('loader');
 |
 */
 
-$autoload['config'] = array();
+$autoload['config'] = array('sf_config');
 
 
 /*
