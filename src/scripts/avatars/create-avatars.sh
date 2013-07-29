@@ -14,6 +14,29 @@
 # use different names in the user interface, so that (for exmaple) users are
 # selecting "dark brown" instead of "chocolate4".
 
+# Check for required command-line programs
+NOTFOUND=0
+CONVERT=$(which convert)
+OPTIPNG=$(which optipng)
+
+if [ ! -x "$CONVERT" ]; then
+    echo ImageMagick not found
+    echo Run "sudo apt-get install imagemagick" to install it
+    NOTFOUND=$((NOTFOUND + 1))
+fi
+
+if [ ! -x "$OPTIPNG" ]; then
+    echo optipng not found
+    echo Run "sudo apt-get install optipng" to install it
+    NOTFOUND=$((NOTFOUND + 1))
+fi
+
+if [ "$NOTFOUND" -gt 0 ]; then
+    echo Some required software was not found.
+    echo Install it and then rerun this script.
+    exit 2
+fi
+
 OUTDIR=../../images/avatar
 mkdir -p $OUTDIR
 for animal in `cat animals.txt`
@@ -24,11 +47,13 @@ do
     do
         for color in `cat light-colors.txt`
         do
-            convert $inputfile -background $color -flatten -resize $size -gravity center -extent $size ${OUTDIR}/${color}-${animal}-${size}.png
+            convert $inputfile -background $color -flatten -resize $size -gravity center -extent $size -depth 8 -colors 64 ${OUTDIR}/${color}-${animal}-${size}.png
+            optipng -q -o7 ${OUTDIR}/${color}-${animal}-${size}.png
         done
         for color in `cat dark-colors.txt`
         do
-            convert $inputfile -negate -background $color -flatten -resize $size -gravity center -extent $size ${OUTDIR}/${color}-${animal}-${size}.png
+            convert $inputfile -negate -background $color -flatten -resize $size -gravity center -extent $size -depth 8 -colors 64 ${OUTDIR}/${color}-${animal}-${size}.png
+            optipng -q -o7 ${OUTDIR}/${color}-${animal}-${size}.png
         done
     done
 done
