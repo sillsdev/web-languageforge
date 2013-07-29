@@ -218,6 +218,12 @@ class Sf
 		return $questionListModel;
 	}
 	
+	public function question_comment_dto($projectId, $questionId) {
+		$questionCommentDto = new \libraries\api\QuestionCommentDto($projectId, $questionId);
+		$questionCommentDto->build();
+		return $questionCommentDto;
+	}
+	
 }
 
 ?>
