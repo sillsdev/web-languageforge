@@ -1,6 +1,5 @@
 <?php
 
-require_once(APPPATH . 'libraries/sf/MongoMapper.php');
 require_once(TestPath . 'common/MockProjectModel.php');
 
 class MongoTestEnvironment
@@ -13,7 +12,7 @@ class MongoTestEnvironment
 	
 	public function __construct()
 	{
-		$this->_db = \libraries\sf\MongoStore::connect(SF_DATABASE);
+		$this->_db = \models\mapper\MongoStore::connect(SF_DATABASE);
 	}
 
 	/**
@@ -27,7 +26,7 @@ class MongoTestEnvironment
 			$collection->drop();
 		}
 		$projectModel = new MockProjectModel();
-		$projectDb = \libraries\sf\MongoStore::connect($projectModel->databaseName());
+		$projectDb = \models\mapper\MongoStore::connect($projectModel->databaseName());
 		$projectDb->drop();
 	}
 
