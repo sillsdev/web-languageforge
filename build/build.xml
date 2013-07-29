@@ -49,7 +49,7 @@
 	<target name="build" />
 
 	<target name="test-js">
-		 <exec executable="karma" searchpath="true">
+		 <exec executable="/usr/local/bin/karma">
 			 <arg value="start" />
 			 <arg file="test/karma.conf.js" />
 			 <arg value="--reporters" />
