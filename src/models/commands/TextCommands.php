@@ -1,6 +1,6 @@
 <?php
 
-namespace libraries\api;
+namespace models\commands;
 
 use models\ProjectModel;
 use models\TextModel;
