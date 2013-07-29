@@ -4,7 +4,7 @@ namespace models;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
-class CommentModelMongoMapper extends \libraries\sf\MongoMapper
+class CommentModelMongoMapper extends \models\mapper\MongoMapper
 {
 	/**
 	 * @var CommentModelMongoMapper[]
@@ -24,7 +24,7 @@ class CommentModelMongoMapper extends \libraries\sf\MongoMapper
 	
 }
 
-class CommentModel extends \libraries\sf\MapperModel
+class CommentModel extends \models\mapper\MapperModel
 {
 	public function __construct($projectModel, $id = NULL) {
 		parent::__construct(CommentModelMongoMapper::connect($projectModel->databaseName()), $id);
@@ -80,7 +80,7 @@ class AnswerModel extends CommentModel
 	public $comments;
 }
 
-class QuestionListModel extends \libraries\sf\MapperListModel
+class QuestionListModel extends \models\mapper\MapperListModel
 {
 
 	public function __construct($projectModel/*, $textId*/)

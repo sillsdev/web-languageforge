@@ -1,5 +1,5 @@
 <?php
-use libraries\api\LinkCommands;
+use models\commands\LinkCommands;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
