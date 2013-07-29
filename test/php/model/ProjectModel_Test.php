@@ -30,7 +30,7 @@ class TestProjectModel extends UnitTestCase {
 		//$model->users->refs = array('1234');
 		$id = $model->write();
 		$this->assertNotNull($id);
-		$this->assertIsA($id, 'string');
+		$this->assertIsA($id, 'models\mapper\Id');
 		$this->assertEqual($id, $model->id);
 		$otherModel = new ProjectModel($id);
 		$this->assertEqual($id, $otherModel->id);

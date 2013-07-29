@@ -2,8 +2,11 @@
 
 namespace models;
 
+use models\mapper\MongoMapper;
+
 use models\mapper\MongoStore;
 use models\mapper\ReferenceList;
+use models\mapper\Id;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
@@ -31,6 +34,7 @@ class ProjectModel extends \models\mapper\MapperModel
 {
 	public function __construct($id = NULL)
 	{
+		$this->id = new Id();
 		$this->users = new ReferenceList();
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
@@ -122,7 +126,7 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 	{
 		parent::__construct(
 				ProjectModelMongoMapper::instance(),
-				array('users' => array('$in' => array(new \MongoId($userId)))),
+				array('users' => array('$in' => array(MongoMapper::mongoID($userId)))),
 				array('projectname')
 		);
 	}

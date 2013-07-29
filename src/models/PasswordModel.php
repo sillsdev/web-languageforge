@@ -4,6 +4,7 @@ namespace models;
 
 use models\mapper\MongoMapper;
 use models\mapper\MapperModel;
+use models\mapper\Id;
 use libraries\Bcrypt;
 
 class PasswordModel_MongoMapper extends MongoMapper
@@ -24,6 +25,7 @@ class PasswordModel extends MapperModel
 {
 	public function __construct($id = NULL)
 	{
+		$this->id = new Id();
 		parent::__construct(PasswordModel_MongoMapper::instance(), $id);
 	}
 	
