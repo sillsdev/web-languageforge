@@ -2,7 +2,7 @@
 
 use models\QuestionListModel;
 
-use libraries\sf\MongoStore;
+use models\mapper\MongoStore;
 use models\ProjectModel;
 use models\QuestionModel;
 
