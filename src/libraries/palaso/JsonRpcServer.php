@@ -21,7 +21,7 @@ along with JSON-RPC PHP; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-namespace libraries\sf;
+namespace libraries\palaso;
 
 /**
  * This class build a json-RPC Server 1.0
@@ -99,47 +99,7 @@ class JsonRpcServer {
 		// finish
 		return true;
 	}
-	
-	/**
-	 * Sets the public properties of $model to values from $data[propertyName]
-	 * @param object $model
-	 * @param array $data
-	 */
-	public static function decode($model, $data)
-	{
-		$properties = get_object_vars($model);
-		foreach ($properties as $key => $value)
-		{
-			if (!array_key_exists($key, $data))
-			{
-				// oops // TODO Add to list, throw at end CP 2013-06
-				continue;
-			}
-			if (is_a($value, 'libraries\sf\ReferenceList')) {
-				// Do nothing.  We don't accept ReferenceList being updated via properties.
-				// Users should call the appropriate API method to create a reference.
-			} else {
-				$model->$key = $data[$key];
-			}
-		}
-	}
-	
-	public static function decodeReferenceList($model, $data) {
-		$model->refs = array();
-		if (!array_key_exists('refs', $data)) {
-			return;
-		}
-		$refsArray = $data['refs'];
-		foreach ($refsArray as $objectId) {
-			if (!is_a($objectId, 'MongoId')) {
-				throw new \Exception(
-						"Invalid type '" . gettype($objectId) . "' in ref collection '$key'"
-				);
-			}
-			array_push( $model->refs, (string)$objectId );
-		}
-	}
-	
+		
 }
 
 ?>

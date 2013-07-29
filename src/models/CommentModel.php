@@ -2,7 +2,7 @@
 
 namespace models;
 
-class CommentModelMongoMapper extends \libraries\sf\MongoMapper
+class CommentModelMongoMapper extends \models\mapper\MongoMapper
 {
 	/**
 	 * @var CommentModelMongoMapper[]
@@ -22,7 +22,7 @@ class CommentModelMongoMapper extends \libraries\sf\MongoMapper
 	
 }
 
-class CommentModel extends \libraries\sf\MapperModel
+class CommentModel extends \models\mapper\MapperModel
 {
 	public function __construct($databaseName, $id = NULL)
 	{

@@ -1,6 +1,6 @@
 <?php
 
-use libraries\api\TextCommands;
+use models\commands\TextCommands;
 use models\TextModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
