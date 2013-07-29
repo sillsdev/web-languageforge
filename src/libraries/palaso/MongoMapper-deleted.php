@@ -310,7 +310,7 @@ class MongoMapper
 				// oops // TODO Add to list, throw at end CP 2013-06
 				continue;
 			}
-			if (is_a($value, 'libraries\sf\ReferenceList')) {
+			if (is_a($value, 'models\mapper\ReferenceList')) {
 				$this->decodeReferenceList($model->$key, $data[$key]);
 			} else {
 				$model->$key = $data[$key];
@@ -360,7 +360,7 @@ class MongoMapper
 		}
 		foreach ($properties as $key => $value)
 		{
-			if (is_a($value, 'libraries\sf\ReferenceList')) {
+			if (is_a($value, 'models\mapper\ReferenceList')) {
 				$data[$key] = $this->encodeReferenceList($model->$key);
 			} else {
 				if ($key == 'projects' || $key == 'users') {

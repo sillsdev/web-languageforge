@@ -1,6 +1,6 @@
 <?php
 
-use libraries\api\QuestionCommands;
+use models\commands\QuestionCommands;
 use models\QuestionModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');

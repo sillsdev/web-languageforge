@@ -1,5 +1,8 @@
 <?php
-use libraries\api\LinkCommands;
+use models\commands\LinkCommands;
+use models\UserModel;
+use models\UserListModel;
+use models\ProjectModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -8,10 +11,6 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 require_once(SourcePath . "models/ProjectModel.php");
 require_once(SourcePath . "models/UserModel.php");
-
-use models\UserModel;
-use models\UserListModel;
-use models\ProjectModel;
 
 class TestUserModel extends UnitTestCase {
 

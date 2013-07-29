@@ -21,7 +21,7 @@ along with JSON-RPC PHP; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-namespace libraries\sf;
+namespace libraries\palaso;
 
 /**
  * This class build a json-RPC Server 1.0
@@ -115,7 +115,7 @@ class JsonRpcServer {
 				// oops // TODO Add to list, throw at end CP 2013-06
 				continue;
 			}
-			if (is_a($value, 'libraries\sf\ReferenceList')) {
+			if (is_a($value, 'models\mapper\ReferenceList')) {
 				// Do nothing.  We don't accept ReferenceList being updated via properties.
 				// Users should call the appropriate API method to create a reference.
 			} else {
