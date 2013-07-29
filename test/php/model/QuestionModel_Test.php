@@ -31,7 +31,7 @@ class TestQuestionModel extends UnitTestCase {
 		$model->comment = "SomeQuestion";
 		$id = $model->write();
 		$this->assertNotNull($id);
-		$this->assertIsA($id, 'string');
+		$this->assertIsA($id, 'models\mapper\Id');
 		$this->assertEqual($id, $model->id);
 		$otherModel = new QuestionModel(new MockProjectModel(), $id);
 		$this->assertEqual($id, $otherModel->id);

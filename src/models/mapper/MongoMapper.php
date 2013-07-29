@@ -51,6 +51,10 @@ class MongoMapper
 		return (string)$this->_db;
 	}
 	
+	public static function mongoID($id) {
+		return new \MongoId($id->id);
+	}
+	
 	public function readList($model, $query, $fields = array())
 	{
 		$cursor = $this->_collection->find($query, $fields);
@@ -68,16 +72,14 @@ class MongoMapper
 	 * @param Object $model
 	 * @param string $id
 	 */
-	public function read($model, $id)
-	{
-		if (!is_string($id) || empty($id)) {
+	public function read($model, $id) {
+		if (!is_a($id, 'models\mapper\Id') || empty($id)) {
 			$type = get_class($id);
 			throw new \Exception("Invalid id '$id' ($type)");
 		}
-		$data = $this->_collection->findOne(array("_id" => new \MongoId($id)));
-		if ($data === NULL)
-		{
-			throw new \Exception("Could not find id '$id'");
+		$data = $this->_collection->findOne(array("_id" => self::mongoID($id)));
+		if ($data === NULL) {
+			throw new \Exception("Could not find id '$id->id'");
 		}
 		try {
 			$decoder = new JsonDecoder($this->_idKey);
@@ -95,7 +97,7 @@ class MongoMapper
 	}
 
 	public function readSubDocument($model, $rootId, $property, $id) {
-		if (!is_string($rootId) || empty($rootId)) {
+		if (!is_a($rootId, 'models\mapper\Id') || empty($rootId)) {
 			$type = get_class($rootId);
 			throw new \Exception("Bad root id '$rootId' ($type)");
 		}		
@@ -127,20 +129,19 @@ class MongoMapper
 		return $id;
 	}
 	
-	public function remove($id)
-	{
-		if (!is_string($id) || empty($id)) {
+	public function remove($id) {
+		if (!is_a($id, 'models\mapper\Id') || empty($id)) {
 			throw new \Exception("Invalid id '$id'");
 		}
 		$result = $this->_collection->remove(
-			array('_id' => new \MongoId($id)),
+			array('_id' => self::mongoID($id)),
 			array('safe' => true)
 		);
 		return $result['n'];
 	}
 	
 	public function removeSubDocument($rootId, $property, $id) {
-		if (!is_string($rootId) || empty($rootId)) {
+		if (!is_a($rootId, 'models\mapper\Id') || empty($rootId)) {
 			throw new \Exception("Invalid rootId '$rootId'");
 		}
 		if (!is_string($id) || empty($id)) {
@@ -159,11 +160,10 @@ class MongoMapper
 	 * @param MongoCollection $collection
 	 * @param array $data
 	 * @param string $id
-	 * @return string
+	 * @return Id
 	 */
-	protected function update($collection, $data, $id)
-	{
-		if (!is_string($id) && !empty($id)) {
+	protected function update($collection, $data, $id) {
+		if (!is_a($id, 'models\mapper\Id') && !empty($id)) {
 			$type = get_class($id);
 			throw new \Exception("Bad id '$id' ($type)");
 		}
@@ -171,11 +171,11 @@ class MongoMapper
 			$id = NULL;
 		}
 		$result = $collection->update(
-				array('_id' => new \MongoId($id)),
+				array('_id' => new \MongoId($id->id)),
 				array('$set' => $data),
 				array('upsert' => true, 'multiple' => false, 'safe' => true)
 		);
-		return isset($result['upserted']) ? $result['upserted'].$id : $id;
+		return isset($result['upserted']) ? new Id((string)$result['upserted']) : $id;
 	}
 	
 	/**
@@ -188,7 +188,7 @@ class MongoMapper
 	 */
 	protected function updateSubDocument($collection, $data, $rootId, $property, $id)
 	{
-		if (!is_string($rootId)) {
+		if (!is_a($rootId, 'models\mapper\Id') ) {
 			$type = get_class($rootId);
 			throw new \Exception("Bad root id '$rootId' ($type)");
 		}		
