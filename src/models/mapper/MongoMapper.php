@@ -80,7 +80,8 @@ class MongoMapper
 			throw new \Exception("Could not find id '$id'");
 		}
 		try {
-			$this->decode($model, $data);
+			$decoder = new JsonDecoder($this->_idKey);
+			$decoder->decode($model, $data);
 		} catch (\Exception $ex) {
 			throw new \Exception("Exception thrown while reading '$id'", $ex->getCode(), $ex);
 		}
@@ -88,7 +89,8 @@ class MongoMapper
 	
 	public function write($model)
 	{
-		$data = $this->encode($model);
+		$encoder = new JsonEncoder($this->_idKey);
+		$data = $encoder->encode($model);
 		return $this->update($this->_collection, $data, $model->id);
 	}
 
@@ -109,11 +111,13 @@ class MongoMapper
 		$data = $data[$property][$id];
 		$data['_id'] = $id;
 		error_log(var_export($data, true));
-		$this->decode($model, $data);
+		$decoder = new JsonDecoder($this->_idKey);
+		$decoder->decode($model, $data);
 	}
 	
 	public function writeSubDocument($model, $rootId, $property) {
-		$data = $this->encode($model);
+		$encoder = new JsonEncoder($this->_idKey);
+		$data = $encoder->encode($model);
 		$idKey = $this->_idKey;
 		$id = $model->$idKey;
 		if (empty($id)) {
@@ -123,100 +127,6 @@ class MongoMapper
 		return $id;
 	}
 	
-	/**
-	 * Sets the public properties of $model to values from $values[propertyName]
-	 * @param object $model
-	 * @param array $values
-	 */
-	public function decode($model, $values)
-	{
-		$properties = get_object_vars($model);
-		$idKey = $this->_idKey;
-		// Map the Mongo _id to the property $idKey
-		if (array_key_exists($idKey, $properties))
-		{
-			$model->$idKey = (string)$values['_id']; // MongoId
-			unset($properties[$idKey]);
-		}
-		foreach ($properties as $key => $value)
-		{
-			if (!array_key_exists($key, $values))
-			{
-				// oops // TODO Add to list, throw at end CP 2013-06
-				continue;
-			}
-			if (is_a($value, 'models\mapper\ReferenceList')) {
-				$this->decodeReferenceList($model->$key, $values[$key]);
-			} else {
-				$model->$key = $values[$key];
-			}
-		}
-	}
-
-	/**
-	 * Decodes the mongo array into the ReferenceList $model
-	 * @param ReferenceList $model
-	 * @param array $data
-	 * @throws \Exception
-	 */
-	public function decodeReferenceList($model, $data) {
-		$model->refs = array();
-		if (array_key_exists('refs', $data)) {
-			// This is bogus data who put that here.
-			throw new \Exception(
-					"Bad refs structure 'refs'"
-			);
-		}
-		$refsArray = $data;
-		foreach ($refsArray as $objectId) {
-			if (!is_a($objectId, 'MongoId')) {
-				throw new \Exception(
-						"Invalid type '" . gettype($objectId) . "' in ref collection '$key'"
-				);
-			}
-			array_push( $model->refs, (string)$objectId );
-		}
-	}
-
-	/**
-	 * Sets key/values in the array from the public properties of $model
-	 * @param object $model
-	 * @return array
-	 */
-	public function encode($model)
-	{
-		$data = array();
-		$properties = get_object_vars($model);
-		$idKey = $this->_idKey;
-		// We don't want the 'idKey' in the data so remove that from the properties
-		if (array_key_exists($idKey, $properties))
-		{
-			unset($properties[$idKey]);
-		}
-		foreach ($properties as $key => $value)
-		{
-			if (is_a($value, 'models\mapper\ReferenceList')) {
-				$data[$key] = $this->encodeReferenceList($model->$key);
-			} else {
-				if ($key == 'projects' || $key == 'users') {
-					throw new \Exception("Possible bad write of '$key'\n" . var_export($model, true));
-				}
-				$data[$key] = $value;
-			}
-		}
-		return $data;
-	}
-
-	public function encodeReferenceList($model) {
-		$result = array_map(
-				function($id) {
-			return new \MongoId($id);
-		},
-		$model->refs
-		);
-		return $result;
-	}
-
 	public function remove($id)
 	{
 		if (!is_string($id) || empty($id)) {
