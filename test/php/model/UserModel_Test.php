@@ -32,7 +32,7 @@ class TestUserModel extends UnitTestCase {
 		$model->avatar_ref = "images/avatar/pinkbat.png";
 		$id = $model->write();
 		$this->assertNotNull($id);
-		$this->assertIsA($id, 'string');
+		$this->assertIsA($id, 'models\mapper\Id');
 		$this->assertEqual($id, $model->id);
 		$otherModel = new UserModel($id);
 		$this->assertEqual($id, $otherModel->id);
