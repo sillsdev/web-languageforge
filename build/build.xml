@@ -49,6 +49,13 @@
 	<target name="build" />
 
 	<target name="test">
+		 <exec executable="karma">
+			 <arg value="start" />
+			 <arg file="test/karma.conf.js" />
+			 <arg value="--reporters" />
+			 <arg value="teamcity" />
+			 <arg value="--single-run" />
+		 </exec>
 		 <echo>##teamcity[importData type='junit' path='${build.output}/AllTests.xml']</echo>
 		 <exec executable="php" dir="test/php" output="${build.output}/AllTests.xml"  error="${build.output}/error.log" failonerror="true">
 			 <arg line="AllTests.php" />
