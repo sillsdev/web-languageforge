@@ -2,7 +2,7 @@
 
 use models\TextListModel;
 
-use libraries\sf\MongoStore;
+use models\mapper\MongoStore;
 use models\ProjectModel;
 use models\TextModel;
 

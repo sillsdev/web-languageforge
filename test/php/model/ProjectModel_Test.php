@@ -1,5 +1,5 @@
 <?php
-use libraries\sf\MongoStore;
+use models\mapper\MongoStore;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');

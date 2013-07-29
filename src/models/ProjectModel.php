@@ -2,12 +2,12 @@
 
 namespace models;
 
-use libraries\sf\MongoStore;
-use libraries\sf\ReferenceList;
+use models\mapper\MongoStore;
+use models\mapper\ReferenceList;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
-class ProjectModelMongoMapper extends \libraries\sf\MongoMapper
+class ProjectModelMongoMapper extends \models\mapper\MongoMapper
 {
 	public static function instance()
 	{
@@ -27,7 +27,7 @@ class ProjectModelMongoMapper extends \libraries\sf\MongoMapper
 	}
 }
 
-class ProjectModel extends \libraries\sf\MapperModel
+class ProjectModel extends \models\mapper\MapperModel
 {
 	public function __construct($id = NULL)
 	{
@@ -59,7 +59,6 @@ class ProjectModel extends \libraries\sf\MapperModel
 	 */
 	public function addUser($userId) {
 		$this->users->_addRef($userId);
-
 	}
 	
 	
@@ -104,7 +103,7 @@ class ProjectModel extends \libraries\sf\MapperModel
 	
 }
 
-class ProjectListModel extends \libraries\sf\MapperListModel
+class ProjectListModel extends \models\mapper\MapperListModel
 {
 	public function __construct()
 	{
@@ -116,7 +115,7 @@ class ProjectListModel extends \libraries\sf\MapperListModel
 	}
 }
 
-class ProjectList_UserModel extends \libraries\sf\MapperListModel
+class ProjectList_UserModel extends \models\mapper\MapperListModel
 {
 
 	public function __construct($userId)

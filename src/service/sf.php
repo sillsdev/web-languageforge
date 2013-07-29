@@ -1,11 +1,12 @@
 <?php
 
-use libraries\sf\JsonRpcServer;
-use libraries\api\ProjectCommands;
-use libraries\api\QuestionCommands;
-use libraries\api\TextCommands;
-use libraries\api\UserCommands;
+use libraries\palaso\JsonRpcServer;
+use models\commands\ProjectCommands;
+use models\commands\QuestionCommands;
+use models\commands\TextCommands;
+use models\commands\UserCommands;
 
+require_once(APPPATH . 'config/sf_config.php');
 
 require_once(APPPATH . 'models/ProjectModel.php');
 require_once(APPPATH . 'models/QuestionModel.php');
@@ -135,7 +136,7 @@ class Sf
 	public function project_updateUser($projectId, $object) {
 		
 		$projectModel = new \models\ProjectModel($projectId);
-		$command = new \libraries\api\ProjectUserCommands($projectModel);
+		$command = new \models\commands\ProjectUserCommands($projectModel);
 		return $command->addUser($object);
 	}
 	

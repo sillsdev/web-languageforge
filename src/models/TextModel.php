@@ -4,7 +4,7 @@ namespace models;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
-class TextModelMongoMapper extends \libraries\sf\MongoMapper
+class TextModelMongoMapper extends \models\mapper\MongoMapper
 {
 	/**
 	 * @var TextModelMongoMapper[]
@@ -24,7 +24,7 @@ class TextModelMongoMapper extends \libraries\sf\MongoMapper
 	
 }
 
-class TextModel extends \libraries\sf\MapperModel
+class TextModel extends \models\mapper\MapperModel
 {
 	/**
 	 * @var ProjectModel;
@@ -56,7 +56,7 @@ class TextModel extends \libraries\sf\MapperModel
 	
 }
 
-class TextListModel extends \libraries\sf\MapperListModel
+class TextListModel extends \models\mapper\MapperListModel
 {
 
 	public function __construct($projectModel)
