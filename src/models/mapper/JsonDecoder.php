@@ -22,7 +22,7 @@ class JsonDecoder {
 		if ($this->_idKey) {
 			$idKey = $this->_idKey;
 			// Map the Mongo _id to the property $idKey
-			if (array_key_exists($idKey, $properties))
+			if (array_key_exists($idKey, $properties) && array_key_exists('_id', $values))
 			{
 				$model->$idKey = (string)$values['_id']; // MongoId
 				unset($properties[$idKey]);
@@ -52,10 +52,8 @@ class JsonDecoder {
 	public function decodeReferenceList($model, $data) {
 		$model->refs = array();
 		if (array_key_exists('refs', $data)) {
-			// This is bogus data who put that here.
-			throw new \Exception(
-					"Bad refs structure 'refs'"
-			);
+			// This likely cam from an API client, who shouldn't be sending this.
+			return;
 		}
 		$refsArray = $data;
 		foreach ($refsArray as $objectId) {
