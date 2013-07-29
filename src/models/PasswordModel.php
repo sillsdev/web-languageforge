@@ -2,9 +2,9 @@
 
 namespace models;
 
-use libraries\sf\MongoMapper;
-use libraries\sf\MapperModel;
-use libraries\BCrypt;
+use models\mapper\MongoMapper;
+use models\mapper\MapperModel;
+use libraries\Bcrypt;
 
 class PasswordModel_MongoMapper extends MongoMapper
 {

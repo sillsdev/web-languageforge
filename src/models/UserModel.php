@@ -2,11 +2,11 @@
 
 namespace models;
 
-use libraries\sf\ReferenceList;
+use models\mapper\ReferenceList;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
-class UserModelMongoMapper extends \libraries\sf\MongoMapper
+class UserModelMongoMapper extends \models\mapper\MongoMapper
 {
 	public static function instance()
 	{
@@ -20,7 +20,7 @@ class UserModelMongoMapper extends \libraries\sf\MongoMapper
 	
 }
 
-class UserModel extends \libraries\sf\MapperModel
+class UserModel extends \models\mapper\MapperModel
 {
 	public function __construct($id = NULL)
 	{
@@ -163,7 +163,7 @@ class UserModel extends \libraries\sf\MapperModel
 	public $feedback_group;
 }
 
-class UserListModel extends \libraries\sf\MapperListModel
+class UserListModel extends \models\mapper\MapperListModel
 {
 
 	public function __construct()
@@ -177,7 +177,7 @@ class UserListModel extends \libraries\sf\MapperListModel
 	
 }
 
-class UserTypeaheadModel extends \libraries\sf\MapperListModel
+class UserTypeaheadModel extends \models\mapper\MapperListModel
 {
 	public function __construct($term)
 	{
@@ -190,7 +190,7 @@ class UserTypeaheadModel extends \libraries\sf\MapperListModel
 	
 }
 
-class UserList_ProjectModel extends \libraries\sf\MapperListModel
+class UserList_ProjectModel extends \models\mapper\MapperListModel
 {
 
 	public function __construct($projectId)

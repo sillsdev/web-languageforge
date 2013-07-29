@@ -1,5 +1,5 @@
 <?php
-use libraries\api\ProjectCommands;
+use models\commands\ProjectCommands;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');

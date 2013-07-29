@@ -48,6 +48,14 @@
 
 	<target name="build" />
 
+	<target name="test">
+		 <echo>##teamcity[importData type='junit' path='${build.output}/AllTests.xml']</echo>
+		 <exec executable="php" dir="test/php" output="${build.output}/AllTests.xml"  error="${build.output}/error.log" failonerror="true">
+			 <arg line="AllTests.php" />
+			 <arg value="-j" />
+		 </exec>
+	 </target>
+			
 	<target name="copyWeb">
 		<copy todir="${build.output}/package/htdocs">
 			<fileset dir="src"/>
