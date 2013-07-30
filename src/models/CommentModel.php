@@ -2,42 +2,20 @@
 
 namespace models;
 
-class CommentModelMongoMapper extends \models\mapper\MongoMapper
+class CommentModel
 {
 	/**
-	 * @var CommentModelMongoMapper[]
+	 * 
+	 * @param Id $id
 	 */
-	private static $_pool = array();
-	
-	/**
-	 * @param string $databaseName
-	 * @return CommentModelMongoMapper
-	 */
-	public static function connect($databaseName) {
-		if (!isset(static::$_pool[$databaseName])) {
-			static::$_pool[$databaseName] = new CommentModelMongoMapper($databaseName, 'questions');
-		}
-		return static::$_pool[$databaseName];
-	}
-	
-}
-
-class CommentModel extends \models\mapper\MapperModel
-{
-	public function __construct($databaseName, $id = NULL)
+	public function __construct()
 	{
-		$this->projects = array();
-		parent::__construct(CommentModelMongoMapper::connect($databaseName), $id);
-	}
-	
-	public static function remove($databaseName, $id)
-	{
-		CommentModelMongoMapper::connect($databaseName)->remove($id);
+		// TODO: determine that id is of class id
 	}
 
 	public $id;
 	
-	public $comment;
+	public $content;
 	
 	public $dateCreated;
 	
