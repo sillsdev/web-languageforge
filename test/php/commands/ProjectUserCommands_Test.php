@@ -29,7 +29,7 @@ class TestProjectUserCommands extends UnitTestCase {
 		);
 		$command = new models\commands\ProjectUserCommands($project);
 		$userId = $command->addUser($object);
-		$this->assertTrue(is_string($userId), "userId is not a string");
+		$this->assertIsA($userId, 'models\mapper\Id');
 		
 		$user = new models\UserModel($userId);
 		$this->assertEqual('Some User', $user->name);

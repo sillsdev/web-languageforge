@@ -8,7 +8,7 @@ class MapperModel
 
 	protected function __construct($mapper, $id = NULL) {
 		$this->_mapper = $mapper;
-		if (!empty($id))
+		if (!Id::isEmpty($id))
 		{
 			$this->_mapper->read($this, $id);
 		}
@@ -29,7 +29,7 @@ class MapperModel
 	 */
 	function write() {
 		$this->id = $this->_mapper->write($this);
-		return $this->id;
+		return $this->id->id;
 	}
 	
 }
