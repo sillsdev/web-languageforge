@@ -35,7 +35,7 @@ angular.module(
 				'userid': '12345',
 				'date': '17 July 2013',
 				'score': '6',
-				'avatar_ref': '/images/avatar/turquoise4-otter-48x48.png',
+				'avatar_ref': '/images/avatar/turquoise4-otter-128x128.png',
 				'comments':
 				[{
 					'content': 'Some engaging comment',
@@ -54,7 +54,7 @@ angular.module(
 				'userid': '12345',
 				'date': '18 November 2013',
 				'score': '3',
-				'avatar_ref': '/images/avatar/salmon-camel-48x48.png',
+				'avatar_ref': '/images/avatar/salmon-camel-128x128.png',
 				'comments':
 				[{
 					'content': 'Some engaging comment',
