@@ -2,23 +2,61 @@
 
 namespace models;
 
-class QuestionModel extends CommentModel
+class QuestionModelMongoMapper extends \models\mapper\MongoMapper
 {
-	public function __construct($projectModel, $id = NULL) {
-		parent::__construct($projectModel, $id);
-		$this->answers = array();
-	}
+	/**
+	 * @var QuestionModelMongoMapper[]
+	 */
+	private static $_pool = array();
 	
 	/**
-	 * @var array<AnswerModel>
+	 * @param string $databaseName
+	 * @return CommentModelMongoMapper
 	 */
-	public $answers;
+	public static function connect($databaseName) {
+		if (!isset(static::$_pool[$databaseName])) {
+			static::$_pool[$databaseName] = new CommentModelMongoMapper($databaseName, 'questions');
+		}
+		return static::$_pool[$databaseName];
+	}
+	
+}
+
+class QuestionModel extends \models\mapper\MapperModel
+{
+	public function __construct($projectModel, $id = NULL)
+	{
+		$this->_projectModel = $projectModel;
+		$databaseName = $projectModel->databaseName();
+		parent::__construct(QuestionModelMongoMapper::connect($databaseName), $id);
+	}	
+	
+	public $id;
+	
+	public $title;
 	
 	/**
 	 * 
 	 * @var string A content description/explanation of the question being asked
 	 */
 	public $description;
+	
+	/**
+	 * 
+	 * @var \MongoDate
+	 */
+	public $dateCreated;
+	
+	/**
+	 * 
+	 * @var \MongoDate
+	 */
+	public $dateEdited;
+	
+	/**
+	 * @var array<AnswerModel>
+	 */
+	public $answers;
 	
 	/**
 	 * 
@@ -34,7 +72,7 @@ class QuestionListModel extends \models\mapper\MapperListModel
 	{
 		// TODO Include $textId in the query CP 2013-07
 		parent::__construct(
-			CommentModelMongoMapper::connect($projectModel->databaseName()),
+			QuestionModelMongoMapper::connect($projectModel->databaseName()),
 			array('comment' => array('$regex' => '')),
 			array('comment')
 		);
