@@ -1,16 +1,7 @@
 <?php
 namespace models\mapper;
 
-class JsonEncoder {
-	
-	/**
-	 * @var string
-	 */
-	private $_idKey;
-	
-	public function __construct($idKey = null) {
-		$this->_idKey = $idKey;
-	}
+class MongoEncoder {
 	
 	/**
 	 * Sets key/values in the array from the public properties of $model

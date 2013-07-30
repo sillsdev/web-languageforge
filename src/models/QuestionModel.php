@@ -69,9 +69,16 @@ class QuestionModel extends CommentModel
 	 * @param Id $id
 	 */
 	public function __construct($projectModel, $id = NULL) {
-		parent::__construct($projectModel, $id);
 		$this->_projectModel = $projectModel;
 		$this->answers = new ArrayOf(ArrayOf::OBJECT, 'generateAnswer');
+		parent::__construct($projectModel, $id);
+	}
+	
+	public function __set($name, $value) {
+		if (in_array($name, array('answers'))) {
+			$className = get_class($this);
+			throw new \Exception("Attempt to set '$name' in '$className'");
+		}
 	}
 	
 	public function generateAnswer($data = null) {

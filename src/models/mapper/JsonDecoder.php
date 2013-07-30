@@ -4,15 +4,6 @@ namespace models\mapper;
 class JsonDecoder {
 	
 	/**
-	 * @var string
-	 */
-	private $_idKey;
-	
-	public function __construct($idKey = null) {
-		$this->_idKey = $idKey;
-	}
-	
-	/**
 	 * Sets the public properties of $model to values from $values[propertyName]
 	 * @param object $model
 	 * @param array $values A mixed array of JSON (like) data.
@@ -30,13 +21,19 @@ class JsonDecoder {
 // 		}
 		foreach ($properties as $key => $value) {
 			if (is_a($value, 'models\mapper\Id')) {
-				$this->decodeId($model->$key, $values['_id']); // '_id' is the id used by Mongo
+				$this->decodeId($key, $model, $values);
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
-				$this->decodeArrayOf($model->$key, $values[$key]);
+				if (array_key_exists($key, $values)) {
+					$this->decodeArrayOf($model->$key, $values[$key]);
+				}
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
-				$this->decodeReferenceList($model->$key, $values[$key]);
+				if (array_key_exists($key, $values)) {
+					$this->decodeReferenceList($model->$key, $values[$key]);
+				}
 			} else if (is_object($value)) {
-				$this->decode($model->$key, $values[$key]);
+				if (array_key_exists($key, $values)) {
+					$this->decode($model->$key, $values[$key]);
+				}
 			} else {
 				if (!array_key_exists($key, $values)) {
 					// oops // TODO Add to list, throw at end CP 2013-06
@@ -51,19 +48,13 @@ class JsonDecoder {
 	}
 
 	/**
-	 * @param Id $model
-	 * @param array $data
+	 * @param string $key
+	 * @param object $model
+	 * @param array $values
 	 * @throws \Exception
 	 */
-	public function decodeId($model, $data) {
-		if (is_array($data)) {
-			throw new \Exception("Bad data when id expected. '$data'");
-		}
-		if (is_a($data, 'MongoId')) {
-			$model->id = (string)$data;
-		} else {
-			$model->id = $data;
-		}
+	public function decodeId($key, $model, $values) {
+		$model->$key = new Id($values[$key]);
 	}
 	
 	/**
