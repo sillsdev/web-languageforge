@@ -51,7 +51,7 @@ class TestUserAPI extends UnitTestCase {
 	}
 	
 	function testUserCRUD_CRUDOK() {
-		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", true);
+		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
 		
 		// Create
 		$param = array(
@@ -61,7 +61,6 @@ class TestUserAPI extends UnitTestCase {
 		);
 		$id = $api->user_update($param);
 		$this->assertNotNull($id);
-		var_dump($id);
 		$this->assertEqual(24, strlen($id));
 		
 		// Read

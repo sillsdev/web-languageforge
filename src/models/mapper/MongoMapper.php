@@ -52,7 +52,13 @@ class MongoMapper
 	}
 	
 	public static function mongoID($id = null) {
-		return Id::isEmpty($id) ? new \MongoId() : new \MongoId($id->id);
+		if (!Id::isEmpty($id)) {
+			if (!is_a($id, 'models\mapper\Id')) {
+				throw new \Exception("Invalid id; Id expected " . $id);
+			}
+			return new \MongoId($id->id);
+		}
+		return new \MongoId(); 
 	}
 	
 	public function readList($model, $query, $fields = array())
@@ -73,7 +79,7 @@ class MongoMapper
 	 * @param string $id
 	 */
 	public function read($model, $id) {
-		if (!is_a($id, 'models\mapper\Id') || empty($id)) {
+		if (!is_a($id, 'models\mapper\Id')) {
 			$type = get_class($id);
 			throw new \Exception("Invalid id '$id' ($type)");
 		}

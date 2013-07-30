@@ -25,6 +25,9 @@ class ReferenceList {
 	 * @param string $id
 	 */
 	public function _addRef($id) {
+		if (!is_a($id, 'models\mapper\Id')) {
+			throw new \Exception("Bad type " . gettype($id));
+		}
 		if (!in_array($id, $this->refs)) {
 			$this->refs[] = $id;
 		}
