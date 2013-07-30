@@ -8,6 +8,9 @@ class MapperModel
 
 	protected function __construct($mapper, $id = NULL) {
 		$this->_mapper = $mapper;
+		if (!empty($id) && !is_a($id, 'models\mapper\Id')) {
+			throw new \Exception("Invalid id ");
+		}
 		if (!Id::isEmpty($id))
 		{
 			$this->_mapper->read($this, $id);

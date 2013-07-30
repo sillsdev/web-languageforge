@@ -2,6 +2,8 @@
 
 namespace models\commands;
 
+use models\mapper\Id;
+
 class UserCommands
 {
 	
@@ -12,7 +14,7 @@ class UserCommands
 	public static function deleteUsers($userIds) {
 		$count = 0;
 		foreach ($userIds as $userId) {
-			$userModel = new \models\UserModel($userId);
+			$userModel = new \models\UserModel(new Id($userId));
 			$userModel->remove();
 			$count++;
 		}
