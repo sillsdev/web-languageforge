@@ -5,12 +5,26 @@ namespace models\mapper;
 class MapperModel
 {
 	protected $_mapper;
+	
+	/**
+	 * 
+	 * @var int - unix epoch in seconds
+	 */
+	public $dateCreated;
+	
+	/**
+	 * 
+	 * @var int - unix epoch in seconds
+	 */
+	public $dateEdited;
 
 	protected function __construct($mapper, $id = NULL) {
 		$this->_mapper = $mapper;
 		if (!empty($id))
 		{
 			$this->_mapper->read($this, $id);
+		} else {
+			$this->dateCreated = time();
 		}
 	}
 	
@@ -28,10 +42,10 @@ class MapperModel
 	 * @see MongoMapper::write()
 	 */
 	function write() {
+		$this->dateEdited = time();
 		$this->id = $this->_mapper->write($this);
 		return $this->id;
 	}
-	
 }
 
 ?>
