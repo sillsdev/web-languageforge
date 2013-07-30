@@ -1,12 +1,13 @@
 <?php
 
-use models\mapper\JsonDecoder;
-
 use libraries\palaso\JsonRpcServer;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
+use models\mapper\Id;
+use models\mapper\JsonEncoder;
+use models\mapper\JsonDecoder;
 
 require_once(APPPATH . 'config/sf_config.php');
 
@@ -25,7 +26,7 @@ class Sf
 	}
 	
 	private function decode($model, $data) {
-		$decoder = new JsonDecoder('id');
+		$decoder = new JsonDecoder();
 		$decoder->decode($model, $data);
 	}
 	
@@ -50,8 +51,9 @@ class Sf
 	 * @param string $id
 	 */
 	public function user_read($id) {
-		$user = new \models\UserModel($id);
-		return $user;
+		$user = new \models\UserModel(new Id($id));
+		$encoder = new JsonEncoder();
+		return $encoder->encode($user);
 	}
 	
 	/**

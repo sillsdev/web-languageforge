@@ -13,7 +13,7 @@ class Id {
 	}
 	
 	public function __toString() {
-		return $this->id;
+		return empty($this->id) ? '_EmptyId_' : $this->id;
 	}
 }
 
