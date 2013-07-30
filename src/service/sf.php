@@ -21,7 +21,7 @@ class Sf
 	public function __construct()
 	{
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
-		ini_set('display_errors', 0);
+// 		ini_set('display_errors', 0);
 	}
 	
 	private function decode($model, $data) {

@@ -8,6 +8,10 @@ class Id {
 		$this->id = $id;
 	}
 	
+	public static function isEmpty($id) {
+		return empty($id) || empty($id->id);
+	}
+	
 	public function __toString() {
 		return $this->id;
 	}

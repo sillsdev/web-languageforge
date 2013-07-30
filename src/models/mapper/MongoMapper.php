@@ -51,8 +51,8 @@ class MongoMapper
 		return (string)$this->_db;
 	}
 	
-	public static function mongoID($id) {
-		return new \MongoId($id->id);
+	public static function mongoID($id = null) {
+		return Id::isEmpty($id) ? new \MongoId() : new \MongoId($id->id);
 	}
 	
 	public function readList($model, $query, $fields = array())
@@ -82,7 +82,7 @@ class MongoMapper
 			throw new \Exception("Could not find id '$id->id'");
 		}
 		try {
-			$decoder = new JsonDecoder($this->_idKey);
+			$decoder = new MongoDecoder($this->_idKey);
 			$decoder->decode($model, $data);
 		} catch (\Exception $ex) {
 			throw new \Exception("Exception thrown while reading '$id'", $ex->getCode(), $ex);
@@ -91,7 +91,7 @@ class MongoMapper
 	
 	public function write($model)
 	{
-		$encoder = new JsonEncoder($this->_idKey);
+		$encoder = new MongoEncoder($this->_idKey);
 		$data = $encoder->encode($model);
 		return $this->update($this->_collection, $data, $model->id);
 	}
@@ -113,12 +113,12 @@ class MongoMapper
 		$data = $data[$property][$id];
 		$data['_id'] = $id;
 		error_log(var_export($data, true));
-		$decoder = new JsonDecoder($this->_idKey);
+		$decoder = new MongoDecoder($this->_idKey);
 		$decoder->decode($model, $data);
 	}
 	
 	public function writeSubDocument($model, $rootId, $property) {
-		$encoder = new JsonEncoder($this->_idKey);
+		$encoder = new MongoEncoder($this->_idKey);
 		$data = $encoder->encode($model);
 		$idKey = $this->_idKey;
 		$id = $model->$idKey;
@@ -167,11 +167,9 @@ class MongoMapper
 			$type = get_class($id);
 			throw new \Exception("Bad id '$id' ($type)");
 		}
-		if (!$id) {
-			$id = NULL;
-		}
+		$mongoId = Id::isEmpty($id) ? self::mongoID(null) : self::mongoID($id);
 		$result = $collection->update(
-				array('_id' => new \MongoId($id->id)),
+				array('_id' => $mongoId),
 				array('$set' => $data),
 				array('upsert' => true, 'multiple' => false, 'safe' => true)
 		);
