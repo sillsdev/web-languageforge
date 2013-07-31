@@ -1,6 +1,8 @@
 <?php
 namespace models\mapper;
 
+use libraries\palaso\CodeGuard;
+
 class ReferenceList {
 	public $refs;
 
@@ -25,8 +27,11 @@ class ReferenceList {
 	 * @param string $id
 	 */
 	public function _addRef($id) {
-		if (!in_array($id, $this->refs)) {
-			$this->refs[] = $id;
+		CodeGuard::checkTypeAndThrow($id, 'string');
+		// CARRY ON HERE CP :-)
+		$idModel = new Id($id);
+		if (!in_array($idModel, $this->refs)) {
+			$this->refs[] = $idModel;
 		}
 		// TODO log if ref already exists?
 	}

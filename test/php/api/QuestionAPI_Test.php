@@ -56,7 +56,7 @@ class TestQuestionAPI extends UnitTestCase {
 		$e = new QuestionAPITestEnvironment();
 		$projectId = $e->createProject(SF_TESTPROJECT);
 		$textId = $e->createText($projectId, 'Test Text 1');
-		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
+		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", true);
 		
 		// List
 		$result = $api->question_list($projectId, $textId);

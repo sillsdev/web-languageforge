@@ -23,7 +23,7 @@ class TestTextCommands extends UnitTestCase {
 		$text->title = "Some Title";
 		$text->write();
 		
-		TextCommands::deleteTexts($project->id, array($text->id));
+		TextCommands::deleteTexts($project->id->asString(), array($text->id->asString()));
 		
 	}
 	
