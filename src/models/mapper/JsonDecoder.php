@@ -9,8 +9,9 @@ class JsonDecoder {
 	 * Sets the public properties of $model to values from $values[propertyName]
 	 * @param object $model
 	 * @param array $values A mixed array of JSON (like) data.
+	 * @param bool $isRootDocument true if this is the root document, false if a sub-document. Defaults to true
 	 */
-	public function decode($model, $values) {
+	public function decode($model, $values, $isRootDocument = true) {
 		$properties = get_object_vars($model);
 // 		if ($this->_idKey) {
 // 			$idKey = $this->_idKey;
@@ -23,7 +24,7 @@ class JsonDecoder {
 // 		}
 		foreach ($properties as $key => $value) {
 			if (is_a($value, 'models\mapper\Id')) {
-				$this->decodeId($key, $model, $values);
+				$this->decodeId($key, $model, $values, $isRootDocument);
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
 				if (array_key_exists($key, $values)) {
 					$this->decodeArrayOf($model->$key, $values[$key]);
@@ -53,9 +54,10 @@ class JsonDecoder {
 	 * @param string $key
 	 * @param object $model
 	 * @param array $values
+	 * @param bool $isRootDocument
 	 * @throws \Exception
 	 */
-	public function decodeId($key, $model, $values) {
+	public function decodeId($key, $model, $values, $isRootDocument) {
 		$model->$key = new Id($values[$key]);
 	}
 	
@@ -70,7 +72,7 @@ class JsonDecoder {
 		foreach ($data as $item) {
 			if ($model->getType() == ArrayOf::OBJECT) {
 				$object = $model->generate($item);
-				$this->decode($object, $item);
+				$this->decode($object, $item, false);
 				$model->data[] = $object;
 			} else if ($model->getType() == ArrayOf::VALUE) {
 				if (is_array($item)) {
