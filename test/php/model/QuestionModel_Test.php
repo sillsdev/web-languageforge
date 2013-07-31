@@ -1,5 +1,7 @@
 <?php
 
+use models\AnswerModel;
+
 use models\QuestionListModel;
 
 use models\mapper\MongoStore;
@@ -60,6 +62,24 @@ class TestQuestionModel extends UnitTestCase {
 		// List
 		$list->read();
 		$this->assertEqual(0, $list->count);
+		
+	}
+
+	function testAnswerEncode_Works() {
+		$projectModel = new MockProjectModel();
+		
+		$question = new QuestionModel($projectModel);
+		
+		$answer = new AnswerModel();
+		$answer->content = 'Some Answer';
+		$question->answers->append($answer);
+		$id = $question->write();
+		
+		$otherQuestion = new QuestionModel($projectModel, $id);
+		$this->assertEqual(1, $otherQuestion->answers->count());
+		$otherAnswer = $otherQuestion->answers->data[0];
+		$this->assertEqual('Some Answer', $otherAnswer->content);
+		$this->assertIsA($otherAnswer, 'models\AnswerModel');
 		
 	}
 

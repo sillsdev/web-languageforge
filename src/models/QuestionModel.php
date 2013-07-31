@@ -31,7 +31,12 @@ class QuestionModel extends \models\mapper\MapperModel
 		$this->_projectModel = $projectModel;
 		$this->id = new Id();
 		$this->textId = new Id();
-		$this->answers = new ArrayOf(ArrayOf::OBJECT, 'generateAnswer');
+		$this->answers = new ArrayOf(
+			ArrayOf::OBJECT,
+			function() {
+				return new AnswerModel();
+			}
+		);
 		
 		$databaseName = $projectModel->databaseName();
 		parent::__construct(QuestionModelMongoMapper::connect($databaseName), $id);
@@ -39,10 +44,6 @@ class QuestionModel extends \models\mapper\MapperModel
 	
 	public static function remove($databaseName, $id) {
 		QuestionModelMongoMapper::connect($databaseName)->remove($id);
-	}
-	
-	public function generateAnswer($data = null) {
-		return new AnswerModel($this->_projectModel);
 	}
 	
 	public $id;
