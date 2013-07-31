@@ -8,7 +8,7 @@ class MongoEncoder {
 	 * @param object $model
 	 * @return array
 	 */
-	public function encode($model) {
+	public function encode($model, $encodeId = false) {
 		$data = array();
 		$properties = get_object_vars($model);
 // 		if ($this->_idKey) {
@@ -21,7 +21,9 @@ class MongoEncoder {
 // 		}
 		foreach ($properties as $key => $value) {
 			if (is_a($value, 'models\mapper\Id')) {
-				$data[$key] = $this->encodeId($model->$key);
+				if ($encodeId) {
+					$data[$key] = $this->encodeId($model->$key);
+				}
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
 				$data[$key] = $this->encodeArrayOf($model->$key);
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
@@ -64,7 +66,7 @@ class MongoEncoder {
 		$result = array();
 		foreach ($model->data as $item) {
 			if (is_object($item)) {
-				$result[] = $this->encode($item);
+				$result[] = $this->encode($item, true);
 			} else {
 				// Data type protection
 				if (is_array($item)) {
