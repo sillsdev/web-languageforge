@@ -53,8 +53,11 @@ class MongoEncoder {
 	 * @return string
 	 */
 	public function encodeId($model) {
-		$result = $model->id;
-		return $result;
+		$mongoId = MongoMapper::mongoID($model->id);
+		if (empty($model->id)) {
+			$model->id = (string)$mongoId;
+		}
+		return $mongoId;
 	}
 
 	/**

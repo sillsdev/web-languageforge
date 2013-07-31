@@ -3,20 +3,16 @@
 namespace models;
 
 use models\mapper\Id;
+use models\mapper\ArrayItem;
 
 class CommentModel
 {
 
 	public function __construct() {
 		$this->id = new Id();
-		$this->projects = array();
-		parent::__construct(CommentModelMongoMapper::connect($databaseName), $id);
+		$this->userRef = new Id();
 	}
 	
-	public static function remove($databaseName, $id) {
-		// TODO: determine that id is of class id
-	}
-
 	public $id;
 	
 	public $content;
@@ -25,7 +21,7 @@ class CommentModel
 	
 	public $dateEdited;
 	
-	public $userId; // TODO This is going to need to be a one way reference type CP 2013-07
+	public $userRef; // TODO This is going to need to be a one way reference type CP 2013-07
 			
 }
 
