@@ -33,13 +33,21 @@ class ArrayOf {
 	}
 	
 	public function generate($data = null) {
-		return $this->_generator($data);
+		$function = $this->_generator;
+		return $function($data);
 	}
 	
 	public function getType() {
 		return $this->_type;
 	}
 	
+	public function append($var) {
+		$this->data[] = $var;
+	}
+	
+	public function count() {
+		return count($this->data);
+	}
 }
 
 ?>
