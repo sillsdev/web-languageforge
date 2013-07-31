@@ -70,17 +70,26 @@ class TestQuestionModel extends UnitTestCase {
 		
 		$question = new QuestionModel($projectModel);
 		
+		// Create
 		$answer = new AnswerModel();
 		$answer->content = 'Some Answer';
 		$question->answers->append($answer);
 		$id = $question->write();
 		
+		// The answer should have a valid id on write.
+		$answer = $question->answers->data[0];
+		$this->assertIsA($answer->id->id, 'string');
+		$this->assertEqual(24, strlen($answer->id->id));
+		
+		// Read back
 		$otherQuestion = new QuestionModel($projectModel, $id);
 		$this->assertEqual(1, $otherQuestion->answers->count());
 		$otherAnswer = $otherQuestion->answers->data[0];
 		$this->assertEqual('Some Answer', $otherAnswer->content);
 		$this->assertIsA($otherAnswer, 'models\AnswerModel');
 		
+		// The read back answer should have the same key.
+		$this->assertEqual($answer->id, $otherAnswer->id);
 	}
 
 }
