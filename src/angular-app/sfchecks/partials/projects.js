@@ -65,10 +65,10 @@ angular.module(
 		// Fake data to make the page look good while it's being designed. To be
 		// replaced by real data once the appropriate API functions are writen.
 		var fakeData = {
-			textsCount: 3,
-			viewsCount: 93,
-			unreadAnswers: 4,
-			unreadComments: 12
+			textsCount: -3,
+			viewsCount: -93,
+			unreadAnswers: -4,
+			unreadComments: -12
 		};
 
 		$scope.getTextsCount = function(project) {
