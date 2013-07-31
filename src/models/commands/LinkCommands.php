@@ -9,8 +9,8 @@ class LinkCommands {
 	 * @param UserModel $user
 	 */
 	static function LinkUserAndProject($project, $user) {
-		$project->addUser($user->id);
-		$user->addProject($project->id);
+		$project->addUser($user->id->asString());
+		$user->addProject($project->id->asString());
 		$project->write();
 		$user->write();
 	}
@@ -21,8 +21,8 @@ class LinkCommands {
 	 * @param UserModel $user
 	 */
 	static function UnlinkUserAndProject($project, $user) {
-		$project->removeUser($user->id);
-		$user->removeProject($project->id);
+		$project->removeUser($user->id->asString());
+		$user->removeProject($project->id->asString());
 		$project->write();
 		$user->write();
 	}

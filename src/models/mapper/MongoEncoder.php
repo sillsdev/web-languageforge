@@ -1,16 +1,7 @@
 <?php
 namespace models\mapper;
 
-class JsonEncoder {
-	
-	/**
-	 * @var string
-	 */
-	private $_idKey;
-	
-	public function __construct($idKey = null) {
-		$this->_idKey = $idKey;
-	}
+class MongoEncoder {
 	
 	/**
 	 * Sets key/values in the array from the public properties of $model
@@ -92,10 +83,10 @@ class JsonEncoder {
 	 */
 	public function encodeReferenceList($model) {
 		$result = array_map(
-				function($id) {
-			return MongoMapper::mongoID($id);
-		},
-		$model->refs
+			function($id) {
+				return MongoMapper::mongoID($id->asString());
+			},
+			$model->refs
 		);
 		return $result;
 	}

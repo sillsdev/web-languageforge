@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\mapper\Id;
+
 class CommentModelMongoMapper extends \models\mapper\MongoMapper
 {
 	/**
@@ -26,6 +28,7 @@ class CommentModel extends \models\mapper\MapperModel
 {
 	public function __construct($databaseName, $id = NULL)
 	{
+		$this->id = new Id();
 		$this->projects = array();
 		parent::__construct(CommentModelMongoMapper::connect($databaseName), $id);
 	}
