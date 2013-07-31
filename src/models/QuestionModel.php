@@ -2,6 +2,9 @@
 
 namespace models;
 
+use models\mapper\Id;
+use models\mapper\ArrayOf;
+
 require_once(APPPATH . '/models/ProjectModel.php');
 
 class CommentModelMongoMapper extends \models\mapper\MongoMapper
@@ -26,7 +29,8 @@ class CommentModelMongoMapper extends \models\mapper\MongoMapper
 
 class CommentModel extends \models\mapper\MapperModel
 {
-	public function __construct($projectModel, $id = NULL) {
+	public function __construct($projectModel, $id = '') {
+		$this->id = new Id();
 		parent::__construct(CommentModelMongoMapper::connect($projectModel->databaseName()), $id);
 	}
 	
@@ -55,13 +59,27 @@ class CommentModel extends \models\mapper\MapperModel
 
 class QuestionModel extends CommentModel
 {
-	public function __construct($projectModel, $id = NULL) {
+	/**
+	 * @var ProjectModel
+	 */
+	private $_projectModel;
+
+	/**
+	 * @param ProjectModel $projectModel
+	 * @param Id $id
+	 */
+	public function __construct($projectModel, $id = '') {
+		$this->_projectModel = $projectModel;
+		$this->answers = new ArrayOf(ArrayOf::OBJECT, 'generateAnswer');
 		parent::__construct($projectModel, $id);
-		$this->answers = array();
+	}
+	
+	public function generateAnswer($data = null) {
+		return new AnswerModel($this->_projectModel);
 	}
 	
 	/**
-	 * @var array<AnswerModel>
+	 * @var ArrayOf<AnswerModel>
 	 */
 	public $answers;
 	

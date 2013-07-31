@@ -29,7 +29,7 @@ class TestMultipleModel extends UnitTestCase {
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
 		$otherModel = new UserModel($id);
-		$this->assertEqual($id, $otherModel->id);
+		$this->assertEqual($id, $otherModel->id->asString());
 		$this->assertEqual('user@example.com', $otherModel->email);
 		$this->assertEqual('SomeUser', $otherModel->username);
 
@@ -40,7 +40,7 @@ class TestMultipleModel extends UnitTestCase {
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
 		$otherModel = new ProjectModel($id);
-		$this->assertEqual($id, $otherModel->id);
+		$this->assertEqual($id, $otherModel->id->asString());
 		$this->assertEqual('SomeLanguage', $otherModel->language);
 		$this->assertEqual('SomeProject', $otherModel->projectname);
 	}
