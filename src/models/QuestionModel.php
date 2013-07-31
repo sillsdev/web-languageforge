@@ -72,7 +72,7 @@ class QuestionModel extends \models\mapper\MapperModel
 	 * 
 	 * @var Id - Id of the referring text
 	 */
-	public $textId;
+	public $textRef;
 	
 	/**
 	 * @var ArrayOf<AnswerModel>

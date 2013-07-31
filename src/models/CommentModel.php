@@ -26,9 +26,7 @@ class CommentModel
 	public $dateEdited;
 	
 	public $userId; // TODO This is going to need to be a one way reference type CP 2013-07
-	
-	public $textRef; // TODO This is going to need to be a two way reference type CP 2013-07
-		
+			
 }
 
 ?>
