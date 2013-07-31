@@ -14,10 +14,14 @@
 	</fieldset>
 	</form>
 </div>
+<form class="control-bar form-inline">
+<button class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
+</form>
 <div listview search="queryTexts()" items="texts" visible-items="visibleTexts" select="">
 <hr />
 <div ng-repeat="text in visibleTexts" class="details-row">
-	<ul class="inline">
+	<ul class="inline" ng-class="{active: isSelected(text)}">
+		<li><input type="checkbox" ng-checked="isSelected(text)" ng-click="updateSelection($event, text)" /></li>
 		<li><a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{text.title|urlencode}}/{{text.id}}">
 			<div class="attention-block">
 				<span class="count">{{getQuestionCount(text)}}</span><br />
