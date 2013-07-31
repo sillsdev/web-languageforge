@@ -2,14 +2,18 @@
 
 namespace models;
 
+use models\mapper\Id;
+
 class CommentModel
 {
-	/**
-	 * 
-	 * @param Id $id
-	 */
-	public function __construct()
-	{
+
+	public function __construct() {
+		$this->id = new Id();
+		$this->projects = array();
+		parent::__construct(CommentModelMongoMapper::connect($databaseName), $id);
+	}
+	
+	public static function remove($databaseName, $id) {
 		// TODO: determine that id is of class id
 	}
 

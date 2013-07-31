@@ -1,12 +1,15 @@
 <?php
 
-use models\mapper\JsonDecoder;
+use libraries\palaso\CodeGuard;
 
 use libraries\palaso\JsonRpcServer;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
+use models\mapper\Id;
+use models\mapper\JsonEncoder;
+use models\mapper\JsonDecoder;
 
 require_once(APPPATH . 'config/sf_config.php');
 
@@ -21,12 +24,17 @@ class Sf
 	public function __construct()
 	{
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
-		ini_set('display_errors', 0);
+// 		ini_set('display_errors', 0);
 	}
 	
 	private function decode($model, $data) {
-		$decoder = new JsonDecoder('id');
+		$decoder = new JsonDecoder();
 		$decoder->decode($model, $data);
+	}
+	
+	private function encode($model) {
+		$encoder = new JsonEncoder();
+		return $encoder->encode($model);
 	}
 	
 	//---------------------------------------------------------------
@@ -51,7 +59,7 @@ class Sf
 	 */
 	public function user_read($id) {
 		$user = new \models\UserModel($id);
-		return $user;
+		return $this->encode($user);
 	}
 	
 	/**
@@ -60,15 +68,6 @@ class Sf
 	 * @return int Count of deleted users
 	 */
  	public function user_delete($userIds) {
- 		if (!is_array($userIds)) {
- 			throw new \Exception("userIds must be an array.");
- 		}
- 		foreach ($userIds as $userId) {
- 			if (!is_string($userId)) {
- 				throw new \Exception("'$userId' is not a string.");
- 			}
- 		}
- 		
  		return UserCommands::deleteUsers($userIds);
  	}
 
@@ -117,7 +116,7 @@ class Sf
 	 */
 	public function project_read($id) {
 		$project = new \models\ProjectModel($id);
-		return $project;
+		return $this->encode($project);
 	}
 	
 	/**
@@ -175,7 +174,7 @@ class Sf
 	public function text_read($projectId, $textId) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel, $textId);
-		return $textModel;
+		return $this->encode($textModel);
 	}
 	
 	public function text_delete($projectId, $textIds) {

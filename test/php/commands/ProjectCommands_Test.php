@@ -17,8 +17,9 @@ class TestProjectCommands extends UnitTestCase {
 		$e->clean();
 		
 		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
 		
-		ProjectCommands::deleteProjects(array($project->id));
+		ProjectCommands::deleteProjects(array($projectId));
 	}
 	
 }

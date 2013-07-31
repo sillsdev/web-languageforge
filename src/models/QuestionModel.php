@@ -2,6 +2,9 @@
 
 namespace models;
 
+use models\mapper\Id;
+use models\mapper\ArrayOf;
+
 class QuestionModelMongoMapper extends \models\mapper\MongoMapper
 {
 	/**
@@ -15,7 +18,7 @@ class QuestionModelMongoMapper extends \models\mapper\MongoMapper
 	 */
 	public static function connect($databaseName) {
 		if (!isset(static::$_pool[$databaseName])) {
-			static::$_pool[$databaseName] = new CommentModelMongoMapper($databaseName, 'questions');
+			static::$_pool[$databaseName] = new QuestionModelMongoMapper($databaseName, 'questions');
 		}
 		return static::$_pool[$databaseName];
 	}
@@ -24,12 +27,23 @@ class QuestionModelMongoMapper extends \models\mapper\MongoMapper
 
 class QuestionModel extends \models\mapper\MapperModel
 {
-	public function __construct($projectModel, $id = NULL)
-	{
+	public function __construct($projectModel, $id = '') {
 		$this->_projectModel = $projectModel;
+		$this->id = new Id();
+		$this->textId = new Id();
+		$this->answers = new ArrayOf(ArrayOf::OBJECT, 'generateAnswer');
+		
 		$databaseName = $projectModel->databaseName();
 		parent::__construct(QuestionModelMongoMapper::connect($databaseName), $id);
 	}	
+	
+	public static function remove($databaseName, $id) {
+		QuestionModelMongoMapper::connect($databaseName)->remove($id);
+	}
+	
+	public function generateAnswer($data = null) {
+		return new AnswerModel($this->_projectModel);
+	}
 	
 	public $id;
 	
@@ -43,7 +57,7 @@ class QuestionModel extends \models\mapper\MapperModel
 	
 	/**
 	 * 
-	 * @var \MongoDate
+	 * @var
 	 */
 	public $dateCreated;
 	
@@ -52,17 +66,21 @@ class QuestionModel extends \models\mapper\MapperModel
 	 * @var \MongoDate
 	 */
 	public $dateEdited;
+
+	/**
+	 * 
+	 * @var Id - Id of the referring text
+	 */
+	public $textId;
 	
 	/**
-	 * @var array<AnswerModel>
+	 * @var ArrayOf<AnswerModel>
 	 */
 	public $answers;
 	
-	/**
-	 * 
-	 * @var string - Id of the referring text
-	 */
-	public $textId;
+	//public $authorDate; // TODO CP 2013-07
+			
+	
 }
 
 class QuestionListModel extends \models\mapper\MapperListModel
@@ -73,8 +91,8 @@ class QuestionListModel extends \models\mapper\MapperListModel
 		// TODO Include $textId in the query CP 2013-07
 		parent::__construct(
 			QuestionModelMongoMapper::connect($projectModel->databaseName()),
-			array('comment' => array('$regex' => '')),
-			array('comment')
+			array('title' => array('$regex' => '')),
+			array('title')
 		);
 	}
 	

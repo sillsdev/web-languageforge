@@ -1,6 +1,6 @@
 'use strict';
 
-/* jasmine specs for directives go here */
+/* See http://www.benlesh.com/2013/06/angular-js-unit-testing-directives.html */
 
 describe('directives', function() {
   beforeEach(module('myApp.directives'));

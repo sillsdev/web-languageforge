@@ -19,29 +19,26 @@ class TestQuestionModel extends UnitTestCase {
 
 	private $_someQuestionId;
 
-	function __construct()
-	{
+	function __construct() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 	}
 
-	function testWrite_ReadBackSame()
-	{
+	function testWrite_ReadBackSame() {
 		$model = new QuestionModel(new MockProjectModel());
-		$model->comment = "SomeQuestion";
+		$model->title = "SomeQuestion";
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$this->assertEqual($id, $model->id);
+		$this->assertEqual($id, $model->id->asString());
 		$otherModel = new QuestionModel(new MockProjectModel(), $id);
-		$this->assertEqual($id, $otherModel->id);
-		$this->assertEqual('SomeQuestion', $otherModel->comment);
+		$this->assertEqual($id, $otherModel->id->asString());
+		$this->assertEqual('SomeQuestion', $otherModel->title);
 
 		$this->_someQuestionId = $id;
 	}
 
-	function testProjectList_HasCountAndEntries()
-	{
+	function testProjectList_HasCountAndEntries() {
 		$model = new QuestionListModel(new MockProjectModel());
 		$model->read();
 
