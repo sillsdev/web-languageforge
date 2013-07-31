@@ -32,7 +32,7 @@ class ProjectModelMongoMapper extends \models\mapper\MongoMapper
 
 class ProjectModel extends \models\mapper\MapperModel
 {
-	public function __construct($id = NULL)
+	public function __construct($id = '')
 	{
 		$this->id = new Id();
 		$this->users = new ReferenceList();
@@ -49,10 +49,9 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * Removes this project from the collection.
 	 * User references to this project are also removed
 	 */
-	public function remove()
-	{
+	public function remove() {
 		ProjectModelMongoMapper::instance()->drop($this->databaseName());
-		ProjectModelMongoMapper::instance()->remove($this->id);
+		ProjectModelMongoMapper::instance()->remove($this->id->asString());
 	}
 	
 	
@@ -78,7 +77,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	}
 
 	public function listUsers() {
-		$userList = new UserList_ProjectModel($this->id);
+		$userList = new UserList_ProjectModel($this->id->asString());
 		$userList->read();
 		return $userList;
 	}

@@ -33,9 +33,9 @@ class TestProjectModel extends UnitTestCase {
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$this->assertEqual($id, $model->id);
-		$otherModel = new ProjectModel(new Id($id));
-		$this->assertEqual($id, $otherModel->id->id);
+		$this->assertEqual($id, $model->id->asString());
+		$otherModel = new ProjectModel($id);
+		$this->assertEqual($id, $otherModel->id->asString());
 		$this->assertEqual('SomeLanguage', $otherModel->language);
 		$this->assertEqual('SomeProject', $otherModel->projectname);
 		//$this->assertEqual(array('1234'), $otherModel->users->refs);
@@ -57,9 +57,9 @@ class TestProjectModel extends UnitTestCase {
 		
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
-		$userModel = new UserModel(new Id($userId));
+		$userModel = new UserModel($userId);
 		$projectModel = $e->createProject('new project');
-		$projectId = $projectModel->id;
+		$projectId = $projectModel->id->asString();
 		
 		// create the reference
 		$projectModel->addUser($userId);
@@ -80,9 +80,9 @@ class TestProjectModel extends UnitTestCase {
 		
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
-		$userModel = new UserModel(new Id($userId));
+		$userModel = new UserModel($userId);
 		$projectModel = $e->createProject('new project');
-		$projectId = $projectModel->id;
+		$projectId = $projectModel->id->asString();
 
 		// create the reference
 		$projectModel->addUser($userId);
@@ -103,9 +103,9 @@ class TestProjectModel extends UnitTestCase {
 		
 		// testing
 		$this->assertFalse(in_array($userId, $projectModel->users->refs));
-		$otherProject = new ProjectModel(new Id($this->_someProjectId));
+		$otherProject = new ProjectModel($this->_someProjectId);
 		$this->assertFalse(in_array($userId, $otherProject->users->refs), "'$userId' should not be found in project.");
-		$project = new ProjectModel(new Id($this->_someProjectId));
+		$project = new ProjectModel($this->_someProjectId);
 	}
 	
 	function testProjectAddUser_TwiceToSameProject_AddedOnce() {
@@ -114,7 +114,7 @@ class TestProjectModel extends UnitTestCase {
 		
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
-		$userModel = new UserModel(new Id($userId));
+		$userModel = new UserModel($userId);
 		$projectModel = $e->createProject('new project');
 		$projectId = $projectModel->id;
 		
@@ -127,11 +127,11 @@ class TestProjectModel extends UnitTestCase {
 	function testProjectListUsers_TwoUsers_ListHasDetails() {
 		$e = new MongoTestEnvironment();
 		$userId1 = $e->createUser('user1', 'User One', 'user1@example.com');
-		$um1 = new UserModel(new Id($userId1));
+		$um1 = new UserModel($userId1);
 		$userId2 = $e->createUser('user2', 'User Two', 'user2@example.com');
-		$um2 = new UserModel(new Id($userId2));
+		$um2 = new UserModel($userId2);
 		$project = $e->createProject(SF_TESTPROJECT);
-		$projectId = $project->id;
+		$projectId = $project->id->asString();
 		
 		// Check the list users is empty
 		$result = $project->listUsers();
@@ -172,7 +172,7 @@ class TestProjectModel extends UnitTestCase {
 	
 	function testRemove_RemovesProject() {
 		$e = new MongoTestEnvironment();
-		$project = new ProjectModel(new Id($this->_someProjectId));
+		$project = new ProjectModel($this->_someProjectId);
 		$project->remove();
 		
 		$e->inhibitErrorDisplay();

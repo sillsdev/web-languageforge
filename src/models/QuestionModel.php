@@ -29,7 +29,7 @@ class CommentModelMongoMapper extends \models\mapper\MongoMapper
 
 class CommentModel extends \models\mapper\MapperModel
 {
-	public function __construct($projectModel, $id = NULL) {
+	public function __construct($projectModel, $id = '') {
 		$this->id = new Id();
 		parent::__construct(CommentModelMongoMapper::connect($projectModel->databaseName()), $id);
 	}
@@ -68,17 +68,10 @@ class QuestionModel extends CommentModel
 	 * @param ProjectModel $projectModel
 	 * @param Id $id
 	 */
-	public function __construct($projectModel, $id = NULL) {
+	public function __construct($projectModel, $id = '') {
 		$this->_projectModel = $projectModel;
 		$this->answers = new ArrayOf(ArrayOf::OBJECT, 'generateAnswer');
 		parent::__construct($projectModel, $id);
-	}
-	
-	public function __set($name, $value) {
-		if (in_array($name, array('answers'))) {
-			$className = get_class($this);
-			throw new \Exception("Attempt to set '$name' in '$className'");
-		}
 	}
 	
 	public function generateAnswer($data = null) {

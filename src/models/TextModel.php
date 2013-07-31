@@ -33,7 +33,7 @@ class TextModel extends \models\mapper\MapperModel
 	 */
 	private $_projectModel;
 	
-	public function __construct($projectModel, $id = NULL)
+	public function __construct($projectModel, $id = '')
 	{
 		$this->id = new Id();
 		$this->_projectModel = $projectModel;

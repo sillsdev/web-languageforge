@@ -36,7 +36,7 @@ class TestUserModel extends UnitTestCase {
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
 		$this->assertEqual($id, $model->id);
-		$otherModel = new UserModel(new Id($id));
+		$otherModel = new UserModel($id);
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('user@example.com', $otherModel->email);
 		$this->assertEqual('SomeUser', $otherModel->username);
@@ -81,13 +81,13 @@ class TestUserModel extends UnitTestCase {
 		$e->clean();
 		
 		$p1m = $e->createProject('p1');
-		$p1 = $p1m->id;
+		$p1 = $p1m->id->asString();
 		$p1m = new ProjectModel($p1);
 		$p2m = $e->createProject('p2');
-		$p2 = $p2m->id;
+		$p2 = $p2m->id->asString();
 		
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@smith.com');
-		$userModel = new UserModel(new Id($userId));
+		$userModel = new UserModel($userId);
 		
 		// Check that list projects is empty
 		$result = $userModel->listProjects();
