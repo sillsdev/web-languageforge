@@ -3,14 +3,13 @@
 namespace models;
 
 use models\mapper\Id;
-use models\mapper\ArrayItem;
 
 class CommentModel
 {
 
 	public function __construct() {
 		$this->id = new Id();
-		$this->userRef = new Id();
+		$this->userRef = null; //new Id(); TODO Need to introduce a new Ref class that can be null
 	}
 	
 	public $id;
