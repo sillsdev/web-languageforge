@@ -7,6 +7,15 @@ class MongoDecoder extends JsonDecoder {
 	 * @param string $key
 	 * @param object $model
 	 * @param array $values
+	 */
+	public function decodeIdReference($key, $model, $values) {
+		$model->$key = new Id((string)$values[$key]);
+	}
+	
+	/**
+	 * @param string $key
+	 * @param object $model
+	 * @param array $values
 	 * @param bool $isRootDocument
 	 * @throws \Exception
 	 */

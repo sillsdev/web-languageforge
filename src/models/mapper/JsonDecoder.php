@@ -13,17 +13,10 @@ class JsonDecoder {
 	 */
 	public function decode($model, $values, $isRootDocument = true) {
 		$properties = get_object_vars($model);
-// 		if ($this->_idKey) {
-// 			$idKey = $this->_idKey;
-// 			// Map the Mongo _id to the property $idKey
-// 			if (array_key_exists($idKey, $properties) && array_key_exists('_id', $values))
-// 			{
-// 				$model->$idKey = (string)$values['_id']; // MongoId
-// 				unset($properties[$idKey]);
-// 			}
-// 		}
 		foreach ($properties as $key => $value) {
-			if (is_a($value, 'models\mapper\Id')) {
+			if (is_a($value, 'models\mapper\IdReference')) {
+				$this->decodeIdReference($key, $model, $values);
+			} else if (is_a($value, 'models\mapper\Id')) {
 				$this->decodeId($key, $model, $values, $isRootDocument);
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
 				if (array_key_exists($key, $values)) {
@@ -54,8 +47,16 @@ class JsonDecoder {
 	 * @param string $key
 	 * @param object $model
 	 * @param array $values
+	 */
+	public function decodeIdReference($key, $model, $values) {
+		$model->$key = new Id($values[$key]);
+	}
+	
+	/**
+	 * @param string $key
+	 * @param object $model
+	 * @param array $values
 	 * @param bool $isRootDocument
-	 * @throws \Exception
 	 */
 	public function decodeId($key, $model, $values, $isRootDocument) {
 		$model->$key = new Id($values[$key]);
