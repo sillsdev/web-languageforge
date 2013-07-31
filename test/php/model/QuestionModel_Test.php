@@ -91,6 +91,26 @@ class TestQuestionModel extends UnitTestCase {
 		// The read back answer should have the same key.
 		$this->assertEqual($answer->id, $otherAnswer->id);
 	}
+	
+	function testTextReference_NullRefValidRef_AllowsNullRef() {
+		$projectModel = new MockProjectModel();
+		$mockTextRef = (string)new \MongoId();
+		
+		// Test create with null textRef
+		$question = new QuestionModel($projectModel);
+		$id = $question->write();
+		
+		$otherQuestion = new QuestionModel($projectModel, $id);
+		$this->assertEqual('', $otherQuestion->textRef->id);
+		
+		// Test update with textRef
+		$question->textRef->id = $mockTextRef;
+		$question->write();
+		
+		$otherQuestion = new QuestionModel($projectModel, $id);
+		$this->assertEqual($mockTextRef, $otherQuestion->textRef->id);
+		
+	}
 
 }
 

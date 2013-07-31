@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\mapper\IdReference;
+
 use models\mapper\Id;
 
 class CommentModel
@@ -9,7 +11,7 @@ class CommentModel
 
 	public function __construct() {
 		$this->id = new Id();
-		$this->userRef = null; //new Id(); TODO Need to introduce a new Ref class that can be null
+		$this->userRef = new IdReference();
 	}
 	
 	public $id;
@@ -20,7 +22,7 @@ class CommentModel
 	
 	public $dateEdited;
 	
-	public $userRef; // TODO This is going to need to be a one way reference type CP 2013-07
+	public $userRef;
 			
 }
 

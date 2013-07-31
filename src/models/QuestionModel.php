@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\mapper\IdReference;
+
 use models\mapper\Id;
 use models\mapper\ArrayOf;
 
@@ -30,7 +32,7 @@ class QuestionModel extends \models\mapper\MapperModel
 	public function __construct($projectModel, $id = '') {
 		$this->_projectModel = $projectModel;
 		$this->id = new Id();
-		$this->textId = new Id();
+		$this->textRef = new IdReference();
 		$this->answers = new ArrayOf(
 			ArrayOf::OBJECT,
 			function() {
