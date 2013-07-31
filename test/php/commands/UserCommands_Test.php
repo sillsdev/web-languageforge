@@ -8,10 +8,6 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestUserCommands extends UnitTestCase {
 
-	function __construct()
-	{
-	}
-	
 	function testDeleteUsers_NoThrow() {
 		$e = new MongoTestEnvironment();
 		$e->clean();

@@ -1,6 +1,6 @@
 'use strict';
 
-/* jasmine specs for services go here */
+/* See http://www.benlesh.com/2013/06/angular-js-unit-testing-services.html */
 
 describe('service', function() {
   beforeEach(module('myApp.services'));

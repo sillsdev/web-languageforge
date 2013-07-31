@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\mapper\Id;
+
 require_once(APPPATH . '/models/ProjectModel.php');
 
 class TextModelMongoMapper extends \models\mapper\MongoMapper
@@ -31,8 +33,9 @@ class TextModel extends \models\mapper\MapperModel
 	 */
 	private $_projectModel;
 	
-	public function __construct($projectModel, $id = NULL)
+	public function __construct($projectModel, $id = '')
 	{
+		$this->id = new Id();
 		$this->_projectModel = $projectModel;
 		$databaseName = $projectModel->databaseName();
 		parent::__construct(TextModelMongoMapper::connect($databaseName), $id);
