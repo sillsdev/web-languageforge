@@ -25,7 +25,7 @@ class UserModelMongoMapper extends \models\mapper\MongoMapper
 
 class UserModel extends \models\mapper\MapperModel
 {
-	public function __construct($id = NULL)
+	public function __construct($id = '')
 	{
 		$this->id = new Id();
 		$this->projects = new ReferenceList();
@@ -38,11 +38,11 @@ class UserModel extends \models\mapper\MapperModel
 	 */
 	public function remove()
 	{
-		UserModelMongoMapper::instance()->remove($this->id);
+		UserModelMongoMapper::instance()->remove($this->id->asString());
 	}
 
-	public function read() {
-		parent::read();
+	public function read($id) {
+		parent::read($id);
 		if (!$this->avatar_ref) {
 			$default_avatar = "/images/avatar/anonymoose.png";
 			$this->avatar_ref = $default_avatar;
@@ -72,7 +72,7 @@ class UserModel extends \models\mapper\MapperModel
 	}
 	
 	public function listProjects() {
-		$projectList = new ProjectList_UserModel($this->id);
+		$projectList = new ProjectList_UserModel($this->id->asString());
 		$projectList->read();
 		return $projectList;
 	}

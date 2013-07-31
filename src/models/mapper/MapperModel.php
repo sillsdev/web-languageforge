@@ -2,27 +2,27 @@
 
 namespace models\mapper;
 
+use libraries\palaso\CodeGuard;
+
 class MapperModel
 {
 	protected $_mapper;
 
-	protected function __construct($mapper, $id = NULL) {
+	protected function __construct($mapper, $id = '') {
 		$this->_mapper = $mapper;
-		if (!empty($id) && !is_a($id, 'models\mapper\Id')) {
-			throw new \Exception("Invalid id ");
-		}
-		if (!Id::isEmpty($id))
-		{
-			$this->_mapper->read($this, $id);
+		CodeGuard::checkTypeAndThrow($id, 'string');
+		if (!empty($id)) {
+			$this->read($id);
 		}
 	}
 	
 	/**
 	 * Reads the model from the mongo collection
+	 * @param string $id
 	 * @see MongoMapper::read()
 	 */
-	function read() {
-		return $this->_mapper->read($this, $this->id);
+	function read($id) {
+		return $this->_mapper->read($this, $id);
 	}
 	
 	/**
@@ -31,7 +31,8 @@ class MapperModel
 	 * @see MongoMapper::write()
 	 */
 	function write() {
-		$this->id = $this->_mapper->write($this);
+		CodeGuard::checkTypeAndThrow($this->id, 'models\mapper\Id');
+		$this->id->id = $this->_mapper->write($this);
 		return $this->id->id;
 	}
 	

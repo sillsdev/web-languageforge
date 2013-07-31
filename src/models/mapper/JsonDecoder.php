@@ -1,6 +1,8 @@
 <?php
 namespace models\mapper;
 
+use libraries\palaso\CodeGuard;
+
 class JsonDecoder {
 	
 	/**
@@ -63,9 +65,7 @@ class JsonDecoder {
 	 * @throws \Exception
 	 */
 	public function decodeArrayOf($model, $data) {
-		if (!is_array($data)) {
-			throw new \Exception("Bad data when array expected. '$data'");
-		}
+		CodeGuard::checkTypeAndThrow($data, 'array');
 		$model->data = array();
 		foreach ($data as $item) {
 			if ($model->getType() == ArrayOf::OBJECT) {

@@ -23,7 +23,7 @@ class PasswordModel_MongoMapper extends MongoMapper
 
 class PasswordModel extends MapperModel
 {
-	public function __construct($id = NULL)
+	public function __construct($id = '')
 	{
 		$this->id = new Id();
 		parent::__construct(PasswordModel_MongoMapper::instance(), $id);
