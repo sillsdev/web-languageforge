@@ -83,10 +83,10 @@ class MongoEncoder {
 	 */
 	public function encodeReferenceList($model) {
 		$result = array_map(
-				function($id) {
-			return MongoMapper::mongoID($id);
-		},
-		$model->refs
+			function($id) {
+				return MongoMapper::mongoID($id->asString());
+			},
+			$model->refs
 		);
 		return $result;
 	}

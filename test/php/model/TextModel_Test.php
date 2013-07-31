@@ -49,10 +49,10 @@ class TestTextModel extends UnitTestCase {
 		$model->title = "Some Title";
 		$id = $model->write();
 		$this->assertNotNull($id);
-		$this->assertIsA($id, 'models\mapper\Id');
-		$this->assertEqual($id, $model->id);
+		$this->assertIsA($id, 'string');
+		$this->assertEqual($id, $model->id->asString());
 		$otherModel = new TextModel(new MockProjectModel(), $id);
-		$this->assertEqual($id, $otherModel->id);
+		$this->assertEqual($id, $otherModel->id->asString());
 		$this->assertEqual('Some Title', $otherModel->title);
 
 		$this->_someTextId = $id;
