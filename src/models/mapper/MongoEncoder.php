@@ -11,16 +11,10 @@ class MongoEncoder {
 	public function encode($model, $encodeId = false) {
 		$data = array();
 		$properties = get_object_vars($model);
-// 		if ($this->_idKey) {
-// 			$idKey = $this->_idKey;
-// 			// We don't want the 'idKey' in the data so remove that from the properties
-// 			if (array_key_exists($idKey, $properties))
-// 			{
-// 				unset($properties[$idKey]);
-// 			}
-// 		}
 		foreach ($properties as $key => $value) {
-			if (is_a($value, 'models\mapper\Id')) {
+			if (is_a($value, 'models\mapper\IdReference')) {
+				$data[$key] = $this->encodeIdReference($model->$key);
+			} else if (is_a($value, 'models\mapper\Id')) {
 				if ($encodeId) {
 					$data[$key] = $this->encodeId($model->$key);
 				}
@@ -46,6 +40,18 @@ class MongoEncoder {
 			}
 		}
 		return $data;
+	}
+
+	/**
+	 * @param IdReference $model
+	 * @return string
+	 */
+	public function encodeIdReference($model) {
+		if (Id::isEmpty($model)) {
+			return null;
+		}
+		$mongoId = MongoMapper::mongoID($model->id);
+		return $mongoId;
 	}
 
 	/**
