@@ -29,7 +29,7 @@ class TestLinkCommands extends UnitTestCase {
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
 		$projectModel = $e->createProject(SF_TESTPROJECT);
-		$projectId = $projectModel->id;
+		$projectId = $projectModel->id->asString();
 		
 		// link project and user
 		LinkCommands::LinkUserAndProject($projectModel, $userModel);
@@ -49,7 +49,7 @@ class TestLinkCommands extends UnitTestCase {
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
 		$projectModel = $e->createProject(SF_TESTPROJECT);
-		$projectId = $projectModel->id;
+		$projectId = $projectModel->id->asString();
 		
 		// create the link
 		LinkCommands::LinkUserAndProject($projectModel, $userModel);
@@ -77,7 +77,7 @@ class TestLinkCommands extends UnitTestCase {
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
 		$projectModel = $e->createProject(SF_TESTPROJECT);
-		$projectId = $projectModel->id;
+		$projectId = $projectModel->id->asString();
 		
 		// link once
 		LinkCommands::LinkUserAndProject($projectModel, $userModel);
@@ -93,8 +93,8 @@ class TestLinkCommands extends UnitTestCase {
 		LinkCommands::LinkUserAndProject($projectModel, $userModel);
 		
 		// read from disk again
-		$otherProject->read();
-		$otherUser->read();
+		$otherProject->read($projectId);
+		$otherUser->read($userId);
 		
 		$this->assertEqual(1, count($otherUser->projects->refs));
 		$this->assertEqual(1, count($otherProject->users->refs));
