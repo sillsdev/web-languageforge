@@ -1,4 +1,4 @@
-<legend>Questions</legend>
+<h2 style="font-weight:normal">Questions for {{textName}}</h2>
 <p>
 <a ng-click="newQuestionCollapsed = !newQuestionCollapsed">Add a New Question</a>
 </p>
@@ -15,19 +15,27 @@
 <form class="control-bar form-inline">
 <button class="btn" ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
 </form>
-<div listview search="queryQuestions()" select="">
-<table class="table" style="width: 100%">
-	<thead>
-	<tr>
-		<th width="16px"></th>
-		<th>Questions</th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr ng-repeat="question in questions" ng-class="{active: isSelected(question)}" >
-		<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(question)" ng-click="updateSelection($event, question)" /></td>
-		<td><a href="#/project/{{projectId}}/{{textId}}/{{question.id}}">{{question.comment}}</a></td>
-	</tr>
-	</tbody>
-</table>		
+<div listview search="queryQuestions()" items="questions" visible-items="visibleQuestions" select="">
+<hr />
+<div ng-repeat="question in visibleQuestions" class="details-row">
+	<ul class="inline" ng-class="{active: isSelected(question)}">
+		<li><input type="checkbox" ng-checked="isSelected(question)" ng-click="updateSelection($event, question)" /></li>
+		<li><a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{textName|urlencode}}/{{textId}}/{{question.comment|urlencode}}/{{question.id}}">
+			<div class="attention-block">
+				<span class="count">{{getAnswerCount(question)}}</span><br />
+				<span class="subtitle">answers</span>
+			</div>
+		</a></li>
+		<li><div class="name-with-viewcount">
+			<a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{textName|urlencode}}/{{textId}}/{{question.comment|urlencode}}/{{question.id}}">
+				<span class="name">{{question.comment}}</span>
+			</a>
+			<br />
+			<span class="viewcount">{{getViewsCount(question)}} views</span>
+		</div></li>
+		<li><a href="#">{{getUnreadAnswers(question)}} unread answers</a></li>
+		<li><a href="#">{{getUnreadComments(question)}} unread comments</a></li>
+	</ul>
+	<hr />
+</div>
 </div>

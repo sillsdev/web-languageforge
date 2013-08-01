@@ -11,26 +11,35 @@ class App extends Secure_base {
 			$data = array();
 			$data['appName'] = $app;
 			$data['jsSessionVars'] = '{"userid": "' . $this->session->userdata('user_id') . '"}';
-			$data['jsCommonFiles'] = $this->getCommonJSFiles();
-			$data['jsProjectFiles'] = $this->getProjectJSFiles($app);
+			$data['jsCommonFiles'] = array();
+			self::addJavascriptFiles("angular-app/common/js", $data['jsCommonFiles']);
+			$data['jsProjectFiles'] = array();
+			self::addJavascriptFiles("angular-app/$app", $data['jsProjectFiles']);
+				
 			$data['title'] = "Scripture Forge";
+			
 			$this->_render_page("angular-app", $data);
 		}
 	}
 	
-	private function getCommonJSFiles() {
-		$allfiles = scandir("angular-app/common/js");
-		return array_filter($allfiles, "filterForJS");
+	private static function ext($filename) {
+		return pathinfo($filename, PATHINFO_EXTENSION);
 	}
 	
-	private function getProjectJSFiles($appName) {
-		$allfiles = scandir("angular-app/$appName/js");
-		return array_filter($allfiles, "filterForJS");
+	private static function addJavascriptFiles($dir, &$result) {
+		if (($handle = opendir($dir))) {
+			while ($file = readdir($handle)) {
+				if (is_file($dir . '/' . $file)) {
+					if (self::ext($file) == 'js') {
+						$result[] = $dir . '/' . $file;
+					}
+				} elseif ($file != '..' && $file != '.') {
+					self::addJavascriptFiles($dir . '/' . $file, $result);
+				}
+			}
+			closedir($handle);
+		}
 	}
-}
-
-function filterForJS($filename) {
-	return (bool)preg_match('/\.js$/', $filename);
 }
 
 ?>

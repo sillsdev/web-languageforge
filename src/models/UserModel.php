@@ -2,11 +2,14 @@
 
 namespace models;
 
-use libraries\sf\ReferenceList;
+use models\mapper\MongoMapper;
+
+use models\mapper\Id;
+use models\mapper\ReferenceList;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
-class UserModelMongoMapper extends \libraries\sf\MongoMapper
+class UserModelMongoMapper extends \models\mapper\MongoMapper
 {
 	public static function instance()
 	{
@@ -20,10 +23,11 @@ class UserModelMongoMapper extends \libraries\sf\MongoMapper
 	
 }
 
-class UserModel extends \libraries\sf\MapperModel
+class UserModel extends \models\mapper\MapperModel
 {
-	public function __construct($id = NULL)
+	public function __construct($id = '')
 	{
+		$this->id = new Id();
 		$this->projects = new ReferenceList();
 		parent::__construct(UserModelMongoMapper::instance(), $id);
 	}
@@ -34,7 +38,15 @@ class UserModel extends \libraries\sf\MapperModel
 	 */
 	public function remove()
 	{
-		UserModelMongoMapper::instance()->remove($this->id);
+		UserModelMongoMapper::instance()->remove($this->id->asString());
+	}
+
+	public function read($id) {
+		parent::read($id);
+		if (!$this->avatar_ref) {
+			$default_avatar = "/images/avatar/anonymoose.png";
+			$this->avatar_ref = $default_avatar;
+		}
 	}
 	
 	/**
@@ -60,7 +72,7 @@ class UserModel extends \libraries\sf\MapperModel
 	}
 	
 	public function listProjects() {
-		$projectList = new ProjectList_UserModel($this->id);
+		$projectList = new ProjectList_UserModel($this->id->asString());
 		$projectList->read();
 		return $projectList;
 	}
@@ -91,12 +103,14 @@ class UserModel extends \libraries\sf\MapperModel
 	/**
 	 * @var string
 	 */
-	public $avatarRef;
+	public $avatar_shape;
 	
 	/**
 	 * @var string
 	 */
-	public $avatarColor;
+	public $avatar_color;
+	
+	public $avatar_ref;
 
 	/**
 	 * @var bool
@@ -120,13 +134,9 @@ class UserModel extends \libraries\sf\MapperModel
 	 */
 	public $mobile_phone;
 	/**
-	 * @var bool
+	 * @var string - possible values are "email", "sms" or "both"
 	 */
-	public $communicate_via_email;
-	/**
-	 * @var bool
-	 */
-	public $communicate_via_sms;
+	public $communicate_via;
 	/**
 	 * @var string
 	 */
@@ -157,7 +167,7 @@ class UserModel extends \libraries\sf\MapperModel
 	public $feedback_group;
 }
 
-class UserListModel extends \libraries\sf\MapperListModel
+class UserListModel extends \models\mapper\MapperListModel
 {
 
 	public function __construct()
@@ -165,13 +175,13 @@ class UserListModel extends \libraries\sf\MapperListModel
 		parent::__construct(
 			UserModelMongoMapper::instance(),
 			array('name' => array('$regex' => '')),
-			array('username', 'email', 'name', 'avatarRef')
+			array('username', 'email', 'name', 'avatar_ref')
 		);
 	}
 	
 }
 
-class UserTypeaheadModel extends \libraries\sf\MapperListModel
+class UserTypeaheadModel extends \models\mapper\MapperListModel
 {
 	public function __construct($term)
 	{
@@ -184,14 +194,14 @@ class UserTypeaheadModel extends \libraries\sf\MapperListModel
 	
 }
 
-class UserList_ProjectModel extends \libraries\sf\MapperListModel
+class UserList_ProjectModel extends \models\mapper\MapperListModel
 {
 
 	public function __construct($projectId)
 	{
 		parent::__construct(
 				UserModelMongoMapper::instance(),
-				array('projects' => array('$in' => array(new \MongoId($projectId)))),
+				array('projects' => array('$in' => array(MongoMapper::mongoID($projectId)))),
 				array('username', 'email', 'name')
 		);
 	}

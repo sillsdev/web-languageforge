@@ -3,6 +3,7 @@
 		<title><?php echo $title; ?></title>
 		
 		<link rel="stylesheet" href="/css/bootstrap.css" />
+		<link rel="stylesheet" href="/css/jquery-te-1.4.0.css" />
 		<link rel="stylesheet" href="/angular-app/common/css/palaso-ui.css" />
 		<link rel="stylesheet" media="screen" href="/css/superfish.css" />
 		<link rel="stylesheet" media="screen" href="/css/slides.css" />
