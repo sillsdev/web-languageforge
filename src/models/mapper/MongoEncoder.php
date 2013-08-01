@@ -42,7 +42,7 @@ class MongoEncoder {
 					throw new \Exception("Possible bad write of '$key'\n" . var_export($model, true));
 				}
 				if (is_object($value)) {
-					$data[$key] = $this->_encode($value);
+					$data[$key] = $this->_encode($value, true);
 				} else {
 					// Default encode
 					$data[$key] = $value;
