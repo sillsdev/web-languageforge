@@ -2,7 +2,7 @@
 
 use models\QuestionListModel;
 
-use libraries\sf\MongoStore;
+use models\mapper\MongoStore;
 use models\ProjectModel;
 use models\QuestionModel;
 
@@ -32,9 +32,9 @@ class TestQuestionModel extends UnitTestCase {
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$this->assertEqual($id, $model->id);
+		$this->assertEqual($id, $model->id->asString());
 		$otherModel = new QuestionModel(new MockProjectModel(), $id);
-		$this->assertEqual($id, $otherModel->id);
+		$this->assertEqual($id, $otherModel->id->asString());
 		$this->assertEqual('SomeQuestion', $otherModel->comment);
 
 		$this->_someQuestionId = $id;
