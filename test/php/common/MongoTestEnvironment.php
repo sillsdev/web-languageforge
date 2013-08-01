@@ -54,6 +54,7 @@ class MongoTestEnvironment
 		$userModel->username = $username;
 		$userModel->name = $name;
 		$userModel->email = $email;
+		$userModel->avatar_ref = $username . ".png";
 		return $userModel->write();
 	}
 	

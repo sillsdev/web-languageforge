@@ -26,6 +26,11 @@ class DtoEncoder extends JsonEncoder {
 			return $result;
 		}
 	}
+	
+	public static function encode($model) {
+		$e = new DtoEncoder();
+		return $e->_encode($model);
+	}
 }
 
 
@@ -38,8 +43,9 @@ class QuestionCommentDto
 	 * @returns array - the DTO array
 	 */
 	public static function encode($projectId, $questionId) {
-		$e = new DtoEncoder();
-		$question = $e->encode($questionModel);
+		$projectModel = new ProjectModel($projectId);
+		$questionModel = new QuestionModel($projectModel, $questionId);
+		$question = DtoEncoder::encode($questionModel);
 		$textId = $questionModel->textRef->asString();
 		$textModel = new TextModel($projectModel, $textId);
 		$text = JsonEncoder::encode($textModel);
