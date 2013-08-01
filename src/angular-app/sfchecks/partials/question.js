@@ -25,34 +25,47 @@ angular.module(
 		});
 		$scope.question = {
 				'title': 'Who is Sherlock refering to in the text?',
+				'questionid': '12334',
 				'content': 'Some pertinent question'
 		};
 		$scope.answers = 
 			[{
 				'content': 'Clearly Sherlock is referring to "the woman", but who the woman is I have no idea.',
 				'by': 'Robin',
+				'userid': '12345',
 				'date': '17 July 2013',
 				'score': '6',
 				'avatarRef': '/images/avatar/turquoise4-otter-48x48.png',
 				'comments':
 				[{
 					'content': 'Some engaging comment',
-					'by': 'Cambell'
+					'by': 'Cambell',
+					'userid': '12345',
+					'date': '18 July 2013'
 				}, {
 					'content': 'Some dispute',
-					'by': 'Chris'
+					'by': 'Chris',
+					'userid': '12345',
+					'date': '18 July 2013'
 				}]
 			}, {
 				'content': 'Some relevant answer',
 				'by': 'Cambell',
+				'userid': '12345',
 				'date': '18 November 2013',
 				'score': '3',
 				'avatarRef': '/images/avatar/salmon-camel-48x48.png',
 				'comments':
 				[{
-					'content': 'Some engaging comment'
+					'content': 'Some engaging comment',
+					'by': 'Cambell',
+					'userid': '12345',
+					'date': '18 July 2013'
 				}, {
-					'content': 'Some dispute'
+					'content': 'Some dispute',
+					'by': 'Chris',
+					'userid': '12345',
+					'date': '18 July 2013'
 				}]
 			}];
 	}])
