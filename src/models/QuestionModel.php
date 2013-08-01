@@ -30,7 +30,6 @@ class QuestionModelMongoMapper extends \models\mapper\MongoMapper
 class QuestionModel extends \models\mapper\MapperModel
 {
 	public function __construct($projectModel, $id = '') {
-		$this->_projectModel = $projectModel;
 		$this->id = new Id();
 		$this->textRef = new IdReference();
 		$this->answers = new ArrayOf(
