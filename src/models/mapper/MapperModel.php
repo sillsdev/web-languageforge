@@ -32,7 +32,7 @@ class MapperModel
 	 */
 	function write() {
 		CodeGuard::checkTypeAndThrow($this->id, 'models\mapper\Id');
-		$this->id->id = $this->_mapper->write($this);
+		$this->id->id = $this->_mapper->write($this, $this->id->id);
 		return $this->id->id;
 	}
 }
