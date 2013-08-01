@@ -16,7 +16,7 @@ class QuestionModelMongoMapper extends \models\mapper\MongoMapper
 	
 	/**
 	 * @param string $databaseName
-	 * @return CommentModelMongoMapper
+	 * @return QuestionModelMongoMapper
 	 */
 	public static function connect($databaseName) {
 		if (!isset(static::$_pool[$databaseName])) {
@@ -45,6 +45,15 @@ class QuestionModel extends \models\mapper\MapperModel
 	
 	public static function remove($databaseName, $id) {
 		QuestionModelMongoMapper::connect($databaseName)->remove($id);
+	}
+	
+	public static function writeAnswer($databaseName, $questionId, $answer) {
+		QuestionModelMongoMapper::connect($databaseName)->write();
+		
+	}
+	
+	public static function writeComment($databaseName, $questionId, $answerId, $comment) {
+		
 	}
 	
 	public $id;

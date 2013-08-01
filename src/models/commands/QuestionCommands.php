@@ -2,6 +2,8 @@
 
 namespace models\commands;
 
+use models\CommentModel;
+
 use models\ProjectModel;
 use models\QuestionModel;
 
@@ -21,6 +23,20 @@ class QuestionCommands
 			$count++;
 		}
 		return $count;
+	}
+	
+	public static function updateAnswer($projectId, $questionId, $answer) {
+		$projectModel = new ProjectModel($projectId);
+		$answerModel = new AnswerModel();
+		JsonDecoder::decode($answerModel, $answer);
+		return QuestionModel::writeAnswer($projectModel->databaseName(), $questionId, $answerModel);
+	}
+	
+	public static function updateComment($projectId, $questionId, $answerId, $comment) {
+		$projectModel = new ProjectModel($projectId);
+		$commentModel = new CommentModel();
+		JsonDecoder::decode($commentModel, $comment);
+		return QuestionModel::writeComment($projectModel->databaseName(), $questionId, $answerId, $commentModel);
 	}
 	
 }
