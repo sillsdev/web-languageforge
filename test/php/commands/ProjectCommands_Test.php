@@ -1,5 +1,5 @@
 <?php
-use libraries\api\ProjectCommands;
+use models\commands\ProjectCommands;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -17,8 +17,9 @@ class TestProjectCommands extends UnitTestCase {
 		$e->clean();
 		
 		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
 		
-		ProjectCommands::deleteProjects(array($project->id));
+		ProjectCommands::deleteProjects(array($projectId));
 	}
 	
 }

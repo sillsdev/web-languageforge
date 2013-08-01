@@ -1,6 +1,6 @@
 <?php
 
-use libraries\api\TextCommands;
+use models\commands\TextCommands;
 use models\TextModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
@@ -23,7 +23,7 @@ class TestTextCommands extends UnitTestCase {
 		$text->title = "Some Title";
 		$text->write();
 		
-		TextCommands::deleteTexts($project->id, array($text->id));
+		TextCommands::deleteTexts($project->id->asString(), array($text->id->asString()));
 		
 	}
 	

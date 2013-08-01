@@ -2,7 +2,9 @@
 
 namespace models;
 
-class CommentModelMongoMapper extends \libraries\sf\MongoMapper
+use models\mapper\Id;
+
+class CommentModelMongoMapper extends \models\mapper\MongoMapper
 {
 	/**
 	 * @var CommentModelMongoMapper[]
@@ -22,10 +24,11 @@ class CommentModelMongoMapper extends \libraries\sf\MongoMapper
 	
 }
 
-class CommentModel extends \libraries\sf\MapperModel
+class CommentModel extends \models\mapper\MapperModel
 {
 	public function __construct($databaseName, $id = NULL)
 	{
+		$this->id = new Id();
 		$this->projects = array();
 		parent::__construct(CommentModelMongoMapper::connect($databaseName), $id);
 	}
