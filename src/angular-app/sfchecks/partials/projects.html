@@ -18,7 +18,7 @@
 		<li><input type="checkbox" ng-checked="isSelected(project)" ng-click="updateSelection($event, project)" /></li>
 		<li><a href="#/project/{{project.projectname|urlencode}}/{{project.id}}">
 			<div class="attention-block">
-				<span style="font-size: 24px">{{getTextsCount(project)}}</span><br />
+				<span style="font-size: 24px">{{getTextCount(project)}}</span><br />
 				<span style=""> texts to check</span>
 			</div>
 		</a></li>
