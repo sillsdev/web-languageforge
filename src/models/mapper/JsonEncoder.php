@@ -23,13 +23,13 @@ class JsonEncoder {
 		$properties = get_object_vars($model);
 		foreach ($properties as $key => $value) {
 			if (is_a($value, 'models\mapper\IdReference')) {
-				$data[$key] = $this->encodeIdReference($model->$key);
+				$data[$key] = $this->encodeIdReference($key, $model->$key);
 			} else if (is_a($value, 'models\mapper\Id')) {
-				$data[$key] = $this->encodeId($model->$key);
+				$data[$key] = $this->encodeId($key, $model->$key);
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
-				$data[$key] = $this->encodeArrayOf($model->$key);
+				$data[$key] = $this->encodeArrayOf($key, $model->$key);
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
-				$data[$key] = $this->encodeReferenceList($model->$key);
+				$data[$key] = $this->encodeReferenceList($key, $model->$key);
 			} else {
 				// Data type protection
 				if (is_array($value)) {
@@ -51,29 +51,35 @@ class JsonEncoder {
 	}
 
 	/**
+	 * @param string $key
 	 * @param IdReference $model
 	 * @return string
 	 */
-	public function encodeIdReference($model) {
+	public function encodeIdReference($key, $model) {
+		// Note: $key may be used in derived methods
 		$result = $model->id;
 		return $result;
 	}
 
 	/**
+	 * @param string $key
 	 * @param Id $model
 	 * @return string
 	 */
-	public function encodeId($model) {
+	public function encodeId($key, $model) {
+		// Note: $key may be used in derived methods
 		$result = $model->id;
 		return $result;
 	}
 
 	/**
+	 * @param string $key
 	 * @param ArrayOf $model
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function encodeArrayOf($model) {
+	public function encodeArrayOf($key, $model) {
+		// Note: $key may be used in derived methods
 		$result = array();
 		foreach ($model->data as $item) {
 			if (is_object($item)) {
@@ -91,10 +97,12 @@ class JsonEncoder {
 	}
 
 	/**
+	 * @param string $key
 	 * @param ReferenceList $model
 	 * @return array
 	 */
-	public function encodeReferenceList($model) {
+	public function encodeReferenceList($key, $model) {
+		// Note: $key may be used in derived methods
 		$result = array_map(
 				function($id) {
 			return MongoMapper::mongoID($id);
