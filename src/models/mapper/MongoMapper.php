@@ -26,8 +26,7 @@ class MongoMapper
 	 * @param string $collection
 	 * @param string $idKey defaults to id
 	 */
-	protected function __construct($database, $collection, $idKey = 'id')
-	{
+	protected function __construct($database, $collection, $idKey = 'id') {
 		$this->_db = MongoStore::connect($database);
 		$this->_collection = $this->_db->$collection;
 		$this->_idKey = $idKey;
@@ -36,8 +35,7 @@ class MongoMapper
 	/**
 	 * Private clone to prevent copies of the singleton.
 	 */
-	private function __clone()
-	{
+	private function __clone() {
 	}
 
 	public function makeId() {
@@ -61,8 +59,7 @@ class MongoMapper
 		return new \MongoId(); 
 	}
 	
-	public function readList($model, $query, $fields = array())
-	{
+	public function readList($model, $query, $fields = array()) {
 		$cursor = $this->_collection->find($query, $fields);
 		$model->count = $cursor->count();
 		$model->entries = array();
@@ -85,17 +82,14 @@ class MongoMapper
 			throw new \Exception("Could not find id '$id'");
 		}
 		try {
-			$decoder = new MongoDecoder($this->_idKey);
-			$decoder->decode($model, $data);
+			MongoDecoder::decode($model, $data);
 		} catch (\Exception $ex) {
 			throw new \Exception("Exception thrown while reading '$id'", $ex->getCode(), $ex);
 		}
 	}
 	
-	public function write($model)
-	{
-		$encoder = new MongoEncoder($this->_idKey);
-		$data = $encoder->encode($model);
+	public function write($model) {
+		$data = MongoEncoder::encode($model);
 		return $this->update($this->_collection, $data, $model->id->asString());
 	}
 
@@ -109,13 +103,11 @@ class MongoMapper
 		$data = $data[$property][$id];
 		$data['_id'] = $id;
 		error_log(var_export($data, true));
-		$decoder = new MongoDecoder($this->_idKey);
-		$decoder->decode($model, $data);
+		MongoDecoder::decode($model, $data);
 	}
 	
 	public function writeSubDocument($model, $rootId, $property) {
-		$encoder = new MongoEncoder($this->_idKey);
-		$data = $encoder->encode($model);
+		$data = MongoEncoder::encode($model);
 		$idKey = $this->_idKey;
 		$id = $model->$idKey;
 		if (empty($id)) {
@@ -154,6 +146,7 @@ class MongoMapper
 	 */
 	protected function update($collection, $data, $id) {
 		CodeGuard::checkTypeAndThrow($id, 'string');
+		CodeGuard::checkNullAndThrow($data, 'data');
 		$result = $collection->update(
 				array('_id' => self::mongoID($id)),
 				array('$set' => $data),

@@ -6,12 +6,30 @@ use libraries\palaso\CodeGuard;
 class JsonDecoder {
 	
 	/**
+	 * @param array $array
+`	 * @return bool
+	 */
+	public static function is_assoc($array) {
+		return (bool)count(array_filter(array_keys($array), 'is_string'));
+	}
+	
+	/**
+	 * Sets the public properties of $model to values from $values[propertyName]
+	 * @param object $model
+	 * @param array $values A mixed array of JSON (like) data.
+	 */
+	public static function decode($model, $values) {
+		$decoder = new JsonDecoder();
+		$decoder->_decode($model, $values);
+	}
+	
+	/**
 	 * Sets the public properties of $model to values from $values[propertyName]
 	 * @param object $model
 	 * @param array $values A mixed array of JSON (like) data.
 	 * @param bool $isRootDocument true if this is the root document, false if a sub-document. Defaults to true
 	 */
-	public function decode($model, $values, $isRootDocument = true) {
+	protected function _decode($model, $values, $isRootDocument = true) {
 		$properties = get_object_vars($model);
 		foreach ($properties as $key => $value) {
 			if (is_a($value, 'models\mapper\IdReference')) {
@@ -28,7 +46,7 @@ class JsonDecoder {
 				}
 			} else if (is_object($value)) {
 				if (array_key_exists($key, $values)) {
-					$this->decode($model->$key, $values[$key]);
+					$this->_decode($model->$key, $values[$key]);
 				}
 			} else {
 				if (!array_key_exists($key, $values)) {
@@ -73,7 +91,7 @@ class JsonDecoder {
 		foreach ($data as $item) {
 			if ($model->getType() == ArrayOf::OBJECT) {
 				$object = $model->generate($item);
-				$this->decode($object, $item, false);
+				$this->_decode($object, $item, false);
 				$model->data[] = $object;
 			} else if ($model->getType() == ArrayOf::VALUE) {
 				if (is_array($item)) {
