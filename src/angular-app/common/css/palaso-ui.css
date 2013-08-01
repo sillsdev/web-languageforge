@@ -55,8 +55,41 @@ div.listview {
 	margin-top: 8px;
 }
 
-div.listview tr.active {
+div.listview div.paginationblock div {
+	display: inline-block;
+}
+
+div.listview .active {
 	background-color: #ffc;
+}
+
+/* Listview for projects, questions, answers views */
+div.listview div.attention-block {
+	text-align: center;
+	background-color: #d3d3d3; /* lightgray */
+	color: #dc143c; /* crimson */
+	padding: 10px;
+}
+
+div.listview div.attention-block .count {
+	font-size: 1.8em;
+}
+
+div.listview div.attention-block .subtitle {
+	font-size: 1.0em;
+}
+
+div.name-with-viewcount {
+	text-align: center;
+	padding: 10px;
+}
+
+div.name-with-viewcount span.name {
+	font-size: 1.2em;
+}
+
+div.name-with-viewcount span.viewcount {
+	font-size: 0.8em;
 }
 
 /* Control bar for use at top of listview */

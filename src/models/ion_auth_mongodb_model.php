@@ -1,4 +1,6 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  use libraries\Bcrypt;
+
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * IonAuth MongoDB Model
  *
@@ -220,7 +222,8 @@ class Ion_auth_mongodb_model extends CI_Model {
 			{
 				$rounds = array('rounds' => $this->default_rounds);
 			}
-			$this->load->library('bcrypt',$rounds);
+			//$this->load->library('bcrypt',$rounds);
+			$this->bcrypt = new Bcrypt($rounds);
 		}
 
 		$this->trigger_events('model_constructor');

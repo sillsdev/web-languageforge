@@ -35,15 +35,20 @@ function UserCtrl($scope, userService) {
 	};
 
 	$scope.users = [];
-	$scope.queryUsers = function() {
-		userService.list(function(result) {
-			if (result.ok) {
-				$scope.users = result.data.entries;
-				$scope.userCount = result.data.count;
-			} else {
-				$scope.users = [];
-			};
-		});
+
+	$scope.queryUsers = function(invalidateCache) {
+		var forceReload = (invalidateCache || (!$scope.users) || ($scope.users.length == 0));
+		if (forceReload) {
+			userService.list(function(result) {
+				if (result.ok) {
+					$scope.users = result.data.entries;
+				} else {
+					$scope.users = [];
+				};
+			});
+		} else {
+			// No need to refresh the cache: do nothing
+		}
 	};
 	//$scope.queryUsers();  // And run it right away to fetch the data for our list.
 
@@ -83,7 +88,7 @@ function UserCtrl($scope, userService) {
 
 	$scope.updateRecord = function(record) {
 		console.log("updateRecord() called with ", record);
-		if (record === undefined || record === {}) {
+		if (record === undefined || JSON.stringify(record) == "{}") {
 			// Avoid adding blank records to the database
 			return null; // TODO: Or maybe just return a promise object that will do nothing...?
 		}
@@ -95,27 +100,29 @@ function UserCtrl($scope, userService) {
 //				record.groups = [null]; // TODO: Should we put something into the form to allow setting gropus? ... Later, not now.
 //			}
 		}
-		jsonRpc.connect("/api/sf");
-		var promise = jsonRpc.call("user_update", {"params": record}, function(result) {
-			$scope.fetchRecordList();
-			console.log("Result of promise: ", result.data.result);
-		});
+		var afterUpdate;
 		if (record.password) {
-			promise = promise.then(function(result) {
-				record.id = result.data.result;
+			afterUpdate = function(result) {
+				record.id = result.data;
+				// TODO Don't do this as a separate API call here. CP 2013-07
 				$scope.changePassword(record);
-			});
-		}
-		if (isNewRecord) {
-			// We just added a record... so clear the user data area so we can add a new one later
-			$scope.record = {};
-			// And focus the input box so the user can just keep typing
-			$scope.focusInput();
+			}
 		} else {
-			// We just edited a record, so remove focus from the user data area
-			$scope.blurInput();
+			afterUpdate = function(result) {
+				// Do nothing
+			}
 		}
-		return promise;
+		userService.update(record, function(result) {
+			afterUpdate(result);
+			$scope.queryUsers(true);
+			if (isNewRecord) {
+				$scope.record = {};
+				$scope.focusInput();
+			} else {
+				$scope.blurInput();
+			}
+		});
+		return true;
 	};
 
 	$scope.removeUsers = function() {
@@ -128,22 +135,17 @@ function UserCtrl($scope, userService) {
 			// TODO ERROR
 			return;
 		}
-		projectService.removeUsers($scope.projectId, userIds, function(result) {
-			if (result.ok) {
-				$scope.queryProjectUsers();
-				// TODO
-			}
+		userService.remove(userIds, function(result) {
+			// Whether result was OK or error, wipe selected list and reload data
+			$scope.selected = [];
+			$scope.vars.selectedIndex = -1;
+			$scope.queryUsers(true);
 		});
 	};
 
 	$scope.changePassword = function(record) {
 		console.log("changePassword() called with ", record);
-		jsonRpc.connect("/api/sf");
-		var params = {
-			"userid": record.id,
-			"newPassword": record.password
-		};
-		jsonRpc.call("change_password", params, function(result) {
+		userService.changePassword(record.id, record.password, function(result) {
 			console.log("Password successfully changed.");
 		});
 	};

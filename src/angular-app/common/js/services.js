@@ -12,9 +12,12 @@ angular.module('sf.services', ['jsonRpc'])
 		this.update = function(model, callback) {
 			jsonRpc.call('user_update', [model], callback);
 		};
-		this.remove = function(id, callback) {
-			jsonRpc.call('user_delete', [id], callback);
+		this.remove = function(userIds, callback) {
+			jsonRpc.call('user_delete', [userIds], callback);
 		};
+		this.changePassword = function(id, password, callback) {
+			jsonRpc.call('change_password', [id, password], callback);
+		}
 		this.list = function(callback) {
 			// TODO Paging CP 2013-07
 			jsonRpc.call('user_list', [], callback);
@@ -22,6 +25,9 @@ angular.module('sf.services', ['jsonRpc'])
 		this.typeahead = function(term, callback) {
 			jsonRpc.call('user_typeahead', [term], callback);
 		};
+		this.changePassword = function(userId, newPassword, callback) {
+			jsonRpc.call('change_password', [userId, newPassword], callback);
+		}
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
@@ -84,7 +90,7 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('question_list', [projectId, textId], callback);
 		};
 	}])
-	.service('CIService', function() {
+	.service('sessionService', function() {
 		this.currentUserId = function() {
 			return window.session.userid;
 		};

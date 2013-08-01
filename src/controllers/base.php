@@ -23,20 +23,26 @@ class Base extends CI_Controller {
 		$isLoggedIn = $this->ion_auth->logged_in();
 		$this->viewdata['logged_in'] = $isLoggedIn;
 		if ($isLoggedIn) {
-			$userId = (string)$this->session->userdata('user_id');
-			$user = new \models\UserModel($userId);
-			$isAdmin = $this->ion_auth->is_admin();
-			$this->viewdata['is_admin'] = $isAdmin;
-			$this->viewdata['user_name'] = $user->name;
-			$this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
-			$projects = $user->listProjects();
-			$this->viewdata['projects_count'] = $projects->count;
-			$this->viewdata['projects'] = $projects->entries;
-			if ($isAdmin) {
-				$projectList = new models\ProjectListModel();
-				$projectList->read();
-				$this->viewdata['all_projects_count'] = $projectList->count;
-				$this->viewdata['all_projects'] = $projectList->entries;
+			try {
+				$userId = (string)$this->session->userdata('user_id');
+				$user = new \models\UserModel($userId);
+				$isAdmin = $this->ion_auth->is_admin();
+				$this->viewdata['is_admin'] = $isAdmin;
+				$this->viewdata['user_name'] = $user->username;
+				$this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
+				$this->viewdata['small_avatar_url'] = $user->avatar_ref;
+				$projects = $user->listProjects();
+				$this->viewdata['projects_count'] = $projects->count;
+				$this->viewdata['projects'] = $projects->entries;
+				if ($isAdmin) {
+					$projectList = new models\ProjectListModel();
+					$projectList->read();
+					$this->viewdata['all_projects_count'] = $projectList->count;
+					$this->viewdata['all_projects'] = $projectList->entries;
+				}
+			} catch (Exception $e) {
+				error_log("User not found, logged out.\n" . $e->getMessage());
+				$this->ion_auth->logout();
 			}
 			
 		}

@@ -1,0 +1,20 @@
+<div class="container" ng-app="changePassword" ng-cloak>
+	<div ng-controller="changePasswordCtrl">
+        <legend>Change Your Password</legend>
+        <form ng-submit="updatePassword()" name="passwordForm">
+            <fieldset>
+                <div ng-show="notify.error" class="notification errorMessage">Error: {{notify.error}}</div>
+                <div ng-show="notify.message" class="notification informationMessage">{{notify.message}}</div>
+
+                <label>Password</label>
+                <input required type="password" ng-model="vars.password" name="password"/>
+                <label>Confirm password</label>
+                <input required type="password" ng-model="vars.confirm_password" ui-validate=" '$value==vars.password' " ui-validate-watch=" 'password' " name="confirm_password"/>
+                <span style="color:red" ng-show='passwordForm.confirm_password.$error.validator'>Passwords do not match</span>
+                <div>
+                	<input type="submit" value="Change Password" />
+                </div>
+            </fieldset>
+        </form>
+	</div>
+</div>
