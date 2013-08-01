@@ -21,6 +21,8 @@ class AnswerModel extends CommentModel
 	 */
 	public $comments;
 	
+	public $textHightlight;
+	
 	/**
 	 * 
 	 * @var int
