@@ -2,9 +2,12 @@
 
 namespace models;
 
+use models\mapper\Id;
+use models\mapper\ArrayOf;
+
 require_once(APPPATH . '/models/ProjectModel.php');
 
-class CommentModelMongoMapper extends \libraries\sf\MongoMapper
+class CommentModelMongoMapper extends \models\mapper\MongoMapper
 {
 	/**
 	 * @var CommentModelMongoMapper[]
@@ -24,9 +27,10 @@ class CommentModelMongoMapper extends \libraries\sf\MongoMapper
 	
 }
 
-class CommentModel extends \libraries\sf\MapperModel
+class CommentModel extends \models\mapper\MapperModel
 {
-	public function __construct($projectModel, $id = NULL) {
+	public function __construct($projectModel, $id = '') {
+		$this->id = new Id();
 		parent::__construct(CommentModelMongoMapper::connect($projectModel->databaseName()), $id);
 	}
 	
@@ -55,13 +59,27 @@ class CommentModel extends \libraries\sf\MapperModel
 
 class QuestionModel extends CommentModel
 {
-	public function __construct($projectModel, $id = NULL) {
+	/**
+	 * @var ProjectModel
+	 */
+	private $_projectModel;
+
+	/**
+	 * @param ProjectModel $projectModel
+	 * @param Id $id
+	 */
+	public function __construct($projectModel, $id = '') {
+		$this->_projectModel = $projectModel;
+		$this->answers = new ArrayOf(ArrayOf::OBJECT, 'generateAnswer');
 		parent::__construct($projectModel, $id);
-		$this->answers = array();
+	}
+	
+	public function generateAnswer($data = null) {
+		return new AnswerModel($this->_projectModel);
 	}
 	
 	/**
-	 * @var array<AnswerModel>
+	 * @var ArrayOf<AnswerModel>
 	 */
 	public $answers;
 	
@@ -80,10 +98,10 @@ class AnswerModel extends CommentModel
 	public $comments;
 }
 
-class QuestionListModel extends \libraries\sf\MapperListModel
+class QuestionListModel extends \models\mapper\MapperListModel
 {
 
-	public function __construct($projectModel, $textId)
+	public function __construct($projectModel/*, $textId*/)
 	{
 		// TODO Include $textId in the query CP 2013-07
 		parent::__construct(

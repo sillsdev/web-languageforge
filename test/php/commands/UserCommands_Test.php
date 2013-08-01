@@ -1,5 +1,5 @@
 <?php
-use libraries\api\UserCommands;
+use models\commands\UserCommands;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -8,10 +8,6 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestUserCommands extends UnitTestCase {
 
-	function __construct()
-	{
-	}
-	
 	function testDeleteUsers_NoThrow() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
