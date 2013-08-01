@@ -8,7 +8,17 @@ class MongoEncoder {
 	 * @param object $model
 	 * @return array
 	 */
-	public function encode($model, $encodeId = false) {
+	public static function encode($model) {
+		$encoder = new MongoEncoder();
+		return $encoder->_encode($model);
+	}
+	
+	/**
+	 * Sets key/values in the array from the public properties of $model
+	 * @param object $model
+	 * @return array
+	 */
+	protected function _encode($model, $encodeId = false) {
 		$data = array();
 		$properties = get_object_vars($model);
 		foreach ($properties as $key => $value) {
@@ -32,7 +42,7 @@ class MongoEncoder {
 					throw new \Exception("Possible bad write of '$key'\n" . var_export($model, true));
 				}
 				if (is_object($value)) {
-					$data[$key] = $this->encode($value);
+					$data[$key] = $this->_encode($value);
 				} else {
 					// Default encode
 					$data[$key] = $value;
@@ -75,7 +85,7 @@ class MongoEncoder {
 		$result = array();
 		foreach ($model->data as $item) {
 			if (is_object($item)) {
-				$result[] = $this->encode($item, true);
+				$result[] = $this->_encode($item, true);
 			} else {
 				// Data type protection
 				if (is_array($item)) {
