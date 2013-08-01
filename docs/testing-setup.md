@@ -28,6 +28,14 @@ You can compile phantom.js from source (http://phantomjs.org/build.html), but th
 
 Once you've got a phantomjs binary, whether you built it from source or downloaded the binary package, put it somewhere on your PATH. (/usr/local/bin/ is probably best.)
 
+If you download the binary, then you also need to install the libfontconfig package
+
+    sudo apt-get install fontconfig
+
+You can verify that phantomjs is in your path and working by typing:
+
+    phantomjs -v
+
 ## Step 3: TeamCity
 
 If installing on your local machine, you can (of course) skip this step; it's only needed when setting up a TeamCity build agent.
