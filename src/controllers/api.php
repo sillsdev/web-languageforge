@@ -20,7 +20,7 @@ class Api extends CI_Controller {
 			throw new Exception(sprintf("Service class '%s' not found in file '%s'", $serviceClassName, $filePath));
 		}
 		$service = new $serviceClassName;
-		libraries\sf\JsonRpcServer::handle($service, $this->output);
+		libraries\palaso\JsonRpcServer::handle($service, $this->output);
 	}
 	
 }

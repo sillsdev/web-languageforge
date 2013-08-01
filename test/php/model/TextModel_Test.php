@@ -2,7 +2,7 @@
 
 use models\TextListModel;
 
-use libraries\sf\MongoStore;
+use models\mapper\MongoStore;
 use models\ProjectModel;
 use models\TextModel;
 
@@ -50,9 +50,9 @@ class TestTextModel extends UnitTestCase {
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$this->assertEqual($id, $model->id);
+		$this->assertEqual($id, $model->id->asString());
 		$otherModel = new TextModel(new MockProjectModel(), $id);
-		$this->assertEqual($id, $otherModel->id);
+		$this->assertEqual($id, $otherModel->id->asString());
 		$this->assertEqual('Some Title', $otherModel->title);
 
 		$this->_someTextId = $id;

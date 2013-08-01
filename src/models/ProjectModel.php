@@ -2,12 +2,15 @@
 
 namespace models;
 
-use libraries\sf\MongoStore;
-use libraries\sf\ReferenceList;
+use models\mapper\MongoMapper;
+
+use models\mapper\MongoStore;
+use models\mapper\ReferenceList;
+use models\mapper\Id;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
-class ProjectModelMongoMapper extends \libraries\sf\MongoMapper
+class ProjectModelMongoMapper extends \models\mapper\MongoMapper
 {
 	public static function instance()
 	{
@@ -27,10 +30,11 @@ class ProjectModelMongoMapper extends \libraries\sf\MongoMapper
 	}
 }
 
-class ProjectModel extends \libraries\sf\MapperModel
+class ProjectModel extends \models\mapper\MapperModel
 {
-	public function __construct($id = NULL)
+	public function __construct($id = '')
 	{
+		$this->id = new Id();
 		$this->users = new ReferenceList();
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
@@ -45,10 +49,9 @@ class ProjectModel extends \libraries\sf\MapperModel
 	 * Removes this project from the collection.
 	 * User references to this project are also removed
 	 */
-	public function remove()
-	{
+	public function remove() {
 		ProjectModelMongoMapper::instance()->drop($this->databaseName());
-		ProjectModelMongoMapper::instance()->remove($this->id);
+		ProjectModelMongoMapper::instance()->remove($this->id->asString());
 	}
 	
 	
@@ -59,7 +62,6 @@ class ProjectModel extends \libraries\sf\MapperModel
 	 */
 	public function addUser($userId) {
 		$this->users->_addRef($userId);
-
 	}
 	
 	
@@ -75,7 +77,7 @@ class ProjectModel extends \libraries\sf\MapperModel
 	}
 
 	public function listUsers() {
-		$userList = new UserList_ProjectModel($this->id);
+		$userList = new UserList_ProjectModel($this->id->asString());
 		$userList->read();
 		return $userList;
 	}
@@ -104,7 +106,7 @@ class ProjectModel extends \libraries\sf\MapperModel
 	
 }
 
-class ProjectListModel extends \libraries\sf\MapperListModel
+class ProjectListModel extends \models\mapper\MapperListModel
 {
 	public function __construct()
 	{
@@ -116,14 +118,14 @@ class ProjectListModel extends \libraries\sf\MapperListModel
 	}
 }
 
-class ProjectList_UserModel extends \libraries\sf\MapperListModel
+class ProjectList_UserModel extends \models\mapper\MapperListModel
 {
 
 	public function __construct($userId)
 	{
 		parent::__construct(
 				ProjectModelMongoMapper::instance(),
-				array('users' => array('$in' => array(new \MongoId($userId)))),
+				array('users' => array('$in' => array(MongoMapper::mongoID($userId)))),
 				array('projectname')
 		);
 	}

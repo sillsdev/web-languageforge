@@ -27,9 +27,9 @@ class TestProjectUserCommands extends UnitTestCase {
 		$object = array(
 			"name" => "Some User"
 		);
-		$command = new libraries\api\ProjectUserCommands($project);
+		$command = new models\commands\ProjectUserCommands($project);
 		$userId = $command->addUser($object);
-		$this->assertTrue(is_string($userId), "userId is not a string");
+		$this->assertIsA($userId, 'string');
 		
 		$user = new models\UserModel($userId);
 		$this->assertEqual('Some User', $user->name);

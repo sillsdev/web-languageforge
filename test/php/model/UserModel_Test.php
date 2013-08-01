@@ -1,5 +1,10 @@
 <?php
-use libraries\api\LinkCommands;
+use models\mapper\Id;
+
+use models\commands\LinkCommands;
+use models\UserModel;
+use models\UserListModel;
+use models\ProjectModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -8,10 +13,6 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 require_once(SourcePath . "models/ProjectModel.php");
 require_once(SourcePath . "models/UserModel.php");
-
-use models\UserModel;
-use models\UserListModel;
-use models\ProjectModel;
 
 class TestUserModel extends UnitTestCase {
 
@@ -30,7 +31,7 @@ class TestUserModel extends UnitTestCase {
 		$model->email = "user@example.com";
 		$model->username = "SomeUser";
 		$model->name = "Some User";
-		$model->avatarRef = "images/avatar/pinkbat.png";
+		$model->avatar_ref = "images/avatar/pinkbat.png";
 		$id = $model->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
@@ -40,7 +41,7 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual('user@example.com', $otherModel->email);
 		$this->assertEqual('SomeUser', $otherModel->username);
 		$this->assertEqual('Some User', $otherModel->name);
-		$this->assertEqual('images/avatar/pinkbat.png', $otherModel->avatarRef);
+		$this->assertEqual('images/avatar/pinkbat.png', $otherModel->avatar_ref);
 		
 		$this->_someUserId = $id;
 	}
@@ -80,10 +81,10 @@ class TestUserModel extends UnitTestCase {
 		$e->clean();
 		
 		$p1m = $e->createProject('p1');
-		$p1 = $p1m->id;
+		$p1 = $p1m->id->asString();
 		$p1m = new ProjectModel($p1);
 		$p2m = $e->createProject('p2');
-		$p2 = $p2m->id;
+		$p2 = $p2m->id->asString();
 		
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@smith.com');
 		$userModel = new UserModel($userId);
@@ -112,7 +113,7 @@ class TestUserModel extends UnitTestCase {
 			), $result->entries
 		);
 	}
-
+/*
 	function testWriteRemove_ListCorrect() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
@@ -131,7 +132,7 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(1, $list->count);
 		$this->assertEqual(
 			array(array(
-				'avatarRef' => null,
+				'avatar_ref' => null,
 				'email' => null,
 				'name' => 'Some Name',
 				'username' => null,
@@ -146,7 +147,7 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(0, $list->count);
 		$this->assertEqual(null, $list->entries);
 	}
-	
+	*/
 }
 
 ?>

@@ -1,4 +1,4 @@
-<legend>Texts to Check</legend>
+<h2 style="font-weight:normal">Texts for {{projectName}}</h2>
 <p>
 <a ng-click="newTextCollapsed = !newTextCollapsed">Add New Text</a>
 </p>
@@ -17,19 +17,27 @@
 <form class="control-bar form-inline">
 <button class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
 </form>
-<div listview search="queryTexts()" select="">
-<table class="table" style="width: 100%">
-	<thead>
-	<tr>
-		<th width="16px"></th>
-		<th>Texts</th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr ng-repeat="text in texts" ng-class="{active: isSelected(text)}" >
-		<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(text)" ng-click="updateSelection($event, text)" /></td>
-		<td><a href="#/project/{{projectId}}/{{text.id}}">{{text.title}}</a></td>
-	</tr>
-	</tbody>
-</table>		
+<div listview search="queryTexts()" items="texts" visible-items="visibleTexts" select="">
+<hr />
+<div ng-repeat="text in visibleTexts" class="details-row">
+	<ul class="inline" ng-class="{active: isSelected(text)}">
+		<li><input type="checkbox" ng-checked="isSelected(text)" ng-click="updateSelection($event, text)" /></li>
+		<li><a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{text.title|urlencode}}/{{text.id}}">
+			<div class="attention-block">
+				<span class="count">{{getQuestionCount(text)}}</span><br />
+				<span class="subtitle">questions</span>
+			</div>
+		</a></li>
+		<li><div class="name-with-viewcount">
+			<a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{text.title|urlencode}}/{{text.id}}">
+				<span class="name">{{text.title}}</span>
+			</a>
+			<br />
+			<span class="viewcount">{{getViewsCount(text)}} views</span>
+		</div></li>
+		<li><a href="#">{{getUnreadAnswers(text)}} unread answers</a></li>
+		<li><a href="#">{{getUnreadComments(text)}} unread comments</a></li>
+	</ul>
+	<hr />
+</div>
 </div>
