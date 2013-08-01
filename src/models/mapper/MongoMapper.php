@@ -6,6 +6,10 @@ use libraries\palaso\CodeGuard;
 
 class MongoMapper
 {
+	
+	const ID_IN_KEY = 0;
+	const ID_IN_DOC = 1;
+	
 	/**
 	 * @var MongoDB
 	 */
@@ -88,11 +92,6 @@ class MongoMapper
 		}
 	}
 	
-	public function write($model) {
-		$data = MongoEncoder::encode($model);
-		return $this->update($this->_collection, $data, $model->id->asString());
-	}
-
 	public function readSubDocument($model, $rootId, $property, $id) {
 		CodeGuard::checkTypeAndThrow($rootId, 'string');
 		CodeGuard::checkTypeAndThrow($id, 'string');
@@ -106,14 +105,39 @@ class MongoMapper
 		MongoDecoder::decode($model, $data);
 	}
 	
-	public function writeSubDocument($model, $rootId, $property) {
-		$data = MongoEncoder::encode($model);
-		$idKey = $this->_idKey;
-		$id = $model->$idKey;
-		if (empty($id)) {
-			$id = MongoStore::makeKey($model->keyString());
+	/**
+	 * @param object $model
+	 * @param string $id
+	 * @param int $keyStyle
+	 * @param string $rootId
+	 * @param string $property
+	 * @see ID_IN_KEY
+	 * @see ID_IN_DOC
+	 * @return string
+	 */
+	public function write($model, $id, $keyStyle = MongoMapper::ID_IN_KEY, $rootId = '', $property = '') {
+		CodeGuard::checkTypeAndThrow($rootId, 'string');
+		CodeGuard::checkTypeAndThrow($property, 'string');
+		CodeGuard::checkTypeAndThrow($id, 'string');
+		$data = MongoEncoder::encode($model); // TODO Take into account key style for stripping key out of the model if needs be
+		if (empty($rootId)) {
+			// We're doing a root level update, only $model, $id are relevant
+			$id = $this->update($this->_collection, $data, $id);
+		} else {
+			if ($keyStyle == self::ID_IN_KEY) {
+				if (empty($id)) {
+					$id = MongoStore::makeKey($model->keyString());
+				}
+				$id = $this->updateSubDocument($data, $id, self::ID_IN_KEY, $rootId, $property);
+			} else {
+				if (empty($id)) {
+					// TODO would be nice if the encode above gave us the id it generated so we could return it to be consistent. CP 2013-08
+					$this->appendSubDocument($data, $rootId, $property);
+				} else {
+					$id = $this->updateSubDocument($data, $id, self::ID_IN_DOC, $rootId, $property);
+				}
+			}
 		}
-		$id = $this->updateSubDocument($this->_collection, $data, $rootId, $property, $id);
 		return $id;
 	}
 	
@@ -156,22 +180,31 @@ class MongoMapper
 	}
 	
 	/**
-	 * @param MongoCollection $collection
 	 * @param array $data
 	 * @param string $rootId
 	 * @param string $property
 	 * @param string $id
 	 * @return string
 	 */
-	protected function updateSubDocument($collection, $data, $rootId, $property, $id) {
+	protected function updateSubDocument($data, $id, $keyType, $rootId, $property) {
 		CodeGuard::checkTypeAndThrow($rootId, 'string');
 		CodeGuard::checkTypeAndThrow($id, 'string');
-		$result = $collection->update(
-				array('_id' => self::mongoId($rootId)),
-				array('$set' => array($property . '.' . $id => $data)),
-				array('upsert' => false, 'multiple' => false, 'safe' => true)
-		);
+		CodeGuard::checkNullAndThrow($id, 'id');
+		if ($keyType == self::ID_IN_KEY) {
+			$result = $this->_collection->update(
+					array('_id' => self::mongoId($rootId)),
+					array('$set' => array($property . '.' . $id => $data)),
+					array('upsert' => false, 'multiple' => false, 'safe' => true)
+			);
+		} else {
+			$result = $this->_collection->update(
+					array('_id' => self::mongoId($rootId)),
+					array('$set' => array($property . '$' . $id => $data)),
+					array('upsert' => false, 'multiple' => false, 'safe' => true)
+			);
+		}
 		// TODO REVIEW Pretty sure this doesn't count as an upsert.  The $rootId document *must* exist therefore isn't an upsert.
+		// TODO REVIEW Returning anything here is pointless. It will always be the id given, and throw on error.
 		return isset($result['upserted']) ? $result['upserted'].$id : $id;
 	}
 	
