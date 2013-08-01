@@ -9,7 +9,7 @@ class MapperSubModel
 	protected $_rootId;
 	protected $_property;
 
-	protected function __construct($mapper, $rootId, $property, $id = NULL) {
+	protected function __construct($mapper, $rootId, $property, $id = '') {
 		$this->_mapper = $mapper;
 		$this->_rootId = $rootId;
 		$this->_property = $property;

@@ -4,12 +4,13 @@ namespace models\mapper;
 class JsonEncoder {
 	
 	/**
-	 * @var string
+	 * Sets key/values in the array from the public properties of $model
+	 * @param object $model
+	 * @return array
 	 */
-	private $_idKey;
-	
-	public function __construct($idKey = null) {
-		$this->_idKey = $idKey;
+	public static function encode($model) {
+		$encoder = new JsonEncoder();
+		return $encoder->_encode($model);
 	}
 	
 	/**
@@ -17,7 +18,7 @@ class JsonEncoder {
 	 * @param object $model
 	 * @return array
 	 */
-	public function encode($model) {
+	protected function _encode($model) {
 		$data = array();
 		$properties = get_object_vars($model);
 		foreach ($properties as $key => $value) {
@@ -39,7 +40,7 @@ class JsonEncoder {
 					throw new \Exception("Possible bad write of '$key'\n" . var_export($model, true));
 				}
 				if (is_object($value)) {
-					$data[$key] = $this->encode($value);
+					$data[$key] = $this->_encode($value);
 				} else {
 					// Default encode
 					$data[$key] = $value;
@@ -76,7 +77,7 @@ class JsonEncoder {
 		$result = array();
 		foreach ($model->data as $item) {
 			if (is_object($item)) {
-				$result[] = $this->encode($item);
+				$result[] = $this->_encode($item);
 			} else {
 				// Data type protection
 				if (is_array($item)) {

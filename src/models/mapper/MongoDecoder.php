@@ -4,6 +4,16 @@ namespace models\mapper;
 class MongoDecoder extends JsonDecoder {
 	
 	/**
+	 * Sets the public properties of $model to values from $values[propertyName]
+	 * @param object $model
+	 * @param array $values A mixed array of JSON (like) data.
+	 */
+	public static function decode($model, $values) {
+		$decoder = new MongoDecoder();
+		$decoder->_decode($model, $values);
+	}
+	
+	/**
 	 * @param string $key
 	 * @param object $model
 	 * @param array $values
