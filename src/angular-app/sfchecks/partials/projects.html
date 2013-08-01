@@ -12,18 +12,26 @@
 <button class="btn" ng-click="removeProject()"><i class="icon-remove"></i>Remove Projects</button>
 </form>
 <div listview search="queryProjectsForUser()" items="projects" visible-items="visibleProjects" select="">
-<table class="table" style="width: 100%">
-	<thead>
-	<tr>
-		<th width="16px"></th>
-		<th>Project</th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr ng-repeat="project in visibleProjects" ng-class="{active: isSelected(project)}" >
-		<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(project)" ng-click="updateSelection($event, project)" /></td>
-		<td><a href="#/project/{{project.projectname|urlencode}}/{{project.id}}">{{project.projectname}}</a></td>
-	</tr>
-	</tbody>
-</table>		
+<hr />
+<div ng-repeat="project in visibleProjects" class="details-row">
+	<ul class="inline" ng-class="{active: isSelected(project)}">
+		<li><input type="checkbox" ng-checked="isSelected(project)" ng-click="updateSelection($event, project)" /></li>
+		<li><a href="#/project/{{project.projectname|urlencode}}/{{project.id}}">
+			<div class="attention-block">
+				<span style="font-size: 24px">{{getTextsCount(project)}}</span><br />
+				<span style=""> texts to check</span>
+			</div>
+		</a></li>
+		<li><div class="name-with-viewcount">
+			<a href="#/project/{{project.projectname|urlencode}}/{{project.id}}">
+				<span class="name">{{project.projectname}}</span>
+			</a>
+			<br />
+			<span class="viewcount">{{getViewsCount(project)}} views</span>
+		</div></li>
+		<li><a href="#">{{getUnreadAnswers(project)}} unread answers</a></li>
+		<li><a href="#">{{getUnreadComments(project)}} unread comments</a></li>
+	</ul>
+	<hr />
+</div>
 </div>

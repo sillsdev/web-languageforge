@@ -9,6 +9,8 @@ angular.module(
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
 		$scope.textId = textId;
+		$scope.projectName = $routeParams.projectName;
+		$scope.textName = $routeParams.textName;
 		// Listview Selection
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
@@ -66,5 +68,31 @@ angular.module(
 				}
 			});
 		};
+
+		// Fake data to make the page look good while it's being designed. To be
+		// replaced by real data once the appropriate API functions are writen.
+		var fakeData = {
+			answerCount: -3,
+			viewsCount: -27,
+			unreadAnswers: -1,
+			unreadComments: -5
+		};
+
+		$scope.getAnswerCount = function(question) {
+			return fakeData.answerCount;
+		}
+
+		$scope.getViewsCount = function(question) {
+			return fakeData.viewsCount;
+		}
+
+		$scope.getUnreadAnswers = function(question) {
+			return fakeData.unreadAnswers;
+		}
+
+		$scope.getUnreadComments = function(question) {
+			return fakeData.unreadComments;
+		}
+
 	}])
 	;
