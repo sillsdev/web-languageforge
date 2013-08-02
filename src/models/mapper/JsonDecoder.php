@@ -40,6 +40,10 @@ class JsonDecoder {
 				if (array_key_exists($key, $values)) {
 					$this->decodeArrayOf($model->$key, $values[$key]);
 				}
+			} else if (is_a($value, 'models\mapper\MapOf')) {
+				if (array_key_exists($key, $values)) {
+					$this->decodeArrayOf($model->$key, $values[$key]);
+				}
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
 				if (array_key_exists($key, $values)) {
 					$this->decodeReferenceList($model->$key, $values[$key]);
@@ -98,6 +102,28 @@ class JsonDecoder {
 					throw new \Exception("Must not decode array for value type");
 				}
 				$model->data[] = $item;
+			}
+		}
+	}
+	
+	/**
+	 * @param MapOf $model
+	 * @param array $data
+	 * @throws \Exception
+	 */
+	public function decodeMapOf($model, $data) {
+		CodeGuard::checkTypeAndThrow($data, 'array');
+		$model->data = array();
+		foreach ($data as $itemKey => $item) {
+			if ($model->hasGenerator()) {
+				$object = $model->generate($item);
+				$this->_decode($object, $item, false);
+				$model->data[$itemKey] = $object;
+			} else {
+				if (is_array($item)) {
+					throw new \Exception("Must not decode array for value type");
+				}
+				$model->data[$itemKey] = $item;
 			}
 		}
 	}
