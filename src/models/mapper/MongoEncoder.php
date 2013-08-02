@@ -30,6 +30,8 @@ class MongoEncoder {
 				}
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
 				$data[$key] = $this->encodeArrayOf($model->$key);
+			} else if (is_a($value, 'models\mapper\MapOf')) {
+				$data[$key] = $this->encodeMapOf($model->$key);
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
 				$data[$key] = $this->encodeReferenceList($model->$key);
 			} else {
@@ -97,7 +99,31 @@ class MongoEncoder {
 		}
 		return $result;
 	}
-
+	
+	/**
+	 * @param MapOf $model
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function encodeMapOf($model) {
+		$result = array();
+		$count = 0;
+		foreach ($model->data as $key => $item) {
+			if (is_object($item)) {
+				$result[$key] = $this->_encode($item, false);
+			} else {
+				// Data type protection
+				if (is_array($item)) {
+					throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
+				}
+				// Default encode
+				$result[$key] = $item;
+			}
+			$count++;
+		}
+		return $count == 0 ? new \Object() : $result;
+	}
+	
 	/**
 	 * @param ReferenceList $model
 	 * @return array

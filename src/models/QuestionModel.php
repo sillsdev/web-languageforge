@@ -5,7 +5,7 @@ namespace models;
 use models\mapper\IdReference;
 
 use models\mapper\Id;
-use models\mapper\ArrayOf;
+use models\mapper\MapOf;
 
 class QuestionModelMongoMapper extends \models\mapper\MongoMapper
 {
@@ -32,8 +32,7 @@ class QuestionModel extends \models\mapper\MapperModel
 	public function __construct($projectModel, $id = '') {
 		$this->id = new Id();
 		$this->textRef = new IdReference();
-		$this->answers = new ArrayOf(
-			ArrayOf::OBJECT,
+		$this->answers = new MapOf(
 			function() {
 				return new AnswerModel();
 			}
@@ -43,54 +42,90 @@ class QuestionModel extends \models\mapper\MapperModel
 		parent::__construct(QuestionModelMongoMapper::connect($databaseName), $id);
 	}	
 	
+	// TODO Override read to sort answers and comments by date/time. CP 2013-08
+	
+	/**
+	 * Removes this question from the collection
+	 * @param string $databaseName
+	 * @param string $id
+	 */
 	public static function remove($databaseName, $id) {
-		QuestionModelMongoMapper::connect($databaseName)->remove($id);
+		$mapper = QuestionModelMongoMapper::connect($databaseName);
+		$mapper->remove($id);
 	}
 	
+	/**
+	 * Adds / updates an answer to the given question.
+	 * @param string $databaseName
+	 * @param string $questionId
+	 * @param AnswerModel $answer
+	 */
 	public static function writeAnswer($databaseName, $questionId, $answer) {
-		QuestionModelMongoMapper::connect($databaseName)->write();
-		
+		$mapper = QuestionModelMongoMapper::connect($databaseName);
+		$id = $mapper->write(
+			$answer, 
+			$answer->id->asString(), 
+			MongoMapper::ID_IN_KEY, 
+			$questionId, 
+			'answers'
+		);
+		return $id;
 	}
 	
+	/**
+	 * Adds / updates a comment on an answer to the given question.
+	 * @param string $databaseName
+	 * @param string $questionId
+	 * @param string $answerId
+	 * @param CommentModel $comment
+	 */
 	public static function writeComment($databaseName, $questionId, $answerId, $comment) {
-		
+		$mapper = QuestionModelMongoMapper::connect($databaseName);
+		$id = $mapper->write(
+			comment, 
+			$comment->id->asString(), 
+			MongoMapper::ID_IN_KEY, 
+			$questionId, 
+			"answers.$answerId.comments"
+		);
+		return $id;
 	}
 	
+	/**
+	 * @var Id
+	 */
 	public $id;
 	
+	/**
+	 * @var string
+	 */
 	public $title;
 	
 	/**
-	 * 
 	 * @var string A content description/explanation of the question being asked
 	 */
 	public $description;
 	
 	/**
-	 * 
-	 * @var
+	 * @var \DateTime
 	 */
 	public $dateCreated;
 	
 	/**
 	 * 
-	 * @var \MongoDate
+	 * @var \DateTime
 	 */
 	public $dateEdited;
 
 	/**
-	 * 
-	 * @var Id - Id of the referring text
+	 * @var IdReference - Id of the referring text
 	 */
 	public $textRef;
 	
 	/**
-	 * @var ArrayOf<AnswerModel>
+	 * @var MapOf<AnswerModel>
 	 */
 	public $answers;
-	
-	//public $authorDate; // TODO CP 2013-07
-			
 	
 }
 
