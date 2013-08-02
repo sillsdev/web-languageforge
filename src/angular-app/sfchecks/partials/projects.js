@@ -4,7 +4,7 @@ angular.module(
 		'sfchecks.projects',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('ProjectsCtrl', ['$scope', 'projectService', function($scope, projectService) {
+	.controller('ProjectsCtrl', ['$scope', 'projectService', 'textService', function($scope, projectService, textService) {
 		// Listview Selection
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
@@ -72,8 +72,19 @@ angular.module(
 		};
 
 		$scope.getTextCount = function(project) {
-			// return projects.texts.count;
-			return fakeData.textCount;
+			if (angular.isUndefined(project.textCount)) {
+				console.log('Trying to get text count for', project.id);
+				textService.list(project.id, function(result) {
+					if (result.ok) {
+						console.log('Result OK, got', result.data.count);
+						project.textCount = result.data.count;
+					} else {
+						console.log('Result failed:', result);
+						project.textCount = undefined;
+					};
+				});
+			}
+			return project.textCount;
 		}
 
 		$scope.getViewsCount = function(project) {
