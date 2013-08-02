@@ -28,6 +28,8 @@ class JsonEncoder {
 				$data[$key] = $this->encodeId($key, $model->$key);
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
 				$data[$key] = $this->encodeArrayOf($key, $model->$key);
+			} else if (is_a($value, 'models\mapper\MapOf')) {
+				$data[$key] = $this->encodeMapOf($key, $model->$key);
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
 				$data[$key] = $this->encodeReferenceList($key, $model->$key);
 			} else {
@@ -96,6 +98,31 @@ class JsonEncoder {
 		return $result;
 	}
 
+	/**
+	 * @param string $key
+	 * @param MapOf $model
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function encodeMapOf($key, $model) {
+		$result = array();
+		$count = 0;
+		foreach ($model->data as $itemKey => $item) {
+			if (is_object($item)) {
+				$result[$itemKey] = $this->_encode($item);
+			} else {
+				// Data type protection
+				if (is_array($item)) {
+					throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $itemKey . "'");
+				}
+				// Default encode
+				$result[$itemKey] = $item;
+			}
+			$count++;
+		}
+		return $count == 0 ? new \Object() : $result;
+	}
+	
 	/**
 	 * @param string $key
 	 * @param ReferenceList $model
