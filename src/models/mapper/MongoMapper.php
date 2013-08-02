@@ -122,19 +122,19 @@ class MongoMapper
 		$data = MongoEncoder::encode($model); // TODO Take into account key style for stripping key out of the model if needs be
 		if (empty($rootId)) {
 			// We're doing a root level update, only $model, $id are relevant
-			$id = $this->update($this->_collection, $data, $id);
+			$id = $this->update($data, $id, self::ID_IN_KEY, '', '');
 		} else {
 			if ($keyStyle == self::ID_IN_KEY) {
 				if (empty($id)) {
 					$id = MongoStore::makeKey($model->keyString());
 				}
-				$id = $this->updateSubDocument($data, $id, self::ID_IN_KEY, $rootId, $property);
+				$id = $this->update($data, $id, self::ID_IN_KEY, $rootId, $property);
 			} else {
 				if (empty($id)) {
 					// TODO would be nice if the encode above gave us the id it generated so we could return it to be consistent. CP 2013-08
 					$this->appendSubDocument($data, $rootId, $property);
 				} else {
-					$id = $this->updateSubDocument($data, $id, self::ID_IN_DOC, $rootId, $property);
+					$id = $this->update($data, $id, self::ID_IN_DOC, $rootId, $property);
 				}
 			}
 		}
@@ -163,49 +163,41 @@ class MongoMapper
 	}
 	
 	/**
-	 * @param MongoCollection $collection
 	 * @param array $data
 	 * @param string $id
-	 * @return string
-	 */
-	protected function update($collection, $data, $id) {
-		CodeGuard::checkTypeAndThrow($id, 'string');
-		CodeGuard::checkNullAndThrow($data, 'data');
-		$result = $collection->update(
-				array('_id' => self::mongoID($id)),
-				array('$set' => $data),
-				array('upsert' => true, 'multiple' => false, 'safe' => true)
-		);
-		return isset($result['upserted']) ? (string)$result['upserted'] : $id;
-	}
-	
-	/**
-	 * @param array $data
+	 * @param int $keyType
 	 * @param string $rootId
 	 * @param string $property
-	 * @param string $id
 	 * @return string
 	 */
-	protected function updateSubDocument($data, $id, $keyType, $rootId, $property) {
+	protected function update($data, $id, $keyType, $rootId, $property) {
 		CodeGuard::checkTypeAndThrow($rootId, 'string');
 		CodeGuard::checkTypeAndThrow($id, 'string');
-		CodeGuard::checkNullAndThrow($id, 'id');
 		if ($keyType == self::ID_IN_KEY) {
-			$result = $this->_collection->update(
+			if (empty($rootId)) {
+				$result = $this->_collection->update(
+					array('_id' => self::mongoId($id)),
+					array('$set' => $data),
+					array('upsert' => true, 'multiple' => false, 'safe' => true)
+				);
+				$id = isset($result['upserted']) ? $result['upserted'].$id : $id;
+			} else {
+				CodeGuard::checkNullAndThrow($id, 'id');
+				$result = $this->_collection->update(
 					array('_id' => self::mongoId($rootId)),
 					array('$set' => array($property . '.' . $id => $data)),
 					array('upsert' => false, 'multiple' => false, 'safe' => true)
-			);
+				);
+			}
 		} else {
+			CodeGuard::checkNullAndThrow($id, 'id');
 			$result = $this->_collection->update(
-					array('_id' => self::mongoId($rootId)),
-					array('$set' => array($property . '$' . $id => $data)),
-					array('upsert' => false, 'multiple' => false, 'safe' => true)
+				array('_id' => self::mongoId($rootId)),
+				array('$set' => array($property . '$' . $id => $data)),
+				array('upsert' => false, 'multiple' => false, 'safe' => true)
 			);
 		}
-		// TODO REVIEW Pretty sure this doesn't count as an upsert.  The $rootId document *must* exist therefore isn't an upsert.
-		// TODO REVIEW Returning anything here is pointless. It will always be the id given, and throw on error.
-		return isset($result['upserted']) ? $result['upserted'].$id : $id;
+		return $id;
 	}
 	
 
