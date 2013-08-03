@@ -120,7 +120,7 @@ class JsonEncoder {
 			}
 			$count++;
 		}
-		return $count == 0 ? new \Object() : $result;
+		return $count == 0 ? new \stdClass() : $result;
 	}
 	
 	/**
