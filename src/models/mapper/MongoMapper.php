@@ -42,9 +42,14 @@ class MongoMapper
 	private function __clone() {
 	}
 
-	public function makeId() {
-		$id = new \MongoId();
-		return (string)$id;
+	/**
+	 * Creates a string suitable for use as a key from the given string $s 
+	 * @param string $s
+	 * @return string
+	 */
+	public static function makeKey($s) {
+		$s = str_replace(array(' ', '-', '_'), '', $s);
+		return $s;
 	}
 	
 	/**
@@ -86,7 +91,7 @@ class MongoMapper
 			throw new \Exception("Could not find id '$id'");
 		}
 		try {
-			MongoDecoder::decode($model, $data);
+			MongoDecoder::decode($model, $data, $id);
 		} catch (\Exception $ex) {
 			throw new \Exception("Exception thrown while reading '$id'", $ex->getCode(), $ex);
 		}
@@ -99,10 +104,10 @@ class MongoMapper
 		if ($data === NULL) {
 			throw new \Exception("Could not find $property=$id in $rootId");
 		}
+		// TODO Check this out on nested sub docs > 1
 		$data = $data[$property][$id];
-		$data['_id'] = $id;
 		error_log(var_export($data, true));
-		MongoDecoder::decode($model, $data);
+		MongoDecoder::decode($model, $data, $id);
 	}
 	
 	/**
@@ -183,9 +188,11 @@ class MongoMapper
 				$id = isset($result['upserted']) ? $result['upserted'].$id : $id;
 			} else {
 				CodeGuard::checkNullAndThrow($id, 'id');
+				CodeGuard::checkNullAndThrow($property, 'property');
+				$subKey = $property . '.' . $id;
 				$result = $this->_collection->update(
 					array('_id' => self::mongoId($rootId)),
-					array('$set' => array($property . '.' . $id => $data)),
+					array('$set' => array($subKey => $data)),
 					array('upsert' => false, 'multiple' => false, 'safe' => true)
 				);
 			}

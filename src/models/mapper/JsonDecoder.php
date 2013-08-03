@@ -6,6 +6,12 @@ use libraries\palaso\CodeGuard;
 class JsonDecoder {
 	
 	/**
+	 * The current id being decoded
+	 * @var string
+	 */
+	protected $_id;
+	
+	/**
 	 * @param array $array
 `	 * @return bool
 	 */
@@ -18,9 +24,9 @@ class JsonDecoder {
 	 * @param object $model
 	 * @param array $values A mixed array of JSON (like) data.
 	 */
-	public static function decode($model, $values) {
+	public static function decode($model, $values, $id = '') {
 		$decoder = new JsonDecoder();
-		$decoder->_decode($model, $values);
+		$decoder->_decode($model, $values, $id);
 	}
 	
 	/**
@@ -29,20 +35,21 @@ class JsonDecoder {
 	 * @param array $values A mixed array of JSON (like) data.
 	 * @param bool $isRootDocument true if this is the root document, false if a sub-document. Defaults to true
 	 */
-	protected function _decode($model, $values, $isRootDocument = true) {
+	protected function _decode($model, $values, $id) {
+		$this->_id = $id;
 		$properties = get_object_vars($model);
 		foreach ($properties as $key => $value) {
 			if (is_a($value, 'models\mapper\IdReference')) {
 				$this->decodeIdReference($key, $model, $values);
 			} else if (is_a($value, 'models\mapper\Id')) {
-				$this->decodeId($key, $model, $values, $isRootDocument);
+				$this->decodeId($key, $model, $values);
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
 				if (array_key_exists($key, $values)) {
-					$this->decodeArrayOf($model->$key, $values[$key]);
+					$this->decodeArrayOf($key, $model->$key, $values[$key]);
 				}
 			} else if (is_a($value, 'models\mapper\MapOf')) {
 				if (array_key_exists($key, $values)) {
-					$this->decodeArrayOf($model->$key, $values[$key]);
+					$this->decodeMapOf($key, $model->$key, $values[$key]);
 				}
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
 				if (array_key_exists($key, $values)) {
@@ -80,7 +87,7 @@ class JsonDecoder {
 	 * @param array $values
 	 * @param bool $isRootDocument
 	 */
-	public function decodeId($key, $model, $values, $isRootDocument) {
+	public function decodeId($key, $model, $values) {
 		$model->$key = new Id($values[$key]);
 	}
 	
@@ -89,7 +96,7 @@ class JsonDecoder {
 	 * @param array $data
 	 * @throws \Exception
 	 */
-	public function decodeArrayOf($model, $data) {
+	public function decodeArrayOf($key, $model, $data) {
 		CodeGuard::checkTypeAndThrow($data, 'array');
 		$model->data = array();
 		foreach ($data as $item) {
@@ -99,7 +106,7 @@ class JsonDecoder {
 				$model->data[] = $object;
 			} else if ($model->getType() == ArrayOf::VALUE) {
 				if (is_array($item)) {
-					throw new \Exception("Must not decode array for value type");
+					throw new \Exception("Must not decode array for value type '$key'");
 				}
 				$model->data[] = $item;
 			}
@@ -111,7 +118,7 @@ class JsonDecoder {
 	 * @param array $data
 	 * @throws \Exception
 	 */
-	public function decodeMapOf($model, $data) {
+	public function decodeMapOf($key, $model, $data) {
 		CodeGuard::checkTypeAndThrow($data, 'array');
 		$model->data = array();
 		foreach ($data as $itemKey => $item) {
@@ -121,7 +128,7 @@ class JsonDecoder {
 				$model->data[$itemKey] = $object;
 			} else {
 				if (is_array($item)) {
-					throw new \Exception("Must not decode array for value type");
+					throw new \Exception("Must not decode array for value type '$key'");
 				}
 				$model->data[$itemKey] = $item;
 			}
