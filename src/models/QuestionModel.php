@@ -132,7 +132,7 @@ class QuestionModel extends \models\mapper\MapperModel
 class QuestionListModel extends \models\mapper\MapperListModel
 {
 
-	public function __construct($projectModel/*, $textId*/)
+	public function __construct($projectModel, $textId)
 	{
 		// TODO Include $textId in the query CP 2013-07
 		parent::__construct(
