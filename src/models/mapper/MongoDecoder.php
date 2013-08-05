@@ -51,7 +51,7 @@ class MongoDecoder extends JsonDecoder {
 		foreach ($data as $item) {
 			if ($model->getType() == ArrayOf::OBJECT) {
 				$object = $model->generate($item);
-				$this->_decode($object, $item, false);
+				$this->_decode($object, $item, '');
 				$model->data[] = $object;
 			} else if ($model->getType() == ArrayOf::VALUE) {
 				if (is_array($item)) {
