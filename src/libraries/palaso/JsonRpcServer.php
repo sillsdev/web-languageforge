@@ -44,8 +44,7 @@ class JsonRpcServer {
 		if (
 			$_SERVER['REQUEST_METHOD'] != 'POST' ||
 			empty($_SERVER['CONTENT_TYPE']) ||
-			strrpos($_SERVER['CONTENT_TYPE'], "application/json") === false
-		) {
+			 (strrpos($_SERVER['CONTENT_TYPE'], "application/json") === false && strrpos($_SERVER['CONTENT_TYPE'], "application/xml") === false)) {
 			throw new \Exception("Not a JSON-RPC request: ct: '" . @$_SERVER['CONTENT_TYPE'] . "'");
 		}
 
