@@ -12,6 +12,7 @@ angular.module(
 		$scope.projectName = $routeParams.projectName;
 		$scope.textName = $routeParams.textName;
 		// Listview Selection
+		$scope.newQuestionCollapsed = true;
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
 			var selectedIndex = $scope.selected.indexOf(item);
