@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\mapper\MongoMapper;
+
 use models\mapper\IdReference;
 
 use models\mapper\Id;
@@ -134,10 +136,9 @@ class QuestionListModel extends \models\mapper\MapperListModel
 
 	public function __construct($projectModel, $textId)
 	{
-		// TODO Include $textId in the query CP 2013-07
 		parent::__construct(
 			QuestionModelMongoMapper::connect($projectModel->databaseName()),
-			array('title' => array('$regex' => '')),
+			array('title' => array('$regex' => ''), 'textRef' => MongoMapper::mongoID($textId)),
 			array('title')
 		);
 	}
