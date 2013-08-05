@@ -6,7 +6,9 @@
 	<form class="well">
 	<fieldset>
 	<label>Question</label>
-	<textarea ng-model="question" class="span4" rows="4" placeholder="Question"></textarea>
+	<input type="text" ng-model="questionTitle" class="span4" rows="4" placeholder="the question"></textarea>
+	<label></label>
+	<textarea ng-model="questionDescription" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
 	<label></label>
 	<button type="submit" class="btn" ng-click="addQuestion()"><i class="icon-plus"></i>Add Question</button>
 	</fieldset>
@@ -28,7 +30,7 @@
 		</a></li>
 		<li><div class="name-with-viewcount">
 			<a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{textName|urlencode}}/{{textId}}/{{question.comment|urlencode}}/{{question.id}}">
-				<span class="name">{{question.comment}}</span>
+				<span class="name">{{question.title}}</span>
 			</a>
 			<br />
 			<span class="viewcount">{{getViewsCount(question)}} views</span>

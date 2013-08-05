@@ -61,7 +61,8 @@ angular.module(
 			var model = {};
 			model.id = '';
 			model.textRef = textId;
-			model.comment = $scope.question;
+			model.title = $scope.questionTitle;
+			model.description = $scope.questionDescription;
 			questionService.update(projectId, model, function(result) {
 				if (result.ok) {
 					$scope.queryQuestions();
