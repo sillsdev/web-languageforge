@@ -40,9 +40,13 @@ class JsonDecoder {
 		$properties = get_object_vars($model);
 		foreach ($properties as $key => $value) {
 			if (is_a($value, 'models\mapper\IdReference')) {
-				$this->decodeIdReference($key, $model, $values);
+				if (array_key_exists($key, $values)) {
+					$this->decodeIdReference($key, $model, $values);
+				}
 			} else if (is_a($value, 'models\mapper\Id')) {
-				$this->decodeId($key, $model, $values);
+				if (array_key_exists($key, $values)) {
+				     $this->decodeId($key, $model, $values);
+				}
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
 				if (array_key_exists($key, $values)) {
 					$this->decodeArrayOf($key, $model->$key, $values[$key]);
@@ -78,7 +82,7 @@ class JsonDecoder {
 	 * @param array $values
 	 */
 	public function decodeIdReference($key, $model, $values) {
-		$model->$key = new Id($values[$key]);
+		$model->$key = new IdReference($values[$key]);
 	}
 	
 	/**
