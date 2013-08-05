@@ -44,9 +44,7 @@ class JsonDecoder {
 					$this->decodeIdReference($key, $model, $values);
 				}
 			} else if (is_a($value, 'models\mapper\Id')) {
-				if (array_key_exists($key, $values)) {
-				     $this->decodeId($key, $model, $values);
-				}
+			     $this->decodeId($key, $model, $values);
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
 				if (array_key_exists($key, $values)) {
 					$this->decodeArrayOf($key, $model->$key, $values[$key]);
