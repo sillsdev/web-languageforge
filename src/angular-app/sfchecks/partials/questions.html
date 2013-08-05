@@ -2,7 +2,7 @@
 <p>
 <a ng-click="newQuestionCollapsed = !newQuestionCollapsed">Add a New Question</a>
 </p>
-<div collapse="!newQuestionCollapsed">
+<div collapse="newQuestionCollapsed">
 	<form class="well">
 	<fieldset>
 	<label>Question</label>
@@ -10,14 +10,14 @@
 	<label></label>
 	<textarea ng-model="questionDescription" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
 	<label></label>
-	<button type="submit" class="btn" ng-click="addQuestion()"><i class="icon-plus"></i>Add Question</button>
+	<button type="submit" class="btn" ng-click="addQuestion(); newQuestionCollapsed = true"><i class="icon-plus"></i>Add Question</button>
 	</fieldset>
 	</form>
 </div>
+<div listview hide-if-empty="true" search="queryQuestions()" items="questions" visible-items="visibleQuestions" select="">
 <form class="control-bar form-inline">
 <button class="btn" ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
 </form>
-<div listview search="queryQuestions()" items="questions" visible-items="visibleQuestions" select="">
 <hr />
 <div ng-repeat="question in visibleQuestions" class="details-row">
 	<ul class="inline" ng-class="{active: isSelected(question)}">
@@ -29,7 +29,7 @@
 			</div>
 		</a></li>
 		<li><div class="name-with-viewcount">
-			<a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{textName|urlencode}}/{{textId}}/{{question.comment|urlencode}}/{{question.id}}">
+			<a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{textName|urlencode}}/{{textId}}/{{question.title|urlencode}}/{{question.id}}">
 				<span class="name">{{question.title}}</span>
 			</a>
 			<br />
