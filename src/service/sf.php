@@ -220,7 +220,7 @@ class Sf
 	}
 	
 	public function question_comment_dto($projectId, $questionId) {
-		return \libraries\api\QuestionCommentDto::encode($projectId, $questionId);
+		return \models\dto\QuestionCommentDto::encode($projectId, $questionId);
 	}
 	
 }
