@@ -4,7 +4,7 @@ angular.module(
 		'sfchecks.question',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('QuestionCtrl', ['$scope', 'projectService', function($scope, projectService) {
+	.controller('QuestionCtrl', ['$scope', '$routeParams', 'dtoService', 'answerService', 'commentService', 'sessionService', function($scope, $routeParams, dtoService, answerService, commentService, sessionService) {
 		$(".jqte").jqte({
 			"placeholder": "Say what you think...",
 			"u": false,
@@ -23,50 +23,40 @@ angular.module(
 				["h4", "Large"]
 			]
 		});
-		$scope.question = {
-				'title': 'Who is Sherlock refering to in the text?',
-				'questionid': '12334',
-				'content': 'Some pertinent question'
-		};
-		$scope.answers = 
-			[{
-				'content': 'Clearly Sherlock is referring to "the woman", but who the woman is I have no idea.',
-				'by': 'Robin',
-				'userid': '12345',
-				'date': '17 July 2013',
-				'score': '6',
-				'avatar_ref': '/images/avatar/turquoise4-otter-128x128.png',
-				'comments':
-				[{
-					'content': 'Some engaging comment',
-					'by': 'Cambell',
-					'userid': '12345',
-					'date': '18 July 2013'
-				}, {
-					'content': 'Some dispute',
-					'by': 'Chris',
-					'userid': '12345',
-					'date': '18 July 2013'
-				}]
-			}, {
-				'content': 'Some relevant answer',
-				'by': 'Cambell',
-				'userid': '12345',
-				'date': '18 November 2013',
-				'score': '3',
-				'avatar_ref': '/images/avatar/salmon-camel-128x128.png',
-				'comments':
-				[{
-					'content': 'Some engaging comment',
-					'by': 'Cambell',
-					'userid': '12345',
-					'date': '18 July 2013'
-				}, {
-					'content': 'Some dispute',
-					'by': 'Chris',
-					'userid': '12345',
-					'date': '18 July 2013'
-				}]
-			}];
+		var projectId = $routeParams.projectId;
+		var questionId = $routeParams.questionId;
+		dtoService.questionCommentDto(projectId, questionId, function(result) {
+			if (result.ok) {
+				$scope.text = result.data.text;
+				$scope.question = result.data.question;
+				$scope.answers = result.data.question.answers;
+			} else {
+				// error condition
+			}
+		});
+		
+		$scope.submitComment = function(answerId, comment) {
+			commentModel = {
+				'userRef': sessionService.currentUserId,
+				'content': comment,
+			};
+			commentService.update(projectId, questionId, answerId, commentModel, function(result) {
+				if (result.error) {
+					// TODO error condition
+				}
+			});
+		}
+		
+		$scope.submitAnswer = function(answer) {
+			answerModel = {
+				'userRef': sessionService.currentUserId,
+				'content': comment,
+			};
+			commentService.update(projectId, questionId, answerModel, function(result) {
+				if (result.error) {
+					// TODO error condition
+				}
+			});
+		}
 	}])
 	;
