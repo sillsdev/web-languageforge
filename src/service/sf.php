@@ -197,7 +197,7 @@ class Sf
 	public function question_read($projectId, $questionId) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$questionModel = new \models\QuestionModel($projectModel, $questionId);
-		return $questionModel;
+		return JsonEncoder::encode($questionModel);
 	}
 	
 	public function question_delete($projectId, $questionIds) {
