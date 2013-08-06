@@ -55,6 +55,9 @@ angular.module('sf.services', ['jsonRpc'])
 			// TODO Paging CP 2013-07
 			jsonRpc.call('project_listUsers', [projectId], callback);
 		};
+		this.dto = function(userId, callback) {
+			jsonRpc.call('project_list_dto', [userId], callback);
+		};
 	}])
 	.service('textService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
@@ -70,17 +73,8 @@ angular.module('sf.services', ['jsonRpc'])
 		this.list = function(projectId, callback) {
 			jsonRpc.call('text_list', [projectId], callback);
 		};
-	}])
-	.service('answerService', ['jsonRpc', function(jsonRpc) {
-		jsonRpc.connect('/api/sf');
-		this.update = function(projectId, questionId, model, callback) {
-			jsonRpc.call('question_update_answer', [projectId, questionId, model], callback);
-		};
-	}])
-	.service('commentService', ['jsonRpc', function(jsonRpc) {
-		jsonRpc.connect('/api/sf');
-		this.update = function(projectId, questionId, answerId, model, callback) {
-			jsonRpc.call('question_update_comment', [projectId, questionId, answerId, model], callback);
+		this.dto = function(projectId, callback) {
+			jsonRpc.call('text_list_dto', [projectId], callback);
 		};
 	}])
 	.service('questionService', ['jsonRpc', function(jsonRpc) {
@@ -97,11 +91,26 @@ angular.module('sf.services', ['jsonRpc'])
 		this.list = function(projectId, textId, callback) {
 			jsonRpc.call('question_list', [projectId, textId], callback);
 		};
+		this.dto = function(projectId, textId, callback) {
+			jsonRpc.call('question_list_dto', [projectId, textId], callback);
+		};
 	}])
-	.service('dtoService', ['jsonRpc', function(jsonRpc) {
+	.service('questionPageService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf');
-		this.questionCommentDto = function(projectId, questionId, callback) {
+		this.dto = function(projectId, questionId, callback) {
 			jsonRpc.call('question_comment_dto', [projectId, questionId], callback);
+		};
+		this.update_answer = function(projectId, questionId, model, callback) {
+			jsonRpc.call('question_update_answer', [projectId, questionId, model], callback);
+		};
+		this.update_comment = function(projectId, questionId, answerId, model, callback) {
+			jsonRpc.call('question_update_comment', [projectId, questionId, answerId, model], callback);
+		};
+	}])
+	.service('activityPageService', ['jsonRpc', function(jsonRpc) {
+		jsonRpc.connect('/api/sf');
+		this.dto = function(projectId, userId, callback) {
+			jsonRpc.call('activity_list_dto', [projectId, userId], callback);
 		};
 	}])
 	.service('sessionService', function() {
