@@ -4,7 +4,7 @@ angular.module(
 		'sfchecks.question',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('QuestionCtrl', ['$scope', '$routeParams', 'dtoService', 'answerService', 'commentService', 'sessionService', function($scope, $routeParams, dtoService, answerService, commentService, sessionService) {
+	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionPageService', 'sessionService', function($scope, $routeParams, questionPageService, sessionService) {
 		$(".jqte").jqte({
 			"placeholder": "Say what you think...",
 			"u": false,
@@ -25,7 +25,7 @@ angular.module(
 		});
 		var projectId = $routeParams.projectId;
 		var questionId = $routeParams.questionId;
-		dtoService.questionCommentDto(projectId, questionId, function(result) {
+		questionPageService.dto(projectId, questionId, function(result) {
 			if (result.ok) {
 				$scope.text = result.data.text;
 				$scope.question = result.data.question;
@@ -35,12 +35,18 @@ angular.module(
 			}
 		});
 		
+		$scope.newComment = {
+			'content':'',
+			'userRef':sessionService.currentUserId
+		}
+		
+		$scope.newAnswer = {
+			'content':'',
+			'userRef':sessionService.currentUserId
+		}
+		
 		$scope.submitComment = function(answerId, comment) {
-			commentModel = {
-				'userRef': sessionService.currentUserId,
-				'content': comment,
-			};
-			commentService.update(projectId, questionId, answerId, commentModel, function(result) {
+			questionPageService.update_comment(projectId, questionId, answerId, $scope.newComment, function(result) {
 				if (result.error) {
 					// TODO error condition
 				}
@@ -48,11 +54,7 @@ angular.module(
 		}
 		
 		$scope.submitAnswer = function(answer) {
-			answerModel = {
-				'userRef': sessionService.currentUserId,
-				'content': comment,
-			};
-			commentService.update(projectId, questionId, answerModel, function(result) {
+			questionPageService.update_answer(projectId, questionId, $scope.newAnswer, function(result) {
 				if (result.error) {
 					// TODO error condition
 				}
