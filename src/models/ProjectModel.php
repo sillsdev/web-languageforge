@@ -83,7 +83,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	}
 	
 	/**
-	 * @var string
+	 * @var Id
 	 */
 	public $id;
 	
