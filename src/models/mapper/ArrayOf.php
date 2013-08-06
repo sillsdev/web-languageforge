@@ -48,6 +48,21 @@ class ArrayOf {
 	public function count() {
 		return count($this->data);
 	}
+	
+	public function getById($id) {
+		if ($this->_type == ArrayOf::OBJECT) {
+			try {
+				foreach ($this->data as $obj) {
+					if ($obj->id == $id) {
+						return $obj;
+					}
+				}
+			} catch (Exception $e) {
+				// don't throw if $obj->id doesn't exist
+			}
+		}
+		return $this->generate();
+	}
 }
 
 ?>

@@ -1,5 +1,7 @@
 <?php
 
+use models\commands\ActivityCommands;
+
 use models\AnswerModel;
 
 use models\QuestionModel;
@@ -162,6 +164,9 @@ class Sf
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel);
 		JsonDecoder::decode($textModel, $object);
+		if ($textModel->id->id == '') {
+			ActivityCommands::addText($projectModel, $textModel);
+		}
 		return $textModel->write();
 	}
 	
@@ -215,7 +220,7 @@ class Sf
 		return QuestionCommands::updateAnswer($projectId, $questionId, $answer);
 	}
 	
-	public function question_update_comment($questionId, $answerId, $comment) {
+	public function question_update_comment($projectId, $questionId, $answerId, $comment) {
 		return QuestionCommands::updateComment($projectId, $questionId, $answerId, $comment);
 	}
 	
