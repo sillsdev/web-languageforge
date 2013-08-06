@@ -33,8 +33,8 @@
 					<td></td>
 					<td>
 						<a ngclick="$(this).next('div').slideToggle()">Comment on this answer</a>
-						<form ng-submit="submitComment(); $(this).slideToggle()">
-							<textarea name="comment" class="jqte"></textarea>
+						<form ng-submit="submitComment(answer.id); $(this).slideToggle()">
+							<textarea ng-model="newComment.content" class="jqte"></textarea>
 							<button type="submit">Comment</button>
 						</form>
 					</td>
@@ -43,12 +43,12 @@
 		</td>
 	</tr>
 	</table>
-	<div ngshow="answers.length > 0">
+	<div ngshow="answers.length == 0">
 		There are no answers yet for this question. You could be the first one to reply!
 	</div>
 	Add your own answer:
 	<form ng-submit="submitAnswer()">
-		<textarea name="answer" class="jqte"></textarea>
+		<textarea ng-model="newAnswer.content" class="jqte"></textarea>
 		<button type="submit">Post</button>
 	</form>
 </div>
