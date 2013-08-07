@@ -32,6 +32,8 @@ class MongoEncoder {
 				$data[$key] = $this->encodeArrayOf($model->$key);
 			} else if (is_a($value, 'models\mapper\MapOf')) {
 				$data[$key] = $this->encodeMapOf($model->$key);
+			} else if (is_a($value, 'DateTime')) {
+				$data[$key] = $this->encodeDateTime($model->$key);
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
 				$data[$key] = $this->encodeReferenceList($model->$key);
 			} else {
@@ -138,7 +140,13 @@ class MongoEncoder {
 		return $result;
 	}
 	
-	
+	/**
+	 * @param DateTime $model
+	 * @return string;
+	 */
+	public function encodeDateTime($model) {
+		return new \MongoDate($model->getTimeStamp());
+	}
 	
 }
 
