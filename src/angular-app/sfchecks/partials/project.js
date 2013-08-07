@@ -27,7 +27,7 @@ angular.module(
 		$scope.texts = [];
 		$scope.queryTexts = function() {
 			console.log("queryTexts()");
-			textService.list(projectId, function(result) {
+			textService.dto(projectId, function(result) {
 				if (result.ok) {
 					$scope.texts = result.data.entries;
 					$scope.textsCount = result.data.count;
@@ -77,7 +77,7 @@ angular.module(
 		};
 
 		$scope.getQuestionCount = function(text) {
-			return fakeData.questionCount;
+			return text.questionCount;
 		}
 
 		$scope.getViewsCount = function(text) {
