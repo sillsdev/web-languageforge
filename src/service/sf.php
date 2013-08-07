@@ -1,5 +1,11 @@
 <?php
 
+use models\commands\ActivityCommands;
+
+use models\AnswerModel;
+
+use models\QuestionModel;
+
 use libraries\palaso\CodeGuard;
 
 use libraries\palaso\JsonRpcServer;
@@ -27,16 +33,6 @@ class Sf
 // 		ini_set('display_errors', 0);
 	}
 	
-	private function decode($model, $data) {
-		$decoder = new JsonDecoder();
-		$decoder->decode($model, $data);
-	}
-	
-	private function encode($model) {
-		$encoder = new JsonEncoder();
-		return $encoder->encode($model);
-	}
-	
 	//---------------------------------------------------------------
 	// USER API
 	//---------------------------------------------------------------
@@ -48,7 +44,7 @@ class Sf
 	 */
 	public function user_update($params) {
 		$user = new \models\UserModel();
-		$this->decode($user, $params);
+		JsonDecoder::decode($user, $params);
 		$result = $user->write();
 		return $result;
 	}
@@ -59,7 +55,7 @@ class Sf
 	 */
 	public function user_read($id) {
 		$user = new \models\UserModel($id);
-		return $this->encode($user);
+		return JsonEncoder::encode($user);
 	}
 	
 	/**
@@ -105,7 +101,7 @@ class Sf
 	 */
 	public function project_update($object) {
 		$project = new \models\ProjectModel();
-		$this->decode($project, $object);
+		JsonDecoder::decode($project, $object);
 		$result = $project->write();
 		return $result;
 	}
@@ -116,7 +112,7 @@ class Sf
 	 */
 	public function project_read($id) {
 		$project = new \models\ProjectModel($id);
-		return $this->encode($project);
+		return JsonEncoder::encode($project);
 	}
 	
 	/**
@@ -167,14 +163,17 @@ class Sf
 	public function text_update($projectId, $object) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel);
-		$this->decode($textModel, $object);
+		JsonDecoder::decode($textModel, $object);
+		if ($textModel->id->id == '') {
+			ActivityCommands::addText($projectModel, $textModel);
+		}
 		return $textModel->write();
 	}
 	
 	public function text_read($projectId, $textId) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel, $textId);
-		return $this->encode($textModel);
+		return JsonEncoder::encode($textModel);
 	}
 	
 	public function text_delete($projectId, $textIds) {
@@ -196,14 +195,14 @@ class Sf
 		$projectModel = new \models\ProjectModel($projectId);
 		$questionModel = new \models\QuestionModel($projectModel);
 		// TODO Watch the decode below. QuestionModel contains a textRef which needs to be decoded correctly. CP 2013-07
-		$this->decode($questionModel, $object);
+		JsonDecoder::decode($questionModel, $object);
 		return $questionModel->write();
 	}
 	
 	public function question_read($projectId, $questionId) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$questionModel = new \models\QuestionModel($projectModel, $questionId);
-		return $questionModel;
+		return JsonEncoder::encode($questionModel);
 	}
 	
 	public function question_delete($projectId, $questionIds) {
@@ -215,6 +214,18 @@ class Sf
 		$questionListModel = new \models\QuestionListModel($projectModel, $textId);
 		$questionListModel->read();
 		return $questionListModel;
+	}
+	
+	public function question_update_answer($projectId, $questionId, $answer) {
+		return QuestionCommands::updateAnswer($projectId, $questionId, $answer);
+	}
+	
+	public function question_update_comment($projectId, $questionId, $answerId, $comment) {
+		return QuestionCommands::updateComment($projectId, $questionId, $answerId, $comment);
+	}
+	
+	public function question_comment_dto($projectId, $questionId) {
+		return \models\dto\QuestionCommentDto::encode($projectId, $questionId);
 	}
 	
 }

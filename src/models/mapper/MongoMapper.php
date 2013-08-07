@@ -6,6 +6,10 @@ use libraries\palaso\CodeGuard;
 
 class MongoMapper
 {
+	
+	const ID_IN_KEY = 0;
+	const ID_IN_DOC = 1;
+	
 	/**
 	 * @var MongoDB
 	 */
@@ -26,8 +30,7 @@ class MongoMapper
 	 * @param string $collection
 	 * @param string $idKey defaults to id
 	 */
-	protected function __construct($database, $collection, $idKey = 'id')
-	{
+	protected function __construct($database, $collection, $idKey = 'id') {
 		$this->_db = MongoStore::connect($database);
 		$this->_collection = $this->_db->$collection;
 		$this->_idKey = $idKey;
@@ -36,13 +39,17 @@ class MongoMapper
 	/**
 	 * Private clone to prevent copies of the singleton.
 	 */
-	private function __clone()
-	{
+	private function __clone() {
 	}
 
-	public function makeId() {
-		$id = new \MongoId();
-		return (string)$id;
+	/**
+	 * Creates a string suitable for use as a key from the given string $s 
+	 * @param string $s
+	 * @return string
+	 */
+	public static function makeKey($s) {
+		$s = str_replace(array(' ', '-', '_'), '', $s);
+		return $s;
 	}
 	
 	/**
@@ -61,8 +68,7 @@ class MongoMapper
 		return new \MongoId(); 
 	}
 	
-	public function readList($model, $query, $fields = array())
-	{
+	public function readList($model, $query, $fields = array()) {
 		$cursor = $this->_collection->find($query, $fields);
 		$model->count = $cursor->count();
 		$model->entries = array();
@@ -85,20 +91,12 @@ class MongoMapper
 			throw new \Exception("Could not find id '$id'");
 		}
 		try {
-			$decoder = new MongoDecoder($this->_idKey);
-			$decoder->decode($model, $data);
+			MongoDecoder::decode($model, $data, $id);
 		} catch (\Exception $ex) {
 			throw new \Exception("Exception thrown while reading '$id'", $ex->getCode(), $ex);
 		}
 	}
 	
-	public function write($model)
-	{
-		$encoder = new MongoEncoder($this->_idKey);
-		$data = $encoder->encode($model);
-		return $this->update($this->_collection, $data, $model->id->asString());
-	}
-
 	public function readSubDocument($model, $rootId, $property, $id) {
 		CodeGuard::checkTypeAndThrow($rootId, 'string');
 		CodeGuard::checkTypeAndThrow($id, 'string');
@@ -106,22 +104,45 @@ class MongoMapper
 		if ($data === NULL) {
 			throw new \Exception("Could not find $property=$id in $rootId");
 		}
+		// TODO Check this out on nested sub docs > 1
 		$data = $data[$property][$id];
-		$data['_id'] = $id;
 		error_log(var_export($data, true));
-		$decoder = new MongoDecoder($this->_idKey);
-		$decoder->decode($model, $data);
+		MongoDecoder::decode($model, $data, $id);
 	}
 	
-	public function writeSubDocument($model, $rootId, $property) {
-		$encoder = new MongoEncoder($this->_idKey);
-		$data = $encoder->encode($model);
-		$idKey = $this->_idKey;
-		$id = $model->$idKey;
-		if (empty($id)) {
-			$id = MongoStore::makeKey($model->keyString());
+	/**
+	 * @param object $model
+	 * @param string $id
+	 * @param int $keyStyle
+	 * @param string $rootId
+	 * @param string $property
+	 * @see ID_IN_KEY
+	 * @see ID_IN_DOC
+	 * @return string
+	 */
+	public function write($model, $id, $keyStyle = MongoMapper::ID_IN_KEY, $rootId = '', $property = '') {
+		CodeGuard::checkTypeAndThrow($rootId, 'string');
+		CodeGuard::checkTypeAndThrow($property, 'string');
+		CodeGuard::checkTypeAndThrow($id, 'string');
+		$data = MongoEncoder::encode($model); // TODO Take into account key style for stripping key out of the model if needs be
+		if (empty($rootId)) {
+			// We're doing a root level update, only $model, $id are relevant
+			$id = $this->update($data, $id, self::ID_IN_KEY, '', '');
+		} else {
+			if ($keyStyle == self::ID_IN_KEY) {
+				if (empty($id)) {
+					$id = MongoStore::makeKey($model->keyString());
+				}
+				$id = $this->update($data, $id, self::ID_IN_KEY, $rootId, $property);
+			} else {
+				if (empty($id)) {
+					// TODO would be nice if the encode above gave us the id it generated so we could return it to be consistent. CP 2013-08
+					$this->appendSubDocument($data, $rootId, $property);
+				} else {
+					$id = $this->update($data, $id, self::ID_IN_DOC, $rootId, $property);
+				}
+			}
 		}
-		$id = $this->updateSubDocument($this->_collection, $data, $rootId, $property, $id);
 		return $id;
 	}
 	
@@ -147,39 +168,43 @@ class MongoMapper
 	}
 	
 	/**
-	 * @param MongoCollection $collection
 	 * @param array $data
 	 * @param string $id
-	 * @return string
-	 */
-	protected function update($collection, $data, $id) {
-		CodeGuard::checkTypeAndThrow($id, 'string');
-		$result = $collection->update(
-				array('_id' => self::mongoID($id)),
-				array('$set' => $data),
-				array('upsert' => true, 'multiple' => false, 'safe' => true)
-		);
-		return isset($result['upserted']) ? (string)$result['upserted'] : $id;
-	}
-	
-	/**
-	 * @param MongoCollection $collection
-	 * @param array $data
+	 * @param int $keyType
 	 * @param string $rootId
 	 * @param string $property
-	 * @param string $id
 	 * @return string
 	 */
-	protected function updateSubDocument($collection, $data, $rootId, $property, $id) {
+	protected function update($data, $id, $keyType, $rootId, $property) {
 		CodeGuard::checkTypeAndThrow($rootId, 'string');
 		CodeGuard::checkTypeAndThrow($id, 'string');
-		$result = $collection->update(
+		if ($keyType == self::ID_IN_KEY) {
+			if (empty($rootId)) {
+				$result = $this->_collection->update(
+					array('_id' => self::mongoId($id)),
+					array('$set' => $data),
+					array('upsert' => true, 'multiple' => false, 'safe' => true)
+				);
+				$id = isset($result['upserted']) ? $result['upserted'].$id : $id;
+			} else {
+				CodeGuard::checkNullAndThrow($id, 'id');
+				CodeGuard::checkNullAndThrow($property, 'property');
+				$subKey = $property . '.' . $id;
+				$result = $this->_collection->update(
+					array('_id' => self::mongoId($rootId)),
+					array('$set' => array($subKey => $data)),
+					array('upsert' => false, 'multiple' => false, 'safe' => true)
+				);
+			}
+		} else {
+			CodeGuard::checkNullAndThrow($id, 'id');
+			$result = $this->_collection->update(
 				array('_id' => self::mongoId($rootId)),
-				array('$set' => array($property . '.' . $id => $data)),
+				array('$set' => array($property . '$' . $id => $data)),
 				array('upsert' => false, 'multiple' => false, 'safe' => true)
-		);
-		// TODO REVIEW Pretty sure this doesn't count as an upsert.  The $rootId document *must* exist therefore isn't an upsert.
-		return isset($result['upserted']) ? $result['upserted'].$id : $id;
+			);
+		}
+		return $id;
 	}
 	
 
