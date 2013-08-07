@@ -1,6 +1,8 @@
 <?php
 namespace models\mapper;
 
+use libraries\palaso\CodeGuard;
+
 class MongoDecoder extends JsonDecoder {
 	
 	/**
@@ -107,6 +109,17 @@ class MongoDecoder extends JsonDecoder {
 			}
 			array_push($model->refs, new Id((string)$objectId));
 		}
+	}
+	
+	/**
+	 * @param string $key
+	 * @param object $model
+	 * @param MongoDate $data
+	 */
+	public function decodeDateTime($key, $model, $data) {
+		CodeGuard::checkTypeAndThrow($data, 'MongoDate');
+		$model = new \DateTime();
+		$model->setTimeStamp($data->sec);
 	}
 	
 	

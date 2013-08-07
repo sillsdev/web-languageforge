@@ -53,6 +53,14 @@ class MongoMapper
 	}
 	
 	/**
+	 * @return string
+	 */
+	public static function makeId() {
+		$id = new \MongoId();
+		return (string)$id;
+	}
+	
+	/**
 	 * Returns the name of the database.
 	 * @return string
 	 */

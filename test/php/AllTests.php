@@ -7,6 +7,7 @@ class AllTests extends TestSuite {
     function __construct() {
         parent::__construct();
  		$this->addFile(TestPath . 'model/AllTests.php');
+ 		$this->addFile(TestPath . 'mapper/AllTests.php');
  		$this->addFile(TestPath . 'commands/AllTests.php');
  		$this->addFile(TestPath . 'dto/AllTests.php');
 		$this->addFile(TestPath . 'api/AllTests.php');
