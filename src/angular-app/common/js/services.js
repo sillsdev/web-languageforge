@@ -55,8 +55,12 @@ angular.module('sf.services', ['jsonRpc'])
 			// TODO Paging CP 2013-07
 			jsonRpc.call('project_listUsers', [projectId], callback);
 		};
-		this.dto = function(userId, callback) {
-			jsonRpc.call('project_list_dto', [userId], callback);
+		// Eventually this will need to become:
+		//this.dto = function(userId, callback) {
+			//jsonRpc.call('project_list_dto', [userId], callback);
+		//};
+		this.dto = function(callback) {
+			jsonRpc.call('project_list_dto', [], callback);
 		};
 	}])
 	.service('textService', ['jsonRpc', function(jsonRpc) {
