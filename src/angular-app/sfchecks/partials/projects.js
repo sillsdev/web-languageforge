@@ -24,7 +24,7 @@ angular.module(
 		$scope.projects = [];
 		$scope.queryProjectsForUser = function() {
 			console.log("queryProjectForUser()");
-			projectService.list(function(result) {
+			projectService.dto(function(result) {
 				if (result.ok) {
 					$scope.projects = result.data.entries;
 					$scope.projectCount = result.data.count;
@@ -74,7 +74,7 @@ angular.module(
 
 		$scope.getTextCount = function(project) {
 			// return projects.texts.count;
-			return fakeData.textCount;
+			return project.textCount;
 		}
 
 		$scope.getViewsCount = function(project) {

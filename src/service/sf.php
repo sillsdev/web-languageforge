@@ -131,6 +131,12 @@ class Sf
 		return $list;
 	}
 	
+	public function project_list_dto() {
+		// Eventually this will need to get the current user id and do:
+		//return \models\dto\ProjectListDto::encode($userId);
+		return \models\dto\ProjectListDto::encode();
+	}
+	
 	public function project_readUser($projectId, $userId) {
 		throw new \Exception("project_readUser NYI");
 	}
