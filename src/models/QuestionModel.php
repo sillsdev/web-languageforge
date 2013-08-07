@@ -2,112 +2,144 @@
 
 namespace models;
 
+use models\mapper\MongoMapper;
+
+use models\mapper\IdReference;
+
 use models\mapper\Id;
-use models\mapper\ArrayOf;
+use models\mapper\MapOf;
 
-require_once(APPPATH . '/models/ProjectModel.php');
-
-class CommentModelMongoMapper extends \models\mapper\MongoMapper
+class QuestionModelMongoMapper extends \models\mapper\MongoMapper
 {
 	/**
-	 * @var CommentModelMongoMapper[]
+	 * @var QuestionModelMongoMapper[]
 	 */
 	private static $_pool = array();
 	
 	/**
 	 * @param string $databaseName
-	 * @return CommentModelMongoMapper
+	 * @return QuestionModelMongoMapper
 	 */
 	public static function connect($databaseName) {
 		if (!isset(static::$_pool[$databaseName])) {
-			static::$_pool[$databaseName] = new CommentModelMongoMapper($databaseName, 'questions');
+			static::$_pool[$databaseName] = new QuestionModelMongoMapper($databaseName, 'questions');
 		}
 		return static::$_pool[$databaseName];
 	}
 	
 }
 
-class CommentModel extends \models\mapper\MapperModel
+class QuestionModel extends \models\mapper\MapperModel
 {
 	public function __construct($projectModel, $id = '') {
 		$this->id = new Id();
-		parent::__construct(CommentModelMongoMapper::connect($projectModel->databaseName()), $id);
+		$this->textRef = new IdReference();
+		$this->answers = new MapOf(
+			function() {
+				return new AnswerModel();
+			}
+		);
+		
+		$databaseName = $projectModel->databaseName();
+		parent::__construct(QuestionModelMongoMapper::connect($databaseName), $id);
+	}	
+	
+	// TODO Override read to sort answers and comments by date/time. CP 2013-08
+	
+	/**
+	 * Removes this question from the collection
+	 * @param string $databaseName
+	 * @param string $id
+	 */
+	public static function remove($databaseName, $id) {
+		$mapper = QuestionModelMongoMapper::connect($databaseName);
+		$mapper->remove($id);
 	}
 	
-	public static function remove($databaseName, $id) {
-		CommentModelMongoMapper::connect($databaseName)->remove($id);
-	}
-
 	/**
-	 * @var string id
+	 * Adds / updates an answer to the given question.
+	 * @param string $databaseName
+	 * @param string $questionId
+	 * @param AnswerModel $answer
+	 */
+	public static function writeAnswer($databaseName, $questionId, $answer) {
+		$mapper = QuestionModelMongoMapper::connect($databaseName);
+		$id = $mapper->write(
+			$answer, 
+			$answer->id->asString(), 
+			MongoMapper::ID_IN_KEY, 
+			$questionId, 
+			'answers'
+		);
+		return $id;
+	}
+	
+	/**
+	 * Adds / updates a comment on an answer to the given question.
+	 * @param string $databaseName
+	 * @param string $questionId
+	 * @param string $answerId
+	 * @param CommentModel $comment
+	 */
+	public static function writeComment($databaseName, $questionId, $answerId, $comment) {
+		$mapper = QuestionModelMongoMapper::connect($databaseName);
+		$id = $mapper->write(
+			comment, 
+			$comment->id->asString(), 
+			MongoMapper::ID_IN_KEY, 
+			$questionId, 
+			"answers.$answerId.comments"
+		);
+		return $id;
+	}
+	
+	/**
+	 * @var Id
 	 */
 	public $id;
 	
 	/**
 	 * @var string
 	 */
-	public $comment;
+	public $title;
 	
 	/**
-	 * @var Reference
+	 * @var string A content description/explanation of the question being asked
 	 */
-	public $authorUserRef;
+	public $description;
 	
-	//public $authorDate; // TODO CP 2013-07
-			
-}
+	/**
+	 * @var \DateTime
+	 */
+	public $dateCreated;
+	
+	/**
+	 * 
+	 * @var \DateTime
+	 */
+	public $dateEdited;
 
-class QuestionModel extends CommentModel
-{
 	/**
-	 * @var ProjectModel
+	 * @var IdReference - Id of the referring text
 	 */
-	private $_projectModel;
-
-	/**
-	 * @param ProjectModel $projectModel
-	 * @param Id $id
-	 */
-	public function __construct($projectModel, $id = '') {
-		$this->_projectModel = $projectModel;
-		$this->answers = new ArrayOf(ArrayOf::OBJECT, 'generateAnswer');
-		parent::__construct($projectModel, $id);
-	}
-	
-	public function generateAnswer($data = null) {
-		return new AnswerModel($this->_projectModel);
-	}
+	public $textRef;
 	
 	/**
-	 * @var ArrayOf<AnswerModel>
+	 * @var MapOf<AnswerModel>
 	 */
 	public $answers;
 	
 }
 
-class AnswerModel extends CommentModel
-{
-	public function __construct($projectModel, $id = NULL) {
-		parent::__construct($projectModel, $id);
-		$this->comments = array();
-	}
-	
-	/**
-	 * @var array<CommentModel>
-	 */
-	public $comments;
-}
-
 class QuestionListModel extends \models\mapper\MapperListModel
 {
 
-	public function __construct($projectModel/*, $textId*/)
+	public function __construct($projectModel, $textId)
 	{
-		// TODO Include $textId in the query CP 2013-07
 		parent::__construct(
-			CommentModelMongoMapper::connect($projectModel->databaseName()),
-			array('comment' => array('$regex' => '')),
-			array('comment')
+			QuestionModelMongoMapper::connect($projectModel->databaseName()),
+			array('title' => array('$regex' => ''), 'textRef' => MongoMapper::mongoID($textId)),
+			array('title')
 		);
 	}
 	

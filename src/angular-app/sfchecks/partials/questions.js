@@ -12,6 +12,7 @@ angular.module(
 		$scope.projectName = $routeParams.projectName;
 		$scope.textName = $routeParams.textName;
 		// Listview Selection
+		$scope.newQuestionCollapsed = true;
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
 			var selectedIndex = $scope.selected.indexOf(item);
@@ -61,7 +62,8 @@ angular.module(
 			var model = {};
 			model.id = '';
 			model.textRef = textId;
-			model.comment = $scope.question;
+			model.title = $scope.questionTitle;
+			model.description = $scope.questionDescription;
 			questionService.update(projectId, model, function(result) {
 				if (result.ok) {
 					$scope.queryQuestions();

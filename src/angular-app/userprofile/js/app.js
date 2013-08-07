@@ -5,7 +5,7 @@ function getAvatarUrl(color, shape) {
 	if (!color || !shape) {
 		return imgPath + "/anonymoose.png";
 	}
-	return imgPath + "/" + color + "-" + shape + "-48x48.png";
+	return imgPath + "/" + color + "-" + shape + "-128x128.png";
 }
 
 function userProfileCtrl($scope, userService) {

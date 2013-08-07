@@ -18,6 +18,12 @@ class CodeGuard {
 		throw new \Exception("Type Exception: Expected '" . $expectedType . "' given '" . $type . "'");
 	}
 	
+	public static function checkNullAndThrow($var, $name) {
+		if ($var == null) {
+			throw new \Exception("'$name' should not be null");
+		}
+	}
+	
 }
 
 ?>
