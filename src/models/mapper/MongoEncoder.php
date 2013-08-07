@@ -41,10 +41,6 @@ class MongoEncoder {
 				if (is_array($value)) {
 					throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
 				}
-				// Special hack to help debugging our app
-				if ($key == 'projects' || $key == 'users') {
-					throw new \Exception("Possible bad write of '$key'\n" . var_export($model, true));
-				}
 				if (is_object($value)) {
 					$data[$key] = $this->_encode($value, true);
 				} else {
