@@ -30,6 +30,8 @@ class JsonEncoder {
 				$data[$key] = $this->encodeArrayOf($key, $model->$key);
 			} else if (is_a($value, 'models\mapper\MapOf')) {
 				$data[$key] = $this->encodeMapOf($key, $model->$key);
+			} else if (is_a($value, 'DateTime')) {
+				$data[$key] = $this->encodeDateTime($key, $model->$key);
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
 				$data[$key] = $this->encodeReferenceList($key, $model->$key);
 			} else {
@@ -139,7 +141,14 @@ class JsonEncoder {
 		return $result;
 	}
 	
-	
+	/**
+	 * @param string $key
+	 * @param DateTime $model
+	 * @return string;
+	 */
+	public function encodeDateTime($key, $model) {
+		return $model->format(\DateTime::ISO8601);
+	}
 	
 }
 
