@@ -25,15 +25,19 @@ class TestQuestionModel extends UnitTestCase {
 	}
 
 	function testCRUD_Works() {
+		$e = new MongoTestEnvironment();
+		$textRef = $e->mockId();
 		$projectModel = new MockProjectModel();
+		
 		// List
-		$list = new QuestionListModel($projectModel);
+		$list = new QuestionListModel($projectModel, $textRef);
 		$list->read();
 		$this->assertEqual(0, $list->count);
 		
 		// Create
 		$question = new QuestionModel($projectModel);
 		$question->title = "SomeQuestion";
+		$question->textRef->id = $textRef;
 		$id = $question->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
@@ -43,6 +47,7 @@ class TestQuestionModel extends UnitTestCase {
 		$otherQuestion = new QuestionModel($projectModel, $id);
 		$this->assertEqual($id, $otherQuestion->id->asString());
 		$this->assertEqual('SomeQuestion', $otherQuestion->title);
+		$this->assertEqual($textRef, $otherQuestion->textRef->id);
 		
 		// Update
 		$otherQuestion->title = 'OtherQuestion';
@@ -65,33 +70,6 @@ class TestQuestionModel extends UnitTestCase {
 		
 	}
 
-	function testAnswerEncode_Works() {
-		$projectModel = new MockProjectModel();
-		
-		$question = new QuestionModel($projectModel);
-		
-		// Create
-		$answer = new AnswerModel();
-		$answer->content = 'Some Answer';
-		$question->answers->append($answer);
-		$id = $question->write();
-		
-		// The answer should have a valid id on write.
-		$answer = $question->answers->data[0];
-		$this->assertIsA($answer->id->id, 'string');
-		$this->assertEqual(24, strlen($answer->id->id));
-		
-		// Read back
-		$otherQuestion = new QuestionModel($projectModel, $id);
-		$this->assertEqual(1, $otherQuestion->answers->count());
-		$otherAnswer = $otherQuestion->answers->data[0];
-		$this->assertEqual('Some Answer', $otherAnswer->content);
-		$this->assertIsA($otherAnswer, 'models\AnswerModel');
-		
-		// The read back answer should have the same key.
-		$this->assertEqual($answer->id, $otherAnswer->id);
-	}
-	
 	function testTextReference_NullRefValidRef_AllowsNullRef() {
 		$projectModel = new MockProjectModel();
 		$mockTextRef = (string)new \MongoId();
