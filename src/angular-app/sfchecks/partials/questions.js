@@ -30,7 +30,7 @@ angular.module(
 		$scope.questions = [];
 		$scope.queryQuestions = function() {
 			console.log("queryQuestions()");
-			questionService.list(projectId, textId, function(result) {
+			questionService.dto(projectId, textId, function(result) {
 				if (result.ok) {
 					$scope.questions = result.data.entries;
 					$scope.questionsCount = result.data.count;
@@ -81,7 +81,7 @@ angular.module(
 		};
 
 		$scope.getAnswerCount = function(question) {
-			return fakeData.answerCount;
+			return question.answerCount;
 		}
 
 		$scope.getViewsCount = function(question) {

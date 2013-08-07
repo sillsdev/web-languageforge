@@ -228,6 +228,10 @@ class Sf
 		return \models\dto\QuestionCommentDto::encode($projectId, $questionId);
 	}
 	
+	public function question_list_dto($projectId, $textId) {
+		return \models\dto\QuestionListDto::encode($projectId, $textId);
+	}
+	
 }
 
 ?>
