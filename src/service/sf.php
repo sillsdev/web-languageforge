@@ -187,6 +187,10 @@ class Sf
 		return $textListModel;
 	}
 	
+	public function text_list_dto($projectId) {
+		return \models\dto\TextListDto::encode($projectId);
+	}
+	
 	//---------------------------------------------------------------
 	// Question / Answer / Comment API
 	//---------------------------------------------------------------

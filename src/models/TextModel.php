@@ -46,7 +46,7 @@ class TextModel extends \models\mapper\MapperModel
 	}
 
 	public function listQuestions() {
-		$questionList = new QuestionListTextsModel($this->_mapper->databaseName(), $this->id);
+		$questionList = new QuestionListModel($this->_projectModel, $this->id->asString());
 		$questionList->read();
 		return $questionList;
 	}
