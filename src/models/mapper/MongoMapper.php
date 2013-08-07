@@ -138,9 +138,7 @@ class MongoMapper
 			$id = $this->update($data, $id, self::ID_IN_KEY, '', '');
 		} else {
 			if ($keyStyle == self::ID_IN_KEY) {
-				if (empty($id)) {
-					$id = MongoStore::makeKey($model->keyString());
-				}
+				CodeGuard::checkNullAndThrow($id, 'id');
 				$id = $this->update($data, $id, self::ID_IN_KEY, $rootId, $property);
 			} else {
 				if (empty($id)) {

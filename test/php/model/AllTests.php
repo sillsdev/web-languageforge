@@ -12,6 +12,7 @@ class AllModelTests extends TestSuite {
  		$this->addFile(TestPath . 'model/TextModel_Test.php');
  		$this->addFile(TestPath . 'model/PasswordModel_Test.php');
  		$this->addFile(TestPath . 'model/QuestionModel_Test.php');
+ 		$this->addFile(TestPath . 'model/AnswerModel_Test.php');
     }
 
 }
