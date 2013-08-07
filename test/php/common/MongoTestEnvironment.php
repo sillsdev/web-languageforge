@@ -70,6 +70,15 @@ class MongoTestEnvironment
 		return $projectModel;
 	}
 	
+	/**
+	 * Returns a string very much like those used for MongoIds
+	 * @return string
+	 */
+	public function mockId() {
+		$id = new MongoId();
+		return (string)$id;
+	}
+	
 	public function inhibitErrorDisplay() {
 		$this->_display = ini_get('display_errors');
 		ini_set('display_errors', false);

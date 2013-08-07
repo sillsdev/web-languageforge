@@ -2,22 +2,21 @@
 
 namespace models;
 
-use models\mapper\ArrayOf;
+use models\mapper\MapOf;
 
 class AnswerModel extends CommentModel
 {
 	public function __construct() {
 		parent::__construct();
-		$this->comments = new ArrayOf(
-			ArrayOf::OBJECT,
-			function() {
+		$this->comments = new MapOf(
+			function($data) {
 				return new CommentModel();
 			}
 		);
 	}
 	
 	/**
-	 * @var array<CommentModel>
+	 * @var MapOf<CommentModel>
 	 */
 	public $comments;
 	
