@@ -34,7 +34,7 @@ class QuestionModel extends \models\mapper\MapperModel
 	public function __construct($projectModel, $id = '') {
 		$this->id = new Id();
 		$this->dateCreated = new \DateTime();
-		$this->dateModified = new \DateTime();
+		$this->dateEdited = new \DateTime();
 		$this->textRef = new IdReference();
 		$this->answers = new MapOf(
 			function() {

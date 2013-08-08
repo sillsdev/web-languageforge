@@ -9,7 +9,7 @@
 	</div>
 	</div>
 	<table>
-	<tr ng-repeat="answer in answers">
+	<tr ng-repeat="(answerId, answer) in question.answers">
 		<td>
 			<div class="vote" style="display:inline-block;">
 				<a><i class="icon-caret-up" /></a>
