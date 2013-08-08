@@ -8,5 +8,8 @@
 	</div>
 	<div ng-controller="ActivityCtrl">
 		<div><a href="#" ng-click="filterAllActivity()">All Activity</a> <a href="#" ng-click="filterMyActivity()">Show Only My Activity</a></div>
+		<div ng-repeat="activity in activities">
+			<activity item="activity">
+		</div>
 	</div>
 </div>
