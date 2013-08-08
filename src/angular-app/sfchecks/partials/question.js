@@ -29,7 +29,6 @@ angular.module(
 			if (result.ok) {
 				$scope.text = result.data.text;
 				$scope.question = result.data.question;
-				$scope.answers = result.data.question.answers;
 			} else {
 				// error condition
 			}
