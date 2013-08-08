@@ -23,7 +23,6 @@ class AnswerModel extends CommentModel
 	public $textHightlight;
 	
 	/**
-	 * 
 	 * @var int
 	 */
 	public $score;

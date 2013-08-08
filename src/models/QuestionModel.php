@@ -33,6 +33,8 @@ class QuestionModel extends \models\mapper\MapperModel
 {
 	public function __construct($projectModel, $id = '') {
 		$this->id = new Id();
+		$this->dateCreated = new \DateTime();
+		$this->dateModified = new \DateTime();
 		$this->textRef = new IdReference();
 		$this->answers = new MapOf(
 			function() {
@@ -105,7 +107,7 @@ class QuestionModel extends \models\mapper\MapperModel
 		}
 		$mapper = QuestionModelMongoMapper::connect($databaseName);
 		$mapper->write(
-			comment, 
+			$comment, 
 			$id, 
 			MongoMapper::ID_IN_KEY, 
 			$questionId, 
@@ -122,7 +124,7 @@ class QuestionModel extends \models\mapper\MapperModel
 	 * @param string $commentId
 	 * @return
 	 */
-	public static function removeQuestion($databaseName, $questionId, $answerId, $commentId) {
+	public static function removeComment($databaseName, $questionId, $answerId, $commentId) {
 		$mapper = QuestionModelMongoMapper::connect($databaseName);
 		// TODO Review, what should we return CP 2013-08
 		return $mapper->removeSubDocument($questionId, "answers.$answerId.comments", $commentId);
