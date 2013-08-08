@@ -64,7 +64,7 @@ class ActivityModel extends \models\mapper\MapperModel
 		$this->questionRef = new IdReference();
 		$this->userRef = new IdReference();
 		$this->action = $this::UNKNOWN;
-		$this->date = new DateTime(time()); // set the timestamp to now
+		$this->date = new \DateTime(); // set the timestamp to now
 		$this->actionContent = new MapOf(); // strings
 		$this->addContent($this::PROJECT, $projectModel->projectname);
 		$databaseName = $projectModel->databaseName();
