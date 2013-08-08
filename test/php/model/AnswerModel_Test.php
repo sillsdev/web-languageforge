@@ -17,7 +17,7 @@ require_once(SourcePath . "models/ProjectModel.php");
 require_once(SourcePath . "models/QuestionModel.php");
 
 
-class TestAnswerCommentModel extends UnitTestCase {
+class TestAnswerModel extends UnitTestCase {
 
 	function __construct() {
 		$e = new MongoTestEnvironment();
