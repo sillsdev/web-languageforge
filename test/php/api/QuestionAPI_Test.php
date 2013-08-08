@@ -56,7 +56,7 @@ class TestQuestionAPI extends UnitTestCase {
 		$e = new QuestionAPITestEnvironment();
 		$projectId = $e->createProject(SF_TESTPROJECT);
 		$textId = $e->createText($projectId, 'Test Text 1');
-		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", true);
+		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
 		
 		// List
 		$result = $api->question_list($projectId, $textId);
@@ -99,16 +99,6 @@ class TestQuestionAPI extends UnitTestCase {
  		// List to confirm delete
  		$result = $api->question_list($projectId, $textId);
 		$this->assertEqual($count, $result['count']);
-	}
-	
-	function testQuestionList_Ok() {
-		$e = new QuestionAPITestEnvironment();
-		$projectId = $e->createProject(SF_TESTPROJECT);
-		$textId = $e->createText($projectId, 'Test Text 1');
-		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
-		$result = $api->question_list($projectId, $textId);
-		
-		$this->assertTrue($result['count'] > 0);
 	}
 	
 }
