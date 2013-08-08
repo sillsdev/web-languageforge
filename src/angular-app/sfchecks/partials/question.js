@@ -4,7 +4,7 @@ angular.module(
 		'sfchecks.question',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionPageService', 'sessionService', function($scope, $routeParams, questionPageService, sessionService) {
+	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', function($scope, $routeParams, questionService, sessionService) {
 		$(".jqte").jqte({
 			"placeholder": "Say what you think...",
 			"u": false,
@@ -25,7 +25,7 @@ angular.module(
 		});
 		var projectId = $routeParams.projectId;
 		var questionId = $routeParams.questionId;
-		questionPageService.dto(projectId, questionId, function(result) {
+		questionService.read(projectId, questionId, function(result) {
 			if (result.ok) {
 				$scope.text = result.data.text;
 				$scope.question = result.data.question;
@@ -41,12 +41,13 @@ angular.module(
 		}
 		
 		$scope.newAnswer = {
+			'id':'',
 			'content':'',
 			'userRef':sessionService.currentUserId
 		}
 		
 		$scope.submitComment = function(answerId, comment) {
-			questionPageService.update_comment(projectId, questionId, answerId, $scope.newComment, function(result) {
+			questionService.update_comment(projectId, questionId, answerId, $scope.newComment, function(result) {
 				if (result.error) {
 					// TODO error condition
 				}
@@ -54,7 +55,7 @@ angular.module(
 		}
 		
 		$scope.submitAnswer = function(answer) {
-			questionPageService.update_answer(projectId, questionId, $scope.newAnswer, function(result) {
+			questionService.update_answer(projectId, questionId, $scope.newAnswer, function(result) {
 				if (result.error) {
 					// TODO error condition
 				}
