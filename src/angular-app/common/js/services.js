@@ -109,8 +109,8 @@ angular.module('sf.services', ['jsonRpc'])
 	}])
 	.service('activityPageService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf');
-		this.dto = function(projectId, userId, callback) {
-			jsonRpc.call('activity_list_dto', [projectId, userId], callback);
+		this.list_activity = function(offset, count, callback) {
+			jsonRpc.call('activity_list_dto', [offset, count], callback);
 		};
 	}])
 	.service('sessionService', function() {
