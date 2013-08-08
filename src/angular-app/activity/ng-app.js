@@ -4,7 +4,9 @@
 angular.module('activity', 
 		[
 		 'sf.services',
-		 'ui.bootstrap'
+		 'ui.bootstrap',
+		 'activity.filters',
+		 'activity.directives'
 		])
 	.controller('ActivityCtrl', ['$scope', 'activityService', function($scope, activityService) {
 		$scope.activities = [
@@ -19,7 +21,7 @@ angular.module('activity',
 			{
 				'type': 'project',
 				'action': 'add_question',
-				'date': 1375947810,
+				'date': 1375946810,
 				'userRef': '',
 				'projectRef': '123445',
 				'textRef': '12345',
@@ -33,7 +35,7 @@ angular.module('activity',
 			{
 				'type': 'project',
 				'action': 'add_text',
-				'date': 1375947810,
+				'date': 1375945810,
 				'userRef': '',
 				'projectRef': '123445',
 				'textRef': '12345',
@@ -46,7 +48,7 @@ angular.module('activity',
 			{
 				'type': 'project',
 				'action': 'add_comment',
-				'date': 1375948400,
+				'date': 1375944400,
 				'userRef': {
 					'id': '123345',
 					'avatar_ref': '/images/avatar/HotPink-frog-128x128.png',
@@ -71,7 +73,7 @@ angular.module('activity',
 			{
 				'type': 'project',
 				'action': 'add_answer',
-				'date': 1375948400,
+				'date': 1375943400,
 				'userRef': {
 					'id': '123345',
 					'avatar_ref': '/images/avatar/chocolate4-cow-128x128.png',
@@ -92,7 +94,7 @@ angular.module('activity',
 				'type': 'project',
 				'action': 'increase_score',
 				'filter': 'me',
-				'date': 1375949526,
+				'date': 1375942526,
 				'userRef': {
 					'id': '123345',
 					'avatar_ref': '/images/avatar/LightYellow-gorilla-128x128.png',
