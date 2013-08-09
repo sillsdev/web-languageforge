@@ -78,6 +78,10 @@ class JsonDecoder {
 				$model->$key = $values[$key];
 			}
 		}
+		$this->postDecode($model);
+	}
+	
+	protected function postDecode($model) {
 	}
 
 	/**
