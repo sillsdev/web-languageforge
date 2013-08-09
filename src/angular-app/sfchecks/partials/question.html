@@ -31,11 +31,13 @@
 				<tr>
 					<td></td>
 					<td>
-						<a ngclick="$(this).next('div').slideToggle()">Comment on this answer</a>
+						<a ng-click="collapsed = !collapsed" class="btn btn-link">Reply</a>
+						<div collapse="!collapsed">
 						<form ng-submit="submitComment(answer.id); $(this).slideToggle()">
-							<textarea ng-model="newComment.content" class="jqte"></textarea>
-							<button type="submit">Comment</button>
+							<textarea ng-model="newComment.content"></textarea><br/>
+							<button type="submit" class="btn btn-small">Comment</button>
 						</form>
+						</div>
 					</td>
 				</tr>
 			</table>
@@ -48,6 +50,6 @@
 	Add your own answer:
 	<form ng-submit="submitAnswer()">
 		<textarea ng-model="newAnswer.content" pui-jqte="jqteOptions"></textarea>
-		<button type="submit">Post</button>
+		<button type="submit" class="btn">Post</button>
 	</form>
 </div>
