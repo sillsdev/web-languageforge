@@ -1,11 +1,12 @@
 'use strict';
 
-angular.module('activity.directives', []).
-	directive('activityitem', [function() {
+angular.module('activity.directives', ['sf.services']).
+	directive('activityitem', ['linkService', function(linkService) {
 		return {
 			restrict : 'E',
 			replace : true,
-			template : '<hr /> <div class="span2"> <img src="{{imageurl}}" /> </div> <div class="span2"> {{datestring|dateformat}} </div> <div class="span8"> {{content}} </div>',
+			templateUrl : '/app/activity/partials/activityitem.directive.html',
+			template : '',
 			scope : {
 				item: "="
 			},
@@ -17,42 +18,44 @@ angular.module('activity.directives', []).
 					$scope.imageurl = this.imageurl[$scope.item.type][$scope.item.action]($scope.item);
 				};
 				
-				this.updateItem = {
+				this.updateScope = {
 					'global' : {
-						'message' : function(item) {
+						'message' : function() {
 							$scope.imageurl = '/images/activity/message-icon.png';
-							$scope.content = item.content.message;
 						}
 					},
 					'project' : {
-						'add_comment' : function(item) {
-							$scope.imageurl = '/images/activity/message-icon.png';
-							$scope.content = item.content.message;
-						},
-						'update_comment' : function(item) {
+						'add_comment' : function() {
 							$scope.imageurl = item.userRef.avatar_ref;
-							var content = '';
-							content += item.userRef.username + " commented on " +
-								item.userRef2.username + "'s answer to \"<a href='"  + 
-								+ + item.content.question +
-								""
-							$scope.content = content;
 						},
-						'add_answer' : function(item) {
+						'update_comment' : function() {
+							$scope.imageurl = item.userRef.avatar_ref;
+							$scope.questionHref = linkService.question(item.projectRef, item.content.project, item.textRef, item.content.text, item.questionRef, item.content.question);
+							$scope.userProfileHref = linkService.user(item.userRef.id);
 						},
-						'update_answer' : function(item) {
+						'add_answer' : function() {
+							$scope.imageurl = item.userRef.avatar_ref;
 						},
-						'add_text' : function(item) {
+						'update_answer' : function() {
+							$scope.imageurl = item.userRef.avatar_ref;
 						},
-						'add_question' : function(item) {
+						'add_text' : function() {
+							$scope.imageurl = '/images/activity/add_text-icon.png';
 						},
-						'change_state_of_question' : function(item) {
+						'add_question' : function() {
+							$scope.imageurl = '/images/activity/add_question-icon.png';
 						},
-						'increase_score' : function(item) {
+						'change_state_of_question' : function() {
+							$scope.imageurl = '/images/activity/unknown-icon.png';
 						},
-						'decrease_score' : function(item) {
+						'increase_score' : function() {
+							$scope.imageurl = '/images/activity/increase_score-icon.png';
 						},
-						'add_user_to_project' : function(item) {
+						'decrease_score' : function() {
+							$scope.imageurl = '/images/activity/decrease_score-icon.png';
+						},
+						'add_user_to_project' : function() {
+							$scope.imageurl = '/images/activity/add_user_to_project-icon.png';
 						}
 					}
 				};
@@ -61,8 +64,8 @@ angular.module('activity.directives', []).
 			}],
 			link : function(scope, element, attrs, controller) {
 				scope.$watch('item', function() {
-					scope.datestring = scope.item.date;
-					controller.updateItem[scope.item.type][scope.item.action](scope.item);
+					scope.partialurl = '/app/activity/partials/' + scope.item.action + '-' + scope.item.type + '.html';
+					controller.updateScope[scope.item.type][scope.item.action]();
 				})
 			}
 		};
