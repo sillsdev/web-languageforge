@@ -1,16 +1,11 @@
 'use strict';
 
-
-
-
-
 // Declare app level module which depends on filters, and services
 angular.module('activity', 
 		[
 		 'sf.services',
 		 'ui.bootstrap',
-		 'activity.filters',
-		 'activity.directives'
+		 'activity.filters'
 		])
 	.controller('ActivityCtrl', ['$scope', 'activityPageService', 'linkService', function($scope, activityService, linkService) {
 		
