@@ -136,12 +136,11 @@ class ActivityModel extends \models\mapper\MapperModel
 class ActivityListModel extends \models\mapper\MapperListModel
 {
 
-	public function __construct($projectModel, $textId)
+	public function __construct($projectModel)
 	{
 		parent::__construct(
 			ActivityModelMongoMapper::connect($projectModel->databaseName()),
-			array('title' => array('$regex' => ''), 'textRef' => MongoMapper::mongoID($textId)),
-			array('title')
+			array('action' => array('$regex' => ''))
 		);
 	}
 	
