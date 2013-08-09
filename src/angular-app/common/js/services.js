@@ -75,7 +75,7 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('text_list_dto', [projectId], callback);
 		};
 	}])
-	.service('questionService', ['jsonRpc', function(jsonRpc) {
+	.service('questionsService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
 		this.read = function(projectId, questionId, callback) {
 			jsonRpc.call('question_read', [projectId, questionId], callback);
@@ -90,9 +90,9 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('question_list_dto', [projectId, textId], callback);
 		};
 	}])
-	.service('questionPageService', ['jsonRpc', function(jsonRpc) {
+	.service('questionService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf');
-		this.dto = function(projectId, questionId, callback) {
+		this.read = function(projectId, questionId, callback) {
 			jsonRpc.call('question_comment_dto', [projectId, questionId], callback);
 		};
 		this.update_answer = function(projectId, questionId, model, callback) {

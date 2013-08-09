@@ -3,9 +3,10 @@
 namespace models\commands;
 
 use models\CommentModel;
-
+use models\AnswerModel;
 use models\ProjectModel;
 use models\QuestionModel;
+use models\mapper\JsonDecoder;
 
 class QuestionCommands
 {
@@ -29,7 +30,7 @@ class QuestionCommands
 		$projectModel = new ProjectModel($projectId);
 		$answerModel = new AnswerModel();
 		JsonDecoder::decode($answerModel, $answer);
-		ActivityCommands::updateAnswer($projectModel, $questionId, $answerModel);
+		//ActivityCommands::updateAnswer($projectModel, $questionId, $answerModel);
 		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
 		return QuestionModel::writeAnswer($projectModel->databaseName(), $questionId, $answerModel);
 	}
