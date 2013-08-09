@@ -8,7 +8,7 @@
 	{{question.description}}
 	</div>
 	</div>
-	<table>
+	<table id="answers">
 	<tr ng-repeat="(answerId, answer) in question.answers">
 		<td>
 			<div class="vote" style="display:inline-block;">
@@ -18,8 +18,7 @@
 			</div>
 		</td>
 		<td>
-			<div class="answer">
-				This is an answer: {{answer.content}}
+			<div class="answer">{{answer.content}}
 				<div class="by">
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
