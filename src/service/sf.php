@@ -223,7 +223,7 @@ class Sf
 	}
 	
 	public function question_update_answer($projectId, $questionId, $answer) {
-		return QuestionCommands::updateAnswer($projectId, $questionId, $answer);
+		return QuestionCommands::updateAnswer($projectId, $questionId, $answer, $this->_userId);
 	}
 	
 	public function question_update_comment($projectId, $questionId, $answerId, $comment) {
