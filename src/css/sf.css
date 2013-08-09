@@ -663,6 +663,10 @@ div.sf-breadcrumbs .here {
 }
 
 /* Question Page */
+table#answers tbody tr:hover, table tbody tr.altrow:hover {
+	background-color: #fff;
+}
+
 div#text {
 	overflow: auto;
 	min-height: 400px;
@@ -691,6 +695,8 @@ div.vote a {
 	display: block;
 	font-size: 42px;
 	color: #999;
+	text-decoration: none;
+	cursor: pointer;
 }
 
 div.vote span {
