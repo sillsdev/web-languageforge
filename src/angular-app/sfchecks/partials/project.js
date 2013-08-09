@@ -27,7 +27,7 @@ angular.module(
 		$scope.texts = [];
 		$scope.queryTexts = function() {
 			console.log("queryTexts()");
-			textService.dto(projectId, function(result) {
+			textService.list(projectId, function(result) {
 				if (result.ok) {
 					$scope.texts = result.data.entries;
 					$scope.textsCount = result.data.count;
