@@ -122,4 +122,26 @@ angular.module('sf.services', ['jsonRpc'])
 			return window.session;
 		};
 	})
+	.service('linkService', function() {
+		this.href = function(url, text) {
+			return '<a href="' + url + '">' + text + '</a>';
+		};
+		
+		this.project = function(projectId, projectName) {
+			return '/app/sfchecks#/project/' + encodeURIComponent(projectName) + '/' + projectId;
+			
+		}
+		
+		this.text = function(projectId, projectName, textId, textName) {
+			return this.project(projectId, projectName) + '/' + encodeURIComponent(textName) + '/' + textId;
+		}
+		
+		this.question = function(projectId, projectName, textId, textName, questionId, questionName) {
+			return this.text(projectId, projectName, textId, textName) + '/' + encodeURIComponent(questionName) + '/' + questionId;
+		}
+		
+		this.user = function(userId) {
+			return '/app/userprofile/' + userId;
+		}
+	})
 	;
