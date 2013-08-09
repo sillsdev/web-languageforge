@@ -36,6 +36,7 @@ class JsonDecoder {
 	 * @param bool $isRootDocument true if this is the root document, false if a sub-document. Defaults to true
 	 */
 	protected function _decode($model, $values, $id) {
+		CodeGuard::checkTypeAndThrow($values, 'array');
 		$this->_id = $id;
 		$properties = get_object_vars($model);
 		foreach ($properties as $key => $value) {
@@ -53,13 +54,18 @@ class JsonDecoder {
 				if (array_key_exists($key, $values)) {
 					$this->decodeMapOf($key, $model->$key, $values[$key]);
 				}
+			} else if (is_a($value, 'DateTime')) {
+				if (array_key_exists($key, $values)) {
+					$this->decodeDateTime($key, $model->$key, $values[$key]);
+				}
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
 				if (array_key_exists($key, $values)) {
 					$this->decodeReferenceList($model->$key, $values[$key]);
 				}
 			} else if (is_object($value)) {
+				var_dump($values);
 				if (array_key_exists($key, $values)) {
-					$this->_decode($model->$key, $values[$key]);
+					$this->_decode($model->$key, $values[$key], '');
 				}
 			} else {
 				if (!array_key_exists($key, $values)) {
@@ -72,6 +78,10 @@ class JsonDecoder {
 				$model->$key = $values[$key];
 			}
 		}
+		$this->postDecode($model);
+	}
+	
+	protected function postDecode($model) {
 	}
 
 	/**
@@ -158,6 +168,15 @@ class JsonDecoder {
 			}
 			array_push($model->refs, new Id((string)$objectId));
 		}
+	}
+	
+	/**
+	 * @param string $key
+	 * @param object $model
+	 * @param string $data
+	 */
+	public function decodeDateTime($key, $model, $data) {
+		$model = new \DateTime($data);
 	}
 	
 	

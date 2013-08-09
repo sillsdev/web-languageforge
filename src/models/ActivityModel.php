@@ -28,11 +28,30 @@ class ActivityModelMongoMapper extends \models\mapper\MongoMapper
 		}
 		return static::$_pool[$databaseName];
 	}
-	
 }
 
 class ActivityModel extends \models\mapper\MapperModel
 {
+	// constants describing Actions
+	const ADD_COMMENT = 'add_comment';
+	const UPDATE_COMMENT = 'update_comment';
+	const ADD_ANSWER = 'add_answer';
+	const UPDATE_ANSWER = 'update_answer';
+	const ADD_TEXT = 'add_text';
+	const ADD_QUESTION = 'add_question';
+	const CHANGE_STATE_OF_QUESTION = 'change_state_of_question';
+	const INCREASE_SCORE = 'increase_score';
+	const DECREASE_SCORE = 'decrease_score';
+	const ADD_USER_TO_PROJECT = 'add_user_to_project';
+	const UNKNOWN = 'unknown';
+	
+	// content types for use with the addContent method
+	const PROJECT = 'project';
+	const TEXT = 'text';
+	const QUESTION = 'question';
+	const ANSWER = 'answer';
+	const COMMENT = 'comment';
+	
 	/**
 	 * 
 	 * @param ProjectModel $projectModel
@@ -41,33 +60,24 @@ class ActivityModel extends \models\mapper\MapperModel
 	public function __construct($projectModel, $id = '') {
 		$this->id = new Id();
 		$this->projectRef = new IdReference($projectModel->id->asString());
+		$this->textRef = new IdReference();
+		$this->questionRef = new IdReference();
 		$this->userRef = new IdReference();
-		$this->actionRefs = new ArrayOf(ArrayOf::OBJECT,
-			function() {
-				return new IdReference();
-			}
-		);
-		$this->action = "unknown";
-		$this->date = new DateTime(time()); // set the timestamp to now
-		$this->actionContent = new ArrayOf(ArrayOf::VALUE); // strings
+		$this->action = $this::UNKNOWN;
+		$this->date = new \DateTime(); // set the timestamp to now
+		$this->actionContent = new MapOf(); // strings
+		$this->addContent($this::PROJECT, $projectModel->projectname);
 		$databaseName = $projectModel->databaseName();
 		parent::__construct(ActivityModelMongoMapper::connect($databaseName), $id);
 	}	
 	
 	/**
 	 * 
-	 * @param string $id
-	 */
-	public function addRef($id) {
-		$this->actionRefs->append(new IdReference($id));
-	}
-	
-	/**
-	 * 
+	 * @param string $type - this is one of 
 	 * @param string $content
 	 */
-	public function addContent($content) {
-		$this->actionContent->append($content);
+	public function addContent($type, $content) {
+		$this->actionContent->data[$type] = $content;
 	}
 	
 	// TODO add a userFilter ArrayOf type that we can use to query Mongo for activities that only apply to specific users
@@ -87,33 +97,26 @@ class ActivityModel extends \models\mapper\MapperModel
 	 * 
 	 * @var IdReference
 	 */
+	public $textRef;
+	
+	/**
+	 * 
+	 * @var IdReference
+	 */
+	public $questionRef;
+	
+	/**
+	 * 
+	 * @var IdReference
+	 */
 	public $userRef;
 	
 	/**
 	 * 
 	 * @var string 
-	 * Possible values are:
-	 * 
-	 * add_comment
-	 * update_comment
-	 * add_answer
-	 * update_answer
-	 * add_text
-	 * add_question
-	 * change_state_of_question
-	 * update_score
-	 * add_user_to_project
-	 * 
 	 */
 	// TODO add broadcast_message as an action on a GlobalActivityModel class cjh 2013-08
 	public $action;
-	
-	/**
-	 * 
-	 * @var ArrayOf
-	 * ArrayOf<IdReference>
-	 */
-	public $actionRefs;
 	
 	/**
 	 * 

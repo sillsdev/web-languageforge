@@ -170,9 +170,10 @@ class Sf
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel);
 		JsonDecoder::decode($textModel, $object);
-		if ($textModel->id->id == '') {
-			ActivityCommands::addText($projectModel, $textModel);
-		}
+		// TODO Enable activity when it works CP 2013-08
+// 		if ($textModel->id->id == '') {
+// 			ActivityCommands::addText($projectModel, $textModel);
+// 		}
 		return $textModel->write();
 	}
 	

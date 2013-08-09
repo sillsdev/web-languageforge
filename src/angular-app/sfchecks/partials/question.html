@@ -5,11 +5,11 @@
 <div id="comments" class="span6">
 	<div class="question">
 	<div>
-	{{question.content}}
+	{{question.description}}
 	</div>
 	</div>
-	<table>
-	<tr ng-repeat="answer in answers">
+	<table id="answers">
+	<tr ng-repeat="(answerId, answer) in question.answers">
 		<td>
 			<div class="vote" style="display:inline-block;">
 				<a><i class="icon-caret-up" /></a>
@@ -18,25 +18,26 @@
 			</div>
 		</td>
 		<td>
-			<div class="answer">
-				This is an answer: {{answer.content}}
+			<div class="answer">{{answer.content}}
 				<div class="by">
-					<img src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated}}<br/>by {{answer.userRef.username}}</div>
+					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
 			</div>
 			<table class="comments">
 				<tr ng-repeat="comment in answer.comments">
 					<td></td>
-					<td>{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated}}</td>
+					<td>{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}</td>
 				</tr>
 				<tr>
 					<td></td>
 					<td>
-						<a ngclick="$(this).next('div').slideToggle()">Comment on this answer</a>
+						<a ng-click="collapsed = !collapsed" class="btn btn-link">Reply</a>
+						<div collapse="!collapsed">
 						<form ng-submit="submitComment(answer.id); $(this).slideToggle()">
-							<textarea ng-model="newComment.content" class="jqte"></textarea>
-							<button type="submit">Comment</button>
+							<textarea ng-model="newComment.content"></textarea><br/>
+							<button type="submit" class="btn btn-small">Comment</button>
 						</form>
+						</div>
 					</td>
 				</tr>
 			</table>
@@ -48,7 +49,7 @@
 	</div>
 	Add your own answer:
 	<form ng-submit="submitAnswer()">
-		<textarea ng-model="newAnswer.content" class="jqte"></textarea>
-		<button type="submit">Post</button>
+		<textarea ng-model="newAnswer.content" pui-jqte="jqteOptions"></textarea>
+		<button type="submit" class="btn">Post</button>
 	</form>
 </div>
