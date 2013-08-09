@@ -21,13 +21,13 @@
 			<div class="answer">
 				This is an answer: {{answer.content}}
 				<div class="by">
-					<img src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated}}<br/>by {{answer.userRef.username}}</div>
+					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
 			</div>
 			<table class="comments">
 				<tr ng-repeat="comment in answer.comments">
 					<td></td>
-					<td>{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated}}</td>
+					<td>{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}</td>
 				</tr>
 				<tr>
 					<td></td>
@@ -48,7 +48,7 @@
 	</div>
 	Add your own answer:
 	<form ng-submit="submitAnswer()">
-		<textarea ng-model="newAnswer.content" class="jqte"></textarea>
+		<textarea ng-model="newAnswer.content" pui-jqte="jqteOptions"></textarea>
 		<button type="submit">Post</button>
 	</form>
 </div>
