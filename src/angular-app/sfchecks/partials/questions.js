@@ -30,7 +30,7 @@ angular.module(
 		$scope.questions = [];
 		$scope.queryQuestions = function() {
 			console.log("queryQuestions()");
-			questionService.dto(projectId, textId, function(result) {
+			questionService.list(projectId, textId, function(result) {
 				if (result.ok) {
 					$scope.questions = result.data.entries;
 					$scope.questionsCount = result.data.count;
