@@ -26,9 +26,14 @@ require_once(APPPATH . 'models/UserModel.php');
 
 class Sf
 {
+	/**
+	 * @var string
+	 */
+	private $_userId;
 	
-	public function __construct()
-	{
+	public function __construct($controller) {
+		$this->_userId = (string)$controller->session->userdata('user_id');
+
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
 // 		ini_set('display_errors', 0);
 	}
