@@ -63,7 +63,10 @@ angular.module(
 			questionService.update_answer(projectId, questionId, answer, function(result) {
 				if (result.ok) {
 					console.log('update_answer ok');
-					// TODO error condition
+					for (var id in result.data) {
+						$scope.question.answers[id] = result.data[id];
+					}
+					// TODO error condition (well, that should be handled globally by the service CP 2013-08)
 				}
 			});
 		};
