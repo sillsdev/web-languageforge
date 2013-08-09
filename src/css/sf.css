@@ -36,8 +36,6 @@ ul, ol {
   
 a {  
 	color: #04abe1;  
-	text-decoration: none;  
-	font-weight: bold;
 }
 
 a.arrowed {
@@ -281,6 +279,8 @@ hr {
 }
 
 /* Form Elements */
+/* Bootstrap */
+/*
 input, textarea {
 	width: auto;
 	height: auto;
@@ -314,7 +314,7 @@ input.error, textarea.error {
 	-webkit-box-shadow: 0px 1px 4px #ddd;
 	box-shadow: 0px 1px 4px #ddd;
 }
-
+*/
 .error-msg {
 	color: #c9262d;
 }
@@ -678,11 +678,13 @@ div#comments {
 	min-height: 400px;
 }
 
-div#comments table td {
-	border: 0;
+div#comments table {
+	width: 100%;
 }
 
-div#comments td {
+div#comments table td {
+	border: 0;
+	padding: 0;
 	vertical-align: top;
 }
 
@@ -730,6 +732,10 @@ div.answer div.by div {
 	vertical-align: middle;
 	line-height: 1.2em;
 	color: #666;
+}
+
+div#comments table.comments textarea {
+	width: 95%;
 }
 
 div#comments table.comments td {
