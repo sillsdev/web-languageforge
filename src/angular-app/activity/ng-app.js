@@ -1,5 +1,9 @@
 'use strict';
 
+
+
+
+
 // Declare app level module which depends on filters, and services
 angular.module('activity', 
 		[
@@ -8,7 +12,24 @@ angular.module('activity',
 		 'activity.filters',
 		 'activity.directives'
 		])
-	.controller('ActivityCtrl', ['$scope', 'activityService', function($scope, activityService) {
+	.controller('ActivityCtrl', ['$scope', 'activityPageService', 'linkService', function($scope, activityService, linkService) {
+		
+		function decodeActivityList(items) {
+			for (var i =0; i < items.length; i++) {
+				if ('userRef' in items[i]) {
+					items[i].userProfileHref = linkService.user(items[i].userRef.id);
+				}
+				if ('projectRef' in items[i]) {
+					items[i].projectHref = linkService.project(items[i].projectRef);
+				}
+				if ('textRef' in items[i]) {
+					items[i].textHref = linkService.text(items[i].projectRef, items[i].textRef);
+				}
+				if ('questionRef' in items[i]) {
+					items[i].questionHref = linkService.question(items[i].projectRef, items[i].textRef, items[i].questionRef);				}
+			}
+		}
+		
 		$scope.activities = [
 			{
 				'type': 'global',
@@ -111,16 +132,19 @@ angular.module('activity',
 				}
 			}
 		];
+		decodeActivityList($scope.activities);
 		/*
 		activityService.list_activity(0, 50, function(result) {
 			if (result.ok) {
 				$scope.activities = result.data.entries;
+				this.decodeActivityList($scope.activities);
 			} else {
 				// error condition
 				console.log("error loading activity")
 			}
 		});
 		*/
+		
 		
 		$scope.filterAllActivity = function() {
 			console.log("filterAllActivity()");
