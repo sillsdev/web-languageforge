@@ -3,8 +3,9 @@
 /* Filters */
 
 angular.module('activity.filters', []).
-  filter('dateformat', function() {
+  filter('relativetime', function() {
   	return function(epochtime) {
-  		return 'one hour ago';
+  		// see http://momentjs.com/docs/
+  		return moment.unix(parseInt(epochtime)).fromNow();
   	};
   });

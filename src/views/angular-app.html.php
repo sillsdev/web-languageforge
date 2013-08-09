@@ -10,6 +10,7 @@ window.session = <?php echo $jsSessionVars; ?>
 <script	src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
 <script src="/js/lib/ng-ui-utils-validate.js"></script>
 <script src="/js/lib/jquery-te-1.4.0.min.js"></script>
+<script src="/js/lib/moment-2.1.0-min.js"></script>
 
 <?php foreach($jsCommonFiles as $filename): ?>
 <script src="/<?php echo $filename; ?>"></script>

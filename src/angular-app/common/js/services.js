@@ -127,17 +127,17 @@ angular.module('sf.services', ['jsonRpc'])
 			return '<a href="' + url + '">' + text + '</a>';
 		};
 		
-		this.project = function(projectId, projectName) {
-			return '/app/sfchecks#/project/' + encodeURIComponent(projectName) + '/' + projectId;
+		this.project = function(projectId) {
+			return '/app/sfchecks#/project/projectName/' + projectId;
 			
 		}
 		
-		this.text = function(projectId, projectName, textId, textName) {
-			return this.project(projectId, projectName) + '/' + encodeURIComponent(textName) + '/' + textId;
+		this.text = function(projectId, textId) {
+			return this.project(projectId) + '/textName/' + textId;
 		}
 		
-		this.question = function(projectId, projectName, textId, textName, questionId, questionName) {
-			return this.text(projectId, projectName, textId, textName) + '/' + encodeURIComponent(questionName) + '/' + questionId;
+		this.question = function(projectId, textId, questionId) {
+			return this.text(projectId, textId) + '/questionName/' + questionId;
 		}
 		
 		this.user = function(userId) {
