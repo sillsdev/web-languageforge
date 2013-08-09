@@ -5,6 +5,12 @@ use libraries\palaso\CodeGuard;
 
 class MongoDecoder extends JsonDecoder {
 	
+	protected function postDecode($model) {
+		if (method_exists($model, 'fixDecode')) {
+			$model->fixDecode();
+		}
+	}
+	
 	/**
 	 * Sets the public properties of $model to values from $values[propertyName]
 	 * @param object $model
