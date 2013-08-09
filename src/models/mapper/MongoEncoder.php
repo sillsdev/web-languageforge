@@ -32,16 +32,14 @@ class MongoEncoder {
 				$data[$key] = $this->encodeArrayOf($model->$key);
 			} else if (is_a($value, 'models\mapper\MapOf')) {
 				$data[$key] = $this->encodeMapOf($model->$key);
+			} else if (is_a($value, 'DateTime')) {
+				$data[$key] = $this->encodeDateTime($model->$key);
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
 				$data[$key] = $this->encodeReferenceList($model->$key);
 			} else {
 				// Data type protection
 				if (is_array($value)) {
 					throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
-				}
-				// Special hack to help debugging our app
-				if ($key == 'projects' || $key == 'users') {
-					throw new \Exception("Possible bad write of '$key'\n" . var_export($model, true));
 				}
 				if (is_object($value)) {
 					$data[$key] = $this->_encode($value, true);
@@ -138,7 +136,13 @@ class MongoEncoder {
 		return $result;
 	}
 	
-	
+	/**
+	 * @param DateTime $model
+	 * @return string;
+	 */
+	public function encodeDateTime($model) {
+		return new \MongoDate($model->getTimeStamp());
+	}
 	
 }
 

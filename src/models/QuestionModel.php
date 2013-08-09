@@ -33,6 +33,8 @@ class QuestionModel extends \models\mapper\MapperModel
 {
 	public function __construct($projectModel, $id = '') {
 		$this->id = new Id();
+		$this->dateCreated = new \DateTime();
+		$this->dateEdited = new \DateTime();
 		$this->textRef = new IdReference();
 		$this->answers = new MapOf(
 			function() {
@@ -63,15 +65,32 @@ class QuestionModel extends \models\mapper\MapperModel
 	 * @param AnswerModel $answer
 	 */
 	public static function writeAnswer($databaseName, $questionId, $answer) {
+		$id = $answer->id->asString();
+		if (empty($id)) {
+			$id = $answer->id->id = QuestionModelMongoMapper::makeId();
+		}
 		$mapper = QuestionModelMongoMapper::connect($databaseName);
-		$id = $mapper->write(
+		$mapper->write(
 			$answer, 
-			$answer->id->asString(), 
+			$id, 
 			MongoMapper::ID_IN_KEY, 
 			$questionId, 
 			'answers'
 		);
 		return $id;
+	}
+	
+	/**
+	 * Removes an answer from the given question.
+	 * @param string $databaseName
+	 * @param string $questionId
+	 * @param string $answerId
+	 * @return
+	 */
+	public static function removeAnswer($databaseName, $questionId, $answerId) {
+		$mapper = QuestionModelMongoMapper::connect($databaseName);
+		// TODO Review, what should we return CP 2013-08
+		return $mapper->removeSubDocument($questionId, 'answers', $answerId);
 	}
 	
 	/**
@@ -82,15 +101,33 @@ class QuestionModel extends \models\mapper\MapperModel
 	 * @param CommentModel $comment
 	 */
 	public static function writeComment($databaseName, $questionId, $answerId, $comment) {
+		$id = $comment->id->asString();
+		if (empty($id)) {
+			$id = $comment->id->id = QuestionModelMongoMapper::makeId();
+		}
 		$mapper = QuestionModelMongoMapper::connect($databaseName);
-		$id = $mapper->write(
-			comment, 
-			$comment->id->asString(), 
+		$mapper->write(
+			$comment, 
+			$id, 
 			MongoMapper::ID_IN_KEY, 
 			$questionId, 
 			"answers.$answerId.comments"
 		);
 		return $id;
+	}
+	
+	/**
+	 * Removes an answer from the given question.
+	 * @param string $databaseName
+	 * @param string $questionId
+	 * @param string $answerId
+	 * @param string $commentId
+	 * @return
+	 */
+	public static function removeComment($databaseName, $questionId, $answerId, $commentId) {
+		$mapper = QuestionModelMongoMapper::connect($databaseName);
+		// TODO Review, what should we return CP 2013-08
+		return $mapper->removeSubDocument($questionId, "answers.$answerId.comments", $commentId);
 	}
 	
 	/**
