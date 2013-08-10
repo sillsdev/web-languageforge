@@ -36,9 +36,7 @@ angular.module(
 		});
 		
 		$scope.newComment = {
-			'id': '',
-			'content': '',
-			'userRef': sessionService.currentUserId
+			'content': ''
 		};
 		
 		$scope.newAnswer = {
@@ -56,8 +54,7 @@ angular.module(
 		$scope.submitAnswer = function() {
 			var answer = {
 				'id':'',
-				'content': $scope.newAnswer.content,
-				'userRef':sessionService.currentUserId
+				'content': $scope.newAnswer.content
 			};
 				
 			questionService.update_answer(projectId, questionId, answer, function(result) {
@@ -70,5 +67,17 @@ angular.module(
 				}
 			});
 		};
+		
+		$scope.answerDelete = function(answerId) {
+			console.log('delete ', answerId);
+			questionService.remove_answer(projectId, questionId, answerId, function(result) {
+				if (result.ok) {
+					console.log('remove_answer ok');
+					// Delete locally
+					delete $scope.question.answers[answerId];
+				}
+			});
+		};
+		
 	}])
 	;
