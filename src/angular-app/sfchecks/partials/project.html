@@ -2,7 +2,7 @@
 <p>
 <a ng-click="newTextCollapsed = !newTextCollapsed">Add New Text</a>
 </p>
-<div collapse="!newTextCollapsed">
+<div collapse="newTextCollapsed">
 	<form class="well">
 	<fieldset>
 	<label>Title</label>
@@ -10,14 +10,14 @@
 	<label>Text</label>
 	<textarea ng-model="content" class="span4" rows="4" placeholder="Paste the USX text here"></textarea>
 	<label></label>
-	<button type="submit" class="btn" ng-click="addText()"><i class="icon-plus"></i>Add Text to Check</button>
+	<button type="submit" class="btn" ng-click="addText(); newTextCollapsed = true"><i class="icon-plus"></i>Add Text to Check</button>
 	</fieldset>
 	</form>
 </div>
+<div listview hide-if-empty="true" search="queryTexts()" items="texts" visible-items="visibleTexts" select="">
 <form class="control-bar form-inline">
-<button class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
+	<button class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
 </form>
-<div listview search="queryTexts()" items="texts" visible-items="visibleTexts" select="">
 <hr />
 <div ng-repeat="text in visibleTexts" class="details-row">
 	<ul class="inline" ng-class="{active: isSelected(text)}">

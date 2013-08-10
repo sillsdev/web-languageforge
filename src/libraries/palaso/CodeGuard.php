@@ -4,7 +4,13 @@ namespace libraries\palaso;
 
 class CodeGuard {
 	
-	public static function checkTypeAndThrow($var, $expectedType) {
+	const CHECK_NULL_THROW = false;
+	const CHECK_NULL_OK = true;
+	
+	public static function checkTypeAndThrow($var, $expectedType, $isNullOk = self::CHECK_NULL_THROW) {
+		if ($isNullOk && $var === null) {
+			return;
+		}
 		$type = gettype($var);
 		if ($type == $expectedType) {
 			return;
@@ -16,6 +22,12 @@ class CodeGuard {
 			$type = get_class($var);
 		}
 		throw new \Exception("Type Exception: Expected '" . $expectedType . "' given '" . $type . "'");
+	}
+	
+	public static function checkNullAndThrow($var, $name) {
+		if ($var == null) {
+			throw new \Exception("'$name' should not be null");
+		}
 	}
 	
 }

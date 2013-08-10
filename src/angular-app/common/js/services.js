@@ -5,7 +5,6 @@
 angular.module('sf.services', ['jsonRpc'])
 	.service('userService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
-
 		this.read = function(id, callback) {
 			jsonRpc.call('user_read', [id], callback);
 		};
@@ -31,7 +30,6 @@ angular.module('sf.services', ['jsonRpc'])
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
-		
 		this.read = function(projectId, callback) {
 			jsonRpc.call('project_read', [projectId], callback);
 		};
@@ -57,10 +55,12 @@ angular.module('sf.services', ['jsonRpc'])
 			// TODO Paging CP 2013-07
 			jsonRpc.call('project_listUsers', [projectId], callback);
 		};
+		this.dto = function(userId, callback) {
+			jsonRpc.call('project_list_dto', [userId], callback);
+		};
 	}])
 	.service('textService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
-		
 		this.read = function(projectId, textId, callback) {
 			jsonRpc.call('text_read', [projectId, textId], callback);
 		};
@@ -73,10 +73,12 @@ angular.module('sf.services', ['jsonRpc'])
 		this.list = function(projectId, callback) {
 			jsonRpc.call('text_list', [projectId], callback);
 		};
+		this.dto = function(projectId, callback) {
+			jsonRpc.call('text_list_dto', [projectId], callback);
+		};
 	}])
-	.service('questionService', ['jsonRpc', function(jsonRpc) {
+	.service('questionsService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
-		
 		this.read = function(projectId, questionId, callback) {
 			jsonRpc.call('question_read', [projectId, questionId], callback);
 		};
@@ -88,6 +90,30 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		this.list = function(projectId, textId, callback) {
 			jsonRpc.call('question_list', [projectId, textId], callback);
+		};
+	}])
+	.service('questionService', ['jsonRpc', function(jsonRpc) {
+		jsonRpc.connect('/api/sf');
+		this.read = function(projectId, questionId, callback) {
+			jsonRpc.call('question_comment_dto', [projectId, questionId], callback);
+		};
+		this.update_answer = function(projectId, questionId, model, callback) {
+			jsonRpc.call('question_update_answer', [projectId, questionId, model], callback);
+		};
+		this.remove_answer = function(projectId, questionId, answerId, callback) {
+			jsonRpc.call('question_remove_answer', [projectId, questionId, answerId], callback);
+		};
+		this.update_comment = function(projectId, questionId, answerId, model, callback) {
+			jsonRpc.call('question_update_comment', [projectId, questionId, answerId, model], callback);
+		};
+		this.remove_comment = function(projectId, questionId, answerId, commentId, callback) {
+			jsonRpc.call('question_remove_commentId', [projectId, questionId, answerId, commentId], callback);
+		};
+	}])
+	.service('activityPageService', ['jsonRpc', function(jsonRpc) {
+		jsonRpc.connect('/api/sf');
+		this.dto = function(projectId, userId, callback) {
+			jsonRpc.call('activity_list_dto', [projectId, userId], callback);
 		};
 	}])
 	.service('sessionService', function() {

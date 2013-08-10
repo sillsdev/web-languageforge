@@ -11,11 +11,9 @@ require_once(APPPATH . '/models/ProjectModel.php');
 
 class UserModelMongoMapper extends \models\mapper\MongoMapper
 {
-	public static function instance()
-	{
+	public static function instance() {
 		static $instance = null;
-		if (null === $instance)
-		{
+		if (null === $instance) {
 			$instance = new UserModelMongoMapper(SF_DATABASE, 'users');
 		}
 		return $instance;
@@ -25,8 +23,7 @@ class UserModelMongoMapper extends \models\mapper\MongoMapper
 
 class UserModel extends \models\mapper\MapperModel
 {
-	public function __construct($id = '')
-	{
+	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->projects = new ReferenceList();
 		parent::__construct(UserModelMongoMapper::instance(), $id);
@@ -36,8 +33,7 @@ class UserModel extends \models\mapper\MapperModel
 	 *	Removes a user from the collection
 	 *  Project references to this user are also removed
 	 */
-	public function remove()
-	{
+	public function remove() {
 		UserModelMongoMapper::instance()->remove($this->id->asString());
 	}
 
