@@ -226,8 +226,18 @@ class Sf
 		return QuestionCommands::updateAnswer($projectId, $questionId, $answer, $this->_userId);
 	}
 	
+	public function question_remove_answer($projectId, $questionId, $answerId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId);
+	}
+	
 	public function question_update_comment($projectId, $questionId, $answerId, $comment) {
 		return QuestionCommands::updateComment($projectId, $questionId, $answerId, $comment);
+	}
+	
+	public function question_remove_comment($projectId, $questionId, $answerId, $commentId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId, $commentId);
 	}
 	
 	public function question_comment_dto($projectId, $questionId) {

@@ -22,6 +22,9 @@
 				<div class="by">
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
+				<div>
+				<a ngclass="btn-link">edit</a>|<a ng-click="answerDelete(answerId)" class="btn-link">delete</a>
+				</div>
 			</div>
 			<table class="comments">
 				<tr ng-repeat="comment in answer.comments">
