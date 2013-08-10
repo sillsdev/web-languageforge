@@ -54,6 +54,7 @@ class MongoTestEnvironment
 		$userModel->username = $username;
 		$userModel->name = $name;
 		$userModel->email = $email;
+		$userModel->avatar_ref = $username . ".png";
 		return $userModel->write();
 	}
 	
@@ -67,6 +68,15 @@ class MongoTestEnvironment
 		$projectModel->projectname = $name;
 		$projectModel->write();
 		return $projectModel;
+	}
+	
+	/**
+	 * Returns a string very much like those used for MongoIds
+	 * @return string
+	 */
+	public function mockId() {
+		$id = new MongoId();
+		return (string)$id;
 	}
 	
 	public function inhibitErrorDisplay() {
