@@ -4,12 +4,13 @@ namespace models\mapper;
 class JsonEncoder {
 	
 	/**
-	 * @var string
+	 * Sets key/values in the array from the public properties of $model
+	 * @param object $model
+	 * @return array
 	 */
-	private $_idKey;
-	
-	public function __construct($idKey = null) {
-		$this->_idKey = $idKey;
+	public static function encode($model) {
+		$encoder = new JsonEncoder();
+		return $encoder->_encode($model);
 	}
 	
 	/**
@@ -17,24 +18,22 @@ class JsonEncoder {
 	 * @param object $model
 	 * @return array
 	 */
-	public function encode($model) {
+	protected function _encode($model) {
 		$data = array();
 		$properties = get_object_vars($model);
-// 		if ($this->_idKey) {
-// 			$idKey = $this->_idKey;
-// 			// We don't want the 'idKey' in the data so remove that from the properties
-// 			if (array_key_exists($idKey, $properties))
-// 			{
-// 				unset($properties[$idKey]);
-// 			}
-// 		}
 		foreach ($properties as $key => $value) {
-			if (is_a($value, 'models\mapper\Id')) {
-				$data[$key] = $this->encodeId($model->$key);
+			if (is_a($value, 'models\mapper\IdReference')) {
+				$data[$key] = $this->encodeIdReference($key, $model->$key);
+			} else if (is_a($value, 'models\mapper\Id')) {
+				$data[$key] = $this->encodeId($key, $model->$key);
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
-				$data[$key] = $this->encodeArrayOf($model->$key);
+				$data[$key] = $this->encodeArrayOf($key, $model->$key);
+			} else if (is_a($value, 'models\mapper\MapOf')) {
+				$data[$key] = $this->encodeMapOf($key, $model->$key);
+			} else if (is_a($value, 'DateTime')) {
+				$data[$key] = $this->encodeDateTime($key, $model->$key);
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
-				$data[$key] = $this->encodeReferenceList($model->$key);
+				$data[$key] = $this->encodeReferenceList($key, $model->$key);
 			} else {
 				// Data type protection
 				if (is_array($value)) {
@@ -45,7 +44,7 @@ class JsonEncoder {
 					throw new \Exception("Possible bad write of '$key'\n" . var_export($model, true));
 				}
 				if (is_object($value)) {
-					$data[$key] = $this->encode($value);
+					$data[$key] = $this->_encode($value);
 				} else {
 					// Default encode
 					$data[$key] = $value;
@@ -56,24 +55,39 @@ class JsonEncoder {
 	}
 
 	/**
-	 * @param Id $model
+	 * @param string $key
+	 * @param IdReference $model
 	 * @return string
 	 */
-	public function encodeId($model) {
+	public function encodeIdReference($key, $model) {
+		// Note: $key may be used in derived methods
 		$result = $model->id;
 		return $result;
 	}
 
 	/**
+	 * @param string $key
+	 * @param Id $model
+	 * @return string
+	 */
+	public function encodeId($key, $model) {
+		// Note: $key may be used in derived methods
+		$result = $model->id;
+		return $result;
+	}
+
+	/**
+	 * @param string $key
 	 * @param ArrayOf $model
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function encodeArrayOf($model) {
+	public function encodeArrayOf($key, $model) {
+		// Note: $key may be used in derived methods
 		$result = array();
 		foreach ($model->data as $item) {
 			if (is_object($item)) {
-				$result[] = $this->encode($item);
+				$result[] = $this->_encode($item);
 			} else {
 				// Data type protection
 				if (is_array($item)) {
@@ -87,10 +101,37 @@ class JsonEncoder {
 	}
 
 	/**
+	 * @param string $key
+	 * @param MapOf $model
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function encodeMapOf($key, $model) {
+		$result = array();
+		$count = 0;
+		foreach ($model->data as $itemKey => $item) {
+			if (is_object($item)) {
+				$result[$itemKey] = $this->_encode($item);
+			} else {
+				// Data type protection
+				if (is_array($item)) {
+					throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $itemKey . "'");
+				}
+				// Default encode
+				$result[$itemKey] = $item;
+			}
+			$count++;
+		}
+		return $count == 0 ? new \stdClass() : $result;
+	}
+	
+	/**
+	 * @param string $key
 	 * @param ReferenceList $model
 	 * @return array
 	 */
-	public function encodeReferenceList($model) {
+	public function encodeReferenceList($key, $model) {
+		// Note: $key may be used in derived methods
 		$result = array_map(
 				function($id) {
 			return MongoMapper::mongoID($id);
@@ -100,7 +141,14 @@ class JsonEncoder {
 		return $result;
 	}
 	
-	
+	/**
+	 * @param string $key
+	 * @param DateTime $model
+	 * @return string;
+	 */
+	public function encodeDateTime($key, $model) {
+		return $model->format(\DateTime::ISO8601);
+	}
 	
 }
 

@@ -6,6 +6,7 @@ angular.module(
 	)
 	.controller('ProjectsCtrl', ['$scope', 'projectService', function($scope, projectService) {
 		// Listview Selection
+		$scope.newProjectCollapsed = true;
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
 			var selectedIndex = $scope.selected.indexOf(item);

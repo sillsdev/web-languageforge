@@ -1,5 +1,7 @@
 <?php
 
+use models\AnswerModel;
+
 use models\QuestionListModel;
 
 use models\mapper\MongoStore;
@@ -17,36 +19,75 @@ require_once(SourcePath . "models/QuestionModel.php");
 
 class TestQuestionModel extends UnitTestCase {
 
-	private $_someQuestionId;
-
-	function __construct()
-	{
+	function __construct() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 	}
 
-	function testWrite_ReadBackSame()
-	{
-		$model = new QuestionModel(new MockProjectModel());
-		$model->comment = "SomeQuestion";
-		$id = $model->write();
+	function testCRUD_Works() {
+		$e = new MongoTestEnvironment();
+		$textRef = $e->mockId();
+		$projectModel = new MockProjectModel();
+		
+		// List
+		$list = new QuestionListModel($projectModel, $textRef);
+		$list->read();
+		$this->assertEqual(0, $list->count);
+		
+		// Create
+		$question = new QuestionModel($projectModel);
+		$question->title = "SomeQuestion";
+		$question->textRef->id = $textRef;
+		$id = $question->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$this->assertEqual($id, $model->id->asString());
-		$otherModel = new QuestionModel(new MockProjectModel(), $id);
-		$this->assertEqual($id, $otherModel->id->asString());
-		$this->assertEqual('SomeQuestion', $otherModel->comment);
+		$this->assertEqual($id, $question->id->asString());
+		
+		// Read back
+		$otherQuestion = new QuestionModel($projectModel, $id);
+		$this->assertEqual($id, $otherQuestion->id->asString());
+		$this->assertEqual('SomeQuestion', $otherQuestion->title);
+		$this->assertEqual($textRef, $otherQuestion->textRef->id);
+		
+		// Update
+		$otherQuestion->title = 'OtherQuestion';
+		$otherQuestion->write();
 
-		$this->_someQuestionId = $id;
+		// Read back
+		$otherQuestion = new QuestionModel($projectModel, $id);
+		$this->assertEqual('OtherQuestion', $otherQuestion->title);
+		
+		// List
+		$list->read();
+		$this->assertEqual(1, $list->count);
+
+		// Delete
+		QuestionModel::remove($projectModel->databaseName(), $id);
+		
+		// List
+		$list->read();
+		$this->assertEqual(0, $list->count);
+		
 	}
 
-	function testProjectList_HasCountAndEntries()
-	{
-		$model = new QuestionListModel(new MockProjectModel());
-		$model->read();
-
-		$this->assertNotEqual(0, $model->count);
-		$this->assertNotNull($model->entries);
+	function testTextReference_NullRefValidRef_AllowsNullRef() {
+		$projectModel = new MockProjectModel();
+		$mockTextRef = (string)new \MongoId();
+		
+		// Test create with null textRef
+		$question = new QuestionModel($projectModel);
+		$id = $question->write();
+		
+		$otherQuestion = new QuestionModel($projectModel, $id);
+		$this->assertEqual('', $otherQuestion->textRef->id);
+		
+		// Test update with textRef
+		$question->textRef->id = $mockTextRef;
+		$question->write();
+		
+		$otherQuestion = new QuestionModel($projectModel, $id);
+		$this->assertEqual($mockTextRef, $otherQuestion->textRef->id);
+		
 	}
 
 }

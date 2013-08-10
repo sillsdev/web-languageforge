@@ -56,7 +56,7 @@ class TestQuestionAPI extends UnitTestCase {
 		$e = new QuestionAPITestEnvironment();
 		$projectId = $e->createProject(SF_TESTPROJECT);
 		$textId = $e->createText($projectId, 'Test Text 1');
-		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", true);
+		$api = new jsonRPCClient("http://scriptureforge.local/api/sf", false);
 		
 		// List
 		$result = $api->question_list($projectId, $textId);
@@ -65,7 +65,9 @@ class TestQuestionAPI extends UnitTestCase {
 		// Create
 		$param = array(
 			'id' => '',
-			'comment' =>'SomeQuestion'
+			'title' =>'SomeQuestion',
+			'description' =>'SomeDescription',
+			'textRef' => $textId
 		);
 		$id = $api->question_update($projectId, $param);
 		$this->assertNotNull($id);
@@ -74,17 +76,17 @@ class TestQuestionAPI extends UnitTestCase {
 		// Read
 		$result = $api->question_read($projectId, $id);
 		$this->assertNotNull($result['id']);
-		$this->assertEqual('SomeQuestion', $result['comment']);
+		$this->assertEqual('SomeQuestion', $result['title']);
 		
 		// Update
-		$result['comment'] = 'OtherQuestion';
+		$result['title'] = 'OtherQuestion';
 		$id = $api->question_update($projectId, $result);
 		$this->assertNotNull($id);
 		$this->assertEqual($result['id'], $id);
 		
 		// Read back
 		$result = $api->question_read($projectId, $id);
-		$this->assertEqual('OtherQuestion', $result['comment']);
+		$this->assertEqual('OtherQuestion', $result['title']);
 		
 		// List
 		$result = $api->question_list($projectId, $textId);
