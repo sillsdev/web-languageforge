@@ -100,8 +100,14 @@ angular.module('sf.services', ['jsonRpc'])
 		this.update_answer = function(projectId, questionId, model, callback) {
 			jsonRpc.call('question_update_answer', [projectId, questionId, model], callback);
 		};
+		this.remove_answer = function(projectId, questionId, answerId, callback) {
+			jsonRpc.call('question_remove_answer', [projectId, questionId, answerId], callback);
+		};
 		this.update_comment = function(projectId, questionId, answerId, model, callback) {
 			jsonRpc.call('question_update_comment', [projectId, questionId, answerId, model], callback);
+		};
+		this.remove_comment = function(projectId, questionId, answerId, commentId, callback) {
+			jsonRpc.call('question_remove_commentId', [projectId, questionId, answerId, commentId], callback);
 		};
 	}])
 	.service('activityPageService', ['jsonRpc', function(jsonRpc) {
