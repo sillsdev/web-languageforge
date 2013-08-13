@@ -81,6 +81,20 @@ class QuestionModel extends \models\mapper\MapperModel
 	}
 	
 	/**
+	 * Reads an answer model for a question
+	 * @param string $databaseName
+	 * @param string $questionId
+	 * @param string $answerId
+	 * 
+	 */
+	public static function readAnswer($databaseName, $questionId, $answerId) {
+		$mapper = QuestionModelMongoMapper::connect($databaseName);
+		$answerModel = new AnswerModel();
+		$mapper->readSubDocument($answerModel, $questionId, 'answers', $answerId);
+		return $answerModel;
+	}
+	
+	/**
 	 * Removes an answer from the given question.
 	 * @param string $databaseName
 	 * @param string $questionId
