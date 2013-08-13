@@ -12,7 +12,7 @@ class CommentModel
 	public function __construct() {
 		$this->id = new Id();
 		$this->dateCreated = new \DateTime();
-		$this->dateModified = new \DateTime();
+		$this->dateEdited = new \DateTime();
 		$this->userRef = new IdReference();
 	}
 
