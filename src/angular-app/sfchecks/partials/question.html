@@ -22,6 +22,9 @@
 				<div class="by">
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
+				<div>
+				<a ngclass="btn-link">edit</a>|<a ng-click="answerDelete(answerId)" class="btn-link">delete</a>
+				</div>
 			</div>
 			<table class="comments">
 				<tr ng-repeat="comment in answer.comments">
@@ -31,11 +34,11 @@
 				<tr>
 					<td></td>
 					<td>
-						<a ng-click="collapsed = !collapsed" class="btn btn-link">Reply</a>
+						<a ng-click="collapsed = !collapsed" class="btn btn-link">add comment</a>
 						<div collapse="!collapsed">
 						<form ng-submit="submitComment(answer.id); $(this).slideToggle()">
 							<textarea ng-model="newComment.content"></textarea><br/>
-							<button type="submit" class="btn btn-small">Comment</button>
+							<button type="submit" class="btn btn-small">Add Comment</button>
 						</form>
 						</div>
 					</td>
@@ -50,6 +53,6 @@
 	Add your own answer:
 	<form ng-submit="submitAnswer()">
 		<textarea ng-model="newAnswer.content" pui-jqte="jqteOptions"></textarea>
-		<button type="submit" class="btn">Post</button>
+		<button type="submit" class="btn">Answer Question</button>
 	</form>
 </div>
