@@ -15,6 +15,12 @@ class AnswerModel extends CommentModel
 		);
 	}
 	
+	public function fixDecode() {
+		if ($this->score == null) {
+			$this->score = 0;
+		}
+	}
+	
 	/**
 	 * @var MapOf<CommentModel>
 	 */
