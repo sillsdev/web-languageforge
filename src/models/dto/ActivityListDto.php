@@ -4,6 +4,8 @@ namespace models\dto;
 
 
 
+use models\ProjectList_UserModel;
+
 use models\ActivityListModel;
 
 use models\ProjectListModel;
@@ -16,27 +18,29 @@ use models\ProjectModel;
 class ActivityListDto
 {
 	/**
-	 * @param string $projectId
+	 * @param string $projectModel
 	 * @param string $questionId
 	 * @return array - the DTO array
 	 */
-	public static function getActivityForProject($projectId) {
-		$projectModel = new ProjectModel($projectId);
+	public static function getActivityForProject($projectModel) {
 		$activityList = new ActivityListModel($projectModel);
-		return DtoEncoder::encode($activityList);
+		return QuestionCommentDtoEncoder::encode($activityList);
 	}
 	
+	/**
+	 * @param string $userId
+	 * @return array - the DTO array
+	*/
 	public static function getActivityForUser($userId) {
-		/*
-		$user = new UserModel($userId);
-		$projectList = $user->listProjects();
-		*/
-		$projectList = new ProjectListModel();
+		$projectList = new ProjectList_UserModel($userId);
 		$dto = array();
 		foreach ($projectList->entries as $project) {
-			$projectId = $project->id->asString();	
-			$dto = array_merge($dto, $this::getActivityForProject($projectId));
+			$dto = array_merge($dto, $this::getActivityForProject($project));
 		}
+		function sortActivity($a, $b) {
+			return ($a['date'] > $b['date']) ? 1 : -1;
+		}
+		uasort($dto, "sortActivity");
 		return $dto;
 	}
 }
