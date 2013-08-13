@@ -2,6 +2,8 @@
 
 namespace models\commands;
 
+use models\dto\QuestionCommentDto;
+
 use models\CommentModel;
 use models\AnswerModel;
 use models\ProjectModel;
@@ -26,13 +28,28 @@ class QuestionCommands
 		return $count;
 	}
 	
-	public static function updateAnswer($projectId, $questionId, $answer) {
+	/**
+	 * Creates or updates an answer for the given $questionId.
+	 * @param string $projectId
+	 * @param string $questionId
+	 * @param array $answer	The $answer will be decoded into an AnswerModel
+	 * @param string $userId
+	 * @return array Returns an encoded QuestionDTO fragment for the Answer
+	 * @see AnswerModel
+	 */
+	public static function updateAnswer($projectId, $questionId, $answer, $userId) {
 		$projectModel = new ProjectModel($projectId);
 		$answerModel = new AnswerModel();
 		JsonDecoder::decode($answerModel, $answer);
+		$answerModel->userRef->id = $userId;
 		//ActivityCommands::updateAnswer($projectModel, $questionId, $answerModel);
 		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
-		return QuestionModel::writeAnswer($projectModel->databaseName(), $questionId, $answerModel);
+		$answerId = QuestionModel::writeAnswer($projectModel->databaseName(), $questionId, $answerModel);
+		$answerDTO = QuestionCommentDto::encodeAnswer($answerModel);
+
+		$dto = array();
+		$dto[$answerId] = $answerDTO;
+		return $dto;
 	}
 	
 	public static function updateComment($projectId, $questionId, $answerId, $comment) {
