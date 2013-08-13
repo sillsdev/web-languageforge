@@ -2,8 +2,10 @@
 
 namespace models;
 
+use models\rights\Roles;
+use models\rights\ProjectRoleModel;
+use models\mapper\MapOf;
 use models\mapper\MongoMapper;
-
 use models\mapper\MongoStore;
 use models\mapper\ReferenceList;
 use models\mapper\Id;
@@ -35,7 +37,9 @@ class ProjectModel extends \models\mapper\MapperModel
 	public function __construct($id = '')
 	{
 		$this->id = new Id();
-		$this->users = new ReferenceList();
+		$this->users = new MapOf(function($data) {
+			return new ProjectRoleModel();
+		});
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
 	
@@ -54,16 +58,19 @@ class ProjectModel extends \models\mapper\MapperModel
 		ProjectModelMongoMapper::instance()->remove($this->id->asString());
 	}
 	
-	
 	/**
 	 * Adds the $userId as a member of this project.
-	 * You do NOT need to call write() as this method calls it for you
 	 * @param string $userId
+	 * @param string $role The role the user has in this project. Defaults to Roles::USER
+	 * @see Roles;
 	 */
-	public function addUser($userId) {
-		$this->users->_addRef($userId);
+	public function addUser($userId, $role = Roles::USER) {
+		$mapper = ProjectModelMongoMapper::instance();
+//		$ProjectModelMongoMapper::mongoID($userId)
+		$model = new ProjectRoleModel();
+		$model->role = $role;
+		$this->users->data[$userId] = $model; 
 	}
-	
 	
 	/**
 	 * Removes the $userId from this project.
@@ -98,7 +105,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	public $language;
 	
 	/**
-	 * @var ReferenceList
+	 * @var MapOf<ProjectRoleModel>
 	 */
 	public $users;
 	
@@ -125,7 +132,7 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 	{
 		parent::__construct(
 				ProjectModelMongoMapper::instance(),
-				array('users' => array('$in' => array(MongoMapper::mongoID($userId)))),
+				array('users.' . $userId => array('$exists' => true)),
 				array('projectname')
 		);
 	}
