@@ -4,7 +4,7 @@ angular.module(
 		'sfchecks.questions',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('QuestionsCtrl', ['$scope', 'questionService', '$routeParams', function($scope, questionService, $routeParams) {
+	.controller('QuestionsCtrl', ['$scope', 'questionsService', '$routeParams', function($scope, questionsService, $routeParams) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
@@ -30,7 +30,7 @@ angular.module(
 		$scope.questions = [];
 		$scope.queryQuestions = function() {
 			console.log("queryQuestions()");
-			questionService.list(projectId, textId, function(result) {
+			questionsService.list(projectId, textId, function(result) {
 				if (result.ok) {
 					$scope.questions = result.data.entries;
 					$scope.questionsCount = result.data.count;
@@ -48,7 +48,7 @@ angular.module(
 				// TODO ERROR
 				return;
 			}
-			questionService.remove(projectId, questionIds, function(result) {
+			questionsService.remove(projectId, questionIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
 					$scope.queryQuestions();
@@ -64,7 +64,7 @@ angular.module(
 			model.textRef = textId;
 			model.title = $scope.questionTitle;
 			model.description = $scope.questionDescription;
-			questionService.update(projectId, model, function(result) {
+			questionsService.update(projectId, model, function(result) {
 				if (result.ok) {
 					$scope.queryQuestions();
 				}

@@ -5,6 +5,12 @@ use libraries\palaso\CodeGuard;
 
 class MongoDecoder extends JsonDecoder {
 	
+	protected function postDecode($model) {
+		if (method_exists($model, 'fixDecode')) {
+			$model->fixDecode();
+		}
+	}
+	
 	/**
 	 * Sets the public properties of $model to values from $values[propertyName]
 	 * @param object $model
@@ -117,9 +123,11 @@ class MongoDecoder extends JsonDecoder {
 	 * @param MongoDate $data
 	 */
 	public function decodeDateTime($key, $model, $data) {
-		CodeGuard::checkTypeAndThrow($data, 'MongoDate');
+		CodeGuard::checkTypeAndThrow($data, 'MongoDate', CodeGuard::CHECK_NULL_OK);
 		$model = new \DateTime();
-		$model->setTimeStamp($data->sec);
+		if ($data !== null) {
+			$model->setTimeStamp($data->sec);
+		}
 	}
 	
 	

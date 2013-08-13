@@ -26,9 +26,14 @@ require_once(APPPATH . 'models/UserModel.php');
 
 class Sf
 {
+	/**
+	 * @var string
+	 */
+	private $_userId;
 	
-	public function __construct()
-	{
+	public function __construct($controller) {
+		$this->_userId = (string)$controller->session->userdata('user_id');
+
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
 // 		ini_set('display_errors', 0);
 	}
@@ -218,11 +223,21 @@ class Sf
 	}
 	
 	public function question_update_answer($projectId, $questionId, $answer) {
-		return QuestionCommands::updateAnswer($projectId, $questionId, $answer);
+		return QuestionCommands::updateAnswer($projectId, $questionId, $answer, $this->_userId);
+	}
+	
+	public function question_remove_answer($projectId, $questionId, $answerId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId);
 	}
 	
 	public function question_update_comment($projectId, $questionId, $answerId, $comment) {
 		return QuestionCommands::updateComment($projectId, $questionId, $answerId, $comment);
+	}
+	
+	public function question_remove_comment($projectId, $questionId, $answerId, $commentId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId, $commentId);
 	}
 	
 	public function question_comment_dto($projectId, $questionId) {
