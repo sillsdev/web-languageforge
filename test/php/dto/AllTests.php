@@ -7,6 +7,7 @@ class AllDtoTests extends TestSuite {
     function __construct() {
         parent::__construct();
  		$this->addFile(TestPath . 'dto/QuestionCommentDto_Test.php');
+ 		$this->addFile(TestPath . 'dto/ActivityDto_Test.php');
     }
 
 }
