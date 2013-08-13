@@ -36,9 +36,7 @@ angular.module(
 		});
 		
 		$scope.newComment = {
-			'id': '',
-			'content': '',
-			'userRef': sessionService.currentUserId
+			'content': ''
 		};
 		
 		$scope.newAnswer = {
@@ -56,16 +54,30 @@ angular.module(
 		$scope.submitAnswer = function() {
 			var answer = {
 				'id':'',
-				'content': $scope.newAnswer.content,
-				'userRef':sessionService.currentUserId
+				'content': $scope.newAnswer.content
 			};
 				
 			questionService.update_answer(projectId, questionId, answer, function(result) {
 				if (result.ok) {
 					console.log('update_answer ok');
-					// TODO error condition
+					for (var id in result.data) {
+						$scope.question.answers[id] = result.data[id];
+					}
+					// TODO error condition (well, that should be handled globally by the service CP 2013-08)
 				}
 			});
 		};
+		
+		$scope.answerDelete = function(answerId) {
+			console.log('delete ', answerId);
+			questionService.remove_answer(projectId, questionId, answerId, function(result) {
+				if (result.ok) {
+					console.log('remove_answer ok');
+					// Delete locally
+					delete $scope.question.answers[answerId];
+				}
+			});
+		};
+		
 	}])
 	;
