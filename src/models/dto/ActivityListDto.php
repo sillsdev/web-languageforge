@@ -2,6 +2,7 @@
 
 namespace models\dto;
 
+require_once(APPPATH . 'models/ActivityModel.php');
 
 
 use models\ProjectList_UserModel;
@@ -24,7 +25,9 @@ class ActivityListDto
 	 */
 	public static function getActivityForProject($projectModel) {
 		$activityList = new ActivityListModel($projectModel);
-		return QuestionCommentDtoEncoder::encode($activityList);
+		$activityList->read();
+		// turn userRefs into userArrays
+		return $activityList;
 	}
 	
 	/**
