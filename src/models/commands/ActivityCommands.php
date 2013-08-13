@@ -25,7 +25,7 @@ class ActivityCommands
 	 */
 	public static function updateComment($projectModel, $questionId, $answerId, $commentModel) {
 		$activity = new ActivityModel($projectModel);
-		$question = new QuestionModel($questionId);
+		$question = new QuestionModel($projectModel, $questionId);
 		$answer = $question->answers->data[$answerId];
 		$text = new TextModel($projectModel, $question->textRef->asString());
 		$activity->action = ($commentModel->id->asString() == '') ? ActivityModel::ADD_COMMENT : ActivityModel::UPDATE_COMMENT;
@@ -48,7 +48,7 @@ class ActivityCommands
 	 */
 	public static function updateAnswer($projectModel, $questionId, $answerModel) {
 		$activity = new ActivityModel($projectModel);
-		$question = new QuestionModel($questionId);
+		$question = new QuestionModel($projectModel, $questionId);
 		$text = new TextModel($projectModel, $question->textRef->asString());
 		$activity->action = ($answerModel->id->asString() == '') ? ActivityModel::ADD_ANSWER : ActivityModel::UPDATE_ANSWER;
 		$activity->userRef->id = $answerModel->userRef->asString();
@@ -56,7 +56,7 @@ class ActivityCommands
 		$activity->questionRef->id = $questionId;
 		$activity->addContent(ActivityModel::TEXT, $text->title);
 		$activity->addContent(ActivityModel::QUESTION, $question->title);
-		$activity->addContent(ActivityModel::ANSWER, $answer->content);
+		$activity->addContent(ActivityModel::ANSWER, $answerModel->content);
 		$activity->write();
 	}
 	
@@ -74,7 +74,6 @@ class ActivityCommands
 	}
 	
 	/**
-	 * 
 	 * @param ProjectModel $projectModel
 	 * @param string $questionId
 	 * @param QuestionModel $questionModel
@@ -114,7 +113,7 @@ class ActivityCommands
 	 */
 	public static function updateScore($projectModel, $questionId, $answerId, $userId, $mode = 'increase') {
 		$activity = new ActivityModel($projectModel);
-		$question = new QuestionModel($questionId);
+		$question = new QuestionModel($projectModel, $questionId);
 		$text = new TextModel($projectModel, $question->textRef->asString());
 		$answer = $question->answers->data[$answerId];
 		$activity = new ActivityModel($projectModel);
