@@ -26,7 +26,7 @@ class TestQuestionModel extends UnitTestCase {
 
 	function testCRUD_Works() {
 		$e = new MongoTestEnvironment();
-		$textRef = $e->mockId();
+		$textRef = MongoTestEnvironment::mockId();
 		$projectModel = new MockProjectModel();
 		
 		// List
