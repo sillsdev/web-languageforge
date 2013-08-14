@@ -34,8 +34,7 @@ class ProjectModelMongoMapper extends \models\mapper\MongoMapper
 
 class ProjectModel extends \models\mapper\MapperModel
 {
-	public function __construct($id = '')
-	{
+	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->users = new MapOf(function($data) {
 			return new ProjectRoleModel();
@@ -84,6 +83,29 @@ class ProjectModel extends \models\mapper\MapperModel
 		$userList = new UserList_ProjectModel($this->id->asString());
 		$userList->read();
 		return $userList;
+	}
+	
+	/**
+	 * Returns true if the given $userId has the $right in this project.
+	 * @param string $userId
+	 * @param int $right
+	 * @return bool
+	 */
+	public function hasRight($userId, $right) {
+		$role = $this->users->data[$userId]->role;
+		$result = Roles::hasRight($role, $right);
+		return $result;
+	}
+	
+	/**
+	 * Returns the rights array for the $userId role.
+	 * @param string $userId
+	 * @return array
+	 */
+	public function getRightsArray($userId) {
+		$role = $this->users->data[$userId]->role;
+		$result = Roles::getRightsArray($role);
+		return $result;
 	}
 	
 	/**

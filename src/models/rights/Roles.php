@@ -43,11 +43,27 @@ class Roles {
 		self::$_rights[self::PROJECT_ADMIN] = $rights;
 		
 	}
-	
-	public static function has($role, $right) {
+
+	/**
+	 * Returns true if the given $role has the $right 
+	 * @param string $role
+	 * @param int $right
+	 * @return bool
+	 */
+	public static function hasRight($role, $right) {
 		return in_array($right, self::$_rights[$role]);
 	}
 	
+	/**
+	 * Returns the array of rights for this $role
+	 * @param string $role
+	 * @return array
+	 */
+	public static function getRightsArray($role) {
+		return self::$_rights[$role];
+	}
+	
 }
+Roles::init();
 
 ?>
