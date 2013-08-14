@@ -11,12 +11,12 @@ class Operation {
 	const LOCK			= 6;
 	
 	public static $operations = array(
-			CREATE,
-			EDIT_OWN,
-			EDIT_OTHER,
-			DELETE_OWN,
-			DELETE_OTHER,
-			LOCK
+			self::CREATE,
+			self::EDIT_OWN,
+			self::EDIT_OTHER,
+			self::DELETE_OWN,
+			self::DELETE_OTHER,
+			self::LOCK
 	);
 	
 }
