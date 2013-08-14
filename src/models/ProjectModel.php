@@ -74,13 +74,10 @@ class ProjectModel extends \models\mapper\MapperModel
 	
 	/**
 	 * Removes the $userId from this project.
-	 * You do NOT need to call write() as this method calls it for you
 	 * @param string $userId
 	 */
 	public function removeUser($userId) {
-		//$userModel = new UserModel($userId);
-		$this->users->_removeRef($userId);
-		//$userModel->projects->_removeRef($this->id);
+		unset($this->users->data[$userId]);
 	}
 
 	public function listUsers() {
