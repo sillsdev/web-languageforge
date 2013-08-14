@@ -12,13 +12,13 @@ class Domain {
 	const COMMENTS		= 160;
 	
 	public static $domains = array(
-			ANY,
-			USERS,
-			PROJECTS,
-			TEXTS,
-			QUESTIONS,
-			ANSWERS,
-			COMMENTS
+			self::ANY,
+			self::USERS,
+			self::PROJECTS,
+			self::TEXTS,
+			self::QUESTIONS,
+			self::ANSWERS,
+			self::COMMENTS
 	);
 	
 }

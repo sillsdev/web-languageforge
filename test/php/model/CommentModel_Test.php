@@ -26,7 +26,7 @@ class TestCommentModel extends UnitTestCase {
 
 	function testAnswerCRUD_Works() {
 		$e = new MongoTestEnvironment();
-		$textRef = $e->mockId();
+		$textRef = MongoTestEnvironment::mockId();
 		$projectModel = new MockProjectModel();
 
 		// Create Question
