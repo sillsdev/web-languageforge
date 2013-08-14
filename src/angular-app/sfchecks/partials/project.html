@@ -28,13 +28,11 @@
 				<span class="subtitle">questions</span>
 			</div>
 		</a></li>
-		<li><div class="name-with-viewcount">
+		<li>
 			<a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{text.title|urlencode}}/{{text.id}}">
-				<span class="name">{{text.title}}</span>
+				<span class="larger-text">{{text.title}}</span>
 			</a>
-			<br />
-			<span class="viewcount">{{getViewsCount(text)}} views</span>
-		</div></li>
+		</li>
 		<li><a href="#">{{getUnreadAnswers(text)}} unread answers</a></li>
 		<li><a href="#">{{getUnreadComments(text)}} unread comments</a></li>
 	</ul>

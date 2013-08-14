@@ -12,7 +12,7 @@ files = [
   'src/js/lib/*ui-bootstrap*.js',
   'src/angular-app/**/*.js',
   'test/app/admin/unit/controllersSpec.js',
-  //'test/spec/**/*.js' // We don't have this yet, but we will soon
+  'test/spec/**/*.spec.js'
 ];
 
 // list of files to exclude

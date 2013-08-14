@@ -13,7 +13,7 @@ describe('controllers', function(){
 		}
 	}
 
-	beforeEach(module('sfchecks.controllers'));
+	beforeEach(module('sfchecks'));
 
 	beforeEach(inject(function($rootScope, $controller /* what else? ... */) {
 		// Create a fresh scope for each test to use
