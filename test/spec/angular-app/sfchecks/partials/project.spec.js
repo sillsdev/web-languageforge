@@ -2,25 +2,25 @@
 
 /* See http://www.benlesh.com/2013/05/angularjs-unit-testing-controllers.html */
 
-var testData = {
-	count: 2,
-	entries: [
-		{title: "Foo", id: "1001", questionCount: 0},
-		{title: "Bar", id: "1002", questionCount: 1},
-	],
-};
-
-var testJsonResult = {
-	id: 1,
-	ok: true,
-	status: 200,
-	data: testData,
-};
-
 describe('Project page (project.js)', function() {
 	var scope;
 	var rootScope;
 	var ctrl;
+
+	var testData = {
+		count: 2,
+		entries: [
+			{title: "Foo", id: "1001", questionCount: 0},
+			{title: "Bar", id: "1002", questionCount: 1},
+		],
+	};
+
+	var testJsonResult = {
+		id: 1,
+		ok: true,
+		status: 200,
+		data: testData,
+	};
 
 	var mockTextService = {
 		list: function(projectId, callback) {
