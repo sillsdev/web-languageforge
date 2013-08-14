@@ -18,17 +18,15 @@
 			<li><input type="checkbox" ng-checked="isSelected(project)" ng-click="updateSelection($event, project)" /></li>
 			<li><a href="#/project/{{project.projectname|urlencode}}/{{project.id}}">
 				<div class="attention-block">
-					<span style="font-size: 24px">{{getTextsCount(project)}}</span><br />
+				<span style="font-size: 24px">{{getTextCount(project)}}</span><br />
 					<span style=""> texts to check</span>
 				</div>
 			</a></li>
-			<li><div class="name-with-viewcount">
+			<li>
 				<a href="#/project/{{project.projectname|urlencode}}/{{project.id}}">
-					<span class="name">{{project.projectname}}</span>
+					<span class="larger-text">{{project.projectname}}</span>
 				</a>
-				<br />
-				<span class="viewcount">{{getViewsCount(project)}} views</span>
-			</div></li>
+			</li>
 			<li><a href="#">{{getUnreadAnswers(project)}} unread answers</a></li>
 			<li><a href="#">{{getUnreadComments(project)}} unread comments</a></li>
 		</ul>

@@ -136,6 +136,12 @@ class Sf
 		return $list;
 	}
 	
+	public function project_list_dto() {
+		// Eventually this will need to get the current user id and do:
+		//return \models\dto\ProjectListDto::encode($userId);
+		return \models\dto\ProjectListDto::encode();
+	}
+	
 	public function project_readUser($projectId, $userId) {
 		throw new \Exception("project_readUser NYI");
 	}
@@ -193,6 +199,10 @@ class Sf
 		return $textListModel;
 	}
 	
+	public function text_list_dto($projectId) {
+		return \models\dto\TextListDto::encode($projectId);
+	}
+	
 	//---------------------------------------------------------------
 	// Question / Answer / Comment API
 	//---------------------------------------------------------------
@@ -242,6 +252,10 @@ class Sf
 	
 	public function question_comment_dto($projectId, $questionId) {
 		return \models\dto\QuestionCommentDto::encode($projectId, $questionId);
+	}
+	
+	public function question_list_dto($projectId, $textId) {
+		return \models\dto\QuestionListDto::encode($projectId, $textId);
 	}
 	
 }

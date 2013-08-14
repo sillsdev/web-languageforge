@@ -81,7 +81,7 @@ angular.module(
 		};
 
 		$scope.getAnswerCount = function(question) {
-			return fakeData.answerCount;
+			return question.answerCount;
 		}
 
 		$scope.getViewsCount = function(question) {
