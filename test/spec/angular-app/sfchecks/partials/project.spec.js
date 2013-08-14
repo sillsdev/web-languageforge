@@ -62,4 +62,7 @@ describe('Project page (project.js)', function() {
 		expect(scope.texts[0].title).toBe("Foo");
 		expect(scope.texts[1].title).toBe("Bar");
 	});
+
+	// TODO: Rewrite this with spyOn(func) and expect(func).toHaveBeenCalled() RM 2013-08
+
 });
