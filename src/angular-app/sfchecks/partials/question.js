@@ -36,6 +36,29 @@ angular.module(
 				// error condition
 			}
 		});
+
+		$scope.openEditors = {
+			answerId: null,
+			commentId: null,
+		};
+
+		$scope.showAnswerEditor = function(answerId) {
+			$scope.openEditors.answerId = answerId;
+		};
+		$scope.answerEditorVisible = function(answerId) {
+			console.log("openEditors:", $scope.openEditors);
+			console.log("answerId:", $scope.answerId);
+			return (answerId == $scope.openEditors.answerId);
+		};
+
+		$scope.showCommentEditor = function(commentId) {
+			$scope.openEditors.commentId = commentId;
+		};
+		$scope.commentEditorVisible = function(commentId) {
+			console.log("openEditors:", $scope.openEditors);
+			console.log("commentId:", $scope.commentId);
+			return (commentId == $scope.openEditors.commentId);
+		};
 		
 		$scope.newComment = {
 			'content': ''
@@ -70,6 +93,10 @@ angular.module(
 					// TODO error condition (well, that should be handled globally by the service CP 2013-08)
 				}
 			});
+		};
+
+		$scope.editAnswer = function() {
+			// Re-use a bunch of code from submitAnswer here
 		};
 		
 		$scope.answerDelete = function(answerId) {
