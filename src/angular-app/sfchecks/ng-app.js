@@ -26,6 +26,13 @@ angular.module('sfchecks',
     		}
     	);
 	    $routeProvider.when(
+	    		'/project/:projectName/:projectId/settings', 
+	    		{
+	    			templateUrl: '/angular-app/sfchecks/partials/project-settings.html', 
+	    			controller: 'ProjectSettingsCtrl'
+	    		}
+	    	);
+	    $routeProvider.when(
     		'/project/:projectName/:projectId/:textName/:textId', 
     		{
     			templateUrl: '/angular-app/sfchecks/partials/questions.html', 
