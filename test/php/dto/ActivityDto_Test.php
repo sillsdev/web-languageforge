@@ -70,44 +70,137 @@ class TestActivityDto extends UnitTestCase {
 		$answer->userRef->id = $user3Id;
 		$answer->textHightlight = "text highlight";
 		$answerId = QuestionModel::writeAnswer($project->databaseName(), $questionId, $answer);
-		ActivityCommands::updateAnswer($project, $questionId, $answer);
+		ActivityCommands::addAnswer($project, $questionId, $answer);
 		
 		// Followed by comments
 		$comment1 = new CommentModel();
 		$comment1->content = "first comment";
 		$comment1->userRef->id = $user1Id;
 		$comment1Id = QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment1);
-		ActivityCommands::updateComment($project, $questionId, $answerId, $comment1);
+		ActivityCommands::addComment($project, $questionId, $answerId, $comment1);
 		
 		$comment2 = new CommentModel();
 		$comment2->content = "second comment";
 		$comment2->userRef->id = $user2Id;
 		$comment2Id = QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment2);
-		ActivityCommands::updateComment($project, $questionId, $answerId, $comment2);
+		ActivityCommands::addComment($project, $questionId, $answerId, $comment2);
+		
+		// updated answer
+		$question->read($questionId);
+		$answer_updated = $question->readAnswer($answerId);
+		$answer_updated->content = "first answer revised";
+		QuestionModel::writeAnswer($project->databaseName(), $questionId, $answer_updated);
+		ActivityCommands::updateAnswer($project, $questionId, $answer_updated);
+		
+		// updated comment1
+		$question->read($questionId);
+		$comment1_updated = $question->readComment($answerId, $comment1Id);
+		$comment1_updated->content = "first comment revised";
+		QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment1_updated);
+		ActivityCommands::updateComment($project, $questionId, $answerId, $comment1_updated);
+		
 		
 		$dto = ActivityListDto::getActivityForProject($project);
-		var_dump($dto);
+		$dto = $dto->entries;
 		
-		/*
-		$aid = $answerId;
-		$cid1 = $comment1Id;
-		$cid2 = $comment2Id;
-		$this->assertEqual($dto['projectid'], $project->id);
-		$this->assertEqual($dto['text']['content'], $text->content);
-		$this->assertEqual($dto['question']['id'], $questionId);
-		$this->assertEqual($dto['question']['title'], 'the question');
-		$this->assertEqual($dto['question']['description'], 'question description');
-		$this->assertEqual($dto['question']['answers'][$aid]['content'], 'first answer');
-		$this->assertEqual($dto['question']['answers'][$aid]['score'], 10);
-		$this->assertEqual($dto['question']['answers'][$aid]['userRef']['avatar_ref'], 'user3.png');
-		$this->assertEqual($dto['question']['answers'][$aid]['userRef']['username'], 'user3');
-		$this->assertEqual($dto['question']['answers'][$aid]['comments'][$cid1]['content'], 'first comment');
-		$this->assertEqual($dto['question']['answers'][$aid]['comments'][$cid1]['userRef']['username'], 'user1');
-		$this->assertEqual($dto['question']['answers'][$aid]['comments'][$cid1]['userRef']['avatar_ref'], 'user1.png');
-		$this->assertEqual($dto['question']['answers'][$aid]['comments'][$cid2]['content'], 'second comment');
-		$this->assertEqual($dto['question']['answers'][$aid]['comments'][$cid2]['userRef']['username'], 'user2');
-		$this->assertEqual($dto['question']['answers'][$aid]['comments'][$cid2]['userRef']['avatar_ref'], 'user2.png');
-		*/
+		$this->assertEqual($dto[0]['action'], 'add_text');
+		$this->assertEqual($dto[0]['projectRef'], $project->id->asString());
+		$this->assertEqual($dto[0]['actionContent']['project'], $project->projectname);
+		$this->assertEqual($dto[0]['textRef'], $textId);
+		$this->assertEqual($dto[0]['actionContent']['text'], $text->title);
+		
+		$this->assertEqual($dto[1]['action'], 'add_user_to_project');
+		$this->assertEqual($dto[1]['projectRef'], $project->id->asString());
+		$this->assertEqual($dto[1]['actionContent']['project'], $project->projectname);
+		$this->assertEqual($dto[1]['userRef']['id'], $user1Id);
+		$this->assertEqual($dto[1]['userRef']['username'], 'user1');
+		$this->assertEqual($dto[1]['userRef']['avatar_ref'], 'user1.png');
+		
+		$this->assertEqual($dto[2]['action'], 'add_user_to_project');
+		$this->assertEqual($dto[2]['projectRef'], $project->id->asString());
+		$this->assertEqual($dto[2]['actionContent']['project'], $project->projectname);
+		$this->assertEqual($dto[2]['userRef']['id'], $user2Id);
+		$this->assertEqual($dto[2]['userRef']['username'], 'user2');
+		$this->assertEqual($dto[2]['userRef']['avatar_ref'], 'user2.png');
+		
+		$this->assertEqual($dto[3]['action'], 'add_user_to_project');
+		$this->assertEqual($dto[3]['projectRef'], $project->id->asString());
+		$this->assertEqual($dto[3]['actionContent']['project'], $project->projectname);
+		$this->assertEqual($dto[3]['userRef']['id'], $user3Id);
+		$this->assertEqual($dto[3]['userRef']['username'], 'user3');
+		$this->assertEqual($dto[3]['userRef']['avatar_ref'], 'user3.png');
+		
+		$this->assertEqual($dto[4]['action'], 'add_question');
+		$this->assertEqual($dto[4]['projectRef'], $project->id->asString());
+		$this->assertEqual($dto[4]['actionContent']['project'], $project->projectname);
+		$this->assertEqual($dto[4]['textRef'], $textId);
+		$this->assertEqual($dto[4]['actionContent']['text'], $text->title);
+		$this->assertEqual($dto[4]['questionRef'], $questionId);
+		$this->assertEqual($dto[4]['actionContent']['question'], $question->title);
+		
+		$this->assertEqual($dto[5]['action'], 'add_answer');
+		$this->assertEqual($dto[5]['projectRef'], $project->id->asString());
+		$this->assertEqual($dto[5]['actionContent']['project'], $project->projectname);
+		$this->assertEqual($dto[5]['textRef'], $textId);
+		$this->assertEqual($dto[5]['actionContent']['text'], $text->title);
+		$this->assertEqual($dto[5]['questionRef'], $questionId);
+		$this->assertEqual($dto[5]['actionContent']['question'], $question->title);
+		$this->assertEqual($dto[5]['userRef']['id'], $user3Id);
+		$this->assertEqual($dto[5]['userRef']['username'], 'user3');
+		$this->assertEqual($dto[5]['userRef']['avatar_ref'], 'user3.png');
+		$this->assertEqual($dto[5]['actionContent']['answer'], $answer->content);
+		
+		$this->assertEqual($dto[6]['action'], 'add_comment');
+		$this->assertEqual($dto[6]['projectRef'], $project->id->asString());
+		$this->assertEqual($dto[6]['actionContent']['project'], $project->projectname);
+		$this->assertEqual($dto[6]['textRef'], $textId);
+		$this->assertEqual($dto[6]['actionContent']['text'], $text->title);
+		$this->assertEqual($dto[6]['questionRef'], $questionId);
+		$this->assertEqual($dto[6]['actionContent']['question'], $question->title);
+		$this->assertEqual($dto[6]['userRef']['id'], $user1Id);
+		$this->assertEqual($dto[6]['userRef']['username'], 'user1');
+		$this->assertEqual($dto[6]['userRef']['avatar_ref'], 'user1.png');
+		$this->assertEqual($dto[6]['actionContent']['answer'], $answer->content);
+		$this->assertEqual($dto[6]['actionContent']['comment'], $comment1->content);
+		
+		$this->assertEqual($dto[7]['action'], 'add_comment');
+		$this->assertEqual($dto[7]['projectRef'], $project->id->asString());
+		$this->assertEqual($dto[7]['actionContent']['project'], $project->projectname);
+		$this->assertEqual($dto[7]['textRef'], $textId);
+		$this->assertEqual($dto[7]['actionContent']['text'], $text->title);
+		$this->assertEqual($dto[7]['questionRef'], $questionId);
+		$this->assertEqual($dto[7]['actionContent']['question'], $question->title);
+		$this->assertEqual($dto[7]['userRef']['id'], $user2Id);
+		$this->assertEqual($dto[7]['userRef']['username'], 'user2');
+		$this->assertEqual($dto[7]['userRef']['avatar_ref'], 'user2.png');
+		$this->assertEqual($dto[7]['actionContent']['answer'], $answer->content);
+		$this->assertEqual($dto[7]['actionContent']['comment'], $comment2->content);
+		
+		$this->assertEqual($dto[8]['action'], 'update_answer');
+		$this->assertEqual($dto[8]['projectRef'], $project->id->asString());
+		$this->assertEqual($dto[8]['actionContent']['project'], $project->projectname);
+		$this->assertEqual($dto[8]['textRef'], $textId);
+		$this->assertEqual($dto[8]['actionContent']['text'], $text->title);
+		$this->assertEqual($dto[8]['questionRef'], $questionId);
+		$this->assertEqual($dto[8]['actionContent']['question'], $question->title);
+		$this->assertEqual($dto[8]['userRef']['id'], $user3Id);
+		$this->assertEqual($dto[8]['userRef']['username'], 'user3');
+		$this->assertEqual($dto[8]['userRef']['avatar_ref'], 'user3.png');
+		$this->assertEqual($dto[8]['actionContent']['answer'], $answer_updated->content);
+		
+		$this->assertEqual($dto[9]['action'], 'update_comment');
+		$this->assertEqual($dto[9]['projectRef'], $project->id->asString());
+		$this->assertEqual($dto[9]['actionContent']['project'], $project->projectname);
+		$this->assertEqual($dto[9]['textRef'], $textId);
+		$this->assertEqual($dto[9]['actionContent']['text'], $text->title);
+		$this->assertEqual($dto[9]['questionRef'], $questionId);
+		$this->assertEqual($dto[9]['actionContent']['question'], $question->title);
+		$this->assertEqual($dto[9]['userRef']['id'], $user1Id);
+		$this->assertEqual($dto[9]['userRef']['username'], 'user1');
+		$this->assertEqual($dto[9]['userRef']['avatar_ref'], 'user1.png');
+		$this->assertEqual($dto[9]['actionContent']['answer'], $answer->content);
+		$this->assertEqual($dto[9]['actionContent']['comment'], $comment1_updated->content);
+		
 	}
 }
 

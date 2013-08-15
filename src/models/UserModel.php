@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\mapper\IdReference;
+
 use models\mapper\MongoMapper;
 
 use models\mapper\Id;
@@ -74,7 +76,7 @@ class UserModel extends \models\mapper\MapperModel
 	}
 	
 	/**
-	 * @var string
+	 * @var IdReference
 	 */
 	public $id;
 	

@@ -244,7 +244,8 @@ class Sf
 	
 	public function question_update_answer_score($projectId, $questionId, $answerId, $score) {
 		$projectModel = new \models\ProjectModel($projectId);
-		$answerModel = QuestionModel::readAnswer($projectModel->databaseName(), $questionId, $answerId);
+		$questionModel = new QuestionModel($questionId);
+		$answerModel = $questionModel->readAnswer($answerId);
 		$lastScore = $answerModel->score;
 		$currentScore = intval($score);
 		$answerModel->score = $currentScore;
