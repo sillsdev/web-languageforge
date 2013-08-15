@@ -39,8 +39,12 @@ angular.module('sf.services', ['jsonRpc'])
 		this.remove = function(projectIds, callback) {
 			jsonRpc.call('project_delete', [projectIds], callback);
 		};
+		// Eventually this will need to become:
+		//this.list = function(userId, callback) {
+			//jsonRpc.call('project_list_dto', [userId], callback);
+		//};
 		this.list = function(callback) {
-			jsonRpc.call('project_list', [], callback);
+			jsonRpc.call('project_list_dto', [], callback);
 		};
 		this.readUser = function(projectId, userId, callback) {
 			jsonRpc.call('project_readUser', [projectId, userId], callback);
@@ -55,9 +59,6 @@ angular.module('sf.services', ['jsonRpc'])
 			// TODO Paging CP 2013-07
 			jsonRpc.call('project_listUsers', [projectId], callback);
 		};
-		this.dto = function(userId, callback) {
-			jsonRpc.call('project_list_dto', [userId], callback);
-		};
 	}])
 	.service('textService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
@@ -71,9 +72,6 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('text_delete', [projectId, textIds], callback);
 		};
 		this.list = function(projectId, callback) {
-			jsonRpc.call('text_list', [projectId], callback);
-		};
-		this.dto = function(projectId, callback) {
 			jsonRpc.call('text_list_dto', [projectId], callback);
 		};
 	}])
@@ -89,7 +87,7 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('question_delete', [projectId, questionIds], callback);
 		};
 		this.list = function(projectId, textId, callback) {
-			jsonRpc.call('question_list', [projectId, textId], callback);
+			jsonRpc.call('question_list_dto', [projectId, textId], callback);
 		};
 	}])
 	.service('questionService', ['jsonRpc', function(jsonRpc) {

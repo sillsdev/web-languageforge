@@ -30,6 +30,8 @@ angular.module(
 			if (result.ok) {
 				$scope.text = result.data.text;
 				$scope.question = result.data.question;
+				// Keep track of answer count so we can show or hide "There are no answers" as appropriate
+				$scope.question.answerCount = Object.keys($scope.question.answers).length;
 			} else {
 				// error condition
 			}
@@ -63,6 +65,8 @@ angular.module(
 					for (var id in result.data) {
 						$scope.question.answers[id] = result.data[id];
 					}
+					// Recalculate answer count as it might have changed
+					$scope.question.answerCount = Object.keys($scope.question.answers).length;
 					// TODO error condition (well, that should be handled globally by the service CP 2013-08)
 				}
 			});
@@ -75,6 +79,8 @@ angular.module(
 					console.log('remove_answer ok');
 					// Delete locally
 					delete $scope.question.answers[answerId];
+					// Recalculate answer count as it just changed
+					$scope.question.answerCount = Object.keys($scope.question.answers).length;
 				}
 			});
 		};
