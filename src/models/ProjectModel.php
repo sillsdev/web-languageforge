@@ -57,7 +57,6 @@ class ProjectModel extends \models\mapper\MapperModel
 	
 	/**
 	 * Adds the $userId as a member of this project.
-	 * You do NOT need to call write() as this method calls it for you
 	 * @param string $userId
 	 */
 	public function addUser($userId) {
@@ -67,7 +66,6 @@ class ProjectModel extends \models\mapper\MapperModel
 	
 	/**
 	 * Removes the $userId from this project.
-	 * You do NOT need to call write() as this method calls it for you
 	 * @param string $userId
 	 */
 	public function removeUser($userId) {

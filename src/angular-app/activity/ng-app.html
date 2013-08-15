@@ -16,7 +16,7 @@
 				<div ng-switch-when="add_comment-project" class="span12 activity-row">
 					<hr>
 					<div class="span1">
-					    <img width="50px" height="50px" src="{{item.userRef.avatar_ref}}" />
+					    <img width="50px" height="50px" ng-src="{{item.userRef.avatar_ref}}" />
 					</div>
 					<div class="span1 activity-date">
 					    {{item.date|relativetime}}
@@ -33,7 +33,7 @@
 				<div ng-switch-when="update_comment-project" class="span12 activity-row">
 					<hr>
 					<div class="span1">
-					    <img width="50px" height="50px" src="{{item.userRef.avatar_ref}}" />
+					    <img width="50px" height="50px" ng-src="{{item.userRef.avatar_ref}}" />
 					</div>
 					<div class="span1 activity-date">
 					    {{item.date|relativetime}}
@@ -93,7 +93,7 @@
 				<div ng-switch-when="add_answer-project" class="span12 activity-row">
 					<hr>
 					<div class="span1">
-					    <img width="50px" height="50px" src="{{item.userRef.avatar_ref}}" />
+					    <img width="50px" height="50px" ng-src="{{item.userRef.avatar_ref}}" />
 					</div>
 					<div class="span1 activity-date">
 					    {{item.date|relativetime}}
