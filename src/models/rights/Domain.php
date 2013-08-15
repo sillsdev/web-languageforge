@@ -11,16 +11,6 @@ class Domain {
 	const ANSWERS		= 150;
 	const COMMENTS		= 160;
 	
-	public static $domains = array(
-			self::ANY,
-			self::USERS,
-			self::PROJECTS,
-			self::TEXTS,
-			self::QUESTIONS,
-			self::ANSWERS,
-			self::COMMENTS
-	);
-	
 }
 
 ?>
