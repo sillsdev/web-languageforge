@@ -63,6 +63,7 @@ class ActivityModel extends \models\mapper\MapperModel
 		$this->textRef = new IdReference();
 		$this->questionRef = new IdReference();
 		$this->userRef = new IdReference();
+		$this->userRef2 = new IdReference();
 		$this->action = $this::UNKNOWN;
 		$this->date = new \DateTime(); // set the timestamp to now
 		$this->actionContent = new MapOf(); // strings
@@ -110,6 +111,12 @@ class ActivityModel extends \models\mapper\MapperModel
 	 * @var IdReference
 	 */
 	public $userRef;
+	
+	/**
+	 * 
+	 * @var IdReference
+	 */
+	public $userRef2;
 	
 	/**
 	 * 

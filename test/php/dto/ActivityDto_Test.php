@@ -160,6 +160,9 @@ class TestActivityDto extends UnitTestCase {
 		$this->assertEqual($dto[6]['userRef']['id'], $user1Id);
 		$this->assertEqual($dto[6]['userRef']['username'], 'user1');
 		$this->assertEqual($dto[6]['userRef']['avatar_ref'], 'user1.png');
+		$this->assertEqual($dto[6]['userRef2']['id'], $user3Id);
+		$this->assertEqual($dto[6]['userRef2']['username'], 'user3');
+		$this->assertEqual($dto[6]['userRef2']['avatar_ref'], 'user3.png');
 		$this->assertEqual($dto[6]['actionContent']['answer'], $answer->content);
 		$this->assertEqual($dto[6]['actionContent']['comment'], $comment1->content);
 		
@@ -173,6 +176,9 @@ class TestActivityDto extends UnitTestCase {
 		$this->assertEqual($dto[7]['userRef']['id'], $user2Id);
 		$this->assertEqual($dto[7]['userRef']['username'], 'user2');
 		$this->assertEqual($dto[7]['userRef']['avatar_ref'], 'user2.png');
+		$this->assertEqual($dto[6]['userRef2']['id'], $user3Id);
+		$this->assertEqual($dto[6]['userRef2']['username'], 'user3');
+		$this->assertEqual($dto[6]['userRef2']['avatar_ref'], 'user3.png');
 		$this->assertEqual($dto[7]['actionContent']['answer'], $answer->content);
 		$this->assertEqual($dto[7]['actionContent']['comment'], $comment2->content);
 		
@@ -198,6 +204,9 @@ class TestActivityDto extends UnitTestCase {
 		$this->assertEqual($dto[9]['userRef']['id'], $user1Id);
 		$this->assertEqual($dto[9]['userRef']['username'], 'user1');
 		$this->assertEqual($dto[9]['userRef']['avatar_ref'], 'user1.png');
+		$this->assertEqual($dto[6]['userRef2']['id'], $user3Id);
+		$this->assertEqual($dto[6]['userRef2']['username'], 'user3');
+		$this->assertEqual($dto[6]['userRef2']['avatar_ref'], 'user3.png');
 		$this->assertEqual($dto[9]['actionContent']['answer'], $answer->content);
 		$this->assertEqual($dto[9]['actionContent']['comment'], $comment1_updated->content);
 		
