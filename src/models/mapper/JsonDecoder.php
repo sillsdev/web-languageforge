@@ -63,7 +63,6 @@ class JsonDecoder {
 					$this->decodeReferenceList($model->$key, $values[$key]);
 				}
 			} else if (is_object($value)) {
-				var_dump($values);
 				if (array_key_exists($key, $values)) {
 					$this->_decode($model->$key, $values[$key], '');
 				}

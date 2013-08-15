@@ -87,7 +87,7 @@ class MongoTestEnvironment
 	 * Returns a string very much like those used for MongoIds
 	 * @return string
 	 */
-	public function mockId() {
+	public static function mockId() {
 		$id = new MongoId();
 		return (string)$id;
 	}

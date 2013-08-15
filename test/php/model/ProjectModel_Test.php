@@ -1,7 +1,14 @@
 <?php
-use models\mapper\Id;
+use models\rights\Operation;
 
+use models\rights\Domain;
+
+use models\rights\Roles;
+
+use models\mapper\Id;
 use models\mapper\MongoStore;
+use models\UserModel;
+use models\ProjectModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -11,21 +18,16 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 require_once(SourcePath . "models/UserModel.php");
 require_once(SourcePath . "models/ProjectModel.php");
 
-use models\UserModel;
-use models\ProjectModel;
-
 class TestProjectModel extends UnitTestCase {
 
 	private $_someProjectId;
 	
-	function __construct()
-	{
+	function __construct() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 	}
 	
-	function testWrite_ReadBackSame()
-	{
+	function testWrite_ReadBackSame() {
 		$model = new ProjectModel();
 		$model->language = "SomeLanguage";
 		$model->projectname = "SomeProject";
@@ -67,9 +69,9 @@ class TestProjectModel extends UnitTestCase {
 		$projectModel->write();
 		$userModel->write();
 		
-		$this->assertTrue(in_array($userId, $projectModel->users->refs));
+		$this->assertTrue(array_key_exists($userId, $projectModel->users->data), "'$userId' not found in project.");
 		$otherProject = new ProjectModel($projectId);
-		$this->assertTrue(in_array($userId, $otherProject->users->refs), "'$userId' not found in project.");
+		$this->assertTrue(array_key_exists($userId, $otherProject->users->data), "'$userId' not found in other project.");
 	}
 	
 	
@@ -91,9 +93,9 @@ class TestProjectModel extends UnitTestCase {
 		$userModel->write();
 		
 		// assert the reference is there		
-		$this->assertTrue(in_array($userId, $projectModel->users->refs));
+		$this->assertTrue(array_key_exists($userId, $projectModel->users->data), "'$userId' not found in project.");
 		$otherProject = new ProjectModel($projectId);
-		$this->assertTrue(in_array($userId, $otherProject->users->refs), "'$userId' not found in project.");
+		$this->assertTrue(array_key_exists($userId, $otherProject->users->data), "'$userId' not found in other project.");
 		
 		// remove the reference
 		$projectModel->removeUser($userId);
@@ -102,9 +104,9 @@ class TestProjectModel extends UnitTestCase {
 		$userModel->write();
 		
 		// testing
-		$this->assertFalse(in_array($userId, $projectModel->users->refs));
+		$this->assertFalse(array_key_exists($userId, $projectModel->users->data), "'$userId' not found in project.");
 		$otherProject = new ProjectModel($this->_someProjectId);
-		$this->assertFalse(in_array($userId, $otherProject->users->refs), "'$userId' should not be found in project.");
+		$this->assertFalse(array_key_exists($userId, $otherProject->users->data), "'$userId' not found in other project.");
 		$project = new ProjectModel($this->_someProjectId);
 	}
 	
@@ -186,6 +188,23 @@ class TestProjectModel extends UnitTestCase {
 		$project->projectname = 'Some Project';
 		$result = $project->databaseName();
 		$this->assertEqual('sf_some_project', $result);
+	}
+	
+	function testHasRight_Ok() {
+		$userId = MongoTestEnvironment::mockId();
+		$project = new ProjectModel();
+		$project->addUser($userId, Roles::PROJECT_ADMIN);
+		$result = $project->hasRight($userId, Domain::QUESTIONS + Operation::CREATE);
+		$this->assertTrue($result);
+	}
+	
+	function testGetRightsArray_Ok() {
+		$userId = MongoTestEnvironment::mockId();
+		$project = new ProjectModel();
+		$project->addUser($userId, Roles::PROJECT_ADMIN);
+		$result = $project->getRightsArray($userId);
+		$this->assertIsA($result, 'array');
+		$this->assertTrue(in_array(Domain::QUESTIONS + Operation::CREATE, $result));
 	}
 		
 }

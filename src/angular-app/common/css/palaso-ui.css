@@ -79,17 +79,8 @@ div.listview div.attention-block .subtitle {
 	font-size: 1.0em;
 }
 
-div.name-with-viewcount {
-	text-align: center;
-	padding: 10px;
-}
-
-div.name-with-viewcount span.name {
+span.larger-text {
 	font-size: 1.2em;
-}
-
-div.name-with-viewcount span.viewcount {
-	font-size: 0.8em;
 }
 
 /* Control bar for use at top of listview */
