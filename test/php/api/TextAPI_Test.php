@@ -37,7 +37,7 @@ class TextAPITestEnvironment
 	}
 	
 	function dispose() {
-		$this->_api->project_delete($this->_projectIdAdded);
+		$this->_api->project_delete(array($this->_projectIdAdded));
 	}
 }
 
@@ -90,6 +90,9 @@ class TestTextAPI extends UnitTestCase {
  		// List to confirm delete
  		$result = $api->text_list($projectId);
 		$this->assertEqual($count, $result['count']);
+
+		// Clean up after ourselves
+		$e->dispose();
 	}
 	
 }
