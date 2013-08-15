@@ -9,7 +9,7 @@ angular.module('activity',
 		])
 	.controller('ActivityCtrl', ['$scope', 'activityPageService', 'linkService', function($scope, activityService, linkService) {
 		
-		function decodeActivityList(items) {
+		$scope.decodeActivityList = function(items) {
 			for (var i =0; i < items.length; i++) {
 				if ('userRef' in items[i]) {
 					items[i].userProfileHref = linkService.user(items[i].userRef.id);
@@ -25,6 +25,7 @@ angular.module('activity',
 			}
 		}
 		
+		/*
 		$scope.activities = [
 			{
 				'type': 'global',
@@ -128,17 +129,16 @@ angular.module('activity',
 			}
 		];
 		decodeActivityList($scope.activities);
-		/*
+		*/
 		activityService.list_activity(0, 50, function(result) {
 			if (result.ok) {
-				$scope.activities = result.data.entries;
-				this.decodeActivityList($scope.activities);
+				$scope.activities = result.data;
+				$scope.decodeActivityList($scope.activities);
 			} else {
 				// error condition
 				console.log("error loading activity")
 			}
 		});
-		*/
 		
 		
 		$scope.filterAllActivity = function() {

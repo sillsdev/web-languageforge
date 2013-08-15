@@ -17,5 +17,6 @@ require_once(APPPATH . 'helpers/loader_helper.php');
 
 define('SF_DATABASE', 'scriptureforge_test');
 define('SF_TESTPROJECT', 'Test Project');
+define('SF_TESTPROJECT2', 'Test Project2');
 
 ?>
