@@ -45,9 +45,28 @@ angular.module(
 		$scope.showAnswerEditor = function(answerId) {
 			$scope.openEditors.answerId = answerId;
 		};
+
+		$scope.$watch('openEditors.answerId', function(newval, oldval) {
+			if (newval === null || newval === undefined) {
+				// Skip; we're being called during initialization
+				return;
+			}
+
+			// Set up the values needed by the new editor
+			var answer = $scope.question.answers[newval];
+			if (angular.isUndefined(answer)) {
+				//console.log('Failed to find', newval, 'in', $scope.question.answers);
+				return;
+			}
+			$scope.editedAnswer = {
+				id: newval,
+				content: answer.content,
+				score: answer.score,
+				// Any other fields that should be copied? TODO: Find out. RM 2013-08
+			};
+		});
+
 		$scope.answerEditorVisible = function(answerId) {
-			console.log("openEditors:", $scope.openEditors);
-			console.log("answerId:", $scope.answerId);
 			return (answerId == $scope.openEditors.answerId);
 		};
 
@@ -55,8 +74,6 @@ angular.module(
 			$scope.openEditors.commentId = commentId;
 		};
 		$scope.commentEditorVisible = function(commentId) {
-			console.log("openEditors:", $scope.openEditors);
-			console.log("commentId:", $scope.commentId);
 			return (commentId == $scope.openEditors.commentId);
 		};
 		
@@ -76,12 +93,7 @@ angular.module(
 			});
 		};
 		
-		$scope.submitAnswer = function() {
-			var answer = {
-				'id':'',
-				'content': $scope.newAnswer.content
-			};
-				
+		$scope.updateAnswer = function(projectId, questionId, answer) {
 			questionService.update_answer(projectId, questionId, answer, function(result) {
 				if (result.ok) {
 					console.log('update_answer ok');
@@ -95,8 +107,19 @@ angular.module(
 			});
 		};
 
-		$scope.editAnswer = function() {
-			// Re-use a bunch of code from submitAnswer here
+		$scope.submitAnswer = function() {
+			var answer = {
+				'id':'',
+				'content': $scope.newAnswer.content
+			};
+			$scope.updateAnswer(projectId, questionId, answer);
+		};
+		
+		$scope.editAnswer = function(answer) {
+			// FIXME: Preserve ownership of answer. Currently if user A creates
+			// an answer and user B edits it later, the answer ends up being
+			// "by user B" in the question page. TODO: Fix later. RM 2013-08
+			$scope.updateAnswer(projectId, questionId, answer);
 		};
 		
 		$scope.answerDelete = function(answerId) {
