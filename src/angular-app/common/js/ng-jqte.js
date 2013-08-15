@@ -11,15 +11,19 @@ angular.module('palaso.ui.jqte', [])
 					return;
 				}
 				ngModelCtrl.$render = function() {
-					element.val(ngModelCtrl.$viewValue);
+					var phase = scope.$$phase;
+					console.log('render ', phase);
+					element.jqteVal(ngModelCtrl.$viewValue);
 				};
 				var options = scope[attrs.puiJqte] === undefined ? {} : scope[attrs.puiJqte];
 				options.change = function() {
-					var v = element.val();
-					console.log('change', v);
+					if (scope.$$phase == '$digest') {
+						return;
+					}
 					scope.$apply(read);
 				}; 
 				element.jqte(options);
+				read();
 				function read() {
 					ngModelCtrl.$setViewValue(element.val());
 				}
