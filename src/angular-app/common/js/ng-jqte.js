@@ -23,7 +23,7 @@ angular.module('palaso.ui.jqte', [])
 					scope.$apply(read);
 				}; 
 				element.jqte(options);
-				read();
+				//read(); // Leave this commented out, else the view will reset the model when initialized. CP 2013-08
 				function read() {
 					ngModelCtrl.$setViewValue(element.val());
 				}
