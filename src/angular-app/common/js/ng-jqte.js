@@ -23,7 +23,7 @@ angular.module('palaso.ui.jqte', [])
 					scope.$apply(read);
 				}; 
 				element.jqte(options);
-				read();
+				//read(); // If we do this, we end up clobbering our initial value. RM 2013-08
 				function read() {
 					ngModelCtrl.$setViewValue(element.val());
 				}
