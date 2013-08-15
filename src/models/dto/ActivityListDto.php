@@ -26,7 +26,22 @@ class ActivityListDto
 	public static function getActivityForProject($projectModel) {
 		$activityList = new ActivityListModel($projectModel);
 		$activityList->read();
+		
 		// turn userRefs into userArrays
+		foreach ($activityList->entries as &$a) {
+			$a['projectRef'] = ($a['projectRef']) ? $a['projectRef']->{'$id'} : '';
+			$a['textRef'] = ($a['textRef']) ? $a['textRef']->{'$id'} : '';
+			$a['questionRef'] = ($a['questionRef']) ? $a['questionRef']->{'$id'} : '';
+			$a['date'] = ($a['date']) ? $a['date']->sec : 0;
+			if ($a['userRef']) {
+				$user = new UserModel($a['userRef']->{'$id'});
+				$a['userRef'] = array(
+						'id' => $user->id->asString(),
+						'username' => $user->username,
+						'avatar_ref' => $user->avatar_ref
+				);
+			}
+		}
 		return $activityList;
 	}
 	
