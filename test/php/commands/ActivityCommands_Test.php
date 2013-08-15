@@ -12,28 +12,8 @@ class TestActivityCommands extends UnitTestCase {
 	{
 	}
 	
-	function testUpdateComment_ActivityExists() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-		
-		$project = $e->createProject(SF_TESTPROJECT);
-		$projectId = $project->id->asString();
-	}
-
-    function testUpdateAnswer_ActivityExists() {
-    }
-
-    function testAddText_ActivityExists() {
-    }
-
-    function testAddQuestion_ActivityExists() {
-    }
-
-    function testAddUserToProject_ActivityExists() {
-    }
-
-    function testUpdateScore_ActivityExists() {
-    }
+	/* See ActivityDto_Test.php for a single DTO test that covers all of the Activity Commands */
+	
 
 
 	

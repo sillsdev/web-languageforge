@@ -23,12 +23,12 @@ class ActivityCommands
 	 * @param string $answerId
 	 * @param CommentModel $commentModel
 	 */
-	public static function updateComment($projectModel, $questionId, $answerId, $commentModel) {
+	public static function updateComment($projectModel, $questionId, $answerId, $commentModel, $mode = "update") {
 		$activity = new ActivityModel($projectModel);
 		$question = new QuestionModel($projectModel, $questionId);
 		$answer = $question->answers->data[$answerId];
 		$text = new TextModel($projectModel, $question->textRef->asString());
-		$activity->action = ($commentModel->id->asString() == '') ? ActivityModel::ADD_COMMENT : ActivityModel::UPDATE_COMMENT;
+		$activity->action = ($mode == 'update') ? ActivityModel::UPDATE_COMMENT : ActivityModel::ADD_COMMENT;
 		$activity->userRef->id = $commentModel->userRef->id;
 		$activity->textRef->id = $text->id->asString();
 		$activity->questionRef->id = $questionId;
@@ -39,6 +39,10 @@ class ActivityCommands
 		$activity->write();
 	}
 	
+	public static function addComment($projectModel, $questionId, $answerId, $commentModel) {
+		ActivityCommands::updateComment($projectModel, $questionId, $answerId, $commentModel, "add");
+	}
+	
 	/**
 	 * 
 	 * @param ProjectModel $projectModel
@@ -46,11 +50,11 @@ class ActivityCommands
 	 * @param string $answerId
 	 * @param AnswerModel $answerModel
 	 */
-	public static function updateAnswer($projectModel, $questionId, $answerModel) {
+	public static function updateAnswer($projectModel, $questionId, $answerModel, $mode = "update") {
 		$activity = new ActivityModel($projectModel);
 		$question = new QuestionModel($projectModel, $questionId);
 		$text = new TextModel($projectModel, $question->textRef->asString());
-		$activity->action = ($answerModel->id->asString() == '') ? ActivityModel::ADD_ANSWER : ActivityModel::UPDATE_ANSWER;
+		$activity->action = ($mode == "update") ? ActivityModel::UPDATE_ANSWER : ActivityModel::ADD_ANSWER;
 		$activity->userRef->id = $answerModel->userRef->asString();
 		$activity->textRef->id = $text->id->asString();
 		$activity->questionRef->id = $questionId;
@@ -58,6 +62,10 @@ class ActivityCommands
 		$activity->addContent(ActivityModel::QUESTION, $question->title);
 		$activity->addContent(ActivityModel::ANSWER, $answerModel->content);
 		$activity->write();
+	}
+	
+	public static function addAnswer($projectModel, $questionId, $answerModel) {
+		ActivityCommands::updateAnswer($projectModel, $questionId, $answerModel, 'add');
 	}
 	
 	/**
