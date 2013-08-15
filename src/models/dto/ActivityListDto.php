@@ -27,20 +27,23 @@ class ActivityListDto
 		$activityList = new ActivityListModel($projectModel);
 		$activityList->read();
 		
+		function encodeUser($userIdRef) {
+			$user = new UserModel($userIdRef->{'$id'});
+			return array(
+					'id' => $user->id->asString(),
+					'username' => $user->username,
+					'avatar_ref' => $user->avatar_ref
+			);
+		}
+		
 		// turn userRefs into userArrays
 		foreach ($activityList->entries as &$a) {
 			$a['projectRef'] = ($a['projectRef']) ? $a['projectRef']->{'$id'} : '';
 			$a['textRef'] = ($a['textRef']) ? $a['textRef']->{'$id'} : '';
 			$a['questionRef'] = ($a['questionRef']) ? $a['questionRef']->{'$id'} : '';
 			$a['date'] = ($a['date']) ? $a['date']->sec : 0;
-			if ($a['userRef']) {
-				$user = new UserModel($a['userRef']->{'$id'});
-				$a['userRef'] = array(
-						'id' => $user->id->asString(),
-						'username' => $user->username,
-						'avatar_ref' => $user->avatar_ref
-				);
-			}
+			$a['userRef'] = ($a['userRef']) ? encodeUser($a['userRef']) : '';
+			$a['userRef2'] = ($a['userRef2']) ? encodeUser($a['userRef2']) : '';
 		}
 		return $activityList;
 	}

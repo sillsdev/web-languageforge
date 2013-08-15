@@ -26,10 +26,11 @@ class ActivityCommands
 	public static function updateComment($projectModel, $questionId, $answerId, $commentModel, $mode = "update") {
 		$activity = new ActivityModel($projectModel);
 		$question = new QuestionModel($projectModel, $questionId);
-		$answer = $question->answers->data[$answerId];
+		$answer = $question->readAnswer($answerId);
 		$text = new TextModel($projectModel, $question->textRef->asString());
 		$activity->action = ($mode == 'update') ? ActivityModel::UPDATE_COMMENT : ActivityModel::ADD_COMMENT;
 		$activity->userRef->id = $commentModel->userRef->id;
+		$activity->userRef2->id = $answer->userRef->id;
 		$activity->textRef->id = $text->id->asString();
 		$activity->questionRef->id = $questionId;
 		$activity->addContent(ActivityModel::TEXT, $text->title);
