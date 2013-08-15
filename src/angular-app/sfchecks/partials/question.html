@@ -25,9 +25,10 @@
 				<div>
 				<a class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>|<a ng-click="answerDelete(answerId)" class="btn-link">delete</a>
 				<ng-switch on="answerEditorVisible(answerId)">
-				<div ng-submit="editAnswer()" ng-switch-when="true">
-					Placeholder for the "edit your answer" form.
-				</div>
+				<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
+					<textarea ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
+					<button type="submit" class="btn">Save</button>
+				</form>
 				</ng-switch>
 				</div>
 			</div>
