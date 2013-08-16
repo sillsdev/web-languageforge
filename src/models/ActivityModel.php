@@ -145,6 +145,7 @@ class ActivityListModel extends \models\mapper\MapperListModel
 
 	public function __construct($projectModel)
 	{
+		$this->entries = new MapOf(function($data) { return new ActivityModel(); });
 		parent::__construct(
 			ActivityModelMongoMapper::connect($projectModel->databaseName()),
 			array('action' => array('$regex' => ''))
@@ -152,5 +153,7 @@ class ActivityListModel extends \models\mapper\MapperListModel
 	}
 	
 }
+
+
 
 ?>
