@@ -12,7 +12,10 @@ angular.module('activity',
 		$scope.decodeActivityList = function(items) {
 			for (var i =0; i < items.length; i++) {
 				if ('userRef' in items[i]) {
-					items[i].userProfileHref = linkService.user(items[i].userRef.id);
+					items[i].userHref = linkService.user(items[i].userRef.id);
+				}
+				if ('userRef2' in items[i]) {
+					items[i].userHref2 = linkService.user(items[i].userRef2.id);
 				}
 				if ('projectRef' in items[i]) {
 					items[i].projectHref = linkService.project(items[i].projectRef);
@@ -25,7 +28,6 @@ angular.module('activity',
 			}
 		}
 		
-		/*
 		$scope.activities = [
 			{
 				'type': 'global',
@@ -60,6 +62,31 @@ angular.module('activity',
 				'content': {
 					'project':'Island Creole',
 					'text':'Revelation 1'
+				}
+			},
+			{
+				'type': 'project',
+				'action': 'update_comment',
+				'date': 1375944400,
+				'userRef': {
+					'id': '123345',
+					'avatar_ref': '/images/avatar/HotPink-frog-128x128.png',
+					'username': 'Jon'
+				},
+				'userRef2': {
+					'id': '123345',
+					'avatar_ref': '/images/avatar/anonymoose.png',
+					'username': 'Chris'
+				},
+				'projectRef': '123445',
+				'textRef': '12345',
+				'questionRef':'12345',
+				'content': {
+					'project':'Jamaican Scripture',
+					'text':'Psalm 109',
+					'question': 'Please comment on the use of the word "man"',
+					'answer':'The word "man" is used too often in this context',
+					'comment': 'I agree',
 				}
 			},
 			{
@@ -109,6 +136,26 @@ angular.module('activity',
 			},
 			{
 				'type': 'project',
+				'action': 'update_answer',
+				'date': 1375943400,
+				'userRef': {
+					'id': '123345',
+					'avatar_ref': '/images/avatar/chocolate4-cow-128x128.png',
+					'username': 'James'
+				},
+				'projectRef': '123445',
+				'textRef': '12345',
+				'questionRef':'12345',
+				'content': {
+					'project':'Jamaican Scripture',
+					'text':'Psalm 109',
+					'question': 'Please comment on the use of the word "man"',
+					'answer':'The word "man" is used too often in this context',
+					'comment': 'I agree',
+				}
+			},
+			{
+				'type': 'project',
 				'action': 'increase_score',
 				'filter': 'me',
 				'date': 1375942526,
@@ -128,8 +175,8 @@ angular.module('activity',
 				}
 			}
 		];
-		decodeActivityList($scope.activities);
-		*/
+		$scope.decodeActivityList($scope.activities);
+		/*
 		activityService.list_activity(0, 50, function(result) {
 			if (result.ok) {
 				$scope.activities = result.data;
@@ -139,14 +186,18 @@ angular.module('activity',
 				console.log("error loading activity")
 			}
 		});
+		*/
+		$scope.showAllActivity = true;
 		
 		
 		$scope.filterAllActivity = function() {
+			$scope.showAllActivity = true;
 			console.log("filterAllActivity()");
 			
 		};
 		
 		$scope.filterMyActivity = function() {
+			$scope.showAllActivity = false;
 			console.log("filterMyActivity()");
 			
 		};
