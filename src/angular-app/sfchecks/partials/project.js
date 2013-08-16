@@ -94,7 +94,9 @@ angular.module(
 
 	}])
 	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', function($scope, $location, $routeParams) {
-		$scope.projectId = $routeParams.projectId;
+		var projectId = $routeParams.projectId;
+		$scope.projectId = projectId;
+		$scope.projectName = $routeParams.projectName;
 	}])
 	.controller('ProjectUsersCtrl', ['$scope', '$location', 'userService', 'projectService', function($scope, $location, userService, projectService) {
 		$scope.selected = [];
