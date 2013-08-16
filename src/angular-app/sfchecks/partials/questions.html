@@ -2,6 +2,7 @@
 <form class="control-bar form-inline">
 	<button class="btn" ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
 	<button class="btn" ng-click="newQuestionCollapsed = !newQuestionCollapsed"><i class="icon-plus"></i>Add New Question</button>
+	<a class="btn" href="#/project/{{projectName|urlencode}}/{{projectId}}/{{textName|urlencode}}/{{textId}}/settings"><i class="icon-cog"></i>Settings</a>
 </form>
 <div class="new-item" collapse="newQuestionCollapsed">
 	<form class="well">
