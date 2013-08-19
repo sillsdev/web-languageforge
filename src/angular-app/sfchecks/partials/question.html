@@ -42,7 +42,7 @@
 					<td>
 						<a ng-click="collapsed = !collapsed" class="btn btn-link">add comment</a>
 						<div collapse="!collapsed">
-						<form ng-submit="submitComment(answer.id); $(this).slideToggle()">
+						<form ng-submit="submitComment(answer); $(this).slideToggle()">
 							<textarea ng-model="newComment.content"></textarea><br/>
 							<button type="submit" class="btn btn-small">Add Comment</button>
 						</form>

@@ -242,7 +242,7 @@ class Sf
 	}
 	
 	public function question_update_comment($projectId, $questionId, $answerId, $comment) {
-		return QuestionCommands::updateComment($projectId, $questionId, $answerId, $comment);
+		return QuestionCommands::updateComment($projectId, $questionId, $answerId, $comment, $this->_userId);
 	}
 	
 	public function question_remove_comment($projectId, $questionId, $answerId, $commentId) {
