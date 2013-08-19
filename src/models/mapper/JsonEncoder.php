@@ -1,6 +1,8 @@
 <?php
 namespace models\mapper;
 
+use libraries\palaso\CodeGuard;
+
 class JsonEncoder {
 	
 	/**
@@ -133,10 +135,11 @@ class JsonEncoder {
 	public function encodeReferenceList($key, $model) {
 		// Note: $key may be used in derived methods
 		$result = array_map(
-				function($id) {
-			return MongoMapper::mongoID($id);
-		},
-		$model->refs
+			function($id) {
+				CodeGuard::checkTypeAndThrow($id, 'models\mapper\Id');
+				return $id->id;
+			},
+			$model->refs
 		);
 		return $result;
 	}
