@@ -124,7 +124,6 @@ class MongoDecoder extends JsonDecoder {
 	 */
 	public function decodeDateTime($key, $model, $data) {
 		CodeGuard::checkTypeAndThrow($data, 'MongoDate', CodeGuard::CHECK_NULL_OK);
-		$model = new \DateTime();
 		if ($data !== null) {
 			$model->setTimeStamp($data->sec);
 		}
