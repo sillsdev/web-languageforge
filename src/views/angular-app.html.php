@@ -3,7 +3,7 @@ require_once(APPPATH . "angular-app/$appName/ng-app.html");
 ?>
 	
 <script type="text/javascript">
-window.session = <?php echo $jsSessionVars; ?>
+window.session = <?php echo $jsonSession; ?>
 </script>
 	
 <script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
