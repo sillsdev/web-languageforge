@@ -271,11 +271,9 @@ div.three-col-2, div.three-col-3 {
 }
 
 hr {
-	width: auto;
 	height: 1px;
 	background-color: #dcdcdc;
 	border: 0;
-	margin: 20px 0;
 }
 
 /* Form Elements */
@@ -602,6 +600,10 @@ button i {
 	margin-right: 8px;
 }
 
+a i {
+	margin-right: 8px;
+}
+
 i.icon-remove {
 	color: #f66
 }
@@ -741,6 +743,11 @@ div#comments table.comments textarea {
 div#comments table.comments td {
 	border-top: 1px solid #eee;
 	border-bottom: 1px solid #eee;
+}
+
+/* New Item under ribbon bar */
+div.new-item form {
+	margin: 20px 0 0 0;
 }
 
 .activity-date {

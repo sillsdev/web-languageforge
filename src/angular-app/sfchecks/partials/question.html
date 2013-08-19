@@ -23,7 +23,13 @@
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
 				<div>
-				<a ngclass="btn-link">edit</a>|<a ng-click="answerDelete(answerId)" class="btn-link">delete</a>
+				<a class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>|<a ng-click="answerDelete(answerId)" class="btn-link">delete</a>
+				<ng-switch on="answerEditorVisible(answerId)">
+				<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
+					<textarea ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
+					<button type="submit" class="btn">Save</button>
+				</form>
+				</ng-switch>
 				</div>
 			</div>
 			<table class="comments">
