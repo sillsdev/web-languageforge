@@ -79,10 +79,10 @@ class MongoMapper
 	public function readListAsModels($model, $query, $fields = array()) {
 		$cursor = $this->_collection->find($query, $fields);
 		$data = array();
-		$data->count = $cursor->count();
-		$data->entries = array();
+		$data['count'] = $cursor->count();
+		$data['entries'] = array();
 		foreach ($cursor as $item) {
-			$data->entries[] = $item;
+			$data['entries'][(string)$item['_id']] = $item;
 		}
 		MongoDecoder::decode($model, $data);
 	}
