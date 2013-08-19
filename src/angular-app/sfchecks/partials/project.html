@@ -1,8 +1,10 @@
 <h2 style="font-weight:normal">Texts for {{projectName}}</h2>
-<p>
-<a ng-click="newTextCollapsed = !newTextCollapsed">Add New Text</a>
-</p>
-<div collapse="newTextCollapsed">
+<form class="control-bar form-inline">
+	<button class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
+	<button class="btn" ng-click="newTextCollapsed = !newTextCollapsed"><i class="icon-plus"></i>Add New Text</button>
+	<a class="btn" href="#/project/{{projectName|urlencode}}/{{projectId}}/settings"><i class="icon-cog"></i>Settings</a>
+</form>
+<div class="new-item" collapse="newTextCollapsed">
 	<form class="well">
 	<fieldset>
 	<label>Title</label>
@@ -14,11 +16,8 @@
 	</fieldset>
 	</form>
 </div>
-<div listview hide-if-empty="true" search="queryTexts()" items="texts" visible-items="visibleTexts" select="">
-<form class="control-bar form-inline">
-	<button class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
-</form>
 <hr />
+<div listview hide-if-empty="true" search="queryTexts()" items="texts" visible-items="visibleTexts" select="">
 <div ng-repeat="text in visibleTexts" class="details-row">
 	<ul class="inline" ng-class="{active: isSelected(text)}">
 		<li><input type="checkbox" ng-checked="isSelected(text)" ng-click="updateSelection($event, text)" /></li>
