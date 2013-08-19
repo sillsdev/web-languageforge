@@ -43,7 +43,7 @@ class QuestionAPITestEnvironment
 	}
 	
 	function dispose() {
-		$this->_api->project_delete($this->_projectIdAdded);
+		$this->_api->project_delete(array($this->_projectIdAdded));
 	}
 }
 
@@ -99,6 +99,9 @@ class TestQuestionAPI extends UnitTestCase {
  		// List to confirm delete
  		$result = $api->question_list($projectId, $textId);
 		$this->assertEqual($count, $result['count']);
+
+		// Clean up after ourselves
+		$e->dispose();
 	}
 	
 }
