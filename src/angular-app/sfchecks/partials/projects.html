@@ -1,5 +1,5 @@
 <h2 style="font-weight:normal">My Projects</h2>
-<form class="control-bar form-inline">
+<form ng-show="rights.project.deleteOther" class="control-bar form-inline">
 	<button class="btn" ng-click="removeProject()"><i class="icon-remove"></i>Remove Projects</button>
 	<button class="btn" ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Create New Project</button>
 </form>
@@ -13,7 +13,7 @@
 <div listview hide-if-empty="true" search="queryProjectsForUser()" items="projects" visible-items="visibleProjects" select="">
 	<div ng-repeat="project in visibleProjects" class="details-row">
 		<ul class="inline" ng-class="{active: isSelected(project)}">
-			<li><input type="checkbox" ng-checked="isSelected(project)" ng-click="updateSelection($event, project)" /></li>
+			<li ng-show="rights.project.deleteOther"><input type="checkbox" ng-checked="isSelected(project)" ng-click="updateSelection($event, project)" /></li>
 			<li><a href="#/project/{{project.projectname|urlencode}}/{{project.id}}">
 				<div class="attention-block">
 				<span style="font-size: 24px">{{getTextCount(project)}}</span><br />
