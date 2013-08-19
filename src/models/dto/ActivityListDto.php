@@ -115,6 +115,7 @@ class ActivityListDto
 	private static function prepareDto(&$dto) {
 		foreach ($dto['entries'] as &$item) {
 			$item['content'] = $item['actionContent'];
+			$item['type'] = 'project';
 			unset($item['actionContent']);
 		}
 	}
