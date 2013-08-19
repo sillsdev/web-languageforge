@@ -4,10 +4,15 @@ angular.module(
 		'sfchecks.project',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', function($scope, textService, $routeParams) {
+	.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 
+	                            function($scope, textService, $routeParams, ss) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
 		$scope.projectName = $routeParams.projectName;
+		// Rights
+		$scope.rights = {}
+		$scope.rights.project = {};
+		
 		// Listview Selection
 		$scope.newTextCollapsed = true;
 		$scope.selected = [];

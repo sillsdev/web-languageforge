@@ -1359,6 +1359,9 @@ class Ion_auth_mongodb_model extends CI_Model {
 
 		// Buildup user groups data array
 		$user = (object) $user[0];
+		if (empty($user->groups)) {
+			$user->groups = array();
+		}
 		foreach ($user->groups as $group_id)
 		{
 			$groups[] = $this->group($group_id)->document();
