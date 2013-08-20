@@ -48,6 +48,16 @@ class QuestionCommentDto
 		return $dto;
 	}
 	
+	/**
+	 * Encodes a $commentModel in the same method as returned by the 
+	 * @param CommentModel $commentModel
+	 * @return array - The DTO.
+	 */
+	public static function encodeComment($commentModel) {
+		$dto = QuestionCommentDtoEncoder::encode($commentModel);
+		return $dto;
+	}
+	
 }
 
 ?>
