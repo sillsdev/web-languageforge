@@ -1,4 +1,4 @@
-<h2 style="font-weight:normal">Questions for {{textName}}</h2>
+<h2 style="font-weight:normal">Questions for {{text.title}}</h2>
 <form ng-show="rights.showControlBar" class="control-bar form-inline">
 	<button ng-show="rights.deleteOther" class="btn" ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
 	<button ng-show="rights.create" class="btn" ng-click="newQuestionCollapsed = !newQuestionCollapsed"><i class="icon-plus"></i>Add New Question</button>
@@ -21,14 +21,14 @@
 <div ng-repeat="question in visibleQuestions" class="details-row">
 	<ul class="inline" ng-class="{active: isSelected(question)}">
 		<li ng-show="rights.deleteOther"><input type="checkbox" ng-checked="isSelected(question)" ng-click="updateSelection($event, question)" /></li>
-		<li><a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{textName|urlencode}}/{{textId}}/{{question.comment|urlencode}}/{{question.id}}">
+		<li><a href="{{question.url}}">
 			<div class="attention-block">
 				<span class="count">{{getAnswerCount(question)}}</span><br />
 				<span class="subtitle">answers</span>
 			</div>
 		</a></li>
 		<li>
-			<a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{textName|urlencode}}/{{textId}}/{{question.title|urlencode}}/{{question.id}}">
+			<a href="{{question.url}}">
 				<span class="larger-text">{{question.title}}</span>
 			</a>
 		</li>

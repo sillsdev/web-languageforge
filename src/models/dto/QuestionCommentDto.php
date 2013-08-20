@@ -2,11 +2,11 @@
 
 namespace models\dto;
 
-use models\UserModel;
-use models\TextModel;
-use models\mapper\JsonEncoder;
 use models\ProjectModel;
 use models\QuestionModel;
+use models\TextModel;
+use models\UserModel;
+use models\mapper\JsonEncoder;
 
 class QuestionCommentDto
 {
@@ -26,12 +26,12 @@ class QuestionCommentDto
 		
 		$textId = $questionModel->textRef->asString();
 		$textModel = new TextModel($projectModel, $textId);
-		$text = JsonEncoder::encode($textModel);
+		$text = 
 
 		$dto = array();
 		$dto['question'] = $question;
-		$dto['text'] = $text;
-		$dto['projectid'] = $projectId;
+		$dto['text'] = JsonEncoder::encode($textModel);
+		$dto['project'] = JsonEncoder::encode($projectModel);
 		$dto['rights'] = RightsHelper::encode($userModel, $projectModel);
 		
 		return $dto;
