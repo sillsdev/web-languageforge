@@ -52,11 +52,12 @@ class QuestionCommands
 		return $dto;
 	}
 	
-	public static function updateComment($projectId, $questionId, $answerId, $comment) {
+	public static function updateComment($projectId, $questionId, $answerId, $comment, $userId) {
 		$projectModel = new ProjectModel($projectId);
 		$commentModel = new CommentModel();
 		JsonDecoder::decode($commentModel, $comment);
-		ActivityCommands::updateComment($projectModel, $questionId, $answerId, $comment);
+		$commentModel->userRef->id = $userId;
+		ActivityCommands::updateComment($projectModel, $questionId, $answerId, $commentModel);
 		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
 		return QuestionModel::writeComment($projectModel->databaseName(), $questionId, $answerId, $commentModel);
 	}

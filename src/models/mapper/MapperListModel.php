@@ -46,6 +46,10 @@ class MapperListModel
 		return $this->_mapper->readList($this, $this->_query, $this->_fields);
 	}
 	
+	function readAsModels() {
+		return $this->_mapper->readListAsModels($this, $this->_query, $this->_fields);
+	}
+	
 }
 
 ?>

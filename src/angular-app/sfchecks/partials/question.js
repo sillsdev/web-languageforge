@@ -26,6 +26,7 @@ angular.module(
 
 		var projectId = $routeParams.projectId;
 		var questionId = $routeParams.questionId;
+		//var userId = sessionService.currentUserId(); // Currently unused.
 		questionService.read(projectId, questionId, function(result) {
 			if (result.ok) {
 				$scope.text = result.data.text;
@@ -85,10 +86,22 @@ angular.module(
 			content: ''
 		};
 		
-		$scope.submitComment = function(answerId, comment) {
-			questionService.update_comment(projectId, questionId, answerId, $scope.newComment, function(result) {
-				if (result.error) {
-					// TODO error condition
+		$scope.submitComment = function(answer, comment) {
+			var comment = {
+				'id':'',
+				'content': $scope.newComment.content,
+			};
+			questionService.update_comment(projectId, questionId, answer.id, comment, function(result) {
+				console.log('update_comment(', projectId, questionId, answer.id, comment, ')');
+				if (result.ok) {
+					console.log('update_comment ok');
+					console.log(result);
+					for (var id in result.data) {
+						answer.comments[id] = result.data[id];
+					}
+				} else {
+					console.log('update_comment ERROR');
+					console.log(result);
 				}
 			});
 		};
