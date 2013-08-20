@@ -42,7 +42,7 @@ class QuestionCommands
 		$answerModel = new AnswerModel();
 		JsonDecoder::decode($answerModel, $answer);
 		$answerModel->userRef->id = $userId;
-		//ActivityCommands::updateAnswer($projectModel, $questionId, $answerModel);
+		ActivityCommands::updateAnswer($projectModel, $questionId, $answerModel);
 		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
 		$answerId = QuestionModel::writeAnswer($projectModel->databaseName(), $questionId, $answerModel);
 		$answerDTO = QuestionCommentDto::encodeAnswer($answerModel);

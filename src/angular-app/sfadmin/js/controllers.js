@@ -96,6 +96,7 @@ function UserCtrl($scope, userService) {
 		var isNewRecord = false;
 		if (record.id === undefined) {
 			isNewRecord = true; // Will be used below
+			record.id = '';
 //			if (record.groups === undefined) {
 //				record.groups = [null]; // TODO: Should we put something into the form to allow setting gropus? ... Later, not now.
 //			}

@@ -1,5 +1,9 @@
 <?php
 
+use models\ProjectModel;
+
+use models\dto\ActivityListDto;
+
 use models\commands\ActivityCommands;
 
 use models\AnswerModel;
@@ -175,11 +179,15 @@ class Sf
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel);
 		JsonDecoder::decode($textModel, $object);
-		// TODO Enable activity when it works CP 2013-08
-// 		if ($textModel->id->id == '') {
-// 			ActivityCommands::addText($projectModel, $textModel);
-// 		}
-		return $textModel->write();
+		$add_text = false;
+ 		if ($textModel->id->asString() == '') {
+ 			$add_text = true;
+ 		}
+		$textId = $textModel->write();
+		if ($add_text) {
+ 			ActivityCommands::addText($projectModel, $textId, $textModel);
+		}
+ 		return $textId;
 	}
 	
 	public function text_read($projectId, $textId) {
@@ -210,9 +218,17 @@ class Sf
 	public function question_update($projectId, $object) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$questionModel = new \models\QuestionModel($projectModel);
+		$add_question = false;
+ 		if ($questionModel->id->asString() == '') {
+ 			$add_question = true;
+ 		}
 		// TODO Watch the decode below. QuestionModel contains a textRef which needs to be decoded correctly. CP 2013-07
 		JsonDecoder::decode($questionModel, $object);
-		return $questionModel->write();
+		$questionId = $questionModel->write();
+		if ($add_question) {
+			ActivityCommands::addQuestion($projectModel, $questionId, $questionModel);
+		}
+		return $questionId;
 	}
 	
 	public function question_read($projectId, $questionId) {
@@ -236,6 +252,21 @@ class Sf
 		return QuestionCommands::updateAnswer($projectId, $questionId, $answer, $this->_userId);
 	}
 	
+	public function question_update_answer_score($projectId, $questionId, $answerId, $score) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionModel = new QuestionModel($questionId);
+		$answerModel = $questionModel->readAnswer($answerId);
+		$lastScore = $answerModel->score;
+		$currentScore = intval($score);
+		$answerModel->score = $currentScore;
+		QuestionModel::writeAnswer($projectModel->databaseName(), $questionId, $answerModel);
+		if ($currentScore > $lastScore) {
+			ActivityCommands::updateScore($projectModel, $questionId, $answerId, $this->_userId, 'increase');
+		} else {
+			ActivityCommands::updateScore($projectModel, $questionId, $answerId, $this->_userId, 'decrease');
+		}
+	}
+	
 	public function question_remove_answer($projectId, $questionId, $answerId) {
 		$projectModel = new \models\ProjectModel($projectId);
 		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId);
@@ -256,6 +287,11 @@ class Sf
 	
 	public function question_list_dto($projectId, $textId) {
 		return \models\dto\QuestionListDto::encode($projectId, $textId);
+	}
+	
+	// ---------------- Activity Feed -----------------
+	public function activity_list_dto() {
+		return \models\dto\ActivityListDto::getActivityForUser($this->_userId);
 	}
 	
 }

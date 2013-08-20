@@ -76,6 +76,18 @@ class MongoMapper
 		return new \MongoId(); 
 	}
 	
+	public function readListAsModels($model, $query, $fields = array()) {
+		$cursor = $this->_collection->find($query, $fields);
+		$data = array();
+		$data['count'] = $cursor->count();
+		$data['entries'] = array();
+		foreach ($cursor as $item) {
+			$data['entries'][(string)$item['_id']] = $item;
+		}
+		MongoDecoder::decode($model, $data);
+	}
+	
+	
 	public function readList($model, $query, $fields = array()) {
 		$cursor = $this->_collection->find($query, $fields);
 		$model->count = $cursor->count();
@@ -88,6 +100,20 @@ class MongoMapper
 		}
 	}
 	
+	
+	/**
+	 * 
+	 * @param string $id
+	 */
+	public function exists($id) {
+		CodeGuard::checkTypeAndThrow($id, 'string');
+		$data = $this->_collection->findOne(array("_id" => self::mongoID($id)));
+		if ($data == NULL) {
+			return false;	
+		}
+		return true;
+	}
+	
 	/**
 	 * @param Object $model
 	 * @param string $id
@@ -96,7 +122,8 @@ class MongoMapper
 		CodeGuard::checkTypeAndThrow($id, 'string');
 		$data = $this->_collection->findOne(array("_id" => self::mongoID($id)));
 		if ($data === NULL) {
-			throw new \Exception("Could not find id '$id'");
+			$collection = (string)$this->_collection;
+			throw new \Exception("Could not find id '$id'in '$collection'");
 		}
 		try {
 			MongoDecoder::decode($model, $data, $id);
@@ -212,6 +239,7 @@ class MongoMapper
 		}
 		return $id;
 	}
+	
 	
 
 }
