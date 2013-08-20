@@ -4,7 +4,7 @@ angular.module(
 		'sfchecks.question',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.jqte', 'ui.bootstrap' ]
 	)
-	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', function($scope, $routeParams, questionService, sessionService) {
+	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', function($scope, $routeParams, questionService, sessionService, bcs) {
 		$scope.jqteOptions = {
 			'placeholder': 'Say what you think...',
 			'u': false,
@@ -30,6 +30,10 @@ angular.module(
 			if (result.ok) {
 				$scope.text = result.data.text;
 				$scope.question = result.data.question;
+				$scope.project = result.data.project;
+				bcs.updateMap('project', $scope.project.id, $scope.project.projectname);
+				bcs.updateMap('text', $scope.text.id, $scope.text.title);
+				bcs.updateMap('question', $scope.question.id, $scope.question.title);
 				// Keep track of answer count so we can show or hide "There are no answers" as appropriate
 				$scope.question.answerCount = Object.keys($scope.question.answers).length;
 			} else {

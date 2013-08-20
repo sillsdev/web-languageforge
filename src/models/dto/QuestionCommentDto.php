@@ -28,12 +28,12 @@ class QuestionCommentDto
 		
 		$textId = $questionModel->textRef->asString();
 		$textModel = new TextModel($projectModel, $textId);
-		$text = JsonEncoder::encode($textModel);
+		$text = 
 
 		$dto = array();
 		$dto['question'] = $question;
-		$dto['text'] = $text;
-		$dto['projectid'] = $projectId;
+		$dto['text'] = JsonEncoder::encode($textModel);
+		$dto['project'] = JsonEncoder::encode($projectModel);
 		
 		return $dto;
 	}
