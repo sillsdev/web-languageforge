@@ -140,10 +140,9 @@ angular.module('sf.services', ['jsonRpc'])
 				LOCK:         function() { return 6;}
 		};
 		
-		this.hasRight = function(realm, domain, operation) {
+		this.hasRight = function(rights, domain, operation) {
 			var right = domain() + operation();
-			var rightsArray = realm();
-			return rightsArray.indexOf(right) != -1;
+			return rights.indexOf(right) != -1;
 		};
 		
 		this.session = function() {

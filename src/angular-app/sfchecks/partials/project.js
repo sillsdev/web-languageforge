@@ -13,7 +13,7 @@ angular.module(
 		$scope.rights = {};
 		$scope.rights.deleteOther = false; 
 		$scope.rights.create = false; 
-		$scope.rights.editOther = ss.hasRight(ss.realm.SITE, ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
+		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
 		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 		
 		// Listview Selection
@@ -39,10 +39,10 @@ angular.module(
 				if (result.ok) {
 					$scope.texts = result.data.entries;
 					$scope.textsCount = result.data.count;
-					var realm = result.data.rights;
-					$scope.rights.deleteOther = ss.hasRight(realm, ss.domain.TEXTS, ss.operation.DELETE_OTHER); 
-					$scope.rights.create = ss.hasRight(realm, ss.domain.TEXTS, ss.operation.CREATE); 
-					$scope.rights.editOther = ss.hasRight(ss.realm.SITE, ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
+					var rights = result.data.rights;
+					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.DELETE_OTHER); 
+					$scope.rights.create = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE); 
+					$scope.rights.editOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
 					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 				}
 			});
