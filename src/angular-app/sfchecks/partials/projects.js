@@ -4,10 +4,10 @@ angular.module(
 		'sfchecks.projects',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', function($scope, projectService, ss) {
+	.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'linkService', function($scope, projectService, ss, linkService) {
 		// Rights
 		$scope.rights = {};
-		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE, ss.domain.PROJECTS, ss.operation.DELETE_OTHER); 
+		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.DELETE_OTHER); 
 		// Listview Selection
 		$scope.newProjectCollapsed = true;
 		$scope.selected = [];
@@ -30,6 +30,7 @@ angular.module(
 			projectService.list(function(result) {
 				if (result.ok) {
 					$scope.projects = result.data.entries;
+					$scope.enhanceDto($scope.projects);
 					$scope.projectCount = result.data.count;
 				}
 			});
@@ -91,6 +92,11 @@ angular.module(
 		$scope.getUnreadComments = function(project) {
 			return fakeData.unreadComments;
 		};
-
+		
+		$scope.enhanceDto = function(items) {
+			for (var i in items) {
+				items[i].url = linkService.project(items[i].id);
+			}
+		}
 	}])
 	;
