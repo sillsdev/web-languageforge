@@ -6,12 +6,6 @@ use libraries\palaso\CodeGuard;
 class JsonDecoder {
 	
 	/**
-	 * The current id being decoded
-	 * @var string
-	 */
-	protected $_id;
-	
-	/**
 	 * @param array $array
 `	 * @return bool
 	 */
@@ -37,7 +31,6 @@ class JsonDecoder {
 	 */
 	protected function _decode($model, $values, $id) {
 		CodeGuard::checkTypeAndThrow($values, 'array');
-		$this->_id = $id;
 		$properties = get_object_vars($model);
 		foreach ($properties as $key => $value) {
 			if (is_a($value, 'models\mapper\IdReference')) {
@@ -45,7 +38,7 @@ class JsonDecoder {
 					$this->decodeIdReference($key, $model, $values);
 				}
 			} else if (is_a($value, 'models\mapper\Id')) {
-			     $this->decodeId($key, $model, $values);
+			     $this->decodeId($key, $model, $values, $id);
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
 				if (array_key_exists($key, $values)) {
 					$this->decodeArrayOf($key, $model->$key, $values[$key]);
@@ -96,9 +89,9 @@ class JsonDecoder {
 	 * @param string $key
 	 * @param object $model
 	 * @param array $values
-	 * @param bool $isRootDocument
+	 * @param string $id
 	 */
-	public function decodeId($key, $model, $values) {
+	public function decodeId($key, $model, $values, $id) {
 		$model->$key = new Id($values[$key]);
 	}
 	
