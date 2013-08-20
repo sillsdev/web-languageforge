@@ -1,8 +1,8 @@
 <h2 style="font-weight:normal">Questions for {{textName}}</h2>
-<form class="control-bar form-inline">
-	<button class="btn" ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
-	<button class="btn" ng-click="newQuestionCollapsed = !newQuestionCollapsed"><i class="icon-plus"></i>Add New Question</button>
-	<a class="btn" href="#/project/{{projectName|urlencode}}/{{projectId}}/{{textName|urlencode}}/{{textId}}/settings"><i class="icon-cog"></i>Settings</a>
+<form ng-show="rights.showControlBar" class="control-bar form-inline">
+	<button ng-show="rights.deleteOther" class="btn" ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
+	<button ng-show="rights.create" class="btn" ng-click="newQuestionCollapsed = !newQuestionCollapsed"><i class="icon-plus"></i>Add New Question</button>
+	<a ng-show="rights.editOther" class="btn" href="#/project/{{projectName|urlencode}}/{{projectId}}/{{textName|urlencode}}/{{textId}}/settings"><i class="icon-cog"></i>Settings</a>
 </form>
 <div class="new-item" collapse="newQuestionCollapsed">
 	<form class="well">
@@ -20,7 +20,7 @@
 <div listview hide-if-empty="true" search="queryQuestions()" items="questions" visible-items="visibleQuestions" select="">
 <div ng-repeat="question in visibleQuestions" class="details-row">
 	<ul class="inline" ng-class="{active: isSelected(question)}">
-		<li><input type="checkbox" ng-checked="isSelected(question)" ng-click="updateSelection($event, question)" /></li>
+		<li ng-show="rights.deleteOther"><input type="checkbox" ng-checked="isSelected(question)" ng-click="updateSelection($event, question)" /></li>
 		<li><a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{textName|urlencode}}/{{textId}}/{{question.comment|urlencode}}/{{question.id}}">
 			<div class="attention-block">
 				<span class="count">{{getAnswerCount(question)}}</span><br />
