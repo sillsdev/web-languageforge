@@ -11,8 +11,8 @@ angular.module(
 		$scope.projectName = $routeParams.projectName;
 		// Rights
 		$scope.rights = {};
-		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE, ss.domain.TEXTS, ss.operation.DELETE_OTHER); 
-		$scope.rights.create = ss.hasRight(ss.realm.SITE, ss.domain.TEXTS, ss.operation.CREATE); 
+		$scope.rights.deleteOther = false; 
+		$scope.rights.create = false; 
 		$scope.rights.editOther = ss.hasRight(ss.realm.SITE, ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
 		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 		
@@ -39,6 +39,11 @@ angular.module(
 				if (result.ok) {
 					$scope.texts = result.data.entries;
 					$scope.textsCount = result.data.count;
+					var realm = result.data.rights;
+					$scope.rights.deleteOther = ss.hasRight(realm, ss.domain.TEXTS, ss.operation.DELETE_OTHER); 
+					$scope.rights.create = ss.hasRight(realm, ss.domain.TEXTS, ss.operation.CREATE); 
+					$scope.rights.editOther = ss.hasRight(ss.realm.SITE, ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
+					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 				}
 			});
 		};
