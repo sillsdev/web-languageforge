@@ -77,7 +77,7 @@ class TestQuestionCommentDto extends UnitTestCase {
 		$aid = $answerId;
 		$cid1 = $comment1Id;
 		$cid2 = $comment2Id;
-		$this->assertEqual($dto['projectid'], $project->id);
+		$this->assertEqual($dto['project']['id'], $project->id);
 		$this->assertEqual($dto['text']['content'], $text->content);
 		$this->assertEqual($dto['question']['id'], $questionId);
 		$this->assertEqual($dto['question']['title'], 'the question');
