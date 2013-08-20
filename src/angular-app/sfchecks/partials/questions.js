@@ -4,8 +4,8 @@ angular.module(
 		'sfchecks.questions',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('QuestionsCtrl', ['$scope', 'questionsService', '$routeParams', 'sessionService',
-	                              function($scope, questionsService, $routeParams, ss) {
+	.controller('QuestionsCtrl', ['$scope', 'questionsService', '$routeParams', 'sessionService', 'breadcrumbService',
+	                              function($scope, questionsService, $routeParams, ss, bcs) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
@@ -41,6 +41,14 @@ angular.module(
 				if (result.ok) {
 					$scope.questions = result.data.entries;
 					$scope.questionsCount = result.data.count;
+
+					$scope.enhanceDto($scope.questions);
+					$scope.text = result.data.text;
+					$scope.project = result.data.project;
+					$scope.text.url = linkService.text(projectId, textId);
+					bcs.updateMap('project', $scope.project.id, $scope.project.name);
+					bcs.updateMap('text', $scope.text.id, $scope.text.title);
+
 					var rights = result.data.rights;
 					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.DELETE_OTHER); 
 					$scope.rights.create = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE); 
@@ -106,6 +114,12 @@ angular.module(
 
 		$scope.getUnreadComments = function(question) {
 			return fakeData.unreadComments;
+		};
+		
+		$scope.enhanceDto = function(items) {
+			for (var i in items) {
+				items[i].url = linkService.question(projectId, textId, items[i].id);
+			}
 		};
 
 	}])

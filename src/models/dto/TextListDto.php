@@ -28,6 +28,9 @@ class TextListDto
 		$data = array();
 		$data['rights'] = RightsHelper::encode($userModel, $projectModel);
 		$data['count'] = $textList->count;
+		$data['project'] = array(
+				'name' => $projectModel->projectname,
+				'id' => $projectId);
 		$data['entries'] = array();
 		foreach ($textList->entries as $entry) {
 			$textModel = new TextModel($projectModel, $entry['id']);

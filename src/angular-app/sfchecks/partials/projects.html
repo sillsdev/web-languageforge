@@ -14,14 +14,14 @@
 	<div ng-repeat="project in visibleProjects" class="details-row">
 		<ul class="inline" ng-class="{active: isSelected(project)}">
 			<li ng-show="rights.deleteOther"><input type="checkbox" ng-checked="isSelected(project)" ng-click="updateSelection($event, project)" /></li>
-			<li><a href="#/project/{{project.projectname|urlencode}}/{{project.id}}">
+			<li><a href="{{project.url}}">
 				<div class="attention-block">
 				<span style="font-size: 24px">{{getTextCount(project)}}</span><br />
 					<span style=""> texts to check</span>
 				</div>
 			</a></li>
 			<li>
-				<a href="#/project/{{project.projectname|urlencode}}/{{project.id}}">
+				<a href="{{project.url}}">
 					<span class="larger-text">{{project.projectname}}</span>
 				</a>
 			</li>

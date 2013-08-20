@@ -155,16 +155,16 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		
 		this.project = function(projectId) {
-			return '/app/sfchecks#/project/projectName/' + projectId;
+			return '/app/sfchecks#/project/' + projectId;
 			
 		};
 		
 		this.text = function(projectId, textId) {
-			return this.project(projectId) + '/textName/' + textId;
+			return this.project(projectId) + "/" + textId;
 		};
 		
 		this.question = function(projectId, textId, questionId) {
-			return this.text(projectId, textId) + '/questionName/' + questionId;
+			return this.text(projectId, textId) + "/" + questionId;
 		};
 		
 		this.user = function(userId) {
