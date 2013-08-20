@@ -109,7 +109,7 @@ class ActivityListDto
 	}
 	
 	private static function sortActivity($a, $b) {
-		return ($a['date'] > $b['date']) ? 1 : -1;
+		return (new \DateTime($a['date']) < new \DateTime($b['date'])) ? 1 : -1;
 	}
 	
 	private static function prepareDto(&$dto) {

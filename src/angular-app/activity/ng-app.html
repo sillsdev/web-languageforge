@@ -155,6 +155,8 @@
 				
 			</ng-switch>
 		</div>
-		<div style="margin-top:50px" ng-show="filteredActivities.length == 0">No activity to show :(</div>
+			<div class="span12"><hr /></div>
+		<div class="span12 activity-row" style="margin-top:20px;text-align:center" ng-show="filteredActivities.length > 0 && true"><button disabled class="btn btn-primary">Show More Activity</button></div>
+		<div style="margin-top:50px" class="span12 activity-row" ng-show="filteredActivities.length == 0">No activity to show :(</div>
 	</div>
 </div>
