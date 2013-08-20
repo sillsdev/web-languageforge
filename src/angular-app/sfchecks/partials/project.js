@@ -44,7 +44,7 @@ angular.module(
 					$scope.project = result.data.project;
 					$scope.project.url = linkService.project(projectId);
 					bcs.updateMap('project', $scope.project.id, $scope.project.name);
-					
+
 					var rights = result.data.rights;
 					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.DELETE_OTHER); 
 					$scope.rights.create = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE); 
@@ -118,10 +118,16 @@ angular.module(
 		};
 
 	}])
-	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', function($scope, $location, $routeParams) {
+	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 
+	                                    function($scope, $location, $routeParams, ss, bcs, linkService) {
 		var projectId = $routeParams.projectId;
-		$scope.projectId = projectId;
-		$scope.projectName = $routeParams.projectName;
+		$scope.project = {};
+		console.log("project id", projectId);
+		console.log("bcs", bcs.idmap);
+		$scope.project.id = projectId;
+		if (bcs.idmap[projectId] != undefined) {
+			$scope.project.name = bcs.idmap[projectId].name;			
+		}
 	}])
 	.controller('ProjectUsersCtrl', ['$scope', '$location', 'userService', 'projectService', function($scope, $location, userService, projectService) {
 		$scope.selected = [];
@@ -140,7 +146,7 @@ angular.module(
 		
 		$scope.users = [];
 		$scope.queryProjectUsers = function() {
-			projectService.listUsers($scope.projectId, function(result) {
+			projectService.listUsers($scope.project.id, function(result) {
 				if (result.ok) {
 					$scope.projectUsers = result.data.entries;
 					$scope.projectUserCount = result.data.count;
