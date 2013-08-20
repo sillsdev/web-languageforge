@@ -26,12 +26,26 @@ angular.module('sfchecks',
     		}
     	);
 	    $routeProvider.when(
+	    		'/project/:projectName/:projectId/settings', 
+	    		{
+	    			templateUrl: '/angular-app/sfchecks/partials/project-settings.html', 
+	    			controller: 'ProjectSettingsCtrl'
+	    		}
+	    	);
+	    $routeProvider.when(
     		'/project/:projectName/:projectId/:textName/:textId', 
     		{
     			templateUrl: '/angular-app/sfchecks/partials/questions.html', 
     			controller: 'QuestionsCtrl'
     		}
     	);
+	    $routeProvider.when(
+	    		'/project/:projectName/:projectId/:textName/:textId/settings', 
+	    		{
+	    			templateUrl: '/angular-app/sfchecks/partials/questions-settings.html', 
+	    			controller: 'QuestionsSettingsCtrl'
+	    		}
+	    	);
 	    $routeProvider.when(
     		'/project/:projectName/:projectId/:textName/:textId/:questionName/:questionId',
     		{

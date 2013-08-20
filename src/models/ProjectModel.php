@@ -2,6 +2,7 @@
 
 namespace models;
 
+use models\rights\Realm;
 use models\rights\Roles;
 use models\rights\ProjectRoleModel;
 use models\mapper\MapOf;
@@ -93,7 +94,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public function hasRight($userId, $right) {
 		$role = $this->users->data[$userId]->role;
-		$result = Roles::hasRight($role, $right);
+		$result = Roles::hasRight(Realm::PROJECT, $role, $right);
 		return $result;
 	}
 	
@@ -104,7 +105,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public function getRightsArray($userId) {
 		$role = $this->users->data[$userId]->role;
-		$result = Roles::getRightsArray($role);
+		$result = Roles::getRightsArray(Realm::PROJECT, $role);
 		return $result;
 	}
 	

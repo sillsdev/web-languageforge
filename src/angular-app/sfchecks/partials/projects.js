@@ -4,7 +4,10 @@ angular.module(
 		'sfchecks.projects',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('ProjectsCtrl', ['$scope', 'projectService', function($scope, projectService) {
+	.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', function($scope, projectService, ss) {
+		// Rights
+		$scope.rights = {};
+		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE, ss.domain.PROJECTS, ss.operation.DELETE_OTHER); 
 		// Listview Selection
 		$scope.newProjectCollapsed = true;
 		$scope.selected = [];
@@ -75,19 +78,19 @@ angular.module(
 		$scope.getTextCount = function(project) {
 			// return projects.texts.count;
 			return project.textCount;
-		}
+		};
 
 		$scope.getViewsCount = function(project) {
 			return fakeData.viewsCount;
-		}
+		};
 
 		$scope.getUnreadAnswers = function(project) {
 			return fakeData.unreadAnswers;
-		}
+		};
 
 		$scope.getUnreadComments = function(project) {
 			return fakeData.unreadComments;
-		}
+		};
 
 	}])
 	;

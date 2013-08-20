@@ -2,6 +2,10 @@
 
 namespace models;
 
+use models\rights\Roles;
+
+use models\mapper\IdReference;
+
 use models\mapper\MongoMapper;
 
 use models\mapper\Id;
@@ -74,7 +78,7 @@ class UserModel extends \models\mapper\MapperModel
 	}
 	
 	/**
-	 * @var string
+	 * @var IdReference
 	 */
 	public $id;
 	
@@ -82,7 +86,6 @@ class UserModel extends \models\mapper\MapperModel
 	 * @var string
 	 */
 	public $name;
-	
 	
 	/**
 	 * @var string
@@ -93,6 +96,12 @@ class UserModel extends \models\mapper\MapperModel
 	 * @var string
 	 */
 	public $email;
+	
+	/**
+	 * @var string
+	 * @see Roles
+	 */
+	public $role;
 	
 	//public $groups;
 	

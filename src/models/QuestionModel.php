@@ -81,6 +81,27 @@ class QuestionModel extends \models\mapper\MapperModel
 	}
 	
 	/**
+	 * Reads an answer model for a question
+	 * @param string $answerId
+	 * @return AnswerModel
+	 * 
+	 */
+	public function readAnswer($answerId) {
+		return $this->answers->data[$answerId];
+	}
+	
+	/**
+	 * 
+	 * @param string $answerId
+	 * @param string $commentId
+	 * @return CommentModel
+	 */
+	public function readComment($answerId, $commentId) {
+		$answer = $this->answers->data[$answerId];
+		return $answer->comments->data[$commentId];
+	}
+	
+	/**
 	 * Removes an answer from the given question.
 	 * @param string $databaseName
 	 * @param string $questionId
