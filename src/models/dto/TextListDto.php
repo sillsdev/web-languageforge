@@ -2,6 +2,8 @@
 
 namespace models\dto;
 
+use models\UserModel;
+
 use models\ProjectModel;
 
 use models\TextListModel;
@@ -14,14 +16,17 @@ class TextListDto
 	/**
 	 *
 	 * @param string $projectId
+	 * @param string $userId
 	 * @returns array - the DTO array
 	 */
-	public static function encode($projectId) {
+	public static function encode($projectId, $userId) {
+		$userModel = new UserModel($userId);
 		$projectModel = new ProjectModel($projectId);
 		$textList = new TextListModel($projectModel);
 		$textList->read();
 
 		$data = array();
+		$data['rights'] = RightsHelper::encode($userModel, $projectModel);
 		$data['count'] = $textList->count;
 		$data['entries'] = array();
 		foreach ($textList->entries as $entry) {
