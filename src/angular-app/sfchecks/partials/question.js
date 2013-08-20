@@ -28,6 +28,7 @@ angular.module(
 		var questionId = $routeParams.questionId;
 		//var userId = sessionService.currentUserId(); // Currently unused.
 		questionService.read(projectId, questionId, function(result) {
+			console.log('questionService.read(', projectId, questionId, ') =>', result)
 			if (result.ok) {
 				$scope.text = result.data.text;
 				$scope.question = result.data.question;
@@ -86,19 +87,22 @@ angular.module(
 			content: ''
 		};
 		
-		$scope.submitComment = function(answer, comment) {
-			var comment = {
-				'id':'',
-				'content': $scope.newComment.content,
+		$scope.submitComment = function(answerId, answer) {
+			console.log('submitComment(', answerId, answer, ')');
+			var newComment = {
+				id: '',
+				content: $scope.newComment.content,
 			};
-			questionService.update_comment(projectId, questionId, answer.id, comment, function(result) {
-				console.log('update_comment(', projectId, questionId, answer.id, comment, ')');
+			questionService.update_comment(projectId, questionId, answerId, newComment, function(result) {
+				console.log('update_comment(', projectId, questionId, answerId, newComment, ')');
 				if (result.ok) {
 					console.log('update_comment ok');
 					console.log(result);
-					for (var id in result.data) {
-						answer.comments[id] = result.data[id];
-					}
+					console.log("Comment object before setting ID:", newComment);
+					newComment.id = result.data;
+					console.log("Comment object after setting ID:", newComment);
+					$scope.question.answers[answerId][newComment.id] = newComment; // TODO: Find out why this doesn't update the DOM properly. RM 2013-08
+					$scope.question.answerCount = Object.keys($scope.question.answers).length;
 				} else {
 					console.log('update_comment ERROR');
 					console.log(result);

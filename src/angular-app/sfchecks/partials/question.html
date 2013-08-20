@@ -18,7 +18,9 @@
 			</div>
 		</td>
 		<td>
-			<div class="answer">{{answer.content}}
+			<div class="answer"><!--<b>DEBUG:</b>answerId = {{answerId}}, answer.id = {{answer.id}}<br/>-->
+				<!--<b>DEBUG:</b>answer = {{answer}}<br/>-->
+				{{answer.content}}
 				<div class="by">
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
@@ -42,7 +44,7 @@
 					<td>
 						<a ng-click="collapsed = !collapsed" class="btn btn-link">add comment</a>
 						<div collapse="!collapsed">
-						<form ng-submit="submitComment(answer); $(this).slideToggle()">
+						<form ng-submit="submitComment(answerId, answer); $(this).slideToggle()">
 							<textarea ng-model="newComment.content"></textarea><br/>
 							<button type="submit" class="btn btn-small">Add Comment</button>
 						</form>
