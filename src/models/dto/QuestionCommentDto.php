@@ -2,15 +2,11 @@
 
 namespace models\dto;
 
-use models\UserModel;
-
-use models\TextModel;
-
-use models\mapper\JsonEncoder;
-
 use models\ProjectModel;
-
 use models\QuestionModel;
+use models\TextModel;
+use models\UserModel;
+use models\mapper\JsonEncoder;
 
 class QuestionCommentDto
 {
@@ -18,9 +14,11 @@ class QuestionCommentDto
 	 * Encodes a QuestionModel and related data for $questionId
 	 * @param string $projectId
 	 * @param string $questionId
+	 * @param string $userId
 	 * @return array - The DTO.
 	 */
-	public static function encode($projectId, $questionId) {
+	public static function encode($projectId, $questionId, $userId) {
+		$userModel = new UserModel($userId);
 		$projectModel = new ProjectModel($projectId);
 		
 		$questionModel = new QuestionModel($projectModel, $questionId);
@@ -28,12 +26,13 @@ class QuestionCommentDto
 		
 		$textId = $questionModel->textRef->asString();
 		$textModel = new TextModel($projectModel, $textId);
-		$text = JsonEncoder::encode($textModel);
+		$text = 
 
 		$dto = array();
 		$dto['question'] = $question;
-		$dto['text'] = $text;
-		$dto['projectid'] = $projectId;
+		$dto['text'] = JsonEncoder::encode($textModel);
+		$dto['project'] = JsonEncoder::encode($projectModel);
+		$dto['rights'] = RightsHelper::encode($userModel, $projectModel);
 		
 		return $dto;
 	}

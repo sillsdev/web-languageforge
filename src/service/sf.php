@@ -39,7 +39,7 @@ class Sf
 		$this->_userId = (string)$controller->session->userdata('user_id');
 
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
-// 		ini_set('display_errors', 0);
+ 		ini_set('display_errors', 0);
 	}
 	
 	//---------------------------------------------------------------
@@ -208,7 +208,7 @@ class Sf
 	}
 	
 	public function text_list_dto($projectId) {
-		return \models\dto\TextListDto::encode($projectId);
+		return \models\dto\TextListDto::encode($projectId, $this->_userId);
 	}
 	
 	//---------------------------------------------------------------
@@ -282,11 +282,11 @@ class Sf
 	}
 	
 	public function question_comment_dto($projectId, $questionId) {
-		return \models\dto\QuestionCommentDto::encode($projectId, $questionId);
+		return \models\dto\QuestionCommentDto::encode($projectId, $questionId, $this->_userId);
 	}
 	
 	public function question_list_dto($projectId, $textId) {
-		return \models\dto\QuestionListDto::encode($projectId, $textId);
+		return \models\dto\QuestionListDto::encode($projectId, $textId, $this->_userId);
 	}
 	
 	// ---------------- Activity Feed -----------------
