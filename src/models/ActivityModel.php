@@ -51,6 +51,8 @@ class ActivityModel extends \models\mapper\MapperModel
 	const QUESTION = 'question';
 	const ANSWER = 'answer';
 	const COMMENT = 'comment';
+	const USER = 'user';
+	const USER2 = 'user2';
 	
 	/**
 	 * 
@@ -63,6 +65,7 @@ class ActivityModel extends \models\mapper\MapperModel
 		$this->textRef = new IdReference();
 		$this->questionRef = new IdReference();
 		$this->userRef = new IdReference();
+		$this->userRef2 = new IdReference();
 		$this->action = $this::UNKNOWN;
 		$this->date = new \DateTime(); // set the timestamp to now
 		$this->actionContent = new MapOf(); // strings
@@ -113,6 +116,12 @@ class ActivityModel extends \models\mapper\MapperModel
 	
 	/**
 	 * 
+	 * @var IdReference
+	 */
+	public $userRef2;
+	
+	/**
+	 * 
 	 * @var string 
 	 */
 	// TODO add broadcast_message as an action on a GlobalActivityModel class cjh 2013-08
@@ -136,15 +145,17 @@ class ActivityModel extends \models\mapper\MapperModel
 class ActivityListModel extends \models\mapper\MapperListModel
 {
 
-	public function __construct($projectModel, $textId)
+	public function __construct($projectModel)
 	{
+		$this->entries = new MapOf(function($data) use ($projectModel) { return new ActivityModel($projectModel); });
 		parent::__construct(
 			ActivityModelMongoMapper::connect($projectModel->databaseName()),
-			array('title' => array('$regex' => ''), 'textRef' => MongoMapper::mongoID($textId)),
-			array('title')
+			array('action' => array('$regex' => ''))
 		);
 	}
 	
 }
+
+
 
 ?>

@@ -34,6 +34,7 @@ class ProjectUserCommands {
 			// No key, so create a new user.
 			$user = new \models\UserModel();
 			$user->name = $object['name'];
+			$user->username = strtolower(str_replace(' ', '.', $user->name));
 			// TODO passwords, how to notify, email? CP 2013-07
 			$userId = $user->write();
 		} else {
@@ -42,6 +43,7 @@ class ProjectUserCommands {
 		// Add the user to the project.
 		assert($userId != null);
 		LinkCommands::LinkUserAndProject($this->_projectModel, new \models\UserModel($userId));
+		ActivityCommands::addUserToProject($this->_projectModel, $userId);
 		return $userId;
 	}
 

@@ -33,6 +33,19 @@ class TestMongoDateMapper extends UnitTestCase {
 		
 	}
 	
+	function testEncodeDecode_HistoricalDate_Same() {
+		$model = new TestMongoDateModel();
+		$model->date = new DateTime('2001-01-01');
+		$encoded = MongoEncoder::encode($model);
+ 		$this->assertIsA($encoded['date'], 'MongoDate');
+		
+		$otherModel = new TestMongoDateModel();
+		MongoDecoder::decode($otherModel, $encoded);
+		$iso8601 = $otherModel->date->format(DateTime::ISO8601);
+		$this->assertEqual($model->date, $otherModel->date);
+		
+	}
+	
 }
 
 ?>

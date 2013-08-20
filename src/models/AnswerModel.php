@@ -13,6 +13,7 @@ class AnswerModel extends CommentModel
 				return new CommentModel();
 			}
 		);
+		$this->score = 0;
 	}
 	
 	public function fixDecode() {
