@@ -101,8 +101,7 @@ angular.module(
 					console.log("Comment object before setting ID:", newComment);
 					newComment.id = result.data;
 					console.log("Comment object after setting ID:", newComment);
-					$scope.question.answers[answerId][newComment.id] = newComment; // TODO: Find out why this doesn't update the DOM properly. RM 2013-08
-					$scope.question.answerCount = Object.keys($scope.question.answers).length;
+					$scope.question.answers[answerId].comments[newComment.id] = newComment;
 				} else {
 					console.log('update_comment ERROR');
 					console.log(result);
