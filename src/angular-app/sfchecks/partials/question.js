@@ -97,9 +97,12 @@ angular.module(
 				console.log('update_comment(', projectId, questionId, answerId, newComment, ')');
 				if (result.ok) {
 					console.log('update_comment ok');
-					console.log(result);
+					console.log('Result:', result);
+					console.log('Result.data.id:', result.data.id);
 					console.log("Comment object before setting ID:", newComment);
-					newComment.id = result.data;
+					for (var id in result.data) {
+						newComment = result.data[id]; // There should be one, and only one, record in result.data
+					}
 					console.log("Comment object after setting ID:", newComment);
 					$scope.question.answers[answerId].comments[newComment.id] = newComment;
 				} else {

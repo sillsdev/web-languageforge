@@ -59,7 +59,12 @@ class QuestionCommands
 		$commentModel->userRef->id = $userId;
 		ActivityCommands::updateComment($projectModel, $questionId, $answerId, $commentModel);
 		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
-		return QuestionModel::writeComment($projectModel->databaseName(), $questionId, $answerId, $commentModel);
+		$commentId = QuestionModel::writeComment($projectModel->databaseName(), $questionId, $answerId, $commentModel);
+		$commentDTO = QuestionCommentDto::encodeComment($commentModel);
+
+		$dto = array();
+		$dto[$commentId] = $commentDTO;
+		return $dto;
 	}
 	
 }
