@@ -16,7 +16,7 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		this.changePassword = function(id, password, callback) {
 			jsonRpc.call('change_password', [id, password], callback);
-		}
+		};
 		this.list = function(callback) {
 			// TODO Paging CP 2013-07
 			jsonRpc.call('user_list', [], callback);
@@ -26,7 +26,7 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		this.changePassword = function(userId, newPassword, callback) {
 			jsonRpc.call('change_password', [userId, newPassword], callback);
-		}
+		};
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
@@ -116,7 +116,34 @@ angular.module('sf.services', ['jsonRpc'])
 	}])
 	.service('sessionService', function() {
 		this.currentUserId = function() {
-			return window.session.userid;
+			return window.session.userId;
+		};
+		
+		this.realm = {
+			SITE: function() { return window.session.userSiteRights; }
+		};
+		this.domain = {
+				ANY:       function() { return 100;},
+				USERS:     function() { return 110;},
+				PROJECTS:  function() { return 120;},
+				TEXTS:     function() { return 130;},
+				QUESTIONS: function() { return 140;},
+				ANSWERS:   function() { return 150;},
+				COMMENTS:  function() { return 160;}
+		};
+		this.operation = {
+				CREATE:       function() { return 1;},
+				EDIT_OWN:     function() { return 2;},
+				EDIT_OTHER:   function() { return 3;},
+				DELETE_OWN:   function() { return 4;},
+				DELETE_OTHER: function() { return 5;},
+				LOCK:         function() { return 6;}
+		};
+		
+		this.hasRight = function(realm, domain, operation) {
+			var right = domain() + operation();
+			var rightsArray = realm();
+			return rightsArray.indexOf(right) != -1;
 		};
 		
 		this.session = function() {
@@ -131,18 +158,18 @@ angular.module('sf.services', ['jsonRpc'])
 		this.project = function(projectId) {
 			return '/app/sfchecks#/project/projectName/' + projectId;
 			
-		}
+		};
 		
 		this.text = function(projectId, textId) {
 			return this.project(projectId) + '/textName/' + textId;
-		}
+		};
 		
 		this.question = function(projectId, textId, questionId) {
 			return this.text(projectId, textId) + '/questionName/' + questionId;
-		}
+		};
 		
 		this.user = function(userId) {
 			return '/app/userprofile/' + userId;
-		}
+		};
 	})
 	;

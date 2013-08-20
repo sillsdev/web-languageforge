@@ -4,10 +4,18 @@ angular.module(
 		'sfchecks.project',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', function($scope, textService, $routeParams) {
+	.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 
+	                            function($scope, textService, $routeParams, ss) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
 		$scope.projectName = $routeParams.projectName;
+		// Rights
+		$scope.rights = {};
+		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE, ss.domain.TEXTS, ss.operation.DELETE_OTHER); 
+		$scope.rights.create = ss.hasRight(ss.realm.SITE, ss.domain.TEXTS, ss.operation.CREATE); 
+		$scope.rights.editOther = ss.hasRight(ss.realm.SITE, ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
+		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
+		
 		// Listview Selection
 		$scope.newTextCollapsed = true;
 		$scope.selected = [];
@@ -78,23 +86,25 @@ angular.module(
 
 		$scope.getQuestionCount = function(text) {
 			return text.questionCount;
-		}
+		};
 
 		$scope.getViewsCount = function(text) {
 			return fakeData.viewsCount;
-		}
+		};
 
 		$scope.getUnreadAnswers = function(text) {
 			return fakeData.unreadAnswers;
-		}
+		};
 
 		$scope.getUnreadComments = function(text) {
 			return fakeData.unreadComments;
-		}
+		};
 
 	}])
 	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', function($scope, $location, $routeParams) {
-		$scope.projectId = $routeParams.projectId;
+		var projectId = $routeParams.projectId;
+		$scope.projectId = projectId;
+		$scope.projectName = $routeParams.projectName;
 	}])
 	.controller('ProjectUsersCtrl', ['$scope', '$location', 'userService', 'projectService', function($scope, $location, userService, projectService) {
 		$scope.selected = [];
