@@ -1,10 +1,7 @@
 <?php
 use models\rights\Operation;
-
 use models\rights\Domain;
-
 use models\rights\Roles;
-
 use models\mapper\Id;
 use models\mapper\MongoStore;
 use models\UserModel;
@@ -175,12 +172,12 @@ class TestProjectModel extends UnitTestCase {
 	function testRemove_RemovesProject() {
 		$e = new MongoTestEnvironment();
 		$project = new ProjectModel($this->_someProjectId);
+		
+		$this->assertTrue($project->exists($this->_someProjectId));
+		
 		$project->remove();
 		
-		$e->inhibitErrorDisplay();
-		$this->expectException(new \Exception("Could not find id '$this->_someProjectId'"));
-		$project = new ProjectModel($this->_someProjectId);
-		$e->restoreErrorDisplay();
+		$this->assertFalse($project->exists($this->_someProjectId));
 	}
 	
 	function testDatabaseName_Ok() {

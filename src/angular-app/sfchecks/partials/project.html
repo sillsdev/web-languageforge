@@ -1,8 +1,8 @@
 <h2 style="font-weight:normal">Texts for {{projectName}}</h2>
-<form class="control-bar form-inline">
-	<button class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
-	<button class="btn" ng-click="newTextCollapsed = !newTextCollapsed"><i class="icon-plus"></i>Add New Text</button>
-	<a class="btn" href="#/project/{{projectName|urlencode}}/{{projectId}}/settings"><i class="icon-cog"></i>Settings</a>
+<form ng-show="rights.showControlBar" class="control-bar form-inline">
+	<button ng-show="rights.deleteOther" class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
+	<button ng-show="rights.create" class="btn" ng-click="newTextCollapsed = !newTextCollapsed"><i class="icon-plus"></i>Add New Text</button>
+	<a ng-show="rights.editOther" class="btn" href="#/project/{{projectName|urlencode}}/{{projectId}}/settings"><i class="icon-cog"></i>Settings</a>
 </form>
 <div class="new-item" collapse="newTextCollapsed">
 	<form class="well">
@@ -20,7 +20,7 @@
 <div listview hide-if-empty="true" search="queryTexts()" items="texts" visible-items="visibleTexts" select="">
 <div ng-repeat="text in visibleTexts" class="details-row">
 	<ul class="inline" ng-class="{active: isSelected(text)}">
-		<li><input type="checkbox" ng-checked="isSelected(text)" ng-click="updateSelection($event, text)" /></li>
+		<li ng-show="rights.deleteOther" ><input type="checkbox" ng-checked="isSelected(text)" ng-click="updateSelection($event, text)" /></li>
 		<li><a href="#/project/{{projectName|urlencode}}/{{projectId}}/{{text.title|urlencode}}/{{text.id}}">
 			<div class="attention-block">
 				<span class="count">{{getQuestionCount(text)}}</span><br />

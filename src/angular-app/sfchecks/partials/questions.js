@@ -97,4 +97,12 @@ angular.module(
 		}
 
 	}])
+	.controller('QuestionsSettingsCtrl', ['$scope', 'questionsService', '$routeParams', function($scope, questionsService, $routeParams) {
+		var projectId = $routeParams.projectId;
+		var textId = $routeParams.textId;
+		$scope.projectId = projectId;
+		$scope.textId = textId;
+		$scope.projectName = $routeParams.projectName;
+		$scope.textName = $routeParams.textName;
+	}])
 	;
