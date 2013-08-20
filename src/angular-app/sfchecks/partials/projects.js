@@ -7,7 +7,7 @@ angular.module(
 	.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', function($scope, projectService, ss) {
 		// Rights
 		$scope.rights = {};
-		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE, ss.domain.PROJECTS, ss.operation.DELETE_OTHER); 
+		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.DELETE_OTHER); 
 		// Listview Selection
 		$scope.newProjectCollapsed = true;
 		$scope.selected = [];
