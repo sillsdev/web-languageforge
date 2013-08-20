@@ -9,7 +9,7 @@
 	<div ng-controller="ActivityCtrl">
 		<div ng-show="activities.length > 0" style="margin-top:20px"><button class="btn" ng-disabled="showAllActivity" ng-click="filterAllActivity()">All Activity</button> <button class="btn" ng-disabled="!showAllActivity" ng-click="filterMyActivity()">Show Only My Activity</button></div>
 		
-		<div ng-show="activities.length > 0" ng-repeat="item in activities">
+		<div ng-show="filteredActivities.length > 0" ng-repeat="item in filteredActivities">
 			<ng-switch on="item.action + '-' + item.type">
 			
 			
@@ -155,6 +155,6 @@
 				
 			</ng-switch>
 		</div>
-		<div style="margin-top:50px" ng-show="activities.length == 0">You don't have any activity yet :(</div>
+		<div style="margin-top:50px" ng-show="filteredActivities.length == 0">No activity to show :(</div>
 	</div>
 </div>
