@@ -18,11 +18,7 @@ class App extends Secure_base {
 			$sessionData['userId'] = (string)$this->session->userdata('user_id');
 			$role = $this->_user->role;
 			if (empty($role)) {
-				if ($this->_user->username == 'admin') {
-					$role = Roles::SYSTEM_ADMIN;
-				} else {
-					$role = Roles::USER;
-				}
+				$role = Roles::USER;
 			}
 			$sessionData['userSiteRights'] = Roles::getRightsArray(Realm::SITE, $role);
 			$jsonSessionData = json_encode($sessionData);
