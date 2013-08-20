@@ -4,13 +4,20 @@ angular.module(
 		'sfchecks.questions',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('QuestionsCtrl', ['$scope', 'questionsService', '$routeParams', function($scope, questionsService, $routeParams) {
+	.controller('QuestionsCtrl', ['$scope', 'questionsService', '$routeParams', 'sessionService',
+	                              function($scope, questionsService, $routeParams, ss) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
 		$scope.textId = textId;
 		$scope.projectName = $routeParams.projectName;
 		$scope.textName = $routeParams.textName;
+		// Rights
+		$scope.rights = {};
+		$scope.rights.deleteOther = false; 
+		$scope.rights.create = false; 
+		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
+		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 		// Listview Selection
 		$scope.newQuestionCollapsed = true;
 		$scope.selected = [];
@@ -34,6 +41,11 @@ angular.module(
 				if (result.ok) {
 					$scope.questions = result.data.entries;
 					$scope.questionsCount = result.data.count;
+					var rights = result.data.rights;
+					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.DELETE_OTHER); 
+					$scope.rights.create = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE); 
+					$scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT_OTHER);
+					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 				}
 			});
 		};
@@ -82,19 +94,19 @@ angular.module(
 
 		$scope.getAnswerCount = function(question) {
 			return question.answerCount;
-		}
+		};
 
 		$scope.getViewsCount = function(question) {
 			return fakeData.viewsCount;
-		}
+		};
 
 		$scope.getUnreadAnswers = function(question) {
 			return fakeData.unreadAnswers;
-		}
+		};
 
 		$scope.getUnreadComments = function(question) {
 			return fakeData.unreadComments;
-		}
+		};
 
 	}])
 	.controller('QuestionsSettingsCtrl', ['$scope', 'questionsService', '$routeParams', function($scope, questionsService, $routeParams) {
