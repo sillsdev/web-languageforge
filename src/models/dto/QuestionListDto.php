@@ -3,6 +3,7 @@
 namespace models\dto;
 
 use models\ProjectModel;
+use models\TextModel;
 
 use models\QuestionAnswersListModel;
 
@@ -24,6 +25,13 @@ class QuestionListDto
 		$data = array();
 		$data['count'] = $questionList->count;
 		$data['entries'] = array();
+		$data['project'] = array(
+				'name' => $projectModel->projectname,
+				'id' => $projectId);
+		$textModel = new TextModel($projectModel, $textId);
+		$data['text'] = array(
+				'title' => $textModel->title,
+				'id' => $textId);
 		foreach ($questionList->entries as $questionData) {
 			// Just want answer count, not whole list
 			$questionData['answerCount'] = count($questionData['answers']);
