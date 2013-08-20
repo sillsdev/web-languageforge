@@ -25,12 +25,16 @@ class Roles {
 		
 		self::$_rights[Realm::SITE][Roles::SYSTEM_ADMIN] = $rights;
 		
+		// User
+		$rights = array();
+		$rights[] = Domain::USERS + Operation::EDIT_OWN;
+		self::$_rights[Realm::SITE][Roles::USER] = $rights;
+		
 		// ----------------------------------------------------------
 		// PROJECT REALM
 		// ----------------------------------------------------------
 		// User
 		$rights = array();
-		$rights[] = Domain::USERS + Operation::EDIT_OWN;
 		$rights[] = Domain::ANSWERS + Operation::CREATE;
 		$rights[] = Domain::ANSWERS + Operation::EDIT_OWN;
 		$rights[] = Domain::COMMENTS + Operation::CREATE;

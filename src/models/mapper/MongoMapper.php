@@ -122,7 +122,8 @@ class MongoMapper
 		CodeGuard::checkTypeAndThrow($id, 'string');
 		$data = $this->_collection->findOne(array("_id" => self::mongoID($id)));
 		if ($data === NULL) {
-			throw new \Exception("Could not find id '$id'");
+			$collection = (string)$this->_collection;
+			throw new \Exception("Could not find id '$id'in '$collection'");
 		}
 		try {
 			MongoDecoder::decode($model, $data, $id);

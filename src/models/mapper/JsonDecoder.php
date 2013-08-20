@@ -160,11 +160,7 @@ class JsonDecoder {
 		}
 		$refsArray = $data;
 		foreach ($refsArray as $objectId) {
-			if (!is_a($objectId, 'MongoId')) {
-				throw new \Exception(
-						"Invalid type '" . gettype($objectId) . "' in ref collection '$key'"
-				);
-			}
+			CodeGuard::checkTypeAndThrow($objectId, 'string');
 			array_push($model->refs, new Id((string)$objectId));
 		}
 	}
