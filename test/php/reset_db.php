@@ -80,6 +80,9 @@ class TestResetDb extends UnitTestCase {
 		$userList->read();
 		$userId = $userList->entries[0]['id'];
 		
+		if ($drop_old) {
+			$db->projects->drop();
+		}
 		$project = new ProjectModel();
 		$project->projectname = "jamaican project";
 		$project->addUser($userId);

@@ -749,3 +749,39 @@ div#comments table.comments td {
 div.new-item form {
 	margin: 20px 0 0 0;
 }
+
+.activity-date {
+	font-size:12px;
+}
+
+.activity-icon {
+	text-align:center;
+}
+
+.activity-content i.icon-quote-left {
+	font-size: 12px;
+	margin-left:5px;
+	position:relative;
+	top: -5px;
+}
+
+ .activity-content i.icon-quote-right {
+	font-size: 12px;
+	position:relative;
+	margin-right: 5px;
+	top: -5px;
+}
+
+.activity-content p {
+	margin-top:10px;
+}
+
+.activity-content hr {
+	margin: 5px 0 5px 0;
+}
+
+.activity-content .indented {
+	margin-left:20px;
+}
+
+

@@ -51,6 +51,8 @@ class ActivityModel extends \models\mapper\MapperModel
 	const QUESTION = 'question';
 	const ANSWER = 'answer';
 	const COMMENT = 'comment';
+	const USER = 'user';
+	const USER2 = 'user2';
 	
 	/**
 	 * 
@@ -145,6 +147,7 @@ class ActivityListModel extends \models\mapper\MapperListModel
 
 	public function __construct($projectModel)
 	{
+		$this->entries = new MapOf(function($data) use ($projectModel) { return new ActivityModel($projectModel); });
 		parent::__construct(
 			ActivityModelMongoMapper::connect($projectModel->databaseName()),
 			array('action' => array('$regex' => ''))
@@ -152,5 +155,7 @@ class ActivityListModel extends \models\mapper\MapperListModel
 	}
 	
 }
+
+
 
 ?>
