@@ -76,6 +76,18 @@ class MongoMapper
 		return new \MongoId(); 
 	}
 	
+	public function readListAsModels($model, $query, $fields = array()) {
+		$cursor = $this->_collection->find($query, $fields);
+		$data = array();
+		$data['count'] = $cursor->count();
+		$data['entries'] = array();
+		foreach ($cursor as $item) {
+			$data['entries'][(string)$item['_id']] = $item;
+		}
+		MongoDecoder::decode($model, $data);
+	}
+	
+	
 	public function readList($model, $query, $fields = array()) {
 		$cursor = $this->_collection->find($query, $fields);
 		$model->count = $cursor->count();

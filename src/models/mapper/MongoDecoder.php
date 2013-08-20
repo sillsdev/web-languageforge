@@ -34,15 +34,16 @@ class MongoDecoder extends JsonDecoder {
 	 * @param string $key
 	 * @param object $model
 	 * @param array $values
+	 * @param string $id
 	 * @throws \Exception
 	 */
-	public function decodeId($key, $model, $values) {
-		if (!empty($this->_id)) {
-			$model->$key->id = $this->_id;
+	public function decodeId($key, $model, $values, $id) {
+		if (!empty($id)) {
+			$model->$key->id = $id;
 		} else if (!empty($values[$key])) {
 			$model->$key->id = $values[$key];
 		} else {
-			throw new \Exception("Could not decode Id '$key'");
+			throw new \Exception("The id could not be decoded. Value not set in 'values' or 'id' for key '$key'");
 		}
 	}
 	
@@ -124,7 +125,6 @@ class MongoDecoder extends JsonDecoder {
 	 */
 	public function decodeDateTime($key, $model, $data) {
 		CodeGuard::checkTypeAndThrow($data, 'MongoDate', CodeGuard::CHECK_NULL_OK);
-		$model = new \DateTime();
 		if ($data !== null) {
 			$model->setTimeStamp($data->sec);
 		}

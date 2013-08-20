@@ -7,50 +7,50 @@
 		</ul>
 	</div>
 	<div ng-controller="ActivityCtrl">
-		<div><a href="#" ng-click="filterAllActivity()">All Activity</a> <a href="#" ng-click="filterMyActivity()">Show Only My Activity</a></div>
+		<div ng-show="activities.length > 0" style="margin-top:20px"><button class="btn" ng-disabled="showAllActivity" ng-click="filterAllActivity()">All Activity</button> <button class="btn" ng-disabled="!showAllActivity" ng-click="filterMyActivity()">Show Only My Activity</button></div>
 		
-		<div ng-show="activities.length > 0" ng-repeat="item in activities">
+		<div ng-show="filteredActivities.length > 0" ng-repeat="item in filteredActivities">
 			<ng-switch on="item.action + '-' + item.type">
 			
 			
 				<div ng-switch-when="add_comment-project" class="span12 activity-row">
 					<hr>
-					<div class="span1">
+					<div class="span1 activity-icon">
 					    <img width="50px" height="50px" ng-src="{{item.userRef.avatar_ref}}" />
 					</div>
 					<div class="span1 activity-date">
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span>{{item.userRef.username}} commented on {{item.userRef2.username}}'s answer to "<a href="{{item.questionHref}}">{{item.content.question}}</a>" on {{item.content.text}}</span>
+						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> commented on <a href="{{item.userHref2}}">{{item.userRef2.username}}'s</a> answer to <i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a><i class="icon-quote-right"></i> on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
 						<p class="indented">{{item.content.answer}}</p>
 						<hr />
-						<p class="indented">{{item.content.comment}} - <a href="{{item.userProfileHref}}">{{item.userRef.username}}</a></p>
+						<p class="indented">{{item.content.comment}} - <a href="{{item.userHref}}">{{item.userRef.username}}</a></p>
 					</div>
 				</div> 
 				
 				
 				<div ng-switch-when="update_comment-project" class="span12 activity-row">
 					<hr>
-					<div class="span1">
+					<div class="span1 activity-icon">
 					    <img width="50px" height="50px" ng-src="{{item.userRef.avatar_ref}}" />
 					</div>
 					<div class="span1 activity-date">
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span>{{item.userRef.username}} updated their comment on {{item.userRef2.username}}'s answer to "<a href="{{item.questionHref}}">{{item.content.question}}</a>" on {{item.content.text}}</span>
+						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> updated their comment on <a href="{{item.userHref2}}">{{item.userRef2.username}}'s</a> answer to <i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a> <i class="icon-quote-right"></i> on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
 						<p class="indented">{{item.content.answer}}</p>
 						<hr />
-						<p class="indented">{{item.content.comment}} - <a href="{{item.userProfileHref}}">{{item.userRef.username}}</a></p>
+						<p class="indented">{{item.content.comment}} - <a href="{{item.userHref}}">{{item.userRef.username}}</a></p>
 					</div>
 				</div> 
 				
 				
 				<div ng-switch-when="message-global" class="span12 activity-row">
 					<hr>
-					<div class="span1">
-						<div style="margin-left:5px"><i class="icon-warning-sign" style="font-size:3em"></i></div>
+					<div class="span1 activity-icon">
+						<i class="icon-warning-sign" style="font-size:3em"></i>
 					</div>
 					<div class="span1 activity-date">
 					    {{item.date|relativetime}}
@@ -63,43 +63,72 @@
 				
 				<div ng-switch-when="add_question-project" class="span12 activity-row">
 					<hr>
-					<div class="span1">
-						<div style="margin-left:5px"><i class="icon-question-sign" style="font-size:3em"></i></div>
+					<div class="span1 activity-icon">
+						<i class="icon-question-sign" style="font-size:3em"></i>
 					</div>
 					<div class="span1 activity-date">
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span>{{item.content.text}} has a new question in the {{item.content.project}} project:</span>
+						<span><a href="{{item.textHref}}">{{item.content.text}}</a> has a new question in the <a href="{{item.projectHref}}">{{item.content.project}}</a> project</span>
 						<p class="indented"><i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a> <i class="icon-quote-right"></i></p>
+					</div>
+				</div> 
+				
+				
+				<div ng-switch-when="add_user_to_project-project" class="span12 activity-row">
+					<hr>
+					<div class="span1 activity-icon">
+						<i class="icon-user" style="font-size:3em"></i>
+					</div>
+					<div class="span1 activity-date">
+					    {{item.date|relativetime}}
+					</div>
+					<div class="span8 activity-content">
+						<span><a href="{{item.userHref}}">{{item.content.user}}</a> is now a member of <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
 					</div>
 				</div> 
 				
 				
 				<div ng-switch-when="add_text-project" class="span12 activity-row">
 					<hr>
-					<div class="span1">
-						<div style="margin-left:5px"><i class="icon-file-text" style="font-size:3em"></i></div>
+					<div class="span1 activity-icon">
+						<i class="icon-file-text" style="font-size:3em"></i>
 					</div>
 					<div class="span1 activity-date">
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span>The {{item.content.project}} project has added a new text <a href="{{item.textHref}}">{{item.content.text}}</a></span>
+						<span>The <a href="{{item.projectHref}}">{{item.content.project}}</a> project has added <a href="{{item.textHref}}">{{item.content.text}}</a> for checking</span>
 					</div>
 				</div> 
 				
 				
 				<div ng-switch-when="add_answer-project" class="span12 activity-row">
 					<hr>
-					<div class="span1">
+					<div class="span1 activity-icon">
 					    <img width="50px" height="50px" ng-src="{{item.userRef.avatar_ref}}" />
 					</div>
 					<div class="span1 activity-date">
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span>{{item.userRef.username}} answered <i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a> <i class="icon-quote-right"></i> on {{item.content.text}}</span>
+						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> answered <i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a> <i class="icon-quote-right"></i> on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+						<p class="indented">{{item.content.answer}}</p>
+					</div>
+				</div> 
+				
+				
+				<div ng-switch-when="update_answer-project" class="span12 activity-row">
+					<hr>
+					<div class="span1 activity-icon">
+					    <img width="50px" height="50px" ng-src="{{item.userRef.avatar_ref}}" />
+					</div>
+					<div class="span1 activity-date">
+					    {{item.date|relativetime}}
+					</div>
+					<div class="span8 activity-content">
+						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> updated their answer to <i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a> <i class="icon-quote-right"></i> on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
 						<p class="indented">{{item.content.answer}}</p>
 					</div>
 				</div> 
@@ -107,14 +136,14 @@
 				
 				<div ng-switch-when="increase_score-project" class="span12 activity-row">
 					<hr>
-					<div class="span1">
-						<div style="margin-left:5px"><i class="icon-thumbs-up" style="font-size:3em"></i></div>
+					<div class="span1 activity-icon">
+						<i class="icon-thumbs-up" style="font-size:3em"></i>
 					</div>
 					<div class="span1 activity-date">
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span>{{item.userRef.username}} +1'd your answer to <i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a> <i class="icon-quote-right"></i> on {{item.content.text}}</span>
+						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> +1'd your answer to <i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a> <i class="icon-quote-right"></i> on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
 					</div>
 				</div> 
 				
@@ -126,6 +155,8 @@
 				
 			</ng-switch>
 		</div>
-		<div ng-show="activities.length == 0">You don't have any activities yet ... how did that happen?'</div>
+			<div class="span12"><hr /></div>
+		<div class="span12 activity-row" style="margin-top:20px;text-align:center" ng-show="filteredActivities.length > 0 && true"><button disabled class="btn btn-primary">Show More Activity</button></div>
+		<div style="margin-top:50px" class="span12 activity-row" ng-show="filteredActivities.length == 0">No activity to show :(</div>
 	</div>
 </div>
