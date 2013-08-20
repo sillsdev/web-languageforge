@@ -7,7 +7,7 @@ angular.module('activity',
 		 'ui.bootstrap',
 		 'activity.filters'
 		])
-	.controller('ActivityCtrl', ['$scope', 'activityPageService', 'linkService', function($scope, activityService, linkService) {
+	.controller('ActivityCtrl', ['$scope', 'activityPageService', 'linkService', 'sessionService', function($scope, activityService, linkService, sessionService) {
 		
 		$scope.decodeActivityList = function(items) {
 			for (var i =0; i < items.length; i++) {
@@ -28,6 +28,7 @@ angular.module('activity',
 			}
 		}
 		
+		/*
 		$scope.activities = [
 			{
 				'type': 'global',
@@ -176,30 +177,37 @@ angular.module('activity',
 			}
 		];
 		$scope.decodeActivityList($scope.activities);
-		/*
+		*/
 		activityService.list_activity(0, 50, function(result) {
 			if (result.ok) {
-				$scope.activities = result.data;
+				$scope.activities = [];
+				for (var key in result.data) {
+					$scope.activities.push(result.data[key]);
+				}
 				$scope.decodeActivityList($scope.activities);
+				$scope.filteredActivities = $scope.activities;
 			} else {
 				// error condition
-				console.log("error loading activity")
+				console.log("error loading activity");
 			}
 		});
-		*/
 		$scope.showAllActivity = true;
 		
 		
 		$scope.filterAllActivity = function() {
 			$scope.showAllActivity = true;
-			console.log("filterAllActivity()");
-			
+			$scope.filteredActivities = $scope.activities;
 		};
 		
 		$scope.filterMyActivity = function() {
 			$scope.showAllActivity = false;
-			console.log("filterMyActivity()");
-			
+			$scope.filteredActivities = [];
+			for (var i in $scope.activities) {
+				var a = $scope.activities[i];
+				if (a.userRef && a.userRef.id == sessionService.currentUserId() || a.userRef2 && a.userRef2.id == sessionService.currentUserId()) {
+					$scope.filteredActivities.push(a);
+				} 
+			}
 		};
 	}])
 	;
