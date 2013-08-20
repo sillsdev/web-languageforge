@@ -282,7 +282,7 @@ class Sf
 	}
 	
 	public function question_comment_dto($projectId, $questionId) {
-		return \models\dto\QuestionCommentDto::encode($projectId, $questionId);
+		return \models\dto\QuestionCommentDto::encode($projectId, $questionId, $this->_userId);
 	}
 	
 	public function question_list_dto($projectId, $textId) {
