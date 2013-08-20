@@ -77,6 +77,7 @@ class JsonDecoder {
 				$model->$key = $values[$key];
 			}
 		}
+		$this->_id = null;
 		$this->postDecode($model);
 	}
 	
