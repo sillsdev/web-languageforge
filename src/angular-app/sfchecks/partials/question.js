@@ -77,10 +77,23 @@ angular.module(
 			}
 			$scope.editedAnswer = {
 				id: newval,
+				comments: {},
 				content: answer.content,
+				//dateEdited: Date.now(), // Commented out for now because the model wasn't happy with a Javascript date. TODO: Figure out what format I should be passing this in. RM 2013-08
 				score: answer.score,
-				// Any other fields that should be copied? TODO: Find out. RM 2013-08
+				textHighlight: answer.textHighlight,
+				userRef: answer.userRef,
 			};
+			for (var id in answer.comments) {
+				var strippedComment = {};
+				var comment = answer.comments[id];
+				strippedComment.id = comment.id;
+				strippedComment.content = comment.content;
+				strippedComment.dateCreated = comment.dateCreated;
+				strippedComment.dateEdited = comment.dateEdited;
+				strippedComment.userRef = comment.userRef.userid;
+				$scope.editedAnswer.comments[id] = strippedComment;
+			}
 		});
 
 		$scope.answerEditorVisible = function(answerId) {
