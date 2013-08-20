@@ -23,6 +23,9 @@ class TextListDto
 
 		$data = array();
 		$data['count'] = $textList->count;
+		$data['project'] = array(
+				'name' => $projectModel->projectname,
+				'id' => $projectId);
 		$data['entries'] = array();
 		foreach ($textList->entries as $entry) {
 			$textModel = new TextModel($projectModel, $entry['id']);
