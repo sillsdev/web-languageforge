@@ -38,7 +38,7 @@ class TestCommentModel extends UnitTestCase {
 		// Create Answer
 		$answer = new AnswerModel();
 		$answer->content = 'Some answer';
-		$answerId = $question->writeAnswer($projectModel->databaseName(), $questionId, $answer);
+		$answerId = $question->writeAnswer($answer);
 		
 		// List
 		$question->read($questionId);
@@ -48,7 +48,7 @@ class TestCommentModel extends UnitTestCase {
 		// Create
 		$comment = new CommentModel();
 		$comment->content = 'Some comment';
-		$id = $question->writeComment($projectModel->databaseName(), $questionId, $answerId, $comment);
+		$id = QuestionModel::writeComment($projectModel->databaseName(), $questionId, $answerId, $comment);
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
 		$this->assertEqual(24, strlen($id));
