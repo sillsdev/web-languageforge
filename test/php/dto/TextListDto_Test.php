@@ -59,7 +59,7 @@ class TestTextListDto extends UnitTestCase {
 		$question3->textRef->id = $text2Id;
 		$question3Id = $question3->write();
 
-		$dto = TextListDto::encode($projectId);
+		$dto = TextListDto::encode($projectId, $user1Id);
 
 		// Now check that it all looks right
 		$this->assertEqual($dto['count'], 2);
