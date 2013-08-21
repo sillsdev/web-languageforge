@@ -8,7 +8,7 @@ require_once(SimpleTestPath . 'autorun.php');
 
 class TestJsonDateModel {
 	function __construct() {
-		$this->date = new DateTime('now');
+		$this->date = new DateTime('2013-08-01');
 	}
 	
 	public $date;
