@@ -77,7 +77,7 @@ class TestQuestionListDto extends UnitTestCase {
 		$comment1->userRef->id = $user2Id;
 		$comment1Id = QuestionModel::writeComment($project->databaseName(), $question2Id, $answer3Id, $comment1);
 
-		$dto = QuestionListDto::encode($projectId, $textId);
+		$dto = QuestionListDto::encode($projectId, $textId, $user1Id);
 
 		// Now check that it all looks right
 		$this->assertEqual($dto['count'], 2);

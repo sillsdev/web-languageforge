@@ -71,7 +71,7 @@ class TestQuestionCommentDto extends UnitTestCase {
 		$comment2->userRef->id = $user2Id;
 		$comment2Id = QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment2);
 		
-		$dto = QuestionCommentDto::encode($project->id->asString(), $questionId);
+		$dto = QuestionCommentDto::encode($project->id->asString(), $questionId, $user1Id);
 // 		var_dump($dto);
 		
 		$aid = $answerId;

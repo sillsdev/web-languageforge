@@ -2,17 +2,11 @@
 
 
 use models\commands\ActivityCommands;
-
 use models\dto\ActivityListDto;
-
 use models\TextModel;
-
 use models\dto\QuestionCommentDto;
-
 use models\CommentModel;
-
 use models\AnswerModel;
-
 use models\mapper\MongoStore;
 use models\ProjectModel;
 use models\UserModel;
@@ -21,13 +15,7 @@ use models\QuestionModel;
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
-/*
 require_once(TestPath . 'common/MongoTestEnvironment.php');
-
-require_once(SourcePath . "models/ProjectModel.php");
-require_once(SourcePath . "models/QuestionModel.php");
-*/
-
 
 class TestActivityDto extends UnitTestCase {
 
@@ -312,7 +300,7 @@ class TestActivityDto extends UnitTestCase {
 		$this->assertEqual($dto[$a10]['userRef2']['username'], 'user3');
 		$this->assertEqual($dto[$a10]['userRef2']['avatar_ref'], 'user3.png');
 		$this->assertEqual($dto[$a10]['content']['user2'], 'user3');
-		$this->assertEqual($dto[$a10]['content']['answer'], $answer->content);
+		$this->assertEqual($dto[$a10]['content']['answer'], $answer_updated->content);
 		$this->assertEqual($dto[$a10]['content']['comment'], $comment1_updated->content);
 		
 	}
