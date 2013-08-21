@@ -140,6 +140,18 @@ angular.module(
 			});
 		};
 		
+		$scope.commentDelete = function(answer, commentId) {
+			console.log('delete ', commentId);
+			console.log(projectId, questionId, answer, commentId);
+			questionService.remove_comment(projectId, questionId, answer.id, commentId, function(result) {
+				if (result.ok) {
+					console.log('remove_comment ok');
+					// Delete locally
+					delete answer.comments[commentId];
+				}
+			});
+		};
+		
 		$scope.updateAnswer = function(projectId, questionId, answer) {
 			questionService.update_answer(projectId, questionId, answer, function(result) {
 				if (result.ok) {

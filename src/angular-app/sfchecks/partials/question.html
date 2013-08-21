@@ -25,7 +25,8 @@
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
 				<div>
-				<a ng-show="rightsEditOwn(answer.userRef.userid)" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a><a ng-show="rightsDeleteOwn(answer.userRef.userid)" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
+				<a ng-show="rightsEditOwn(answer.userRef.userid)" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
+				<a ng-show="rightsDeleteOwn(answer.userRef.userid)" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
 				<ng-switch on="answerEditorVisible(answerId)">
 				<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
 					<textarea ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
@@ -37,7 +38,11 @@
 			<table class="comments">
 				<tr ng-repeat="comment in answer.comments">
 					<td></td>
-					<td>{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}</td>
+					<td>
+						{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}
+						<a ng-show="rightsEditOwn(comment.userRef.userid)" class="btn-link" ng-click="showCommentEditor(comment.id)">edit</a>
+						<a ng-show="rightsDeleteOwn(comment.userRef.userid)" ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
+					</td>
 				</tr>
 				<tr>
 					<td></td>
