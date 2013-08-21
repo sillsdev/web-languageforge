@@ -103,6 +103,40 @@ angular.module(
 		$scope.showCommentEditor = function(commentId) {
 			$scope.openEditors.commentId = commentId;
 		};
+		$scope.$watch('openEditors.commentId', function(newval, oldval) {
+			if (newval === null || newval === undefined) {
+				// Skip; we're being called during initialization
+				return;
+			}
+
+			// We're in the question-level scope, and we need to find a
+			// specific commentId without knowing which answer it belongs
+			// to, because all we have to work with is the new value of
+			// the commentId (the old value won't help us).
+			var comment;
+			search_loop:
+			for (var aid in $scope.question.answers) {
+				var answer = $scope.question.answers[aid];
+				for (var cid in answer.comments) {
+					if (cid == newval) {
+						comment = answer.comments[cid];
+						break search_loop;
+					}
+				}
+			}
+			// Set up the values needed by the new editor
+			if (angular.isUndefined(comment)) {
+				//console.log('Failed to find', newval, 'in', $scope.question.comments);
+				return;
+			}
+			$scope.editedComment = {
+				id: newval,
+				content: comment.content,
+				//dateEdited: Date.now(), // Commented out for now because the model wasn't happy with a Javascript date. TODO: Figure out what format I should be passing this in. RM 2013-08
+				userRef: comment.userRef, // Do we really need to copy this over? Or will the PHP model code take care of that for us?
+			};
+		});
+
 		$scope.commentEditorVisible = function(commentId) {
 			return (commentId == $scope.openEditors.commentId);
 		};
@@ -115,23 +149,12 @@ angular.module(
 			content: ''
 		};
 		
-		$scope.submitComment = function(answerId, answer) {
-			console.log('submitComment(', answerId, answer, ')');
-			var newComment = {
-				id: '',
-				content: $scope.newComment.content,
-			};
+		$scope.updateComment = function(answerId, answer, newComment) {
 			questionService.update_comment(projectId, questionId, answerId, newComment, function(result) {
-				console.log('update_comment(', projectId, questionId, answerId, newComment, ')');
 				if (result.ok) {
-					console.log('update_comment ok');
-					console.log('Result:', result);
-					console.log('Result.data.id:', result.data.id);
-					console.log("Comment object before setting ID:", newComment);
 					for (var id in result.data) {
 						newComment = result.data[id]; // There should be one, and only one, record in result.data
 					}
-					console.log("Comment object after setting ID:", newComment);
 					$scope.question.answers[answerId].comments[newComment.id] = newComment;
 				} else {
 					console.log('update_comment ERROR');
@@ -139,6 +162,21 @@ angular.module(
 				}
 			});
 		};
+		
+		$scope.submitComment = function(answerId, answer) {
+			console.log('submitComment(', answerId, answer, ')');
+			var newComment = {
+				id: '',
+				content: $scope.newComment.content,
+			};
+			$scope.updateComment(answerId, answer, newComment);
+		}
+		
+		$scope.editComment = function(answerId, answer, comment) {
+			if ($scope.rightsEditOwn(comment.userRef.userid)) {
+				$scope.updateComment(answerId, answer, comment);
+			}
+		}
 		
 		$scope.commentDelete = function(answer, commentId) {
 			console.log('delete ', commentId);
@@ -175,10 +213,9 @@ angular.module(
 		};
 		
 		$scope.editAnswer = function(answer) {
-			// FIXME: Preserve ownership of answer. Currently if user A creates
-			// an answer and user B edits it later, the answer ends up being
-			// "by user B" in the question page. TODO: Fix later. RM 2013-08
-			$scope.updateAnswer(projectId, questionId, answer);
+			if ($scope.rightsEditOwn(answer.userRef.userid)) {
+				$scope.updateAnswer(projectId, questionId, answer);
+			}
 		};
 		
 		$scope.answerDelete = function(answerId) {

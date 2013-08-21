@@ -42,6 +42,12 @@
 						{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}
 						<a ng-show="rightsEditOwn(comment.userRef.userid)" class="btn-link" ng-click="showCommentEditor(comment.id)">edit</a>
 						<a ng-show="rightsDeleteOwn(comment.userRef.userid)" ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
+						<ng-switch on="commentEditorVisible(comment.id)">
+						<form ng-submit="editComment(answerId, answer, editedComment)" ng-switch-when="true">
+							<textarea ng-model="editedComment.content" pui-jqte="jqteOptions"></textarea>
+							<button type="submit" class="btn">Save</button>
+						</form>
+						</ng-switch>
 					</td>
 				</tr>
 				<tr>
@@ -49,7 +55,7 @@
 					<td>
 						<a ng-click="collapsed = !collapsed" class="btn btn-link">add comment</a>
 						<div collapse="!collapsed">
-						<form ng-submit="submitComment(answerId, answer); $(this).slideToggle()">
+						<form ng-submit="submitComment(answerId, answer); collapsed = !collapsed;">
 							<textarea ng-model="newComment.content"></textarea><br/>
 							<button type="submit" class="btn btn-small">Add Comment</button>
 						</form>
