@@ -12,8 +12,7 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestTextListDto extends UnitTestCase {
 
-	function __construct()
-	{
+	function __construct() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 	}

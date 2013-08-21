@@ -49,11 +49,15 @@ class Roles {
 		$rights[] = Domain::TEXTS + Operation::EDIT_OTHER;
 		$rights[] = Domain::QUESTIONS + Operation::CREATE;
 		$rights[] = Domain::QUESTIONS + Operation::EDIT_OTHER;
+		$rights[] = Domain::USERS + Operation::CREATE;
+		$rights[] = Domain::USERS + Operation::EDIT_OTHER;
+		$rights[] = Domain::USERS + Operation::DELETE_OTHER;
 		
 		self::$_rights[Realm::PROJECT][Roles::PROJECT_ADMIN] = $rights;
 		
 		// System Admin
 		$rights = array();
+		self::grantAllOnDomain($rights, Domain::USERS);
 		self::grantAllOnDomain($rights, Domain::PROJECTS);
 		self::grantAllOnDomain($rights, Domain::TEXTS);
 		self::grantAllOnDomain($rights, Domain::QUESTIONS);
