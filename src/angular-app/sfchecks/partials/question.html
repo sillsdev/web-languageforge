@@ -18,12 +18,15 @@
 			</div>
 		</td>
 		<td>
-			<div class="answer">{{answer.content}}
+			<div class="answer"><!--<b>DEBUG:</b>answerId = {{answerId}}, answer.id = {{answer.id}}<br/>-->
+				<!--<b>DEBUG:</b>answer = {{answer}}<br/>-->
+				{{answer.content}}
 				<div class="by">
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
 				<div>
-				<a ng-show="rightsEditOwn(answer.userRef.userid)" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a><a ng-show="rightsDeleteOwn(answer.userRef.userid)" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
+				<a ng-show="rightsEditOwn(answer.userRef.userid)" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
+				<a ng-show="rightsDeleteOwn(answer.userRef.userid)" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
 				<ng-switch on="answerEditorVisible(answerId)">
 				<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
 					<textarea ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
@@ -35,14 +38,24 @@
 			<table class="comments">
 				<tr ng-repeat="comment in answer.comments">
 					<td></td>
-					<td>{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}</td>
+					<td>
+						{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}
+						<a ng-show="rightsEditOwn(comment.userRef.userid)" class="btn-link" ng-click="showCommentEditor(comment.id)">edit</a>
+						<a ng-show="rightsDeleteOwn(comment.userRef.userid)" ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
+						<ng-switch on="commentEditorVisible(comment.id)">
+						<form ng-submit="editComment(answerId, answer, editedComment)" ng-switch-when="true">
+							<textarea ng-model="editedComment.content" pui-jqte="jqteOptions"></textarea>
+							<button type="submit" class="btn">Save</button>
+						</form>
+						</ng-switch>
+					</td>
 				</tr>
 				<tr>
 					<td></td>
 					<td>
 						<a ng-click="collapsed = !collapsed" class="btn btn-link">add comment</a>
 						<div collapse="!collapsed">
-						<form ng-submit="submitComment(answer); $(this).slideToggle()">
+						<form ng-submit="submitComment(answerId, answer); collapsed = !collapsed;">
 							<textarea ng-model="newComment.content"></textarea><br/>
 							<button type="submit" class="btn btn-small">Add Comment</button>
 						</form>
