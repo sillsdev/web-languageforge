@@ -164,7 +164,7 @@ angular.module(
 				// TODO ERROR
 				return;
 			}
-			projectService.removeUsers($scope.projectId, userIds, function(result) {
+			projectService.removeUsers($scope.project.id, userIds, function(result) {
 				if (result.ok) {
 					$scope.queryProjectUsers();
 					// TODO
@@ -215,7 +215,7 @@ angular.module(
 				$model.email = $scope.term;
 			}
 			console.log("addUser ", model);
-			projectService.updateUser($scope.projectId, model, function(result) {
+			projectService.updateUser($scope.project.id, model, function(result) {
 				if (result.ok) {
 					// TODO broadcast notice and add
 					$scope.queryProjectUsers();
