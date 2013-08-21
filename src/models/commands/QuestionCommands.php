@@ -60,8 +60,14 @@ class QuestionCommands
 		$commentModel->userRef->id = $userId;
 		ActivityCommands::updateComment($projectModel, $questionId, $answerId, $commentModel);
 		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
-		// TODO The write comment below needs to read back a comment, and encode it like the DTO for the client. CP 2013-08
-		return QuestionModel::writeComment($projectModel->databaseName(), $questionId, $answerId, $commentModel);
+		$commentId = QuestionModel::writeComment($projectModel->databaseName(), $questionId, $answerId, $commentModel);
+		$questionModel = new QuestionModel($projectModel, $questionId);
+		$newComment = $questionModel->readComment($answerId, $commentId);
+		$commentDTO = QuestionCommentDto::encodeComment($newComment);
+
+		$dto = array();
+		$dto[$commentId] = $commentDTO;
+		return $dto;
 	}
 	
 }
