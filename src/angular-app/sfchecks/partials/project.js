@@ -129,7 +129,8 @@ angular.module(
 			$scope.project.name = bcs.idmap[projectId].name;			
 		}
 	}])
-	.controller('ProjectUsersCtrl', ['$scope', '$location', 'userService', 'projectService', function($scope, $location, userService, projectService) {
+	.controller('ProjectUsersCtrl', ['$scope', '$location', 'userService', 'projectService', 'sessionService',
+	                                 function($scope, $location, userService, projectService, ss) {
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
 			var selectedIndex = $scope.selected.indexOf(item);
@@ -150,6 +151,14 @@ angular.module(
 				if (result.ok) {
 					$scope.projectUsers = result.data.entries;
 					$scope.projectUserCount = result.data.count;
+					// Rights
+					var rights = result.data.rights;
+					$scope.rights = {};
+					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.DELETE_OTHER); 
+					$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
+					$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT_OTHER);
+					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
+					
 				}
 			});
 		};

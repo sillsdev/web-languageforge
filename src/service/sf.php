@@ -1,5 +1,7 @@
 <?php
 
+use models\dto\ProjectSettingsDto;
+
 use models\ProjectModel;
 
 use models\dto\ActivityListDto;
@@ -167,8 +169,8 @@ class Sf
 	}
 	
 	public function project_listUsers($projectId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		return $projectModel->listUsers();
+		$result = ProjectSettingsDto::encode($projectId, $this->_userId);
+		return $result;
 	}
 	
 	//---------------------------------------------------------------
