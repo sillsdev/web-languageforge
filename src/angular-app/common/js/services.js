@@ -105,7 +105,7 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('question_update_comment', [projectId, questionId, answerId, model], callback);
 		};
 		this.remove_comment = function(projectId, questionId, answerId, commentId, callback) {
-			jsonRpc.call('question_remove_commentId', [projectId, questionId, answerId, commentId], callback);
+			jsonRpc.call('question_remove_comment', [projectId, questionId, answerId, commentId], callback);
 		};
 	}])
 	.service('activityPageService', ['jsonRpc', function(jsonRpc) {
