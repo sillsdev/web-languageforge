@@ -280,7 +280,7 @@ class Sf
 	
 	public function question_remove_comment($projectId, $questionId, $answerId, $commentId) {
 		$projectModel = new \models\ProjectModel($projectId);
-		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId, $commentId);
+		return QuestionModel::removeComment($projectModel->databaseName(), $questionId, $answerId, $commentId);
 	}
 	
 	public function question_comment_dto($projectId, $questionId) {
