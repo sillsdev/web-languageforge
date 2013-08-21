@@ -54,7 +54,7 @@ class TestQuestionListDto extends UnitTestCase {
 		$answer1->score = 10;
 		$answer1->userRef->id = $user1Id;
 		$answer1->textHightlight = "I knew that I was on Mars";
-		$answer1Id = QuestionModel::writeAnswer($project->databaseName(), $question1Id, $answer1);
+		$answer1Id = $question1->writeAnswer($answer1);
 
 		// ... and two answers for question 2
 		$answer2 = new AnswerModel();
@@ -62,14 +62,14 @@ class TestQuestionListDto extends UnitTestCase {
 		$answer2->score = 1;
 		$answer2->userRef->id = $user1Id;
 		$answer2->textHightlight = "I knew that I was on Mars";
-		$answer2Id = QuestionModel::writeAnswer($project->databaseName(), $question2Id, $answer2);
+		$answer2Id = $question2->writeAnswer($answer2);
 
 		$answer3 = new AnswerModel();
 		$answer3->content = "On the planet we call Barsoom, which you inhabitants of Earth normally call Mars.";
 		$answer3->score = 7;
 		$answer3->userRef->id = $user2Id;
 		$answer3->textHightlight = "I knew that I was on Mars";
-		$answer3Id = QuestionModel::writeAnswer($project->databaseName(), $question2Id, $answer3);
+		$answer3Id = $question2->writeAnswer($answer3);
 
 		// Comments should NOT show up in the answer count; let's test this.
 		$comment1 = new CommentModel();

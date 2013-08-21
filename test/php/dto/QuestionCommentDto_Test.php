@@ -58,7 +58,7 @@ class TestQuestionCommentDto extends UnitTestCase {
 		$answer->score = 10;
 		$answer->userRef->id = $user3Id;
 		$answer->textHightlight = "text highlight";
-		$answerId = QuestionModel::writeAnswer($project->databaseName(), $questionId, $answer);
+		$answerId = $question->writeAnswer($answer);
 		
 		// Followed by comments
 		$comment1 = new CommentModel();

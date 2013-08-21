@@ -254,12 +254,12 @@ class Sf
 	
 	public function question_update_answer_score($projectId, $questionId, $answerId, $score) {
 		$projectModel = new \models\ProjectModel($projectId);
-		$questionModel = new QuestionModel($questionId);
+		$questionModel = new QuestionModel($projectModel, $questionId);
 		$answerModel = $questionModel->readAnswer($answerId);
 		$lastScore = $answerModel->score;
 		$currentScore = intval($score);
 		$answerModel->score = $currentScore;
-		QuestionModel::writeAnswer($projectModel->databaseName(), $questionId, $answerModel);
+		$questionModel->writeAnswer($answerModel);
 		if ($currentScore > $lastScore) {
 			ActivityCommands::updateScore($projectModel, $questionId, $answerId, $this->_userId, 'increase');
 		} else {

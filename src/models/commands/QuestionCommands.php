@@ -44,8 +44,9 @@ class QuestionCommands
 		$answerModel->userRef->id = $userId;
 		ActivityCommands::updateAnswer($projectModel, $questionId, $answerModel);
 		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
-		$answerId = QuestionModel::writeAnswer($projectModel->databaseName(), $questionId, $answerModel);
-		$answerDTO = QuestionCommentDto::encodeAnswer($answerModel);
+		$questionModel = new QuestionModel($projectModel, $questionId);
+		$answerId = $questionModel->writeAnswer($answerModel);
+		$answerDTO = QuestionCommentDto::encodeAnswer($questionModel->readAnswer($answerId));
 
 		$dto = array();
 		$dto[$answerId] = $answerDTO;
@@ -59,6 +60,7 @@ class QuestionCommands
 		$commentModel->userRef->id = $userId;
 		ActivityCommands::updateComment($projectModel, $questionId, $answerId, $commentModel);
 		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
+		// TODO The write comment below needs to read back a comment, and encode it like the DTO for the client. CP 2013-08
 		return QuestionModel::writeComment($projectModel->databaseName(), $questionId, $answerId, $commentModel);
 	}
 	

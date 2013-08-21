@@ -54,7 +54,7 @@ class TestActivityDto extends UnitTestCase {
 		$answer->score = 10;
 		$answer->userRef->id = $userId;
 		$answer->textHightlight = "text highlight";
-		$answerId = QuestionModel::writeAnswer($project->databaseName(), $questionId, $answer);
+		$answerId = $question->writeAnswer($answer);
 		$activityid = ActivityCommands::addAnswer($project, $questionId, $answer);
 		
 		// now delete the user
@@ -152,7 +152,7 @@ class TestActivityDto extends UnitTestCase {
 		$answer->score = 10;
 		$answer->userRef->id = $user3Id;
 		$answer->textHightlight = "text highlight";
-		$answerId = QuestionModel::writeAnswer($project->databaseName(), $questionId, $answer);
+		$answerId = $question->writeAnswer($answer);
 		$a6 = ActivityCommands::addAnswer($project, $questionId, $answer);
 		
 		// Followed by comments
@@ -172,7 +172,7 @@ class TestActivityDto extends UnitTestCase {
 		$question->read($questionId);
 		$answer_updated = $question->readAnswer($answerId);
 		$answer_updated->content = "first answer revised";
-		QuestionModel::writeAnswer($project->databaseName(), $questionId, $answer_updated);
+		$question->writeAnswer($answer_updated);
 		$a9 = ActivityCommands::updateAnswer($project, $questionId, $answer_updated);
 		
 		// updated comment1
