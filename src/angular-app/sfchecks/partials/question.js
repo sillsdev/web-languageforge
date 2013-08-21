@@ -63,6 +63,10 @@ angular.module(
 			$scope.openEditors.answerId = answerId;
 		};
 
+		$scope.hideAnswerEditor = function() {
+			$scope.openEditors.answerId = null;
+		};
+
 		$scope.$watch('openEditors.answerId', function(newval, oldval) {
 			if (newval === null || newval === undefined) {
 				// Skip; we're being called during initialization
@@ -102,6 +106,9 @@ angular.module(
 
 		$scope.showCommentEditor = function(commentId) {
 			$scope.openEditors.commentId = commentId;
+		};
+		$scope.hideCommentEditor = function() {
+			$scope.openEditors.commentId = null;
 		};
 		$scope.$watch('openEditors.commentId', function(newval, oldval) {
 			if (newval === null || newval === undefined) {
@@ -176,6 +183,7 @@ angular.module(
 			if ($scope.rightsEditOwn(comment.userRef.userid)) {
 				$scope.updateComment(answerId, answer, comment);
 			}
+			$scope.hideCommentEditor();
 		}
 		
 		$scope.commentDelete = function(answer, commentId) {
@@ -216,6 +224,7 @@ angular.module(
 			if ($scope.rightsEditOwn(answer.userRef.userid)) {
 				$scope.updateAnswer(projectId, questionId, answer);
 			}
+			$scope.hideAnswerEditor();
 		};
 		
 		$scope.answerDelete = function(answerId) {
