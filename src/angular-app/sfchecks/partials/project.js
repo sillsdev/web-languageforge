@@ -118,10 +118,27 @@ angular.module(
 		};
 
 	}])
-	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', function($scope, $location, $routeParams) {
+	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'projectService', function($scope, $location, $routeParams, projectService) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
 		$scope.projectName = $routeParams.projectName;
+
+		$scope.editedName = $scope.projectName;
+		$scope.updateProjectName = function(newName) {
+			var newProject = {
+				id: $scope.projectId,
+				projectname: newName,
+			};
+			console.log('About to update project with data', newProject);
+			projectService.update(newProject, function(result) {
+				console.log(result);
+				if (result.ok) {
+					// Update project name in scope. TODO: Work out what needs to be updated.
+					$scope.projectId = result.data;
+					console.log('Updated OK');
+				}
+			});
+		};
 	}])
 	.controller('ProjectUsersCtrl', ['$scope', '$location', 'userService', 'projectService', function($scope, $location, userService, projectService) {
 		$scope.selected = [];

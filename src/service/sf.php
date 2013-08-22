@@ -109,9 +109,20 @@ class Sf
 	 * @return string Id of written object
 	 */
 	public function project_update($object) {
+		error_log('project_update(' . print_r($object, true) . ') called');
 		$project = new \models\ProjectModel();
+		$id = $object['id'];
+		$isNewProject = ($id == '');
+		if (!$isNewProject) {
+			$project->read($id);
+		}
+		error_log('after read(' . print_r($id, true) . '), $project is ' . print_r($project, true));
 		JsonDecoder::decode($project, $object);
+		error_log('after decode(), $project is ' . print_r($project, true));
 		$result = $project->write();
+		if ($isNewProject) {
+			//ActivityCommands::addProject($project); // TODO: Determine if any other params are needed. RM 2013-08
+		}
 		return $result;
 	}
 
