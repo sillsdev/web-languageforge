@@ -28,7 +28,7 @@ class UsxHelper {
 		$this->_tagStack = array();
 		$this->_stateCData = false;
 		xml_parse($this->_parser, $this->_usx);
-		echo $this->_out;
+		//echo $this->_out;
 		return $this->_out;
 	}
 	
