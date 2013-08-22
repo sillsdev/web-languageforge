@@ -61,7 +61,7 @@ class TestProjectModel extends UnitTestCase {
 		$projectId = $projectModel->id->asString();
 		
 		// create the reference
-		$projectModel->addUser($userId);
+		$projectModel->addUser($userId, Roles::USER);
 		$userModel->addProject($projectId);
 		$projectModel->write();
 		$userModel->write();
@@ -84,7 +84,7 @@ class TestProjectModel extends UnitTestCase {
 		$projectId = $projectModel->id->asString();
 
 		// create the reference
-		$projectModel->addUser($userId);
+		$projectModel->addUser($userId, Roles::USER);
 		$userModel->addProject($projectId);
 		$projectModel->write();
 		$userModel->write();
@@ -117,9 +117,9 @@ class TestProjectModel extends UnitTestCase {
 		$projectModel = $e->createProject('new project');
 		$projectId = $projectModel->id;
 		
-		$projectModel->addUser($userId);
+		$projectModel->addUser($userId, Roles::USER);
 		$this->assertEqual(1, count($projectModel->users));
-		$projectModel->addUser($userId);
+		$projectModel->addUser($userId, Roles::USER);
 		$this->assertEqual(1, count($projectModel->users));
 	}
 	
@@ -138,11 +138,11 @@ class TestProjectModel extends UnitTestCase {
 		$this->assertEqual(array(), $result->entries);
 				
 		// Add our two users
-		$project->addUser($userId1);
+		$project->addUser($userId1, Roles::USER);
 		$um1->addProject($projectId);
 		$um1->write();
 		
-		$project->addUser($userId2);
+		$project->addUser($userId2, Roles::USER);
 		$um2->addProject($projectId);
 		$um2->write();
 		$project->write();
@@ -156,13 +156,15 @@ class TestProjectModel extends UnitTestCase {
 		          'email' => 'user1@example.com',
 		          'name' => 'User One',
 		          'username' => 'user1',
-		          'id' => $userId1
+		          'id' => $userId1,
+				  'role' => Roles::USER
 				), 
 				array(
 		          'email' => 'user2@example.com',
 		          'name' => 'User Two',
 		          'username' => 'user2',
-		          'id' => $userId2
+		          'id' => $userId2,
+				  'role' => Roles::USER
 				)
 			), $result->entries
 		);

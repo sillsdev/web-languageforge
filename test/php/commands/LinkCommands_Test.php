@@ -1,4 +1,6 @@
 <?php
+use models\rights\Roles;
+
 use models\commands\LinkCommands;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
@@ -32,7 +34,7 @@ class TestLinkCommands extends UnitTestCase {
 		$projectId = $projectModel->id->asString();
 		
 		// link project and user
-		LinkCommands::LinkUserAndProject($projectModel, $userModel);
+		LinkCommands::LinkUserAndProject($projectModel, $userModel, Roles::USER);
 		
 		// read from disk
 		$otherUser = new UserModel($userId);
@@ -52,7 +54,7 @@ class TestLinkCommands extends UnitTestCase {
 		$projectId = $projectModel->id->asString();
 		
 		// create the link
-		LinkCommands::LinkUserAndProject($projectModel, $userModel);
+		LinkCommands::LinkUserAndProject($projectModel, $userModel, Roles::USER);
 		
 		// assert that the reference is there
 		$this->assertTrue(in_array($projectId, $userModel->projects->refs), "project $projectId not found in user->projects");
@@ -80,7 +82,7 @@ class TestLinkCommands extends UnitTestCase {
 		$projectId = $projectModel->id->asString();
 		
 		// link once
-		LinkCommands::LinkUserAndProject($projectModel, $userModel);
+		LinkCommands::LinkUserAndProject($projectModel, $userModel, Roles::USER);
 		
 		// read from disk
 		$otherUser = new UserModel($userId);
@@ -90,7 +92,7 @@ class TestLinkCommands extends UnitTestCase {
 		$this->assertEqual(1, count($otherProject->users->data));
 		
 		// link again
-		LinkCommands::LinkUserAndProject($projectModel, $userModel);
+		LinkCommands::LinkUserAndProject($projectModel, $userModel, Roles::USER);
 		
 		// read from disk again
 		$otherProject->read($projectId);

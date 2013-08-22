@@ -87,7 +87,8 @@ class Roles {
 	 * @return bool
 	 */
 	public static function hasRight($realm, $role, $right) {
-		return in_array($right, self::$_rights[$realm][$role]);
+		$result = in_array($right, self::$_rights[$realm][$role]);
+		return $result;
 	}
 	
 	/**

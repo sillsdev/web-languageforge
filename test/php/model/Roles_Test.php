@@ -22,9 +22,9 @@ class TestRoles extends UnitTestCase {
 		// Project Admin Roles
 		$result = Roles::hasRight(Realm::PROJECT, Roles::PROJECT_ADMIN, Domain::QUESTIONS + Operation::CREATE);
 		$this->assertTrue($result);
-		$result = Roles::hasRight(Realm::PROJECT, Roles::PROJECT_ADMIN, Domain::USERS + Operation::CREATE);
+		$result = Roles::hasRight(Realm::PROJECT, Roles::PROJECT_ADMIN, Domain::PROJECTS + Operation::CREATE);
 		$this->assertFalse($result);
-		// Project Admin Roles
+		// System Admin Roles
 		$result = Roles::hasRight(Realm::PROJECT, Roles::SYSTEM_ADMIN, Domain::QUESTIONS + Operation::CREATE);
 		$this->assertTrue($result);
 		$result = Roles::hasRight(Realm::SITE, Roles::SYSTEM_ADMIN, Domain::USERS + Operation::CREATE);
