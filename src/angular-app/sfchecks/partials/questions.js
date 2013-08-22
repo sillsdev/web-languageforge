@@ -123,12 +123,33 @@ angular.module(
 		};
 
 	}])
-	.controller('QuestionsSettingsCtrl', ['$scope', 'questionsService', '$routeParams', function($scope, questionsService, $routeParams) {
+	.controller('QuestionsSettingsCtrl', ['$scope', 'questionsService', 'textService', '$routeParams', function($scope, questionsService, textService, $routeParams) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
 		$scope.textId = textId;
-		$scope.projectName = $routeParams.projectName;
-		$scope.textName = $routeParams.textName;
+		// Get name from text service. This really should be in the DTO, but this will work for now.
+		// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08
+		var text;
+		textService.read($scope.projectId, $scope.textId, function(result) {
+			if (result.ok) {
+				text = result.data;
+				$scope.textTitle = text.title;
+				$scope.editedTitle = text.title;
+			}
+		});
+
+		$scope.updateTextName = function(newTitle) {
+			var newText = {
+				id: $scope.textId,
+				title: newTitle,
+			}
+			textService.update($scope.projectId, newText, function(result) {
+				if (result.ok) {
+					$scope.textTitle = newText.title;
+					console.log('Updated text OK');
+				}
+			});
+		}
 	}])
 	;
