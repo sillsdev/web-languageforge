@@ -153,10 +153,9 @@ class Sf
 	}
 	
 	public function project_updateUser($projectId, $object) {
-		
 		$projectModel = new \models\ProjectModel($projectId);
 		$command = new \models\commands\ProjectUserCommands($projectModel);
-		return $command->addUser($object);
+		return $command->updateUser($object);
 	}
 	
 	public function project_deleteUsers($projectId, $userIds) {

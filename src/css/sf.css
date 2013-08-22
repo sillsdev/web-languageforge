@@ -785,3 +785,7 @@ div.new-item form {
 }
 
 
+/* Table / Grid styles */
+table select {
+	margin-bottom: 0px;
+}
