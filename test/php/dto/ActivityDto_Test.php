@@ -1,6 +1,8 @@
 <?php
 
 
+use models\rights\Roles;
+
 use models\commands\ActivityCommands;
 use models\dto\ActivityListDto;
 use models\TextModel;
@@ -83,10 +85,10 @@ class TestActivityDto extends UnitTestCase {
 		$project2 = $e->createProject(SF_TESTPROJECT2);
 		
 		$userId = $e->createUser("user1", "user1", "user1@email.com");
-		$project1->addUser($userId);
+		$project1->addUser($userId, Roles::USER);
 		$project1->write();
 		
-		$project2->addUser($userId);
+		$project2->addUser($userId, Roles::USER);
 		$project2->write();
 		
 		$text1 = new TextModel($project1);

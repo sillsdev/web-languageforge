@@ -2,6 +2,10 @@
 
 namespace models\commands;
 
+use models\rights\Roles;
+
+use libraries\palaso\CodeGuard;
+
 class ProjectUserCommands {
 	
 	private $_projectModel;
@@ -23,8 +27,9 @@ class ProjectUserCommands {
 	 * @param array $object
 	 * @return string
 	 */
-	public function addUser($object) {
+	public function updateUser($object) {
 		$userId = null;
+		// 1) Check the user
 		if (array_key_exists('id', $object)) {
 			// TODO Check user exists? CP 2013-07
 			$userId = $object['id'];
@@ -38,11 +43,14 @@ class ProjectUserCommands {
 			// TODO passwords, how to notify, email? CP 2013-07
 			$userId = $user->write();
 		} else {
-			throw new Exception("Project_user_commands::addUser with unsupported data");
+			$info = var_export($object);
+			throw new \Exception("unsupported data '$object'");
 		}
 		// Add the user to the project.
-		assert($userId != null);
-		LinkCommands::LinkUserAndProject($this->_projectModel, new \models\UserModel($userId));
+		CodeGuard::checkNullAndThrow($userId, '$userId');
+		// 2) Check the role
+		$role = key_exists('role', $object) ? $object['role'] : Roles::USER;
+		LinkCommands::LinkUserAndProject($this->_projectModel, new \models\UserModel($userId), $role);
 		ActivityCommands::addUserToProject($this->_projectModel, $userId);
 		return $userId;
 	}
@@ -61,10 +69,7 @@ class ProjectUserCommands {
 	public function removeUserProjectLink($userModel) {
 		
 	}
-	
-	public function deleteProject() {
-		throw new \Exception("Project_user_commands::deleteProject NYI");
-	}
+
 }
 
 

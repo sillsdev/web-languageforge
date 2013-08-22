@@ -36,7 +36,7 @@
 				<td width="16px" align="center"><input ng-show="rights.deleteOther" type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
 				<td>{{user.username}}</td>
 				<td>{{user.name}}</td>
-				<td>&nbsp;</td>
+				<td><select ng-model="user.role" ng-change="onRoleChange(user)" ng-options="role.key as role.name for role in roles" /></td>
 			</tr>
 			</tbody>
 		</table>		

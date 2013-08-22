@@ -63,10 +63,10 @@ class ProjectModel extends \models\mapper\MapperModel
 	/**
 	 * Adds the $userId as a member of this project.
 	 * @param string $userId
-	 * @param string $role The role the user has in this project. Defaults to Roles::USER
+	 * @param string $role The role the user has in this project.
 	 * @see Roles;
 	 */
-	public function addUser($userId, $role = Roles::USER) {
+	public function addUser($userId, $role) {
 		$mapper = ProjectModelMongoMapper::instance();
 //		$ProjectModelMongoMapper::mongoID($userId)
 		$model = new ProjectRoleModel();
@@ -85,7 +85,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	public function listUsers() {
 		$userList = new UserList_ProjectModel($this->id->asString());
 		$userList->read();
-		return $userList;
+		for ($i = 0, $l = count($userList->entries); $i < $l; $i++) {
+			$userId = $userList->entries[$i]['id'];
+			$userList->entries[$i]['role'] = $this->users->data[$userId]->role;
+		}
+ 		return $userList;
 	}
 	
 	/**

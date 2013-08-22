@@ -131,6 +131,9 @@ angular.module(
 	}])
 	.controller('ProjectUsersCtrl', ['$scope', '$location', 'userService', 'projectService', 'sessionService',
 	                                 function($scope, $location, userService, projectService, ss) {
+		// ----------------------------------------------------------
+		// List
+		// ----------------------------------------------------------
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
 			var selectedIndex = $scope.selected.indexOf(item);
@@ -181,6 +184,28 @@ angular.module(
 			});
 		};
 		
+		// Roles in list
+		$scope.roles = [
+	        {key: 'user', name: 'User'},
+	        {key: 'project_admin', name: 'Project Admin'}
+        ];
+		
+		$scope.onRoleChange = function(user) {
+			var model = {};
+			model.id = user.id;
+			model.role = user.role;
+			console.log('userchange...', model);
+			projectService.updateUser($scope.project.id, model, function(result) {
+				if (result.ok) {
+					// TODO broadcast notice
+					console.log('userchanged');
+				}
+			});
+		};
+		
+		// ----------------------------------------------------------
+		// Typeahead
+		// ----------------------------------------------------------
 	    $scope.users = [];
 	    $scope.addModes = {
 	    	'addNew': { 'en': 'Create New', 'icon': 'icon-user'},
