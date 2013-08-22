@@ -95,6 +95,9 @@ angular.module('sf.services', ['jsonRpc'])
 		this.read = function(projectId, questionId, callback) {
 			jsonRpc.call('question_comment_dto', [projectId, questionId], callback);
 		};
+		this.update = function(projectId, model, callback) {
+			jsonRpc.call('question_update', [projectId, model], callback);
+		};
 		this.update_answer = function(projectId, questionId, model, callback) {
 			jsonRpc.call('question_update_answer', [projectId, questionId, model], callback);
 		};
