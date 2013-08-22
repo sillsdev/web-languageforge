@@ -220,14 +220,13 @@ class Sf
 	public function question_update($projectId, $object) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$questionModel = new \models\QuestionModel($projectModel);
-		$add_question = false;
- 		if ($questionModel->id->asString() == '') {
- 			$add_question = true;
- 		}
-		// TODO Watch the decode below. QuestionModel contains a textRef which needs to be decoded correctly. CP 2013-07
+		$isNewQuestion = ($object['id'] == '');
+		if (!$isNewQuestion) {
+			$questionModel->read($object['id']);
+		}
 		JsonDecoder::decode($questionModel, $object);
 		$questionId = $questionModel->write();
-		if ($add_question) {
+		if ($isNewQuestion) {
 			ActivityCommands::addQuestion($projectModel, $questionId, $questionModel);
 		}
 		return $questionId;
