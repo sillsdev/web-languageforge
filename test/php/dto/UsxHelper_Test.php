@@ -17,7 +17,8 @@ class TestUsxHelper extends UnitTestCase {
 		$testFilePath = $rootPath . 'docs/usx/043JHN.usx';
 		$usx = file_get_contents($testFilePath);
 		$usxHelper = new UsxHelper($usx);
-		$usxHelper->toHtml();
+		$result = $usxHelper->toHtml();
+		echo $result;
 	}
 	
 }
