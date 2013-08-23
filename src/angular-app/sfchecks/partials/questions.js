@@ -147,15 +147,12 @@ angular.module(
 		});
 
 		$scope.updateText = function(newText) {
-			console.log('updateText(', newText, ')');
 			if (!newText.content) {
-				console.log('trimming empty content');
 				delete newText.content;
 			}
 			textService.update($scope.projectId, newText, function(result) {
 				if (result.ok) {
 					$scope.textTitle = newText.title;
-					console.log('Updated text OK');
 					$scope.showMessage = true;
 				}
 			});
