@@ -1,9 +1,17 @@
 <h2 style="font-weight:normal">Settings for {{textTitle}}</h2>
-<tabset>
-	<tab heading="Text">
-		<form class="well form-inline" ng-submit="updateTextName(editedTitle)">
-		<input type="text" ng-model="editedTitle" placeholder="Text Name"/>
-		<button type="submit" class="btn"><i class="icon-pencil"></i>Rename Text</button>
+<div ng-switch on="rights.editOther">
+<tabset ng-switch-when="undefined"> <!-- should be when="true" once a rights list is made available from the DTO; leaving as "undefined" during development -->
+	<tab heading="Edit Text">
+		<form class="well " ng-submit="updateText(editedText)">
+		<label>Title</label>
+		<input type="text" class="span4" ng-model="editedText.title" placeholder="Text Name"/>
+		<label>Text</label>
+		<textarea ng-model="editedText.content" class="span4" rows="4" placeholder="Paste the USX text here"></textarea>
+		<label></label>
+		<button type="submit" class="btn"><i class="icon-pencil"></i>Save</button>
+		<h3 id="message" ng-show="showMessage">Saved.</h3>
 		</form>
 	</tab>
 </tabset>
+<div ng-switch-when="false"><p>You don't have permission to edit this text.</p></div>
+</div>
