@@ -57,7 +57,7 @@ angular.module(
 	//$scope.queryUsers();  // And run it right away to fetch the data for our list.
 
 	$scope.selectRow = function(index, record) {
-		console.log("Called selectRow(", index, ", ", record, ")");
+//		console.log("Called selectRow(", index, ", ", record, ")");
 		$scope.vars.selectedIndex = index;
 		if (index < 0) {
 			$scope.vars.record = {};
@@ -70,7 +70,7 @@ angular.module(
 
 	$scope.$watch("vars.record.id", function(newId, oldId) {
 		// attrs.$observe("userid", function(newval, oldval) {
-		console.log("Watch triggered with oldval '" + oldId + "' and newval '" + newId + "'");
+//		console.log("Watch triggered with oldval '" + oldId + "' and newval '" + newId + "'");
 		if (newId) {
 			userService.read(newId, function(result) {
 				$scope.record = result.data;
@@ -91,13 +91,20 @@ angular.module(
 	};
 
 	// Roles in list
-	$scope.roles = [
-        {key: 'user', name: 'User'},
-        {key: 'system_admin', name: 'System Admin'}
-    ];
+	$scope.roles = {
+        'user': {name: 'User'},
+        'system_admin': {name: 'System Admin'}
+	};
+	
+	$scope.roleLabel = function(role) {
+		if (role == undefined) {
+			return '';
+		}
+		return $scope.roles[role].name;
+	};
 
 	$scope.updateRecord = function(record) {
-		console.log("updateRecord() called with ", record);
+//		console.log("updateRecord() called with ", record);
 		if (record === undefined || JSON.stringify(record) == "{}") {
 			// Avoid adding blank records to the database
 			return null; // TODO: Or maybe just return a promise object that will do nothing...?
@@ -117,11 +124,11 @@ angular.module(
 				record.id = result.data;
 				// TODO Don't do this as a separate API call here. CP 2013-07
 				$scope.changePassword(record);
-			}
+			};
 		} else {
 			afterUpdate = function(result) {
 				// Do nothing
-			}
+			};
 		}
 		userService.update(record, function(result) {
 			afterUpdate(result);
@@ -137,7 +144,7 @@ angular.module(
 	};
 
 	$scope.removeUsers = function() {
-		console.log("removeUsers");
+//		console.log("removeUsers");
 		var userIds = [];
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			userIds.push($scope.selected[i].id);
@@ -155,9 +162,9 @@ angular.module(
 	};
 
 	$scope.changePassword = function(record) {
-		console.log("changePassword() called with ", record);
+//		console.log("changePassword() called with ", record);
 		userService.changePassword(record.id, record.password, function(result) {
-			console.log("Password successfully changed.");
+//			console.log("Password successfully changed.");
 		});
 	};
 	
@@ -169,7 +176,7 @@ angular.module(
 	};
 	$scope.togglePasswordForm = function() {
 		$scope.vars.showPasswordForm = !$scope.vars.showPasswordForm;
-	}
+	};
 
 }])
 .controller('PasswordCtrl', ['$scope', 'jsonRpc', function($scope, jsonRpc) {

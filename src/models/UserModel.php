@@ -180,7 +180,7 @@ class UserListModel extends \models\mapper\MapperListModel
 		parent::__construct(
 			UserModelMongoMapper::instance(),
 			array('name' => array('$regex' => '')),
-			array('username', 'email', 'name', 'avatar_ref')
+			array('username', 'email', 'name', 'avatar_ref', 'role')
 		);
 	}
 	
