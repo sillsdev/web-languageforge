@@ -20,6 +20,7 @@ class ProjectSettingsDto
 		$data = array();
 		$data['count'] = $list->count;
 		$data['entries'] = $list->entries;
+		$data['projectName'] = $projectModel->projectname;
 		$data['rights'] = RightsHelper::encode($userModel, $projectModel);
 		$data['bcs'] = BreadCrumbHelper::encode('settings', $projectModel, null, null);
 		return $data;

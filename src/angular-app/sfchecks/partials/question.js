@@ -54,6 +54,51 @@ angular.module(
 			return right;
 		};
 
+		$scope.editQuestionCollapsed = true;
+		$scope.showQuestionEditor = function() {
+			$scope.editQuestionCollapsed = false;
+		};
+		$scope.hideQuestionEditor = function() {
+			$scope.editQuestionCollapsed = true;
+		};
+		$scope.toggleQuestionEditor = function() {
+			$scope.editQuestionCollapsed = !$scope.editQuestionCollapsed;
+		};
+		$scope.$watch('editQuestionCollapsed', function(newval) {
+			if (newval) { return; }
+			// Question editor not collapsed? Then set up initial values
+			$scope.editedQuestion = {
+				id: $scope.question.id,
+				title: $scope.question.title,
+				description: $scope.question.description,
+				// Do we need to copy the other values? Let's check:
+				//dateCreated: $scope.question.dateCreated,
+				//textRef: $scope.question.textRef,
+				//answers: $scope.question.answers,
+				//answerCount: $scope.question.answerCount,
+			}
+		});
+		$scope.updateQuestion = function(newQuestion) {
+			questionService.update(projectId, newQuestion, function(result) {
+				if (result.ok) {
+					questionService.read(projectId, newQuestion.id, function(result) {
+						if (result.ok) {
+							$scope.question = result.data.question;
+							// Recalculate answer count since the DB doesn't store it
+							$scope.question.answerCount = Object.keys($scope.question.answers).length;
+						} else {
+							// error condition
+							console.log('update_question failed to read DB after update');
+							console.log(result);
+						}
+					});
+				} else {
+					console.log('update_question ERROR');
+					console.log(result);
+				}
+			});
+		};
+
 		$scope.openEditors = {
 			answerId: null,
 			commentId: null,

@@ -22,6 +22,7 @@ use models\commands\UserCommands;
 use models\mapper\Id;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
+use models\mapper\MongoStore;
 
 require_once(APPPATH . 'config/sf_config.php');
 
@@ -112,8 +113,26 @@ class Sf
 	 */
 	public function project_update($object) {
 		$project = new \models\ProjectModel();
+		$id = $object['id'];
+		$isNewProject = ($id == '');
+		$oldDBName = '';
+		if (!$isNewProject) {
+			$project->read($id);
+			// This is getting complex; it probably belongs in ProjectCommands. TODO: Rewrite it to put it there. RM 2013-08
+			$oldDBName = $project->databaseName();
+		}
 		JsonDecoder::decode($project, $object);
+		$newDBName = $project->databaseName();
+		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
+			if (MongoStore::hasDB($newDBName)) {
+				throw new \Exception("New project name " . $object->projectname . " already exists. Not renaming.");
+			}
+			MongoStore::renameDB($oldDBName, $newDBName);
+		}
 		$result = $project->write();
+		if ($isNewProject) {
+			//ActivityCommands::addProject($project); // TODO: Determine if any other params are needed. RM 2013-08
+		}
 		return $result;
 	}
 
