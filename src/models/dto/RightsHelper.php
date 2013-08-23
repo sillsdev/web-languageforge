@@ -18,7 +18,7 @@ class RightsHelper
 		if ($userModel->role == Roles::SYSTEM_ADMIN) {
 			return Roles::getRightsArray(Realm::PROJECT, $userModel->role); 
 		} else {
-			return $projectModel->getRightsArray($userId);
+			return $projectModel->getRightsArray($userModel->id->id);
 		}
 	}
 	

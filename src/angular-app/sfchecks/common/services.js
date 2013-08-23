@@ -32,7 +32,7 @@ angular.module('sfchecks.services', [])
 				'type': type,
 				'name': name
 			};
-		}
+		};
 		
 		return breadcrumbService;
 		

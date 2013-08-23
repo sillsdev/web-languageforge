@@ -1,18 +1,14 @@
 <?php
 
 
+use models\rights\Roles;
+
 use models\commands\ActivityCommands;
-
 use models\dto\ActivityListDto;
-
 use models\TextModel;
-
 use models\dto\QuestionCommentDto;
-
 use models\CommentModel;
-
 use models\AnswerModel;
-
 use models\mapper\MongoStore;
 use models\ProjectModel;
 use models\UserModel;
@@ -21,13 +17,7 @@ use models\QuestionModel;
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
-/*
 require_once(TestPath . 'common/MongoTestEnvironment.php');
-
-require_once(SourcePath . "models/ProjectModel.php");
-require_once(SourcePath . "models/QuestionModel.php");
-*/
-
 
 class TestActivityDto extends UnitTestCase {
 
@@ -66,7 +56,7 @@ class TestActivityDto extends UnitTestCase {
 		$answer->score = 10;
 		$answer->userRef->id = $userId;
 		$answer->textHightlight = "text highlight";
-		$answerId = QuestionModel::writeAnswer($project->databaseName(), $questionId, $answer);
+		$answerId = $question->writeAnswer($answer);
 		$activityid = ActivityCommands::addAnswer($project, $questionId, $answer);
 		
 		// now delete the user
@@ -95,10 +85,10 @@ class TestActivityDto extends UnitTestCase {
 		$project2 = $e->createProject(SF_TESTPROJECT2);
 		
 		$userId = $e->createUser("user1", "user1", "user1@email.com");
-		$project1->addUser($userId);
+		$project1->addUser($userId, Roles::USER);
 		$project1->write();
 		
-		$project2->addUser($userId);
+		$project2->addUser($userId, Roles::USER);
 		$project2->write();
 		
 		$text1 = new TextModel($project1);
@@ -164,7 +154,7 @@ class TestActivityDto extends UnitTestCase {
 		$answer->score = 10;
 		$answer->userRef->id = $user3Id;
 		$answer->textHightlight = "text highlight";
-		$answerId = QuestionModel::writeAnswer($project->databaseName(), $questionId, $answer);
+		$answerId = $question->writeAnswer($answer);
 		$a6 = ActivityCommands::addAnswer($project, $questionId, $answer);
 		
 		// Followed by comments
@@ -184,7 +174,7 @@ class TestActivityDto extends UnitTestCase {
 		$question->read($questionId);
 		$answer_updated = $question->readAnswer($answerId);
 		$answer_updated->content = "first answer revised";
-		QuestionModel::writeAnswer($project->databaseName(), $questionId, $answer_updated);
+		$question->writeAnswer($answer_updated);
 		$a9 = ActivityCommands::updateAnswer($project, $questionId, $answer_updated);
 		
 		// updated comment1
@@ -312,7 +302,7 @@ class TestActivityDto extends UnitTestCase {
 		$this->assertEqual($dto[$a10]['userRef2']['username'], 'user3');
 		$this->assertEqual($dto[$a10]['userRef2']['avatar_ref'], 'user3.png');
 		$this->assertEqual($dto[$a10]['content']['user2'], 'user3');
-		$this->assertEqual($dto[$a10]['content']['answer'], $answer->content);
+		$this->assertEqual($dto[$a10]['content']['answer'], $answer_updated->content);
 		$this->assertEqual($dto[$a10]['content']['comment'], $comment1_updated->content);
 		
 	}

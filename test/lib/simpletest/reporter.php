@@ -28,7 +28,7 @@ class HtmlReporter extends SimpleReporter {
      *    by a web browser.
      *    @access public
      */
-    function __construct($character_set = 'ISO-8859-1') {
+    function __construct($character_set = 'UTF-8') {
         parent::__construct();
         $this->character_set = $character_set;
     }

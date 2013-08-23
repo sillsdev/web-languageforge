@@ -1,7 +1,7 @@
 <?php
 
 use models\AnswerModel;
-
+use models\CommentModel;
 use models\QuestionListModel;
 
 use models\mapper\MongoStore;
@@ -43,7 +43,10 @@ class TestAnswerModel extends UnitTestCase {
 		// Create
 		$answer = new AnswerModel();
 		$answer->content = 'Some answer';
-		$id = $question->writeAnswer($projectModel->databaseName(), $questionId, $answer);
+		$id = $question->writeAnswer($answer);
+		$comment = new CommentModel();
+		$comment->content = 'Some comment';
+		$commentId = QuestionModel::writeComment($projectModel->databaseName(), $questionId, $id, $comment);
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
 		$this->assertEqual(24, strlen($id));
@@ -54,12 +57,17 @@ class TestAnswerModel extends UnitTestCase {
 		$otherAnswer = $otherQuestion->answers->data[$id];
 		$this->assertEqual($id, $otherAnswer->id->asString());
 		$this->assertEqual('Some answer', $otherAnswer->content);
+		$this->assertEqual(1, count($otherAnswer->comments->data));
 // 		var_dump($id);
 // 		var_dump($otherAnswer->id->asString());
 		
 		// Update
 		$otherAnswer->content= 'Other answer';
-		$otherId = $question->writeAnswer($projectModel->databaseName(), $questionId, $otherAnswer);
+		// Note: Updates to the AnswerModel should not clobber child nodes such as comments.  Hence this test.
+		// See https://github.com/sillsdev/sfwebchecks/issues/39
+		unset($otherAnswer->comments->data[$commentId]);
+		$otherQuestion->read($otherQuestion->id->asString());
+		$otherId = $otherQuestion->writeAnswer($otherAnswer);
 		$this->assertEqual($id, $otherId);
 		
 		// Read back
@@ -67,7 +75,8 @@ class TestAnswerModel extends UnitTestCase {
 		$otherAnswer = $otherQuestion->answers->data[$id];
 		$this->assertEqual($id, $otherAnswer->id->asString());
 		$this->assertEqual('Other answer', $otherAnswer->content);
-				
+		$this->assertEqual(1, count($otherAnswer->comments->data));
+		
 		// List
 		$this->assertEqual(1, count($otherQuestion->answers->data));
 
