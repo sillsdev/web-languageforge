@@ -180,10 +180,8 @@ class Sf
 	public function project_deleteUsers($projectId, $userIds) {
 		// This removes the user from the project.
 		$projectModel = new \models\ProjectModel($projectId);
-		foreach ($userIds as $userId) {
-			$projectModel->removeUser($userId);
-			$projectModel->write();
-		}
+		$command = new \models\commands\ProjectUserCommands($projectModel);
+		$command->removeUsers($userIds);
 	}
 	
 	public function project_listUsers($projectId) {
