@@ -2,8 +2,8 @@
 
 namespace models\commands;
 
+use models\UserModel;
 use models\rights\Roles;
-
 use libraries\palaso\CodeGuard;
 
 class ProjectUserCommands {
@@ -55,21 +55,15 @@ class ProjectUserCommands {
 		return $userId;
 	}
 
-	// TODO
 	public function removeUsers($userIds) {
-		
+		foreach ($userIds as $userId) {
+			$userModel = new UserModel($userId);
+			LinkCommands::UnlinkUserAndProject($this->_projectModel, $userModel);
+			$this->_projectModel->removeUser($userId);
+			$this->_projectModel->write();
+		}
 	}
 	
-	// TODO
-	public function createUserProjectLink($userModel) {
-		
-	}
-	
-	// TODO
-	public function removeUserProjectLink($userModel) {
-		
-	}
-
 }
 
 
