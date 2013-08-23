@@ -36,8 +36,6 @@ ul, ol {
   
 a {  
 	color: #04abe1;  
-	text-decoration: none;  
-	font-weight: bold;
 }
 
 a.arrowed {
@@ -273,14 +271,14 @@ div.three-col-2, div.three-col-3 {
 }
 
 hr {
-	width: auto;
 	height: 1px;
 	background-color: #dcdcdc;
 	border: 0;
-	margin: 20px 0;
 }
 
 /* Form Elements */
+/* Bootstrap */
+/*
 input, textarea {
 	width: auto;
 	height: auto;
@@ -314,7 +312,7 @@ input.error, textarea.error {
 	-webkit-box-shadow: 0px 1px 4px #ddd;
 	box-shadow: 0px 1px 4px #ddd;
 }
-
+*/
 .error-msg {
 	color: #c9262d;
 }
@@ -602,6 +600,10 @@ button i {
 	margin-right: 8px;
 }
 
+a i {
+	margin-right: 8px;
+}
+
 i.icon-remove {
 	color: #f66
 }
@@ -663,6 +665,10 @@ div.sf-breadcrumbs .here {
 }
 
 /* Question Page */
+table#answers tbody tr:hover, table tbody tr.altrow:hover {
+	background-color: #fff;
+}
+
 div#text {
 	overflow: auto;
 	min-height: 400px;
@@ -674,11 +680,13 @@ div#comments {
 	min-height: 400px;
 }
 
-div#comments table td {
-	border: 0;
+div#comments table {
+	width: 100%;
 }
 
-div#comments td {
+div#comments table td {
+	border: 0;
+	padding: 0;
 	vertical-align: top;
 }
 
@@ -691,6 +699,8 @@ div.vote a {
 	display: block;
 	font-size: 42px;
 	color: #999;
+	text-decoration: none;
+	cursor: pointer;
 }
 
 div.vote span {
@@ -726,7 +736,56 @@ div.answer div.by div {
 	color: #666;
 }
 
+div#comments table.comments textarea {
+	width: 95%;
+}
+
 div#comments table.comments td {
 	border-top: 1px solid #eee;
 	border-bottom: 1px solid #eee;
+}
+
+/* New Item under ribbon bar */
+div.new-item form {
+	margin: 20px 0 0 0;
+}
+
+.activity-date {
+	font-size:12px;
+}
+
+.activity-icon {
+	text-align:center;
+}
+
+.activity-content i.icon-quote-left {
+	font-size: 12px;
+	margin-left:5px;
+	position:relative;
+	top: -5px;
+}
+
+ .activity-content i.icon-quote-right {
+	font-size: 12px;
+	position:relative;
+	margin-right: 5px;
+	top: -5px;
+}
+
+.activity-content p {
+	margin-top:10px;
+}
+
+.activity-content hr {
+	margin: 5px 0 5px 0;
+}
+
+.activity-content .indented {
+	margin-left:20px;
+}
+
+
+/* Table / Grid styles */
+table select {
+	margin-bottom: 0px;
 }

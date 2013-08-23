@@ -2,7 +2,11 @@
 
 /* Controllers */
 
-function UserCtrl($scope, userService) {
+angular.module(
+	'sfAdmin.controllers',
+	[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
+)
+.controller('UserCtrl', ['$scope', 'userService', function UserCtrl($scope, userService) {
 
 	$scope.vars = {
 		selectedIndex: -1,
@@ -53,7 +57,7 @@ function UserCtrl($scope, userService) {
 	//$scope.queryUsers();  // And run it right away to fetch the data for our list.
 
 	$scope.selectRow = function(index, record) {
-		console.log("Called selectRow(", index, ", ", record, ")");
+//		console.log("Called selectRow(", index, ", ", record, ")");
 		$scope.vars.selectedIndex = index;
 		if (index < 0) {
 			$scope.vars.record = {};
@@ -66,7 +70,7 @@ function UserCtrl($scope, userService) {
 
 	$scope.$watch("vars.record.id", function(newId, oldId) {
 		// attrs.$observe("userid", function(newval, oldval) {
-		console.log("Watch triggered with oldval '" + oldId + "' and newval '" + newId + "'");
+//		console.log("Watch triggered with oldval '" + oldId + "' and newval '" + newId + "'");
 		if (newId) {
 			userService.read(newId, function(result) {
 				$scope.record = result.data;
@@ -86,8 +90,21 @@ function UserCtrl($scope, userService) {
 		$scope.focusInput();
 	};
 
+	// Roles in list
+	$scope.roles = {
+        'user': {name: 'User'},
+        'system_admin': {name: 'System Admin'}
+	};
+	
+	$scope.roleLabel = function(role) {
+		if (role == undefined) {
+			return '';
+		}
+		return $scope.roles[role].name;
+	};
+
 	$scope.updateRecord = function(record) {
-		console.log("updateRecord() called with ", record);
+//		console.log("updateRecord() called with ", record);
 		if (record === undefined || JSON.stringify(record) == "{}") {
 			// Avoid adding blank records to the database
 			return null; // TODO: Or maybe just return a promise object that will do nothing...?
@@ -96,6 +113,7 @@ function UserCtrl($scope, userService) {
 		var isNewRecord = false;
 		if (record.id === undefined) {
 			isNewRecord = true; // Will be used below
+			record.id = '';
 //			if (record.groups === undefined) {
 //				record.groups = [null]; // TODO: Should we put something into the form to allow setting gropus? ... Later, not now.
 //			}
@@ -106,11 +124,11 @@ function UserCtrl($scope, userService) {
 				record.id = result.data;
 				// TODO Don't do this as a separate API call here. CP 2013-07
 				$scope.changePassword(record);
-			}
+			};
 		} else {
 			afterUpdate = function(result) {
 				// Do nothing
-			}
+			};
 		}
 		userService.update(record, function(result) {
 			afterUpdate(result);
@@ -126,7 +144,7 @@ function UserCtrl($scope, userService) {
 	};
 
 	$scope.removeUsers = function() {
-		console.log("removeUsers");
+//		console.log("removeUsers");
 		var userIds = [];
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			userIds.push($scope.selected[i].id);
@@ -144,9 +162,9 @@ function UserCtrl($scope, userService) {
 	};
 
 	$scope.changePassword = function(record) {
-		console.log("changePassword() called with ", record);
+//		console.log("changePassword() called with ", record);
 		userService.changePassword(record.id, record.password, function(result) {
-			console.log("Password successfully changed.");
+//			console.log("Password successfully changed.");
 		});
 	};
 	
@@ -158,107 +176,9 @@ function UserCtrl($scope, userService) {
 	};
 	$scope.togglePasswordForm = function() {
 		$scope.vars.showPasswordForm = !$scope.vars.showPasswordForm;
-	}
-
-}
-
-function ProjectCtrl($scope, $http, jsonRpc) {
-	$scope.vars = {
-		selectedIndex: -1,
-		editButtonName: "",
-		editButtonIcon: "",
-		recordType: "project",
-		inputfocus: false,
-	};
-	
-	$scope.focusInput = function() {
-		$scope.vars.inputfocus = true;
 	};
 
-	$scope.blurInput = function() {
-		$scope.vars.inputfocus = false;
-	};
-
-	$scope.fetchRecordList = function() {
-		jsonRpc.connect("/api/sf");
-		var promise = jsonRpc.call("project_list", {}, function(result) {
-			if (result.ok) {
-				$scope.data = result.data;
-			} else {
-				$scope.data = {};
-			};
-		});
-		return promise;
-	};
-	$scope.fetchRecordList();  // And run it right away to fetch the data for our list.
-
-	$scope.selectRow = function(index, record) {
-		console.log("Called selectRow(", index, ", ", record, ")");
-		$scope.vars.selectedIndex = index;
-		if (index < 0) {
-			$scope.vars.record = {};
-		} else {
-			$scope.vars.record = record;
-			$scope.vars.editButtonName = "Save";
-			$scope.vars.editButtonIcon = "pencil";
-		}
-	};
-
-	$scope.addRecord = function() {
-		$scope.selectRow(-1); // Make a blank entry in the "User data" area
-		// TODO: Signal the user somehow that he should type in the user data area and hit Save
-		// Right now this is not intuitive, so we need some kind of visual signal
-		$scope.vars.editButtonName = "Add";
-		$scope.vars.editButtonIcon = "plus";
-		$scope.focusInput();
-	};
-
-	$scope.updateRecord = function(record) {
-		console.log("updateRecord() called with ", record);
-		if (record === undefined || record === {}) {
-			// Avoid adding blank records to the database
-			return null; // TODO: Or maybe just return a promise object that will do nothing...?
-		}
-		jsonRpc.connect("/api/sf");
-		var promise = jsonRpc.call("project_update", {"params": record}, function(result) {
-			$scope.fetchRecordList();
-		});
-		if (record.id === undefined) {
-			// We just added a record... so clear the user data area so we can add a new one later
-			$scope.record = {};
-			// And focus the input box so the user can just keep typing
-			$scope.focusInput();
-		} else {
-			// We just edited a record, so remove focus from the user data area
-			$scope.blurInput();
-		}
-		return promise;
-	};
-
-	$scope.deleteRecord = function(record) {
-		console.log("deleteRecord() called with ", record);
-		if ($scope.vars.selectedIndex < 0) {
-			// TODO: It would be better to really disable the button, but this quick hack will work for now
-			console.log("Deleting nothing since nothing is really selected");
-			return null;
-		}
-		jsonRpc.connect("/api/sf");
-		var promise = jsonRpc.call("project_delete", {"id": record.id}, function(result) {
-			$scope.fetchRecordList();
-			$scope.selectRow(-1);
-		});
-		$scope.vars.editButtonName = "";
-		$scope.vars.editButtonIcon = "";
-		return promise;
-	};
-}
-
-angular.module(
-	'sfAdmin.controllers',
-	[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
-)
-.controller('UserCtrl', ['$scope', 'userService', UserCtrl])
-.controller('ProjectCtrl', ['$scope', '$http', 'jsonRpc', ProjectCtrl])
+}])
 .controller('PasswordCtrl', ['$scope', 'jsonRpc', function($scope, jsonRpc) {
 	$scope.changePassword = function(record) {
 		// Validation

@@ -2,6 +2,10 @@
 
 namespace models;
 
+use models\rights\Roles;
+
+use models\mapper\IdReference;
+
 use models\mapper\MongoMapper;
 
 use models\mapper\Id;
@@ -11,11 +15,9 @@ require_once(APPPATH . '/models/ProjectModel.php');
 
 class UserModelMongoMapper extends \models\mapper\MongoMapper
 {
-	public static function instance()
-	{
+	public static function instance() {
 		static $instance = null;
-		if (null === $instance)
-		{
+		if (null === $instance) {
 			$instance = new UserModelMongoMapper(SF_DATABASE, 'users');
 		}
 		return $instance;
@@ -25,8 +27,7 @@ class UserModelMongoMapper extends \models\mapper\MongoMapper
 
 class UserModel extends \models\mapper\MapperModel
 {
-	public function __construct($id = '')
-	{
+	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->projects = new ReferenceList();
 		parent::__construct(UserModelMongoMapper::instance(), $id);
@@ -36,8 +37,7 @@ class UserModel extends \models\mapper\MapperModel
 	 *	Removes a user from the collection
 	 *  Project references to this user are also removed
 	 */
-	public function remove()
-	{
+	public function remove() {
 		UserModelMongoMapper::instance()->remove($this->id->asString());
 	}
 
@@ -78,7 +78,7 @@ class UserModel extends \models\mapper\MapperModel
 	}
 	
 	/**
-	 * @var string
+	 * @var IdReference
 	 */
 	public $id;
 	
@@ -86,7 +86,6 @@ class UserModel extends \models\mapper\MapperModel
 	 * @var string
 	 */
 	public $name;
-	
 	
 	/**
 	 * @var string
@@ -97,6 +96,12 @@ class UserModel extends \models\mapper\MapperModel
 	 * @var string
 	 */
 	public $email;
+	
+	/**
+	 * @var string
+	 * @see Roles
+	 */
+	public $role;
 	
 	//public $groups;
 	
@@ -175,7 +180,7 @@ class UserListModel extends \models\mapper\MapperListModel
 		parent::__construct(
 			UserModelMongoMapper::instance(),
 			array('name' => array('$regex' => '')),
-			array('username', 'email', 'name', 'avatar_ref')
+			array('username', 'email', 'name', 'avatar_ref', 'role')
 		);
 	}
 	

@@ -10,17 +10,22 @@ class MongoTestEnvironment
 	 */
 	private $_db;
 	
-	public function __construct()
-	{
+	/**
+	 * 
+	 * @var array
+	 */
+	private $_projectDbs;
+	
+	public function __construct() {
 		$this->_db = \models\mapper\MongoStore::connect(SF_DATABASE);
+		$this->_projectDbs = array();
 	}
 
 	/**
 	 * Removes all the collections from the mongo database.
 	 * Hopefully this is only ever called on the scriptureforge_test database.
 	 */
-	public function clean()
-	{
+	public function clean() {
 		foreach ($this->_db->listCollections() as $collection)
 		{
 			$collection->drop();
@@ -28,6 +33,11 @@ class MongoTestEnvironment
 		$projectModel = new MockProjectModel();
 		$projectDb = \models\mapper\MongoStore::connect($projectModel->databaseName());
 		$projectDb->drop();
+		
+		foreach ($this->_projectDbs as $databaseName) {
+			$projectDb = \models\mapper\MongoStore::connect($databaseName);
+			$projectDb->drop();
+		}
 	}
 
 	/**
@@ -54,6 +64,7 @@ class MongoTestEnvironment
 		$userModel->username = $username;
 		$userModel->name = $name;
 		$userModel->email = $email;
+		$userModel->avatar_ref = $username . ".png";
 		return $userModel->write();
 	}
 	
@@ -66,7 +77,28 @@ class MongoTestEnvironment
 		$projectModel = new models\ProjectModel();
 		$projectModel->projectname = $name;
 		$projectModel->write();
+		array_push($this->_projectDbs, $projectModel->databaseName());
 		return $projectModel;
+	}
+	
+	/**
+	 * Returns a string very much like those used for MongoIds
+	 * @return string
+	 */
+	public static function mockId() {
+		$id = new MongoId();
+		return (string)$id;
+	}
+	
+	/**
+	 * Returns a string of utf-8 usx xml
+	 * @return string
+	 */
+	public static function usxSample() {
+		global $rootPath;
+		$testFilePath = $rootPath . 'docs/usx/043JHN.usx';
+		$usx = file_get_contents($testFilePath);
+		return $usx;
 	}
 	
 	public function inhibitErrorDisplay() {

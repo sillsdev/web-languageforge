@@ -8,8 +8,8 @@ class LinkCommands {
 	 * @param ProjectModel $project
 	 * @param UserModel $user
 	 */
-	static function LinkUserAndProject($project, $user) {
-		$project->addUser($user->id->asString());
+	static function LinkUserAndProject($project, $user, $role) {
+		$project->addUser($user->id->asString(), $role);
 		$user->addProject($project->id->asString());
 		$project->write();
 		$user->write();

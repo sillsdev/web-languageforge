@@ -1,5 +1,7 @@
 <?php
 
+use models\dto\UsxHelper;
+
 use models\TextListModel;
 
 use models\mapper\MongoStore;
@@ -19,14 +21,61 @@ class TestTextModel extends UnitTestCase {
 
 	private $_someTextId;
 
-	function __construct()
-	{
+	function __construct() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 	}
 
+	function testCRUD_Works() {
+		$e = new MongoTestEnvironment();
+		$projectModel = new MockProjectModel();
+		
+		// List
+		$list = new TextListModel($projectModel);
+		$list->read();
+		$this->assertEqual(0, $list->count);
+		
+		// Create
+		$text = new TextModel($projectModel);
+		$text->title = "Some Text";
+		$usx = MongoTestEnvironment::usxSample();
+		$text->content = $usx;
+		$id = $text->write();
+		$this->assertNotNull($id);
+		$this->assertIsA($id, 'string');
+		$this->assertEqual($id, $text->id->asString());
+		
+		// Read back
+		$otherText = new TextModel($projectModel, $id);
+		$this->assertEqual($id, $otherText->id->asString());
+		$this->assertEqual('Some Text', $otherText->title);
+		$this->assertEqual($usx, $otherText->content);
+		
+		// Update
+		$otherText->title = 'Other Text';
+		$otherText->write();
+		
+		// Read back
+		$otherText = new TextModel($projectModel, $id);
+		$this->assertEqual('Other Text', $otherText->title);
+		
+		// List
+		$list->read();
+		$this->assertEqual(1, $list->count);
+		
+		// Delete
+		TextModel::remove($projectModel->databaseName(), $id);
+		
+		// List
+		$list->read();
+		$this->assertEqual(0, $list->count);
+		
+	}
+	
 	function testUpdateThenRemove_NewProject_CreatesThenRemovesProjectDatabase() {
 		$e = new MongoTestEnvironment();
+		$e->clean();
+		
 		$projectModel = $e->createProject(SF_TESTPROJECT);
 		$databaseName = $projectModel->databaseName();
 		
@@ -41,48 +90,6 @@ class TestTextModel extends UnitTestCase {
 		$projectModel->remove();
 		
 		$this->assertFalse(MongoStore::hasDB($databaseName));
-	}
-
-	function testWrite_ReadBackSame()
-	{
-		$model = new TextModel(new MockProjectModel());
-		$model->title = "Some Title";
-		$id = $model->write();
-		$this->assertNotNull($id);
-		$this->assertIsA($id, 'string');
-		$this->assertEqual($id, $model->id->asString());
-		$otherModel = new TextModel(new MockProjectModel(), $id);
-		$this->assertEqual($id, $otherModel->id->asString());
-		$this->assertEqual('Some Title', $otherModel->title);
-
-		$this->_someTextId = $id;
-	}
-	
-	function testWriteRemove_ListCorrect() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-		$projectModel = new MockProjectModel();
-
-		$list = new TextListModel($projectModel);
-		$list->read();
-		$this->assertEqual(0, $list->count);
-		$this->assertEqual(null, $list->entries);
-		
-		$text = new TextModel($projectModel);
-		$text->title = "Some Title";
-		$id = $text->write();
-
-		$list = new TextListModel($projectModel);
-		$list->read();
-		$this->assertEqual(1, $list->count);
-		$this->assertEqual(array(array('title' => 'Some Title', 'id' => $id)), $list->entries);
-
-		TextModel::remove($projectModel->databaseName(), $id);
-		
-		$list = new TextListModel($projectModel);
-		$list->read();
-		$this->assertEqual(0, $list->count);
-		$this->assertEqual(null, $list->entries);
 	}
 
 }
