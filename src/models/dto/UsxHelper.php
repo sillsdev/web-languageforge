@@ -81,6 +81,10 @@ class UsxHelper {
 	
 	// Handlers
 	private function onParagraphOpen($style) {
+		if ($style == 'ide') {
+			$this->_stateCData = false;
+			return;
+		}
 		$this->_stateCData = true;
 		if ($style != 'p') {
 			$this->_out .= "<p class=\"$style\">";
