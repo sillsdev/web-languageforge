@@ -1,5 +1,8 @@
 <?php 
 
+use models\rights\Realm;
+use models\rights\Roles;
+
 require_once 'secure_base.php';
 
 class App extends Secure_base {
@@ -10,7 +13,17 @@ class App extends Secure_base {
 		} else {
 			$data = array();
 			$data['appName'] = $app;
-			$data['jsSessionVars'] = '{"userid": "' . $this->session->userdata('user_id') . '"}';
+			
+			$sessionData = array();
+			$sessionData['userId'] = (string)$this->session->userdata('user_id');
+			$role = $this->_user->role;
+			if (empty($role)) {
+				$role = Roles::USER;
+			}
+			$sessionData['userSiteRights'] = Roles::getRightsArray(Realm::SITE, $role);
+			$jsonSessionData = json_encode($sessionData);
+			$data['jsonSession'] = $jsonSessionData;
+
 			$data['jsCommonFiles'] = array();
 			self::addJavascriptFiles("angular-app/common/js", $data['jsCommonFiles']);
 			$data['jsProjectFiles'] = array();

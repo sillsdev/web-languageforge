@@ -1,0 +1,53 @@
+<h2 style="font-weight:normal">Settings for {{project.name}}</h2>
+<tabset>
+	<tab heading="Users">
+		<form ng-show="rights.showControlBar" class="control-bar form-inline">
+			<button ng-show="rights.deleteOther" class="btn" ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Users</button>
+			<button ng-show="rights.create" class="btn" ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add New User</button>
+		</form>
+		<div class="new-item" collapse="!newUserCollapsed">
+			<form class="well form-inline">
+			<typeahead class="typeahead" items="user" term="term" search="queryUser(term)" select="selectUser(item)">
+				<ul>
+					<li typeahead-item="user" ng-repeat="user in users" class="typeahead-item">
+						<img width="32px" ng-src="{{imageSource(user.avatarRef)}}" class="left">
+						<p class="name">{{user.name}}</p>
+						<p class="email">{{user.email}}</p>
+					</li>
+				</ul>
+			</typeahead>
+			<button ng-model="addMode" class="btn" ng-click="addProjectUser()"><i ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+			</form>
+		</div>
+		<div listview search="queryProjectUsers()" items="project.users" visible-items="visibleProjectUsers" select="">
+		<!-- <div listview search="queryProjectUsers()" select=""> -->
+		<table class="table" style="width: 100%">
+			<thead>
+			<tr>
+				<th></th>
+				<th>Username</th>
+				<th>Full Name</th>
+				<th>Role</th>
+				</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="user in visibleProjectUsers" ng-class="{active: isSelected(user)}" >
+				<td width="16px" align="center"><input ng-show="rights.deleteOther" type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
+				<td>{{user.username}}</td>
+				<td>{{user.name}}</td>
+				<td><select ng-model="user.role" ng-change="onRoleChange(user)" ng-options="role.key as role.name for role in roles" /></td>
+			</tr>
+			</tbody>
+		</table>		
+		</div>
+	</tab>
+	<tab heading="Project">
+	<form class="well" ng-submit="updateProject()">
+	<fieldset>
+		<label>Project Name</label>
+		<input type="text" placeholder="(project name)" ng-model="project.name"/>
+	</fieldset>
+	<button type="submit" class="btn">Save</button>
+	</form>
+	</tab>
+</tabset>

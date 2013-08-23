@@ -19,21 +19,35 @@ angular.module('sfchecks',
     		}
 	    );
 	    $routeProvider.when(
-    		'/project/:projectName/:projectId', 
+    		'/project/:projectId', 
     		{
     			templateUrl: '/angular-app/sfchecks/partials/project.html', 
     			controller: 'ProjectCtrl'
     		}
     	);
 	    $routeProvider.when(
-    		'/project/:projectName/:projectId/:textName/:textId', 
+	    		'/project/:projectId/settings', 
+	    		{
+	    			templateUrl: '/angular-app/sfchecks/partials/project-settings.html', 
+	    			controller: 'ProjectSettingsCtrl'
+	    		}
+	    	);
+	    $routeProvider.when(
+    		'/project/:projectId/:textId', 
     		{
     			templateUrl: '/angular-app/sfchecks/partials/questions.html', 
     			controller: 'QuestionsCtrl'
     		}
     	);
 	    $routeProvider.when(
-    		'/project/:projectName/:projectId/:textName/:textId/:questionName/:questionId',
+	    		'/project/:projectId/:textId/settings', 
+	    		{
+	    			templateUrl: '/angular-app/sfchecks/partials/questions-settings.html', 
+	    			controller: 'QuestionsSettingsCtrl'
+	    		}
+	    	);
+	    $routeProvider.when(
+    		'/project/:projectId/:textId/:questionId',
     		{
     			templateUrl: '/angular-app/sfchecks/partials/question.html', 
     			controller: 'QuestionCtrl'
@@ -47,8 +61,12 @@ angular.module('sfchecks',
 		$scope.routeParams = $routeParams;
 	}])
 	.controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService', function($scope, $rootScope, breadcrumbService) {
+		$scope.idmap = breadcrumbService.idmap;
 		$rootScope.$on('$routeChangeSuccess', function(event, current) {
 			$scope.breadcrumbs = breadcrumbService.read();
 		});
+		$scope.$watch('idmap', function(oldVal, newVal, scope) {
+			$scope.breadcrumbs = breadcrumbService.read();
+		}, true);
 	}])
 	;

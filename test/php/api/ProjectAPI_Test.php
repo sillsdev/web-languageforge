@@ -15,7 +15,7 @@ class TestProjectAPI extends UnitTestCase {
 		// Create
 		$param = array(
 			'id' => '',
-			'projectname' =>'SomeProject',
+			'projectname' => SF_TESTPROJECT,
 			'language' => 'SomeLanguage'
 		);
 		$id = $api->project_update($param);
@@ -25,7 +25,7 @@ class TestProjectAPI extends UnitTestCase {
 		// Read
 		$result = $api->project_read($id);
 		$this->assertNotNull($result['id']);
-		$this->assertEqual('SomeProject', $result['projectname']);
+		$this->assertEqual(SF_TESTPROJECT, $result['projectname']);
 		$this->assertEqual('SomeLanguage', $result['language']);
 		
 		// Update

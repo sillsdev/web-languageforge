@@ -1,5 +1,17 @@
 <?php
 
+use models\dto\ProjectSettingsDto;
+
+use models\ProjectModel;
+
+use models\dto\ActivityListDto;
+
+use models\commands\ActivityCommands;
+
+use models\AnswerModel;
+
+use models\QuestionModel;
+
 use libraries\palaso\CodeGuard;
 
 use libraries\palaso\JsonRpcServer;
@@ -10,6 +22,7 @@ use models\commands\UserCommands;
 use models\mapper\Id;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
+use models\mapper\MongoStore;
 
 require_once(APPPATH . 'config/sf_config.php');
 
@@ -20,21 +33,16 @@ require_once(APPPATH . 'models/UserModel.php');
 
 class Sf
 {
+	/**
+	 * @var string
+	 */
+	private $_userId;
 	
-	public function __construct()
-	{
+	public function __construct($controller) {
+		$this->_userId = (string)$controller->session->userdata('user_id');
+
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
-// 		ini_set('display_errors', 0);
-	}
-	
-	private function decode($model, $data) {
-		$decoder = new JsonDecoder();
-		$decoder->decode($model, $data);
-	}
-	
-	private function encode($model) {
-		$encoder = new JsonEncoder();
-		return $encoder->encode($model);
+ 		ini_set('display_errors', 0);
 	}
 	
 	//---------------------------------------------------------------
@@ -48,7 +56,7 @@ class Sf
 	 */
 	public function user_update($params) {
 		$user = new \models\UserModel();
-		$this->decode($user, $params);
+		JsonDecoder::decode($user, $params);
 		$result = $user->write();
 		return $result;
 	}
@@ -59,7 +67,7 @@ class Sf
 	 */
 	public function user_read($id) {
 		$user = new \models\UserModel($id);
-		return $this->encode($user);
+		return JsonEncoder::encode($user);
 	}
 	
 	/**
@@ -105,8 +113,26 @@ class Sf
 	 */
 	public function project_update($object) {
 		$project = new \models\ProjectModel();
-		$this->decode($project, $object);
+		$id = $object['id'];
+		$isNewProject = ($id == '');
+		$oldDBName = '';
+		if (!$isNewProject) {
+			$project->read($id);
+			// This is getting complex; it probably belongs in ProjectCommands. TODO: Rewrite it to put it there. RM 2013-08
+			$oldDBName = $project->databaseName();
+		}
+		JsonDecoder::decode($project, $object);
+		$newDBName = $project->databaseName();
+		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
+			if (MongoStore::hasDB($newDBName)) {
+				throw new \Exception("New project name " . $object->projectname . " already exists. Not renaming.");
+			}
+			MongoStore::renameDB($oldDBName, $newDBName);
+		}
 		$result = $project->write();
+		if ($isNewProject) {
+			//ActivityCommands::addProject($project); // TODO: Determine if any other params are needed. RM 2013-08
+		}
 		return $result;
 	}
 
@@ -116,7 +142,7 @@ class Sf
 	 */
 	public function project_read($id) {
 		$project = new \models\ProjectModel($id);
-		return $this->encode($project);
+		return JsonEncoder::encode($project);
 	}
 	
 	/**
@@ -135,29 +161,32 @@ class Sf
 		return $list;
 	}
 	
+	public function project_list_dto() {
+		// Eventually this will need to get the current user id and do:
+		//return \models\dto\ProjectListDto::encode($userId);
+		return \models\dto\ProjectListDto::encode();
+	}
+	
 	public function project_readUser($projectId, $userId) {
 		throw new \Exception("project_readUser NYI");
 	}
 	
 	public function project_updateUser($projectId, $object) {
-		
 		$projectModel = new \models\ProjectModel($projectId);
 		$command = new \models\commands\ProjectUserCommands($projectModel);
-		return $command->addUser($object);
+		return $command->updateUser($object);
 	}
 	
 	public function project_deleteUsers($projectId, $userIds) {
 		// This removes the user from the project.
 		$projectModel = new \models\ProjectModel($projectId);
-		foreach ($userIds as $userId) {
-			$projectModel->removeUser($userId);
-			$projectModel->write();
-		}
+		$command = new \models\commands\ProjectUserCommands($projectModel);
+		$command->removeUsers($userIds);
 	}
 	
 	public function project_listUsers($projectId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		return $projectModel->listUsers();
+		$result = ProjectSettingsDto::encode($projectId, $this->_userId);
+		return $result;
 	}
 	
 	//---------------------------------------------------------------
@@ -167,14 +196,22 @@ class Sf
 	public function text_update($projectId, $object) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel);
-		$this->decode($textModel, $object);
-		return $textModel->write();
+		JsonDecoder::decode($textModel, $object);
+		$add_text = false;
+ 		if ($textModel->id->asString() == '') {
+ 			$add_text = true;
+ 		}
+		$textId = $textModel->write();
+		if ($add_text) {
+ 			ActivityCommands::addText($projectModel, $textId, $textModel);
+		}
+ 		return $textId;
 	}
 	
 	public function text_read($projectId, $textId) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel, $textId);
-		return $this->encode($textModel);
+		return JsonEncoder::encode($textModel);
 	}
 	
 	public function text_delete($projectId, $textIds) {
@@ -188,6 +225,10 @@ class Sf
 		return $textListModel;
 	}
 	
+	public function text_list_dto($projectId) {
+		return \models\dto\TextListDto::encode($projectId, $this->_userId);
+	}
+	
 	//---------------------------------------------------------------
 	// Question / Answer / Comment API
 	//---------------------------------------------------------------
@@ -195,15 +236,22 @@ class Sf
 	public function question_update($projectId, $object) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$questionModel = new \models\QuestionModel($projectModel);
-		// TODO Watch the decode below. QuestionModel contains a textRef which needs to be decoded correctly. CP 2013-07
-		$this->decode($questionModel, $object);
-		return $questionModel->write();
+		$isNewQuestion = ($object['id'] == '');
+		if (!$isNewQuestion) {
+			$questionModel->read($object['id']);
+		}
+		JsonDecoder::decode($questionModel, $object);
+		$questionId = $questionModel->write();
+		if ($isNewQuestion) {
+			ActivityCommands::addQuestion($projectModel, $questionId, $questionModel);
+		}
+		return $questionId;
 	}
 	
 	public function question_read($projectId, $questionId) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$questionModel = new \models\QuestionModel($projectModel, $questionId);
-		return $questionModel;
+		return JsonEncoder::encode($questionModel);
 	}
 	
 	public function question_delete($projectId, $questionIds) {
@@ -215,6 +263,52 @@ class Sf
 		$questionListModel = new \models\QuestionListModel($projectModel, $textId);
 		$questionListModel->read();
 		return $questionListModel;
+	}
+	
+	public function question_update_answer($projectId, $questionId, $answer) {
+		return QuestionCommands::updateAnswer($projectId, $questionId, $answer, $this->_userId);
+	}
+	
+	public function question_update_answer_score($projectId, $questionId, $answerId, $score) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionModel = new QuestionModel($projectModel, $questionId);
+		$answerModel = $questionModel->readAnswer($answerId);
+		$lastScore = $answerModel->score;
+		$currentScore = intval($score);
+		$answerModel->score = $currentScore;
+		$questionModel->writeAnswer($answerModel);
+		if ($currentScore > $lastScore) {
+			ActivityCommands::updateScore($projectModel, $questionId, $answerId, $this->_userId, 'increase');
+		} else {
+			ActivityCommands::updateScore($projectModel, $questionId, $answerId, $this->_userId, 'decrease');
+		}
+	}
+	
+	public function question_remove_answer($projectId, $questionId, $answerId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId);
+	}
+	
+	public function question_update_comment($projectId, $questionId, $answerId, $comment) {
+		return QuestionCommands::updateComment($projectId, $questionId, $answerId, $comment, $this->_userId);
+	}
+	
+	public function question_remove_comment($projectId, $questionId, $answerId, $commentId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		return QuestionModel::removeComment($projectModel->databaseName(), $questionId, $answerId, $commentId);
+	}
+	
+	public function question_comment_dto($projectId, $questionId) {
+		return \models\dto\QuestionCommentDto::encode($projectId, $questionId, $this->_userId);
+	}
+	
+	public function question_list_dto($projectId, $textId) {
+		return \models\dto\QuestionListDto::encode($projectId, $textId, $this->_userId);
+	}
+	
+	// ---------------- Activity Feed -----------------
+	public function activity_list_dto() {
+		return \models\dto\ActivityListDto::getActivityForUser($this->_userId);
 	}
 	
 }

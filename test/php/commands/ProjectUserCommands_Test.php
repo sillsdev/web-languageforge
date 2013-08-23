@@ -28,7 +28,7 @@ class TestProjectUserCommands extends UnitTestCase {
 			"name" => "Some User"
 		);
 		$command = new models\commands\ProjectUserCommands($project);
-		$userId = $command->addUser($object);
+		$userId = $command->updateUser($object);
 		$this->assertIsA($userId, 'string');
 		
 		$user = new models\UserModel($userId);
