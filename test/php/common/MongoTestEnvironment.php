@@ -16,8 +16,7 @@ class MongoTestEnvironment
 	 */
 	private $_projectDbs;
 	
-	public function __construct()
-	{
+	public function __construct() {
 		$this->_db = \models\mapper\MongoStore::connect(SF_DATABASE);
 		$this->_projectDbs = array();
 	}
@@ -26,8 +25,7 @@ class MongoTestEnvironment
 	 * Removes all the collections from the mongo database.
 	 * Hopefully this is only ever called on the scriptureforge_test database.
 	 */
-	public function clean()
-	{
+	public function clean() {
 		foreach ($this->_db->listCollections() as $collection)
 		{
 			$collection->drop();
@@ -90,6 +88,17 @@ class MongoTestEnvironment
 	public static function mockId() {
 		$id = new MongoId();
 		return (string)$id;
+	}
+	
+	/**
+	 * Returns a string of utf-8 usx xml
+	 * @return string
+	 */
+	public static function usxSample() {
+		global $rootPath;
+		$testFilePath = $rootPath . 'docs/usx/043JHN.usx';
+		$usx = file_get_contents($testFilePath);
+		return $usx;
 	}
 	
 	public function inhibitErrorDisplay() {
