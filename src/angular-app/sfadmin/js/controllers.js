@@ -90,6 +90,12 @@ angular.module(
 		$scope.focusInput();
 	};
 
+	// Roles in list
+	$scope.roles = [
+        {key: 'user', name: 'User'},
+        {key: 'system_admin', name: 'System Admin'}
+    ];
+
 	$scope.updateRecord = function(record) {
 		console.log("updateRecord() called with ", record);
 		if (record === undefined || JSON.stringify(record) == "{}") {

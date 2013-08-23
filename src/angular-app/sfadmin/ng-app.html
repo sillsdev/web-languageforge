@@ -46,6 +46,10 @@
 					<input type="text" placeholder="(no email)" ng-model="record.email"/>
 				</div>
 				<div>
+					<label>Role</label>
+					<select ng-model="record.role" ng-options="role.key as role.name for role in roles"></select>
+				</div>
+				<div>
 					<label style="margin-bottom:20px"><input type="checkbox" ng-model="record.active"/> Is Active</label>
 				</div>
 				<a href="" ng-click="togglePasswordForm(); vars.inputfocus = false">Click to change password</a>
