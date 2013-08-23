@@ -1,6 +1,6 @@
 <h2 style="font-weight:normal">Settings for {{textTitle}}</h2>
 <div ng-switch on="rights.editOther">
-<tabset ng-switch-when="undefined"> <!-- should be when="true" once a rights list is made available from the DTO; leaving as "undefined" during development -->
+<tabset ng-switch-when="true">
 	<tab heading="Edit Text">
 		<form class="well " ng-submit="updateText(editedText)">
 		<label>Title</label>

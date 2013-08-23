@@ -123,9 +123,10 @@ angular.module(
 		};
 
 	}])
-	.controller('QuestionsSettingsCtrl', ['$scope', 'questionsService', 'textService', '$routeParams', function($scope, questionsService, textService, $routeParams) {
+	.controller('QuestionsSettingsCtrl', ['$scope', 'textService', 'sessionService', '$routeParams', function($scope, textService, ss, $routeParams) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
+		var dto;
 		$scope.projectId = projectId;
 		$scope.textId = textId;
 		$scope.editedText = {
@@ -134,11 +135,14 @@ angular.module(
 		// Get name from text service. This really should be in the DTO, but this will work for now.
 		// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08
 		var text;
-		textService.read($scope.projectId, $scope.textId, function(result) {
+		textService.settings_dto($scope.projectId, $scope.textId, function(result) {
 			if (result.ok) {
-				text = result.data;
-				$scope.textTitle = text.title;
-				$scope.editedText.title = text.title;
+				$scope.dto = result.data;
+				$scope.textTitle = $scope.dto.text.title;
+				$scope.editedText.title = $scope.dto.text.title;
+				$scope.rights = {
+					editOther: ss.hasRight($scope.dto.rights, ss.domain.TEXTS, ss.operation.EDIT_OTHER),
+				};
 			}
 		});
 

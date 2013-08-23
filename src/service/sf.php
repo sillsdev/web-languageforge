@@ -228,6 +228,10 @@ class Sf
 	public function text_list_dto($projectId) {
 		return \models\dto\TextListDto::encode($projectId, $this->_userId);
 	}
+
+	public function text_settings_dto($projectId, $textId) {
+		return \models\dto\TextSettingsDto::encode($projectId, $textId, $this->_userId);
+	}
 	
 	//---------------------------------------------------------------
 	// Question / Answer / Comment API
