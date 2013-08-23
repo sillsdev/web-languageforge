@@ -87,6 +87,11 @@ class ProjectModel extends \models\mapper\MapperModel
 		$userList->read();
 		for ($i = 0, $l = count($userList->entries); $i < $l; $i++) {
 			$userId = $userList->entries[$i]['id'];
+			if (!key_exists($userId, $this->users->data)) {
+				$projectId = $this->id->asString();
+				error_log("User $userId is not a member of project $projectId");
+				continue;
+			}
 			$userList->entries[$i]['role'] = $this->users->data[$userId]->role;
 		}
  		return $userList;

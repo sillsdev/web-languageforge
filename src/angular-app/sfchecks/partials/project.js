@@ -118,8 +118,8 @@ angular.module(
 		};
 
 	}])
-	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 
-	                                    function($scope, $location, $routeParams, ss, bcs, linkService) {
+	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService',
+	                                 function($scope, $location, $routeParams, bcs, userService, projectService, ss) {
 		var projectId = $routeParams.projectId;
 		$scope.project = {};
 		console.log("project id", projectId);
@@ -128,9 +128,21 @@ angular.module(
 		if (bcs.idmap[projectId] != undefined) {
 			$scope.project.name = bcs.idmap[projectId].name;			
 		}
-	}])
-	.controller('ProjectUsersCtrl', ['$scope', '$location', 'userService', 'projectService', 'sessionService',
-	                                 function($scope, $location, userService, projectService, ss) {
+
+		$scope.updateProject = function() {
+			var newProject = {
+				id: $scope.project.id,
+				projectname: $scope.project.name
+			};
+			console.log('About to update project with data', newProject);
+			projectService.update(newProject, function(result) {
+				console.log(result);
+				if (result.ok) {
+					console.log('Updated OK');
+				}
+			});
+		};
+	
 		// ----------------------------------------------------------
 		// List
 		// ----------------------------------------------------------
@@ -152,8 +164,9 @@ angular.module(
 		$scope.queryProjectUsers = function() {
 			projectService.listUsers($scope.project.id, function(result) {
 				if (result.ok) {
-					$scope.projectUsers = result.data.entries;
-					$scope.projectUserCount = result.data.count;
+					$scope.project.name = result.data.projectName;
+					$scope.project.users = result.data.entries;
+					$scope.project.userCount = result.data.count;
 					// Rights
 					var rights = result.data.rights;
 					$scope.rights = {};
