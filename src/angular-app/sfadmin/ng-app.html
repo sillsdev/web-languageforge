@@ -17,11 +17,13 @@
 				<th></th>
 				<th>Username</th>
 				<th>Full Name</th>
+				<th>Role</th>
 			</tr>
 			<tr ng-repeat="user in visibleUsers" ng-class="{active: isSelected(user)}" ng-click="selectRow($index, user)" >
 				<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
 				<td>{{user.username}}</td>
 				<td>{{user.name}}</td>
+				<td>{{roleLabel(user.role)}}</td>
 			</tr>
 		</table>
 		</div>
@@ -47,7 +49,7 @@
 				</div>
 				<div>
 					<label>Role</label>
-					<select ng-model="record.role" ng-options="role.key as role.name for role in roles"></select>
+					<select ng-model="record.role" ng-options="key as role.name for (key, role) in roles"></select>
 				</div>
 				<div>
 					<label style="margin-bottom:20px"><input type="checkbox" ng-model="record.active"/> Is Active</label>
