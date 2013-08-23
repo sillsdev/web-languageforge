@@ -28,7 +28,7 @@ angular.module(
 		var projectId = $routeParams.projectId;
 		var questionId = $routeParams.questionId;
 		questionService.read(projectId, questionId, function(result) {
-			console.log('questionService.read(', projectId, questionId, ') =>', result)
+			console.log('questionService.read(', projectId, questionId, ')');
 			if (result.ok) {
 				$scope.text = result.data.text;
 				$scope.question = result.data.question;
@@ -216,7 +216,6 @@ angular.module(
 		};
 		
 		$scope.submitComment = function(answerId, answer) {
-			console.log('submitComment(', answerId, answer, ')');
 			var newComment = {
 				id: '',
 				content: $scope.newComment.content,
@@ -233,7 +232,6 @@ angular.module(
 		
 		$scope.commentDelete = function(answer, commentId) {
 			console.log('delete ', commentId);
-			console.log(projectId, questionId, answer, commentId);
 			questionService.remove_comment(projectId, questionId, answer.id, commentId, function(result) {
 				if (result.ok) {
 					console.log('remove_comment ok');

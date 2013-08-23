@@ -134,9 +134,7 @@ angular.module(
 				id: $scope.project.id,
 				projectname: $scope.project.name
 			};
-			console.log('About to update project with data', newProject);
 			projectService.update(newProject, function(result) {
-				console.log(result);
 				if (result.ok) {
 					console.log('Updated OK');
 				}
