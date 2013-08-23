@@ -13,9 +13,8 @@ class TestUsxHelper extends UnitTestCase {
 	}
 
 	function testAsHtml_works() {
-		global $rootPath;
-		$testFilePath = $rootPath . 'docs/usx/043JHN.usx';
-		$usx = file_get_contents($testFilePath);
+		$usx = MongoTestEnvironment::usxSample();
+
 		$usxHelper = new UsxHelper($usx);
 		$result = $usxHelper->toHtml();
 		echo $result;

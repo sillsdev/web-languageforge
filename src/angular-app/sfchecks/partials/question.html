@@ -1,6 +1,5 @@
 <h2>{{question.title}}</h2>
-<div id="text" class="span5">
-	{{text.content}}
+<div id="text" class="span5" ng-bind-html-unsafe="text.content">
 </div>
 <div id="comments" class="span6">
 	<div class="question">

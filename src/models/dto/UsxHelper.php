@@ -48,8 +48,8 @@ class UsxHelper {
 				$this->onChar($attributes['STYLE']);
 				break;
 			default:
-				echo 'to:';
-				var_dump($tag, $attributes);
+// 				echo 'to:';
+// 				var_dump($tag, $attributes);
 				
 		}
 	}
@@ -64,8 +64,8 @@ class UsxHelper {
 			case 'CHAR':
 				break;
 			default:
-				echo 'tc:';
-				var_dump($tag);
+// 				echo 'tc:';
+// 				var_dump($tag);
 				
 		}
 		array_pop($this->_tagStack);

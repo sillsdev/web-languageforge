@@ -1,5 +1,7 @@
 <?php
 
+use models\dto\UsxHelper;
+
 use models\TextListModel;
 
 use models\mapper\MongoStore;
@@ -36,6 +38,8 @@ class TestTextModel extends UnitTestCase {
 		// Create
 		$text = new TextModel($projectModel);
 		$text->title = "Some Text";
+		$usx = MongoTestEnvironment::usxSample();
+		$text->content = $usx;
 		$id = $text->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
@@ -45,6 +49,7 @@ class TestTextModel extends UnitTestCase {
 		$otherText = new TextModel($projectModel, $id);
 		$this->assertEqual($id, $otherText->id->asString());
 		$this->assertEqual('Some Text', $otherText->title);
+		$this->assertEqual($usx, $otherText->content);
 		
 		// Update
 		$otherText->title = 'Other Text';

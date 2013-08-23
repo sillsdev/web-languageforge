@@ -33,7 +33,7 @@ class QuestionCommentDto
 		$dto = array();
 		$dto['question'] = $question;
 		$dto['text'] = JsonEncoder::encode($textModel);
-		//$dto['text']['content'] = $usxHelper->toHtml();
+		$dto['text']['content'] = $usxHelper->toHtml();
 		$dto['project'] = JsonEncoder::encode($projectModel);
 		$dto['rights'] = RightsHelper::encode($userModel, $projectModel);
 		
