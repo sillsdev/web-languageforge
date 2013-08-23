@@ -6,6 +6,19 @@
 	<div>
 	{{question.description}}
 	</div>
+	<a class="btn-link" ng-click="toggleQuestionEditor()">edit</a>
+	<div class="edit-question" collapse="editQuestionCollapsed">
+		<form class="well">
+		<fieldset>
+		<label>Question</label>
+		<input type="text" ng-model="editedQuestion.title" class="span4" rows="4" placeholder="the question"></textarea>
+		<label></label>
+		<textarea ng-model="editedQuestion.description" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
+		<label></label>
+		<button type="submit" class="btn" ng-click="updateQuestion(editedQuestion); hideQuestionEditor()"><i class="icon-plus"></i>Edit Question</button>
+		</fieldset>
+		</form>
+	</div>
 	</div>
 	<table id="answers">
 	<tr ng-repeat="(answerId, answer) in question.answers">

@@ -22,6 +22,10 @@ class ProjectCommands
 		}
 		return $count;
 	}
+
+	public static function renameProject($projectId, $oldName, $newName) {
+		// TODO: Write this. (Move renaming logic over from sf->project_update). RM 2013-08
+	}
 	
 }
 
