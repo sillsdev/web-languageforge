@@ -60,21 +60,28 @@ class QuestionModel extends \models\mapper\MapperModel
 	
 	/**
 	 * Adds / updates an answer to the given question.
-	 * @param string $databaseName
-	 * @param string $questionId
 	 * @param AnswerModel $answer
 	 */
-	public static function writeAnswer($databaseName, $questionId, $answer) {
+	public function writeAnswer($answer) {
 		$id = $answer->id->asString();
 		if (empty($id)) {
 			$id = $answer->id->id = QuestionModelMongoMapper::makeId();
+			$answerToWrite = $answer;
+		} else {
+			$answerToWrite = $this->answers->data[$id];
+			$properties = get_object_vars($answer);
+			$exclude = array('comments');
+			foreach ($properties as $key => $value) {
+				if (!in_array($key, $exclude)) {
+					$answerToWrite->$key = $value;
+				}
+			}
 		}
-		$mapper = QuestionModelMongoMapper::connect($databaseName);
-		$mapper->write(
-			$answer, 
+		$this->_mapper->write(
+			$answerToWrite, 
 			$id, 
 			MongoMapper::ID_IN_KEY, 
-			$questionId, 
+			$this->id->asString(), 
 			'answers'
 		);
 		return $id;

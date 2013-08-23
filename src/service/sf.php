@@ -1,5 +1,7 @@
 <?php
 
+use models\dto\ProjectSettingsDto;
+
 use models\ProjectModel;
 
 use models\dto\ActivityListDto;
@@ -170,24 +172,21 @@ class Sf
 	}
 	
 	public function project_updateUser($projectId, $object) {
-		
 		$projectModel = new \models\ProjectModel($projectId);
 		$command = new \models\commands\ProjectUserCommands($projectModel);
-		return $command->addUser($object);
+		return $command->updateUser($object);
 	}
 	
 	public function project_deleteUsers($projectId, $userIds) {
 		// This removes the user from the project.
 		$projectModel = new \models\ProjectModel($projectId);
-		foreach ($userIds as $userId) {
-			$projectModel->removeUser($userId);
-			$projectModel->write();
-		}
+		$command = new \models\commands\ProjectUserCommands($projectModel);
+		$command->removeUsers($userIds);
 	}
 	
 	public function project_listUsers($projectId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		return $projectModel->listUsers();
+		$result = ProjectSettingsDto::encode($projectId, $this->_userId);
+		return $result;
 	}
 	
 	//---------------------------------------------------------------
@@ -272,12 +271,12 @@ class Sf
 	
 	public function question_update_answer_score($projectId, $questionId, $answerId, $score) {
 		$projectModel = new \models\ProjectModel($projectId);
-		$questionModel = new QuestionModel($questionId);
+		$questionModel = new QuestionModel($projectModel, $questionId);
 		$answerModel = $questionModel->readAnswer($answerId);
 		$lastScore = $answerModel->score;
 		$currentScore = intval($score);
 		$answerModel->score = $currentScore;
-		QuestionModel::writeAnswer($projectModel->databaseName(), $questionId, $answerModel);
+		$questionModel->writeAnswer($answerModel);
 		if ($currentScore > $lastScore) {
 			ActivityCommands::updateScore($projectModel, $questionId, $answerId, $this->_userId, 'increase');
 		} else {
