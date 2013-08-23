@@ -1,5 +1,10 @@
 <?php
 
+use models\rights\Operation;
+use models\rights\Domain;
+use models\rights\Realm;
+use models\rights\Roles;
+
 class Base extends CI_Controller {
 	
 	protected $_isLoggedIn;
@@ -36,7 +41,7 @@ class Base extends CI_Controller {
 		// setup specific variables for header
 		$this->viewdata['logged_in'] = $this->_isLoggedIn;
 		if ($this->_isLoggedIn) {
-			$isAdmin = $this->ion_auth->is_admin();
+			$isAdmin = Roles::hasRight(Realm::SITE, $this->_user->role, Domain::USERS + Operation::CREATE);
 			$this->viewdata['is_admin'] = $isAdmin;
 			$this->viewdata['user_name'] = $this->_user->username;
 			$this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
