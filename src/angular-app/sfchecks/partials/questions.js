@@ -4,14 +4,22 @@ angular.module(
 		'sfchecks.questions',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
 	)
-	.controller('QuestionsCtrl', ['$scope', 'questionService', '$routeParams', function($scope, questionService, $routeParams) {
+	.controller('QuestionsCtrl', ['$scope', 'questionsService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService',
+	                              function($scope, questionsService, $routeParams, ss, linkService, bcs) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
 		$scope.textId = textId;
 		$scope.projectName = $routeParams.projectName;
 		$scope.textName = $routeParams.textName;
+		// Rights
+		$scope.rights = {};
+		$scope.rights.deleteOther = false; 
+		$scope.rights.create = false; 
+		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
+		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 		// Listview Selection
+		$scope.newQuestionCollapsed = true;
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
 			var selectedIndex = $scope.selected.indexOf(item);
@@ -29,10 +37,23 @@ angular.module(
 		$scope.questions = [];
 		$scope.queryQuestions = function() {
 			console.log("queryQuestions()");
-			questionService.list(projectId, textId, function(result) {
+			questionsService.list(projectId, textId, function(result) {
 				if (result.ok) {
 					$scope.questions = result.data.entries;
 					$scope.questionsCount = result.data.count;
+
+					$scope.enhanceDto($scope.questions);
+					$scope.text = result.data.text;
+					$scope.project = result.data.project;
+					$scope.text.url = linkService.text(projectId, textId);
+					bcs.updateMap('project', $scope.project.id, $scope.project.name);
+					bcs.updateMap('text', $scope.text.id, $scope.text.title);
+
+					var rights = result.data.rights;
+					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.DELETE_OTHER); 
+					$scope.rights.create = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE); 
+					$scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT_OTHER);
+					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 				}
 			});
 		};
@@ -47,7 +68,7 @@ angular.module(
 				// TODO ERROR
 				return;
 			}
-			questionService.remove(projectId, questionIds, function(result) {
+			questionsService.remove(projectId, questionIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
 					$scope.queryQuestions();
@@ -61,8 +82,9 @@ angular.module(
 			var model = {};
 			model.id = '';
 			model.textRef = textId;
-			model.comment = $scope.question;
-			questionService.update(projectId, model, function(result) {
+			model.title = $scope.questionTitle;
+			model.description = $scope.questionDescription;
+			questionsService.update(projectId, model, function(result) {
 				if (result.ok) {
 					$scope.queryQuestions();
 				}
@@ -79,20 +101,55 @@ angular.module(
 		};
 
 		$scope.getAnswerCount = function(question) {
-			return fakeData.answerCount;
-		}
+			return question.answerCount;
+		};
 
 		$scope.getViewsCount = function(question) {
 			return fakeData.viewsCount;
-		}
+		};
 
 		$scope.getUnreadAnswers = function(question) {
 			return fakeData.unreadAnswers;
-		}
+		};
 
 		$scope.getUnreadComments = function(question) {
 			return fakeData.unreadComments;
-		}
+		};
+		
+		$scope.enhanceDto = function(items) {
+			for (var i in items) {
+				items[i].url = linkService.question(projectId, textId, items[i].id);
+			}
+		};
 
+	}])
+	.controller('QuestionsSettingsCtrl', ['$scope', 'questionsService', 'textService', '$routeParams', function($scope, questionsService, textService, $routeParams) {
+		var projectId = $routeParams.projectId;
+		var textId = $routeParams.textId;
+		$scope.projectId = projectId;
+		$scope.textId = textId;
+		// Get name from text service. This really should be in the DTO, but this will work for now.
+		// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08
+		var text;
+		textService.read($scope.projectId, $scope.textId, function(result) {
+			if (result.ok) {
+				text = result.data;
+				$scope.textTitle = text.title;
+				$scope.editedTitle = text.title;
+			}
+		});
+
+		$scope.updateTextName = function(newTitle) {
+			var newText = {
+				id: $scope.textId,
+				title: newTitle,
+			}
+			textService.update($scope.projectId, newText, function(result) {
+				if (result.ok) {
+					$scope.textTitle = newText.title;
+					console.log('Updated text OK');
+				}
+			});
+		}
 	}])
 	;

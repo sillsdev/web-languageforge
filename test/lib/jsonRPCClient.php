@@ -62,6 +62,9 @@ class jsonRPCClient {
 	 * @param boolean $debug
 	 */
 	public function __construct($url,$debug = false) {
+		if ($debug) {
+			$url .= "?XDEBUG_SESSION_START=ECLIPSE_DBGP";	
+		}
 		// server URL
 		$this->url = $url;
 		// proxy
@@ -122,7 +125,7 @@ class jsonRPCClient {
 		$request = json_encode($request);
 		
 		$debug = '';
-		$this->debug && $debug.='***** Request *****'."\n".$request."\n".'***** End Of request *****'."\n\n";
+		$this->debug && $debug.="***** Request *****\nUrl: ".$this->url."\n".$request."\n".'***** End Of request *****'."\n";
 		
 		// performs the HTTP POST
 		$opts = array ('http' => array (

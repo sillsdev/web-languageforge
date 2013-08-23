@@ -32,10 +32,19 @@ class MapperModel
 	 */
 	function write() {
 		CodeGuard::checkTypeAndThrow($this->id, 'models\mapper\Id');
-		$this->id->id = $this->_mapper->write($this);
+		$this->id->id = $this->_mapper->write($this, $this->id->id);
 		return $this->id->id;
 	}
 	
+	/**
+	 * returns true if the Id exists in the collection, false otherwise 
+	 * @param string $id
+	 * @return bool
+	 */
+	function exists($id) {
+		$idExists = $this->_mapper->exists($id);
+		return $idExists;
+	}
 }
 
 ?>

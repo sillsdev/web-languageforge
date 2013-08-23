@@ -7,22 +7,31 @@ angular.module('sfchecks.services', [])
 		
 		var breadcrumbService = {};
 		
+		breadcrumbService.idmap = {};
+		
 		breadcrumbService.read = function() {
 			var crumbs = [];
 			var url = "#/project";
-			if ($r.projectName) {
-				url = url + "/" + encodeURIComponent($r.projectName) + "/" + $r.projectId;
-				crumbs.push({"label": $r.projectName, "url": url});
+			if ($r.projectId && this.idmap[$r.projectId]) {
+				url = url + "/" + $r.projectId;
+				crumbs.push({"label": this.idmap[$r.projectId].name, "url": url, 'type':'project'});
 			}
-			if ($r.textName) {
-				url = url + "/" + encodeURIComponent($r.textName) + "/" + $r.textId;
-				crumbs.push({"label": $r.textName, "url": url});
+			if ($r.textId && this.idmap[$r.textId]) {
+				url = url + "/" + $r.textId;
+				crumbs.push({"label": this.idmap[$r.textId].name, "url": url, 'type':'text'});
 			}
-			if ($r.questionName) {
-				url = url + "/" + encodeURIComponent($r.questionName) + "/" + $r.questionId;
-				crumbs.push({"label": $r.questionName, "url": url});
+			if ($r.questionId && this.idmap[$r.questionId]) {
+				url = url + "/" + $r.questionId;
+				crumbs.push({"label": this.idmap[$r.questionId].name, "url": url, 'type':'question'});
 			}
 			return crumbs;
+		};
+		
+		breadcrumbService.updateMap = function(type, id, name) {
+			breadcrumbService.idmap[id] = {
+				'type': type,
+				'name': name
+			};
 		};
 		
 		return breadcrumbService;

@@ -8,22 +8,32 @@ class MongoEncoder {
 	 * @param object $model
 	 * @return array
 	 */
-	public function encode($model) {
+	public static function encode($model) {
+		$encoder = new MongoEncoder();
+		return $encoder->_encode($model);
+	}
+	
+	/**
+	 * Sets key/values in the array from the public properties of $model
+	 * @param object $model
+	 * @return array
+	 */
+	protected function _encode($model, $encodeId = false) {
 		$data = array();
 		$properties = get_object_vars($model);
-// 		if ($this->_idKey) {
-// 			$idKey = $this->_idKey;
-// 			// We don't want the 'idKey' in the data so remove that from the properties
-// 			if (array_key_exists($idKey, $properties))
-// 			{
-// 				unset($properties[$idKey]);
-// 			}
-// 		}
 		foreach ($properties as $key => $value) {
-			if (is_a($value, 'models\mapper\Id')) {
-				$data[$key] = $this->encodeId($model->$key);
+			if (is_a($value, 'models\mapper\IdReference')) {
+				$data[$key] = $this->encodeIdReference($model->$key);
+			} else if (is_a($value, 'models\mapper\Id')) {
+				if ($encodeId) {
+					$data[$key] = $this->encodeId($model->$key);
+				}
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
 				$data[$key] = $this->encodeArrayOf($model->$key);
+			} else if (is_a($value, 'models\mapper\MapOf')) {
+				$data[$key] = $this->encodeMapOf($model->$key);
+			} else if (is_a($value, 'DateTime')) {
+				$data[$key] = $this->encodeDateTime($model->$key);
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
 				$data[$key] = $this->encodeReferenceList($model->$key);
 			} else {
@@ -31,12 +41,8 @@ class MongoEncoder {
 				if (is_array($value)) {
 					throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
 				}
-				// Special hack to help debugging our app
-				if ($key == 'projects' || $key == 'users') {
-					throw new \Exception("Possible bad write of '$key'\n" . var_export($model, true));
-				}
 				if (is_object($value)) {
-					$data[$key] = $this->encode($value);
+					$data[$key] = $this->_encode($value, true);
 				} else {
 					// Default encode
 					$data[$key] = $value;
@@ -47,12 +53,27 @@ class MongoEncoder {
 	}
 
 	/**
+	 * @param IdReference $model
+	 * @return string
+	 */
+	public function encodeIdReference($model) {
+		if (Id::isEmpty($model)) {
+			return null;
+		}
+		$mongoId = MongoMapper::mongoID($model->id);
+		return $mongoId;
+	}
+
+	/**
 	 * @param Id $model
 	 * @return string
 	 */
 	public function encodeId($model) {
-		$result = $model->id;
-		return $result;
+		$mongoId = MongoMapper::mongoID($model->id);
+		if (empty($model->id)) {
+			$model->id = (string)$mongoId;
+		}
+		return $mongoId;
 	}
 
 	/**
@@ -64,7 +85,7 @@ class MongoEncoder {
 		$result = array();
 		foreach ($model->data as $item) {
 			if (is_object($item)) {
-				$result[] = $this->encode($item);
+				$result[] = $this->_encode($item, true);
 			} else {
 				// Data type protection
 				if (is_array($item)) {
@@ -76,7 +97,31 @@ class MongoEncoder {
 		}
 		return $result;
 	}
-
+	
+	/**
+	 * @param MapOf $model
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function encodeMapOf($model) {
+		$result = array();
+		$count = 0;
+		foreach ($model->data as $key => $item) {
+			if (is_object($item)) {
+				$result[$key] = $this->_encode($item, false);
+			} else {
+				// Data type protection
+				if (is_array($item)) {
+					throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
+				}
+				// Default encode
+				$result[$key] = $item;
+			}
+			$count++;
+		}
+		return $count == 0 ? new \stdClass() : $result;
+	}
+	
 	/**
 	 * @param ReferenceList $model
 	 * @return array
@@ -91,7 +136,13 @@ class MongoEncoder {
 		return $result;
 	}
 	
-	
+	/**
+	 * @param DateTime $model
+	 * @return string;
+	 */
+	public function encodeDateTime($model) {
+		return new \MongoDate($model->getTimeStamp());
+	}
 	
 }
 

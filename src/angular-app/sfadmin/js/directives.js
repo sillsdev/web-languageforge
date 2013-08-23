@@ -2,45 +2,12 @@
 
 /* Directives */
 
-
 angular.module('sfAdmin.directives', ["jsonRpc", "sfAdmin.filters"]).
   directive('appVersion', ['version', function(version) {
     return function(scope, elm, attrs) {
       elm.text(version);
     };
   }])
-  .directive('projectData', ['jsonRpc', function(jsonRpc) {
-	  return {
-		  templateUrl: "/angular-app/sfadmin/partials/projectdata.html",
-		  restrict: "E",
-		  link: function(scope, elem, attrs) {
-			  scope.$watch("vars.record.id", function(newval, oldval) {
-			  //attrs.$observe("userid", function(newval, oldval) {
-				  console.log("Watch triggered with oldval '" + oldval + "' and newval '" + newval + "'");
-				  if (newval) {
-					  get_project_by_id(newval);
-				  } else {
-					  // Clear data table
-					  scope.record = {};
-				  }
-			  });
-			  
-			  function get_project_by_id(recordid) {
-				  console.log("Fetching id: " + recordid);
-				  jsonRpc.connect("/api/sf");
-				  jsonRpc.call("project_read", {"id": recordid}, function(result) {
-					  scope.record = result.data;
-				  });
-			  }
-		  },
-	  };
-  }])
-  .directive('projectList', function() {
-	  return {
-		  restrict: "E",
-		  templateUrl: "/angular-app/sfadmin/partials/projectlist.html",
-	  };
-  })
   .directive("requireEqual", function() {
 	return {
 		restrict: "A",

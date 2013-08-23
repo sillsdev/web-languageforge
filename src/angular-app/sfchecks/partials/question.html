@@ -1,39 +1,89 @@
 <h2>{{question.title}}</h2>
-<div id="text" class="span5">
-To Sherlock Holmes she is always the woman. I have seldom heard him mention her under any other name. In his eyes she eclipses and predominates the whole of her sex. It was not that he felt any emotion akin to love for Irene Adler. All emotions, and that one particularly, were abhorrent to his cold, precise but admirably balanced mind. He was, I take it, the most perfect reasoning and observing machine that the world has seen, but as a lover he would have placed himself in a false position. He never spoke of the softer passions, save with a gibe and a sneer. They were admirable things for the observer -- excellent for drawing the veil from men's motives and actions. But for the trained reasoner to admit such intrusions into his own delicate and finely adjusted temperament was to introduce a distracting factor which might throw a doubt upon all his mental results. Grit in a sensitive instrument, or a crack in one of his own high-power lenses, would not be more disturbing than a strong emotion in a nature such as his. And yet there was but one woman to him, and that woman was the late Irene Adler, of dubious and questionable memory.
-To Sherlock Holmes she is always the woman. I have seldom heard him mention her under any other name. In his eyes she eclipses and predominates the whole of her sex. It was not that he felt any emotion akin to love for Irene Adler. All emotions, and that one particularly, were abhorrent to his cold, precise but admirably balanced mind. He was, I take it, the most perfect reasoning and observing machine that the world has seen, but as a lover he would have placed himself in a false position. He never spoke of the softer passions, save with a gibe and a sneer. They were admirable things for the observer -- excellent for drawing the veil from men's motives and actions. But for the trained reasoner to admit such intrusions into his own delicate and finely adjusted temperament was to introduce a distracting factor which might throw a doubt upon all his mental results. Grit in a sensitive instrument, or a crack in one of his own high-power lenses, would not be more disturbing than a strong emotion in a nature such as his. And yet there was but one woman to him, and that woman was the late Irene Adler, of dubious and questionable memory.
+<div id="text" class="span5" ng-bind-html-unsafe="text.content">
 </div>
 <div id="comments" class="span6">
 	<div class="question">
 	<div>
-	The question gets displayed here {{question.content}}
+	{{question.description}}
+	</div>
+	<a class="btn-link" ng-click="toggleQuestionEditor()">edit</a>
+	<div class="edit-question" collapse="editQuestionCollapsed">
+		<form class="well">
+		<fieldset>
+		<label>Question</label>
+		<input type="text" ng-model="editedQuestion.title" class="span4" rows="4" placeholder="the question"></textarea>
+		<label></label>
+		<textarea ng-model="editedQuestion.description" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
+		<label></label>
+		<button type="submit" class="btn" ng-click="updateQuestion(editedQuestion); hideQuestionEditor()"><i class="icon-plus"></i>Edit Question</button>
+		</fieldset>
+		</form>
 	</div>
 	</div>
-	<table>
-	<tr ng-repeat="answer in answers">
-	<td>
-	<div class="vote" style="display:inline-block;">
-		<a><i class="icon-caret-up" /></a>
-		<span>{{answer.score}}</span>
-		<a><i class="icon-caret-down" /></a>
-	</div>
-	</td><td>
-		<div class="answer">
-		This is an answer: {{answer.content}}
-		<div class="by">
-		<img src="{{answer.avatarRef}}" width="32" height="32" /><div>answered {{answer.date}}<br/>by {{answer.by}}</div>
-		</div>
-		</div>
-		<table class="comments">
-		<tr ng-repeat="comment in answer.comments">
-		<td></td>
-		<td>This is the comment: {{comment.content}}</td>
-		</tr>
-		</table>
-	</td>
+	<table id="answers">
+	<tr ng-repeat="(answerId, answer) in question.answers">
+		<td>
+			<div class="vote" style="display:inline-block;">
+				<a><i class="icon-caret-up" /></a>
+				<span>{{answer.score}}</span>
+				<a><i class="icon-caret-down" /></a>
+			</div>
+		</td>
+		<td>
+			<div class="answer"><!--<b>DEBUG:</b>answerId = {{answerId}}, answer.id = {{answer.id}}<br/>-->
+				<!--<b>DEBUG:</b>answer = {{answer}}<br/>-->
+				{{answer.content}}
+				<div class="by">
+					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
+				</div>
+				<div>
+				<a ng-show="rightsEditOwn(answer.userRef.userid)" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
+				<a ng-show="rightsDeleteOwn(answer.userRef.userid)" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
+				<ng-switch on="answerEditorVisible(answerId)">
+				<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
+					<textarea ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
+					<button type="submit" class="btn">Save</button>
+				</form>
+				</ng-switch>
+				</div>
+			</div>
+			<table class="comments">
+				<tr ng-repeat="comment in answer.comments">
+					<td></td>
+					<td>
+						{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}
+						<a ng-show="rightsEditOwn(comment.userRef.userid)" class="btn-link" ng-click="showCommentEditor(comment.id)">edit</a>
+						<a ng-show="rightsDeleteOwn(comment.userRef.userid)" ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
+						<ng-switch on="commentEditorVisible(comment.id)">
+						<form ng-submit="editComment(answerId, answer, editedComment)" ng-switch-when="true">
+							<textarea ng-model="editedComment.content" pui-jqte="jqteOptions"></textarea>
+							<button type="submit" class="btn">Save</button>
+						</form>
+						</ng-switch>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<a ng-click="collapsed = !collapsed" class="btn btn-link">add comment</a>
+						<div collapse="!collapsed">
+						<form ng-submit="submitComment(answerId, answer); collapsed = !collapsed;">
+							<textarea ng-model="newComment.content"></textarea><br/>
+							<button type="submit" class="btn btn-small">Add Comment</button>
+						</form>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
 	</tr>
 	</table>
+	<div ng-show="question.answerCount == 0">
+		There are no answers yet for this question. You could be the first one to reply!
+	</div>
 	Add your own answer:
-	<div id="commentInput" class="jqte"></div>
-	<button>Post</button>
+	<form ng-submit="submitAnswer()">
+		<textarea ng-model="newAnswer.content" pui-jqte="jqteOptions"></textarea>
+		<button type="submit" class="btn">Answer Question</button>
+	</form>
 </div>

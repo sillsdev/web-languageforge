@@ -58,7 +58,7 @@
 		 </exec>
 	</target>
 
-	<target name="test-php">
+	<target name="test-php" depends="prepare">
 		 <echo>##teamcity[importData type='junit' path='${build.output}/AllTests.xml']</echo>
 		 <exec executable="php" dir="test/php" output="${build.output}/AllTests.xml"  error="${build.output}/error.log" failonerror="true">
 			 <arg line="AllTests.php" />
@@ -71,7 +71,7 @@
 		<antcall target="test-php" />
 	</target>
 			
-	<target name="copyWeb">
+	<target name="copyWeb" depends="prepare">
 		<copy todir="${build.output}/package/htdocs">
 			<fileset dir="src"/>
 		</copy>
