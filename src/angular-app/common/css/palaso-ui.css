@@ -63,6 +63,10 @@ div.listview .active {
 	background-color: #ffc;
 }
 
+div.listview div.pagination select {
+	width: 70px;
+}
+
 /* Listview for projects, questions, answers views */
 div.listview div.attention-block {
 	text-align: center;

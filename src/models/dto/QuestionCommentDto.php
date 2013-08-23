@@ -26,11 +26,14 @@ class QuestionCommentDto
 		
 		$textId = $questionModel->textRef->asString();
 		$textModel = new TextModel($projectModel, $textId);
-		$text = 
-
+		$usxHelper = new UsxHelper($textModel->content);
+		//echo $usxHelper->toHtml();
+		//echo $textModel->content;
+		
 		$dto = array();
 		$dto['question'] = $question;
 		$dto['text'] = JsonEncoder::encode($textModel);
+		$dto['text']['content'] = $usxHelper->toHtml();
 		$dto['project'] = JsonEncoder::encode($projectModel);
 		$dto['rights'] = RightsHelper::encode($userModel, $projectModel);
 		

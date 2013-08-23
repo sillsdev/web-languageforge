@@ -44,7 +44,7 @@ angular.module(
 					$scope.project = result.data.project;
 					$scope.project.url = linkService.project(projectId);
 					bcs.updateMap('project', $scope.project.id, $scope.project.name);
-					
+
 					var rights = result.data.rights;
 					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.DELETE_OTHER); 
 					$scope.rights.create = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE); 
@@ -118,29 +118,34 @@ angular.module(
 		};
 
 	}])
-	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'projectService', function($scope, $location, $routeParams, projectService) {
+	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService',
+	                                 function($scope, $location, $routeParams, bcs, userService, projectService, ss) {
 		var projectId = $routeParams.projectId;
-		$scope.projectId = projectId;
-		$scope.projectName = $routeParams.projectName;
+		$scope.project = {};
+		console.log("project id", projectId);
+		console.log("bcs", bcs.idmap);
+		$scope.project.id = projectId;
+		if (bcs.idmap[projectId] != undefined) {
+			$scope.project.name = bcs.idmap[projectId].name;			
+		}
 
-		$scope.editedName = $scope.projectName;
-		$scope.updateProjectName = function(newName) {
+		$scope.updateProject = function() {
 			var newProject = {
-				id: $scope.projectId,
-				projectname: newName,
+				id: $scope.project.id,
+				projectname: $scope.project.name
 			};
 			console.log('About to update project with data', newProject);
 			projectService.update(newProject, function(result) {
 				console.log(result);
 				if (result.ok) {
-					// Update project name in scope. TODO: Work out what needs to be updated.
-					$scope.projectId = result.data;
 					console.log('Updated OK');
 				}
 			});
 		};
-	}])
-	.controller('ProjectUsersCtrl', ['$scope', '$location', 'userService', 'projectService', function($scope, $location, userService, projectService) {
+	
+		// ----------------------------------------------------------
+		// List
+		// ----------------------------------------------------------
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
 			var selectedIndex = $scope.selected.indexOf(item);
@@ -157,10 +162,19 @@ angular.module(
 		
 		$scope.users = [];
 		$scope.queryProjectUsers = function() {
-			projectService.listUsers($scope.projectId, function(result) {
+			projectService.listUsers($scope.project.id, function(result) {
 				if (result.ok) {
-					$scope.projectUsers = result.data.entries;
-					$scope.projectUserCount = result.data.count;
+					$scope.project.name = result.data.projectName;
+					$scope.project.users = result.data.entries;
+					$scope.project.userCount = result.data.count;
+					// Rights
+					var rights = result.data.rights;
+					$scope.rights = {};
+					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.DELETE_OTHER); 
+					$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
+					$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT_OTHER);
+					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
+					
 				}
 			});
 		};
@@ -175,7 +189,7 @@ angular.module(
 				// TODO ERROR
 				return;
 			}
-			projectService.removeUsers($scope.projectId, userIds, function(result) {
+			projectService.removeUsers($scope.project.id, userIds, function(result) {
 				if (result.ok) {
 					$scope.queryProjectUsers();
 					// TODO
@@ -183,6 +197,28 @@ angular.module(
 			});
 		};
 		
+		// Roles in list
+		$scope.roles = [
+	        {key: 'user', name: 'User'},
+	        {key: 'project_admin', name: 'Project Admin'}
+        ];
+		
+		$scope.onRoleChange = function(user) {
+			var model = {};
+			model.id = user.id;
+			model.role = user.role;
+			console.log('userchange...', model);
+			projectService.updateUser($scope.project.id, model, function(result) {
+				if (result.ok) {
+					// TODO broadcast notice
+					console.log('userchanged');
+				}
+			});
+		};
+		
+		// ----------------------------------------------------------
+		// Typeahead
+		// ----------------------------------------------------------
 	    $scope.users = [];
 	    $scope.addModes = {
 	    	'addNew': { 'en': 'Create New', 'icon': 'icon-user'},
@@ -226,7 +262,7 @@ angular.module(
 				$model.email = $scope.term;
 			}
 			console.log("addUser ", model);
-			projectService.updateUser($scope.projectId, model, function(result) {
+			projectService.updateUser($scope.project.id, model, function(result) {
 				if (result.ok) {
 					// TODO broadcast notice and add
 					$scope.queryProjectUsers();
