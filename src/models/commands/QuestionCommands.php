@@ -46,6 +46,8 @@ class QuestionCommands
 		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
 		$questionModel = new QuestionModel($projectModel, $questionId);
 		$answerId = $questionModel->writeAnswer($answerModel);
+		// Re-read question model to pick up new answer
+		$questionModel->read($questionId);
 		$answerDTO = QuestionCommentDto::encodeAnswer($questionModel->readAnswer($answerId));
 
 		$dto = array();
