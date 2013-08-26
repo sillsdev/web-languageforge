@@ -11,7 +11,7 @@ angular.module('palaso.ui.typeahead', [])
 				search : "&",
 				select : "&",
 				items : "=",
-				term : "="
+				term : "=term"
 			},
 			controller : ["$scope", function($scope) {
 				$scope.items = [];
