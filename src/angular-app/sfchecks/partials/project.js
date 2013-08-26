@@ -224,11 +224,13 @@ angular.module(
 	    	'invite': { 'en': 'Send Invite', 'icon': 'icon-envelope'}
 	    };
 	    $scope.addMode = 'addNew';
+	    $scope.typeahead = {};
+	    $scope.typeahead.userName = '';
 		
-		$scope.queryUser = function(term) {
-			console.log('searching for ', term);
-			userService.typeahead(term, function(result) {
-				// TODO Check term == controller view value (cf bootstrap typeahead) else abandon.
+		$scope.queryUser = function(userName) {
+			console.log('searching for ', userName);
+			userService.typeahead(userName, function(result) {
+				// TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
 				if (result.ok) {
 					$scope.users = result.data.entries;
 					$scope.updateAddMode();
@@ -242,7 +244,7 @@ angular.module(
 			return $scope.addModes[addMode].icon;
 		};
 		$scope.updateAddMode = function() {
-			// TODO This isn't adequate.  Need to watch the 'term' and 'selection' also. CP 2013-07
+			// TODO This isn't adequate.  Need to watch the 'typeahead.userName' and 'selection' also. CP 2013-07
 			if ($scope.users.length == 0) {
 				$scope.addMode = 'addNew';
 			} else if ($scope.users.length == 1) {
@@ -253,11 +255,11 @@ angular.module(
 		$scope.addProjectUser = function() {
 			var model = {};
 			if ($scope.addMode == 'addNew') {
-				model.name = $scope.term;
+				model.name = $scope.typeahead.userName;
 			} else if ($scope.addMode == 'addExisting') {
 				model.id = $scope.user.id;
 			} else if ($scope.addMode == 'invite') {
-				$model.email = $scope.term;
+				$model.email = $scope.typeahead.userName;
 			}
 			console.log("addUser ", model);
 			projectService.updateUser($scope.project.id, model, function(result) {
@@ -271,7 +273,7 @@ angular.module(
 		$scope.selectUser = function(item) {
 			console.log('user selected', item);
 			$scope.user = item;
-			$scope.term = item.name;
+			$scope.typeahead.userName = item.name;
 		};
 	
 		$scope.imageSource = function(avatarRef) {
