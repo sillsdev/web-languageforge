@@ -3,6 +3,6 @@
 </div>
 <div class="sfcontainer">
 			<h2>Discuss</h2>
-			<p>You can discuss Scripture Forge at our <a href="#">Google Group here.</a></p>
+			<p>You can discuss Scripture Forge at our <a href="https://groups.google.com/forum/#!forum/scripture-forge">Google Group here.</a></p>
 			
 </div>
