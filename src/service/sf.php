@@ -196,16 +196,16 @@ class Sf
 	public function text_update($projectId, $object) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel);
-		JsonDecoder::decode($textModel, $object);
-		$add_text = false;
- 		if ($textModel->id->asString() == '') {
- 			$add_text = true;
- 		}
-		$textId = $textModel->write();
-		if ($add_text) {
- 			ActivityCommands::addText($projectModel, $textId, $textModel);
+		$isNewText = ($object['id'] == '');
+		if (!$isNewText) {
+			$textModel->read($object['id']);
 		}
- 		return $textId;
+		JsonDecoder::decode($textModel, $object);
+		$textId = $textModel->write();
+		if ($isNewText) {
+			ActivityCommands::addText($projectModel, $textId, $textModel);
+		}
+		return $textId;
 	}
 	
 	public function text_read($projectId, $textId) {
@@ -227,6 +227,10 @@ class Sf
 	
 	public function text_list_dto($projectId) {
 		return \models\dto\TextListDto::encode($projectId, $this->_userId);
+	}
+
+	public function text_settings_dto($projectId, $textId) {
+		return \models\dto\TextSettingsDto::encode($projectId, $textId, $this->_userId);
 	}
 	
 	//---------------------------------------------------------------
