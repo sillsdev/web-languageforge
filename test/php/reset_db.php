@@ -1,5 +1,7 @@
 <?php
 
+use models\rights\Roles;
+
 use models\AnswerModel;
 
 use models\QuestionListModel;
@@ -51,6 +53,7 @@ class TestResetDb extends UnitTestCase {
 		$users_data = array(array(
 			"username" => "admin",
 			"name" => "admin",
+			"role" => 'system_admin',
 			// Default password is "password"; both of the below are hashes of that password
 			//"password" => "59beecdf7fc966e2f17fd8f65a4a9aeb09d4a3d4", // If using SHA1
 			"password" => '$2a$07$SeBknntpZror9uyftVopmu61qg0ms8Qv1yV6FG.kQOSM.9QhmTo36', // If using bcrypt
@@ -85,13 +88,13 @@ class TestResetDb extends UnitTestCase {
 		}
 		$project = new ProjectModel();
 		$project->projectname = "jamaican project";
-		$project->addUser($userId);
+		$project->addUser($userId, Roles::PROJECT_ADMIN);
 		$project->write();
 		
 		$project2 = new ProjectModel();
 		$project2->projectname = "thai project";
-		$project->addUser($userId);
-		$project->write();
+		$project2->addUser($userId, Roles::PROJECT_ADMIN);
+		$project2->write();
 	
 		echo "it worked!";
 		
