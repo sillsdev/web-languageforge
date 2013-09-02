@@ -14,7 +14,6 @@ angular.module('palaso.ui.typeahead', [])
 				term : "=term"
 			},
 			controller : ["$scope", function($scope) {
-				$scope.items = [];
 				$scope.hide = false;
 				this.activate = function(item) {
 					$scope.active = item;
