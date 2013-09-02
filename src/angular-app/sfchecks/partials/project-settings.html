@@ -7,7 +7,7 @@
 		</form>
 		<div class="new-item" collapse="!newUserCollapsed">
 			<form class="well form-inline">
-			<typeahead class="typeahead" items="user" term="typeahead.userName" search="queryUser(typeahead.userName)" select="selectUser(item)">
+			<typeahead class="typeahead" items="user" term="typeahead.userName" search="queryUser" select="selectUser">
 				<ul>
 					<li typeahead-item="user" ng-repeat="user in users" class="typeahead-item">
 						<img width="32px" ng-src="{{imageSource(user.avatarRef)}}" class="left">
