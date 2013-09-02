@@ -243,7 +243,15 @@ angular.module(
 		$scope.addModeIcon = function(addMode) {
 			return $scope.addModes[addMode].icon;
 		};
-		$scope.updateAddMode = function() {
+		$scope.updateAddMode = function(newMode) {
+			if (newMode in $scope.addModes) {
+				$scope.addMode = newMode;
+			} else {
+				// This also covers the case where newMode is undefined
+				$scope.calculateAddMode();
+			}
+		}
+		$scope.calculateAddMode = function() {
 			// TODO This isn't adequate.  Need to watch the 'typeahead.userName' and 'selection' also. CP 2013-07
 			if ($scope.users.length == 0) {
 				$scope.addMode = 'addNew';
@@ -274,6 +282,7 @@ angular.module(
 			console.log('user selected', item);
 			$scope.user = item;
 			$scope.typeahead.userName = item.name;
+			$scope.updateAddMode('addExisting');
 		};
 	
 		$scope.imageSource = function(avatarRef) {
