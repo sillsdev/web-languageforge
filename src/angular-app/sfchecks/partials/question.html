@@ -57,7 +57,7 @@
 						<a ng-show="rightsDeleteOwn(comment.userRef.userid)" ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
 						<ng-switch on="commentEditorVisible(comment.id)">
 						<form ng-submit="editComment(answerId, answer, editedComment)" ng-switch-when="true">
-							<textarea ng-model="editedComment.content" pui-jqte="jqteOptions"></textarea>
+							<textarea ng-model="editedComment.content"></textarea>
 							<button type="submit" class="btn">Save</button>
 							<a class="btn-link" ng-click="hideCommentEditor()">Cancel</a>
 						</form>
