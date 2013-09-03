@@ -43,6 +43,7 @@
 				<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
 					<textarea ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
 					<button type="submit" class="btn">Save</button>
+					<a class="btn-link" ng-click="hideAnswerEditor()">Cancel</a>
 				</form>
 				</ng-switch>
 				</div>
@@ -58,6 +59,7 @@
 						<form ng-submit="editComment(answerId, answer, editedComment)" ng-switch-when="true">
 							<textarea ng-model="editedComment.content" pui-jqte="jqteOptions"></textarea>
 							<button type="submit" class="btn">Save</button>
+							<a class="btn-link" ng-click="hideCommentEditor()">Cancel</a>
 						</form>
 						</ng-switch>
 					</td>
