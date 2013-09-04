@@ -2,7 +2,7 @@
 <form ng-show="rights.showControlBar" class="control-bar form-inline">
 	<button ng-show="rights.deleteOther" class="btn" ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
 	<button ng-show="rights.create" class="btn" ng-click="newQuestionCollapsed = !newQuestionCollapsed"><i class="icon-plus"></i>Add New Question</button>
-	<a ng-show="rights.editOther" class="btn" href="#/project/{{projectId}}/{{textId}}/settings"><i class="icon-cog"></i>Settings</a>
+	<a ng-show="rights.editOther" class="btn" href="#/project/{{projectId}}/{{textId}}/settings"><i class="icon-pencil"></i>Update Text</a>
 </form>
 <div class="new-item" collapse="newQuestionCollapsed">
 	<form class="well">
