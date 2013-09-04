@@ -221,6 +221,7 @@ angular.module(
 				content: $scope.newComment.content,
 			};
 			$scope.updateComment(answerId, answer, newComment);
+			$scope.newComment.content = '';
 		}
 		
 		$scope.editComment = function(answerId, answer, comment) {
@@ -261,6 +262,7 @@ angular.module(
 				'content': $scope.newAnswer.content
 			};
 			$scope.updateAnswer(projectId, questionId, answer);
+			$scope.newAnswer.content = '';
 		};
 		
 		$scope.editAnswer = function(answer) {
