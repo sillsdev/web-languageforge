@@ -176,6 +176,11 @@ div.darkTextLogo {
 	background: transparent url(../images/sf_sprite.png) no-repeat 0 -22px;
 }
 
+div.darkTextLogo.text-logo-top {
+	margin: 11px 10px 0px -176px;
+	/* Should this use position: absolute instead? */
+}
+
 div#promotion {
 	position: relative;
 	width: 958px;
