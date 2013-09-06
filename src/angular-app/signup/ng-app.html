@@ -30,6 +30,13 @@
 							<label>Password</label> <input required type="text"
 								ng-model="record.password" name="password" />
 						</div>
+						<div>
+							<label>Verify the letters in this image</label> 
+							<img ng-src="{{captchaSrc}}" />
+							<a class="btn btn-small" ng-click="getCaptchaSrc()">Different Image</a>
+							<div class="notification errorMessage" ng-show="captchaError">Incorrect code. Please try again</div>
+							<input required type="text" ng-model="record.captcha" name="captcha" />
+						</div>
 					</div>
 					<button class="btn btn-primary" type="submit"
 						ng-disabled="userNameExists || userForm.$invalid">

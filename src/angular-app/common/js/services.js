@@ -123,7 +123,7 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('activity_list_dto', [offset, count], callback);
 		};
 	}])
-	.service('sessionService', function() {
+	.service('sessionService', ['jsonRpc', function(jsonRpc) {
 		this.currentUserId = function() {
 			return window.session.userId;
 		};
@@ -157,7 +157,11 @@ angular.module('sf.services', ['jsonRpc'])
 		this.session = function() {
 			return window.session;
 		};
-	})
+		
+		this.getCaptchaSrc = function(callback) {
+			jsonRpc.call('get_captcha_src', [], callback);
+		}
+	}])
 	.service('linkService', function() {
 		this.href = function(url, text) {
 			return '<a href="' + url + '">' + text + '</a>';
