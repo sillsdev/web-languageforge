@@ -115,6 +115,48 @@ class TestUserModel extends UnitTestCase {
 			), $result->entries
 		);
 	}
+	
+	function testReadByUserName_userFound_UserModelPopulated() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$emailAddress = 'joe@smith.com';
+		$e->createUser('jsmith', 'joe smith', $emailAddress);
+		
+		$user = new UserModel();
+		$result = $user->readByUserName('jsmith');
+		$this->assertTrue($result);
+		$this->assertEqual($user->email, $emailAddress);
+	}
+	
+	function testReadByUserName_userNotFound_EmptyModel() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$e->createUser('jsmith', 'joe smith','joe@smith.com');
+		
+		$user = new UserModel();
+		$result = $user->readByUserName('adam');
+		$this->assertFalse($result);
+		$this->assertEqual($user->email, '');
+	}
+	
+	function testUserNameExists_userExists_true() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$e->createUser('jsmith', 'joe smith','joe@smith.com');
+		$result = UserModel::userNameExists('jsmith');
+		$this->assertTrue($result);
+		
+	}
+	function testUserNameExists_doesNotExist_false() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$result = UserModel::userNameExists('jsmith');
+		$this->assertFalse($result);
+	}
 /*
 	function testWriteRemove_ListCorrect() {
 		$e = new MongoTestEnvironment();
