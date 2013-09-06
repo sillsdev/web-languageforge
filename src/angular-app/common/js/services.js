@@ -14,9 +14,6 @@ angular.module('sf.services', ['jsonRpc'])
 		this.remove = function(userIds, callback) {
 			jsonRpc.call('user_delete', [userIds], callback);
 		};
-		this.changePassword = function(id, password, callback) {
-			jsonRpc.call('change_password', [id, password], callback);
-		};
 		this.list = function(callback) {
 			// TODO Paging CP 2013-07
 			jsonRpc.call('user_list', [], callback);
@@ -26,6 +23,12 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		this.changePassword = function(userId, newPassword, callback) {
 			jsonRpc.call('change_password', [userId, newPassword], callback);
+		};
+		this.userNameExists = function(username, callback) {
+			jsonRpc.call('username_exists', [username], callback);
+		}
+		this.create = function(model, callback) {
+			jsonRpc.call('user_create', [model], callback);
 		};
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
