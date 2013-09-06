@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\rights\Roles;
+
 use models\mapper\Id;
 use libraries\Bcrypt;
 
@@ -50,6 +52,13 @@ class UserModelWithPassword extends \models\mapper\MapperModel
 	 * @var string
 	 */
 	public $password;
+	
+	/**
+	 * 
+	 * @var string
+	 * @see Roles
+	 */
+	public $role;
 	
 }
 
