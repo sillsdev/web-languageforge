@@ -40,8 +40,11 @@ class Sf
 	 */
 	private $_userId;
 	
+	private $_controller;
+	
 	public function __construct($controller) {
 		$this->_userId = (string)$controller->session->userdata('user_id');
+		$this->_controller = $controller;
 
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
  		ini_set('display_errors', 0);
@@ -114,6 +117,10 @@ class Sf
 	 */
 	public function user_create($params) {
 		// TODO: implement captcha or similar technology to prevent abuse of creating users
+		$captcha_info = $this->_controller->session->userdata('captcha_info');
+		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
+			return false;  // captcha does not match
+		}
 		$user = new \models\UserModelWithPassword();
 		JsonDecoder::decode($user, $params);
 		if (UserModel::userNameExists($user->username)) {
@@ -124,6 +131,13 @@ class Sf
 		$user->role = "user";
 		$user->write();
 		return true;
+	}
+	
+	public function get_captcha_src() {
+		$this->_controller->load->library('captcha');
+		$captcha_info = $this->_controller->captcha->main();
+		$this->_controller->session->set_userdata('captcha_info', $captcha_info);
+		return $captcha_info['image_src'];
 	}
 	
 	
