@@ -28,22 +28,27 @@ angular.module(
 		return true;
 	};
 	$scope.checkUserName = function() {
-		$scope.userNameLoading = true;
-		userService.userNameExists($scope.record.username, function(result) {
-			if (result.ok) {
+		$scope.userNameOk = false;
+		$scope.userNameExists = false;
+		if ($scope.record.username) {
+			$scope.userNameLoading = true;
+			userService.userNameExists($scope.record.username, function(result) {
+				console.log(typeof(result.data));
 				$scope.userNameLoading = false;
-				if (result.data == 'true') {
-					$scope.userNameOk = false;
-					$scope.userNameExists = true;
+				if (result.ok) {
+					if (result.data) {
+						$scope.userNameOk = false;
+						$scope.userNameExists = true;
+					} else {
+						$scope.userNameOk = true;
+						$scope.userNameExists = false;
+					}
 				} else {
-					$scope.userNameOk = true;
-					$scope.userNameExists = false;
+					$scope.success.state = false;
+					$scope.success.message = "An error occurred checking for an username";
 				}
-			} else {
-				$scope.success.state = false;
-				$scope.success.message = "An error occurred checking for an username";
-			}
-		});
+			});
+		}
 	}
 }])
 ;

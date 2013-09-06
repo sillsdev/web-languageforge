@@ -104,10 +104,7 @@ class Sf
 	}
 	
 	public function username_exists($username) {
-		if (UserModel::userNameExists($username)) {
-			return "true";
-		}
-		return "false";
+		return UserModel::userNameExists($username);
 	}
 	
 	/**
@@ -120,12 +117,13 @@ class Sf
 		$user = new \models\UserModelWithPassword();
 		JsonDecoder::decode($user, $params);
 		if (UserModel::userNameExists($user->username)) {
-			return "false";
+			return false;
 		}
 		$user->encryptPassword();
 		$user->active = false;
+		$user->role = "user";
 		$user->write();
-		return "true";
+		return true;
 	}
 	
 	

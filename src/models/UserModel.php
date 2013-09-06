@@ -55,10 +55,7 @@ class UserModel extends \models\mapper\MapperModel
 	 */
 	static public function userNameExists($username) {
 		$user = new UserModel();
-		if ($user->readByUserName($username)) {
-			return true;
-		}
-		return false;
+		return $user->readByUserName($username);
 	}
 	
 	/**
