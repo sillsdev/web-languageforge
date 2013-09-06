@@ -53,23 +53,14 @@ class JsonRpcServer {
 
 		// executes the task on local object
 		try {
-			if (is_callable(array($object, $request['method']))) {
+			if (method_exists($object, $request['method'])) {
 				$result = call_user_func_array(array($object,$request['method']),$request['params']);
-				if ($result !== FALSE) {
-					$response = array (
-						'jsonrpc' => '2.0',
-						'id' => $request['id'],
-						'result' => $result,
-						'error' => NULL
-					);
-				} else {
-					$response = array (
-						'jsonrpc' => '2.0',
-						'id' => $request['id'],
-						'result' => NULL,
-						'error' => sprintf("unknown method '%s' on class '%s'", $request['method'], get_class($object))
-					);
-				}
+				$response = array (
+					'jsonrpc' => '2.0',
+					'id' => $request['id'],
+					'result' => $result,
+					'error' => NULL
+				);
 			} else {
 				$response = array (
 					'jsonrpc' => '2.0',
