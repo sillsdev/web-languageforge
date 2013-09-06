@@ -1,5 +1,7 @@
 <?php
 
+use models\UserModel;
+
 use models\dto\ProjectSettingsDto;
 
 use models\ProjectModel;
@@ -100,6 +102,33 @@ class Sf
 		$user->changePassword($newPassword);
 		$user->write();
 	}
+	
+	public function username_exists($username) {
+		if (UserModel::userNameExists($username)) {
+			return "true";
+		}
+		return "false";
+	}
+	
+	/**
+	 * Create a new user with password
+	 * @param UserModel $json
+	 * @return string Id of written object
+	 */
+	public function user_create($params) {
+		// TODO: implement captcha or similar technology to prevent abuse of creating users
+		$user = new \models\UserModelWithPassword();
+		JsonDecoder::decode($user, $params);
+		if (UserModel::userNameExists($user->username)) {
+			return "false";
+		}
+		$user->encryptPassword();
+		$user->active = false;
+		$user->write();
+		return "true";
+	}
+	
+	
 	
 	
 	//---------------------------------------------------------------

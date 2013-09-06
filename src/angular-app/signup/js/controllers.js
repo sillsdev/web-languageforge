@@ -1,0 +1,49 @@
+'use strict';
+
+/* Controllers */
+
+angular.module(
+	'signup.controllers',
+	[ 'sf.services', 'ui.bootstrap' ]
+)
+.controller('UserCtrl', ['$scope', 'userService', function UserCtrl($scope, userService) {
+
+	$scope.record = {};
+	$scope.success = {
+		'state':false,
+		'message':''
+	};
+	$scope.record.id = '';
+	$scope.record.password = '';
+	$scope.createUser = function(record) {
+		userService.create(record, function(result) {
+			if (result.ok) {
+				$scope.success.state = true;
+				$scope.success.message = "";
+			} else {
+				$scope.success.state = false;
+				$scope.success.message = "An error occurred in the signup process";
+			}
+		});
+		return true;
+	};
+	$scope.checkUserName = function() {
+		$scope.userNameLoading = true;
+		userService.userNameExists($scope.record.username, function(result) {
+			if (result.ok) {
+				$scope.userNameLoading = false;
+				if (result.data == 'true') {
+					$scope.userNameOk = false;
+					$scope.userNameExists = true;
+				} else {
+					$scope.userNameOk = true;
+					$scope.userNameExists = false;
+				}
+			} else {
+				$scope.success.state = false;
+				$scope.success.message = "An error occurred checking for an username";
+			}
+		});
+	}
+}])
+;
