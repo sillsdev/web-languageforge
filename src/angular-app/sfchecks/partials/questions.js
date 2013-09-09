@@ -10,8 +10,6 @@ angular.module(
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
 		$scope.textId = textId;
-		$scope.projectName = $routeParams.projectName;
-		$scope.textName = $routeParams.textName;
 		// Rights
 		$scope.rights = {};
 		$scope.rights.deleteOther = false; 
