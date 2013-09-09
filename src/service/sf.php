@@ -116,7 +116,6 @@ class Sf
 	 * @return string Id of written object
 	 */
 	public function user_create($params) {
-		// TODO: implement captcha or similar technology to prevent abuse of creating users
 		$captcha_info = $this->_controller->session->userdata('captcha_info');
 		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
 			return false;  // captcha does not match
