@@ -7,14 +7,9 @@
 	<property name="build.output" value="output" />
 	<property name="build.packageFile" value="${build.output}/${application.name}.tgz" />
 	<property name="build.installPath" value="/var/www/scriptureforge.org_dev" />
+	<property name="build.installForTestPath" value="/var/www/scriptureforge.org_e2etest" />
 	<property name="build.uploadPath" value="/var/www/scriptureforge.org" />
 
-	<!--
-	<property name="mysql.db" value="lfweb" />
-	<property name="mysql.username" value="lfweb" />
-	<property name="mysql.password" value="secret" />
-	-->
-	
 	<target name="clean" depends="cleanLibs">
 		<delete dir="${build.output}" quiet="true" />
 	</target>
@@ -24,6 +19,11 @@
 
 	<target name="cleanInstall" depends="">
 		<delete dir="${build.installPath}" quiet="true" />
+		<!--  TODO drop mongo scriptureforge_e2etest db -->
+	</target>
+	
+	<target name="cleanInstallForTest" depends="">
+		<delete dir="${build.installForTestPath}" quiet="true" />
 	</target>
 
 	<target name="cleanUpload" depends="">
@@ -108,6 +108,25 @@
 		<antcall target="restartWebServer" /> 
 	</target>
 	
+	<target name="installForTest" depends="package, cleanInstallForTest, initMongoForTest">
+		<untar src="${build.packageFile}" dest="${build.installForTestPath}" compression="gzip" />
+		<replace file="${build.installForTestPath}/htdocs/config/mongodb.php">
+		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
+		</replace>
+		<replace file="${build.installForTestPath}/htdocs/config/sf_config.php">
+		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
+		</replace>
+		<antcall target="restartWebServer" /> 
+	</target>
+	
+	<target name="initMongoForTest">
+		<exec dir="src/scripts/" executable="php" failonerror="true">
+			<arg value="setup-auth-data.php" />
+			<arg value="scriptureforge_e2etest" />
+			<arg value="REALLY_DROP_OLD" />
+		</exec>
+	</target>
+	
 	<target name="restartWebServer">
 		<exec executable="/etc/init.d/apache2">
 			<arg value="restart" />
@@ -124,7 +143,5 @@
 			<arg value="${upload.destination}" />
 		</exec>
 	</target>
-	
-	<!-- Development targets to help developers, not used for production -->
 	
 </project>
