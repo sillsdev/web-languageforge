@@ -4,7 +4,7 @@
 				
 				<?php if (isset($is_static_page)):?>
 				<div class="sf-logo-large">
-					<img src="/images/sf_logo_large.png" alt="Scripture Forge" width="96" height="165" class="png_bg" />
+					<img src="/images/sf_logo_large.png" alt="Scripture Forge" style="width:96px; height:165px" class="png_bg" />
 				</div>
 				<?php endif;?>
 				
