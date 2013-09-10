@@ -6,7 +6,7 @@
 		<div class="notification errorMessage"
 			ng-show="!success.state && success.message">{{notify.error}}</div>
 		<div ng-hide="success.state" class="span4">
-			<form ng-submit="createUser(record)" name="userForm">
+			<form ng-submit="createUser(record)" id="userForm">
 				<fieldset>
 					<legend>Sign Up Below</legend>
 					<div class="well">
