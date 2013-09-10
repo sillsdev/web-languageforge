@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.question',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.jqte', 'ui.bootstrap' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.selection' ]
 	)
 	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService',
 	                             function($scope, $routeParams, questionService, ss, bcs) {
@@ -284,6 +284,11 @@ angular.module(
 				}
 			});
 		};
+
+		$scope.selectedText = '';
+		$scope.$watch('selectedText', function(newval) {
+			console.log('New selection:', newval);
+		});
 		
 	}])
 	;
