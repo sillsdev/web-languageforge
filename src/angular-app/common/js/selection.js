@@ -1,14 +1,17 @@
 
 angular.module('palaso.ui.selection', [])
   // Typeahead
-  .directive('selection', ["$compile", function($compile) {
+  .directive('silSelection', ["$compile", function($compile) {
 		return {
 			restrict: 'A',
 			scope: {
-				remoteVar : "=",
+				silSelectedText : "=",
 				content : "=",
 			},
-			link: function(scope, element, attrs) {
+			controller: function() {
+				this.cssApplier = rangy.createCssClassApplier('highlighted');
+			},
+			link: function(scope, element, attrs, controller) {
 				scope.$watch('content',
 					function(value) {
 						// When the "compile" expresison changes, assign it into
@@ -21,23 +24,31 @@ angular.module('palaso.ui.selection', [])
 						$compile(element.contents())(scope);
 					}
 				);
+				scope.oldHighlightedRange = null;
+				scope.$watch('silSelectedText', function(newSelection) {
+					if (!newSelection) {
+						console.log('Watching selected text, which just got reset to', newSelection);
+						// Client code cleared the selection; we should clear
+						// the highlight if there is one.
+						if (scope.oldHighlightedRange) {
+							controller.cssApplier.undoToRange(scope.oldHighlightedRange);
+						}
+					}
+				});
 				element.bind('mouseup', function() {
-					var selectObj = '';
-					var range;
-					var txt;
-					if (window.getSelection) {
-						selectObj = window.getSelection();
+					var selection = rangy.getSelection();
+					var selectedHtml = selection.toHtml();
+
+					if (scope.oldHighlightedRange) {
+						controller.cssApplier.undoToRange(scope.oldHighlightedRange);
 					}
-					else if (document.getSelection) {
-						selectObj = document.getSelection();
-					}
-					else if (document.selection) {
-						selectObj = document.selection.createRange().text;
-					}
-					txt = selectObj.toString();
-					console.log('Selected text appears to be:', txt);
+
+					var range = selection.getRangeAt(0);
+					controller.cssApplier.applyToRange(range);
+					scope.oldHighlightedRange = range;
+
 					scope.$apply(function() {
-						scope.remoteVar = txt;
+						scope.silSelectedText = selectedHtml;
 					});
 				});
 			}
