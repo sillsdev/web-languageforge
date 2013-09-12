@@ -198,7 +198,8 @@ angular.module(
 		};
 		
 		$scope.newAnswer = {
-			content: ''
+			content: '',
+			textHighlight: '',
 		};
 		
 		$scope.updateComment = function(answerId, answer, newComment) {
@@ -222,6 +223,7 @@ angular.module(
 			};
 			$scope.updateComment(answerId, answer, newComment);
 			$scope.newComment.content = '';
+			$scope.newComment.textHighlight = '';
 		}
 		
 		$scope.editComment = function(answerId, answer, comment) {
@@ -259,10 +261,13 @@ angular.module(
 		$scope.submitAnswer = function() {
 			var answer = {
 				'id':'',
-				'content': $scope.newAnswer.content
+				'content': $scope.newAnswer.content,
+				'textHighlight': $scope.newAnswer.textHighlight,
 			};
 			$scope.updateAnswer(projectId, questionId, answer);
 			$scope.newAnswer.content = '';
+			$scope.newAnswer.textHighlight = '';
+			$scope.selectedText = '';
 		};
 		
 		$scope.editAnswer = function(answer) {
@@ -287,7 +292,7 @@ angular.module(
 
 		$scope.selectedText = '';
 		$scope.$watch('selectedText', function(newval) {
-			console.log('New selection:', newval);
+			$scope.newAnswer.textHighlight = newval;
 		});
 		
 	}])
