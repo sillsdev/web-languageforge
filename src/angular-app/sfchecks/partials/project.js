@@ -2,10 +2,10 @@
 
 angular.module(
 		'sfchecks.project',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
-	)
-	.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 
-	                            function($scope, textService, $routeParams, ss, bcs, linkService) {
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb' ]
+)
+.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService',
+                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
 		
@@ -16,6 +16,14 @@ angular.module(
 		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
 		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 		
+		// Breadcrumb
+		breadcrumbService.set('top',
+				[
+				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
+				]
+		);
+
 		// Listview Selection
 		$scope.newTextCollapsed = true;
 		$scope.selected = [];
@@ -43,7 +51,7 @@ angular.module(
 
 					$scope.project = result.data.project;
 					$scope.project.url = linkService.project(projectId);
-					bcs.updateMap('project', $scope.project.id, $scope.project.name);
+					breadcrumbService.updateCrumb('top', 1, {label: $scope.project.name});
 
 					var rights = result.data.rights;
 					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.DELETE_OTHER); 
@@ -119,15 +127,19 @@ angular.module(
 
 	}])
 	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService',
-	                                 function($scope, $location, $routeParams, bcs, userService, projectService, ss) {
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss) {
 		var projectId = $routeParams.projectId;
 		$scope.project = {};
-		console.log("project id", projectId);
-		console.log("bcs", bcs.idmap);
 		$scope.project.id = projectId;
-		if (bcs.idmap[projectId] != undefined) {
-			$scope.project.name = bcs.idmap[projectId].name;			
-		}
+
+		// Breadcrumb
+		breadcrumbService.set('top',
+				[
+				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/settings', label: 'Settings'},
+				]
+		);
 
 		$scope.updateProject = function() {
 			var newProject = {
@@ -172,6 +184,8 @@ angular.module(
 					$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
 					$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT_OTHER);
 					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
+					// Breadcrumb
+					breadcrumbService.updateCrumb('top', 1, {label: result.data.bcs.project.crumb});
 					
 				}
 			});
