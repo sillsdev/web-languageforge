@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.question',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.jqte', 'ui.bootstrap' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.selection' ]
 	)
 	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService',
 	                             function($scope, $routeParams, questionService, ss, breadcrumbService) {
@@ -210,7 +210,8 @@ angular.module(
 		};
 		
 		$scope.newAnswer = {
-			content: ''
+			content: '',
+			textHighlight: '',
 		};
 		
 		$scope.updateComment = function(answerId, answer, newComment) {
@@ -234,6 +235,7 @@ angular.module(
 			};
 			$scope.updateComment(answerId, answer, newComment);
 			$scope.newComment.content = '';
+			$scope.newComment.textHighlight = '';
 		}
 		
 		$scope.editComment = function(answerId, answer, comment) {
@@ -271,10 +273,13 @@ angular.module(
 		$scope.submitAnswer = function() {
 			var answer = {
 				'id':'',
-				'content': $scope.newAnswer.content
+				'content': $scope.newAnswer.content,
+				'textHighlight': $scope.newAnswer.textHighlight,
 			};
 			$scope.updateAnswer(projectId, questionId, answer);
 			$scope.newAnswer.content = '';
+			$scope.newAnswer.textHighlight = '';
+			$scope.selectedText = '';
 		};
 		
 		$scope.editAnswer = function(answer) {
@@ -296,6 +301,11 @@ angular.module(
 				}
 			});
 		};
+
+		$scope.selectedText = '';
+		$scope.$watch('selectedText', function(newval) {
+			$scope.newAnswer.textHighlight = newval;
+		});
 		
 	}])
 	;
