@@ -43,7 +43,7 @@ angular.module('signup.directives', ['sf.services']).
                 mesureStrength: function (p) {
 
                     var _force = 0;                    
-                    var _regex = /[$-/:-?{-~!"^_`\[\]]/g;
+                    var _regex = '/[$-/:-?{-~!"^_`\[\]]/g';
                                           
                     var _lowerLetters = /[a-z]+/.test(p);                    
                     var _upperLetters = /[A-Z]+/.test(p);
