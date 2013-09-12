@@ -1,8 +1,11 @@
-<h2>{{question.title}}</h2>
-<div id="text" class="span5" selection remote-var="selectedText" content="text.content">
+<div class="span5">
+<h2>{{text.title}}</h2>
+<div id="text" sil-selection sil-selected-text="selectedText" content="text.content">
+</div>
 </div>
 <div id="comments" class="span6">
 	<div class="question">
+	<h2>{{question.title}}</h2>
 	<div>
 	{{question.description}}
 	</div>
@@ -19,6 +22,16 @@
 		</fieldset>
 		</form>
 	</div>
+	<div ng-show="question.answerCount == 0">
+		There are no answers yet for this question. You could be the first one to reply!
+	</div>
+	<br/>
+	Add your own answer<span ng-show="newAnswer.textHighlight"> about this part of the text</span>:
+	<div ng-show="newAnswer.textHighlight" ng-bind-html-unsafe="newAnswer.textHighlight" class="scripture-quote"></div>
+	<form ng-submit="submitAnswer()">
+		<textarea ng-model="newAnswer.content" pui-jqte="jqteOptions"></textarea>
+		<button type="submit" class="btn">Answer Question</button>
+	</form>
 	</div>
 	<table id="answers">
 	<tr ng-repeat="(answerId, answer) in question.answers">
@@ -32,6 +45,9 @@
 		<td>
 			<div class="answer"><!--<b>DEBUG:</b>answerId = {{answerId}}, answer.id = {{answer.id}}<br/>-->
 				<!--<b>DEBUG:</b>answer = {{answer}}<br/>-->
+				<div ng-show="answer.textHighlight" ng-bind-html-unsafe="answer.textHighlight" class="scripture-quote">
+					{{answer.textHighlight}}
+				</div>
 				{{answer.content}}
 				<div class="by">
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
@@ -80,12 +96,4 @@
 		</td>
 	</tr>
 	</table>
-	<div ng-show="question.answerCount == 0">
-		There are no answers yet for this question. You could be the first one to reply!
-	</div>
-	Add your own answer:
-	<form ng-submit="submitAnswer()">
-		<textarea ng-model="newAnswer.content" pui-jqte="jqteOptions"></textarea>
-		<button type="submit" class="btn">Answer Question</button>
-	</form>
 </div>

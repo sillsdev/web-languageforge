@@ -695,6 +695,12 @@ div#comments table td {
 	vertical-align: top;
 }
 
+div.scripture-quote {
+	background-color: #dddddd;
+	padding: 5px;
+	font-size: 90%;
+}
+
 div.vote {
 	text-align: center;
 	line-height: 1.0em;
