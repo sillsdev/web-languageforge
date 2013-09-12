@@ -613,30 +613,31 @@ i.icon-remove {
 	color: #f66
 }
 
+/* Top navigation */
 div.hdrnav {
 	overflow: auto;
-	
 }
+
+/*
 div.hdrnav ul {
 }
-
-div.hdrnav li {
-	background: #777777;
-	display: block;
-	float: left;
-	margin-top: 2px;
-	margin-right: 7px;
-}
-
-div.hdrnav li:hover, div.hdrnav li.here {
-	background: #0088cc;
-}
-
+*/
 div.hdrnav img {
 	margin-right: 12px;
 }
 
-div.hdrnav a {
+ul.topNav > li {
+	background: #777777;
+	display: inline-block;
+	margin-top: 2px;
+	margin-right: 7px;
+}
+
+ul.topNav li:hover, div.hdrnav li.here {
+	background: #0088cc;
+}
+
+ul.topNav a {
 	color: #fff;
 	display: block;
 	padding: 6px 12px 6px 12px;
@@ -649,23 +650,29 @@ div#logo-small {
 	background: url(../images/sf_logo_small.png) no-repeat;
 }
 
-div.sf-breadcrumbs {
-	margin-top: 5px;
+/* Breadcrumbs */
+.breadcrumb > li .divider {
+	padding: 0 5px;
+	xcolor: #ccc;
+}
+
+ul.topCrumbs {
+	margin: 5px 0 0 0;
 	font-weight:bold;
 	color: gray;
+	padding: 0 0;
+	list-style: none;
+	background-color: #fff;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
 }
 
-div.sf-breadcrumbs a {
+ul.topCrumbs a {
 	color: gray;
-	display: inline;
-	padding: 12px 3px 0 3px;
-	text-decoration: none;
-}
-div.sf-breadcrumbs a:hover {
-	text-decoration: underline;
 }
 
-div.sf-breadcrumbs .here {
+ul.topCrumbs .active {
 	color: #202020;
 }
 
