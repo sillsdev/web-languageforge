@@ -95,3 +95,8 @@ span.larger-text {
 form.control-bar {
 	margin-bottom: 0px;
 }
+
+/* Highlighted text in text selection directive */
+.highlighted {
+	background-color: yellow;
+}

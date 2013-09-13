@@ -2,12 +2,21 @@
 
 angular.module(
 		'sfchecks.projects',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
-	)
-	.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'linkService', function($scope, projectService, ss, linkService) {
+		[ 'sf.services', 'palaso.ui.listview', 'ui.bootstrap', 'sgw.ui.breadcrumb' ]
+)
+.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'breadcrumbService', 'linkService', 
+                             function($scope, projectService, ss, breadcrumbService, linkService) {
 		// Rights
 		$scope.rights = {};
 		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.DELETE_OTHER); 
+
+		// Breadcrumb
+		breadcrumbService.set('top',
+				[
+				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
+				]
+		);
+
 		// Listview Selection
 		$scope.newProjectCollapsed = true;
 		$scope.selected = [];
