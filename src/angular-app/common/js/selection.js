@@ -35,13 +35,15 @@ angular.module('palaso.ui.selection', [])
 						}
 					}
 				});
+				element.bind('mousedown', function() {
+					if (scope.oldHighlightedRange) {
+						controller.cssApplier.undoToRange(scope.oldHighlightedRange);
+						scope.oldHighlightedRange = null;
+					}
+				});
 				element.bind('mouseup', function() {
 					var selection = rangy.getSelection();
 					var selectedHtml = selection.toHtml();
-
-					if (scope.oldHighlightedRange) {
-						controller.cssApplier.undoToRange(scope.oldHighlightedRange);
-					}
 
 					var range = selection.getRangeAt(0);
 					controller.cssApplier.applyToRange(range);
