@@ -267,9 +267,13 @@ angular.module(
 		}
 		$scope.calculateAddMode = function() {
 			// TODO This isn't adequate.  Need to watch the 'typeahead.userName' and 'selection' also. CP 2013-07
-			if ($scope.users.length == 0) {
+			if ($scope.typeahead.userName.indexOf('@') != -1) {
+				$scope.addMode = 'invite';
+			} else if ($scope.users.length == 0) {
 				$scope.addMode = 'addNew';
-			} else if ($scope.users.length == 1) {
+			} else if (!$scope.typeahead.userName) {
+				$scope.addMode = 'addNew';
+			} else {
 				$scope.addMode = 'addExisting';
 			}
 		};
@@ -281,7 +285,7 @@ angular.module(
 			} else if ($scope.addMode == 'addExisting') {
 				model.id = $scope.user.id;
 			} else if ($scope.addMode == 'invite') {
-				$model.email = $scope.typeahead.userName;
+				model.email = $scope.typeahead.userName;
 			}
 			console.log("addUser ", model);
 			projectService.updateUser($scope.project.id, model, function(result) {
