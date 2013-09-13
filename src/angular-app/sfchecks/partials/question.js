@@ -2,10 +2,10 @@
 
 angular.module(
 		'sfchecks.question',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.jqte', 'ui.bootstrap' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.selection' ]
 	)
 	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService',
-	                             function($scope, $routeParams, questionService, ss, bcs) {
+	                             function($scope, $routeParams, questionService, ss, breadcrumbService) {
 		$scope.jqteOptions = {
 			'placeholder': 'Say what you think...',
 			'u': false,
@@ -27,15 +27,27 @@ angular.module(
 
 		var projectId = $routeParams.projectId;
 		var questionId = $routeParams.questionId;
+
+		// Breadcrumb
+		breadcrumbService.set('top',
+				[
+				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId + '/' + $routeParams.qusetionId, label: ''},
+				]
+		);
+		
 		questionService.read(projectId, questionId, function(result) {
 			console.log('questionService.read(', projectId, questionId, ')');
 			if (result.ok) {
 				$scope.text = result.data.text;
 				$scope.question = result.data.question;
 				$scope.project = result.data.project;
-				bcs.updateMap('project', $scope.project.id, $scope.project.projectname);
-				bcs.updateMap('text', $scope.text.id, $scope.text.title);
-				bcs.updateMap('question', $scope.question.id, $scope.question.title);
+				console.log(result.data);
+				breadcrumbService.updateCrumb('top', 1, {label: $scope.project.projectname});
+				breadcrumbService.updateCrumb('top', 2, {label: $scope.text.title});
+				breadcrumbService.updateCrumb('top', 3, {label: $scope.question.title});
 				// Keep track of answer count so we can show or hide "There are no answers" as appropriate
 				$scope.question.answerCount = Object.keys($scope.question.answers).length;
 				$scope.rights = result.data.rights;
@@ -198,7 +210,8 @@ angular.module(
 		};
 		
 		$scope.newAnswer = {
-			content: ''
+			content: '',
+			textHighlight: '',
 		};
 		
 		$scope.updateComment = function(answerId, answer, newComment) {
@@ -222,6 +235,7 @@ angular.module(
 			};
 			$scope.updateComment(answerId, answer, newComment);
 			$scope.newComment.content = '';
+			$scope.newComment.textHighlight = '';
 		}
 		
 		$scope.editComment = function(answerId, answer, comment) {
@@ -259,10 +273,13 @@ angular.module(
 		$scope.submitAnswer = function() {
 			var answer = {
 				'id':'',
-				'content': $scope.newAnswer.content
+				'content': $scope.newAnswer.content,
+				'textHighlight': $scope.newAnswer.textHighlight,
 			};
 			$scope.updateAnswer(projectId, questionId, answer);
 			$scope.newAnswer.content = '';
+			$scope.newAnswer.textHighlight = '';
+			$scope.selectedText = '';
 		};
 		
 		$scope.editAnswer = function(answer) {
@@ -284,6 +301,11 @@ angular.module(
 				}
 			});
 		};
+
+		$scope.selectedText = '';
+		$scope.$watch('selectedText', function(newval) {
+			$scope.newAnswer.textHighlight = newval;
+		});
 		
 	}])
 	;
