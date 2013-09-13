@@ -534,6 +534,17 @@ table tbody tr:hover, table tbody tr.altrow:hover {
 }
 
 /* Notifications */
+.alert {
+	margin-top: 8px;
+	margin-bottom: 4px;
+	padding: 7px 10px 7px 35px;
+}
+
+.alert .close {
+	top: 0px;
+	right: 0px;
+}
+
 .notification {
 	position: relative;
 	margin: 0 0 10px;
@@ -542,23 +553,23 @@ table tbody tr:hover, table tbody tr.altrow:hover {
 	font-size: 0.9em;
 }
 
-.errorMessage {
-	background: url(../images/exclamation.png) no-repeat scroll 8px 7px #ffeeee;
+.alert-error {
+	background: url(../images/exclamation.png) no-repeat scroll 8px 8px #ffeeee;
 	border: 1px solid #e47b7b;
 }
 
-.warningMessage {
-	background: url(../images/error.png) no-repeat scroll 8px 7px #FFFDF1;
+.alert-warn {
+	background: url(../images/error.png) no-repeat scroll 8px 8px #FFFDF1;
 	border: 1px solid #FFE578;
 }
 
-.acceptedMessage {
-	background: url(../images/tick.png) no-repeat scroll 8px 7px #f4fff2;
+.alert-success {
+	background: url(../images/tick.png) no-repeat scroll 8px 8px #f4fff2;
 	border: 1px solid #81ca76;
 }
 
-.informationMessage {
-	background: url(../images/information.png) no-repeat scroll 8px 7px #F4FAFF;
+.alert-info {
+	background: url(../images/information.png) no-repeat scroll 8px 8px #F4FAFF;
 	border: 1px solid #AECEEF;
 }
 
