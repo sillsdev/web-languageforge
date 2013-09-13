@@ -5,10 +5,19 @@ angular.module('activity',
 		[
 		 'sf.services',
 		 'ui.bootstrap',
-		 'activity.filters'
+		 'activity.filters',
+		 'sgw.ui.breadcrumb'
 		])
-	.controller('ActivityCtrl', ['$scope', 'activityPageService', 'linkService', 'sessionService', function($scope, activityService, linkService, sessionService) {
+	.controller('ActivityCtrl', ['$scope', 'activityPageService', 'linkService', 'sessionService','breadcrumbService',
+	                             function($scope, activityService, linkService, sessionService, breadcrumbService) {
 		
+		// Breadcrumb
+		breadcrumbService.set('top',
+				[
+				 {label: 'Activity'},
+				]
+		);
+
 		$scope.decodeActivityList = function(items) {
 			for (var i =0; i < items.length; i++) {
 				if ('userRef' in items[i]) {
