@@ -21,7 +21,7 @@ module.exports = function(config){
     },
 
     plugins : [
-            'karma-junit-reporter',
+            'karma-teamcity-reporter',
             'karma-jasmine',
             'karma-ng-scenario',    
             'karma-phantomjs-launcher'    
