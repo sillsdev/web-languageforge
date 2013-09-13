@@ -27,7 +27,6 @@ angular.module('palaso.ui.selection', [])
 				scope.oldHighlightedRange = null;
 				scope.$watch('silSelectedText', function(newSelection) {
 					if (!newSelection) {
-						console.log('Watching selected text, which just got reset to', newSelection);
 						// Client code cleared the selection; we should clear
 						// the highlight if there is one.
 						if (scope.oldHighlightedRange) {
