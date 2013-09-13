@@ -1,10 +1,11 @@
 <div class="container" ng-app="activity" ng-cloak style="margin-top:10px">
 	<div id="sfchecks-hmenu" class="hdrnav">
-		<img src="/images/sf_logo_medium.png" class="left" width="48px" height="60px" />
-		<ul style="margin:0; clear:right; overflow:auto">
-			<li><a href="/app/sfchecks">My Projects</a></li>
-			<li class="here"><a href="#">Activity</a></li>
+		<img src="/images/sf_logo_medium.png" class="left" style="width:48px; height:60px" />
+		<ul class="topNav" style="margin:0; clear:right; overflow:auto">
+			<li><a href="/app/sfchecks#/projects">My Projects</a></li>
+			<li class="here"><a href="/app/activity">Activity</a></li>
 		</ul>
+		<ul id="top" class="topCrumbs" breadcrumbs></ul>
 	</div>
 	<div ng-controller="ActivityCtrl">
 		<div ng-show="activities.length > 0" style="margin-top:20px"><button class="btn" ng-disabled="showAllActivity" ng-click="filterAllActivity()">All Activity</button> <button class="btn" ng-disabled="!showAllActivity" ng-click="filterMyActivity()">Show Only My Activity</button></div>
