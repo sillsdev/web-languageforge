@@ -3119,7 +3119,7 @@ table th[class*="span"],
   height: auto;
 }
 
-.cclose {
+.close {
   float: right;
   font-size: 20px;
   font-weight: bold;
@@ -3130,7 +3130,7 @@ table th[class*="span"],
   filter: alpha(opacity=20);
 }
 
-.cclose:hover {
+.close:hover {
   color: #000000;
   text-decoration: none;
   cursor: pointer;
@@ -3138,7 +3138,7 @@ table th[class*="span"],
   filter: alpha(opacity=40);
 }
 
-button.cclose {
+button.close {
   padding: 0;
   cursor: pointer;
   background: transparent;
@@ -3836,7 +3836,7 @@ input[type="submit"].btn.btn-mini {
   margin: 0;
 }
 
-.alert .cclose {
+.alert .close {
   position: relative;
   top: -2px;
   right: -21px;
@@ -5151,7 +5151,7 @@ input[type="submit"].btn.btn-mini {
   border-bottom: 1px solid #eee;
 }
 
-.modal-header .cclose {
+.modal-header .close {
   margin-top: 2px;
 }
 
