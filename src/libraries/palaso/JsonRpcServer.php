@@ -69,7 +69,7 @@ class JsonRpcServer {
 					'error' => sprintf("unknown method '%s' on class '%s'", $request['method'], get_class($object))
 				);
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			$response = array (
 				'id' => $request['id'],
 				'result' => NULL,
