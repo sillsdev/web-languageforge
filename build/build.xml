@@ -19,7 +19,6 @@
 
 	<target name="cleanInstall" depends="">
 		<delete dir="${build.installPath}" quiet="true" />
-		<!--  TODO drop mongo scriptureforge_e2etest db -->
 	</target>
 	
 	<target name="cleanInstallForTest" depends="">
@@ -58,7 +57,7 @@
 		 </exec>
 	</target>
 
-	<target name="test-js-e2e">
+	<target name="test-js-e2e" depends="installForE2eTest">
 		 <exec executable="/usr/local/bin/karma">
 			 <arg value="start" />
 			 <arg file="test/karma-e2e.conf.js" />
@@ -102,24 +101,10 @@
 
 	<target name="install" depends="package,cleanInstall">
 		<untar src="${build.packageFile}" dest="${build.installPath}" compression="gzip" />
-		<!--
-		<chgrp type="both" group="www-data">
-			<dirset dir="${build.installPath}/web/sites/default/files/" />
-			<fileset dir="${build.installPath}/web/sites/default/files/">
-			    <include name="**/*"/>
-			</fileset>
-		</chgrp>
-		<chmod type="both" perm="g+w">
-			<dirset dir="${build.installPath}/web/sites/default/files/" />
-			<fileset dir="${build.installPath}/web/sites/default/files/">
-			    <include name="**/*"/>
-			</fileset>
-		</chmod>
-		-->
 		<antcall target="restartWebServer" /> 
 	</target>
 	
-	<target name="installForTest" depends="package, cleanInstallForTest, initMongoForTest">
+	<target name="installForE2eTest" depends="package, cleanInstallForE2eTest, initMongoForTest">
 		<untar src="${build.packageFile}" dest="${build.installForTestPath}" compression="gzip" />
 		<replace file="${build.installForTestPath}/htdocs/config/mongodb.php">
 		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
