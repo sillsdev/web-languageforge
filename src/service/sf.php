@@ -21,6 +21,7 @@ use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
+use models\commands\FavoriteCommands;
 use models\mapper\Id;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
@@ -30,6 +31,7 @@ require_once(APPPATH . 'config/sf_config.php');
 
 require_once(APPPATH . 'models/ProjectModel.php');
 require_once(APPPATH . 'models/QuestionModel.php');
+require_once(APPPATH . 'models/FavoriteModel.php');
 require_once(APPPATH . 'models/TextModel.php');
 require_once(APPPATH . 'models/UserModel.php');
 
@@ -350,6 +352,33 @@ class Sf
 		return \models\dto\QuestionListDto::encode($projectId, $textId, $this->_userId);
 	}
 	
+
+	//---------------------------------------------------------------
+	// Favorites API
+	//---------------------------------------------------------------
+
+	public function favorite_update($params) {
+		$favorite = new \models\FavoriteModel();
+		JsonDecoder::decode($favorite, $params);
+		$result = $favorite->write();
+		return $result;
+	}
+
+	public function favorite_read($id) {
+		$favorite = new \models\FavoriteModel($id);
+		return JsonEncoder::encode($favorite);
+	}
+
+	public function favorite_delete($favoriteIds) {
+		return FavoriteCommands::deleteFavorites($favoriteIds);
+	}
+
+	public function favorite_list($username) {
+		$list = new \models\FavoriteListModel($username);
+		$list->read();
+		return $list;
+	}
+
 	// ---------------- Activity Feed -----------------
 	public function activity_list_dto() {
 		return \models\dto\ActivityListDto::getActivityForUser($this->_userId);
