@@ -117,6 +117,18 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('question_remove_comment', [projectId, questionId, answerId, commentId], callback);
 		};
 	}])
+	.service('favoriteService', ['jsonRpc', function(jsonRpc) {
+		jsonRpc.connect('/api/sf');
+		this.read = function(favoriteId, callback) {
+			jsonRpc.call('favorite_read', [favoriteId], callback);
+		};
+		this.update = function(favoriteId, callback) {
+			jsonRpc.call('favorite_update', [favoriteId], callback);
+		};
+		this.remove = function(favoriteIds, callback) {
+			jsonRpc.call('favorite_delete', [favoriteIds], callback);
+		};
+	}])
 	.service('activityPageService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf');
 		this.list_activity = function(offset, count, callback) {
