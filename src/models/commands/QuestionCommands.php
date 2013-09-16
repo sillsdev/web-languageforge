@@ -55,6 +55,15 @@ class QuestionCommands
 		return $dto;
 	}
 	
+	/**
+	 * Creates / Updates a comment on the given answer. 
+	 * @param string $projectId
+	 * @param string $questionId
+	 * @param string $answerId
+	 * @param string $comment
+	 * @param string $userId
+	 * @return array Dto
+	 */
 	public static function updateComment($projectId, $questionId, $answerId, $comment, $userId) {
 		$projectModel = new ProjectModel($projectId);
 		$commentModel = new CommentModel();
@@ -70,6 +79,21 @@ class QuestionCommands
 		$dto = array();
 		$dto[$commentId] = $commentDTO;
 		return $dto;
+	}
+
+	/**
+	 * Up votes the given answer, if permitted for the given $userId
+	 * @param string $userId 
+	 * @param string $projectId
+	 * @param string $questionId
+	 * @param string $answerId
+	 */
+	public static function voteUp($userId, $projectId, $questionId, $answerId) {
+		
+	}
+	
+	public static function voteDown($userId, $projectId, $questionId, $answerId) {
+		
 	}
 	
 }
