@@ -21,8 +21,9 @@
 		<delete dir="${build.installPath}" quiet="true" />
 	</target>
 	
-	<target name="cleanInstallForTest" depends="">
+	<target name="cleanInstallForE2eTest" depends="">
 		<delete dir="${build.installForTestPath}" quiet="true" />
+		<mkdir dir="${build.installForTestPath}" />
 	</target>
 
 	<target name="cleanUpload" depends="">
