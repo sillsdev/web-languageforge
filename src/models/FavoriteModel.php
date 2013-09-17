@@ -39,11 +39,6 @@ class FavoriteModel extends \models\mapper\MapperModel
 	/**
 	 * @var string
 	 */
-	public $username;
-
-	/**
-	 * @var string
-	 */
 	public $title;
 
 	/**
@@ -54,11 +49,11 @@ class FavoriteModel extends \models\mapper\MapperModel
 
 class FavoriteListModel extends \models\mapper\MapperListModel
 {
-	public function __construct($username) {
+	public function __construct() {
 		parent::__construct(
 			FavoriteModelMongoMapper::instance(),
-			array('username' => array('$regex' => $username)),
-			array('username', 'title', 'description')
+			array(),
+			array('title', 'description')
 		);
 	}
 }
