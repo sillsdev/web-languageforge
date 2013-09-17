@@ -31,7 +31,7 @@ require_once(APPPATH . 'config/sf_config.php');
 
 require_once(APPPATH . 'models/ProjectModel.php');
 require_once(APPPATH . 'models/QuestionModel.php');
-require_once(APPPATH . 'models/FavoriteModel.php');
+require_once(APPPATH . 'models/QuestionTemplateModel.php');
 require_once(APPPATH . 'models/TextModel.php');
 require_once(APPPATH . 'models/UserModel.php');
 
