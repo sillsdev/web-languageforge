@@ -5,24 +5,21 @@ use models\mapper\MongoMapper;
 use models\mapper\Id;
 use models\mapper\IdReference;
 
-class UserRelationModelMongoMapper extends \models\mapper\MongoMapper
+class UserRelationModel extends \models\mapper\MapperModel
 {
-	public static function instance() {
+	public static function mapper() {
 		static $instance = null;
 		if (null === $instance) {
-			$instance = new UserRelationModelMongoMapper(SF_DATABASE, 'userrelation');
+			$instance = new \models\mapper\MongoMapper(SF_DATABASE, 'userrelation');
 		}
 		return $instance;
 	}
-}
-
-class UserRelationModel extends \models\mapper\MapperModel
-{
+	
 	public function __construct($type, $id = '') {
 		$this->id = new Id();
 		$this->userRef = new IdReference();
 		$this->type = $type;
-		parent::__construct(UserRelationModelMongoMapper::instance(), $id);
+		parent::__construct(self::mapper(), $id);
 	}
 	
 	/**
