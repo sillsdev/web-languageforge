@@ -24,14 +24,12 @@ class FavoriteAPITestEnvironment
 	}
 
 	/**
-	 * @param string $name
-	 * @param string $username
-	 * @param string $email
+	 * @param string $title
+	 * @param string $description
 	 */
-	function addFavorite($username = 'someuser', $title = 'Some Title', $description = 'Some Description') {
+	function addFavorite($title = 'Some Title', $description = 'Some Description') {
 		$param = array(
 			'id' => '',
-			'username' => $username,
 			'title' => $title,
 			'description' => $description
 		);
@@ -70,7 +68,6 @@ class TestFavoriteAPI extends UnitTestCase {
 
 		// Create
 		$id = $e->addFavorite(
-			'someuser',
 			'Favorite Title',
 			'Nice and clear description'
 		);
@@ -80,7 +77,6 @@ class TestFavoriteAPI extends UnitTestCase {
 		// Read
 		$result = $api->favorite_read($id);
 		$this->assertNotNull($result['id']);
-		$this->assertEqual('someuser', $result['username']);
 		$this->assertEqual('Favorite Title', $result['title']);
 		$this->assertEqual('Nice and clear description', $result['description']);
 
@@ -105,19 +101,17 @@ class TestFavoriteAPI extends UnitTestCase {
 		$api = $e->api;
 
 		$id = $e->addFavorite(
-			'someuser',
 			'Favorite Title',
 			'Nice and clear description'
 		);
 		$id2 = $e->addFavorite(
-			'otheruser',
 			'A title',
 			'A description'
 		);
 
 		$result = $api->favorite_list('someuser');
 
-		$this->assertEqual($result['count'], 1);
+		$this->assertEqual($result['count'], 2);
 
 		$e->deleteFavorite($id);
 		$e->deleteFavorite($id2);

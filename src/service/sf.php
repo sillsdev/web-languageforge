@@ -373,8 +373,8 @@ class Sf
 		return FavoriteCommands::deleteFavorites($favoriteIds);
 	}
 
-	public function favorite_list($username) {
-		$list = new \models\FavoriteListModel($username);
+	public function favorite_list() {
+		$list = new \models\FavoriteListModel();
 		$list->read();
 		return $list;
 	}
