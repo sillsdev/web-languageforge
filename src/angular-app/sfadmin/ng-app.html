@@ -1,5 +1,6 @@
 <div class="container" ng-app="sfAdmin" ng-cloak>
 	<legend>Site Administration</legend>
+	<sil-notices></sil-notices>
 
 	<tabset>
 	<tab heading="Users">
@@ -37,39 +38,37 @@
 			<div class="well">
 				<div>
 					<label>User Name</label>
-					<input type="text" placeholder="(username)" ng-model="record.username"/>
+					<input ng-blur="checkUserName()" required type="text" placeholder="(username)" ng-model="record.username"/>
+					<span  ng-show="userNameLoading"><img id="userNameLoading" src="/images/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+					<span  ng-show="userNameOk"><img id="userNameOk" src="/images/tick.png" title="User name is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+					<span  ng-show="userNameExists"><img id="userNameExists" src="/images/exclamation.png" title="User name already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
 				</div>
 				<div>
 					<label>Name</label>
-					<input type="text" placeholder="(your name here)" ng-model="record.name"/>
+					<input required type="text" placeholder="(your name here)" ng-model="record.name"/>
 				</div>
 				<div>
 					<label>Email</label>
-					<input type="text" placeholder="(no email)" ng-model="record.email"/>
+					<input required type="text" placeholder="(no email)" ng-model="record.email"/>
 				</div>
 				<div>
 					<label>Role</label>
-					<select ng-model="record.role" ng-options="key as role.name for (key, role) in roles"></select>
+					<select required ng-model="record.role" ng-options="key as role.name for (key, role) in roles"></select>
 				</div>
 				<div>
 					<label style="margin-bottom:20px"><input type="checkbox" ng-model="record.active"/> Is Active</label>
 				</div>
-				<a href="" ng-click="togglePasswordForm(); vars.inputfocus = false">Click to change password</a>
+				<a ng-show="vars.state == 'update'" href="" ng-click="togglePasswordForm(); vars.inputfocus = false">Change {{record.username}}'s password</a>
 				<div ng-show="vars.showPasswordForm">
 					<label>Password</label>
-					<input type="password" ng-model="record.password" ng-focus="vars.inputfocus" name="password"/>
-				</div>
-				<div class="large-12" ng-show="vars.showPasswordForm">
-					<label>Confirm password</label>
-					<input type="password" ng-model="record.confirm_password" require-equal="record.password" name="confirmPassword"/>
-					<label ng-show="passwordForm.confirmPassword.$error.match">Passwords do not match</label>
+					<input type="text" ng-model="record.password" ng-focus="vars.inputfocus" name="password"/>
 				</div>
 				<table class="table">
 				<tr ng-show="record.created_on"><td><label style="cursor:default">Created On: {{ record.created_on * 1000 | date:shortDate }}</label></td></tr>
 				<tr ng-show="record.last_login"><td><label style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label></td></tr>
 				</table>
 			</div>
-					<button class="btn btn-small" type="submit" ng-disabled="(userForm.password.$pristine != userForm.confirmPassword.$pristine) || userForm.$invalid">
+					<button class="btn btn-small" type="submit" ng-disabled="userForm.$invalid || userNameExists">
 						<i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
 					</button>
 		</fieldset>

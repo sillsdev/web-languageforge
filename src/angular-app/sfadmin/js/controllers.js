@@ -4,9 +4,9 @@
 
 angular.module(
 	'sfAdmin.controllers',
-	[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
+	[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'palaso.ui.notice']
 )
-.controller('UserCtrl', ['$scope', 'userService', function UserCtrl($scope, userService) {
+.controller('UserCtrl', ['$scope', 'userService', 'silNoticeService', function UserCtrl($scope, userService, notice) {
 
 	$scope.vars = {
 		selectedIndex: -1,
@@ -14,7 +14,15 @@ angular.module(
 		editButtonIcon: "",
 		inputfocus: false,
 		showPasswordForm: false,
+		state: "add" // can be either "add" or "update"
 	};
+	
+	$scope.resetCheckName = function() {
+		$scope.userNameLoading = false;
+		$scope.userNameExists = false;
+		$scope.userNameOk = false;
+	}
+	$scope.resetCheckName();
 	
 	$scope.focusInput = function() {
 		$scope.vars.inputfocus = true;
@@ -65,6 +73,8 @@ angular.module(
 			$scope.vars.record = record;
 			$scope.vars.editButtonName = "Save";
 			$scope.vars.editButtonIcon = "pencil";
+			$scope.vars.state = "update";
+			$scope.hidePasswordForm();
 		}
 	};
 
@@ -74,6 +84,7 @@ angular.module(
 		if (newId) {
 			userService.read(newId, function(result) {
 				$scope.record = result.data;
+				$scope.resetCheckName();
 			});
 		} else {
 			// Clear data table
@@ -87,6 +98,8 @@ angular.module(
 		// Right now this is not intuitive, so we need some kind of visual signal
 		$scope.vars.editButtonName = "Add";
 		$scope.vars.editButtonIcon = "plus";
+		$scope.vars.state = "add";
+		$scope.showPasswordForm();
 		$scope.focusInput();
 	};
 
@@ -102,7 +115,66 @@ angular.module(
 		}
 		return $scope.roles[role].name;
 	};
+	
+	$scope.checkUserName = function() {
+		$scope.userNameOk = false;
+		$scope.userNameExists = false;
+		if ($scope.record.username && $scope.vars.state == "add") {
+			$scope.userNameLoading = true;
+			userService.userNameExists($scope.record.username, function(result) {
+				$scope.userNameLoading = false;
+				if (result.ok) {
+					if (result.data) {
+						$scope.userNameOk = false;
+						$scope.userNameExists = true;
+					} else {
+						$scope.userNameOk = true;
+						$scope.userNameExists = false;
+					}
+				}
+			});
+		}
+	}
+	
+	$scope.updateRecord = function(record) {
+		if (record.id == undefined) {
+			// add a new user
+			record.id = '';
+			
+			userService.create(record, function(result) {
+				if (result.ok) {
+					if (result.data) {
+						notice.push(notice.SUCCESS, "The user " + record.username + " was successfully added");
+					} else {
+						notice.push(notice.ERROR, "API Error: the username already exists!  (this should not happen)");
+					}
+				}
+				
+			});
+			$scope.record = {};
+			$scope.focusInput();
+			
+		} else {
+			// update an existing user
+			userService.update(record, function(result) {
+				if (result.ok) {
+					if (result.data) {
+						notice.push(notice.SUCCESS, "The user " + record.username + " was successfully updated");
+					}
+				}
+			});
+			if (record.password) {
+				$scope.changePassword(record);
+				$scope.record.password = "";
+			}
+			$scope.blurInput();
+		}
+		
+		$scope.resetCheckName();
+		$scope.queryUsers(true);
+	}
 
+/*
 	$scope.updateRecord = function(record) {
 //		console.log("updateRecord() called with ", record);
 		if (record === undefined || JSON.stringify(record) == "{}") {
@@ -142,6 +214,7 @@ angular.module(
 		});
 		return true;
 	};
+	*/
 
 	$scope.removeUsers = function() {
 //		console.log("removeUsers");
@@ -154,6 +227,15 @@ angular.module(
 			return;
 		}
 		userService.remove(userIds, function(result) {
+			if (result.ok) {
+				if (result.data == 1) {
+					notice.push(notice.SUCCESS, "1 user was deleted");
+				} else if (result.data > 1) {
+					notice.push(notice.SUCCESS, result.data + " users were deleted");
+				} else {
+					notice.push(notice.ERROR, "Error deleting one or more users");
+				}
+			}
 			// Whether result was OK or error, wipe selected list and reload data
 			$scope.selected = [];
 			$scope.vars.selectedIndex = -1;
@@ -164,6 +246,9 @@ angular.module(
 	$scope.changePassword = function(record) {
 //		console.log("changePassword() called with ", record);
 		userService.changePassword(record.id, record.password, function(result) {
+			if (result.ok) {
+				notice.push(notice.SUCCESS, "Password for " + record.name + " updated successfully");
+			}
 //			console.log("Password successfully changed.");
 		});
 	};
@@ -179,6 +264,7 @@ angular.module(
 	};
 
 }])
+/*
 .controller('PasswordCtrl', ['$scope', 'jsonRpc', function($scope, jsonRpc) {
 	$scope.changePassword = function(record) {
 		// Validation
@@ -194,4 +280,5 @@ angular.module(
 		};
 	};
 }])
+*/
 ;
