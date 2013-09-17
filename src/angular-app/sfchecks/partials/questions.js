@@ -4,8 +4,8 @@ angular.module(
 		'sfchecks.questions',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb' ]
 	)
-	.controller('QuestionsCtrl', ['$scope', 'questionsService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService',
-	                              function($scope, questionsService, $routeParams, ss, linkService, breadcrumbService) {
+	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService',
+	                              function($scope, questionsService, qts, $routeParams, ss, linkService, breadcrumbService) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
@@ -26,6 +26,24 @@ angular.module(
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
 				]
 		);
+
+		// Question templates
+		$scope.templates = [];
+		$scope.queryTemplates = function() {
+			qts.list(function(result) {
+				if (result.ok) {
+					$scope.templates = result.data.entries;
+				}
+			});
+		};
+		$scope.queryTemplates();
+
+		$scope.$watch('template', function(template) {
+			if (template) {
+				$scope.questionTitle = template.title;
+				$scope.questionDescription = template.description;
+			}
+		});
 
 		// Listview Selection
 		$scope.newQuestionCollapsed = true;
