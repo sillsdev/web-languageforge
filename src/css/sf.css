@@ -775,8 +775,8 @@ div#comments table.comments td {
 }
 
 /* New Item under ribbon bar */
-div.new-item form {
-	margin: 20px 0 0 0;
+div.new-item {
+	margin: 20px 0 20px 0;
 }
 
 .activity-date {
