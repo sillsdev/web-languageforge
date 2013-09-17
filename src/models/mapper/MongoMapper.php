@@ -30,7 +30,7 @@ class MongoMapper
 	 * @param string $collection
 	 * @param string $idKey defaults to id
 	 */
-	protected function __construct($database, $collection, $idKey = 'id') {
+	public function __construct($database, $collection, $idKey = 'id') {
 		$this->_db = MongoStore::connect($database);
 		$this->_collection = $this->_db->$collection;
 		$this->_idKey = $idKey;
@@ -145,6 +145,21 @@ class MongoMapper
 		CodeGuard::checkTypeAndThrow($property, 'string');
 		CodeGuard::checkTypeAndThrow($value, 'string');
 		$data = $this->_collection->findOne(array($property => $value));
+		if ($data != NULL) {
+			MongoDecoder::decode($model, $data, $data['_id']);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param Object $model
+	 * @param array  $properties
+	 */
+	public function readByProperties($model, $properties) {
+		CodeGuard::checkTypeAndThrow($properties, 'array');
+		$data = $this->_collection->findOne($properties);
 		if ($data != NULL) {
 			MongoDecoder::decode($model, $data, $data['_id']);
 			return true;
