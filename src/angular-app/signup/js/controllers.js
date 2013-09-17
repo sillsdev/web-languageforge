@@ -4,16 +4,13 @@
 
 angular.module(
 	'signup.controllers',
-	[ 'sf.services', 'ui.bootstrap' ]
+	[ 'sf.services', 'ui.bootstrap', 'palaso.ui.notice' ]
 )
-.controller('UserCtrl', ['$scope', 'userService', 'sessionService', function UserCtrl($scope, userService, sessionService) {
+.controller('UserCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', function UserCtrl($scope, userService, sessionService, notice) {
 
 	$scope.record = {};
-	$scope.success = {
-		'state':false,
-		'message':''
-	};
 	$scope.record.id = '';
+	$scope.userRegistered = false;
 	
 	
 	$scope.getCaptchaSrc = function() {
@@ -21,9 +18,6 @@ angular.module(
 			if (result.ok) {
 				$scope.captchaSrc = result.data;
 				$scope.record.captcha = "";
-			} else {
-				$scope.success.state = false;
-				$scope.success.message = "An error occurred fetching the captcha image";
 			}
 			
 		});
@@ -33,18 +27,15 @@ angular.module(
 	
 	
 	$scope.createUser = function(record) {
-		userService.create(record, function(result) {
+		userService.register(record, function(result) {
 			if (result.ok) {
 				if (!result.data) {
-					$scope.captchaError = true;
+					notice.push(notice.WARN, "The image verification failed.  Please try again");
 					$scope.getCaptchaSrc();
 				} else {
-					$scope.success.state = true;
-					$scope.success.message = "";
+					notice.push(notice.SUCCESS, "Thank you, " + record.name + ", for registering.  We will contact you via email when your account is active.");
+					$("#userForm").fadeOut();
 				}
-			} else {
-				$scope.success.state = false;
-				$scope.success.message = "An error occurred in the signup process";
 			}
 		});
 		return true;
@@ -64,9 +55,6 @@ angular.module(
 						$scope.userNameOk = true;
 						$scope.userNameExists = false;
 					}
-				} else {
-					$scope.success.state = false;
-					$scope.success.message = "An error occurred checking for an username";
 				}
 			});
 		}
