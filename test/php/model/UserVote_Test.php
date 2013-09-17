@@ -2,11 +2,11 @@
 
 use models\dto\UsxHelper;
 
-use models\TextListModel;
+use models\VoteListModel;
 
 use models\mapper\MongoStore;
 use models\ProjectModel;
-use models\TextModel;
+use models\UserVoteModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -15,83 +15,66 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 require_once(TestPath . 'common/MockProjectModel.php');
 
 require_once(SourcePath . "models/ProjectModel.php");
-require_once(SourcePath . "models/TextModel.php");
+require_once(SourcePath . "models/UserVoteModel.php");
 
-class TestTextModel extends UnitTestCase {
-
-	private $_someTextId;
+class TestUserUserVoteModel extends UnitTestCase {
 
 	function __construct() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
 	}
 
 	function testCRUD_Works() {
 		$e = new MongoTestEnvironment();
-		$projectModel = new MockProjectModel();
+		$e->clean();
 		
-		// List
-		$list = new TextListModel($projectModel);
-		$list->read();
-		$this->assertEqual(0, $list->count);
+		$userId = $e->mockId();
+		$projectId = $e->mockId();
+		$questionId = $e->mockId();
+		$answerId = $e->mockId();
 		
 		// Create
-		$text = new TextModel($projectModel);
-		$text->title = "Some Text";
-		$usx = MongoTestEnvironment::usxSample();
-		$text->content = $usx;
-		$id = $text->write();
+		$vote = UserVoteModel::getOrCreateVotesForQuestion($userId, $projectId, $questionId);
+		$this->assertNotNull($vote);
+
+		// Has vote should fail, answer is not yet present.
+		$result = $vote->hasVote($answerId);
+		$this->assertFalse($result);
+		
+		// Add vote, should then be present.
+		$vote->addVote($answerId);
+		$result = $vote->hasVote($answerId);
+		$this->assertTrue($result);
+		
+		$id = $vote->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$this->assertEqual($id, $text->id->asString());
+		$this->assertEqual($id, $vote->id->asString());
 		
 		// Read back
-		$otherText = new TextModel($projectModel, $id);
-		$this->assertEqual($id, $otherText->id->asString());
-		$this->assertEqual('Some Text', $otherText->title);
-		$this->assertEqual($usx, $otherText->content);
+		$otherVote = UserVoteModel::getOrCreateVotesForQuestion($userId, $projectId, $questionId);
+		$result = $otherVote->hasVote($answerId);
+		$this->assertTrue($result);
 		
 		// Update
-		$otherText->title = 'Other Text';
-		$otherText->write();
+		$answer2Id = $e->mockId();
+		$otherVote->addVote($answer2Id);
+		$otherVote->write();
 		
 		// Read back
-		$otherText = new TextModel($projectModel, $id);
-		$this->assertEqual('Other Text', $otherText->title);
+		$otherVote = UserVoteModel::getOrCreateVotesForQuestion($userId, $projectId, $questionId);
+		$result = $otherVote->hasVote($answerId);
+		$this->assertTrue($result);
+		$result = $otherVote->hasVote($answer2Id);
+		$this->assertTrue($result);
 		
-		// List
-		$list->read();
-		$this->assertEqual(1, $list->count);
+		// Remove vote, should no longer be present.
+		$vote->removeVote($answerId);
+		$result = $vote->hasVote($answerId);
+		$this->assertFalse($result);
 		
-		// Delete
-		TextModel::remove($projectModel->databaseName(), $id);
-		
-		// List
-		$list->read();
-		$this->assertEqual(0, $list->count);
+// 		UserVoteModel::remove($projectModel->databaseName(), $id);
 		
 	}
 	
-	function testUpdateThenRemove_NewProject_CreatesThenRemovesProjectDatabase() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-		
-		$projectModel = $e->createProject(SF_TESTPROJECT);
-		$databaseName = $projectModel->databaseName();
-		
-		$this->assertFalse(MongoStore::hasDB($databaseName));
-					
-		$text = new TextModel($projectModel);
-		$text->title = 'Some Title';
-		$text->write();
-		
-		$this->assertTrue(MongoStore::hasDB($databaseName));
-		
-		$projectModel->remove();
-		
-		$this->assertFalse(MongoStore::hasDB($databaseName));
-	}
-
 }
 
 ?>

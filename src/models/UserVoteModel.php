@@ -25,27 +25,58 @@ class UserVoteModel extends UserRelationModel
 	}
 	
 	/**
-	 * Returns the UserVoteModel for the users vote on the given $answerId if it exists.  Otherwise returns null.
+	 * Returns the UserVoteModel for the users votes on the given $questionId if it exists.
+	 * Otherwise returns a new UserVoteModel.
 	 * @param string $userId
 	 * @param string $projectId
 	 * @param string $questionId
-	 * @param string $answerId
 	 * @return UserVoteModel
 	 */
-	public static function getVotesForQuestion($userId, $projectId, $questionId, $answerId) {
-		
+	public static function getOrCreateVotesForQuestion($userId, $projectId, $questionId) {
+		$mapper = self::mapper();
+		$userVoteModel = new UserVoteModel();
+		$mapper->readByProperties($userVoteModel, array('type' => 'vote', 'userRef' => $userId, 'projectRef' => $projectId, 'questionRef' => $questionId));
+		return $userVoteModel;
 	}
 	
 	/**
-	 * Adds a UserVoteModel to the database for the $userId on the given $answerId.
-	 * No additional check is made to see if this is permitted.
-	 * @param string $userId
-	 * @param string $projectId
-	 * @param string $questionId
+	 * Adds $answerId to the votes array.
 	 * @param string $answerId
 	 */
-	public static function addVote($userId, $projectId, $questionId, $answerId) {
-		
+	public function addVote($answerId) {
+		$vote = new Vote();
+		$vote->answerRef->id = $answerId;
+		if (in_array($vote, $this->votes->data)) {
+			return;
+		}
+		$this->votes->data[] = $vote;
+	}
+	
+	/**
+	 * Removes $answerId from the votes array.
+	 * @param string $answerId
+	 */
+	public function removeVote($answerId) {
+		foreach ($this->votes->data as $key => $value) {
+			if ($value->answerRef->id == $answerId) {
+				unset($this->votes->data[$key]);
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * Returns true if the $answerId exists in the votes array.
+	 * @param string $answerId
+	 * @return bool
+	 */
+	public function hasVote($answerId) {
+		$vote = new Vote();
+		$vote->answerRef->id = $answerId;
+		if (in_array($vote, $this->votes->data)) {
+			return true;
+		}
+		return false;
 	}
 	
 	/**
