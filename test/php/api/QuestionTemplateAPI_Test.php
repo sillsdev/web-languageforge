@@ -5,7 +5,7 @@ require_once(SimpleTestPath . 'autorun.php');
 require_once(TestLibPath . 'jsonRPCClient.php');
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-class FavoriteAPITestEnvironment
+class QuestionTemplateAPITestEnvironment
 {
 	/**
 	 * @var jsonRPCClient
@@ -27,13 +27,13 @@ class FavoriteAPITestEnvironment
 	 * @param string $title
 	 * @param string $description
 	 */
-	function addFavorite($title = 'Some Title', $description = 'Some Description') {
+	function addQuestionTemplate($title = 'Some Title', $description = 'Some Description') {
 		$param = array(
 			'id' => '',
 			'title' => $title,
 			'description' => $description
 		);
-		$id = $this->api->favorite_update($param);
+		$id = $this->api->questionTemplate_update($param);
 		$this->_idAdded[] = $id;
 		return $id;
 	}
@@ -41,80 +41,80 @@ class FavoriteAPITestEnvironment
 	/**
 	 * @param string $id
 	 */
-	function deleteFavorite($id) {
-		// If you used addFavorite to add it, use this to delete it. This
+	function deleteQuestionTemplate($id) {
+		// If you used addQuestionTemplate to add it, use this to delete it. This
 		// ensures that dispose() won't attempt to delete it a second time.
 		$index = array_search($id, $this->_idAdded);
-		$result = $this->api->favorite_delete(array($id));
+		$result = $this->api->questionTemplate_delete(array($id));
 		unset($this->_idAdded[$index]);
 		return $result;
 	}
 
 	function dispose() {
-		$this->api->favorite_delete($this->_idAdded);
+		$this->api->questionTemplate_delete($this->_idAdded);
 	}
 }
 
-class TestFavoriteAPI extends UnitTestCase {
+class TestQuestionTemplateAPI extends UnitTestCase {
 
 	function __construct() {
-		$this->e = new FavoriteAPITestEnvironment();
+		$this->e = new QuestionTemplateAPITestEnvironment();
 	}
 
-	function testFavoriteCRUD_CRUDOK() {
+	function testQuestionTemplateCRUD_CRUDOK() {
 		// "Shortcut" variables for ease of typing
 		$e = $this->e;
 		$api = $e->api;
 
 		// Create
-		$id = $e->addFavorite(
-			'Favorite Title',
+		$id = $e->addQuestionTemplate(
+			'Template Title',
 			'Nice and clear description'
 		);
 		$this->assertNotNull($id);
 		$this->assertEqual(24, strlen($id));
 
 		// Read
-		$result = $api->favorite_read($id);
+		$result = $api->questionTemplate_read($id);
 		$this->assertNotNull($result['id']);
-		$this->assertEqual('Favorite Title', $result['title']);
+		$this->assertEqual('Template Title', $result['title']);
 		$this->assertEqual('Nice and clear description', $result['description']);
 
 		// Update
 		$result['description'] = 'Muddled description';
-		$newid = $api->favorite_update($result);
+		$newid = $api->questionTemplate_update($result);
 		$this->assertNotNull($id);
 		$this->assertEqual($id, $newid);
 
 		// Verify update actually changed DB
-		$postUpdateResult = $api->favorite_read($id);
+		$postUpdateResult = $api->questionTemplate_read($id);
 		$this->assertNotNull($postUpdateResult['id']);
 		$this->assertEqual($postUpdateResult['description'], 'Muddled description');
 
 		// Delete
-		$result = $e->deleteFavorite($id);
+		$result = $e->deleteQuestionTemplate($id);
 		$this->assertTrue($result);
 	}
 
-	function testFavoriteList_Ok() {
+	function testQuestionTemplateList_Ok() {
 		$e = $this->e;
 		$api = $e->api;
 
-		$id = $e->addFavorite(
-			'Favorite Title',
+		$id = $e->addQuestionTemplate(
+			'Template Title',
 			'Nice and clear description'
 		);
-		$id2 = $e->addFavorite(
+		$id2 = $e->addQuestionTemplate(
 			'A title',
 			'A description'
 		);
 
-		$result = $api->favorite_list('someuser');
+		$result = $api->questionTemplate_list();
 
 		$this->assertEqual($result['count'], 2);
 
-		$e->deleteFavorite($id);
-		$e->deleteFavorite($id2);
+		$e->deleteQuestionTemplate($id);
+		$e->deleteQuestionTemplate($id2);
 	}
 
 }
