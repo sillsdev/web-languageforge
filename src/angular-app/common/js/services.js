@@ -128,6 +128,9 @@ angular.module('sf.services', ['jsonRpc'])
 		this.remove = function(questionTemplateIds, callback) {
 			jsonRpc.call('questionTemplate_delete', [questionTemplateIds], callback);
 		};
+		this.list = function(callback) {
+			jsonRpc.call('questionTemplate_list', [], callback);
+		};
 	}])
 	.service('activityPageService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf');
