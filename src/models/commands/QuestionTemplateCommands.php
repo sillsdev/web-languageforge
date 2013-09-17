@@ -4,19 +4,19 @@ namespace models\commands;
 
 use libraries\palaso\CodeGuard;
 
-class FavoriteCommands
+class QuestionTemplateCommands
 {
 	/**
-	 * @param array $favoriteIds
-	 * @return int Total number of favorite questions removed.
+	 * @param array $questionTemplateIds
+	 * @return int Total number of questionTemplate questions removed.
 	 */
-	public static function deleteFavorites($favoriteIds) {
-		CodeGuard::checkTypeAndThrow($favoriteIds, 'array');
+	public static function deleteQuestionTemplates($questionTemplateIds) {
+		CodeGuard::checkTypeAndThrow($questionTemplateIds, 'array');
 		$count = 0;
-		foreach ($favoriteIds as $favoriteId) {
-			CodeGuard::checkTypeAndThrow($favoriteId, 'string');
-			$favorite = new \models\FavoriteModel($favoriteId);
-			$favorite->remove($favoriteId);
+		foreach ($questionTemplateIds as $questionTemplateId) {
+			CodeGuard::checkTypeAndThrow($questionTemplateId, 'string');
+			$questionTemplate = new \models\QuestionTemplateModel($questionTemplateId);
+			$questionTemplate->remove($questionTemplateId);
 			$count++;
 		}
 		return $count;

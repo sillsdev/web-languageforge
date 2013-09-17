@@ -117,16 +117,16 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('question_remove_comment', [projectId, questionId, answerId, commentId], callback);
 		};
 	}])
-	.service('favoriteService', ['jsonRpc', function(jsonRpc) {
+	.service('questionTemplateService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf');
-		this.read = function(favoriteId, callback) {
-			jsonRpc.call('favorite_read', [favoriteId], callback);
+		this.read = function(questionTemplateId, callback) {
+			jsonRpc.call('questionTemplate_read', [questionTemplateId], callback);
 		};
-		this.update = function(favoriteId, callback) {
-			jsonRpc.call('favorite_update', [favoriteId], callback);
+		this.update = function(questionTemplateId, callback) {
+			jsonRpc.call('questionTemplate_update', [questionTemplateId], callback);
 		};
-		this.remove = function(favoriteIds, callback) {
-			jsonRpc.call('favorite_delete', [favoriteIds], callback);
+		this.remove = function(questionTemplateIds, callback) {
+			jsonRpc.call('questionTemplate_delete', [questionTemplateIds], callback);
 		};
 	}])
 	.service('activityPageService', ['jsonRpc', function(jsonRpc) {
