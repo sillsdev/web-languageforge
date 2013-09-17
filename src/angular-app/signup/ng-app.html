@@ -3,10 +3,9 @@
 	<div ng-controller="UserCtrl">
 		<legend>Create an Account</legend>
 
-		<div class="notification errorMessage"
-			ng-show="!success.state && success.message">{{notify.error}}</div>
-		<div ng-hide="success.state" class="span4">
-			<form ng-submit="createUser(record)" id="userForm">
+		<sil-notices></sil-notices>
+		<div class="span4">
+			<form ng-disabled="userRegistered" ng-submit="createUser(record)" id="userForm">
 				<fieldset>
 					<legend>Sign Up Below</legend>
 					<div class="well">
@@ -34,7 +33,6 @@
 							<label>Verify the letters in this image</label> 
 							<img id="captcha" ng-src="{{captchaSrc}}" />
 							<a class="btn btn-small" ng-click="getCaptchaSrc()">Different Image</a>
-							<div id="captchaError" class="notification errorMessage" ng-show="captchaError">Incorrect code. Please try again</div>
 							<input required type="text" ng-model="record.captcha" name="captcha" />
 						</div>
 					</div>
@@ -45,8 +43,7 @@
 				</fieldset>
 			</form>
 		</div>
-		<div ng-show="success.state">Thank you, {{record.name}}. You are
-			now signed up. We will contact you when your account is active.</div>
+		<div ng-show="success.state"></div>
 	</div>
 </div>
 

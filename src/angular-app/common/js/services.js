@@ -30,6 +30,9 @@ angular.module('sf.services', ['jsonRpc'])
 		this.create = function(model, callback) {
 			jsonRpc.call('user_create', [model], callback);
 		};
+		this.register = function(model, callback) {
+			jsonRpc.call('user_register', [model], callback);
+		};
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
