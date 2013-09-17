@@ -21,7 +21,7 @@ use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
-use models\commands\FavoriteCommands;
+use models\commands\QuestionTemplateCommands;
 use models\mapper\Id;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
@@ -354,27 +354,27 @@ class Sf
 	
 
 	//---------------------------------------------------------------
-	// Favorites API
+	// QuestionTemplates API
 	//---------------------------------------------------------------
 
-	public function favorite_update($params) {
-		$favorite = new \models\FavoriteModel();
-		JsonDecoder::decode($favorite, $params);
-		$result = $favorite->write();
+	public function questionTemplate_update($params) {
+		$questionTemplate = new \models\QuestionTemplateModel();
+		JsonDecoder::decode($questionTemplate, $params);
+		$result = $questionTemplate->write();
 		return $result;
 	}
 
-	public function favorite_read($id) {
-		$favorite = new \models\FavoriteModel($id);
-		return JsonEncoder::encode($favorite);
+	public function questionTemplate_read($id) {
+		$questionTemplate = new \models\QuestionTemplateModel($id);
+		return JsonEncoder::encode($questionTemplate);
 	}
 
-	public function favorite_delete($favoriteIds) {
-		return FavoriteCommands::deleteFavorites($favoriteIds);
+	public function questionTemplate_delete($questionTemplateIds) {
+		return QuestionTemplateCommands::deleteQuestionTemplates($questionTemplateIds);
 	}
 
-	public function favorite_list() {
-		$list = new \models\FavoriteListModel();
+	public function questionTemplate_list() {
+		$list = new \models\QuestionTemplateListModel();
 		$list->read();
 		return $list;
 	}

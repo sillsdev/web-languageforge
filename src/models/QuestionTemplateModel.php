@@ -8,26 +8,26 @@ use models\mapper\MapperListModel;
 use models\mapper\Id;
 use models\mapper\IdReference;
 
-class FavoriteModelMongoMapper extends \models\mapper\MongoMapper
+class QuestionTemplateModelMongoMapper extends \models\mapper\MongoMapper
 {
 	public static function instance() {
 		static $instance = null;
 		if (null === $instance) {
-			$instance = new FavoriteModelMongoMapper(SF_DATABASE, 'favorites');
+			$instance = new QuestionTemplateModelMongoMapper(SF_DATABASE, 'questiontemplates');
 		}
 		return $instance;
 	}
 }
 
-class FavoriteModel extends \models\mapper\MapperModel
+class QuestionTemplateModel extends \models\mapper\MapperModel
 {
 	public function __construct($id = '') {
 		$this->id = new Id();
-		parent::__construct(FavoriteModelMongoMapper::instance(), $id);
+		parent::__construct(QuestionTemplateModelMongoMapper::instance(), $id);
 	}
 
 	public function remove() {
-		$result = FavoriteModelMongoMapper::instance()->remove($this->id->asString());
+		$result = QuestionTemplateModelMongoMapper::instance()->remove($this->id->asString());
 		return $result;
 	}
 
@@ -47,11 +47,11 @@ class FavoriteModel extends \models\mapper\MapperModel
 	public $description;
 }
 
-class FavoriteListModel extends \models\mapper\MapperListModel
+class QuestionTemplateListModel extends \models\mapper\MapperListModel
 {
 	public function __construct() {
 		parent::__construct(
-			FavoriteModelMongoMapper::instance(),
+			QuestionTemplateModelMongoMapper::instance(),
 			array(),
 			array('title', 'description')
 		);
