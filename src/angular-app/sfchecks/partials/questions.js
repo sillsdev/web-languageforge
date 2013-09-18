@@ -105,7 +105,7 @@ angular.module(
 				}
 			});
 		};
-		// Add
+		// Add question
 		$scope.addQuestion = function() {
 			console.log("addQuestion()");
 			var model = {};
@@ -116,6 +116,45 @@ angular.module(
 			questionsService.update(projectId, model, function(result) {
 				if (result.ok) {
 					$scope.queryQuestions();
+				}
+			});
+		};
+		// Add template
+		$scope.addTemplate = function() {
+			console.log("addTemplate()");
+			var model = {};
+			model.id = '';
+			model.title = $scope.questionTitle;
+			model.description = $scope.questionDescription;
+			qts.update(model, function(result) {
+				if (result.ok) {
+					$scope.queryTemplates();
+					// TODO: Notify user that operation succeeded. 2013-09 RM
+				}
+			});
+		};
+		$scope.makeQuestionIntoTemplate = function() {
+			// Expects one, and only one, question to be selected (checked)
+			// TODO: Use notification framework to inform user if wrong # of
+			// questions selected. 2013-09 RM
+			var l = $scope.selected.length;
+			if (l == 0) {
+				// TODO: Notify user of error
+				console.log('No selected questions.');
+				return;
+			} else if (l >= 2) {
+				// TODO: Notify user of error
+				console.log('Too many selected questions.');
+				return;
+			}
+			var model = {};
+			model.id = '';
+			model.title = $scope.selected[0].title;
+			model.description = $scope.selected[0].description;
+			qts.update(model, function(result) {
+				if (result.ok) {
+					$scope.queryTemplates();
+					// TODO: Notify user that operation succeeded. 2013-09 RM
 				}
 			});
 		};
