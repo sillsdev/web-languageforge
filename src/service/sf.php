@@ -350,7 +350,18 @@ class Sf
 		return \models\dto\QuestionListDto::encode($projectId, $textId, $this->_userId);
 	}
 	
-	// ---------------- Activity Feed -----------------
+	public function answer_vote_up($projectId, $questionId, $answerId) {
+		return QuestionCommands::voteUp($this->_userId, $projectId, $questionId, $answerId);
+	}
+	
+	public function answer_vote_down($projectId, $questionId, $answerId) {
+		return QuestionCommands::voteDown($this->_userId, $projectId, $questionId, $answerId);
+	}
+	
+	//---------------------------------------------------------------
+	// Activity Log
+	//---------------------------------------------------------------
+
 	public function activity_list_dto() {
 		return \models\dto\ActivityListDto::getActivityForUser($this->_userId);
 	}

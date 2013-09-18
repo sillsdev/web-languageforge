@@ -26,7 +26,7 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		this.userNameExists = function(username, callback) {
 			jsonRpc.call('username_exists', [username], callback);
-		}
+		};
 		this.create = function(model, callback) {
 			jsonRpc.call('user_create', [model], callback);
 		};
@@ -116,6 +116,12 @@ angular.module('sf.services', ['jsonRpc'])
 		this.remove_comment = function(projectId, questionId, answerId, commentId, callback) {
 			jsonRpc.call('question_remove_comment', [projectId, questionId, answerId, commentId], callback);
 		};
+		this.answer_voteUp = function(projectId, questionId, answerId, callback) {
+			jsonRpc.call('answer_vote_up', [projectId, questionId, answerId], callback);
+		};
+		this.answer_voteDown = function(projectId, questionId, answerId, callback) {
+			jsonRpc.call('answer_vote_down', [projectId, questionId, answerId], callback);
+		};
 	}])
 	.service('activityPageService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf');
@@ -160,7 +166,7 @@ angular.module('sf.services', ['jsonRpc'])
 		
 		this.getCaptchaSrc = function(callback) {
 			jsonRpc.call('get_captcha_src', [], callback);
-		}
+		};
 	}])
 	.service('linkService', function() {
 		this.href = function(url, text) {
