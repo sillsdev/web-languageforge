@@ -18,6 +18,7 @@ class UserRelationModel extends \models\mapper\MapperModel
 	public function __construct($type, $id = '') {
 		$this->id = new Id();
 		$this->userRef = new IdReference();
+		$this->projectRef = new IdReference();
 		$this->type = $type;
 		parent::__construct(self::mapper(), $id);
 	}

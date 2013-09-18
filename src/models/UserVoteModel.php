@@ -35,7 +35,17 @@ class UserVoteModel extends UserRelationModel
 	public static function getOrCreateVotesForQuestion($userId, $projectId, $questionId) {
 		$mapper = self::mapper();
 		$userVoteModel = new UserVoteModel();
-		$mapper->readByProperties($userVoteModel, array('type' => 'vote', 'userRef' => $userId, 'projectRef' => $projectId, 'questionRef' => $questionId));
+		$exists = $mapper->readByProperties($userVoteModel, array(
+				'type' => 'vote', 
+				'userRef' => MongoMapper::mongoID($userId), 
+				'projectRef' => MongoMapper::mongoID($projectId), 
+				'questionRef' => MongoMapper::mongoID($questionId)
+		));
+		if (!$exists) {
+			$userVoteModel->userRef->id = $userId;
+			$userVoteModel->projectRef->id = $projectId;
+			$userVoteModel->questionRef->id = $questionId;
+		}
 		return $userVoteModel;
 	}
 	

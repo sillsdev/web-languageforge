@@ -146,7 +146,7 @@ class MongoMapper
 		CodeGuard::checkTypeAndThrow($value, 'string');
 		$data = $this->_collection->findOne(array($property => $value));
 		if ($data != NULL) {
-			MongoDecoder::decode($model, $data, $data['_id']);
+			MongoDecoder::decode($model, $data, (string)$data['_id']);
 			return true;
 		}
 		return false;
@@ -161,7 +161,7 @@ class MongoMapper
 		CodeGuard::checkTypeAndThrow($properties, 'array');
 		$data = $this->_collection->findOne($properties);
 		if ($data != NULL) {
-			MongoDecoder::decode($model, $data, $data['_id']);
+			MongoDecoder::decode($model, $data, (string)$data['_id']);
 			return true;
 		}
 		return false;
