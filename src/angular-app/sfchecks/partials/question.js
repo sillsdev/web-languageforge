@@ -19,6 +19,9 @@ angular.module(
 			'link': false,
 			'unlink': false,
 			'fsize': false,
+			'sub': false,
+			'color': false,
+			'format': false,
 			'formats': [
 				['p', 'Normal'],
 				['h4', 'Large']
