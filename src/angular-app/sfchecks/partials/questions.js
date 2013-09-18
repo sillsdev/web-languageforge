@@ -4,8 +4,8 @@ angular.module(
 		'sfchecks.questions',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb' ]
 	)
-	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService',
-	                              function($scope, questionsService, qts, $routeParams, ss, linkService, breadcrumbService) {
+	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService', 'silNoticeService',
+	                              function($scope, questionsService, qts, $routeParams, ss, linkService, breadcrumbService, notice) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
@@ -129,22 +129,18 @@ angular.module(
 			qts.update(model, function(result) {
 				if (result.ok) {
 					$scope.queryTemplates();
-					// TODO: Notify user that operation succeeded. 2013-09 RM
+					notice.push(notice.SUCCESS, 'Template added.');
 				}
 			});
 		};
 		$scope.makeQuestionIntoTemplate = function() {
 			// Expects one, and only one, question to be selected (checked)
-			// TODO: Use notification framework to inform user if wrong # of
-			// questions selected. 2013-09 RM
 			var l = $scope.selected.length;
 			if (l == 0) {
-				// TODO: Notify user of error
-				console.log('No selected questions.');
+				notice.push(notice.ERROR, 'Please select a question to make into a template.');
 				return;
 			} else if (l >= 2) {
-				// TODO: Notify user of error
-				console.log('Too many selected questions.');
+				notice.push(notice.ERROR, 'Please select only one question to make into a template.');
 				return;
 			}
 			var model = {};
@@ -154,7 +150,7 @@ angular.module(
 			qts.update(model, function(result) {
 				if (result.ok) {
 					$scope.queryTemplates();
-					// TODO: Notify user that operation succeeded. 2013-09 RM
+					notice.push(notice.SUCCESS, 'Template added.');
 				}
 			});
 		};
