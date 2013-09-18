@@ -51,6 +51,8 @@ class TestUserUserVoteModel extends UnitTestCase {
 		
 		// Read back
 		$otherVote = UserVoteModel::getOrCreateVotesForQuestion($userId, $projectId, $questionId);
+		$this->assertIsA($otherVote->id->id, 'string');
+		$this->assertEqual($id, $vote->id->asString());
 		$result = $otherVote->hasVote($answerId);
 		$this->assertTrue($result);
 		
