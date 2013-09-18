@@ -3,6 +3,7 @@
 // Declare app level module which depends on filters, and services
 angular.module('sfchecks', 
 		[
+		 'ngSanitize',
 		 'sfchecks.projects',
 		 'sfchecks.project',
 		 'sfchecks.questions',
