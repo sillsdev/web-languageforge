@@ -15,12 +15,12 @@ class UserRelationModel extends \models\mapper\MapperModel
 		return $instance;
 	}
 	
-	public function __construct($type, $id = '') {
+	public function __construct($type, $userId, $projectId) {
 		$this->id = new Id();
-		$this->userRef = new IdReference();
-		$this->projectRef = new IdReference();
 		$this->type = $type;
-		parent::__construct(self::mapper(), $id);
+		$this->userRef = new IdReference($userId);
+		$this->projectRef = new IdReference($projectId);
+		parent::__construct(self::mapper(), '');
 	}
 	
 	/**

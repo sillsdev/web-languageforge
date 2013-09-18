@@ -18,35 +18,26 @@ class Vote
 
 class UserVoteModel extends UserRelationModel
 {
-	public function __construct($id = '') {
-		$this->questionRef = new IdReference();
-		$this->votes = new ArrayOf(ArrayOf::OBJECT, function($data) { return new Vote(); } );
-		parent::__construct('vote', $id);
-	}
-	
 	/**
-	 * Returns the UserVoteModel for the users votes on the given $questionId if it exists.
-	 * Otherwise returns a new UserVoteModel.
 	 * @param string $userId
 	 * @param string $projectId
 	 * @param string $questionId
-	 * @return UserVoteModel
 	 */
-	public static function getOrCreateVotesForQuestion($userId, $projectId, $questionId) {
+	public function __construct($userId, $projectId, $questionId) {
+		$this->questionRef = new IdReference($questionId);
+		$this->votes = new ArrayOf(ArrayOf::OBJECT, function($data) { return new Vote(); } );
+		parent::__construct('vote', $userId, $projectId);
+		$this->read();
+	}
+	
+	public function read($id = '') {
 		$mapper = self::mapper();
-		$userVoteModel = new UserVoteModel();
-		$exists = $mapper->readByProperties($userVoteModel, array(
-				'type' => 'vote', 
-				'userRef' => MongoMapper::mongoID($userId), 
-				'projectRef' => MongoMapper::mongoID($projectId), 
-				'questionRef' => MongoMapper::mongoID($questionId)
+		$exists = $mapper->readByProperties($this, array(
+				'type' => 'vote',
+				'userRef' => MongoMapper::mongoID($this->userRef->asString()),
+				'projectRef' => MongoMapper::mongoID($this->projectRef->asString()),
+				'questionRef' => MongoMapper::mongoID($this->questionRef->asString())
 		));
-		if (!$exists) {
-			$userVoteModel->userRef->id = $userId;
-			$userVoteModel->projectRef->id = $projectId;
-			$userVoteModel->questionRef->id = $questionId;
-		}
-		return $userVoteModel;
 	}
 	
 	/**

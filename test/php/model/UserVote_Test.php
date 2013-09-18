@@ -32,8 +32,9 @@ class TestUserUserVoteModel extends UnitTestCase {
 		$answerId = $e->mockId();
 		
 		// Create
-		$vote = UserVoteModel::getOrCreateVotesForQuestion($userId, $projectId, $questionId);
+		$vote = new UserVoteModel($userId, $projectId, $questionId);
 		$this->assertNotNull($vote);
+		$this->assertTrue(empty($vote->id->id));
 
 		// Has vote should fail, answer is not yet present.
 		$result = $vote->hasVote($answerId);
@@ -50,7 +51,7 @@ class TestUserUserVoteModel extends UnitTestCase {
 		$this->assertEqual($id, $vote->id->asString());
 		
 		// Read back
-		$otherVote = UserVoteModel::getOrCreateVotesForQuestion($userId, $projectId, $questionId);
+		$otherVote = new UserVoteModel($userId, $projectId, $questionId);
 		$this->assertIsA($otherVote->id->id, 'string');
 		$this->assertEqual($id, $vote->id->asString());
 		$result = $otherVote->hasVote($answerId);
@@ -62,7 +63,7 @@ class TestUserUserVoteModel extends UnitTestCase {
 		$otherVote->write();
 		
 		// Read back
-		$otherVote = UserVoteModel::getOrCreateVotesForQuestion($userId, $projectId, $questionId);
+		$otherVote = new UserVoteModel($userId, $projectId, $questionId);
 		$result = $otherVote->hasVote($answerId);
 		$this->assertTrue($result);
 		$result = $otherVote->hasVote($answer2Id);
