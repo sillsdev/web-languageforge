@@ -78,6 +78,27 @@
 	</div>
 	</div>
 	</tab>
+	<tab heading="Question Templates">
+		<div class="row" ng-controller="TemplateCtrl" style="overflow:hidden">
+			<form class="control-bar form-inline">
+				<button class="btn" ng-click="removeTemplates()"><i class="icon-remove"></i>Remove Templates</button>
+			</form>
+			<div listview search="queryTemplates()" items="templates" visible-items="visibleTemplates" select="">
+			<table style="width: 100%">
+				<tr>
+					<th></th>
+					<th>Question title</th>
+					<th>Question contents</th>
+				</tr>
+				<tr ng-repeat="template in visibleTemplates" ng-class="{active: isSelected(template)}" ng-click="selectRow($index, template)" >
+					<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(template)" ng-click="updateSelection($event, template)" /></td>
+					<td>{{template.title}}</td>
+					<td style="text-overflow: ellipsis">{{template.description}}</td>
+				</tr>
+			</table>
+			</div>
+		</div>
+	</tab>
 	<!-- 
 	<tab heading="Projects">
 		<div class="row" ng-controller="ProjectCtrl" style="overflow:hidden">
