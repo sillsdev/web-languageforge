@@ -2,6 +2,8 @@
 
 namespace models\commands;
 
+use models\UserVoteModel;
+
 use models\dto\QuestionCommentDto;
 
 use models\CommentModel;
@@ -89,11 +91,33 @@ class QuestionCommands
 	 * @param string $answerId
 	 */
 	public static function voteUp($userId, $projectId, $questionId, $answerId) {
-		
+		// Check the vote lock.
+		$vote = new UserVoteModel($userId, $projectId, $questionId);
+		if ($vote->hasVote($answerId)) {
+			throw new \Exception("User '$userId' has already voted on answer '$answerId' in question '$questionId' in the project '$projectId'");
+		}
+		// If ok up vote the question and add the lock.
+		$projectModel = new ProjectModel($projectId);
+		$questionModel = new QuestionModel($projectModel, $questionId);
+		$answerModel = $questionModel->readAnswer($answerId);
+		$answerModel->score++;
+		$questionModel->writeAnswer($answerModel);
+		$vote->addVote($answerId);
+		$vote->write();
+		// Return the answer dto.
+		$answerDTO = QuestionCommentDto::encodeAnswer($answerModel);
+		$dto = array();
+		$dto[$answerId] = $answerDTO;
+		return $dto;
 	}
 	
 	public static function voteDown($userId, $projectId, $questionId, $answerId) {
-		
+		// Check the vote lock.
+		$vote = new UserVoteModel($userId, $projectId, $questionId);
+		// If ok down vote the question and remove the lock.
+		$vote->removeVote($answerId);
+		$vote->write();
+		// Return the answer dto.
 	}
 	
 }
