@@ -2,6 +2,8 @@
 
 namespace models\commands;
 
+use models\UserVoteModel;
+
 use models\dto\QuestionCommentDto;
 
 use models\CommentModel;
@@ -48,13 +50,18 @@ class QuestionCommands
 		$answerId = $questionModel->writeAnswer($answerModel);
 		// Re-read question model to pick up new answer
 		$questionModel->read($questionId);
-		$answerDTO = QuestionCommentDto::encodeAnswer($questionModel->readAnswer($answerId));
-
-		$dto = array();
-		$dto[$answerId] = $answerDTO;
-		return $dto;
+		return self::encodeAnswer($questionModel->readAnswer($answerId));
 	}
 	
+	/**
+	 * Creates / Updates a comment on the given answer. 
+	 * @param string $projectId
+	 * @param string $questionId
+	 * @param string $answerId
+	 * @param string $comment
+	 * @param string $userId
+	 * @return array Dto
+	 */
 	public static function updateComment($projectId, $questionId, $answerId, $comment, $userId) {
 		$projectModel = new ProjectModel($projectId);
 		$commentModel = new CommentModel();
@@ -70,6 +77,64 @@ class QuestionCommands
 		$dto = array();
 		$dto[$commentId] = $commentDTO;
 		return $dto;
+	}
+
+	/**
+	 * Returns the AnswerModel as an AnswerDTO, a part of the QuestionDTO.
+	 * @param AnswerModel $answerModel
+	 * @return array
+	 */
+	private static function encodeAnswer($answerModel) {
+		$answerDTO = QuestionCommentDto::encodeAnswer($answerModel);
+		$answerId = $answerModel->id->asString();
+		$dto = array();
+		$dto[$answerId] = $answerDTO;
+		return $dto;
+	}
+	
+	/**
+	 * Up votes the given answer, if permitted for the given $userId
+	 * @param string $userId 
+	 * @param string $projectId
+	 * @param string $questionId
+	 * @param string $answerId
+	 */
+	public static function voteUp($userId, $projectId, $questionId, $answerId) {
+		$projectModel = new ProjectModel($projectId);
+		$questionModel = new QuestionModel($projectModel, $questionId);
+		// Check the vote lock.
+		$vote = new UserVoteModel($userId, $projectId, $questionId);
+		if ($vote->hasVote($answerId)) {
+			// Don't throw.  There's no harm in this, just don't increment the vote.
+			return self::encodeAnswer($questionModel->readAnswer($answerId));
+		}
+		// If ok up vote the question and add the lock.
+		$answerModel = $questionModel->readAnswer($answerId);
+		$answerModel->score++;
+		$questionModel->writeAnswer($answerModel);
+		$vote->addVote($answerId);
+		$vote->write();
+		// Return the answer dto.
+		return self::encodeAnswer($answerModel);
+	}
+	
+	public static function voteDown($userId, $projectId, $questionId, $answerId) {
+		$projectModel = new ProjectModel($projectId);
+		$questionModel = new QuestionModel($projectModel, $questionId);
+		// Check the vote lock.
+		$vote = new UserVoteModel($userId, $projectId, $questionId);
+		if (!$vote->hasVote($answerId)) {
+			// Don't throw.  There's no harm in this, just don't decrement the vote.
+			return self::encodeAnswer($questionModel->readAnswer($answerId));
+		}
+		// If ok down vote the question and remove the lock.
+		$answerModel = $questionModel->readAnswer($answerId);
+		$answerModel->score--;
+		$questionModel->writeAnswer($answerModel);
+		$vote->removeVote($answerId);
+		$vote->write();
+		// Return the answer dto.
+		return self::encodeAnswer($answerModel);
 	}
 	
 }

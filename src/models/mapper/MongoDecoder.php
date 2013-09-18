@@ -39,8 +39,10 @@ class MongoDecoder extends JsonDecoder {
 	 */
 	public function decodeId($key, $model, $values, $id) {
 		if (!empty($id)) {
+			CodeGuard::checkTypeAndThrow($id, 'string');
 			$model->$key->id = $id;
 		} else if (!empty($values[$key])) {
+			CodeGuard::checkTypeAndThrow($values[$key], 'string');
 			$model->$key->id = $values[$key];
 		} else {
 			throw new \Exception("The id could not be decoded. Value not set in 'values' or 'id' for key '$key'");
