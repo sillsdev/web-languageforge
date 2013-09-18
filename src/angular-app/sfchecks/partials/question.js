@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.question',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.selection' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.selection' ]
 	)
 	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService',
 	                             function($scope, $routeParams, questionService, ss, breadcrumbService) {
@@ -88,7 +88,7 @@ angular.module(
 				//textRef: $scope.question.textRef,
 				//answers: $scope.question.answers,
 				//answerCount: $scope.question.answerCount,
-			}
+			};
 		});
 		$scope.updateQuestion = function(newQuestion) {
 			questionService.update(projectId, newQuestion, function(result) {
@@ -177,7 +177,7 @@ angular.module(
 			// specific commentId without knowing which answer it belongs
 			// to, because all we have to work with is the new value of
 			// the commentId (the old value won't help us).
-			var comment;
+			var comment = undefined;
 			search_loop:
 			for (var aid in $scope.question.answers) {
 				var answer = $scope.question.answers[aid];
@@ -236,14 +236,14 @@ angular.module(
 			$scope.updateComment(answerId, answer, newComment);
 			$scope.newComment.content = '';
 			$scope.newComment.textHighlight = '';
-		}
+		};
 		
 		$scope.editComment = function(answerId, answer, comment) {
 			if ($scope.rightsEditOwn(comment.userRef.userid)) {
 				$scope.updateComment(answerId, answer, comment);
 			}
 			$scope.hideCommentEditor();
-		}
+		};
 		
 		$scope.commentDelete = function(answer, commentId) {
 			console.log('delete ', commentId);
@@ -255,21 +255,42 @@ angular.module(
 				}
 			});
 		};
+
+		var afterUpdateAnswer = function(answersDto) {
+			for (var id in answersDto) {
+				$scope.question.answers[id] = answersDto[id];
+			}
+			// Recalculate answer count as it might have changed
+			$scope.question.answerCount = Object.keys($scope.question.answers).length;
+		};
+		
+		$scope.voteUp = function(answerId) {
+			questionService.answer_voteUp(projectId, questionId, answerId, function(result) {
+				if (result.ok) {
+					console.log('vote up ok');
+					afterUpdateAnswer(result.data);
+				}
+			});
+		};
+		
+		$scope.voteDown = function(answerId) {
+			questionService.answer_voteDown(projectId, questionId, answerId, function(result) {
+				if (result.ok) {
+					console.log('vote up ok');
+					afterUpdateAnswer(result.data);
+				}
+			});
+		};
 		
 		$scope.updateAnswer = function(projectId, questionId, answer) {
 			questionService.update_answer(projectId, questionId, answer, function(result) {
 				if (result.ok) {
 					console.log('update_answer ok');
-					for (var id in result.data) {
-						$scope.question.answers[id] = result.data[id];
-					}
-					// Recalculate answer count as it might have changed
-					$scope.question.answerCount = Object.keys($scope.question.answers).length;
-					// TODO error condition (well, that should be handled globally by the service CP 2013-08)
+					afterUpdateAnswer(result.data);
 				}
 			});
 		};
-
+		
 		$scope.submitAnswer = function() {
 			var answer = {
 				'id':'',
