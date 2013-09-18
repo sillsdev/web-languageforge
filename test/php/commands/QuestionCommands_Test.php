@@ -79,34 +79,66 @@ class TestQuestionCommands extends UnitTestCase {
 		
 	}
 	
-	function testVoteUp_NoVotes_VoteGoesUp() {
+	function testVoteUp_NoVotesThenUpAndDown_VoteGoesUpAndDown() {
 		$e = new UserVoteTestEnvironment();
 		$e->create();
 		
 		$dto = $e->addAnswer('Some answer');
-		var_dump($dto, $e->answerId);
+// 		var_dump($dto, $e->answerId);
 		
 		$answer0 = $dto[$e->answerId];
 		$this->assertEqual(0, $answer0['score']);
 		
  		$dto = QuestionCommands::voteUp($e->userId, $e->projectId, $e->questionId, $e->answerId);
- 		var_dump($dto, $e->answerId);
+//  	var_dump($dto, $e->answerId);
  			
  		$answer1 = $dto[$e->answerId];
  		$this->assertEqual(1, $answer1['score']);
  			
+ 		$dto = QuestionCommands::voteDown($e->userId, $e->projectId, $e->questionId, $e->answerId);
+ //  	var_dump($dto, $e->answerId);
+ 		 	
+		$answer2 = $dto[$e->answerId];
+ 		$this->assertEqual(0, $answer2['score']);
 	}
 	
-	function testVoteUp_TwoVotes_ThrowAndNoChange() {
+	function testVoteUp_TwoVotes_NoChange() {
+		$mte = new MongoTestEnvironment();
+		$e = new UserVoteTestEnvironment();
+		$e->create();
 		
+		$dto = $e->addAnswer('Some answer');
+// 		var_dump($dto, $e->answerId);
+		
+		$answer0 = $dto[$e->answerId];
+		$this->assertEqual(0, $answer0['score']);
+		
+		$dto = QuestionCommands::voteUp($e->userId, $e->projectId, $e->questionId, $e->answerId);
+// 		var_dump($dto, $e->answerId);
+
+		$dto = QuestionCommands::voteUp($e->userId, $e->projectId, $e->questionId, $e->answerId);
+// 		var_dump($dto, $e->answerId);
+		
+		$answer1 = $dto[$e->answerId];
+		$this->assertEqual(1, $answer1['score']);
 	}
 	
 	function testVoteDown_NoVote_NoChange() {
+		$e = new UserVoteTestEnvironment();
+		$e->create();
 		
-	}
-	
-	function testVoteDown_WithVote_VoteGoesDown() {
+		$dto = $e->addAnswer('Some answer');
+// 		var_dump($dto, $e->answerId);
 		
+		$answer0 = $dto[$e->answerId];
+		$this->assertEqual(0, $answer0['score']);
+		
+		$dto = QuestionCommands::voteDown($e->userId, $e->projectId, $e->questionId, $e->answerId);
+// 	 	var_dump($dto, $e->answerId);
+		$this->assertIsA($dto, 'array');
+		
+		$answer1 = $dto[$e->answerId];
+		$this->assertEqual(0, $answer1['score']);
 	}
 	
 }
