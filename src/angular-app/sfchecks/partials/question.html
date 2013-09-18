@@ -37,9 +37,9 @@
 	<tr ng-repeat="(answerId, answer) in question.answers">
 		<td>
 			<div class="vote" style="display:inline-block;">
-				<a><i class="icon-caret-up"></i></a>
+				<a ng-click="voteUp(answerId)"><i class="icon-caret-up"></i></a>
 				<span>{{answer.score}}</span>
-				<a><i class="icon-caret-down"></i></a>
+				<a ng-click="voteDown(answerId)"><i class="icon-caret-down"></i></a>
 			</div>
 		</td>
 		<td>
