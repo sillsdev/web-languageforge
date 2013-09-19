@@ -198,6 +198,43 @@ angular.module(
 		return item != null && $scope.selected.indexOf(item) >= 0;
 	};
 
+	$scope.editedTemplate = {
+		id: '',
+		title: '',
+		description: '',
+	};
+	$scope.templateEditorVisible = false;
+	$scope.showTemplateEditor = function() {
+		if ($scope.selected.length == 1) {
+			var template = $scope.selected[0];
+			$scope.editedTemplate.id = template.id;
+			$scope.editedTemplate.title = template.title;
+			$scope.editedTemplate.description = template.description;
+			$scope.templateEditorVisible = true;
+		} else {
+			notice.push(notice.WARN, 'Please select one template before clicking Edit');
+		}
+	};
+	$scope.hideTemplateEditor = function() {
+		$scope.templateEditorVisible = false;
+	};
+	$scope.toggleTemplateEditor = function() {
+		// Can't just do "visible = !visible" because show() has logic we need to run
+		if ($scope.templateEditorVisible) {
+			$scope.hideTemplateEditor();
+		} else {
+			$scope.showTemplateEditor();
+		}
+	};
+	$scope.editTemplate = function() {
+		qts.update($scope.editedTemplate, function(result) {
+			// Whether result was OK or error, wipe selected list and reload data
+			$scope.selected = [];
+			$scope.vars.selectedIndex = -1;
+			$scope.queryTemplates(true);
+		});
+	};
+
 	$scope.templates = [];
 	$scope.queryTemplates = function(invalidateCache) {
 		var forceReload = (invalidateCache || (!$scope.templates) || ($scope.templates.length == 0));
