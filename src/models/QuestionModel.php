@@ -218,7 +218,7 @@ class QuestionAnswersListModel extends \models\mapper\MapperListModel
 		parent::__construct(
 			QuestionModelMongoMapper::connect($projectModel->databaseName()),
 			array('title' => array('$regex' => ''), 'textRef' => MongoMapper::mongoID($textId)),
-			array('title', 'answers')
+			array('title', 'description', 'answers')
 		);
 	}
 
