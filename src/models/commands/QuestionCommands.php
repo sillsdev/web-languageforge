@@ -58,7 +58,7 @@ class QuestionCommands
 	 * @param string $projectId
 	 * @param string $questionId
 	 * @param string $answerId
-	 * @param string $comment
+	 * @param array $comment
 	 * @param string $userId
 	 * @return array Dto
 	 */

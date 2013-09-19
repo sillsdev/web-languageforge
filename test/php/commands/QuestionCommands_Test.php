@@ -1,5 +1,9 @@
 <?php
 
+use models\CommentModel;
+
+use models\AnswerModel;
+
 use models\commands\QuestionCommands;
 use models\QuestionModel;
 
@@ -141,6 +145,63 @@ class TestQuestionCommands extends UnitTestCase {
 		$this->assertEqual(0, $answer1['score']);
 	}
 	
+	function testUpdateAnswer_existingAnswer_originalAuthorIsPreserved() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$project = $e->createProject(SF_TESTPROJECT);
+		$question = new QuestionModel($project);
+		$questionId = $question->write();
+		
+		$answer = new AnswerModel();
+		$answer->content = "the answer";
+		$user1Id = $e->createUser("user1", "user1", "user1");
+		$user2Id = $e->createUser("user2", "user2", "user2");
+		$answer->userRef->id = $user1Id;
+		$answerId = $question->writeAnswer($answer);
+		$answerArray = array(
+			"id" => $answerId,
+			"content" => "updated answer"
+		);
+		
+		QuestionCommands::updateAnswer($project->id->asString(), $questionId, $answerArray, $user2Id);
+		$question->read($questionId);
+		$newAnswer = $question->readAnswer($answerId);
+		$this->assertEqual($user1Id, $newAnswer->userRef->asString());
+	}
+	
+	function testUpdateComment_existingComment_originalAuthorIsPreserved() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$project = $e->createProject(SF_TESTPROJECT);
+		$question = new QuestionModel($project);
+		$questionId = $question->write();
+		
+		$answer = new AnswerModel();
+		$answer->content = "the answer";
+		$answerId = $question->writeAnswer($answer);
+		
+		$user1Id = $e->createUser("user1", "user1", "user1");
+		$user2Id = $e->createUser("user2", "user2", "user2");
+		
+		$comment = new CommentModel();
+		$comment->userRef->id = $user1Id;
+		$comment->content = "the comment";
+		
+		$commentId = $question->writeComment($project->databaseName(), $questionId, $answerId, $comment);
+		
+		$commentArray = array(
+			"id" => $commentId,
+			"content" => "updated comment"
+		);
+		
+		QuestionCommands::updateComment($project->id->asString(), $questionId, $answerId, $commentArray, $user2Id);
+		$question->read($questionId);
+		$newComment = $question->readComment($answerId, $commentId);
+		$this->assertEqual($user1Id, $newComment->userRef->asString());
+		
+	}
 }
 
 ?>
