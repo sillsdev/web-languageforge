@@ -10,6 +10,7 @@ class AllApiTests extends TestSuite {
  		$this->addFile(TestPath . 'api/ProjectAPI_Test.php');
  		$this->addFile(TestPath . 'api/TextAPI_Test.php');
   		$this->addFile(TestPath . 'api/QuestionAPI_Test.php');
+		$this->addFile(TestPath . 'api/QuestionTemplateAPI_Test.php');
     }
 
 }
