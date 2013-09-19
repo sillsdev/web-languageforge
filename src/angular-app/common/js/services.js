@@ -122,8 +122,8 @@ angular.module('sf.services', ['jsonRpc'])
 		this.read = function(questionTemplateId, callback) {
 			jsonRpc.call('questionTemplate_read', [questionTemplateId], callback);
 		};
-		this.update = function(questionTemplateId, callback) {
-			jsonRpc.call('questionTemplate_update', [questionTemplateId], callback);
+		this.update = function(questionTemplate, callback) {
+			jsonRpc.call('questionTemplate_update', [questionTemplate], callback);
 		};
 		this.remove = function(questionTemplateIds, callback) {
 			jsonRpc.call('questionTemplate_delete', [questionTemplateIds], callback);
