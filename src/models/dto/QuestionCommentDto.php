@@ -2,6 +2,8 @@
 
 namespace models\dto;
 
+use models\UserVoteModel;
+
 use models\ProjectModel;
 use models\QuestionModel;
 use models\TextModel;
@@ -30,13 +32,20 @@ class QuestionCommentDto
 		//echo $usxHelper->toHtml();
 		//echo $textModel->content;
 		
+		$votes = new UserVoteModel($userId, $projectId, $questionId);
+		$votesDto = array();
+		foreach ($votes->votes->data as $vote) {
+			$votesDto[$vote->answerRef->id] = true;
+		}
+		
 		$dto = array();
 		$dto['question'] = $question;
+		$dto['votes'] = $votesDto;
 		$dto['text'] = JsonEncoder::encode($textModel);
 		$dto['text']['content'] = $usxHelper->toHtml();
 		$dto['project'] = JsonEncoder::encode($projectModel);
 		$dto['rights'] = RightsHelper::encode($userModel, $projectModel);
-		
+
 		return $dto;
 	}
 	
