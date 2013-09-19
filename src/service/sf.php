@@ -21,6 +21,7 @@ use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
+use models\commands\QuestionTemplateCommands;
 use models\mapper\Id;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
@@ -30,6 +31,7 @@ require_once(APPPATH . 'config/sf_config.php');
 
 require_once(APPPATH . 'models/ProjectModel.php');
 require_once(APPPATH . 'models/QuestionModel.php');
+require_once(APPPATH . 'models/QuestionTemplateModel.php');
 require_once(APPPATH . 'models/TextModel.php');
 require_once(APPPATH . 'models/UserModel.php');
 
@@ -367,6 +369,32 @@ class Sf
 	
 	public function answer_vote_down($projectId, $questionId, $answerId) {
 		return QuestionCommands::voteDown($this->_userId, $projectId, $questionId, $answerId);
+	}
+
+	//---------------------------------------------------------------
+	// QuestionTemplates API
+	//---------------------------------------------------------------
+
+	public function questionTemplate_update($params) {
+		$questionTemplate = new \models\QuestionTemplateModel();
+		JsonDecoder::decode($questionTemplate, $params);
+		$result = $questionTemplate->write();
+		return $result;
+	}
+
+	public function questionTemplate_read($id) {
+		$questionTemplate = new \models\QuestionTemplateModel($id);
+		return JsonEncoder::encode($questionTemplate);
+	}
+
+	public function questionTemplate_delete($questionTemplateIds) {
+		return QuestionTemplateCommands::deleteQuestionTemplates($questionTemplateIds);
+	}
+
+	public function questionTemplate_list() {
+		$list = new \models\QuestionTemplateListModel();
+		$list->read();
+		return $list;
 	}
 	
 	//---------------------------------------------------------------

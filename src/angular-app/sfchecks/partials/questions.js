@@ -4,8 +4,8 @@ angular.module(
 		'sfchecks.questions',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb' ]
 	)
-	.controller('QuestionsCtrl', ['$scope', 'questionsService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService',
-	                              function($scope, questionsService, $routeParams, ss, linkService, breadcrumbService) {
+	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService', 'silNoticeService',
+	                              function($scope, questionsService, qts, $routeParams, ss, linkService, breadcrumbService, notice) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
@@ -26,6 +26,24 @@ angular.module(
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
 				]
 		);
+
+		// Question templates
+		$scope.templates = [];
+		$scope.queryTemplates = function() {
+			qts.list(function(result) {
+				if (result.ok) {
+					$scope.templates = result.data.entries;
+				}
+			});
+		};
+		$scope.queryTemplates();
+
+		$scope.$watch('template', function(template) {
+			if (template) {
+				$scope.questionTitle = template.title;
+				$scope.questionDescription = template.description;
+			}
+		});
 
 		// Listview Selection
 		$scope.newQuestionCollapsed = true;
@@ -87,7 +105,7 @@ angular.module(
 				}
 			});
 		};
-		// Add
+		// Add question
 		$scope.addQuestion = function() {
 			console.log("addQuestion()");
 			var model = {};
@@ -98,6 +116,41 @@ angular.module(
 			questionsService.update(projectId, model, function(result) {
 				if (result.ok) {
 					$scope.queryQuestions();
+				}
+			});
+		};
+		// Add template
+		$scope.addTemplate = function() {
+			console.log("addTemplate()");
+			var model = {};
+			model.id = '';
+			model.title = $scope.questionTitle;
+			model.description = $scope.questionDescription;
+			qts.update(model, function(result) {
+				if (result.ok) {
+					$scope.queryTemplates();
+					notice.push(notice.SUCCESS, 'Template added.');
+				}
+			});
+		};
+		$scope.makeQuestionIntoTemplate = function() {
+			// Expects one, and only one, question to be selected (checked)
+			var l = $scope.selected.length;
+			if (l == 0) {
+				notice.push(notice.ERROR, 'Please select a question to make into a template.');
+				return;
+			} else if (l >= 2) {
+				notice.push(notice.ERROR, 'Please select only one question to make into a template.');
+				return;
+			}
+			var model = {};
+			model.id = '';
+			model.title = $scope.selected[0].title;
+			model.description = $scope.selected[0].description;
+			qts.update(model, function(result) {
+				if (result.ok) {
+					$scope.queryTemplates();
+					notice.push(notice.SUCCESS, 'Template added.');
 				}
 			});
 		};

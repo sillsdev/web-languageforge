@@ -4,7 +4,7 @@
 
 angular.module(
 	'sfAdmin.controllers',
-	[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'palaso.ui.notice']
+	[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'ui.bootstrap' ]
 )
 .controller('UserCtrl', ['$scope', 'userService', 'silNoticeService', function UserCtrl($scope, userService, notice) {
 
@@ -261,6 +261,97 @@ angular.module(
 	};
 	$scope.togglePasswordForm = function() {
 		$scope.vars.showPasswordForm = !$scope.vars.showPasswordForm;
+	};
+
+}])
+.controller('TemplateCtrl', ['$scope', 'jsonRpc', 'silNoticeService', 'questionTemplateService', function($scope, jsonRpc, notice, qts) {
+	$scope.selected = [];
+	$scope.vars = {
+		selectedIndex: -1,
+	};
+	$scope.updateSelection = function(event, item) {
+		var selectedIndex = $scope.selected.indexOf(item);
+		var checkbox = event.target;
+		if (checkbox.checked && selectedIndex == -1) {
+			$scope.selected.push(item);
+		} else if (!checkbox.checked && selectedIndex != -1) {
+			$scope.selected.splice(selectedIndex, 1);
+		}
+		$scope.vars.selectedIndex = selectedIndex; // Needed?
+	};
+	$scope.isSelected = function(item) {
+		return item != null && $scope.selected.indexOf(item) >= 0;
+	};
+
+	$scope.editedTemplate = {
+		id: '',
+		title: '',
+		description: '',
+	};
+	$scope.templateEditorVisible = false;
+	$scope.showTemplateEditor = function() {
+		if ($scope.selected.length == 1) {
+			var template = $scope.selected[0];
+			$scope.editedTemplate.id = template.id;
+			$scope.editedTemplate.title = template.title;
+			$scope.editedTemplate.description = template.description;
+			$scope.templateEditorVisible = true;
+		} else {
+			notice.push(notice.WARN, 'Please select one template before clicking Edit');
+		}
+	};
+	$scope.hideTemplateEditor = function() {
+		$scope.templateEditorVisible = false;
+	};
+	$scope.toggleTemplateEditor = function() {
+		// Can't just do "visible = !visible" because show() has logic we need to run
+		if ($scope.templateEditorVisible) {
+			$scope.hideTemplateEditor();
+		} else {
+			$scope.showTemplateEditor();
+		}
+	};
+	$scope.editTemplate = function() {
+		qts.update($scope.editedTemplate, function(result) {
+			// Whether result was OK or error, wipe selected list and reload data
+			$scope.selected = [];
+			$scope.vars.selectedIndex = -1;
+			$scope.queryTemplates(true);
+		});
+	};
+
+	$scope.templates = [];
+	$scope.queryTemplates = function(invalidateCache) {
+		var forceReload = (invalidateCache || (!$scope.templates) || ($scope.templates.length == 0));
+		if (forceReload) {
+			qts.list(function(result) {
+				if (result.ok) {
+					$scope.templates = result.data.entries;
+				} else {
+					$scope.templates = [];
+				};
+			});
+		} else {
+			// No need to refresh the cache: do nothing
+		}
+	};
+
+	$scope.removeTemplates = function() {
+//		console.log("removeTemplates");
+		var templateIds = [];
+		for(var i = 0, l = $scope.selected.length; i < l; i++) {
+			templateIds.push($scope.selected[i].id);
+		}
+		if (l == 0) {
+			// TODO ERROR
+			return;
+		}
+		qts.remove(templateIds, function(result) {
+			// Whether result was OK or error, wipe selected list and reload data
+			$scope.selected = [];
+			$scope.vars.selectedIndex = -1;
+			$scope.queryTemplates(true);
+		});
 	};
 
 }])
