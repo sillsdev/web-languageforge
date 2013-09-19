@@ -1,5 +1,5 @@
 
-angular.module('palaso.ui.listview', [])
+angular.module('palaso.ui.listview', ['ui.bootstrap'])
   // Typeahead
   .directive('listview', ["$timeout", function($timeout) {
 		return {

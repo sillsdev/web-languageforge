@@ -1,5 +1,7 @@
 <?php
 
+use models\UserModel;
+
 use models\dto\ProjectSettingsDto;
 
 use models\ProjectModel;
@@ -19,6 +21,7 @@ use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
+use models\commands\QuestionTemplateCommands;
 use models\mapper\Id;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
@@ -28,6 +31,7 @@ require_once(APPPATH . 'config/sf_config.php');
 
 require_once(APPPATH . 'models/ProjectModel.php');
 require_once(APPPATH . 'models/QuestionModel.php');
+require_once(APPPATH . 'models/QuestionTemplateModel.php');
 require_once(APPPATH . 'models/TextModel.php');
 require_once(APPPATH . 'models/UserModel.php');
 
@@ -38,8 +42,11 @@ class Sf
 	 */
 	private $_userId;
 	
+	private $_controller;
+	
 	public function __construct($controller) {
 		$this->_userId = (string)$controller->session->userdata('user_id');
+		$this->_controller = $controller;
 
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
  		ini_set('display_errors', 0);
@@ -100,6 +107,52 @@ class Sf
 		$user->changePassword($newPassword);
 		$user->write();
 	}
+	
+	public function username_exists($username) {
+		return UserModel::userNameExists($username);
+	}
+	
+	/**
+	 * Register a new user with password
+	 * @param UserModel $json
+	 * @return string Id of written object
+	 */
+	public function user_register($params) {
+		$captcha_info = $this->_controller->session->userdata('captcha_info');
+		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
+			return false;  // captcha does not match
+		}
+		$user = new \models\UserModelWithPassword();
+		JsonDecoder::decode($user, $params);
+		if (UserModel::userNameExists($user->username)) {
+			return false;
+		}
+		$user->encryptPassword();
+		$user->active = false;
+		$user->role = "user";
+		return $user->write();
+	}
+	
+	public function user_create($params) {
+		// TODO cjh 2013-09 assure that authenticated user executing this action has privilege to create an user
+		$user = new \models\UserModelWithPassword();
+		JsonDecoder::decode($user, $params);
+		if (UserModel::userNameExists($user->username)) {
+			return false;
+		}
+		$user->encryptPassword();
+		return $user->write();
+		
+	}
+	
+	public function get_captcha_src() {
+		$this->_controller->load->library('captcha');
+		$captcha_info = $this->_controller->captcha->main();
+		$this->_controller->session->set_userdata('captcha_info', $captcha_info);
+		return $captcha_info['image_src'];
+	}
+	
+	
 	
 	
 	//---------------------------------------------------------------
@@ -196,16 +249,16 @@ class Sf
 	public function text_update($projectId, $object) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel);
-		JsonDecoder::decode($textModel, $object);
-		$add_text = false;
- 		if ($textModel->id->asString() == '') {
- 			$add_text = true;
- 		}
-		$textId = $textModel->write();
-		if ($add_text) {
- 			ActivityCommands::addText($projectModel, $textId, $textModel);
+		$isNewText = ($object['id'] == '');
+		if (!$isNewText) {
+			$textModel->read($object['id']);
 		}
- 		return $textId;
+		JsonDecoder::decode($textModel, $object);
+		$textId = $textModel->write();
+		if ($isNewText) {
+			ActivityCommands::addText($projectModel, $textId, $textModel);
+		}
+		return $textId;
 	}
 	
 	public function text_read($projectId, $textId) {
@@ -227,6 +280,10 @@ class Sf
 	
 	public function text_list_dto($projectId) {
 		return \models\dto\TextListDto::encode($projectId, $this->_userId);
+	}
+
+	public function text_settings_dto($projectId, $textId) {
+		return \models\dto\TextSettingsDto::encode($projectId, $textId, $this->_userId);
 	}
 	
 	//---------------------------------------------------------------
@@ -306,7 +363,44 @@ class Sf
 		return \models\dto\QuestionListDto::encode($projectId, $textId, $this->_userId);
 	}
 	
-	// ---------------- Activity Feed -----------------
+	public function answer_vote_up($projectId, $questionId, $answerId) {
+		return QuestionCommands::voteUp($this->_userId, $projectId, $questionId, $answerId);
+	}
+	
+	public function answer_vote_down($projectId, $questionId, $answerId) {
+		return QuestionCommands::voteDown($this->_userId, $projectId, $questionId, $answerId);
+	}
+
+	//---------------------------------------------------------------
+	// QuestionTemplates API
+	//---------------------------------------------------------------
+
+	public function questionTemplate_update($params) {
+		$questionTemplate = new \models\QuestionTemplateModel();
+		JsonDecoder::decode($questionTemplate, $params);
+		$result = $questionTemplate->write();
+		return $result;
+	}
+
+	public function questionTemplate_read($id) {
+		$questionTemplate = new \models\QuestionTemplateModel($id);
+		return JsonEncoder::encode($questionTemplate);
+	}
+
+	public function questionTemplate_delete($questionTemplateIds) {
+		return QuestionTemplateCommands::deleteQuestionTemplates($questionTemplateIds);
+	}
+
+	public function questionTemplate_list() {
+		$list = new \models\QuestionTemplateListModel();
+		$list->read();
+		return $list;
+	}
+	
+	//---------------------------------------------------------------
+	// Activity Log
+	//---------------------------------------------------------------
+
 	public function activity_list_dto() {
 		return \models\dto\ActivityListDto::getActivityForUser($this->_userId);
 	}

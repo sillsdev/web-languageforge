@@ -33,6 +33,10 @@ li.typeahead-item {
 	margin: 0 0 4px 0;
 }
 
+li.typeahead-item.active {
+	background-color: #ffc;
+}
+
 li.typeahead-item p {
 	line-height: 1.2em;
 	margin-top: 0px;
@@ -90,4 +94,9 @@ span.larger-text {
 /* Control bar for use at top of listview */
 form.control-bar {
 	margin-bottom: 0px;
+}
+
+/* Highlighted text in text selection directive */
+.highlighted {
+	background-color: yellow;
 }

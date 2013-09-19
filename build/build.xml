@@ -7,14 +7,9 @@
 	<property name="build.output" value="output" />
 	<property name="build.packageFile" value="${build.output}/${application.name}.tgz" />
 	<property name="build.installPath" value="/var/www/scriptureforge.org_dev" />
+	<property name="build.installForTestPath" value="/var/www/scriptureforge.org_e2etest" />
 	<property name="build.uploadPath" value="/var/www/scriptureforge.org" />
 
-	<!--
-	<property name="mysql.db" value="lfweb" />
-	<property name="mysql.username" value="lfweb" />
-	<property name="mysql.password" value="secret" />
-	-->
-	
 	<target name="clean" depends="cleanLibs">
 		<delete dir="${build.output}" quiet="true" />
 	</target>
@@ -24,6 +19,11 @@
 
 	<target name="cleanInstall" depends="">
 		<delete dir="${build.installPath}" quiet="true" />
+	</target>
+	
+	<target name="cleanInstallForE2eTest" depends="">
+		<delete dir="${build.installForTestPath}" quiet="true" />
+		<mkdir dir="${build.installForTestPath}" />
 	</target>
 
 	<target name="cleanUpload" depends="">
@@ -48,7 +48,7 @@
 
 	<target name="build" />
 
-	<target name="test-js">
+	<target name="test-js-unit">
 		 <exec executable="/usr/local/bin/karma">
 			 <arg value="start" />
 			 <arg file="test/karma.conf.js" />
@@ -58,6 +58,16 @@
 		 </exec>
 	</target>
 
+	<target name="test-js-e2e" depends="installForE2eTest">
+		 <exec executable="/usr/local/bin/karma">
+			 <arg value="start" />
+			 <arg file="test/karma-e2e.conf.js" />
+			 <arg value="--single-run" />
+			 <arg value="--reporters" />
+			 <arg value="teamcity" />
+		 </exec>
+	</target>
+	
 	<target name="test-php" depends="prepare">
 		 <echo>##teamcity[importData type='junit' path='${build.output}/AllTests.xml']</echo>
 		 <exec executable="php" dir="test/php" output="${build.output}/AllTests.xml"  error="${build.output}/error.log" failonerror="true">
@@ -67,7 +77,8 @@
 	 </target>
 
 	<target name="test">
-		<antcall target="test-js" />
+		<antcall target="test-js-unit" />
+		<antcall target="test-js-e2e" />
 		<antcall target="test-php" />
 	</target>
 			
@@ -91,21 +102,26 @@
 
 	<target name="install" depends="package,cleanInstall">
 		<untar src="${build.packageFile}" dest="${build.installPath}" compression="gzip" />
-		<!--
-		<chgrp type="both" group="www-data">
-			<dirset dir="${build.installPath}/web/sites/default/files/" />
-			<fileset dir="${build.installPath}/web/sites/default/files/">
-			    <include name="**/*"/>
-			</fileset>
-		</chgrp>
-		<chmod type="both" perm="g+w">
-			<dirset dir="${build.installPath}/web/sites/default/files/" />
-			<fileset dir="${build.installPath}/web/sites/default/files/">
-			    <include name="**/*"/>
-			</fileset>
-		</chmod>
-		-->
 		<antcall target="restartWebServer" /> 
+	</target>
+	
+	<target name="installForE2eTest" depends="package, cleanInstallForE2eTest, initMongoForTest">
+		<untar src="${build.packageFile}" dest="${build.installForTestPath}" compression="gzip" />
+		<replace file="${build.installForTestPath}/htdocs/config/mongodb.php">
+		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
+		</replace>
+		<replace file="${build.installForTestPath}/htdocs/config/sf_config.php">
+		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
+		</replace>
+		<antcall target="restartWebServer" /> 
+	</target>
+	
+	<target name="initMongoForTest">
+		<exec dir="src/scripts/" executable="php" failonerror="true">
+			<arg value="setup-auth-data.php" />
+			<arg value="scriptureforge_e2etest" />
+			<arg value="REALLY_DROP_OLD" />
+		</exec>
 	</target>
 	
 	<target name="restartWebServer">
@@ -124,7 +140,5 @@
 			<arg value="${upload.destination}" />
 		</exec>
 	</target>
-	
-	<!-- Development targets to help developers, not used for production -->
 	
 </project>

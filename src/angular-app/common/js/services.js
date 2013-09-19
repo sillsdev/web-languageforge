@@ -14,9 +14,6 @@ angular.module('sf.services', ['jsonRpc'])
 		this.remove = function(userIds, callback) {
 			jsonRpc.call('user_delete', [userIds], callback);
 		};
-		this.changePassword = function(id, password, callback) {
-			jsonRpc.call('change_password', [id, password], callback);
-		};
 		this.list = function(callback) {
 			// TODO Paging CP 2013-07
 			jsonRpc.call('user_list', [], callback);
@@ -26,6 +23,15 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		this.changePassword = function(userId, newPassword, callback) {
 			jsonRpc.call('change_password', [userId, newPassword], callback);
+		};
+		this.userNameExists = function(username, callback) {
+			jsonRpc.call('username_exists', [username], callback);
+		};
+		this.create = function(model, callback) {
+			jsonRpc.call('user_create', [model], callback);
+		};
+		this.register = function(model, callback) {
+			jsonRpc.call('user_register', [model], callback);
 		};
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
@@ -74,6 +80,9 @@ angular.module('sf.services', ['jsonRpc'])
 		this.list = function(projectId, callback) {
 			jsonRpc.call('text_list_dto', [projectId], callback);
 		};
+		this.settings_dto = function(projectId, textId, callback) {
+			jsonRpc.call('text_settings_dto', [projectId, textId], callback);
+		};
 	}])
 	.service('questionsService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
@@ -110,6 +119,27 @@ angular.module('sf.services', ['jsonRpc'])
 		this.remove_comment = function(projectId, questionId, answerId, commentId, callback) {
 			jsonRpc.call('question_remove_comment', [projectId, questionId, answerId, commentId], callback);
 		};
+		this.answer_voteUp = function(projectId, questionId, answerId, callback) {
+			jsonRpc.call('answer_vote_up', [projectId, questionId, answerId], callback);
+		};
+		this.answer_voteDown = function(projectId, questionId, answerId, callback) {
+			jsonRpc.call('answer_vote_down', [projectId, questionId, answerId], callback);
+		};
+	}])
+	.service('questionTemplateService', ['jsonRpc', function(jsonRpc) {
+		jsonRpc.connect('/api/sf');
+		this.read = function(questionTemplateId, callback) {
+			jsonRpc.call('questionTemplate_read', [questionTemplateId], callback);
+		};
+		this.update = function(questionTemplate, callback) {
+			jsonRpc.call('questionTemplate_update', [questionTemplate], callback);
+		};
+		this.remove = function(questionTemplateIds, callback) {
+			jsonRpc.call('questionTemplate_delete', [questionTemplateIds], callback);
+		};
+		this.list = function(callback) {
+			jsonRpc.call('questionTemplate_list', [], callback);
+		};
 	}])
 	.service('activityPageService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf');
@@ -117,7 +147,7 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('activity_list_dto', [offset, count], callback);
 		};
 	}])
-	.service('sessionService', function() {
+	.service('sessionService', ['jsonRpc', function(jsonRpc) {
 		this.currentUserId = function() {
 			return window.session.userId;
 		};
@@ -132,7 +162,8 @@ angular.module('sf.services', ['jsonRpc'])
 				TEXTS:     function() { return 130;},
 				QUESTIONS: function() { return 140;},
 				ANSWERS:   function() { return 150;},
-				COMMENTS:  function() { return 160;}
+				COMMENTS:  function() { return 160;},
+				TEMPLATES: function() { return 170;}
 		};
 		this.operation = {
 				CREATE:       function() { return 1;},
@@ -151,7 +182,11 @@ angular.module('sf.services', ['jsonRpc'])
 		this.session = function() {
 			return window.session;
 		};
-	})
+		
+		this.getCaptchaSrc = function(callback) {
+			jsonRpc.call('get_captcha_src', [], callback);
+		};
+	}])
 	.service('linkService', function() {
 		this.href = function(url, text) {
 			return '<a href="' + url + '">' + text + '</a>';
