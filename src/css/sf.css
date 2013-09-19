@@ -683,6 +683,15 @@ ul.topCrumbs .active {
 	color: #202020;
 }
 
+/* jqte fixes and overrides */
+.jqte_placeholder {
+	display: block;	
+}
+
+.jqte {
+	margin: 20px 0;
+}
+
 /* Question Page */
 table#answers tbody tr:hover, table tbody tr.altrow:hover {
 	background-color: #fff;
