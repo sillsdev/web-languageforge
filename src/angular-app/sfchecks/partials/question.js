@@ -38,11 +38,13 @@ angular.module(
 				]
 		);
 		
+		$scope.votes = {};
 		questionService.read(projectId, questionId, function(result) {
 			console.log('questionService.read(', projectId, questionId, ')');
 			if (result.ok) {
 				$scope.text = result.data.text;
 				$scope.question = result.data.question;
+				$scope.votes = result.data.votes;
 				$scope.project = result.data.project;
 				console.log(result.data);
 				breadcrumbService.updateCrumb('top', 1, {label: $scope.project.projectname});
@@ -265,18 +267,26 @@ angular.module(
 		};
 		
 		$scope.voteUp = function(answerId) {
+			if ($scope.votes[answerId] == true) {
+				return;
+			}
 			questionService.answer_voteUp(projectId, questionId, answerId, function(result) {
 				if (result.ok) {
 					console.log('vote up ok');
+					$scope.votes[answerId] = true;
 					afterUpdateAnswer(result.data);
 				}
 			});
 		};
 		
 		$scope.voteDown = function(answerId) {
+			if ($scope.votes[answerId] != true) {
+				return;
+			}
 			questionService.answer_voteDown(projectId, questionId, answerId, function(result) {
 				if (result.ok) {
-					console.log('vote up ok');
+					console.log('vote down ok');
+					delete $scope.votes[answerId];
 					afterUpdateAnswer(result.data);
 				}
 			});
