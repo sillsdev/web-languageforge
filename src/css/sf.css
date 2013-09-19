@@ -732,6 +732,10 @@ div.vote a {
 	cursor: pointer;
 }
 
+div.vote a.disabled {
+	color: #eee;
+}
+
 div.vote span {
 	font-size: 24px;
 	font-weight: bold;
