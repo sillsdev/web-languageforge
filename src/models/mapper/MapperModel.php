@@ -6,8 +6,17 @@ use libraries\palaso\CodeGuard;
 
 class MapperModel
 {
+	/**
+	 * 
+	 * @var MongoMapper
+	 */
 	protected $_mapper;
 
+	/**
+	 * 
+	 * @param MongoMapper $mapper
+	 * @param string $id
+	 */
 	protected function __construct($mapper, $id = '') {
 		$this->_mapper = $mapper;
 		CodeGuard::checkTypeAndThrow($id, 'string');
@@ -23,6 +32,16 @@ class MapperModel
 	 */
 	function read($id) {
 		return $this->_mapper->read($this, $id);
+	}
+	
+	/**
+	 * 
+	 * @param string $property
+	 * @param string $value
+	 * @return boolean
+	 */
+	function readByProperty($property, $value) {
+		return $this->_mapper->readByProperty($this, $property, $value);
 	}
 	
 	/**

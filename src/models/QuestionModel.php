@@ -33,6 +33,7 @@ class QuestionModel extends \models\mapper\MapperModel
 {
 	public function __construct($projectModel, $id = '') {
 		$this->id = new Id();
+		$this->workflowState = "open"; // default workflow state
 		$this->dateCreated = new \DateTime();
 		$this->dateEdited = new \DateTime();
 		$this->textRef = new IdReference();
@@ -194,6 +195,13 @@ class QuestionModel extends \models\mapper\MapperModel
 	 */
 	public $answers;
 	
+	/**
+	 * 
+	 * @var string
+	 */
+	public $workflowState;
+	
+	
 }
 
 class QuestionListModel extends \models\mapper\MapperListModel
@@ -218,7 +226,7 @@ class QuestionAnswersListModel extends \models\mapper\MapperListModel
 		parent::__construct(
 			QuestionModelMongoMapper::connect($projectModel->databaseName()),
 			array('title' => array('$regex' => ''), 'textRef' => MongoMapper::mongoID($textId)),
-			array('title', 'answers')
+			array('title', 'description', 'answers')
 		);
 	}
 

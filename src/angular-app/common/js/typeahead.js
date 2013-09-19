@@ -8,13 +8,12 @@ angular.module('palaso.ui.typeahead', [])
 			replace : true,
 			template : '<div><input ng-model="term" ng-change="query()" type="text" autocomplete="off" /><div ng-transclude></div></div>',
 			scope : {
-				search : "&",
-				select : "&",
+				search : "=",
+				select : "=",
 				items : "=",
-				term : "="
+				term : "=term"
 			},
 			controller : ["$scope", function($scope) {
-				$scope.items = [];
 				$scope.hide = false;
 				this.activate = function(item) {
 					$scope.active = item;
@@ -36,18 +35,14 @@ angular.module('palaso.ui.typeahead', [])
 				this.select = function(item) {
 					$scope.hide = true;
 					$scope.focused = true;
-					$scope.select({
-						item : item
-					});
+					$scope.select(item);
 				};
 				$scope.isVisible = function() {
 					return !$scope.hide && ($scope.focused || $scope.mousedOver);
 				};
 				$scope.query = function() {
 					$scope.hide = false;
-					$scope.search({
-						term : $scope.term
-					});
+					$scope.search($scope.term);
 				};
 			}],
 			link : function(scope, element, attrs, controller) {

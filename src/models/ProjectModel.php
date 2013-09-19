@@ -145,7 +145,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public $users;
 	
-	// What else needs to be in the model?
+	public $projectCode;
 	
 }
 

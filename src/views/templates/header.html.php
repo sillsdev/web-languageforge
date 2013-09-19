@@ -4,13 +4,13 @@
 				
 				<?php if (isset($is_static_page)):?>
 				<div class="sf-logo-large">
-					<img src="/images/sf_logo_large.png" alt="Scripture Forge" width="96" height="165" class="png_bg" />
+					<img src="/images/sf_logo_large.png" alt="Scripture Forge" style="width:96px; height:165px" class="png_bg" />
 				</div>
 				<?php endif;?>
 				
 				<div id="header-nav" class="left">
 				<?php if (!isset($is_static_page)):?>
-					<img align="left" style="margin: 2px 10px 0 0" src="/images/sf_logo_small.png" alt="Scripture Forge" width="27" height="36" />
+					<div class="darkTextLogo png_bg left text-logo-top"></div>
 				<?php endif;?>
 					<ul class="sf-menu">
 						<li><a href="/">Home</a></li>
@@ -55,7 +55,7 @@
 							</ul>
 							<ul class="sf-menu">
 							<li>
-							<a href="#"><img src="<?php echo $small_avatar_url; ?>" width="30px" height="30px" style="float:left; position:relative; top:-6px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
+							<a href="#"><img src="<?php echo $small_avatar_url; ?>" style="width: 30px; height: 30px; float:left; position:relative; top:-6px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
 								<ul>
 									<?php if ($is_admin):?>
 									<li><a href="/app/sfadmin">Site Administration</a></li>
@@ -70,7 +70,7 @@
 				
 				<?php else:?>
 					<div id="account" class="right">
-						<input type="button" value="Login" class="login-btn left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="#">Create an Account</a>
+						<input type="button" value="Login" class="login-btn left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/signup">Create an Account</a>
 					</div>
 				<?php endif;?>
 				

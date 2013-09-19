@@ -2,10 +2,10 @@
 
 angular.module(
 		'sfchecks.project',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap' ]
-	)
-	.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 
-	                            function($scope, textService, $routeParams, ss, bcs, linkService) {
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb' ]
+)
+.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService',
+                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
 		
@@ -16,6 +16,14 @@ angular.module(
 		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
 		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 		
+		// Breadcrumb
+		breadcrumbService.set('top',
+				[
+				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
+				]
+		);
+
 		// Listview Selection
 		$scope.newTextCollapsed = true;
 		$scope.selected = [];
@@ -43,7 +51,7 @@ angular.module(
 
 					$scope.project = result.data.project;
 					$scope.project.url = linkService.project(projectId);
-					bcs.updateMap('project', $scope.project.id, $scope.project.name);
+					breadcrumbService.updateCrumb('top', 1, {label: $scope.project.name});
 
 					var rights = result.data.rights;
 					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.DELETE_OTHER); 
@@ -119,24 +127,26 @@ angular.module(
 
 	}])
 	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService',
-	                                 function($scope, $location, $routeParams, bcs, userService, projectService, ss) {
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss) {
 		var projectId = $routeParams.projectId;
 		$scope.project = {};
-		console.log("project id", projectId);
-		console.log("bcs", bcs.idmap);
 		$scope.project.id = projectId;
-		if (bcs.idmap[projectId] != undefined) {
-			$scope.project.name = bcs.idmap[projectId].name;			
-		}
+
+		// Breadcrumb
+		breadcrumbService.set('top',
+				[
+				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/settings', label: 'Settings'},
+				]
+		);
 
 		$scope.updateProject = function() {
 			var newProject = {
 				id: $scope.project.id,
 				projectname: $scope.project.name
 			};
-			console.log('About to update project with data', newProject);
 			projectService.update(newProject, function(result) {
-				console.log(result);
 				if (result.ok) {
 					console.log('Updated OK');
 				}
@@ -174,6 +184,8 @@ angular.module(
 					$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
 					$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT_OTHER);
 					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
+					// Breadcrumb
+					breadcrumbService.updateCrumb('top', 1, {label: result.data.bcs.project.crumb});
 					
 				}
 			});
@@ -226,11 +238,13 @@ angular.module(
 	    	'invite': { 'en': 'Send Invite', 'icon': 'icon-envelope'}
 	    };
 	    $scope.addMode = 'addNew';
+	    $scope.typeahead = {};
+	    $scope.typeahead.userName = '';
 		
-		$scope.queryUser = function(term) {
-			console.log('searching for ', term);
-			userService.typeahead(term, function(result) {
-				// TODO Check term == controller view value (cf bootstrap typeahead) else abandon.
+		$scope.queryUser = function(userName) {
+			console.log('searching for ', userName);
+			userService.typeahead(userName, function(result) {
+				// TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
 				if (result.ok) {
 					$scope.users = result.data.entries;
 					$scope.updateAddMode();
@@ -243,11 +257,23 @@ angular.module(
 		$scope.addModeIcon = function(addMode) {
 			return $scope.addModes[addMode].icon;
 		};
-		$scope.updateAddMode = function() {
-			// TODO This isn't adequate.  Need to watch the 'term' and 'selection' also. CP 2013-07
-			if ($scope.users.length == 0) {
+		$scope.updateAddMode = function(newMode) {
+			if (newMode in $scope.addModes) {
+				$scope.addMode = newMode;
+			} else {
+				// This also covers the case where newMode is undefined
+				$scope.calculateAddMode();
+			}
+		}
+		$scope.calculateAddMode = function() {
+			// TODO This isn't adequate.  Need to watch the 'typeahead.userName' and 'selection' also. CP 2013-07
+			if ($scope.typeahead.userName.indexOf('@') != -1) {
+				$scope.addMode = 'invite';
+			} else if ($scope.users.length == 0) {
 				$scope.addMode = 'addNew';
-			} else if ($scope.users.length == 1) {
+			} else if (!$scope.typeahead.userName) {
+				$scope.addMode = 'addNew';
+			} else {
 				$scope.addMode = 'addExisting';
 			}
 		};
@@ -255,11 +281,11 @@ angular.module(
 		$scope.addProjectUser = function() {
 			var model = {};
 			if ($scope.addMode == 'addNew') {
-				model.name = $scope.term;
+				model.name = $scope.typeahead.userName;
 			} else if ($scope.addMode == 'addExisting') {
 				model.id = $scope.user.id;
 			} else if ($scope.addMode == 'invite') {
-				$model.email = $scope.term;
+				model.email = $scope.typeahead.userName;
 			}
 			console.log("addUser ", model);
 			projectService.updateUser($scope.project.id, model, function(result) {
@@ -273,7 +299,8 @@ angular.module(
 		$scope.selectUser = function(item) {
 			console.log('user selected', item);
 			$scope.user = item;
-			$scope.term = item.name;
+			$scope.typeahead.userName = item.name;
+			$scope.updateAddMode('addExisting');
 		};
 	
 		$scope.imageSource = function(avatarRef) {
