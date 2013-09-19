@@ -6,6 +6,7 @@
 <div id="comments" class="span6">
 	<div class="question">
 	<h2>{{question.title}}</h2>
+	<h4 ng-show="questionIsClosed()" style="color:gray; font-style:italic">This question is marked closed</h4>
 	<div>
 	{{question.description}}
 	</div>
@@ -14,32 +15,38 @@
 		<form class="well">
 		<fieldset>
 		<label>Question</label>
-		<input type="text" ng-model="editedQuestion.title" class="span4" rows="4" placeholder="the question"></textarea>
+		<input type="text" ng-model="editedQuestion.title" class="span4" rows="4" placeholder="the question" />
 		<label></label>
 		<textarea ng-model="editedQuestion.description" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
 		<label></label>
-		<button type="submit" class="btn" ng-click="updateQuestion(editedQuestion); hideQuestionEditor()"><i class="icon-plus"></i>Edit Question</button>
+		<label>Workflow</label>
+		<select ng-model="editedQuestion.workflowState" ng-options="state as label for (state,label) in workflowStates" name="workflowState"></select>
+		<label></label>
+		<button class="btn" ng-click="updateQuestion(editedQuestion); hideQuestionEditor()"><i class="icon-ok"></i>Save</button>
+		<button class="btn" ng-click="hideQuestionEditor()"><i class="icon-reply"></i>Cancel</button>
 		</fieldset>
 		</form>
 	</div>
-	<div ng-show="question.answerCount == 0">
+	<div ng-show="question.answerCount == 0 && !questionIsClosed()">
 		There are no answers yet for this question. You could be the first one to reply!
 	</div>
 	<br/>
-	Add your own answer<span ng-show="newAnswer.textHighlight"> about this part of the text</span>:
-	<div ng-show="newAnswer.textHighlight" ng-bind-html="newAnswer.textHighlight" class="scripture-quote"></div>
-	<form ng-submit="submitAnswer()">
-		<textarea ng-model="newAnswer.content" pui-jqte="jqteOptions"></textarea>
-		<button type="submit" class="btn">Answer Question</button>
-	</form>
+	<div ng-hide="questionIsClosed()">
+		Add your own answer<span ng-show="newAnswer.textHighlight"> about this part of the text</span>:
+		<div ng-show="newAnswer.textHighlight" ng-bind-html="newAnswer.textHighlight" class="scripture-quote"></div>
+			<form ng-submit="submitAnswer()">
+				<textarea ng-model="newAnswer.content" pui-jqte="jqteOptions"></textarea>
+				<button type="submit" class="btn">Answer Question</button>
+			</form>
+		</div>
 	</div>
 	<table id="answers">
 	<tr ng-repeat="(answerId, answer) in question.answers">
 		<td>
 			<div class="vote" style="display:inline-block;">
-				<a ng-click="voteUp(answerId)"><i class="icon-caret-up"></i></a>
+				<a ng-hide="questionIsClosed()" ng-click="voteUp(answerId)"><i class="icon-caret-up"></i></a>
 				<span>{{answer.score}}</span>
-				<a ng-click="voteDown(answerId)"><i class="icon-caret-down"></i></a>
+				<a ng-hide="questionIsClosed()" ng-click="voteDown(answerId)"><i class="icon-caret-down"></i></a>
 			</div>
 		</td>
 		<td>
@@ -55,8 +62,8 @@
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
 				<div>
-				<a ng-show="rightsEditOwn(answer.userRef.userid)" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
-				<a ng-show="rightsDeleteOwn(answer.userRef.userid)" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
+				<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
+				<a ng-show="rightsDeleteOwn(answer.userRef.userid) && !questionIsClosed()" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
 				<ng-switch on="answerEditorVisible(answerId)">
 				<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
 					<textarea ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
@@ -71,8 +78,8 @@
 					<td></td>
 					<td>
 						{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}
-						<a ng-show="rightsEditOwn(comment.userRef.userid)" class="btn-link" ng-click="showCommentEditor(comment.id)">edit</a>
-						<a ng-show="rightsDeleteOwn(comment.userRef.userid)" ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
+						<a ng-show="rightsEditOwn(comment.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showCommentEditor(comment.id)">edit</a>
+						<a ng-show="rightsDeleteOwn(comment.userRef.userid) && !questionIsClosed()" ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
 						<ng-switch on="commentEditorVisible(comment.id)">
 						<form ng-submit="editComment(answerId, answer, editedComment)" ng-switch-when="true">
 							<textarea ng-model="editedComment.content"></textarea>
@@ -85,12 +92,14 @@
 				<tr>
 					<td></td>
 					<td>
-						<a ng-click="collapsed = !collapsed" class="btn btn-link">add comment</a>
-						<div collapse="!collapsed">
-						<form ng-submit="submitComment(answerId, answer); collapsed = !collapsed;">
-							<textarea ng-model="newComment.content"></textarea><br/>
-							<button type="submit" class="btn btn-small">Add Comment</button>
-						</form>
+						<div ng-hide="questionIsClosed()">
+							<a ng-click="collapsed = !collapsed" class="btn btn-link">add comment</a>
+							<div collapse="!collapsed">
+							<form ng-submit="submitComment(answerId, answer); collapsed = !collapsed;">
+								<textarea ng-model="newComment.content"></textarea><br/>
+								<button type="submit" class="btn btn-small">Add Comment</button>
+							</form>
+							</div>
 						</div>
 					</td>
 				</tr>
