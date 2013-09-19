@@ -2,12 +2,12 @@
 
 angular.module(
 		'sfchecks.question',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.jqte', 'ui.bootstrap' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.selection', 'palaso.ui.notice' ]
 	)
-	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService',
-	                             function($scope, $routeParams, questionService, ss, bcs) {
+	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService',
+	                             function($scope, $routeParams, questionService, ss, breadcrumbService, notice) {
 		$scope.jqteOptions = {
-			'placeholder': 'Say what you think...',
+			'placeholder': 'Type your answer here. Click "Done" when finished.',
 			'u': false,
 			'indent': false,
 			'outdent': false,
@@ -19,6 +19,9 @@ angular.module(
 			'link': false,
 			'unlink': false,
 			'fsize': false,
+			'sub': false,
+			'color': false,
+			'format': false,
 			'formats': [
 				['p', 'Normal'],
 				['h4', 'Large']
@@ -27,20 +30,32 @@ angular.module(
 
 		var projectId = $routeParams.projectId;
 		var questionId = $routeParams.questionId;
+
+		// Breadcrumb
+		breadcrumbService.set('top',
+				[
+				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId + '/' + $routeParams.qusetionId, label: ''},
+				]
+		);
+		
+		$scope.votes = {};
 		questionService.read(projectId, questionId, function(result) {
-			console.log('questionService.read(', projectId, questionId, ') =>', result)
+			console.log('questionService.read(', projectId, questionId, ')');
 			if (result.ok) {
 				$scope.text = result.data.text;
 				$scope.question = result.data.question;
+				$scope.votes = result.data.votes;
 				$scope.project = result.data.project;
-				bcs.updateMap('project', $scope.project.id, $scope.project.projectname);
-				bcs.updateMap('text', $scope.text.id, $scope.text.title);
-				bcs.updateMap('question', $scope.question.id, $scope.question.title);
+				console.log(result.data);
+				breadcrumbService.updateCrumb('top', 1, {label: $scope.project.projectname});
+				breadcrumbService.updateCrumb('top', 2, {label: $scope.text.title});
+				breadcrumbService.updateCrumb('top', 3, {label: $scope.question.title});
 				// Keep track of answer count so we can show or hide "There are no answers" as appropriate
 				$scope.question.answerCount = Object.keys($scope.question.answers).length;
 				$scope.rights = result.data.rights;
-			} else {
-				// error condition
 			}
 		});
 		
@@ -53,7 +68,32 @@ angular.module(
 			var right = (userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN);
 			return right;
 		};
-
+		
+		$scope.rightsCloseQuestion = function(userId) {
+			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
+		}
+		
+		$scope.workflowStates = [
+			{
+				state: "open",
+				label: "Open"
+			},
+			{
+				state: "review",
+				label: "In Review"
+			},
+			{
+				state: "closed",
+				label: "Closed"
+			},
+		];
+		
+		$scope.questionIsClosed = function() {
+			if ($scope.question) {
+				return ($scope.question.workflowState == 'closed');
+			}
+		}
+		
 		$scope.editQuestionCollapsed = true;
 		$scope.showQuestionEditor = function() {
 			$scope.editQuestionCollapsed = false;
@@ -71,30 +111,25 @@ angular.module(
 				id: $scope.question.id,
 				title: $scope.question.title,
 				description: $scope.question.description,
+				workflowState: $scope.question.workflowState
 				// Do we need to copy the other values? Let's check:
 				//dateCreated: $scope.question.dateCreated,
 				//textRef: $scope.question.textRef,
 				//answers: $scope.question.answers,
 				//answerCount: $scope.question.answerCount,
-			}
+			};
 		});
 		$scope.updateQuestion = function(newQuestion) {
 			questionService.update(projectId, newQuestion, function(result) {
 				if (result.ok) {
+					notice.push(notice.SUCCESS, "The question was successfully updated")
 					questionService.read(projectId, newQuestion.id, function(result) {
 						if (result.ok) {
 							$scope.question = result.data.question;
 							// Recalculate answer count since the DB doesn't store it
 							$scope.question.answerCount = Object.keys($scope.question.answers).length;
-						} else {
-							// error condition
-							console.log('update_question failed to read DB after update');
-							console.log(result);
 						}
 					});
-				} else {
-					console.log('update_question ERROR');
-					console.log(result);
 				}
 			});
 		};
@@ -165,7 +200,7 @@ angular.module(
 			// specific commentId without knowing which answer it belongs
 			// to, because all we have to work with is the new value of
 			// the commentId (the old value won't help us).
-			var comment;
+			var comment = undefined;
 			search_loop:
 			for (var aid in $scope.question.answers) {
 				var answer = $scope.question.answers[aid];
@@ -198,47 +233,84 @@ angular.module(
 		};
 		
 		$scope.newAnswer = {
-			content: ''
+			content: '',
+			textHighlight: '',
 		};
 		
 		$scope.updateComment = function(answerId, answer, newComment) {
 			questionService.update_comment(projectId, questionId, answerId, newComment, function(result) {
 				if (result.ok) {
+						if (newComment.id == '') {
+							notice.push(notice.SUCCESS, "The comment was successfully submitted");
+						} else {
+							notice.push(notice.SUCCESS, "The comment was successfully updated");
+						}
 					for (var id in result.data) {
 						newComment = result.data[id]; // There should be one, and only one, record in result.data
 					}
 					$scope.question.answers[answerId].comments[newComment.id] = newComment;
-				} else {
-					console.log('update_comment ERROR');
-					console.log(result);
 				}
 			});
 		};
 		
 		$scope.submitComment = function(answerId, answer) {
-			console.log('submitComment(', answerId, answer, ')');
 			var newComment = {
 				id: '',
 				content: $scope.newComment.content,
 			};
 			$scope.updateComment(answerId, answer, newComment);
-		}
+			$scope.newComment.content = '';
+			$scope.newComment.textHighlight = '';
+		};
 		
 		$scope.editComment = function(answerId, answer, comment) {
 			if ($scope.rightsEditOwn(comment.userRef.userid)) {
 				$scope.updateComment(answerId, answer, comment);
 			}
 			$scope.hideCommentEditor();
-		}
+		};
 		
 		$scope.commentDelete = function(answer, commentId) {
 			console.log('delete ', commentId);
-			console.log(projectId, questionId, answer, commentId);
 			questionService.remove_comment(projectId, questionId, answer.id, commentId, function(result) {
 				if (result.ok) {
-					console.log('remove_comment ok');
+					notice.push(notice.SUCCESS, "The comment was successfully removed");
 					// Delete locally
 					delete answer.comments[commentId];
+				}
+			});
+		};
+
+		var afterUpdateAnswer = function(answersDto) {
+			for (var id in answersDto) {
+				$scope.question.answers[id] = answersDto[id];
+			}
+			// Recalculate answer count as it might have changed
+			$scope.question.answerCount = Object.keys($scope.question.answers).length;
+		};
+		
+		$scope.voteUp = function(answerId) {
+			if ($scope.votes[answerId] == true || $scope.questionIsClosed()) {
+				return;
+			}
+			questionService.answer_voteUp(projectId, questionId, answerId, function(result) {
+				if (result.ok) {
+					console.log('vote up ok');
+					$scope.votes[answerId] = true;
+					afterUpdateAnswer(result.data);
+				}
+			});
+		};
+		
+		$scope.voteDown = function(answerId) {
+			if ($scope.votes[answerId] != true || $scope.questionIsClosed()) {
+				return;
+			}
+			questionService.answer_voteDown(projectId, questionId, answerId, function(result) {
+				if (result.ok) {
+					console.log('vote down ok');
+					delete $scope.votes[answerId];
+					afterUpdateAnswer(result.data);
 				}
 			});
 		};
@@ -246,23 +318,26 @@ angular.module(
 		$scope.updateAnswer = function(projectId, questionId, answer) {
 			questionService.update_answer(projectId, questionId, answer, function(result) {
 				if (result.ok) {
-					console.log('update_answer ok');
-					for (var id in result.data) {
-						$scope.question.answers[id] = result.data[id];
+					if (answer.id == '') {
+						notice.push(notice.SUCCESS, "The answer was successfully submitted");
+					} else {
+						notice.push(notice.SUCCESS, "The answer was successfully updated");
 					}
-					// Recalculate answer count as it might have changed
-					$scope.question.answerCount = Object.keys($scope.question.answers).length;
-					// TODO error condition (well, that should be handled globally by the service CP 2013-08)
+					afterUpdateAnswer(result.data);
 				}
 			});
 		};
-
+		
 		$scope.submitAnswer = function() {
 			var answer = {
 				'id':'',
-				'content': $scope.newAnswer.content
+				'content': $scope.newAnswer.content,
+				'textHighlight': $scope.newAnswer.textHighlight,
 			};
 			$scope.updateAnswer(projectId, questionId, answer);
+			$scope.newAnswer.content = '';
+			$scope.newAnswer.textHighlight = '';
+			$scope.selectedText = '';
 		};
 		
 		$scope.editAnswer = function(answer) {
@@ -276,7 +351,7 @@ angular.module(
 			console.log('delete ', answerId);
 			questionService.remove_answer(projectId, questionId, answerId, function(result) {
 				if (result.ok) {
-					console.log('remove_answer ok');
+					notice.push(notice.SUCCESS, "The answer was successfully removed");
 					// Delete locally
 					delete $scope.question.answers[answerId];
 					// Recalculate answer count as it just changed
@@ -284,6 +359,11 @@ angular.module(
 				}
 			});
 		};
+
+		$scope.selectedText = '';
+		$scope.$watch('selectedText', function(newval) {
+			$scope.newAnswer.textHighlight = newval;
+		});
 		
 	}])
 	;

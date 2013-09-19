@@ -46,3 +46,15 @@ Once you've installed phantomjs, node.js, and karma in /usr/local/bin, you'll ne
     env.PATH=/usr/local/bin:/usr/bin:/bin
 
 Restart the build agent, and TeamCity should now be able to run Karma (and Karma should be able to find node.js and PhantomJS) correctly.
+
+## Step 4: Running on your local machine
+
+You can start running tests right away with the following command:
+
+	karma start [karma.conf.js] --single-run
+	
+Where karma.conf.js is the karma config file
+
+You can also have karma watch any source files under test, and have karma automatically re-run the tests when any files (tests or sources) are updated
+
+	karma start [karma.conf.js] --auto-watch

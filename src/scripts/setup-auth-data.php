@@ -59,7 +59,7 @@
 		"password" => '$2a$07$SeBknntpZror9uyftVopmu61qg0ms8Qv1yV6FG.kQOSM.9QhmTo36', // If using bcrypt
 		"email" => "admin@admin.com",
 		"role" => "system_admin",
-		"active" => 1,
+		"active" => true,
 		"groups" => array( $admin_id, $users_id ),
 		"first_name" => "Admin",
 		"last_name" => "istrator",

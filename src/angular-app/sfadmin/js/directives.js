@@ -2,12 +2,17 @@
 
 /* Directives */
 
-angular.module('sfAdmin.directives', ["jsonRpc", "sfAdmin.filters"]).
-  directive('appVersion', ['version', function(version) {
-    return function(scope, elm, attrs) {
-      elm.text(version);
-    };
-  }])
+angular.module('sfAdmin.directives', ["jsonRpc", "sfAdmin.filters"])
+	.directive('ngBlur', ['$parse', function($parse) {
+	  return function(scope, element, attr) {
+	    var fn = $parse(attr['ngBlur']);
+	    element.bind('blur', function(event) {
+	      scope.$apply(function() {
+	        fn(scope, {$event:event});
+	      });
+	    });
+	  }
+	}])
   .directive("requireEqual", function() {
 	return {
 		restrict: "A",

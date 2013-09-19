@@ -30,7 +30,7 @@ class MongoMapper
 	 * @param string $collection
 	 * @param string $idKey defaults to id
 	 */
-	protected function __construct($database, $collection, $idKey = 'id') {
+	public function __construct($database, $collection, $idKey = 'id') {
 		$this->_db = MongoStore::connect($database);
 		$this->_collection = $this->_db->$collection;
 		$this->_idKey = $idKey;
@@ -131,6 +131,42 @@ class MongoMapper
 			throw new \Exception("Exception thrown while reading '$id'", $ex->getCode(), $ex);
 		}
 	}
+	
+	/**
+	 * 
+	 * @param Object $model
+	 * @param string $property
+	 * @param string $value
+	 * @return bool true on document found, false otherwise
+	 * Note that unlike the read() method, readByProperty() does NOT throw an exception if no document is found
+	 * 
+	 */
+	public function readByProperty($model, $property, $value) {
+		CodeGuard::checkTypeAndThrow($property, 'string');
+		CodeGuard::checkTypeAndThrow($value, 'string');
+		$data = $this->_collection->findOne(array($property => $value));
+		if ($data != NULL) {
+			MongoDecoder::decode($model, $data, (string)$data['_id']);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param Object $model
+	 * @param array  $properties
+	 */
+	public function readByProperties($model, $properties) {
+		CodeGuard::checkTypeAndThrow($properties, 'array');
+		$data = $this->_collection->findOne($properties);
+		if ($data != NULL) {
+			MongoDecoder::decode($model, $data, (string)$data['_id']);
+			return true;
+		}
+		return false;
+	}
+	
 	
 	public function readSubDocument($model, $rootId, $property, $id) {
 		CodeGuard::checkTypeAndThrow($rootId, 'string');

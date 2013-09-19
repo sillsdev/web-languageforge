@@ -1,4 +1,4 @@
-<h2 style="font-weight:normal">Settings for {{project.name}}</h2>
+<h2 style="font-weight:normal">Update {{project.name}}</h2>
 <tabset>
 	<tab heading="Users">
 		<form ng-show="rights.showControlBar" class="control-bar form-inline">
@@ -7,7 +7,7 @@
 		</form>
 		<div class="new-item" collapse="!newUserCollapsed">
 			<form class="well form-inline">
-			<typeahead class="typeahead" items="user" term="term" search="queryUser(term)" select="selectUser(item)">
+			<typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
 				<ul>
 					<li typeahead-item="user" ng-repeat="user in users" class="typeahead-item">
 						<img width="32px" ng-src="{{imageSource(user.avatarRef)}}" class="left">
