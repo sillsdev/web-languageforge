@@ -22,6 +22,7 @@ class Roles {
 		$rights = array();
 		self::grantAllOnDomain($rights, Domain::USERS);
 		self::grantAllOnDomain($rights, Domain::PROJECTS);
+		self::grantAllOnDomain($rights, Domain::TEMPLATES);
 		
 		self::$_rights[Realm::SITE][Roles::SYSTEM_ADMIN] = $rights;
 		
@@ -52,6 +53,7 @@ class Roles {
 		$rights[] = Domain::USERS + Operation::CREATE;
 		$rights[] = Domain::USERS + Operation::EDIT_OTHER;
 		$rights[] = Domain::USERS + Operation::DELETE_OTHER;
+		self::grantAllOnDomain($rights, Domain::TEMPLATES);
 		
 		self::$_rights[Realm::PROJECT][Roles::PROJECT_ADMIN] = $rights;
 		
@@ -63,6 +65,7 @@ class Roles {
 		self::grantAllOnDomain($rights, Domain::QUESTIONS);
 		self::grantAllOnDomain($rights, Domain::ANSWERS);
 		self::grantAllOnDomain($rights, Domain::COMMENTS);
+		self::grantAllOnDomain($rights, Domain::TEMPLATES);
 
 		self::$_rights[Realm::PROJECT][Roles::SYSTEM_ADMIN] = $rights;
 		
