@@ -616,10 +616,6 @@ button i {
 	margin-right: 8px;
 }
 
-a i {
-	margin-right: 8px;
-}
-
 i.icon-remove {
 	color: #f66
 }
@@ -722,6 +718,8 @@ div.scripture-quote {
 div.vote {
 	text-align: center;
 	line-height: 1.0em;
+	margin-right: 16px;
+	margin-top: -8px;
 }
 
 div.vote a {
@@ -730,6 +728,10 @@ div.vote a {
 	color: #999;
 	text-decoration: none;
 	cursor: pointer;
+}
+
+div.vote a.disabled {
+	color: #eee;
 }
 
 div.vote span {
