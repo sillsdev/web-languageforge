@@ -20,7 +20,7 @@
 		<textarea ng-model="editedQuestion.description" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
 		<label></label>
 		<label>Workflow</label>
-		<select ng-model="editedQuestion.workflowState" ng-options="state as label for (state,label) in workflowStates" name="workflowState"></select>
+		<select ng-model="editedQuestion.workflowState" ng-options="s.state as s.label for s in workflowStates" name="workflowState"></select>
 		<label></label>
 		<button class="btn" ng-click="updateQuestion(editedQuestion); hideQuestionEditor()"><i class="icon-ok"></i>Save</button>
 		<button class="btn" ng-click="hideQuestionEditor()"><i class="icon-reply"></i>Cancel</button>

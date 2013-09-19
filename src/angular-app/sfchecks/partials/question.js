@@ -71,14 +71,25 @@ angular.module(
 			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
 		}
 		
-		$scope.workflowStates = {
-			open: "Open",
-			review: "In Review",
-			closed: "Closed"
-		}
+		$scope.workflowStates = [
+			{
+				state: "open",
+				label: "Open"
+			},
+			{
+				state: "review",
+				label: "In Review"
+			},
+			{
+				state: "closed",
+				label: "Closed"
+			},
+		];
 		
 		$scope.questionIsClosed = function() {
-			return ($scope.question.workflowState == 'closed');
+			if ($scope.question) {
+				return ($scope.question.workflowState == 'closed');
+			}
 		}
 		
 		$scope.editQuestionCollapsed = true;
