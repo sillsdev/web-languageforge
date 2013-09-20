@@ -144,7 +144,8 @@ angular.module(
 		$scope.updateProject = function() {
 			var newProject = {
 				id: $scope.project.id,
-				projectname: $scope.project.name
+				projectname: $scope.project.name,
+				featured: $scope.project.featured
 			};
 			projectService.update(newProject, function(result) {
 				if (result.ok) {
@@ -175,6 +176,7 @@ angular.module(
 			projectService.listUsers($scope.project.id, function(result) {
 				if (result.ok) {
 					$scope.project.name = result.data.projectName;
+					$scope.project.featured = result.data.projectIsFeatured;
 					$scope.project.users = result.data.entries;
 					$scope.project.userCount = result.data.count;
 					// Rights
