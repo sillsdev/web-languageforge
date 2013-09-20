@@ -167,18 +167,6 @@ class ProjectListModel extends \models\mapper\MapperListModel
 	}
 }
 
-class FeaturedProjectListModel extends \models\mapper\MapperListModel
-{
-	public function __construct()
-	{
-		parent::__construct(
-			ProjectModelMongoMapper::instance(),
-			array('featured' => true),
-			array('projectname', 'language')
-		);
-	}
-}
-
 class ProjectList_UserModel extends \models\mapper\MapperListModel
 {
 
