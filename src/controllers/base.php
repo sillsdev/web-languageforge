@@ -1,13 +1,14 @@
 <?php
 
-use models\FeaturedProjectListModel;
 
 use models\ProjectListModel;
+use models\FeaturedProjectListModel;
 
 use models\rights\Operation;
 use models\rights\Domain;
 use models\rights\Realm;
 use models\rights\Roles;
+
 
 class Base extends CI_Controller {
 	
