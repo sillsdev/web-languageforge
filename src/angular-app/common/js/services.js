@@ -162,7 +162,8 @@ angular.module('sf.services', ['jsonRpc'])
 				TEXTS:     function() { return 130;},
 				QUESTIONS: function() { return 140;},
 				ANSWERS:   function() { return 150;},
-				COMMENTS:  function() { return 160;}
+				COMMENTS:  function() { return 160;},
+				TEMPLATES: function() { return 170;}
 		};
 		this.operation = {
 				CREATE:       function() { return 1;},

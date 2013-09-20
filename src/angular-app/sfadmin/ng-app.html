@@ -81,7 +81,7 @@
 		<div class="row" ng-controller="TemplateCtrl" style="overflow:hidden">
 			<form class="control-bar form-inline">
 				<button class="btn" ng-click="removeTemplates()"><i class="icon-remove"></i>Remove Templates</button>
-				<button class="btn" ng-click="toggleTemplateEditor()"><i class="icon-pencil"></i>Edit Template</button>
+				<button class="btn" ng-click="toggleTemplateEditor()"><i class="icon-{{editTemplateButtonIcon}}"></i>{{editTemplateButtonText}}</button>
 			</form>
 			<div class="new-item" collapse="!templateEditorVisible">
 				<form class="well">
@@ -91,7 +91,7 @@
 				<label></label>
 				<textarea ng-model="editedTemplate.description" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
 				<label></label>
-				<button type="submit" class="btn" ng-click="editTemplate(); hideTemplateEditor()"><i class="icon-plus"></i>Edit Template</button>
+				<button type="submit" class="btn" ng-click="editTemplate(); hideTemplateEditor()"><i class="icon-{{editTemplateButtonIcon}}"></i>{{editTemplateButtonText}}</button>
 				</fieldset>
 				</form>
 			</div>
@@ -99,7 +99,7 @@
 			<table style="width: 100%">
 				<tr>
 					<th></th>
-					<th>Question title</th>
+					<th class="span3">Question title</th>
 					<th>Question contents</th>
 				</tr>
 				<tr ng-repeat="template in visibleTemplates" ng-class="{active: isSelected(template)}" ng-click="selectRow($index, template)" >
