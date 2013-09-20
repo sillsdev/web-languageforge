@@ -1,12 +1,12 @@
 <h2 style="font-weight:normal">My Projects</h2>
 <form ng-show="rights.deleteOther" class="control-bar form-inline">
-	<button class="btn" ng-click="removeProject()"><i class="icon-remove"></i>Remove Projects</button>
+	<button ng-disabled="selected.length == 0" class="btn" ng-click="removeProject()"><i class="icon-remove"></i>Remove Projects</button>
 	<button class="btn" ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Create New Project</button>
 </form>
 <div class="new-item" collapse="newProjectCollapsed">
 	<form class="well form-inline">
 	<input type="text" ng-model="projectName" placeholder="Project Name"/>
-	<button type="submit" class="btn" ng-click="addProject(); newProjectCollapsed = true"><i class="icon-plus"></i>Add Project</button>
+	<button type="submit" class="btn" ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
 	</form>
 </div>
 <hr />

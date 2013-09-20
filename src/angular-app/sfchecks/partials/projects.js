@@ -2,10 +2,10 @@
 
 angular.module(
 		'sfchecks.projects',
-		[ 'sf.services', 'palaso.ui.listview', 'ui.bootstrap', 'sgw.ui.breadcrumb' ]
+		[ 'sf.services', 'palaso.ui.listview', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice' ]
 )
-.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'breadcrumbService', 'linkService', 
-                             function($scope, projectService, ss, breadcrumbService, linkService) {
+.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService',
+                             function($scope, projectService, ss, breadcrumbService, linkService, notice) {
 		// Rights
 		$scope.rights = {};
 		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.DELETE_OTHER); 
@@ -59,7 +59,11 @@ angular.module(
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
 					$scope.queryProjectsForUser();
-					// TODO
+					if (projectIds.length == 1) {
+						notice.push(notice.SUCCESS, "The project was removed successfully");
+					} else {
+						notice.push(notice.SUCCESS, "The projects were removed successfully");
+					}
 				}
 			});
 		};
@@ -71,7 +75,9 @@ angular.module(
 			model.projectname = $scope.projectName;
 			projectService.update(model, function(result) {
 				if (result.ok) {
+					notice.push(notice.SUCCESS, "The " + $scope.projectName + " project was created successfully");
 					$scope.queryProjectsForUser();
+					$scope.projectName = '';
 				}
 			});
 		};
