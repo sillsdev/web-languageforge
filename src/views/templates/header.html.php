@@ -17,7 +17,7 @@
 						<li><a href="#">Explore</a>
 							<ul>
 							<?php foreach($featuredProjects as $project): ?>
-								<li><a href="<?php echo "/app/sfchecks#/project/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+								<li><a href="<?php echo "/projects/" . str_replace(" ", "_", strtolower($project['projectname'])); ?>"><?php echo $project['projectname']; ?></a></li>
 							<?php endforeach; ?>
 								<!--
 								<li><a href="#">Sub Menu Item 2</a>

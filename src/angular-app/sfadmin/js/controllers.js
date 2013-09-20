@@ -72,7 +72,7 @@ angular.module(
 		} else {
 			$scope.vars.record = record;
 			$scope.vars.editButtonName = "Save";
-			$scope.vars.editButtonIcon = "pencil";
+			$scope.vars.editButtonIcon = "ok";
 			$scope.vars.state = "update";
 			$scope.hidePasswordForm();
 		}
