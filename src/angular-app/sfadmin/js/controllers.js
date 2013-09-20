@@ -283,6 +283,17 @@ angular.module(
 		return item != null && $scope.selected.indexOf(item) >= 0;
 	};
 
+	$scope.editTemplateButtonText = 'Add New Template';
+	$scope.editTemplateButtonIcon = 'plus';
+	$scope.$watch('selected.length', function(newval) {
+		if (newval >= 1) {
+			$scope.editTemplateButtonText = 'Edit Template';
+			$scope.editTemplateButtonIcon = 'pencil';
+		} else {
+			$scope.editTemplateButtonText = 'Add New Template';
+			$scope.editTemplateButtonIcon = 'plus';
+		}
+	});
 	$scope.editedTemplate = {
 		id: '',
 		title: '',
@@ -290,14 +301,19 @@ angular.module(
 	};
 	$scope.templateEditorVisible = false;
 	$scope.showTemplateEditor = function() {
-		if ($scope.selected.length == 1) {
+		if ($scope.selected.length == 0) {
+			$scope.editedTemplate.id = '';
+			$scope.editedTemplate.title = '';
+			$scope.editedTemplate.description = '';
+			$scope.templateEditorVisible = true;
+		} else if ($scope.selected.length == 1) {
 			var template = $scope.selected[0];
 			$scope.editedTemplate.id = template.id;
 			$scope.editedTemplate.title = template.title;
 			$scope.editedTemplate.description = template.description;
 			$scope.templateEditorVisible = true;
 		} else {
-			notice.push(notice.WARN, 'Please select one template before clicking Edit');
+			notice.push(notice.WARN, 'Please select no more than one template before clicking Edit');
 		}
 	};
 	$scope.hideTemplateEditor = function() {

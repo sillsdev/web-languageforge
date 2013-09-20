@@ -7,7 +7,7 @@ angular.module(
 	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService',
 	                             function($scope, $routeParams, questionService, ss, breadcrumbService, notice) {
 		$scope.jqteOptions = {
-			'placeholder': 'Say what you think...',
+			'placeholder': 'Type your answer here. Click "Done" when finished.',
 			'u': false,
 			'indent': false,
 			'outdent': false,
