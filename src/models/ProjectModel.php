@@ -147,6 +147,12 @@ class ProjectModel extends \models\mapper\MapperModel
 	
 	public $projectCode;
 	
+	/**
+	 * Flag to indicated if this project is featured on the website 
+	 * @var boolean
+	 */
+	public $featured;
+	
 }
 
 class ProjectListModel extends \models\mapper\MapperListModel
@@ -156,6 +162,18 @@ class ProjectListModel extends \models\mapper\MapperListModel
 		parent::__construct(
 			ProjectModelMongoMapper::instance(),
 			array(),
+			array('projectname', 'language')
+		);
+	}
+}
+
+class FeaturedProjectListModel extends \models\mapper\MapperListModel
+{
+	public function __construct()
+	{
+		parent::__construct(
+			ProjectModelMongoMapper::instance(),
+			array('featured' => true),
 			array('projectname', 'language')
 		);
 	}

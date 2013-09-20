@@ -16,7 +16,9 @@
 						<li><a href="/">Home</a></li>
 						<li><a href="#">Explore</a>
 							<ul>
-								<li><a href="#">Jamaica Project 1</a></li>
+							<?php foreach($featuredProjects as $project): ?>
+								<li><a href="<?php echo "/app/sfchecks#/project/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+							<?php endforeach; ?>
 								<!--
 								<li><a href="#">Sub Menu Item 2</a>
 									<ul>
@@ -26,8 +28,6 @@
 									</ul>
 								</li>
 								-->
-								<li><a href="#">Jamaica Project 2</a></li>
-								<li><a href="#">Jamaica Project 3</a></li>
 							</ul>
 						</li>
 						<li><a href="/learn_scripture_forge">Learn</a>

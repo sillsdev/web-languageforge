@@ -1,5 +1,9 @@
 <?php
 
+use models\FeaturedProjectListModel;
+
+use models\ProjectListModel;
+
 use models\rights\Operation;
 use models\rights\Domain;
 use models\rights\Realm;
@@ -40,6 +44,11 @@ class Base extends CI_Controller {
 		
 		// setup specific variables for header
 		$this->viewdata['logged_in'] = $this->_isLoggedIn;
+		
+		$featuredProjectList = new FeaturedProjectListModel();
+		$featuredProjectList->read();
+		$this->viewdata['featuredProjects'] = $featuredProjectList->entries;
+		
 		if ($this->_isLoggedIn) {
 			$isAdmin = Roles::hasRight(Realm::SITE, $this->_user->role, Domain::USERS + Operation::CREATE);
 			$this->viewdata['is_admin'] = $isAdmin;
