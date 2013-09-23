@@ -2,7 +2,7 @@
 
 require_once 'base.php';
 
-class Pages extends Base {
+class Projects extends Base {
 	
 	public function view($page = 'unknown') {
 		$data = array();
@@ -10,7 +10,7 @@ class Pages extends Base {
 		$data['is_static_page'] = true;
 		if ( ! file_exists('views/projects/'.$page.'.html.php'))
 		{
-			show_404();
+			$this->_render_page("projects/not_yet_implemented", $data);
 		} else {
 			$this->_render_page("projects/$page", $data);
 		}
