@@ -113,7 +113,7 @@ angular.module(
 		};
 		// Add question
 		$scope.addQuestion = function() {
-			console.log("addQuestion()");
+			//console.log("addQuestion()");
 			var model = {};
 			model.id = '';
 			model.textRef = textId;
@@ -123,27 +123,25 @@ angular.module(
 				if (result.ok) {
 					$scope.queryQuestions();
 					notice.push(notice.SUCCESS, "'" + model.title + "' was added successfully");
+					if ($scope.saveAsTemplate) {
+						qts.update(model, function(result) {
+							if (result.ok) {
+								$scope.queryTemplates();
+								notice.push(notice.SUCCESS, "'" + model.title + "' was added as a template question");
+							}
+						});
+					}
+					$scope.questionTitle = "";
+					$scope.questionDescription = "";
+					$scope.saveAsTemplate = false;
 				}
 			});
 		};
-		// Add template
-		$scope.addTemplate = function() {
-			console.log("addTemplate()");
-			var model = {};
-			model.id = '';
-			model.title = $scope.questionTitle;
-			model.description = $scope.questionDescription;
-			qts.update(model, function(result) {
-				if (result.ok) {
-					$scope.queryTemplates();
-					notice.push(notice.SUCCESS, "'" + model.title + "' was added as a template question");
-				}
-			});
-		};
+		
 		$scope.makeQuestionIntoTemplate = function() {
 			// Expects one, and only one, question to be selected (checked)
 			var l = $scope.selected.length;
-			if (l != 0) {
+			if (l != 1) {
 				return;
 			}
 			var model = {};
@@ -154,6 +152,7 @@ angular.module(
 				if (result.ok) {
 					$scope.queryTemplates();
 					notice.push(notice.SUCCESS, "'" + model.title + "' was added as a template question");
+					$scope.selected = [];
 				}
 			});
 		};
@@ -236,7 +235,6 @@ angular.module(
 				if (result.ok) {
 					notice.push(notice.SUCCESS, newText.title + " settings successfully updated");
 					$scope.textTitle = newText.title;
-					$scope.showMessage = true;
 				}
 			});
 		}

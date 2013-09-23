@@ -10,7 +10,7 @@
 	<div>
 	{{question.description}}
 	</div>
-	<a class="btn-link" ng-click="toggleQuestionEditor()">edit</a>
+	<a class="btn-link" ng-show="rightsEditQuestion()" ng-click="toggleQuestionEditor()">Edit Question Settings</a>
 	<div class="edit-question" collapse="editQuestionCollapsed">
 		<form class="well">
 		<fieldset>
