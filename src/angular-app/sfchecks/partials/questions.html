@@ -1,9 +1,9 @@
 <h2 style="font-weight:normal">Questions for {{text.title}}</h2>
 <form ng-show="rights.showControlBar" class="control-bar form-inline">
-	<button ng-show="rights.deleteOther" class="btn" ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
+	<button ng-show="rights.deleteOther" class="btn" ng-disabled="selected.length == 0" ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
+	<button ng-show="rights.createTemplate" ng-disabled="selected.length == 0 || selected.length > 1" class="btn" ng-click="makeQuestionIntoTemplate()"><i class="icon-pushpin"></i>Make Template</button>
 	<button ng-show="rights.create" class="btn" ng-click="newQuestionCollapsed = !newQuestionCollapsed"><i class="icon-plus"></i>Add New Question</button>
-	<button ng-show="rights.createTemplate" class="btn" ng-click="makeQuestionIntoTemplate()"><i class="icon-pushpin"></i>Make Question into Template</button>
-	<a ng-show="rights.editOther" class="btn" href="#/project/{{projectId}}/{{textId}}/settings"><i class="icon-pencil"></i>Update Text</a>
+	<a ng-show="rights.editOther" class="btn" href="#/project/{{projectId}}/{{textId}}/settings"><i class="icon-pencil"></i> Update Text</a>
 </form>
 <div class="new-item" collapse="newQuestionCollapsed">
 	<form class="well span12">
