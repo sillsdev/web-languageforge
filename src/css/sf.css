@@ -617,7 +617,7 @@ p.applicationContent {
 }
 
 /* icons */
-button i {
+button i, a i {
 	margin-right: 8px;
 }
 
