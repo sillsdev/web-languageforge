@@ -1,17 +1,9 @@
 		<div id="header" class="png_bg">
-			
 			<div class="sfcontainer">
-				
-				<?php if (isset($is_static_page)):?>
 				<div class="sf-logo-large">
-					<img src="/images/sf_logo_large.png" alt="Scripture Forge" style="width:96px; height:165px" class="png_bg" />
+					<img src="/images/sf_logo_medium.png" alt="Scripture Forge" style="width:92px; height:114px" class="png_bg" />
 				</div>
-				<?php endif;?>
-				
 				<div id="header-nav" class="left">
-				<?php if (!isset($is_static_page)):?>
-					<div class="darkTextLogo png_bg left text-logo-top"></div>
-				<?php endif;?>
 					<ul class="sf-menu">
 						<li><a href="/">Home</a></li>
 						<li><a href="#">Explore</a>
@@ -32,6 +24,7 @@
 						</li>
 						<li><a href="/learn_scripture_forge">Learn</a>
 							<ul>
+								<li><a href="/learn_faq">Frequently Asked Questions</a></li>
 								<li><a href="/learn_scripture_forge">About Scripture Forge</a></li>
 								<li><a href="/learn_expand_your_team">Expand Your Team</a></li>
 								<li><a href="/learn_contribute">Contribute</a></li>
