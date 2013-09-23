@@ -1,6 +1,6 @@
-<div class="container" ng-app="userProfile" ng-cloak>
+<div class="sfcontainer" ng-app="userProfile" ng-cloak>
 	<div ng-controller="userProfileCtrl">
-	<legend>{{user.name}}'s User Profile</legend>
+	<h1>{{user.name}}'s User Profile</h1>
 	<form ng-submit="updateUser()">
 					<fieldset>
 						<div ng-show="notify.error" class="notification errorMessage">Error: {{notify.error}}</div>
