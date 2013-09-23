@@ -72,6 +72,9 @@ angular.module(
 		$scope.rightsCloseQuestion = function(userId) {
 			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
 		}
+		$scope.rightsEditQuestion = function(userId) {
+			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
+		}
 		
 		$scope.workflowStates = [
 			{
@@ -122,7 +125,7 @@ angular.module(
 		$scope.updateQuestion = function(newQuestion) {
 			questionService.update(projectId, newQuestion, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "The question was successfully updated")
+					notice.push(notice.SUCCESS, "The question was updated successfully")
 					questionService.read(projectId, newQuestion.id, function(result) {
 						if (result.ok) {
 							$scope.question = result.data.question;
@@ -241,9 +244,9 @@ angular.module(
 			questionService.update_comment(projectId, questionId, answerId, newComment, function(result) {
 				if (result.ok) {
 						if (newComment.id == '') {
-							notice.push(notice.SUCCESS, "The comment was successfully submitted");
+							notice.push(notice.SUCCESS, "The comment was submitted successfully");
 						} else {
-							notice.push(notice.SUCCESS, "The comment was successfully updated");
+							notice.push(notice.SUCCESS, "The comment was updated successfully");
 						}
 					for (var id in result.data) {
 						newComment = result.data[id]; // There should be one, and only one, record in result.data
@@ -274,7 +277,7 @@ angular.module(
 			console.log('delete ', commentId);
 			questionService.remove_comment(projectId, questionId, answer.id, commentId, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "The comment was successfully removed");
+					notice.push(notice.SUCCESS, "The comment was removed successfully");
 					// Delete locally
 					delete answer.comments[commentId];
 				}
@@ -319,9 +322,9 @@ angular.module(
 			questionService.update_answer(projectId, questionId, answer, function(result) {
 				if (result.ok) {
 					if (answer.id == '') {
-						notice.push(notice.SUCCESS, "The answer was successfully submitted");
+						notice.push(notice.SUCCESS, "The answer was submitted successfully");
 					} else {
-						notice.push(notice.SUCCESS, "The answer was successfully updated");
+						notice.push(notice.SUCCESS, "The answer was updated successfully");
 					}
 					afterUpdateAnswer(result.data);
 				}
@@ -351,7 +354,7 @@ angular.module(
 			console.log('delete ', answerId);
 			questionService.remove_answer(projectId, questionId, answerId, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "The answer was successfully removed");
+					notice.push(notice.SUCCESS, "The answer was removed successfully");
 					// Delete locally
 					delete $scope.question.answers[answerId];
 					// Recalculate answer count as it just changed

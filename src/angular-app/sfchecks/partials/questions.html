@@ -3,7 +3,7 @@
 	<button ng-show="rights.deleteOther" class="btn" ng-disabled="selected.length == 0" ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
 	<button ng-show="rights.createTemplate" ng-disabled="selected.length == 0 || selected.length > 1" class="btn" ng-click="makeQuestionIntoTemplate()"><i class="icon-pushpin"></i>Make Template</button>
 	<button ng-show="rights.create" class="btn" ng-click="newQuestionCollapsed = !newQuestionCollapsed"><i class="icon-plus"></i>Add New Question</button>
-	<a ng-show="rights.editOther" class="btn" href="#/project/{{projectId}}/{{textId}}/settings"><i class="icon-pencil"></i> Update Text</a>
+	<a ng-show="rights.editOther" class="btn" href="#/project/{{projectId}}/{{textId}}/settings"><i class="icon-pencil"></i> Update Text Settings</a>
 </form>
 <div class="new-item" collapse="newQuestionCollapsed">
 	<form class="well span12">
@@ -13,8 +13,8 @@
 	<label></label>
 	<textarea ng-model="questionDescription" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
 	<label></label>
-	<button type="submit" class="btn" ng-click="addQuestion(); newQuestionCollapsed = true"><i class="icon-plus"></i>Add Question</button>
-	<button class="btn" ng-show="rights.createTemplate" ng-click="addTemplate()"><i class="icon-pushpin"></i>Save as Template</button>
+	<label style="float:right;margin-left:20px"><input type="checkbox" ng-model="saveAsTemplate" ng-show="rights.createTemplate" /> Also save as template</label>
+	<button type="submit" class="btn" ng-click="addQuestion(); newQuestionCollapsed = true"><i class="icon-ok"></i>Save</button>
 	</fieldset>
 	<fieldset class="span4">
 		<label>Templates</label>
