@@ -2,10 +2,10 @@
 
 angular.module(
 		'sfchecks.project',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.textdrop' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.textdrop', 'palaso.ui.notice' ]
 )
-.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService',
-                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService) {
+.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService',
+                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService, notice) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
 		
@@ -69,11 +69,15 @@ angular.module(
 				textIds.push($scope.selected[i].id);
 			}
 			if (l == 0) {
-				// TODO ERROR
 				return;
 			}
 			textService.remove(projectId, textIds, function(result) {
 				if (result.ok) {
+					if (textIds.length == 1) {
+						notice.push(notice.SUCCESS, "The text was removed successfully");
+					} else {
+						notice.push(notice.SUCCESS, "The texts were removed successfully");
+					}
 					$scope.selected = []; // Reset the selection
 					$scope.queryTexts();
 					// TODO
@@ -89,6 +93,7 @@ angular.module(
 			model.content = $scope.content;
 			textService.update(projectId, model, function(result) {
 				if (result.ok) {
+					notice.push(notice.SUCCESS, "The text '" + model.title + "' was added successfully")
 					$scope.queryTexts();
 				}
 			});
@@ -126,8 +131,8 @@ angular.module(
 		};
 
 	}])
-	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService',
-	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss) {
+	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService',
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice) {
 		var projectId = $routeParams.projectId;
 		$scope.project = {};
 		$scope.project.id = projectId;
@@ -149,7 +154,7 @@ angular.module(
 			};
 			projectService.update(newProject, function(result) {
 				if (result.ok) {
-					console.log('Updated OK');
+					notice.push(notice.SUCCESS, $scope.project.name + " settings updated successfully");
 				}
 			});
 		};
@@ -206,7 +211,12 @@ angular.module(
 			projectService.removeUsers($scope.project.id, userIds, function(result) {
 				if (result.ok) {
 					$scope.queryProjectUsers();
-					// TODO
+					$scope.selected = [];
+					if (userIds.length == 1) {
+						notice.push(notice.SUCCESS, "The user was removed from this project");
+					} else {
+						notice.push(notice.SUCCESS, userIds.length + " users were removed from this project");
+					}
 				}
 			});
 		};
@@ -224,8 +234,7 @@ angular.module(
 			console.log('userchange...', model);
 			projectService.updateUser($scope.project.id, model, function(result) {
 				if (result.ok) {
-					// TODO broadcast notice
-					console.log('userchanged');
+					notice.push(notice.SUCCESS, user.username + "'s role was changed to " + user.role);
 				}
 			});
 		};
@@ -235,9 +244,9 @@ angular.module(
 		// ----------------------------------------------------------
 	    $scope.users = [];
 	    $scope.addModes = {
-	    	'addNew': { 'en': 'Create New', 'icon': 'icon-user'},
-	    	'addExisting' : { 'en': 'Add Existing', 'icon': 'icon-user'},
-	    	'invite': { 'en': 'Send Invite', 'icon': 'icon-envelope'}
+	    	'addNew': { 'en': 'Create New User', 'icon': 'icon-user'},
+	    	'addExisting' : { 'en': 'Add Existing User', 'icon': 'icon-user'},
+	    	'invite': { 'en': 'Send Email Invite', 'icon': 'icon-envelope'}
 	    };
 	    $scope.addMode = 'addNew';
 	    $scope.typeahead = {};
@@ -289,10 +298,15 @@ angular.module(
 			} else if ($scope.addMode == 'invite') {
 				model.email = $scope.typeahead.userName;
 			}
-			console.log("addUser ", model);
 			projectService.updateUser($scope.project.id, model, function(result) {
 				if (result.ok) {
-					// TODO broadcast notice and add
+					if ($scope.addMode == "addNew") {
+						notice.push(notice.SUCCESS, "User '" + model.name + "' was created and added to " + $scope.project.name);
+					} else if ($scope.addMode == "addExisting") {
+						notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.name + " successfully");
+					} else {
+						notice.push(notice.SUCCESS, "'" + model.email + "' was invited to join the project " + $scope.project.name);
+					}
 					$scope.queryProjectUsers();
 				}
 			});
