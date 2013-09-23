@@ -835,3 +835,12 @@ div.new-item {
 table select {
 	margin-bottom: 0px;
 }
+
+label {
+	cursor: default;
+}
+
+.nav-tabs li {
+	cursor: pointer;
+}
+
