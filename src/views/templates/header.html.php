@@ -63,7 +63,7 @@
 				
 				<?php else:?>
 					<div id="account" class="right">
-						<input type="button" value="Login" class="login-btn left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/signup">Create an Account</a>
+						<input type="button" value="Login" style="position:relative; top:-3px" class="login-btn left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/signup">Create an Account</a>
 					</div>
 				<?php endif;?>
 				
