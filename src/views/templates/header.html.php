@@ -1,3 +1,6 @@
+<!--[if lte IE 8]>
+<div style="text-align:center">Your browser may not work so well. Please consider <a href="learn_faq">upgrading</a> to a modern standards compliant browser.</div>
+<![endif]-->
 		<div id="header" class="png_bg">
 			<div class="sfcontainer">
 				<div class="sf-logo-large">
