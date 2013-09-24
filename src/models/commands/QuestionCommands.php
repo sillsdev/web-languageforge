@@ -129,6 +129,7 @@ class QuestionCommands
 		$questionModel->writeAnswer($answerModel);
 		$vote->addVote($answerId);
 		$vote->write();
+		ActivityCommands::updateScore($projectModel, $questionId, $answerId, $userId);
 		// Return the answer dto.
 		return self::encodeAnswer($answerModel);
 	}
