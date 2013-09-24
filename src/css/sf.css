@@ -36,6 +36,7 @@ ul, ol {
   
 a {  
 	color: #04abe1;  
+	cursor: pointer;
 }
 
 a.arrowed {
