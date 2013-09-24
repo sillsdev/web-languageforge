@@ -40,6 +40,8 @@ class ProjectUserCommands {
 			$user = new \models\UserModel();
 			$user->name = $object['name'];
 			$user->username = strtolower(str_replace(' ', '.', $user->name));
+			$user->role = Roles::USER;
+			$user->active = true;
 			// TODO passwords, how to notify, email? CP 2013-07
 			$userId = $user->write();
 		} else {
