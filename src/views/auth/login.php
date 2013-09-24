@@ -4,7 +4,7 @@
 <p><?php echo lang('login_subheading');?></p>
 
 <?php if ($message):?>
-<div class="notification informationMessage"><?php echo $message;?></div>
+<div class="alert alert-info"><?php echo $message;?></div>
 <?php endif;?>
 
 <?php echo form_open("auth/login");?>
