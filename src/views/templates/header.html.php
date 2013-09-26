@@ -57,6 +57,7 @@
 									<li><a href="/app/sfadmin">Site Administration</a></li>
 									<?php endif;?>
 									<li><a href="/app/userprofile">My Profile</a></li>
+									<li><a href="/app/activity">My Activity</a></li>
 									<li><a href="/app/changepassword">Change Password</a></li>
 									<li><a href="/auth/logout">Logout</a></li>
 								</ul>
