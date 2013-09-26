@@ -22,8 +22,8 @@
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> commented on <a href="{{item.userHref2}}">{{item.userRef2.username}}'s</a> answer to <i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a><i class="icon-quote-right"></i> on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
-						<p class="indented">{{item.content.answer}}</p>
+						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> commented on <a href="{{item.userHref2}}">{{item.userRef2.username}}'s</a> answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+						<p class="indented" ng-bind-html-unsafe="item.content.answer"></p>
 						<hr />
 						<p class="indented">{{item.content.comment}} - <a href="{{item.userHref}}">{{item.userRef.username}}</a></p>
 					</div>
@@ -39,8 +39,8 @@
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> updated their comment on <a href="{{item.userHref2}}">{{item.userRef2.username}}'s</a> answer to <i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a> <i class="icon-quote-right"></i> on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
-						<p class="indented">{{item.content.answer}}</p>
+						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> updated their comment on <a href="{{item.userHref2}}">{{item.userRef2.username}}'s</a> answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+						<p class="indented" ng-bind-html-unsafe="item.content.answer"></p>
 						<hr />
 						<p class="indented">{{item.content.comment}} - <a href="{{item.userHref}}">{{item.userRef.username}}</a></p>
 					</div>
@@ -71,7 +71,7 @@
 					</div>
 					<div class="span8 activity-content">
 						<span><a href="{{item.textHref}}">{{item.content.text}}</a> has a new question in the <a href="{{item.projectHref}}">{{item.content.project}}</a> project</span>
-						<p class="indented"><i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a> <i class="icon-quote-right"></i></p>
+						<p class="indented">&ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;</p>
 					</div>
 				</div> 
 				
@@ -113,8 +113,8 @@
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> answered <i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a> <i class="icon-quote-right"></i> on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
-						<p class="indented">{{item.content.answer}}</p>
+						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> answered &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+						<p class="indented" ng-bind-html-unsafe="item.content.answer"></p>
 					</div>
 				</div> 
 				
@@ -128,8 +128,8 @@
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> updated their answer to <i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a> <i class="icon-quote-right"></i> on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
-						<p class="indented">{{item.content.answer}}</p>
+						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> updated their answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+						<div ng-bind-html-unsafe="item.content.answer"></div>
 					</div>
 				</div> 
 				
@@ -143,7 +143,7 @@
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> +1'd your answer to <i class="icon-quote-left"></i> <a href="{{item.questionHref}}">{{item.content.question}}</a> <i class="icon-quote-right"></i> on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> +1'd your answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
 					</div>
 				</div> 
 				
