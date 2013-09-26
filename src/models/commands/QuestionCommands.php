@@ -54,9 +54,13 @@ class QuestionCommands
 		$answerId = $questionModel->writeAnswer($answerModel);
 		// Re-read question model to pick up new answer
 		$questionModel->read($questionId);
-		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
 		$newAnswer = $questionModel->readAnswer($answerId);
-		ActivityCommands::updateAnswer($projectModel, $questionId, $newAnswer);
+		if ($answer['id'] != '') {
+			// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
+			ActivityCommands::updateAnswer($projectModel, $questionId, $newAnswer);
+		} else {
+			ActivityCommands::addAnswer($projectModel, $questionId, $newAnswer);
+		}
 		return self::encodeAnswer($newAnswer);
 	}
 	
@@ -86,8 +90,12 @@ class QuestionCommands
 		$newComment = $questionModel->readComment($answerId, $commentId);
 		$commentDTO = QuestionCommentDto::encodeComment($newComment);
 		
-		ActivityCommands::updateComment($projectModel, $questionId, $answerId, $newComment);
-		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
+		if ($comment['id'] != '') {
+			// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
+			ActivityCommands::updateComment($projectModel, $questionId, $answerId, $newComment);
+		} else {
+			ActivityCommands::addComment($projectModel, $questionId, $answerId, $newComment);
+		}
 
 		$dto = array();
 		$dto[$commentId] = $commentDTO;
