@@ -48,8 +48,19 @@ class Sf
 		$this->_userId = (string)$controller->session->userdata('user_id');
 		$this->_controller = $controller;
 
+		// "Kick" session every time we use an API call, so it won't time out
+		$this->update_last_activity();
+
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
  		ini_set('display_errors', 0);
+	}
+
+	public function update_last_activity($newtime = NULL) {
+		if (is_null($newtime)) {
+			// Default to current time
+			$newtime = time();
+		}
+		$this->_controller->session->set_userdata('last_activity', $newtime);
 	}
 	
 	//---------------------------------------------------------------
