@@ -1,0 +1,6 @@
+{
+	"require": {
+		"mustache/mustache": "v2.4.1",
+		"swiftmailer/swiftmailer": "v5.0.2"
+	}
+}
