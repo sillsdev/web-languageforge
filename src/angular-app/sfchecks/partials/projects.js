@@ -82,32 +82,15 @@ angular.module(
 			});
 		};
 
-		// Fake data to make the page look good while it's being designed. To be
-		// replaced by real data once the appropriate API functions are writen.
-		var fakeData = {
-			textCount: -3,
-			viewsCount: -93,
-			unreadAnswers: -4,
-			unreadComments: -12
-		};
-
 		$scope.getTextCount = function(project) {
 			// return projects.texts.count;
 			return project.textCount;
 		};
 
-		$scope.getViewsCount = function(project) {
-			return fakeData.viewsCount;
+		$scope.getResponses = function(project) {
+			return "'Not Yet Implemented'";
 		};
 
-		$scope.getUnreadAnswers = function(project) {
-			return fakeData.unreadAnswers;
-		};
-
-		$scope.getUnreadComments = function(project) {
-			return fakeData.unreadComments;
-		};
-		
 		$scope.enhanceDto = function(items) {
 			for (var i in items) {
 				items[i].url = linkService.project(items[i].id);
