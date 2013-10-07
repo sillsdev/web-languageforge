@@ -1,3 +1,4 @@
+		<div id="footercontainer">
 		<div id="footer" class="png_bg">
 			<div class="sfcontainer cf">
 			
@@ -38,4 +39,5 @@
 			<div class="sfcontainer">
 				<div class="darkTextLogo png_bg"></div>
 			</div>
+		</div>
 		</div>
