@@ -155,6 +155,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	
 }
 
+/**
+ * 
+ * List of projects in the system
+ *
+ */
 class ProjectListModel extends \models\mapper\MapperListModel
 {
 	public function __construct()
@@ -167,6 +172,10 @@ class ProjectListModel extends \models\mapper\MapperListModel
 	}
 }
 
+/**
+ * List of projects of which an user is a member
+ * 
+ */
 class ProjectList_UserModel extends \models\mapper\MapperListModel
 {
 

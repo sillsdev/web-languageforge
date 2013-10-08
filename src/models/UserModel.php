@@ -217,6 +217,10 @@ class UserTypeaheadModel extends \models\mapper\MapperListModel
 	
 }
 
+/**
+ * List of users who are members of the specified project
+ *
+ */
 class UserList_ProjectModel extends \models\mapper\MapperListModel
 {
 
