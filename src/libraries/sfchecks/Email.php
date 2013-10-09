@@ -28,10 +28,10 @@ class EmailSwiftMailWrapper
 	 */
 	public function send() {
 		// Create the Transport
-		$transport = \Swift_SmtpTransport::newInstance('smtp.example.org', 25)
-			->setUsername('your username')
-			->setPassword('your password')
-			;
+		$transport = \Swift_SmtpTransport::newInstance('localhost', 25);
+// 			->setUsername('your username')
+// 			->setPassword('your password')
+// 			;
 		
 		// Create the Mailer using your created Transport
 		$mailer = \Swift_Mailer::newInstance($transport);
@@ -43,8 +43,7 @@ class EmailSwiftMailWrapper
 		$message->setBody($this->_body);
 		
 		// Send the message
-		$result = $mailer->send($message);		
-		
+		$result = $mailer->send($message);	
 		
 	}
 }
@@ -59,7 +58,6 @@ class EmailHelper
 		$key = sha1(microtime(true).mt_rand(10000,90000));
 		$userModel->validationKey = $key;
 		$userModel->validationDate = new \DateTime();
-		$userModel->write();
 	}
 	
 	/**
@@ -87,11 +85,10 @@ class Email
 {
 	/**
 	 * Send an email to validate a user when they sign up.
-	 * @param string $userId
+	 * @param UserModel $userModel
 	 * @param SwiftMailer $mailer
 	 */
-	public static function sendSignup($userId, $mailer = null) {
-		$userModel = new UserModel($userId);
+	public static function sendSignup($userModel, $mailer = null) {
 		EmailHelper::addValidateKeyToUser($userModel);
 		$vars = array(
 			'user' => $userModel,
@@ -100,6 +97,9 @@ class Email
 		$t = EmailHelper::template('email/en/SignupValidate.html');
 		$html = $t->render($vars);
 		
+		if ($mailer == null) {
+			$mailer = new EmailSwiftMailWrapper();
+		}
 		$mailer->setFrom(array('no-reply@scriptureforge.org' => 'ScriptureForge')); // TODO put this in the sf config CP 2013-10
 		$mailer->setTo(array($userModel->email => $userModel->name));
 		$mailer->setBody($html);

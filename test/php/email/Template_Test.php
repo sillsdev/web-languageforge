@@ -39,11 +39,11 @@ class TestEmail extends UnitTestCase {
 		$userId1 = $e->createUser("User1", "Name1", "name@example.com");
 		
 		$mailer = new MockMailer();
+		$userModel = new UserModel($userId1);
 		
-		Email::sendSignup($userId1, $mailer);
+		Email::sendSignup($userModel, $mailer);
 		
 		// What's in the mailer?
-		$userModel = new UserModel($userId1);
 		$expectedFrom = array('no-reply@scriptureforge.org' => 'ScriptureForge');
 		$expectedTo = array($userModel->email => $userModel->name);
 		$this->assertPattern('/Name1/', $mailer->body);
