@@ -1,6 +1,7 @@
 {
 	"require": {
-		"mustache/mustache": "v2.4.1",
-		"swiftmailer/swiftmailer": "v5.0.2"
+		"swiftmailer/swiftmailer": "v5.0.2",
+		"twig/twig": "v1.14.0",
+		"twig/extensions": "dev-master"
 	}
 }
