@@ -26,6 +26,7 @@ use models\mapper\Id;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
 use models\mapper\MongoStore;
+use libraries\sfchecks\Email;
 
 require_once(APPPATH . 'config/sf_config.php');
 
@@ -127,6 +128,7 @@ class Sf
 		if (UserModel::userNameExists($user->username)) {
 			return false;
 		}
+		Email::sendSignup($userModel);
 		$user->encryptPassword();
 		$user->active = false;
 		$user->role = "user";
