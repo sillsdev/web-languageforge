@@ -48,7 +48,7 @@
 
 	<target name="build" />
 
-	<target name="test-js-unit">
+	<target name="test-js-unit" depends="composer">
 		 <exec executable="/usr/local/bin/karma">
 			 <arg value="start" />
 			 <arg file="test/karma.conf.js" />
@@ -58,7 +58,7 @@
 		 </exec>
 	</target>
 
-	<target name="test-js-e2e" depends="installForE2eTest">
+	<target name="test-js-e2e" depends="composer,installForE2eTest">
 		 <exec executable="/usr/local/bin/karma">
 			 <arg value="start" />
 			 <arg file="test/karma-e2e.conf.js" />
@@ -68,7 +68,7 @@
 		 </exec>
 	</target>
 	
-	<target name="test-php" depends="prepare">
+	<target name="test-php" depends="prepare,composer">
 		 <echo>##teamcity[importData type='junit' path='${build.output}/AllTests.xml']</echo>
 		 <exec executable="php" dir="test/php" output="${build.output}/AllTests.xml"  error="${build.output}/error.log" failonerror="true">
 			 <arg line="AllTests.php" />
@@ -81,8 +81,14 @@
 		<antcall target="test-js-e2e" />
 		<antcall target="test-php" />
 	</target>
-			
-	<target name="copyWeb" depends="prepare">
+	
+	<target name="composer">
+		 <exec executable="composer" dir="src" failonerror="true">
+			 <arg line="install" />
+		 </exec>	    
+	</target>
+	
+	<target name="copyWeb" depends="prepare,composer">
 		<copy todir="${build.output}/package/htdocs">
 			<fileset dir="src"/>
 		</copy>
