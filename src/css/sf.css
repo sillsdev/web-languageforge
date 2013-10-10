@@ -860,9 +860,15 @@ label {
 	position: relative;
 	
 }
+
 .clearfooter {
 	height: 239px;
 	clear: both;
 }
 
-
+.unread {
+	background-color: #E1F2E1;
+	margin-top:10px;
+	padding: 5px;
+	border: #C1DBC1 2px solid;
+}

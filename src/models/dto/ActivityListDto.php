@@ -107,8 +107,10 @@ class ActivityListDto
 			$activity = array_merge($activity, self::getActivityForProject($projectModel));
 		}
 		uasort($activity, array('self', 'sortActivity'));
-		$unreadModel = new UnreadActivityModel($userId);
-		$unreadItems = $unreadModel->unreadItems();
+		$unreadActivity = new UnreadActivityModel($userId);
+		$unreadItems = $unreadActivity->unreadItems();
+		$unreadActivity->markAllRead();
+		$unreadActivity->write();
 		$dto = array(
 				'activity' => $activity,
 				'unread' => $unreadItems

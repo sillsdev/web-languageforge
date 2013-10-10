@@ -53,7 +53,6 @@ class UserUnreadModel extends UserRelationModel
 			}
 		);
 		$this->_type = $itemType;
-		$this->_userId = $userId;
 		parent::__construct('unread_item', $userId, $projectId);
 		$this->read();
 	}
@@ -66,6 +65,8 @@ class UserUnreadModel extends UserRelationModel
 		);
 		if ($this->projectRef->asString() != '') {
 			$query['projectRef'] = MongoMapper::mongoID($this->projectRef->asString());
+		} else {
+			$query['projectRef'] = null;
 		}
 		$exists = $mapper->readByProperties($this, $query);
 	}
@@ -127,7 +128,7 @@ class UserUnreadModel extends UserRelationModel
 		$items = array();
 		foreach ($this->unread->data as $key => $value) {
 			if ($value->type == $this->_type) {
-				$items[] = $value->itemRef;
+				$items[] = $value->itemRef->asString();
 			}
 		}
 		return $items;
