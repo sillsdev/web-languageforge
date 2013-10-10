@@ -7,5 +7,6 @@ angular.module(
 	.controller('RobinTestCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService',
 	                              function($scope, $routeParams, questionService, ss, breadcrumbService, notice) {
 		console.log("Testing tag layout");
+		$scope.tags = ["First", "Second", "Third", "Fourth"];
 	}])
 	;
