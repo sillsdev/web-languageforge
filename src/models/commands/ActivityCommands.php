@@ -51,7 +51,7 @@ class ActivityCommands
 		$activity->addContent(ActivityModel::USER2, $user2->username);
 		$activityId = $activity->write();
 		UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
-		UnreadCommentModel::markUnreadForProjectMembers($commentModel->id->asString(), $projectModel);
+		UnreadCommentModel::markUnreadForProjectMembers($commentModel->id->asString(), $projectModel, $questionId, $commentModel->userRef->asString());
 		return $activityId;
 	}
 	
@@ -83,7 +83,7 @@ class ActivityCommands
 		$activity->addContent(ActivityModel::USER, $user->username);
 		$activityId = $activity->write();
 		UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
-		UnreadAnswerModel::markUnreadForProjectMembers($answerModel->id->asString(), $projectModel);
+		UnreadAnswerModel::markUnreadForProjectMembers($answerModel->id->asString(), $projectModel, $questionId, $answerModel->userRef->asString());
 		return $activityId;
 	}
 	
