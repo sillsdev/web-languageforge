@@ -2,6 +2,7 @@
 
 use libraries\sfchecks\Email;
 use models\UserModel;
+use models\ProjectModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -53,6 +54,29 @@ class TestEmail extends UnitTestCase {
 		
 	}
 	
+	function testSendAddedToProject_PropertiesToFromBodyOk() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$adminId = $e->createUser("Admin", "NameOfAdmin", "admin@example.com");
+		$userId = $e->createUser("User", "NameOfUser", "user@example.com");
+		$adminUserModel = new UserModel($adminId);
+		$userUserModel = new UserModel($userId);
+		$projectModel = $e->createProject("NameOfProject");
+		$mailer = new MockMailer();
+		
+		Email::sendAddedToProject($adminUserModel, $userUserModel, $projectModel, $mailer);
+		
+		// What's in the mailer?
+		$expectedFrom = array('no-reply@scriptureforge.org' => 'ScriptureForge');
+		$expectedTo = array($userUserModel->email => $userUserModel->name);
+		$this->assertPattern('/NameOfUser/', $mailer->body); // TODO: IJH - need to check these are in the right order.
+		$this->assertPattern('/NameOfAdmin/', $mailer->body);
+		$this->assertPattern('/NameOfProject/', $mailer->body);
+		$this->assertEqual($expectedFrom, $mailer->from);
+		$this->assertEqual($expectedTo, $mailer->to);
+		
+	}
 }
 
 ?>

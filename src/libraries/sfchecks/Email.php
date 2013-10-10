@@ -2,6 +2,7 @@
 namespace libraries\sfchecks;
 
 use models\UserModel;
+use models\ProjectModel;
 
 class EmailSwiftMailWrapper
 {
@@ -106,8 +107,30 @@ class Email
 		$mailer->send();
 	}
 	
-	public static function sendSignupWithProject() {
+	/**
+	 * Send an email to let the user know they have been added to the project by admin. 
+	 * @param UserModel $adminUserModel
+	 * @param UserModel $userUserModel
+	 * @param ProjectModel $projectModel
+	 * @param SwiftMailer $mailer
+	 */
+	public static function sendAddedToProject($adminUserModel, $userUserModel, $projectModel, $mailer = null) {
+		$vars = array(
+				'user' => $userUserModel,
+				'admin' => $adminUserModel,
+				'project' => $projectModel->projectname,
+				'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/project/' . $projectModel->projectname,
+		);
+		$t = EmailHelper::template('email/en/AddedToProject.html');
+		$html = $t->render($vars);
 		
+		if ($mailer == null) {
+			$mailer = new EmailSwiftMailWrapper();
+		}
+		$mailer->setFrom(array('no-reply@scriptureforge.org' => 'ScriptureForge')); // TODO put this in the sf config CP 2013-10
+		$mailer->setTo(array($userUserModel->email => $userUserModel->name));
+		$mailer->setBody($html);
+		$mailer->send();
 	}
 	
 }
