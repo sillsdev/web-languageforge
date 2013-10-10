@@ -41,16 +41,27 @@ class QuestionCommands
 	 */
 	public static function updateAnswer($projectId, $questionId, $answer, $userId) {
 		$projectModel = new ProjectModel($projectId);
+		$questionModel = new QuestionModel($projectModel, $questionId);
+		$authorId = $userId;
+		if ($answer['id'] != '') {
+			// update existing answer
+			$oldAnswer = $questionModel->readAnswer($answer['id']);
+			$authorId = $oldAnswer->userRef->asString();
+		}
 		$answerModel = new AnswerModel();
 		JsonDecoder::decode($answerModel, $answer);
-		$answerModel->userRef->id = $userId;
-		ActivityCommands::updateAnswer($projectModel, $questionId, $answerModel);
-		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
-		$questionModel = new QuestionModel($projectModel, $questionId);
+		$answerModel->userRef->id = $authorId;
 		$answerId = $questionModel->writeAnswer($answerModel);
 		// Re-read question model to pick up new answer
 		$questionModel->read($questionId);
-		return self::encodeAnswer($questionModel->readAnswer($answerId));
+		$newAnswer = $questionModel->readAnswer($answerId);
+		if ($answer['id'] != '') {
+			// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
+			ActivityCommands::updateAnswer($projectModel, $questionId, $newAnswer);
+		} else {
+			ActivityCommands::addAnswer($projectModel, $questionId, $newAnswer);
+		}
+		return self::encodeAnswer($newAnswer);
 	}
 	
 	/**
@@ -58,21 +69,33 @@ class QuestionCommands
 	 * @param string $projectId
 	 * @param string $questionId
 	 * @param string $answerId
-	 * @param string $comment
+	 * @param array $comment
 	 * @param string $userId
 	 * @return array Dto
 	 */
 	public static function updateComment($projectId, $questionId, $answerId, $comment, $userId) {
 		$projectModel = new ProjectModel($projectId);
+		$questionModel = new QuestionModel($projectModel, $questionId);
+		$authorId = $userId;
+		if ($comment['id'] != '') {
+			// update existing comment
+			$oldComment = $questionModel->readComment($answerId, $comment['id']);
+			$authorId = $oldComment->userRef->asString();
+		}
 		$commentModel = new CommentModel();
 		JsonDecoder::decode($commentModel, $comment);
-		$commentModel->userRef->id = $userId;
-		ActivityCommands::updateComment($projectModel, $questionId, $answerId, $commentModel);
-		// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
+		$commentModel->userRef->id = $authorId;
 		$commentId = QuestionModel::writeComment($projectModel->databaseName(), $questionId, $answerId, $commentModel);
-		$questionModel = new QuestionModel($projectModel, $questionId);
+		$questionModel->read($questionId);
 		$newComment = $questionModel->readComment($answerId, $commentId);
 		$commentDTO = QuestionCommentDto::encodeComment($newComment);
+		
+		if ($comment['id'] != '') {
+			// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
+			ActivityCommands::updateComment($projectModel, $questionId, $answerId, $newComment);
+		} else {
+			ActivityCommands::addComment($projectModel, $questionId, $answerId, $newComment);
+		}
 
 		$dto = array();
 		$dto[$commentId] = $commentDTO;
@@ -114,6 +137,7 @@ class QuestionCommands
 		$questionModel->writeAnswer($answerModel);
 		$vote->addVote($answerId);
 		$vote->write();
+		ActivityCommands::updateScore($projectModel, $questionId, $answerId, $userId);
 		// Return the answer dto.
 		return self::encodeAnswer($answerModel);
 	}

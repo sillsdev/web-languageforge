@@ -2,6 +2,8 @@
 
 namespace models\dto;
 
+use models\UnreadActivityModel;
+
 use models\TextModel;
 use models\QuestionModel;
 
@@ -99,12 +101,20 @@ class ActivityListDto
 	public static function getActivityForUser($userId) {
 		$projectList = new ProjectList_UserModel($userId);
 		$projectList->read();
-		$dto = array();
+		$activity = array();
 		foreach ($projectList->entries as $project) {
 			$projectModel = new ProjectModel($project['id']);
-			$dto = array_merge($dto, self::getActivityForProject($projectModel));
+			$activity = array_merge($activity, self::getActivityForProject($projectModel));
 		}
-		uasort($dto, array('self', 'sortActivity'));
+		uasort($activity, array('self', 'sortActivity'));
+		$unreadActivity = new UnreadActivityModel($userId);
+		$unreadItems = $unreadActivity->unreadItems();
+		$unreadActivity->markAllRead();
+		$unreadActivity->write();
+		$dto = array(
+				'activity' => $activity,
+				'unread' => $unreadItems
+		);
 		return $dto;
 	}
 	

@@ -5,12 +5,13 @@
 </div>
 <div id="comments" class="span6">
 	<div class="question">
+	<div ng-hide="unreadResponseCount() == 0" style="margin-top:10px" class="right badge badge-important">{{unreadResponseCount()}} new response<span ng-show="unreadResponseCount() > 1">s</span></div>
 	<h2>{{question.title}}</h2>
 	<h4 ng-show="questionIsClosed()" style="color:gray; font-style:italic">This question is marked closed</h4>
 	<div>
 	{{question.description}}
 	</div>
-	<a class="btn-link" ng-click="toggleQuestionEditor()">edit</a>
+	<a class="btn-link" ng-show="rightsEditQuestion()" ng-click="toggleQuestionEditor()">Edit Question Settings</a>
 	<div class="edit-question" collapse="editQuestionCollapsed">
 		<form class="well">
 		<fieldset>
@@ -50,7 +51,7 @@
 			</div>
 		</td>
 		<td>
-			<div class="answer"><!--<b>DEBUG:</b>answerId = {{answerId}}, answer.id = {{answer.id}}<br/>-->
+			<div ng-class="{unread: isUnreadAnswer(answerId)}" class="answer"><!--<b>DEBUG:</b>answerId = {{answerId}}, answer.id = {{answer.id}}<br/>-->
 				<!--<b>DEBUG:</b>answer = {{answer}}<br/>-->
 				<div ng-show="answer.textHighlight" ng-bind-html="answer.textHighlight" class="scripture-quote">
 					{{answer.textHighlight}}
@@ -76,7 +77,7 @@
 			<table class="comments">
 				<tr ng-repeat="comment in answer.comments">
 					<td></td>
-					<td>
+					<td ng-class="{unread: isUnreadComment(comment.id)}">
 						{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}
 						<a ng-show="rightsEditOwn(comment.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showCommentEditor(comment.id)">edit</a>
 						<a ng-show="rightsDeleteOwn(comment.userRef.userid) && !questionIsClosed()" ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>

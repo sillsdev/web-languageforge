@@ -1,22 +1,19 @@
+<!--[if lte IE 8]>
+<div style="text-align:center">Your browser may not work so well. Please consider <a href="learn_faq">upgrading</a> to a modern standards compliant browser.</div>
+<![endif]-->
 		<div id="header" class="png_bg">
-			
 			<div class="sfcontainer">
-				
-				<?php if (isset($is_static_page)):?>
 				<div class="sf-logo-large">
-					<img src="/images/sf_logo_large.png" alt="Scripture Forge" style="width:96px; height:165px" class="png_bg" />
+					<img src="/images/sf_logo_medium.png" alt="Scripture Forge" style="width:92px; height:114px" class="png_bg" />
 				</div>
-				<?php endif;?>
-				
 				<div id="header-nav" class="left">
-				<?php if (!isset($is_static_page)):?>
-					<div class="darkTextLogo png_bg left text-logo-top"></div>
-				<?php endif;?>
 					<ul class="sf-menu">
 						<li><a href="/">Home</a></li>
 						<li><a href="#">Explore</a>
 							<ul>
-								<li><a href="#">Jamaica Project 1</a></li>
+							<?php foreach($featuredProjects as $project): ?>
+								<li><a href="<?php echo "/projects/" . str_replace(" ", "_", strtolower($project['projectname'])); ?>"><?php echo $project['projectname']; ?></a></li>
+							<?php endforeach; ?>
 								<!--
 								<li><a href="#">Sub Menu Item 2</a>
 									<ul>
@@ -26,12 +23,11 @@
 									</ul>
 								</li>
 								-->
-								<li><a href="#">Jamaica Project 2</a></li>
-								<li><a href="#">Jamaica Project 3</a></li>
 							</ul>
 						</li>
 						<li><a href="/learn_scripture_forge">Learn</a>
 							<ul>
+								<li><a href="/learn_faq">Frequently Asked Questions</a></li>
 								<li><a href="/learn_scripture_forge">About Scripture Forge</a></li>
 								<li><a href="/learn_expand_your_team">Expand Your Team</a></li>
 								<li><a href="/learn_contribute">Contribute</a></li>
@@ -61,6 +57,7 @@
 									<li><a href="/app/sfadmin">Site Administration</a></li>
 									<?php endif;?>
 									<li><a href="/app/userprofile">My Profile</a></li>
+									<li><a href="/app/activity">My Activity</a></li>
 									<li><a href="/app/changepassword">Change Password</a></li>
 									<li><a href="/auth/logout">Logout</a></li>
 								</ul>
@@ -70,7 +67,7 @@
 				
 				<?php else:?>
 					<div id="account" class="right">
-						<input type="button" value="Login" class="login-btn left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/signup">Create an Account</a>
+						<input type="button" value="Login" style="position:relative; top:-3px" class="login-btn left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/signup">Create an Account</a>
 					</div>
 				<?php endif;?>
 				

@@ -54,9 +54,10 @@ p {
 </style>
 </head>
 <body>
-	<div id="container">
-		<h1><?php echo $heading; ?></h1>
+	<div style="text-align:center; padding:10px" id="container">
+		<h1>Wat!!! <?php echo $heading; ?></h1>
 		<?php echo $message; ?>
+		<img border="3px solid gray" src="/images/darth_wat_grande.jpg" />
 	</div>
 </body>
 </html>

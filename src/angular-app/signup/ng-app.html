@@ -1,10 +1,9 @@
-<div class="container" ng-app="signup" ng-cloak>
+<div class="sfcontainer container" ng-app="signup" ng-cloak>
 
-	<div ng-controller="UserCtrl">
-		<legend>Create an Account</legend>
+		<h1>Create an Account</h1>
 
 		<sil-notices></sil-notices>
-		<div class="span4">
+		<div ng-controller="UserCtrl" class="span4">
 			<form ng-disabled="userRegistered" ng-submit="createUser(record)" id="userForm">
 				<fieldset>
 					<legend>Sign Up Below</legend>
@@ -32,19 +31,17 @@
 						<div>
 							<label>Verify the letters in this image</label> 
 							<img id="captcha" ng-src="{{captchaSrc}}" />
-							<a class="btn btn-small" ng-click="getCaptchaSrc()">Different Image</a>
+							<label><a style="font-style:italic; font-size: 12px" ng-click="getCaptchaSrc()">I can't read the letters</a></label>
 							<input required type="text" ng-model="record.captcha" name="captcha" />
 						</div>
-					</div>
 					<button id="submit" class="btn btn-primary" type="submit"
 						ng-disabled="userNameExists || userForm.$invalid">
 						Sign Up <i style="margin-left: 5px" class="icon-thumbs-up"></i>
 					</button>
+					</div>
 				</fieldset>
 			</form>
 		</div>
-		<div ng-show="success.state"></div>
-	</div>
 </div>
 
 <script>

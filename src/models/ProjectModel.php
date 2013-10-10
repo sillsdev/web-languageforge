@@ -12,6 +12,7 @@ use models\mapper\MongoMapper;
 use models\mapper\MongoStore;
 use models\mapper\ReferenceList;
 use models\mapper\Id;
+use models\mapper\UserList_ProjectModel;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
@@ -147,8 +148,19 @@ class ProjectModel extends \models\mapper\MapperModel
 	
 	public $projectCode;
 	
+	/**
+	 * Flag to indicated if this project is featured on the website 
+	 * @var boolean
+	 */
+	public $featured;
+	
 }
 
+/**
+ * 
+ * List of projects in the system
+ *
+ */
 class ProjectListModel extends \models\mapper\MapperListModel
 {
 	public function __construct()
@@ -161,6 +173,10 @@ class ProjectListModel extends \models\mapper\MapperListModel
 	}
 }
 
+/**
+ * List of projects of which an user is a member
+ * 
+ */
 class ProjectList_UserModel extends \models\mapper\MapperListModel
 {
 

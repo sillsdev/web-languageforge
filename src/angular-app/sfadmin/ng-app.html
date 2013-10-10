@@ -1,5 +1,5 @@
-<div class="container" ng-app="sfAdmin" ng-cloak>
-	<legend>Site Administration</legend>
+<div class="sfcontainer" ng-app="sfAdmin" ng-cloak>
+	<h1>Site Administration</h1>
 	<sil-notices></sil-notices>
 
 	<tabset>
@@ -20,9 +20,9 @@
 				<th>Full Name</th>
 				<th>Role</th>
 			</tr>
-			<tr ng-repeat="user in visibleUsers" ng-class="{active: isSelected(user)}" ng-click="selectRow($index, user)" >
+			<tr ng-repeat="user in visibleUsers" ng-class="{active: isSelected(user)}" >
 				<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
-				<td>{{user.username}}</td>
+				<td><a ng-click="selectRow($index, user)" title="Click to edit this user">{{user.username}}</a></td>
 				<td>{{user.name}}</td>
 				<td>{{roleLabel(user.role)}}</td>
 			</tr>
@@ -80,18 +80,19 @@
 	<tab heading="Question Templates">
 		<div class="row" ng-controller="TemplateCtrl" style="overflow:hidden">
 			<form class="control-bar form-inline">
-				<button class="btn" ng-click="removeTemplates()"><i class="icon-remove"></i>Remove Templates</button>
-				<button class="btn" ng-click="toggleTemplateEditor()"><i class="icon-{{editTemplateButtonIcon}}"></i>{{editTemplateButtonText}}</button>
+				<button class="btn" ng-disabled="selected.length == 0" ng-click="removeTemplates()"><i class="icon-remove"></i>Remove Templates</button>
+				<button class="btn" ng-click="toggleTemplateEditor()"><i class="icon-plus"></i>Add New Template</button>
 			</form>
 			<div class="new-item" collapse="!templateEditorVisible">
 				<form class="well">
 				<fieldset>
 				<label>Question Template</label>
-				<input type="text" ng-model="editedTemplate.title" class="span4" rows="4" placeholder="the question"></textarea>
+				<input type="text" required ng-model="editedTemplate.title" class="span4" rows="4" placeholder="the question"></textarea>
 				<label></label>
-				<textarea ng-model="editedTemplate.description" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
+				<textarea required ng-model="editedTemplate.description" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
 				<label></label>
-				<button type="submit" class="btn" ng-click="editTemplate(); hideTemplateEditor()"><i class="icon-{{editTemplateButtonIcon}}"></i>{{editTemplateButtonText}}</button>
+				<button type="submit" class="btn" ng-click="editTemplate()"><i class="icon-ok"></i>Save</button>
+				<a ng-click="hideTemplateEditor()">Cancel</a>
 				</fieldset>
 				</form>
 			</div>
@@ -104,7 +105,7 @@
 				</tr>
 				<tr ng-repeat="template in visibleTemplates" ng-class="{active: isSelected(template)}" ng-click="selectRow($index, template)" >
 					<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(template)" ng-click="updateSelection($event, template)" /></td>
-					<td>{{template.title}}</td>
+					<td><a title="Click to edit this template" ng-click="showTemplateEditor(template)">{{template.title}}</a></td>
 					<td style="text-overflow: ellipsis">{{template.description}}</td>
 				</tr>
 			</table>

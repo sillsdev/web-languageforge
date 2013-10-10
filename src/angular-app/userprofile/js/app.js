@@ -1,9 +1,8 @@
 'use strict';
 
-angular.module('userProfile', ['jsonRpc', 'ui.bootstrap', 'sf.services'])
-.controller('userProfileCtrl', ['$scope', 'userService', 'sessionService',
-		function userProfileCtrl($scope, userService, ss) {
-	$scope.notify = {};
+angular.module('userProfile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.notice'])
+.controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
+		function userProfileCtrl($scope, userService, ss, notice) {
 	$scope.user = {};
 	$scope.user.avatar_color = '';
 	$scope.user.avatar_shape = '';
@@ -20,9 +19,6 @@ angular.module('userProfile', ['jsonRpc', 'ui.bootstrap', 'sf.services'])
 		userService.read(ss.currentUserId(), function(result) {
 			if (result.ok) {
 				$scope.user = result.data;
-			} else {
-				// TODO report the real error
-				$scope.notify.error = 'something went wrong';
 			}
 		});
 	};	
@@ -30,12 +26,7 @@ angular.module('userProfile', ['jsonRpc', 'ui.bootstrap', 'sf.services'])
 	$scope.updateUser = function() {
 		userService.update($scope.user, function(result) {
 			if (result.ok) {
-				console.log("updated user profile successfully.");
-				$scope.notify.message = "Profile updated successfully.";
-			} else {
-				// TODO report the real error
-				$scope.notify.error = 'something went wrong';
-				console.log("error updating user profile.");
+				notice.push(notice.SUCCESS, "Profile updated successfully");
 			}
 		});
 	}
