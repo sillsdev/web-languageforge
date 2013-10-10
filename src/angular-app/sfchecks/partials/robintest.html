@@ -25,6 +25,10 @@
 <h1>Title goes here</h1>
 <div class="tag-list">
 	<ul style="background: #ffcc99">
-		<li ng-repeat="tag in tags" ng-mouseenter="show = true" ng-mouseleave="show = false">{{tag}}<img src="/images/closeicon.svg" width="20" height="20" ng-show="show"></img></li>
+		<li ng-repeat="tag in tags" ng-mouseenter="show = true" ng-mouseleave="show = false">
+			{{tag}}
+			<img src="/images/closeicon.svg" width="20" height="20" ng-show="show" ng-click="removeTag($index)"></img>
+		</li>
+		<!-- Next up: Hook up add/remove functions to those controls -->
 	</ul>
 </div>
