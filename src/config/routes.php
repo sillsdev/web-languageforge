@@ -46,6 +46,7 @@ $route['auth/(:any)'] = 'auth/$1';
 $route['api/(:any)'] = 'api/service/$1';
 $route['projects/(:any)'] = 'projects/view/$1';
 $route['signup'] = 'signup/view';
+$route['validate/(:any)'] = 'validate/check/$1';
 $route['viewcaptcha'] = 'viewcaptcha/index';
 $route['app/(:any)'] = 'app/view/$1';
 $route['(:any)'] = "pages/view/$1";
