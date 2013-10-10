@@ -1,5 +1,5 @@
 <?php
-namespace models\mapper;
+namespace models;
 
 use \models\mapper\MongoMapper;
 
