@@ -19,6 +19,7 @@ class UserModel extends \models\mapper\MapperModel
 	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->projects = new ReferenceList();
+		$this->validationDate = new \DateTime();
 		parent::__construct(UserModelMongoMapper::instance(), $id);
 	}
 	
@@ -104,6 +105,16 @@ class UserModel extends \models\mapper\MapperModel
 	 * @var string
 	 */
 	public $email;
+	
+	/**
+	 * @var string
+	 */
+	public $validationKey;
+	
+	/**
+	 * @var \DateTime
+	 */
+	public $validationDate;
 	
 	/**
 	 * @var string
