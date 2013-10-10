@@ -2,10 +2,10 @@
 
 angular.module(
 		'sfchecks.projects',
-		[ 'sf.services', 'palaso.ui.listview', 'ui.bootstrap', 'sgw.ui.breadcrumb' ]
+		[ 'sf.services', 'palaso.ui.listview', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice' ]
 )
-.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'breadcrumbService', 'linkService', 
-                             function($scope, projectService, ss, breadcrumbService, linkService) {
+.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService',
+                             function($scope, projectService, ss, breadcrumbService, linkService, notice) {
 		// Rights
 		$scope.rights = {};
 		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.DELETE_OTHER); 
@@ -59,7 +59,11 @@ angular.module(
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
 					$scope.queryProjectsForUser();
-					// TODO
+					if (projectIds.length == 1) {
+						notice.push(notice.SUCCESS, "The project was removed successfully");
+					} else {
+						notice.push(notice.SUCCESS, "The projects were removed successfully");
+					}
 				}
 			});
 		};
@@ -71,18 +75,11 @@ angular.module(
 			model.projectname = $scope.projectName;
 			projectService.update(model, function(result) {
 				if (result.ok) {
+					notice.push(notice.SUCCESS, "The " + $scope.projectName + " project was created successfully");
 					$scope.queryProjectsForUser();
+					$scope.projectName = '';
 				}
 			});
-		};
-
-		// Fake data to make the page look good while it's being designed. To be
-		// replaced by real data once the appropriate API functions are writen.
-		var fakeData = {
-			textCount: -3,
-			viewsCount: -93,
-			unreadAnswers: -4,
-			unreadComments: -12
 		};
 
 		$scope.getTextCount = function(project) {
@@ -90,18 +87,10 @@ angular.module(
 			return project.textCount;
 		};
 
-		$scope.getViewsCount = function(project) {
-			return fakeData.viewsCount;
+		$scope.getResponses = function(project) {
+			return "'Not Yet Implemented'";
 		};
 
-		$scope.getUnreadAnswers = function(project) {
-			return fakeData.unreadAnswers;
-		};
-
-		$scope.getUnreadComments = function(project) {
-			return fakeData.unreadComments;
-		};
-		
 		$scope.enhanceDto = function(items) {
 			for (var i in items) {
 				items[i].url = linkService.project(items[i].id);

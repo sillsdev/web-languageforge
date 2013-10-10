@@ -72,7 +72,7 @@ angular.module(
 		} else {
 			$scope.vars.record = record;
 			$scope.vars.editButtonName = "Save";
-			$scope.vars.editButtonIcon = "pencil";
+			$scope.vars.editButtonIcon = "ok";
 			$scope.vars.state = "update";
 			$scope.hidePasswordForm();
 		}
@@ -300,20 +300,14 @@ angular.module(
 		description: '',
 	};
 	$scope.templateEditorVisible = false;
-	$scope.showTemplateEditor = function() {
-		if ($scope.selected.length == 0) {
+	$scope.showTemplateEditor = function(template) {
+		$scope.templateEditorVisible = true;
+		if (template) {
+			$scope.editedTemplate = template;
+		} else {
 			$scope.editedTemplate.id = '';
 			$scope.editedTemplate.title = '';
 			$scope.editedTemplate.description = '';
-			$scope.templateEditorVisible = true;
-		} else if ($scope.selected.length == 1) {
-			var template = $scope.selected[0];
-			$scope.editedTemplate.id = template.id;
-			$scope.editedTemplate.title = template.title;
-			$scope.editedTemplate.description = template.description;
-			$scope.templateEditorVisible = true;
-		} else {
-			notice.push(notice.WARN, 'Please select no more than one template before clicking Edit');
 		}
 	};
 	$scope.hideTemplateEditor = function() {
@@ -328,12 +322,21 @@ angular.module(
 		}
 	};
 	$scope.editTemplate = function() {
-		qts.update($scope.editedTemplate, function(result) {
-			// Whether result was OK or error, wipe selected list and reload data
-			$scope.selected = [];
-			$scope.vars.selectedIndex = -1;
-			$scope.queryTemplates(true);
-		});
+		if ($scope.editedTemplate.title && $scope.editedTemplate.description) {
+			qts.update($scope.editedTemplate, function(result) {
+				if (result.ok) {
+					if ($scope.editedTemplate.id) {
+						notice.push(notice.SUCCESS, "The template '" + $scope.editedTemplate.title + "' was updated successfully")
+					} else {
+						notice.push(notice.SUCCESS, "The new template '" + $scope.editedTemplate.title + "' was added successfully")
+					}
+					$scope.hideTemplateEditor();
+					$scope.selected = [];
+					$scope.vars.selectedIndex = -1;
+					$scope.queryTemplates(true);
+				}
+			});
+		}
 	};
 
 	$scope.templates = [];
@@ -359,14 +362,19 @@ angular.module(
 			templateIds.push($scope.selected[i].id);
 		}
 		if (l == 0) {
-			// TODO ERROR
 			return;
 		}
 		qts.remove(templateIds, function(result) {
-			// Whether result was OK or error, wipe selected list and reload data
-			$scope.selected = [];
-			$scope.vars.selectedIndex = -1;
-			$scope.queryTemplates(true);
+			if (result.ok) {
+				if (templateIds.length == 1) {
+					notice.push(notice.SUCCESS, "The template was removed successfully");
+				} else {
+					notice.push(notice.SUCCESS, "The templates were removed successfully");
+				}
+				$scope.selected = [];
+				$scope.vars.selectedIndex = -1;
+				$scope.queryTemplates(true);
+			}
 		});
 	};
 

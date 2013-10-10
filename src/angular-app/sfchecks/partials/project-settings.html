@@ -2,8 +2,8 @@
 <tabset>
 	<tab heading="Users">
 		<form ng-show="rights.showControlBar" class="control-bar form-inline">
-			<button ng-show="rights.deleteOther" class="btn" ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Users</button>
-			<button ng-show="rights.create" class="btn" ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add New User</button>
+			<button ng-disabled="selected.length == 0" ng-show="rights.deleteOther" class="btn" ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Members</button>
+			<button ng-show="rights.create" class="btn" ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add Members</button>
 		</form>
 		<div class="new-item" collapse="!newUserCollapsed">
 			<form class="well form-inline">
@@ -46,8 +46,11 @@
 	<fieldset>
 		<label>Project Name</label>
 		<input type="text" placeholder="(project name)" ng-model="project.name"/>
+		<label><input type="checkbox" ng-model="project.featured"/> Featured On Website</label>
+		
 	</fieldset>
-	<button type="submit" class="btn">Save</button>
+	<button style="margin-top:10px" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+	
 	</form>
 	</tab>
 </tabset>

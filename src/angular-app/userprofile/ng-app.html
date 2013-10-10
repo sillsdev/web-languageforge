@@ -1,16 +1,16 @@
-<div class="container" ng-app="userProfile" ng-cloak>
+<div class="sfcontainer" ng-app="userProfile" ng-cloak>
 	<div ng-controller="userProfileCtrl">
-	<legend>{{user.name}}'s User Profile</legend>
+	<h1>{{user.name}}'s User Profile</h1>
+	<sil-notices></sil-notices>
 	<form ng-submit="updateUser()">
 					<fieldset>
 						<div ng-show="notify.error" class="notification errorMessage">Error: {{notify.error}}</div>
 						<div ng-show="notify.message" class="notification informationMessage">{{notify.message}}</div>
 						<tabset>
 							<tab heading="My Account">
-								<label>Username</label>
-								<input type="text" placeholder="(username)" ng-model="user.username"/>
+								<label>Username: <b style="margin-left:10px">{{user.username}}</b></label>
 								<label>Picture</label>
-								<div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" ng-src="{{user.avatar_ref}}" /></div>
+								<div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" ng-src="{{user.avatar_ref}}" title="Use the dropdown selections below to change your avatar's color and shape" /></div>
 								<div><select ng-model="user.avatar_color" ng-include src=" '/angular-app/userprofile/avatar_color.html' "/></select></div>
 								<div><select ng-model="user.avatar_shape" ng-include src=" '/angular-app/userprofile/avatar_shape.html' "/></select></div>
 								<label>Email Address</label>
@@ -51,7 +51,7 @@
 								<select ng-model="user.feedback_group" ng-include src=" '/angular-app/userprofile/jamaica_feedback_groups.html' "/></select>
 							</tab>
 						</tabset>
-						<button style="margin-top:20px" type="submit" class="btn btn-primary">Save Profile</button>
+						<button style="margin-top:20px" type="submit" class="btn"><i class="icon-ok"></i>Save Profile</button>
 						<div style="margin-top:20px" class="well">
 							<label>Last Login:  {{user.last_login * 1000 | date:shortDate}}</label>
 						</div>
