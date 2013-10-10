@@ -1,0 +1,170 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "91a5f83ca46931a8935b4f9fc2c0ee9c",
+    "packages": [
+        {
+            "name": "swiftmailer/swiftmailer",
+            "version": "v5.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swiftmailer/swiftmailer.git",
+                "reference": "f3917ecef35a4e4d98b303eb9fee463bc983f379"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/f3917ecef35a4e4d98b303eb9fee463bc983f379",
+                "reference": "f3917ecef35a4e4d98b303eb9fee463bc983f379",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.1-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "lib/swift_required.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Chris Corbyn"
+                }
+            ],
+            "description": "Swiftmailer, free feature-rich PHP mailer",
+            "homepage": "http://swiftmailer.org",
+            "keywords": [
+                "mail",
+                "mailer"
+            ],
+            "time": "2013-08-30 12:35:21"
+        },
+        {
+            "name": "twig/extensions",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fabpot/Twig-extensions.git",
+                "reference": "3604161a4aa2e5c535cbc708810123fd3258b2dc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/3604161a4aa2e5c535cbc708810123fd3258b2dc",
+                "reference": "3604161a4aa2e5c535cbc708810123fd3258b2dc",
+                "shasum": ""
+            },
+            "require": {
+                "twig/twig": "~1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Twig_Extensions_": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Common additional features for Twig that do not directly belong in core",
+            "homepage": "https://github.com/fabpot/Twig-extensions",
+            "keywords": [
+                "debug",
+                "i18n",
+                "text"
+            ],
+            "time": "2013-09-27 20:07:42"
+        },
+        {
+            "name": "twig/twig",
+            "version": "v1.14.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fabpot/Twig.git",
+                "reference": "224fc55635d544a2ec8edb3592be18db5a093f59"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/224fc55635d544a2ec8edb3592be18db5a093f59",
+                "reference": "224fc55635d544a2ec8edb3592be18db5a093f59",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.14-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Twig_": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Armin Ronacher",
+                    "email": "armin.ronacher@active-4.com"
+                }
+            ],
+            "description": "Twig, the flexible, fast, and secure template language for PHP",
+            "homepage": "http://twig.sensiolabs.org",
+            "keywords": [
+                "templating"
+            ],
+            "time": "2013-10-03 06:41:20"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "twig/extensions": 20
+    },
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}

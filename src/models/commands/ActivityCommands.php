@@ -2,6 +2,12 @@
 
 namespace models\commands;
 
+use models\UnreadCommentModel;
+use models\UnreadAnswerModel;
+use models\UnreadTextModel;
+use models\UnreadQuestionModel;
+use models\UnreadActivityModel;
+
 use models\TextModel;
 
 use models\mapper\IdReference;
@@ -43,7 +49,10 @@ class ActivityCommands
 		$activity->addContent(ActivityModel::COMMENT, $commentModel->content);
 		$activity->addContent(ActivityModel::USER, $user->username);
 		$activity->addContent(ActivityModel::USER2, $user2->username);
-		return $activity->write();
+		$activityId = $activity->write();
+		UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
+		UnreadCommentModel::markUnreadForProjectMembers($commentModel->id->asString(), $projectModel, $questionId, $commentModel->userRef->asString());
+		return $activityId;
 	}
 	
 	public static function addComment($projectModel, $questionId, $answerId, $commentModel) {
@@ -72,7 +81,10 @@ class ActivityCommands
 		$activity->addContent(ActivityModel::QUESTION, $question->title);
 		$activity->addContent(ActivityModel::ANSWER, $answerModel->content);
 		$activity->addContent(ActivityModel::USER, $user->username);
-		return $activity->write();
+		$activityId = $activity->write();
+		UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
+		UnreadAnswerModel::markUnreadForProjectMembers($answerModel->id->asString(), $projectModel, $questionId, $answerModel->userRef->asString());
+		return $activityId;
 	}
 	
 	public static function addAnswer($projectModel, $questionId, $answerModel) {
@@ -90,7 +102,10 @@ class ActivityCommands
 		$activity->action = ActivityModel::ADD_TEXT;
 		$activity->textRef->id = $textId;
 		$activity->addContent(ActivityModel::TEXT, $textModel->title);
-		return $activity->write();
+		$activityId = $activity->write();
+		UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
+		UnreadTextModel::markUnreadForProjectMembers($textId, $projectModel);
+		return $activityId;
 	}
 	
 	/**
@@ -107,7 +122,10 @@ class ActivityCommands
 		$activity->questionRef->id = $questionId;
 		$activity->addContent(ActivityModel::TEXT, $text->title);
 		$activity->addContent(ActivityModel::QUESTION, $questionModel->title);
-		return $activity->write();
+		$activityId = $activity->write();
+		UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
+		UnreadQuestionModel::markUnreadForProjectMembers($questionId, $projectModel);
+		return $activityId;
 	}
 	
 	/**
@@ -122,7 +140,9 @@ class ActivityCommands
 		$activity->userRef->id = $userId; // we can use the userRef in this case because we don't keep track of the user that performed this action
 		$user = new UserModel($userId);
 		$activity->addContent(ActivityModel::USER, $user->username);
-		return $activity->write();
+		$activityId = $activity->write();
+		UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
+		return $activityId;
 	}
 	
 	// this may only be useful to log this activity for answers on which the user has commented on or has answered him/herself
@@ -153,7 +173,9 @@ class ActivityCommands
 		$activity->addContent(ActivityModel::ANSWER, $answer->content);
 		$activity->addContent(ActivityModel::USER, $user->username);
 		$activity->addContent(ActivityModel::USER, $user2->username);
-		return $activity->write();
+		$activityId = $activity->write();
+		UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
+		return $activityId;
 	}
 }
 

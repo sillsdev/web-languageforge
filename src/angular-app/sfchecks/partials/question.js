@@ -37,19 +37,35 @@ angular.module(
 				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId + '/' + $routeParams.qusetionId, label: ''},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId + '/' + $routeParams.questionId, label: ''},
 				]
 		);
 		
 		$scope.votes = {};
+		$scope.unreadComments = [];
+		$scope.unreadAnswers = [];
+		
+		$scope.unreadResponseCount = function() {
+			return $scope.unreadComments.length + $scope.unreadAnswers.length;
+		}
+		
+		$scope.isUnreadComment = function(id, commentUserId) {
+			return ($.inArray(id, $scope.unreadComments) > -1);
+		};
+		$scope.isUnreadAnswer = function(id, answerUserId) {
+			return ($.inArray(id, $scope.unreadAnswers) > -1);
+		};
+		
 		questionService.read(projectId, questionId, function(result) {
-			console.log('questionService.read(', projectId, questionId, ')');
+			//console.log('questionService.read(', projectId, questionId, ')');
 			if (result.ok) {
 				$scope.text = result.data.text;
 				$scope.question = result.data.question;
 				$scope.votes = result.data.votes;
 				$scope.project = result.data.project;
-				console.log(result.data);
+				$scope.unreadComments = result.data.unreadComments;
+				$scope.unreadAnswers = result.data.unreadAnswers;
+				//console.log(result.data);
 				breadcrumbService.updateCrumb('top', 1, {label: $scope.project.projectname});
 				breadcrumbService.updateCrumb('top', 2, {label: $scope.text.title});
 				breadcrumbService.updateCrumb('top', 3, {label: $scope.question.title});
@@ -70,6 +86,9 @@ angular.module(
 		};
 		
 		$scope.rightsCloseQuestion = function(userId) {
+			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
+		}
+		$scope.rightsEditQuestion = function(userId) {
 			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
 		}
 		
@@ -122,7 +141,7 @@ angular.module(
 		$scope.updateQuestion = function(newQuestion) {
 			questionService.update(projectId, newQuestion, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "The question was successfully updated")
+					notice.push(notice.SUCCESS, "The question was updated successfully")
 					questionService.read(projectId, newQuestion.id, function(result) {
 						if (result.ok) {
 							$scope.question = result.data.question;
@@ -240,15 +259,16 @@ angular.module(
 		$scope.updateComment = function(answerId, answer, newComment) {
 			questionService.update_comment(projectId, questionId, answerId, newComment, function(result) {
 				if (result.ok) {
-						if (newComment.id == '') {
-							notice.push(notice.SUCCESS, "The comment was successfully submitted");
-						} else {
-							notice.push(notice.SUCCESS, "The comment was successfully updated");
-						}
+					if (newComment.id == '') {
+						notice.push(notice.SUCCESS, "The comment was submitted successfully");
+					} else {
+						notice.push(notice.SUCCESS, "The comment was updated successfully");
+					}
 					for (var id in result.data) {
 						newComment = result.data[id]; // There should be one, and only one, record in result.data
 					}
 					$scope.question.answers[answerId].comments[newComment.id] = newComment;
+					$scope.unreadComments.push(newComment.id);
 				}
 			});
 		};
@@ -274,7 +294,7 @@ angular.module(
 			console.log('delete ', commentId);
 			questionService.remove_comment(projectId, questionId, answer.id, commentId, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "The comment was successfully removed");
+					notice.push(notice.SUCCESS, "The comment was removed successfully");
 					// Delete locally
 					delete answer.comments[commentId];
 				}
@@ -284,6 +304,7 @@ angular.module(
 		var afterUpdateAnswer = function(answersDto) {
 			for (var id in answersDto) {
 				$scope.question.answers[id] = answersDto[id];
+				$scope.unreadAnswers.push(id);
 			}
 			// Recalculate answer count as it might have changed
 			$scope.question.answerCount = Object.keys($scope.question.answers).length;
@@ -319,9 +340,9 @@ angular.module(
 			questionService.update_answer(projectId, questionId, answer, function(result) {
 				if (result.ok) {
 					if (answer.id == '') {
-						notice.push(notice.SUCCESS, "The answer was successfully submitted");
+						notice.push(notice.SUCCESS, "The answer was submitted successfully");
 					} else {
-						notice.push(notice.SUCCESS, "The answer was successfully updated");
+						notice.push(notice.SUCCESS, "The answer was updated successfully");
 					}
 					afterUpdateAnswer(result.data);
 				}
@@ -351,7 +372,7 @@ angular.module(
 			console.log('delete ', answerId);
 			questionService.remove_answer(projectId, questionId, answerId, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "The answer was successfully removed");
+					notice.push(notice.SUCCESS, "The answer was removed successfully");
 					// Delete locally
 					delete $scope.question.answers[answerId];
 					// Recalculate answer count as it just changed

@@ -6,10 +6,9 @@
 		<label>Title</label>
 		<input type="text" class="span4" ng-model="editedText.title" placeholder="Text Name"/>
 		<label>Text</label>
-		<textarea ng-model="editedText.content" class="span4" rows="4" placeholder="Paste the USX text here"></textarea>
+		<textarea textdrop="content" ng-model="editedText.content" class="span4" rows="4" placeholder="Paste the USX text here"></textarea>
 		<label></label>
 		<button type="submit" class="btn"><i class="icon-pencil"></i>Save</button>
-		<h3 id="message" ng-show="showMessage">Saved.</h3>
 		</form>
 	</tab>
 </tabset>

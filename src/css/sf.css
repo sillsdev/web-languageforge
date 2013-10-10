@@ -33,9 +33,14 @@ ul, ol {
 	list-style: none;  
 }
 */
+
+html, body {
+	height: 100%;
+}
   
 a {  
 	color: #04abe1;  
+	cursor: pointer;
 }
 
 a.arrowed {
@@ -151,11 +156,10 @@ div.sfcontainer {
 }
 /* Bootstrap
 */
-
 div.sf-logo-large {
 	position: absolute;
-	width: 96px;
-	height: 165px;
+	width: 92px;
+	height: auto;
 	top: 7px;
 	left: 6px;
 	z-index: 10;
@@ -163,8 +167,8 @@ div.sf-logo-large {
 
 div.sf-logo-medium {
 	position: absolute;
-	width: 96px;
-	height: 122px;
+	width: 92px;
+	height: auto;
 	top: -38px;
 	left: -4px;
 	z-index: 10;
@@ -237,7 +241,6 @@ div#footer {
 	position: relative;
 	width: 100%;
 	height: auto;
-	margin-top: 40px;
 	padding: 40px 0 40px 0;
 	background-color: #3a3a3a;
 	background: #3a3a3a url(../images/sf_sprite.png) no-repeat center -139px;
@@ -279,6 +282,12 @@ hr {
 	height: 1px;
 	background-color: #dcdcdc;
 	border: 0;
+}
+
+div.sfcontainer h1 {
+	margin-left: 132px;
+	margin-top: 24px;
+	margin-bottom: 24px;
 }
 
 /* Form Elements */
@@ -612,7 +621,7 @@ p.applicationContent {
 }
 
 /* icons */
-button i {
+button i, a i {
 	margin-right: 8px;
 }
 
@@ -623,6 +632,7 @@ i.icon-remove {
 /* Top navigation */
 div.hdrnav {
 	overflow: auto;
+	margin-left: 122px;
 }
 
 /*
@@ -828,4 +838,37 @@ div.new-item {
 /* Table / Grid styles */
 table select {
 	margin-bottom: 0px;
+}
+
+label {
+	cursor: default;
+}
+
+.nav-tabs li {
+	cursor: pointer;
+}
+
+#maincontainer {
+	min-height: 100%;
+	margin-bottom: -239px;
+	position: relative;
+	
+}
+
+#footercontainer {
+	height: 239px;
+	position: relative;
+	
+}
+
+.clearfooter {
+	height: 239px;
+	clear: both;
+}
+
+.unread {
+	background-color: #E1F2E1;
+	margin-top:10px;
+	padding: 5px;
+	border: #C1DBC1 2px solid;
 }

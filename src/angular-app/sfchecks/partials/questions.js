@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.questions',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.textdrop', 'palaso.ui.notice' ]
 	)
 	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService', 'silNoticeService',
 	                              function($scope, questionsService, qts, $routeParams, ss, linkService, breadcrumbService, notice) {
@@ -103,13 +103,17 @@ angular.module(
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
 					$scope.queryQuestions();
-					// TODO
+					if (questionIds.length == 1) {
+						notice.push(notice.SUCCESS, "The text was removed successfully");
+					} else {
+						notice.push(notice.SUCCESS, "The texts were removed successfully");
+					}
 				}
 			});
 		};
 		// Add question
 		$scope.addQuestion = function() {
-			console.log("addQuestion()");
+			//console.log("addQuestion()");
 			var model = {};
 			model.id = '';
 			model.textRef = textId;
@@ -118,31 +122,26 @@ angular.module(
 			questionsService.update(projectId, model, function(result) {
 				if (result.ok) {
 					$scope.queryQuestions();
+					notice.push(notice.SUCCESS, "'" + model.title + "' was added successfully");
+					if ($scope.saveAsTemplate) {
+						qts.update(model, function(result) {
+							if (result.ok) {
+								$scope.queryTemplates();
+								notice.push(notice.SUCCESS, "'" + model.title + "' was added as a template question");
+							}
+						});
+					}
+					$scope.questionTitle = "";
+					$scope.questionDescription = "";
+					$scope.saveAsTemplate = false;
 				}
 			});
 		};
-		// Add template
-		$scope.addTemplate = function() {
-			console.log("addTemplate()");
-			var model = {};
-			model.id = '';
-			model.title = $scope.questionTitle;
-			model.description = $scope.questionDescription;
-			qts.update(model, function(result) {
-				if (result.ok) {
-					$scope.queryTemplates();
-					notice.push(notice.SUCCESS, 'Template added.');
-				}
-			});
-		};
+		
 		$scope.makeQuestionIntoTemplate = function() {
 			// Expects one, and only one, question to be selected (checked)
 			var l = $scope.selected.length;
-			if (l == 0) {
-				notice.push(notice.ERROR, 'Please select a question to make into a template.');
-				return;
-			} else if (l >= 2) {
-				notice.push(notice.ERROR, 'Please select only one question to make into a template.');
+			if (l != 1) {
 				return;
 			}
 			var model = {};
@@ -152,34 +151,18 @@ angular.module(
 			qts.update(model, function(result) {
 				if (result.ok) {
 					$scope.queryTemplates();
-					notice.push(notice.SUCCESS, 'Template added.');
+					notice.push(notice.SUCCESS, "'" + model.title + "' was added as a template question");
+					$scope.selected = [];
 				}
 			});
-		};
-
-		// Fake data to make the page look good while it's being designed. To be
-		// replaced by real data once the appropriate API functions are writen.
-		var fakeData = {
-			answerCount: -3,
-			viewsCount: -27,
-			unreadAnswers: -1,
-			unreadComments: -5
 		};
 
 		$scope.getAnswerCount = function(question) {
 			return question.answerCount;
 		};
 
-		$scope.getViewsCount = function(question) {
-			return fakeData.viewsCount;
-		};
-
-		$scope.getUnreadAnswers = function(question) {
-			return fakeData.unreadAnswers;
-		};
-
-		$scope.getUnreadComments = function(question) {
-			return fakeData.unreadComments;
+		$scope.getResponses = function(question) {
+			return "'Not Yet Implemented'";
 		};
 		
 		$scope.enhanceDto = function(items) {
@@ -189,8 +172,8 @@ angular.module(
 		};
 
 	}])
-	.controller('QuestionsSettingsCtrl', ['$scope', 'textService', 'sessionService', '$routeParams', 'breadcrumbService', 
-	                                      function($scope, textService, ss, $routeParams, breadcrumbService) {
+	.controller('QuestionsSettingsCtrl', ['$scope', 'textService', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 
+	                                      function($scope, textService, ss, $routeParams, breadcrumbService, notice) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		var dto;
@@ -233,8 +216,8 @@ angular.module(
 			}
 			textService.update($scope.projectId, newText, function(result) {
 				if (result.ok) {
+					notice.push(notice.SUCCESS, newText.title + " settings successfully updated");
 					$scope.textTitle = newText.title;
-					$scope.showMessage = true;
 				}
 			});
 		}

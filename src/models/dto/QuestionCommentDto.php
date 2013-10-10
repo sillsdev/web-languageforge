@@ -2,6 +2,11 @@
 
 namespace models\dto;
 
+use models\UnreadActivityModel;
+
+use models\UnreadAnswerModel;
+use models\UnreadCommentModel;
+
 use models\UserVoteModel;
 
 use models\ProjectModel;
@@ -38,6 +43,19 @@ class QuestionCommentDto
 			$votesDto[$vote->answerRef->id] = true;
 		}
 		
+		$unreadAnswerModel = new UnreadAnswerModel($userId, $projectModel->id->asString(), $questionId);
+		$unreadAnswers = $unreadAnswerModel->unreadItems();
+		$unreadAnswerModel->markAllRead();
+		$unreadAnswerModel->write();
+		
+		$unreadCommentModel = new UnreadCommentModel($userId, $projectModel->id->asString(), $questionId);
+		$unreadComments = $unreadCommentModel->unreadItems();
+		$unreadCommentModel->markAllRead();
+		$unreadCommentModel->write();
+		
+		$unreadActivityModel = new UnreadActivityModel($userId);
+		$unreadActivity = $unreadActivityModel->unreadItems();
+		
 		$dto = array();
 		$dto['question'] = $question;
 		$dto['votes'] = $votesDto;
@@ -45,6 +63,9 @@ class QuestionCommentDto
 		$dto['text']['content'] = $usxHelper->toHtml();
 		$dto['project'] = JsonEncoder::encode($projectModel);
 		$dto['rights'] = RightsHelper::encode($userModel, $projectModel);
+		$dto['unreadAnswers'] = $unreadAnswers;
+		$dto['unreadComments'] = $unreadComments;
+		$dto['unreadActivityCount'] = count($unreadActivity);
 
 		return $dto;
 	}
