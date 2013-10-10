@@ -1,6 +1,16 @@
 <?php
 
 
+use models\dto\QuestionCommentDto;
+
+use models\dto\ActivityListDto;
+
+use models\UnreadAnswerModel;
+
+use models\AnswerModel;
+
+use models\commands\QuestionCommands;
+
 use models\UnreadQuestionModel;
 
 use models\QuestionModel;
@@ -185,6 +195,121 @@ class TestUserUnreadModel extends UnitTestCase {
 		$unreadModel->read();
 		$this->assertFalse($unreadModel->isUnread($qId1));
 		$this->assertFalse($unreadModel->isUnread($qId2));
+	}
+	
+	function testUnreadAnswerModel_multipleUsers_authorIsNotMarkedUnread() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject("unread_test");
+		$projectId = $project->id->asString();
+		
+		$userId1 = $e->createUser('user1', 'user1', 'user1');
+		$user1 = new UserModel($userId1);
+		$user1->addProject($project->id->asString());
+		$user1->write();
+		
+		$userId2 = $e->createUser('user2', 'user2', 'user2');
+		$user2 = new UserModel($userId2);
+		$user2->addProject($project->id->asString());
+		$user2->write();
+		
+		$userId3 = $e->createUser('user3', 'user3', 'user3');
+		$user3 = new UserModel($userId3);
+		$user3->addProject($project->id->asString());
+		$user3->write();
+		
+		$answer = array('content' => "test answer", 'id' => '');
+		
+		$question = new QuestionModel($project);
+		$question->title = "test question";
+		$questionId = $question->write();
+		$answerDto = QuestionCommands::updateAnswer($projectId, $questionId, $answer, $userId1);
+		$answer = array_pop($answerDto);
+		$answerId = $answer['id'];
+		
+		// the answer author does NOT get their answer marked as unread
+		$unreadModel = new UnreadAnswerModel($userId1, $projectId, $questionId);
+		$this->assertFalse($unreadModel->isUnread($answerId));
+		
+		$unreadModel = new UnreadAnswerModel($userId2, $projectId, $questionId);
+		$this->assertTrue($unreadModel->isUnread($answerId));
+		$unreadModel = new UnreadAnswerModel($userId3, $projectId, $questionId);
+		$this->assertTrue($unreadModel->isUnread($answerId));
+	}
+	
+	function testMultipleUnreadModels_multipleUsers_multipleUpdates_multipleVisitsToQuestionPage_usersHaveDifferentUnreadStates() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject("unread_test");
+		$projectId = $project->id->asString();
+		
+		$userId1 = $e->createUser('user1', 'user1', 'user1');
+		$user1 = new UserModel($userId1);
+		$user1->addProject($project->id->asString());
+		$user1->write();
+		
+		$userId2 = $e->createUser('user2', 'user2', 'user2');
+		$user2 = new UserModel($userId2);
+		$user2->addProject($project->id->asString());
+		$user2->write();
+		
+		$userId3 = $e->createUser('user3', 'user3', 'user3');
+		$user3 = new UserModel($userId3);
+		$user3->addProject($project->id->asString());
+		$user3->write();
+		
+		$answer1 = array('content' => "test answer 1", 'id' => '');
+		$answer2 = array('content' => "test answer 2", 'id' => '');
+		
+		$question = new QuestionModel($project);
+		$question->title = "test question";
+		$questionId = $question->write();
+		$answer1Dto = QuestionCommands::updateAnswer($projectId, $questionId, $answer1, $userId1);
+		$answer2Dto = QuestionCommands::updateAnswer($projectId, $questionId, $answer2, $userId2);
+		$answer1 = array_pop($answer1Dto);
+		$answer1Id = $answer1['id'];
+		$answer2 = array_pop($answer2Dto);
+		$answer2Id = $answer2['id'];
+		
+		// the answer author does NOT get their answer marked as unread
+		$unreadModel = new UnreadAnswerModel($userId1, $projectId, $questionId);
+		$this->assertEqual(count($unreadModel->unreadItems()), 1);
+		
+		// the answer author does NOT get their answer marked as unread
+		$unreadModel = new UnreadAnswerModel($userId2, $projectId, $questionId);
+		$this->assertEqual(count($unreadModel->unreadItems()), 1);
+		
+		$unreadModel = new UnreadAnswerModel($userId3, $projectId, $questionId);
+		$this->assertEqual(count($unreadModel->unreadItems()), 2);
+		
+		// user1 visits question page
+		$pageDto = QuestionCommentDto::encode($projectId, $questionId, $userId1);
+		$unreadModel = new UnreadAnswerModel($userId1, $projectId, $questionId);
+		$this->assertEqual(count($unreadModel->unreadItems()), 0);
+		$unreadModel = new UnreadAnswerModel($userId2, $projectId, $questionId);
+		$this->assertEqual(count($unreadModel->unreadItems()), 1);
+		$unreadModel = new UnreadAnswerModel($userId3, $projectId, $questionId);
+		$this->assertEqual(count($unreadModel->unreadItems()), 2);
+		
+		// user2 visits question page
+		$pageDto = QuestionCommentDto::encode($projectId, $questionId, $userId2);
+		$unreadModel = new UnreadAnswerModel($userId1, $projectId, $questionId);
+		$this->assertEqual(count($unreadModel->unreadItems()), 0);
+		$unreadModel = new UnreadAnswerModel($userId2, $projectId, $questionId);
+		$this->assertEqual(count($unreadModel->unreadItems()), 0);
+		$unreadModel = new UnreadAnswerModel($userId3, $projectId, $questionId);
+		$this->assertEqual(count($unreadModel->unreadItems()), 2);
+		
+		// user2 visits question page
+		$pageDto = QuestionCommentDto::encode($projectId, $questionId, $userId3);
+		$unreadModel = new UnreadAnswerModel($userId1, $projectId, $questionId);
+		$this->assertEqual(count($unreadModel->unreadItems()), 0);
+		$unreadModel = new UnreadAnswerModel($userId2, $projectId, $questionId);
+		$this->assertEqual(count($unreadModel->unreadItems()), 0);
+		$unreadModel = new UnreadAnswerModel($userId3, $projectId, $questionId);
+		$this->assertEqual(count($unreadModel->unreadItems()), 0);
 	}
 }
 
