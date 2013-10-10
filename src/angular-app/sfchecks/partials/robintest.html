@@ -25,8 +25,6 @@
 <h1>Title goes here</h1>
 <div class="tag-list">
 	<ul style="background: #ffcc99">
-		<li ng-mouseenter="show1 = true" ng-mouseleave="show1 = false">One<img src="/images/closeicon.svg" width="20" height="20" ng-show="show1"></img></li>
-		<li ng-mouseenter="show2 = true" ng-mouseleave="show2 = false">Two<img src="/images/closeicon.svg" width="20" height="20" ng-show="show2"></img></li>
-		<li ng-mouseenter="show3 = true" ng-mouseleave="show3 = false">Three<img src="/images/closeicon.svg" width="20" height="20" ng-show="show3"></img></li>
+		<li ng-repeat="tag in tags" ng-mouseenter="show = true" ng-mouseleave="show = false">{{tag}}<img src="/images/closeicon.svg" width="20" height="20" ng-show="show"></img></li>
 	</ul>
 </div>
