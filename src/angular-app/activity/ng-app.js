@@ -17,6 +17,12 @@ angular.module('activity',
 				 {label: 'Activity'},
 				]
 		);
+		
+		$scope.unread = [];
+		
+		$scope.isUnread = function(id) {
+			return ($.inArray(id, $scope.unread) > -1);
+		};
 
 		$scope.decodeActivityList = function(items) {
 			for (var i =0; i < items.length; i++) {
@@ -39,6 +45,7 @@ angular.module('activity',
 		activityService.list_activity(0, 50, function(result) {
 			if (result.ok) {
 				$scope.activities = [];
+				$scope.unread = result.data.unread;
 				for (var key in result.data.activity) {
 					$scope.activities.push(result.data.activity[key]);
 				}
