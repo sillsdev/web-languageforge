@@ -28,6 +28,8 @@ use models\mapper\JsonDecoder;
 use models\mapper\MongoStore;
 use libraries\sfchecks\Email;
 
+require_once(APPPATH . 'vendor/autoload.php');
+
 require_once(APPPATH . 'config/sf_config.php');
 
 require_once(APPPATH . 'models/ProjectModel.php');
@@ -128,7 +130,7 @@ class Sf
 		if (UserModel::userNameExists($user->username)) {
 			return false;
 		}
-		Email::sendSignup($userModel);
+		Email::sendSignup($user);
 		$user->encryptPassword();
 		$user->active = false;
 		$user->role = "user";
