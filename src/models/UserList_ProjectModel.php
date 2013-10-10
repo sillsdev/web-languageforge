@@ -1,12 +1,13 @@
 <?php
-namespace models\mapper;
+namespace models;
+
+use models\mapper\MongoMapper;
 
 use models\mapper\MapperListModel;
-use models\mapper\UserModelMongoMapper;
+use models\UserModelMongoMapper;
 
 /**
  * List of users who are members of the specified project
- *
  */
 class UserList_ProjectModel extends \models\mapper\MapperListModel
 {
