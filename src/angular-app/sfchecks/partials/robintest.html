@@ -21,6 +21,9 @@
 		z-index: 1;
 		color: red;
 	}
+	form.new-tags i.icon-plus {
+		color: green;
+	}
 </style>
 <h1>Title goes here</h1>
 <div class="tag-list">
@@ -32,3 +35,10 @@
 		<!-- Next up: Hook up add/remove functions to those controls -->
 	</ul>
 </div>
+<form class="new-tags" ng-submit="submitTags()">
+	<label for="inputtags">Add tags (comma-separated):</label>
+	<input type="text" name="inputtags" ng-model="inputtags"></input>
+	<a ng-click="submitTags()"><i class="icon-plus"></i></a>
+	<label>Tags that will be added when you hit Enter or click the green plus:</label>
+	<p>{{inputtaglist}}</p>
+</form>
