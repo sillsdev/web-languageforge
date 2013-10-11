@@ -3,7 +3,7 @@
 namespace models;
 
 use models\rights\Roles;
-use models\mapper\UserModelMongoMapper;
+use models\UserModelMongoMapper;
 
 use models\mapper\IdReference;
 
