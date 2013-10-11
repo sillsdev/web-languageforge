@@ -3,10 +3,8 @@
 namespace models;
 
 use models\rights\Roles;
-
 use models\mapper\Id;
 use libraries\Bcrypt;
-
 
 class UserModelWithPassword extends \models\mapper\MapperModel
 {
