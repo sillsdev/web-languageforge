@@ -175,8 +175,11 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		
 		this.hasRight = function(rights, domain, operation) {
-			var right = domain() + operation();
-			return rights.indexOf(right) != -1;
+			if (rights) {
+				var right = domain() + operation();
+				return rights.indexOf(right) != -1;
+			}
+			return false;
 		};
 		
 		this.session = function() {
