@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "91a5f83ca46931a8935b4f9fc2c0ee9c",
+    "hash": "86fb5c182f5717f208dd13c50194c7a1",
     "packages": [
         {
             "name": "swiftmailer/swiftmailer",
@@ -149,6 +149,56 @@
                 "templating"
             ],
             "time": "2013-10-03 06:41:20"
+        },
+        {
+            "name": "twilio/sdk",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twilio/twilio-php.git",
+                "reference": "f676f16d48fc2aad54c093c0d04a860c29f44f40"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/f676f16d48fc2aad54c093c0d04a860c29f44f40",
+                "reference": "f676f16d48fc2aad54c093c0d04a860c29f44f40",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.1"
+            },
+            "require-dev": {
+                "mockery/mockery": ">=0.7.2",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Services_Twilio": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Burke",
+                    "email": "kevin@twilio.com"
+                },
+                {
+                    "name": "Kyle Conroy",
+                    "email": "kyle+pear@twilio.com"
+                }
+            ],
+            "description": "A PHP wrapper for Twilio's API",
+            "homepage": "http://github.com/twilio/twilio-php",
+            "keywords": [
+                "api",
+                "sms",
+                "twilio"
+            ],
+            "time": "2013-09-28 18:56:04"
         }
     ],
     "packages-dev": [
@@ -159,7 +209,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "twig/extensions": 20
+        "twig/extensions": 20,
+        "twilio/sdk": 20
     },
     "platform": [
 
