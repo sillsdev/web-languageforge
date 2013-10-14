@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\sms\SmsSettings;
+
 use libraries\palaso\CodeGuard;
 
 use models\rights\Realm;
@@ -43,6 +45,7 @@ class ProjectModel extends \models\mapper\MapperModel
 		$this->users = new MapOf(function($data) {
 			return new ProjectRoleModel();
 		});
+		$this->smsSettings = new SmsSettings();
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
 	
@@ -147,6 +150,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	public $users;
 	
 	public $projectCode;
+	
+	/**
+	 * @var SmsSettings
+	 */
+	public $smsSettings;
 	
 	/**
 	 * Flag to indicated if this project is featured on the website 
