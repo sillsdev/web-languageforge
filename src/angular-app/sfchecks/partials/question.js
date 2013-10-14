@@ -44,16 +44,17 @@ angular.module(
 		$scope.votes = {};
 		$scope.unreadComments = [];
 		$scope.unreadAnswers = [];
+		$scope.myResponses = [];
 		
 		$scope.unreadResponseCount = function() {
 			return $scope.unreadComments.length + $scope.unreadAnswers.length;
 		}
 		
-		$scope.isUnreadComment = function(id, commentUserId) {
-			return ($.inArray(id, $scope.unreadComments) > -1);
+		$scope.isUnreadComment = function(id) {
+			return ($.inArray(id, $scope.unreadComments) > -1 || $.inArray(id, $scope.myResponses) > -1);
 		};
-		$scope.isUnreadAnswer = function(id, answerUserId) {
-			return ($.inArray(id, $scope.unreadAnswers) > -1);
+		$scope.isUnreadAnswer = function(id) {
+			return ($.inArray(id, $scope.unreadAnswers) > -1 || $.inArray(id, $scope.myResponses) > -1);
 		};
 		
 		questionService.read(projectId, questionId, function(result) {
@@ -268,7 +269,7 @@ angular.module(
 						newComment = result.data[id]; // There should be one, and only one, record in result.data
 					}
 					$scope.question.answers[answerId].comments[newComment.id] = newComment;
-					$scope.unreadComments.push(newComment.id);
+					$scope.myResponses.push(newComment.id);
 				}
 			});
 		};
@@ -304,7 +305,7 @@ angular.module(
 		var afterUpdateAnswer = function(answersDto) {
 			for (var id in answersDto) {
 				$scope.question.answers[id] = answersDto[id];
-				$scope.unreadAnswers.push(id);
+				$scope.myResponses.push(id);
 			}
 			// Recalculate answer count as it might have changed
 			$scope.question.answerCount = Object.keys($scope.question.answers).length;
