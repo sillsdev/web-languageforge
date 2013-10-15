@@ -3,6 +3,7 @@
 namespace models;
 
 use models\rights\Roles;
+use models\UserModelMongoMapper;
 
 use models\mapper\IdReference;
 
@@ -13,22 +14,12 @@ use models\mapper\ReferenceList;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
-class UserModelMongoMapper extends \models\mapper\MongoMapper
-{
-	public static function instance() {
-		static $instance = null;
-		if (null === $instance) {
-			$instance = new UserModelMongoMapper(SF_DATABASE, 'users');
-		}
-		return $instance;
-	}
-}
-
 class UserModel extends \models\mapper\MapperModel
 {
 	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->projects = new ReferenceList();
+		$this->validationDate = new \DateTime();
 		parent::__construct(UserModelMongoMapper::instance(), $id);
 	}
 	
@@ -114,6 +105,16 @@ class UserModel extends \models\mapper\MapperModel
 	 * @var string
 	 */
 	public $email;
+	
+	/**
+	 * @var string
+	 */
+	public $validationKey;
+	
+	/**
+	 * @var \DateTime
+	 */
+	public $validationDate;
 	
 	/**
 	 * @var string
@@ -217,19 +218,6 @@ class UserTypeaheadModel extends \models\mapper\MapperListModel
 	
 }
 
-class UserList_ProjectModel extends \models\mapper\MapperListModel
-{
-
-	public function __construct($projectId)
-	{
-		parent::__construct(
-				UserModelMongoMapper::instance(),
-				array('projects' => array('$in' => array(MongoMapper::mongoID($projectId)))),
-				array('username', 'email', 'name')
-		);
-	}
-
-}
 
 
 
