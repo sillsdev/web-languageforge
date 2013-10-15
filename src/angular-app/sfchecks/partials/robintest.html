@@ -5,7 +5,9 @@
 		position: relative;
 		padding: 5px;
 		border: 1px solid #333333;
-		margin-right: 0.2em;
+		margin-right: 0.5em;
+		margin-bottom: 0.3em;
+		cursor: default;
 	}
 	.tag-list ul li img {
 		position: absolute;
@@ -13,6 +15,7 @@
 		right: -10px;
 		color: red;
 		z-index: 1;
+		cursor: pointer;
 	}
 	.tag-list ul li i.icon-remove-circle {
 		position: absolute;
@@ -27,7 +30,7 @@
 </style>
 <h1>Title goes here</h1>
 <div class="tag-list">
-	<ul style="background: #ffcc99">
+	<ul>
 		<li ng-repeat="tag in tags" ng-mouseenter="show = true" ng-mouseleave="show = false">
 			{{tag}}
 			<img src="/images/closeicon.svg" width="20" height="20" ng-show="show" ng-click="removeTag($index)"></img>
