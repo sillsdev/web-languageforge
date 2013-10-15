@@ -66,8 +66,9 @@
 				<div id="answerControls">
 					<div class="overlay" ng-show="tagEditorVisible">
 					<div class="overlay-bg">
-						<form class="">
-							<add-tags tags="answer.tags"></add-tags>
+						<form ng-submit="addTags(tags, answer);tagEditorVisible=false">
+							<add-tags tags="tags"></add-tags>
+							<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 							<a ng-click="tagEditorVisible=false">Cancel</a>
 						</form>
 					</div>
@@ -78,7 +79,7 @@
 					<ng-switch on="answerEditorVisible(answerId)">
 					<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
 						<textarea ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
-						<button type="submit" class="btn">Save</button>
+						<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 						<a class="btn-link" ng-click="hideAnswerEditor()">Cancel</a>
 					</form>
 					</ng-switch>
