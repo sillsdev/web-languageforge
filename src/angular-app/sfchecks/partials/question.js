@@ -369,15 +369,6 @@ angular.module(
 		});
 
 		$scope.tags = ['Tag one', 'Tag two'];
-		$scope.tagEditorVisible = false;
-		$scope.showTagEditor = function() {
-			console.log('Toggling overlay');
-			$scope.tagEditorVisible = !$scope.tagEditorVisible;
-		};
-		$scope.hideTagEditor = function() {
-			console.log('Toggling overlay');
-			$scope.tagEditorVisible = !$scope.tagEditorVisible;
-		};
 		/* This approach almost works, but not quite:
 		$scope.tagWatcher = function() {
 			var result = [];
