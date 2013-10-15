@@ -337,7 +337,7 @@ angular.module(
 			});
 		};
 		
-		$scope.updateAnswer = function(projectId, questionId, answer) {
+		var updateAnswer = function(projectId, questionId, answer) {
 			questionService.update_answer(projectId, questionId, answer, function(result) {
 				if (result.ok) {
 					if (answer.id == '') {
@@ -356,7 +356,7 @@ angular.module(
 				'content': $scope.newAnswer.content,
 				'textHighlight': $scope.newAnswer.textHighlight,
 			};
-			$scope.updateAnswer(projectId, questionId, answer);
+			updateAnswer(projectId, questionId, answer);
 			$scope.newAnswer.content = '';
 			$scope.newAnswer.textHighlight = '';
 			$scope.selectedText = '';
@@ -364,7 +364,7 @@ angular.module(
 		
 		$scope.editAnswer = function(answer) {
 			if ($scope.rightsEditOwn(answer.userRef.userid)) {
-				$scope.updateAnswer(projectId, questionId, answer);
+				updateAnswer(projectId, questionId, answer);
 			}
 			$scope.hideAnswerEditor();
 		};
@@ -387,28 +387,35 @@ angular.module(
 			$scope.newAnswer.textHighlight = newval;
 		});
 
-		$scope.tags = ['Tag one', 'Tag two'];
-		/* This approach almost works, but not quite:
-		$scope.tagWatcher = function() {
+		// TAGS
+		var mergeArrays = function(a, b) {
+			// From http://stackoverflow.com/a/13847481/2314532
+			var set = {};
 			var result = [];
-			var as = $scope.question.answers;
-			for (var i=0; i < as.length; i++) {
-				var a = as[i];
-				var entry = {
-					'id': a.id,
-					'tags': a.tags,
+
+			// Can't count on forEach being available; loop the manual way
+			for (var i=0; i < a.length; i++) {
+				var item = a[i];
+				if (!set[item]) { // O(1) lookup
+					set[item] = true;
+					result.push(item);
 				}
-				result.push(entry);
+			}
+			for (var i=0; i < b.length; i++) {
+				var item = b[i];
+				if (!set[item]) { // O(1) lookup
+					set[item] = true;
+					result.push(item);
+				}
 			}
 			return result;
 		};
-		$scope.$watch($scope.tagWatcher, function(newval, oldval) {
-			if (angular.isUndefined(newval)) {
-				return;
-			};
-			console.log('Watcher called for tags:', oldval, '=>', newval);
-		});
-		*/
 
+		$scope.addTags = function(tags, answer) {
+			console.log('Tags to add', tags, answer);
+			answer.tags = mergeArrays(tags, answer.tags);
+			updateAnswer(projectId, questionId, answer);
+		};
+		
 	}])
 	;
