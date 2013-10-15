@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\mapper\ArrayOf;
+
 use models\mapper\MapOf;
 
 class AnswerModel extends CommentModel
@@ -14,6 +16,7 @@ class AnswerModel extends CommentModel
 			}
 		);
 		$this->score = 0;
+		$this->tags = new ArrayOf(ArrayOf::VALUE);
 	}
 	
 	public function fixDecode() {
@@ -33,6 +36,11 @@ class AnswerModel extends CommentModel
 	 * @var int
 	 */
 	public $score;
+	
+	/**
+	 * @var ArrayOf<string>
+	 */
+	public $tags;
 }
 
 ?>
