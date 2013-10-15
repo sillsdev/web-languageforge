@@ -37,19 +37,36 @@ angular.module(
 				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId + '/' + $routeParams.qusetionId, label: ''},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId + '/' + $routeParams.questionId, label: ''},
 				]
 		);
 
 		$scope.votes = {};
+		$scope.unreadComments = [];
+		$scope.unreadAnswers = [];
+		$scope.myResponses = [];
+		
+		$scope.unreadResponseCount = function() {
+			return $scope.unreadComments.length + $scope.unreadAnswers.length;
+		}
+		
+		$scope.isUnreadComment = function(id) {
+			return ($.inArray(id, $scope.unreadComments) > -1 || $.inArray(id, $scope.myResponses) > -1);
+		};
+		$scope.isUnreadAnswer = function(id) {
+			return ($.inArray(id, $scope.unreadAnswers) > -1 || $.inArray(id, $scope.myResponses) > -1);
+		};
+		
 		questionService.read(projectId, questionId, function(result) {
-			console.log('questionService.read(', projectId, questionId, ')');
+			//console.log('questionService.read(', projectId, questionId, ')');
 			if (result.ok) {
 				$scope.text = result.data.text;
 				$scope.question = result.data.question;
 				$scope.votes = result.data.votes;
 				$scope.project = result.data.project;
-				console.log(result.data);
+				$scope.unreadComments = result.data.unreadComments;
+				$scope.unreadAnswers = result.data.unreadAnswers;
+				//console.log(result.data);
 				breadcrumbService.updateCrumb('top', 1, {label: $scope.project.projectname});
 				breadcrumbService.updateCrumb('top', 2, {label: $scope.text.title});
 				breadcrumbService.updateCrumb('top', 3, {label: $scope.question.title});
@@ -243,15 +260,16 @@ angular.module(
 		$scope.updateComment = function(answerId, answer, newComment) {
 			questionService.update_comment(projectId, questionId, answerId, newComment, function(result) {
 				if (result.ok) {
-						if (newComment.id == '') {
-							notice.push(notice.SUCCESS, "The comment was submitted successfully");
-						} else {
-							notice.push(notice.SUCCESS, "The comment was updated successfully");
-						}
+					if (newComment.id == '') {
+						notice.push(notice.SUCCESS, "The comment was submitted successfully");
+					} else {
+						notice.push(notice.SUCCESS, "The comment was updated successfully");
+					}
 					for (var id in result.data) {
 						newComment = result.data[id]; // There should be one, and only one, record in result.data
 					}
 					$scope.question.answers[answerId].comments[newComment.id] = newComment;
+					$scope.myResponses.push(newComment.id);
 				}
 			});
 		};
@@ -287,6 +305,7 @@ angular.module(
 		var afterUpdateAnswer = function(answersDto) {
 			for (var id in answersDto) {
 				$scope.question.answers[id] = answersDto[id];
+				$scope.myResponses.push(id);
 			}
 			// Recalculate answer count as it might have changed
 			$scope.question.answerCount = Object.keys($scope.question.answers).length;
