@@ -719,6 +719,7 @@ div#answerControls {
 
 .overlay {
 	position: absolute;
+	z-index: 9999;
 }
 
 div#answerControls .overlay {
@@ -733,7 +734,6 @@ div.overlay form {
 	padding: 18px;
 	background-color: rgba(0, 0, 0, 0.80);
 	background: url(data:;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAABl0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuNUmK/OAAAAATSURBVBhXY2RgYNgHxGAAYuwDAA78AjwwRoQYAAAAAElFTkSuQmCC)	repeat scroll transparent\9;
-	z-index: 9999;
 	color: white;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
