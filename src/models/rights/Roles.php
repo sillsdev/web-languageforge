@@ -48,8 +48,10 @@ class Roles {
 		$rights[] = Domain::PROJECTS + Operation::EDIT_OWN;
 		$rights[] = Domain::TEXTS + Operation::CREATE; 
 		$rights[] = Domain::TEXTS + Operation::EDIT_OTHER;
+		$rights[] = Domain::TEXTS + Operation::DELETE_OTHER;
 		$rights[] = Domain::QUESTIONS + Operation::CREATE;
 		$rights[] = Domain::QUESTIONS + Operation::EDIT_OTHER;
+		$rights[] = Domain::QUESTIONS + Operation::DELETE_OTHER;
 		$rights[] = Domain::USERS + Operation::CREATE;
 		$rights[] = Domain::USERS + Operation::EDIT_OTHER;
 		$rights[] = Domain::USERS + Operation::DELETE_OTHER;
