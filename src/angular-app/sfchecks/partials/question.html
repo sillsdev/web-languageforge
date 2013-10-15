@@ -62,26 +62,23 @@
 				<div class="by">
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
-				<div>
-				<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="tagEditorVisible = true">tag</a>
-				<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
-				<a ng-show="rightsDeleteOwn(answer.userRef.userid) && !questionIsClosed()" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
-				<ng-switch on="answerEditorVisible(answerId)">
-				<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
-					<textarea ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
-					<button type="submit" class="btn">Save</button>
-					<a class="btn-link" ng-click="hideAnswerEditor()">Cancel</a>
-				</form>
-				</ng-switch>
-				</div>
-				<div class="overlay-outer" ng-show="tagEditorVisible">
-					<div class="overlay-bg">
-						<div class="overlay-inner">
+				<div id="answerControls">
+					<div class="overlay" ng-show="tagEditorVisible">
+						<form class="">
 							<add-tags tags="answer.tags"></add-tags>
-							<a ng-click="tagEditorVisible = false">Cancel</a>
-						</div>
+							<a ng-click="tagEditorVisible=false">Cancel</a>
+						</form>
 					</div>
-					<div class="overlay-clear"></div>
+					<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="tagEditorVisible=true">tag</a>
+					<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
+					<a ng-show="rightsDeleteOwn(answer.userRef.userid) && !questionIsClosed()" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
+					<ng-switch on="answerEditorVisible(answerId)">
+					<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
+						<textarea ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
+						<button type="submit" class="btn">Save</button>
+						<a class="btn-link" ng-click="hideAnswerEditor()">Cancel</a>
+					</form>
+					</ng-switch>
 				</div>
 			</div>
 			<table class="comments">

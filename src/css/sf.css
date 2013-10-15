@@ -713,6 +713,10 @@ div#text {
 	max-height: 600px;
 }
 
+div#answerControls {
+	position: relative;
+}
+
 div#comments {
 	width: 512px;
 	min-height: 400px;
@@ -864,5 +868,4 @@ label {
 	height: 239px;
 	clear: both;
 }
-
 
