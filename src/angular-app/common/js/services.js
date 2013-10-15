@@ -156,14 +156,14 @@ angular.module('sf.services', ['jsonRpc'])
 			SITE: function() { return window.session.userSiteRights; }
 		};
 		this.domain = {
-				ANY:       function() { return 100;},
-				USERS:     function() { return 110;},
-				PROJECTS:  function() { return 120;},
-				TEXTS:     function() { return 130;},
-				QUESTIONS: function() { return 140;},
-				ANSWERS:   function() { return 150;},
-				COMMENTS:  function() { return 160;},
-				TEMPLATES: function() { return 170;}
+				ANY:       function() { return 1000;},
+				USERS:     function() { return 1100;},
+				PROJECTS:  function() { return 1200;},
+				TEXTS:     function() { return 1300;},
+				QUESTIONS: function() { return 1400;},
+				ANSWERS:   function() { return 1500;},
+				COMMENTS:  function() { return 1600;},
+				TEMPLATES: function() { return 1700;}
 		};
 		this.operation = {
 				CREATE:       function() { return 1;},
