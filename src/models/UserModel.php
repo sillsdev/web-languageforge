@@ -16,6 +16,11 @@ require_once(APPPATH . '/models/ProjectModel.php');
 
 class UserModel extends \models\mapper\MapperModel
 {
+	
+	const COMMUNICATE_VIA_SMS   = 'sms';
+	const COMMUNICATE_VIA_EMAIL = 'email';
+	const COMMUNICATE_VIA_BOTH  = 'both';
+	
 	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->projects = new ReferenceList();

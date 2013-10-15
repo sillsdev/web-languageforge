@@ -1,23 +1,16 @@
 <?php
 namespace libraries\sms;
 
-use models\UserModel;
+use models\mapper\IdReference;
+use models\mapper\MongoMapper;
+use models\mapper\MapperModel;
+use models\mapper\Id;
 
 /**
  * Manages the SMS queue.
  */
-class Sms
+class SmsQueue
 {
-
-	/**
-	 * Queues an SMS for sending in the sms queue
-	 * @param UserModel $userModel
-	 * @param ProjectModel $projectModel
-	 * @param string $message
-	 */
-	public static function send($userModel, $projectModel, $message) {
-		
-	}
 
 	/**
 	 * Attempts to deliver a single sms message. 
@@ -46,3 +39,5 @@ class Sms
 	}
 	
 }
+
+?>
