@@ -125,3 +125,29 @@ form.control-bar {
 form.new-tags i.icon-plus {
 	color: green;
 }
+
+/* Overlays */
+.overlay-outer {
+	position: relative;
+	width: 100%;
+	min-height: 250px;
+}
+
+.overlay-bg {
+	background-color: rgba(0,0,0,0.5);
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 1001;
+}
+
+.overlay-inner {
+	background-color: white;
+	margin: 100px;
+	border: solid black 1px;
+	z-index: 1002;
+}
+
+.overlay-clear {
+	float: clear;
+}
