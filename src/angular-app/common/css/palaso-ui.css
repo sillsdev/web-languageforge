@@ -100,3 +100,35 @@ form.control-bar {
 .highlighted {
 	background-color: yellow;
 }
+
+/* Styles for the two tagging directives (view-tags and add-tags) */
+
+
+.tag-list ul li {
+	position: relative;
+	color: #3E6D8E;
+	background-color: #E0EAF1;
+	border-bottom: 1px solid #b3cee1;
+	border-right: 1px solid #b3cee1;
+	padding: 3px 4px 3px 4px;
+	margin: 2px 2px 2px 0;
+	text-decoration: none;
+	font-size: 90%;
+	line-height: 1.4;
+	white-space: nowrap;
+	display: inline-block;
+}
+
+.tag-list ul li img.closeicon {
+	position: absolute;
+	top: -10px;
+	right: -10px;
+	color: red;
+	z-index: 1;
+	cursor: pointer;
+}
+
+form.new-tags i.icon-plus {
+	color: green;
+}
+
