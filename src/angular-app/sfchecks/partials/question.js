@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.question',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.selection', 'palaso.ui.notice' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice' ]
 	)
 	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService',
 	                             function($scope, $routeParams, questionService, ss, breadcrumbService, notice) {
@@ -40,7 +40,7 @@ angular.module(
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId + '/' + $routeParams.qusetionId, label: ''},
 				]
 		);
-		
+
 		$scope.votes = {};
 		questionService.read(projectId, questionId, function(result) {
 			console.log('questionService.read(', projectId, questionId, ')');
@@ -367,6 +367,38 @@ angular.module(
 		$scope.$watch('selectedText', function(newval) {
 			$scope.newAnswer.textHighlight = newval;
 		});
-		
+
+		$scope.tags = ['Tag one', 'Tag two'];
+		$scope.tagEditorVisible = false;
+		$scope.showTagEditor = function() {
+			console.log('Toggling overlay');
+			$scope.tagEditorVisible = !$scope.tagEditorVisible;
+		};
+		$scope.hideTagEditor = function() {
+			console.log('Toggling overlay');
+			$scope.tagEditorVisible = !$scope.tagEditorVisible;
+		};
+		/* This approach almost works, but not quite:
+		$scope.tagWatcher = function() {
+			var result = [];
+			var as = $scope.question.answers;
+			for (var i=0; i < as.length; i++) {
+				var a = as[i];
+				var entry = {
+					'id': a.id,
+					'tags': a.tags,
+				}
+				result.push(entry);
+			}
+			return result;
+		};
+		$scope.$watch($scope.tagWatcher, function(newval, oldval) {
+			if (angular.isUndefined(newval)) {
+				return;
+			};
+			console.log('Watcher called for tags:', oldval, '=>', newval);
+		});
+		*/
+
 	}])
 	;
