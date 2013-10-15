@@ -4,7 +4,6 @@ require_once(APPPATH . "angular-app/$appName/ng-app.html");
 	
 <script type="text/javascript">
 window.session = <?php echo $jsonSession; ?>;
-document.write('<p>Angular should be loading...</p>');
 </script>
 	
 <script	src="/js/lib/angular_stable_1.2.0-rc.2/angular.js"></script>
