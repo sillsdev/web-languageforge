@@ -56,7 +56,7 @@ angular.module(
 					var rights = result.data.rights;
 					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.DELETE_OTHER); 
 					$scope.rights.create = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE); 
-					$scope.rights.editOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
+					$scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT_OTHER);
 					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 				}
 			});
@@ -118,6 +118,10 @@ angular.module(
 	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice) {
 		var projectId = $routeParams.projectId;
 		$scope.project = {};
+		$scope.settings = {
+			'sms': {},
+			'email': {}
+		};
 		$scope.project.id = projectId;
 
 		// Breadcrumb
@@ -141,6 +145,28 @@ angular.module(
 				}
 			});
 		};
+		
+		$scope.updateCommunicationSettings = function() {
+			projectService.updateSettings($scope.project.id, $scope.settings.sms, $scope.settings.email, function(result) {
+				if (result.ok) {
+					notice.push(notice.SUCCESS, $scope.project.name + " SMS settings updated successfully");
+				}
+			});
+		};
+		
+		$scope.readCommunicationSettings = function() {
+			projectService.readSettings($scope.project.id, function(result) {
+				if (result.ok) {
+					$scope.settings.sms = result.data.sms;
+					$scope.settings.email = result.data.email;
+				}
+			});
+		}
+		
+		$scope.canEditCommunicationSettings = function() {
+			return ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
+		}
+		
 	
 		// ----------------------------------------------------------
 		// List
@@ -206,8 +232,8 @@ angular.module(
 		
 		// Roles in list
 		$scope.roles = [
-	        {key: 'user', name: 'User'},
-	        {key: 'project_admin', name: 'Project Admin'}
+	        {key: 'user', name: 'Member'},
+	        {key: 'project_admin', name: 'Manager'}
         ];
 		
 		$scope.onRoleChange = function(user) {

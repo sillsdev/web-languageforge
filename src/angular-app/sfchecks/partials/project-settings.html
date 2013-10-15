@@ -1,4 +1,4 @@
-<h2 style="font-weight:normal">Update {{project.name}}</h2>
+<h2 style="font-weight:normal">{{project.name}} Settings</h2>
 <tabset>
 	<tab heading="Users">
 		<form ng-show="rights.showControlBar" class="control-bar form-inline">
@@ -48,6 +48,22 @@
 		<input type="text" placeholder="(project name)" ng-model="project.name"/>
 		<label><input type="checkbox" ng-model="project.featured"/> Featured On Website</label>
 		
+	</fieldset>
+	<button style="margin-top:10px" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+	
+	</form>
+	</tab>
+	<tab select="readCommunicationSettings()" ng-show="$parent.canEditCommunicationSettings()" heading="SMS">
+	<form class="well" ng-submit="updateCommunicationSettings()">
+	<fieldset>
+		<label>Twilio Account Username</label>
+		<input type="text" placeholder="(Twilio SID)" ng-model="settings.sms.accountId"/>
+		<label>Twillio Auth Token</label>
+		<input type="text" placeholder="(Twilio Auth Token)" ng-model="settings.sms.authToken"/>
+		<label>SMS From Number</label>
+		<input type="text" placeholder="(From Number)" ng-model="settings.sms.fromNumber"/>
+		<label>Email From (reply-to) Address</label>
+		<input type="email" placeholder="(From Email)" ng-model="settings.email.fromAddress"/>
 	</fieldset>
 	<button style="margin-top:10px" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 	

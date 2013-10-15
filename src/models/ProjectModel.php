@@ -38,6 +38,29 @@ class ProjectModelMongoMapper extends \models\mapper\MongoMapper
 	}
 }
 
+class ProjectSettingsModel extends \models\mapper\MapperModel
+{
+	public function __construct($id = '') {
+		$this->id = new Id();
+		$this->smsSettings = new SmsSettings();
+		$this->emailSettings = new EmailSettings();
+		parent::__construct(ProjectModelMongoMapper::instance(), $id);
+	}
+	
+	public $id;
+	
+	/**
+	 * @var SmsSettings
+	 */
+	public $smsSettings;
+	
+	/**
+	 * @var EmailSettings
+	 */
+	public $emailSettings;
+	
+}
+
 class ProjectModel extends \models\mapper\MapperModel
 {
 	public function __construct($id = '') {
@@ -45,7 +68,6 @@ class ProjectModel extends \models\mapper\MapperModel
 		$this->users = new MapOf(function($data) {
 			return new ProjectRoleModel();
 		});
-		$this->smsSettings = new SmsSettings();
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
 	
@@ -150,11 +172,6 @@ class ProjectModel extends \models\mapper\MapperModel
 	public $users;
 	
 	public $projectCode;
-	
-	/**
-	 * @var SmsSettings
-	 */
-	public $smsSettings;
 	
 	/**
 	 * Flag to indicated if this project is featured on the website 

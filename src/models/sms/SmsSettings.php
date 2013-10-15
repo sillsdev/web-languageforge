@@ -23,6 +23,11 @@ class SmsSettings
 	 */
 	public $authToken;
 	
+	/**
+	 * 
+	 * @var string
+	 */
+	public $fromNumber;
 }
 
 ?>

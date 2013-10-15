@@ -65,6 +65,12 @@ angular.module('sf.services', ['jsonRpc'])
 			// TODO Paging CP 2013-07
 			jsonRpc.call('project_listUsers', [projectId], callback);
 		};
+		this.updateSettings = function(projectId, smsSettings, emailSettings, callback) {
+			jsonRpc.call('project_updateSettings', [projectId, smsSettings, emailSettings], callback);
+		};
+		this.readSettings = function(projectId, callback) {
+			jsonRpc.call('project_readSettings', [projectId], callback);
+		};
 	}])
 	.service('textService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
