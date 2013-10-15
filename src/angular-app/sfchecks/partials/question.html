@@ -63,7 +63,7 @@
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
 				<div>
-				<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showTagEditor()">tag</a>
+				<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="tagEditorVisible = true">tag</a>
 				<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
 				<a ng-show="rightsDeleteOwn(answer.userRef.userid) && !questionIsClosed()" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
 				<ng-switch on="answerEditorVisible(answerId)">
@@ -78,7 +78,7 @@
 					<div class="overlay-bg">
 						<div class="overlay-inner">
 							<add-tags tags="answer.tags"></add-tags>
-							<a ng-click="hideTagEditor()">Cancel</a>
+							<a ng-click="tagEditorVisible = false">Cancel</a>
 						</div>
 					</div>
 					<div class="overlay-clear"></div>
