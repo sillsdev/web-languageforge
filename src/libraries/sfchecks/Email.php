@@ -22,10 +22,6 @@ class EmailSwiftMailWrapper
 		$this->_body = $body;
 	}
 	
-	/**
-	 * @param UserModel $userModel
-	 * @param string $content
-	 */
 	public function send() {
 		// Create the Transport
 		$transport = \Swift_SmtpTransport::newInstance('localhost', 25);
@@ -48,39 +44,6 @@ class EmailSwiftMailWrapper
 	}
 }
 
-class EmailHelper
-{
-	/**
-	 * @param UserModel $userModel
-	 * @return string
-	 */
-	public static function addValidateKeyToUser($userModel) {
-		$key = sha1(microtime(true).mt_rand(10000,90000));
-		$userModel->validationKey = $key;
-		$userModel->validationDate = new \DateTime();
-	}
-	
-	/**
-	 * 
-	 * @param string $name
-	 * @return \Twig_Template
-	 */
-	public static function template($name) {
-		$loader = new \Twig_Loader_Filesystem(APPPATH . '/views');
-		if (defined('TestMode')) {
-			$options = array();
-		} else {
-			$options = array(
-				'cache' => APPPATH . '/cache',
-			);
-		}
-		$twig = new \Twig_Environment($loader, $options);
-		$template = $twig->loadTemplate($name);
-		return $template;
-	}
-	
-}
-
 class Email
 {
 	/**
@@ -96,18 +59,25 @@ class Email
 		);
 		$t = EmailHelper::template('email/en/SignupValidate.html');
 		$html = $t->render($vars);
-		
-		if ($mailer == null) {
-			$mailer = new EmailSwiftMailWrapper();
-		}
-		$mailer->setFrom(array('no-reply@scriptureforge.org' => 'ScriptureForge')); // TODO put this in the sf config CP 2013-10
-		$mailer->setTo(array($userModel->email => $userModel->name));
-		$mailer->setBody($html);
-		$mailer->send();
+		self::send(
+			array('no-reply@scriptureforge.org' => 'ScriptureForge'),
+			array($userModel->email => $userModel->name),
+			$html,
+			$mailer
+		);
 	}
 	
 	public static function sendSignupWithProject() {
 		
 	}
-	
+
+	public static function send($from, $to, $content, $mailer = null) {
+		if ($mailer == null) {
+			$mailer = new EmailSwiftMailWrapper();
+		}
+		$mailer->setFrom($from); // TODO put this in the sf config CP 2013-10
+		$mailer->setTo($to);
+		$mailer->setBody($content);
+		$mailer->send();
+	}
 }
