@@ -412,8 +412,13 @@ angular.module(
 		};
 
 		$scope.addTags = function(tags, answer) {
-			console.log('Tags to add', tags, answer);
+//			console.log('Tags to add', tags, answer);
 			answer.tags = mergeArrays(tags, answer.tags);
+			updateAnswer(projectId, questionId, answer);
+		};
+		
+		$scope.deletedTags = function(answer) {
+//			console.log('Tags deleted');
 			updateAnswer(projectId, questionId, answer);
 		};
 		
