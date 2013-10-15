@@ -126,21 +126,3 @@ form.new-tags i.icon-plus {
 	color: green;
 }
 
-/* Overlays */
-.overlay {
-	position: absolute;
-	height: 100px;
-	top: 20px;
-	left: 0px;
-	right: 0px;
-	bottom: 0px;
-	padding: 18px;
-	background-color: rgba(0, 0, 0, 0.80);
-	background: url(data:;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAABl0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuNUmK/OAAAAATSURBVBhXY2RgYNgHxGAAYuwDAA78AjwwRoQYAAAAAElFTkSuQmCC)	repeat scroll transparent\9;
-	z-index: 9999;
-	color: white;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-}
-
