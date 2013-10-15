@@ -1,5 +1,15 @@
 <?php
 
+use models\rights\Operation;
+
+use models\rights\Domain;
+
+use models\dto\RightsHelper;
+
+use models\ProjectSettingsModel;
+
+use models\sms\SmsSettings;
+
 use models\UserModel;
 
 use models\dto\ProjectSettingsDto;
@@ -255,6 +265,30 @@ class Sf
 	public function project_listUsers($projectId) {
 		$result = ProjectSettingsDto::encode($projectId, $this->_userId);
 		return $result;
+	}
+	
+	public function project_updateSettings($projectId, $smsSettingsArray, $emailSettingsArray) {
+		if (RightsHelper::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT_OTHER)) {
+			$smsSettings = new \models\sms\SmsSettings();
+			$emailSettings = new \models\EmailSettings();
+			JsonDecoder::decode($smsSettings, $smsSettingsArray);
+			JsonDecoder::decode($emailSettings, $emailSettingsArray);
+			$projectSettings = new ProjectSettingsModel($projectId);
+			$projectSettings->smsSettings = $smsSettings;
+			$projectSettings->emailSettings = $emailSettings;
+			$result = $projectSettings->write();
+			return $result;
+		}
+	}
+	
+	public function project_readSettings($projectId) {
+		if (RightsHelper::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT_OTHER)) {
+			$project = new ProjectSettingsModel($projectId);
+			return array(
+				'sms' => JsonEncoder::encode($project->smsSettings),
+				'email' => JsonEncoder::encode($project->emailSettings)
+			);
+		}
 	}
 	
 	//---------------------------------------------------------------

@@ -22,6 +22,10 @@ class RightsHelper
 		}
 	}
 	
+	public static function userHasSiteRight($userId, $right) {
+		$user = new UserModel($userId);
+		return Roles::hasRight(Realm::SITE, $user->role, $right);
+	}
 }
 
 ?>
