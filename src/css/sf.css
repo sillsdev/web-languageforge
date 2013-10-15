@@ -589,7 +589,7 @@ div.application {
 	border: 1px solid #c4c4c5;
 	-webkit-border-radius: 5px 5px 5px 5px;
 	-moz-border-radius: 5px 5px 5px 5px;
-	border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px; 
 }
 
 div.applicationTitle {
@@ -695,7 +695,7 @@ ul.topCrumbs .active {
 
 /* jqte fixes and overrides */
 .jqte_placeholder {
-	display: block;	
+	display: block; 
 }
 
 .jqte {
@@ -889,8 +889,15 @@ label {
 	position: relative;
 	
 }
+
 .clearfooter {
 	height: 239px;
 	clear: both;
 }
 
+.unread {
+	background-color: #E1F2E1;
+	margin-top:10px;
+	padding: 5px;
+	border: #C1DBC1 2px solid;
+}
