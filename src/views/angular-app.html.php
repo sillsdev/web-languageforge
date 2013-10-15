@@ -3,11 +3,13 @@ require_once(APPPATH . "angular-app/$appName/ng-app.html");
 ?>
 	
 <script type="text/javascript">
-window.session = <?php echo $jsonSession; ?>
+window.session = <?php echo $jsonSession; ?>;
+document.write('<p>Angular should be loading...</p>');
 </script>
 	
-<script	src="/js/lib/angular_stable_1.0.7/angular.js"></script>
-<script	src="/js/lib/angular_stable_1.0.7/angular-sanitize.js"></script>
+<script	src="/js/lib/angular_stable_1.2.0-rc.2/angular.js"></script>
+<script	src="/js/lib/angular_stable_1.2.0-rc.2/angular-route.js"></script>
+<script	src="/js/lib/angular_stable_1.2.0-rc.2/angular-sanitize.js"></script>
 <script	src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
 <script src="/js/lib/ng-ui-utils-validate.js"></script>
 <script src="/js/lib/jquery-te-1.4.0.min.js"></script>
