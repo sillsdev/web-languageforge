@@ -1,5 +1,5 @@
 <?php
-namespace models\sms;
+namespace libraries\sms;
 
 use models\mapper\IdReference;
 
@@ -10,9 +10,11 @@ use models\mapper\Id;
 class SmsModel extends MapperModel
 {
 	
-	public const SMS_NEW     = 'new';
-	public const SMS_SENDING = 'sending';
-	public const SMS_FAIL    = 'fail';
+	const SMS_NEW     = 'new';
+	const SMS_SENDING = 'sending';
+	const SMS_FAIL    = 'fail';
+	
+	const SMS_TWILIO  = 'twilio';
 	
 	public function __construct($id = '') {
 		$this->id = new Id();
@@ -94,7 +96,7 @@ class SmsModel extends MapperModel
 	/**
 	 * @var string
 	 */
-	public $providerInfo
+	public $providerInfo;
 	
 }
 
