@@ -64,10 +64,12 @@
 				</div>
 				<div id="answerControls">
 					<div class="overlay" ng-show="tagEditorVisible">
+					<div class="overlay-bg">
 						<form class="">
 							<add-tags tags="answer.tags"></add-tags>
 							<a ng-click="tagEditorVisible=false">Cancel</a>
 						</form>
+					</div>
 					</div>
 					<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="tagEditorVisible=true">tag</a>
 					<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
