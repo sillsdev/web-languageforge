@@ -17,10 +17,12 @@ angular.module('palaso.ui.tagging', ['ui.bootstrap'])
 			replace: true,
 			scope: {
 				tags: "=",
+				onDelete: "&"
 			},
 			controller: ["$scope", function($scope) {
 				$scope.removeTag = function(tagIndex) {
 					$scope.tags.splice(tagIndex, 1);
+					$scope.onDelete();
 				};
 			}],
 			link: function(scope, element, attrs, controller) {
@@ -30,12 +32,7 @@ angular.module('palaso.ui.tagging', ['ui.bootstrap'])
 
   .directive('addTags', ["$timeout", function($timeout) {
 		return {
-			template: '\
-<form class="new-tags" ng-submit="addTags()">\
-	<label for="inputtagstring">Add tags (comma-separated):</label>\
-	<input type="text" name="inputtagstring" ng-model="inputtagstring"></input>\
-</form>\
-',
+			template: '<input type="text" name="inputtagstring" ng-model="inputtagstring"></input>',
 			restrict: "EA",
 			replace: true,
 			scope: {
