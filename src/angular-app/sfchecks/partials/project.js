@@ -4,7 +4,7 @@ angular.module(
 		'sfchecks.project',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop' ]
 )
-.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService',
+.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService', 'silMessageService', 'projectService',
                             function($scope, textService, $routeParams, ss, breadcrumbService, linkService, notice) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
@@ -23,6 +23,8 @@ angular.module(
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
 				]
 		);
+		
+		$scope.markMessageRead = projectService.markMessageRead;
 
 		// Listview Selection
 		$scope.newTextCollapsed = true;
