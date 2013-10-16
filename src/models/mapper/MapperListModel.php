@@ -41,8 +41,7 @@ class MapperListModel
 		$this->_fields = $fields;
 	}
 
-	function read()
-	{
+	function read() {
 		return $this->_mapper->readList($this, $this->_query, $this->_fields);
 	}
 	
