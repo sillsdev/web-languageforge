@@ -37,6 +37,7 @@ use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
 use models\mapper\MongoStore;
 use libraries\sfchecks\Email;
+use libraries\sfchecks\Communicate;
 
 require_once(APPPATH . 'vendor/autoload.php');
 
@@ -151,7 +152,7 @@ class Sf
 		if (UserModel::userNameExists($user->username)) {
 			return false;
 		}
-		Email::sendSignup($user);
+		Communicate::sendSignup($user);
 		$user->encryptPassword();
 		$user->active = false;
 		$user->role = "user";

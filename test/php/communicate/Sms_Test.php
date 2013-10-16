@@ -1,33 +1,17 @@
 <?php
 
-use models\UserModel;
-use libraries\sfchecks\IDelivery;
-use libraries\sfchecks\Communicate;
 use libraries\sms\SmsModel;
+
+use libraries\sms\Sms;
+use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
-require_once(TestPath . 'common/MongoTestEnvironment.php');
-
-class MockCommunicateDelivery implements IDelivery
-{
-	public $userModel;
-	public $projectModel;
-	public $content;
-	public $smsModel;
-
-	public function sendEmail($userModel, $projectModel, $content) {
-	}
-	
-	public function sendSms($smsModel) {
-		$this->smsModel = $smsModel;
-	}
-	
-}
+// require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestSms extends UnitTestCase {
-/*
+
 	function testSmsDeliver_Works() {
 		$smsModel = new SmsModel();
 		$smsModel->from = '13852904211';
@@ -38,31 +22,6 @@ class TestSms extends UnitTestCase {
 		$smsModel->message = 'Test Message';
 		
 		Sms::deliver($smsModel);
-		
-	}
-*/	
-	function testCommunicateToUser() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-		$userId = $e->createUser("User", "Name", "name@example.com");
-		$user = new UserModel($userId);
-		$user->communicate_via = UserModel::COMMUNICATE_VIA_SMS;
-		$user->mobile_phone = '+66837610205';
-		$project = $e->createProject('ProjectName');
-		$smsTemplate = 'Test message';
-		$emailTemplate = '';
-		$delivery = new MockCommunicateDelivery();
-		
-		Communicate::communicateToUser($user, $project, $smsTemplate, $emailTemplate, $delivery);
-		
-		// What's in the delivery?
-		$expectedTo = $user->mobile_phone;
-		$this->assertEqual($expectedTo, $delivery->smsModel->to);
-		$this->assertEqual($smsTemplate, $delivery->smsModel->message);
-				
-		$expectedFrom = array('no-reply@scriptureforge.org' => 'ScriptureForge');
-//		$this->assertPattern('/Name/', $mailer->body);
-//		$this->assertEqual($expectedFrom, $mailer->from);
 		
 	}
 	

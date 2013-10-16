@@ -44,6 +44,7 @@ class SmsModel extends MapperModel
 		$this->id = new Id();
 		$this->dateCreated = new \DateTime();
 		$this->dateSent = new \DateTime();
+		$this->provider = self::SMS_TWILIO;
 		parent::__construct(SmsModelMongoMapper::connect($databaseName), $id);
 	}
 	
