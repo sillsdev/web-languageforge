@@ -28,7 +28,7 @@ window.session = <?php echo $jsonSession; ?>;
 	<script src="/js/lib/moment-2.1.0-min.js"></script>
 
 <?php if (SF_USE_MINIFIED_JS): ?>
-	<script src="/js/lib/scriptureforge-min.js"></script>
+	<script src="/js/lib/scriptureforge.min.js"></script>
 <?php else: ?>
 	<?php foreach($jsCommonFiles as $filename): ?>
 	<script src="/<?php echo $filename; ?>"></script>
