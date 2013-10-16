@@ -38,12 +38,18 @@ class App extends Secure_base {
 	private static function ext($filename) {
 		return pathinfo($filename, PATHINFO_EXTENSION);
 	}
+
+	private static function basename($filename) {
+		return pathinfo($filename, PATHINFO_BASENAME);
+	}
 	
 	private static function addJavascriptFiles($dir, &$result) {
 		if (($handle = opendir($dir))) {
 			while ($file = readdir($handle)) {
 				if (is_file($dir . '/' . $file)) {
-					if (self::ext($file) == 'js') {
+					$base = self::basename($file);
+					$isMin = (strpos($base, '-min') !== false) || (strpos($base, '.min') !== false);
+					if (!$isMin && self::ext($file) == 'js') {
 						$result[] = $dir . '/' . $file;
 					}
 				} elseif ($file != '..' && $file != '.') {
