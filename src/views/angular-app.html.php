@@ -8,18 +8,17 @@ window.session = <?php echo $jsonSession; ?>;
 	
 <?php if (SF_USE_MINIFIED_JS): ?>
 <!-- TODO: Switch to using Google's CDN for Angular -->
-<!--	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script> -->
-<!--	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-route.min.js"></script> -->
-<!--	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-sanitize.min.js"></script> -->
-<!-- TODO: Switch to Angular 1.2.0-rc.3 instead of 1.2.0-rc.2 to pull in some important bugfixes -->
-	<script src="/js/lib/angular_stable_1.2.0-rc.2/angular.min.js"></script>
-	<script src="/js/lib/angular_stable_1.2.0-rc.2/angular-route.min.js"></script>
-	<script src="/js/lib/angular_stable_1.2.0-rc.2/angular-sanitize.min.js"></script>
+<!--	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular.min.js"></script> -->
+<!--	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-route.min.js"></script> -->
+<!--	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-sanitize.min.js"></script> -->
+	<script src="/js/lib/angular_stable_1.2.0-rc.3/angular.min.js"></script>
+	<script src="/js/lib/angular_stable_1.2.0-rc.3/angular-route.min.js"></script>
+	<script src="/js/lib/angular_stable_1.2.0-rc.3/angular-sanitize.min.js"></script>
 	<!-- ng-ui-*.js included in combined scriptureforge-min.js script -->
 <?php else: ?>
-	<script src="/js/lib/angular_stable_1.2.0-rc.2/angular.js"></script>
-	<script src="/js/lib/angular_stable_1.2.0-rc.2/angular-route.js"></script>
-	<script src="/js/lib/angular_stable_1.2.0-rc.2/angular-sanitize.js"></script>
+	<script src="/js/lib/angular_stable_1.2.0-rc.3/angular.js"></script>
+	<script src="/js/lib/angular_stable_1.2.0-rc.3/angular-route.js"></script>
+	<script src="/js/lib/angular_stable_1.2.0-rc.3/angular-sanitize.js"></script>
 	<script src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
 	<script src="/js/lib/ng-ui-utils-validate.js"></script>
 <?php endif; ?>
