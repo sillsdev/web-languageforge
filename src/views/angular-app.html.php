@@ -7,13 +7,9 @@ window.session = <?php echo $jsonSession; ?>;
 </script>
 	
 <?php if (SF_USE_MINIFIED_JS): ?>
-<!-- TODO: Switch to using Google's CDN for Angular -->
-<!--	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular.min.js"></script> -->
-<!--	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-route.min.js"></script> -->
-<!--	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-sanitize.min.js"></script> -->
-	<script src="/js/lib/angular_stable_1.2.0-rc.3/angular.min.js"></script>
-	<script src="/js/lib/angular_stable_1.2.0-rc.3/angular-route.min.js"></script>
-	<script src="/js/lib/angular_stable_1.2.0-rc.3/angular-sanitize.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-route.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-sanitize.min.js"></script>
 	<!-- ng-ui-*.js included in combined scriptureforge-min.js script -->
 <?php else: ?>
 	<script src="/js/lib/angular_stable_1.2.0-rc.3/angular.js"></script>
