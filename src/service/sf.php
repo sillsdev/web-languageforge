@@ -294,15 +294,28 @@ class Sf
 		}
 	}
 	
-	public function project_markMessageRead($projectId, $messageId) {
+	public function project_pageDto($projectId) {
+		return \models\dto\ProjectPageDto::encode($projectId, $this->_userId);
+	}
+	
+	//---------------------------------------------------------------
+	// MESSAGE API
+	//---------------------------------------------------------------
+	public function message_markRead($projectId, $messageId) {
 		$unreadModel = new UnreadMessageModel($this->_userId, $projectId);
 		$unreadModel->markRead($messageId);
 		$unreadModel->write();
 	}
 	
-	public function project_pageDto($projectId) {
-		return \models\dto\ProjectPageDto::encode($projectId, $this->_userId);
+	public function message_send($projectId, $userIds, $subject, $emailTemplate, $smsTemplate) {
+		$project = new ProjectModel($projectId);
+		$users = array();
+		foreach ($userIds as $id) {
+			$users[] = new UserModel($id);
+		}
+		return Communicate::communicateToUsers($users, $project, $subject, $smsTemplate, $emailTemplate);
 	}
+	
 	
 	//---------------------------------------------------------------
 	// TEXT API
