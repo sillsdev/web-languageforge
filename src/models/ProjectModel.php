@@ -47,6 +47,9 @@ class ProjectSettingsModel extends \models\mapper\MapperModel
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
 	
+	/**
+	 * @var Id
+	 */
 	public $id;
 	
 	/**
@@ -61,14 +64,13 @@ class ProjectSettingsModel extends \models\mapper\MapperModel
 	
 }
 
-class ProjectModel extends \models\mapper\MapperModel
+class ProjectModel extends ProjectSettingsModel
 {
 	public function __construct($id = '') {
-		$this->id = new Id();
 		$this->users = new MapOf(function($data) {
 			return new ProjectRoleModel();
 		});
-		parent::__construct(ProjectModelMongoMapper::instance(), $id);
+		parent::__construct($id);
 	}
 	
 	public function databaseName() {
@@ -150,11 +152,6 @@ class ProjectModel extends \models\mapper\MapperModel
 		}
 		return $result;
 	}
-	
-	/**
-	 * @var Id
-	 */
-	public $id;
 	
 	/**
 	 * @var string
