@@ -1,4 +1,4 @@
-<sil-messages markRead="markMessageRead"></sil-messages>
+<div class="notices"><alert ng-repeat="message in messages" type="info" close="markMessageRead(message.id)">{{message.message}}</alert></div>
 <h2 style="font-weight:normal">Texts for {{project.name}}</h2>
 <form ng-show="rights.showControlBar" class="control-bar form-inline">
 	<button ng-disabled="selected.length == 0" ng-show="rights.deleteOther" class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
@@ -18,7 +18,7 @@
 	</form>
 </div>
 <hr />
-<div listview hide-if-empty="true" search="queryTexts()" items="texts" visible-items="visibleTexts" select="">
+<div listview hide-if-empty="true" items="texts" visible-items="visibleTexts" select="">
 <div ng-repeat="text in visibleTexts" class="details-row">
 	<ul class="inline" ng-class="{active: isSelected(text)}">
 		<li ng-show="rights.deleteOther" ><input type="checkbox" ng-checked="isSelected(text)" ng-click="updateSelection($event, text)" /></li>

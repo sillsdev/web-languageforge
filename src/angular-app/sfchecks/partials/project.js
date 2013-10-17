@@ -4,8 +4,8 @@ angular.module(
 		'sfchecks.project',
 		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop' ]
 )
-.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService', 'silMessageService', 'projectService',
-                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService, notice) {
+.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService', 'projectService',
+                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService, notice, projectService) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
 		
@@ -24,8 +24,29 @@ angular.module(
 				]
 		);
 		
-		$scope.markMessageRead = projectService.markMessageRead;
-
+		// Broadcast Messages
+		// items are in the format of {id: id, message: message}
+		$scope.messages = [];
+		
+		/*
+		function addMessage(id, message) {
+			messages.push({id: id, message: message});
+		};
+		*/
+		
+		$scope.markMessageRead = function(id) {
+			for (index in $scope.messages) {
+				m = $scope.messages[index];
+				if (m.id == id) {
+					$scope.messages.splice(index, 1);
+					projectService.markMessageRead(projectId, id);
+					break;
+				}
+			}
+		};
+		
+		
+		
 		// Listview Selection
 		$scope.newTextCollapsed = true;
 		$scope.selected = [];
@@ -41,18 +62,28 @@ angular.module(
 		$scope.isSelected = function(item) {
 			return item != null && $scope.selected.indexOf(item) >= 0;
 		};
-		// Listview Data
+		
 		$scope.texts = [];
-		$scope.queryTexts = function() {
-			console.log("queryTexts()");
-			textService.list(projectId, function(result) {
+		
+		// Page Dto
+		$scope.getPageDto = function() {
+			projectService.pageDto(projectId, function(result) {
 				if (result.ok) {
-					$scope.texts = result.data.entries;
+					$scope.texts = result.data.texts;
+					$scope.textsCount = $scope.texts.length;
 					$scope.enhanceDto($scope.texts);
-					$scope.textsCount = result.data.count;
+					
+					$scope.messages = result.data.broadcastMessages;
+					
+					// update activity count service
+					$scope.activityUnreadCount = result.data.activityUnreadCount;
+					
+					$scope.members = result.data.members;
+						
 
 					$scope.project = result.data.project;
 					$scope.project.url = linkService.project(projectId);
+					
 					breadcrumbService.updateCrumb('top', 1, {label: $scope.project.name});
 
 					var rights = result.data.rights;
@@ -63,7 +94,8 @@ angular.module(
 				}
 			});
 		};
-		// Remove
+		
+		// Remove Text
 		$scope.removeTexts = function() {
 			console.log("removeTexts()");
 			var textIds = [];
@@ -114,6 +146,8 @@ angular.module(
 				items[i].url = linkService.text($scope.projectId, items[i].id);
 			}
 		};
+		
+		$scope.getPageDto();
 
 	}])
 	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService',
