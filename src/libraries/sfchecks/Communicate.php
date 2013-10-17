@@ -1,6 +1,10 @@
 <?php
 namespace libraries\sfchecks;
 
+use models\UnreadMessageModel;
+
+use models\MessageModel;
+
 use models\UserModel;
 use models\ProjectModel;
 use libraries\sms\SmsModel;
@@ -106,9 +110,22 @@ class CommunicateHelper
 class Communicate 
 {
 	public static function communicateToUsers($users, $project, $subject, $smsTemplate, $emailTemplate, IDelivery $delivery = null) {
+		
+		// store message in database
+		$messageModel = new MessageModel($project);
+		$messageModel->subject = $subject;
+		$messageModel->content = $emailTemplate;
+		$messageId = $messageModel->write();
+		
+		
 		foreach ($users as $user) {
 			self::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, $delivery);
+			$unreadModel = new UnreadMessageModel($user->id->asString(), $project->id->asString());
+			$unreadModel->markUnread($messageId);
+			$unreadModel->write();
 		}
+		
+		return $messageId;
 	}
 	
 	/**
@@ -121,6 +138,8 @@ class Communicate
 	 * @param IDelivery $delivery
 	 */
 	public static function communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, IDelivery $delivery = null) {
+		$broadcastMessageContent = "";
+		
 		// Prepare the email message if required
 		if ($user->communicate_via == UserModel::COMMUNICATE_VIA_EMAIL || $user->communicate_via == UserModel::COMMUNICATE_VIA_BOTH) {
 			$from = array($project->emailSettings->fromAddress => $project->emailSettings->fromName);
@@ -131,6 +150,8 @@ class Communicate
 			);
 			$t = CommunicateHelper::templateFromString($emailTemplate);
 			$content = $t->render($vars);
+			
+			$broadcastMessageContent = $content;
 		
 			CommunicateHelper::deliverEmail($from, $to, $subject, $content, $delivery);
 		}
@@ -148,10 +169,9 @@ class Communicate
 			);
 			$t = CommunicateHelper::templateFromString($smsTemplate);
 			$sms->message = $t->render($vars);
-				
+			
 			CommunicateHelper::deliverSMS($sms, $delivery);
 		}
-		
 	}
 	
 	/**

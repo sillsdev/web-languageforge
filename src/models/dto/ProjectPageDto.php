@@ -2,7 +2,10 @@
 
 namespace models\dto;
 
+use models\MessageModel;
+
 use models\UnreadMessageModel;
+use models\UnreadActivityModel;
 
 use models\UserModel;
 
@@ -50,20 +53,20 @@ class ProjectPageDto
 		$unreadItems = $unreadActivity->unreadItems();
 		$data['activityUnreadCount'] = count($unreadItems);
 		
+		// unread broadcast messages
 		$unreadMessages = new UnreadMessageModel($userId, $projectId);
 		$messageIds = $unreadMessages->unreadItems();
 		$messages = array();
 		foreach ($messageIds as $messageId) {
-			$message = new ;
+			$message = new MessageModel($projectModel, $messageId);
 			$messages[] = array(
 				'id' => $message->id->asString(),
-				'message' => $message->content
+				'subject' => $message->subject,
+				'content' => $message->content
 			);
 		}
-		$data['broadcastMessages'] = 
+		$data['broadcastMessages'] =  $messages;
 		
-		
-
 		return $data;
 	}
 }
