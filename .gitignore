@@ -6,3 +6,5 @@ nbproject/
 
 src/vendor/
 src/cache/
+
+src/bower_components/
