@@ -2,10 +2,10 @@
 namespace libraries\sms;
 
 use models\mapper\IdReference;
-
 use models\mapper\MongoMapper;
 use models\mapper\MapperModel;
 use models\mapper\Id;
+use libraries\palaso\CodeGuard;
 
 class SmsModel extends MapperModel
 {
@@ -16,26 +16,20 @@ class SmsModel extends MapperModel
 	
 	const SMS_TWILIO  = 'twilio';
 	
-	public function __construct($id = '') {
+	/**
+	 * @param string $database
+	 * @param string $id
+	 */
+	public function __construct($databaseName, $id = '') {
 		$this->id = new Id();
 		$this->dateCreated = new \DateTime();
 		$this->dateSent = new \DateTime();
-		parent::__construct(self::mapper(), $id);
+		$this->provider = self::SMS_TWILIO;
+		parent::__construct(SmsMongoMapper::connect($databaseName), $id);
 	}
 	
-	/**
-	 * @return \models\mapper\MongoMapper>
-	 */
-	public static function mapper() {
-		static $instance = null;
-		if (null === $instance) {
-			$instance = new MongoMapper(SF_DATABASE, 'sms');
-		}
-		return $instance;
-	}
-	
-	public static function remove($id) {
-		self::mapper()->remove($id);
+	public static function remove($databaseName, $id) {
+		SmsMongoMapper::connect($databaseName)->remove($id);
 	}
 
 	/**

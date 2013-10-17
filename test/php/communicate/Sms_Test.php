@@ -10,7 +10,7 @@ require_once(SimpleTestPath . 'autorun.php');
 
 // require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-class TestEmail extends UnitTestCase {
+class TestSms extends UnitTestCase {
 
 	function testSmsDeliver_Works() {
 		$smsModel = new SmsModel();
