@@ -1,0 +1,47 @@
+<style>
+	.tag-list ul li {
+		display: inline-block;
+		background: #cccccc;
+		position: relative;
+		padding: 5px;
+		border: 1px solid #333333;
+		margin-right: 0.5em;
+		margin-bottom: 0.3em;
+		cursor: default;
+	}
+	.tag-list ul li img {
+		position: absolute;
+		top: -10px;
+		right: -10px;
+		color: red;
+		z-index: 1;
+		cursor: pointer;
+	}
+	.tag-list ul li i.icon-remove-circle {
+		position: absolute;
+		top: -0.4em;
+		right: -0.4em;
+		z-index: 1;
+		color: red;
+	}
+	form.new-tags i.icon-plus {
+		color: green;
+	}
+</style>
+<h1>Title goes here</h1>
+<div class="tag-list">
+	<ul>
+		<li ng-repeat="tag in tags" ng-mouseenter="show = true" ng-mouseleave="show = false">
+			{{tag}}
+			<img src="/images/closeicon.svg" width="20" height="20" ng-show="show" ng-click="removeTag($index)"></img>
+		</li>
+		<!-- Next up: Hook up add/remove functions to those controls -->
+	</ul>
+</div>
+<form class="new-tags" ng-submit="submitTags()">
+	<label for="inputtags">Add tags (comma-separated):</label>
+	<input type="text" name="inputtags" ng-model="inputtags"></input>
+	<a ng-click="submitTags()"><i class="icon-plus"></i></a>
+	<label>Tags that will be added when you hit Enter or click the green plus:</label>
+	<p>{{inputtaglist}}</p>
+</form>
