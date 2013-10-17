@@ -5,6 +5,8 @@
 
 	<property name="build.number" value="0.0.0.0" />
 	<property name="build.output" value="output" />
+	<property name="build.libJsFile" value="${build.output}/${application.name}.js" />
+	<property name="build.minJsFile" value="${build.output}/${application.name}.min.js" />
 	<property name="build.packageFile" value="${build.output}/${application.name}.tgz" />
 	<property name="build.installPath" value="/var/www/scriptureforge.org_dev" />
 	<property name="build.installForTestPath" value="/var/www/scriptureforge.org_e2etest" />
@@ -87,14 +89,38 @@
 			 <arg line="install" />
 		 </exec>	    
 	</target>
-	
-	<target name="copyWeb" depends="prepare,composer">
+
+	<target name="minify" depends="prepare">
+		<concat destfile="${build.libJsFile}" overwrite="yes" fixlastline="yes">
+			<fileset dir="src/angular-app"
+				includes="**/*.js"
+				excludes="**/*.min.js"
+			/>
+			<fileset dir="src/js/lib"
+				includes="ng-ui-*.js"
+				excludes="ng-ui-*.min.js"
+			/>
+		</concat>
+		<exec executable="/usr/bin/yui-compressor">
+			<arg value="-o" />
+			<arg value="${build.minJsFile}" />
+			<arg value="${build.libJsFile}" />
+		</exec>
+	</target>
+
+	<target name="copyWeb" depends="prepare,composer,minify">
 		<copy todir="${build.output}/package/htdocs">
 			<fileset dir="src"/>
 		</copy>
 		<copy todir="${build.output}/package/lib">
 			<fileset dir="lib"/>
 		</copy>
+		<copy todir="${build.output}/package/htdocs/js/lib"
+			file="${build.minJsFile}"
+		/>
+		<replace file="${build.output}/package/htdocs/config/sf_config.php">
+			<replacefilter token="$config['sfenv'] = 'dev';" value="$config['sfenv'] = 'prod';" />
+		</replace>
 	</target>
 	
 	<target name="package" depends="prepare,copyWeb" >
