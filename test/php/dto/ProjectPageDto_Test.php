@@ -1,7 +1,6 @@
 <?php
 
-
-use models\dto\TextListDto;
+use models\dto\ProjectPageDto;
 
 use models\TextModel;
 use models\QuestionModel;
@@ -10,7 +9,7 @@ require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-class TestTextListDto extends UnitTestCase {
+class TestProjectPageDto extends UnitTestCase {
 
 	function __construct() {
 		$e = new MongoTestEnvironment();
@@ -58,18 +57,17 @@ class TestTextListDto extends UnitTestCase {
 		$question3->textRef->id = $text2Id;
 		$question3Id = $question3->write();
 
-		$dto = TextListDto::encode($projectId, $user1Id);
+		$dto = ProjectPageDto::encode($projectId, $user1Id);
 
 		// Now check that it all looks right
-		$this->assertEqual($dto['count'], 2);
-		$this->assertIsa($dto['entries'], 'array');
-		$this->assertEqual($dto['entries'][0]['id'], $text1Id);
-		$this->assertEqual($dto['entries'][1]['id'], $text2Id);
+		$this->assertIsa($dto['texts'], 'array');
+		$this->assertEqual($dto['texts'][0]['id'], $text1Id);
+		$this->assertEqual($dto['texts'][1]['id'], $text2Id);
 		// The rest should fail... for now.
-		$this->assertEqual($dto['entries'][0]['title'], "Chapter 3");
-		$this->assertEqual($dto['entries'][1]['title'], "Chapter 4");
-		$this->assertEqual($dto['entries'][0]['questionCount'], 2);
-		$this->assertEqual($dto['entries'][1]['questionCount'], 1);
+		$this->assertEqual($dto['texts'][0]['title'], "Chapter 3");
+		$this->assertEqual($dto['texts'][1]['title'], "Chapter 4");
+		$this->assertEqual($dto['texts'][0]['questionCount'], 2);
+		$this->assertEqual($dto['texts'][1]['questionCount'], 1);
 
 	}
 

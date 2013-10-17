@@ -1,5 +1,7 @@
 <?php
 
+use models\UnreadMessageModel;
+
 use models\rights\Operation;
 
 use models\rights\Domain;
@@ -289,6 +291,16 @@ class Sf
 				'email' => JsonEncoder::encode($project->emailSettings)
 			);
 		}
+	}
+	
+	public function project_markMessageRead($projectId, $messageId) {
+		$unreadModel = new UnreadMessageModel($this->_userId, $projectId);
+		$unreadModel->markRead($messageId);
+		$unreadModel->write();
+	}
+	
+	public function project_pageDto($projectId) {
+		return \models\dto\ProjectPageDto::encode($projectId, $this->_userId);
 	}
 	
 	//---------------------------------------------------------------

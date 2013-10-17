@@ -1,5 +1,8 @@
+// Note: this code was based on the notice service, and so it exists as a directive and service pair.  However, the broadcast message feature
+// probably could have just as well been integrated into the project page controller without the added complexity of the service and directive - cjh
+/*
 angular.module('sfchecks.message', ['ui.bootstrap'])
-.factory('messageService', ['$log', function($log) {
+.factory('messageService', ['$log', 'jsonRpc', function($log, jsonRpc) {
 	var messages = [];
 	return {
 		push: function(id, message) {
@@ -13,6 +16,7 @@ angular.module('sfchecks.message', ['ui.bootstrap'])
 					break;
 				}
 			}
+			jsonRpc.call('project_markMessageRead', [id], function() {});
 		},
 		get: function() {
 			return notices;
@@ -22,20 +26,15 @@ angular.module('sfchecks.message', ['ui.bootstrap'])
 		}
 	};
 }])
-.directive('silMessageService', ['silMessageService', '$log', function(messageService, $log) {
+.directive('broadcastMessages', ['messageService', '$log', function(messageService, $log) {
 	return {
 		restrict : 'EA',
 		template : '<div class="notices"><alert ng-repeat="message in messages()" type="info" close="closeMessage(message.id)">{{message.message}}</alert></div>',
-		scope : {
-			markRead : "="
-		},
 		replace : true,
 		compile : function(tElement, tAttrs) {
 			return function($scope, $elem, $attr) {
 				$scope.closeMessage = function(id) {
 					messageService.remove(id);
-					// mark message read on server here via directive-provided method
-					markRead(id);
 				};
 				$scope.messages = function() {
 					return messageService.get();
@@ -44,3 +43,4 @@ angular.module('sfchecks.message', ['ui.bootstrap'])
 		}
 	};
 }]);
+*/
