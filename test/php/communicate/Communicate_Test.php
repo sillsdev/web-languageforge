@@ -1,5 +1,9 @@
 <?php
 
+use models\MessageModel;
+
+use models\UnreadMessageModel;
+
 use libraries\sfchecks\IDelivery;
 use libraries\sfchecks\Communicate;
 use libraries\sfchecks\Email;
@@ -59,6 +63,32 @@ class TestCommunicate extends UnitTestCase {
 		$this->assertEqual($subject, $delivery->subject);
 		$this->assertEqual($emailTemplate, $delivery->content);
 		
+	}
+	
+	function testCommunicateToUsers_SendEmail_BroadcastMessageStoredAndUnread() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		$userId = $e->createUser("User", "Name", "name@example.com");
+		$user = new UserModel($userId);
+		$user->communicate_via = UserModel::COMMUNICATE_VIA_EMAIL;
+		$project = $e->createProject('ProjectName');
+		$subject = 'TestSubject';
+		$project->emailSettings->fromAddress = 'projectName@scriptureforge.org';
+		$project->emailSettings->fromName = 'ScriptureForge ProjectName';
+		$smsTemplate = '';
+		$emailTemplate = 'TestMessage';
+		$delivery = new MockCommunicateDelivery();
+		
+		Communicate::communicateToUsers(array($user), $project, $subject, $smsTemplate, $emailTemplate, $delivery);
+		
+		$unread = new UnreadMessageModel($userId, $project->id->asString());
+		$messageIds = $unread->unreadItems();
+		$this->assertEqual(count($messageIds), 1);
+		
+		$messageId = $messageIds[0];
+		$message = new MessageModel($project, $messageId);
+		$this->assertEqual($message->subject, $subject);
+		$this->assertEqual($message->content, $emailTemplate);
 	}
 	
 	function testSendSignup_PropertiesToFromBodyOk() {

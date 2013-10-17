@@ -1,9 +1,11 @@
-<h2 style="font-weight:normal">{{project.name}} Settings</h2>
+<h2 style="font-weight:normal">{{project.name}} Details</h2>
 <tabset>
 	<tab heading="Users">
 		<form ng-show="rights.showControlBar" class="control-bar form-inline">
 			<button ng-disabled="selected.length == 0" ng-show="rights.deleteOther" class="btn" ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Members</button>
 			<button ng-show="rights.create" class="btn" ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add Members</button>
+			<button ng-disabled="selected.length == 0" ng-show="rights.create" class="btn" ng-click="newMessageCollapsed = !newMessageCollapsed"><i class="icon-envelope"></i>Message Selected Users</button>
+			
 		</form>
 		<div class="new-item" collapse="!newUserCollapsed">
 			<form class="well form-inline">
@@ -16,6 +18,23 @@
 					</li>
 				</ul>
 			</typeahead>
+			<button ng-model="addMode" class="btn" ng-click="addProjectUser()"><i ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+			</form>
+		</div>
+		<div collapse="newMessageCollapsed">
+			<form class="well" ng-submit="sendMessageToSelectedUsers()">
+			<fieldset>
+				<label>Email Subject</label>
+				<input name="emailSubject" required type="text" placeholder="Subject" ng-model="message.subject"/>
+				<label>Email Message</label>
+				<textarea name="emailTemplate" required ng-model="message.emailTemplate" pui-jqte="jqteOptions"></textarea>
+				<label>SMS Message</label>
+				<input required name="smsTemplate" type="text" placeholder="SMS Message" ng-model="message.smsTemplate"/>
+			</fieldset>
+			<button style="margin-top:10px" type="submit" class="btn"><i class="icon-ok"></i>Send Message Now</button>
+			
+			</form>
+			<form class="well form-inline">
 			<button ng-model="addMode" class="btn" ng-click="addProjectUser()"><i ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
 			</form>
 		</div>
@@ -41,7 +60,7 @@
 		</table>		
 		</div>
 	</tab>
-	<tab heading="Project">
+	<tab heading="Project Settings">
 	<form class="well" ng-submit="updateProject()">
 	<fieldset>
 		<label>Project Name</label>
@@ -53,7 +72,7 @@
 	
 	</form>
 	</tab>
-	<tab select="readCommunicationSettings()" ng-show="$parent.canEditCommunicationSettings()" heading="SMS">
+	<tab select="readCommunicationSettings()" ng-show="$parent.canEditCommunicationSettings()" heading="Communication Settings">
 	<form class="well" ng-submit="updateCommunicationSettings()">
 	<fieldset>
 		<label>Twilio Account Username</label>

@@ -75,9 +75,14 @@ angular.module('sf.services', ['jsonRpc'])
 		this.pageDto = function(projectId, callback) {
 			jsonRpc.call('project_pageDto', [projectId], callback);
 		};
-		
-		this.markMessageRead = function(projectId, messageId) {
-			jsonRpc.call('project_markMessageRead', [projectId, messageId], function() {});
+	}])
+	.service('messageService', ['jsonRpc', function(jsonRpc) {
+		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
+		this.markRead = function(projectId, textId, callback) {
+			jsonRpc.call('message_markRead', [projectId, textId], callback);
+		};
+		this.send = function(projectId, userIds, subject, emailTemplate, smsTemplate, callback) {
+			jsonRpc.call('message_send', [projectId, userIds, subject, emailTemplate, smsTemplate], callback);
 		};
 	}])
 	.service('textService', ['jsonRpc', function(jsonRpc) {

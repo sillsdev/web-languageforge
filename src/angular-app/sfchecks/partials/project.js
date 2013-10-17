@@ -2,10 +2,10 @@
 
 angular.module(
 		'sfchecks.project',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte' ]
 )
-.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService', 'projectService',
-                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService, notice, projectService) {
+.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService', 'projectService', 'messageService',
+                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService, notice, projectService, messageService) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
 		
@@ -25,7 +25,7 @@ angular.module(
 		);
 		
 		// Broadcast Messages
-		// items are in the format of {id: id, message: message}
+		// items are in the format of {id: id, subject: subject, content: content}
 		$scope.messages = [];
 		
 		/*
@@ -39,7 +39,7 @@ angular.module(
 				m = $scope.messages[index];
 				if (m.id == id) {
 					$scope.messages.splice(index, 1);
-					projectService.markMessageRead(projectId, id);
+					messageService.markRead(projectId, id);
 					break;
 				}
 			}
@@ -150,8 +150,8 @@ angular.module(
 		$scope.getPageDto();
 
 	}])
-	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService',
-	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice) {
+	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
 		var projectId = $routeParams.projectId;
 		$scope.project = {};
 		$scope.settings = {
@@ -165,9 +165,28 @@ angular.module(
 				[
 				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/settings', label: 'Settings'},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/settings', label: 'Details'},
 				]
 		);
+		
+		$scope.message = {};
+		$scope.newMessageCollapsed = true;
+		$scope.sendMessageToSelectedUsers = function() {
+			var userIds = [];
+			for(var i = 0, l = $scope.selected.length; i < l; i++) {
+				userIds.push($scope.selected[i].id);
+			}
+			messageService.send($scope.project.id, userIds, $scope.message.subject, $scope.message.emailTemplate, $scope.message.smsTemplate, function(result) {
+				if (result.ok) {
+					$scope.message.subject = '';
+					$scope.message.emailTemplate = '';
+					$scope.message.smsTemplate = '';
+					$scope.selected = [];
+					$scope.newMessageCollapsed = true;
+					notice.push(notice.SUCCESS, "The message was successfully queued for sending");
+				}
+			});
+		};
 
 		$scope.updateProject = function() {
 			var newProject = {
@@ -202,6 +221,30 @@ angular.module(
 		$scope.canEditCommunicationSettings = function() {
 			return ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
 		}
+		
+		
+		// jqte options for html email message composition
+		$scope.jqteOptions = {
+			'placeholder': 'Email Message',
+			'u': false,
+			'indent': false,
+			'outdent': false,
+			'left': false,
+			'center': false,
+			'right': false,
+			'rule': false,
+			'source': false,
+			'link': false,
+			'unlink': false,
+			'fsize': false,
+			'sub': false,
+			'color': false,
+			'format': false,
+			'formats': [
+				['p', 'Normal'],
+				['h4', 'Large']
+			]
+		};
 		
 	
 		// ----------------------------------------------------------
