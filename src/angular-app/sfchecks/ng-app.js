@@ -3,6 +3,7 @@
 // Declare app level module which depends on filters, and services
 angular.module('sfchecks', 
 		[
+		 'ngRoute',
 		 'ngSanitize',
 		 'sfchecks.projects',
 		 'sfchecks.project',
@@ -10,6 +11,7 @@ angular.module('sfchecks',
 		 'sfchecks.question',
 		 'sfchecks.filters',
 		 'sfchecks.services',
+		 'sfchecks.robintest',
 		 'palaso.ui.notice'
 		])
 	.config(['$routeProvider', function($routeProvider) {
@@ -53,6 +55,13 @@ angular.module('sfchecks',
     		{
     			templateUrl: '/angular-app/sfchecks/partials/question.html', 
     			controller: 'QuestionCtrl'
+			}
+		);
+		$routeProvider.when(
+			'/robintest',
+			{
+				templateUrl: '/angular-app/sfchecks/partials/robintest.html',
+				controller: 'RobinTestCtrl'
 			}
 		);
 	    $routeProvider.otherwise({redirectTo: 'projects'});
