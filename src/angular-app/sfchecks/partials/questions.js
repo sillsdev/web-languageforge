@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.questions',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice' ] // , 'angularFileUpload' ]
 	)
 	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService', 'silNoticeService',
 	                              function($scope, questionsService, qts, $routeParams, ss, linkService, breadcrumbService, notice) {
@@ -221,5 +221,24 @@ angular.module(
 				}
 			});
 		}
+/*
+		$scope.onFileSelect = function($files) {
+		    //$files: an array of files selected, each file has name, size, and type.
+		    for (var i = 0; i < $files.length; i++) {
+		      var $file = $files[i];
+		      $http.uploadFile({
+		        url: 'server/upload/url', //upload.php script, node.js route, or servlet upload url)
+		        // headers: {'optional', 'value'}
+		        data: {myObj: $scope.myModelObj},
+		        file: $file
+		      }).progress(function(evt) {
+		        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+		      }).then(function(data, status, headers, config) {
+		        // file is uploaded successfully
+		        console.log(data);
+		      }); 
+		    }
+		  }
+*/				
 	}])
 	;
