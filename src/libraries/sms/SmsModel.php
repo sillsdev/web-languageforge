@@ -7,26 +7,6 @@ use models\mapper\MapperModel;
 use models\mapper\Id;
 use libraries\palaso\CodeGuard;
 
-class SmsModelMongoMapper extends \models\mapper\MongoMapper
-{
-	/**
-	 * @var SmsModelMongoMapper[]
-	 */
-	private static $_pool = array();
-
-	/**
-	 * @param string $databaseName
-	 * @return SmsModelMongoMapper
-	 */
-	public static function connect($databaseName) {
-		if (!isset(static::$_pool[$databaseName])) {
-			static::$_pool[$databaseName] = new SmsModelMongoMapper($databaseName, 'sms');
-		}
-		return static::$_pool[$databaseName];
-	}
-
-}
-
 class SmsModel extends MapperModel
 {
 	
@@ -45,11 +25,11 @@ class SmsModel extends MapperModel
 		$this->dateCreated = new \DateTime();
 		$this->dateSent = new \DateTime();
 		$this->provider = self::SMS_TWILIO;
-		parent::__construct(SmsModelMongoMapper::connect($databaseName), $id);
+		parent::__construct(SmsMongoMapper::connect($databaseName), $id);
 	}
 	
 	public static function remove($databaseName, $id) {
-		SmsModelMongoMapper::connect($databaseName)->remove($id);
+		SmsMongoMapper::connect($databaseName)->remove($id);
 	}
 
 	/**
