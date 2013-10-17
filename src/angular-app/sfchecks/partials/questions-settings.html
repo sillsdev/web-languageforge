@@ -1,14 +1,20 @@
+<script src="/bower_components/angular/angular.min.js"></script>
+<script src="/bower_components/angularjs-file-upload/angular-file-upload.js"></script>
+
 <h2 style="font-weight:normal">Update {{textTitle}}</h2>
 <div ng-show="rights.editOther">
 <tabset>
 	<tab heading="Edit Text">
 		<form class="well " ng-submit="updateText(editedText)">
-		<label>Title</label>
-		<input type="text" class="span4" ng-model="editedText.title" placeholder="Text Name"/>
-		<label>Text</label>
-		<textarea ng-model="editedText.content" class="span4" rows="4" placeholder="Paste the USX text here"></textarea>
-		<label></label>
-		<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+			<label>Title</label>
+			<input type="text" class="span4" ng-model="editedText.title" placeholder="Text Name"/>
+			<label>Text</label>
+			<textarea ng-model="editedText.content" class="span4" rows="4" placeholder="Paste the USX text here"></textarea>
+			<label>Upload an Audio File</label>
+			<input type="file" ng-file-select="onFileSelect($files)" >
+			<div class="drop-box" ng-file-drop="onFileSelect($files);">or drop files here</div>
+			<label></label>
+			<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 		</form>
 	</tab>
 </tabset>
