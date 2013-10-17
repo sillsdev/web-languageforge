@@ -5,7 +5,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     // list of files / patterns to load in the browser
     files: [
-      'src/js/lib/angular_stable_1.0.7/angular.js',
+      'src/js/lib/angular_stable_1.2.0-rc.2/angular.js',
       'test/lib/angular/angular-mocks.js',
       'src/js/lib/*ui-bootstrap*.js',
       'src/angular-app/**/*.js',
