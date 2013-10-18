@@ -28,20 +28,33 @@ class SmsQueue
 			$smsModel->message
 		);
 		
+		/* Not exactly sure as to what constitutes the various failure modes.  For now dump the message response to the log.
+		 * As we know more we can 'white list' the codes and handle them gracefully here.
+		 */
+		error_log(var_export($message, true));
 // 		var_dump($message);
+		
+		// Update the state
+		$smsModel->state = SmsModel::SMS_SENT;
+		$smsModel->write();
+		
 	}
 	
 	/**
 	 * Attempts to deliver any sms messages in the queue.
+	 * @param string $databaseName
 	 */
-	public static function processQueue() {
-		
+	public static function processQueue($databaseName) {
+		// TODO Async
+		$queue = new SmsQueueModel($databaseName);
+		$queue->readNew();
+		foreach ($queue->entries as $sms) {
+			self::deliver($sms);
+		}
 	}
 	
 	public static function queue($smsModel) {
 		$smsModel->write();
-		self::deliver($smsModel); // Temporarily just to see if it works.  Use the credentials from the test to CP phone.
-// 		self::processQueue();
 	}
 }
 

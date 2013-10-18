@@ -39,10 +39,11 @@ class Loader
 		// we build the filename to require
 		$load = APPPATH . $classPath . ".php";
 		// check for file existence
-		if (!file_exists($load)) {
-			error_log("Loader: Cannot find source file '$load'");
-		} else {
+		if (file_exists($load)) {
 			require($load);
+// Don't log when using other loaders.  This loader may not be authoritative.
+// 		} else { 
+// 			error_log("Loader: Cannot find source file '$load'");
 		}
 		//error_log(sprintf("Loader: exists %s %d", $className, class_exists($className, false)));
 		return class_exists($className, false);
