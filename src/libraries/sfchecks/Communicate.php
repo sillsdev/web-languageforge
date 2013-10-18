@@ -12,10 +12,18 @@ use libraries\sms\SmsQueue;
 
 class CommunicateDelivery implements IDelivery
 {
+	/**
+	 * (non-PHPdoc)
+	 * @see libraries\sfchecks.IDelivery::sendEmail()
+	 */
 	public function sendEmail($from, $to, $subject, $content) {
 		Email::send($from, $to, $subject, $content);
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see libraries\sfchecks.IDelivery::sendSms()
+	 */
 	public function sendSms($smsModel) {
 		SmsQueue::queue($smsModel);
 	}
