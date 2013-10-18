@@ -12,6 +12,7 @@ class SmsModel extends MapperModel
 	
 	const SMS_NEW     = 'new';
 	const SMS_SENDING = 'sending';
+	const SMS_SENT    = 'sent';
 	const SMS_FAIL    = 'fail';
 	
 	const SMS_TWILIO  = 'twilio';
