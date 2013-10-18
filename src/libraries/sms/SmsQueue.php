@@ -28,7 +28,7 @@ class SmsQueue
 			$smsModel->message
 		);
 		
-		var_dump($message);
+// 		var_dump($message);
 	}
 	
 	/**
@@ -38,6 +38,11 @@ class SmsQueue
 		
 	}
 	
+	public static function queue($smsModel) {
+		$smsModel->write();
+		self::deliver($smsModel); // Temporarily just to see if it works.  Use the credentials from the test to CP phone.
+// 		self::processQueue();
+	}
 }
 
 ?>
