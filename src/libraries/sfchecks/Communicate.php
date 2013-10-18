@@ -2,9 +2,7 @@
 namespace libraries\sfchecks;
 
 use models\UnreadMessageModel;
-
 use models\MessageModel;
-
 use models\UserModel;
 use models\ProjectModel;
 use libraries\sms\SmsModel;
@@ -88,7 +86,7 @@ class CommunicateHelper
 	public static function deliverSMS($smsModel, IDelivery $delivery = null) {
 		// Create our default delivery mechanism if one is not passed in.
 		if ($delivery == null) {
-			$delivery = new IDelivery();
+			$delivery = new CommunicateDelivery();
 		}
 		
 		// Deliver the sms message
@@ -106,7 +104,7 @@ class CommunicateHelper
 	public static function deliverEmail($from, $to, $subject, $content, IDelivery $delivery = null) {
 		// Create our default delivery mechanism if one is not passed in.
 		if ($delivery == null) {
-			$delivery = new IDelivery();
+			$delivery = new CommunicateDelivery();
 		}
 		
 		// Deliver the email message
@@ -117,6 +115,15 @@ class CommunicateHelper
 
 class Communicate 
 {
+	/**
+	 * 
+	 * @param array $users array<UserModel> 
+	 * @param ProjectModel $project
+	 * @param string $subject
+	 * @param string $smsTemplate
+	 * @param string $emailTemplate
+	 * @param IDelivery $delivery
+	 */
 	public static function communicateToUsers($users, $project, $subject, $smsTemplate, $emailTemplate, IDelivery $delivery = null) {
 		
 		// store message in database
@@ -132,6 +139,7 @@ class Communicate
 			$unreadModel->markUnread($messageId);
 			$unreadModel->write();
 		}
+		SmsQueue::processQueue($project->databaseName());
 		
 		return $messageId;
 	}
