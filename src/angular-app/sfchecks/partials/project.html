@@ -1,9 +1,9 @@
-<div class="notices"><alert ng-repeat="message in messages" type="info" close="markMessageRead(message.id)"><b>{{message.subject}}</b><br />{{message.content}}</alert></div>
+<div class="notices"><alert ng-repeat="message in messages" type="info" close="markMessageRead(message.id)"><b>{{message.subject}}</b><br /><span ng-bind-html="message.content"</span></alert></div>
 <h2 style="font-weight:normal">{{project.name}} Dashboard</h2>
 <form ng-show="rights.showControlBar" class="control-bar form-inline">
 	<button ng-disabled="selected.length == 0" ng-show="rights.deleteOther" class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
 	<button ng-show="rights.create" class="btn" ng-click="newTextCollapsed = !newTextCollapsed"><i class="icon-plus"></i>Add New Text</button>
-	<a ng-show="rights.editOther" class="btn" href="{{project.url}}/settings"><i class="icon-pencil"></i>Project Details</a>
+	<a ng-show="rights.editOther" class="btn" href="{{project.url}}/details"><i class="icon-pencil"></i>Project Details</a>
 </form>
 <div class="new-item" collapse="newTextCollapsed">
 	<form class="well">
