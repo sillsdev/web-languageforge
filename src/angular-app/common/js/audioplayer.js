@@ -1,9 +1,4 @@
-'use strict';
-
-angular.module(
-		'sfchecks.robintest',
-		[ 'sf.services', 'palaso.ui.audioplayer', 'ui.bootstrap', 'palaso.ui.notice' ]
-	)
+angular.module('palaso.ui.audioplayer', [])
 	.config(['$compileProvider', function($compileProvider) {
 		// Angular uses a whitelist to determine what URLs are allowed in
 		// <a href="{{somevalue}}"> elements. By default, data: URLs are not
@@ -28,25 +23,44 @@ angular.module(
 		// Only add this if we haven't added it already
 		if (oldWhitelist.source.indexOf(encoded) == -1) {
 			var newWhitelist = RegExp(oldWhitelist.source + '|^\\s*data:audio/x-mpegurl;charset=utf-8;base64,' + encoded);
-			console.log('Adding data URLs to whitelist. New whitelist:', newWhitelist);
 			$compileProvider.aHrefSanitizationWhitelist(newWhitelist);
 		}
 	}])
-	.controller('RobinTestCtrl', ['$scope',
-	                              function($scope) {
-		$scope.mp3filename = 'B01___05_Matthew_______N2JAMBSW.mp3';
-		$scope.specialurl = '';
-		$scope.findit = function() {
-			var url = '/audio/' + $scope.mp3filename;
-			var a = document.createElement('a');
-			a.href = url; // This forces the URL to become an absolute URL
-			var b64 = window.btoa(a.href);
-			a.remove();
-			console.log('Base64 encode:', b64);
-			var href = "data:audio/x-mpegurl;charset=utf-8;base64," + b64;
-			$scope.specialurl = href;
-			console.log(href);
-		}
-		$scope.findit();
-	}])
-	;
+	// Audio player
+	.directive('audioplayer', function() {
+		return {
+			restrict : 'E',
+			replace : true,
+			template : '<div class="audioplayer"><a ng-href="{{constructedurl}}" download="{{m3ufilename}}"><i class="icon-volume-up"></i></a><a ng-href="/audio/{{filename}}"><i class="icon-download"></i></a></div>',
+			scope : {
+				filename: "=",
+			},
+			controller: ["$scope", function($scope) {
+				$scope.makeBase64Url = function(filename) {
+					var relativeUrl = '/audio/' + filename;
+
+					// Use trick from http://stackoverflow.com/q/470832 to
+					// retrieve an absolute URL (including server & protocol).
+					// This doesn't work in IE 6, but who cares? It works in
+					// IE 7+ and all other browsers.
+					var a = document.createElement('a');
+					a.href = relativeUrl;
+					var absoluteUrl = a.href;
+					a.remove();
+
+					// Construct data: URL to produce the correct .m3u
+					var b64Url = window.btoa(absoluteUrl);
+					$scope.m3ufilename = filename.replace('mp3', 'm3u');
+					$scope.constructedurl = "data:audio/x-mpegurl;charset=utf-8;base64," + b64Url;
+				}
+			}],
+			link : function(scope, element, attrs, controller) {
+				scope.$watch('filename', function(newval) {
+					if (newval) {
+						scope.makeBase64Url(newval);
+					}
+				});
+			}
+		};
+  })
+  ;
