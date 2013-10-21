@@ -38,10 +38,16 @@ class UserModel extends \models\mapper\MapperModel
 
 	public function read($id) {
 		parent::read($id);
+		
+		// Default Values for User
 		if (!$this->avatar_ref) {
 			$default_avatar = "/images/avatar/anonymoose.png";
 			$this->avatar_ref = $default_avatar;
 		}
+		if (!$this->communicate_via) {
+			$this->communicate_via = self::COMMUNICATE_VIA_EMAIL;
+		}
+		
 	}
 	
 	/**
