@@ -59,6 +59,8 @@ json_rpc.factory('jsonRpc', ['$http', 'error', function($http, error) {
 		request.success(function(data, status, headers, config) {
 			if (data == null) {
 				// TODO error handling for jsonRpc CP 2013-07
+				error.error('RPC Error', "data is null");
+				
 				return;
 			}
 			if (typeof data == 'string') {
@@ -81,6 +83,7 @@ json_rpc.factory('jsonRpc', ['$http', 'error', function($http, error) {
 			
 		});
 		request.error(function(data, status, headers, config) {
+			error.error('RPC Error', "Server Status Code " + status);
 			result.ok = false;
 			result.data = data;
 			result.status = status;
