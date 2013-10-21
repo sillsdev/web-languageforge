@@ -35,10 +35,10 @@ angular.module(
 		*/
 		
 		$scope.markMessageRead = function(id) {
-			for (index in $scope.messages) {
-				m = $scope.messages[index];
+			for (var i=0; i < $scope.messages.length; ++i) {
+				var m = $scope.messages[i];
 				if (m.id == id) {
-					$scope.messages.splice(index, 1);
+					$scope.messages.splice(i, 1);
 					messageService.markRead(projectId, id);
 					break;
 				}

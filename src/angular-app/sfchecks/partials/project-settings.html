@@ -34,9 +34,6 @@
 			<button style="margin-top:10px" type="submit" class="btn"><i class="icon-ok"></i>Send Message Now</button>
 			
 			</form>
-			<form class="well form-inline">
-			<button ng-model="addMode" class="btn" ng-click="addProjectUser()"><i ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
-			</form>
 		</div>
 		<div listview search="queryProjectUsers()" items="project.users" visible-items="visibleProjectUsers" select="">
 		<!-- <div listview search="queryProjectUsers()" select=""> -->
@@ -87,6 +84,7 @@
 		<input type="text" placeholder="(From Name)" ng-model="settings.email.fromName"/>
 	</fieldset>
 	<button style="margin-top:10px" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+	<button disabled style="margin-top:10px" class="btn"><i class="icon-check"></i>Test Settings (NYI)</button>
 	
 	</form>
 	</tab>
