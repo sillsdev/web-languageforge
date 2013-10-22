@@ -173,20 +173,22 @@ class Communicate
 		}
 		
 		// Prepare the sms message if required
-		if ($user->communicate_via == UserModel::COMMUNICATE_VIA_SMS || $user->communicate_via == UserModel::COMMUNICATE_VIA_BOTH) {
-			$databaseName = $project->databaseName();
-			$sms = new SmsModel($databaseName);
-			$sms->providerInfo = $project->smsSettings->accountId . '|' . $project->smsSettings->authToken;
-			$sms->to = $user->mobile_phone;
-			$sms->from = $project->smsSettings->fromNumber;
-			$vars = array(
-				'user' => $user,
-				'project' => $project
-			);
-			$t = CommunicateHelper::templateFromString($smsTemplate);
-			$sms->message = $t->render($vars);
-			
-			CommunicateHelper::deliverSMS($sms, $delivery);
+		if ($project->smsSettings->hasValidCredentials()) {
+			if ($user->communicate_via == UserModel::COMMUNICATE_VIA_SMS || $user->communicate_via == UserModel::COMMUNICATE_VIA_BOTH) {
+				$databaseName = $project->databaseName();
+				$sms = new SmsModel($databaseName);
+				$sms->providerInfo = $project->smsSettings->accountId . '|' . $project->smsSettings->authToken;
+				$sms->to = $user->mobile_phone;
+				$sms->from = $project->smsSettings->fromNumber;
+				$vars = array(
+					'user' => $user,
+					'project' => $project
+				);
+				$t = CommunicateHelper::templateFromString($smsTemplate);
+				$sms->message = $t->render($vars);
+				
+				CommunicateHelper::deliverSMS($sms, $delivery);
+			}
 		}
 	}
 	
