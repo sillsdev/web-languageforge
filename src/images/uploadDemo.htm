@@ -25,10 +25,10 @@
 		<div class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">or drop files here</div>
 		<div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
 		<br/>
-		Progress:
-		<br/>
 		<div ng-show="selectedFiles != null">
 			<div class="sel-file" ng-repeat="f in selectedFiles">
+				Progress:
+				<br/>
 				<span class="progress">						
 					<div style="width:{{progress[$index]}}%">{{progress[$index]}}%</div>
 				</span>
