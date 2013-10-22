@@ -50,39 +50,5 @@
 			<img src="/images/girlsmiling.jpg" alt="girl smiling" width="299" height="182" class="left">
 			<h2>The Power of Collaboration</h2>
 			<p>When everyone plays their part in getting Scripture translated and into the right hands, everyone benefits.  It's the power of collaboration that gets Scripture checking done faster and better.  Our technology brings Scripture checking to the masses, in a positive environment that focuses participants on the task and works wherever they are.  On the tablet, phone or web, Scripture Forge is there.</p>
-			<p><a href="/create_account" class="arrowed">Get Involved Today</a></p>
+			<p><a href="/learn_contribute" class="arrowed">Get Involved Today</a></p>
 		</div>
-		
-		<!--
-		<div class="sfcontainer cf">
-			<h2>Latest News</h2>
-			
-			<div class="three-col">
-				<div class="three-col-1">
-					<p>1st September 2012</p>
-					<h3>Nullam Quis Risus Eget Urna</h3>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas faucibus mollis interdum. Nullam id dolor id nibh ultricies vehicula ut id elit...</p>
-					<p><a href="#" class="arrowed">Read Article</a></p>
-				</div>
-			</div>
-			
-			<div class="three-col">
-				<div class="three-col-2">
-					<p>27th August 2012</p>
-					<h3>Praesent Commodo Cursus</h3>
-					<p>Nullam quis risus eget urna mollis ornare vel eu leo. Praesent commodo cursus magna, vel scelerisque nisl consectetur et...</p>
-					<p><a href="#" class="arrowed">Read Article</a></p>
-				</div>
-			</div>
-			
-			<div class="three-col">
-				<div class="three-col-3">
-					<p>26th August 2012</p>
-					<h3>Posuere Consectetur</h3>
-					<p>Etiam porta sem malesuada magna mollis euismod. Sed posuere consectetur est at lobortis. Sed posuere consectetur est at lobortis...</p>
-					<p><a href="#" class="arrowed">Read Article</a></p>
-				</div>
-			</div>
-			
-		</div>
-		-->

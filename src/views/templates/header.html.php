@@ -33,7 +33,7 @@
 								<li><a href="/learn_contribute">Contribute</a></li>
 							</ul>
 						</li>
-						<li><a href="/contribute">Contribute</a></li>
+						<li><a href="/learn_contribute">Contribute</a></li>
 						<li><a href="/discuss">Discuss</a></li>
 					</ul>
 				</div>
