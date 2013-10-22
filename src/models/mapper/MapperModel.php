@@ -30,7 +30,7 @@ class MapperModel
 	 * @param string $id
 	 * @see MongoMapper::read()
 	 */
-	function read($id) {
+	public function read($id) {
 		return $this->_mapper->read($this, $id);
 	}
 	
@@ -40,7 +40,7 @@ class MapperModel
 	 * @param string $value
 	 * @return boolean
 	 */
-	function readByProperty($property, $value) {
+	public function readByProperty($property, $value) {
 		return $this->_mapper->readByProperty($this, $property, $value);
 	}
 	
@@ -49,7 +49,7 @@ class MapperModel
 	 * @return string The unique id of the object written
 	 * @see MongoMapper::write()
 	 */
-	function write() {
+	public function write() {
 		CodeGuard::checkTypeAndThrow($this->id, 'models\mapper\Id');
 		$this->id->id = $this->_mapper->write($this, $this->id->id);
 		return $this->id->id;
@@ -60,9 +60,17 @@ class MapperModel
 	 * @param string $id
 	 * @return bool
 	 */
-	function exists($id) {
+	public function exists($id) {
 		$idExists = $this->_mapper->exists($id);
 		return $idExists;
+	}
+
+	/**
+	 * Returns the database name
+	 * @return string
+	 */
+	public function databaseName() {
+		return $this->_mapper->databaseName();
 	}
 }
 
