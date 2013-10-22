@@ -4,10 +4,8 @@ angular.module('palaso.ui.textdrop', [])
 .directive('textdrop', function() {
 	return {
 		restrict: 'A',
-		scope: {
-			dropTarget: "=textdrop",
-		},
-		link: function(scope, element, attrs) {
+		require: '?ngModel',
+		link: function(scope, element, attrs, ngModelCtrl) {
 	        var processDragOverOrEnter = function(event) {
 	          if (event != null) {
 	            event.preventDefault();
@@ -26,9 +24,15 @@ angular.module('palaso.ui.textdrop', [])
 				file = event.originalEvent.dataTransfer.files[0];
 				reader.onloadend = function(evt) {
 					if (evt.target.readyState == FileReader.DONE) {
+						/*
+						if (scope.$$phase == '$digest') {
+							return;
+						}
+						*/
 						scope.$apply(function() {
-							scope.dropTarget = evt.target.result;
-							// this is probably a hack, but I cannot get scope.$apply to update the view, so I will update it myself
+							//scope.dropTarget = evt.target.result;
+							ngModelCtrl.$setViewValue(evt.target.result);
+							// this is a hack, but I cannot figure out how to get scope.$apply to update the view, so I will update it myself
 							element[0].value = evt.target.result;
 						});	
 					}

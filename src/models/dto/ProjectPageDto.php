@@ -2,6 +2,11 @@
 
 namespace models\dto;
 
+use models\MessageModel;
+
+use models\UnreadMessageModel;
+use models\UnreadActivityModel;
+
 use models\UserModel;
 
 use models\ProjectModel;
@@ -11,7 +16,7 @@ use models\TextListModel;
 use models\TextModel;
 
 
-class TextListDto
+class ProjectPageDto
 {
 	/**
 	 *
@@ -27,20 +32,41 @@ class TextListDto
 
 		$data = array();
 		$data['rights'] = RightsHelper::encode($userModel, $projectModel);
-		$data['count'] = $textList->count;
 		$data['project'] = array(
 				'name' => $projectModel->projectname,
 				'id' => $projectId);
-		$data['entries'] = array();
+		$data['texts'] = array();
 		foreach ($textList->entries as $entry) {
 			$textModel = new TextModel($projectModel, $entry['id']);
 			$questionList = $textModel->listQuestions();
 			// Just want question count, not whole list
 			$entry['questionCount'] = $questionList->count;
 
-			$data['entries'][] = $entry;
+			$data['texts'][] = $entry;
 		}
-
+		
+		// future support for members
+		$data['members'] = array();
+		
+		// unread activity count
+		$unreadActivity = new UnreadActivityModel($userId);
+		$unreadItems = $unreadActivity->unreadItems();
+		$data['activityUnreadCount'] = count($unreadItems);
+		
+		// unread broadcast messages
+		$unreadMessages = new UnreadMessageModel($userId, $projectId);
+		$messageIds = $unreadMessages->unreadItems();
+		$messages = array();
+		foreach ($messageIds as $messageId) {
+			$message = new MessageModel($projectModel, $messageId);
+			$messages[] = array(
+				'id' => $message->id->asString(),
+				'subject' => $message->subject,
+				'content' => $message->content
+			);
+		}
+		$data['broadcastMessages'] =  $messages;
+		
 		return $data;
 	}
 }

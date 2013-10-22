@@ -76,12 +76,15 @@ class Auth extends Base {
 				
 				$referer = $this->session->userdata('referer_url');
 				$this->session->unset_userdata('referer_url');
-				if ($referer && strpos($referer, "/auth") === false) {
+				if ($referer && strpos($referer, "/app") !== false) {
 					redirect($referer, 'location');
-				} 
+				}
 				else
 				{
-					redirect('/', 'location');
+					$user = new \models\UserModel((string)$this->session->userdata('user_id'));
+					$projects = $user->listProjects();
+					$firstProjectId = $projects->entries[0]['id'];
+					redirect("/app/sfchecks#/project/$firstProjectId", 'location');
 				}
 			}
 			else
