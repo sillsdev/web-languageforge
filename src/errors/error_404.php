@@ -69,7 +69,7 @@ p {
 		<h3>There are still nearly 2000 living languages in the world that do not have any portion of the Bible.  <a href="/">Scriptureforge.org</a> technology accelerates the pace of Bible translation with the aim to get this number lower, faster.</h3>
 		
 		<div style="margin-top:50px">
-			<h4>Incidentally, you propbably arrived here because of a broken link on our site.  Sorry about that.</h4>
+			<h4>Incidentally, you probably arrived here because of a broken link on our site.  Sorry about that.</h4>
 			<span><a href="/">Return to the Front Page</a></span>
 		</div>
 	</div>
