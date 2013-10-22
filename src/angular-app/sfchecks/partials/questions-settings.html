@@ -9,12 +9,7 @@
 			<textarea ng-model="editedText.content" class="span4" rows="4" placeholder="Paste the USX text here"></textarea>
 			<label>Upload an Audio File</label>
 			<input type="file" ng-file-select="onFileSelect($files)" >
-			<div class="drop-box" ng-file-drop="onFileSelect($files);">or drop files here</div>
-			<div ng-bind-html="uploadresults"></div>
-<!-- Commit functional code before changing this
-			choose a single file: <input type="file" ng-file-select="onFileSelect($files)">
-			<br/>
-			<br/>
+			<label></label>
 			<div class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">or drop files here</div>
 			<div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
 			<br/>
@@ -34,8 +29,8 @@
 					<li ng-repeat="result in uploadResult" ng-bind-html="result">{{result}}</li>
 				</ul>
 			</div>
--->			
 			<label></label>
+			<br/>
 			<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 		</form>
 	</tab>
