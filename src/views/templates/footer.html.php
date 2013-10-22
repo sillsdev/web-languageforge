@@ -16,6 +16,14 @@
 				</div>
 				
 				<div class="three-col">
+					<div class="three-col-2">
+						<div class="left footer-nav">
+						&nbsp;
+						</div>
+					</div>
+				</div>
+				
+				<div class="three-col">
 					<div class="three-col-3">
 						<a href="http://ic.payap.ac.th/"><img src="/images/PAYAP_logo.png" alt="PAYAP" width="170" height="50" class="right png_bg"></a>
 						<a href="http://www.sil.org"><img src="/images/SIL_logo.png" alt="SIL" width="50" height="49" class="right png_bg" style="margin-right: 30px;"></a>
