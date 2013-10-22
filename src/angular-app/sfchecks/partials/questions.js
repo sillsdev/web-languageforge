@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.questions',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice' ] // , 'angularFileUpload' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'angularFileUpload', 'ngSanitize' ]
 	)
 	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService', 'silNoticeService',
 	                              function($scope, questionsService, qts, $routeParams, ss, linkService, breadcrumbService, notice) {
@@ -172,8 +172,8 @@ angular.module(
 		};
 
 	}])
-	.controller('QuestionsSettingsCtrl', ['$scope', 'textService', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 
-	                                      function($scope, textService, ss, $routeParams, breadcrumbService, notice) {
+	.controller('QuestionsSettingsCtrl', ['$scope', '$http', 'textService', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 
+	                                      function($scope, $http, textService, ss, $routeParams, breadcrumbService, notice) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		var dto;
@@ -221,24 +221,29 @@ angular.module(
 				}
 			});
 		}
-/*
+
+		$scope.uploadresults = "<p><b>No</b> upload results yet...</p>"
 		$scope.onFileSelect = function($files) {
+			console.log('onFileSelect() called with param', $files);
+			//$scope.uploadresults = "<pre><font color='#cc0000'>Is font considered safe?</font></pre>"
 		    //$files: an array of files selected, each file has name, size, and type.
 		    for (var i = 0; i < $files.length; i++) {
 		      var $file = $files[i];
-		      $http.uploadFile({
-		        url: 'server/upload/url', //upload.php script, node.js route, or servlet upload url)
+				console.log('Allegedly uploading ', $file);
+				$http.uploadFile({
+		        'url': '/upload/file', //upload.php script, node.js route, or servlet upload url)
 		        // headers: {'optional', 'value'}
-		        data: {myObj: $scope.myModelObj},
-		        file: $file
+		        // data: {myObj: $scope.myModelObj},
+		        'file': $file
 		      }).progress(function(evt) {
 		        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
 		      }).then(function(data, status, headers, config) {
 		        // file is uploaded successfully
-		        console.log(data);
+			    $scope.uploadresults = data;
+			    $scope.$digest();
 		      }); 
 		    }
 		  }
-*/				
+
 	}])
 	;
