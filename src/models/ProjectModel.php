@@ -2,10 +2,7 @@
 
 namespace models;
 
-use models\sms\SmsSettings;
-
 use libraries\palaso\CodeGuard;
-
 use models\rights\Realm;
 use models\rights\Roles;
 use models\rights\ProjectRoleModel;
@@ -15,6 +12,7 @@ use models\mapper\MongoStore;
 use models\mapper\ReferenceList;
 use models\mapper\Id;
 use models\UserList_ProjectModel;
+use models\sms\SmsSettings;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 

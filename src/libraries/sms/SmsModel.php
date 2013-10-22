@@ -23,9 +23,11 @@ class SmsModel extends MapperModel
 	 */
 	public function __construct($databaseName, $id = '') {
 		$this->id = new Id();
+		$this->userRef = new IdReference();
 		$this->dateCreated = new \DateTime();
 		$this->dateSent = new \DateTime();
 		$this->provider = self::SMS_TWILIO;
+		$this->state = self::SMS_NEW;
 		parent::__construct(SmsMongoMapper::connect($databaseName), $id);
 	}
 	

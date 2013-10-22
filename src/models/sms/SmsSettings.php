@@ -1,16 +1,21 @@
 <?php
 namespace models\sms;
 
-use models\mapper\IdReference;
-
-use models\mapper\MongoMapper;
-use models\mapper\MapperModel;
-use models\mapper\Id;
-
 class SmsSettings
 {
 	
+	/**
+	 * 
+	 */
 	public function __construct() {
+	}
+
+	/**
+	 * Returns true if all the credentials are set.
+	 * @return bool
+	 */
+	public function hasValidCredentials() {
+		return $this->accountId && $this->authToken && $this->fromNumber;
 	}
 	
 	/**

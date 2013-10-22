@@ -1,6 +1,8 @@
 <?php
 namespace libraries\sms;
 
+use libraries\palaso\CodeGuard;
+
 use models\mapper\IdReference;
 use models\mapper\MongoMapper;
 use models\mapper\MapperModel;
@@ -17,6 +19,14 @@ class SmsQueue
 	 * @param SmsModel $smsModel
 	 */
 	public static function deliver($smsModel) {
+		CodeGuard::checkTypeAndThrow($smsModel, 'libraries\sms\SmsModel');
+		// Check if the smsModel is valid
+		if (!$smsModel->to || !$smsModel->from || $smsModel->userRef == null || !$smsModel->userRef->asString()) {
+			SmsModel::remove($smsModel->databaseName(), $smsModel->id->asString());
+			error_log("Error: Removed invalid sms from queue: " . $smsModel->id->asString());
+			error_log(" Dump: " . var_export($smsModel, true));
+			return;
+		}
 		$info = explode('|', $smsModel->providerInfo);
 		$sid = $info[0];
 		$token = $info[1];
@@ -48,13 +58,26 @@ class SmsQueue
 		// TODO Async
 		$queue = new SmsQueueModel($databaseName);
 		$queue->readNew();
-		foreach ($queue->entries as $sms) {
+		foreach ($queue->entries->data as $id => $sms) {
+			error_log(var_export($sms, true));
 			self::deliver($sms);
 		}
 	}
 	
+	/**
+	 * @param SmsModel $smsModel
+	 */
 	public static function queue($smsModel) {
-		$smsModel->write();
+		CodeGuard::checkTypeAndThrow($smsModel, 'libraries\sms\SmsModel');
+		// Check if the smsModel is valid
+		if (!$smsModel->to || !$smsModel->from || $smsModel->userRef == null || !$smsModel->userRef->asString()) {
+			error_log("Error: Attempting to queue invalid sms");
+			error_log(" Dump: " . var_export($smsModel, true));
+			return;
+		}
+		$id = $smsModel->write();
+		$databaseName = $smsModel->databaseName();
+		error_log("wrote sms: $id to $databaseName");
 	}
 }
 
