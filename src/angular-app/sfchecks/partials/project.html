@@ -1,8 +1,9 @@
-<h2 style="font-weight:normal">Texts for {{project.name}}</h2>
+<div class="notices"><alert ng-repeat="message in messages" type="info" close="markMessageRead(message.id)"><b>{{message.subject}}</b><br /><span ng-bind-html="message.content"</span></alert></div>
+<h2 style="font-weight:normal">{{project.name}} Dashboard</h2>
 <form ng-show="rights.showControlBar" class="control-bar form-inline">
 	<button ng-disabled="selected.length == 0" ng-show="rights.deleteOther" class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
 	<button ng-show="rights.create" class="btn" ng-click="newTextCollapsed = !newTextCollapsed"><i class="icon-plus"></i>Add New Text</button>
-	<a ng-show="rights.editOther" class="btn" href="{{project.url}}/settings"><i class="icon-pencil"></i>Update Project Settings</a>
+	<a ng-show="rights.editOther" class="btn" href="{{project.url}}/details"><i class="icon-pencil"></i>Project Details</a>
 </form>
 <div class="new-item" collapse="newTextCollapsed">
 	<form class="well">
@@ -10,14 +11,14 @@
 	<label>Title</label>
 	<input ng-model="title" class="span4" type="text" placeholder="Title"/>
 	<label>Text</label>
-	<textarea ng-model="content" class="span4" rows="4" placeholder="Paste the USX text here"></textarea>
+	<textarea textdrop ng-model="content" class="span4" rows="4" placeholder="Paste the USX text here"></textarea>
 	<label></label>
 	<button type="submit" class="btn" ng-click="addText(); newTextCollapsed = true"><i class="icon-ok"></i>Save</button>
 	</fieldset>
 	</form>
 </div>
 <hr />
-<div listview hide-if-empty="true" search="queryTexts()" items="texts" visible-items="visibleTexts" select="">
+<div listview hide-if-empty="true" items="texts" visible-items="visibleTexts" select="">
 <div ng-repeat="text in visibleTexts" class="details-row">
 	<ul class="inline" ng-class="{active: isSelected(text)}">
 		<li ng-show="rights.deleteOther" ><input type="checkbox" ng-checked="isSelected(text)" ng-click="updateSelection($event, text)" /></li>

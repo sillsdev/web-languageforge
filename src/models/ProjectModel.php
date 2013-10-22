@@ -3,7 +3,6 @@
 namespace models;
 
 use libraries\palaso\CodeGuard;
-
 use models\rights\Realm;
 use models\rights\Roles;
 use models\rights\ProjectRoleModel;
@@ -13,6 +12,7 @@ use models\mapper\MongoStore;
 use models\mapper\ReferenceList;
 use models\mapper\Id;
 use models\UserList_ProjectModel;
+use models\sms\SmsSettings;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
@@ -36,14 +36,39 @@ class ProjectModelMongoMapper extends \models\mapper\MongoMapper
 	}
 }
 
-class ProjectModel extends \models\mapper\MapperModel
+class ProjectSettingsModel extends \models\mapper\MapperModel
 {
 	public function __construct($id = '') {
 		$this->id = new Id();
+		$this->smsSettings = new SmsSettings();
+		$this->emailSettings = new EmailSettings();
+		parent::__construct(ProjectModelMongoMapper::instance(), $id);
+	}
+	
+	/**
+	 * @var Id
+	 */
+	public $id;
+	
+	/**
+	 * @var SmsSettings
+	 */
+	public $smsSettings;
+	
+	/**
+	 * @var EmailSettings
+	 */
+	public $emailSettings;
+	
+}
+
+class ProjectModel extends ProjectSettingsModel
+{
+	public function __construct($id = '') {
 		$this->users = new MapOf(function($data) {
 			return new ProjectRoleModel();
 		});
-		parent::__construct(ProjectModelMongoMapper::instance(), $id);
+		parent::__construct($id);
 	}
 	
 	public function databaseName() {
@@ -125,11 +150,6 @@ class ProjectModel extends \models\mapper\MapperModel
 		}
 		return $result;
 	}
-	
-	/**
-	 * @var Id
-	 */
-	public $id;
 	
 	/**
 	 * @var string

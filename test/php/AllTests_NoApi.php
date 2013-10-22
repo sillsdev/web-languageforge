@@ -9,6 +9,7 @@ class AllTestsNoApi extends TestSuite {
  		$this->addFile(TestPath . 'model/AllTests.php');
  		$this->addFile(TestPath . 'mapper/AllTests.php');
  		$this->addFile(TestPath . 'commands/AllTests.php');
+ 		$this->addFile(TestPath . 'communicate/AllTests.php');
  		$this->addFile(TestPath . 'dto/AllTests.php');
  		$this->addFile(TestPath . 'email/AllTests.php');
     }
