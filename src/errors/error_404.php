@@ -25,7 +25,6 @@ h1 {
 	color: #444;
 	background-color: transparent;
 	border-bottom: 1px solid #D0D0D0;
-	font-size: 19px;
 	font-weight: normal;
 	margin: 0 0 14px 0;
 	padding: 14px 15px 10px 15px;
@@ -43,9 +42,19 @@ code {
 }
 
 #container {
-	margin: 10px;
 	border: 1px solid #D0D0D0;
 	-webkit-box-shadow: 0 0 8px #D0D0D0;
+	width:850px;
+	padding-left:50px;
+	padding-right:50px;
+	height:600px;
+	position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align:center;
+    margin: auto;
 }
 
 p {
@@ -54,10 +63,15 @@ p {
 </style>
 </head>
 <body>
-	<div style="text-align:center; padding:10px" id="container">
-		<h1>Wat!!! <?php echo $heading; ?></h1>
-		<?php echo $message; ?>
-		<img border="3px solid gray" src="/images/darth_wat_grande.jpg" />
+	<div id="container">
+		<h1>404 Scripture Not Found</h1>
+		<img src="/images/empty_book.png" />
+		<h3>There are still nearly 2000 living languages in the world that do not have any portion of the Bible.  <a href="/">Scriptureforge.org</a> technology accelerates the pace of Bible translation with the aim to get this number lower, faster.</h3>
+		
+		<div style="margin-top:50px">
+			<h4>Incidentally, you propbably arrived here because of a broken link on our site.  Sorry about that.</h4>
+			<span><a href="/">Return to the Front Page</a></span>
+		</div>
 	</div>
 </body>
 </html>
