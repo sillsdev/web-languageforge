@@ -222,27 +222,41 @@ angular.module(
 			});
 		};
 
-		$scope.uploadresults = "<p><b>No</b> upload results yet...</p>";
+		$scope.selectedFiles = [];
+		$scope.progress = [];
+		
 		$scope.onFileSelect = function($files) {
-		    for (var i = 0; i < $files.length; i++) {
-		      var $file = $files[i];
-				console.log('Allegedly uploading ', $file);
-				$http.uploadFile({
-		        'url': '/upload/file', //upload.php script, node.js route, or servlet upload url)
-		        // headers: {'optional', 'value'}
-		        // data: {myObj: $scope.myModelObj},
-		        'file': $file
-		      }).progress(function(evt) {
-		        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-		        $scope.uploadresults = 'percent: ' + parseInt(100.0 * evt.loaded / evt.total);
-			    $scope.$digest();
-		      }).then(function(data, status, headers, config) {
-		        // file is uploaded successfully
-			    $scope.uploadresults = data;
-			    $scope.$digest();
-		      }); 
-		    }
-		  };
+			$scope.uploadResult = [];
+			$scope.selectedFiles = $files;
+			for ( var i = 0; i < $files.length; i++) {
+				var $file = $files[i];
+				$scope.progress[i] = 0;
+				(function() {
+					var index = i; 
+					$http.uploadFile({
+					    url: '/upload/file', // upload.php script, node.js route, or servlet upload url)
+						/* headers: {'myHeaderKey': 'myHeaderVal'},
+						data : {
+							myModel : $scope.myModel
+						}, */
+						file : $file,
+						//fileFormDataName: 'myFile'
+					}).progress(function(evt) {
+						$scope.progress[index] = parseInt(100.0 * evt.loaded / evt.total);
+						if (!$scope.$$phase) {
+							$scope.$apply();
+						}
+					}).success(function(data, status, headers, config) {
+						$scope.uploadResult.push(data.toString());
+						// to fix IE not updating the dom
+						if (!$scope.$$phase) {
+							$scope.$apply();
+						}
+					});
+				})();
+			}
+		};
+		  
 
 	}])
 	;
