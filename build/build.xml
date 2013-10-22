@@ -135,7 +135,7 @@
 	<target name="install" depends="package,cleanInstall">
 		<untar src="${build.packageFile}" dest="${build.installPath}" compression="gzip" />
 		<chown type="both" owner="www-data">
-			<dirset dir="${build.installPath}/cache/" />
+			<dirset dir="${build.installPath}/htdocs/cache/" />
 		</chown>
 		<!--
 		<chmod type="both" perm="g+w">
