@@ -181,7 +181,7 @@ angular.module(
 		$scope.textId = textId;
 		$scope.editedText = {
 			id: textId,
-		}
+		};
 
 		// Breadcrumb
 		breadcrumbService.set('top',
@@ -220,13 +220,10 @@ angular.module(
 					$scope.textTitle = newText.title;
 				}
 			});
-		}
+		};
 
-		$scope.uploadresults = "<p><b>No</b> upload results yet...</p>"
+		$scope.uploadresults = "<p><b>No</b> upload results yet...</p>";
 		$scope.onFileSelect = function($files) {
-			console.log('onFileSelect() called with param', $files);
-			//$scope.uploadresults = "<pre><font color='#cc0000'>Is font considered safe?</font></pre>"
-		    //$files: an array of files selected, each file has name, size, and type.
 		    for (var i = 0; i < $files.length; i++) {
 		      var $file = $files[i];
 				console.log('Allegedly uploading ', $file);
@@ -237,13 +234,15 @@ angular.module(
 		        'file': $file
 		      }).progress(function(evt) {
 		        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+		        $scope.uploadresults = 'percent: ' + parseInt(100.0 * evt.loaded / evt.total);
+			    $scope.$digest();
 		      }).then(function(data, status, headers, config) {
 		        // file is uploaded successfully
 			    $scope.uploadresults = data;
 			    $scope.$digest();
 		      }); 
 		    }
-		  }
+		  };
 
 	}])
 	;
