@@ -9,7 +9,7 @@
 				<div id="header-nav" class="left">
 					<ul class="sf-menu">
 						<li><a href="/">Home</a></li>
-						<li><a href="#">Explore</a>
+						<li><a href="/explore">Explore</a>
 							<ul>
 							<?php foreach($featuredProjects as $project): ?>
 								<li><a href="<?php echo "/projects/" . str_replace(" ", "_", strtolower($project['projectname'])); ?>"><?php echo $project['projectname']; ?></a></li>
