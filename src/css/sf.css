@@ -116,7 +116,7 @@ p {
 	margin-bottom: 1.1em;
 }
 
-p.small {
+.small {
 	font-size: 0.8em; 
 }
 
@@ -900,4 +900,9 @@ label {
 	margin-top:10px;
 	padding: 5px;
 	border: #C1DBC1 2px solid;
+}
+
+.termsofservice li {
+	font-size: 0.9em;
+	line-height: 1.4em;
 }
