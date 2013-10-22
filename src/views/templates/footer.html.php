@@ -16,14 +16,6 @@
 				</div>
 				
 				<div class="three-col">
-					<div class="three-col-2">
-						<h4>Credits</h4>
-						<p class="small">Copyright <?php echo strftime("%Y"); ?> Scripture Forge. An SIL International project. All rights reserved.</p>
-						<p class="small">Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</p>
-					</div>
-				</div>
-				
-				<div class="three-col">
 					<div class="three-col-3">
 						<a href="http://ic.payap.ac.th/"><img src="/images/PAYAP_logo.png" alt="PAYAP" width="170" height="50" class="right png_bg"></a>
 						<a href="http://www.sil.org"><img src="/images/SIL_logo.png" alt="SIL" width="50" height="49" class="right png_bg" style="margin-right: 30px;"></a>
@@ -37,7 +29,9 @@
 		
 		<div id="footerBaseline">
 			<div class="sfcontainer">
-				<div class="darkTextLogo png_bg"></div>
+					<div class="small" style="color:#CCC; float:left; margin-left:250px">Copyright <?php echo strftime("%Y"); ?> SIL International. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</div>
+				<div class="darkTextLogo png_bg">
+				</div>
 			</div>
 		</div>
 		</div>
