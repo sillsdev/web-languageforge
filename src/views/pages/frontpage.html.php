@@ -45,10 +45,18 @@
 			);
 			$this->load->view("templates/3column.html.php", $data);
 			?>
-			
-		<div class="sub-promotion sfcontainer cf">
-			<img src="/images/girlsmiling.jpg" alt="girl smiling" width="299" height="182" class="left">
-			<h2>The Power of Collaboration</h2>
-			<p>When everyone plays their part in getting Scripture translated and into the right hands, everyone benefits.  It's the power of collaboration that gets Scripture checking done faster and better.  Our technology brings Scripture checking to the masses, in a positive environment that focuses participants on the task and works wherever they are.  On the tablet, phone or web, Scripture Forge is there.</p>
-			<p><a href="/learn_contribute" class="arrowed">Get Involved Today</a></p>
-		</div>
+		
+			<div class="container">
+				<div class="sub-promotion">
+				<div class="row row-padded">
+					<div class="span4">
+						<img src="/images/girlsmiling.jpg" alt="girl smiling" width="299" height="182" class="left">
+					</div>
+					<div class="span8">
+						<h3>The Power of Collaboration</h3>
+						<p>When everyone plays their part in getting Scripture translated and into the right hands, everyone benefits.  It&rsquo;s the power of collaboration that gets Scripture checking done faster and better. Our technology brings Scripture checking to the masses, in a positive environment that focuses participants on the task and works wherever they are. On the tablet, phone or web, Scripture Forge is there.</p>
+						<p><a href="/learn_contribute" class="arrowed">Get Involved Today</a></p>
+					</div>
+				</div>
+				</div>
+			</div>
