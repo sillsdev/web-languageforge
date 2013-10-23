@@ -166,11 +166,18 @@ div#footer {
 	padding: 40px 0 40px 0;
 	background-color: #3a3a3a;
 	background: #3a3a3a url(../../images/jamaican_psalms/sf_sprite_jamaica.png) no-repeat center -139px;
-	color: #fff;
+}
+
+div#footer small {
+	line-height: auto;
 }
 
 div#footer, div#footer a {
 	color: #f4f4f6;
+}
+
+div#footer div#sponsor {
+	text-align: center;
 }
 
 div#footerBaseline {
@@ -181,10 +188,15 @@ div#footerBaseline {
 	background-color: #202020;
 }
 
+div#footerBaseline a {
+	color: #404040;
+	text-decoration: underline;  
+}
+
 a {  
 	color: #6DA251;  
 	text-decoration: none;  
-	font-weight: bold;
+	xfont-weight: bold;
 }
 
 a.arrowed {
