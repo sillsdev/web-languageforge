@@ -48,6 +48,8 @@ class Base extends CI_Controller {
 		
 		if (file_exists(self::templateToPath($view))) {
 			$this->viewdata["page"] = $view . ".html.php";
+		} else if (file_exists(self::templateToPath($view, '.php'))) {
+			$this->viewdata["page"] = $view . ".php";
 		}
 		
 		$this->viewdata['is_admin'] = false;
@@ -84,8 +86,8 @@ class Base extends CI_Controller {
 	 * @param string $templateName
 	 * @return string
 	 */
-	protected static function templateToPath($templateName) {
-		return 'views/' .  $templateName . '.html.php';
+	protected static function templateToPath($templateName, $suffix = '.html.php') {
+		return 'views/' .  $templateName . $suffix;
 	}
 	
 }

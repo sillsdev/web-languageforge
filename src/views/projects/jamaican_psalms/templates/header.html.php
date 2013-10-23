@@ -3,12 +3,12 @@
 <![endif]-->
 		<div id="header">
 			<div class="container">
-				<div class="sf-logo-large">
+				<div class="sf-logo-medium">
 					<img src="/images/sf_logo_medium.png" alt="Scripture Forge"  style="width:92px; height:114px" class="png_bg" />
 				</div>
 				<div id="header-nav" class="pull-left">
 					<ul class="sf-menu">
-						<li><a href="/">Home</a></li>
+						<li><a href="/project/jamaican">Home</a></li>
 						<li><a href="/learn_scripture_forge">Learn</a>
 							<ul>
 								<li><a href="/learn_faq">Frequently Asked Questions</a></li>
@@ -23,19 +23,16 @@
 				</div>
 				
 				<?php if ($logged_in):?>
-					<div class="pull-right">
+					<div id="header-nav" class="pull-right">
 							<ul class="sf-menu">
-								<li><a href="/app/sfchecks#/projects">My Projects</a>
-									<ul>
-									<?php foreach($projects as $project): ?>
-										<li><a href="<?php echo "/app/sfchecks#/project/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
-									<?php endforeach;?>
-									</ul>
-								</li>
-							</ul>
-							<ul class="sf-menu">
-							<li>
-							<a href="#"><img src="<?php echo $small_avatar_url; ?>" style="width: 30px; height: 30px; float:left; position:relative; top:-6px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
+							<li><a href="/app/sfchecks#/projects">My Projects</a>
+								<ul>
+								<?php foreach($projects as $project): ?>
+									<li><a href="<?php echo "/app/sfchecks#/project/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+								<?php endforeach;?>
+								</ul>
+							</li>
+							<li><a href="#"><img src="<?php echo $small_avatar_url; ?>" style="width: 30px; height: 30px; float:left; position:relative; top:-6px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
 								<ul>
 									<?php if ($is_admin):?>
 									<li><a href="/app/sfadmin">Site Administration</a></li>

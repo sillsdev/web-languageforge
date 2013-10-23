@@ -67,10 +67,9 @@ div.sf-logo-large {
 
 div.sf-logo-medium {
 	position: absolute;
-	width: 96px;
-	height: 122px;
-	top: -38px;
-	left: -4px;
+	width: 92px;
+	height: 114px;
+	top: 7px;
 	z-index: 10;
 }
 
