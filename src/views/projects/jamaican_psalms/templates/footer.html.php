@@ -6,7 +6,7 @@
 					
 						<div class="span2">
 							<h4>Contact</h4>
-							<small>Scripture Forge<br />SIL International<br />7500 W. Camp Wisdom Road<br />Dallas, TX 75236-5629 USA</small>
+							<small>Jamaican Psalms Project<br />Bible Society West Indies<br />24 Hagley Pk Plaza<br /> Kingston 10, Jamaica</small>
 						</div>
 						
 						<div class="span2">

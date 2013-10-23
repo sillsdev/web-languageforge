@@ -394,13 +394,13 @@ a:hover {
 /* added from sf.css as referenced in template */
 #maincontainer {
 	min-height: 100%;
-	margin-bottom: -239px;
+	margin-bottom: -225px;
 	position: relative;
 	
 }
 
 #footercontainer {
-	height: 239px;
+	height: 225px;
 	position: relative;
 	
 }
