@@ -14,13 +14,23 @@ class App extends Secure_base {
 			$data = array();
 			$data['appName'] = $app;
 			
+			// User Id
 			$sessionData = array();
 			$sessionData['userId'] = (string)$this->session->userdata('user_id');
+			
+			// Rights
 			$role = $this->_user->role;
 			if (empty($role)) {
 				$role = Roles::USER;
 			}
 			$sessionData['userSiteRights'] = Roles::getRightsArray(Realm::SITE, $role);
+			
+			// File Size
+			$postMax = self::fromValueWithSuffix(ini_get("post_max_size"));
+			$uploadMax = self::fromValueWithSuffix(ini_get("upload_max_filesize"));
+			$fileSizeMax = min(array($postMax, $uploadMax));
+			$sessionData['fileSizeMax'] = $fileSizeMax;
+			
 			$jsonSessionData = json_encode($sessionData);
 			$data['jsonSession'] = $jsonSessionData;
 
@@ -33,6 +43,28 @@ class App extends Secure_base {
 			
 			$this->_render_page("angular-app", $data);
 		}
+	}
+	
+	/**
+	 * 
+	 * @param string $val
+	 * @return int
+	 */
+	private static function fromValueWithSuffix($val) {
+		$val = trim($val);
+		$result = (int)$val;
+		$last = strtolower($val[strlen($val)-1]);
+		switch($last) {
+			// The 'G' modifier is available since PHP 5.1.0
+			case 'g':
+				$result *= 1024;
+			case 'm':
+				$result *= 1024;
+			case 'k':
+				$result *= 1024;
+		}
+	
+		return $result;
 	}
 	
 	private static function ext($filename) {
