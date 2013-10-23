@@ -1,4 +1,4 @@
-<div class="sfcontainer termsofservice">
+<div class="container termsofservice">
 			<h1>Website Terms of Use</h1>
 			<p>PLEASE REVIEW BEFORE USING THIS WEBSITE - IF YOU DO NOT AGREE TO THESE TERMS OF USE, DO NOT USE THIS WEBSITE.</p>
 			<h3>General Description</h3>

@@ -1,4 +1,4 @@
-<div class="sfcontainer">
+<div class="container">
 	<h1>Frequently Asked Questions</h1>
 <div>
 <h2>Q. What web browsers work best with ScriptureForge?</h2>
