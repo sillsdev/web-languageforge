@@ -15,7 +15,7 @@
 					"summary" => "Scripture Forge enables communities to participate in the Scripture checking process like never before."
 					)
 			);
-			$this->load->view("templates/slideshow.html.php", $data);
+			$this->load->view("projects/jamaican_psalms/templates/slideshow.html.php", $data);
 			?>
 			
 			
@@ -48,7 +48,7 @@
 					"target_url" => "#"
 					)
 			);
-			$this->load->view("templates/3column.html.php", $data);
+			$this->load->view("projects/jamaican_psalms/templates/3column.html.php", $data);
 			?>
 			
 			
