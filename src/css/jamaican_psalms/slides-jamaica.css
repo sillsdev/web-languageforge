@@ -80,7 +80,7 @@
 	Pagination
 */
 
-.pagination {
+.slide_pagination {
 	position: absolute;
 	display: block;
 	width: 64px;
@@ -91,13 +91,13 @@
 	z-index: 5;
 }
 
-.pagination li {
+.slide_pagination li {
 	float:left;
 	margin:0 1px;
 	list-style:none;
 }
 
-.pagination li a {
+.slide_pagination li a {
 	display: block;
 	width: 13px;
 	height: 0;
@@ -112,6 +112,6 @@
 	outline: 0;
 }
 
-.pagination li.current a {
+.slide_pagination li.current a {
 	background-position: -12px 0;
 }
