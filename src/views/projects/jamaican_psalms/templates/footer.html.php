@@ -30,7 +30,7 @@
 						<div class="span3">
 							<p><a href="http://ic.payap.ac.th/"><img src="/images/PAYAP_logo.png" alt="PAYAP Logo" width="170" height="50" /></a></p>
 							<p><a href="http://www.theseedcompany.org/"><img src="/images/seed-company-logo.png" alt="Seed Company Logo" width="162" height="50" /></a></p>
-							<p><a href="http://biblesocietywi.org/"><img src="/images/jamaican_psalms/bwsi_logo.png" alt="bwsi_logo" width="91" height="60"></p>
+							<p><a href="http://biblesocietywi.org/"><img src="/images/jamaican_psalms/bwsi_logo.png" alt="bwsi_logo" width="91" height="60" /></a></p>
 						</div>
 						
 				
@@ -41,7 +41,10 @@
 		
 		<div id="footerBaseline">
 			<div class="container">
+				<div style="color:#CCC; float:left; margin-left:250px">Copyright <?php echo strftime("%Y"); ?> SIL International. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</div>
 				<div class="darkTextLogo"></div>
 			</div>
-		</div>
+<!-- 			<div class="container"> -->
+<!-- 				<div class="darkTextLogo"></div> -->
+<!-- 			</div> -->
 		</div>
