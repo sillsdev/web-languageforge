@@ -4,18 +4,23 @@ require_once 'base.php';
 
 class Projects extends Base {
 	
-	public function view($page = 'unknown') {
+	public function view($project = 'unknown') {
 		$data = array();
 		$data['title'] = "Scripture Forge";
 		$data['is_static_page'] = true;
-		if ( ! file_exists('views/projects/'.$page.'.html.php'))
-		{
-			$this->_render_page("projects/not_yet_implemented", $data);
+		
+		$templateInFolder = 'projects/' . $project . '/pages/frontpage';
+		$templateInSingleFile = 'projects/' . $project;
+
+		if (file_exists(self::templateToPath($templateInFolder))) {
+			$this->renderProjectPage('pages/frontpage', $project, $data);
+		} else if (file_exists(self::templateToPath($templateInSingleFile))) {
+			$this->_render_page($templateInSingleFile, $data);
 		} else {
-			$this->_render_page("projects/$page", $data);
+			$this->_render_page("projects/not_yet_implemented", $data);
 		}
 	}
+	
 }
-
 
 ?>
