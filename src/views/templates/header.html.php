@@ -1,12 +1,12 @@
 <!--[if lte IE 8]>
 <div style="text-align:center">Your browser may not work so well. Please consider <a href="learn_faq">upgrading</a> to a modern standards compliant browser.</div>
 <![endif]-->
-		<div id="header" class="png_bg">
-			<div class="sfcontainer">
+		<div id="header">
+			<div class="container">
 				<div class="sf-logo-large">
-					<img src="/images/sf_logo_medium.png" alt="Scripture Forge" style="width:92px; height:114px" class="png_bg" />
+					<img src="/images/sf_logo_medium.png" alt="Scripture Forge" style="width:92px; height:114px" />
 				</div>
-				<div id="header-nav" class="left">
+				<div id="header-nav" class="pull-left">
 					<ul class="sf-menu">
 						<li><a href="/">Home</a></li>
 						<li><a href="/explore">Explore</a>
@@ -39,7 +39,7 @@
 				</div>
 				
 				<?php if ($logged_in):?>
-					<div class="right">
+					<div class="pull-right">
 							<ul class="sf-menu">
 								<li><a href="/app/sfchecks#/projects">My Projects</a>
 									<ul>
@@ -66,7 +66,7 @@
 					</div>
 				
 				<?php else:?>
-					<div id="account" class="right">
+					<div id="account" class="pull-right">
 						<input type="button" value="Login" style="position:relative; top:-3px" class="login-btn left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/signup">Create an Account</a>
 					</div>
 				<?php endif;?>
