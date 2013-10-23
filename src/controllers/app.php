@@ -7,7 +7,7 @@ require_once 'secure_base.php';
 
 class App extends Secure_base {
 	
-	public function view($app = 'main') {
+	public function view($app = 'main', $project = 'default') {
 		if ( ! file_exists("angular-app/$app")) {
 			show_404();
 		} else {
