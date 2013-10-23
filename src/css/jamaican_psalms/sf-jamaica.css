@@ -76,6 +76,7 @@ div.sf-logo-medium {
 div.darkTextLogo {
 	width: 166px;
 	height: 14px;
+	margin-top: 14px;
 	background: transparent url(../../images/jamaican_psalms/sf_sprite_jamaica.png) no-repeat 0 -22px;
 }
 
@@ -182,9 +183,11 @@ div#footer div#sponsor {
 div#footerBaseline {
 	position: relative;
 	width: 100%;
-	height: 26px;
-	padding-top: 14px;
+	height: 40px;
+	line-height: 40px;
 	background-color: #202020;
+	color: #aaa;
+	text-align: right;
 }
 
 div#footerBaseline a {
