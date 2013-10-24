@@ -104,9 +104,9 @@ angular.module(
 					$scope.selected = []; // Reset the selection
 					$scope.queryQuestions();
 					if (questionIds.length == 1) {
-						notice.push(notice.SUCCESS, "The text was removed successfully");
+						notice.push(notice.SUCCESS, "The question was removed successfully");
 					} else {
-						notice.push(notice.SUCCESS, "The texts were removed successfully");
+						notice.push(notice.SUCCESS, "The questions were removed successfully");
 					}
 				}
 			});
