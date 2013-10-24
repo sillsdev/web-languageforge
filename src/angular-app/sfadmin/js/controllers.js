@@ -106,7 +106,7 @@ angular.module(
 	// Roles in list
 	$scope.roles = {
         'user': {name: 'User'},
-        'system_admin': {name: 'System Admin'}
+        'system_admin': {name: 'Site Administrator'}
 	};
 	
 	$scope.roleLabel = function(role) {
