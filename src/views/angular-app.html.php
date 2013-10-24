@@ -35,3 +35,7 @@ window.session = <?php echo $jsonSession; ?>;
 	<?php endforeach; ?>
 <?php endif; ?>
 
+
+<?php // this is necessary to fix a IE 10 bug where documentReady fires before all JS resources are loaded.
+// see: http://stackoverflow.com/questions/12988506/angularjs-fail-to-load-module ?>
+<script>angular.bootstrap(document, ['<?php echo $appName;?>']);</script>

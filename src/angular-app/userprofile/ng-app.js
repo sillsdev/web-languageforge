@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('userProfile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.notice'])
+angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.notice'])
 .controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
 		function userProfileCtrl($scope, userService, ss, notice) {
 	$scope.user = {};
