@@ -29,18 +29,27 @@ angular.module(
 		);
 
 		// Question templates
-		$scope.templates = [];
+		$scope.emptyTemplate = {
+			title: '(Select a template)',
+			description: undefined
+		};
+		$scope.templates = [$scope.emptyTemplate];
 		$scope.queryTemplates = function() {
 			qts.list(function(result) {
 				if (result.ok) {
 					$scope.templates = result.data.entries;
+					// Add "(Select a template)" as default value
+					$scope.templates.unshift($scope.emptyTemplate);
+					if (angular.isUndefined($scope.template)) {
+						$scope.template = $scope.emptyTemplate;
+					}
 				}
 			});
 		};
 		$scope.queryTemplates();
 
 		$scope.$watch('template', function(template) {
-			if (template) {
+			if (template && !angular.isUndefined(template.description)) {
 				$scope.questionTitle = template.title;
 				$scope.questionDescription = template.description;
 			}
