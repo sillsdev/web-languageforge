@@ -27,14 +27,24 @@ class Upload extends Base {
 					mkdir($folderPath);
 				};
 				
+				// cleanup previous files of any allowed extension
+				$cleanupFiles = glob($folderPath . '/' . $textId . '*[' . implode(', ', $allowedExtensions) . ']');
+				foreach ($cleanupFiles as $filename) {
+					@unlink($filename);
+				}
+				
 				// move uploaded file from tmp location to assets
 				$filePath =  $folderPath . '/' . $textId . '_' . $fileName;
-				move_uploaded_file($file['tmp_name'], $filePath);
+				$moveOk = move_uploaded_file($file['tmp_name'], $filePath);
 
 				// update database with file location
 				$project = new ProjectModel($projectId);
 				$text = new TextModel($project, $textId);
-				$text->audioUrl = $filePath;
+				if ($moveOk) {
+					$text->audioUrl = $filePath;
+				} else {
+					$text->audioUrl = '';
+				}
 				$text->write();
 
 				echo "File $fileName uploaded.";
