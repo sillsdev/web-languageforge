@@ -48,7 +48,7 @@ class Upload extends Base {
 				}
 				$text->write();
 
-				echo "File $fileName uploaded.";
+				echo "File uploaded succesfully.";
 			} else {
 				$allowedExtensionsStr = implode(", ", $allowedExtensions);
 				if (count($allowedExtensions) < 1) {
