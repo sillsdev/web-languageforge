@@ -14,6 +14,7 @@ class Upload extends Base {
 		$file = $_FILES['file'];
 		$fileType = $file['type'];
 		$fileName = $file['name'];
+		$fileName = str_replace(array('/', '\\', '?', '%', '*', ':', '|', '"', '<', '>'), '_', $fileName);	// replace special characters with _
 		$fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
 
 		$projectId = $_POST['projectId'];
@@ -29,8 +30,8 @@ class Upload extends Base {
 				
 				// cleanup previous files of any allowed extension
 				$cleanupFiles = glob($folderPath . '/' . $textId . '*[' . implode(', ', $allowedExtensions) . ']');
-				foreach ($cleanupFiles as $filename) {
-					@unlink($filename);
+				foreach ($cleanupFiles as $cleanupFile) {
+					@unlink($cleanupFile);
 				}
 				
 				// move uploaded file from tmp location to assets
