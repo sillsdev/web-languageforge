@@ -32,11 +32,13 @@ class MongoTestEnvironment
 		}
 		$projectModel = new MockProjectModel();
 		$projectDb = \models\mapper\MongoStore::connect($projectModel->databaseName());
-		$projectDb->drop();
 		
 		foreach ($this->_projectDbs as $databaseName) {
 			$projectDb = \models\mapper\MongoStore::connect($databaseName);
-			$projectDb->drop();
+			foreach ($projectDb->listCollections() as $collection)
+			{
+				$collection->drop();
+			}
 		}
 	}
 
