@@ -16,9 +16,9 @@ class RightsHelper
 	 */
 	public static function encode($userModel, $projectModel) {
 		if ($userModel->role == Roles::SYSTEM_ADMIN) {
-			return Roles::getRightsArray(Realm::PROJECT, $userModel->role); 
+			return Roles::getRightsArray(Realm::PROJECT, Roles::PROJECT_ADMIN); 
 		} else {
-			return $projectModel->getRightsArray($userModel->id->id);
+			return $projectModel->getRightsArray($userModel->id->asString());
 		}
 	}
 	
