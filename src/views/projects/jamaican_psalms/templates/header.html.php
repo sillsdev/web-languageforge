@@ -8,7 +8,7 @@
 				</div>
 				<div id="header-nav" class="pull-left">
 					<ul class="sf-menu">
-						<li><a href="/project/jamaican">Home</a></li>
+						<li><a href="/projects/jamaican_psalms">Home</a></li>
 						<li><a href="/learn_scripture_forge">Learn</a>
 							<ul>
 								<li><a href="/learn_faq">Frequently Asked Questions</a></li>
@@ -17,7 +17,7 @@
 								<li><a href="/learn_contribute">Contribute</a></li>
 							</ul>
 						</li>
-						<li><a href="/contribute">Contribute</a></li>
+						<li><a href="/learn_contribute">Contribute</a></li>
 						<li><a href="/discuss">Discuss</a></li>
 					</ul>
 				</div>
