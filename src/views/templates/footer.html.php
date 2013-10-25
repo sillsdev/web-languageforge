@@ -10,16 +10,16 @@
 						</div>
 						<div class="left footer-nav">
 							<h4>Navigate</h4>
-							<p class="small"><a href="/">Home</a><br /><a href="/explore">Explore</a><br /><a href="/learn_scripture_forge">Learn</a><br /><a href="/contribute">Contribute</a><br /><a href="/discuss">Discuss</a></p>
+							<p class="small"><a href="/">Home</a><br /><a href="/explore">Explore</a><br /><a href="/learn_scripture_forge">Learn</a><br /><a href="/learn_contribute">Contribute</a><br /><a href="/discuss">Discuss</a></p>
 						</div>
 					</div>
 				</div>
 				
 				<div class="three-col">
 					<div class="three-col-2">
-						<h4>Credits</h4>
-						<p class="small">Copyright <?php echo strftime("%Y"); ?> Scripture Forge. An SIL International project. All rights reserved.</p>
-						<p class="small">Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</p>
+						<div class="left footer-nav">
+						&nbsp;
+						</div>
 					</div>
 				</div>
 				
@@ -37,7 +37,9 @@
 		
 		<div id="footerBaseline">
 			<div class="sfcontainer">
-				<div class="darkTextLogo png_bg"></div>
+					<div class="small" style="color:#CCC; float:left; margin-left:250px">Copyright <?php echo strftime("%Y"); ?> SIL International. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</div>
+				<div class="darkTextLogo png_bg">
+				</div>
 			</div>
 		</div>
 		</div>

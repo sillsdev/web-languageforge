@@ -3,7 +3,6 @@
 namespace models;
 
 use libraries\palaso\CodeGuard;
-
 use models\rights\Realm;
 use models\rights\Roles;
 use models\rights\ProjectRoleModel;
@@ -13,6 +12,7 @@ use models\mapper\MongoStore;
 use models\mapper\ReferenceList;
 use models\mapper\Id;
 use models\UserList_ProjectModel;
+use models\sms\SmsSettings;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
@@ -36,14 +36,39 @@ class ProjectModelMongoMapper extends \models\mapper\MongoMapper
 	}
 }
 
-class ProjectModel extends \models\mapper\MapperModel
+class ProjectSettingsModel extends \models\mapper\MapperModel
 {
 	public function __construct($id = '') {
 		$this->id = new Id();
+		$this->smsSettings = new SmsSettings();
+		$this->emailSettings = new EmailSettings();
+		parent::__construct(ProjectModelMongoMapper::instance(), $id);
+	}
+	
+	/**
+	 * @var Id
+	 */
+	public $id;
+	
+	/**
+	 * @var SmsSettings
+	 */
+	public $smsSettings;
+	
+	/**
+	 * @var EmailSettings
+	 */
+	public $emailSettings;
+	
+}
+
+class ProjectModel extends ProjectSettingsModel
+{
+	public function __construct($id = '') {
 		$this->users = new MapOf(function($data) {
 			return new ProjectRoleModel();
 		});
-		parent::__construct(ProjectModelMongoMapper::instance(), $id);
+		parent::__construct($id);
 	}
 	
 	public function databaseName() {
@@ -127,11 +152,6 @@ class ProjectModel extends \models\mapper\MapperModel
 	}
 	
 	/**
-	 * @var Id
-	 */
-	public $id;
-	
-	/**
 	 * @var string
 	 */
 	public $projectname;
@@ -180,14 +200,29 @@ class ProjectListModel extends \models\mapper\MapperListModel
 class ProjectList_UserModel extends \models\mapper\MapperListModel
 {
 
-	public function __construct($userId)
-	{
-		parent::__construct(
-				ProjectModelMongoMapper::instance(),
-				array('users.' . $userId => array('$exists' => true)),
-				array('projectname')
-		);
+	public function __construct() {
+		parent::__construct(ProjectModelMongoMapper::instance());
 	}
+	
+	/**
+	 * Reads all projects
+	 */
+	function readAll() {
+		$query = array();
+		$fields = array('projectname');
+		return $this->_mapper->readList($this, $query, $fields);
+	}
+	
+	/**
+	 * Reads all projects in which the given $userId is a member.
+	 * @param string $userId
+	 */
+	function readUserProjects($userId) {
+		$query = array('users.' . $userId => array('$exists' => true));
+		$fields = array('projectname');
+		return $this->_mapper->readList($this, $query, $fields);
+	}
+	
 
 }
 

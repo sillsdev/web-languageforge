@@ -34,23 +34,42 @@ angular.module('palaso.ui.selection', [])
 						}
 					}
 				});
-				element.bind('mousedown', function() {
+				element.bind('mousedown', function(event) {
 					if (scope.oldHighlightedRange) {
 						controller.cssApplier.undoToRange(scope.oldHighlightedRange);
 						scope.oldHighlightedRange = null;
 					}
+					scope.validMouseDown = true;
 				});
-				element.bind('mouseup', function() {
-					var selection = rangy.getSelection();
-					var selectedHtml = selection.toHtml();
+				element.bind('mouseup', function(event) {
+					// There is a Firefox behavior, which may be a bug, that
+					// is making the mouseup event fire even when the mouse
+					// button is released *outside* this element. Weirdly,
+					// both the event.currentTarget and event.delegateTarget
+					// properties point to this element when the event fires
+					// from an outside mouse release! This behavior doesn't
+					// happen in Chrome, where the event (correctly) doesn't
+					// fire on an outside mouse release.
 
-					var range = selection.getRangeAt(0);
-					controller.cssApplier.applyToRange(range);
-					scope.oldHighlightedRange = range;
+					// I have found no way to get Firefox to fire the mouseup
+					// event correctly. In the meantime, checking that the
+					// mousedown event was originally fired on this element
+					// should be good enough to catch most, though not all,
+					// cases of invalid highlighting.  2013-10 RM
 
-					scope.$apply(function() {
-						scope.silSelectedText = selectedHtml;
-					});
+					if (scope.validMouseDown) {
+						var selection = rangy.getSelection();
+						var selectedHtml = selection.toHtml();
+
+						var range = selection.getRangeAt(0);
+						controller.cssApplier.applyToRange(range);
+						scope.oldHighlightedRange = range;
+
+						scope.$apply(function() {
+							scope.silSelectedText = selectedHtml;
+						});
+					}
+					scope.validMouseDown = false;
 				});
 			}
 		};
