@@ -231,6 +231,26 @@ angular.module(
 			});
 		};
 
+		$scope.onUsxFile = function($files) {
+			if (!$files || $files.length == 0) {
+				return;
+			}
+			var file = $files[0];  // Use only first file
+			var reader = new FileReader();
+			reader.addEventListener("loadend", function() {
+				// Basic sanity check: make sure what was uploaded is XML
+				// First few characters should be optional BOM, then <?xml
+				var startOfText = reader.result.slice(0,10);
+				var xmlIndex = startOfText.indexOf('<?xml');
+				if (xmlIndex != -1) {
+					$scope.$apply(function() {
+						$scope.editedText.content = reader.result;
+					})
+				}
+			})
+			reader.readAsText(file);
+		}
+
 		$scope.progress = 0;
 		$scope.uploadResult = '';
 		$scope.onFileSelect = function($files) {
