@@ -2,25 +2,17 @@
 
 namespace models\dto;
 
-use models\UnreadActivityModel;
-
-use models\TextModel;
+use models\ActivityListModel;
 use models\QuestionModel;
-
+use models\TextModel;
+use models\UnreadActivityModel;
+use models\ProjectList_UserModel;
+use models\ProjectListModel;
+use models\ProjectModel;
+use models\UserModel;
 use models\mapper\JsonEncoder;
 
 require_once(APPPATH . 'models/ActivityModel.php');
-
-
-use models\ProjectList_UserModel;
-
-use models\ActivityListModel;
-
-use models\ProjectListModel;
-
-use models\UserModel;
-
-use models\ProjectModel;
 
 class ActivityListDtoEncoder extends JsonEncoder {
 	private $_project;
@@ -99,8 +91,8 @@ class ActivityListDto
 	 * @return array - the DTO array
 	*/
 	public static function getActivityForUser($userId) {
-		$projectList = new ProjectList_UserModel($userId);
-		$projectList->read();
+		$projectList = new ProjectList_UserModel();
+		$projectList->readUserProjects($userId);
 		$activity = array();
 		foreach ($projectList->entries as $project) {
 			$projectModel = new ProjectModel($project['id']);

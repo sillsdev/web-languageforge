@@ -20,4 +20,6 @@ define('SF_DATABASE', 'scriptureforge_test');
 define('SF_TESTPROJECT', 'Test Project');
 define('SF_TESTPROJECT2', 'Test Project2');
 
+require_once(APPPATH . 'config/sf_config.php');
+
 ?>

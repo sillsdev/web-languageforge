@@ -32,15 +32,26 @@ class Base extends CI_Controller {
 	}
 	
 	// all child classes should use this method to render their pages
-	protected function _render_page($view, $data=null, $render=true)
-	{
-		$this->viewdata = (empty($data)) ? $this->data: $data;
+	protected function _render_page($view, $data=null, $render=true) {
+		$this->renderProjectPage($view, '', $data, $render);
+	}
+	
+	protected function renderProjectPage($view, $project = '', $data = null, $render = true) {
+		$this->viewdata = (empty($data)) ? $this->data : $data;
 		
-		if (file_exists(APPPATH . "/views/" . $view . ".html.php")) {
-			$view = $view . ".html.php";
+		if ($project) {
+			$view = 'projects/' . $project . '/' . $view;
+			$containerView = 'projects/' . $project . '/templates/container.html.php';
+		} else {
+			$containerView = 'templates/container.html.php';
 		}
 		
-		$this->viewdata["page"] = $view;
+		if (file_exists(self::templateToPath($view))) {
+			$this->viewdata["page"] = $view . ".html.php";
+		} else if (file_exists(self::templateToPath($view, '.php'))) {
+			$this->viewdata["page"] = $view . ".php";
+		}
+		
 		$this->viewdata['is_admin'] = false;
 		
 		// setup specific variables for header
@@ -66,9 +77,17 @@ class Base extends CI_Controller {
 				$this->viewdata['all_projects'] = $projectList->entries;
 			}
 		}
-		$view_html = $this->load->view('templates/container.html.php', $this->viewdata, !$render);
-
+		$view_html = $this->load->view($containerView, $this->viewdata, !$render);
+		
 		if (!$render) return $view_html;
+	}
+	
+	/**
+	 * @param string $templateName
+	 * @return string
+	 */
+	protected static function templateToPath($templateName, $suffix = '.html.php') {
+		return 'views/' .  $templateName . $suffix;
 	}
 	
 }

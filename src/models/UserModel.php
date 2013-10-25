@@ -2,20 +2,23 @@
 
 namespace models;
 
-use models\rights\Roles;
 use models\UserModelMongoMapper;
-
-use models\mapper\IdReference;
-
-use models\mapper\MongoMapper;
-
 use models\mapper\Id;
+use models\mapper\IdReference;
+use models\mapper\MongoMapper;
 use models\mapper\ReferenceList;
+use models\rights\Realm;
+use models\rights\Roles;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
 class UserModel extends \models\mapper\MapperModel
 {
+	
+	const COMMUNICATE_VIA_SMS   = 'sms';
+	const COMMUNICATE_VIA_EMAIL = 'email';
+	const COMMUNICATE_VIA_BOTH  = 'both';
+	
 	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->projects = new ReferenceList();
@@ -33,10 +36,16 @@ class UserModel extends \models\mapper\MapperModel
 
 	public function read($id) {
 		parent::read($id);
+		
+		// Default Values for User
 		if (!$this->avatar_ref) {
 			$default_avatar = "/images/avatar/anonymoose.png";
 			$this->avatar_ref = $default_avatar;
 		}
+		if (!$this->communicate_via) {
+			$this->communicate_via = self::COMMUNICATE_VIA_EMAIL;
+		}
+		
 	}
 	
 	/**
@@ -81,9 +90,21 @@ class UserModel extends \models\mapper\MapperModel
 	}
 	
 	public function listProjects() {
-		$projectList = new ProjectList_UserModel($this->id->asString());
-		$projectList->read();
+		$projectList = new ProjectList_UserModel();
+		$projectList->readUserProjects($this->id->asString());
 		return $projectList;
+	}
+	
+	
+	/**
+	 * Returns true if the given $userId has the $right in this site.
+	 * @param string $userId
+	 * @param int $right
+	 * @return bool
+	 */
+	public function hasRight($right) {
+		$result = Roles::hasRight(Realm::SITE, $this->role, $right);
+		return $result;
 	}
 	
 	/**

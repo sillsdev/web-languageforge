@@ -6,7 +6,6 @@ class AllEmailTests extends TestSuite {
 	
     function __construct() {
         parent::__construct();
- 		$this->addFile(TestPath . 'email/Template_Test.php');
     }
 
 }

@@ -3,6 +3,7 @@
 // Declare app level module which depends on filters, and services
 angular.module('sfchecks', 
 		[
+		 'ngRoute',
 		 'ngSanitize',
 		 'sfchecks.projects',
 		 'sfchecks.project',
@@ -28,7 +29,7 @@ angular.module('sfchecks',
     		}
     	);
 	    $routeProvider.when(
-	    		'/project/:projectId/settings', 
+	    		'/project/:projectId/details', 
 	    		{
 	    			templateUrl: '/angular-app/sfchecks/partials/project-settings.html', 
 	    			controller: 'ProjectSettingsCtrl'

@@ -12,7 +12,6 @@ class AllCommandsTests extends TestSuite {
  		$this->addFile(TestPath . 'commands/ProjectCommands_Test.php');
  		$this->addFile(TestPath . 'commands/TextCommands_Test.php');
  		$this->addFile(TestPath . 'commands/QuestionCommands_Test.php');
- 		$this->addFile(TestPath . 'commands/ActivityCommands_Test.php');
     }
 
 }

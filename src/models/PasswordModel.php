@@ -28,12 +28,6 @@ class PasswordModel extends MapperModel
 		$this->id = new Id();
 		parent::__construct(PasswordModel_MongoMapper::instance(), $id);
 	}
-	
-	public static function remove($id)
-	{
-		PasswordModel_MongoMapper::instance()->remove($id);
-	}
-	
 
 	public function changePassword($newPassword) {
 		$bcrypt = new Bcrypt();

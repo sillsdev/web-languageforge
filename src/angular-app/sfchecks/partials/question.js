@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.question',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.selection', 'palaso.ui.notice' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice' ]
 	)
 	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService',
 	                             function($scope, $routeParams, questionService, ss, breadcrumbService, notice) {
@@ -40,20 +40,21 @@ angular.module(
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId + '/' + $routeParams.questionId, label: ''},
 				]
 		);
-		
+
 		$scope.votes = {};
 		$scope.unreadComments = [];
 		$scope.unreadAnswers = [];
+		$scope.myResponses = [];
 		
 		$scope.unreadResponseCount = function() {
 			return $scope.unreadComments.length + $scope.unreadAnswers.length;
 		}
 		
-		$scope.isUnreadComment = function(id, commentUserId) {
-			return ($.inArray(id, $scope.unreadComments) > -1);
+		$scope.isUnreadComment = function(id) {
+			return ($.inArray(id, $scope.unreadComments) > -1 || $.inArray(id, $scope.myResponses) > -1);
 		};
-		$scope.isUnreadAnswer = function(id, answerUserId) {
-			return ($.inArray(id, $scope.unreadAnswers) > -1);
+		$scope.isUnreadAnswer = function(id) {
+			return ($.inArray(id, $scope.unreadAnswers) > -1 || $.inArray(id, $scope.myResponses) > -1);
 		};
 		
 		questionService.read(projectId, questionId, function(result) {
@@ -268,7 +269,7 @@ angular.module(
 						newComment = result.data[id]; // There should be one, and only one, record in result.data
 					}
 					$scope.question.answers[answerId].comments[newComment.id] = newComment;
-					$scope.unreadComments.push(newComment.id);
+					$scope.myResponses.push(newComment.id);
 				}
 			});
 		};
@@ -304,7 +305,7 @@ angular.module(
 		var afterUpdateAnswer = function(answersDto) {
 			for (var id in answersDto) {
 				$scope.question.answers[id] = answersDto[id];
-				$scope.unreadAnswers.push(id);
+				$scope.myResponses.push(id);
 			}
 			// Recalculate answer count as it might have changed
 			$scope.question.answerCount = Object.keys($scope.question.answers).length;
@@ -336,7 +337,7 @@ angular.module(
 			});
 		};
 		
-		$scope.updateAnswer = function(projectId, questionId, answer) {
+		var updateAnswer = function(projectId, questionId, answer) {
 			questionService.update_answer(projectId, questionId, answer, function(result) {
 				if (result.ok) {
 					if (answer.id == '') {
@@ -355,7 +356,7 @@ angular.module(
 				'content': $scope.newAnswer.content,
 				'textHighlight': $scope.newAnswer.textHighlight,
 			};
-			$scope.updateAnswer(projectId, questionId, answer);
+			updateAnswer(projectId, questionId, answer);
 			$scope.newAnswer.content = '';
 			$scope.newAnswer.textHighlight = '';
 			$scope.selectedText = '';
@@ -363,7 +364,7 @@ angular.module(
 		
 		$scope.editAnswer = function(answer) {
 			if ($scope.rightsEditOwn(answer.userRef.userid)) {
-				$scope.updateAnswer(projectId, questionId, answer);
+				updateAnswer(projectId, questionId, answer);
 			}
 			$scope.hideAnswerEditor();
 		};
@@ -385,6 +386,41 @@ angular.module(
 		$scope.$watch('selectedText', function(newval) {
 			$scope.newAnswer.textHighlight = newval;
 		});
+
+		// TAGS
+		var mergeArrays = function(a, b) {
+			// From http://stackoverflow.com/a/13847481/2314532
+			var set = {};
+			var result = [];
+
+			// Can't count on forEach being available; loop the manual way
+			for (var i=0; i < a.length; i++) {
+				var item = a[i];
+				if (!set[item]) { // O(1) lookup
+					set[item] = true;
+					result.push(item);
+				}
+			}
+			for (var i=0; i < b.length; i++) {
+				var item = b[i];
+				if (!set[item]) { // O(1) lookup
+					set[item] = true;
+					result.push(item);
+				}
+			}
+			return result;
+		};
+
+		$scope.addTags = function(tags, answer) {
+//			console.log('Tags to add', tags, answer);
+			answer.tags = mergeArrays(tags, answer.tags);
+			updateAnswer(projectId, questionId, answer);
+		};
+		
+		$scope.deletedTags = function(answer) {
+//			console.log('Tags deleted');
+			updateAnswer(projectId, questionId, answer);
+		};
 		
 	}])
 	;

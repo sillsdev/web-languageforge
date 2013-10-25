@@ -1,0 +1,411 @@
+/**
+ * Scripture Forge
+ *
+ * Version      Version 2.0
+ * Date			17th October 2013
+ * File Info	Homepage template CSS sheet to fit bootstrap 2 grid
+ */
+  
+body { 
+	font-family: "Open Sans", Arial, Helvetica, Verdana, sans-serif;
+	font-weight: 400;
+	color: #404040;
+	background: url(../../images/jamaican_psalms/sf_j_body_bkg_tile.png) repeat 0 0;
+}
+
+h2, h3 {
+	font-family: "Dosis", sans-serif;
+	font-weight: 300;
+}
+
+.lifted-text {
+	text-shadow: 0px 1px 1px #fff;
+}
+
+.sf-jamaican-yellow {
+	color: #F0BA13;
+}
+
+.sf-jamaican-green {
+	color: #6DA251;
+}
+
+/* Layout */
+div#header {
+	position: relative;
+	height: 39px;
+	background: #333 url(../../images/sf_header-bar-bkg.png) repeat-x 0 0;
+	border-bottom: 1px solid #222;
+	color: #fff;
+	z-index: 10; /* IE6-7 hack for logo */
+}
+
+div#header, div#header a {
+	color: #eeeff0;
+}
+
+div#header-nav {
+	width: auto;
+	height: 39px;
+	padding-left: 130px;
+	border-right: 1px solid #434242;
+}
+
+div#account{
+	padding-top: 7px;
+	font-size: 0.85em; 
+	line-height: 24px;
+}
+
+div.sf-logo-large {
+	position: absolute;
+	width: 96px;
+	height: 165px;
+	top: 7px;
+	z-index: 10;
+}
+
+div.sf-logo-medium {
+	position: absolute;
+	width: 92px;
+	height: 114px;
+	top: 7px;
+	z-index: 10;
+}
+
+div.darkTextLogo {
+	width: 166px;
+	height: 14px;
+	background: transparent url(../../images/jamaican_psalms/sf_sprite_jamaica.png) no-repeat 0 -22px;
+}
+
+div#sf-promotion-outer-wrap {
+	width: 100%;
+	border-bottom: 8px solid #fff;
+	background: url(../../images/jamaican_psalms/sf_promo_bkg_jamaica.png) repeat-x 0 0;
+}
+
+div#sf-promotion-inner-wrap {
+	width: auto;
+	max-width: 1280px;
+	min-width: 940px;
+	margin: 0 auto;
+	background: #333 url(../../images/jamaican_psalms/photo-1.jpg) no-repeat center 0;
+	overflow: hidden;
+}
+
+div#sf-promotion-wrap-shadow {
+	display: block;
+	height: 30px;
+	background: transparent url(../../images/jamaican_psalms/sf_sprite_jamaica.png) no-repeat center -74px;
+}
+
+div.promotionWing {
+	position: relative;
+	width: 229px;
+	height: 400px;
+	z-index: 2;
+}
+
+div.promotionWingLeft {
+	background: url(../../images/jamaican_psalms/sf_promo_wings_left_jamaica.png) no-repeat 0 0;
+}
+
+div.promotionWingRight {
+	background: url(../../images/jamaican_psalms/sf_promo_wings_right_jamaica.png) no-repeat 0 0;
+}
+
+div#sf-promotion {
+	width: 938px;
+	text-align: center;
+	margin: 0 auto;
+}
+
+div.sf-3up {
+	margin: 40px 0;
+	background-color: #fff;
+	border: 1px solid #D9D9D9;
+}
+
+div.sf-3up .span4 {
+	width: 262px;
+	margin: 0;
+	padding: 5px 25px 10px 25px;
+}
+
+div.sf-3up-1 {
+	border-top: 8px solid #F0BA13; 
+}
+
+div.sf-3up-2 {
+	border-top: 8px solid #595959; 
+	border-right: 1px dashed #ccc;
+	border-left: 1px dashed #ccc;
+}
+
+div.sf-3up-3 {
+	border-top: 8px solid #6DA251; 
+}
+
+div.sub-foot-detailing {
+	width: auto;
+	height: 7px;
+	background: url(../../images/jamaican_psalms/sf_j_sub-foot-detailing.png) repeat-x 0 0;
+}
+
+div#sub-foot {
+	padding: 20px 0;
+	background: url(../../images/jamaican_psalms/sf_j_dark_bkg_tile.png) repeat 0 0;
+}
+
+div#footer {
+	position: relative;
+	width: 100%;
+	height: auto;
+	padding: 40px 0 40px 0;
+	background-color: #3a3a3a;
+	background: #3a3a3a url(../../images/jamaican_psalms/sf_sprite_jamaica.png) no-repeat center -139px;
+}
+
+div#footer small {
+	line-height: auto;
+}
+
+div#footer, div#footer a {
+	color: #f4f4f6;
+}
+
+div#footer div#sponsor {
+	text-align: center;
+}
+
+div#footerBaseline {
+	position: relative;
+	width: 100%;
+	height: 26px;
+	padding-top: 14px;
+	background-color: #202020;
+}
+
+div#footerBaseline a {
+	color: #404040;
+	text-decoration: underline;  
+}
+
+a {  
+	color: #6DA251;  
+	text-decoration: none;  
+	xfont-weight: bold;
+}
+
+a.arrowed {
+	background: url(../../images/jamaican_psalms/sf_sprite_jamaica.png) no-repeat top right;
+	*background: url(../../images/jamaican_psalms/sf_sprite_jamaica.gif) no-repeat top right;
+	padding-right: 12px;
+}
+  
+a:hover {  
+	text-decoration: underline; 
+	color: #6DA251; 
+}
+
+.login-btn {
+	width: auto;
+	height: auto;
+	padding: 0.3em 1.2em 0.4em 1.2em;
+	color: #eee;
+	font-size: 1.0em;
+	font-weight: bold;
+	cursor: pointer;
+	border: 1px solid #191919;
+	-webkit-border-radius: 4px 4px 4px 4px;
+	-moz-border-radius: 4px 4px 4px 4px;
+	border-radius: 4px 4px 4px 4px;
+	-webkit-box-shadow: 0 0 3px #494949, inset 0 0 1px #aaa;
+	-moz-box-shadow: 0 0 3px #494949, inset 0 0 1px #aaa;
+	box-shadow: 0 0 3px #494949, inset 0 0 1px #aaa;
+	background: #555454; /* Old browsers */
+	background: -moz-linear-gradient(top, #555454 0%, #070707 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#555454), color-stop(100%,#070707));
+	background: -webkit-linear-gradient(top, #555454 0%,#070707 100%);
+	background: -o-linear-gradient(top, #555454 0%,#070707 100%);
+	background: -ms-linear-gradient(top, #555454 0%,#070707 100%);
+	background: linear-gradient(to bottom, #555454 0%,#070707 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#555454', endColorstr='#070707',GradientType=0 );
+}
+
+.login-btn:hover {
+	color: #fff;
+	border: 1px solid #000;
+	-webkit-box-shadow: 0 0 3px #494949, inset 0 0 1px #777;
+	-moz-box-shadow: 0 0 3px #494949, inset 0 0 1px #777;
+	box-shadow: 0 0 3px #494949, inset 0 0 1px #777;
+}
+
+.sf-btnJ {
+	padding: 6px 12px;
+	margin: 10px 0 5px 0;
+}
+
+.sf-btnJ1 {
+  background-color: #F0BA13;
+  border-color: #F0BA13;
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+  background-color: #deac10;
+  background-image: -moz-linear-gradient(top,#F0BA13,#c4970c);
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#F0BA13),to(#c4970c));
+  background-image: -webkit-linear-gradient(top,#F0BA13,#c4970c);
+  background-image: -o-linear-gradient(top,#F0BA13,#c4970c);
+  background-image: linear-gradient(to bottom,#F0BA13,#c4970c);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff0ba13', endColorstr='#ffc3960c', GradientType=0);
+  border-color: #c4970c #c4970c #7c5f08;
+  border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+}
+.sf-btnJ1:hover,
+.sf-btnJ1:focus {
+  text-decoration: none;
+  background-position: 0 -15px;
+  -webkit-transition: background-position .1s linear;
+  -moz-transition: background-position .1s linear;
+  -o-transition: background-position .1s linear;
+  transition: background-position .1s linear;
+}
+.sf-btnJ1:hover,
+.sf-btnJ1:focus {
+  background-color: #c4970c;
+}
+.sf-btnJ1:active,
+.sf-btnJ1.active,
+.sf-btnJ1.active:hover {
+  background-color: #dca90e;
+  border-color: #c4970c;
+}
+.sf-btnJ1.disabled:hover,
+.sf-btnJ1.disabled:focus,
+.sf-btnJ1.disabled:active,
+.sf-btnJ1.disabled.active,
+.sf-btnJ1[disabled] .sf-btnJ1:hover,
+.sf-btnJ1[disabled] .sf-btnJ1:focus,
+.sf-btnJ1[disabled] .sf-btnJ1:active,
+.sf-btnJ1[disabled] .sf-btnJ1.active {
+  background-color: #F0BA13;
+  border-color: #F0BA13;
+}
+
+
+.sf-btnJ2 {
+  background-color: #595959;
+  border-color: #595959;
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+  background-color: #4f4f4f;
+  background-image: -moz-linear-gradient(top,#595959,#404040);
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#595959),to(#404040));
+  background-image: -webkit-linear-gradient(top,#595959,#404040);
+  background-image: -o-linear-gradient(top,#595959,#404040);
+  background-image: linear-gradient(to bottom,#595959,#404040);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff595959', endColorstr='#ff3f3f3f', GradientType=0);
+  border-color: #404040 #404040 #191919;
+  border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+}
+.sf-btnJ2:hover,
+.sf-btnJ2:focus {
+  color: #ccc;
+  text-decoration: none;
+  background-position: 0 -15px;
+  -webkit-transition: background-position .1s linear;
+  -moz-transition: background-position .1s linear;
+  -o-transition: background-position .1s linear;
+  transition: background-position .1s linear;
+}
+.sf-btnJ2:hover,
+.sf-btnJ2:focus {
+  background-color: #404040;
+}
+.sf-btnJ2:active,
+.sf-btnJ2.active,
+.sf-btnJ2.active:hover {
+  background-color: #4c4c4c;
+  border-color: #404040;
+}
+.sf-btnJ2.disabled:hover,
+.sf-btnJ2.disabled:focus,
+.sf-btnJ2.disabled:active,
+.sf-btnJ2.disabled.active,
+.sf-btnJ2[disabled] .sf-btnJ2:hover,
+.sf-btnJ2[disabled] .sf-btnJ2:focus,
+.sf-btnJ2[disabled] .sf-btnJ2:active,
+.sf-btnJ2[disabled] .sf-btnJ2.active {
+  background-color: #595959;
+  border-color: #595959;
+}
+
+.sf-btnJ3 {
+  background-color: #6DA251;
+  border-color: #6DA251;
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+  background-color: #64944a;
+  background-image: -moz-linear-gradient(top,#6DA251,#568040);
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#6DA251),to(#568040));
+  background-image: -webkit-linear-gradient(top,#6DA251,#568040);
+  background-image: -o-linear-gradient(top,#6DA251,#568040);
+  background-image: linear-gradient(to bottom,#6DA251,#568040);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff6da251', endColorstr='#ff567f40', GradientType=0);
+  border-color: #568040 #568040 #344d27;
+  border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+}
+.sf-btnJ3:hover,
+.sf-btnJ3:focus {
+  text-decoration: none;
+  background-position: 0 -15px;
+  -webkit-transition: background-position .1s linear;
+  -moz-transition: background-position .1s linear;
+  -o-transition: background-position .1s linear;
+  transition: background-position .1s linear;
+}
+.sf-btnJ3:hover,
+.sf-btnJ3:focus {
+  background-color: #568040;
+}
+.sf-btnJ3:active,
+.sf-btnJ3.active,
+.sf-btnJ3.active:hover {
+  background-color: #629149;
+  border-color: #568040;
+}
+.sf-btnJ3.disabled:hover,
+.sf-btnJ3.disabled:focus,
+.sf-btnJ3.disabled:active,
+.sf-btnJ3.disabled.active,
+.sf-btnJ3[disabled] .sf-btnJ3:hover,
+.sf-btnJ3[disabled] .sf-btnJ3:focus,
+.sf-btnJ3[disabled] .sf-btnJ3:active,
+.sf-btnJ3[disabled] .sf-btnJ3.active {
+  background-color: #6DA251;
+  border-color: #6DA251;
+}
+
+
+/* added from sf.css as referenced in template */
+#maincontainer {
+	min-height: 100%;
+	margin-bottom: -225px;
+	position: relative;
+	
+}
+
+#footercontainer {
+	height: 225px;
+	position: relative;
+	
+}
+
+.clearfooter {
+	height: 239px;
+	clear: both;
+}

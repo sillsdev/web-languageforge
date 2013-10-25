@@ -1,6 +1,7 @@
 <?php
 namespace models\rights;
 
+use libraries\palaso\CodeGuard;
 class Roles {
 	
 	const SYSTEM_ADMIN  = 'system_admin';
@@ -48,8 +49,10 @@ class Roles {
 		$rights[] = Domain::PROJECTS + Operation::EDIT_OWN;
 		$rights[] = Domain::TEXTS + Operation::CREATE; 
 		$rights[] = Domain::TEXTS + Operation::EDIT_OTHER;
+		$rights[] = Domain::TEXTS + Operation::DELETE_OTHER;
 		$rights[] = Domain::QUESTIONS + Operation::CREATE;
 		$rights[] = Domain::QUESTIONS + Operation::EDIT_OTHER;
+		$rights[] = Domain::QUESTIONS + Operation::DELETE_OTHER;
 		$rights[] = Domain::USERS + Operation::CREATE;
 		$rights[] = Domain::USERS + Operation::EDIT_OTHER;
 		$rights[] = Domain::USERS + Operation::DELETE_OTHER;
@@ -90,6 +93,8 @@ class Roles {
 	 * @return bool
 	 */
 	public static function hasRight($realm, $role, $right) {
+		CodeGuard::checkNotFalseAndThrow($realm, 'realm');
+		CodeGuard::checkNotFalseAndThrow($role, 'role');
 		$result = in_array($right, self::$_rights[$realm][$role]);
 		return $result;
 	}
