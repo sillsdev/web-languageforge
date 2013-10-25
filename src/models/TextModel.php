@@ -55,6 +55,8 @@ class TextModel extends \models\mapper\MapperModel
 	
 	public $title;
 	
+	public $audioUrl;
+	
 	public $content;
 	
 }
