@@ -2,10 +2,10 @@
 
 angular.module(
 		'sfchecks.project',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte' ]
 )
-.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService',
-                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService, notice) {
+.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService', 'projectService', 'messageService',
+                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService, notice, projectService, messageService) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
 		
@@ -23,7 +23,30 @@ angular.module(
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
 				]
 		);
-
+		
+		// Broadcast Messages
+		// items are in the format of {id: id, subject: subject, content: content}
+		$scope.messages = [];
+		
+		/*
+		function addMessage(id, message) {
+			messages.push({id: id, message: message});
+		};
+		*/
+		
+		$scope.markMessageRead = function(id) {
+			for (var i=0; i < $scope.messages.length; ++i) {
+				var m = $scope.messages[i];
+				if (m.id == id) {
+					$scope.messages.splice(i, 1);
+					messageService.markRead(projectId, id);
+					break;
+				}
+			}
+		};
+		
+		
+		
 		// Listview Selection
 		$scope.newTextCollapsed = true;
 		$scope.selected = [];
@@ -39,29 +62,40 @@ angular.module(
 		$scope.isSelected = function(item) {
 			return item != null && $scope.selected.indexOf(item) >= 0;
 		};
-		// Listview Data
+		
 		$scope.texts = [];
-		$scope.queryTexts = function() {
-			console.log("queryTexts()");
-			textService.list(projectId, function(result) {
+		
+		// Page Dto
+		$scope.getPageDto = function() {
+			projectService.pageDto(projectId, function(result) {
 				if (result.ok) {
-					$scope.texts = result.data.entries;
+					$scope.texts = result.data.texts;
+					$scope.textsCount = $scope.texts.length;
 					$scope.enhanceDto($scope.texts);
-					$scope.textsCount = result.data.count;
+					
+					$scope.messages = result.data.broadcastMessages;
+					
+					// update activity count service
+					$scope.activityUnreadCount = result.data.activityUnreadCount;
+					
+					$scope.members = result.data.members;
+						
 
 					$scope.project = result.data.project;
 					$scope.project.url = linkService.project(projectId);
+					
 					breadcrumbService.updateCrumb('top', 1, {label: $scope.project.name});
 
 					var rights = result.data.rights;
 					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.DELETE_OTHER); 
 					$scope.rights.create = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE); 
-					$scope.rights.editOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
+					$scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT_OTHER);
 					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 				}
 			});
 		};
-		// Remove
+		
+		// Remove Text
 		$scope.removeTexts = function() {
 			console.log("removeTexts()");
 			var textIds = [];
@@ -112,12 +146,18 @@ angular.module(
 				items[i].url = linkService.text($scope.projectId, items[i].id);
 			}
 		};
+		
+		$scope.getPageDto();
 
 	}])
-	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService',
-	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice) {
+	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
 		var projectId = $routeParams.projectId;
 		$scope.project = {};
+		$scope.settings = {
+			'sms': {},
+			'email': {}
+		};
 		$scope.project.id = projectId;
 
 		// Breadcrumb
@@ -125,9 +165,28 @@ angular.module(
 				[
 				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/settings', label: 'Settings'},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/settings', label: 'Details'},
 				]
 		);
+		
+		$scope.message = {};
+		$scope.newMessageCollapsed = true;
+		$scope.sendMessageToSelectedUsers = function() {
+			var userIds = [];
+			for(var i = 0, l = $scope.selected.length; i < l; i++) {
+				userIds.push($scope.selected[i].id);
+			}
+			messageService.send($scope.project.id, userIds, $scope.message.subject, $scope.message.emailTemplate, $scope.message.smsTemplate, function(result) {
+				if (result.ok) {
+					$scope.message.subject = '';
+					$scope.message.emailTemplate = '';
+					$scope.message.smsTemplate = '';
+					$scope.selected = [];
+					$scope.newMessageCollapsed = true;
+					notice.push(notice.SUCCESS, "The message was successfully queued for sending");
+				}
+			});
+		};
 
 		$scope.updateProject = function() {
 			var newProject = {
@@ -141,6 +200,52 @@ angular.module(
 				}
 			});
 		};
+		
+		$scope.updateCommunicationSettings = function() {
+			projectService.updateSettings($scope.project.id, $scope.settings.sms, $scope.settings.email, function(result) {
+				if (result.ok) {
+					notice.push(notice.SUCCESS, $scope.project.name + " SMS settings updated successfully");
+				}
+			});
+		};
+		
+		$scope.readCommunicationSettings = function() {
+			projectService.readSettings($scope.project.id, function(result) {
+				if (result.ok) {
+					$scope.settings.sms = result.data.sms;
+					$scope.settings.email = result.data.email;
+				}
+			});
+		}
+		
+		$scope.canEditCommunicationSettings = function() {
+			return ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
+		}
+		
+		
+		// jqte options for html email message composition
+		$scope.jqteOptions = {
+			'placeholder': 'Email Message',
+			'u': false,
+			'indent': false,
+			'outdent': false,
+			'left': false,
+			'center': false,
+			'right': false,
+			'rule': false,
+			'source': false,
+			'link': false,
+			'unlink': false,
+			'fsize': false,
+			'sub': false,
+			'color': false,
+			'format': false,
+			'formats': [
+				['p', 'Normal'],
+				['h4', 'Large']
+			]
+		};
+		
 	
 		// ----------------------------------------------------------
 		// List
@@ -206,8 +311,8 @@ angular.module(
 		
 		// Roles in list
 		$scope.roles = [
-	        {key: 'user', name: 'User'},
-	        {key: 'project_admin', name: 'Project Admin'}
+	        {key: 'user', name: 'Member'},
+	        {key: 'project_admin', name: 'Manager'}
         ];
 		
 		$scope.onRoleChange = function(user) {

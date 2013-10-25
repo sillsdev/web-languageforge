@@ -65,6 +65,25 @@ angular.module('sf.services', ['jsonRpc'])
 			// TODO Paging CP 2013-07
 			jsonRpc.call('project_listUsers', [projectId], callback);
 		};
+		this.updateSettings = function(projectId, smsSettings, emailSettings, callback) {
+			jsonRpc.call('project_updateSettings', [projectId, smsSettings, emailSettings], callback);
+		};
+		this.readSettings = function(projectId, callback) {
+			jsonRpc.call('project_readSettings', [projectId], callback);
+		};
+		
+		this.pageDto = function(projectId, callback) {
+			jsonRpc.call('project_pageDto', [projectId], callback);
+		};
+	}])
+	.service('messageService', ['jsonRpc', function(jsonRpc) {
+		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
+		this.markRead = function(projectId, textId) {
+			jsonRpc.call('message_markRead', [projectId, textId], function() {});
+		};
+		this.send = function(projectId, userIds, subject, emailTemplate, smsTemplate, callback) {
+			jsonRpc.call('message_send', [projectId, userIds, subject, emailTemplate, smsTemplate], callback);
+		};
 	}])
 	.service('textService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
@@ -156,14 +175,14 @@ angular.module('sf.services', ['jsonRpc'])
 			SITE: function() { return window.session.userSiteRights; }
 		};
 		this.domain = {
-				ANY:       function() { return 100;},
-				USERS:     function() { return 110;},
-				PROJECTS:  function() { return 120;},
-				TEXTS:     function() { return 130;},
-				QUESTIONS: function() { return 140;},
-				ANSWERS:   function() { return 150;},
-				COMMENTS:  function() { return 160;},
-				TEMPLATES: function() { return 170;}
+				ANY:       function() { return 1000;},
+				USERS:     function() { return 1100;},
+				PROJECTS:  function() { return 1200;},
+				TEXTS:     function() { return 1300;},
+				QUESTIONS: function() { return 1400;},
+				ANSWERS:   function() { return 1500;},
+				COMMENTS:  function() { return 1600;},
+				TEMPLATES: function() { return 1700;}
 		};
 		this.operation = {
 				CREATE:       function() { return 1;},

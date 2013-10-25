@@ -1,5 +1,17 @@
 <?php
 
+use models\UnreadMessageModel;
+
+use models\rights\Operation;
+
+use models\rights\Domain;
+
+use models\dto\RightsHelper;
+
+use models\ProjectSettingsModel;
+
+use models\sms\SmsSettings;
+
 use models\UserModel;
 
 use models\dto\ProjectSettingsDto;
@@ -27,6 +39,7 @@ use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
 use models\mapper\MongoStore;
 use libraries\sfchecks\Email;
+use libraries\sfchecks\Communicate;
 
 require_once(APPPATH . 'vendor/autoload.php');
 
@@ -141,7 +154,7 @@ class Sf
 		if (UserModel::userNameExists($user->username)) {
 			return false;
 		}
-		Email::sendSignup($user);
+		Communicate::sendSignup($user);
 		$user->encryptPassword();
 		$user->active = false;
 		$user->role = "user";
@@ -230,9 +243,7 @@ class Sf
 	}
 	
 	public function project_list_dto() {
-		// Eventually this will need to get the current user id and do:
-		//return \models\dto\ProjectListDto::encode($userId);
-		return \models\dto\ProjectListDto::encode();
+		return \models\dto\ProjectListDto::encode($this->_userId);
 	}
 	
 	public function project_readUser($projectId, $userId) {
@@ -256,6 +267,53 @@ class Sf
 		$result = ProjectSettingsDto::encode($projectId, $this->_userId);
 		return $result;
 	}
+	
+	public function project_updateSettings($projectId, $smsSettingsArray, $emailSettingsArray) {
+		if (RightsHelper::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT_OTHER)) {
+			$smsSettings = new \models\sms\SmsSettings();
+			$emailSettings = new \models\EmailSettings();
+			JsonDecoder::decode($smsSettings, $smsSettingsArray);
+			JsonDecoder::decode($emailSettings, $emailSettingsArray);
+			$projectSettings = new ProjectSettingsModel($projectId);
+			$projectSettings->smsSettings = $smsSettings;
+			$projectSettings->emailSettings = $emailSettings;
+			$result = $projectSettings->write();
+			return $result;
+		}
+	}
+	
+	public function project_readSettings($projectId) {
+		if (RightsHelper::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT_OTHER)) {
+			$project = new ProjectSettingsModel($projectId);
+			return array(
+				'sms' => JsonEncoder::encode($project->smsSettings),
+				'email' => JsonEncoder::encode($project->emailSettings)
+			);
+		}
+	}
+	
+	public function project_pageDto($projectId) {
+		return \models\dto\ProjectPageDto::encode($projectId, $this->_userId);
+	}
+	
+	//---------------------------------------------------------------
+	// MESSAGE API
+	//---------------------------------------------------------------
+	public function message_markRead($projectId, $messageId) {
+		$unreadModel = new UnreadMessageModel($this->_userId, $projectId);
+		$unreadModel->markRead($messageId);
+		$unreadModel->write();
+	}
+	
+	public function message_send($projectId, $userIds, $subject, $emailTemplate, $smsTemplate) {
+		$project = new ProjectModel($projectId);
+		$users = array();
+		foreach ($userIds as $id) {
+			$users[] = new UserModel($id);
+		}
+		return Communicate::communicateToUsers($users, $project, $subject, $smsTemplate, $emailTemplate);
+	}
+	
 	
 	//---------------------------------------------------------------
 	// TEXT API

@@ -68,7 +68,7 @@ angular.module(
 //		console.log("Called selectRow(", index, ", ", record, ")");
 		$scope.vars.selectedIndex = index;
 		if (index < 0) {
-			$scope.vars.record = {};
+			$scope.vars.record = {role: 'user'};
 		} else {
 			$scope.vars.record = record;
 			$scope.vars.editButtonName = "Save";
@@ -88,7 +88,7 @@ angular.module(
 			});
 		} else {
 			// Clear data table
-			$scope.record = {};
+			$scope.record = {role: 'user'};
 		}
 	});
 
@@ -106,7 +106,7 @@ angular.module(
 	// Roles in list
 	$scope.roles = {
         'user': {name: 'User'},
-        'system_admin': {name: 'System Admin'}
+        'system_admin': {name: 'Site Administrator'}
 	};
 	
 	$scope.roleLabel = function(role) {
@@ -151,7 +151,7 @@ angular.module(
 				}
 				
 			});
-			$scope.record = {};
+			$scope.record = {role: 'user'};
 			$scope.focusInput();
 			
 		} else {

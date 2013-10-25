@@ -1,6 +1,6 @@
 <h2 style="font-weight:normal">Update {{textTitle}}</h2>
-<div ng-switch on="rights.editOther">
-<tabset ng-switch-when="true">
+<div ng-show="rights.editOther">
+<tabset>
 	<tab heading="Edit Text">
 		<form class="well " ng-submit="updateText(editedText)">
 		<label>Title</label>
@@ -12,5 +12,5 @@
 		</form>
 	</tab>
 </tabset>
-<div ng-switch-when="false"><p>You don't have permission to edit this text.</p></div>
 </div>
+<div ng-hide="rights.editOther"><p>You don't have permission to edit this text.</p></div>
