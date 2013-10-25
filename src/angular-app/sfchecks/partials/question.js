@@ -149,6 +149,7 @@ angular.module(
 					questionService.read(projectId, newQuestion.id, function(result) {
 						if (result.ok) {
 							$scope.question = result.data.question;
+							breadcrumbService.updateCrumb('top', 3, {label: $scope.question.title});
 							// Recalculate answer count since the DB doesn't store it
 							$scope.question.answerCount = Object.keys($scope.question.answers).length;
 						}
