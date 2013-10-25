@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.question',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.m3ulink', 'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice' ]
 	)
 	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService',
 	                             function($scope, $routeParams, questionService, ss, breadcrumbService, notice) {
@@ -61,6 +61,9 @@ angular.module(
 			//console.log('questionService.read(', projectId, questionId, ')');
 			if (result.ok) {
 				$scope.text = result.data.text;
+				if ($scope.text.audioUrl) {
+					$scope.mp3link = '/' + $scope.text.audioUrl; // Should the added / be in upload.php?
+				}
 				$scope.question = result.data.question;
 				$scope.votes = result.data.votes;
 				$scope.project = result.data.project;
