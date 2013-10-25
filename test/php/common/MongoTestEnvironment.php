@@ -10,15 +10,9 @@ class MongoTestEnvironment
 	 */
 	private $_db;
 	
-	/**
-	 * 
-	 * @var array
-	 */
-	private $_projectDbs;
 	
 	public function __construct() {
 		$this->_db = \models\mapper\MongoStore::connect(SF_DATABASE);
-		$this->_projectDbs = array();
 	}
 
 	/**
@@ -29,16 +23,6 @@ class MongoTestEnvironment
 		foreach ($this->_db->listCollections() as $collection)
 		{
 			$collection->drop();
-		}
-		$projectModel = new MockProjectModel();
-		$projectDb = \models\mapper\MongoStore::connect($projectModel->databaseName());
-		
-		foreach ($this->_projectDbs as $databaseName) {
-			$projectDb = \models\mapper\MongoStore::connect($databaseName);
-			foreach ($projectDb->listCollections() as $collection)
-			{
-				$collection->drop();
-			}
 		}
 	}
 
@@ -78,8 +62,15 @@ class MongoTestEnvironment
 	public function createProject($name) {
 		$projectModel = new models\ProjectModel();
 		$projectModel->projectname = $name;
+		
+		// clean out old db if it is present
+		$projectDb = \models\mapper\MongoStore::connect($projectModel->databaseName());
+		foreach ($projectDb->listCollections() as $collection)
+		{
+			$collection->drop();
+		}
+		
 		$projectModel->write();
-		array_push($this->_projectDbs, $projectModel->databaseName());
 		return $projectModel;
 	}
 	
