@@ -1,0 +1,6 @@
+{
+	"name": "ScriptureForge",
+	"dependencies": {
+		"angularjs-file-upload": "1.0.*"
+	}
+}
