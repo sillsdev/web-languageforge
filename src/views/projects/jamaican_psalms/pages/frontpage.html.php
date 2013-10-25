@@ -3,16 +3,16 @@
 			
 			$data['slides'] = array(
 				array(
-					"title" => "Scripture Forge Community Checking",
-					"summary" => "Scripture Forge enables communities to participate in the Scripture checking process like never before."
+					"title" => "Jamaican Psalms Community-based Translation",
+					"summary" => "The Jamaican community helping make the book of Psalms speak good, engaging Jamaican"
 					),
 				array(
-					"title" => "Scripture Forge Community Checking 2",
-					"summary" => "Scripture Forge enables communities to participate in the Scripture checking process like never before."
+					"title" => "Jamaican Psalms Community-based Translation",
+					"summary" => "Jamaicans from all churches and backgrounds working together for the good of Jamaica and the Jamaican Psalms translation"
 					),
 				array(
-					"title" => "Scripture Forge Community Checking 3",
-					"summary" => "Scripture Forge enables communities to participate in the Scripture checking process like never before."
+					"title" => "Jamaican Psalms Community-based Translation",
+					"summary" => "Jamaicans connecting with the book of Psalms and with each other like never before. Speak your mind. Ask Questions. Improve it."
 					)
 			);
 			$this->load->view("projects/jamaican_psalms/templates/slideshow.html.php", $data);
@@ -23,7 +23,7 @@
 				<div class="row">
 					<div class="span12">
 						<h2 class="lifted-text">Welcome to <span class="sf-jamaican-green">Jamiekan Psalms</span></h2>
-						<p>Can you imagine hundreds of Jamaicans from all over the world (young and old, rich and poor), working together on the internet to translate the Bible into the language that connects with them best—Jamaican Creole?  That is exactly what we want to accomplish with this project!   From the comforts of wherever you have internet access, work together with the Bible Society of the West Indies in translating our favourite Psalms iina fi wi langwij!</p>
+						<p>Imagine hundreds, maybe thousands, of Jamaicans from all over the world (male and female, all ages, all churches and job backgrounds), helping translate the loved and revered book of Palms together in Jamaican. We do this face-to-face in our home and church groups and all together using this Jamaican Psalms translation website. This is our time to work together to produce this important Old Testament book by Jamaicans and for Jamaicans. Join the cause by creating a user account now. It’s free!</p>
 					</div>
 				</div>
 			</div>
@@ -33,19 +33,22 @@
 			
 			$data['columns'] = array(
 				array(
-					"title" => "Latest News",
-					"summary" => "Vestibulum id ligula porta felis euismod semper. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam quis risus eget urna mollis ornare vel eu leo. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis lacus vel augue. Donec id elit non mi porta gravida at eget metus.",
+					"title" => "Your Role",
+					"summary" => "A few translation experts can know many things, but they can’t know everything to produce the best possible translation. This is where you come in.  You also have things to contribute to the translation. That is your experiences, knowledge, spiritual gifts, special insights, and talents can benefit the translation team in important ways.",
+					"button" => "Learn More",
 					"target_url" => "#"
 					),
 				array(
 					"title" => "How it Works",
-					"summary" => "Vestibulum id ligula porta felis euismod semper. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam quis risus eget urna mollis ornare vel eu leo. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis lacus vel augue. Donec id elit non mi porta gravida at eget metus.",
+					"summary" => "First, the team of trained translators meets with Jamaicans from various church denominations, University language units, pastors, teachers, and others. Together you talk about the Psalms chapters to be translated. Next, based on your help, the translation team produces a first draft and they post it on this Website. Then anyone can create a user account, log-in, and view the newly translated passages. Here you can ask questions, make comments, and suggest improvements. You can even comment on other people’s comments, too—just like Facebook. The translators will interact with you on the website, and together the translation draft is improved. This cycle continues until the translated chapters are finished and immediately distributed to the community. In the end, the translation is the fruit of your combined voluntary efforts.",
+					"button" => "Learn More",
 					"target_url" => "#"
 					),
 				array(
 					"title" => "Get Started",
-					"summary" => "Vestibulum id ligula porta felis euismod semper. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam quis risus eget urna mollis ornare vel eu leo. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis lacus vel augue. Donec id elit non mi porta gravida at eget metus.",
-					"target_url" => "#"
+					"summary" => "There are a two ways you can start right away: Organize a face-to-face Psalms study group and share your group’s insights with the translation team.  Create a log-in and begin interacting with the translators and others from the Jamaican community over the translation drafts they post on this website. Either way, you are helping to produce your Jamaican Psalms translation. It’s that easy.",
+					"button" => "Get Started Now",
+					"target_url" => "/signup"
 					)
 			);
 			$this->load->view("projects/jamaican_psalms/templates/3column.html.php", $data);
@@ -62,8 +65,13 @@
 							<h3>The Impact of the Bible</h3>
 							<p>Many Jamaicans have been touched by the Jamaican New Testament!  Take Israel, for example, a young British-Jamaican girl living in England. She talks to us regularly on our Facebook page.  She regularly reads for her family members from the Jamaican New Testament (JNT).  One day, she read to her grandmother from the JNT day.  Her grandmother then told her pastor about the JNT.  The pastor was curious, so Israel was asked to take her JNT to church and read from it during worship!  Israel messaged us after the service:</p>
 							<p>“I've just got home from church. Believe me when I tell you that they LOVE the JNT! Thank you for my copy of the JNT in my own language. I've come to realise that when you listen to the Bible in your language, it is more meaningful to you.”</p>
-							<p><a href="/create_account" class="arrowed">Get Involved Today</a></p>
-						</div>
+<!-- 							<p><a href="/create_account" class="arrowed">Get Involved Today</a></p> -->
+							<p>
+								<a href="/signup">
+									<button class="btn sf-btnJ sf-btnJ3" href="/signup">Get Started Now</button>
+								</a>
+							</p>
+							</div>
 					</div>
 				</div>
 			</div>

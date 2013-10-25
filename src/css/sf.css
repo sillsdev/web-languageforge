@@ -713,6 +713,19 @@ div#text {
 	max-height: 600px;
 }
 
+div#text p, div.scripture-quote p {
+	line-height: 1.2em;
+}
+
+div#text p.q1, div.scripture-quote p.q1 {
+	margin-bottom: 0em;
+}
+
+div#text p.q2, div.scripture-quote p.q2 {
+	margin-bottom: 0em;
+	margin-left: 1.5em;
+}
+
 div#answerControls {
 	position: relative;
 }
