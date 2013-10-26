@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.project',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload' ]
 )
 .controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService', 'projectService', 'messageService',
                             function($scope, textService, $routeParams, ss, breadcrumbService, linkService, notice, projectService, messageService) {
@@ -146,6 +146,26 @@ angular.module(
 				items[i].url = linkService.text($scope.projectId, items[i].id);
 			}
 		};
+
+		$scope.onUsxFile = function($files) {
+			if (!$files || $files.length == 0) {
+				return;
+			}
+			var file = $files[0];  // Use only first file
+			var reader = new FileReader();
+			reader.addEventListener("loadend", function() {
+				// Basic sanity check: make sure what was uploaded is XML
+				// First few characters should be optional BOM, then <?xml
+				var startOfText = reader.result.slice(0,10);
+				var xmlIndex = startOfText.indexOf('<?xml');
+				if (xmlIndex != -1) {
+					$scope.$apply(function() {
+						$scope.content = reader.result;
+					})
+				}
+			})
+			reader.readAsText(file);
+		}
 		
 		$scope.getPageDto();
 
