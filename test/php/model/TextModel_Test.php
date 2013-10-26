@@ -79,6 +79,7 @@ class TestTextModel extends UnitTestCase {
 		$projectModel = $e->createProject(SF_TESTPROJECT);
 		$databaseName = $projectModel->databaseName();
 		
+		$projectModel->remove();
 		$this->assertFalse(MongoStore::hasDB($databaseName));
 					
 		$text = new TextModel($projectModel);
