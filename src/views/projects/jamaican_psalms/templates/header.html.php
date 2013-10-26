@@ -4,7 +4,7 @@
 		<div id="header">
 			<div class="container">
 				<div class="sf-logo-medium">
-					<img src="/images/sf_logo_medium.png" alt="Scripture Forge"  style="width:92px; height:114px" class="png_bg" />
+					<img src="/images/jamaican_psalms/sf_j_logo.png" alt="Jamaican Psalms"  style="width:92px; height:114px" class="png_bg" />
 				</div>
 				<div id="header-nav" class="pull-left">
 					<ul class="sf-menu">
