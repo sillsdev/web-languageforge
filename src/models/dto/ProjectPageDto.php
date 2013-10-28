@@ -38,9 +38,18 @@ class ProjectPageDto
 		$data['texts'] = array();
 		foreach ($textList->entries as $entry) {
 			$textModel = new TextModel($projectModel, $entry['id']);
-			$questionList = $textModel->listQuestions();
-			// Just want question count, not whole list
+			$questionList = $textModel->listQuestionsWithAnswers();
+			// Just want count of questions and responses, not whole list
 			$entry['questionCount'] = $questionList->count;
+			$responseCount = 0; // "Responses" = answers + comments
+			foreach ($questionList->entries as $q) {
+				foreach ($q['answers'] as $a) {
+					$commentCount = count($a['comments']);
+					$responseCount += ($commentCount+1); // +1 for this answer
+				}
+			}
+			$entry['responseCount'] = $responseCount;
+			error_log("Found $responseCount responses");
 
 			$data['texts'][] = $entry;
 		}
