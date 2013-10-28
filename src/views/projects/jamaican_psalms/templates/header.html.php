@@ -4,11 +4,11 @@
 		<div id="header">
 			<div class="container">
 				<div class="sf-logo-medium">
-					<img src="/images/sf_logo_medium.png" alt="Scripture Forge"  style="width:92px; height:114px" class="png_bg" />
+					<img src="/images/jamaican_psalms/sf_j_logo.png" alt="Jamaican Psalms"  style="width:92px; height:114px" class="png_bg" />
 				</div>
 				<div id="header-nav" class="pull-left">
 					<ul class="sf-menu">
-						<li><a href="/project/jamaican_psalms">Home</a></li>
+						<li><a href="/projects/jamaican_psalms">Home</a></li>
 						<li><a href="/learn_scripture_forge">Learn</a>
 							<ul>
 								<li><a href="/learn_faq">Frequently Asked Questions</a></li>
@@ -17,7 +17,7 @@
 								<li><a href="/learn_contribute">Contribute</a></li>
 							</ul>
 						</li>
-						<li><a href="/contribute">Contribute</a></li>
+						<li><a href="/learn_contribute">Contribute</a></li>
 						<li><a href="/discuss">Discuss</a></li>
 					</ul>
 				</div>

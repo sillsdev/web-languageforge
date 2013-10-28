@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.questions',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice' ]
+		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'angularFileUpload', 'ngSanitize' ]
 	)
 	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService', 'silNoticeService',
 	                              function($scope, questionsService, qts, $routeParams, ss, linkService, breadcrumbService, notice) {
@@ -29,18 +29,27 @@ angular.module(
 		);
 
 		// Question templates
-		$scope.templates = [];
+		$scope.emptyTemplate = {
+			title: '(Select a template)',
+			description: undefined
+		};
+		$scope.templates = [$scope.emptyTemplate];
 		$scope.queryTemplates = function() {
 			qts.list(function(result) {
 				if (result.ok) {
 					$scope.templates = result.data.entries;
+					// Add "(Select a template)" as default value
+					$scope.templates.unshift($scope.emptyTemplate);
+					if (angular.isUndefined($scope.template)) {
+						$scope.template = $scope.emptyTemplate;
+					}
 				}
 			});
 		};
 		$scope.queryTemplates();
 
 		$scope.$watch('template', function(template) {
-			if (template) {
+			if (template && !angular.isUndefined(template.description)) {
 				$scope.questionTitle = template.title;
 				$scope.questionDescription = template.description;
 			}
@@ -104,9 +113,9 @@ angular.module(
 					$scope.selected = []; // Reset the selection
 					$scope.queryQuestions();
 					if (questionIds.length == 1) {
-						notice.push(notice.SUCCESS, "The text was removed successfully");
+						notice.push(notice.SUCCESS, "The question was removed successfully");
 					} else {
-						notice.push(notice.SUCCESS, "The texts were removed successfully");
+						notice.push(notice.SUCCESS, "The questions were removed successfully");
 					}
 				}
 			});
@@ -172,8 +181,8 @@ angular.module(
 		};
 
 	}])
-	.controller('QuestionsSettingsCtrl', ['$scope', 'textService', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 
-	                                      function($scope, textService, ss, $routeParams, breadcrumbService, notice) {
+	.controller('QuestionsSettingsCtrl', ['$scope', '$http', 'textService', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 
+	                                      function($scope, $http, textService, ss, $routeParams, breadcrumbService, notice) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		var dto;
@@ -181,7 +190,7 @@ angular.module(
 		$scope.textId = textId;
 		$scope.editedText = {
 			id: textId,
-		}
+		};
 
 		// Breadcrumb
 		breadcrumbService.set('top',
@@ -220,6 +229,60 @@ angular.module(
 					$scope.textTitle = newText.title;
 				}
 			});
+		};
+
+		$scope.onUsxFile = function($files) {
+			if (!$files || $files.length == 0) {
+				return;
+			}
+			var file = $files[0];  // Use only first file
+			var reader = new FileReader();
+			reader.addEventListener("loadend", function() {
+				// Basic sanity check: make sure what was uploaded is XML
+				// First few characters should be optional BOM, then <?xml
+				var startOfText = reader.result.slice(0,10);
+				var xmlIndex = startOfText.indexOf('<?xml');
+				if (xmlIndex != -1) {
+					$scope.$apply(function() {
+						$scope.editedText.content = reader.result;
+					})
+				}
+			})
+			reader.readAsText(file);
 		}
+
+		$scope.progress = 0;
+		$scope.uploadResult = '';
+		$scope.onFileSelect = function($files) {
+			var file = $files[0];	// take the first file only
+			$scope.file = file;
+			if (file['size'] <= ss.fileSizeMax()) {
+				$http.uploadFile({
+				    url: '/upload',	// upload.php script
+//					headers: {'myHeaderKey': 'myHeaderVal'},
+					data: {
+						projectId: projectId,
+						textId: textId,
+					},
+					file: file
+				}).progress(function(evt) {
+					$scope.progress = parseInt(100.0 * evt.loaded / evt.total);
+					if (!$scope.$$phase) {
+						$scope.$apply();
+					}
+				}).success(function(data, status, headers, config) {
+					$scope.uploadResult = data.toString();
+					$scope.progress = 100.0;
+					// to fix IE not updating the dom
+					if (!$scope.$$phase) {
+						$scope.$apply();
+					}
+				});
+			} else {
+				$scope.uploadResult = file['name'] + " is too large.";
+			}
+		};
+		  
+
 	}])
 	;
