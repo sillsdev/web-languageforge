@@ -171,7 +171,7 @@ angular.module(
 		};
 
 		$scope.getResponses = function(question) {
-			return "'Not Yet Implemented'";
+			return question.responseCount;
 		};
 		
 		$scope.enhanceDto = function(items) {
