@@ -87,10 +87,6 @@ angular.module(
 			return project.textCount;
 		};
 
-		$scope.getResponses = function(project) {
-			return "'Not Yet Implemented'";
-		};
-
 		$scope.enhanceDto = function(items) {
 			for (var i in items) {
 				items[i].url = linkService.project(items[i].id);
