@@ -15,7 +15,7 @@
 					"summary" => "Connecting with the book of Psalms and with each other like never before. Speak your mind. Ask Questions. Improve it!"
 					)
 			);
-			$this->load->view("projects/jamaican_psalms/templates/slideshow.html.php", $data);
+			$this->load->view("projects/jamaicanpsalms/templates/slideshow.html.php", $data);
 			?>
 			
 			
@@ -55,7 +55,7 @@
 					"target_url" => "/signup"
 					)
 			);
-			$this->load->view("projects/jamaican_psalms/templates/3column.html.php", $data);
+			$this->load->view("projects/jamaicanpsalms/templates/3column.html.php", $data);
 			?>
 			
 			
@@ -64,7 +64,7 @@
 			<div id="sub-foot">
 				<div class="container">
 					<div class="row">
-						<div class="span3"><img src="/images/jamaican_psalms/sf-sub-footer-pic.png" alt="Israel's Story" style="width:210px;height:210px;margin-top:52px" /></div>
+						<div class="span3"><img src="/images/jamaicanpsalms/sf-sub-footer-pic.png" alt="Israel's Story" style="width:210px;height:210px;margin-top:52px" /></div>
 						<div class="span9">
 							<h3>The Impact of the Bible</h3>
 							<p>Many Jamaicans have been touched by the Jamaican New Testament! Take Israel, for example, a young British-Jamaican girl living in England. She talks to us regularly on our Facebook page. Ever so often she reads for her family members from the Jamaican New Testament (JNT). One day, she read to her grandmother from the JNT. Her grandmother then told her pastor about the JNT. The pastor was curious, so Israel was asked to take her JNT to church and read from it during worship! Israel messaged us after the service, this was what she said:</p>
