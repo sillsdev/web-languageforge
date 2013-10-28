@@ -50,6 +50,12 @@ class TextModel extends \models\mapper\MapperModel
 		$questionList->read();
 		return $questionList;
 	}
+
+	public function listQuestionsWithAnswers() {
+		$questionList = new QuestionAnswersListModel($this->_projectModel, $this->id->asString());
+		$questionList->read();
+		return $questionList;
+	}
 	
 	public $id;
 	
