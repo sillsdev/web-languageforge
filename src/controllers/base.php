@@ -32,7 +32,7 @@ class Base extends CI_Controller {
 			}
 		}
 		$uriParts = explode('.', $_SERVER['HTTP_HOST']);
-		if ($uriParts[0] == 'www' || $uriParts == 'scriptureforge') {
+		if ($uriParts[0] == 'scriptureforge' || $uriParts[0] == 'dev' || $uriParts[0] == 'www') {
 			$this->_project = 'scriptureforge';
 		} else {
 			$this->_project = $uriParts[0];
