@@ -38,7 +38,7 @@
 			$data['columns'] = array(
 				array(
 					"title" => "Your Role",
-					"summary" => "A few translation experts can know many things, but they can’t know everything to produce the best possible translation. This is where you come in.  You also have things to contribute to the translation. That is your experiences, knowledge, spiritual gifts, special insights and talents can benefit the translation team in important ways.",
+					"summary" => "A few translation experts can know many things, but they can’t know everything to produce the best possible translation. This is where you come in.  You also have things to contribute to the translation. Your experiences, knowledge, spiritual gifts, special insights, talents, and many other things can benefit the translation team in important ways.",
 					"button" => "Learn More",
 					"target_url" => "#"
 					),
