@@ -1,6 +1,5 @@
-<div class="sfcontainer">
-	<h1>Frequently Asked Questions</h1>
-<div>
+<div class="content container">
+<h1>Frequently Asked Questions</h1>
 <h2>Q. What web browsers work best with ScriptureForge?</h2>
 <p>ScriptureForge is an html5 web application.  Any modern standards compliant web browser should work well with this web site.  We recommend:
 <ul>
@@ -9,5 +8,4 @@
 <li>Internet Explorer (version 10 or better)</li>
 </ul>
 If you are using Windows XP we recommend using Chrome or Firefox as Internet Explorer versions available for Windows XP do not work well.
-</div>
 </div>

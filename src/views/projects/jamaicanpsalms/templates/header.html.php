@@ -4,11 +4,11 @@
 		<div id="header">
 			<div class="container">
 				<div class="sf-logo-medium">
-					<img src="/images/jamaican_psalms/sf_j_logo.png" alt="Jamaican Psalms"  style="width:92px; height:114px" class="png_bg" />
+					<img src="/images/jamaicanpsalms/sf_j_logo.png" alt="Jamaican Psalms"  style="width:92px; height:114px" class="png_bg" />
 				</div>
 				<div id="header-nav" class="pull-left">
 					<ul class="sf-menu">
-						<li><a href="/projects/jamaican_psalms">Home</a></li>
+						<li><a href="/">Home</a></li>
 						<li><a href="/learn_scripture_forge">Learn</a>
 							<ul>
 								<li><a href="/learn_faq">Frequently Asked Questions</a></li>
@@ -32,7 +32,7 @@
 								<?php endforeach;?>
 								</ul>
 							</li>
-							<li><a href="#"><img src="<?php echo $small_avatar_url; ?>" style="width: 30px; height: 30px; float:left; position:relative; top:-6px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
+							<li><a href="#"><img src="<?php echo $small_avatar_url; ?>" style="width: 29px; height: 29px; float:left; position:relative; top:-5px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
 								<ul>
 									<?php if ($is_admin):?>
 									<li><a href="/app/sfadmin">Site Administration</a></li>
