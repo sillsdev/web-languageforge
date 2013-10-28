@@ -1,4 +1,4 @@
-<div class="sfcontainer banner">
+<div class="container banner">
 	<img src="/images/beach1.jpg" width="965px" height="360px" alt="on the beach" />
 </div>
 <div class="sfcontainer">

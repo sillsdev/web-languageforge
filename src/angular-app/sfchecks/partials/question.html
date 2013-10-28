@@ -36,7 +36,7 @@
 		<div ng-show="newAnswer.textHighlight" ng-bind-html="newAnswer.textHighlight" class="scripture-quote"></div>
 			<form ng-submit="submitAnswer()">
 				<textarea ng-model="newAnswer.content" pui-jqte="jqteOptions"></textarea>
-				<div ng-hide="unreadResponseCount() == 0" style="margin-top:10px" class="right badge badge-important">{{unreadResponseCount()}} new response<span ng-show="unreadResponseCount() > 1">s</span></div>
+				<div ng-hide="unreadResponseCount() == 0" class="right badge badge-important">{{unreadResponseCount()}} new response<span ng-show="unreadResponseCount() > 1">s</span></div>
 				<button type="submit" class="btn">Done</button>
 			</form>
 		</div>

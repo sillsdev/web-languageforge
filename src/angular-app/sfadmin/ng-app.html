@@ -1,4 +1,4 @@
-<div class="sfcontainer" ng-cloak>
+<div class="content container" ng-cloak>
 	<h1>Site Administration</h1>
 	<sil-notices></sil-notices>
 
@@ -13,19 +13,23 @@
 		<button class="btn" ng-click="addRecord()"><i class="icon-plus"></i>Add New</button>
 		</form>
 		<div listview search="queryUsers()" items="users" visible-items="visibleUsers" select="">
-		<table style="width: 100%">
+		<table class="table" style="width: 100%">
+			<thead>
 			<tr>
 				<th></th>
 				<th>Username</th>
 				<th>Full Name</th>
 				<th>Role</th>
 			</tr>
+			</thead>
+			<tbody>
 			<tr ng-repeat="user in visibleUsers" ng-class="{active: isSelected(user)}" >
 				<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
 				<td><a ng-click="selectRow($index, user)" title="Click to edit this user">{{user.username}}</a></td>
 				<td>{{user.name}}</td>
 				<td>{{roleLabel(user.role)}}</td>
 			</tr>
+			</tbody>
 		</table>
 		</div>
 		</fieldset>
