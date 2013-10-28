@@ -702,6 +702,11 @@ ul.topCrumbs .active {
 	margin: 20px 0;
 }
 
+.jqte_toolbar {
+	visibility: hidden;
+	height: 0px;
+}
+
 /* Question Page */
 table#answers tbody tr:hover, table tbody tr.altrow:hover {
 	background-color: #fff;
@@ -919,3 +924,4 @@ label {
 	font-size: 0.9em;
 	line-height: 1.4em;
 }
+
