@@ -38,11 +38,12 @@
 |
 */
 
-if ($_SERVER['HTTP_HOST'] == 'jamaicanpsalms.scriptureforge.org') {
-	$route['default_controller'] = "/projects/view/jamaican_psalms";
-} else {
-	$route['default_controller'] = "/pages/view/frontpage";
-}
+// if ($_SERVER['HTTP_HOST'] == 'jamaicanpsalms.scriptureforge.org') {
+// 	$route['default_controller'] = "/projects/view/jamaicanpsalms";
+// } else {
+// 	$route['default_controller'] = "/pages/view/frontpage";
+// }
+$route['default_controller'] = "/pages/view/frontpage";
 
 $route['404_override'] = '';
 $route['login'] = 'auth/login';
