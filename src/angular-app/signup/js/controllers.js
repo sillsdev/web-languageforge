@@ -33,7 +33,7 @@ angular.module(
 					notice.push(notice.WARN, "The image verification failed.  Please try again");
 					$scope.getCaptchaSrc();
 				} else {
-					notice.push(notice.SUCCESS, "Thank you, " + record.name + ", for registering.  We will contact you via email when your account is active.");
+					notice.push(notice.SUCCESS, "Thank you for signing up.  We've sent you an email to confirm your registration. Please click the link in the email to activate your account.");
 					$("#userForm").fadeOut();
 				}
 			}

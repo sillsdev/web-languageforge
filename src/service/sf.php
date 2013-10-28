@@ -243,9 +243,7 @@ class Sf
 	}
 	
 	public function project_list_dto() {
-		// Eventually this will need to get the current user id and do:
-		//return \models\dto\ProjectListDto::encode($userId);
-		return \models\dto\ProjectListDto::encode();
+		return \models\dto\ProjectListDto::encode($this->_userId);
 	}
 	
 	public function project_readUser($projectId, $userId) {
