@@ -15,6 +15,6 @@ function changePasswordCtrl($scope, userService, sessionService, notice) {
 	}
 }
 
-angular.module('changePassword', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'ui.validate', 'palaso.ui.notice']).
+angular.module('changepassword', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'ui.validate', 'palaso.ui.notice']).
 controller('changePasswordCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', changePasswordCtrl])
 ;

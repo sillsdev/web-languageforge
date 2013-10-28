@@ -2,15 +2,13 @@
 
 namespace models;
 
-use models\rights\Roles;
 use models\UserModelMongoMapper;
-
-use models\mapper\IdReference;
-
-use models\mapper\MongoMapper;
-
 use models\mapper\Id;
+use models\mapper\IdReference;
+use models\mapper\MongoMapper;
 use models\mapper\ReferenceList;
+use models\rights\Realm;
+use models\rights\Roles;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
@@ -92,9 +90,21 @@ class UserModel extends \models\mapper\MapperModel
 	}
 	
 	public function listProjects() {
-		$projectList = new ProjectList_UserModel($this->id->asString());
-		$projectList->read();
+		$projectList = new ProjectList_UserModel();
+		$projectList->readUserProjects($this->id->asString());
 		return $projectList;
+	}
+	
+	
+	/**
+	 * Returns true if the given $userId has the $right in this site.
+	 * @param string $userId
+	 * @param int $right
+	 * @return bool
+	 */
+	public function hasRight($right) {
+		$result = Roles::hasRight(Realm::SITE, $this->role, $right);
+		return $result;
 	}
 	
 	/**

@@ -1,5 +1,5 @@
-<div class="notices"><alert ng-repeat="message in messages" type="info" close="markMessageRead(message.id)"><b>{{message.subject}}</b><br /><span ng-bind-html="message.content"</span></alert></div>
 <h2 style="font-weight:normal">{{project.name}} Dashboard</h2>
+<div class="notices"><alert ng-repeat="message in messages" type="info" close="markMessageRead(message.id)"><b>{{message.subject}}</b><br /><span ng-bind-html="message.content"</span></alert></div>
 <form ng-show="rights.showControlBar" class="control-bar form-inline">
 	<button ng-disabled="selected.length == 0" ng-show="rights.deleteOther" class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
 	<button ng-show="rights.create" class="btn" ng-click="newTextCollapsed = !newTextCollapsed"><i class="icon-plus"></i>Add New Text</button>
@@ -7,14 +7,25 @@
 </form>
 <div class="new-item" collapse="newTextCollapsed">
 	<form class="well">
-	<fieldset>
+	<fieldset class="span4">
 	<label>Title</label>
-	<input ng-model="title" class="span4" type="text" placeholder="Title"/>
+	<input ng-model="title" type="text" placeholder="Title"/>
 	<label>Text</label>
-	<textarea textdrop ng-model="content" class="span4" rows="4" placeholder="Paste the USX text here"></textarea>
+	<textarea textdrop ng-model="content" rows="4" placeholder="Paste the USX text here"></textarea>
 	<label></label>
 	<button type="submit" class="btn" ng-click="addText(); newTextCollapsed = true"><i class="icon-ok"></i>Save</button>
 	</fieldset>
+	<fieldset class="span4">
+		<div class="drop-box" ng-file-drop="onUsxFile($files)" ng-file-drop-available="dropSupported=true">
+			<h4>Or drop a USX file here</h4>
+			<br/>
+			<p>or if you prefer...</p>
+			<input type="button" class="btn" value="Browse..." onclick="javascript:document.getElementById('usxfile').click();">
+			<input id="usxfile" type="file" style="display:none;" ng-file-select="onUsxFile($files)">
+		</div>
+		<div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+	</fieldset>
+	<div style="clear: left"></div>
 	</form>
 </div>
 <hr />

@@ -100,6 +100,9 @@ class TestQuestionTemplateAPI extends UnitTestCase {
 		$e = $this->e;
 		$api = $e->api;
 
+		$result = $api->questionTemplate_list();
+		$existingTemplatesCount = $result['count'];
+		
 		$id = $e->addQuestionTemplate(
 			'Template Title',
 			'Nice and clear description'
@@ -111,7 +114,7 @@ class TestQuestionTemplateAPI extends UnitTestCase {
 
 		$result = $api->questionTemplate_list();
 
-		$this->assertEqual($result['count'], 2);
+		$this->assertEqual($result['count'], $existingTemplatesCount + 2);
 
 		$e->deleteQuestionTemplate($id);
 		$e->deleteQuestionTemplate($id2);

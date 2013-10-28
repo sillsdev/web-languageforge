@@ -6,13 +6,13 @@
 					
 						<div class="span2">
 							<h4>Contact</h4>
-							<small>Jamaican Psalms Project<br />Bible Society West Indies<br />24 Hagley Pk Plaza<br /> Kingston 10, Jamaica</small>
+							<small>Jamaican Psalms Project<br />Bible Society West Indies<br />24 Hagley Pk Plaza<br /> Kingston 10, Jamaica<br />(876) 926-2772</small>
 						</div>
 						
 						<div class="span2">
 							<h4>Navigate</h4>
 							<small>
-							<a href="/">Home</a><br /><a href="/explore">Explore</a><br /><a href="/learn_scripture_forge">Learn</a><br /><a href="/contribute">Contribute</a><br /><a href="/discuss">Discuss</a>
+							<a href="/">Home</a><br /><a href="/learn_scripture_forge">Learn</a><br /><a href="/contribute">Contribute</a><br /><a href="/discuss">Discuss</a>
 							</small>
 						</div>
 						

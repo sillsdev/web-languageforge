@@ -132,3 +132,12 @@ form.new-tags i.icon-plus {
 	color: green;
 }
 
+/* Style for file upload */
+.drop-box {
+	width: 320px;
+	height: 170px;
+	border: 4px dashed #0088cc;
+	background-color: white;
+	text-align: center;
+	padding-top: 30px;
+}
