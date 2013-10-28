@@ -40,9 +40,14 @@
 			</div>
 		</div>
 		
+		
 		<div id="footerBaseline">
 			<div class="container">
-				<div style="float:left; line-height: 14px; margin-left:250px">Copyright <?php echo strftime("%Y"); ?> SIL International. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</div>
-				<div class="darkTextLogo"></div>
+				<div class="row">
+					<div class="darkTextLogo span3"></div>
+					<div class="span9">
+						<small>Copyright <?php echo strftime("%Y"); ?> SIL International. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</small>
+					</div>
+				</div>
 			</div>
 		</div>
