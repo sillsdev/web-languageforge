@@ -16,6 +16,8 @@ class Base extends CI_Controller {
 	
 	protected $_user;
 	
+	protected $_project;
+	
 	public function __construct() {
 		parent::__construct();
 		$this->load->library('ion_auth');
@@ -29,6 +31,16 @@ class Base extends CI_Controller {
 				$this->ion_auth->logout();
 			}
 		}
+		$uriParts = explode('.', $_SERVER['HTTP_HOST']);
+		if ($uriParts[0] == 'www') {
+			array_shift($uriParts);
+		}
+		if ($uriParts[0] == 'scriptureforge' || $uriParts[0] == 'dev') {
+			$this->_project = 'scriptureforge';
+		} else {
+			$this->_project = $uriParts[0];
+		}
+		
 	}
 	
 	// all child classes should use this method to render their pages
@@ -38,12 +50,14 @@ class Base extends CI_Controller {
 	
 	protected function renderProjectPage($view, $project = '', $data = null, $render = true) {
 		$this->viewdata = (empty($data)) ? $this->data : $data;
+
+		$project = $this->_project;
 		
-		if ($project) {
-			$view = 'projects/' . $project . '/' . $view;
-			$containerView = 'projects/' . $project . '/templates/container.html.php';
-		} else {
+		if ($project == 'scriptureforge') {
 			$containerView = 'templates/container.html.php';
+		} else {
+// 			$view = 'projects/' . $project . '/' . $view;
+			$containerView = 'projects/' . $project . '/templates/container.html.php';
 		}
 		
 		if (file_exists(self::templateToPath($view))) {

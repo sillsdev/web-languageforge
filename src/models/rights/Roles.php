@@ -1,6 +1,7 @@
 <?php
 namespace models\rights;
 
+use libraries\palaso\CodeGuard;
 class Roles {
 	
 	const SYSTEM_ADMIN  = 'system_admin';
@@ -29,6 +30,9 @@ class Roles {
 		// User
 		$rights = array();
 		$rights[] = Domain::USERS + Operation::EDIT_OWN;
+		// Should users be able to delete their own user accounts? Probably,
+		// but not via the listview -- so we should NOT grant DELETE_OWN here.
+		//$rights[] = Domain::USERS + Operation::DELETE_OWN;
 		self::$_rights[Realm::SITE][Roles::USER] = $rights;
 		
 		// ----------------------------------------------------------
@@ -38,14 +42,17 @@ class Roles {
 		$rights = array();
 		$rights[] = Domain::ANSWERS + Operation::CREATE;
 		$rights[] = Domain::ANSWERS + Operation::EDIT_OWN;
+		$rights[] = Domain::ANSWERS + Operation::DELETE_OWN;
 		$rights[] = Domain::COMMENTS + Operation::CREATE;
 		$rights[] = Domain::COMMENTS + Operation::EDIT_OWN;
+		$rights[] = Domain::COMMENTS + Operation::DELETE_OWN;
 		
 		self::$_rights[Realm::PROJECT][Roles::USER] = $rights;
 		
 		// Project Admin
 		$rights = self::$_rights[Realm::PROJECT][Roles::USER];
 		$rights[] = Domain::PROJECTS + Operation::EDIT_OWN;
+		$rights[] = Domain::PROJECTS + Operation::DELETE_OWN;
 		$rights[] = Domain::TEXTS + Operation::CREATE; 
 		$rights[] = Domain::TEXTS + Operation::EDIT_OTHER;
 		$rights[] = Domain::TEXTS + Operation::DELETE_OTHER;
@@ -92,6 +99,8 @@ class Roles {
 	 * @return bool
 	 */
 	public static function hasRight($realm, $role, $right) {
+		CodeGuard::checkNotFalseAndThrow($realm, 'realm');
+		CodeGuard::checkNotFalseAndThrow($role, 'role');
 		$result = in_array($right, self::$_rights[$realm][$role]);
 		return $result;
 	}

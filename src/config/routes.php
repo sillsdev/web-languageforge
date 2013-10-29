@@ -38,7 +38,13 @@
 |
 */
 
+// if ($_SERVER['HTTP_HOST'] == 'jamaicanpsalms.scriptureforge.org') {
+// 	$route['default_controller'] = "/projects/view/jamaicanpsalms";
+// } else {
+// 	$route['default_controller'] = "/pages/view/frontpage";
+// }
 $route['default_controller'] = "/pages/view/frontpage";
+
 $route['404_override'] = '';
 $route['login'] = 'auth/login';
 $route['auth'] = 'auth/index';
@@ -50,6 +56,7 @@ $route['validate/(:any)'] = 'validate/check/$1';
 $route['viewcaptcha'] = 'viewcaptcha/index';
 $route['app/(:any)'] = 'app/view/$1';
 $route['(:any)/app/(:any)'] = 'app/view/$2/$1';
+$route['upload'] = 'upload/receive';
 $route['(:any)'] = "pages/view/$1";
 
 

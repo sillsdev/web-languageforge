@@ -171,6 +171,10 @@ angular.module('sf.services', ['jsonRpc'])
 			return window.session.userId;
 		};
 		
+		this.fileSizeMax = function() {
+			return window.session.fileSizeMax;
+		};
+		
 		this.realm = {
 			SITE: function() { return window.session.userSiteRights; }
 		};
