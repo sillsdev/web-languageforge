@@ -1,45 +1,44 @@
 		<div id="footercontainer">
-		<div id="footer" class="png_bg">
-			<div class="sfcontainer cf">
 			
-				<div class="three-col">
-					<div class="three-col-1">
-						<div class="left">
+			<div id="footer">
+				<div class="container">
+					<div class="row">
+										
+						<div class="span2">
 							<h4>Contact</h4>
 							<p class="small">Scripture Forge<br />SIL International<br />7500 W. Camp Wisdom Road<br />Dallas, TX 75236-5629 USA</p>
 						</div>
-						<div class="left footer-nav">
+						
+						<div class="span2">
 							<h4>Navigate</h4>
-							<p class="small"><a href="/">Home</a><br /><a href="/explore">Explore</a><br /><a href="/learn_scripture_forge">Learn</a><br /><a href="/learn_contribute">Contribute</a><br /><a href="/discuss">Discuss</a></p>
+							<small>
+								<a href="/">Home</a><br /><a href="/explore">Explore</a><br /><a href="/learn_scripture_forge">Learn</a><br /><a href="/learn_contribute">Contribute</a><br /><a href="/discuss">Discuss</a>
+							</small>
 						</div>
-					</div>
-				</div>
-				
-				<div class="three-col">
-					<div class="three-col-2">
-						<div class="left footer-nav">
-						&nbsp;
+						
+						<div class="span1 offset4">
+							<p><a href="http://www.sil.org"><img src="/images/SIL_logo.png" alt="SIL Logo" width="50" height="49" /></a></p>
+							<p><a href="http://www.unitedbiblesocieties.org/"><img src="/images/ubs-logo.png" alt="ubs-logo" width="71" height="50" /></a></p>
 						</div>
-					</div>
-				</div>
+						
+						<div class="span3">
+							<p><a href="http://ic.payap.ac.th/"><img src="/images/PAYAP_logo.png" alt="PAYAP Logo" width="170" height="50" /></a></p>
+							<p><a href="http://www.theseedcompany.org/"><img src="/images/seed-company-logo.png" alt="Seed Company Logo" width="162" height="50" /></a></p>
+						</div>
 				
-				<div class="three-col">
-					<div class="three-col-3">
-						<a href="http://ic.payap.ac.th/"><img src="/images/PAYAP_logo.png" alt="PAYAP" width="170" height="50" class="right png_bg"></a>
-						<a href="http://www.sil.org"><img src="/images/SIL_logo.png" alt="SIL" width="50" height="49" class="right png_bg" style="margin-right: 30px;"></a>
-						<a href="http://www.theseedcompany.org/"><img src="/images/seed-company-logo.png" alt="The Seed Company" width="162" height="50" style="margin-top: 15px" class="right png_bg"></a>
-						<a href="http://www.unitedbiblesocieties.org/"><img src="/images/ubs-logo.png" alt="UBS" width="70" height="50" class="right png_bg" style="margin-right: 30px; margin-top: 15px"></a>
 					</div>
 				</div>
-			
 			</div>
-		</div>
 		
-		<div id="footerBaseline">
-			<div class="sfcontainer">
-					<div class="small" style="color:#CCC; float:left; margin-left:250px">Copyright <?php echo strftime("%Y"); ?> SIL International. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</div>
-				<div class="darkTextLogo png_bg">
+			<div id="footerBaseline">
+				<div class="container">
+					<div class="row">
+						<div class="darkTextLogo span3"></div>
+						<div class="span9">
+							<small>Copyright <?php echo strftime("%Y"); ?> SIL International. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</small>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
+		
 		</div>

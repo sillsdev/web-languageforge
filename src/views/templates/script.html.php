@@ -31,12 +31,5 @@
 				}
 			
 			});	
+			
 		</script>
-		<!--[if IE 6]>
-		<script src="/js/lib/DD_belatedPNG.js"></script>
-		<script>
-			$(document).ready(function(){ 
-				setTimeout(function(){ DD_belatedPNG.fix('.png_bg') }, 100);
-			});
-		</script>
-		<![endif]-->
