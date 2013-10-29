@@ -37,6 +37,10 @@ class UserModelBase extends \models\mapper\MapperModel
 		if (!$this->communicate_via) {
 			$this->communicate_via = self::COMMUNICATE_VIA_EMAIL;
 		}
+		if (!$this->avatar_ref) {
+			$default_avatar = "/images/avatar/anonymoose.png";
+			$this->avatar_ref = $default_avatar;
+		}
 	}
 
 	/**
@@ -86,6 +90,10 @@ class UserModelBase extends \models\mapper\MapperModel
 				$this->validationExpirationDate = new \DateTime();
 			}
 			
+			if ($this->emailPending) {
+				$this->email = $this->emailPending;
+			}
+			
 			$intervalSeconds = ($interval->d * 86400) + ($interval->h * 3600) + ($interval->m * 60) + $interval->s;
 			if ($intervalSeconds > 0 && $interval->invert == 0) {
 				return true;
@@ -104,7 +112,6 @@ class UserModelBase extends \models\mapper\MapperModel
 		$today->add(new \DateInterval("P${days}D"));
 		$this->validationExpirationDate = $today;
 	}
-		
 	
 	/**
 	 * @var IdReference
@@ -120,6 +127,8 @@ class UserModelBase extends \models\mapper\MapperModel
 	 * @var string
 	 */
 	public $username;
+	
+	public $avatar_ref;
 	
 	/**
 	 * 

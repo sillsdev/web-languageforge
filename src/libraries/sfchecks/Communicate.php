@@ -186,12 +186,11 @@ class Communicate
 	
 	/**
 	 * Send an email to validate a user when they sign up.
-	 * @param UserModelForRegistration $userModel
-	 * @param SwiftMailer $mailer
+	 * @param UserModelBase $userModel
+	 * @param IDelivery $mailer
 	 */
 	public static function sendSignup($userModel, IDelivery $delivery = null) {
 		$userModel->setValidation(7);
-		$userModel->write();
 		$vars = array(
 			'user' => $userModel,
 			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/validate/' . $userModel->validationKey,
@@ -201,7 +200,7 @@ class Communicate
 
 		CommunicateHelper::deliverEmail(
 			array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME),
-			array($userModel->email => $userModel->name),
+			array($userModel->emailPending => $userModel->name),
 			'ScriptureForge account signup validation',
 			$html,
 			$delivery
@@ -212,6 +211,31 @@ class Communicate
 		
 	}
 	
+	/**
+	 * 
+	 * @param UserModelBase $fromUserModel
+	 * @param UserModelBase $toUserModel
+	 * @param ProjectModel $projectModel
+	 * @param IDelivery $delivery
+	 */
+	public static function sendInvite($fromUserModel, $toUserModel, $projectModel, IDelivery $delivery = null) {
+		$userModel->setValidation(7);
+		$vars = array(
+			'user' => $userModel,
+			'project' => $projectModel,
+			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/registration#/?v=' . $userModel->validationKey,
+		);
+		$t = CommunicateHelper::templateFromFile('email/en/SignupValidate.html');
+		$html = $t->render($vars);
+
+		CommunicateHelper::deliverEmail(
+			array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME),
+			array($userModel->emailPending => $userModel->name),
+			'ScriptureForge account signup validation',
+			$html,
+			$delivery
+		);
+	}
 }
 
 ?>

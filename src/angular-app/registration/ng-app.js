@@ -6,19 +6,24 @@ angular.module('registration', [ 'sf.services', 'ui.bootstrap', 'palaso.ui.notic
 	$scope.record = {};
 	$scope.record.id = '';
 	$scope.showForm = false;
+	$scope.errorState = false;
 	
 	// initialize the page by reading the user with the given validation key
-	var validationKey = ''; // get this from the URL
-	userService.readForRegistration(validationKey, function(result) {
-		if (result.ok) {
-			if (result.data.canRegister) {
-				$scope.showForm = true;
-				$scope.record = result.data.user;
-			} else {
-				notice.push(notice.WARN, "We cannot complete the registration process for you at this time.  Please <a href='/app/signup'>sign up here</a> instead.");
+	var validationKey = $location.search().v; // get this from the URL
+	if (validationKey.length && validationKey.length > 0) {
+		userService.readForRegistration(validationKey, function(result) {
+			if (result.ok) {
+				if (result.data.canRegister) {
+					$scope.showForm = true;
+					$scope.record = result.data.user;
+				} else {
+					$scope.errorState = true;
+				}
 			}
-		}
-	});
+		});
+	} else {
+		$scope.errorState = true;
+	}
 	
 	$scope.registerUser = function(record) {
 		$scope.requestInProgress = true;

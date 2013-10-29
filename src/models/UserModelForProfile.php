@@ -14,20 +14,6 @@ use models\rights\Roles;
 class UserModelForProfile extends \models\UserModelBase
 {
 	
-	public function read($id) {
-		parent::read($id);
-		
-		// Default Values for User Profile
-		if (!$this->avatar_ref) {
-			$default_avatar = "/images/avatar/anonymoose.png";
-			$this->avatar_ref = $default_avatar;
-		}
-		if (!$this->communicate_via) {
-			$this->communicate_via = self::COMMUNICATE_VIA_EMAIL;
-		}
-		
-	}
-	
 	/**
 	 * @var IdReference
 	 */
@@ -43,8 +29,6 @@ class UserModelForProfile extends \models\UserModelBase
 	 */
 	public $avatar_color;
 	
-	public $avatar_ref;
-
 	/**
 	 * @var int
 	 */
