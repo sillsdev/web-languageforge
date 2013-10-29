@@ -1,42 +1,35 @@
-<div ng-controller="UserCtrl" class="sfcontainer container" ng-cloak>
-
-		<h1>Complete Your Registration</h1>
-
-		<sil-notices></sil-notices>
-		<div class="well" ng-hide="showForm || errorState">
-			<img id="userNameLoading" src="/images/loading-small.gif" /> Loading...
-		</div>
-		<div class="span4">
-			<form ng-show="showForm" ng-submit="registerUser(record)" id="userForm">
-				<fieldset>
-					<legend>You are almost finished, just fill out the form below to login and get started</legend>
-					<div class="well">
-						<div>
-							<label>Email: {{record.emailPending}}</label>
-						</div>
-						<div>
-							<label>User Name</label> <input required type="text"
-								placeholder="pick an username" ng-model="record.username"
-								name="username" id="username" ng-blur="checkUserName()" /> 
-								<span  ng-show="userNameLoading"><img id="userNameLoading" src="/images/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
-								<span  ng-show="userNameOk"><img id="userNameOk" src="/images/tick.png" title="User name is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
-								<span  ng-show="userNameExists"><img id="userNameExists" src="/images/exclamation.png" title="User name already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
-						</div>
-						<div>
-							<label>Name</label> <input required type="text"
-								placeholder="your name" ng-model="record.name" />
-						</div>
-						<div>
-							<label>Password</label> <input required type="text"
-								ng-model="record.password" name="password" />
-						</div>
-					<button id="submit" class="btn btn-primary" type="submit"
-						ng-disabled="userNameExists || userForm.$invalid || requestInProgress">
-						Sign Up <i style="margin-left: 5px" class="icon-thumbs-up"></i>
-					</button>
-					</div>
-				</fieldset>
-			</form>
-		</div>
-		<div class="well" ng-show="errorState">We cannot complete the registration process for you at this time.  Please <a href='/signup'>sign up here</a> instead.</div>
+<div ng-controller="UserCtrl" class="content container" ng-cloak>
+	<h1>Thanks for joining</h1>
+	<sil-notices></sil-notices>
+	<div class="well" ng-hide="showForm || errorState">
+		<img id="userNameLoading" src="/images/loading-small.gif" /> Loading...
+	</div>
+	<div ng-show="showForm">
+	<p>We just need a few more details. Please fill out the details below, and click Join when you're done.</p>
+	<div class="row">
+	<div class="span4">
+		<form ng-submit="registerUser(record)" id="userForm">
+			<fieldset>
+			<div class="well">
+				<h5>{{record.emailPending}}</h5>
+				<label>User Name</label>
+				<input required type="text"
+					placeholder="pick a user name" ng-model="record.username"
+					name="username" id="username" ng-blur="checkUserName()" /> 
+					<span  ng-show="userNameLoading"><img id="userNameLoading" src="/images/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+					<span  ng-show="userNameOk"><img id="userNameOk" src="/images/tick.png" title="User name is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+					<span  ng-show="userNameExists"><img id="userNameExists" src="/images/exclamation.png" title="User name already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+				<label>Name</label>
+				<input required type="text" placeholder="your real name" ng-model="record.name" />
+				<label>Password</label> <input required type="text" ng-model="record.password" name="password" />
+				<button id="submit" class="btn btn-primary" type="submit" ng-disabled="userNameExists || userForm.$invalid || requestInProgress">
+				Join
+				</button>
+			</div>
+			</fieldset>
+		</form>
+	</div>
+	</div>
+	</div>
+	<div class="well" ng-show="errorState">We cannot complete the registration process for you at this time.  Please <a href='/signup'>sign up here</a> instead.</div>
 </div>

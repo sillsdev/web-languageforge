@@ -219,18 +219,19 @@ class Communicate
 	 * @param IDelivery $delivery
 	 */
 	public static function sendInvite($fromUserModel, $toUserModel, $projectModel, IDelivery $delivery = null) {
-		$userModel->setValidation(7);
+		$toUserModel->setValidation(7);
+		$toUserModel->write();
 		$vars = array(
-			'user' => $userModel,
+			'user' => $fromUserModel,
 			'project' => $projectModel,
-			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/registration#/?v=' . $userModel->validationKey,
+			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/registration#/?v=' . $toUserModel->validationKey,
 		);
 		$t = CommunicateHelper::templateFromFile('email/en/SignupValidate.html');
 		$html = $t->render($vars);
 
 		CommunicateHelper::deliverEmail(
 			array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME),
-			array($userModel->emailPending => $userModel->name),
+			array($toUserModel->emailPending => $toUserModel->name),
 			'ScriptureForge account signup validation',
 			$html,
 			$delivery
