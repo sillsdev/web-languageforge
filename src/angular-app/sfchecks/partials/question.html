@@ -59,7 +59,7 @@
 				<div ng-bind-html="answer.content">
 					{{answer.content}}
 				</div>
-				<view-tags tags="answer.tags" on-delete="deletedTags(answer)" rights-delete="rightsDeleteTag()"></view-tags>
+				<view-tags ng-show="$parent.rightsCreateTag()" tags="answer.tags" on-delete="deletedTags(answer)" rights-delete="rightsDeleteTag()"></view-tags>
 				<div class="by">
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
