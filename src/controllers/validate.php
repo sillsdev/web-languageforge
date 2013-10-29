@@ -1,5 +1,7 @@
 <?php
 
+use models\UserModelBase;
+
 use models\UserModel;
 
 require_once 'base.php';
@@ -11,14 +13,10 @@ class Validate extends Base {
 		$data['title'] = "Scripture Forge";
 		$data['is_static_page'] = true;
 		
-		// Search users for $validateKeySubmitted
 		$userActivated = false;
-		$userModel = new UserModel();
+		$userModel = new UserModelBase();
 		if ($userModel->readByProperty('validationKey', $validateKeySubmitted)) {
-			// Check validation key hasn't expired
-			$validationInterval = $userModel->validationDate->diff(new \DateTime());
-			$validationDays = $validationInterval->format('%R%a');
-			if ($validationDays >= 0 and $validationDays <= 1) {
+			if ($userModel->validate()) {
 				$userModel->active = true;
 				$userModel->write();
 				$userActivated = true;
