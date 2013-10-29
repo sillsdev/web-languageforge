@@ -30,6 +30,12 @@ class Base extends CI_Controller {
 				error_log("User not found, logged out.\n" . $e->getMessage());
 				$this->ion_auth->logout();
 			}
+			// Check the role
+			if (!$this->_user->role) {
+				error_log("Fixing role for user " .  $this->_user->id->asString());
+				$this->_user->role = Roles::USER;
+				$this->_user->write();
+			}
 		}
 		$uriParts = explode('.', $_SERVER['HTTP_HOST']);
 		if ($uriParts[0] == 'www') {
