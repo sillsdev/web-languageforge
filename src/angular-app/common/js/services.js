@@ -198,7 +198,8 @@ angular.module('sf.services', ['jsonRpc'])
 				QUESTIONS: function() { return 1400;},
 				ANSWERS:   function() { return 1500;},
 				COMMENTS:  function() { return 1600;},
-				TEMPLATES: function() { return 1700;}
+				TEMPLATES: function() { return 1700;},
+				TAGS:      function() { return 1800;}
 		};
 		this.operation = {
 				CREATE:       function() { return 1;},

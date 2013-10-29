@@ -11,6 +11,7 @@ class Domain {
 	const ANSWERS		= 1500;
 	const COMMENTS		= 1600;
 	const TEMPLATES		= 1700;
+	const TAGS  		= 1800;
 	
 }
 
