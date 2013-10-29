@@ -42,6 +42,9 @@ angular.module('sf.services', ['jsonRpc'])
 		this.updateFromRegistration = function(validationKey, model, callback) {
 			jsonRpc.call('user_updateFromRegistration', [validationKey, model], callback);
 		};
+		this.sendInvite = function(email, projectId, callback) {
+			jsonRpc.call('user_sendInvite', [email, projectId], callback);
+		};
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.

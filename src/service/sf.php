@@ -1,5 +1,7 @@
 <?php
 
+use models\rights\Roles;
+
 use models\UnreadMessageModel;
 
 use models\rights\Operation;
@@ -197,6 +199,7 @@ class Sf
 			JsonDecoder::decode($user, $params);
 			$user->encryptPassword();
 			$user->validate();
+			$user->active = true;
 			return $user->write();
 		}
 	}
@@ -206,8 +209,12 @@ class Sf
 		$newUser = new UserModel();
 		$project = new ProjectModel($projectId);
 		$newUser->emailPending = $email;
+		$newUser->addProject($projectId);
+		$userId = $newUser->write();
+		$project->addUser($userId, Roles::USER);
+		$project->write();
 		Communicate::sendInvite($fromUser, $newUser, $project);
-		return $newUser->write();
+		return $userId;
 	}
 	
 	
