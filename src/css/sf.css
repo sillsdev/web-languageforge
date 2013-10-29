@@ -130,7 +130,7 @@ p {
 div#header {
 	position: relative;
 	width: 100%;
-	height: 42px;
+	height: 39px;
 	background: #333 url(../images/sf_header-bar-bkg.png) repeat-x 0 0;
 	color: #fff;
 	z-index: 10; /* IE6-7 hack for logo */
