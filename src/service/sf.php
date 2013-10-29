@@ -13,6 +13,7 @@ use models\ProjectSettingsModel;
 use models\sms\SmsSettings;
 
 use models\UserModel;
+use models\UserModelForProfile;
 
 use models\dto\ProjectSettingsDto;
 
@@ -101,6 +102,11 @@ class Sf
 	 */
 	public function user_read($id) {
 		$user = new \models\UserModel($id);
+		return JsonEncoder::encode($user);
+	}
+	
+	public function user_readProfile($id) {
+		$user = new \models\UserModelForProfile($id);
 		return JsonEncoder::encode($user);
 	}
 	
@@ -193,6 +199,15 @@ class Sf
 			$user->validate();
 			return $user->write();
 		}
+	}
+	
+	public function user_sendInvite($email, $projectId) {
+		$fromUser = new UserModel($this->_userId);
+		$newUser = new UserModel();
+		$project = new ProjectModel($projectId);
+		$newUser->emailPending = $email;
+		Communicate::sendInvite($fromUser, $newUser, $project);
+		return $newUser->write();
 	}
 	
 	

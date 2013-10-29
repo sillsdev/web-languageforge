@@ -1,9 +1,12 @@
-<div class="sfcontainer container" ng-cloak>
+<div ng-controller="UserCtrl" class="sfcontainer container" ng-cloak>
 
 		<h1>Complete Your Registration</h1>
 
 		<sil-notices></sil-notices>
-		<div ng-controller="UserCtrl" class="span4">
+		<div class="well" ng-hide="showForm || errorState">
+			<img id="userNameLoading" src="/images/loading-small.gif" /> Loading...
+		</div>
+		<div class="span4">
 			<form ng-show="showForm" ng-submit="registerUser(record)" id="userForm">
 				<fieldset>
 					<legend>You are almost finished, just fill out the form below to login and get started</legend>
@@ -35,4 +38,5 @@
 				</fieldset>
 			</form>
 		</div>
+		<div class="well" ng-show="errorState">We cannot complete the registration process for you at this time.  Please <a href='/signup'>sign up here</a> instead.</div>
 </div>
