@@ -46,19 +46,14 @@ class UsxTrimHelper {
 		$this->_out = '';
 		$this->_tagStack = array();
 		// Keep all front matter; only start dropping when first chapter tag reached
-		$this->_stateDrop = false;
+		$this->_stateDrop = true;
 		$this->_stateRecreateTagStack = false;
 		xml_parse($this->_parser, $this->_usx);
 		//echo $this->_out;
 		return $this->_out;
 	}
 
-	public function _dumpStack() {
-		error_log("STACK: " . print_r($this->_tagStack, true));
-	}
-
 	private function onTagOpen($parser, $tag, $attrs) {
-		error_log('TO: ' . $tag . ': ' . print_r($attrs, true));
 		array_push($this->_tagStack, $tag);
 		array_push($this->_tagStack, $attrs);
 		switch ($tag) {
@@ -66,7 +61,7 @@ class UsxTrimHelper {
 				$this->outputStartTag($tag, $attrs);
 				array_pop($this->_tagStack); // Do not leave <usx> tag on stack
 				array_pop($this->_tagStack);
-				return;
+				return; // And do not output it below
 			case 'VERSE':
 				$this->onVerse($attrs);
 				break;
@@ -78,7 +73,6 @@ class UsxTrimHelper {
 // 				var_dump($tag, $attrs);
 
 		}
-		$this->_dumpStack();
 		if (!$this->_stateDrop) {
 			$this->outputStartTag($tag, $attrs);
 		}
@@ -98,7 +92,6 @@ class UsxTrimHelper {
 		}
 		$originalAttrs = array_pop($this->_tagStack);
 		$originalTag = array_pop($this->_tagStack);
-		$this->_dumpStack();
 		if (!$this->_stateDrop) {
 			$this->outputEndTag($tag);
 		}
@@ -118,6 +111,11 @@ class UsxTrimHelper {
 		if (!$oldstate) {
 			// We just went from "keep" to "drop". Issue close tags
 			// for everything on the current tag stack.
+			while (!empty($this->_tagStack)) {
+				$attrs = array_pop($this->_tagStack);
+				$tag = array_pop($this->_tagStack);
+				$this->outputEndTag($tag);
+			}
 		}
 		$this->_stateDrop = true;
 	}
@@ -127,11 +125,15 @@ class UsxTrimHelper {
 		if ($oldstate) {
 			// We just went from "drop" to "keep". Reconstruct the tag stack
 			// that should have gone before this element.
+			$finalAttrs = array_pop($this->_tagStack); // Don't duplicate the <verse> tag that made us start outputting
+			$finalTag = array_pop($this->_tagStack);
 			foreach (array_chunk($this->_tagStack, 2) as $pair) {
 				$tag   = $pair[0];
 				$attrs = $pair[1];
 				$this->outputStartTag($tag, $attrs);
 			}
+			array_push($this->_tagStack, $finalTag);
+			array_push($this->_tagStack, $finalAttrs);
 		}
 		$this->_stateDrop = false;
 	}
@@ -139,15 +141,10 @@ class UsxTrimHelper {
 	private function outputStartTag($tag, $attrs, $selfclosing = false) {
 		$tag = strtolower($tag);
 		$this->_out .= "<$tag";
-		error_log("DEBUG: " . print_r($attrs, true));
-		if ($attrs == 'PARA') {
-			error_log('Whiskey Tango Foxtrot, over?');
-		}
 		foreach ($attrs as $name => $val) {
 			$name = strtolower($name);
 			$this->_out .= " $name=\"$val\"";
 		}
-		error_log("DEBUG: Successfully iterated");
 		if ($selfclosing) {
 			$this->_out .= " /";
 		}
@@ -155,6 +152,7 @@ class UsxTrimHelper {
 	}
 
 	private function outputEndTag($tag) {
+		$tag = strtolower($tag);
 		$this->_out .= "</$tag>";
 	}
 
@@ -166,17 +164,6 @@ class UsxTrimHelper {
 		if (($this->_currentChapter > $this->_startChapter) &&
 		    ($this->_currentChapter < $this->_endChapter)) {
 			$this->stopDropping();
-		}
-		if (($this->_currentChapter == $this->_startChapter) ||
-		    ($this->_currentChapter == $this->_endChapter)) {
-			// Special case: output the chapter marker for this one, but
-			// don't change drop/keep state yet. (Wait til we reach the verse.)
-			$attrs = array_pop($this->_tagStack);
-			array_push($this->_tagStack, $attrs);
-			$this->_dumpStack();
-			error_log('In weird drop state: ' . print_r($attrs, true));
-			$this->outputStartTag("chapter", $attrs);
-			$this->outputEndTag("chapter", $attrs);
 		}
 	}
 
@@ -204,6 +191,13 @@ class UsxTrimHelper {
 		$this->setDropStateByChapter();
 		if (!$this->_stateDrop) {
 			$this->outputStartTag("chapter", $attrs);
+		} else if ($this->_currentChapter == $this->_startChapter) {
+			// Special case: output the chapter marker for this one, but
+			// don't change drop/keep state yet. (Wait til we reach the verse.)
+			$attrs = array_pop($this->_tagStack);
+			array_push($this->_tagStack, $attrs);
+			$this->outputStartTag("chapter", $attrs);
+			$this->outputEndTag("chapter", $attrs);
 		}
 	}
 
@@ -211,9 +205,6 @@ class UsxTrimHelper {
 		$number = (int)$attrs['NUMBER'];
 		$this->_currentVerse = (int)$number;
 		$this->setDropStateByVerse();
-		if (!$this->_stateDrop) {
-			$this->outputStartTag("verse", $attrs);
-		}
 	}
 
 }
