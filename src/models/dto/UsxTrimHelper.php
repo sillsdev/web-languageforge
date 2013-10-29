@@ -42,98 +42,120 @@ class UsxTrimHelper {
 		xml_set_character_data_handler($this->_parser, "onCData");
 	}
 
-	public function toHtml() {
+	public function trimUsx() {
 		$this->_out = '';
 		$this->_tagStack = array();
-		$this->_stateCData = false;
 		// Keep all front matter; only start dropping when first chapter tag reached
 		$this->_stateDrop = false;
+		$this->_stateRecreateTagStack = false;
 		xml_parse($this->_parser, $this->_usx);
 		//echo $this->_out;
 		return $this->_out;
 	}
 
-	private function onTagOpen($parser, $tag, $attributes) {
-		array_push($this->_tagStack, $attributes);
+	public function _dumpStack() {
+		error_log("STACK: " . print_r($this->_tagStack, true));
+	}
+
+	private function onTagOpen($parser, $tag, $attrs) {
+		error_log('TO: ' . $tag . ': ' . print_r($attrs, true));
 		array_push($this->_tagStack, $tag);
+		array_push($this->_tagStack, $attrs);
 		switch ($tag) {
+			case 'USX':
+				$this->outputStartTag($tag, $attrs);
+				array_pop($this->_tagStack); // Do not leave <usx> tag on stack
+				array_pop($this->_tagStack);
+				return;
 			case 'VERSE':
-				$this->onVerse($attributes['NUMBER'], $attributes['STYLE']);
+				$this->onVerse($attrs);
 				break;
 			case 'CHAPTER':
-				$this->onChapter($attributes['NUMBER'], $attributes['STYLE']);
+				$this->onChapter($attrs);
 				break;
 			default:
 // 				echo 'to:';
-// 				var_dump($tag, $attributes);
+// 				var_dump($tag, $attrs);
 
+		}
+		$this->_dumpStack();
+		if (!$this->_stateDrop) {
+			$this->outputStartTag($tag, $attrs);
 		}
 	}
 
 	private function onTagClose($parser, $tag) {
 		switch ($tag) {
-			case 'PARA':
-			case 'CHAPTER':
+			case 'USX':
+				$this->outputEndTag('usx');
+				return;
 			case 'VERSE':
-			case 'CHAR':
 				break;
 			default:
 // 				echo 'tc:';
 // 				var_dump($tag);
 
 		}
-		$storedTag = array_pop($this->_tagStack);
-		// Compare $tag to $storedTag?
-		$attributes = array_pop($this->_tagStack);
+		$originalAttrs = array_pop($this->_tagStack);
+		$originalTag = array_pop($this->_tagStack);
+		$this->_dumpStack();
+		if (!$this->_stateDrop) {
+			$this->outputEndTag($tag);
+		}
 	}
 
 	private function onCData($parser, $cdata) {
 // 		echo 'cd:';
 // 		var_dump($cdata);
-		if ($this->_stateCData && !$this->_stateDrop) {
+		if (!$this->_stateDrop) {
 			$this->_out .= $cdata;
 		}
 	}
 
 	// Handlers
-	private function onParagraphOpen($style) {
-		if ($style == 'ide') {
-			$this->_stateCData = false;
-			return;
-		}
-		$this->_stateCData = true;
-		if (!$this->_stateDrop) {
-			if ($style != 'p') {
-				$this->_out .= "<p class=\"$style\">";
-			} else {
-				$this->_out .= "<p>";
-			}
-		}
-	}
-
-	private function onParagraphClose() {
-		if (!$this->_stateDrop) {
-			$this->_out .= "</p>";
-		}
-		$this->_stateCData = false;
-	}
-
 	private function startDropping() {
+		$oldstate = $this->_stateDrop;
+		if (!$oldstate) {
+			// We just went from "keep" to "drop". Issue close tags
+			// for everything on the current tag stack.
+		}
 		$this->_stateDrop = true;
 	}
 
 	private function stopDropping() {
 		$oldstate = $this->_stateDrop;
 		if ($oldstate) {
-			// We just went from "drop" to "don't drop", so we need to
-			// reconstruct the tag stack that should have gone before
-			// this element.
-			ob_start();
-			var_dump($this->_tagStack);
-			$foo = ob_get_clean();
-			$this->_out .= $foo;
+			// We just went from "drop" to "keep". Reconstruct the tag stack
+			// that should have gone before this element.
+			foreach (array_chunk($this->_tagStack, 2) as $pair) {
+				$tag   = $pair[0];
+				$attrs = $pair[1];
+				$this->outputStartTag($tag, $attrs);
+			}
 		}
 		$this->_stateDrop = false;
+	}
+
+	private function outputStartTag($tag, $attrs, $selfclosing = false) {
+		$tag = strtolower($tag);
+		$this->_out .= "<$tag";
+		error_log("DEBUG: " . print_r($attrs, true));
+		if ($attrs == 'PARA') {
+			error_log('Whiskey Tango Foxtrot, over?');
+		}
+		foreach ($attrs as $name => $val) {
+			$name = strtolower($name);
+			$this->_out .= " $name=\"$val\"";
+		}
+		error_log("DEBUG: Successfully iterated");
+		if ($selfclosing) {
+			$this->_out .= " /";
+		}
+		$this->_out .= ">";
+	}
+
+	private function outputEndTag($tag) {
+		$this->_out .= "</$tag>";
 	}
 
 	private function setDropStateByChapter() {
@@ -145,6 +167,17 @@ class UsxTrimHelper {
 		    ($this->_currentChapter < $this->_endChapter)) {
 			$this->stopDropping();
 		}
+		if (($this->_currentChapter == $this->_startChapter) ||
+		    ($this->_currentChapter == $this->_endChapter)) {
+			// Special case: output the chapter marker for this one, but
+			// don't change drop/keep state yet. (Wait til we reach the verse.)
+			$attrs = array_pop($this->_tagStack);
+			array_push($this->_tagStack, $attrs);
+			$this->_dumpStack();
+			error_log('In weird drop state: ' . print_r($attrs, true));
+			$this->outputStartTag("chapter", $attrs);
+			$this->outputEndTag("chapter", $attrs);
+		}
 	}
 
 	private function setDropStateByVerse() {
@@ -153,12 +186,10 @@ class UsxTrimHelper {
 				// Boundary chapter; need to check verses
 				if (($this->_currentVerse < $this->_startVerse) ||
 				    ($this->_currentVerse > $this->_endVerse)) {
-						$this->_out .= "DEBUG: dropping verse $this->_currentVerse. ";
 					$this->startDropping();
 				}
 				if (($this->_currentVerse >= $this->_startVerse) &&
 				    ($this->_currentVerse <= $this->_endVerse)) {
-						$this->_out .= "DEBUG: keeping verse $this->_currentVerse. ";
 					$this->stopDropping();
 				}
 		} else {
@@ -167,25 +198,22 @@ class UsxTrimHelper {
 		}
 	}
 
-	private function onChapter($number, $style) {
+	private function onChapter($attrs) {
+		$number = (int)$attrs['NUMBER'];
 		$this->_currentChapter = (int)$number;
 		$this->setDropStateByChapter();
 		if (!$this->_stateDrop) {
-			$this->_out .= "<div class=\"$style\">Chapter $number</div>";
-			$this->_out .= "(chapter $number)";
+			$this->outputStartTag("chapter", $attrs);
 		}
 	}
 
-	private function onVerse($number, $style) {
+	private function onVerse($attrs) {
+		$number = (int)$attrs['NUMBER'];
 		$this->_currentVerse = (int)$number;
 		$this->setDropStateByVerse();
 		if (!$this->_stateDrop) {
-			$this->_out .= "<sup>$number</sup>";
-			$this->_out .= "(verse $number)";
+			$this->outputStartTag("verse", $attrs);
 		}
-	}
-
-	private function onChar($style) {
 	}
 
 }
