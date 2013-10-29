@@ -453,15 +453,16 @@ i.icon-remove {
 
 /* Top navigation */
 div.hdrnav {
-	overflow: auto;
 	margin-left: 122px;
 	padding-top: 20px;
+	position: relative;
 }
 
-/*
-div.hdrnav ul {
+div#inviteAFriend .overlay {
+	top: 52px;
+	right: 0px;
 }
-*/
+
 div.hdrnav img {
 	margin-right: 12px;
 }

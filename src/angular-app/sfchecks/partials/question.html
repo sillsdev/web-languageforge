@@ -30,14 +30,6 @@
 	<div ng-show="question.answerCount == 0 && !questionIsClosed()">
 		There are no answers yet for this question. You could be the first one to reply!
 	</div>
-	<div ng-controller="inviteAFriend">
-		<button class="btn" ng-click="showInviteForm = !showInviteForm">Invite a Friend</button>
-		<form ng-show="showInviteForm" class="well" ng-submit="sendInvite()">
-			<label>Email</label>
-			<input required type="email" ng-model="email" />
-			<button class="btn" type="submit">Send Invite</button>
-		</form>
-	</div>
 	<br/>
 	<div ng-hide="questionIsClosed()">
 		Add your own answer<span ng-show="newAnswer.textHighlight"> about this part of the text</span>:

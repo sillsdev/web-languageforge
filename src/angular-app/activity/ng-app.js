@@ -3,10 +3,12 @@
 // Declare app level module which depends on filters, and services
 angular.module('activity', 
 		[
+		 'ngRoute',
 		 'sf.services',
 		 'ui.bootstrap',
 		 'activity.filters',
-		 'sgw.ui.breadcrumb'
+		 'sgw.ui.breadcrumb',
+		 'sf.ui.invitefriend'
 		])
 	.controller('ActivityCtrl', ['$scope', 'activityPageService', 'linkService', 'sessionService','breadcrumbService',
 	                             function($scope, activityService, linkService, sessionService, breadcrumbService) {
