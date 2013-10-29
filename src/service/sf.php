@@ -170,7 +170,6 @@ class Sf
 		}
 		$user->encryptPassword();
 		return $user->write();
-		
 	}
 	
 	public function get_captcha_src() {
@@ -178,6 +177,22 @@ class Sf
 		$captcha_info = $this->_controller->captcha->main();
 		$this->_controller->session->set_userdata('captcha_info', $captcha_info);
 		return $captcha_info['image_src'];
+	}
+	
+	public function user_readForRegistration($validationKey) {
+		$user = new \models\UserModelBase();
+		$user->readByProperty('validationKey', $validationKey);
+		return JsonEncoder::encode($user);
+	}
+	
+	public function user_updateFromRegistration($validationKey, $params) {
+		$user = new \models\UserModelWithPassword();
+		if ($user->readByProperty('validationKey', $validationKey)) {
+			JsonDecoder::decode($user, $params);
+			$user->encryptPassword();
+			$user->validate();
+			return $user->write();
+		}
 	}
 	
 	

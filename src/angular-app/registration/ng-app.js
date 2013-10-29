@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('registration', [ 'sf.services', 'ui.bootstrap', 'palaso.ui.notice'])
-.controller('UserCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', function UserCtrl($scope, userService, sessionService, notice) {
+.controller('UserCtrl', ['$scope', '$location', 'userService', 'sessionService', 'silNoticeService', function UserCtrl($scope, $location, userService, sessionService, notice) {
 
 	$scope.record = {};
 	$scope.record.id = '';
@@ -27,12 +27,15 @@ angular.module('registration', [ 'sf.services', 'ui.bootstrap', 'palaso.ui.notic
 			if (result.ok) {
 				if (result.data) {
 					notice.push(notice.SUCCESS, "Thank you, " + record.name + ", for joining!  You can now login.");
-					$("#userForm").fadeOut();
+					$("#userForm").fadeOut(500, function() {
+						$location.path('/auth/login');
+					});
 				}
 			}
 		});
 		return true;
 	};
+	
 	$scope.checkUserName = function() {
 		$scope.userNameOk = false;
 		$scope.userNameExists = false;
