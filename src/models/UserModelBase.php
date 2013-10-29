@@ -21,6 +21,8 @@ class UserModelBase extends \models\mapper\MapperModel
 	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->validationDate = new \DateTime();
+		$this->validationExpirationDate = new \DateTime();
+		$this->role = Roles::USER;
 		parent::__construct(UserModelMongoMapper::instance(), $id);
 	}
 	

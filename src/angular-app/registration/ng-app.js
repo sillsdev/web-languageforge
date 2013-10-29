@@ -10,12 +10,13 @@ angular.module('registration', [ 'sf.services', 'ui.bootstrap', 'palaso.ui.notic
 	
 	// initialize the page by reading the user with the given validation key
 	var validationKey = $location.search().v; // get this from the URL
-	if (validationKey.length && validationKey.length > 0) {
+	if (validationKey != undefined && validationKey.length > 0) {
 		userService.readForRegistration(validationKey, function(result) {
 			if (result.ok) {
-				if (result.data.canRegister) {
+//				console.log("got user: ", result.data);
+				if (result.data != undefined) {
 					$scope.showForm = true;
-					$scope.record = result.data.user;
+					$scope.record = result.data;
 				} else {
 					$scope.errorState = true;
 				}

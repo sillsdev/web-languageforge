@@ -189,7 +189,13 @@ class Sf
 	
 	public function user_readForRegistration($validationKey) {
 		$user = new \models\UserModelBase();
-		$user->readByProperty('validationKey', $validationKey);
+		if (!$user->readByProperty('validationKey', $validationKey)) {
+			return false;
+		}
+		$now = new \DateTime();
+		if ($now > $user->validationExpirationDate) {
+			throw new \Exception("Sorry, your registration link has expired.");
+		}
 		return JsonEncoder::encode($user);
 	}
 	

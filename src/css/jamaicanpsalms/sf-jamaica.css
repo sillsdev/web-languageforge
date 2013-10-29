@@ -467,6 +467,10 @@ div.hdrnav img {
 	margin-right: 12px;
 }
 
+ul.topNav {
+	margin: 0;
+}
+
 ul.topNav > li {
 	background: #777777;
 	display: inline-block;
@@ -490,8 +494,6 @@ div#logo-small {
 	height: 36px;
 	background: url(../images/sf_logo_small.png) no-repeat;
 }
-
-
 
 /* Breadcrumbs */
 .breadcrumb > li .divider {
