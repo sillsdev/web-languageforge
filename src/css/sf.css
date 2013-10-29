@@ -729,6 +729,11 @@ ul.topCrumbs .active {
 	margin: 20px 0;
 }
 
+.jqte_toolbar {
+	visibility: hidden;
+	height: 0px;
+}
+
 /* Question Page */
 table#answers tbody tr:hover, table tbody tr.altrow:hover {
 	background-color: #fff;
@@ -738,6 +743,19 @@ div#text {
 	overflow: auto;
 	min-height: 400px;
 	max-height: 600px;
+}
+
+div#text p, div.scripture-quote p {
+	line-height: 1.2em;
+}
+
+div#text p.q1, div.scripture-quote p.q1 {
+	margin-bottom: 0em;
+}
+
+div#text p.q2, div.scripture-quote p.q2 {
+	margin-bottom: 0em;
+	margin-left: 1.5em;
 }
 
 div#answerControls {
@@ -933,3 +951,4 @@ label {
 	font-size: 0.9em;
 	line-height: 1.4em;
 }
+

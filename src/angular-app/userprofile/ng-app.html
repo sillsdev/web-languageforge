@@ -1,4 +1,4 @@
-<div class="sfcontainer" ng-app="userProfile" ng-cloak>
+<div class="content container" ng-cloak>
 	<div ng-controller="userProfileCtrl">
 	<h1>{{user.name}}'s User Profile</h1>
 	<sil-notices></sil-notices>
@@ -11,8 +11,8 @@
 								<label>Username: <b style="margin-left:10px">{{user.username}}</b></label>
 								<label>Picture</label>
 								<div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" ng-src="{{user.avatar_ref}}" title="Use the dropdown selections below to change your avatar's color and shape" /></div>
-								<div><select ng-model="user.avatar_color" ng-include src=" '/angular-app/userprofile/avatar_color.html' "/></select></div>
-								<div><select ng-model="user.avatar_shape" ng-include src=" '/angular-app/userprofile/avatar_shape.html' "/></select></div>
+								<div><select ng-model="user.avatar_color" ng-options="c.value as c.label for c in dropdown.avatarColors" /><option value="">Select a Color...</option></select></div>
+								<div><select ng-model="user.avatar_shape" ng-options="s.value as s.label for s in dropdown.avatarShapes" /><option value="">Choose an animal...</option></select></div>
 								<label>Email Address</label>
 								<input type="text" placeholder="(email)" ng-model="user.email"/>
 								<label>Jamaica Mobile Phone Number</label>
@@ -38,17 +38,17 @@
 									<option>Female</option>
 								</select>
 								<label>Location</label>
-								<select ng-model="user.city" ng-include src=" '/angular-app/userprofile/jamaica_towns.html '"/></select>
+								<select ng-model="user.city" ng-options="c.label as c.label for c in dropdown.jamaicanTowns"/><option value="unspecified"></option></select>
 							</tab>
 							<tab heading="Participation Details">
 								<label>Preferred Bible Version</label>
-								<select ng-model="user.preferred_bible_version" ng-include src=" '/angular-app/userprofile/jamaica_bible_versions.html' "/></select>
+								<select ng-model="user.preferred_bible_version" ng-options="b.label as b.label for b in dropdown.bibleVersions" /><option value="unspecified"></option></select>
 								<label>Religious Affiliation</label>
-								<select ng-model="user.religious_affiliation" ng-include src=" '/angular-app/userprofile/jamaica_religious_affiliations.html' "/></select>
+								<select ng-model="user.religious_affiliation" ng-options="a.label as a.label for a in dropdown.religiousAffiliations"/><option value="unspecified"></option></select>
 								<label>Study Group</label>
-								<select ng-model="user.study_group" ng-include src=" '/angular-app/userprofile/jamaica_study_groups.html' "/></select>
+								<select ng-model="user.study_group" ng-options="g.label as g.label for g in dropdown.studyGroups"/><option value="unspecified"></option></select>
 								<label>Feedback Group</label>
-								<select ng-model="user.feedback_group" ng-include src=" '/angular-app/userprofile/jamaica_feedback_groups.html' "/></select>
+								<select ng-model="user.feedback_group" ng-options="g.label as g.label for g in dropdown.feedbackGroups"/><option value="unspecified"></option></select>
 							</tab>
 						</tabset>
 						<button style="margin-top:20px" type="submit" class="btn"><i class="icon-ok"></i>Save</button>

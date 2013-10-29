@@ -34,8 +34,7 @@ class MapperListModel
 	 * @param array $query
 	 * @param array $fields
 	 */
-	protected function __construct($mapper, $query, $fields = array())
-	{
+	protected function __construct($mapper, $query = array(), $fields = array()) {
 		$this->_mapper = $mapper;
 		$this->_query = $query;
 		$this->_fields = $fields;
