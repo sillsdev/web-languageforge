@@ -1,5 +1,7 @@
 <?php
 
+use models\rights\Roles;
+
 use models\UnreadMessageModel;
 
 use models\rights\Operation;
@@ -13,6 +15,7 @@ use models\ProjectSettingsModel;
 use models\sms\SmsSettings;
 
 use models\UserModel;
+use models\UserModelForProfile;
 
 use models\dto\ProjectSettingsDto;
 
@@ -104,6 +107,11 @@ class Sf
 		return JsonEncoder::encode($user);
 	}
 	
+	public function user_readProfile($id) {
+		$user = new \models\UserModelForProfile($id);
+		return JsonEncoder::encode($user);
+	}
+	
 	/**
 	 * Delete users
 	 * @param array<string> $userIds
@@ -170,7 +178,6 @@ class Sf
 		}
 		$user->encryptPassword();
 		return $user->write();
-		
 	}
 	
 	public function get_captcha_src() {
@@ -178,6 +185,42 @@ class Sf
 		$captcha_info = $this->_controller->captcha->main();
 		$this->_controller->session->set_userdata('captcha_info', $captcha_info);
 		return $captcha_info['image_src'];
+	}
+	
+	public function user_readForRegistration($validationKey) {
+		$user = new \models\UserModelBase();
+		if (!$user->readByProperty('validationKey', $validationKey)) {
+			return false;
+		}
+		$now = new \DateTime();
+		if ($now > $user->validationExpirationDate) {
+			throw new \Exception("Sorry, your registration link has expired.");
+		}
+		return JsonEncoder::encode($user);
+	}
+	
+	public function user_updateFromRegistration($validationKey, $params) {
+		$user = new \models\UserModelWithPassword();
+		if ($user->readByProperty('validationKey', $validationKey)) {
+			JsonDecoder::decode($user, $params);
+			$user->encryptPassword();
+			$user->validate();
+			$user->active = true;
+			return $user->write();
+		}
+	}
+	
+	public function user_sendInvite($email, $projectId) {
+		$fromUser = new UserModel($this->_userId);
+		$newUser = new UserModel();
+		$project = new ProjectModel($projectId);
+		$newUser->emailPending = $email;
+		$newUser->addProject($projectId);
+		$userId = $newUser->write();
+		$project->addUser($userId, Roles::USER);
+		$project->write();
+		Communicate::sendInvite($fromUser, $newUser, $project);
+		return $userId;
 	}
 	
 	
