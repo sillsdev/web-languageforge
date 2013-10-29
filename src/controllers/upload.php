@@ -8,7 +8,7 @@ require_once 'base.php';
 class Upload extends Base {
 
 	public function receive() {
-		$allowedTypes = array("audio/mpeg");
+		$allowedTypes = array("audio/mpeg", "audio/mp3");	// type: documented, observed
 		$allowedExtensions = array(".mp3");
 		
 		$file = $_FILES['file'];
@@ -52,11 +52,11 @@ class Upload extends Base {
 			} else {
 				$allowedExtensionsStr = implode(", ", $allowedExtensions);
 				if (count($allowedExtensions) < 1) {
-					echo "File $fileName is not an allowed audio file. No audio file formats are cerrently enabled.";
+					echo "$fileName is not an allowed audio file. No audio file formats are currently enabled.";
 				} else if (count($allowedExtensions) == 1) {
-					echo "File $fileName is not an allowed audio file. Ensure the file is an $allowedExtensionsStr.";
+					echo "$fileName is not an allowed audio file. Ensure the file is an $allowedExtensionsStr.";
 				} else {
-					echo "File $fileName is not an allowed audio file. Ensure the file is one of the following types: $allowedExtensionsStr.";
+					echo "$fileName is not an allowed audio file. Ensure the file is one of the following types: $allowedExtensionsStr.";
 				}
 			}
 		}
