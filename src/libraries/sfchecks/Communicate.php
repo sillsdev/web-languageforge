@@ -4,6 +4,7 @@ namespace libraries\sfchecks;
 use models\UnreadMessageModel;
 use models\MessageModel;
 use models\UserModel;
+use models\UserModelForRegistration;
 use models\ProjectModel;
 use libraries\sms\SmsModel;
 use libraries\sms\SmsQueue;
@@ -30,15 +31,6 @@ class CommunicateDelivery implements IDelivery
 
 class CommunicateHelper
 {
-	/**
-	 * @param UserModel $userModel
-	 * @return string
-	 */
-	public static function addValidateKeyToUser($userModel) {
-		$key = sha1(microtime(true).mt_rand(10000,90000));
-		$userModel->validationKey = $key;
-		$userModel->validationDate = new \DateTime();
-	}
 
 	/**
 	 *
@@ -194,11 +186,12 @@ class Communicate
 	
 	/**
 	 * Send an email to validate a user when they sign up.
-	 * @param UserModel $userModel
+	 * @param UserModelForRegistration $userModel
 	 * @param SwiftMailer $mailer
 	 */
 	public static function sendSignup($userModel, IDelivery $delivery = null) {
-		CommunicateHelper::addValidateKeyToUser($userModel);
+		$userModel->setValidation(7);
+		$userModel->write();
 		$vars = array(
 			'user' => $userModel,
 			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/validate/' . $userModel->validationKey,
