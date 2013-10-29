@@ -1,5 +1,4 @@
-<div class="container cf">
-	<div style="margin: 40px 0 0 140px">
+<div class="content container cf">
 <h1><?php echo lang('login_heading');?></h1>
 <p><?php echo lang('login_subheading');?></p>
 
@@ -30,5 +29,4 @@
 <?php echo form_close();?>
 
 <p><a href="forgot_password"><?php echo lang('login_forgot_password');?></a></p>
-	</div>
 </div>

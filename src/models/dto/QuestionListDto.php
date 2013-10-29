@@ -37,6 +37,12 @@ class QuestionListDto
 		foreach ($questionList->entries as $questionData) {
 			// Just want answer count, not whole list
 			$questionData['answerCount'] = count($questionData['answers']);
+			$responseCount = 0; // "Reponses" = answers + comments
+			foreach ($questionData['answers'] as $a) {
+				$commentCount = count($a['comments']);
+				$responseCount += $commentCount+1; // +1 for this answer
+			}
+			$questionData['responseCount'] = $responseCount;
 			unset($questionData['answers']);
 
 			$data['entries'][] = $questionData;

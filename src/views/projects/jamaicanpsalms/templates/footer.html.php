@@ -20,7 +20,7 @@
 						<div id="sponsor" class="span4">
 							<h4>Jamaican Psalms Project By</h4>
 <!-- 							<small>Bible Societies of the West Indies</small> -->
-							<div><a href="http://biblesocietywi.org/"><img src="/images/jamaican_psalms/bwsi_logo.png" alt="bwsi_logo" width="91" height="60" /></a></div>
+							<div><a href="http://biblesocietywi.org/"><img src="/images/jamaicanpsalms/bwsi_logo.png" alt="bwsi_logo" width="91" height="60" /></a></div>
 						</div>
 					
 						
