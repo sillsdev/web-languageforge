@@ -47,6 +47,11 @@ class UsxTrimHelper {
 		$this->_tagStack = array();
 		// Keep all front matter; only start dropping when first chapter tag reached
 		$this->_stateDrop = true;
+		// Special-case: if start chapter & verse are 0 (we're starting from
+		// the beginning of the supplied USX), keep all front matter
+		if ($this->_startChapter == 0 && $this->_startVerse == 0) {
+			$this->_stateDrop = false;
+		}
 		$this->_stateRecreateTagStack = false;
 		xml_parse($this->_parser, $this->_usx);
 		//echo $this->_out;
