@@ -40,18 +40,16 @@
 				
 				<?php if ($logged_in):?>
 					<div class="pull-right">
-							<ul class="sf-menu">
-								<li><a href="/app/sfchecks#/projects">My Projects</a>
-									<ul>
-									<?php foreach($projects as $project): ?>
-										<li><a href="<?php echo "/app/sfchecks#/project/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
-									<?php endforeach;?>
-									</ul>
-								</li>
-							</ul>
-							<ul class="sf-menu">
+						<ul id="header-nav" class="sf-menu">
+							<li><a href="/app/sfchecks#/projects">My Projects</a>
+								<ul>
+								<?php foreach($projects as $project): ?>
+									<li><a href="<?php echo "/app/sfchecks#/project/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+								<?php endforeach;?>
+								</ul>
+							</li>
 							<li>
-							<a href="#"><img src="<?php echo $small_avatar_url; ?>" style="width: 30px; height: 30px; float:left; position:relative; top:-6px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
+							<a href="#"><img src="<?php echo $small_avatar_url; ?>" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
 								<ul>
 									<?php if ($is_admin):?>
 									<li><a href="/app/sfadmin">Site Administration</a></li>
