@@ -30,6 +30,12 @@ class CodeGuard {
 		}
 	}
 	
+	public static function checkNotFalseAndThrow($var, $name) {
+		if ($var == null || !$var) {
+			throw new \Exception("'$name' should not evaluate to false");
+		}
+	}
+	
 }
 
 ?>
