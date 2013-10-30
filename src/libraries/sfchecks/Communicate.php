@@ -4,6 +4,7 @@ namespace libraries\sfchecks;
 use models\UnreadMessageModel;
 use models\MessageModel;
 use models\UserModel;
+use models\UserModelForRegistration;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
 use libraries\sms\SmsModel;
@@ -31,15 +32,6 @@ class CommunicateDelivery implements IDelivery
 
 class CommunicateHelper
 {
-	/**
-	 * @param UserModel $userModel
-	 * @return string
-	 */
-	public static function addValidateKeyToUser($userModel) {
-		$key = sha1(microtime(true).mt_rand(10000,90000));
-		$userModel->validationKey = $key;
-		$userModel->validationDate = new \DateTime();
-	}
 
 	/**
 	 *
@@ -195,11 +187,11 @@ class Communicate
 	
 	/**
 	 * Send an email to validate a user when they sign up.
-	 * @param UserModel $userModel
+	 * @param UserModelBase $userModel
 	 * @param IDelivery $delivery
 	 */
 	public static function sendSignup($userModel, IDelivery $delivery = null) {
-		CommunicateHelper::addValidateKeyToUser($userModel);
+		$userModel->setValidation(7);
 		$vars = array(
 			'user' => $userModel,
 			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/validate/' . $userModel->validationKey,
@@ -209,7 +201,7 @@ class Communicate
 
 		CommunicateHelper::deliverEmail(
 			array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME),
-			array($userModel->email => $userModel->name),
+			array($userModel->emailPending => $userModel->name),
 			'ScriptureForge account signup validation',
 			$html,
 			$delivery
@@ -220,6 +212,32 @@ class Communicate
 		
 	}
 	
+	/**
+	 * 
+	 * @param UserModelBase $fromUserModel
+	 * @param UserModelBase $toUserModel
+	 * @param ProjectModel $projectModel
+	 * @param IDelivery $delivery
+	 */
+	public static function sendInvite($fromUserModel, $toUserModel, $projectModel, IDelivery $delivery = null) {
+		$toUserModel->setValidation(7);
+		$toUserModel->write();
+		$vars = array(
+			'user' => $fromUserModel,
+			'project' => $projectModel,
+			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/registration#/?v=' . $toUserModel->validationKey,
+		);
+		$t = CommunicateHelper::templateFromFile('email/en/SignupValidate.html');
+		$html = $t->render($vars);
+
+		CommunicateHelper::deliverEmail(
+			array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME),
+			array($toUserModel->emailPending => $toUserModel->name),
+			'ScriptureForge account signup validation',
+			$html,
+			$delivery
+		);
+	}
 }
 
 ?>

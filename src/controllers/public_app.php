@@ -5,24 +5,25 @@ use models\rights\Roles;
 
 require_once 'base.php';
 
-class Signup extends Base {
+class Public_app extends Base {
 	
-	public function view() {
-		
-		$app = 'signup';
-		
-		$data = array();
-		$data['appName'] = $app;
-		
-		$data['jsCommonFiles'] = array();
-		self::addJavascriptFiles("angular-app/common/js", $data['jsCommonFiles']);
-		$data['jsProjectFiles'] = array();
-		self::addJavascriptFiles("angular-app/$app", $data['jsProjectFiles']);
+	public function view($app = 'main') {
+		if ( ! file_exists("angular-app/$app")) {
+			show_404();
+		} else {
+			$data = array();
+			$data['appName'] = $app;
 			
-		$data['title'] = "Scripture Forge";
-		$data['jsonSession'] = '"";'; // empty json session data that angular-app template needs to be happy
-		
-		$this->_render_page("angular-app", $data);
+			$data['jsCommonFiles'] = array();
+			self::addJavascriptFiles("angular-app/common/js", $data['jsCommonFiles']);
+			$data['jsProjectFiles'] = array();
+			self::addJavascriptFiles("angular-app/$app", $data['jsProjectFiles']);
+				
+			$data['title'] = "Scripture Forge";
+			$data['jsonSession'] = '"";'; // empty json session data that angular-app template needs to be happy
+			
+			$this->_render_page("angular-app", $data);
+		}
 	}
 	
 	private static function ext($filename) {
