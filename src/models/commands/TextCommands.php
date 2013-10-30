@@ -4,10 +4,52 @@ namespace models\commands;
 
 use models\ProjectModel;
 use models\TextModel;
+use models\dto\UsxTrimHelper;
+use models\mapper\JsonDecoder;
+use models\commands\ActivityCommands;
 
 class TextCommands
 {
 	
+	private static function hasRange($object) {
+		error_log(print_r($object, true));
+		$sc = (int)$object['startCh'];
+		$sv = (int)$object['startVs'];
+		$ec = (int)$object['endCh'];
+		$ev = (int)$object['endVs'];
+		return ($sc || $sv || $ec || $ev);
+	}
+
+	/**
+	 * @param string $projectId
+	 * @param JSON $object
+	 * @return ID of text updated/added
+	 */
+	public static function updateText($projectId, $object) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$textModel = new \models\TextModel($projectModel);
+		$isNewText = ($object['id'] == '');
+		if (!$isNewText) {
+			$textModel->read($object['id']);
+		}
+		JsonDecoder::decode($textModel, $object);
+		if (TextCommands::hasRange($object)) {
+			$usxTrimHelper = new UsxTrimHelper(
+				$textModel->content,
+				$object['startCh'],
+				$object['startVs'],
+				$object['endCh'],
+				$object['endVs']
+			);
+			$textModel->content = $usxTrimHelper->trimUsx();
+		}
+		$textId = $textModel->write();
+		if ($isNewText) {
+			ActivityCommands::addText($projectModel, $textId, $textModel);
+		}
+		return $textId;
+	}
+
 	/**
 	 * @param string $projectId
 	 * @param array $textIds
