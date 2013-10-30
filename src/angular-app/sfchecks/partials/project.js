@@ -125,6 +125,10 @@ angular.module(
 			model.id = '';
 			model.title = $scope.title;
 			model.content = $scope.content;
+			model.startCh = $scope.startCh;
+			model.startVs = $scope.startVs;
+			model.endCh = $scope.endCh;
+			model.endVs = $scope.endVs;
 			textService.update(projectId, model, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "The text '" + model.title + "' was added successfully");
