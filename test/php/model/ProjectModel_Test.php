@@ -205,7 +205,27 @@ class TestProjectModel extends UnitTestCase {
 		$this->assertIsA($result, 'array');
 		$this->assertTrue(in_array(Domain::QUESTIONS + Operation::CREATE, $result));
 	}
-		
+
+	function testCreateFromDomain_3Projects_MatchingProjectCodeSelected() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+	
+		$project1 = $e->createProject('Project1Name');
+		$project1->projectCode = ProjectModel::domainToProjectCode('dev.scriptureforge.org');
+		$project1->write();
+		$project2 = $e->createProject('Project2Name');
+		$project2->projectCode = ProjectModel::domainToProjectCode('jamaicanpsalms.scriptureforge.org');
+		$project2->write();
+		$project3 = $e->createProject('Project3Name');
+		$project3->projectCode = ProjectModel::domainToProjectCode('scriptureforge.local');
+		$project3->write();
+		$projectDomain = 'jamaicanpsalms.local';
+	
+		$project = ProjectModel::createFromDomain($projectDomain);
+	
+		$this->assertEqual($project->projectCode, ProjectModel::domainToProjectCode($projectDomain));
+	}
+	
 }
 
 ?>

@@ -8,6 +8,7 @@ use models\rights\Operation;
 use models\rights\Domain;
 use models\rights\Realm;
 use models\rights\Roles;
+use models\ProjectModel;
 
 
 class Base extends CI_Controller {
@@ -37,14 +38,11 @@ class Base extends CI_Controller {
 				$this->_user->write();
 			}
 		}
-		$uriParts = explode('.', $_SERVER['HTTP_HOST']);
-		if ($uriParts[0] == 'www') {
-			array_shift($uriParts);
-		}
-		if ($uriParts[0] == 'scriptureforge' || $uriParts[0] == 'dev') {
+		$projectCode = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
+		if ($projectCode == 'scriptureforge' || $projectCode == 'dev') {
 			$this->_project = 'scriptureforge';
 		} else {
-			$this->_project = $uriParts[0];
+			$this->_project = $projectCode;
 		}
 		
 	}

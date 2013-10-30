@@ -6,6 +6,7 @@ use models\MessageModel;
 use models\UserModel;
 use models\UserModelForRegistration;
 use models\ProjectModel;
+use models\ProjectSettingsModel;
 use libraries\sms\SmsModel;
 use libraries\sms\SmsQueue;
 
@@ -98,7 +99,7 @@ class CommunicateHelper
 		if ($delivery == null) {
 			$delivery = new CommunicateDelivery();
 		}
-		
+
 		// Deliver the email message
 		$delivery->sendEmail($from, $to, $subject, $content);
 	}
@@ -110,7 +111,7 @@ class Communicate
 	/**
 	 * 
 	 * @param array $users array<UserModel> 
-	 * @param ProjectModel $project
+	 * @param ProjectSettingsModel $project
 	 * @param string $subject
 	 * @param string $smsTemplate
 	 * @param string $emailTemplate
@@ -139,7 +140,7 @@ class Communicate
 	/**
 	 * 
 	 * @param UserModel $user
-	 * @param ProjectModel $project
+	 * @param ProjectSettingsModel $project
 	 * @param string $subject
 	 * @param string $smsTemplate
 	 * @param string $emailTemplate
@@ -187,10 +188,11 @@ class Communicate
 	/**
 	 * Send an email to validate a user when they sign up.
 	 * @param UserModelBase $userModel
-	 * @param IDelivery $mailer
+	 * @param IDelivery $delivery
 	 */
 	public static function sendSignup($userModel, IDelivery $delivery = null) {
 		$userModel->setValidation(7);
+		$userModel->write();
 		$vars = array(
 			'user' => $userModel,
 			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/validate/' . $userModel->validationKey,
