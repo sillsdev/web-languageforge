@@ -22,13 +22,14 @@ class TestProjectUserCommands extends UnitTestCase {
 		$project->language = "SomeLanguage";
 		$project->projectname = "SomeProject";
 		$projectId = $project->write();
+		$currentUserId = '';
 		
-		// Mock user object
-		$object = array(
+		// Mock user params
+		$params = array(
 			"name" => "Some User"
 		);
 		$command = new models\commands\ProjectUserCommands($project);
-		$userId = $command->updateUser($object);
+		$userId = $command->updateUser($params, $currentUserId);
 		$this->assertIsA($userId, 'string');
 		
 		$user = new models\UserModel($userId);
