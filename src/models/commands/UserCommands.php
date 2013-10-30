@@ -42,17 +42,26 @@ class UserCommands
 		}
 		$user->active = false;
 		$user->role = Roles::USER;
+		if (!$user->emailPending) {
+			if (!$user->email) {
+				throw new \Exception("");
+			}
+			$user->emailPending = $user->email;
+			$user->email = '';
+		}
 		$id = $user->write();
 
 		// Write the password
 		$userPassword = new UserModelWithPassword($id);
-		$userPassword->encryptPassword();
+		$userPassword->setPassword($params['password']);
 		$userPassword->write();
 
 		// if signup from project page then add user to project
 		if ($projectCode) {
 			$project = ProjectModel::createFromDomain($projectCode);
-			if ($project) {
+			if (!$project) {
+				error_log("Error: Could not create project from project code '$projectCode'");
+			} else {
 				$project->addUser($user->id->asString(), $user->role);
 				$user->addProject($project->id->asString());
 				$project->write();

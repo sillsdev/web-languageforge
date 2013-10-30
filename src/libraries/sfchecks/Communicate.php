@@ -99,7 +99,7 @@ class CommunicateHelper
 		if ($delivery == null) {
 			$delivery = new CommunicateDelivery();
 		}
-		
+
 		// Deliver the email message
 		$delivery->sendEmail($from, $to, $subject, $content);
 	}
@@ -192,6 +192,7 @@ class Communicate
 	 */
 	public static function sendSignup($userModel, IDelivery $delivery = null) {
 		$userModel->setValidation(7);
+		$userModel->write();
 		$vars = array(
 			'user' => $userModel,
 			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/validate/' . $userModel->validationKey,
