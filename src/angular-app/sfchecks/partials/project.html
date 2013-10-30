@@ -13,8 +13,8 @@
 	<label>Text</label>
 	<textarea textdrop ng-model="content" rows="4" placeholder="Paste the USX text here"></textarea>
 	<label></label>
-	<table><tr><td>From:<br><a href="#">reset</a></td><td>Chapter <input type="number" ng-model="startCh" style="width: 3em"></input></td><td> Verse <input type="number" ng-model="startVs" style="width: 3em"></input></td></tr>
-	<tr><td>To:<br><a href="#">reset</a></td><td>Chapter <input type="number" ng-model="endCh" style="width: 3em"></input></td><td> Verse <input type="number" ng-model="endVs" style="width: 3em"></input></td></tr></table>
+	<table><tr><td>From:<br><a ng-click="startCh = ''; startVs = ''">reset</a></td><td>Chapter <input type="number" ng-model="startCh" style="width: 3em"></input></td><td> Verse <input type="number" ng-model="startVs" style="width: 3em"></input></td></tr>
+	<tr><td>To:<br><a ng-click="endCh = ''; endVs = ''">reset</a></td><td>Chapter <input type="number" ng-model="endCh" style="width: 3em"></input></td><td> Verse <input type="number" ng-model="endVs" style="width: 3em"></input></td></tr></table>
 	<button type="submit" class="btn" ng-click="addText(); newTextCollapsed = true"><i class="icon-ok"></i>Save</button>
 	</fieldset>
 	<fieldset class="span4">
