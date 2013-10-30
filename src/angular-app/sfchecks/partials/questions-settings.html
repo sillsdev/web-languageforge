@@ -9,6 +9,8 @@
 			<label>Text</label>
 			<textarea ng-model="editedText.content" rows="4" placeholder="Paste the USX text here"></textarea>
 			<label></label>
+			<table><tr><td>From:<br><a href="#">reset</a></td><td>Chapter <input type="number" ng-model="startCh" style="width: 3em"></input></td><td> Verse <input type="number" ng-model="startVs" style="width: 3em"></input></td></tr>
+			<tr><td>To:<br><a href="#">reset</a></td><td>Chapter <input type="number" ng-model="endCh" style="width: 3em"></input></td><td> Verse <input type="number" ng-model="endVs" style="width: 3em"></input></td></tr></table>
 			<br/>
 			<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 			</fieldset>
@@ -39,9 +41,9 @@
 			<br />
 			<div ng-show="file != null">
 				<p><strong>{{file.name}}</strong> {{file.size | bytes }}</p>
-				<div class="span4" margin-left="-50px"><progress percent="progress"></progress></div>&nbsp
+				<div class="span4" margin-left="-50px"><progress percent="progress"></progress></div>&nbsp;
 			</div>
-			<label>&nbsp</label>
+			<label>&nbsp;</label>
 			<div ng-bind-html="uploadResult"></div>
 		</form>
 	</tab>
