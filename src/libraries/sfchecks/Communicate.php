@@ -5,6 +5,7 @@ use models\UnreadMessageModel;
 use models\MessageModel;
 use models\UserModel;
 use models\ProjectModel;
+use models\ProjectSettingsModel;
 use libraries\sms\SmsModel;
 use libraries\sms\SmsQueue;
 
@@ -118,7 +119,7 @@ class Communicate
 	/**
 	 * 
 	 * @param array $users array<UserModel> 
-	 * @param ProjectModel $project
+	 * @param ProjectSettingsModel $project
 	 * @param string $subject
 	 * @param string $smsTemplate
 	 * @param string $emailTemplate
@@ -147,7 +148,7 @@ class Communicate
 	/**
 	 * 
 	 * @param UserModel $user
-	 * @param ProjectModel $project
+	 * @param ProjectSettingsModel $project
 	 * @param string $subject
 	 * @param string $smsTemplate
 	 * @param string $emailTemplate
@@ -195,7 +196,7 @@ class Communicate
 	/**
 	 * Send an email to validate a user when they sign up.
 	 * @param UserModel $userModel
-	 * @param SwiftMailer $mailer
+	 * @param IDelivery $delivery
 	 */
 	public static function sendSignup($userModel, IDelivery $delivery = null) {
 		CommunicateHelper::addValidateKeyToUser($userModel);
