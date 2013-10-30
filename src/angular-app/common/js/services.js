@@ -8,6 +8,9 @@ angular.module('sf.services', ['jsonRpc'])
 		this.read = function(id, callback) {
 			jsonRpc.call('user_read', [id], callback);
 		};
+		this.readProfile = function(id, callback) {
+			jsonRpc.call('user_readProfile', [id], callback);
+		};
 		this.update = function(model, callback) {
 			jsonRpc.call('user_update', [model], callback);
 		};
@@ -32,6 +35,15 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		this.register = function(model, callback) {
 			jsonRpc.call('user_register', [model], callback);
+		};
+		this.readForRegistration = function(validationKey, callback) {
+			jsonRpc.call('user_readForRegistration', [validationKey], callback);
+		};
+		this.updateFromRegistration = function(validationKey, model, callback) {
+			jsonRpc.call('user_updateFromRegistration', [validationKey, model], callback);
+		};
+		this.sendInvite = function(email, projectId, callback) {
+			jsonRpc.call('user_sendInvite', [email, projectId], callback);
 		};
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
@@ -186,7 +198,8 @@ angular.module('sf.services', ['jsonRpc'])
 				QUESTIONS: function() { return 1400;},
 				ANSWERS:   function() { return 1500;},
 				COMMENTS:  function() { return 1600;},
-				TEMPLATES: function() { return 1700;}
+				TEMPLATES: function() { return 1700;},
+				TAGS:      function() { return 1800;}
 		};
 		this.operation = {
 				CREATE:       function() { return 1;},

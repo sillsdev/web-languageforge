@@ -102,7 +102,7 @@ class TestCommunicate extends UnitTestCase {
 		
 		// What's in the delivery?
 		$expectedFrom = array('no-reply@scriptureforge.org' => 'ScriptureForge');
-		$expectedTo = array($userModel->email => $userModel->name);
+		$expectedTo = array($userModel->emailPending => $userModel->name);
 		$this->assertEqual($expectedFrom, $delivery->from);
 		$this->assertEqual($expectedTo, $delivery->to);
 		$this->assertPattern('/Name/', $delivery->content);

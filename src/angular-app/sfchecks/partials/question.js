@@ -78,7 +78,8 @@ angular.module(
 				$scope.rights = result.data.rights;
 			}
 		});
-		
+
+		// Rights: Answers
 		$scope.rightsEditOwn = function(userId) {
 			var right = (userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN);
 			return right;
@@ -89,12 +90,24 @@ angular.module(
 			return right;
 		};
 		
+		// Rights: Question
 		$scope.rightsCloseQuestion = function(userId) {
 			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
-		}
+		};
+		
 		$scope.rightsEditQuestion = function(userId) {
 			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
-		}
+		};
+		
+		
+		// Rights: Tags
+		$scope.rightsCreateTag = function() {
+			return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.CREATE);
+		};
+		
+		$scope.rightsDeleteTag = function() {
+			return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.DELETE_OTHER);
+		};
 		
 		$scope.workflowStates = [
 			{
