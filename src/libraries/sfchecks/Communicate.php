@@ -228,7 +228,7 @@ class Communicate
 			'project' => $projectModel,
 			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/registration#/?v=' . $toUserModel->validationKey,
 		);
-		$t = CommunicateHelper::templateFromFile('email/en/SignupValidate.html');
+		$t = CommunicateHelper::templateFromFile('email/en/InvitationValidate.html');
 		$html = $t->render($vars);
 
 		CommunicateHelper::deliverEmail(
