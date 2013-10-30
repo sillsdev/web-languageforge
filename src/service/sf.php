@@ -79,6 +79,9 @@ class Sf
 	 */
 	public function user_update($params) {
 		$user = new \models\UserModel();
+		if ($params['id']) {
+			$user->read($params['id']);
+		}
 		JsonDecoder::decode($user, $params);
 		$result = $user->write();
 		return $result;
@@ -273,10 +276,10 @@ class Sf
 		throw new \Exception("project_readUser NYI");
 	}
 	
-	public function project_updateUser($projectId, $object) {
+	public function project_updateUser($projectId, $params) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$command = new \models\commands\ProjectUserCommands($projectModel);
-		return $command->updateUser($object);
+		return $command->updateUser($params, $this->_userId);
 	}
 	
 	public function project_deleteUsers($projectId, $userIds) {
