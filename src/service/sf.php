@@ -182,7 +182,12 @@ class Sf
 	
 	public function get_captcha_src() {
 		$this->_controller->load->library('captcha');
-		$captcha_info = $this->_controller->captcha->main();
+		$captcha_config = array(
+			'png_backgrounds' => array(APPPATH . 'images/captcha/captcha_bg.png'),
+			'fonts' => array(FCPATH.'/images/captcha/times_new_yorker.ttf'),
+			'characters' => 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789',
+		);
+		$captcha_info = $this->_controller->captcha->main($captcha_config);
 		$this->_controller->session->set_userdata('captcha_info', $captcha_info);
 		return $captcha_info['image_src'];
 	}
