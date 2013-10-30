@@ -1,50 +1,37 @@
 <?php
 
-use models\UnreadMessageModel;
-
-use models\rights\Operation;
-
-use models\rights\Domain;
-
-use models\dto\RightsHelper;
-
-use models\ProjectSettingsModel;
-
-use models\sms\SmsSettings;
-
-use models\UserModel;
-
-use models\dto\ProjectSettingsDto;
-
-use models\ProjectModel;
-
-use models\dto\ActivityListDto;
+use libraries\palaso\CodeGuard;
+use libraries\palaso\JsonRpcServer;
+use libraries\sfchecks\Communicate;
+use libraries\sfchecks\Email;
 
 use models\commands\ActivityCommands;
-
-use models\AnswerModel;
-
-use models\QuestionModel;
-
-use libraries\palaso\CodeGuard;
-
-use libraries\palaso\JsonRpcServer;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
+use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
-use models\commands\QuestionTemplateCommands;
+use models\dto\ActivityListDto;
+use models\dto\ProjectSettingsDto;
+use models\dto\RightsHelper;
 use models\mapper\Id;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
 use models\mapper\MongoStore;
-use libraries\sfchecks\Email;
-use libraries\sfchecks\Communicate;
+use models\rights\Operation;
+use models\rights\Domain;
+use models\sms\SmsSettings;
+
+use models\AnswerModel;
+use models\ProjectModel;
+use models\ProjectSettingsModel;
+use models\QuestionModel;
+use models\UnreadMessageModel;
+use models\UserModel;
 
 require_once(APPPATH . 'vendor/autoload.php');
 
 require_once(APPPATH . 'config/sf_config.php');
-
 require_once(APPPATH . 'models/ProjectModel.php');
 require_once(APPPATH . 'models/QuestionModel.php');
 require_once(APPPATH . 'models/QuestionTemplateModel.php');
@@ -146,19 +133,8 @@ class Sf
 	 */
 	public function user_register($params) {
 		$captcha_info = $this->_controller->session->userdata('captcha_info');
-		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
-			return false;  // captcha does not match
-		}
-		$user = new \models\UserModelWithPassword();
-		JsonDecoder::decode($user, $params);
-		if (UserModel::userNameExists($user->username)) {
-			return false;
-		}
-		Communicate::sendSignup($user);
-		$user->encryptPassword();
-		$user->active = false;
-		$user->role = "user";
-		return $user->write();
+		$projectCode = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
+		return UserCommands::register($params, $captcha_info, $projectCode);
 	}
 	
 	public function user_create($params) {
@@ -306,7 +282,7 @@ class Sf
 	}
 	
 	public function message_send($projectId, $userIds, $subject, $emailTemplate, $smsTemplate) {
-		$project = new ProjectModel($projectId);
+		$project = new ProjectSettingsModel($projectId);
 		$users = array();
 		foreach ($userIds as $id) {
 			$users[] = new UserModel($id);
