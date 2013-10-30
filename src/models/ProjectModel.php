@@ -36,41 +36,43 @@ class ProjectModelMongoMapper extends \models\mapper\MongoMapper
 	}
 }
 
-class ProjectSettingsModel extends \models\mapper\MapperModel
+class ProjectModel extends \models\mapper\MapperModel
 {
 	public function __construct($id = '') {
 		$this->id = new Id();
-		$this->smsSettings = new SmsSettings();
-		$this->emailSettings = new EmailSettings();
+		$this->users = new MapOf(function($data) {
+			return new ProjectRoleModel();
+		});
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
 	
 	/**
-	 * @var Id
+	 * @param string $domainName
+	 * @return \models\ProjectModel
 	 */
-	public $id;
-	
-	/**
-	 * @var SmsSettings
-	 */
-	public $smsSettings;
-	
-	/**
-	 * @var EmailSettings
-	 */
-	public $emailSettings;
-	
-}
-
-class ProjectModel extends ProjectSettingsModel
-{
-	public function __construct($id = '') {
-		$this->users = new MapOf(function($data) {
-			return new ProjectRoleModel();
-		});
-		parent::__construct($id);
+	public static function createFromDomain($domainName) {
+		$projectCode = self::domainToProjectCode($domainName);
+		$project = new ProjectModel();
+		$project->readByProperty('projectCode', $projectCode);
+		return $project;
 	}
 	
+	/**
+	 * @param string $domainName
+	 * @return string
+	 */
+	public static function domainToProjectCode($domainName) {
+		$uriParts = explode('.', $domainName);
+		if ($uriParts[0] == 'www') {
+			array_shift($uriParts);
+		}
+		return $uriParts[0];
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see \models\mapper\MapperModel::databaseName()
+	 */
 	public function databaseName() {
 		$name = strtolower($this->projectname);
 		$name = str_replace(' ', '_', $name);
@@ -152,6 +154,11 @@ class ProjectModel extends ProjectSettingsModel
 	}
 	
 	/**
+	 * @var Id
+	 */
+	public $id;
+	
+	/**
 	 * @var string
 	 */
 	public $projectname;
@@ -166,6 +173,10 @@ class ProjectModel extends ProjectSettingsModel
 	 */
 	public $users;
 	
+	/**
+	 * A string representing exactly this project from external sources. Typically some part of the URL.
+	 * @var string
+	 */
 	public $projectCode;
 	
 	/**
@@ -174,6 +185,30 @@ class ProjectModel extends ProjectSettingsModel
 	 */
 	public $featured;
 	
+}
+
+/**
+ * This class is separate from the ProjectModel to protect the smsSettings and emailSettings which are managed
+ * by the site administrator only.
+ */
+class ProjectSettingsModel extends ProjectModel
+{
+	public function __construct($id = '') {
+		$this->smsSettings = new SmsSettings();
+		$this->emailSettings = new EmailSettings();
+		parent::__construct($id);
+	}
+
+	/**
+	 * @var SmsSettings
+	 */
+	public $smsSettings;
+
+	/**
+	 * @var EmailSettings
+	 */
+	public $emailSettings;
+
 }
 
 /**
@@ -225,6 +260,5 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 	
 
 }
-
 
 ?>

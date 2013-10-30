@@ -3,7 +3,11 @@
 namespace models\commands;
 
 use libraries\palaso\CodeGuard;
-use models\mapper\Id;
+use libraries\sfchecks\IDelivery;
+use libraries\sfchecks\Communicate;
+use models\mapper\JsonDecoder;
+use models\UserModel;
+use models\ProjectModel;
 
 class UserCommands
 {
@@ -22,6 +26,34 @@ class UserCommands
 			$count++;
 		}
 		return $count;
+	}
+	
+	public static function register($params, $captcha_info, $projectCode, IDelivery $delivery = null) {
+		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
+			return false;  // captcha does not match
+		}
+		$user = new \models\UserModelWithPassword();
+		JsonDecoder::decode($user, $params);
+		if (UserModel::userNameExists($user->username)) {
+			return false;
+		}
+		Communicate::sendSignup($user, $delivery);
+		
+		$user->encryptPassword();
+		$user->active = false;
+		$user->role = "user";
+
+		// if signup from project page then add user to project
+		if ($projectCode != '') {
+			$project = ProjectModel::createFromDomain($projectCode);
+			if ($project->projectCode == $projectCode) {
+				$project->addUser($user->id->asString(), $user->role);
+				$user->addProject($project->id->asString());
+				$project->write();
+			}
+		}
+		
+		return $user->write();
 	}
 	
 }

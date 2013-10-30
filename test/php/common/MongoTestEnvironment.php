@@ -62,16 +62,25 @@ class MongoTestEnvironment
 	public function createProject($name) {
 		$projectModel = new models\ProjectModel();
 		$projectModel->projectname = $name;
-		
-		// clean out old db if it is present
-		$projectDb = \models\mapper\MongoStore::connect($projectModel->databaseName());
-		foreach ($projectDb->listCollections() as $collection)
-		{
-			$collection->drop();
-		}
-		
+		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;
+	}
+	
+	public function createProjectSettings($name) {
+		$projectModel = new models\ProjectSettingsModel();
+		$projectModel->projectname = $name;
+		$this->cleanProjectEnvironment($projectModel);
+		$projectModel->write();
+		return $projectModel;
+	}
+	
+	private function cleanProjectEnvironment($projectModel) {
+		// clean out old db if it is present
+		$projectDb = \models\mapper\MongoStore::connect($projectModel->databaseName());
+		foreach ($projectDb->listCollections() as $collection) {
+			$collection->drop();
+		}
 	}
 	
 	/**
