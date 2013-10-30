@@ -12,7 +12,6 @@ class TextCommands
 {
 	
 	private static function hasRange($object) {
-		error_log(print_r($object, true));
 		$sc = (int)$object['startCh'];
 		$sv = (int)$object['startVs'];
 		$ec = (int)$object['endCh'];
