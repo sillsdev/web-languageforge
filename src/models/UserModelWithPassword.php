@@ -14,11 +14,6 @@ class UserModelWithPassword extends \models\UserModelBase
 	}
 	
 	/**
-	 * @var IdReference
-	 */
-	public $id;
-	
-	/**
 	 * @var string
 	 */
 	public $password;

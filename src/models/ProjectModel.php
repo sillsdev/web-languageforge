@@ -53,7 +53,9 @@ class ProjectModel extends \models\mapper\MapperModel
 	public static function createFromDomain($domainName) {
 		$projectCode = self::domainToProjectCode($domainName);
 		$project = new ProjectModel();
-		$project->readByProperty('projectCode', $projectCode);
+		if (!$project->readByProperty('projectCode', $projectCode)) {
+			return null;
+		}
 		return $project;
 	}
 	

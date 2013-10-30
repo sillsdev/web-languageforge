@@ -18,8 +18,9 @@ use models\mapper\Id;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
 use models\mapper\MongoStore;
-use models\rights\Operation;
 use models\rights\Domain;
+use models\rights\Operation;
+use models\rights\Roles;
 use models\sms\SmsSettings;
 
 use models\AnswerModel;
@@ -28,6 +29,7 @@ use models\ProjectSettingsModel;
 use models\QuestionModel;
 use models\UnreadMessageModel;
 use models\UserModel;
+use models\UserModelForProfile;
 
 require_once(APPPATH . 'vendor/autoload.php');
 
