@@ -8,6 +8,8 @@ use libraries\sfchecks\Communicate;
 use models\mapper\JsonDecoder;
 use models\UserModel;
 use models\ProjectModel;
+use models\UserModelWithPassword;
+use models\rights\Roles;
 
 class UserCommands
 {
@@ -32,28 +34,36 @@ class UserCommands
 		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
 			return false;  // captcha does not match
 		}
-		$user = new \models\UserModelWithPassword();
+
+		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
 		if (UserModel::userNameExists($user->username)) {
 			return false;
 		}
-		Communicate::sendSignup($user, $delivery);
-		
-		$user->encryptPassword();
 		$user->active = false;
-		$user->role = "user";
+		$user->role = Roles::USER;
+		$id = $user->write();
+
+		// Write the password
+		$userPassword = new UserModelWithPassword($id);
+		$userPassword->encryptPassword();
+		$userPassword->write();
 
 		// if signup from project page then add user to project
-		if ($projectCode != '') {
+		if ($projectCode) {
 			$project = ProjectModel::createFromDomain($projectCode);
-			if ($project->projectCode == $projectCode) {
+			if ($project) {
 				$project->addUser($user->id->asString(), $user->role);
 				$user->addProject($project->id->asString());
 				$project->write();
+				$user->write();
 			}
 		}
+
+		// TODO Choose between two emails.  One for project signup, one for general signup. CP 2013-10
+		Communicate::sendSignup($user, $delivery);
 		
-		return $user->write();
+		return $id;
 	}
 	
 }

@@ -42,7 +42,7 @@ class TestUserCommands extends UnitTestCase {
 		UserCommands::deleteUsers(array($userId));
 	}
 	
-	function testRegisterFromProjectPage_UserInProjectProjectHasUser() {
+	function testRegister_WithProjectCode_UserInProjectAndProjectHasUser() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 	
@@ -69,6 +69,29 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($user->username, $params['username']);
 		$this->assertEqual($project->listUsers()->count, 1);
 		$this->assertEqual($user->listProjects()->count, 1);
+	}
+	
+	function testRegister_NoProjectCode_UserInNoProjects() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+	
+		$validCode = 'validCode';
+		$params = array(
+				'id' => '',
+				'username' => 'someusername',
+				'name' => 'Some Name',
+				'email' => 'someone@example.com',
+				'password' => 'somepassword',
+				'captcha' => $validCode
+		);
+		$captcha_info = array('code' => $validCode);
+		$delivery = new MockDelivery();
+		
+		$userId = UserCommands::register($params, $captcha_info, '', $delivery);
+		
+		$user = new UserModel($userId);
+		$this->assertEqual($user->username, $params['username']);
+		$this->assertEqual($user->listProjects()->count, 0);
 	}
 	
 }

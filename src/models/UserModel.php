@@ -49,13 +49,6 @@ class UserModel extends \models\UserModelBase
 		return $projectList;
 	}
 	
-	
-	/**
-	 * @var IdReference
-	 */
-	public $id;
-	
-	
 	/**
 	 * @var ReferenceList
 	 */
