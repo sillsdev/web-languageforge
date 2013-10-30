@@ -151,7 +151,7 @@ class Sf
 		if (UserModel::userNameExists($user->username)) {
 			return false;
 		}
-		$user->encryptPassword();
+		$user->setPassword($params['password']);
 		return $user->write();
 	}
 	
@@ -183,7 +183,7 @@ class Sf
 		$user = new \models\UserModelWithPassword();
 		if ($user->readByProperty('validationKey', $validationKey)) {
 			JsonDecoder::decode($user, $params);
-			$user->encryptPassword();
+			$user->setPassword($params['password']);
 			$user->validate();
 			$user->active = true;
 			return $user->write();
