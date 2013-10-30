@@ -320,18 +320,7 @@ class Sf
 	//---------------------------------------------------------------
 	
 	public function text_update($projectId, $object) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$textModel = new \models\TextModel($projectModel);
-		$isNewText = ($object['id'] == '');
-		if (!$isNewText) {
-			$textModel->read($object['id']);
-		}
-		JsonDecoder::decode($textModel, $object);
-		$textId = $textModel->write();
-		if ($isNewText) {
-			ActivityCommands::addText($projectModel, $textId, $textModel);
-		}
-		return $textId;
+		return TextCommands::updateText($projectId, $object);
 	}
 	
 	public function text_read($projectId, $textId) {
