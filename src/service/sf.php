@@ -1,53 +1,39 @@
 <?php
 
-use models\rights\Roles;
-
-use models\UnreadMessageModel;
-
-use models\rights\Operation;
-
-use models\rights\Domain;
-
-use models\dto\RightsHelper;
-
-use models\ProjectSettingsModel;
-
-use models\sms\SmsSettings;
-
-use models\UserModel;
-use models\UserModelForProfile;
-
-use models\dto\ProjectSettingsDto;
-
-use models\ProjectModel;
-
-use models\dto\ActivityListDto;
+use libraries\palaso\CodeGuard;
+use libraries\palaso\JsonRpcServer;
+use libraries\sfchecks\Communicate;
+use libraries\sfchecks\Email;
 
 use models\commands\ActivityCommands;
-
-use models\AnswerModel;
-
-use models\QuestionModel;
-
-use libraries\palaso\CodeGuard;
-
-use libraries\palaso\JsonRpcServer;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
+use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
-use models\commands\QuestionTemplateCommands;
+use models\dto\ActivityListDto;
+use models\dto\ProjectSettingsDto;
+use models\dto\RightsHelper;
 use models\mapper\Id;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
 use models\mapper\MongoStore;
-use libraries\sfchecks\Email;
-use libraries\sfchecks\Communicate;
+use models\rights\Domain;
+use models\rights\Operation;
+use models\rights\Roles;
+use models\sms\SmsSettings;
+
+use models\AnswerModel;
+use models\ProjectModel;
+use models\ProjectSettingsModel;
+use models\QuestionModel;
+use models\UnreadMessageModel;
+use models\UserModel;
+use models\UserModelForProfile;
 
 require_once(APPPATH . 'vendor/autoload.php');
 
 require_once(APPPATH . 'config/sf_config.php');
-
 require_once(APPPATH . 'models/ProjectModel.php');
 require_once(APPPATH . 'models/QuestionModel.php');
 require_once(APPPATH . 'models/QuestionTemplateModel.php');
@@ -154,19 +140,8 @@ class Sf
 	 */
 	public function user_register($params) {
 		$captcha_info = $this->_controller->session->userdata('captcha_info');
-		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
-			return false;  // captcha does not match
-		}
-		$user = new \models\UserModelWithPassword();
-		JsonDecoder::decode($user, $params);
-		if (UserModel::userNameExists($user->username)) {
-			return false;
-		}
-		Communicate::sendSignup($user);
-		$user->encryptPassword();
-		$user->active = false;
-		$user->role = "user";
-		return $user->write();
+		$projectCode = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
+		return UserCommands::register($params, $captcha_info, $projectCode);
 	}
 	
 	public function user_create($params) {
@@ -176,13 +151,18 @@ class Sf
 		if (UserModel::userNameExists($user->username)) {
 			return false;
 		}
-		$user->encryptPassword();
+		$user->setPassword($params['password']);
 		return $user->write();
 	}
 	
 	public function get_captcha_src() {
 		$this->_controller->load->library('captcha');
-		$captcha_info = $this->_controller->captcha->main();
+		$captcha_config = array(
+			'png_backgrounds' => array(APPPATH . 'images/captcha/captcha_bg.png'),
+			'fonts' => array(FCPATH.'/images/captcha/times_new_yorker.ttf'),
+			'characters' => 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789',
+		);
+		$captcha_info = $this->_controller->captcha->main($captcha_config);
 		$this->_controller->session->set_userdata('captcha_info', $captcha_info);
 		return $captcha_info['image_src'];
 	}
@@ -203,7 +183,7 @@ class Sf
 		$user = new \models\UserModelWithPassword();
 		if ($user->readByProperty('validationKey', $validationKey)) {
 			JsonDecoder::decode($user, $params);
-			$user->encryptPassword();
+			$user->setPassword($params['password']);
 			$user->validate();
 			$user->active = true;
 			return $user->write();
@@ -349,7 +329,7 @@ class Sf
 	}
 	
 	public function message_send($projectId, $userIds, $subject, $emailTemplate, $smsTemplate) {
-		$project = new ProjectModel($projectId);
+		$project = new ProjectSettingsModel($projectId);
 		$users = array();
 		foreach ($userIds as $id) {
 			$users[] = new UserModel($id);

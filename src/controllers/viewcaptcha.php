@@ -6,8 +6,10 @@ class Viewcaptcha extends CI_Controller {
 	{
 		$this->load->library('captcha');
 
-		if (!$captcha_config = $this->session->userdata('captcha_config'))
+		if (!$captcha_config = $this->session->userdata('captcha_config')) {
+			error_log("Error: Captcha has no config available");
 			return;
+		}
 		
 		$captcha_config = unserialize($captcha_config);
 		$this->session->unset_userdata('captcha_config');
@@ -21,6 +23,9 @@ class Viewcaptcha extends CI_Controller {
 		
 		// Create captcha object
 		$captcha = imagecreatefrompng($background);
+		if ($captcha === FALSE) {
+			throw new Exception("Capture failed to create from background '$background'");
+		}
 	    imagealphablending($captcha, true);
 	    imagesavealpha($captcha , true);
 		

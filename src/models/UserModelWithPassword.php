@@ -8,15 +8,10 @@ use libraries\Bcrypt;
 
 class UserModelWithPassword extends \models\UserModelBase
 {
-	public function encryptPassword() {
+	public function setPassword($newPassword) {
 		$bcrypt = new Bcrypt();
-		$this->password = $bcrypt->hash($this->password);
+		$this->password = $bcrypt->hash($newPassword);
 	}
-	
-	/**
-	 * @var IdReference
-	 */
-	public $id;
 	
 	/**
 	 * @var string

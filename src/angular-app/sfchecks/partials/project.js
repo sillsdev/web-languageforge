@@ -127,7 +127,7 @@ angular.module(
 			model.content = $scope.content;
 			textService.update(projectId, model, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "The text '" + model.title + "' was added successfully")
+					notice.push(notice.SUCCESS, "The text '" + model.title + "' was added successfully");
 					$scope.queryTexts();
 				}
 			});
@@ -161,11 +161,11 @@ angular.module(
 				if (xmlIndex != -1) {
 					$scope.$apply(function() {
 						$scope.content = reader.result;
-					})
+					});
 				}
-			})
+			});
 			reader.readAsText(file);
-		}
+		};
 		
 		$scope.getPageDto();
 
@@ -212,6 +212,7 @@ angular.module(
 			var newProject = {
 				id: $scope.project.id,
 				projectname: $scope.project.name,
+				projectCode: $scope.project.projectCode,
 				featured: $scope.project.featured
 			};
 			projectService.update(newProject, function(result) {
@@ -236,11 +237,11 @@ angular.module(
 					$scope.settings.email = result.data.email;
 				}
 			});
-		}
+		};
 		
 		$scope.canEditCommunicationSettings = function() {
 			return ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
-		}
+		};
 		
 		
 		// jqte options for html email message composition
@@ -290,6 +291,7 @@ angular.module(
 				if (result.ok) {
 					$scope.project.name = result.data.projectName;
 					$scope.project.featured = result.data.projectIsFeatured;
+					$scope.project.projectCode = result.data.projectCode;
 					$scope.project.users = result.data.entries;
 					$scope.project.userCount = result.data.count;
 					// Rights
@@ -383,7 +385,8 @@ angular.module(
 				// This also covers the case where newMode is undefined
 				$scope.calculateAddMode();
 			}
-		}
+		};
+		
 		$scope.calculateAddMode = function() {
 			// TODO This isn't adequate.  Need to watch the 'typeahead.userName' and 'selection' also. CP 2013-07
 			if ($scope.typeahead.userName.indexOf('@') != -1) {
