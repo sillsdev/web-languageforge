@@ -173,30 +173,52 @@ class UsxTrimHelper {
 	}
 
 	private function setDropStateByVerse() {
-		if (($this->_currentChapter == $this->_startChapter) ||
-		    ($this->_currentChapter == $this->_endChapter)) {
-				// Boundary chapter; need to check verses
+		if ($this->_startChapter == $this->_endChapter) {
+			// One-chapter section ...
+			if ($this->_currentChapter == $this->_startChapter) {
+				// ... and we're in that chapter: check start and end verses
 				if (($this->_currentVerse < $this->_startVerse) ||
-				    ($this->_currentVerse > $this->_endVerse)) {
+					($this->_currentVerse > $this->_endVerse)) {
 					$this->startDropping();
 				}
 				if (($this->_currentVerse >= $this->_startVerse) &&
-				    ($this->_currentVerse <= $this->_endVerse)) {
+					($this->_currentVerse <= $this->_endVerse)) {
 					$this->stopDropping();
 				}
+			} else {
+				// ... but we're not in that chapter: check only chapter number
+				$this->setDropStateByChapter();
+			}
 		} else {
-			// Don't need to check verses in this situation
-			$this->setDropStateByChapter();
+			// Multi-chapter section...
+			if ($this->_currentChapter == $this->_startChapter) {
+				// ... and we're in the start chapter: check only start verse
+				if ($this->_currentVerse < $this->_startVerse) {
+					$this->startDropping();
+				} else {
+					$this->stopDropping();
+				}
+			} else if ($this->_currentChapter == $this->_endChapter) {
+				// ... and we're in the end chapter: check only end verse
+				if ($this->_currentVerse > $this->_endVerse) {
+					$this->startDropping();
+				} else {
+					$this->stopDropping();
+				}
+			} else {
+				// ... and we're not in a boundary chapter: check only chapter number
+				$this->setDropStateByChapter();
+			}
 		}
+
+				// Boundary chapter; need to check verses
 	}
 
 	private function onChapter($attrs) {
 		$number = (int)$attrs['NUMBER'];
 		$this->_currentChapter = (int)$number;
 		$this->setDropStateByChapter();
-		if (!$this->_stateDrop) {
-			$this->outputStartTag("chapter", $attrs);
-		} else if ($this->_currentChapter == $this->_startChapter) {
+		if ($this->_currentChapter == $this->_startChapter) {
 			// Special case: output the chapter marker for this one, but
 			// don't change drop/keep state yet. (Wait til we reach the verse.)
 			$attrs = array_pop($this->_tagStack);
