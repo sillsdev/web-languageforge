@@ -76,8 +76,8 @@
 					</div>
 					</div>
 					<a ng-show="rightsCreateTag() && !questionIsClosed()" class="btn-link" ng-click="tagEditorVisible=true">tag</a>
-					<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
-					<a ng-show="rightsDeleteOwn(answer.userRef.userid) && !questionIsClosed()" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
+					<a ng-show="rightsEditResponse(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
+					<a ng-show="rightsDeleteResponse(answer.userRef.userid) && !questionIsClosed()" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
 					<ng-switch on="answerEditorVisible(answerId)">
 					<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
 						<textarea ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
@@ -92,8 +92,8 @@
 					<td></td>
 					<td ng-class="{unread: isUnreadComment(comment.id)}">
 						{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}
-						<a ng-show="rightsEditOwn(comment.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showCommentEditor(comment.id)">edit</a>
-						<a ng-show="rightsDeleteOwn(comment.userRef.userid) && !questionIsClosed()" ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
+						<a ng-show="rightsEditResponse(comment.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showCommentEditor(comment.id)">edit</a>
+						<a ng-show="rightsDeleteResponse(comment.userRef.userid) && !questionIsClosed()" ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
 						<ng-switch on="commentEditorVisible(comment.id)">
 						<form ng-submit="editComment(answerId, answer, editedComment)" ng-switch-when="true">
 							<textarea ng-model="editedComment.content"></textarea>
