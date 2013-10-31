@@ -30,6 +30,15 @@ class UserCommands
 		return $count;
 	}
 	
+	/**
+	 * Register a new user, add to project if in context
+	 * @param array $params
+	 * @param string $captcha_info
+	 * @param string $projectCode
+	 * @param IDelivery $delivery
+	 * @throws \Exception
+	 * @return string $userId
+	 */
 	public static function register($params, $captcha_info, $projectCode, IDelivery $delivery = null) {
 		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
 			return false;  // captcha does not match
@@ -73,6 +82,28 @@ class UserCommands
 		Communicate::sendSignup($user, $delivery);
 		
 		return $id;
+	}
+	
+	/**
+	 * 
+	 * @param UserModel $fromUser
+	 * @param string $email
+	 * @param ProjectModel $projectId
+	 * @param IDelivery $delivery
+	 * @return string $userId
+	 */
+	public static function sendInvite($fromUser, $email, $projectId, IDelivery $delivery = null) {
+		$newUser = new UserModel();
+		$project = new ProjectModel($projectId);
+		$newUser->emailPending = $email;
+		$newUser->addProject($projectId);
+		$userId = $newUser->write();
+		$project->addUser($userId, Roles::USER);
+		$project->write();
+
+		Communicate::sendInvite($fromUser, $newUser, $project, $delivery);
+		
+		return $userId;
 	}
 	
 }

@@ -11,7 +11,7 @@ require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-class MockDelivery implements IDelivery {
+class MockUserComamndsDelivery implements IDelivery {
 	public $from;
 	public $to;
 	public $subject;
@@ -61,7 +61,7 @@ class TestUserCommands extends UnitTestCase {
 		);
 		$captcha_info = array('code' => $validCode);
 		$projectCode = $project->projectCode;
-		$delivery = new MockDelivery();
+		$delivery = new MockUserComamndsDelivery();
 		
 		$userId = UserCommands::register($params, $captcha_info, $projectCode, $delivery);
 		
@@ -85,7 +85,7 @@ class TestUserCommands extends UnitTestCase {
 				'captcha' => $validCode
 		);
 		$captcha_info = array('code' => $validCode);
-		$delivery = new MockDelivery();
+		$delivery = new MockUserComamndsDelivery();
 		
 		$userId = UserCommands::register($params, $captcha_info, '', $delivery);
 		
@@ -94,6 +94,23 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($user->listProjects()->count, 0);
 	}
 	
+	function testSendInvite() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$fromUserId = $e->createUser("fromuser", "From Name", "from@example.com");
+		$fromUser = new UserModel($fromUserId);
+		$email = 'someone@example.com';
+		$project = $e->createProject(SF_TESTPROJECT);
+		$delivery = new MockUserComamndsDelivery();
+		
+		$userId = UserCommands::sendInvite($fromUser, $email, $project->id->asString(), $delivery);
+		
+		$user = new UserModel($userId);
+//		$this->assertEqual($user->username, $params['username']);
+//		$this->assertEqual($user->listProjects()->count, 0);
+	}
+		
 }
 
 ?>
