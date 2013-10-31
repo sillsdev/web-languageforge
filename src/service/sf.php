@@ -193,8 +193,8 @@ class Sf
 		}
 	}
 	
-	public function user_sendInvite($email, $projectId) {
-		UserCommands::sendInvite(new UserModel($this->_userId), $email, $projectId, $_SERVER['HTTP_HOST']);
+	public function user_sendInvite($toEmail, $projectId) {
+		return UserCommands::sendInvite(new UserModel($this->_userId), $toEmail, $projectId, $_SERVER['HTTP_HOST']);
 	}
 	
 	
