@@ -75,6 +75,42 @@ class UserCommands
 		return $id;
 	}
 	
+	
+       /**
+       *
+        * @param UserModel $inviterUser
+       * @param string $toEmail
+       * @param string $projectId
+       * @param string $hostname
+       * @param IDelivery $delivery
+       * @return string $userId
+       */
+       public static function sendInvite($inviterUser, $toEmail, $projectId, $hostname, IDelivery $delivery = null) {
+			$newUser = new UserModel();
+			$project = null;
+			if ($projectId) {
+				$project = new ProjectModel($projectId);
+			} else {
+				$project = ProjectModel::createFromDomain($hostname);
+			}
+			if ($project) {
+				$newUser->emailPending = $toEmail;
+				$newUser->addProject($project->id->asString());
+				$userId = $newUser->write();
+				$project->addUser($userId, Roles::USER);
+				$project->write();
+				Communicate::sendInvite($inviterUser, $newUser, $project, $delivery);
+				return $userId;
+			} else {
+				$projectCode = ProjectModel::domainToProjectCode($host);
+				if ($projectCode == 'scriptureforge') {
+					throw new \Exception("Sending an invitation without a project context is not supported.");
+				} else {
+					throw new \Exception("Cannot send invitation for unknown project '$projectCode'");
+				}
+			}
+       }
+	
 }
 
 ?>
