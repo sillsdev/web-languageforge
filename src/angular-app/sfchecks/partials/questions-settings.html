@@ -6,7 +6,7 @@
 			<fieldset class="span4">
 			<label>Title</label>
 			<input type="text" ng-model="editedText.title" placeholder="Text Name"/>
-			<label>Text</label>
+			<label>USX Text</label>
 			<textarea ng-model="editedText.content" rows="4" placeholder="Paste the USX text here"></textarea>
 			<label></label>
 			<br/>
@@ -14,7 +14,7 @@
 			</fieldset>
 			<fieldset class="span4">
 				<div class="drop-box" ng-file-drop="onUsxFile($files)" ng-file-drop-available="dropSupported=true">
-					<h4>Or drop a USX file here</h4>
+					<h4>or drop a USX file here</h4>
 					<br/>
 					<p>or if you prefer...</p>
 					<input type="button" class="btn" value="Browse..." onclick="javascript:document.getElementById('usxfile').click();">
