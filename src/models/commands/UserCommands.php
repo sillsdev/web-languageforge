@@ -102,7 +102,7 @@ class UserCommands
 				Communicate::sendInvite($inviterUser, $newUser, $project, $delivery);
 				return $userId;
 			} else {
-				$projectCode = ProjectModel::domainToProjectCode($host);
+				$projectCode = ProjectModel::domainToProjectCode($hostname);
 				if ($projectCode == 'scriptureforge') {
 					throw new \Exception("Sending an invitation without a project context is not supported.");
 				} else {
