@@ -11,8 +11,8 @@ angular.module('sf.services', ['jsonRpc'])
 		this.readProfile = function(id, callback) {
 			jsonRpc.call('user_readProfile', [id], callback);
 		};
-		this.update = function(model, callback) {
-			jsonRpc.call('user_update', [model], callback);
+		this.update = function(model, projectId, callback) {
+			jsonRpc.call('user_update', [model, projectId], callback);
 		};
 		this.remove = function(userIds, callback) {
 			jsonRpc.call('user_delete', [userIds], callback);
@@ -42,8 +42,8 @@ angular.module('sf.services', ['jsonRpc'])
 		this.updateFromRegistration = function(validationKey, model, callback) {
 			jsonRpc.call('user_updateFromRegistration', [validationKey, model], callback);
 		};
-		this.sendInvite = function(email, projectId, callback) {
-			jsonRpc.call('user_sendInvite', [email, projectId], callback);
+		this.sendInvite = function(toEmail, projectId, callback) {
+			jsonRpc.call('user_sendInvite', [toEmail, projectId], callback);
 		};
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
