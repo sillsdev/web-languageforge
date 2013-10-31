@@ -94,21 +94,47 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($user->listProjects()->count, 0);
 	}
 	
-	function testSendInvite() {
+	function testSendInvite_SendInvite_PropertiesFromToBodyOk() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
-		$fromUserId = $e->createUser("fromuser", "From Name", "from@example.com");
-		$fromUser = new UserModel($fromUserId);
-		$email = 'someone@example.com';
+		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
+		$inviterUser = new UserModel($inviterUserId);
+		$toEmail = 'someone@example.com';
 		$project = $e->createProject(SF_TESTPROJECT);
 		$delivery = new MockUserComamndsDelivery();
 		
-		$userId = UserCommands::sendInvite($fromUser, $email, $project->id->asString(), $delivery);
+		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $project->id->asString(), $delivery);
 		
-		$user = new UserModel($userId);
-//		$this->assertEqual($user->username, $params['username']);
-//		$this->assertEqual($user->listProjects()->count, 0);
+		// What's in the delivery?
+		$toUser = new UserModel($toUserId);
+		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
+		$expectedTo = array($toUser->emailPending => $toUser->name);
+		$this->assertEqual($expectedFrom, $delivery->from);
+		$this->assertEqual($expectedTo, $delivery->to);
+		$this->assertPattern('/Inviter Name/', $delivery->content);
+		$this->assertPattern('/Test Project/', $delivery->content);
+		$this->assertPattern('/' . $toUser->validationKey . '/', $delivery->content);
+	}
+		
+	function testSendInvite_noProjectContextNoProjectCode_throwException() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
+		$inviterUser = new UserModel($inviterUserId);
+		$toEmail = 'someone@example.com';
+		$delivery = new MockUserComamndsDelivery();
+		
+		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, '', $delivery);
+		
+		$this->expectException('');
+	}
+	
+	function testAddExistingUser() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
 	}
 		
 }

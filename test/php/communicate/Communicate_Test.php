@@ -101,7 +101,7 @@ class TestCommunicate extends UnitTestCase {
 		Communicate::sendSignup($userModel, $delivery);
 		
 		// What's in the delivery?
-		$expectedFrom = array('no-reply@scriptureforge.org' => 'ScriptureForge');
+		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
 		$expectedTo = array($userModel->emailPending => $userModel->name);
 		$this->assertEqual($expectedFrom, $delivery->from);
 		$this->assertEqual($expectedTo, $delivery->to);

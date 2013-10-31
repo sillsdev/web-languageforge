@@ -86,22 +86,22 @@ class UserCommands
 	
 	/**
 	 * 
-	 * @param UserModel $fromUser
-	 * @param string $email
+	 * @param UserModel $inviterUser
+	 * @param string $toEmail
 	 * @param ProjectModel $projectId
 	 * @param IDelivery $delivery
 	 * @return string $userId
 	 */
-	public static function sendInvite($fromUser, $email, $projectId, IDelivery $delivery = null) {
+	public static function sendInvite($inviterUser, $toEmail, $projectId, IDelivery $delivery = null) {
 		$newUser = new UserModel();
 		$project = new ProjectModel($projectId);
-		$newUser->emailPending = $email;
+		$newUser->emailPending = $toEmail;
 		$newUser->addProject($projectId);
 		$userId = $newUser->write();
 		$project->addUser($userId, Roles::USER);
 		$project->write();
 
-		Communicate::sendInvite($fromUser, $newUser, $project, $delivery);
+		Communicate::sendInvite($inviterUser, $newUser, $project, $delivery);
 		
 		return $userId;
 	}
