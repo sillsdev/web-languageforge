@@ -191,16 +191,7 @@ class Sf
 	}
 	
 	public function user_sendInvite($email, $projectId) {
-		$fromUser = new UserModel($this->_userId);
-		$newUser = new UserModel();
-		$project = new ProjectModel($projectId);
-		$newUser->emailPending = $email;
-		$newUser->addProject($projectId);
-		$userId = $newUser->write();
-		$project->addUser($userId, Roles::USER);
-		$project->write();
-		Communicate::sendInvite($fromUser, $newUser, $project);
-		return $userId;
+		UserCommands::sendInvite(new UserModel($this->_userId), $email, $projectId, $_SERVER['HTTP_HOST']);
 	}
 	
 	
