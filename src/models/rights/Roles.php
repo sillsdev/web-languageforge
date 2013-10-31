@@ -59,6 +59,11 @@ class Roles {
 		$rights[] = Domain::QUESTIONS + Operation::CREATE;
 		$rights[] = Domain::QUESTIONS + Operation::EDIT_OTHER;
 		$rights[] = Domain::QUESTIONS + Operation::DELETE_OTHER;
+		$rights[] = Domain::ANSWERS + Operation::EDIT_OTHER;
+		$rights[] = Domain::ANSWERS + Operation::DELETE_OTHER;
+		$rights[] = Domain::COMMENTS + Operation::CREATE;
+		$rights[] = Domain::COMMENTS + Operation::EDIT_OTHER;
+		$rights[] = Domain::COMMENTS + Operation::DELETE_OTHER;
 		$rights[] = Domain::TAGS + Operation::CREATE;
 		$rights[] = Domain::TAGS + Operation::DELETE_OTHER;
 		$rights[] = Domain::USERS + Operation::CREATE;
