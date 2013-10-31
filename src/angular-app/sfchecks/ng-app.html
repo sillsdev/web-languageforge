@@ -1,6 +1,6 @@
 <div class="content container" ng-cloak>
 	<div id="sfchecks-hmenu" class="hdrnav">
-		<div ng-controller="inviteAFriend" id="inviteAFriend" class="pull-right">
+		<div ng-controller="inviteAFriend" id="inviteAFriend" class="pull-right" ng-show="showInviteDiv">
 		<div class="overlay" ng-show="showInviteForm">
 		<div class="overlay-bg">
 			<form ng-submit="sendInvite();showInviteForm=false">
