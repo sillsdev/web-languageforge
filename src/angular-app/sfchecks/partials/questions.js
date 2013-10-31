@@ -223,10 +223,6 @@ angular.module(
 			if (!newText.content) {
 				delete newText.content;
 			}
-			newText.startCh = $scope.startCh;
-			newText.startVs = $scope.startVs;
-			newText.endCh = $scope.endCh;
-			newText.endVs = $scope.endVs;
 			textService.update($scope.projectId, newText, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, newText.title + " settings successfully updated");
@@ -236,6 +232,7 @@ angular.module(
 		};
 
 		$scope.onUsxFile = function($files) {
+			console.log('Dropped files:', $files);
 			if (!$files || $files.length == 0) {
 				return;
 			}
