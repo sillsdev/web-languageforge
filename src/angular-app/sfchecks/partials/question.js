@@ -2,7 +2,15 @@
 
 angular.module(
 		'sfchecks.question',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.m3ulink', 'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice' ]
+		[ 'sf.services', 
+		  'palaso.ui.listview', 
+		  'palaso.ui.jqte', 
+		  'ui.bootstrap', 
+		  'sgw.soundmanager', 
+		  'palaso.ui.selection', 
+		  'palaso.ui.tagging', 
+		  'palaso.ui.notice'
+		 ]
 	)
 	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService',
 	                             function($scope, $routeParams, questionService, ss, breadcrumbService, notice) {
@@ -27,6 +35,8 @@ angular.module(
 				['h4', 'Large']
 			]
 		};
+		
+		$scope.state = 'stop';
 		$scope.audioReady = false;
 		soundManager.setup({
 			url : '/js/lib/sm2/',
@@ -39,18 +49,13 @@ angular.module(
 			}
 		});
 		
-		$scope.playAudio = function() {
-			var audioUrl = '/' + $scope.text.audioUrl; // Should the added / be in upload.php?
-			var sound = soundManager.createSound({
-				url: audioUrl,
-				volume: 50,
-				autoLoad: true,
-				autoPlay: false,
-				onload: function() {
-					console.log('sound loaded');
-				}
-			});
-			sound.play();
+		$scope.audioIcon = function() {
+			var map = {
+				'stop': 'icon-volume-up',
+				'play': 'icon-pause',
+				'pause': 'icon-play'
+			};
+			return map[$scope.state];
 		};
 
 		var projectId = $routeParams.projectId;
@@ -86,6 +91,10 @@ angular.module(
 			//console.log('questionService.read(', projectId, questionId, ')');
 			if (result.ok) {
 				$scope.text = result.data.text;
+				if ($scope.text.audioUrl != '') {
+					$scope.audioDownloadUrl = '/download/' + $scope.text.audioUrl;
+					$scope.text.audioUrl = '/' + $scope.text.audioUrl;
+				} 
 				$scope.question = result.data.question;
 				$scope.votes = result.data.votes;
 				$scope.project = result.data.project;
