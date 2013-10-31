@@ -215,16 +215,16 @@ class Communicate
 	
 	/**
 	 * 
-	 * @param UserModelBase $fromUserModel
+	 * @param UserModelBase $inviterUserModel
 	 * @param UserModelBase $toUserModel
 	 * @param ProjectModel $projectModel
 	 * @param IDelivery $delivery
 	 */
-	public static function sendInvite($fromUserModel, $toUserModel, $projectModel, IDelivery $delivery = null) {
+	public static function sendInvite($inviterUserModel, $toUserModel, $projectModel, IDelivery $delivery = null) {
 		$toUserModel->setValidation(7);
 		$toUserModel->write();
 		$vars = array(
-			'user' => $fromUserModel,
+			'user' => $inviterUserModel,
 			'project' => $projectModel,
 			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/registration#/?v=' . $toUserModel->validationKey,
 		);
