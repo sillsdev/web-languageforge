@@ -27,6 +27,31 @@ angular.module(
 				['h4', 'Large']
 			]
 		};
+		$scope.audioReady = false;
+		soundManager.setup({
+			url : '/js/lib/sm2/',
+			flashVersion : 9, // optional: shiny features (default = 8)
+			// optional: ignore Flash where possible, use 100% HTML5 mode
+			//preferFlash : false,
+			onready : function() {
+				$scope.audioReady = true;
+				// Ready to use; soundManager.createSound() etc. can now be called.
+			}
+		});
+		
+		$scope.playAudio = function() {
+			var audioUrl = '/' + $scope.text.audioUrl; // Should the added / be in upload.php?
+			var sound = soundManager.createSound({
+				url: audioUrl,
+				volume: 50,
+				autoLoad: true,
+				autoPlay: false,
+				onload: function() {
+					console.log('sound loaded');
+				}
+			});
+			sound.play();
+		};
 
 		var projectId = $routeParams.projectId;
 		var questionId = $routeParams.questionId;
@@ -61,9 +86,6 @@ angular.module(
 			//console.log('questionService.read(', projectId, questionId, ')');
 			if (result.ok) {
 				$scope.text = result.data.text;
-				if ($scope.text.audioUrl) {
-					$scope.mp3link = '/' + $scope.text.audioUrl; // Should the added / be in upload.php?
-				}
 				$scope.question = result.data.question;
 				$scope.votes = result.data.votes;
 				$scope.project = result.data.project;
