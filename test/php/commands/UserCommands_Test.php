@@ -102,9 +102,11 @@ class TestUserCommands extends UnitTestCase {
 		$inviterUser = new UserModel($inviterUserId);
 		$toEmail = 'someone@example.com';
 		$project = $e->createProject(SF_TESTPROJECT);
+		$project->projectCode = 'someProjectCode';
+		$project->write();
 		$delivery = new MockUserComamndsDelivery();
 		
-		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $project->id->asString(), $delivery);
+		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $project->id->asString(), $project->projectCode, $delivery);
 		
 		// What's in the delivery?
 		$toUser = new UserModel($toUserId);
@@ -117,6 +119,23 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertPattern('/' . $toUser->validationKey . '/', $delivery->content);
 	}
 		
+	function testSendInvite_noProjectContext_throwException() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
+		$inviterUser = new UserModel($inviterUserId);
+		$toEmail = 'someone@example.com';
+		$projectId = '';
+		$hostName = 'someProjectCode.scriptureforge.org';
+		$delivery = new MockUserComamndsDelivery();
+		
+		$e->inhibitErrorDisplay();
+		$this->expectException(new \Exception("Cannot send invitation for unknown project 'someProjectCode'"));
+		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $projectId, $hostName, $delivery);
+		$e->restoreErrorDisplay();
+	}
+	
 	function testSendInvite_noProjectContextNoProjectCode_throwException() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
@@ -124,11 +143,14 @@ class TestUserCommands extends UnitTestCase {
 		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
 		$inviterUser = new UserModel($inviterUserId);
 		$toEmail = 'someone@example.com';
+		$projectId = '';
+		$hostName = 'scriptureforge.org';
 		$delivery = new MockUserComamndsDelivery();
 		
-		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, '', $delivery);
-		
-		$this->expectException('');
+		$e->inhibitErrorDisplay();
+		$this->expectException(new \Exception("Sending an invitation without a project context is not supported."));
+		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $projectId, $hostName, $delivery);
+		$e->restoreErrorDisplay();
 	}
 	
 	function testAddExistingUser() {
