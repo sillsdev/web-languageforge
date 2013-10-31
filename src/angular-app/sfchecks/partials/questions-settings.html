@@ -4,25 +4,31 @@
 	<tab heading="Edit Text">
 		<form class="well " ng-submit="updateText(editedText)">
 			<fieldset class="span4">
-			<label>Title</label>
-			<input type="text" ng-model="editedText.title" placeholder="Text Name"/>
-			<label>USX Text</label>
-			<textarea ng-model="editedText.content" rows="4" placeholder="Paste the USX text here"></textarea>
-			<label></label>
-			<table>
-				<tr>
-					<td>From:<br><a ng-click="startCh = ''; startVs = ''">reset</a></td>
-					<td>Chapter <input type="number" ng-model="startCh" style="width: 3em"></input></td>
-					<td> Verse <input type="number" ng-model="startVs" style="width: 3em"></input></td>
-				</tr>
-				<tr>
-					<td>To:<br><a ng-click="endCh = ''; endVs = ''">reset</a></td>
-					<td>Chapter <input type="number" ng-model="endCh" style="width: 3em"></input></td>
-					<td> Verse <input type="number" ng-model="endVs" style="width: 3em"></input></td>
-				</tr>
-			</table>
-			<br/>
-			<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+				<table class="tableform">
+					<tr>
+						<td colspan="2">
+							<label>Title</label>
+							<input ng-model="title" type="text" placeholder="Title"/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<label>USX Text</label>
+							<textarea textdrop ng-model="content" rows="4" placeholder="Paste the USX text here"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td>From</td>
+						<td><input type="number" ng-model="startCh" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="startVs" placeholder="Verse" style="width: 5em"></input></td>
+						<td><a ng-click="startCh = ''; startVs = ''" class="btn-link">reset</a></td>
+					</tr>
+					<tr>
+						<td>To</td>
+						<td><input type="number" ng-model="endCh" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="endVs" placeholder="Verse" style="width: 5em"></input></td>
+						<td><a ng-click="endCh = ''; endVs = ''" class="btn-link">reset</a></td>
+					</tr>
+				</table>
+				<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 			</fieldset>
 			<fieldset class="span4">
 				<div class="drop-box" ng-file-drop="onUsxFile($files)" ng-file-drop-available="dropSupported=true">
