@@ -232,7 +232,6 @@ angular.module(
 		};
 
 		$scope.onUsxFile = function($files) {
-			console.log('Dropped files:', $files);
 			if (!$files || $files.length == 0) {
 				return;
 			}
