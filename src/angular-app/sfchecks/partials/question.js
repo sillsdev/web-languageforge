@@ -48,7 +48,7 @@ angular.module(
 		
 		$scope.unreadResponseCount = function() {
 			return $scope.unreadComments.length + $scope.unreadAnswers.length;
-		}
+		};
 		
 		$scope.isUnreadComment = function(id) {
 			return ($.inArray(id, $scope.unreadComments) > -1 || $.inArray(id, $scope.myResponses) > -1);
@@ -80,13 +80,15 @@ angular.module(
 		});
 
 		// Rights: Answers
-		$scope.rightsEditOwn = function(userId) {
-			var right = (userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN);
+		$scope.rightsEditResponse = function(userId) {
+			var right = ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OTHER)
+				|| ((userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
 			return right;
 		};
 
-		$scope.rightsDeleteOwn = function(userId) {
-			var right = (userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN);
+		$scope.rightsDeleteResponse = function(userId) {
+			var right = ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OTHER)
+				|| ((userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN));
 			return right;
 		};
 		
@@ -302,7 +304,7 @@ angular.module(
 		};
 		
 		$scope.editComment = function(answerId, answer, comment) {
-			if ($scope.rightsEditOwn(comment.userRef.userid)) {
+			if ($scope.rightsEditResponse(comment.userRef.userid)) {
 				$scope.updateComment(answerId, answer, comment);
 			}
 			$scope.hideCommentEditor();
@@ -380,7 +382,7 @@ angular.module(
 		};
 		
 		$scope.editAnswer = function(answer) {
-			if ($scope.rightsEditOwn(answer.userRef.userid)) {
+			if ($scope.rightsEditResponse(answer.userRef.userid)) {
 				updateAnswer(projectId, questionId, answer);
 			}
 			$scope.hideAnswerEditor();
