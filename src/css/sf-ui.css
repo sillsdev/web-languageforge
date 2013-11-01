@@ -1,0 +1,8 @@
+table.tableform input,
+table.tableform textarea {
+	margin-bottom: 0px;
+}
+
+table.tableform td {
+	padding-bottom: 8px;
+}

@@ -33,6 +33,13 @@ class QuestionCommentDto
 		
 		$textId = $questionModel->textRef->asString();
 		$textModel = new TextModel($projectModel, $textId);
+		if (false) {
+			// Demo of how we would use the new UsxTrimHelper class
+			// (In real use, the 1:3-1:5 range would be selected by UI controls)
+			$usxTrimHelper = new UsxTrimHelper($textModel->content, 1, 3, 1, 5);
+			$trimmedUsx = $usxTrimHelper->trimUsx();
+			$usxHelper = new UsxHelper($trimmedUsx);
+		}
 		$usxHelper = new UsxHelper($textModel->content);
 		//echo $usxHelper->toHtml();
 		//echo $textModel->content;
