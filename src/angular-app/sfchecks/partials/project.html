@@ -8,11 +8,30 @@
 <div class="new-item" collapse="newTextCollapsed">
 	<form class="well">
 	<fieldset class="span4">
-	<label>Title</label>
-	<input ng-model="title" type="text" placeholder="Title"/>
-	<label>Text</label>
-	<textarea textdrop ng-model="content" rows="4" placeholder="Paste the USX text here"></textarea>
-	<label></label>
+	<table class="tableform">
+		<tr>
+			<td colspan="2">
+				<label>Title</label>
+				<input ng-model="title" type="text" placeholder="Title"/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<label>Text</label>
+				<textarea textdrop ng-model="content" rows="4" placeholder="Paste the USX text here"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>From</td>
+			<td><input type="number" ng-model="startCh" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="startVs" placeholder="Verse" style="width: 5em"></input></td>
+			<td><a ng-click="startCh = ''; startVs = ''" class="btn-link">reset</a></td>
+		</tr>
+		<tr>
+			<td>To</td>
+			<td><input type="number" ng-model="endCh" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="endVs" placeholder="Verse" style="width: 5em"></input></td>
+			<td><a ng-click="endCh = ''; endVs = ''" class="btn-link">reset</a></td>
+		</tr>
+	</table>
 	<button type="submit" class="btn" ng-click="addText(); newTextCollapsed = true"><i class="icon-ok"></i>Save</button>
 	</fieldset>
 	<fieldset class="span4">
