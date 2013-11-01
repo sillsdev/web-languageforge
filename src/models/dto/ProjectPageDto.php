@@ -49,7 +49,6 @@ class ProjectPageDto
 				}
 			}
 			$entry['responseCount'] = $responseCount;
-			error_log("Found $responseCount responses");
 
 			$data['texts'][] = $entry;
 		}
