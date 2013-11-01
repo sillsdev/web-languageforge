@@ -30,6 +30,5 @@ $this->load->view('projects/jamaicanpsalms/templates/script.html.php');
 </script>
 <?php endif; ?>
 
-?>
 </body>
 </html>
