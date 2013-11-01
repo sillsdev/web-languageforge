@@ -10,7 +10,7 @@ angular.module('sf.ui.invitefriend', ['sf.services', 'palaso.ui.notice'])
 			$scope.showInviteDiv = true;
 			if (!$routeParams.projectId) {
 				var projectCode = $location.$$host.slice(0, $location.$$host.indexOf('.'));
-				if (projectCode == 'www' || projectCode == 'scriptureforge') {
+				if (projectCode == 'www' || projectCode == 'scriptureforge' || projectCode == 'dev') {
 					$scope.showInviteDiv = false;
 				}
 			}
