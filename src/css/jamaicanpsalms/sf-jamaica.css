@@ -536,6 +536,10 @@ ul.topCrumbs .active {
 }
 
 /* Question Page */
+h2 a:hover {
+	text-decoration: none;
+}
+
 table#answers tbody tr:hover, table tbody tr.altrow:hover {
 	background-color: #fff;
 }

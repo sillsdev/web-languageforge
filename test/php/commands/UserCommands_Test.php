@@ -94,71 +94,114 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($user->listProjects()->count, 0);
 	}
 	
-	function testSendInvite_SendInvite_PropertiesFromToBodyOk() {
+	function testReadForRegistration_validKey_validUserModel() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-
-		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
-		$inviterUser = new UserModel($inviterUserId);
-		$toEmail = 'someone@example.com';
-		$project = $e->createProject(SF_TESTPROJECT);
-		$project->projectCode = 'someProjectCode';
-		$project->write();
-		$delivery = new MockUserComamndsDelivery();
 		
-		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $project->id->asString(), $project->projectCode, $delivery);
-		
-		// What's in the delivery?
-		$toUser = new UserModel($toUserId);
-		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
-		$expectedTo = array($toUser->emailPending => $toUser->name);
-		$this->assertEqual($expectedFrom, $delivery->from);
-		$this->assertEqual($expectedTo, $delivery->to);
-		$this->assertPattern('/Inviter Name/', $delivery->content);
-		$this->assertPattern('/Test Project/', $delivery->content);
-		$this->assertPattern('/' . $toUser->validationKey . '/', $delivery->content);
-	}
-		
-	function testSendInvite_noProjectContext_throwException() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-
-		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
-		$inviterUser = new UserModel($inviterUserId);
-		$toEmail = 'someone@example.com';
-		$projectId = '';
-		$hostName = 'someProjectCode.scriptureforge.org';
-		$delivery = new MockUserComamndsDelivery();
-		
-		$e->inhibitErrorDisplay();
-		$this->expectException(new \Exception("Cannot send invitation for unknown project 'someProjectCode'"));
-		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $projectId, $hostName, $delivery);
-		$e->restoreErrorDisplay();
+		$user = new UserModel();
+		$user->emailPending = 'user@user.com';
+		$key = $user->setValidation(7);
+		$user->write();
+		$params = UserCommands::readForRegistration($key);
+		$this->assertEqual($params['email'], 'user@user.com');
 	}
 	
-	function testSendInvite_noProjectContextNoProjectCode_throwException() {
+	function testReadForRegistration_keyExpired_throws() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-
-		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
-		$inviterUser = new UserModel($inviterUserId);
-		$toEmail = 'someone@example.com';
-		$projectId = '';
-		$hostName = 'scriptureforge.org';
-		$delivery = new MockUserComamndsDelivery();
 		
-		$e->inhibitErrorDisplay();
-		$this->expectException(new \Exception("Sending an invitation without a project context is not supported."));
-		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $projectId, $hostName, $delivery);
-		$e->restoreErrorDisplay();
+		$user = new UserModel();
+		$user->emailPending = 'user@user.com';
+		$key = $user->setValidation(1);
+		$date = $user->validationExpirationDate;
+		$date->sub(new DateInterval('P2D'));
+		$user->validationExpirationDate = $date;
+		$user->write();
+		$this->expectException();
+		$params = UserCommands::readForRegistration($key);
 	}
 	
-	function testAddExistingUser() {
+	function testReadForRegistration_invalidKey_noValidUser() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-
+		$params = UserCommands::readForRegistration('bogus key');
+		$this->assertEqual($params, array());
 	}
+	
+	function testUpdateFromRegistration_validKey_userUpdatedAndKeyConsumed() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
 		
+		$user = new UserModel();
+		$user->emailPending = 'user@user.com';
+		$key = $user->setValidation(1);
+		$userId = $user->write();
+		
+		$userArray = array(
+			'id'       => '',
+			'username' => 'joe',
+			'name'     => 'joe user',
+			'password' => 'password'
+		);
+		UserCommands::updateFromRegistration($key, $userArray);
+		
+		$user = new UserModel($userId);
+		
+		$this->assertEqual($user->username, 'joe');
+		$this->assertEqual($user->email, 'user@user.com');
+		$this->assertNotEqual($user->emailPending, 'user@user.com');
+		$this->assertEqual($user->validationKey, '');
+	}
+	
+	function testUpdateFromRegistration_InvalidKey_userNotUpdatedAndKeyNotConsumed() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$user = new UserModel();
+		$user->emailPending = 'user@user.com';
+		$key = $user->setValidation(1);
+		$userId = $user->write();
+		
+		$userArray = array(
+			'id'       => '',
+			'username' => 'joe',
+			'name'     => 'joe user',
+			'password' => 'password'
+		);
+		UserCommands::updateFromRegistration('bogus key', $userArray);
+		
+		$user = new UserModel($userId);
+		
+		$this->assertNotEqual($user->username, 'joe');
+		$this->assertEqual($user->validationKey, $key);
+	}
+	
+	function testUpdateFromRegistration_ExpiredKey_userNotUpdatedAndKeyConsumed() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$user = new UserModel();
+		$user->emailPending = 'user@user.com';
+		$key = $user->setValidation(1);
+		$date = $user->validationExpirationDate;
+		$date->sub(new DateInterval('P2D'));
+		$user->validationExpirationDate = $date;
+		$userId = $user->write();
+		
+		$userArray = array(
+			'id'       => '',
+			'username' => 'joe',
+			'name'     => 'joe user',
+			'password' => 'password'
+		);
+		$this->expectException();
+		UserCommands::updateFromRegistration($key, $userArray);
+		
+		$user = new UserModel($userId);
+		
+		$this->assertEqual($user->username, '');
+		$this->assertEqual($user->validationKey, '');
+	}
 }
 
 ?>

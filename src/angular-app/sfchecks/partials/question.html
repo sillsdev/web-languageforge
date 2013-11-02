@@ -1,5 +1,9 @@
 <div class="span5">
-    <h2>{{text.title}} <span ng-show="mp3link"><a class="right" href="{{mp3link}}"><i class="icon-download" tooltip="Download audio"></i></a> <a class="right" m3ulink filename="{{mp3link}}"><i class="icon-volume-up" tooltip="Play audio"></i></a></span></h2>
+	<h2 class="pull-right" ng-show="true || (text.audioUrl && audioReady)">
+		<a sgw-sound-player state="state" href="text.audioUrl"><i ng-class="$parent.$parent.audioIcon()" tooltip="Play audio"></i></a>
+		<a ng-href="{{audioDownloadUrl}}"><i class="icon-download" tooltip="Download audio"></i></a>
+	</h2>
+	<h2>{{text.title}}</h2>
 <div id="text" sil-selection sil-selected-text="selectedText" content="text.content">
 </div>
 </div>
