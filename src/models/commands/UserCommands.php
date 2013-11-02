@@ -37,7 +37,7 @@ class UserCommands
 	 * @throws \Exception
 	 * @return string Id of written object
 	 */
-	public static function update($params, $projectId = '') {
+	public static function update($params, $projectId = '') {	// Connect up to sf.php>user_update when tested IJH 2013-11
 		$userId = null;
 		$user = null;
 		// Update or Create?
@@ -55,11 +55,16 @@ class UserCommands
 			$user->role = Roles::USER;
 			$user->active = true;
 			$userId = $user->write();
+			
 			// TODO passwords, make 4 digit and return in message to user and email current user. CP 2013-10
-			$password = mt_rand(1000, 9999);
+			$characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+			$password = '';
+			while( strlen($password) < 4 ) {
+				$password .= substr($characters, rand() % (strlen($characters)), 1);
+			}
 			$userWithPassword = new UserModelWithPassword($userId);
 			$userWithPassword->setPassword($password);
-			var_dump($password);	// TODO remove IJH 2013-11
+			$userWithPassword->write();
 		} else {
 			$info = var_export($params, true);
 			throw new \Exception("unsupported data: '$info'");
@@ -71,13 +76,14 @@ class UserCommands
 		if ($projectId) {
 			$role = array_key_exists('role', $params) ? $params['role'] : Roles::USER;
 			$project = new ProjectModel($projectId);
-			LinkCommands::LinkUserAndProject($project, $user, $role);
+			$project->addUser($user->id->asString(), $role);
+			$user->addProject($project->id->asString());
+			$project->write();
 			ActivityCommands::addUserToProject($project, $userId);
 		}
 
 		$userId = $user->write();
 		return $userId;
-		
 	}
 	
 	/**
@@ -129,7 +135,6 @@ class UserCommands
 		}
 
 		// TODO Choose between two emails.  One for project signup, one for general signup. CP 2013-10
-		// TODO Should this update the activity feed? IJH 2013-11
 		Communicate::sendSignup($user, $delivery);
 		
 		return $userId;
@@ -159,7 +164,6 @@ class UserCommands
 			$userId = $newUser->write();
 			$project->addUser($userId, Roles::USER);
 			$project->write();
-			// TODO Should this update the activity feed? IJH 2013-11
 			Communicate::sendInvite($inviterUser, $newUser, $project, $delivery);
 			return $userId;
 		} else {
