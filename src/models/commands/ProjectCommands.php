@@ -3,6 +3,8 @@
 namespace models\commands;
 
 use libraries\palaso\CodeGuard;
+use models\ProjectModel;
+use models\UserModel;
 
 class ProjectCommands
 {
@@ -23,6 +25,22 @@ class ProjectCommands
 		return $count;
 	}
 
+	/**
+	 * Removes users from the project (two-way unlink)
+	 * @param Id $projectId
+	 * @param array $userIds
+	 */
+	public static function removeUsers($projectId, $userIds) {	// Connect up to sf.php>project_deleteUsers when tested, then remove ProjectUserCommands.php & LinkCommands.php IJH 2013-11
+		$project = new ProjectModel($projectId);
+		foreach ($userIds as $userId) {
+			$user = new UserModel($userId->asString());
+			$project->removeUser($user->id->asString());
+			$user->removeProject($project->id->asString());
+			$project->write();
+			$user->write();
+		}
+	}
+	
 	public static function renameProject($projectId, $oldName, $newName) {
 		// TODO: Write this. (Move renaming logic over from sf->project_update). RM 2013-08
 	}
