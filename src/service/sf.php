@@ -77,7 +77,7 @@ class Sf
 	 * @param UserModel $json
 	 * @return string Id of written object
 	 */
-	public function user_update($params) {
+	public function user_update($params, $projectId = '') {
 		$user = new \models\UserModel();
 		if ($params['id']) {
 			$user->read($params['id']);

@@ -31,6 +31,52 @@ class UserCommands
 		}
 		return $count;
 	}
+
+	/**
+	 * Create/Update a User
+	 * @param array $params
+	 * @throws \Exception
+	 * @return string Id of written object
+	 */
+	public static function update($params, $projectId = '') {
+		$userId = null;
+		$user = null;
+		// Update or Create?
+		if (array_key_exists('id', $params)) {
+			// user exists, so update data
+			// TODO Check user exists? CP 2013-07
+			$userId = $params['id'];
+			$user = new UserModel($userId);
+			JsonDecoder::decode($user, $params);
+		} else if (array_key_exists('name', $params)) {
+			// No key, so create a new user.
+			$user = new UserModel();
+			JsonDecoder::decode($user, $params);
+			// $user->name = $params['name'];
+			$user->username = strtolower(str_replace(' ', '.', $user->name));
+			$user->role = Roles::USER;
+			$user->active = true;
+			// TODO passwords, make 4 digit and return in message to user and email current user. CP 2013-10
+			$userId = $user->write();
+		} else {
+			$info = var_export($params, true);
+			throw new \Exception("unsupported data: '$info'");
+		}
+		// Note, we should have a $user available here
+		CodeGuard::checkNullAndThrow($user, '$userModel');
+		
+		// Add the user to the project if supplied
+		if ($projectId) {
+			$role = array_key_exists('role', $params) ? $params['role'] : Roles::USER;
+			$project = new ProjectModel($projectId);
+			LinkCommands::LinkUserAndProject($project, $user, $role);
+			ActivityCommands::addUserToProject($project, $userId);
+		}
+
+		$userId = $user->write();
+		return $userId;
+		
+	}
 	
 	/**
 	 * Register a new user, add to project if in context
@@ -55,15 +101,15 @@ class UserCommands
 		$user->role = Roles::USER;
 		if (!$user->emailPending) {
 			if (!$user->email) {
-				throw new \Exception("");
+				throw new \Exception("Error: no email set for user signup.");
 			}
 			$user->emailPending = $user->email;
 			$user->email = '';
 		}
-		$id = $user->write();
+		$userId = $user->write();
 
 		// Write the password
-		$userPassword = new UserModelWithPassword($id);
+		$userPassword = new UserModelWithPassword($userId);
 		$userPassword->setPassword($params['password']);
 		$userPassword->write();
 
@@ -81,18 +127,19 @@ class UserCommands
 		}
 
 		// TODO Choose between two emails.  One for project signup, one for general signup. CP 2013-10
+		// TODO Should this update the activity feed? IJH 2013-11
 		Communicate::sendSignup($user, $delivery);
 		
-		return $id;
+		return $userId;
 	}
 	
 	
     /**
-    *
-       * @param UserModel $inviterUser
+    * Sends an email to invite emailee to join the project
+	* @param UserModel $inviterUser
     * @param string $toEmail
     * @param string $projectId
-       * @param string $hostName
+	* @param string $hostName
     * @param IDelivery $delivery
     * @return string $userId
     */
@@ -110,6 +157,7 @@ class UserCommands
 			$userId = $newUser->write();
 			$project->addUser($userId, Roles::USER);
 			$project->write();
+			// TODO Should this update the activity feed? IJH 2013-11
 			Communicate::sendInvite($inviterUser, $newUser, $project, $delivery);
 			return $userId;
 		} else {
