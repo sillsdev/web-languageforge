@@ -361,12 +361,6 @@ class TestUserCommands extends UnitTestCase {
 		$e->restoreErrorDisplay();
 	}
 	
-	function testAddExistingUser() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	
-	}
-	
 }
 
 ?>
