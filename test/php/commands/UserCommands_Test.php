@@ -42,6 +42,53 @@ class TestUserCommands extends UnitTestCase {
 		UserCommands::deleteUsers(array($userId));
 	}
 	
+	function testUpdate_ExistingUserNoProject_UserUpdatedAndInNoProjects() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$userId = $e->createUser("existinguser", "Existing Name", "existing@example.com");
+		$user = new UserModel($userId);
+		$params = array(
+				'id' => $user->id->asString(),
+				'username' => $user->username,
+				'name' => 'New Name',
+				'email' => 'newname@example.com',
+		);
+		
+		$updatedUserID = UserCommands::update($params);
+		
+		$updatedUser = new UserModel($updatedUserID);
+		$this->assertEqual($updatedUser->id, $userId);
+		$this->assertEqual($updatedUser->name, "New Name");
+		$this->assertEqual($updatedUser->email, "newname@example.com");
+		$this->assertEqual($updatedUser->listProjects()->count, 0);
+	}
+	
+	function testUpdate_ExistingUserAndProject_UserUpdatedAndJoinProject() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$userId = $e->createUser("existinguser", "Existing Name", "existing@example.com");
+		$user = new UserModel($userId);
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id;
+		$params = array(
+				'id' => $user->id->asString(),
+				'username' => $user->username,
+				'name' => 'New Name',
+				'email' => 'newname@example.com',
+		);
+		
+		$updatedUserID = UserCommands::update($params, $projectId->asString());
+		
+		$updatedUser = new UserModel($updatedUserID);
+		$this->assertEqual($updatedUser->id, $userId);
+		$this->assertEqual($updatedUser->name, "New Name");
+		$this->assertEqual($updatedUser->email, "newname@example.com");
+		$this->assertEqual($project->listUsers()->count, 1);
+		$this->assertEqual($updatedUser->listProjects()->count, 1);
+	}
+	
 	function testRegister_WithProjectCode_UserInProjectAndProjectHasUser() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
