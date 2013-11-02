@@ -37,7 +37,7 @@ class UserCommands
 	 * @throws \Exception
 	 * @return string Id of written object
 	 */
-	public static function update($params, $projectId = '') {	// Connect up to sf.php>user_update when tested IJH 2013-11
+	public static function update($params, $projectId = '') {	// Connect up to sf.php>user_update when tested, then remove ProjectUserCommands.php & LinkCommands.php  IJH 2013-11
 		$userId = null;
 		$user = null;
 		// Update or Create?
