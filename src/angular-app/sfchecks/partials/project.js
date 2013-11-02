@@ -411,7 +411,7 @@ angular.module(
 		
 		$scope.addProjectUser = function() {
 			if ($scope.addMode == 'addNew') {
-				userService.createSimple($scope.project.id, $scope.typeahead.userName, function(result) {
+				userService.createSimple($scope.typeahead.userName, $scope.project.id, function(result) {
 					if (result.ok) {
 						notice.push(notice.SUCCESS, "User created.  Username: " + result.data.username + " Password: " + result.data.password);
 					};

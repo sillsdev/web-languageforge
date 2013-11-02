@@ -30,7 +30,7 @@ class ProjectCommands
 	 * @param Id $projectId
 	 * @param array $userIds
 	 */
-	public static function removeUsers($projectId, $userIds) {	// Connect up to sf.php>project_deleteUsers when tested, then remove ProjectUserCommands.php & LinkCommands.php IJH 2013-11
+	public static function removeUsers($projectId, $userIds) {
 		$project = new ProjectModel($projectId);
 		foreach ($userIds as $userId) {
 			$user = new UserModel($userId->asString());
