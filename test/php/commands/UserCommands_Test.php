@@ -42,6 +42,58 @@ class TestUserCommands extends UnitTestCase {
 		UserCommands::deleteUsers(array($userId));
 	}
 	
+/* TODO This is failing and showing the exception on my home test machine. Test at work. IJH 2103-11	
+	function testUpdate_BadParams_Exception() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$params = array(
+				'di' => '21312',	// id spelt backwards
+				'Name' => 'name',	// name with Cap
+		);
+		
+		$e->inhibitErrorDisplay();
+		$this->expectException(new \Exception("unsupported data: 'array ( 'di' => '21312', 'Name' => 'name', )'"));
+		$id = UserCommands::update($params);
+		$e->restoreErrorDisplay();
+	}
+*/
+		
+	function testUpdate_CreateUserNoProject_UserCreatedAndInNoProjects() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$params = array(
+				'name' => 'New Name',
+		);
+		
+		$newUserID = UserCommands::update($params);
+		
+		$newUser = new UserModel($newUserID);
+		$this->assertNotEqual($newUserID, '');
+		$this->assertEqual($newUser->name, "New Name");
+		$this->assertEqual($newUser->listProjects()->count, 0);
+	}
+	
+	function testUpdate_CreateUserForProject_UserUpdatedAndJoinProject() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+		$params = array(
+				'name' => 'New Name',
+		);
+		
+		$newUserID = UserCommands::update($params, $projectId);
+		
+		$newUser = new UserModel($newUserID);
+		$this->assertNotEqual($newUserID, '');
+		$this->assertEqual($newUser->name, "New Name");
+		$this->assertEqual($project->listUsers()->count, 1);
+		$this->assertEqual($newUser->listProjects()->count, 1);
+	}
+	
 	function testUpdate_ExistingUserNoProject_UserUpdatedAndInNoProjects() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
@@ -71,7 +123,7 @@ class TestUserCommands extends UnitTestCase {
 		$userId = $e->createUser("existinguser", "Existing Name", "existing@example.com");
 		$user = new UserModel($userId);
 		$project = $e->createProject(SF_TESTPROJECT);
-		$projectId = $project->id;
+		$projectId = $project->id->asString();
 		$params = array(
 				'id' => $user->id->asString(),
 				'username' => $user->username,
@@ -79,7 +131,7 @@ class TestUserCommands extends UnitTestCase {
 				'email' => 'newname@example.com',
 		);
 		
-		$updatedUserID = UserCommands::update($params, $projectId->asString());
+		$updatedUserID = UserCommands::update($params, $projectId);
 		
 		$updatedUser = new UserModel($updatedUserID);
 		$this->assertEqual($updatedUser->id, $userId);

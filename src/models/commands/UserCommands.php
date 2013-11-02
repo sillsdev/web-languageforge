@@ -2,7 +2,6 @@
 
 namespace models\commands;
 
-
 use libraries\palaso\CodeGuard;
 use libraries\sfchecks\IDelivery;
 use libraries\sfchecks\Communicate;
@@ -51,13 +50,16 @@ class UserCommands
 		} else if (array_key_exists('name', $params)) {
 			// No key, so create a new user.
 			$user = new UserModel();
-			JsonDecoder::decode($user, $params);
-			// $user->name = $params['name'];
+			$user->name = $params['name'];
 			$user->username = strtolower(str_replace(' ', '.', $user->name));
 			$user->role = Roles::USER;
 			$user->active = true;
-			// TODO passwords, make 4 digit and return in message to user and email current user. CP 2013-10
 			$userId = $user->write();
+			// TODO passwords, make 4 digit and return in message to user and email current user. CP 2013-10
+			$password = mt_rand(1000, 9999);
+			$userWithPassword = new UserModelWithPassword($userId);
+			$userWithPassword->setPassword($password);
+			var_dump($password);	// TODO remove IJH 2013-11
 		} else {
 			$info = var_export($params, true);
 			throw new \Exception("unsupported data: '$info'");
