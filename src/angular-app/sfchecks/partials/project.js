@@ -125,6 +125,10 @@ angular.module(
 			model.id = '';
 			model.title = $scope.title;
 			model.content = $scope.content;
+			model.startCh = $scope.startCh;
+			model.startVs = $scope.startVs;
+			model.endCh = $scope.endCh;
+			model.endVs = $scope.endVs;
 			textService.update(projectId, model, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "The text '" + model.title + "' was added successfully");
@@ -154,13 +158,18 @@ angular.module(
 			var file = $files[0];  // Use only first file
 			var reader = new FileReader();
 			reader.addEventListener("loadend", function() {
-				// Basic sanity check: make sure what was uploaded is XML
-				// First few characters should be optional BOM, then <?xml
-				var startOfText = reader.result.slice(0,10);
-				var xmlIndex = startOfText.indexOf('<?xml');
-				if (xmlIndex != -1) {
+				// Basic sanity check: make sure what was uploaded is USX
+				// First few characters should be optional BOM, optional <?xml ..., then <usx ...
+				var startOfText = reader.result.slice(0,1000);
+				var usxIndex = startOfText.indexOf('<usx');
+				if (usxIndex != -1) {
 					$scope.$apply(function() {
 						$scope.content = reader.result;
+					});
+				} else {
+					notice.push(notice.ERROR, "Error loading USX file. The file doesn't appear to be valid USX.");
+					$scope.$apply(function() {
+						$scope.content = '';
 					});
 				}
 			});

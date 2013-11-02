@@ -14,7 +14,7 @@ angular.module('registration', [ 'sf.services', 'ui.bootstrap', 'palaso.ui.notic
 		userService.readForRegistration(validationKey, function(result) {
 			if (result.ok) {
 //				console.log("got user: ", result.data);
-				if (result.data != undefined) {
+				if (result.data.length != 0) {
 					$scope.showForm = true;
 					$scope.record = result.data;
 				} else {
@@ -33,8 +33,8 @@ angular.module('registration', [ 'sf.services', 'ui.bootstrap', 'palaso.ui.notic
 			if (result.ok) {
 				if (result.data) {
 					notice.push(notice.SUCCESS, "Thank you, " + record.name + ", for joining!  You can now login.");
-					$("#userForm").fadeOut(500, function() {
-						$location.path('/auth/login');
+					$("#userForm").fadeOut(1000, function() {
+						$window.location.href = '/auth/login';
 					});
 				}
 			}

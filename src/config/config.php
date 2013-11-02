@@ -245,7 +245,7 @@ $config['encryption_key'] = 'bZOOZLunEIIhrGMw0j6v2YvXV0dKrn3J';
 |
 */
 $config['sess_cookie_name']		= 'cisession';
-$config['sess_expiration']		= 7200;
+$config['sess_expiration']		= 86400;
 $config['sess_expire_on_close']	= FALSE;
 $config['sess_encrypt_cookie']	= TRUE;
 $config['sess_use_database']	= TRUE;

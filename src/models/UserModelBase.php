@@ -20,9 +20,7 @@ class UserModelBase extends \models\mapper\MapperModel
 	
 	public function __construct($id = '') {
 		$this->id = new Id();
-		$this->validationDate = new \DateTime();
 		$this->validationExpirationDate = new \DateTime();
-		$this->role = Roles::USER;
 		parent::__construct(UserModelMongoMapper::instance(), $id);
 	}
 	
@@ -94,6 +92,7 @@ class UserModelBase extends \models\mapper\MapperModel
 			
 			if ($this->emailPending) {
 				$this->email = $this->emailPending;
+				$this->emailPending = '';
 			}
 			
 			$intervalSeconds = ($interval->d * 86400) + ($interval->h * 3600) + ($interval->m * 60) + $interval->s;
@@ -107,12 +106,14 @@ class UserModelBase extends \models\mapper\MapperModel
 	/**
 	 * 
 	 * @param int $days
+	 * @return string - validation key
 	 */
 	public function setValidation($days) {
 		$this->validationKey = sha1(microtime(true).mt_rand(10000,90000));
 		$today = new \DateTime();
 		$today->add(new \DateInterval("P${days}D"));
 		$this->validationExpirationDate = $today;
+		return $this->validationKey;
 	}
 	
 	/**
