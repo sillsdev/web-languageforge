@@ -171,26 +171,11 @@ class Sf
 	}
 	
 	public function user_readForRegistration($validationKey) {
-		$user = new \models\UserModelBase();
-		if (!$user->readByProperty('validationKey', $validationKey)) {
-			return false;
-		}
-		$now = new \DateTime();
-		if ($now > $user->validationExpirationDate) {
-			throw new \Exception("Sorry, your registration link has expired.");
-		}
-		return JsonEncoder::encode($user);
+		return UserCommands::readForRegistration($validationKey);
 	}
 	
 	public function user_updateFromRegistration($validationKey, $params) {
-		$user = new \models\UserModelWithPassword();
-		if ($user->readByProperty('validationKey', $validationKey)) {
-			JsonDecoder::decode($user, $params);
-			$user->setPassword($params['password']);
-			$user->validate();
-			$user->active = true;
-			return $user->write();
-		}
+		return UserCommands::updateFromRegistration($validationKey, $params);
 	}
 	
 	public function user_sendInvite($toEmail, $projectId) {
@@ -337,18 +322,7 @@ class Sf
 	//---------------------------------------------------------------
 	
 	public function text_update($projectId, $object) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$textModel = new \models\TextModel($projectModel);
-		$isNewText = ($object['id'] == '');
-		if (!$isNewText) {
-			$textModel->read($object['id']);
-		}
-		JsonDecoder::decode($textModel, $object);
-		$textId = $textModel->write();
-		if ($isNewText) {
-			ActivityCommands::addText($projectModel, $textId, $textModel);
-		}
-		return $textId;
+		return TextCommands::updateText($projectId, $object);
 	}
 	
 	public function text_read($projectId, $textId) {

@@ -2,9 +2,11 @@
 
 namespace models\commands;
 
+
 use libraries\palaso\CodeGuard;
 use libraries\sfchecks\IDelivery;
 use libraries\sfchecks\Communicate;
+use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
 use models\UserModel;
 use models\ProjectModel;
@@ -85,41 +87,77 @@ class UserCommands
 	}
 	
 	
-       /**
-       *
+    /**
+    *
        * @param UserModel $inviterUser
-       * @param string $toEmail
-       * @param string $projectId
+    * @param string $toEmail
+    * @param string $projectId
        * @param string $hostName
-       * @param IDelivery $delivery
-       * @return string $userId
-       */
+    * @param IDelivery $delivery
+    * @return string $userId
+    */
        public static function sendInvite($inviterUser, $toEmail, $projectId, $hostName, IDelivery $delivery = null) {
-			$newUser = new UserModel();
-			$project = null;
-			if ($projectId) {
-				$project = new ProjectModel($projectId);
-			} else {
+		$newUser = new UserModel();
+		$project = null;
+		if ($projectId) {
+			$project = new ProjectModel($projectId);
+		} else {
 				$project = ProjectModel::createFromDomain($hostName);
-			}
-			if ($project) {
-				$newUser->emailPending = $toEmail;
-				$newUser->addProject($project->id->asString());
-				$userId = $newUser->write();
-				$project->addUser($userId, Roles::USER);
-				$project->write();
-				Communicate::sendInvite($inviterUser, $newUser, $project, $delivery);
-				return $userId;
-			} else {
+		}
+		if ($project) {
+			$newUser->emailPending = $toEmail;
+			$newUser->addProject($project->id->asString());
+			$userId = $newUser->write();
+			$project->addUser($userId, Roles::USER);
+			$project->write();
+			Communicate::sendInvite($inviterUser, $newUser, $project, $delivery);
+			return $userId;
+		} else {
 				$projectCode = ProjectModel::domainToProjectCode($hostName);
-				if ($projectCode == 'scriptureforge') {
-					throw new \Exception("Sending an invitation without a project context is not supported.");
-				} else {
-					throw new \Exception("Cannot send invitation for unknown project '$projectCode'");
-				}
+			if ($projectCode == 'scriptureforge') {
+				throw new \Exception("Sending an invitation without a project context is not supported.");
+			} else {
+				throw new \Exception("Cannot send invitation for unknown project '$projectCode'");
 			}
-       }
-	
+		}
+    }
+    
+    /**
+     * 
+     * @param string $validationKey
+     * @return array
+     */
+	public static function readForRegistration($validationKey) {
+		$user = new \models\UserModelBase();
+		if (!$user->readByProperty('validationKey', $validationKey)) {
+			return array();
+		}
+		if (!$user->validate(false)) {
+			throw new \Exception("Sorry, your registration link has expired.");
+		}
+		return JsonEncoder::encode($user);
+	}
+       
+	/**
+	* 
+	* @param string $validationKey
+	* @param array $params
+	*/
+	public static function updateFromRegistration($validationKey, $params) {
+		$user = new \models\UserModelWithPassword();
+		if ($user->readByProperty('validationKey', $validationKey)) {
+			if ($user->validate()) {
+				$params['id'] = $user->id->asString();
+				JsonDecoder::decode($user, $params);
+				$user->setPassword($params['password']);
+				$user->validate();
+				$user->active = true;
+				return $user->write();
+			} else {
+				throw new \Exception("Sorry, your registration link has expired.");
+			}
+		}
+    }
 }
 
 ?>
