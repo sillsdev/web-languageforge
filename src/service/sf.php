@@ -259,10 +259,7 @@ class Sf
 	}
 	
 	public function project_deleteUsers($projectId, $userIds) {
-		// This removes the user from the project.
-		$projectModel = new \models\ProjectModel($projectId);
-		$command = new \models\commands\ProjectUserCommands($projectModel);
-		$command->removeUsers($userIds);
+		ProjectCommands::removeUsers($projectId, $userIds);
 	}
 	
 	public function project_listUsers($projectId) {
