@@ -38,19 +38,19 @@
 			$data['columns'] = array(
 				array(
 					"title" => "Your Role",
-					"summary" => "A few translation experts can know many things, but they can’t know everything to produce the best possible translation. This is where you come in.  You also have things to contribute to the translation. Your experiences, knowledge, spiritual gifts, special insights, talents, and many other things can benefit the translation team in important ways.",
+					"summary" => "A few translation experts can know many things, but they can't know everything to produce the best possible translation. This is where you come in.  You also have things to contribute to the translation. Your experiences, knowledge, spiritual gifts, special insights, talents, and many other things can benefit the translation team in important ways.",
 					"button" => "Learn More",
 					"target_url" => "#"
 					),
 				array(
 					"title" => "How it Works",
-					"summary" => "First, the team of trained translators meets with Jamaicans from various church denominations, universities and professions (pastors, teachers, and others). Together you talk about the Psalms chapters to be translated. Next, based on your help, the translation team produces a first draft and they post it on this website. Then you and everyone who has created a user account on the website can log-in and read or listen to the newly translated passages. Here you can ask questions, make comments, and suggest improvements. You can even comment on other people's comments, too— just like Facebook! The translators will interact with you on the website, and together the translation draft is improved. This cycle continues until the translated chapters are finished and immediately distributed to the community. In the end, the translation is the fruit of your combined voluntary efforts.",
-					"button" => "Learn More",
-					"target_url" => "#"
+					"summary" => "First, the team of trained translators meets with Jamaicans from various church denominations, universities and professions (pastors, teachers, and others). Together you talk about the Psalms chapters to be translated. Next, based on your help, the translation team produces a first draft and they post it on this website. Then you and everyone who has created a user account on the website can...",
+					"button" => "Read More",
+					"target_url" => "/learn_how_it_works"
 					),
 				array(
 					"title" => "Get Started",
-					"summary" => "There are two ways you can start right away: Organize a face-to-face Psalms study group and share your group's insights with the translation team.  Create a log-in and begin interacting with the translators and others from the Jamaican community over the translation drafts they post on this website. Either way, you are helping to produce your Jamaican Psalms translation. It's that easy.",
+					"summary" => "There are two ways you can start right away: Organize a face-to-face Psalms study group and share your group's insights with the translation team.Â  Create a log-in and begin interacting with the translators and others from the Jamaican community over the translation drafts they post on this website. Either way, you are helping to produce your Jamaican Psalms translation. It's that easy.",
 					"button" => "Get Started Now",
 					"target_url" => "/signup"
 					)
@@ -68,7 +68,7 @@
 						<div class="span9">
 							<h3>The Impact of the Bible</h3>
 							<p>Many Jamaicans have been touched by the Jamaican New Testament! Take Israel, for example, a young British-Jamaican girl living in England. She talks to us regularly on our Facebook page. Ever so often she reads for her family members from the Jamaican New Testament (JNT). One day, she read to her grandmother from the JNT. Her grandmother then told her pastor about the JNT. The pastor was curious, so Israel was asked to take her JNT to church and read from it during worship! Israel messaged us after the service, this was what she said:</p>
-							<p>“I've just got home from church. Believe me when I tell you that they LOVE the JNT! Thank you for my copy of the JNT in my own language. I've come to realise that when you listen to the Bible in your language, it is more meaningful to you.”</p>
+							<p>"I've just got home from church. Believe me when I tell you that they LOVE the JNT! Thank you for my copy of the JNT in my own language. I've come to realise that when you listen to the Bible in your language, it is more meaningful to you."</p>
 <!-- 							<p><a href="/create_account" class="arrowed">Get Involved Today</a></p> -->
 							<p>
 								<a href="/signup">
