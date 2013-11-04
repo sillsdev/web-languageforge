@@ -45,7 +45,7 @@ class TestCommunicate extends UnitTestCase {
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
 		$user->communicate_via = UserModel::COMMUNICATE_VIA_EMAIL;
-		$project = $e->createProject('ProjectName');
+		$project = $e->createProjectSettings(SF_TESTPROJECT);
 		$subject = 'TestSubject';
 		$project->emailSettings->fromAddress = 'projectName@scriptureforge.org';
 		$project->emailSettings->fromName = 'ScriptureForge ProjectName';
@@ -71,7 +71,7 @@ class TestCommunicate extends UnitTestCase {
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
 		$user->communicate_via = UserModel::COMMUNICATE_VIA_EMAIL;
-		$project = $e->createProject('ProjectName');
+		$project = $e->createProjectSettings(SF_TESTPROJECT);
 		$subject = 'TestSubject';
 		$project->emailSettings->fromAddress = 'projectName@scriptureforge.org';
 		$project->emailSettings->fromName = 'ScriptureForge ProjectName';
@@ -102,7 +102,7 @@ class TestCommunicate extends UnitTestCase {
 		
 		// What's in the delivery?
 		$expectedFrom = array('no-reply@scriptureforge.org' => 'ScriptureForge');
-		$expectedTo = array($userModel->email => $userModel->name);
+		$expectedTo = array($userModel->emailPending => $userModel->name);
 		$this->assertEqual($expectedFrom, $delivery->from);
 		$this->assertEqual($expectedTo, $delivery->to);
 		$this->assertPattern('/Name/', $delivery->content);
@@ -117,7 +117,7 @@ class TestCommunicate extends UnitTestCase {
 		$user = new UserModel($userId);
 		$user->communicate_via = UserModel::COMMUNICATE_VIA_SMS;
 		$user->mobile_phone = '+66837610205';
-		$project = $e->createProject('ProjectName');
+		$project = $e->createProjectSettings(SF_TESTPROJECT);
 		$project->smsSettings->fromNumber = '13852904211';
 		$project->smsSettings->accountId = 'ACc03c2767c2c9c138bde0aa0b30ac9d6e';
 		$project->smsSettings->authToken = 'be77f02cd3b6b13d3b42d8a64050fd35';

@@ -27,7 +27,7 @@
 						<p>Imagine hundreds, maybe thousands, of Jamaicans from all over the world (male and female, all ages, all churches and job backgrounds), helping to translate their favourite Psalms into Jamaican. We do this face-to-face in our home and church groups using this Jamaican Psalms translation website. This is a translation of the Psalms by Jamaicans for for Jamaicans. Gad wod iina fi wi langwij! Join the cause by creating a user account now. It frii!</p>
 					</div>
 					<div class="span5">
-						<iframe width="380" height="285" src="//www.youtube.com/embed/oCdTWgDXDnw" frameborder="0" allowfullscreen></iframe>
+						<iframe width="380" height="285" src="http://www.youtube.com/embed/hYlECJ35Wos" frameborder="0" allowfullscreen></iframe>
 					</div>
 					</div>
 			</div>
@@ -44,7 +44,7 @@
 					),
 				array(
 					"title" => "How it Works",
-					"summary" => "First, the team of trained translators meets with Jamaicans from various church denominations, universities and professions (pastors, teachers, and others). Together you talk about the Psalms chapters to be translated. Next, based on your help, the translation team produces a first draft and they post it on this website. Then you and everyone who has created a user account on the website can log-in, and read or listen to the newly translated passages. Here you can ask questions, make comments, and suggest improvements. You can even comment on other people's comments, too— just like Facebook! The translators will interact with you on the website, and together the translation draft is improved. This cycle continues until the translated chapters are finished and immediately distributed to the community. In the end, the translation is the fruit of your combined voluntary efforts.",
+					"summary" => "First, the team of trained translators meets with Jamaicans from various church denominations, universities and professions (pastors, teachers, and others). Together you talk about the Psalms chapters to be translated. Next, based on your help, the translation team produces a first draft and they post it on this website. Then you and everyone who has created a user account on the website can log-in and read or listen to the newly translated passages. Here you can ask questions, make comments, and suggest improvements. You can even comment on other people's comments, too— just like Facebook! The translators will interact with you on the website, and together the translation draft is improved. This cycle continues until the translated chapters are finished and immediately distributed to the community. In the end, the translation is the fruit of your combined voluntary efforts.",
 					"button" => "Learn More",
 					"target_url" => "#"
 					),

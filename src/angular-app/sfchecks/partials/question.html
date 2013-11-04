@@ -1,5 +1,9 @@
 <div class="span5">
-    <h2>{{text.title}} <span ng-show="mp3link"><a class="right" href="{{mp3link}}"><i class="icon-download" tooltip="Download audio"></i></a> <a class="right" m3ulink filename="{{mp3link}}"><i class="icon-volume-up" tooltip="Play audio"></i></a></span></h2>
+	<h2 class="pull-right" ng-show="true || (text.audioUrl && audioReady)">
+		<a sgw-sound-player state="state" href="text.audioUrl"><i ng-class="$parent.$parent.audioIcon()" tooltip="Play audio"></i></a>
+		<a ng-href="{{audioDownloadUrl}}"><i class="icon-download" tooltip="Download audio"></i></a>
+	</h2>
+	<h2>{{text.title}}</h2>
 <div id="text" sil-selection sil-selected-text="selectedText" content="text.content">
 </div>
 </div>
@@ -59,7 +63,7 @@
 				<div ng-bind-html="answer.content">
 					{{answer.content}}
 				</div>
-				<view-tags tags="answer.tags" on-delete="deletedTags(answer)"></view-tags>
+				<view-tags ng-show="$parent.rightsCreateTag()" tags="answer.tags" on-delete="deletedTags(answer)" rights-delete="rightsDeleteTag()"></view-tags>
 				<div class="by">
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>
 				</div>
@@ -75,9 +79,9 @@
 						</form>
 					</div>
 					</div>
-					<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="tagEditorVisible=true">tag</a>
-					<a ng-show="rightsEditOwn(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
-					<a ng-show="rightsDeleteOwn(answer.userRef.userid) && !questionIsClosed()" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
+					<a ng-show="rightsCreateTag() && !questionIsClosed()" class="btn-link" ng-click="tagEditorVisible=true">tag</a>
+					<a ng-show="rightsEditResponse(answer.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showAnswerEditor(answerId)">edit</a>
+					<a ng-show="rightsDeleteResponse(answer.userRef.userid) && !questionIsClosed()" ng-click="answerDelete(answerId)" class="btn-link">delete</a>
 					<ng-switch on="answerEditorVisible(answerId)">
 					<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
 						<textarea ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
@@ -92,8 +96,8 @@
 					<td></td>
 					<td ng-class="{unread: isUnreadComment(comment.id)}">
 						{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}
-						<a ng-show="rightsEditOwn(comment.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showCommentEditor(comment.id)">edit</a>
-						<a ng-show="rightsDeleteOwn(comment.userRef.userid) && !questionIsClosed()" ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
+						<a ng-show="rightsEditResponse(comment.userRef.userid) && !questionIsClosed()" class="btn-link" ng-click="showCommentEditor(comment.id)">edit</a>
+						<a ng-show="rightsDeleteResponse(comment.userRef.userid) && !questionIsClosed()" ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
 						<ng-switch on="commentEditorVisible(comment.id)">
 						<form ng-submit="editComment(answerId, answer, editedComment)" ng-switch-when="true">
 							<textarea ng-model="editedComment.content"></textarea>

@@ -6,7 +6,7 @@ angular.module('palaso.ui.tagging', ['ui.bootstrap'])
 			template: '\
 <div class="tag-list">\
 	<ul>\
-		<li ng-repeat="tag in tags" ng-mouseenter="show = true" ng-mouseleave="show = false">\
+		<li ng-repeat="tag in tags" ng-mouseenter="show = true && rightsDelete()" ng-mouseleave="show = false">\
 			{{tag}}\
 			<img class="closeicon" src="/images/closeicon.svg" width="20" height="20" ng-show="show" ng-click="removeTag($index)"></img>\
 		</li>\
@@ -17,7 +17,8 @@ angular.module('palaso.ui.tagging', ['ui.bootstrap'])
 			replace: true,
 			scope: {
 				tags: "=",
-				onDelete: "&"
+				onDelete: "&",
+				rightsDelete: "&"
 			},
 			controller: ["$scope", function($scope) {
 				$scope.removeTag = function(tagIndex) {
@@ -61,6 +62,6 @@ angular.module('palaso.ui.tagging', ['ui.bootstrap'])
 					}
 				});
 			},
-		}
+		};
 	}])
 ;
