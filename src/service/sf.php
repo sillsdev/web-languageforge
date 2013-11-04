@@ -145,7 +145,7 @@ class Sf
 	}
 	
 	public function user_create($params) {
-		// TODO cjh 2013-09 assure that authenticated user executing this action has privilege to create an user
+		// TODO cjh 2013-09 assure that authenticated user executing this action has privilege to create a user
 		$user = new \models\UserModelWithPassword();
 		JsonDecoder::decode($user, $params);
 		if (UserModel::userNameExists($user->username)) {
