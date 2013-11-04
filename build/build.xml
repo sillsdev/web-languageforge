@@ -139,7 +139,7 @@
 		</chmod>
 	</target>
 	
-	<target name="package" depends="prepare,copyWeb" >
+	<target name="package" depends="clean,prepare,copyWeb" >
 		<tar 
 			destfile="${build.packageFile}"
 			basedir="${build.output}/package"

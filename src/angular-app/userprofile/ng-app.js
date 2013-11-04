@@ -26,7 +26,7 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso
 	});
 	
 	var loadUser = function() {
-		userService.read(ss.currentUserId(), function(result) {
+		userService.readProfile(ss.currentUserId(), function(result) {
 			if (result.ok) {
 				$scope.user = result.data;
 			}

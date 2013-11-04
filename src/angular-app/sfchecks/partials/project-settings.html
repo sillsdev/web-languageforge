@@ -61,7 +61,9 @@
 	<form class="well" ng-submit="updateProject()">
 	<fieldset>
 		<label>Project Name</label>
-		<input type="text" placeholder="(project name)" ng-model="project.name"/>
+		<input type="text" placeholder="project name" ng-model="project.name"/>
+		<label>Project Code</label>
+		<input type="text" placeholder="project code" ng-model="project.projectCode"/>
 		<label><input type="checkbox" ng-model="project.featured"/> Featured On Website</label>
 		
 	</fieldset>

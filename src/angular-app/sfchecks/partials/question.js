@@ -2,7 +2,15 @@
 
 angular.module(
 		'sfchecks.question',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'palaso.ui.m3ulink', 'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice' ]
+		[ 'sf.services', 
+		  'palaso.ui.listview', 
+		  'palaso.ui.jqte', 
+		  'ui.bootstrap', 
+		  'sgw.soundmanager', 
+		  'palaso.ui.selection', 
+		  'palaso.ui.tagging', 
+		  'palaso.ui.notice'
+		 ]
 	)
 	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService',
 	                             function($scope, $routeParams, questionService, ss, breadcrumbService, notice) {
@@ -27,6 +35,28 @@ angular.module(
 				['h4', 'Large']
 			]
 		};
+		
+		$scope.state = 'stop';
+		$scope.audioReady = false;
+		soundManager.setup({
+			url : '/js/lib/sm2/',
+			flashVersion : 9, // optional: shiny features (default = 8)
+			// optional: ignore Flash where possible, use 100% HTML5 mode
+			//preferFlash : false,
+			onready : function() {
+				$scope.audioReady = true;
+				// Ready to use; soundManager.createSound() etc. can now be called.
+			}
+		});
+		
+		$scope.audioIcon = function() {
+			var map = {
+				'stop': 'icon-volume-up',
+				'play': 'icon-pause',
+				'pause': 'icon-play'
+			};
+			return map[$scope.state];
+		};
 
 		var projectId = $routeParams.projectId;
 		var questionId = $routeParams.questionId;
@@ -48,7 +78,7 @@ angular.module(
 		
 		$scope.unreadResponseCount = function() {
 			return $scope.unreadComments.length + $scope.unreadAnswers.length;
-		}
+		};
 		
 		$scope.isUnreadComment = function(id) {
 			return ($.inArray(id, $scope.unreadComments) > -1 || $.inArray(id, $scope.myResponses) > -1);
@@ -61,9 +91,10 @@ angular.module(
 			//console.log('questionService.read(', projectId, questionId, ')');
 			if (result.ok) {
 				$scope.text = result.data.text;
-				if ($scope.text.audioUrl) {
-					$scope.mp3link = '/' + $scope.text.audioUrl; // Should the added / be in upload.php?
-				}
+				if ($scope.text.audioUrl != '') {
+					$scope.audioDownloadUrl = '/download/' + $scope.text.audioUrl;
+					$scope.text.audioUrl = '/' + $scope.text.audioUrl;
+				} 
 				$scope.question = result.data.question;
 				$scope.votes = result.data.votes;
 				$scope.project = result.data.project;
@@ -78,23 +109,38 @@ angular.module(
 				$scope.rights = result.data.rights;
 			}
 		});
-		
-		$scope.rightsEditOwn = function(userId) {
-			var right = (userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN);
+
+		// Rights: Answers
+		$scope.rightsEditResponse = function(userId) {
+			var right = ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OTHER)
+				|| ((userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
 			return right;
 		};
 
-		$scope.rightsDeleteOwn = function(userId) {
-			var right = (userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN);
+		$scope.rightsDeleteResponse = function(userId) {
+			var right = ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OTHER)
+				|| ((userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN));
 			return right;
 		};
 		
+		// Rights: Question
 		$scope.rightsCloseQuestion = function(userId) {
 			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
-		}
+		};
+		
 		$scope.rightsEditQuestion = function(userId) {
 			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
-		}
+		};
+		
+		
+		// Rights: Tags
+		$scope.rightsCreateTag = function() {
+			return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.CREATE);
+		};
+		
+		$scope.rightsDeleteTag = function() {
+			return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.DELETE_OTHER);
+		};
 		
 		$scope.workflowStates = [
 			{
@@ -289,7 +335,7 @@ angular.module(
 		};
 		
 		$scope.editComment = function(answerId, answer, comment) {
-			if ($scope.rightsEditOwn(comment.userRef.userid)) {
+			if ($scope.rightsEditResponse(comment.userRef.userid)) {
 				$scope.updateComment(answerId, answer, comment);
 			}
 			$scope.hideCommentEditor();
@@ -367,7 +413,7 @@ angular.module(
 		};
 		
 		$scope.editAnswer = function(answer) {
-			if ($scope.rightsEditOwn(answer.userRef.userid)) {
+			if ($scope.rightsEditResponse(answer.userRef.userid)) {
 				updateAnswer(projectId, questionId, answer);
 			}
 			$scope.hideAnswerEditor();

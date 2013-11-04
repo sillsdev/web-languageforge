@@ -11,7 +11,8 @@ angular.module('sfchecks',
 		 'sfchecks.question',
 		 'sfchecks.filters',
 		 'sfchecks.services',
-		 'palaso.ui.notice'
+		 'palaso.ui.notice',
+		 'sf.ui.invitefriend'
 		])
 	.config(['$routeProvider', function($routeProvider) {
 	    $routeProvider.when(
