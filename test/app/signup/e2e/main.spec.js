@@ -6,7 +6,7 @@ describe("E2E testing: Signup app", function() {
 		browser().navigateTo('/signup');
 	});
 	
-	it("contains an user form", function() {
+	it("contains a user form", function() {
 		expect(element("form#userForm").count()).toBe(1);
 	});
 	
