@@ -231,7 +231,7 @@ class ProjectListModel extends \models\mapper\MapperListModel
 }
 
 /**
- * List of projects of which an user is a member
+ * List of projects of which a user is a member
  * 
  */
 class ProjectList_UserModel extends \models\mapper\MapperListModel
