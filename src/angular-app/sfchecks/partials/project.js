@@ -131,7 +131,7 @@ angular.module(
 			model.endVs = $scope.endVs;
 			textService.update(projectId, model, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "The text '" + model.title + "' was added successfully")
+					notice.push(notice.SUCCESS, "The text '" + model.title + "' was added successfully");
 					$scope.queryTexts();
 				}
 			});
@@ -158,18 +158,23 @@ angular.module(
 			var file = $files[0];  // Use only first file
 			var reader = new FileReader();
 			reader.addEventListener("loadend", function() {
-				// Basic sanity check: make sure what was uploaded is XML
-				// First few characters should be optional BOM, then <?xml
-				var startOfText = reader.result.slice(0,10);
-				var xmlIndex = startOfText.indexOf('<?xml');
-				if (xmlIndex != -1) {
+				// Basic sanity check: make sure what was uploaded is USX
+				// First few characters should be optional BOM, optional <?xml ..., then <usx ...
+				var startOfText = reader.result.slice(0,1000);
+				var usxIndex = startOfText.indexOf('<usx');
+				if (usxIndex != -1) {
 					$scope.$apply(function() {
 						$scope.content = reader.result;
-					})
+					});
+				} else {
+					notice.push(notice.ERROR, "Error loading USX file. The file doesn't appear to be valid USX.");
+					$scope.$apply(function() {
+						$scope.content = '';
+					});
 				}
-			})
+			});
 			reader.readAsText(file);
-		}
+		};
 		
 		$scope.getPageDto();
 
@@ -216,6 +221,7 @@ angular.module(
 			var newProject = {
 				id: $scope.project.id,
 				projectname: $scope.project.name,
+				projectCode: $scope.project.projectCode,
 				featured: $scope.project.featured
 			};
 			projectService.update(newProject, function(result) {
@@ -240,11 +246,11 @@ angular.module(
 					$scope.settings.email = result.data.email;
 				}
 			});
-		}
+		};
 		
 		$scope.canEditCommunicationSettings = function() {
 			return ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
-		}
+		};
 		
 		
 		// jqte options for html email message composition
@@ -294,6 +300,7 @@ angular.module(
 				if (result.ok) {
 					$scope.project.name = result.data.projectName;
 					$scope.project.featured = result.data.projectIsFeatured;
+					$scope.project.projectCode = result.data.projectCode;
 					$scope.project.users = result.data.entries;
 					$scope.project.userCount = result.data.count;
 					// Rights
@@ -387,7 +394,8 @@ angular.module(
 				// This also covers the case where newMode is undefined
 				$scope.calculateAddMode();
 			}
-		}
+		};
+		
 		$scope.calculateAddMode = function() {
 			// TODO This isn't adequate.  Need to watch the 'typeahead.userName' and 'selection' also. CP 2013-07
 			if ($scope.typeahead.userName.indexOf('@') != -1) {

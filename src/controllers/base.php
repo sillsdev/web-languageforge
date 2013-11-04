@@ -8,6 +8,7 @@ use models\rights\Operation;
 use models\rights\Domain;
 use models\rights\Realm;
 use models\rights\Roles;
+use models\ProjectModel;
 
 
 class Base extends CI_Controller {
@@ -30,12 +31,18 @@ class Base extends CI_Controller {
 				error_log("User not found, logged out.\n" . $e->getMessage());
 				$this->ion_auth->logout();
 			}
+			// Check the role
+			if (!$this->_user->role) {
+				error_log("Fixing role for user " .  $this->_user->id->asString());
+				$this->_user->role = Roles::USER;
+				$this->_user->write();
+			}
 		}
-		$uriParts = explode('.', $_SERVER['HTTP_HOST']);
-		if ($uriParts[0] == 'scriptureforge' || $uriParts[0] == 'dev' || $uriParts[0] == 'www') {
+		$projectCode = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
+		if ($projectCode == 'scriptureforge' || $projectCode == 'dev') {
 			$this->_project = 'scriptureforge';
 		} else {
-			$this->_project = $uriParts[0];
+			$this->_project = $projectCode;
 		}
 		
 	}
