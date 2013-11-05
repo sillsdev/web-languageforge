@@ -4,9 +4,9 @@
 	<button class="btn" ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Create New Project</button>
 </form>
 <div class="new-item" collapse="newProjectCollapsed">
-	<form class="well form-inline">
-	<input type="text" ng-model="projectName" placeholder="Project Name"/>
-	<button type="submit" class="btn" ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
+	<form class="well form-inline" name="newProjectForm">
+	<input type="text" ng-model="projectName" required placeholder="Project Name"/>
+	<button type="submit" class="btn" ng-disabled="newProjectForm.$invalid" ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
 	</form>
 </div>
 <hr />
