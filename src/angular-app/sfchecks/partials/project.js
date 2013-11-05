@@ -97,26 +97,25 @@ angular.module(
 		
 		// Remove Text
 		$scope.removeTexts = function() {
-			console.log("removeTexts()");
+			//console.log("removeTexts()");
 			var textIds = [];
 			for(var i = 0, l = $scope.selected.length; i < l; i++) {
 				textIds.push($scope.selected[i].id);
 			}
-			if (l == 0) {
-				return;
-			}
-			textService.remove(projectId, textIds, function(result) {
-				if (result.ok) {
-					if (textIds.length == 1) {
-						notice.push(notice.SUCCESS, "The text was removed successfully");
-					} else {
-						notice.push(notice.SUCCESS, "The texts were removed successfully");
+			if (window.confirm("Are you sure you want to delete the(se) " + textIds.length + " text(s)?")) {
+				textService.remove(projectId, textIds, function(result) {
+					if (result.ok) {
+						if (textIds.length == 1) {
+							notice.push(notice.SUCCESS, "The text was removed successfully");
+						} else {
+							notice.push(notice.SUCCESS, "The texts were removed successfully");
+						}
+						$scope.selected = []; // Reset the selection
+						// TODO
 					}
-					$scope.selected = []; // Reset the selection
-					$scope.queryTexts();
-					// TODO
-				}
-			});
+					$scope.getPageDto();
+				});
+			}
 		};
 		// Add
 		$scope.addText = function() {
@@ -132,8 +131,8 @@ angular.module(
 			textService.update(projectId, model, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "The text '" + model.title + "' was added successfully");
-					$scope.queryTexts();
 				}
+				$scope.getPageDto();
 			});
 		};
 
