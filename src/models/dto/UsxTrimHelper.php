@@ -116,6 +116,8 @@ class UsxTrimHelper {
 		if (!$oldstate) {
 			// We just went from "keep" to "drop". Issue close tags
 			// for everything on the current tag stack.
+			$finalAttrs = array_pop($this->_tagStack); // Don't close the <verse> tag that made us stop outputting, since we're dropping it
+			$finalTag = array_pop($this->_tagStack);
 			while (!empty($this->_tagStack)) {
 				$attrs = array_pop($this->_tagStack);
 				$tag = array_pop($this->_tagStack);
