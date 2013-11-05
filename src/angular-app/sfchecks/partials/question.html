@@ -9,7 +9,7 @@
 </div>
 <div id="comments" class="span6">
 	<div class="question">
-	<h2>{{question.title}}</h2>
+	<h2>{{questionTitleCalculated}}</h2>
 	<h4 ng-show="questionIsClosed()" style="color:gray; font-style:italic">This question is marked closed</h4>
 	<div>
 	{{question.description}}
@@ -19,9 +19,9 @@
 		<form class="well">
 		<fieldset>
 		<label>Question</label>
-		<input type="text" ng-model="editedQuestion.title" class="span4" rows="4" placeholder="the question" />
+		<textarea required ng-model="editedQuestion.description" class="span4" rows="4" placeholder="The Question"></textarea>
 		<label></label>
-		<textarea ng-model="editedQuestion.description" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
+		<input type="text" ng-model="editedQuestion.title" class="span4" maxlength="35" placeholder="One-line Summary For Title" />
 		<label></label>
 		<label>Workflow</label>
 		<select ng-model="editedQuestion.workflowState" ng-options="s.state as s.label for s in workflowStates" name="workflowState"></select>
