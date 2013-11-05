@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\mapper\ArrayOf;
+
 use libraries\palaso\CodeGuard;
 use models\rights\Realm;
 use models\rights\Roles;
@@ -38,11 +40,13 @@ class ProjectModelMongoMapper extends \models\mapper\MongoMapper
 
 class ProjectModel extends \models\mapper\MapperModel
 {
+	
 	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->users = new MapOf(function($data) {
 			return new ProjectRoleModel();
 		});
+		$this->userProperties = new ProjectUserProperties();
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
 	
@@ -186,7 +190,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @var boolean
 	 */
 	public $featured;
-	
+
+	/**
+	 * @var ProjectUserProperties
+	 */
+	public $userProperties;
 }
 
 /**
