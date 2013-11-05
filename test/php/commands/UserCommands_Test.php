@@ -5,6 +5,8 @@ use models\commands\UserCommands;
 use models\ProjectModel;
 use models\mapper\JsonDecoder;
 use models\UserModel;
+use models\dto\CreateSimpleDto;
+use models\mapper\Id;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -42,103 +44,21 @@ class TestUserCommands extends UnitTestCase {
 		UserCommands::deleteUsers(array($userId));
 	}
 	
-/* TODO This is failing and showing the exception on my home test machine. Test at work. IJH 2103-11	
-	function testUpdate_BadParams_Exception() {
+	function testCreateSimple_CreateUser_PasswordAndJoinProject() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-		
-		$params = array(
-				'di' => '21312',	// id spelt backwards
-				'Name' => 'name',	// name with Cap
-		);
-		
-		$e->inhibitErrorDisplay();
-		$this->expectException(new \Exception("unsupported data: 'array ( 'di' => '21312', 'Name' => 'name', )'"));
-		$id = UserCommands::update($params);
-		$e->restoreErrorDisplay();
-	}
-*/
-		
-	function testUpdate_CreateUserNoProject_UserCreatedAndInNoProjects() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-		
-		$params = array(
-				'name' => 'New Name',
-		);
-		
-		$newUserID = UserCommands::update($params);
-		
-		$newUser = new UserModel($newUserID);
-		$this->assertNotEqual($newUserID, '');
-		$this->assertEqual($newUser->name, "New Name");
-		$this->assertEqual($newUser->listProjects()->count, 0);
-	}
-	
-	function testUpdate_CreateUserForProject_UserUpdatedAndJoinProject() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-		
+
+		$userName = 'username';
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
-		$params = array(
-				'name' => 'New Name',
-		);
 		
-		$newUserID = UserCommands::update($params, $projectId);
+		$dto = UserCommands::createSimple($userName, $projectId);
 		
-		$newUser = new UserModel($newUserID);
-		$this->assertNotEqual($newUserID, '');
-		$this->assertEqual($newUser->name, "New Name");
+		$user = new UserModel($dto['id']);
+		$this->assertEqual($user->username, "username");
+		$this->assertEqual(strlen($dto['password']), 4);
 		$this->assertEqual($project->listUsers()->count, 1);
-		$this->assertEqual($newUser->listProjects()->count, 1);
-	}
-	
-	function testUpdate_ExistingUserNoProject_UserUpdatedAndInNoProjects() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-		
-		$userId = $e->createUser("existinguser", "Existing Name", "existing@example.com");
-		$user = new UserModel($userId);
-		$params = array(
-				'id' => $user->id->asString(),
-				'username' => $user->username,
-				'name' => 'New Name',
-				'email' => 'newname@example.com',
-		);
-		
-		$updatedUserID = UserCommands::update($params);
-		
-		$updatedUser = new UserModel($updatedUserID);
-		$this->assertEqual($updatedUser->id, $userId);
-		$this->assertEqual($updatedUser->name, "New Name");
-		$this->assertEqual($updatedUser->email, "newname@example.com");
-		$this->assertEqual($updatedUser->listProjects()->count, 0);
-	}
-	
-	function testUpdate_ExistingUserAndProject_UserUpdatedAndJoinProject() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-		
-		$userId = $e->createUser("existinguser", "Existing Name", "existing@example.com");
-		$user = new UserModel($userId);
-		$project = $e->createProject(SF_TESTPROJECT);
-		$projectId = $project->id->asString();
-		$params = array(
-				'id' => $user->id->asString(),
-				'username' => $user->username,
-				'name' => 'New Name',
-				'email' => 'newname@example.com',
-		);
-		
-		$updatedUserID = UserCommands::update($params, $projectId);
-		
-		$updatedUser = new UserModel($updatedUserID);
-		$this->assertEqual($updatedUser->id, $userId);
-		$this->assertEqual($updatedUser->name, "New Name");
-		$this->assertEqual($updatedUser->email, "newname@example.com");
-		$this->assertEqual($project->listUsers()->count, 1);
-		$this->assertEqual($updatedUser->listProjects()->count, 1);
+		$this->assertEqual($user->listProjects()->count, 1);
 	}
 	
 	function testRegister_WithProjectCode_UserInProjectAndProjectHasUser() {
@@ -193,7 +113,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($user->listProjects()->count, 0);
 	}
 	
-	function testReadForRegistration_validKey_validUserModel() {
+	function testReadForRegistration_ValidKey_ValidUserModel() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
@@ -205,7 +125,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($params['email'], 'user@user.com');
 	}
 	
-	function testReadForRegistration_keyExpired_throws() {
+	function testReadForRegistration_KeyExpired_Throws() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
@@ -227,7 +147,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($params, array());
 	}
 	
-	function testUpdateFromRegistration_validKey_userUpdatedAndKeyConsumed() {
+	function testUpdateFromRegistration_ValidKey_UserUpdatedAndKeyConsumed() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
@@ -252,7 +172,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($user->validationKey, '');
 	}
 	
-	function testUpdateFromRegistration_InvalidKey_userNotUpdatedAndKeyNotConsumed() {
+	function testUpdateFromRegistration_InvalidKey_UserNotUpdatedAndKeyNotConsumed() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
@@ -275,7 +195,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($user->validationKey, $key);
 	}
 	
-	function testUpdateFromRegistration_ExpiredKey_userNotUpdatedAndKeyConsumed() {
+	function testUpdateFromRegistration_ExpiredKey_UserNotUpdatedAndKeyConsumed() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
@@ -327,7 +247,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertPattern('/' . $toUser->validationKey . '/', $delivery->content);
 	}
 	
-	function testSendInvite_noProjectContext_throwException() {
+	function testSendInvite_NoProjectContext_ThrowException() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 	
@@ -344,7 +264,7 @@ class TestUserCommands extends UnitTestCase {
 		$e->restoreErrorDisplay();
 	}
 	
-	function testSendInvite_noProjectContextNoProjectCode_throwException() {
+	function testSendInvite_NoProjectContextNoProjectCode_ThrowException() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 	

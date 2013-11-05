@@ -77,7 +77,7 @@ class Sf
 	 * @param UserModel $json
 	 * @return string Id of written object
 	 */
-	public function user_update($params, $projectId = '') {
+	public function user_update($params) {
 		$user = new \models\UserModel();
 		if ($params['id']) {
 			$user->read($params['id']);
@@ -110,7 +110,16 @@ class Sf
  		return UserCommands::deleteUsers($userIds);
  	}
 
-	// TODO Pretty sure this is going to want some paging params
+ 	/**
+ 	 * @param string $userName
+ 	 * @param string $projectId
+ 	 * @return CreateSimpleDto
+ 	 */
+ 	public function user_createSimple($userName, $projectId) {
+ 		return UserCommands::createSimple($userName, $projectId, $this->_userId);
+ 	}
+ 	
+ 	// TODO Pretty sure this is going to want some paging params
 	public function user_list() {
 		$list = new \models\UserListModel();
 		$list->read();
@@ -250,6 +259,10 @@ class Sf
 	
 	public function project_readUser($projectId, $userId) {
 		throw new \Exception("project_readUser NYI");
+	}
+	
+	public function project_addExistingUsers($projectId, $userId) {
+		ProjectCommands::addExistingUser($projectId, $userId);
 	}
 	
 	public function project_updateUser($projectId, $params) {
