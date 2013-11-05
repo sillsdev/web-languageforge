@@ -16,7 +16,7 @@ class TestPasswordModel extends UnitTestCase {
 	
 	function testChangePassword_PasswordChanged()
 	{
-		// create an user with a random password
+		// create  user with a random password
 		$e = new MongoTestEnvironment();
 		$userId = $e->createUser('test', 'test user', 'user@me.com');
 		$passwordModel = new PasswordModel($userId);

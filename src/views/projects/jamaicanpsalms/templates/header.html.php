@@ -13,7 +13,7 @@
 							<ul>
 								<li><a href="/learn_faq">Frequently Asked Questions</a></li>
 								<li><a href="/learn_scripture_forge">About Scripture Forge</a></li>
-								<li><a href="/learn_expand_your_team">Expand Your Team</a></li>
+								<li><a href="/learn_how_it_works">How It Works</a></li>
 								<li><a href="/learn_contribute">Contribute</a></li>
 							</ul>
 						</li>
