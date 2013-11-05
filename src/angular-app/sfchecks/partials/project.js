@@ -413,11 +413,11 @@ angular.module(
 			if ($scope.addMode == 'addNew') {
 				userService.createSimple($scope.typeahead.userName, $scope.project.id, function(result) {
 					if (result.ok) {
-						notice.push(notice.SUCCESS, "User created.  Username: " + result.data.username + " Password: " + result.data.password);
+						notice.push(notice.SUCCESS, "User created.  Username: " + $scope.typeahead.userName + "    Password: " + result.data.password);
 					};
 				});
 			} else if ($scope.addMode == 'addExisting') {
-				userService.update($scope.typeahead.userName, $scope.project.id, function(result) {
+				projectService.addExistingUser($scope.project.id, $scope.user.id, function(result) {
 					if (result.ok) {
 						notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.name + " successfully");
 					}

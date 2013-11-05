@@ -140,6 +140,28 @@ class TestCommunicate extends UnitTestCase {
 	
 	}
 	
+	function testSendNewUserInProject_PropertiesFromToBodyOk() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		$toUserId = $e->createUser("touser", "To Name", "toname@example.com");
+		$toUser = new UserModel($toUserId);
+		$newUserName = 'newusername';
+		$newUserPassword = 'password';
+		$project = $e->createProjectSettings(SF_TESTPROJECT);
+		$delivery = new MockCommunicateDelivery();
+		
+		Communicate::sendNewUserInProject($toUser, $newUserName, $newUserPassword, $project, $delivery);
+		
+		// What's in the delivery?
+		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
+		$expectedTo = array($toUser->email => $toUser->name);
+		$this->assertEqual($expectedFrom, $delivery->from);
+		$this->assertEqual($expectedTo, $delivery->to);
+		$this->assertPattern('/To Name/', $delivery->content);
+		$this->assertPattern('/' . $newUserName . '/', $delivery->content);
+		$this->assertPattern('/' . $newUserPassword . '/', $delivery->content);
+			}
+
 }
 
 ?>

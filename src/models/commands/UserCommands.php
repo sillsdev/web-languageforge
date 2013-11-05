@@ -7,10 +7,11 @@ use libraries\sfchecks\IDelivery;
 use libraries\sfchecks\Communicate;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
-use models\UserModel;
 use models\ProjectModel;
+use models\UserModel;
 use models\UserModelWithPassword;
 use models\rights\Roles;
+use models\dto\CreateSimpleDto;
 
 class UserCommands
 {
@@ -32,58 +33,40 @@ class UserCommands
 	}
 
 	/**
-	 * Create/Update a User
-	 * @param array $params
-	 * @throws \Exception
-	 * @return string Id of written object
+	 * Create a user with only username, add user to project
+	 * @param string $userName
+	 * @param string $projectId
+	 * @param string $currentUserId
+	 * @return CreateSimpleDto
 	 */
-	public static function update($params, $projectId = '') {	// Connect up to sf.php>user_update when tested, then remove ProjectUserCommands.php & LinkCommands.php  IJH 2013-11
-		$userId = null;
-		$user = null;
-		// Update or Create?
-		if (array_key_exists('id', $params)) {
-			// user exists, so update data
-			// TODO Check user exists? CP 2013-07
-			$userId = $params['id'];
-			$user = new UserModel($userId);
-			JsonDecoder::decode($user, $params);
-		} else if (array_key_exists('name', $params)) {
-			// No key, so create a new user.
-			$user = new UserModel();
-			$user->name = $params['name'];
-			$user->username = strtolower(str_replace(' ', '.', $user->name));
-			$user->role = Roles::USER;
-			$user->active = true;
-			$userId = $user->write();
-			
-			// TODO passwords, make 4 digit and return in message to user and email current user. CP 2013-10
-			$characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
-			$password = '';
-			while( strlen($password) < 4 ) {
-				$password .= substr($characters, rand() % (strlen($characters)), 1);
-			}
-			$userWithPassword = new UserModelWithPassword($userId);
-			$userWithPassword->setPassword($password);
-			$userWithPassword->write();
-		} else {
-			$info = var_export($params, true);
-			throw new \Exception("unsupported data: '$info'");
-		}
-		// Note, we should have a $user available here
-		CodeGuard::checkNullAndThrow($user, '$userModel');
-		
-		// Add the user to the project if supplied
-		if ($projectId) {
-			$role = array_key_exists('role', $params) ? $params['role'] : Roles::USER;
-			$project = new ProjectModel($projectId);
-			$project->addUser($user->id->asString(), $role);
-			$user->addProject($project->id->asString());
-			$project->write();
-			ActivityCommands::addUserToProject($project, $userId);
-		}
-
+	public static function createSimple($userName, $projectId, $currentUserId = '') {
+		$user = new UserModel();
+		$user->name = $userName;
+		$user->username = strtolower(str_replace(' ', '.', $user->name));
+		$user->role = Roles::USER;
+		$user->active = true;
 		$userId = $user->write();
-		return $userId;
+		
+		// Make 4 digit password
+		$characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+		$password = '';
+		while (strlen($password) < 4) {
+			$password .= substr($characters, rand() % (strlen($characters)), 1);
+		}
+		$userWithPassword = new UserModelWithPassword($userId);
+		$userWithPassword->setPassword($password);
+		$userWithPassword->write();
+		
+		ProjectCommands::addExistingUser($projectId, $userId);
+		
+		if ($currentUserId) {
+			$toUser = new UserModel($currentUserId);
+			$project = new ProjectModel($projectId);
+			Communicate::sendNewUserInProject($toUser, $user->username, $password, $project);
+		}
+		
+		$dto = new CreateSimpleDto($userId, $password);
+		return $dto->encode();
 	}
 	
 	/**

@@ -2,9 +2,11 @@
 
 namespace models\commands;
 
-use models\UserModel;
-use models\rights\Roles;
 use libraries\palaso\CodeGuard;
+use models\rights\Roles;
+use models\mapper\JsonDecoder;
+use models\UserModel;
+use models\UserModelWithPassword;
 
 class ProjectUserCommands {
 	
@@ -13,7 +15,7 @@ class ProjectUserCommands {
 	public function __construct($projectModel) {
 		$this->_projectModel = $projectModel;
 	}
-	
+
 	/**
 	 * Added the user represented by the json array equivalent.
 	 * { id: ...
@@ -28,54 +30,51 @@ class ProjectUserCommands {
 	 * @param string $currentUserId
 	 * @return string
 	 */
-	public function updateUser($params, $currentUserId) {
+	public function updateUser($params, $currentUserId = '') {
 		$userId = null;
-		$userModel = null;
-		// 1) Check the user
+		$user = null;
+		// Update or Create?
 		if (array_key_exists('id', $params)) {
-			// TODO Check user exists? CP 2013-07
+			// user exists, so update data
 			$userId = $params['id'];
-			$userModel = new UserModel($userId);
-		} else if (array_key_exists('email', $params)) {
-			throw new \Exception("Project_user_commands::addUser with email NYI");
-			// TODO Create a user model
+			$user = new UserModel($userId);
+			JsonDecoder::decode($user, $params);
 		} else if (array_key_exists('name', $params)) {
 			// No key, so create a new user.
-			$user = new \models\UserModel();
+			$user = new UserModel();
 			$user->name = $params['name'];
 			$user->username = strtolower(str_replace(' ', '.', $user->name));
 			$user->role = Roles::USER;
 			$user->active = true;
-			// TODO passwords, make 4 digit and return in message to user and email current user. CP 2013-10
 			$userId = $user->write();
+				
+			// TODO passwords, make 4 digit and return in message to user and email current user. CP 2013-10
+			$characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+			$password = '';
+			while( strlen($password) < 4 ) {
+				$password .= substr($characters, rand() % (strlen($characters)), 1);
+			}
+			$userWithPassword = new UserModelWithPassword($userId);
+			$userWithPassword->setPassword($password);
+			$userWithPassword->write();
 		} else {
-			$info = var_export($params);
-			throw new \Exception("unsupported data '$params'");
+			$info = var_export($params, true);
+			throw new \Exception("unsupported data: '$info'");
 		}
-		// Note, we should have a $userModel available here
-		// CodeGuard::checkNullAndThrow($userModel, '$userModel'); // TODO un-comment for final IJH 2013-10
+		// Note, we should have a $user available here
+		CodeGuard::checkNullAndThrow($user, '$userModel');
 		
-		// Add user to project
-		
-		// Write the project and the user models
-		
-		// Add the user to the project.
-		// 2) Check the role
-		$role = key_exists('role', $params) ? $params['role'] : Roles::USER;
-		LinkCommands::LinkUserAndProject($this->_projectModel, new \models\UserModel($userId), $role);
+		// Add the user to the project
+		$role = array_key_exists('role', $params) ? $params['role'] : Roles::USER;
+		$this->_projectModel->addUser($user->id->asString(), $role);
+		$user->addProject($this->_projectModel->id->asString());
+		$this->_projectModel->write();
 		ActivityCommands::addUserToProject($this->_projectModel, $userId);
+		
+		$userId = $user->write();
 		return $userId;
 	}
 
-	public function removeUsers($userIds) {
-		foreach ($userIds as $userId) {
-			$userModel = new UserModel($userId);
-			LinkCommands::UnlinkUserAndProject($this->_projectModel, $userModel);
-			$this->_projectModel->removeUser($userId);
-			$this->_projectModel->write();
-		}
-	}
-	
 }
 
 

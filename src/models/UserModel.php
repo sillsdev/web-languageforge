@@ -15,6 +15,9 @@ require_once(APPPATH . '/models/ProjectModel.php');
 class UserModel extends \models\UserModelBase
 {
 	
+	/**
+	 * @param string $id
+	 */
 	public function __construct($id = '') {
 		$this->projects = new ReferenceList();
 		parent::__construct($id);
