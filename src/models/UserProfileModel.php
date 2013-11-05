@@ -11,7 +11,7 @@ use models\rights\Realm;
 use models\rights\Roles;
 
 
-class UserModelForProfile extends \models\UserModelBase
+class UserProfileModel extends \models\UserModelBase
 {
 	
 	/**
@@ -45,30 +45,37 @@ class UserModelForProfile extends \models\UserModelBase
 	 * @var string
 	 */
 	public $age;
+	
 	/**
 	 * @var string
 	 */
 	public $gender;
+	
 	/**
 	 * @var string
 	 */
 	public $city;
+	
 	/**
 	 * @var string
 	 */
-	public $preferred_bible_version;
+	public $preferredBibleVersion;
+	
 	/**
 	 * @var string
 	 */
-	public $religious_affiliation;
+	public $religiousAffiliation;
+	
 	/**
 	 * @var string
 	 */
-	public $study_group;
+	public $studyGroup;
+	
 	/**
 	 * @var string
 	 */
-	public $feedback_group;
+	public $feedbackGroup;
+	
 }
 
 ?>

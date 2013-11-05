@@ -29,7 +29,7 @@ use models\ProjectSettingsModel;
 use models\QuestionModel;
 use models\UnreadMessageModel;
 use models\UserModel;
-use models\UserModelForProfile;
+use models\UserProfileModel;
 
 require_once(APPPATH . 'vendor/autoload.php');
 
@@ -94,7 +94,7 @@ class Sf
 	}
 	
 	public function user_readProfile($id) {
-		$user = new \models\UserModelForProfile($id);
+		$user = new \models\UserProfileModel($id);
 		return JsonEncoder::encode($user);
 	}
 	
