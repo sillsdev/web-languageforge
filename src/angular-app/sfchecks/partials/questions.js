@@ -73,7 +73,7 @@ angular.module(
 		// Listview Data
 		$scope.questions = [];
 		$scope.queryQuestions = function() {
-			console.log("queryQuestions()");
+			//console.log("queryQuestions()");
 			questionsService.list(projectId, textId, function(result) {
 				if (result.ok) {
 					$scope.questions = result.data.entries;
@@ -83,8 +83,8 @@ angular.module(
 					$scope.text = result.data.text;
 					$scope.project = result.data.project;
 					$scope.text.url = linkService.text(projectId, textId);
-					console.log($scope.project.name);
-					console.log($scope.text.title);
+					//console.log($scope.project.name);
+					//console.log($scope.text.title);
 					breadcrumbService.updateCrumb('top', 1, {label: $scope.project.name});
 					breadcrumbService.updateCrumb('top', 2, {label: $scope.text.title});
 
@@ -99,7 +99,7 @@ angular.module(
 		};
 		// Remove
 		$scope.removeQuestions = function() {
-			console.log("removeQuestions()");
+			//console.log("removeQuestions()");
 			var questionIds = [];
 			for(var i = 0, l = $scope.selected.length; i < l; i++) {
 				questionIds.push($scope.selected[i].id);
@@ -131,11 +131,10 @@ angular.module(
 			questionsService.update(projectId, model, function(result) {
 				if (result.ok) {
 					$scope.queryQuestions();
-					notice.push(notice.SUCCESS, "'" + model.title + "' was added successfully");
+					notice.push(notice.SUCCESS, "'" + $scope.calculateTitle(model.title, model.description) + "' was added successfully");
 					if ($scope.saveAsTemplate) {
 						qts.update(model, function(result) {
 							if (result.ok) {
-								$scope.queryTemplates();
 								notice.push(notice.SUCCESS, "'" + model.title + "' was added as a template question");
 							}
 						});
@@ -143,8 +142,27 @@ angular.module(
 					$scope.questionTitle = "";
 					$scope.questionDescription = "";
 					$scope.saveAsTemplate = false;
+					$scope.newQuestionCollapsed = true;
 				}
+				$scope.queryTemplates();
 			});
+		};
+		
+		$scope.calculateTitle = function(title, description) {
+			var questionTitleCalculated;
+			if (!title || title == '') {
+				var spaceIndex = description.indexOf(' ', 50);
+				var shortTitle;
+				if (spaceIndex > -1) {
+					shortTitle = description.slice(0, spaceIndex) + '...';
+				} else {
+					shortTitle = description;
+				}
+				questionTitleCalculated = shortTitle;
+			} else {
+				questionTitleCalculated = title;
+			}
+			return questionTitleCalculated;
 		};
 		
 		$scope.makeQuestionIntoTemplate = function() {
@@ -177,6 +195,7 @@ angular.module(
 		$scope.enhanceDto = function(items) {
 			for (var i in items) {
 				items[i].url = linkService.question(projectId, textId, items[i].id);
+				items[i].calculatedTitle = $scope.calculateTitle(items[i].title, items[i].description);
 			}
 		};
 

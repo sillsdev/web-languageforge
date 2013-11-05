@@ -6,15 +6,15 @@
 	<a ng-show="rights.editOther" class="btn" href="#/project/{{projectId}}/{{textId}}/settings"><i class="icon-pencil"></i> Update Text Settings</a>
 </form>
 <div class="new-item" collapse="newQuestionCollapsed">
-	<form class="well span12">
+	<form class="well span12" name="newQuestionForm">
 	<fieldset class="span4">
 	<label>Question</label>
-	<input type="text" ng-model="questionTitle" class="span4" rows="4" placeholder="the question"></textarea>
+	<textarea required ng-model="questionDescription" class="span4" rows="4" placeholder="The Question"></textarea>
 	<label></label>
-	<textarea ng-model="questionDescription" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
+	<input type="text" ng-model="questionTitle" class="span4" maxlength="35" placeholder="One-line Summary For Title" />
 	<label></label>
-	<label style="float:right;margin-left:20px"><input type="checkbox" ng-model="saveAsTemplate" ng-show="rights.createTemplate" /> Also save as template</label>
-	<button type="submit" class="btn" ng-click="addQuestion(); newQuestionCollapsed = true"><i class="icon-ok"></i>Save</button>
+	<label style="float:right;margin-left:20px"><input title="A summary title is required for templates" ng-disabled="!questionTitle" type="checkbox" ng-model="saveAsTemplate" ng-show="rights.createTemplate" /> Also save as template</label>
+	<button type="submit" class="btn" ng-disabled="newQuestionForm.$invalid" ng-click="addQuestion()"><i class="icon-ok"></i>Save</button>
 	</fieldset>
 	<fieldset class="span4">
 		<label>Templates</label>
@@ -35,7 +35,7 @@
 		</a></li>
 		<li>
 			<a href="{{question.url}}">
-				<span class="larger-text">{{question.title}}</span>
+				<span class="larger-text">{{question.calculatedTitle}}</span>
 			</a>
 		</li>
 		<li>{{getResponses(question)}} responses</li>
