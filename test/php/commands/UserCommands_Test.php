@@ -118,6 +118,7 @@ class TestUserCommands extends UnitTestCase {
 		$user->validationExpirationDate = $date;
 		$user->write();
 		$this->expectException();
+		$e->inhibitErrorDisplay();
 		$params = UserCommands::readForRegistration($key);
 	}
 	
@@ -194,6 +195,7 @@ class TestUserCommands extends UnitTestCase {
 			'name'     => 'joe user',
 			'password' => 'password'
 		);
+		$e->inhibitErrorDisplay();
 		$this->expectException();
 		UserCommands::updateFromRegistration($key, $userArray);
 		
