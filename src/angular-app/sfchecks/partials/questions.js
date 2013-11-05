@@ -104,21 +104,19 @@ angular.module(
 			for(var i = 0, l = $scope.selected.length; i < l; i++) {
 				questionIds.push($scope.selected[i].id);
 			}
-			if (l == 0) {
-				// TODO ERROR
-				return;
-			}
-			questionsService.remove(projectId, questionIds, function(result) {
-				if (result.ok) {
-					$scope.selected = []; // Reset the selection
-					$scope.queryQuestions();
-					if (questionIds.length == 1) {
-						notice.push(notice.SUCCESS, "The question was removed successfully");
-					} else {
-						notice.push(notice.SUCCESS, "The questions were removed successfully");
+			if (window.confirm("Are you sure you want to delete these " + questionIds.length + " question(s)?")) {
+				questionsService.remove(projectId, questionIds, function(result) {
+					if (result.ok) {
+						$scope.selected = []; // Reset the selection
+						$scope.queryQuestions();
+						if (questionIds.length == 1) {
+							notice.push(notice.SUCCESS, "The question was removed successfully");
+						} else {
+							notice.push(notice.SUCCESS, "The questions were removed successfully");
+						}
 					}
-				}
-			});
+				});
+			}
 		};
 		// Add question
 		$scope.addQuestion = function() {
