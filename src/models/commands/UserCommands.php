@@ -2,16 +2,16 @@
 
 namespace models\commands;
 
-
 use libraries\palaso\CodeGuard;
 use libraries\sfchecks\IDelivery;
 use libraries\sfchecks\Communicate;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
-use models\UserModel;
 use models\ProjectModel;
+use models\UserModel;
 use models\UserModelWithPassword;
 use models\rights\Roles;
+use models\dto\CreateSimpleDto;
 
 class UserCommands
 {
@@ -31,7 +31,55 @@ class UserCommands
 		}
 		return $count;
 	}
+
+	/**
+	 * Create a user with only username, add user to project if in context, creating user gets email of new user credentials
+	 * @param string $userName
+	 * @param string $projectId
+	 * @param string $currentUserId
+	 * @return CreateSimpleDto
+	 */
+	public static function createSimple($userName, $projectId = '', $currentUserId = '') {
+		$user = new UserModel();
+		$user->name = $userName;
+		$user->username = strtolower(str_replace(' ', '.', $user->name));
+		$user->role = Roles::USER;
+		$user->active = true;
+		$userId = $user->write();
+		
+		// Make 4 digit password
+		$characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+		$password = '';
+		while (strlen($password) < 4) {
+			$password .= substr($characters, rand() % (strlen($characters)), 1);
+		}
+		$userWithPassword = new UserModelWithPassword($userId);
+		$userWithPassword->setPassword($password);
+		$userWithPassword->write();
+		
+		if ($projectId) {
+			ProjectCommands::updateUserRole($projectId, array('id' => $userId));
+			
+			if ($currentUserId) {
+				$toUser = new UserModel($currentUserId);
+				$project = new ProjectModel($projectId);
+				Communicate::sendNewUserInProject($toUser, $user->username, $password, $project);
+			}
+		}
+		
+		$dto = new CreateSimpleDto($userId, $password);
+		return $dto->encode();
+	}
 	
+	/**
+	 * Register a new user, add to project if in context
+	 * @param array $params
+	 * @param string $captcha_info
+	 * @param string $projectCode
+	 * @param IDelivery $delivery
+	 * @throws \Exception
+	 * @return string $userId
+	 */
 	public static function register($params, $captcha_info, $projectCode, IDelivery $delivery = null) {
 		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
 			return false;  // captcha does not match
@@ -46,15 +94,15 @@ class UserCommands
 		$user->role = Roles::USER;
 		if (!$user->emailPending) {
 			if (!$user->email) {
-				throw new \Exception("");
+				throw new \Exception("Error: no email set for user signup.");
 			}
 			$user->emailPending = $user->email;
 			$user->email = '';
 		}
-		$id = $user->write();
+		$userId = $user->write();
 
 		// Write the password
-		$userPassword = new UserModelWithPassword($id);
+		$userPassword = new UserModelWithPassword($userId);
 		$userPassword->setPassword($params['password']);
 		$userPassword->write();
 
@@ -74,26 +122,26 @@ class UserCommands
 		// TODO Choose between two emails.  One for project signup, one for general signup. CP 2013-10
 		Communicate::sendSignup($user, $delivery);
 		
-		return $id;
+		return $userId;
 	}
 	
 	
     /**
-    *
-    * @param UserModel $inviterUser
+    * Sends an email to invite emailee to join the project
+	* @param UserModel $inviterUser
     * @param string $toEmail
     * @param string $projectId
-    * @param string $hostname
+	* @param string $hostName
     * @param IDelivery $delivery
     * @return string $userId
     */
-    public static function sendInvite($inviterUser, $toEmail, $projectId, $hostname, IDelivery $delivery = null) {
+	public static function sendInvite($inviterUser, $toEmail, $projectId, $hostName, IDelivery $delivery = null) {
 		$newUser = new UserModel();
 		$project = null;
 		if ($projectId) {
 			$project = new ProjectModel($projectId);
 		} else {
-			$project = ProjectModel::createFromDomain($hostname);
+			$project = ProjectModel::createFromDomain($hostName);
 		}
 		if ($project) {
 			$newUser->emailPending = $toEmail;
@@ -104,7 +152,7 @@ class UserCommands
 			Communicate::sendInvite($inviterUser, $newUser, $project, $delivery);
 			return $userId;
 		} else {
-			$projectCode = ProjectModel::domainToProjectCode($hostname);
+				$projectCode = ProjectModel::domainToProjectCode($hostName);
 			if ($projectCode == 'scriptureforge') {
 				throw new \Exception("Sending an invitation without a project context is not supported.");
 			} else {

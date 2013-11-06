@@ -109,6 +109,12 @@ class Roles {
 	public static function hasRight($realm, $role, $right) {
 		CodeGuard::checkNotFalseAndThrow($realm, 'realm');
 		CodeGuard::checkNotFalseAndThrow($role, 'role');
+		if (!array_key_exists($realm, self::$_rights)) {
+			throw new \Exception("Realm '$realm' does not exist.");
+		}
+		if (!array_key_exists($role, self::$_rights[$realm])) {
+			throw new \Exception("Role '$role' does not exist in the '$realm' realm.");
+		}
 		$result = in_array($right, self::$_rights[$realm][$role]);
 		return $result;
 	}
@@ -120,6 +126,14 @@ class Roles {
 	 * @return array
 	 */
 	public static function getRightsArray($realm, $role) {
+		CodeGuard::checkNotFalseAndThrow($realm, 'realm');
+		CodeGuard::checkNotFalseAndThrow($role, 'role');
+		if (!array_key_exists($realm, self::$_rights)) {
+			throw new \Exception("Realm '$realm' does not exist.");
+		}
+		if (!array_key_exists($role, self::$_rights[$realm])) {
+			throw new \Exception("Role '$role' does not exist in the '$realm' realm.");
+		}
 		return self::$_rights[$realm][$role];
 	}
 	
