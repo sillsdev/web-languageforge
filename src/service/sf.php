@@ -79,6 +79,9 @@ class Sf
 	 */
 	public function user_update($params) {
 		$user = new \models\UserModel();
+		if ($params['id']) {
+			$user->read($params['id']);
+		}
 		JsonDecoder::decode($user, $params);
 		$result = $user->write();
 		return $result;
@@ -107,7 +110,16 @@ class Sf
  		return UserCommands::deleteUsers($userIds);
  	}
 
-	// TODO Pretty sure this is going to want some paging params
+ 	/**
+ 	 * @param string $userName
+ 	 * @param string $projectId
+ 	 * @return CreateSimpleDto
+ 	 */
+ 	public function user_createSimple($userName, $projectId) {
+ 		return UserCommands::createSimple($userName, $projectId, $this->_userId);
+ 	}
+ 	
+ 	// TODO Pretty sure this is going to want some paging params
 	public function user_list() {
 		$list = new \models\UserListModel();
 		$list->read();
@@ -175,8 +187,8 @@ class Sf
 		return UserCommands::updateFromRegistration($validationKey, $params);
 	}
 	
-	public function user_sendInvite($email, $projectId) {
-		UserCommands::sendInvite(new UserModel($this->_userId), $email, $projectId, $_SERVER['HTTP_HOST']);
+	public function user_sendInvite($toEmail, $projectId) {
+		return UserCommands::sendInvite(new UserModel($this->_userId), $toEmail, $projectId, $_SERVER['HTTP_HOST']);
 	}
 	
 	
@@ -249,17 +261,12 @@ class Sf
 		throw new \Exception("project_readUser NYI");
 	}
 	
-	public function project_updateUser($projectId, $object) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$command = new \models\commands\ProjectUserCommands($projectModel);
-		return $command->updateUser($object);
+	public function project_updateUserRole($projectId, $params) {
+		ProjectCommands::updateUserRole($projectId, $params);
 	}
 	
-	public function project_deleteUsers($projectId, $userIds) {
-		// This removes the user from the project.
-		$projectModel = new \models\ProjectModel($projectId);
-		$command = new \models\commands\ProjectUserCommands($projectModel);
-		$command->removeUsers($userIds);
+	public function project_removeUsers($projectId, $userIds) {
+		ProjectCommands::removeUsers($projectId, $userIds);
 	}
 	
 	public function project_listUsers($projectId) {
