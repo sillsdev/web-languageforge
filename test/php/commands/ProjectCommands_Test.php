@@ -21,26 +21,8 @@ class TestProjectCommands extends UnitTestCase {
 		
 		ProjectCommands::deleteProjects(array($projectId));
 	}
-/* TODO test for no user IJH 2013-11	
-	function testAddExistingUser_ProjectAndNoUser() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-		
-		$userId = '12342314';
-		$project = $e->createProject(SF_TESTPROJECT);
-		$projectId = $project->id->asString();
-		
-		$updatedUserID = ProjectCommands::addExistingUser($projectId, $userId);
-		
-		$updatedUser = new UserModel($updatedUserID);
-		$this->assertEqual($updatedUser->id, $userId);
-		$this->assertEqual($updatedUser->name, "Existing Name");
-		$this->assertEqual($updatedUser->email, "existing@example.com");
-		$this->assertEqual($project->listUsers()->count, 1);
-		$this->assertEqual($updatedUser->listProjects()->count, 1);
-	}
-*/	
-	function testAddExistingUser_ExistingUserAndProject_UserJoinedProject() {
+
+	function testUpdateUserRole_ExistingUserAndProject_UserJoinedProject() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
@@ -48,8 +30,11 @@ class TestProjectCommands extends UnitTestCase {
 		$user = new UserModel($userId);
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
+		$params = array(
+				'id' => $user->id->asString(),
+		);
 		
-		$updatedUserID = ProjectCommands::addExistingUser($projectId, $userId);
+		$updatedUserID = ProjectCommands::updateUserRole($projectId, $params);
 		
 		$updatedUser = new UserModel($updatedUserID);
 		$this->assertEqual($updatedUser->id, $userId);

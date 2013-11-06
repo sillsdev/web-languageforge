@@ -113,7 +113,7 @@ angular.module(
 						notice.push(notice.SUCCESS, "The texts were removed successfully");
 					}
 					$scope.selected = []; // Reset the selection
-					$scope.queryTexts();
+					$scope.getPageDto();
 					// TODO
 				}
 			});
@@ -132,8 +132,8 @@ angular.module(
 			textService.update(projectId, model, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "The text '" + model.title + "' was added successfully");
-					$scope.queryTexts();
 				}
+				$scope.getPageDto();
 			});
 		};
 
@@ -414,18 +414,23 @@ angular.module(
 				userService.createSimple($scope.typeahead.userName, $scope.project.id, function(result) {
 					if (result.ok) {
 						notice.push(notice.SUCCESS, "User created.  Username: " + $scope.typeahead.userName + "    Password: " + result.data.password);
+						$scope.queryProjectUsers();
 					};
 				});
 			} else if ($scope.addMode == 'addExisting') {
-				projectService.addExistingUser($scope.project.id, $scope.user.id, function(result) {
+				var model = {};
+				model.id = $scope.user.id;
+				projectService.updateUser($scope.project.id, model, function(result) {
 					if (result.ok) {
 						notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.name + " successfully");
+						$scope.queryProjectUsers();
 					}
 				});
 			} else if ($scope.addMode == 'invite') {
 				userService.sendInvite($scope.typeahead.userName, $scope.project.id, function(result) {
 					if (result.ok) {
 						notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.name);
+						$scope.queryProjectUsers();
 					}
 				});
 			}

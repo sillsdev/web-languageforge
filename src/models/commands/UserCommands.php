@@ -33,13 +33,13 @@ class UserCommands
 	}
 
 	/**
-	 * Create a user with only username, add user to project
+	 * Create a user with only username, add user to project if in context, creating user gets email of new user credentials
 	 * @param string $userName
 	 * @param string $projectId
 	 * @param string $currentUserId
 	 * @return CreateSimpleDto
 	 */
-	public static function createSimple($userName, $projectId, $currentUserId = '') {
+	public static function createSimple($userName, $projectId = '', $currentUserId = '') {
 		$user = new UserModel();
 		$user->name = $userName;
 		$user->username = strtolower(str_replace(' ', '.', $user->name));
@@ -57,12 +57,14 @@ class UserCommands
 		$userWithPassword->setPassword($password);
 		$userWithPassword->write();
 		
-		ProjectCommands::addExistingUser($projectId, $userId);
-		
-		if ($currentUserId) {
-			$toUser = new UserModel($currentUserId);
-			$project = new ProjectModel($projectId);
-			Communicate::sendNewUserInProject($toUser, $user->username, $password, $project);
+		if ($projectId) {
+			ProjectCommands::updateUserRole($projectId, array('id' => $userId));
+			
+			if ($currentUserId) {
+				$toUser = new UserModel($currentUserId);
+				$project = new ProjectModel($projectId);
+				Communicate::sendNewUserInProject($toUser, $user->username, $password, $project);
+			}
 		}
 		
 		$dto = new CreateSimpleDto($userId, $password);

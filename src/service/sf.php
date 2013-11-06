@@ -261,17 +261,11 @@ class Sf
 		throw new \Exception("project_readUser NYI");
 	}
 	
-	public function project_addExistingUsers($projectId, $userId) {
-		ProjectCommands::addExistingUser($projectId, $userId);
+	public function project_updateUserRole($projectId, $params) {
+		ProjectCommands::updateUserRole($projectId, $params);
 	}
 	
-	public function project_updateUser($projectId, $params) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$command = new \models\commands\ProjectUserCommands($projectModel);
-		return $command->updateUser($params, $this->_userId);
-	}
-	
-	public function project_deleteUsers($projectId, $userIds) {
+	public function project_removeUsers($projectId, $userIds) {
 		ProjectCommands::removeUsers($projectId, $userIds);
 	}
 	
