@@ -160,7 +160,7 @@ class TestCommunicate extends UnitTestCase {
 		$this->assertPattern('/To Name/', $delivery->content);
 		$this->assertPattern('/' . $newUserName . '/', $delivery->content);
 		$this->assertPattern('/' . $newUserPassword . '/', $delivery->content);
-			}
+	}
 
 }
 
