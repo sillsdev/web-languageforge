@@ -70,14 +70,11 @@ angular.module('sf.services', ['jsonRpc'])
 		this.readUser = function(projectId, userId, callback) {
 			jsonRpc.call('project_readUser', [projectId, userId], callback);
 		};
-		this.addExistingUser = function(projectId, userId, callback) {
-			jsonRpc.call('project_addExistingUsers', [projectId, userId], callback);
-		};
 		this.updateUser = function(projectId, model, callback) {
-			jsonRpc.call('project_updateUser', [projectId, model], callback);
+			jsonRpc.call('project_updateUserRole', [projectId, model], callback);
 		};
 		this.removeUsers = function(projectId, users, callback) {
-			jsonRpc.call('project_deleteUsers', [projectId, users], callback);
+			jsonRpc.call('project_removeUsers', [projectId, users], callback);
 		};
 		this.listUsers = function(projectId, callback) {
 			// TODO Paging CP 2013-07

@@ -81,12 +81,6 @@ class TestProjectUserCommands extends UnitTestCase {
 		$user = new models\UserModel($userId);
 		$this->assertEqual('Some User', $user->name);
 	}
-	
-	function testAddUser_ExistingUser_AddsOk() {
-		
-	}
-	
-	
 
 }
 
