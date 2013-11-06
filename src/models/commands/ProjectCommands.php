@@ -28,40 +28,21 @@ class ProjectCommands
 	}
 
 	/**
-	 * Add existing user to project
-	 * @param string $projectId
-	 * @param string $userId
-	 * @return string
-	 */
-	// TODO Rename to updateUserRole
-	// public static function addExistingUser($projectId, $userId) {
-	/**
 	 * Update the user role in the project
 	 * @param string $projectId
 	 * @param array $params
-	 * @throws \Exception
 	 * @return unknown|string
 	 */
 	public static function updateUserRole($projectId, $params) {
-		$userId = null;
-		$user = null;
-		// Update or Create?
-		if (array_key_exists('id', $params)) {
-			// user exists, so update data
-			$userId = $params['id'];
-			$user = new UserModel($userId);
-			JsonDecoder::decode($user, $params);
-		} else {
-			$info = var_export($params, true);
-			throw new \Exception("unsupported data: '$info'");
-		}
-		// Note, we should have a $user available here
-		CodeGuard::checkNullAndThrow($user, '$userModel');
+		CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
+		CodeGuard::checkNotFalseAndThrow($params['id'], 'id');
 		
 		// Add the user to the project
-		$role = array_key_exists('role', $params) ? $params['role'] : Roles::USER;
+		$role = array_key_exists('role', $params) && $params['role'] != '' ? $params['role'] : Roles::USER;
+		$userId = $params['id'];
+		$user = new UserModel($userId);
 		$project = new ProjectModel($projectId);
-		$project->addUser($user->id->asString(), $role);
+		$project->addUser($userId, $role);
 		$user->addProject($projectId);
 		$project->write();
 		$user->write();

@@ -48,17 +48,25 @@ class TestUserCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
+		// setup parameters: username and project
 		$userName = 'username';
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
+		// create user
 		$dto = UserCommands::createSimple($userName, $projectId);
 		
+		// read from disk
 		$user = new UserModel($dto['id']);
+		$sameProject = new ProjectModel($projectId);
+		
+		// user created and password created, user joined to project
 		$this->assertEqual($user->username, "username");
 		$this->assertEqual(strlen($dto['password']), 4);
-		$this->assertEqual($project->listUsers()->count, 1);
-		$this->assertEqual($user->listProjects()->count, 1);
+		$projectUser = $sameProject->listUsers()->entries[0];
+		$this->assertEqual($projectUser['username'], "username");
+		$userProject = $user->listProjects()->entries[0];
+		$this->assertEqual($userProject['projectname'], SF_TESTPROJECT);
 	}
 	
 	function testRegister_WithProjectCode_UserInProjectAndProjectHasUser() {
