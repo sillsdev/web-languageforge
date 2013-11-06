@@ -135,13 +135,13 @@ class UserCommands
     * @param IDelivery $delivery
     * @return string $userId
     */
-       public static function sendInvite($inviterUser, $toEmail, $projectId, $hostName, IDelivery $delivery = null) {
+	public static function sendInvite($inviterUser, $toEmail, $projectId, $hostName, IDelivery $delivery = null) {
 		$newUser = new UserModel();
 		$project = null;
 		if ($projectId) {
 			$project = new ProjectModel($projectId);
 		} else {
-				$project = ProjectModel::createFromDomain($hostName);
+			$project = ProjectModel::createFromDomain($hostName);
 		}
 		if ($project) {
 			$newUser->emailPending = $toEmail;
