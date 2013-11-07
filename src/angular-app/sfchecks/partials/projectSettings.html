@@ -35,7 +35,7 @@
 			
 			</form>
 		</div>
-		<div listview search="queryProjectUsers()" items="project.users" visible-items="visibleProjectUsers" select="">
+		<div listview search="queryProjectSettings()" items="list.users" visible-items="list.visibleUsers" select="">
 		<!-- <div listview search="queryProjectUsers()" select=""> -->
 		<table class="table" style="width: 100%">
 			<thead>
@@ -47,7 +47,7 @@
 				</tr>
 			</thead>
 			<tbody>
-			<tr ng-repeat="user in visibleProjectUsers" ng-class="{active: isSelected(user)}" >
+			<tr ng-repeat="user in list.visibleUsers" ng-class="{active: isSelected(user)}" >
 				<td width="16px" align="center"><input ng-show="rights.deleteOther" type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
 				<td>{{user.username}}</td>
 				<td>{{user.name}}</td>
@@ -57,19 +57,33 @@
 		</table>		
 		</div>
 	</tab>
-	<tab heading="Project Settings">
-	<form class="well" ng-submit="updateProject()">
-	<fieldset>
-		<label>Project Name</label>
-		<input type="text" placeholder="project name" ng-model="project.name"/>
-		<label>Project Code</label>
-		<input type="text" placeholder="project code" ng-model="project.projectCode"/>
-		<label><input type="checkbox" ng-model="project.featured"/> Featured On Website</label>
-		
-	</fieldset>
-	<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
-	
-	</form>
+	<tab heading="Project Properties">
+		<form class="well" ng-submit="updateProject()">
+		<fieldset>
+			<label>Project Name</label>
+			<input type="text" placeholder="project name" ng-model="project.projectname"/>
+			<label>Project Code</label>
+			<input type="text" placeholder="project code" ng-model="project.projectCode"/>
+			<label class="checkbox"><input type="checkbox" ng-model="project.featured"/> Featured On Website</label>
+		</fieldset>
+		<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+		</form>
+	</tab>
+	<tab heading="Project Setup">
+		<form class="well" ng-submit="updateProject()">
+		<div class="row">
+		<div class="span4" style="border:1px solid blue;">
+		<fieldset>
+		<ul class="unstyled">
+		<li ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"><div class="checkbox"><input type="checkbox"/>{{list.name}}</div></li>
+		</ul>
+		</fieldset>
+		</div><div class="span4" style="border: 1px solid red;">
+		&nbsp;
+		</div>
+		</div>
+		<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+		</form>
 	</tab>
 	<tab select="readCommunicationSettings()" ng-show="$parent.canEditCommunicationSettings()" heading="Communication Settings">
 	<form class="well" ng-submit="updateCommunicationSettings()">
@@ -86,7 +100,6 @@
 		<input type="text" placeholder="(From Name)" ng-model="settings.email.fromName"/>
 	</fieldset>
 	<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
-	<button disabled class="btn"><i class="icon-check"></i>Test Settings (NYI)</button>
 	
 	</form>
 	</tab>

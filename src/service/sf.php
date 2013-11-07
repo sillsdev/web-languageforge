@@ -262,7 +262,7 @@ class Sf
 		$command->removeUsers($userIds);
 	}
 	
-	public function project_listUsers($projectId) {
+	public function project_settings($projectId) {
 		$result = ProjectSettingsDto::encode($projectId, $this->_userId);
 		return $result;
 	}

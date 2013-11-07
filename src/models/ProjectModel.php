@@ -64,6 +64,19 @@ class ProjectModel extends \models\mapper\MapperModel
 	}
 	
 	/**
+	 * Reads the model from the mongo collection
+	 * Ensures that the required pick lists exist even if not present in the database
+	 * @param string $id
+	 * @see MapperModel::read()
+	 */
+	public function read($id) {
+		$result = parent::read($id);
+		$this->userProperties->ensurePickListsExist();
+		return $result;
+	}
+	
+	
+	/**
 	 * @param string $domainName
 	 * @return string
 	 */
