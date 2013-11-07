@@ -75,11 +75,13 @@ class JsonRpcServer {
 				'result' => NULL,
 				'error' => $e->getMessage()
 			);
-			// TODO We need to log all errors in this class, but not throw as the api would therefore not return the error to the client.
+
+			$message = '';
+			$message .= $e->getMessage() . "\n";
+			$message .= $e->getTraceAsString() . "\n";
+			error_log($message);
 		}
 		
-		// TODO Log all errors here. CP 2013-06
-
 		// output the response
 		if (!empty($request['id'])) {
 			// notifications don't want response
