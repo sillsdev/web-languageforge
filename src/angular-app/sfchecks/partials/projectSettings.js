@@ -74,6 +74,7 @@ angular.module(
 	.controller('ProjectSettingsPropertiesCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
 	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
 
+		// TODO This can be moved to the page level controller, it is common with the Setup tab.
 		$scope.updateProject = function() {
 			// TODO this should be fine just being $scope.project from the dto.
 			var newProject = {
@@ -89,6 +90,34 @@ angular.module(
 			});
 		};
 		
+	
+	}])
+	.controller('ProjectSettingsSetupCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
+
+		// TODO This can be moved to the page level controller, it is common with the Setup tab.
+		$scope.updateProject = function() {
+			projectService.update($scope.project, function(result) {
+				if (result.ok) {
+					notice.push(notice.SUCCESS, $scope.project.name + " settings updated successfully");
+				}
+			});
+		};
+		
+		$scope.currentListId = '';
+		$scope.selectList = function(listId) {
+			console.log("selectList ", listId);
+			$scope.currentListId = listId;
+		};
+		
+		$scope.pickAddItem = function() {
+			
+		};
+
+		$scope.pickRemoveItem = function(index) {
+			
+		};
+
 	
 	}])
 	.controller('ProjectSettingsUsersCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
