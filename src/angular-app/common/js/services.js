@@ -73,9 +73,8 @@ angular.module('sf.services', ['jsonRpc'])
 		this.removeUsers = function(projectId, users, callback) {
 			jsonRpc.call('project_deleteUsers', [projectId, users], callback);
 		};
-		this.listUsers = function(projectId, callback) {
-			// TODO Paging CP 2013-07
-			jsonRpc.call('project_listUsers', [projectId], callback);
+		this.projectSettings = function(projectId, callback) {
+			jsonRpc.call('project_settings', [projectId], callback);
 		};
 		this.updateSettings = function(projectId, smsSettings, emailSettings, callback) {
 			jsonRpc.call('project_updateSettings', [projectId, smsSettings, emailSettings], callback);
