@@ -234,26 +234,30 @@ angular.module(
 		};
 		
 		$scope.addProjectUser = function() {
-			var model = {};
 			if ($scope.addMode == 'addNew') {
-				model.name = $scope.typeahead.userName;
+				userService.createSimple($scope.typeahead.userName, $scope.project.id, function(result) {
+					if (result.ok) {
+						notice.push(notice.SUCCESS, "User created.  Username: " + $scope.typeahead.userName + "    Password: " + result.data.password);
+						$scope.queryProjectUsers();
+					};
+				});
 			} else if ($scope.addMode == 'addExisting') {
+				var model = {};
 				model.id = $scope.user.id;
-			} else if ($scope.addMode == 'invite') {
-				model.email = $scope.typeahead.userName;
-			}
-			projectService.updateUser($scope.project.id, model, function(result) {
-				if (result.ok) {
-					if ($scope.addMode == "addNew") {
-						notice.push(notice.SUCCESS, "User '" + model.name + "' was created and added to " + $scope.project.name);
-					} else if ($scope.addMode == "addExisting") {
+				projectService.updateUser($scope.project.id, model, function(result) {
+					if (result.ok) {
 						notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.name + " successfully");
-					} else {
-						notice.push(notice.SUCCESS, "'" + model.email + "' was invited to join the project " + $scope.project.name);
+						$scope.queryProjectUsers();
 					}
-					$scope.queryProjectSettings();
-				}
-			});
+				});
+			} else if ($scope.addMode == 'invite') {
+				userService.sendInvite($scope.typeahead.userName, $scope.project.id, function(result) {
+					if (result.ok) {
+						notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.name);
+						$scope.queryProjectUsers();
+					}
+				});
+			}
 		};
 	
 		$scope.selectUser = function(item) {
