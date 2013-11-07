@@ -56,7 +56,7 @@ json_rpc.factory('jsonRpc', ['$http', 'error', function($http, error) {
 		};
 		var result = {};
 		var request = $http(http_request);
-		request.success(function(data, status, headers, config) {
+		this.requestsuccess = function(data, status, headers, config) {
 			if (data == null) {
 				// TODO error handling for jsonRpc CP 2013-07
 				error.error('RPC Error', "data is null");
@@ -81,17 +81,39 @@ json_rpc.factory('jsonRpc', ['$http', 'error', function($http, error) {
 				callback(result);
 			}
 			
-		});
-		request.error(function(data, status, headers, config) {
-			error.error('RPC Error', "Server Status Code " + status);
-			result.ok = false;
-			result.data = data;
-			result.status = status;
-			result.headers = headers;
-			result.config = config;
-			callback(result);
-		});
+		};
+		this.requesterror = function(data, status, headers, config) {
+			if (status == 0 || status == "0") {
+				// DEBUG
+				console.log('Got RPC Error with server status code 0. Request details follow:');
+				console.log('Status:', status);
+				console.log('Headers:', headers);
+				console.log('Config:', config);
+				console.log('Data:', data);
+				// Retry. This could potentially get into an infinite loop
+				// if the request *keeps on* returning an error with status 0,
+				// but that's not likely to happen.
+				var new_json_request = json_request;
+				new_json_request.id = this.next_id();
+				var new_http_request = http_request;
+				new_http_request.data = JSON.stringify(new_json_request);
+				var new_request = $http(new_http_request);
+				new_request.success(this.requestsuccess);
+				new_request.error(this.requesterror);
+			} else {
+				error.error('RPC Error', "Server Status Code " + status);
+				result.ok = false;
+				result.data = data;
+				result.status = status;
+				result.headers = headers;
+				result.config = config;
+				callback(result);
+			}
+		};
+		request.success(this.requestsuccess);
+		request.error(this.requesterror);
 		return request;
 	};
+
 	return this;
 }]);

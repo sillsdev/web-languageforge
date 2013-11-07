@@ -11,11 +11,14 @@ angular.module('sf.services', ['jsonRpc'])
 		this.readProfile = function(id, callback) {
 			jsonRpc.call('user_readProfile', [id], callback);
 		};
-		this.update = function(model, callback) {
-			jsonRpc.call('user_update', [model], callback);
+		this.update = function(model, projectId, callback) {
+			jsonRpc.call('user_update', [model, projectId], callback);
 		};
 		this.remove = function(userIds, callback) {
 			jsonRpc.call('user_delete', [userIds], callback);
+		};
+		this.createSimple = function(userName, projectId, callback) {
+			jsonRpc.call('user_createSimple', [userName, projectId], callback);
 		};
 		this.list = function(callback) {
 			// TODO Paging CP 2013-07
@@ -42,8 +45,8 @@ angular.module('sf.services', ['jsonRpc'])
 		this.updateFromRegistration = function(validationKey, model, callback) {
 			jsonRpc.call('user_updateFromRegistration', [validationKey, model], callback);
 		};
-		this.sendInvite = function(email, projectId, callback) {
-			jsonRpc.call('user_sendInvite', [email, projectId], callback);
+		this.sendInvite = function(toEmail, projectId, callback) {
+			jsonRpc.call('user_sendInvite', [toEmail, projectId], callback);
 		};
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
@@ -68,10 +71,10 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('project_readUser', [projectId, userId], callback);
 		};
 		this.updateUser = function(projectId, model, callback) {
-			jsonRpc.call('project_updateUser', [projectId, model], callback);
+			jsonRpc.call('project_updateUserRole', [projectId, model], callback);
 		};
 		this.removeUsers = function(projectId, users, callback) {
-			jsonRpc.call('project_deleteUsers', [projectId, users], callback);
+			jsonRpc.call('project_removeUsers', [projectId, users], callback);
 		};
 		this.projectSettings = function(projectId, callback) {
 			jsonRpc.call('project_settings', [projectId], callback);

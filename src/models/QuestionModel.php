@@ -211,8 +211,8 @@ class QuestionListModel extends \models\mapper\MapperListModel
 	{
 		parent::__construct(
 			QuestionModelMongoMapper::connect($projectModel->databaseName()),
-			array('title' => array('$regex' => ''), 'textRef' => MongoMapper::mongoID($textId)),
-			array('title')
+			array('description' => array('$regex' => ''), 'textRef' => MongoMapper::mongoID($textId)),
+			array('description')
 		);
 	}
 	
@@ -225,7 +225,7 @@ class QuestionAnswersListModel extends \models\mapper\MapperListModel
 	{
 		parent::__construct(
 			QuestionModelMongoMapper::connect($projectModel->databaseName()),
-			array('title' => array('$regex' => ''), 'textRef' => MongoMapper::mongoID($textId)),
+			array('description' => array('$regex' => ''), 'textRef' => MongoMapper::mongoID($textId)),
 			array('title', 'description', 'answers')
 		);
 	}
