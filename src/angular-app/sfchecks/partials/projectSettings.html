@@ -91,8 +91,8 @@
 		<a ng-click="pickAddItem()"><i class="icon-plus"></i></a>
 		<table>
 		<tbody>
-		<tr ng-repeat="">
-		<td>{{}}</td><td><a ng-click="pickRemoveItem($index)"><i class="icon-delete"></i></a></td>
+		<tr ng-repeat="item in project.userProperties.userProfilePickLists.currentListId">
+		<td>{{item.value}}</td><td><a ng-click="pickRemoveItem($index)"><i class="icon-delete"></i></a></td>
 		</tr>
 		</tbody>
 		</table>
