@@ -74,17 +74,32 @@
 		</div>
 	</tab>
 	<tab heading="Project Setup">
-		<div ng-controller="ProjectSettingsPropertiesCtrl">
+		<div ng-controller="ProjectSettingsSetupCtrl">
 		<form class="well" ng-submit="updateProject()">
 		<div class="row">
 		<div class="span4" style="border:1px solid blue;">
 		<fieldset>
 		<ul class="unstyled">
-		<li ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"><div class="checkbox"><input type="checkbox"/>{{list.name}}</div></li>
+		<li ng-click="selectList(listId)" ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"><div class="checkbox"><input type="checkbox"/>{{list.name}}</div></li>
 		</ul>
 		</fieldset>
 		</div><div class="span4" style="border: 1px solid red;">
-		&nbsp;
+		<fieldset>
+		<label>Default Value {{currentListId}}</label>
+		<select></select>
+		<input ng-model="newValue" type="text" placeholder="new value"/>
+		<a ng-click="pickAddItem()"><i class="icon-plus"></i></a>
+		<table>
+		<tbody>
+		<tr ng-repeat="">
+		<td>{{}}</td><td><a ng-click="pickRemoveItem($index)"><i class="icon-delete"></i></a></td>
+		</tr>
+		</tbody>
+		</table>
+		<ul class="unstyled">
+		<li ng-repeat="">{{}}</li>
+		</ul>
+		</fieldset>
 		</div>
 		</div>
 		<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
