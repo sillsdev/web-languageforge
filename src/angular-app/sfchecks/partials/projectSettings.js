@@ -8,10 +8,7 @@ angular.module(
 	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
 		var projectId = $routeParams.projectId;
 		$scope.project = {};
-		$scope.settings = {
-			'sms': {},
-			'email': {}
-		};
+		$scope.list = {};
 		$scope.project.id = projectId;
 
 		// Breadcrumb
@@ -23,24 +20,59 @@ angular.module(
 				]
 		);
 		
-		$scope.message = {};
-		$scope.newMessageCollapsed = true;
-		$scope.sendMessageToSelectedUsers = function() {
-			var userIds = [];
-			for(var i = 0, l = $scope.selected.length; i < l; i++) {
-				userIds.push($scope.selected[i].id);
-			}
-			messageService.send($scope.project.id, userIds, $scope.message.subject, $scope.message.emailTemplate, $scope.message.smsTemplate, function(result) {
+		$scope.canEditCommunicationSettings = function() {
+			return ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
+		};
+		
+		$scope.queryProjectSettings = function() {
+			projectService.projectSettings($scope.project.id, function(result) {
 				if (result.ok) {
-					$scope.message.subject = '';
-					$scope.message.emailTemplate = '';
-					$scope.message.smsTemplate = '';
-					$scope.selected = [];
-					$scope.newMessageCollapsed = true;
-					notice.push(notice.SUCCESS, "The message was successfully queued for sending");
+					$scope.project = result.data.project;
+					$scope.list.users = result.data.entries;
+					$scope.list.userCount = result.data.count;
+					// Rights
+					var rights = result.data.rights;
+					$scope.rights = {};
+					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.DELETE_OTHER); 
+					$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
+					$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT_OTHER);
+					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
+					// Breadcrumb
+					breadcrumbService.updateCrumb('top', 1, {label: result.data.bcs.project.crumb});
+					
 				}
 			});
 		};
+		
+		$scope.settings = {
+			'sms': {},
+			'email': {}
+		};
+			
+		$scope.readCommunicationSettings = function() {
+			projectService.readSettings($scope.project.id, function(result) {
+				if (result.ok) {
+					$scope.settings.sms = result.data.sms;
+					$scope.settings.email = result.data.email;
+				}
+			});
+		};
+
+
+	}])
+	.controller('ProjectSettingsCommunicationCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
+		$scope.updateCommunicationSettings = function() {
+			projectService.updateSettings($scope.project.id, $scope.settings.sms, $scope.settings.email, function(result) {
+				if (result.ok) {
+					notice.push(notice.SUCCESS, $scope.project.name + " SMS settings updated successfully");
+				}
+			});
+		};
+		
+	}])
+	.controller('ProjectSettingsPropertiesCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
 
 		$scope.updateProject = function() {
 			// TODO this should be fine just being $scope.project from the dto.
@@ -57,28 +89,13 @@ angular.module(
 			});
 		};
 		
-		$scope.updateCommunicationSettings = function() {
-			projectService.updateSettings($scope.project.id, $scope.settings.sms, $scope.settings.email, function(result) {
-				if (result.ok) {
-					notice.push(notice.SUCCESS, $scope.project.name + " SMS settings updated successfully");
-				}
-			});
-		};
-		
-		$scope.readCommunicationSettings = function() {
-			projectService.readSettings($scope.project.id, function(result) {
-				if (result.ok) {
-					$scope.settings.sms = result.data.sms;
-					$scope.settings.email = result.data.email;
-				}
-			});
-		};
-		
-		$scope.canEditCommunicationSettings = function() {
-			return ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
-		};
-		
-		
+	
+	}])
+	.controller('ProjectSettingsUsersCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
+		$scope.message = {};
+		$scope.newMessageCollapsed = true;
+
 		// jqte options for html email message composition
 		$scope.jqteOptions = {
 			'placeholder': 'Email Message',
@@ -101,12 +118,27 @@ angular.module(
 				['h4', 'Large']
 			]
 		};
-		
-	
+
+		$scope.sendMessageToSelectedUsers = function() {
+			var userIds = [];
+			for(var i = 0, l = $scope.selected.length; i < l; i++) {
+				userIds.push($scope.selected[i].id);
+			}
+			messageService.send($scope.project.id, userIds, $scope.message.subject, $scope.message.emailTemplate, $scope.message.smsTemplate, function(result) {
+				if (result.ok) {
+					$scope.message.subject = '';
+					$scope.message.emailTemplate = '';
+					$scope.message.smsTemplate = '';
+					$scope.selected = [];
+					$scope.newMessageCollapsed = true;
+					notice.push(notice.SUCCESS, "The message was successfully queued for sending");
+				}
+			});
+		};
+
 		// ----------------------------------------------------------
 		// List
 		// ----------------------------------------------------------
-		$scope.list = {};
 		$scope.selected = [];
 		$scope.updateSelection = function(event, item) {
 			var selectedIndex = $scope.selected.indexOf(item);
@@ -119,26 +151,6 @@ angular.module(
 		};
 		$scope.isSelected = function(item) {
 			return item != null && $scope.selected.indexOf(item) >= 0;
-		};
-		
-		$scope.queryProjectSettings = function() {
-			projectService.projectSettings($scope.project.id, function(result) {
-				if (result.ok) {
-					$scope.project = result.data.project;
-					$scope.list.users = result.data.entries;
-					$scope.list.userCount = result.data.count;
-					// Rights
-					var rights = result.data.rights;
-					$scope.rights = {};
-					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.DELETE_OTHER); 
-					$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
-					$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT_OTHER);
-					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
-					// Breadcrumb
-					breadcrumbService.updateCrumb('top', 1, {label: result.data.bcs.project.crumb});
-					
-				}
-			});
 		};
 		
 		$scope.removeProjectUsers = function() {
