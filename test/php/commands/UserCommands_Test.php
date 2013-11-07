@@ -5,13 +5,15 @@ use models\commands\UserCommands;
 use models\ProjectModel;
 use models\mapper\JsonDecoder;
 use models\UserModel;
+use models\dto\CreateSimpleDto;
+use models\mapper\Id;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-class MockDelivery implements IDelivery {
+class MockUserCommandsDelivery implements IDelivery {
 	public $from;
 	public $to;
 	public $subject;
@@ -42,6 +44,31 @@ class TestUserCommands extends UnitTestCase {
 		UserCommands::deleteUsers(array($userId));
 	}
 	
+	function testCreateSimple_CreateUser_PasswordAndJoinProject() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		// setup parameters: username and project
+		$userName = 'username';
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+		
+		// create user
+		$dto = UserCommands::createSimple($userName, $projectId);
+		
+		// read from disk
+		$user = new UserModel($dto['id']);
+		$sameProject = new ProjectModel($projectId);
+		
+		// user created and password created, user joined to project
+		$this->assertEqual($user->username, "username");
+		$this->assertEqual(strlen($dto['password']), 4);
+		$projectUser = $sameProject->listUsers()->entries[0];
+		$this->assertEqual($projectUser['username'], "username");
+		$userProject = $user->listProjects()->entries[0];
+		$this->assertEqual($userProject['projectname'], SF_TESTPROJECT);
+	}
+	
 	function testRegister_WithProjectCode_UserInProjectAndProjectHasUser() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
@@ -61,7 +88,7 @@ class TestUserCommands extends UnitTestCase {
 		);
 		$captcha_info = array('code' => $validCode);
 		$projectCode = $project->projectCode;
-		$delivery = new MockDelivery();
+		$delivery = new MockUserCommandsDelivery();
 		
 		$userId = UserCommands::register($params, $captcha_info, $projectCode, $delivery);
 		
@@ -85,7 +112,7 @@ class TestUserCommands extends UnitTestCase {
 				'captcha' => $validCode
 		);
 		$captcha_info = array('code' => $validCode);
-		$delivery = new MockDelivery();
+		$delivery = new MockUserCommandsDelivery();
 		
 		$userId = UserCommands::register($params, $captcha_info, '', $delivery);
 		
@@ -94,7 +121,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($user->listProjects()->count, 0);
 	}
 	
-	function testReadForRegistration_validKey_validUserModel() {
+	function testReadForRegistration_ValidKey_ValidUserModel() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
@@ -106,7 +133,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($params['email'], 'user@user.com');
 	}
 	
-	function testReadForRegistration_keyExpired_throws() {
+	function testReadForRegistration_KeyExpired_Throws() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
@@ -118,6 +145,7 @@ class TestUserCommands extends UnitTestCase {
 		$user->validationExpirationDate = $date;
 		$user->write();
 		$this->expectException();
+		$e->inhibitErrorDisplay();
 		$params = UserCommands::readForRegistration($key);
 	}
 	
@@ -128,7 +156,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($params, array());
 	}
 	
-	function testUpdateFromRegistration_validKey_userUpdatedAndKeyConsumed() {
+	function testUpdateFromRegistration_ValidKey_UserUpdatedAndKeyConsumed() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
@@ -153,7 +181,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($user->validationKey, '');
 	}
 	
-	function testUpdateFromRegistration_InvalidKey_userNotUpdatedAndKeyNotConsumed() {
+	function testUpdateFromRegistration_InvalidKey_UserNotUpdatedAndKeyNotConsumed() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
@@ -176,7 +204,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($user->validationKey, $key);
 	}
 	
-	function testUpdateFromRegistration_ExpiredKey_userNotUpdatedAndKeyConsumed() {
+	function testUpdateFromRegistration_ExpiredKey_UserNotUpdatedAndKeyConsumed() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
@@ -194,6 +222,7 @@ class TestUserCommands extends UnitTestCase {
 			'name'     => 'joe user',
 			'password' => 'password'
 		);
+		$e->inhibitErrorDisplay();
 		$this->expectException();
 		UserCommands::updateFromRegistration($key, $userArray);
 		
@@ -202,6 +231,66 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($user->username, '');
 		$this->assertEqual($user->validationKey, '');
 	}
+	
+	function testSendInvite_SendInvite_PropertiesFromToBodyOk() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+	
+		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
+		$inviterUser = new UserModel($inviterUserId);
+		$toEmail = 'someone@example.com';
+		$project = $e->createProject(SF_TESTPROJECT);
+		$project->projectCode = 'someProjectCode';
+		$project->write();
+		$delivery = new MockUserCommandsDelivery();
+	
+		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $project->id->asString(), $project->projectCode, $delivery);
+	
+		// What's in the delivery?
+		$toUser = new UserModel($toUserId);
+		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
+		$expectedTo = array($toUser->emailPending => $toUser->name);
+		$this->assertEqual($expectedFrom, $delivery->from);
+		$this->assertEqual($expectedTo, $delivery->to);
+		$this->assertPattern('/Inviter Name/', $delivery->content);
+		$this->assertPattern('/Test Project/', $delivery->content);
+		$this->assertPattern('/' . $toUser->validationKey . '/', $delivery->content);
+	}
+	
+	function testSendInvite_NoProjectContext_ThrowException() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+	
+		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
+		$inviterUser = new UserModel($inviterUserId);
+		$toEmail = 'someone@example.com';
+		$projectId = '';
+		$hostName = 'someProjectCode.scriptureforge.org';
+		$delivery = new MockUserCommandsDelivery();
+	
+		$e->inhibitErrorDisplay();
+		$this->expectException(new \Exception("Cannot send invitation for unknown project 'someProjectCode'"));
+		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $projectId, $hostName, $delivery);
+		$e->restoreErrorDisplay();
+	}
+	
+	function testSendInvite_NoProjectContextNoProjectCode_ThrowException() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+	
+		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
+		$inviterUser = new UserModel($inviterUserId);
+		$toEmail = 'someone@example.com';
+		$projectId = '';
+		$hostName = 'scriptureforge.org';
+		$delivery = new MockUserCommandsDelivery();
+	
+		$e->inhibitErrorDisplay();
+		$this->expectException(new \Exception("Sending an invitation without a project context is not supported."));
+		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $projectId, $hostName, $delivery);
+		$e->restoreErrorDisplay();
+	}
+	
 }
 
 ?>

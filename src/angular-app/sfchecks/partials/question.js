@@ -188,6 +188,33 @@ angular.module(
 				//answerCount: $scope.question.answerCount,
 			};
 		});
+		
+		$scope.questionTitleCalculated = '';
+		$scope.$watch('question.title', function(newval) {
+			$scope.calculateTitle();
+		});
+		$scope.$watch('question.description', function(newval) {
+			$scope.calculateTitle();
+		});
+			
+		$scope.calculateTitle = function() {
+			if ($scope.question) {
+				if (!$scope.question.title || $scope.question.title == '') {
+					var spaceIndex = $scope.question.description.indexOf(' ', 30);
+					var shortTitle;
+					if (spaceIndex > -1) {
+						shortTitle = $scope.question.description.slice(0, spaceIndex) + '...';
+					} else {
+						shortTitle = $scope.question.description;
+					}
+					$scope.questionTitleCalculated = shortTitle;
+				} else {
+					$scope.questionTitleCalculated = $scope.question.title;
+				}
+				breadcrumbService.updateCrumb('top', 3, {label: $scope.questionTitleCalculated});
+			}
+		};
+		
 		$scope.updateQuestion = function(newQuestion) {
 			questionService.update(projectId, newQuestion, function(result) {
 				if (result.ok) {
@@ -195,7 +222,6 @@ angular.module(
 					questionService.read(projectId, newQuestion.id, function(result) {
 						if (result.ok) {
 							$scope.question = result.data.question;
-							breadcrumbService.updateCrumb('top', 3, {label: $scope.question.title});
 							// Recalculate answer count since the DB doesn't store it
 							$scope.question.answerCount = Object.keys($scope.question.answers).length;
 						}

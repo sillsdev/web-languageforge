@@ -18,7 +18,7 @@
 					</li>
 				</ul>
 			</typeahead>
-			<button ng-model="addMode" class="btn" ng-click="addProjectUser()"><i ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+			<button ng-model="addMode" class="btn" ng-disabled="!typeahead.userName" ng-click="addProjectUser()"><i ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
 			</form>
 		</div>
 		<div collapse="newMessageCollapsed">
