@@ -21,8 +21,9 @@ class PickItem
 
 class PickList
 {
-	public function __construct() {
+	public function __construct($name = '') {
 		$this->id = new Id();
+		$this->name = $name;
 		$this->items = new ArrayOf(ArrayOf::OBJECT, function($data) {
 			return new PickItem();
 		});
@@ -33,6 +34,11 @@ class PickList
 	 * @var string
 	 */
 	public $id;
+	
+	/**
+	 * @var string
+	 */
+	public $name;
 	
 	/**
 	 * @var ArrayOf ArrayOf<PickItem>

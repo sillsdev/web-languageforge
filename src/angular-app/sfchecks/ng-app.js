@@ -32,7 +32,7 @@ angular.module('sfchecks',
 	    $routeProvider.when(
 	    		'/project/:projectId/details', 
 	    		{
-	    			templateUrl: '/angular-app/sfchecks/partials/project-settings.html', 
+	    			templateUrl: '/angular-app/sfchecks/partials/projectSettings.html', 
 	    			controller: 'ProjectSettingsCtrl'
 	    		}
 	    	);

@@ -28,6 +28,20 @@ class ProjectUserProperties
 		});
 	}
 	
+	public function ensurePickListsExist() {
+		$this->ensurePickListExists(self::PROPERTY_CITY, 'Location');
+		$this->ensurePickListExists(self::PROPERTY_PREFERRED_BIBLE_VERSION, 'Preferred Bible Version');
+		$this->ensurePickListExists(self::PROPERTY_RELIGIOUS_AFFILIATION, 'Religious Affiliation');
+		$this->ensurePickListExists(self::PROPERTY_STUDY_GROUP, 'Study Group');
+		$this->ensurePickListExists(self::PROPERTY_FEEDBACK_GROUP, 'Feeback Group');
+	}
+	
+	private function ensurePickListExists($key, $name) {
+		if (!isset($this->userProfilePickLists->data[$key])) {
+			$this->userProfilePickLists->data[$key] = new PickList($name);
+		}
+	}
+	
 	public static function definition() {
 		static $definition = null;
 		if ($definition == null) {
