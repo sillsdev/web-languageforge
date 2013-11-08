@@ -41,8 +41,13 @@ angular.module('palaso.ui.typeahead', [])
 					return !$scope.hide && ($scope.focused || $scope.mousedOver);
 				};
 				$scope.query = function() {
-					$scope.hide = false;
-					$scope.search($scope.term);
+					if ($scope.term) {
+						$scope.hide = false;
+						$scope.search($scope.term);
+					} else {
+						// Hide when no search term
+						$scope.hide = true;
+					}
 				};
 			}],
 			link : function(scope, element, attrs, controller) {
