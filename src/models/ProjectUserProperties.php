@@ -33,7 +33,7 @@ class ProjectUserProperties
 		$this->ensurePickListExists(self::PROPERTY_PREFERRED_BIBLE_VERSION, 'Preferred Bible Version');
 		$this->ensurePickListExists(self::PROPERTY_RELIGIOUS_AFFILIATION, 'Religious Affiliation');
 		$this->ensurePickListExists(self::PROPERTY_STUDY_GROUP, 'Study Group');
-		$this->ensurePickListExists(self::PROPERTY_FEEDBACK_GROUP, 'Feeback Group');
+		$this->ensurePickListExists(self::PROPERTY_FEEDBACK_GROUP, 'Feedback Group');
 	}
 	
 	private function ensurePickListExists($key, $name) {

@@ -111,12 +111,28 @@ angular.module(
 		};
 		
 		$scope.pickAddItem = function() {
-			
+			console.log("pickAddItem ", $scope.currentListId, " ", $scope.newValue);
+			console.log($scope.project.userProperties.userProfilePickLists[$scope.currentListId]);
+			if ($scope.project.userProperties.userProfilePickLists[$scope.currentListId].items == undefined) {
+				$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items = [];
+			}
+			$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.push($scope.newValue);
 		};
 
 		$scope.pickRemoveItem = function(index) {
-			
+			console.log("pickRemoveItem ", $scope.currentListId, " ", index);
+			$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.splice(index, 1);
 		};
+		
+		$scope.$watch('project.userProperties.userProfilePickLists', function(newValue) {
+			console.log("project watch ", newValue);
+			if (newValue != undefined) {
+				for (var key in newValue) {
+					$scope.currentListId = key;
+					break;
+				}
+			}
+		});
 
 	
 	}])
