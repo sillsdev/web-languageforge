@@ -1,4 +1,4 @@
-<h2 style="font-weight:normal">{{project.name}} Details</h2>
+<h2 style="font-weight:normal">{{project.projectname}} Details</h2>
 <tabset>
 	<tab heading="Users">
 		<div ng-controller="ProjectSettingsUsersCtrl">
@@ -45,7 +45,7 @@
 				<th>Username</th>
 				<th>Full Name</th>
 				<th>Role</th>
-				</tr>
+			</tr>
 			</thead>
 			<tbody>
 			<tr ng-repeat="user in list.visibleUsers" ng-class="{active: isSelected(user)}" >
@@ -88,7 +88,7 @@
 		<fieldset class="well">
 			<legend style="width:auto;">{{project.userProperties.userProfilePickLists[currentListId].name}}</legend>
 			<label>Default Value</label>
-			<select></select>
+			<select ng-model="project.userProperties.userProfilePickLists[currentListId].defaultKey" ng-options="item for item in project.userProperties.userProfilePickLists[currentListId].items"></select>
 			<table>
 				<thead>
 				<tr>
