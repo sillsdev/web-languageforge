@@ -37,10 +37,10 @@
 									<option>Male</option>
 									<option>Female</option>
 								</select>
-								<label>Location</label>
-								<select ng-model="user.city" ng-options="c.label as c.label for c in dropdown.jamaicanTowns"/><option value="unspecified"></option></select>
 							</tab>
 							<tab heading="Participation Details">
+								<label>Location</label>
+								<select ng-model="user.city" ng-options="c.label as c.label for c in dropdown.jamaicanTowns"/><option value="unspecified"></option></select>
 								<label>Preferred Bible Version</label>
 								<select ng-model="user.preferredBibleVersion" ng-options="b.label as b.label for b in dropdown.bibleVersions" /><option value="unspecified"></option></select>
 								<label>Religious Affiliation</label>
