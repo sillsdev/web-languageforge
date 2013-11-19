@@ -39,7 +39,7 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso
 				notice.push(notice.SUCCESS, "Profile updated successfully");
 			}
 		});
-	}
+	};
 	
 	loadUser(); // load the user data right away
 	
