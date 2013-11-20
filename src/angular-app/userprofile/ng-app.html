@@ -1,61 +1,52 @@
 <div class="content container" ng-cloak>
 	<div ng-controller="userProfileCtrl">
-	<h1>{{user.name}}'s User Profile</h1>
-	<sil-notices></sil-notices>
-	<form ng-submit="updateUser()">
-					<fieldset>
-						<div ng-show="notify.error" class="notification errorMessage">Error: {{notify.error}}</div>
-						<div ng-show="notify.message" class="notification informationMessage">{{notify.message}}</div>
-						<tabset>
-							<tab heading="My Account">
-								<label>Username: <b style="margin-left:10px">{{user.username}}</b></label>
-								<label>Picture</label>
-								<div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" ng-src="{{user.avatar_ref}}" title="Use the dropdown selections below to change your avatar's color and shape" /></div>
-								<div><select ng-model="user.avatar_color" ng-options="c.value as c.label for c in dropdown.avatarColors" /><option value="">Select a Color...</option></select></div>
-								<div><select ng-model="user.avatar_shape" ng-options="s.value as s.label for s in dropdown.avatarShapes" /><option value="">Choose an animal...</option></select></div>
-								<label>Email Address</label>
-								<input type="text" placeholder="(email)" ng-model="user.email"/>
-								<label>Jamaica Mobile Phone Number</label>
-								<input type="text" placeholder="###-####" ng-model="user.mobile_phone"/>
-								<label>I preferred to be contacted via</label>
-							    <div class="btn-group">
-							        <button type="button" class="btn" ng-model="user.communicate_via" btn-radio="'email'">Email</button>
-							        <button type="button" class="btn" ng-model="user.communicate_via" btn-radio="'sms'">SMS</button>
-							        <button type="button" class="btn" ng-model="user.communicate_via" btn-radio="'both'">Both</button>
-							    </div>
-								
-								<label style="margin-top:20px"><a href="/app/changepassword">Change Password</a></label>
-							</tab>
-							<tab heading="About Me">
-								<h5>Tell us about yourself...</h5>
-								<label>Full Name</label>
-								<input type="text" placeholder="(full name)" ng-model="user.name"/>
-								<label>Age</label>
-								<input type="text" placeholder="(age)" ng-model="user.age"/>
-								<label>Gender</label>
-								<select ng-model="user.gender">
-									<option>Male</option>
-									<option>Female</option>
-								</select>
-							</tab>
-							<tab heading="Participation Details">
-								<label>Location</label>
-								<select ng-model="user.city" ng-options="c.label as c.label for c in dropdown.jamaicanTowns"/><option value="unspecified"></option></select>
-								<label>Preferred Bible Version</label>
-								<select ng-model="user.preferredBibleVersion" ng-options="b.label as b.label for b in dropdown.bibleVersions" /><option value="unspecified"></option></select>
-								<label>Religious Affiliation</label>
-								<select ng-model="user.religiousAffiliation" ng-options="a.label as a.label for a in dropdown.religiousAffiliations"/><option value="unspecified"></option></select>
-								<label>Study Group</label>
-								<select ng-model="user.studyGroup" ng-options="g.label as g.label for g in dropdown.studyGroups"/><option value="unspecified"></option></select>
-								<label>Feedback Group</label>
-								<select ng-model="user.feedbackGroup" ng-options="g.label as g.label for g in dropdown.feedbackGroups"/><option value="unspecified"></option></select>
-							</tab>
-						</tabset>
-						<button style="margin-top:20px" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
-						<div style="margin-top:20px" class="well">
-							<label>Last Login:  {{user.last_login * 1000 | date:shortDate}}</label>
-						</div>
-					</fieldset>
-				</form>
+		<h1>{{user.name}}'s User Profile</h1>
+		<sil-notices></sil-notices>
+		<form ng-submit="updateUser()">
+		<fieldset>
+			<div ng-show="notify.error" class="notification errorMessage">Error: {{notify.error}}</div>
+			<div ng-show="notify.message" class="notification informationMessage">{{notify.message}}</div>
+			<tabset>
+				<tab heading="My Account">
+					<label>Username: <b style="margin-left:10px">{{user.username}}</b></label>
+					<label>Picture</label>
+					<div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" ng-src="{{user.avatar_ref}}" title="Use the dropdown selections below to change your avatar's color and shape" /></div>
+					<div><select ng-model="user.avatar_color" ng-options="c.value as c.label for c in dropdown.avatarColors" /><option value="">Select a Color...</option></select></div>
+					<div><select ng-model="user.avatar_shape" ng-options="s.value as s.label for s in dropdown.avatarShapes" /><option value="">Choose an animal...</option></select></div>
+					<label>Email Address</label>
+					<input type="text" placeholder="(email)" ng-model="user.email"/>
+					<label>Jamaica Mobile Phone Number</label>
+					<input type="text" placeholder="###-####" ng-model="user.mobile_phone"/>
+					<label>I preferred to be contacted via</label>
+					<div class="btn-group">
+						<button type="button" class="btn" ng-model="user.communicate_via" btn-radio="'email'">Email</button>
+						<button type="button" class="btn" ng-model="user.communicate_via" btn-radio="'sms'">SMS</button>
+						<button type="button" class="btn" ng-model="user.communicate_via" btn-radio="'both'">Both</button>
+					</div>
+					
+					<label style="margin-top:20px"><a href="/app/changepassword">Change Password</a></label>
+				</tab>
+				<tab heading="About Me">
+					<h5>Tell us about yourself...</h5>
+					<label>Full Name</label>
+					<input type="text" placeholder="(full name)" ng-model="user.name"/>
+					<label>Age</label>
+					<input type="text" placeholder="(age)" ng-model="user.age"/>
+					<label>Gender</label>
+					<select ng-model="user.gender">
+						<option>Male</option>
+						<option>Female</option>
+					</select>
+				</tab>
+				<tab ng-repeat="project in projects" heading="{{project.projectname}}">
+					<ng-include src="'/angular-app/userprofile/partials/profileProject.html'"></ng-include>
+				</tab>
+			</tabset>
+			<button style="margin-top:20px" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+			<div style="margin-top:20px" class="well">
+				<label>Last Login:  {{user.last_login * 1000 | date:shortDate}}</label>
+			</div>
+		</fieldset>
+		</form>
 	</div>
 </div>

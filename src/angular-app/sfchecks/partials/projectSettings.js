@@ -16,7 +16,7 @@ angular.module(
 				[
 				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
 				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/settings', label: 'Details'},
+				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/settings', label: 'Settings'},
 				]
 		);
 		
