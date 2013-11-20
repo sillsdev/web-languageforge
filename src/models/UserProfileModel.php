@@ -11,7 +11,7 @@ use models\rights\Realm;
 use models\rights\Roles;
 
 
-class UserProfileModel extends \models\UserModelBase
+class UserProfileModel extends \models\UserModel
 {
 	
 	/**

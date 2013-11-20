@@ -30,6 +30,7 @@ use models\QuestionModel;
 use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserProfileModel;
+use models\dto\UserProfileDto;
 
 require_once(APPPATH . 'vendor/autoload.php');
 
@@ -97,8 +98,7 @@ class Sf
 	}
 	
 	public function user_readProfile($id) {
-		$user = new \models\UserProfileModel($id);
-		return JsonEncoder::encode($user);
+		return UserProfileDto::encode($id);
 	}
 	
 	/**
