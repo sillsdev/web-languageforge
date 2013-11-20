@@ -1,4 +1,4 @@
-<h2 style="font-weight:normal">{{project.projectname}} Details</h2>
+<h2 style="font-weight:normal">{{project.projectname}} Settings</h2>
 <tabset>
 	<tab heading="Users">
 		<div ng-controller="ProjectSettingsUsersCtrl">
@@ -6,7 +6,6 @@
 			<button ng-disabled="selected.length == 0" ng-show="rights.deleteOther" class="btn" ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Members</button>
 			<button ng-show="rights.create" class="btn" ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add Members</button>
 			<button ng-disabled="selected.length == 0" ng-show="rights.create" class="btn" ng-click="newMessageCollapsed = !newMessageCollapsed"><i class="icon-envelope"></i>Message Selected Users</button>
-			
 		</form>
 		<div class="new-item" collapse="!newUserCollapsed">
 			<form class="well form-inline">
@@ -81,9 +80,16 @@
 		<fieldset class="well">
 			<legend>User Profile</legend>
 			<ul class="unstyled">
-			<li ng-click="selectList(listId)" ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"><div class="checkbox"><input type="checkbox"/>{{list.name}}</div></li>
+				<li ng-click="selectList(listId)" ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"><div class="checkbox"><input type="checkbox"/>{{list.name}}</div></li>
 			</ul>
-			</fieldset>
+			
+			<tabset vertical="true" type="navType">
+				<tab ng-repeat="(listId, list) in project.userProperties.userProfilePickLists">
+					<tab-heading><div class="checkbox"><input type="checkbox"/>{{list.name}}</div></tab-heading>
+					<div class="checkbox"><input type="checkbox"/>Enable <strong>{{list.name}}</strong> list</div>
+				</tab>
+			</tabset>
+		</fieldset>
 		</div><div class="span4">
 		<fieldset class="well">
 			<legend style="width:auto;">{{project.userProperties.userProfilePickLists[currentListId].name}}</legend>
