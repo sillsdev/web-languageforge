@@ -1,6 +1,6 @@
 <div class="content container" ng-cloak>
 	<div ng-controller="userProfileCtrl">
-		<h1>{{user.name}}'s User Profile</h1>
+		<h1>{{user.userProfile.name}}'s User Profile</h1>
 		<sil-notices></sil-notices>
 		<form ng-submit="updateUser()">
 		<fieldset>
@@ -8,20 +8,20 @@
 			<div ng-show="notify.message" class="notification informationMessage">{{notify.message}}</div>
 			<tabset>
 				<tab heading="My Account">
-					<label>Username: <b style="margin-left:10px">{{user.username}}</b></label>
+					<label>Username: <b style="margin-left:10px">{{user.userProfile.username}}</b></label>
 					<label>Picture</label>
-					<div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" ng-src="{{user.avatar_ref}}" title="Use the dropdown selections below to change your avatar's color and shape" /></div>
-					<div><select ng-model="user.avatar_color" ng-options="c.value as c.label for c in dropdown.avatarColors" /><option value="">Select a Color...</option></select></div>
-					<div><select ng-model="user.avatar_shape" ng-options="s.value as s.label for s in dropdown.avatarShapes" /><option value="">Choose an animal...</option></select></div>
+					<div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" ng-src="{{user.userProfile.avatar_ref}}" title="Use the dropdown selections below to change your avatar's color and shape" /></div>
+					<div><select ng-model="user.userProfile.avatar_color" ng-options="c.value as c.label for c in dropdown.avatarColors" /><option value="">Select a Color...</option></select></div>
+					<div><select ng-model="user.userProfile.avatar_shape" ng-options="s.value as s.label for s in dropdown.avatarShapes" /><option value="">Choose an animal...</option></select></div>
 					<label>Email Address</label>
-					<input type="text" placeholder="(email)" ng-model="user.email"/>
+					<input type="text" placeholder="(email)" ng-model="user.userProfile.email"/>
 					<label>Jamaica Mobile Phone Number</label>
-					<input type="text" placeholder="###-####" ng-model="user.mobile_phone"/>
+					<input type="text" placeholder="###-####" ng-model="user.userProfile.mobile_phone"/>
 					<label>I preferred to be contacted via</label>
 					<div class="btn-group">
-						<button type="button" class="btn" ng-model="user.communicate_via" btn-radio="'email'">Email</button>
-						<button type="button" class="btn" ng-model="user.communicate_via" btn-radio="'sms'">SMS</button>
-						<button type="button" class="btn" ng-model="user.communicate_via" btn-radio="'both'">Both</button>
+						<button type="button" class="btn" ng-model="user.userProfile.communicate_via" btn-radio="'email'">Email</button>
+						<button type="button" class="btn" ng-model="user.userProfile.communicate_via" btn-radio="'sms'">SMS</button>
+						<button type="button" class="btn" ng-model="user.userProfile.communicate_via" btn-radio="'both'">Both</button>
 					</div>
 					
 					<label style="margin-top:20px"><a href="/app/changepassword">Change Password</a></label>
@@ -29,22 +29,22 @@
 				<tab heading="About Me">
 					<h5>Tell us about yourself...</h5>
 					<label>Full Name</label>
-					<input type="text" placeholder="(full name)" ng-model="user.name"/>
+					<input type="text" placeholder="(full name)" ng-model="user.userProfile.name"/>
 					<label>Age</label>
-					<input type="text" placeholder="(age)" ng-model="user.age"/>
+					<input type="text" placeholder="(age)" ng-model="user.userProfile.age"/>
 					<label>Gender</label>
-					<select ng-model="user.gender">
+					<select ng-model="user.userProfile.gender">
 						<option>Male</option>
 						<option>Female</option>
 					</select>
 				</tab>
-				<tab ng-repeat="project in projects" heading="{{project.projectname}}">
+				<tab ng-repeat="project in user.userProfile.projects" heading="{{project.name}}">
 					<ng-include src="'/angular-app/userprofile/partials/profileProject.html'"></ng-include>
 				</tab>
 			</tabset>
 			<button style="margin-top:20px" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 			<div style="margin-top:20px" class="well">
-				<label>Last Login:  {{user.last_login * 1000 | date:shortDate}}</label>
+				<label>Last Login:  {{user.userProfile.last_login * 1000 | date:shortDate}}</label>
 			</div>
 		</fieldset>
 		</form>
