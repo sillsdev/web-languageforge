@@ -17,7 +17,7 @@ class UserProfileDto
 		$userProfileModel = new UserProfileModel($userId);
 
 		$userProfile = UserProfileEncoder::encode($userProfileModel);
-		$dto['userProfile'] = $userProfile;
+		$dto['profile'] = $userProfile;
 
 		return $dto;
 	}
