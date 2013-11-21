@@ -116,7 +116,11 @@ angular.module(
 			if ($scope.project.userProperties.userProfilePickLists[$scope.currentListId].items == undefined) {
 				$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items = [];
 			}
-			$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.push($scope.newValue);
+			
+			var pickItem = {};
+			pickItem.key = $scope.newValue;
+			pickItem.value = $scope.newValue;
+			$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.push(pickItem);
 		};
 
 		$scope.pickRemoveItem = function(index) {

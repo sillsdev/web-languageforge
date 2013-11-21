@@ -15,7 +15,6 @@ class UserProfileEncoder extends JsonEncoder {
 	 * @return array
 	 */
 	public function encodeReferenceList($key, $model) {
-		error_log($key);
 		if ($key != 'projects') {
 			return parent::encodeReferenceList($key, $model);
 		}

@@ -87,7 +87,7 @@
 		<fieldset class="well">
 			<legend style="width:auto;">{{project.userProperties.userProfilePickLists[currentListId].name}}</legend>
 			<label>Default Value</label>
-			<select ng-model="project.userProperties.userProfilePickLists[currentListId].defaultKey" ng-options="item for item in project.userProperties.userProfilePickLists[currentListId].items"></select>
+			<select ng-model="project.userProperties.userProfilePickLists[currentListId].defaultKey" ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists[currentListId].items"></select>
 			<table>
 				<thead>
 				<tr>
@@ -97,7 +97,7 @@
 				</thead>
 				<tbody>
 				<tr ng-repeat="item in project.userProperties.userProfilePickLists[currentListId].items track by $index">
-					<td>{{item}}</td>
+					<td>{{item.value}}</td>
 					<td><a ng-click="pickRemoveItem($index)"><i class="icon-remove"></i></a></td>
 				</tr>
 				</tbody>
