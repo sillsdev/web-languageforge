@@ -46,7 +46,7 @@ class ProjectModel extends \models\mapper\MapperModel
 		$this->users = new MapOf(function($data) {
 			return new ProjectRoleModel();
 		});
-		$this->userProperties = new ProjectUserProperties();
+		$this->userProperties = new ProjectUserPropertiesSettings();
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
 	
@@ -205,7 +205,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	public $featured;
 
 	/**
-	 * @var ProjectUserProperties
+	 * @var ProjectUserPropertiesSettings
 	 */
 	public $userProperties;
 }

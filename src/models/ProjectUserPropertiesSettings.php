@@ -2,6 +2,7 @@
 namespace models;
 
 use models\mapper\MapOf;
+use models\mapper\ArrayOf;
 
 class ProjectUserPropertyDefinition {
 	
@@ -14,7 +15,7 @@ class ProjectUserPropertyDefinition {
 	private $_type;
 }
 
-class ProjectUserProperties
+class ProjectUserPropertiesSettings
 {
 	const PROPERTY_CITY                    = 'city';
 	const PROPERTY_PREFERRED_BIBLE_VERSION = 'preferredBibleVersion';
@@ -26,6 +27,7 @@ class ProjectUserProperties
 		$this->userProfilePickLists = new MapOf(function($data) {
 			return new PickList();
 		});
+		$this->userProfilePropertiesEnabled = new ArrayOf(ArrayOf::VALUE);
 	}
 	
 	public function ensurePickListsExist() {
@@ -66,6 +68,5 @@ class ProjectUserProperties
 	 * @var ArrayOf ArrayOf<string>
 	 */
 	public $userProfilePropertiesEnabled;
-	
 	
 }

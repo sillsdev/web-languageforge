@@ -80,7 +80,7 @@
 		<fieldset class="well">
 			<legend>Show in the User's Profile</legend>
 			<ul class="unstyled">
-				<li ng-click="selectList(listId)" ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"><div class="checkbox"><input type="checkbox"/>{{list.name}}</div></li>
+  				<li ng-click="selectList(listId)" ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"><div class="checkbox"><input ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list.name}}</div></li>
 			</ul>
 		</fieldset>
 		</div><div class="span4">
