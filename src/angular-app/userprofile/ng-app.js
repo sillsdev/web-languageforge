@@ -43,6 +43,7 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso
 	
 	loadUser(); // load the user data right away
 	
+/*	TODO for debug, remove when user profile is functional IJH 2013-11
 	$scope.projects = [ {
 		projectname : "One",
 		pickLists : [ {
@@ -81,7 +82,7 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso
 		}, ]
 	}
 	];
-	
+*/	
 	$scope.dropdown = {};
 	
 	$scope.dropdown.avatarColors = [
