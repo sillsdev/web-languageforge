@@ -39,7 +39,16 @@
 					</select>
 				</tab>
 				<tab ng-repeat="project in user.userProfile.projects" heading="{{project.name}}">
-					<ng-include src="'/angular-app/userprofile/partials/profileProject.html'"></ng-include>
+					<label>{{project.userProperties.userProfilePickLists['city'].name}}</label>
+					<select ng-class="" ng-model="project.userProperties.userProfilePickLists['city'].defaultKey" ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['city'].items" placeholder="yadayda"></select>
+					<label>{{project.userProperties.userProfilePickLists['preferredBibleVersion'].name}}</label>
+					<select ng-model="project.userProperties.userProfilePickLists['preferredBibleVersion'].defaultKey" ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['preferredBibleVersion'].items"><option value="unspecified"></option></select>
+					<label>{{project.userProperties.userProfilePickLists['religiousAffliation'].name}}</label>
+					<select ng-model="project.userProperties.userProfilePickLists['religiousAffliation'].defaultKey" ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['religiousAffliation'].items"><option value="unspecified"></option></select>
+					<label>{{project.userProperties.userProfilePickLists['studyGroup'].name}}</label>
+					<select ng-model="project.userProperties.userProfilePickLists['studyGroup'].defaultKey" ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['studyGroup'].items"><option value="unspecified"></option></select>
+					<label>{{project.userProperties.userProfilePickLists['feedbackGroup'].name}}</label>
+					<select ng-model="project.userProperties.userProfilePickLists['feedbackGroup'].defaultKey" ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['feedbackGroup'].items"><option value="unspecified"></option></select>
 				</tab>
 			</tabset>
 			<button style="margin-top:20px" type="submit" class="btn"><i class="icon-ok"></i>Save</button>

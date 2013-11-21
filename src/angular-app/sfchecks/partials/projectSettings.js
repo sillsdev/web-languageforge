@@ -96,7 +96,20 @@ angular.module(
 	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
 
 		// TODO This can be moved to the page level controller, it is common with the Setup tab.
+		$scope.currentListsEnabled = [];
 		$scope.updateProject = function() {
+			if ($scope.project.userProperties.userProfilePropertiesEnabled == undefined) {
+				$scope.project.userProperties.userProfilePropertiesEnabled = [];
+			}
+			
+			// populate the list of enabled user profile properties
+			for (var listId in $scope.currentListsEnabled) {
+				if ($scope.currentListsEnabled[listId]) {
+					$scope.project.userProperties.userProfilePropertiesEnabled.push(listId);
+				}
+			}
+			console.log("updateProject ", $scope.currentListsEnabled, ' ', $scope.project.userProperties.userProfilePropertiesEnabled);
+
 			projectService.update($scope.project, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, $scope.project.name + " settings updated successfully");
@@ -128,16 +141,19 @@ angular.module(
 			$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.splice(index, 1);
 		};
 		
-		$scope.$watch('project.userProperties.userProfilePickLists', function(newValue) {
+		$scope.$watch('project.userProperties', function(newValue) {
 			console.log("project watch ", newValue);
 			if (newValue != undefined) {
-				for (var key in newValue) {
+				for (var key in newValue.userProfilePickLists) {
 					$scope.currentListId = key;
 					break;
 				}
+				$scope.currentListsEnabled = [];
+				for (var i = 0; i < $scope.project.userProperties.userProfilePropertiesEnabled.length; i++) {
+					$scope.currentListsEnabled[$scope.project.userProperties.userProfilePropertiesEnabled[i]] = true;
+				}
 			}
 		});
-
 	
 	}])
 	.controller('ProjectSettingsUsersCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
