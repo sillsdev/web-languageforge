@@ -24,7 +24,7 @@
 					<div class="span7">
 						<h2 class="lifted-text">Welcome to the <span class="sf-jamaican-green">Jamaican Psalms Project</span></h2>
 						<p>Oudi! Wa'a gwaan?</p>
-						<p>Imagine hundreds, maybe thousands, of Jamaicans from all over the world (male and female, all ages, all churches and job backgrounds), helping to translate their favourite Psalms into Jamaican. We do this face-to-face in our home and church groups using this Jamaican Psalms translation website. This is a translation of the Psalms by Jamaicans for for Jamaicans. Gad wod iina fi wi langwij! Join the cause by creating a user account now. It frii!</p>
+						<p>Imagine hundreds, maybe thousands, of Jamaicans from all over the world (male and female, all ages, all churches and job backgrounds), helping to translate their favourite Psalms into Jamaican. We do this face-to-face in our home and church groups using this Jamaican Psalms translation website. This is a translation of the Psalms by Jamaicans for Jamaicans. Gad wod iina fi wi langwij! Join the cause by creating a user account now. It frii!</p>
 					</div>
 					<div class="span5">
 						<iframe width="380" height="285" src="http://www.youtube.com/embed/hYlECJ35Wos" frameborder="0" allowfullscreen></iframe>
