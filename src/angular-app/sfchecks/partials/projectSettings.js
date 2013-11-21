@@ -98,17 +98,14 @@ angular.module(
 		// TODO This can be moved to the page level controller, it is common with the Setup tab.
 		$scope.currentListsEnabled = [];
 		$scope.updateProject = function() {
-			if ($scope.project.userProperties.userProfilePropertiesEnabled == undefined) {
-				$scope.project.userProperties.userProfilePropertiesEnabled = [];
-			}
-			
 			// populate the list of enabled user profile properties
+			console.log("updateProject ", $scope.currentListsEnabled, ' ', $scope.project.userProperties.userProfilePropertiesEnabled);
+			$scope.project.userProperties.userProfilePropertiesEnabled = [];
 			for (var listId in $scope.currentListsEnabled) {
 				if ($scope.currentListsEnabled[listId]) {
 					$scope.project.userProperties.userProfilePropertiesEnabled.push(listId);
 				}
 			}
-			console.log("updateProject ", $scope.currentListsEnabled, ' ', $scope.project.userProperties.userProfilePropertiesEnabled);
 
 			projectService.update($scope.project, function(result) {
 				if (result.ok) {

@@ -43,46 +43,6 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso
 	
 	loadUser(); // load the user data right away
 	
-/*	TODO for debug, remove when user profile is functional IJH 2013-11
-	$scope.projects = [ {
-		projectname : "One",
-		pickLists : [ {
-			label : "Study Group",
-			value : "Some value",
-			items : [ {
-				label : 'Study Group #1'
-			}, {
-				label : 'Study Group #2'
-			}, {
-				label : 'Study Group #3'
-			} ]
-		}, {
-			label : "Feedback Group",
-			value : "Some value",
-			items : [ {
-				label : 'Feedback Group #1'
-			}, {
-				label : 'Feedback Group #2'
-			}, {
-				label : 'Feedback Group #3'
-			} ]
-		} ]
-	}, {
-		projectname : "Two",
-		pickLists : [ {
-			label : "Feedback Group",
-			value : "Some value",
-			items : [ {
-				label : 'Feedback Group #1'
-			}, {
-				label : 'Feedback Group #2'
-			}, {
-				label : 'Feedback Group #3'
-			} ]
-		}, ]
-	}
-	];
-*/	
 	$scope.dropdown = {};
 	
 	$scope.dropdown.avatarColors = [
