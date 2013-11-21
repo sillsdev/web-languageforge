@@ -1,4 +1,0 @@
-<div ng-repeat="pickList in project.userProperties.userProfilePickLists">
-	<label>{{pickList.name}}</label>
-	<select ng-model="pickList.defaultKey" ng-options="item.key as item.value for item in pickList.items"/><option value="unspecified"></option></select>
-</div>
