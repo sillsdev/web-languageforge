@@ -120,6 +120,16 @@ angular.module(
 			$scope.currentListId = listId;
 		};
 		
+		Array.prototype.containsKey = function(obj_key, key) {
+		    var i = this.length;
+		    while (i--) {
+		        if (this[i][key] === obj_key) {
+		            return true;
+		        }
+		    }
+		    return false;
+		};
+
 		$scope.pickAddItem = function() {
 			console.log("pickAddItem ", $scope.currentListId, " ", $scope.newValue);
 			console.log($scope.project.userProperties.userProfilePickLists[$scope.currentListId]);
@@ -127,10 +137,30 @@ angular.module(
 				$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items = [];
 			}
 			
-			var pickItem = {};
-			pickItem.key = $scope.newValue;
-			pickItem.value = $scope.newValue;
-			$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.push(pickItem);
+			if ($scope.newValue != undefined) {
+				var pickItem = {};
+				pickItem.key = $scope.newValue.replace(/ /gi,'_');
+				pickItem.value = $scope.newValue;
+
+				// TODO indexOf doesn't work with objects IJH 2013-11,
+				// In the console.log line below change the indexOf() content to pickItem, pickItem2, pickItem3,
+				// They should all return 0 but return 0, 1, -1 respectively.
+				var myArray = [];
+				myArray.push(pickItem);
+				var pickItem2 = {};
+				pickItem2.key = $scope.newValue.replace(/ /gi,'_');
+				pickItem2.value = $scope.newValue;
+				myArray.push(pickItem2);
+				var pickItem3 = {};
+				pickItem3.key = $scope.newValue.replace(/ /gi,'_');
+				pickItem3.value = $scope.newValue;
+				console.log("indexOf should equal 0 not 1 or -1! ", myArray.indexOf(pickItem3), ' ', pickItem);
+
+				// check if item exists before adding
+				if (!$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.containsKey(pickItem.key, 'key')) {
+					$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.push(pickItem);
+				}
+			}
 		};
 
 		$scope.pickRemoveItem = function(index) {
