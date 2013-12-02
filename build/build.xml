@@ -33,14 +33,7 @@
 	</target>
 
 	<target name="version">
-		<script language="javascript">
-			<![CDATA[depends
-			// getting the value
-			buildnumber = project.getProperty("build.number");
-			index = buildnumber.lastIndexOf(".");
-			project.setProperty("version", buildnumber.substring(0, index));
-			]]>
-		</script>
+	    <property name="version" value="${build.number}" />
 		<echo>${version}</echo>
 	</target>
 	
@@ -110,7 +103,7 @@
 		</exec>
 	</target>
 
-	<target name="copyWeb" depends="prepare,composer,minify">
+	<target name="copyWeb" depends="prepare,composer,minify,version">
 		<copy todir="${build.output}/package/htdocs">
 			<fileset dir="src"/>
 		</copy>
