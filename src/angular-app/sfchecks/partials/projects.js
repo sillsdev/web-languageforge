@@ -46,26 +46,24 @@ angular.module(
 		};
 		// Remove
 		$scope.removeProject = function() {
-			console.log("removeProject()");
+			//console.log("removeProject()");
 			var projectIds = [];
 			for(var i = 0, l = $scope.selected.length; i < l; i++) {
 				projectIds.push($scope.selected[i].id);
 			}
-			if (l == 0) {
-				// TODO ERROR
-				return;
-			}
-			projectService.remove(projectIds, function(result) {
-				if (result.ok) {
-					$scope.selected = []; // Reset the selection
-					$scope.queryProjectsForUser();
-					if (projectIds.length == 1) {
-						notice.push(notice.SUCCESS, "The project was removed successfully");
-					} else {
-						notice.push(notice.SUCCESS, "The projects were removed successfully");
+			if (window.confirm("Are you sure you want to delete the(se) " + projectIds.length + " project(s)? (Deleting a project is a big deal)")) {
+				projectService.remove(projectIds, function(result) {
+					if (result.ok) {
+						$scope.selected = []; // Reset the selection
+						$scope.queryProjectsForUser();
+						if (projectIds.length == 1) {
+							notice.push(notice.SUCCESS, "The project was removed successfully");
+						} else {
+							notice.push(notice.SUCCESS, "The projects were removed successfully");
+						}
 					}
-				}
-			});
+				});
+			}
 		};
 		// Add
 		$scope.addProject = function() {
