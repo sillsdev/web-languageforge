@@ -12,10 +12,26 @@ class TextCommands
 {
 	
 	private static function hasRange($object) {
-		$sc = (int)$object['startCh'];
-		$sv = (int)$object['startVs'];
-		$ec = (int)$object['endCh'];
-		$ev = (int)$object['endVs'];
+		if (isset($object['startCh'])) {
+			$sc = (int)$object['startCh'];
+		} else {
+			$sc = 0;
+		}
+		if (isset($object['startVs'])) {
+			$sv = (int)$object['startVs'];
+		} else {
+			$sv = 0;
+		}
+		if (isset($object['endCh'])) {
+			$ec = (int)$object['endCh'];
+		} else {
+			$ec = 0;
+		}
+		if (isset($object['endVs'])) {
+			$ev = (int)$object['endVs'];
+		} else {
+			$ev = 0;
+		}
 		return ($sc || $sv || $ec || $ev);
 	}
 

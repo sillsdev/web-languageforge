@@ -274,7 +274,7 @@ div#footer, div#footer a, div#footer h4{
 div#footerBaseline {
 	position: relative;
 	width: 100%;
-	height: 40px;
+	height: auto;
 	line-height: 40px;
 	background-color: #202020;
 	color: #aaa;

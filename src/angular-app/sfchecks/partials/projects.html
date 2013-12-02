@@ -4,9 +4,9 @@
 	<button class="btn" ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Create New Project</button>
 </form>
 <div class="new-item" collapse="newProjectCollapsed">
-	<form class="well form-inline">
-	<input type="text" ng-model="projectName" placeholder="Project Name"/>
-	<button type="submit" class="btn" ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
+	<form class="well form-inline" name="newProjectForm">
+	<input type="text" ng-model="projectName" maxlength="50" required placeholder="Project Name"/>
+	<button type="submit" class="btn" ng-disabled="newProjectForm.$invalid" ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
 	</form>
 </div>
 <hr />
@@ -14,17 +14,17 @@
 	<div ng-repeat="project in visibleProjects" class="details-row">
 		<ul class="inline" ng-class="{active: isSelected(project)}">
 			<li ng-show="rights.deleteOther"><input type="checkbox" ng-checked="isSelected(project)" ng-click="updateSelection($event, project)" /></li>
+			<li style="width: 30%">
+				<a href="{{project.url}}">
+					<span class="larger-text">{{project.projectname}}</span>
+				</a>
+			</li>
 			<li><a href="{{project.url}}">
 				<div class="attention-block">
 				<span style="font-size: 24px">{{getTextCount(project)}}</span><br />
 					<span style=""> texts to check</span>
 				</div>
 			</a></li>
-			<li>
-				<a href="{{project.url}}">
-					<span class="larger-text">{{project.projectname}}</span>
-				</a>
-			</li>
 		</ul>
 		<hr />
 	</div>

@@ -53,7 +53,7 @@
 				</div>
 				<div>
 					<label>Email</label>
-					<input required type="text" placeholder="(no email)" ng-model="record.email"/>
+					<input type="text" placeholder="(no email)" ng-model="record.email"/>
 				</div>
 				<div>
 					<label>Role</label>
@@ -91,9 +91,9 @@
 				<form class="well">
 				<fieldset>
 				<label>Question Template</label>
-				<input type="text" required ng-model="editedTemplate.title" class="span4" rows="4" placeholder="the question"></textarea>
+				<textarea required ng-model="editedTemplate.description" class="span4" rows="4" placeholder="The Question"></textarea>
 				<label></label>
-				<textarea required ng-model="editedTemplate.description" class="span4" rows="4" placeholder="additional explanation of the question"></textarea>
+				<input type="text" maxlength="35" required ng-model="editedTemplate.title" class="span4" rows="4" placeholder="One Line Summary for Title" />
 				<label></label>
 				<button type="submit" class="btn" ng-click="editTemplate()"><i class="icon-ok"></i>Save</button>
 				<a ng-click="hideTemplateEditor()">Cancel</a>
