@@ -97,8 +97,13 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(array(), $result->entries);
 				
 		// Add our two projects
-		LinkCommands::LinkUserAndProject($p1m, $userModel, Roles::USER);
-		LinkCommands::LinkUserAndProject($p2m, $userModel, Roles::USER);
+		$p1m->addUser($userModel->id->asString(), Roles::USER);
+		$userModel->addProject($p1m->id->asString());
+		$p2m->addUser($userModel->id->asString(), Roles::USER);
+		$userModel->addProject($p2m->id->asString());
+		$p1m->write();
+		$p2m->write();
+		$userModel->write();
 		
 		$result = $userModel->listProjects();
 		$this->assertEqual(2, $result->count);

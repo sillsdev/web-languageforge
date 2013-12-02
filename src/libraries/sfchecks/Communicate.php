@@ -209,22 +209,18 @@ class Communicate
 		);
 	}
 	
-	public static function sendSignupWithProject() {
-		
-	}
-	
 	/**
 	 * 
-	 * @param UserModelBase $fromUserModel
+	 * @param UserModelBase $inviterUserModel
 	 * @param UserModelBase $toUserModel
 	 * @param ProjectModel $projectModel
 	 * @param IDelivery $delivery
 	 */
-	public static function sendInvite($fromUserModel, $toUserModel, $projectModel, IDelivery $delivery = null) {
+	public static function sendInvite($inviterUserModel, $toUserModel, $projectModel, IDelivery $delivery = null) {
 		$toUserModel->setValidation(7);
 		$toUserModel->write();
 		$vars = array(
-			'user' => $fromUserModel,
+			'user' => $inviterUserModel,
 			'project' => $projectModel,
 			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/registration#/?v=' . $toUserModel->validationKey,
 		);
@@ -239,6 +235,34 @@ class Communicate
 			$delivery
 		);
 	}
+	
+	/**
+	 * 
+	 * @param UserModel $toUserModel
+	 * @param string $newUserName
+	 * @param string $newUserPassword
+	 * @param ProjectModel $projectModel
+	 * @param IDelivery $delivery
+	 */
+	public static function sendNewUserInProject($toUserModel, $newUserName, $newUserPassword, $projectModel, IDelivery $delivery = null) {
+		$vars = array(
+				'user' => $toUserModel,
+				'newUserName' => $newUserName,
+				'newUserPassword' => $newUserPassword,
+				'project' => $projectModel,
+		);
+		$t = CommunicateHelper::templateFromFile('email/en/NewUserInProject.html');
+		$html = $t->render($vars);
+	
+		CommunicateHelper::deliverEmail(
+			array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME),
+			array($toUserModel->email => $toUserModel->name),
+			'ScriptureForge new user login for project',
+			$html,
+			$delivery
+		);
+	}
+	
 }
 
 ?>

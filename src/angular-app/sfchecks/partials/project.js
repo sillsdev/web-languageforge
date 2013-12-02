@@ -97,26 +97,25 @@ angular.module(
 		
 		// Remove Text
 		$scope.removeTexts = function() {
-			console.log("removeTexts()");
+			//console.log("removeTexts()");
 			var textIds = [];
 			for(var i = 0, l = $scope.selected.length; i < l; i++) {
 				textIds.push($scope.selected[i].id);
 			}
-			if (l == 0) {
-				return;
-			}
-			textService.remove(projectId, textIds, function(result) {
-				if (result.ok) {
-					if (textIds.length == 1) {
-						notice.push(notice.SUCCESS, "The text was removed successfully");
-					} else {
-						notice.push(notice.SUCCESS, "The texts were removed successfully");
+			if (window.confirm("Are you sure you want to delete the(se) " + textIds.length + " text(s)?")) {
+				textService.remove(projectId, textIds, function(result) {
+					if (result.ok) {
+						if (textIds.length == 1) {
+							notice.push(notice.SUCCESS, "The text was removed successfully");
+						} else {
+							notice.push(notice.SUCCESS, "The texts were removed successfully");
+						}
+						$scope.selected = []; // Reset the selection
+						// TODO
 					}
-					$scope.selected = []; // Reset the selection
-					$scope.queryTexts();
-					// TODO
-				}
-			});
+					$scope.getPageDto();
+				});
+			}
 		};
 		// Add
 		$scope.addText = function() {
@@ -132,8 +131,8 @@ angular.module(
 			textService.update(projectId, model, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "The text '" + model.title + "' was added successfully");
-					$scope.queryTexts();
 				}
+				$scope.getPageDto();
 			});
 		};
 
@@ -410,26 +409,30 @@ angular.module(
 		};
 		
 		$scope.addProjectUser = function() {
-			var model = {};
 			if ($scope.addMode == 'addNew') {
-				model.name = $scope.typeahead.userName;
+				userService.createSimple($scope.typeahead.userName, $scope.project.id, function(result) {
+					if (result.ok) {
+						notice.push(notice.SUCCESS, "User created.  Username: " + $scope.typeahead.userName + "    Password: " + result.data.password);
+						$scope.queryProjectUsers();
+					};
+				});
 			} else if ($scope.addMode == 'addExisting') {
+				var model = {};
 				model.id = $scope.user.id;
-			} else if ($scope.addMode == 'invite') {
-				model.email = $scope.typeahead.userName;
-			}
-			projectService.updateUser($scope.project.id, model, function(result) {
-				if (result.ok) {
-					if ($scope.addMode == "addNew") {
-						notice.push(notice.SUCCESS, "User '" + model.name + "' was created and added to " + $scope.project.name);
-					} else if ($scope.addMode == "addExisting") {
+				projectService.updateUser($scope.project.id, model, function(result) {
+					if (result.ok) {
 						notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.name + " successfully");
-					} else {
-						notice.push(notice.SUCCESS, "'" + model.email + "' was invited to join the project " + $scope.project.name);
+						$scope.queryProjectUsers();
 					}
-					$scope.queryProjectUsers();
-				}
-			});
+				});
+			} else if ($scope.addMode == 'invite') {
+				userService.sendInvite($scope.typeahead.userName, $scope.project.id, function(result) {
+					if (result.ok) {
+						notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.name);
+						$scope.queryProjectUsers();
+					}
+				});
+			}
 		};
 	
 		$scope.selectUser = function(item) {

@@ -6,13 +6,13 @@
 	<a ng-show="rights.editOther" class="btn" href="{{project.url}}/details"><i class="icon-pencil"></i>Project Details</a>
 </form>
 <div class="new-item" collapse="newTextCollapsed">
-	<form class="well">
+	<form class="well" name="newTextForm">
 	<fieldset class="span4">
 	<table class="tableform">
 		<tr>
 			<td colspan="2">
 				<label>Title</label>
-				<input ng-model="title" type="text" placeholder="Title"/>
+				<input required ng-model="title" type="text" placeholder="Title"/>
 			</td>
 		</tr>
 		<tr>
@@ -32,7 +32,7 @@
 			<td><a ng-click="endCh = ''; endVs = ''" class="btn-link">reset</a></td>
 		</tr>
 	</table>
-	<button type="submit" class="btn" ng-click="addText(); newTextCollapsed = true"><i class="icon-ok"></i>Save</button>
+	<button type="submit" class="btn" ng-disabled="newTextForm.$invalid" ng-click="addText(); newTextCollapsed = true"><i class="icon-ok"></i>Save</button>
 	</fieldset>
 	<fieldset class="span4">
 		<div class="drop-box" ng-file-drop="onUsxFile($files)" ng-file-drop-available="dropSupported=true">

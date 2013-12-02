@@ -37,6 +37,7 @@ class TestQuestionModel extends UnitTestCase {
 		// Create
 		$question = new QuestionModel($projectModel);
 		$question->title = "SomeQuestion";
+		$question->description = "SomeQuestion";
 		$question->textRef->id = $textRef;
 		$id = $question->write();
 		$this->assertNotNull($id);
@@ -50,12 +51,12 @@ class TestQuestionModel extends UnitTestCase {
 		$this->assertEqual($textRef, $otherQuestion->textRef->id);
 		
 		// Update
-		$otherQuestion->title = 'OtherQuestion';
+		$otherQuestion->description = 'OtherQuestion';
 		$otherQuestion->write();
 
 		// Read back
 		$otherQuestion = new QuestionModel($projectModel, $id);
-		$this->assertEqual('OtherQuestion', $otherQuestion->title);
+		$this->assertEqual('OtherQuestion', $otherQuestion->description);
 		
 		// List
 		$list->read();
