@@ -33,8 +33,9 @@
 			<div id="footerBaseline">
 				<div class="container">
 					<div class="row">
-						<div class="darkTextLogo span3"></div>
-						<div class="span9">
+						<div class="darkTextLogo span2"></div>
+						<div class="span1" style="color: #404040"><small>v <?php echo VERSION;?></small></div>
+						<div class="span8">
 							<small>Copyright <?php echo strftime("%Y"); ?> SIL International. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</small>
 						</div>
 					</div>
