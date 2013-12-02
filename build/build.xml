@@ -33,14 +33,7 @@
 	</target>
 
 	<target name="version">
-		<script language="javascript">
-			<![CDATA[
-			// getting the value
-			buildnumber = project.getProperty("build.number");
-			index = buildnumber.lastIndexOf(".");
-			project.setProperty("version", buildnumber.substring(0, index));
-			]]>
-		</script>
+	    <property name="version" value="${build.number}" />
 		<echo>${version}</echo>
 	</target>
 	
