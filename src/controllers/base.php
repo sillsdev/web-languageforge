@@ -10,6 +10,8 @@ use models\rights\Realm;
 use models\rights\Roles;
 use models\ProjectModel;
 
+require_once(APPPATH . "version.php");
+
 
 class Base extends CI_Controller {
 	
