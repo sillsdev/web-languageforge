@@ -123,6 +123,9 @@
 		<replace file="${build.output}/package/htdocs/config/sf_config.php">
 			<replacefilter token="$config['sfenv'] = 'dev';" value="$config['sfenv'] = 'prod';" />
 		</replace>
+	    <replace file="${build.output}/package/htdocs/version.php">
+			<replacefilter token="9.9.9" value="${version}" />
+		</replace>
 		<chgrp type="both" group="www-data">
 			<dirset dir="${build.output}/package/htdocs/" />
 			<fileset dir="${build.output}/package/htdocs/">
