@@ -91,23 +91,46 @@ class TestCommunicate extends UnitTestCase {
 		$this->assertEqual($message->content, $emailTemplate);
 	}
 	
-	function testSendSignup_PropertiesToFromBodyOk() {
+	function testSendSignup_NoProject_PropertiesToFromBodyOk() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		$userId = $e->createUser("User", "Name", "name@example.com");
-		$userModel = new UserModel($userId);
+		$user = new UserModel($userId);
+		$project = null;
 		$delivery = new MockCommunicateDelivery();
 		
-		Communicate::sendSignup($userModel, $delivery);
+		Communicate::sendSignup($user, $project, $delivery);
 		
 		// What's in the delivery?
 		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
-		$expectedTo = array($userModel->emailPending => $userModel->name);
+		$expectedTo = array($user->emailPending => $user->name);
 		$this->assertEqual($expectedFrom, $delivery->from);
 		$this->assertEqual($expectedTo, $delivery->to);
+		$this->assertNoPattern('/' . SF_TESTPROJECT . '/', $delivery->subject);
 		$this->assertPattern('/Name/', $delivery->content);
-		$this->assertPattern('/' . $userModel->validationKey . '/', $delivery->content);
+		$this->assertPattern('/' . $user->validationKey . '/', $delivery->content);
+		$this->assertNoPattern('/' . SF_TESTPROJECT . '/', $delivery->content);
+	}
+
+	function testSendSignup_WithProject_PropertiesToFromBodyOk() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		$userId = $e->createUser("User", "Name", "name@example.com");
+		$user = new UserModel($userId);
+		$project = $e->createProject(SF_TESTPROJECT);
+		$delivery = new MockCommunicateDelivery();
 		
+		Communicate::sendSignup($user, $project, $delivery);
+		
+		// What's in the delivery?
+		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
+		$expectedTo = array($user->emailPending => $user->name);
+		$this->assertPattern('/' . SF_TESTPROJECT . '/', $delivery->from[SF_DEFAULT_EMAIL]);
+		$this->assertEqual($expectedTo, $delivery->to);
+		$this->assertPattern('/' . SF_TESTPROJECT . '/', $delivery->subject);
+		$this->assertPattern('/Name/', $delivery->content);
+		$this->assertPattern('/' . $user->validationKey . '/', $delivery->content);
+		$this->assertPattern('/' . SF_TESTPROJECT . ' Team/', $delivery->content);
 	}
 
 	function testCommunicateToUser_SendSms_PropertiesToFromMessageProviderInfoOk() {
