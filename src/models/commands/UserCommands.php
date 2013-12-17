@@ -107,6 +107,7 @@ class UserCommands
 		$userPassword->write();
 
 		// if signup from project page then add user to project
+		$project = null;
 		if ($projectCode) {
 			$project = ProjectModel::createFromDomain($projectCode);
 			if (!$project) {
@@ -119,8 +120,7 @@ class UserCommands
 			}
 		}
 
-		// TODO Choose between two emails.  One for project signup, one for general signup. CP 2013-10
-		Communicate::sendSignup($user, $delivery);
+		Communicate::sendSignup($user, $project, $delivery);
 		
 		return $userId;
 	}
