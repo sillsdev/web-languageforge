@@ -188,22 +188,38 @@ class Communicate
 	/**
 	 * Send an email to validate a user when they sign up.
 	 * @param UserModelBase $userModel
+	 * @param ProjectModel $projectModel
 	 * @param IDelivery $delivery
 	 */
-	public static function sendSignup($userModel, IDelivery $delivery = null) {
+	public static function sendSignup($userModel, $projectModel = null, IDelivery $delivery = null) {
 		$userModel->setValidation(7);
 		$userModel->write();
-		$vars = array(
-			'user' => $userModel,
-			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/validate/' . $userModel->validationKey,
-		);
-		$t = CommunicateHelper::templateFromFile('email/en/SignupValidate.html');
+		if (is_null($projectModel)) { 
+			// no project in scope, signup to ScriptureForge only
+			$from = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
+			$subject = 'ScriptureForge account validation';
+			$vars = array(
+					'user' => $userModel,
+					'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/validate/' . $userModel->validationKey,
+			);
+			$t = CommunicateHelper::templateFromFile('email/en/SignupValidate.html');
+		} else {
+			// project in scope, signup to project on ScriptureForge
+			$from = array(SF_DEFAULT_EMAIL => $projectModel->projectname . ' on ' . SF_DEFAULT_EMAIL_NAME);
+			$subject = $projectModel->projectname . ' project on ScriptureForge account validation';
+			$vars = array(
+					'user' => $userModel,
+					'project' => $projectModel,
+					'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/validate/' . $userModel->validationKey,
+			);
+			$t = CommunicateHelper::templateFromFile('email/en/SignupWithProjectValidate.html');
+		}
 		$html = $t->render($vars);
 
 		CommunicateHelper::deliverEmail(
-			array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME),
+			$from,
 			array($userModel->emailPending => $userModel->name),
-			'ScriptureForge account signup validation',
+			$subject,
 			$html,
 			$delivery
 		);
