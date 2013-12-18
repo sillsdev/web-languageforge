@@ -17,7 +17,7 @@ class UserProfileModel extends \models\UserModel
 	/**
 	 * @var IdReference
 	 */
-	public $id;
+	public $id;	// TODO Review. Is this needed since it's inherited from UserModelBase? IJH 2013-12
 	
 	/**
 	 * @var string

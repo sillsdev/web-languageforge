@@ -9,7 +9,6 @@ function getAvatarUrl(color, shape) {
 }
 
 
-
 angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.notice'])
 .controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
 		function userProfileCtrl($scope, userService, ss, notice) {
@@ -29,6 +28,7 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso
 		userService.readProfile(ss.currentUserId(), function(result) {
 			if (result.ok) {
 				$scope.user = result.data;
+				console.log(result.data);
 			}
 		});
 	};	
