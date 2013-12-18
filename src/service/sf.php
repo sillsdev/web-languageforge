@@ -97,6 +97,11 @@ class Sf
 		return JsonEncoder::encode($user);
 	}
 	
+	/**
+	 * Read the user profile from $id
+	 * @param string $id
+	 * @return UserProfileDto
+	 */
 	public function user_readProfile($id) {
 		return UserProfileDto::encode($id);
 	}
