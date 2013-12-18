@@ -12,14 +12,9 @@ class UserProfileDto
 	 * @returns array - the DTO array
 	 */
 	public static function encode($userId) {
-		$dto = array();
-		
+		// TODO Review. Simplification of this DTO Ok? IJH 2013-12
 		$userProfileModel = new UserProfileModel($userId);
-
-		$userProfile = UserProfileEncoder::encode($userProfileModel);
-		$dto['profile'] = $userProfile;
-
-		return $dto;
+		return UserProfileEncoder::encode($userProfileModel);
 	}
 }
 
