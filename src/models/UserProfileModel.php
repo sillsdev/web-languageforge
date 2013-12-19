@@ -5,20 +5,23 @@ namespace models;
 use models\UserModelMongoMapper;
 use models\mapper\Id;
 use models\mapper\IdReference;
+use models\mapper\MapOf;
 use models\mapper\MongoMapper;
 use models\mapper\ReferenceList;
 use models\rights\Realm;
 use models\rights\Roles;
 
-
 class UserProfileModel extends \models\UserModel
 {
 	
-	/**
-	 * @var IdReference
-	 */
-	public $id;	// TODO Review. Is this needed since it's inherited from UserModelBase? IJH 2013-12
-	
+	public function __construct($id = '') {
+		$this->id = new Id();
+		$this->projectUserProfiles = new MapOf(function($data) {
+			return new ProjectUserProfile();
+		});
+		parent::__construct($id);
+	}
+		
 	/**
 	 * @var string
 	 */
@@ -51,6 +54,16 @@ class UserProfileModel extends \models\UserModel
 	 */
 	public $gender;
 	
+	/**
+	 * 
+	 * @var MapOf<ProjectUserProfile>
+	 */
+	public $projectUserProfiles;
+	
+}
+
+class ProjectUserProfile {
+
 	/**
 	 * @var string
 	 */
