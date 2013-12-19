@@ -45,6 +45,7 @@ angular.module(
 			//preferFlash : false,
 			onready : function() {
 				$scope.audioReady = true;
+				$scope.$apply();
 				// Ready to use; soundManager.createSound() etc. can now be called.
 			}
 		});
