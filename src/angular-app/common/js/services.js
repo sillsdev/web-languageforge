@@ -11,8 +11,11 @@ angular.module('sf.services', ['jsonRpc'])
 		this.readProfile = function(id, callback) {
 			jsonRpc.call('user_readProfile', [id], callback);
 		};
-		this.update = function(model, projectId, callback) {
-			jsonRpc.call('user_update', [model, projectId], callback);
+		this.update = function(model, callback) {
+			jsonRpc.call('user_update', [model], callback);
+		};
+		this.updateProfile = function(model, callback) {
+			jsonRpc.call('user_updateProfile', [model], callback);
 		};
 		this.remove = function(userIds, callback) {
 			jsonRpc.call('user_delete', [userIds], callback);

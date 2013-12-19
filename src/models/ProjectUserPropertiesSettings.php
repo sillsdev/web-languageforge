@@ -19,7 +19,7 @@ class ProjectUserPropertiesSettings
 {
 	const PROPERTY_CITY                    = 'city';
 	const PROPERTY_PREFERRED_BIBLE_VERSION = 'preferredBibleVersion';
-	const PROPERTY_RELIGIOUS_AFFILIATION   = 'religiousAffliation';
+	const PROPERTY_RELIGIOUS_AFFILIATION   = 'religiousAffiliation';
 	const PROPERTY_STUDY_GROUP             = 'studyGroup';
 	const PROPERTY_FEEDBACK_GROUP          = 'feedbackGroup';
 	

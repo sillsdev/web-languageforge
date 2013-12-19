@@ -74,26 +74,12 @@ class Sf
 	//---------------------------------------------------------------
 	
 	/**
-	 * Create/Update a User
-	 * @param UserModel $json
-	 * @return string Id of written object
-	 */
-	public function user_update($params) {
-		$user = new \models\UserModel();
-		if ($params['id']) {
-			$user->read($params['id']);
-		}
-		JsonDecoder::decode($user, $params);
-		$result = $user->write();
-		return $result;
-	}
-
-	/**
 	 * Read a user from the given $id
 	 * @param string $id
+	 * @return UserModel $json
 	 */
 	public function user_read($id) {
-		$user = new \models\UserModel($id);
+		$user = new UserModel($id);
 		return JsonEncoder::encode($user);
 	}
 	
@@ -106,6 +92,44 @@ class Sf
 		return UserProfileDto::encode($id);
 	}
 	
+	/**
+	 * Create/Update a User
+	 * @param UserModel $json
+	 * @return string Id of written object
+	 */
+	public function user_update($params) {
+		$user = new UserModel();
+		if ($params['id']) {
+			$user->read($params['id']);
+		}
+		JsonDecoder::decode($user, $params);
+		$result = $user->write();
+		return $result;
+	}
+
+	/**
+	 * Create/Update a User Profile
+	 * @param UserProfileModel $json
+	 * @return string Id of written object
+	 */
+	public function user_updateProfile($params) {
+		$user = new UserProfileModel();
+		if ($params['id']) {
+			$user->read($params['id']);
+		}
+		
+		// don't allow the following keys to be persisted
+		if (array_key_exists('projects', $params)) {
+			unset($params['projects']);
+		}
+		if (array_key_exists('role', $params)) {
+					unset($params['role']);
+		}
+		JsonDecoder::decode($user, $params);
+		$result = $user->write();
+		return $result;
+	}
+
 	/**
 	 * Delete users
 	 * @param array<string> $userIds
