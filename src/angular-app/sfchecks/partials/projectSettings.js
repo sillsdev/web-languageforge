@@ -79,10 +79,11 @@ angular.module(
 			// TODO this should be fine just being $scope.project from the dto.
 			var newProject = {
 				id: $scope.project.id,
-				projectname: $scope.project.name,
+				projectname: $scope.project.projectname,
 				projectCode: $scope.project.projectCode,
 				featured: $scope.project.featured
 			};
+
 			projectService.update(newProject, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, $scope.project.name + " settings updated successfully");
@@ -141,20 +142,6 @@ angular.module(
 				var pickItem = {};
 				pickItem.key = $scope.newValue.replace(/ /gi,'_');
 				pickItem.value = $scope.newValue;
-
-				// TODO indexOf doesn't work with objects IJH 2013-11,
-				// In the console.log line below change the indexOf() content to pickItem, pickItem2, pickItem3,
-				// They should all return 0 but return 0, 1, -1 respectively.
-				var myArray = [];
-				myArray.push(pickItem);
-				var pickItem2 = {};
-				pickItem2.key = $scope.newValue.replace(/ /gi,'_');
-				pickItem2.value = $scope.newValue;
-				myArray.push(pickItem2);
-				var pickItem3 = {};
-				pickItem3.key = $scope.newValue.replace(/ /gi,'_');
-				pickItem3.value = $scope.newValue;
-				console.log("indexOf should equal 0 not 1 or -1! ", myArray.indexOf(pickItem3), ' ', pickItem);
 
 				// check if item exists before adding
 				if (!$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.containsKey(pickItem.key, 'key')) {
