@@ -1,35 +1,35 @@
 <h2 style="font-weight:normal">{{project.projectname}} Settings</h2>
 <tabset>
 	<tab heading="Users">
-		<div ng-controller="ProjectSettingsUsersCtrl">
-		<form ng-show="rights.showControlBar" class="control-bar form-inline">
-			<button ng-disabled="selected.length == 0" ng-show="rights.deleteOther" class="btn" ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Members</button>
-			<button ng-show="rights.create" class="btn" ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add Members</button>
-			<button ng-disabled="selected.length == 0" ng-show="rights.create" class="btn" ng-click="newMessageCollapsed = !newMessageCollapsed"><i class="icon-envelope"></i>Message Selected Users</button>
+		<div data-ng-controller="ProjectSettingsUsersCtrl">
+		<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther" class="btn" data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Members</button>
+			<button data-ng-show="rights.create" class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add Members</button>
+			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.create" class="btn" data-ng-click="newMessageCollapsed = !newMessageCollapsed"><i class="icon-envelope"></i>Message Selected Users</button>
 		</form>
 		<div class="new-item" collapse="!newUserCollapsed">
 			<form class="well form-inline">
 			<typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
 				<ul>
-					<li typeahead-item="user" ng-repeat="user in users" class="typeahead-item">
-						<img width="32px" ng-src="{{imageSource(user.avatarRef)}}" class="left">
+					<li typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
+						<img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
 						<p class="name">{{user.name}}</p>
 						<p class="email">{{user.email}}</p>
 					</li>
 				</ul>
 			</typeahead>
-			<button ng-model="addMode" class="btn" ng-disabled="!typeahead.userName" ng-click="addProjectUser()"><i ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+			<button data-ng-model="addMode" class="btn" data-ng-disabled="!typeahead.userName" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
 			</form>
 		</div>
 		<div collapse="newMessageCollapsed">
-			<form class="well" ng-submit="sendMessageToSelectedUsers()">
+			<form class="well" data-ng-submit="sendMessageToSelectedUsers()">
 			<fieldset>
 				<label>Email Subject</label>
-				<input name="emailSubject" required type="text" placeholder="Subject" ng-model="message.subject"/>
+				<input name="emailSubject" required type="text" placeholder="Subject" data-ng-model="message.subject"/>
 				<label>Email Message</label>
-				<textarea name="emailTemplate" required ng-model="message.emailTemplate" pui-jqte="jqteOptions"></textarea>
+				<textarea name="emailTemplate" required data-ng-model="message.emailTemplate" pui-jqte="jqteOptions"></textarea>
 				<label>SMS Message</label>
-				<input required name="smsTemplate" type="text" placeholder="SMS Message" ng-model="message.smsTemplate"/>
+				<input required name="smsTemplate" type="text" placeholder="SMS Message" data-ng-model="message.smsTemplate"/>
 			</fieldset>
 			<button type="submit" class="btn"><i class="icon-ok"></i>Send Message Now</button>
 			
@@ -47,11 +47,11 @@
 			</tr>
 			</thead>
 			<tbody>
-			<tr ng-repeat="user in list.visibleUsers" ng-class="{active: isSelected(user)}" >
-				<td width="16px" align="center"><input ng-show="rights.deleteOther" type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
+			<tr data-ng-repeat="user in list.visibleUsers" data-ng-class="{active: isSelected(user)}" >
+				<td width="16px" align="center"><input data-ng-show="rights.deleteOther" type="checkbox" data-ng-checked="isSelected(user)" data-ng-click="updateSelection($event, user)" /></td>
 				<td>{{user.username}}</td>
 				<td>{{user.name}}</td>
-				<td><select ng-model="user.role" ng-change="onRoleChange(user)" ng-options="role.key as role.name for role in roles" /></td>
+				<td><select data-ng-model="user.role" data-ng-change="onRoleChange(user)" data-ng-options="role.key as role.name for role in roles"></select></td>
 			</tr>
 			</tbody>
 		</table>		
@@ -59,46 +59,46 @@
 		</div>
 	</tab>
 	<tab heading="Project Properties">
-		<div ng-controller="ProjectSettingsPropertiesCtrl">
-		<form class="well" ng-submit="updateProject()">
+		<div data-ng-controller="ProjectSettingsPropertiesCtrl">
+		<form class="well" data-ng-submit="updateProject()">
 		<fieldset>
 			<label>Project Name</label>
-			<input type="text" placeholder="project name" ng-model="project.projectname"/>
+			<input type="text" placeholder="project name" data-ng-model="project.projectname"/>
 			<label>Project Code</label>
-			<input type="text" placeholder="project code" ng-model="project.projectCode"/>
-			<label class="checkbox"><input type="checkbox" ng-model="project.featured"/> Featured On Website</label>
+			<input type="text" placeholder="project code" data-ng-model="project.projectCode"/>
+			<label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> Featured On Website</label>
 		</fieldset>
 		<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 		</form>
 		</div>
 	</tab>
 	<tab heading="Project Setup">
-		<div ng-controller="ProjectSettingsSetupCtrl">
-		<form class="well" ng-submit="updateProject()">
+		<div data-ng-controller="ProjectSettingsSetupCtrl">
+		<form class="well" data-ng-submit="updateProject()">
 		<div class="row">
 		<div class="span4">
 		<fieldset class="well">
 			<legend>Show in the User's Profile</legend>
 			<ul class="unstyled">
-  				<li ng-click="selectList(listId)" ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"><div class="checkbox"><input ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list.name}}</div></li>
+  				<li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"><div class="checkbox"><input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list.name}}</div></li>
 			</ul>
 		</fieldset>
 		</div><div class="span4">
 		<fieldset class="well">
 			<legend style="width:auto;">{{project.userProperties.userProfilePickLists[currentListId].name}}</legend>
 			<label>Default Value</label>
-			<select ng-model="project.userProperties.userProfilePickLists[currentListId].defaultKey" ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists[currentListId].items"></select>
+			<select data-ng-model="project.userProperties.userProfilePickLists[currentListId].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists[currentListId].items"></select>
 			<table>
 				<thead>
 				<tr>
-					<td><input ng-model="newValue" type="text" placeholder="new value"/></td>
-					<td><a ng-click="pickAddItem()"><i class="icon-plus"></i></a></td>
+					<td><input data-ng-model="newValue" type="text" placeholder="new value"/></td>
+					<td><a data-ng-click="pickAddItem()"><i class="icon-plus"></i></a></td>
 				</tr>
 				</thead>
 				<tbody>
-				<tr ng-repeat="item in project.userProperties.userProfilePickLists[currentListId].items track by $index">
+				<tr data-ng-repeat="item in project.userProperties.userProfilePickLists[currentListId].items track by $index">
 					<td>{{item.value}}</td>
-					<td><a ng-click="pickRemoveItem($index)"><i class="icon-remove"></i></a></td>
+					<td><a data-ng-click="pickRemoveItem($index)"><i class="icon-remove"></i></a></td>
 				</tr>
 				</tbody>
 			</table>
@@ -109,20 +109,20 @@
 		</form>
 		</div>
 	</tab>
-	<tab select="readCommunicationSettings()" ng-show="$parent.canEditCommunicationSettings()" heading="Communication Settings">
-		<div ng-controller="ProjectSettingsCommunicationCtrl">
-		<form class="well" ng-submit="updateCommunicationSettings()">
+	<tab select="readCommunicationSettings()" data-ng-show="$parent.canEditCommunicationSettings()" heading="Communication Settings">
+		<div data-ng-controller="ProjectSettingsCommunicationCtrl">
+		<form class="well" data-ng-submit="updateCommunicationSettings()">
 		<fieldset>
 			<label>Twilio Account Username</label>
-			<input type="text" placeholder="(Twilio SID)" ng-model="settings.sms.accountId"/>
+			<input type="text" placeholder="(Twilio SID)" data-ng-model="settings.sms.accountId"/>
 			<label>Twillio Auth Token</label>
-			<input type="text" placeholder="(Twilio Auth Token)" ng-model="settings.sms.authToken"/>
+			<input type="text" placeholder="(Twilio Auth Token)" data-ng-model="settings.sms.authToken"/>
 			<label>SMS From Number</label>
-			<input type="text" placeholder="(From Number)" ng-model="settings.sms.fromNumber"/>
+			<input type="text" placeholder="(From Number)" data-ng-model="settings.sms.fromNumber"/>
 			<label>Email From (reply-to) Address</label>
-			<input type="email" placeholder="(From Email)" ng-model="settings.email.fromAddress"/>
+			<input type="email" placeholder="(From Email)" data-ng-model="settings.email.fromAddress"/>
 			<label>Email Name</label>
-			<input type="text" placeholder="(From Name)" ng-model="settings.email.fromName"/>
+			<input type="text" placeholder="(From Name)" data-ng-model="settings.email.fromName"/>
 		</fieldset>
 		<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 		
