@@ -16,13 +16,14 @@ class UserProfileEncoder extends JsonEncoder {
 	 */
 	public function encodeReferenceList($key, $model) {
 		if ($key != 'projects') {
-			return parent::encodeReferenceList($key, $model);
+ 			return parent::encodeReferenceList($key, $model);
 		}
 		$result = array_map(
 				function($id) {
 					CodeGuard::checkTypeAndThrow($id, 'models\mapper\Id');
 					$projectModel = new ProjectModel($id->asString());
 					$projectDto = array();
+					$projectDto['id'] = $id->asString();
 					$projectDto['name'] = $projectModel->projectname;
 					$projectDto['userProperties'] = self::encode($projectModel->userProperties);
 					return $projectDto;

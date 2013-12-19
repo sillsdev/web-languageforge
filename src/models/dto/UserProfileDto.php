@@ -2,6 +2,7 @@
 
 namespace models\dto;
 
+use models\mapper\JsonEncoder;
 use models\UserProfileModel;
 
 class UserProfileDto
@@ -12,9 +13,16 @@ class UserProfileDto
 	 * @returns array - the DTO array
 	 */
 	public static function encode($userId) {
-		// TODO Review. Simplification of this DTO Ok? IJH 2013-12
+		$dto = array();
+		
 		$userProfileModel = new UserProfileModel($userId);
-		return UserProfileEncoder::encode($userProfileModel);
+		$userProfile = UserProfileEncoder::encode($userProfileModel);
+		$dto['projectsSettings'] = $userProfile['projects'];
+
+		unset($userProfile['projects']);
+		$dto['userProfile'] = $userProfile;
+		
+		return $dto;
 	}
 }
 
