@@ -1,5 +1,7 @@
 <?php
 
+use libraries\palaso\exceptions\UserNotAuthenticatedException;
+
 use libraries\palaso\CodeGuard;
 use libraries\palaso\JsonRpcServer;
 use libraries\sfchecks\Communicate;
@@ -60,6 +62,27 @@ class Sf
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
  		ini_set('display_errors', 0);
 	}
+	
+	private function isAnonymousMethod($methodName) {
+		$methods = array(
+				'username_exists',
+				'user_register',
+				'get_captcha_src',
+				'user_readForRegistration',
+				'user_updateFromRegistration'
+		);
+		return in_array($methodName, $methods);
+	}
+	
+	public function checkPermissions($methodName) {
+
+		if (!$this->isAnonymousMethod($methodName) && !$this->_userId) {
+			throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
+		}
+		
+		// do other permission checks here
+	}
+	
 
 	public function update_last_activity($newtime = NULL) {
 		if (is_null($newtime)) {
