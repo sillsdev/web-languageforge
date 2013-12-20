@@ -24,6 +24,10 @@ class ProjectCommands
 			$project->remove();
 			$count++;
 		}
+		// TODO BUG: this does not remove users from a project before the project is deleted
+		// STEP 1: enumerate users in the project
+		// STEP 2: remove the user from the project
+		// STEP 3: delete the project
 		return $count;
 	}
 
