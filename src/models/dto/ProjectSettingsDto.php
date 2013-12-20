@@ -2,6 +2,8 @@
 
 namespace models\dto;
 
+use models\mapper\JsonEncoder;
+
 use models\UserModel;
 use models\ProjectModel;
 
@@ -20,9 +22,8 @@ class ProjectSettingsDto
 		$data = array();
 		$data['count'] = $list->count;
 		$data['entries'] = $list->entries;
-		$data['projectName'] = $projectModel->projectname;
-		$data['projectCode'] = $projectModel->projectCode;
-		$data['projectIsFeatured'] = $projectModel->featured;
+		$data['project'] = JsonEncoder::encode($projectModel);
+		unset($data['project']['users']);
 		$data['rights'] = RightsHelper::encode($userModel, $projectModel);
 		$data['bcs'] = BreadCrumbHelper::encode('settings', $projectModel, null, null);
 		return $data;

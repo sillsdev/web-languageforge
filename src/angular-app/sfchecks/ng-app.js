@@ -7,6 +7,7 @@ angular.module('sfchecks',
 		 'ngSanitize',
 		 'sfchecks.projects',
 		 'sfchecks.project',
+		 'sfchecks.projectSettings',
 		 'sfchecks.questions',
 		 'sfchecks.question',
 		 'sfchecks.filters',
@@ -30,9 +31,9 @@ angular.module('sfchecks',
     		}
     	);
 	    $routeProvider.when(
-	    		'/project/:projectId/details', 
+	    		'/project/:projectId/settings', 
 	    		{
-	    			templateUrl: '/angular-app/sfchecks/partials/project-settings.html', 
+	    			templateUrl: '/angular-app/sfchecks/partials/projectSettings.html', 
 	    			controller: 'ProjectSettingsCtrl'
 	    		}
 	    	);
