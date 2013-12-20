@@ -34,10 +34,12 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso
 				// populate the project pickList default values with the userProfile picked values 
 				for (var i = 0; i < $scope.projectsSettings.length; i++) {
 					var project = $scope.projectsSettings[i];
-					for (var pickListId in project.userProperties.userProfilePickLists) {
-						if ($scope.user.projectUserProfiles[project.id]) {	// ensure user has profile data
-							if ($scope.user.projectUserProfiles[project.id][pickListId])
-								$scope.projectsSettings[i].userProperties.userProfilePickLists[pickListId].defaultKey = $scope.user.projectUserProfiles[project.id][pickListId];
+					if (project.userProperties && project.userProperties.userProfilePickLists) {
+						for (var pickListId in project.userProperties.userProfilePickLists) {
+							if ($scope.user.projectUserProfiles[project.id]) {	// ensure user has profile data
+								if ($scope.user.projectUserProfiles[project.id][pickListId])
+									$scope.projectsSettings[i].userProperties.userProfilePickLists[pickListId].defaultKey = $scope.user.projectUserProfiles[project.id][pickListId];
+							}
 						}
 					}
 				}
@@ -51,9 +53,11 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso
 		for (var i = 0; i < $scope.projectsSettings.length; i++) {
 			var project = $scope.projectsSettings[i];
 			$scope.user.projectUserProfiles[project.id] = {};
-			for (var pickListId in project.userProperties.userProfilePickLists) {
-				var pickList = project.userProperties.userProfilePickLists[pickListId];
-				$scope.user.projectUserProfiles[project.id][pickListId] = pickList.defaultKey;
+			if (project.userProperties && project.userProperties.userProfilePickLists) {
+				for (var pickListId in project.userProperties.userProfilePickLists) {
+					var pickList = project.userProperties.userProfilePickLists[pickListId];
+					$scope.user.projectUserProfiles[project.id][pickListId] = pickList.defaultKey;
+				}
 			}
 		}
 		
