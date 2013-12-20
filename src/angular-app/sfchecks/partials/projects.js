@@ -35,7 +35,7 @@ angular.module(
 		// Listview Data
 		$scope.projects = [];
 		$scope.queryProjectsForUser = function() {
-			console.log("queryProjectForUser()");
+//			console.log("queryProjectForUser()");
 			projectService.list(function(result) {
 				if (result.ok) {
 					$scope.projects = result.data.entries;
@@ -67,7 +67,7 @@ angular.module(
 		};
 		// Add
 		$scope.addProject = function() {
-			console.log("addProject()");
+//			console.log("addProject()");
 			var model = {};
 			model.id = '';
 			model.projectname = $scope.projectName;

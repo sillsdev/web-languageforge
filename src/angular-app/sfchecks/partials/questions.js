@@ -256,7 +256,7 @@ angular.module(
 				$scope.rights = {
 					editOther: ss.hasRight($scope.dto.rights, ss.domain.TEXTS, ss.operation.EDIT_OTHER),
 				};
-				console.log($scope.dto);
+//				console.log($scope.dto);
 				breadcrumbService.updateCrumb('top', 1, {label: $scope.dto.bcs.project.crumb});
 				breadcrumbService.updateCrumb('top', 2, {label: $scope.dto.text.title});
 			}
