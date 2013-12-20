@@ -100,7 +100,7 @@ angular.module(
 		$scope.currentListsEnabled = [];
 		$scope.updateProject = function() {
 			// populate the list of enabled user profile properties
-			console.log("updateProject ", $scope.currentListsEnabled, ' ', $scope.project.userProperties.userProfilePropertiesEnabled);
+//			console.log("updateProject ", $scope.currentListsEnabled, ' ', $scope.project.userProperties.userProfilePropertiesEnabled);
 			$scope.project.userProperties.userProfilePropertiesEnabled = [];
 			for (var listId in $scope.currentListsEnabled) {
 				if ($scope.currentListsEnabled[listId]) {
@@ -117,7 +117,7 @@ angular.module(
 		
 		$scope.currentListId = '';
 		$scope.selectList = function(listId) {
-			console.log("selectList ", listId);
+//			console.log("selectList ", listId);
 			$scope.currentListId = listId;
 		};
 		
@@ -132,8 +132,8 @@ angular.module(
 		};
 		
 		$scope.pickAddItem = function() {
-			console.log("pickAddItem ", $scope.currentListId, " ", $scope.newValue);
-			console.log($scope.project.userProperties.userProfilePickLists[$scope.currentListId]);
+//			console.log("pickAddItem ", $scope.currentListId, " ", $scope.newValue);
+//			console.log($scope.project.userProperties.userProfilePickLists[$scope.currentListId]);
 			if ($scope.project.userProperties.userProfilePickLists[$scope.currentListId].items == undefined) {
 				$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items = [];
 			}
@@ -151,12 +151,12 @@ angular.module(
 		};
 
 		$scope.pickRemoveItem = function(index) {
-			console.log("pickRemoveItem ", $scope.currentListId, " ", index);
+//			console.log("pickRemoveItem ", $scope.currentListId, " ", index);
 			$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.splice(index, 1);
 		};
 		
 		$scope.$watch('project.userProperties', function(newValue) {
-			console.log("project watch ", newValue);
+//			console.log("project watch ", newValue);
 			if (newValue != undefined) {
 				for (var key in newValue.userProfilePickLists) {
 					$scope.currentListId = key;
@@ -233,7 +233,7 @@ angular.module(
 		};
 		
 		$scope.removeProjectUsers = function() {
-			console.log("removeUsers");
+//			console.log("removeUsers");
 			var userIds = [];
 			for(var i = 0, l = $scope.selected.length; i < l; i++) {
 				userIds.push($scope.selected[i].id);
@@ -265,7 +265,7 @@ angular.module(
 			var model = {};
 			model.id = user.id;
 			model.role = user.role;
-			console.log('userchange...', model);
+//			console.log('userchange...', model);
 			projectService.updateUser($scope.project.id, model, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, user.username + "'s role was changed to " + user.role);
@@ -287,7 +287,7 @@ angular.module(
 	    $scope.typeahead.userName = '';
 		
 		$scope.queryUser = function(userName) {
-			console.log('searching for ', userName);
+//			console.log('searching for ', userName);
 			userService.typeahead(userName, function(result) {
 				// TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
 				if (result.ok) {
@@ -352,7 +352,7 @@ angular.module(
 		};
 	
 		$scope.selectUser = function(item) {
-			console.log('user selected', item);
+//			console.log('user selected', item);
 			$scope.user = item;
 			$scope.typeahead.userName = item.name;
 			$scope.updateAddMode('addExisting');
