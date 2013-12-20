@@ -65,7 +65,7 @@ angular.module(
 		$scope.updateCommunicationSettings = function() {
 			projectService.updateSettings($scope.project.id, $scope.settings.sms, $scope.settings.email, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, $scope.project.name + " SMS settings updated successfully");
+					notice.push(notice.SUCCESS, $scope.project.projectname + " SMS settings updated successfully");
 				}
 			});
 		};
@@ -103,14 +103,14 @@ angular.module(
 			console.log("updateProject ", $scope.currentListsEnabled, ' ', $scope.project.userProperties.userProfilePropertiesEnabled);
 			$scope.project.userProperties.userProfilePropertiesEnabled = [];
 			for (var listId in $scope.currentListsEnabled) {
-				if ($scope.currentListsEnabled[listId]) {
+				if ($scope.currentListsEnabled[listId] && listId != 'containsKey') {
 					$scope.project.userProperties.userProfilePropertiesEnabled.push(listId);
 				}
 			}
 
 			projectService.update($scope.project, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, $scope.project.name + " settings updated successfully");
+					notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
 				}
 			});
 		};
@@ -337,14 +337,14 @@ angular.module(
 				model.id = $scope.user.id;
 				projectService.updateUser($scope.project.id, model, function(result) {
 					if (result.ok) {
-						notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.name + " successfully");
+						notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectname + " successfully");
 						$scope.queryProjectUsers();
 					}
 				});
 			} else if ($scope.addMode == 'invite') {
 				userService.sendInvite($scope.typeahead.userName, $scope.project.id, function(result) {
 					if (result.ok) {
-						notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.name);
+						notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.projectname);
 						$scope.queryProjectUsers();
 					}
 				});
