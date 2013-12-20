@@ -35,8 +35,10 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso
 				for (var i = 0; i < $scope.projectsSettings.length; i++) {
 					var project = $scope.projectsSettings[i];
 					for (var pickListId in project.userProperties.userProfilePickLists) {
-						if ($scope.user.projectUserProfiles[project.id][pickListId])
-							$scope.projectsSettings[i].userProperties.userProfilePickLists[pickListId].defaultKey = $scope.user.projectUserProfiles[project.id][pickListId];
+						if ($scope.user.projectUserProfiles[project.id]) {	// ensure user has profile data
+							if ($scope.user.projectUserProfiles[project.id][pickListId])
+								$scope.projectsSettings[i].userProperties.userProfilePickLists[pickListId].defaultKey = $scope.user.projectUserProfiles[project.id][pickListId];
+						}
 					}
 				}
 			}
