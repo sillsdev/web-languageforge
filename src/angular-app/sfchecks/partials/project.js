@@ -119,7 +119,7 @@ angular.module(
 		};
 		// Add
 		$scope.addText = function() {
-			console.log("addText()");
+//			console.log("addText()");
 			var model = {};
 			model.id = '';
 			model.title = $scope.title;
