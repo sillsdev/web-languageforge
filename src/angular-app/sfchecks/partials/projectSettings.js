@@ -103,7 +103,7 @@ angular.module(
 			console.log("updateProject ", $scope.currentListsEnabled, ' ', $scope.project.userProperties.userProfilePropertiesEnabled);
 			$scope.project.userProperties.userProfilePropertiesEnabled = [];
 			for (var listId in $scope.currentListsEnabled) {
-				if ($scope.currentListsEnabled[listId] && listId != 'containsKey') {
+				if ($scope.currentListsEnabled[listId]) {
 					$scope.project.userProperties.userProfilePropertiesEnabled.push(listId);
 				}
 			}
@@ -130,7 +130,7 @@ angular.module(
 		    }
 		    return false;
 		};
-
+		
 		$scope.pickAddItem = function() {
 			console.log("pickAddItem ", $scope.currentListId, " ", $scope.newValue);
 			console.log($scope.project.userProperties.userProfilePickLists[$scope.currentListId]);
@@ -162,7 +162,7 @@ angular.module(
 					$scope.currentListId = key;
 					break;
 				}
-				$scope.currentListsEnabled = [];
+				$scope.currentListsEnabled = {};
 				for (var i = 0; i < $scope.project.userProperties.userProfilePropertiesEnabled.length; i++) {
 					$scope.currentListsEnabled[$scope.project.userProperties.userProfilePropertiesEnabled[i]] = true;
 				}
