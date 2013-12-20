@@ -23,6 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 namespace libraries\palaso;
 
+use libraries\palaso\exceptions\UserNotAuthenticatedException;
+
 /**
  * This class build a json-RPC Server 1.0
  * http://json-rpc.org/wiki/specification
@@ -53,6 +55,8 @@ class JsonRpcServer {
 
 		// executes the task on local object
 		try {
+			// TODO: refactor to use an error dto
+			$object->checkPermissions($request['method']);
 			if (method_exists($object, $request['method'])) {
 				$result = call_user_func_array(array($object,$request['method']),$request['params']);
 				$response = array (
