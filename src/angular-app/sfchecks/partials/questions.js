@@ -11,6 +11,28 @@ angular.module(
 		$scope.projectId = projectId;
 		$scope.textId = textId;
 		
+		$scope.audioReady = false;
+		soundManager.setup({
+			url : '/js/lib/sm2/',
+			flashVersion : 9, // optional: shiny features (default = 8)
+			// optional: ignore Flash where possible, use 100% HTML5 mode
+			//preferFlash : false,
+			onready : function() {
+				$scope.audioReady = true;
+				$scope.$apply();
+				// Ready to use; soundManager.createSound() etc. can now be called.
+			}
+		});
+		
+		$scope.audioIcon = function() {
+			var map = {
+				'stop': 'icon-volume-up',
+				'play': 'icon-pause',
+				'pause': 'icon-play'
+			};
+			return map[$scope.state];
+		};
+
 		// Rights
 		$scope.rights = {};
 		$scope.rights.deleteOther = false; 
@@ -81,6 +103,10 @@ angular.module(
 
 					$scope.enhanceDto($scope.questions);
 					$scope.text = result.data.text;
+					if ($scope.text.audioUrl != '') {
+						$scope.audioDownloadUrl = '/download/' + $scope.text.audioUrl;
+						$scope.text.audioUrl = '/' + $scope.text.audioUrl;
+					} 
 					$scope.project = result.data.project;
 					$scope.text.url = linkService.text(projectId, textId);
 					//console.log($scope.project.name);

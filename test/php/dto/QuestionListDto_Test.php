@@ -28,7 +28,8 @@ class TestQuestionListDto extends UnitTestCase {
 
 		$text = new TextModel($project);
 		$text->title = "Chapter 3";
-		$text->content = "I opened my eyes upon a strange and weird landscape. I knew that I was on Mars; …";
+		$text->content = '<usx version="2.0"> <chapter number="1" style="c" /> <verse number="1" style="v" /> <para style="q1">Blessed is the man</para> <para style="q2">who does not walk in the counsel of the wicked</para> <para style="q1">or stand in the way of sinners</para> <usx>';
+		
 		$textId = $text->write();
 
 		// Answers are tied to specific users, so let's create some sample users
@@ -90,6 +91,9 @@ class TestQuestionListDto extends UnitTestCase {
 		$this->assertEqual($dto['entries'][1]['answerCount'], 2);
 		// Specifically check if comments got included in answer count
 		$this->assertNotEqual($dto['entries'][1]['answerCount'], 3, "Comments should not be included in answer count.");
+		
+		// make sure our text content is coming down into the dto
+		$this->assertTrue(strlen($dto['text']['content']) > 0);
 
 	}
 
