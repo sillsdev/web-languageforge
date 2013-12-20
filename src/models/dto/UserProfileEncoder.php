@@ -21,11 +21,15 @@ class UserProfileEncoder extends JsonEncoder {
 		$result = array_map(
 				function($id) {
 					CodeGuard::checkTypeAndThrow($id, 'models\mapper\Id');
-					$projectModel = new ProjectModel($id->asString());
 					$projectDto = array();
-					$projectDto['id'] = $id->asString();
-					$projectDto['name'] = $projectModel->projectname;
-					$projectDto['userProperties'] = self::encode($projectModel->userProperties);
+					try {
+						$projectModel = new ProjectModel($id->asString());
+						$projectDto['id'] = $id->asString();
+						$projectDto['name'] = $projectModel->projectname;
+						$projectDto['userProperties'] = self::encode($projectModel->userProperties);
+					} catch (\Exception $e) {
+						
+					}
 					return $projectDto;
 				},
 				$model->refs

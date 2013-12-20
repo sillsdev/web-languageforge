@@ -8,8 +8,8 @@ angular.module('sf.services', ['jsonRpc'])
 		this.read = function(id, callback) {
 			jsonRpc.call('user_read', [id], callback);
 		};
-		this.readProfile = function(id, callback) {
-			jsonRpc.call('user_readProfile', [id], callback);
+		this.readProfile = function(callback) {
+			jsonRpc.call('user_readProfile', [], callback);
 		};
 		this.update = function(model, callback) {
 			jsonRpc.call('user_update', [model], callback);
