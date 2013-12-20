@@ -9,7 +9,6 @@ function getAvatarUrl(color, shape) {
 }
 
 
-
 angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.notice'])
 .controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
 		function userProfileCtrl($scope, userService, ss, notice) {
@@ -28,18 +27,42 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso
 	var loadUser = function() {
 		userService.readProfile(ss.currentUserId(), function(result) {
 			if (result.ok) {
-				$scope.user = result.data;
+				$scope.user = result.data.userProfile;
+				$scope.projectsSettings = result.data.projectsSettings;
+				console.log(result.data);
+				
+				// populate the project pickList default values with the userProfile picked values 
+				for (var i = 0; i < $scope.projectsSettings.length; i++) {
+					var project = $scope.projectsSettings[i];
+					for (var pickListId in project.userProperties.userProfilePickLists) {
+						if ($scope.user.projectUserProfiles[project.id]) {	// ensure user has profile data
+							if ($scope.user.projectUserProfiles[project.id][pickListId])
+								$scope.projectsSettings[i].userProperties.userProfilePickLists[pickListId].defaultKey = $scope.user.projectUserProfiles[project.id][pickListId];
+						}
+					}
+				}
 			}
 		});
 	};	
 	
 	$scope.updateUser = function() {
-		userService.update($scope.user, function(result) {
+		// populate the userProfile picked values from the project pickLists
+		console.log("updateProfile ", $scope.user);
+		for (var i = 0; i < $scope.projectsSettings.length; i++) {
+			var project = $scope.projectsSettings[i];
+			$scope.user.projectUserProfiles[project.id] = {};
+			for (var pickListId in project.userProperties.userProfilePickLists) {
+				var pickList = project.userProperties.userProfilePickLists[pickListId];
+				$scope.user.projectUserProfiles[project.id][pickListId] = pickList.defaultKey;
+			}
+		}
+		
+		userService.updateProfile($scope.user, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "Profile updated successfully");
 			}
 		});
-	}
+	};
 	
 	loadUser(); // load the user data right away
 	
