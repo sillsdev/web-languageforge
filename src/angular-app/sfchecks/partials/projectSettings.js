@@ -329,7 +329,7 @@ angular.module(
 				userService.createSimple($scope.typeahead.userName, $scope.project.id, function(result) {
 					if (result.ok) {
 						notice.push(notice.SUCCESS, "User created.  Username: " + $scope.typeahead.userName + "    Password: " + result.data.password);
-						$scope.queryProjectUsers();
+						$scope.queryProjectSettings();
 					};
 				});
 			} else if ($scope.addMode == 'addExisting') {
@@ -338,14 +338,14 @@ angular.module(
 				projectService.updateUser($scope.project.id, model, function(result) {
 					if (result.ok) {
 						notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectname + " successfully");
-						$scope.queryProjectUsers();
+						$scope.queryProjectSettings();
 					}
 				});
 			} else if ($scope.addMode == 'invite') {
 				userService.sendInvite($scope.typeahead.userName, $scope.project.id, function(result) {
 					if (result.ok) {
 						notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.projectname);
-						$scope.queryProjectUsers();
+						$scope.queryProjectSettings();
 					}
 				});
 			}
