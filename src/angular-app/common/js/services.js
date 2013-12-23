@@ -8,11 +8,14 @@ angular.module('sf.services', ['jsonRpc'])
 		this.read = function(id, callback) {
 			jsonRpc.call('user_read', [id], callback);
 		};
-		this.readProfile = function(id, callback) {
-			jsonRpc.call('user_readProfile', [id], callback);
+		this.readProfile = function(callback) {
+			jsonRpc.call('user_readProfile', [], callback);
 		};
-		this.update = function(model, projectId, callback) {
-			jsonRpc.call('user_update', [model, projectId], callback);
+		this.update = function(model, callback) {
+			jsonRpc.call('user_update', [model], callback);
+		};
+		this.updateProfile = function(model, callback) {
+			jsonRpc.call('user_updateProfile', [model], callback);
 		};
 		this.remove = function(userIds, callback) {
 			jsonRpc.call('user_delete', [userIds], callback);
@@ -76,9 +79,8 @@ angular.module('sf.services', ['jsonRpc'])
 		this.removeUsers = function(projectId, users, callback) {
 			jsonRpc.call('project_removeUsers', [projectId, users], callback);
 		};
-		this.listUsers = function(projectId, callback) {
-			// TODO Paging CP 2013-07
-			jsonRpc.call('project_listUsers', [projectId], callback);
+		this.projectSettings = function(projectId, callback) {
+			jsonRpc.call('project_settings', [projectId], callback);
 		};
 		this.updateSettings = function(projectId, smsSettings, emailSettings, callback) {
 			jsonRpc.call('project_updateSettings', [projectId, smsSettings, emailSettings], callback);

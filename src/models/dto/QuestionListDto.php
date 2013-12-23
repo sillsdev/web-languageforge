@@ -2,6 +2,8 @@
 
 namespace models\dto;
 
+use models\mapper\JsonEncoder;
+
 use models\ProjectModel;
 use models\QuestionAnswersListModel;
 use models\TextModel;
@@ -31,9 +33,14 @@ class QuestionListDto
 				'name' => $projectModel->projectname,
 				'id' => $projectId);
 		$textModel = new TextModel($projectModel, $textId);
+		$data['text'] = JsonEncoder::encode($textModel);
+		$usxHelper = new UsxHelper($textModel->content);
+		$data['text']['content'] = $usxHelper->toHtml();
+		/*
 		$data['text'] = array(
 				'title' => $textModel->title,
 				'id' => $textId);
+				*/
 		foreach ($questionList->entries as $questionData) {
 			// Just want answer count, not whole list
 			$questionData['answerCount'] = count($questionData['answers']);

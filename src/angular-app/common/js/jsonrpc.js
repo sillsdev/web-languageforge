@@ -6,7 +6,7 @@
 
 var json_rpc = angular.module('jsonRpc', ['sf.error']);
 
-json_rpc.factory('jsonRpc', ['$http', 'error', function($http, error) {
+json_rpc.factory('jsonRpc', ['$http', '$window', 'error', function($http, $window, error) {
 	this.params = {};
 	this.last_id = 0;
 	
@@ -70,6 +70,13 @@ json_rpc.factory('jsonRpc', ['$http', 'error', function($http, error) {
 			if (data.error != null) {
 				// TODO error handling for jsonRpc CP 2013-07
 				error.error('RPC Error', data.error);
+				
+				// TODO refactor this hack to support a proper error DTO - cjh 2013-12
+				if (data.error.indexOf("Please login again") != -1) {
+					// redirect to login page with message
+					error.error("You will now be redirected to the login page.");
+					$window.location.href = "/login";
+				}
 				return;
 			}
 			if (data.error == null) {
