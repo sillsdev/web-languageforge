@@ -1,5 +1,7 @@
 <?php
 
+use libraries\palaso\exceptions\UserNotAuthenticatedException;
+
 use libraries\palaso\CodeGuard;
 use libraries\palaso\JsonRpcServer;
 use libraries\sfchecks\Communicate;
@@ -29,7 +31,8 @@ use models\ProjectSettingsModel;
 use models\QuestionModel;
 use models\UnreadMessageModel;
 use models\UserModel;
-use models\UserModelForProfile;
+use models\UserProfileModel;
+use models\dto\UserProfileDto;
 
 require_once(APPPATH . 'vendor/autoload.php');
 
@@ -59,6 +62,27 @@ class Sf
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
  		ini_set('display_errors', 0);
 	}
+	
+	private function isAnonymousMethod($methodName) {
+		$methods = array(
+				'username_exists',
+				'user_register',
+				'get_captcha_src',
+				'user_readForRegistration',
+				'user_updateFromRegistration'
+		);
+		return in_array($methodName, $methods);
+	}
+	
+	public function checkPermissions($methodName) {
+
+		if (!$this->isAnonymousMethod($methodName) && !$this->_userId) {
+			throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
+		}
+		
+		// do other permission checks here
+	}
+	
 
 	public function update_last_activity($newtime = NULL) {
 		if (is_null($newtime)) {
@@ -73,12 +97,31 @@ class Sf
 	//---------------------------------------------------------------
 	
 	/**
+	 * Read a user from the given $id
+	 * @param string $id
+	 * @return UserModel $json
+	 */
+	public function user_read($id) {
+		$user = new UserModel($id);
+		return JsonEncoder::encode($user);
+	}
+	
+	/**
+	 * Read the user profile from $id
+	 * @param string $id
+	 * @return UserProfileDto
+	 */
+	public function user_readProfile() {
+		return UserProfileDto::encode($this->_userId);
+	}
+	
+	/**
 	 * Create/Update a User
 	 * @param UserModel $json
 	 * @return string Id of written object
 	 */
 	public function user_update($params) {
-		$user = new \models\UserModel();
+		$user = new UserModel();
 		if ($params['id']) {
 			$user->read($params['id']);
 		}
@@ -88,19 +131,28 @@ class Sf
 	}
 
 	/**
-	 * Read a user from the given $id
-	 * @param string $id
+	 * Create/Update a User Profile
+	 * @param UserProfileModel $json
+	 * @return string Id of written object
 	 */
-	public function user_read($id) {
-		$user = new \models\UserModel($id);
-		return JsonEncoder::encode($user);
+	public function user_updateProfile($params) {
+		$user = new UserProfileModel();
+		if ($params['id']) {
+			$user->read($params['id']);
+		}
+		
+		// don't allow the following keys to be persisted
+		if (array_key_exists('projects', $params)) {
+			unset($params['projects']);
+		}
+		if (array_key_exists('role', $params)) {
+					unset($params['role']);
+		}
+		JsonDecoder::decode($user, $params);
+		$result = $user->write();
+		return $result;
 	}
-	
-	public function user_readProfile($id) {
-		$user = new \models\UserModelForProfile($id);
-		return JsonEncoder::encode($user);
-	}
-	
+
 	/**
 	 * Delete users
 	 * @param array<string> $userIds
@@ -269,7 +321,7 @@ class Sf
 		ProjectCommands::removeUsers($projectId, $userIds);
 	}
 	
-	public function project_listUsers($projectId) {
+	public function project_settings($projectId) {
 		$result = ProjectSettingsDto::encode($projectId, $this->_userId);
 		return $result;
 	}
