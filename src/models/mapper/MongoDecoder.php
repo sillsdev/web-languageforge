@@ -55,6 +55,10 @@ class MongoDecoder extends JsonDecoder {
 	 * @throws \Exception
 	 */
 	public function decodeArrayOf($key, $model, $data) {
+		if ($data == null) {
+			$model->data = array();
+			return;
+		}
 		if (!is_array($data)) {
 			throw new \Exception("Bad data when array expected. '$data'");
 		}

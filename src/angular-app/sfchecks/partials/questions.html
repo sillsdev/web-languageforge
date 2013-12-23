@@ -23,23 +23,37 @@
 	</form>
 </div>
 <hr />
-<div listview hide-if-empty="true" search="queryQuestions()" items="questions" visible-items="visibleQuestions" select="">
-<div ng-repeat="question in visibleQuestions" class="details-row">
-	<ul class="inline" ng-class="{active: isSelected(question)}">
-		<li ng-show="rights.deleteOther"><input type="checkbox" ng-checked="isSelected(question)" ng-click="updateSelection($event, question)" /></li>
-		<li><a href="{{question.url}}">
-			<div class="attention-block">
-				<span class="count">{{getAnswerCount(question)}}</span><br />
-				<span class="subtitle">answers</span>
-			</div>
-		</a></li>
-		<li>
-			<a href="{{question.url}}">
-				<span class="larger-text">{{question.calculatedTitle}}</span>
-			</a>
-		</li>
-		<li>{{getResponses(question)}} responses</li>
-	</ul>
-	<hr />
+
+<div class="row">
+    <div class="span5">
+    	<h2 class="pull-left" ng-show="text.audioUrl && audioReady">
+    		<a sgw-sound-player state="state" href="text.audioUrl"><i ng-class="$parent.$parent.audioIcon()" tooltip="Play audio"></i></a>
+    		<a ng-href="{{audioDownloadUrl}}"><i class="icon-download" tooltip="Download audio"></i></a>
+    	</h2>
+    	<h2>{{text.title}}</h2>
+        <div id="text" sil-selection content="text.content"> </div>
+    </div>
+    <div class="span7">
+        <div listview hide-if-empty="true" search="queryQuestions()" items="questions" visible-items="visibleQuestions" select="">
+        <div ng-repeat="question in visibleQuestions" class="details-row">
+        	<ul class="inline" ng-class="{active: isSelected(question)}">
+        		<li ng-show="rights.deleteOther"><input type="checkbox" ng-checked="isSelected(question)" ng-click="updateSelection($event, question)" /></li>
+        		<li><a href="{{question.url}}">
+        			<div class="attention-block">
+        				<span class="count">{{getAnswerCount(question)}}</span><br />
+        				<span class="subtitle">answers</span>
+        			</div>
+        		</a></li>
+        		<li>
+        			<a href="{{question.url}}">
+        				<span class="larger-text">{{question.calculatedTitle}}</span>
+        			</a>
+        		</li>
+        		<li>{{getResponses(question)}} responses</li>
+        	</ul>
+        	<hr />
+        </div>
+        </div>
+    </div>
 </div>
-</div>
+

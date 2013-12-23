@@ -45,6 +45,7 @@ angular.module(
 			//preferFlash : false,
 			onready : function() {
 				$scope.audioReady = true;
+				$scope.$apply();
 				// Ready to use; soundManager.createSound() etc. can now be called.
 			}
 		});
@@ -161,7 +162,7 @@ angular.module(
 			if ($scope.question) {
 				return ($scope.question.workflowState == 'closed');
 			}
-		}
+		};
 		
 		$scope.editQuestionCollapsed = true;
 		$scope.showQuestionEditor = function() {
@@ -218,7 +219,7 @@ angular.module(
 		$scope.updateQuestion = function(newQuestion) {
 			questionService.update(projectId, newQuestion, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "The question was updated successfully")
+					notice.push(notice.SUCCESS, "The question was updated successfully");
 					questionService.read(projectId, newQuestion.id, function(result) {
 						if (result.ok) {
 							$scope.question = result.data.question;
@@ -368,7 +369,7 @@ angular.module(
 		};
 		
 		$scope.commentDelete = function(answer, commentId) {
-			console.log('delete ', commentId);
+//			console.log('delete ', commentId);
 			questionService.remove_comment(projectId, questionId, answer.id, commentId, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "The comment was removed successfully");
@@ -393,7 +394,7 @@ angular.module(
 			}
 			questionService.answer_voteUp(projectId, questionId, answerId, function(result) {
 				if (result.ok) {
-					console.log('vote up ok');
+//					console.log('vote up ok');
 					$scope.votes[answerId] = true;
 					afterUpdateAnswer(result.data);
 				}
@@ -406,7 +407,7 @@ angular.module(
 			}
 			questionService.answer_voteDown(projectId, questionId, answerId, function(result) {
 				if (result.ok) {
-					console.log('vote down ok');
+//					console.log('vote down ok');
 					delete $scope.votes[answerId];
 					afterUpdateAnswer(result.data);
 				}
@@ -446,7 +447,7 @@ angular.module(
 		};
 		
 		$scope.answerDelete = function(answerId) {
-			console.log('delete ', answerId);
+//			console.log('delete ', answerId);
 			questionService.remove_answer(projectId, questionId, answerId, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "The answer was removed successfully");
