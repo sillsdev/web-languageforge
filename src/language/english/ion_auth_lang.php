@@ -37,7 +37,7 @@ $lang['activation_email_unsuccessful']   	 = 'Unable to Send Activation Email';
 // Login / Logout
 $lang['login_successful'] 		  	         = 'Logged In Successfully';
 $lang['login_unsuccessful'] 		  	     = 'Incorrect Login';
-$lang['login_unsuccessful_not_active'] 		 = 'Account is inactive';
+$lang['login_unsuccessful_not_active'] 		 = 'Your account is not yet active.  We have sent you an email with an activation link.  If you do not see it, please check your SPAM folder.';
 $lang['login_timeout']                       = 'Temporarily Locked Out.  Try again later.';
 $lang['logout_successful'] 		 	         = 'Logged Out Successfully';
 

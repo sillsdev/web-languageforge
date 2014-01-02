@@ -22,16 +22,17 @@ angular.module('signup', [ 'sf.services', 'ui.bootstrap'])
 	
 	
 	
-	
 	$scope.createUser = function(record) {
+		$scope.submissionInProgress = true;
 		userService.register(record, function(result) {
+			$scope.submissionInProgress = false;
 			if (result.ok) {
 				if (!result.data) {
 					notice.push(notice.WARN, "The image verification failed.  Please try again");
 					$scope.getCaptchaSrc();
 				} else {
-					notice.push(notice.SUCCESS, "Thank you for signing up.  We've sent you an email to confirm your registration. Please click the link in the email to activate your account.  If you don't see your activation email, check your email's SPAM folder.");
-					$("#userForm").fadeOut();
+					$scope.submissionComplete = true;
+					//notice.push(notice.SUCCESS, "Thank you for signing up.  We've sent you an email to confirm your registration. Please click the link in the email to activate your account.  If you don't see your activation email, check your email's SPAM folder.");
 				}
 			}
 		});
