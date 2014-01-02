@@ -5,7 +5,7 @@ require_once 'base.php';
 class Download extends CI_Controller {
 	
 	public function assets($id, $file) {
-		$filePath = APPPATH .  "assets/$id/$file";
+		$filePath = APPPATH .  "assets/$id/" . urldecode($file);
 		if (!file_exists($filePath)) {
 			show_404();
 			return;
