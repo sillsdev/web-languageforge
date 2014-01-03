@@ -25,6 +25,7 @@ class ProjectPageDto
 	 * @returns array - the DTO array
 	 */
 	public static function encode($projectId, $userId) {
+		// TODO: ensure that $userId has permission to view the project page
 		$userModel = new UserModel($userId);
 		$projectModel = new ProjectModel($projectId);
 		$textList = new TextListModel($projectModel);
