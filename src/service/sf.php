@@ -1,5 +1,7 @@
 <?php
 
+use models\commands\MessageCommands;
+
 use libraries\palaso\exceptions\UserNotAuthenticatedException;
 
 use libraries\palaso\CodeGuard;
@@ -99,11 +101,10 @@ class Sf
 	/**
 	 * Read a user from the given $id
 	 * @param string $id
-	 * @return UserModel $json
+	 * @return array
 	 */
 	public function user_read($id) {
-		$user = new UserModel($id);
-		return JsonEncoder::encode($user);
+		return UserCommands::readUser($id, $this->_userId);
 	}
 	
 	/**
@@ -121,13 +122,7 @@ class Sf
 	 * @return string Id of written object
 	 */
 	public function user_update($params) {
-		$user = new UserModel();
-		if ($params['id']) {
-			$user->read($params['id']);
-		}
-		JsonDecoder::decode($user, $params);
-		$result = $user->write();
-		return $result;
+		return UserCommands::updateUser($params, $this->_userId);
 	}
 
 	/**
@@ -136,21 +131,7 @@ class Sf
 	 * @return string Id of written object
 	 */
 	public function user_updateProfile($params) {
-		$user = new UserProfileModel();
-		if ($params['id']) {
-			$user->read($params['id']);
-		}
-		
-		// don't allow the following keys to be persisted
-		if (array_key_exists('projects', $params)) {
-			unset($params['projects']);
-		}
-		if (array_key_exists('role', $params)) {
-					unset($params['role']);
-		}
-		JsonDecoder::decode($user, $params);
-		$result = $user->write();
-		return $result;
+		return UserCommands::updateUserProfile($params, $this->_userId);
 	}
 
 	/**
@@ -159,7 +140,7 @@ class Sf
 	 * @return int Count of deleted users
 	 */
  	public function user_delete($userIds) {
- 		return UserCommands::deleteUsers($userIds);
+ 		return UserCommands::deleteUsers($userIds, $this->_userId);
  	}
 
  	/**
@@ -173,27 +154,19 @@ class Sf
  	
  	// TODO Pretty sure this is going to want some paging params
 	public function user_list() {
-		$list = new \models\UserListModel();
-		$list->read();
-		return $list;
+		return UserCommands::listUsers($this->_userId);
 	}
 	
 	public function user_typeahead($term) {
-		$list = new \models\UserTypeaheadModel($term);
-		$list->read();
-		return $list;
+		return UserCommands::userTypeaheadList($term, $this->_userId);
 	}
 	
 	public function change_password($userId, $newPassword) {
-		if (!is_string($userId) && !is_string($newPassword)) {
-			throw new \Exception("Invalid args\n" . var_export($userId, true) . "\n" . var_export($newPassword, true));
-		}
-		$user = new \models\PasswordModel($userId);
-		$user->changePassword($newPassword);
-		$user->write();
+		return UserCommands::changePassword($userId, $newPassword, $this->_userId);
 	}
 	
 	public function username_exists($username) {
+		// intentionally we have no security here: people can see what users exist by trial and error
 		return UserModel::userNameExists($username);
 	}
 	
@@ -209,14 +182,7 @@ class Sf
 	}
 	
 	public function user_create($params) {
-		// TODO cjh 2013-09 assure that authenticated user executing this action has privilege to create a user
-		$user = new \models\UserModelWithPassword();
-		JsonDecoder::decode($user, $params);
-		if (UserModel::userNameExists($user->username)) {
-			return false;
-		}
-		$user->setPassword($params['password']);
-		return $user->write();
+		return UserCommands::createUser($params, $this->_userId);
 	}
 	
 	public function get_captcha_src() {
@@ -252,32 +218,11 @@ class Sf
 	
 	/**
 	 * Create/Update a Project
-	 * @param ProjectModel $json
+	 * @param array $object
 	 * @return string Id of written object
 	 */
 	public function project_update($object) {
-		$project = new \models\ProjectModel();
-		$id = $object['id'];
-		$isNewProject = ($id == '');
-		$oldDBName = '';
-		if (!$isNewProject) {
-			$project->read($id);
-			// This is getting complex; it probably belongs in ProjectCommands. TODO: Rewrite it to put it there. RM 2013-08
-			$oldDBName = $project->databaseName();
-		}
-		JsonDecoder::decode($project, $object);
-		$newDBName = $project->databaseName();
-		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
-			if (MongoStore::hasDB($newDBName)) {
-				throw new \Exception("New project name " . $object->projectname . " already exists. Not renaming.");
-			}
-			MongoStore::renameDB($oldDBName, $newDBName);
-		}
-		$result = $project->write();
-		if ($isNewProject) {
-			//ActivityCommands::addProject($project); // TODO: Determine if any other params are needed. RM 2013-08
-		}
-		return $result;
+		return ProjectCommands::updateProject($object, $this->_userId);
 	}
 
 	/**
@@ -285,8 +230,7 @@ class Sf
 	 * @param string $id
 	 */
 	public function project_read($id) {
-		$project = new \models\ProjectModel($id);
-		return JsonEncoder::encode($project);
+		return ProjectCommands::readProject($id, $this->_userId);
 	}
 	
 	/**
@@ -295,14 +239,12 @@ class Sf
 	 * @return int Count of deleted projects
 	 */
  	public function project_delete($projectIds) {
- 		return ProjectCommands::deleteProjects($projectIds);
+ 		return ProjectCommands::deleteProjects($projectIds, $this->_userId);
  	}
 
 	// TODO Pretty sure this is going to want some paging params
 	public function project_list() {
-		$list = new \models\ProjectListModel();
-		$list->read();
-		return $list;
+		return ProjectCommands::listProjects($this->_userId);
 	}
 	
 	public function project_list_dto() {
@@ -314,40 +256,23 @@ class Sf
 	}
 	
 	public function project_updateUserRole($projectId, $params) {
-		ProjectCommands::updateUserRole($projectId, $params);
+		return ProjectCommands::updateUserRole($projectId, $params, $this->_userId);
 	}
 	
 	public function project_removeUsers($projectId, $userIds) {
-		ProjectCommands::removeUsers($projectId, $userIds);
+		return ProjectCommands::removeUsers($projectId, $userIds, $this->_userId);
 	}
 	
 	public function project_settings($projectId) {
-		$result = ProjectSettingsDto::encode($projectId, $this->_userId);
-		return $result;
+		return ProjectSettingsDto::encode($projectId, $this->_userId);
 	}
 	
 	public function project_updateSettings($projectId, $smsSettingsArray, $emailSettingsArray) {
-		if (RightsHelper::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT_OTHER)) {
-			$smsSettings = new \models\sms\SmsSettings();
-			$emailSettings = new \models\EmailSettings();
-			JsonDecoder::decode($smsSettings, $smsSettingsArray);
-			JsonDecoder::decode($emailSettings, $emailSettingsArray);
-			$projectSettings = new ProjectSettingsModel($projectId);
-			$projectSettings->smsSettings = $smsSettings;
-			$projectSettings->emailSettings = $emailSettings;
-			$result = $projectSettings->write();
-			return $result;
-		}
+		return ProjectCommands::updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray, $this->_userId);
 	}
 	
 	public function project_readSettings($projectId) {
-		if (RightsHelper::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT_OTHER)) {
-			$project = new ProjectSettingsModel($projectId);
-			return array(
-				'sms' => JsonEncoder::encode($project->smsSettings),
-				'email' => JsonEncoder::encode($project->emailSettings)
-			);
-		}
+		return ProjectCommands::readProjectSettings($projectId, $this->_userId);
 	}
 	
 	public function project_pageDto($projectId) {
@@ -358,18 +283,11 @@ class Sf
 	// MESSAGE API
 	//---------------------------------------------------------------
 	public function message_markRead($projectId, $messageId) {
-		$unreadModel = new UnreadMessageModel($this->_userId, $projectId);
-		$unreadModel->markRead($messageId);
-		$unreadModel->write();
+		return MessageCommands::markMessageRead($projectId, $messageId, $this->_userId);
 	}
 	
 	public function message_send($projectId, $userIds, $subject, $emailTemplate, $smsTemplate) {
-		$project = new ProjectSettingsModel($projectId);
-		$users = array();
-		foreach ($userIds as $id) {
-			$users[] = new UserModel($id);
-		}
-		return Communicate::communicateToUsers($users, $project, $subject, $smsTemplate, $emailTemplate);
+		return MessageCommands::sendMessage($projectId, $userIds, $subject, $emailTemplate, $smsTemplate, $this->_userId);
 	}
 	
 	
@@ -378,17 +296,15 @@ class Sf
 	//---------------------------------------------------------------
 	
 	public function text_update($projectId, $object) {
-		return TextCommands::updateText($projectId, $object);
+		return TextCommands::updateText($projectId, $object, $this->_userId);
 	}
 	
 	public function text_read($projectId, $textId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$textModel = new \models\TextModel($projectModel, $textId);
-		return JsonEncoder::encode($textModel);
+		return TextCommands::readText($projectId, $textId, $this->_userId);
 	}
 	
 	public function text_delete($projectId, $textIds) {
-		return TextCommands::deleteTexts($projectId, $textIds);
+		return TextCommands::deleteTexts($projectId, $textIds, $this->_userId);
 	}
 	
 	public function text_list($projectId) {

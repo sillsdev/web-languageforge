@@ -15,6 +15,7 @@ class ProjectSettingsDto
 	 * @returns array - the DTO array
 	 */
 	public static function encode($projectId, $userId) {
+		// TODO: ensure $userId is authorized to access project settings
 		$userModel = new UserModel($userId);
 		$projectModel = new ProjectModel($projectId);
 
