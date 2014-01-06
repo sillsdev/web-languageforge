@@ -191,15 +191,17 @@ class UserCommands
 	 * Register a new user, add to project if in context
 	 * @param array $params
 	 * @param string $captcha_info
-	 * @param string $projectCode
+	 * @param string $httpHost
 	 * @param IDelivery $delivery
 	 * @throws \Exception
 	 * @return string $userId
 	 */
-	public static function register($params, $captcha_info, $projectCode, IDelivery $delivery = null) {
+	public static function register($params, $captcha_info, $httpHost, IDelivery $delivery = null) {
 		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
 			return false;  // captcha does not match
 		}
+		
+		$projectCode = ProjectModel::domainToProjectCode($httpHost);
 
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
@@ -239,6 +241,18 @@ class UserCommands
 		Communicate::sendSignup($user, $project, $delivery);
 		
 		return $userId;
+	}
+	
+	public static function getCaptchaSrc($controller) {
+		$controller->load->library('captcha');
+		$captcha_config = array(
+			'png_backgrounds' => array(APPPATH . 'images/captcha/captcha_bg.png'),
+			'fonts' => array(FCPATH.'/images/captcha/times_new_yorker.ttf'),
+			'characters' => 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789',
+		);
+		$captcha_info = $controller->captcha->main($captcha_config);
+		$controller->session->set_userdata('captcha_info', $captcha_info);
+		return $captcha_info['image_src'];
 	}
 	
 	
