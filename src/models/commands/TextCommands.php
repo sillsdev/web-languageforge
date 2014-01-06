@@ -6,6 +6,7 @@ use models\ProjectModel;
 use models\TextModel;
 use models\dto\UsxTrimHelper;
 use models\mapper\JsonDecoder;
+use models\mapper\JsonEncoder;
 use models\commands\ActivityCommands;
 
 class TextCommands
@@ -101,7 +102,6 @@ class TextCommands
 	 * @param string $projectId
 	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 * @return \models\TextListModel
-	 */
 	public static function listTexts($projectId, $authUserId) {
 		// TODO: validate $authUserId as authorized to perform this action
 		$projectModel = new \models\ProjectModel($projectId);
@@ -109,6 +109,7 @@ class TextCommands
 		$textListModel->read();
 		return $textListModel;
 	}
+	 */
 	
 }
 

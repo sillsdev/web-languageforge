@@ -1,6 +1,8 @@
 <?php
 namespace models\commands;
 use models\UnreadMessageModel;
+use models\ProjectSettingsModel;
+use libraries\sfchecks\Communicate;
 
 class MessageCommands {
 	public static function markMessageRead($projectId, $messageId, $userId) {
