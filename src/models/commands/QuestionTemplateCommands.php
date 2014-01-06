@@ -3,6 +3,10 @@
 namespace models\commands;
 
 use libraries\palaso\CodeGuard;
+use models\QuestionTemplateModel;
+use models\mapper\JsonDecoder;
+use models\mapper\JsonEncoder;
+use models\QuestionTemplateListModel;
 
 class QuestionTemplateCommands
 {

@@ -3,14 +3,14 @@
 namespace models\commands;
 
 use models\UserVoteModel;
-
 use models\dto\QuestionCommentDto;
-
 use models\CommentModel;
 use models\AnswerModel;
 use models\ProjectModel;
 use models\QuestionModel;
 use models\mapper\JsonDecoder;
+use models\mapper\JsonEncoder;
+use models\commands\ActivityCommands;
 
 class QuestionCommands
 {
@@ -54,6 +54,7 @@ class QuestionCommands
 		return $count;
 	}
 	
+	/* deprecated - cjh - use dto instead
 	public static function listQuestions($projectId, $textId, $authUserId) {
 		// TODO: validate $authUserId as authorized to perform this action
 		$projectModel = new \models\ProjectModel($projectId);
@@ -61,6 +62,7 @@ class QuestionCommands
 		$questionListModel->read();
 		return $questionListModel;
 	}
+	*/
 	
 	/**
 	 * Creates or updates an answer for the given $questionId.
