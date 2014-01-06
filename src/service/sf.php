@@ -3,12 +3,11 @@
 use models\commands\MessageCommands;
 
 use libraries\palaso\exceptions\UserNotAuthenticatedException;
-
+use libraries\palaso\exceptions\UserUnauthorizedException;
 use libraries\palaso\CodeGuard;
 use libraries\palaso\JsonRpcServer;
 use libraries\sfchecks\Communicate;
 use libraries\sfchecks\Email;
-
 use models\commands\ActivityCommands;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
@@ -26,7 +25,6 @@ use models\rights\Domain;
 use models\rights\Operation;
 use models\rights\Roles;
 use models\sms\SmsSettings;
-
 use models\AnswerModel;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
@@ -63,35 +61,6 @@ class Sf
 
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
  		ini_set('display_errors', 0);
-	}
-	
-	private function isAnonymousMethod($methodName) {
-		$methods = array(
-				'username_exists',
-				'user_register',
-				'get_captcha_src',
-				'user_readForRegistration',
-				'user_updateFromRegistration'
-		);
-		return in_array($methodName, $methods);
-	}
-	
-	public function checkPermissions($methodName) {
-
-		if (!$this->isAnonymousMethod($methodName) && !$this->_userId) {
-			throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
-		}
-		
-		// do other permission checks here
-	}
-	
-
-	public function update_last_activity($newtime = NULL) {
-		if (is_null($newtime)) {
-			// Default to current time
-			$newtime = time();
-		}
-		$this->_controller->session->set_userdata('last_activity', $newtime);
 	}
 	
 	//---------------------------------------------------------------
@@ -153,6 +122,9 @@ class Sf
  	}
  	
  	// TODO Pretty sure this is going to want some paging params
+	/**
+	 * @return \models\UserListModel
+	 */
 	public function user_list() {
 		return UserCommands::listUsers($this->_userId);
 	}
@@ -297,9 +269,11 @@ class Sf
 		return TextCommands::deleteTexts($projectId, $textIds, $this->_userId);
 	}
 	
+	/* i don't think this is used anywhere - cjh
 	public function text_list($projectId) {
 		return TextCommands::listTexts($projectId, $this->_userId);
 	}
+	*/
 	
 	public function text_list_dto($projectId) {
 		return \models\dto\TextListDto::encode($projectId, $this->_userId);
@@ -325,9 +299,11 @@ class Sf
 		return QuestionCommands::deleteQuestions($projectId, $questionIds, $this->_userId);
 	}
 	
+	/* not used anywhere - cjh
 	public function question_list($projectId, $textId) {
 		return QuestionCommands::listQuestions($projectId, $textId, $this->_userId);
 	}
+	*/
 	
 	public function question_update_answer($projectId, $questionId, $answer) {
 		return QuestionCommands::updateAnswer($projectId, $questionId, $answer, $this->_userId);
@@ -394,6 +370,44 @@ class Sf
 	public function activity_list_dto() {
 		return \models\dto\ActivityListDto::getActivityForUser($this->_userId);
 	}
+	
+	
+	//---------------------------------------------------------------
+	// Private Utility Functions
+	//---------------------------------------------------------------
+
+	private function isAnonymousMethod($methodName) {
+		$methods = array(
+				'username_exists',
+				'user_register',
+				'get_captcha_src',
+				'user_readForRegistration',
+				'user_updateFromRegistration'
+		);
+		return in_array($methodName, $methods);
+	}
+	
+	public function checkPermissions($methodName) {
+
+		if (!$this->isAnonymousMethod($methodName)) {
+			if (!$this->_userId) {
+				throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
+			}
+			if (!RightsHelper::userCanAccessMethod($methodName, $this->_userId)) {
+				//throw new UserUnauthorizedException("You do not have sufficient privileges for API method '$methodName'");
+			}
+		}
+	}
+	
+
+	public function update_last_activity($newtime = NULL) {
+		if (is_null($newtime)) {
+			// Default to current time
+			$newtime = time();
+		}
+		$this->_controller->session->set_userdata('last_activity', $newtime);
+	}
+	
 	
 }
 
