@@ -308,10 +308,7 @@ class Sf
 	}
 	
 	public function text_list($projectId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$textListModel = new \models\TextListModel($projectModel);
-		$textListModel->read();
-		return $textListModel;
+		return TextCommands::listTexts($projectId, $this->_userId);
 	}
 	
 	public function text_list_dto($projectId) {
@@ -327,59 +324,33 @@ class Sf
 	//---------------------------------------------------------------
 	
 	public function question_update($projectId, $object) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$questionModel = new \models\QuestionModel($projectModel);
-		$isNewQuestion = ($object['id'] == '');
-		if (!$isNewQuestion) {
-			$questionModel->read($object['id']);
-		}
-		JsonDecoder::decode($questionModel, $object);
-		$questionId = $questionModel->write();
-		if ($isNewQuestion) {
-			ActivityCommands::addQuestion($projectModel, $questionId, $questionModel);
-		}
-		return $questionId;
+		return QuestionCommands::updateQuestion($projectId, $object, $this->_userId);
 	}
 	
 	public function question_read($projectId, $questionId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$questionModel = new \models\QuestionModel($projectModel, $questionId);
-		return JsonEncoder::encode($questionModel);
+		return QuestionCommands::readQuestion($projectId, $questionId, $this->_userId);
 	}
 	
 	public function question_delete($projectId, $questionIds) {
-		return QuestionCommands::deleteQuestions($projectId, $questionIds);
+		return QuestionCommands::deleteQuestions($projectId, $questionIds, $this->_userId);
 	}
 	
 	public function question_list($projectId, $textId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$questionListModel = new \models\QuestionListModel($projectModel, $textId);
-		$questionListModel->read();
-		return $questionListModel;
+		return QuestionCommands::listQuestions($projectId, $textId, $this->_userId);
 	}
 	
 	public function question_update_answer($projectId, $questionId, $answer) {
 		return QuestionCommands::updateAnswer($projectId, $questionId, $answer, $this->_userId);
 	}
 	
+	/* Note: I think this is never used - cjh (vote up/down is used instead)
 	public function question_update_answer_score($projectId, $questionId, $answerId, $score) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$questionModel = new QuestionModel($projectModel, $questionId);
-		$answerModel = $questionModel->readAnswer($answerId);
-		$lastScore = $answerModel->score;
-		$currentScore = intval($score);
-		$answerModel->score = $currentScore;
-		$questionModel->writeAnswer($answerModel);
-		if ($currentScore > $lastScore) {
-			ActivityCommands::updateScore($projectModel, $questionId, $answerId, $this->_userId, 'increase');
-		} else {
-			ActivityCommands::updateScore($projectModel, $questionId, $answerId, $this->_userId, 'decrease');
-		}
+		return QuestionCommands::updateAnswerScore($projectId, $questionId, $answerId, $score, $this->_userId);
 	}
+	*/
 	
 	public function question_remove_answer($projectId, $questionId, $answerId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId);
+		return QuestionCommands::removeAnswer($projectId, $questionId, $answerId, $this->_userId);
 	}
 	
 	public function question_update_comment($projectId, $questionId, $answerId, $comment) {
@@ -387,8 +358,7 @@ class Sf
 	}
 	
 	public function question_remove_comment($projectId, $questionId, $answerId, $commentId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		return QuestionModel::removeComment($projectModel->databaseName(), $questionId, $answerId, $commentId);
+		return QuestionCommands::removeComment($projectId, $questionId, $answerId, $commentId, $this->_userId);
 	}
 	
 	public function question_comment_dto($projectId, $questionId) {
@@ -412,25 +382,19 @@ class Sf
 	//---------------------------------------------------------------
 
 	public function questionTemplate_update($params) {
-		$questionTemplate = new \models\QuestionTemplateModel();
-		JsonDecoder::decode($questionTemplate, $params);
-		$result = $questionTemplate->write();
-		return $result;
+		return QuestionTemplateCommands::updateTemplate($params, $this->_userId);
 	}
 
 	public function questionTemplate_read($id) {
-		$questionTemplate = new \models\QuestionTemplateModel($id);
-		return JsonEncoder::encode($questionTemplate);
+		return QuestionTemplateCommands::readTemplate($id, $this->_userId);
 	}
 
 	public function questionTemplate_delete($questionTemplateIds) {
-		return QuestionTemplateCommands::deleteQuestionTemplates($questionTemplateIds);
+		return QuestionTemplateCommands::deleteQuestionTemplates($questionTemplateIds, $this->_userId);
 	}
 
 	public function questionTemplate_list() {
-		$list = new \models\QuestionTemplateListModel();
-		$list->read();
-		return $list;
+		return QuestionTemplateCommands::listTemplates($this->_userId);
 	}
 	
 	//---------------------------------------------------------------

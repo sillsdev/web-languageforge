@@ -19,7 +19,7 @@ class TestProjectCommands extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		ProjectCommands::deleteProjects(array($projectId));
+		ProjectCommands::deleteProjects(array($projectId), 'bogus userid');
 	}
 
 	function testUpdateUserRole_UpdateUserInProject_UserJoinedProject() {
@@ -37,7 +37,7 @@ class TestProjectCommands extends UnitTestCase {
 		);
 	
 		// update user role in project
-		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params);
+		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params, 'bogus userid');
 	
 		// read from disk
 		$updatedUser = new UserModel($updatedUserId);
@@ -65,7 +65,7 @@ class TestProjectCommands extends UnitTestCase {
 		);
 		
 		// update user role in project once
-		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params);
+		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params, 'bogus userid');
 		
 		// read from disk
 		$sameUser = new UserModel($updatedUserId);
@@ -76,7 +76,7 @@ class TestProjectCommands extends UnitTestCase {
 		$this->assertEqual($sameUser->listProjects()->count, 1);
 		
 		// update user role in project again
-		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params);
+		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params, 'bogus userid');
 		
 		// read from disk again
 		$sameProject->read($projectId);
@@ -100,7 +100,7 @@ class TestProjectCommands extends UnitTestCase {
 		$this->assertEqual($project->listUsers()->count, 0);
 		
 		// remove users from project with no users - no throw expected
-		ProjectCommands::removeUsers($projectId, $userIds);
+		ProjectCommands::removeUsers($projectId, $userIds, 'bogus auth userid');
 	}
 
 	function testRemoveUsers_UsersInProject_RemovedFromProject() {
@@ -149,7 +149,7 @@ class TestProjectCommands extends UnitTestCase {
 		
 		// remove users from project
 		$userIds = array($user1->id->asString(), $user2->id->asString(), $user3->id->asString());
-		ProjectCommands::removeUsers($projectId, $userIds);
+		ProjectCommands::removeUsers($projectId, $userIds, 'bogus auth userids');
 		
 		// read from disk
 		$sameProject = new ProjectModel($projectId);
