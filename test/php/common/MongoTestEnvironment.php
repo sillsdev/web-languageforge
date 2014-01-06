@@ -1,5 +1,7 @@
 <?php
 
+use models\rights\Roles;
+
 require_once(TestPath . 'common/MockProjectModel.php');
 
 class MongoTestEnvironment
@@ -45,12 +47,13 @@ class MongoTestEnvironment
 	 * @param string $email
 	 * @return string id
 	 */
-	public function createUser($username, $name, $email) {
+	public function createUser($username, $name, $email, $role = Roles::USER) {
 		$userModel = new models\UserModel();
 		$userModel->username = $username;
 		$userModel->name = $name;
 		$userModel->email = $email;
 		$userModel->avatar_ref = $username . ".png";
+		$userModel->role = $role;
 		return $userModel->write();
 	}
 	
