@@ -41,7 +41,7 @@ class TestUserCommands extends UnitTestCase {
 		
 		$userId = $e->createUser('somename', 'Some Name', 'somename@example.com');
 		
-		UserCommands::deleteUsers(array($userId));
+		UserCommands::deleteUsers(array($userId), 'bogus auth userid');
 	}
 	
 	function testCreateSimple_CreateUser_PasswordAndJoinProject() {

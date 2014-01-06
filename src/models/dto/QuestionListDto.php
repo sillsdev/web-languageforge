@@ -19,6 +19,7 @@ class QuestionListDto
 	 * @returns array - the DTO array
 	 */
 	public static function encode($projectId, $textId, $userId) {
+		// TODO: validate $userId as authorized to receive this data
 		$userModel = new UserModel($userId);
 		$projectModel = new ProjectModel($projectId);
 		//$textModel = new TextModel($projectModel, $textId);

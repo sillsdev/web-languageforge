@@ -15,12 +15,36 @@ use models\mapper\JsonDecoder;
 class QuestionCommands
 {
 	
+	public static function updateQuestion($projectId, $object, $authUserId) {
+		// TODO: validate $authUserId as authorized to perform this action
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionModel = new \models\QuestionModel($projectModel);
+		$isNewQuestion = ($object['id'] == '');
+		if (!$isNewQuestion) {
+			$questionModel->read($object['id']);
+		}
+		JsonDecoder::decode($questionModel, $object);
+		$questionId = $questionModel->write();
+		if ($isNewQuestion) {
+			ActivityCommands::addQuestion($projectModel, $questionId, $questionModel);
+		}
+		return $questionId;
+	}
+	
+	public static function readQuestion($projectId, $questionId, $authUserId) {
+		// TODO: validate $authUserId as authorized to perform this action
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionModel = new \models\QuestionModel($projectModel, $questionId);
+		return JsonEncoder::encode($questionModel);
+	}
+	
 	/**
 	 * @param string $projectId
 	 * @param array $questionIds
 	 * @return int Total number of questions removed.
 	 */
-	public static function deleteQuestions($projectId, $questionIds) {
+	public static function deleteQuestions($projectId, $questionIds, $authUserId) {
+		// TODO: validate $authUserId as authorized to perform this action
 		$projectModel = new ProjectModel($projectId);
 		$count = 0;
 		foreach ($questionIds as $questionId) {
@@ -28,6 +52,14 @@ class QuestionCommands
 			$count++;
 		}
 		return $count;
+	}
+	
+	public static function listQuestions($projectId, $textId, $authUserId) {
+		// TODO: validate $authUserId as authorized to perform this action
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionListModel = new \models\QuestionListModel($projectModel, $textId);
+		$questionListModel->read();
+		return $questionListModel;
 	}
 	
 	/**
@@ -40,6 +72,7 @@ class QuestionCommands
 	 * @see AnswerModel
 	 */
 	public static function updateAnswer($projectId, $questionId, $answer, $userId) {
+		// TODO: validate $userId as authorized to perform this action
 		$projectModel = new ProjectModel($projectId);
 		$questionModel = new QuestionModel($projectModel, $questionId);
 		$authorId = $userId;
@@ -64,6 +97,30 @@ class QuestionCommands
 		return self::encodeAnswer($newAnswer);
 	}
 	
+	/* note: I think this is never used.  Vote up/down is used instead - cjh
+	public static function updateAnswerScore($projectId, $questionId, $answerId, $score, $authUserId) {
+		// TODO: validate $authUserId as authorized to perform this action
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionModel = new QuestionModel($projectModel, $questionId);
+		$answerModel = $questionModel->readAnswer($answerId);
+		$lastScore = $answerModel->score;
+		$currentScore = intval($score);
+		$answerModel->score = $currentScore;
+		$questionModel->writeAnswer($answerModel);
+		if ($currentScore > $lastScore) {
+			ActivityCommands::updateScore($projectModel, $questionId, $answerId, $this->_userId, 'increase');
+		} else {
+			ActivityCommands::updateScore($projectModel, $questionId, $answerId, $this->_userId, 'decrease');
+		}
+	}
+	*/
+	
+	public static function removeAnswer($projectId, $questionId, $answerId, $authUserId) {
+		// TODO: validate $authUserId as authorized to perform this action
+		$projectModel = new \models\ProjectModel($projectId);
+		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId);
+	}
+	
 	/**
 	 * Creates / Updates a comment on the given answer. 
 	 * @param string $projectId
@@ -74,6 +131,7 @@ class QuestionCommands
 	 * @return array Dto
 	 */
 	public static function updateComment($projectId, $questionId, $answerId, $comment, $userId) {
+		// TODO: validate $userId as authorized to perform this action
 		$projectModel = new ProjectModel($projectId);
 		$questionModel = new QuestionModel($projectModel, $questionId);
 		$authorId = $userId;
@@ -101,6 +159,12 @@ class QuestionCommands
 		$dto[$commentId] = $commentDTO;
 		return $dto;
 	}
+	
+	public static function removeComment($projectId, $questionId, $answerId, $commentId, $authUserId) {
+		// TODO: validate $authUserId as authorized to perform this action
+		$projectModel = new \models\ProjectModel($projectId);
+		return QuestionModel::removeComment($projectModel->databaseName(), $questionId, $answerId, $commentId);
+	}
 
 	/**
 	 * Returns the AnswerModel as an AnswerDTO, a part of the QuestionDTO.
@@ -123,6 +187,7 @@ class QuestionCommands
 	 * @param string $answerId
 	 */
 	public static function voteUp($userId, $projectId, $questionId, $answerId) {
+		// TODO: validate $userId as authorized to perform this action
 		$projectModel = new ProjectModel($projectId);
 		$questionModel = new QuestionModel($projectModel, $questionId);
 		// Check the vote lock.
@@ -143,6 +208,7 @@ class QuestionCommands
 	}
 	
 	public static function voteDown($userId, $projectId, $questionId, $answerId) {
+		// TODO: validate $userId as authorized to perform this action
 		$projectModel = new ProjectModel($projectId);
 		$questionModel = new QuestionModel($projectModel, $questionId);
 		// Check the vote lock.
