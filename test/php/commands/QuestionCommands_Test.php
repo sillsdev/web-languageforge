@@ -79,7 +79,7 @@ class TestQuestionCommands extends UnitTestCase {
 		$question->write();
 		
 		$questionId = $question->id->asString();
-		QuestionCommands::deleteQuestions($projectId, array($questionId));
+		QuestionCommands::deleteQuestions($projectId, array($questionId), 'bogus auth userid');
 		
 	}
 	

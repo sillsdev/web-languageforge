@@ -96,6 +96,20 @@ class TextCommands
 		return $count;
 	}
 	
+	/**
+	 * 
+	 * @param string $projectId
+	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
+	 * @return \models\TextListModel
+	 */
+	public static function listTexts($projectId, $authUserId) {
+		// TODO: validate $authUserId as authorized to perform this action
+		$projectModel = new \models\ProjectModel($projectId);
+		$textListModel = new \models\TextListModel($projectModel);
+		$textListModel->read();
+		return $textListModel;
+	}
+	
 }
 
 ?>

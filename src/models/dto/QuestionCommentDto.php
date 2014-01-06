@@ -25,6 +25,7 @@ class QuestionCommentDto
 	 * @return array - The DTO.
 	 */
 	public static function encode($projectId, $questionId, $userId) {
+		// TODO: validate $userId as authorized to perform this action
 		$userModel = new UserModel($userId);
 		$projectModel = new ProjectModel($projectId);
 		
