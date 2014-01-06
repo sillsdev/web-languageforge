@@ -26,6 +26,15 @@ class RightsHelper
 		$user = new UserModel($userId);
 		return Roles::hasRight(Realm::SITE, $user->role, $right);
 	}
+	
+	public static function userCanAccessMethod($methodName, $userId) {
+		switch ($methodName) {
+			case 'method':
+				return RightsHelper::userHasSiteRight($userId, $right);
+			default:
+				return false;
+		}
+	}
 }
 
 ?>
