@@ -176,9 +176,7 @@ class Sf
 	 * @return string Id of written object
 	 */
 	public function user_register($params) {
-		$captcha_info = $this->_controller->session->userdata('captcha_info');
-		$projectCode = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
-		return UserCommands::register($params, $captcha_info, $projectCode);
+		return UserCommands::register($params, $this->_controller->session->userdata('captcha_info'), $_SERVER['HTTP_HOST']);
 	}
 	
 	public function user_create($params) {
@@ -186,15 +184,7 @@ class Sf
 	}
 	
 	public function get_captcha_src() {
-		$this->_controller->load->library('captcha');
-		$captcha_config = array(
-			'png_backgrounds' => array(APPPATH . 'images/captcha/captcha_bg.png'),
-			'fonts' => array(FCPATH.'/images/captcha/times_new_yorker.ttf'),
-			'characters' => 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789',
-		);
-		$captcha_info = $this->_controller->captcha->main($captcha_config);
-		$this->_controller->session->set_userdata('captcha_info', $captcha_info);
-		return $captcha_info['image_src'];
+		return UserCommands::getCaptchaSrc($this->_controller);
 	}
 	
 	public function user_readForRegistration($validationKey) {
