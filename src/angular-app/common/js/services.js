@@ -208,11 +208,13 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		this.operation = {
 				CREATE:       function() { return 1;},
-				EDIT_OWN:     function() { return 2;},
-				EDIT_OTHER:   function() { return 3;},
-				DELETE_OWN:   function() { return 4;},
-				DELETE_OTHER: function() { return 5;},
-				LOCK:         function() { return 6;}
+				EDIT:         function() { return 2;},
+				DELETE:       function() { return 3;},
+				LOCK:         function() { return 4;},
+				VIEW:         function() { return 5;},
+				VIEW_OWN:     function() { return 6;},
+				EDIT_OWN:     function() { return 7;},
+				DELETE_OWN:   function() { return 8;},
 		};
 		
 		this.hasRight = function(rights, domain, operation) {

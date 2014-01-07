@@ -30,6 +30,7 @@ class Roles {
 		// User
 		$rights = array();
 		$rights[] = Domain::USERS + Operation::EDIT_OWN;
+		$rights[] = Domain::USERS + Operation::VIEW_OWN;
 		// Should users be able to delete their own user accounts? Probably,
 		// but not via the listview -- so we should NOT grant DELETE_OWN here.
 		//$rights[] = Domain::USERS + Operation::DELETE_OWN;
@@ -38,37 +39,45 @@ class Roles {
 		// ----------------------------------------------------------
 		// PROJECT REALM
 		// ----------------------------------------------------------
-		// User
+		// Project Member (user)
 		$rights = array();
+		$rights[] = Domain::PROJECTS + Operation::VIEW_OWN;
+		$rights[] = Domain::TEXTS + Operation::VIEW;
+		$rights[] = Domain::QUESTIONS + Operation::VIEW;
+		$rights[] = Domain::ANSWERS + Operation::VIEW;
+		$rights[] = Domain::ANSWERS + Operation::VIEW_OWN;
 		$rights[] = Domain::ANSWERS + Operation::CREATE;
 		$rights[] = Domain::ANSWERS + Operation::EDIT_OWN;
 		$rights[] = Domain::ANSWERS + Operation::DELETE_OWN;
+		$rights[] = Domain::COMMENTS + Operation::VIEW;
+		$rights[] = Domain::COMMENTS + Operation::VIEW_OWN;
 		$rights[] = Domain::COMMENTS + Operation::CREATE;
 		$rights[] = Domain::COMMENTS + Operation::EDIT_OWN;
 		$rights[] = Domain::COMMENTS + Operation::DELETE_OWN;
 		
 		self::$_rights[Realm::PROJECT][Roles::USER] = $rights;
 		
-		// Project Admin
+		// Project Manager (project_admin) (everything an user has...plus the following)
 		$rights = self::$_rights[Realm::PROJECT][Roles::USER];
 		$rights[] = Domain::PROJECTS + Operation::EDIT_OWN;
-		$rights[] = Domain::PROJECTS + Operation::DELETE_OWN;
+		//$rights[] = Domain::PROJECTS + Operation::DELETE_OWN;
 		$rights[] = Domain::TEXTS + Operation::CREATE; 
-		$rights[] = Domain::TEXTS + Operation::EDIT_OTHER;
-		$rights[] = Domain::TEXTS + Operation::DELETE_OTHER;
+		$rights[] = Domain::TEXTS + Operation::EDIT;
+		$rights[] = Domain::TEXTS + Operation::DELETE;
 		$rights[] = Domain::QUESTIONS + Operation::CREATE;
-		$rights[] = Domain::QUESTIONS + Operation::EDIT_OTHER;
-		$rights[] = Domain::QUESTIONS + Operation::DELETE_OTHER;
-		$rights[] = Domain::ANSWERS + Operation::EDIT_OTHER;
-		$rights[] = Domain::ANSWERS + Operation::DELETE_OTHER;
-		$rights[] = Domain::COMMENTS + Operation::CREATE;
-		$rights[] = Domain::COMMENTS + Operation::EDIT_OTHER;
-		$rights[] = Domain::COMMENTS + Operation::DELETE_OTHER;
+		$rights[] = Domain::QUESTIONS + Operation::EDIT;
+		$rights[] = Domain::QUESTIONS + Operation::DELETE;
+		$rights[] = Domain::ANSWERS + Operation::EDIT;
+		$rights[] = Domain::ANSWERS + Operation::DELETE;
+		$rights[] = Domain::COMMENTS + Operation::EDIT;
+		$rights[] = Domain::COMMENTS + Operation::DELETE;
 		$rights[] = Domain::TAGS + Operation::CREATE;
-		$rights[] = Domain::TAGS + Operation::DELETE_OTHER;
+		$rights[] = Domain::TAGS + Operation::EDIT;
+		$rights[] = Domain::TAGS + Operation::DELETE;
 		$rights[] = Domain::USERS + Operation::CREATE;
-		$rights[] = Domain::USERS + Operation::EDIT_OTHER;
-		$rights[] = Domain::USERS + Operation::DELETE_OTHER;
+		$rights[] = Domain::USERS + Operation::EDIT;
+		$rights[] = Domain::USERS + Operation::DELETE;
+		$rights[] = Domain::USERS + Operation::VIEW;
 		self::grantAllOnDomain($rights, Domain::TEMPLATES);
 		
 		self::$_rights[Realm::PROJECT][Roles::PROJECT_ADMIN] = $rights;
