@@ -20,8 +20,7 @@ class MessageCommands {
 	 * @param string $smsTemplate
 	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 */
-	public static function sendMessage($projectId, $userIds, $subject, $emailTemplate, $smsTemplate, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function sendMessage($projectId, $userIds, $subject, $emailTemplate, $smsTemplate) {
 		$project = new ProjectSettingsModel($projectId);
 		$users = array();
 		foreach ($userIds as $id) {

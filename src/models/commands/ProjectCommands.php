@@ -46,6 +46,7 @@ class ProjectCommands
 	 * @return string
 	 */
 	public static function updateProject($object, $authUserId) {
+		// TODO check if user has right to create or just update a project, and to what extent
 		$project = new \models\ProjectModel();
 		$id = $object['id'];
 		$isNewProject = ($id == '');
@@ -75,8 +76,7 @@ class ProjectCommands
 	 * @param string $id
 	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 */
-	public static function readProject($id, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function readProject($id) {
 		$project = new \models\ProjectModel($id);
 		return JsonEncoder::encode($project);
 	}
@@ -85,8 +85,7 @@ class ProjectCommands
 	 * @param array $projectIds
 	 * @return int Total number of projects removed.
 	 */
-	public static function deleteProjects($projectIds, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function deleteProjects($projectIds) {
 		CodeGuard::checkTypeAndThrow($projectIds, 'array');
 		$count = 0;
 		foreach ($projectIds as $projectId) {
@@ -104,11 +103,9 @@ class ProjectCommands
 	
 	/**
 	 * 
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 * @return \models\ProjectListModel
 	 */
-	public static function listProjects($authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function listProjects() {
 		$list = new \models\ProjectListModel();
 		$list->read();
 		return $list;
@@ -118,13 +115,11 @@ class ProjectCommands
 	 * Update the user role in the project
 	 * @param string $projectId
 	 * @param array $params
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 * @return unknown|string
 	 */
-	public static function updateUserRole($projectId, $params, $authUserId) {
+	public static function updateUserRole($projectId, $params) {
 		CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
 		CodeGuard::checkNotFalseAndThrow($params['id'], 'id');
-		// TODO: validate $authUserId as authorized to perform this action
 		
 		// Add the user to the project
 		$role = array_key_exists('role', $params) && $params['role'] != '' ? $params['role'] : Roles::USER;
@@ -144,10 +139,8 @@ class ProjectCommands
 	 * Removes users from the project (two-way unlink)
 	 * @param Id $projectId
 	 * @param array $userIds array<string>
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 */
-	public static function removeUsers($projectId, $userIds, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function removeUsers($projectId, $userIds) {
 		$project = new ProjectModel($projectId);
 		foreach ($userIds as $userId) {
 			$user = new UserModel($userId);
@@ -162,7 +155,7 @@ class ProjectCommands
 		// TODO: Write this. (Move renaming logic over from sf->project_update). RM 2013-08
 	}
 	
-	public static function updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray, $authUserId) {
+	public static function updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray) {
 		$smsSettings = new \models\sms\SmsSettings();
 		$emailSettings = new \models\EmailSettings();
 		JsonDecoder::decode($smsSettings, $smsSettingsArray);
@@ -174,7 +167,7 @@ class ProjectCommands
 		return $result;
 	}
 	
-	public static function readProjectSettings($projectId, $authUserId) {
+	public static function readProjectSettings($projectId) {
 		$project = new ProjectSettingsModel($projectId);
 		return array(
 			'sms' => JsonEncoder::encode($project->smsSettings),
