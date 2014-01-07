@@ -163,27 +163,23 @@ class ProjectCommands
 	}
 	
 	public static function updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray, $authUserId) {
-		if (RightsHelper::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT_OTHER)) {
-			$smsSettings = new \models\sms\SmsSettings();
-			$emailSettings = new \models\EmailSettings();
-			JsonDecoder::decode($smsSettings, $smsSettingsArray);
-			JsonDecoder::decode($emailSettings, $emailSettingsArray);
-			$projectSettings = new ProjectSettingsModel($projectId);
-			$projectSettings->smsSettings = $smsSettings;
-			$projectSettings->emailSettings = $emailSettings;
-			$result = $projectSettings->write();
-			return $result;
-		}
+		$smsSettings = new \models\sms\SmsSettings();
+		$emailSettings = new \models\EmailSettings();
+		JsonDecoder::decode($smsSettings, $smsSettingsArray);
+		JsonDecoder::decode($emailSettings, $emailSettingsArray);
+		$projectSettings = new ProjectSettingsModel($projectId);
+		$projectSettings->smsSettings = $smsSettings;
+		$projectSettings->emailSettings = $emailSettings;
+		$result = $projectSettings->write();
+		return $result;
 	}
 	
 	public static function readProjectSettings($projectId, $authUserId) {
-		if (RightsHelper::userHasSiteRight($authUserId, Domain::PROJECTS + Operation::EDIT_OTHER)) {
-			$project = new ProjectSettingsModel($projectId);
-			return array(
-				'sms' => JsonEncoder::encode($project->smsSettings),
-				'email' => JsonEncoder::encode($project->emailSettings)
-			);
-		}
+		$project = new ProjectSettingsModel($projectId);
+		return array(
+			'sms' => JsonEncoder::encode($project->smsSettings),
+			'email' => JsonEncoder::encode($project->emailSettings)
+		);
 	}
 	
 }
