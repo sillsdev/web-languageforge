@@ -73,7 +73,7 @@ class Sf
 	 * @return array
 	 */
 	public function user_read($id) {
-		return UserCommands::readUser($id, $this->_userId);
+		return UserCommands::readUser($id);
 	}
 	
 	/**
@@ -91,7 +91,7 @@ class Sf
 	 * @return string Id of written object
 	 */
 	public function user_update($params) {
-		return UserCommands::updateUser($params, $this->_userId);
+		return UserCommands::updateUser($params);
 	}
 
 	/**
@@ -109,7 +109,7 @@ class Sf
 	 * @return int Count of deleted users
 	 */
  	public function user_delete($userIds) {
- 		return UserCommands::deleteUsers($userIds, $this->_userId);
+ 		return UserCommands::deleteUsers($userIds);
  	}
 
  	/**
@@ -126,11 +126,11 @@ class Sf
 	 * @return \models\UserListModel
 	 */
 	public function user_list() {
-		return UserCommands::listUsers($this->_userId);
+		return UserCommands::listUsers();
 	}
 	
 	public function user_typeahead($term) {
-		return UserCommands::userTypeaheadList($term, $this->_userId);
+		return UserCommands::userTypeaheadList($term);
 	}
 	
 	public function change_password($userId, $newPassword) {
@@ -152,7 +152,7 @@ class Sf
 	}
 	
 	public function user_create($params) {
-		return UserCommands::createUser($params, $this->_userId);
+		return UserCommands::createUser($params);
 	}
 	
 	public function get_captcha_src() {
@@ -168,7 +168,7 @@ class Sf
 	}
 	
 	public function user_sendInvite($toEmail, $projectId) {
-		return UserCommands::sendInvite(new UserModel($this->_userId), $toEmail, $projectId, $_SERVER['HTTP_HOST']);
+		return UserCommands::sendInvite($this->_userId, $toEmail, $projectId, $_SERVER['HTTP_HOST']);
 	}
 	
 	
@@ -184,7 +184,7 @@ class Sf
 	 * @return string Id of written object
 	 */
 	public function project_update($object) {
-		return ProjectCommands::updateProject($object, $this->_userId);
+		return ProjectCommands::updateProject($object);
 	}
 
 	/**
@@ -192,7 +192,7 @@ class Sf
 	 * @param string $id
 	 */
 	public function project_read($id) {
-		return ProjectCommands::readProject($id, $this->_userId);
+		return ProjectCommands::readProject($id);
 	}
 	
 	/**
@@ -201,28 +201,30 @@ class Sf
 	 * @return int Count of deleted projects
 	 */
  	public function project_delete($projectIds) {
- 		return ProjectCommands::deleteProjects($projectIds, $this->_userId);
+ 		return ProjectCommands::deleteProjects($projectIds);
  	}
 
 	// TODO Pretty sure this is going to want some paging params
 	public function project_list() {
-		return ProjectCommands::listProjects($this->_userId);
+		return ProjectCommands::listProjects();
 	}
 	
 	public function project_list_dto() {
 		return \models\dto\ProjectListDto::encode($this->_userId);
 	}
 	
+	/*
 	public function project_readUser($projectId, $userId) {
 		throw new \Exception("project_readUser NYI");
 	}
+	*/
 	
 	public function project_updateUserRole($projectId, $params) {
-		return ProjectCommands::updateUserRole($projectId, $params, $this->_userId);
+		return ProjectCommands::updateUserRole($projectId, $params);
 	}
 	
 	public function project_removeUsers($projectId, $userIds) {
-		return ProjectCommands::removeUsers($projectId, $userIds, $this->_userId);
+		return ProjectCommands::removeUsers($projectId, $userIds);
 	}
 	
 	public function project_settings($projectId) {
@@ -230,11 +232,11 @@ class Sf
 	}
 	
 	public function project_updateSettings($projectId, $smsSettingsArray, $emailSettingsArray) {
-		return ProjectCommands::updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray, $this->_userId);
+		return ProjectCommands::updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray);
 	}
 	
 	public function project_readSettings($projectId) {
-		return ProjectCommands::readProjectSettings($projectId, $this->_userId);
+		return ProjectCommands::readProjectSettings($projectId);
 	}
 	
 	public function project_pageDto($projectId) {
@@ -245,11 +247,11 @@ class Sf
 	// MESSAGE API
 	//---------------------------------------------------------------
 	public function message_markRead($projectId, $messageId) {
-		return MessageCommands::markMessageRead($projectId, $messageId, $this->_userId);
+		return MessageCommands::markMessageRead($projectId, $messageId);
 	}
 	
 	public function message_send($projectId, $userIds, $subject, $emailTemplate, $smsTemplate) {
-		return MessageCommands::sendMessage($projectId, $userIds, $subject, $emailTemplate, $smsTemplate, $this->_userId);
+		return MessageCommands::sendMessage($projectId, $userIds, $subject, $emailTemplate, $smsTemplate);
 	}
 	
 	
@@ -258,15 +260,15 @@ class Sf
 	//---------------------------------------------------------------
 	
 	public function text_update($projectId, $object) {
-		return TextCommands::updateText($projectId, $object, $this->_userId);
+		return TextCommands::updateText($projectId, $object);
 	}
 	
 	public function text_read($projectId, $textId) {
-		return TextCommands::readText($projectId, $textId, $this->_userId);
+		return TextCommands::readText($projectId, $textId);
 	}
 	
 	public function text_delete($projectId, $textIds) {
-		return TextCommands::deleteTexts($projectId, $textIds, $this->_userId);
+		return TextCommands::deleteTexts($projectId, $textIds);
 	}
 	
 	/* i don't think this is used anywhere - cjh
@@ -288,15 +290,15 @@ class Sf
 	//---------------------------------------------------------------
 	
 	public function question_update($projectId, $object) {
-		return QuestionCommands::updateQuestion($projectId, $object, $this->_userId);
+		return QuestionCommands::updateQuestion($projectId, $object);
 	}
 	
 	public function question_read($projectId, $questionId) {
-		return QuestionCommands::readQuestion($projectId, $questionId, $this->_userId);
+		return QuestionCommands::readQuestion($projectId, $questionId);
 	}
 	
 	public function question_delete($projectId, $questionIds) {
-		return QuestionCommands::deleteQuestions($projectId, $questionIds, $this->_userId);
+		return QuestionCommands::deleteQuestions($projectId, $questionIds);
 	}
 	
 	/* not used anywhere - cjh
@@ -306,7 +308,7 @@ class Sf
 	*/
 	
 	public function question_update_answer($projectId, $questionId, $answer) {
-		return QuestionCommands::updateAnswer($projectId, $questionId, $answer, $this->_userId);
+		return QuestionCommands::updateAnswer($projectId, $questionId, $answer);
 	}
 	
 	/* Note: I think this is never used - cjh (vote up/down is used instead)
@@ -316,15 +318,15 @@ class Sf
 	*/
 	
 	public function question_remove_answer($projectId, $questionId, $answerId) {
-		return QuestionCommands::removeAnswer($projectId, $questionId, $answerId, $this->_userId);
+		return QuestionCommands::removeAnswer($projectId, $questionId, $answerId);
 	}
 	
 	public function question_update_comment($projectId, $questionId, $answerId, $comment) {
-		return QuestionCommands::updateComment($projectId, $questionId, $answerId, $comment, $this->_userId);
+		return QuestionCommands::updateComment($projectId, $questionId, $answerId, $comment);
 	}
 	
 	public function question_remove_comment($projectId, $questionId, $answerId, $commentId) {
-		return QuestionCommands::removeComment($projectId, $questionId, $answerId, $commentId, $this->_userId);
+		return QuestionCommands::removeComment($projectId, $questionId, $answerId, $commentId);
 	}
 	
 	public function question_comment_dto($projectId, $questionId) {
@@ -348,19 +350,19 @@ class Sf
 	//---------------------------------------------------------------
 
 	public function questionTemplate_update($params) {
-		return QuestionTemplateCommands::updateTemplate($params, $this->_userId);
+		return QuestionTemplateCommands::updateTemplate($params);
 	}
 
 	public function questionTemplate_read($id) {
-		return QuestionTemplateCommands::readTemplate($id, $this->_userId);
+		return QuestionTemplateCommands::readTemplate($id);
 	}
 
 	public function questionTemplate_delete($questionTemplateIds) {
-		return QuestionTemplateCommands::deleteQuestionTemplates($questionTemplateIds, $this->_userId);
+		return QuestionTemplateCommands::deleteQuestionTemplates($questionTemplateIds);
 	}
 
 	public function questionTemplate_list() {
-		return QuestionTemplateCommands::listTemplates($this->_userId);
+		return QuestionTemplateCommands::listTemplates();
 	}
 	
 	//---------------------------------------------------------------
@@ -394,7 +396,7 @@ class Sf
 				throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
 			}
 			if (!RightsHelper::userCanAccessMethod($methodName, $this->_userId)) {
-				//throw new UserUnauthorizedException("You do not have sufficient privileges for API method '$methodName'");
+				throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
 			}
 		}
 	}
