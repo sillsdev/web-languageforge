@@ -105,7 +105,7 @@ class TestProjectCommands extends UnitTestCase {
 		ProjectCommands::removeUsers($projectId, $userIds, 'bogus auth userid');
 	}
 	
-	function testReadSettings_UnAuthorizedUser_CannotReadSettings() {
+	function testReadSettings_CanReadSettings() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
@@ -117,30 +117,6 @@ class TestProjectCommands extends UnitTestCase {
 		$projectSettings->write();
 		
 		$user1Id = $e->createUser("user1name", "User1 Name", "user1@example.com");
-		$project->addUser($user1Id, Roles::USER);
-		$project->write();
-		
-
-		// TODO: change test to support NotAuthorizedException
-		$result = ProjectCommands::readProjectSettings($projectId, $user1Id);
-		
-		$this->assertFalse($result);
-	}
-
-	function testReadSettings_SiteAdmin_CanReadSettings() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-
-		// setup project and users
-		$project = $e->createProject(SF_TESTPROJECT);
-		$projectId = $project->id->asString();
-		$projectSettings = new ProjectSettingsModel($projectId);
-		$projectSettings->smsSettings->accountId = "12345";
-		$projectSettings->write();
-		
-		$user1Id = $e->createUser("user1name", "User1 Name", "user1@example.com", Roles::SYSTEM_ADMIN);
-		$project->addUser($user1Id, Roles::USER);
-		$project->write();
 		
 		$result = ProjectCommands::readProjectSettings($projectId, $user1Id);
 		
