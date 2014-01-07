@@ -113,7 +113,7 @@ angular.module(
 
 		// Rights: Answers
 		$scope.rightsEditResponse = function(userId) {
-			var right = ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OTHER)
+			var right = ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT)
 				|| ((userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
 			return right;
 		};
@@ -126,11 +126,11 @@ angular.module(
 		
 		// Rights: Question
 		$scope.rightsCloseQuestion = function(userId) {
-			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
+			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
 		};
 		
 		$scope.rightsEditQuestion = function(userId) {
-			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
+			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
 		};
 		
 		
