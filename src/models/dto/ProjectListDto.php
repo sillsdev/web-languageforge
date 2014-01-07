@@ -19,7 +19,7 @@ class ProjectListDto
 	public static function encode($userId) {
 		
 		$user = new UserModel($userId);
-		$canListAllProjects = $user->hasRight(Domain::PROJECTS + Operation::VIEW_OTHER);
+		$canListAllProjects = $user->hasRight(Domain::PROJECTS + Operation::VIEW);
 
 		$projectList = new ProjectList_UserModel();
 		if ($canListAllProjects) {
