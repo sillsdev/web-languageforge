@@ -44,21 +44,17 @@ class UserCommands
 	/**
 	 * 
 	 * @param string $id
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 * @return array
 	 */
-	public static function readUser($id, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function readUser($id) {
 		$user = new UserModel($id);
 		return JsonEncoder::encode($user);
 	}
 	/**
 	 * User Create/Update
 	 * @param array $params - user model fields to update
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 */
-	public static function updateUser($params, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function updateUser($params) {
 		$user = new UserModel();
 		if ($params['id']) {
 			$user->read($params['id']);
@@ -71,10 +67,8 @@ class UserCommands
 	/**
 	 * User Profile Create/Update
 	 * @param array $params - user model fields to update
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 */
-	public static function updateUserProfile($params, $authUserId) {
-		// TODO: validate $userId as authorized to perform this action
+	public static function updateUserProfile($params) {
 		$user = new UserProfileModel();
 		if ($params['id']) {
 			$user->read($params['id']);
@@ -96,11 +90,9 @@ class UserCommands
 
 	/**
 	 * @param array $userIds
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 * @return int Total number of users removed.
 	 */
-	public static function deleteUsers($userIds, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function deleteUsers($userIds) {
 		CodeGuard::checkTypeAndThrow($userIds, 'array');
 		$count = 0;
 		foreach ($userIds as $userId) {
@@ -114,11 +106,9 @@ class UserCommands
 	
 	/**
 	 * 
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 * @return \models\UserListModel
 	 */
-	public static function listUsers($authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function listUsers() {
 		$list = new \models\UserListModel();
 		$list->read();
 		return $list;
@@ -127,11 +117,9 @@ class UserCommands
 	/**
 	 * 
 	 * @param string $term
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 * @return \models\UserTypeaheadModel
 	 */
-	public static function userTypeaheadList($term, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function userTypeaheadList($term) {
 		$list = new \models\UserTypeaheadModel($term);
 		$list->read();
 		return $list;
@@ -141,11 +129,10 @@ class UserCommands
 	 * 
 	 * @param string $userId
 	 * @param string $newPassword
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 * @throws \Exception
 	 */
-	public static function changePassword($userId, $newPassword, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function changePassword($userId, $newPassword, $currUserId) {
+		// TODO: validate $currUserId as authorized to perform this action
 		if (!is_string($userId) && !is_string($newPassword)) {
 			throw new \Exception("Invalid args\n" . var_export($userId, true) . "\n" . var_export($newPassword, true));
 		}
@@ -157,11 +144,9 @@ class UserCommands
 	/**
 	 * 
 	 * @param string $params
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 * @return boolean|string
 	 */
-	public static function createUser($params, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function createUser($params) {
 		$user = new \models\UserModelWithPassword();
 		JsonDecoder::decode($user, $params);
 		if (UserModel::userNameExists($user->username)) {
@@ -180,7 +165,7 @@ class UserCommands
 	 * @return CreateSimpleDto
 	 */
 	public static function createSimple($userName, $projectId = '', $currentUserId = '') {
-		// TODO: validate $authUserId as authorized to perform this action
+		// TODO: validate $currentUserId as authorized to perform this action
 		$user = new UserModel();
 		$user->name = $userName;
 		$user->username = strtolower(str_replace(' ', '.', $user->name));
@@ -199,7 +184,7 @@ class UserCommands
 		$userWithPassword->write();
 		
 		if ($projectId) {
-			ProjectCommands::updateUserRole($projectId, array('id' => $userId), $currentUserId);
+			ProjectCommands::updateUserRole($projectId, array('id' => $userId));
 			
 			if ($currentUserId) {
 				$toUser = new UserModel($currentUserId);
@@ -290,8 +275,9 @@ class UserCommands
     * @param IDelivery $delivery
     * @return string $userId
     */
-	public static function sendInvite($inviterUser, $toEmail, $projectId, $hostName, IDelivery $delivery = null) {
+	public static function sendInvite($inviterUserId, $toEmail, $projectId, $hostName, IDelivery $delivery = null) {
 		$newUser = new UserModel();
+		$inviterUser = newUserModel($inviterUserId);
 		$project = null;
 		if ($projectId) {
 			$project = new ProjectModel($projectId);

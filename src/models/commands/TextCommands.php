@@ -41,8 +41,7 @@ class TextCommands
 	 * @param JSON $object
 	 * @return ID of text updated/added
 	 */
-	public static function updateText($projectId, $object, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function updateText($projectId, $object) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel);
 		$isNewText = ($object['id'] == '');
@@ -73,8 +72,7 @@ class TextCommands
 	 * @param string $textId
 	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 */
-	public static function readText($projectId, $textId, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function readText($projectId, $textId) {
 		$projectModel = new \models\ProjectModel($projectId);
 		$textModel = new \models\TextModel($projectModel, $textId);
 		return JsonEncoder::encode($textModel);
@@ -86,8 +84,7 @@ class TextCommands
 	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 * @return int Total number of projects removed.
 	 */
-	public static function deleteTexts($projectId, $textIds, $authUserId) {
-		// TODO: validate $authUserId as authorized to perform this action
+	public static function deleteTexts($projectId, $textIds) {
 		$projectModel = new ProjectModel($projectId);
 		$count = 0;
 		foreach ($textIds as $textId) {
