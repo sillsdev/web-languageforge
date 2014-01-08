@@ -54,8 +54,8 @@ class Base extends CI_Controller {
 		$this->renderProjectPage($view, '', $data, $render);
 	}
 	
-	protected function renderProjectPage($view, $project = '', $data = null, $render = true) {
-		$this->viewdata = (empty($data)) ? $this->data : $data;
+	protected function renderProjectPage($view, $project = '', $data = array(), $render = true) {
+		$this->viewdata = $data;
 
 		$project = $this->_project;
 		
