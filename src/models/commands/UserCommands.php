@@ -277,7 +277,7 @@ class UserCommands
     */
 	public static function sendInvite($inviterUserId, $toEmail, $projectId, $hostName, IDelivery $delivery = null) {
 		$newUser = new UserModel();
-		$inviterUser = newUserModel($inviterUserId);
+		$inviterUser = new UserModel($inviterUserId);
 		$project = null;
 		if ($projectId) {
 			$project = new ProjectModel($projectId);
