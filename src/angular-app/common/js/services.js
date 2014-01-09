@@ -21,7 +21,7 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('user_delete', [userIds], callback);
 		};
 		this.createSimple = function(userName, projectId, callback) {
-			jsonRpc.call('user_createSimple', [userName, projectId], callback);
+			jsonRpc.call('user_createSimple', [projectId, userName], callback);
 		};
 		this.list = function(callback) {
 			// TODO Paging CP 2013-07
@@ -49,7 +49,7 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('user_updateFromRegistration', [validationKey, model], callback);
 		};
 		this.sendInvite = function(toEmail, projectId, callback) {
-			jsonRpc.call('user_sendInvite', [toEmail, projectId], callback);
+			jsonRpc.call('user_sendInvite', [projectId, toEmail], callback);
 		};
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
