@@ -2,6 +2,8 @@
 
 namespace models\commands;
 
+use libraries\palaso\exceptions\UserUnauthorizedException;
+
 use libraries\palaso\CodeGuard;
 use libraries\palaso\JsonRpcServer;
 use libraries\palaso\exceptions\UserNotAuthenticatedException;
@@ -132,9 +134,8 @@ class UserCommands
 	 * @throws \Exception
 	 */
 	public static function changePassword($userId, $newPassword, $currUserId) {
-		// TODO: validate $currUserId as authorized to perform this action
-		if (!is_string($userId) && !is_string($newPassword)) {
-			throw new \Exception("Invalid args\n" . var_export($userId, true) . "\n" . var_export($newPassword, true));
+		if ($userId != $currUserId && !RightsHelper::userHasSiteRight($currUserId, Domain::USERS + Operation::EDIT)) {
+			throw new UserUnauthorizedException();
 		}
 		$user = new \models\PasswordModel($userId);
 		$user->changePassword($newPassword);
@@ -165,7 +166,6 @@ class UserCommands
 	 * @return CreateSimpleDto
 	 */
 	public static function createSimple($userName, $projectId = '', $currentUserId = '') {
-		// TODO: validate $currentUserId as authorized to perform this action
 		$user = new UserModel();
 		$user->name = $userName;
 		$user->username = strtolower(str_replace(' ', '.', $user->name));

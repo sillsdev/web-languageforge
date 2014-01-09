@@ -56,7 +56,7 @@ class JsonRpcServer {
 		// executes the task on local object
 		try {
 			// TODO: refactor to use an error dto
-			$object->checkPermissions($request['method']);
+			$object->checkPermissions($request['method'], $request['params']);
 			if (method_exists($object, $request['method'])) {
 				$result = call_user_func_array(array($object,$request['method']),$request['params']);
 				$response = array (

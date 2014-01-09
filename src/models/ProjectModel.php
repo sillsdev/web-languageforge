@@ -151,9 +151,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @return bool
 	 */
 	public function hasRight($userId, $right) {
-		$role = $this->users->data[$userId]->role;
-		$result = Roles::hasRight(Realm::PROJECT, $role, $right);
-		return $result;
+		$hasRight = false;
+		if (key_exists($userId, $this->users->data)) {
+			$hasRight = Roles::hasRight(Realm::PROJECT, $this->users->data[$userId]->role, $right);
+		}
+		return $hasRight;
 	}
 	
 	/**
