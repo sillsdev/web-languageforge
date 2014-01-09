@@ -64,6 +64,17 @@ class Sf
 	}
 	
 	//---------------------------------------------------------------
+	// IMPORTANT NOTE TO THE DEVELOPERS 
+	//---------------------------------------------------------------
+	// When adding a new api method, also add your method name and appropriate RightsHelper statement as required by 
+	// the method's context (project context or site context) to the RightsHelper::userCanAccessMethod() method 
+	// FYI userCanAccessMethod() is a whitelist.  Anything not explicitly listed is denied access
+	//
+	// If an api method is ever renamed, remember to update the name in this method as well
+	//---------------------------------------------------------------
+	
+	
+	//---------------------------------------------------------------
 	// USER API
 	//---------------------------------------------------------------
 	
@@ -117,7 +128,7 @@ class Sf
  	 * @param string $projectId
  	 * @return CreateSimpleDto
  	 */
- 	public function user_createSimple($userName, $projectId) {
+ 	public function user_createSimple($projectId, $userName) {
  		return UserCommands::createSimple($userName, $projectId, $this->_userId);
  	}
  	
@@ -167,7 +178,7 @@ class Sf
 		return UserCommands::updateFromRegistration($validationKey, $params);
 	}
 	
-	public function user_sendInvite($toEmail, $projectId) {
+	public function user_sendInvite($projectId, $toEmail) {
 		return UserCommands::sendInvite($this->_userId, $toEmail, $projectId, $_SERVER['HTTP_HOST']);
 	}
 	
@@ -212,12 +223,6 @@ class Sf
 	public function project_list_dto() {
 		return \models\dto\ProjectListDto::encode($this->_userId);
 	}
-	
-	/*
-	public function project_readUser($projectId, $userId) {
-		throw new \Exception("project_readUser NYI");
-	}
-	*/
 	
 	public function project_updateUserRole($projectId, $params) {
 		return ProjectCommands::updateUserRole($projectId, $params);
@@ -301,21 +306,9 @@ class Sf
 		return QuestionCommands::deleteQuestions($projectId, $questionIds);
 	}
 	
-	/* not used anywhere - cjh
-	public function question_list($projectId, $textId) {
-		return QuestionCommands::listQuestions($projectId, $textId, $this->_userId);
-	}
-	*/
-	
 	public function question_update_answer($projectId, $questionId, $answer) {
 		return QuestionCommands::updateAnswer($projectId, $questionId, $answer);
 	}
-	
-	/* Note: I think this is never used - cjh (vote up/down is used instead)
-	public function question_update_answer_score($projectId, $questionId, $answerId, $score) {
-		return QuestionCommands::updateAnswerScore($projectId, $questionId, $answerId, $score, $this->_userId);
-	}
-	*/
 	
 	public function question_remove_answer($projectId, $questionId, $answerId) {
 		return QuestionCommands::removeAnswer($projectId, $questionId, $answerId);
@@ -378,7 +371,7 @@ class Sf
 	// Private Utility Functions
 	//---------------------------------------------------------------
 
-	private function isAnonymousMethod($methodName) {
+	private static function isAnonymousMethod($methodName) {
 		$methods = array(
 				'username_exists',
 				'user_register',
@@ -389,13 +382,13 @@ class Sf
 		return in_array($methodName, $methods);
 	}
 	
-	public function checkPermissions($methodName) {
+	public function checkPermissions($methodName, $params) {
 
-		if (!$this->isAnonymousMethod($methodName)) {
+		if (!self::isAnonymousMethod($methodName)) {
 			if (!$this->_userId) {
 				throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
 			}
-			if (!RightsHelper::userCanAccessMethod($methodName, $this->_userId)) {
+			if (!RightsHelper::userCanAccessMethod($this->_userId, $methodName, $params)) {
 				throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
 			}
 		}

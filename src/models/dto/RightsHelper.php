@@ -31,76 +31,64 @@ class RightsHelper
 		return Roles::hasRight(Realm::SITE, $user->role, $right);
 	}
 	
-	public static function userHasProjectRight($userId, $right) {
-		$user = new UserModel($userId);
-		return Roles::hasRight(Realm::SITE, $user->role, $right);
+	/**
+	 * 
+	 * @param string $projectId
+	 * @param string $userId
+	 * @param int $right
+	 * @return bool
+	 */
+	private static function userHasProjectRight($projectId, $userId, $right) {
+		$project = new ProjectModel($projectId);
+		return $project->hasRight($userId, $right);
 	}
 	
-	public static function userCanAccessMethod($methodName, $userId) {
+	/**
+	 * 
+	 * @param string $userId
+	 * @param string $methodName
+	 * @param array $params - parameters passed to the method
+	 * @return boolean
+	 */
+	public static function userCanAccessMethod($userId, $methodName, $params) {
 		switch ($methodName) {
-
-			// Site Admin
-			case 'user_read':
-			case 'user_list':
-				return RightsHelper::userHasSiteRight($userId, Domain::USERS + Operation::VIEW);
-
-			case 'user_update':
-			case 'user_create':
-				return RightsHelper::userHasSiteRight($userId, Domain::USERS + Operation::EDIT);
-				
-			case 'user_delete':
-				return RightsHelper::userHasSiteRight($userId, Domain::USERS + Operation::DELETE);
-				
-			case 'project_delete':
-				return RightsHelper::userHasSiteRight($userId, Domain::PROJECTS + Operation::DELETE);
-				
-			case 'project_list':
-				return RightsHelper::userHasSiteRight($userId, Domain::PROJECTS + Operation::VIEW);
-
-			// User
-			case 'user_readProfile':
-				return RightsHelper::userHasSiteRight($userId, Domain::USERS + Operation::VIEW_OWN);
-				
-			case 'user_updateProfile':
-			case 'change_password': // change_password requires additional protection in the method itself
-				return RightsHelper::userHasSiteRight($userId, Domain::USERS + Operation::EDIT_OWN);
-
+			
+			// User Role (Project Context)
 			case 'user_sendInvite':
 			case 'message_markRead':
-			case 'project_list_dto':
 			case 'project_pageDto':
-			case 'activity_list_dto':
+				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::VIEW);
 			case 'answer_vote_up':
 			case 'answer_vote_down':
-				return RightsHelper::userHasProjectRight($userId, Domain::ANSWERS + Operation::VIEW);
+				return self::userHasProjectRight($params[0], $userId, Domain::ANSWERS + Operation::VIEW);
 
 			case 'text_list_dto':
-				return RightsHelper::userHasProjectRight($userId, Domain::TEXTS + Operation::VIEW);
+				return self::userHasProjectRight($params[0], $userId, Domain::TEXTS + Operation::VIEW);
 				
 			case 'question_update_answer':
-				return RightsHelper::userHasProjectRight($userId, Domain::ANSWERS + Operation::EDIT_OWN);
+				return self::userHasProjectRight($params[0], $userId, Domain::ANSWERS + Operation::EDIT_OWN);
 				
 			case 'question_remove_answer':
-				return RightsHelper::userHasProjectRight($userId, Domain::ANSWERS + Operation::DELETE_OWN);
+				return self::userHasProjectRight($params[0], $userId, Domain::ANSWERS + Operation::DELETE_OWN);
 				
 			case 'question_update_comment':
-				return RightsHelper::userHasProjectRight($userId, Domain::COMMENTS + Operation::EDIT_OWN);
+				return self::userHasProjectRight($params[0], $userId, Domain::COMMENTS + Operation::EDIT_OWN);
 				
 			case 'question_remove_comment':
-				return RightsHelper::userHasProjectRight($userId, Domain::COMMENTS + Operation::DELETE_OWN);
+				return self::userHasProjectRight($params[0], $userId, Domain::COMMENTS + Operation::DELETE_OWN);
 				
 			case 'question_comment_dto':
-				return RightsHelper::userHasProjectRight($userId, Domain::ANSWERS + Operation::VIEW);
+				return self::userHasProjectRight($params[0], $userId, Domain::ANSWERS + Operation::VIEW);
 				
 			case 'question_list_dto':
-				return RightsHelper::userHasProjectRight($userId, Domain::QUESTIONS + Operation::VIEW);
+				return self::userHasProjectRight($params[0], $userId, Domain::QUESTIONS + Operation::VIEW);
 
-			// Project Manager
+			// Project Manager Role (Project Context)
 			case 'user_createSimple':
-				return RightsHelper::userHasProjectRight($userId, Domain::USERS + Operation::CREATE);
+				return self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::CREATE);
 				
 			case 'user_typeahead':
-				return RightsHelper::userHasProjectRight($userId, Domain::USERS + Operation::VIEW);
+				return self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::VIEW);
 				
 			case 'message_send':
 			case 'project_update':
@@ -108,39 +96,68 @@ class RightsHelper
 			case 'project_settings':
 			case 'project_updateSettings':
 			case 'project_readSettings':
-				return RightsHelper::userHasProjectRight($userId, Domain::PROJECTS + Operation::EDIT);
+				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
 
 			case 'project_updateUserRole':
-				return RightsHelper::userHasProjectRight($userId, Domain::USERS + Operation::EDIT);
+				return self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::EDIT);
 
 			case 'project_removeUsers':
-				return RightsHelper::userHasProjectRight($userId, Domain::USERS + Operation::DELETE);
+				return self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::DELETE);
 
 			case 'text_update':
 			case 'text_read':
 			case 'text_settings_dto':
-				return RightsHelper::userHasProjectRight($userId, Domain::TEXTS + Operation::EDIT);
+				return self::userHasProjectRight($params[0], $userId, Domain::TEXTS + Operation::EDIT);
 
 			case 'text_delete':
-				return RightsHelper::userHasProjectRight($userId, Domain::TEXTS + Operation::DELETE);
+				return self::userHasProjectRight($params[0], $userId, Domain::TEXTS + Operation::DELETE);
 
 			case 'question_update':
 			case 'question_read':
-				return RightsHelper::userHasProjectRight($userId, Domain::QUESTIONS + Operation::EDIT);
+				return self::userHasProjectRight($params[0], $userId, Domain::QUESTIONS + Operation::EDIT);
 
 			case 'question_delete':
-				return RightsHelper::userHasProjectRight($userId, Domain::QUESTIONS + Operation::DELETE);
+				return self::userHasProjectRight($params[0], $userId, Domain::QUESTIONS + Operation::DELETE);
 
 			case 'questionTemplate_update':
 			case 'questionTemplate_read':
-				return RightsHelper::userHasProjectRight($userId, Domain::TEMPLATES + Operation::EDIT);
+				return self::userHasProjectRight($params[0], $userId, Domain::TEMPLATES + Operation::EDIT);
 
 			case 'questionTemplate_delete':
-				return RightsHelper::userHasProjectRight($userId, Domain::TEMPLATES + Operation::DELETE);
+				return self::userHasProjectRight($params[0], $userId, Domain::TEMPLATES + Operation::DELETE);
 				
 			case 'questionTemplate_list':
-				return RightsHelper::userHasProjectRight($userId, Domain::TEMPLATES + Operation::VIEW);
+				return self::userHasProjectRight($params[0], $userId, Domain::TEMPLATES + Operation::VIEW);
+
+
+			// Admin (site context)
+			case 'user_read':
+			case 'user_list':
+				return self::userHasSiteRight($userId, Domain::USERS + Operation::VIEW);
+
+			case 'user_update':
+			case 'user_create':
+				return self::userHasSiteRight($userId, Domain::USERS + Operation::EDIT);
 				
+			case 'user_delete':
+				return self::userHasSiteRight($userId, Domain::USERS + Operation::DELETE);
+				
+			case 'project_delete':
+				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::DELETE);
+				
+			case 'project_list':
+				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::VIEW);
+
+			// User (site context)
+			case 'user_readProfile':
+				return self::userHasSiteRight($userId, Domain::USERS + Operation::VIEW_OWN);
+				
+			case 'user_updateProfile':
+			case 'change_password': // change_password requires additional protection in the method itself
+				return self::userHasSiteRight($userId, Domain::USERS + Operation::EDIT_OWN);
+			case 'project_list_dto':
+			case 'activity_list_dto':
+				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::VIEW_OWN);
 			default:
 				return false;
 		}

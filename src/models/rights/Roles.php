@@ -31,6 +31,7 @@ class Roles {
 		$rights = array();
 		$rights[] = Domain::USERS + Operation::EDIT_OWN;
 		$rights[] = Domain::USERS + Operation::VIEW_OWN;
+		$rights[] = Domain::PROJECTS + Operation::VIEW_OWN;
 		// Should users be able to delete their own user accounts? Probably,
 		// but not via the listview -- so we should NOT grant DELETE_OWN here.
 		//$rights[] = Domain::USERS + Operation::DELETE_OWN;
@@ -41,7 +42,7 @@ class Roles {
 		// ----------------------------------------------------------
 		// Project Member (user)
 		$rights = array();
-		$rights[] = Domain::PROJECTS + Operation::VIEW_OWN;
+		$rights[] = Domain::PROJECTS + Operation::VIEW;
 		$rights[] = Domain::TEXTS + Operation::VIEW;
 		$rights[] = Domain::QUESTIONS + Operation::VIEW;
 		$rights[] = Domain::ANSWERS + Operation::VIEW;
@@ -59,8 +60,7 @@ class Roles {
 		
 		// Project Manager (project_admin) (everything an user has...plus the following)
 		$rights = self::$_rights[Realm::PROJECT][Roles::USER];
-		$rights[] = Domain::PROJECTS + Operation::EDIT_OWN;
-		//$rights[] = Domain::PROJECTS + Operation::DELETE_OWN;
+		$rights[] = Domain::PROJECTS + Operation::EDIT;
 		$rights[] = Domain::TEXTS + Operation::CREATE; 
 		$rights[] = Domain::TEXTS + Operation::EDIT;
 		$rights[] = Domain::TEXTS + Operation::DELETE;
