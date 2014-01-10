@@ -23,6 +23,38 @@ class MapperModel
 	 * @var \DateTime
 	 */
 	public $dateCreated;
+	
+	/**
+	 * 
+	 * @var array
+	 */
+	private $_privateProperties;
+	
+	/**
+	 * 
+	 * @var array
+	 */
+	private $_readOnlyProperties;
+	
+	protected function setReadOnlyProp($propertyName) {
+		if (!in_array($propertyName, $this->_readOnlyProperties)) {
+			$this->_readOnlyProperties[] = $propertyName;
+		}
+	}
+	protected function setPrivateProp($propertyName) {
+		if (!in_array($propertyName, $this->_privateProperties)) {
+			$this->_privateProperties[] = $propertyName;
+		}
+	}
+	
+	public function getReadOnlyProperties() {
+		return $this->_readOnlyProperties;
+	}
+	
+	public function getPrivateProperties() {
+		return $this->_privateProperties;
+	}
+	
 
 	/**
 	 * 
@@ -30,9 +62,13 @@ class MapperModel
 	 * @param string $id
 	 */
 	protected function __construct($mapper, $id = '') {
+		$this->_privateProperties = array();
+		$this->_readOnlyProperties = array();
 		$this->_mapper = $mapper;
 		$this->dateModified = new \DateTime();
 		$this->dateCreated = new \DateTime();
+		$this->setReadOnlyProp('dateModified');
+		$this->setReadOnlyProp('dateCreated');
 		CodeGuard::checkTypeAndThrow($id, 'string');
 		if (!empty($id)) {
 			$this->read($id);
