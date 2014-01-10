@@ -147,6 +147,9 @@ class RightsHelper
 				
 			case 'project_list':
 				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::VIEW);
+			
+			case 'project_update':
+				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT);
 
 			// User (site context)
 			case 'user_readProfile':
@@ -159,7 +162,7 @@ class RightsHelper
 			case 'activity_list_dto':
 				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::VIEW_OWN);
 			default:
-				return false;
+				throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");
 		}
 	}
 }
