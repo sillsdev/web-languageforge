@@ -1,12 +1,13 @@
 <?php
 
-use libraries\palaso\exceptions\UserNotAuthenticatedException;
+use models\commands\MessageCommands;
 
+use libraries\palaso\exceptions\UserNotAuthenticatedException;
+use libraries\palaso\exceptions\UserUnauthorizedException;
 use libraries\palaso\CodeGuard;
 use libraries\palaso\JsonRpcServer;
 use libraries\sfchecks\Communicate;
 use libraries\sfchecks\Email;
-
 use models\commands\ActivityCommands;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
@@ -24,7 +25,6 @@ use models\rights\Domain;
 use models\rights\Operation;
 use models\rights\Roles;
 use models\sms\SmsSettings;
-
 use models\AnswerModel;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
@@ -63,34 +63,16 @@ class Sf
  		ini_set('display_errors', 0);
 	}
 	
-	private function isAnonymousMethod($methodName) {
-		$methods = array(
-				'username_exists',
-				'user_register',
-				'get_captcha_src',
-				'user_readForRegistration',
-				'user_updateFromRegistration'
-		);
-		return in_array($methodName, $methods);
-	}
+	//---------------------------------------------------------------
+	// IMPORTANT NOTE TO THE DEVELOPERS 
+	//---------------------------------------------------------------
+	// When adding a new api method, also add your method name and appropriate RightsHelper statement as required by 
+	// the method's context (project context or site context) to the RightsHelper::userCanAccessMethod() method 
+	// FYI userCanAccessMethod() is a whitelist.  Anything not explicitly listed is denied access
+	//
+	// If an api method is ever renamed, remember to update the name in this method as well
+	//---------------------------------------------------------------
 	
-	public function checkPermissions($methodName) {
-
-		if (!$this->isAnonymousMethod($methodName) && !$this->_userId) {
-			throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
-		}
-		
-		// do other permission checks here
-	}
-	
-
-	public function update_last_activity($newtime = NULL) {
-		if (is_null($newtime)) {
-			// Default to current time
-			$newtime = time();
-		}
-		$this->_controller->session->set_userdata('last_activity', $newtime);
-	}
 	
 	//---------------------------------------------------------------
 	// USER API
@@ -99,11 +81,10 @@ class Sf
 	/**
 	 * Read a user from the given $id
 	 * @param string $id
-	 * @return UserModel $json
+	 * @return array
 	 */
 	public function user_read($id) {
-		$user = new UserModel($id);
-		return JsonEncoder::encode($user);
+		return UserCommands::readUser($id);
 	}
 	
 	/**
@@ -121,13 +102,7 @@ class Sf
 	 * @return string Id of written object
 	 */
 	public function user_update($params) {
-		$user = new UserModel();
-		if ($params['id']) {
-			$user->read($params['id']);
-		}
-		JsonDecoder::decode($user, $params);
-		$result = $user->write();
-		return $result;
+		return UserCommands::updateUser($params);
 	}
 
 	/**
@@ -136,21 +111,7 @@ class Sf
 	 * @return string Id of written object
 	 */
 	public function user_updateProfile($params) {
-		$user = new UserProfileModel();
-		if ($params['id']) {
-			$user->read($params['id']);
-		}
-		
-		// don't allow the following keys to be persisted
-		if (array_key_exists('projects', $params)) {
-			unset($params['projects']);
-		}
-		if (array_key_exists('role', $params)) {
-					unset($params['role']);
-		}
-		JsonDecoder::decode($user, $params);
-		$result = $user->write();
-		return $result;
+		return UserCommands::updateUserProfile($params, $this->_userId);
 	}
 
 	/**
@@ -167,33 +128,28 @@ class Sf
  	 * @param string $projectId
  	 * @return CreateSimpleDto
  	 */
- 	public function user_createSimple($userName, $projectId) {
+ 	public function user_createSimple($projectId, $userName) {
  		return UserCommands::createSimple($userName, $projectId, $this->_userId);
  	}
  	
  	// TODO Pretty sure this is going to want some paging params
+	/**
+	 * @return \models\UserListModel
+	 */
 	public function user_list() {
-		$list = new \models\UserListModel();
-		$list->read();
-		return $list;
+		return UserCommands::listUsers();
 	}
 	
 	public function user_typeahead($term) {
-		$list = new \models\UserTypeaheadModel($term);
-		$list->read();
-		return $list;
+		return UserCommands::userTypeaheadList($term);
 	}
 	
 	public function change_password($userId, $newPassword) {
-		if (!is_string($userId) && !is_string($newPassword)) {
-			throw new \Exception("Invalid args\n" . var_export($userId, true) . "\n" . var_export($newPassword, true));
-		}
-		$user = new \models\PasswordModel($userId);
-		$user->changePassword($newPassword);
-		$user->write();
+		return UserCommands::changePassword($userId, $newPassword, $this->_userId);
 	}
 	
 	public function username_exists($username) {
+		// intentionally we have no security here: people can see what users exist by trial and error
 		return UserModel::userNameExists($username);
 	}
 	
@@ -203,32 +159,15 @@ class Sf
 	 * @return string Id of written object
 	 */
 	public function user_register($params) {
-		$captcha_info = $this->_controller->session->userdata('captcha_info');
-		$projectCode = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
-		return UserCommands::register($params, $captcha_info, $projectCode);
+		return UserCommands::register($params, $this->_controller->session->userdata('captcha_info'), $_SERVER['HTTP_HOST']);
 	}
 	
 	public function user_create($params) {
-		// TODO cjh 2013-09 assure that authenticated user executing this action has privilege to create a user
-		$user = new \models\UserModelWithPassword();
-		JsonDecoder::decode($user, $params);
-		if (UserModel::userNameExists($user->username)) {
-			return false;
-		}
-		$user->setPassword($params['password']);
-		return $user->write();
+		return UserCommands::createUser($params);
 	}
 	
 	public function get_captcha_src() {
-		$this->_controller->load->library('captcha');
-		$captcha_config = array(
-			'png_backgrounds' => array(APPPATH . 'images/captcha/captcha_bg.png'),
-			'fonts' => array(FCPATH.'/images/captcha/times_new_yorker.ttf'),
-			'characters' => 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789',
-		);
-		$captcha_info = $this->_controller->captcha->main($captcha_config);
-		$this->_controller->session->set_userdata('captcha_info', $captcha_info);
-		return $captcha_info['image_src'];
+		return UserCommands::getCaptchaSrc($this->_controller);
 	}
 	
 	public function user_readForRegistration($validationKey) {
@@ -239,8 +178,8 @@ class Sf
 		return UserCommands::updateFromRegistration($validationKey, $params);
 	}
 	
-	public function user_sendInvite($toEmail, $projectId) {
-		return UserCommands::sendInvite(new UserModel($this->_userId), $toEmail, $projectId, $_SERVER['HTTP_HOST']);
+	public function user_sendInvite($projectId, $toEmail) {
+		return UserCommands::sendInvite($this->_userId, $toEmail, $projectId, $_SERVER['HTTP_HOST']);
 	}
 	
 	
@@ -252,32 +191,11 @@ class Sf
 	
 	/**
 	 * Create/Update a Project
-	 * @param ProjectModel $json
+	 * @param array $object
 	 * @return string Id of written object
 	 */
 	public function project_update($object) {
-		$project = new \models\ProjectModel();
-		$id = $object['id'];
-		$isNewProject = ($id == '');
-		$oldDBName = '';
-		if (!$isNewProject) {
-			$project->read($id);
-			// This is getting complex; it probably belongs in ProjectCommands. TODO: Rewrite it to put it there. RM 2013-08
-			$oldDBName = $project->databaseName();
-		}
-		JsonDecoder::decode($project, $object);
-		$newDBName = $project->databaseName();
-		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
-			if (MongoStore::hasDB($newDBName)) {
-				throw new \Exception("New project name " . $object->projectname . " already exists. Not renaming.");
-			}
-			MongoStore::renameDB($oldDBName, $newDBName);
-		}
-		$result = $project->write();
-		if ($isNewProject) {
-			//ActivityCommands::addProject($project); // TODO: Determine if any other params are needed. RM 2013-08
-		}
-		return $result;
+		return ProjectCommands::updateProject($object);
 	}
 
 	/**
@@ -285,8 +203,7 @@ class Sf
 	 * @param string $id
 	 */
 	public function project_read($id) {
-		$project = new \models\ProjectModel($id);
-		return JsonEncoder::encode($project);
+		return ProjectCommands::readProject($id);
 	}
 	
 	/**
@@ -300,54 +217,31 @@ class Sf
 
 	// TODO Pretty sure this is going to want some paging params
 	public function project_list() {
-		$list = new \models\ProjectListModel();
-		$list->read();
-		return $list;
+		return ProjectCommands::listProjects();
 	}
 	
 	public function project_list_dto() {
 		return \models\dto\ProjectListDto::encode($this->_userId);
 	}
 	
-	public function project_readUser($projectId, $userId) {
-		throw new \Exception("project_readUser NYI");
-	}
-	
 	public function project_updateUserRole($projectId, $params) {
-		ProjectCommands::updateUserRole($projectId, $params);
+		return ProjectCommands::updateUserRole($projectId, $params);
 	}
 	
 	public function project_removeUsers($projectId, $userIds) {
-		ProjectCommands::removeUsers($projectId, $userIds);
+		return ProjectCommands::removeUsers($projectId, $userIds);
 	}
 	
 	public function project_settings($projectId) {
-		$result = ProjectSettingsDto::encode($projectId, $this->_userId);
-		return $result;
+		return ProjectSettingsDto::encode($projectId, $this->_userId);
 	}
 	
 	public function project_updateSettings($projectId, $smsSettingsArray, $emailSettingsArray) {
-		if (RightsHelper::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT_OTHER)) {
-			$smsSettings = new \models\sms\SmsSettings();
-			$emailSettings = new \models\EmailSettings();
-			JsonDecoder::decode($smsSettings, $smsSettingsArray);
-			JsonDecoder::decode($emailSettings, $emailSettingsArray);
-			$projectSettings = new ProjectSettingsModel($projectId);
-			$projectSettings->smsSettings = $smsSettings;
-			$projectSettings->emailSettings = $emailSettings;
-			$result = $projectSettings->write();
-			return $result;
-		}
+		return ProjectCommands::updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray);
 	}
 	
 	public function project_readSettings($projectId) {
-		if (RightsHelper::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT_OTHER)) {
-			$project = new ProjectSettingsModel($projectId);
-			return array(
-				'sms' => JsonEncoder::encode($project->smsSettings),
-				'email' => JsonEncoder::encode($project->emailSettings)
-			);
-		}
+		return ProjectCommands::readProjectSettings($projectId);
 	}
 	
 	public function project_pageDto($projectId) {
@@ -358,18 +252,11 @@ class Sf
 	// MESSAGE API
 	//---------------------------------------------------------------
 	public function message_markRead($projectId, $messageId) {
-		$unreadModel = new UnreadMessageModel($this->_userId, $projectId);
-		$unreadModel->markRead($messageId);
-		$unreadModel->write();
+		return MessageCommands::markMessageRead($projectId, $messageId);
 	}
 	
 	public function message_send($projectId, $userIds, $subject, $emailTemplate, $smsTemplate) {
-		$project = new ProjectSettingsModel($projectId);
-		$users = array();
-		foreach ($userIds as $id) {
-			$users[] = new UserModel($id);
-		}
-		return Communicate::communicateToUsers($users, $project, $subject, $smsTemplate, $emailTemplate);
+		return MessageCommands::sendMessage($projectId, $userIds, $subject, $emailTemplate, $smsTemplate);
 	}
 	
 	
@@ -382,20 +269,11 @@ class Sf
 	}
 	
 	public function text_read($projectId, $textId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$textModel = new \models\TextModel($projectModel, $textId);
-		return JsonEncoder::encode($textModel);
+		return TextCommands::readText($projectId, $textId);
 	}
 	
 	public function text_delete($projectId, $textIds) {
 		return TextCommands::deleteTexts($projectId, $textIds);
-	}
-	
-	public function text_list($projectId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$textListModel = new \models\TextListModel($projectModel);
-		$textListModel->read();
-		return $textListModel;
 	}
 	
 	public function text_list_dto($projectId) {
@@ -411,68 +289,31 @@ class Sf
 	//---------------------------------------------------------------
 	
 	public function question_update($projectId, $object) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$questionModel = new \models\QuestionModel($projectModel);
-		$isNewQuestion = ($object['id'] == '');
-		if (!$isNewQuestion) {
-			$questionModel->read($object['id']);
-		}
-		JsonDecoder::decode($questionModel, $object);
-		$questionId = $questionModel->write();
-		if ($isNewQuestion) {
-			ActivityCommands::addQuestion($projectModel, $questionId, $questionModel);
-		}
-		return $questionId;
+		return QuestionCommands::updateQuestion($projectId, $object);
 	}
 	
 	public function question_read($projectId, $questionId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$questionModel = new \models\QuestionModel($projectModel, $questionId);
-		return JsonEncoder::encode($questionModel);
+		return QuestionCommands::readQuestion($projectId, $questionId);
 	}
 	
 	public function question_delete($projectId, $questionIds) {
 		return QuestionCommands::deleteQuestions($projectId, $questionIds);
 	}
 	
-	public function question_list($projectId, $textId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$questionListModel = new \models\QuestionListModel($projectModel, $textId);
-		$questionListModel->read();
-		return $questionListModel;
-	}
-	
 	public function question_update_answer($projectId, $questionId, $answer) {
-		return QuestionCommands::updateAnswer($projectId, $questionId, $answer, $this->_userId);
-	}
-	
-	public function question_update_answer_score($projectId, $questionId, $answerId, $score) {
-		$projectModel = new \models\ProjectModel($projectId);
-		$questionModel = new QuestionModel($projectModel, $questionId);
-		$answerModel = $questionModel->readAnswer($answerId);
-		$lastScore = $answerModel->score;
-		$currentScore = intval($score);
-		$answerModel->score = $currentScore;
-		$questionModel->writeAnswer($answerModel);
-		if ($currentScore > $lastScore) {
-			ActivityCommands::updateScore($projectModel, $questionId, $answerId, $this->_userId, 'increase');
-		} else {
-			ActivityCommands::updateScore($projectModel, $questionId, $answerId, $this->_userId, 'decrease');
-		}
+		return QuestionCommands::updateAnswer($projectId, $questionId, $answer);
 	}
 	
 	public function question_remove_answer($projectId, $questionId, $answerId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId);
+		return QuestionCommands::removeAnswer($projectId, $questionId, $answerId);
 	}
 	
 	public function question_update_comment($projectId, $questionId, $answerId, $comment) {
-		return QuestionCommands::updateComment($projectId, $questionId, $answerId, $comment, $this->_userId);
+		return QuestionCommands::updateComment($projectId, $questionId, $answerId, $comment);
 	}
 	
 	public function question_remove_comment($projectId, $questionId, $answerId, $commentId) {
-		$projectModel = new \models\ProjectModel($projectId);
-		return QuestionModel::removeComment($projectModel->databaseName(), $questionId, $answerId, $commentId);
+		return QuestionCommands::removeComment($projectId, $questionId, $answerId, $commentId);
 	}
 	
 	public function question_comment_dto($projectId, $questionId) {
@@ -496,15 +337,11 @@ class Sf
 	//---------------------------------------------------------------
 
 	public function questionTemplate_update($params) {
-		$questionTemplate = new \models\QuestionTemplateModel();
-		JsonDecoder::decode($questionTemplate, $params);
-		$result = $questionTemplate->write();
-		return $result;
+		return QuestionTemplateCommands::updateTemplate($params);
 	}
 
 	public function questionTemplate_read($id) {
-		$questionTemplate = new \models\QuestionTemplateModel($id);
-		return JsonEncoder::encode($questionTemplate);
+		return QuestionTemplateCommands::readTemplate($id);
 	}
 
 	public function questionTemplate_delete($questionTemplateIds) {
@@ -512,9 +349,7 @@ class Sf
 	}
 
 	public function questionTemplate_list() {
-		$list = new \models\QuestionTemplateListModel();
-		$list->read();
-		return $list;
+		return QuestionTemplateCommands::listTemplates();
 	}
 	
 	//---------------------------------------------------------------
@@ -524,6 +359,44 @@ class Sf
 	public function activity_list_dto() {
 		return \models\dto\ActivityListDto::getActivityForUser($this->_userId);
 	}
+	
+	
+	//---------------------------------------------------------------
+	// Private Utility Functions
+	//---------------------------------------------------------------
+
+	private static function isAnonymousMethod($methodName) {
+		$methods = array(
+				'username_exists',
+				'user_register',
+				'get_captcha_src',
+				'user_readForRegistration',
+				'user_updateFromRegistration'
+		);
+		return in_array($methodName, $methods);
+	}
+	
+	public function checkPermissions($methodName, $params) {
+
+		if (!self::isAnonymousMethod($methodName)) {
+			if (!$this->_userId) {
+				throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
+			}
+			if (!RightsHelper::userCanAccessMethod($this->_userId, $methodName, $params)) {
+				throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
+			}
+		}
+	}
+	
+
+	public function update_last_activity($newtime = NULL) {
+		if (is_null($newtime)) {
+			// Default to current time
+			$newtime = time();
+		}
+		$this->_controller->session->set_userdata('last_activity', $newtime);
+	}
+	
 	
 }
 

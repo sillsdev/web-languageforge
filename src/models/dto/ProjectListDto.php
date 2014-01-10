@@ -13,13 +13,13 @@ class ProjectListDto
 {
 	/**
 	 *
-	 * @param string $userId  // NOTE: Not implemented yet! Right now *all* projects are listed regardless of ownership. TODO: Implement this. RM 2013-08
+	 * @param string $userId
 	 * @returns array - the DTO array
 	 */
 	public static function encode($userId) {
 		
 		$user = new UserModel($userId);
-		$canListAllProjects = $user->hasRight(Domain::PROJECTS + Operation::VIEW_OTHER);
+		$canListAllProjects = $user->hasRight(Domain::PROJECTS + Operation::VIEW);
 
 		$projectList = new ProjectList_UserModel();
 		if ($canListAllProjects) {

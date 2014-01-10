@@ -136,7 +136,7 @@ class ProjectModel extends \models\mapper\MapperModel
 			$userId = $userList->entries[$i]['id'];
 			if (!key_exists($userId, $this->users->data)) {
 				$projectId = $this->id->asString();
-				error_log("User $userId is not a member of project $projectId");
+				//error_log("User $userId is not a member of project $projectId");
 				continue;
 			}
 			$userList->entries[$i]['role'] = $this->users->data[$userId]->role;
@@ -151,9 +151,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @return bool
 	 */
 	public function hasRight($userId, $right) {
-		$role = $this->users->data[$userId]->role;
-		$result = Roles::hasRight(Realm::PROJECT, $role, $right);
-		return $result;
+		$hasRight = false;
+		if (key_exists($userId, $this->users->data)) {
+			$hasRight = Roles::hasRight(Realm::PROJECT, $this->users->data[$userId]->role, $right);
+		}
+		return $hasRight;
 	}
 	
 	/**
