@@ -6,6 +6,7 @@ use models\ProjectModel;
 use models\TextModel;
 use models\dto\UsxTrimHelper;
 use models\mapper\JsonDecoder;
+use models\mapper\JsonEncoder;
 use models\commands\ActivityCommands;
 
 class TextCommands
@@ -64,10 +65,23 @@ class TextCommands
 		}
 		return $textId;
 	}
+	
+	/**
+	 * 
+	 * @param string $projectId
+	 * @param string $textId
+	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
+	 */
+	public static function readText($projectId, $textId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$textModel = new \models\TextModel($projectModel, $textId);
+		return JsonEncoder::encode($textModel);
+	}
 
 	/**
 	 * @param string $projectId
 	 * @param array $textIds
+	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 * @return int Total number of projects removed.
 	 */
 	public static function deleteTexts($projectId, $textIds) {

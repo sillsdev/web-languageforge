@@ -3,13 +3,81 @@
 namespace models\commands;
 
 use libraries\palaso\CodeGuard;
-use models\mapper\JsonDecoder;
-use models\rights\Roles;
+use libraries\palaso\JsonRpcServer;
+use libraries\palaso\exceptions\UserNotAuthenticatedException;
+use libraries\sfchecks\Communicate;
+use libraries\sfchecks\Email;
+use models\AnswerModel;
 use models\ProjectModel;
+use models\ProjectSettingsModel;
+use models\QuestionModel;
+use models\UnreadMessageModel;
 use models\UserModel;
+use models\UserProfileModel;
+use models\commands\ActivityCommands;
+use models\commands\ProjectCommands;
+use models\commands\QuestionCommands;
+use models\commands\QuestionTemplateCommands;
+use models\commands\TextCommands;
+use models\commands\UserCommands;
+use models\dto\ActivityListDto;
+use models\dto\ProjectSettingsDto;
+use models\dto\RightsHelper;
+use models\dto\UserProfileDto;
+use models\mapper\Id;
+use models\mapper\JsonDecoder;
+use models\mapper\JsonEncoder;
+use models\mapper\MongoStore;
+use models\rights\Domain;
+use models\rights\Operation;
+use models\rights\Realm;
+use models\rights\Roles;
+use models\sms\SmsSettings;
+
 
 class ProjectCommands
 {
+	
+	/**
+	 * 
+	 * @param unknown $object
+	 * @throws \Exception
+	 * @return string
+	 */
+	public static function updateProject($object) {
+		$project = new \models\ProjectModel();
+		$id = $object['id'];
+		$isNewProject = ($id == '');
+		$oldDBName = '';
+		if (!$isNewProject) {
+			$project->read($id);
+			// This is getting complex; it probably belongs in ProjectCommands. TODO: Rewrite it to put it there. RM 2013-08
+			$oldDBName = $project->databaseName();
+		}
+		JsonDecoder::decode($project, $object);
+		$newDBName = $project->databaseName();
+		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
+			if (MongoStore::hasDB($newDBName)) {
+				throw new \Exception("New project name " . $object->projectname . " already exists. Not renaming.");
+			}
+			MongoStore::renameDB($oldDBName, $newDBName);
+		}
+		$result = $project->write();
+		if ($isNewProject) {
+			//ActivityCommands::addProject($project); // TODO: Determine if any other params are needed. RM 2013-08
+		}
+		return $result;
+	}
+	
+	/**
+	 * 
+	 * @param string $id
+	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
+	 */
+	public static function readProject($id) {
+		$project = new \models\ProjectModel($id);
+		return JsonEncoder::encode($project);
+	}
 	
 	/**
 	 * @param array $projectIds
@@ -29,6 +97,16 @@ class ProjectCommands
 		// STEP 2: remove the user from the project
 		// STEP 3: delete the project
 		return $count;
+	}
+	
+	/**
+	 * 
+	 * @return \models\ProjectListModel
+	 */
+	public static function listProjects() {
+		$list = new \models\ProjectListModel();
+		$list->read();
+		return $list;
 	}
 
 	/**
@@ -73,6 +151,26 @@ class ProjectCommands
 	
 	public static function renameProject($projectId, $oldName, $newName) {
 		// TODO: Write this. (Move renaming logic over from sf->project_update). RM 2013-08
+	}
+	
+	public static function updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray) {
+		$smsSettings = new \models\sms\SmsSettings();
+		$emailSettings = new \models\EmailSettings();
+		JsonDecoder::decode($smsSettings, $smsSettingsArray);
+		JsonDecoder::decode($emailSettings, $emailSettingsArray);
+		$projectSettings = new ProjectSettingsModel($projectId);
+		$projectSettings->smsSettings = $smsSettings;
+		$projectSettings->emailSettings = $emailSettings;
+		$result = $projectSettings->write();
+		return $result;
+	}
+	
+	public static function readProjectSettings($projectId) {
+		$project = new ProjectSettingsModel($projectId);
+		return array(
+			'sms' => JsonEncoder::encode($project->smsSettings),
+			'email' => JsonEncoder::encode($project->emailSettings)
+		);
 	}
 	
 }
