@@ -114,5 +114,9 @@ class MongoTestEnvironment
 	public function restoreErrorDisplay() {
 		ini_set('display_errors', $this->_display);
 	}
+	
+	public function fixJson($input) {
+		return json_decode(json_encode($input), true);
+	}
 		
 }
