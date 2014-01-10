@@ -276,12 +276,6 @@ class Sf
 		return TextCommands::deleteTexts($projectId, $textIds);
 	}
 	
-	/* i don't think this is used anywhere - cjh
-	public function text_list($projectId) {
-		return TextCommands::listTexts($projectId, $this->_userId);
-	}
-	*/
-	
 	public function text_list_dto($projectId) {
 		return \models\dto\TextListDto::encode($projectId, $this->_userId);
 	}
