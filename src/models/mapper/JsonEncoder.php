@@ -127,6 +127,7 @@ class JsonEncoder {
 			}
 			$count++;
 		}
+		// Note: we return stdClass to represent an empty JSON object (as opposed to an empty JSON array)
 		return $count == 0 ? new \stdClass() : $result;
 	}
 	
