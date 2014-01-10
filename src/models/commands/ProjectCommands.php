@@ -46,8 +46,6 @@ class ProjectCommands
 	 * @return string
 	 */
 	public static function updateProject($object, $authUserId) {
-		// TODO check if user has right to create or just update a project, and to what extent
-		// TODO: if updating the project, make sure user is a member of the project (regardless of site admin status)
 		$project = new \models\ProjectModel();
 		$id = $object['id'];
 		$isNewProject = ($id == '');
