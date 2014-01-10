@@ -21,7 +21,6 @@ class QuestionListDto
 	public static function encode($projectId, $textId, $userId) {
 		$userModel = new UserModel($userId);
 		$projectModel = new ProjectModel($projectId);
-		//$textModel = new TextModel($projectModel, $textId);
 		$questionList = new QuestionAnswersListModel($projectModel, $textId);
 		$questionList->read();
 
@@ -36,11 +35,6 @@ class QuestionListDto
 		$data['text'] = JsonEncoder::encode($textModel);
 		$usxHelper = new UsxHelper($textModel->content);
 		$data['text']['content'] = $usxHelper->toHtml();
-		/*
-		$data['text'] = array(
-				'title' => $textModel->title,
-				'id' => $textId);
-				*/
 		foreach ($questionList->entries as $questionData) {
 			// Just want answer count, not whole list
 			$questionData['answerCount'] = count($questionData['answers']);
