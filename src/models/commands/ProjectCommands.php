@@ -41,11 +41,10 @@ class ProjectCommands
 	/**
 	 * 
 	 * @param unknown $object
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 * @throws \Exception
 	 * @return string
 	 */
-	public static function updateProject($object, $authUserId) {
+	public static function updateProject($object) {
 		$project = new \models\ProjectModel();
 		$id = $object['id'];
 		$isNewProject = ($id == '');
