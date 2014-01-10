@@ -12,7 +12,14 @@ class JsonEncoder {
 	 */
 	public static function encode($model) {
 		$encoder = new JsonEncoder();
-		return $encoder->_encode($model);
+		$data = $encoder->_encode($model);
+		if (method_exists($model, 'getPrivateProperties')) {
+			$privateProperties = $model->getPrivateProperties();
+			foreach ($privateProperties as $prop) {
+				unset($data[$prop]);
+			}
+		}
+		return $data;
 	}
 	
 	/**

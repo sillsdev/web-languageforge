@@ -20,6 +20,18 @@ class JsonDecoder {
 	 */
 	public static function decode($model, $values, $id = '') {
 		$decoder = new JsonDecoder();
+		$propsToRemove = array();
+		
+		if (method_exists($model, 'getPrivateProperties')) {
+			$propsToRemove = $model->getPrivateProperties();
+		}
+		if (method_exists($model, 'getReadOnlyProperties')) {
+			$propsToRemove = array_merge($propsToRemove, $model->getReadOnlyProperties());
+		}
+		foreach ($propsToRemove as $prop) {
+			unset($values[$prop]);
+		}
+
 		$decoder->_decode($model, $values, $id);
 	}
 	
