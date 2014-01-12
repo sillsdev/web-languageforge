@@ -30,3 +30,7 @@ fieldset.picklists li:hover {
 fieldset.picklists li.selected {
 	background-color: #DDD;
 }
+
+a:hover {
+	cursor: pointer;
+}

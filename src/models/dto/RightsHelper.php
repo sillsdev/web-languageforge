@@ -31,6 +31,16 @@ class RightsHelper
 		return Roles::hasRight(Realm::SITE, $user->role, $right);
 	}
 	
+	public static function userHasProjectRightForAnyProject($userId, $right) {
+		$user = new UserModel($userId);
+		foreach ($user->projects->refs as $id) {
+			if (self::userHasProjectRight($id->asString(), $userId, $right)) {
+				return true;
+			}
+		}
+		return false;	
+	}
+	
 	/**
 	 * 
 	 * @param string $projectId
@@ -88,7 +98,7 @@ class RightsHelper
 				return self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::CREATE);
 				
 			case 'user_typeahead':
-				return self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::VIEW);
+				return self::userHasProjectRightForAnyProject($userId, Domain::USERS + Operation::VIEW);
 				
 			case 'message_send':
 			case 'project_update':
@@ -119,16 +129,6 @@ class RightsHelper
 			case 'question_delete':
 				return self::userHasProjectRight($params[0], $userId, Domain::QUESTIONS + Operation::DELETE);
 
-			case 'questionTemplate_update':
-			case 'questionTemplate_read':
-				return self::userHasProjectRight($params[0], $userId, Domain::TEMPLATES + Operation::EDIT);
-
-			case 'questionTemplate_delete':
-				return self::userHasProjectRight($params[0], $userId, Domain::TEMPLATES + Operation::DELETE);
-				
-			case 'questionTemplate_list':
-				return self::userHasProjectRight($params[0], $userId, Domain::TEMPLATES + Operation::VIEW);
-
 
 			// Admin (site context)
 			case 'user_read':
@@ -150,6 +150,17 @@ class RightsHelper
 			
 			case 'project_update':
 				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT);
+
+			case 'questionTemplate_update':
+			case 'questionTemplate_read':
+				return self::userHasSiteRight($userId, Domain::TEMPLATES + Operation::EDIT);
+
+			case 'questionTemplate_delete':
+				return self::userHasSiteRight($userId, Domain::TEMPLATES + Operation::DELETE);
+				
+			case 'questionTemplate_list':
+				return self::userHasSiteRight($userId, Domain::TEMPLATES + Operation::VIEW);
+
 
 			// User (site context)
 			case 'user_readProfile':
