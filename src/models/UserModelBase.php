@@ -24,10 +24,6 @@ class UserModelBase extends \models\mapper\MapperModel
 		parent::__construct(UserModelMongoMapper::instance(), $id);
 	}
 	
-	/**
-	 *	Removes a user from the collection
-	 *  Project references to this user are also removed
-	 */
 	public function remove() {
 		UserModelMongoMapper::instance()->remove($this->id->asString());
 	}
