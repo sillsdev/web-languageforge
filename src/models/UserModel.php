@@ -23,6 +23,29 @@ class UserModel extends \models\UserModelBase
 		parent::__construct($id);
 	}
 	
+	/**
+	 *	Removes a user from the collection
+	 *  Project references to this user are also removed
+	 */
+	public function remove() {
+		foreach ($this->projects->refs as $id) {
+			$project = new ProjectModel($id->asString());
+			$project->removeUser($this->id->asString());
+			$project->write();
+		}
+		parent::remove();
+	}
+	
+	public function isMemberOfProject($projectId) {
+		foreach ($this->projects->refs as $id) {
+			if ($projectId == $id->asString()) {
+				return true;
+			}
+		}
+		return false;
+	}
+			
+	
 	
 	/**
 	 *	Adds the user as a member of $projectId
