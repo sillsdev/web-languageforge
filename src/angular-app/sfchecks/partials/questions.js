@@ -19,7 +19,9 @@ angular.module(
 			//preferFlash : false,
 			onready : function() {
 				$scope.audioReady = true;
-				$scope.$apply();
+				if(!$scope.$$phase) {
+					$scope.$apply();
+				}
 				// Ready to use; soundManager.createSound() etc. can now be called.
 			}
 		});
@@ -68,7 +70,6 @@ angular.module(
 				}
 			});
 		};
-		$scope.queryTemplates();
 
 		$scope.$watch('template', function(template) {
 			if (template && !angular.isUndefined(template.description)) {
@@ -115,11 +116,14 @@ angular.module(
 					breadcrumbService.updateCrumb('top', 2, {label: $scope.text.title});
 
 					var rights = result.data.rights;
-					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.DELETE_OTHER); 
+					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.DELETE); 
 					$scope.rights.create = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE); 
 					$scope.rights.createTemplate = ss.hasRight(rights, ss.domain.TEMPLATES, ss.operation.CREATE); 
 					$scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT);
 					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
+					if ($scope.rights.create) {
+						$scope.queryTemplates();
+					}
 				}
 			});
 		};

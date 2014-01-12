@@ -33,7 +33,7 @@ angular.module(
 					// Rights
 					var rights = result.data.rights;
 					$scope.rights = {};
-					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.DELETE_OTHER); 
+					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.DELETE); 
 					$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
 					$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
 					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;

@@ -8,7 +8,7 @@ angular.module(
                              function($scope, projectService, ss, breadcrumbService, linkService, notice) {
 		// Rights
 		$scope.rights = {};
-		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.DELETE_OTHER); 
+		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.DELETE); 
 
 		// Breadcrumb
 		breadcrumbService.set('top',
