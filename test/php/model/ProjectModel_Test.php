@@ -226,6 +226,28 @@ class TestProjectModel extends UnitTestCase {
 		$this->assertEqual($project->projectCode, ProjectModel::domainToProjectCode($projectDomain));
 	}
 	
+	function testRemoveProject_ProjectHasMembers_UserRefsToProjectAreRemoved() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		$userId = $e->createUser('user1', 'user1', 'user1');
+		$user = new UserModel($userId);
+		$project = $e->createProject('testProject');
+		$project->addUser($userId, Roles::USER);
+		$projectId = $project->write();
+		$user->addProject($project->id->asString());
+		$user->write();
+		
+		// delete the project
+		$project->remove();
+		
+		// re-read the user
+		$user->read($userId);
+		
+		$this->assertFalse($user->isMemberOfProject($projectId));
+		
+		
+	}
+	
 }
 
 ?>

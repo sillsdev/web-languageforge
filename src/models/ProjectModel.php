@@ -103,6 +103,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * User references to this project are also removed
 	 */
 	public function remove() {
+		foreach ($this->users->data as $userId => $roleObj) {
+			$user = new UserModel($userId);
+			$user->removeProject($this->id->asString());
+			$user->write();
+		}
 		ProjectModelMongoMapper::instance()->drop($this->databaseName());
 		ProjectModelMongoMapper::instance()->remove($this->id->asString());
 	}
@@ -127,6 +132,15 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public function removeUser($userId) {
 		unset($this->users->data[$userId]);
+	}
+	
+	/**
+	 * 
+	 * @param string $userId
+	 * @return bool
+	 */
+	public function userIsMember($userId) {
+		return 	key_exists($userId, $this->users->data);
 	}
 
 	public function listUsers() {
