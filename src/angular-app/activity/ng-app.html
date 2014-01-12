@@ -38,7 +38,7 @@
 					</div>
 					<div class="span8 activity-content">
 						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> commented on <a href="{{item.userHref2}}">{{item.userRef2.username}}'s</a> answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
-						<p class="indented" ng-bind-html-unsafe="item.content.answer"></p>
+						<p class="indented" ng-bind-html="item.content.answer"></p>
 						<hr />
 						<p class="indented">{{item.content.comment}} - <a href="{{item.userHref}}">{{item.userRef.username}}</a></p>
 					</div>
@@ -57,7 +57,7 @@
 					</div>
 					<div class="span8 activity-content">
 						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> updated their comment on <a href="{{item.userHref2}}">{{item.userRef2.username}}'s</a> answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
-						<p class="indented" ng-bind-html-unsafe="item.content.answer"></p>
+						<p class="indented" ng-bind-html="item.content.answer"></p>
 						<hr />
 						<p class="indented">{{item.content.comment}} - <a href="{{item.userHref}}">{{item.userRef.username}}</a></p>
 					</div>
@@ -141,7 +141,7 @@
 					</div>
 					<div class="span8 activity-content">
 						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> answered &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
-						<p class="indented" ng-bind-html-unsafe="item.content.answer"></p>
+						<p class="indented" ng-bind-html="item.content.answer"></p>
 					</div>
 					</div>
 				</div> 
@@ -158,7 +158,7 @@
 					</div>
 					<div class="span8 activity-content">
 						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> updated their answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
-						<div ng-bind-html-unsafe="item.content.answer"></div>
+						<div ng-bind-html="item.content.answer"></div>
 					</div>
 					</div>
 				</div> 

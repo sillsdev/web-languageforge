@@ -32,6 +32,7 @@ class Roles {
 		$rights[] = Domain::USERS + Operation::EDIT_OWN;
 		$rights[] = Domain::USERS + Operation::VIEW_OWN;
 		$rights[] = Domain::PROJECTS + Operation::VIEW_OWN;
+		$rights[] = Domain::TEMPLATES + Operation::VIEW;
 		// Should users be able to delete their own user accounts? Probably,
 		// but not via the listview -- so we should NOT grant DELETE_OWN here.
 		//$rights[] = Domain::USERS + Operation::DELETE_OWN;
