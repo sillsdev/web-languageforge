@@ -56,6 +56,7 @@ $route['registration'] = 'public_app/view/registration';
 $route['validate/(:any)'] = 'validate/check/$1';
 $route['viewcaptcha'] = 'viewcaptcha/index';
 $route['app/(:any)'] = 'app/view/$1';
+$route['script/(:any)'] = 'script/view/$1';
 $route['download/assets/(:any)/(:any)'] = 'download/assets/$1/$2';
 $route['(:any)/app/(:any)'] = 'app/view/$2/$1';
 $route['upload'] = 'upload/receive';
