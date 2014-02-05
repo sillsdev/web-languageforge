@@ -55,6 +55,7 @@ class Sf
 	public function __construct($controller) {
 		$this->_userId = (string)$controller->session->userdata('user_id');
 		$this->_controller = $controller;
+		$this->site = (string)$controller->site;
 
 		// "Kick" session every time we use an API call, so it won't time out
 		$this->update_last_activity();

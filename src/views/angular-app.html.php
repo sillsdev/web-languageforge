@@ -1,5 +1,5 @@
 <?php
-require_once(APPPATH . "angular-app/$appName/ng-app.html");
+require_once(APPPATH . "$appFolder/ng-app.html");
 ?>
 	
 <script type="text/javascript">

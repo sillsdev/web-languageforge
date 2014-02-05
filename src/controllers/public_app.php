@@ -8,22 +8,28 @@ require_once 'base.php';
 class Public_app extends Base {
 	
 	public function view($app = 'main') {
-		if ( ! file_exists("angular-app/$app")) {
-			show_404();
-		} else {
-			$data = array();
-			$data['appName'] = $app;
-			
-			$data['jsCommonFiles'] = array();
-			self::addJavascriptFiles("angular-app/common/js", $data['jsCommonFiles']);
-			$data['jsProjectFiles'] = array();
-			self::addJavascriptFiles("angular-app/$app", $data['jsProjectFiles']);
-				
-			$data['title'] = "Scripture Forge";
-			$data['jsonSession'] = '"";'; // empty json session data that angular-app template needs to be happy
-			
-			$this->_render_page("angular-app", $data);
+		$appFolder = "angular-app/" . $this->site . "/public/$app";
+		if (!file_exists($appFolder)) {
+			$appFolder = "angular-app/account/public/$app";
+			if (!file_exists($appFolder)) {
+				show_404(); // this terminates PHP
+			}
 		}
+
+		$data = array();
+		$data['appName'] = $app;
+		$data['site'] = $this->site;
+		$data['appFolder'] = $appFolder;
+		
+		$data['jsCommonFiles'] = array();
+		self::addJavascriptFiles("angular-app/common/js", $data['jsCommonFiles']);
+		$data['jsProjectFiles'] = array();
+		self::addJavascriptFiles($appFolder, $data['jsProjectFiles']);
+			
+		$data['title'] = $this->site;
+		$data['jsonSession'] = '"";'; // empty json session data that angular-app template needs to be happy
+		
+		$this->_render_page("angular-app", $data);
 	}
 	
 	private static function ext($filename) {
