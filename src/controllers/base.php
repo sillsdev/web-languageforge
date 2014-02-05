@@ -19,7 +19,11 @@ class Base extends CI_Controller {
 	
 	protected $_user;
 	
-	protected $_project;
+	public $project;
+	
+	public $projectId; // TODO implement project context
+	
+	public $site;
 	
 	public function __construct() {
 		parent::__construct();
@@ -42,11 +46,11 @@ class Base extends CI_Controller {
 		}
 		$projectCode = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
 		if ($projectCode == 'scriptureforge' || $projectCode == 'dev') {
-			$this->_project = 'scriptureforge';
+			$this->project = 'scriptureforge';
 		} else {
-			$this->_project = $projectCode;
+			$this->project = $projectCode;
 		}
-		
+		$this->site = self::getSiteName();
 	}
 	
 	// all child classes should use this method to render their pages
@@ -57,7 +61,7 @@ class Base extends CI_Controller {
 	protected function renderProjectPage($view, $project = '', $data = array(), $render = true) {
 		$this->viewdata = $data;
 
-		$project = $this->_project;
+		$project = $this->project;
 		
 		if ($project == 'scriptureforge') {
 			$containerView = 'templates/container.html.php';
@@ -108,6 +112,13 @@ class Base extends CI_Controller {
 	 */
 	protected static function templateToPath($templateName, $suffix = '.html.php') {
 		return 'views/' .  $templateName . $suffix;
+	}
+	
+	public static function getSiteName() {
+		$domainName = $_SERVER['HTTP_HOST'];
+		$uriParts = explode('.', $domainName);
+		array_pop($uriParts); // pop off the .org
+		return array_pop($uriParts);
 	}
 	
 }

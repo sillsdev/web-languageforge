@@ -9,10 +9,10 @@ class Pages extends Base {
 		$data['title'] = "Scripture Forge";
 		$data['is_static_page'] = true;
 		
-		if ($this->_project == 'scriptureforge') {
+		if ($this->project == 'scriptureforge') {
 			$view = 'pages/'.$page;
 		} else {
-			$view = 'projects/' . $this->_project . '/pages/' . $page;
+			$view = 'projects/' . $this->project . '/pages/' . $page;
 			$filePath = self::templateToPath($view);
 			if (!file_exists($filePath)) {
 				$view = 'pages/'.$page;
