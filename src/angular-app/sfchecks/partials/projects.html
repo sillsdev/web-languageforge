@@ -1,19 +1,19 @@
 <h2 style="font-weight:normal">My Projects</h2>
-<form ng-show="rights.deleteOther" class="control-bar form-inline">
-	<button ng-disabled="selected.length == 0" class="btn" ng-click="removeProject()"><i class="icon-remove"></i>Remove Projects</button>
-	<button class="btn" ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Create New Project</button>
+<form data-ng-show="rights.deleteOther" class="control-bar form-inline">
+	<button data-ng-disabled="selected.length == 0" class="btn" data-ng-click="removeProject()"><i class="icon-remove"></i>Remove Projects</button>
+	<button class="btn" data-ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Create New Project</button>
 </form>
 <div class="new-item" collapse="newProjectCollapsed">
 	<form class="well form-inline" name="newProjectForm">
-	<input type="text" ng-model="projectName" maxlength="50" required placeholder="Project Name"/>
-	<button type="submit" class="btn" ng-disabled="newProjectForm.$invalid" ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
+	<input type="text" data-ng-model="projectName" maxlength="50" required placeholder="Project Name"/>
+	<button type="submit" class="btn" data-ng-disabled="newProjectForm.$invalid" data-ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
 	</form>
 </div>
 <hr />
 <div listview hide-if-empty="true" search="queryProjectsForUser()" items="projects" visible-items="visibleProjects" select="">
-	<div ng-repeat="project in visibleProjects" class="details-row">
-		<ul class="inline" ng-class="{active: isSelected(project)}">
-			<li ng-show="rights.deleteOther"><input type="checkbox" ng-checked="isSelected(project)" ng-click="updateSelection($event, project)" /></li>
+	<div data-ng-repeat="project in visibleProjects" class="details-row">
+		<ul class="inline" data-ng-class="{active: isSelected(project)}">
+			<li data-ng-show="rights.deleteOther"><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
 			<li style="width: 30%">
 				<a href="{{project.url}}">
 					<span class="larger-text">{{project.projectname}}</span>
@@ -29,3 +29,19 @@
 		<hr />
 	</div>
 </div>
+	<div data-ng-controller="ModalDemoCtrl">
+		<script type="text/ng-template" id="myModalContent.html">
+			<div class="modal-header">
+				<h3>Add me to the project?</h3>
+			</div>
+			<div class="modal-body">
+				<p>You are not a member of this project. Do you want to be added as a manager?</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" data-ng-click="ok()">OK</button>
+				<button class="btn btn-warning" data-ng-click="cancel()">Cancel</button>
+		 	</div>
+		</script>
+	
+    	<button class="btn btn-default" data-ng-click="open()">Open me!</button>
+    </div>
