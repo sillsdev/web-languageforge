@@ -183,17 +183,21 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('activity_list_dto', [offset, count], callback);
 		};
 	}])
-	.service('sessionService', ['jsonRpc', function(jsonRpc) {
+	.service('sessionService', ['jsonRpc', '$window', function(jsonRpc, $window) {
 		this.currentUserId = function() {
-			return window.session.userId;
+			return $window.session.userId;
 		};
 		
 		this.fileSizeMax = function() {
-			return window.session.fileSizeMax;
+			return $window.session.fileSizeMax;
+		};
+		
+		this.site = function() {
+			return $window.session.site;
 		};
 		
 		this.realm = {
-			SITE: function() { return window.session.userSiteRights; }
+			SITE: function() { return $window.session.userSiteRights; }
 		};
 		this.domain = {
 				ANY:       function() { return 1000;},
@@ -226,7 +230,7 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		
 		this.session = function() {
-			return window.session;
+			return $window.session;
 		};
 		
 		this.getCaptchaSrc = function(callback) {

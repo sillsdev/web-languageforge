@@ -8,41 +8,48 @@ require_once 'secure_base.php';
 class App extends Secure_base {
 	
 	public function view($app = 'main', $project = 'default') {
-		if ( ! file_exists("angular-app/$app")) {
-			show_404();
-		} else {
-			$data = array();
-			$data['appName'] = $app;
-			
-			// User Id
-			$sessionData = array();
-			$sessionData['userId'] = (string)$this->session->userdata('user_id');
-			
-			// Rights
-			$role = $this->_user->role;
-			if (empty($role)) {
-				$role = Roles::USER;
+		$appFolder = "angular-app/" . $this->site . "/$app";
+		if (!file_exists($appFolder)) {
+			$appFolder = "angular-app/account/$app";
+			if (!file_exists($appFolder)) {
+				show_404(); // this terminates PHP
 			}
-			$sessionData['userSiteRights'] = Roles::getRightsArray(Realm::SITE, $role);
-			
-			// File Size
-			$postMax = self::fromValueWithSuffix(ini_get("post_max_size"));
-			$uploadMax = self::fromValueWithSuffix(ini_get("upload_max_filesize"));
-			$fileSizeMax = min(array($postMax, $uploadMax));
-			$sessionData['fileSizeMax'] = $fileSizeMax;
-			
-			$jsonSessionData = json_encode($sessionData);
-			$data['jsonSession'] = $jsonSessionData;
-
-			$data['jsCommonFiles'] = array();
-			self::addJavascriptFiles("angular-app/common/js", $data['jsCommonFiles']);
-			$data['jsProjectFiles'] = array();
-			self::addJavascriptFiles("angular-app/$app", $data['jsProjectFiles']);
-				
-			$data['title'] = "Scripture Forge";
-			
-			$this->_render_page("angular-app", $data);
 		}
+	
+		$data = array();
+		$data['appName'] = $app;
+		$data['site'] = $this->site;
+		$data['appFolder'] = $appFolder;
+		
+		// User Id
+		$sessionData = array();
+		$sessionData['userId'] = (string)$this->session->userdata('user_id');
+		
+		// Rights
+		$role = $this->_user->role;
+		if (empty($role)) {
+			$role = Roles::USER;
+		}
+		$sessionData['userSiteRights'] = Roles::getRightsArray(Realm::SITE, $role);
+		$sessionData['site'] = $this->site;
+		
+		// File Size
+		$postMax = self::fromValueWithSuffix(ini_get("post_max_size"));
+		$uploadMax = self::fromValueWithSuffix(ini_get("upload_max_filesize"));
+		$fileSizeMax = min(array($postMax, $uploadMax));
+		$sessionData['fileSizeMax'] = $fileSizeMax;
+		
+		$jsonSessionData = json_encode($sessionData);
+		$data['jsonSession'] = $jsonSessionData;
+
+		$data['jsCommonFiles'] = array();
+		self::addJavascriptFiles("angular-app/common/js", $data['jsCommonFiles']);
+		$data['jsProjectFiles'] = array();
+		self::addJavascriptFiles($appFolder, $data['jsProjectFiles']);
+			
+		$data['title'] = $this->site;
+		
+		$this->_render_page("angular-app", $data);
 	}
 	
 	/**

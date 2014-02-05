@@ -11,7 +11,6 @@ angular.module('sfchecks',
 		 'sfchecks.questions',
 		 'sfchecks.question',
 		 'sfchecks.filters',
-		 'sfchecks.services',
 		 'palaso.ui.notice',
 		 'sf.ui.invitefriend'
 		])
@@ -19,42 +18,42 @@ angular.module('sfchecks',
 	    $routeProvider.when(
     		'/projects', 
     		{
-    			templateUrl: '/angular-app/sfchecks/partials/projects.html', 
+    			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/projects.html', 
     			controller: 'ProjectsCtrl'
     		}
 	    );
 	    $routeProvider.when(
     		'/project/:projectId', 
     		{
-    			templateUrl: '/angular-app/sfchecks/partials/project.html', 
+    			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/project.html', 
     			controller: 'ProjectCtrl'
     		}
     	);
 	    $routeProvider.when(
 	    		'/project/:projectId/settings', 
 	    		{
-	    			templateUrl: '/angular-app/sfchecks/partials/projectSettings.html', 
+	    			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/projectSettings.html', 
 	    			controller: 'ProjectSettingsCtrl'
 	    		}
 	    	);
 	    $routeProvider.when(
     		'/project/:projectId/:textId', 
     		{
-    			templateUrl: '/angular-app/sfchecks/partials/questions.html', 
+    			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/questions.html', 
     			controller: 'QuestionsCtrl'
     		}
     	);
 	    $routeProvider.when(
 	    		'/project/:projectId/:textId/settings', 
 	    		{
-	    			templateUrl: '/angular-app/sfchecks/partials/questions-settings.html', 
+	    			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/questions-settings.html', 
 	    			controller: 'QuestionsSettingsCtrl'
 	    		}
 	    	);
 	    $routeProvider.when(
     		'/project/:projectId/:textId/:questionId',
     		{
-    			templateUrl: '/angular-app/sfchecks/partials/question.html', 
+    			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/question.html', 
     			controller: 'QuestionCtrl'
 			}
 		);
@@ -65,11 +64,5 @@ angular.module('sfchecks',
 		$scope.route = $route;
 		$scope.location = $location;
 		$scope.routeParams = $routeParams;
-		
-//		noticeService.push(noticeService.ERROR, 'Oh snap! Change a few things up and try submitting again.');
-//		noticeService.push(noticeService.SUCCESS, 'Well done! You successfully read this important alert message.');
-//		noticeService.push(noticeService.WARN, 'Oh snap! Change a few things up and try submitting again.');
-//		noticeService.push(noticeService.INFO, 'Well done! You successfully read this important alert message.');
-		
 	}])
 	;
