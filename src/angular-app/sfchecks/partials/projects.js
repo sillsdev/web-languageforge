@@ -32,6 +32,7 @@ angular.module(
 		$scope.isSelected = function(item) {
 			return item != null && $scope.selected.indexOf(item) >= 0;
 		};
+		
 		// Listview Data
 		$scope.projects = [];
 		$scope.queryProjectsForUser = function() {
@@ -44,6 +45,7 @@ angular.module(
 				}
 			});
 		};
+		
 		// Remove
 		$scope.removeProject = function() {
 			//console.log("removeProject()");
@@ -65,6 +67,7 @@ angular.module(
 				});
 			}
 		};
+		
 		// Add
 		$scope.addProject = function() {
 //			console.log("addProject()");
@@ -89,6 +92,31 @@ angular.module(
 			for (var i in items) {
 				items[i].url = linkService.project(items[i].id);
 			}
-		}
+		};
+	}])
+.controller('ModalDemoCtrl', ['$scope', '$modal', '$log',
+                              function($scope, $modal, $log) {
+		$scope.open = function () {
+			var modalInstance = $modal.open({
+				templateUrl: 'myModalContent.html',
+				controller: ModalInstanceCtrl,
+			});
+
+			modalInstance.result.then(function (selectedItem) {
+				$scope.selected = selectedItem;
+			}, function () {
+				$log.info('Modal dismissed at: ' + new Date());
+			});
+		};
+	}])
+.controller('ModalInstanceCtrl', ['$scope', '$modalInstance',
+                                  function($scope, $modalInstance) {
+		$scope.ok = function () {
+			$modalInstance.close(true);
+		};
+
+		$scope.cancel = function () {
+			$modalInstance.dismiss('cancel');
+		};
 	}])
 	;
