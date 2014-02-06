@@ -68,7 +68,7 @@ angular.module(
 			}
 		};
 		
-		// Add
+		// Add new project
 		$scope.addProject = function() {
 //			console.log("addProject()");
 			var model = {};
@@ -83,6 +83,48 @@ angular.module(
 			});
 		};
 
+		$scope.isInProject = function(project) {
+			if (project.role == 'user' || project.role == 'project_admin') {
+				return true;
+			}
+			return false;
+		};
+
+		$scope.isManager = function(project) {
+			if (project.role == 'project_admin') {
+				return true;
+			}
+			return false;
+		};
+
+		// Add user as Manager of project
+		$scope.addManagerToProject = function(project) {
+			console.log("addManagerToProject(" + project.projectname + ")");
+			var user = {};
+			user.id = ss.currentUserId();
+			user.role = 'project_admin';
+			projectService.updateUser(project.id, user, function(result) {
+				if (result.ok) {
+					notice.push(notice.SUCCESS, "You are now a Manager of the " + project.projectname + " project.");
+					$scope.queryProjectsForUser();
+				}
+			});
+		};
+
+		// Add user as Member of project
+		$scope.addMemberToProject = function(project) {
+			console.log("addMemberToProject(" + project.projectname + ")");
+			var user = {};
+			user.id = ss.currentUserId();
+			user.role = 'user';
+			projectService.updateUser(project.id, user, function(result) {
+				if (result.ok) {
+					notice.push(notice.SUCCESS, "You are now a Member of the " + project.projectname + " project.");
+					$scope.queryProjectsForUser();
+				}
+			});
+		};
+
 		$scope.getTextCount = function(project) {
 			// return projects.texts.count;
 			return project.textCount;
@@ -92,31 +134,6 @@ angular.module(
 			for (var i in items) {
 				items[i].url = linkService.project(items[i].id);
 			}
-		};
-	}])
-.controller('ModalDemoCtrl', ['$scope', '$modal', '$log',
-                              function($scope, $modal, $log) {
-		$scope.open = function () {
-			var modalInstance = $modal.open({
-				templateUrl: 'myModalContent.html',
-				controller: ModalInstanceCtrl,
-			});
-
-			modalInstance.result.then(function (selectedItem) {
-				$scope.selected = selectedItem;
-			}, function () {
-				$log.info('Modal dismissed at: ' + new Date());
-			});
-		};
-	}])
-.controller('ModalInstanceCtrl', ['$scope', '$modalInstance',
-                                  function($scope, $modalInstance) {
-		$scope.ok = function () {
-			$modalInstance.close(true);
-		};
-
-		$scope.cancel = function () {
-			$modalInstance.dismiss('cancel');
 		};
 	}])
 	;

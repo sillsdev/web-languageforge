@@ -109,7 +109,8 @@ class RightsHelper
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
 
 			case 'project_updateUserRole':
-				return self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::EDIT);
+				return (self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::EDIT) ||
+						self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT));
 
 			case 'project_removeUsers':
 				return self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::DELETE);
