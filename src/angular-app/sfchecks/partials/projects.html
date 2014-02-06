@@ -15,33 +15,22 @@
 		<ul class="inline" data-ng-class="{active: isSelected(project)}">
 			<li data-ng-show="rights.deleteOther"><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
 			<li style="width: 30%">
-				<a href="{{project.url}}">
+				<a data-ng-show="isInProject(project)" href="{{project.url}}">
 					<span class="larger-text">{{project.projectname}}</span>
 				</a>
+				<span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectname}}</span>
 			</li>
-			<li><a href="{{project.url}}">
+			<li data-ng-show="rights.deleteOther" style="width: 20%">
+				<button class="btn" data-ng-show="!isManager(project)" data-ng-click="addManagerToProject(project)"><i class="icon-plus"></i>Add me as Manager</button>
+				<button class="btn" data-ng-show="!isInProject(project)" data-ng-click="addMemberToProject(project)"><i class="icon-plus"></i>Add me as Member</button>
+			</li>
+			<li>
 				<div class="attention-block">
-				<span style="font-size: 24px">{{getTextCount(project)}}</span><br />
+					<span style="font-size: 24px">{{getTextCount(project)}}</span><br />
 					<span style=""> texts to check</span>
 				</div>
-			</a></li>
+			</li>
 		</ul>
 		<hr />
 	</div>
 </div>
-	<div data-ng-controller="ModalDemoCtrl">
-		<script type="text/ng-template" id="myModalContent.html">
-			<div class="modal-header">
-				<h3>Add me to the project?</h3>
-			</div>
-			<div class="modal-body">
-				<p>You are not a member of this project. Do you want to be added as a manager?</p>
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn-primary" data-ng-click="ok()">OK</button>
-				<button class="btn btn-warning" data-ng-click="cancel()">Cancel</button>
-		 	</div>
-		</script>
-	
-    	<button class="btn btn-default" data-ng-click="open()">Open me!</button>
-    </div>

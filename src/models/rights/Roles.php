@@ -4,9 +4,10 @@ namespace models\rights;
 use libraries\palaso\CodeGuard;
 class Roles {
 	
-	const SYSTEM_ADMIN  = 'system_admin';
-	const PROJECT_ADMIN = 'project_admin';
-	const USER 			 = 'user';
+	const SYSTEM_ADMIN	= 'system_admin';
+	const PROJECT_ADMIN	= 'project_admin';
+	const USER 			= 'user';
+	const NONE 			= 'none';
 	
 	/**
 	 * @var array

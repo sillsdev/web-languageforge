@@ -8,6 +8,7 @@ use models\TextListModel;
 use models\UserModel;
 use models\rights\Operation;
 use models\rights\Domain;
+use models\rights\Roles;
 
 class ProjectListDto
 {
@@ -37,7 +38,13 @@ class ProjectListDto
 			$textList->read();
 			// Just want text count, not whole list
 			$entry['textCount'] = $textList->count;
-
+			
+			$role = Roles::NONE;
+			if (count($projectModel->users->data) > 0) {
+				$role = $projectModel->users->data[$userId]->role;
+			}
+			$entry['role'] = $role;
+				
 			$data['entries'][] = $entry;
 		}
 
