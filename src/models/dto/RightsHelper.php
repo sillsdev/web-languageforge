@@ -19,11 +19,7 @@ class RightsHelper
 	 * @param ProjectModel $projectModel
 	 */
 	public static function encode($userModel, $projectModel) {
-		if ($userModel->role == Roles::SYSTEM_ADMIN) {
-			return Roles::getRightsArray(Realm::PROJECT, Roles::PROJECT_ADMIN); 
-		} else {
-			return $projectModel->getRightsArray($userModel->id->asString());
-		}
+		return $projectModel->getRightsArray($userModel->id->asString());
 	}
 	
 	public static function userHasSiteRight($userId, $right) {
@@ -109,7 +105,8 @@ class RightsHelper
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
 
 			case 'project_updateUserRole':
-				return self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::EDIT);
+				return (self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::EDIT) ||
+						self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT));
 
 			case 'project_removeUsers':
 				return self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::DELETE);
