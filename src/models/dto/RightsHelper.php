@@ -19,11 +19,7 @@ class RightsHelper
 	 * @param ProjectModel $projectModel
 	 */
 	public static function encode($userModel, $projectModel) {
-		if ($userModel->role == Roles::SYSTEM_ADMIN) {
-			return Roles::getRightsArray(Realm::PROJECT, Roles::PROJECT_ADMIN); 
-		} else {
-			return $projectModel->getRightsArray($userModel->id->asString());
-		}
+		return $projectModel->getRightsArray($userModel->id->asString());
 	}
 	
 	public static function userHasSiteRight($userId, $right) {
