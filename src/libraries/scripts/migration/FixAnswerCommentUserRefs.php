@@ -1,23 +1,16 @@
 <?php
 namespace libraries\scripts\migration;
 
-require_once 'models\TextModel.php';
-require_once 'models\QuestionModel.php';
+require_once APPPATH . 'models\TextModel.php';
+require_once APPPATH . 'models\QuestionModel.php';
 
 use models\QuestionListModel;
-
 use models\QuestionModel;
-
 use models\TextModel;
-
 use models\TextListModel;
-
 use models\ProjectListModel;
-
 use models\ProjectModel;
-
 use models\UserModel;
-
 use models\UserListModel;
 
 class FixAnswerCommentUserRefs {
