@@ -44,38 +44,29 @@ class Base extends CI_Controller {
 				$this->_user->write();
 			}
 		}
-		$projectCode = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
-		if ($projectCode == 'scriptureforge' || $projectCode == 'dev') {
-			$this->project = 'scriptureforge';
-		} else {
-			$this->project = $projectCode;
-		}
+		$this->project = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
 		$this->site = self::getSiteName();
 	}
 	
 	// all child classes should use this method to render their pages
-	protected function _render_page($view, $data=null, $render=true) {
+	protected function renderPage($view, $data=null, $render=true) {
 		$this->renderProjectPage($view, '', $data, $render);
 	}
 	
 	protected function renderProjectPage($view, $project = '', $data = array(), $render = true) {
 		$this->viewdata = $data;
-
-		$project = $this->project;
+		$this->viewdata['contentTemplate'] = $this->getContentTemplatePath($view);
+		$this->viewdata['projectPath'] = $this->getProjectPath();
 		
-		if ($project == 'scriptureforge') {
-			$containerView = 'templates/container.html.php';
-		} else {
-// 			$view = 'projects/' . $project . '/' . $view;
-			$containerView = 'projects/' . $project . '/templates/container.html.php';
-		}
+		$this->populateHeaderMenuViewdata();
 		
-		if (file_exists(self::templateToPath($view))) {
-			$this->viewdata["page"] = $view . ".html.php";
-		} else if (file_exists(self::templateToPath($view, '.php'))) {
-			$this->viewdata["page"] = $view . ".php";
-		}
+		$containerTemplatePath = $this->getSharedTemplatePath("container");
+		$view_html = $this->load->view($containerTemplatePath, $this->viewdata, !$render);
 		
+		if (!$render) return $view_html;
+	}
+	
+	protected function populateHeaderMenuViewdata() {
 		$this->viewdata['is_admin'] = false;
 		
 		// setup specific variables for header
@@ -101,17 +92,40 @@ class Base extends CI_Controller {
 				$this->viewdata['all_projects'] = $projectList->entries;
 			}
 		}
-		$view_html = $this->load->view($containerView, $this->viewdata, !$render);
-		
-		if (!$render) return $view_html;
 	}
 	
-	/**
-	 * @param string $templateName
-	 * @return string
-	 */
-	protected static function templateToPath($templateName, $suffix = '.html.php') {
-		return 'views/' .  $templateName . $suffix;
+	protected function getSharedTemplatePath($templateName) {
+		$viewPath = "views/shared/$templateName";
+		$suffix = '.html.php';
+		if (file_exists($viewPath . $suffix)) {
+			return $viewPath . $suffix;
+		}
+		$suffix = '.php'; // support plain php files for third-party templates like 'auth'
+		if (file_exists($viewPath . $suffix)) {
+			return $viewPath . $suffix;
+		}
+		return '';
+	}
+	
+	protected function getProjectPath() {
+		return "views/" . $this->site . "/" . $this->project;
+	}
+	
+	protected function getContentTemplatePath($templateName) {
+		$sharedPath = $this->getSharedTemplatePath($templateName);
+		if ($sharedPath != '') {
+			return $sharedPath;
+		} else {
+			return $this->getProjectTemplatePath($templateName);
+		}
+	}
+	
+	protected function getProjectTemplatePath($templateName) {
+		$viewPath = $this->getProjectPath() . "/$templateName.html.php";
+		if (file_exists($viewPath)) {
+			return $viewPath;
+		}
+		return '';
 	}
 	
 	public static function getSiteName() {
@@ -120,5 +134,7 @@ class Base extends CI_Controller {
 		array_pop($uriParts); // pop off the .org
 		return array_pop($uriParts);
 	}
+	
+	
 	
 }
