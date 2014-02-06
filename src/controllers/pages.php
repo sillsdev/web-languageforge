@@ -8,8 +8,8 @@ class Pages extends Base {
 		$data = array();
 		$data['title'] = $this->site;
 		$data['is_static_page'] = true;
-		
-		if (empty($this->getProjectTemplatePath("pages/$page"))) {
+		$templatePath = $this->getProjectTemplatePath("pages/$page");
+		if (empty($templatePath)) {
 			show_404();
 		} else {
 			$this->renderPage("pages/$page", $data);
