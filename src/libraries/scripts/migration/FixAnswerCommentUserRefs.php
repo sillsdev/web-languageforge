@@ -1,8 +1,8 @@
 <?php
 namespace libraries\scripts\migration;
 
-require_once APPPATH . 'models\TextModel.php';
-require_once APPPATH . 'models\QuestionModel.php';
+require_once APPPATH . 'models/TextModel.php';
+require_once APPPATH . 'models/QuestionModel.php';
 
 use models\QuestionListModel;
 use models\QuestionModel;
