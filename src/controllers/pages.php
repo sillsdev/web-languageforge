@@ -6,25 +6,13 @@ class Pages extends Base {
 	
 	public function view($page = 'frontpage') {
 		$data = array();
-		$data['title'] = "Scripture Forge";
+		$data['title'] = $this->site;
 		$data['is_static_page'] = true;
 		
-		if ($this->project == 'scriptureforge') {
-			$view = 'pages/'.$page;
-		} else {
-			$view = 'projects/' . $this->project . '/pages/' . $page;
-			$filePath = self::templateToPath($view);
-			if (!file_exists($filePath)) {
-				$view = 'pages/'.$page;
-			}
-		}
-		
-		$filePath = self::templateToPath($view);
-		
-		if (!file_exists($filePath)) {
+		if (empty($this->getProjectTemplatePath("pages/$page"))) {
 			show_404();
 		} else {
-			$this->_render_page($view, $data);
+			$this->renderPage("pages/$page", $data);
 		}
 	}
 }

@@ -28,7 +28,7 @@ class Script extends Secure_base {
 					$script = new $classname;
 					$data['output'] = $script->run();
 					$data['scriptname'] = $classname . "->run()";
-					$this->_render_page("textoutput", $data);
+					$this->renderPage("textoutput", $data);
 				} catch (\Exception $e) {
 					show_error("Looks like there was a problem with the script $classname", 500, 'Script Error');
 				}
