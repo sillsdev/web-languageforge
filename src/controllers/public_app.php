@@ -29,7 +29,7 @@ class Public_app extends Base {
 		$data['title'] = $this->site;
 		$data['jsonSession'] = '"";'; // empty json session data that angular-app template needs to be happy
 		
-		$this->_render_page("angular-app", $data);
+		$this->renderPage("angular-app", $data);
 	}
 	
 	private static function ext($filename) {

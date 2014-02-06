@@ -82,10 +82,14 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public static function domainToProjectCode($domainName) {
 		$uriParts = explode('.', $domainName);
-		if ($uriParts[0] == 'www') {
+		if ($uriParts[0] == 'www' || $uriParts[0] == 'dev') {
 			array_shift($uriParts);
 		}
-		return $uriParts[0];
+		$projectCode = $uriParts[0];
+		if ($projectCode == 'scriptureforge' || $projectCode == 'languageforge') {
+			return 'default';
+		}
+		return $projectCode;
 	}
 	
 	/**

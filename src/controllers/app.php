@@ -49,7 +49,7 @@ class App extends Secure_base {
 			
 		$data['title'] = $this->site;
 		
-		$this->_render_page("angular-app", $data);
+		$this->renderPage("angular-app", $data);
 	}
 	
 	/**
