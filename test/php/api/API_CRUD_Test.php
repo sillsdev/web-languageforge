@@ -30,9 +30,22 @@ class ApiCrudTestEnvironment {
 		$this->e->clean();
 	}
 	
-	function makeProject() {
+	function makeProject($userId = '') {
+		if (!$userId) {
+			$userId = $this->makeSiteAdminUser();	
+		}
 		$model = array( 'id' => '', 'projectname' => SF_TESTPROJECT, 'language' => 'SomeLanguage');
-		return ProjectCommands::updateProject($model);
+		return ProjectCommands::updateProject($model, $userId);
+	}
+	
+	function makeUser($username) {
+		$params = array('id' => '', 'username' => $username, 'name' => $username);
+		return UserCommands::updateUser($params);
+	}
+	
+	function makeSiteAdminUser() {
+		$params = array('id' => '', 'username' => 'admin', 'name' => 'admin', 'role' => Roles::SYSTEM_ADMIN);
+		return UserCommands::updateUser($params);
 	}
 	
 	function makeText($projectId, $textName) {
