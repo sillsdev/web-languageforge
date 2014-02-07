@@ -195,7 +195,7 @@ class Sf
 	 * @return string Id of written object
 	 */
 	public function project_update($object) {
-		return ProjectCommands::updateProject($object);
+		return ProjectCommands::updateProject($object, $this->_userId);
 	}
 
 	/**
