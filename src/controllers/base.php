@@ -34,15 +34,17 @@ class Base extends CI_Controller {
 				$userId = (string)$this->session->userdata('user_id');
 				$this->_user = new \models\UserModel($userId);
 			} catch (Exception $e) {
-				error_log("User not found, logged out.\n" . $e->getMessage());
+				error_log("User $userId not found, logged out.\n" . $e->getMessage());
 				$this->ion_auth->logout();
 			}
 			// Check the role
+			/* this is migration code... we don't need this here
 			if (!$this->_user->role) {
 				error_log("Fixing role for user " .  $this->_user->id->asString());
 				$this->_user->role = Roles::USER;
 				$this->_user->write();
 			}
+			*/
 		}
 		$this->project = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
 		$this->site = self::getSiteName();
@@ -95,20 +97,15 @@ class Base extends CI_Controller {
 	}
 	
 	protected function getSharedTemplatePath($templateName) {
-		$viewPath = "views/shared/$templateName";
-		$suffix = '.html.php';
-		if (file_exists($viewPath . $suffix)) {
-			return $viewPath . $suffix;
-		}
-		$suffix = '.php'; // support plain php files for third-party templates like 'auth'
-		if (file_exists($viewPath . $suffix)) {
-			return $viewPath . $suffix;
+		$viewPath = "shared/$templateName.html.php";
+		if (file_exists("views/$viewPath")) {
+			return $viewPath;
 		}
 		return '';
 	}
 	
 	protected function getProjectPath() {
-		return "views/" . $this->site . "/" . $this->project;
+		return $this->site . "/" . $this->project;
 	}
 	
 	protected function getContentTemplatePath($templateName) {
@@ -122,7 +119,7 @@ class Base extends CI_Controller {
 	
 	protected function getProjectTemplatePath($templateName) {
 		$viewPath = $this->getProjectPath() . "/$templateName.html.php";
-		if (file_exists($viewPath)) {
+		if (file_exists("views/$viewPath")) {
 			return $viewPath;
 		}
 		return '';
@@ -132,7 +129,14 @@ class Base extends CI_Controller {
 		$domainName = $_SERVER['HTTP_HOST'];
 		$uriParts = explode('.', $domainName);
 		array_pop($uriParts); // pop off the .org
-		return array_pop($uriParts);
+		$site = array_pop($uriParts);
+
+		// exception list for custom standalone domains
+		if ($site == 'jamaicanpsalms') {
+			$site = 'scriptureforge';
+		}
+
+		return $site;
 	}
 	
 	

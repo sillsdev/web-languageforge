@@ -2,7 +2,7 @@
 <html lang="en-GB">
 <head>
 <?php
-$this->load->view('templates/meta.html.php');
+$this->load->view("$projectPath/templates/meta.html.php");
 ?>
 </head>
 <body>
