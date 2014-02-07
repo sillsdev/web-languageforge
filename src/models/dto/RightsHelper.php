@@ -97,13 +97,15 @@ class RightsHelper
 				return self::userHasProjectRightForAnyProject($userId, Domain::USERS + Operation::VIEW);
 				
 			case 'message_send':
-			case 'project_update':
 			case 'project_read':
 			case 'project_settings':
 			case 'project_updateSettings':
 			case 'project_readSettings':
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
 
+			case 'project_update':
+				return self::userHasProjectRight($params[0]['id'], $userId, Domain::PROJECTS + Operation::EDIT);
+				
 			case 'project_updateUserRole':
 				return (self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::EDIT) ||
 						self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT));
