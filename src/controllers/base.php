@@ -1,6 +1,8 @@
 <?php
 
 
+use libraries\Website;
+
 use models\ProjectListModel;
 use models\FeaturedProjectListModel;
 
@@ -47,7 +49,7 @@ class Base extends CI_Controller {
 			*/
 		}
 		$this->project = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
-		$this->site = self::getSiteName();
+		$this->site = Website::getSiteName();
 	}
 	
 	// all child classes should use this method to render their pages
@@ -125,19 +127,6 @@ class Base extends CI_Controller {
 		return '';
 	}
 	
-	public static function getSiteName() {
-		$domainName = $_SERVER['HTTP_HOST'];
-		$uriParts = explode('.', $domainName);
-		array_pop($uriParts); // pop off the .org
-		$site = array_pop($uriParts);
-
-		// exception list for custom standalone domains
-		if ($site == 'jamaicanpsalms') {
-			$site = 'scriptureforge';
-		}
-
-		return $site;
-	}
 	
 	
 	

@@ -1,5 +1,7 @@
 <?php
 
+use libraries\Website;
+
 use models\commands\MessageCommands;
 
 use libraries\palaso\exceptions\UserNotAuthenticatedException;
@@ -52,10 +54,12 @@ class Sf
 	
 	private $_controller;
 	
+	private $_site;
+	
 	public function __construct($controller) {
 		$this->_userId = (string)$controller->session->userdata('user_id');
 		$this->_controller = $controller;
-		$this->site = (string)$controller->site;
+		$this->_site = Website::getSiteName();
 
 		// "Kick" session every time we use an API call, so it won't time out
 		$this->update_last_activity();
