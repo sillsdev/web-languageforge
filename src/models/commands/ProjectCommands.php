@@ -70,8 +70,11 @@ class ProjectCommands
 			}
 			MongoStore::renameDB($oldDBName, $newDBName);
 		}
-		$result = $project->write();
-		return $result;
+		$projectId = $project->write();
+		if ($isNewProject) {
+			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => Roles::PROJECT_ADMIN));
+		}
+		return $projectId;
 	}
 	
 	/**
