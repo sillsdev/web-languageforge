@@ -1,25 +1,18 @@
 <?php
+
+use models\mapper\Id;
+use models\rights\Roles;
 use models\commands\UserCommands;
-
-use models\dto\ProjectPageDto;
-
-use models\QuestionTemplateModel;
-
 use models\commands\QuestionTemplateCommands;
-
-use models\dto\QuestionListDto;
-
 use models\commands\QuestionCommands;
-
 use models\commands\TextCommands;
-
-use models\ProjectSettingsModel;
-
 use models\commands\ProjectCommands;
+use models\dto\ProjectPageDto;
+use models\dto\QuestionListDto;
 use models\UserModel;
 use models\ProjectModel;
-use models\rights\Roles;
-use models\mapper\Id;
+use models\ProjectSettingsModel;
+use models\QuestionTemplateModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -69,10 +62,8 @@ class ApiCrudTestEnvironment {
 	
 }
 
-
 class TestApiCrud extends UnitTestCase {
 
-	
 	function testProjectCRUD_CRUDOK() {
 		$e = new ApiCrudTestEnvironment();
 		
@@ -82,7 +73,8 @@ class TestApiCrud extends UnitTestCase {
 			'projectname' => SF_TESTPROJECT,
 			'language' => 'SomeLanguage'
 		);
-		$id = ProjectCommands::updateProject($param);
+		$userId = $e->e->createUser('userName', 'User Name', 'user@example.com', Roles::SYSTEM_ADMIN);
+		$id = ProjectCommands::updateProject($param, $userId);
 		$this->assertNotNull($id);
 		$this->assertEqual(24, strlen($id));
 		
@@ -94,7 +86,7 @@ class TestApiCrud extends UnitTestCase {
 		
 		// Update
 		$result['language'] = 'AnotherLanguage';
-		$id = ProjectCommands::updateProject($e->json($result));
+		$id = ProjectCommands::updateProject($e->json($result), $userId);
 		$this->assertNotNull($id);
 		$this->assertEqual($result['id'], $id);
 		
@@ -160,7 +152,6 @@ class TestApiCrud extends UnitTestCase {
 		// Clean up after ourselves
 		ProjectCommands::deleteProjects(array($projectId));
 	}
-	
 	
 	function testQuestionTemplateCRUD_CRUDOK() {
 		$e = new ApiCrudTestEnvironment();
