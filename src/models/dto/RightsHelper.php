@@ -44,7 +44,7 @@ class RightsHelper
 	 * @param int $right
 	 * @return bool
 	 */
-	private static function userHasProjectRight($projectId, $userId, $right) {
+	public static function userHasProjectRight($projectId, $userId, $right) {
 		$project = new ProjectModel($projectId);
 		return $project->hasRight($userId, $right);
 	}
