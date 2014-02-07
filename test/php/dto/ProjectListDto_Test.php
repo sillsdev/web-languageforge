@@ -40,6 +40,7 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertEqual($dto['entries'][0]['id'], $projectId);
 		$this->assertEqual($dto['entries'][0]['projectname'], SF_TESTPROJECT);
 		$this->assertEqual($dto['entries'][0]['textCount'], 2);
+		$this->assertEqual($dto['entries'][0]['role'], Roles::NONE);
 	}
 
 	function testEncode_SiteAdmin2Projects_DtoReturnsProjectCount2() {
@@ -51,13 +52,13 @@ class TestProjectListDto extends UnitTestCase {
 		$user->role = Roles::SYSTEM_ADMIN;
 		$user->write();
 	
-		$project1Name = 'ProjectName1';
+		$project1Name = 'SF_TESTPROJECT';
 		$project1 = $e->createProject($project1Name);
 		$projectId1 = $project1->id->asString();
-		$project1->addUser($userId, Roles::USER);
+		$project1->addUser($userId, Roles::PROJECT_ADMIN);
 		$project1->write();
 		
-		$project2Name = 'ProjectName2';
+		$project2Name = 'SF_TESTPROJECT2';
 		$project2 = $e->createProject($project2Name);
 		$projectId2 = $project2->id->asString();
 		
@@ -67,8 +68,10 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertIsA($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $projectId1);
 		$this->assertEqual($dto['entries'][0]['projectname'], $project1Name);
+		$this->assertEqual($dto['entries'][0]['role'], Roles::PROJECT_ADMIN);
 		$this->assertEqual($dto['entries'][1]['id'], $projectId2);
 		$this->assertEqual($dto['entries'][1]['projectname'], $project2Name);
+		$this->assertEqual($dto['entries'][1]['role'], Roles::NONE);
 	}
 	
 	function testEncode_UserOf1Project2Projects_DtoReturnsProjectCount1() {
@@ -80,13 +83,13 @@ class TestProjectListDto extends UnitTestCase {
 		$user->role = Roles::USER;
 		$user->write();
 	
-		$project1Name = 'ProjectName1';
+		$project1Name = 'SF_TESTPROJECT';
 		$project1 = $e->createProject($project1Name);
 		$projectId1 = $project1->id->asString();
 		$project1->addUser($userId, Roles::USER);
 		$project1->write();
 		
-		$project2Name = 'ProjectName2';
+		$project2Name = 'SF_TESTPROJECT2';
 		$project2 = $e->createProject($project2Name);
 		$projectId2 = $project2->id->asString();
 		
@@ -96,6 +99,7 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertIsA($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $projectId1);
 		$this->assertEqual($dto['entries'][0]['projectname'], $project1Name);
+		$this->assertEqual($dto['entries'][0]['role'], Roles::USER);
 	}
 
 }
