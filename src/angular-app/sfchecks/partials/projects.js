@@ -99,7 +99,7 @@ angular.module(
 
 		// Add user as Manager of project
 		$scope.addManagerToProject = function(project) {
-			console.log("addManagerToProject(" + project.projectname + ")");
+//			console.log("addManagerToProject(" + project.projectname + ")");
 			var user = {};
 			user.id = ss.currentUserId();
 			user.role = 'project_admin';
@@ -113,7 +113,7 @@ angular.module(
 
 		// Add user as Member of project
 		$scope.addMemberToProject = function(project) {
-			console.log("addMemberToProject(" + project.projectname + ")");
+//			console.log("addMemberToProject(" + project.projectname + ")");
 			var user = {};
 			user.id = ss.currentUserId();
 			user.role = 'user';
