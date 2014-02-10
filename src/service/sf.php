@@ -252,7 +252,7 @@ class Sf
 	// MESSAGE API
 	//---------------------------------------------------------------
 	public function message_markRead($projectId, $messageId) {
-		return MessageCommands::markMessageRead($projectId, $messageId);
+		return MessageCommands::markMessageRead($projectId, $messageId, $this->_userId);
 	}
 	
 	public function message_send($projectId, $userIds, $subject, $emailTemplate, $smsTemplate) {
