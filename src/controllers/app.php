@@ -44,6 +44,7 @@ class App extends Secure_base {
 
 		$data['jsCommonFiles'] = array();
 		self::addJavascriptFiles("angular-app/common/js", $data['jsCommonFiles']);
+		self::addJavascriptFiles ( "angular-app/common/directive", $data ['jsCommonFiles'] );
 		$data['jsProjectFiles'] = array();
 		self::addJavascriptFiles($appFolder, $data['jsProjectFiles']);
 			
