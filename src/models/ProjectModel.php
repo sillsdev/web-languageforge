@@ -103,6 +103,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * User references to this project are also removed
 	 */
 	public function remove() {
+		foreach ($this->users->data as $userId => $roleObj) {
+			$user = new UserModel($userId);
+			$user->removeProject($this->id->asString());
+			$user->write();
+		}
 		ProjectModelMongoMapper::instance()->drop($this->databaseName());
 		ProjectModelMongoMapper::instance()->remove($this->id->asString());
 	}
@@ -128,6 +133,15 @@ class ProjectModel extends \models\mapper\MapperModel
 	public function removeUser($userId) {
 		unset($this->users->data[$userId]);
 	}
+	
+	/**
+	 * 
+	 * @param string $userId
+	 * @return bool
+	 */
+	public function userIsMember($userId) {
+		return 	key_exists($userId, $this->users->data);
+	}
 
 	public function listUsers() {
 		$userList = new UserList_ProjectModel($this->id->asString());
@@ -136,7 +150,7 @@ class ProjectModel extends \models\mapper\MapperModel
 			$userId = $userList->entries[$i]['id'];
 			if (!key_exists($userId, $this->users->data)) {
 				$projectId = $this->id->asString();
-				error_log("User $userId is not a member of project $projectId");
+				//error_log("User $userId is not a member of project $projectId");
 				continue;
 			}
 			$userList->entries[$i]['role'] = $this->users->data[$userId]->role;
@@ -151,9 +165,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @return bool
 	 */
 	public function hasRight($userId, $right) {
-		$role = $this->users->data[$userId]->role;
-		$result = Roles::hasRight(Realm::PROJECT, $role, $right);
-		return $result;
+		$hasRight = false;
+		if (key_exists($userId, $this->users->data)) {
+			$hasRight = Roles::hasRight(Realm::PROJECT, $this->users->data[$userId]->role, $right);
+		}
+		return $hasRight;
 	}
 	
 	/**

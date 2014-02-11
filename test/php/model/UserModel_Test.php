@@ -162,6 +162,27 @@ class TestUserModel extends UnitTestCase {
 		$result = UserModel::userNameExists('jsmith');
 		$this->assertFalse($result);
 	}
+	
+	function testUserRemove_UserMemberOfProject_ProjectLinkRemovedAsWell() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		$userId = $e->createUser('user1', 'user1', 'user1');
+		$user = new UserModel($userId);
+		$project = $e->createProject('testProject');
+		$project->addUser($userId, Roles::USER);
+		$project->write();
+		$user->addProject($project->id->asString());
+		$user->write();
+		
+		// delete the user
+		$user->remove();
+		
+		// re-read the project
+		$project->read($project->id->asString());
+		
+		$this->assertFalse($project->userIsMember($userId));
+		
+	}
 /*
 	function testWriteRemove_ListCorrect() {
 		$e = new MongoTestEnvironment();

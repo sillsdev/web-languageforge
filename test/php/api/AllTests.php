@@ -6,11 +6,7 @@ class AllApiTests extends TestSuite {
 	
     function __construct() {
         parent::__construct();
- 		$this->addFile(TestPath . 'api/UserAPI_Test.php');
- 		$this->addFile(TestPath . 'api/ProjectAPI_Test.php');
- 		$this->addFile(TestPath . 'api/TextAPI_Test.php');
-  		$this->addFile(TestPath . 'api/QuestionAPI_Test.php');
-		$this->addFile(TestPath . 'api/QuestionTemplateAPI_Test.php');
+  		$this->addFile(TestPath . 'api/API_CRUD_Test.php');
     }
 
 }
