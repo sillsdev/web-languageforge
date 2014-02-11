@@ -200,7 +200,7 @@ class Sf
 	 * @return string Id of written object
 	 */
 	public function project_update($object) {
-		return ProjectCommands::updateProject($object);
+		return ProjectCommands::updateProject($object, $this->_userId);
 	}
 
 	/**
@@ -257,7 +257,7 @@ class Sf
 	// MESSAGE API
 	//---------------------------------------------------------------
 	public function message_markRead($projectId, $messageId) {
-		return MessageCommands::markMessageRead($projectId, $messageId);
+		return MessageCommands::markMessageRead($projectId, $messageId, $this->_userId);
 	}
 	
 	public function message_send($projectId, $userIds, $subject, $emailTemplate, $smsTemplate) {

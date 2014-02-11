@@ -1,24 +1,24 @@
 <h2 style="font-weight:normal">Questions for {{text.title}}</h2>
-<form ng-show="rights.showControlBar" class="control-bar form-inline">
-	<button ng-show="rights.deleteOther" class="btn" ng-disabled="selected.length == 0" ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
-	<button ng-show="rights.createTemplate" ng-disabled="selected.length == 0 || selected.length > 1" class="btn" ng-click="makeQuestionIntoTemplate()"><i class="icon-pushpin"></i>Make Template</button>
-	<button ng-show="rights.create" class="btn" ng-click="newQuestionCollapsed = !newQuestionCollapsed"><i class="icon-plus"></i>Add New Question</button>
-	<a ng-show="rights.editOther" class="btn" href="#/project/{{projectId}}/{{textId}}/settings"><i class="icon-pencil"></i> Update Text Settings</a>
+<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+	<button data-ng-show="rights.deleteOther" class="btn" data-ng-disabled="selected.length == 0" data-ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
+	<button data-ng-show="rights.createTemplate" data-ng-disabled="selected.length == 0 || selected.length > 1" class="btn" data-ng-click="makeQuestionIntoTemplate()"><i class="icon-pushpin"></i>Make Template</button>
+	<button data-ng-show="rights.create" class="btn" data-ng-click="newQuestionCollapsed = !newQuestionCollapsed"><i class="icon-plus"></i>Add New Question</button>
+	<a data-ng-show="rights.editOther" class="btn" href="#/project/{{projectId}}/{{textId}}/settings"><i class="icon-pencil"></i> Update Text Settings</a>
 </form>
-<div class="new-item" collapse="newQuestionCollapsed">
+<div class="new-item" data-collapse="newQuestionCollapsed">
 	<form class="well span12" name="newQuestionForm">
 	<fieldset class="span4">
 	<label>Question</label>
-	<textarea required ng-model="questionDescription" class="span4" rows="4" placeholder="The Question"></textarea>
+	<textarea required data-ng-model="questionDescription" class="span4" rows="4" placeholder="The Question"></textarea>
 	<label></label>
-	<input type="text" ng-model="questionTitle" class="span4" maxlength="35" placeholder="One-line Summary For Title" />
+	<input type="text" data-ng-model="questionTitle" class="span4" maxlength="35" placeholder="One-line Summary For Title" />
 	<label></label>
-	<label style="float:right;margin-left:20px"><input title="A summary title is required for templates" ng-disabled="!questionTitle" type="checkbox" ng-model="saveAsTemplate" ng-show="rights.createTemplate" /> Also save as template</label>
-	<button type="submit" class="btn" ng-disabled="newQuestionForm.$invalid" ng-click="addQuestion()"><i class="icon-ok"></i>Save</button>
+	<label style="float:right;margin-left:20px"><input title="A summary title is required for templates" data-ng-disabled="!questionTitle" type="checkbox" data-ng-model="saveAsTemplate" data-ng-show="rights.createTemplate" /> Also save as template</label>
+	<button type="submit" class="btn" data-ng-disabled="newQuestionForm.$invalid" data-ng-click="addQuestion()"><i class="icon-ok"></i>Save</button>
 	</fieldset>
 	<fieldset class="span4">
 		<label>Templates</label>
-		<select ng-model="template" ng-options="t.title for t in templates"></select>
+		<select data-ng-model="template" data-ng-options="t.title for t in templates"></select>
 	</fieldset>
 	</form>
 </div>
@@ -26,18 +26,18 @@
 
 <div class="row">
     <div class="span5">
-    	<h2 class="pull-left" ng-show="text.audioUrl && audioReady">
-    		<a sgw-sound-player state="state" href="text.audioUrl"><i ng-class="$parent.$parent.audioIcon()" tooltip="Play audio"></i></a>
-    		<a ng-href="{{audioDownloadUrl}}"><i class="icon-download" tooltip="Download audio"></i></a>
+    	<h2 class="pull-left" data-ng-show="text.audioUrl && audioReady">
+    		<a data-sgw-sound-player data-state="state" href="text.audioUrl"><i data-ng-class="$parent.$parent.audioIcon()" data-tooltip="Play audio"></i></a>
+    		<a data-ng-href="{{audioDownloadUrl}}"><i class="icon-download" data-tooltip="Download audio"></i></a>
     	</h2>
     	<h2>{{text.title}}</h2>
-        <div id="text" sil-selection content="text.content"> </div>
+        <div id="text" data-sil-selection data-content="text.content"> </div>
     </div>
     <div class="span7">
-        <div listview hide-if-empty="true" search="queryQuestions()" items="questions" visible-items="visibleQuestions" select="">
-        <div ng-repeat="question in visibleQuestions" class="details-row">
-        	<ul class="inline" ng-class="{active: isSelected(question)}">
-        		<li ng-show="rights.deleteOther"><input type="checkbox" ng-checked="isSelected(question)" ng-click="updateSelection($event, question)" /></li>
+        <div data-listview data-hide-if-empty="true" data-search="queryQuestions()" data-items="questions" data-visible-items="visibleQuestions" data-select="">
+        <div data-ng-repeat="question in visibleQuestions" class="details-row">
+        	<ul class="inline" data-ng-class="{active: isSelected(question)}">
+        		<li data-ng-show="rights.deleteOther"><input type="checkbox" data-ng-click="updateSelection($event, question)" /></li>
         		<li><a href="{{question.url}}">
         			<div class="attention-block">
         				<span class="count">{{getAnswerCount(question)}}</span><br />

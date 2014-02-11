@@ -5,6 +5,7 @@ namespace models\commands;
 use libraries\palaso\CodeGuard;
 use libraries\palaso\JsonRpcServer;
 use libraries\palaso\exceptions\UserNotAuthenticatedException;
+use libraries\palaso\exceptions\UserUnauthorizedException;
 use libraries\sfchecks\Communicate;
 use libraries\sfchecks\Email;
 use models\AnswerModel;
@@ -34,24 +35,31 @@ use models\rights\Realm;
 use models\rights\Roles;
 use models\sms\SmsSettings;
 
-
 class ProjectCommands
 {
 	
 	/**
-	 * 
-	 * @param unknown $object
+	 * Create or update project
+	 * @param array<projectModel> $object
+	 * @param string $userId
+	 * @throws UserUnauthorizedException
 	 * @throws \Exception
-	 * @return string
+	 * @return string projectId
 	 */
-	public static function updateProject($object) {
-		$project = new \models\ProjectModel();
+	public static function updateProject($object, $userId) {
+		$project = new ProjectModel();
 		$id = $object['id'];
 		$isNewProject = ($id == '');
 		$oldDBName = '';
-		if (!$isNewProject) {
+		if ($isNewProject) {
+			if (!RightsHelper::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT)) {
+				throw new UserUnauthorizedException("Insufficient privileges to create new project in method 'updateProject'");
+			}
+		} else {
+			if (!RightsHelper::userHasProjectRight($id, $userId, Domain::USERS + Operation::EDIT)) {
+				throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
+			}
 			$project->read($id);
-			// This is getting complex; it probably belongs in ProjectCommands. TODO: Rewrite it to put it there. RM 2013-08
 			$oldDBName = $project->databaseName();
 		}
 		JsonDecoder::decode($project, $object);
@@ -62,11 +70,11 @@ class ProjectCommands
 			}
 			MongoStore::renameDB($oldDBName, $newDBName);
 		}
-		$result = $project->write();
+		$projectId = $project->write();
 		if ($isNewProject) {
-			//ActivityCommands::addProject($project); // TODO: Determine if any other params are needed. RM 2013-08
+			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => Roles::PROJECT_ADMIN));
 		}
-		return $result;
+		return $projectId;
 	}
 	
 	/**
