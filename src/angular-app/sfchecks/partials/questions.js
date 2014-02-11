@@ -90,15 +90,37 @@ angular.module(
 				$scope.selected.splice(selectedIndex, 1);
 			}
 		};
+		
+//		Array.prototype.containsKey = function(obj_key, key) {
+//		    var i = this.length;
+//		    while (i--) {
+//		        if (this[i][key] === obj_key) {
+//		            return true;
+//		        }
+//		    }
+//		    return false;
+//		};
 		$scope.isSelected = function(item) {
-			return item != null && $scope.selected.indexOf(item) >= 0;
+			if (item == null) {
+				return false;
+			} 
+		    var i = $scope.selected.length;
+		    while (i--) {
+		        if ($scope.selected[i]['id'] === item.id) {
+		            return true;
+		        }
+		    }
+		    return false;
+//			return item != null && $scope.selected.containsKey(item.id, 'id');
 		};
+		
 		// Listview Data
 		$scope.questions = [];
 		$scope.queryQuestions = function() {
 			//console.log("queryQuestions()");
 			questionsService.list(projectId, textId, function(result) {
 				if (result.ok) {
+					$scope.selected = [];
 					$scope.questions = result.data.entries;
 					$scope.questionsCount = result.data.count;
 
