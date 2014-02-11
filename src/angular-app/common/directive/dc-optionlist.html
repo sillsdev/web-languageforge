@@ -1,0 +1,8 @@
+<form class="form-horizontal dc-optionlist">
+    <label class="control-label">{{definition.label}}</label>
+        <div class="controls">
+            <select ng-model="model" ng-options="key as label for (key, label) in definition.values">
+                <option value="">Unknown</option>
+            </select>
+        </div>
+</form>
