@@ -44,7 +44,7 @@ class RightsHelper
 	 * @param int $right
 	 * @return bool
 	 */
-	private static function userHasProjectRight($projectId, $userId, $right) {
+	public static function userHasProjectRight($projectId, $userId, $right) {
 		$project = new ProjectModel($projectId);
 		return $project->hasRight($userId, $right);
 	}
@@ -104,7 +104,8 @@ class RightsHelper
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
 
 			case 'project_update':
-				return self::userHasProjectRight($params[0]['id'], $userId, Domain::PROJECTS + Operation::EDIT);
+				return (self::userHasProjectRight($params[0]['id'], $userId, Domain::PROJECTS + Operation::EDIT) ||
+						self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT));
 				
 			case 'project_updateUserRole':
 				return (self::userHasProjectRight($params[0], $userId, Domain::USERS + Operation::EDIT) ||
@@ -147,9 +148,6 @@ class RightsHelper
 			case 'project_list':
 				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::VIEW);
 			
-			case 'project_update':
-				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT);
-
 			case 'questionTemplate_update':
 			case 'questionTemplate_read':
 				return self::userHasSiteRight($userId, Domain::TEMPLATES + Operation::EDIT);
