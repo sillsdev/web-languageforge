@@ -11,34 +11,34 @@ angular.module('lexicon',
 		$routeProvider.when(
 				'/view',
 				{
-					templateUrl: '/angular-app/lexicon/views/not-implemented.html',
+					templateUrl: '/angular-app/scriptureforge/lexicon/views/not-implemented.html',
 					// controller: 'dbeCtrl'
 				}
 			);
 		$routeProvider.when(
 				'/dashboard',
 				{
-					templateUrl: '/angular-app/lexicon/views/not-implemented.html',
+					templateUrl: '/angular-app/scriptureforge/lexicon/views/not-implemented.html',
 					// controller: 'dashboardCtrl'
 				}
 			);
 		$routeProvider.when(
 				'/gather-words',
 				{
-					templateUrl: '/angular-app/lexicon/views/not-implemented.html',
+					templateUrl: '/angular-app/scriptureforge/lexicon/views/not-implemented.html',
 				}
 			);
 		$routeProvider.when(
 				'/dbe',
 				{
-					templateUrl: '/angular-app/lexicon/views/dbe.html',
+					templateUrl: '/angular-app/scriptureforge/lexicon/views/dbe.html',
 					controller: 'dbeCtrl'
 				}
 			);
 		$routeProvider.when(
 				'/settings',
 				{
-					templateUrl: '/angular-app/lexicon/views/settings.html',
+					templateUrl: '/angular-app/scriptureforge/lexicon/views/settings.html',
 					controller: 'SettingsCtrl'
 				}
 			);
