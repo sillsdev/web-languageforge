@@ -10,8 +10,8 @@ angular.module('activity',
 		 'sgw.ui.breadcrumb',
 		 'sf.ui.invitefriend'
 		])
-	.controller('ActivityCtrl', ['$scope', 'activityPageService', 'linkService', 'sessionService','breadcrumbService',
-	                             function($scope, activityService, linkService, sessionService, breadcrumbService) {
+	.controller('ActivityCtrl', ['$scope', '$sce', 'activityPageService', 'linkService', 'sessionService','breadcrumbService',
+	                             function($scope, $sce, activityService, linkService, sessionService, breadcrumbService) {
 		
 		// Breadcrumb
 		breadcrumbService.set('top',
@@ -42,6 +42,12 @@ angular.module('activity',
 				}
 				if ('questionRef' in items[i]) {
 					items[i].questionHref = linkService.question(items[i].projectRef, items[i].textRef, items[i].questionRef);				}
+				if ('content' in items[i]) {
+					if ('answer' in items[i]['content']) {
+						items[i]['content']['answer'] = $sce.trustAsHtml(items[i]['content']['answer']);
+					}
+					
+				}
 			}
 		}
 		activityService.list_activity(0, 50, function(result) {

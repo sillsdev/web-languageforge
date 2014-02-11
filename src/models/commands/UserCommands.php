@@ -2,20 +2,94 @@
 
 namespace models\commands;
 
+use libraries\palaso\exceptions\UserUnauthorizedException;
+
 use libraries\palaso\CodeGuard;
-use libraries\sfchecks\IDelivery;
+use libraries\palaso\JsonRpcServer;
+use libraries\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\sfchecks\Communicate;
-use models\mapper\JsonEncoder;
-use models\mapper\JsonDecoder;
+use libraries\sfchecks\Email;
+use libraries\sfchecks\IDelivery;
+use models\AnswerModel;
 use models\ProjectModel;
+use models\ProjectSettingsModel;
+use models\QuestionModel;
+use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserModelWithPassword;
-use models\rights\Roles;
+use models\UserProfileModel;
+use models\commands\ActivityCommands;
+use models\commands\ProjectCommands;
+use models\commands\QuestionCommands;
+use models\commands\QuestionTemplateCommands;
+use models\commands\TextCommands;
+use models\commands\UserCommands;
+use models\dto\ActivityListDto;
 use models\dto\CreateSimpleDto;
+use models\dto\ProjectSettingsDto;
+use models\dto\RightsHelper;
+use models\dto\UserProfileDto;
+use models\mapper\Id;
+use models\mapper\JsonDecoder;
+use models\mapper\JsonEncoder;
+use models\mapper\MongoStore;
+use models\rights\Domain;
+use models\rights\Operation;
+use models\rights\Realm;
+use models\rights\Roles;
+use models\sms\SmsSettings;
+
 
 class UserCommands
 {
 	
+	/**
+	 * 
+	 * @param string $id
+	 * @return array
+	 */
+	public static function readUser($id) {
+		$user = new UserModel($id);
+		return JsonEncoder::encode($user);
+	}
+	/**
+	 * User Create/Update
+	 * @param array $params - user model fields to update
+	 */
+	public static function updateUser($params) {
+		$user = new UserModel();
+		if ($params['id']) {
+			$user->read($params['id']);
+		}
+		JsonDecoder::decode($user, $params);
+		$result = $user->write();
+		return $result;
+	}
+	
+	/**
+	 * User Profile Create/Update
+	 * @param array $params - user model fields to update
+	 */
+	public static function updateUserProfile($params) {
+		$user = new UserProfileModel();
+		if ($params['id']) {
+			$user->read($params['id']);
+		}
+		
+		// don't allow the following keys to be persisted
+		if (array_key_exists('projects', $params)) {
+			unset($params['projects']);
+		}
+		if (array_key_exists('role', $params)) {
+					unset($params['role']);
+		}
+		JsonDecoder::decode($user, $params);
+		$result = $user->write();
+		return $result;
+		
+	}
+	
+
 	/**
 	 * @param array $userIds
 	 * @return int Total number of users removed.
@@ -31,6 +105,58 @@ class UserCommands
 		}
 		return $count;
 	}
+	
+	/**
+	 * 
+	 * @return \models\UserListModel
+	 */
+	public static function listUsers() {
+		$list = new \models\UserListModel();
+		$list->read();
+		return $list;
+	}
+	
+	/**
+	 * 
+	 * @param string $term
+	 * @return \models\UserTypeaheadModel
+	 */
+	public static function userTypeaheadList($term) {
+		$list = new \models\UserTypeaheadModel($term);
+		$list->read();
+		return $list;
+	}
+	
+	/**
+	 * 
+	 * @param string $userId
+	 * @param string $newPassword
+	 * @throws \Exception
+	 */
+	public static function changePassword($userId, $newPassword, $currUserId) {
+		if ($userId != $currUserId && !RightsHelper::userHasSiteRight($currUserId, Domain::USERS + Operation::EDIT)) {
+			throw new UserUnauthorizedException();
+		}
+		$user = new \models\PasswordModel($userId);
+		$user->changePassword($newPassword);
+		$user->write();
+	}
+	
+	/**
+	 * 
+	 * @param string $params
+	 * @return boolean|string
+	 */
+	public static function createUser($params) {
+		$user = new \models\UserModelWithPassword();
+		JsonDecoder::decode($user, $params);
+		if (UserModel::userNameExists($user->username)) {
+			return false;
+		}
+		$user->setPassword($params['password']);
+		return $user->write();
+	}
+	
 
 	/**
 	 * Create a user with only username, add user to project if in context, creating user gets email of new user credentials
@@ -75,15 +201,17 @@ class UserCommands
 	 * Register a new user, add to project if in context
 	 * @param array $params
 	 * @param string $captcha_info
-	 * @param string $projectCode
+	 * @param string $httpHost
 	 * @param IDelivery $delivery
 	 * @throws \Exception
 	 * @return string $userId
 	 */
-	public static function register($params, $captcha_info, $projectCode, IDelivery $delivery = null) {
+	public static function register($params, $captcha_info, $httpHost, IDelivery $delivery = null) {
 		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
 			return false;  // captcha does not match
 		}
+		
+		$projectCode = ProjectModel::domainToProjectCode($httpHost);
 
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
@@ -125,6 +253,18 @@ class UserCommands
 		return $userId;
 	}
 	
+	public static function getCaptchaSrc($controller) {
+		$controller->load->library('captcha');
+		$captcha_config = array(
+			'png_backgrounds' => array(APPPATH . 'images/captcha/captcha_bg.png'),
+			'fonts' => array(FCPATH.'/images/captcha/times_new_yorker.ttf'),
+			'characters' => 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789',
+		);
+		$captcha_info = $controller->captcha->main($captcha_config);
+		$controller->session->set_userdata('captcha_info', $captcha_info);
+		return $captcha_info['image_src'];
+	}
+	
 	
     /**
     * Sends an email to invite emailee to join the project
@@ -135,8 +275,9 @@ class UserCommands
     * @param IDelivery $delivery
     * @return string $userId
     */
-	public static function sendInvite($inviterUser, $toEmail, $projectId, $hostName, IDelivery $delivery = null) {
+	public static function sendInvite($inviterUserId, $toEmail, $projectId, $hostName, IDelivery $delivery = null) {
 		$newUser = new UserModel();
+		$inviterUser = new UserModel($inviterUserId);
 		$project = null;
 		if ($projectId) {
 			$project = new ProjectModel($projectId);

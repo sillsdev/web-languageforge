@@ -3,6 +3,10 @@
 namespace models\commands;
 
 use libraries\palaso\CodeGuard;
+use models\QuestionTemplateModel;
+use models\mapper\JsonDecoder;
+use models\mapper\JsonEncoder;
+use models\QuestionTemplateListModel;
 
 class QuestionTemplateCommands
 {
@@ -20,6 +24,24 @@ class QuestionTemplateCommands
 			$count++;
 		}
 		return $count;
+	}
+	
+	public static function updateTemplate($params) {
+		$questionTemplate = new \models\QuestionTemplateModel();
+		JsonDecoder::decode($questionTemplate, $params);
+		$result = $questionTemplate->write();
+		return $result;
+	}
+	
+	public static function readTemplate($id) {
+		$questionTemplate = new \models\QuestionTemplateModel($id);
+		return JsonEncoder::encode($questionTemplate);
+	}
+	
+	public static function listTemplates() {
+		$list = new \models\QuestionTemplateListModel();
+		$list->read();
+		return $list;
 	}
 }
 

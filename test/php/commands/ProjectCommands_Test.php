@@ -1,4 +1,6 @@
 <?php
+use models\ProjectSettingsModel;
+
 use models\commands\ProjectCommands;
 use models\UserModel;
 use models\ProjectModel;
@@ -19,7 +21,7 @@ class TestProjectCommands extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		ProjectCommands::deleteProjects(array($projectId));
+		ProjectCommands::deleteProjects(array($projectId), 'bogus userid');
 	}
 
 	function testUpdateUserRole_UpdateUserInProject_UserJoinedProject() {
@@ -37,7 +39,7 @@ class TestProjectCommands extends UnitTestCase {
 		);
 	
 		// update user role in project
-		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params);
+		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params, 'bogus userid');
 	
 		// read from disk
 		$updatedUser = new UserModel($updatedUserId);
@@ -65,7 +67,7 @@ class TestProjectCommands extends UnitTestCase {
 		);
 		
 		// update user role in project once
-		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params);
+		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params, 'bogus userid');
 		
 		// read from disk
 		$sameUser = new UserModel($updatedUserId);
@@ -76,7 +78,7 @@ class TestProjectCommands extends UnitTestCase {
 		$this->assertEqual($sameUser->listProjects()->count, 1);
 		
 		// update user role in project again
-		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params);
+		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params, 'bogus userid');
 		
 		// read from disk again
 		$sameProject->read($projectId);
@@ -100,7 +102,25 @@ class TestProjectCommands extends UnitTestCase {
 		$this->assertEqual($project->listUsers()->count, 0);
 		
 		// remove users from project with no users - no throw expected
-		ProjectCommands::removeUsers($projectId, $userIds);
+		ProjectCommands::removeUsers($projectId, $userIds, 'bogus auth userid');
+	}
+	
+	function testReadSettings_CanReadSettings() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		// setup project and users
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+		$projectSettings = new ProjectSettingsModel($projectId);
+		$projectSettings->smsSettings->accountId = "12345";
+		$projectSettings->write();
+		
+		$user1Id = $e->createUser("user1name", "User1 Name", "user1@example.com");
+		
+		$result = ProjectCommands::readProjectSettings($projectId, $user1Id);
+		
+		$this->assertEqual($result['sms']['accountId'], "12345");
 	}
 
 	function testRemoveUsers_UsersInProject_RemovedFromProject() {
@@ -149,7 +169,7 @@ class TestProjectCommands extends UnitTestCase {
 		
 		// remove users from project
 		$userIds = array($user1->id->asString(), $user2->id->asString(), $user3->id->asString());
-		ProjectCommands::removeUsers($projectId, $userIds);
+		ProjectCommands::removeUsers($projectId, $userIds, 'bogus auth userids');
 		
 		// read from disk
 		$sameProject = new ProjectModel($projectId);

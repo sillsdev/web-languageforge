@@ -45,7 +45,9 @@ angular.module(
 			//preferFlash : false,
 			onready : function() {
 				$scope.audioReady = true;
-				$scope.$apply();
+				if(!$scope.$$phase) {
+					$scope.$apply();
+				}
 				// Ready to use; soundManager.createSound() etc. can now be called.
 			}
 		});
@@ -113,24 +115,24 @@ angular.module(
 
 		// Rights: Answers
 		$scope.rightsEditResponse = function(userId) {
-			var right = ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OTHER)
+			var right = ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT)
 				|| ((userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
 			return right;
 		};
 
 		$scope.rightsDeleteResponse = function(userId) {
-			var right = ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OTHER)
+			var right = ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE)
 				|| ((userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN));
 			return right;
 		};
 		
 		// Rights: Question
 		$scope.rightsCloseQuestion = function(userId) {
-			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
+			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
 		};
 		
 		$scope.rightsEditQuestion = function(userId) {
-			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT_OTHER);
+			return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
 		};
 		
 		
@@ -140,7 +142,7 @@ angular.module(
 		};
 		
 		$scope.rightsDeleteTag = function() {
-			return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.DELETE_OTHER);
+			return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.DELETE);
 		};
 		
 		$scope.workflowStates = [
