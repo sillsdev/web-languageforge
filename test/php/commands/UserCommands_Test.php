@@ -41,7 +41,7 @@ class TestUserCommands extends UnitTestCase {
 		
 		$userId = $e->createUser('somename', 'Some Name', 'somename@example.com');
 		
-		UserCommands::deleteUsers(array($userId));
+		UserCommands::deleteUsers(array($userId), 'bogus auth userid');
 	}
 	
 	function testCreateSimple_CreateUser_PasswordAndJoinProject() {
@@ -237,14 +237,13 @@ class TestUserCommands extends UnitTestCase {
 		$e->clean();
 	
 		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
-		$inviterUser = new UserModel($inviterUserId);
 		$toEmail = 'someone@example.com';
 		$project = $e->createProject(SF_TESTPROJECT);
 		$project->projectCode = 'someProjectCode';
 		$project->write();
 		$delivery = new MockUserCommandsDelivery();
 	
-		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $project->id->asString(), $project->projectCode, $delivery);
+		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $project->id->asString(), $project->projectCode, $delivery);
 	
 		// What's in the delivery?
 		$toUser = new UserModel($toUserId);
@@ -262,7 +261,6 @@ class TestUserCommands extends UnitTestCase {
 		$e->clean();
 	
 		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
-		$inviterUser = new UserModel($inviterUserId);
 		$toEmail = 'someone@example.com';
 		$projectId = '';
 		$hostName = 'someProjectCode.scriptureforge.org';
@@ -270,7 +268,7 @@ class TestUserCommands extends UnitTestCase {
 	
 		$e->inhibitErrorDisplay();
 		$this->expectException(new \Exception("Cannot send invitation for unknown project 'someProjectCode'"));
-		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $projectId, $hostName, $delivery);
+		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $projectId, $hostName, $delivery);
 		$e->restoreErrorDisplay();
 	}
 	
@@ -279,7 +277,6 @@ class TestUserCommands extends UnitTestCase {
 		$e->clean();
 	
 		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
-		$inviterUser = new UserModel($inviterUserId);
 		$toEmail = 'someone@example.com';
 		$projectId = '';
 		$hostName = 'scriptureforge.org';
@@ -287,7 +284,7 @@ class TestUserCommands extends UnitTestCase {
 	
 		$e->inhibitErrorDisplay();
 		$this->expectException(new \Exception("Sending an invitation without a project context is not supported."));
-		$toUserId = UserCommands::sendInvite($inviterUser, $toEmail, $projectId, $hostName, $delivery);
+		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $projectId, $hostName, $delivery);
 		$e->restoreErrorDisplay();
 	}
 	

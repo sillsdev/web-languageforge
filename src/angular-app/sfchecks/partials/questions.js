@@ -19,7 +19,9 @@ angular.module(
 			//preferFlash : false,
 			onready : function() {
 				$scope.audioReady = true;
-				$scope.$apply();
+				if(!$scope.$$phase) {
+					$scope.$apply();
+				}
 				// Ready to use; soundManager.createSound() etc. can now be called.
 			}
 		});
@@ -38,7 +40,7 @@ angular.module(
 		$scope.rights.deleteOther = false; 
 		$scope.rights.create = false; 
 		$scope.rights.createTemplate = false; 
-		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT_OTHER);
+		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT);
 		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
 		
 		// Breadcrumb
@@ -68,7 +70,6 @@ angular.module(
 				}
 			});
 		};
-		$scope.queryTemplates();
 
 		$scope.$watch('template', function(template) {
 			if (template && !angular.isUndefined(template.description)) {
@@ -89,15 +90,37 @@ angular.module(
 				$scope.selected.splice(selectedIndex, 1);
 			}
 		};
+		
+//		Array.prototype.containsKey = function(obj_key, key) {
+//		    var i = this.length;
+//		    while (i--) {
+//		        if (this[i][key] === obj_key) {
+//		            return true;
+//		        }
+//		    }
+//		    return false;
+//		};
 		$scope.isSelected = function(item) {
-			return item != null && $scope.selected.indexOf(item) >= 0;
+			if (item == null) {
+				return false;
+			} 
+		    var i = $scope.selected.length;
+		    while (i--) {
+		        if ($scope.selected[i]['id'] === item.id) {
+		            return true;
+		        }
+		    }
+		    return false;
+//			return item != null && $scope.selected.containsKey(item.id, 'id');
 		};
+		
 		// Listview Data
 		$scope.questions = [];
 		$scope.queryQuestions = function() {
 			//console.log("queryQuestions()");
 			questionsService.list(projectId, textId, function(result) {
 				if (result.ok) {
+					$scope.selected = [];
 					$scope.questions = result.data.entries;
 					$scope.questionsCount = result.data.count;
 
@@ -115,11 +138,14 @@ angular.module(
 					breadcrumbService.updateCrumb('top', 2, {label: $scope.text.title});
 
 					var rights = result.data.rights;
-					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.DELETE_OTHER); 
+					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.DELETE); 
 					$scope.rights.create = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE); 
 					$scope.rights.createTemplate = ss.hasRight(rights, ss.domain.TEMPLATES, ss.operation.CREATE); 
-					$scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT_OTHER);
+					$scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT);
 					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
+					if ($scope.rights.create) {
+						$scope.queryTemplates();
+					}
 				}
 			});
 		};
@@ -254,7 +280,7 @@ angular.module(
 				$scope.textTitle = $scope.dto.text.title;
 				$scope.editedText.title = $scope.dto.text.title;
 				$scope.rights = {
-					editOther: ss.hasRight($scope.dto.rights, ss.domain.TEXTS, ss.operation.EDIT_OTHER),
+					editOther: ss.hasRight($scope.dto.rights, ss.domain.TEXTS, ss.operation.EDIT),
 				};
 //				console.log($scope.dto);
 				breadcrumbService.updateCrumb('top', 1, {label: $scope.dto.bcs.project.crumb});

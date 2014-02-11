@@ -3,17 +3,38 @@
 namespace models\commands;
 
 use models\UserVoteModel;
-
 use models\dto\QuestionCommentDto;
-
 use models\CommentModel;
 use models\AnswerModel;
 use models\ProjectModel;
 use models\QuestionModel;
 use models\mapper\JsonDecoder;
+use models\mapper\JsonEncoder;
+use models\commands\ActivityCommands;
 
 class QuestionCommands
 {
+	
+	public static function updateQuestion($projectId, $object) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionModel = new \models\QuestionModel($projectModel);
+		$isNewQuestion = ($object['id'] == '');
+		if (!$isNewQuestion) {
+			$questionModel->read($object['id']);
+		}
+		JsonDecoder::decode($questionModel, $object);
+		$questionId = $questionModel->write();
+		if ($isNewQuestion) {
+			ActivityCommands::addQuestion($projectModel, $questionId, $questionModel);
+		}
+		return $questionId;
+	}
+	
+	public static function readQuestion($projectId, $questionId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionModel = new \models\QuestionModel($projectModel, $questionId);
+		return JsonEncoder::encode($questionModel);
+	}
 	
 	/**
 	 * @param string $projectId
@@ -30,6 +51,16 @@ class QuestionCommands
 		return $count;
 	}
 	
+	/* deprecated - cjh - use dto instead
+	public static function listQuestions($projectId, $textId, $authUserId) {
+		// TODO: validate $authUserId as authorized to perform this action
+		$projectModel = new \models\ProjectModel($projectId);
+		$questionListModel = new \models\QuestionListModel($projectModel, $textId);
+		$questionListModel->read();
+		return $questionListModel;
+	}
+	*/
+	
 	/**
 	 * Creates or updates an answer for the given $questionId.
 	 * @param string $projectId
@@ -40,6 +71,7 @@ class QuestionCommands
 	 * @see AnswerModel
 	 */
 	public static function updateAnswer($projectId, $questionId, $answer, $userId) {
+		// TODO: validate $userId as authorized to perform this action
 		$projectModel = new ProjectModel($projectId);
 		$questionModel = new QuestionModel($projectModel, $questionId);
 		$authorId = $userId;
@@ -64,6 +96,11 @@ class QuestionCommands
 		return self::encodeAnswer($newAnswer);
 	}
 	
+	public static function removeAnswer($projectId, $questionId, $answerId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId);
+	}
+	
 	/**
 	 * Creates / Updates a comment on the given answer. 
 	 * @param string $projectId
@@ -74,6 +111,7 @@ class QuestionCommands
 	 * @return array Dto
 	 */
 	public static function updateComment($projectId, $questionId, $answerId, $comment, $userId) {
+		// TODO: validate $userId as authorized to perform this action
 		$projectModel = new ProjectModel($projectId);
 		$questionModel = new QuestionModel($projectModel, $questionId);
 		$authorId = $userId;
@@ -100,6 +138,11 @@ class QuestionCommands
 		$dto = array();
 		$dto[$commentId] = $commentDTO;
 		return $dto;
+	}
+	
+	public static function removeComment($projectId, $questionId, $answerId, $commentId) {
+		$projectModel = new \models\ProjectModel($projectId);
+		return QuestionModel::removeComment($projectModel->databaseName(), $questionId, $answerId, $commentId);
 	}
 
 	/**

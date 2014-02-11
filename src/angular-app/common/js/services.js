@@ -21,7 +21,7 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('user_delete', [userIds], callback);
 		};
 		this.createSimple = function(userName, projectId, callback) {
-			jsonRpc.call('user_createSimple', [userName, projectId], callback);
+			jsonRpc.call('user_createSimple', [projectId, userName], callback);
 		};
 		this.list = function(callback) {
 			// TODO Paging CP 2013-07
@@ -49,7 +49,7 @@ angular.module('sf.services', ['jsonRpc'])
 			jsonRpc.call('user_updateFromRegistration', [validationKey, model], callback);
 		};
 		this.sendInvite = function(toEmail, projectId, callback) {
-			jsonRpc.call('user_sendInvite', [toEmail, projectId], callback);
+			jsonRpc.call('user_sendInvite', [projectId, toEmail], callback);
 		};
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
@@ -208,11 +208,13 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		this.operation = {
 				CREATE:       function() { return 1;},
-				EDIT_OWN:     function() { return 2;},
-				EDIT_OTHER:   function() { return 3;},
-				DELETE_OWN:   function() { return 4;},
-				DELETE_OTHER: function() { return 5;},
-				LOCK:         function() { return 6;}
+				EDIT:         function() { return 2;},
+				DELETE:       function() { return 3;},
+				LOCK:         function() { return 4;},
+				VIEW:         function() { return 5;},
+				VIEW_OWN:     function() { return 6;},
+				EDIT_OWN:     function() { return 7;},
+				DELETE_OWN:   function() { return 8;},
 		};
 		
 		this.hasRight = function(rights, domain, operation) {
