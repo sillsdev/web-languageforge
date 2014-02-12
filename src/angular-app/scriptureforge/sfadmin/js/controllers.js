@@ -65,7 +65,6 @@ angular.module(
 	//$scope.queryUsers();  // And run it right away to fetch the data for our list.
 
 	$scope.selectRow = function(index, record) {
-//		console.log("Called selectRow(", index, ", ", record, ")");
 		$scope.vars.selectedIndex = index;
 		if (index < 0) {
 			$scope.vars.record = {role: 'user'};
@@ -79,8 +78,6 @@ angular.module(
 	};
 
 	$scope.$watch("vars.record.id", function(newId, oldId) {
-		// attrs.$observe("userid", function(newval, oldval) {
-//		console.log("Watch triggered with oldval '" + oldId + "' and newval '" + newId + "'");
 		if (newId) {
 			userService.read(newId, function(result) {
 				$scope.record = result.data;
@@ -174,50 +171,8 @@ angular.module(
 		$scope.queryUsers(true);
 	}
 
-/*
-	$scope.updateRecord = function(record) {
-//		console.log("updateRecord() called with ", record);
-		if (record === undefined || JSON.stringify(record) == "{}") {
-			// Avoid adding blank records to the database
-			return null; // TODO: Or maybe just return a promise object that will do nothing...?
-		}
-		
-		var isNewRecord = false;
-		if (record.id === undefined) {
-			isNewRecord = true; // Will be used below
-			record.id = '';
-//			if (record.groups === undefined) {
-//				record.groups = [null]; // TODO: Should we put something into the form to allow setting gropus? ... Later, not now.
-//			}
-		}
-		var afterUpdate;
-		if (record.password) {
-			afterUpdate = function(result) {
-				record.id = result.data;
-				// TODO Don't do this as a separate API call here. CP 2013-07
-				$scope.changePassword(record);
-			};
-		} else {
-			afterUpdate = function(result) {
-				// Do nothing
-			};
-		}
-		userService.update(record, function(result) {
-			afterUpdate(result);
-			$scope.queryUsers(true);
-			if (isNewRecord) {
-				$scope.record = {};
-				$scope.focusInput();
-			} else {
-				$scope.blurInput();
-			}
-		});
-		return true;
-	};
-	*/
 
 	$scope.removeUsers = function() {
-//		console.log("removeUsers");
 		var userIds = [];
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			userIds.push($scope.selected[i].id);
@@ -244,12 +199,10 @@ angular.module(
 	};
 
 	$scope.changePassword = function(record) {
-//		console.log("changePassword() called with ", record);
 		userService.changePassword(record.id, record.password, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "Password for " + record.name + " updated successfully");
 			}
-//			console.log("Password successfully changed.");
 		});
 	};
 	
@@ -356,7 +309,6 @@ angular.module(
 	};
 
 	$scope.removeTemplates = function() {
-//		console.log("removeTemplates");
 		var templateIds = [];
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			templateIds.push($scope.selected[i].id);
@@ -379,21 +331,4 @@ angular.module(
 	};
 
 }])
-/*
-.controller('PasswordCtrl', ['$scope', 'jsonRpc', function($scope, jsonRpc) {
-	$scope.changePassword = function(record) {
-		// Validation
-		if (record.password != record.confirmPassword) {
-			console.log("Error: passwords do not match");
-			// TODO: Learn how to do Angular validation so I can give control back to the user. RM 2013-07
-			return null;
-		}
-		jsonRpc.connct("/api/sf");
-		params = {
-			"userid": record.id,
-			"newPassword": record.password,
-		};
-	};
-}])
-*/
 ;

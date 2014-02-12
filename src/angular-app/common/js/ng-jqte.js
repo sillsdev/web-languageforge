@@ -12,7 +12,6 @@ angular.module('palaso.ui.jqte', [])
 				}
 				ngModelCtrl.$render = function() {
 					var phase = scope.$$phase;
-					console.log('render ', phase);
 					element.jqteVal(ngModelCtrl.$viewValue);
 				};
 				var options = scope[attrs.puiJqte] === undefined ? {} : scope[attrs.puiJqte];
