@@ -1,5 +1,5 @@
 <div class="container banner">
-	<img src="/images/beach2.jpg" width="965px" height="360px" alt="on the beach" />
+	<img src="/images/scriptureforge/default/beach2.jpg" width="965px" height="360px" alt="on the beach" />
 </div>
 
 <div class="container">

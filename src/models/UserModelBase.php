@@ -34,7 +34,7 @@ class UserModelBase extends \models\mapper\MapperModel
 			$this->communicate_via = self::COMMUNICATE_VIA_EMAIL;
 		}
 		if (!$this->avatar_ref) {
-			$default_avatar = "/images/avatar/anonymoose.png";
+			$default_avatar = "/images/shared/avatar/anonymoose.png";
 			$this->avatar_ref = $default_avatar;
 		}
 	}

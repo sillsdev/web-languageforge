@@ -17,13 +17,13 @@
 						</div>
 						
 						<div class="span1 offset4">
-							<p><a href="http://www.sil.org"><img src="/images/SIL_logo.png" alt="SIL Logo" width="50" height="49" /></a></p>
-							<p><a href="http://www.unitedbiblesocieties.org/"><img src="/images/ubs-logo.png" alt="ubs-logo" width="71" height="50" /></a></p>
+							<p><a href="http://www.sil.org"><img src="/images/shared/SIL_logo.png" alt="SIL Logo" width="50" height="49" /></a></p>
+							<p><a href="http://www.unitedbiblesocieties.org/"><img src="/images/shared/ubs-logo.png" alt="ubs-logo" width="71" height="50" /></a></p>
 						</div>
 						
 						<div class="span3">
-							<p><a href="http://ic.payap.ac.th/"><img src="/images/PAYAP_logo.png" alt="PAYAP Logo" width="170" height="50" /></a></p>
-							<p><a href="http://www.theseedcompany.org/"><img src="/images/seed-company-logo.png" alt="Seed Company Logo" width="162" height="50" /></a></p>
+							<p><a href="http://ic.payap.ac.th/"><img src="/images/shared/PAYAP_logo.png" alt="PAYAP Logo" width="170" height="50" /></a></p>
+							<p><a href="http://www.theseedcompany.org/"><img src="/images/shared/seed-company-logo.png" alt="Seed Company Logo" width="162" height="50" /></a></p>
 						</div>
 				
 					</div>

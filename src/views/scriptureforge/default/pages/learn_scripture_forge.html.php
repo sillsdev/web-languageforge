@@ -1,5 +1,5 @@
 <div class="container banner">
-	<img src="/images/beach3.jpg" width="965px" height="360px" alt="on the beach" />
+	<img src="/images/scriptureforge/default/beach3.jpg" width="965px" height="360px" alt="on the beach" />
 	<h2>About Scripture Forge</h2>
 	<p>Take your scripture-checking project to the next level by involving tens or hundreds more in the scripture review process.  Engage your language's diaspora speakers on the web or their phone, wherever they are.  Bring new insights into the checking process by engaging remote participants.  While your translation team continues to work in ParaTExt, Scripture Forge provides a community feedback mechanism to help your team test their scripture drafts for comprehension and readability.
 	</p>
