@@ -91,8 +91,8 @@
 	padding-top: 10px;
 	margin-right: 3px;
 	_margin-right: 1px;
-	background-image:url(../images/sf_sprite.png);
-	_background-image:url(../images/sf_sprite.gif);
+	background-image:url(/images/scriptureforge/default/sf_sprite.png);
+	_background-image:url(/images/scriptureforge/default/sf_sprite.gif);
 	background-position: 0 0;
 	float: left;
 	overflow: hidden;

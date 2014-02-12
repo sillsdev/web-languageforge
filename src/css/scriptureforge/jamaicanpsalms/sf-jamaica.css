@@ -25,7 +25,7 @@ body {
 	font-family: "Open Sans", Arial, Helvetica, Verdana, sans-serif;
 	font-weight: 400;
 	color: #404040;
-	background: url(../../images/jamaicanpsalms/sf_j_body_bkg_tile.png) repeat 0 0;
+	background: url(/images/scriptureforge/jamaicanpsalms/sf_j_body_bkg_tile.png) repeat 0 0;
 }
 
 h2, h3 {
@@ -49,7 +49,7 @@ h2, h3 {
 div#header {
 	position: relative;
 	height: 39px;
-	background: #333 url(../../images/sf_header-bar-bkg.png) repeat-x 0 0;
+	background: #333 url(/images/scriptureforge/jamaicanpsalms/sf_header-bar-bkg.png) repeat-x 0 0;
 	border-bottom: 1px solid #222;
 	color: #fff;
 	z-index: 10; /* IE6-7 hack for logo */
@@ -92,13 +92,13 @@ div.darkTextLogo {
 	width: 166px;
 	height: 14px;
 	margin-top: 14px;
-	background: transparent url(../../images/jamaicanpsalms/sf_sprite_jamaica.png) no-repeat 0 -22px;
+	background: transparent url(/images/scriptureforge/jamaicanpsalms/sf_sprite_jamaica.png) no-repeat 0 -22px;
 }
 
 div#sf-promotion-outer-wrap {
 	width: 100%;
 	border-bottom: 8px solid #fff;
-	background: url(../../images/jamaicanpsalms/sf_promo_bkg_jamaica.png) repeat-x 0 0;
+	background: url(/images/scriptureforge/jamaicanpsalms/sf_promo_bkg_jamaica.png) repeat-x 0 0;
 }
 
 div#sf-promotion-inner-wrap {
@@ -106,14 +106,14 @@ div#sf-promotion-inner-wrap {
 	max-width: 1280px;
 	min-width: 940px;
 	margin: 0 auto;
-	background: #333 url(../../images/jamaicanpsalms/photo-4.jpg) no-repeat center 0;
+	background: #333 url(/images/scriptureforge/jamaicanpsalms/photo-4.jpg) no-repeat center 0;
 	overflow: hidden;
 }
 
 div#sf-promotion-wrap-shadow {
 	display: block;
 	height: 30px;
-	background: transparent url(../../images/jamaicanpsalms/sf_sprite_jamaica.png) no-repeat center -74px;
+	background: transparent url(/images/scriptureforge/jamaicanpsalms/sf_sprite_jamaica.png) no-repeat center -74px;
 }
 
 div.promotionWing {
@@ -124,11 +124,11 @@ div.promotionWing {
 }
 
 div.promotionWingLeft {
-	background: url(../../images/jamaicanpsalms/sf_promo_wings_left_jamaica.png) no-repeat 0 0;
+	background: url(/images/scriptureforge/jamaicanpsalms/sf_promo_wings_left_jamaica.png) no-repeat 0 0;
 }
 
 div.promotionWingRight {
-	background: url(../../images/jamaicanpsalms/sf_promo_wings_right_jamaica.png) no-repeat 0 0;
+	background: url(/images/scriptureforge/jamaicanpsalms/sf_promo_wings_right_jamaica.png) no-repeat 0 0;
 }
 
 div#sf-promotion {
@@ -166,12 +166,12 @@ div.sf-3up-3 {
 div.sub-foot-detailing {
 	width: auto;
 	height: 7px;
-	background: url(../../images/jamaicanpsalms/sf_j_sub-foot-detailing.png) repeat-x 0 0;
+	background: url(/images/scriptureforge/jamaicanpsalms/sf_j_sub-foot-detailing.png) repeat-x 0 0;
 }
 
 div#sub-foot {
 	padding: 20px 0;
-	background: url(../../images/jamaicanpsalms/sf_j_dark_bkg_tile.png) repeat 0 0;
+	background: url(/images/scriptureforge/jamaicanpsalms/sf_j_dark_bkg_tile.png) repeat 0 0;
 }
 
 div#footer {
@@ -180,7 +180,7 @@ div#footer {
 	height: auto;
 	padding: 20px 0 24px 0;
 	background-color: #3a3a3a;
-	background: #3a3a3a url(../../images/jamaicanpsalms/sf_sprite_jamaica.png) no-repeat center -139px;
+	background: #3a3a3a url(/images/scriptureforge/jamaicanpsalms/sf_sprite_jamaica.png) no-repeat center -139px;
 }
 
 div#footer small {
@@ -217,8 +217,8 @@ a {
 }
 
 a.arrowed {
-	background: url(../../images/jamaicanpsalms/sf_sprite_jamaica.png) no-repeat top right;
-	*background: url(../../images/jamaicanpsalms/sf_sprite_jamaica.gif) no-repeat top right;
+	background: url(/images/scriptureforge/jamaicanpsalms/sf_sprite_jamaica.png) no-repeat top right;
+	*background: url(/images/scriptureforge/jamaicanpsalms/sf_sprite_jamaica.gif) no-repeat top right;
 	padding-right: 12px;
 }
   
@@ -492,7 +492,7 @@ ul.topNav a {
 div#logo-small {
 	width: 27px;
 	height: 36px;
-	background: url(../images/sf_logo_small.png) no-repeat;
+	background: url(/images/scriptureforge/jamaicanpsalms/sf_logo_small.png) no-repeat;
 }
 
 /* Breadcrumbs */
