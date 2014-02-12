@@ -46,8 +46,8 @@ a {
 }
 
 a.arrowed {
-	background: url(../images/sf_sprite.png) no-repeat top right;
-	*background: url(../images/sf_sprite.gif) no-repeat top right;
+	background: url(/images/scriptureforge/default/sf_sprite.png) no-repeat top right;
+	*background: url(/images/scriptureforge/default/sf_sprite.gif) no-repeat top right;
 	padding-right: 12px;
 }
   
@@ -131,7 +131,7 @@ div#header {
 	position: relative;
 	width: 100%;
 	height: 39px;
-	background: #333 url(../images/sf_header-bar-bkg.png) repeat-x 0 0;
+	background: #333 url(/images/scriptureforge/default/sf_header-bar-bkg.png) repeat-x 0 0;
 	color: #fff;
 	z-index: 10; /* IE6-7 hack for logo */
 }
@@ -183,7 +183,7 @@ div.darkTextLogo {
 	width: 166px;
 	height: 14px;
 	margin-top: 14px;
-	background: transparent url(../images/sf_sprite.png) no-repeat 0 -22px;
+	background: transparent url(/images/scriptureforge/default/sf_sprite.png) no-repeat 0 -22px;
 }
 
 /*
@@ -202,7 +202,7 @@ div#promotion {
 	-webkit-border-radius: 5px 5px 5px 5px;
 	-moz-border-radius: 5px 5px 5px 5px;
 	border-radius: 5px 5px 5px 5px;
-	background: #f4f4f6 url(../images/promotion-hl.png) no-repeat 0 0;
+	background: #f4f4f6 url(/images/scriptureforge/default/promotion-hl.png) no-repeat 0 0;
 }
 
 div#promotionCutout {
@@ -212,7 +212,7 @@ div#promotionCutout {
 	height: 21px;
 	bottom: -11px;
 	right: -1px;
-	background: transparent url(../images/sf_sprite.png) no-repeat -24px 0;
+	background: transparent url(/images/scriptureforge/default/sf_sprite.png) no-repeat -24px 0;
 	z-index: 2;
 }
 
@@ -222,7 +222,7 @@ div#promotion-ribbon {
 	height: 102px;
 	top: -6px;
 	right: -6px;
-	background: transparent url(../images/sf_sprite.png) no-repeat right -36px;
+	background: transparent url(/images/scriptureforge/default/sf_sprite.png) no-repeat right -36px;
 	z-index: 10;
 }
 
@@ -263,7 +263,7 @@ div#footer {
 	height: auto;
 	padding: 40px 0 40px 0;
 	background-color: #3a3a3a;
-	background: #3a3a3a url(../images/sf_sprite.png) no-repeat center -139px;
+	background: #3a3a3a url(/images/scriptureforge/default/sf_sprite.png) no-repeat center -139px;
 	color: #fff;
 }
 
@@ -590,22 +590,22 @@ table tbody tr:hover, table tbody tr.altrow:hover {
 }
 
 .alert-error {
-	background: url(../images/exclamation.png) no-repeat scroll 8px 8px #ffeeee;
+	background: url(/images/shared/exclamation.png) no-repeat scroll 8px 8px #ffeeee;
 	border: 1px solid #e47b7b;
 }
 
 .alert-warn {
-	background: url(../images/error.png) no-repeat scroll 8px 8px #FFFDF1;
+	background: url(/images/shared/error.png) no-repeat scroll 8px 8px #FFFDF1;
 	border: 1px solid #FFE578;
 }
 
 .alert-success {
-	background: url(../images/tick.png) no-repeat scroll 8px 8px #f4fff2;
+	background: url(/images/shared/tick.png) no-repeat scroll 8px 8px #f4fff2;
 	border: 1px solid #81ca76;
 }
 
 .alert-info {
-	background: url(../images/information.png) no-repeat scroll 8px 8px #F4FAFF;
+	background: url(/images/shared/information.png) no-repeat scroll 8px 8px #F4FAFF;
 	border: 1px solid #AECEEF;
 }
 
@@ -692,7 +692,7 @@ ul.topNav a {
 div#logo-small {
 	width: 27px;
 	height: 36px;
-	background: url(../images/sf_logo_small.png) no-repeat;
+	background: url(/images/scriptureforge/default/sf_logo_small.png) no-repeat;
 }
 
 /* Breadcrumbs */

@@ -104,8 +104,8 @@
 	padding-top: 12px;
 	margin-right: 6px;
 	_margin-right: 1px;
-	background-image:url(../../images/jamaicanpsalms/sf_sprite_jamaica.png);
-	_background-image:url(../../images/jamaicanpsalms/sf_sprite_jamaica.gif);
+	background-image:url(/images/scriptureforge/jamaicanpsalms/sf_sprite_jamaica.png);
+	_background-image:url(/images/scriptureforge/jamaicanpsalms/sf_sprite_jamaica.gif);
 	background-position: 0 0;
 	float: left;
 	overflow: hidden;
