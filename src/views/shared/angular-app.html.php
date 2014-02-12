@@ -7,9 +7,9 @@ window.session = <?php echo $jsonSession; ?>;
 </script>
 	
 <?php if (SF_USE_MINIFIED_JS): ?>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-route.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-sanitize.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-route.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js"></script>
 	<script src="/js/lib/angular-file-upload.min.js"></script>
 	<!-- ng-ui-*.js included in combined scriptureforge-min.js script -->
 <?php else: ?>
