@@ -1,7 +1,7 @@
 'use strict';
 
 function getAvatarUrl(color, shape) {
-	var imgPath = "/images/avatar";
+	var imgPath = "/images/shared/avatar";
 	if (!color || !shape) {
 		return imgPath + "/anonymoose.png";
 	}

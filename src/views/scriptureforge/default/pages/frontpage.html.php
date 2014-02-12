@@ -50,7 +50,7 @@
 				<div class="sub-promotion">
 				<div class="row row-padded">
 					<div class="span4">
-						<img src="/images/girlsmiling.jpg" alt="girl smiling" width="299" height="182" class="left">
+						<img src="/images/scriptureforge/default/girlsmiling.jpg" alt="girl smiling" width="299" height="182" class="left">
 					</div>
 					<div class="span8">
 						<h3>The Power of Collaboration</h3>
