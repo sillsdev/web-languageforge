@@ -359,7 +359,7 @@ angular.module(
 		};
 	
 		$scope.imageSource = function(avatarRef) {
-			return avatarRef ? '/images/avatar/' + avatarRef : '/images/avatar/anonymous02.png';
+			return avatarRef ? '/images/shared/avatar/' + avatarRef : '/images/shared/avatar/anonymous02.png';
 		};
 	
 	}])
