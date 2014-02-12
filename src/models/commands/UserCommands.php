@@ -256,7 +256,7 @@ class UserCommands
 	public static function getCaptchaSrc($controller) {
 		$controller->load->library('captcha');
 		$captcha_config = array(
-			'png_backgrounds' => array(APPPATH . 'images/captcha/captcha_bg.png'),
+			'png_backgrounds' => array(APPPATH . 'images/shared/captcha/captcha_bg.png'),
 			'fonts' => array(FCPATH.'/images/shared/captcha/times_new_yorker.ttf'),
 			'characters' => 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789',
 		);
