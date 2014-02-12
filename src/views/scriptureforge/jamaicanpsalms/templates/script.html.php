@@ -1,4 +1,3 @@
-		<script src="/js/lib/jquery-1.8.0.min.js"></script>
 		<script src="/js/lib/jquery-ui-1.8.23.custom.min.js"></script>
 		<script src="/js/lib/superfish/superfish.js"></script>
 		<script src="/js/lib/superfish/hoverIntent.js"></script>
