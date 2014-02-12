@@ -21,10 +21,8 @@ angular.module('sgw.soundmanager', [])
 						autoLoad: true,
 						autoPlay: false,
 						onload: function() {
-							console.log('sound loaded');
 						},
 						onfinish: function() {
-							console.log('sound finished');
 							$scope.state = 'stop';
 						}
 					});					

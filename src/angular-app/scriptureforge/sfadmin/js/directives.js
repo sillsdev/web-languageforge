@@ -45,7 +45,6 @@ angular.module('sfAdmin.directives', ["jsonRpc", "sfAdmin.filters"])
 		if (!ngFocusSet) {
 			throw Error("Non assignable expression");
 		}
-		console.log("In ng-focus directive, trying to focus with var ", attrs.ngFocus);
 
 		var abortFocusing = false;
 		var unwatch = scope.$watch(attrs.ngFocus, function(newVal){

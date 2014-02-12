@@ -29,7 +29,6 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso
 			if (result.ok) {
 				$scope.user = result.data.userProfile;
 				$scope.projectsSettings = result.data.projectsSettings;
-//				console.log(result.data);
 				
 				// populate the project pickList default values with the userProfile picked values 
 				for (var i = 0; i < $scope.projectsSettings.length; i++) {
@@ -49,7 +48,6 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso
 	
 	$scope.updateUser = function() {
 		// populate the userProfile picked values from the project pickLists
-//		console.log("updateProfile ", $scope.user);
 		for (var i = 0; i < $scope.projectsSettings.length; i++) {
 			var project = $scope.projectsSettings[i];
 			$scope.user.projectUserProfiles[project.id] = {};
