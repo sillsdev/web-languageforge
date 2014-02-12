@@ -59,9 +59,6 @@ angular.module('activity',
 				}
 				$scope.decodeActivityList($scope.activities);
 				$scope.filteredActivities = $scope.activities;
-			} else {
-				// error condition
-				console.log("error loading activity");
 			}
 		});
 		$scope.showAllActivity = true;

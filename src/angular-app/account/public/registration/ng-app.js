@@ -13,7 +13,6 @@ angular.module('registration', [ 'sf.services', 'ui.bootstrap', 'palaso.ui.notic
 	if (validationKey != undefined && validationKey.length > 0) {
 		userService.readForRegistration(validationKey, function(result) {
 			if (result.ok) {
-//				console.log("got user: ", result.data);
 				if (result.data.length != 0) {
 					$scope.showForm = true;
 					$scope.record = result.data;
