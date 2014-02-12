@@ -61,13 +61,12 @@ class Base extends CI_Controller {
 		$this->viewdata = $data;
 		$this->viewdata['contentTemplate'] = $this->getContentTemplatePath($view);
 		$this->viewdata['projectPath'] = $this->getProjectPath();
+		$this->viewdata['defaultProjectPath'] = $this->getProjectPath('default');
 		
 		$this->populateHeaderMenuViewdata();
 		
 		$containerTemplatePath = $this->getSharedTemplatePath("container");
-		$view_html = $this->load->view($containerTemplatePath, $this->viewdata, !$render);
-		
-		if (!$render) return $view_html;
+		return $this->load->view($containerTemplatePath, $this->viewdata, !$render);
 	}
 	
 	protected function populateHeaderMenuViewdata() {
@@ -106,8 +105,11 @@ class Base extends CI_Controller {
 		return '';
 	}
 	
-	protected function getProjectPath() {
-		return $this->site . "/" . $this->project;
+	protected function getProjectPath($project = "") {
+		if (!$project) {
+			$project = $this->project;
+		}
+		return $this->site . "/" . $project;
 	}
 	
 	protected function getContentTemplatePath($templateName) {
@@ -119,10 +121,15 @@ class Base extends CI_Controller {
 		}
 	}
 	
-	protected function getProjectTemplatePath($templateName) {
+	protected function getProjectTemplatePath($templateName, $project = "") {
 		$viewPath = $this->getProjectPath() . "/$templateName.html.php";
 		if (file_exists("views/$viewPath")) {
 			return $viewPath;
+		} else {
+			$viewPath = $this->getProjectPath('default') . "/$templateName.html.php";
+			if (file_exists("views/$viewPath")) {
+				return $viewPath;
+			}
 		}
 		return '';
 	}
