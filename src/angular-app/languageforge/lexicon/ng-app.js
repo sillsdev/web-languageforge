@@ -15,14 +15,12 @@ angular.module('lexicon',
 				'/view',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html',
-					// controller: 'dbeCtrl'
 				}
 			);
 		$routeProvider.when(
 				'/dashboard',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html',
-					// controller: 'dashboardCtrl'
 				}
 			);
 		$routeProvider.when(
@@ -35,21 +33,18 @@ angular.module('lexicon',
 				'/dbe',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/dbe.html',
-					controller: 'dbeCtrl'
 				}
 			);
 		$routeProvider.when(
 				'/add-grammar',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/add-grammar.html',
-					controller: 'grammarCtrl',
 				}
 			);
 		$routeProvider.when(
 				'/add-examples',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/add-examples.html',
-					controller: 'examplesCtrl',
 				}
 			);
 		$routeProvider.when(
