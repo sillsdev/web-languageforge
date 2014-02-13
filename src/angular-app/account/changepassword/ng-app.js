@@ -12,7 +12,7 @@ function changePasswordCtrl($scope, userService, sessionService, notice) {
 				}
 			});
 		}
-	}
+	};
 }
 
 angular.module('changepassword', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'ui.validate', 'palaso.ui.notice']).

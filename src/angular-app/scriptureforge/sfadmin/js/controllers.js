@@ -21,7 +21,7 @@ angular.module(
 		$scope.userNameLoading = false;
 		$scope.userNameExists = false;
 		$scope.userNameOk = false;
-	}
+	};
 	$scope.resetCheckName();
 	
 	$scope.focusInput = function() {
@@ -131,7 +131,7 @@ angular.module(
 				}
 			});
 		}
-	}
+	};
 	
 	$scope.updateRecord = function(record) {
 		if (record.id == undefined) {
@@ -169,7 +169,7 @@ angular.module(
 		
 		$scope.resetCheckName();
 		$scope.queryUsers(true);
-	}
+	};
 
 
 	$scope.removeUsers = function() {
@@ -279,9 +279,9 @@ angular.module(
 			qts.update($scope.editedTemplate, function(result) {
 				if (result.ok) {
 					if ($scope.editedTemplate.id) {
-						notice.push(notice.SUCCESS, "The template '" + $scope.editedTemplate.title + "' was updated successfully")
+						notice.push(notice.SUCCESS, "The template '" + $scope.editedTemplate.title + "' was updated successfully");
 					} else {
-						notice.push(notice.SUCCESS, "The new template '" + $scope.editedTemplate.title + "' was added successfully")
+						notice.push(notice.SUCCESS, "The new template '" + $scope.editedTemplate.title + "' was added successfully");
 					}
 					$scope.hideTemplateEditor();
 					$scope.selected = [];

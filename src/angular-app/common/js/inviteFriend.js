@@ -14,7 +14,7 @@ angular.module('sf.ui.invitefriend', ['sf.services', 'palaso.ui.notice'])
 					$scope.showInviteDiv = false;
 				}
 			}
-		}
+		};
 		
 		$rootScope.$on('$viewContentLoaded', function (event, next, current) {
 			$scope.checkVisibility();

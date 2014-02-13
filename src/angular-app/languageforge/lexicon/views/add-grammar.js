@@ -118,7 +118,7 @@ function grammarCtrl($scope, userService, sessionService, lexService, $window, $
 				$scope.selectEntry(result.data);
 			});
 		};
-	}
+	};
 
 	// run this when the page loads
 	$scope.getPageDto();

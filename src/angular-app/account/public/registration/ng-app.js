@@ -59,6 +59,6 @@ angular.module('registration', [ 'sf.services', 'ui.bootstrap', 'palaso.ui.notic
 				}
 			});
 		}
-	}
+	};
 }])
 ;

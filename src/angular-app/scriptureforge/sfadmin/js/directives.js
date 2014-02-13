@@ -11,7 +11,7 @@ angular.module('sfAdmin.directives', ["jsonRpc", "sfAdmin.filters"])
 	        fn(scope, {$event:event});
 	      });
 	    });
-	  }
+	  };
 	}])
   .directive("requireEqual", function() {
 	return {
