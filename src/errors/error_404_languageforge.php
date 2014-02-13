@@ -64,9 +64,9 @@ p {
 </head>
 <body>
 	<div id="container">
-		<h1>404 Scripture Not Found</h1>
-		<img src="/images/shared/empty_book.png" />
-		<h3>There are still nearly 2000 living languages in the world that do not have any portion of the Bible.  <a href="/">Scriptureforge.org</a> technology accelerates the pace of Bible translation with the aim to get this number lower, faster.</h3>
+		<h1>404 Language Not Found</h1>
+		<img src="" />
+		<h3>Every week a language dies. (Is this really true? - better check the facts)  <a href="/">LanguageForge.org</a> technology accelerates the task of language development and documentation with the aim of increasing language vitality among minority languages.</h3>
 		
 		<div style="margin-top:50px">
 			<h4>Incidentally, you probably arrived here because of a broken link on our site.  Sorry about that.</h4>
