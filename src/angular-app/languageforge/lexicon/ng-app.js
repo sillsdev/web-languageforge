@@ -75,7 +75,6 @@ angular.module('lexicon',
 		}, true);
 	}])
 	.controller('LexiconMenuCtrl', ['$scope', '$timeout', function($scope, $timeout) {
-		console.log('Running lexicon menu controller');
 		$scope.noSubmenuId = 0;
 		$scope.gatherSubmenuId = 1;
 		$scope.addSubmenuId = 2;

@@ -1,14 +1,20 @@
 <h2 style="font-weight:normal">Settings</h2>
 <tabset>
+	<tab heading="Writing Systems">
+		<div data-ng-include="'/angular-app/lexicon/views/writing-systems.html'"></div>
+	</tab>
 	<tab heading="Fields">
 		<div class="row">
 		<div class="span4">
 			<fieldset>
 			<legend>Show the following fields:</legend>
 			<ul class="unstyled">
-  				<li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in config.entry.fields"><div class="checkbox"><input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list}}</div></li>
+  				<li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in config.entry.fieldNames"><div class="checkbox"><input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list}}</div></li>
 			</ul>
 			</fieldset>
+			
+			<br />
+			<pre>{{config|json}}</pre>
 		</div>
 		
 		<div class="span8">
@@ -17,42 +23,25 @@
 				<legend>Setup</legend>
 				<div class="well">
 					<div>
-						<label>Name for display</label>
-						<input type="text" data-ng-model="unknown"/>
+						<label>Name for display <input type="text" data-ng-model="unknown"/></label>
 					</div>
 					<div>
-						<label style="margin-bottom:20px"><input type="checkbox" data-ng-model="unknown"/> Normally hidden</label>
+						<label style="margin-bottom:20px"><input type="checkbox" data-ng-model="unknown"/> Hidden if empty</label>
 					</div>
 					<div class="well">
 						<label>Writing System</label>
 						<ul class="unstyled">
-  							<li data-ng-click="unknown" data-ng-repeat="language in unknown"><div class="checkbox"><input data-ng-model="language" type="checkbox"/>{{language.name}}</div></li>
+			  				<li data-ng-click="selectList(writingSystemId)" data-ng-repeat="(writingSystemId, writingSystem) in config.writingsystems.map"><div class="checkbox"><input data-ng-model="currentListsEnabled[writingSystemId]" type="checkbox"/>{{writingSystem}}</div></li>
 						</ul>
 					</div>
 					<button class="btn" data-ng-click="editWritingSystemsCollapsed != editWritingSystemsCollapsed"><i class="icon-pencil"></i>Edit writing systems</button>
 					<a data-ng-show="true" href="" data-ng-click="editWritingSystems()">Edit writing systems</a>
-					<div data-collapse="false">
-						<fieldset>
-						<legend>Edit Writing Systems</legend>
-						<div class="span2 well">
-							<ul class="unstyled">
-				  				<li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in config.writingsystems.map"><div class="checkbox"><input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list}}</div></li>
-							</ul>
-						</div>
-						<div class="span4 well">
-							<label>Abbreviation <input type="text" data-ng-model="unknown"/></label>
-							<label>Special <select class="form-control" data-ng-model="special"><option></option></select></label>
-							<label>Purpose <select class="form-control" data-ng-model="purpose"><option></option></select></label>
-						</div>
-						</fieldset>
-						<button class="btn" data-ng-click="saveWritingSystems()"><i class="icon-ok"></i>Save</button>
+					<div data-collapse="false" data-ng-include="'/angular-app/lexicon/views/writing-systems.html'">
 					</div>
 				</div>
 				<button class="btn btn-small" type="submit" data-ng-show="false"><i class="icon-ok"></i>Save</button>
 			</fieldset>
 			</form>
-			
-			<pre>{{config|json}}</pre>
 		</div>
 		</div>
 	</tab>
