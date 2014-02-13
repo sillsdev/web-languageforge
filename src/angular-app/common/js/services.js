@@ -271,8 +271,8 @@ angular.module('sf.services', ['jsonRpc'])
 			},
 			'entry': {
 				'type': 'fields',
-				'fields': ['lexeme', 'senses'],
-				'definitions': {
+				'fieldNames': ['lexeme', 'senses'],
+				'fields': {
 					'lexeme': {
 						'type': 'multitext',
 						'label': 'Word',
@@ -281,8 +281,8 @@ angular.module('sf.services', ['jsonRpc'])
 					},
 					'senses': {
 						'type': 'fields',
-						'fields': ['definition', 'partOfSpeech', 'semanticDomainValue', 'examples'],
-						'definitions': {
+						'fieldNames': ['definition', 'partOfSpeech', 'semanticDomainValue', 'examples'],
+						'fields': {
 							'definition': {
 								'type': 'multitext',
 								'label': 'Meaning',
@@ -311,8 +311,8 @@ angular.module('sf.services', ['jsonRpc'])
 							},
 							'examples': {
 								'type': 'fields',
-								'fields': ['example', 'translation'],
-								'definitions': {
+								'fieldNames': ['example', 'translation'],
+								'fields': {
 									'example': {
 										'type': 'multitext',
 										'label': 'example',
@@ -332,6 +332,9 @@ angular.module('sf.services', ['jsonRpc'])
 				}
 			}
 		};
+		this.projectSettings = function() {
+			return config;
+		};
 
 		var sampleData = [
 				{
@@ -347,7 +350,7 @@ angular.module('sf.services', ['jsonRpc'])
 				{
 					"lexeme": {"thipa": "krapâw mǔu"},
 					"senses": [{
-						"meaning": {
+						"definition": {
 							"th": "กระเพาหมู",
 							"en": "stir fried basil and hot peppers with ground pork over rice",
 						}
@@ -357,7 +360,7 @@ angular.module('sf.services', ['jsonRpc'])
 				{
 					"lexeme": {"thipa": "phàt siiʔ ǐw mǔu"},
 					"senses": [{
-						"meaning": {
+						"definition": {
 					"th": "ผัดชีอิ้วหมู",
 					"en": "Noodles fried in soy sauce with pork",
 					}}],
@@ -366,7 +369,7 @@ angular.module('sf.services', ['jsonRpc'])
 				{
 					"lexeme": {"thipa": "kài phàt métmàmùaŋ"},
 					"senses": [{
-						"meaning": {
+						"definition": {
 							"th": "ไก่ผัดเม็ดมะม่วง",
 							"en": "Stir fried chicken with cashews",
 						}
@@ -376,7 +379,7 @@ angular.module('sf.services', ['jsonRpc'])
 				{
 					"lexeme": {"thipa": "cèt khǔnsʉ̀k phàt phrìk phǎw"},
 					"senses": [{
-						"meaning": {
+						"definition": {
 							"th": "เจ็ดขุนศึกผัดผริกเผา",
 							"en": "seven kinds of meat fried and seared with peppers",
 						}
@@ -386,7 +389,7 @@ angular.module('sf.services', ['jsonRpc'])
 				{
 					"lexeme": {"thipa": "phàt prîaw wǎan kài"},
 					"senses": [{
-						"meaning": {
+						"definition": {
 							"th": "ผัดเปรี้ยวหวานหมู",
 							"en": "Sweet and sour chicken",
 						}
@@ -395,9 +398,10 @@ angular.module('sf.services', ['jsonRpc'])
 
 				{
 					"lexeme": {"thipa": "phàt thai kûŋ"},
-					"senses": [{"meaning": {
-						"th": "ผักไทกุ้ง",
-						"en": "Fried noodles mixed or wrapped with egg and bamboo shoots topped with shrimp",
+					"senses": [{
+						"definition": {
+							"th": "ผักไทกุ้ง",
+							"en": "Fried noodles mixed or wrapped with egg and bamboo shoots topped with shrimp",
 						}
 					}],
 				},
@@ -405,7 +409,7 @@ angular.module('sf.services', ['jsonRpc'])
 				{
 					"lexeme": {"thipa": "khâaw khài ciaw mǔu yɔ̂ɔ"},
 					"senses": [{
-						"meaning": {
+						"definition": {
 							"th": "ข้าวไข่เจียหมูยอ",
 							"en": "fried omelette with pork over rice",
 						}
@@ -415,7 +419,7 @@ angular.module('sf.services', ['jsonRpc'])
 				{
 					"lexeme": {"thipa": "khâaw phàt mǔu"},
 					"senses": [{
-						"meaning": {
+						"definition": {
 							"th": "ข้าวผัดหมู",
 							"en": "Fried rice with minced pork",
 						}
@@ -425,7 +429,7 @@ angular.module('sf.services', ['jsonRpc'])
 				{
 					"lexeme": {"thipa": "nɔ̀máay fàràŋ phàt kûŋ"},
 					"senses": [{
-						"meaning": {
+						"definition": {
 							"th": "หน่อไม้ฝรั่งผัดกุ้ง",
 							"en": "Sauteed asparagus with shrimp over rice",
 						}
@@ -435,7 +439,7 @@ angular.module('sf.services', ['jsonRpc'])
 				{
 					"lexeme": {"thipa": "kài sòt kràthiam"},
 					"senses": [{
-						"meaning": {
+						"definition": {
 							"th": "ไก่สกกระเกียม",
 							"en": "stir fried garlic chicken over rice",
 						}
@@ -581,16 +585,25 @@ angular.module('sf.services', ['jsonRpc'])
 		
 		this.getPageDto = function(projectId, callback) {
 			var list = [];
-			var ws = config.entry.definitions.lexeme.writingsystems[0];
+			var ws = config.entry.fields.lexeme.writingsystems[0];
 			serverIter(function(i,e) {
 				var title = e.lexeme[ws];
 				if (!title) {
 					title = '[new word]';
 				}
-				list.push({id: e.id, title: title});
+				list.push({id: e.id, title: title, entry: e});
 			});
 			(callback || angular.noop)({data: { entries: list, config: config }});
 		};
 		
+		// --- BEGIN TEST CODE ---
+		// Set up sample data when service first created
+		// (This will be removed once a real server is available)
+		for (var _idx = 0; _idx < sampleData.length; _idx++) {
+			var entry = sampleData[_idx];
+			this.update('sampleProject', entry);
+		};
+		this.saveNow('sampleProject');
+		// --- END TEST CODE ---
 	})
 	;

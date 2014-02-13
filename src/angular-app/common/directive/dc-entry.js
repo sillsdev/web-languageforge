@@ -36,7 +36,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 				$scope.getSenseTitle = function(sense) {
 					var title = "[new meaning]";
 					if (sense && sense.definition && $scope.config.entry) {
-						var definitionWritingSystem = $scope.config.entry.definitions.senses.definitions.definition.writingsystems[0];
+						var definitionWritingSystem = $scope.config.entry.fields.senses.fields.definition.writingsystems[0];
 						if (sense.definition[definitionWritingSystem]) {
 							title = sense.definition[definitionWritingSystem];
 						}

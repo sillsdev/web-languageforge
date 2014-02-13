@@ -2,7 +2,7 @@
     <div ng-repeat="ws in definition.writingsystems" class="control-group">
         <label ng-if="$first" class="control-label">{{definition.label}}</label>
         <div class="controls">
-            <input width="{{definition.width}}" type="text" ng-model="model[ws]"/><span title="unknown" class="wsid">{{ws}}</span>
+            <input ng-disabled="{{definition.readonly}}" width="{{definition.width}}" type="text" ng-model="model[ws]"/><span title="unknown" class="wsid">{{ws}}</span>
         </div>
     </div>
 </form>
