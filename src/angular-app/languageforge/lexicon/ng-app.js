@@ -7,6 +7,7 @@ angular.module('lexicon',
 		 'dbe',
 		 'meaning',
 		 'examples',
+		 'lexicon.add-meanings',
 		 'settings'
 		])
 	.config(['$routeProvider', function($routeProvider) {
@@ -49,6 +50,12 @@ angular.module('lexicon',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/add-examples.html',
 					controller: 'examplesCtrl',
+				}
+			);
+		$routeProvider.when(
+				'/add-meanings',
+				{
+					templateUrl: '/angular-app/languageforge/lexicon/views/add-meanings.html',
 				}
 			);
 		$routeProvider.when(
