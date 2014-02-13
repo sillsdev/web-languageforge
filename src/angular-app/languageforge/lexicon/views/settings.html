@@ -9,7 +9,7 @@
 			<fieldset>
 			<legend>Show the following fields:</legend>
 			<ul class="unstyled">
-  				<li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in config.entry.fieldNames"><div class="checkbox"><input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list}}</div></li>
+				<li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in config.entry.fieldNames"><div class="checkbox"><input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list}}</div></li>
 			</ul>
 			</fieldset>
 			
@@ -20,7 +20,7 @@
 		<div class="span8">
 			<form data-ng-submit="" name="setupForm">
 			<fieldset>
-				<legend>Setup</legend>
+				<legend>Setup for "selected field"</legend>
 				<div class="well">
 					<div>
 						<label>Name for display <input type="text" data-ng-model="unknown"/></label>
@@ -31,12 +31,15 @@
 					<div class="well">
 						<label>Writing System</label>
 						<ul class="unstyled">
-			  				<li data-ng-click="selectList(writingSystemId)" data-ng-repeat="(writingSystemId, writingSystem) in config.writingsystems.map"><div class="checkbox"><input data-ng-model="currentListsEnabled[writingSystemId]" type="checkbox"/>{{writingSystem}}</div></li>
+							<li data-ng-click="selectList(writingSystemId)" data-ng-repeat="(writingSystemId, writingSystem) in config.writingsystems.map"><div class="checkbox"><input data-ng-model="currentListsEnabled[writingSystemId]" type="checkbox"/>{{writingSystem}}</div></li>
 						</ul>
 					</div>
 					<button class="btn" data-ng-click="editWritingSystemsCollapsed != editWritingSystemsCollapsed"><i class="icon-pencil"></i>Edit writing systems</button>
 					<a data-ng-show="true" href="" data-ng-click="editWritingSystems()">Edit writing systems</a>
-					<div data-collapse="false" data-ng-include="'/angular-app/languageforge/lexicon/views/writing-systems.html'">
+					<div data-collapse="false" style="background-color:white;">
+						<legend>Edit Writing Systems</legend>
+						<div data-ng-include="'/angular-app/languageforge/lexicon/views/writing-systems.html'">
+						</div>
 					</div>
 				</div>
 				<button class="btn btn-small" type="submit" data-ng-show="false"><i class="icon-ok"></i>Save</button>
@@ -46,5 +49,54 @@
 		</div>
 	</tab>
 	<tab heading="Tasks">
+		<div class="row">
+		<div class="span4">
+			<fieldset>
+			<legend>Show the following tasks:</legend>
+			<ul class="unstyled">
+				<li><div class="control-group">
+					<label>Dashboard</label>
+					<div class="controls">
+						<label class="checkbox"><input type="checkbox" data-ng-model="unknown"> Dashboard</label>
+					</div>
+				</div></li>
+				<li><div class="control-group">
+					<label>Dictionary</label>
+					<div class="controls">
+						<label class="checkbox"><input type="checkbox" data-ng-model="unknown"> Dictionary Browse &amp Edit</label>
+					</div>
+				</div></li>
+				<li><div class="control-group">
+					<label>Add Information</label>
+					<div class="controls">
+						<label class="checkbox"><input type="checkbox" data-ng-model="unknown"> Add Meanings</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="unknown"> Add Parts of Speech</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="unknown"> Add Example Sentences</label>
+					</div>
+				</div></li>
+				<li><div class="control-group">
+					<label>Gather Words</label>
+					<div class="controls">
+						<label class="checkbox"><input type="checkbox" data-ng-model="unknown"> From Texts</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="unknown"> From a Word List</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="unknown"> From Semantic Domains</label>
+					</div>
+				</div></li>
+				<li><div class="control-group">
+					<label>Settings</label>
+					<div class="controls">
+						<label class="checkbox"><input type="checkbox" data-ng-model="unknown"> Settings</label>
+					</div>
+				</div></li>
+				<li><div class="control-group">
+					<label>Review</label>
+					<div class="controls">
+						<label class="checkbox"><input type="checkbox" data-ng-model="unknown"> Review</label>
+					</div>
+				</div></li>
+			</ul>
+			</fieldset>
+		</div>
+	</div>
 	</tab>
 </tabset>
