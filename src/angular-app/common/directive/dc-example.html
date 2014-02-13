@@ -1,12 +1,12 @@
 <div class="dc-example">
     <div class="deleteX pull-right"><i ng-click="remove(index)" title="Delete Example Sentence" class="icon-remove"></i></div>
-    <div ng-repeat="field in config.fields">
-        <ng-switch on="config.definitions[field].type">
+    <div ng-repeat="field in config.fieldNames">
+        <ng-switch on="config.fields[field].type">
             <div ng-switch-when="multitext">
-                <dc-multitext definition="config.definitions[field]" model="model[field]"></multitext>
+                <dc-multitext definition="config.fields[field]" model="model[field]"></multitext>
             </div>
             <div ng-switch-default>
-                unsupported type {{config.definitions[field].type}} for field {{field}}
+                unsupported type {{config.fields[field].type}} for field {{field}}
             </div>
         </ng-switch>
     </div>
