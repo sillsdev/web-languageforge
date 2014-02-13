@@ -22,7 +22,7 @@
 						<tbody>
 							<tr ng-class="{selected: itemIsSelected(item), even: $even, odd: $odd}"
 							    class="animate-repeat" ng-repeat="item in visibleItems | filter:searchText">
-								<td ng-click="selectItem(item)">{{getEntryName(item)}}</td>
+								<td ng-click="saveEntry(); selectItem(item)">{{getEntryName(item)}}</td>
 							</tr>
 						</tbody>
 					</table>
