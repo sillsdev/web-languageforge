@@ -5,40 +5,56 @@ angular.module('lexicon',
 		[
 		 'ngRoute',
 		 'dbe',
+		 'meaning',
+		 'examples',
 		 'settings'
 		])
 	.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when(
 				'/view',
 				{
-					templateUrl: '/angular-app/scriptureforge/lexicon/views/not-implemented.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html',
 					// controller: 'dbeCtrl'
 				}
 			);
 		$routeProvider.when(
 				'/dashboard',
 				{
-					templateUrl: '/angular-app/scriptureforge/lexicon/views/not-implemented.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html',
 					// controller: 'dashboardCtrl'
 				}
 			);
 		$routeProvider.when(
 				'/gather-words',
 				{
-					templateUrl: '/angular-app/scriptureforge/lexicon/views/not-implemented.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html',
 				}
 			);
 		$routeProvider.when(
 				'/dbe',
 				{
-					templateUrl: '/angular-app/scriptureforge/lexicon/views/dbe.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/dbe.html',
 					controller: 'dbeCtrl'
+				}
+			);
+		$routeProvider.when(
+				'/add-grammar',
+				{
+					templateUrl: '/angular-app/languageforge/lexicon/views/add-grammar.html',
+					controller: 'grammarCtrl',
+				}
+			);
+		$routeProvider.when(
+				'/add-examples',
+				{
+					templateUrl: '/angular-app/languageforge/lexicon/views/add-examples.html',
+					controller: 'examplesCtrl',
 				}
 			);
 		$routeProvider.when(
 				'/settings',
 				{
-					templateUrl: '/angular-app/scriptureforge/lexicon/views/settings.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/settings.html',
 					controller: 'SettingsCtrl'
 				}
 			);
@@ -83,7 +99,7 @@ angular.module('lexicon',
 			if ($scope.hidePromise) {
 				$timeout.cancel($scope.hidePromise);
 			}
-		}
+		};
 		$scope.iconName = function(submenuId) {
 			var name = 'icon-chevron-';
 			if ($scope.isSubmenuVisible(submenuId)) {
@@ -92,6 +108,6 @@ angular.module('lexicon',
 				name += 'down';
 			};
 			return name;
-		}
+		};
 	}])
 	;

@@ -121,7 +121,7 @@ function dbeCtrl($scope, userService, sessionService, lexService, $window, $time
 		entry = entry || $scope.currentEntry;
 		var title = "[new word]";
 		if (entry.lexeme && $scope.config && $scope.config.entry) {
-			var lexemeWritingSystem = $scope.config.entry.definitions.lexeme.writingsystems[0];
+			var lexemeWritingSystem = $scope.config.entry.fields.lexeme.writingsystems[0];
 			if (entry.lexeme[lexemeWritingSystem]) {
 				title = entry.lexeme[lexemeWritingSystem];
 			}
