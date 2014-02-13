@@ -12,7 +12,7 @@ class App extends Secure_base {
 		if (!file_exists($appFolder)) {
 			$appFolder = "angular-app/account/$app";
 			if (!file_exists($appFolder)) {
-				show_404(); // this terminates PHP
+				show_404($this->site); // this terminates PHP
 			}
 		}
 	

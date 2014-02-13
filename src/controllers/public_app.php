@@ -12,7 +12,7 @@ class Public_app extends Base {
 		if (!file_exists($appFolder)) {
 			$appFolder = "angular-app/account/public/$app";
 			if (!file_exists($appFolder)) {
-				show_404(); // this terminates PHP
+				show_404($this->site); // this terminates PHP
 			}
 		}
 

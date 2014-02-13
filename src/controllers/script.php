@@ -15,7 +15,7 @@ class Script extends Secure_base {
 	
 	public function view($folder = '', $script = '') {
 		if ( ! file_exists("libraries/scripts/$folder/$script.php")) {
-			show_404();
+			show_404($this->site);
 		} else {
 			$userId = (string)$this->session->userdata('user_id');
 			if (! RightsHelper::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT)) {

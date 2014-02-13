@@ -259,7 +259,7 @@ class Auth extends Base {
 	{
 		if (!$code)
 		{
-			show_404();
+			show_404($this->site);
 		}
 
 		$user = $this->ion_auth->forgotten_password_check($code);

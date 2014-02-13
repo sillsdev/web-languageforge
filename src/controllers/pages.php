@@ -10,7 +10,7 @@ class Pages extends Base {
 		$data['is_static_page'] = true;
 		$templatePath = $this->getProjectTemplatePath("pages/$page");
 		if (empty($templatePath)) {
-			show_404();
+			show_404($this->site);
 		} else {
 			$this->renderPage("pages/$page", $data);
 		}
