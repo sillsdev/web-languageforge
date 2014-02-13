@@ -1,0 +1,46 @@
+<form class="form-horizontal">
+	<legend>Edit Writing Systems</legend>
+	<div class="control-group">
+		<button class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>New</button>
+		<div class="btn-group">
+			<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">More <span class="caret"></span></a>
+			<ul class="dropdown-menu">
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for ws</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for ws</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of ws</a></li>
+				<li class="divider"></li>
+				<li><a tabindex="-1" href="#"><i class="icon-remove"></i> Remove ws</a></li>
+			</ul>
+		</div>
+	</div>
+	<br />
+	<div class="span2 control-group">
+		<ul class="unstyled">
+ 			<li data-ng-click="selectList(writingSystemId)" data-ng-repeat="(writingSystemId, writingSystem) in config.writingsystems.map">{{writingSystem}}</li>
+		</ul>
+	</div>
+	<div class="span4 well">
+		<div class="control-group">
+			<label class="control-label" for="abbrev">Abbreviation</label>
+		    <div class="controls">
+		      <input type="text" id="abbrev" data-ng-model="unknown">
+		    </div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="special">Special</label>
+		    <div class="controls">
+		      <select class="form-control" id="special" data-ng-model="special"><option></option></select>
+		    </div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="purpose">Purpose</label>
+		    <div class="controls">
+		      <select class="form-control" id="purpose" data-ng-model="special"><option></option></select>
+		    </div>
+		</div>
+		<div class="control-group">
+			<button class="btn" data-ng-click="saveWritingSystems()"><i class="icon-ok"></i>Save</button>
+		</div>
+	</div>
+</form>
+	
