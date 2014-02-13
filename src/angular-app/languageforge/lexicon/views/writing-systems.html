@@ -1,5 +1,5 @@
 <form class="form-horizontal">
-	<legend>Edit Writing Systems</legend>
+	<!-- control buttons -->
 	<div class="control-group">
 		<button class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>New</button>
 		<div class="btn-group">
@@ -14,32 +14,47 @@
 		</div>
 	</div>
 	<br />
-	<div class="span2 control-group">
-		<ul class="unstyled">
- 			<li data-ng-click="selectList(writingSystemId)" data-ng-repeat="(writingSystemId, writingSystem) in config.writingsystems.map">{{writingSystem}}</li>
-		</ul>
-	</div>
-	<div class="span4 well">
-		<div class="control-group">
-			<label class="control-label" for="abbrev">Abbreviation</label>
-		    <div class="controls">
-		      <input type="text" id="abbrev" data-ng-model="unknown">
-		    </div>
+	
+	<div class="row-fluid">
+		<!-- Left column: writing system list -->
+		<div class="span3 control-group">
+			<ul class="unstyled">
+				<li data-ng-click="selectList(writingSystemId)" data-ng-repeat="(writingSystemId, writingSystem) in config.writingsystems.map">{{writingSystem}}</li>
+			</ul>
 		</div>
-		<div class="control-group">
-			<label class="control-label" for="special">Special</label>
-		    <div class="controls">
-		      <select class="form-control" id="special" data-ng-model="special"><option></option></select>
-		    </div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="purpose">Purpose</label>
-		    <div class="controls">
-		      <select class="form-control" id="purpose" data-ng-model="special"><option></option></select>
-		    </div>
-		</div>
-		<div class="control-group">
-			<button class="btn" data-ng-click="saveWritingSystems()"><i class="icon-ok"></i>Save</button>
+		
+		<!-- Right column: writing system settings -->
+		<div class="span9 well">
+			<div class="control-group">
+				<label class="control-label" for="abbrev">Abbreviation</label>
+				<div class="controls controls-row">
+					<input type="text" id="abbrev" data-ng-model="unknown">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="special">Special</label>
+				<div class="controls">
+					<select class="form-control" id="special" data-ng-model="special">
+						<option>none</option>
+						<option>IPA transcription</option>
+						<option>Voice</option>
+						<option>Script / Region / Variant</option>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="purpose">Purpose</label>
+				<div class="controls">
+					<select class="form-control" id="purpose" data-ng-model="purpose">
+						<option>unspecified</option>
+						<option>Etic (raw phonetic transcription)</option>
+						<option>Emic (uses the phonology of the language)</option>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<button class="btn" data-ng-click="saveWritingSystems()"><i class="icon-ok"></i>Save</button>
+			</div>
 		</div>
 	</div>
 </form>
