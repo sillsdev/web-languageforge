@@ -1,7 +1,6 @@
 'use strict';
 
 function examplesCtrl($scope, userService, sessionService, lexService, $window, $timeout) {
-	console.log('Entering examplesCtrl controller function');
 	var projectId = 'sampleProject';
 	$scope.items = [];
 	$scope.visibleEntries = [];
@@ -11,7 +10,6 @@ function examplesCtrl($scope, userService, sessionService, lexService, $window, 
 
 	$scope.getPageDto = function(callback) {
 		lexService.getPageDto(projectId, function(result) {
-			console.log('getPageDto() returned:', result);
 			$scope.items = result.data.entries;  // Items is a list of {id: 3, title: "foo", entry: (full entry)} objects
 			// $scope.config = result.data.config; // Can't just do this because we need to modify our local copy
 			$scope.config = angular.copy(result.data.config);
@@ -103,7 +101,6 @@ function examplesCtrl($scope, userService, sessionService, lexService, $window, 
 	};
 
 	$scope.updateListWithEntry = function(entry) {
-		console.log('Updating list with', entry);
 		var index = $scope.getItemIndexById(entry.id);
 		if (angular.isUndefined(index)) {
 			// New items go to start of list
@@ -117,7 +114,6 @@ function examplesCtrl($scope, userService, sessionService, lexService, $window, 
 	$scope.saveEntry = function() {
 		if ($scope.entryLoaded() && $scope.currentEntryIsDirty()) {
 			lexService.update(projectId, $scope.pageData.currentEntry, function(result) {
-				console.log('Callback from update() with:', result);
 				$scope.updateListWithEntry(result.data);
 				$scope.selectEntry(result.data);
 			});
@@ -126,7 +122,6 @@ function examplesCtrl($scope, userService, sessionService, lexService, $window, 
 
 	// run this when the page loads
 	$scope.getPageDto();
-	console.log('In examplesCtrl, finishing');
 	
 };
 
