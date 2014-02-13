@@ -40,5 +40,5 @@ angular.module('palaso.ui.textdrop', [])
 				reader.readAsText(file);
 			});
 		}
-	}
+	};
 });

@@ -49,7 +49,7 @@ angular.module('activity',
 					
 				}
 			}
-		}
+		};
 		activityService.list_activity(0, 50, function(result) {
 			if (result.ok) {
 				$scope.activities = [];
