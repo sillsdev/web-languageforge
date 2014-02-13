@@ -53,7 +53,7 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
 						sliceEnd = $scope.itemsPerPage;
 					}
 					$scope.visibleItems = $scope.items.slice(sliceStart, sliceEnd);
-				}
+				};
 				this.updatePages = function() {
 					$scope.noOfPages = Math.ceil($scope.items.length / $scope.itemsPerPage);
 					if ($scope.currentPage > $scope.noOfPages) {
@@ -63,7 +63,7 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
 					if ($scope.currentPage < 1) {
 						$scope.currentPage = 1;
 					}
-				}
+				};
 				this.query = function() {
 					$scope.search();
 					this.updatePages();
@@ -83,7 +83,7 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
 				scope.$watch('items', function() {
 					controller.updatePages();
 					controller.updateVisibleItems();
-				}, true)
+				}, true);
 				controller.query();
 			}
 		};

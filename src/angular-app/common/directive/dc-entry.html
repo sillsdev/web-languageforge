@@ -1,7 +1,7 @@
 <div class="dc-entry">
-    <dc-multitext definition="config.entry.definitions.lexeme" model="model.lexeme"></dc-multitext>
+    <dc-multitext definition="config.entry.fields.lexeme" model="model.lexeme"></dc-multitext>
     <div class="addItem"><a ng-click="addSense()">Add Meaning</a></div>
     <div class="animate-repeat" ng-repeat="sense in model.senses">
-        <dc-sense remove="deleteSense" index="$index" config="config.entry.definitions.senses" model="sense"></dc-sense>
+        <dc-sense remove="deleteSense" index="$index" config="config.entry.fields.senses" model="sense"></dc-sense>
     </div>
 </div>
