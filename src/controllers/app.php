@@ -48,6 +48,9 @@ class App extends Secure_base {
 		$data['jsProjectFiles'] = array();
 		self::addJavascriptFiles($appFolder, $data['jsProjectFiles']);
 			
+		$data['cssCommonFiles'] = array();
+		self::addCssFiles("angular-app/common/css", $data['cssCommonFiles']);
+
 		$data['title'] = $this->site;
 		
 		$this->renderPage("angular-app", $data);
@@ -84,16 +87,31 @@ class App extends Secure_base {
 	}
 	
 	private static function addJavascriptFiles($dir, &$result) {
+		self::addFiles('js', $dir, $result);
+	}
+
+	private static function addCssFiles($dir, &$result) {
+		self::addFiles('css', $dir, $result);
+	}
+
+	private static function addFiles($ext, $dir, &$result) {
 		if (($handle = opendir($dir))) {
 			while ($file = readdir($handle)) {
 				if (is_file($dir . '/' . $file)) {
-					$base = self::basename($file);
-					$isMin = (strpos($base, '-min') !== false) || (strpos($base, '.min') !== false);
-					if (!$isMin && self::ext($file) == 'js') {
-						$result[] = $dir . '/' . $file;
+					if ($ext == 'js') {
+						/* For Javascript, check that file is not minified */
+						$base = self::basename($file);
+						$isMin = (strpos($base, '-min') !== false) || (strpos($base, '.min') !== false);
+						if (!$isMin && self::ext($file) == $ext) {
+							$result[] = $dir . '/' . $file;
+						}
+					} else {
+						if (self::ext($file) == $ext) {
+							$result[] = $dir . '/' . $file;
+						}
 					}
 				} elseif ($file != '..' && $file != '.') {
-					self::addJavascriptFiles($dir . '/' . $file, $result);
+					self::addFiles($ext, $dir . '/' . $file, $result);
 				}
 			}
 			closedir($handle);
