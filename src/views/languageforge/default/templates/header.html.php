@@ -21,7 +21,7 @@
 								-->
 								<li><a href="#">Jamaica Project 2</a></li>
 								<li><a href="#">Jamaica Project 3</a></li>
-								<?php foreach($all_projects as $project): ?>
+								<?php foreach($featuredProjects as $project): ?>
 											<li><a href="<?php echo "/app/project/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
 								<?php endforeach;?>
 							</ul>
