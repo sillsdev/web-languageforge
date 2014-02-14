@@ -48,7 +48,7 @@ class Base extends CI_Controller {
 			}
 			*/
 		}
-		$this->project = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
+		$this->project = Website::getProjectThemeNameFromDomain($_SERVER['HTTP_HOST']);
 		$this->site = Website::getSiteName();
 	}
 	

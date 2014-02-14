@@ -12,22 +12,38 @@ use models\mapper\MongoStore;
 use models\mapper\ReferenceList;
 use models\mapper\Id;
 
-require_once(APPPATH . '/models/ProjectModel.php');
 
-
+/**
+ * List of projects of which a user is a member
+ * 
+ */
 class ProjectList_UserModel extends \models\mapper\MapperListModel
 {
 
-	public function __construct($userId)
-	{
-		parent::__construct(
-				ProjectModelMongoMapper::instance(),
-				array('users.' . $userId => array('$exists' => true)),
-				array('projectname')
-		);
+	public function __construct() {
+		parent::__construct(ProjectModelMongoMapper::instance());
 	}
+	
+	/**
+	 * Reads all projects
+	 */
+	function readAll() {
+		$query = array();
+		$fields = array('projectname');
+		return $this->_mapper->readList($this, $query, $fields);
+	}
+	
+	/**
+	 * Reads all projects in which the given $userId is a member.
+	 * @param string $userId
+	 */
+	function readUserProjects($userId) {
+		$query = array('users.' . $userId => array('$exists' => true));
+		$fields = array('projectname');
+		return $this->_mapper->readList($this, $query, $fields);
+	}
+	
 
 }
-
 
 ?>

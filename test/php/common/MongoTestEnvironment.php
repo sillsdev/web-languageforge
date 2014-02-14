@@ -62,17 +62,21 @@ class MongoTestEnvironment
 	 * @param string $name
 	 * @return ProjectModel
 	 */
-	public function createProject($name) {
+	public function createProject($name, $site = 'scriptureforge') {
 		$projectModel = new models\ProjectModel();
 		$projectModel->projectname = $name;
+		$projectModel->siteName = $site;
+		$projectModel->themeName = 'default';
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;
 	}
 	
-	public function createProjectSettings($name) {
+	public function createProjectSettings($name, $site = 'scriptureforge') {
 		$projectModel = new models\ProjectSettingsModel();
 		$projectModel->projectname = $name;
+		$projectModel->siteName = $site;
+		$projectModel->themeName = 'default';
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;

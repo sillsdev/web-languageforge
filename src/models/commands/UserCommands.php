@@ -2,6 +2,8 @@
 
 namespace models\commands;
 
+use libraries\Website;
+
 use libraries\palaso\exceptions\UserUnauthorizedException;
 
 use libraries\palaso\CodeGuard;
@@ -212,6 +214,7 @@ class UserCommands
 		}
 		
 		$projectCode = ProjectModel::domainToProjectCode($httpHost);
+		$site = Website::getSiteName($httpHost);
 
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
@@ -248,7 +251,7 @@ class UserCommands
 			}
 		}
 
-		Communicate::sendSignup($user, $project, $delivery);
+		Communicate::sendSignup($user, $site, $project, $delivery);
 		
 		return $userId;
 	}
@@ -294,7 +297,7 @@ class UserCommands
 			return $userId;
 		} else {
 				$projectCode = ProjectModel::domainToProjectCode($hostName);
-			if ($projectCode == 'scriptureforge') {
+			if ($projectCode == '') {
 				throw new \Exception("Sending an invitation without a project context is not supported.");
 			} else {
 				throw new \Exception("Cannot send invitation for unknown project '$projectCode'");
