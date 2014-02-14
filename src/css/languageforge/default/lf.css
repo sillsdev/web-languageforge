@@ -842,6 +842,21 @@ div#comments table.comments td {
 	border-bottom: 1px solid #eee;
 }
 
+div.picklists {
+	border-top: 1px solid #E3E3E3;
+}
+div.picklists li {
+	cursor: pointer;
+	padding-left: 5px;
+	border-bottom: 1px solid #E3E3E3;
+}
+div.picklists li:hover {
+	background-color: #EEE;
+}
+div.picklists li.selected {
+	background-color: #DDD;
+}
+
 /* New Item under ribbon bar */
 div.new-item form {
 	margin: 20px 0 0 0;

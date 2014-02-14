@@ -7,30 +7,30 @@
 				More <span class="caret"></span>
 			</a>
 			<ul class="dropdown-menu">
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for 'ws'</a></li>
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for 'ws'</a></li>
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of 'ws'</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for {{config.writingsystems.map[currentWritingSystemId]}}</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for {{config.writingsystems.map[currentWritingSystemId]}}</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of {{config.writingsystems.map[currentWritingSystemId]}}</a></li>
 				<li class="divider"></li>
-				<li><a tabindex="-1" href="#"><i class="icon-remove"></i> Remove 'ws'</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-remove"></i> Remove {{config.writingsystems.map[currentWritingSystemId]}}</a></li>
 			</ul>
 		</div>
 	</div>
 	
 	<div class="row-fluid">
 		<!-- Left column: writing system list -->
-		<div class="span3 control-group">
+		<div class="span3 control-group picklists">
 			<ul class="unstyled">
-				<li data-ng-click="selectList(writingSystemId)" data-ng-repeat="(writingSystemId, writingSystem) in config.writingsystems.map">{{writingSystem}}</li>
+				<li data-ng-click="selectWritingSystem(writingSystemId)" data-ng-repeat="(writingSystemId, writingSystem) in config.writingsystems.map" data-ng-class="{selected:currentWritingSystemId == writingSystemId}">{{writingSystem}}</li>
 			</ul>
 		</div>
 		
 		<!-- Right column: writing system setup -->
 		<div class="span9 well">
-			<h3>{{config.writingsystems.map[currentListId]}}</h3>
+			<h3>{{config.writingsystems.map[currentWritingSystemId]}}</h3>
 			<div class="control-group">
 				<label class="control-label" for="abbrev">Abbreviation</label>
 				<div class="controls">
-					<input type="text" id="abbrev" data-ng-model="currentListId">
+					<input type="text" id="abbrev" data-ng-model="currentWritingSystemId">
 				</div>
 			</div>
 			<div class="control-group">
