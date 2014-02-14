@@ -18,26 +18,6 @@ use models\sms\SmsSettings;
 
 require_once(APPPATH . '/models/ProjectModel.php');
 
-class ProjectModelMongoMapper extends \models\mapper\MongoMapper
-{
-	public static function instance()
-	{
-		static $instance = null;
-		if (null === $instance)
-		{
-			$instance = new ProjectModelMongoMapper(SF_DATABASE, 'projects');
-		}
-		return $instance;
-	}
-	
-	public function drop($databaseName) {
-		if (MongoStore::hasDB($databaseName)) {
-			$db = MongoStore::connect($databaseName);
-			$db->drop();
-		}
-	}
-}
-
 class ProjectModel extends \models\mapper\MapperModel
 {
 	
@@ -251,56 +231,6 @@ class ProjectSettingsModel extends ProjectModel
 	 * @var EmailSettings
 	 */
 	public $emailSettings;
-
-}
-
-/**
- * 
- * List of projects in the system
- *
- */
-class ProjectListModel extends \models\mapper\MapperListModel
-{
-	public function __construct()
-	{
-		parent::__construct(
-			ProjectModelMongoMapper::instance(),
-			array(),
-			array('projectname', 'language')
-		);
-	}
-}
-
-/**
- * List of projects of which a user is a member
- * 
- */
-class ProjectList_UserModel extends \models\mapper\MapperListModel
-{
-
-	public function __construct() {
-		parent::__construct(ProjectModelMongoMapper::instance());
-	}
-	
-	/**
-	 * Reads all projects
-	 */
-	function readAll() {
-		$query = array();
-		$fields = array('projectname');
-		return $this->_mapper->readList($this, $query, $fields);
-	}
-	
-	/**
-	 * Reads all projects in which the given $userId is a member.
-	 * @param string $userId
-	 */
-	function readUserProjects($userId) {
-		$query = array('users.' . $userId => array('$exists' => true));
-		$fields = array('projectname');
-		return $this->_mapper->readList($this, $query, $fields);
-	}
-	
 
 }
 
