@@ -1,7 +1,7 @@
 <?php
-use libraries\lfdictionary\dashboardtool\DashboardToolFactory;
-use libraries\lfdictionary\dashboardtool\DashboardDbType;
-use libraries\lfdictionary\dashboardtool\ActivityFieldType;
+use libraries\languageforge\lfdictionary\dashboardtool\DashboardToolFactory;
+use libraries\languageforge\lfdictionary\dashboardtool\DashboardDbType;
+use libraries\languageforge\lfdictionary\dashboardtool\ActivityFieldType;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

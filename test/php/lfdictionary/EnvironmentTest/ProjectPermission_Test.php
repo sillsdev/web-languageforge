@@ -1,5 +1,5 @@
 <?php 
-use libraries\lfdictionary\environment\ProjectPermission;
+use libraries\languageforge\lfdictionary\environment\ProjectPermission;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

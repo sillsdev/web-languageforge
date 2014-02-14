@@ -1,11 +1,11 @@
 <?php
-use libraries\lfdictionary\environment\MissingInfoType;
-use libraries\lfdictionary\store\LexStoreController;
-use libraries\lfdictionary\store\LexStoreType;
-use libraries\lfdictionary\dto\EntryDTO;
-use libraries\lfdictionary\dto\Sense;
-use libraries\lfdictionary\dto\Example;
-use libraries\lfdictionary\dto\MultiText;
+use libraries\languageforge\lfdictionary\environment\MissingInfoType;
+use libraries\languageforge\lfdictionary\store\LexStoreController;
+use libraries\languageforge\lfdictionary\store\LexStoreType;
+use libraries\languageforge\lfdictionary\dto\EntryDTO;
+use libraries\languageforge\lfdictionary\dto\Sense;
+use libraries\languageforge\lfdictionary\dto\Example;
+use libraries\languageforge\lfdictionary\dto\MultiText;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');
@@ -257,18 +257,18 @@ class TestOfLexStore extends UnitTestCase {
 	version="0.13"
 	producer="WeSay 1.0.0.0">
 	<entry
-		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		id="chuÌ€uchiÌ€i muÌŒu rÉ”Ì‚É”p_dd15cbc4-9085-4d66-af3d-8428f078a7da"
 		dateCreated="2008-11-03T06:17:24Z"
 		dateModified="2009-10-12T04:05:40Z"
 		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
 		<lexical-unit>
 			<form
 				lang="th-fonipa">
-				<text>chùuchìi mǔu krɔ̂ɔp</text>
+				<text>chuÌ€uchiÌ€i muÌŒu krÉ”Ì‚É”p</text>
 			</form>
 			<form
 				lang="th">
-				<text>ฉู่ฉี่หมูรอบ</text>
+				<text>à¸‰à¸¹à¹ˆà¸‰à¸µà¹ˆà¸«à¸¡à¸¹à¸£à¸­à¸š</text>
 			</form>
 		</lexical-unit>
 	</entry>
@@ -280,11 +280,11 @@ class TestOfLexStore extends UnitTestCase {
 		<lexical-unit>
 			<form
 				lang="th-fonipa">
-				<text>khâaw kài thɔ̂ɔt</text>
+				<text>khaÌ‚aw kaÌ€i thÉ”Ì‚É”t</text>
 			</form>
 			<form
 				lang="th">
-				<text>ข้าวไก่ทอด</text>
+				<text>à¸‚à¹‰à¸²à¸§à¹„à¸�à¹ˆà¸—à¸­à¸”</text>
 			</form>
 		</lexical-unit>
 	</entry>

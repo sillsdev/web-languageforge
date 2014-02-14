@@ -1,5 +1,5 @@
 <?php
-use libraries\lfdictionary\commands\GetDomainTreeListCommand;
+use libraries\languageforge\lfdictionary\commands\GetDomainTreeListCommand;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');

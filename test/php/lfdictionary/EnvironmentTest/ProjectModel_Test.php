@@ -1,8 +1,8 @@
 <?php
 use models\ProjectModel;
-use libraries\lfdictionary\environment\EnvironmentMapper;
-use libraries\lfdictionary\environment\ProjectRole;
-use libraries\lfdictionary\environment\ProjectPermission;
+use libraries\languageforge\lfdictionary\environment\EnvironmentMapper;
+use libraries\languageforge\lfdictionary\environment\ProjectRole;
+use libraries\languageforge\lfdictionary\environment\ProjectPermission;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

@@ -1,15 +1,15 @@
 <?php
 
-use libraries\Website;
+use libraries\shared\Website;
 
 use models\commands\MessageCommands;
 
-use libraries\palaso\exceptions\UserNotAuthenticatedException;
-use libraries\palaso\exceptions\UserUnauthorizedException;
-use libraries\palaso\CodeGuard;
-use libraries\palaso\JsonRpcServer;
-use libraries\sfchecks\Communicate;
-use libraries\sfchecks\Email;
+use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
+use libraries\shared\palaso\exceptions\UserUnauthorizedException;
+use libraries\shared\palaso\CodeGuard;
+use libraries\shared\palaso\JsonRpcServer;
+use libraries\scriptureforge\sfchecks\Communicate;
+use libraries\scriptureforge\sfchecks\Email;
 use models\commands\ActivityCommands;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;

@@ -1,7 +1,7 @@
 <?php
 
 
-use libraries\Website;
+use libraries\shared\Website;
 
 use models\ProjectListModel;
 use models\FeaturedProjectListModel;

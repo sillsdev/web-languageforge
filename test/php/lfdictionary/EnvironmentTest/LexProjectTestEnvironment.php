@@ -1,7 +1,7 @@
 <?php
-use libraries\lfdictionary\environment\LexProject;
+use libraries\languageforge\lfdictionary\environment\LexProject;
 
-use libraries\lfdictionary\common\HgWrapper;
+use libraries\languageforge\lfdictionary\common\HgWrapper;
 use models\ProjectModel;
 class LexProjectTestEnvironment {
 	

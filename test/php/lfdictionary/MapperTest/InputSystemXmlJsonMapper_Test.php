@@ -1,5 +1,5 @@
 <?php
-use \libraries\lfdictionary\mapper\InputSystemXmlJsonMapper;
+use \libraries\languageforge\lfdictionary\mapper\InputSystemXmlJsonMapper;
 
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');

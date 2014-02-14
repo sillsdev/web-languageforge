@@ -1,6 +1,6 @@
 <?php
-use \libraries\lfdictionary\environment\LexProject;
-use \libraries\lfdictionary\mapper\FieldSettingXmlJsonMapper;
+use \libraries\languageforge\lfdictionary\environment\LexProject;
+use \libraries\languageforge\lfdictionary\mapper\FieldSettingXmlJsonMapper;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

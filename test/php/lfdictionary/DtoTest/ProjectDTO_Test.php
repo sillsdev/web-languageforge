@@ -1,6 +1,6 @@
 <?php
-use \libraries\lfdictionary\dto\ProjectDTO;
-use \libraries\lfdictionary\dto\ProjectListDTO;
+use \libraries\languageforge\lfdictionary\dto\ProjectDTO;
+use \libraries\languageforge\lfdictionary\dto\ProjectListDTO;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

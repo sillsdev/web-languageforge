@@ -1,5 +1,5 @@
 <?php
-use libraries\lfdictionary\commands\GatherWordCommand;
+use libraries\languageforge\lfdictionary\commands\GatherWordCommand;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');

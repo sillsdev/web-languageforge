@@ -1,7 +1,7 @@
 <?php
 namespace models;
 
-use libraries\palaso\CodeGuard;
+use libraries\shared\palaso\CodeGuard;
 
 class ProjectModelFixer
 {

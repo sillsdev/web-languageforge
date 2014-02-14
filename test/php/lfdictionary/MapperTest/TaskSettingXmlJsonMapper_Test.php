@@ -1,6 +1,6 @@
 <?php
-use libraries\lfdictionary\environment\LexiconProjectEnvironment;
-use libraries\lfdictionary\mapper\TaskSettingXmlJsonMapper;
+use libraries\languageforge\lfdictionary\environment\LexiconProjectEnvironment;
+use libraries\languageforge\lfdictionary\mapper\TaskSettingXmlJsonMapper;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

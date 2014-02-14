@@ -1,7 +1,7 @@
 <?php
-use libraries\lfdictionary\commands\GetSettingUserFieldsSettingCommand;
+use libraries\languageforge\lfdictionary\commands\GetSettingUserFieldsSettingCommand;
 
-use libraries\lfdictionary\commands\UpdateSettingUserFieldsSettingCommand;
+use libraries\languageforge\lfdictionary\commands\UpdateSettingUserFieldsSettingCommand;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');

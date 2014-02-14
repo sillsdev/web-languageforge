@@ -1,5 +1,5 @@
 <?php
-use \libraries\lfdictionary\dto\DomainTreeDTO;
+use \libraries\languageforge\lfdictionary\dto\DomainTreeDTO;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

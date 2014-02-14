@@ -1,6 +1,6 @@
 <?php
 
-use libraries\sfchecks\IDelivery;
+use libraries\scriptureforge\sfchecks\IDelivery;
 use models\commands\UserCommands;
 use models\ProjectModel;
 use models\mapper\JsonDecoder;

@@ -1,5 +1,5 @@
 <?php
-use libraries\lfdictionary\store\LiftScanner;
+use libraries\languageforge\lfdictionary\store\LiftScanner;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

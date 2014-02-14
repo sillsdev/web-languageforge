@@ -1,8 +1,8 @@
 <?php
-use libraries\lfdictionary\commands\GetSettingUserTasksSettingCommand;
+use libraries\languageforge\lfdictionary\commands\GetSettingUserTasksSettingCommand;
 
-use libraries\lfdictionary\commands\UpdateSettingUserTasksSettingCommand;
-use libraries\lfdictionary\environment\LexProject;
+use libraries\languageforge\lfdictionary\commands\UpdateSettingUserTasksSettingCommand;
+use libraries\languageforge\lfdictionary\environment\LexProject;
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 require_once(dirname(__FILE__) . '/../MockObject/LexProjectMockObject.php');

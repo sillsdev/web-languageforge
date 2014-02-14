@@ -23,7 +23,7 @@ class Script extends Secure_base {
 			} else {
 				try {
 					$data = array();
-					$classname = "libraries\scripts\\$folder\\$script"; 
+					$classname = "libraries\shared\scripts\\$folder\\$script"; 
 
 					$script = new $classname;
 					$data['output'] = $script->run();
