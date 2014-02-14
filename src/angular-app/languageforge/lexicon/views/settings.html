@@ -13,11 +13,13 @@
 		<div class="span4">
 			<fieldset>
 			<legend>Show the following fields:</legend>
+			<div class="picklists">
 			<ul class="unstyled">
-				<li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in config.entry.fieldNames">
-					<div class="checkbox"><input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list}}</div>
+				<li data-ng-click="selectField(fielId)" data-ng-repeat="(fielId, field) in config.entry.fieldNames" data-ng-class="{selected:currentFieldId == fielId}">
+					<div class="checkbox"><input data-ng-model="currentListsEnabled[fielId]" type="checkbox"/>{{field}}</div>
 				</li>
 			</ul>
+			</div>
 			</fieldset>
 			
 			<br />
@@ -79,7 +81,7 @@
 				<dt>Dictionary</dt>
 				<dd>
 					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" data-ng-model="show.task.dbe"> Dictionary Browse &amp Edit</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="show.task.dbe"> Dictionary Browse &amp; Edit</label>
 					</div></div>
 				</dd>
 				<dt>Add Information</dt>
