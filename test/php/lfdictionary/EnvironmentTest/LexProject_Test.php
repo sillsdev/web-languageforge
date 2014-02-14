@@ -1,16 +1,16 @@
 <?php
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once 'LexProjectTestEnvironment.php';
-use libraries\lfdictionary\environment\ProjectStates;
+use libraries\languageforge\lfdictionary\environment\ProjectStates;
 
-use libraries\lfdictionary\environment\ProjectState;
+use libraries\languageforge\lfdictionary\environment\ProjectState;
 
 use models\ProjectModel;
 
 require_once(SIMPLETEST_PATH . 'autorun.php');
 require_once(LF_BASE_PATH . "Loader.php");
 
-use libraries\lfdictionary\environment\LexProject;
+use libraries\languageforge\lfdictionary\environment\LexProject;
 class TestOfLexProject extends UnitTestCase {
 
 	function testConstructor_NormalizedProjectPath() {

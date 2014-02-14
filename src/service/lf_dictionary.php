@@ -1,23 +1,23 @@
 <?php
-use libraries\lfdictionary\store\LexStoreType;
-use libraries\lfdictionary\store\LexStoreController;
-use libraries\lfdictionary\environment\ProjectStates;
-use libraries\lfdictionary\common\AsyncRunner;
-use libraries\lfdictionary\common\LoggerFactory;
-use libraries\lfdictionary\common\UserActionDeniedException;
-use libraries\lfdictionary\dashboardtool\HistoricalHgDataFetcher;
-use libraries\lfdictionary\dto\ListDTO;
-use libraries\lfdictionary\dto\ProjectStateDTO;
-use libraries\lfdictionary\dto\ResultDTO;
-use libraries\lfdictionary\dto\UserDTO;
-use libraries\lfdictionary\dto\UserListDTO;
-use libraries\lfdictionary\environment\LanguageDepotImporter;
-use libraries\lfdictionary\environment\EnvironmentMapper;
-use libraries\lfdictionary\environment\LexProject;
-use libraries\lfdictionary\environment\ProjectState;
-use libraries\lfdictionary\store\LexStoreMissingInfo;
-use libraries\lfdictionary\store\LexStore;
-use libraries\palaso\CodeGuard;
+use libraries\languageforge\lfdictionary\store\LexStoreType;
+use libraries\languageforge\lfdictionary\store\LexStoreController;
+use libraries\languageforge\lfdictionary\environment\ProjectStates;
+use libraries\languageforge\lfdictionary\common\AsyncRunner;
+use libraries\languageforge\lfdictionary\common\LoggerFactory;
+use libraries\languageforge\lfdictionary\common\UserActionDeniedException;
+use libraries\languageforge\lfdictionary\dashboardtool\HistoricalHgDataFetcher;
+use libraries\languageforge\lfdictionary\dto\ListDTO;
+use libraries\languageforge\lfdictionary\dto\ProjectStateDTO;
+use libraries\languageforge\lfdictionary\dto\ResultDTO;
+use libraries\languageforge\lfdictionary\dto\UserDTO;
+use libraries\languageforge\lfdictionary\dto\UserListDTO;
+use libraries\languageforge\lfdictionary\environment\LanguageDepotImporter;
+use libraries\languageforge\lfdictionary\environment\EnvironmentMapper;
+use libraries\languageforge\lfdictionary\environment\LexProject;
+use libraries\languageforge\lfdictionary\environment\ProjectState;
+use libraries\languageforge\lfdictionary\store\LexStoreMissingInfo;
+use libraries\languageforge\lfdictionary\store\LexStore;
+use libraries\shared\palaso\CodeGuard;
 use models\mapper\JsonDecoder;
 use models\UserModel;
 use models\ProjectModel;
@@ -62,7 +62,7 @@ class LfDictionary {
 	 */
 	private $_userModel;
 	public function __construct($controller) {
-		\libraries\lfdictionary\common\ErrorHandler::register ();
+		\libraries\languageforge\lfdictionary\common\ErrorHandler::register ();
 		$this->_userId = ( string ) $controller->session->userdata ( 'user_id' );
 		$this->_projectId = null;
 		
@@ -153,12 +153,12 @@ class LfDictionary {
 		foreach ( $result->_senses as $sense ) {
 			
 			if (! (isset ( $sense->_id ) && strlen ( trim ( $sense->_id ) ) > 0)) {
-				$sense->_id = \libraries\lfdictionary\common\UUIDGenerate::uuid_generate_php ();
+				$sense->_id = \libraries\languageforge\lfdictionary\common\UUIDGenerate::uuid_generate_php ();
 			}
 			// Example Level
 			foreach ( $sense->_examples as $example ) {
 				if (! (isset ( $example->_id ) && strlen ( trim ( $example->_id ) ) > 0)) {
-					$example->_id = \libraries\lfdictionary\common\UUIDGenerate::uuid_generate_php ();
+					$example->_id = \libraries\languageforge\lfdictionary\common\UUIDGenerate::uuid_generate_php ();
 				}
 			}
 		}
@@ -173,7 +173,7 @@ class LfDictionary {
 	 *
 	 * @param string $guid        	
 	 * @param string $mercurialSHA        	
-	 * @throws \libraries\lfdictionary\common\UserActionDeniedException
+	 * @throws \libraries\languageforge\lfdictionary\common\UserActionDeniedException
 	 * @return ResultDTO
 	 */
 	function deleteEntry($guid, $mercurialSHA) {
@@ -196,7 +196,7 @@ class LfDictionary {
 	 *
 	 * @param EntryDTO $entry        	
 	 * @param string $action        	
-	 * @throws \libraries\lfdictionary\common\UserActionDeniedException
+	 * @throws \libraries\languageforge\lfdictionary\common\UserActionDeniedException
 	 * @return ResultDTO
 	 */
 	function saveEntry($entry, $action) {
@@ -208,7 +208,7 @@ class LfDictionary {
 		}
 		// Save Entry
 		$rawEntry = json_decode ( $entry, true );
-		$entryDto = \libraries\lfdictionary\dto\EntryDTO::createFromArray ( $rawEntry );
+		$entryDto = \libraries\languageforge\lfdictionary\dto\EntryDTO::createFromArray ( $rawEntry );
 		$store = $this->getLexStore ();
 		$store->writeEntry ( $entryDto, $action, $this->_userModel->id, $this->_userModel->username );
 	
@@ -250,7 +250,7 @@ class LfDictionary {
 			LoggerFactory::getLogger ()->logDebugMessage ( $uploadedBinFile );
 			$fileHandler = fopen ( $uploadedBinFile, 'r' );
 			if (! $fileHandler) {
-				throw new \libraries\lfdictionary\common\UserActionDeniedException ( 'File upload failed.' );
+				throw new \libraries\languageforge\lfdictionary\common\UserActionDeniedException ( 'File upload failed.' );
 			}
 			if (filesize ( $uploadedBinFile ) == 0) {
 				$result = new ResultDTO ( false, 0 );
@@ -260,7 +260,7 @@ class LfDictionary {
 			fclose ( $fileHandler );
 			unlink ( $uploadedBinFile );
 			// format conversion
-			$words = \libraries\lfdictionary\common\TextFormatHelper::convertToUTF8String ( $fileData );
+			$words = \libraries\languageforge\lfdictionary\common\TextFormatHelper::convertToUTF8String ( $fileData );
 		}
 		$existWords = array ();
 		$wordEntries = $existWordsList ['entries'];
@@ -274,7 +274,7 @@ class LfDictionary {
 			}
 		}
 		
-		$command = new \libraries\lfdictionary\commands\GatherWordCommand ( $this->_lexProject->getLiftFilePath (), $languageCode, $existWords, $words, $this->getLexStore () );
+		$command = new \libraries\languageforge\lfdictionary\commands\GatherWordCommand ( $this->_lexProject->getLiftFilePath (), $languageCode, $existWords, $words, $this->getLexStore () );
 		
 		$result = new ResultDTO ( true, $command->execute () );
 		return $result->encode ();
@@ -288,7 +288,7 @@ class LfDictionary {
 		// read all exist words from DB
 		$existWordListDto = $store->readEntriesAsListDTO ( 0, PHP_INT_MAX );
 		
-		$command = new \libraries\lfdictionary\commands\GetWordListFromWordPackCommand ( $existWordListDto, $wordPackFile );
+		$command = new \libraries\languageforge\lfdictionary\commands\GetWordListFromWordPackCommand ( $existWordListDto, $wordPackFile );
 		$result = $command->execute ();
 		return $result->encode ();
 	}
@@ -296,21 +296,21 @@ class LfDictionary {
 		$this->isReadyOrThrow ();
 		
 		$wordPackFile = LEXICON_WORD_LIST_SOURCE . LEXICON_WORD_PACK_FILE_NAME;
-		$command = new \libraries\lfdictionary\commands\GetWordCommand ( $wordPackFile, $guid );
+		$command = new \libraries\languageforge\lfdictionary\commands\GetWordCommand ( $wordPackFile, $guid );
 		$result = $command->execute ();
 		return $result->encode ();
 	}
 	function getDomainTreeList() {
 		$this->isReadyOrThrow ();
 		
-		$command = new \libraries\lfdictionary\commands\GetDomainTreeListCommand ( \libraries\lfdictionary\environment\LexProject::locateSemanticDomainFilePath ( 'en' ), 'en' );
+		$command = new \libraries\languageforge\lfdictionary\commands\GetDomainTreeListCommand ( \libraries\languageforge\lfdictionary\environment\LexProject::locateSemanticDomainFilePath ( 'en' ), 'en' );
 		$result = $command->execute ();
 		return $result->encode ();
 	}
 	function getDomainQuestion($guid) {
 		$this->isReadyOrThrow ();
 		
-		$command = new \libraries\lfdictionary\commands\GetDomainQuestionCommand ( \libraries\lfdictionary\environment\LexProject::locateSemanticDomainFilePath ( 'en' ), 'en', $guid );
+		$command = new \libraries\languageforge\lfdictionary\commands\GetDomainQuestionCommand ( \libraries\languageforge\lfdictionary\environment\LexProject::locateSemanticDomainFilePath ( 'en' ), 'en', $guid );
 		$result = $command->execute ();
 		return $result->encode ();
 	}
@@ -318,7 +318,7 @@ class LfDictionary {
 		$this->isReadyOrThrow ();
 		
 		$chorusNotesFilePath = $this->_lexProject->getChorusNotesFilePath ();
-		$command = new \libraries\lfdictionary\commands\GetCommentsCommand ( $chorusNotesFilePath, $messageStatus, $messageType, $startIndex, $limits, $isRecentChanges );
+		$command = new \libraries\languageforge\lfdictionary\commands\GetCommentsCommand ( $chorusNotesFilePath, $messageStatus, $messageType, $startIndex, $limits, $isRecentChanges );
 		$result = $command->execute ();
 		return $result->encode ();
 	}
@@ -329,19 +329,19 @@ class LfDictionary {
 		$now = new DateTime ();
 		$w3cDateString = $now->format ( DateTime::W3C );
 		$messageType = 0;
-		$command = new \libraries\lfdictionary\commands\SaveCommentsCommand ( $chorusNotesFilePath, $messageStatus, $isStatusReviewed, $isStatusTodo, $messageType, $parentGuid, $commentMessage, $w3cDateString, $this->_userModel->username, $isRootMessage );
+		$command = new \libraries\languageforge\lfdictionary\commands\SaveCommentsCommand ( $chorusNotesFilePath, $messageStatus, $isStatusReviewed, $isStatusTodo, $messageType, $parentGuid, $commentMessage, $w3cDateString, $this->_userModel->username, $isRootMessage );
 		$result = $command->execute ();
 		return $result->encode ();
 	}
 	function getDashboardData($actRange) {
 		$this->isReadyOrThrow ();
 		
-		$command = new \libraries\lfdictionary\commands\GetDashboardDataCommand ( $this->getLexStore (), $this->_projectId, $this->_lexProject->getLiftFilePath (), $actRange );
+		$command = new \libraries\languageforge\lfdictionary\commands\GetDashboardDataCommand ( $this->getLexStore (), $this->_projectId, $this->_lexProject->getLiftFilePath (), $actRange );
 		$result = $command->execute ();
 		return $result->encode ();
 	}
 	function getDashboardUpdateRunning() {
-		$command = new \libraries\lfdictionary\commands\UpdateDashboardCommand ( $this->_projectId, $this->_projectModel, $this->_lexProject );
+		$command = new \libraries\languageforge\lfdictionary\commands\UpdateDashboardCommand ( $this->_projectId, $this->_projectModel, $this->_lexProject );
 		$result = new ResultDTO ( true, strval ( $command->execute () ) );
 		return $result->encode ();
 	}
@@ -351,7 +351,7 @@ class LfDictionary {
 		// so all user name will save in lowercase
 		$strName = $userModel->username;
 		$strName = mb_strtolower ( $strName, mb_detect_encoding ( $strName ) );
-		$command = new \libraries\lfdictionary\commands\GetSettingUserFieldsSettingCommand ( $this->_lexProject, $strName );
+		$command = new \libraries\languageforge\lfdictionary\commands\GetSettingUserFieldsSettingCommand ( $this->_lexProject, $strName );
 		$result = $command->execute ();
 		return $result;
 	}
@@ -361,7 +361,7 @@ class LfDictionary {
 		// so all user name will save in lowercase
 		$strName = $userModel->username;
 		$strName = mb_strtolower ( $strName, mb_detect_encoding ( $strName ) );
-		$command = new \libraries\lfdictionary\commands\GetSettingUserTasksSettingCommand ( $this->_lexProject, $strName );
+		$command = new \libraries\languageforge\lfdictionary\commands\GetSettingUserTasksSettingCommand ( $this->_lexProject, $strName );
 		$result = $command->execute ();
 		return $result;
 	}
@@ -392,7 +392,7 @@ class LfDictionary {
 			// apply to special user
 			$userNames [] = $this->getUserNameById ( $userIds );
 		}
-		$command = new \libraries\lfdictionary\commands\UpdateSettingUserTasksSettingCommand ( $this->_lexProject, $userNames, $tasks );
+		$command = new \libraries\languageforge\lfdictionary\commands\UpdateSettingUserTasksSettingCommand ( $this->_lexProject, $userNames, $tasks );
 		$result = $command->execute ();
 		return $result;
 	}
@@ -414,7 +414,7 @@ class LfDictionary {
 			// apply to special user
 			$userNames [] = $this->getUserNameById ( $userIds );
 		}
-		$command = new \libraries\lfdictionary\commands\UpdateSettingUserFieldsSettingCommand ( $this->_lexProject, $userNames, $fields );
+		$command = new \libraries\languageforge\lfdictionary\commands\UpdateSettingUserFieldsSettingCommand ( $this->_lexProject, $userNames, $fields );
 		$result = $command->execute ();
 		return $result;
 	}
@@ -510,7 +510,7 @@ class LfDictionary {
 		
 		$this->_lexProject->projectState->setState ( ProjectStates::Importing, "Importing from LanguageDepot" );
 		
-		$importer = new \libraries\lfdictionary\environment\LanguageDepotImporter ( $this->_projectId );
+		$importer = new \libraries\languageforge\lfdictionary\environment\LanguageDepotImporter ( $this->_projectId );
 		$importer->cloneRepository ( $user, $password, $soruceURI );
 		$importer->importContinue ( $this->_lexProject->projectState );
 		return $this->state ();
@@ -524,7 +524,7 @@ class LfDictionary {
 		$currentState = $this->_lexProject->projectState->getState ();
 		$progress = 0;
 		switch ($currentState) {
-			case \libraries\lfdictionary\environment\ProjectStates::Importing :
+			case \libraries\languageforge\lfdictionary\environment\ProjectStates::Importing :
 				$importer = new \environment\LanguageDepotImporter ( $this->_projectId );
 				$importer->importContinue ( $this->_lexProject->projectState );
 				$progress = $importer->progress ();
@@ -532,7 +532,7 @@ class LfDictionary {
 		}
 		$state = $this->_lexProject->projectState->getState ();
 		$message = $this->_lexProject->projectState->getMessage ();
-		$dto = new \libraries\lfdictionary\dto\ProjectStateDTO ( $state, $message );
+		$dto = new \libraries\languageforge\lfdictionary\dto\ProjectStateDTO ( $state, $message );
 		$dto->Progress = $progress;
 		return $dto->encode ();
 	}
@@ -558,7 +558,7 @@ class LfDictionary {
 	
 	// Reviewed This can stay here
 	function getSettingInputSystems() {
-		$command = new \libraries\lfdictionary\commands\GetSettingInputSystemsCommand ( $this->_lexProject );
+		$command = new \libraries\languageforge\lfdictionary\commands\GetSettingInputSystemsCommand ( $this->_lexProject );
 		$result = $command->execute ();
 		return $result;
 	}
@@ -567,7 +567,7 @@ class LfDictionary {
 	function updateSettingInputSystems($inputSystems) {
 		// don't use rawurldecode here, because it does not decode "+" -> " "
 		$inputSystems = urldecode ( $inputSystems );
-		$command = new \libraries\lfdictionary\commands\UpdateSettingInputSystemsCommand ( $this->_lexProject, $inputSystems );
+		$command = new \libraries\languageforge\lfdictionary\commands\UpdateSettingInputSystemsCommand ( $this->_lexProject, $inputSystems );
 		$command->execute ();
 		return $this->getSettingInputSystems ();
 	}
@@ -601,7 +601,7 @@ class LfDictionary {
 		$this->isReadyOrThrow ();
 		$store = $this->getLexStore ();
 		$wordCount = $store->entryCount ();
-		$result = new \libraries\lfdictionary\dto\ResultDTO ( true, strval ( $wordCount ) );
+		$result = new \libraries\languageforge\lfdictionary\dto\ResultDTO ( true, strval ( $wordCount ) );
 		return $result->encode ();
 	}
 	public function depot_begin_import($model) {		

@@ -1,6 +1,6 @@
 <?php
 
-use \libraries\lfdictionary\dto\UserDTO;
+use \libraries\languageforge\lfdictionary\dto\UserDTO;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');
@@ -18,7 +18,7 @@ class TestOfUserDTO extends UnitTestCase {
 	function testUserListDTOEncode_ReturnsCorrectJson() {
 		$userDTO = new UserDTO(new UserModelMockObject());
 		$userDTO->setUserRole("admin");
-		$userListDTO = new \libraries\lfdictionary\dto\UserListDTO();
+		$userListDTO = new \libraries\languageforge\lfdictionary\dto\UserListDTO();
 		$userListDTO->addListUser($userDTO);
 		$result = json_encode($userListDTO->encode());
 		

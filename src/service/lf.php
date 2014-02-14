@@ -1,6 +1,6 @@
 <?php
 
-use libraries\lfdictionary\dto\ResultDTO;
+use libraries\languageforge\lfdictionary\dto\ResultDTO;
 use models\UserModel;
 
 use models\dto\ProjectSettingsDto;
@@ -10,8 +10,8 @@ use models\commands\ActivityCommands;
 use models\AnswerModel;
 use models\QuestionModel;
 
-use libraries\palaso\CodeGuard;
-use libraries\palaso\JsonRpcServer;
+use libraries\shared\palaso\CodeGuard;
+use libraries\shared\palaso\JsonRpcServer;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
 use models\commands\UserCommands;

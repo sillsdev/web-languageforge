@@ -4,7 +4,7 @@ namespace models;
 
 use models\mapper\ArrayOf;
 
-use libraries\palaso\CodeGuard;
+use libraries\shared\palaso\CodeGuard;
 use models\rights\Realm;
 use models\rights\Roles;
 use models\rights\ProjectRoleModel;

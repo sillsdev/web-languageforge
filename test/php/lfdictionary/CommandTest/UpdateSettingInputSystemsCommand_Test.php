@@ -1,7 +1,7 @@
 <?php
-use libraries\lfdictionary\commands\GetSettingInputSystemsCommand;
+use libraries\languageforge\lfdictionary\commands\GetSettingInputSystemsCommand;
 
-use libraries\lfdictionary\commands\UpdateSettingInputSystemsCommand;
+use libraries\languageforge\lfdictionary\commands\UpdateSettingInputSystemsCommand;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');

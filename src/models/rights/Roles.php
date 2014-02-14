@@ -1,7 +1,7 @@
 <?php
 namespace models\rights;
 
-use libraries\palaso\CodeGuard;
+use libraries\shared\palaso\CodeGuard;
 class Roles {
 	
 	const SYSTEM_ADMIN	= 'system_admin';

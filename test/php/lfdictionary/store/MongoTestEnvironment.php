@@ -1,10 +1,10 @@
 <?php
 
-use libraries\lfdictionary\store\mongo\MongoLexStore;
-use libraries\lfdictionary\dto\MultiText;
-use libraries\lfdictionary\dto\EntryDTO;
-use libraries\lfdictionary\dto\Sense;
-use libraries\lfdictionary\dto\Example;
+use libraries\languageforge\lfdictionary\store\mongo\MongoLexStore;
+use libraries\languageforge\lfdictionary\dto\MultiText;
+use libraries\languageforge\lfdictionary\dto\EntryDTO;
+use libraries\languageforge\lfdictionary\dto\Sense;
+use libraries\languageforge\lfdictionary\dto\Example;
 
 class MongoTestEnvironment {
 

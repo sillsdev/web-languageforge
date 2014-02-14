@@ -1,13 +1,13 @@
 <?php
-use libraries\lfdictionary\commands\GetDashboardDataCommand;
+use libraries\languageforge\lfdictionary\commands\GetDashboardDataCommand;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
 require_once(DicTestPath . 'CommandTest/LiftTestEnvironment.php');
 
-use \libraries\lfdictionary\common\DataConnector;
-use \libraries\lfdictionary\common\DataConnection;
+use \libraries\languageforge\lfdictionary\common\DataConnector;
+use \libraries\languageforge\lfdictionary\common\DataConnection;
 
 class TestOfGetDashboardDataCommand extends UnitTestCase {
 

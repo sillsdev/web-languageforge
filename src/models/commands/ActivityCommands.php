@@ -237,12 +237,12 @@ class ActivityCommands
 		foreach ( $result->_senses as $sense ) {
 	
 			if (! (isset ( $sense->_id ) && strlen ( trim ( $sense->_id ) ) > 0)) {
-				$sense->_id = \libraries\lfdictionary\common\UUIDGenerate::uuid_generate_php ();
+				$sense->_id = \libraries\languageforge\lfdictionary\common\UUIDGenerate::uuid_generate_php ();
 			}
 			// Example Level
 			foreach ( $sense->_examples as $example ) {
 				if (! (isset ( $example->_id ) && strlen ( trim ( $example->_id ) ) > 0)) {
-					$example->_id = \libraries\lfdictionary\common\UUIDGenerate::uuid_generate_php ();
+					$example->_id = \libraries\languageforge\lfdictionary\common\UUIDGenerate::uuid_generate_php ();
 				}
 			}
 		}

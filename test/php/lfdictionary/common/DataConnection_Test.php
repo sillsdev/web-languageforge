@@ -7,11 +7,11 @@ class TestOfDataConnection extends UnitTestCase {
 
 	function testConstructor_BogusConnection_Throws() {
 		$this->expectException('\Exception');
-		$d = new \libraries\lfdictionary\common\DataConnection('bogus', 'bogus', 'bogus');
+		$d = new \libraries\languageforge\lfdictionary\common\DataConnection('bogus', 'bogus', 'bogus');
 	}
 	
 	function testConstructor_lfweb_NoThrow() {
-		$d = new \libraries\lfdictionary\common\DataConnection(DB_NAME, DB_USER, DB_PASS);
+		$d = new \libraries\languageforge\lfdictionary\common\DataConnection(DB_NAME, DB_USER, DB_PASS);
 		$this->assertIsA($d->mysqli, 'mysqli');
 	}
 	
