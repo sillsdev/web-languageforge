@@ -1,6 +1,6 @@
 <?php
 
-use models\dto\ProjectListDto;
+use models\shared\dto\ProjectListDto;
 use models\TextModel;
 use models\UserModel;
 use models\rights\Roles;

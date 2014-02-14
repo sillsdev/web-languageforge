@@ -1,6 +1,6 @@
 <?php
 
-namespace models\dto;
+namespace models\scriptureforge\dto;
 
 class BreadCrumbHelper
 {

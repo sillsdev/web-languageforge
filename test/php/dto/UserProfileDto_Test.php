@@ -1,6 +1,6 @@
 <?php
 
-use models\dto\UserProfileDto;
+use models\shared\dto\UserProfileDto;
 use models\ProjectUserProfile;
 use models\rights\Roles;
 use models\UserProfileModel;

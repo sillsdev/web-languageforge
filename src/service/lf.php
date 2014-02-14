@@ -5,7 +5,7 @@ use models\UserModel;
 
 use models\dto\ProjectSettingsDto;
 use models\ProjectModel;
-use models\dto\ActivityListDto;
+use models\shared\dto\ActivityListDto;
 use models\commands\ActivityCommands;
 use models\AnswerModel;
 use models\QuestionModel;
@@ -183,8 +183,8 @@ class Lf
 	
 	public function project_list_dto() {
 		// Eventually this will need to get the current user id and do:
-		//return \models\dto\ProjectListDto::encode($userId);
-		return \models\dto\ProjectListDto::encode();
+		//return \models\shared\dto\ProjectListDto::encode($userId);
+		return \models\shared\dto\ProjectListDto::encode();
 	}
 	
 	public function project_readUser($projectId, $userId) {
@@ -336,7 +336,7 @@ class Lf
 	//---------------------------------------------------------------
 
 	public function activity_list_dto() {
-		return \models\dto\ActivityListDto::getActivityForUser($this->_userId);
+		return \models\shared\dto\ActivityListDto::getActivityForUser($this->_userId);
 	}
 	
 }

@@ -4,7 +4,7 @@ namespace models\commands;
 
 use models\ProjectModel;
 use models\TextModel;
-use models\dto\UsxTrimHelper;
+use models\scriptureforge\dto\UsxTrimHelper;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
 use models\commands\ActivityCommands;

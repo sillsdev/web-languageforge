@@ -4,7 +4,7 @@ use models\rights\Domain;
 
 use models\rights\Operation;
 
-use models\dto\RightsHelper;
+use models\shared\dto\RightsHelper;
 
 use models\rights\Realm;
 use models\rights\Roles;
