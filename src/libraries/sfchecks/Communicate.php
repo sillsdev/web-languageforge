@@ -43,10 +43,10 @@ class CommunicateHelper
 			$options = array();
 		} else {
 			$options = array(
-					'cache' => APPPATH . '/cache',
+					'cache' => APPPATH . 'cache',
 			);
 		}
-		$loader = new \Twig_Loader_Filesystem(APPPATH . '/views');
+		$loader = new \Twig_Loader_Filesystem(APPPATH . 'views');
 		$twig = new \Twig_Environment($loader, $options);
 		$template = $twig->loadTemplate($fileName);
 		return $template;
@@ -62,7 +62,7 @@ class CommunicateHelper
 			$options = array();
 		} else {
 			$options = array(
-					'cache' => APPPATH . '/cache',
+					'cache' => APPPATH . 'cache',
 			);
 		}
 		$loader = new \Twig_Loader_String();
@@ -188,10 +188,11 @@ class Communicate
 	/**
 	 * Send an email to validate a user when they sign up.
 	 * @param UserModelBase $userModel
+	 * @param string $site - e.g. scriptureforge || languageforge
 	 * @param ProjectModel $projectModel
 	 * @param IDelivery $delivery
 	 */
-	public static function sendSignup($userModel, $projectModel = null, IDelivery $delivery = null) {
+	public static function sendSignup($userModel, $site, $projectModel = null, IDelivery $delivery = null) {
 		$userModel->setValidation(7);
 		$userModel->write();
 		if (is_null($projectModel)) { 
@@ -202,9 +203,10 @@ class Communicate
 					'user' => $userModel,
 					'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/validate/' . $userModel->validationKey,
 			);
-			$t = CommunicateHelper::templateFromFile('email/en/SignupValidate.html');
+			$t = CommunicateHelper::templateFromFile("$site/default/email/en/SignupValidate.html");
 		} else {
-			// project in scope, signup to project on ScriptureForge
+			// project in scope, signup to project on site
+			$projectTheme = $projectModel->themeName;
 			$from = array(SF_DEFAULT_EMAIL => $projectModel->projectname . ' on ' . SF_DEFAULT_EMAIL_NAME);
 			$subject = $projectModel->projectname . ' project on ScriptureForge account validation';
 			$vars = array(
@@ -212,7 +214,7 @@ class Communicate
 					'project' => $projectModel,
 					'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/validate/' . $userModel->validationKey,
 			);
-			$t = CommunicateHelper::templateFromFile('email/en/SignupWithProjectValidate.html');
+			$t = CommunicateHelper::templateFromFile("$site/$projectTheme/email/en/SignupWithProjectValidate.html");
 		}
 		$html = $t->render($vars);
 
@@ -240,7 +242,7 @@ class Communicate
 			'project' => $projectModel,
 			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/registration#/?v=' . $toUserModel->validationKey,
 		);
-		$t = CommunicateHelper::templateFromFile('email/en/InvitationValidate.html');
+		$t = CommunicateHelper::templateFromFile($projectModel->siteName . '/' . $projectModel->themeName . "/email/en/InvitationValidate.html");
 		$html = $t->render($vars);
 
 		CommunicateHelper::deliverEmail(
@@ -267,7 +269,7 @@ class Communicate
 				'newUserPassword' => $newUserPassword,
 				'project' => $projectModel,
 		);
-		$t = CommunicateHelper::templateFromFile('email/en/NewUserInProject.html');
+		$t = CommunicateHelper::templateFromFile($projectModel->siteName . '/' . $projectModel->themeName . '/email/en/NewUserInProject.html');
 		$html = $t->render($vars);
 	
 		CommunicateHelper::deliverEmail(

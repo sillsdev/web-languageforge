@@ -1,5 +1,7 @@
 <?php
 
+use libraries\Website;
+
 use models\MessageModel;
 
 use models\UnreadMessageModel;
@@ -99,7 +101,7 @@ class TestCommunicate extends UnitTestCase {
 		$project = null;
 		$delivery = new MockCommunicateDelivery();
 		
-		Communicate::sendSignup($user, $project, $delivery);
+		Communicate::sendSignup($user, Website::SCRIPTUREFORGE, $project, $delivery);
 		
 		// What's in the delivery?
 		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
@@ -120,7 +122,7 @@ class TestCommunicate extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$delivery = new MockCommunicateDelivery();
 		
-		Communicate::sendSignup($user, $project, $delivery);
+		Communicate::sendSignup($user, Website::SCRIPTUREFORGE, $project, $delivery);
 		
 		// What's in the delivery?
 		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);

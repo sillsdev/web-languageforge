@@ -12,7 +12,7 @@ use models\mapper\MongoStore;
 use models\mapper\ReferenceList;
 use models\mapper\Id;
 
-require_once(APPPATH . '/models/ProjectModel.php');
+require_once(APPPATH . 'models/ProjectModel.php');
 
 class ProjectModelMongoMapper extends \models\mapper\MongoMapper
 {
@@ -21,7 +21,7 @@ class ProjectModelMongoMapper extends \models\mapper\MongoMapper
 		static $instance = null;
 		if (null === $instance)
 		{
-			$instance = new ProjectModelMongoMapper(LF_DATABASE, 'projects');
+			$instance = new ProjectModelMongoMapper(SF_DATABASE, 'projects');
 		}
 		return $instance;
 	}

@@ -244,7 +244,7 @@ class LfDictionary {
 		if (strlen ( trim ( $filename ) ) > 3) {
 			LoggerFactory::getLogger ()->logDebugMessage ( $filename );
 			// it is from uploaded file.
-			$uploadedFolder = APPPATH . '/service/fileUploader/files/';
+			$uploadedFolder = APPPATH . 'service/fileUploader/files/';
 			$uploadedBinFile = $uploadedFolder . "/" . $filename;
 			// read everything from uploaded file
 			LoggerFactory::getLogger ()->logDebugMessage ( $uploadedBinFile );
