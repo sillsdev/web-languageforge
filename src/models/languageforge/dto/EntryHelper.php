@@ -1,6 +1,6 @@
 <?php
 
-namespace models\dto;
+namespace models\languageforge\dto;
 
 class EntryHelper {
 	private $_entry;

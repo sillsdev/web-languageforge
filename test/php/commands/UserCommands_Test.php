@@ -5,7 +5,7 @@ use models\commands\UserCommands;
 use models\ProjectModel;
 use models\mapper\JsonDecoder;
 use models\UserModel;
-use models\dto\CreateSimpleDto;
+use models\shared\dto\CreateSimpleDto;
 use models\mapper\Id;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');

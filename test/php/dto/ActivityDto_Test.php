@@ -4,9 +4,9 @@
 use models\rights\Roles;
 
 use models\commands\ActivityCommands;
-use models\dto\ActivityListDto;
+use models\shared\dto\ActivityListDto;
 use models\TextModel;
-use models\dto\QuestionCommentDto;
+use models\scriptureforge\dto\QuestionCommentDto;
 use models\CommentModel;
 use models\AnswerModel;
 use models\mapper\MongoStore;
