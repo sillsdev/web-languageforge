@@ -2,7 +2,7 @@
 
 namespace models;
 
-require_once(APPPATH . '/models/CommunityModel.php');
+require_once(APPPATH . 'models/CommunityModel.php');
 
 class CommunityModelMongoMapper extends \models\mapper\MongoMapper
 {

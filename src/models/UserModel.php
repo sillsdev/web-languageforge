@@ -10,7 +10,7 @@ use models\mapper\ReferenceList;
 use models\rights\Realm;
 use models\rights\Roles;
 
-require_once(APPPATH . '/models/ProjectModel.php');
+require_once(APPPATH . 'models/ProjectModel.php');
 
 class UserModel extends \models\UserModelBase
 {

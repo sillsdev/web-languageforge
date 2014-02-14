@@ -73,7 +73,7 @@ class TestUserCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 	
-		$projectDomain = 'someprojectcode.example.com';
+		$projectDomain = 'someproject.scriptureforge.org';
 		$project = $e->createProject(SF_TESTPROJECT);
 		$project->projectCode = ProjectModel::domainToProjectCode($projectDomain);
 		$project->write();
@@ -87,10 +87,9 @@ class TestUserCommands extends UnitTestCase {
 				'captcha' => $validCode
 		);
 		$captcha_info = array('code' => $validCode);
-		$projectCode = $project->projectCode;
 		$delivery = new MockUserCommandsDelivery();
 		
-		$userId = UserCommands::register($params, $captcha_info, $projectCode, $delivery);
+		$userId = UserCommands::register($params, $captcha_info, $projectDomain, $delivery);
 		
 		$user = new UserModel($userId);
 		$this->assertEqual($user->username, $params['username']);
@@ -114,7 +113,7 @@ class TestUserCommands extends UnitTestCase {
 		$captcha_info = array('code' => $validCode);
 		$delivery = new MockUserCommandsDelivery();
 		
-		$userId = UserCommands::register($params, $captcha_info, '', $delivery);
+		$userId = UserCommands::register($params, $captcha_info, 'www.scriptureforge.org', $delivery);
 		
 		$user = new UserModel($userId);
 		$this->assertEqual($user->username, $params['username']);
@@ -243,7 +242,7 @@ class TestUserCommands extends UnitTestCase {
 		$project->write();
 		$delivery = new MockUserCommandsDelivery();
 	
-		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $project->id->asString(), $project->projectCode, $delivery);
+		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $project->id->asString(), 'someProjectCode.scriptureforge.org', $delivery);
 	
 		// What's in the delivery?
 		$toUser = new UserModel($toUserId);

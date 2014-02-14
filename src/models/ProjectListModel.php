@@ -12,7 +12,7 @@ use models\mapper\MongoStore;
 use models\mapper\ReferenceList;
 use models\mapper\Id;
 
-require_once(APPPATH . '/models/ProjectModel.php');
+require_once(APPPATH . 'models/ProjectModel.php');
 
 class ProjectListModel extends \models\mapper\MapperListModel
 {

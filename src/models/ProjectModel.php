@@ -16,7 +16,6 @@ use models\mapper\Id;
 use models\UserList_ProjectModel;
 use models\sms\SmsSettings;
 
-require_once(APPPATH . '/models/ProjectModel.php');
 
 class ProjectModel extends \models\mapper\MapperModel
 {
@@ -27,6 +26,7 @@ class ProjectModel extends \models\mapper\MapperModel
 			return new ProjectRoleModel();
 		});
 		$this->userProperties = new ProjectUserPropertiesSettings();
+		$this->themeName = 'default';
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
 	
@@ -67,7 +67,7 @@ class ProjectModel extends \models\mapper\MapperModel
 		}
 		$projectCode = $uriParts[0];
 		if ($projectCode == 'scriptureforge' || $projectCode == 'languageforge') {
-			return 'default';
+			$projectCode = '';
 		}
 		return $projectCode;
 	}
@@ -171,6 +171,13 @@ class ProjectModel extends \models\mapper\MapperModel
 		}
 		return $result;
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getViewsPath() {
+		return 'views/' . $projectModel->siteName . '/' . $projectModel->themeName;
+	}
 	
 	/**
 	 * @var Id
@@ -182,9 +189,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public $projectname;
 	
+	
 	/**
 	 * @var string
 	 */
+	// TODO move this to a subclass cjh 2014-02
 	public $language;
 	
 	/**
@@ -208,6 +217,24 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @var ProjectUserPropertiesSettings
 	 */
 	public $userProperties;
+	
+	/**
+	 * specifies the theme name for this project e.g. jamaicanpsalms || default
+	 * @var string
+	 */
+	public $themeName;
+	
+	/**
+	 * Specifies which site this project belongs to.  e.g. scriptureforge || languageforge  cf. Website class
+	 * @var string
+	 */
+	public $siteName;
+	
+	/**
+	 *  specifies the angular app this project is associated with e.g. sfchecks || lexicon  (note: these apps are site specific)
+	 * @var string
+	 */
+	public $appName;
 }
 
 /**
