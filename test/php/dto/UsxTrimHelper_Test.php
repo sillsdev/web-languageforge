@@ -1,6 +1,6 @@
 <?php
 
-use models\dto\UsxTrimHelper;
+use models\scriptureforge\dto\UsxTrimHelper;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');

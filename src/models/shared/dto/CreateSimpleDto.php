@@ -1,5 +1,5 @@
 <?php
-namespace models\dto;
+namespace models\shared\dto;
 
 use models\mapper\Id;
 use models\mapper\JsonEncoder;

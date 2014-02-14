@@ -1,6 +1,6 @@
 <?php
 
-use models\dto\UsxHelper;
+use models\scriptureforge\dto\UsxHelper;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');

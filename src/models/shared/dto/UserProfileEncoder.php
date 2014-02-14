@@ -1,6 +1,6 @@
 <?php
 
-namespace models\dto;
+namespace models\shared\dto;
 
 use models\UserModel;
 use models\mapper\JsonEncoder;

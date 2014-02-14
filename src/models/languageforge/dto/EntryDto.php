@@ -1,6 +1,6 @@
 <?php
 
-namespace models\dto;
+namespace models\languageforge\dto;
 
 use libraries\languageforge\lfdictionary\store\LexStoreType;
 use libraries\languageforge\lfdictionary\store\LexStoreController;

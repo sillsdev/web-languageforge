@@ -16,9 +16,9 @@ use models\commands\QuestionCommands;
 use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
-use models\dto\ActivityListDto;
-use models\dto\ProjectSettingsDto;
-use models\dto\RightsHelper;
+use models\shared\dto\ActivityListDto;
+use models\scriptureforge\dto\ProjectSettingsDto;
+use models\shared\dto\RightsHelper;
 use models\mapper\Id;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
@@ -34,7 +34,7 @@ use models\QuestionModel;
 use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserProfileModel;
-use models\dto\UserProfileDto;
+use models\shared\dto\UserProfileDto;
 
 require_once(APPPATH . 'vendor/autoload.php');
 
@@ -226,7 +226,7 @@ class Sf
 	}
 	
 	public function project_list_dto() {
-		return \models\dto\ProjectListDto::encode($this->_userId);
+		return \models\shared\dto\ProjectListDto::encode($this->_userId);
 	}
 	
 	public function project_updateUserRole($projectId, $params) {
@@ -250,7 +250,7 @@ class Sf
 	}
 	
 	public function project_pageDto($projectId) {
-		return \models\dto\ProjectPageDto::encode($projectId, $this->_userId);
+		return \models\scriptureforge\dto\ProjectPageDto::encode($projectId, $this->_userId);
 	}
 	
 	//---------------------------------------------------------------
@@ -282,11 +282,11 @@ class Sf
 	}
 	
 	public function text_list_dto($projectId) {
-		return \models\dto\TextListDto::encode($projectId, $this->_userId);
+		return \models\scriptureforge\dto\TextListDto::encode($projectId, $this->_userId);
 	}
 
 	public function text_settings_dto($projectId, $textId) {
-		return \models\dto\TextSettingsDto::encode($projectId, $textId, $this->_userId);
+		return \models\scriptureforge\dto\TextSettingsDto::encode($projectId, $textId, $this->_userId);
 	}
 	
 	//---------------------------------------------------------------
@@ -322,11 +322,11 @@ class Sf
 	}
 	
 	public function question_comment_dto($projectId, $questionId) {
-		return \models\dto\QuestionCommentDto::encode($projectId, $questionId, $this->_userId);
+		return \models\scriptureforge\dto\QuestionCommentDto::encode($projectId, $questionId, $this->_userId);
 	}
 	
 	public function question_list_dto($projectId, $textId) {
-		return \models\dto\QuestionListDto::encode($projectId, $textId, $this->_userId);
+		return \models\scriptureforge\dto\QuestionListDto::encode($projectId, $textId, $this->_userId);
 	}
 	
 	public function answer_vote_up($projectId, $questionId, $answerId) {
@@ -362,7 +362,7 @@ class Sf
 	//---------------------------------------------------------------
 
 	public function activity_list_dto() {
-		return \models\dto\ActivityListDto::getActivityForUser($this->_userId);
+		return \models\shared\dto\ActivityListDto::getActivityForUser($this->_userId);
 	}
 	
 	
