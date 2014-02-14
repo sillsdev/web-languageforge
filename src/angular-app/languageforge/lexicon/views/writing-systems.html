@@ -1,19 +1,20 @@
-<form class="form-horizontal">
+<form>
 	<!-- control buttons -->
 	<div class="control-group">
-		<button class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>New</button>
+		<button class="btn btn-success" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>New</button>
 		<div class="btn-group">
-			<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">More <span class="caret"></span></a>
+			<a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#" style="font-weight:normal">
+				More <span class="caret"></span>
+			</a>
 			<ul class="dropdown-menu">
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for ws</a></li>
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for ws</a></li>
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of ws</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for 'ws'</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for 'ws'</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of 'ws'</a></li>
 				<li class="divider"></li>
-				<li><a tabindex="-1" href="#"><i class="icon-remove"></i> Remove ws</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-remove"></i> Remove 'ws'</a></li>
 			</ul>
 		</div>
 	</div>
-	<br />
 	
 	<div class="row-fluid">
 		<!-- Left column: writing system list -->
@@ -23,12 +24,13 @@
 			</ul>
 		</div>
 		
-		<!-- Right column: writing system settings -->
+		<!-- Right column: writing system setup -->
 		<div class="span9 well">
+			<h3>{{config.writingsystems.map[currentListId]}}</h3>
 			<div class="control-group">
 				<label class="control-label" for="abbrev">Abbreviation</label>
-				<div class="controls controls-row">
-					<input type="text" id="abbrev" data-ng-model="unknown">
+				<div class="controls">
+					<input type="text" id="abbrev" data-ng-model="currentListId">
 				</div>
 			</div>
 			<div class="control-group">
@@ -42,7 +44,7 @@
 					</select>
 				</div>
 			</div>
-			<div class="control-group">
+			<div class="control-group offset1" data-ng-show="special == 'IPA transcription'">
 				<label class="control-label" for="purpose">Purpose</label>
 				<div class="controls">
 					<select class="form-control" id="purpose" data-ng-model="purpose">
@@ -52,8 +54,22 @@
 					</select>
 				</div>
 			</div>
-			<div class="control-group">
-				<button class="btn" data-ng-click="saveWritingSystems()"><i class="icon-ok"></i>Save</button>
+			<div class="control-group offset1" data-ng-show="special == 'Script / Region / Variant'">
+				<label class="control-label" for="script">Script</label>
+				<div class="controls">
+					<select class="form-control" id="script" data-ng-model="script">
+						<option>get script list</option>
+					</select>
+				<label class="control-label" for="region">Region</label>
+				<div class="controls">
+					<select class="form-control" id="region" data-ng-model="region">
+						<option>get region list</option>
+					</select>
+				</div>
+				<label class="control-label" for="variant">Variant</label>
+				<div class="controls">
+					<input type="text" id="variant" data-ng-model="variant">
+				</div>
 			</div>
 		</div>
 	</div>

@@ -7,17 +7,18 @@ angular.module(
 	.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', 
 	                                 function($scope, userService, ss, lexService, $window, $timeout) {
 
+		$scope.currentListId = '';
+		$scope.selectList = function(listId) {
+//			console.log("selectList ", listId);
+			$scope.currentListId = listId;
+		};
+		
 		$scope.querySettings = function() {
 			$scope.config = lexService.projectSettings();
 		};
 		
 		$scope.querySettings();
-		
-		$scope.editWritingSystemsCollapsed = true;
-		
-		$scope.editWritingSystemsCollapsed = function() {
-			$scope.editWritingSystemsCollapsed = false;
-		};
+		$scope.editWritingSystemsCollapsed = false;	// TODO change. Set true after layout IJH 2014-02
 		
 		$scope.saveWritingSystems = function() {
 			$scope.editWritingSystemsCollapsed = true;
