@@ -1,7 +1,7 @@
 <?php
 
-use \libraries\lfdictionary\dto\Example;
-use \libraries\lfdictionary\dto\MultiText;
+use \libraries\languageforge\lfdictionary\dto\Example;
+use \libraries\languageforge\lfdictionary\dto\MultiText;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

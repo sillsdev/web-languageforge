@@ -2,16 +2,16 @@
 
 namespace models\commands;
 
-use libraries\Website;
+use libraries\shared\Website;
 
-use libraries\palaso\exceptions\UserUnauthorizedException;
+use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 
-use libraries\palaso\CodeGuard;
-use libraries\palaso\JsonRpcServer;
-use libraries\palaso\exceptions\UserNotAuthenticatedException;
-use libraries\sfchecks\Communicate;
-use libraries\sfchecks\Email;
-use libraries\sfchecks\IDelivery;
+use libraries\shared\palaso\CodeGuard;
+use libraries\shared\palaso\JsonRpcServer;
+use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
+use libraries\scriptureforge\sfchecks\Communicate;
+use libraries\scriptureforge\sfchecks\Email;
+use libraries\scriptureforge\sfchecks\IDelivery;
 use models\AnswerModel;
 use models\ProjectModel;
 use models\ProjectSettingsModel;

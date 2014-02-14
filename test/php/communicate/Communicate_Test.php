@@ -1,15 +1,15 @@
 <?php
 
-use libraries\Website;
+use libraries\shared\Website;
 
 use models\MessageModel;
 
 use models\UnreadMessageModel;
 
-use libraries\sfchecks\IDelivery;
-use libraries\sfchecks\Communicate;
-use libraries\sfchecks\Email;
-use libraries\sms\SmsModel;
+use libraries\scriptureforge\sfchecks\IDelivery;
+use libraries\scriptureforge\sfchecks\Communicate;
+use libraries\scriptureforge\sfchecks\Email;
+use libraries\shared\sms\SmsModel;
 use models\UserModel;
 use models\ProjectModel;
 

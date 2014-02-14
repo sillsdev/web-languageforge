@@ -1,11 +1,11 @@
 <?php
-use libraries\lfdictionary\environment\EnvironmentMapper;
-use libraries\lfdictionary\environment\LFProjectAccess;
+use libraries\languageforge\lfdictionary\environment\EnvironmentMapper;
+use libraries\languageforge\lfdictionary\environment\LFProjectAccess;
 use models\UserModel;
 use models\ProjectModel;
-use libraries\lfdictionary\environment\ProjectRole;
-use libraries\lfdictionary\environment\ProjectPermission;
-use \libraries\lfdictionary\dto\ClientEnvironmentDto;
+use libraries\languageforge\lfdictionary\environment\ProjectRole;
+use libraries\languageforge\lfdictionary\environment\ProjectPermission;
+use \libraries\languageforge\lfdictionary\dto\ClientEnvironmentDto;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

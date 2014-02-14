@@ -1,7 +1,7 @@
 <?php
-use libraries\lfdictionary\commands\SaveCommentsCommand;
+use libraries\languageforge\lfdictionary\commands\SaveCommentsCommand;
 
-use libraries\lfdictionary\commands\GetCommentsCommand;
+use libraries\languageforge\lfdictionary\commands\GetCommentsCommand;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');

@@ -1,6 +1,6 @@
 <?php
-use libraries\lfdictionary\dto\AutoListDTO;
-use libraries\lfdictionary\dto\AutoListEntry;
+use libraries\languageforge\lfdictionary\dto\AutoListDTO;
+use libraries\languageforge\lfdictionary\dto\AutoListEntry;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

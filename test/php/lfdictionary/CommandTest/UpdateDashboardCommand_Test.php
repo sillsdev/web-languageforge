@@ -1,5 +1,5 @@
 <?php
-use libraries\lfdictionary\commands\UpdateDashboardCommand;
+use libraries\languageforge\lfdictionary\commands\UpdateDashboardCommand;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -7,8 +7,8 @@ require_once(SimpleTestPath . 'autorun.php');
 require_once(DicTestPath . 'CommandTest/LiftTestEnvironment.php');
 require_once(DicTestPath . 'MockObject/AllMockObjects.php');
 
-use \libraries\lfdictionary\common\DataConnector;
-use \libraries\lfdictionary\common\DataConnection;
+use \libraries\languageforge\lfdictionary\common\DataConnector;
+use \libraries\languageforge\lfdictionary\common\DataConnection;
 
 class TestOfUpdateDashboardDataCommand extends UnitTestCase {
 

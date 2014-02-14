@@ -4,7 +4,7 @@ namespace models\commands;
 use models\UnreadMessageModel;
 use models\UserModel;
 use models\ProjectSettingsModel;
-use libraries\sfchecks\Communicate;
+use libraries\scriptureforge\sfchecks\Communicate;
 
 class MessageCommands {
 	public static function markMessageRead($projectId, $messageId, $userId) {

@@ -6,7 +6,7 @@ require_once(LF_BASE_PATH . "Loader.php");
 //require_once(SOURCE_PATH . 'environment/CommunityModel.php');
 require_once(TEST_PATH . 'EnvironmentTest/DrupalTestEnvironment.php');
 DrupalTestEnvironment::setDrupalTestDataConnection();
-\libraries\lfdictionary\common\LFDrupal::loadDrupal();
+\libraries\languageforge\lfdictionary\common\LFDrupal::loadDrupal();
 
 class TestOfCommunityModule extends UnitTestCase {
 	
@@ -20,7 +20,7 @@ class TestOfCommunityModule extends UnitTestCase {
 		$db->import();
 		
 		$projectId = 87;		
-		$communityModel = new \libraries\lfdictionary\environment\CommunityModel($projectId);		
+		$communityModel = new \libraries\languageforge\lfdictionary\environment\CommunityModel($projectId);		
 		
 		//SearchUser
 		$string = 'tel';
@@ -38,7 +38,7 @@ class TestOfCommunityModule extends UnitTestCase {
 		$db->import();
 		
 		$projectId = 87;
-		$communityModel = new \libraries\lfdictionary\environment\CommunityModel($projectId);		
+		$communityModel = new \libraries\languageforge\lfdictionary\environment\CommunityModel($projectId);		
 		
 		$db->setDrupalConnection(); //Drupal Database connection
 		

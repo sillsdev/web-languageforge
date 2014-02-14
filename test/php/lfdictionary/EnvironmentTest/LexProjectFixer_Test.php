@@ -1,7 +1,7 @@
 <?php
-use \libraries\lfdictionary\common\HgWrapper;
-use libraries\lfdictionary\environment\LexProject;
-use libraries\lfdictionary\environment\LexProjectFixer;
+use \libraries\languageforge\lfdictionary\common\HgWrapper;
+use libraries\languageforge\lfdictionary\environment\LexProject;
+use libraries\languageforge\lfdictionary\environment\LexProjectFixer;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

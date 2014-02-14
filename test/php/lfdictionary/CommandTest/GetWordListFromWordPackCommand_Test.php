@@ -1,11 +1,11 @@
 <?php
-use libraries\lfdictionary\dto\ListDTO;
+use libraries\languageforge\lfdictionary\dto\ListDTO;
 
-use libraries\lfdictionary\commands\GetWordListFromWordPackCommand;
+use libraries\languageforge\lfdictionary\commands\GetWordListFromWordPackCommand;
 
-use libraries\lfdictionary\dto\ListEntry;
+use libraries\languageforge\lfdictionary\dto\ListEntry;
 
-use libraries\lfdictionary\dto\MultiText;
+use libraries\languageforge\lfdictionary\dto\MultiText;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');

@@ -1,5 +1,5 @@
 <?php
-use libraries\lfdictionary\commands\GetSettingUserTasksSettingCommand;
+use libraries\languageforge\lfdictionary\commands\GetSettingUserTasksSettingCommand;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');

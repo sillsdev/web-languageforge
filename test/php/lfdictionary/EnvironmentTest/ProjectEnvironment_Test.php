@@ -1,5 +1,5 @@
 <?php
-use libraries\lfdictionary\environment\LexiconProjectEnvironment;
+use libraries\languageforge\lfdictionary\environment\LexiconProjectEnvironment;
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');
 require_once(LF_BASE_PATH . "Loader.php");
@@ -7,7 +7,7 @@ require_once(dirname(__FILE__) . '/../MockObject/AllMockObjects.php');
 // require_once(TEST_PATH . 'EnvironmentTest/DrupalTestEnvironment.php');
 
 // DrupalTestEnvironment::setDrupalTestDataConnection();
-// \libraries\lfdictionary\common\LFDrupal::loadDrupal();
+// \libraries\languageforge\lfdictionary\common\LFDrupal::loadDrupal();
 
 // Test project
 define('PROJECT_NID', 284);

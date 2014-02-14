@@ -20,7 +20,7 @@ class DrupalTestEnvironment {
 	 */
 	function setconnection() {
 		// TODO Redo the database connection in data connector style CP 2012-09
-		$this->_connection = new \libraries\lfdictionary\common\DataConnection(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+		$this->_connection = new \libraries\languageforge\lfdictionary\common\DataConnection(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
 		$this->_connection->open();
 	}
 	
@@ -60,7 +60,7 @@ class DrupalTestEnvironment {
 // 		$sqlimport = "mysql -h $dbhost -u$dbuser -p$dbpass $dbname < $this->_sqlFilePath";
 // 		system($sqlimport);
 		
-		\libraries\lfdictionary\common\LFDrupal::loadDrupal();		
+		\libraries\languageforge\lfdictionary\common\LFDrupal::loadDrupal();		
 
 		//Drupal DB Connection Open
 		$this->setDrupalConnection();

@@ -2,7 +2,7 @@
 
 namespace models\mapper;
 
-use libraries\palaso\CodeGuard;
+use libraries\shared\palaso\CodeGuard;
 
 class MongoMapper
 {

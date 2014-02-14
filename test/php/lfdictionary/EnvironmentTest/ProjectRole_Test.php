@@ -1,6 +1,6 @@
 <?php 
-use libraries\lfdictionary\environment\ProjectRole;
-use libraries\lfdictionary\environment\ProjectPermission;
+use libraries\languageforge\lfdictionary\environment\ProjectRole;
+use libraries\languageforge\lfdictionary\environment\ProjectPermission;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');
@@ -10,7 +10,7 @@ class TestOfProjectRole extends UnitTestCase {
 	
 	function testGet_NoRole_Throws() {
 		$this->expectException('\Exception');
-		$result = \libraries\lfdictionary\environment\ProjectRole::get('bogus');
+		$result = \libraries\languageforge\lfdictionary\environment\ProjectRole::get('bogus');
 	}
 	
 	function testAddGet_Returns() {

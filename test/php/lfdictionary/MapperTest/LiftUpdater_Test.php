@@ -1,12 +1,12 @@
 <?php
 
-use \libraries\lfdictionary\dto\MultiText;
-use \libraries\lfdictionary\dto\Example;
-use \libraries\lfdictionary\dto\Sense;
-use \libraries\lfdictionary\dto\EntryDTO;
+use \libraries\languageforge\lfdictionary\dto\MultiText;
+use \libraries\languageforge\lfdictionary\dto\Example;
+use \libraries\languageforge\lfdictionary\dto\Sense;
+use \libraries\languageforge\lfdictionary\dto\EntryDTO;
 
-use \libraries\lfdictionary\mapper\LiftUpdater;
-use \libraries\lfdictionary\common\UUIDGenerate;
+use \libraries\languageforge\lfdictionary\mapper\LiftUpdater;
+use \libraries\languageforge\lfdictionary\common\UUIDGenerate;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

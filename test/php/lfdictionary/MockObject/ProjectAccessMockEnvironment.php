@@ -1,8 +1,8 @@
 <?php
-use libraries\lfdictionary\environment\ProjectRole;
-use libraries\lfdictionary\environment\IEnvironmentMapper;
-use libraries\lfdictionary\environment\ProjectPermission;
-use libraries\lfdictionary\environment\LFProjectAccess;
+use libraries\languageforge\lfdictionary\environment\ProjectRole;
+use libraries\languageforge\lfdictionary\environment\IEnvironmentMapper;
+use libraries\languageforge\lfdictionary\environment\ProjectPermission;
+use libraries\languageforge\lfdictionary\environment\LFProjectAccess;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 

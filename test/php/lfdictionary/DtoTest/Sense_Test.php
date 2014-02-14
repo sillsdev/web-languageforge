@@ -1,8 +1,8 @@
 <?php
 
-use \libraries\lfdictionary\dto\MultiText;
-use \libraries\lfdictionary\dto\Example;
-use \libraries\lfdictionary\dto\Sense;
+use \libraries\languageforge\lfdictionary\dto\MultiText;
+use \libraries\languageforge\lfdictionary\dto\Example;
+use \libraries\languageforge\lfdictionary\dto\Sense;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SIMPLETEST_PATH . 'autorun.php');

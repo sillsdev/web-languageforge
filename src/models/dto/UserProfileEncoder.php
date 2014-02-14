@@ -5,7 +5,7 @@ namespace models\dto;
 use models\UserModel;
 use models\mapper\JsonEncoder;
 use models\ProjectModel;
-use libraries\palaso\CodeGuard;
+use libraries\shared\palaso\CodeGuard;
 
 class UserProfileEncoder extends JsonEncoder {
 	
