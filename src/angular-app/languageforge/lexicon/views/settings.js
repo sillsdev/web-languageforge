@@ -10,12 +10,14 @@ angular.module(
 		$scope.currentWritingSystemTag = '';
 		$scope.currentWritingSystem = {};
 		$scope.currentWritingSystem.id = '';
+		$scope.currentWritingSystem.abbreviation = '';
 		$scope.currentWritingSystem.special = '';
 		$scope.currentWritingSystem.purpose = '';
 		$scope.currentWritingSystem.script = '';
 		$scope.currentWritingSystem.region = '';
 		$scope.currentWritingSystem.variant = '';
 		$scope.selectWritingSystem = function(writingSystemId) {
+			$scope.currentWritingSystem.abbreviation = writingSystemId;		// TODO add. fiddle until load current writing system is done IJH 2014-02
 			$scope.currentWritingSystem.id = writingSystemId;
 		};
 		
@@ -31,10 +33,11 @@ angular.module(
 		};
 		
 		$scope.querySettings();
-		$scope.editWritingSystemsCollapsed = false;	// TODO change. Set true after layout IJH 2014-02
+		$scope.editWritingSystems = {};
+		$scope.editWritingSystems.collapsed = true;
 		
 		$scope.saveWritingSystems = function() {
-			$scope.editWritingSystemsCollapsed = true;
+			$scope.editWritingSystems.collapsed = true;
 		};
 		
 		$scope.$watch('config.writingsystems', function(newValue) {
