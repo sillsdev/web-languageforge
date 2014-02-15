@@ -51,6 +51,7 @@ a.arrowed {
   
 a:hover {  
 	text-decoration: underline;  
+	cursor: pointer;
 }
   
 .left {  
