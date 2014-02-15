@@ -15,8 +15,8 @@
 			<legend>Show the following fields:</legend>
 			<div class="picklists">
 			<ul class="unstyled">
-				<li data-ng-click="selectField(fielId)" data-ng-repeat="(fielId, field) in config.entry.fieldNames" data-ng-class="{selected:currentFieldId == fielId}">
-					<div class="checkbox"><input data-ng-model="currentListsEnabled[fielId]" type="checkbox"/>{{field}}</div>
+				<li data-ng-click="selectField(fieldId)" data-ng-repeat="(fieldId, field) in config.entry.fieldNames" data-ng-class="{selected:currentFieldId == fieldId}">
+					<div class="checkbox"><input data-ng-model="currentFieldsEnabled[fieldId]" type="checkbox"/>{{field}}</div>
 				</li>
 			</ul>
 			</div>
@@ -35,9 +35,9 @@
 						<label class="control-label" for="displayName">Name for display</label>
 						<div class="controls">
 							<input type="text" id="displayName" data-ng-model="unknown">
-							<label style="margin-bottom:20px">
-								<input type="checkbox" data-ng-model="unknown"/> Hidden if empty
-							</label>
+						</div>
+						<div class="checkbox">
+							<input type="checkbox" data-ng-model="currentField.hidden"/>Hidden if empty
 						</div>
 					</div>
 					<hr />
