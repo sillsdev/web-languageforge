@@ -347,7 +347,8 @@ angular.module('sf.services', ['jsonRpc'])
 						}
 					}
 				}
-			}
+			},
+			'visibleTasks': ['view', 'dashboard', 'review', 'gather-texts', 'semdom', 'wordlist', 'dbe', 'add-meanings', 'add-grammar', 'add-examples', 'review'], 
 		};
 		this.projectSettings = function(projectId, callback) {
 			(callback || angular.noop)({ok: true, data: {config: config}});
