@@ -7,37 +7,37 @@
 				More <span class="caret"></span>
 			</a>
 			<ul class="dropdown-menu">
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for {{config.writingsystems.map[currentWritingSystem.id]}}</a></li>
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for {{config.writingsystems.map[currentWritingSystem.id]}}</a></li>
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of {{config.writingsystems.map[currentWritingSystem.id]}}</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for {{config.inputSystems[currentInputSystem.code]}}</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for {{config.inputSystems[currentInputSystem.code]}}</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of {{config.inputSystems[currentInputSystem.code]}}</a></li>
 				<li class="divider"></li>
-				<li><a tabindex="-1" href="#"><i class="icon-remove"></i> Remove {{config.writingsystems.map[currentWritingSystem.id]}}</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-remove"></i> Remove {{config.inputSystems[currentInputSystem.code]}}</a></li>
 			</ul>
 		</div>
 	</div>
 	
 	<div class="row-fluid">
-		<!-- Left column: writing system list -->
+		<!-- Left column: input system list -->
 		<div class="span3 control-group picklists">
 			<ul class="unstyled">
-				<li data-ng-click="selectWritingSystem(writingSystemId)" data-ng-repeat="(writingSystemId, writingSystem) in config.writingsystems.map" data-ng-class="{selected:currentWritingSystem.id == writingSystemId}">{{writingSystem}}</li>
+				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in config.inputSystems" data-ng-class="{selected:currentInputSystem.code == inputSystemTag}">{{inputSystem}}</li>
 			</ul>
 		</div>
 		
-		<!-- Right column: writing system setup -->
+		<!-- Right column: input system setup -->
 		<div class="span9 well">
-			<span class="pull-right">{{currentWritingSystemTag}}</span>
-			<h3>{{config.writingsystems.map[currentWritingSystem.id]}}</h3>
+			<span class="pull-right">{{currentInputSystemTag}}</span>
+			<h3>{{config.inputSystems[currentInputSystem.code]}}</h3>
 			<div class="control-group">
 				<label class="control-label" for="abbrev">Abbreviation</label>
 				<div class="controls">
-					<input type="text" id="abbrev" data-ng-model="currentWritingSystem.abbreviation">
+					<input type="text" id="abbrev" data-ng-model="currentInputSystem.abbreviation">
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="special">Special</label>
 				<div class="controls">
-					<select class="form-control" id="special" data-ng-model="currentWritingSystem.special">
+					<select class="form-control" id="special" data-ng-model="currentInputSystem.special">
 						<option>none</option>
 						<option>IPA transcription</option>
 						<option>Voice</option>
@@ -45,10 +45,10 @@
 					</select>
 				</div>
 			</div>
-			<div class="control-group" data-ng-show="currentWritingSystem.special == 'IPA transcription'">
+			<div class="control-group" data-ng-show="currentInputSystem.special == 'IPA transcription'">
 				<label class="control-label offset1" for="purpose">Purpose</label>
 				<div class="controls offset1">
-					<select class="form-control" id="purpose" data-ng-model="currentWritingSystem.purpose">
+					<select class="form-control" id="purpose" data-ng-model="currentInputSystem.purpose">
 						<option>unspecified</option>
 						<option>Etic (raw phonetic transcription)</option>
 						<option>Emic (uses the phonology of the language)</option>
@@ -58,25 +58,25 @@
 					<i class="icon-globe"></i> Read more about IPA transcriptions
 				</a>
 			</div>
-			<div class="control-group" data-ng-show="currentWritingSystem.special == 'Voice'">
+			<div class="control-group" data-ng-show="currentInputSystem.special == 'Voice'">
 				<p>In applications which support this option, fields with this input system will able to play and record voice.</p>
 			</div>
-			<div class="control-group" data-ng-show="currentWritingSystem.special == 'Script / Region / Variant'">
+			<div class="control-group" data-ng-show="currentInputSystem.special == 'Script / Region / Variant'">
 				<label class="control-label offset1" for="script">Script</label>
 				<div class="controls offset1">
-					<select class="form-control" id="script" data-ng-model="currentWritingSystem.script">
+					<select class="form-control" id="script" data-ng-model="currentInputSystem.script">
 						<option>get script list</option>
 					</select>
 				</div>
 				<label class="control-label offset1" for="region">Region</label>
 				<div class="controls offset1">
-					<select class="form-control" id="region" data-ng-model="currentWritingSystem.region">
+					<select class="form-control" id="region" data-ng-model="currentInputSystem.region">
 						<option>get region list</option>
 					</select>
 				</div>
 				<label class="control-label offset1" for="variant">Variant</label>
 				<div class="controls offset1">
-					<input type="text" id="variant" data-ng-model="currentWritingSystem.variant">
+					<input type="text" id="variant" data-ng-model="currentInputSystem.variant">
 				</div>
 				<a href="http://www.w3.org/International/questions/qa-choosing-language-tags" target="_blank">
 					<i class="icon-globe"></i> 	Read more about language identifiers

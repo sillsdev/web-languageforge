@@ -261,6 +261,20 @@ angular.module('sf.services', ['jsonRpc'])
 	})
 	.service('lexEntryService', function() {
 		var config = {
+			'inputSystems': {
+				'en': {
+					'abbreviation': 'en',
+				},
+				'qaa': {
+					'abbreviation': 'qaa',
+				},
+				'th': {
+					'abbreviation': 'th',
+				},
+				'th-fonipa-x-etic': {
+					'abbreviation': 'thipa',
+				}
+			},
 			'writingsystems': {
 				'type': 'map',
 				'map': {
@@ -332,10 +346,10 @@ angular.module('sf.services', ['jsonRpc'])
 				}
 			}
 		};
-		this.projectSettings = function() {
-			return config;
+		this.projectSettings = function(projectId, callback) {
+			(callback || angular.noop)({ok: true, data: {config: config}});
 		};
-
+		
 		var sampleData = [
 				{
 					"lexeme": {"thipa": "khâaw kài thɔ̂ɔt"},
