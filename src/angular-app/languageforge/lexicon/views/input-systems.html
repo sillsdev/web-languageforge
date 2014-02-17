@@ -20,8 +20,11 @@
 		<!-- Left column: input system list -->
 		<div class="span3 control-group picklists">
 			<ul class="unstyled">
-				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in config.inputSystems" data-ng-class="{selected:currentInputSystem.code == inputSystemTag}">{{inputSystem}}</li>
+				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in lists.inputSystems" data-ng-class="{selected:currentInputSystem.code == inputSystemTag}">{{inputSystem.name}}</li>
 			</ul>
+			
+			<br />
+			<pre>{{lists|json}}</pre>
 		</div>
 		
 		<!-- Right column: input system setup -->
