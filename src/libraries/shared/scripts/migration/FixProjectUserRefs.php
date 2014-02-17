@@ -11,7 +11,8 @@ use models\UserListModel;
 
 class FixProjectUserRefs {
 	
-	public function run() {
+	public function run($mode = 'test') {
+		$testMode = ($mode == 'test');
 		$message = "";
 		$userlist = new UserListModel();
 		$userlist->read();
@@ -33,7 +34,9 @@ class FixProjectUserRefs {
 					$message .= "Removed dead project link $ref from user $userId\n";
 				}
 			}
-			$user->write();
+			if (!$testMode) {
+				$user->write();
+			}
 		}
 		if ($deadProjectLinks > 0) {
 			$message .= "\n\nRemoved $deadProjectLinks dead project links from the users collection\n\n";
@@ -53,7 +56,9 @@ class FixProjectUserRefs {
 					$message .= "Removed dead user link $ref for project $projectId\n";
 				}
 			}
-			$project->write();
+			if (!$testMode) {
+				$project->write();
+			}
 		}
 		if ($deadUserLinks > 0) {
 			$message .= "\n\nRemoved $deadUserLinks dead user links from the projects collection\n\n";
