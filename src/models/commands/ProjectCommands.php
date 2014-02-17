@@ -2,6 +2,12 @@
 
 namespace models\commands;
 
+use models\languageforge\LfProjectModel;
+
+use models\scriptureforge\SfProjectModel;
+
+use libraries\shared\Website;
+
 use libraries\shared\palaso\CodeGuard;
 use libraries\shared\palaso\JsonRpcServer;
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
@@ -74,6 +80,33 @@ class ProjectCommands
 		if ($isNewProject) {
 			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => Roles::PROJECT_ADMIN));
 		}
+		return $projectId;
+	}
+	
+	/**
+	 * Create a project, checking permissions as necessary
+	 * @param string $projectName
+	 * @param string $appName
+	 * @param string $userId
+	 * @param string $site
+	 */
+	public static function createProject($projectName, $appName, $userId, $site) {
+		if (!RightsHelper::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT)) {
+			throw new UserUnauthorizedException("Insufficient privileges to create new project in method 'updateProject'");
+		}
+		if ($site == Website::SCRIPTUREFORGE) {
+			$project = new SfProjectModel();
+			$project->projectname = $projectName;
+			$project->appName = $appName;
+			$projectId = $project->write();
+			
+		} elseif ($site == Website::LANGUAGEFORGE) {
+			$project = new LfProjectModel();
+			$project->projectname = $projectName;
+			$project->appName = $appName;
+			$projectId = $project->write();
+		}
+		ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => Roles::PROJECT_ADMIN));
 		return $projectId;
 	}
 	

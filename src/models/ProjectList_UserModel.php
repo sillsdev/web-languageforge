@@ -29,7 +29,7 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 	 */
 	function readAll() {
 		$query = array();
-		$fields = array('projectname');
+		$fields = array('projectname', 'appName', 'themeName');
 		return $this->_mapper->readList($this, $query, $fields);
 	}
 	
@@ -39,7 +39,7 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 	 */
 	function readUserProjects($userId) {
 		$query = array('users.' . $userId => array('$exists' => true));
-		$fields = array('projectname');
+		$fields = array('projectname', 'appName', 'themeName');
 		return $this->_mapper->readList($this, $query, $fields);
 	}
 	
