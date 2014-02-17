@@ -9,16 +9,20 @@ angular.module(
 
 		$scope.config = {};
 		$scope.languageCodes = {};
+		$scope.lists = {
+			inputSystems: {}
+		};
 		
 		$scope.currentInputSystemTag = '';
-		$scope.currentInputSystem = {};
-		$scope.currentInputSystem.code = '';
-		$scope.currentInputSystem.abbreviation = '';
-		$scope.currentInputSystem.special = '';
-		$scope.currentInputSystem.purpose = '';
-		$scope.currentInputSystem.script = '';
-		$scope.currentInputSystem.region = '';
-		$scope.currentInputSystem.variant = '';
+		$scope.currentInputSystem = {
+			'code': '',
+			'abbreviation': '',
+			'special': '',
+			'purpose': '',
+			'script': '',
+			'region': '',
+			'variant': ''
+		};
 		$scope.selectInputSystem = function(inputSystemTag) {
 			$scope.currentInputSystem.abbreviation = inputSystemTag;		// TODO add. fiddle until load current input system is done IJH 2014-02
 			$scope.currentInputSystem.code = inputSystemTag;
@@ -34,8 +38,20 @@ angular.module(
 		$scope.queryProjectSettings = function() {
 			lexService.projectSettings('', function(result) {	// TODO Add. $scope.project.id in place of '' when part of project IJH 2014-02
 				if (result.ok) {
-					$scope.config = result.data.config;
 					$scope.languageCodes = inputSystems.langaugeCodes();
+					$scope.config = result.data.config;
+					$scope.lists.inputSystems = $scope.config.inputSystems;
+					for (var tag in $scope.lists.inputSystems) {
+						var code = inputSystems.code(tag);
+						var script = inputSystems.script(tag);
+						var region = inputSystems.region(tag);
+						var privateUse = inputSystems.privateUse(tag);
+						$scope.lists.inputSystems[tag].code = code;
+						$scope.lists.inputSystems[tag].script = script;
+						$scope.lists.inputSystems[tag].region = region;
+						$scope.lists.inputSystems[tag].privateUse = privateUse;
+						$scope.lists.inputSystems[tag].name = inputSystems.name(code, script, region, privateUse);
+					};
 				}
 			});
 		};
