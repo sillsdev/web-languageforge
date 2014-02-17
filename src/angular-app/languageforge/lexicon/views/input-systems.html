@@ -20,7 +20,7 @@
 		<!-- Left column: input system list -->
 		<div class="span3 control-group picklists">
 			<ul class="unstyled">
-				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in lists.inputSystems" data-ng-class="{selected:currentInputSystem.code == inputSystemTag}">{{inputSystem.name}}</li>
+				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in lists.inputSystems" data-ng-class="{selected:currentInputSystemTag == inputSystemTag}">{{inputSystem.name}}</li>
 			</ul>
 			
 			<br />
@@ -30,7 +30,7 @@
 		<!-- Right column: input system setup -->
 		<div class="span9 well">
 			<span class="pull-right">{{currentInputSystemTag}}</span>
-			<h3>{{config.inputSystems[currentInputSystem.code]}}</h3>
+			<h3>{{currentInputSystem.name}}</h3>
 			<div class="control-group">
 				<label class="control-label" for="abbrev">Abbreviation</label>
 				<div class="controls">
