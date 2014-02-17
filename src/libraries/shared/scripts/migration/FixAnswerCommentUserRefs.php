@@ -15,7 +15,8 @@ use models\UserListModel;
 
 class FixAnswerCommentUserRefs {
 	
-	public function run() {
+	public function run($mode = 'test') {
+		$testMode = ($mode == 'test');
 		$message = "";
 		$userlist = new UserListModel();
 		$userlist->read();
@@ -49,7 +50,9 @@ class FixAnswerCommentUserRefs {
 							$ref = $comment->userRef;
 							if (!empty($ref->id) && !in_array($ref->asString(), $userIds)) {
 								$comment->userRef->id = '';
-								$question->writeComment($project->databaseName(), $questionId, $answerId, $comment);
+								if (!$testMode) {
+									$question->writeComment($project->databaseName(), $questionId, $answerId, $comment);
+								}
 								$deadCommentUserRefs++;
 								$message .= "Removed dead user-comment ref $ref from question $questionId, answer $answerId, comment $commentId\n";
 							}
@@ -58,7 +61,9 @@ class FixAnswerCommentUserRefs {
 						$ref = $answer->userRef;
 						if (!empty($ref->id) && !in_array($ref->asString(), $userIds)) {
 							$answer->userRef->id = '';
-							$question->writeAnswer($answer);
+							if (!$testMode) {
+								$question->writeAnswer($answer);
+							}
 							$deadAnswerUserRefs++;
 							$message .= "Removed dead user-answer ref $ref from question $questionId, answer $answerId\n";
 						}
