@@ -78,6 +78,18 @@ class Sf
 	// If an api method is ever renamed, remember to update the name in this method as well
 	//---------------------------------------------------------------
 	
+
+	/*
+	 * 
+ ____               ___       ___                                   
+/\  _`\            /\_ \     /\_ \                                  
+\ \ \L\ \     __   \//\ \    \//\ \      ___    __  __  __    ____  
+ \ \  _ <'  /'__`\   \ \ \     \ \ \    / __`\ /\ \/\ \/\ \  /',__\ 
+  \ \ \L\ \/\  __/    \_\ \_    \_\ \_ /\ \L\ \\ \ \_/ \_/ \/\__, `\
+   \ \____/\ \____\   /\____\   /\____\\ \____/ \ \___x___/'\/\____/
+    \/___/  \/____/   \/____/   \/____/ \/___/   \/__//__/   \/___/ 
+	
+	 */
 	
 	//---------------------------------------------------------------
 	// USER API
@@ -191,25 +203,8 @@ class Sf
 	
 	
 	//---------------------------------------------------------------
-	// PROJECT API
+	// GENERAL PROJECT API
 	//---------------------------------------------------------------
-	
-	/**
-	 * Create/Update a Project
-	 * @param array $object
-	 * @return string Id of written object
-	 */
-	public function project_update($object) {
-		return ProjectCommands::updateProject($object, $this->_userId);
-	}
-
-	/**
-	 * Read a project from the given $id
-	 * @param string $id
-	 */
-	public function project_read($id) {
-		return ProjectCommands::readProject($id);
-	}
 	
 	/**
 	 * Delete projects
@@ -237,6 +232,46 @@ class Sf
 		return ProjectCommands::removeUsers($projectId, $userIds);
 	}
 	
+	
+	//---------------------------------------------------------------
+	// Activity Log
+	//---------------------------------------------------------------
+
+	public function activity_list_dto() {
+		return \models\shared\dto\ActivityListDto::getActivityForUser($this->_userId);
+	}
+	
+	
+	
+	/*
+	 *  ____   ___  ____  __  ____  ____  _  _  ____  ____    ____  __  ____   ___  ____ 
+	 * / ___) / __)(  _ \(  )(  _ \(_  _)/ )( \(  _ \(  __)  (  __)/  \(  _ \ / __)(  __)
+	 * \___ \( (__  )   / )(  ) __/  )(  ) \/ ( )   / ) _)    ) _)(  O ))   /( (_ \ ) _) 
+	 * (____/ \___)(__\_)(__)(__)   (__) \____/(__\_)(____)  (__)  \__/(__\_) \___/(____)
+	 * 
+	 */
+	
+	//---------------------------------------------------------------
+	// SCRIPTUREFORGE PROJECT API
+	//---------------------------------------------------------------
+
+	/**
+	 * Create/Update a Project
+	 * @param array $object
+	 * @return string Id of written object
+	 */
+	public function project_update($object) {
+		return ProjectCommands::updateProject($object, $this->_userId);
+	}
+
+	/**
+	 * Read a project from the given $id
+	 * @param string $id
+	 */
+	public function project_read($id) {
+		return ProjectCommands::readProject($id);
+	}
+	
 	public function project_settings($projectId) {
 		return ProjectSettingsDto::encode($projectId, $this->_userId);
 	}
@@ -252,6 +287,7 @@ class Sf
 	public function project_pageDto($projectId) {
 		return \models\scriptureforge\dto\ProjectPageDto::encode($projectId, $this->_userId);
 	}
+
 	
 	//---------------------------------------------------------------
 	// MESSAGE API
@@ -357,13 +393,24 @@ class Sf
 		return QuestionTemplateCommands::listTemplates();
 	}
 	
+	
+	
+	
+	
+	/*
+	 * .____                                                        ___________                         
+	 * |    |   _____    ____    ____  __ _______     ____   ____   \_   _____/__________  ____   ____  
+	 * |    |   \__  \  /    \  / ___\|  |  \__  \   / ___\_/ __ \   |    __)/  _ \_  __ \/ ___\_/ __ \ 
+	 * |    |___ / __ \|   |  \/ /_/  >  |  // __ \_/ /_/  >  ___/   |     \(  <_> )  | \/ /_/  >  ___/ 
+	 * |_______ (____  /___|  /\___  /|____/(____  /\___  / \___  >  \___  / \____/|__|  \___  / \___  >
+	 *         \/    \/     \//_____/            \//_____/      \/       \/             /_____/      \/ 
+	 * 
+	 */
+	
 	//---------------------------------------------------------------
-	// Activity Log
+	// LANGUAGEFORGE PROJECT API
 	//---------------------------------------------------------------
-
-	public function activity_list_dto() {
-		return \models\shared\dto\ActivityListDto::getActivityForUser($this->_userId);
-	}
+	
 	
 	
 	//---------------------------------------------------------------
