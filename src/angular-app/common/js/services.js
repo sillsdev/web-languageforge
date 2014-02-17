@@ -276,6 +276,12 @@ angular.module('sf.services', ['jsonRpc'])
 				},
 				'th-fonipa-x-etic': {
 					'abbreviation': 'thipa',
+				},
+				'mi-Zxxx-x-audio': {
+					'abbreviation': 'mi',
+				},
+				'mi-Latn-NZ-x-Ngati': {
+					'abbreviation': 'miNgati',
 				}
 			},
 			'writingsystems': {
