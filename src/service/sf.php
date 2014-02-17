@@ -207,6 +207,16 @@ class Sf
 	//---------------------------------------------------------------
 	
 	/**
+	 * 
+	 * @param string $projectName
+	 * @param string $appName
+	 * @return string - projectId
+	 */
+	public function project_create($projectName, $appName) {
+		return ProjectCommands::createProject($projectName, $appName, $this->_userId, $this->_site);
+	}
+
+	/**
 	 * Delete projects
 	 * @param array<string> $projectIds
 	 * @return int Count of deleted projects
@@ -221,7 +231,7 @@ class Sf
 	}
 	
 	public function project_list_dto() {
-		return \models\shared\dto\ProjectListDto::encode($this->_userId);
+		return \models\shared\dto\ProjectListDto::encode($this->_userId, $this->_site);
 	}
 	
 	public function project_updateUserRole($projectId, $params) {

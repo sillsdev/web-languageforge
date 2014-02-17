@@ -148,6 +148,9 @@ class RightsHelper
 			case 'project_list':
 				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::VIEW);
 			
+			case 'project_create':
+				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT);
+			
 			case 'questionTemplate_update':
 			case 'questionTemplate_read':
 				return self::userHasSiteRight($userId, Domain::TEMPLATES + Operation::EDIT);
