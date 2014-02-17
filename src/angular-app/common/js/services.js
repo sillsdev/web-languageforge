@@ -54,6 +54,9 @@ angular.module('sf.services', ['jsonRpc'])
 	}])
 	.service('projectService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
+		this.create = function(projectName, appName, callback) {
+			jsonRpc.call('project_create', [projectName, appName], callback);
+		};
 		this.read = function(projectId, callback) {
 			jsonRpc.call('project_read', [projectId], callback);
 		};
