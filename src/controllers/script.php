@@ -13,8 +13,8 @@ require_once 'secure_base.php';
 
 class Script extends Secure_base {
 	
-	public function view($folder = '', $script = '') {
-		if ( ! file_exists("libraries/scripts/$folder/$script.php")) {
+	public function view($folder = '', $script = '', $runtype = 'test') {
+		if ( ! file_exists("libraries/shared/scripts/$folder/$script.php")) {
 			show_404($this->site);
 		} else {
 			$userId = (string)$this->session->userdata('user_id');
@@ -26,7 +26,11 @@ class Script extends Secure_base {
 					$classname = "libraries\shared\scripts\\$folder\\$script"; 
 
 					$script = new $classname;
-					$data['output'] = $script->run();
+					$data['output'] = '';
+					if ($runtype == 'test') {
+						$data['output'] .= "--------------- THIS IS A TEST RUN - The database should not be modified ----------------\n\n";
+					}
+					$data['output'] .= $script->run($runtype);
 					$data['scriptname'] = $classname . "->run()";
 					$this->renderPage("textoutput", $data);
 				} catch (\Exception $e) {

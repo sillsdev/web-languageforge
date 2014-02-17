@@ -9,7 +9,8 @@ use models\UserListModel;
 
 class FixUserRoles {
 
-	public function run() {
+	public function run($mode = 'test') {
+		$testMode = ($mode == 'test');
 		$message = "";
 
 		$userlist = new UserListModel();
@@ -20,7 +21,9 @@ class FixUserRoles {
 			$user = new UserModel($userId);
 			if (!$user->role) {
 				$user->role = Roles::USER;
-				$user->write();
+				if (!$testMode) {
+					$user->write();
+				}
 				$badUserRoles++;
 				$message .= "Fixed role of user $userId\n";
 			}
@@ -45,7 +48,9 @@ class FixUserRoles {
 					$message .= "Fixed role of user $ref for project $projectId\n";
 				}
 			}
-			$project->write();
+			if (!$testMode) {
+				$project->write();
+			}
 		}
 		if ($badProjectUserRoles > 0) {
 			$message .= "\n\nFixed $badProjectUserRoles non-existent user roles from the projects collection\n\n";
