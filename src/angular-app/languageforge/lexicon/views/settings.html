@@ -3,8 +3,8 @@
 <form data-ng-submit="" name="settingsForm">
 <button class="btn btn-primary pull-right" type="submit"><i class="icon-ok"></i> Apply</button>
 <tabset>
-	<tab heading="Writing Systems">
-		<div data-ng-include="'/angular-app/languageforge/lexicon/views/writing-systems.html'"></div>
+	<tab heading="Input Systems">
+		<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'"></div>
 	</tab>
 	<tab heading="Fields">
 		<div class="row">
@@ -43,20 +43,20 @@
 					<hr />
 					
 					<div class="control-group">
-						<label class="control-label" for="wsList">Writing System</label>
+						<label class="control-label" for="wsList">Input System</label>
 						<ul class="unstyled"  id="wsList">
-							<li data-ng-click="selectList(writingSystemId)" data-ng-repeat="(writingSystemId, writingSystem) in config.writingsystems.map">
-								<div class="checkbox"><input data-ng-model="currentListsEnabled[writingSystemId]" type="checkbox"/>{{writingSystem}}</div>
+							<li data-ng-click="selectList(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in config.inputSystems">
+								<div class="checkbox"><input data-ng-model="currentListsEnabled[inputSystemTag]" type="checkbox"/>{{inputSystem.abbreviation}}</div>
 							</li>
 						</ul>
 					</div>
-					<a data-ng-show="editWritingSystems.collapsed" href="" data-ng-click="editWritingSystems.collapsed = false">Edit writing systems</a>
+					<a data-ng-show="editInputSystems.collapsed" href="" data-ng-click="editInputSystems.collapsed = false">Edit input systems</a>
 					
-					<div data-collapse="editWritingSystems.collapsed">
+					<div data-collapse="editInputSystems.collapsed">
 						<hr />
-						<button class="btn btn-primary pull-right" data-ng-click="saveWritingSystems()"><i class="icon-ok"></i> Done</button>
-						<h3 style="font-weight:normal">Edit Writing Systems</h3>
-						<div data-ng-include="'/angular-app/languageforge/lexicon/views/writing-systems.html'">
+						<button class="btn btn-primary pull-right" data-ng-click="saveInputSystems()"><i class="icon-ok"></i> Done</button>
+						<h3 style="font-weight:normal">Edit Input Systems</h3>
+						<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'">
 						</div>
 					</div>
 				</div>
