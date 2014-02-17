@@ -37,7 +37,9 @@
 					}
 					break;
 				case 'Zxxx':
-					extraName = 'Voice';
+					if (privateUse == 'audio') {
+						extraName = 'Voice';
+					}
 					break;
 				default:
 					extraName = script + '-' + region;

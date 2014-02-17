@@ -15,6 +15,7 @@ angular.module(
 		
 		$scope.currentInputSystemTag = '';
 		$scope.currentInputSystem = {
+			'name': '',
 			'code': '',
 			'abbreviation': '',
 			'special': '',
@@ -24,8 +25,10 @@ angular.module(
 			'variant': ''
 		};
 		$scope.selectInputSystem = function(inputSystemTag) {
-			$scope.currentInputSystem.abbreviation = inputSystemTag;		// TODO add. fiddle until load current input system is done IJH 2014-02
-			$scope.currentInputSystem.code = inputSystemTag;
+			$scope.currentInputSystemTag = inputSystemTag;
+			$scope.currentInputSystem.name = $scope.lists.inputSystems[inputSystemTag].name;
+			$scope.currentInputSystem.code = $scope.lists.inputSystems[inputSystemTag].code;
+			$scope.currentInputSystem.abbreviation = $scope.lists.inputSystems[inputSystemTag].abbreviation;
 		};
 		
 		$scope.currentField = {};
@@ -55,7 +58,6 @@ angular.module(
 				}
 			});
 		};
-		
 		
 		$scope.queryProjectSettings();
 		$scope.editInputSystems = {};
