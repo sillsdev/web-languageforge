@@ -8,6 +8,7 @@ angular.module('lexicon',
 		 'meaning',
 		 'examples',
 		 'lexicon.add-meanings',
+		 'sf.services',
 		 'settings'
 		])
 	.config(['$routeProvider', function($routeProvider) {
@@ -76,7 +77,7 @@ angular.module('lexicon',
 			$scope.breadcrumbs = breadcrumbService.read();
 		}, true);
 	}])
-	.controller('LexiconMenuCtrl', ['$scope', '$timeout', function($scope, $timeout) {
+	.controller('LexiconMenuCtrl', ['$scope', '$timeout', 'lexEntryService', function($scope, $timeout, lexEntryService) {
 		$scope.noSubmenuId = 0;
 		$scope.gatherSubmenuId = 1;
 		$scope.addSubmenuId = 2;
@@ -87,6 +88,13 @@ angular.module('lexicon',
 		};
 		$scope.isSubmenuVisible = function(submenuId) {
 			return ($scope.visibleSubmenu == submenuId);
+		};
+		$scope.isItemVisible = function(itemName) {
+			// Default to visible if nothing specified in config
+			if (angular.isUndefined($scope.config) || angular.isUndefined($scope.config.visibleTasks)) {
+				return true;
+			};
+			return ($scope.config.visibleTasks.indexOf(itemName) != -1);
 		};
 		$scope.hideAllSubmenus = function(delay) {
 			// If no delay specified, undefined will work quite well since
@@ -110,5 +118,13 @@ angular.module('lexicon',
 			};
 			return name;
 		};
+		$scope.getProjectConfig = function(projectId) {
+			lexEntryService.projectSettings(projectId, function(result) {
+				if (result.ok) {
+					$scope.config = result.data.config;
+				};
+			});
+		};
+		$scope.getProjectConfig('sampleProject');
 	}])
 	;
