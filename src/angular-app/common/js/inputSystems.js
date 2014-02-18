@@ -28,21 +28,15 @@
 				case '':
 					break;
 				case 'fonipa':
-					extraName = 'IPA';
-					if (privateUse == 'etic') {
-						extraName += '-etic';
-					}
-					if (privateUse == 'emic') {
-						extraName += '-emic';
-					}
+					extraName = 'IPA' + ((privateUse) ? '-' + privateUse : '');
 					break;
 				case 'Zxxx':
 					if (privateUse == 'audio') {
 						extraName = 'Voice';
+						break;
 					}
-					break;
 				default:
-					extraName = script + '-' + region;
+					extraName = script + ((region) ? '-' + region : '');
 			}
 			return baseName + ((extraName) ? ' (' + extraName + ')' : '');
 		},
