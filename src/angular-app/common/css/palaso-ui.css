@@ -137,8 +137,11 @@ form.dc-multitext label, form.dc-optionlist label {
 }
 
 form.dc-multitext .wsid {
-	margin-left:5px;
-	font-style:italic;
+	margin-right:5px;
+	color: #ffffcc;
+	background-color: #4488cc;
+	padding: 6px;
+	border-radius: 5px;
 }
 
 #entryList .selected {
