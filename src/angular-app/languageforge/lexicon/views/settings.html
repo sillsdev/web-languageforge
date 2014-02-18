@@ -1,6 +1,6 @@
 <div class="container" data-ng-cloak>
 <h2 style="font-weight:normal">Settings</h2>
-<form data-ng-submit="" name="settingsForm">
+<form data-ng-submit="settingsApply()" name="settingsForm">
 <button class="btn btn-primary pull-right" type="submit"><i class="icon-ok"></i> Apply</button>
 <tabset>
 	<tab heading="Input Systems">
@@ -42,19 +42,18 @@
 					</div>
 					<hr />
 					
-					<div class="control-group">
-						<label class="control-label" for="wsList">Input System</label>
-						<ul class="unstyled"  id="wsList">
+					<div class="control-group" data-ng-show="editInputSystems.collapsed">
+						<label class="control-label" for="inputSystem">Input System</label>
+						<ul class="unstyled"  id="inputSystem">
 							<li data-ng-click="selectList(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in config.inputSystems">
 								<div class="checkbox"><input data-ng-model="currentListsEnabled[inputSystemTag]" type="checkbox"/>{{inputSystem.abbreviation}}</div>
 							</li>
 						</ul>
+						<a href="" data-ng-click="editInputSystems.collapsed = false">Edit input systems</a>
 					</div>
-					<a data-ng-show="editInputSystems.collapsed" href="" data-ng-click="editInputSystems.collapsed = false">Edit input systems</a>
 					
 					<div data-collapse="editInputSystems.collapsed">
-						<hr />
-						<button class="btn btn-primary pull-right" data-ng-click="saveInputSystems()"><i class="icon-ok"></i> Done</button>
+						<button class="btn btn-primary pull-right" data-ng-click="editInputSystems.done()"><i class="icon-ok"></i> Done</button>
 						<h3 style="font-weight:normal">Edit Input Systems</h3>
 						<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'">
 						</div>
@@ -75,41 +74,41 @@
 				<dt>Dashboard</dt>
 				<dd>
 					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" data-ng-model="show.task.dashboard"> Dashboard</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks.dashboard.visible"> Dashboard</label>
 					</div></div>
 				</dd>
 				<dt>Dictionary</dt>
 				<dd>
 					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" data-ng-model="show.task.dbe"> Dictionary Browse &amp; Edit</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks.dbe.visible"> Dictionary Browse &amp; Edit</label>
 					</div></div>
 				</dd>
 				<dt>Add Information</dt>
 				<dd>
 					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" data-ng-model="show.task.addMeanings"> Add Meanings</label>
-						<label class="checkbox"><input type="checkbox" data-ng-model="show.task.addPartOfSpeech"> Add Parts of Speech</label>
-						<label class="checkbox"><input type="checkbox" data-ng-model="show.task.addExample"> Add Example Sentences</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-meanings'].visible"> Add Meanings</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-grammar'].visible"> Add Parts of Speech</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-examples'].visible"> Add Example Sentences</label>
 					</div></div>
 				</dd>
 				<dt>Gather Words</dt>
 				<dd>
 					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" data-ng-model="show.task.fromTexts"> From Texts</label>
-						<label class="checkbox"><input type="checkbox" data-ng-model="show.task.fromWordList"> From a Word List</label>
-						<label class="checkbox"><input type="checkbox" data-ng-model="show.task.fromSemanticDomains"> From Semantic Domains</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['gather-texts'].visible"> From Texts</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks.wordlist.visible"> From a Word List</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks.semdom.visible"> From Semantic Domains</label>
 					</div></div>
 				</dd>
 				<dt>Settings</dt>
 				<dd>
 					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" data-ng-model="show.task.settings"> Settings</label>
+						<label class="checkbox"><input type="checkbox" disabled data-ng-model="config.tasks.settings.visible"> Settings</label>
 					</div></div>
 				</dd>
 				<dt>Review</dt>
 				<dd>
 					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" data-ng-model="show.task.review"> Review</label>
+						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks.review.visible"> Review</label>
 					</div></div>
 				</dd>
 			</dl>

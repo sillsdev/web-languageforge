@@ -2,10 +2,10 @@
 
 angular.module(
 		'settings', 
-		['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.dc.entry', 'ngAnimate']
+		['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.notice', 'palaso.ui.dc.entry', 'ngAnimate']
 	)
-	.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', 
-	                                 function($scope, userService, ss, lexService, $window, $timeout) {
+	.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
+	                                 function($scope, userService, ss, notice, lexService, $window, $timeout) {
 
 		$scope.config = {};
 		$scope.languageCodes = {};
@@ -48,6 +48,7 @@ angular.module(
 			'variant': ''
 		};
 		$scope.selectInputSystem = function(inputSystemTag) {
+			// TODO Add. update old before loading new IJH 2014-02
 			$scope.currentInputSystemTag = inputSystemTag;
 			$scope.currentInputSystem.name = $scope.lists.inputSystems[inputSystemTag].name;
 			$scope.currentInputSystem.code = $scope.lists.inputSystems[inputSystemTag].code;
@@ -85,11 +86,20 @@ angular.module(
 		};
 		
 		$scope.queryProjectSettings();
-		$scope.editInputSystems = {};
-		$scope.editInputSystems.collapsed = true;
+		$scope.editInputSystems = {
+			'collapsed': true,
+			'done': function() {
+				this.collapsed = true;
+			}
+		};
 		
-		$scope.saveInputSystems = function() {
-			$scope.editInputSystems.collapsed = true;
+		$scope.settingsApply = function() {
+			console.log("settingsApply");
+			lexService.updateProjectSettings('', $scope.config, function(result) {	// TODO Add. $scope.project.id in place of '' when part of project IJH 2014-02
+				if (result.ok) {
+					notice.push(notice.SUCCESS, "Project settings updated successfully");
+				}
+			});
 		};
 		
 		// convert raw config inputSystems to use in selectors
