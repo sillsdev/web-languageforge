@@ -246,7 +246,7 @@ angular.module('sf.services', ['jsonRpc'])
 		};
 		
 		this.project = function(projectId) {
-			return '/app/sfchecks#/project/' + projectId;
+			return '/app/sfchecks#/p/' + projectId;
 		};
 		
 		this.text = function(projectId, textId) {
