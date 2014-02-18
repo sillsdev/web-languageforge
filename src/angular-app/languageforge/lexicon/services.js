@@ -117,7 +117,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				{
 					"lexeme": {"thipa": "khâaw kài thɔ̂ɔt"},
 					"senses": [{
-						"meaning": {
+						"definition": {
 							"th": "ข้าวไก่ทอด",
 							"en": "pieces of fried chicken served over rice, usually with a sweet and spicy sauce on the side",
 						}
