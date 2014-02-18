@@ -8,7 +8,7 @@ angular.module('lexicon',
 		 'meaning',
 		 'examples',
 		 'lexicon.add-meanings',
-		 'sf.services',
+		 'lexicon.services',
 		 'settings'
 		])
 	.config(['$routeProvider', function($routeProvider) {
