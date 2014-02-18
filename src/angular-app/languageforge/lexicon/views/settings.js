@@ -41,7 +41,7 @@ angular.module(
 		$scope.queryProjectSettings = function() {
 			lexService.projectSettings('', function(result) {	// TODO Add. $scope.project.id in place of '' when part of project IJH 2014-02
 				if (result.ok) {
-					$scope.languageCodes = inputSystems.langaugeCodes();
+					$scope.languageCodes = inputSystems.languageCodes();
 					$scope.config = result.data.config;
 					$scope.lists.inputSystems = $scope.config.inputSystems;
 					for (var tag in $scope.lists.inputSystems) {
