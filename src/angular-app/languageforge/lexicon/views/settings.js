@@ -23,11 +23,10 @@ angular.module(
 				]
 			},
 			'purpose': {
-				'options': [
-					'unspecified',
-					'Etic (raw phonetic transcription)',
-					'Emic (uses the phonology of the language)'
-				]
+				'options': {
+					'etic': 'Etic (raw phonetic transcription)',
+					'emic': 'Emic (uses the phonology of the language)'
+				}
 			},
 			'script': {
 				'options': inputSystems.scripts()
@@ -95,7 +94,7 @@ angular.module(
 		
 		// convert raw config inputSystems to use in selectors
 		var convertSelects = function(selectorInputSystem, inputSystem) {
-			selectorInputSystem.purpose = $scope.selects.purpose.options[0];
+			selectorInputSystem.purpose = '';
 			selectorInputSystem.script = '';
 			selectorInputSystem.region = '';
 			selectorInputSystem.variant = '';
@@ -105,14 +104,7 @@ angular.module(
 					break;
 				case 'fonipa':
 					selectorInputSystem.special = $scope.selects.special.options[1];
-					switch(inputSystem.privateUse) {
-						case 'etic':
-							selectorInputSystem.purpose = $scope.selects.purpose.options[1];
-							break;
-						case 'emic':
-							selectorInputSystem.purpose = $scope.selects.purpose.options[2];
-							break;
-					}
+					selectorInputSystem.purpose = inputSystem.privateUse;
 					break;
 				case 'Zxxx':
 					if (inputSystem.privateUse == 'audio') {
@@ -121,29 +113,11 @@ angular.module(
 					}
 				default:
 					selectorInputSystem.special = $scope.selects.special.options[3];
-					selectorInputSystem.script = $scope.selects.script.options[inputSystem.script];
-					selectorInputSystem.region = $scope.selects.region.options[inputSystem.region];
+					selectorInputSystem.script = inputSystem.script;
+					selectorInputSystem.region = inputSystem.region;
 					selectorInputSystem.variant = inputSystem.privateUse;
 			}
 			return selectorInputSystem;
-		};
-		// revert script selectors to use in raw config inputSystems script
-		var revertSelectScript = function(selectorScript) {
-			for (var script in  $scope.selects.script.options) {
-				if ($scope.selects.script.options[script] == selectorScript) {
-					break;
-				}
-			}
-			return script;
-		};
-		// revert region selectors to use in raw config inputSystems region
-		var revertSelectRegion = function(selectorRegion) {
-			for (var region in  $scope.selects.region.options) {
-				if ($scope.selects.region.options[region] == selectorRegion) {
-					break;
-				}
-			}
-			return region;
 		};
 		
 		$scope.$watch('config.inputSystems', function(newValue) {
@@ -159,26 +133,17 @@ angular.module(
 //			console.log("current input system watch: ", newValue);
 			if (newValue != undefined) {
 				$scope.currentInputSystemTag = $scope.currentInputSystem.code;
-				switch(newValue.special) {
+				switch($scope.currentInputSystem.special) {
 					case $scope.selects.special.options[1]:		// IPA transcription
 						$scope.currentInputSystemTag += '-fonipa';
-						switch(newValue.purpose) {
-							case $scope.selects.purpose.options[1]:		// Etic (raw phonetic transcription)
-								$scope.currentInputSystemTag += '-x-etic';
-								break;
-							case $scope.selects.purpose.options[2]:		// Emic (uses the phonology of the language)
-								$scope.currentInputSystemTag += '-x-emic';
-								break;
-						}
+						$scope.currentInputSystemTag += ($scope.currentInputSystem.purpose) ? '-x-' + $scope.currentInputSystem.purpose : '';
 						break;
 					case $scope.selects.special.options[2]:		// Voice
 						$scope.currentInputSystemTag += '-Zxxx-x-audio';
 						break;
 					case $scope.selects.special.options[3]:		// Script / Region / Variant
-						var script = revertSelectScript($scope.currentInputSystem.script);
-						var region = revertSelectRegion($scope.currentInputSystem.region);
-						$scope.currentInputSystemTag += (script) ? '-' + script : '';
-						$scope.currentInputSystemTag += (region) ? '-' + region : '';
+						$scope.currentInputSystemTag += ($scope.currentInputSystem.script) ? '-' + $scope.currentInputSystem.script : '';
+						$scope.currentInputSystemTag += ($scope.currentInputSystem.region) ? '-' + $scope.currentInputSystem.region : '';
 						$scope.currentInputSystemTag += ($scope.currentInputSystem.variant) ? '-x-' + $scope.currentInputSystem.variant : '';
 						break;
 				}
