@@ -21,7 +21,20 @@ angular.module(
 					'Voice',
 					'Script / Region / Variant'
 				]
-			}
+			},
+			'purpose': {
+				'options': [
+					'unspecified',
+					'Etic (raw phonetic transcription)',
+					'Emic (uses the phonology of the language)'
+				]
+			},
+			'script': {
+				'options': inputSystems.scripts()
+			},
+			'region': {
+				'options': inputSystems.regions()
+			},
 		};
 		
 		$scope.currentInputSystemTag = '';
@@ -40,7 +53,7 @@ angular.module(
 			$scope.currentInputSystem.name = $scope.lists.inputSystems[inputSystemTag].name;
 			$scope.currentInputSystem.code = $scope.lists.inputSystems[inputSystemTag].code;
 			$scope.currentInputSystem.abbreviation = $scope.lists.inputSystems[inputSystemTag].abbreviation;
-			$scope.currentInputSystem.special = convertScriptForSelect($scope.lists.inputSystems[inputSystemTag].script, $scope.lists.inputSystems[inputSystemTag].privateUse);
+			$scope.currentInputSystem = convertSelects($scope.currentInputSystem, $scope.lists.inputSystems[inputSystemTag]);
 		};
 		
 		$scope.currentFieldId = '';
@@ -58,15 +71,15 @@ angular.module(
 					$scope.config = result.data.config;
 					$scope.lists.inputSystems = $scope.config.inputSystems;
 					for (var tag in $scope.lists.inputSystems) {
-						var code = inputSystems.code(tag);
-						var script = inputSystems.script(tag);
-						var region = inputSystems.region(tag);
-						var privateUse = inputSystems.privateUse(tag);
+						var code = inputSystems.getCode(tag);
+						var script = inputSystems.getScript(tag);
+						var region = inputSystems.getRegion(tag);
+						var privateUse = inputSystems.getPrivateUse(tag);
 						$scope.lists.inputSystems[tag].code = code;
 						$scope.lists.inputSystems[tag].script = script;
 						$scope.lists.inputSystems[tag].region = region;
 						$scope.lists.inputSystems[tag].privateUse = privateUse;
-						$scope.lists.inputSystems[tag].name = inputSystems.name(code, script, region, privateUse);
+						$scope.lists.inputSystems[tag].name = inputSystems.getName(code, script, region, privateUse);
 					};
 				}
 			});
@@ -80,31 +93,64 @@ angular.module(
 			$scope.editInputSystems.collapsed = true;
 		};
 		
-		var convertScriptForSelect = function(script, privateUse) {
-			var scriptSelect = '';
-			switch(script) {
+		// convert raw config inputSystems to use in selectors
+		var convertSelects = function(selectorInputSystem, inputSystem) {
+			selectorInputSystem.purpose = $scope.selects.purpose.options[0];
+			selectorInputSystem.script = '';
+			selectorInputSystem.region = '';
+			selectorInputSystem.variant = '';
+			switch(inputSystem.script) {
 				case '':
-					scriptSelect = $scope.selects.special.options[0];
+					selectorInputSystem.special = $scope.selects.special.options[0];
 					break;
 				case 'fonipa':
-					scriptSelect = $scope.selects.special.options[1];
+					selectorInputSystem.special = $scope.selects.special.options[1];
+					switch(inputSystem.privateUse) {
+						case 'etic':
+							selectorInputSystem.purpose = $scope.selects.purpose.options[1];
+							break;
+						case 'emic':
+							selectorInputSystem.purpose = $scope.selects.purpose.options[2];
+							break;
+					}
 					break;
 				case 'Zxxx':
-					if (privateUse == 'audio') {
-						scriptSelect = $scope.selects.special.options[2];
+					if (inputSystem.privateUse == 'audio') {
+						selectorInputSystem.special = $scope.selects.special.options[2];
 						break;
 					}
 				default:
-					scriptSelect = $scope.selects.special.options[3];
+					selectorInputSystem.special = $scope.selects.special.options[3];
+					selectorInputSystem.script = $scope.selects.script.options[inputSystem.script];
+					selectorInputSystem.region = $scope.selects.region.options[inputSystem.region];
+					selectorInputSystem.variant = inputSystem.privateUse;
 			}
-			return scriptSelect;
+			return selectorInputSystem;
+		};
+		// revert script selectors to use in raw config inputSystems script
+		var revertSelectScript = function(selectorScript) {
+			for (var script in  $scope.selects.script.options) {
+				if ($scope.selects.script.options[script] == selectorScript) {
+					break;
+				}
+			}
+			return script;
+		};
+		// revert region selectors to use in raw config inputSystems region
+		var revertSelectRegion = function(selectorRegion) {
+			for (var region in  $scope.selects.region.options) {
+				if ($scope.selects.region.options[region] == selectorRegion) {
+					break;
+				}
+			}
+			return region;
 		};
 		
 		$scope.$watch('config.inputSystems', function(newValue) {
 //			console.log("config input systems watch: ", newValue);
 			if (newValue != undefined) {
-				for (var key in newValue.map) {
-					$scope.currentInputSystem.code = key;
+				for (var tag in newValue) {
+					$scope.currentInputSystemTag = tag;
 					break;
 				}
 			}
@@ -114,23 +160,25 @@ angular.module(
 			if (newValue != undefined) {
 				$scope.currentInputSystemTag = $scope.currentInputSystem.code;
 				switch(newValue.special) {
-					case 'IPA transcription':
+					case $scope.selects.special.options[1]:		// IPA transcription
 						$scope.currentInputSystemTag += '-fonipa';
 						switch(newValue.purpose) {
-							case 'Etic (raw phonetic transcription)':
+							case $scope.selects.purpose.options[1]:		// Etic (raw phonetic transcription)
 								$scope.currentInputSystemTag += '-x-etic';
 								break;
-							case 'Emic (uses the phonology of the language)':
+							case $scope.selects.purpose.options[2]:		// Emic (uses the phonology of the language)
 								$scope.currentInputSystemTag += '-x-emic';
 								break;
 						}
 						break;
-					case 'Voice':
+					case $scope.selects.special.options[2]:		// Voice
 						$scope.currentInputSystemTag += '-Zxxx-x-audio';
 						break;
-					case 'Script / Region / Variant':
-						$scope.currentInputSystemTag += ($scope.currentInputSystem.script) ? '-' + $scope.currentInputSystem.script : '';
-						$scope.currentInputSystemTag += ($scope.currentInputSystem.region) ? '-' + $scope.currentInputSystem.region : '';
+					case $scope.selects.special.options[3]:		// Script / Region / Variant
+						var script = revertSelectScript($scope.currentInputSystem.script);
+						var region = revertSelectRegion($scope.currentInputSystem.region);
+						$scope.currentInputSystemTag += (script) ? '-' + script : '';
+						$scope.currentInputSystemTag += (region) ? '-' + region : '';
 						$scope.currentInputSystemTag += ($scope.currentInputSystem.variant) ? '-x-' + $scope.currentInputSystem.variant : '';
 						break;
 				}

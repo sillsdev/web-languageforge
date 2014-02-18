@@ -46,11 +46,7 @@
 			<div class="control-group" data-ng-show="currentInputSystem.special == 'IPA transcription'">
 				<label class="control-label offset1" for="purpose">Purpose</label>
 				<div class="controls offset1">
-					<select class="form-control" id="purpose" data-ng-model="currentInputSystem.purpose">
-						<option>unspecified</option>
-						<option>Etic (raw phonetic transcription)</option>
-						<option>Emic (uses the phonology of the language)</option>
-					</select>
+					<select class="form-control" id="purpose" data-ng-model="currentInputSystem.purpose" data-ng-options="option for option in selects.purpose.options"></select>
 				</div>
 				<a href="http://en.wikipedia.org/wiki/International_Phonetic_Alphabet" target="_blank">
 					<i class="icon-globe"></i> Read more about IPA transcriptions
@@ -62,14 +58,14 @@
 			<div class="control-group" data-ng-show="currentInputSystem.special == 'Script / Region / Variant'">
 				<label class="control-label offset1" for="script">Script</label>
 				<div class="controls offset1">
-					<select class="form-control" id="script" data-ng-model="currentInputSystem.script">
-						<option>get script list</option>
+					<select class="form-control" id="script" data-ng-model="currentInputSystem.script" data-ng-options="option for (key, option) in selects.script.options">
+						<option value="">-- select a script --</option>
 					</select>
 				</div>
 				<label class="control-label offset1" for="region">Region</label>
 				<div class="controls offset1">
-					<select class="form-control" id="region" data-ng-model="currentInputSystem.region">
-						<option>get region list</option>
+					<select class="form-control" id="region" data-ng-model="currentInputSystem.region" data-ng-options="option for (key, option) in selects.region.options">
+						<option value="">-- select a region --</option>
 					</select>
 				</div>
 				<label class="control-label offset1" for="variant">Variant</label>
