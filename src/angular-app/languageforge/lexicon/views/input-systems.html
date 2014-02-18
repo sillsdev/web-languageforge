@@ -40,12 +40,7 @@
 			<div class="control-group">
 				<label class="control-label" for="special">Special</label>
 				<div class="controls">
-					<select class="form-control" id="special" data-ng-model="currentInputSystem.special">
-						<option>none</option>
-						<option>IPA transcription</option>
-						<option>Voice</option>
-						<option>Script / Region / Variant</option>
-					</select>
+					<select class="form-control" id="special" data-ng-model="currentInputSystem.special" data-ng-options="option for option in selects.special.options"></select>
 				</div>
 			</div>
 			<div class="control-group" data-ng-show="currentInputSystem.special == 'IPA transcription'">
