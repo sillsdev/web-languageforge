@@ -80,7 +80,8 @@ angular.module('lexicon',
 			$scope.breadcrumbs = breadcrumbService.read();
 		}, true);
 	}])
-	.controller('LexiconMenuCtrl', ['$scope', '$timeout', 'lexEntryService', function($scope, $timeout, lexEntryService) {
+	.controller('LexiconMenuCtrl', ['$scope', '$timeout', 'lexEntryService', 
+	                                function($scope, $timeout, lexEntryService) {
 		$scope.noSubmenuId = 0;
 		$scope.gatherSubmenuId = 1;
 		$scope.addSubmenuId = 2;
