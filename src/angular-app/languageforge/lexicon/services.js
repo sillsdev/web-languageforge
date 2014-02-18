@@ -1,6 +1,6 @@
 angular.module('lexicon.services', ['jsonRpc'])
 	.service('lexEntryService', function() {
-		var config = {
+		var _config = {
 			'inputSystems': {
 				'en': {
 					'abbreviation': 'en',
@@ -91,10 +91,26 @@ angular.module('lexicon.services', ['jsonRpc'])
 					}
 				}
 			},
-			'visibleTasks': ['view', 'dashboard', 'review', 'gather-texts', 'semdom', 'wordlist', 'dbe', 'add-meanings', 'add-grammar', 'add-examples', 'review'],
+			'tasks': {
+				'view': {'visible': true},
+				'dashboard': {'visible': true},
+				'gather-texts': {'visible': true},
+				'semdom': {'visible': true},
+				'wordlist': {'visible': true},
+				'dbe': {'visible': true},
+				'add-meanings': {'visible': true},
+				'add-grammar': {'visible': true},
+				'add-examples': {'visible': true},
+				'settings': {'visible': true},
+				'review': {'visible': true}
+			}
 		};
 		this.projectSettings = function(projectId, callback) {
-			(callback || angular.noop)({ok: true, data: {config: config}});
+			(callback || angular.noop)({'ok': true, 'data': {'config': angular.copy(_config)}});
+		};
+		this.updateProjectSettings = function(projectId, config, callback) {
+			_config = config;
+			(callback || angular.noop)({'ok': true});
 		};
 
 		var sampleData = [

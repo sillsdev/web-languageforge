@@ -90,11 +90,15 @@ angular.module('lexicon',
 			return ($scope.visibleSubmenu == submenuId);
 		};
 		$scope.isItemVisible = function(itemName) {
-			// Default to visible if nothing specified in config
-			if (angular.isUndefined($scope.config) || angular.isUndefined($scope.config.visibleTasks)) {
+			// Default to visible if config not defined
+			if (angular.isUndefined($scope.config)) {
 				return true;
 			};
-			return ($scope.config.visibleTasks.indexOf(itemName) != -1);
+			// Default to invisible if nothing specified in config
+			if (angular.isUndefined($scope.config.tasks[itemName])) {
+				return false;
+			};
+			return $scope.config.tasks[itemName].visible;
 		};
 		$scope.hideAllSubmenus = function(delay) {
 			// If no delay specified, undefined will work quite well since
