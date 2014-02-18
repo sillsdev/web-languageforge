@@ -7,11 +7,11 @@
 				More <span class="caret"></span>
 			</a>
 			<ul class="dropdown-menu">
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for {{config.inputSystems[currentInputSystem.code]}}</a></li>
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for {{config.inputSystems[currentInputSystem.code]}}</a></li>
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of {{config.inputSystems[currentInputSystem.code]}}</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
 				<li class="divider"></li>
-				<li><a tabindex="-1" href="#"><i class="icon-remove"></i> Remove {{config.inputSystems[currentInputSystem.code]}}</a></li>
+				<li><a tabindex="-1" href="#"><i class="icon-remove"></i> Remove {{lists.inputSystems[currentInputSystemTag].name}}</a></li>
 			</ul>
 		</div>
 	</div>
@@ -24,7 +24,10 @@
 			</ul>
 			
 			<br />
-			<pre>{{lists|json}}</pre>
+			<pre>
+				{{currentInputSystemTag}}
+				{{lists|json}}
+			</pre>
 		</div>
 		
 		<!-- Right column: input system setup -->
@@ -43,28 +46,30 @@
 					<select class="form-control" id="special" data-ng-model="currentInputSystem.special" data-ng-options="option for option in selects.special.options"></select>
 				</div>
 			</div>
-			<div class="control-group" data-ng-show="currentInputSystem.special == 'IPA transcription'">
+			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.options[1]">	<!-- IPA transcription -->
 				<label class="control-label offset1" for="purpose">Purpose</label>
 				<div class="controls offset1">
-					<select class="form-control" id="purpose" data-ng-model="currentInputSystem.purpose" data-ng-options="option for option in selects.purpose.options"></select>
+					<select class="form-control" id="purpose" data-ng-model="currentInputSystem.purpose" data-ng-options="key as option for (key, option) in selects.purpose.options">
+						<option value="">unspecified</option>
+					</select>
 				</div>
 				<a href="http://en.wikipedia.org/wiki/International_Phonetic_Alphabet" target="_blank">
 					<i class="icon-globe"></i> Read more about IPA transcriptions
 				</a>
 			</div>
-			<div class="control-group" data-ng-show="currentInputSystem.special == 'Voice'">
+			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.options[2]">		<!-- Voice -->
 				<p>In applications which support this option, fields with this input system will able to play and record voice.</p>
 			</div>
-			<div class="control-group" data-ng-show="currentInputSystem.special == 'Script / Region / Variant'">
+			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.options[3]">		<!-- Script / Region / Variant -->
 				<label class="control-label offset1" for="script">Script</label>
 				<div class="controls offset1">
-					<select class="form-control" id="script" data-ng-model="currentInputSystem.script" data-ng-options="option for (key, option) in selects.script.options">
+					<select class="form-control" id="script" data-ng-model="currentInputSystem.script" data-ng-options="key as option for (key, option) in selects.script.options">
 						<option value="">-- select a script --</option>
 					</select>
 				</div>
 				<label class="control-label offset1" for="region">Region</label>
 				<div class="controls offset1">
-					<select class="form-control" id="region" data-ng-model="currentInputSystem.region" data-ng-options="option for (key, option) in selects.region.options">
+					<select class="form-control" id="region" data-ng-model="currentInputSystem.region" data-ng-options="key as option for (key, option) in selects.region.options">
 						<option value="">-- select a region --</option>
 					</select>
 				</div>
