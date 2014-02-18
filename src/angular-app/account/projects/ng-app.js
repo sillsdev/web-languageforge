@@ -4,8 +4,8 @@ angular.module(
 		'projects',
 		[ 'sf.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice' ]
 )
-.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'linkService', 'silNoticeService',
-                             function($scope, projectService, ss, linkService, notice) {
+.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'linkService', 'silNoticeService', '$window',
+                             function($scope, projectService, ss, linkService, notice, $window) {
 		// Rights
 		$scope.rights = {};
 		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.DELETE); 
@@ -117,6 +117,23 @@ angular.module(
 		$scope.linkService = linkService;
 		
 		$scope.site = ss.site;
+		
+		$scope.getBaseHost = function(hostname) {
+			var parts = hostname.split('.');
+			if (parts[0] == 'www' || parts[0] == 'dev' || parts[0] == 'scriptureforge' || parts[0] == 'languageforge') {
+				return hostname;
+			}
+			return hostname.substring(hostname.indexOf('.') + 1);
+		};
+		
+		$scope.getProjectHost = function(theme) {
+			var baseHost = $scope.getBaseHost($window.location.hostname);
+			if (theme != 'default') {
+				return $window.location.protocol + '//' + theme + '.' + baseHost;
+			} else {
+				return $window.location.protocol + '//' + baseHost;
+			}
+		};
 		
 		$scope.projectTypes = {
 			'sfchecks': 'Community Scripture Checking Project',

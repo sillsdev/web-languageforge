@@ -31,7 +31,7 @@
         		<ul class="inline" data-ng-class="{active: isSelected(project)}">
         			<li data-ng-show="rights.deleteOther"><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
         			<li style="width: 80%">
-        				<a data-ng-show="isInProject(project)" href="/app/{{project.appName}}#/p/{{project.id}}">
+        				<a data-ng-show="isInProject(project)" href="{{getProjectHost(project.themeName)}}/app/{{project.appName}}#/p/{{project.id}}">
         					<span class="larger-text">{{project.projectname}} ({{projectTypes[project.appName]}})</span>
         				</a>
         				<span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectname}} ({{projectTypes[project.appName]}})</span>
