@@ -12,56 +12,59 @@ angular.module('lexicon',
 		 'settings'
 		])
 	.config(['$routeProvider', function($routeProvider) {
+		// the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
+	    $routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } });
 		$routeProvider.when(
-				'/view',
+				'/p/:projectId/view',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html',
 				}
 			);
 		$routeProvider.when(
-				'/dashboard',
+				// dashboard
+				'/p/:projectId',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html',
 				}
 			);
 		$routeProvider.when(
-				'/gather-words',
+				'/p/:projectId/gather-words',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html',
 				}
 			);
 		$routeProvider.when(
-				'/dbe',
+				'/p/:projectId/dbe',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/dbe.html',
 				}
 			);
 		$routeProvider.when(
-				'/add-grammar',
+				'/p/:projectId/add-grammar',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/add-grammar.html',
 				}
 			);
 		$routeProvider.when(
-				'/add-examples',
+				'/p/:projectId/add-examples',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/add-examples.html',
 				}
 			);
 		$routeProvider.when(
-				'/add-meanings',
+				'/p/:projectId/add-meanings',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/add-meanings.html',
 				}
 			);
 		$routeProvider.when(
-				'/settings',
+				'/p/:projectId/settings',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/settings.html',
 					controller: 'SettingsCtrl'
 				}
 			);
-		$routeProvider.otherwise({redirectTo: '/dashboard'});
+	    $routeProvider.otherwise({redirectTo: '/projects'});
 	}])
 	.controller('MainCtrl', ['$scope', '$route', '$routeParams', '$location', function($scope, $route, $routeParams, $location) {
 		$scope.route = $route;
