@@ -217,6 +217,7 @@ form.dc-multitext .wsid {
 }
 
 .dc-sense {
+	background-color: #FFF0DE;
 	border-right: 10px solid #F1F1F1;
 	border-radius: 10px;
 	margin-top: 20px;
