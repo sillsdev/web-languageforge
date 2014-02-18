@@ -5,23 +5,29 @@
 		'languageCodes': function() {
 			return _inputSystems_languageCodes;
 		},
-		'code': function(tag) {
+		'scripts': function() {
+			return _inputSystems_scripts;
+		},
+		'regions': function() {
+			return _inputSystems_regions;
+		},
+		'getCode': function(tag) {
 			var tokens = tag.split('-');
 			return tokens[0];
 		},
-		'script': function(tag) {
+		'getScript': function(tag) {
 			var tokens = tag.split('-');
 			return (tokens[1]) ? tokens[1] : '';
 		},
-		'region': function(tag) {
+		'getRegion': function(tag) {
 			var tokens = tag.split('-');
 			return (tokens[2] && tokens[2] != 'x') ? tokens[2] : '';
 		},
-		'privateUse': function(tag) {
+		'getPrivateUse': function(tag) {
 			var i = tag.indexOf('-x-');
 			return (i > 0) ? tag.substr(i + 3, tag.length - i + 3): '';
 		},
-		'name': function(code, script, region, privateUse) {
+		'getName': function(code, script, region, privateUse) {
 			var baseName = _inputSystems_languageCodes[code];
 			var extraName = '';
 			switch (script) {
@@ -49,3 +55,10 @@
 		'mi': 'Maori'
 	};
 	
+	var _inputSystems_scripts = {
+		'Latn': 'Latin'
+	};
+	
+	var _inputSystems_regions = {
+		'NZ': 'New Zealand'
+	};
