@@ -13,6 +13,17 @@ angular.module(
 			inputSystems: {}
 		};
 		
+		$scope.selects = {
+			'special': {
+				'options': [
+					'none',
+					'IPA transcription',
+					'Voice',
+					'Script / Region / Variant'
+				]
+			}
+		};
+		
 		$scope.currentInputSystemTag = '';
 		$scope.currentInputSystem = {
 			'name': '',
@@ -29,11 +40,13 @@ angular.module(
 			$scope.currentInputSystem.name = $scope.lists.inputSystems[inputSystemTag].name;
 			$scope.currentInputSystem.code = $scope.lists.inputSystems[inputSystemTag].code;
 			$scope.currentInputSystem.abbreviation = $scope.lists.inputSystems[inputSystemTag].abbreviation;
+			$scope.currentInputSystem.special = convertScriptForSelect($scope.lists.inputSystems[inputSystemTag].script, $scope.lists.inputSystems[inputSystemTag].privateUse);
 		};
 		
-		$scope.currentField = {};
-		$scope.currentField.hidden = '';
 		$scope.currentFieldId = '';
+		$scope.currentField = {
+			'hidden': ''
+		};
 		$scope.selectField = function(fieldId) {
 			$scope.currentFieldId = fieldId;
 		};
@@ -65,6 +78,26 @@ angular.module(
 		
 		$scope.saveInputSystems = function() {
 			$scope.editInputSystems.collapsed = true;
+		};
+		
+		var convertScriptForSelect = function(script, privateUse) {
+			var scriptSelect = '';
+			switch(script) {
+				case '':
+					scriptSelect = $scope.selects.special.options[0];
+					break;
+				case 'fonipa':
+					scriptSelect = $scope.selects.special.options[1];
+					break;
+				case 'Zxxx':
+					if (privateUse == 'audio') {
+						scriptSelect = $scope.selects.special.options[2];
+						break;
+					}
+				default:
+					scriptSelect = $scope.selects.special.options[3];
+			}
+			return scriptSelect;
 		};
 		
 		$scope.$watch('config.inputSystems', function(newValue) {
