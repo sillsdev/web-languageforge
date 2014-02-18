@@ -4,8 +4,11 @@ angular.module(
 		'settings', 
 		['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.notice', 'palaso.ui.dc.entry', 'ngAnimate']
 	)
-	.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
-	                                 function($scope, userService, ss, notice, lexService, $window, $timeout) {
+	.controller('SettingsCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
+	                                 function($scope, $routeParams, userService, ss, notice, lexService, $window, $timeout) {
+		$scope.project = {
+			'id': $routeParams.projectId
+		};
 
 		$scope.config = {};
 		$scope.languageCodes = {};
@@ -65,7 +68,7 @@ angular.module(
 		};
 		
 		$scope.queryProjectSettings = function() {
-			lexService.projectSettings('', function(result) {	// TODO Add. $scope.project.id in place of '' when part of project IJH 2014-02
+			lexService.projectSettings($scope.project.id, function(result) {
 				if (result.ok) {
 					$scope.languageCodes = inputSystems.languageCodes();
 					$scope.config = result.data.config;
@@ -95,7 +98,7 @@ angular.module(
 		
 		$scope.settingsApply = function() {
 			console.log("settingsApply");
-			lexService.updateProjectSettings('', $scope.config, function(result) {	// TODO Add. $scope.project.id in place of '' when part of project IJH 2014-02
+			lexService.updateProjectSettings($scope.project.id, $scope.config, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "Project settings updated successfully");
 				}
