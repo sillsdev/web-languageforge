@@ -17,6 +17,7 @@
                     <tbody>
                         <tr ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" ng-repeat="e in entries | filter:searchText">
                             <td ng-click="editEntry(e.id)">{{e.title}}</td>
+                            <td ng-click="editEntry(e.id)">{{getMeaning(e.entry)}}</td>
                         </tr>
                     </tbody>
                 </table>
