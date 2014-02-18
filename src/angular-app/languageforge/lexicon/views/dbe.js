@@ -77,8 +77,19 @@ function dbeCtrl($scope, userService, sessionService, lexService, $window, $time
 			}
 		}
 		if (isNew) {
-			$scope.entries.unshift({id:entry.id, title:$scope.entryTitle(entry)});
+			$scope.entries.unshift({id:entry.id, title:$scope.entryTitle(entry), entry:entry});
 		}
+	};
+	
+	$scope.getMeaning = function(entry) {
+		// Default to English; second default is the first meaning found that's not blank
+		var meaning = entry.senses[0].definition['en']; // Might be undefined
+		// TODO: Default should be "primary analysis language", whatever that is defined in the config. (Currently there's nowhere in the config to define that).
+		for (var lang in entry.senses[0].definition) {
+			if (!meaning) { meaning = entry.senses[0].definition[lang]; };
+		};
+		if (!meaning) { meaning = "[No definition]"; }
+		return meaning;
 	};
 	
 	$scope.setCurrentEntry = function(entry) {
