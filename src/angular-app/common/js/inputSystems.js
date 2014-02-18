@@ -2,7 +2,7 @@
 
 // input systems common functions
 	var inputSystems = {
-		'langaugeCodes': function() {
+		'languageCodes': function() {
 			return _inputSystems_languageCodes;
 		},
 		'code': function(tag) {
