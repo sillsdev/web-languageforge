@@ -25,6 +25,18 @@ class Website {
 		return $site;
 	}
 	
+	public static function getHostName($domainName = '') {
+		if (!$domainName) {
+			$domainName = $_SERVER['HTTP_HOST'];
+		}
+		$uriParts = explode('.', $domainName);
+		$stopWords = array(self::LANGUAGEFORGE, self::SCRIPTUREFORGE, 'www', 'dev');
+		while (count($uriParts) > 0 && !in_array($uriParts[0], $stopWords)) {
+			array_shift($uriParts);
+		}
+		return implode('.', $uriParts);
+	}
+	
 	/**
 	 * 
 	 * @param string $domainName

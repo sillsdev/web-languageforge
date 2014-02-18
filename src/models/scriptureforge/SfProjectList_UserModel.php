@@ -1,6 +1,6 @@
 <?php
 
-namespace models\languageforge;
+namespace models\scriptureforge;
 
 use libraries\shared\Website;
 
@@ -21,7 +21,7 @@ use models\mapper\Id;
  * List of projects of which a user is a member
  * 
  */
-class LfProjectList_UserModel extends ProjectList_UserModel
+class SfProjectList_UserModel extends ProjectList_UserModel
 {
 
 	public function __construct() {
@@ -32,7 +32,7 @@ class LfProjectList_UserModel extends ProjectList_UserModel
 	 * Reads all projects
 	 */
 	function readAll() {
-		$query = array('siteName' => array('$in' => array(Website::LANGUAGEFORGE)));
+		$query = array('siteName' => array('$in' => array(Website::SCRIPTUREFORGE)));
 		$fields = array('projectname', 'appName', 'themeName', 'siteName');
 		return $this->_mapper->readList($this, $query, $fields);
 	}
@@ -42,7 +42,7 @@ class LfProjectList_UserModel extends ProjectList_UserModel
 	 * @param string $userId
 	 */
 	function readUserProjects($userId) {
-		$query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array(Website::LANGUAGEFORGE)));
+		$query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array(Website::SCRIPTUREFORGE)));
 		$fields = array('projectname', 'appName', 'themeName', 'siteName');
 		return $this->_mapper->readList($this, $query, $fields);
 	}

@@ -2,6 +2,12 @@
 
 namespace models;
 
+use models\scriptureforge\SfProjectList_UserModel;
+
+use models\languageforge\LfProjectList_UserModel;
+
+use libraries\shared\Website;
+
 use models\UserModelMongoMapper;
 use models\mapper\Id;
 use models\mapper\IdReference;
@@ -69,8 +75,12 @@ class UserModel extends \models\UserModelBase
 		//$projectModel->users->_removeRef($this->id);
 	}
 	
-	public function listProjects() {
-		$projectList = new ProjectList_UserModel();
+	public function listProjects($site) {
+		if ($site == Website::LANGUAGEFORGE) {
+			$projectList = new LfProjectList_UserModel();
+		} elseif ($site == Website::SCRIPTUREFORGE) {
+			$projectList = new SfProjectList_UserModel();
+		}
 		$projectList->readUserProjects($this->id->asString());
 		return $projectList;
 	}
