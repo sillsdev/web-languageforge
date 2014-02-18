@@ -85,9 +85,10 @@ class Base extends CI_Controller {
 			$this->viewdata['user_name'] = $this->_user->username;
 			$this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
 			$this->viewdata['small_avatar_url'] = $this->_user->avatar_ref;
-			$projects = $this->_user->listProjects();
+			$projects = $this->_user->listProjects($this->site);
 			$this->viewdata['projects_count'] = $projects->count;
 			$this->viewdata['projects'] = $projects->entries;
+			$this->viewdata['hostname'] = Website::getHostName();
 			if ($isAdmin) {
 				$projectList = new models\ProjectListModel();
 				$projectList->read();
