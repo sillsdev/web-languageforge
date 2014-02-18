@@ -21,14 +21,6 @@ angular.module('lexicon.services', ['jsonRpc'])
 					'abbreviation': 'miNgati',
 				}
 			},
-			'writingsystems': {
-				'type': 'map',
-				'map': {
-					'th': 'Thai',
-					'en': 'English',
-					'thipa': 'Thai IPA'
-				}
-			},
 			'entry': {
 				'type': 'fields',
 				'fieldNames': ['lexeme', 'senses'],
@@ -362,7 +354,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 
 		this.getPageDto = function(projectId, callback) {
 			var list = [];
-			var ws = config.entry.fields.lexeme.writingsystems[0];
+			var ws = _config.entry.fields.lexeme.writingsystems[0];
 			serverIter(function(i,e) {
 				var title = e.lexeme[ws];
 				if (!title) {
@@ -370,7 +362,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				}
 				list.push({id: e.id, title: title, entry: e});
 			});
-			(callback || angular.noop)({data: { entries: list, config: config }});
+			(callback || angular.noop)({data: { entries: list, config: _config }});
 		};
 
 		// --- BEGIN TEST CODE ---
