@@ -5,7 +5,6 @@ angular.module('sfchecks',
 		[
 		 'ngRoute',
 		 'ngSanitize',
-		 'sfchecks.projects',
 		 'sfchecks.project',
 		 'sfchecks.projectSettings',
 		 'sfchecks.questions',
@@ -15,49 +14,45 @@ angular.module('sfchecks',
 		 'sf.ui.invitefriend'
 		])
 	.config(['$routeProvider', function($routeProvider) {
-	    $routeProvider.when(
-    		'/projects', 
-    		{
-    			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/projects.html', 
-    			controller: 'ProjectsCtrl'
-    		}
+		// the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
+	    $routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } }
 	    );
 	    $routeProvider.when(
-    		'/project/:projectId', 
+    		'/p/:projectId', 
     		{
     			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/project.html', 
     			controller: 'ProjectCtrl'
     		}
     	);
 	    $routeProvider.when(
-	    		'/project/:projectId/settings', 
+	    		'/p/:projectId/settings', 
 	    		{
 	    			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/projectSettings.html', 
 	    			controller: 'ProjectSettingsCtrl'
 	    		}
 	    	);
 	    $routeProvider.when(
-    		'/project/:projectId/:textId', 
+    		'/p/:projectId/:textId', 
     		{
     			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/questions.html', 
     			controller: 'QuestionsCtrl'
     		}
     	);
 	    $routeProvider.when(
-	    		'/project/:projectId/:textId/settings', 
+	    		'/p/:projectId/:textId/settings', 
 	    		{
 	    			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/questions-settings.html', 
 	    			controller: 'QuestionsSettingsCtrl'
 	    		}
 	    	);
 	    $routeProvider.when(
-    		'/project/:projectId/:textId/:questionId',
+    		'/p/:projectId/:textId/:questionId',
     		{
     			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/question.html', 
     			controller: 'QuestionCtrl'
 			}
 		);
-	    $routeProvider.otherwise({redirectTo: 'projects'});
+	    $routeProvider.otherwise({redirectTo: '/projects'});
 	}])
 	.controller('MainCtrl', ['$scope', 'silNoticeService', '$route', '$routeParams', '$location',
 	                         function($scope, noticeService, $route, $routeParams, $location) {

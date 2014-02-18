@@ -46,9 +46,9 @@ angular.module(
 		// Breadcrumb
 		breadcrumbService.set('top',
 				[
-				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
+				 {href: '/app/projects', label: 'My Projects'},
+				 {href: '/app/sfchecks#/p/' + $routeParams.projectId, label: ''},
+				 {href: '/app/sfchecks#/p/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
 				]
 		);
 
