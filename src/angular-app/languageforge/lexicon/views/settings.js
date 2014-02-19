@@ -9,6 +9,8 @@ angular.module(
 		$scope.project = {
 			'id': $routeParams.projectId
 		};
+		
+		$scope.showPre = false;		// TODO Remove. Set false to hide <pre>. Remove this and all <pre> IJH 2014-02
 
 		$scope.config = {};
 		$scope.languageCodes = {};
