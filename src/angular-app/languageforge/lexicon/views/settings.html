@@ -69,22 +69,22 @@
 		<div class="row">
 		
 		<!-- Left column: task list -->
-		<div class="span3">
+		<div class="span3 control-group">
 			<dl class="picklists">
 				<dt>Dashboard</dt>
-				<dd><div class="control-group"><div class="controls">
+				<dd><div class="controls">
 					<div data-ng-click="selectTask('dashboard')" data-ng-class="{selected:currentTaskId == 'dashboard'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['dashboard'].visible"> Dashboard</div>
 					</div>
-				</div></div></dd>
+				</div></dd>
 				<dt>Dictionary</dt>
-				<dd><div class="control-group"><div class="controls">
+				<dd><div class="controls">
 					<div data-ng-click="selectTask('dbe')" data-ng-class="{selected:currentTaskId == 'dbe'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['dbe'].visible"> Dictionary Browse &amp; Edit</div>
 					</div>
-				</div></div></dd>
+				</div></dd>
 				<dt>Add Information</dt>
-				<dd><div class="control-group"><div class="controls">
+				<dd><div class="controls">
 					<div data-ng-click="selectTask('add-meanings')" data-ng-class="{selected:currentTaskId == 'add-meanings'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-meanings'].visible"> Add Meanings</div>
 					</div>
@@ -94,9 +94,9 @@
 					<div data-ng-click="selectTask('add-examples')" data-ng-class="{selected:currentTaskId == 'add-examples'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-examples'].visible"> Add Example Sentences</div>
 					</div>
-				</div></div></dd>
+				</div></dd>
 				<dt>Gather Words</dt>
-				<dd><div class="control-group"><div class="controls">
+				<dd><div class="controls">
 					<div data-ng-click="selectTask('gather-texts')" data-ng-class="{selected:currentTaskId == 'gather-texts'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['gather-texts'].visible"> From Texts</div>
 					</div>
@@ -106,19 +106,19 @@
 					<div data-ng-click="selectTask('semdom')" data-ng-class="{selected:currentTaskId == 'semdom'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visible"> From Semantic Domains</div>
 					</div>
-				</div></div></dd>
+				</div></dd>
 				<dt>Settings</dt>
-				<dd><div class="control-group"><div class="controls">
+				<dd><div class="controls">
 					<div data-ng-click="selectTask('settings')" data-ng-class="{selected:currentTaskId == 'settings'}">
 						<div class="checkbox"><input type="checkbox" disabled data-ng-model="config.tasks['settings'].visible"> Settings</div>
 					</div>
-				</div></div></dd>
+				</div></dd>
 				<dt>Review</dt>
-				<dd><div class="control-group"><div class="controls">
+				<dd><div class="controls">
 					<div data-ng-click="selectTask('review')" data-ng-class="{selected:currentTaskId == 'review'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['review'].visible"> Review</div>
 					</div>
-				</div></div></dd>
+				</div></dd>
 			</dl>
 		</div>
 		
@@ -141,7 +141,6 @@
 					</div>
 				</div>
 			</div>
-			
 			<div class="well" data-ng-show="currentTaskId == 'semdom'">
 				<h3>Gather Words from Semantic Domains</h3>
 				<div class="control-group">
@@ -171,7 +170,6 @@
 						</dd>
 					</dl>
 				</div>
-				
 			</div>
 <pre data-ng-show="showPre">
 currentTaskId {{currentTaskId}}
