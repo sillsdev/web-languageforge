@@ -125,6 +125,6 @@ function grammarCtrl($scope, userService, sessionService, lexService, $window, $
 	
 };
 
-angular.module('meaning', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.dc.entry', 'palaso.ui.lfListview', 'ngAnimate']).
+angular.module('meaning', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.rendered', 'palaso.ui.lfListview', 'ngAnimate']).
 controller('grammarCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', grammarCtrl])
 ;
