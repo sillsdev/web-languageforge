@@ -164,4 +164,36 @@ angular.module(
 		});
 	
 	}])
+	.controller('TaskSettingsCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
+	                                 function($scope, $routeParams, userService, ss, notice, lexService, $window, $timeout) {
+		$scope.selects.timeRange = {
+			'options': {
+				'1_30days': 'Up to 30 days',
+				'2_90days': 'Up to 90 days',
+				'3_1year': 'Up to 1 year',
+				'4_all': 'All'
+			}
+		};
+		$scope.selects.language = {
+			'options': {
+				'en': 'English',
+				'es': 'Spanish',
+				'fr': 'French',
+				'hi': 'Hindi',
+				'id': 'Indonesian',
+				'km': 'Central Khmer',
+				'ne': 'Nepali',
+				'ru': 'Russian',
+				'th': 'Thai',
+				'ur': 'Urdu',
+				'zh-CN': 'Chinese'
+			}
+		};
+		
+		$scope.currentTaskId = '';
+		$scope.selectTask = function(taskId) {
+			$scope.currentTaskId = taskId;
+		};
+
+	}])
 	;

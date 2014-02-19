@@ -843,18 +843,25 @@ div#comments table.comments td {
 	border-bottom: 1px solid #eee;
 }
 
-div.picklists {
-	border-top: 1px solid #E3E3E3;
-}
+/* Settings */
 div.picklists li {
 	cursor: pointer;
 	padding-left: 5px;
-	border-bottom: 1px solid #E3E3E3;
 }
 div.picklists li:hover {
 	background-color: #EEE;
 }
 div.picklists li.selected {
+	background-color: #DDD;
+}
+
+dl.picklists div {
+	cursor: pointer;
+}
+dl.picklists div div div:hover {
+	background-color: #EEE;
+}
+dl.picklists div.selected {
 	background-color: #DDD;
 }
 
