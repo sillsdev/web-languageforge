@@ -10,7 +10,7 @@
 		<div class="row">
 		
 		<!-- Left column: field list -->
-		<div class="span4">
+		<div class="span3">
 			<fieldset>
 			<legend>Show the following fields:</legend>
 			<div class="picklists">
@@ -27,7 +27,7 @@
 		</div>
 		
 		<!-- Right column: field setup -->
-		<div class="span8">
+		<div class="span9">
 			<fieldset>
 				<legend>Setup for "selected field"</legend>
 				<div class="well">
@@ -61,60 +61,126 @@
 				</div>
 			</fieldset>
 		</div>
+		
 		</div>
 	</tab>
 	<tab heading="Tasks">
+		<div data-ng-controller="TaskSettingsCtrl">
 		<div class="row">
 		
 		<!-- Left column: task list -->
-		<div class="span4">
-			<fieldset>
-			<legend>Show the following tasks:</legend>
-			<dl class="unstyled">
+		<div class="span3">
+			<dl class="picklists">
 				<dt>Dashboard</dt>
-				<dd>
-					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks.dashboard.visible"> Dashboard</label>
-					</div></div>
-				</dd>
+				<dd><div class="control-group"><div class="controls">
+					<div data-ng-click="selectTask('dashboard')" data-ng-class="{selected:currentTaskId == 'dashboard'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['dashboard'].visible"> Dashboard</div>
+					</div>
+				</div></div></dd>
 				<dt>Dictionary</dt>
-				<dd>
-					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks.dbe.visible"> Dictionary Browse &amp; Edit</label>
-					</div></div>
-				</dd>
+				<dd><div class="control-group"><div class="controls">
+					<div data-ng-click="selectTask('dbe')" data-ng-class="{selected:currentTaskId == 'dbe'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['dbe'].visible"> Dictionary Browse &amp; Edit</div>
+					</div>
+				</div></div></dd>
 				<dt>Add Information</dt>
-				<dd>
-					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-meanings'].visible"> Add Meanings</label>
-						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-grammar'].visible"> Add Parts of Speech</label>
-						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-examples'].visible"> Add Example Sentences</label>
-					</div></div>
-				</dd>
+				<dd><div class="control-group"><div class="controls">
+					<div data-ng-click="selectTask('add-meanings')" data-ng-class="{selected:currentTaskId == 'add-meanings'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-meanings'].visible"> Add Meanings</div>
+					</div>
+					<div data-ng-click="selectTask('add-grammar')" data-ng-class="{selected:currentTaskId == 'add-grammar'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-grammar'].visible"> Add Parts of Speech</div>
+					</div>
+					<div data-ng-click="selectTask('add-examples')" data-ng-class="{selected:currentTaskId == 'add-examples'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-examples'].visible"> Add Example Sentences</div>
+					</div>
+				</div></div></dd>
 				<dt>Gather Words</dt>
-				<dd>
-					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['gather-texts'].visible"> From Texts</label>
-						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks.wordlist.visible"> From a Word List</label>
-						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks.semdom.visible"> From Semantic Domains</label>
-					</div></div>
-				</dd>
+				<dd><div class="control-group"><div class="controls">
+					<div data-ng-click="selectTask('gather-texts')" data-ng-class="{selected:currentTaskId == 'gather-texts'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['gather-texts'].visible"> From Texts</div>
+					</div>
+					<div data-ng-click="selectTask('wordlist')" data-ng-class="{selected:currentTaskId == 'wordlist'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['wordlist'].visible"> From a Word List</div>
+					</div>
+					<div data-ng-click="selectTask('semdom')" data-ng-class="{selected:currentTaskId == 'semdom'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visible"> From Semantic Domains</div>
+					</div>
+				</div></div></dd>
 				<dt>Settings</dt>
-				<dd>
-					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" disabled data-ng-model="config.tasks.settings.visible"> Settings</label>
-					</div></div>
-				</dd>
+				<dd><div class="control-group"><div class="controls">
+					<div data-ng-click="selectTask('settings')" data-ng-class="{selected:currentTaskId == 'settings'}">
+						<div class="checkbox"><input type="checkbox" disabled data-ng-model="config.tasks['settings'].visible"> Settings</div>
+					</div>
+				</div></div></dd>
 				<dt>Review</dt>
-				<dd>
-					<div class="control-group"><div class="controls">
-						<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks.review.visible"> Review</label>
-					</div></div>
-				</dd>
+				<dd><div class="control-group"><div class="controls">
+					<div data-ng-click="selectTask('review')" data-ng-class="{selected:currentTaskId == 'review'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['review'].visible"> Review</div>
+					</div>
+				</div></div></dd>
 			</dl>
-			</fieldset>
 		</div>
-	</div>
+		
+		<!-- Right column: task setup -->
+		<div class="span9">
+			<div class="well" data-ng-show="currentTaskId == 'dashboard'">
+				<h3>Dashboard</h3>
+				<div class="control-group">
+					<label class="control-label" for="timeRange">Activity time range</label>
+					<div class="controls">
+						<select class="form-control" id="timeRange" data-ng-model="config.tasks['dashboard'].timeRange" data-ng-options="key as option for (key, option) in selects.timeRange.options">
+							<option value="">-- choose a time range --</option>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="wordCount">Target word count</label>
+					<div class="controls">
+						<input type="number" min="0" id="wordCount" data-ng-model="config.tasks['dashboard'].targetWordCount">
+					</div>
+				</div>
+			</div>
+			
+			<div class="well" data-ng-show="currentTaskId == 'semdom'">
+				<h3>Gather from Semantic Domains</h3>
+				<div class="control-group">
+					<label class="control-label" for="language">Language</label>
+					<div class="controls">
+						<select class="form-control" id="language" data-ng-model="config.tasks['semdom'].language" data-ng-options="key as option for (key, option) in selects.language.options">
+							<option value="">-- choose a language --</option>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="fields">Fields to gather along with the Word</label>
+					<dl id="fields">
+						<dt>Sense</dt>
+						<dd>
+							<div class="controls">
+								<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.definition"> Definition (Meaning)</label>
+								<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.partOfSpeech"> Part Of Speech</label>
+							</div>
+						</dd>
+						<dt>Example</dt>
+						<dd>
+							<div class="controls">
+								<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.example"> Example Sentence</label>
+								<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.translation"> Example Translation</label>
+							</div>
+						</dd>
+					</dl>
+				</div>
+				
+			</div>
+<pre>
+currentTaskId {{currentTaskId}}
+config.tasks['{{currentTaskId}}'] {{config.tasks[currentTaskId]|json}}
+</pre>
+		</div>
+		
+		</div>
+		</div>
 	</tab>
 </tabset>
 </form>
