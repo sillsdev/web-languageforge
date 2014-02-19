@@ -1,24 +1,12 @@
 <form>
-	<!-- control buttons -->
-	<div class="control-group">
-		<button class="btn btn-success" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>New</button>
-		<div class="btn-group">
-			<a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#" style="font-weight:normal">
-				More <span class="caret"></span>
-			</a>
-			<ul class="dropdown-menu">
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
-				<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
-				<li class="divider"></li>
-				<li><a tabindex="-1" href="#"><i class="icon-remove"></i> Remove {{lists.inputSystems[currentInputSystemTag].name}}</a></li>
-			</ul>
+<div class="row-fluid">
+	<!-- Left column: input system list -->
+	<div class="span3">
+		<!-- control buttons -->
+		<div class="control-group pagination-centered">
+			<button class="btn btn-success" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>New Language</button>
 		</div>
-	</div>
-	
-	<div class="row-fluid">
-		<!-- Left column: input system list -->
-		<div class="span3 control-group picklists">
+		<div class="control-group picklists">
 			<ul class="unstyled">
 				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in lists.inputSystems" data-ng-class="{selected:currentInputSystemTag == inputSystemTag}">{{inputSystem.name}}</li>
 			</ul>
@@ -29,9 +17,26 @@
 				{{lists|json}}
 			</pre>
 		</div>
+	</div>
 		
-		<!-- Right column: input system setup -->
-		<div class="span9 well">
+	<!-- Right column: input system setup -->
+	<div class="span9">
+		<!-- control buttons -->
+		<div class="control-group">
+			<div class="btn-group">
+				<a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#" style="font-weight:normal">
+					More <span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
+					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
+					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
+					<li class="divider"></li>
+					<li><a tabindex="-1" href="#"><i class="icon-remove"></i> Remove {{lists.inputSystems[currentInputSystemTag].name}}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="well">
 			<span class="pull-right">{{currentInputSystemTag}}</span>
 			<h3>{{currentInputSystem.name}}</h3>
 			<div class="control-group">
@@ -83,5 +88,6 @@
 			</div>
 		</div>
 	</div>
+</div>
 </form>
 	
