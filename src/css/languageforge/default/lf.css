@@ -865,6 +865,11 @@ dl.picklists div.selected {
 	background-color: #DDD;
 }
 
+dl#fields {
+	margin-top: 5px;
+	padding-left: 20px;
+}
+
 /* New Item under ribbon bar */
 div.new-item form {
 	margin: 20px 0 0 0;

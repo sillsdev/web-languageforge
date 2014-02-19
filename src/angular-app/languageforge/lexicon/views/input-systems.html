@@ -11,11 +11,11 @@
 				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in lists.inputSystems" data-ng-class="{selected:currentInputSystemTag == inputSystemTag}">{{inputSystem.name}}</li>
 			</ul>
 			
-			<br />
-			<pre>
-				{{currentInputSystemTag}}
-				{{lists|json}}
-			</pre>
+<br />
+<pre data-ng-show="showPre">
+{{currentInputSystemTag}}
+{{lists|json}}
+</pre>
 		</div>
 	</div>
 		
@@ -51,13 +51,37 @@
 					<select class="form-control" id="special" data-ng-model="currentInputSystem.special" data-ng-options="option for option in selects.special.options"></select>
 				</div>
 			</div>
+			
+			<div class="offset1">
 			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.options[1]">	<!-- IPA transcription -->
-				<label class="control-label offset1" for="purpose">Purpose</label>
-				<div class="controls offset1">
+				<label class="control-label" for="purpose">Purpose</label>
+				<div class="controls">
 					<select class="form-control" id="purpose" data-ng-model="currentInputSystem.purpose" data-ng-options="key as option for (key, option) in selects.purpose.options">
 						<option value="">unspecified</option>
 					</select>
 				</div>
+			</div>
+			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.options[3]">		<!-- Script / Region / Variant -->
+				<label class="control-label" for="script">Script</label>
+				<div class="controls">
+					<select class="form-control" id="script" data-ng-model="currentInputSystem.script" data-ng-options="key as option for (key, option) in selects.script.options">
+						<option value="">-- select a script --</option>
+					</select>
+				</div>
+				<label class="control-label" for="region">Region</label>
+				<div class="controls">
+					<select class="form-control" id="region" data-ng-model="currentInputSystem.region" data-ng-options="key as option for (key, option) in selects.region.options">
+						<option value="">-- select a region --</option>
+					</select>
+				</div>
+				<label class="control-label" for="variant">Variant</label>
+				<div class="controls">
+					<input type="text" id="variant" data-ng-model="currentInputSystem.variant">
+				</div>
+			</div>
+			</div>
+			
+			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.options[1]">	<!-- IPA transcription -->
 				<a href="http://en.wikipedia.org/wiki/International_Phonetic_Alphabet" target="_blank">
 					<i class="icon-globe"></i> Read more about IPA transcriptions
 				</a>
@@ -66,22 +90,6 @@
 				<p>In applications which support this option, fields with this input system will able to play and record voice.</p>
 			</div>
 			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.options[3]">		<!-- Script / Region / Variant -->
-				<label class="control-label offset1" for="script">Script</label>
-				<div class="controls offset1">
-					<select class="form-control" id="script" data-ng-model="currentInputSystem.script" data-ng-options="key as option for (key, option) in selects.script.options">
-						<option value="">-- select a script --</option>
-					</select>
-				</div>
-				<label class="control-label offset1" for="region">Region</label>
-				<div class="controls offset1">
-					<select class="form-control" id="region" data-ng-model="currentInputSystem.region" data-ng-options="key as option for (key, option) in selects.region.options">
-						<option value="">-- select a region --</option>
-					</select>
-				</div>
-				<label class="control-label offset1" for="variant">Variant</label>
-				<div class="controls offset1">
-					<input type="text" id="variant" data-ng-model="currentInputSystem.variant">
-				</div>
 				<a href="http://www.w3.org/International/questions/qa-choosing-language-tags" target="_blank">
 					<i class="icon-globe"></i> 	Read more about language identifiers
 				</a>
