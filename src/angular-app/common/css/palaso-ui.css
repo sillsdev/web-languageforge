@@ -1,3 +1,10 @@
+/* Ensure that adding 1px borders won't mess up layout
+   See http://css-tricks.com/international-box-sizing-awareness-day/ */
+*, *:before, *:after {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
 
 /* Typeahead */
 div.typeahead {
@@ -229,6 +236,14 @@ form.dc-multitext .wsid {
 	border-right: 10px solid #F1F1F1;
 	border-radius: 10px;
 	
+}
+
+.dc-rendered.word {
+	font-weight: bold;
+}
+
+.dc-rendered.definition {
+	/* CSS for definition can go here, if needed */
 }
 
 .deleteX {

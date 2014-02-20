@@ -2,20 +2,22 @@ angular.module('palaso.ui.dc.rendered', [])
   // Palaso UI Rendered Definition
   .directive('dcRendered', [function() {
 		return {
-			restrict : 'E',
-			templateUrl : '/angular-app/common/directive/dc-rendered.html',
-			scope : {
-				config : "=",
-				model : "=",
+			restrict: 'E',
+			templateUrl: '/angular-app/common/directive/dc-rendered.html',
+			scope: {
+				config: "=",
+				model: "=",
+				hideIfEmpty: "=?"
 			},
 			controller: ['$scope', function($scope) {
 				$scope.definition = {
-					'label': '[word goes here]',
-					'rendered': '(nicely-rendered HTML goes here)'
+					'label': '',
+					'rendered': ''
 				};
+				if (angular.isUndefined($scope.hideIfEmpty)) { $scope.hideIfEmpty = false; };
 
 				$scope.getLexemeForm = function(entry) {
-					var result = '[unknown word]';
+					var result = '';
 					// entry.lexeme has one property, but we don't know its name.
 					// We could look in the config, but this is actually simpler.
 					angular.forEach(entry.lexeme, function(word, wsid) {
@@ -69,7 +71,7 @@ angular.module('palaso.ui.dc.rendered', [])
 					}
 				};
 			}],
-			link : function(scope, element, attrs, controller) {
+			link: function(scope, element, attrs, controller) {
 				scope.$watch('model', function(model) {
 					scope.makeValidModel();
 					scope.render(model);

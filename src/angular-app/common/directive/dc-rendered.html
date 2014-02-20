@@ -1,3 +1,5 @@
-<div class="dc-rendered">
-	<span style="font-weight: bold">{{definition.label}}</span> {{definition.rendered}}
+<div class="dc-rendered" ng-hide="hideIfEmpty && !definition.label">
+	<span class="dc-rendered word">{{definition.label}}</span>
+	<span class="dc-rendered definition">{{definition.rendered}}</span>
+	<hr />
 </div>
