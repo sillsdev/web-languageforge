@@ -10,7 +10,7 @@ angular.module(
 			'id': $routeParams.projectId
 		};
 		
-		$scope.showPre = false;		// TODO Remove. Set false to hide <pre>. Remove this and all <pre> IJH 2014-02
+		$scope.showPre = true;		// TODO Remove. Set false to hide <pre>. Remove this and all <pre> IJH 2014-02
 
 		$scope.config = {};
 		$scope.languageCodes = {};
@@ -61,14 +61,6 @@ angular.module(
 			$scope.currentInputSystem = convertSelects($scope.currentInputSystem, $scope.lists.inputSystems[inputSystemTag]);
 		};
 		
-		$scope.currentFieldId = '';
-		$scope.currentField = {
-			'hidden': ''
-		};
-		$scope.selectField = function(fieldId) {
-			$scope.currentFieldId = fieldId;
-		};
-		
 		$scope.queryProjectSettings = function() {
 			lexService.projectSettings($scope.project.id, function(result) {
 				if (result.ok) {
@@ -86,20 +78,16 @@ angular.module(
 						$scope.lists.inputSystems[tag].privateUse = privateUse;
 						$scope.lists.inputSystems[tag].name = inputSystems.getName(code, script, region, privateUse);
 					};
+					$scope.currentFieldName = 'lexeme';
+					$scope.currentTaskName = 'dashboard';
 				}
 			});
 		};
 		
 		$scope.queryProjectSettings();
-		$scope.editInputSystems = {
-			'collapsed': true,
-			'done': function() {
-				this.collapsed = true;
-			}
-		};
-		
+
 		$scope.settingsApply = function() {
-			console.log("settingsApply");
+//			console.log("settingsApply");
 			lexService.updateProjectSettings($scope.project.id, $scope.config, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "Project settings updated successfully");
@@ -166,6 +154,27 @@ angular.module(
 		});
 	
 	}])
+	.controller('FieldSettingsCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
+	                                 function($scope, $routeParams, userService, ss, notice, lexService, $window, $timeout) {
+		$scope.fieldconfig = {
+			'lexeme': $scope.config.entry.fields['lexeme'],
+			'definition': $scope.config.entry.fields.senses.fields['definition'],
+			'partOfSpeech': $scope.config.entry.fields.senses.fields['partOfSpeech'],
+			'example': $scope.config.entry.fields.senses.fields.examples.fields['example'],
+			'translation': $scope.config.entry.fields.senses.fields.examples.fields['translation']
+		};
+		$scope.selectField = function(fieldName) {
+			$scope.currentFieldName = fieldName;
+		};
+
+		$scope.editInputSystems = {
+			'collapsed': true,
+			'done': function() {
+				this.collapsed = true;
+			}
+		};
+			
+	}])
 	.controller('TaskSettingsCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
 	                                 function($scope, $routeParams, userService, ss, notice, lexService, $window, $timeout) {
 		$scope.selects.timeRange = {
@@ -192,9 +201,8 @@ angular.module(
 			}
 		};
 		
-		$scope.currentTaskId = '';
-		$scope.selectTask = function(taskId) {
-			$scope.currentTaskId = taskId;
+		$scope.selectTask = function(taskName) {
+			$scope.currentTaskName = taskName;
 		};
 
 	}])

@@ -10,12 +10,6 @@
 			<ul class="unstyled">
 				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in lists.inputSystems" data-ng-class="{selected:currentInputSystemTag == inputSystemTag}">{{inputSystem.name}}</li>
 			</ul>
-			
-<br />
-<pre data-ng-show="showPre">
-{{currentInputSystemTag}}
-{{lists|json}}
-</pre>
 		</div>
 	</div>
 		
@@ -97,5 +91,9 @@
 		</div>
 	</div>
 </div>
+<pre data-ng-show="showPre">
+{{currentInputSystemTag}}
+{{lists|json}}
+</pre>
 </form>
 	
