@@ -4,23 +4,13 @@ angular.module(
 		'sfchecks.projectSettings',
 		[ 'bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload' ]
 	)
-	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
-	                                 function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService) {
+	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService', 'sfchecksLinkService',
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService, sfchecksLinkService) {
 		var projectId = $routeParams.projectId;
 		$scope.project = {};
 		$scope.list = {};
 		$scope.project.id = projectId;
 
-		// Breadcrumb
-		// TODO: refactor to use sfchecksLinkService - cjh
-		breadcrumbService.set('top',
-				[
-				 {href: '/app/projects', label: 'My Projects'},
-				 {href: '/app/sfchecks#/p/' + $routeParams.projectId, label: ''},
-				 {href: '/app/sfchecks#/p/' + $routeParams.projectId + '/settings', label: 'Settings'},
-				]
-		);
-		
 		$scope.canEditCommunicationSettings = function() {
 			return ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT);
 		};
@@ -38,8 +28,16 @@ angular.module(
 					$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
 					$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
 					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
+
 					// Breadcrumb
-					breadcrumbService.updateCrumb('top', 1, {label: result.data.bcs.project.crumb});
+					// TODO: refactor to use sfchecksLinkService - cjh
+					breadcrumbService.set('top',
+							[
+							 {href: '/app/projects', label: 'My Projects'},
+							 {href: sfchecksLinkService.project($routeParams.projectId), label: result.data.bcs.project.crumb},
+							 {href: sfchecksLinkService.project($routeParams.projectId) + '/settings', label: 'Settings'},
+							]
+					);
 					
 				}
 			});
