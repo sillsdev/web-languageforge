@@ -3,7 +3,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
   .directive('dcEntry', [function() {
 		return {
 			restrict : 'E',
-			templateUrl : '/angular-app/common/directive/dc-entry.html',
+			templateUrl : '/angular-app/languageforge/lexicon/directive/dc-entry.html',
 			scope : {
 				config : "=",
 				model : "=",
