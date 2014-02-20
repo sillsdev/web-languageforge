@@ -9,7 +9,7 @@ function getAvatarUrl(color, shape) {
 }
 
 
-angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.notice'])
+angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice'])
 .controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
 		function userProfileCtrl($scope, userService, ss, notice) {
 	$scope.user = {};

@@ -2,10 +2,10 @@
 
 angular.module(
 		'sfchecks.projectSettings',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload' ]
+		[ 'bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload' ]
 	)
-	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
-	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
+	.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService) {
 		var projectId = $routeParams.projectId;
 		$scope.project = {};
 		$scope.list = {};
@@ -25,7 +25,7 @@ angular.module(
 		};
 		
 		$scope.queryProjectSettings = function() {
-			projectService.projectSettings($scope.project.id, function(result) {
+			sfchecksProjectService.projectSettings($scope.project.id, function(result) {
 				if (result.ok) {
 					$scope.project = result.data.project;
 					$scope.list.users = result.data.entries;
@@ -50,7 +50,7 @@ angular.module(
 		};
 			
 		$scope.readCommunicationSettings = function() {
-			projectService.readSettings($scope.project.id, function(result) {
+			sfchecksProjectService.readSettings($scope.project.id, function(result) {
 				if (result.ok) {
 					$scope.settings.sms = result.data.sms;
 					$scope.settings.email = result.data.email;
@@ -60,10 +60,10 @@ angular.module(
 
 
 	}])
-	.controller('ProjectSettingsCommunicationCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
-	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
+	.controller('ProjectSettingsCommunicationCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService) {
 		$scope.updateCommunicationSettings = function() {
-			projectService.updateSettings($scope.project.id, $scope.settings.sms, $scope.settings.email, function(result) {
+			sfchecksProjectService.updateSettings($scope.project.id, $scope.settings.sms, $scope.settings.email, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, $scope.project.projectname + " SMS settings updated successfully");
 				}
@@ -71,8 +71,8 @@ angular.module(
 		};
 		
 	}])
-	.controller('ProjectSettingsPropertiesCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
-	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
+	.controller('ProjectSettingsPropertiesCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService) {
 
 		// TODO This can be moved to the page level controller, it is common with the Setup tab.
 		$scope.updateProject = function() {
@@ -84,7 +84,7 @@ angular.module(
 				featured: $scope.project.featured
 			};
 
-			projectService.update(newProject, function(result) {
+			sfchecksProjectService.update(newProject, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
 				}
@@ -93,8 +93,8 @@ angular.module(
 		
 	
 	}])
-	.controller('ProjectSettingsSetupCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
-	                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
+	.controller('ProjectSettingsSetupCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
+	                                 function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService) {
 
 		// TODO This can be moved to the page level controller, it is common with the Setup tab.
 		$scope.currentListsEnabled = [];
@@ -108,7 +108,7 @@ angular.module(
 				}
 			}
 
-			projectService.update($scope.project, function(result) {
+			sfchecksProjectService.update($scope.project, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
 				}

@@ -2,10 +2,10 @@
 
 angular.module(
 		'sfchecks.project',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload' ]
+		[ 'bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload' ]
 )
-.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService', 'projectService', 'messageService',
-                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService, notice, projectService, messageService) {
+.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
+                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService, notice, sfchecksProjectService, messageService) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
 		
@@ -67,7 +67,7 @@ angular.module(
 		
 		// Page Dto
 		$scope.getPageDto = function() {
-			projectService.pageDto(projectId, function(result) {
+			sfchecksProjectService.pageDto(projectId, function(result) {
 				if (result.ok) {
 					$scope.texts = result.data.texts;
 					$scope.textsCount = $scope.texts.length;

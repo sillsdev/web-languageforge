@@ -178,6 +178,6 @@ function dbeCtrl($scope, userService, sessionService, lexService, $window, $time
 }
 
 
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.dc.entry', 'ngAnimate']).
+angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'ngAnimate']).
 controller('dbeCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', dbeCtrl])
 ;
