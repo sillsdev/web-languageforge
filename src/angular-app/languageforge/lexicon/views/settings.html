@@ -1,7 +1,7 @@
 <div class="container" data-ng-cloak>
 <h2 style="font-weight:normal">Settings</h2>
-<form data-ng-submit="settingsApply()" name="settingsForm">
-<button class="btn btn-primary pull-right" type="submit"><i class="icon-ok"></i> Apply</button>
+<form name="settingsForm">
+<button class="btn btn-primary pull-right" data-ng-click="settingsApply()" ><i class="icon-ok"></i> Apply</button>
 <tabset>
 	<tab heading="Input Systems">
 		<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'"></div>
@@ -43,8 +43,8 @@
 					<hr />
 					
 					<div class="control-group" data-ng-show="editInputSystems.collapsed">
-						<label class="control-label" for="inputSystem">Input System</label>
-						<ul class="unstyled"  id="inputSystem">
+						<label class="control-label" for="inputSystem">Input Systems</label>
+						<ul class="unstyled indent1"  id="inputSystem">
 							<li data-ng-click="selectList(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in config.inputSystems">
 								<div class="checkbox"><input data-ng-model="currentListsEnabled[inputSystemTag]" type="checkbox"/>{{inputSystem.abbreviation}}</div>
 							</li>
@@ -153,7 +153,7 @@
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="fields">Fields to gather along with the Word</label>
-					<dl id="fields">
+					<dl class="indent1" id="fields">
 						<dt>Sense</dt>
 						<dd>
 							<div class="controls">
