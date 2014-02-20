@@ -43,15 +43,6 @@ angular.module(
 		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT);
 		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
 		
-		// Breadcrumb
-		breadcrumbService.set('top',
-				[
-				 {href: '/app/projects', label: 'My Projects'},
-				 {href: sfchecksLinkService.project($routeParams.projectId), label: ''},
-				 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: ''},
-				]
-		);
-
 		// Question templates
 		$scope.emptyTemplate = {
 			title: '(Select a template)',
@@ -132,10 +123,15 @@ angular.module(
 					} 
 					$scope.project = result.data.project;
 					$scope.text.url = sfchecksLinkService.text(projectId, textId);
-					//console.log($scope.project.name);
-					//console.log($scope.text.title);
-					breadcrumbService.updateCrumb('top', 1, {label: $scope.project.name});
-					breadcrumbService.updateCrumb('top', 2, {label: $scope.text.title});
+
+					// Breadcrumb
+					breadcrumbService.set('top',
+							[
+							 {href: '/app/projects', label: 'My Projects'},
+							 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.project.name},
+							 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: $scope.text.title},
+							]
+					);
 
 					var rights = result.data.rights;
 					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.DELETE); 
@@ -250,8 +246,8 @@ angular.module(
 		};
 
 	}])
-	.controller('QuestionsSettingsCtrl', ['$scope', '$http', 'textService', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 
-	                                      function($scope, $http, textService, ss, $routeParams, breadcrumbService, notice) {
+	.controller('QuestionsSettingsCtrl', ['$scope', '$http', 'textService', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService',
+	                                      function($scope, $http, textService, ss, $routeParams, breadcrumbService, notice, sfchecksLinkService) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		var dto;
@@ -260,16 +256,6 @@ angular.module(
 		$scope.editedText = {
 			id: textId,
 		};
-
-		// Breadcrumb
-		breadcrumbService.set('top',
-				[
-				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
-				 {href: sfchecksLinkService.project($routeParams.projectId), label: ''},
-				 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: ''},
-				 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId) + '/Settings', label: 'Settings'}
-				]
-		);
 
 		// Get name from text service. This really should be in the DTO, but this will work for now.
 		// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08
@@ -282,9 +268,16 @@ angular.module(
 				$scope.rights = {
 					editOther: ss.hasRight($scope.dto.rights, ss.domain.TEXTS, ss.operation.EDIT),
 				};
-//				console.log($scope.dto);
-				breadcrumbService.updateCrumb('top', 1, {label: $scope.dto.bcs.project.crumb});
-				breadcrumbService.updateCrumb('top', 2, {label: $scope.dto.text.title});
+
+				// Breadcrumb
+				breadcrumbService.set('top',
+						[
+						 {href: '/app/sfchecks#/projects', label: 'My Projects'},
+						 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.dto.bcs.project.crumb},
+						 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: $scope.dto.text.title},
+						 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId) + '/Settings', label: 'Settings'}
+						]
+				);
 			}
 		});
 

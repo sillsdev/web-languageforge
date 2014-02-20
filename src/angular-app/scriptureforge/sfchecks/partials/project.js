@@ -16,14 +16,6 @@ angular.module(
 		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT);
 		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 		
-		// Breadcrumb
-		breadcrumbService.set('top',
-				[
-				 {href: '/app/projects', label: 'My Projects'},
-				 {href: '/app/sfchecks#/p/' + $routeParams.projectId, label: ''},
-				]
-		);
-		
 		// Broadcast Messages
 		// items are in the format of {id: id, subject: subject, content: content}
 		$scope.messages = [];
@@ -84,7 +76,13 @@ angular.module(
 					$scope.project = result.data.project;
 					$scope.project.url = sfchecksLinkService.project(projectId);
 					
-					breadcrumbService.updateCrumb('top', 1, {label: $scope.project.name});
+					// Breadcrumb
+					breadcrumbService.set('top',
+							[
+							 {href: '/app/projects', label: 'My Projects'},
+							 {href: '/app/sfchecks#/p/' + $routeParams.projectId, label: $scope.project.name},
+							]
+					);
 
 					var rights = result.data.rights;
 					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.DELETE); 
