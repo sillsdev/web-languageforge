@@ -3,7 +3,7 @@ angular.module('palaso.ui.dc.optionlist', [])
   .directive('dcOptionlist', [function() {
 		return {
 			restrict : 'E',
-			templateUrl : '/angular-app/common/directive/dc-optionlist.html',
+			templateUrl : '/angular-app/languageforge/lexicon/directive/dc-optionlist.html',
 			scope : {
 				definition : "=",
 				model : "=",
