@@ -91,6 +91,7 @@ angular.module(
 			lexService.updateProjectSettings($scope.project.id, $scope.config, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "Project settings updated successfully");
+					$scope.settingsForm.$setPristine();
 				}
 			});
 		};
