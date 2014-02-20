@@ -85,9 +85,22 @@ angular.module('lexicon.services', ['jsonRpc'])
 			},
 			'tasks': {
 				'view': {'visible': true},
-				'dashboard': {'visible': true},
+				'dashboard': {
+					'visible': true,
+					'timeRange': '1_30days',
+					'targetWordCount': 0
+				},
 				'gather-texts': {'visible': true},
-				'semdom': {'visible': true},
+				'semdom': {
+					'visible': true,
+					'language': 'en',
+					'visibleFields': {
+						'definition': true,
+						'partOfSpeech': true,
+						'example': true,
+						'translation': true
+					}
+				},
 				'wordlist': {'visible': true},
 				'dbe': {'visible': true},
 				'add-meanings': {'visible': true},
