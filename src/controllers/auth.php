@@ -82,9 +82,9 @@ class Auth extends Base {
 				else
 				{
 					$user = new \models\UserModel((string)$this->session->userdata('user_id'));
-					$projects = $user->listProjects();
+					$projects = $user->listProjects($this->site);
 					$firstProjectId = $projects->entries[0]['id'];
-					redirect("/app/sfchecks#/project/$firstProjectId", 'location');
+					redirect("/app/sfchecks#/p/$firstProjectId", 'location');
 				}
 			}
 			else
