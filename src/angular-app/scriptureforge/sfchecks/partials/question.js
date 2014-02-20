@@ -64,16 +64,6 @@ angular.module(
 		var projectId = $routeParams.projectId;
 		var questionId = $routeParams.questionId;
 
-		// Breadcrumb
-		breadcrumbService.set('top',
-				[
-				 {href: '/app/projects', label: 'My Projects'},
-				 {href: '/app/sfchecks#/p/' + $routeParams.projectId, label: ''},
-				 {href: '/app/sfchecks#/p/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
-				 {href: '/app/sfchecks#/p/' + $routeParams.projectId + '/' + $routeParams.textId + '/' + $routeParams.questionId, label: ''},
-				]
-		);
-
 		$scope.votes = {};
 		$scope.unreadComments = [];
 		$scope.unreadAnswers = [];
@@ -104,9 +94,17 @@ angular.module(
 				$scope.unreadComments = result.data.unreadComments;
 				$scope.unreadAnswers = result.data.unreadAnswers;
 				//console.log(result.data);
-				breadcrumbService.updateCrumb('top', 1, {label: $scope.project.projectname});
-				breadcrumbService.updateCrumb('top', 2, {label: $scope.text.title});
-				breadcrumbService.updateCrumb('top', 3, {label: $scope.question.title});
+
+				// Breadcrumb
+				breadcrumbService.set('top',
+						[
+						 {href: '/app/projects', label: 'My Projects'},
+						 {href: '/app/sfchecks#/p/' + $routeParams.projectId, label: $scope.project.projectname},
+						 {href: '/app/sfchecks#/p/' + $routeParams.projectId + '/' + $routeParams.textId, label: $scope.text.title},
+						 {href: '/app/sfchecks#/p/' + $routeParams.projectId + '/' + $routeParams.textId + '/' + $routeParams.questionId, label: $scope.question.title},
+						]
+				);
+
 				// Keep track of answer count so we can show or hide "There are no answers" as appropriate
 				$scope.question.answerCount = Object.keys($scope.question.answers).length;
 				$scope.rights = result.data.rights;
