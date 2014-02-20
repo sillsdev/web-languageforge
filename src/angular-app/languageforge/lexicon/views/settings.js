@@ -160,6 +160,7 @@ angular.module(
 			'lexeme': $scope.config.entry.fields['lexeme'],
 			'definition': $scope.config.entry.fields.senses.fields['definition'],
 			'partOfSpeech': $scope.config.entry.fields.senses.fields['partOfSpeech'],
+			'semanticDomainValue': $scope.config.entry.fields.senses.fields['semanticDomainValue'],
 			'example': $scope.config.entry.fields.senses.fields.examples.fields['example'],
 			'translation': $scope.config.entry.fields.senses.fields.examples.fields['translation']
 		};
