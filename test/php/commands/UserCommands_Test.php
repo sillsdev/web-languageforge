@@ -1,5 +1,7 @@
 <?php
 
+use libraries\shared\Website;
+
 use libraries\scriptureforge\sfchecks\IDelivery;
 use models\commands\UserCommands;
 use models\ProjectModel;
@@ -65,7 +67,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual(strlen($dto['password']), 4);
 		$projectUser = $sameProject->listUsers()->entries[0];
 		$this->assertEqual($projectUser['username'], "username");
-		$userProject = $user->listProjects()->entries[0];
+		$userProject = $user->listProjects(Website::SCRIPTUREFORGE)->entries[0];
 		$this->assertEqual($userProject['projectname'], SF_TESTPROJECT);
 	}
 	
@@ -94,7 +96,7 @@ class TestUserCommands extends UnitTestCase {
 		$user = new UserModel($userId);
 		$this->assertEqual($user->username, $params['username']);
 		$this->assertEqual($project->listUsers()->count, 1);
-		$this->assertEqual($user->listProjects()->count, 1);
+		$this->assertEqual($user->listProjects(Website::SCRIPTUREFORGE)->count, 1);
 	}
 	
 	function testRegister_NoProjectCode_UserInNoProjects() {
@@ -117,7 +119,7 @@ class TestUserCommands extends UnitTestCase {
 		
 		$user = new UserModel($userId);
 		$this->assertEqual($user->username, $params['username']);
-		$this->assertEqual($user->listProjects()->count, 0);
+		$this->assertEqual($user->listProjects(Website::SCRIPTUREFORGE)->count, 0);
 	}
 	
 	function testReadForRegistration_ValidKey_ValidUserModel() {

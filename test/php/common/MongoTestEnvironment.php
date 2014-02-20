@@ -67,6 +67,7 @@ class MongoTestEnvironment
 		$projectModel->projectname = $name;
 		$projectModel->siteName = $site;
 		$projectModel->themeName = 'default';
+		$projectModel->appName = 'sfchecks';
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;

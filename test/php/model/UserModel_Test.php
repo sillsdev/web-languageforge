@@ -1,4 +1,6 @@
 <?php
+use libraries\shared\Website;
+
 use models\rights\Roles;
 
 use models\mapper\Id;
@@ -92,7 +94,7 @@ class TestUserModel extends UnitTestCase {
 		$userModel = new UserModel($userId);
 		
 		// Check that list projects is empty
-		$result = $userModel->listProjects();
+		$result = $userModel->listProjects(Website::SCRIPTUREFORGE);
 		$this->assertEqual(0, $result->count);
 		$this->assertEqual(array(), $result->entries);
 				
@@ -105,17 +107,23 @@ class TestUserModel extends UnitTestCase {
 		$p2m->write();
 		$userModel->write();
 		
-		$result = $userModel->listProjects();
+		$result = $userModel->listProjects(Website::SCRIPTUREFORGE);
 		$this->assertEqual(2, $result->count);
 		$this->assertEqual(
 			array(
 				array(
 		          'projectname' => 'p1',
-		          'id' => $p1
+		          'id' => $p1,
+				  'appName' => 'sfchecks',
+				  'siteName' => Website::SCRIPTUREFORGE,
+				  'themeName' => 'default'
 				),
 				array(
 		          'projectname' => 'p2',
-		          'id' => $p2
+		          'id' => $p2,
+				  'appName' => 'sfchecks',
+				  'siteName' => Website::SCRIPTUREFORGE,
+				  'themeName' => 'default'
 				)
 			), $result->entries
 		);
