@@ -3,7 +3,7 @@ angular.module('palaso.ui.dc.example', ['palaso.ui.dc.multitext'])
   .directive('dcExample', [function() {
 		return {
 			restrict : 'E',
-			templateUrl : '/angular-app/common/directive/dc-example.html',
+			templateUrl : '/angular-app/languageforge/lexicon/directive/dc-example.html',
 			scope : {
 				config : "=",
 				model : "=",

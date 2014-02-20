@@ -1,7 +1,7 @@
 <div class="dc-sense">
     <div class="deleteX pull-right"><i data-ng-click="remove(index)" title="Delete '{{getSenseTitle(sense)}}'" class="icon-remove"></i></div>
     <div data-ng-repeat="field in config.fieldNames">
-        <div class="data-ng-switch" data-on="config.fields[field].type">
+        <ng-switch data-on="config.fields[field].type">
             <div data-ng-switch-when="optionlist">
                 <dc-optionlist definition="config.fields[field]" model="model[field]"></dc-optionlist>
             </div>
@@ -9,7 +9,7 @@
                 <dc-multitext definition="config.fields[field]" model="model[field]"></dc-multitext>
             </div>
             <div data-ng-switch-when="fields">
-                <div class="data-ng-switch" data-on="field">
+                <ng-switch data-on="field">
                     <div data-ng-switch-when="examples">
                         <div class="animate-repeat" data-ng-repeat="example in model.examples"> 
                             <dc-example remove="deleteExample" index="$index" config="config.fields.examples" model="example"></dc-example>
@@ -19,11 +19,11 @@
                     <div data-ng-switch-default>
                         unsupported config field: {{field}}
                     </div>
-                </div>
+                </ng-switch>
             </div>
             <div data-ng-switch-default>
                 unsupported type {{config.fields[field].type}} for field {{field}}
             </div>
-        </div>
+        </ng-switch>
     </div>
 </div>

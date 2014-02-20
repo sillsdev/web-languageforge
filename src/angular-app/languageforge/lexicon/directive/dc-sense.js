@@ -3,7 +3,7 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
   .directive('dcSense', [function() {
 		return {
 			restrict : 'E',
-			templateUrl : '/angular-app/common/directive/dc-sense.html',
+			templateUrl : '/angular-app/languageforge/lexicon/directive/dc-sense.html',
 			scope : {
 				config : "=",
 				model : "=",
