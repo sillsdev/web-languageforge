@@ -4,8 +4,8 @@ angular.module(
 		'sfchecks.questions',
 		[ 'bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'angularFileUpload', 'ngSanitize' ]
 	)
-	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService', 'silNoticeService',
-	                              function($scope, questionsService, qts, $routeParams, ss, linkService, breadcrumbService, notice) {
+	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService',
+	                              function($scope, questionsService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
@@ -13,7 +13,7 @@ angular.module(
 		
 		$scope.audioReady = false;
 		soundManager.setup({
-			url : '/js/lib/sm2/',
+			url : '/angular-app/scriptureforge/sfchecks/js/vendor/sm2',
 			flashVersion : 9, // optional: shiny features (default = 8)
 			// optional: ignore Flash where possible, use 100% HTML5 mode
 			//preferFlash : false,
@@ -47,8 +47,8 @@ angular.module(
 		breadcrumbService.set('top',
 				[
 				 {href: '/app/projects', label: 'My Projects'},
-				 {href: '/app/sfchecks#/p/' + $routeParams.projectId, label: ''},
-				 {href: '/app/sfchecks#/p/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
+				 {href: sfchecksLinkService.project($routeParams.projectId), label: ''},
+				 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: ''},
 				]
 		);
 
@@ -131,7 +131,7 @@ angular.module(
 						$scope.text.audioUrl = '/' + $scope.text.audioUrl;
 					} 
 					$scope.project = result.data.project;
-					$scope.text.url = linkService.text(projectId, textId);
+					$scope.text.url = sfchecksLinkService.text(projectId, textId);
 					//console.log($scope.project.name);
 					//console.log($scope.text.title);
 					breadcrumbService.updateCrumb('top', 1, {label: $scope.project.name});
@@ -244,7 +244,7 @@ angular.module(
 		
 		$scope.enhanceDto = function(items) {
 			for (var i in items) {
-				items[i].url = linkService.question(projectId, textId, items[i].id);
+				items[i].url = sfchecksLinkService.question(projectId, textId, items[i].id);
 				items[i].calculatedTitle = $scope.calculateTitle(items[i].title, items[i].description);
 			}
 		};
@@ -265,9 +265,9 @@ angular.module(
 		breadcrumbService.set('top',
 				[
 				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId + '/Settings', label: 'Settings'},
+				 {href: sfchecksLinkService.project($routeParams.projectId), label: ''},
+				 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: ''},
+				 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId) + '/Settings', label: 'Settings'}
 				]
 		);
 

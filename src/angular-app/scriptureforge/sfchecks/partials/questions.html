@@ -3,7 +3,7 @@
 	<button data-ng-show="rights.deleteOther" class="btn" data-ng-disabled="selected.length == 0" data-ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
 	<button data-ng-show="rights.createTemplate" data-ng-disabled="selected.length == 0 || selected.length > 1" class="btn" data-ng-click="makeQuestionIntoTemplate()"><i class="icon-pushpin"></i>Make Template</button>
 	<button data-ng-show="rights.create" class="btn" data-ng-click="newQuestionCollapsed = !newQuestionCollapsed"><i class="icon-plus"></i>Add New Question</button>
-	<a data-ng-show="rights.editOther" class="btn" href="#/project/{{projectId}}/{{textId}}/settings"><i class="icon-pencil"></i> Update Text Settings</a>
+	<a data-ng-show="rights.editOther" class="btn" href="#/p/{{projectId}}/{{textId}}/settings"><i class="icon-pencil"></i> Update Text Settings</a>
 </form>
 <div class="new-item" data-collapse="newQuestionCollapsed">
 	<form class="well span12" name="newQuestionForm">
@@ -27,7 +27,7 @@
 <div class="row">
     <div class="span5">
     	<h2 class="pull-left" data-ng-show="text.audioUrl && audioReady">
-    		<a data-sgw-sound-player data-state="state" href="text.audioUrl"><i data-ng-class="$parent.$parent.audioIcon()" data-tooltip="Play audio"></i></a>
+    		<a data-sgw-sound-player data-state="state" href="text.audioUrl"><i data-ng-class="$parent.audioIcon()" data-tooltip="Play audio"></i></a>
     		<a data-ng-href="{{audioDownloadUrl}}"><i class="icon-download" data-tooltip="Download audio"></i></a>
     	</h2>
     	<h2>{{text.title}}</h2>

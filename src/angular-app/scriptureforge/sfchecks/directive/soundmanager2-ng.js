@@ -42,7 +42,6 @@ angular.module('sgw.soundmanager', [])
 		link : function(scope, element, attrs, controller) {
 			// Set the audioUrl from the href
 //			scope.audioUrl = attrs['href'];
-			
 			element.bind('click', function(e) {
 				e.preventDefault();
 				scope.$apply(function() {

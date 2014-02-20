@@ -4,8 +4,8 @@ angular.module(
 		'sfchecks.project',
 		[ 'bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload' ]
 )
-.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'linkService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
-                            function($scope, textService, $routeParams, ss, breadcrumbService, linkService, notice, sfchecksProjectService, messageService) {
+.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'sfchecksLinkService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
+                            function($scope, textService, $routeParams, ss, breadcrumbService, sfchecksLinkService, notice, sfchecksProjectService, messageService) {
 		var projectId = $routeParams.projectId;
 		$scope.projectId = projectId;
 		
@@ -82,7 +82,7 @@ angular.module(
 						
 
 					$scope.project = result.data.project;
-					$scope.project.url = linkService.project(projectId);
+					$scope.project.url = sfchecksLinkService.project(projectId);
 					
 					breadcrumbService.updateCrumb('top', 1, {label: $scope.project.name});
 
@@ -146,7 +146,7 @@ angular.module(
 		
 		$scope.enhanceDto = function(items) {
 			for (var i in items) {
-				items[i].url = linkService.text($scope.projectId, items[i].id);
+				items[i].url = sfchecksLinkService.text($scope.projectId, items[i].id);
 			}
 		};
 
