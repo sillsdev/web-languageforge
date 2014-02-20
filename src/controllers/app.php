@@ -10,7 +10,7 @@ class App extends Secure_base {
 	public function view($app = 'main', $project = 'default') {
 		$appFolder = "angular-app/" . $this->site . "/$app";
 		if (!file_exists($appFolder)) {
-			$appFolder = "angular-app/account/$app";
+			$appFolder = "angular-app/bellows/apps/$app";
 			if (!file_exists($appFolder)) {
 				show_404($this->site); // this terminates PHP
 			}
@@ -42,14 +42,14 @@ class App extends Secure_base {
 		$jsonSessionData = json_encode($sessionData);
 		$data['jsonSession'] = $jsonSessionData;
 
-		$data['jsCommonFiles'] = array();
-		self::addJavascriptFiles("angular-app/common/js", $data['jsCommonFiles']);
-		self::addJavascriptFiles ( "angular-app/common/directive", $data ['jsCommonFiles'] );
-		$data['jsProjectFiles'] = array();
-		self::addJavascriptFiles($appFolder, $data['jsProjectFiles']);
+		$data['jsFiles'] = array();
+		self::addJavascriptFiles("angular-app/bellows/js", $data['jsFiles']);
+		self::addJavascriptFiles ( "angular-app/bellows/directive", $data ['jsFiles'] );
+		self::addJavascriptFiles($appFolder, $data['jsFiles']);
 			
-		$data['cssCommonFiles'] = array();
-		self::addCssFiles("angular-app/common/css", $data['cssCommonFiles']);
+		$data['cssFiles'] = array();
+		self::addCssFiles("angular-app/bellows/css", $data['cssFiles']);
+		self::addCssFiles("$appFolder", $data['cssfiles']);
 
 		$data['title'] = $this->site;
 		

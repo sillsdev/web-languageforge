@@ -4,8 +4,8 @@
 		
 		<link rel="stylesheet" href="/css/shared/bootstrap.css" />
 		<link rel="stylesheet" href="/css/shared/jquery-te-1.4.0.css" />
-		<?php if (isset($cssCommonFiles)): ?>
-		<?php foreach($cssCommonFiles as $filename): ?>
+		<?php if (isset($cssFiles)): ?>
+		<?php foreach($cssFiles as $filename): ?>
 		<link rel=stylesheet href="/<?php echo $filename; ?>" />
 		<?php endforeach; ?>
 		<?php endif; ?>
