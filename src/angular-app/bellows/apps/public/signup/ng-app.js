@@ -1,7 +1,7 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module('signup', [ 'sf.services', 'ui.bootstrap'])
+angular.module('signup', [ 'bellows.services', 'ui.bootstrap'])
 .controller('UserCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
                          function UserCtrl($scope, userService, sessionService, notice) {
 

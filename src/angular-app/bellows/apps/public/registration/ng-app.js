@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('registration', [ 'sf.services', 'ui.bootstrap', 'palaso.ui.notice'])
+angular.module('registration', [ 'bellows.services', 'ui.bootstrap', 'palaso.ui.notice'])
 .controller('UserCtrl', ['$scope', '$location', 'userService', 'sessionService', 'silNoticeService', function UserCtrl($scope, $location, userService, sessionService, notice) {
 
 	$scope.record = {};

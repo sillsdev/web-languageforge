@@ -2,7 +2,7 @@
 
 angular.module(
 		'settings', 
-		['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.notice', 'palaso.ui.dc.entry', 'ngAnimate']
+		['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.dc.entry', 'ngAnimate']
 	)
 	.controller('SettingsCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
 	                                 function($scope, $routeParams, userService, ss, notice, lexService, $window, $timeout) {

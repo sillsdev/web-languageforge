@@ -4,7 +4,7 @@
 angular.module('activity', 
 		[
 		 'ngRoute',
-		 'sf.services',
+		 'bellows.services',
 		 'ui.bootstrap',
 		 'activity.filters',
 		 'sgw.ui.breadcrumb',

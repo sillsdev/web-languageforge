@@ -2,7 +2,7 @@
 
 angular.module(
 		'projects',
-		[ 'sf.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice' ]
+		[ 'bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice' ]
 )
 .controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'linkService', 'silNoticeService', '$window',
                              function($scope, projectService, ss, linkService, notice, $window) {
