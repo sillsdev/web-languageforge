@@ -16,10 +16,10 @@
 				<dt>Lex Entry</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectField('lexeme')" data-ng-class="{selected:currentFieldName == 'lexeme'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['lexeme'].visible"> {{fieldconfig['lexeme'].label}}</div>
+						<div class="checkbox"><input type="checkbox" disabled checked> {{fieldconfig['lexeme'].label}}</div>
 					</div>
 				</div></dd>
-				<dt>Lex Sense</dt>
+				<dt>Lex Senses</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectField('definition')" data-ng-class="{selected:currentFieldName == 'definition'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['definition'].visible"> {{fieldconfig['definition'].label}}</div>
@@ -27,8 +27,11 @@
 					<div data-ng-click="selectField('partOfSpeech')" data-ng-class="{selected:currentFieldName == 'partOfSpeech'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['partOfSpeech'].visible"> {{fieldconfig['partOfSpeech'].label}}</div>
 					</div>
+					<div data-ng-click="selectField('semanticDomainValue')" data-ng-class="{selected:currentFieldName == 'semanticDomainValue'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['semanticDomainValue'].visible"> {{fieldconfig['semanticDomainValue'].label}}</div>
+					</div>
 				</div></dd>
-				<dt>Lex Example</dt>
+				<dt>Lex Examples</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectField('example')" data-ng-class="{selected:currentFieldName == 'example'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['example'].visible"> {{fieldconfig['example'].label}}</div>
@@ -48,7 +51,7 @@
 					<label class="control-label" for="displayName">Display Name</label>
 					<div class="controls">
 						<input type="text" id="displayName" data-ng-model="fieldconfig[currentFieldName].label"/>
-						<label class="checkbox">
+						<label class="checkbox" data-ng-show="false">
 							<input type="checkbox" data-ng-model="fieldconfig[currentFieldName].hideEmpty"/>Hidden if empty
 						</label>
 					</div>

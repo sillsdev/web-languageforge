@@ -28,6 +28,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 					'lexeme': {
 						'type': 'multitext',
 						'label': 'Word',
+						'visible': true,
 						'writingsystems': ['thipa'],
 						'width': 20
 					},
@@ -67,13 +68,15 @@ angular.module('lexicon.services', ['jsonRpc'])
 								'fields': {
 									'example': {
 										'type': 'multitext',
-										'label': 'example',
+										'label': 'Example Sentence',
+										'visible': true,
 										'writingsystems': ['th'],
 										'width': 20
 									},
 									'translation': {
 										'type': 'multitext',
-										'label': 'translation',
+										'label': 'Example Translation',
+										'visible': true,
 										'writingsystems': ['en'],
 										'width': 20
 									}
