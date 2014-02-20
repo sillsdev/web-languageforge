@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.question',
-		[ 'sf.services', 
+		[ 'bellows.services','sfchecks.services',  
 		  'palaso.ui.listview', 
 		  'palaso.ui.jqte', 
 		  'ui.bootstrap', 

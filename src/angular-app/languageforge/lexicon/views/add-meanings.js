@@ -123,6 +123,6 @@ function meaningsCtrl($scope, userService, sessionService, lexService, $window, 
 	
 };
 
-angular.module('lexicon.add-meanings', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.dc.entry', 'palaso.ui.listview', 'ngAnimate']).
+angular.module('lexicon.add-meanings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.listview', 'ngAnimate']).
 controller('meaningsCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', meaningsCtrl])
 ;

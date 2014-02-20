@@ -125,6 +125,6 @@ function examplesCtrl($scope, userService, sessionService, lexService, $window, 
 	
 };
 
-angular.module('examples', ['jsonRpc', 'ui.bootstrap', 'sf.services', 'palaso.ui.dc.entry', 'palaso.ui.listview', 'ngAnimate']).
+angular.module('examples', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.listview', 'ngAnimate']).
 controller('examplesCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', examplesCtrl])
 ;

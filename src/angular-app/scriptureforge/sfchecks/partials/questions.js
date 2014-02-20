@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.questions',
-		[ 'sf.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'angularFileUpload', 'ngSanitize' ]
+		[ 'bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'angularFileUpload', 'ngSanitize' ]
 	)
 	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'linkService', 'breadcrumbService', 'silNoticeService',
 	                              function($scope, questionsService, qts, $routeParams, ss, linkService, breadcrumbService, notice) {
