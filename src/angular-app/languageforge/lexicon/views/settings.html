@@ -7,61 +7,76 @@
 		<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'"></div>
 	</tab>
 	<tab heading="Fields">
+		<div data-ng-controller="FieldSettingsCtrl">
 		<div class="row">
 		
 		<!-- Left column: field list -->
-		<div class="span3">
-			<fieldset>
-			<legend>Show the following fields:</legend>
-			<div class="picklists">
-			<ul class="unstyled">
-				<li data-ng-click="selectField(fieldId)" data-ng-repeat="(fieldId, field) in config.entry.fieldNames" data-ng-class="{selected:currentFieldId == fieldId}">
-					<div class="checkbox"><input data-ng-model="currentFieldsEnabled[fieldId]" type="checkbox"/>{{field}}</div>
-				</li>
-			</ul>
-			</div>
-			</fieldset>
-			
-			<br />
-			<pre data-ng-show="showPre">{{config|json}}</pre>
+		<div class="span3 control-group">
+			<dl class="picklists">
+				<dt>Lex Entry</dt>
+				<dd><div class="controls">
+					<div data-ng-click="selectField('lexeme')" data-ng-class="{selected:currentFieldName == 'lexeme'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['lexeme'].visible"> {{fieldconfig['lexeme'].label}}</div>
+					</div>
+				</div></dd>
+				<dt>Lex Sense</dt>
+				<dd><div class="controls">
+					<div data-ng-click="selectField('definition')" data-ng-class="{selected:currentFieldName == 'definition'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['definition'].visible"> {{fieldconfig['definition'].label}}</div>
+					</div>
+					<div data-ng-click="selectField('partOfSpeech')" data-ng-class="{selected:currentFieldName == 'partOfSpeech'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['partOfSpeech'].visible"> {{fieldconfig['partOfSpeech'].label}}</div>
+					</div>
+				</div></dd>
+				<dt>Lex Example</dt>
+				<dd><div class="controls">
+					<div data-ng-click="selectField('example')" data-ng-class="{selected:currentFieldName == 'example'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['example'].visible"> {{fieldconfig['example'].label}}</div>
+					</div>
+					<div data-ng-click="selectField('translation')" data-ng-class="{selected:currentFieldName == 'translation'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['translation'].visible"> {{fieldconfig['translation'].label}}</div>
+					</div>
+				</div></dd>
+			</dl>
 		</div>
 		
 		<!-- Right column: field setup -->
 		<div class="span9">
-			<fieldset>
-				<legend>Setup for "selected field"</legend>
-				<div class="well">
-					<div class="control-group">
-						<label class="control-label" for="displayName">Name for display</label>
-						<div class="controls">
-							<input type="text" id="displayName" data-ng-model="unknown">
-						</div>
-						<div class="checkbox">
-							<input type="checkbox" data-ng-model="currentField.hidden"/>Hidden if empty
-						</div>
-					</div>
-					<hr />
-					
-					<div class="control-group" data-ng-show="editInputSystems.collapsed">
-						<label class="control-label" for="inputSystem">Input Systems</label>
-						<ul class="unstyled indent1"  id="inputSystem">
-							<li data-ng-click="selectList(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in config.inputSystems">
-								<div class="checkbox"><input data-ng-model="currentListsEnabled[inputSystemTag]" type="checkbox"/>{{inputSystem.abbreviation}}</div>
-							</li>
-						</ul>
-						<a href="" data-ng-click="editInputSystems.collapsed = false">Edit input systems</a>
-					</div>
-					
-					<div data-collapse="editInputSystems.collapsed">
-						<button class="btn btn-primary pull-right" data-ng-click="editInputSystems.done()"><i class="icon-ok"></i> Done</button>
-						<h3 style="font-weight:normal">Edit Input Systems</h3>
-						<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'">
-						</div>
+			<div class="well">
+				<h3>{{fieldconfig[currentFieldName].label}} Field Setup</h3>
+				<div class="control-group">
+					<label class="control-label" for="displayName">Display Name</label>
+					<div class="controls">
+						<input type="text" id="displayName" data-ng-model="fieldconfig[currentFieldName].label"/>
+						<label class="checkbox">
+							<input type="checkbox" data-ng-model="fieldconfig[currentFieldName].hideEmpty"/>Hidden if empty
+						</label>
 					</div>
 				</div>
-			</fieldset>
+				<hr />
+				
+				<div class="control-group" data-ng-show="editInputSystems.collapsed">
+					<label class="control-label" for="inputSystem">Input Systems</label>
+					<ul class="unstyled indent1"  id="inputSystem">
+						<li data-ng-click="selectList(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in config.inputSystems">
+							<div class="checkbox"><input data-ng-model="currentListsEnabled[inputSystemTag]" type="checkbox"/>{{inputSystem.abbreviation}}</div>
+						</li>
+					</ul>
+					<a href="" data-ng-click="editInputSystems.collapsed = false">Edit input systems</a>
+				</div>
+				
+				<div data-collapse="editInputSystems.collapsed">
+					<button class="btn btn-primary pull-right" data-ng-click="editInputSystems.done()"><i class="icon-ok"></i> Done</button>
+					<h3 style="font-weight:normal">Edit Input Systems</h3>
+					<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'"></div>
+				</div>
+			</div>
 		</div>
 		
+		</div>
+<pre data-ng-show="showPre">
+config.entry {{config.entry|json}}
+</pre>
 		</div>
 	</tab>
 	<tab heading="Tasks">
@@ -73,49 +88,49 @@
 			<dl class="picklists">
 				<dt>Dashboard</dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectTask('dashboard')" data-ng-class="{selected:currentTaskId == 'dashboard'}">
+					<div data-ng-click="selectTask('dashboard')" data-ng-class="{selected:currentTaskName == 'dashboard'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['dashboard'].visible"> Dashboard</div>
 					</div>
 				</div></dd>
 				<dt>Dictionary</dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectTask('dbe')" data-ng-class="{selected:currentTaskId == 'dbe'}">
+					<div data-ng-click="selectTask('dbe')" data-ng-class="{selected:currentTaskName == 'dbe'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['dbe'].visible"> Dictionary Browse &amp; Edit</div>
 					</div>
 				</div></dd>
 				<dt>Add Information</dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectTask('add-meanings')" data-ng-class="{selected:currentTaskId == 'add-meanings'}">
+					<div data-ng-click="selectTask('add-meanings')" data-ng-class="{selected:currentTaskName == 'add-meanings'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-meanings'].visible"> Add Meanings</div>
 					</div>
-					<div data-ng-click="selectTask('add-grammar')" data-ng-class="{selected:currentTaskId == 'add-grammar'}">
+					<div data-ng-click="selectTask('add-grammar')" data-ng-class="{selected:currentTaskName == 'add-grammar'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-grammar'].visible"> Add Parts of Speech</div>
 					</div>
-					<div data-ng-click="selectTask('add-examples')" data-ng-class="{selected:currentTaskId == 'add-examples'}">
+					<div data-ng-click="selectTask('add-examples')" data-ng-class="{selected:currentTaskName == 'add-examples'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['add-examples'].visible"> Add Example Sentences</div>
 					</div>
 				</div></dd>
 				<dt>Gather Words</dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectTask('gather-texts')" data-ng-class="{selected:currentTaskId == 'gather-texts'}">
+					<div data-ng-click="selectTask('gather-texts')" data-ng-class="{selected:currentTaskName == 'gather-texts'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['gather-texts'].visible"> From Texts</div>
 					</div>
-					<div data-ng-click="selectTask('wordlist')" data-ng-class="{selected:currentTaskId == 'wordlist'}">
+					<div data-ng-click="selectTask('wordlist')" data-ng-class="{selected:currentTaskName == 'wordlist'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['wordlist'].visible"> From a Word List</div>
 					</div>
-					<div data-ng-click="selectTask('semdom')" data-ng-class="{selected:currentTaskId == 'semdom'}">
+					<div data-ng-click="selectTask('semdom')" data-ng-class="{selected:currentTaskName == 'semdom'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visible"> From Semantic Domains</div>
 					</div>
 				</div></dd>
 				<dt>Settings</dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectTask('settings')" data-ng-class="{selected:currentTaskId == 'settings'}">
+					<div data-ng-click="selectTask('settings')" data-ng-class="{selected:currentTaskName == 'settings'}">
 						<div class="checkbox"><input type="checkbox" disabled data-ng-model="config.tasks['settings'].visible"> Settings</div>
 					</div>
 				</div></dd>
 				<dt>Review</dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectTask('review')" data-ng-class="{selected:currentTaskId == 'review'}">
+					<div data-ng-click="selectTask('review')" data-ng-class="{selected:currentTaskName == 'review'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['review'].visible"> Review</div>
 					</div>
 				</div></dd>
@@ -124,7 +139,7 @@
 		
 		<!-- Right column: task setup -->
 		<div class="span9">
-			<div class="well" data-ng-show="currentTaskId == 'dashboard'">
+			<div class="well" data-ng-show="currentTaskName == 'dashboard'">
 				<h3>Dashboard</h3>
 				<div class="control-group">
 					<label class="control-label" for="timeRange">Activity time range</label>
@@ -141,7 +156,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="well" data-ng-show="currentTaskId == 'semdom'">
+			<div class="well" data-ng-show="currentTaskName == 'semdom'">
 				<h3>Gather Words from Semantic Domains</h3>
 				<div class="control-group">
 					<label class="control-label" for="language">Language</label>
@@ -154,14 +169,14 @@
 				<div class="control-group">
 					<label class="control-label" for="fields">Fields to gather along with the Word</label>
 					<dl class="indent1" id="fields">
-						<dt>Sense</dt>
+						<dt>Senses</dt>
 						<dd>
 							<div class="controls">
 								<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.definition"> Definition (Meaning)</label>
 								<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.partOfSpeech"> Part Of Speech</label>
 							</div>
 						</dd>
-						<dt>Example</dt>
+						<dt>Examples</dt>
 						<dd>
 							<div class="controls">
 								<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.example"> Example Sentence</label>
@@ -171,13 +186,13 @@
 					</dl>
 				</div>
 			</div>
-<pre data-ng-show="showPre">
-currentTaskId {{currentTaskId}}
-config.tasks['{{currentTaskId}}'] {{config.tasks[currentTaskId]|json}}
-</pre>
 		</div>
 		
 		</div>
+<pre data-ng-show="showPre">
+currentTaskName {{currentTaskName}}
+config.tasks['{{currentTaskName}}'] {{config.tasks[currentTaskName]|json}}
+</pre>
 		</div>
 	</tab>
 </tabset>
