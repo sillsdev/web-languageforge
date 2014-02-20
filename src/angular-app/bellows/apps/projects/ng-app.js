@@ -4,8 +4,8 @@ angular.module(
 		'projects',
 		[ 'bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice' ]
 )
-.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'linkService', 'silNoticeService', '$window',
-                             function($scope, projectService, ss, linkService, notice, $window) {
+.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', '$window',
+                             function($scope, projectService, ss, notice, $window) {
 		// Rights
 		$scope.rights = {};
 		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.DELETE); 
@@ -114,8 +114,6 @@ angular.module(
 			});
 		};
 
-		$scope.linkService = linkService;
-		
 		$scope.site = ss.site;
 		
 		$scope.getBaseHost = function(hostname) {

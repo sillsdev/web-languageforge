@@ -100,8 +100,10 @@ class App extends Secure_base {
 				if (is_file($dir . '/' . $file)) {
 					if ($ext == 'js') {
 						/* For Javascript, check that file is not minified */
+						// why? - cjh
 						$base = self::basename($file);
-						$isMin = (strpos($base, '-min') !== false) || (strpos($base, '.min') !== false);
+						//$isMin = (strpos($base, '-min') !== false) || (strpos($base, '.min') !== false);
+						$isMin = FALSE;
 						if (!$isMin && self::ext($file) == $ext) {
 							$result[] = $dir . '/' . $file;
 						}

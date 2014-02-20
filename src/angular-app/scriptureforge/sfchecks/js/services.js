@@ -108,25 +108,4 @@ angular.module('sfchecks.services', ['jsonRpc'])
 			jsonRpc.call('questionTemplate_list', [], callback);
 		};
 	}])
-	.service('linkService', function() {
-		this.href = function(url, text) {
-			return '<a href="' + url + '">' + text + '</a>';
-		};
-		
-		this.project = function(projectId) {
-			return '/app/sfchecks#/p/' + projectId;
-		};
-		
-		this.text = function(projectId, textId) {
-			return this.project(projectId) + "/" + textId;
-		};
-		
-		this.question = function(projectId, textId, questionId) {
-			return this.text(projectId, textId) + "/" + questionId;
-		};
-		
-		this.user = function(userId) {
-			return '/app/userprofile/' + userId;
-		};
-	})
 	;

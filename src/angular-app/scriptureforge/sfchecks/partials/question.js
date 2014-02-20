@@ -39,7 +39,7 @@ angular.module(
 		$scope.state = 'stop';
 		$scope.audioReady = false;
 		soundManager.setup({
-			url : '/js/lib/sm2/',
+			url : '/angular-app/scriptureforge/sfchecks/js/vendor/sm2',
 			flashVersion : 9, // optional: shiny features (default = 8)
 			// optional: ignore Flash where possible, use 100% HTML5 mode
 			//preferFlash : false,

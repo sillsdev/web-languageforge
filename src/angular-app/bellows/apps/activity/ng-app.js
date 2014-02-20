@@ -8,10 +8,9 @@ angular.module('activity',
 		 'ui.bootstrap',
 		 'activity.filters',
 		 'sgw.ui.breadcrumb',
-		 'sf.ui.invitefriend'
 		])
-	.controller('ActivityCtrl', ['$scope', '$sce', 'activityPageService', 'linkService', 'sessionService','breadcrumbService',
-	                             function($scope, $sce, activityService, linkService, sessionService, breadcrumbService) {
+	.controller('ActivityCtrl', ['$scope', '$sce', 'activityPageService', 'sfchecksLinkService', 'sessionService','breadcrumbService',
+	                             function($scope, $sce, activityService, sfchecksLinkService, sessionService, breadcrumbService) {
 		
 		// Breadcrumb
 		breadcrumbService.set('top',
@@ -29,19 +28,19 @@ angular.module('activity',
 		$scope.decodeActivityList = function(items) {
 			for (var i =0; i < items.length; i++) {
 				if ('userRef' in items[i]) {
-					items[i].userHref = linkService.user(items[i].userRef.id);
+					items[i].userHref = sfchecksLinkService.user(items[i].userRef.id);
 				}
 				if ('userRef2' in items[i]) {
-					items[i].userHref2 = linkService.user(items[i].userRef2.id);
+					items[i].userHref2 = sfchecksLinkService.user(items[i].userRef2.id);
 				}
 				if ('projectRef' in items[i]) {
-					items[i].projectHref = linkService.project(items[i].projectRef);
+					items[i].projectHref = sfchecksLinkService.project(items[i].projectRef);
 				}
 				if ('textRef' in items[i]) {
-					items[i].textHref = linkService.text(items[i].projectRef, items[i].textRef);
+					items[i].textHref = sfchecksLinkService.text(items[i].projectRef, items[i].textRef);
 				}
 				if ('questionRef' in items[i]) {
-					items[i].questionHref = linkService.question(items[i].projectRef, items[i].textRef, items[i].questionRef);				}
+					items[i].questionHref = sfchecksLinkService.question(items[i].projectRef, items[i].textRef, items[i].questionRef);				}
 				if ('content' in items[i]) {
 					if ('answer' in items[i]['content']) {
 						items[i]['content']['answer'] = $sce.trustAsHtml(items[i]['content']['answer']);

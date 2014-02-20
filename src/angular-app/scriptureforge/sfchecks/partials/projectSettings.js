@@ -12,6 +12,7 @@ angular.module(
 		$scope.project.id = projectId;
 
 		// Breadcrumb
+		// TODO: refactor to use sfchecksLinkService - cjh
 		breadcrumbService.set('top',
 				[
 				 {href: '/app/projects', label: 'My Projects'},

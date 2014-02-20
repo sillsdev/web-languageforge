@@ -1,6 +1,6 @@
 <div class="span5">
 	<h2 class="pull-left" ng-show="text.audioUrl && audioReady">
-		<a sgw-sound-player state="state" href="text.audioUrl"><i ng-class="$parent.$parent.audioIcon()" tooltip="Play audio"></i></a>
+		<a sgw-sound-player state="state" href="text.audioUrl"><i ng-class="$parent.audioIcon()" tooltip="Play audio"></i></a>
 		<a ng-href="{{audioDownloadUrl}}"><i class="icon-download" tooltip="Download audio"></i></a>
 	</h2>
 	<h2>{{text.title}}</h2>
