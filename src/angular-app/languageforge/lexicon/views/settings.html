@@ -1,7 +1,7 @@
 <div class="container" data-ng-cloak>
 <h2 style="font-weight:normal">Settings</h2>
 <form name="settingsForm">
-<button class="btn btn-primary pull-right" data-ng-click="settingsApply()" ><i class="icon-ok"></i> Apply</button>
+<button class="btn btn-primary pull-right" data-ng-disabled="settingsForm.$pristine" data-ng-click="settingsApply()" ><i class="icon-ok"></i> Apply</button>
 <tabset>
 	<tab heading="Input Systems">
 		<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'"></div>
