@@ -4,7 +4,7 @@
 		
 		<link rel="stylesheet" href="/css/shared/bootstrap.css" />
 		<link rel="stylesheet" href="/css/shared/jquery-te-1.4.0.css" />
-		<link rel="stylesheet" href="/angular-app/common/css/palaso-ui.css" />
+		<link rel="stylesheet" href="/angular-app/bellows/css/palaso-ui.css" />
 		<link rel="stylesheet" media="screen" href="/css/scriptureforge/default/superfish.css" />
 		<link rel="stylesheet" media="screen" href="/css/scriptureforge/jamaicanpsalms/slides-jamaica.css" />
 		<link rel="stylesheet" href="/css/shared/font-awesome.css">

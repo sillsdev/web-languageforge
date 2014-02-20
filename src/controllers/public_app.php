@@ -10,7 +10,7 @@ class Public_app extends Base {
 	public function view($app = 'main') {
 		$appFolder = "angular-app/" . $this->site . "/public/$app";
 		if (!file_exists($appFolder)) {
-			$appFolder = "angular-app/account/public/$app";
+			$appFolder = "angular-app/bellows/app/public/$app";
 			if (!file_exists($appFolder)) {
 				show_404($this->site); // this terminates PHP
 			}
@@ -21,10 +21,14 @@ class Public_app extends Base {
 		$data['site'] = $this->site;
 		$data['appFolder'] = $appFolder;
 		
-		$data['jsCommonFiles'] = array();
-		self::addJavascriptFiles("angular-app/common/js", $data['jsCommonFiles']);
-		$data['jsProjectFiles'] = array();
-		self::addJavascriptFiles($appFolder, $data['jsProjectFiles']);
+		$data['jsFiles'] = array();
+		self::addJavascriptFiles("angular-app/bellows/js", $data['jsFiles']);
+		self::addJavascriptFiles ( "angular-app/bellows/directive", $data ['jsFiles'] );
+		self::addJavascriptFiles($appFolder, $data['jsFiles']);
+			
+		$data['cssFiles'] = array();
+		self::addCssFiles("angular-app/bellows/css", $data['cssFiles']);
+		self::addCssFiles("$appFolder", $data['cssfiles']);
 			
 		$data['title'] = $this->site;
 		$data['jsonSession'] = '"";'; // empty json session data that angular-app template needs to be happy
@@ -45,7 +49,8 @@ class Public_app extends Base {
 			while ($file = readdir($handle)) {
 				if (is_file($dir . '/' . $file)) {
 					$base = self::basename($file);
-					$isMin = (strpos($base, '-min') !== false) || (strpos($base, '.min') !== false);
+					//$isMin = (strpos($base, '-min') !== false) || (strpos($base, '.min') !== false);
+					$isMin = FALSE;
 					if (!$isMin && self::ext($file) == 'js') {
 						$result[] = $dir . '/' . $file;
 					}
