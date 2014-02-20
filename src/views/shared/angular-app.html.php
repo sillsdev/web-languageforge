@@ -20,7 +20,7 @@ window.session = <?php echo $jsonSession; ?>;
 	<script src="/js/lib/angular-file-upload.js"></script>
 	<script src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
 	<script src="/js/lib/ng-ui-utils-validate.js"></script>
-	<?php endif; ?>
+<?php endif; ?>
 	<script src="/js/lib/sm2/soundmanager2-nodebug-jsmin.js"></script>
 	<script src="/js/lib/rangy-1.3alpha.772/rangy-core.js"></script>
 	<script src="/js/lib/rangy-1.3alpha.772/rangy-cssclassapplier.js"></script>
@@ -31,11 +31,7 @@ window.session = <?php echo $jsonSession; ?>;
 <?php if (SF_USE_MINIFIED_JS): ?>
 	<script src="/js/lib/scriptureforge.min.js"></script>
 <?php else: ?>
-	<?php foreach($jsCommonFiles as $filename): ?>
-	<script src="/<?php echo $filename; ?>"></script>
-	<?php endforeach; ?>
-
-	<?php foreach($jsProjectFiles as $filename): ?>
+	<?php foreach($jsFiles as $filename): ?>
 	<script src="/<?php echo $filename; ?>"></script>
 	<?php endforeach; ?>
 <?php endif; ?>
