@@ -33,7 +33,6 @@ angular.module('lexicon.services', ['jsonRpc'])
 					},
 					'senses': {
 						'type': 'fields',
-						'fieldNames': ['definition', 'partOfSpeech', 'semanticDomainValue', 'examples'],
 						'fields': {
 							'definition': {
 								'type': 'multitext',
@@ -370,7 +369,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			return;
 		};
 
-		this.getEntriesList = function() {
+		getEntriesList = function() {
 			var list = [];
 			var ws = _config.entry.fields.lexeme.writingsystems[0];
 			serverIter(function(i,e) {
@@ -384,7 +383,6 @@ angular.module('lexicon.services', ['jsonRpc'])
 		};
 		this.addExampleDto = function(projectId, callback) {
 			var dtoConfig = angular.copy(_config);
-			var list = getEntriesList();
 			// We just want to see the definition and part of speech, but leave rest of config alone
 			angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
 				field.visible = false;
@@ -393,12 +391,30 @@ angular.module('lexicon.services', ['jsonRpc'])
 			dtoConfig.entry.fields.senses.fields['examples'].visible = true;
 			// Definition should be read-only
 			dtoConfig.entry.fields.senses.fields.definition.readonly = true; // TODO Implement. I Not yet implemented, but soon RM 2014-01
-			(callback || angular.noop)({'ok': true, 'data': {'entries': list, 'config': dtoConfig}});
+			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
 		};
-		this.getPageDto = function(projectId, callback) {
+		this.addGrammarDto = function(projectId, callback) {
 			var dtoConfig = angular.copy(_config);
-			var list = getEntriesList();
-			(callback || angular.noop)({'ok': true, 'data': {'entries': list, 'config': dtoConfig}});
+			// We just want to see the definition and part of speech, but leave rest of config alone
+			angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
+				field.visible = false;
+			});
+			dtoConfig.entry.fields.senses.fields['definition'].visible = true;
+			dtoConfig.entry.fields.senses.fields['partOfSpeech'].visible = true;
+			// Definition should be read-only
+			dtoConfig.entry.fields.senses.fields.definition.readonly = true; // TODO Implement. I Not yet implemented, but soon RM 2014-01
+			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
+		};
+		this.addMeaningsDto = function(projectId, callback) {
+			var dtoConfig = angular.copy(_config);
+			// We just want to see the definition and part of speech, but leave rest of config alone
+			angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
+				field.visible = false;
+			});
+			dtoConfig.entry.fields.senses.fields['definition'].visible = true;
+			// Definition should be read-only
+			dtoConfig.entry.fields.senses.fields.definition.readonly = true; // TODO Implement. I Not yet implemented, but soon RM 2014-01
+			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
 		};
 
 		// --- BEGIN TEST CODE ---
