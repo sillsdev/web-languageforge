@@ -23,7 +23,6 @@ angular.module('lexicon.services', ['jsonRpc'])
 			},
 			'entry': {
 				'type': 'fields',
-				'fieldNames': ['lexeme', 'senses'],
 				'fields': {
 					'lexeme': {
 						'type': 'multitext',
@@ -39,12 +38,14 @@ angular.module('lexicon.services', ['jsonRpc'])
 							'definition': {
 								'type': 'multitext',
 								'label': 'Meaning',
+								'visible': true,
 								'writingsystems': ['th', 'en'],
 								'width': 20
 							},
 							'partOfSpeech': {
 								'type': 'optionlist',
 								'label': 'Part of Speech',
+								'visible': true,
 								'values': {
 									'noun': 'Noun',
 									'verb': 'Verb',
@@ -55,6 +56,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 							'semanticDomainValue': {
 								'type': 'optionlist',
 								'label': 'Semantic Domain',
+								'visible': true,
 								'values': {
 									'2.1': '2.1 Body',
 									'2.2': '2.2 Head and Shoulders',
@@ -64,7 +66,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 							},
 							'examples': {
 								'type': 'fields',
-								'fieldNames': ['example', 'translation'],
+								'visible': true,
 								'fields': {
 									'example': {
 										'type': 'multitext',
@@ -368,7 +370,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			return;
 		};
 
-		this.getPageDto = function(projectId, callback) {
+		this.getEntriesList = function() {
 			var list = [];
 			var ws = _config.entry.fields.lexeme.writingsystems[0];
 			serverIter(function(i,e) {
@@ -378,7 +380,25 @@ angular.module('lexicon.services', ['jsonRpc'])
 				}
 				list.push({id: e.id, title: title, entry: e});
 			});
-			(callback || angular.noop)({data: { entries: list, config: _config }});
+			return list;
+		};
+		this.addExampleDto = function(projectId, callback) {
+			var dtoConfig = angular.copy(_config);
+			var list = getEntriesList();
+			// We just want to see the definition and part of speech, but leave rest of config alone
+			angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
+				field.visible = false;
+			});
+			dtoConfig.entry.fields.senses.fields['definition'].visible = true;
+			dtoConfig.entry.fields.senses.fields['examples'].visible = true;
+			// Definition should be read-only
+			dtoConfig.entry.fields.senses.fields.definition.readonly = true; // TODO Implement. I Not yet implemented, but soon RM 2014-01
+			(callback || angular.noop)({'ok': true, 'data': {'entries': list, 'config': dtoConfig}});
+		};
+		this.getPageDto = function(projectId, callback) {
+			var dtoConfig = angular.copy(_config);
+			var list = getEntriesList();
+			(callback || angular.noop)({'ok': true, 'data': {'entries': list, 'config': dtoConfig}});
 		};
 
 		// --- BEGIN TEST CODE ---

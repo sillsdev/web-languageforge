@@ -9,6 +9,7 @@ angular.module('lexicon',
 		 'examples',
 		 'lexicon.add-meanings',
 		 'lexicon.services',
+		 'lexicon.filters',
 		 'settings'
 		])
 	.config(['$routeProvider', function($routeProvider) {
