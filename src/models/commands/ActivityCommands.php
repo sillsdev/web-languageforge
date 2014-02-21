@@ -160,7 +160,7 @@ class ActivityCommands
 		$activity = new ActivityModel($projectModel);
 		$question = new QuestionModel($projectModel, $questionId);
 		$text = new TextModel($projectModel, $question->textRef->asString());
-		$answer = $question->answers->data[$answerId];
+		$answer = $question->answers[$answerId];
 		$user = new UserModel($userId);
 		$user2 = new UserModel($answer->userRef->asString());
 		$activity = new ActivityModel($projectModel);

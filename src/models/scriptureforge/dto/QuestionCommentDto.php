@@ -41,7 +41,7 @@ class QuestionCommentDto
 		
 		$votes = new UserVoteModel($userId, $projectId, $questionId);
 		$votesDto = array();
-		foreach ($votes->votes->data as $vote) {
+		foreach ($votes->votes as $vote) {
 			$votesDto[$vote->answerRef->id] = true;
 		}
 		

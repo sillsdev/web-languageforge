@@ -44,9 +44,9 @@ class FixAnswerCommentUserRefs {
 				foreach ($questionIds as $questionId) {
 					$question = new QuestionModel($project, $questionId);
 					
-					foreach ($question->answers->data as $answerId => $answer) {
+					foreach ($question->answers as $answerId => $answer) {
 						
-						foreach ($answer->comments->data as $commentId => $comment) {
+						foreach ($answer->comments as $commentId => $comment) {
 							$ref = $comment->userRef;
 							if (!empty($ref->id) && !in_array($ref->asString(), $userIds)) {
 								$comment->userRef->id = '';

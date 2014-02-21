@@ -27,7 +27,7 @@ class TestUserProfileDto extends UnitTestCase {
 		
 		$projectUserProfile = new ProjectUserProfile();
 		$projectUserProfile->city = 'myCity';
-		$user->projectUserProfiles->data[$projectId] = $projectUserProfile;
+		$user->projectUserProfiles[$projectId] = $projectUserProfile;
 		
 		$user->write();
 		$project->write();
