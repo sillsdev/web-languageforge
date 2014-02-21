@@ -64,6 +64,27 @@
 			<div ng-bind-html="uploadResult"></div>
 		</form>
 	</tab>
+	<tab heading="ParaTExt Export">
+	    <div ng-controller="ParatextExportTextCtrl" class="well">
+	        <h4>Export Text Answers/Comments to a ParaTExt XML file</h4>
+	        <pre>{{export|json}}</pre>
+	        <label><input type="checkbox" checked name="exportAnswers" disabled /> Export Answers</label>
+	        <label><input type="checkbox" checked name="exportComments" ng-model="export.comments" /> Export Comments</label>
+            <label>Tags to Export: (<a ng-click="export.tagEditorVisible = !export.tagEditorVisible">Select Tags</a>) <p style="font-weight:bold" ng-show="export.tags.length == 0">None Selected</p><view-tags rights-delete="returnTrue()" tags="export.tags"></view-tags></label>
+			<div class="overlay" ng-show="export.tagEditorVisible">
+    			<div class="overlay-bg">
+    				<form>
+    					<label for="inputtagstring">Specify tags (comma-separated):</label>
+    					<add-tags tags="export.tags"></add-tags>
+    					<label></label>
+    					<button ng-click="export.tagEditorVisible=false" class="btn"><i class="icon-ok"></i>OK</button>
+    				</form>
+    			</div>
+			</div>
+	        <button ng-click="exportComments()" class="btn">Export</button>
+	    </div>
+
+	</tab>
 </tabset>
 </div>
 <div ng-hide="rights.editOther"><p>You don't have permission to edit this text.</p></div>
