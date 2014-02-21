@@ -58,7 +58,7 @@ class SmsQueue
 		// TODO Async
 		$queue = new SmsQueueModel($databaseName);
 		$queue->readNew();
-		foreach ($queue->entries->data as $id => $sms) {
+		foreach ($queue->entries as $id => $sms) {
 			error_log(var_export($sms, true));
 			self::deliver($sms);
 		}

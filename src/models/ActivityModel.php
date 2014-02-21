@@ -85,7 +85,7 @@ class ActivityModel extends \models\mapper\MapperModel
 	 * @param string $content
 	 */
 	public function addContent($type, $content) {
-		$this->actionContent->data[$type] = $content;
+		$this->actionContent[$type] = $content;
 	}
 	
 	// TODO add a userFilter ArrayOf type that we can use to query Mongo for activities that only apply to specific users
