@@ -38,9 +38,9 @@ class ProjectListDto
 			$projectModel = new ProjectModel($entry['id']);
 			if ($projectModel->siteName == $site) {
 				$role = Roles::NONE;
-				if (count($projectModel->users->data) > 0) {
-					if (isset($projectModel->users->data[$userId]->role)) {
-						$role = $projectModel->users->data[$userId]->role;
+				if (count($projectModel->users) > 0) {
+					if (isset($projectModel->users[$userId]->role)) {
+						$role = $projectModel->users[$userId]->role;
 					}
 				}
 				$entry['role'] = $role;

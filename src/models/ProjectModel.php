@@ -87,7 +87,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * User references to this project are also removed
 	 */
 	public function remove() {
-		foreach ($this->users->data as $userId => $roleObj) {
+		foreach ($this->users as $userId => $roleObj) {
 			$user = new UserModel($userId);
 			$user->removeProject($this->id->asString());
 			$user->write();
@@ -107,7 +107,7 @@ class ProjectModel extends \models\mapper\MapperModel
 //		$ProjectModelMongoMapper::mongoID($userId)
 		$model = new ProjectRoleModel();
 		$model->role = $role;
-		$this->users->data[$userId] = $model; 
+		$this->users[$userId] = $model; 
 	}
 	
 	/**
@@ -115,7 +115,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @param string $userId
 	 */
 	public function removeUser($userId) {
-		unset($this->users->data[$userId]);
+		unset($this->users[$userId]);
 	}
 	
 	/**
@@ -124,7 +124,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @return bool
 	 */
 	public function userIsMember($userId) {
-		return 	key_exists($userId, $this->users->data);
+		return 	key_exists($userId, $this->users);
 	}
 
 	public function listUsers() {
@@ -132,12 +132,12 @@ class ProjectModel extends \models\mapper\MapperModel
 		$userList->read();
 		for ($i = 0, $l = count($userList->entries); $i < $l; $i++) {
 			$userId = $userList->entries[$i]['id'];
-			if (!key_exists($userId, $this->users->data)) {
+			if (!key_exists($userId, $this->users)) {
 				$projectId = $this->id->asString();
 				//error_log("User $userId is not a member of project $projectId");
 				continue;
 			}
-			$userList->entries[$i]['role'] = $this->users->data[$userId]->role;
+			$userList->entries[$i]['role'] = $this->users[$userId]->role;
 		}
  		return $userList;
 	}
@@ -150,8 +150,8 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public function hasRight($userId, $right) {
 		$hasRight = false;
-		if (key_exists($userId, $this->users->data)) {
-			$hasRight = Roles::hasRight(Realm::PROJECT, $this->users->data[$userId]->role, $right);
+		if (key_exists($userId, $this->users)) {
+			$hasRight = Roles::hasRight(Realm::PROJECT, $this->users[$userId]->role, $right);
 		}
 		return $hasRight;
 	}
@@ -163,10 +163,10 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public function getRightsArray($userId) {
 		CodeGuard::checkTypeAndThrow($userId, 'string');
-		if (!key_exists($userId, $this->users->data)) {
+		if (!key_exists($userId, $this->users)) {
 			$result = array();
 		} else {
-			$role = $this->users->data[$userId]->role;
+			$role = $this->users[$userId]->role;
 			$result = Roles::getRightsArray(Realm::PROJECT, $role);
 		}
 		return $result;

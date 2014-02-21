@@ -48,7 +48,7 @@ class FixProjectUserRefs {
 		foreach ($projectlist->entries as $projectParams) { // foreach existing project
 			$projectId = $projectParams['id'];
 			$project = new ProjectModel($projectId);
-			$projectUserRefs = array_keys($project->users->data);
+			$projectUserRefs = array_keys($project->users);
 			foreach ($projectUserRefs as $ref) { // foreach user that is a member of this project
 				if (!in_array($ref, $userIds)) {
 					$project->removeUser($ref); // remove dead user link
