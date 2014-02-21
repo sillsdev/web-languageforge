@@ -56,23 +56,22 @@ class MongoDecoder extends JsonDecoder {
 	 */
 	public function decodeArrayOf($key, $model, $data) {
 		if ($data == null) {
-			$model->data = array();
-			return;
+			$data = array();
 		}
 		if (!is_array($data)) {
 			throw new \Exception("Bad data when array expected. '$data'");
 		}
-		$model->data = array();
+		$model->exchangeArray(array());
 		foreach ($data as $item) {
-			if ($model->getType() == ArrayOf::OBJECT) {
+			if ($model->hasGenerator()) {
 				$object = $model->generate($item);
 				$this->_decode($object, $item, '');
-				$model->data[] = $object;
-			} else if ($model->getType() == ArrayOf::VALUE) {
+				$model[] = $object;
+			} else {
 				if (is_array($item)) {
 					throw new \Exception("Must not decode array for value type '$key'");
 				}
-				$model->data[] = $item;
+				$model[] = $item;
 			}
 		}
 	}
@@ -83,20 +82,23 @@ class MongoDecoder extends JsonDecoder {
 	 * @throws \Exception
 	 */
 	public function decodeMapOf($key, $model, $data) {
+		if ($data == null) {
+			$data = array();
+		}
 		if (!is_array($data)) {
 			throw new \Exception("Bad data when array expected. '$data'");
 		}
-		$model->data = array();
+		$model->exchangeArray(array());
 		foreach ($data as $itemKey => $item) {
 			if ($model->hasGenerator()) {
 				$object = $model->generate($item);
 				$this->_decode($object, $item, $itemKey);
-				$model->data[$itemKey] = $object;
+				$model[$itemKey] = $object;
 			} else {
 				if (is_array($item)) {
 					throw new \Exception("Must not decode array for value type '$key'");
 				}
-				$model->data[$itemKey] = $item;
+				$model[$itemKey] = $item;
 			}
 		}
 	}

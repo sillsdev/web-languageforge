@@ -23,7 +23,7 @@ class MapperModel
 	 * @var \DateTime
 	 */
 	public $dateCreated;
-	
+
 	/**
 	 * 
 	 * @var array
@@ -73,6 +73,11 @@ class MapperModel
 		if (!empty($id)) {
 			$this->read($id);
 		}
+	}
+	
+        // TODO Would be nice to deprecate this. Should be removed. Derived models should do their own query, or have methods that do the right query not elsewhere in app code. CP 2013-11
+	public function findOneByQuery($query, $fields = array()) {
+		return $this->_mapper->findOneByQuery($this, $query, $fields = array());
 	}
 	
 	/**

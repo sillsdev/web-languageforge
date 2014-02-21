@@ -1,7 +1,7 @@
 <?php
 namespace models;
 
-use libraries\shared\palaso\CodeGuard;
+use libraries\palaso\CodeGuard;
 
 class ProjectModelFixer
 {
@@ -35,32 +35,32 @@ class ProjectModelFixer
 	
 	private function ensureV01() {
 		$model = $this->projectModel;
-		$this->ensureHasProjectCode();
+		$this->ensureHasProjectSlug();
 		$this->ensureHasProjectName();
 		$this->ensureHasLanguageCode();
 		$this->ensureHasProjectType();
 	}
 	
-	private function ensureHasProjectCode() {
+	private function ensureHasProjectSlug() {
 		$model = $this->projectModel;
-		if (!empty($model->projectCode)) {
+		if (!empty($model->projectSlug)) {
 			return;
 		}
 		$this->ensureHasProjectName();
 		$this->ensureHasLanguageCode();
 		$this->ensureHasProjectType();
-		$model->projectCode = ProjectModel::makeProjectCode($model->languageCode, $model->projectname, $model->projectType);
-		error_log(sprintf("Fixed ProjectModel::projectCode %s = %s", $model->id->asString(), $model->projectCode));
+		$model->projectSlug = ProjectModel::makeProjectSlug($model->languageCode, $model->projectName, $model->projectType);
+		error_log(sprintf("Fixed ProjectModel::projectSlug %s = %s", $model->id->asString(), $model->projectSlug));
 		$this->wasFixed = true;
 	}
 	
 	private function ensureHasProjectName() {
 		$model = $this->projectModel;
-		if (!empty($model->projectname)) {
+		if (!empty($model->projectName)) {
 			return;
 		}
-		$model->projectname = 'Unknown Project';
-		error_log(sprintf("Fixed ProjectModel::projectName %s = %s", $model->id->asString(), $model->projectname));
+		$model->projectName = 'Unknown Project';
+		error_log(sprintf("Fixed ProjectModel::projectName %s = %s", $model->id->asString(), $model->projectName));
 		$this->wasFixed = true;
 	}
 	

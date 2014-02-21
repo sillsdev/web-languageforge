@@ -97,7 +97,7 @@ class JsonEncoder {
 	public function encodeArrayOf($key, $model) {
 		// Note: $key may be used in derived methods
 		$result = array();
-		foreach ($model->data as $item) {
+		foreach ($model as $item) {
 			if (is_object($item)) {
 				$result[] = $this->_encode($item);
 			} else {
@@ -121,7 +121,7 @@ class JsonEncoder {
 	public function encodeMapOf($key, $model) {
 		$result = array();
 		$count = 0;
-		foreach ($model->data as $itemKey => $item) {
+		foreach ($model as $itemKey => $item) {
 			if (is_object($item)) {
 				$result[$itemKey] = $this->_encode($item);
 			} else {
