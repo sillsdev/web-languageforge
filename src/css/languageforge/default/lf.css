@@ -663,7 +663,6 @@ div.hdrnav img {
 
 .hdrnav .submenu {
 	position: relative;
-	z-index: 99;
 }
 
 .hdrnav .submenu a {
@@ -680,6 +679,7 @@ div.hdrnav img {
 	left: 0em;
 	top: 1.1em;
 	line-height: 1.2em;
+	z-index: 9; /* One less than the z-index: 10 used for header */
 }
 
 .hdrnav .submenu ul li {
