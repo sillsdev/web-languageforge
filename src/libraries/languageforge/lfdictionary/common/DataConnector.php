@@ -1,8 +1,9 @@
 <?php
-namespace libraries\languageforge\lfdictionary\common;
+namespace libraries\lfdictionary\common;
 
 /**
  * A shared pool of named database connections
+ * TODO Delete.
  */
 class DataConnector {
 	

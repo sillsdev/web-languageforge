@@ -1,9 +1,9 @@
 <?php
-namespace libraries\languageforge\lfdictionary\environment;
+namespace libraries\lfdictionary\environment;
 
-use libraries\languageforge\lfdictionary\common\LoggerFactory;
-use libraries\languageforge\lfdictionary\common\HgWrapper;
-use libraries\shared\palaso\CodeGuard;
+use libraries\lfdictionary\common\LoggerFactory;
+use libraries\lfdictionary\common\HgWrapper;
+use libraries\palaso\CodeGuard;
 use models\ProjectModel;
 
 class LexProjectFixer extends LexProject
@@ -88,7 +88,7 @@ class LexProjectFixer extends LexProject
 		if ($this->locateLiftFilePath() == null) {
 			$templatePath = self::templatePath();
 			$sourceFile = $templatePath . "default.lift";
-			$liftFile = $this->projectPath . $this->projectModel->projectCode . ".lift";
+			$liftFile = $this->projectPath . $this->projectModel->projectSlug . ".lift";
 			copy($sourceFile, $liftFile);
 			if ($this->_shouldLog) {
 				LoggerFactory::getLogger()->logInfoMessage(sprintf("lift file does not exist.  fixed %s",$liftFile));

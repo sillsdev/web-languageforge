@@ -1,5 +1,5 @@
 <?php
-namespace libraries\languageforge\lfdictionary\environment;
+namespace libraries\lfdictionary\environment;
 
 require_once(dirname(__FILE__) . '/../Config.php');
 //require_once(LF_LIBRARY_PATH . "/lfbase/Loader.php");

@@ -1,5 +1,10 @@
 <?php
-namespace libraries\languageforge\lfdictionary\common;
+namespace libraries\lfdictionary\common;
+
+/**
+ * TextFormatHelper attempts to convert strings from some input encoding to utf-8.
+ * REVIEWED CP 2013-12: This class is useful, but should perhaps be moved closer to the GatherWordsFromTextCommand (if such a class exists).
+ */
 class TextFormatHelper {
 	/**
 	 * @return UTF8 string
@@ -18,7 +23,7 @@ class TextFormatHelper {
 			$result = iconv($encoding, "UTF-8//TRANSLIT", $string);
 			return $result;
 		} catch (Exception $e) {
-			throw new \libraries\languageforge\lfdictionary\common\UserActionDeniedException('unknown encoding of text file or it is not a plain text file.');
+			throw new \libraries\lfdictionary\common\UserActionDeniedException('unknown encoding of text file or it is not a plain text file.');
 		}
 	}
 

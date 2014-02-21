@@ -1,9 +1,9 @@
 <?php
-namespace libraries\languageforge\lfdictionary\environment;
+namespace libraries\lfdictionary\environment;
 
-use libraries\languageforge\lfdictionary\dto\ClientEnvironmentDto;
-use libraries\languageforge\lfdictionary\environment\LexProjectUserSettings;
-use libraries\languageforge\lfdictionary\common\LoggerFactory;
+use libraries\lfdictionary\dto\ClientEnvironmentDto;
+use libraries\lfdictionary\environment\LexProjectUserSettings;
+use libraries\lfdictionary\common\LoggerFactory;
 use models\UserModel;
 use models\ProjectModel;
 use models\ProjectModelFixer;
@@ -39,7 +39,7 @@ class LexClientEnvironment
 		LexProjectFixer::fixProjectVLatest($this->_lexProject);
 		
 		LoggerFactory::getLogger()->logInfoMessage(sprintf('LexClientEnvironment P=%s (%s) U=%s (%s)',
-			$this->_projectModel->projectname,
+			$this->_projectModel->projectName,
 			$projectId,
 			$this->_userModel->username,
 			$this->_userModel->id->asString()

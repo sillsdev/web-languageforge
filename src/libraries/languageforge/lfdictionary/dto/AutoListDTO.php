@@ -1,6 +1,10 @@
 <?php
-namespace libraries\languageforge\lfdictionary\dto;
-// Auto Suggest 
+namespace libraries\lfdictionary\dto;
+
+/**
+ * AutoSuggest / Typeahead Dto.
+ */ 
+// TODO Refactor. This is really a model that can get data from the mongo db, preferably to a LV dist or similar on the preferred lexeme / gloss form. CP 2013-12
 class AutoListDTO {
 
 	/**

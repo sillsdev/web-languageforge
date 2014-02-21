@@ -1,8 +1,8 @@
 <?php
 
-namespace libraries\languageforge\lfdictionary\dashboardtool;
+namespace libraries\lfdictionary\dashboardtool;
 
-use libraries\languageforge\lfdictionary\environment\LexProject;
+use libraries\lfdictionary\environment\LexProject;
 
 require_once(dirname(__FILE__)   . '/../../../helpers/loader_helper.php');
 require_once(dirname(__FILE__) . '/ActivityFieldType.php');
@@ -12,8 +12,8 @@ if (!defined('APPPATH'))
 	define('APPPATH', dirname(__FILE__)   . '/../../../');
 }
 
-use libraries\languageforge\lfdictionary\dashboardtool\DashboardToolFactory;
-use libraries\languageforge\lfdictionary\dashboardtool\DashboardDbType;
+use libraries\lfdictionary\dashboardtool\DashboardToolFactory;
+use libraries\lfdictionary\dashboardtool\DashboardDbType;
 use models\ProjectModel;
 
 class DashboardCounterExtracter
@@ -69,14 +69,14 @@ class DashboardCounterExtracter
 			
 			try {
 				$this->projectModel = new ProjectModel($this->projectId);
-				$this->projectPath = PROJECTS_HG_ROOT_FOLDER. $this->projectModel->projectname;
-				$liftFilePath = glob(PROJECTS_HG_ROOT_FOLDER. $this->projectModel->projectname."/*.lift");
+				$this->projectPath = PROJECTS_HG_ROOT_FOLDER. $this->projectModel->projectName;
+				$liftFilePath = glob(PROJECTS_HG_ROOT_FOLDER. $this->projectModel->projectName."/*.lift");
 					
 				if (count($liftFilePath) >= 1) {
 					$this->liftFilePath = $liftFilePath[0];
 			
 				} else {
-					throw new \Exception("No lift file found in: ".PROJECTS_HG_ROOT_FOLDER . $this->projectModel->projectname);
+					throw new \Exception("No lift file found in: ".PROJECTS_HG_ROOT_FOLDER . $this->projectModel->projectName);
 				}
 					
 			} catch (Exception $e) {
@@ -161,9 +161,9 @@ class DashboardCounterExtracter
 		
 		try {
 			$this->projectModel = new ProjectModel($this->projectId);
-			$projectPath = LexProject::workFolderPath() . $this->projectModel->projectCode;
+			$projectPath = LexProject::workFolderPath() . $this->projectModel->projectSlug;
 		
-			$filePath = glob(LexProject::workFolderPath() . $this->projectModel->projectname."/*.lift");
+			$filePath = glob(LexProject::workFolderPath() . $this->projectModel->projectName."/*.lift");
 			
 			if (count($filePath) >= 1) {
 				
@@ -188,7 +188,7 @@ class DashboardCounterExtracter
 				
 				$this->readAndInsertCounters($this->liftFilePath, $timestamp, null);
 			} else {
-				throw new \Exception("No lift file found in: " . LexProject::workFolderPath() . $this->projectModel->projectname);
+				throw new \Exception("No lift file found in: " . LexProject::workFolderPath() . $this->projectModel->projectName);
 			}
 		
 		} catch (Exception $e) {
@@ -227,7 +227,7 @@ class DashboardCounterExtracter
 		//echo "Sum of part of speech count ".$this->_speech->length."<br/>";
 		//echo "Sum of example count ".$this->_example->length;
 		
-		$DashboardToolCommands = DashboardToolFactory::getDashboardCommands(DashboardDbType::DB_MONGODB);
+		$DashboardCommands = DashboardToolFactory::getDashboardCommands(DashboardDbType::DB_MONGODB);
 		
 		$result = $DashboardCommands->insertUpdateCounter($this->projectId, ActivityFieldType::COUNT_ENTRY, $entries, $timestamp, $hg_version, $hg_hash);
 		$result = $DashboardCommands->insertUpdateCounter($this->projectId, ActivityFieldType::COUNT_MEANING, $meaning, $timestamp, $hg_version, $hg_hash);

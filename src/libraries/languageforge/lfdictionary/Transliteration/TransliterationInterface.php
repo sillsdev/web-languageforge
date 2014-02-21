@@ -5,7 +5,7 @@
  * Definition of \Drupal\Component\Transliteration\TransliterationInterface.
  */
 
-namespace libraries\languageforge\lfdictionary\Transliteration;
+namespace libraries\lfdictionary\Transliteration;
 
 /**
  * Defines an interface for classes providing transliteration.

@@ -1,8 +1,20 @@
 <?php
-namespace libraries\languageforge\lfdictionary\commands;
+namespace libraries\lfdictionary\commands;
 
 require_once(dirname(__FILE__) . '/../Config.php');
-use libraries\languageforge\lfdictionary\common\LoggerFactory;
+
+use libraries\lfdictionary\common\LoggerFactory;
+
+/**
+ * TODO Rename / Move. This looks like a model to me. The execute is all about reading persisted data (from file) into the model. CP 2013-12
+ * TODO Enhance. The separate dto would use JsonEncoder on this 'model'
+ */
+/**
+ * GetDomainTreeListCommand
+ * REVIEWED CP 2013-12: Much of the code is ok. This is a model that must read an existing xml data file. That's fine. However,
+ * I suspect that the real 'dto' that needs to be returned is much larger and this is just a subset.
+ */
+// TODO Rename. SemanticDomainTreeModel
 class GetDomainTreeListCommand {
 	
 	/**
@@ -34,7 +46,7 @@ class GetDomainTreeListCommand {
 
 		$this->_filePath = $filePath;
 		$this->_languageCode = $languageCode;
-		$this->_dto = new \libraries\languageforge\lfdictionary\dto\DomainTreeDTO();
+		$this->_dto = new \libraries\lfdictionary\dto\DomainTreeDTO();
 	}
 
 	function execute(){
@@ -48,7 +60,7 @@ class GetDomainTreeListCommand {
 		$doc->preserveWhiteSpace = false;
 		$doc->Load($this->_filePath);
 
-		$this->_dto = new \libraries\languageforge\lfdictionary\dto\DomainTreeDTO();
+		$this->_dto = new \libraries\lfdictionary\dto\DomainTreeDTO();
 		$xpath = new \DOMXPath($doc);
 		$entries = $xpath->query('//Lists/List/Possibilities/CmSemanticDomain/Name/AUni[@ws="' . $this->_languageCode . '"]');
 		$this->processChildren($xpath,$entries,$this->_dto);
@@ -68,7 +80,7 @@ class GetDomainTreeListCommand {
 				
 			$key = $indexNr . " " . $entry->nodeValue;
 				
-			$childDto = new \libraries\languageforge\lfdictionary\dto\DomainTreeDTO();
+			$childDto = new \libraries\lfdictionary\dto\DomainTreeDTO();
 			$childDto->setParent($parentDto);
 			$parentDto->add($childDto);
 			$childDto->setGuid($guid);

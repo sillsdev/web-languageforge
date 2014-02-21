@@ -1,7 +1,13 @@
 <?php
-namespace libraries\languageforge\lfdictionary\commands;
+namespace libraries\lfdictionary\commands;
+
+use libraries\lfdictionary\common\LoggerFactory;
+
 require_once(dirname(__FILE__) . '/../Config.php');
-use libraries\languageforge\lfdictionary\common\LoggerFactory;
+
+/*
+ * TODO Deprecate. This is superceded by the SF Q/A code. However, this does provide useful code for interfacing with the current chorus notes. Keep in repo for later. CP 2013-12
+ */
 class SaveCommentsCommand {
 
 	//if need to change follow definations, please change client side too.
@@ -58,7 +64,7 @@ class SaveCommentsCommand {
 
 	function processFile() {
 
-		$this->_dto = new \libraries\languageforge\lfdictionary\dto\ConversationDTO();
+		$this->_dto = new \libraries\lfdictionary\dto\ConversationDTO();
 		$doc = new \DOMDocument;
 		$doc->preserveWhiteSpace = false;
 		$doc->Load($this->_fileName);
@@ -108,7 +114,7 @@ class SaveCommentsCommand {
 			
 				
 			$newRootMessageNode->setAttribute("date", $this->_datetime);
-			$newNodeGuid=strtolower (\libraries\languageforge\lfdictionary\common\UUIDGenerate::uuid_generate_php());
+			$newNodeGuid=strtolower (\libraries\lfdictionary\common\UUIDGenerate::uuid_generate_php());
 			$newRootMessageNode->setAttribute("guid",  $newNodeGuid);
 			$xml_annotation->appendChild($newRootMessageNode);
 			
@@ -152,7 +158,7 @@ class SaveCommentsCommand {
 				
 							
 				$newMessageNode->setAttribute("date", $this->_datetime);
-				$newNodeGuid=strtolower (\libraries\languageforge\lfdictionary\common\UUIDGenerate::uuid_generate_php());
+				$newNodeGuid=strtolower (\libraries\lfdictionary\common\UUIDGenerate::uuid_generate_php());
 				$newMessageNode->setAttribute("guid",  $newNodeGuid);
 					
 				$entries->item(0)->parentNode->appendChild($newMessageNode);

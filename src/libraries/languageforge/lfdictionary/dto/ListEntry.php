@@ -1,5 +1,7 @@
 <?php
-namespace libraries\languageforge\lfdictionary\dto;
+namespace libraries\lfdictionary\dto;
+
+use models\lex\MultiText;
 
 class ListEntry {
 
@@ -26,7 +28,7 @@ class ListEntry {
 	
 	public function __construct($guid = null) {
 		$this->guid = $guid;
-		$this->entry = \libraries\languageforge\lfdictionary\dto\MultiText::create();
+		$this->entry = MultiText::create();
 		$this->meanings = array();
 	}
 	
@@ -67,9 +69,9 @@ class ListEntry {
 	static public function createFromParts($guid, $word, $definitions) {
 		$entry = new ListEntry();
 		$entry->setGuid($guid);
-		$entry->setEntry(\libraries\languageforge\lfdictionary\dto\MultiText::createFromArray($word));
+		$entry->setEntry(MultiText::createFromArray($word));
 		foreach ($definitions as $definition) {
-			$multiText = \libraries\languageforge\lfdictionary\dto\MultiText::createFromArray($definition['definition']);
+			$multiText = MultiText::createFromArray($definition['definition']);
 			$entry->addMeaning($multiText);
 		}
 		return $entry;

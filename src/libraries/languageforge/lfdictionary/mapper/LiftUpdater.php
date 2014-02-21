@@ -1,8 +1,15 @@
 <?php
+namespace libraries\lfdictionary\mapper;
 
-namespace libraries\languageforge\lfdictionary\mapper;
 require_once(dirname(__FILE__) . '/../Config.php');
 
+/**
+ * LiftUpdater creates a lift fragment containing an updated LexEntry suitable for merging into the lift file.
+ * Note that this 'merges' the entry in that it retains data from the lift file that the web app model doesn't know about.
+ * This may not be necessary, as the c# app could do the same thing.
+ * REVIEWED CP 2013-12: This seems ok to me.
+ * TODO Move.  Should be moved to models/mapper/lift if it is refactored to persist (encode) the LexEntryModel
+ */
 class LiftUpdater {
 	
 	/**
@@ -20,7 +27,7 @@ class LiftUpdater {
 	
 	/**
 	 * @param SimpleXmlElement $entryXml
-	 * @param EntryDTO $entryDto
+	 * @param LexEntryModel $entryDto
 	 */
 	static function mergeEntry($entryXml, $entryDto) {
 		// Paranoid check that the xml guid == dto guid
@@ -180,14 +187,14 @@ class LiftUpdater {
 	/**
 	 * @param string $filePath
 	 * @param string $timeStamp
-	 * @param string $mercurialSHA
+	 * @param string $mercurialSha
 	 * @return string
 	 */
-	static function updateFilePath($filePath, $timeStamp, $mercurialSHA="") {
-		if ($mercurialSHA==""){
+	static function updateFilePath($filePath, $timeStamp, $mercurialSha="") {
+		if ($mercurialSha==""){
 			return $filePath . '-' . $timeStamp . '.liftupdate';
 		}else{
-			return $filePath . '-' . $timeStamp . '-' . $mercurialSHA . '.liftupdate';
+			return $filePath . '-' . $timeStamp . '-' . $mercurialSha . '.liftupdate';
 		}
 	}
 }

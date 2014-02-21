@@ -1,5 +1,5 @@
 <?php
-namespace libraries\languageforge\lfdictionary\dto;
+namespace libraries\lfdictionary\dto;
 
 class ListDTO {
 
@@ -9,13 +9,13 @@ class ListDTO {
 	public $entryCount;
 	
 	/**
-	* @var int
-	*/
+	 * @var int
+	 */
 	public $entryBeginIndex;
 	
 	/**
-	* @var int
-	*/
+	 * @var int
+	 */
 	public $entryEndIndex;
 	
 	/**
@@ -56,6 +56,5 @@ class ListDTO {
 	}
 	
 }
-
 
 ?>

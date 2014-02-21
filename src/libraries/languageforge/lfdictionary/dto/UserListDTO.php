@@ -3,8 +3,9 @@
  * This class contains User DTO
  * @author Arivusudar
  */
+// TODO. Delete. This is not likely useful.  The Dto should be page focussed, and the ProjectModel + JsonEncoder will help a lot. CP 2013-12
 
-namespace libraries\languageforge\lfdictionary\dto;
+namespace libraries\lfdictionary\dto;
 
 class UserListDTO {
 

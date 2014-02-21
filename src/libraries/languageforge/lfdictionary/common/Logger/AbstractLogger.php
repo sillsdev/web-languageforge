@@ -1,10 +1,10 @@
 <?php
 
-namespace libraries\languageforge\lfdictionary\common\Logger;
+namespace libraries\lfdictionary\common\Logger;
 
 use InvalidArgumentException;
 use ReflectionClass;
-use \libraries\languageforge\lfdictionary\common\ILogger;
+use \libraries\lfdictionary\common\ILogger;
 /**
  * Abstract Logger class offering base logging functionality
  *

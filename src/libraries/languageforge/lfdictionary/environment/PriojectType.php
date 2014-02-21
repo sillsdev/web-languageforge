@@ -1,5 +1,5 @@
 <?php
-namespace libraries\languageforge\lfdictionary\environment;
+namespace libraries\lfdictionary\environment;
 
 class ProjectType {
 	const DICTIONARY =  1;

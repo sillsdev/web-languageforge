@@ -1,5 +1,5 @@
 <?php
-namespace libraries\languageforge\lfdictionary\dto;
+namespace libraries\lfdictionary\dto;
 
 class ProjectStateDTO
 {

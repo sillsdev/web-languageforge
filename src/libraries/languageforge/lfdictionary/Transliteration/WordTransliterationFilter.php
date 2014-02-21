@@ -1,8 +1,9 @@
 <?php
-namespace libraries\languageforge\lfdictionary\Transliteration;
-use libraries\languageforge\lfdictionary\common\LoggerFactory;
+namespace libraries\lfdictionary\Transliteration;
+use libraries\lfdictionary\common\LoggerFactory;
+
+// TODO Delete. The typeahead can be reimplemented in a relevant command / dto using lv distance etc. This is used in the MongoLexStore::searchEntriesAsWordList, essentially implementing search for typeahead. CP 2013-12
 class WordTransliterationFilter extends PHPTransliteration {
-	//TODO XZ 2013-5-7 transliteration is not best idea, is may have problems with different language.
 
 	/**
 		* Constructs a transliteration filter object.

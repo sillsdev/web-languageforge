@@ -1,6 +1,17 @@
 <?php
-namespace libraries\languageforge\lfdictionary\common;
+namespace libraries\lfdictionary\common;
 
+/**
+ * The AsyncRunner provides a means of executing OS commands that may take a long time.
+ * The commands are started, and the runction returns immediately. The output of the command is
+ * sent to a file, wrapped using the GNU time command.  Clients can continue to poll until the
+ * command is complete.  Typically, the polling would be initiated by a javascript client to
+ * get some indication of progress.
+ * 
+ * A sample use of this would be the HgWrapper
+ * @see HgWrapper
+ * REVIEWED CP 2013-12: OK.
+ */
 class AsyncRunner
 {
 	private $_baseFilePath;

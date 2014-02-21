@@ -1,11 +1,11 @@
 <?php
-namespace libraries\languageforge\lfdictionary\environment;
+namespace libraries\lfdictionary\environment;
 
-use libraries\shared\palaso\CodeGuard;
+use libraries\palaso\CodeGuard;
 
-use libraries\languageforge\lfdictionary\common\LoggerFactory;
+use libraries\lfdictionary\common\LoggerFactory;
 use models\ProjectModel;
-use libraries\languageforge\lfdictionary\environment\ProjectState;
+use libraries\lfdictionary\environment\ProjectState;
 
 class LexProject
 {
@@ -59,7 +59,7 @@ class LexProject
 		}
 		$this->projectModel = $projectModel;
 		
-		$projectName = $this->projectModel->projectCode;
+		$projectName = $this->projectModel->projectSlug;
 		$workPath = rtrim($workPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 		$this->workFolderPath = $workPath;
 		$this->projectPath = rtrim($workPath . $projectName, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -76,12 +76,12 @@ class LexProject
 	 * Creates a new Lexicon project
 	 * @throws \Exception
 	 */
-	public function createNewProject() {
+	public function create() {
 		if (is_dir($this->projectPath)) {
 			throw new \Exception(sprintf("Cannot create new project '%s' already exists", $this->projectPath));
 		}
 		LexProjectFixer::fixProjectVLatest($this, false);
-		$this->projectState->setState(\libraries\languageforge\lfdictionary\environment\ProjectStates::Ready);
+		$this->projectState->setState(\libraries\lfdictionary\environment\ProjectStates::Ready);
 	}
 	
 	public function getUserOrDefaultProjectSettingsFilePath($userName) {
@@ -117,7 +117,7 @@ class LexProject
 		}
 	
 		// try to get it from the project folder projectname.WeSayConfig
-		$weSayProjectConfig = $this->projectPath . $this->projectModel->projectCode . self::SETTINGS_EXTENSION;
+		$weSayProjectConfig = $this->projectPath . $this->projectModel->projectSlug . self::SETTINGS_EXTENSION;
 		if (file_exists($weSayProjectConfig)) {
 			copy($weSayProjectConfig, $userSettingsFilePath);
 			return $userSettingsFilePath;
@@ -194,12 +194,12 @@ class LexProject
 	}
 	
 	public function getCurrentHash() {
-		$hg = new \libraries\languageforge\lfdictionary\common\HgWrapper($this->projectPath);
+		$hg = new \libraries\lfdictionary\common\HgWrapper($this->projectPath);
 		try {
 			$currentHash = $hg->getCurrentHash();
 		} catch (\Exception $exception) {
 			$currentHash = 'unknown';
-			LoggerFactory::getLogger()->logInfoMessage(sprintf("WARNING: getCurrentHash failed for '%s'", $this->projectModel->projectCode));
+			LoggerFactory::getLogger()->logInfoMessage(sprintf("WARNING: getCurrentHash failed for '%s'", $this->projectModel->projectSlug));
 		}
 		return $currentHash;
 	}
@@ -225,7 +225,7 @@ class LexProject
 		$prePercent = 0;
 		$bestMatchName = "";
 		foreach ($filePaths as $filePath) {			
-			similar_text(basename($filePath, ".lift"), $this->projectModel->projectCode, $percent);
+			similar_text(basename($filePath, ".lift"), $this->projectModel->projectSlug, $percent);
 			if ($prePercent <= $percent)
 			{
 				$prePercent = $percent;
@@ -261,7 +261,7 @@ class LexProject
 	 */
 	public function isReady() {
 		$state =  $this->projectState->getState();
-		if ($state != \libraries\languageforge\lfdictionary\environment\ProjectStates::Ready) {
+		if ($state != \libraries\lfdictionary\environment\ProjectStates::Ready) {
 			return false;
 		}
 		return true;
@@ -275,7 +275,7 @@ class LexProject
 		if (!$result) {
 			throw new \Exception(sprintf(
 					"The project '%s' (%s) is not yet ready for use.",
-					$this->projectModel->projectname, $this->projectModel->projectCode
+					$this->projectModel->projectName, $this->projectModel->projectSlug
 			));
 		}
 		return $result;

@@ -1,28 +1,32 @@
 <?php
-namespace libraries\languageforge\lfdictionary\environment;
+namespace libraries\lfdictionary\environment;
 require_once(dirname(__FILE__) . '/../Config.php');
 
-use libraries\languageforge\lfdictionary\common\AsyncRunner;
-use libraries\languageforge\lfdictionary\common\HgWrapper;
-use libraries\languageforge\lfdictionary\environment\LexProject;
-use libraries\languageforge\lfdictionary\environment\ProjectState;
+use libraries\lfdictionary\common\AsyncRunner;
+use libraries\lfdictionary\common\HgWrapper;
+use libraries\lfdictionary\environment\LexProject;
+use libraries\lfdictionary\environment\ProjectState;
 use models\ProjectModel;
 
+/**
+ * The LanguageDepotImporter imports a mercurial Lift repository from some other, possibly remote, source.
+ * Currently the importer does not import to the mongo database. 
+ */
 class LanguageDepotImporter {
 	
 	
 	/**
 	 * @var String
 	 */
-	private $_projectCode;
+	private $_projectSlug;
 		
 	/**
-	 * @param String $projectCode
+	 * @param String $projectSlug
 	 * @param String $projectAdminUserId
 	 * @param LexProject $lexProject
 	 */
-	public function __construct($projectCode) {
-		$this->_projectCode = $projectCode;
+	public function __construct($projectSlug) {
+		$this->_projectSlug = $projectSlug;
 	}
 
 	
@@ -34,7 +38,6 @@ class LanguageDepotImporter {
 	 * @return AsyncRunner
 	 */
 	public function cloneRepository($user, $password, $projectCode) {
-		// TODO Add support for private repo? CP 2012-08
 		$asyncRunner = $this->createAsyncRunner();
 		if ($asyncRunner->isRunning()) {
 			// The lock file exists, so we may be still running, or complete.
@@ -44,8 +47,8 @@ class LanguageDepotImporter {
 				return $asyncRunner;
 			}
 		}
-		$url = "http://$user:$password@hg-public.languagedepot.org/$projectCode";
-		$hg = new HgWrapper(LexProject::defaultWorkFolderPath(). $this->_projectCode .'/');
+		$url = "http://$user:$password@hg-public.languagedepot.org/$projectSlug";
+		$hg = new HgWrapper(LexProject::defaultWorkFolderPath(). $this->_projectSlug .'/');
 		$hg->cloneRepository($url, $asyncRunner);
 		return $asyncRunner;
 	}
@@ -59,7 +62,7 @@ class LanguageDepotImporter {
 		// Analyze the output of the async file and return an appropriate progress indicator.
 		$asyncRunner = $this->createAsyncRunner();
 		if (!$asyncRunner->isRunning()) {
-			throw new \Exception("Process '" . LexProject::stateFolderPath() . $this->_projectCode . "' not running");
+			throw new \Exception("Process '" . LexProject::stateFolderPath() . $this->_projectSlug . "' not running");
 		}
 		if ($asyncRunner->isComplete()) {
 			return 100;
@@ -103,7 +106,7 @@ class LanguageDepotImporter {
 	}
 	
 	private function createAsyncRunner() {
-		return new AsyncRunner(LexProject::stateFolderPath() .$this->_projectCode);
+		return new AsyncRunner(LexProject::stateFolderPath() .$this->_projectSlug);
 	}
 	
 	/**

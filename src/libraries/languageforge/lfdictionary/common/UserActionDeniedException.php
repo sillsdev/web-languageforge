@@ -1,5 +1,11 @@
 <?php
-namespace libraries\languageforge\lfdictionary\common;
+namespace libraries\lfdictionary\common;
+
+/**
+ * UserActionDeniedException may be thrown by the api when the currently logged in user has insufficient rights\
+ * to execute an api.
+ * REVIEWED CP 2013-12: OK
+ */
 class UserActionDeniedException extends \Exception
 {
 	// Redefine the exception so message isn't optional
@@ -8,4 +14,5 @@ class UserActionDeniedException extends \Exception
 		parent::__construct($message, $code);
 	}
 }
+
 ?>

@@ -1,6 +1,8 @@
 <?php
-namespace libraries\languageforge\lfdictionary\store;
-use libraries\languageforge\lfdictionary\store\mongo\LiftMongoImporter;
+namespace libraries\lfdictionary\store;
+use libraries\lfdictionary\store\mongo\LiftMongoImporter;
+
+// TODO Delete. This just doesn't hold its weight. CP 2013-12
 class LiftImporterFactory
 {
 	public static function  getImportFactory($storeType, $liftFilePath, $database)

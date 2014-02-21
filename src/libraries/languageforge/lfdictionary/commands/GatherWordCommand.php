@@ -1,14 +1,21 @@
 <?php
+namespace libraries\lfdictionary\commands;
 
-namespace libraries\languageforge\lfdictionary\commands;
+use models\lex\LexEntryModel;
+use models\lex\MultiText;
+use libraries\lfdictionary\common\UUIDGenerate;
+use libraries\lfdictionary\common\WordsParser;
+use libraries\lfdictionary\mapper\LiftUpdater;
+
 require_once(dirname(__FILE__) . '/../Config.php');
 
-use libraries\languageforge\lfdictionary\dto\EntryDTO;
-use libraries\languageforge\lfdictionary\dto\MultiText;
+/**
+ * GatherWordCommand imports data from a text file into the Lift file *and* saves it into the mongo database.
+ * TODO Rename. GatherWordsImportFromFile (or text it could do both). CP 2013-12
+ * TODO Enhance. No need to save direct to lift.  We will need a general mongo -> lift writer which should handle this. CP 2013-12
+ */
+class GatherWordCommand {
 
-
-class GatherWordCommand
-{
 	/**
 	 * @var String
 	 */
@@ -54,7 +61,6 @@ class GatherWordCommand
 		$this->exitWordsArr = $exitWordsArr;
 		$this->lang = $language;
 		$this->_lexStore = $lexStore;
-
 	}
 
 	function execute() {
@@ -66,19 +72,19 @@ class GatherWordCommand
 	function processFile() {
 		$this->gatherWords=urldecode($this->gatherWords);
 		// remove exist
-		$this->newWordsArr=array_diff(\libraries\languageforge\lfdictionary\common\WordsParser::parsingToArray($this->gatherWords) ,$this->exitWordsArr);
+		$this->newWordsArr=array_diff(WordsParser::parsingToArray($this->gatherWords) ,$this->exitWordsArr);
 
-		if (count($this->newWordsArr)>0){
-
-			$now = \libraries\languageforge\lfdictionary\mapper\LiftUpdater::now();
-			$filePath = \libraries\languageforge\lfdictionary\mapper\LiftUpdater::updateFilePath($this->_filePath, $now);
+		if (count($this->newWordsArr)>0) {
+			$now = LiftUpdater::now();
+			// TODO The LiftUpdater should not be called directly here, rather in the course of processing the file the LexEntryCommands::addEntry(...) should be called which in turn would do this (in addition to updating activity etc). CP 2013-12
+			$filePath = LiftUpdater::updateFilePath($this->_filePath, $now);
 			$rootXml = new \SimpleXMLElement('<lift />');
 			// loop words array to add text
 			foreach ($this->newWordsArr as $results) {
-				if ($wordEntry=trim($results)!=""){
+				if ($wordEntry=trim($results)!="") {
 					$entryXml = $rootXml->addChild('entry');
 					$entryXml['dateCreated'] = $entryXml['dateModified'] = gmdate("Y-m-d\TH:i:s\Z");
-					$entryXml['guid'] = \libraries\languageforge\lfdictionary\common\UUIDGenerate::uuid_generate_php();
+					$entryXml['guid'] = UUIDGenerate::uuid_generate_php();
 					$entryXml['id'] = $results . "_" . $entryXml['guid'];
 
 					$ChildUnitXml=$entryXml->addChild('lexical-unit');
@@ -93,15 +99,14 @@ class GatherWordCommand
 		}
 	}
 
-	function saveIntoDatabase($lang, $word)
-	{
-		if (isset($this->_lexStore))
-		{
-			$entryDTO = EntryDTO::create(\libraries\languageforge\lfdictionary\common\UUIDGenerate::uuid_generate_php());
+	function saveIntoDatabase($lang, $word) {
+		if (isset($this->_lexStore)) {
+			$entryDTO = LexEntryModel::create(UUIDGenerate::uuid_generate_php());
 			$entryDTO->setEntry(MultiText::create($lang, $word));
 			$this->_lexStore->writeEntry($entryDTO, 'new');
 		}
 	}
+	
 };
 
 ?>

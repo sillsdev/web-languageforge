@@ -1,5 +1,11 @@
 <?php
-namespace libraries\languageforge\lfdictionary\dto;
+namespace libraries\lfdictionary\dto;
+
+/**
+ * ActivityDto
+ * TODO Review. Compare with the SF ActivityDto they do a similar function.
+ * REVIEWED CP 2013-12: This is mostly ok. It should be built from the mongo activity log, which in turn is build from the dashboardtool from the mercurial lex repo.
+ */
 class DashboardActivitiesDTO{
 
 	/**

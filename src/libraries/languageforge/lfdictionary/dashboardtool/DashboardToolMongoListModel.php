@@ -1,5 +1,5 @@
 <?php
-namespace libraries\languageforge\lfdictionary\dashboardtool;
+namespace libraries\lfdictionary\dashboardtool;
 
 use models\mapper\MongoStore;
 use models\mapper\ReferenceList;
