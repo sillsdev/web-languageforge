@@ -1,11 +1,11 @@
 <?php
-namespace libraries\languageforge\lfdictionary\dashboardtool;
+namespace libraries\lfdictionary\dashboardtool;
 
 
-use libraries\languageforge\lfdictionary\dto\DashboardActivitiesDTO;
+use libraries\lfdictionary\dto\DashboardActivitiesDTO;
 
 require_once(dirname(__FILE__) . '/../Config.php');
-use \libraries\languageforge\lfdictionary\common\LoggerFactory;
+use \libraries\lfdictionary\common\LoggerFactory;
 class DashboardCommandsMongoDb implements IDashboardCommands
 {
 

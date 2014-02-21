@@ -1,14 +1,25 @@
 <?php
+namespace libraries\lfdictionary\commands;
 
-namespace libraries\languageforge\lfdictionary\commands;
+use libraries\lfdictionary\common\HgWrapper;
+
 require_once(dirname(__FILE__) . '/../Config.php');
 
-use libraries\languageforge\lfdictionary\common\AsyncRunner;
-use libraries\languageforge\lfdictionary\dashboardtool\DashboardToolFactory;
-use libraries\languageforge\lfdictionary\dashboardtool\DashboardDbType;
-use libraries\languageforge\lfdictionary\dashboardtool\HistoricalHgDataFetcher;
-use libraries\languageforge\lfdictionary\common\LoggerFactory;
+use libraries\lfdictionary\common\AsyncRunner;
+use libraries\lfdictionary\dashboardtool\DashboardToolFactory;
+use libraries\lfdictionary\dashboardtool\DashboardDbType;
+use libraries\lfdictionary\dashboardtool\HistoricalHgDataFetcher;
+use libraries\lfdictionary\common\LoggerFactory;
 use models\ProjectModel;
+
+/**
+ * UpdateDashboardCommand processes the Lift file in a Lex Repository updating the current statistics
+ * stored in the mongo db.
+ * @see HgWrapper
+ * @see AsyncRunner
+ * REVIEWED CP 2013-12: This is mostly ok, some minor refactoring.  The dashboard data needs a decent model with mongo persistence.
+ * TODO Refactor. The HistoricalHgDataFetcher should really be just the HgWrapper. CP 2013-12
+ */
 class UpdateDashboardCommand
 {
 	
@@ -167,7 +178,7 @@ class UpdateDashboardCommand
 	public function error() {
 		$asyncRunner = $this->createAsyncRunner();
 		$output = $asyncRunner->getOutput();
-		$errors = \libraries\languageforge\lfdictionary\common\HgWrapper::errorMessageFilter($output);
+		$errors = \libraries\lfdictionary\common\HgWrapper::errorMessageFilter($output);
 		return $errors;
 	}
 

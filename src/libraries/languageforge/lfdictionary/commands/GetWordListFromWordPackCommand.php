@@ -1,10 +1,25 @@
 <?php
-
-namespace libraries\languageforge\lfdictionary\commands;
-require_once(dirname(__FILE__) . '/../Config.php');
+namespace libraries\lfdictionary\commands;
 
 use dto\ListDTO;
-use libraries\languageforge\lfdictionary\common\LoggerFactory;
+use libraries\lfdictionary\common\LoggerFactory;
+use libraries\lfdictionary\dto\EntryListDTO;
+use models\lex\LexEntryModel;
+use models\lex\MultiText;
+use models\lex\Sense;
+use models\lex\Example;
+
+require_once(dirname(__FILE__) . '/../Config.php');
+
+/**
+ * TODO Rename / Move. This looks like a model to me. The execute is all about reading persisted data (from file) into the model. CP 2013-12
+ * TODO Enhance. The separate dto would use JsonEncoder on this 'model'
+ */
+/**
+ * GetWordListFromWordPackCommand
+ * REVIEWED CP 2013-12: Much of the code is ok. This is a model that must read an existing xml data file. That's fine. However,
+ * I suspect that the real 'dto' that needs to be returned is much larger and this is just a subset.
+ */
 class GetWordListFromWordPackCommand
 {
 	/**
@@ -28,13 +43,12 @@ class GetWordListFromWordPackCommand
 		$this->existWordList = $listDTO;
 		$this->sourceFile = $sourceLifeFile;
 
-		if (!file_exists($this->sourceFile))
-		{
+		if (!file_exists($this->sourceFile)) {
 			throw new \Exception('Lift file is missing on server: ' . $this->sourceFile);
 				
 		}
 
-		$this->_dto = new \libraries\languageforge\lfdictionary\dto\EntryListDTO();
+		$this->_dto = new EntryListDTO();
 	}
 
 	function execute() {
@@ -82,7 +96,6 @@ class GetWordListFromWordPackCommand
 
 		LoggerFactory::getLogger()->logDebugMessage(count($NewWordXMLdatas));
 		$this->_dto->entryCount = count($NewWordXMLdatas);
-
 	}
 
 	function processModelFromNode($node) {
@@ -90,7 +103,7 @@ class GetWordListFromWordPackCommand
 		$entry = null;
 		$lexicalForms = $node->{'lexical-unit'};
 		if ($lexicalForms) {
-			$entry = \libraries\languageforge\lfdictionary\dto\EntryDTO::create((string)$node['guid']);
+			$entry = LexEntryModel::create((string)$node['guid']);
 			$entry->setEntry($this->readMultiText($lexicalForms));
 			if(isset($node->{'sense'})) {
 				foreach ($node->{'sense'} as $sense) {
@@ -107,7 +120,7 @@ class GetWordListFromWordPackCommand
 	}
 
 	function readMultiText($node) {
-		$multiText = new \libraries\languageforge\lfdictionary\dto\MultiText();
+		$multiText = new MultiText();
 		foreach ($node->{'form'} as $form) {
 			$multiText->addForm((string)$form['lang'], (string)$form->{'text'});
 		}
@@ -115,7 +128,7 @@ class GetWordListFromWordPackCommand
 	}
 
 	function readSense($node) {
-		$sense = new \libraries\languageforge\lfdictionary\dto\Sense();
+		$sense = new Sense();
 
 		//Definition
 		$definition = $node->{'definition'};
@@ -147,8 +160,7 @@ class GetWordListFromWordPackCommand
 	}
 
 	function readExample($node) {
-
-		$example = new \dto\Example();
+		$example = new Example();
 
 		// Example multitext
 		$exampleXml = $node;
@@ -164,7 +176,6 @@ class GetWordListFromWordPackCommand
 		}
 		return $example;
 	}
-
 
 };
 

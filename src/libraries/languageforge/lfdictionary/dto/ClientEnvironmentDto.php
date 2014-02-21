@@ -1,9 +1,13 @@
 <?php
-namespace libraries\languageforge\lfdictionary\dto;
+namespace libraries\lfdictionary\dto;
 
 use models\UserModel;
 use models\ProjectModel;
 
+/**
+ * The ClientEnvironmentDto is delivered with the page.  It includes (static?) information used by the Lex app.
+ * This should include the site wide user rights. 
+ */
 class ClientEnvironmentDto {
 
 	/**
@@ -26,7 +30,7 @@ class ClientEnvironmentDto {
 	}
 
 	function encode() {
-		// TODO Don't think we really need projectDTO and userDTO, we can just use projectAccessDTO maybe CP 2012-11
+		// TODO Enhance Remove. ProjectDTO and UserDTO can be better implemented by the JsonEncoder and the respective models CP 2013-12
 		$projectDTO = new ProjectDTO($this->_projectModel);
 		$project = base64_encode(json_encode($projectDTO->encode()));
 		

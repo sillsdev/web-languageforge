@@ -1,9 +1,10 @@
 <?php
-namespace libraries\languageforge\lfdictionary\common;
-
+namespace libraries\lfdictionary\common;
 
 /*
  * Wrapper functions for Mercurial
+ * @see AsyncRunner
+ * REVIEWED CP 2013-12: OK.
  */
 class HgWrapper {
 	
@@ -56,7 +57,7 @@ class HgWrapper {
 	}
 
 	public function commit($message) {
-		// TODO should also allow a user here.
+		// TODO Enhance. Should also pass in the username to use for the commit.
 		$command = "commit -u languageforge -m '$message'";
 		$this->hg($command);
 	}

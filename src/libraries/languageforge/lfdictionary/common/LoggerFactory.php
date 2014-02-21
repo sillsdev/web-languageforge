@@ -1,7 +1,7 @@
 <?php
-namespace libraries\languageforge\lfdictionary\common;
+namespace libraries\lfdictionary\common;
 
-
+// TODO Delete. See ErrorHandler
 class LoggerFactory
 {
 	static function getLogger()

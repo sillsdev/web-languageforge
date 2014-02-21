@@ -1,12 +1,16 @@
 <?php
-namespace libraries\languageforge\lfdictionary\commands;
+namespace libraries\lfdictionary\commands;
 
 require_once(dirname(__FILE__) . '/../Config.php');
 
-use libraries\languageforge\lfdictionary\dashboardtool\DashboardDbType;
-use libraries\languageforge\lfdictionary\dashboardtool\DashboardToolFactory;
-use libraries\languageforge\lfdictionary\common\LoggerFactory;
-use libraries\languageforge\lfdictionary\dto\EntryListDTO;
+use libraries\lfdictionary\dashboardtool\DashboardDbType;
+use libraries\lfdictionary\dashboardtool\DashboardToolFactory;
+use libraries\lfdictionary\common\LoggerFactory;
+use libraries\lfdictionary\dto\EntryListDTO;
+
+/**
+ * TODO Rename. This looks like a DTO to me. The execute is all about preparing data to return, rename that to encode, call it a dto and move into the dto folder. CP 2013-12
+ */
 class GetDashboardDataCommand {
 	
 	var $_store = NULL;
@@ -34,7 +38,7 @@ class GetDashboardDataCommand {
 		// read the current counter values from the lift file
 		$this->processFile();
 
-		$result=new \libraries\languageforge\lfdictionary\dto\DashboardActivitiesDTO();
+		$result=new \libraries\lfdictionary\dto\DashboardActivitiesDTO();
 		$result->setStatsExamplesCount($this->_exampleCount);
 		$result->setStatsMeaningsCount($this->_meaningCount);
 		$result->setStatsPOSCount($this->_posCount);

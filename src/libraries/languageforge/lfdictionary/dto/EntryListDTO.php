@@ -1,5 +1,10 @@
 <?php
-namespace libraries\languageforge\lfdictionary\dto;
+namespace libraries\lfdictionary\dto;
+
+/**
+ * EntryListDto holds the list of entries used on the LHS of the Dictionary Browse Edit page.
+ * TODO Refactor. Add other elements of the dto, like rights and breadcrumbs.  Use the RightsHelper
+ */
 class EntryListDTO {
 
 	/**
@@ -10,7 +15,7 @@ class EntryListDTO {
 	/**
 	 *
 	 * Enter description here ...
-	 * @var array<EntryDTO>
+	 * @var array<LexEntryModel>
 	 */
 	var $_entries;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace libraries\languageforge\lfdictionary\common\Logger;
+namespace libraries\lfdictionary\common\Logger;
 
 /**
  * Factory for FileLogger
@@ -11,7 +11,7 @@ namespace libraries\languageforge\lfdictionary\common\Logger;
  * @author     Matěj Humpál <finwe@finwe.info>
  * @copyright  Copyright (c) 2011 Matěj Humpál
  */
-class FileLoggerFactory implements \libraries\languageforge\lfdictionary\common\Logger\ILoggerFactory
+class FileLoggerFactory implements \libraries\lfdictionary\common\Logger\ILoggerFactory
 {
 
 	private $options;

@@ -1,7 +1,9 @@
 <?php
-namespace libraries\languageforge\lfdictionary\mapper;
+namespace libraries\lfdictionary\mapper;
 
-
+// TODO Refactor. This should have a model with this code as a supporting encoder and decoder (to / from ldml file) there may also be a 'mapper' which handles the file environment, duplicate / overwrite files etc CP 2013-12
+// TODO The model would also use a mongoMapper to persist to the mongo database (we now want settings in the mongo database. CP 2013-12
+// @see GetSettingInputSystemsCommand which is a kind of dto / model that uses this class. CP 2013-12
 class InputSystemXmlJsonMapper {
 
 	const XML_NAMESPACE_PALASO = "urn://palaso.org/ldmlExtensions/v1";

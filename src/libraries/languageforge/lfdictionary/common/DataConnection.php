@@ -1,8 +1,9 @@
 <?php
-namespace libraries\languageforge\lfdictionary\common;
+namespace libraries\lfdictionary\common;
 
 /**
  * Implements a data connection to a MySQL database.
+ * TODO Delete.
  */
 class DataConnection {
 

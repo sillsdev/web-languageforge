@@ -4,7 +4,7 @@
  * @author Arivusudar
  */
 
-namespace libraries\languageforge\lfdictionary\dto;
+namespace libraries\lfdictionary\dto;
 
 class ProjectListDTO {
 	

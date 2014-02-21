@@ -1,12 +1,16 @@
 <?php
-namespace libraries\languageforge\lfdictionary\commands;
-use libraries\languageforge\lfdictionary\environment\LexProjectFixer;
+namespace libraries\lfdictionary\commands;
+use libraries\lfdictionary\environment\LexProjectFixer;
 
-use libraries\languageforge\lfdictionary\environment\LexProject;
+use libraries\lfdictionary\environment\LexProject;
 
-use libraries\languageforge\lfdictionary\mapper\InputSystemXmlJsonMapper;
+use libraries\lfdictionary\mapper\InputSystemXmlJsonMapper;
 
-
+/* REVIEWED CP 2013-12: This 'command' uses the InputSystemXmlJsonMapper to go straight to Dto without an intervening model.
+ * TODO Enhance. Add a model to go with the mapper.  Then the dto can be generated using JsonEncoder. CP 2013-12
+ * TODO Enhance. Persist the model to mongo via mongomapper CP 2013-12
+ * @see InputSystemXmlJsonMapper
+ */
 class GetSettingInputSystemsCommand
 {
 

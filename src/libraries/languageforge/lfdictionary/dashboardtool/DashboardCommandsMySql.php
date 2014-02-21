@@ -1,10 +1,10 @@
 <?php
-namespace libraries\languageforge\lfdictionary\dashboardtool;
+namespace libraries\lfdictionary\dashboardtool;
 require_once(dirname(__FILE__) . '/../Config.php');
 
-use \libraries\languageforge\lfdictionary\common\DataConnector;
-use \libraries\languageforge\lfdictionary\common\DataConnection;
-use \libraries\languageforge\lfdictionary\common\LoggerFactory;
+use \libraries\lfdictionary\common\DataConnector;
+use \libraries\lfdictionary\common\DataConnection;
+use \libraries\lfdictionary\common\LoggerFactory;
 class DashboardCommandsMySql implements IDashboardCommands
 {
 	

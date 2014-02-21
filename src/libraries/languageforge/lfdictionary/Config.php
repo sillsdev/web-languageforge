@@ -7,6 +7,7 @@ if (!defined('SOURCE_PATH')) {
 }
 
 if(!defined('TestMode')) {
+	// TODO Delete. We don't have mysql anymore so these can go. CP 2013-12
 	//defining database connection variables as constants
 	define('DB_SERVER', 'localhost');
 	define('DB_USER', 'lfweb7');
@@ -31,11 +32,11 @@ define('LANGUAGEFORGE_LOG_PATH', '/tmp/');
 //Language Depot Database name
 define('LANG_DEPOT_DB_NAME', 'languagedepot');
 
-define('LANGUAGE_FORGE_DEFAULT_SETTINGS_RWC', 'WeSayConfig.Rwc.Default'); // TODO Move this to the LFRapidWords project CP 2012-09
-define('LANGUAGE_FORGE_DEFAULT_SETTINGS', 'default.WeSayConfig');	// TODO name need to be changed, if a user named "default" will make problem!
+define('LANGUAGE_FORGE_DEFAULT_SETTINGS_RWC', 'WeSayConfig.Rwc.Default'); // TODO Move. To the LFRapidWords project CP 2012-09
+define('LANGUAGE_FORGE_DEFAULT_SETTINGS', 'default.WeSayConfig');	// TODO Rename. If a user named "default" will make problem!
 
 define('VCS_MASTER_PATH', '/var/vcs/languageforge/');
-define('LANGUAGE_FORGE_WORK_PATH', '/var/lib/languageforge/work/'); // TODO This doesn't need to be configurable. Should be in a static method somewhere CP 2012-10
+define('LANGUAGE_FORGE_WORK_PATH', '/var/lib/languageforge/work/'); // TODO Move. This doesn't need to be configurable. Should be in a static method somewhere CP 2012-10
 
 
 define('LEXICON_WORD_PACK_FILE_NAME', 'SILCawl.lift');

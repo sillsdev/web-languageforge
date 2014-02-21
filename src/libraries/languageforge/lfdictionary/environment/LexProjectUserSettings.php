@@ -4,9 +4,9 @@
  * LanguageForge Dictionary API
  * @author Arivusudar
  */
-namespace libraries\languageforge\lfdictionary\environment;
-use \libraries\languageforge\lfdictionary\mapper\TaskSettingXmlJsonMapper;
-use libraries\languageforge\lfdictionary\environment\LexProject;
+namespace libraries\lfdictionary\environment;
+use \libraries\lfdictionary\mapper\TaskSettingXmlJsonMapper;
+use libraries\lfdictionary\environment\LexProject;
 
 error_reporting(E_ALL | E_STRICT);
 require_once(dirname(__FILE__) . '/../Config.php');
@@ -15,8 +15,8 @@ require_once(dirname(__FILE__) . '/../Config.php');
 
 use models\UserModel;
 use models\ProjectModel;
-use \libraries\languageforge\lfdictionary\environment\TaskSettingsModel;
-use \libraries\languageforge\lfdictionary\common\LoggerFactory;
+use \libraries\lfdictionary\environment\TaskSettingsModel;
+use \libraries\lfdictionary\common\LoggerFactory;
 class LexProjectUserSettings
 {
 	

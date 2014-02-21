@@ -1,11 +1,12 @@
 <?php
 
-namespace libraries\languageforge\lfdictionary\commands;
+namespace libraries\lfdictionary\commands;
 
 require_once (dirname ( __FILE__ ) . '/../Config.php');
 
-use libraries\languageforge\lfdictionary\common\LoggerFactory;
+use libraries\lfdictionary\common\LoggerFactory;
 
+// TODO Delete. This is superceded by the Q&A components from SF. CP 2013-12
 class GetCommentsCommand {
 	
 	// if need to change follow definations, please change client side too.
@@ -46,7 +47,7 @@ class GetCommentsCommand {
 		return $this->_dto;
 	}
 	function processFile() {
-		$this->_dto = new \libraries\languageforge\lfdictionary\dto\ConversationListDTO ();
+		$this->_dto = new \libraries\lfdictionary\dto\ConversationListDTO ();
 		if (file_exists ( $fileName )) {
 			
 			$doc = new \DOMDocument ();
@@ -88,7 +89,7 @@ class GetCommentsCommand {
 				else {
 					// undefined
 				}
-				$convDto = new \libraries\languageforge\lfdictionary\dto\ConversationDTO ();
+				$convDto = new \libraries\lfdictionary\dto\ConversationDTO ();
 				$convDto->setClass ( $entry->getAttributeNode ( "class" )->value );
 				$convDto->setGuid ( $entry->getAttributeNode ( "guid" )->value );
 				$convDto->setReference ( $entry->getAttributeNode ( "ref" )->value );
@@ -97,7 +98,7 @@ class GetCommentsCommand {
 				$convDto->setComment ( "" );
 				$convDto->setStatus ( "" );
 				foreach ( $entry->childNodes as $childNode ) {
-					$childDto = new \libraries\languageforge\lfdictionary\dto\ConversationDTO ();
+					$childDto = new \libraries\lfdictionary\dto\ConversationDTO ();
 					$childDto->setClass ( "" );
 					$childDto->setReference ( "" );
 					$childDto->setGuid ( $childNode->getAttributeNode ( "guid" )->value );
@@ -105,7 +106,6 @@ class GetCommentsCommand {
 					$childDto->setDate ( strtotime ( $childNode->getAttributeNode ( "date" )->value ) );
 					$childDto->setComment ( $childNode->nodeValue );
 					$childDto->setStatus ( $childNode->getAttributeNode ( "status" )->value );
-					// TODO cyu check for null
 					// $childDto->setStatusResolved($childNode->getAttributeNode ("status.resolved")->value);
 					// $childDto->setStatusReviewed($childNode->getAttributeNode ("status.reviewed")->value);
 					// $childDto->setStatusTodo($childNode->getAttributeNode ("status.todo")->value);
