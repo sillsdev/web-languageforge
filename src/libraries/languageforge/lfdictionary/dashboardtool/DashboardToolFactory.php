@@ -1,5 +1,5 @@
 <?php
-namespace libraries\languageforge\lfdictionary\dashboardtool;
+namespace libraries\lfdictionary\dashboardtool;
 
 class DashboardDbType
 {

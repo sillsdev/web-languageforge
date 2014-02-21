@@ -1,16 +1,18 @@
 <?php
-namespace libraries\languageforge\lfdictionary\commands;
+namespace libraries\lfdictionary\commands;
 
-use libraries\languageforge\lfdictionary\environment\LexProject;
+use libraries\lfdictionary\environment\LexProject;
 
-use \libraries\languageforge\lfdictionary\mapper\TaskSettingXmlJsonMapper;
+use \libraries\lfdictionary\mapper\TaskSettingXmlJsonMapper;
 
-use \libraries\languageforge\lfdictionary\environment\LexProjectUserSettings;
+use \libraries\lfdictionary\environment\LexProjectUserSettings;
 
-use \libraries\languageforge\lfdictionary\environment\LexClientEnvironment;
+use \libraries\lfdictionary\environment\LexClientEnvironment;
 
 require_once(dirname(__FILE__) . '/../Config.php');
 
+// TODO Refactor. Need the WritingSystemModel with encoder / decoder and mapper.
+// TODO Enhance. Need to store the model in mongo.
 class UpdateSettingUserTasksSettingCommand
 {
 	/**

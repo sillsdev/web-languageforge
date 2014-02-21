@@ -1,8 +1,9 @@
 <?php
-namespace libraries\languageforge\lfdictionary\mapper;
+namespace libraries\lfdictionary\mapper;
 require_once(dirname(__FILE__) . '/../Config.php');
 
 
+// TODO Delete. Field settings are now going to be stored in the mongo db.  We need a model to suit, but use mongo mapper to persist. CP 2013-12
 class TaskSettingXmlJsonMapper {
 	//task setting attribute
 

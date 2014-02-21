@@ -13,8 +13,8 @@
  * this file is a modified copy of Drupal 8 PHPTransliteration.
  *
  */
-namespace libraries\languageforge\lfdictionary\Transliteration;
-use libraries\languageforge\lfdictionary\common\LoggerFactory;
+namespace libraries\lfdictionary\Transliteration;
+use libraries\lfdictionary\common\LoggerFactory;
 /**
  * Implements transliteration without using the PECL extensions.
  *

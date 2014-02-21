@@ -1,5 +1,7 @@
 <?php
-namespace libraries\languageforge\lfdictionary\dto;
+namespace libraries\lfdictionary\dto;
+
+// TODO Refactor. Conflate with the similarly named command which should be the dto. The encdoing should become trivial with JsonEncoder CP 2013-12
 class DomainQuestionDTO{
 
 	/**

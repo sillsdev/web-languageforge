@@ -1,6 +1,8 @@
 <?php
 
-namespace libraries\languageforge\lfdictionary\dto;
+namespace libraries\lfdictionary\dto;
+
+// TODO Delete. Superceded by SF Q&A.  CP 2013-12
 class ConversationDTO {
 
 	/**

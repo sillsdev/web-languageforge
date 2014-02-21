@@ -1,11 +1,16 @@
 <?php
-namespace libraries\languageforge\lfdictionary\commands;
-use libraries\languageforge\lfdictionary\environment\LexProject;
+namespace libraries\lfdictionary\commands;
 
-use \libraries\languageforge\lfdictionary\mapper\FieldSettingXmlJsonMapper;
+use \libraries\lfdictionary\environment\LexProject;
+use \libraries\lfdictionary\mapper\FieldSettingXmlJsonMapper;
 
 require_once(dirname(__FILE__) . '/../Config.php');
 
+/* REVIEWED CP 2013-12: This 'command' uses the FieldSettingXmlJsonMapper to go straight to Dto without an intervening model.
+ * TODO Enhance. Add a model to go with the mapper.  Then the dto can be generated using JsonEncoder. CP 2013-12
+ * TODO Enhance. Persist the model to mongo via mongomapper CP 2013-12
+ * @see FieldSettingXmlJsonMapper
+ */
 class GetSettingUserFieldsSettingCommand {
 
 	/**

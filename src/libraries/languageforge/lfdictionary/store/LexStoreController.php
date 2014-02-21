@@ -1,20 +1,21 @@
 <?php
-namespace libraries\languageforge\lfdictionary\store;
+namespace libraries\lfdictionary\store;
 
-use libraries\languageforge\lfdictionary\dto\ListDTO;
-use libraries\languageforge\lfdictionary\environment\LexProject;
-use libraries\languageforge\lfdictionary\dto\EntryDTO;
-use libraries\languageforge\lfdictionary\dto\Example;
-use libraries\languageforge\lfdictionary\dto\Sense;
-use \libraries\languageforge\lfdictionary\common\LoggerFactory;
+use libraries\lfdictionary\common\LoggerFactory;
+use libraries\lfdictionary\dto\ListDTO;
+use libraries\lfdictionary\environment\LexProject;
+use models\lex\LexEntryModel;
+use models\lex\AuthorInfo;
+use models\lex\Example;
+use models\lex\Sense;
 
-class LexStoreType
-{
+class LexStoreType {
 	const STORE_TEST  = 0;
 	const STORE_MONGO = 1;
 }
-class LexStoreController
-{
+
+// TODO Delete. This just doesn't hold its weight. CP 2013-12
+class LexStoreController {
 
 	/**
 	 * @var string
@@ -36,7 +37,6 @@ class LexStoreController
 	 */
 	private $_lexStoreType;
 
-
 	/**
 	 * @param string $databaseName
 	 * @param LexProject $lexProject
@@ -50,7 +50,7 @@ class LexStoreController
 
 	/**
 	 * Writes the Lexical Entry to the Store.
-	 * @param EntryDTO $entry
+	 * @param LexEntryModel $entry
 	 * @param string $action
 	 */
 	public function writeEntry($entry, $action, $userId, $userName) {
@@ -60,7 +60,7 @@ class LexStoreController
 	/**
 	 * Reads a Lexical Entry from the Store
 	 * @param string $guid
-	 * @return EntryDTO
+	 * @return LexEntryModel
 	 */
 	public function readEntry($guid) {
 		return $this->_lexStore->readEntry($guid);
@@ -89,9 +89,9 @@ class LexStoreController
 	/**
 	 * Deletes an entry from the Store
 	 * @param string $guid
-	 * @param string $mercurialSHA
+	 * @param string $mercurialSha
 	 */
-	public function deleteEntry($guid, $mercurialSHA) {
+	public function deleteEntry($guid, $mercurialSha) {
 		return $this->_lexStore->deleteEntry($guid);
 	}
 
@@ -129,8 +129,7 @@ class LexStoreController
 		}
 	}
 
-	public function searchEntriesAsWordList($lang, $titleLetter, $startFrom, $maxEntryCount)
-	{
+	public function searchEntriesAsWordList($lang, $titleLetter, $startFrom, $maxEntryCount) {
 		return $this->_lexStore->searchEntriesAsWordList($lang, $titleLetter, $startFrom, $maxEntryCount);
 	}
 
@@ -139,13 +138,12 @@ class LexStoreController
 	}
 
 
-	private function entryMetadataUpdater(EntryDTO $entry, $userId, $userName)
-	{
+	private function entryMetadataUpdater(LexEntryModel $entry, $userId, $userName) {
+		
 		$date = new \DateTime();
 		$unixTimeStamp = $date->getTimestamp();
 		$original = $this->readEntry($entry->getGuid());
-		if ($original == null)
-		{
+		if ($original == null) {
 			//new Entry
 			$entry->_metadata->_createdby=$userName;
 			$entry->_metadata->_createdbyId=$userId;
@@ -154,8 +152,7 @@ class LexStoreController
 			$entry->_metadata->_modifiedById=$userId;
 			$entry->_metadata->_modifiedDate=$unixTimeStamp;
 			//sense
-			foreach ($entry->_senses as $sense)
-			{
+			foreach ($entry->_senses as $sense) {
 				$sense->_metadata->_createdby=$userName;
 				$sense->_metadata->_createdbyId=$userId;
 				$sense->_metadata->_createdDate=$unixTimeStamp;
@@ -163,8 +160,7 @@ class LexStoreController
 				$sense->_metadata->_modifiedById=$userId;
 				$sense->_metadata->_modifiedDate=$unixTimeStamp;
 				//example
-				foreach ($sense->_examples as $example)
-				{
+				foreach ($sense->_examples as $example) {
 					$example->_metadata->_createdby=$userName;
 					$example->_metadata->_createdbyId=$userId;
 					$example->_metadata->_createdDate=$unixTimeStamp;
@@ -173,12 +169,12 @@ class LexStoreController
 					$example->_metadata->_modifiedDate=$unixTimeStamp;
 				}
 			}
-		}else {
+		} else {
 			//check and update exists Entry
 
 			//clone
-			$newEntryCopy = EntryDTO::createFromArray(unserialize(serialize($entry->encode())));
-			$originalEntryCopy = EntryDTO::createFromArray(unserialize(serialize($original->encode())));
+			$newEntryCopy = LexEntryModel::createFromArray(unserialize(serialize($entry->encode())));
+			$originalEntryCopy = LexEntryModel::createFromArray(unserialize(serialize($original->encode())));
 
 			$copyOfSenses = $newEntryCopy->_senses;
 			$copyOfOriginalSenses = $originalEntryCopy->_senses;
@@ -186,12 +182,11 @@ class LexStoreController
 			//remove non-need part
 			$newEntryCopy->_senses = Array();
 			$originalEntryCopy->_senses = Array();
-			$newEntryCopy->_metadata =  new \libraries\languageforge\lfdictionary\dto\EntryMetadataDTO();
-			$originalEntryCopy->_metadata =  new \libraries\languageforge\lfdictionary\dto\EntryMetadataDTO();
+			$newEntryCopy->_metadata =  new AuthorInfo();
+			$originalEntryCopy->_metadata =  new AuthorInfo();
 
 			//compare
-			if (strcmp(json_encode($newEntryCopy->encode()), json_encode($originalEntryCopy->encode()))!=0)
-			{
+			if (strcmp(json_encode($newEntryCopy->encode()), json_encode($originalEntryCopy->encode()))!=0) {
 				//changed
 				LoggerFactory::getLogger()->logDebugMessage("Entry Changed...");
 				$entry->_metadata->_modifiedBy=$userName;
@@ -201,25 +196,21 @@ class LexStoreController
 
 			LoggerFactory::getLogger()->logDebugMessage("Looking for changes in Senses...");
 			//check and update exists Sense
-			foreach ($copyOfSenses as $sense)
-			{
+			foreach ($copyOfSenses as $sense) {
 				$isSenseIdMatch = false;
 				$newSenseCopy = Sense::createFromArray(unserialize(serialize($sense->encode())));
 				$copyOfExamples = $newSenseCopy->_examples;
-				if(isset($copyOfOriginalSenses)){
-					foreach ($copyOfOriginalSenses as $originalSense)
-					{
-						if ($sense->getId()==$originalSense->getId())
-						{
+				if(isset($copyOfOriginalSenses)) {
+					foreach ($copyOfOriginalSenses as $originalSense) {
+						if ($sense->getId()==$originalSense->getId()) {
 							LoggerFactory::getLogger()->logDebugMessage("Original Sense with Id found: ". $sense->getId());
 							$isSenseIdMatch = true;
 							break;
 						}
-
 					}
 				}
-				if ($isSenseIdMatch==true)
-				{
+				
+				if ($isSenseIdMatch==true) {
 					LoggerFactory::getLogger()->logDebugMessage("Clone senses...");
 					$originalSenseCopy = Sense::createFromArray(unserialize(serialize($originalSense->encode())));
 					$copyOfOriginalExamples = $originalSenseCopy->_examples;
@@ -227,22 +218,21 @@ class LexStoreController
 					//remove non-need part
 					$newSenseCopy->_examples = Array();
 					$originalSenseCopy->_examples = Array();
-					$newSenseCopy->_metadata =  new \libraries\languageforge\lfdictionary\dto\EntryMetadataDTO();
-					$originalSenseCopy->_metadata =  new \libraries\languageforge\lfdictionary\dto\EntryMetadataDTO();
+					$newSenseCopy->_metadata =  new AuthorInfo();
+					$originalSenseCopy->_metadata =  new AuthorInfo();
 
 					//compare
 					LoggerFactory::getLogger()->logDebugMessage("Compare senses...");
-					if (strcmp(json_encode($newSenseCopy->encode()),json_encode($originalSenseCopy->encode())) != 0)
-					{
+					if (strcmp(json_encode($newSenseCopy->encode()),json_encode($originalSenseCopy->encode())) != 0) {
 						//changed
 						LoggerFactory::getLogger()->logDebugMessage("Sense Changed...");
 						$sense->_metadata->_modifiedBy=$userName;
 						$sense->_metadata->_modifiedById=$userId;
 						$sense->_metadata->_modifiedDate=$unixTimeStamp;
-					}else {
+					} else {
 						LoggerFactory::getLogger()->logDebugMessage("Sense nothing changes...");
 					}
-				}else {
+				} else {
 					// new sense
 					LoggerFactory::getLogger()->logDebugMessage("new Sense...");
 					$sense->_metadata->_createdby=$userName;
@@ -255,14 +245,11 @@ class LexStoreController
 					
 				//Example
 				LoggerFactory::getLogger()->logDebugMessage("Looking for changes in Examples...");
-				foreach ($copyOfExamples as $example)
-				{
+				foreach ($copyOfExamples as $example) {
 					$isExampleIdMatch = false;
-					if(isset($copyOfOriginalExamples)){
-						foreach ($copyOfOriginalExamples as $originalExample)
-						{
-							if ($example->getId()==$originalExample->getId())
-							{
+					if(isset($copyOfOriginalExamples)) {
+						foreach ($copyOfOriginalExamples as $originalExample) {
+							if ($example->getId()==$originalExample->getId()) {
 								LoggerFactory::getLogger()->logDebugMessage("Original Example with Id found: ". $example->getId());
 								$isExampleIdMatch = true;
 								break;
@@ -271,30 +258,27 @@ class LexStoreController
 						}
 					}
 
-					if ($isExampleIdMatch==true)
-					{
+					if ($isExampleIdMatch==true) {
 						LoggerFactory::getLogger()->logDebugMessage("Clone Example...");
 						$newExampleCopy = Example::createFromArray(unserialize(serialize($example->encode())));
 						$originalExampleCopy = Example::createFromArray(unserialize(serialize($originalExample->encode())));
 
-
 						//remove non-need part
-						$newExampleCopy->_metadata =  new \libraries\languageforge\lfdictionary\dto\EntryMetadataDTO();
-						$originalExampleCopy->_metadata =  new \libraries\languageforge\lfdictionary\dto\EntryMetadataDTO();
+						$newExampleCopy->_metadata =  new AuthorInfo();
+						$originalExampleCopy->_metadata =  new AuthorInfo();
 
 						//compare
 						LoggerFactory::getLogger()->logDebugMessage("Compare Examples...");
-						if (strcmp(json_encode($newExampleCopy->encode()), json_encode($originalExampleCopy->encode()))!=0)
-						{
+						if (strcmp(json_encode($newExampleCopy->encode()), json_encode($originalExampleCopy->encode()))!=0) {
 							//changed
 							LoggerFactory::getLogger()->logDebugMessage("Example changed...");
 							$example->_metadata->_modifiedBy=$userName;
 							$example->_metadata->_modifiedById=$userId;
 							$example->_metadata->_modifiedDate=$unixTimeStamp;
-						}else {
+						} else {
 							LoggerFactory::getLogger()->logDebugMessage("Example nothing changes...");
 						}
-					}else {
+					} else {
 						// new example
 						LoggerFactory::getLogger()->logDebugMessage("new Example...");
 						$example->_metadata->_createdby=$userName;

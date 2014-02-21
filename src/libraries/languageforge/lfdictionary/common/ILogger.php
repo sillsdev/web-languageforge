@@ -1,7 +1,8 @@
 <?php
 
-namespace libraries\languageforge\lfdictionary\common;
+namespace libraries\lfdictionary\common;
 
+// TODO Delete. See ErrorHandler
 /**
  * Basic interface for logging
  *

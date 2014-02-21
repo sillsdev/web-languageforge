@@ -1,10 +1,12 @@
 <?php
-namespace libraries\languageforge\lfdictionary\commands;
-use libraries\languageforge\lfdictionary\environment\LexProject;
-use \libraries\languageforge\lfdictionary\mapper\FieldSettingXmlJsonMapper;
+namespace libraries\lfdictionary\commands;
+use libraries\lfdictionary\environment\LexProject;
+use \libraries\lfdictionary\mapper\FieldSettingXmlJsonMapper;
 
 require_once(dirname(__FILE__) . '/../Config.php');
 
+// TODO Refactor. Need the WritingSystemModel with encoder / decoder and mapper.
+// TODO Enhance. Need to store the model in mongo.
 class UpdateSettingUserFieldsSettingCommand
 {
 	/**

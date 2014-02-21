@@ -1,5 +1,11 @@
 <?php
-namespace libraries\languageforge\lfdictionary\common;
+namespace libraries\lfdictionary\common;
+
+/**
+ * Generates a GUID suitable for use as an id for models that are persisted on the file system
+ * in Send / Receive.
+ * REVIEWED CP 2013-12: Ok.
+ */
 class UUIDGenerate{
 	/**
 	 * Generates a UUID v4 using PHP code.

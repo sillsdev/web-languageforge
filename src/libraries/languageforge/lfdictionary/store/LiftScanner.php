@@ -1,15 +1,25 @@
 <?php
-namespace libraries\languageforge\lfdictionary\store;
+namespace libraries\lfdictionary\store;
 
-class LiftStates 
-{
+use models\lex\LexEntryModel;
+use models\lex\Sense;
+use libraries\lfdictionary\common\UUIDGenerate;
+use models\lex\Example;
+use models\lex\MultiText;
+
+class LiftStates {
 	const SKIP        = 0;
 	const PROCESS_ONE = 1;
 	const PROCESS_ALL = 2;
 }
 
-class LiftScanner
-{
+/**
+ * LiftScanner reads a lift file and returns an array representation.
+ * TODO Refactor. This would be better expressed as a decoder / mapper to populate the LexEntryModel from a lift file.  The code here would be well up for that. CP 2013-12
+ * TODO Move. models/mapper/lift CP 2013-12
+ * REVIEWED CP 2013-12: The code here seems pretty good, and would well suit refactoring to a lift mapper / decoder.  
+ */
+class LiftScanner {
 
 	/**
 	 * @var string
@@ -67,16 +77,16 @@ class LiftScanner
 	}
 	
 	/**
-	 * Reads a EntryDTO from the XmlNode $node
+	 * Reads a LexEntryModel from the XmlNode $node
 	 * @param XmlNode $node
-	 * @return \dto\EntryDTO
+	 * @return LexEntryModel
 	 */
 	public function readEntry($node) {
 		$entry = null;
 		$lexicalForms = $node->{'lexical-unit'};
 		if ($lexicalForms) {
 			$guid = (string)$node['guid'];
-			$entry = \libraries\languageforge\lfdictionary\dto\EntryDTO::create($guid);
+			$entry = LexEntryModel::create($guid);
 			$entry->setGuid((string)$node['guid']);
 			$entry->setEntry($this->readMultiText($lexicalForms));
 			if(isset($node->{'sense'})) {
@@ -91,10 +101,10 @@ class LiftScanner
 	/**
 	 * Reads a Sense from the XmlNode $node
 	 * @param XmlNode $node
-	 * @return \dto\Sense
+	 * @return Sense
 	 */
 	public function readSense($node) {
-		$sense = new \libraries\languageforge\lfdictionary\dto\Sense();
+		$sense = new Sense();
 		// Definition
 		$definition = $node->{'definition'};
 		$sense->setDefinition($this->readMultiText($definition));
@@ -102,9 +112,9 @@ class LiftScanner
 		//id
 		if(isset($node->{'id'})) {
 			$sense->setId($node->{'id'});
-		}else {
+		} else {
 			// no id? create a one
-			$sense->setId( \libraries\languageforge\lfdictionary\common\UUIDGenerate::uuid_generate_php());
+			$sense->setId(UUIDGenerate::uuid_generate_php());
 		}
 		
 		// Part Of Speech
@@ -137,14 +147,14 @@ class LiftScanner
 	 * @return \dto\Example
 	 */
 	public function readExample($node) {
-		$example = new \libraries\languageforge\lfdictionary\dto\Example();
+		$example = new Example();
 	
 		//id
 		if(isset($node->{'id'})) {
 			$example->setId($node->{'id'});
-		}else {
+		} else {
 			// no id? create a one
-			$example->setId( \libraries\languageforge\lfdictionary\common\UUIDGenerate::uuid_generate_php());
+			$example->setId(UUIDGenerate::uuid_generate_php());
 		}
 		
 		// Example multitext
@@ -167,9 +177,8 @@ class LiftScanner
 	 * @param XmlNode $node
 	 * @return \lfbase\dto\MultiText
 	 */
-	
 	public function readMultiText($node) {
-		$multiText = new \libraries\languageforge\lfdictionary\dto\MultiText();
+		$multiText = new MultiText();
 		foreach ($node->{'form'} as $form) {
 			$multiText->addForm((string)$form['lang'], (string)$form->{'text'});
 		}

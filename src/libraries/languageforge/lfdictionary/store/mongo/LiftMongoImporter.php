@@ -1,8 +1,10 @@
 <?php
-namespace libraries\languageforge\lfdictionary\store\mongo;
-use \libraries\languageforge\lfdictionary\store\ILiftImporter;
-use \libraries\languageforge\lfdictionary\store\LiftScanner;
-use \libraries\languageforge\lfdictionary\store\LiftStates;
+namespace libraries\lfdictionary\store\mongo;
+
+use \libraries\lfdictionary\store\ILiftImporter;
+use \libraries\lfdictionary\store\LiftScanner;
+use \libraries\lfdictionary\store\LiftStates;
+
 /**
  * LiftMongoImporter imports lift data into the mongo database
  */
@@ -57,7 +59,7 @@ class LiftMongoImporter implements ILiftImporter
 	
 	/**
 	 * Updates a single $entry in the LexMongoStore according to the given $policy.
-	 * @param \dto\EntryDTO $entry
+	 * @param LexEntryModel $entry
 	 * @param LiftMongoImporterUpdatePolicy $policy
 	 */
 	public function updateEntry($entry, $policy) {

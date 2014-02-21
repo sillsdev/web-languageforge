@@ -1,8 +1,18 @@
 <?php
-namespace libraries\languageforge\lfdictionary\common;
-error_reporting(E_ALL | E_STRICT);
+namespace libraries\lfdictionary\common;
 require_once(dirname(__FILE__) . '/../Config.php');
-use libraries\languageforge\lfdictionary\common\LoggerFactory;
+
+// TODO Enhance, Remove. I don't think the LoggerFactory adds anything useful. It should be removed and use the std php error logging functions instead. CP 2013-12
+use libraries\lfdictionary\common\LoggerFactory;
+
+error_reporting(E_ALL | E_STRICT);
+
+/**
+ * ErrorHandler provides global exception handling and logging for application errors.
+ * 1) Errors and exceptions are formatted for logging
+ * 2) Exceptions are formatted for passing back to a jsonrpc client.
+ * REVIEWED CP 2013-12: This should still be used. It is quite good, though perhaps could be enhanced. It would make a useful addition to SF also.
+ */
 class ErrorHandler
 {
 

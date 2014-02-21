@@ -7,7 +7,7 @@ if(defined('STDIN') ){
 	$runAsUser=trim(shell_exec('whoami'));
 	echo("Lex dashboard tool running from CLI [" . $runAsUser . "]. \n");
 	$args = CommandLineParser::parseArgs($_SERVER['argv']);
-	$dashboardCounterExtracter = new \libraries\languageforge\lfdictionary\dashboardtool\DashboardCounterExtracter($args);	
+	$dashboardCounterExtracter = new \libraries\lfdictionary\dashboardtool\DashboardCounterExtracter($args);	
 	$dashboardCounterExtracter->process();
 	exit(0);
 }else{

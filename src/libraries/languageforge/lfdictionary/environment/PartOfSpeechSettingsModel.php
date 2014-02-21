@@ -4,7 +4,7 @@
  * LanguageForge Dictionary API
  * @author Arivusudar
  */
-namespace libraries\languageforge\lfdictionary\environment;
+namespace libraries\lfdictionary\environment;
 
 class PartOfSpeechSettingsModel
 {
