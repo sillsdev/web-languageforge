@@ -1,9 +1,6 @@
 'use strict';
 
-angular.module(
-		'settings', 
-		['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.dc.entry', 'ngAnimate']
-	)
+angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.dc.entry', 'ngAnimate'])
 	.controller('SettingsCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
 	                                 function($scope, $routeParams, userService, ss, notice, lexService, $window, $timeout) {
 		$scope.project = {
