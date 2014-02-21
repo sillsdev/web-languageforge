@@ -1,11 +1,3 @@
-/* Ensure that adding 1px borders won't mess up layout
-   See http://css-tricks.com/international-box-sizing-awareness-day/ */
-*, *:before, *:after {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-
 /* Typeahead */
 div.typeahead {
 	z-index: 1051;
