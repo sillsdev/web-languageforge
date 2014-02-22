@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.dc.entry', 'ngAnimate'])
-.controller('SettingsCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
-							function($scope, $routeParams, userService, ss, notice, lexService, $window, $timeout) {
+.controller('SettingsCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', '$filter', 
+							function($scope, $routeParams, userService, ss, notice, lexService, $window, $timeout, $filter) {
 	$scope.project = {
 		'id': $routeParams.projectId
 	};
 	
-	$scope.showPre = true;		// TODO Remove. Set false to hide <pre>. Remove this and all <pre> IJH 2014-02
+	$scope.showPre = true;		// TODO Remove. Set false to hide <pre>. Remove this and all debug <pre> IJH 2014-02
 
 	$scope.config = {};
 	$scope.languageCodes = {};
@@ -75,16 +75,16 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 					$scope.lists.inputSystems[tag].privateUse = privateUse;
 					$scope.lists.inputSystems[tag].name = inputSystems.getName(code, script, region, privateUse);
 				};
+				// select the first items
+				$scope.selectInputSystem($filter('orderAsArray')($scope.config.inputSystems, 'tag')[0]['tag']);
 				$scope.currentFieldName = 'lexeme';
 				$scope.currentTaskName = 'dashboard';
 			}
 		});
 	};
-	
-	$scope.queryProjectSettings();
 
 	$scope.settingsApply = function() {
-//			console.log("settingsApply");
+//		console.log("settingsApply");
 		lexService.updateProjectSettings($scope.project.id, $scope.config, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "Project settings updated successfully");
@@ -121,17 +121,10 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		return selectorInputSystem;
 	};
 	
-	$scope.$watch('config.inputSystems', function(newValue) {
-//			console.log("config input systems watch: ", newValue);
-		if (newValue != undefined) {
-			for (var tag in newValue) {
-				$scope.currentInputSystemTag = tag;
-				break;
-			}
-		}
-	});
+	$scope.queryProjectSettings();
+	
 	$scope.$watchCollection('currentInputSystem', function(newValue) {
-//			console.log("current input system watch: ", newValue);
+		console.log("current input system watch: ", newValue);
 		if (newValue != undefined) {
 			$scope.currentInputSystemTag = $scope.currentInputSystem.code;
 			switch($scope.currentInputSystem.special) {
