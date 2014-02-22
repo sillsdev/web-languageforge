@@ -1,25 +1,26 @@
 'use strict';
 
-function dbeCtrl($scope, userService, sessionService, lexService, $window, $timeout) {
-	
+angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'ngAnimate'])
+.controller('dbeCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', 
+                        function ($scope, $routeParams, userService, sessionService, lexService, $window, $timeout) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
 	// for an idea on expanding text areas
-	
-	
- 
 	
 	/* this is what an entry looks like
 	$scope.currentEntry = {
 		'id': '1234',
 		'lexeme': { 'en': '', 'th': '' },
 		'senses': [
-		    {
+			{
 				'meaning': { 'en': '', 'th': '' },
-		    }
+			}
 		]
 	};
 	*/
-	var projectId = 'blah';
+	$scope.project = {
+		'id': $routeParams.projectId
+	};
+		
 	var pristineEntry = {};
 	var lastSavedDate = new Date();
 	var saveTimer;
@@ -100,7 +101,7 @@ function dbeCtrl($scope, userService, sessionService, lexService, $window, $time
 	
 	$scope.saveCurrentEntry = function() {
 		if ($scope.entryLoaded() && $scope.currentEntryIsDirty()) {
-			lexService.update(projectId, $scope.currentEntry, function(result) {
+			lexService.update($scope.project.id, $scope.currentEntry, function(result) {
 				$scope.updateListWithEntry(result.data);
 				$scope.setCurrentEntry(result.data);
 			});
@@ -112,13 +113,13 @@ function dbeCtrl($scope, userService, sessionService, lexService, $window, $time
 
 		if (arguments.length == 0) {
 			// create new entry
-			lexService.update(projectId, {id:''}, function(result) {
+			lexService.update($scope.project.id, {id:''}, function(result) {
 				$scope.updateListWithEntry(result.data);
 				$scope.setCurrentEntry(result.data);
 			});
 		} else {
 			// load existing entry
-			lexService.read(projectId, id, function(result) {
+			lexService.read($scope.project.id, id, function(result) {
 				$scope.setCurrentEntry(result.data);
 			});
 		}
@@ -147,7 +148,7 @@ function dbeCtrl($scope, userService, sessionService, lexService, $window, $time
 	$scope.deleteEntry = function(entry) {
 		if ($window.confirm("Are you sure you want to delete '" + $scope.entryTitle(entry) + "'?")) {
 			$scope.entries.splice($scope.getEntryIndexById(entry.id), 1);
-			lexService.remove(projectId, entry.id, function(){});
+			lexService.remove($scope.project.id, entry.id, function(){});
 			$scope.setCurrentEntry({});
 		}
 	};
@@ -165,19 +166,16 @@ function dbeCtrl($scope, userService, sessionService, lexService, $window, $time
 	};
 	
 	$scope.getPageDto = function(callback) {
-		lexService.getPageDto(projectId, function(result) {
-			$scope.entries = result.data.entries;
-			$scope.config = result.data.config;
-			(callback || angular.noop)();
+		lexService.dbeDto($scope.project.id, function(result) {
+			if (result.ok) {
+				$scope.entries = result.data.entries;
+				$scope.config = result.data.config;
+			}
 		});
 	};
 
 	// run this when the page loads
 	$scope.getPageDto();
 	
-}
-
-
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'ngAnimate']).
-controller('dbeCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', dbeCtrl])
+}])
 ;

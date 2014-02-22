@@ -381,6 +381,10 @@ angular.module('lexicon.services', ['jsonRpc'])
 			});
 			return list;
 		};
+		this.dbeDto = function(projectId, callback) {
+			var dtoConfig = angular.copy(_config);
+			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
+		};
 		this.addExampleDto = function(projectId, callback) {
 			var dtoConfig = angular.copy(_config);
 			// We just want to see the definition and part of speech, but leave rest of config alone
@@ -390,7 +394,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			dtoConfig.entry.fields.senses.fields['definition'].visible = true;
 			dtoConfig.entry.fields.senses.fields['examples'].visible = true;
 			// Definition should be read-only
-			dtoConfig.entry.fields.senses.fields.definition.readonly = true; // TODO Implement. I Not yet implemented, but soon RM 2014-01
+			dtoConfig.entry.fields.senses.fields.definition.readonly = true;
 			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
 		};
 		this.addGrammarDto = function(projectId, callback) {
@@ -402,7 +406,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			dtoConfig.entry.fields.senses.fields['definition'].visible = true;
 			dtoConfig.entry.fields.senses.fields['partOfSpeech'].visible = true;
 			// Definition should be read-only
-			dtoConfig.entry.fields.senses.fields.definition.readonly = true; // TODO Implement. I Not yet implemented, but soon RM 2014-01
+			dtoConfig.entry.fields.senses.fields.definition.readonly = true;
 			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
 		};
 		this.addMeaningsDto = function(projectId, callback) {
@@ -412,8 +416,6 @@ angular.module('lexicon.services', ['jsonRpc'])
 				field.visible = false;
 			});
 			dtoConfig.entry.fields.senses.fields['definition'].visible = true;
-			// Definition should be read-only
-			dtoConfig.entry.fields.senses.fields.definition.readonly = true; // TODO Implement. I Not yet implemented, but soon RM 2014-01
 			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
 		};
 
