@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'ngAnimate'])
-.controller('dbeCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', 
-                        function ($scope, $routeParams, userService, sessionService, lexService, $window, $timeout) {
+.controller('dbeCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', '$filter', 
+                        function ($scope, $routeParams, userService, sessionService, lexService, $window, $timeout, $filter) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
 	// for an idea on expanding text areas
 	
@@ -170,6 +170,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			if (result.ok) {
 				$scope.entries = result.data.entries;
 				$scope.config = result.data.config;
+				// select the first entry
+				$scope.currentEntry.id = $filter('orderAsArray')($scope.entries, 'id')[0]['id'];
 			}
 		});
 	};
