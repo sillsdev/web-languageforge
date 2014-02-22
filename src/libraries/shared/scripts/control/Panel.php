@@ -15,7 +15,7 @@ class Panel {
 		$message .= '<li><a href="/script/migration/FixProjectUserRefs{{run}}">FixProjectUserRefs </a></li>';
 		$message .= '<li><a href="/script/migration/FixUserRoles{{run}}">FixUserRoles </a></li>';
 		$message .= '<li><a href="/script/migration/FixAvatarRefs{{run}}">FixAvatarRefs </a></li>';
-		$message .= '<li><a href="/script/migration/MakeAllSfchecksProjects">MakeAllSfchecksProjects </a></li>';
+		$message .= '<li><a href="/script/migration/MakeAllSfchecksProjects{{run}}">MakeAllSfchecksProjects </a></li>';
 		$message .= '</ul>';
 		$message .= '</div>';
 		return $message;
