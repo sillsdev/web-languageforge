@@ -124,7 +124,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	$scope.queryProjectSettings();
 	
 	$scope.$watchCollection('currentInputSystem', function(newValue) {
-		console.log("current input system watch: ", newValue);
+//		console.log("current input system watch: ", newValue);
 		if (newValue != undefined) {
 			$scope.currentInputSystemTag = $scope.currentInputSystem.code;
 			switch($scope.currentInputSystem.special) {
@@ -155,6 +155,10 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		'example': $scope.config.entry.fields.senses.fields.examples.fields['example'],
 		'translation': $scope.config.entry.fields.senses.fields.examples.fields['translation']
 	};
+	$scope.currentField = {
+//		'name': '',
+		'inputSystems': {}
+	};
 	$scope.selectField = function(fieldName) {
 		$scope.currentFieldName = fieldName;
 	};
@@ -165,7 +169,19 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 			this.collapsed = true;
 		}
 	};
-		
+
+	$scope.$watchCollection('currentField.inputSystems', function(newValue) {
+		if (newValue != undefined) {
+			$scope.fieldconfig[$scope.currentFieldName].inputSystems = [];
+			angular.forEach($scope.currentField.inputSystems, function(enabled, tag) {
+				if (enabled) {
+					var abbreviation = $scope.config.inputSystems[tag].abbreviation;
+					$scope.fieldconfig[$scope.currentFieldName].inputSystems.push(abbreviation);
+				}
+			});
+		}
+	});
+	
 }])
 .controller('TaskSettingsCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
 								function($scope, $routeParams, userService, ss, notice, lexService, $window, $timeout) {
