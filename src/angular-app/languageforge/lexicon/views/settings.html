@@ -56,19 +56,24 @@
 						</label>
 					</div>
 				</div>
+				
 				<div data-ng-if="fieldconfig[currentField.name].inputSystems">
 					<hr />
-					
-					<div class="control-group" data-ng-show="editInputSystems.collapsed">
-						<label class="control-label" for="inputSystem">Input Systems</label>
-						<ul class="unstyled indent1"  id="inputSystem">
-							<li data-ng-repeat="(inputSystemTag, inputSystem) in config.inputSystems">
-								<label class="checkbox"><input data-ng-model="currentField.inputSystems[inputSystemTag]" type="checkbox"/>{{inputSystem.abbreviation}}</label>
-							</li>
-						</ul>
-						<a href="" data-ng-click="editInputSystems.collapsed = false">Edit input systems</a>
+					<div class="row control-group" data-ng-show="editInputSystems.collapsed">
+						<div class="span3 picklists">
+							<label class="control-label" for="inputSystem">Input Systems</label>
+							<ul class="unstyled indent1"  id="inputSystem">
+								<li data-ng-click="currentField.inputSystems.tag = inputSystemTag" data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
+									<div class="checkbox"><input data-ng-model="currentField.inputSystems.fields[inputSystemTag]" type="checkbox"/>{{config.inputSystems[inputSystemTag].abbreviation}}</div>
+								</li>
+							</ul>
+							<a href="" data-ng-click="editInputSystems.collapsed = false">Edit input systems</a>
+						</div>
+						<div class="span1 btn-group btn-group-vertical">
+							<button class="btn" data-ng-click="moveUp(currentField.inputSystems.tag)" data-ng-disabled="currentField.inputSystems.fieldOrder[0] == currentField.inputSystems.tag || !currentField.inputSystems.tag">&nbsp;&nbsp;<i class="icon-arrow-up"></i></button>
+							<button class="btn" data-ng-click="moveDown(currentField.inputSystems.tag)" data-ng-disabled="currentField.inputSystems.fieldOrder[currentField.inputSystems.fieldOrder.length - 1] == currentField.inputSystems.tag || !currentField.inputSystems.tag">&nbsp;&nbsp;<i class="icon-arrow-down"></i></button>
+						</div>
 					</div>
-					
 					<div data-collapse="editInputSystems.collapsed">
 						<button class="btn btn-primary pull-right" data-ng-click="editInputSystems.done()"><i class="icon-ok"></i> Done</button>
 						<h3 style="font-weight:normal">Edit Input Systems</h3>

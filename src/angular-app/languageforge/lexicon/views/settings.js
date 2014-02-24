@@ -157,14 +157,36 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	};
 	$scope.currentField = {
 		'name': '',
-		'inputSystems': {}
+		'inputSystems': {
+			'fieldOrder': [],
+			'fields': {}
+		}
 	};
 	$scope.selectField = function(fieldName) {
 		$scope.currentField.name = fieldName;
-		$scope.currentField.inputSystems = {};
+
+		$scope.currentField.inputSystems.fields = {};
 		angular.forEach($scope.fieldconfig[fieldName].inputSystems, function(tag) {
-			$scope.currentField.inputSystems[tag] = true;
+			$scope.currentField.inputSystems.fields[tag] = true;
 		});
+		
+		$scope.currentField.inputSystems.fieldOrder = $scope.fieldconfig[fieldName].inputSystems;
+		angular.forEach($scope.config.inputSystems, function(inputSystem, tag) {
+			if(! (tag in $scope.currentField.inputSystems.fields)) {
+				$scope.currentField.inputSystems.fieldOrder.push(tag);
+			}
+		});
+	};
+	
+	$scope.moveUp = function(currentTag) {
+		var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
+		$scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1];
+		$scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1] = currentTag;
+	};
+	$scope.moveDown = function(currentTag) {
+		var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
+		$scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1];
+		$scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1] = currentTag;
 	};
 
 	$scope.editInputSystems = {
@@ -181,11 +203,11 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 			$scope.selectField('lexeme');
 		}
 	});
-	$scope.$watchCollection('currentField.inputSystems', function(newValue, oldValue) {
-		console.log("currentField.inputSystems watch ", newValue, oldValue);
+	$scope.$watchCollection('currentField.inputSystems.fields', function(newValue) {
+		console.log("currentField.inputSystems.fields watch ", newValue);
 		if (newValue != undefined) {
 			$scope.fieldconfig[$scope.currentField.name].inputSystems = [];
-			angular.forEach($scope.currentField.inputSystems, function(enabled, tag) {
+			angular.forEach($scope.currentField.inputSystems.fields, function(enabled, tag) {
 				if (enabled) {
 					$scope.fieldconfig[$scope.currentField.name].inputSystems.push(tag);
 				}
