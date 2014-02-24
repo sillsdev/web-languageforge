@@ -367,35 +367,45 @@ angular.module(
 	                                      function($scope, textService, $routeParams, $location) {
 		
 		$scope.export = {
-			'projectId': $routeParams.projectId,
 			'textId': $routeParams.textId,
 			'tagEditorVisible' : false,
-			'comments' : false,
+			'exportComments' : false,
+			'username' : '',
 			'tags' : []
+		};
+		
+		$scope.download = {
+			'xml' : '<no data>',
+			'commentCount' : 5,
+			'answerCount' : 3,
+			'complete' : false,
+			'inprogress' : false
 		};
 		
 		$scope.returnTrue = function() {
 			return true;
 		}
+
 		
-		$scope.exportComments = function() {
-			var xml = '<here>';
-			/*
-			textService.exportComments($scope.export, function(result) {
+		$scope.startExport = function() {
+			$scope.download.inprogress = true;
+			textService.exportComments($routeParams.projectId, $scope.export, function(result) {
 				if (result.ok) {
-					var xml = result.data;
-					
+					$scope.download = result.data;
+					$scope.download.complete = true;
 				}
 			});
-			*/
-			var uri = 'data:text/plain;charset=utf-8,' + encodeURIComponent(xml);
+		};
+		
+		$scope.downloadExport = function() {
+			// for a reference on how to create a data-uri for use in downloading content see http://stackoverflow.com/questions/16514509/how-do-you-serve-a-file-for-download-with-angularjs-or-javascript
+			var uri = 'data:text/plain;charset=utf-8,' + encodeURIComponent($scope.download.xml);
 			var link = document.createElement('a');
-			link.download = 'export.xml';
+			link.download = 'Comments_' + $scope.export.username.replace(' ', '_') + '.xml';
 			link.href = uri;
 			link.click();
 		};
 		
 		
-		// for a reference on how to create a data-uri for use in downloading content see http://stackoverflow.com/questions/16514509/how-do-you-serve-a-file-for-download-with-angularjs-or-javascript
 	}])
 	;
