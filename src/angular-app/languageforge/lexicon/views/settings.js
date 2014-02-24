@@ -78,7 +78,6 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 				};
 				// select the first items
 				$scope.selectInputSystem($filter('orderAsArray')($scope.config.inputSystems, 'tag')[0]['tag']);
-				$scope.currentFieldName = 'lexeme';
 				$scope.currentTaskName = 'dashboard';
 			}
 		});
@@ -157,11 +156,15 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		'translation': $scope.config.entry.fields.senses.fields.examples.fields['translation']
 	};
 	$scope.currentField = {
-//		'name': '',
+		'name': '',
 		'inputSystems': {}
 	};
 	$scope.selectField = function(fieldName) {
-		$scope.currentFieldName = fieldName;
+		$scope.currentField.name = fieldName;
+		$scope.currentField.inputSystems = {};
+		angular.forEach($scope.fieldconfig[fieldName].inputSystems, function(tag) {
+			$scope.currentField.inputSystems[tag] = true;
+		});
 	};
 
 	$scope.editInputSystems = {
@@ -170,14 +173,21 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 			this.collapsed = true;
 		}
 	};
-
-	$scope.$watchCollection('currentField.inputSystems', function(newValue) {
+	
+	$scope.$watch('config', function (newValue) {
+		console.log("config Fields watch ", newValue);
 		if (newValue != undefined) {
-			$scope.fieldconfig[$scope.currentFieldName].inputSystems = [];
+			// when config is updated select the first Feild in the list
+			$scope.selectField('lexeme');
+		}
+	});
+	$scope.$watchCollection('currentField.inputSystems', function(newValue, oldValue) {
+		console.log("currentField.inputSystems watch ", newValue, oldValue);
+		if (newValue != undefined) {
+			$scope.fieldconfig[$scope.currentField.name].inputSystems = [];
 			angular.forEach($scope.currentField.inputSystems, function(enabled, tag) {
 				if (enabled) {
-					var abbreviation = $scope.config.inputSystems[tag].abbreviation;
-					$scope.fieldconfig[$scope.currentFieldName].inputSystems.push(abbreviation);
+					$scope.fieldconfig[$scope.currentField.name].inputSystems.push(tag);
 				}
 			});
 		}
