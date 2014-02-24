@@ -376,8 +376,9 @@ angular.module(
 		
 		$scope.download = {
 			'xml' : '<no data>',
-			'commentCount' : 5,
-			'answerCount' : 3,
+			'commentCount' : 0,
+			'answerCount' : 0,
+			'totalCount' : 0,
 			'complete' : false,
 			'inprogress' : false
 		};
@@ -394,6 +395,7 @@ angular.module(
 					$scope.download = result.data;
 					$scope.download.complete = true;
 				}
+				$scope.download.inprogress = false;
 			});
 		};
 		
