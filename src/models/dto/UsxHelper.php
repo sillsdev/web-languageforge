@@ -47,7 +47,7 @@ class UsxHelper {
 	}
 	
 	public function getMetadata() {
-		if (is_null($this->_startChapter)) {
+		if (is_null($this->_info['startChapter'])) {
 			// parse the USX if we haven't already
 			$this->toHtml();
 		}
