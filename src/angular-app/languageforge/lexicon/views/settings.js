@@ -60,7 +60,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	};
 	
 	$scope.queryProjectSettings = function() {
-		lexService.projectSettings($scope.project.id, function(result) {
+		lexService.readProjectSettings($scope.project.id, function(result) {
 			if (result.ok) {
 				$scope.languageCodes = inputSystems.languageCodes();
 				$scope.config = result.data.config;

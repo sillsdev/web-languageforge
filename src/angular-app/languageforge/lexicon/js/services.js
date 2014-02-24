@@ -114,7 +114,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				'review': {'visible': true}
 			}
 		};
-		this.projectSettings = function(projectId, callback) {
+		this.readProjectSettings = function(projectId, callback) {
 			(callback || angular.noop)({'ok': true, 'data': {'config': angular.copy(_config)}});
 		};
 		this.updateProjectSettings = function(projectId, config, callback) {
