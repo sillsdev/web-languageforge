@@ -56,22 +56,24 @@
 						</label>
 					</div>
 				</div>
-				<hr />
-				
-				<div class="control-group" data-ng-show="editInputSystems.collapsed">
-					<label class="control-label" for="inputSystem">Input Systems</label>
-					<ul class="unstyled indent1"  id="inputSystem">
-						<li data-ng-repeat="(inputSystemTag, inputSystem) in config.inputSystems">
-							<label class="checkbox"><input data-ng-model="currentField.inputSystems[inputSystemTag]" type="checkbox"/>{{inputSystem.abbreviation}}</label>
-						</li>
-					</ul>
-					<a href="" data-ng-click="editInputSystems.collapsed = false">Edit input systems</a>
-				</div>
-				
-				<div data-collapse="editInputSystems.collapsed">
-					<button class="btn btn-primary pull-right" data-ng-click="editInputSystems.done()"><i class="icon-ok"></i> Done</button>
-					<h3 style="font-weight:normal">Edit Input Systems</h3>
-					<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'"></div>
+				<div data-ng-if="fieldconfig[currentField.name].inputSystems">
+					<hr />
+					
+					<div class="control-group" data-ng-show="editInputSystems.collapsed">
+						<label class="control-label" for="inputSystem">Input Systems</label>
+						<ul class="unstyled indent1"  id="inputSystem">
+							<li data-ng-repeat="(inputSystemTag, inputSystem) in config.inputSystems">
+								<label class="checkbox"><input data-ng-model="currentField.inputSystems[inputSystemTag]" type="checkbox"/>{{inputSystem.abbreviation}}</label>
+							</li>
+						</ul>
+						<a href="" data-ng-click="editInputSystems.collapsed = false">Edit input systems</a>
+					</div>
+					
+					<div data-collapse="editInputSystems.collapsed">
+						<button class="btn btn-primary pull-right" data-ng-click="editInputSystems.done()"><i class="icon-ok"></i> Done</button>
+						<h3 style="font-weight:normal">Edit Input Systems</h3>
+						<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'"></div>
+					</div>
 				</div>
 			</div>
 		</div>
