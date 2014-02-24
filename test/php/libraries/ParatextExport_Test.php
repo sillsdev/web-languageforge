@@ -67,7 +67,8 @@ class TestParatextExport extends UnitTestCase {
 		$params = array(
 			'textId' => $textId,
 			'tags' => array(),
-			'username' => 'Joe User'
+			'username' => 'Joe User',
+			'exportComments' => true
 		);
 		$download = ParatextExport::exportCommentsForText($project->id->asString(), $textId, $params);
  		
@@ -125,7 +126,8 @@ class TestParatextExport extends UnitTestCase {
 		$params = array(
 			'textId' => $textId,
 			'tags' => array('export'),
-			'username' => 'Joe User'
+			'username' => 'Joe User',
+			'exportComments' => true
 		);
 		$download = ParatextExport::exportCommentsForText($project->id->asString(), $textId, $params);
  		//echo "<pre>" . print_r($download) . "</pre>";
