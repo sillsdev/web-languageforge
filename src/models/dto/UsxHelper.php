@@ -12,6 +12,13 @@ class UsxHelper {
 	
 	private $_tagStack;
 	
+	
+	/**
+	 * 
+	 * @var array
+	 */
+	private $_info;
+	
 	// States
 	private $_stateCData;
 	
@@ -21,6 +28,13 @@ class UsxHelper {
 		xml_set_object($this->_parser, $this);
 		xml_set_element_handler($this->_parser, "onTagOpen", "onTagClose");
 		xml_set_character_data_handler($this->_parser, "onCData");
+		$this->_info = array(
+			'startChapter' => null,
+			'startVerse' => null,
+			'endChapter' => null,
+			'endVerse' => null,
+			'bookCode' => null
+		);
 	}
 	
 	public function toHtml() {
@@ -30,6 +44,14 @@ class UsxHelper {
 		xml_parse($this->_parser, $this->_usx);
 		//echo $this->_out;
 		return $this->_out;
+	}
+	
+	public function getMetadata() {
+		if (is_null($this->_startChapter)) {
+			// parse the USX if we haven't already
+			$this->toHtml();
+		}
+		return $this->_info;
 	}
 	
 	private function onTagOpen($parser, $tag, $attributes) {
@@ -46,6 +68,9 @@ class UsxHelper {
 				break;
 			case 'CHAR':
 				$this->onChar($attributes['STYLE']);
+				break;
+			case 'BOOK':
+				$this->onBook($attributes['CODE']);
 				break;
 			default:
 // 				echo 'to:';
@@ -99,15 +124,27 @@ class UsxHelper {
 	}
 	
 	private function onChapter($number, $style) {
+		if (is_null($this->_info['startChapter'])) {
+			$this->_info['startChapter'] = $number;
+		}
+		$this->_info['endChapter'] = $number;
 		$this->_out .= "<div class=\"$style\">Chapter $number</div>";
 	}
 	
 	private function onVerse($number, $style) {
+		if (is_null($this->_info['startVerse'])) {
+			$this->_info['startVerse'] = $number;
+		}
+		$this->_info['endVerse'] = $number;
 		$this->_out .= "<sup>$number</sup>";
 	}
 	
 	private function onChar($style) {
 		
+	}
+	
+	private function onBook($code) {
+		$this->_info['bookCode'] = $code;
 	}
 	
 }
