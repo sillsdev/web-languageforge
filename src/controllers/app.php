@@ -49,7 +49,7 @@ class App extends Secure_base {
 			
 		$data['cssFiles'] = array();
 		self::addCssFiles("angular-app/bellows/css", $data['cssFiles']);
-		self::addCssFiles("$appFolder", $data['cssfiles']);
+		self::addCssFiles($appFolder, $data['cssFiles']);
 
 		$data['title'] = $this->site;
 		
