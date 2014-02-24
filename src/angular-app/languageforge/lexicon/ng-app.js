@@ -128,7 +128,7 @@ angular.module('lexicon',
 			return name;
 		};
 		$scope.getProjectConfig = function(projectId) {
-			lexEntryService.projectSettings(projectId, function(result) {
+			lexEntryService.readProjectSettings(projectId, function(result) {
 				if (result.ok) {
 					$scope.config = result.data.config;
 				};
