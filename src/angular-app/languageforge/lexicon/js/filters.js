@@ -7,11 +7,12 @@ angular.module('lexicon.filters', [])
 		return function(obj, keyName) {
 			var result = [];
 			angular.forEach(obj, function(val, key) {
+				var newVal = angular.copy(val);
 				// if keyName defined, include key in val object
 				if (keyName) {
-					val[keyName] = key;
+					newVal[keyName] = key;
 				}
-				result.push(val);
+				result.push(newVal);
 			});
 			return result;
 		};
