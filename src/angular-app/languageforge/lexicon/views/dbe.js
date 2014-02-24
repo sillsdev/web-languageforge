@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'ngAnimate'])
-.controller('dbeCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', '$filter', 
-                        function ($scope, $routeParams, userService, sessionService, lexService, $window, $timeout, $filter) {
+.controller('dbeCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', '$filter', 
+                        function ($scope, userService, sessionService, lexService, $window, $timeout, $filter) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
 	// for an idea on expanding text areas
 	
@@ -17,8 +17,10 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		]
 	};
 	*/
+	
+	var projectId = $scope.routeParams.projectId;
 	$scope.project = {
-		'id': $routeParams.projectId
+		'id': projectId
 	};
 		
 	var pristineEntry = {};

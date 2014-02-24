@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('examples', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.listview', 'ngAnimate'])
-.controller('examplesCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', 
-                             function ($scope, $routeParams, userService, sessionService, lexService, $window, $timeout) {
+.controller('examplesCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 
+                             function ($scope, userService, sessionService, lexService) {
+	var projectId = $scope.routeParams.projectId;
 	$scope.project = {
-		'id': $routeParams.projectId
+		'id': projectId
 	};
 		
 	$scope.items = [];
