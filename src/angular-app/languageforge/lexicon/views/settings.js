@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.dc.entry', 'ngAnimate'])
-.controller('SettingsCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', '$filter', 
-							function($scope, $routeParams, userService, ss, notice, lexService, $window, $timeout, $filter) {
+.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', '$filter', 
+							function($scope, userService, ss, notice, lexService, $window, $timeout, $filter) {
+	var projectId = $scope.routeParams.projectId;
 	$scope.project = {
-		'id': $routeParams.projectId
+		'id': projectId
 	};
 	
 	$scope.showPre = true;		// TODO Remove. Set false to hide <pre>. Remove this and all debug <pre> IJH 2014-02
@@ -145,8 +146,8 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	});
 
 }])
-.controller('FieldSettingsCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
-								function($scope, $routeParams, userService, ss, notice, lexService, $window, $timeout) {
+.controller('FieldSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
+								function($scope, userService, ss, notice, lexService, $window, $timeout) {
 	$scope.fieldconfig = {
 		'lexeme': $scope.config.entry.fields['lexeme'],
 		'definition': $scope.config.entry.fields.senses.fields['definition'],
@@ -183,8 +184,8 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	});
 	
 }])
-.controller('TaskSettingsCtrl', ['$scope', '$routeParams', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
-								function($scope, $routeParams, userService, ss, notice, lexService, $window, $timeout) {
+.controller('TaskSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
+								function($scope, userService, ss, notice, lexService, $window, $timeout) {
 	$scope.selects.timeRange = {
 		'options': {
 			'1_30days': 'Up to 30 days',
