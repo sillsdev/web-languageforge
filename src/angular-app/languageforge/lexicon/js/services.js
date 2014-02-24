@@ -23,6 +23,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			},
 			'entry': {
 				'type': 'fields',
+				'fieldOrder': ['lexeme', 'senses'],
 				'fields': {
 					'lexeme': {
 						'type': 'multitext',
@@ -33,6 +34,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 					},
 					'senses': {
 						'type': 'fields',
+						'fieldOrder': ['definition', 'partOfSpeech', 'semanticDomainValue', 'examples'],
 						'fields': {
 							'definition': {
 								'type': 'multitext',
@@ -66,6 +68,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 							'examples': {
 								'type': 'fields',
 								'visible': true,
+								'fieldOrder': ['example', 'translation'],
 								'fields': {
 									'example': {
 										'type': 'multitext',
