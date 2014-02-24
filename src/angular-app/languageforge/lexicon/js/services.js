@@ -29,6 +29,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 						'type': 'multitext',
 						'label': 'Word',
 						'visible': true,
+						'inputSystems': ['th-fonipa-x-etic'],
 						'writingsystems': ['thipa'],
 						'width': 20
 					},
@@ -40,6 +41,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 								'type': 'multitext',
 								'label': 'Meaning',
 								'visible': true,
+								'inputSystems': ['th', 'en'],
 								'writingsystems': ['th', 'en'],
 								'width': 20
 							},
@@ -74,6 +76,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 										'type': 'multitext',
 										'label': 'Example Sentence',
 										'visible': true,
+										'inputSystems': ['th'],
 										'writingsystems': ['th'],
 										'width': 20
 									},
@@ -81,6 +84,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 										'type': 'multitext',
 										'label': 'Example Translation',
 										'visible': true,
+										'inputSystems': ['en'],
 										'writingsystems': ['en'],
 										'width': 20
 									}
