@@ -1,10 +1,10 @@
 <div class="dc-example">
 	<div class="deleteX pull-right"><i data-ng-click="remove(index)" title="Delete Example Sentence" class="icon-remove"></i></div>
-	<div data-ng-repeat="(fieldName, field) in config.fields">
-		<div data-ng-if="field.visible">
-			<div data-ng-switch data-on="field.type">
+	<div data-ng-repeat="fieldName in config.fieldOrder">
+		<div data-ng-if="config.fields[fieldName].visible">
+			<div data-ng-switch data-on="config.fields[fieldName].type">
 				<div data-ng-switch-when="multitext">
-					<dc-multitext definition="field" model="model[fieldName]"></dc-multitext>
+					<dc-multitext definition="config.fields[fieldName]" model="model[fieldName]"></dc-multitext>
 				</div>
 				<div data-ng-switch-default>
 					unsupported type {{config.fields[fieldName].type}} for field {{fieldName}}
