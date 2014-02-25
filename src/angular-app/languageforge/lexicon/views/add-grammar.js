@@ -27,9 +27,9 @@ angular.module('meaning', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palas
 		entry = entry || $scope.pageData.currentEntry;
 		var title = "[new word]";
 		if (entry.lexeme && $scope.config && $scope.config.entry) {
-			var lexemeWritingSystem = $scope.config.entry.fields.lexeme.writingsystems[0];
-			if (entry.lexeme[lexemeWritingSystem]) {
-				title = entry.lexeme[lexemeWritingSystem];
+			var lexemeInputSystem = $scope.config.entry.fields.lexeme.inputSystems[0];
+			if (entry.lexeme[lexemeInputSystem]) {
+				title = entry.lexeme[lexemeInputSystem];
 			}
 		}
 		return title;

@@ -30,7 +30,6 @@ angular.module('lexicon.services', ['jsonRpc'])
 						'label': 'Word',
 						'visible': true,
 						'inputSystems': ['th-fonipa-x-etic'],
-						'writingsystems': ['thipa'],
 						'width': 20
 					},
 					'senses': {
@@ -42,7 +41,6 @@ angular.module('lexicon.services', ['jsonRpc'])
 								'label': 'Meaning',
 								'visible': true,
 								'inputSystems': ['th', 'en'],
-								'writingsystems': ['th', 'en'],
 								'width': 20
 							},
 							'partOfSpeech': {
@@ -77,7 +75,6 @@ angular.module('lexicon.services', ['jsonRpc'])
 										'label': 'Example Sentence',
 										'visible': true,
 										'inputSystems': ['th'],
-										'writingsystems': ['th'],
 										'width': 20
 									},
 									'translation': {
@@ -85,7 +82,6 @@ angular.module('lexicon.services', ['jsonRpc'])
 										'label': 'Example Translation',
 										'visible': true,
 										'inputSystems': ['en'],
-										'writingsystems': ['en'],
 										'width': 20
 									}
 								}
@@ -121,17 +117,30 @@ angular.module('lexicon.services', ['jsonRpc'])
 				'review': {'visible': true}
 			}
 		};
+		this.configInputSystems = function() {
+			return _config.inputSystems;
+		};
 		this.readProjectSettings = function(projectId, callback) {
-			(callback || angular.noop)({'ok': true, 'data': {'config': angular.copy(_config)}});
+			var config = angular.copy(_config);
+			this.setConfig(config);
+			(callback || angular.noop)({'ok': true, 'data': {'config': config}});
 		};
 		this.updateProjectSettings = function(projectId, config, callback) {
 			_config = config;
 			(callback || angular.noop)({'ok': true});
 		};
+		
+		var _dtoConfig = {};
+		this.setConfig = function(dtoConfig) {
+			_dtoConfig = angular.copy(dtoConfig);
+		};
+		this.getConfig = function() {
+			return _dtoConfig;
+		};
 
 		var sampleData = [
 				{
-					"lexeme": {"thipa": "khâaw kài thɔ̂ɔt"},
+					"lexeme": {"th-fonipa-x-etic": "khâaw kài thɔ̂ɔt"},
 					"senses": [{
 						"definition": {
 							"th": "ข้าวไก่ทอด",
@@ -141,7 +150,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				},
 
 				{
-					"lexeme": {"thipa": "krapâw mǔu"},
+					"lexeme": {"th-fonipa-x-etic": "krapâw mǔu"},
 					"senses": [{
 						"definition": {
 							"th": "กระเพาหมู",
@@ -151,7 +160,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				},
 
 				{
-					"lexeme": {"thipa": "phàt siiʔ ǐw mǔu"},
+					"lexeme": {"th-fonipa-x-etic": "phàt siiʔ ǐw mǔu"},
 					"senses": [{
 						"definition": {
 					"th": "ผัดชีอิ้วหมู",
@@ -160,7 +169,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				},
 
 				{
-					"lexeme": {"thipa": "kài phàt métmàmùaŋ"},
+					"lexeme": {"th-fonipa-x-etic": "kài phàt métmàmùaŋ"},
 					"senses": [{
 						"definition": {
 							"th": "ไก่ผัดเม็ดมะม่วง",
@@ -170,7 +179,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				},
 
 				{
-					"lexeme": {"thipa": "cèt khǔnsʉ̀k phàt phrìk phǎw"},
+					"lexeme": {"th-fonipa-x-etic": "cèt khǔnsʉ̀k phàt phrìk phǎw"},
 					"senses": [{
 						"definition": {
 							"th": "เจ็ดขุนศึกผัดผริกเผา",
@@ -180,7 +189,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				},
 
 				{
-					"lexeme": {"thipa": "phàt prîaw wǎan kài"},
+					"lexeme": {"th-fonipa-x-etic": "phàt prîaw wǎan kài"},
 					"senses": [{
 						"definition": {
 							"th": "ผัดเปรี้ยวหวานหมู",
@@ -190,7 +199,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				},
 
 				{
-					"lexeme": {"thipa": "phàt thai kûŋ"},
+					"lexeme": {"th-fonipa-x-etic": "phàt thai kûŋ"},
 					"senses": [{
 						"definition": {
 							"th": "ผักไทกุ้ง",
@@ -200,7 +209,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				},
 
 				{
-					"lexeme": {"thipa": "khâaw khài ciaw mǔu yɔ̂ɔ"},
+					"lexeme": {"th-fonipa-x-etic": "khâaw khài ciaw mǔu yɔ̂ɔ"},
 					"senses": [{
 						"definition": {
 							"th": "ข้าวไข่เจียหมูยอ",
@@ -210,7 +219,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				},
 
 				{
-					"lexeme": {"thipa": "khâaw phàt mǔu"},
+					"lexeme": {"th-fonipa-x-etic": "khâaw phàt mǔu"},
 					"senses": [{
 						"definition": {
 							"th": "ข้าวผัดหมู",
@@ -220,7 +229,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				},
 
 				{
-					"lexeme": {"thipa": "nɔ̀máay fàràŋ phàt kûŋ"},
+					"lexeme": {"th-fonipa-x-etic": "nɔ̀máay fàràŋ phàt kûŋ"},
 					"senses": [{
 						"definition": {
 							"th": "หน่อไม้ฝรั่งผัดกุ้ง",
@@ -230,7 +239,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				},
 
 				{
-					"lexeme": {"thipa": "kài sòt kràthiam"},
+					"lexeme": {"th-fonipa-x-etic": "kài sòt kràthiam"},
 					"senses": [{
 						"definition": {
 							"th": "ไก่สกกระเกียม",
@@ -378,9 +387,9 @@ angular.module('lexicon.services', ['jsonRpc'])
 
 		getEntriesList = function() {
 			var list = [];
-			var ws = _config.entry.fields.lexeme.writingsystems[0];
+			var inputSystem = _config.entry.fields.lexeme.inputSystems[0];
 			serverIter(function(i,e) {
-				var title = e.lexeme[ws];
+				var title = e.lexeme[inputSystem];
 				if (!title) {
 					title = '[new word]';
 				}
@@ -390,6 +399,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 		};
 		this.dbeDto = function(projectId, callback) {
 			var dtoConfig = angular.copy(_config);
+			this.setConfig(dtoConfig);
 			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
 		};
 		this.addExampleDto = function(projectId, callback) {
@@ -402,6 +412,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			dtoConfig.entry.fields.senses.fields['examples'].visible = true;
 			// Definition should be read-only
 			dtoConfig.entry.fields.senses.fields.definition.readonly = true;
+			this.setConfig(dtoConfig);
 			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
 		};
 		this.addGrammarDto = function(projectId, callback) {
@@ -414,6 +425,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			dtoConfig.entry.fields.senses.fields['partOfSpeech'].visible = true;
 			// Definition should be read-only
 			dtoConfig.entry.fields.senses.fields.definition.readonly = true;
+			this.setConfig(dtoConfig);
 			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
 		};
 		this.addMeaningsDto = function(projectId, callback) {
@@ -423,6 +435,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				field.visible = false;
 			});
 			dtoConfig.entry.fields.senses.fields['definition'].visible = true;
+			this.setConfig(dtoConfig);
 			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
 		};
 
