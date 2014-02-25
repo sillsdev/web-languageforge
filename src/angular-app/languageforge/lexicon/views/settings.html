@@ -16,28 +16,28 @@
 				<dt>Lex Entry</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectField('lexeme')" data-ng-class="{selected:currentField.name == 'lexeme'}">
-						<div class="checkbox"><input type="checkbox" disabled checked> {{fieldconfig['lexeme'].label}}</div>
+						<div class="checkbox"><input type="checkbox" disabled checked> {{fieldConfig['lexeme'].label}}</div>
 					</div>
 				</div></dd>
 				<dt>Lex Senses</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectField('definition')" data-ng-class="{selected:currentField.name == 'definition'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['definition'].visible"> {{fieldconfig['definition'].label}}</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['definition'].visible"> {{fieldConfig['definition'].label}}</div>
 					</div>
 					<div data-ng-click="selectField('partOfSpeech')" data-ng-class="{selected:currentField.name == 'partOfSpeech'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['partOfSpeech'].visible"> {{fieldconfig['partOfSpeech'].label}}</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['partOfSpeech'].visible"> {{fieldConfig['partOfSpeech'].label}}</div>
 					</div>
 					<div data-ng-click="selectField('semanticDomainValue')" data-ng-class="{selected:currentField.name == 'semanticDomainValue'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['semanticDomainValue'].visible"> {{fieldconfig['semanticDomainValue'].label}}</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['semanticDomainValue'].visible"> {{fieldConfig['semanticDomainValue'].label}}</div>
 					</div>
 				</div></dd>
 				<dt>Lex Examples</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectField('example')" data-ng-class="{selected:currentField.name == 'example'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['example'].visible"> {{fieldconfig['example'].label}}</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['example'].visible"> {{fieldConfig['example'].label}}</div>
 					</div>
 					<div data-ng-click="selectField('translation')" data-ng-class="{selected:currentField.name == 'translation'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="fieldconfig['translation'].visible"> {{fieldconfig['translation'].label}}</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['translation'].visible"> {{fieldConfig['translation'].label}}</div>
 					</div>
 				</div></dd>
 			</dl>
@@ -46,18 +46,18 @@
 		<!-- Right column: field setup -->
 		<div class="span9">
 			<div class="well">
-				<h3>{{fieldconfig[currentField.name].label}} Field Setup</h3>
+				<h3>{{fieldConfig[currentField.name].label}} Field Setup</h3>
 				<div class="control-group">
 					<label class="control-label" for="displayName">Display Name</label>
 					<div class="controls">
-						<input type="text" id="displayName" data-ng-model="fieldconfig[currentField.name].label"/>
+						<input type="text" id="displayName" data-ng-model="fieldConfig[currentField.name].label"/>
 						<label class="checkbox">
-							<input type="checkbox" disabled data-ng-model="fieldconfig[currentField.name].hideEmpty"/>Hidden if empty
+							<input type="checkbox" disabled data-ng-model="fieldConfig[currentField.name].hideEmpty"/>Hidden if empty
 						</label>
 					</div>
 				</div>
 				
-				<div data-ng-if="fieldconfig[currentField.name].inputSystems">
+				<div data-ng-if="fieldConfig[currentField.name].inputSystems">
 					<hr />
 					<div class="row control-group" data-ng-show="editInputSystems.collapsed">
 						<div class="span3 picklists">
