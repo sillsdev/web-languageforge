@@ -1,6 +1,6 @@
 <?php
 
-namespace models\lex;
+namespace models\languageforge\lexicon;
 
 use models\mapper\MapOf;
 

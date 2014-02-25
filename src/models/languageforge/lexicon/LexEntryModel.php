@@ -1,6 +1,8 @@
 <?php
 
-namespace models\lex;
+namespace models\languageforge\lexicon;
+
+use models\CommentModel;
 
 use models\mapper\Id;
 use models\mapper\ArrayOf;
@@ -19,7 +21,7 @@ class LexEntryModelMongoMapper extends \models\mapper\MongoMapper {
 	 */
 	public static function connect($databaseName) {
 		if (!isset(static::$_pool[$databaseName])) {
-			static::$_pool[$databaseName] = new LexEntryModelMongoMapper($databaseName, 'lex');
+			static::$_pool[$databaseName] = new LexEntryModelMongoMapper($databaseName, 'lexicon');
 		}
 		return static::$_pool[$databaseName];
 	}
@@ -36,6 +38,11 @@ class LexEntryModel extends \models\mapper\MapperModel {
 		$this->id = new Id();
 		$this->_projectModel = $projectModel;
 		$this->lexeme = new MultiText();
+		$this->lexemeComments = new ArrayOf(
+			function($data) {
+				return new CommentModel();
+			}
+		);
 		$this->senses = new ArrayOf(
 			function($data) {
 				return new Sense();
@@ -60,10 +67,16 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	public $mercurialSha;
 
 	/**
-	 * This is a single LF domain
 	 * @var MultiText
 	 */
-	public $lexeme; // TODO Renamed $_entry to $lexeme, remove this comment when stitched in IJH 2013-11
+	// TODO Renamed $_entry to $lexeme.  References to $_entry may still exist
+	public $lexeme; 
+	
+	/**
+	 * 
+	 * @var ArrayOf<CommentModel>
+	 */
+	public $lexemeComments;
 
 	/**
 	 * @var ArrayOf ArrayOf<Sense>
@@ -74,7 +87,8 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	 *
 	 * @var AuthorInfo
 	 */
-	public $authorInfo; // TODO Renamed $_metadata to $authorInfo, remove this comment when stitched in IJH 2013-11
+	 // TODO Renamed $_metadata to $authorInfo, remove this comment when stitched in IJH 2013-11
+	public $authorInfo;
 
 	/**
 	 * @var ProjectModel;
