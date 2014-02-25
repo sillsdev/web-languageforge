@@ -4,21 +4,27 @@ angular.module('lexicon.services', ['jsonRpc'])
 			'inputSystems': {
 				'en': {
 					'abbreviation': 'en',
+					'fieldUseCount': 11
 				},
 				'qaa': {
 					'abbreviation': 'qaa',
+					'fieldUseCount': 0
 				},
 				'th': {
 					'abbreviation': 'th',
+					'fieldUseCount': 11
 				},
 				'th-fonipa-x-etic': {
 					'abbreviation': 'thipa',
+					'fieldUseCount': 11
 				},
 				'mi-Zxxx-x-audio': {
 					'abbreviation': 'mi',
+					'fieldUseCount': 0
 				},
 				'mi-Latn-NZ-x-Ngati': {
 					'abbreviation': 'miNgati',
+					'fieldUseCount': 0
 				}
 			},
 			'entry': {
@@ -163,8 +169,8 @@ angular.module('lexicon.services', ['jsonRpc'])
 					"lexeme": {"th-fonipa-x-etic": "phàt siiʔ ǐw mǔu"},
 					"senses": [{
 						"definition": {
-					"th": "ผัดชีอิ้วหมู",
-					"en": "Noodles fried in soy sauce with pork",
+							"th": "ผัดชีอิ้วหมู",
+							"en": "Noodles fried in soy sauce with pork",
 					}}],
 				},
 

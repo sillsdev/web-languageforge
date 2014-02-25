@@ -31,8 +31,12 @@
 			</div>
 		</div>
 		<div class="well">
-			<span class="pull-right">{{currentInputSystemTag}}</span>
+			<div class="pull-right">
+				<br />
+				<label class="control-label">{{currentInputSystemTag}}</label>
+			</div>
 			<h3>{{currentInputSystem.name}}</h3>
+			<p>{{currentInputSystem.fieldUseCount}} entry field{{(currentInputSystem.fieldUseCount == 1) ? ' is' : 's are'}} using this system</p>
 			<div class="control-group">
 				<label class="control-label" for="abbrev">Abbreviation</label>
 				<div class="controls">
@@ -42,7 +46,7 @@
 			<div class="control-group">
 				<label class="control-label" for="special">Special</label>
 				<div class="controls">
-					<select class="form-control" id="special" data-ng-model="currentInputSystem.special" data-ng-options="selects.special.options[key] for key in selects.special.optionsOrder"></select>
+					<select class="form-control" id="special" data-ng-model="currentInputSystem.special" data-ng-disabled="currentInputSystem.fieldUseCount" data-ng-options="selects.special.options[key] for key in selects.special.optionsOrder"></select>
 				</div>
 			</div>
 			
@@ -50,7 +54,7 @@
 			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.optionsOrder[1]">	<!-- IPA transcription -->
 				<label class="control-label" for="purpose">Purpose</label>
 				<div class="controls">
-					<select class="form-control" id="purpose" data-ng-model="currentInputSystem.purpose" data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
+					<select class="form-control" id="purpose" data-ng-model="currentInputSystem.purpose" data-ng-disabled="currentInputSystem.fieldUseCount" data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
 						<option value="">unspecified</option>
 					</select>
 				</div>
@@ -58,19 +62,19 @@
 			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.optionsOrder[3]">		<!-- Script / Region / Variant -->
 				<label class="control-label" for="script">Script</label>
 				<div class="controls">
-					<select class="form-control" id="script" data-ng-model="currentInputSystem.script" data-ng-options="key as option for (key, option) in selects.script.options">
+					<select class="form-control" id="script" data-ng-model="currentInputSystem.script" data-ng-disabled="currentInputSystem.fieldUseCount" data-ng-options="key as option for (key, option) in selects.script.options">
 						<option value="">-- select a script --</option>
 					</select>
 				</div>
 				<label class="control-label" for="region">Region</label>
 				<div class="controls">
-					<select class="form-control" id="region" data-ng-model="currentInputSystem.region" data-ng-options="key as option for (key, option) in selects.region.options">
+					<select class="form-control" id="region" data-ng-model="currentInputSystem.region" data-ng-disabled="currentInputSystem.fieldUseCount" data-ng-options="key as option for (key, option) in selects.region.options">
 						<option value="">-- select a region --</option>
 					</select>
 				</div>
 				<label class="control-label" for="variant">Variant</label>
 				<div class="controls">
-					<input type="text" id="variant" data-ng-model="currentInputSystem.variant">
+					<input type="text" id="variant" data-ng-model="currentInputSystem.variant" data-ng-disabled="currentInputSystem.fieldUseCount">
 				</div>
 			</div>
 			</div>
