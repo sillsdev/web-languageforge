@@ -1,8 +1,8 @@
 <form class="form-horizontal dc-multitext">
-    <div ng-repeat="ws in definition.writingsystems" class="control-group">
-        <label ng-if="$first" class="control-label">{{definition.label}}</label>
+    <div data-ng-repeat="inputSystem in definition.inputSystems" class="control-group">
+        <label data-ng-if="$first" class="control-label">{{definition.label}}</label>
         <div class="controls">
-            <span title="unknown" class="wsid">{{ws}}</span><input ng-disabled="{{definition.readonly}}" width="{{definition.width}}" type="text" ng-model="model[ws]"/>
+            <span title="unknown" class="wsid">{{getAbbreviation(inputSystem)}}</span><input data-ng-disabled="{{definition.readonly}}" width="{{definition.width}}" type="text" data-ng-model="model[inputSystem]"/>
         </div>
     </div>
 </form>
