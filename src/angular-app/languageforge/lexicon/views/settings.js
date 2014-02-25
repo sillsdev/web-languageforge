@@ -11,7 +11,6 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	$scope.showPre = true;		// TODO Remove. Set false to hide <pre>. Remove this and all debug <pre> IJH 2014-02
 
 	$scope.config = {};
-	$scope.languageCodes = {};
 	$scope.lists = {
 		inputSystems: {}
 	};
@@ -42,29 +41,20 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	};
 	
 	$scope.currentInputSystemTag = '';
-	$scope.currentInputSystem = {
-		'name': '',
-		'code': '',
-		'abbreviation': '',
-		'special': '',
-		'purpose': '',
-		'script': '',
-		'region': '',
-		'variant': ''
-	};
+	$scope.currentInputSystem = {};
 	$scope.selectInputSystem = function(inputSystemTag) {
 		// TODO Add. update old before loading new IJH 2014-02
 		$scope.currentInputSystemTag = inputSystemTag;
 		$scope.currentInputSystem.name = $scope.lists.inputSystems[inputSystemTag].name;
 		$scope.currentInputSystem.code = $scope.lists.inputSystems[inputSystemTag].code;
 		$scope.currentInputSystem.abbreviation = $scope.lists.inputSystems[inputSystemTag].abbreviation;
+		$scope.currentInputSystem.fieldUseCount = $scope.lists.inputSystems[inputSystemTag].fieldUseCount;
 		$scope.currentInputSystem = convertSelects($scope.currentInputSystem, $scope.lists.inputSystems[inputSystemTag]);
 	};
 	
 	$scope.queryProjectSettings = function() {
 		lexService.readProjectSettings($scope.project.id, function(result) {
 			if (result.ok) {
-				$scope.languageCodes = inputSystems.languageCodes();
 				$scope.config = result.data.config;
 				$scope.lists.inputSystems = $scope.config.inputSystems;
 				for (var tag in $scope.lists.inputSystems) {
@@ -199,14 +189,14 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	};
 	
 	$scope.$watch('config', function (newValue) {
-		console.log("config Fields watch ", newValue);
+//		console.log("config Fields watch ", newValue);
 		if (newValue != undefined) {
 			// when config is updated select the first Feild in the list
 			$scope.selectField('lexeme');
 		}
 	});
 	$scope.$watchCollection('currentField.inputSystems.selecteds', function(newValue) {
-		console.log("currentField.inputSystems.selecteds watch ", newValue);
+//		console.log("currentField.inputSystems.selecteds watch ", newValue);
 		if (newValue != undefined) {
 			$scope.fieldconfig[$scope.currentField.name].inputSystems = [];
 			angular.forEach($scope.currentField.inputSystems.selecteds, function(selected, tag) {
