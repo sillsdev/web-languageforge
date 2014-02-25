@@ -14,5 +14,11 @@ class LfProjectModel extends ProjectModel {
 		parent::__construct($id);
 		$this->siteName = Website::LANGUAGEFORGE;
 	}
+	
+	/**
+	 * The ISO 639 language code
+	 * @var string
+	 */
+	public $languageCode;
 }
 ?>

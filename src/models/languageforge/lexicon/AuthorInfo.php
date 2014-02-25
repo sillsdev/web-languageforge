@@ -1,6 +1,8 @@
 <?php
 
-namespace models\lex;
+namespace models\languageforge\lexicon;
+
+use models\mapper\IdReference;
 
 /**
  * This class contains author information for the lex entry element and it sub-elements
@@ -8,15 +10,15 @@ namespace models\lex;
 class AuthorInfo {
 
 	public function __construct() {
-		$this->createdByIdRef = "";
+		$this->createdByIdRef = new IdReference();
 		$this->createdDate = 0;
-		$this->modifiedByIdRef = "";
+		$this->modifiedByIdRef = new IdReference();
 		$this->modifiedDate = 0;
 	}
 	
 	/**
 	 * user's Id as string
-	 * @var String
+	 * @var IdReference
 	 */
 	public $createdByIdRef;
 	
@@ -28,7 +30,7 @@ class AuthorInfo {
 	
 	/**
 	 * user's Id as string
-	 * @var String
+	 * @var IdReference
 	 */
 	public $modifiedByIdRef;
 	

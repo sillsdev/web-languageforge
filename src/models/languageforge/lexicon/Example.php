@@ -1,13 +1,22 @@
 <?php
 
-namespace models\lex;
+namespace models\languageforge\lexicon;
+
+use models\CommentModel;
+
+use models\mapper\ArrayOf;
 
 use models\mapper\Id;
 
 class Example {
 
 	function __construct() {
-		$this->example = new MultiText();
+		$this->sentence = new MultiText();
+		$this->sentenceComments = new ArrayOf(
+			function($data) {
+				return new CommentModel();
+			}
+		);
 		$this->translation = new MultiText();
 		$this->authorInfo = new AuthorInfo();
 	}
@@ -15,7 +24,13 @@ class Example {
 	/**
 	 * @var MultiText
 	 */
-	public $example;
+	public $sentence;
+	
+	/**
+	 * 
+	 * @var ArrayOf<CommentModel>
+	 */
+	public $sentenceComments;
 
 	/**
 	 * @var MultiText
