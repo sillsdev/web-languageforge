@@ -155,7 +155,7 @@ config.entry {{config.entry|json}}
 				<div class="control-group">
 					<label class="control-label" for="timeRange">Activity time range</label>
 					<div class="controls">
-						<select class="form-control" id="timeRange" data-ng-model="config.tasks['dashboard'].timeRange" data-ng-options="key as option for (key, option) in selects.timeRange.options">
+						<select class="form-control" id="timeRange" data-ng-model="config.tasks['dashboard'].timeRange" data-ng-options="selects.timeRange.options[key] for key in selects.timeRange.optionsOrder">
 							<option value="">-- choose a time range --</option>
 						</select>
 					</div>

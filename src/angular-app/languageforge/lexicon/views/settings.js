@@ -18,14 +18,16 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	
 	$scope.selects = {
 		'special': {
-			'options': [
-				'none',
-				'IPA transcription',
-				'Voice',
-				'Script / Region / Variant'
-			]
+			'optionsOrder': ['none', 'ipaTranscription', 'voice', 'scriptRegionVariant'],
+			'options': {
+				'none': 'none',
+				'ipaTranscription': 'IPA transcription',
+				'voice': 'Voice',
+				'scriptRegionVariant': 'Script / Region / Variant'
+			}
 		},
 		'purpose': {
+			'optionsOrder': ['etic', 'emic'],
 			'options': {
 				'etic': 'Etic (raw phonetic transcription)',
 				'emic': 'Emic (uses the phonology of the language)'
@@ -101,19 +103,19 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		selectorInputSystem.variant = '';
 		switch(inputSystem.script) {
 			case '':
-				selectorInputSystem.special = $scope.selects.special.options[0];
+				selectorInputSystem.special = $scope.selects.special.optionsOrder[0];
 				break;
 			case 'fonipa':
-				selectorInputSystem.special = $scope.selects.special.options[1];
+				selectorInputSystem.special = $scope.selects.special.optionsOrder[1];
 				selectorInputSystem.purpose = inputSystem.privateUse;
 				break;
 			case 'Zxxx':
 				if (inputSystem.privateUse == 'audio') {
-					selectorInputSystem.special = $scope.selects.special.options[2];
+					selectorInputSystem.special = $scope.selects.special.optionsOrder[2];
 					break;
 				}
 			default:
-				selectorInputSystem.special = $scope.selects.special.options[3];
+				selectorInputSystem.special = $scope.selects.special.optionsOrder[3];
 				selectorInputSystem.script = inputSystem.script;
 				selectorInputSystem.region = inputSystem.region;
 				selectorInputSystem.variant = inputSystem.privateUse;
@@ -128,14 +130,14 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		if (newValue != undefined) {
 			$scope.currentInputSystemTag = $scope.currentInputSystem.code;
 			switch($scope.currentInputSystem.special) {
-				case $scope.selects.special.options[1]:		// IPA transcription
+				case $scope.selects.special.optionsOrder[1]:		// IPA transcription
 					$scope.currentInputSystemTag += '-fonipa';
 					$scope.currentInputSystemTag += ($scope.currentInputSystem.purpose) ? '-x-' + $scope.currentInputSystem.purpose : '';
 					break;
-				case $scope.selects.special.options[2]:		// Voice
+				case $scope.selects.special.optionsOrder[2]:		// Voice
 					$scope.currentInputSystemTag += '-Zxxx-x-audio';
 					break;
-				case $scope.selects.special.options[3]:		// Script / Region / Variant
+				case $scope.selects.special.optionsOrder[3]:		// Script / Region / Variant
 					$scope.currentInputSystemTag += ($scope.currentInputSystem.script) ? '-' + $scope.currentInputSystem.script : '';
 					$scope.currentInputSystemTag += ($scope.currentInputSystem.region) ? '-' + $scope.currentInputSystem.region : '';
 					$scope.currentInputSystemTag += ($scope.currentInputSystem.variant) ? '-x-' + $scope.currentInputSystem.variant : '';
@@ -219,11 +221,12 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 .controller('TaskSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', 
                                  function($scope, userService, ss, notice, lexService) {
 	$scope.selects.timeRange = {
+		'optionsOrder': ['30days', '90days', '1year', 'all'],
 		'options': {
-			'1_30days': 'Up to 30 days',
-			'2_90days': 'Up to 90 days',
-			'3_1year': 'Up to 1 year',
-			'4_all': 'All'
+			'30days': 'Up to 30 days',
+			'90days': 'Up to 90 days',
+			'1year': 'Up to 1 year',
+			'all': 'All'
 		}
 	};
 	$scope.selects.language = {
