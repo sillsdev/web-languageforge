@@ -254,7 +254,6 @@ angular.module(
 	                                      function($scope, $http, textService, ss, $routeParams, breadcrumbService, notice) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
-		var dto;
 		$scope.projectId = projectId;
 		$scope.textId = textId;
 		$scope.editedText = {
@@ -273,7 +272,6 @@ angular.module(
 
 		// Get name from text service. This really should be in the DTO, but this will work for now.
 		// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08
-		var text;
 		textService.settings_dto($scope.projectId, $scope.textId, function(result) {
 			if (result.ok) {
 				$scope.dto = result.data;
@@ -385,7 +383,7 @@ angular.module(
 		
 		$scope.returnTrue = function() {
 			return true;
-		}
+		};
 
 		
 		$scope.startExport = function() {
