@@ -139,7 +139,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 }])
 .controller('FieldSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', 
                                   function($scope, userService, ss, notice, lexService) {
-	$scope.fieldconfig = {
+	$scope.fieldConfig = {
 		'lexeme': $scope.config.entry.fields['lexeme'],
 		'definition': $scope.config.entry.fields.senses.fields['definition'],
 		'partOfSpeech': $scope.config.entry.fields.senses.fields['partOfSpeech'],
@@ -158,16 +158,19 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		$scope.currentField.name = fieldName;
 
 		$scope.currentField.inputSystems.selecteds = {};
-		angular.forEach($scope.fieldconfig[fieldName].inputSystems, function(tag) {
+		angular.forEach($scope.fieldConfig[fieldName].inputSystems, function(tag) {
 			$scope.currentField.inputSystems.selecteds[tag] = true;
 		});
 		
-		$scope.currentField.inputSystems.fieldOrder = $scope.fieldconfig[fieldName].inputSystems;
-		angular.forEach($scope.config.inputSystems, function(inputSystem, tag) {
-			if(! (tag in $scope.currentField.inputSystems.selecteds)) {
-				$scope.currentField.inputSystems.fieldOrder.push(tag);
-			}
-		});
+		// if the field uses input systems, add the selected systems first then the unselected systems
+		if ($scope.fieldConfig[fieldName].inputSystems) {
+			$scope.currentField.inputSystems.fieldOrder = $scope.fieldConfig[fieldName].inputSystems;
+			angular.forEach($scope.config.inputSystems, function(inputSystem, tag) {
+				if(! (tag in $scope.currentField.inputSystems.selecteds)) {
+					$scope.currentField.inputSystems.fieldOrder.push(tag);
+				}
+			});
+		}
 	};
 	
 	$scope.moveUp = function(currentTag) {
@@ -198,10 +201,10 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	$scope.$watchCollection('currentField.inputSystems.selecteds', function(newValue) {
 //		console.log("currentField.inputSystems.selecteds watch ", newValue);
 		if (newValue != undefined) {
-			$scope.fieldconfig[$scope.currentField.name].inputSystems = [];
+			$scope.fieldConfig[$scope.currentField.name].inputSystems = [];
 			angular.forEach($scope.currentField.inputSystems.selecteds, function(selected, tag) {
 				if (selected) {
-					$scope.fieldconfig[$scope.currentField.name].inputSystems.push(tag);
+					$scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
 				}
 			});
 		}
