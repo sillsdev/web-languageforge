@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.dc.entry', 'ngAnimate'])
-.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', '$filter', 
-							function($scope, userService, ss, notice, lexService, $window, $timeout, $filter) {
+.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$filter', 
+                             function($scope, userService, ss, notice, lexService, $filter) {
 	var projectId = $scope.routeParams.projectId;
 	$scope.project = {
 		'id': projectId
@@ -145,8 +145,8 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	});
 
 }])
-.controller('FieldSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
-								function($scope, userService, ss, notice, lexService, $window, $timeout) {
+.controller('FieldSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', 
+                                  function($scope, userService, ss, notice, lexService) {
 	$scope.fieldconfig = {
 		'lexeme': $scope.config.entry.fields['lexeme'],
 		'definition': $scope.config.entry.fields.senses.fields['definition'],
@@ -159,20 +159,20 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		'name': '',
 		'inputSystems': {
 			'fieldOrder': [],
-			'fields': {}
+			'selecteds': {}
 		}
 	};
 	$scope.selectField = function(fieldName) {
 		$scope.currentField.name = fieldName;
 
-		$scope.currentField.inputSystems.fields = {};
+		$scope.currentField.inputSystems.selecteds = {};
 		angular.forEach($scope.fieldconfig[fieldName].inputSystems, function(tag) {
-			$scope.currentField.inputSystems.fields[tag] = true;
+			$scope.currentField.inputSystems.selecteds[tag] = true;
 		});
 		
 		$scope.currentField.inputSystems.fieldOrder = $scope.fieldconfig[fieldName].inputSystems;
 		angular.forEach($scope.config.inputSystems, function(inputSystem, tag) {
-			if(! (tag in $scope.currentField.inputSystems.fields)) {
+			if(! (tag in $scope.currentField.inputSystems.selecteds)) {
 				$scope.currentField.inputSystems.fieldOrder.push(tag);
 			}
 		});
@@ -203,12 +203,12 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 			$scope.selectField('lexeme');
 		}
 	});
-	$scope.$watchCollection('currentField.inputSystems.fields', function(newValue) {
-		console.log("currentField.inputSystems.fields watch ", newValue);
+	$scope.$watchCollection('currentField.inputSystems.selecteds', function(newValue) {
+		console.log("currentField.inputSystems.selecteds watch ", newValue);
 		if (newValue != undefined) {
 			$scope.fieldconfig[$scope.currentField.name].inputSystems = [];
-			angular.forEach($scope.currentField.inputSystems.fields, function(enabled, tag) {
-				if (enabled) {
+			angular.forEach($scope.currentField.inputSystems.selecteds, function(selected, tag) {
+				if (selected) {
 					$scope.fieldconfig[$scope.currentField.name].inputSystems.push(tag);
 				}
 			});
@@ -216,8 +216,8 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	});
 	
 }])
-.controller('TaskSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$window', '$timeout', 
-								function($scope, userService, ss, notice, lexService, $window, $timeout) {
+.controller('TaskSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', 
+                                 function($scope, userService, ss, notice, lexService) {
 	$scope.selects.timeRange = {
 		'options': {
 			'1_30days': 'Up to 30 days',
