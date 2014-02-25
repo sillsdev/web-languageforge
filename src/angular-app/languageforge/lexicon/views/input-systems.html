@@ -26,7 +26,7 @@
 					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
 					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
 					<li class="divider"></li>
-					<li><a tabindex="-1" href="#"><i class="icon-remove"></i> Remove {{lists.inputSystems[currentInputSystemTag].name}}</a></li>
+					<li><a tabindex="-1" data-ng-click="removeInputSystem(currentInputSystemTag)" data-ng-disabled="currentInputSystem.fieldUseCount"><i class="icon-remove"></i> Remove {{currentInputSystem.name}}</a></li>
 				</ul>
 			</div>
 		</div>
