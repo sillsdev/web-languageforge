@@ -8,7 +8,7 @@
 		</div>
 		<div class="control-group picklists">
 			<ul class="unstyled">
-				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in lists.inputSystems" data-ng-class="{selected:currentInputSystemTag == inputSystemTag}">{{inputSystem.name}}</li>
+				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in inputSystems" data-ng-class="{selected:currentInputSystemTag == inputSystemTag}">{{inputSystem.name}}</li>
 			</ul>
 		</div>
 	</div>
@@ -22,11 +22,11 @@
 					More <span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu">
-					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
-					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
-					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of {{lists.inputSystems[currentInputSystem.code].name}}</a></li>
+					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
+					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
+					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
 					<li class="divider"></li>
-					<li><a tabindex="-1" data-ng-click="removeInputSystem(currentInputSystemTag)" data-ng-disabled="currentInputSystem.fieldUseCount"><i class="icon-remove"></i> Remove {{currentInputSystem.name}}</a></li>
+					<li><a tabindex="-1" data-ng-click="removeInputSystem(currentInputSystemTag)" data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount"><i class="icon-remove"></i> Remove {{inputSystems[currentInputSystemTag].name}}</a></li>
 				</ul>
 			</div>
 		</div>
@@ -35,59 +35,59 @@
 				<br />
 				<label class="control-label">{{currentInputSystemTag}}</label>
 			</div>
-			<h3>{{currentInputSystem.name}}</h3>
-			<p>{{currentInputSystem.fieldUseCount}} entry field{{(currentInputSystem.fieldUseCount == 1) ? ' is' : 's are'}} using this system</p>
+			<h3>{{inputSystems[currentInputSystemTag].name}}</h3>
+			<p>{{inputSystems[currentInputSystemTag].fieldUseCount}} entry field{{(inputSystems[currentInputSystemTag].fieldUseCount == 1) ? ' is' : 's are'}} using this system</p>
 			<div class="control-group">
 				<label class="control-label" for="abbrev">Abbreviation</label>
 				<div class="controls">
-					<input type="text" id="abbrev" data-ng-model="currentInputSystem.abbreviation">
+					<input type="text" id="abbrev" data-ng-model="inputSystems[currentInputSystemTag].abbreviation">
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="special">Special</label>
 				<div class="controls">
-					<select class="form-control" id="special" data-ng-model="currentInputSystem.special" data-ng-disabled="currentInputSystem.fieldUseCount" data-ng-options="selects.special.options[key] for key in selects.special.optionsOrder"></select>
+					<select class="form-control" id="special" data-ng-model="inputSystems[currentInputSystemTag].special" data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount" data-ng-options="selects.special.options[key] for key in selects.special.optionsOrder"></select>
 				</div>
 			</div>
 			
 			<div class="offset1">
-			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.optionsOrder[1]">	<!-- IPA transcription -->
+			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[1]">	<!-- IPA transcription -->
 				<label class="control-label" for="purpose">Purpose</label>
 				<div class="controls">
-					<select class="form-control" id="purpose" data-ng-model="currentInputSystem.purpose" data-ng-disabled="currentInputSystem.fieldUseCount" data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
+					<select class="form-control" id="purpose" data-ng-model="inputSystems[currentInputSystemTag].purpose" data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount" data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
 						<option value="">unspecified</option>
 					</select>
 				</div>
 			</div>
-			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.optionsOrder[3]">		<!-- Script / Region / Variant -->
+			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[3]">		<!-- Script / Region / Variant -->
 				<label class="control-label" for="script">Script</label>
 				<div class="controls">
-					<select class="form-control" id="script" data-ng-model="currentInputSystem.script" data-ng-disabled="currentInputSystem.fieldUseCount" data-ng-options="key as option for (key, option) in selects.script.options">
+					<select class="form-control" id="script" data-ng-model="inputSystems[currentInputSystemTag].script" data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount" data-ng-options="key as option for (key, option) in selects.script.options">
 						<option value="">-- select a script --</option>
 					</select>
 				</div>
 				<label class="control-label" for="region">Region</label>
 				<div class="controls">
-					<select class="form-control" id="region" data-ng-model="currentInputSystem.region" data-ng-disabled="currentInputSystem.fieldUseCount" data-ng-options="key as option for (key, option) in selects.region.options">
+					<select class="form-control" id="region" data-ng-model="inputSystems[currentInputSystemTag].region" data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount" data-ng-options="key as option for (key, option) in selects.region.options">
 						<option value="">-- select a region --</option>
 					</select>
 				</div>
 				<label class="control-label" for="variant">Variant</label>
 				<div class="controls">
-					<input type="text" id="variant" data-ng-model="currentInputSystem.variant" data-ng-disabled="currentInputSystem.fieldUseCount">
+					<input type="text" id="variant" data-ng-model="inputSystems[currentInputSystemTag].variant" data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount">
 				</div>
 			</div>
 			</div>
 			
-			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.optionsOrder[1]">	<!-- IPA transcription -->
+			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[1]">	<!-- IPA transcription -->
 				<a href="http://en.wikipedia.org/wiki/International_Phonetic_Alphabet" target="_blank">
 					<i class="icon-globe"></i> Read more about IPA transcriptions
 				</a>
 			</div>
-			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.optionsOrder[2]">		<!-- Voice -->
+			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[2]">		<!-- Voice -->
 				<p>In applications which support this option, fields with this input system will able to play and record voice.</p>
 			</div>
-			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.optionsOrder[3]">		<!-- Script / Region / Variant -->
+			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[3]">		<!-- Script / Region / Variant -->
 				<a href="http://www.w3.org/International/questions/qa-choosing-language-tags" target="_blank">
 					<i class="icon-globe"></i> 	Read more about language identifiers
 				</a>
@@ -96,9 +96,7 @@
 	</div>
 </div>
 <pre data-ng-show="showPre">
-currentInputSystemTag: {{currentInputSystemTag}}
-currentInputSystem {{currentInputSystem | json}}
-lists {{lists | json}}
+inputSystems['{{currentInputSystemTag}}'] {{inputSystems[currentInputSystemTag] | json}}
 </pre>
 </div>
 	

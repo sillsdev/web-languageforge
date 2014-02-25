@@ -11,9 +11,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	$scope.showPre = true;		// TODO Remove. Set false to hide <pre>. Remove this and all debug <pre> IJH 2014-02
 
 	$scope.config = {};
-	$scope.lists = {
-		inputSystems: {}
-	};
+	$scope.inputSystems = {};
 	
 	$scope.selects = {
 		'special': {
@@ -41,43 +39,8 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	};
 	
 	$scope.currentInputSystemTag = '';
-	$scope.currentInputSystem = {};
 	$scope.selectInputSystem = function(inputSystemTag) {
-		// TODO Add. update old before loading new IJH 2014-02
 		$scope.currentInputSystemTag = inputSystemTag;
-		$scope.currentInputSystem.name = $scope.lists.inputSystems[inputSystemTag].name;
-		$scope.currentInputSystem.code = $scope.lists.inputSystems[inputSystemTag].code;
-		$scope.currentInputSystem.abbreviation = $scope.lists.inputSystems[inputSystemTag].abbreviation;
-		$scope.currentInputSystem.fieldUseCount = $scope.lists.inputSystems[inputSystemTag].fieldUseCount;
-		$scope.currentInputSystem = convertSelects($scope.currentInputSystem, $scope.lists.inputSystems[inputSystemTag]);
-	};
-	
-	// convert raw config inputSystems to use in selectors
-	var convertSelects = function(selectorInputSystem, inputSystem) {
-		selectorInputSystem.purpose = '';
-		selectorInputSystem.script = '';
-		selectorInputSystem.region = '';
-		selectorInputSystem.variant = '';
-		switch(inputSystem.script) {
-			case '':
-				selectorInputSystem.special = $scope.selects.special.optionsOrder[0];
-				break;
-			case 'fonipa':
-				selectorInputSystem.special = $scope.selects.special.optionsOrder[1];
-				selectorInputSystem.purpose = inputSystem.privateUse;
-				break;
-			case 'Zxxx':
-				if (inputSystem.privateUse == 'audio') {
-					selectorInputSystem.special = $scope.selects.special.optionsOrder[2];
-					break;
-				}
-			default:
-				selectorInputSystem.special = $scope.selects.special.optionsOrder[3];
-				selectorInputSystem.script = inputSystem.script;
-				selectorInputSystem.region = inputSystem.region;
-				selectorInputSystem.variant = inputSystem.privateUse;
-		}
-		return selectorInputSystem;
 	};
 	
 	$scope.removeInputSystem = function(currentInputSystemTag) {
@@ -88,17 +51,37 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		lexService.readProjectSettings($scope.project.id, function(result) {
 			if (result.ok) {
 				$scope.config = result.data.config;
-				$scope.lists.inputSystems = $scope.config.inputSystems;
-				for (var tag in $scope.lists.inputSystems) {
+				$scope.inputSystems = $scope.config.inputSystems;
+				for (var tag in $scope.inputSystems) {
 					var code = inputSystems.getCode(tag);
 					var script = inputSystems.getScript(tag);
 					var region = inputSystems.getRegion(tag);
 					var privateUse = inputSystems.getPrivateUse(tag);
-					$scope.lists.inputSystems[tag].code = code;
-					$scope.lists.inputSystems[tag].script = script;
-					$scope.lists.inputSystems[tag].region = region;
-					$scope.lists.inputSystems[tag].privateUse = privateUse;
-					$scope.lists.inputSystems[tag].name = inputSystems.getName(code, script, region, privateUse);
+					$scope.inputSystems[tag].name = inputSystems.getName(code, script, region, privateUse);
+					$scope.inputSystems[tag].code = code;
+					$scope.inputSystems[tag].purpose = '';
+					$scope.inputSystems[tag].script = '';
+					$scope.inputSystems[tag].region = '';
+					$scope.inputSystems[tag].variant = '';
+					switch(script) {
+						case '':
+							$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[0];
+							break;
+						case 'fonipa':
+							$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[1];
+							$scope.inputSystems[tag].purpose = privateUse;
+							break;
+						case 'Zxxx':
+							if (privateUse == 'audio') {
+								$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[2];
+								break;
+							}
+						default:
+							$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[3];
+							$scope.inputSystems[tag].script = script;
+							$scope.inputSystems[tag].region = region;
+							$scope.inputSystems[tag].variant = privateUse;
+					}
 				};
 				// select the first items
 				$scope.selectInputSystem($filter('orderAsArray')($scope.config.inputSystems, 'tag')[0]['tag']);
@@ -119,23 +102,28 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	
 	$scope.queryProjectSettings();
 	
-	$scope.$watchCollection('currentInputSystem', function(newValue) {
+	$scope.$watchCollection('inputSystems[currentInputSystemTag]', function(newValue) {
 //		console.log("current input system watch: ", newValue);
 		if (newValue != undefined) {
-			$scope.currentInputSystemTag = $scope.currentInputSystem.code;
-			switch($scope.currentInputSystem.special) {
+			var newInputSystemTag = $scope.inputSystems[$scope.currentInputSystemTag].code;
+			switch($scope.inputSystems[$scope.currentInputSystemTag].special) {
 				case $scope.selects.special.optionsOrder[1]:		// IPA transcription
-					$scope.currentInputSystemTag += '-fonipa';
-					$scope.currentInputSystemTag += ($scope.currentInputSystem.purpose) ? '-x-' + $scope.currentInputSystem.purpose : '';
+					newInputSystemTag += '-fonipa';
+					newInputSystemTag += ($scope.inputSystems[$scope.currentInputSystemTag].purpose) ? '-x-' + $scope.inputSystems[$scope.currentInputSystemTag].purpose : '';
 					break;
 				case $scope.selects.special.optionsOrder[2]:		// Voice
-					$scope.currentInputSystemTag += '-Zxxx-x-audio';
+					newInputSystemTag += '-Zxxx-x-audio';
 					break;
 				case $scope.selects.special.optionsOrder[3]:		// Script / Region / Variant
-					$scope.currentInputSystemTag += ($scope.currentInputSystem.script) ? '-' + $scope.currentInputSystem.script : '';
-					$scope.currentInputSystemTag += ($scope.currentInputSystem.region) ? '-' + $scope.currentInputSystem.region : '';
-					$scope.currentInputSystemTag += ($scope.currentInputSystem.variant) ? '-x-' + $scope.currentInputSystem.variant : '';
+					newInputSystemTag += ($scope.inputSystems[$scope.currentInputSystemTag].script) ? '-' + $scope.inputSystems[$scope.currentInputSystemTag].script : '';
+					newInputSystemTag += ($scope.inputSystems[$scope.currentInputSystemTag].region) ? '-' + $scope.inputSystems[$scope.currentInputSystemTag].region : '';
+					newInputSystemTag += ($scope.inputSystems[$scope.currentInputSystemTag].variant) ? '-x-' + $scope.inputSystems[$scope.currentInputSystemTag].variant : '';
 					break;
+			}
+			if (newInputSystemTag != $scope.currentInputSystemTag) {
+				$scope.inputSystems[newInputSystemTag] = $scope.inputSystems[$scope.currentInputSystemTag];
+				delete $scope.inputSystems[$scope.currentInputSystemTag];
+				$scope.currentInputSystemTag = newInputSystemTag;
 			}
 		}
 	});
