@@ -364,7 +364,7 @@ angular.module(
 	.controller('ParatextExportTextCtrl', ['$scope', 'textService', '$routeParams', '$location', 
 	                                      function($scope, textService, $routeParams, $location) {
 		
-		$scope.export = {
+		$scope.exportConfig = {
 			'textId': $routeParams.textId,
 			'tagEditorVisible' : false,
 			'exportComments' : false,
@@ -388,7 +388,7 @@ angular.module(
 		
 		$scope.startExport = function() {
 			$scope.download.inprogress = true;
-			textService.exportComments($routeParams.projectId, $scope.export, function(result) {
+			textService.exportComments($routeParams.projectId, $scope.exportConfig, function(result) {
 				if (result.ok) {
 					$scope.download = result.data;
 					$scope.download.complete = true;
@@ -401,7 +401,7 @@ angular.module(
 			// for a reference on how to create a data-uri for use in downloading content see http://stackoverflow.com/questions/16514509/how-do-you-serve-a-file-for-download-with-angularjs-or-javascript
 			var uri = 'data:text/plain;charset=utf-8,' + encodeURIComponent($scope.download.xml);
 			var link = document.createElement('a');
-			link.download = 'Comments_' + $scope.export.username.replace(' ', '_') + '.xml';
+			link.download = 'Comments_' + $scope.exportConfig.username.replace(' ', '_') + '.xml';
 			link.href = uri;
 			link.click();
 		};
