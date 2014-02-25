@@ -44,7 +44,10 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	};
 	
 	$scope.removeInputSystem = function(currentInputSystemTag) {
-		console.log("removeInputSystem");
+//		console.log("removeInputSystem");
+		delete $scope.inputSystems[currentInputSystemTag];
+		// select the first items
+		$scope.selectInputSystem($filter('orderAsArray')($scope.config.inputSystems, 'tag')[0]['tag']);
 	};
 	
 	$scope.queryProjectSettings = function() {
@@ -123,7 +126,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 			if (newInputSystemTag != $scope.currentInputSystemTag) {
 				$scope.inputSystems[newInputSystemTag] = $scope.inputSystems[$scope.currentInputSystemTag];
 				delete $scope.inputSystems[$scope.currentInputSystemTag];
-				$scope.currentInputSystemTag = newInputSystemTag;
+				$scope.selectInputSystem(newInputSystemTag);
 			}
 		}
 	});
