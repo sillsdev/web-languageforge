@@ -94,7 +94,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 				'view': {'visible': true},
 				'dashboard': {
 					'visible': true,
-					'timeRange': '1_30days',
+					'timeRange': '30days',
 					'targetWordCount': 0
 				},
 				'gather-texts': {'visible': true},
