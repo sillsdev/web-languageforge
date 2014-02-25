@@ -63,9 +63,9 @@ angular.module('palaso.ui.dc.rendered', [])
 					// if the model doesn't exist, create an object for it based upon the definition
 					if (!$scope.model) {
 						$scope.model = {};
-						if ($scope.definition && $scope.definition.writingsystems) {
-							for (var i=0; i<$scope.definition.writingsystems.length; i++) {
-								$scope.model[$scope.definition.writingsystems[i]] = "";
+						if ($scope.definition && $scope.definition.inputSystems) {
+							for (var i=0; i<$scope.definition.inputSystems.length; i++) {
+								$scope.model[$scope.definition.inputSystems[i]] = "";
 							}
 						}
 					}
