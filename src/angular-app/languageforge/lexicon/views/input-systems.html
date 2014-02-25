@@ -42,20 +42,20 @@
 			<div class="control-group">
 				<label class="control-label" for="special">Special</label>
 				<div class="controls">
-					<select class="form-control" id="special" data-ng-model="currentInputSystem.special" data-ng-options="option for option in selects.special.options"></select>
+					<select class="form-control" id="special" data-ng-model="currentInputSystem.special" data-ng-options="selects.special.options[key] for key in selects.special.optionsOrder"></select>
 				</div>
 			</div>
 			
 			<div class="offset1">
-			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.options[1]">	<!-- IPA transcription -->
+			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.optionsOrder[1]">	<!-- IPA transcription -->
 				<label class="control-label" for="purpose">Purpose</label>
 				<div class="controls">
-					<select class="form-control" id="purpose" data-ng-model="currentInputSystem.purpose" data-ng-options="key as option for (key, option) in selects.purpose.options">
+					<select class="form-control" id="purpose" data-ng-model="currentInputSystem.purpose" data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
 						<option value="">unspecified</option>
 					</select>
 				</div>
 			</div>
-			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.options[3]">		<!-- Script / Region / Variant -->
+			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.optionsOrder[3]">		<!-- Script / Region / Variant -->
 				<label class="control-label" for="script">Script</label>
 				<div class="controls">
 					<select class="form-control" id="script" data-ng-model="currentInputSystem.script" data-ng-options="key as option for (key, option) in selects.script.options">
@@ -75,15 +75,15 @@
 			</div>
 			</div>
 			
-			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.options[1]">	<!-- IPA transcription -->
+			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.optionsOrder[1]">	<!-- IPA transcription -->
 				<a href="http://en.wikipedia.org/wiki/International_Phonetic_Alphabet" target="_blank">
 					<i class="icon-globe"></i> Read more about IPA transcriptions
 				</a>
 			</div>
-			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.options[2]">		<!-- Voice -->
+			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.optionsOrder[2]">		<!-- Voice -->
 				<p>In applications which support this option, fields with this input system will able to play and record voice.</p>
 			</div>
-			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.options[3]">		<!-- Script / Region / Variant -->
+			<div class="control-group" data-ng-show="currentInputSystem.special == selects.special.optionsOrder[3]">		<!-- Script / Region / Variant -->
 				<a href="http://www.w3.org/International/questions/qa-choosing-language-tags" target="_blank">
 					<i class="icon-globe"></i> 	Read more about language identifiers
 				</a>
@@ -93,7 +93,8 @@
 </div>
 <pre data-ng-show="showPre">
 currentInputSystemTag: {{currentInputSystemTag}}
-lists {{lists|json}}
+currentInputSystem {{currentInputSystem | json}}
+lists {{lists | json}}
 </pre>
 </div>
 	
