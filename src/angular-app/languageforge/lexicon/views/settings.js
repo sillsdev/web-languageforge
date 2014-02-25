@@ -52,6 +52,38 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		$scope.currentInputSystem = convertSelects($scope.currentInputSystem, $scope.lists.inputSystems[inputSystemTag]);
 	};
 	
+	// convert raw config inputSystems to use in selectors
+	var convertSelects = function(selectorInputSystem, inputSystem) {
+		selectorInputSystem.purpose = '';
+		selectorInputSystem.script = '';
+		selectorInputSystem.region = '';
+		selectorInputSystem.variant = '';
+		switch(inputSystem.script) {
+			case '':
+				selectorInputSystem.special = $scope.selects.special.optionsOrder[0];
+				break;
+			case 'fonipa':
+				selectorInputSystem.special = $scope.selects.special.optionsOrder[1];
+				selectorInputSystem.purpose = inputSystem.privateUse;
+				break;
+			case 'Zxxx':
+				if (inputSystem.privateUse == 'audio') {
+					selectorInputSystem.special = $scope.selects.special.optionsOrder[2];
+					break;
+				}
+			default:
+				selectorInputSystem.special = $scope.selects.special.optionsOrder[3];
+				selectorInputSystem.script = inputSystem.script;
+				selectorInputSystem.region = inputSystem.region;
+				selectorInputSystem.variant = inputSystem.privateUse;
+		}
+		return selectorInputSystem;
+	};
+	
+	$scope.removeInputSystem = function(currentInputSystemTag) {
+		console.log("removeInputSystem");
+	};
+	
 	$scope.queryProjectSettings = function() {
 		lexService.readProjectSettings($scope.project.id, function(result) {
 			if (result.ok) {
@@ -83,34 +115,6 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 				$scope.settingsForm.$setPristine();
 			}
 		});
-	};
-	
-	// convert raw config inputSystems to use in selectors
-	var convertSelects = function(selectorInputSystem, inputSystem) {
-		selectorInputSystem.purpose = '';
-		selectorInputSystem.script = '';
-		selectorInputSystem.region = '';
-		selectorInputSystem.variant = '';
-		switch(inputSystem.script) {
-			case '':
-				selectorInputSystem.special = $scope.selects.special.optionsOrder[0];
-				break;
-			case 'fonipa':
-				selectorInputSystem.special = $scope.selects.special.optionsOrder[1];
-				selectorInputSystem.purpose = inputSystem.privateUse;
-				break;
-			case 'Zxxx':
-				if (inputSystem.privateUse == 'audio') {
-					selectorInputSystem.special = $scope.selects.special.optionsOrder[2];
-					break;
-				}
-			default:
-				selectorInputSystem.special = $scope.selects.special.optionsOrder[3];
-				selectorInputSystem.script = inputSystem.script;
-				selectorInputSystem.region = inputSystem.region;
-				selectorInputSystem.variant = inputSystem.privateUse;
-		}
-		return selectorInputSystem;
 	};
 	
 	$scope.queryProjectSettings();
