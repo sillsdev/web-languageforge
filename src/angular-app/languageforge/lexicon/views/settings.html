@@ -64,7 +64,7 @@
 							<label class="control-label" for="inputSystem">Input Systems</label>
 							<ul class="unstyled indent1"  id="inputSystem">
 								<li data-ng-click="currentField.inputSystems.tag = inputSystemTag" data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
-									<div class="checkbox"><input data-ng-model="currentField.inputSystems.fields[inputSystemTag]" type="checkbox"/>{{config.inputSystems[inputSystemTag].abbreviation}}</div>
+									<div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>{{config.inputSystems[inputSystemTag].abbreviation}}</div>
 								</li>
 							</ul>
 							<a href="" data-ng-click="editInputSystems.collapsed = false">Edit input systems</a>
