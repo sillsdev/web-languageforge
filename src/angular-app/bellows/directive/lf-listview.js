@@ -6,7 +6,7 @@ angular.module('palaso.ui.lfListview', ['ui.bootstrap'])
 			restrict : 'EA',
 			transclude : true,
 			replace : true,
-			template : '<div class="listview" ng-hide="hideIfEmpty && items.length == 0"><div ng-transclude></div><div class="paginationblock" style="text-align: center"><div style="width: 100%">{{itemsDisplayName}} {{firstItem}}-{{lastItem}} of {{items.length}}</div><pagination boundary-links="true" max-size="0" num-pages="noOfPages" current-page="currentPage" previous-text="\'&lsaquo;\'" next-text="\'&rsaquo;\'" first-text="\'&laquo;\'" last-text="\'&raquo;\'"></pagination></div></div>',
+			template : '<div class="listview" ng-hide="hideIfEmpty && items.length == 0"><div ng-transclude></div><div class="paginationblock" style="text-align: center"><div style="width: 100%">{{itemsDisplayName}} {{firstItem}}-{{lastItem}} of {{items.length}}</div><pagination boundary-links="true" total-items="items.length" items-per-page="itemsPerPage" page="currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination></div></div>',
 			scope : {
 				search : "&",
 				select : "&",
