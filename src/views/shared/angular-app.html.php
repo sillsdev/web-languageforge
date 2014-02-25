@@ -18,7 +18,7 @@ window.session = <?php echo $jsonSession; ?>;
 	<script src="/js/lib/angular_stable_1.2.4/angular-route.js"></script>
 	<script src="/js/lib/angular_stable_1.2.4/angular-sanitize.js"></script>
 	<script src="/js/lib/angular-file-upload.js"></script>
-	<script src="/js/lib/ng-ui-bootstrap-tpls-0.4.0.js"></script>
+	<script src="/js/lib/ng-ui-bootstrap-tpls-0.8.0.js"></script>
 	<script src="/js/lib/ng-ui-utils-validate.js"></script>
 <?php endif; ?>
 	
