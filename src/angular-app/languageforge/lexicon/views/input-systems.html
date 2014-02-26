@@ -22,11 +22,11 @@
 					More <span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu">
-					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add IPA for {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
-					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add Voice for {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
-					<li><a tabindex="-1" href="#"><i class="icon-plus"></i> Add a variant of {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
+					<li><a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[1])"><i class="icon-plus"></i> Add IPA for {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
+					<li><a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[2])"><i class="icon-plus"></i> Add Voice for {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
+					<li><a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[3])"><i class="icon-plus"></i> Add a variant of {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
 					<li class="divider"></li>
-					<li><a tabindex="-1" data-ng-click="removeInputSystem(currentInputSystemTag)" data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount"><i class="icon-remove"></i> Remove {{inputSystems[currentInputSystemTag].name}}</a></li>
+					<li data-ng-class="{disabled:(inputSystems[currentInputSystemTag].fieldUseCount > 0)}"><a tabindex="-1" data-ng-click="removeInputSystem(currentInputSystemTag)"><i class="icon-remove"></i> Remove {{inputSystems[currentInputSystemTag].name}}</a></li>
 				</ul>
 			</div>
 		</div>

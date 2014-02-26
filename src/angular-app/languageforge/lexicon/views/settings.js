@@ -43,6 +43,34 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		$scope.currentInputSystemTag = inputSystemTag;
 	};
 	
+	$scope.addInputSystem = function(code, special) {
+		console.log("addInputSystem ", $scope.inputSystems);
+		var tag = 'xxxx';
+		var script = '';
+		var privateUse = '';
+		$scope.inputSystems[tag] = {};
+		$scope.inputSystems[tag].script = '';
+		switch(special) {
+			case $scope.selects.special.optionsOrder[1]:		// IPA transcription
+				script = 'fonipa';
+				break;
+			case $scope.selects.special.optionsOrder[2]:		// Voice
+				script = 'Zxxx';
+				privateUse = 'audio';
+				break;
+			case $scope.selects.special.optionsOrder[3]:		// Script / Region / Variant
+				script = 'unspecified';
+				$scope.inputSystems[tag].script = script;
+				break;
+		}
+		$scope.inputSystems[tag].name = inputSystems.getName(code, script, '', privateUse);
+		$scope.inputSystems[tag].code = code;
+		$scope.inputSystems[tag].special = special;
+		$scope.inputSystems[tag].purpose = '';
+		$scope.inputSystems[tag].region = '';
+		$scope.inputSystems[tag].variant = '';
+		$scope.currentInputSystemTag = tag;
+	};
 	$scope.removeInputSystem = function(currentInputSystemTag) {
 //		console.log("removeInputSystem");
 		delete $scope.inputSystems[currentInputSystemTag];
@@ -108,24 +136,29 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	$scope.$watchCollection('inputSystems[currentInputSystemTag]', function(newValue) {
 //		console.log("current input system watch: ", newValue);
 		if (newValue != undefined) {
-			var newInputSystemTag = $scope.inputSystems[$scope.currentInputSystemTag].code;
-			switch($scope.inputSystems[$scope.currentInputSystemTag].special) {
+			var tag = $scope.currentInputSystemTag;
+			var newInputSystemTag = $scope.inputSystems[tag].code;
+			switch($scope.inputSystems[tag].special) {
 				case $scope.selects.special.optionsOrder[1]:		// IPA transcription
 					newInputSystemTag += '-fonipa';
-					newInputSystemTag += ($scope.inputSystems[$scope.currentInputSystemTag].purpose) ? '-x-' + $scope.inputSystems[$scope.currentInputSystemTag].purpose : '';
+					newInputSystemTag += ($scope.inputSystems[tag].purpose) ? '-x-' + $scope.inputSystems[tag].purpose : '';
 					break;
 				case $scope.selects.special.optionsOrder[2]:		// Voice
 					newInputSystemTag += '-Zxxx-x-audio';
 					break;
 				case $scope.selects.special.optionsOrder[3]:		// Script / Region / Variant
-					newInputSystemTag += ($scope.inputSystems[$scope.currentInputSystemTag].script) ? '-' + $scope.inputSystems[$scope.currentInputSystemTag].script : '';
-					newInputSystemTag += ($scope.inputSystems[$scope.currentInputSystemTag].region) ? '-' + $scope.inputSystems[$scope.currentInputSystemTag].region : '';
-					newInputSystemTag += ($scope.inputSystems[$scope.currentInputSystemTag].variant) ? '-x-' + $scope.inputSystems[$scope.currentInputSystemTag].variant : '';
+					if (! $scope.inputSystems[tag].script && ! $scope.inputSystems[tag].region)  {
+						$scope.inputSystems[tag].script = 'unspecified';
+					}
+					$scope.inputSystems[tag].name = inputSystems.getName($scope.inputSystems[tag].code, $scope.inputSystems[tag].script, $scope.inputSystems[tag].region, $scope.inputSystems[tag].variant);
+					newInputSystemTag += ($scope.inputSystems[tag].script) ? '-' + $scope.inputSystems[tag].script : '';
+					newInputSystemTag += ($scope.inputSystems[tag].region) ? '-' + $scope.inputSystems[tag].region : '';
+					newInputSystemTag += ($scope.inputSystems[tag].variant) ? '-x-' + $scope.inputSystems[tag].variant : '';
 					break;
 			}
-			if (newInputSystemTag != $scope.currentInputSystemTag) {
-				$scope.inputSystems[newInputSystemTag] = $scope.inputSystems[$scope.currentInputSystemTag];
-				delete $scope.inputSystems[$scope.currentInputSystemTag];
+			if (newInputSystemTag != tag) {
+				$scope.inputSystems[newInputSystemTag] = $scope.inputSystems[tag];
+				delete $scope.inputSystems[tag];
 				$scope.selectInputSystem(newInputSystemTag);
 			}
 		}
