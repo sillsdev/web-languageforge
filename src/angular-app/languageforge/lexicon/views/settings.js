@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.dc.entry', 'ngAnimate'])
+angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
 .controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$filter', 
                              function($scope, userService, ss, notice, lexService, $filter) {
 	var projectId = $scope.routeParams.projectId;
@@ -8,7 +8,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		'id': projectId
 	};
 	
-	$scope.showPre = true;		// TODO Remove. Set false to hide <pre>. Remove this and all debug <pre> IJH 2014-02
+	$scope.showPre = false;		// TODO Remove. Set false to hide <pre>. Remove this and all debug <pre> IJH 2014-02
 
 	$scope.config = {};
 	$scope.inputSystems = {};
