@@ -137,11 +137,6 @@ def build_final_result(data):
             record.setdefault('country', set()).add(country)
 
         name = language_record['Name']
-        if language_record['NameType'].startswith('D'):
-            name += ' (dialect)'
-        if language_record['NameType'].endswith('P'):
-            name += ' (pejorative)'
-
         if language_record['NameType'] == 'L':
             record['name'] = name
         else:
@@ -163,7 +158,7 @@ def main():
     sys.stderr.write('Reading files...\n')
     data = read_all_files()
     if not data:
-        sys.stderr.write("Error reading input data files")
+        sys.stderr.write("Error reading input data files\n")
         sys.exit(2)
     sys.stderr.write('Parsing files...\n')
     data = parse_all_files(data)
