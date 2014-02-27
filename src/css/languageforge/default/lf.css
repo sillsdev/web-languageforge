@@ -878,6 +878,37 @@ dl#fields {
 	padding-left: 20px;
 }
 
+.overlay {
+	position: absolute;
+	z-index: 1000;
+}
+
+.lf-dropdown-menu {
+	/* modified from bootstrap.css .dropdown-menu */
+  top: 100%;
+  left: 0;
+  display: block;
+  float: left;
+  min-width: 400px;
+  padding: 18px;
+  margin: 2px 0 0;
+  list-style: none;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+     -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
 /* New Item under ribbon bar */
 div.new-item form {
 	margin: 20px 0 0 0;
