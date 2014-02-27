@@ -63,15 +63,29 @@ class MongoDecoder extends JsonDecoder {
 		}
 		$model->exchangeArray(array());
 		foreach ($data as $item) {
-			if ($model->hasGenerator()) {
-				$object = $model->generate($item);
-				$this->_decode($object, $item, '');
-				$model[] = $object;
-			} else {
-				if (is_array($item)) {
-					throw new \Exception("Must not decode array for value type '$key'");
+			$gotObject = false;
+			if (is_array($item) && array_key_exists('__className', $item)) {
+				$className = $item['__className'];
+				unset($item['__className']);
+				try {
+					$object = new $className();
+					$this->_decode($object, $item, '');
+					$model[] = $object;
+					$gotObject = true;
+				} catch (Exception $e) { }
+			}
+			if (!$gotObject) {
+				// fallback to generator if above method doesn't work
+				if ($model->hasGenerator()) {
+					$object = $model->generate($item);
+					$this->_decode($object, $item, '');
+					$model[] = $object;
+				} else {
+					if (is_array($item)) {
+						throw new \Exception("Must not decode array for value type '$key'");
+					}
+					$model[] = $item;
 				}
-				$model[] = $item;
 			}
 		}
 	}
@@ -90,15 +104,29 @@ class MongoDecoder extends JsonDecoder {
 		}
 		$model->exchangeArray(array());
 		foreach ($data as $itemKey => $item) {
-			if ($model->hasGenerator()) {
-				$object = $model->generate($item);
-				$this->_decode($object, $item, $itemKey);
-				$model[$itemKey] = $object;
-			} else {
-				if (is_array($item)) {
-					throw new \Exception("Must not decode array for value type '$key'");
+			$gotObject = false;
+			if (is_array($item) && array_key_exists('__className', $item)) {
+				$className = $item['__className'];
+				unset($item['__className']);
+				try {
+					$object = new $className();
+					$this->_decode($object, $item, $itemKey);
+					$model[$itemKey] = $object;
+					$gotObject = true;
+				} catch (Exception $e) { }
+			}
+			if (!$gotObject) {
+				// fallback to generator if above method doesn't work
+				if ($model->hasGenerator()) {
+					$object = $model->generate($item);
+					$this->_decode($object, $item, $itemKey);
+					$model[$itemKey] = $object;
+				} else {
+					if (is_array($item)) {
+						throw new \Exception("Must not decode array for value type '$key'");
+					}
+					$model[$itemKey] = $item;
 				}
-				$model[$itemKey] = $item;
 			}
 		}
 	}
