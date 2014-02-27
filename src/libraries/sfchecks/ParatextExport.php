@@ -32,10 +32,10 @@ class ParatextExport
 			foreach ($question['answers'] as $answerId => $answer) {
 				if (count($params['tags']) == 0 || count(array_intersect($params['tags'], $answer['tags'])) > 0) { // if the answer is tagged with an export tag
 					$dl['answerCount']++;
-					$dl['xml'] .= self::makeCommentXml($params['username'], $answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
+					$dl['xml'] .= self::makeCommentXml($answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
 					if ($params['exportComments']) {
 						foreach ($answer['comments'] as $commentId => $comment) {
-							$dl['xml'] .= self::makeCommentXml($params['username'], array(), 0, $textInfo, $commentId, $comment);
+							$dl['xml'] .= self::makeCommentXml(array(), 0, $textInfo, $commentId, $comment);
 							$dl['commentCount']++;
 						}
 					}
@@ -54,15 +54,15 @@ class ParatextExport
 
 	/**
 	 * 
-	 * @param string $username
 	 * @param array $tags
 	 * @param int $votes
 	 * @param array $textInfo
 	 * @param string $commentId
 	 * @param array $comment
 	 */
-	private static function makeCommentXml($username, $tags, $votes, $textInfo, $commentId, $comment) {
+	private static function makeCommentXml($tags, $votes, $textInfo, $commentId, $comment) {
 		$user = new UserModel((string)$comment['userRef']);
+		$username = $user->username;
 		
 		$content = $comment['content'] . " (by " . $user->username . " on " . date(\DateTime::RFC822, $comment['dateEdited']->sec) . ")";
 		if (count($tags) > 0) {
@@ -78,18 +78,18 @@ class ParatextExport
 		}
 		return "\t<Comment>
 		<Thread>" . $commentId . "</Thread>
-		<User>$username</User>
+		<User>SF-$username</User>
 		<Date>" . date(\DateTime::ISO8601, $comment['dateEdited']->sec) . "</Date>
 		<VerseRef>" . $textInfo['bookCode'] . " " . $textInfo['startChapter'] . ":" . $textInfo['startVerse'] . "</VerseRef>
 		<SelectedText />
-		<StartPosition></StartPosition>
+		<StartPosition>" . $textInfo['startVerse'] . "</StartPosition>
 		<ContextBefore>\\v " . $textInfo['startVerse'] . "</ContextBefore>
 		<ContextAfter/>
 		<Status>todo</Status>
 		<Type/>
 		<Language/>
 		<Verse>\\v " . $textInfo['startVerse'] . "</Verse>
-		<Field Name='assigned'/>
+		<Field Name=\"assigned\"></Field>
 		<Contents>$content</Contents>
 	</Comment>\n";
 	}

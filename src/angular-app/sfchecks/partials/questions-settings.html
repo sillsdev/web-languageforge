@@ -75,7 +75,6 @@
     	        <button ng-click="downloadExport()" class="btn btn-primary">Download ParaTExt XML File</button>
 	        </div>
 	        <form name="exportForm">
-	        <label>ParaTExt User Name <input type="text" required name="username" ng-model="exportConfig.username" placeholder="e.g. Joe Smith"/></label>
 	        <label><input type="checkbox" checked name="exportAnswers" disabled /> Export Answers</label>
 	        <label><input type="checkbox" checked name="exportComments" ng-model="exportConfig.exportComments" /> Export Comments</label>
             <label>Tags to Export: (<a ng-click="exportConfig.tagEditorVisible = !exportConfig.tagEditorVisible">Select Tags</a>) <p style="font-weight:bold" ng-show="exportConfig.tags.length == 0">None Selected</p><view-tags rights-delete="returnTrue()" tags="exportConfig.tags"></view-tags></label>
