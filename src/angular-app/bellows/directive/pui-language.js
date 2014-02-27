@@ -1,19 +1,28 @@
 
 angular.module('palaso.ui.language', [])
- // Palaso UI Select Language: button dropdown 
-.directive('puiSelectLanguageDrop', [function() {
+ // Palaso UI Select Language 
+.directive('puiSelectLanguage', [function() {
 	return {
 		restrict : 'E',
 		transclude: true,
 		templateUrl : '/angular-app/bellows/directive/pui-language.html',
 		scope : {
-			puiBtnType : "=",
+			puiCode : "=",
+			puiLanguage : "=",
+			puiAddDisabled : "=",
 		},
-		controller: ["$scope", function($scope) {
-			$scope.puiBtnClass = "btn btn-success dropdown-toggle";
-		}],
-		link : function(scope, element, attrs, controller) {
-		}
+		controller: ["$scope", '$filter', function($scope, $filter) {
+			$scope.languages = inputSystems.languages();
+
+			$scope.currentCode = '';
+			$scope.puiAddDisabled = true;
+			$scope.selectLanguage = function(language) {
+				$scope.currentCode = language.code.three;
+				$scope.puiCode = (language.code.two) ? language.code.two : language.code.three;
+				$scope.puiLanguage = language;
+				$scope.puiAddDisabled = false;
+			};
+		}]
 	};
 }])
 ;

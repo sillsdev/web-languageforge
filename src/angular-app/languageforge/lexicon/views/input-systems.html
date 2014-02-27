@@ -3,10 +3,17 @@
 	<!-- Left column: input system list -->
 	<div class="span3">
 		<!-- control buttons -->
-		<div class="control-group pagination-centered">
-			<pui-select-language-drop pui-btn-type="btn-success">
+		<div class="control-group">
+			<button class="btn btn-success" data-ng-click="show.newLanguage = !show.newLanguage" style="font-weight:normal">
 				New <span class="caret"></span>
-			</pui-select-language-drop>
+			</button>
+			<div class="overlay" data-ng-show="show.newLanguage">
+				<div class="lf-dropdown-menu">
+					<pui-select-language pui-code="newCode" pui-language="newlanguage" pui-add-disabled="addDisabled">
+						<button class="btn btn-primary" data-ng-click="addInputSystem(newCode, '')" data-ng-disabled="addDisabled"><i class="icon-plus"></i> Add {{newlanguage.name}}</button>
+					</pui-select-language>
+				</div>
+			</div>
 		</div>
 		<div class="control-group picklists">
 			<ul class="unstyled">
@@ -97,8 +104,10 @@
 		</div>
 	</div>
 </div>
-<pre data-ng-show="showPre">
+
+<pre data-ng-show="false">
 inputSystems['{{currentInputSystemTag}}'] {{inputSystems[currentInputSystemTag] | json}}
 </pre>
+
 </div>
 	

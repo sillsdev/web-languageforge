@@ -8,11 +8,8 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		'id': projectId
 	};
 	
-	$scope.showPre = false;		// TODO Remove. Set false to hide <pre>. Remove this and all debug <pre> IJH 2014-02
-
 	$scope.config = {};
 	$scope.inputSystems = {};
-	
 	$scope.selects = {
 		'special': {
 			'optionsOrder': ['none', 'ipaTranscription', 'voice', 'scriptRegionVariant'],
@@ -41,41 +38,6 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	$scope.currentInputSystemTag = '';
 	$scope.selectInputSystem = function(inputSystemTag) {
 		$scope.currentInputSystemTag = inputSystemTag;
-	};
-	
-	$scope.addInputSystem = function(code, special) {
-		console.log("addInputSystem ", $scope.inputSystems);
-		var tag = 'xxxx';
-		var script = '';
-		var privateUse = '';
-		$scope.inputSystems[tag] = {};
-		$scope.inputSystems[tag].script = '';
-		switch(special) {
-			case $scope.selects.special.optionsOrder[1]:		// IPA transcription
-				script = 'fonipa';
-				break;
-			case $scope.selects.special.optionsOrder[2]:		// Voice
-				script = 'Zxxx';
-				privateUse = 'audio';
-				break;
-			case $scope.selects.special.optionsOrder[3]:		// Script / Region / Variant
-				script = 'unspecified';
-				$scope.inputSystems[tag].script = script;
-				break;
-		}
-		$scope.inputSystems[tag].name = inputSystems.getName(code, script, '', privateUse);
-		$scope.inputSystems[tag].code = code;
-		$scope.inputSystems[tag].special = special;
-		$scope.inputSystems[tag].purpose = '';
-		$scope.inputSystems[tag].region = '';
-		$scope.inputSystems[tag].variant = '';
-		$scope.currentInputSystemTag = tag;
-	};
-	$scope.removeInputSystem = function(currentInputSystemTag) {
-//		console.log("removeInputSystem");
-		delete $scope.inputSystems[currentInputSystemTag];
-		// select the first items
-		$scope.selectInputSystem($filter('orderAsArray')($scope.config.inputSystems, 'tag')[0]['tag']);
 	};
 	
 	$scope.queryProjectSettings = function() {
@@ -133,6 +95,48 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	
 	$scope.queryProjectSettings();
 	
+// InputSystemsSettingsCtrl
+	$scope.show = {
+		'newLanguage': false
+	};
+	$scope.newCode = '';
+
+	$scope.addInputSystem = function(code, special) {
+		console.log("addInputSystem ", $scope.inputSystems);
+		var tag = 'xxxx';
+		var script = '';
+		var privateUse = '';
+		$scope.inputSystems[tag] = {};
+		$scope.inputSystems[tag].script = '';
+		switch(special) {
+			case $scope.selects.special.optionsOrder[1]:		// IPA transcription
+				script = 'fonipa';
+				break;
+			case $scope.selects.special.optionsOrder[2]:		// Voice
+				script = 'Zxxx';
+				privateUse = 'audio';
+				break;
+			case $scope.selects.special.optionsOrder[3]:		// Script / Region / Variant
+				script = 'unspecified';
+				$scope.inputSystems[tag].script = script;
+				break;
+		}
+		$scope.inputSystems[tag].name = inputSystems.getName(code, script, '', privateUse);
+		$scope.inputSystems[tag].code = code;
+		$scope.inputSystems[tag].special = special;
+		$scope.inputSystems[tag].purpose = '';
+		$scope.inputSystems[tag].region = '';
+		$scope.inputSystems[tag].variant = '';
+		$scope.currentInputSystemTag = tag;
+		$scope.show.newLanguage = false;
+	};
+	$scope.removeInputSystem = function(currentInputSystemTag) {
+//		console.log("removeInputSystem");
+		delete $scope.inputSystems[currentInputSystemTag];
+		// select the first items
+		$scope.selectInputSystem($filter('orderAsArray')($scope.config.inputSystems, 'tag')[0]['tag']);
+	};
+	
 	$scope.$watchCollection('inputSystems[currentInputSystemTag]', function(newValue) {
 //		console.log("current input system watch: ", newValue);
 		if (newValue != undefined) {
@@ -165,8 +169,8 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	});
 
 }])
-.controller('FieldSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', 
-                                  function($scope, userService, ss, notice, lexService) {
+.controller('FieldSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
+                                  function($scope, userService, ss, notice) {
 	$scope.fieldConfig = {
 		'lexeme': $scope.config.entry.fields['lexeme'],
 		'definition': $scope.config.entry.fields.senses.fields['definition'],
@@ -239,8 +243,8 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	});
 	
 }])
-.controller('TaskSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', 
-                                 function($scope, userService, ss, notice, lexService) {
+.controller('TaskSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
+                                 function($scope, userService, ss, notice) {
 	$scope.selects.timeRange = {
 		'optionsOrder': ['30days', '90days', '1year', 'all'],
 		'options': {
