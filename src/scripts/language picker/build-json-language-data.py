@@ -97,7 +97,11 @@ def parse_subtag_registry(raw_text):
         record = re.sub(u" +", u" ", record)    # Multiple spaces are collapsed into one, per spec
         for line in record.splitlines():
             key, val = line.split(": ", 1)
-            data[key] = val
+            if key == 'Description':
+                # Descriptions can, and often do, appear more than once per record
+                data.setdefault(key, []).append(val)
+            else:
+                data[key] = val
         result[data[u'Type']].append(data)
     return result
 
@@ -132,7 +136,7 @@ def parse_all_files(data):
     result['country_lookup'] = {record['CountryID']: record['Name'] for record in result['ccs']}
     return result
 
-def build_final_result(data):
+def build_language_data(data):
     result = collections.OrderedDict()
     for language_record in data['lndx']:
         langid3 = language_record[u'LangID']
@@ -160,23 +164,38 @@ def build_final_result(data):
             result[langid] = record
     return result
 
-def write_json(final_result, out_fname):
-    records_for_output = []
-    for record in final_result.itervalues():
-        for key in ['country', 'altNames']:
-            if record.has_key(key):
-                record[key] = list(sorted(record[key]))
-            else:
-                record[key] = []  # Ensure country and altNames lists exist, even if they're empty
-        # Rearrange output record so keys will be in predictable order in JSON file
-        new_record = collections.OrderedDict()
-        for key in OUTPUT_KEY_ORDER:
-            new_record[key] = record[key]
-        records_for_output.append(new_record)
+def build_regions_data(data):
+    result = collections.OrderedDict()
+    for record in data['ccs']:
+        result[record['CountryID']] = record['Name']
+    return result
+
+def build_scripts_data(data):
+    result = collections.OrderedDict()
+    for record in data['subtags']['script']:
+        result[record['Subtag']] = record['Description']
+    return result
+
+def write_json(final_result, out_fname, prefix, suffix, fix_records=False):
+    if fix_records:
+        records_for_output = []
+        for record in final_result.itervalues():
+            for key in ['country', 'altNames']:
+                if record.has_key(key):
+                    record[key] = list(sorted(record[key]))
+                else:
+                    record[key] = []  # Ensure country and altNames lists exist, even if they're empty
+            # Rearrange output record so keys will be in predictable order in JSON file
+            new_record = collections.OrderedDict()
+            for key in OUTPUT_KEY_ORDER:
+                new_record[key] = record[key]
+            records_for_output.append(new_record)
+    else:
+        records_for_output = final_result
     with codecs.open(out_fname, 'wU', 'utf-8') as f:
-        f.write(OUTPUT_PREFIX)
+        f.write(prefix)
         json.dump(records_for_output, f, ensure_ascii=False, indent=4, separators=(',', ': '))
-        f.write(OUTPUT_SUFFIX)
+        f.write(suffix)
 
 def main():
     sys.stderr.write('Reading files...\n')
@@ -187,8 +206,19 @@ def main():
     sys.stderr.write('Parsing files...\n')
     data = parse_all_files(data)
     sys.stderr.write('Preparing JSON output...\n')
-    result = build_final_result(data)
-    write_json(result, OUTPUT_FNAME)
+    langdata = build_language_data(data)
+    write_json(langdata, OUTPUT_FNAME, OUTPUT_PREFIX, OUTPUT_SUFFIX, fix_records=True)
+    regdata = build_regions_data(data)
+    write_json(regdata,
+               OUTPUT_FNAME.replace('languages', 'regions'),
+               OUTPUT_PREFIX.replace('languages', 'regions'),
+               OUTPUT_SUFFIX.replace('languages', 'regions'))
+    scriptdata = build_scripts_data(data)
+    write_json(scriptdata,
+               OUTPUT_FNAME.replace('languages', 'scripts'),
+               OUTPUT_PREFIX.replace('languages', 'scripts'),
+               OUTPUT_SUFFIX.replace('languages', 'scripts'))
+
 
 if __name__ == '__main__':
     main()
