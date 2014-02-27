@@ -89,6 +89,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "Project settings updated successfully");
 				$scope.settingsForm.$setPristine();
+				$scope.queryProjectSettings();
 			}
 		});
 	};
@@ -102,23 +103,27 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	$scope.newCode = '';
 
 	$scope.addInputSystem = function(code, special) {
-		console.log("addInputSystem ", $scope.inputSystems);
+//		console.log("addInputSystem ", $scope.inputSystems);
 		var tag = 'xxxx';
 		var script = '';
 		var privateUse = '';
 		$scope.inputSystems[tag] = {};
 		$scope.inputSystems[tag].script = '';
+		$scope.inputSystems[tag].abbreviation = code;
 		switch(special) {
 			case $scope.selects.special.optionsOrder[1]:		// IPA transcription
 				script = 'fonipa';
+				$scope.inputSystems[tag].abbreviation = code + 'ipa';
 				break;
 			case $scope.selects.special.optionsOrder[2]:		// Voice
 				script = 'Zxxx';
 				privateUse = 'audio';
+				$scope.inputSystems[tag].abbreviation = code + 'audio';
 				break;
 			case $scope.selects.special.optionsOrder[3]:		// Script / Region / Variant
 				script = 'unspecified';
 				$scope.inputSystems[tag].script = script;
+				$scope.inputSystems[tag].abbreviation = code + '-';
 				break;
 		}
 		$scope.inputSystems[tag].name = inputSystems.getName(code, script, '', privateUse);
