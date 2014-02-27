@@ -2,35 +2,35 @@
 
 """Parses language data from IANA subtag registry plus several other files,
 and outputs JSON data in the following format:
-{
-    'aaa': {
+[
+    {
         'name': 'Ghotuo',
-        'code': { 3: 'aaa' },
+        'code': { 'three': 'aaa' },
         'country': ['Nigeria'],
-        'other names': [],
+        'altNames': [],
     },
-    'aab': {
+    {
         'name': 'Alumu',
-        'code': { 3: 'aab' },
+        'code': { 'three': 'aab' },
         'country': ['Nigeria'],
-        'other names': ['Alumu', 'Tesu', 'Arum', 'Alumu-Tesu', 'Alumu', 'Arum-Cesu', 'Arum-Chessu', 'Arum-Tesu'],
+        'altNames': ['Alumu', 'Tesu', 'Arum', 'Alumu-Tesu', 'Alumu', 'Arum-Cesu', 'Arum-Chessu', 'Arum-Tesu'],
     },
     # ...
-    'auc': {
+    {
         'name': 'Waorani',
-        'code': { 3: 'auc' },
+        'code': { 'three': 'auc' },
         'country': ['Brazil'],
-        'other names': ['Huaorani', 'Sabela', 'Waodani', 'Auca (pejorative)'],
+        'altNames': ['Huaorani', 'Sabela', 'Waodani', 'Auca'],  # Pejorative names like Auca are *not* flagged as such
     }
     # ...
-    'en': {
+    {
         'name': 'English',
-        'code': { 2: 'en', 3: 'eng' },
+        'code': { 'two': 'en', 'three': 'eng' },
         'country': ['Australia', 'United Kingdom', 'United States', ...],
-        'other names': ['Belfast (dialect)', 'Birmingham (dialect)', ...],
+        'altNames': ['Belfast', 'Birmingham', ...],  # Dialects are *not* flagged as such
     }
     # ...
-}"""
+]"""
 
 import os, sys
 import re
@@ -46,6 +46,7 @@ LANGUAGE_CODES_FNAME  = "LanguageCodes.txt"
 LANGUAGE_INDEX_FNAME  = "LanguageIndex.txt"
 CONVERT_2_TO_3_FNAME  = "TwoToThreeCodes.txt"
 OUTPUT_FNAME = "languages.json"
+OUTPUT_KEY_ORDER = ['name', 'code', 'country', 'altNames']
 
 def read_file(fname):
     with codecs.open(fname, 'rU', 'utf-8-sig') as f:
@@ -129,8 +130,8 @@ def build_final_result(data):
         if not record.has_key('code'):
             record['code'] = {}
             if len(langid) == 2:
-                record['code'][2] = langid
-            record['code'][3] = langid3
+                record['code']['two'] = langid
+            record['code']['three'] = langid3
 
         country = data['country_lookup'].get(language_record[u'CountryID'])
         if country:
@@ -140,19 +141,27 @@ def build_final_result(data):
         if language_record['NameType'] == 'L':
             record['name'] = name
         else:
-            record.setdefault('other names', set()).add(name)
+            record.setdefault('altNames', set()).add(name)
 
         if not result.has_key(langid):
             result[langid] = record
     return result
 
 def write_json(final_result, out_fname):
+    records_for_output = []
     for record in final_result.itervalues():
-        for key in ['country', 'other names']:
+        for key in ['country', 'altNames']:
             if record.has_key(key):
                 record[key] = list(sorted(record[key]))
+            else:
+                record[key] = []  # Ensure country and altNames lists exist, even if they're empty
+        # Rearrange output record so keys will be in predictable order in JSON file
+        new_record = collections.OrderedDict()
+        for key in OUTPUT_KEY_ORDER:
+            new_record[key] = record[key]
+        records_for_output.append(new_record)
     with codecs.open(out_fname, 'wU', 'utf-8') as f:
-        json.dump(final_result, f, ensure_ascii=False, indent=4, separators=(',', ': '))
+        json.dump(records_for_output, f, ensure_ascii=False, indent=4, separators=(',', ': '))
 
 def main():
     sys.stderr.write('Reading files...\n')
