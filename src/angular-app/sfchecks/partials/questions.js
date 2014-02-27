@@ -368,7 +368,6 @@ angular.module(
 			'textId': $routeParams.textId,
 			'tagEditorVisible' : false,
 			'exportComments' : false,
-			'username' : '',
 			'tags' : []
 		};
 		
@@ -401,7 +400,7 @@ angular.module(
 			// for a reference on how to create a data-uri for use in downloading content see http://stackoverflow.com/questions/16514509/how-do-you-serve-a-file-for-download-with-angularjs-or-javascript
 			var uri = 'data:text/plain;charset=utf-8,' + encodeURIComponent($scope.download.xml);
 			var link = document.createElement('a');
-			link.download = 'Comments_' + $scope.exportConfig.username.replace(' ', '_') + '.xml';
+			link.download = 'Comments_For_Export.xml';
 			link.href = uri;
 			link.click();
 		};
