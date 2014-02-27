@@ -1,51 +1,35 @@
-<pre data-ng-show="false">
-puiBtnClass {{puiBtnClass}}
-puiBtnType {{puiBtnType}}
-</pre>
-
-<div class="btn-group">
-	<!-- TODO 
-			attribute btn-success
-			content (New <span...) 
-
-	<a data-ng-class="puiBtnClass" data-toggle="dropdown" href="#" style="font-weight:normal">
-	-->
-	<a class="btn btn-success dropdown-toggle" style="font-weight:normal">
-		<span data-ng-transclude></span>
-	</a>
-	<div class="dropdown-menu">
-		<div style="margin-bottom:10px">
-			<input width="4" placeholder="search filter" type="text" class="input-medium search-query" data-ng-model="searchText" />
-			<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''" data-ng-show="searchText && searchText != ''">
-				<i class="icon-remove" style="color:black; cursor: pointer"></i>
-			</span>
-		</div>
-		<table class="table table-condensed ">
-			<thead>
-				<tr>
-					<th>Name</th><th>Code</th><th>Alternate Names</th><th>Region</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr data-ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" data-ng-repeat="e in entries | filter:searchText">
-					<td data-ng-click="editEntry(e.id)">{{e.title}}</td>
-					<td data-ng-click="editEntry(e.id)">{{getMeaning(e.entry)}}</td>
-				</tr>
-			</tbody>
-		</table>
-		
-		<p>first line</p>
-		<p>second</p>
-		
-		<button class="btn btn-primary pull-right" data-ng-disabled="false" data-ng-click="addLanguage(code)" ><i class="icon-plus"></i> Add</button>
-		<small>
-			<a href="http://www.infoterm.info/standardization/iso_639_1_2002.php" target="_blank">
-				<i class="icon-globe"></i> About Language 639-1 Codes
-			</a>
-			<br />
-			<a href="http://www.sil.org/iso639-3/" target="_blank">
-				<i class="icon-globe"></i> About Language 639-3 Codes
-			</a>
-		</small>
+<div>
+	<div style="margin-bottom:10px">
+		<input width="4" placeholder="search filter" type="text" class="input-medium search-query" data-ng-model="searchText" />
+		<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''" data-ng-show="searchText && searchText != ''">
+			<i class="icon-remove" style="color:black; cursor: pointer"></i>
+		</span>
 	</div>
+	<table class="table table-condensed table-hover">
+		<thead>
+			<tr>
+				<th>Name</th><th>Code</th><th>Country</th><th>Other Names</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr data-ng-class="{info: currentCode == language.code.three}" class="animate-repeat" 
+				data-ng-click="selectLanguage(language)" data-ng-repeat="language in languages | filter:searchText">
+				<td>{{language.name}}</td>
+				<td>{{(language.code.two) ? language.code.two : language.code.three}}</td>
+				<td>{{language.country.join(", ")}}</td>
+				<td>{{language.altNames.join(", ")}}</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<div class="pull-right" data-ng-transclude></div>
+	<small>
+		<a href="http://www.infoterm.info/standardization/iso_639_1_2002.php" target="_blank">
+			<i class="icon-globe"></i> About Language 639-1 Codes
+		</a>
+		<br />
+		<a href="http://www.sil.org/iso639-3/" target="_blank">
+			<i class="icon-globe"></i> About Language 639-3 Codes
+		</a>
+	</small>
 </div>
