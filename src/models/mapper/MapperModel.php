@@ -37,11 +37,17 @@ class MapperModel
 	private $_readOnlyProperties;
 	
 	protected function setReadOnlyProp($propertyName) {
+		if (!is_array($this->_readOnlyProperties)) {
+			$this->_readOnlyProperties = array();
+		}
 		if (!in_array($propertyName, $this->_readOnlyProperties)) {
 			$this->_readOnlyProperties[] = $propertyName;
 		}
 	}
 	protected function setPrivateProp($propertyName) {
+		if (!is_array($this->_privateProperties)) {
+			$this->_privateProperties = array();
+		}
 		if (!in_array($propertyName, $this->_privateProperties)) {
 			$this->_privateProperties[] = $propertyName;
 		}
@@ -62,8 +68,6 @@ class MapperModel
 	 * @param string $id
 	 */
 	protected function __construct($mapper, $id = '') {
-		$this->_privateProperties = array();
-		$this->_readOnlyProperties = array();
 		$this->_mapper = $mapper;
 		$this->dateModified = new \DateTime();
 		$this->dateCreated = new \DateTime();
