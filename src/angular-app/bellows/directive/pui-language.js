@@ -12,7 +12,7 @@ angular.module('palaso.ui.language', [])
 			puiAddDisabled : "=",
 		},
 		controller: ["$scope", '$filter', function($scope, $filter) {
-			$scope.languages = inputSystems.languages();
+			$scope.languages = inputSystems.languages('debug');
 
 			$scope.currentCode = '';
 			$scope.puiAddDisabled = true;

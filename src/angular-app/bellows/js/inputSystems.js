@@ -2,8 +2,23 @@
 
 // input systems common functions
 var inputSystems = {
-	'languages': function() {
-		return _inputSystems_languages;
+	'languages': function(debug) {
+		var unlisted = {
+			'name': 'Unlisted Language',
+			'code': {
+				'three': 'qaa'
+			},
+			'country': ['?'],
+			'altNames': []
+		};
+		var languages = [];
+		if (angular.isDefined(debug)) {
+			this._debug = debug;
+			languages = _inputSystems_languagesSmall;
+		}
+		languages = _inputSystems_languages;
+		languages.push(unlisted);
+		return languages;
 	},
 	'scripts': function() {
 		return _inputSystems_scripts;
@@ -30,8 +45,8 @@ var inputSystems = {
 	'getName': function(code, script, region, privateUse) {
 		var extraName = '';
 		var baseName = '';
-		angular.forEach(_inputSystems_languages, function(language) {
-			if (code == language.code.two || code == language.code.three) {
+		angular.forEach(this.languages(this._debug), function(language) {
+			if (code == language.code.three || code == language.code.two) {
 				baseName = language.name;
 				return;
 			}
@@ -53,4 +68,5 @@ var inputSystems = {
 		}
 		return baseName + ((extraName) ? ' (' + extraName + ')' : '');
 	},
+	'_debug': ''
 };

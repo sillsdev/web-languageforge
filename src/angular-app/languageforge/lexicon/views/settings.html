@@ -15,29 +15,41 @@
 			<dl class="picklists">
 				<dt>Lex Entry</dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectField('lexeme')" data-ng-class="{selected:currentField.name == 'lexeme'}">
-						<div class="checkbox"><input type="checkbox" disabled checked> {{fieldConfig['lexeme'].label}}</div>
+					<div data-ng-click="selectField('lexeme')" 
+						data-ng-class="{selected:currentField.name == 'lexeme'}">
+						<div class="checkbox">
+							<input type="checkbox" disabled checked> {{fieldConfig['lexeme'].label}}</div>
 					</div>
 				</div></dd>
 				<dt>Lex Senses</dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectField('definition')" data-ng-class="{selected:currentField.name == 'definition'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['definition'].visible"> {{fieldConfig['definition'].label}}</div>
+					<div data-ng-click="selectField('definition')" 
+						data-ng-class="{selected:currentField.name == 'definition'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['definition'].visible">
+							 {{fieldConfig['definition'].label}}</div>
 					</div>
-					<div data-ng-click="selectField('partOfSpeech')" data-ng-class="{selected:currentField.name == 'partOfSpeech'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['partOfSpeech'].visible"> {{fieldConfig['partOfSpeech'].label}}</div>
+					<div data-ng-click="selectField('partOfSpeech')" 
+						data-ng-class="{selected:currentField.name == 'partOfSpeech'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['partOfSpeech'].visible">
+							 {{fieldConfig['partOfSpeech'].label}}</div>
 					</div>
-					<div data-ng-click="selectField('semanticDomainValue')" data-ng-class="{selected:currentField.name == 'semanticDomainValue'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['semanticDomainValue'].visible"> {{fieldConfig['semanticDomainValue'].label}}</div>
+					<div data-ng-click="selectField('semanticDomainValue')" 
+						data-ng-class="{selected:currentField.name == 'semanticDomainValue'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['semanticDomainValue'].visible">
+							 {{fieldConfig['semanticDomainValue'].label}}</div>
 					</div>
 				</div></dd>
 				<dt>Lex Examples</dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectField('example')" data-ng-class="{selected:currentField.name == 'example'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['example'].visible"> {{fieldConfig['example'].label}}</div>
+					<div data-ng-click="selectField('example')" 
+						data-ng-class="{selected:currentField.name == 'example'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['example'].visible">
+							 {{fieldConfig['example'].label}}</div>
 					</div>
-					<div data-ng-click="selectField('translation')" data-ng-class="{selected:currentField.name == 'translation'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['translation'].visible"> {{fieldConfig['translation'].label}}</div>
+					<div data-ng-click="selectField('translation')" 
+						data-ng-class="{selected:currentField.name == 'translation'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['translation'].visible">
+							 {{fieldConfig['translation'].label}}</div>
 					</div>
 				</div></dd>
 			</dl>
@@ -52,8 +64,7 @@
 					<div class="controls">
 						<input type="text" id="displayName" data-ng-model="fieldConfig[currentField.name].label"/>
 						<label class="checkbox">
-							<input type="checkbox" disabled data-ng-model="fieldConfig[currentField.name].hideEmpty"/>Hidden if empty
-						</label>
+							<input type="checkbox" disabled data-ng-model="fieldConfig[currentField.name].hideEmpty"/>Hidden if empty</label>
 					</div>
 				</div>
 				
@@ -63,19 +74,27 @@
 						<div class="span3 picklists">
 							<label class="control-label" for="inputSystem">Input Systems</label>
 							<ul class="unstyled indent1"  id="inputSystem">
-								<li data-ng-click="currentField.inputSystems.tag = inputSystemTag" data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
-									<div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>{{config.inputSystems[inputSystemTag].abbreviation}}</div>
+								<li data-ng-click="currentField.inputSystems.tag = inputSystemTag" 
+									data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" 
+									data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
+									<div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
+										{{config.inputSystems[inputSystemTag].abbreviation}}</div>
 								</li>
 							</ul>
 							<a href="" data-ng-click="editInputSystems.collapsed = false">Edit input systems</a>
 						</div>
 						<div class="span1 btn-group btn-group-vertical">
-							<button class="btn" data-ng-click="moveUp(currentField.inputSystems.tag)" data-ng-disabled="currentField.inputSystems.fieldOrder[0] == currentField.inputSystems.tag || !currentField.inputSystems.tag">&nbsp;&nbsp;<i class="icon-arrow-up"></i></button>
-							<button class="btn" data-ng-click="moveDown(currentField.inputSystems.tag)" data-ng-disabled="currentField.inputSystems.fieldOrder[currentField.inputSystems.fieldOrder.length - 1] == currentField.inputSystems.tag || !currentField.inputSystems.tag">&nbsp;&nbsp;<i class="icon-arrow-down"></i></button>
+							<button class="btn" data-ng-click="moveUp(currentField.inputSystems.tag)" 
+								data-ng-disabled="currentField.inputSystems.fieldOrder[0] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
+								&nbsp;&nbsp;<i class="icon-arrow-up"></i></button>
+							<button class="btn" data-ng-click="moveDown(currentField.inputSystems.tag)" 
+								data-ng-disabled="currentField.inputSystems.fieldOrder[currentField.inputSystems.fieldOrder.length - 1] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
+								&nbsp;&nbsp;<i class="icon-arrow-down"></i></button>
 						</div>
 					</div>
 					<div data-collapse="editInputSystems.collapsed">
-						<button class="btn btn-primary pull-right" data-ng-click="editInputSystems.done()"><i class="icon-ok"></i> Done</button>
+						<button class="btn btn-primary pull-right" 
+							data-ng-click="editInputSystems.done()"><i class="icon-ok"></i> Done</button>
 						<h3 style="font-weight:normal">Edit Input Systems</h3>
 						<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'"></div>
 					</div>
@@ -155,15 +174,17 @@ config.entry {{config.entry|json}}
 				<div class="control-group">
 					<label class="control-label" for="timeRange">Activity time range</label>
 					<div class="controls">
-						<select class="form-control" id="timeRange" data-ng-model="config.tasks['dashboard'].timeRange" data-ng-options="selects.timeRange.options[key] for key in selects.timeRange.optionsOrder">
-							<option value="">-- choose a time range --</option>
-						</select>
+						<select class="form-control" id="timeRange" 
+							data-ng-model="config.tasks['dashboard'].timeRange" 
+							data-ng-options="selects.timeRange.options[key] for key in selects.timeRange.optionsOrder">
+							<option value="">-- choose a time range --</option></select>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="wordCount">Target word count</label>
 					<div class="controls">
-						<input type="number" min="0" id="wordCount" data-ng-model="config.tasks['dashboard'].targetWordCount">
+						<input type="number" min="0" id="wordCount" 
+							data-ng-model="config.tasks['dashboard'].targetWordCount">
 					</div>
 				</div>
 			</div>
@@ -172,9 +193,10 @@ config.entry {{config.entry|json}}
 				<div class="control-group">
 					<label class="control-label" for="language">Language</label>
 					<div class="controls">
-						<select class="form-control" id="language" data-ng-model="config.tasks['semdom'].language" data-ng-options="key as option for (key, option) in selects.language.options">
-							<option value="">-- choose a language --</option>
-						</select>
+						<select class="form-control" id="language" 
+							data-ng-model="config.tasks['semdom'].language" 
+							data-ng-options="key as option for (key, option) in selects.language.options">
+							<option value="">-- choose a language --</option></select>
 					</div>
 				</div>
 				<div class="control-group">
@@ -183,15 +205,23 @@ config.entry {{config.entry|json}}
 						<dt>Senses</dt>
 						<dd>
 							<div class="controls">
-								<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.definition"> Definition (Meaning)</label>
-								<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.partOfSpeech"> Part Of Speech</label>
+								<label class="checkbox">
+									<input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.definition">
+									 Definition (Meaning)</label>
+								<label class="checkbox">
+									<input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.partOfSpeech">
+									 Part Of Speech</label>
 							</div>
 						</dd>
 						<dt>Examples</dt>
 						<dd>
 							<div class="controls">
-								<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.example"> Example Sentence</label>
-								<label class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.translation"> Example Translation</label>
+								<label class="checkbox">
+									<input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.example">
+									 Example Sentence</label>
+								<label class="checkbox">
+									<input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.translation">
+									 Example Translation</label>
 							</div>
 						</dd>
 					</dl>
