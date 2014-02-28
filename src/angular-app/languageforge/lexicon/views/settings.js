@@ -50,7 +50,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 					var script = inputSystems.getScript(tag);
 					var region = inputSystems.getRegion(tag);
 					var privateUse = inputSystems.getPrivateUse(tag);
-					$scope.inputSystems[tag].name = inputSystems.getName($scope.inputSystems[tag].codeName, script, region, privateUse);
+					$scope.inputSystems[tag].name = inputSystems.getName($scope.inputSystems[tag].languageName, script, region, privateUse);
 					$scope.inputSystems[tag].code = code;
 					$scope.inputSystems[tag].purpose = '';
 					$scope.inputSystems[tag].script = '';
@@ -102,13 +102,13 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	};
 	$scope.newCode = '';
 
-	$scope.addInputSystem = function(code, codeName, special) {
+	$scope.addInputSystem = function(code, languageName, special) {
 //		console.log("addInputSystem ", $scope.inputSystems);
 		var tag = 'xxxx';
 		var script = '';
 		var privateUse = '';
 		$scope.inputSystems[tag] = {};
-		$scope.inputSystems[tag].codeName = codeName;
+		$scope.inputSystems[tag].languageName = languageName;
 		$scope.inputSystems[tag].abbreviation = code;
 		$scope.inputSystems[tag].script = '';
 		switch(special) {
@@ -127,7 +127,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 				$scope.inputSystems[tag].abbreviation = code + '-';
 				break;
 		}
-		$scope.inputSystems[tag].name = inputSystems.getName(codeName, script, '', privateUse);
+		$scope.inputSystems[tag].name = inputSystems.getName(languageName, script, '', privateUse);
 		$scope.inputSystems[tag].code = code;
 		$scope.inputSystems[tag].special = special;
 		$scope.inputSystems[tag].purpose = '';
@@ -160,7 +160,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 					if (! $scope.inputSystems[tag].script && ! $scope.inputSystems[tag].region)  {
 						$scope.inputSystems[tag].script = 'unspecified';
 					}
-					$scope.inputSystems[tag].name = inputSystems.getName($scope.inputSystems[tag].codeName, $scope.inputSystems[tag].script, $scope.inputSystems[tag].region, $scope.inputSystems[tag].variant);
+					$scope.inputSystems[tag].name = inputSystems.getName($scope.inputSystems[tag].languageName, $scope.inputSystems[tag].script, $scope.inputSystems[tag].region, $scope.inputSystems[tag].variant);
 					newInputSystemTag += ($scope.inputSystems[tag].script) ? '-' + $scope.inputSystems[tag].script : '';
 					newInputSystemTag += ($scope.inputSystems[tag].region) ? '-' + $scope.inputSystems[tag].region : '';
 					newInputSystemTag += ($scope.inputSystems[tag].variant) ? '-x-' + $scope.inputSystems[tag].variant : '';
