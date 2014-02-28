@@ -5,19 +5,22 @@
 		<!-- control buttons -->
 		<div class="control-group">
 			<button class="btn btn-success" data-ng-click="show.newLanguage = !show.newLanguage" style="font-weight:normal">
-				New <span class="caret"></span>
-			</button>
+				New <span class="caret"></span></button>
 			<div class="overlay" data-ng-show="show.newLanguage">
 				<div class="lf-dropdown-menu">
 					<pui-select-language pui-code="newCode" pui-language="newlanguage" pui-add-disabled="addDisabled">
-						<button class="btn btn-primary" data-ng-click="addInputSystem(newCode, 'none')" data-ng-disabled="addDisabled"><i class="icon-plus"></i> Add {{newlanguage.name}}</button>
+						<button class="btn btn-primary" data-ng-click="addInputSystem(newCode, selects.special.optionsOrder[0])" data-ng-disabled="addDisabled">
+							<i class="icon-plus"></i> Add {{newlanguage.name}}</button>
 					</pui-select-language>
 				</div>
 			</div>
 		</div>
+		
+		<!-- picklist -->
 		<div class="control-group picklists">
 			<ul class="unstyled">
-				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in inputSystems" data-ng-class="{selected:currentInputSystemTag == inputSystemTag}">{{inputSystem.name}}</li>
+				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in inputSystems" 
+					data-ng-class="{selected:currentInputSystemTag == inputSystemTag}" data-ng-style="{marginBottom:'5px'}">{{inputSystem.name}}</li>
 			</ul>
 		</div>
 	</div>
@@ -28,17 +31,23 @@
 		<div class="control-group">
 			<div class="btn-group">
 				<a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#" style="font-weight:normal">
-					More <span class="caret"></span>
-				</a>
+					More <span class="caret"></span></a>
 				<ul class="dropdown-menu">
-					<li><a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[1])"><i class="icon-plus"></i> Add IPA for {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
-					<li><a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[2])"><i class="icon-plus"></i> Add Voice for {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
-					<li><a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[3])"><i class="icon-plus"></i> Add a variant of {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
+					<li><a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[1])">
+						<i class="icon-plus"></i> Add IPA for {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
+					<li><a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[2])">
+						<i class="icon-plus"></i> Add Voice for {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
+					<li><a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[3])">
+						<i class="icon-plus"></i> Add a variant of {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
 					<li class="divider"></li>
-					<li data-ng-class="{disabled:(inputSystems[currentInputSystemTag].fieldUseCount > 0)}"><a tabindex="-1" data-ng-click="removeInputSystem(currentInputSystemTag)"><i class="icon-remove"></i> Remove {{inputSystems[currentInputSystemTag].name}}</a></li>
+					<li data-ng-class="{disabled:(inputSystems[currentInputSystemTag].fieldUseCount > 0)}">
+						<a tabindex="-1" data-ng-click="removeInputSystem(currentInputSystemTag)">
+						<i class="icon-remove"></i> Remove {{inputSystems[currentInputSystemTag].name}}</a></li>
 				</ul>
 			</div>
 		</div>
+		
+		<!-- settings -->
 		<div class="well" data-ng-show="inputSystems[currentInputSystemTag]">
 			<div class="pull-right">
 				<br />
@@ -51,11 +60,15 @@
 					<input type="text" id="abbrev" data-ng-model="inputSystems[currentInputSystemTag].abbreviation">
 				</div>
 			</div>
-			<p data-ng-show="inputSystems[currentInputSystemTag].fieldUseCount > 0">Some settings are disabled because {{inputSystems[currentInputSystemTag].fieldUseCount}} entry field{{(inputSystems[currentInputSystemTag].fieldUseCount == 1) ? ' is' : 's are'}} using this system</p>
+			<small data-ng-show="inputSystems[currentInputSystemTag].fieldUseCount > 0">
+				Some settings are disabled because {{inputSystems[currentInputSystemTag].fieldUseCount}} entry field{{(inputSystems[currentInputSystemTag].fieldUseCount == 1) ? ' is' : 's are'}} using this system.</small>
 			<div class="control-group">
 				<label class="control-label" for="special">Special</label>
 				<div class="controls">
-					<select class="form-control" id="special" data-ng-model="inputSystems[currentInputSystemTag].special" data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount" data-ng-options="selects.special.options[key] for key in selects.special.optionsOrder"></select>
+					<select class="form-control" id="special" 
+						data-ng-model="inputSystems[currentInputSystemTag].special" 
+						data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount" 
+						data-ng-options="selects.special.options[key] for key in selects.special.optionsOrder"></select>
 				</div>
 			</div>
 			
@@ -63,43 +76,49 @@
 			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[1]">	<!-- IPA transcription -->
 				<label class="control-label" for="purpose">Purpose</label>
 				<div class="controls">
-					<select class="form-control" id="purpose" data-ng-model="inputSystems[currentInputSystemTag].purpose" data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount" data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
-						<option value="">unspecified</option>
-					</select>
+					<select class="form-control" id="purpose" 
+						data-ng-model="inputSystems[currentInputSystemTag].purpose" 
+						data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount" 
+						data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
+						<option value="">unspecified</option></select>
 				</div>
 			</div>
 			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[3]">		<!-- Script / Region / Variant -->
 				<label class="control-label" for="script">Script</label>
 				<div class="controls">
-					<select class="form-control" id="script" data-ng-model="inputSystems[currentInputSystemTag].script" data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount" data-ng-options="key as option for (key, option) in selects.script.options">
-						<option value="">-- select a script --</option>
-					</select>
+					<select class="form-control" id="script" 
+						data-ng-model="inputSystems[currentInputSystemTag].script" 
+						data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount" 
+						data-ng-options="key as option.join(', ') for (key, option) in selects.script.options">
+						<option value="">-- select a script --</option></select>
 				</div>
 				<label class="control-label" for="region">Region</label>
 				<div class="controls">
-					<select class="form-control" id="region" data-ng-model="inputSystems[currentInputSystemTag].region" data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount" data-ng-options="key as option for (key, option) in selects.region.options">
-						<option value="">-- select a region --</option>
-					</select>
+					<select class="form-control" id="region" 
+						data-ng-model="inputSystems[currentInputSystemTag].region" 
+						data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount" 
+						data-ng-options="key as option for (key, option) in selects.region.options">
+						<option value="">-- select a region --</option></select>
 				</div>
 				<label class="control-label" for="variant">Variant</label>
 				<div class="controls">
-					<input type="text" id="variant" data-ng-model="inputSystems[currentInputSystemTag].variant" data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount">
+					<input type="text" id="variant" 
+						data-ng-model="inputSystems[currentInputSystemTag].variant" 
+						data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount">
 				</div>
 			</div>
 			</div>
 			
 			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[1]">	<!-- IPA transcription -->
 				<a href="http://en.wikipedia.org/wiki/International_Phonetic_Alphabet" target="_blank">
-					<i class="icon-globe"></i> Read more about IPA transcriptions
-				</a>
+					<i class="icon-globe"></i> Read more about IPA transcriptions</a>
 			</div>
 			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[2]">		<!-- Voice -->
-				<p>In applications which support this option, fields with this input system will able to play and record voice.</p>
+				<small>In applications which support this option, fields with this input system will able to play and record voice.</small>
 			</div>
 			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[3]">		<!-- Script / Region / Variant -->
 				<a href="http://www.w3.org/International/questions/qa-choosing-language-tags" target="_blank">
-					<i class="icon-globe"></i> 	Read more about language identifiers
-				</a>
+					<i class="icon-globe"></i> 	Read more about language identifiers</a>
 			</div>
 		</div>
 	</div>
