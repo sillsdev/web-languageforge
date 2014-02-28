@@ -63,8 +63,9 @@
 					<input type="text" id="abbrev" data-ng-model="inputSystems[currentInputSystemTag].abbreviation">
 				</div>
 			</div>
-			<small data-ng-show="inputSystems[currentInputSystemTag].fieldUseCount > 0">
-				Some settings are disabled because {{inputSystems[currentInputSystemTag].fieldUseCount}} entry field{{(inputSystems[currentInputSystemTag].fieldUseCount == 1) ? ' is' : 's are'}} using this system.</small>
+			<p class="text-warning" data-ng-show="inputSystems[currentInputSystemTag].fieldUseCount > 0">
+				<small>Some settings are disabled because {{inputSystems[currentInputSystemTag].fieldUseCount}} entry field{{(inputSystems[currentInputSystemTag].fieldUseCount == 1) ? ' is' : 's are'}} using this system.</small>
+			</p>
 			<div class="control-group">
 				<label class="control-label" for="special">Special</label>
 				<div class="controls">

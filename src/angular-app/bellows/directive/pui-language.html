@@ -1,13 +1,14 @@
 <div>
 	<div style="margin-bottom:10px">
 		<input width="4" placeholder="search" type="text" class="input-medium search-query" data-ng-model="searchText" />
-		<button class="btn btn-success" data-ng-click="filterText = searchText" data-ng-show="searchText && searchText != ''">
+		<button class="btn btn-success" data-ng-click="search()" data-ng-show="searchText && searchText != ''">
 			<i class="icon-search"></i> Search
 		</button>
-		<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''; filterText = ''" data-ng-show="searchText && searchText != ''">
+		<span style="margin-left:10px" title="Clear Search" data-ng-click="clearSearch()" data-ng-show="searchText && searchText != ''">
 			<i class="icon-remove" style="color:black; cursor: pointer"></i>
 		</span>
 	</div>
+	
 	<table class="table table-condensed table-hover" style="height:400px">
 		<thead>
 			<tr>
