@@ -45,6 +45,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 			if (result.ok) {
 				$scope.config = result.data.config;
 				$scope.inputSystems = $scope.config.inputSystems;
+				
 				for (var tag in $scope.inputSystems) {
 					var code = inputSystems.getCode(tag);
 					var script = inputSystems.getScript(tag);
@@ -76,6 +77,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 							$scope.inputSystems[tag].variant = privateUse;
 					}
 				};
+				
 				// select the first items
 				$scope.selectInputSystem($filter('orderAsArray')($scope.config.inputSystems, 'tag')[0]['tag']);
 				$scope.currentTaskName = 'dashboard';
