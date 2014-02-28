@@ -41,7 +41,7 @@ var inputSystems = {
 		var i = tag.indexOf('-x-');
 		return (i > 0) ? tag.substr(i + 3, tag.length - i + 3): '';
 	},
-	'getName': function(codeName, script, region, privateUse) {
+	'getName': function(languageName, script, region, privateUse) {
 		var extraName = '';
 		switch (script) {
 			case '':
@@ -57,6 +57,6 @@ var inputSystems = {
 			default:
 				extraName = script + ((region) ? '-' + region : '');
 		}
-		return codeName + ((extraName) ? ' (' + extraName + ')' : '');
+		return languageName + ((extraName) ? ' (' + extraName + ')' : '');
 	}
 };

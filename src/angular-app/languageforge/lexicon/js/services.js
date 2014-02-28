@@ -3,32 +3,32 @@ angular.module('lexicon.services', ['jsonRpc'])
 		var _config = {
 			'inputSystems': {
 				'en': {
-					'codeName': 'English',
+					'languageName': 'English',
 					'abbreviation': 'en',
 					'fieldUseCount': 11
 				},
 				'qaa': {
-					'codeName': 'Unlisted Language',
+					'languageName': 'Unlisted Language',
 					'abbreviation': 'qaa',
 					'fieldUseCount': 0
 				},
 				'th': {
-					'codeName': 'Thai',
+					'languageName': 'Thai',
 					'abbreviation': 'th',
 					'fieldUseCount': 11
 				},
 				'th-fonipa-x-etic': {
-					'codeName': 'Thai',
+					'languageName': 'Thai',
 					'abbreviation': 'thipa',
 					'fieldUseCount': 11
 				},
 				'mi-Zxxx-x-audio': {
-					'codeName': 'Maori',
+					'languageName': 'Maori',
 					'abbreviation': 'mi',
 					'fieldUseCount': 0
 				},
 				'mi-Latn-NZ-x-Ngati': {
-					'codeName': 'Maori',
+					'languageName': 'Maori',
 					'abbreviation': 'miNgati',
 					'fieldUseCount': 0
 				}
