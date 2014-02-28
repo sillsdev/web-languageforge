@@ -1,5 +1,7 @@
 <?php
 
+use models\languageforge\lexicon\commands\LexProjectCommands;
+
 use libraries\shared\Website;
 
 use models\commands\MessageCommands;
@@ -420,6 +422,25 @@ class Sf
 	//---------------------------------------------------------------
 	// LANGUAGEFORGE PROJECT API
 	//---------------------------------------------------------------
+	
+	public function lex_projectSettings_read($projectId) {
+		return LexProjectCommands::readSettings($projectId);
+	}
+	
+	public function lex_projectSettings_update($projectId, $settings) {
+		return LexProjectCommands::updateSettings($projectId, $settings);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

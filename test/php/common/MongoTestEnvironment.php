@@ -1,5 +1,7 @@
 <?php
 
+use models\languageforge\lexicon\LexiconProjectModel;
+
 use models\rights\Roles;
 
 require_once(TestPath . 'common/MockProjectModel.php');
@@ -83,7 +85,7 @@ class MongoTestEnvironment
 		return $projectModel;
 	}
 	
-	private function cleanProjectEnvironment($projectModel) {
+	protected function cleanProjectEnvironment($projectModel) {
 		// clean out old db if it is present
 		$projectDb = \models\mapper\MongoStore::connect($projectModel->databaseName());
 		foreach ($projectDb->listCollections() as $collection) {
@@ -124,4 +126,16 @@ class MongoTestEnvironment
 		return json_decode(json_encode($input), true);
 	}
 		
+}
+
+class LexiconMongoTestEnvironment extends MongoTestEnvironment {
+	
+	public function createProject($name, $site = 'languageforge') {
+		$projectModel = new LexiconProjectModel();
+		$projectModel->projectname = $name;
+		$this->cleanProjectEnvironment($projectModel);
+		$projectModel->write();
+		return $projectModel;
+	}
+	
 }
