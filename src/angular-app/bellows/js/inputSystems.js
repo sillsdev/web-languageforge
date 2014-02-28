@@ -13,7 +13,6 @@ var inputSystems = {
 		};
 		var languages = [];
 		if (angular.isDefined(debug)) {
-			this._debug = debug;
 			languages = _inputSystems_languagesSmall;
 		}
 		languages = _inputSystems_languages;
@@ -42,16 +41,8 @@ var inputSystems = {
 		var i = tag.indexOf('-x-');
 		return (i > 0) ? tag.substr(i + 3, tag.length - i + 3): '';
 	},
-	'getName': function(code, script, region, privateUse) {
+	'getName': function(codeName, script, region, privateUse) {
 		var extraName = '';
-		var baseName = '';
-		angular.forEach(this.languages(this._debug), function(language) {
-			if (code == language.code.three || code == language.code.two) {
-				baseName = language.name;
-				return;
-			}
-		});
-		
 		switch (script) {
 			case '':
 				break;
@@ -66,7 +57,6 @@ var inputSystems = {
 			default:
 				extraName = script + ((region) ? '-' + region : '');
 		}
-		return baseName + ((extraName) ? ' (' + extraName + ')' : '');
-	},
-	'_debug': ''
+		return codeName + ((extraName) ? ' (' + extraName + ')' : '');
+	}
 };
