@@ -1,8 +1,8 @@
 <?php
 
-namespace models\commands;
+namespace models\languageforge\lexicon\commands;
 
-use libraries\palaso\CodeGuard;
+use libraries\shared\palaso\CodeGuard;
 use libraries\lfdictionary\common\UserActionDeniedException;
 use models\commands\ActivityCommands;
 use models\mapper\JsonEncoder;

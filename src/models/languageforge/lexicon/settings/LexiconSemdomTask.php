@@ -9,11 +9,13 @@ class LexiconSemdomTask extends LexiconTask {
 
 	function __construct() {
 		$this->language = 'en';
-		$this->visibleFields = new MapOf(
-			function($data) {
-				return true;
-			}
-		);
+		$this->visibleFields = new MapOf();
+		
+		// default values
+		$this->visibleFields['definition'] = true;
+		$this->visibleFields['partOfSpeech'] = true;
+		$this->visibleFields['example'] = true;
+		$this->visibleFields['translation'] = true;
 	}
 	
 	/**

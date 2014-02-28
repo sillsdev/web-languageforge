@@ -172,6 +172,17 @@ class RightsHelper
 			case 'project_list_dto':
 			case 'activity_list_dto':
 				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::VIEW_OWN);
+				
+				
+			// LanguageForge (lexicon)
+			case 'lex_projectSettings_read':
+				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::VIEW);
+			case 'lex_projectSettings_update':
+				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
+				
+				
+				
+				
 			default:
 				throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");
 		}
