@@ -91,9 +91,6 @@ class ProjectCommands
 	 * @param string $site
 	 */
 	public static function createProject($projectName, $appName, $userId, $site) {
-		if (!RightsHelper::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT)) {
-			throw new UserUnauthorizedException("Insufficient privileges to create new project in method 'updateProject'");
-		}
 		if ($site == Website::SCRIPTUREFORGE) {
 			$project = new SfProjectModel();
 			$project->projectname = $projectName;

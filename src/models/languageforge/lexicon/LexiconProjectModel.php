@@ -2,18 +2,26 @@
 
 namespace models\languageforge\lexicon;
 
+use models\languageforge\lexicon\settings\LexiconProjectSettings;
+
 use models\mapper\MapOf;
 use models\languageforge\LfProjectModel;
 
 class LexiconProjectModel extends LfProjectModel {
 	public function __construct($id = '') {
-		parent::__construct($id);
 		$this->appName = LfProjectModel::LEXICON_APP;
 		$this->inputSystems = new MapOf(
 			function($data) {
 				return new InputSystem();
 			}
 		);
+		
+		$this->settings = new LexiconProjectSettings();
+
+		// default values
+		$this->inputSystems['en'] = new InputSystem('en', 'English', 'en');
+
+		parent::__construct($id);
 	}
 	
 	/**
@@ -21,5 +29,11 @@ class LexiconProjectModel extends LfProjectModel {
 	 * @var MapOf<InputSystem>
 	 */
 	public $inputSystems;
+	
+	/**
+	 * 
+	 * @var LexiconProjectSettings
+	 */
+	public $settings;
 }
 ?>
