@@ -13,6 +13,18 @@ angular.module('palaso.ui.language', [])
 		},
 		controller: ["$scope", '$filter', function($scope, $filter) {
 			$scope.languages = inputSystems.languages('debug');
+			
+			$scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
+			$scope.search = function() {
+				$scope.filterText = $scope.searchText;
+				if ($scope.searchText == '*') {
+					$scope.filterText = '';
+				}
+			};
+			$scope.clearSearch = function() {
+				scope.searchText = '';
+				scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
+			};
 
 			$scope.currentCode = '';
 			$scope.puiAddDisabled = true;
