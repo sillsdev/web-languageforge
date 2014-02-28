@@ -1,11 +1,14 @@
 <div>
 	<div style="margin-bottom:10px">
-		<input width="4" placeholder="search filter" type="text" class="input-medium search-query" data-ng-model="searchText" />
-		<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''" data-ng-show="searchText && searchText != ''">
+		<input width="4" placeholder="search" type="text" class="input-medium search-query" data-ng-model="searchText" />
+		<button class="btn btn-success" data-ng-click="filterText = searchText" data-ng-show="searchText && searchText != ''">
+			<i class="icon-search"></i> Search
+		</button>
+		<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''; filterText = ''" data-ng-show="searchText && searchText != ''">
 			<i class="icon-remove" style="color:black; cursor: pointer"></i>
 		</span>
 	</div>
-	<table class="table table-condensed table-hover">
+	<table class="table table-condensed table-hover" style="height:400px">
 		<thead>
 			<tr>
 				<th>Name</th><th>Code</th><th>Country</th><th>Other Names</th>
@@ -13,7 +16,7 @@
 		</thead>
 		<tbody>
 			<tr data-ng-class="{info: currentCode == language.code.three}" class="animate-repeat" 
-				data-ng-click="selectLanguage(language)" data-ng-repeat="language in languages | filter:searchText">
+				data-ng-click="selectLanguage(language)" data-ng-repeat="language in languages | filter:filterText">
 				<td>{{language.name}}</td>
 				<td>{{(language.code.two) ? language.code.two : language.code.three}}</td>
 				<td>{{language.country.join(", ")}}</td>
