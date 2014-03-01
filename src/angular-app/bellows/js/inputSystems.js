@@ -11,12 +11,24 @@ var InputSystems = {
 			'country': ['?'],
 			'altNames': []
 		};
+		
 		var languages = [];
-		if (angular.isDefined(debug)) {
+		languages = _inputSystems_languages;
+		if (angular.isDefined(debug) && debug == 'debug') {
 			languages = _inputSystems_languagesSmall;
 		}
-		languages = _inputSystems_languages;
-		languages.push(unlisted);
+		
+		var unlistedExists = false;
+		angular.forEach(languages, function (language){
+			if (language.code.three == unlisted.code.three){
+				unlistedExists = true;
+				return;
+			}
+		});
+		if (! unlistedExists) {
+			languages.push(unlisted);
+		}
+		
 		return languages;
 	},
 	'scripts': function() {
