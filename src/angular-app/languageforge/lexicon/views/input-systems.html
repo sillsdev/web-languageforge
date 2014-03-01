@@ -21,9 +21,9 @@
 		<!-- picklist -->
 		<div class="control-group picklists">
 			<ul class="unstyled">
-				<li data-ng-click="selectInputSystem(inputSystemTag)" data-ng-repeat="(inputSystemTag, inputSystem) in inputSystems" 
-					data-ng-class="{selected:currentInputSystemTag == inputSystemTag}" 
-					data-ng-style="{marginBottom:((inputSystem.lastInFamily) ? '5px' : '0px')}">{{inputSystem.name}}</li>
+				<li data-ng-click="selectInputSystem(inputSystem.tag)" data-ng-repeat="inputSystem in inputSystemsList" 
+					data-ng-class="{selected:currentInputSystemTag == inputSystem.tag}" 
+					data-ng-style="{marginBottom:((inputSystem.code != inputSystemsList[$index + 1].code) ? '5px' : '0px')}">{{inputSystem.name}}</li>
 			</ul>
 		</div>
 	</div>
