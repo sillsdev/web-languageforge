@@ -40,6 +40,10 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		$scope.currentInputSystemTag = inputSystemTag;
 	};
 	
+	$scope.sortInputSystemsList = function () {
+		return $filter('orderBy')($filter('orderAsArray')($scope.config.inputSystems, 'tag'), 'name');
+	};
+	
 	$scope.queryProjectSettings = function() {
 		lexService.readProjectSettings($scope.project.id, function(result) {
 			if (result.ok) {
@@ -75,9 +79,10 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 							$scope.inputSystems[tag].variant = privateUse;
 					}
 				};
+				$scope.inputSystemsList = $scope.sortInputSystemsList();
 				
 				// select the first items
-				$scope.selectInputSystem($filter('orderAsArray')($scope.config.inputSystems, 'tag')[0]['tag']);
+				$scope.selectInputSystem($scope.inputSystemsList[0].tag);
 				$scope.currentTaskName = 'dashboard';
 			}
 		});
@@ -125,7 +130,6 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 				$scope.inputSystems[tag].abbreviation = code + '-';
 				break;
 		}
-		$scope.inputSystems[tag].name = inputSystems.getName(languageName, script, '', privateUse);
 		$scope.inputSystems[tag].code = code;
 		$scope.inputSystems[tag].special = special;
 		$scope.inputSystems[tag].purpose = '';
@@ -137,8 +141,9 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	$scope.removeInputSystem = function(currentInputSystemTag) {
 //		console.log("removeInputSystem");
 		delete $scope.inputSystems[currentInputSystemTag];
+		$scope.inputSystemsList = $scope.sortInputSystemsList();
 		// select the first items
-		$scope.selectInputSystem($filter('orderAsArray')($scope.config.inputSystems, 'tag')[0]['tag']);
+		$scope.selectInputSystem($scope.inputSystemsList[0].tag);
 	};
 	
 	$scope.$watchCollection('inputSystems[currentInputSystemTag]', function(newValue) {
@@ -165,10 +170,13 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 			}
 			$scope.inputSystems[tag].name = InputSystems.getName($scope.inputSystems[tag].languageName, newInputSystemTag);
 			if (newInputSystemTag != tag) {
-				$scope.inputSystems[newInputSystemTag] = $scope.inputSystems[tag];
+//				if (! (newInputSystemTag in $scope.inputSystems)) {
+					$scope.inputSystems[newInputSystemTag] = $scope.inputSystems[tag];
+//				}
 				delete $scope.inputSystems[tag];
 				$scope.selectInputSystem(newInputSystemTag);
 			}
+			$scope.inputSystemsList = $scope.sortInputSystemsList();
 		}
 	});
 
