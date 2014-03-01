@@ -11,8 +11,8 @@ angular.module('palaso.ui.language', [])
 			puiLanguage : "=",
 			puiAddDisabled : "=",
 		},
-		controller: ["$scope", '$filter', function($scope, $filter) {
-			$scope.languages = inputSystems.languages('debug');
+		controller: ['$scope', '$filter', function($scope, $filter) {
+			$scope.languages = InputSystems.languages('debug');
 			
 			$scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
 			$scope.search = function() {
@@ -22,8 +22,8 @@ angular.module('palaso.ui.language', [])
 				}
 			};
 			$scope.clearSearch = function() {
-				scope.searchText = '';
-				scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
+				$scope.searchText = '';
+				$scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
 			};
 
 			$scope.currentCode = '';
