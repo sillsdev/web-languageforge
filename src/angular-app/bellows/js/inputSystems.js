@@ -1,7 +1,7 @@
 'use strict';
 
 // input systems common functions
-var inputSystems = {
+var InputSystems = {
 	'languages': function(debug) {
 		var unlisted = {
 			'name': 'Unlisted Language',
@@ -41,7 +41,10 @@ var inputSystems = {
 		var i = tag.indexOf('-x-');
 		return (i > 0) ? tag.substr(i + 3, tag.length - i + 3): '';
 	},
-	'getName': function(languageName, script, region, privateUse) {
+	'getName': function(languageName, tag) {
+		var script = this.getScript(tag);
+		var region = this.getRegion(tag);
+		var privateUse = this.getPrivateUse(tag);
 		var extraName = '';
 		switch (script) {
 			case '':

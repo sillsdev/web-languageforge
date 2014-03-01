@@ -28,10 +28,10 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 			}
 		},
 		'script': {
-			'options': inputSystems.scripts()
+			'options': InputSystems.scripts()
 		},
 		'region': {
-			'options': inputSystems.regions()
+			'options': InputSystems.regions()
 		},
 	};
 	
@@ -47,12 +47,10 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 				$scope.inputSystems = $scope.config.inputSystems;
 				
 				for (var tag in $scope.inputSystems) {
-					var code = inputSystems.getCode(tag);
-					var script = inputSystems.getScript(tag);
-					var region = inputSystems.getRegion(tag);
-					var privateUse = inputSystems.getPrivateUse(tag);
-					$scope.inputSystems[tag].name = inputSystems.getName($scope.inputSystems[tag].languageName, script, region, privateUse);
-					$scope.inputSystems[tag].code = code;
+					var script = InputSystems.getScript(tag);
+					var privateUse = InputSystems.getPrivateUse(tag);
+					$scope.inputSystems[tag].name = InputSystems.getName($scope.inputSystems[tag].languageName, tag);
+					$scope.inputSystems[tag].code = InputSystems.getCode(tag);
 					$scope.inputSystems[tag].purpose = '';
 					$scope.inputSystems[tag].script = '';
 					$scope.inputSystems[tag].region = '';
@@ -73,7 +71,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 						default:
 							$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[3];
 							$scope.inputSystems[tag].script = script;
-							$scope.inputSystems[tag].region = region;
+							$scope.inputSystems[tag].region = InputSystems.getRegion(tag);
 							$scope.inputSystems[tag].variant = privateUse;
 					}
 				};
@@ -108,7 +106,6 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 //		console.log("addInputSystem ", $scope.inputSystems);
 		var tag = 'xxxx';
 		var script = '';
-		var privateUse = '';
 		$scope.inputSystems[tag] = {};
 		$scope.inputSystems[tag].languageName = languageName;
 		$scope.inputSystems[tag].abbreviation = code;
@@ -120,7 +117,6 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 				break;
 			case $scope.selects.special.optionsOrder[2]:		// Voice
 				script = 'Zxxx';
-				privateUse = 'audio';
 				$scope.inputSystems[tag].abbreviation = code + 'audio';
 				break;
 			case $scope.selects.special.optionsOrder[3]:		// Script / Region / Variant
@@ -162,12 +158,12 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 					if (! $scope.inputSystems[tag].script && ! $scope.inputSystems[tag].region)  {
 						$scope.inputSystems[tag].script = 'unspecified';
 					}
-					$scope.inputSystems[tag].name = inputSystems.getName($scope.inputSystems[tag].languageName, $scope.inputSystems[tag].script, $scope.inputSystems[tag].region, $scope.inputSystems[tag].variant);
 					newInputSystemTag += ($scope.inputSystems[tag].script) ? '-' + $scope.inputSystems[tag].script : '';
 					newInputSystemTag += ($scope.inputSystems[tag].region) ? '-' + $scope.inputSystems[tag].region : '';
 					newInputSystemTag += ($scope.inputSystems[tag].variant) ? '-x-' + $scope.inputSystems[tag].variant : '';
 					break;
 			}
+			$scope.inputSystems[tag].name = InputSystems.getName($scope.inputSystems[tag].languageName, newInputSystemTag);
 			if (newInputSystemTag != tag) {
 				$scope.inputSystems[newInputSystemTag] = $scope.inputSystems[tag];
 				delete $scope.inputSystems[tag];
