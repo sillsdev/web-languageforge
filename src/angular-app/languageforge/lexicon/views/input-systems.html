@@ -4,19 +4,7 @@
 	<div class="span3">
 		<!-- control buttons -->
 		<div class="control-group">
-			<button class="btn btn-success" data-ng-click="openNewLanguage()">New</button>
-			<button class="btn btn-success" data-ng-click="show.newLanguage = !show.newLanguage" style="font-weight:normal">
-				New <span class="caret"></span></button>
-			<div class="overlay" data-ng-show="show.newLanguage">
-				<div class="lf-dropdown-menu">
-					<pui-select-language pui-code="newCode" pui-language="newlanguage" pui-add-disabled="addDisabled">
-						<button class="btn btn-primary" 
-							data-ng-click="addInputSystem(newCode, newlanguage.name, selects.special.optionsOrder[0])" 
-							data-ng-disabled="addDisabled">
-							<i class="icon-plus"></i> Add {{newlanguage.name}}</button>
-					</pui-select-language>
-				</div>
-			</div>
+			<button class="btn btn-success" data-ng-click="openNewLanguageModal()"><i class="icon-plus"></i>New</button>
 		</div>
 		
 		<!-- picklist -->
@@ -24,7 +12,7 @@
 			<ul class="unstyled">
 				<li data-ng-click="selectInputSystem(inputSystem.tag)" data-ng-repeat="inputSystem in inputSystemsList" 
 					data-ng-class="{selected:currentInputSystemTag == inputSystem.tag}" 
-					data-ng-style="{marginBottom:((inputSystem.code != inputSystemsList[$index + 1].code) ? '5px' : '0px')}">{{inputSystem.name}}</li>
+					data-ng-style="{marginBottom:((inputSystem.code != inputSystemsList[$index + 1].code) ? '10px' : '0px')}">{{inputSystem.name}}</li>
 			</ul>
 		</div>
 	</div>
