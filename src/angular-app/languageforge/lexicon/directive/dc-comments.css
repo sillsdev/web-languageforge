@@ -10,9 +10,12 @@ div.dc-comments {
 
 .dc-comments .comment {
 	display: flex;
+	max-width: 620px;
 }
 
 .dc-comments .scorecontrol {
+	flex-grow: 0; /* This refers to the *containing* flex, not the one we're about to create */
+	flex-shrink: 0; /* This refers to the *containing* flex, not the one we're about to create */
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -29,7 +32,8 @@ div.dc-comments {
 }
 
 .dc-comments .all-but-score {
-	/* No styles here at the moment */
+	flex-grow: 1;
+	flex-shrink: 1;
 }
 
 .dc-comments .comment-date-and-status {
@@ -52,14 +56,42 @@ div.dc-comments {
 }
 
 .dc-comments .avatar-and-content .avatar {
-	/* Nothing yet */
+	flex-shrink: 0;
+	flex-grow: 0;
 }
 
 .dc-comments .avatar-and-content .comment-content {
-	/* Nothing yet */
+	flex-shrink: 1;
+	flex-grow: 1;
+}
+
+.dc-comments .avatar-and-content .comment-replylink {
+	flex-grow: 0;
+	flex-shrink: 0;
+/* 	margin: 0px 5px; */
 }
 
 .dc-comments .new-comment-form {
 	display: flex;
 	flex-direction: column;
+}
+
+.dc-comments .subcomments {
+	width: 100%;
+}
+
+.dc-comments .subcomments td {
+	border: none;
+}
+
+.dc-comments .subcomments .subcomment-who {
+	width: 25%;
+}
+
+.dc-comments .subcomments .subcomment-when {
+	width: 25%;
+}
+
+.dc-comments .subcomments .subcomment-what {
+	width: 50%;
 }
