@@ -9,7 +9,7 @@
 			<i class="icon-remove" style="color:black; cursor: pointer"></i></span>
 	</div>
 	
-	<table class="table table-condensed table-hover" style="height:400px">
+	<table class="table table-condensed table-hover">
 		<thead>
 			<tr>
 				<th>Name</th><th>Code</th><th>Country</th><th>Other Names</th>
@@ -18,7 +18,7 @@
 		<tbody>
 			<tr data-ng-class="{info: currentCode == language.code.three}" class="animate-repeat" 
 				data-ng-click="selectLanguage(language)" 
-				data-ng-repeat="language in languages | filter:filterText track by languages.code.three">
+				data-ng-repeat="language in languages | filter:filterText track by language.code.three">
 				<td>{{language.name}}</td>
 				<td>{{(language.code.two) ? language.code.two : language.code.three}}</td>
 				<td>{{language.country.join(", ")}}</td>
