@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+
+.dc-rendered.word {
+	font-weight: bold;
+}
+
+.dc-rendered.definition {
+	/* CSS for definition can go here, if needed */
+}
