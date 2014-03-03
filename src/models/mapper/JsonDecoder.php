@@ -23,10 +23,10 @@ class JsonDecoder {
 		$propsToRemove = array();
 		
 		if (method_exists($model, 'getPrivateProperties')) {
-			$propsToRemove = $model->getPrivateProperties();
+			$propsToRemove = (array)$model->getPrivateProperties();
 		}
 		if (method_exists($model, 'getReadOnlyProperties')) {
-			$propsToRemove = array_merge($propsToRemove, $model->getReadOnlyProperties());
+			$propsToRemove = array_merge($propsToRemove, (array)$model->getReadOnlyProperties());
 		}
 		foreach ($propsToRemove as $prop) {
 			unset($values[$prop]);

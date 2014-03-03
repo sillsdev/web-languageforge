@@ -14,7 +14,7 @@ class JsonEncoder {
 		$encoder = new JsonEncoder();
 		$data = $encoder->_encode($model);
 		if (method_exists($model, 'getPrivateProperties')) {
-			$privateProperties = $model->getPrivateProperties();
+			$privateProperties = (array)$model->getPrivateProperties();
 			foreach ($privateProperties as $prop) {
 				unset($data[$prop]);
 			}
