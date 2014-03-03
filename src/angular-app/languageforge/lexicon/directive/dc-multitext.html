@@ -4,5 +4,6 @@
         <div class="controls">
             <span title="unknown" class="wsid">{{getAbbreviation(inputSystem)}}</span><input data-ng-disabled="{{definition.readonly}}" width="{{definition.width}}" type="text" data-ng-model="model[inputSystem].value"/>
         </div>
+        <dc-comments data-ng-show="definition.commentsVisible" dc-config="definition" dc-model="model[inputSystem]"></dc-comments>
     </div>
 </form>
