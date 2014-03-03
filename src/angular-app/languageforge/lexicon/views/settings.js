@@ -1,14 +1,14 @@
 'use strict';
 
-angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
-.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$filter', '$modal', 
+angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
+.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', '$filter', '$modal', 
                              function($scope, userService, ss, notice, lexService, $filter, $modal) {
-	var projectId = $scope.routeParams.projectId;
-	$scope.project = {
-		'id': projectId
-	};
 	
 	$scope.config = {};
+	$scope.haveConfig = function() {
+		return angular.isDefined($scope.config.entry);
+	};
+
 	$scope.inputSystems = {};
 	$scope.selects = {
 		'special': {
@@ -45,9 +45,9 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	};
 	
 	$scope.queryProjectSettings = function() {
-		lexService.readProjectSettings($scope.project.id, function(result) {
+		lexService.getSettings(function(result) {
 			if (result.ok) {
-				$scope.config = result.data.config;
+				$scope.config = result.data;
 				$scope.inputSystems = $scope.config.inputSystems;
 				
 				for (var tag in $scope.inputSystems) {
@@ -90,11 +90,11 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 
 	$scope.settingsApply = function() {
 //		console.log("settingsApply");
-		lexService.updateProjectSettings($scope.project.id, $scope.config, function(result) {
+		lexService.updateSettings($scope.config, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "Project settings updated successfully");
 				$scope.settingsForm.$setPristine();
-				$scope.queryProjectSettings();
+				//$scope.queryProjectSettings(); - why should we do this?
 			}
 		});
 	};
@@ -203,14 +203,6 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 }])
 .controller('FieldSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
                                   function($scope, userService, ss, notice) {
-	$scope.fieldConfig = {
-		'lexeme': $scope.config.entry.fields['lexeme'],
-		'definition': $scope.config.entry.fields.senses.fields['definition'],
-		'partOfSpeech': $scope.config.entry.fields.senses.fields['partOfSpeech'],
-		'semanticDomainValue': $scope.config.entry.fields.senses.fields['semanticDomainValue'],
-		'example': $scope.config.entry.fields.senses.fields.examples.fields['example'],
-		'translation': $scope.config.entry.fields.senses.fields.examples.fields['translation']
-	};
 	$scope.currentField = {
 		'name': '',
 		'inputSystems': {
@@ -257,14 +249,22 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	
 	$scope.$watch('config', function (newValue) {
 //		console.log("config Fields watch ", newValue);
-		if (newValue != undefined) {
-			// when config is updated select the first Feild in the list
+		if (angular.isDefined(newValue) && $scope.haveConfig()) {
+			$scope.fieldConfig = {
+				'lexeme': $scope.config.entry.fields['lexeme'],
+				'definition': $scope.config.entry.fields.senses.fields['definition'],
+				'partOfSpeech': $scope.config.entry.fields.senses.fields['partOfSpeech'],
+				'semanticDomainValue': $scope.config.entry.fields.senses.fields['semanticDomainValue'],
+				'example': $scope.config.entry.fields.senses.fields.examples.fields['example'],
+				'translation': $scope.config.entry.fields.senses.fields.examples.fields['translation']
+			};
+			// when config is updated select the first field in the list
 			$scope.selectField('lexeme');
 		}
 	});
 	$scope.$watchCollection('currentField.inputSystems.selecteds', function(newValue) {
 //		console.log("currentField.inputSystems.selecteds watch ", newValue);
-		if (newValue != undefined) {
+		if (angular.isDefined(newValue) && $scope.haveConfig()) {
 			$scope.fieldConfig[$scope.currentField.name].inputSystems = [];
 			angular.forEach($scope.currentField.inputSystems.selecteds, function(selected, tag) {
 				if (selected) {
