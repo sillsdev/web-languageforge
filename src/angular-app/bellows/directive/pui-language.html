@@ -1,13 +1,13 @@
 <div>
-	<div style="margin-bottom:10px">
+	<form name="languageSearch">
 		<input width="4" placeholder="search" type="text" 
 			class="input-medium search-query" data-ng-model="searchText" />
 		<button class="btn btn-success" data-ng-click="search()" data-ng-show="searchText && searchText != ''">
-			<i class="icon-search"></i> Search</button>
+			<i class="icon-search"></i>Search</button>
 		<span style="margin-left:10px" title="Clear Search" data-ng-click="clearSearch()" 
 			data-ng-show="searchText && searchText != ''">
 			<i class="icon-remove" style="color:black; cursor: pointer"></i></span>
-	</div>
+	</form>
 	
 	<table class="table table-condensed table-hover">
 		<thead>
