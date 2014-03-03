@@ -25,61 +25,68 @@ class LexiconProjectSettings {
 	function __construct() {
 		$this->tasks = new MapOf(
 			function($data) {
-				return new LexiconTask();
+				switch ($data['type']) {
+					case LexiconTask::DASHBOARD:
+						return new LexiconDashboardTask();
+					case LexiconTask::SEMDOM:
+						return new LexiconSemdomTask();
+					default:
+						return new LexiconTask();
+				}
 			}	
 		);
 		
 		// default values
-		$this->tasks['view'] = new LexiconTask();
-		$this->tasks['dashboard'] = new LexiconDashboardTask();
-		$this->tasks['gatherTexts'] = new LexiconTask();
-		$this->tasks['semdom'] = new LexiconSemdomTask();
-		$this->tasks['wordlist'] = new LexiconTask();
-		$this->tasks['dbe'] = new LexiconTask();
-		$this->tasks['addMeanings'] = new LexiconTask();
-		$this->tasks['addGrammar'] = new LexiconTask();
-		$this->tasks['addExamples'] = new LexiconTask();
-		$this->tasks['settings'] = new LexiconTask();
-		$this->tasks['review'] = new LexiconTask();
+		$this->tasks[LexiconTask::VIEW] = new LexiconTask();
+		$this->tasks[LexiconTask::DASHBOARD] = new LexiconDashboardTask();
+		$this->tasks[LexiconTask::GATHERTEXTS] = new LexiconTask();
+		$this->tasks[LexiconTask::SEMDOM] = new LexiconSemdomTask();
+		$this->tasks[LexiconTask::WORDLIST] = new LexiconTask();
+		$this->tasks[LexiconTask::DBE] = new LexiconTask();
+		$this->tasks[LexiconTask::ADDMEANINGS] = new LexiconTask();
+		$this->tasks[LexiconTask::ADDGRAMMAR] = new LexiconTask();
+		$this->tasks[LexiconTask::ADDEXAMPLES] = new LexiconTask();
+		$this->tasks[LexiconTask::SETTINGS] = new LexiconTask();
+		$this->tasks[LexiconTask::REVIEW] = new LexiconTask();
 		
 		// default values for the entry config
 		$this->entry = new LexiconFieldListConfigObj();
-		$this->entry->fieldOrder[] = 'lexeme';
-		$this->entry->fieldOrder[] = 'senses';
+		$this->entry->fieldOrder[] = LexiconConfigObj::LEXEME;
+		$this->entry->fieldOrder[] = LexiconConfigObj::SENSES_LIST;
 
-		$this->entry->fields['lexeme'] = new LexiconMultitextConfigObj();
-		$this->entry->fields['lexeme']->label = 'Word';
-		$this->entry->fields['lexeme']->inputSystems[] = 'en';
+		$this->entry->fields[LexiconConfigObj::LEXEME] = new LexiconMultitextConfigObj();
+		$this->entry->fields[LexiconConfigObj::LEXEME]->label = 'Word';
+		$this->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[] = 'en';
 
-		$this->entry->fields['senses'] = new LexiconFieldListConfigObj();
-		$this->entry->fields['senses']->fieldOrder[] = 'definition';
-		$this->entry->fields['senses']->fieldOrder[] = 'partOfSpeech';
-		$this->entry->fields['senses']->fieldOrder[] = 'semanticDomainValue';
-		$this->entry->fields['senses']->fieldOrder[] = 'examples';
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST] = new LexiconFieldListConfigObj();
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::DEFINITION;
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::POS;
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SEMDOM;
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::EXAMPLES_LIST;
 
-		$this->entry->fields['senses']->fields['definition'] = new LexiconMultitextConfigObj();
-		$this->entry->fields['senses']->fields['definition']->label = 'Meaning';
-		$this->entry->fields['senses']->fields['definition']->inputSystems[] = 'en';
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION] = new LexiconMultitextConfigObj();
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->label = 'Meaning';
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems[] = 'en';
 		
-		$this->entry->fields['senses']->fields['partOfSpeech'] = new LexiconOptionlistConfigObj();
-		$this->entry->fields['senses']->fields['partOfSpeech']->label = 'Part of Speech';
-		// $this->entry->fields['senses']->fields['partOfSpeech']->values will be populated automatically by the DTO (or perhaps in the client itself)
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS] = new LexiconOptionlistConfigObj();
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->label = 'Part of Speech';
+		// $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->values will be populated automatically by the DTO (or perhaps in the client itself)
 		
-		$this->entry->fields['senses']->fields['semanticDomainValue'] = new LexiconOptionlistConfigObj();
-		$this->entry->fields['senses']->fields['semanticDomainValue']->label = 'Semantic Domain';
-		// $this->entry->fields['senses']->fields['semanticDomainValue']->values should be populated automatically in the DTO or client
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM] = new LexiconOptionlistConfigObj();
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM]->label = 'Semantic Domain';
+		// $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM]->values should be populated automatically in the DTO or client
 
-		$this->entry->fields['senses']->fields['examples'] = new LexiconFieldListConfigObj();
-		$this->entry->fields['senses']->fields['examples']->fieldOrder[] = 'example';
-		$this->entry->fields['senses']->fields['examples']->fieldOrder[] = 'translation';
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST] = new LexiconFieldListConfigObj();
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fieldOrder[] = LexiconConfigObj::EXAMPLE;
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fieldOrder[] = LexiconConfigObj::TRANSLATION;
 
-		$this->entry->fields['senses']->fields['examples']->fields['example'] = new LexiconMultitextConfigObj();
-		$this->entry->fields['senses']->fields['examples']->fields['example']->label = 'Example';
-		$this->entry->fields['senses']->fields['examples']->fields['example']->inputSystems[] = 'en';
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE] = new LexiconMultitextConfigObj();
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE]->label = 'Example';
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE]->inputSystems[] = 'en';
 		
-		$this->entry->fields['senses']->fields['examples']->fields['translation'] = new LexiconMultitextConfigObj();
-		$this->entry->fields['senses']->fields['examples']->fields['translation']->label = 'Translation';
-		$this->entry->fields['senses']->fields['examples']->fields['translation']->inputSystems[] = 'en';
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::TRANSLATION] = new LexiconMultitextConfigObj();
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::TRANSLATION]->label = 'Translation';
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::TRANSLATION]->inputSystems[] = 'en';
 
 	}
 }

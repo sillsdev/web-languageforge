@@ -6,6 +6,9 @@ namespace models\languageforge\lexicon\settings;
 
 class LexiconDashboardTask extends LexiconTask {
 
+	public function __construct() {
+		$this->type = LexiconTask::DASHBOARD;
+	}
 	
 	/**
 	 * Number of days to view the data

@@ -8,6 +8,18 @@ class LexiconConfigObj {
 	const FIELDLIST = 'fields';
 	const MULTITEXT = 'multitext';
 	const OPTIONLIST = 'optionlist';
+	
+	// fields
+	const LEXEME = 'lexeme';
+	const DEFINITION = 'definition';
+	const POS = 'partOfSpeech';
+	const SEMDOM = 'semanticDomainValue';
+	const EXAMPLE = 'example';
+	const TRANSLATION = 'translation';
+
+	// field lists
+	const SENSES_LIST = 'senses';
+	const EXAMPLES_LIST = 'examples';
 
 	/**
 	 * 
