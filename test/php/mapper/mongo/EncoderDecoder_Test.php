@@ -15,13 +15,25 @@ class CodecTest extends UserModel {
 	public function __construct($id = '') {
 		$this->fruitsMap = new MapOf(
 			function($data) {
-				return new Fruit();
+				if (array_key_exists('numOfSlices', $data)) {
+					return new Apple();
+				} elseif (array_key_exists('peelThickness', $data)) {
+					return new Orange();
+				} else {
+					return new Fruit();
+				}
 			}
 		);
 		
 		$this->fruitsArray = new ArrayOf(
 			function($data) {
-				return new Fruit();
+				if (array_key_exists('numOfSlices', $data)) {
+					return new Apple();
+				} elseif (array_key_exists('peelThickness', $data)) {
+					return new Orange();
+				} else {
+					return new Fruit();
+				}
 			}
 		);
 		parent::__construct($id);
