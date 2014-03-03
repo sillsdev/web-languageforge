@@ -10,6 +10,7 @@ angular.module('palaso.ui.language', [])
 			puiCode : "=",
 			puiLanguage : "=",
 			puiAddDisabled : "=",
+			puiShowLinks : "=",
 		},
 		controller: ['$scope', '$filter', function($scope, $filter) {
 			// TODO Enhance. Could use infinite scrolling since search can return large results. See example here http://jsfiddle.net/vojtajina/U7Bz9/. Example doesn't remove top data when scrolling down. IJH 2014-02
