@@ -18,7 +18,15 @@
 					<div>{{comment.userRef.username}}</div>
 				</div>
 				<div class="comment-content">{{comment.content}}</div>
+				<div class="comment-replylink"><a href="#">Reply</a></div>
 			</div>
+			<table class="subcomments" data-ng-if="comment.subcomments.length">
+				<tr data-ng-repeat="subcomment in comment.subcomments">
+					<td class="subcomment-who">{{subcomment.userRef.username}}</td>
+					<td class="subcomment-when">{{subcomment.dateModified | date:'yyyy-MM-dd'}}</td>
+					<td class="subcomment-what">{{subcomment.content}}</td>
+				</tr>
+			</table>
 		</div>
 	</div>
 	<div class="new-comment-form">
