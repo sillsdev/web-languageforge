@@ -1,5 +1,7 @@
 angular.module('lexicon.services', ['jsonRpc'])
-	.service('lexEntryService', function() {
+	.service('lexProjectService', ['jsonRpc', '$location', function(jsonRpc, $location) {
+		jsonRpc.connect('/api/sf');
+		/*
 		var _config = {
 			'inputSystems': {
 				'en': {
@@ -129,19 +131,49 @@ angular.module('lexicon.services', ['jsonRpc'])
 				'review': {'visible': true}
 			}
 		};
+		*/
+
 		this.configInputSystems = function() {
 			return _config.inputSystems;
 		};
-		this.readProjectSettings = function(projectId, callback) {
-			var config = angular.copy(_config);
-			this.setConfig(config);
-			(callback || angular.noop)({'ok': true, 'data': {'config': config}});
-		};
-		this.updateProjectSettings = function(projectId, config, callback) {
-			_config = config;
-			(callback || angular.noop)({'ok': true});
+		
+		var _config = {};
+		
+		this.getSettings = function(callback) {
+			// TODO this could potentially get called more than once when a page is directly loaded such as /p/{projectId}/settings
+			// in this case the menu makes a call, and the page also makes a call.  Implement locking or an observer pattern (I pick observer pattern)
+			
+			
+			if (angular.isUndefined(_config.entry)) {
+				jsonRpc.call('lex_projectSettings_read', [this.getProjectId()], function(result) {
+					if (result.ok) {
+						_config = result.data;
+						callback(result);
+					}
+				});
+			} else {
+				callback({ok:true, data:angular.copy(_config)});
+			}
 		};
 		
+		this.updateSettings = function(settings, callback) {
+			jsonRpc.call('lex_projectSettings_update', [this.getProjectId(), settings], function(result) {
+				if (result.ok) {
+					_config = angular.copy(settings);
+					callback(result);
+				}
+			});
+		};
+		
+		this.getProjectId = function() {
+			// strip off the "/p/"
+			var parts = $location.path().split('/');
+			return parts[2];
+		};
+	}])
+
+	.service('lexEntryService', ['jsonRpc', function(jsonRpc) {
+		jsonRpc.connect('/api/sf');
 		var _dtoConfig = {};
 		this.setConfig = function(dtoConfig) {
 			_dtoConfig = angular.copy(dtoConfig);
@@ -474,5 +506,5 @@ angular.module('lexicon.services', ['jsonRpc'])
 		};
 		this.saveNow('sampleProject');
 		// --- END TEST CODE ---
-	})
+	}])
 	;
