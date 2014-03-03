@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'ngAnimate'])
+angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate'])
 .controller('dbeCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', '$filter', 
                         function ($scope, userService, sessionService, lexService, $window, $timeout, $filter) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
@@ -171,7 +171,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		lexService.dbeDto($scope.project.id, function(result) {
 			if (result.ok) {
 				$scope.entries = result.data.entries;
-				$scope.config = result.data.config;
+				// $scope.config = result.data.config; // When retrieving config from JSON, we can do this.
+				$scope.config = angular.copy(result.data.config); // When retrieving config from mock service, we need to do this
 				// select the first entry
 				$scope.currentEntry.id = $filter('orderAsArray')($scope.entries, 'id')[0]['id'];
 			}
@@ -180,6 +181,27 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 
 	// run this when the page loads
 	$scope.getPageDto();
-	
+
+	$scope.recursiveSetConfig = function(startAt, propName, propValue) {
+		// Go through the config tree starting at the startAt field, and
+		// set a given property to a given value in all fields below startAt.
+		angular.forEach(startAt.fieldOrder, function(fieldName) {
+			var field = startAt.fields[fieldName];
+			if (angular.isUndefined(field)) { return; }
+			if (field.type == "fields") {
+				$scope.recursiveSetConfig(field, propName, propValue);
+			} else {
+				field[propName] = propValue;
+			};
+		});
+	}
+
+	// When comments tab is clicked, set up new config for its interior
+	$scope.selectCommentsTab = function() {
+		$scope.recursiveSetConfig($scope.config.entry, 'commentsVisible', true);
+	};
+	$scope.deselectCommentsTab = function() {
+		$scope.recursiveSetConfig($scope.config.entry, 'commentsVisible', false);
+	};
 }])
 ;

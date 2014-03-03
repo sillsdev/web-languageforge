@@ -1,10 +1,10 @@
 <div class="container" ng-cloak ng-controller="dbeCtrl">
-	<div class="row">
-	    <div class="span6 offset4">
+    <div class="row">
+        <div class="span6 offset4">
         <h2>Dictionary Browse and Edit</h2>
-	    </div>
-	</div>
-	<div class="row" style="margin-top:20px">
+        </div>
+    </div>
+    <div class="row" style="margin-top:20px">
         <div class="span4" ng-show="entries.length > 0">
             <div style="margin-bottom:10px">
                 <input width="4" placeholder="search filter" type="text" class="input-medium search-query" ng-model="searchText" />
@@ -25,20 +25,30 @@
         </div>
 
         <div class="span8">
-            <div class="row">
-                <div class="span3">
-                    <div ng-show="entryLoaded()" style="margin-bottom:20px; font-size:20px; font-weight:bold;">{{entryTitle()}}</div>
+            <tabset>
+                <tab heading="Edit">
+                <div class="row">
+                    <div class="span3">
+                        <div ng-show="entryLoaded()" style="margin-bottom:20px; font-size:20px; font-weight:bold;">{{entryTitle()}}</div>
+                    </div>
+                    <div class="span2">
+                        <button class="btn" ng-click="newEntry()"><i class="icon-plus"></i>New Word</button>
+                    </div>
+                    <div class="span3">
+                        <button class="btn" ng-disabled="!canSave()" ng-show="entries.length > 0" ng-click="saveNow()"><i class="icon-save"></i>{{saveButtonTitle()}}</button>
+                    </div>
                 </div>
-                <div class="span2">
-            	    <button class="btn" ng-click="newEntry()"><i class="icon-plus"></i>New Word</button>
+                <div class="animate-show" ng-show="entryLoaded()" id="entryItemView">
+                    <dc-entry config="config" model="currentEntry"></dc-entry>
                 </div>
-                <div class="span3">
-            	    <button class="btn" ng-disabled="!canSave()" ng-show="entries.length > 0" ng-click="saveNow()"><i class="icon-save"></i>{{saveButtonTitle()}}</button>
-                </div>
-            </div>
-            <div class="animate-show" ng-show="entryLoaded()" id="entryItemView">
-                <dc-entry config="config" model="currentEntry"></dc-entry>
-            </div>
+                </tab>
+                <tab heading="Comment" active="commentsTabActive" select="selectCommentsTab()" deselect="deselectCommentsTab()">
+                    <dc-rendered config="config" model="currentEntry" hide-if-empty="true"></dc-rendered>
+                    <div>Filters will go here</div>
+<!--                     <dc-comments config="config" model="currentEntry"></dc-comments> -->
+                    <dc-entry config="config" model="currentEntry"></dc-entry>
+                </tab>
+            </tabset>
         </div>
 
 <!--
@@ -55,10 +65,10 @@
                     {{entries|json}}</pre>
         </div>
         -->
-	</div>
-	<div class="row" ng-show="entryLoaded()">
-	    <div class="span3">
+    </div>
+    <div class="row" ng-show="entryLoaded()">
+        <div class="span3">
                 <button ng-click="deleteEntry(currentEntry)" class="btn btn-small"><i class="icon-remove"></i>Delete Word</button>
-	    </div>
-	</div>
+        </div>
+    </div>
 </div>

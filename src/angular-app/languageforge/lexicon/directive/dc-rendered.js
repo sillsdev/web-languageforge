@@ -21,7 +21,7 @@ angular.module('palaso.ui.dc.rendered', [])
 					// entry.lexeme has one property, but we don't know its name.
 					// We could look in the config, but this is actually simpler.
 					angular.forEach(entry.lexeme, function(word, wsid) {
-						result = word || result; // We're ignoring wsid, but we might use it later
+						result = word.value || result; // We're ignoring wsid, but we might use it later
 					});
 					return result;
 				};
@@ -37,7 +37,7 @@ angular.module('palaso.ui.dc.rendered', [])
 				$scope.render = function(entry) {
 					$scope.definition.label = $scope.getLexemeForm($scope.model);
 					var defParts = [];
-					var useNumbers = (entry.senses.length > 1);
+					var useNumbers = (entry.senses && entry.senses.length > 1);
 					var nextNum = 1;
 					angular.forEach(entry.senses, function(sense) {
 						if (useNumbers) {
@@ -45,7 +45,7 @@ angular.module('palaso.ui.dc.rendered', [])
 							nextNum++;
 						};
 						if (sense.partOfSpeech) {
-							var abbrev = $scope.posAbbrevs[sense.partOfSpeech];
+							var abbrev = $scope.posAbbrevs[sense.partOfSpeech.value];
 							defParts.push(abbrev ? (abbrev + ' ') : '');
 						};
 						// Might be nice to order the definitions in some way, like primary analysis
@@ -53,7 +53,7 @@ angular.module('palaso.ui.dc.rendered', [])
 						// there's a way to specify primary analysis languages in config, we'll just
 						// go through the definitions in whatever order forEach() produces them.
 						angular.forEach(sense.definition, function(def, wsid) {
-							defParts.push(def + ' ');
+							defParts.push(def.value + ' ');
 						});
 					});
 					$scope.definition.rendered = defParts.join("") || "[No definition exists yet: add one!]";
@@ -65,7 +65,10 @@ angular.module('palaso.ui.dc.rendered', [])
 						$scope.model = {};
 						if ($scope.definition && $scope.definition.inputSystems) {
 							for (var i=0; i<$scope.definition.inputSystems.length; i++) {
-								$scope.model[$scope.definition.inputSystems[i]] = "";
+								if (!$scope.model[$scope.definition.inputSystems[i]]) {
+									$scope.model[$scope.definition.inputSystems[i]] = {};
+								};
+								$scope.model[$scope.definition.inputSystems[i]].value = "";
 							}
 						}
 					}
