@@ -38,6 +38,7 @@ angular.module('palaso.ui.dc.comments', ['palaso.ui.dc.entry', 'angularjs-gravat
 				comment.dateModified = new Date(); // Duplicate of code in makeValidComment(); decide later which one to use
 				comment.regarding = $scope.dcModel.value;
 				comment.content = newCommentContent;
+				comment.subcomments.push($scope.makeValidComment());
 				$scope.dcModel.comments.push(comment);
 			};
 		}],
