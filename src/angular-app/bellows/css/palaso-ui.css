@@ -230,14 +230,6 @@ form.dc-multitext .wsid {
 	
 }
 
-.dc-rendered.word {
-	font-weight: bold;
-}
-
-.dc-rendered.definition {
-	/* CSS for definition can go here, if needed */
-}
-
 .deleteX {
 	margin-right: 20px;
 }
