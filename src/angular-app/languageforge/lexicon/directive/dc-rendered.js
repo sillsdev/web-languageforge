@@ -44,7 +44,7 @@ angular.module('palaso.ui.dc.rendered', [])
 							defParts.push(nextNum.toString() + ") ");
 							nextNum++;
 						};
-						if (sense.partOfSpeech.value) {
+						if (sense.partOfSpeech) {
 							var abbrev = $scope.posAbbrevs[sense.partOfSpeech.value];
 							defParts.push(abbrev ? (abbrev + ' ') : '');
 						};
