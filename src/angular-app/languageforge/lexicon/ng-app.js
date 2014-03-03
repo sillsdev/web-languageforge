@@ -15,25 +15,13 @@ angular.module('lexicon',
 	.config(['$routeProvider', function($routeProvider) {
 		// the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
 	    $routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } });
-		$routeProvider.when(
-				'/p/:projectId/view',
-				{
-					templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html',
-				}
-			);
-		$routeProvider.when(
-				// dashboard
-				'/p/:projectId',
-				{
-					templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html',
-				}
-			);
-		$routeProvider.when(
-				'/p/:projectId/gather-words',
-				{
-					templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html',
-				}
-			);
+
+		$routeProvider.when( '/p/:projectId', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
+		$routeProvider.when( '/p/:projectId/view', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
+		$routeProvider.when( '/p/:projectId/gatherTexts', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
+		$routeProvider.when( '/p/:projectId/review', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
+		$routeProvider.when( '/p/:projectId/wordlist', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
+
 		$routeProvider.when(
 				'/p/:projectId/dbe',
 				{
@@ -67,11 +55,6 @@ angular.module('lexicon',
 			);
 	    $routeProvider.otherwise({redirectTo: '/projects'});
 	}])
-	.controller('MainCtrl', ['$scope', '$route', '$routeParams', '$location', function($scope, $route, $routeParams, $location) {
-		$scope.route = $route;
-		$scope.location = $location;
-		$scope.routeParams = $routeParams;
-	}])
 	.controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService', function($scope, $rootScope, breadcrumbService) {
 		$scope.idmap = breadcrumbService.idmap;
 		$rootScope.$on('$routeChangeSuccess', function(event, current) {
@@ -81,13 +64,13 @@ angular.module('lexicon',
 			$scope.breadcrumbs = breadcrumbService.read();
 		}, true);
 	}])
-	.controller('LexiconMenuCtrl', ['$scope', '$timeout', 'lexEntryService', 
-	                                function($scope, $timeout, lexEntryService) {
+	.controller('LexiconMenuCtrl', ['$scope', '$timeout', 'lexProjectService', 
+	                                function($scope, $timeout, lexProjectService) {
 		$scope.noSubmenuId = 0;
 		$scope.gatherSubmenuId = 1;
 		$scope.addSubmenuId = 2;
 		$scope.visibleSubmenu = $scope.noSubmenuId;
-
+		
 		$scope.showSubmenu = function(submenuId) {
 			$scope.visibleSubmenu = submenuId;
 		};
@@ -127,13 +110,13 @@ angular.module('lexicon',
 			};
 			return name;
 		};
-		$scope.getProjectConfig = function(projectId) {
-			lexEntryService.readProjectSettings(projectId, function(result) {
-				if (result.ok) {
-					$scope.config = result.data.config;
-				};
-			});
-		};
-		$scope.getProjectConfig('sampleProject');
+		
+		$scope.projectId = lexProjectService.getProjectId();
+		
+		lexProjectService.getSettings(function(result) {
+			if (result.ok) {
+				$scope.config = result.data;
+			}
+		});
 	}])
 	;

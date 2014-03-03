@@ -17,6 +17,7 @@ class LexiconSemdomTask extends LexiconTask {
 		$this->visibleFields['partOfSpeech'] = true;
 		$this->visibleFields['example'] = true;
 		$this->visibleFields['translation'] = true;
+		parent::__construct();
 	}
 	
 	/**

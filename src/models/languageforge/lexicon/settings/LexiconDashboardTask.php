@@ -8,6 +8,7 @@ class LexiconDashboardTask extends LexiconTask {
 
 	public function __construct() {
 		$this->type = LexiconTask::DASHBOARD;
+		parent::__construct();
 	}
 	
 	/**
