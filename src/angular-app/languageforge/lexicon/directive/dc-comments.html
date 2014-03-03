@@ -1,0 +1,30 @@
+<div class="dc-comments" > <!-- ng-show="config.comments" -->
+	<!-- ng-repeat over existing comments, nested comments (Design note: two different things? Or the same thing? I'm inclined to say same thing.) -->
+	<div class="comment" data-ng-repeat="comment in dcModel.comments">
+ 		<div class="scorecontrol">
+			<div class="scorearrow"><a href="#"><i class="icon-caret-up icon-large"></i></a></div>
+			<div class="score">{{comment.score}}</div>
+			<div class="scorearrow"><a href="#"><i class="icon-caret-down icon-large"></i></a></div>
+		</div>
+		<div class="all-but-score">
+			<div class="comment-date-and-status">
+				<span class="comment-date">{{comment.dateModified | date:'yyyy-MM-dd'}}</span>
+				Comment status <span class="comment-status">{{comment.status}}</span>
+				<!-- TODO: add CSS to give a specific width to the two spans so they will always line up vertically with each other -->
+			</div>
+			<div class="avatar-and-content">
+				<div class="avatar">
+					<gravatar-image gravatar-email="comment.userRef.email" gravatar-size="48"></gravatar-image>
+					<div>{{comment.userRef.username}}</div>
+				</div>
+				<div class="comment-content">{{comment.content}}</div>
+			</div>
+		</div>
+	</div>
+	<div class="new-comment-form">
+			<div>New comment</div>
+			<div><textarea data-ng-model="newComment"></textarea></div>
+			<div><button type="submit" class="btn-sm btn-success" data-ng-click="submitComment(newComment)">Post New Comment</button></div>
+	</div>
+	<pre>Model: {{dcModel}}</pre>
+</div>

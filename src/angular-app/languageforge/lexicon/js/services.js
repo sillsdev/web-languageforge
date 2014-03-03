@@ -158,14 +158,33 @@ angular.module('lexicon.services', ['jsonRpc'])
 							"th": {
 								value: "ข้าวไก่ทอด",
 								comments: [{
-									userRef: "Robin", // Actually a user object
+									userRef: {username: "Robin M.", email: "Robin_Munn@sil.org"},
 									dateModified: "2014-03-03", // Actually a Javascript Date object
 									regarding: "ข้าวไก่ทอด",
-									content: "I can't read Thai",
+									content: "I can't read Thai.",
 									score: 0,
 									subcomments: [], // subcomments will have userRef, content, dateModified. No regarding, no score, no subcomments.
-									status: "Resolved", // Possible values may change, but for now: "Resolved", "To Do", "Reviewed". One value only -- these are not tags.
-									}, /* ... More comments go here ... */]},
+									status: "To Do", // Possible values may change, but for now: "Resolved", "To Do", "Reviewed". One value only -- these are not tags.
+									},
+									{
+										userRef: {username: "Mike C.", email: "Michael_Cochran@sil.org"},
+										dateModified: "2014-03-03", // Actually a Javascript Date object
+										regarding: "ข้าวไก่ทอด",
+										content: "I can.",
+										score: 0,
+										subcomments: [], // subcomments will have userRef, content, dateModified. No regarding, no score, no subcomments.
+										status: "Reviewed", // Possible values may change, but for now: "Resolved", "To Do", "Reviewed". One value only -- these are not tags.
+									},
+									{
+										userRef: {username: "Ira H.", email: "test@superexpert.com"},
+										dateModified: "2014-03-03", // Actually a Javascript Date object
+										regarding: "ข้าวไก่ทอด",
+										content: "So can I.",
+										score: 0,
+										subcomments: [], // subcomments will have userRef, content, dateModified. No regarding, no score, no subcomments.
+										status: "Resolved", // Possible values may change, but for now: "Resolved", "To Do", "Reviewed". One value only -- these are not tags.
+									},
+								]},
 							"en": {
 								value: "pieces of fried chicken served over rice, usually with a sweet and spicy sauce on the side",
 								comments: [],  // No comments yet: empty list

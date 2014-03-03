@@ -1,5 +1,5 @@
-angular.module('palaso.ui.dc.optionlist', [])
-  // Palaso UI Multitext
+angular.module('palaso.ui.dc.optionlist', ['palaso.ui.dc.comments'])
+  // Palaso UI Optionlist
   .directive('dcOptionlist', [function() {
 		return {
 			restrict : 'E',
