@@ -91,8 +91,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		for (var lang in entry.senses[0].definition) {
 			if (!meaning) { meaning = entry.senses[0].definition[lang]; };
 		};
-		if (!meaning) { meaning = "[No definition]"; }
-		return meaning;
+		if (!meaning) { meaning = {value: "[No definition]"}; }
+		return meaning.value;
 	};
 	
 	$scope.setCurrentEntry = function(entry) {
@@ -137,7 +137,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		if (entry.lexeme && $scope.config && $scope.config.entry) {
 			var lexemeInputSystem = $scope.config.entry.fields.lexeme.inputSystems[0];
 			if (entry.lexeme[lexemeInputSystem]) {
-				title = entry.lexeme[lexemeInputSystem];
+				title = entry.lexeme[lexemeInputSystem].value;
 			}
 		}
 		return title;

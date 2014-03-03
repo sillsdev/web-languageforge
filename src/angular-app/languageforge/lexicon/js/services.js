@@ -152,7 +152,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 
 		var sampleData = [
 				{
-					"lexeme": {"th-fonipa-x-etic": "khâaw kài thɔ̂ɔt"},
+					"lexeme": {"th-fonipa-x-etic": {value: "khâaw kài thɔ̂ɔt"}},
 					"senses": [{
 						"definition": {
 							"th": {
@@ -176,100 +176,100 @@ angular.module('lexicon.services', ['jsonRpc'])
 				},
 
 				{
-					"lexeme": {"th-fonipa-x-etic": "krapâw mǔu"},
+					"lexeme": {"th-fonipa-x-etic": {value: "krapâw mǔu"}},
 					"senses": [{
 						"definition": {
-							"th": "กระเพาหมู",
-							"en": "stir fried basil and hot peppers with ground pork over rice",
+							"th": {value: "กระเพาหมู"},
+							"en": {value: "stir fried basil and hot peppers with ground pork over rice"},
 						}
 					}],
 				},
 
 				{
-					"lexeme": {"th-fonipa-x-etic": "phàt siiʔ ǐw mǔu"},
+					"lexeme": {"th-fonipa-x-etic": {value: "phàt siiʔ ǐw mǔu"}},
 					"senses": [{
 						"definition": {
-							"th": "ผัดชีอิ้วหมู",
-							"en": "Noodles fried in soy sauce with pork",
+							"th": {value: "ผัดชีอิ้วหมู"},
+							"en": {value: "Noodles fried in soy sauce with pork"},
 					}}],
 				},
 
 				{
-					"lexeme": {"th-fonipa-x-etic": "kài phàt métmàmùaŋ"},
+					"lexeme": {"th-fonipa-x-etic": {value: "kài phàt métmàmùaŋ"}},
 					"senses": [{
 						"definition": {
-							"th": "ไก่ผัดเม็ดมะม่วง",
-							"en": "Stir fried chicken with cashews",
+							"th": {value: "ไก่ผัดเม็ดมะม่วง"},
+							"en": {value: "Stir fried chicken with cashews"},
 						}
 					}],
 				},
 
 				{
-					"lexeme": {"th-fonipa-x-etic": "cèt khǔnsʉ̀k phàt phrìk phǎw"},
+					"lexeme": {"th-fonipa-x-etic": {value: "cèt khǔnsʉ̀k phàt phrìk phǎw"}},
 					"senses": [{
 						"definition": {
-							"th": "เจ็ดขุนศึกผัดผริกเผา",
-							"en": "seven kinds of meat fried and seared with peppers",
+							"th": {value: "เจ็ดขุนศึกผัดผริกเผา"},
+							"en": {value: "seven kinds of meat fried and seared with peppers"},
 						}
 					}],
 				},
 
 				{
-					"lexeme": {"th-fonipa-x-etic": "phàt prîaw wǎan kài"},
+					"lexeme": {"th-fonipa-x-etic": {value: "phàt prîaw wǎan kài"}},
 					"senses": [{
 						"definition": {
-							"th": "ผัดเปรี้ยวหวานหมู",
-							"en": "Sweet and sour chicken",
+							"th": {value: "ผัดเปรี้ยวหวานหมู"},
+							"en": {value: "Sweet and sour chicken"},
 						}
 					}],
 				},
 
 				{
-					"lexeme": {"th-fonipa-x-etic": "phàt thai kûŋ"},
+					"lexeme": {"th-fonipa-x-etic": {value: "phàt thai kûŋ"}},
 					"senses": [{
 						"definition": {
-							"th": "ผักไทกุ้ง",
-							"en": "Fried noodles mixed or wrapped with egg and bamboo shoots topped with shrimp",
+							"th": {value: "ผักไทกุ้ง"},
+							"en": {value: "Fried noodles mixed or wrapped with egg and bamboo shoots topped with shrimp"},
 						}
 					}],
 				},
 
 				{
-					"lexeme": {"th-fonipa-x-etic": "khâaw khài ciaw mǔu yɔ̂ɔ"},
+					"lexeme": {"th-fonipa-x-etic": {value: "khâaw khài ciaw mǔu yɔ̂ɔ"}},
 					"senses": [{
 						"definition": {
-							"th": "ข้าวไข่เจียหมูยอ",
-							"en": "fried omelette with pork over rice",
+							"th": {value: "ข้าวไข่เจียหมูยอ"},
+							"en": {value: "fried omelette with pork over rice"},
 						}
 					}],
 				},
 
 				{
-					"lexeme": {"th-fonipa-x-etic": "khâaw phàt mǔu"},
+					"lexeme": {"th-fonipa-x-etic": {value: "khâaw phàt mǔu"}},
 					"senses": [{
 						"definition": {
-							"th": "ข้าวผัดหมู",
-							"en": "Fried rice with minced pork",
+							"th": {value: "ข้าวผัดหมู"},
+							"en": {value: "Fried rice with minced pork"},
 						}
 					}],
 				},
 
 				{
-					"lexeme": {"th-fonipa-x-etic": "nɔ̀máay fàràŋ phàt kûŋ"},
+					"lexeme": {"th-fonipa-x-etic": {value: "nɔ̀máay fàràŋ phàt kûŋ"}},
 					"senses": [{
 						"definition": {
-							"th": "หน่อไม้ฝรั่งผัดกุ้ง",
-							"en": "Sauteed asparagus with shrimp over rice",
+							"th": {value: "หน่อไม้ฝรั่งผัดกุ้ง"},
+							"en": {value: "Sauteed asparagus with shrimp over rice"},
 						}
 					}],
 				},
 
 				{
-					"lexeme": {"th-fonipa-x-etic": "kài sòt kràthiam"},
+					"lexeme": {"th-fonipa-x-etic": {value: "kài sòt kràthiam"}},
 					"senses": [{
 						"definition": {
-							"th": "ไก่สกกระเกียม",
-							"en": "stir fried garlic chicken over rice",
+							"th": {value: "ไก่สกกระเกียม"},
+							"en": {value: "stir fried garlic chicken over rice"},
 						}
 					}],
 				},
@@ -415,7 +415,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			var list = [];
 			var inputSystem = _config.entry.fields.lexeme.inputSystems[0];
 			serverIter(function(i,e) {
-				var title = e.lexeme[inputSystem];
+				var title = e.lexeme[inputSystem].value;
 				if (!title) {
 					title = '[new word]';
 				}

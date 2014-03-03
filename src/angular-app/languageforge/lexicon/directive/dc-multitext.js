@@ -15,7 +15,7 @@ angular.module('palaso.ui.dc.multitext', ['lexicon.services'])
 						$scope.model = {};
 						if ($scope.definition && $scope.definition.inputSystems) {
 							for (var i=0; i<$scope.definition.inputSystems.length; i++) {
-								$scope.model[$scope.definition.inputSystems[i]] = "";
+								$scope.model[$scope.definition.inputSystems[i]] = {value: ""};
 							}
 						}
 					}
