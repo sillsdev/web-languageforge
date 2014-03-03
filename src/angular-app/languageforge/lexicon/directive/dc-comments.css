@@ -1,0 +1,65 @@
+@CHARSET "UTF-8";
+
+div.dc-comments {
+	/* background-color: #ffedd4; */
+	background-color: #ffeedd;
+	/* min-height: 100px; */
+	width: 100%;
+	line-height: 20px; /* Override the line-height setting from ng-repeat */
+}
+
+.dc-comments .comment {
+	display: flex;
+}
+
+.dc-comments .scorecontrol {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 1em 0.5em 0em 0.5em; /* Top should match line-height of date/status line */
+}
+
+.dc-comments .scorecontrol .scorearrow a {
+	display: inline-block;
+}
+
+.dc-comments .scorecontrol .score {
+	width: 2em;
+	overflow: hidden;
+}
+
+.dc-comments .all-but-score {
+	/* No styles here at the moment */
+}
+
+.dc-comments .comment-date-and-status {
+	font-size: 85%;
+}
+
+.dc-comments .comment-date {
+	color: red;
+	display: inline-block; /* So width will be respected */
+	width: 12em;
+}
+
+.dc-comments .comment-status {
+	color: red;
+}
+
+.dc-comments .avatar-and-content {
+	display: flex;
+	flex-direction: row;
+}
+
+.dc-comments .avatar-and-content .avatar {
+	/* Nothing yet */
+}
+
+.dc-comments .avatar-and-content .comment-content {
+	/* Nothing yet */
+}
+
+.dc-comments .new-comment-form {
+	display: flex;
+	flex-direction: column;
+}

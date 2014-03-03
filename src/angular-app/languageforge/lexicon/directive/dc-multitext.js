@@ -1,4 +1,4 @@
-angular.module('palaso.ui.dc.multitext', ['lexicon.services'])
+angular.module('palaso.ui.dc.multitext', ['lexicon.services', 'palaso.ui.dc.comments'])
   // Palaso UI Multitext
   .directive('dcMultitext', [function() {
 		return {
