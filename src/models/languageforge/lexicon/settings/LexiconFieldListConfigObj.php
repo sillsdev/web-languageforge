@@ -12,7 +12,14 @@ class LexiconFieldListConfigObj extends LexiconConfigObj {
 		$this->fieldOrder = new ArrayOf();
 		$this->fields = new MapOf(
 			function($data) {
-				return new LexiconConfigObj();
+				switch ($data['type']) {
+					case LexiconConfigObj::FIELDLIST:
+						return new LexiconFieldListConfigObj();
+					case LexiconConfigObj::MULTITEXT:
+						return new LexiconMultitextConfigObj();
+					case LexiconConfigObj::OPTIONLIST:
+						return new LexiconOptionlistConfigObj();
+				}
 			}
 		);
 	}

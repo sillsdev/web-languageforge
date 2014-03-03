@@ -7,6 +7,7 @@ use models\mapper\ArrayOf;
 use models\mapper\MapOf;
 
 class LexiconMultitextConfigObj extends LexiconConfigObj {
+	
 	public function __construct() {
 		$this->type = LexiconConfigObj::MULTITEXT;
 		
