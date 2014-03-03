@@ -89,7 +89,6 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	};
 
 	$scope.settingsApply = function() {
-//		console.log("settingsApply");
 		lexService.updateProjectSettings($scope.project.id, $scope.config, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "Project settings updated successfully");
@@ -102,33 +101,7 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	$scope.queryProjectSettings();
 	
 // InputSystemsSettingsCtrl
-	$scope.show = {
-		'newLanguage': false
-	};
-	$scope.newCode = '';
-	
-	$scope.openNewLanguage = function() {
-		console.log("openNewLanguage");
-		var modalInstance = $modal.open({
-			templateUrl: 'selectNewLanguage.html',
-			controller: ModalInstanceCtrl,
-			resolve: {
-				items: function () {
-					return $scope.items;
-				}
-			}
-		});
-		
-		modalInstance.result.then(function () {
-			console.log("Modal OK");
-		}, function () {
-			console.log('Modal dismissed at: ' + new Date());
-		});
-
-	};
-
 	$scope.addInputSystem = function(code, languageName, special) {
-//		console.log("addInputSystem ", $scope.inputSystems);
 		var tag = 'xxxx';
 		var script = '';
 		$scope.inputSystems[tag] = {};
@@ -156,18 +129,36 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		$scope.inputSystems[tag].region = '';
 		$scope.inputSystems[tag].variant = '';
 		$scope.currentInputSystemTag = tag;
-		$scope.show.newLanguage = false;
 	};
 	$scope.removeInputSystem = function(currentInputSystemTag) {
-//		console.log("removeInputSystem");
 		delete $scope.inputSystems[currentInputSystemTag];
 		$scope.inputSystemsList = $scope.sortInputSystemsList();
 		// select the first items
 		$scope.selectInputSystem($scope.inputSystemsList[0].tag);
 	};
 	
+	$scope.openNewLanguageModal = function() {
+		var modalInstance = $modal.open({
+			templateUrl: '/angular-app/languageforge/lexicon/views/selectNewLanguage.html',
+			controller: function($scope, $modalInstance) {
+				$scope.selected = {
+					code: '',
+					language: {}
+				};
+				$scope.add = function () {
+					$modalInstance.close($scope.selected);
+				};
+				
+			}
+		});
+		
+		modalInstance.result.then(function (selected) {
+			$scope.addInputSystem(selected.code, selected.language.name, $scope.selects.special.optionsOrder[0]);
+		});
+
+	};
+	
 	$scope.$watchCollection('inputSystems[currentInputSystemTag]', function(newValue) {
-//		console.log("current input system watch: ", newValue);
 		if (newValue != undefined) {
 			var tag = $scope.currentInputSystemTag;
 			var newInputSystemTag = $scope.inputSystems[tag].code;
@@ -256,14 +247,12 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 	};
 	
 	$scope.$watch('config', function (newValue) {
-//		console.log("config Fields watch ", newValue);
 		if (newValue != undefined) {
 			// when config is updated select the first Feild in the list
 			$scope.selectField('lexeme');
 		}
 	});
 	$scope.$watchCollection('currentField.inputSystems.selecteds', function(newValue) {
-//		console.log("currentField.inputSystems.selecteds watch ", newValue);
 		if (newValue != undefined) {
 			$scope.fieldConfig[$scope.currentField.name].inputSystems = [];
 			angular.forEach($scope.currentField.inputSystems.selecteds, function(selected, tag) {
@@ -306,12 +295,5 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		$scope.currentTaskName = taskName;
 	};
 
-}])
-.controller('ModalInstanceCtrl', ['$scope', '$modalInstance', 
-                                  function($scope, $modalInstance) {
-	$scope.ok = function () {
-		$modalInstance.close();
-	};
-	
 }])
 ;
