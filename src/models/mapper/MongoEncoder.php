@@ -85,10 +85,7 @@ class MongoEncoder {
 		$result = array();
 		foreach ($model as $item) {
 			if (is_object($item)) {
-				$className = get_class($item);
-				$itemResult = $this->_encode($item, true);
-				$itemResult['__className'] = $className;
-				$result[] = $itemResult;
+				$result[] = $this->_encode($item, true);
 			} else {
 				// Data type protection
 				if (is_array($item)) {
@@ -111,10 +108,7 @@ class MongoEncoder {
 		$count = 0;
 		foreach ($model as $key => $item) {
 			if (is_object($item)) {
-				$className = get_class($item);
-				$itemResult = $this->_encode($item, false);
-				$itemResult['__className'] = $className;
-				$result[$key] = $itemResult;
+				$result[$key] = $this->_encode($item, false);
 			} else {
 				// Data type protection
 				if (is_array($item)) {
