@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
-.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$filter', 
-                             function($scope, userService, ss, notice, lexService, $filter) {
+.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexEntryService', '$filter', '$modal', 
+                             function($scope, userService, ss, notice, lexService, $filter, $modal) {
 	var projectId = $scope.routeParams.projectId;
 	$scope.project = {
 		'id': projectId
@@ -106,6 +106,26 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		'newLanguage': false
 	};
 	$scope.newCode = '';
+	
+	$scope.openNewLanguage = function() {
+		console.log("openNewLanguage");
+		var modalInstance = $modal.open({
+			templateUrl: 'selectNewLanguage.html',
+			controller: ModalInstanceCtrl,
+			resolve: {
+				items: function () {
+					return $scope.items;
+				}
+			}
+		});
+		
+		modalInstance.result.then(function () {
+			console.log("Modal OK");
+		}, function () {
+			console.log('Modal dismissed at: ' + new Date());
+		});
+
+	};
 
 	$scope.addInputSystem = function(code, languageName, special) {
 //		console.log("addInputSystem ", $scope.inputSystems);
@@ -286,5 +306,12 @@ angular.module('settings', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'pala
 		$scope.currentTaskName = taskName;
 	};
 
+}])
+.controller('ModalInstanceCtrl', ['$scope', '$modalInstance', 
+                                  function($scope, $modalInstance) {
+	$scope.ok = function () {
+		$modalInstance.close();
+	};
+	
 }])
 ;
