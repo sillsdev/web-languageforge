@@ -113,10 +113,13 @@ angular.module('lexicon',
 		
 		$scope.projectId = lexProjectService.getProjectId();
 		
-		lexProjectService.getSettings(function(result) {
-			if (result.ok) {
-				$scope.config = result.data;
-			}
+		lexProjectService.settingsChangeNotify(function() {
+			lexProjectService.getSettings(function(result) {
+				if (result.ok) {
+					$scope.config = result.data;
+				}
+			});
 		});
+		
 	}])
 	;
