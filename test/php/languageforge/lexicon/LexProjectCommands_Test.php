@@ -46,19 +46,16 @@ class TestLexProjectCommands extends UnitTestCase {
 		LexProjectCommands::updateSettings($projectId, $settingsDto);
 		
 		$project2 = new LexiconProjectModel($projectId);
-		var_dump($project2->inputSystems);
 		
 		// test for a few default values
 		$this->assertEqual($project2->inputSystems['en']->tag, 'en');
 		$this->assertTrue($project2->settings->tasks['dbe']->visible);
 		$this->assertEqual($project2->settings->entry->fields['lexeme']->label, 'Word');
-		/*
 		
 		// test for updated values
 		$this->assertFalse($project2->settings->tasks['addMeanings']->visible);
 		$this->assertEqual($project2->settings->entry->fields['lexeme']->inputSystems[0], 'my');
 		$this->assertEqual($project2->settings->entry->fields['lexeme']->inputSystems[1], 'th');
-		*/
 	}
 }
 

@@ -10,6 +10,7 @@ class LexiconSemdomTask extends LexiconTask {
 	function __construct() {
 		$this->language = 'en';
 		$this->visibleFields = new MapOf();
+		$this->type = LexiconTask::SEMDOM;
 		
 		// default values
 		$this->visibleFields['definition'] = true;
