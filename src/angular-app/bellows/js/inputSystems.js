@@ -2,7 +2,7 @@
 
 // input systems common functions
 var InputSystems = {
-	'languages': function(debug) {
+	'languages': function(dataType) {
 		var unlisted = {
 			'name': 'Unlisted Language',
 			'code': {
@@ -13,9 +13,12 @@ var InputSystems = {
 		};
 		
 		var languages = [];
-		languages = _inputSystems_languages;
-		if (angular.isDefined(debug) && debug == 'debug') {
-			languages = _inputSystems_languagesSmall;
+		switch(dataType) {
+			case 'debug':
+				languages = _inputSystems_languagesSmall;
+				break;
+			default:
+				languages = _inputSystems_languages;
 		}
 		
 		var unlistedExists = false;
