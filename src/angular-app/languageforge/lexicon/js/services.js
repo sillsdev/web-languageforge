@@ -155,9 +155,23 @@ angular.module('lexicon.services', ['jsonRpc'])
 					"lexeme": {"th-fonipa-x-etic": "khâaw kài thɔ̂ɔt"},
 					"senses": [{
 						"definition": {
-							"th": "ข้าวไก่ทอด",
-							"en": "pieces of fried chicken served over rice, usually with a sweet and spicy sauce on the side",
-						}
+							"th": {
+								value: "ข้าวไก่ทอด",
+								comments: [{
+									userRef: "Robin", // Actually a user object
+									dateModified: "2014-03-03", // Actually a Javascript Date object
+									regarding: "ข้าวไก่ทอด",
+									content: "I can't read Thai",
+									score: 0,
+									subcomments: [], // subcomments will have userRef, content, dateModified. No regarding, no score, no subcomments.
+									status: "Resolved", // Possible values may change, but for now: "Resolved", "To Do", "Reviewed". One value only -- these are not tags.
+									}, /* ... More comments go here ... */]},
+							"en": {
+								value: "pieces of fried chicken served over rice, usually with a sweet and spicy sauce on the side",
+								comments: [],  // No comments yet: empty list
+							}
+						},
+						"partOfSpeech": {"value": "noun", "comments": []},
 					}],
 				},
 
