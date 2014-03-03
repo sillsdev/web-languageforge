@@ -11,6 +11,7 @@ window.session = <?php echo $jsonSession; ?>;
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-route.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js"></script>
 	<script src="/js/lib/angular-file-upload.min.js"></script>
+	<script src="/js/lib/angularjs-gravatardirective.min.js"></script>
 	<!-- ng-ui-*.js included in combined scriptureforge-min.js script -->
 <?php else: ?>
 	<script src="/js/lib/angular_stable_1.2.4/angular.js"></script>
@@ -18,6 +19,7 @@ window.session = <?php echo $jsonSession; ?>;
 	<script src="/js/lib/angular_stable_1.2.4/angular-route.js"></script>
 	<script src="/js/lib/angular_stable_1.2.4/angular-sanitize.js"></script>
 	<script src="/js/lib/angular-file-upload.js"></script>
+	<script src="/js/lib/angularjs-gravatardirective.js"></script>
 	<script src="/js/lib/ng-ui-bootstrap-tpls-0.8.0.js"></script>
 	<script src="/js/lib/ng-ui-utils-validate.js"></script>
 <?php endif; ?>
