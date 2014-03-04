@@ -15,7 +15,7 @@ angular.module('palaso.ui.language', [])
 		controller: ['$scope', '$filter', function($scope, $filter) {
 			// TODO Enhance. Could use infinite scrolling since search can return large results. See example here http://jsfiddle.net/vojtajina/U7Bz9/. Example doesn't remove top data when scrolling down. IJH 2014-02
 			
-			$scope.languages = InputSystems.languages('debug');
+			$scope.languages = InputSystems.languages();
 			
 			$scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
 			$scope.search = function() {
