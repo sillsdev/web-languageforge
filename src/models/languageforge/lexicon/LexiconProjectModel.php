@@ -20,6 +20,7 @@ class LexiconProjectModel extends LfProjectModel {
 
 		// default values
 		$this->inputSystems['en'] = new InputSystem('en', 'English', 'en');
+		$this->inputSystems['th'] = new InputSystem('th', 'Thai', 'th');
 
 		parent::__construct($id);
 	}
