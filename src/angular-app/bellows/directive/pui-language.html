@@ -9,7 +9,7 @@
 </form>
 	
 <div>
-	<table class="table table-condensed table-hover" style="height: 300px">
+	<table class="table table-condensed table-hover">
 		<thead>
 			<tr>
 				<th>Name</th><th>Code</th><th>Country</th><th>Other Names</th>
@@ -21,8 +21,8 @@
 				data-ng-repeat="language in languages | filter:filterText track by language.code.three">
 				<td class="primary"><div>{{language.name}}</div></td>
 				<td>{{(language.code.two) ? language.code.two : language.code.three}}</td>
-				<td class="container"><div>{{language.country.join(", ")}}</div></td>
-				<td class="container"><div>{{language.altNames.join(", ")}}</div></td>
+				<td class="container" title="{{language.country.join(', ')}}"><div>{{language.country.join(', ')}}</div></td>
+				<td class="container" title="{{language.altNames.join(', ')}}"><div>{{language.altNames.join(', ')}}</div></td>
 			</tr>
 		</tbody>
 	</table>

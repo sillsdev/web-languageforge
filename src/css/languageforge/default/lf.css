@@ -874,8 +874,13 @@ dl#fields {
 	margin-top: 5px;
 }
 
-*.indent1 {
+.indent1 {
 	padding-left: 20px;
+}
+
+.modal {
+	width: 940px;
+	margin-left: -470px;
 }
 
 td.primary > div { width: 200px; height: 20px; }
