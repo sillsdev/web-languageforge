@@ -187,32 +187,33 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 	$scope.$watchCollection('inputSystems[currentInputSystemTag]', function(newValue) {
 		if (newValue != undefined) {
 			var tag = $scope.currentInputSystemTag;
-			var newInputSystemTag = $scope.inputSystems[tag].code;
+			var newTag = $scope.inputSystems[tag].code;
 			switch($scope.inputSystems[tag].special) {
 				case $scope.selects.special.optionsOrder[1]:		// IPA transcription
-					newInputSystemTag += '-fonipa';
-					newInputSystemTag += ($scope.inputSystems[tag].purpose) ? '-x-' + $scope.inputSystems[tag].purpose : '';
+					newTag += '-fonipa';
+					newTag += ($scope.inputSystems[tag].purpose) ? '-x-' + $scope.inputSystems[tag].purpose : '';
 					break;
 				case $scope.selects.special.optionsOrder[2]:		// Voice
-					newInputSystemTag += '-Zxxx-x-audio';
+					newTag += '-Zxxx-x-audio';
 					break;
 				case $scope.selects.special.optionsOrder[3]:		// Script / Region / Variant
 					if (! $scope.inputSystems[tag].script && ! $scope.inputSystems[tag].region)  {
 						$scope.inputSystems[tag].script = 'unspecified';
 					}
-					newInputSystemTag += ($scope.inputSystems[tag].script) ? '-' + $scope.inputSystems[tag].script : '';
-					newInputSystemTag += ($scope.inputSystems[tag].region) ? '-' + $scope.inputSystems[tag].region : '';
-					newInputSystemTag += ($scope.inputSystems[tag].variant) ? '-x-' + $scope.inputSystems[tag].variant : '';
+					newTag += ($scope.inputSystems[tag].script) ? '-' + $scope.inputSystems[tag].script : '';
+					newTag += ($scope.inputSystems[tag].region) ? '-' + $scope.inputSystems[tag].region : '';
+					newTag += ($scope.inputSystems[tag].variant) ? '-x-' + $scope.inputSystems[tag].variant : '';
 					break;
 			}
-			$scope.inputSystems[tag].name = InputSystems.getName($scope.inputSystems[tag].languageName, newInputSystemTag);
-			if (newInputSystemTag != tag) {
-				if (! (newInputSystemTag in $scope.inputSystems)) {
-					$scope.inputSystems[tag].tag = newInputSystemTag;
-					$scope.inputSystems[newInputSystemTag] = $scope.inputSystems[tag];
+			$scope.inputSystems[tag].name = InputSystems.getName($scope.inputSystems[tag].languageName, newTag);
+			if (tag != newTag) {
+				if (! (newTag in $scope.inputSystems)) {
+					$scope.inputSystems[tag].tag = newTag;
+					$scope.inputSystems[newTag] = $scope.inputSystems[tag];
+					$scope.settingsForm.$setDirty();
 				}
 				delete $scope.inputSystems[tag];
-				$scope.selectInputSystem(newInputSystemTag);
+				$scope.selectInputSystem(newTag);
 			}
 			$scope.inputSystemsList = $scope.sortInputSystemsList();
 		}
