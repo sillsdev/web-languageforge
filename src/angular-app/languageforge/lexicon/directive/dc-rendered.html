@@ -1,5 +1,5 @@
 <div class="dc-rendered" ng-hide="hideIfEmpty && !definition.label">
 	<span class="dc-rendered word">{{definition.label}}</span>
-	<span class="dc-rendered definition" ng-repeat="sense in definition.senses">{{sense}}</span>
+	<span class="dc-rendered definition" ng-repeat="sense in definition.senses"><span class="number">{{sense.num}}</span><span class="partOfSpeech">{{sense.pos}}</span><span class="definition-content">{{sense.defcontent}}</span></span>
 	<hr />
 </div>
