@@ -18,7 +18,12 @@
 					<div>{{comment.userRef.username}}</div>
 				</div>
 				<div class="comment-content">{{comment.content}}</div>
-				<div class="comment-replylink"><a href="#">Reply</a></div>
+				<div class="comment-replylink"><a ng-click="replyBoxVisible = !replyBoxVisible">Reply</a></div> <!-- TODO: Change "x = !x" to a function call -->
+			</div>
+			<div collapse="!replyBoxVisible">
+				<div>Reply to the above comment</div>
+				<div><textarea data-ng-model="newSubcomment"></textarea></div>
+				<div><button type="submit" class="btn-sm btn-info" data-ng-click="submitSubcomment(newSubcomment, comment)">Post Reply</button></div>
 			</div>
 			<table class="subcomments" data-ng-if="comment.subcomments.length">
 				<tr data-ng-repeat="subcomment in comment.subcomments">
@@ -29,7 +34,7 @@
 			</table>
 		</div>
 	</div>
-	<div class="new-comment-form">
+	<div class="new-comment-form" collapse="replyBoxVisible">
 			<div>New comment</div>
 			<div><textarea data-ng-model="newComment"></textarea></div>
 			<div><button type="submit" class="btn-sm btn-success" data-ng-click="submitComment(newComment)">Post New Comment</button></div>
