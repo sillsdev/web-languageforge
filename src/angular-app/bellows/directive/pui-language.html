@@ -1,15 +1,15 @@
-<div>
-	<form name="languageSearch">
-		<input width="4" placeholder="search" type="text" 
-			class="input-medium search-query" data-ng-model="searchText" />
-		<button class="btn btn-success" data-ng-click="search()" data-ng-show="searchText && searchText != ''">
-			<i class="icon-search"></i>Search</button>
-		<span style="margin-left:10px" title="Clear Search" data-ng-click="clearSearch()" 
-			data-ng-show="searchText && searchText != ''">
-			<i class="icon-remove" style="color:black; cursor: pointer"></i></span>
-	</form>
+<form name="languageSearch">
+	<input width="4" placeholder="search" type="text" 
+		class="input-medium search-query" data-ng-model="searchText" />
+	<button class="btn btn-success" data-ng-click="search()" data-ng-show="searchText && searchText != ''">
+		<i class="icon-search"></i>Search</button>
+	<span style="margin-left:10px" title="Clear Search" data-ng-click="clearSearch()" 
+		data-ng-show="searchText && searchText != ''">
+		<i class="icon-remove" style="color:black; cursor: pointer"></i></span>
+</form>
 	
-	<table class="table table-condensed table-hover">
+<div>
+	<table class="table table-condensed table-hover" style="height: 300px">
 		<thead>
 			<tr>
 				<th>Name</th><th>Code</th><th>Country</th><th>Other Names</th>
@@ -19,20 +19,20 @@
 			<tr data-ng-class="{info: currentCode == language.code.three}" class="animate-repeat" 
 				data-ng-click="selectLanguage(language)" 
 				data-ng-repeat="language in languages | filter:filterText track by language.code.three">
-				<td>{{language.name}}</td>
+				<td class="primary"><div>{{language.name}}</div></td>
 				<td>{{(language.code.two) ? language.code.two : language.code.three}}</td>
-				<td>{{language.country.join(", ")}}</td>
-				<td>{{language.altNames.join(", ")}}</td>
+				<td class="container"><div>{{language.country.join(", ")}}</div></td>
+				<td class="container"><div>{{language.altNames.join(", ")}}</div></td>
 			</tr>
 		</tbody>
 	</table>
-	
-	<div class="pull-right" data-ng-transclude></div>
-	<p data-ng-show="puiShowLinks">
-		<a href="http://www.infoterm.info/standardization/iso_639_1_2002.php" target="_blank">
-			<small><i class="icon-globe"></i> About Language 639-1 Codes</small></a>
-		<br />
-		<a href="http://www.sil.org/iso639-3/" target="_blank">
-			<small><i class="icon-globe"></i> About Language 639-3 Codes</small></a>
-	</p>
 </div>
+	
+<div class="pull-right" data-ng-transclude></div>
+<p data-ng-show="puiShowLinks">
+	<a href="http://www.infoterm.info/standardization/iso_639_1_2002.php" target="_blank">
+		<small><i class="icon-globe"></i> About Language 639-1 Codes</small></a>
+	<br />
+	<a href="http://www.sil.org/iso639-3/" target="_blank">
+		<small><i class="icon-globe"></i> About Language 639-3 Codes</small></a>
+</p>
