@@ -2,9 +2,9 @@
 	<!-- ng-repeat over existing comments, nested comments (Design note: two different things? Or the same thing? I'm inclined to say same thing.) -->
 	<div class="comment" data-ng-repeat="comment in dcModel.comments">
  		<div class="scorecontrol">
-			<div class="scorearrow"><a href="#"><i class="icon-caret-up icon-large"></i></a></div>
+			<div class="scorearrow"><a ng-click="incScore(comment)"><i class="icon-caret-up icon-2x"></i></a></div>
 			<div class="score">{{comment.score}}</div>
-			<div class="scorearrow"><a href="#"><i class="icon-caret-down icon-large"></i></a></div>
+			<div class="scorearrow"><a ng-click="decScore(comment)"><i class="icon-caret-down icon-2x"></i></a></div>
 		</div>
 		<div class="all-but-score">
 			<div class="comment-date-and-status">
@@ -23,7 +23,7 @@
 			<div collapse="!replyBoxVisible">
 				<div>Reply to the above comment</div>
 				<div><textarea data-ng-model="newSubcomment"></textarea></div>
-				<div><button type="submit" class="btn-sm btn-info" data-ng-click="submitSubcomment(newSubcomment, comment)">Post Reply</button></div>
+				<div><button type="submit" class="btn-sm btn-info" data-ng-click="submitSubcomment(newSubcomment, comment); newSubcomment=''; replyBoxVisible=false">Post Reply</button></div>
 			</div>
 			<table class="subcomments" data-ng-if="comment.subcomments.length">
 				<tr data-ng-repeat="subcomment in comment.subcomments">
@@ -34,10 +34,9 @@
 			</table>
 		</div>
 	</div>
-	<div class="new-comment-form" collapse="replyBoxVisible">
+	<div class="new-comment-form">
 			<div>New comment</div>
 			<div><textarea data-ng-model="newComment"></textarea></div>
-			<div><button type="submit" class="btn-sm btn-success" data-ng-click="submitComment(newComment)">Post New Comment</button></div>
+			<div><button type="submit" class="btn-sm btn-success" data-ng-click="submitComment(newComment); newComment=''">Post New Comment</button></div>
 	</div>
-	<pre>Model: {{dcModel}}</pre>
 </div>

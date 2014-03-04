@@ -27,7 +27,7 @@ angular.module('palaso.ui.dc.comments', ['palaso.ui.dc.entry', 'angularjs-gravat
 					// TODO: Get actual username & email from session service
 					dateModified: new Date(), // Default to today's date, can modify this elsewhere if needed
 					regarding: "",
-					content: "This is the sample comment",
+					content: "",
 					score: 0,
 					subcomments: [],
 					status: "To Do",
@@ -36,20 +36,29 @@ angular.module('palaso.ui.dc.comments', ['palaso.ui.dc.entry', 'angularjs-gravat
 
 			$scope.submitComment = function(newCommentContent) {
 				var comment = $scope.makeValidComment();
-				comment.dateModified = new Date(); // Duplicate of code in makeValidComment(); decide later which one to use
 				comment.regarding = $scope.dcModel.value;
 				comment.content = newCommentContent;
-				// comment.subcomments.push($scope.makeValidComment());
 				$scope.dcModel.comments.push(comment);
 			};
 
 			$scope.submitSubcomment = function(newSubcommentContent, parentComment) {
 				var subcomment = $scope.makeValidComment();
-				subcomment.dateModified = new Date(); // Duplicate of code in makeValidComment(); decide later which one to use
-				subcomment.regarding = parentComment.content; // We're inside the ng-repeat="comment in ngModel.comments" scope here
+				subcomment.regarding = parentComment.content; // Not actually used at the moment, but why not? We may want it later
 				subcomment.content = newSubcommentContent;
-				subcomment.subcomments.push($scope.makeValidComment());
 				parentComment.subcomments.push(subcomment);
+			}
+
+			// TODO: The correct way to do this, per spec, is to store votes on a per-user basis,
+			// then calculate the score by subtracting downvotes from upvotes. This permits us to control
+			// ballot stuffing by giving each user only one vote per comment, which can be an upvote
+			// or a downvote. We'll need to hook up the session service and get the current username,
+			// then store that in either the comment.upvotes or comment.downvotes list. Then the current
+			// score will become a function: return comment.upvotes.length - comment.downvotes.length.
+			$scope.incScore = function(comment) {
+				comment.score++;
+			}
+			$scope.decScore = function(comment) {
+				comment.score--;
 			}
 		}],
 		link: function(scope, element, attrs, controller) {
