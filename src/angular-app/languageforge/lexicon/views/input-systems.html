@@ -25,14 +25,17 @@
 				<a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#" style="font-weight:normal">
 					More <span class="caret"></span></a>
 				<ul class="dropdown-menu">
-					<li><a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, inputSystems[currentInputSystemTag].languageName, selects.special.optionsOrder[1])">
-						<i class="icon-plus"></i> Add IPA for {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
-					<li><a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, inputSystems[currentInputSystemTag].languageName, selects.special.optionsOrder[2])">
-						<i class="icon-plus"></i> Add Voice for {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
-					<li><a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, inputSystems[currentInputSystemTag].languageName, selects.special.optionsOrder[3])">
-						<i class="icon-plus"></i> Add a variant of {{inputSystems[inputSystems[currentInputSystemTag].code].name}}</a></li>
+					<li data-ng-class="{disabled: newExists(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[1])}">
+						<a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, inputSystems[currentInputSystemTag].languageName, selects.special.optionsOrder[1])">
+						<i class="icon-plus"></i> Add IPA for {{inputSystems[currentInputSystemTag].languageName}}</a></li>
+					<li data-ng-class="{disabled: newExists(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[2])}">
+						<a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, inputSystems[currentInputSystemTag].languageName, selects.special.optionsOrder[2])">
+						<i class="icon-plus"></i> Add Voice for {{inputSystems[currentInputSystemTag].languageName}}</a></li>
+					<li data-ng-class="{disabled: newExists(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[3])}">
+						<a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, inputSystems[currentInputSystemTag].languageName, selects.special.optionsOrder[3])">
+						<i class="icon-plus"></i> Add a variant of {{inputSystems[currentInputSystemTag].languageName}}</a></li>
 					<li class="divider"></li>
-					<li data-ng-class="{disabled:(inputSystems[currentInputSystemTag].fieldUseCount > 0)}">
+					<li data-ng-class="{disabled: (inputSystems[currentInputSystemTag].fieldUseCount > 0)}">
 						<a tabindex="-1" data-ng-click="removeInputSystem(currentInputSystemTag)">
 						<i class="icon-remove"></i> Remove {{inputSystems[currentInputSystemTag].name}}</a></li>
 				</ul>
@@ -117,7 +120,7 @@
 	</div>
 </div>
 
-<pre data-ng-show="false">
+<pre data-ng-show="true">
 inputSystems['{{currentInputSystemTag}}'] {{inputSystems[currentInputSystemTag] | json}}
 </pre>
 

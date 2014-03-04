@@ -53,6 +53,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 				for (var tag in $scope.inputSystems) {
 					var script = InputSystems.getScript(tag);
 					var privateUse = InputSystems.getPrivateUse(tag);
+					$scope.inputSystems[tag].fieldUseCount = 21;	// TODO Remove. for debug until API supplies this IJH 2014-03
 					$scope.inputSystems[tag].name = InputSystems.getName($scope.inputSystems[tag].languageName, tag);
 					$scope.inputSystems[tag].code = InputSystems.getCode(tag);
 					$scope.inputSystems[tag].purpose = '';
@@ -101,8 +102,23 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 	$scope.queryProjectSettings();
 	
 // InputSystemsSettingsCtrl
+	$scope.newExists = function(code, special) {
+		var tag = code;
+		switch(special) {
+		case $scope.selects.special.optionsOrder[1]:		// IPA transcription
+			tag += '-fonipa';
+			break;
+		case $scope.selects.special.optionsOrder[2]:		// Voice
+			tag += '-Zxxx-x-audio';
+			break;
+		case $scope.selects.special.optionsOrder[3]:		// Script / Region / Variant
+			tag += '-unspecified';
+			break;
+	}
+		return (tag in $scope.inputSystems);
+	};
 	$scope.addInputSystem = function(code, languageName, special) {
-		var tag = 'xxxx';
+		var tag = 'xxNewTagxx';
 		var script = '';
 		$scope.inputSystems[tag] = {};
 		$scope.inputSystems[tag].languageName = languageName;
@@ -181,10 +197,10 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 			}
 			$scope.inputSystems[tag].name = InputSystems.getName($scope.inputSystems[tag].languageName, newInputSystemTag);
 			if (newInputSystemTag != tag) {
-//				if (! (newInputSystemTag in $scope.inputSystems)) {
+				if (! (newInputSystemTag in $scope.inputSystems)) {
 					$scope.inputSystems[tag].tag = newInputSystemTag;
 					$scope.inputSystems[newInputSystemTag] = $scope.inputSystems[tag];
-//				}
+				}
 				delete $scope.inputSystems[tag];
 				$scope.selectInputSystem(newInputSystemTag);
 			}
