@@ -9,7 +9,7 @@
 		<div class="all-but-score">
 			<div class="comment-date-and-status">
 				<span class="comment-date">{{comment.dateModified | date:'yyyy-MM-dd'}}</span>
-				Comment status <span class="comment-status">{{comment.status}}</span>
+				Comment status <span class="comment-status" ng-click="comment.status = nextStatus(comment.status)">{{comment.status}}</span>
 				<!-- TODO: add CSS to give a specific width to the two spans so they will always line up vertically with each other -->
 			</div>
 			<div class="avatar-and-content">
