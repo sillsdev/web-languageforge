@@ -22,12 +22,12 @@ class Example {
 	}
 
 	/**
-	 * @var MapOf
+	 * @var MapOf<LexiconFieldWithComments>
 	 */
 	public $sentence;
 	
 	/**
-	 * @var MapOf
+	 * @var MapOf<LexiconFieldWithComments>
 	 */
 	public $translation;
 
