@@ -252,11 +252,25 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 		var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
 		$scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1];
 		$scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1] = currentTag;
+		$scope.fieldConfig[$scope.currentField.name].inputSystems = [];
+		angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
+			if ($scope.currentField.inputSystems.selecteds[tag]) {
+				$scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
+			}
+		});
+		$scope.settingsForm.$setDirty();
 	};
 	$scope.moveDown = function(currentTag) {
 		var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
 		$scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1];
 		$scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1] = currentTag;
+		$scope.fieldConfig[$scope.currentField.name].inputSystems = [];
+		angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
+			if ($scope.currentField.inputSystems.selecteds[tag]) {
+				$scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
+			}
+		});
+		$scope.settingsForm.$setDirty();
 	};
 
 	$scope.editInputSystems = {
@@ -275,8 +289,8 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 	$scope.$watchCollection('currentField.inputSystems.selecteds', function(newValue) {
 		if (angular.isDefined(newValue) && $scope.haveConfig()) {
 			$scope.fieldConfig[$scope.currentField.name].inputSystems = [];
-			angular.forEach($scope.currentField.inputSystems.selecteds, function(selected, tag) {
-				if (selected) {
+			angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
+				if ($scope.currentField.inputSystems.selecteds[tag]) {
 					$scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
 				}
 			});
