@@ -4,12 +4,12 @@
 			<!-- Don't need breadcrumbs <ul id="top" class="topCrumbs" data-breadcrumbs></ul> -->
 			<div class="control-group pull-right">
 				<div class="btn-group">
-					<a class="btn dropdown-toggle" data-toggle="dropdown" href="#" style="font-weight:normal">
-						<i class="icon-cog icon-2x" data-tooltip="Project Settings"></i>&nbsp;&nbsp;<span class="caret"></span></a>
+					<a class="btn dropdown-toggle" data-toggle="dropdown" data-tooltip="Project Settings" href="#">
+						<i class="icon-cog icon-2x"></i>&nbsp;&nbsp;<span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li><a href="#/p/{{projectId}}/importExport" data-ng-show="isItemVisible('importExport')">Import/Export</a></li>
+						<li data-ng-show="isItemVisible('importExport')"><a href="#/p/{{projectId}}/importExport">Import/Export</a></li>
 						<li class="divider" data-ng-show="isItemVisible('importExport')"></li>
-						<li><a href="#/p/{{projectId}}/settings" data-ng-style="{disabled: !isItemVisible('settings')}">Settings</a></li>
+						<li data-ng-class="{disabled: !isItemVisible('settings')}"><a href="#/p/{{projectId}}/settings">Settings</a></li>
 					</ul>
 				</div>
 			</div>

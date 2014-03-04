@@ -1,3 +1,62 @@
-<div class="container" data-ng-cloak data-ng-controller="SettingsCtrl">
-	Not yet implemented.
+<div class="container" data-ng-cloak data-ng-controller="ImportExportCtrl">
+<h2 style="font-weight:normal">Import/Export</h2>
+<tabset>
+	<tab heading="LIFT Import">
+		<div data-ng-controller="LiftImportCtrl">
+		<form class="well " data-ng-submit="updateImport()">
+			<label>Upload a LIFT File</label>
+			<div class="drop-box" data-ng-file-drop="onFileSelect($files);" data-ng-file-drop-available="dropSupported=true">
+				<h4>Drop a LIFT file here</h4>
+				<br/>
+				<p>or if you prefer...</p>
+			    <input type="button" class="btn" value="Browse..." onclick="javascript:document.getElementById('liftFile').click();">
+			    <input id="liftFile" type="file" style="display:none;" data-ng-file-select="onFileSelect($files)">
+			</div>
+			<div data-ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+			<br />
+			<div data-ng-show="file != null">
+				<p><strong>{{file.name}}</strong> {{file.size | bytes }}</p>
+				<div class="span4" data-margin-left="-50px"><progress data-percent="progress"></progress></div>&nbsp;
+			</div>
+			<label>&nbsp;</label>
+			<div data-ng-bind-html="uploadResult"></div>
+			
+			<div class="control-group">
+				<div class="controls">
+					<label class="checkbox">
+						<input type="checkbox" data-ng-model="mergeWithExisting"/>Merge with existing</label>
+				</div>
+				<div class="controls indent1" data-ng-show="mergeWithExisting">
+					<label class="checkbox">
+						<input type="checkbox" data-ng-model="allowDuplicates"/>Allow duplicates</label>
+				</div>
+			</div>
+			
+		</form>
+<pre data-ng-show="false">
+</pre>
+		</div>
+	</tab>
+	<tab heading="LIFT Export">
+		<div data-ng-controller="LiftExportCtrl">
+		<div class="row">
+		
+		<!-- Left column: task list -->
+		<div class="span3 control-group">
+		</div>
+		
+		<!-- Right column: task setup -->
+		<div class="span9">
+			<div class="well">
+			</div>
+		</div>
+		
+		</div>
+<pre data-ng-show="false">
+</pre>
+		</div>
+	</tab>
+	<tab heading="Configuration Import">
+	</tab>
+</tabset>
 </div>
