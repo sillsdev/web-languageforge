@@ -9,6 +9,15 @@ angular.module('palaso.ui.dc.comments', ['palaso.ui.dc.entry', 'angularjs-gravat
 			dcModel : "=",
 		},
 		controller: ['$scope', function($scope) {
+			$scope.validStatuses = [ // TODO: Get this list from the appropriate service
+				"To Do",
+				"Reviewed",
+				"Resolved",
+			];
+			$scope.nextStatus = function(prevStatus) {
+				var idx = $scope.validStatuses.indexOf(prevStatus);
+				return $scope.validStatuses[(idx+1) % $scope.validStatuses.length]
+			};
 			$scope.config = angular.copy($scope.dcConfig); // Don't want to make changes to the passed-in config object
 			$scope.makeValidModel = function() {
 				if (!$scope.dcModel) {

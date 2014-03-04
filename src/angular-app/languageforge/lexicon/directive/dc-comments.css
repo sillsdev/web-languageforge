@@ -51,6 +51,7 @@ div.dc-comments {
 
 .dc-comments .comment-status {
 	color: red;
+	cursor: pointer;
 }
 
 .dc-comments .avatar-and-content {
