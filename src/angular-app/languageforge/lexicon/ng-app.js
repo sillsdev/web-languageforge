@@ -8,9 +8,11 @@ angular.module('lexicon',
 		 'meaning',
 		 'examples',
 		 'lexicon.add-meanings',
+		 'lexicon.importExport',
+		 'settings',
 		 'lexicon.services',
 		 'lexicon.filters',
-		 'settings'
+		 'bellows.filters'
 		])
 	.config(['$routeProvider', function($routeProvider) {
 		// the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
