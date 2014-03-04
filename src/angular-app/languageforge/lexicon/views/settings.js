@@ -182,6 +182,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 			$scope.inputSystems[tag].name = InputSystems.getName($scope.inputSystems[tag].languageName, newInputSystemTag);
 			if (newInputSystemTag != tag) {
 //				if (! (newInputSystemTag in $scope.inputSystems)) {
+					$scope.inputSystems[tag].tag = newInputSystemTag;
 					$scope.inputSystems[newInputSystemTag] = $scope.inputSystems[tag];
 //				}
 				delete $scope.inputSystems[tag];
