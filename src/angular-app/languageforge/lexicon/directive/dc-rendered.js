@@ -36,6 +36,7 @@ angular.module('palaso.ui.dc.rendered', [])
 
 				$scope.render = function(entry) {
 					$scope.definition.label = $scope.getLexemeForm($scope.model);
+					var senses = [];
 					var defParts = [];
 					var useNumbers = (entry.senses && entry.senses.length > 1);
 					var nextNum = 1;
@@ -55,8 +56,11 @@ angular.module('palaso.ui.dc.rendered', [])
 						angular.forEach(sense.definition, function(def, wsid) {
 							defParts.push(def.value + ' ');
 						});
+						senses.push(defParts.join(""));
+						defParts = [];
 					});
-					$scope.definition.rendered = defParts.join("") || "[No definition exists yet: add one!]";
+					$scope.definition.senses = senses;
+					$scope.definition.rendered = senses.join(" ") || "[No definition exists yet: add one!]";
 				};
 
 				$scope.makeValidModel = function() {
