@@ -13,7 +13,7 @@ class LexiconConfigObj {
 	const LEXEME = 'lexeme';
 	const DEFINITION = 'definition';
 	const POS = 'partOfSpeech';
-	const SEMDOM = 'semanticDomainValue';
+	const SEMDOM = 'semanticDomain';
 	const EXAMPLE = 'example';
 	const TRANSLATION = 'translation';
 
