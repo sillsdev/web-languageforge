@@ -67,7 +67,7 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	public $mercurialSha;
 
 	/**
-	 * @var MultiText
+	 * @var MapOf<LexiconFieldWithComments>
 	 */
 	// TODO Renamed $_entry to $lexeme.  References to $_entry may still exist
 	public $lexeme; 
