@@ -1,4 +1,4 @@
-<div class="container" data-ng-cloak>
+<div class="container" data-ng-cloak data-ng-controller="SettingsCtrl">
 <h2 style="font-weight:normal">Settings</h2>
 <form name="settingsForm">
 <button class="btn btn-primary pull-right" data-ng-disabled="settingsForm.$pristine" data-ng-click="settingsApply()" ><i class="icon-ok"></i> Apply</button>
@@ -152,16 +152,19 @@ config.entry {{config.entry|json}}
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visible"> From Semantic Domains</div>
 					</div>
 				</div></dd>
-				<dt>Settings</dt>
-				<dd><div class="controls">
-					<div data-ng-click="selectTask('settings')" data-ng-class="{selected:currentTaskName == 'settings'}">
-						<div class="checkbox"><input type="checkbox" disabled data-ng-model="config.tasks['settings'].visible"> Settings</div>
-					</div>
-				</div></dd>
 				<dt>Review</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectTask('review')" data-ng-class="{selected:currentTaskName == 'review'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['review'].visible"> Review</div>
+					</div>
+				</div></dd>
+				<dt>Settings</dt>
+				<dd><div class="controls">
+					<div data-ng-click="selectTask('importExport')" data-ng-class="{selected:currentTaskName == 'importExport'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['importExport'].visible">Import/Export</div>
+					</div>
+					<div data-ng-click="selectTask('settings')" data-ng-class="{selected:currentTaskName == 'settings'}">
+						<div class="checkbox"><input type="checkbox" disabled data-ng-model="config.tasks['settings'].visible">Settings</div>
 					</div>
 				</div></dd>
 			</dl>

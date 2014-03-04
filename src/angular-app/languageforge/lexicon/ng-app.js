@@ -47,10 +47,15 @@ angular.module('lexicon',
 				}
 			);
 		$routeProvider.when(
+				'/p/:projectId/importExport',
+				{
+					templateUrl: '/angular-app/languageforge/lexicon/views/import-export.html',
+				}
+			);
+		$routeProvider.when(
 				'/p/:projectId/settings',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/settings.html',
-					controller: 'SettingsCtrl'
 				}
 			);
 	    $routeProvider.otherwise({redirectTo: '/projects'});
