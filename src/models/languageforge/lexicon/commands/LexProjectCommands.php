@@ -29,6 +29,7 @@ class LexProjectCommands {
 		$project = new LexiconProjectModel($projectId);
 		$settings = JsonEncoder::encode($project->settings);
 		$settings['inputSystems'] = JsonEncoder::encode($project->inputSystems);
+		// TODO Add. fieldUseCount needs to be calculated and injected IJH 2014-03 
 		return $settings;
 	}
 	
