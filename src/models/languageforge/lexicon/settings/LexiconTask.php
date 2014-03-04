@@ -16,9 +16,10 @@ class LexiconTask {
 	const ADDMEANINGS = 'addMeanings';
 	const ADDGRAMMAR = 'addGrammar';
 	const ADDEXAMPLES = 'addExamples';
-	const SETTINGS = 'settings';
 	const REVIEW = 'review';
-
+	const IMPORTEXPORT = 'importExport';
+	const SETTINGS = 'settings';
+	
 	function __construct() {
 		$this->visible = true;
 		$this->type = '';
