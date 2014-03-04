@@ -80,13 +80,15 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.getMeaning = function(entry) {
 		// Default to English; second default is the first meaning found that's not blank
-		var meaning = entry.senses[0].definition['en']; // Might be undefined
-		// TODO: Default should be "primary analysis language", whatever that is defined in the config. (Currently there's nowhere in the config to define that).
-		for (var lang in entry.senses[0].definition) {
-			if (!meaning) { meaning = entry.senses[0].definition[lang]; };
-		};
-		if (!meaning) { meaning = {value: "[No definition]"}; }
-		return meaning.value;
+		if (angular.isDefined(entry.senses[0].definition)) {
+			var meaning = entry.senses[0].definition['en']; // Might be undefined
+			// TODO: Default should be "primary analysis language", whatever that is defined in the config. (Currently there's nowhere in the config to define that).
+			for (var lang in entry.senses[0].definition) {
+				if (!meaning) { meaning = entry.senses[0].definition[lang]; };
+			};
+			if (!meaning) { meaning = {value: "[No definition]"}; }
+			return meaning.value;
+		}
 	};
 	
 	$scope.setCurrentEntry = function(entry) {
@@ -161,7 +163,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return index;
 	};
 	
-	$scope.getPageDto = function(callback) {
+	projectService.settingsChangeNotify(function() {
 		lexService.dbeDto(function(result) {
 			if (result.ok) {
 				$scope.entries = result.data.entries;
@@ -169,11 +171,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				$scope.currentEntry.id = $filter('orderAsArray')($scope.entries, 'id')[0]['id'];
 			}
 		});
-	};
-
-	// run this when the page loads
-	$scope.getPageDto();
-
+	});
+	
 	$scope.recursiveSetConfig = function(startAt, propName, propValue) {
 		// Go through the config tree starting at the startAt field, and
 		// set a given property to a given value in all fields below startAt.
@@ -190,10 +189,14 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 
 	// When comments tab is clicked, set up new config for its interior
 	$scope.selectCommentsTab = function() {
-		$scope.recursiveSetConfig($scope.config.entry, 'commentsVisible', true);
+		if (angular.isDefined($scope.config.entry)) {
+			$scope.recursiveSetConfig($scope.config.entry, 'commentsVisible', true);
+		}
 	};
 	$scope.deselectCommentsTab = function() {
-		$scope.recursiveSetConfig($scope.config.entry, 'commentsVisible', false);
+		if (angular.isDefined($scope.config.entry)) {
+			$scope.recursiveSetConfig($scope.config.entry, 'commentsVisible', false);
+		}
 	};
 }])
 ;
