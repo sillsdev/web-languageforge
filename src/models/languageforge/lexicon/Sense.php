@@ -10,23 +10,14 @@ use models\mapper\ArrayOf;
 class Sense {
 
 	function __construct() {
-		$this->definition = new MultiText();
-		$this->definitionComments = new ArrayOf(
+		$this->definition = new MapOf(
 			function($data) {
-				return new CommentModel();
-			}
+				return new LexiconFieldWithComments();
+			}		
 		);
-		$this->partOfSpeech = '';
-		$this->partOfSpeechComments = new ArrayOf(
-			function($data) {
-				return new CommentModel();
-			}
-		);
-		$this->semanticDomain = new ArrayOf(
-			function($data) {
-				return '';	
-			}
-		);
+		$this->partOfSpeech = new LexiconFieldWithComments();
+		$this->semanticDomain = new LexiconMultiValueFieldWithComments();
+		
 		$this->examples = new ArrayOf(
 			function($data) {
 				return new Example();
@@ -36,34 +27,24 @@ class Sense {
 	}
 
 	/**
-	 * @var MultiText
+	 * @var MapOf<LexiconFieldWithComments>
 	 */
 	public $definition;
 	
-	/**
-	 * 
-	 * @var ArrayOf<CommentModel>
-	 */
-	public $definitionComments;
 
 	/**
-	 * @var string
+	 * @var LexiconFieldWithComments
 	 */
 	public $partOfSpeech;
 	
-	/**
-	 * 
-	 * @var ArrayOf<CommentModel>
-	 */
-	public $partOfSpeechComments;
 
 	/**
-	 * @var ArrayOf<string>
+	 * @var LexiconMultiValueFieldWithComments
 	 */
 	public $semanticDomain;
 
 	/**
-	 * @var ArrayOf ArrayOf<Example>
+	 * @var ArrayOf<Example>
 	 */
 	public $examples;
 
