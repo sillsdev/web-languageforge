@@ -8,7 +8,7 @@ angular.module('palaso.ui.dc.multitext', ['lexicon.services', 'palaso.ui.dc.comm
 				definition : "=",
 				model : "=",
 			},
-			controller: ['$scope', 'lexEntryService', function($scope, lexService) {
+			controller: ['$scope', 'lexProjectService', function($scope, lexService) {
 				$scope.makeValidModel = function() {
 					// if the model doesn't exist, create an object for it based upon the definition
 					if (!$scope.model) {
@@ -22,7 +22,7 @@ angular.module('palaso.ui.dc.multitext', ['lexicon.services', 'palaso.ui.dc.comm
 				};
 				
 				$scope.getAbbreviation = function(inputSystem) {
-					return lexService.getConfig().inputSystems[inputSystem].abbreviation;
+					return lexService.getSettings().inputSystems[inputSystem].abbreviation;
 				};
 			}],
 			link : function(scope, element, attrs, controller) {

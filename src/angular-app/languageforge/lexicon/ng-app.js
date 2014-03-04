@@ -64,6 +64,14 @@ angular.module('lexicon',
 			$scope.breadcrumbs = breadcrumbService.read();
 		}, true);
 	}])
+	.controller("MainCtrl", ['$scope', 'lexProjectService', function($scope, projectService) {
+		$scope.hasProjectConfig = false;
+		projectService.readSettings(function(result) {
+			if (result.ok) {
+				$scope.hasProjectConfig = true;
+			}
+		});
+	}])
 	.controller('LexiconMenuCtrl', ['$scope', '$timeout', 'lexProjectService', 
 	                                function($scope, $timeout, lexProjectService) {
 		$scope.noSubmenuId = 0;
@@ -114,11 +122,7 @@ angular.module('lexicon',
 		$scope.projectId = lexProjectService.getProjectId();
 		
 		lexProjectService.settingsChangeNotify(function() {
-			lexProjectService.getSettings(function(result) {
-				if (result.ok) {
-					$scope.config = result.data;
-				}
-			});
+			$scope.config = lexProjectService.getSettings();
 		});
 		
 	}])
