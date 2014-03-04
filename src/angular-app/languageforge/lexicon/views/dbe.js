@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate'])
-.controller('dbeCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', '$filter', 
-                        function ($scope, userService, sessionService, lexService, $window, $timeout, $filter) {
+.controller('dbeCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexProjectService', '$window', '$timeout', '$filter', 
+                        function ($scope, userService, sessionService, lexService, projectService, $window, $timeout, $filter) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
 	// for an idea on expanding text areas
 	
@@ -18,14 +18,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	*/
 	
-	var projectId = $scope.routeParams.projectId;
-	$scope.project = {
-		'id': projectId
-	};
-		
 	var pristineEntry = {};
 	var lastSavedDate = new Date();
-	var saveTimer;
 	$scope.currentEntry = {};
 	$scope.entries = [];
 	$scope.config = {};
@@ -103,7 +97,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.saveCurrentEntry = function() {
 		if ($scope.entryLoaded() && $scope.currentEntryIsDirty()) {
-			lexService.update($scope.project.id, $scope.currentEntry, function(result) {
+			lexService.update($scope.currentEntry, function(result) {
 				$scope.updateListWithEntry(result.data);
 				$scope.setCurrentEntry(result.data);
 			});
@@ -115,13 +109,13 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 
 		if (arguments.length == 0) {
 			// create new entry
-			lexService.update($scope.project.id, {id:''}, function(result) {
+			lexService.update({id:''}, function(result) {
 				$scope.updateListWithEntry(result.data);
 				$scope.setCurrentEntry(result.data);
 			});
 		} else {
 			// load existing entry
-			lexService.read($scope.project.id, id, function(result) {
+			lexService.read(id, function(result) {
 				$scope.setCurrentEntry(result.data);
 			});
 		}
@@ -150,7 +144,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.deleteEntry = function(entry) {
 		if ($window.confirm("Are you sure you want to delete '" + $scope.entryTitle(entry) + "'?")) {
 			$scope.entries.splice($scope.getEntryIndexById(entry.id), 1);
-			lexService.remove($scope.project.id, entry.id, function(){});
+			lexService.remove(entry.id, function(){});
 			$scope.setCurrentEntry({});
 		}
 	};
@@ -168,12 +162,10 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	
 	$scope.getPageDto = function(callback) {
-		lexService.dbeDto($scope.project.id, function(result) {
+		lexService.dbeDto(function(result) {
 			if (result.ok) {
 				$scope.entries = result.data.entries;
-				// $scope.config = result.data.config; // When retrieving config from JSON, we can do this.
-				$scope.config = angular.copy(result.data.config); // When retrieving config from mock service, we need to do this
-				// select the first entry
+				$scope.config = result.data.config; // When retrieving config from JSON, we can do this.
 				$scope.currentEntry.id = $filter('orderAsArray')($scope.entries, 'id')[0]['id'];
 			}
 		});
@@ -194,7 +186,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				field[propName] = propValue;
 			};
 		});
-	}
+	};
 
 	// When comments tab is clicked, set up new config for its interior
 	$scope.selectCommentsTab = function() {

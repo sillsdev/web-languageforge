@@ -5,6 +5,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
                              function($scope, userService, ss, notice, lexService, $filter, $modal) {
 	
 	$scope.config = {};
+
 	$scope.haveConfig = function() {
 		return angular.isDefined($scope.config.entry);
 	};
@@ -44,50 +45,61 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 		return $filter('orderBy')($filter('orderAsArray')($scope.config.inputSystems, 'tag'), 'name');
 	};
 	
-	$scope.queryProjectSettings = function() {
-		lexService.getSettings(function(result) {
-			if (result.ok) {
-				$scope.config = result.data;
-				$scope.inputSystems = $scope.config.inputSystems;
-				
-				for (var tag in $scope.inputSystems) {
-					var script = InputSystems.getScript(tag);
-					var privateUse = InputSystems.getPrivateUse(tag);
+	$scope.setupView = function() {
+		if (angular.isDefined($scope.config.inputSystems)) {
+			$scope.inputSystems = $scope.config.inputSystems;
+			for (var tag in $scope.inputSystems) {
+				var script = InputSystems.getScript(tag);
+				var privateUse = InputSystems.getPrivateUse(tag);
 					$scope.inputSystems[tag].fieldUseCount = 21;	// TODO Remove. for debug until API supplies this IJH 2014-03
-					$scope.inputSystems[tag].name = InputSystems.getName($scope.inputSystems[tag].languageName, tag);
-					$scope.inputSystems[tag].code = InputSystems.getCode(tag);
-					$scope.inputSystems[tag].purpose = '';
-					$scope.inputSystems[tag].script = '';
-					$scope.inputSystems[tag].region = '';
-					$scope.inputSystems[tag].variant = '';
-					switch(script) {
-						case '':
-							$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[0];
+				$scope.inputSystems[tag].name = InputSystems.getName($scope.inputSystems[tag].languageName, tag);
+				$scope.inputSystems[tag].code = InputSystems.getCode(tag);
+				$scope.inputSystems[tag].purpose = '';
+				$scope.inputSystems[tag].script = '';
+				$scope.inputSystems[tag].region = '';
+				$scope.inputSystems[tag].variant = '';
+				switch(script) {
+					case '':
+						$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[0];
+						break;
+					case 'fonipa':
+						$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[1];
+						$scope.inputSystems[tag].purpose = privateUse;
+						break;
+					case 'Zxxx':
+						if (privateUse == 'audio') {
+							$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[2];
 							break;
-						case 'fonipa':
-							$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[1];
-							$scope.inputSystems[tag].purpose = privateUse;
-							break;
-						case 'Zxxx':
-							if (privateUse == 'audio') {
-								$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[2];
-								break;
-							}
-						default:
-							$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[3];
-							$scope.inputSystems[tag].script = script;
-							$scope.inputSystems[tag].region = InputSystems.getRegion(tag);
-							$scope.inputSystems[tag].variant = privateUse;
-					}
-				};
-				$scope.inputSystemsList = $scope.sortInputSystemsList();
-				
-				// select the first items
-				$scope.selectInputSystem($scope.inputSystemsList[0].tag);
-				$scope.currentTaskName = 'dashboard';
-			}
-		});
+						}
+					default:
+						$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[3];
+						$scope.inputSystems[tag].script = script;
+						$scope.inputSystems[tag].region = InputSystems.getRegion(tag);
+						$scope.inputSystems[tag].variant = privateUse;
+				}
+			};
+			$scope.inputSystemsList = $scope.sortInputSystemsList();
+			
+			// select the first items
+			$scope.selectInputSystem($scope.inputSystemsList[0].tag);
+			$scope.currentTaskName = 'dashboard';
+			
+			// for FieldSettingsCtrl
+			$scope.fieldConfig = {
+				'lexeme': $scope.config.entry.fields['lexeme'],
+				'definition': $scope.config.entry.fields.senses.fields['definition'],
+				'partOfSpeech': $scope.config.entry.fields.senses.fields['partOfSpeech'],
+				'semanticDomainValue': $scope.config.entry.fields.senses.fields['semanticDomainValue'],
+				'example': $scope.config.entry.fields.senses.fields.examples.fields['example'],
+				'translation': $scope.config.entry.fields.senses.fields.examples.fields['translation']
+			};
+		}
 	};
+	
+	lexService.settingsChangeNotify(function() {
+		$scope.config = lexService.getSettings();
+		$scope.setupView();
+	});
 
 	$scope.settingsApply = function() {
 		lexService.updateSettings($scope.config, function(result) {
@@ -98,8 +110,6 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 			}
 		});
 	};
-	
-	$scope.queryProjectSettings();
 	
 // InputSystemsSettingsCtrl
 	$scope.newExists = function(code, special) {
@@ -257,14 +267,6 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 	
 	$scope.$watch('config', function (newValue) {
 		if (angular.isDefined(newValue) && $scope.haveConfig()) {
-			$scope.fieldConfig = {
-				'lexeme': $scope.config.entry.fields['lexeme'],
-				'definition': $scope.config.entry.fields.senses.fields['definition'],
-				'partOfSpeech': $scope.config.entry.fields.senses.fields['partOfSpeech'],
-				'semanticDomainValue': $scope.config.entry.fields.senses.fields['semanticDomainValue'],
-				'example': $scope.config.entry.fields.senses.fields.examples.fields['example'],
-				'translation': $scope.config.entry.fields.senses.fields.examples.fields['translation']
-			};
 			// when config is updated select the first field in the list
 			$scope.selectField('lexeme');
 		}
