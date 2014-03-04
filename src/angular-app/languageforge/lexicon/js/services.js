@@ -347,9 +347,10 @@ angular.module('lexicon.services', ['jsonRpc'])
 
 		getEntriesList = function() {
 			var list = [];
-			var inputSystem = _config.entry.fields.lexeme.inputSystems[0];
+			var config = projectService.getSettings();
+			//var inputSystem = config.entry.fields.lexeme.inputSystems[0];
 			serverIter(function(i,e) {
-				var title = e.lexeme[inputSystem].value;
+				var title = e.lexeme[Object.keys(e.lexeme)[0]].value;
 				if (!title) {
 					title = '[new word]';
 				}
@@ -358,13 +359,15 @@ angular.module('lexicon.services', ['jsonRpc'])
 			return list;
 		};
 		this.dbeDto = function(callback) {
-			projectService.getSettings(function(result) {
+			/*
+			jsonRpc.call('lex_dbeDto', [this.getProjectId()], function(result) {
 				if (result.ok) {
-					(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': result.data}});
+					var entries = result.data.entries;
+					callback({'ok': true, 'data': {'entries': getEntriesList(), 'config': projectService.getSettings()}});
 				}
 			});
-			//var dtoConfig = angular.copy(_config);
-			//this.setConfig(dtoConfig);
+			*/
+			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': projectService.getSettings()}});
 		};
 		this.addExampleDto = function(callback) {
 			var dtoConfig = angular.copy(_config);
@@ -408,9 +411,9 @@ angular.module('lexicon.services', ['jsonRpc'])
 		// (This will be removed once a real server is available)
 		for (var _idx = 0; _idx < sampleData.length; _idx++) {
 			var entry = sampleData[_idx];
-			this.update('sampleProject', entry);
+			this.update(entry);
 		};
-		this.saveNow('sampleProject');
+		this.saveNow();
 		// --- END TEST CODE ---
 	}])
 	;

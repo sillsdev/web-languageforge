@@ -51,7 +51,6 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 			for (var tag in $scope.inputSystems) {
 				var script = InputSystems.getScript(tag);
 				var privateUse = InputSystems.getPrivateUse(tag);
-					$scope.inputSystems[tag].fieldUseCount = 21;	// TODO Remove. for debug until API supplies this IJH 2014-03
 				$scope.inputSystems[tag].name = InputSystems.getName($scope.inputSystems[tag].languageName, tag);
 				$scope.inputSystems[tag].code = InputSystems.getCode(tag);
 				$scope.inputSystems[tag].purpose = '';
@@ -159,6 +158,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 	$scope.removeInputSystem = function(currentInputSystemTag) {
 		delete $scope.inputSystems[currentInputSystemTag];
 		$scope.inputSystemsList = $scope.sortInputSystemsList();
+		$scope.settingsForm.$setDirty();
 		// select the first items
 		$scope.selectInputSystem($scope.inputSystemsList[0].tag);
 	};
