@@ -347,7 +347,6 @@ angular.module('lexicon.services', ['jsonRpc'])
 
 		getEntriesList = function() {
 			var list = [];
-			var config = projectService.getSettings();
 			//var inputSystem = config.entry.fields.lexeme.inputSystems[0];
 			serverIter(function(i,e) {
 				var title = e.lexeme[Object.keys(e.lexeme)[0]].value;
@@ -466,7 +465,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 					},
 					'senses': {
 						'type': 'fields',
-						'fieldOrder': ['definition', 'partOfSpeech', 'semanticDomainValue', 'examples'],
+						'fieldOrder': ['definition', 'partOfSpeech', 'semanticDomain', 'examples'],
 						'fields': {
 							'definition': {
 								'type': 'multitext',
@@ -486,7 +485,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 								},
 								'width': 20
 							},
-							'semanticDomainValue': {
+							'semanticDomain': {
 								'type': 'optionlist',
 								'label': 'Semantic Domain',
 								'visible': true,
