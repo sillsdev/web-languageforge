@@ -11,30 +11,29 @@ angular.module('lexicon.services', ['jsonRpc'])
 		
 		this.settingsChangeNotify = function(callback) {
 			settingsChangeCallbacks.push(callback);
+			if (angular.isDefined(_config.entry)) { // special case to notify the caller that we have a real config at this time
+				callback();
+			}
 		};
 		
-		function _notify() {
+		function _notifySettingsChange() {
 			angular.forEach(settingsChangeCallbacks, function(callback) {
 				callback();
 			});
 		}
 		
-		this.getSettings = function(callback) {
-			// TODO this could potentially get called more than once when a page is directly loaded such as /p/{projectId}/settings
-			// in this case the menu makes a call, and the page also makes a call.  Implement locking or an observer pattern (I pick observer pattern)
-			
-			
-			if (angular.isUndefined(_config.entry)) {
-				jsonRpc.call('lex_projectSettings_read', [this.getProjectId()], function(result) {
-					if (result.ok) {
-						_config = result.data;
-						callback(result);
-						_notify();
-					}
-				});
-			} else {
-				callback({ok:true, data:angular.copy(_config)});
-			}
+		this.getSettings = function() {
+			return angular.copy(_config);
+		};
+		
+		this.readSettings = function(callback) {
+			jsonRpc.call('lex_projectSettings_read', [this.getProjectId()], function(result) {
+				if (result.ok) {
+					_config = result.data;
+					callback(result);
+					_notifySettingsChange();
+				}
+			});
 		};
 		
 		this.updateSettings = function(settings, callback) {
@@ -42,20 +41,21 @@ angular.module('lexicon.services', ['jsonRpc'])
 				if (result.ok) {
 					_config = angular.copy(settings);
 					callback(result);
-					_notify();
+					_notifySettingsChange();
 				}
 			});
 		};
 		
 		this.getProjectId = function() {
-			// strip off the "/p/"
 			var parts = $location.path().split('/');
+			// strip off the "/p/"
 			return parts[2];
 		};
 	}])
 
-	.service('lexEntryService', ['jsonRpc', function(jsonRpc) {
+	.service('lexEntryService', ['jsonRpc', 'lexProjectService', function(jsonRpc, projectService) {
 		jsonRpc.connect('/api/sf');
+		/*
 		var _dtoConfig = {};
 		this.setConfig = function(dtoConfig) {
 			_dtoConfig = angular.copy(dtoConfig);
@@ -63,6 +63,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 		this.getConfig = function() {
 			return _dtoConfig;
 		};
+		*/
 
 		var sampleData = [
 				{
@@ -259,7 +260,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			return dirtyEntries.length > 0;
 		};
 
-		this.saveNow = function(projectId, callback) {
+		this.saveNow = function(callback) {
 			// save each entry in the dirty list
 			dirtyIter(function(i, dirtyEntry) {
 				// do update or add on server (server figures it out)
@@ -282,7 +283,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			(callback || angular.noop)({data:''});
 		};
 
-		this.read = function(projectId, id, callback) {
+		this.read = function(id, callback) {
 			var result = {};
 			dirtyIter(function(i,e) {
 				if (e.id == id) {
@@ -306,7 +307,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			(callback || angular.noop)({data: result});
 		};
 
-		this.update = function(projectId, entry, callback) {
+		this.update = function(entry, callback) {
 			if (entry.hasOwnProperty('id') && entry.id != '') {
 				var foundInDirty = false;
 				dirtyIter(function(i,e) {
@@ -326,7 +327,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			(callback || angular.noop)({data:entry});
 		};
 
-		this.remove = function(projectId, id, callback) {
+		this.remove = function(id, callback) {
 			dirtyIter(function(i,e) {
 				if (e.id == id) {
 					dirtyEntries.splice(i, 1);
@@ -356,12 +357,16 @@ angular.module('lexicon.services', ['jsonRpc'])
 			});
 			return list;
 		};
-		this.dbeDto = function(projectId, callback) {
-			var dtoConfig = angular.copy(_config);
-			this.setConfig(dtoConfig);
-			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
+		this.dbeDto = function(callback) {
+			projectService.getSettings(function(result) {
+				if (result.ok) {
+					(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': result.data}});
+				}
+			});
+			//var dtoConfig = angular.copy(_config);
+			//this.setConfig(dtoConfig);
 		};
-		this.addExampleDto = function(projectId, callback) {
+		this.addExampleDto = function(callback) {
 			var dtoConfig = angular.copy(_config);
 			// We just want to see the definition and part of speech, but leave rest of config alone
 			angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
@@ -374,7 +379,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			this.setConfig(dtoConfig);
 			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
 		};
-		this.addGrammarDto = function(projectId, callback) {
+		this.addGrammarDto = function(callback) {
 			var dtoConfig = angular.copy(_config);
 			// We just want to see the definition and part of speech, but leave rest of config alone
 			angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
@@ -387,7 +392,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			this.setConfig(dtoConfig);
 			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
 		};
-		this.addMeaningsDto = function(projectId, callback) {
+		this.addMeaningsDto = function(callback) {
 			var dtoConfig = angular.copy(_config);
 			// We just want to see the definition and part of speech, but leave rest of config alone
 			angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
