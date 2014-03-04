@@ -46,8 +46,9 @@ class LexiconProjectSettings {
 		$this->tasks[LexiconTask::ADDMEANINGS] = new LexiconTask();
 		$this->tasks[LexiconTask::ADDGRAMMAR] = new LexiconTask();
 		$this->tasks[LexiconTask::ADDEXAMPLES] = new LexiconTask();
-		$this->tasks[LexiconTask::SETTINGS] = new LexiconTask();
 		$this->tasks[LexiconTask::REVIEW] = new LexiconTask();
+		$this->tasks[LexiconTask::IMPORTEXPORT] = new LexiconTask();
+		$this->tasks[LexiconTask::SETTINGS] = new LexiconTask();
 		
 		// default values for the entry config
 		$this->entry = new LexiconFieldListConfigObj();
