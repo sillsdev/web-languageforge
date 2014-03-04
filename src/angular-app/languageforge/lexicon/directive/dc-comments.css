@@ -19,7 +19,7 @@ div.dc-comments {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin: 1em 0.5em 0em 0.5em; /* Top should match line-height of date/status line */
+	margin: 1em 0.25em 0em 0.25em; /* Top should match line-height of date/status line */
 }
 
 .dc-comments .scorecontrol .scorearrow a {
@@ -29,6 +29,9 @@ div.dc-comments {
 .dc-comments .scorecontrol .score {
 	width: 2em;
 	overflow: hidden;
+	font-size: 120%;
+	font-weight: bold;
+	text-align: center;
 }
 
 .dc-comments .all-but-score {
@@ -63,6 +66,7 @@ div.dc-comments {
 .dc-comments .avatar-and-content .comment-content {
 	flex-shrink: 1;
 	flex-grow: 1;
+	margin: 0px 5px;
 }
 
 .dc-comments .avatar-and-content .comment-replylink {
@@ -94,4 +98,9 @@ div.dc-comments {
 
 .dc-comments .subcomments .subcomment-what {
 	width: 50%;
+}
+
+.dc-comments textarea {
+	/* Both comments and subcomments textareas should be large */
+	width: 80%;
 }
