@@ -2,6 +2,8 @@
 
 namespace models\languageforge\lexicon;
 
+use models\mapper\MapOf;
+
 use models\CommentModel;
 
 use models\mapper\Id;
@@ -36,12 +38,10 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	 */
 	public function __construct($projectModel, $id = '') {
 		$this->id = new Id();
-		$this->_projectModel = $projectModel;
-		$this->lexeme = new MultiText();
-		$this->lexemeComments = new ArrayOf(
+		$this->lexeme = new MapOf(
 			function($data) {
-				return new CommentModel();
-			}
+				return new LexiconFieldWithComments();
+			}		
 		);
 		$this->senses = new ArrayOf(
 			function($data) {
@@ -73,12 +73,6 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	public $lexeme; 
 	
 	/**
-	 * 
-	 * @var ArrayOf<CommentModel>
-	 */
-	public $lexemeComments;
-
-	/**
 	 * @var ArrayOf ArrayOf<Sense>
 	 */
 	public $senses;
@@ -90,11 +84,6 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	 // TODO Renamed $_metadata to $authorInfo, remove this comment when stitched in IJH 2013-11
 	public $authorInfo;
 
-	/**
-	 * @var ProjectModel;
-	 */
-	private $_projectModel;
-	
 	/**
 	 * Remove this LexEntry from the collection
 	 * @param ProjectModel $projectModel

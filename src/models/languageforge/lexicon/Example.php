@@ -3,37 +3,31 @@
 namespace models\languageforge\lexicon;
 
 use models\CommentModel;
-
-use models\mapper\ArrayOf;
-
-use models\mapper\Id;
+use models\mapper\MapOf;
 
 class Example {
 
 	function __construct() {
-		$this->sentence = new MultiText();
-		$this->sentenceComments = new ArrayOf(
+		$this->sentence = new MapOf(
 			function($data) {
-				return new CommentModel();
-			}
+				return new LexiconFieldWithComments();
+			}		
 		);
-		$this->translation = new MultiText();
+		$this->translation = new MapOf(
+			function($data) {
+				return new LexiconFieldWithComments();
+			}		
+		);
 		$this->authorInfo = new AuthorInfo();
 	}
 
 	/**
-	 * @var MultiText
+	 * @var MapOf
 	 */
 	public $sentence;
 	
 	/**
-	 * 
-	 * @var ArrayOf<CommentModel>
-	 */
-	public $sentenceComments;
-
-	/**
-	 * @var MultiText
+	 * @var MapOf
 	 */
 	public $translation;
 
