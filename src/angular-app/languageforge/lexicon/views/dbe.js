@@ -203,5 +203,42 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.deselectCommentsTab = function() {
 		$scope.recursiveSetConfig($scope.config.entry, 'commentsVisible', false);
 	};
+
+	// TODO: Consider moving filter-related code and variables into its own controller
+	$scope.filter = {}
+	$scope.filter.chevronIcon = "icon-chevron-up";
+	$scope.filter.visible = true;
+	$scope.toggleFilters = function() {
+		console.log('Filters toggled');
+		if ($scope.filter.visible) {
+			$scope.filter.visible = false;
+			$scope.filter.chevronIcon = "icon-chevron-down";
+		} else {
+			$scope.filter.visible = true;
+			$scope.filter.chevronIcon = "icon-chevron-up";
+		}
+	};
+	$scope.filter.validStatuses = [ // TODO: Get this from appropriate service or API call, rather than hardcoded list
+		"To Do",
+		"Reviewed",
+		"Resolved",
+	];
+	$scope.filter.searchFor = {};
+	angular.forEach($scope.validStatuses, function(status) {
+		$scope.filter.searchFor[status] = false;
+	});
+	$scope.filter.searchFor['To Do'] = true; // DEBUG: To check appropriate checkbox in filter form
+	$scope.getInputSystems = function() {
+		return $scope.config.inputSystems; // TODO: Add filtering if needed, i.e. only show a checkbox for input systems that have comments below
+	};
+	$scope.filter.showLangs = {};
+	angular.forEach($scope.getInputSystems(), function(inputSystem) {
+		$scope.filter.showLangs[inputSystem.abbreviation] = false;
+	});
+	$scope.filter.showLangs['en'] = true; // DEBUG: To check appropriate checkbox in filter form
+	$scope.applyFilters = function() {
+		console.log('Applying filters:', $scope.filter);
+		// TODO: Implement this
+	}
 }])
 ;
