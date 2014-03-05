@@ -84,3 +84,34 @@ legend.override-bootstrap {
 	/* Override lf.css */
 	margin-right: 0px;
 }
+
+.filter-controls .horiz-controls {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start; /* Or try space-between */
+	margin-bottom: 10px;
+}
+
+.filter-controls .horiz-controls.flex-center {
+	justify-content: center; /* Or try space-between */
+}
+
+.filter-controls .horiz-controls .horiz-flex-element {
+	margin: 0px 10px;
+}
+
+.filter-controls .horiz-controls {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start; /* Or try space-between */
+}
+
+.filter-controls .horiz-controls .self-flex-end {
+	align-self: flex-end;
+}
+
+.filter-controls .top-right-corner {
+	position: absolute;
+	top: 0px; /* Might need to increase this once the "For the demo, these do NOT work" text goes away */
+	right: 10px;
+}
