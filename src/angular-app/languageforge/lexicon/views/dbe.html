@@ -44,7 +44,19 @@
                 </tab>
                 <tab heading="Comment" active="commentsTabActive" select="selectCommentsTab()" deselect="deselectCommentsTab()">
                     <dc-rendered config="config" model="currentEntry" hide-if-empty="true"></dc-rendered>
-                    <div>Filters will go here</div>
+                    <fieldset class="filter-controls override-bootstrap">
+                        <legend class="override-bootstrap">Filters <i ng-click="toggleFilters()" style="cursor: pointer" ng-class="filter.chevronIcon"></i></legend>
+                        <div class="filter-controls-inner" collapse="!filter.visible">
+                            <p><b>IMPORTANT:</b> For the demo, these controls do NOT work.</p>
+                            <div class="datepicker"><input type="checkbox" ng-model="useCreatedAfter"></input>Created after: <input type="text" size="8" datepicker-popup ng-model="createdAfter"></div>
+                            <div class="datepicker"><input type="checkbox" ng-model="useCreatedBefore"></input>Created before: <input type="text" size="8" datepicker-popup ng-model="createdBefore"></div>
+                            <div class="created-by">Created by: <select><option>Everyone</option></select></div>
+                            <div class="status">Status: <div ng-repeat="status in filter.validStatuses"><input ng-model="filter.searchFor[status]" type="checkbox">{{status}}</input> </div></div>
+                            <div class="containing-text">Containing text: <input type="text" size="50"></input></div>
+                            <div class="languages-to-show">Languages to show: <div ng-repeat="lang in getInputSystems()"><input ng-model="filter.showLangs[lang.abbreviation]" type="checkbox">{{lang.languageName}} ({{lang.abbreviation}})</input> </div></div>
+                            <button ng-click="applyFilters()" class="btn-info"><i class="icon-search"></i></button>
+                        </div>
+                    </fieldset>
 <!--                     <dc-comments config="config" model="currentEntry"></dc-comments> -->
                     <dc-entry config="config" model="currentEntry"></dc-entry>
                 </tab>
@@ -52,7 +64,7 @@
         </div>
 
 <!--
-        <div class="span5">
+        <div class="span12">
             <pre>serverEntries
                 {{serverEntries()|json}}</pre>
             <pre>dirtyEntries
