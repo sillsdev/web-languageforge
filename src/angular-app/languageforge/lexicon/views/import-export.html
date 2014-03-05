@@ -1,8 +1,8 @@
 <div class="container" data-ng-cloak data-ng-controller="ImportExportCtrl">
 <h2 style="font-weight:normal">Import/Export</h2>
 <tabset>
-	<tab heading="LIFT Import">
-		<div class="well" data-ng-controller="LiftImportCtrl">
+	<tab heading="LIFT Import" data-ng-controller="LiftImportCtrl">
+		<div class="well">
 			<label>Import a LIFT File</label>
 			<div class="drop-box" data-ng-file-drop="onFileSelect($files);" data-ng-file-drop-available="dropSupported=true" data-ng-show="dropSupported">
 				<h4>Drop a LIFT file here</h4>
