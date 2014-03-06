@@ -6,6 +6,7 @@ use models\CommentModel;
 
 use models\mapper\Id;
 use models\mapper\ArrayOf;
+use models\mapper\MapOf;
 
 class Sense {
 

@@ -14,7 +14,7 @@ class LexEntryCommands {
 	
 	public static function readEntry($projectId, $entryId) {
 		$project = new LexiconProjectModel($projectId);
-		$entry = new LexEntryModel($project);
+		$entry = new LexEntryModel($project, $entryId);
 		return JsonEncoder::encode($entry);
 	}
 	
