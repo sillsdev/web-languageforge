@@ -2,7 +2,7 @@
 namespace libraries\sfchecks;
 
 
-use models\dto\UsxHelper;
+use models\scriptureforge\dto\UsxHelper;
 
 use models\UserModel;
 use models\ProjectModel;
