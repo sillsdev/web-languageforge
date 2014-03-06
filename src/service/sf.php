@@ -436,7 +436,9 @@ class Sf
 		return LexProjectCommands::updateSettings($projectId, $settings);
 	}
 	
-	
+	public function lex_projectSettings_importLift($projectId, $import) {
+		return LexProjectCommands::importLift($projectId, $import);
+	}
 	
 	
 	

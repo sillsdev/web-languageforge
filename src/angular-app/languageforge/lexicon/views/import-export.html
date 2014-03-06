@@ -1,60 +1,71 @@
-<div class="container" data-ng-cloak data-ng-controller="ImportExportCtrl">
+<div class="container" data-ng-cloak>
 <h2 style="font-weight:normal">Import/Export</h2>
 <tabset>
 	<tab heading="LIFT Import" data-ng-controller="LiftImportCtrl">
 		<div class="well">
 			<label>Import a LIFT File</label>
-			<div class="drop-box" data-ng-file-drop="onFileSelect($files);" data-ng-file-drop-available="dropSupported=true" data-ng-show="dropSupported">
+			<div class="drop-box" data-ng-file-drop="onFileSelect($files);" 
+				data-ng-file-drop-available="dropSupported=true" data-ng-show="dropSupported">
 				<h4>Drop a LIFT file here</h4>
 				<br/>
 				<p>or if you prefer...</p>
-			    <input type="button" class="btn" value="Browse..." onclick="javascript:document.getElementById('liftFile').click();">
-			    <input id="liftFile" type="file" style="display:none;" data-ng-file-select="onFileSelect($files)">
+			    <input type="button" class="btn" value="Browse..." 
+			    	onclick="javascript:document.getElementById('liftFile').click();">
+			    <input id="liftFile" type="file" style="display:none" 
+			    	data-ng-file-select="onFileSelect($files)">
 			</div>
 			<div data-ng-show="!dropSupported"> <!-- HTML5 Drop File is not supported on this browser -->
-				<input type="button" class="btn" value="Browse..." onclick="javascript:document.getElementById('liftFile').click();">
-			    <input id="liftFile" type="file" style="display:none;" data-ng-file-select="onFileSelect($files)">
+				<input type="button" class="btn" value="Browse..." 
+					onclick="javascript:document.getElementById('liftFile').click();">
+			    <input id="liftFile" type="file" style="display:none" 
+			    	data-ng-file-select="onFileSelect($files)">
 			</div>
 			<br />
 			<form data-ng-show="file != null">
-				<p><strong>{{file.name}}</strong>&nbsp;&nbsp;&nbsp;{{file.size | bytes }}</p>
+				<p>Language Forge merges the incoming data with existing entries. 
+					If there is a conflict, Language Forge cannot guess what you would prefer. 
+					Therefore, choose the merge settings to use for this import.</p>
+				<p>Whenever there is a conflict:</p>
 				<div class="control-group">
 					<div class="controls">
-						<label class="checkbox">
-							<input type="checkbox" data-ng-model="mergeWithExisting"/>Merge with existing</label>
+						<label class="radio">
+							<input type="radio" value="importLoses" data-ng-model="duplicates"/>Do not import the conflicting data (keep Language Forge data).</label>
+						<label class="radio">
+							<input type="radio" value="importWins" data-ng-model="duplicates"/>Import the conflicting data and overwrite the current data (the importing data overrules the Language Forge data).</label>
+						<label class="radio">
+							<input type="radio" value="createDuplicates" data-ng-model="duplicates"/>Import the conflicting data into a new lexical entry or sense and I will make decisions myself later.</label>
 					</div>
-					<div class="controls indent1" data-ng-show="mergeWithExisting">
+					<div class="controls">
 						<label class="checkbox">
-							<input type="checkbox" data-ng-model="allowDuplicates"/>Allow duplicates</label>
+							<input type="checkbox" data-ng-model="skipSameModTime"/>Skip importing entries with identical modification times.</label>
 					</div>
 				</div>
-				<button class="btn btn-primary" data-ng-click="importLift()"><i class="icon-upload"></i>Import</button>
+				<button class="btn btn-primary" data-ng-click="importLift()">
+					<i class="icon-upload"></i>Import</button><strong> {{file.name}}</strong> ({{file.size | bytes }})
 			</form>
 		</div>
 <pre data-ng-show="true">
 file {{file | json}}
 </pre>
 	</tab>
-	<tab heading="LIFT Export">
-		<div data-ng-controller="LiftExportCtrl">
+	<tab heading="LIFT Export" data-ng-controller="LiftExportCtrl">
 		<div class="row">
 		
-		<!-- Left column: task list -->
-		<div class="span3 control-group">
-		</div>
-		
-		<!-- Right column: task setup -->
-		<div class="span9">
-			<div class="well">
+			<!-- Left column: task list -->
+			<div class="span3 control-group">
 			</div>
-		</div>
+			
+			<!-- Right column: task setup -->
+			<div class="span9">
+				<div class="well">
+				</div>
+			</div>
 		
 		</div>
 <pre data-ng-show="false">
 </pre>
-		</div>
 	</tab>
-	<tab heading="Configuration Import">
+	<tab heading="Settings Import">
 	</tab>
 </tabset>
 </div>
