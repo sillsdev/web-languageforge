@@ -42,6 +42,10 @@ class LexProjectCommands {
 		$decoder->decodeMapOf('', $project->inputSystems, $settings['inputSystems']);
 		$project->write();
 	}
+	
+	public static function importLift($projectId, $import) {
+	}
+	
 }
 
 ?>

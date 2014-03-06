@@ -1,26 +1,37 @@
 'use strict';
 
-angular.module('lexicon.importExport', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'angularFileUpload'])
-.controller('ImportExportCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', '$filter', '$modal', 
-                             function($scope, userService, ss, notice, lexService, $filter, $modal) {
+angular.module('lexicon.importExport', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'angularFileUpload', 'lexicon.upload'])
+.controller('LiftImportCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'fileReader', 'lexProjectService', 
+                               function($scope, userService, ss, notice, fileReader, lexProjectService) {
+	$scope.duplicates = 'createDuplicates';
+	$scope.skipSameModTime = true;
 	
-}])
-.controller('LiftImportCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', '$http',
-                                 function($scope, userService, ss, notice, $http) {
-	$scope.mergeWithExisting = true;
-
 	$scope.onFileSelect = function($files) {
 		$scope.file = $files[0];	// take the first file only
-		
+		fileReader.readAsDataUrl($scope.file, $scope)
+		.then(function(result) {
+			$scope.file.data = result;
+		});
 	};
 	
 	$scope.importLift = function() {
-		console.log("importLift");
+		var importData = {
+			file: $scope.file,
+			settings: {
+				duplicates: $scope.duplicates,
+				skipSameModTime: $scope.skipSameModTime,
+			},
+		};
+		lexProjectService.importLift(importData, function(result) {
+			if (result.ok) {
+				notice.push(notice.SUCCESS, "LIFT import completed successfully");
+			}
+		});
 	};
 
 }])
 .controller('LiftExportCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
-                                 function($scope, userService, ss, notice) {
+                               function($scope, userService, ss, notice) {
 	
 }])
 ;

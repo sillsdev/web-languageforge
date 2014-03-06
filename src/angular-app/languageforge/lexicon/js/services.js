@@ -46,6 +46,14 @@ angular.module('lexicon.services', ['jsonRpc'])
 			});
 		};
 		
+		this.importLift = function(importData, callback) {
+			jsonRpc.call('lex_projectSettings_importLift', [this.getProjectId(), importData], function(result) {
+				if (result.ok) {
+					callback(result);
+				}
+			});
+		};
+		
 		this.getProjectId = function() {
 			var parts = $location.path().split('/');
 			// strip off the "/p/"

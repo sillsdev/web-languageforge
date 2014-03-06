@@ -180,6 +180,8 @@ class RightsHelper
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::VIEW);
 			case 'lex_projectSettings_update':
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
+			case 'lex_projectSettings_importLift':
+				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
 				
 				
 				
