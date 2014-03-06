@@ -26,6 +26,12 @@ class LexiconConfigObj {
 	 * @var string
 	 */
 	public $type;
+	
+	/**
+	 * 
+	 * @var boolean
+	 */
+	public $visible;
 
 	/**
 	 * 
