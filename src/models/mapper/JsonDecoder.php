@@ -115,11 +115,15 @@ class JsonDecoder {
 	 * @throws \Exception
 	 */
 	public function decodeArrayOf($key, $model, $data) {
+		if ($data == null) {
+			$data = array();
+		}
 		CodeGuard::checkTypeAndThrow($data, 'array');
+		$model->exchangeArray(array());
 		foreach ($data as $item) {
 			if ($model->hasGenerator()) {
 				$object = $model->generate($item);
-				$this->_decode($object, $item, false);
+				$this->_decode($object, $item, '');
 				$model[] = $object;
 			} else {
 				if (is_array($item)) {
@@ -137,11 +141,15 @@ class JsonDecoder {
 	 * @throws \Exception
 	 */
 	public function decodeMapOf($key, $model, $data) {
+		if ($data == null) {
+			$data = array();
+		}
 		CodeGuard::checkTypeAndThrow($data, 'array');
+		$model->exchangeArray(array());
 		foreach ($data as $itemKey => $item) {
 			if ($model->hasGenerator()) {
 				$object = $model->generate($item);
-				$this->_decode($object, $item, false);
+				$this->_decode($object, $item, $itemKey);
 				$model[$itemKey] = $object;
 			} else {
 				if (is_array($item)) {
