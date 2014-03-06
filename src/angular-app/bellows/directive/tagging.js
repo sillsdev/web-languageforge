@@ -23,7 +23,7 @@ angular.module('palaso.ui.tagging', ['ui.bootstrap'])
 			controller: ["$scope", function($scope) {
 				$scope.removeTag = function(tagIndex) {
 					$scope.tags.splice(tagIndex, 1);
-					$scope.onDelete();
+					($scope.onDelete||angular.noop)();
 				};
 			}],
 			link: function(scope, element, attrs, controller) {
