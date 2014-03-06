@@ -51,6 +51,17 @@ class ParatextExport
 	public static function exportCommentsForProject($projectId, $params) {
 		// NYI: loop over the texts in the project and call self::exportCommentsForText()
 	}
+	
+	/**
+	 * 
+	 * @param string $xml
+	 * @return string sanitized XML
+	 */
+	private static function sanitizeComment($xml) {
+		$search = array('&nbsp;', '<br>', '<b>', '</b>', '<i>', '</i>');
+		$replace = array(' ', '<br />', '<bold>', '</bold>', '<italic>', '</italic>');
+		return str_replace($search, $replace, $xml);
+	}
 
 	/**
 	 * 
@@ -64,7 +75,7 @@ class ParatextExport
 		$user = new UserModel((string)$comment['userRef']);
 		$username = $user->username;
 		
-		$content = $comment['content'] . " (by " . $user->username . " on " . date(\DateTime::RFC822, $comment['dateEdited']->sec) . ")";
+		$content = self::sanitizeComment($comment['content']) . " (by " . $user->username . " on " . date(\DateTime::RFC822, $comment['dateEdited']->sec) . ")";
 		if (count($tags) > 0) {
 			$content .= " (Tags: ";
 			foreach ($tags as $tag) {
