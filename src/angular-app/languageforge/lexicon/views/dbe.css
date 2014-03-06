@@ -115,3 +115,14 @@ legend.override-bootstrap {
 	top: 0px; /* Might need to increase this once the "For the demo, these do NOT work" text goes away */
 	right: 10px;
 }
+
+#entryList {
+	/* Override palaso-ui.css */
+	height: auto !important;
+}
+
+.outer-flex {
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+}
