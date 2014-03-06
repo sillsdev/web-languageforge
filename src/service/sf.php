@@ -1,6 +1,7 @@
 <?php
 
 use models\languageforge\lexicon\commands\LexProjectCommands;
+use libraries\sfchecks\ParatextExport;
 
 use libraries\shared\Website;
 
@@ -335,6 +336,10 @@ class Sf
 
 	public function text_settings_dto($projectId, $textId) {
 		return \models\scriptureforge\dto\TextSettingsDto::encode($projectId, $textId, $this->_userId);
+	}
+	
+	public function text_exportComments($projectId, $params) {
+		return ParatextExport::exportCommentsForText($projectId, $params['textId'], $params);
 	}
 	
 	//---------------------------------------------------------------
