@@ -4,7 +4,7 @@
         <h2>Dictionary Browse and Edit</h2>
         </div>
     </div>
-    <div class="row" style="margin-top:20px">
+    <div class="row outer-flex" style="margin-top:20px">
         <div class="span4" ng-show="entries.length > 0">
             <div style="margin-bottom:10px">
                 <input width="4" placeholder="search filter" type="text" class="input-medium search-query" ng-model="searchText" />
@@ -16,8 +16,8 @@
                 <table class="table table-condensed ">
                     <tbody>
                         <tr ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" ng-repeat="e in entries | filter:searchText">
-                            <td ng-click="editEntry(e.id)">{{e.title}}</td>
-                            <td ng-click="editEntry(e.id)">{{getMeaning(e.entry)}}</td>
+                            <td ng-click="editEntry(e.id)">{{e.title | characters:40}}</td>
+                            <td ng-click="editEntry(e.id)">{{getMeaning(e.entry) | characters:40}}</td>
                         </tr>
                     </tbody>
                 </table>
