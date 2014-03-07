@@ -36,5 +36,11 @@ class LexiconProjectModel extends LfProjectModel {
 	 * @var LexiconProjectSettings
 	 */
 	public $settings;
+	
+	/**
+	 * 
+	 * @var string
+	 */
+	public $liftFilePath;
 }
 ?>
