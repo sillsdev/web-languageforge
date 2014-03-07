@@ -288,12 +288,14 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 	});
 	$scope.$watchCollection('currentField.inputSystems.selecteds', function(newValue) {
 		if (angular.isDefined(newValue) && $scope.haveConfig()) {
-			$scope.fieldConfig[$scope.currentField.name].inputSystems = [];
-			angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
-				if ($scope.currentField.inputSystems.selecteds[tag]) {
-					$scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
-				}
-			});
+			if ($scope.fieldConfig[$scope.currentField.name].inputSystems) {
+				$scope.fieldConfig[$scope.currentField.name].inputSystems = [];
+				angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
+					if ($scope.currentField.inputSystems.selecteds[tag]) {
+						$scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
+					}
+				});
+			}
 		}
 	});
 	
