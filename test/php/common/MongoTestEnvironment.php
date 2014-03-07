@@ -91,6 +91,13 @@ class MongoTestEnvironment
 		foreach ($projectDb->listCollections() as $collection) {
 			$collection->drop();
 		}
+		// clean up assets folder
+		$folderPath = $projectModel->getAssetsFolderPath();
+		$cleanupFiles = glob($folderPath . '/*');
+		foreach ($cleanupFiles as $cleanupFile) {
+			@unlink($cleanupFile);
+		}
+		@rmdir($folderPath);
 	}
 	
 	/**
