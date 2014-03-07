@@ -176,7 +176,14 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @return string
 	 */
 	public function getViewsPath() {
-		return 'views/' . $projectModel->siteName . '/' . $projectModel->themeName;
+		return 'views/' . $this->siteName . '/' . $this->themeName;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getAssetsFolderPath() {
+		return APPPATH . 'assets/' . $this->siteName . '/' . $this->appName. '/' . $this->databaseName();
 	}
 	
 	/**
