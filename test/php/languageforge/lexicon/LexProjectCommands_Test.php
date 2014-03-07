@@ -57,7 +57,7 @@ class TestLexProjectCommands extends UnitTestCase {
 		$this->assertEqual($project2->settings->entry->fields['lexeme']->inputSystems[1], 'th');
 	}
 	
-	function testImportLift_LiftFileAdding_Ok() {
+	function testImportLift_EachDuplicateSetting_LiftFileAddedOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
