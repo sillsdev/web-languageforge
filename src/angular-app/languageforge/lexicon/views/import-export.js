@@ -3,7 +3,7 @@
 angular.module('lexicon.importExport', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'angularFileUpload', 'lexicon.upload'])
 .controller('LiftImportCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'fileReader', 'lexProjectService', 
                                function($scope, userService, ss, notice, fileReader, lexProjectService) {
-	$scope.duplicates = 'createDuplicates';
+	$scope.mergeRule = 'createDuplicates';
 	$scope.skipSameModTime = true;
 	
 	$scope.onFileSelect = function($files) {
@@ -18,7 +18,7 @@ angular.module('lexicon.importExport', ['ui.bootstrap', 'bellows.services', 'pal
 		var importData = {
 			file: $scope.file,
 			settings: {
-				duplicates: $scope.duplicates,
+				mergeRule: $scope.mergeRule,
 				skipSameModTime: $scope.skipSameModTime,
 			},
 		};
