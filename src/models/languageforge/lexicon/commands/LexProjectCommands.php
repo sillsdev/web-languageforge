@@ -7,24 +7,18 @@ use libraries\lfdictionary\common\UserActionDeniedException;
 use models\languageforge\lexicon\settings\LexiconProjectSettings;
 use models\languageforge\lexicon\settings\LexiconFieldListConfigObj;
 use models\languageforge\lexicon\LexiconProjectModel;
+use models\languageforge\lexicon\LiftMergeRule;
 use models\commands\ActivityCommands;
 use models\mapper\ArrayOf;
 use models\mapper\MapOf;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
-use models\lex\LexEntryModel;
-use models\lex\LexEntryId;
-use models\lex\LexEntryIds;
 use models\rights\Domain;
 use models\rights\Operation;
 use models\UserModel;
 
 class LexProjectCommands {
 
-	const DUPLICATES_IMPORTLOSES = 'importLoses';
-	const DUPLICATES_IMPORTWINS = 'importWins';
-	const DUPLICATES_ALLOW = 'createDuplicates';
-	
 	public static function readSettings($projectId) {
 		$project = new LexiconProjectModel($projectId);
 		$settings = JsonEncoder::encode($project->settings);
@@ -48,12 +42,13 @@ class LexProjectCommands {
 	public static function importLift($projectId, $import) {
 		$allowedExtensions = array(".lift");
 		
-		// LIFT file and file name
+		// LIFT file
 		$base64data = substr($import['file']['data'], 13);
 		$liftXml = base64_decode($base64data);
+		
+		// LIFT file name
 		$fileName = str_replace(array('/', '\\', '?', '%', '*', ':', '|', '"', '<', '>'), '_', $import['file']['name']);	// replace special characters with _
 		$fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
-		
 		if (! in_array($fileExt, $allowedExtensions)) {
 			$message = "$fileName is not an allowed LIFT file. Ensure the file is one of the following types: $allowedExtensionsStr.";
 			if (count($allowedExtensions) == 1) {
@@ -71,7 +66,7 @@ class LexProjectCommands {
 			mkdir($folderPath, 0777, true);
 		};
 		
-		if ($import['settings']['duplicates'] != self::DUPLICATES_IMPORTLOSES || !$project->liftFilePath) {
+		if (!$project->liftFilePath || $import['settings']['mergeRule'] != LiftMergeRule::IMPORT_LOSES) {
 			// cleanup previous files of any allowed extension
 			$cleanupFiles = glob($folderPath . '/*[' . implode(', ', $allowedExtensions) . ']');
 			foreach ($cleanupFiles as $cleanupFile) {
@@ -83,10 +78,9 @@ class LexProjectCommands {
 			$moveOk = file_put_contents($filePath, $liftXml);
 	
 			// update database with file location
+			$project->liftFilePath = '';
 			if ($moveOk) {
 				$project->liftFilePath = $filePath;
-			} else {
-				$project->liftFilePath = '';
 			}
 			$project->write();
 		}

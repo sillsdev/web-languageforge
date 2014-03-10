@@ -2,6 +2,7 @@
 
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\commands\LexProjectCommands;
+use models\languageforge\lexicon\LiftMergeRule;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -63,7 +64,7 @@ class TestLexProjectCommands extends UnitTestCase {
 		
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
-		$import = LexTestData::Import(LexProjectCommands::DUPLICATES_IMPORTLOSES, false);
+		$import = LexTestData::Import(LiftMergeRule::IMPORT_LOSES, false);
 		
 		// no LIFT file initially
 		$fileName = str_replace(array('/', '\\', '?', '%', '*', ':', '|', '"', '<', '>'), '_', $import['file']['name']);	// replace special characters with _
@@ -86,7 +87,7 @@ class TestLexProjectCommands extends UnitTestCase {
 		$this->assertFalse(file_exists($filePath), 'Imported LIFT file should not exist');
 		
 		// importWins: LIFT file added, other removed
-		$import = LexTestData::ImportSettings($import, LexProjectCommands::DUPLICATES_IMPORTWINS);
+		$import = LexTestData::ImportSettings($import, LiftMergeRule::IMPORT_WINS);
 		LexProjectCommands::importLift($projectId, $import);
 		$this->assertFalse(file_exists($filePathOther), 'Other LIFT file should not exist');
 		$this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
@@ -98,7 +99,7 @@ class TestLexProjectCommands extends UnitTestCase {
 		$this->assertFalse(file_exists($filePath), 'Imported LIFT file should not exist');
 		
 		// createDuplicates: LIFT file added, other removed
-		$import = LexTestData::ImportSettings($import, LexProjectCommands::DUPLICATES_ALLOW);
+		$import = LexTestData::ImportSettings($import, LiftMergeRule::CREATE_DUPLICATES);
 		LexProjectCommands::importLift($projectId, $import);
 		$this->assertFalse(file_exists($filePathOther), 'Other LIFT file should not exist');
 		$this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
