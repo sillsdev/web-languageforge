@@ -67,7 +67,8 @@
 						<div class="span3"><img src="/images/jamaicanpsalms/sf-sub-footer-pic.png" alt="Israel's Story" style="width:210px;height:210px;margin-top:52px" /></div>
 						<div class="span9">
 							<h3>The Impact of the Bible</h3>
-							<p>Many Jamaicans have been touched by the Jamaican New Testament! Take Israel, for example, a young British-Jamaican girl living in England. She talks to us regularly on our Facebook page. Ever so often she reads for her family members from the Jamaican New Testament (JNT). One day, she read to her grandmother from the JNT. Her grandmother then told her pastor about the JNT. The pastor was curious, so Israel was asked to take her JNT to church and read from it during worship! Israel messaged us after the service, this was what she said:</p>
+							<p>Many Jamaicans have been touched by the Jamaican New Testament! Take Israel, for example, a young British-Jamaican young man living in England. He talks to us regularly on our Facebook page. Ever so often he reads for his family members from the Jamaican New Testament (JNT). One day, he read to his grandmother from the JNT. His grandmother then told her pastor about the JNT. The pastor was curious, so Israel was asked to take his JNT to church and read from it during worship! Israel messaged us after the service, this was what he said:</p>
+
 							<p>"I've just got home from church. Believe me when I tell you that they LOVE the JNT! Thank you for my copy of the JNT in my own language. I've come to realise that when you listen to the Bible in your language, it is more meaningful to you."</p>
 <!-- 							<p><a href="/create_account" class="arrowed">Get Involved Today</a></p> -->
 							<p>
