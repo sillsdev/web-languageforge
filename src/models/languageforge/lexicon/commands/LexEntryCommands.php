@@ -2,6 +2,10 @@
 
 namespace models\languageforge\lexicon\commands;
 
+use models\languageforge\lexicon\settings\LexiconConfigObj;
+
+use models\languageforge\lexicon\LexEntryListModel;
+
 use models\languageforge\lexicon\LexiconProjectModel;
 
 use models\languageforge\lexicon\LexEntryModel;
@@ -43,6 +47,101 @@ class LexEntryCommands {
 		foreach ($entryIds as $id) {
 			LexEntryModel::remove($project, $id);
 		}
+	}
+	
+	/**
+	 * 
+	 * @param string $projectId
+	 * @param string $missingInfo - if empty, returns all entries.
+	 * 								if matches one of LexiconConfigObj constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
+	 */
+	public static function listEntries($projectId, $missingInfo = '') {
+		$project = new LexiconProjectModel($projectId);
+		$lexEntries = new LexEntryListModel($project);
+		$lexEntries->read();
+		if ($missingInfo != '') {
+			// TODO: this is extremely inefficient!  Refactor to use mongo db query or at a minimum just 1 db transaction - cjh 2014-03
+			// TODO: move to LexEntryListModel - cjh 2014-03
+			foreach ($lexEntries->entries as $index => $e) {
+				$entry = new LexEntryModel($project, $e['id']);
+				$foundMissingInfo = false;
+				if (count($entry->senses) == 0) {
+					$foundMissingInfo = true;
+				} else {
+					foreach ($entry->senses as $sense) {
+						switch ($missingInfo) {
+							case LexiconConfigObj::DEFINITION:
+								$definition = $sense->definition;
+								if (count($definition) == 0) {
+									$foundMissingInfo = true;
+								} else {
+									foreach ($definition as $form) {
+										if ($form->value == '') {
+											$foundMissingInfo = true;
+										}
+									}
+								}
+								break;
+	
+							case LexiconConfigObj::POS:
+								if ($sense->partOfSpeech->value == '') {
+									$foundMissingInfo = true;
+								}
+								break;
+	
+							case LexiconConfigObj::EXAMPLE_SENTENCE:
+								$examples = $sense->examples;
+								if (count($examples) == 0) {
+									$foundMissingInfo = true;
+								} else {
+									foreach ($examples as $example) {
+										if (count($example->sentence) == 0) {
+											$foundMissingInfo = true;
+										} else {
+											foreach ($example->sentence as $form) {
+												if ($form->value == '') {
+													$foundMissingInfo = true;
+												}
+											}
+										}
+									}
+								}
+								break;
+	
+							case LexiconConfigObj::EXAMPLE_TRANSLATION:
+								$examples = $sense->examples;
+								if (count($examples) == 0) {
+									$foundMissingInfo = true;
+								} else {
+									foreach ($examples as $example) {
+										if (count($example->translation) == 0) {
+											$foundMissingInfo = true;
+										} else {
+											foreach ($example->translation as $form) {
+												if ($form->value == '') {
+													$foundMissingInfo = true;
+												}
+											}
+										}
+									}
+								}
+								break;
+							
+							default:
+								throw new \Exception("Unknown missingInfoType = " . $missingInfo);
+						}
+						if ($foundMissingInfo) {
+							break;
+						}
+					}
+				}
+				if (!$foundMissingInfo) {
+					unset($lexEntries->entries[$index]);
+				}
+			}
+			$lexEntries->count = count($lexEntries->entries);
+		}
+		return $lexEntries;
 	}
 }
 
