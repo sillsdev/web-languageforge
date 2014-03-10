@@ -2,8 +2,13 @@
 
 namespace models\languageforge\lexicon;
 
+use models\languageforge\lexicon\LexiconProjectModel;
+use models\languageforge\lexicon\LexEntryModel;
+use models\languageforge\lexicon\LexEntryListModel;
+use models\languageforge\lexicon\LiftMergeRule;
+
 class LiftImport {
-	
+
 	public static function merge($xml, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true) {
 		$entryList = new LexEntryListModel($projectModel);
 		$entryList->read();
@@ -13,12 +18,12 @@ class LiftImport {
 		while ($reader->read()) {
 			if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
 				$guid = $reader->getAttribute('guid');
-				$node = $reader->expand(); // expands the node for that particular guid
+				$node = simplexml_import_dom($reader->expand()); // expands the node for that particular guid
 				
-				if ($guid exists in entries) {
+				$importWins = true;
+				if (exists_in_entries($guid, $entries)) {
 					$entry = existingEntry;
-					if (different mod time && $skipSameModTime) {
-						$importWins = true;
+					if (different_mod_time() && $skipSameModTime) {
 						switch ($mergeRule) {
 							case LiftMergeRule::CREATE_DUPLICATES:
 								$entry = new LexEntryModel($projectModel);
@@ -35,26 +40,16 @@ class LiftImport {
 								throw new \Exception("unknown LiftMergeRule " . $mergeRule);
 								
 						}
-						LiftDecoder::decode($node, $entry, $importWins);
-						$entry->write();
 					} else {
 						// skip because same mod time
 					}
 				} else {
 					$entry = new LexEntryModel($projectModel);
-					LiftDecoder::decode($node, $entry);
-					$entry->write();
 				}
 				
+				LiftDecoder::decode($node, $entry, $importWins);
+				$entry->write();
 				
-				
-// 				$dom = new \DomDocument();
-// 				$n = $dom->importNode($node,true);
-// 				$dom->appendChild($n);
-// 				$sxe = simplexml_import_dom($n);
-// 				if ($processEntryCallback !== null) {
-// 					$processEntryCallback($sxe);
-// 				}
 			}
 		}
 	}
