@@ -14,8 +14,8 @@ class LexiconConfigObj {
 	const DEFINITION = 'definition';
 	const POS = 'partOfSpeech';
 	const SEMDOM = 'semanticDomain';
-	const EXAMPLE = 'example';
-	const TRANSLATION = 'translation';
+	const EXAMPLE_SENTENCE = 'sentence';
+	const EXAMPLE_TRANSLATION = 'translation';
 
 	// field lists
 	const SENSES_LIST = 'senses';
