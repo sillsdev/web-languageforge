@@ -1,5 +1,9 @@
 <?php
 
+use models\languageforge\lexicon\settings\LexiconConfigObj;
+
+use models\languageforge\lexicon\commands\LexProjectCommands;
+
 use models\languageforge\lexicon\commands\LexEntryCommands;
 
 use models\languageforge\lexicon\LexCommentReply;
@@ -137,6 +141,121 @@ class TestLexEntryCommands extends UnitTestCase {
 		$this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
 		$this->assertEqual($newEntry['senses'][0]['partOfSpeech']['comments'][0]['content'], 'i vote for adj');
 		
+	}
+	
+	function testListEntries_allEntries() {
+		$e = new LexiconMongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+		
+		$sense = new Sense();
+		$sense->definition['en'] = new LexiconFieldWithComments('apple');
+		
+		for ($i = 0; $i < 10; $i++) {
+			$entry = new LexEntryModel($project);
+			$entry->lexeme['de'] = new LexiconFieldWithComments('Apfel' . $i);
+			$entry->senses[] = $sense;
+			$entry->write();
+		}
+		
+		$result = LexEntryCommands::listEntries($projectId);
+		$this->assertEqual($result->count, 10);
+		$this->assertEqual($result->entries[5]['lexeme']['de']['value'], 'Apfel5');
+	}
+	
+	function testListEntries_missingInfoDefinition_someEntries() {
+		$e = new LexiconMongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+		
+		$sense = new Sense();
+		$sense->definition['en'] = new LexiconFieldWithComments('apple');
+		
+		$senseNoDef = new Sense();
+		$senseNoDef->definition['en'] = new LexiconFieldWithComments();
+		
+		for ($i = 0; $i < 10; $i++) {
+			$entry = new LexEntryModel($project);
+			$entry->lexeme['de'] = new LexiconFieldWithComments('Apfel' . $i);
+			if ($i % 2 == 0) {
+				$entry->senses[] = $sense;
+			}
+			$entry->write();
+		}
+		$entry = new LexEntryModel($project);
+		$entry->lexeme['de'] = new LexiconFieldWithComments('Apfel');
+		$entry->senses[] = $senseNoDef;
+		$entry->write();
+		
+		$result = LexEntryCommands::listEntries($projectId, LexiconConfigObj::DEFINITION);
+		$this->assertEqual($result->count, 6);
+	}
+
+	function testListEntries_missingInfoPartOfSpeech_someEntries() {
+		$e = new LexiconMongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+		
+		$sense = new Sense();
+		$sense->definition['en'] = new LexiconFieldWithComments('apple');
+		$sense->partOfSpeech = new LexiconFieldWithComments('noun');
+		
+		$senseNoPos = new Sense();
+		$senseNoPos->definition['en'] = new LexiconFieldWithComments('orange');
+		
+		for ($i = 0; $i < 10; $i++) {
+			$entry = new LexEntryModel($project);
+			$entry->lexeme['de'] = new LexiconFieldWithComments('Apfel' . $i);
+			$entry->senses[] = $sense;
+			if ($i % 2 == 0) {
+				$entry->senses[] = $senseNoPos;
+			}
+			$entry->write();
+		}
+		
+		$result = LexEntryCommands::listEntries($projectId, LexiconConfigObj::POS);
+		$this->assertEqual($result->count, 5);
+		
+	}
+
+	function testListEntries_missingInfoExamples_someEntries() {
+		$e = new LexiconMongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+		
+		
+		
+		for ($i = 0; $i < 10; $i++) {
+			$entry = new LexEntryModel($project);
+			$entry->lexeme['de'] = new LexiconFieldWithComments('Apfel' . $i);
+			$sense = new Sense();
+			$sense->definition['en'] = new LexiconFieldWithComments('apple');
+			$sense->partOfSpeech = new LexiconFieldWithComments('noun');
+			$example = new Example();
+			if ($i % 2 == 0) {
+				$example->sentence['de'] = new LexiconFieldWithComments('Ich esse Apfeln oft');
+			}
+			if ($i % 3 == 0) {
+				$example->translation['en'] = new LexiconFieldWithComments('I eat Apples often');
+			}
+			$sense->examples[] = $example;
+			$entry->senses[] = $sense;
+			$entry->write();
+		}
+		
+		$result = LexEntryCommands::listEntries($projectId, LexiconConfigObj::EXAMPLE_SENTENCE);
+		$this->assertEqual($result->count, 5);
+
+		$result = LexEntryCommands::listEntries($projectId, LexiconConfigObj::EXAMPLE_TRANSLATION);
+		$this->assertEqual($result->count, 6);
 	}
 }
 

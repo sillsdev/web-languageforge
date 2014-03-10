@@ -10,26 +10,6 @@ use models\mapper\Id;
 use models\mapper\ArrayOf;
 use models\ProjectModel;
 
-class LexEntryModelMongoMapper extends \models\mapper\MongoMapper {
-
-	/**
-	 * @var LexEntryModelMongoMapper[]
-	 */
-	private static $_pool = array();
-	
-	/**
-	 * @param string $databaseName
-	 * @return LexEntryModelMongoMapper
-	 */
-	public static function connect($databaseName) {
-		if (!isset(static::$_pool[$databaseName])) {
-			static::$_pool[$databaseName] = new LexEntryModelMongoMapper($databaseName, 'lexicon');
-		}
-		return static::$_pool[$databaseName];
-	}
-	
-}
-
 class LexEntryModel extends \models\mapper\MapperModel {
 
 	/**
@@ -59,7 +39,7 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	public $id;
 	
 	/**
-	 *
+	 * 
 	 * @var string
 	 */
 	public $guid;
@@ -100,16 +80,5 @@ class LexEntryModel extends \models\mapper\MapperModel {
 
 }
 
-class LexEntryListModel extends \models\mapper\MapperListModel {
-
-	public function __construct($projectModel) {
-		parent::__construct(
-				LexEntryModelMongoMapper::connect($projectModel->databaseName()),
-				array(),
-				array('lexeme', 'senses')
-		);
-	}
-
-}
 
 ?>
