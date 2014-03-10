@@ -58,8 +58,12 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	 */
 	public $id;
 	
-	// TODO Enhance. Add $guid also.  All Lift entries have a guid and we need to have this to do S/R correctly. CP 2013-12
-	
+	/**
+	 *
+	 * @var string
+	 */
+	public $guid;
+
 	/**
 	 *
 	 * @var string

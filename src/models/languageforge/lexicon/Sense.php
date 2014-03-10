@@ -32,6 +32,11 @@ class Sense {
 	 */
 	public $definition;
 	
+	/**
+	 * The id of the sense as specified in the LIFT file
+	 * @var string
+	 */
+	public $liftId;
 
 	/**
 	 * @var LexiconFieldWithComments
