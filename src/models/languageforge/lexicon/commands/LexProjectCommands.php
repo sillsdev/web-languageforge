@@ -7,6 +7,8 @@ use libraries\lfdictionary\common\UserActionDeniedException;
 use models\languageforge\lexicon\settings\LexiconProjectSettings;
 use models\languageforge\lexicon\settings\LexiconFieldListConfigObj;
 use models\languageforge\lexicon\LexiconProjectModel;
+use models\languageforge\lexicon\LexEntryModel;
+use models\languageforge\lexicon\LiftImport;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\commands\ActivityCommands;
 use models\mapper\ArrayOf;
@@ -84,6 +86,8 @@ class LexProjectCommands {
 			}
 			$project->write();
 		}
+		
+		LiftImport::merge($liftXml, $project, $import['settings']['mergeRule'], $import['settings']['skipSameModTime']);
 			
 	}
 	
