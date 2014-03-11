@@ -36,13 +36,18 @@ class LexDbeDto
 		if (count($lexemeWritingSystems) > 0) {
 			// sort by lexeme (first writing system)
 			$ws = $lexemeWritingSystems[0];
-			function lexeme_cmp($a, $b) { return ($a['lexeme'][$ws]['value'] > $b['lexeme'][$ws]['value']) ? 1 : -1;	}
-			usort($entries, "lexeme_cmp");
+			usort($entries, function ($a, $b) use ($ws) { 
+				if (array_key_exists('lexeme', $a) && array_key_exists('lexeme', $b)) {
+					return ($a['lexeme'][$ws]['value'] > $b['lexeme'][$ws]['value']) ? 1 : -1;
+				} else {
+					return 0;
+				}
+			});
 		}
 
-		$firstEntry = new LexEntryModel($projectModel);
-		if ($entriesModel->count > 0) {
-			$firstEntry = new LexEntryModel($entriesModel->entries[0]['id']);
+		$firstEntry = new LexEntryModel($project);
+		if (count($entries) > 0) {
+			$firstEntry = new LexEntryModel($project, $entries[0]['id']);
 		}
 		
 		return array(
