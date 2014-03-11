@@ -2,10 +2,6 @@
 
 namespace models\languageforge\lexicon;
 
-use models\mapper\MapOf;
-
-use models\CommentModel;
-
 use models\mapper\Id;
 use models\mapper\ArrayOf;
 use models\ProjectModel;
@@ -18,11 +14,7 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	 */
 	public function __construct($projectModel, $id = '') {
 		$this->id = new Id();
-		$this->lexeme = new MapOf(
-			function($data) {
-				return new LexiconFieldWithComments();
-			}		
-		);
+		$this->lexeme = new MultiText();
 		$this->senses = new ArrayOf(
 			function($data) {
 				return new Sense();
