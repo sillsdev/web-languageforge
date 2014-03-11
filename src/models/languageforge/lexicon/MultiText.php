@@ -12,11 +12,11 @@ class MultiText extends MapOf {
 		});
 	}
 	
-	public function updateForm($inputSystem, $text) {
+	public function form($inputSystem, $value) {
 		if (array_key_exists($inputSystem, $this)) {
-			$this[$inputSystem]->value = $text;
+			$this[$inputSystem]->value = $value;
 		} else {
-			$this[$inputSystem] = new LexiconFieldWithComments($text);
+			$this[$inputSystem] = new LexiconFieldWithComments($value);
 		}
 	}
 

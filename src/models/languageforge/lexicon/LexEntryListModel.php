@@ -1,6 +1,8 @@
 <?php 
 namespace models\languageforge\lexicon;
 
+use models\languageforge\lexicon\settings\LexiconConfigObj;
+
 class LexEntryListModel extends \models\mapper\MapperListModel {
 
 	public function __construct($projectModel) {
@@ -16,7 +18,7 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		if ($missingInfo != '') {
 			// TODO: this is extremely inefficient!  Refactor to use mongo db query or at a minimum just 1 db transaction - cjh 2014-03
 			foreach ($this->entries as $index => $e) {
-				$entry = new LexEntryModel($project, $e['id']);
+				$entry = new LexEntryModel($this->_mapper, $e['id']);
 				$foundMissingInfo = false;
 				if (count($entry->senses) == 0) {
 					$foundMissingInfo = true;
