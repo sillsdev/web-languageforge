@@ -257,6 +257,36 @@ class TestLexEntryCommands extends UnitTestCase {
 		$result = LexEntryCommands::listEntries($projectId, LexiconConfigObj::EXAMPLE_TRANSLATION);
 		$this->assertEqual($result->count, 6);
 	}
+	
+	function testListEntries_someEntriesWithNoDefinition_Ok() {
+		$e = new LexiconMongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+		
+		for ($i = 0; $i < 10; $i++) {
+			$entry = new LexEntryModel($project);
+			$entry->lexeme->form('de', 'Apfel' . $i);
+			if ($i % 2 == 0) {
+				$sense = new Sense();
+				$entry->senses[] = $sense;
+			}
+			if ($i % 3 == 0) {
+				$sense = new Sense();
+				$sense->definition->form('en', 'apple');
+				$sense->partOfSpeech->value = 'noun';
+				$entry->senses[] = $sense;
+			}
+			$entry->write();
+		}
+		
+		$result = LexEntryCommands::listEntries($projectId);
+
+		$this->assertEqual($result->entries[0]['lexeme']['de']['value'], 'Apfel0');
+		$this->assertEqual(get_class($result->entries[0]['definition']), 'stdClass');
+		$this->assertEqual($result->entries[3]['definition']['en']['value'], 'apple');
+	}
 }
 
 ?>
