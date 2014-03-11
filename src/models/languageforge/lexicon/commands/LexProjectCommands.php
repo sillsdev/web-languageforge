@@ -59,14 +59,14 @@ class LexProjectCommands {
 			throw new \Exception($message);
 		}
 		
-		// TODO Enhance. Validate LIFT file, throw exception if invalid. IJH 2014-03
-		
-		// make the folder if it doesn't exist
+		// make the Assets folder if it doesn't exist
 		$project = new LexiconProjectModel($projectId);
 		$folderPath = $project->getAssetsFolderPath();
 		if (!file_exists($folderPath) and !is_dir($folderPath)) {
 			mkdir($folderPath, 0777, true);
 		};
+		
+		LiftImport::merge($liftXml, $project, $import['settings']['mergeRule'], $import['settings']['skipSameModTime']);
 		
 		if (!$project->liftFilePath || $import['settings']['mergeRule'] != LiftMergeRule::IMPORT_LOSES) {
 			// cleanup previous files of any allowed extension
@@ -75,10 +75,10 @@ class LexProjectCommands {
 				@unlink($cleanupFile);
 			}
 			
-			// put the LIFT file into assets
+			// put the LIFT file into Assets
 			$filePath =  $folderPath . '/' . $fileName;
 			$moveOk = file_put_contents($filePath, $liftXml);
-	
+			
 			// update database with file location
 			$project->liftFilePath = '';
 			if ($moveOk) {
@@ -86,9 +86,6 @@ class LexProjectCommands {
 			}
 			$project->write();
 		}
-		
-		LiftImport::merge($liftXml, $project, $import['settings']['mergeRule'], $import['settings']['skipSameModTime']);
-			
 	}
 	
 }

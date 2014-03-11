@@ -13,8 +13,13 @@ class LiftImport {
 		$entryList = new LexEntryListModel($projectModel);
 		$entryList->read();
 		$entries = $entryList->entries;
+				
 		$reader = new \XMLReader();
 		$reader->XML($xml);
+		$reader->setRelaxNGSchema(APPPATH . "vendor/lift/lift-0.13.rng");
+		if (! $reader->isValid()) {
+			throw new \Exception("Sorry, the LIFT file is invalid.");
+		}
 		while ($reader->read()) {
 			if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
 				$guid = $reader->getAttribute('guid');
