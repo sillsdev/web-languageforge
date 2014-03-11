@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate'])
-.controller('dbeCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexProjectService', '$window', '$timeout', '$filter', 
-                        function ($scope, userService, sessionService, lexService, projectService, $window, $timeout, $filter) {
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', '$filter', 
+                        function ($scope, userService, sessionService, lexService, $window, $timeout, $filter) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
 	// for an idea on expanding text areas
 	
@@ -163,15 +163,32 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return index;
 	};
 	
-	projectService.settingsChangeNotify(function() {
-		lexService.dbeDto(function(result) {
-			if (result.ok) {
-				$scope.entries = result.data.entries;
-				$scope.config = result.data.config; // When retrieving config from JSON, we can do this.
-				$scope.currentEntry.id = $filter('orderAsArray')($scope.entries, 'id')[0]['id'];
-			}
-		});
-	});
+	$scope.refreshView = function() {
+		var view = 'dbe';
+		switch (view) {
+			case 'dbe':
+				lexService.dbeDto(function(result) {
+					if (result.ok) {
+						$scope.config = result.data.config;
+						$scope.entries = result.data.entries;
+						$scope.setCurrentEntry(result.data.firstEntry);
+						//$scope.currentEntry.id = $filter('orderAsArray')($scope.entries, 'id')[0]['id'];
+					}
+				});
+				break;
+			case 'add-grammar':
+				break;
+			case 'add-examples':
+				break;
+			case 'add-meanings':
+				break;
+			case 'add-pos':
+				break;
+		}
+	};
+	
+	$scope.refreshView();
+	
 	
 	$scope.recursiveSetConfig = function(startAt, propName, propValue) {
 		// Go through the config tree starting at the startAt field, and

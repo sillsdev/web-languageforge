@@ -18,7 +18,7 @@ angular.module('lexicon',
 		// the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
 	    $routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } });
 
-		$routeProvider.when( '/p/:projectId', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
+		$routeProvider.when( '/p/:projectId', { redirectTo: '/p/:projectId/dbe', });
 		$routeProvider.when( '/p/:projectId/view', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
 		$routeProvider.when( '/p/:projectId/gatherTexts', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
 		$routeProvider.when( '/p/:projectId/review', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
@@ -27,25 +27,25 @@ angular.module('lexicon',
 		$routeProvider.when(
 				'/p/:projectId/dbe',
 				{
-					templateUrl: '/angular-app/languageforge/lexicon/views/dbe.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
 				}
 			);
 		$routeProvider.when(
 				'/p/:projectId/add-grammar',
 				{
-					templateUrl: '/angular-app/languageforge/lexicon/views/add-grammar.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
 				}
 			);
 		$routeProvider.when(
 				'/p/:projectId/add-examples',
 				{
-					templateUrl: '/angular-app/languageforge/lexicon/views/add-examples.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
 				}
 			);
 		$routeProvider.when(
 				'/p/:projectId/add-meanings',
 				{
-					templateUrl: '/angular-app/languageforge/lexicon/views/add-meanings.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
 				}
 			);
 		$routeProvider.when(
@@ -71,16 +71,8 @@ angular.module('lexicon',
 			$scope.breadcrumbs = breadcrumbService.read();
 		}, true);
 	}])
-	.controller("MainCtrl", ['$scope', 'lexProjectService', function($scope, projectService) {
-		$scope.hasProjectConfig = false;
-		projectService.readSettings(function(result) {
-			if (result.ok) {
-				$scope.hasProjectConfig = true;
-			}
-		});
-	}])
-	.controller('LexiconMenuCtrl', ['$scope', '$timeout', 'lexProjectService', 
-	                                function($scope, $timeout, lexProjectService) {
+	.controller('LexiconMenuCtrl', ['$scope', '$timeout', 'lexConfigService', 'lexProjectService', 
+	                                function($scope, $timeout, lexConfigService, lexProjectService) {
 		$scope.noSubmenuId = 0;
 		$scope.gatherSubmenuId = 1;
 		$scope.addSubmenuId = 2;
@@ -95,7 +87,7 @@ angular.module('lexicon',
 		$scope.isItemVisible = function(itemName) {
 			// Default to visible if config not defined
 			if (angular.isUndefined($scope.config)) {
-				return true;
+				return false;
 			};
 			// Default to invisible if nothing specified in config
 			if (angular.isUndefined($scope.config.tasks[itemName])) {
@@ -128,9 +120,8 @@ angular.module('lexicon',
 		
 		$scope.projectId = lexProjectService.getProjectId();
 		
-		lexProjectService.settingsChangeNotify(function() {
-			$scope.config = lexProjectService.getSettings();
+		lexConfigService.registerListener(function() {
+			$scope.config = lexConfigService.getConfig();
 		});
-		
 	}])
 	;
