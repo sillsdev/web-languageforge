@@ -35,15 +35,15 @@ class TestLexEntryCommands extends UnitTestCase {
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
-		$entry->lexeme['th'] = new LexiconFieldWithComments('apple');
+		$entry->lexeme->form('th', 'apple');
 
 		$sense = new Sense();
-		$sense->definition['en'] = new LexiconFieldWithComments('red fruit');
-		$sense->partOfSpeech = new LexiconFieldWithComments('noun');
+		$sense->definition->form('en', 'red fruit');
+		$sense->partOfSpeech->value = 'noun';
 		
 		$example = new Example();
-		$example->sentence['th'] = new LexiconFieldWithComments('example1');
-		$example->translation['en'] = new LexiconFieldWithComments('trans1');
+		$example->sentence->form('th', 'example1');
+		$example->translation->form('en', 'trans1');
 		
 		$sense->examples[] = $example;
 		
@@ -70,7 +70,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
-		$entry->lexeme['th'] = new LexiconFieldWithComments('apple');
+		$entry->lexeme->form('th', 'apple');
 		
 		$reply = new LexCommentReply('reply1');
 		$comment = new LexComment('this is a comment');
@@ -82,8 +82,8 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 
 		$sense = new Sense();
-		$sense->definition['en'] = new LexiconFieldWithComments('red fruit');
-		$sense->partOfSpeech = new LexiconFieldWithComments('noun');
+		$sense->definition->form('en', 'red fruit');
+		$sense->partOfSpeech->value = 'noun';
 		
 		$entry->senses[] = $sense;
 		
@@ -110,15 +110,15 @@ class TestLexEntryCommands extends UnitTestCase {
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
-		$entry->lexeme['th'] = new LexiconFieldWithComments('apple');
+		$entry->lexeme->form('th', 'apple');
 
 		$sense = new Sense();
-		$sense->definition['en'] = new LexiconFieldWithComments('red fruit');
-		$sense->partOfSpeech = new LexiconFieldWithComments('noun');
+		$sense->definition->form('en', 'red fruit');
+		$sense->partOfSpeech->value = 'noun';
 		
 		$example = new Example();
-		$example->sentence['th'] = new LexiconFieldWithComments('example1');
-		$example->translation['en'] = new LexiconFieldWithComments('trans1');
+		$example->sentence->form('th', 'example1');
+		$example->translation->form('en', 'trans1');
 		
 		$sense->examples[] = $example;
 		
@@ -151,11 +151,11 @@ class TestLexEntryCommands extends UnitTestCase {
 		$projectId = $project->id->asString();
 		
 		$sense = new Sense();
-		$sense->definition['en'] = new LexiconFieldWithComments('apple');
+		$sense->definition->form('en', 'apple');
 		
 		for ($i = 0; $i < 10; $i++) {
 			$entry = new LexEntryModel($project);
-			$entry->lexeme['de'] = new LexiconFieldWithComments('Apfel' . $i);
+			$entry->lexeme->form('de', 'Apfel' . $i);
 			$entry->senses[] = $sense;
 			$entry->write();
 		}
@@ -173,21 +173,21 @@ class TestLexEntryCommands extends UnitTestCase {
 		$projectId = $project->id->asString();
 		
 		$sense = new Sense();
-		$sense->definition['en'] = new LexiconFieldWithComments('apple');
+		$sense->definition->form('en', 'apple');
 		
 		$senseNoDef = new Sense();
-		$senseNoDef->definition['en'] = new LexiconFieldWithComments();
+		$senseNoDef->definition->form('en', '');
 		
 		for ($i = 0; $i < 10; $i++) {
 			$entry = new LexEntryModel($project);
-			$entry->lexeme['de'] = new LexiconFieldWithComments('Apfel' . $i);
+			$entry->lexeme->form('de', 'Apfel' . $i);
 			if ($i % 2 == 0) {
 				$entry->senses[] = $sense;
 			}
 			$entry->write();
 		}
 		$entry = new LexEntryModel($project);
-		$entry->lexeme['de'] = new LexiconFieldWithComments('Apfel');
+		$entry->lexeme->form('de', 'Apfel');
 		$entry->senses[] = $senseNoDef;
 		$entry->write();
 		
@@ -203,15 +203,15 @@ class TestLexEntryCommands extends UnitTestCase {
 		$projectId = $project->id->asString();
 		
 		$sense = new Sense();
-		$sense->definition['en'] = new LexiconFieldWithComments('apple');
-		$sense->partOfSpeech = new LexiconFieldWithComments('noun');
+		$sense->definition->form('en', 'apple');
+		$sense->partOfSpeech->value = 'noun';
 		
 		$senseNoPos = new Sense();
-		$senseNoPos->definition['en'] = new LexiconFieldWithComments('orange');
+		$senseNoPos->definition->form('en', 'orange');
 		
 		for ($i = 0; $i < 10; $i++) {
 			$entry = new LexEntryModel($project);
-			$entry->lexeme['de'] = new LexiconFieldWithComments('Apfel' . $i);
+			$entry->lexeme->form('de', 'Apfel' . $i);
 			$entry->senses[] = $sense;
 			if ($i % 2 == 0) {
 				$entry->senses[] = $senseNoPos;
@@ -235,16 +235,16 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 		for ($i = 0; $i < 10; $i++) {
 			$entry = new LexEntryModel($project);
-			$entry->lexeme['de'] = new LexiconFieldWithComments('Apfel' . $i);
+			$entry->lexeme->form('de', 'Apfel' . $i);
 			$sense = new Sense();
-			$sense->definition['en'] = new LexiconFieldWithComments('apple');
-			$sense->partOfSpeech = new LexiconFieldWithComments('noun');
+			$sense->definition->form('en', 'apple');
+			$sense->partOfSpeech->value = 'noun';
 			$example = new Example();
 			if ($i % 2 == 0) {
-				$example->sentence['de'] = new LexiconFieldWithComments('Ich esse Apfeln oft');
+				$example->sentence->form('de', 'Ich esse Apfeln oft');
 			}
 			if ($i % 3 == 0) {
-				$example->translation['en'] = new LexiconFieldWithComments('I eat Apples often');
+				$example->translation->form('en', 'I eat Apples often');
 			}
 			$sense->examples[] = $example;
 			$entry->senses[] = $sense;
