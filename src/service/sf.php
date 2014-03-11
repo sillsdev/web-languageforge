@@ -1,5 +1,7 @@
 <?php
 
+use models\languageforge\lexicon\dto\LexDbeDto;
+
 use models\languageforge\lexicon\commands\LexProjectCommands;
 use libraries\sfchecks\ParatextExport;
 
@@ -428,7 +430,7 @@ class Sf
 	// LANGUAGEFORGE PROJECT API
 	//---------------------------------------------------------------
 	
-	public function lex_projectSettings_read($projectId) {
+	public function lex_projectSettingsDto($projectId) {
 		return LexProjectCommands::readSettings($projectId);
 	}
 	
@@ -439,6 +441,23 @@ class Sf
 	public function lex_projectSettings_importLift($projectId, $import) {
 		return LexProjectCommands::importLift($projectId, $import);
 	}
+	
+	public function lex_entry_read($projectId, $entryId) {
+		return LexEntryCommands::readEntry($projectId, $entryId);
+	}
+	
+	public function lex_entry_update($projectId, $entryId, $model) {
+		return LexEntryCommands::updateEntry($projectId, $entryId, $model);
+	}
+	
+	public function lex_entry_remove($projectId, $entryId) {
+		return LexEntryCommands::removeEntries($projectId, array($entryId));
+	}
+	
+	public function lex_dbeDto($projectId) {
+		return LexDbeDto::encode($projectId);
+	}
+	
 	
 	
 	

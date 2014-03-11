@@ -1,50 +1,41 @@
 angular.module('lexicon.services', ['jsonRpc'])
-	.service('lexProjectService', ['jsonRpc', '$location', function(jsonRpc, $location) {
-		jsonRpc.connect('/api/sf');
-		this.configInputSystems = function() {
-			return _config.inputSystems;
+	.service('lexConfigService', [function(jsonRpc, $location) {
+
+		var _callbacks = [];
+		var _config = {};
+
+		this.setConfig = function(config) {
+			_config = angular.copy(config);
+			if (angular.isDefined(_config.entry)) {
+				angular.forEach(_callbacks, function(callback) {
+					callback();
+				});
+			}
 		};
 		
-		var _config = {};
+		this.getConfig = function() {
+			return _config;
+		};
 		
-		var settingsChangeCallbacks = [];
-		
-		this.settingsChangeNotify = function(callback) {
-			settingsChangeCallbacks.push(callback);
-			if (angular.isDefined(_config.entry)) { // special case to notify the caller that we have a real config at this time
+		this.registerListener = function(callback) {
+			_callbacks.push(callback);
+			if (angular.isDefined(_config.entry)) {
 				callback();
 			}
 		};
 		
-		function _notifySettingsChange() {
-			angular.forEach(settingsChangeCallbacks, function(callback) {
-				callback();
-			});
-		}
-		
-		this.getSettings = function() {
-			return angular.copy(_config);
+	}])
+	.service('lexProjectService', ['jsonRpc', '$location', function(jsonRpc, $location) {
+		jsonRpc.connect('/api/sf');
+
+		this.settingsPageDto = function(callback) {
+			jsonRpc.call('lex_projectSettingsDto', [this.getProjectId()], callback);
 		};
-		
-		this.readSettings = function(callback) {
-			jsonRpc.call('lex_projectSettings_read', [this.getProjectId()], function(result) {
-				if (result.ok) {
-					_config = result.data;
-					callback(result);
-					_notifySettingsChange();
-				}
-			});
-		};
-		
+
 		this.updateSettings = function(settings, callback) {
-			jsonRpc.call('lex_projectSettings_update', [this.getProjectId(), settings], function(result) {
-				if (result.ok) {
-					_config = angular.copy(settings);
-					callback(result);
-					_notifySettingsChange();
-				}
-			});
+			jsonRpc.call('lex_projectSettings_update', [this.getProjectId(), settings], callback);
 		};
+		
 		
 		this.importLift = function(importData, callback) {
 			jsonRpc.call('lex_projectSettings_importLift', [this.getProjectId(), importData], function(result) {
@@ -366,15 +357,16 @@ angular.module('lexicon.services', ['jsonRpc'])
 			return list;
 		};
 		this.dbeDto = function(callback) {
+			jsonRpc.call('lex_dbeDto', [projectService.getProjectId()], callback);
 			/*
-			jsonRpc.call('lex_dbeDto', [this.getProjectId()], function(result) {
+			function(result) {
 				if (result.ok) {
 					var entries = result.data.entries;
 					callback({'ok': true, 'data': {'entries': getEntriesList(), 'config': projectService.getSettings()}});
 				}
 			});
-			*/
 			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': projectService.getSettings()}});
+			*/
 		};
 		this.addExampleDto = function(callback) {
 			var dtoConfig = angular.copy(_config);
