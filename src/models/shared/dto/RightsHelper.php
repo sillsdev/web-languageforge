@@ -176,13 +176,16 @@ class RightsHelper
 				
 				
 			// LanguageForge (lexicon)
-			case 'lex_projectSettings_read':
-				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::VIEW);
 			case 'lex_projectSettings_update':
+			case 'lex_projectSettingsDto':
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
 			case 'lex_projectSettings_importLift':
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
 				
+			// grant general permission until a better, app-specific rightsHelper can be developed
+			// TODO: refactor rightshelper to be app specific!
+			case 'lex_dbeDto':
+				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::VIEW);
 				
 				
 				

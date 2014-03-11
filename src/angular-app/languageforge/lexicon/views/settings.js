@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
-.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', '$filter', '$modal', 
-                             function($scope, userService, ss, notice, lexService, $filter, $modal) {
+.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexConfigService', '$filter', '$modal', 
+                             function($scope, userService, ss, notice, lexService, configService, $filter, $modal) {
 	
 	$scope.config = {};
 
@@ -95,17 +95,20 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 		}
 	};
 	
-	lexService.settingsChangeNotify(function() {
-		$scope.config = lexService.getSettings();
-		$scope.setupView();
+	lexService.settingsPageDto(function(result) {
+		if (result.ok) {
+			$scope.config = result.data;
+			configService.setConfig($scope.config);
+			$scope.setupView();
+		}
 	});
-
+	
 	$scope.settingsApply = function() {
 		lexService.updateSettings($scope.config, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "Project settings updated successfully");
 				$scope.settingsForm.$setPristine();
-				//$scope.queryProjectSettings(); - why should we do this?
+				configService.setConfig($scope.config);
 			}
 		});
 	};
