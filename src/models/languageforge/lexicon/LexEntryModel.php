@@ -8,6 +8,14 @@ use models\ProjectModel;
 
 class LexEntryModel extends \models\mapper\MapperModel {
 
+	public static function mapper($databaseName) {
+		static $instance = null;
+		if (null === $instance) {
+			$instance = new \models\mapper\MongoMapper($databaseName, 'lexicon');
+		}
+		return $instance;
+	}
+
 	/**
 	 * @param ProjectModel $projectModel
 	 * @param string $id
@@ -22,7 +30,7 @@ class LexEntryModel extends \models\mapper\MapperModel {
 		);
 		$this->authorInfo = new AuthorInfo();
 		$databaseName = $projectModel->databaseName();
-		parent::__construct(LexEntryModelMongoMapper::connect($databaseName), $id);
+		parent::__construct(self::mapper($databaseName), $id);
 	}
 	
 	/**

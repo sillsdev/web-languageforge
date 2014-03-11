@@ -5,11 +5,16 @@ use models\languageforge\lexicon\settings\LexiconConfigObj;
 
 class LexEntryListModel extends \models\mapper\MapperListModel {
 
+	public static function mapper($databaseName) {
+		static $instance = null;
+		if (null === $instance) {
+			$instance = new \models\mapper\MongoMapper($databaseName, 'lexicon');
+		}
+		return $instance;
+	}
+
 	public function __construct($projectModel) {
-		parent::__construct(
-				LexEntryModelMongoMapper::connect($projectModel->databaseName()),
-				array(), array('guid', 'lexeme')
-		);
+		parent::__construct( self::mapper($projectModel->databaseName()), array(), array('guid', 'lexeme'));
 	}
 	
 	public function read($missingInfo = '') {
