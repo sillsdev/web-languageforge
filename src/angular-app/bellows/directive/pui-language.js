@@ -13,7 +13,7 @@ angular.module('palaso.ui.language', [])
 			puiShowLinks : "=",
 		},
 		controller: ['$scope', '$filter', function($scope, $filter) {
-			// TODO Enhance. Could use infinite scrolling since search can return large results. See example here http://jsfiddle.net/vojtajina/U7Bz9/. Example doesn't remove top data when scrolling down. IJH 2014-02
+			// TODO Enhance. Could use infinite scrolling since search can return large results. See example here http://jsfiddle.net/W6wJ2/. IJH 2014-02
 			
 			$scope.languages = InputSystems.languages();
 			

@@ -19,7 +19,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	*/
 	
 	var pristineEntry = {};
-	var lastSavedDate = new Date();
+	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
 	$scope.entries = [];
 	$scope.config = {};
@@ -36,15 +36,14 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	
 	$scope.canSave = function() {
-		return $scope.currentEntryIsDirty() || lexService.canSave();
+		return $scope.currentEntryIsDirty();
 	};
 	
 	$scope.saveButtonTitle = function() {
 		if ($scope.canSave()) {
 			return "Save Now";
 		} else {
-			return "Saved " + moment(lastSavedDate).fromNow();
-			//return "All Changes Saved";
+			return "Saved " + moment($scope.lastSavedDate).fromNow();
 		}
 	};
 
@@ -55,12 +54,14 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	// when timer goes off, execute the save now method and delete the timer
 	
 	$scope.saveNow = function() {
-		lastSavedDate = new Date();
-		$scope.saveCurrentEntry();
-		lexService.saveNow();
-		$scope.getPageDto(function() {
-			$scope.editEntry($scope.currentEntry.id);
-		});
+		if ($scope.canSave()) {
+			lexService.update($scope.currentEntry, function(result) {
+				$scope.updateListWithEntry(result.data);
+				$scope.setCurrentEntry(result.data);
+				$scope.lastSavedDate = new Date();
+				$scope.refreshView();
+			});
+		}
 	};
 	
 	$scope.updateListWithEntry = function(entry) {
@@ -68,27 +69,25 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		for (var i=0; i<$scope.entries.length; i++) {
 			var e = $scope.entries[i];
 			if (e.id == entry.id) {
-				$scope.entries[i].title = $scope.entryTitle(entry);
+				$scope.entries[i] = entry;
 				isNew = false;
 				break;
 			}
 		}
 		if (isNew) {
-			$scope.entries.unshift({id:entry.id, title:$scope.entryTitle(entry), entry:entry});
+			$scope.entries.unshift(entry);
 		}
 	};
 	
 	$scope.getMeaning = function(entry) {
-		// Default to English; second default is the first meaning found that's not blank
-		if (angular.isDefined(entry.senses[0].definition)) {
-			var meaning = entry.senses[0].definition['en']; // Might be undefined
-			// TODO: Default should be "primary analysis language", whatever that is defined in the config. (Currently there's nowhere in the config to define that).
-			for (var lang in entry.senses[0].definition) {
-				if (!meaning) { meaning = entry.senses[0].definition[lang]; };
-			};
-			if (!meaning) { meaning = {value: "[No definition]"}; }
-			return meaning.value;
+		var meaning = '';
+		if (angular.isDefined($scope.config.entry) && angular.isDefined(entry.definition)) {
+			var ws = $scope.config.entry.senses.definition.inputSystems[0];
+			if (angular.isDefined(entry.definition[ws])) {
+				meaning = entry.definition[ws].value;
+			}
 		}
+		return meaning;
 	};
 	
 	$scope.setCurrentEntry = function(entry) {
@@ -97,26 +96,12 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		pristineEntry = angular.copy(entry);
 	};
 	
-	$scope.saveCurrentEntry = function() {
-		if ($scope.entryLoaded() && $scope.currentEntryIsDirty()) {
-			lexService.update($scope.currentEntry, function(result) {
-				$scope.updateListWithEntry(result.data);
-				$scope.setCurrentEntry(result.data);
-			});
-		}
-	};
-	
 	$scope.editEntry = function(id) {
-		$scope.saveCurrentEntry();
+		$scope.saveNow();
 
 		if (arguments.length == 0) {
-			// create new entry
-			lexService.update({id:''}, function(result) {
-				$scope.updateListWithEntry(result.data);
-				$scope.setCurrentEntry(result.data);
-			});
+			$scope.setCurrentEntry({id:''});
 		} else {
-			// load existing entry
 			lexService.read(id, function(result) {
 				$scope.setCurrentEntry(result.data);
 			});
@@ -127,7 +112,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		$scope.editEntry();
 	};
 	
-	$scope.entryTitle = function(entry) {
+	$scope.getTitle = function(entry) {
 		entry = entry || $scope.currentEntry;
 		var title = "[new word]";
 		if (entry.lexeme && $scope.config && $scope.config.entry) {
@@ -163,18 +148,21 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return index;
 	};
 	
-	$scope.refreshView = function() {
+	$scope.refreshView = function(updateFirstEntry) {
+		updateFirstEntry = typeof updateFirstEntry !== 'undefined' ? updateFirstEntry : false;
+		var gotDto = function (result) {
+			if (result.ok) {
+				$scope.config = result.data.config;
+				$scope.entries = result.data.entries;
+				if (updateFirstEntry) {
+					$scope.setCurrentEntry(result.data.firstEntry);
+				}
+			}
+		};
 		var view = 'dbe';
 		switch (view) {
 			case 'dbe':
-				lexService.dbeDto(function(result) {
-					if (result.ok) {
-						$scope.config = result.data.config;
-						$scope.entries = result.data.entries;
-						$scope.setCurrentEntry(result.data.firstEntry);
-						//$scope.currentEntry.id = $filter('orderAsArray')($scope.entries, 'id')[0]['id'];
-					}
-				});
+				lexService.dbeDto(gotDto);
 				break;
 			case 'add-grammar':
 				break;
@@ -187,7 +175,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	$scope.refreshView();
+	$scope.refreshView(true);
 	
 	
 	$scope.recursiveSetConfig = function(startAt, propName, propValue) {

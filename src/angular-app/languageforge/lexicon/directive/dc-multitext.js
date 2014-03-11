@@ -1,4 +1,4 @@
-angular.module('palaso.ui.dc.multitext', ['lexicon.services', 'palaso.ui.dc.comments'])
+angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
   // Palaso UI Multitext
   .directive('dcMultitext', [function() {
 		return {
@@ -8,7 +8,7 @@ angular.module('palaso.ui.dc.multitext', ['lexicon.services', 'palaso.ui.dc.comm
 				definition : "=",
 				model : "=",
 			},
-			controller: ['$scope', 'lexProjectService', function($scope, lexService) {
+			controller: ['$scope', function($scope, lexService) {
 				$scope.makeValidModel = function() {
 					// if the model doesn't exist, create an object for it based upon the definition
 					if (!$scope.model) {
@@ -22,7 +22,7 @@ angular.module('palaso.ui.dc.multitext', ['lexicon.services', 'palaso.ui.dc.comm
 				};
 				
 				$scope.getAbbreviation = function(inputSystem) {
-					return lexService.getSettings().inputSystems[inputSystem].abbreviation;
+					//return lexService.getSettings().inputSystems[inputSystem].abbreviation;
 				};
 			}],
 			link : function(scope, element, attrs, controller) {

@@ -22,6 +22,7 @@ class LexEntryCommands {
 		return JsonEncoder::encode($entry);
 	}
 	
+	/*
 	public static function addEntry($projectId, $params) {
 		CodeGuard::checkTypeAndThrow($params, 'array');
 		$project = new LexiconProjectModel($projectId);
@@ -29,18 +30,33 @@ class LexEntryCommands {
 		JsonDecoder::decode($entry, $params);
 		return $entry->write();
 	}
+	*/
 	
-	public static function updateEntry($projectId, $entryId, $params) {
+	public static function updateEntry($projectId, $params) {
 		// TODO: we need to do checking of rights for updating comments, parts of the entry, etc - cjh
 		CodeGuard::checkTypeAndThrow($params, 'array');
 		$project = new LexiconProjectModel($projectId);
-		$entry = new LexEntryModel($project, $entryId);
+		// TODO: sanitize the params coming in - unset comments on each node? - cjh
+		if (array_key_exists('id', $params) && $params['id'] != '') {
+			$entry = new LexEntryModel($project, $entryId);
+		} else {
+			$entry = new LexEntryModel($project);
+		}
 		JsonDecoder::decode($entry, $params);
 		return $entry->write();
 		// question (from cjh) when doing an updateEntry, is there a way for us to only update comments using the standard JsonDecoder?  Or only update parts of the model that should be updated? Need to write a test for this
 		
 	}
 	
+	public static function updateLexemeComment($projectId, $entryId, $params) {}
+	public static function updateLexemeReply($projectId, $entryId, $commentId, $params) {}
+	
+	public static function updateSenseComment($projectId, $entryId, $senseId, $senseNode, $params) {}
+	public static function updateSenseReply($projectId, $entryId, $senseId, $senseNode, $commentId, $params) {}
+	
+	public static function updateExampleComment($projectId, $entryId, $senseId, $exampleId, $exampleNode, $params) {}
+	public static function updateExampleReply($projectId, $entryId, $senseId, $exampleId, $exampleNode, $commentId, $params) {}
+
 	public static function removeEntries($projectId, $entryIds) {
 		CodeGuard::checkTypeAndThrow($entryIds, 'array');
 		$project = new LexiconProjectModel($projectId);
