@@ -36,7 +36,7 @@ class LiftDecoder {
 	public function readMultiText($node) {
 		$multiText = new MultiText();
 		foreach ($node->{'form'} as $form) {
-			$multiText->updateForm((string)$form['lang'], (string)$form->{'text'});
+			$multiText->form((string)$form['lang'], (string)$form->{'text'});
 		}
 		
 // 		echo "<pre>";
