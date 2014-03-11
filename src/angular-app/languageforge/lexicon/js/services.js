@@ -64,6 +64,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 		};
 		*/
 
+		/*
 		var sampleData = [
 				{
 					"lexeme": {"th-fonipa-x-etic": {value: "khâaw kài thɔ̂ɔt"}},
@@ -208,7 +209,9 @@ angular.module('lexicon.services', ['jsonRpc'])
 				},
 
 			];
+		*/
 
+		/*
 		var serverEntries = [];
 		var dirtyEntries = [];
 		var lastLocalId = 0;
@@ -280,6 +283,15 @@ angular.module('lexicon.services', ['jsonRpc'])
 			});
 			dirtyEntries = [];
 			(callback || angular.noop)({data:''});
+		};
+		*/
+		
+		this.read = function(id, callback) {
+			jsonRpc.call('lex_entry_read', [projectService.getProjectId(), id], callback);
+		};
+		
+		this.update = function(entry, callback) {
+			jsonRpc.call('lex_entry_read', [projectService.getProjectId(), entry], callback);
 		};
 
 		this.read = function(id, callback) {
