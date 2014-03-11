@@ -2,32 +2,21 @@
 
 namespace models\languageforge\lexicon;
 
-use models\CommentModel;
-use models\mapper\MapOf;
-
 class Example {
 
 	function __construct() {
-		$this->sentence = new MapOf(
-			function($data) {
-				return new LexiconFieldWithComments();
-			}		
-		);
-		$this->translation = new MapOf(
-			function($data) {
-				return new LexiconFieldWithComments();
-			}		
-		);
+		$this->sentence = new MultiText();
+		$this->translation = new MultiText();
 		$this->authorInfo = new AuthorInfo();
 	}
 
 	/**
-	 * @var MapOf<LexiconFieldWithComments>
+	 * @var MultiText
 	 */
 	public $sentence;
 	
 	/**
-	 * @var MapOf<LexiconFieldWithComments>
+	 * @var MultiText
 	 */
 	public $translation;
 
