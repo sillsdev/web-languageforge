@@ -37,13 +37,13 @@ class TestLexDbeDto extends UnitTestCase {
 		$projectId = $project->id->asString();
 		
 		$result = LexDbeDto::encode($projectId);
-		$this->assertEqual($result['config']['entry']['lexeme']['type'], 'fields', 'dto config is not valid');
+		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 0);
-		$this->assertEqual($result['entry']['lexeme'], '', 'blank first entry is not valid');
+		$this->assertEqual(get_class($result['entry']['lexeme']), 'stdClass', 'blank first entry is not valid');
 		
 	}
 	
-	function testEncode_entries_ok() {
+	function testEncode_entries_sortsOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
@@ -52,20 +52,24 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		
 		$sense = new Sense();
-		$sense->definition['en'] = new LexiconFieldWithComments('apple');
+		$sense->definition->form('en', 'apple');
 		
 		for ($i = 0; $i < 10; $i++) {
 			$entry = new LexEntryModel($project);
-			$entry->lexeme['de'] = new LexiconFieldWithComments('Apfel' . $i);
+			$entry->lexeme->form('en', 'Apfel' . $i);
 			$entry->senses[] = $sense;
 			$entry->write();
 		}
 		
+		$entry = new LexEntryModel($project);
+		$entry->lexeme->form('en', 'Aardvark');
+		$entry->senses[] = $sense;
+		$entry->write();
+
 		$result = LexDbeDto::encode($projectId);
-		$this->assertEqual($result['config']['entry']['lexeme']['type'], 'fields', 'dto config is not valid');
-		$this->assertEqual(count($result['entries']), 10);
-		$this->assertEqual($result['entries'][0]['lexeme']['de']['value'], 'Apfel');
-		$this->assertEqual($result['entry']['lexeme'], '', 'blank first entry is not valid');
+		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
+		$this->assertEqual(count($result['entries']), 11);
+		$this->assertEqual($result['entry']['lexeme']['en']['value'], 'Aardvark', 'Aardvark should sort first');
 		
 	}
 	
