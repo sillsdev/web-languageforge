@@ -11,6 +11,14 @@ class MultiText extends MapOf {
 			return new LexiconFieldWithComments();
 		});
 	}
+	
+	public function updateForm($inputSystem, $text) {
+		if (array_key_exists($inputSystem, $this)) {
+			$this[$inputSystem]->value = $text;
+		} else {
+			$this[$inputSystem] = new LexiconFieldWithComments($text);
+		}
+	}
 
 }
 
