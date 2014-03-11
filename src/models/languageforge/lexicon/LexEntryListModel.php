@@ -14,29 +14,39 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 	}
 
 	public function __construct($projectModel) {
-		parent::__construct( self::mapper($projectModel->databaseName()), array(), array('guid', 'lexeme'));
+		parent::__construct( self::mapper($projectModel->databaseName()), array(), array('guid', 'lexeme', 'senses'));
+	}
+	
+	private function getDefinition($entry) {
+		$senses = $entry['senses'];
+		$definition = new \stdClass();
+		if (count($senses) > 0 && array_key_exists('definition', $senses[0]) && count($senses[0]['definition']) > 0) {
+			// TODO: actually figure out the preferred writing system for display and use that
+			$definition = $senses[0]['definition'];
+		}
+		return $definition;
 	}
 	
 	public function read($missingInfo = '') {
 		parent::read();
 		
 		if ($missingInfo != '') {
-			// TODO: this is extremely inefficient!  Refactor to use mongo db query or at a minimum just 1 db transaction - cjh 2014-03
-			foreach ($this->entries as $index => $e) {
-				$entry = new LexEntryModel($this->_mapper, $e['id']);
+			foreach ($this->entries as $index => $entry) {
+				
+				$senses = $entry['senses'];
 				$foundMissingInfo = false;
-				if (count($entry->senses) == 0) {
+				if (count($senses) == 0) {
 					$foundMissingInfo = true;
 				} else {
-					foreach ($entry->senses as $sense) {
+					foreach ($senses as $sense) {
 						switch ($missingInfo) {
 							case LexiconConfigObj::DEFINITION:
-								$definition = $sense->definition;
+								$definition = $sense['definition'];
 								if (count($definition) == 0) {
 									$foundMissingInfo = true;
 								} else {
 									foreach ($definition as $form) {
-										if ($form->value == '') {
+										if ($form['value'] == '') {
 											$foundMissingInfo = true;
 										}
 									}
@@ -44,22 +54,22 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 								break;
 	
 							case LexiconConfigObj::POS:
-								if ($sense->partOfSpeech->value == '') {
+								if (!array_key_exists('value', $sense['partOfSpeech']) || $sense['partOfSpeech']['value'] == '') {
 									$foundMissingInfo = true;
 								}
 								break;
 	
 							case LexiconConfigObj::EXAMPLE_SENTENCE:
-								$examples = $sense->examples;
+								$examples = $sense['examples'];
 								if (count($examples) == 0) {
 									$foundMissingInfo = true;
 								} else {
 									foreach ($examples as $example) {
-										if (count($example->sentence) == 0) {
+										if (!array_key_exists('sentence', $example) || count($example['sentence']) == 0) {
 											$foundMissingInfo = true;
 										} else {
-											foreach ($example->sentence as $form) {
-												if ($form->value == '') {
+											foreach ($example['sentence'] as $form) {
+												if ($form['value'] == '') {
 													$foundMissingInfo = true;
 												}
 											}
@@ -69,16 +79,16 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 								break;
 	
 							case LexiconConfigObj::EXAMPLE_TRANSLATION:
-								$examples = $sense->examples;
+								$examples = $sense['examples'];
 								if (count($examples) == 0) {
 									$foundMissingInfo = true;
 								} else {
 									foreach ($examples as $example) {
-										if (count($example->translation) == 0) {
+										if (!array_key_exists('translation', $example) || count($example['translation']) == 0) {
 											$foundMissingInfo = true;
 										} else {
-											foreach ($example->translation as $form) {
-												if ($form->value == '') {
+											foreach ($example['translation'] as $form) {
+												if ($form['value'] == '') {
 													$foundMissingInfo = true;
 												}
 											}
@@ -97,9 +107,17 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 				}
 				if (!$foundMissingInfo) {
 					unset($this->entries[$index]);
+				} else {
+					$this->entries[$index]['definition'] = $this->getDefinition($entry);
+					unset($this->entries[$index]['senses']);
 				}
-			}
+			} // end of foreach
 			$this->count = count($this->entries);
+		} else {
+			foreach ($this->entries as $index => $entry) {
+				$this->entries[$index]['definition'] = $this->getDefinition($entry);
+				unset($this->entries[$index]['senses']);
+			}
 		}
 	}
 
