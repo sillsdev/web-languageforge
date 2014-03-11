@@ -11,6 +11,12 @@ class Example {
 	}
 
 	/**
+	 * The id of the example as specified in the LIFT file
+	 * @var string
+	 */
+	public $liftId;
+
+	/**
 	 * @var MultiText
 	 */
 	public $sentence;

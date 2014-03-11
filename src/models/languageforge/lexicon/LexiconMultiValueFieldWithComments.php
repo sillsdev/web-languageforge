@@ -13,6 +13,7 @@ class LexiconMultiValueFieldWithComments extends LexiconMultiValueField {
 				return new LexComment();
 			}
 		);
+		parent::__construct();
 	}
 	
 	public $comments;
