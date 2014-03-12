@@ -117,6 +117,7 @@ class RightsHelper
 			case 'text_update':
 			case 'text_read':
 			case 'text_settings_dto':
+			case 'text_exportComments':
 				return self::userHasProjectRight($params[0], $userId, Domain::TEXTS + Operation::EDIT);
 
 			case 'text_delete':

@@ -254,7 +254,6 @@ angular.module(
 	                                      function($scope, $http, textService, ss, $routeParams, breadcrumbService, notice) {
 		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
-		var dto;
 		$scope.projectId = projectId;
 		$scope.textId = textId;
 		$scope.editedText = {
@@ -273,7 +272,6 @@ angular.module(
 
 		// Get name from text service. This really should be in the DTO, but this will work for now.
 		// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08
-		var text;
 		textService.settings_dto($scope.projectId, $scope.textId, function(result) {
 			if (result.ok) {
 				$scope.dto = result.data;
@@ -362,5 +360,51 @@ angular.module(
 		};
 		  
 
+	}])
+	.controller('ParatextExportTextCtrl', ['$scope', 'textService', '$routeParams', '$location', 
+	                                      function($scope, textService, $routeParams, $location) {
+		
+		$scope.exportConfig = {
+			'textId': $routeParams.textId,
+			'tagEditorVisible' : false,
+			'exportComments' : false,
+			'tags' : []
+		};
+		
+		$scope.download = {
+			'xml' : '<no data>',
+			'commentCount' : 0,
+			'answerCount' : 0,
+			'totalCount' : 0,
+			'complete' : false,
+			'inprogress' : false
+		};
+		
+		$scope.returnTrue = function() {
+			return true;
+		};
+
+		
+		$scope.startExport = function() {
+			$scope.download.inprogress = true;
+			textService.exportComments($routeParams.projectId, $scope.exportConfig, function(result) {
+				if (result.ok) {
+					$scope.download = result.data;
+					$scope.download.complete = true;
+				}
+				$scope.download.inprogress = false;
+			});
+		};
+		
+		$scope.downloadExport = function() {
+			// for a reference on how to create a data-uri for use in downloading content see http://stackoverflow.com/questions/16514509/how-do-you-serve-a-file-for-download-with-angularjs-or-javascript
+			var uri = 'data:text/plain;charset=utf-8,' + encodeURIComponent($scope.download.xml);
+			var link = document.createElement('a');
+			link.download = $scope.download.filename;
+			link.href = uri;
+			link.click();
+		};
+		
+		
 	}])
 	;
