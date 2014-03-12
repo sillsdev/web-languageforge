@@ -35,40 +35,123 @@ file {
 		return $import;
 	}
 	
+	// has incorrect th-fonipa form in each entry
 	const liftTwoEntriesV0_13 = <<<EOD
 <?xml version="1.0" encoding="utf-8"?>
 <lift
 	version="0.13"
 	producer="WeSay 1.0.0.0">
 	<entry
-		id="chuÌ€uchiÌ€i muÌŒu rÉ”Ì‚É”p_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
 		dateCreated="2008-11-03T06:17:24Z"
-		dateModified="2009-10-12T04:05:40Z"
+		dateModified="2011-10-26T01:41:19Z"
 		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
 		<lexical-unit>
 			<form
 				lang="th-fonipa">
-				<text>chuÌ€uchiÌ€i muÌŒu krÉ”Ì‚É”p</text>
+				<text>chùuchìi mǔu krɔ̂ɔp</text>
 			</form>
 			<form
 				lang="th">
-				<text>à¸‰à¸¹à¹ˆà¸‰à¸µà¹ˆà¸«à¸¡à¸¹à¸£à¸­à¸š</text>
+				<text>ฉู่ฉี่หมูกรอบ</text>
 			</form>
 		</lexical-unit>
 	</entry>
 	<entry
-		id="05473cb0-4165-4923-8d81-02f8b8ed3f26"
+		id="Id'dPrematurely_05473cb0-4165-4923-8d81-02f8b8ed3f26"
 		dateCreated="2008-10-09T02:15:23Z"
 		dateModified="2008-10-17T06:16:11Z"
 		guid="05473cb0-4165-4923-8d81-02f8b8ed3f26">
 		<lexical-unit>
 			<form
 				lang="th-fonipa">
-				<text>khaÌ‚aw kaÌ€i thÉ”Ì‚É”t</text>
+				<text>khâaw kài thɔ̀ɔt</text>
 			</form>
 			<form
 				lang="th">
-				<text>à¸‚à¹‰à¸²à¸§à¹„à¸�à¹ˆà¸—à¸­à¸”</text>
+				<text>ข้าวไก่ทอด</text>
+			</form>
+		</lexical-unit>
+	</entry>
+</lift>
+EOD;
+	
+	// has correct th-fonipa form in each entry
+	const liftTwoEntriesCorrectedV0_13 = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.13"
+	producer="WeSay 1.0.0.0">
+	<entry
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		dateCreated="2008-11-03T06:17:24Z"
+		dateModified="2011-10-26T01:41:19Z"
+		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>chùuchìi mǔu krɔ̀ɔp</text>
+			</form>
+			<form
+				lang="th">
+				<text>ฉู่ฉี่หมูกรอบ</text>
+			</form>
+		</lexical-unit>
+	</entry>
+	<entry
+		id="Id'dPrematurely_05473cb0-4165-4923-8d81-02f8b8ed3f26"
+		dateCreated="2008-10-09T02:15:23Z"
+		dateModified="2008-10-17T06:16:11Z"
+		guid="05473cb0-4165-4923-8d81-02f8b8ed3f26">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>khâaw kài thɔ̂ɔt</text>
+			</form>
+			<form
+				lang="th">
+				<text>ข้าวไก่ทอด</text>
+			</form>
+		</lexical-unit>
+	</entry>
+</lift>
+EOD;
+	
+	// has correct th-fonipa form in each entry and mod date changed
+	const liftTwoEntriesModifiedV0_13 = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.13"
+	producer="WeSay 1.0.0.0">
+	<entry
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		dateCreated="2008-11-03T06:17:24Z"
+		dateModified="2013-10-26T01:41:19Z"
+		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>chùuchìi mǔu krɔ̀ɔp</text>
+			</form>
+			<form
+				lang="th">
+				<text>ฉู่ฉี่หมูกรอบ</text>
+			</form>
+		</lexical-unit>
+	</entry>
+	<entry
+		id="Id'dPrematurely_05473cb0-4165-4923-8d81-02f8b8ed3f26"
+		dateCreated="2008-10-09T02:15:23Z"
+		dateModified="2013-10-17T06:16:11Z"
+		guid="05473cb0-4165-4923-8d81-02f8b8ed3f26">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>khâaw kài thɔ̂ɔt</text>
+			</form>
+			<form
+				lang="th">
+				<text>ข้าวไก่ทอด</text>
 			</form>
 		</lexical-unit>
 	</entry>
@@ -81,15 +164,14 @@ EOD;
 	version="0.12"
 	producer="WeSay 1.0.0.0">
 	<entry
-		xXxXx = "invalidAttribute"
-		id="chuÌ€uchiÌ€i muÌŒu rÉ”Ì‚É”p_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
 		dateCreated="2008-11-03T06:17:24Z"
-		dateModified="2009-10-12T04:05:40Z"
+		dateModified="2011-10-26T01:41:19Z"
 		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
 		<lexical-unit>
 			<form
 				lang="th-fonipa">
-				<text>chuÌ€uchiÌ€i muÌŒu krÉ”Ì‚É”p</text>
+				<text>chùuchìi mǔu krɔ̂ɔp</text>
 			</form>
 		</lexical-unit>
 	</entry>
@@ -103,14 +185,14 @@ EOD;
 	producer="WeSay 1.0.0.0">
 	<entry
 		xXxXx = "invalidAttribute"
-		id="chuÌ€uchiÌ€i muÌŒu rÉ”Ì‚É”p_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
 		dateCreated="2008-11-03T06:17:24Z"
-		dateModified="2009-10-12T04:05:40Z"
+		dateModified="2011-10-26T01:41:19Z"
 		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
 		<lexical-unit>
 			<form
 				lang="th-fonipa">
-				<text>chuÌ€uchiÌ€i muÌŒu krÉ”Ì‚É”p</text>
+				<text>chùuchìi mǔu krɔ̂ɔp</text>
 			</form>
 		</lexical-unit>
 	</entry>
