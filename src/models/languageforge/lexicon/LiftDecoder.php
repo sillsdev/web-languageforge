@@ -4,63 +4,71 @@ namespace models\languageforge\lexicon;
 
 class LiftDecoder {
 	
-	public static function decode($node, $entry, $importWins = true) {
+	/**
+	 * 
+	 * @param SimpleXMLElement $sxeNode
+	 * @param LexEntryModel $entry
+	 * @param string $importWins
+	 */
+	public static function decode($sxeNode, $entry, $importWins = true) {
 		$decoder = new LiftDecoder();
-		$decoder->_decode($node, $entry, $importWins);
+		$decoder->_decode($sxeNode, $entry, $importWins);
 	}
 	
-	protected function _decode($node, $entry, $importWins = true) {
-		$lexicalForms = $node->{'lexical-unit'};
-		if ($lexicalForms) {
-		
-// 			echo "<pre>";
-// 			echo "lexicalForms ";
-// 			echo var_dump($lexicalForms);
-// 			echo "</pre>";
-		
-			$entry->guid = (string)$node['guid'];
+	/**
+	 * 
+	 * @param SimpleXMLElement $sxeNode
+	 * @param LexEntryModel $entry
+	 * @param string $importWins
+	 */
+	protected function _decode($sxeNode, $entry, $importWins = true) {
+		$lexicalForms = $sxeNode->{'lexical-unit'};
+		if ($lexicalForms && $importWins) {
+			$entry->guid = (string)$sxeNode['guid'];
+			$dateModified = new \DateTime((string)$sxeNode['dateModified']);
+			$entry->authorInfo->modifiedDate = $dateModified->getTimestamp();
 			$entry->lexeme = $this->readMultiText($lexicalForms);
-			if(isset($node->{'sense'})) {
-				foreach ($node->{'sense'} as $senseNode) {
-					$entry->senses[] = $this->readSense($senseNode);
+			if(isset($sxeNode->{'sense'})) {
+				foreach ($sxeNode->{'sense'} as $senseNode) {
+ 					$entry->senses[] = $this->readSense($senseNode);
 				}
 			}
 		}
 	}
 
 	/**
-	 * Reads a Sense from the XmlNode $node
-	 * @param XmlNode $node
+	 * Reads a Sense from the XmlNode $sxeNode
+	 * @param SimpleXMLElement $sxeNode
 	 * @return Sense
 	 */
-	public function readSense($node) {
+	public function readSense($sxeNode) {
 		$sense = new Sense();
 		// Definition
-		$definition = $node->{'definition'};
+		$definition = $sxeNode->{'definition'};
 		$sense->definition = $this->readMultiText($definition);
 		
 		//id
 		$sense->liftId = '';
-		if(isset($node->{'id'})) {
-			$sense->liftId = $node->{'id'};
+		if(isset($sxeNode->{'id'})) {
+			$sense->liftId = $sxeNode->{'id'};
 		}
 		
 		// Part Of Speech
-		if(isset($node->{'grammatical-info'})) {
-			$partOfSpeech = (string)$node->{'grammatical-info'}->attributes()->value;
+		if(isset($sxeNode->{'grammatical-info'})) {
+			$partOfSpeech = (string)$sxeNode->{'grammatical-info'}->attributes()->value;
 			$sense->partOfSpeech->value($partOfSpeech);
 		}
 	
 		// Semantic Domain
 		// TODO Enhance. Add for loop for multiple traits. IJH 2014-03
-		if(isset($node->{'trait'})) {
-			$semanticDomainName = (string)$node->{'trait'}->attributes()->name;
-			$semanticDomainValue = (string)$node->{'trait'}->attributes()->value;
+		if(isset($sxeNode->{'trait'})) {
+			$semanticDomainName = (string)$sxeNode->{'trait'}->attributes()->name;
+			$semanticDomainValue = (string)$sxeNode->{'trait'}->attributes()->value;
 			$sense->semanticDomain->value($semanticDomainValue);
 		}
 	
 		// Examples
-		$examples = $node->{'example'};
+		$examples = $sxeNode->{'example'};
 		if ($examples) {
 			foreach ($examples as $example) {
 				$sense->examples[] = $this->readExample($example);
@@ -70,24 +78,24 @@ class LiftDecoder {
 	}
 	
 	/**
-	 * Reads an Example from the XmlNode $node
-	 * @param XmlNode $node
+	 * Reads an Example from the XmlNode $sxeNode
+	 * @param SimpleXMLElement $sxeNode
 	 * @return Example
 	 */
-	public function readExample($node) {
+	public function readExample($sxeNode) {
 		$example = new Example();
 	
 		// id
 		$example->liftId = '';
-		if(isset($node->{'id'})) {
-			$example->liftId = $node->{'id'};
+		if(isset($sxeNode->{'id'})) {
+			$example->liftId = $sxeNode->{'id'};
 		}
 		
 		// Sentence multitext
-		$exampleXml = $node;
+		$exampleXml = $sxeNode;
 		$example->sentence = $this->readMultiText($exampleXml);
 		// Translation multitext
-		$translationXml = $node->{'translation'};
+		$translationXml = $sxeNode->{'translation'};
 		if(!empty($translationXml)) {
 			$example->translation = $this->readMultiText($translationXml);
 		}
@@ -95,13 +103,13 @@ class LiftDecoder {
 	}
 	
 	/**
-	 * Reads a MultiText from the XmlNode $node
-	 * @param XmlNode $node
+	 * Reads a MultiText from the XmlNode $sxeNode
+	 * @param SimpleXMLElement $sxeNode
 	 * @return MultiText
 	 */
-	public function readMultiText($node) {
+	public function readMultiText($sxeNode) {
 		$multiText = new MultiText();
-		foreach ($node->{'form'} as $form) {
+		foreach ($sxeNode->{'form'} as $form) {
 			$multiText->form((string)$form['lang'], (string)$form->{'text'});
 		}
 		return $multiText;
