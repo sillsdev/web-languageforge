@@ -12,6 +12,7 @@ class AllTests extends TestSuite {
  		$this->addFile(TestPath . 'commands/AllTests.php');
  		$this->addFile(TestPath . 'communicate/AllTests.php');
  		$this->addFile(TestPath . 'dto/AllTests.php');
+ 		$this->addFile(TestPath . 'libraries/ParatextExport_Test.php');
     }
 }
 ?>
