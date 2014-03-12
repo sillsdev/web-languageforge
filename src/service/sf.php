@@ -1,5 +1,7 @@
 <?php
 
+use libraries\sfchecks\ParatextExport;
+
 use models\commands\MessageCommands;
 
 use libraries\palaso\exceptions\UserNotAuthenticatedException;
@@ -282,6 +284,10 @@ class Sf
 
 	public function text_settings_dto($projectId, $textId) {
 		return \models\dto\TextSettingsDto::encode($projectId, $textId, $this->_userId);
+	}
+	
+	public function text_exportComments($projectId, $params) {
+		return ParatextExport::exportCommentsForText($projectId, $params['textId'], $params);
 	}
 	
 	//---------------------------------------------------------------

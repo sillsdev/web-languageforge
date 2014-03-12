@@ -119,6 +119,9 @@ angular.module('sf.services', ['jsonRpc'])
 		this.settings_dto = function(projectId, textId, callback) {
 			jsonRpc.call('text_settings_dto', [projectId, textId], callback);
 		};
+		this.exportComments = function(projectId, params, callback) {
+			jsonRpc.call('text_exportComments', [projectId, params], callback);
+		};
 	}])
 	.service('questionsService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
