@@ -20,11 +20,16 @@ class LiftImport {
 		while ($reader->read()) {
 			if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
 				$guid = $reader->getAttribute('guid');
+				$dateModified = $reader->getAttribute('dateModified');
+				$node = $reader->expand();
+				$dom = new \DomDocument();
+				$n = $dom->importNode($node, true); // expands the node for that particular guid
+				$sxe = simplexml_import_dom($n);
 				
 				$importWins = true;
 				if (self::_existsIn($guid, $entries)) {
 					$entry = new LexEntryModel($projectModel, self::$_existingEntry['id']);
-					if (self::_differentModTime() && $skipSameModTime) {
+					if (self::_differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
 						switch ($mergeRule) {
 							case LiftMergeRule::CREATE_DUPLICATES:
 								$entry = new LexEntryModel($projectModel);
@@ -37,22 +42,17 @@ class LiftImport {
 							default:
 								throw new \Exception("unknown LiftMergeRule " . $mergeRule);
 						}
+
+						LiftDecoder::decode($sxe, $entry, $importWins);
+						$entry->write();
 					} else {
-						// skip because same mod time or skip enabled
+						// skip because same mod time and skip enabled
 					}
 				} else {
 					$entry = new LexEntryModel($projectModel);
+					LiftDecoder::decode($sxe, $entry, $importWins);
+					$entry->write();
 				}
-				
-				$node = $reader->expand();
-				$dom = new \DomDocument();
-				$n = $dom->importNode($node, true); // expands the node for that particular guid
-// 				$dom->appendChild($n);
-				$sxe = simplexml_import_dom($n);
-				
-				LiftDecoder::decode($sxe, $entry, $importWins);
-				$entry->write();
-				
 			}
 		}
 
@@ -63,7 +63,6 @@ class LiftImport {
 		echo "   skipSameModTime: " . var_export($skipSameModTime, true);
 		echo "   entries count: " . count($entries);
 		echo "</pre>";
-		
 	}
 	
 	private static function _existsIn($guid, $entries) {
@@ -76,8 +75,14 @@ class LiftImport {
 		return false;
 	}
 	
-	private static function _differentModTime() {
-		return true;
+	/**
+	 * @param string $importDateModified
+	 * @param \DateTime $entryDateModified
+	 * @return boolean
+	 */
+	private static function _differentModTime($importDateModified, $entryDateModified) {
+		$dateModified = new \DateTime($importDateModified);
+		return ($dateModified->getTimestamp() != $entryDateModified);
 	}
 
 }
