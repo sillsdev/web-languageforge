@@ -45,8 +45,8 @@ class ParatextExport
 		$dl['totalCount'] = $dl['answerCount'] + $dl['commentCount'];
 		$dl['xml'] .= "</CommentList>";
 
-		$filename = $project->databaseName() . "_" . $text->title . '_' . date('Ymd_Gi');
-		$dl['filename'] = preg_replace("([^\w\d\-]|[\.]{2,})", '_', $filename) . '.xml';
+		$dl['filename'] = 'Comments_sf_' . date('Ymd_Gi');
+		//$dl['filename'] = preg_replace("([^\w\d\-]|[\.]{2,})", '_', $filename) . '.xml';
 		return $dl;
 	}
 	
