@@ -41,10 +41,10 @@
 				</div></dd>
 				<dt>Lex Examples</dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectField('example')" 
-						data-ng-class="{selected:currentField.name == 'example'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['example'].visible">
-							 {{fieldConfig['example'].label}}</div>
+					<div data-ng-click="selectField('sentence')" 
+						data-ng-class="{selected:currentField.name == 'sentence'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['sentence'].visible">
+							 {{fieldConfig['sentence'].label}}</div>
 					</div>
 					<div data-ng-click="selectField('translation')" 
 						data-ng-class="{selected:currentField.name == 'translation'}">
@@ -220,7 +220,7 @@ config.entry {{config.entry|json}}
 						<dd>
 							<div class="controls">
 								<label class="checkbox">
-									<input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.example">
+									<input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.sentence">
 									 Example Sentence</label>
 								<label class="checkbox">
 									<input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.translation">

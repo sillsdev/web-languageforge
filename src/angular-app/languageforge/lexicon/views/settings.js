@@ -89,7 +89,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 				'definition': $scope.config.entry.fields.senses.fields['definition'],
 				'partOfSpeech': $scope.config.entry.fields.senses.fields['partOfSpeech'],
 				'semanticDomain': $scope.config.entry.fields.senses.fields['semanticDomain'],
-				'example': $scope.config.entry.fields.senses.fields.examples.fields['example'],
+				'sentence': $scope.config.entry.fields.senses.fields.examples.fields['sentence'],
 				'translation': $scope.config.entry.fields.senses.fields.examples.fields['translation']
 			};
 		}
