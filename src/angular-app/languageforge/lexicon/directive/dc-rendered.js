@@ -36,27 +36,37 @@ angular.module('palaso.ui.dc.rendered', [])
 
 				$scope.render = function(entry) {
 					$scope.definition.label = $scope.getLexemeForm($scope.model);
-					var defParts = [];
+					var senses = [];
+					var defParts = {};
 					var useNumbers = (entry.senses && entry.senses.length > 1);
 					var nextNum = 1;
 					angular.forEach(entry.senses, function(sense) {
 						if (useNumbers) {
-							defParts.push(nextNum.toString() + ") ");
+							defParts.num = nextNum.toString() + ") ";
 							nextNum++;
+						} else {
+							defParts.num = '';
 						};
 						if (sense.partOfSpeech) {
 							var abbrev = $scope.posAbbrevs[sense.partOfSpeech.value];
-							defParts.push(abbrev ? (abbrev + ' ') : '');
+							defParts.pos = (abbrev ? (abbrev + ' ') : '');
+						} else {
+							defParts.pos = '';
 						};
+						defParts.defs = [];
 						// Might be nice to order the definitions in some way, like primary analysis
 						// language first, then other languages after in a consistent order. But until
 						// there's a way to specify primary analysis languages in config, we'll just
 						// go through the definitions in whatever order forEach() produces them.
 						angular.forEach(sense.definition, function(def, wsid) {
-							defParts.push(def.value + ' ');
+							defParts.defs.push(def.value + ' ');
 						});
+						defParts.defcontent = defParts.defs.join("");
+						senses.push(defParts);
+						defParts = {};
 					});
-					$scope.definition.rendered = defParts.join("") || "[No definition exists yet: add one!]";
+					$scope.definition.senses = senses;
+					$scope.definition.rendered = senses.join(" ") || "[No definition exists yet: add one!]";
 				};
 
 				$scope.makeValidModel = function() {
