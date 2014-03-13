@@ -13,6 +13,31 @@
 					</ul>
 				</div>
 			</div>
+			<div class="btn-group lexnav">
+				<a class="btn" data-ng-show="isItemVisible('view')" href="#/p/{{projectId}}/view"><i class="icon-eye-open icon-2x"></i> View</a>
+				<a class="btn" data-ng-show="isItemVisible('dashboard')" href="#/p/{{projectId}}"><i class="icon-bookmark icon-2x"></i> Dashboard</a>
+				<div class="btn-group">
+					<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+						<i class="icon-th icon-2x"></i> Gather Words <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li data-ng-show="isItemVisible('review')"     ><a href="#/p/{{projectId}}/review">Review</a></li>
+						<li data-ng-show="isItemVisible('gatherTexts')"><a href="#/p/{{projectId}}/gather-texts">From texts</a></li>
+						<li data-ng-show="isItemVisible('semdom')"     ><a href="#/p/{{projectId}}/semdom">From Semantic Domains</a></li>
+						<li data-ng-show="isItemVisible('wordlist')"   ><a href="#/p/{{projectId}}/wordlist">From a Word List</a></li>
+						<li data-ng-show="isItemVisible('dbe')"        ><a href="#/p/{{projectId}}/dbe">Browse and edit</a></li>
+					</ul>
+				</div>
+				<div class="btn-group">
+					<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+						<i class="icon-plus icon-2x"></i> Add Information <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+							<li data-ng-show="isItemVisible('addMeanings')"><a href="#/p/{{projectId}}/add-meanings">Add meanings</a></li>
+							<li data-ng-show="isItemVisible('addGrammar')" ><a href="#/p/{{projectId}}/add-grammar">Add grammatical usage</a></li>
+							<li data-ng-show="isItemVisible('addExamples')"><a href="#/p/{{projectId}}/add-examples">Add examples</a></li>
+					</ul>
+				</div>
+			</div>
+			
 			<div class="hdrnav">
 				<ul>
 					<li data-ng-show="isItemVisible('view')"><a href="#/p/{{projectId}}/view"><i class="icon-eye-open"></i> View</a></li>
