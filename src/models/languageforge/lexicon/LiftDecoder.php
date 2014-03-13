@@ -8,7 +8,7 @@ class LiftDecoder {
 	 * 
 	 * @param SimpleXMLElement $sxeNode
 	 * @param LexEntryModel $entry
-	 * @param string $importWins
+	 * @param boolean $importWins
 	 */
 	public static function decode($sxeNode, $entry, $importWins = true) {
 		$decoder = new LiftDecoder();
@@ -19,7 +19,7 @@ class LiftDecoder {
 	 * 
 	 * @param SimpleXMLElement $sxeNode
 	 * @param LexEntryModel $entry
-	 * @param string $importWins
+	 * @param boolean $importWins
 	 */
 	protected function _decode($sxeNode, $entry, $importWins = true) {
 		$lexicalForms = $sxeNode->{'lexical-unit'};
