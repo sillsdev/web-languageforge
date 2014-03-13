@@ -4,8 +4,13 @@ namespace models\languageforge\lexicon;
 
 class LiftImport {
 	
-	private static $_existingEntry = null;
-
+	/**
+	 * @param string $xml
+	 * @param LexiconProjectModel $projectModel
+	 * @param LiftMergeRule $mergeRule
+	 * @param boolean $skipSameModTime
+	 * @throws \Exception
+	 */
 	public static function merge($xml, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true) {
 		$entryList = new LexEntryListModel($projectModel);
 		$entryList->read();
@@ -24,11 +29,12 @@ class LiftImport {
 				$n = $dom->importNode($node, true); // expands the node for that particular guid
 				$sxeNode = simplexml_import_dom($n);
 				
-				$guid = $reader->getAttribute('guid');
-				$dateModified = $reader->getAttribute('dateModified');
 				$importWins = true;
-				if (self::existsIn($guid, $entries)) {
-					$entry = new LexEntryModel($projectModel, self::$_existingEntry['id']);
+				$guid = $reader->getAttribute('guid');
+				$existingEntry = self::existsIn($guid, $entries);
+				if ($existingEntry) {
+					$entry = new LexEntryModel($projectModel, $existingEntry['id']);
+					$dateModified = $reader->getAttribute('dateModified');
 					if (self::differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
 						switch ($mergeRule) {
 							case LiftMergeRule::CREATE_DUPLICATES:
@@ -66,16 +72,15 @@ class LiftImport {
 	}
 	
 	/**
-	 * If the guid exists in entries return true and store entry
+	 * If the guid exists in entries return the entry
 	 * @param string $guid
 	 * @param array $entries
-	 * @return boolean
+	 * @return array <$entry or false if not found>
 	 */
 	private static function existsIn($guid, $entries) {
 		foreach ($entries as $entry) {
 			if ($entry['guid'] == $guid) {
-				self::$_existingEntry = $entry;
-				return true;
+				return $entry;
 			}
 		}
 		return false;

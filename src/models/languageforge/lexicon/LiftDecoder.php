@@ -30,7 +30,7 @@ class LiftDecoder {
 			$entry->lexeme = $this->readMultiText($lexicalForms);
 			if(isset($sxeNode->{'sense'})) {
 				foreach ($sxeNode->{'sense'} as $senseNode) {
- 					$entry->senses[] = $this->readSense($senseNode);
+					$entry->senses[] = $this->readSense($senseNode);
 				}
 			}
 		}
@@ -60,11 +60,12 @@ class LiftDecoder {
 		}
 	
 		// Semantic Domain
-		// TODO Enhance. Add for loop for multiple traits. IJH 2014-03
 		if(isset($sxeNode->{'trait'})) {
-			$semanticDomainName = (string)$sxeNode->{'trait'}->attributes()->name;
-			$semanticDomainValue = (string)$sxeNode->{'trait'}->attributes()->value;
-			$sense->semanticDomain->value($semanticDomainValue);
+			foreach ($sxeNode->{'trait'} as $traitNode) {
+				$semanticDomainName = (string)$traitNode->attributes()->name;
+				$semanticDomainValue = (string)$traitNode->attributes()->value;
+				$sense->semanticDomain->value($semanticDomainValue);
+			}
 		}
 	
 		// Examples
