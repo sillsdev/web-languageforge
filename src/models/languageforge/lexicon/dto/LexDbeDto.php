@@ -37,7 +37,11 @@ class LexDbeDto
 			// sort by lexeme (first writing system)
 			$ws = $lexemeWritingSystems[0];
 			usort($entries, function ($a, $b) use ($ws) { 
-				if (array_key_exists('lexeme', $a) && array_key_exists('lexeme', $b)) {
+				if (array_key_exists('lexeme', $a) && 
+					array_key_exists('lexeme', $b) &&
+					array_key_exists($ws, $a['lexeme']) &&
+					array_key_exists($ws, $b['lexeme'])
+				) {
 					return ($a['lexeme'][$ws]['value'] > $b['lexeme'][$ws]['value']) ? 1 : -1;
 				} else {
 					return 0;
