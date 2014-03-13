@@ -50,9 +50,9 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	// when timer goes off, execute the save now method and delete the timer
 	
 	$scope.saveNow = function() {
+		$scope.lexemeFormRequired = false;
 		if ($scope.canSave()) {
 			var foundLexeme = false;
-			$scope.lexemeFormRequired = false;
 			angular.forEach($scope.config.entry.fields.lexeme.inputSystems, function(ws) {
 				if($scope.currentEntry.lexeme[ws].value != '') {
 					foundLexeme = true;
@@ -112,6 +112,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.setCurrentEntry = function(entry) {
 		entry = entry || {};
+		$scope.lexemeFormRequired = false;
 		$scope.currentEntry = angular.copy(entry);
 		pristineEntry = angular.copy(entry);
 	};
