@@ -8,7 +8,11 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 				config : "=",
 				model : "=",
 			},
-			controller: ['$scope', function($scope, lexService) {
+			controller: ['$scope', 'lexConfigService', function($scope, configService) {
+				
+				configService.registerListener(function() {
+					$scope.gConfig = configService.getConfig();
+				});
 				$scope.makeValidModel = function() {
 					// if the model doesn't exist, create an object for it based upon the config
 					if (!$scope.model) {
@@ -22,7 +26,9 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 				};
 				
 				$scope.getAbbreviation = function(inputSystem) {
-					return $scope.config.wsInfo[inputSystem].abbreviation;
+					if (angular.isDefined($scope.gConfig)) {
+						return $scope.gConfig.inputSystems[inputSystem].abbreviation;
+					}
 				};
 			}],
 			link : function(scope, element, attrs, controller) {

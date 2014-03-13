@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate'])
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$timeout', '$filter', 
-                        function ($scope, userService, sessionService, lexService, $window, $timeout, $filter) {
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$timeout', '$filter', 
+                        function ($scope, userService, sessionService, lexService, configService, $window, $timeout, $filter) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
 	// for an idea on expanding text areas
 	
@@ -60,9 +60,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			});
 			if (foundLexeme) {
 				lexService.update($scope.currentEntry, function(result) {
-	
 					$scope.updateListWithEntry(result.data);
-					$scope.setCurrentEntry(result.data);
 					$scope.lastSavedDate = new Date();
 					$scope.refreshView();
 				});
@@ -168,7 +166,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		var gotDto = function (result) {
 			if (result.ok) {
 				configService.setConfig(result.data.config);
-				$scope.config = enhanceConfig(result.data.config);
+				$scope.config = result.data.config;
 				$scope.entries = result.data.entries;
 				if (updateFirstEntry && result.data.entry.id != '') {
 					$scope.setCurrentEntry(result.data.entry);
@@ -208,20 +206,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		});
 	};
 	
-	function enhanceConfig(conf) {
-		var config = angular.copy(conf);
-		if (angular.isDefined(config.entry)) {
-			config.entry.fields.lexeme.wsInfo = config.inputSystems;
-			angular.forEach(config.entry.fields.senses, function(sense) {
-				sense.fields.definition.wsInfo = config.inputSystems;
-				angular.forEach(sense.fields.examples, function(example) {
-					example.fields.sentence.wsInfo = config.inputSystems;
-					example.fields.translation.wsInfo = config.inputSystems;
-				});
-			});
-		}
-		return config;
-	}
 
 	// When comments tab is clicked, set up new config for its interior
 	$scope.selectCommentsTab = function() {
