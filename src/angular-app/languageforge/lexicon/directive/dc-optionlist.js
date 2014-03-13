@@ -5,12 +5,12 @@ angular.module('palaso.ui.dc.optionlist', ['palaso.ui.dc.comments'])
 			restrict : 'E',
 			templateUrl : '/angular-app/languageforge/lexicon/directive/dc-optionlist.html',
 			scope : {
-				definition : "=",
+				config : "=",
 				model : "=",
 			},
 			controller: ['$scope', 'lexEntryService', function($scope, lexService) {
 				$scope.makeValidModel = function() {
-					// if the model doesn't exist, create an object for it based upon the definition
+					// if the model doesn't exist, create an object for it based upon the config
 					if (!$scope.model) {
 						$scope.model = {};
 						if (!$scope.model.value) {
