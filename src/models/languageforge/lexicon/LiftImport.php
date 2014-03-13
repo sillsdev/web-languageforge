@@ -50,6 +50,9 @@ class LiftImport {
 						}
 
 						LiftDecoder::decode($sxeNode, $entry, $importWins);
+						if ($mergeRule == LiftMergeRule::CREATE_DUPLICATES) {
+							$entry->guid = '';
+						}
 						$entry->write();
 					} else {
 						// skip because same mod time and skip enabled

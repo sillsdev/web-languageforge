@@ -58,7 +58,7 @@ class LiftDecoder {
 		// Part Of Speech
 		if(isset($sxeNode->{'grammatical-info'})) {
 			$partOfSpeech = (string)$sxeNode->{'grammatical-info'}->attributes()->value;
-			$sense->partOfSpeech->value($partOfSpeech);
+			$sense->partOfSpeech->value = $partOfSpeech;
 		}
 	
 		// Semantic Domain

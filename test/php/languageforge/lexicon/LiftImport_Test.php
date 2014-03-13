@@ -59,18 +59,21 @@ class TestLiftImport extends UnitTestCase {
 		$this->assertEqual($entries[0]['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da", "First entry should have given guid");
 		$this->assertEqual($entries[0]['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp", "First entry should have given IPA form");
 		$this->assertEqual($entries[0]['lexeme']['th']['value'], "ฉู่ฉี่หมูกรอบ", "First entry should have given Thai form");
+		$this->assertEqual($entries[0]['senses'][0]['definition']['en']['value'], "A kind of curry fried with crispy pork", "First entry definition should have given English form");
+		$this->assertEqual($entries[0]['senses'][0]['partOfSpeech']['value'], "Noun", "First entry part of speech should have given value");
+		$this->assertEqual($entries[0]['senses'][0]['semanticDomain']['values'][0], "5.2 Food", "First entry semantic domain should have given value");
+		$this->assertEqual($entries[0]['senses'][0]['semanticDomain']['values'][1], "1 Universe, creation", "First entry semantic domain should have given value");
+		$this->assertEqual($entries[0]['senses'][0]['examples'][0]['sentence']['th-fonipa']['value'], "sentence 1", "First entry example sentence 1 should have given value");
+		$this->assertEqual($entries[0]['senses'][0]['examples'][0]['translation']['en']['value'], "translation 1", "First entry example translation 1 should have given value");
+		$this->assertEqual($entries[0]['senses'][0]['examples'][1]['sentence']['th-fonipa']['value'], "sentence 2", "First entry example sentence 2 should have given value");
+		$this->assertEqual($entries[0]['senses'][0]['examples'][1]['translation']['en']['value'], "translation 2", "First entry example translation 2 should have given value");
 		$this->assertEqual($entries[1]['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26", "Second entry should have given guid");
 		$this->assertEqual($entries[1]['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt", "Second entry should have given IPA form");
 		$this->assertEqual($entries[1]['lexeme']['th']['value'], "ข้าวไก่ทอด", "Second entry should have given Thai form");
 		
-		$entry = new LexEntryModel($project, $entries[0]['id']);
-		echo "<pre>";
-		echo "entries[0] as entry->senses[0]->examples[0]: ";
-		echo var_dump($entry->senses[0]->examples[0]);
-		echo "entries[0]: " . var_export($entries[0], true);
-// 		echo "entries[1]: " . var_export($entries[1], true);
-// 		echo "entries: " . var_export($entries, true);
-		echo "</pre>";
+// 		echo "<pre>";
+// 		echo "entries[0]: " . var_export($entries[0], true);
+// 		echo "</pre>";
 	}
 
 	function testLiftImportMerge_ExistingDataAndImportWins_MergeOk() {
@@ -181,10 +184,10 @@ class TestLiftImport extends UnitTestCase {
 		$this->assertEqual($entries[0]['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp", "First entry should have uncorrected IPA form");
 		$this->assertEqual($entries[1]['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26", "Second entry should have given guid");
 		$this->assertEqual($entries[1]['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt", "Second entry should have uncorrected IPA form");
-		$this->assertEqual($entries[2]['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da", "First entry should have given guid");
-		$this->assertEqual($entries[2]['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp", "First entry should have corrected IPA form");
-		$this->assertEqual($entries[3]['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26", "Second entry should have given guid");
-		$this->assertEqual($entries[3]['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt", "Second entry should have corrected IPA form");
+		$this->assertEqual($entries[2]['guid'], "", "Third entry should have an empty guid");
+		$this->assertEqual($entries[2]['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp", "Third entry should have corrected IPA form");
+		$this->assertEqual($entries[3]['guid'], "", "Fourth entry should have an empty guid");
+		$this->assertEqual($entries[3]['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt", "Fourth entry should have corrected IPA form");
 	}
 
 	function testLiftImportMerge_ExistingDataAndCreateDuplicatesAndSkip_NoMerge() {
