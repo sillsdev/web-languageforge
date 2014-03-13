@@ -130,7 +130,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$params['lexeme']['th']['value'] = 'rose apple';
 		$params['senses'][0]['partOfSpeech']['comments'] = array(array('content' => 'i vote for adj'));
 		
-		LexEntryCommands::updateEntry($projectId, $entryId, $params);
+		LexEntryCommands::updateEntry($projectId, $params);
 		
 		$newEntry = LexEntryCommands::readEntry($projectId, $entryId);
 
