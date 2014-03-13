@@ -32,7 +32,14 @@ class LiftDecoder {
 			}
 			if(isset($sxeNode->{'sense'})) {
 				foreach ($sxeNode->{'sense'} as $senseNode) {
-					$entry->senses[] = $this->readSense($senseNode);
+					$senseId = $senseNode->{'id'};
+					$existingSense = $this->existsIn($senseId, $entry->senses);
+// 					if ($existingSense) {
+// 						$existingSense = $this->readSense($senseNode);
+						
+// 					} else {
+						$entry->senses[] = $this->readSense($senseNode);
+// 					}
 				}
 			}
 		}
@@ -118,6 +125,21 @@ class LiftDecoder {
 		return $multiText;
 	}
 		
+	/**
+	 * If the sense id exists in senses return the index
+	 * @param string $senseId
+	 * @param array $senses
+	 * @return array <$index or false if not found>
+	 */
+	private function existsIn($senseId, $senses) {
+		foreach ($senses as $index=>$sense) {
+			if ($sense['id'] == $senseId) {
+				return $index;
+			}
+		}
+		return false;
+	}
+	
 }
 
 ?>
