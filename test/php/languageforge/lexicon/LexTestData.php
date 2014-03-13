@@ -56,6 +56,39 @@ file {
 				<text>ฉู่ฉี่หมูกรอบ</text>
 			</form>
 		</lexical-unit>
+		<field
+			type="literal-meaning">
+			<form
+				lang="en">
+				<text>Chuchi curry pork crispy</text>
+			</form>
+		</field>
+		<sense
+			id="df801833-d55b-4492-b501-650da7bc7b73">
+			<definition>
+				<form
+					lang="en">
+					<text>A kind of curry fried with crispy pork</text>
+				</form>
+			</definition>
+			<example>
+				<form
+					lang="th-fonipa">
+					<text>sentence1</text>
+				</form>
+			</example>
+			<example>
+				<form
+					lang="th-fonipa">
+					<text>sentence2</text>
+				</form>
+			</example>
+			<illustration
+				href="IMG_0214.JPG" />
+			<trait
+				name="semantic-domain-ddp4"
+				value="5.2 Food" />
+		</sense>
 	</entry>
 	<entry
 		id="Id'dPrematurely_05473cb0-4165-4923-8d81-02f8b8ed3f26"
@@ -72,6 +105,24 @@ file {
 				<text>ข้าวไก่ทอด</text>
 			</form>
 		</lexical-unit>
+		<sense
+			id="f60ba047-df0c-47cc-aba1-af4ea1030e31">
+			<definition>
+				<form
+					lang="en">
+					<text>pieces of fried chicken served over rice, usually with a sweet and spicy sauce on the side</text>
+				</form>
+			</definition>
+			<illustration
+				href="IMG_0187.JPG" />
+		</sense>
+		<field
+			type="literal-meaning">
+			<form
+				lang="en">
+				<text>rice chicken fried</text>
+			</form>
+		</field>
 	</entry>
 </lift>
 EOD;
