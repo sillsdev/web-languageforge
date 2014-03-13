@@ -88,12 +88,12 @@ class LiftImport {
 	
 	/**
 	 * @param string $importDateModified
-	 * @param int <Unix timestamp> $entryDateModified
+	 * @param DateTime $entryDateModified
 	 * @return boolean
 	 */
 	private static function differentModTime($importDateModified, $entryDateModified) {
 		$dateModified = new \DateTime($importDateModified);
-		return ($dateModified->getTimestamp() != $entryDateModified);
+		return ($dateModified->getTimestamp() != $entryDateModified->getTimestamp());
 	}
 
 }

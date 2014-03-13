@@ -23,11 +23,13 @@ class LiftDecoder {
 	 */
 	protected function _decode($sxeNode, $entry, $importWins = true) {
 		$lexicalForms = $sxeNode->{'lexical-unit'};
-		if ($lexicalForms && $importWins) {
-			$entry->guid = (string)$sxeNode['guid'];
-			$dateModified = new \DateTime((string)$sxeNode['dateModified']);
-			$entry->authorInfo->modifiedDate = $dateModified->getTimestamp();
-			$entry->lexeme = $this->readMultiText($lexicalForms);
+		if ($lexicalForms) {
+			if ($importWins) {
+				$entry->guid = (string)$sxeNode['guid'];
+				$entry->authorInfo->createdDate = new \DateTime((string)$sxeNode['dateCreated']);
+				$entry->authorInfo->modifiedDate = new \DateTime((string)$sxeNode['dateModified']);
+				$entry->lexeme = $this->readMultiText($lexicalForms);
+			}
 			if(isset($sxeNode->{'sense'})) {
 				foreach ($sxeNode->{'sense'} as $senseNode) {
 					$entry->senses[] = $this->readSense($senseNode);

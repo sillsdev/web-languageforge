@@ -109,6 +109,8 @@ class TestLexEntryCommands extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
+		$userId = $e->createUser('john', 'john', 'john');
+		
 		$entry = new LexEntryModel($project);
 		$entry->lexeme->form('th', 'apple');
 
@@ -130,7 +132,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$params['lexeme']['th']['value'] = 'rose apple';
 		$params['senses'][0]['partOfSpeech']['comments'] = array(array('content' => 'i vote for adj'));
 		
-		LexEntryCommands::updateEntry($projectId, $params);
+		LexEntryCommands::updateEntry($projectId, $params, $userId);
 		
 		$newEntry = LexEntryCommands::readEntry($projectId, $entryId);
 
