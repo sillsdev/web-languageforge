@@ -27,7 +27,7 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		return $definition;
 	}
 	
-	public function read($missingInfo = '') {
+	public function readForDto($missingInfo = '') {
 		parent::read();
 		
 		if ($missingInfo != '') {
