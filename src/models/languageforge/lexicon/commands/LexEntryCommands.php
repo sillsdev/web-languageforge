@@ -13,6 +13,7 @@ use models\languageforge\lexicon\LexEntryModel;
 use libraries\shared\palaso\CodeGuard;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
+use models\languageforge\lexicon\LexComment;
 
 class LexEntryCommands {
 	
@@ -32,7 +33,7 @@ class LexEntryCommands {
 	}
 	*/
 	
-	public static function updateEntry($projectId, $params) {
+	public static function updateEntry($projectId, $entryId, $params) {
 		// TODO: we need to do checking of rights for updating comments, parts of the entry, etc - cjh
 		CodeGuard::checkTypeAndThrow($params, 'array');
 		$project = new LexiconProjectModel($projectId);
@@ -48,7 +49,24 @@ class LexEntryCommands {
 		
 	}
 	
-	public static function updateLexemeComment($projectId, $entryId, $params) {}
+	public static function updateLexemeComment($projectId, $entryId, $inputSystem, $params) {
+		CodeGuard::checkTypeAndThrow($params, 'array');
+		$project = new LexiconProjectModel($projectId);
+		$entry = new LexEntryModel($project, $entryId);
+		if (! array_key_exists($inputSystem, $entry->lexeme)) {
+			throw new \Exception("Input system $inputSystem must exist to updateLexemeComment.");
+		}
+		if (array_key_exists('index', $params) && $params['index'] != '' && array_key_exists($inputSystem, $entry->lexeme)) {
+			$comment = $entry->lexeme[$inputSystem]->comments[$params['index']];
+			JsonDecoder::decode($comment, $params);
+			$entry->lexeme[$inputSystem]->comments[$params['index']] = $comment;
+		} else {
+			$comment = new LexComment();
+			JsonDecoder::decode($comment, $params);
+			$entry->lexeme[$inputSystem]->comments[] = $comment;
+		}
+		return $entry->write();
+	}
 	public static function updateLexemeReply($projectId, $entryId, $commentId, $params) {}
 	
 	public static function updateSenseComment($projectId, $entryId, $senseId, $senseNode, $params) {}
@@ -74,7 +92,7 @@ class LexEntryCommands {
 	public static function listEntries($projectId, $missingInfo = '') {
 		$project = new LexiconProjectModel($projectId);
 		$lexEntries = new LexEntryListModel($project);
-		$lexEntries->read($missingInfo);
+		$lexEntries->readForDto($missingInfo);
 		return $lexEntries;
 	}
 }
