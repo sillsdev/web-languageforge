@@ -33,7 +33,7 @@ class LexEntryCommands {
 	}
 	*/
 	
-	public static function updateEntry($projectId, $params) {
+	public static function updateEntry($projectId, $params, $userId) {
 		// TODO: we need to do checking of rights for updating comments, parts of the entry, etc - cjh
 		CodeGuard::checkTypeAndThrow($params, 'array');
 		$project = new LexiconProjectModel($projectId);
@@ -42,7 +42,13 @@ class LexEntryCommands {
 			$entry = new LexEntryModel($project, $params['id']);
 		} else {
 			$entry = new LexEntryModel($project);
+			$entry->authorInfo->createdByIdRef = $userId;
+			$entry->authorInfo->createdDate = new \DateTime();
 		}
+		
+		// set authorInfo
+		$entry->authorInfo->modifiedDate = new \DateTime();
+		$entry->authorInfo->modifiedByIdRef = $userId;
 		JsonDecoder::decode($entry, $params);
 		$entry->write();
 		return JsonEncoder::encode($entry);
