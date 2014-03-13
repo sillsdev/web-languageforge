@@ -65,6 +65,8 @@ file {
 		</field>
 		<sense
 			id="df801833-d55b-4492-b501-650da7bc7b73">
+			<grammatical-info
+				value="Noun" />
 			<definition>
 				<form
 					lang="en">
@@ -74,20 +76,35 @@ file {
 			<example>
 				<form
 					lang="th-fonipa">
-					<text>sentence1</text>
+					<text>sentence 1</text>
 				</form>
+				<translation>
+					<form
+						lang="en">
+						<text>translation 1</text>
+					</form>
+				</translation>
 			</example>
 			<example>
 				<form
 					lang="th-fonipa">
-					<text>sentence2</text>
+					<text>sentence 2</text>
 				</form>
+				<translation>
+					<form
+						lang="en">
+						<text>translation 2</text>
+					</form>
+				</translation>
 			</example>
 			<illustration
 				href="IMG_0214.JPG" />
 			<trait
 				name="semantic-domain-ddp4"
 				value="5.2 Food" />
+			<trait
+				name="semantic-domain-ddp4"
+				value="1 Universe, creation" />
 		</sense>
 	</entry>
 	<entry
