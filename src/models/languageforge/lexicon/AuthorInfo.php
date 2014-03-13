@@ -11,9 +11,9 @@ class AuthorInfo {
 
 	public function __construct() {
 		$this->createdByIdRef = new IdReference();
-		$this->createdDate = 0;
+		$this->createdDate = new \DateTime();
 		$this->modifiedByIdRef = new IdReference();
-		$this->modifiedDate = 0;
+		$this->modifiedDate = new \DateTime();
 	}
 	
 	/**
@@ -23,8 +23,8 @@ class AuthorInfo {
 	public $createdByIdRef;
 	
 	/**
-	 *	datetime as timestamp
-	 * @var int
+	 *	datetime
+	 * @var DateTime
 	 */
 	public $createdDate;
 	
@@ -35,8 +35,8 @@ class AuthorInfo {
 	public $modifiedByIdRef;
 	
 	/**
-	 * datetime as timestamp
-	 * @var int
+	 * datetime
+	 * @var DateTime
 	 */
 	public $modifiedDate;
 	

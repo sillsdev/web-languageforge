@@ -449,7 +449,7 @@ class Sf
 	}
 	
 	public function lex_entry_update($projectId, $model) {
-		return LexEntryCommands::updateEntry($projectId, $model);
+		return LexEntryCommands::updateEntry($projectId, $model, $this->_userId);
 	}
 	
 	public function lex_entry_remove($projectId, $entryId) {
