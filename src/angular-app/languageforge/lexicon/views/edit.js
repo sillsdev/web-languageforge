@@ -167,7 +167,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		updateFirstEntry = typeof updateFirstEntry !== 'undefined' ? updateFirstEntry : false;
 		var gotDto = function (result) {
 			if (result.ok) {
-				$scope.config = result.data.config;
+				configService.setConfig(result.data.config);
+				$scope.config = enhanceConfig(result.data.config);
 				$scope.entries = result.data.entries;
 				if (updateFirstEntry && result.data.entry.id != '') {
 					$scope.setCurrentEntry(result.data.entry);
@@ -206,6 +207,21 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			};
 		});
 	};
+	
+	function enhanceConfig(conf) {
+		var config = angular.copy(conf);
+		if (angular.isDefined(config.entry)) {
+			config.entry.fields.lexeme.wsInfo = config.inputSystems;
+			angular.forEach(config.entry.fields.senses, function(sense) {
+				sense.fields.definition.wsInfo = config.inputSystems;
+				angular.forEach(sense.fields.examples, function(example) {
+					example.fields.sentence.wsInfo = config.inputSystems;
+					example.fields.translation.wsInfo = config.inputSystems;
+				});
+			});
+		}
+		return config;
+	}
 
 	// When comments tab is clicked, set up new config for its interior
 	$scope.selectCommentsTab = function() {
