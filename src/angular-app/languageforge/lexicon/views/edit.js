@@ -31,12 +31,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return false;
 	};
 	
-	$scope.canSave = function() {
-		return $scope.currentEntryIsDirty();
-	};
-	
 	$scope.saveButtonTitle = function() {
-		if ($scope.canSave()) {
+		if ($scope.currentEntryIsDirty()) {
 			return "Save Now";
 		} else {
 			return "Saved " + moment($scope.lastSavedDate).fromNow();
@@ -49,9 +45,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	// set a new 30 second timer, and delete the old timer
 	// when timer goes off, execute the save now method and delete the timer
 	
-	$scope.saveNow = function() {
-		$scope.lexemeFormRequired = false;
-		if ($scope.canSave()) {
+	$scope.saveCurrentEntry = function() {
+		if ($scope.currentEntryIsDirty()) {
 			var foundLexeme = false;
 			angular.forEach($scope.config.entry.fields.lexeme.inputSystems, function(ws) {
 				if($scope.currentEntry.lexeme[ws].value != '') {
@@ -60,14 +55,16 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			});
 			if (foundLexeme) {
 				lexService.update($scope.currentEntry, function(result) {
-					$scope.updateListWithEntry(result.data);
+					//$scope.updateListWithEntry(result.data);
 					$scope.lastSavedDate = new Date();
 					$scope.refreshView();
 				});
+				return true;
 			} else {
-				$scope.lexemeFormRequired = true;
+				return false;
 			}
 		}
+		return true;
 	};
 	
 	$scope.updateListWithEntry = function(entry) {
@@ -111,23 +108,26 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.setCurrentEntry = function(entry) {
 		entry = entry || {};
 		$scope.lexemeFormRequired = false;
-		$scope.currentEntry = angular.copy(entry);
+		$scope.currentEntry = entry;
 		pristineEntry = angular.copy(entry);
 	};
 	
 	$scope.editEntry = function(id) {
-		$scope.saveNow();
-
-		if (arguments.length == 0) {
-			if ($scope.currentEntry.id != '') {
-				var newEntry = {id:''};
-				$scope.setCurrentEntry(newEntry);
-				$scope.updateListWithEntry(newEntry);
+		$scope.lexemeFormRequired = false;
+		if ($scope.saveCurrentEntry()) {
+			if (arguments.length == 0) {
+				if ($scope.currentEntry.id != '') {
+					var newEntry = {id:''};
+					$scope.setCurrentEntry(newEntry);
+					$scope.updateListWithEntry(newEntry);
+				}
+			} else {
+				lexService.read(id, function(result) {
+					$scope.setCurrentEntry(result.data);
+				});
 			}
 		} else {
-			lexService.read(id, function(result) {
-				$scope.setCurrentEntry(result.data);
-			});
+			$scope.lexemeFormRequired = true;
 		}
 	};
 
