@@ -75,7 +75,7 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	 */
 	public static function remove($projectModel, $id) {
 		$databaseName = $projectModel->databaseName();
-		LexEntryModelMongoMapper::connect($databaseName)->remove($id);
+		self::mapper($databaseName)->remove($id);
 	}
 
 }

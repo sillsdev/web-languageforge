@@ -185,6 +185,9 @@ class RightsHelper
 			// grant general permission until a better, app-specific rightsHelper can be developed
 			// TODO: refactor rightshelper to be app specific!
 			case 'lex_dbeDto':
+			case 'lex_entry_read':
+			case 'lex_entry_update':
+			case 'lex_entry_remove':
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::VIEW);
 				
 				

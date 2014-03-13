@@ -291,9 +291,14 @@ angular.module('lexicon.services', ['jsonRpc'])
 		};
 		
 		this.update = function(entry, callback) {
-			jsonRpc.call('lex_entry_read', [projectService.getProjectId(), entry], callback);
+			jsonRpc.call('lex_entry_update', [projectService.getProjectId(), entry], callback);
 		};
 
+		this.remove = function(id, callback) {
+			jsonRpc.call('lex_entry_remove', [projectService.getProjectId(), id], callback);
+		};
+
+		/*
 		this.read = function(id, callback) {
 			var result = {};
 			dirtyIter(function(i,e) {
@@ -368,6 +373,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 			});
 			return list;
 		};
+		*/
 		this.dbeDto = function(callback) {
 			jsonRpc.call('lex_dbeDto', [projectService.getProjectId()], callback);
 			/*
@@ -380,6 +386,14 @@ angular.module('lexicon.services', ['jsonRpc'])
 			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': projectService.getSettings()}});
 			*/
 		};
+		
+		
+		
+		
+		
+		
+		/*
+		
 		this.addExampleDto = function(callback) {
 			var dtoConfig = angular.copy(_config);
 			// We just want to see the definition and part of speech, but leave rest of config alone
@@ -416,7 +430,9 @@ angular.module('lexicon.services', ['jsonRpc'])
 			this.setConfig(dtoConfig);
 			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
 		};
+		*/
 
+		/*
 		// --- BEGIN TEST CODE ---
 		// Set up sample data when service first created
 		// (This will be removed once a real server is available)
@@ -426,6 +442,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 		};
 		this.saveNow();
 		// --- END TEST CODE ---
+		*/
 	}])
 	;
 
