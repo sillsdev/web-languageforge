@@ -1,5 +1,7 @@
 <?php
 
+use models\languageforge\lexicon\commands\LexEntryCommands;
+
 use models\languageforge\lexicon\dto\LexDbeDto;
 
 use models\languageforge\lexicon\commands\LexProjectCommands;
@@ -446,8 +448,8 @@ class Sf
 		return LexEntryCommands::readEntry($projectId, $entryId);
 	}
 	
-	public function lex_entry_update($projectId, $entryId, $model) {
-		return LexEntryCommands::updateEntry($projectId, $entryId, $model);
+	public function lex_entry_update($projectId, $model) {
+		return LexEntryCommands::updateEntry($projectId, $model);
 	}
 	
 	public function lex_entry_remove($projectId, $entryId) {

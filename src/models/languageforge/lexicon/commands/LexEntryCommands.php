@@ -39,12 +39,13 @@ class LexEntryCommands {
 		$project = new LexiconProjectModel($projectId);
 		// TODO: sanitize the params coming in - unset comments on each node? - cjh
 		if (array_key_exists('id', $params) && $params['id'] != '') {
-			$entry = new LexEntryModel($project, $entryId);
+			$entry = new LexEntryModel($project, $params['id']);
 		} else {
 			$entry = new LexEntryModel($project);
 		}
 		JsonDecoder::decode($entry, $params);
-		return $entry->write();
+		$entry->write();
+		return JsonEncoder::encode($entry);
 		// question (from cjh) when doing an updateEntry, is there a way for us to only update comments using the standard JsonDecoder?  Or only update parts of the model that should be updated? Need to write a test for this
 		
 	}

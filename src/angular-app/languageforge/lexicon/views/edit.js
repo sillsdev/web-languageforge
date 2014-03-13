@@ -24,10 +24,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.entries = [];
 	$scope.config = {};
 	
-	// for debugging
-	$scope.serverEntries = lexService.serverEntries;
-	$scope.dirtyEntries = lexService.dirtyEntries;
-	
 	$scope.currentEntryIsDirty = function() {
 		if ($scope.entryLoaded()) {
 			return !angular.equals($scope.currentEntry, pristineEntry);
@@ -55,12 +51,24 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.saveNow = function() {
 		if ($scope.canSave()) {
-			lexService.update($scope.currentEntry, function(result) {
-				$scope.updateListWithEntry(result.data);
-				$scope.setCurrentEntry(result.data);
-				$scope.lastSavedDate = new Date();
-				$scope.refreshView();
+			var foundLexeme = false;
+			$scope.lexemeFormRequired = false;
+			angular.forEach($scope.config.entry.fields.lexeme.inputSystems, function(ws) {
+				if($scope.currentEntry.lexeme[ws].value != '') {
+					foundLexeme = true;
+				};
 			});
+			if (foundLexeme) {
+				lexService.update($scope.currentEntry, function(result) {
+	
+					$scope.updateListWithEntry(result.data);
+					$scope.setCurrentEntry(result.data);
+					$scope.lastSavedDate = new Date();
+					$scope.refreshView();
+				});
+			} else {
+				$scope.lexemeFormRequired = true;
+			}
 		}
 	};
 	
@@ -79,10 +87,22 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
+	$scope.getEntryIndexById = function(id) {
+		var index = undefined;
+		for (var i=0; i<$scope.entries.length; i++) {
+			var e = $scope.entries[i];
+			if (e.id == id) {
+				index = i;
+				break;
+			}
+		}
+		return index;
+	};
+	
 	$scope.getMeaning = function(entry) {
 		var meaning = '';
 		if (angular.isDefined($scope.config.entry) && angular.isDefined(entry.definition)) {
-			var ws = $scope.config.entry.senses.definition.inputSystems[0];
+			var ws = $scope.config.entry.fields.senses.fields.definition.inputSystems[0];
 			if (angular.isDefined(entry.definition[ws])) {
 				meaning = entry.definition[ws].value;
 			}
@@ -100,7 +120,11 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		$scope.saveNow();
 
 		if (arguments.length == 0) {
-			$scope.setCurrentEntry({id:''});
+			if ($scope.currentEntry.id != '') {
+				var newEntry = {id:''};
+				$scope.setCurrentEntry(newEntry);
+				$scope.updateListWithEntry(newEntry);
+			}
 		} else {
 			lexService.read(id, function(result) {
 				$scope.setCurrentEntry(result.data);
@@ -114,10 +138,10 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.getTitle = function(entry) {
 		entry = entry || $scope.currentEntry;
-		var title = "[new word]";
+		var title = "[empty]";
 		if (entry.lexeme && $scope.config && $scope.config.entry) {
 			var lexemeInputSystem = $scope.config.entry.fields.lexeme.inputSystems[0];
-			if (entry.lexeme[lexemeInputSystem]) {
+			if (angular.isDefined(entry.lexeme[lexemeInputSystem]) && entry.lexeme[lexemeInputSystem].value != '') {
 				title = entry.lexeme[lexemeInputSystem].value;
 			}
 		}
@@ -125,27 +149,17 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 
 	$scope.entryLoaded = function() {
-		return $scope.currentEntry.hasOwnProperty('id');
+		return angular.isDefined($scope.currentEntry.id);
 	};
 	
 	$scope.deleteEntry = function(entry) {
-		if ($window.confirm("Are you sure you want to delete '" + $scope.entryTitle(entry) + "'?")) {
+		if ($window.confirm("Are you sure you want to delete '" + $scope.getTitle(entry) + "'?")) {
 			$scope.entries.splice($scope.getEntryIndexById(entry.id), 1);
-			lexService.remove(entry.id, function(){});
+			if (entry.id != '') {
+				lexService.remove(entry.id, function(){});
+			}
 			$scope.setCurrentEntry({});
 		}
-	};
-	
-	$scope.getEntryIndexById = function(id) {
-		var index = undefined;
-		for (var i=0; i<$scope.entries.length; i++) {
-			var e = $scope.entries[i];
-			if (e.id == id) {
-				index = i;
-				break;
-			}
-		}
-		return index;
 	};
 	
 	$scope.refreshView = function(updateFirstEntry) {
@@ -154,8 +168,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			if (result.ok) {
 				$scope.config = result.data.config;
 				$scope.entries = result.data.entries;
-				if (updateFirstEntry) {
-					$scope.setCurrentEntry(result.data.firstEntry);
+				if (updateFirstEntry && result.data.entry.id != '') {
+					$scope.setCurrentEntry(result.data.entry);
 				}
 			}
 		};

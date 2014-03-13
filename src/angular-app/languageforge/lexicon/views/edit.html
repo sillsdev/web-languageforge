@@ -15,7 +15,7 @@
             <div id="entryList">
                 <table class="table table-condensed ">
                     <tbody>
-                        <tr ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" ng-repeat="e in entries | filter:searchText">
+                        <tr ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" ng-repeat="e in entries track by e.id | filter:searchText">
                             <td ng-click="editEntry(e.id)">{{getTitle(e)}}</td>
                             <td ng-click="editEntry(e.id)">{{getMeaning(e)}}</td>
                         </tr>
@@ -35,10 +35,11 @@
                         <button class="btn" ng-click="newEntry()"><i class="icon-plus"></i>New Word</button>
                     </div>
                     <div class="span3">
-                        <button class="btn" ng-disabled="!canSave()" ng-show="entries.length > 0" ng-click="saveNow()"><i class="icon-save"></i>{{saveButtonTitle()}}</button>
+                        <button class="btn" ng-disabled="!canSave()" ng-show="entryLoaded()" ng-click="saveNow()"><i class="icon-save"></i>{{saveButtonTitle()}}</button>
                     </div>
                 </div>
                 <div class="animate-show" ng-show="entryLoaded()" id="entryItemView">
+                    <div class="text-warn" ng-show="lexemeFormRequired">At least one lexeme form is required</div>
                     <dc-entry config="config" model="currentEntry"></dc-entry>
                 </div>
                 </tab>
@@ -53,10 +54,6 @@
 
 <!--
         <div class="span5">
-            <pre>serverEntries
-                {{serverEntries()|json}}</pre>
-            <pre>dirtyEntries
-                {{dirtyEntries()|json}}</pre>
             <pre>currentEntry
                 {{currentEntry|json}}</pre>
             <pre>pristineEntry

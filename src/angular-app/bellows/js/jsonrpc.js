@@ -85,7 +85,7 @@ json_rpc.factory('jsonRpc', ['$http', '$window', 'error', function($http, $windo
 				result.status = status;
 				result.headers = headers;
 				result.config = config;
-				callback(result);
+				(callback||angular.noop)(result);
 			}
 			
 		};
@@ -114,7 +114,7 @@ json_rpc.factory('jsonRpc', ['$http', '$window', 'error', function($http, $windo
 				result.status = status;
 				result.headers = headers;
 				result.config = config;
-				callback(result);
+				(callback||angular.noop)(result);
 			}
 		};
 		request.success(this.requestsuccess);
