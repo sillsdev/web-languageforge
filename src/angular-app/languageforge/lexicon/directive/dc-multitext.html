@@ -1,9 +1,9 @@
 <form class="form-horizontal dc-multitext">
-    <div data-ng-repeat="inputSystem in definition.inputSystems" class="control-group">
-        <label data-ng-if="$first" class="control-label">{{definition.label}}</label>
+    <div data-ng-repeat="inputSystem in config.inputSystems" class="control-group">
+        <label data-ng-if="$first" class="control-label">{{config.label}}</label>
         <div class="controls">
-            <span title="unknown" class="wsid">{{getAbbreviation(inputSystem)}}</span><input data-ng-disabled="{{definition.readonly}}" width="{{definition.width}}" type="text" data-ng-model="model[inputSystem].value"/>
+            <span title="unknown" class="wsid">{{getAbbreviation(inputSystem)}}</span><input data-ng-disabled="{{config.readonly}}" width="{{config.width}}" type="text" data-ng-model="model[inputSystem].value"/>
         </div>
-        <dc-comments data-ng-show="definition.commentsVisible" dc-config="definition" dc-model="model[inputSystem]"></dc-comments>
+        <dc-comments data-ng-show="config.commentsVisible" dc-config="config" dc-model="model[inputSystem]"></dc-comments>
     </div>
 </form>

@@ -5,24 +5,24 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 			restrict : 'E',
 			templateUrl : '/angular-app/languageforge/lexicon/directive/dc-multitext.html',
 			scope : {
-				definition : "=",
+				config : "=",
 				model : "=",
 			},
 			controller: ['$scope', function($scope, lexService) {
 				$scope.makeValidModel = function() {
-					// if the model doesn't exist, create an object for it based upon the definition
+					// if the model doesn't exist, create an object for it based upon the config
 					if (!$scope.model) {
 						$scope.model = {};
-						if ($scope.definition && $scope.definition.inputSystems) {
-							for (var i=0; i<$scope.definition.inputSystems.length; i++) {
-								$scope.model[$scope.definition.inputSystems[i]] = {value: ""};
+						if ($scope.config && $scope.config.inputSystems) {
+							for (var i=0; i<$scope.config.inputSystems.length; i++) {
+								$scope.model[$scope.config.inputSystems[i]] = {value: ""};
 							}
 						}
 					}
 				};
 				
 				$scope.getAbbreviation = function(inputSystem) {
-					//return lexService.getSettings().inputSystems[inputSystem].abbreviation;
+					return $scope.config.wsInfo[inputSystem].abbreviation;
 				};
 			}],
 			link : function(scope, element, attrs, controller) {
