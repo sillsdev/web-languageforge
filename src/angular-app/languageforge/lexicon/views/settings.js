@@ -168,7 +168,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 	
 	$scope.openNewLanguageModal = function() {
 		var modalInstance = $modal.open({
-			templateUrl: '/angular-app/languageforge/lexicon/views/selectNewLanguage.html',
+			templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
 			controller: function($scope, $modalInstance) {
 				$scope.selected = {
 					code: '',
