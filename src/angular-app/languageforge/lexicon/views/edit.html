@@ -22,17 +22,20 @@
                     </tbody>
                 </table>
             </div>
+            <div ng-show="entryLoaded()">
+                <button ng-click="deleteEntry(currentEntry)" class="btn btn-small"><i class="icon-remove"></i>Delete Word</button>
+            </div>
         </div>
 
         <div class="span8">
             <div class="row">
-                <div class="span3">
+                <div class="span2">
                 </div>
                 <div class="span2">
                     <button class="btn" ng-click="newEntry()"><i class="icon-plus"></i>New Word</button>
                 </div>
                 <div class="span3">
-                    <button class="btn" ng-disabled="!canSave()" ng-show="entryLoaded()" ng-click="saveNow()"><i class="icon-save"></i>{{saveButtonTitle()}}</button>
+                    <button class="btn" ng-disabled="!currentEntryIsDirty()" ng-show="entryLoaded()" ng-click="saveCurrentEntry()"><i class="icon-save"></i>{{saveButtonTitle()}}</button>
                 </div>
             </div>
             <div class="row">
@@ -84,10 +87,5 @@
                     {{entries|json}}</pre>
         </div>
         -->
-    </div>
-    <div class="row" ng-show="entryLoaded()">
-        <div class="span3">
-                <button ng-click="deleteEntry(currentEntry)" class="btn btn-small"><i class="icon-remove"></i>Delete Word</button>
-        </div>
     </div>
 </div>

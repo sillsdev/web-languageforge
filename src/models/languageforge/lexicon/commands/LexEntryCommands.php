@@ -33,7 +33,7 @@ class LexEntryCommands {
 	}
 	*/
 	
-	public static function updateEntry($projectId, $entryId, $params) {
+	public static function updateEntry($projectId, $params) {
 		// TODO: we need to do checking of rights for updating comments, parts of the entry, etc - cjh
 		CodeGuard::checkTypeAndThrow($params, 'array');
 		$project = new LexiconProjectModel($projectId);
