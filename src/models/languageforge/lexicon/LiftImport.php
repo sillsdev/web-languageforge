@@ -19,17 +19,17 @@ class LiftImport {
 		}
 		while ($reader->read()) {
 			if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
-				$guid = $reader->getAttribute('guid');
-				$dateModified = $reader->getAttribute('dateModified');
 				$node = $reader->expand();
 				$dom = new \DomDocument();
 				$n = $dom->importNode($node, true); // expands the node for that particular guid
-				$sxe = simplexml_import_dom($n);
+				$sxeNode = simplexml_import_dom($n);
 				
+				$guid = $reader->getAttribute('guid');
+				$dateModified = $reader->getAttribute('dateModified');
 				$importWins = true;
-				if (self::_existsIn($guid, $entries)) {
+				if (self::existsIn($guid, $entries)) {
 					$entry = new LexEntryModel($projectModel, self::$_existingEntry['id']);
-					if (self::_differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
+					if (self::differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
 						switch ($mergeRule) {
 							case LiftMergeRule::CREATE_DUPLICATES:
 								$entry = new LexEntryModel($projectModel);
@@ -43,14 +43,14 @@ class LiftImport {
 								throw new \Exception("unknown LiftMergeRule " . $mergeRule);
 						}
 
-						LiftDecoder::decode($sxe, $entry, $importWins);
+						LiftDecoder::decode($sxeNode, $entry, $importWins);
 						$entry->write();
 					} else {
 						// skip because same mod time and skip enabled
 					}
 				} else {
 					$entry = new LexEntryModel($projectModel);
-					LiftDecoder::decode($sxe, $entry, $importWins);
+					LiftDecoder::decode($sxeNode, $entry, $importWins);
 					$entry->write();
 				}
 			}
@@ -65,7 +65,13 @@ class LiftImport {
 		echo "</pre>";
 	}
 	
-	private static function _existsIn($guid, $entries) {
+	/**
+	 * If the guid exists in entries return true and store entry
+	 * @param string $guid
+	 * @param array $entries
+	 * @return boolean
+	 */
+	private static function existsIn($guid, $entries) {
 		foreach ($entries as $entry) {
 			if ($entry['guid'] == $guid) {
 				self::$_existingEntry = $entry;
@@ -77,10 +83,10 @@ class LiftImport {
 	
 	/**
 	 * @param string $importDateModified
-	 * @param \DateTime $entryDateModified
+	 * @param int <Unix timestamp> $entryDateModified
 	 * @return boolean
 	 */
-	private static function _differentModTime($importDateModified, $entryDateModified) {
+	private static function differentModTime($importDateModified, $entryDateModified) {
 		$dateModified = new \DateTime($importDateModified);
 		return ($dateModified->getTimestamp() != $entryDateModified);
 	}
