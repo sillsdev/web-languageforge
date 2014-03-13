@@ -5,5 +5,18 @@
 }
 
 .dc-rendered.definition {
-	/* CSS for definition can go here, if needed */
+	margin-left: 10px;
+}
+
+.dc-rendered.definition .number {
+	font-weight: bold;
+}
+
+.dc-rendered.definition .partOfSpeech {
+	font-style: italic;
+}
+
+.dc-rendered.definition .definition-content {
+	font-weight: normal;
+	font-style: normal;
 }
