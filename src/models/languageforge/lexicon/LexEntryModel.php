@@ -75,8 +75,8 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	 * @return array <$index or -1 if not found>
 	 */
 	public function searchSensesFor($propertyName, $value) {
-		foreach ($this->senses as $index=>$sense) {
-			if ($sense->{$propertyName} == $value) {
+		foreach ($this->senses as $index => $sense) {
+ 			if (isset($sense->{$propertyName}) && (trim($sense->{$propertyName}) !== '') && ($sense->{$propertyName} == $value)) {
 				return $index;
 			}
 		}

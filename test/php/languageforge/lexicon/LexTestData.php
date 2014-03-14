@@ -36,6 +36,7 @@ file {
 	}
 	
 	// has incorrect th-fonipa form in each entry
+	// has incorrect sense in first entry
 	const liftTwoEntriesV0_13 = <<<EOD
 <?xml version="1.0" encoding="utf-8"?>
 <lift
@@ -64,15 +65,15 @@ file {
 			</form>
 		</field>
 		<sense
-			id="df801833-d55b-4492-b501-650da7bc7b73">
-			<grammatical-info
-				value="Noun" />
+			id="9d50e072-0206-4776-9ee6-bddf89b96aed">
 			<definition>
 				<form
 					lang="en">
-					<text>A kind of curry fried with crispy pork</text>
+					<text>incorrect definition</text>
 				</form>
 			</definition>
+			<grammatical-info
+				value="Adjective" />
 			<example>
 				<form
 					lang="th-fonipa">
@@ -145,6 +146,7 @@ file {
 EOD;
 	
 	// has correct th-fonipa form in each entry
+	// has correct sense in first entry (same id)
 	const liftTwoEntriesCorrectedV0_13 = <<<EOD
 <?xml version="1.0" encoding="utf-8"?>
 <lift
@@ -165,6 +167,17 @@ EOD;
 				<text>ฉู่ฉี่หมูกรอบ</text>
 			</form>
 		</lexical-unit>
+		<sense
+			id="9d50e072-0206-4776-9ee6-bddf89b96aed">
+			<grammatical-info
+				value="Noun" />
+			<definition>
+				<form
+					lang="en">
+					<text>A kind of curry fried with crispy pork</text>
+				</form>
+			</definition>
+		</sense>
 	</entry>
 	<entry
 		id="Id'dPrematurely_05473cb0-4165-4923-8d81-02f8b8ed3f26"
@@ -186,6 +199,7 @@ EOD;
 EOD;
 	
 	// has correct th-fonipa form in each entry and mod date changed
+	// has correct sense in first entry (different id)
 	const liftTwoEntriesModifiedV0_13 = <<<EOD
 <?xml version="1.0" encoding="utf-8"?>
 <lift
@@ -206,6 +220,17 @@ EOD;
 				<text>ฉู่ฉี่หมูกรอบ</text>
 			</form>
 		</lexical-unit>
+		<sense
+			id="df801833-d55b-4492-b501-650da7bc7b73">
+			<grammatical-info
+				value="Noun" />
+			<definition>
+				<form
+					lang="en">
+					<text>A kind of curry fried with crispy pork</text>
+				</form>
+			</definition>
+		</sense>
 	</entry>
 	<entry
 		id="Id'dPrematurely_05473cb0-4165-4923-8d81-02f8b8ed3f26"
