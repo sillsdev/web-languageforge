@@ -29,29 +29,18 @@ class LiftImport {
 				$n = $dom->importNode($node, true); // expands the node for that particular guid
 				$sxeNode = simplexml_import_dom($n);
 				
-				$importWins = true;
 				$guid = $reader->getAttribute('guid');
 				$existingEntry = $entryList->searchEntriesFor('guid', $guid);
 				if ($existingEntry) {
 					$entry = new LexEntryModel($projectModel, $existingEntry['id']);
 					$dateModified = $reader->getAttribute('dateModified');
 					if (self::differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
-						switch ($mergeRule) {
-							case LiftMergeRule::CREATE_DUPLICATES:
-								$entry = new LexEntryModel($projectModel);
-								break;
-							case LiftMergeRule::IMPORT_LOSES:
-								$importWins = false;
-								break;
-							case LiftMergeRule::IMPORT_WINS:
-								break;
-							default:
-								throw new \Exception("unknown LiftMergeRule " . $mergeRule);
-						}
-
-						LiftDecoder::decode($sxeNode, $entry, $importWins);
 						if ($mergeRule == LiftMergeRule::CREATE_DUPLICATES) {
+							$entry = new LexEntryModel($projectModel);
+							LiftDecoder::decode($sxeNode, $entry, $mergeRule);
 							$entry->guid = '';
+						} else {
+							LiftDecoder::decode($sxeNode, $entry, $mergeRule);
 						}
 						$entry->write();
 					} else {
@@ -59,19 +48,11 @@ class LiftImport {
 					}
 				} else {
 					$entry = new LexEntryModel($projectModel);
-					LiftDecoder::decode($sxeNode, $entry, $importWins);
+					LiftDecoder::decode($sxeNode, $entry, $mergeRule);
 					$entry->write();
 				}
 			}
 		}
-
-		$entryList->read();
-		$entries = $entryList->entries;
-		echo "<pre>";
-		echo "mergeRule: ". $mergeRule;
-		echo "   skipSameModTime: " . var_export($skipSameModTime, true);
-		echo "   entries count: " . count($entries);
-		echo "</pre>";
 	}
 	
 	/**

@@ -5,26 +5,24 @@ namespace models\languageforge\lexicon;
 class LiftDecoder {
 	
 	/**
-	 * 
 	 * @param SimpleXMLElement $sxeNode
 	 * @param LexEntryModel $entry
-	 * @param boolean $importWins
+	 * @param LiftMergeRule $mergeRule
 	 */
-	public static function decode($sxeNode, $entry, $importWins = true) {
+	public static function decode($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
 		$decoder = new LiftDecoder();
-		$decoder->_decode($sxeNode, $entry, $importWins);
+		$decoder->_decode($sxeNode, $entry, $mergeRule);
 	}
 	
 	/**
-	 * 
 	 * @param SimpleXMLElement $sxeNode
 	 * @param LexEntryModel $entry
-	 * @param boolean $importWins
+	 * @param LiftMergeRule $mergeRule
 	 */
-	protected function _decode($sxeNode, $entry, $importWins = true) {
+	protected function _decode($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
 		$lexicalForms = $sxeNode->{'lexical-unit'};
 		if ($lexicalForms) {
-			if ($importWins) {
+			if ($mergeRule != LiftMergeRule::IMPORT_LOSES) {
 				$entry->guid = (string) $sxeNode['guid'];
 				$entry->authorInfo->createdDate = new \DateTime((string) $sxeNode['dateCreated']);
 				$entry->authorInfo->modifiedDate = new \DateTime((string) $sxeNode['dateModified']);
@@ -32,16 +30,30 @@ class LiftDecoder {
 			}
 			if(isset($sxeNode->sense)) {
 				foreach ($sxeNode->sense as $senseNode) {
-					$liftId = (string) $senseNode['id'];
-					$sense = new Sense($liftId);
-		
+					$liftId = '';
+					if (isset($senseNode['id'])) {
+						$liftId = (string) $senseNode['id'];
+					}
 					$existingSenseIndex = $entry->searchSensesFor('liftId', $liftId);
-// 					if ($existingSenseIndex >= 0) {
-// 						$existingSense = $this->readSense($senseNode);
-						
-// 					} else {
+					if ($existingSenseIndex >= 0) {
+						switch ($mergeRule) {
+							case LiftMergeRule::CREATE_DUPLICATES:
+								$sense = new Sense('');
+								$entry->senses[] = $this->readSense($senseNode, $sense);
+								break;
+							case LiftMergeRule::IMPORT_WINS:
+								$sense = $entry->senses[$existingSenseIndex];
+								$entry->senses[$existingSenseIndex] = $this->readSense($senseNode, $sense);
+								break;
+							case LiftMergeRule::IMPORT_LOSES:
+								break;
+							default:
+								throw new \Exception("unknown LiftMergeRule " . $mergeRule);
+						}
+					} else {
+						$sense = new Sense($liftId);
 						$entry->senses[] = $this->readSense($senseNode, $sense);
-// 					}
+					}
 				}
 			}
 		}
