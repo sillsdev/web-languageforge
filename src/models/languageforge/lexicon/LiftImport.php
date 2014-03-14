@@ -31,7 +31,7 @@ class LiftImport {
 				
 				$importWins = true;
 				$guid = $reader->getAttribute('guid');
-				$existingEntry = self::existsIn($guid, $entries);
+				$existingEntry = $entryList->searchEntriesFor('guid', $guid);
 				if ($existingEntry) {
 					$entry = new LexEntryModel($projectModel, $existingEntry['id']);
 					$dateModified = $reader->getAttribute('dateModified');
@@ -72,21 +72,6 @@ class LiftImport {
 		echo "   skipSameModTime: " . var_export($skipSameModTime, true);
 		echo "   entries count: " . count($entries);
 		echo "</pre>";
-	}
-	
-	/**
-	 * If the guid exists in entries return the entry
-	 * @param string $guid
-	 * @param array $entries
-	 * @return array <$entry or false if not found>
-	 */
-	private static function existsIn($guid, $entries) {
-		foreach ($entries as $entry) {
-			if ($entry['guid'] == $guid) {
-				return $entry;
-			}
-		}
-		return false;
 	}
 	
 	/**
