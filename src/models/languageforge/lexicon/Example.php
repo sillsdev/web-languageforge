@@ -4,7 +4,8 @@ namespace models\languageforge\lexicon;
 
 class Example {
 
-	function __construct() {
+	function __construct($liftId = '') {
+		$this->liftId = $liftId;
 		$this->sentence = new MultiText();
 		$this->translation = new MultiText();
 		$this->authorInfo = new AuthorInfo();

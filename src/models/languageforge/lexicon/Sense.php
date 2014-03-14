@@ -6,7 +6,8 @@ use models\mapper\ArrayOf;
 
 class Sense {
 
-	function __construct() {
+	function __construct($liftId = '') {
+		$this->liftId = $liftId;
 		$this->definition = new MultiText();
 		$this->partOfSpeech = new LexiconFieldWithComments();
 		$this->semanticDomain = new LexiconMultiValueFieldWithComments();
@@ -19,16 +20,16 @@ class Sense {
 	}
 
 	/**
-	 * @var MultiText
-	 */
-	public $definition;
-	
-	/**
 	 * The id of the sense as specified in the LIFT file
 	 * @var string
 	 */
 	public $liftId;
 
+	/**
+	 * @var MultiText
+	 */
+	public $definition;
+	
 	/**
 	 * @var LexiconFieldWithComments
 	 */

@@ -71,9 +71,9 @@ class TestLiftImport extends UnitTestCase {
 		$this->assertEqual($entries[1]['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt", "Second entry should have given IPA form");
 		$this->assertEqual($entries[1]['lexeme']['th']['value'], "ข้าวไก่ทอด", "Second entry should have given Thai form");
 		
-// 		echo "<pre>";
-// 		echo "entries[0]: " . var_export($entries[0], true);
-// 		echo "</pre>";
+		echo "<pre>";
+		echo "entries[0]: " . var_export($entries[0], true);
+		echo "</pre>";
 	}
 
 	function testLiftImportMerge_ExistingDataAndImportWins_MergeOk() {
