@@ -69,6 +69,21 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	public $authorInfo;
 
 	/**
+	 * If the $value of $propertyName exists in senses return the index
+	 * @param string $senseId
+	 * @param array $senses
+	 * @return array <$index or -1 if not found>
+	 */
+	public function searchSensesFor($propertyName, $value) {
+		foreach ($this->senses as $index=>$sense) {
+			if ($sense[$propertyName] == $value) {
+				return $index;
+			}
+		}
+		return -1;
+	}
+	
+	/**
 	 * Remove this LexEntry from the collection
 	 * @param ProjectModel $projectModel
 	 * @param unknown $id

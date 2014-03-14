@@ -125,21 +125,6 @@ class LiftDecoder {
 		return $multiText;
 	}
 		
-	/**
-	 * If the sense id exists in senses return the index
-	 * @param string $senseId
-	 * @param array $senses
-	 * @return array <$index or false if not found>
-	 */
-	private function existsIn($senseId, $senses) {
-		foreach ($senses as $index=>$sense) {
-			if ($sense['id'] == $senseId) {
-				return $index;
-			}
-		}
-		return false;
-	}
-	
 }
 
 ?>
