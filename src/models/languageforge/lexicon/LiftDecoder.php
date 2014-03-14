@@ -33,8 +33,8 @@ class LiftDecoder {
 			if(isset($sxeNode->{'sense'})) {
 				foreach ($sxeNode->{'sense'} as $senseNode) {
 					$senseId = $senseNode->{'id'};
-					$existingSense = $this->existsIn($senseId, $entry->senses);
-// 					if ($existingSense) {
+// 					$existingSenseIndex = $entry->searchSensesFor('liftId', $senseId);
+// 					if ($existingSenseIndex >= 0) {
 // 						$existingSense = $this->readSense($senseNode);
 						
 // 					} else {
