@@ -121,6 +121,21 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		}
 	}
 
+	/**
+	 * If the $value of $propertyName exists in entries return the entry
+	 * @param string $propertyName
+	 * @param unknown $value
+	 * @return array|boolean $entry or false if not found
+	 */
+	public function searchEntriesFor($propertyName, $value) {
+		foreach ($this->entries as $entry) {
+			if ($entry[$propertyName] == $value) {
+				return $entry;
+			}
+		}
+		return false;
+	}
+	
 }
 
 ?>
