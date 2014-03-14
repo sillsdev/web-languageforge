@@ -40,6 +40,30 @@ class ArrayOf extends \ArrayObject {
 		parent::offsetSet($index, $newval);
 	}
 	
+	/**
+	 * Appends $value if it doesn't already exist in the array
+	 * @param unknown $value
+	 */
+	public function value($value) {
+		if ($this->count() <= 0 || !$this->array_search($value)) {
+			$this[] = $value;
+		}
+	}
+	
+	/**
+	 * Return true if $item exists in the data
+	 * @param unknown $item
+	 * @return boolean
+	 */
+	public function array_search($item) {
+		foreach ($this as $value) {
+			if ($value == $item) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }
 
 ?>

@@ -61,8 +61,8 @@ class TestLiftImport extends UnitTestCase {
 		$this->assertEqual($entries[0]['lexeme']['th']['value'], "ฉู่ฉี่หมูกรอบ", "First entry should have given Thai form");
 		$this->assertEqual($entries[0]['senses'][0]['definition']['en']['value'], "A kind of curry fried with crispy pork", "First entry definition should have given English form");
 		$this->assertEqual($entries[0]['senses'][0]['partOfSpeech']['value'], "Noun", "First entry part of speech should have given value");
-		$this->assertEqual($entries[0]['senses'][0]['semanticDomain']['values'][0], "5.2 Food", "First entry semantic domain should have given value");
-		$this->assertEqual($entries[0]['senses'][0]['semanticDomain']['values'][1], "1 Universe, creation", "First entry semantic domain should have given value");
+		$this->assertEqual($entries[0]['senses'][0]['semanticDomain'][0], "5.2 Food", "First entry semantic domain should have given value");
+		$this->assertEqual($entries[0]['senses'][0]['semanticDomain'][1], "1 Universe, creation", "First entry semantic domain should have given value");
 		$this->assertEqual($entries[0]['senses'][0]['examples'][0]['sentence']['th-fonipa']['value'], "sentence 1", "First entry example sentence 1 should have given value");
 		$this->assertEqual($entries[0]['senses'][0]['examples'][0]['translation']['en']['value'], "translation 1", "First entry example translation 1 should have given value");
 		$this->assertEqual($entries[0]['senses'][0]['examples'][1]['sentence']['th-fonipa']['value'], "sentence 2", "First entry example sentence 2 should have given value");
