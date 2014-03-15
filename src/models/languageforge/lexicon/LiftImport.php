@@ -18,10 +18,25 @@ class LiftImport {
 				
 		$reader = new \XMLReader();
 		$reader->XML($xml);
+		
+		// validate LIFT
+		set_error_handler(function ($errno, $errstr, $errfile, $errline, array $errcontext) {
+			// error was suppressed with the @-operator
+			if (0 === error_reporting()) {
+				return false;
+			}
+			
+			if (strpos($errstr, 'XMLReader::next()') !== false) {
+				throw new \Exception("Sorry, the selected LIFT file is invalid.");
+			} else {
+				return true;	// use the default handler
+			}
+		});
 		$reader->setRelaxNGSchema(APPPATH . "vendor/lift/lift-0.13.rng");
-		if (! $reader->isValid()) {
-			throw new \Exception("Sorry, the LIFT file is invalid.");
-		}
+		while ($reader->next()) {}	// read the entire file to validate all
+		$reader->moveToElement();	// go back to the start of the file
+		restore_error_handler();
+		
 		while ($reader->read()) {
 			if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
 				$node = $reader->expand();
@@ -64,7 +79,7 @@ class LiftImport {
 		$dateModified = new \DateTime($importDateModified);
 		return ($dateModified->getTimestamp() != $entryDateModified->getTimestamp());
 	}
-
+	
 }
 
 ?>

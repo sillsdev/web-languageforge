@@ -52,9 +52,10 @@ class LexProjectCommands {
 		$fileName = str_replace(array('/', '\\', '?', '%', '*', ':', '|', '"', '<', '>'), '_', $import['file']['name']);	// replace special characters with _
 		$fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
 		if (! in_array($fileExt, $allowedExtensions)) {
-			$message = "$fileName is not an allowed LIFT file. Ensure the file is one of the following types: $allowedExtensionsStr.";
+			$allowedExtensionsList = "*" . implode(", *", $allowedExtensions);
+			$message = "$fileName is not an allowed LIFT file. Ensure the file is one of the following types: $allowedExtensionsList.";
 			if (count($allowedExtensions) == 1) {
-				$message = "$fileName is not an allowed LIFT file. Ensure the file is a $allowedExtensionsStr.";
+				$message = "$fileName is not an allowed LIFT file. Ensure it is a $allowedExtensionsList file.";
 			}
 			throw new \Exception($message);
 		}
