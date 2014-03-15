@@ -10,8 +10,6 @@
 					<dc-multitext config="config.fields[fieldName]" model="model[fieldName]"></dc-multitext>
 				</div>
 				<div data-ng-switch-when="fields">
-					<pre data-ng-show="false">{{config | json}}</pre>
-					
 					<div data-ng-switch data-on="fieldName">
 						<div data-ng-switch-when="examples">
 							<div class="animate-repeat" data-ng-repeat="example in model.examples"> 
