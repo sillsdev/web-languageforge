@@ -1,5 +1,9 @@
 /* Top navigation */
 div.lexnav {
 	overflow: visible;
-	padding-left: 130px;
+	padding-left: 125px;
+}
+
+.lexnav a {
+	color: #3F7CA4;
 }
