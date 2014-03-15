@@ -21,7 +21,7 @@ class TestLiftImport extends UnitTestCase {
 		$liftXml = LexTestData::liftOneEntryV0_12;
 		
 		$e->inhibitErrorDisplay();
-		$this->expectError(new PatternExpectation("/Element lift failed to validate content/i"));
+		$this->expectException();
 		LiftImport::merge($liftXml, $project);
 		$e->restoreErrorDisplay();
 	}
@@ -34,9 +34,7 @@ class TestLiftImport extends UnitTestCase {
 		$liftXml = LexTestData::liftInvalidAttribute;
 		
 		$e->inhibitErrorDisplay();
-		$this->expectError(new PatternExpectation("/Expecting an element pronunciation, got nothing/i"));
-		$this->expectError(new PatternExpectation("/Invalid attribute xXxXx for element entry/i"));
-		$this->expectError(new PatternExpectation("/Element lift has extra content: entry/i"));
+		$this->expectException();
 		LiftImport::merge($liftXml, $project);
 		$e->restoreErrorDisplay();
 	}

@@ -34,7 +34,7 @@ class LiftImport {
 		});
 		$reader->setRelaxNGSchema(APPPATH . "vendor/lift/lift-0.13.rng");
 		while ($reader->next()) {}	// read the entire file to validate all
-		$reader->moveToElement();	// go back to the start of the file
+		$reader->XML($xml);	// go back to the start of the file
 		restore_error_handler();
 		
 		while ($reader->read()) {
