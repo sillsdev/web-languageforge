@@ -5,6 +5,7 @@ angular.module('lexicon.importExport', ['ui.bootstrap', 'bellows.services', 'pal
                                function($scope, userService, ss, notice, fileReader, lexProjectService) {
 	$scope.mergeRule = 'createDuplicates';
 	$scope.skipSameModTime = true;
+	$scope.deleteMatchingEntry = false;
 	
 	$scope.onFileSelect = function($files) {
 		$scope.file = $files[0];	// take the first file only
@@ -20,6 +21,7 @@ angular.module('lexicon.importExport', ['ui.bootstrap', 'bellows.services', 'pal
 			settings: {
 				mergeRule: $scope.mergeRule,
 				skipSameModTime: $scope.skipSameModTime,
+				deleteMatchingEntry: $scope.deleteMatchingEntry,
 			},
 		};
 		lexProjectService.importLift(importData, function(result) {
