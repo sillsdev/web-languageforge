@@ -12,30 +12,13 @@ class LiftImport {
 	 * @throws \Exception
 	 */
 	public static function merge($xml, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true) {
+		self::validate($xml);
+		
 		$entryList = new LexEntryListModel($projectModel);
 		$entryList->read();
-		$entries = $entryList->entries;
 				
 		$reader = new \XMLReader();
 		$reader->XML($xml);
-		
-		// validate LIFT
-		set_error_handler(function ($errno, $errstr, $errfile, $errline, array $errcontext) {
-			// error was suppressed with the @-operator
-			if (0 === error_reporting()) {
-				return false;
-			}
-			
-			if (strpos($errstr, 'XMLReader::next()') !== false) {
-				throw new \Exception("Sorry, the selected LIFT file is invalid.");
-			} else {
-				return true;	// use the default handler
-			}
-		});
-		$reader->setRelaxNGSchema(APPPATH . "vendor/lift/lift-0.13.rng");
-		while ($reader->next()) {}	// read the entire file to validate all
-		$reader->XML($xml);	// go back to the start of the file
-		restore_error_handler();
 		
 		while ($reader->read()) {
 			if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
@@ -68,6 +51,36 @@ class LiftImport {
 				}
 			}
 		}
+	}
+
+	/**
+	 * validate the lift data
+	 * @param string $xml
+	 * @throws \Exception
+	 * @return boolean
+	 */
+	public static function validate($xml) {
+		$reader = new \XMLReader();
+		$reader->XML($xml);
+		
+		// validate LIFT
+		set_error_handler(function ($errno, $errstr, $errfile, $errline, array $errcontext) {
+			// error was suppressed with the @-operator
+			if (0 === error_reporting()) {
+				return false;
+			}
+				
+			if (strpos($errstr, 'XMLReader::next()') !== false) {
+				throw new \Exception("Sorry, the selected LIFT file is invalid.");
+			} else {
+				return true;	// use the default handler
+			}
+		});
+		$reader->setRelaxNGSchema(APPPATH . "vendor/lift/lift-0.13.rng");
+		while ($reader->next()) {}	// read the entire file to validate all
+		restore_error_handler();
+		
+		return true;
 	}
 	
 	/**
