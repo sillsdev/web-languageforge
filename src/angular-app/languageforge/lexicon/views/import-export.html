@@ -38,6 +38,8 @@
 					<div class="controls">
 						<label class="checkbox">
 							<input type="checkbox" data-ng-model="skipSameModTime"/>Skip importing entries with identical modification times.</label>
+						<label class="checkbox" data-ng-show="mergeRule == 'importWins'">
+							<input type="checkbox" data-ng-model="deleteMatchingEntry"/>Delete matching entry if deleted in import.</label>
 					</div>
 				</div>
 				<button class="btn btn-primary" data-ng-click="importLift()">

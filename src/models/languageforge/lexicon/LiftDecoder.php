@@ -28,7 +28,7 @@ class LiftDecoder {
 				$entry->authorInfo->modifiedDate = new \DateTime((string) $sxeNode['dateModified']);
 				$entry->lexeme = $this->readMultiText($lexicalForms);
 			}
-			if(isset($sxeNode->sense)) {
+			if (isset($sxeNode->sense)) {
 				foreach ($sxeNode->sense as $senseNode) {
 					$liftId = '';
 					if (isset($senseNode['id'])) {
@@ -70,13 +70,13 @@ class LiftDecoder {
 		$sense->definition = $this->readMultiText($definition);
 		
 		// Part Of Speech
-		if(isset($sxeNode->{'grammatical-info'})) {
+		if (isset($sxeNode->{'grammatical-info'})) {
 			$partOfSpeech = (string) $sxeNode->{'grammatical-info'}->attributes()->value;
 			$sense->partOfSpeech->value = $partOfSpeech;
 		}
 	
 		// Semantic Domain
-		if(isset($sxeNode->trait)) {
+		if (isset($sxeNode->trait)) {
 			foreach ($sxeNode->trait as $traitNode) {
 				$semanticDomainName = (string) $traitNode->attributes()->name;
 				$semanticDomainValue = (string) $traitNode->attributes()->value;
@@ -107,7 +107,7 @@ class LiftDecoder {
 		$example->sentence = $this->readMultiText($exampleXml);
 		// Translation multitext
 		$translationXml = $sxeNode->translation;
-		if(!empty($translationXml)) {
+		if (! empty($translationXml)) {
 			$example->translation = $this->readMultiText($translationXml);
 		}
 		return $example;
