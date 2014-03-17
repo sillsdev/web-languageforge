@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate'])
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$timeout', '$filter', 
-                        function ($scope, userService, sessionService, lexService, configService, $window, $timeout, $filter) {
+angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'sgw.ui.breadcrumb'])
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$timeout', '$filter', 'lexLinkService', 'breadcrumbService', 
+                        function ($scope, userService, sessionService, lexService, configService, $window, $timeout, $filter, linkService, breadcrumbService) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
 	// for an idea on expanding text areas
 	
@@ -17,6 +17,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		]
 	};
 	*/
+	
+	
 	
 	var pristineEntry = {};
 	$scope.lastSavedDate = new Date();
@@ -114,20 +116,22 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.editEntry = function(id) {
 		$scope.lexemeFormRequired = false;
-		if ($scope.saveCurrentEntry()) {
-			if (arguments.length == 0) {
-				if ($scope.currentEntry.id != '') {
-					var newEntry = {id:''};
-					$scope.setCurrentEntry(newEntry);
-					$scope.updateListWithEntry(newEntry);
+		if (angular.isUndefined(id) || $scope.currentEntry.id != id) {
+			if ($scope.saveCurrentEntry()) {
+				if (arguments.length == 0) {
+					//if ($scope.currentEntry.id != '') {
+						var newEntry = {id:''};
+						$scope.setCurrentEntry(newEntry);
+						$scope.updateListWithEntry(newEntry);
+					//}
+				} else {
+					lexService.read(id, function(result) {
+						$scope.setCurrentEntry(result.data);
+					});
 				}
 			} else {
-				lexService.read(id, function(result) {
-					$scope.setCurrentEntry(result.data);
-				});
+				$scope.lexemeFormRequired = true;
 			}
-		} else {
-			$scope.lexemeFormRequired = true;
 		}
 	};
 
@@ -171,6 +175,13 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				if (updateFirstEntry && result.data.entry.id != '') {
 					$scope.setCurrentEntry(result.data.entry);
 				}
+				breadcrumbService.set('top',
+					[
+					 {href: '/app/projects', label: 'My Projects'},
+					 {href: linkService.project(), label: result.data.project.projectname},
+					 {href: linkService.edit('dbe'), label: 'Browse And Edit'},
+					]
+				);
 			}
 		};
 		var view = 'dbe';

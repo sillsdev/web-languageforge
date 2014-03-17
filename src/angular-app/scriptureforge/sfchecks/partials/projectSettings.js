@@ -30,7 +30,6 @@ angular.module(
 					$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 
 					// Breadcrumb
-					// TODO: refactor to use sfchecksLinkService - cjh
 					breadcrumbService.set('top',
 							[
 							 {href: '/app/projects', label: 'My Projects'},

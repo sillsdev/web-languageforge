@@ -15,7 +15,7 @@
             <div id="entryList">
                 <table class="table table-condensed ">
                     <tbody>
-                        <tr ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" ng-repeat="e in entries track by e.id | filter:searchText">
+                        <tr ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" ng-repeat="e in entries track by e.id">
                             <td ng-click="editEntry(e.id)">{{getTitle(e) | characters:40}}</td>
                             <td ng-click="editEntry(e.id)">{{getMeaning(e) | characters:40}}</td>
                         </tr>
@@ -38,7 +38,7 @@
                     <button class="btn" ng-disabled="!currentEntryIsDirty()" ng-show="entryLoaded()" ng-click="saveCurrentEntry()"><i class="icon-save"></i>{{saveButtonTitle()}}</button>
                 </div>
             </div>
-            <div class="row">
+            <div ng-show="entryLoaded()" class="row">
                 <div class="span8">
                     <tabset>
                         <tab heading="Edit">

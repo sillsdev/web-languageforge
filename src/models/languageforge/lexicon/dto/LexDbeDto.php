@@ -57,7 +57,8 @@ class LexDbeDto
 		return array(
 			'entries' => $entries,
 			'config' => $config,
-			'entry' => JsonEncoder::encode($firstEntry)
+			'entry' => JsonEncoder::encode($firstEntry),
+			'project' => array('projectname' => $project->projectname)
 		);
 	}
 }
