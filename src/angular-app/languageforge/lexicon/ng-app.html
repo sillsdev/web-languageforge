@@ -1,6 +1,13 @@
 <div class="sfcontainer">
 	<div class="container" data-ng-cloak style="margin-top:10px; width:100%">
-		<div id="lexicon-hmenu" data-ng-controller="LexiconMenuCtrl">
+    	<div id="sfchecks-hmenu" class="hdrnav">
+    		<ul class="topNav">
+    			<li><a href="/app/projects">My Projects</a></li>
+    			<li><a href="/app/activity">Activity</a></li>
+    		</ul>
+    		<ul id="top" class="topCrumbs" breadcrumbs></ul>
+    	</div>
+		<div id="lexicon-hmenu" style="clear:both" data-ng-controller="LexiconMenuCtrl">
 			<!-- Don't need breadcrumbs <ul id="top" class="topCrumbs" data-breadcrumbs></ul> -->
 			<div class="control-group">
 			</div>
@@ -44,6 +51,7 @@
 				</div>
 			</div>
 			
+			<!--
 			<div class="hdrnav">
 				<ul>
 					<li data-ng-show="isItemVisible('view')"><a href="#/p/{{projectId}}/view"><i class="icon-eye-open"></i> View</a></li>
@@ -66,6 +74,7 @@
 					<a class="pointer" data-ng-click="showSubmenu(addSubmenuId)"><i class="icon-plus"></i> Add Information <i data-ng-class="iconName(addSubmenuId)"></i></a></li>
 				</ul>
 			</div>
+			-->
 		</div>
 		<div data-sil-notices></div>
 		<div data-ng-view></div>

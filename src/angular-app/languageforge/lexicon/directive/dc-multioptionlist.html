@@ -1,0 +1,11 @@
+<form class="form-horizontal dc-optionlist">
+    <label class="control-label">{{config.label}}</label>
+        <div class="controls">
+            <span style="border: 2px solid gray; padding:3px; margin-right:10px;" ng-repeat="val for val in model.values">{{getDisplayName(val)}}</span>
+            <select ng-model="newValue">
+                <option value="">Unknown</option>
+            </select>
+            <button ng-click="addValue()" class="btn btn-small"><i class="icon-plus"></i>Add</button>
+        </div>
+        <dc-comments data-ng-show="config.commentsVisible" dc-config="config" dc-model="model"></dc-comments>
+</form>
