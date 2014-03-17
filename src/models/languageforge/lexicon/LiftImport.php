@@ -11,7 +11,7 @@ class LiftImport {
 	 * @param boolean $skipSameModTime
 	 * @throws \Exception
 	 */
-	public static function merge($xml, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true) {
+	public static function merge($xml, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false) {
 		self::validate($xml);
 		
 		$entryList = new LexEntryListModel($projectModel);
@@ -37,17 +37,27 @@ class LiftImport {
 							$entry = new LexEntryModel($projectModel);
 							LiftDecoder::decode($sxeNode, $entry, $mergeRule);
 							$entry->guid = '';
+							$entry->write();
 						} else {
-							LiftDecoder::decode($sxeNode, $entry, $mergeRule);
+							if (isset($sxeNode->{'lexical-unit'})) {
+								LiftDecoder::decode($sxeNode, $entry, $mergeRule);
+								$entry->write();
+							} else if (isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
+								LexEntryModel::remove($projectModel, $existingEntry['id']);
+							}
 						}
-						$entry->write();
 					} else {
 						// skip because same mod time and skip enabled
+						if (! isset($sxeNode->{'lexical-unit'}) && isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
+							LexEntryModel::remove($projectModel, $existingEntry['id']);
+						}
 					}
 				} else {
-					$entry = new LexEntryModel($projectModel);
-					LiftDecoder::decode($sxeNode, $entry, $mergeRule);
-					$entry->write();
+					if (isset($sxeNode->{'lexical-unit'})) {
+						$entry = new LexEntryModel($projectModel);
+						LiftDecoder::decode($sxeNode, $entry, $mergeRule);
+						$entry->write();
+					}
 				}
 			}
 		}

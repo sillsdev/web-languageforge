@@ -67,7 +67,7 @@ class LexProjectCommands {
 			mkdir($folderPath, 0777, true);
 		};
 		
-		LiftImport::merge($liftXml, $project, $import['settings']['mergeRule'], $import['settings']['skipSameModTime']);
+		LiftImport::merge($liftXml, $project, $import['settings']['mergeRule'], $import['settings']['skipSameModTime'], $import['settings']['deleteMatchingEntry']);
 		
 		if (!$project->liftFilePath || $import['settings']['mergeRule'] != LiftMergeRule::IMPORT_LOSES) {
 			// cleanup previous files of any allowed extension
@@ -85,8 +85,9 @@ class LexProjectCommands {
 			if ($moveOk) {
 				$project->liftFilePath = $filePath;
 			}
-			$project->write();
 		}
+		
+		$project->write();
 	}
 	
 }
