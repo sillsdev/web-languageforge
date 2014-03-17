@@ -64,7 +64,7 @@
 			<div id="sub-foot">
 				<div class="container">
 					<div class="row">
-						<div class="span3"><img src="/images/jamaicanpsalms/sf-sub-footer-pic.png" alt="Israel's Story" style="width:210px;height:210px;margin-top:52px" /></div>
+						<div class="span3"><img src="/images/jamaicanpsalms/sf-sub-footer-pic.png" alt="Israel's Story" style="width:146px;height:150px;margin-top:72px; margin-left:60px" /></div>
 						<div class="span9">
 							<h3>The Impact of the Bible</h3>
 							<p>Many Jamaicans have been touched by the Jamaican New Testament! Take Israel, for example, a young British-Jamaican young man living in England. He talks to us regularly on our Facebook page. Ever so often he reads for his family members from the Jamaican New Testament (JNT). One day, he read to his grandmother from the JNT. His grandmother then told her pastor about the JNT. The pastor was curious, so Israel was asked to take his JNT to church and read from it during worship! Israel messaged us after the service, this was what he said:</p>
