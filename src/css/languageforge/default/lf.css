@@ -699,13 +699,12 @@ ul.topNav li:hover {
 }
 
 ul.topNav li.here {
-	background-image: url(http://languageforge.local/images/lf_header-bar-bkg.png);
+	background-image: url(/images/languageforge/default/lf_header-bar-bkg.png);
 }
 
 ul.topNav a {
 	color: #fff;
 	display: block;
-	padding: 6px 12px 6px 12px;
 	text-decoration: none;
 }
 

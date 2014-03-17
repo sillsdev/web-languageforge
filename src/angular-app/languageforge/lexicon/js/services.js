@@ -25,6 +25,15 @@ angular.module('lexicon.services', ['jsonRpc'])
 		};
 		
 	}])
+	.service('lexLinkService', ['lexProjectService', function(projectService) {
+		this.project = function () {
+			return '/app/lexicon#/p/' + projectService.getProjectId();
+		};
+		
+		this.edit = function (projectId, view) {
+			return this.project(projectId) + '/' + view;
+		};
+	}])
 	.service('lexProjectService', ['jsonRpc', '$location', function(jsonRpc, $location) {
 		jsonRpc.connect('/api/sf');
 
