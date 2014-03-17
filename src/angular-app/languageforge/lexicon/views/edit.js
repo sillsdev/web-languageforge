@@ -59,6 +59,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				lexService.update($scope.currentEntry, function(result) {
 					//$scope.updateListWithEntry(result.data);
 					$scope.lastSavedDate = new Date();
+					pristineEntry = angular.copy($scope.currentEntry);
 					$scope.refreshView();
 				});
 				return true;
