@@ -5,18 +5,17 @@ use libraries\shared\LanguageData;
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
-class TestParatextExport extends UnitTestCase {
+class TestLanguageData extends UnitTestCase {
 
-	function testLanguageData_ThreeLetterCodesExist() {
-		$tag = 'eng';
-		$name = $tag;
+	function testLanguageData_DataExists() {
 		$languages = new LanguageData();
-		$languageCode = $languages->getCode($tag);
-		if (key_exists($languageCode, $languages)) {
-			$name = $languages[$languageCode]->name;
-		}
 		
-		$this->assertEqual($name, "English");
+		$this->assertTrue($languages->count() >= 7725);
+		$this->assertEqual($languages['eng']->name, "English");
+		$this->assertEqual($languages['en']->name, "English");
+		$this->assertEqual($languages['mri']->name, "Maori");
+		$this->assertEqual($languages['mi']->name, "Maori");
+		$this->assertEqual($languages['qaa']->name, "Unlisted Language");
 	}
 
 }

@@ -8,9 +8,8 @@ use models\mapper\JsonDecoder;
 
 class LanguageCode {
 	
-	public function __construct($codeThree = 'qaa') {
+	public function __construct($codeThree = '') {
 		$this->three = $codeThree;
-		$this->two = '';
 	}
 	
 	/**
@@ -29,7 +28,7 @@ class LanguageCode {
 
 class Language {
 	
-	public function __construct($name = 'Unlisted Language', $codeThree = 'qaa') {
+	public function __construct($name = '', $codeThree = '') {
 		$this->name = $name;
 		$this->code = new LanguageCode($codeThree);
 		$this->country = new ArrayOf();
@@ -79,29 +78,28 @@ class LanguageData extends MapOf {
 	
 	public function read() {
 		$languagesFile = file_get_contents(APPPATH . "angular-app/bellows/js/inputSystems_languages.js");
-		$json = substr($languagesFile, strpos($languagesFile, '['));
+		$json = str_replace(";", "", substr($languagesFile, strpos($languagesFile, '[')));
+		$arr = json_decode($json, true);
+
 		$decoder = new JsonDecoder();
-		$decoder->decodeMapOf('', $this, json_decode($json, true));
+		foreach ($arr as $obj) {
+			$language = new Language();
+			$decoder->decode($language, $obj);
+			$this[$language->code->three] = $language;
+			
+			// duplicate any two letter code languages with two letter code keys
+			if ($language->code->two) {
+				$this[$language->code->two] = $language;
+			}
+		}
 		
 		// add the unlisted language if it doesn't already exist
-		$unlisted = new Language();
+		$unlisted = new Language('Unlisted Language', 'qaa');
 		$unlisted->country[] = '?';
 		$unlistedCode = $unlisted->code->three;
 		if (! key_exists($unlistedCode, $this)) {
 			$this[$unlistedCode] = $unlisted;
 		}
-		
-		// duplicate any two letter code languages with two letter code keys 
-		// TODO Fix. This doesn't work yet IJH 2014-03
-		$arr = $this->getArrayCopy();
-		$twoLetterLanguages = array();
-		foreach (array_keys($arr) as $codeThree) {
-			$language = $arr[$codeThree];
-			if ($language->code->two) {
-				$twoLetterLanguages[$language->code->two] = $language;
-			}
-		}
-		$this->exchangeArray(array_merge($twoLetterLanguages, $arr));
 	}
 	
 	/**
