@@ -156,7 +156,7 @@ class MongoMapper
 		try {
 			MongoDecoder::decode($model, $data, $id);
 		} catch (\Exception $ex) {
-			throw new \Exception("Exception thrown while reading '$id'", $ex->getCode(), $ex);
+			CodeGuard::exception("Exception thrown while decoding '$id'", $ex->getCode(), $ex);
 		}
 	}
 	
