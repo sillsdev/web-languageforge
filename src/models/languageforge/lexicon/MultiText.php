@@ -19,6 +19,15 @@ class MultiText extends MapOf {
 			$this[$inputSystem] = new LexiconFieldWithComments($value);
 		}
 	}
+	
+	/**
+	 * 
+	 * @param string $inputSystem
+	 * @return boolean
+	 */
+	public function hasForm($inputSystem) {
+		return array_key_exists($inputSystem, $this);
+	}
 
 }
 

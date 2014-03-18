@@ -35,7 +35,7 @@ class TestLexProjectCommands extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$settingsDto = LexProjectCommands::readSettings($projectId);
+		$settingsDto = json_decode(json_encode(LexProjectCommands::readSettings($projectId)), true);
 		
 		$this->assertTrue($settingsDto['tasks']['addMeanings']['visible']);
 		$this->assertEqual($settingsDto['entry']['fields']['lexeme']['inputSystems'][0], 'en');
