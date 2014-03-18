@@ -22,14 +22,14 @@
 			</div>
 			<div collapse="!replyBoxVisible">
 				<div>Reply to the above comment</div>
-				<div><textarea data-ng-model="newSubcomment"></textarea></div>
-				<div><button type="submit" class="btn-sm btn-info" data-ng-click="submitSubcomment(newSubcomment, comment); newSubcomment=''; replyBoxVisible=false">Post Reply</button></div>
+				<div><textarea data-ng-model="newReply"></textarea></div>
+				<div><button type="submit" class="btn-sm btn-info" data-ng-click="submitReply(newReply, comment); newReply=''; replyBoxVisible=false">Post Reply</button></div>
 			</div>
-			<table class="subcomments" data-ng-if="comment.subcomments.length">
-				<tr data-ng-repeat="subcomment in comment.subcomments">
-					<td class="subcomment-who">{{subcomment.userRef.username}}</td>
-					<td class="subcomment-when">{{subcomment.dateModified | date:'yyyy-MM-dd'}}</td>
-					<td class="subcomment-what">{{subcomment.content}}</td>
+			<table class="replies" data-ng-if="comment.replies.length">
+				<tr data-ng-repeat="reply in comment.replies">
+					<td class="reply-who">{{reply.userRef.username}}</td>
+					<td class="reply-when">{{reply.dateModified | date:'yyyy-MM-dd'}}</td>
+					<td class="reply-what">{{reply.content}}</td>
 				</tr>
 			</table>
 		</div>

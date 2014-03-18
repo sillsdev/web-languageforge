@@ -172,13 +172,62 @@ class TestLexCommentCommands extends UnitTestCase {
 		
 		$entry->read($entryId);
 
-		$reply = $entry->lexeme[$ws]->comments[0]->subcomments[0];
+		$reply = $entry->lexeme[$ws]->comments[0]->replies[0];
 		$this->assertEqual($reply->content, 'Plus 1');
 		$this->assertNotEqual($reply->id, '', 'comment should have a unique id');
 		
 	}
 	
 	function testUpdateLexemeReply_ExistingReply_ReplyUpdatedOk() {
+		$e = new LexiconMongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+		
+		$entry = new LexEntryModel($project);
+		$ws = 'th';
+		$entry->lexeme->form($ws, 'apple');
+
+		$sense = new Sense();
+		$sense->definition->form('en', 'red fruit');
+		$sense->partOfSpeech->value = 'noun';
+		
+		$example = new Example();
+		$example->sentence->form('th', 'example1');
+		$example->translation->form('en', 'trans1');
+		
+		$sense->examples[] = $example;
+		
+		$entry->senses[] = $sense;
+		
+		$entryId = $entry->write();
+		
+		$commentData = array(
+			'id' => '',
+			'content' => 'I like this lexeme a lot',
+			'regarding' => 'apple',
+			'score' => 5
+		);
+		
+		$entryArray = LexCommentCommands::updateLexemeComment($projectId, $entryId, $ws, $commentData, '12345');
+		
+		$commentId = $entryArray['lexeme'][$ws]['comments'][0]['id'];
+
+		$replyData = array(
+			'id' => '',
+			'content' => 'Plus 1'
+		);
+		
+		$entryArray = LexCommentCommands::updateLexemeReply($projectId, $entryId, $ws, $commentId, $replyData, '12345');
+		
+		$replyId = $entryArray['lexeme'][$ws]['comments'][0]['replies'][0]['id'];
+		
+		$entry->read($entryId);
+
+		$reply = $entry->lexeme[$ws]->comments[0]->replies[0];
+		$this->assertEqual($reply->content, 'Plus 1');
+		$this->assertNotEqual($reply->id, '', 'comment should have a unique id');
 		
 	}
 	

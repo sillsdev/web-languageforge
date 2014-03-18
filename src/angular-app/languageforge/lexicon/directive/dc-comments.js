@@ -38,7 +38,7 @@ angular.module('palaso.ui.dc.comments', ['palaso.ui.dc.entry', 'angularjs-gravat
 					regarding: "",
 					content: "",
 					score: 0,
-					subcomments: [],
+					replies: [],
 					status: "To Do",
 				};
 			};
@@ -50,11 +50,11 @@ angular.module('palaso.ui.dc.comments', ['palaso.ui.dc.entry', 'angularjs-gravat
 				$scope.dcModel.comments.push(comment);
 			};
 
-			$scope.submitSubcomment = function(newSubcommentContent, parentComment) {
-				var subcomment = $scope.makeValidComment();
-				subcomment.regarding = parentComment.content; // Not actually used at the moment, but why not? We may want it later
-				subcomment.content = newSubcommentContent;
-				parentComment.subcomments.push(subcomment);
+			$scope.submitReply = function(newReplyContent, parentComment) {
+				var reply = $scope.makeValidComment();
+				reply.regarding = parentComment.content; // Not actually used at the moment, but why not? We may want it later
+				reply.content = newReplyContent;
+				parentComment.replies.push(reply);
 			}
 
 			// TODO: The correct way to do this, per spec, is to store votes on a per-user basis,

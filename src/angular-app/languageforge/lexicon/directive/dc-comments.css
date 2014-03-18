@@ -81,27 +81,27 @@ div.dc-comments {
 	flex-direction: column;
 }
 
-.dc-comments .subcomments {
+.dc-comments .replies {
 	width: 100%;
 }
 
-.dc-comments .subcomments td {
+.dc-comments .replies td {
 	border: none;
 }
 
-.dc-comments .subcomments .subcomment-who {
+.dc-comments .replies .reply-who {
 	width: 25%;
 }
 
-.dc-comments .subcomments .subcomment-when {
+.dc-comments .replies .reply-when {
 	width: 25%;
 }
 
-.dc-comments .subcomments .subcomment-what {
+.dc-comments .replies .reply-what {
 	width: 50%;
 }
 
 .dc-comments textarea {
-	/* Both comments and subcomments textareas should be large */
+	/* Both comments and replies textareas should be large */
 	width: 80%;
 }

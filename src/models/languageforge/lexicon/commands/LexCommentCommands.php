@@ -113,7 +113,7 @@ class LexCommentCommands {
 			}
 		}
 		if ($foundKey !== FALSE) {
-			self::updateComment($commentModels[$foundKey]->subcomments, $replyData, $userId, 'reply');
+			self::updateComment($commentModels[$foundKey]->replies, $replyData, $userId, 'reply');
 		}
 	}
 }
