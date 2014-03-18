@@ -2,6 +2,9 @@
 
 namespace models\languageforge\lexicon;
 
+use models\mapper\ArrayOf;
+use models\languageforge\lexicon\settings\LexiconConfigObj;
+
 class LiftImport {
 	
 	/**
@@ -16,6 +19,13 @@ class LiftImport {
 		
 		$entryList = new LexEntryListModel($projectModel);
 		$entryList->read();
+		if ($entryList->count <= 0) {
+			// clear entry field input systems settings if their are no entries (only use imported input systems)
+			$projectModel->settings->entry->fields[LexiconConfigObj::LEXEME]->inputSystems = new ArrayOf();
+			$projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems = new ArrayOf();
+			$projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems = new ArrayOf();
+			$projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems = new ArrayOf();
+		}
 				
 		$reader = new \XMLReader();
 		$reader->XML($xml);
@@ -35,12 +45,12 @@ class LiftImport {
 					if (self::differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
 						if ($mergeRule == LiftMergeRule::CREATE_DUPLICATES) {
 							$entry = new LexEntryModel($projectModel);
-							LiftDecoder::decode($sxeNode, $entry, $mergeRule);
+							LiftDecoder::decode($projectModel, $sxeNode, $entry, $mergeRule);
 							$entry->guid = '';
 							$entry->write();
 						} else {
 							if (isset($sxeNode->{'lexical-unit'})) {
-								LiftDecoder::decode($sxeNode, $entry, $mergeRule);
+								LiftDecoder::decode($projectModel, $sxeNode, $entry, $mergeRule);
 								$entry->write();
 							} else if (isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
 								LexEntryModel::remove($projectModel, $existingEntry['id']);
@@ -55,7 +65,7 @@ class LiftImport {
 				} else {
 					if (isset($sxeNode->{'lexical-unit'})) {
 						$entry = new LexEntryModel($projectModel);
-						LiftDecoder::decode($sxeNode, $entry, $mergeRule);
+						LiftDecoder::decode($projectModel, $sxeNode, $entry, $mergeRule);
 						$entry->write();
 					}
 				}

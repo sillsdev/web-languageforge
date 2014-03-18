@@ -2,12 +2,12 @@
 
 namespace models\languageforge\lexicon;
 
-use models\languageforge\lexicon\settings\LexiconProjectSettings;
-
 use models\mapper\MapOf;
 use models\languageforge\LfProjectModel;
+use models\languageforge\lexicon\settings\LexiconProjectSettings;
 
 class LexiconProjectModel extends LfProjectModel {
+	
 	public function __construct($id = '') {
 		$this->appName = LfProjectModel::LEXICON_APP;
 		$this->inputSystems = new MapOf(
@@ -27,7 +27,7 @@ class LexiconProjectModel extends LfProjectModel {
 	
 	/**
 	 * 
-	 * @var MapOf<InputSystem>
+	 * @var MapOf <InputSystem>
 	 */
 	public $inputSystems;
 	
@@ -42,5 +42,25 @@ class LexiconProjectModel extends LfProjectModel {
 	 * @var string
 	 */
 	public $liftFilePath;
+	
+	/**
+	 * Adds an input system if it doesn't already exist
+	 * @param string $tag
+	 * @param string $abbr
+	 * @param string $name
+	 */
+	public function addInputSystem($tag, $abbr = '', $name = '') {
+		if (! key_exists($tag, $this->inputSystems)) {
+			if (! $abbr) {
+				$abbr = $tag;
+			}
+			if (! $name) {
+				$name = $tag;
+			}
+			$this->inputSystems[$tag] = new InputSystem($tag, $name, $abbr);
+		}
+	}
+	
 }
+
 ?>
