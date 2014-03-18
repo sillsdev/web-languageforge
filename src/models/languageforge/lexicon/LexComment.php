@@ -31,12 +31,13 @@ class LexComment extends LexCommentReply {
 	public $status;
 	
 	public function __construct($content = '') {
-		$this->content = $content;
 		$this->subcomments = new ArrayOf(
 			function($data) {
 				return new LexCommentReply();
 			}
 		);
+		$this->score = 0;
+		parent::__construct($content);
 	}
 }
 

@@ -56,40 +56,6 @@ class LexEntryCommands {
 		
 	}
 	
-	public static function updateLexemeComment($projectId, $entryId, $inputSystem, $params) {
-		CodeGuard::checkTypeAndThrow($params, 'array');
-		$project = new LexiconProjectModel($projectId);
-		$entry = new LexEntryModel($project, $entryId);
-		if (!$entry->lexeme->hasForm($inputSystem)) {
-			throw new \Exception("Input system $inputSystem must exist to updateLexemeComment.");
-		}
-		if (array_key_exists('index', $params) && $params['index'] != '' && array_key_exists($inputSystem, $entry->lexeme)) {
-			$comment = $entry->lexeme[$inputSystem]->comments[$params['index']];
-			JsonDecoder::decode($comment, $params);
-			$entry->lexeme[$inputSystem]->comments[$params['index']] = $comment;
-		} else {
-			$comment = new LexComment();
-			JsonDecoder::decode($comment, $params);
-			$entry->lexeme[$inputSystem]->comments[] = $comment;
-		}
-		return $entry->write();
-	}
-	public static function updateLexemeReply($projectId, $entryId, $commentId, $params) {}
-	
-	public static function updateSenseComment($projectId, $entryId, $senseId, $senseNode, $params) {}
-	public static function updateSenseReply($projectId, $entryId, $senseId, $senseNode, $commentId, $params) {}
-	
-	public static function updateExampleComment($projectId, $entryId, $senseId, $exampleId, $exampleNode, $params) {}
-	public static function updateExampleReply($projectId, $entryId, $senseId, $exampleId, $exampleNode, $commentId, $params) {}
-
-	public static function removeEntries($projectId, $entryIds) {
-		CodeGuard::checkTypeAndThrow($entryIds, 'array');
-		$project = new LexiconProjectModel($projectId);
-		foreach ($entryIds as $id) {
-			LexEntryModel::remove($project, $id);
-		}
-	}
-	
 	/**
 	 * 
 	 * @param string $projectId
