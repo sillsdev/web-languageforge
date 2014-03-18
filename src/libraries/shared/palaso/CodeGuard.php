@@ -21,23 +21,27 @@ class CodeGuard {
 		if ($type == 'object') {
 			$type = get_class($var);
 		}
+		var_dump(debug_backtrace());
 		throw new \Exception("Type Exception: Expected '" . $expectedType . "' given '" . $type . "'");
 	}
 	
 	public static function checkNullAndThrow($var, $name) {
 		if ($var == null) {
+			debug_print_backtrace();
 			throw new \Exception("'$name' should not be null");
 		}
 	}
 	
 	public static function checkEmptyAndThrow($var, $name) {
 		if (empty($var)) {
+			debug_print_backtrace();
 			throw new \Exception("'$name' should not be empty");
 		}
 	}
 	
 	public static function checkNotFalseAndThrow($var, $name) {
 		if ($var == null || !$var) {
+			debug_print_backtrace();
 			throw new \Exception("'$name' should not evaluate to false");
 		}
 	}

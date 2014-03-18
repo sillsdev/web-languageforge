@@ -60,7 +60,7 @@ class LexEntryCommands {
 		CodeGuard::checkTypeAndThrow($params, 'array');
 		$project = new LexiconProjectModel($projectId);
 		$entry = new LexEntryModel($project, $entryId);
-		if (! array_key_exists($inputSystem, $entry->lexeme)) {
+		if (!$entry->lexeme->hasForm($inputSystem)) {
 			throw new \Exception("Input system $inputSystem must exist to updateLexemeComment.");
 		}
 		if (array_key_exists('index', $params) && $params['index'] != '' && array_key_exists($inputSystem, $entry->lexeme)) {
