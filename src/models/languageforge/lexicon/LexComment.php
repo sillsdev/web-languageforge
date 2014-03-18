@@ -22,7 +22,7 @@ class LexComment extends LexCommentReply {
 	 * 
 	 * @var ArrayOf<LexCommentReply>
 	 */
-	public $subcomments;
+	public $replies;
 	
 	/**
 	 * 
@@ -31,7 +31,7 @@ class LexComment extends LexCommentReply {
 	public $status;
 	
 	public function __construct($content = '') {
-		$this->subcomments = new ArrayOf(
+		$this->replies = new ArrayOf(
 			function($data) {
 				return new LexCommentReply();
 			}
