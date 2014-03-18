@@ -222,14 +222,20 @@ class TestLexCommentCommands extends UnitTestCase {
 		$entryArray = LexCommentCommands::updateLexemeReply($projectId, $entryId, $ws, $commentId, $replyData, '12345');
 		
 		$replyId = $entryArray['lexeme'][$ws]['comments'][0]['replies'][0]['id'];
+
+		$replyData = array(
+			'id' => $replyId,
+			'content' => 'Plus 2'
+		);
+
+		LexCommentCommands::updateLexemeReply($projectId, $entryId, $ws, $commentId, $replyData, '12345');
 		
 		$entry->read($entryId);
 
 		$reply = $entry->lexeme[$ws]->comments[0]->replies[0];
-		$this->assertEqual($reply->content, 'Plus 1');
-		$this->assertNotEqual($reply->id, '', 'comment should have a unique id');
-		
+		$this->assertEqual($reply->content, 'Plus 2');
 	}
+
 	
 }
 

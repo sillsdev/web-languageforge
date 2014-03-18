@@ -16,6 +16,28 @@ class LexiconFieldWithComments extends LexiconField {
 		);
 		parent::__construct($value);
 	}
+	
+	/**
+	 * 
+	 * @param string $id
+	 * @return LexComment
+	 */
+	public function getComment($id) {
+		foreach ($this->comments as $comment) {
+			if ($comment->id == $id) {
+				return $comment;
+			}
+		}
+	}
+
+	public function setComment($id, $model) {
+		foreach ($this->comments as $key => $comment) {
+			if ($comment->id == $id) {
+				$this->comments[$key] = $model;
+				break;
+			}
+		}
+	}
 }
 
 ?>
