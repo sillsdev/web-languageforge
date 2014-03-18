@@ -76,7 +76,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$comment = new LexComment('this is a comment');
 		$comment->score = 5;
 		$comment->regarding = "apple";
-		$comment->subcomments[] = $reply;
+		$comment->replies[] = $reply;
 		
 		$entry->lexeme['th']->comments[] = $comment;
 		
@@ -97,7 +97,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$this->assertEqual($newEntry['lexeme']['th']['comments'][0]['content'], 'this is a comment');
 		$this->assertEqual($newEntry['lexeme']['th']['comments'][0]['score'], 5);
 		$this->assertEqual($newEntry['lexeme']['th']['comments'][0]['regarding'], 'apple');
-		$this->assertEqual($newEntry['lexeme']['th']['comments'][0]['subcomments'][0]['content'], 'reply1');
+		$this->assertEqual($newEntry['lexeme']['th']['comments'][0]['replies'][0]['content'], 'reply1');
 
 
 	}

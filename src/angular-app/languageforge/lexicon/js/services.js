@@ -87,7 +87,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 									regarding: "ข้าวไก่ทอด",
 									content: "I can't read Thai.",
 									score: 0,
-									subcomments: [], // subcomments will have userRef, content, dateModified. No regarding, no score, no subcomments.
+									replies: [], // replies will have userRef, content, dateModified. No regarding, no score, no replies.
 									status: "To Do", // Possible values may change, but for now: "Resolved", "To Do", "Reviewed". One value only -- these are not tags.
 									},
 									{
@@ -96,7 +96,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 										regarding: "ข้าวไก่ทอด",
 										content: "I can.",
 										score: 0,
-										subcomments: [], // subcomments will have userRef, content, dateModified. No regarding, no score, no subcomments.
+										replies: [], // replies will have userRef, content, dateModified. No regarding, no score, no replies.
 										status: "Reviewed", // Possible values may change, but for now: "Resolved", "To Do", "Reviewed". One value only -- these are not tags.
 									},
 									{
@@ -105,7 +105,7 @@ angular.module('lexicon.services', ['jsonRpc'])
 										regarding: "ข้าวไก่ทอด",
 										content: "So can I.",
 										score: 0,
-										subcomments: [], // subcomments will have userRef, content, dateModified. No regarding, no score, no subcomments.
+										replies: [], // replies will have userRef, content, dateModified. No regarding, no score, no replies.
 										status: "Resolved", // Possible values may change, but for now: "Resolved", "To Do", "Reviewed". One value only -- these are not tags.
 									},
 								]},
