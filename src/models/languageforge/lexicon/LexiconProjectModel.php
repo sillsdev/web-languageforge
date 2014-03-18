@@ -5,6 +5,7 @@ namespace models\languageforge\lexicon;
 use models\mapper\MapOf;
 use models\languageforge\LfProjectModel;
 use models\languageforge\lexicon\settings\LexiconProjectSettings;
+use libraries\shared\LanguageData;
 
 class LexiconProjectModel extends LfProjectModel {
 	
@@ -56,6 +57,11 @@ class LexiconProjectModel extends LfProjectModel {
 			}
 			if (! $name) {
 				$name = $tag;
+				$languages = new LanguageData();
+				$languageCode = $languages->getCode($tag);
+				if (key_exists($languageCode, $languages)) {
+					$name = $languages[$languageCode]->name;
+				}
 			}
 			$this->inputSystems[$tag] = new InputSystem($tag, $name, $abbr);
 		}
