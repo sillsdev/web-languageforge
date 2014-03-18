@@ -42,25 +42,60 @@ class CodeGuard {
 		}
 	}
 	
-	private static function printStackTrace() {
-		$stacktrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 20);
-		$stacktrace = array_slice($stacktrace, 2, count($stacktrace) - 11);
+	private static function printStackTrace($trace = null) {
+		if (is_null($trace)) {
+			$trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 20);
+		}
+		$trace = array_slice($trace, 2, count($trace) - 11);
+		$getString = function ($val) {
+			if (is_string($val)) {
+				return $val;
+			} elseif (is_array($val)) {
+				return 'Array';
+			} elseif (is_object($val)) {
+				return get_class($val);
+			} else {
+				return '';
+			}
+		};
 		print "<pre style='font-weight:bold'>";
-		foreach ($stacktrace as $item) {
+		foreach ($trace as $item) {
 			$file = substr($item['file'], strrpos($item['file'], '/')+1);
 			$line = $item['line'];
 			$function = $item['function'];
 			$type = $item['type'];
 			$class = substr($item['class'], strrpos($item['class'], '\\')+1);
-			$args = implode(', ', array_map(function($val) { return (is_array($val)) ? 'Array' : $val; }, $item['args']));
+			$args = implode(', ', array_map($getString, $item['args']));
 			print "<p>$file line $line, $class$type$function($args)</p>";
 		}
 		print "</pre>";
 	} 
 	
-	private static function exception($message) {
+	/**
+	 * 
+	 * @param string $message
+	 * @param string $code
+	 * @param \Exception $previous
+	 * @throws \Exception
+	 */
+	public static function exception($message = null, $code = null, $previous = null) {
+		if (!is_null($previous)) {
+			self::printException($previous);
+			self::printStackTrace($previous->getTrace());
+		}
 		self::printStackTrace();
-		throw new \Exception($message);
+		throw new \Exception($message, $code, $previous);
+	}
+	
+	/**
+	 * 
+	 * @param \Exception $ex
+	 */
+	private static function printException($ex) {
+		print "<pre style='font-weight:bold'>";
+		print $ex->getMessage() . " in " . $ex->getFile() . " line " . $ex->getLine();
+		print "</pre>";
+		
 	}
 	
 }
