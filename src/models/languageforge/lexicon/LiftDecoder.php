@@ -2,22 +2,38 @@
 
 namespace models\languageforge\lexicon;
 
+use models\languageforge\lexicon\settings\LexiconConfigObj;
+use models\mapper\ArrayOf;
+
 class LiftDecoder {
 	
+	public function __construct($projectModel) {
+		$this->_projectModel = $projectModel;
+	}
+	
 	/**
+	 * 
+	 * @var LexiconProjectModel
+	 */
+	private $_projectModel;
+	
+	/**
+	 * @param LexiconProjectModel $projectModel
 	 * @param SimpleXMLElement $sxeNode
 	 * @param LexEntryModel $entry
 	 * @param LiftMergeRule $mergeRule
 	 */
-	public static function decode($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
-		$decoder = new LiftDecoder();
-		$decoder->_decode($sxeNode, $entry, $mergeRule);
+	public static function decode($projectModel, $sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
+		$decoder = new LiftDecoder($projectModel);
+		$projectModel = $decoder->_decode($sxeNode, $entry, $mergeRule);
 	}
 	
 	/**
 	 * @param SimpleXMLElement $sxeNode
 	 * @param LexEntryModel $entry
 	 * @param LiftMergeRule $mergeRule
+	 * @throws \Exception
+	 * @return LexiconProjectModel
 	 */
 	protected function _decode($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
 		$lexicalForms = $sxeNode->{'lexical-unit'};
@@ -26,7 +42,7 @@ class LiftDecoder {
 				$entry->guid = (string) $sxeNode['guid'];
 				$entry->authorInfo->createdDate = new \DateTime((string) $sxeNode['dateCreated']);
 				$entry->authorInfo->modifiedDate = new \DateTime((string) $sxeNode['dateModified']);
-				$entry->lexeme = $this->readMultiText($lexicalForms);
+				$entry->lexeme = $this->readMultiText($lexicalForms, $this->_projectModel->settings->entry->fields[LexiconConfigObj::LEXEME]->inputSystems);
 			}
 			if (isset($sxeNode->sense)) {
 				foreach ($sxeNode->sense as $senseNode) {
@@ -57,6 +73,8 @@ class LiftDecoder {
 				}
 			}
 		}
+		
+		return $this->_projectModel;
 	}
 
 	/**
@@ -67,7 +85,7 @@ class LiftDecoder {
 	public function readSense($sxeNode, $sense) {
 		// Definition
 		$definition = $sxeNode->definition;
-		$sense->definition = $this->readMultiText($definition);
+		$sense->definition = $this->readMultiText($definition, $this->_projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems);
 		
 		// Part Of Speech
 		if (isset($sxeNode->{'grammatical-info'})) {
@@ -104,11 +122,11 @@ class LiftDecoder {
 		
 		// Sentence multitext
 		$exampleXml = $sxeNode;
-		$example->sentence = $this->readMultiText($exampleXml);
+		$example->sentence = $this->readMultiText($exampleXml, $this->_projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems);
 		// Translation multitext
 		$translationXml = $sxeNode->translation;
 		if (! empty($translationXml)) {
-			$example->translation = $this->readMultiText($translationXml);
+			$example->translation = $this->readMultiText($translationXml, $this->_projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems);
 		}
 		return $example;
 	}
@@ -116,12 +134,19 @@ class LiftDecoder {
 	/**
 	 * Reads a MultiText from the XmlNode $sxeNode
 	 * @param SimpleXMLElement $sxeNode
+	 * @param ArrayOf $inputSystems
 	 * @return MultiText
 	 */
-	public function readMultiText($sxeNode) {
+	public function readMultiText($sxeNode, $inputSystems = null) {
 		$multiText = new MultiText();
 		foreach ($sxeNode->form as $form) {
-			$multiText->form((string) $form['lang'], (string) $form->text);
+			$inputSystemTag = (string) $form['lang'];
+			$multiText->form($inputSystemTag, (string) $form->text);
+			
+			$this->_projectModel->addInputSystem($inputSystemTag);
+			if (isset($inputSystems)) {
+				$inputSystems->value($inputSystemTag);
+			}
 		}
 		return $multiText;
 	}
