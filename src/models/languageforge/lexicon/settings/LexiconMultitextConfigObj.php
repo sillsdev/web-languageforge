@@ -31,7 +31,7 @@ class LexiconMultitextConfigObj extends LexiconConfigObj {
 	
 	/**
 	 * 
-	 * @var array
+	 * @var ArrayOf
 	 */
 	public $inputSystems;
 	
