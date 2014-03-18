@@ -23,7 +23,7 @@ class LexCommentCommands {
 		CodeGuard::checkTypeAndThrow($commentData, 'array');
 		$project = new LexiconProjectModel($projectId);
 		$entry = new LexEntryModel($project, $entryId);
-		self::updateComment($entry->lexeme[$inputSystem]->comments, $commentData, $userId);
+		self::updateComment($entry->lexeme[$inputSystem], $commentData, $userId);
 		$entry->write();
 		return JsonEncoder::encode($entry);
 	}
@@ -32,12 +32,18 @@ class LexCommentCommands {
 		CodeGuard::checkTypeAndThrow($replyData, 'array');
 		$project = new LexiconProjectModel($projectId);
 		$entry = new LexEntryModel($project, $entryId);
-		self::updateReply($entry->lexeme[$inputSystem]->comments, $commentId, $replyData, $userId);
+		self::updateReply($entry->lexeme[$inputSystem], $commentId, $replyData, $userId);
 		$entry->write();
 		return JsonEncoder::encode($entry);
 	}
 	
-	public static function updateSenseComment($projectId, $entryId, $senseId, $senseNode, $params) {
+	public static function updateSenseComment($projectId, $entryId, $inputSystem, $senseId, $senseNode, $commentData, $userId) {
+		CodeGuard::checkTypeAndThrow($commentData, 'array');
+		$project = new LexiconProjectModel($projectId);
+		$entry = new LexEntryModel($project, $entryId);
+		self::updateComment(self::getSenseComments($entry, $senseId, $senseNode), $commentData, $userId);
+		$entry->write();
+		return JsonEncoder::encode($entry);
 		
 	}
 	public static function updateSenseReply($projectId, $entryId, $senseId, $senseNode, $commentId, $params) {}
@@ -68,52 +74,55 @@ class LexCommentCommands {
 	
 	/**
 	 * 
-	 * @param ArrayOf<LexComment|LexCommentReply> $commentModels
+	 * @param LexiconFieldWithComments $field
 	 * @param array $commentData
 	 * @param string $userId
 	 * @param string $type
 	 */
-	private static function updateComment($commentModels, $commentData, $userId, $type = 'comment') {
-		$foundKey = FALSE;
-		if ($commentData['id'] != '') {
-			// existing comment
-			foreach ($commentModels as $key => $c) {
-				if ($c->id == $commentData['id']) {
-					$foundKey = $key;
-					break;
-				}
-			}
-			$comment = $commentModels[$foundKey];
+	private static function updateComment($field, $commentData, $userId) {
+		$id = $commentData['id'];
+		$existingComment = ($id != '');
+		if ($existingComment) {
+			$comment = $field->getComment($id);
 		} else {
-			// new comment
-			if ($type == 'comment') {
-				$comment = new LexComment();
-				$comment->regarding = $commentData['regarding'];
-			} else {
-				$comment = new LexCommentReply();
-			}
+			$comment = new LexComment();
+			$comment->regarding = $commentData['regarding'];
 		}
 		$comment->content = $commentData['content'];
 		$comment->dateModified = new \DateTime();
 		$comment->userRef = $userId;
 		
-		if ($foundKey !== FALSE) {
-			$commentModels[$foundKey] = $comment;
+		if ($existingComment) {
+			$field->setComment($id, $comment);
 		} else {
-			$commentModels[] = $comment;
+			$field->comments[] = $comment;
 		}
 	}
 	
-	private static function updateReply($commentModels, $commentId, $replyData, $userId) {
-		$foundKey = FALSE;
-		foreach ($commentModels as $key => $comment) {
-			if ($comment->id == $commentId) {
-				$foundKey = $key;
-				break;
-			}
+	/**
+	 * 
+	 * @param LexiconFieldWithComments $field
+	 * @param string $commentId
+	 * @param array $replyData
+	 * @param string $userId
+	 */
+	private static function updateReply($field, $commentId, $replyData, $userId) {
+		$comment = $field->getComment($commentId);
+		$id = $replyData['id'];
+		$existingReply = ($id != '');
+		if ($existingReply) {
+			$reply = $comment->getReply($id);
+		} else {
+			$reply = new LexCommentReply();
 		}
-		if ($foundKey !== FALSE) {
-			self::updateComment($commentModels[$foundKey]->replies, $replyData, $userId, 'reply');
+		$reply->content = $replyData['content'];
+		$reply->dateModified = new \DateTime();
+		$reply->userRef = $userId;
+		
+		if ($existingReply) {
+			$comment->setReply($id, $reply);
+		} else {
+			$comment->replies[] = $reply;
 		}
 	}
 }

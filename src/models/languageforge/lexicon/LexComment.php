@@ -39,6 +39,28 @@ class LexComment extends LexCommentReply {
 		$this->score = 0;
 		parent::__construct($content);
 	}
+	
+	/**
+	 * 
+	 * @param string $id
+	 * @return LexCommentReply
+	 */
+	public function getReply($id) {
+		foreach ($this->replies as $reply) {
+			if ($reply->id == $id) {
+				return $reply;
+			}
+		}
+	}
+
+	public function setReply($id, $model) {
+		foreach ($this->replies as $key => $reply) {
+			if ($reply->id == $id) {
+				$this->replies[$key] = $model;
+				break;
+			}
+		}
+	}
 }
 
 ?>
