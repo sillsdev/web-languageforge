@@ -68,7 +68,7 @@
 					</div>
 				</div>
 				
-				<div data-ng-if="fieldConfig[currentField.name].inputSystems">
+				<div data-ng-if="fieldConfig[currentField.name].inputSystems != undefined">
 					<hr />
 					<div class="row control-group" data-ng-show="editInputSystems.collapsed">
 						<div class="span3 picklists">
@@ -104,7 +104,7 @@
 		
 		</div>
 <!-- 
-<pre data-ng-show="false">
+<pre>
 currentField {{currentField | json}}
 config.entry {{config.entry|json}}
 </pre>
@@ -236,7 +236,7 @@ config.entry {{config.entry|json}}
 		
 		</div>
 <!-- 
-<pre data-ng-show="false">
+<pre>
 config.tasks['{{currentTaskName}}'] = {{config.tasks[currentTaskName] | json}}
 </pre>
  -->
