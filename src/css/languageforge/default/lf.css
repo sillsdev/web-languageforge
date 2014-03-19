@@ -629,6 +629,7 @@ i.icon-remove {
 }
 
 /* Top navigation */
+/*
 div.hdrnav {
 	overflow: visible;
 	padding-left: 130px;
@@ -679,7 +680,7 @@ div.hdrnav img {
 	left: 0em;
 	top: 1.1em;
 	line-height: 1.2em;
-	z-index: 9; /* One less than the z-index: 10 used for header */
+	z-index: 9; /* One less than the z-index: 10 used for header *//*
 }
 
 .hdrnav .submenu ul li {
@@ -707,7 +708,7 @@ ul.topNav a {
 	display: block;
 	text-decoration: none;
 }
-
+*/
 div#logo-small {
 	width: 27px;
 	height: 36px;
