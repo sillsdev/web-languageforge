@@ -1,5 +1,7 @@
 <?php
 
+use models\languageforge\lexicon\commands\LexCommentCommands;
+
 use models\languageforge\lexicon\dto\LexProjectSettingsDto;
 
 use models\languageforge\lexicon\commands\LexEntryCommands;
@@ -460,6 +462,10 @@ class Sf
 	
 	public function lex_dbeDto($projectId) {
 		return LexDbeDto::encode($projectId);
+	}
+	
+	public function lex_updateLexemeComment($projectId, $entryId, $inputSystem, $commentData) {
+		return LexCommentCommands::updateLexemeComment($projectId, $entryId, $inputSystem, $commentData, $this->_userId);
 	}
 	
 	

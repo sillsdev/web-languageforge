@@ -398,6 +398,52 @@ class TestLexCommentCommands extends UnitTestCase {
 		
 	}
 	
+	function testUpdateExampleReply_ExistingReply_UpdatesOk() {
+		$e = new LexiconMongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+		
+		$entry = new LexEntryModel($project);
+		$entry->lexeme->form('th', 'apple');
+
+		$sense = new Sense();
+		$sense->definition->form('en', 'red fruit');
+		$sense->partOfSpeech->value = 'noun';
+		
+		$ws = 'th';
+		$reply = new LexCommentReply('simple reply');
+		$replyId = $reply->id;
+		$comment = new LexComment('test comment');
+		$comment->regarding = 'example1';
+		$comment->replies[] = $reply;
+		$commentId = $comment->id;
+		$example = new Example();
+		$example->sentence->form($ws, 'example1');
+		$example->sentence[$ws]->comments[] = $comment;
+		$example->translation->form('en', 'trans1');
+		
+		$sense->examples[] = $example;
+		
+		$entry->senses[] = $sense;
+		
+		$entryId = $entry->write();
+		
+		$replyData = array(
+			'id' => $replyId,
+			'content' => 'improved reply',
+		);
+		
+		$entryArray = LexCommentCommands::updateExampleReply($projectId, $entryId, $sense->id, $example->id, 'sentence', $ws, $commentId, $replyData, '12345');
+		
+		$entry->read($entryId);
+
+		$reply = $entry->senses[0]->examples[0]->sentence[$ws]->comments[0]->replies[0];
+		$this->assertEqual($reply->content, 'improved reply');
+		$this->assertNotEqual($reply->id, '', 'comment should have a unique id');
+		
+	}
 	
 }
 
