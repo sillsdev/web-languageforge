@@ -17,9 +17,9 @@
 				<ul class="dropdown-menu pull-right">
 					<li data-ng-show="isItemVisible('importExport')"><a href="#/p/{{projectId}}/importExport">Import/Export</a></li>
 					<li class="divider" data-ng-show="isItemVisible('importExport')"></li>
-					<li data-ng-class="{disabled: !isItemVisible('settings')}"><a href="#/p/{{projectId}}/configuration">Dictionary Configuration</a></li>
-					<li data-ng-class="{disabled: !isItemVisible('_settings')}"><a href="#/p/{{projectId}}/_settings">Project Settings</a></li>
-					<li data-ng-class="{disabled: !isItemVisible('users')}"><a href="#/p/{{projectId}}/users">User Management</a></li>
+					<li data-ng-class="{disabled: !isItemVisible('configuration')}"><a href="#/p/{{projectId}}/configuration">Dictionary Configuration</a></li>
+					<li data-ng-class="{disabled: true}"><a href="#/p/{{projectId}}/settings">Project Settings</a></li>
+					<li data-ng-class="{disabled: true}"><a href="#/p/{{projectId}}/users">User Management</a></li>
 				</ul>
 			</div>
 			<div class="btn-group" data-ng-show="isItemVisible('dashboard')">
