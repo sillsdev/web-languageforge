@@ -68,32 +68,15 @@ class LexCommentCommands {
 		CodeGuard::checkTypeAndThrow($replyData, 'array');
 		$project = new LexiconProjectModel($projectId);
 		$entry = new LexEntryModel($project, $entryId);
-		self::updateReply(self::getSenseField($entry, $senseId, $exampleId, $exampleFieldName, $inputSystem), $commentId, $replyData, $userId);
+		self::updateReply(self::getExampleField($entry, $senseId, $exampleId, $exampleFieldName, $inputSystem), $commentId, $replyData, $userId);
 		$entry->write();
 		return JsonEncoder::encode($entry);
 	}
+	
+	public static function deleteCommentById($projectId, $entryId, $commentId) {
+		// loop through all possible comment arrays and remove the comment with the matching id...
+	}
 
-	public static function removeEntries($projectId, $entryIds) {
-		CodeGuard::checkTypeAndThrow($entryIds, 'array');
-		$project = new LexiconProjectModel($projectId);
-		foreach ($entryIds as $id) {
-			LexEntryModel::remove($project, $id);
-		}
-	}
-	
-	/**
-	 * 
-	 * @param string $projectId
-	 * @param string $missingInfo - if empty, returns all entries.
-	 * 								if matches one of LexiconConfigObj constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
-	 */
-	public static function listEntries($projectId, $missingInfo = '') {
-		$project = new LexiconProjectModel($projectId);
-		$lexEntries = new LexEntryListModel($project);
-		$lexEntries->readForDto($missingInfo);
-		return $lexEntries;
-	}
-	
 	
 	/**
 	 * 
@@ -107,9 +90,9 @@ class LexCommentCommands {
 			case 'definition':
 				return $sense->definition[$inputSystem];
 			case 'partOfSpeech':
-				return $sense->partOfSpeech[$inputSystem];
+				return $sense->partOfSpeech;
 			case 'semanticDomain':
-				return $sense->semanticDomain[$inputSystem];
+				return $sense->semanticDomain;
 		}
 	}
 	

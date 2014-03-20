@@ -21,6 +21,10 @@ class LexiconConfigObj {
 	const SENSES_LIST = 'senses';
 	const EXAMPLES_LIST = 'examples';
 
+	// comments
+	const COMMENTS_LIST = 'comments';
+	const REPLIES_LIST = 'replies';
+	
 	/**
 	 * 
 	 * @var string

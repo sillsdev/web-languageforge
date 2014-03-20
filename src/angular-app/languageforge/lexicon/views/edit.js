@@ -196,6 +196,10 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.refreshView(true);
 	
+	$scope.updateLexemeComment = function(comment) {
+		console.log("lexeme comment = " + comment);
+	};
+	
 	
 	$scope.recursiveSetConfig = function(startAt, propName, propValue) {
 		// Go through the config tree starting at the startAt field, and
@@ -225,7 +229,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 
 	// TODO: Consider moving filter-related code and variables into its own controller
-	$scope.filter = {}
+	$scope.filter = {};
 	$scope.filter.chevronIcon = "icon-chevron-up";
 	$scope.filter.visible = true;
 	$scope.toggleFilters = function() {
@@ -259,6 +263,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.applyFilters = function() {
 		console.log('Applying filters:', $scope.filter);
 		// TODO: Implement this
-	}
+	};
 }])
 ;
