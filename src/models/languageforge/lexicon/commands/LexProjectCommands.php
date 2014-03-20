@@ -4,7 +4,7 @@ namespace models\languageforge\lexicon\commands;
 
 use libraries\shared\palaso\CodeGuard;
 use libraries\lfdictionary\common\UserActionDeniedException;
-use models\languageforge\lexicon\settings\LexiconProjectSettings;
+use models\languageforge\lexicon\settings\LexConfiguration;
 use models\languageforge\lexicon\settings\LexiconFieldListConfigObj;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LexEntryModel;
@@ -23,7 +23,7 @@ class LexProjectCommands {
 
 	public static function updateSettings($projectId, $settings) {
 		$project = new LexiconProjectModel($projectId);
-		$settingsModel = new LexiconProjectSettings();
+		$settingsModel = new LexConfiguration();
 		JsonDecoder::decode($settingsModel, $settings);
 		$project->settings = $settingsModel;
 		$decoder = new JsonDecoder();

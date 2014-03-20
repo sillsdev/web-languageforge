@@ -4,7 +4,7 @@ namespace models\languageforge\lexicon;
 
 use models\mapper\MapOf;
 use models\languageforge\LfProjectModel;
-use models\languageforge\lexicon\settings\LexiconProjectSettings;
+use models\languageforge\lexicon\settings\LexConfiguration;
 use libraries\shared\LanguageData;
 
 class LexiconProjectModel extends LfProjectModel {
@@ -17,7 +17,7 @@ class LexiconProjectModel extends LfProjectModel {
 			}
 		);
 		
-		$this->settings = new LexiconProjectSettings();
+		$this->settings = new LexConfiguration();
 
 		// default values
 		$this->inputSystems['en'] = new InputSystem('en', 'English', 'en');
@@ -34,7 +34,7 @@ class LexiconProjectModel extends LfProjectModel {
 	
 	/**
 	 * 
-	 * @var LexiconProjectSettings
+	 * @var LexConfiguration
 	 */
 	public $settings;
 	
