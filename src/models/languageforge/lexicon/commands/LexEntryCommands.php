@@ -49,11 +49,42 @@ class LexEntryCommands {
 		// set authorInfo
 		$entry->authorInfo->modifiedDate = new \DateTime();
 		$entry->authorInfo->modifiedByIdRef = $userId;
+
+		// comments should not be updated via this method
+		$params = self::removeComments($params);
+
 		JsonDecoder::decode($entry, $params);
 		$entry->write();
 		return JsonEncoder::encode($entry);
 		// question (from cjh) when doing an updateEntry, is there a way for us to only update comments using the standard JsonDecoder?  Or only update parts of the model that should be updated? Need to write a test for this
 		
+	}
+	
+	/**
+	 * 
+	 * @param array $entry - an array representation of an entry
+	 * @return array - the entry array with comments removed
+	 */
+	private static function removeComments($entry) {
+		foreach ($entry[LexiconConfigObj::LEXEME] as $form => $lexeme) {
+			unset($entry[LexiconConfigObj::LEXEME][$form][LexiconConfigObj::COMMENTS_LIST]);
+		}
+		foreach ($entry[LexiconConfigObj::SENSES_LIST] as $senseKey => $sense) {
+			foreach ($sense[LexiconConfigObj::DEFINITION] as $form => $definition) {
+				unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::DEFINITION][$form][LexiconConfigObj::COMMENTS_LIST]);
+			}
+			unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::POS][LexiconConfigObj::COMMENTS_LIST]);
+			unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::SEMDOM][LexiconConfigObj::COMMENTS_LIST]);
+			foreach ($sense[LexiconConfigObj::EXAMPLES_LIST] as $exampleKey => $example) {
+				foreach ($example[LexiconConfigObj::EXAMPLE_SENTENCE] as $form => $sentence) {
+					unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::EXAMPLES_LIST][$exampleKey][LexiconConfigObj::EXAMPLE_SENTENCE][$form][LexiconConfigObj::COMMENTS_LIST]);
+				}
+				foreach ($example[LexiconConfigObj::EXAMPLE_TRANSLATION] as $form => $sentence) {
+					unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::EXAMPLES_LIST][$exampleKey][LexiconConfigObj::EXAMPLE_TRANSLATION][$form][LexiconConfigObj::COMMENTS_LIST]);
+				}
+			}
+		}
+		return $entry;
 	}
 	
 	/**

@@ -111,6 +111,10 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 			});
 		};
 		
+		this.updateLexemeComment = function(entryId, ws, comment, callback) {
+			jsonRpc.call('lex_updateLexemeComment', [projectService.getProjectId(), entryId, ws, comment], callback);
+		};
+		
 		
 		
 		
