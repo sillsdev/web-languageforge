@@ -9,6 +9,7 @@ class Example {
 		$this->sentence = new MultiText();
 		$this->translation = new MultiText();
 		$this->authorInfo = new AuthorInfo();
+		$this->id = uniqid();
 	}
 
 	/**
@@ -31,6 +32,12 @@ class Example {
 	 * @var AuthorInfo
 	 */
 	public $authorInfo;
+	
+	/**
+	 * 
+	 * @var string
+	 */
+	public $id;
 
 }
 
