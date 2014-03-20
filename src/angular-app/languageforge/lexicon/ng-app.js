@@ -85,7 +85,8 @@ angular.module('lexicon',
 			return $scope.config.tasks[itemName].visible;
 		};
 		
-/*		
+/*
+ * TODO Remove. Used in previous menu system. IJH 2014-03
 		$scope.noSubmenuId = 0;
 		$scope.gatherSubmenuId = 1;
 		$scope.addSubmenuId = 2;

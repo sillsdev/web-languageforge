@@ -8,7 +8,7 @@ use models\languageforge\lexicon\InputSystem;
 
 use models\mapper\MapOf;
 
-class LexiconProjectSettings {
+class LexConfiguration {
 
 	/**
 	 * 
@@ -48,7 +48,7 @@ class LexiconProjectSettings {
 		$this->tasks[LexiconTask::ADDEXAMPLES] = new LexiconTask();
 		$this->tasks[LexiconTask::REVIEW] = new LexiconTask();
 		$this->tasks[LexiconTask::IMPORTEXPORT] = new LexiconTask();
-		$this->tasks[LexiconTask::SETTINGS] = new LexiconTask();
+		$this->tasks[LexiconTask::CONFIGURATION] = new LexiconTask();
 		
 		// default values for the entry config
 		$this->entry = new LexiconFieldListConfigObj();

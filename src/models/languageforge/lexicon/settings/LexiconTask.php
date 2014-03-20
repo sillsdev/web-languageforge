@@ -18,7 +18,7 @@ class LexiconTask {
 	const ADDEXAMPLES = 'addExamples';
 	const REVIEW = 'review';
 	const IMPORTEXPORT = 'importExport';
-	const SETTINGS = 'settings';
+	const CONFIGURATION = 'configuration';
 	
 	function __construct() {
 		$this->visible = true;
@@ -31,6 +31,9 @@ class LexiconTask {
 	 */
 	public $visible;
 	
+	/**
+	 * @var string
+	 */
 	public $type;
 }
 
