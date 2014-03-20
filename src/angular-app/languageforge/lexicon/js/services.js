@@ -34,8 +34,8 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 			return this.project() + '/' + view;
 		};
 
-		this.settings = function () {
-			return this.project() + '/settings';
+		this.configuration = function () {
+			return this.project() + '/configuration';
 		};
 
 		this.getProjectId = function() {
@@ -47,14 +47,14 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 	.service('lexProjectService', ['jsonRpc', 'breadcrumbService', 'lexLinkService', '$location', function(jsonRpc, breadcrumbService, linkService, $location) {
 		jsonRpc.connect('/api/sf');
 
-		this.settingsPageDto = function(callback) {
+		this.configurationPageDto = function(callback) {
 			jsonRpc.call('lex_projectSettingsDto', [this.getProjectId()], function(result) {
 				if (result.ok) {
 					breadcrumbService.set('top',
 						[
 						 {href: '/app/projects', label: 'My Projects'},
 						 {href: linkService.project(), label: result.data.project.projectname},
-						 {href: linkService.settings(), label: 'Settings'},
+						 {href: linkService.configuration(), label: 'Dictionary Configuration'},
 						]
 					);
 					callback(result);
@@ -62,8 +62,8 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 			});
 		};
 
-		this.updateSettings = function(settings, callback) {
-			jsonRpc.call('lex_projectSettings_update', [this.getProjectId(), settings], callback);
+		this.updateConfiguration = function(config, callback) {
+			jsonRpc.call('lex_projectSettings_update', [this.getProjectId(), config], callback);
 		};
 		
 		
