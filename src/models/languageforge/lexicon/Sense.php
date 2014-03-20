@@ -8,6 +8,7 @@ class Sense {
 
 	function __construct($liftId = '') {
 		$this->liftId = $liftId;
+		$this->id = uniqid();
 		$this->definition = new MultiText();
 		$this->partOfSpeech = new LexiconFieldWithComments();
 		$this->semanticDomain = new LexiconMultiValueFieldWithComments();
@@ -24,6 +25,8 @@ class Sense {
 	 * @var string
 	 */
 	public $liftId;
+	
+	public $id;
 
 	/**
 	 * @var MultiText
@@ -51,7 +54,35 @@ class Sense {
 	 * @var AuthorInfo
 	 */
 	public $authorInfo;
+	
+	
+	/**
+	 * 
+	 * @param string $id
+	 * @return Example
+	 */
+	public function getExample($id) {
+		foreach ($this->examples as $example) {
+			if ($example->id == $id) {
+				return $example;
+			}
+		}
+	}
 
+	/**
+	 * 
+	 * @param string $id
+	 * @param Example $model
+	 */
+	public function setExample($id, $model) {
+		foreach ($this->examples as $key => $example) {
+			if ($example->id == $id) {
+				$this->examples[$key] = $model;
+				break;
+			}
+		}
+	}
+	
 }
 
 ?>

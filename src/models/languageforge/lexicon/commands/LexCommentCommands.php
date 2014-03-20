@@ -37,19 +37,41 @@ class LexCommentCommands {
 		return JsonEncoder::encode($entry);
 	}
 	
-	public static function updateSenseComment($projectId, $entryId, $inputSystem, $senseId, $senseNode, $commentData, $userId) {
+	public static function updateSenseComment($projectId, $entryId, $senseId, $senseFieldName, $inputSystem, $commentData, $userId) {
 		CodeGuard::checkTypeAndThrow($commentData, 'array');
 		$project = new LexiconProjectModel($projectId);
 		$entry = new LexEntryModel($project, $entryId);
-		self::updateComment(self::getSenseComments($entry, $senseId, $senseNode), $commentData, $userId);
+		self::updateComment(self::getSenseField($entry, $senseId, $senseFieldName, $inputSystem), $commentData, $userId);
 		$entry->write();
 		return JsonEncoder::encode($entry);
-		
 	}
-	public static function updateSenseReply($projectId, $entryId, $senseId, $senseNode, $commentId, $params) {}
+
+	public static function updateSenseReply($projectId, $entryId, $senseId, $senseFieldName, $inputSystem, $commentId, $replyData, $userId) {
+		CodeGuard::checkTypeAndThrow($replyData, 'array');
+		$project = new LexiconProjectModel($projectId);
+		$entry = new LexEntryModel($project, $entryId);
+		self::updateReply(self::getSenseField($entry, $senseId, $senseFieldName, $inputSystem), $commentId, $replyData, $userId);
+		$entry->write();
+		return JsonEncoder::encode($entry);
+	}
 	
-	public static function updateExampleComment($projectId, $entryId, $senseId, $exampleId, $exampleNode, $params) {}
-	public static function updateExampleReply($projectId, $entryId, $senseId, $exampleId, $exampleNode, $commentId, $params) {}
+	public static function updateExampleComment($projectId, $entryId, $senseId, $exampleId, $exampleFieldName, $inputSystem, $commentData, $userId) {
+		CodeGuard::checkTypeAndThrow($commentData, 'array');
+		$project = new LexiconProjectModel($projectId);
+		$entry = new LexEntryModel($project, $entryId);
+		self::updateComment(self::getExampleField($entry, $senseId, $exampleId, $exampleFieldName, $inputSystem), $commentData, $userId);
+		$entry->write();
+		return JsonEncoder::encode($entry);
+	}
+
+	public static function updateExampleReply($projectId, $entryId, $senseId, $exampleId, $exampleFieldName, $inputSystem, $commentId, $replyData, $userId) {
+		CodeGuard::checkTypeAndThrow($replyData, 'array');
+		$project = new LexiconProjectModel($projectId);
+		$entry = new LexEntryModel($project, $entryId);
+		self::updateReply(self::getSenseField($entry, $senseId, $exampleId, $exampleFieldName, $inputSystem), $commentId, $replyData, $userId);
+		$entry->write();
+		return JsonEncoder::encode($entry);
+	}
 
 	public static function removeEntries($projectId, $entryIds) {
 		CodeGuard::checkTypeAndThrow($entryIds, 'array');
@@ -70,6 +92,36 @@ class LexCommentCommands {
 		$lexEntries = new LexEntryListModel($project);
 		$lexEntries->readForDto($missingInfo);
 		return $lexEntries;
+	}
+	
+	
+	/**
+	 * 
+	 * @param LexEntryModel $entry
+	 * @param string $senseId
+	 * @param string $senseFieldName
+	 */
+	private static function getSenseField($entry, $senseId, $senseFieldName, $inputSystem) {
+		$sense = $entry->getSense($senseId);
+		switch ($senseFieldName) {
+			case 'definition':
+				return $sense->definition[$inputSystem];
+			case 'partOfSpeech':
+				return $sense->partOfSpeech[$inputSystem];
+			case 'semanticDomain':
+				return $sense->semanticDomain[$inputSystem];
+		}
+	}
+	
+	private static function getExampleField($entry, $senseId, $exampleId, $exampleFieldName, $inputSystem) {
+		$sense = $entry->getSense($senseId);
+		$example = $sense->getExample($exampleId);
+		switch ($exampleFieldName) {
+			case 'sentence':
+				return $example->sentence[$inputSystem];
+			case 'translation':
+				return $example->translation[$inputSystem];
+		}
 	}
 	
 	/**
