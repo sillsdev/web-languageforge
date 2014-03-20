@@ -2,34 +2,30 @@
 
 use models\languageforge\lexicon\commands\LexCommentCommands;
 
-use models\languageforge\lexicon\dto\LexProjectSettingsDto;
-
-use models\languageforge\lexicon\commands\LexEntryCommands;
-
-use models\languageforge\lexicon\dto\LexDbeDto;
-
-use models\languageforge\lexicon\commands\LexProjectCommands;
-use libraries\sfchecks\ParatextExport;
-
-use libraries\shared\Website;
-
-use models\commands\MessageCommands;
-
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\shared\palaso\CodeGuard;
 use libraries\shared\palaso\JsonRpcServer;
+use libraries\shared\Website;
 use libraries\scriptureforge\sfchecks\Communicate;
 use libraries\scriptureforge\sfchecks\Email;
+use libraries\sfchecks\ParatextExport;
 use models\commands\ActivityCommands;
+use models\commands\MessageCommands;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
 use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
+use models\languageforge\lexicon\dto\LexDbeDto;
+use models\languageforge\lexicon\dto\LexProjectSettingsDto;
+use models\languageforge\lexicon\commands\LexEntryCommands;
+use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\shared\dto\ActivityListDto;
-use models\scriptureforge\dto\ProjectSettingsDto;
+use models\shared\dto\ProjectUsersDto;
 use models\shared\dto\RightsHelper;
+use models\shared\dto\UserProfileDto;
+use models\scriptureforge\dto\ProjectSettingsDto;
 use models\mapper\Id;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
@@ -45,10 +41,8 @@ use models\QuestionModel;
 use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserProfileModel;
-use models\shared\dto\UserProfileDto;
 
 require_once(APPPATH . 'vendor/autoload.php');
-
 require_once(APPPATH . 'config/sf_config.php');
 require_once(APPPATH . 'models/ProjectModel.php');
 require_once(APPPATH . 'models/QuestionModel.php');
@@ -243,6 +237,10 @@ class Sf
 	
 	public function project_list_dto() {
 		return \models\shared\dto\ProjectListDto::encode($this->_userId, $this->_site);
+	}
+	
+	public function project_usersDto($projectId) {
+		return ProjectUsersDto::encode($projectId, $this->_userId);
 	}
 	
 	public function project_updateUserRole($projectId, $params) {

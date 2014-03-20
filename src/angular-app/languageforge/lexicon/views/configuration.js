@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
+angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
 .controller('ConfigCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexConfigService', '$filter', '$modal', 
                              function($scope, userService, ss, notice, lexService, configService, $filter, $modal) {
 	
