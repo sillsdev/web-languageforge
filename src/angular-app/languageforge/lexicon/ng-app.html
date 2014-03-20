@@ -12,12 +12,14 @@
 		</div>
 		<div class="lexnav control-group">
 			<div class="btn-group pull-right">
-				<a class="btn dropdown-toggle" data-toggle="dropdown" data-tooltip-placement="left" data-tooltip="Project Settings" href="#">
+				<a class="btn dropdown-toggle" data-toggle="dropdown" data-tooltip-placement="left" data-tooltip="Settings" href="#">
 					<i class="icon-cog icon-2x"></i>&nbsp;&nbsp;<span class="caret"></span></a>
 				<ul class="dropdown-menu pull-right">
 					<li data-ng-show="isItemVisible('importExport')"><a href="#/p/{{projectId}}/importExport">Import/Export</a></li>
 					<li class="divider" data-ng-show="isItemVisible('importExport')"></li>
-					<li data-ng-class="{disabled: !isItemVisible('settings')}"><a href="#/p/{{projectId}}/settings">Settings</a></li>
+					<li data-ng-class="{disabled: !isItemVisible('settings')}"><a href="#/p/{{projectId}}/configuration">Dictionary Configuration</a></li>
+					<li data-ng-class="{disabled: !isItemVisible('_settings')}"><a href="#/p/{{projectId}}/_settings">Project Settings</a></li>
+					<li data-ng-class="{disabled: !isItemVisible('users')}"><a href="#/p/{{projectId}}/users">User Management</a></li>
 				</ul>
 			</div>
 			<div class="btn-group" data-ng-show="isItemVisible('dashboard')">
@@ -30,12 +32,12 @@
 				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 					<i class="icon-th icon-2x"></i> Gather Words <span class="caret"></span></a>
 				<ul class="dropdown-menu">
-					<li data-ng-show="isItemVisible('dbe')"        ><a href="#/p/{{projectId}}/dbe">Browse and edit</a></li>
-					<li class="divider" data-ng-show="isItemVisible('review')"></li>
+					<li data-ng-show="isItemVisible('dbe')"        ><a href="#/p/{{projectId}}/dbe">Browse and Edit</a></li>
+					<li class="divider" data-ng-show="isItemVisible('dbe')"></li>
 					<li data-ng-show="isItemVisible('gatherTexts')"><a href="#/p/{{projectId}}/gather-texts">from Texts</a></li>
 					<li data-ng-show="isItemVisible('semdom')"     ><a href="#/p/{{projectId}}/semdom">from Semantic Domains</a></li>
 					<li data-ng-show="isItemVisible('wordlist')"   ><a href="#/p/{{projectId}}/wordlist">from a Word List</a></li>
-					<li class="divider" data-ng-show="isItemVisible('dbe')"></li>
+					<li class="divider" data-ng-show="isItemVisible('review')"></li>
 					<li data-ng-show="isItemVisible('review')"     ><a href="#/p/{{projectId}}/review">Review</a></li>
 				</ul>
 			</div>
