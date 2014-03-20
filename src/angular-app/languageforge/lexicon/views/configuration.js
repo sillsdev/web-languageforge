@@ -95,7 +95,7 @@ angular.module('configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.
 		}
 	};
 	
-	lexService.settingsPageDto(function(result) {
+	lexService.configurationPageDto(function(result) {
 		if (result.ok) {
 			$scope.config = result.data;
 			configService.setConfig($scope.config);
@@ -104,7 +104,7 @@ angular.module('configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.
 	});
 	
 	$scope.configurationApply = function() {
-		lexService.updateSettings($scope.config, function(result) {
+		lexService.updateConfiguration($scope.config, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "Dictionary configuration updated successfully");
 				$scope.configForm.$setPristine();
