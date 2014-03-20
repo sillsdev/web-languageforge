@@ -1,5 +1,7 @@
 <?php
 
+use models\languageforge\lexicon\dto\LexProjectSettingsDto;
+
 use models\languageforge\lexicon\commands\LexEntryCommands;
 
 use models\languageforge\lexicon\dto\LexDbeDto;
@@ -433,7 +435,7 @@ class Sf
 	//---------------------------------------------------------------
 	
 	public function lex_projectSettingsDto($projectId) {
-		return LexProjectCommands::readSettings($projectId);
+		return LexProjectSettingsDto::encode($projectId);
 	}
 	
 	public function lex_projectSettings_update($projectId, $settings) {
