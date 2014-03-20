@@ -139,13 +139,15 @@ class LiftDecoder {
 	 */
 	public function readMultiText($sxeNode, $inputSystems = null) {
 		$multiText = new MultiText();
-		foreach ($sxeNode->form as $form) {
-			$inputSystemTag = (string) $form['lang'];
-			$multiText->form($inputSystemTag, (string) $form->text);
-			
-			$this->_projectModel->addInputSystem($inputSystemTag);
-			if (isset($inputSystems)) {
-				$inputSystems->value($inputSystemTag);
+		if (isset($sxeNode->form)) {
+			foreach ($sxeNode->form as $form) {
+				$inputSystemTag = (string) $form['lang'];
+				$multiText->form($inputSystemTag, (string) $form->text);
+				
+				$this->_projectModel->addInputSystem($inputSystemTag);
+				if (isset($inputSystems)) {
+					$inputSystems->value($inputSystemTag);
+				}
 			}
 		}
 		return $multiText;
