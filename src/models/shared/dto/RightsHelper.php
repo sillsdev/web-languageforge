@@ -147,6 +147,7 @@ class RightsHelper
 				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::DELETE);
 				
 			case 'project_list':
+			case 'project_usersDto':
 				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::VIEW);
 			
 			case 'project_create':
