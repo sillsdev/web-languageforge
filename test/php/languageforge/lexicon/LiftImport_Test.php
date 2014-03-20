@@ -12,7 +12,7 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 require_once(dirname(__FILE__) . '/LexTestData.php');
 
 class TestLiftImport extends UnitTestCase {
-
+/*
 	function testLiftImportMerge_XmlOldVer_Exception() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
@@ -38,7 +38,7 @@ class TestLiftImport extends UnitTestCase {
 		LiftImport::merge($liftXml, $project);
 		$e->restoreErrorDisplay();
 	}
-
+*/
 	function testLiftImportMerge_XmlValidAndNoExistingData_NoExceptionAndMergeOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();

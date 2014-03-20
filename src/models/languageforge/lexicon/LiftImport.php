@@ -15,7 +15,7 @@ class LiftImport {
 	 * @throws \Exception
 	 */
 	public static function merge($xml, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false) {
-		self::validate($xml);
+// 		self::validate($xml);	// TODO Fix. The XML Reader validator doesn't work with <optional> in the RelaxNG schema. IJH 2014-03
 		
 		$entryList = new LexEntryListModel($projectModel);
 		$entryList->read();
@@ -89,9 +89,11 @@ class LiftImport {
 			if (0 === error_reporting()) {
 				return false;
 			}
-				
-			if (strpos($errstr, 'XMLReader::next()') !== false) {
-				throw new \Exception("Sorry, the selected LIFT file is invalid.");
+
+			$validationErrorIndex = strpos($errstr, 'XMLReader::next(): ');
+			if ($validationErrorIndex !== false) {
+				$errMsg = substr($errstr, $validationErrorIndex + 19);
+				throw new \Exception("Sorry, the selected LIFT file is invalid: $errMsg");
 			} else {
 				return true;	// use the default handler
 			}
