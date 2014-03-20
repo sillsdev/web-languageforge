@@ -1,5 +1,7 @@
 <?php
 
+use models\languageforge\lexicon\dto\LexProjectSettingsDto;
+
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\languageforge\lexicon\LiftMergeRule;
@@ -11,22 +13,6 @@ require_once(dirname(__FILE__) . '/LexTestData.php');
 
 class TestLexProjectCommands extends UnitTestCase {
 
-	function testReadProjectSettings_DefaultsOk() {
-		$e = new LexiconMongoTestEnvironment();
-		$e->clean();
-		
-		$project = $e->createProject(SF_TESTPROJECT);
-		$projectId = $project->id->asString();
-		
-		$dto = LexProjectCommands::readSettings($projectId);
-		
-		// test for a few default values
-		$this->assertEqual($dto['inputSystems']['en']['tag'], 'en');
-		$this->assertTrue($dto['tasks']['dbe']['visible']);
-		$this->assertEqual($dto['entry']['fields']['lexeme']['label'], 'Word');
-		$this->assertEqual($dto['entry']['fields']['lexeme']['label'], 'Word');
-		$this->assertEqual($dto['entry']['fields']['senses']['fields']['partOfSpeech']['label'], 'Part of Speech');
-	}
 
 	function testUpdateProjectSettings_SettingsPersist() {
 		$e = new LexiconMongoTestEnvironment();
@@ -35,7 +21,7 @@ class TestLexProjectCommands extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$settingsDto = json_decode(json_encode(LexProjectCommands::readSettings($projectId)), true);
+		$settingsDto = json_decode(json_encode(LexProjectSettingsDto::encode($projectId)), true);
 		
 		$this->assertTrue($settingsDto['tasks']['addMeanings']['visible']);
 		$this->assertEqual($settingsDto['entry']['fields']['lexeme']['inputSystems'][0], 'en');
