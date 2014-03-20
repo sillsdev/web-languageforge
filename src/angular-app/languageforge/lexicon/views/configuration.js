@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
-.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexConfigService', '$filter', '$modal', 
+angular.module('configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
+.controller('ConfigCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexConfigService', '$filter', '$modal', 
                              function($scope, userService, ss, notice, lexService, configService, $filter, $modal) {
 	
 	$scope.config = {};
@@ -83,7 +83,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 			$scope.selectInputSystem($scope.inputSystemsList[0].tag);
 			$scope.currentTaskName = 'dashboard';
 			
-			// for FieldSettingsCtrl
+			// for FieldConfigCtrl
 			$scope.fieldConfig = {
 				'lexeme': $scope.config.entry.fields['lexeme'],
 				'definition': $scope.config.entry.fields.senses.fields['definition'],
@@ -103,17 +103,17 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 		}
 	});
 	
-	$scope.settingsApply = function() {
+	$scope.configurationApply = function() {
 		lexService.updateSettings($scope.config, function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, "Project settings updated successfully");
-				$scope.settingsForm.$setPristine();
+				notice.push(notice.SUCCESS, "Dictionary configuration updated successfully");
+				$scope.configForm.$setPristine();
 				configService.setConfig($scope.config);
 			}
 		});
 	};
 	
-// InputSystemsSettingsCtrl
+// InputSystemsConfigCtrl
 	$scope.newExists = function(code, special) {
 		var tag = code;
 		switch(special) {
@@ -161,7 +161,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 	$scope.removeInputSystem = function(currentInputSystemTag) {
 		delete $scope.inputSystems[currentInputSystemTag];
 		$scope.inputSystemsList = $scope.sortInputSystemsList();
-		$scope.settingsForm.$setDirty();
+		$scope.configForm.$setDirty();
 		// select the first items
 		$scope.selectInputSystem($scope.inputSystemsList[0].tag);
 	};
@@ -213,7 +213,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 				if (! (newTag in $scope.inputSystems)) {
 					$scope.inputSystems[tag].tag = newTag;
 					$scope.inputSystems[newTag] = $scope.inputSystems[tag];
-					$scope.settingsForm.$setDirty();
+					$scope.configForm.$setDirty();
 				}
 				delete $scope.inputSystems[tag];
 				$scope.selectInputSystem(newTag);
@@ -223,7 +223,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 	});
 
 }])
-.controller('FieldSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
+.controller('FieldConfigCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
                                   function($scope, userService, ss, notice) {
 	$scope.currentField = {
 		'name': '',
@@ -261,7 +261,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 				$scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
 			}
 		});
-		$scope.settingsForm.$setDirty();
+		$scope.configForm.$setDirty();
 	};
 	$scope.moveDown = function(currentTag) {
 		var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
@@ -273,7 +273,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 				$scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
 			}
 		});
-		$scope.settingsForm.$setDirty();
+		$scope.configForm.$setDirty();
 	};
 
 	$scope.editInputSystems = {
@@ -303,7 +303,7 @@ angular.module('settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notic
 	});
 	
 }])
-.controller('TaskSettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
+.controller('TaskConfigCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
                                  function($scope, userService, ss, notice) {
 	$scope.selects.timeRange = {
 		'optionsOrder': ['30days', '90days', '1year', 'all'],

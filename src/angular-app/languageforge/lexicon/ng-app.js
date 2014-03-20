@@ -9,7 +9,7 @@ angular.module('lexicon',
 		 'examples',
 		 'lexicon.add-meanings',
 		 'lexicon.importExport',
-		 'settings',
+		 'configuration',
 		 'lexicon.services',
 		 'lexicon.filters',
 		 'bellows.filters'
@@ -55,9 +55,9 @@ angular.module('lexicon',
 				}
 			);
 		$routeProvider.when(
-				'/p/:projectId/settings',
+				'/p/:projectId/configuration',
 				{
-					templateUrl: '/angular-app/languageforge/lexicon/views/settings.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/configuration.html',
 				}
 			);
 	    $routeProvider.otherwise({redirectTo: '/projects'});
@@ -73,17 +73,6 @@ angular.module('lexicon',
 	}])
 	.controller('LexiconMenuCtrl', ['$scope', '$timeout', 'lexConfigService', 'lexProjectService', 
 	                                function($scope, $timeout, lexConfigService, lexProjectService) {
-		$scope.noSubmenuId = 0;
-		$scope.gatherSubmenuId = 1;
-		$scope.addSubmenuId = 2;
-		$scope.visibleSubmenu = $scope.noSubmenuId;
-		
-		$scope.showSubmenu = function(submenuId) {
-			$scope.visibleSubmenu = submenuId;
-		};
-		$scope.isSubmenuVisible = function(submenuId) {
-			return ($scope.visibleSubmenu == submenuId);
-		};
 		$scope.isItemVisible = function(itemName) {
 			// Default to visible if config not defined
 			if (angular.isUndefined($scope.config)) {
@@ -94,6 +83,19 @@ angular.module('lexicon',
 				return false;
 			};
 			return $scope.config.tasks[itemName].visible;
+		};
+		
+/*		
+		$scope.noSubmenuId = 0;
+		$scope.gatherSubmenuId = 1;
+		$scope.addSubmenuId = 2;
+		$scope.visibleSubmenu = $scope.noSubmenuId;
+		
+		$scope.showSubmenu = function(submenuId) {
+			$scope.visibleSubmenu = submenuId;
+		};
+		$scope.isSubmenuVisible = function(submenuId) {
+			return ($scope.visibleSubmenu == submenuId);
 		};
 		$scope.hideAllSubmenus = function(delay) {
 			// If no delay specified, undefined will work quite well since
@@ -117,6 +119,7 @@ angular.module('lexicon',
 			};
 			return name;
 		};
+*/
 		
 		$scope.projectId = lexProjectService.getProjectId();
 		

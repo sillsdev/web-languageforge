@@ -1,13 +1,13 @@
-<div class="container" data-ng-cloak data-ng-controller="SettingsCtrl">
-<h2 style="font-weight:normal">Settings</h2>
-<form name="settingsForm">
-<button class="btn btn-primary pull-right" data-ng-disabled="settingsForm.$pristine" data-ng-click="settingsApply()" ><i class="icon-ok"></i> Apply</button>
+<div class="container" data-ng-cloak data-ng-controller="ConfigCtrl">
+<h2 style="font-weight:normal">Dictionary Configuration</h2>
+<form name="configForm">
+<button class="btn btn-primary pull-right" data-ng-disabled="configForm.$pristine" data-ng-click="configurationApply()" ><i class="icon-ok"></i> Apply</button>
 <tabset>
 	<tab heading="Input Systems">
 		<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'"></div>
 	</tab>
 	<tab heading="Fields">
-		<div data-ng-controller="FieldSettingsCtrl">
+		<div data-ng-controller="FieldConfigCtrl">
 		<div class="row">
 		
 		<!-- Left column: field list -->
@@ -112,7 +112,7 @@ config.entry {{config.entry|json}}
 		</div>
 	</tab>
 	<tab heading="Tasks">
-		<div data-ng-controller="TaskSettingsCtrl">
+		<div data-ng-controller="TaskConfigCtrl">
 		<div class="row">
 		
 		<!-- Left column: task list -->
