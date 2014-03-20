@@ -1,9 +1,9 @@
-angular.module('lexicon.services', ['jsonRpc'])
+angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 	.service('lexConfigService', [function(jsonRpc, $location) {
 
 		var _callbacks = [];
 		var _config = {};
-
+		
 		this.setConfig = function(config) {
 			_config = angular.copy(config);
 			if (angular.isDefined(_config.entry)) {
@@ -25,20 +25,41 @@ angular.module('lexicon.services', ['jsonRpc'])
 		};
 		
 	}])
-	.service('lexLinkService', ['lexProjectService', function(projectService) {
+	.service('lexLinkService', ['$location', function($location) {
 		this.project = function () {
-			return '/app/lexicon#/p/' + projectService.getProjectId();
+			return '/app/lexicon#/p/' + this.getProjectId();
 		};
 		
-		this.edit = function (projectId, view) {
-			return this.project(projectId) + '/' + view;
+		this.edit = function (view) {
+			return this.project() + '/' + view;
+		};
+
+		this.settings = function () {
+			return this.project() + '/settings';
+		};
+
+		this.getProjectId = function() {
+			var parts = $location.path().split('/');
+			// strip off the "/p/"
+			return parts[2];
 		};
 	}])
-	.service('lexProjectService', ['jsonRpc', '$location', function(jsonRpc, $location) {
+	.service('lexProjectService', ['jsonRpc', 'breadcrumbService', 'lexLinkService', '$location', function(jsonRpc, breadcrumbService, linkService, $location) {
 		jsonRpc.connect('/api/sf');
 
 		this.settingsPageDto = function(callback) {
-			jsonRpc.call('lex_projectSettingsDto', [this.getProjectId()], callback);
+			jsonRpc.call('lex_projectSettingsDto', [this.getProjectId()], function(result) {
+				if (result.ok) {
+					breadcrumbService.set('top',
+						[
+						 {href: '/app/projects', label: 'My Projects'},
+						 {href: linkService.project(), label: result.data.project.projectname},
+						 {href: linkService.settings(), label: 'Settings'},
+						]
+					);
+					callback(result);
+				}
+			});
 		};
 
 		this.updateSettings = function(settings, callback) {
@@ -61,240 +82,8 @@ angular.module('lexicon.services', ['jsonRpc'])
 		};
 	}])
 
-	.service('lexEntryService', ['jsonRpc', 'lexProjectService', function(jsonRpc, projectService) {
+	.service('lexEntryService', ['jsonRpc', 'lexProjectService', 'breadcrumbService', 'lexLinkService', function(jsonRpc, projectService, breadcrumbService, linkService) {
 		jsonRpc.connect('/api/sf');
-		/*
-		var _dtoConfig = {};
-		this.setConfig = function(dtoConfig) {
-			_dtoConfig = angular.copy(dtoConfig);
-		};
-		this.getConfig = function() {
-			return _dtoConfig;
-		};
-		*/
-
-		/*
-		var sampleData = [
-				{
-					"lexeme": {"th-fonipa-x-etic": {value: "khâaw kài thɔ̂ɔt"}},
-					"senses": [{
-						"definition": {
-							"th": {
-								value: "ข้าวไก่ทอด",
-								comments: [{
-									userRef: {username: "Robin M.", email: "Robin_Munn@sil.org"},
-									dateModified: "2014-03-03", // Actually a Javascript Date object
-									regarding: "ข้าวไก่ทอด",
-									content: "I can't read Thai.",
-									score: 0,
-									replies: [], // replies will have userRef, content, dateModified. No regarding, no score, no replies.
-									status: "To Do", // Possible values may change, but for now: "Resolved", "To Do", "Reviewed". One value only -- these are not tags.
-									},
-									{
-										userRef: {username: "Mike C.", email: "Michael_Cochran@sil.org"},
-										dateModified: "2014-03-03", // Actually a Javascript Date object
-										regarding: "ข้าวไก่ทอด",
-										content: "I can.",
-										score: 0,
-										replies: [], // replies will have userRef, content, dateModified. No regarding, no score, no replies.
-										status: "Reviewed", // Possible values may change, but for now: "Resolved", "To Do", "Reviewed". One value only -- these are not tags.
-									},
-									{
-										userRef: {username: "Ira H.", email: "test@superexpert.com"},
-										dateModified: "2014-03-03", // Actually a Javascript Date object
-										regarding: "ข้าวไก่ทอด",
-										content: "So can I.",
-										score: 0,
-										replies: [], // replies will have userRef, content, dateModified. No regarding, no score, no replies.
-										status: "Resolved", // Possible values may change, but for now: "Resolved", "To Do", "Reviewed". One value only -- these are not tags.
-									},
-								]},
-							"en": {
-								value: "pieces of fried chicken served over rice, usually with a sweet and spicy sauce on the side",
-								comments: [],  // No comments yet: empty list
-							}
-						},
-						"partOfSpeech": {"value": "noun", "comments": []},
-					}],
-				},
-
-				{
-					"lexeme": {"th-fonipa-x-etic": {value: "krapâw mǔu"}},
-					"senses": [{
-						"definition": {
-							"th": {value: "กระเพาหมู"},
-							"en": {value: "stir fried basil and hot peppers with ground pork over rice"},
-						}
-					}],
-				},
-
-				{
-					"lexeme": {"th-fonipa-x-etic": {value: "phàt siiʔ ǐw mǔu"}},
-					"senses": [{
-						"definition": {
-							"th": {value: "ผัดชีอิ้วหมู"},
-							"en": {value: "Noodles fried in soy sauce with pork"},
-					}}],
-				},
-
-				{
-					"lexeme": {"th-fonipa-x-etic": {value: "kài phàt métmàmùaŋ"}},
-					"senses": [{
-						"definition": {
-							"th": {value: "ไก่ผัดเม็ดมะม่วง"},
-							"en": {value: "Stir fried chicken with cashews"},
-						}
-					}],
-				},
-
-				{
-					"lexeme": {"th-fonipa-x-etic": {value: "cèt khǔnsʉ̀k phàt phrìk phǎw"}},
-					"senses": [{
-						"definition": {
-							"th": {value: "เจ็ดขุนศึกผัดผริกเผา"},
-							"en": {value: "seven kinds of meat fried and seared with peppers"},
-						}
-					}],
-				},
-
-				{
-					"lexeme": {"th-fonipa-x-etic": {value: "phàt prîaw wǎan kài"}},
-					"senses": [{
-						"definition": {
-							"th": {value: "ผัดเปรี้ยวหวานหมู"},
-							"en": {value: "Sweet and sour chicken"},
-						}
-					}],
-				},
-
-				{
-					"lexeme": {"th-fonipa-x-etic": {value: "phàt thai kûŋ"}},
-					"senses": [{
-						"definition": {
-							"th": {value: "ผักไทกุ้ง"},
-							"en": {value: "Fried noodles mixed or wrapped with egg and bamboo shoots topped with shrimp"},
-						}
-					}],
-				},
-
-				{
-					"lexeme": {"th-fonipa-x-etic": {value: "khâaw khài ciaw mǔu yɔ̂ɔ"}},
-					"senses": [{
-						"definition": {
-							"th": {value: "ข้าวไข่เจียหมูยอ"},
-							"en": {value: "fried omelette with pork over rice"},
-						}
-					}],
-				},
-
-				{
-					"lexeme": {"th-fonipa-x-etic": {value: "khâaw phàt mǔu"}},
-					"senses": [{
-						"definition": {
-							"th": {value: "ข้าวผัดหมู"},
-							"en": {value: "Fried rice with minced pork"},
-						}
-					}],
-				},
-
-				{
-					"lexeme": {"th-fonipa-x-etic": {value: "nɔ̀máay fàràŋ phàt kûŋ"}},
-					"senses": [{
-						"definition": {
-							"th": {value: "หน่อไม้ฝรั่งผัดกุ้ง"},
-							"en": {value: "Sauteed asparagus with shrimp over rice"},
-						}
-					}],
-				},
-
-				{
-					"lexeme": {"th-fonipa-x-etic": {value: "kài sòt kràthiam"}},
-					"senses": [{
-						"definition": {
-							"th": {value: "ไก่สกกระเกียม"},
-							"en": {value: "stir fried garlic chicken over rice"},
-						}
-					}],
-				},
-
-			];
-		*/
-
-		/*
-		var serverEntries = [];
-		var dirtyEntries = [];
-		var lastLocalId = 0;
-		var lastServerId = 0;
-		var localIdMap = {};
-
-		// for debugging
-		this.serverEntries = function() {
-			return serverEntries;
-		};
-
-		// for debugging
-		this.dirtyEntries = function() {
-			return dirtyEntries;
-		};
-
-		function serverIter(func) {
-			for (var i=0; i<serverEntries.length; i++) {
-				if (func(i, serverEntries[i])) {
-					break;
-				}
-			}
-		}
-
-		// TODO: replace instances of this function with the full for loop
-		// While this is a handy shortcut for developers, it makes the resulting code less readable
-		// and perhaps less understandable.  Probably best to just code the full for loop everywhere
-		// even though it is a few more keystrokes
-		function dirtyIter(func) {
-			for (var i=0; i<dirtyEntries.length; i++) {
-				if (func(i, dirtyEntries[i])) {
-					break;
-				}
-			}
-		}
-
-		function getNewServerId() {
-			lastServerId++;
-			return "server " + lastServerId;
-		}
-
-		function getNewLocalId() {
-			lastLocalId++;
-			return "local " + lastLocalId;
-		}
-
-		this.canSave = function() {
-			return dirtyEntries.length > 0;
-		};
-
-		this.saveNow = function(callback) {
-			// save each entry in the dirty list
-			dirtyIter(function(i, dirtyEntry) {
-				// do update or add on server (server figures it out)
-				var updated = false;
-				serverIter(function(j, serverEntry) {
-					if (serverEntry.id == dirtyEntry.id) {
-						serverEntries[j] = dirtyEntry;
-						updated = true;
-						return true;
-					}
-				});
-				if (!updated) {
-					var newServerId = getNewServerId();
-					localIdMap[dirtyEntry.id] = newServerId;
-					dirtyEntry.id = newServerId;
-					serverEntries.unshift(dirtyEntry);
-				}
-			});
-			dirtyEntries = [];
-			(callback || angular.noop)({data:''});
-		};
-		*/
-		
 		this.read = function(id, callback) {
 			jsonRpc.call('lex_entry_read', [projectService.getProjectId(), id], callback);
 		};
@@ -307,93 +96,19 @@ angular.module('lexicon.services', ['jsonRpc'])
 			jsonRpc.call('lex_entry_remove', [projectService.getProjectId(), id], callback);
 		};
 
-		/*
-		this.read = function(id, callback) {
-			var result = {};
-			dirtyIter(function(i,e) {
-				if (e.id == id) {
-					result = e;
-					return true;
-				}
-			});
-			if (!result.hasOwnProperty('id')) {
-				if (id.indexOf("local") != -1) {
-					// this is a local id, get the corresponding server id
-					id = localIdMap[id];
-				}
-				// read from server
-				serverIter(function(i,e) {
-					if (e.id == id) {
-						result = e;
-						return true;
-					}
-				});
-			}
-			(callback || angular.noop)({data: result});
-		};
-
-		this.update = function(entry, callback) {
-			if (entry.hasOwnProperty('id') && entry.id != '') {
-				var foundInDirty = false;
-				dirtyIter(function(i,e) {
-					if (e.id == entry.id) {
-						dirtyEntries[i] = entry;
-						foundInDirty = true;
-						return true;
-					}
-				});
-				if (!foundInDirty) {
-					dirtyEntries.unshift(entry);
-				}
-			} else {
-				entry.id = getNewLocalId();
-				dirtyEntries.unshift(entry);
-			}
-			(callback || angular.noop)({data:entry});
-		};
-
-		this.remove = function(id, callback) {
-			dirtyIter(function(i,e) {
-				if (e.id == id) {
-					dirtyEntries.splice(i, 1);
-					return true;
-				}
-			});
-			// remove from server
-			serverIter(function(i,e){
-				if (e.id == id) {
-					serverEntries.splice(i, 1);
-					return true;
-				}
-			});
-			(callback || angular.noop)({data: {}});
-			return;
-		};
-
-		getEntriesList = function() {
-			var list = [];
-			//var inputSystem = config.entry.fields.lexeme.inputSystems[0];
-			serverIter(function(i,e) {
-				var title = e.lexeme[Object.keys(e.lexeme)[0]].value;
-				if (!title) {
-					title = '[new word]';
-				}
-				list.push({id: e.id, title: title, entry: e});
-			});
-			return list;
-		};
-		*/
 		this.dbeDto = function(callback) {
-			jsonRpc.call('lex_dbeDto', [projectService.getProjectId()], callback);
-			/*
-			function(result) {
+			jsonRpc.call('lex_dbeDto', [projectService.getProjectId()], function(result) {
 				if (result.ok) {
-					var entries = result.data.entries;
-					callback({'ok': true, 'data': {'entries': getEntriesList(), 'config': projectService.getSettings()}});
+					breadcrumbService.set('top',
+						[
+						 {href: '/app/projects', label: 'My Projects'},
+						 {href: linkService.project(), label: result.data.project.projectname},
+						 {href: linkService.edit('dbe'), label: 'Browse And Edit'},
+						]
+					);
+					callback(result);
 				}
 			});
-			(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': projectService.getSettings()}});
-			*/
 		};
 		
 		

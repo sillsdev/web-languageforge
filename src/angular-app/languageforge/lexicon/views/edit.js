@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'sgw.ui.breadcrumb'])
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$timeout', '$filter', 'lexLinkService', 'breadcrumbService', 
-                        function ($scope, userService, sessionService, lexService, configService, $window, $timeout, $filter, linkService, breadcrumbService) {
+angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services'])
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$timeout', '$filter', 'lexLinkService', 
+                        function ($scope, userService, sessionService, lexService, configService, $window, $timeout, $filter, linkService) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
 	// for an idea on expanding text areas
 	
@@ -176,13 +176,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				if (updateFirstEntry && result.data.entry.id != '') {
 					$scope.setCurrentEntry(result.data.entry);
 				}
-				breadcrumbService.set('top',
-					[
-					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectname},
-					 {href: linkService.edit('dbe'), label: 'Browse And Edit'},
-					]
-				);
 			}
 		};
 		var view = 'dbe';
