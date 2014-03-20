@@ -84,6 +84,34 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	}
 	
 	/**
+	 * 
+	 * @param string $id
+	 * @return Sense
+	 */
+	public function getSense($id) {
+		foreach ($this->senses as $sense) {
+			if ($sense->id == $id) {
+				return $sense;
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param string $id
+	 * @param Sense $model
+	 */
+	public function setSense($id, $model) {
+		foreach ($this->senses as $key => $sense) {
+			if ($sense->id == $id) {
+				$this->senses[$key] = $model;
+				break;
+			}
+		}
+	}
+
+	
+	/**
 	 * Remove this LexEntry from the collection
 	 * @param ProjectModel $projectModel
 	 * @param unknown $id
