@@ -77,7 +77,7 @@ class LanguageData extends MapOf {
 	private static $_data;
 	
 	public function read() {
-		$languagesFile = file_get_contents(APPPATH . "angular-app/bellows/js/inputSystems_languages.js");
+		$languagesFile = file_get_contents(APPPATH . "angular-app/bellows/js/assets/inputSystems_languages.js");
 		$json = str_replace(";", "", substr($languagesFile, strpos($languagesFile, '[')));
 		$arr = json_decode($json, true);
 
