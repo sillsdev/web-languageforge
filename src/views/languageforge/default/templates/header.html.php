@@ -61,7 +61,7 @@
 							<a href="#"><img src="<?php echo $small_avatar_url; ?>" style="width:30px; height:30px; float:left; border:1px solid white; margin-top:-6px; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
 								<ul>
 									<?php if ($is_admin):?>
-									<li><a href="/app/lfadmin">Site Administration</a></li>
+									<li><a href="/app/siteadmin">Site Administration</a></li>
 									<?php endif;?>
 									<li><a href="/app/userprofile">My Profile</a></li>
 									<li><a href="/app/changepassword">Change Password</a></li>
