@@ -2,6 +2,8 @@
 
 namespace models;
 
+use libraries\shared\Website;
+
 use libraries\shared\palaso\CodeGuard;
 use models\rights\Realm;
 use models\rights\Roles;
@@ -19,8 +21,10 @@ use models\mapper\Id;
  */
 class ProjectList_UserModel extends \models\mapper\MapperListModel
 {
+	private $_site;
 
-	public function __construct() {
+	public function __construct($site) {
+		$this->_site = $site;
 		parent::__construct(ProjectModelMongoMapper::instance());
 	}
 	
@@ -28,8 +32,8 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 	 * Reads all projects
 	 */
 	function readAll() {
-		$query = array();
-		$fields = array('projectname', 'appName', 'themeName');
+		$query = array('siteName' => array('$in' => array($this->_site)));
+		$fields = array('projectname', 'appName', 'themeName', 'siteName');
 		return $this->_mapper->readList($this, $query, $fields);
 	}
 	
@@ -38,11 +42,11 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 	 * @param string $userId
 	 */
 	function readUserProjects($userId) {
-		$query = array('users.' . $userId => array('$exists' => true));
-		$fields = array('projectname', 'appName', 'themeName');
+		$query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array($this->_site)));
+		$fields = array('projectname', 'appName', 'themeName', 'siteName');
 		return $this->_mapper->readList($this, $query, $fields);
 	}
-	
+
 
 }
 

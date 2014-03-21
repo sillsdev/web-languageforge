@@ -24,7 +24,7 @@ class ProjectListDto
 		$user = new UserModel($userId);
 		$canListAllProjects = $user->hasRight(Domain::PROJECTS + Operation::VIEW);
 
-		$projectList = new ProjectList_UserModel();
+		$projectList = new ProjectList_UserModel($site);
 		if ($canListAllProjects) {
 			$projectList->readAll();
 		} else {
@@ -36,17 +36,15 @@ class ProjectListDto
 		$data['entries'] = array();
 		foreach ($projectList->entries as $entry) {
 			$projectModel = new ProjectModel($entry['id']);
-			if ($projectModel->siteName == $site) {
-				$role = Roles::NONE;
-				if (count($projectModel->users) > 0) {
-					if (isset($projectModel->users[$userId]->role)) {
-						$role = $projectModel->users[$userId]->role;
-					}
+			$role = Roles::NONE;
+			if (count($projectModel->users) > 0) {
+				if (isset($projectModel->users[$userId]) && isset($projectModel->users[$userId]->role)) {
+					$role = $projectModel->users[$userId]->role;
 				}
-				$entry['role'] = $role;
-					
-				$data['entries'][] = $entry;
 			}
+			$entry['role'] = $role;
+				
+			$data['entries'][] = $entry;
 		}
 		return $data;
 	}
