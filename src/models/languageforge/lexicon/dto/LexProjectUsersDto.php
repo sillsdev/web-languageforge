@@ -24,6 +24,7 @@ class ProjectUsersDto {
 		$data['project'] = JsonEncoder::encode($projectModel);
 		unset($data['project']['users']);
 		$data['rights'] = RightsHelper::encode($userModel, $projectModel);
+// 		$data['bcs'] = BreadCrumbHelper::encode('settings', $projectModel, null, null);
 		return $data;
 	}
 }
