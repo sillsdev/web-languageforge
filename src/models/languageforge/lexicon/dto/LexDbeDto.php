@@ -30,7 +30,7 @@ class LexDbeDto
 		$entriesModel->read();
 		$entries = $entriesModel->entries;
 		
-		$config = LexProjectSettingsDto::encode($projectId);
+		$config = LexConfigurationDto::encode($projectId);
 		
 		$lexemeWritingSystems = $config['entry']['fields']['lexeme']['inputSystems'];
 		if (count($lexemeWritingSystems) > 0) {
