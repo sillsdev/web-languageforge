@@ -14,6 +14,7 @@ angular.module('lexicon.manageUsers', ['bellows.services', 'palaso.ui.listview',
 				$scope.project = result.data.project;
 				$scope.list.users = result.data.entries;
 				$scope.list.userCount = result.data.count;
+				
 				// Rights
 				var rights = result.data.rights;
 				$scope.rights = {};
@@ -24,11 +25,11 @@ angular.module('lexicon.manageUsers', ['bellows.services', 'palaso.ui.listview',
 
 				// Breadcrumb
 				breadcrumbService.set('top',
-						[
-						 {href: '/app/projects', label: 'My Projects'},
-						 {href: linkService.project($routeParams.projectId), label: result.data.bcs.project.crumb},
-						 {href: linkService.project($routeParams.projectId) + '/settings', label: 'Settings'},
-						]
+					[
+					 {href: '/app/projects', label: 'My Projects'},
+					 {href: linkService.project(), label: result.data.project.projectname},
+					 {href: linkService.projectView('users'), label: 'User Management'},
+					]
 				);
 				
 			}
