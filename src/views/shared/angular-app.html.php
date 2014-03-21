@@ -8,6 +8,7 @@ window.session = <?php echo $jsonSession; ?>;
 	
 <?php if (SF_USE_MINIFIED_JS): ?>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-animate.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-route.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js"></script>
 	<script src="/js/lib/angular-file-upload.min.js"></script>
