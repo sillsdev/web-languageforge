@@ -7,8 +7,9 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 			scope : {
 				config : "=",
 				model : "=",
+				comment : "&"
 			},
-			controller: ["$scope", "$window", function($scope, $window) {
+			controller: ["$scope", "$window", 'lexEntryService', function($scope, $window, lexService) {
 				$scope.addSense = function() {
 					$scope.model.senses.unshift({});
 				};
@@ -42,6 +43,16 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 						}
 					}
 					return title;
+				};
+				
+				$scope.submitComment = function(comment, field) {
+					if (angular.isDefined(comment.field)) {
+						comment.field = field + "_" + comment.field;
+					} else {
+						comment.field = field;
+					}
+					comment.entryId = $scope.model.id;
+					$scope.comment({comment:comment});
 				};
 			}],
 			link : function(scope, element, attrs, controller) {

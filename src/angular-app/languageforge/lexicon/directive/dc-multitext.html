@@ -4,6 +4,6 @@
         <div class="controls">
             <span title="unknown" class="wsid">{{getAbbreviation(inputSystem)}}</span><input data-ng-disabled="{{config.readonly}}" width="{{config.width}}" type="text" data-ng-model="model[inputSystem].value"/>
         </div>
-        <dc-comments data-ng-show="config.commentsVisible" dc-config="config" dc-model="model[inputSystem]"></dc-comments>
+        <dc-comments data-ng-show="config.commentsVisible" config="config" model="model[inputSystem]" submit="submitComment(comment, inputSystem)"></dc-comments>
     </div>
 </form>

@@ -7,6 +7,7 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 			scope : {
 				config : "=",
 				model : "=",
+				comment : "&"
 			},
 			controller: ['$scope', 'lexConfigService', function($scope, configService) {
 				
@@ -23,6 +24,11 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 							}
 						}
 					}
+				};
+				
+				$scope.submitComment = function(comment, inputSystem) {
+					comment.inputSystem = inputSystem;
+					$scope.comment({comment:comment});
 				};
 				
 				$scope.getAbbreviation = function(inputSystem) {
