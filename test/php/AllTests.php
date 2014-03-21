@@ -14,6 +14,7 @@ class AllTests extends TestSuite {
  		$this->addFile(TestPath . 'dto/AllTests.php');
  		$this->addFile(TestPath . 'libraries/AllTests.php');
  		$this->addFile(TestPath . 'languageforge/AllTests.php');
+ 		$this->addFile(TestPath . 'shared/AllTests.php');
     }
 }
 ?>
