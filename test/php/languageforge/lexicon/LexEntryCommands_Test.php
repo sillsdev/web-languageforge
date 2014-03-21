@@ -141,7 +141,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$this->assertEqual($newEntry['senses'][0]['partOfSpeech']['value'], 'noun');
 		$this->assertEqual($newEntry['senses'][0]['examples'][0]['sentence']['th']['value'], 'example1');
 		$this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
-		$this->assertEqual($newEntry['senses'][0]['partOfSpeech']['comments'][0]['content'], 'i vote for adj');
+		$this->assertEqual($newEntry['senses'][0]['partOfSpeech']['comments'], array());
 		
 	}
 	
