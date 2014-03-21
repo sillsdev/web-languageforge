@@ -23,6 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 namespace libraries\shared\palaso;
 
+use libraries\shared\palaso\exceptions\ErrorHandler;
+
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 
 /**
@@ -41,6 +43,9 @@ class JsonRpcServer {
 	 * @return boolean
 	 */
 	public static function handle($object, $output) {
+		
+		// user-defined error handler to catch annoying php errors and throw them as exceptions
+		set_error_handler(function ($errno, $errstr, $errfile, $errline) { throw new ErrorHandler($errstr, 0, $errno, $errfile, $errline); } , E_ALL);
 
 		// checks if a JSON-RPC request has been received
 		if (
@@ -77,8 +82,7 @@ class JsonRpcServer {
 			$response = array (
 				'id' => $request['id'],
 				'result' => NULL,
-				'error' => $e->getMessage()
-			);
+				'error' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile());
 
 			$message = '';
 			$message .= $e->getMessage() . "\n";
