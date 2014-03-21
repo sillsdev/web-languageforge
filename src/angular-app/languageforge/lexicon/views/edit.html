@@ -52,7 +52,7 @@
                             <dc-entry config="config" model="currentEntry"></dc-entry>
                         </div>
                         </tab>
-                        <tab heading="Comment" active="commentsTabActive" select="selectCommentsTab()" deselect="deselectCommentsTab()">
+                        <tab heading="Comment" active="commentsTabActive" select="selectCommentsTab()" deselect="deselectCommentsTab()" disabled="currentEntry.id == ''">
                             <dc-rendered config="config" model="currentEntry" hide-if-empty="true"></dc-rendered>
                     <fieldset class="filter-controls override-bootstrap">
                         <legend class="override-bootstrap">Filters <i ng-click="toggleFilters()" style="cursor: pointer" ng-class="filter.chevronIcon"></i></legend>
