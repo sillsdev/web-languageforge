@@ -8,7 +8,8 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
 				config : "=",
 				model : "=",
 				index : "=",
-				remove : "="
+				remove : "=",
+				comment : "&"
 			},
 			controller: ['$scope', '$window', function($scope, $window) {
 				$scope.makeValidModel = function() {
@@ -28,6 +29,16 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
 					if ($window.confirm("Are you sure you want to delete example #" + (index+1) + " ?")) {
 						$scope.model.examples.splice(index, 1);
 					}
+				};
+				
+				$scope.submitComment = function(comment, field) {
+					if (angular.isDefined(comment.field)) {
+						comment.field = field + "_" + comment.field;
+					} else {
+						comment.field = field;
+					}
+					$scope.comment({comment:comment});
+					//console.log(comment);
 				};
 			}],
 			link : function(scope, element, attrs, controller) {

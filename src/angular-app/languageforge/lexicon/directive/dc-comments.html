@@ -1,6 +1,6 @@
-<div class="dc-comments" > <!-- ng-show="config.comments" -->
+<div class="dc-comments" >
 	<!-- ng-repeat over existing comments, nested comments (Design note: two different things? Or the same thing? I'm inclined to say same thing.) -->
-	<div class="comment" data-ng-repeat="comment in dcModel.comments">
+	<div class="comment" data-ng-repeat="comment in model.comments">
  		<div class="scorecontrol">
 			<div class="scorearrow"><a ng-click="incScore(comment)"><i class="icon-caret-up icon-2x"></i></a></div>
 			<div class="score">{{comment.score}}</div>
@@ -23,7 +23,7 @@
 			<div collapse="!replyBoxVisible">
 				<div>Reply to the above comment</div>
 				<div><textarea data-ng-model="newReply"></textarea></div>
-				<div><button type="submit" class="btn-sm btn-info" data-ng-click="submitReply(newReply, comment); newReply=''; replyBoxVisible=false">Post Reply</button></div>
+				<div><button type="submit" class="btn-sm btn-info" data-ng-click="doReply(newReply, comment); newReply=''; replyBoxVisible=false">Post Reply</button></div>
 			</div>
 			<table class="replies" data-ng-if="comment.replies.length">
 				<tr data-ng-repeat="reply in comment.replies">
@@ -37,6 +37,6 @@
 	<div class="new-comment-form">
 			<div>New comment</div>
 			<div><textarea data-ng-model="newComment"></textarea></div>
-			<div><button type="submit" class="btn-sm btn-success" data-ng-click="submitComment(newComment); newComment=''">Post New Comment</button></div>
+			<div><button type="submit" class="btn-sm btn-success" data-ng-click="doComment(newComment); newComment=''">Post New Comment</button></div>
 	</div>
 </div>
