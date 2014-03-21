@@ -83,8 +83,13 @@ class Auth extends Base {
 				{
 					$user = new \models\UserModel((string)$this->session->userdata('user_id'));
 					$projects = $user->listProjects($this->site);
-					$firstProjectId = $projects->entries[0]['id'];
-					redirect("/app/sfchecks#/p/$firstProjectId", 'location');
+					if ($projects->count > 0) {
+						$proj = $projects->entries[0];
+						$url = "/app/" . $proj['appName'] . "#/p/" . $proj['id'];
+						redirect($url, 'location');
+					} else {
+						redirect('/', 'location');
+					}
 				}
 			}
 			else
