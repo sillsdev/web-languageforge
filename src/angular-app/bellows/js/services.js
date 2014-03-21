@@ -63,6 +63,9 @@ angular.module('bellows.services', ['jsonRpc'])
 		this.list = function(callback) {
 			jsonRpc.call('project_list_dto', [], callback);
 		};
+		this.users = function(projectId, callback) {
+			jsonRpc.call('project_usersDto', [projectId], callback);
+		};
 		this.readUser = function(projectId, userId, callback) {
 			jsonRpc.call('project_readUser', [projectId, userId], callback);
 		};

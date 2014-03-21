@@ -1,35 +1,23 @@
 <?php
 
-use models\languageforge\lexicon\dto\LexProjectSettingsDto;
-
-use models\languageforge\lexicon\dto\LexDbeDto;
-
-use models\languageforge\lexicon\settings\LexiconConfigObj;
-
-use models\languageforge\lexicon\commands\LexProjectCommands;
-
 use models\languageforge\lexicon\commands\LexEntryCommands;
-
-use models\languageforge\lexicon\LexCommentReply;
-
-use models\languageforge\lexicon\LexComment;
-
+use models\languageforge\lexicon\commands\LexProjectCommands;
+use models\languageforge\lexicon\dto\LexConfigurationDto;
+use models\languageforge\lexicon\dto\LexDbeDto;
+use models\languageforge\lexicon\settings\LexiconConfigObj;
 use models\languageforge\lexicon\Example;
-
+use models\languageforge\lexicon\LexComment;
+use models\languageforge\lexicon\LexCommentReply;
+use models\languageforge\lexicon\LexEntryModel;
+use models\languageforge\lexicon\LexiconFieldWithComments;
+use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\Sense;
 
-use models\languageforge\lexicon\LexiconFieldWithComments;
-
-use models\languageforge\lexicon\LexEntryModel;
-
-use models\languageforge\lexicon\LexiconProjectModel;
-
-require_once(dirname(__FILE__) . '/../../TestConfig.php');
+require_once(dirname(__FILE__) . '/../../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-class TestLexProjectSettingsDto extends UnitTestCase {
+class TestLexConfigurationDto extends UnitTestCase {
 	
 	function testEncode_DefaultsOk() {
 		$e = new LexiconMongoTestEnvironment();
@@ -38,7 +26,7 @@ class TestLexProjectSettingsDto extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$dto = LexProjectSettingsDto::encode($projectId);
+		$dto = LexConfigurationDto::encode($projectId);
 		
 		// test for a few default values
 		$this->assertEqual($dto['inputSystems']['en']['tag'], 'en');
