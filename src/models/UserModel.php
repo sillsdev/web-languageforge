@@ -76,11 +76,7 @@ class UserModel extends \models\UserModelBase
 	}
 	
 	public function listProjects($site) {
-		if ($site == Website::LANGUAGEFORGE) {
-			$projectList = new LfProjectList_UserModel();
-		} elseif ($site == Website::SCRIPTUREFORGE) {
-			$projectList = new SfProjectList_UserModel();
-		}
+		$projectList = new ProjectList_UserModel($site);
 		$projectList->readUserProjects($this->id->asString());
 		return $projectList;
 	}
