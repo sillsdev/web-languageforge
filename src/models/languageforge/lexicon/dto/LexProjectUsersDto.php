@@ -1,12 +1,14 @@
 <?php
 
-namespace models\shared\dto;
+namespace models\languageforge\lexicon\dto;
 
 use models\mapper\JsonEncoder;
+use models\shared\dto\RightsHelper;
 use models\UserModel;
 use models\ProjectModel;
+use models\shared\dto\ProjectUsersDto;
 
-class ProjectUsersDto {
+class LexProjectUsersDto {
 	
 	/**
 	 * @param string $projectId
@@ -15,16 +17,11 @@ class ProjectUsersDto {
 	 */
 	public static function encode($projectId, $userId) {
 		$userModel = new UserModel($userId);
-		$projectModel = new ProjectModel($projectId);
-
-		$list = $projectModel->listUsers();
-		$data = array();
-		$data['count'] = $list->count;
-		$data['entries'] = $list->entries;
-		$data['project'] = JsonEncoder::encode($projectModel);
-		unset($data['project']['users']);
+		$data = LexBaseViewDto::encode($projectId);
 		$data['rights'] = RightsHelper::encode($userModel, $projectModel);
-// 		$data['bcs'] = BreadCrumbHelper::encode('settings', $projectModel, null, null);
+		
+		$data = array_merge($data, ProjectUsersDto::encode($projectId, $userId));
+		
 		return $data;
 	}
 }
