@@ -1,11 +1,11 @@
 <div class="content container" data-ng-cloak>
-   	<div class="hdrnav">
-   		<ul class="topNav">
-   			<li class="here"><a href="/app/projects">My Projects</a></li>
-   			<li><a href="/app/activity">Activity</a></li>
-   		</ul>
-   		<ul id="top" class="topCrumbs" breadcrumbs></ul>
-   	</div>
+	<div class="hdrnav">
+		<ul class="topNav">
+			<li class="here"><a href="/app/projects">My Projects</a></li>
+			<li><a href="/app/activity">Activity</a></li>
+		</ul>
+		<ul id="top" class="topCrumbs" breadcrumbs></ul>
+	</div>
 	<div id="lexicon-hmenu" style="clear:both" data-ng-controller="LexiconMenuCtrl">
 		<!-- Don't need breadcrumbs <ul id="top" class="topCrumbs" data-breadcrumbs></ul> -->
 		<div class="control-group">
@@ -19,7 +19,7 @@
 					<li class="divider" data-ng-show="isItemVisible('importExport')"></li>
 					<li data-ng-class="{disabled: !isItemVisible('configuration')}"><a href="#/p/{{projectId}}/configuration">Dictionary Configuration</a></li>
 					<li data-ng-class="{disabled: true}"><a href="#/p/{{projectId}}/settings">Project Settings</a></li>
-					<li data-ng-class="{disabled: true}"><a href="#/p/{{projectId}}/users">User Management</a></li>
+					<li data-ng-class="{disabled: false}"><a href="#/p/{{projectId}}/users">User Management</a></li>
 				</ul>
 			</div>
 			<div class="btn-group" data-ng-show="isItemVisible('dashboard')">

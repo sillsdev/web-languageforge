@@ -1,6 +1,6 @@
 <?php
 
-use models\languageforge\lexicon\dto\LexProjectSettingsDto;
+use models\languageforge\lexicon\dto\LexConfigurationDto;
 
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\commands\LexProjectCommands;
@@ -21,7 +21,7 @@ class TestLexProjectCommands extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$settingsDto = json_decode(json_encode(LexProjectSettingsDto::encode($projectId)), true);
+		$settingsDto = json_decode(json_encode(LexConfigurationDto::encode($projectId)), true);
 		
 		$this->assertTrue($settingsDto['tasks']['addMeanings']['visible']);
 		$this->assertEqual($settingsDto['entry']['fields']['lexeme']['inputSystems'][0], 'en');
