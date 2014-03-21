@@ -7,6 +7,7 @@ angular.module('palaso.ui.dc.optionlist', ['palaso.ui.dc.comments'])
 			scope : {
 				config : "=",
 				model : "=",
+				comment : "&"
 			},
 			controller: ['$scope', 'lexEntryService', function($scope, lexService) {
 				$scope.makeValidModel = function() {
@@ -18,10 +19,12 @@ angular.module('palaso.ui.dc.optionlist', ['palaso.ui.dc.comments'])
 						}
 					}
 				};
-
-				$scope.getAbbreviation = function(inputSystem) {
-					return lexService.getConfig().inputSystems[inputSystem].abbreviation;
+				
+				$scope.submitComment = function(comment) {
+					$scope.comment({comment:comment});
 				};
+				
+
 			}],
 			link : function(scope, element, attrs, controller) {
 				scope.$watch('model', function() {

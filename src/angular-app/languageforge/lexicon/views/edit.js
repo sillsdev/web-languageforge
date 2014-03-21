@@ -200,6 +200,16 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		console.log("lexeme comment = " + comment);
 	};
 	
+	$scope.submitComment = function(comment) {
+		lexService.updateComment(comment, function(result) {
+			if (result.ok) {
+				var entry = result.data;
+				$scope.setCurrentEntry(entry);
+				$scope.updateListWithEntry(entry);
+			}
+		});
+	};
+	
 	
 	$scope.recursiveSetConfig = function(startAt, propName, propValue) {
 		// Go through the config tree starting at the startAt field, and

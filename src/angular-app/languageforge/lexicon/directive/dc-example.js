@@ -8,13 +8,21 @@ angular.module('palaso.ui.dc.example', ['palaso.ui.dc.multitext'])
 				config : "=",
 				model : "=",
 				index : "=",
-				remove : "="
+				remove : "=",
+				comment : "&"
 			},
 			controller: ['$scope', function($scope) {
 				$scope.makeValidModel = function() {
 					if (!$scope.model) {
 						$scope.model = {};
 					}
+				};
+				
+				$scope.submitComment = function(comment, field) {
+					if (angular.isDefined(field)) {
+						comment.field = field;
+					}
+					$scope.comment({comment: comment});
 				};
 			}],
 			link : function(scope, element, attrs, controller) {

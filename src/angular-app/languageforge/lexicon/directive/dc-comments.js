@@ -1,12 +1,13 @@
-angular.module('palaso.ui.dc.comments', ['palaso.ui.dc.entry', 'angularjs-gravatardirective', 'ngRoute'])
+angular.module('palaso.ui.dc.comments', ['angularjs-gravatardirective'])
 // Palaso UI Dictionary Control: Comments
-.directive('dcComments', ['$routeParams', 'lexEntryService', function($routeParams, lexService) {
+.directive('dcComments', [function() {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular-app/languageforge/lexicon/directive/dc-comments.html',
 		scope: {
-			dcConfig : "=",
-			dcModel : "=",
+			config : "=",
+			model : "=",
+			submitComment : "&submit"
 		},
 		controller: ['$scope', function($scope) {
 			$scope.validStatuses = [ // TODO: Get this list from the appropriate service
@@ -16,25 +17,26 @@ angular.module('palaso.ui.dc.comments', ['palaso.ui.dc.entry', 'angularjs-gravat
 			];
 			$scope.nextStatus = function(prevStatus) {
 				var idx = $scope.validStatuses.indexOf(prevStatus);
-				return $scope.validStatuses[(idx+1) % $scope.validStatuses.length]
+				return $scope.validStatuses[(idx+1) % $scope.validStatuses.length];
 			};
-			$scope.config = angular.copy($scope.dcConfig); // Don't want to make changes to the passed-in config object
+			$scope.config = angular.copy($scope.config); // Don't want to make changes to the passed-in config object
 			$scope.makeValidModel = function() {
-				if (!$scope.dcModel) {
-					$scope.dcModel = {};
+				if (!$scope.model) {
+					$scope.model = {};
 				}
-				if (!$scope.dcModel.comments) {
-					$scope.dcModel.comments = [];
-					// $scope.dcModel.comments.push($scope.makeValidComment()); // Sample data for debugging
+				if (!$scope.model.comments) {
+					$scope.model.comments = [];
+					// $scope.model.comments.push($scope.makeValidComment()); // Sample data for debugging
 				}
 			};
 
+			/*
 			$scope.makeValidComment = function() {
 				// Create and return an empty comment object
 				return {
-					userRef: {username: "Robin M.", email: "Robin_Munn@sil.org"}, // Sample data. If email provided, will be used in fetching Gravatar
+					//userRef: {username: "Robin M.", email: "Robin_Munn@sil.org"}, // Sample data. If email provided, will be used in fetching Gravatar
 					// TODO: Get actual username & email from session service
-					dateModified: new Date(), // Default to today's date, can modify this elsewhere if needed
+					//dateModified: new Date(), // Default to today's date, can modify this elsewhere if needed
 					regarding: "",
 					content: "",
 					score: 0,
@@ -42,20 +44,24 @@ angular.module('palaso.ui.dc.comments', ['palaso.ui.dc.entry', 'angularjs-gravat
 					status: "To Do",
 				};
 			};
+			*/
+			
 
-			$scope.submitComment = function(newCommentContent) {
-				var comment = $scope.makeValidComment();
-				comment.regarding = $scope.dcModel.value;
+			$scope.doComment = function(newCommentContent) {
+				var comment = {};
+				comment.regarding = $scope.model.value;
 				comment.content = newCommentContent;
-				$scope.dcModel.comments.push(comment);
+				$scope.newComment = '';
+				$scope.submitComment({comment:comment});
 			};
-
-			$scope.submitReply = function(newReplyContent, parentComment) {
-				var reply = $scope.makeValidComment();
-				reply.regarding = parentComment.content; // Not actually used at the moment, but why not? We may want it later
+			
+			$scope.doReply = function(newReplyContent, parentComment) {
+				var reply = {};
+				//reply.regarding = parentComment.content; // Not actually used at the moment, but why not? We may want it later
 				reply.content = newReplyContent;
-				parentComment.replies.push(reply);
-			}
+				reply.parentId = parentComment.id;
+				$scope.submitComment({comment:reply});
+			};
 
 			// TODO: The correct way to do this, per spec, is to store votes on a per-user basis,
 			// then calculate the score by subtracting downvotes from upvotes. This permits us to control
@@ -65,16 +71,16 @@ angular.module('palaso.ui.dc.comments', ['palaso.ui.dc.entry', 'angularjs-gravat
 			// score will become a function: return comment.upvotes.length - comment.downvotes.length.
 			$scope.incScore = function(comment) {
 				comment.score++;
-			}
+			};
 			$scope.decScore = function(comment) {
 				comment.score--;
-			}
+			};
 		}],
 		link: function(scope, element, attrs, controller) {
 			scope.$watch('visibility', function() { // Or some other variable instead of visibility... this is just an example
 				// Hide me
 			});
-			scope.$watch('dcModel', function() {
+			scope.$watch('model', function() {
 				scope.makeValidModel();
 			});
 		},
