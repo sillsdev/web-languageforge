@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
+<project name="SFWeb" default="build" basedir="..">
+
+	<property name="application.name" value="languageforge" />
+
+	<property name="build.number" value="0.0.0.0" />
+	<property name="build.output" value="output" />
+	<property name="build.libJsFile" value="${build.output}/${application.name}.js" />
+	<property name="build.minJsFile" value="${build.output}/${application.name}.min.js" />
+	<property name="build.packageFile" value="${build.output}/${application.name}.tgz" />
+	<property name="build.installPath" value="/var/www/languageforge.org_dev" />
+	<property name="build.installForTestPath" value="/var/www/languageforge.org_e2etest" />
+	<property name="build.uploadPath" value="/var/www/languageforge.org" />
+
+	<target name="clean" depends="cleanLibs">
+		<delete dir="${build.output}" quiet="true" />
+	</target>
+		
+	<target name="cleanLibs">
+	</target>
+
+	<target name="cleanInstall" depends="">
+		<delete dir="${build.installPath}" quiet="true" />
+	</target>
+	
+	<target name="cleanInstallForE2eTest" depends="">
+		<delete dir="${build.installForTestPath}" quiet="true" />
+		<mkdir dir="${build.installForTestPath}" />
+	</target>
+
+	<target name="cleanUpload" depends="">
+		<delete dir="${build.uploadPath}" quiet="true" />
+	</target>
+
+	<target name="version">
+	    <property name="version" value="${build.number}" />
+		<echo>${version}</echo>
+	</target>
+	
+	<target name="prepare">
+		<mkdir dir="${build.output}" />
+	</target>
+
+	<target name="build" />
+
+	<target name="test-js-unit" depends="composer">
+		 <exec executable="/usr/local/bin/karma">
+			 <arg value="start" />
+			 <arg file="test/karma.conf.js" />
+			 <arg value="--reporters" />
+			 <arg value="teamcity" />
+			 <arg value="--single-run" />
+		 </exec>
+	</target>
+
+	<target name="test-js-e2e" depends="composer,installForE2eTest">
+		 <exec executable="/usr/local/bin/karma">
+			 <arg value="start" />
+			 <arg file="test/karma-e2e.conf.js" />
+			 <arg value="--single-run" />
+			 <arg value="--reporters" />
+			 <arg value="teamcity" />
+		 </exec>
+	</target>
+	
+	<target name="test-php" depends="prepare,composer">
+		 <echo>##teamcity[importData type='junit' path='${build.output}/AllTests.xml']</echo>
+		 <exec executable="php" dir="test/php" output="${build.output}/AllTests.xml"  error="${build.output}/error.log" failonerror="true">
+			 <arg line="AllTests.php" />
+			 <arg value="-j" />
+		 </exec>
+	 </target>
+
+	<target name="test">
+	    <!-- commented out until these are revisited and made working again (the e2e tests are hanging as of 2013-10-24 cjh)
+		<antcall target="test-js-unit" />
+		<antcall target="test-js-e2e" />
+		-->
+		<antcall target="test-php" />
+	</target>
+	
+	<target name="composer">
+		 <exec executable="composer" dir="src" failonerror="true">
+			 <arg line="install" />
+		 </exec>	    
+	</target>
+
+	<target name="minify" depends="prepare">
+		<concat destfile="${build.libJsFile}" overwrite="yes" fixlastline="yes">
+			<fileset dir="src/angular-app"
+				includes="**/*.js"
+				excludes="**/*.min.js"
+			/>
+			<fileset dir="src/js/lib"
+				includes="ng-ui-*.js"
+				excludes="ng-ui-*.min.js"
+			/>
+		</concat>
+		<exec executable="/usr/bin/yui-compressor">
+			<arg value="-o" />
+			<arg value="${build.minJsFile}" />
+			<arg value="${build.libJsFile}" />
+		</exec>
+	</target>
+
+	<target name="copyWeb" depends="prepare,composer,minify,version">
+		<copy todir="${build.output}/package/htdocs">
+			<fileset dir="src"/>
+		</copy>
+		<copy todir="${build.output}/package/lib">
+			<fileset dir="lib"/>
+		</copy>
+		<copy todir="${build.output}/package/htdocs/js/lib"
+			file="${build.minJsFile}"
+		/>
+		<replace file="${build.output}/package/htdocs/config/sf_config.php">
+			<replacefilter token="$config['sfenv'] = 'dev';" value="$config['sfenv'] = 'prod';" />
+		</replace>
+	    <replace file="${build.output}/package/htdocs/version.php">
+			<replacefilter token="9.9.9" value="${version}" />
+		</replace>
+		<chgrp type="both" group="www-data">
+			<dirset dir="${build.output}/package/htdocs/" />
+			<fileset dir="${build.output}/package/htdocs/">
+			    <include name="**/*"/>
+			</fileset>
+			<dirset dir="${build.output}/package/lib/" />
+			<fileset dir="${build.output}/package/lib/">
+			    <include name="**/*"/>
+			</fileset>
+		</chgrp>
+		<chmod type="both" perm="g+w">
+			<dirset dir="${build.output}/package/htdocs/cache/" />
+			<dirset dir="${build.output}/package/htdocs/assets/" />
+		</chmod>
+	</target>
+	
+	<target name="package" depends="clean,prepare,copyWeb" >
+		<tar 
+			destfile="${build.packageFile}"
+			basedir="${build.output}/package"
+			excludes="${build.packageFile}"
+			longfile="gnu"
+			compression="gzip" />
+	</target>
+
+	<target name="install" depends="package,cleanInstall">
+		<untar src="${build.packageFile}" dest="${build.installPath}" compression="gzip" />
+		<chgrp type="both" group="www-data">
+			<dirset dir="${build.installPath}/htdocs/" />
+			<fileset dir="${build.installPath}/htdocs/">
+			    <include name="**/*"/>
+			</fileset>
+			<dirset dir="${build.installPath}/lib/" />
+			<fileset dir="${build.installPath}/lib/">
+			    <include name="**/*"/>
+			</fileset>
+		</chgrp>
+		<chmod type="both" perm="g+w">
+			<dirset dir="${build.installPath}/htdocs/cache/" />
+			<dirset dir="${build.installPath}/htdocs/assets/" />
+		</chmod>
+		<!--
+		<chown type="both" owner="www-data">
+			<dirset dir="${build.installPath}/htdocs/cache/" />
+		</chown>
+		<chmod type="both" perm="g+w">
+			<dirset dir="${build.installPath}/web/sites/default/files/" />
+			<fileset dir="${build.installPath}/web/sites/default/files/">
+			    <include name="**/*"/>
+			</fileset>
+		</chmod>
+		-->
+		<antcall target="restartWebServer" /> 
+	</target>
+	
+	<target name="installForE2eTest" depends="package, cleanInstallForE2eTest, initMongoForTest">
+		<untar src="${build.packageFile}" dest="${build.installForTestPath}" compression="gzip" />
+		<replace file="${build.installForTestPath}/htdocs/config/mongodb.php">
+		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
+		</replace>
+		<replace file="${build.installForTestPath}/htdocs/config/sf_config.php">
+		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
+		</replace>
+		<antcall target="restartWebServer" /> 
+	</target>
+	
+	<target name="initMongoForTest">
+		<exec dir="src/scripts/" executable="php" failonerror="true">
+			<arg value="setup-auth-data.php" />
+			<arg value="scriptureforge_e2etest" />
+			<arg value="REALLY_DROP_OLD" />
+		</exec>
+	</target>
+	
+	<target name="restartWebServer">
+		<exec executable="/etc/init.d/apache2">
+			<arg value="restart" />
+		</exec>
+	</target>
+	
+	<target name="upload" depends="package,cleanUpload">
+		<untar src="${build.packageFile}" dest="${build.uploadPath}" compression="gzip" />
+		<chgrp type="both" group="www-data">
+			<dirset dir="${build.uploadPath}/htdocs/" />
+			<fileset dir="${build.uploadPath}/htdocs/">
+			    <include name="**/*"/>
+			</fileset>
+			<dirset dir="${build.uploadPath}/lib/" />
+			<fileset dir="${build.uploadPath}/lib/">
+			    <include name="**/*"/>
+			</fileset>
+		</chgrp>
+		<chmod type="both" perm="g+w">
+			<dirset dir="${build.uploadPath}/htdocs/cache/" />
+			<dirset dir="${build.uploadPath}/htdocs/assets/" />
+		</chmod>
+		<exec dir="${build.uploadPath}" executable="rsync" failonerror="true">
+			<arg value="-vazHAX" />
+			<arg value="--delete-during" />
+			<arg value='--rsh=ssh -i ${upload.credentials}' />
+			<arg value="${build.uploadPath}/" />
+			<arg value="${upload.destination}" />
+		</exec>
+	</target>
+	
+</project>
