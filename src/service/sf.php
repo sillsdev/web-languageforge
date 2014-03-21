@@ -1,7 +1,5 @@
 <?php
 
-use models\languageforge\lexicon\commands\LexCommentCommands;
-
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\shared\palaso\CodeGuard;
@@ -18,17 +16,18 @@ use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
 use models\languageforge\lexicon\dto\LexDbeDto;
-use models\languageforge\lexicon\dto\LexProjectSettingsDto;
+use models\languageforge\lexicon\dto\LexConfigurationDto;
+use models\languageforge\lexicon\commands\LexCommentCommands;
 use models\languageforge\lexicon\commands\LexEntryCommands;
 use models\languageforge\lexicon\commands\LexProjectCommands;
+use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\ActivityListDto;
 use models\shared\dto\ProjectUsersDto;
 use models\shared\dto\RightsHelper;
 use models\shared\dto\UserProfileDto;
-use models\scriptureforge\dto\ProjectSettingsDto;
 use models\mapper\Id;
-use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
+use models\mapper\JsonEncoder;
 use models\mapper\MongoStore;
 use models\rights\Domain;
 use models\rights\Operation;
@@ -435,7 +434,7 @@ class Sf
 	//---------------------------------------------------------------
 	
 	public function lex_projectSettingsDto($projectId) {
-		return LexProjectSettingsDto::encode($projectId);
+		return LexConfigurationDto::encode($projectId);
 	}
 	
 	public function lex_projectSettings_update($projectId, $settings) {
