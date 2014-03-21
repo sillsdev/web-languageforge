@@ -113,9 +113,11 @@
 		<copy todir="${build.output}/package/htdocs/js/lib"
 			file="${build.minJsFile}"
 		/>
+		<!-- 
 		<replace file="${build.output}/package/htdocs/config/sf_config.php">
 			<replacefilter token="$config['sfenv'] = 'dev';" value="$config['sfenv'] = 'prod';" />
 		</replace>
+		 -->
 	    <replace file="${build.output}/package/htdocs/version.php">
 			<replacefilter token="9.9.9" value="${version}" />
 		</replace>
