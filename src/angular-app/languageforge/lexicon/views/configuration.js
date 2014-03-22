@@ -95,7 +95,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 		}
 	};
 	
-	lexService.configurationPageDto(function(result) {
+	lexService.configurationDto(function(result) {
 		if (result.ok) {
 			$scope.config = result.data;
 			configService.setConfig($scope.config);

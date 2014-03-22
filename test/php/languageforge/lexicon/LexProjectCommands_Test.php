@@ -14,22 +14,22 @@ require_once(dirname(__FILE__) . '/LexTestData.php');
 class TestLexProjectCommands extends UnitTestCase {
 
 
-	function testUpdateProjectSettings_SettingsPersist() {
+	function testUpdateConfig_ConfigPersists() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$settingsDto = json_decode(json_encode(LexConfigurationDto::encode($projectId)), true);
+		$config = json_decode(json_encode(LexConfigurationDto::encode($projectId)), true);
 		
-		$this->assertTrue($settingsDto['tasks']['addMeanings']['visible']);
-		$this->assertEqual($settingsDto['entry']['fields']['lexeme']['inputSystems'][0], 'en');
+		$this->assertTrue($config['tasks']['addMeanings']['visible']);
+		$this->assertEqual($config['entry']['fields']['lexeme']['inputSystems'][0], 'en');
 
-		$settingsDto['tasks']['addMeanings']['visible'] = false;
-		$settingsDto['entry']['fields']['lexeme']['inputSystems'] = array('my', 'th');
+		$config['tasks']['addMeanings']['visible'] = false;
+		$config['entry']['fields']['lexeme']['inputSystems'] = array('my', 'th');
 		
-		LexProjectCommands::updateSettings($projectId, $settingsDto);
+		LexProjectCommands::updateConfig($projectId, $config);
 		
 		$project2 = new LexiconProjectModel($projectId);
 		
