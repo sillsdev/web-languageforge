@@ -43,6 +43,21 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 .service('lexProjectService', ['jsonRpc', 'breadcrumbService', 'lexLinkService', '$location', function(jsonRpc, breadcrumbService, linkService, $location) {
 	jsonRpc.connect('/api/sf');
 
+	this.baseViewDto = function(view, label, callback) {
+		jsonRpc.call('lex_baseViewDto', [this.getProjectId()], function(result) {
+			if (result.ok) {
+				breadcrumbService.set('top',
+					[
+					 {href: '/app/projects', label: 'My Projects'},
+					 {href: linkService.project(), label: result.data.project.projectname},
+					 {href: linkService.projectView(view), label: label},
+					]
+				);
+				callback(result);
+			}
+		});
+	};
+
 	this.configurationDto = function(callback) {
 		jsonRpc.call('lex_configurationDto', [this.getProjectId()], function(result) {
 			if (result.ok) {
