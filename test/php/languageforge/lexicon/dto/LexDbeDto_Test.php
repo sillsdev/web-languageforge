@@ -20,7 +20,7 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestLexDbeDto extends UnitTestCase {
 	
-	function testEncode_noEntries_ok() {
+	function testEncode_NoEntries_Ok() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
@@ -36,13 +36,15 @@ class TestLexDbeDto extends UnitTestCase {
 		$user->write();
 		$project->write();
 				
-		$result = LexDbeDto::encode($projectId, $userId);
+		$result = LexDbeDto::encode($projectId, $userId, 0, null);
+		
 		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 0);
+		$this->assertEqual($result['entriesCount'], 0);
 		$this->assertEqual(get_class($result['entry']['lexeme']), 'stdClass', 'blank first entry is not valid');
 	}
 	
-	function testEncode_entries_sortsOk() {
+	function testEncode_Entries_SortsOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
@@ -73,10 +75,53 @@ class TestLexDbeDto extends UnitTestCase {
 		$entry->senses[] = $sense;
 		$entry->write();
 
-		$result = LexDbeDto::encode($projectId, $userId);
+		$result = LexDbeDto::encode($projectId, $userId, 0, null);
+		
 		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 11);
+		$this->assertEqual($result['entriesCount'], 11);
 		$this->assertEqual($result['entry']['lexeme']['en']['value'], 'Aardvark', 'Aardvark should sort first');
+	}
+	
+	function testEncode_EntriesAndLoadPartial_PartialOk() {
+		$e = new LexiconMongoTestEnvironment();
+		$e->clean();
+		
+		$userId = $e->createUser("User", "Name", "name@example.com");
+		$user = new UserModel($userId);
+		$user->role = Roles::USER;
+
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+		
+		$project->addUser($userId, Roles::USER);
+		$user->addProject($projectId);
+		$user->write();
+		$project->write();
+				
+		$sense = new Sense();
+		$sense->definition->form('en', 'apple');
+		
+		for ($i = 9; $i >= 0; $i--) {
+			$entry = new LexEntryModel($project);
+			$entry->lexeme->form('en', 'Apfel' . $i);
+			$entry->senses[] = $sense;
+			$entry->write();
+		}
+		
+		$result = LexDbeDto::encode($projectId, $userId, 0, 5);
+		
+		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
+		$this->assertEqual(count($result['entries']), 5);
+		$this->assertEqual($result['entriesCount'], 10);
+		$this->assertEqual($result['entry']['lexeme']['en']['value'], 'Apfel0', 'Apfel0 should sort first');
+
+		$result = LexDbeDto::encode($projectId, $userId, 4, 5);
+		
+		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
+		$this->assertEqual(count($result['entries']), 5);
+		$this->assertEqual($result['entriesCount'], 10);
+		$this->assertEqual($result['entry']['lexeme']['en']['value'], 'Apfel4', 'Apfel4 should sort first');
 	}
 	
 	function testReadEntry_NoComments_ReadBackOk() {

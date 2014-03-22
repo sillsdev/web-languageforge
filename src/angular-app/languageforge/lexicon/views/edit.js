@@ -60,7 +60,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 					//$scope.updateListWithEntry(result.data);
 					$scope.lastSavedDate = new Date();
 					pristineEntry = angular.copy($scope.currentEntry);
-					$scope.refreshView($scope.list.entryLoadStart, $scope.list.entryLoadLength);
+					$scope.refreshView($scope.load.entryStart, $scope.load.entryLength);
 				});
 				return true;
 			} else {
@@ -166,17 +166,17 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	$scope.list = {
-		entryLoadStart: 0,
-		entryLoadLength: 30
+	$scope.load = {
+		entryStart: 0,
+		entryLength: 30
 	}; 
 	$scope.loadMore = function() {
-		console.log("loadMore ", $scope.list.entryLoadStart);
-		$scope.list.entryLoadStart += $scope.list.entryLoadLength;
-		$scope.refreshView($scope.list.entryLoadStart, $scope.list.entryLoadLength, true);
+		$scope.load.entryStart += $scope.load.entryLength;
+		console.log("loadMore ", $scope.load.entryStart);
+		$scope.refreshView($scope.load.entryStart, $scope.load.entryLength, true);
 	};
 	
-	$scope.refreshView = function(entryLoadStart, entryLoadLength, updateFirstEntry) {
+	$scope.refreshView = function(loadEntryStart, loadEntryLength, updateFirstEntry) {
 		updateFirstEntry = typeof updateFirstEntry !== 'undefined' ? updateFirstEntry : false;
 		var gotDto = function (result) {
 			if (result.ok) {
@@ -191,7 +191,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		var view = 'dbe';
 		switch (view) {
 			case 'dbe':
-				lexService.dbeDto(entryLoadStart, entryLoadLength, gotDto);
+				lexService.dbeDto(loadEntryStart, loadEntryLength, gotDto);
 				break;
 			case 'add-grammar':
 				break;
@@ -204,7 +204,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	$scope.refreshView($scope.list.entryLoadStart, $scope.list.entryLoadLength, true);
+	$scope.refreshView($scope.load.entryStart, $scope.load.entryLength, true);
 	
 	$scope.updateLexemeComment = function(comment) {
 		console.log("lexeme comment = " + comment);
