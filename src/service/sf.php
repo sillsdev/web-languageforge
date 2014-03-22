@@ -460,7 +460,7 @@ class Sf
 	}
 	
 	public function lex_dbeDto($projectId) {
-		return LexDbeDto::encode($projectId);
+		return LexDbeDto::encode($projectId, $this->_userId);
 	}
 	
 	public function lex_updateLexemeComment($projectId, $entryId, $inputSystem, $commentData) {
