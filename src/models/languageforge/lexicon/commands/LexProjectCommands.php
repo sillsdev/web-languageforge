@@ -21,13 +21,13 @@ use models\UserModel;
 
 class LexProjectCommands {
 
-	public static function updateSettings($projectId, $settings) {
+	public static function updateConfig($projectId, $config) {
 		$project = new LexiconProjectModel($projectId);
-		$settingsModel = new LexConfiguration();
-		JsonDecoder::decode($settingsModel, $settings);
-		$project->settings = $settingsModel;
+		$configModel = new LexConfiguration();
+		JsonDecoder::decode($configModel, $config);
+		$project->settings = $configModel;
 		$decoder = new JsonDecoder();
-		$decoder->decodeMapOf('', $project->inputSystems, $settings['inputSystems']);
+		$decoder->decodeMapOf('', $project->inputSystems, $config['inputSystems']);
 		$project->write();
 	}
 	

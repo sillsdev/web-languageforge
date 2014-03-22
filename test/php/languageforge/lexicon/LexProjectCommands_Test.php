@@ -1,10 +1,11 @@
 <?php
 
-use models\languageforge\lexicon\dto\LexConfigurationDto;
-
-use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\commands\LexProjectCommands;
+use models\languageforge\lexicon\dto\LexBaseViewDto;
+use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LiftMergeRule;
+use models\rights\Roles;
+use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -14,22 +15,31 @@ require_once(dirname(__FILE__) . '/LexTestData.php');
 class TestLexProjectCommands extends UnitTestCase {
 
 
-	function testUpdateProjectSettings_SettingsPersist() {
+	function testUpdateConfig_ConfigPersists() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
+		$userId = $e->createUser("User", "Name", "name@example.com");
+		$user = new UserModel($userId);
+		$user->role = Roles::USER;
+
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$settingsDto = json_decode(json_encode(LexConfigurationDto::encode($projectId)), true);
+		$project->addUser($userId, Roles::USER);
+		$user->addProject($projectId);
+		$user->write();
+		$project->write();
+				
+		$config = json_decode(json_encode(LexBaseViewDto::encode($projectId, $userId)['config']), true);
 		
-		$this->assertTrue($settingsDto['tasks']['addMeanings']['visible']);
-		$this->assertEqual($settingsDto['entry']['fields']['lexeme']['inputSystems'][0], 'en');
+		$this->assertTrue($config['tasks']['addMeanings']['visible']);
+		$this->assertEqual($config['entry']['fields']['lexeme']['inputSystems'][0], 'en');
 
-		$settingsDto['tasks']['addMeanings']['visible'] = false;
-		$settingsDto['entry']['fields']['lexeme']['inputSystems'] = array('my', 'th');
+		$config['tasks']['addMeanings']['visible'] = false;
+		$config['entry']['fields']['lexeme']['inputSystems'] = array('my', 'th');
 		
-		LexProjectCommands::updateSettings($projectId, $settingsDto);
+		LexProjectCommands::updateConfig($projectId, $config);
 		
 		$project2 = new LexiconProjectModel($projectId);
 		

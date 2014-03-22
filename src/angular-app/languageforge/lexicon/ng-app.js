@@ -64,7 +64,7 @@ angular.module('lexicon',
 		$routeProvider.when(
 				'/p/:projectId/users',
 				{
-					templateUrl: '/angular-app/languageforge/lexicon/views/projectUsers.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/manageUsers.html',
 				}
 			);
 	    $routeProvider.otherwise({redirectTo: '/projects'});
