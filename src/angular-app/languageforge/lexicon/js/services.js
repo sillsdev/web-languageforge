@@ -43,8 +43,8 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 .service('lexProjectService', ['jsonRpc', 'breadcrumbService', 'lexLinkService', '$location', function(jsonRpc, breadcrumbService, linkService, $location) {
 	jsonRpc.connect('/api/sf');
 
-	this.configurationPageDto = function(callback) {
-		jsonRpc.call('lex_projectSettingsDto', [this.getProjectId()], function(result) {
+	this.configurationDto = function(callback) {
+		jsonRpc.call('lex_configurationDto', [this.getProjectId()], function(result) {
 			if (result.ok) {
 				breadcrumbService.set('top',
 					[
@@ -59,11 +59,11 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 	};
 
 	this.updateConfiguration = function(config, callback) {
-		jsonRpc.call('lex_projectSettings_update', [this.getProjectId(), config], callback);
+		jsonRpc.call('lex_configuration_update', [this.getProjectId(), config], callback);
 	};
 	
 	this.importLift = function(importData, callback) {
-		jsonRpc.call('lex_projectSettings_importLift', [this.getProjectId(), importData], function(result) {
+		jsonRpc.call('lex_import_lift', [this.getProjectId(), importData], function(result) {
 			if (result.ok) {
 				callback(result);
 			}

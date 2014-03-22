@@ -429,15 +429,15 @@ class Sf
 	// LANGUAGEFORGE PROJECT API
 	//---------------------------------------------------------------
 	
-	public function lex_projectSettingsDto($projectId) {
+	public function lex_configurationDto($projectId) {
 		return LexConfigurationDto::encode($projectId);
 	}
 	
-	public function lex_projectSettings_update($projectId, $settings) {
-		return LexProjectCommands::updateSettings($projectId, $settings);
+	public function lex_configuration_update($projectId, $settings) {
+		return LexProjectCommands::updateConfig($projectId, $settings);
 	}
 	
-	public function lex_projectSettings_importLift($projectId, $import) {
+	public function lex_import_lift($projectId, $import) {
 		return LexProjectCommands::importLift($projectId, $import);
 	}
 	
