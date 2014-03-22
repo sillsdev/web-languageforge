@@ -1,6 +1,6 @@
 <?php
 
-use models\shared\dto\ProjectUsersDto;
+use models\shared\dto\ManageUsersDto;
 use models\UserModel;
 use models\rights\Roles;
 
@@ -8,7 +8,7 @@ require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-class TestProjectUsersDto extends UnitTestCase {
+class TestManageUsersDto extends UnitTestCase {
 
 	function testEncode_ProjectWithUser_DtoCorrect() {
 		$e = new MongoTestEnvironment();
@@ -26,7 +26,7 @@ class TestProjectUsersDto extends UnitTestCase {
 		$user->write();
 		$project->write();
 
-		$dto = ProjectUsersDto::encode($projectId);
+		$dto = ManageUsersDto::encode($projectId);
 
 		$this->assertEqual($dto['userCount'], 1);
 		$this->assertIsA($dto['users'], 'array');

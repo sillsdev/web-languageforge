@@ -62,10 +62,24 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 		jsonRpc.call('lex_projectSettings_update', [this.getProjectId(), config], callback);
 	};
 	
-	
 	this.importLift = function(importData, callback) {
 		jsonRpc.call('lex_projectSettings_importLift', [this.getProjectId(), importData], function(result) {
 			if (result.ok) {
+				callback(result);
+			}
+		});
+	};
+	
+	this.users = function(callback) {
+		jsonRpc.call('lex_manageUsersDto', [this.getProjectId()], function(result) {
+			if (result.ok) {
+				breadcrumbService.set('top',
+					[
+					 {href: '/app/projects', label: 'My Projects'},
+					 {href: linkService.project(), label: result.data.project.projectname},
+					 {href: linkService.projectView('users'), label: 'User Management'},
+					]
+				);
 				callback(result);
 			}
 		});
