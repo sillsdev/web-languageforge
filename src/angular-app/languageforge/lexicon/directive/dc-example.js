@@ -22,6 +22,7 @@ angular.module('palaso.ui.dc.example', ['palaso.ui.dc.multitext'])
 					if (angular.isDefined(field)) {
 						comment.field = field;
 					}
+					comment.exampleId = model.id;
 					$scope.comment({comment: comment});
 				};
 			}],
