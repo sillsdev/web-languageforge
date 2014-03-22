@@ -58,21 +58,6 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 		});
 	};
 
-	this.configurationDto = function(callback) {
-		jsonRpc.call('lex_configurationDto', [this.getProjectId()], function(result) {
-			if (result.ok) {
-				breadcrumbService.set('top',
-					[
-					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectname},
-					 {href: linkService.projectView('configuration'), label: 'Dictionary Configuration'},
-					]
-				);
-				callback(result);
-			}
-		});
-	};
-
 	this.updateConfiguration = function(config, callback) {
 		jsonRpc.call('lex_configuration_update', [this.getProjectId(), config], callback);
 	};

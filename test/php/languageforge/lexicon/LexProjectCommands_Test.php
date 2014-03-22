@@ -1,10 +1,11 @@
 <?php
 
-use models\languageforge\lexicon\dto\LexConfigurationDto;
-
-use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\commands\LexProjectCommands;
+use models\languageforge\lexicon\dto\LexBaseViewDto;
+use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LiftMergeRule;
+use models\rights\Roles;
+use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -18,10 +19,19 @@ class TestLexProjectCommands extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
+		$userId = $e->createUser("User", "Name", "name@example.com");
+		$user = new UserModel($userId);
+		$user->role = Roles::USER;
+
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$config = json_decode(json_encode(LexConfigurationDto::encode($projectId)), true);
+		$project->addUser($userId, Roles::USER);
+		$user->addProject($projectId);
+		$user->write();
+		$project->write();
+				
+		$config = json_decode(json_encode(LexBaseViewDto::encode($projectId, $userId)['config']), true);
 		
 		$this->assertTrue($config['tasks']['addMeanings']['visible']);
 		$this->assertEqual($config['entry']['fields']['lexeme']['inputSystems'][0], 'en');

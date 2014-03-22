@@ -185,7 +185,6 @@ class RightsHelper
 			// TODO: refactor rightshelper to be app specific!
 			case 'lex_baseViewDto':
 			case 'lex_dbeDto':
-			case 'lex_configurationDto':
 			case 'lex_entry_read':
 			case 'lex_entry_update':
 			case 'lex_entry_remove':
