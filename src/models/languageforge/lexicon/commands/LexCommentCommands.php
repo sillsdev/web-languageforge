@@ -18,11 +18,18 @@ use models\mapper\JsonDecoder;
 use models\languageforge\lexicon\LexComment;
 
 class LexCommentCommands {
-	
-	public static function updateComment($projectId, $comment, $userId) {
+	/**
+	 * 
+	 * @param string $projectId
+	 * @param array $comment - comment data array to create or update
+	 * @param string $userId
+	 * @throws \Exception
+	 * @return array
+	 */	
+	public static function updateCommentOrReply($projectId, $comment, $userId) {
 		CodeGuard::checkTypeAndThrow($comment, 'array');
 		$project = new LexiconProjectModel($projectId);
-		$entry = new LexEntryModel($project, $entryId);
+		$entry = new LexEntryModel($project, $comment['entryId']);
 		$field = $comment['field'];
 		switch ($field) {
 			case 'lexeme':
@@ -43,7 +50,8 @@ class LexCommentCommands {
 				$field = substr($field, 14);
 				$sense = $entry->getSense($comment['senseId']);
 				$example = $sense->getExample($comment['exampleId']);
-				self::updateComment($example->$field[$comment['inputSystem']], $comment, $userId);
+				$multitext = $example->$field;
+				self::updateComment($multitext[$comment['inputSystem']], $comment, $userId);
 				break;
 			default:
 				throw new \Exception("unknown comment field '$field' in LexCommentCommands::updateComment");

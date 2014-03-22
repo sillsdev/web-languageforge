@@ -58,10 +58,13 @@ class TestLexCommentCommands extends UnitTestCase {
 			'id' => '',
 			'content' => 'I like this lexeme a lot',
 			'regarding' => 'apple',
-			'score' => 5
+			'score' => 5,
+			'entryId' => $entryId,
+			'field' => 'lexeme',
+			'inputSystem' => $ws
 		);
 		
-		LexCommentCommands::updateLexemeComment($projectId, $entryId, $ws, $commentData, '12345');
+		LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
 		
 		$entry->read($entryId);
 		
@@ -101,10 +104,13 @@ class TestLexCommentCommands extends UnitTestCase {
 			'id' => '',
 			'content' => 'I like this lexeme a lot',
 			'regarding' => 'apple',
-			'score' => 5
+			'score' => 5,
+			'entryId' => $entryId,
+			'field' => 'lexeme',
+			'inputSystem' => $ws
 		);
 		
-		$entryArray = LexCommentCommands::updateLexemeComment($projectId, $entryId, $ws, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
 		
 		$commentId = $entryArray['lexeme'][$ws]['comments'][0]['id'];
 
@@ -112,10 +118,13 @@ class TestLexCommentCommands extends UnitTestCase {
 			'id' => $commentId,
 			'content' => 'I changed my mind.  Not so much',
 			'regarding' => 'apple2',
-			'score' => 2
+			'score' => 2,
+			'entryId' => $entryId,
+			'field' => 'lexeme',
+			'inputSystem' => $ws
 		);
 		
-		$entryArray = LexCommentCommands::updateLexemeComment($projectId, $entryId, $ws, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
 		
 		$entry->read($entryId);
 
@@ -156,19 +165,26 @@ class TestLexCommentCommands extends UnitTestCase {
 			'id' => '',
 			'content' => 'I like this lexeme a lot',
 			'regarding' => 'apple',
-			'score' => 5
+			'score' => 5,
+			'entryId' => $entryId,
+			'field' => 'lexeme',
+			'inputSystem' => $ws
 		);
 		
-		$entryArray = LexCommentCommands::updateLexemeComment($projectId, $entryId, $ws, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
 		
 		$commentId = $entryArray['lexeme'][$ws]['comments'][0]['id'];
 
 		$replyData = array(
 			'id' => '',
-			'content' => 'Plus 1'
+			'content' => 'Plus 1',
+			'entryId' => $entryId,
+			'field' => 'lexeme',
+			'parentId' => $commentId,
+			'inputSystem' => $ws
 		);
 		
-		$entryArray = LexCommentCommands::updateLexemeReply($projectId, $entryId, $ws, $commentId, $replyData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, '12345');
 		
 		$entry->read($entryId);
 
@@ -207,28 +223,39 @@ class TestLexCommentCommands extends UnitTestCase {
 			'id' => '',
 			'content' => 'I like this lexeme a lot',
 			'regarding' => 'apple',
-			'score' => 5
+			'score' => 5,
+			'entryId' => $entryId,
+			'field' => 'lexeme',
+			'inputSystem' => $ws
 		);
 		
-		$entryArray = LexCommentCommands::updateLexemeComment($projectId, $entryId, $ws, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
 		
 		$commentId = $entryArray['lexeme'][$ws]['comments'][0]['id'];
 
 		$replyData = array(
 			'id' => '',
-			'content' => 'Plus 1'
+			'content' => 'Plus 1',
+			'entryId' => $entryId,
+			'field' => 'lexeme',
+			'inputSystem' => $ws,
+			'parentId' => $commentId
 		);
 		
-		$entryArray = LexCommentCommands::updateLexemeReply($projectId, $entryId, $ws, $commentId, $replyData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, '12345');
 		
 		$replyId = $entryArray['lexeme'][$ws]['comments'][0]['replies'][0]['id'];
 
 		$replyData = array(
 			'id' => $replyId,
-			'content' => 'Plus 2'
+			'content' => 'Plus 2',
+			'entryId' => $entryId,
+			'inputSystem' => $ws,
+			'field' => 'lexeme',
+			'parentId' => $commentId
 		);
 
-		LexCommentCommands::updateLexemeReply($projectId, $entryId, $ws, $commentId, $replyData, '12345');
+		LexCommentCommands::updateCommentOrReply($projectId, $replyData, '12345');
 		
 		$entry->read($entryId);
 
@@ -265,10 +292,14 @@ class TestLexCommentCommands extends UnitTestCase {
 			'id' => '',
 			'content' => 'I like this lexeme a lot',
 			'regarding' => 'apple',
-			'score' => 5
+			'score' => 5,
+			'entryId' => $entryId,
+			'inputSystem' => $ws,
+			'senseId' => $sense->id,
+			'field' => 'sense_definition'
 		);
 		
-		$entryArray = LexCommentCommands::updateSenseComment($projectId, $entryId, $sense->id, 'definition', $ws, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
 		
 		$commentId = $entryArray['senses'][0]['definition'][$ws]['comments'][0]['id'];
 
@@ -276,10 +307,14 @@ class TestLexCommentCommands extends UnitTestCase {
 			'id' => $commentId,
 			'content' => 'I changed my mind.  Not so much',
 			'regarding' => 'apple2',
-			'score' => 2
+			'score' => 2,
+			'entryId' => $entryId,
+			'inputSystem' => $ws,
+			'senseId' => $sense->id,
+			'field' => 'sense_definition'
 		);
 		
-		$entryArray = LexCommentCommands::updateSenseComment($projectId, $entryId, $sense->id, 'definition', $ws, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
 		
 		$entry->read($entryId);
 
@@ -320,28 +355,42 @@ class TestLexCommentCommands extends UnitTestCase {
 			'id' => '',
 			'content' => 'I like this lexeme a lot',
 			'regarding' => 'apple',
-			'score' => 5
+			'score' => 5,
+			'entryId' => $entryId,
+			'inputSystem' => $ws,
+			'senseId' => $sense->id,
+			'field' => 'sense_definition'
 		);
 		
-		$entryArray = LexCommentCommands::updateSenseComment($projectId, $entryId, $sense->id, 'definition', $ws, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
 		
 		$commentId = $entryArray['senses'][0]['definition'][$ws]['comments'][0]['id'];
 
 		$replyData = array(
 			'id' => '',
-			'content' => 'Plus 1'
+			'content' => 'Plus 1',
+			'entryId' => $entryId,
+			'inputSystem' => $ws,
+			'senseId' => $sense->id,
+			'field' => 'sense_definition',
+			'parentId' => $commentId
 		);
 		
-		$entryArray = LexCommentCommands::updateSenseReply($projectId, $entryId, $sense->id, 'definition', $ws, $commentId, $replyData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, '12345');
 		
 		$replyId = $entryArray['senses'][0]['definition'][$ws]['comments'][0]['replies'][0]['id'];
 
 		$replyData = array(
 			'id' => $replyId,
-			'content' => 'Plus 2'
+			'content' => 'Plus 2',
+			'entryId' => $entryId,
+			'inputSystem' => $ws,
+			'senseId' => $sense->id,
+			'field' => 'sense_definition',
+			'parentId' => $commentId
 		);
 
-		LexCommentCommands::updateSenseReply($projectId, $entryId, $sense->id, 'definition', $ws, $commentId, $replyData, '12345');
+		LexCommentCommands::updateCommentOrReply($projectId, $replyData, '12345');
 		
 		$entry->read($entryId);
 
@@ -383,10 +432,15 @@ class TestLexCommentCommands extends UnitTestCase {
 			'id' => $commentId,
 			'content' => 'improved comment',
 			'regarding' => 'whatever',
-			'score' => 5
+			'score' => 5,
+			'entryId' => $entryId,
+			'inputSystem' => $ws,
+			'senseId' => $sense->id,
+			'field' => 'sense_example_sentence',
+			'exampleId' => $example->id
 		);
 		
-		$entryArray = LexCommentCommands::updateExampleComment($projectId, $entryId, $sense->id, $example->id, 'sentence', $ws, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
 		
 		$entry->read($entryId);
 
@@ -433,9 +487,15 @@ class TestLexCommentCommands extends UnitTestCase {
 		$replyData = array(
 			'id' => $replyId,
 			'content' => 'improved reply',
+			'entryId' => $entryId,
+			'inputSystem' => $ws,
+			'senseId' => $sense->id,
+			'field' => 'sense_example_sentence',
+			'exampleId' => $example->id,
+			'parentId' => $commentId
 		);
 		
-		$entryArray = LexCommentCommands::updateExampleReply($projectId, $entryId, $sense->id, $example->id, 'sentence', $ws, $commentId, $replyData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, '12345');
 		
 		$entry->read($entryId);
 
