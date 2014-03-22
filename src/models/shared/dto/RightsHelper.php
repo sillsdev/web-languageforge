@@ -101,6 +101,7 @@ class RightsHelper
 			case 'project_settings':
 			case 'project_updateSettings':
 			case 'project_readSettings':
+			case 'lex_manageUsersDto':
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
 
 			case 'project_update':
@@ -147,7 +148,6 @@ class RightsHelper
 				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::DELETE);
 				
 			case 'project_list':
-			case 'project_usersDto':
 				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::VIEW);
 			
 			case 'project_create':

@@ -1,19 +1,18 @@
 'use strict';
 
 angular.module('lexicon.manageUsers', ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop'])
-.controller('manageUsersCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'lexLinkService',
-                                    function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, linkService) {
-	var projectId = $routeParams.projectId;
-	$scope.project = {};
-	$scope.list = {};
-	$scope.project.id = projectId;
+.controller('manageUsersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexConfigService',
+                                    function($scope, userService, projectService, ss, notice, lexProjectService, configService) {
+	$scope.config = {};
 
-	$scope.queryProjectSettings = function() {
-		projectService.users($scope.project.id, function(result) {
+	$scope.queryProjectUsers = function() {
+		lexProjectService.users(function(result) {
 			if (result.ok) {
+				$scope.config = result.data.config;
+				configService.setConfig($scope.config);
 				$scope.project = result.data.project;
-				$scope.list.users = result.data.entries;
-				$scope.list.userCount = result.data.count;
+				$scope.list.users = result.data.users;
+				$scope.list.userCount = result.data.userCount;
 				
 				// Rights
 				var rights = result.data.rights;
@@ -22,16 +21,6 @@ angular.module('lexicon.manageUsers', ['bellows.services', 'palaso.ui.listview',
 				$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
 				$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
 				$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
-
-				// Breadcrumb
-				breadcrumbService.set('top',
-					[
-					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectname},
-					 {href: linkService.projectView('users'), label: 'User Management'},
-					]
-				);
-				
 			}
 		});
 	};
@@ -65,7 +54,7 @@ angular.module('lexicon.manageUsers', ['bellows.services', 'palaso.ui.listview',
 		}
 		projectService.removeUsers($scope.project.id, userIds, function(result) {
 			if (result.ok) {
-				$scope.queryProjectSettings();
+				$scope.queryProjectUsers();
 				$scope.selected = [];
 				if (userIds.length == 1) {
 					notice.push(notice.SUCCESS, "The user was removed from this project");
@@ -150,7 +139,7 @@ angular.module('lexicon.manageUsers', ['bellows.services', 'palaso.ui.listview',
 			userService.createSimple($scope.typeahead.userName, $scope.project.id, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "User created.  Username: " + $scope.typeahead.userName + "    Password: " + result.data.password);
-					$scope.queryProjectSettings();
+					$scope.queryProjectUsers();
 				};
 			});
 		} else if ($scope.addMode == 'addExisting') {
@@ -159,14 +148,14 @@ angular.module('lexicon.manageUsers', ['bellows.services', 'palaso.ui.listview',
 			projectService.updateUser($scope.project.id, model, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectname + " successfully");
-					$scope.queryProjectSettings();
+					$scope.queryProjectUsers();
 				}
 			});
 		} else if ($scope.addMode == 'invite') {
 			userService.sendInvite($scope.typeahead.userName, $scope.project.id, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.projectname);
-					$scope.queryProjectSettings();
+					$scope.queryProjectUsers();
 				}
 			});
 		}

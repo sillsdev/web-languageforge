@@ -15,14 +15,14 @@ use models\commands\QuestionCommands;
 use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
-use models\languageforge\lexicon\dto\LexDbeDto;
-use models\languageforge\lexicon\dto\LexConfigurationDto;
 use models\languageforge\lexicon\commands\LexCommentCommands;
 use models\languageforge\lexicon\commands\LexEntryCommands;
 use models\languageforge\lexicon\commands\LexProjectCommands;
+use models\languageforge\lexicon\dto\LexDbeDto;
+use models\languageforge\lexicon\dto\LexConfigurationDto;
+use models\languageforge\lexicon\dto\LexManageUsersDto;
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\ActivityListDto;
-use models\shared\dto\ProjectUsersDto;
 use models\shared\dto\RightsHelper;
 use models\shared\dto\UserProfileDto;
 use models\mapper\Id;
@@ -236,10 +236,6 @@ class Sf
 	
 	public function project_list_dto() {
 		return \models\shared\dto\ProjectListDto::encode($this->_userId, $this->_site);
-	}
-	
-	public function project_usersDto($projectId) {
-		return ProjectUsersDto::encode($projectId, $this->_userId);
 	}
 	
 	public function project_updateUserRole($projectId, $params) {
@@ -465,10 +461,11 @@ class Sf
 		return LexCommentCommands::updateLexemeComment($projectId, $entryId, $inputSystem, $commentData, $this->_userId);
 	}
 	
+	public function lex_manageUsersDto($projectId) {
+		return LexManageUsersDto::encode($projectId, $this->_userId);
+	}
 	
-	
-	
-	
+		
 	
 	
 	

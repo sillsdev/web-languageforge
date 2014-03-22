@@ -3,9 +3,9 @@
 namespace models\languageforge\lexicon\dto;
 
 use models\mapper\JsonEncoder;
-use models\shared\dto\ProjectUsersDto;
+use models\shared\dto\ManageUsersDto;
 
-class LexProjectUsersDto {
+class LexManageUsersDto {
 	
 	/**
 	 * @param string $projectId
@@ -14,7 +14,7 @@ class LexProjectUsersDto {
 	 */
 	public static function encode($projectId, $userId) {
 		$data = LexBaseViewDto::encode($projectId, $userId);
-		$data = array_merge($data, ProjectUsersDto::encode($projectId, $userId));
+		$data = array_merge($data, ManageUsersDto::encode($projectId, $userId));
 		
 		return $data;
 	}

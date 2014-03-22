@@ -4,7 +4,7 @@ namespace models\shared\dto;
 
 use models\ProjectModel;
 
-class ProjectUsersDto {
+class ManageUsersDto {
 	
 	/**
 	 * @param string $projectId
