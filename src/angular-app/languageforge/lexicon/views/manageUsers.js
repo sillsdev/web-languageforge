@@ -3,13 +3,11 @@
 angular.module('lexicon.manageUsers', ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop'])
 .controller('manageUsersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexConfigService',
                                     function($scope, userService, projectService, ss, notice, lexProjectService, configService) {
-	$scope.config = {};
 
 	$scope.queryProjectUsers = function() {
 		lexProjectService.users(function(result) {
 			if (result.ok) {
-				$scope.config = result.data.config;
-				configService.setConfig($scope.config);
+				configService.setConfig(result.data.config);
 				$scope.project = result.data.project;
 				$scope.list.users = result.data.users;
 				$scope.list.userCount = result.data.userCount;

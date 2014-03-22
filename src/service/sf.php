@@ -40,6 +40,7 @@ use models\QuestionModel;
 use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserProfileModel;
+use models\languageforge\lexicon\dto\LexBaseViewDto;
 
 require_once(APPPATH . 'vendor/autoload.php');
 require_once(APPPATH . 'config/sf_config.php');
@@ -429,6 +430,11 @@ class Sf
 	// LANGUAGEFORGE PROJECT API
 	//---------------------------------------------------------------
 	
+	public function lex_baseViewDto($projectId) {
+		return LexBaseViewDto::encode($projectId, $this->_userId);
+	}
+	
+	// TODO Remove. Refactor out, use LexBaseViewDto instead IJH 2014-03
 	public function lex_configurationDto($projectId) {
 		return LexConfigurationDto::encode($projectId);
 	}
