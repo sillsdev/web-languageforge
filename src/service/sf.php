@@ -465,8 +465,8 @@ class Sf
 		return LexManageUsersDto::encode($projectId, $this->_userId);
 	}
 
-	public function lex_updateComment($projectId, $comment) {
-		return LexCommentCommands::updateComment($projectId, $comment, $this->_userId);
+	public function lex_updateComment($projectId, $data) {
+		return LexCommentCommands::updateComment($projectId, $data, $this->_userId);
 	}
 	
 	
