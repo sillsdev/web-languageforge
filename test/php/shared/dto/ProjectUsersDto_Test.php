@@ -26,18 +26,15 @@ class TestProjectUsersDto extends UnitTestCase {
 		$user->write();
 		$project->write();
 
-		$dto = ProjectUsersDto::encode($projectId, $userId);
+		$dto = ProjectUsersDto::encode($projectId);
 
-		$this->assertEqual($dto['count'], 1);
-		$this->assertIsA($dto['entries'], 'array');
-		$this->assertEqual($dto['entries'][0]['id'], $userId);
-		$this->assertEqual($dto['entries'][0]['name'], 'Name');
-		$this->assertEqual($dto['entries'][0]['role'], Roles::USER);
-		$this->assertTrue(count($dto['rights']) > 0, "No rights in dto");
-// 		$this->assertEqual($dto['bcs']['op'], 'settings');
-// 		$this->assertEqual($dto['bcs']['project'], array('id' => $projectId, 'crumb' => SF_TESTPROJECT));
-		$this->assertFalse(isset($dto['project']['users']));
-		$this->assertEqual($dto['project']['id'], $projectId);
+		$this->assertEqual($dto['userCount'], 1);
+		$this->assertIsA($dto['users'], 'array');
+		$this->assertEqual($dto['users'][0]['id'], $userId);
+		$this->assertEqual($dto['users'][0]['name'], 'Name');
+		$this->assertEqual($dto['users'][0]['role'], Roles::USER);
+		$this->assertFalse(isset($dto['rights']));
+		$this->assertFalse(isset($dto['project']));
 	}
 
 }

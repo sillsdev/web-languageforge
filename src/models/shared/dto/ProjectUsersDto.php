@@ -2,8 +2,6 @@
 
 namespace models\shared\dto;
 
-use models\mapper\JsonEncoder;
-use models\UserModel;
 use models\ProjectModel;
 
 class ProjectUsersDto {
@@ -13,17 +11,14 @@ class ProjectUsersDto {
 	 * @param string $userId
 	 * @returns array - the DTO array
 	 */
-	public static function encode($projectId, $userId) {
-		$userModel = new UserModel($userId);
+	public static function encode($projectId) {
 		$projectModel = new ProjectModel($projectId);
 
 		$list = $projectModel->listUsers();
 		$data = array();
-		$data['count'] = $list->count;
-		$data['entries'] = $list->entries;
-		$data['project'] = JsonEncoder::encode($projectModel);
-		unset($data['project']['users']);
-		$data['rights'] = RightsHelper::encode($userModel, $projectModel);
+		$data['userCount'] = $list->count;
+		$data['users'] = $list->entries;
+
 		return $data;
 	}
 }
