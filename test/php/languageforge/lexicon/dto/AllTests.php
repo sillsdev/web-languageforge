@@ -7,7 +7,6 @@ class AllLexiconDtoTests extends TestSuite {
 	
     function __construct() {
         parent::__construct();
-        $this->addFile(TestPath . 'languageforge/lexicon/dto/LexConfigurationDto_Test.php');
         $this->addFile(TestPath . 'languageforge/lexicon/dto/LexBaseViewDto_Test.php');
         $this->addFile(TestPath . 'languageforge/lexicon/dto/LexDbeDto_Test.php');
     }

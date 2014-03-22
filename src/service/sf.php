@@ -18,8 +18,8 @@ use models\commands\UserCommands;
 use models\languageforge\lexicon\commands\LexCommentCommands;
 use models\languageforge\lexicon\commands\LexEntryCommands;
 use models\languageforge\lexicon\commands\LexProjectCommands;
+use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\languageforge\lexicon\dto\LexDbeDto;
-use models\languageforge\lexicon\dto\LexConfigurationDto;
 use models\languageforge\lexicon\dto\LexManageUsersDto;
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\ActivityListDto;
@@ -40,7 +40,6 @@ use models\QuestionModel;
 use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserProfileModel;
-use models\languageforge\lexicon\dto\LexBaseViewDto;
 
 require_once(APPPATH . 'vendor/autoload.php');
 require_once(APPPATH . 'config/sf_config.php');
@@ -432,11 +431,6 @@ class Sf
 	
 	public function lex_baseViewDto($projectId) {
 		return LexBaseViewDto::encode($projectId, $this->_userId);
-	}
-	
-	// TODO Remove. Refactor out, use LexBaseViewDto instead IJH 2014-03
-	public function lex_configurationDto($projectId) {
-		return LexConfigurationDto::encode($projectId);
 	}
 	
 	public function lex_configuration_update($projectId, $settings) {
