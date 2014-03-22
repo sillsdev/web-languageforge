@@ -1,9 +1,8 @@
 'use strict';
 
 angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
-.controller('ConfigCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexConfigService', '$filter', '$modal', 
-                             function($scope, userService, ss, notice, lexService, configService, $filter, $modal) {
-	
+.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'lexConfigService', '$filter', '$modal', 
+                             function($scope, notice, lexProjectService, configService, $filter, $modal) {
 	$scope.config = {};
 
 	$scope.haveConfig = function() {
@@ -95,16 +94,16 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 		}
 	};
 	
-	lexService.configurationPageDto(function(result) {
+	lexProjectService.baseViewDto('configuration', 'Dictionary Configuration', function(result) {
 		if (result.ok) {
-			$scope.config = result.data;
+			$scope.config = result.data.config;
 			configService.setConfig($scope.config);
 			$scope.setupView();
 		}
 	});
 	
 	$scope.configurationApply = function() {
-		lexService.updateConfiguration($scope.config, function(result) {
+		lexProjectService.updateConfiguration($scope.config, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "Dictionary configuration updated successfully");
 				$scope.configForm.$setPristine();
@@ -223,8 +222,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 	});
 
 }])
-.controller('FieldConfigCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
-                                  function($scope, userService, ss, notice) {
+.controller('FieldConfigCtrl', ['$scope', function($scope) {
 	$scope.currentField = {
 		'name': '',
 		'inputSystems': {
@@ -303,8 +301,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 	});
 	
 }])
-.controller('TaskConfigCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
-                                 function($scope, userService, ss, notice) {
+.controller('TaskConfigCtrl', ['$scope', function($scope) {
 	$scope.selects.timeRange = {
 		'optionsOrder': ['30days', '90days', '1year', 'all'],
 		'options': {

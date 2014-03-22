@@ -43,14 +43,14 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 .service('lexProjectService', ['jsonRpc', 'breadcrumbService', 'lexLinkService', '$location', function(jsonRpc, breadcrumbService, linkService, $location) {
 	jsonRpc.connect('/api/sf');
 
-	this.configurationPageDto = function(callback) {
-		jsonRpc.call('lex_projectSettingsDto', [this.getProjectId()], function(result) {
+	this.baseViewDto = function(view, label, callback) {
+		jsonRpc.call('lex_baseViewDto', [this.getProjectId()], function(result) {
 			if (result.ok) {
 				breadcrumbService.set('top',
 					[
 					 {href: '/app/projects', label: 'My Projects'},
 					 {href: linkService.project(), label: result.data.project.projectname},
-					 {href: linkService.projectView('configuration'), label: 'Dictionary Configuration'},
+					 {href: linkService.projectView(view), label: label},
 					]
 				);
 				callback(result);
@@ -59,13 +59,27 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 	};
 
 	this.updateConfiguration = function(config, callback) {
-		jsonRpc.call('lex_projectSettings_update', [this.getProjectId(), config], callback);
+		jsonRpc.call('lex_configuration_update', [this.getProjectId(), config], callback);
 	};
 	
-	
 	this.importLift = function(importData, callback) {
-		jsonRpc.call('lex_projectSettings_importLift', [this.getProjectId(), importData], function(result) {
+		jsonRpc.call('lex_import_lift', [this.getProjectId(), importData], function(result) {
 			if (result.ok) {
+				callback(result);
+			}
+		});
+	};
+	
+	this.users = function(callback) {
+		jsonRpc.call('lex_manageUsersDto', [this.getProjectId()], function(result) {
+			if (result.ok) {
+				breadcrumbService.set('top',
+					[
+					 {href: '/app/projects', label: 'My Projects'},
+					 {href: linkService.project(), label: result.data.project.projectname},
+					 {href: linkService.projectView('users'), label: 'User Management'},
+					]
+				);
 				callback(result);
 			}
 		});
