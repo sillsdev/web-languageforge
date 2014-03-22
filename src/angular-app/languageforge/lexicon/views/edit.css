@@ -118,7 +118,9 @@ legend.override-bootstrap {
 
 #entryList {
 	/* Override palaso-ui.css */
-	height: auto !important;
+/*	height: auto !important;*/
+	height: 570px;
+	margin-bottom: 20px;
 }
 
 .outer-flex {

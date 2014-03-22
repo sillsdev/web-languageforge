@@ -453,8 +453,8 @@ class Sf
 		return LexEntryCommands::removeEntries($projectId, array($entryId));
 	}
 	
-	public function lex_dbeDto($projectId) {
-		return LexDbeDto::encode($projectId, $this->_userId);
+	public function lex_dbeDto($projectId, $entryLoadStart, $entryLoadLength) {
+		return LexDbeDto::encode($projectId, $this->_userId, $entryLoadStart, $entryLoadLength);
 	}
 	
 	public function lex_updateLexemeComment($projectId, $entryId, $inputSystem, $commentData) {

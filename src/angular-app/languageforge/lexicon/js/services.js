@@ -107,8 +107,8 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 		jsonRpc.call('lex_entry_remove', [projectService.getProjectId(), id], callback);
 	};
 
-	this.dbeDto = function(callback) {
-		jsonRpc.call('lex_dbeDto', [projectService.getProjectId()], function(result) {
+	this.dbeDto = function(entryLoadStart, entryLoadLength, callback) {
+		jsonRpc.call('lex_dbeDto', [projectService.getProjectId(), entryLoadStart, entryLoadLength], function(result) {
 			if (result.ok) {
 				breadcrumbService.set('top',
 					[
