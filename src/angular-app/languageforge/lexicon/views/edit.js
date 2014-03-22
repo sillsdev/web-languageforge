@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services'])
+angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$timeout', '$filter', 'lexLinkService', 
                         function ($scope, userService, sessionService, lexService, configService, $window, $timeout, $filter, linkService) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
@@ -60,7 +60,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 					//$scope.updateListWithEntry(result.data);
 					$scope.lastSavedDate = new Date();
 					pristineEntry = angular.copy($scope.currentEntry);
-					$scope.refreshView();
+					$scope.refreshView($scope.list.entryLoadStart, $scope.list.entryLoadLength);
 				});
 				return true;
 			} else {
@@ -166,7 +166,17 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	$scope.refreshView = function(updateFirstEntry) {
+	$scope.list = {
+		entryLoadStart: 0,
+		entryLoadLength: 30
+	}; 
+	$scope.loadMore = function() {
+		console.log("loadMore ", $scope.list.entryLoadStart);
+		$scope.list.entryLoadStart += $scope.list.entryLoadLength;
+		$scope.refreshView($scope.list.entryLoadStart, $scope.list.entryLoadLength, true);
+	};
+	
+	$scope.refreshView = function(entryLoadStart, entryLoadLength, updateFirstEntry) {
 		updateFirstEntry = typeof updateFirstEntry !== 'undefined' ? updateFirstEntry : false;
 		var gotDto = function (result) {
 			if (result.ok) {
@@ -181,7 +191,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		var view = 'dbe';
 		switch (view) {
 			case 'dbe':
-				lexService.dbeDto(gotDto);
+				lexService.dbeDto(entryLoadStart, entryLoadLength, gotDto);
 				break;
 			case 'add-grammar':
 				break;
@@ -194,7 +204,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	$scope.refreshView(true);
+	$scope.refreshView($scope.list.entryLoadStart, $scope.list.entryLoadLength, true);
 	
 	$scope.updateLexemeComment = function(comment) {
 		console.log("lexeme comment = " + comment);
