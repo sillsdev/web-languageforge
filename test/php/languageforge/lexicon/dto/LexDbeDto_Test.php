@@ -1,30 +1,21 @@
 <?php
 
-use models\languageforge\lexicon\dto\LexDbeDto;
-
-use models\languageforge\lexicon\settings\LexiconConfigObj;
-
-use models\languageforge\lexicon\commands\LexProjectCommands;
-
 use models\languageforge\lexicon\commands\LexEntryCommands;
-
+use models\languageforge\lexicon\commands\LexProjectCommands;
+use models\languageforge\lexicon\dto\LexDbeDto;
+use models\languageforge\lexicon\settings\LexiconConfigObj;
 use models\languageforge\lexicon\LexCommentReply;
-
 use models\languageforge\lexicon\LexComment;
-
-use models\languageforge\lexicon\Example;
-
-use models\languageforge\lexicon\Sense;
-
-use models\languageforge\lexicon\LexiconFieldWithComments;
-
 use models\languageforge\lexicon\LexEntryModel;
-
+use models\languageforge\lexicon\LexiconFieldWithComments;
 use models\languageforge\lexicon\LexiconProjectModel;
+use models\languageforge\lexicon\Example;
+use models\languageforge\lexicon\Sense;
+use models\rights\Roles;
+use models\UserModel;
 
-require_once(dirname(__FILE__) . '/../../TestConfig.php');
+require_once(dirname(__FILE__) . '/../../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestLexDbeDto extends UnitTestCase {
@@ -33,24 +24,40 @@ class TestLexDbeDto extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
+		$userId = $e->createUser("User", "Name", "name@example.com");
+		$user = new UserModel($userId);
+		$user->role = Roles::USER;
+
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$result = LexDbeDto::encode($projectId);
+		$project->addUser($userId, Roles::USER);
+		$user->addProject($projectId);
+		$user->write();
+		$project->write();
+				
+		$result = LexDbeDto::encode($projectId, $userId);
 		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 0);
 		$this->assertEqual(get_class($result['entry']['lexeme']), 'stdClass', 'blank first entry is not valid');
-		
 	}
 	
 	function testEncode_entries_sortsOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
+		$userId = $e->createUser("User", "Name", "name@example.com");
+		$user = new UserModel($userId);
+		$user->role = Roles::USER;
+
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		
+		$project->addUser($userId, Roles::USER);
+		$user->addProject($projectId);
+		$user->write();
+		$project->write();
+				
 		$sense = new Sense();
 		$sense->definition->form('en', 'apple');
 		
@@ -66,11 +73,10 @@ class TestLexDbeDto extends UnitTestCase {
 		$entry->senses[] = $sense;
 		$entry->write();
 
-		$result = LexDbeDto::encode($projectId);
+		$result = LexDbeDto::encode($projectId, $userId);
 		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 11);
 		$this->assertEqual($result['entry']['lexeme']['en']['value'], 'Aardvark', 'Aardvark should sort first');
-		
 	}
 	
 	function testReadEntry_NoComments_ReadBackOk() {
@@ -104,8 +110,6 @@ class TestLexDbeDto extends UnitTestCase {
 		$this->assertEqual($newEntry['senses'][0]['partOfSpeech']['value'], 'noun');
 		$this->assertEqual($newEntry['senses'][0]['examples'][0]['sentence']['th']['value'], 'example1');
 		$this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
-
-		
 	}
 
 	function testReadEntry_HasComments_ReadBackOk() {
@@ -125,7 +129,6 @@ class TestLexDbeDto extends UnitTestCase {
 		$comment->replies[] = $reply;
 		
 		$entry->lexeme['th']->comments[] = $comment;
-		
 
 		$sense = new Sense();
 		$sense->definition['en'] = new LexiconFieldWithComments('red fruit');
@@ -144,8 +147,6 @@ class TestLexDbeDto extends UnitTestCase {
 		$this->assertEqual($newEntry['lexeme']['th']['comments'][0]['score'], 5);
 		$this->assertEqual($newEntry['lexeme']['th']['comments'][0]['regarding'], 'apple');
 		$this->assertEqual($newEntry['lexeme']['th']['comments'][0]['replies'][0]['content'], 'reply1');
-
-
 	}
 	
 }

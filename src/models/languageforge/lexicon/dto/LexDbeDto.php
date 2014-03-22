@@ -2,27 +2,21 @@
 
 namespace models\languageforge\lexicon\dto;
 
+use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\languageforge\lexicon\LexEntryModel;
-
+use models\languageforge\lexicon\LexEntryListModel;
+use models\languageforge\lexicon\LexiconProjectModel;
 use models\mapper\JsonEncoder;
 
-use models\languageforge\lexicon\commands\LexProjectCommands;
-
-use models\languageforge\lexicon\LexEntryListModel;
-
-use models\languageforge\lexicon\LexiconProjectModel;
-
-class LexDbeDto
-{
+class LexDbeDto {
+	
 	/**
-	 *
 	 * @param string $projectId
-	 * @param string $textId
 	 * @param string $userId
 	 * @returns array - the DTO array
 	 */
-
-	public static function encode($projectId) {
+	public static function encode($projectId, $userId) {
+		$data = LexBaseViewDto::encode($projectId, $userId);
 		
 		$project = new LexiconProjectModel($projectId);
 		
@@ -30,9 +24,7 @@ class LexDbeDto
 		$entriesModel->read();
 		$entries = $entriesModel->entries;
 		
-		$config = LexConfigurationDto::encode($projectId);
-		
-		$lexemeWritingSystems = $config['entry']['fields']['lexeme']['inputSystems'];
+		$lexemeWritingSystems = $data['config']['entry']['fields']['lexeme']['inputSystems'];
 		if (count($lexemeWritingSystems) > 0) {
 			// sort by lexeme (first writing system)
 			$ws = $lexemeWritingSystems[0];
@@ -54,12 +46,10 @@ class LexDbeDto
 			$firstEntry = new LexEntryModel($project, $entries[0]['id']);
 		}
 		
-		return array(
-			'entries' => $entries,
-			'config' => $config,
-			'entry' => JsonEncoder::encode($firstEntry),
-			'project' => array('projectname' => $project->projectname)
-		);
+		$data['entries'] = $entries;
+		$data['entry'] = JsonEncoder::encode($firstEntry);
+		
+		return $data;
 	}
 }
 
