@@ -71,7 +71,8 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 	};
 	
 	this.users = function(callback) {
-		jsonRpc.call('lex_manageUsersDto', [this.getProjectId()], function(result) {
+		projectId = this.getProjectId();
+		jsonRpc.call('lex_manageUsersDto', [projectId], function(result) {
 			if (result.ok) {
 				breadcrumbService.set('top',
 					[
@@ -80,6 +81,7 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 					 {href: linkService.projectView('users'), label: 'User Management'},
 					]
 				);
+				result.data.project.id = projectId;
 				callback(result);
 			}
 		});
