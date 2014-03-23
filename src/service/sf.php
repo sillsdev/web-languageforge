@@ -462,7 +462,7 @@ class Sf
 	}
 
 	public function lex_entry_updateComment($projectId, $data) {
-		return LexCommentCommands::updateComment($projectId, $data, $this->_userId);
+		return LexCommentCommands::updateCommentOrReply($projectId, $data, $this->_userId);
 	}
 	
 	

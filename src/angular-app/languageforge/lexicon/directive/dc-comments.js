@@ -47,21 +47,27 @@ angular.module('palaso.ui.dc.comments', ['angularjs-gravatardirective'])
 			*/
 			
 
-			$scope.doComment = function(newCommentContent) {
-				if (angular.isDefined(newCommentContent) && newCommentContent != '') {
-					var comment = {};
-					comment.regarding = $scope.model.value;
-					comment.content = newCommentContent;
+			$scope.newCommentClick = function() {
+				console.log("newCommentClick");
+				if ($scope.newComment != '') {
+					var comment = {
+						id : '',
+						regarding : $scope.model.value,
+						content : $scope.newComment
+					};
 					$scope.newComment = '';
 					$scope.submitComment({comment:comment});
 				}
 			};
 			
-			$scope.doReply = function(newReplyContent, parentComment) {
-				var reply = {};
-				//reply.regarding = parentComment.content; // Not actually used at the moment, but why not? We may want it later
-				reply.content = newReplyContent;
-				reply.parentId = parentComment.id;
+			$scope.newReplyClick = function(newReplyContent, parentComment) {
+				var reply = {
+					id : '',
+					content : $scope.newReply,
+					parentId : parentComment.id
+				};
+				$scope.newReply = '';
+				$scope.replyBoxVisible = false;
 				$scope.submitComment({comment:reply});
 			};
 
