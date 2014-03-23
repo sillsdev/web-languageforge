@@ -206,11 +206,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.refreshView($scope.load.entryStart, $scope.load.entryLength, true);
 	
-	$scope.updateLexemeComment = function(comment) {
-		console.log("lexeme comment = " + comment);
-	};
-	
 	$scope.submitComment = function(comment) {
+		console.log('submitComment = ' + comment);
 		lexService.updateComment(comment, function(result) {
 			if (result.ok) {
 				var entry = result.data;

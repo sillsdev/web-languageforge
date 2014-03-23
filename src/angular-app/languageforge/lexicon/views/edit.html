@@ -50,7 +50,7 @@
                         </div>
                         <div class="animate-show" ng-show="entryLoaded()" id="entryItemView">
                             <p class="text-error" ng-show="lexemeFormRequired">At least one lexeme form is required</p>
-                            <dc-entry config="config" model="currentEntry" comment="submitComment(comment)"></dc-entry>
+                            <dc-entry config="config" model="currentEntry"></dc-entry>
                         </div>
                         </tab>
                         <tab heading="Comment" active="commentsTabActive" select="selectCommentsTab()" deselect="deselectCommentsTab()" disabled="currentEntry.id == ''">

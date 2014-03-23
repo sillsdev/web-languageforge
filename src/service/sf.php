@@ -457,15 +457,11 @@ class Sf
 		return LexDbeDto::encode($projectId, $this->_userId, $loadEntryStart, $loadEntryLength);
 	}
 	
-	public function lex_updateLexemeComment($projectId, $entryId, $inputSystem, $commentData) {
-		return LexCommentCommands::updateLexemeComment($projectId, $entryId, $inputSystem, $commentData, $this->_userId);
-	}
-	
 	public function lex_manageUsersDto($projectId) {
 		return LexManageUsersDto::encode($projectId, $this->_userId);
 	}
 
-	public function lex_updateComment($projectId, $data) {
+	public function lex_entry_updateComment($projectId, $data) {
 		return LexCommentCommands::updateComment($projectId, $data, $this->_userId);
 	}
 	
