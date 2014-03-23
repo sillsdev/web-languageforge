@@ -103,7 +103,7 @@ class TestActivityDto extends UnitTestCase {
 		$text2Id = $text2->write();
 		$a2 = ActivityCommands::addText($project2, $text2Id, $text2);
 		
-		$dto = ActivityListDto::getActivityForUser($userId);
+		$dto = ActivityListDto::getActivityForUser($project1->siteName, $userId);
 		$dto = $dto['activity'];
 		
 		$this->assertEqual($dto[$a1]['action'], 'add_text');

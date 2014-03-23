@@ -87,11 +87,12 @@ class ActivityListDto
 	}
 	
 	/**
+	 * @param string $site
 	 * @param string $userId
 	 * @return array - the DTO array
 	*/
-	public static function getActivityForUser($userId) {
-		$projectList = new ProjectList_UserModel();
+	public static function getActivityForUser($site, $userId) {
+		$projectList = new ProjectList_UserModel($site);
 		$projectList->readUserProjects($userId);
 		$activity = array();
 		foreach ($projectList->entries as $project) {

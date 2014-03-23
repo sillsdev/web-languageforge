@@ -252,7 +252,7 @@ class Sf
 	//---------------------------------------------------------------
 
 	public function activity_list_dto() {
-		return \models\shared\dto\ActivityListDto::getActivityForUser($this->_userId);
+		return \models\shared\dto\ActivityListDto::getActivityForUser($this->_site, $this->_userId);
 	}
 	
 	
