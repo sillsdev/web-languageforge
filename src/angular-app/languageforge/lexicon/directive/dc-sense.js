@@ -37,7 +37,7 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
 					} else {
 						comment.field = field;
 					}
-					comment.senseId = model.id;
+					comment.senseId = $scope.model.id;
 					$scope.comment({comment:comment});
 					//console.log(comment);
 				};
