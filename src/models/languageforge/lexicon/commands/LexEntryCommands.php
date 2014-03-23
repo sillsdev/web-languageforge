@@ -2,6 +2,8 @@
 
 namespace models\languageforge\lexicon\commands;
 
+use models\ProjectModel;
+
 use models\languageforge\lexicon\settings\LexiconConfigObj;
 
 use models\languageforge\lexicon\LexEntryListModel;
@@ -37,7 +39,6 @@ class LexEntryCommands {
 		// TODO: we need to do checking of rights for updating comments, parts of the entry, etc - cjh
 		CodeGuard::checkTypeAndThrow($params, 'array');
 		$project = new LexiconProjectModel($projectId);
-		// TODO: sanitize the params coming in - unset comments on each node? - cjh
 		if (array_key_exists('id', $params) && $params['id'] != '') {
 			$entry = new LexEntryModel($project, $params['id']);
 		} else {
@@ -56,8 +57,6 @@ class LexEntryCommands {
 		JsonDecoder::decode($entry, $params);
 		$entry->write();
 		return JsonEncoder::encode($entry);
-		// question (from cjh) when doing an updateEntry, is there a way for us to only update comments using the standard JsonDecoder?  Or only update parts of the model that should be updated? Need to write a test for this
-		
 	}
 	
 	/**
@@ -98,6 +97,11 @@ class LexEntryCommands {
 		$lexEntries = new LexEntryListModel($project);
 		$lexEntries->readForDto($missingInfo);
 		return $lexEntries;
+	}
+	
+	public static function removeEntry($projectId, $entryId) {
+		$project = new ProjectModel($projectId);
+		return LexEntryModel::remove($project, $entryId);
 	}
 }
 
