@@ -7,19 +7,19 @@ window.session = <?php echo $jsonSession; ?>;
 </script>
 	
 <?php if (SF_USE_MINIFIED_JS): ?>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-animate.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-route.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-animate.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-sanitize.min.js"></script>
 	<script src="/js/lib/angular-file-upload.min.js"></script>
 	<script src="/js/lib/angularjs-gravatardirective.min.js"></script>
 	<script src="/js/lib/truncate.min.js"></script>
 	<!-- ng-ui-*.js included in combined scriptureforge-min.js script -->
 <?php else: ?>
-	<script src="/js/lib/angular_stable_1.2.4/angular.js"></script>
-	<script src="/js/lib/angular_stable_1.2.4/angular-animate.js"></script>
-	<script src="/js/lib/angular_stable_1.2.4/angular-route.js"></script>
-	<script src="/js/lib/angular_stable_1.2.4/angular-sanitize.js"></script>
+	<script src="/js/lib/angular_stable_1.2.15/angular.js"></script>
+	<script src="/js/lib/angular_stable_1.2.15/angular-animate.js"></script>
+	<script src="/js/lib/angular_stable_1.2.15/angular-route.js"></script>
+	<script src="/js/lib/angular_stable_1.2.15/angular-sanitize.js"></script>
 	<script src="/js/lib/angular-file-upload.js"></script>
 	<script src="/js/lib/angularjs-gravatardirective.js"></script>
 	<script src="/js/lib/truncate.js"></script>
