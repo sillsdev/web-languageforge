@@ -123,7 +123,7 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 	};
 	
 	this.updateComment = function(comment, callback) {
-		jsonRpc.call('lex_updateComment', [projectService.getProjectId(), comment], callback);
+		jsonRpc.call('lex_entry_updateComment', [projectService.getProjectId(), comment], callback);
 	};
 	
 	
