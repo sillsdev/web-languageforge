@@ -23,7 +23,7 @@
 			<div collapse="!replyBoxVisible">
 				<div>Reply to the above comment</div>
 				<div><textarea data-ng-model="newReply"></textarea></div>
-				<div><button type="submit" class="btn-sm btn-info" data-ng-click="doReply(newReply, comment); newReply=''; replyBoxVisible=false">Post Reply</button></div>
+				<div><button type="submit" class="btn-sm btn-info" data-ng-click="newReplyClick(comment)">Post Reply</button></div>
 			</div>
 			<table class="replies" data-ng-if="comment.replies.length">
 				<tr data-ng-repeat="reply in comment.replies">
@@ -37,6 +37,6 @@
 	<div class="new-comment-form">
 			<div>New comment</div>
 			<div><textarea data-ng-model="newComment"></textarea></div>
-			<div><button type="submit" class="btn-sm btn-success" data-ng-click="doComment(newComment); newComment=''">Post New Comment</button></div>
+			<div><button type="submit" class="btn-sm btn-success" data-ng-click="newCommentClick()">Post New Comment</button></div>
 	</div>
 </div>
