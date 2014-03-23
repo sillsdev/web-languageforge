@@ -48,11 +48,13 @@ angular.module('palaso.ui.dc.comments', ['angularjs-gravatardirective'])
 			
 
 			$scope.doComment = function(newCommentContent) {
-				var comment = {};
-				comment.regarding = $scope.model.value;
-				comment.content = newCommentContent;
-				$scope.newComment = '';
-				$scope.submitComment({comment:comment});
+				if (angular.isDefined(newCommentContent) && newCommentContent != '') {
+					var comment = {};
+					comment.regarding = $scope.model.value;
+					comment.content = newCommentContent;
+					$scope.newComment = '';
+					$scope.submitComment({comment:comment});
+				}
 			};
 			
 			$scope.doReply = function(newReplyContent, parentComment) {

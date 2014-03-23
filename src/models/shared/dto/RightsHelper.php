@@ -188,6 +188,7 @@ class RightsHelper
 			case 'lex_entry_read':
 			case 'lex_entry_update':
 			case 'lex_entry_remove':
+			case 'lex_entry_updateComment':
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::VIEW);
 				
 				
