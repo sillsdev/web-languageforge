@@ -450,7 +450,7 @@ class Sf
 	}
 	
 	public function lex_entry_remove($projectId, $entryId) {
-		return LexEntryCommands::removeEntries($projectId, array($entryId));
+		return LexEntryCommands::removeEntry($projectId, $entryId);
 	}
 	
 	public function lex_dbeDto($projectId, $loadEntryStart, $loadEntryLength) {
