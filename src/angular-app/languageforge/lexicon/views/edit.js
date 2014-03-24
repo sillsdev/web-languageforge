@@ -173,12 +173,22 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.show = {
 		iEntryStart: 0,
 		numberOfEntries: 30,
-		entries: []
+		entries: [],
 	}; 
-	$scope.showMore = function() {
+	$scope.show.initial = function() {
+		$scope.show.iEntryStart = 0;
+		$scope.show.numberOfEntries = 30;
+		$scope.show.entries = $scope.entries.slice($scope.show.iEntryStart, $scope.show.iEntryStart + $scope.show.numberOfEntries);
+	};
+	$scope.show.more = function() {
 		$scope.show.iEntryStart += $scope.show.numberOfEntries;
-		console.log("showMore ", $scope.show.iEntryStart);
-//		$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries, true);
+		if ($scope.show.iEntryStart > $scope.entriesTotalCount) {
+			$scope.show.iEntryStart = $scope.entriesTotalCount;
+		} else {
+//			console.log("show.more ", $scope.show.iEntryStart);
+			var moreEntries = $scope.entries.slice($scope.show.iEntryStart, $scope.show.iEntryStart + $scope.show.numberOfEntries);
+			$scope.show.entries = $scope.show.entries.concat(moreEntries);
+		}
 	};
 	
 	$scope.refreshView = function(iEntryStart, numberOfEntries, updateFirstEntry) {
@@ -188,9 +198,11 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				configService.setConfig(result.data.config);
 				$scope.config = result.data.config;
 				$scope.entries = result.data.entries;
+				$scope.entriesTotalCount = result.data.entriesTotalCount;
 				if (updateFirstEntry && result.data.entry.id != '') {
 					$scope.setCurrentEntry(result.data.entry);
 				}
+				$scope.show.initial();
 			}
 		};
 		var view = 'dbe';

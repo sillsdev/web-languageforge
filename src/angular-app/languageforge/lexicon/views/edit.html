@@ -5,19 +5,19 @@
 		</div>
 	</div>
 	<div class="row outer-flex" style="margin-top:20px">
-		<div class="span4" data-ng-show="entries.length > 0">
+		<div class="span4" data-ng-show="show.entries.length > 0">
 			<div style="margin-bottom:10px">
-				<span class="pull-right">{{entries.length}} entries</span>
+				<span class="pull-right">showing {{show.entries.length}} of {{entriesTotalCount}} entries</span>
 				<input disabled width="4" placeholder="search filter" type="text" class="input-medium search-query" data-ng-model="searchText" />
 				<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''" data-ng-show="searchText && searchText != ''">
 					<i class="icon-remove" style="color:black; cursor: pointer"></i>
 				</span>
 			</div>
 			<!-- <div id="entryList" data-pui-when-scrolled="showMore()"> -->
-			<div id="entryList" data-pui-when-scrolled="showMore()">
+			<div id="entryList" data-pui-when-scrolled="show.more()">
 				<table class="table table-condensed ">
 					<tbody>
-						<tr data-ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" data-ng-repeat="e in entries track by e.id">
+						<tr data-ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" data-ng-repeat="e in show.entries track by e.id">
 							<td data-ng-click="editEntry(e.id)">{{getTitle(e) | characters:40}}</td>
 							<td data-ng-click="editEntry(e.id)">{{getMeaning(e) | characters:40}}</td>
 						</tr>
