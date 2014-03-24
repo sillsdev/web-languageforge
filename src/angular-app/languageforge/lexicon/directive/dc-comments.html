@@ -1,44 +1,36 @@
 <div class="dc-comments" >
 	<!-- ng-repeat over existing comments, nested comments (Design note: two different things? Or the same thing? I'm inclined to say same thing.) -->
 	<div class="comment" data-ng-repeat="comment in model.comments">
-	    <pre>{{comment|json}}</pre>
  		<div class="scorecontrol">
 			<div class="scorearrow"><a ng-click="incScore(comment)"><i class="icon-caret-up icon-2x"></i></a></div>
 			<div class="score">{{comment.score}}</div>
 			<div class="scorearrow"><a ng-click="decScore(comment)"><i class="icon-caret-down icon-2x"></i></a></div>
 		</div>
 		<div class="all-but-score">
-			<div class="comment-date-and-status">
-				<span class="comment-date">{{comment.dateModified | date:'yyyy-MM-dd'}}</span>
-				Comment status <span class="comment-status" ng-click="comment.status = nextStatus(comment.status)">{{comment.status}}</span>
-				<!-- TODO: add CSS to give a specific width to the two spans so they will always line up vertically with each other -->
-			</div>
 			<div class="avatar-and-content">
 				<div class="avatar">
-					<gravatar-image gravatar-email="comment.userRef.email" gravatar-size="48"></gravatar-image>
+                    <img width="50px" height="50px" ng-src="{{comment.userRef.avatar_ref}}" />
 					<div>{{comment.userRef.username}}</div>
 				</div>
 				<div class="comment-content">{{comment.content}}</div>
 				<div class="comment-replylink"><a ng-click="replyBoxVisible = !replyBoxVisible">Reply</a></div> <!-- TODO: Change "x = !x" to a function call -->
 			</div>
-			<div collapse="!replyBoxVisible">
-				<div>Reply to the above comment</div>
-				<div><textarea data-ng-model="data.newReply"></textarea></div>
-				new reply = {{data.newReply}}
-				<div><button type="submit" class="btn-sm btn-info" data-ng-click="newReplyClick(comment)">Post Reply</button></div>
+			<div class="comment-date-and-status">
+				<span class="comment-date">{{comment.dateModified | relativetime}}</span>
+				Comment status <span class="comment-status" ng-click="comment.status = nextStatus(comment.status)">{{comment.status}}</span>
+				<!-- TODO: add CSS to give a specific width to the two spans so they will always line up vertically with each other -->
 			</div>
-			<table class="replies" data-ng-if="comment.replies.length">
-				<tr data-ng-repeat="reply in comment.replies">
-					<td class="reply-who">{{reply.userRef.username}}</td>
-					<td class="reply-when">{{reply.dateModified | date:'yyyy-MM-dd'}}</td>
-					<td class="reply-what">{{reply.content}}</td>
-				</tr>
-			</table>
+			<div collapse="!replyBoxVisible">
+				<div><textarea data-ng-model="data.newReply"></textarea></div>
+				<div style="margin-top:3px"><button type="submit" class="btn-sm btn-info" data-ng-click="newReplyClick(comment)">Post New Reply</button></div>
+			</div>
+			<div class="replies" data-ng-repeat="reply in comment.replies">
+			    <span class="reply-what">{{reply.content}}</span> - <span class="reply-who">{{reply.userRef.username}}</span> <span class="reply-when">{{reply.dateModified | relativetime}}</span>
+			</div>
 		</div>
 	</div>
 	<div class="new-comment-form">
-			<div>New comment</div>
 			<div><textarea data-ng-model="data.newComment"></textarea></div>
-			<div><button type="submit" class="btn-sm btn-success" data-ng-click="newCommentClick()">Post New Comment</button></div>
+			<div style="margin-top:3px"><button type="submit" class="btn-sm btn-success" data-ng-click="newCommentClick()">Post New Comment</button></div>
 	</div>
 </div>
