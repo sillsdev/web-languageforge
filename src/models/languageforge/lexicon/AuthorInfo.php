@@ -10,9 +10,9 @@ use models\mapper\IdReference;
 class AuthorInfo {
 
 	public function __construct() {
-		$this->createdByIdRef = new IdReference();
+		$this->createdByUserRef = new IdReference();
 		$this->createdDate = new \DateTime();
-		$this->modifiedByIdRef = new IdReference();
+		$this->modifiedByUserRef = new IdReference();
 		$this->modifiedDate = new \DateTime();
 	}
 	
@@ -20,7 +20,7 @@ class AuthorInfo {
 	 * user's Id as string
 	 * @var IdReference
 	 */
-	public $createdByIdRef;
+	public $createdByUserRef;
 	
 	/**
 	 *	datetime
@@ -32,7 +32,7 @@ class AuthorInfo {
 	 * user's Id as string
 	 * @var IdReference
 	 */
-	public $modifiedByIdRef;
+	public $modifiedByUserRef;
 	
 	/**
 	 * datetime
