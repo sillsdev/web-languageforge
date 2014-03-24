@@ -135,6 +135,7 @@ class TestLexCommentCommands extends UnitTestCase {
 		$this->assertEqual($comment->score, 0, "comment score should not be updated by this method");
 		$this->assertEqual($comment->regarding, 'apple', "regarding field should not be updated on existing comment");
 		$this->assertNotEqual($comment->id, '', 'comment should have a unique id');
+		$this->assertEqual($entryArray['lexeme'][$ws]['comments'][0]['userRef']['username'], 'joe');
 		
 	}
 	

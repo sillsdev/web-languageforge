@@ -2,6 +2,8 @@
 
 namespace models\languageforge\lexicon\commands;
 
+use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
+
 use models\languageforge\lexicon\LexCommentReply;
 
 use models\languageforge\lexicon\settings\LexiconConfigObj;
@@ -57,7 +59,7 @@ class LexCommentCommands {
 				throw new \Exception("unknown comment field '$field' in LexCommentCommands::updateComment");
 		}
 		$entry->write();
-		return JsonEncoder::encode($entry);
+		return LexEntryWithCommentsEncoder::encode($entry);
 	}
 	
 	
@@ -84,7 +86,7 @@ class LexCommentCommands {
 			}
 			$reply->content = $data['content'];
 			$reply->dateModified = new \DateTime();
-			$reply->userRef = $userId;
+			$reply->userRef->id = $userId;
 			
 			if ($existing) {
 				$comment->setReply($id, $reply);
@@ -100,7 +102,7 @@ class LexCommentCommands {
 			}
 			$comment->content = $data['content'];
 			$comment->dateModified = new \DateTime();
-			$comment->userRef = $userId;
+			$comment->userRef->id = $userId;
 			
 			if ($existing) {
 				$field->setComment($id, $comment);
