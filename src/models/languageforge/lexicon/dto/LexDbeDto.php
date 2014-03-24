@@ -26,22 +26,15 @@ class LexDbeDto {
 		$entriesModel->readForDto();
 		$entries = $entriesModel->entries;
 		
-		$lexemeWritingSystems = $data['config']['entry']['fields']['lexeme']['inputSystems'];
-		if (count($lexemeWritingSystems) > 0) {
-			// sort by lexeme (first writing system)
-			$ws = $lexemeWritingSystems[0];
-			usort($entries, function ($a, $b) use ($ws) { 
-				if (array_key_exists('lexeme', $a) && 
-					array_key_exists('lexeme', $b) &&
-					array_key_exists($ws, $a['lexeme']) &&
-					array_key_exists($ws, $b['lexeme'])
-				) {
-					return (strtolower($a['lexeme'][$ws]['value']) > strtolower($b['lexeme'][$ws]['value'])) ? 1 : -1;
-				} else {
-					return 0;
-				}
-			});
-		}
+		usort($entries, function ($a, $b) { 
+			if (array_key_exists('lexeme', $a) && 
+				array_key_exists('lexeme', $b)
+			) {
+				return (strtolower($a['lexeme']) > strtolower($b['lexeme'])) ? 1 : -1;
+			} else {
+				return 0;
+			}
+		});
 		
 		$entries = array_slice($entries, $iEntryStart, $numberOfEntries);
 		

@@ -27,8 +27,8 @@
 				<table class="table table-condensed ">
 					<tbody>
 						<tr data-ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" data-ng-repeat="e in show.entries track by e.id">
-							<td data-ng-click="editEntry(e.id)">{{getTitle(e) | characters:40}}</td>
-							<td data-ng-click="editEntry(e.id)">{{getMeaning(e) | characters:40}}</td>
+							<td data-ng-click="editEntry(e.id)">{{e.lexeme| characters:40}}</td>
+							<td data-ng-click="editEntry(e.id)">{{e.definition | characters:40}}</td>
 						</tr>
 					</tbody>
 				</table>

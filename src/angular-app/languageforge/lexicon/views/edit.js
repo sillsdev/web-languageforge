@@ -72,11 +72,12 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.updateListWithEntry = function(entry) {
 		var isNew = true;
+		var toInsert = {id: entry.id, lexeme: $scope.getTitle(entry), definition: $scope.getMeaning(entry)};
 		for (var i=0; i<$scope.show.entries.length; i++) {
 			var e = $scope.show.entries[i];
 			if (e.id == entry.id) {
-				$scope.show.entries[i] = entry;
-				$scope.entries[i] = entry;
+				$scope.show.entries[i] = toInsert;
+				$scope.entries[i] = toInsert;
 				isNew = false;
 				break;
 			}
