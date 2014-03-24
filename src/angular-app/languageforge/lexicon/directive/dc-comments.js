@@ -10,6 +10,7 @@ angular.module('palaso.ui.dc.comments', ['angularjs-gravatardirective'])
 			submitComment : "&submit"
 		},
 		controller: ['$scope', function($scope) {
+			$scope.data = {newComment: "", newReply: ""};
 			$scope.validStatuses = [ // TODO: Get this list from the appropriate service
 				"To Do",
 				"Reviewed",
@@ -53,20 +54,20 @@ angular.module('palaso.ui.dc.comments', ['angularjs-gravatardirective'])
 					var comment = {
 						id : '',
 						regarding : $scope.model.value,
-						content : $scope.newComment
+						content : $scope.data.newComment
 					};
-					$scope.newComment = '';
+					$scope.data.newComment = '';
 					$scope.submitComment({comment:comment});
 				}
 			};
 			
-			$scope.newReplyClick = function(newReplyContent, parentComment) {
+			$scope.newReplyClick = function(parentComment) {
 				var reply = {
 					id : '',
-					content : $scope.newReply,
+					content : $scope.data.newReply,
 					parentId : parentComment.id
 				};
-				$scope.newReply = '';
+				$scope.data.newReply = '';
 				$scope.replyBoxVisible = false;
 				$scope.submitComment({comment:reply});
 			};
