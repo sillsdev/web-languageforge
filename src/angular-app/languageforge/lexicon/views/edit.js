@@ -222,6 +222,17 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		});
 	};
 	
+	$scope.canDeleteSense = function() {
+		return true;
+	};
+	
+	$scope.canDeleteWord = function() {
+		return true;
+	};
+	
+	$scope.canDeleteExample = function() {
+		return true;
+	};
 	
 	$scope.recursiveSetConfig = function(startAt, propName, propValue) {
 		// Go through the config tree starting at the startAt field, and

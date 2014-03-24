@@ -2,6 +2,8 @@
 
 namespace models\languageforge\lexicon\dto;
 
+use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
+
 use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryListModel;
@@ -50,7 +52,7 @@ class LexDbeDto {
 		
 		$data['entries'] = $entries;
 		$data['entriesTotalCount'] = count($entriesModel->entries);
-		$data['entry'] = JsonEncoder::encode($firstEntry);
+		$data['entry'] = LexEntryWithCommentsEncoder::encode($firstEntry);
 		
 		return $data;
 	}
