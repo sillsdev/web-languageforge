@@ -1,92 +1,92 @@
-<div class="container" ng-cloak ng-controller="editCtrl">
-    <div class="row">
-        <div class="span6 offset4">
-        <h2>Dictionary Browse and Edit</h2>
-        </div>
-    </div>
-    <div class="row outer-flex" style="margin-top:20px">
-        <div class="span4" ng-show="entries.length > 0">
-            <div style="margin-bottom:10px">
-	        <span class="pull-right">{{entries.length}} entries</span>
-                <input disabled width="4" placeholder="search filter" type="text" class="input-medium search-query" ng-model="searchText" />
-                <span style="margin-left:10px" title="Clear Filter" ng-click="searchText = ''" ng-show="searchText && searchText != ''">
-                    <i class="icon-remove" style="color:black; cursor: pointer"></i>
-                </span>
-            </div>
-            <!-- <div id="entryList" data-pui-when-scrolled="showMore()"> -->
-            <div id="entryList" data-pui-when-scrolled="showMore()">
-                <table class="table table-condensed ">
-                    <tbody>
-                        <tr ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" ng-repeat="e in entries track by e.id">
-                            <td ng-click="editEntry(e.id)">{{getTitle(e) | characters:40}}</td>
-                            <td ng-click="editEntry(e.id)">{{getMeaning(e) | characters:40}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div ng-show="entryLoaded()">
-                <button ng-click="deleteEntry(currentEntry)" class="btn btn-small"><i class="icon-remove"></i>Delete Word</button>
-            </div>
-        </div>
-
-        <div class="span8">
-            <div class="row">
-                <div style="margin:20px" class="span8">
-                    <dc-rendered config="config" model="currentEntry" hide-if-empty="true"></dc-rendered>
-                </div>
-            </div>
-            <div ng-show="entryLoaded()" class="row">
-                <div class="span8">
-                    <tabset>
-                        <tab heading="Edit">
-                        <div class="row">
-                            <div class="offset3 span2">
-                                <button class="btn" ng-click="newEntry()"><i class="icon-plus"></i>New Word</button>
-                            </div>
-                            <div class="span3">
-                                <button class="btn" ng-disabled="!currentEntryIsDirty()" ng-show="entryLoaded()" ng-click="saveCurrentEntry()"><i class="icon-save"></i>{{saveButtonTitle()}}</button>
-                            </div>
-                        </div>
-                        <div style="margin-top:20px" class="row">
-                            <div class="span8 animate-show" ng-show="entryLoaded()" id="entryItemView">
-                                <p class="text-error" ng-show="lexemeFormRequired">At least one lexeme form is required</p>
-                                <dc-entry config="config" model="currentEntry"></dc-entry>
-                            </div>
-                        </div>
-                        </tab>
-                        <tab heading="Comment" active="commentsTabActive" select="selectCommentsTab()" deselect="deselectCommentsTab()" disabled="currentEntry.id == ''">
-                    <fieldset class="filter-controls override-bootstrap">
-                        <legend class="override-bootstrap">Filters <i ng-click="toggleFilters()" style="cursor: pointer" ng-class="filter.chevronIcon"></i></legend>
-                        <div class="filter-controls-inner" collapse="!filter.visible">
-                            <p><b>These controls are not implemented yet</b></p>
-                            <div class="horiz-controls flex-center">
-                                <div class="datepicker horiz-flex-element"><input type="checkbox" ng-model="useCreatedAfter"></input>Created after: <input type="text" size="8" datepicker-popup ng-model="createdAfter"></div>
-                                <div class="datepicker horiz-flex-element"><input type="checkbox" ng-model="useCreatedBefore"></input>Created before: <input type="text" size="8" datepicker-popup ng-model="createdBefore"></div>
-                            </div>
-                            <div class="created-by">Created by: <select><option>Everyone</option></select></div>
-                            <div class="status horiz-controls">Status: <div class="horiz-flex-element" ng-repeat="status in filter.validStatuses"><input ng-model="filter.searchFor[status]" type="checkbox">{{status}}</input> </div></div>
-                            <div class="containing-text">Containing text: <input type="text" size="50"></input></div>
-                            <div class="languages-to-show horiz-controls">Languages to show: <div class="horiz-flex-element" ng-repeat="lang in getInputSystems()"><input ng-model="filter.showLangs[lang.abbreviation]" type="checkbox">{{lang.languageName}} ({{lang.abbreviation}})</input> </div></div>
-                            <button ng-click="applyFilters()" class="btn-info top-right-corner"><i class="icon-search"></i></button>
-                        </div>
-                    </fieldset>
-        <!--                     <dc-comments config="config" model="currentEntry"></dc-comments> -->
-                            <dc-entry config="config" model="currentEntry"></dc-entry>
-                        </tab>
-                    </tabset>
-                </div>
-            </div>
-        </div>
-
-<!--
-        <div class="span5">
-            <pre>currentEntry
-                {{currentEntry|json}}</pre>
-            <pre>pristineEntry
-                {{pristineEntry|json}}</pre>
-                <pre>entries list
-                    {{entries|json}}</pre>
-        </div>
-        -->
-    </div>
+<div class="container" data-ng-cloak data-ng-controller="editCtrl">
+	<div class="row">
+		<div class="span6 offset4">
+		<h2>Dictionary Browse and Edit</h2>
+		</div>
+	</div>
+	<div class="row outer-flex" style="margin-top:20px">
+		<div class="span4" data-ng-show="entries.length > 0">
+			<div style="margin-bottom:10px">
+				<span class="pull-right">{{entries.length}} entries</span>
+				<input disabled width="4" placeholder="search filter" type="text" class="input-medium search-query" data-ng-model="searchText" />
+				<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''" data-ng-show="searchText && searchText != ''">
+					<i class="icon-remove" style="color:black; cursor: pointer"></i>
+				</span>
+			</div>
+			<!-- <div id="entryList" data-pui-when-scrolled="showMore()"> -->
+			<div id="entryList" data-pui-when-scrolled="showMore()">
+				<table class="table table-condensed ">
+					<tbody>
+						<tr data-ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" data-ng-repeat="e in entries track by e.id">
+							<td data-ng-click="editEntry(e.id)">{{getTitle(e) | characters:40}}</td>
+							<td data-ng-click="editEntry(e.id)">{{getMeaning(e) | characters:40}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div data-ng-show="entryLoaded()">
+				<button data-ng-click="deleteEntry(currentEntry)" class="btn btn-small"><i class="icon-remove"></i>Delete Word</button>
+			</div>
+		</div>
+		
+		<div class="span8">
+			<div class="row">
+				<div style="margin:20px" class="span8">
+					<dc-rendered config="config" model="currentEntry" hide-if-empty="true"></dc-rendered>
+				</div>
+			</div>
+			<div data-ng-show="entryLoaded()" class="row">
+				<div class="span8">
+					<tabset>
+						<tab heading="Edit">
+						<div class="row">
+							<div class="offset3 span2">
+								<button class="btn" data-ng-click="newEntry()"><i class="icon-plus"></i>New Word</button>
+							</div>
+							<div class="span3">
+								<button class="btn" data-ng-disabled="!currentEntryIsDirty()" data-ng-show="entryLoaded()" data-ng-click="saveCurrentEntry()"><i class="icon-save"></i>{{saveButtonTitle()}}</button>
+							</div>
+						</div>
+						<div style="margin-top:20px" class="row">
+							<div class="span8 animate-show" data-ng-show="entryLoaded()" id="entryItemView">
+								<p class="text-error" data-ng-show="lexemeFormRequired">At least one lexeme form is required</p>
+								<dc-entry config="config" model="currentEntry"></dc-entry>
+							</div>
+						</div>
+						</tab>
+						<tab heading="Comment" active="commentsTabActive" select="selectCommentsTab()" deselect="deselectCommentsTab()" disabled="currentEntry.id == ''">
+							<fieldset class="filter-controls override-bootstrap">
+								<legend class="override-bootstrap">Filters <i data-ng-click="toggleFilters()" style="cursor: pointer" data-ng-class="filter.chevronIcon"></i></legend>
+								<div class="filter-controls-inner" data-collapse="!filter.visible">
+									<p><b>These controls are not implemented yet</b></p>
+									<div class="horiz-controls flex-center">
+										<div class="datepicker horiz-flex-element"><input type="checkbox" data-ng-model="useCreatedAfter" />Created after: <input type="text" size="8" data-datepicker-popup data-ng-model="createdAfter"></div>
+										<div class="datepicker horiz-flex-element"><input type="checkbox" data-ng-model="useCreatedBefore" />Created before: <input type="text" size="8" data-datepicker-popup data-ng-model="createdBefore"></div>
+									</div>
+									<div class="created-by">Created by: <select><option>Everyone</option></select></div>
+									<div class="status horiz-controls">Status: <div class="horiz-flex-element" data-ng-repeat="status in filter.validStatuses"><input data-ng-model="filter.searchFor[status]" type="checkbox" />{{status}}</div></div>
+									<div class="containing-text">Containing text: <input type="text" size="50" /></div>
+									<div class="languages-to-show horiz-controls">Languages to show: <div class="horiz-flex-element" data-ng-repeat="lang in getInputSystems()"><input data-ng-model="filter.showLangs[lang.abbreviation]" type="checkbox" />{{lang.languageName}} ({{lang.abbreviation}})</div></div>
+									<button data-ng-click="applyFilters()" class="btn-info top-right-corner"><i class="icon-search"></i></button>
+								</div>
+							</fieldset>
+<!-- 							<dc-comments config="config" model="currentEntry"></dc-comments> -->
+							<dc-entry config="config" model="currentEntry"></dc-entry>
+						</tab>
+					</tabset>
+				</div>
+			</div>
+		</div>
+		
+		<!--
+		<div class="span5">
+			<pre>currentEntry
+				{{currentEntry|json}}</pre>
+			<pre>pristineEntry
+				{{pristineEntry|json}}</pre>
+			<pre>entries list
+				{{entries|json}}</pre>
+		</div>
+		-->
+	</div>
 </div>
