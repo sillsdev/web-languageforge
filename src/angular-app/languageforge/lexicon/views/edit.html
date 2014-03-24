@@ -4,16 +4,25 @@
 		<h2>Dictionary Browse and Edit</h2>
 		</div>
 	</div>
+	
 	<div class="row outer-flex" style="margin-top:20px">
+		<!-- Left column: entry list control -->
 		<div class="span4" data-ng-show="show.entries.length > 0">
+			<!-- control buttons -->
+			<div class="control-group">
+				<button class="btn btn-success" data-ng-click="newEntry()"><i class="icon-plus"></i>New Word</button>
+			</div>
+			
+			<!-- entry list search -->
 			<div style="margin-bottom:10px">
-				<span class="pull-right">showing {{show.entries.length}} of {{entriesTotalCount}} entries</span>
+				<span class="pull-right">{{entriesTotalCount}} entries</span>
 				<input disabled width="4" placeholder="search filter" type="text" class="input-medium search-query" data-ng-model="searchText" />
 				<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''" data-ng-show="searchText && searchText != ''">
 					<i class="icon-remove" style="color:black; cursor: pointer"></i>
 				</span>
 			</div>
-			<!-- <div id="entryList" data-pui-when-scrolled="showMore()"> -->
+			
+			<!-- entry list -->
 			<div id="entryList" data-pui-when-scrolled="show.more()">
 				<table class="table table-condensed ">
 					<tbody>
@@ -24,58 +33,51 @@
 					</tbody>
 				</table>
 			</div>
-			<div data-ng-show="entryLoaded()">
-				<button data-ng-click="deleteEntry(currentEntry)" class="btn btn-small"><i class="icon-remove"></i>Delete Word</button>
-			</div>
 		</div>
 		
+		<!-- Right column: comment on/edit entry -->
 		<div class="span8">
-			<div class="row">
-				<div style="margin:20px" class="span8">
-					<dc-rendered config="config" model="currentEntry" hide-if-empty="true"></dc-rendered>
-				</div>
+			<!-- entry label -->
+			<div style="margin-bottom: 20px">
+				<dc-rendered config="config" model="currentEntry" hide-if-empty="true"></dc-rendered>
 			</div>
-			<div data-ng-show="entryLoaded()" class="row">
-				<div class="span8">
-					<tabset>
-						<tab heading="Edit">
-						<div class="row">
-							<div class="offset3 span2">
-								<button class="btn" data-ng-click="newEntry()"><i class="icon-plus"></i>New Word</button>
-							</div>
-							<div class="span3">
-								<button class="btn" data-ng-disabled="!currentEntryIsDirty()" data-ng-show="entryLoaded()" data-ng-click="saveCurrentEntry()"><i class="icon-save"></i>{{saveButtonTitle()}}</button>
-							</div>
-						</div>
-						<div style="margin-top:20px" class="row">
-							<div class="span8 animate-show" data-ng-show="entryLoaded()" id="entryItemView">
-								<p class="text-error" data-ng-show="lexemeFormRequired">At least one lexeme form is required</p>
-								<dc-entry config="config" model="currentEntry"></dc-entry>
-							</div>
-						</div>
-						</tab>
-						<tab heading="Comment" active="commentsTabActive" select="selectCommentsTab()" deselect="deselectCommentsTab()" disabled="currentEntry.id == ''">
-							<fieldset class="filter-controls override-bootstrap">
-								<legend class="override-bootstrap">Filters <i data-ng-click="toggleFilters()" style="cursor: pointer" data-ng-class="filter.chevronIcon"></i></legend>
-								<div class="filter-controls-inner" data-collapse="!filter.visible">
-									<p><b>These controls are not implemented yet</b></p>
-									<div class="horiz-controls flex-center">
-										<div class="datepicker horiz-flex-element"><input type="checkbox" data-ng-model="useCreatedAfter" />Created after: <input type="text" size="8" data-datepicker-popup data-ng-model="createdAfter"></div>
-										<div class="datepicker horiz-flex-element"><input type="checkbox" data-ng-model="useCreatedBefore" />Created before: <input type="text" size="8" data-datepicker-popup data-ng-model="createdBefore"></div>
-									</div>
-									<div class="created-by">Created by: <select><option>Everyone</option></select></div>
-									<div class="status horiz-controls">Status: <div class="horiz-flex-element" data-ng-repeat="status in filter.validStatuses"><input data-ng-model="filter.searchFor[status]" type="checkbox" />{{status}}</div></div>
-									<div class="containing-text">Containing text: <input type="text" size="50" /></div>
-									<div class="languages-to-show horiz-controls">Languages to show: <div class="horiz-flex-element" data-ng-repeat="lang in getInputSystems()"><input data-ng-model="filter.showLangs[lang.abbreviation]" type="checkbox" />{{lang.languageName}} ({{lang.abbreviation}})</div></div>
-									<button data-ng-click="applyFilters()" class="btn-info top-right-corner"><i class="icon-search"></i></button>
-								</div>
-							</fieldset>
-<!-- 							<dc-comments config="config" model="currentEntry"></dc-comments> -->
+			
+			<tabset data-ng-show="entryLoaded()">
+				<!-- control buttons -->
+				<div class="control-group pull-right" data-ng-show="entryLoaded()">
+					<button class="btn" style="margin-right: 140px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry()">
+						<i class="icon-save"></i>{{saveButtonTitle()}}</button>
+					<button data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="Delete Word"><i class="icon-remove"></i>Word</button>
+				</div>
+				
+				<tab heading="Edit">
+					<div style="margin-top:20px" class="row">
+						<div class="animate-show" data-ng-show="entryLoaded()" id="entryItemView">
+							<p class="text-error" data-ng-show="lexemeFormRequired">At least one lexeme form is required</p>
 							<dc-entry config="config" model="currentEntry"></dc-entry>
-						</tab>
-					</tabset>
-				</div>
-			</div>
+						</div>
+					</div>
+				</tab>
+				<tab heading="Comment" active="commentsTabActive" select="selectCommentsTab()" deselect="deselectCommentsTab()" disabled="currentEntry.id == ''">
+					<fieldset class="filter-controls override-bootstrap">
+						<legend class="override-bootstrap">Filters <i data-ng-click="toggleFilters()" style="cursor: pointer" data-ng-class="filter.chevronIcon"></i></legend>
+						<div class="filter-controls-inner" data-collapse="!filter.visible">
+							<p><b>These controls are not implemented yet</b></p>
+							<div class="horiz-controls flex-center">
+								<div class="datepicker horiz-flex-element"><input type="checkbox" data-ng-model="useCreatedAfter" />Created after: <input type="text" size="8" data-datepicker-popup data-ng-model="createdAfter"></div>
+								<div class="datepicker horiz-flex-element"><input type="checkbox" data-ng-model="useCreatedBefore" />Created before: <input type="text" size="8" data-datepicker-popup data-ng-model="createdBefore"></div>
+							</div>
+							<div class="created-by">Created by: <select><option>Everyone</option></select></div>
+							<div class="status horiz-controls">Status: <div class="horiz-flex-element" data-ng-repeat="status in filter.validStatuses"><input data-ng-model="filter.searchFor[status]" type="checkbox" />{{status}}</div></div>
+							<div class="containing-text">Containing text: <input type="text" size="50" /></div>
+							<div class="languages-to-show horiz-controls">Languages to show: <div class="horiz-flex-element" data-ng-repeat="lang in getInputSystems()"><input data-ng-model="filter.showLangs[lang.abbreviation]" type="checkbox" />{{lang.languageName}} ({{lang.abbreviation}})</div></div>
+							<button data-ng-click="applyFilters()" class="btn-info top-right-corner"><i class="icon-search"></i></button>
+						</div>
+					</fieldset>
+<!-- 					<dc-comments config="config" model="currentEntry"></dc-comments> -->
+					<dc-entry config="config" model="currentEntry"></dc-entry>
+				</tab>
+			</tabset>
 		</div>
 		
 		<!--
