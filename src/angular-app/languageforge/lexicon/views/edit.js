@@ -60,7 +60,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 					//$scope.updateListWithEntry(result.data);
 					$scope.lastSavedDate = new Date();
 					pristineEntry = angular.copy($scope.currentEntry);
-					$scope.refreshView($scope.load.entryStart, $scope.load.entryLength);
+					$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
 				});
 				return true;
 			} else {
@@ -167,16 +167,21 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	
 	$scope.load = {
-		entryStart: 0,
-		entryLength: 30
+		iEntryStart: 0,
+		numberOfEntries: null
 	}; 
-	$scope.loadMore = function() {
-		$scope.load.entryStart += $scope.load.entryLength;
-		console.log("loadMore ", $scope.load.entryStart);
-		$scope.refreshView($scope.load.entryStart, $scope.load.entryLength, true);
+	$scope.show = {
+		iEntryStart: 0,
+		numberOfEntries: 30,
+		entries: []
+	}; 
+	$scope.showMore = function() {
+		$scope.show.iEntryStart += $scope.show.numberOfEntries;
+		console.log("showMore ", $scope.show.iEntryStart);
+//		$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries, true);
 	};
 	
-	$scope.refreshView = function(loadEntryStart, loadEntryLength, updateFirstEntry) {
+	$scope.refreshView = function(iEntryStart, numberOfEntries, updateFirstEntry) {
 		updateFirstEntry = typeof updateFirstEntry !== 'undefined' ? updateFirstEntry : false;
 		var gotDto = function (result) {
 			if (result.ok) {
@@ -191,7 +196,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		var view = 'dbe';
 		switch (view) {
 			case 'dbe':
-				lexService.dbeDto(loadEntryStart, loadEntryLength, gotDto);
+				lexService.dbeDto(iEntryStart, numberOfEntries, gotDto);
 				break;
 			case 'add-grammar':
 				break;
@@ -204,7 +209,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	$scope.refreshView($scope.load.entryStart, $scope.load.entryLength, true);
+	$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries, true);
 	
 	$scope.submitComment = function(comment) {
 		console.log('submitComment = ' + comment);

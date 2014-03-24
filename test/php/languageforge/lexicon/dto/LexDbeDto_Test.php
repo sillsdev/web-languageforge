@@ -36,11 +36,11 @@ class TestLexDbeDto extends UnitTestCase {
 		$user->write();
 		$project->write();
 				
-		$result = LexDbeDto::encode($projectId, $userId, 0, null);
+		$result = LexDbeDto::encode($projectId, $userId);
 		
 		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 0);
-		$this->assertEqual($result['entriesCount'], 0);
+		$this->assertEqual($result['entriesTotalCount'], 0);
 		$this->assertEqual(get_class($result['entry']['lexeme']), 'stdClass', 'blank first entry is not valid');
 	}
 	
@@ -75,11 +75,11 @@ class TestLexDbeDto extends UnitTestCase {
 		$entry->senses[] = $sense;
 		$entry->write();
 
-		$result = LexDbeDto::encode($projectId, $userId, 0, null);
+		$result = LexDbeDto::encode($projectId, $userId);
 		
 		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 11);
-		$this->assertEqual($result['entriesCount'], 11);
+		$this->assertEqual($result['entriesTotalCount'], 11);
 		$this->assertEqual($result['entry']['lexeme']['en']['value'], 'Aardvark', 'Aardvark should sort first');
 	}
 	
@@ -113,14 +113,14 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 5);
-		$this->assertEqual($result['entriesCount'], 10);
+		$this->assertEqual($result['entriesTotalCount'], 10);
 		$this->assertEqual($result['entry']['lexeme']['en']['value'], 'Apfel0', 'Apfel0 should sort first');
 
 		$result = LexDbeDto::encode($projectId, $userId, 4, 5);
 		
 		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 5);
-		$this->assertEqual($result['entriesCount'], 10);
+		$this->assertEqual($result['entriesTotalCount'], 10);
 		$this->assertEqual($result['entry']['lexeme']['en']['value'], 'Apfel4', 'Apfel4 should sort first');
 	}
 	
