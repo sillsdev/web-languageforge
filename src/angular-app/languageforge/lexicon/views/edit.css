@@ -123,6 +123,10 @@ legend.override-bootstrap {
 	margin-bottom: 20px;
 }
 
+#entryList .table  {
+	margin-bottom: 0px;
+}
+
 .outer-flex {
 	display: flex;
 	flex-direction: row;

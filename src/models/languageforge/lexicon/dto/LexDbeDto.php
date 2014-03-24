@@ -15,7 +15,7 @@ class LexDbeDto {
 	 * @param string $userId
 	 * @returns array - the DTO array
 	 */
-	public static function encode($projectId, $userId, $loadEntryStart, $loadEntryLength) {
+	public static function encode($projectId, $userId, $iEntryStart = 0, $numberOfEntries = null) {
 		$data = LexBaseViewDto::encode($projectId, $userId);
 		
 		$project = new LexiconProjectModel($projectId);
@@ -41,7 +41,7 @@ class LexDbeDto {
 			});
 		}
 		
-		$entries = array_slice($entries, $loadEntryStart, $loadEntryLength);
+		$entries = array_slice($entries, $iEntryStart, $numberOfEntries);
 		
 		$firstEntry = new LexEntryModel($project);
 		if (count($entries) > 0) {
@@ -49,7 +49,7 @@ class LexDbeDto {
 		}
 		
 		$data['entries'] = $entries;
-		$data['entriesCount'] = count($entriesModel->entries);
+		$data['entriesTotalCount'] = count($entriesModel->entries);
 		$data['entry'] = JsonEncoder::encode($firstEntry);
 		
 		return $data;
