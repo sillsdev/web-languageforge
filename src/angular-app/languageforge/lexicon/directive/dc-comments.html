@@ -1,6 +1,7 @@
 <div class="dc-comments" >
 	<!-- ng-repeat over existing comments, nested comments (Design note: two different things? Or the same thing? I'm inclined to say same thing.) -->
 	<div class="comment" data-ng-repeat="comment in model.comments">
+	    <pre>{{comment|json}}</pre>
  		<div class="scorecontrol">
 			<div class="scorearrow"><a ng-click="incScore(comment)"><i class="icon-caret-up icon-2x"></i></a></div>
 			<div class="score">{{comment.score}}</div>

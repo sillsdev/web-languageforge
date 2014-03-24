@@ -2,6 +2,8 @@
 
 namespace models\languageforge\lexicon\commands;
 
+use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
+
 use models\ProjectModel;
 
 use models\languageforge\lexicon\settings\LexiconConfigObj;
@@ -22,7 +24,7 @@ class LexEntryCommands {
 	public static function readEntry($projectId, $entryId) {
 		$project = new LexiconProjectModel($projectId);
 		$entry = new LexEntryModel($project, $entryId);
-		return JsonEncoder::encode($entry);
+		return LexEntryWithCommentsEncoder::encode($entry);
 	}
 	
 	/*
@@ -56,7 +58,7 @@ class LexEntryCommands {
 
 		JsonDecoder::decode($entry, $params);
 		$entry->write();
-		return JsonEncoder::encode($entry);
+		return LexEntryWithCommentsEncoder::encode($entry);
 	}
 	
 	/**
