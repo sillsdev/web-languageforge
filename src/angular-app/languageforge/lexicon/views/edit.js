@@ -187,12 +187,12 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	}; 
 	$scope.show = {
 		iEntryStart: 0,
-		numberOfEntries: 30,
+		numberOfEntries: 50,
 		entries: [],
 	}; 
 	$scope.show.initial = function() {
 		$scope.show.iEntryStart = 0;
-		$scope.show.numberOfEntries = 30;
+		$scope.show.numberOfEntries = 50;
 		$scope.show.entries = $scope.entries.slice($scope.show.iEntryStart, $scope.show.iEntryStart + $scope.show.numberOfEntries);
 	};
 	$scope.show.more = function() {
