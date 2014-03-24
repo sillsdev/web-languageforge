@@ -72,8 +72,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.updateListWithEntry = function(entry) {
 		var isNew = true;
-		for (var i=0; i<$scope.entries.length; i++) {
-			var e = $scope.entries[i];
+		for (var i=0; i<$scope.show.entries.length; i++) {
+			var e = $scope.show.entries[i];
 			if (e.id == entry.id) {
 				$scope.show.entries[i] = entry;
 				$scope.entries[i] = entry;
@@ -89,8 +89,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.getEntryIndexById = function(id) {
 		var index = undefined;
-		for (var i=0; i<$scope.entries.length; i++) {
-			var e = $scope.entries[i];
+		for (var i=0; i<$scope.show.entries.length; i++) {
+			var e = $scope.show.entries[i];
 			if (e.id == id) {
 				index = i;
 				break;
@@ -162,18 +162,22 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		if ($window.confirm("Are you sure you want to delete '" + $scope.getTitle(entry) + "'?")) {
 			if ($scope.entryHasComments(entry)) {
 				if ($window.confirm("Are you sure you want to delete '" + $scope.getTitle(entry) + "'?")) {
-					$scope.entries.splice($scope.getEntryIndexById(entry.id), 1);
+					var entryIndex = $scope.getEntryIndexById(entry.id);
+					$scope.show.entries.splice(entryIndex, 1);
+					$scope.entries.splice(entryIndex, 1);
 					if (entry.id != '') {
 						lexService.remove(entry.id, function(){});
 					}
 					$scope.setCurrentEntry({});
 				}
 			} else {
-					$scope.entries.splice($scope.getEntryIndexById(entry.id), 1);
-					if (entry.id != '') {
-						lexService.remove(entry.id, function(){});
-					}
-					$scope.setCurrentEntry({});
+				var entryIndex = $scope.getEntryIndexById(entry.id);
+				$scope.show.entries.splice(entryIndex, 1);
+				$scope.entries.splice(entryIndex, 1);
+				if (entry.id != '') {
+					lexService.remove(entry.id, function(){});
+				}
+				$scope.setCurrentEntry({});
 			}
 		}
 	};
