@@ -1,16 +1,17 @@
 @CHARSET "UTF-8";
 
 div.dc-comments {
-	/* background-color: #ffedd4; */
-	background-color: #ffeedd;
 	/* min-height: 100px; */
-	width: 100%;
+	/*width: 100%; */
 	line-height: 20px; /* Override the line-height setting from ng-repeat */
+	margin: 5px;
+	margin-bottom:50px;
 }
 
 .dc-comments .comment {
 	display: flex;
 	max-width: 620px;
+	margin-top:20px;
 }
 
 .dc-comments .scorecontrol {
@@ -44,7 +45,6 @@ div.dc-comments {
 }
 
 .dc-comments .comment-date {
-	color: red;
 	display: inline-block; /* So width will be respected */
 	width: 12em;
 }
@@ -77,28 +77,32 @@ div.dc-comments {
 }
 
 .dc-comments .new-comment-form {
+	margin-top: 10px;
 	display: flex;
 	flex-direction: column;
 }
 
 .dc-comments .replies {
-	width: 100%;
+	border-top: #999999 1px dotted;
+	margin-top:7px;
+	padding-top:3px;
+	margin-left:20px;
 }
 
-.dc-comments .replies td {
-	border: none;
-}
 
 .dc-comments .replies .reply-who {
-	width: 25%;
+	background-color: #E0EAF1;
+	font-size: 90%;
+	padding: 2px 5px 2px 5px;
 }
 
 .dc-comments .replies .reply-when {
-	width: 25%;
+	color: #606060;
+	padding-left:5px;
+	font-size: 90%;
 }
 
 .dc-comments .replies .reply-what {
-	width: 50%;
 }
 
 .dc-comments textarea {
