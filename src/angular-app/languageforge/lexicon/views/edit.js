@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$timeout', '$filter', 'lexLinkService', 
-                        function ($scope, userService, sessionService, lexService, configService, $window, $timeout, $filter, linkService) {
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$interval', '$filter', 'lexLinkService', 
+                        function ($scope, userService, sessionService, lexService, configService, $window, $interval, $filter, linkService) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
 	// for an idea on expanding text areas
 	
@@ -41,12 +41,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 
-	//$timeout($scope.saveButtonTitle,60000);
-	//TODO set a watch on currentEntry
-	// when currentEntry changes, if it can be saved, then
-	// set a new 30 second timer, and delete the old timer
-	// when timer goes off, execute the save now method and delete the timer
-	
 	$scope.saveCurrentEntry = function() {
 		if ($scope.currentEntryIsDirty()) {
 			var foundLexeme = false;
@@ -247,6 +241,42 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries, true);
 	
+	//$interval($scope.saveCurrentEntry, 60000, 1);
+	//TODO set a watch on currentEntry
+	// when currentEntry changes, if it can be saved, then
+	// set a new 30 second timer, and delete the old timer
+	// when timer goes off, execute the save now method and delete the timer
+	
+	$scope.autoSave = function() {
+		console.log("autoSave ");
+	};
+	
+	var stopAutoSaveTimer;
+	$scope.startAutoSaveTimer = function() {
+		if (angular.isDefined(stopAutoSaveTimer)) {
+			return;
+		}
+//		stopAutoSaveTimer = $interval($scope.saveCurrentEntry, 60000, 1);
+		stopAutoSaveTimer = $interval($scope.autoSave, 10000, 1);
+	};
+	$scope.cancelAutoSaveTimer = function() {
+		if (angular.isDefined(stopAutoSaveTimer)) {
+			$interval.cancel(stopAutoSaveTimer);
+			stopAutoSaveTimer = undefined;
+		}
+	};
+	
+	$scope.$watchCollection('currentEntry', function(newValue) {
+		if (newValue != undefined && $scope.currentEntryIsDirty) {
+			$scope.cancelAutoSaveTimer();
+			$scope.startAutoSaveTimer();
+		}
+	});
+	
+	$scope.$on('$destroy', function() {
+		$scope.cancelAutoSaveTimer();
+	});
+	
 	$scope.submitComment = function(comment) {
 		console.log('submitComment = ' + comment);
 		lexService.updateComment(comment, function(result) {
@@ -284,7 +314,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		});
 	};
 	
-
 	// When comments tab is clicked, set up new config for its interior
 	$scope.selectCommentsTab = function() {
 		if (angular.isDefined($scope.config.entry)) {
