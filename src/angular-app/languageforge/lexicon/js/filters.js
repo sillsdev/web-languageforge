@@ -17,4 +17,10 @@ angular.module('lexicon.filters', [])
 			return result;
 		};
 	})
+	.filter('relativetime', function() {
+	  	return function(timestamp) {
+	  		// see http://momentjs.com/docs/
+	  		return moment(timestamp).fromNow();
+	  	};
+	})
 	;
