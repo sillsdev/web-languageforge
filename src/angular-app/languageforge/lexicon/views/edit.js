@@ -35,9 +35,9 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.saveButtonTitle = function() {
 		if ($scope.currentEntryIsDirty()) {
-			return "Save Now";
+			return "Save Entry";
 		} else {
-			return "Saved " + moment($scope.lastSavedDate).fromNow();
+			return "Entry saved " + moment($scope.lastSavedDate).fromNow();
 		}
 	};
 
@@ -141,6 +141,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 
 	$scope.newEntry = function() {
 		$scope.editEntry();
+		$scope.entriesTotalCount++;
 	};
 	
 	$scope.getTitle = function(entry) {
@@ -166,6 +167,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 					var entryIndex = $scope.getEntryIndexById(entry.id);
 					$scope.show.entries.splice(entryIndex, 1);
 					$scope.entries.splice(entryIndex, 1);
+					$scope.entriesTotalCount--;
 					if (entry.id != '') {
 						lexService.remove(entry.id, function(){});
 					}
@@ -175,6 +177,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				var entryIndex = $scope.getEntryIndexById(entry.id);
 				$scope.show.entries.splice(entryIndex, 1);
 				$scope.entries.splice(entryIndex, 1);
+				$scope.entriesTotalCount--;
 				if (entry.id != '') {
 					lexService.remove(entry.id, function(){});
 				}

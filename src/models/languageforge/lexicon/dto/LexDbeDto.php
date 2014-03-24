@@ -2,11 +2,10 @@
 
 namespace models\languageforge\lexicon\dto;
 
-use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
-
 use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryListModel;
+use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\mapper\JsonEncoder;
 
@@ -15,7 +14,8 @@ class LexDbeDto {
 	/**
 	 * @param string $projectId
 	 * @param string $userId
-	 * @returns array - the DTO array
+	 * @param int $iEntryStart
+	 * @param int $numberOfEntries
 	 */
 	public static function encode($projectId, $userId, $iEntryStart = 0, $numberOfEntries = null) {
 		$data = LexBaseViewDto::encode($projectId, $userId);
