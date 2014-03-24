@@ -9,7 +9,7 @@ angular.module('palaso.ui.scroll', [])
         elm.bind('scroll', function() {
             if (raw.scrollTop + raw.offsetHeight + 1000 >= raw.scrollHeight) {
                 scope.$apply(attr.puiWhenScrolled);
-                raw.scrollTop = raw.scrollTop - 1000;
+//                raw.scrollTop = raw.scrollTop - 1000;
             }
         });
     };
