@@ -7,7 +7,7 @@
     <div class="row outer-flex" style="margin-top:20px">
         <div class="span4" ng-show="entries.length > 0">
             <div style="margin-bottom:10px">
-                <input width="4" placeholder="search filter" type="text" class="input-medium search-query" ng-model="searchText" />
+                <input disabled width="4" placeholder="search filter" type="text" class="input-medium search-query" ng-model="searchText" />
                 <span style="margin-left:10px" title="Clear Filter" ng-click="searchText = ''" ng-show="searchText && searchText != ''">
                     <i class="icon-remove" style="color:black; cursor: pointer"></i>
                 </span>
@@ -30,13 +30,8 @@
 
         <div class="span8">
             <div class="row">
-                <div class="span2">
-                </div>
-                <div class="span2">
-                    <button class="btn" ng-click="newEntry()"><i class="icon-plus"></i>New Word</button>
-                </div>
-                <div class="span3">
-                    <button class="btn" ng-disabled="!currentEntryIsDirty()" ng-show="entryLoaded()" ng-click="saveCurrentEntry()"><i class="icon-save"></i>{{saveButtonTitle()}}</button>
+                <div style="margin:20px" class="span8">
+                    <dc-rendered config="config" model="currentEntry" hide-if-empty="true"></dc-rendered>
                 </div>
             </div>
             <div ng-show="entryLoaded()" class="row">
@@ -44,21 +39,25 @@
                     <tabset>
                         <tab heading="Edit">
                         <div class="row">
+                            <div class="offset3 span2">
+                                <button class="btn" ng-click="newEntry()"><i class="icon-plus"></i>New Word</button>
+                            </div>
                             <div class="span3">
-                                <div ng-show="entryLoaded()" style="margin-bottom:20px; font-size:20px; font-weight:bold;">{{getTitle()}}</div>
+                                <button class="btn" ng-disabled="!currentEntryIsDirty()" ng-show="entryLoaded()" ng-click="saveCurrentEntry()"><i class="icon-save"></i>{{saveButtonTitle()}}</button>
                             </div>
                         </div>
-                        <div class="animate-show" ng-show="entryLoaded()" id="entryItemView">
-                            <p class="text-error" ng-show="lexemeFormRequired">At least one lexeme form is required</p>
-                            <dc-entry config="config" model="currentEntry"></dc-entry>
+                        <div style="margin-top:20px" class="row">
+                            <div class="span8 animate-show" ng-show="entryLoaded()" id="entryItemView">
+                                <p class="text-error" ng-show="lexemeFormRequired">At least one lexeme form is required</p>
+                                <dc-entry config="config" model="currentEntry"></dc-entry>
+                            </div>
                         </div>
                         </tab>
                         <tab heading="Comment" active="commentsTabActive" select="selectCommentsTab()" deselect="deselectCommentsTab()" disabled="currentEntry.id == ''">
-                            <dc-rendered config="config" model="currentEntry" hide-if-empty="true"></dc-rendered>
                     <fieldset class="filter-controls override-bootstrap">
                         <legend class="override-bootstrap">Filters <i ng-click="toggleFilters()" style="cursor: pointer" ng-class="filter.chevronIcon"></i></legend>
                         <div class="filter-controls-inner" collapse="!filter.visible">
-                            <p><b>IMPORTANT:</b> For the demo, these controls do NOT work.</p>
+                            <p><b>These controls are not implemented yet</b></p>
                             <div class="horiz-controls flex-center">
                                 <div class="datepicker horiz-flex-element"><input type="checkbox" ng-model="useCreatedAfter"></input>Created after: <input type="text" size="8" datepicker-popup ng-model="createdAfter"></div>
                                 <div class="datepicker horiz-flex-element"><input type="checkbox" ng-model="useCreatedBefore"></input>Created before: <input type="text" size="8" datepicker-popup ng-model="createdBefore"></div>

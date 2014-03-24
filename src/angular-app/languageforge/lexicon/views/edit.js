@@ -248,7 +248,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	// TODO: Consider moving filter-related code and variables into its own controller
 	$scope.filter = {};
 	$scope.filter.chevronIcon = "icon-chevron-up";
-	$scope.filter.visible = true;
+	$scope.filter.visible = false;
 	$scope.toggleFilters = function() {
 		console.log('Filters toggled');
 		if ($scope.filter.visible) {
