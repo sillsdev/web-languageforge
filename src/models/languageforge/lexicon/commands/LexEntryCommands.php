@@ -45,13 +45,13 @@ class LexEntryCommands {
 			$entry = new LexEntryModel($project, $params['id']);
 		} else {
 			$entry = new LexEntryModel($project);
-			$entry->authorInfo->createdByIdRef = $userId;
+			$entry->authorInfo->createdByUserRef->id = $userId;
 			$entry->authorInfo->createdDate = new \DateTime();
 		}
 		
 		// set authorInfo
 		$entry->authorInfo->modifiedDate = new \DateTime();
-		$entry->authorInfo->modifiedByIdRef = $userId;
+		$entry->authorInfo->modifiedByUserRef->id = $userId;
 
 		// comments should not be updated via this method
 		$params = self::removeComments($params);

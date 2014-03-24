@@ -158,13 +158,28 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.deleteEntry = function(entry) {
 		if ($window.confirm("Are you sure you want to delete '" + $scope.getTitle(entry) + "'?")) {
-			$scope.entries.splice($scope.getEntryIndexById(entry.id), 1);
-			if (entry.id != '') {
-				lexService.remove(entry.id, function(){});
+			if ($scope.entryHasComments(entry)) {
+				if ($window.confirm("Are you sure you want to delete '" + $scope.getTitle(entry) + "'?")) {
+					$scope.entries.splice($scope.getEntryIndexById(entry.id), 1);
+					if (entry.id != '') {
+						lexService.remove(entry.id, function(){});
+					}
+					$scope.setCurrentEntry({});
+				}
+			} else {
+					$scope.entries.splice($scope.getEntryIndexById(entry.id), 1);
+					if (entry.id != '') {
+						lexService.remove(entry.id, function(){});
+					}
+					$scope.setCurrentEntry({});
 			}
-			$scope.setCurrentEntry({});
 		}
 	};
+	
+	$scope.entryHasComments = function(entry) {
+		return false;
+	};
+	
 	
 	$scope.load = {
 		iEntryStart: 0,
