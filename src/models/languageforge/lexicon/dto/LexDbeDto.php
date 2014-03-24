@@ -36,7 +36,7 @@ class LexDbeDto {
 					array_key_exists($ws, $a['lexeme']) &&
 					array_key_exists($ws, $b['lexeme'])
 				) {
-					return ($a['lexeme'][$ws]['value'] > $b['lexeme'][$ws]['value']) ? 1 : -1;
+					return (strtolower($a['lexeme'][$ws]['value']) > strtolower($b['lexeme'][$ws]['value'])) ? 1 : -1;
 				} else {
 					return 0;
 				}
