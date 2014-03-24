@@ -25,18 +25,28 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		if (count($senses) > 0 && array_key_exists('definition', $senses[0]) && count($senses[0]['definition']) > 0) {
 			// TODO: actually figure out the preferred writing system for display and use that
 			$definition = $senses[0]['definition'];
-			foreach ($definition as $ws => $value) {
-				unset($definition[$ws]['comments']);
-			}
+			$defKeys = array_keys($definition);
+			return $definition[$defKeys[0]]['value'];
+		}
+		return $definition;
+	}
+	
+	private function getLexeme($entry) {
+		$lexeme = $entry['lexeme'];
+		if (count($lexeme) > 0) {
+			// TODO: actually figure out the preferred writing system for display and use that
+			$lexKeys = array_keys($lexeme);
+			return $lexeme[$lexKeys[0]]['value'];
 		}
 		return $definition;
 	}
 	
 	public function readForDto($missingInfo = '') {
 		parent::read();
+		$entriesToReturn = array();
 		
 		if ($missingInfo != '') {
-			foreach ($this->entries as $index => $entry) {
+			foreach ($this->entries as $entry) {
 				$senses = $entry['senses'];
 				$foundMissingInfo = false;
 				if (count($senses) == 0) {
@@ -109,25 +119,25 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 						}
 					}
 				}
-				if (!$foundMissingInfo) {
-					unset($this->entries[$index]);
-				} else {
-					$this->entries[$index]['definition'] = $this->getDefinition($entry);
-					unset($this->entries[$index]['senses']);
-					foreach ($entry['lexeme'] as $ws => $value) {
-						unset($this->entries[$index]['lexeme'][$ws]['comments']);
-					}
+				if ($foundMissingInfo) {
+					$entriesToReturn[] = array(
+						'id' => $entry['id'],
+						'definition' => $this->getDefinition($entry),
+						'lexeme' => $this->getLexeme($entry)
+					);
 				}
 			} // end of foreach
+			$this->entries = $entriesToReturn;
 			$this->count = count($this->entries);
 		} else {
-			foreach ($this->entries as $index => $entry) {
-				$this->entries[$index]['definition'] = $this->getDefinition($entry);
-				unset($this->entries[$index]['senses']);
-				foreach ($entry['lexeme'] as $ws => $value) {
-					unset($this->entries[$index]['lexeme'][$ws]['comments']);
-				}
+			foreach ($this->entries as $entry) {
+				$entriesToReturn[] = array(
+					'id' => $entry['id'],
+					'definition' => $this->getDefinition($entry),
+					'lexeme' => $this->getLexeme($entry)
+				);
 			}
+			$this->entries = $entriesToReturn;
 		}
 	}
 
