@@ -23,7 +23,7 @@ class LexDbeDto {
 		$project = new LexiconProjectModel($projectId);
 		
 		$entriesModel = new LexEntryListModel($project);
-		$entriesModel->read();
+		$entriesModel->readForDto();
 		$entries = $entriesModel->entries;
 		
 		$lexemeWritingSystems = $data['config']['entry']['fields']['lexeme']['inputSystems'];

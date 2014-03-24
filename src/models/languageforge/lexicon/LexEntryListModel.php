@@ -1,6 +1,8 @@
 <?php 
 namespace models\languageforge\lexicon;
 
+use models\languageforge\lexicon\commands\LexEntryCommands;
+
 use models\languageforge\lexicon\settings\LexiconConfigObj;
 
 class LexEntryListModel extends \models\mapper\MapperListModel {
@@ -23,6 +25,9 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		if (count($senses) > 0 && array_key_exists('definition', $senses[0]) && count($senses[0]['definition']) > 0) {
 			// TODO: actually figure out the preferred writing system for display and use that
 			$definition = $senses[0]['definition'];
+			foreach ($definition as $ws => $value) {
+				unset($definition[$ws]['comments']);
+			}
 		}
 		return $definition;
 	}
@@ -32,7 +37,6 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		
 		if ($missingInfo != '') {
 			foreach ($this->entries as $index => $entry) {
-				
 				$senses = $entry['senses'];
 				$foundMissingInfo = false;
 				if (count($senses) == 0) {
@@ -110,6 +114,9 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 				} else {
 					$this->entries[$index]['definition'] = $this->getDefinition($entry);
 					unset($this->entries[$index]['senses']);
+					foreach ($entry['lexeme'] as $ws => $value) {
+						unset($this->entries[$index]['lexeme'][$ws]['comments']);
+					}
 				}
 			} // end of foreach
 			$this->count = count($this->entries);
@@ -117,6 +124,9 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 			foreach ($this->entries as $index => $entry) {
 				$this->entries[$index]['definition'] = $this->getDefinition($entry);
 				unset($this->entries[$index]['senses']);
+				foreach ($entry['lexeme'] as $ws => $value) {
+					unset($this->entries[$index]['lexeme'][$ws]['comments']);
+				}
 			}
 		}
 	}
