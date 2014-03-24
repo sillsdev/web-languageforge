@@ -22,7 +22,8 @@
 			</div>
 			<div collapse="!replyBoxVisible">
 				<div>Reply to the above comment</div>
-				<div><textarea data-ng-model="newReply"></textarea></div>
+				<div><textarea data-ng-model="data.newReply"></textarea></div>
+				new reply = {{data.newReply}}
 				<div><button type="submit" class="btn-sm btn-info" data-ng-click="newReplyClick(comment)">Post Reply</button></div>
 			</div>
 			<table class="replies" data-ng-if="comment.replies.length">
@@ -36,7 +37,7 @@
 	</div>
 	<div class="new-comment-form">
 			<div>New comment</div>
-			<div><textarea data-ng-model="newComment"></textarea></div>
+			<div><textarea data-ng-model="data.newComment"></textarea></div>
 			<div><button type="submit" class="btn-sm btn-success" data-ng-click="newCommentClick()">Post New Comment</button></div>
 	</div>
 </div>

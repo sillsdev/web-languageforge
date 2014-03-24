@@ -90,7 +90,7 @@ angular.module('palaso.ui.dc.rendered', [])
 					scope.render(model);
 				});
 				scope.$watch('definition', function(definition) {
-				})
+				});
 			}
 		};
   }])
