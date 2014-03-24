@@ -57,7 +57,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			});
 			if (foundLexeme) {
 				lexService.update($scope.currentEntry, function(result) {
-					//$scope.updateListWithEntry(result.data);
+					$scope.updateListWithEntry(result.data);
 					$scope.lastSavedDate = new Date();
 					pristineEntry = angular.copy($scope.currentEntry);
 					$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
@@ -75,12 +75,14 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		for (var i=0; i<$scope.entries.length; i++) {
 			var e = $scope.entries[i];
 			if (e.id == entry.id) {
+				$scope.show.entries[i] = entry;
 				$scope.entries[i] = entry;
 				isNew = false;
 				break;
 			}
 		}
 		if (isNew) {
+			$scope.show.entries.unshift(entry);
 			$scope.entries.unshift(entry);
 		}
 	};
@@ -179,7 +181,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.entryHasComments = function(entry) {
 		return false;
 	};
-	
 	
 	$scope.load = {
 		iEntryStart: 0,
