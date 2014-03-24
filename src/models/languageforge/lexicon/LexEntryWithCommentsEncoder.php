@@ -7,7 +7,7 @@ use models\mapper\JsonEncoder;
 
 class LexEntryWithCommentsEncoder extends JsonEncoder {
 	public function encodeIdReference($key, $model) {
-		if ($key == 'userRef') {
+		if ($key == 'userRef' || $key == 'createdByUserRef' || $key == 'modifiedByUserRef') {
 			$user = new UserModel();
 			if ($user->exists($model->asString())) {
 				$user->read($model->asString());
@@ -21,6 +21,18 @@ class LexEntryWithCommentsEncoder extends JsonEncoder {
 		} else {
 			return $model->asString();
 		}
+	}
+
+	public static function encode($model) {
+		$encoder = new LexEntryWithCommentsEncoder();
+		$data = $encoder->_encode($model);
+		if (method_exists($model, 'getPrivateProperties')) {
+			$privateProperties = (array)$model->getPrivateProperties();
+			foreach ($privateProperties as $prop) {
+				unset($data[$prop]);
+			}
+		}
+		return $data;
 	}
 }
 
