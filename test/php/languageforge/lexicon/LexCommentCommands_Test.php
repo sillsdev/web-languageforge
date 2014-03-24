@@ -32,6 +32,7 @@ class TestLexCommentCommands extends UnitTestCase {
 	function testUpdateLexemeComment_NewComment_CommentAdded() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
+		$userId = $e->createUser('joe', 'joe', 'joe');
 		
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -64,7 +65,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'inputSystem' => $ws
 		);
 		
-		LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
+		LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
 		
 		$entry->read($entryId);
 		
@@ -78,6 +79,7 @@ class TestLexCommentCommands extends UnitTestCase {
 	function testUpdateLexemeComment_ExistingComment_CommentUpdatedOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
+		$userId = $e->createUser('joe', 'joe', 'joe');
 		
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -110,7 +112,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'inputSystem' => $ws
 		);
 		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
 		
 		$commentId = $entryArray['lexeme'][$ws]['comments'][0]['id'];
 
@@ -124,7 +126,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'inputSystem' => $ws
 		);
 		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
 		
 		$entry->read($entryId);
 
@@ -139,6 +141,7 @@ class TestLexCommentCommands extends UnitTestCase {
 	function testUpdateLexemeReply_NewReply_ReplyAdded() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
+		$userId = $e->createUser('joe', 'joe', 'joe');
 		
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -171,7 +174,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'inputSystem' => $ws
 		);
 		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
 		
 		$commentId = $entryArray['lexeme'][$ws]['comments'][0]['id'];
 
@@ -184,7 +187,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'inputSystem' => $ws
 		);
 		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, $userId);
 		
 		$entry->read($entryId);
 
@@ -197,6 +200,7 @@ class TestLexCommentCommands extends UnitTestCase {
 	function testUpdateLexemeReply_ExistingReply_ReplyUpdatedOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
+		$userId = $e->createUser('joe', 'joe', 'joe');
 		
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -229,7 +233,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'inputSystem' => $ws
 		);
 		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
 		
 		$commentId = $entryArray['lexeme'][$ws]['comments'][0]['id'];
 
@@ -242,7 +246,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'parentId' => $commentId
 		);
 		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, $userId);
 		
 		$replyId = $entryArray['lexeme'][$ws]['comments'][0]['replies'][0]['id'];
 
@@ -255,7 +259,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'parentId' => $commentId
 		);
 
-		LexCommentCommands::updateCommentOrReply($projectId, $replyData, '12345');
+		LexCommentCommands::updateCommentOrReply($projectId, $replyData, $userId);
 		
 		$entry->read($entryId);
 
@@ -266,6 +270,7 @@ class TestLexCommentCommands extends UnitTestCase {
 	function testUpdateSenseComment_ExistingComment_UpdatesOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
+		$userId = $e->createUser('joe', 'joe', 'joe');
 		
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -299,7 +304,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'field' => 'sense_definition'
 		);
 		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
 		
 		$commentId = $entryArray['senses'][0]['definition'][$ws]['comments'][0]['id'];
 
@@ -314,7 +319,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'field' => 'sense_definition'
 		);
 		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
 		
 		$entry->read($entryId);
 
@@ -329,6 +334,7 @@ class TestLexCommentCommands extends UnitTestCase {
 	function testUpdateSenseReply_ExistingReply_UpdatesOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
+		$userId = $e->createUser('joe', 'joe', 'joe');
 		
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -362,7 +368,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'field' => 'sense_definition'
 		);
 		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
 		
 		$commentId = $entryArray['senses'][0]['definition'][$ws]['comments'][0]['id'];
 
@@ -376,7 +382,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'parentId' => $commentId
 		);
 		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, $userId);
 		
 		$replyId = $entryArray['senses'][0]['definition'][$ws]['comments'][0]['replies'][0]['id'];
 
@@ -390,7 +396,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'parentId' => $commentId
 		);
 
-		LexCommentCommands::updateCommentOrReply($projectId, $replyData, '12345');
+		LexCommentCommands::updateCommentOrReply($projectId, $replyData, $userId);
 		
 		$entry->read($entryId);
 
@@ -402,6 +408,7 @@ class TestLexCommentCommands extends UnitTestCase {
 	function testUpdateExampleComment_ExistingComment_UpdatesOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
+		$userId = $e->createUser('joe', 'joe', 'joe');
 		
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -440,7 +447,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'exampleId' => $example->id
 		);
 		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
 		
 		$entry->read($entryId);
 
@@ -455,6 +462,7 @@ class TestLexCommentCommands extends UnitTestCase {
 	function testUpdateExampleReply_ExistingReply_UpdatesOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
+		$userId = $e->createUser('joe', 'joe', 'joe');
 		
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -495,7 +503,7 @@ class TestLexCommentCommands extends UnitTestCase {
 			'parentId' => $commentId
 		);
 		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, '12345');
+		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, $userId);
 		
 		$entry->read($entryId);
 
