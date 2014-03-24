@@ -66,7 +66,7 @@ class LexEntryCommands {
 	 * @param array $entry - an array representation of an entry
 	 * @return array - the entry array with comments removed
 	 */
-	private static function removeComments($entry) {
+	public static function removeComments($entry) {
 		foreach ($entry[LexiconConfigObj::LEXEME] as $form => $lexeme) {
 			unset($entry[LexiconConfigObj::LEXEME][$form][LexiconConfigObj::COMMENTS_LIST]);
 		}
