@@ -679,6 +679,10 @@ div.new-item {
 	margin: 20px 0 20px 0;
 }
 
+div.new-item.collapse.in {
+	overflow: visible;
+}
+
 .activity-date {
 	font-size:12px;
 }
