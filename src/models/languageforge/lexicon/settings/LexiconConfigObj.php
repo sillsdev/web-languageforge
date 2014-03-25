@@ -12,6 +12,7 @@ class LexiconConfigObj {
 	// fields
 	const LEXEME = 'lexeme';
 	const DEFINITION = 'definition';
+	const GLOSS = 'gloss';
 	const POS = 'partOfSpeech';
 	const SEMDOM = 'semanticDomain';
 	const EXAMPLE_SENTENCE = 'sentence';
@@ -26,25 +27,21 @@ class LexiconConfigObj {
 	const REPLIES_LIST = 'replies';
 	
 	/**
-	 * 
 	 * @var string
 	 */
 	public $type;
 	
 	/**
-	 * 
 	 * @var boolean
 	 */
 	public $visible;
 
 	/**
-	 * 
 	 * @var array
 	 */
 	private $_privateProperties;
 	
 	/**
-	 * 
 	 * @var array
 	 */
 	private $_readOnlyProperties;

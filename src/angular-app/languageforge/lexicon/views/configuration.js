@@ -86,6 +86,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 			$scope.fieldConfig = {
 				'lexeme': $scope.config.entry.fields['lexeme'],
 				'definition': $scope.config.entry.fields.senses.fields['definition'],
+				'gloss': $scope.config.entry.fields.senses.fields['gloss'],
 				'partOfSpeech': $scope.config.entry.fields.senses.fields['partOfSpeech'],
 				'semanticDomain': $scope.config.entry.fields.senses.fields['semanticDomain'],
 				'sentence': $scope.config.entry.fields.senses.fields.examples.fields['sentence'],
