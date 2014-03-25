@@ -10,14 +10,14 @@
 		<div class="span4">
 			<!-- control buttons -->
 			<div class="control-group">
-				<button class="btn btn-success" data-ng-click="newEntry()"><i class="icon-plus"></i>New Word</button>
+				<button class="btn btn-success" data-ng-click="newEntry()"><i class="icon-plus"></i>New {{config.entry.fields.lexeme.label}}</button>
 			</div>
 			
 			<div ng-show="show.entries.length > 0">
 			
     			<!-- entry list search -->
     			<div style="margin-bottom:10px">
-    				<span class="pull-right">{{entriesTotalCount}} entries</span>
+				<span class="pull-right" style="color: grey">{{entriesTotalCount}} entries</span>
     				<input disabled width="4" placeholder="search filter" type="text" class="input-medium search-query" data-ng-model="searchText" />
     				<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''" data-ng-show="searchText && searchText != ''">
     					<i class="icon-remove" style="color:black; cursor: pointer"></i>
@@ -48,9 +48,10 @@
 			<tabset data-ng-show="entryLoaded()">
 				<!-- control buttons -->
 				<div class="control-group pull-right" data-ng-show="entryLoaded()">
-					<button class="btn" style="margin-right: 140px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry()">
-						<i class="icon-save"></i>{{saveButtonTitle()}}</button>
-					<button data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="Delete Word"><i class="icon-remove"></i>Word</button>
+					<span style="color: grey; margin-right: 10px">
+						{{saveNotice()}}</span>
+					<button data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="Delete Word">
+						<i class="icon-remove"></i>{{config.entry.fields.lexeme.label}}</button>
 				</div>
 				
 				<tab heading="Edit">
@@ -82,16 +83,16 @@
 				</tab>
 			</tabset>
 		</div>
-		
-		<!--
-		<div class="span5">
-			<pre>currentEntry
-				{{currentEntry|json}}</pre>
-			<pre>pristineEntry
-				{{pristineEntry|json}}</pre>
-			<pre>entries list
-				{{entries|json}}</pre>
-		</div>
-		-->
 	</div>
+<!-- 	
+	<div class="row">
+		<div class="span4">
+			<pre>show.entries list {{show.entries|json}}</pre>
+		</div>
+		<div class="span8">
+			<pre>currentEntry {{currentEntry|json}}</pre>
+			<pre>pristineEntry {{pristineEntry|json}}</pre>
+		</div>
+	</div>
+ -->
 </div>

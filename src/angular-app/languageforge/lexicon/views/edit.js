@@ -33,16 +33,28 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return false;
 	};
 	
-	$scope.saveButtonTitle = function() {
+	var saving = false;
+	var saved = false;
+	$scope.saveNotice = function() {
 		if ($scope.currentEntryIsDirty()) {
-			return "Save Entry";
+			if (saving) {
+				return "Saving entry";
+			} else {
+				return "Entry changed";
+			}
 		} else {
-			return "Entry saved " + moment($scope.lastSavedDate).fromNow();
+			if (saved) {
+				return "Entry saved";
+//				return "Entry saved " + moment($scope.lastSavedDate).fromNow();
+			} else {
+				return "";
+			}
 		}
 	};
 
 	$scope.saveCurrentEntry = function() {
 		if ($scope.currentEntryIsDirty()) {
+			saving = true;
 			var foundLexeme = false;
 			angular.forEach($scope.config.entry.fields.lexeme.inputSystems, function(ws) {
 				if($scope.currentEntry.lexeme[ws].value != '') {
@@ -55,6 +67,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 					$scope.setCurrentEntry(result.data);
 					$scope.lastSavedDate = new Date();
 					$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
+					saved = true;
+					saving = false;
 				});
 				return true;
 			} else {
@@ -110,6 +124,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		$scope.lexemeFormRequired = false;
 		$scope.currentEntry = entry;
 		pristineEntry = angular.copy(entry);
+		saved = false;
 	};
 	
 	$scope.editEntry = function(id) {
@@ -186,7 +201,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.load = {
 		iEntryStart: 0,
-		numberOfEntries: null
+		numberOfEntries: null	// use null to grab all data from iEntryStart onwards
 	}; 
 	$scope.show = {
 		iEntryStart: 0,
@@ -241,40 +256,35 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries, true);
 	
-	//$interval($scope.saveCurrentEntry, 60000, 1);
-	//TODO set a watch on currentEntry
-	// when currentEntry changes, if it can be saved, then
-	// set a new 30 second timer, and delete the old timer
-	// when timer goes off, execute the save now method and delete the timer
-	
-	$scope.autoSave = function() {
+	function autoSave() {
 		console.log("autoSave ");
+		$scope.saveCurrentEntry();
 	};
 	
-	var stopAutoSaveTimer;
-	$scope.startAutoSaveTimer = function() {
-		if (angular.isDefined(stopAutoSaveTimer)) {
+	var autoSaveTimer;
+	function startAutoSaveTimer() {
+		if (angular.isDefined(autoSaveTimer)) {
 			return;
 		}
-//		stopAutoSaveTimer = $interval($scope.saveCurrentEntry, 60000, 1);
-		stopAutoSaveTimer = $interval($scope.autoSave, 10000, 1);
+//		autoSaveTimer = $interval(autoSave, 10000, 1);
+		autoSaveTimer = $interval($scope.saveCurrentEntry, 10000, 1);
 	};
-	$scope.cancelAutoSaveTimer = function() {
-		if (angular.isDefined(stopAutoSaveTimer)) {
-			$interval.cancel(stopAutoSaveTimer);
-			stopAutoSaveTimer = undefined;
+	function cancelAutoSaveTimer() {
+		if (angular.isDefined(autoSaveTimer)) {
+			$interval.cancel(autoSaveTimer);
+			autoSaveTimer = undefined;
 		}
 	};
 	
-	$scope.$watchCollection('currentEntry', function(newValue) {
+	$scope.$watch('currentEntry', function(newValue) {
 		if (newValue != undefined && $scope.currentEntryIsDirty) {
-			$scope.cancelAutoSaveTimer();
-			$scope.startAutoSaveTimer();
+			cancelAutoSaveTimer();
+			startAutoSaveTimer();
 		}
-	});
+	}, true);
 	
 	$scope.$on('$destroy', function() {
-		$scope.cancelAutoSaveTimer();
+		cancelAutoSaveTimer();
 	});
 	
 	$scope.submitComment = function(comment) {
