@@ -40,7 +40,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			if (saving) {
 				return "Saving entry";
 			} else {
-				return "Entry changed";
+				return "";
 			}
 		} else {
 			if (saved) {
@@ -54,7 +54,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 
 	$scope.saveCurrentEntry = function() {
 		if ($scope.currentEntryIsDirty()) {
-			saving = true;
+			cancelAutoSaveTimer();
 			var foundLexeme = false;
 			angular.forEach($scope.config.entry.fields.lexeme.inputSystems, function(ws) {
 				if($scope.currentEntry.lexeme[ws].value != '') {
@@ -62,9 +62,12 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				};
 			});
 			if (foundLexeme) {
+				saving = true;
 				lexService.update($scope.prepEntryForUpdate($scope.currentEntry), function(result) {
 					$scope.updateListWithEntry(result.data);
-					$scope.setCurrentEntry(result.data);
+					if ($scope.currentEntry.id != '') { // new word button pressed - don't set current entry
+						$scope.setCurrentEntry(result.data);
+					}
 					$scope.lastSavedDate = new Date();
 					$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
 					saved = true;
@@ -281,9 +284,11 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	
 	$scope.$watch('currentEntry', function(newValue) {
-		if (newValue != undefined && $scope.currentEntryIsDirty) {
+		if (newValue != undefined) {
 			cancelAutoSaveTimer();
-			startAutoSaveTimer();
+			if ($scope.currentEntryIsDirty) {
+				startAutoSaveTimer();
+			}
 		}
 	}, true);
 	
