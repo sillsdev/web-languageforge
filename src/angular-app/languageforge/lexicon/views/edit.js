@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$interval', '$filter', 'lexLinkService', 
-                        function ($scope, userService, sessionService, lexService, configService, $window, $interval, $filter, linkService) {
+.controller('editCtrl', ['$scope', '$rootScope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 
+                        function ($scope, $rootScope, userService, sessionService, lexService, configService, $window, $modal, $interval, $filter, linkService) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
 	// for an idea on expanding text areas
 	
@@ -38,21 +38,17 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.saveNotice = function() {
 		if ($scope.currentEntryIsDirty()) {
 			if (saving) {
-				return "Saving entry";
-			} else {
-				return "";
+				return "Saving";
 			}
 		} else {
 			if (saved) {
-				return "Entry saved";
-//				return "Entry saved " + moment($scope.lastSavedDate).fromNow();
-			} else {
-				return "";
+				return "Saved";
 			}
 		}
+		return "";
 	};
 
-	$scope.saveCurrentEntry = function() {
+	$scope.saveCurrentEntry = function(successCallback, failCallback) {
 		if ($scope.currentEntryIsDirty()) {
 			cancelAutoSaveTimer();
 			var foundLexeme = false;
@@ -64,13 +60,18 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			if (foundLexeme) {
 				saving = true;
 				lexService.update($scope.prepEntryForUpdate($scope.currentEntry), function(result) {
-					$scope.updateListWithEntry(result.data);
-					if ($scope.currentEntry.id != '') { // new word button pressed - don't set current entry
-						$scope.setCurrentEntry(result.data);
+					if (result.ok) {
+						$scope.updateListWithEntry(result.data);
+						if ($scope.currentEntry.id != '') { // new word button pressed - don't set current entry
+							$scope.setCurrentEntry(result.data);
+						}
+						$scope.lastSavedDate = new Date();
+						$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
+						saved = true;
+						(successCallback||angular.noop)();
+					} else {
+						(failCallback||angular.noop)();
 					}
-					$scope.lastSavedDate = new Date();
-					$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
-					saved = true;
 					saving = false;
 				});
 				return true;
@@ -138,7 +139,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		$scope.lexemeFormRequired = false;
 		if (angular.isUndefined(id) || $scope.currentEntry.id != id) {
 			if ($scope.saveCurrentEntry()) {
-				if (arguments.length == 0) {
+				if (angular.isUndefined(id)) {
 					//if ($scope.currentEntry.id != '') {
 						var newEntry = {id:''};
 						$scope.setCurrentEntry(newEntry);
@@ -226,7 +227,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		if ($scope.show.iEntryStart > $scope.entriesTotalCount) {
 			$scope.show.iEntryStart = $scope.entriesTotalCount;
 		} else {
-//			console.log("show.more ", $scope.show.iEntryStart);
 			var moreEntries = $scope.entries.slice($scope.show.iEntryStart, $scope.show.iEntryStart + $scope.show.numberOfEntries);
 			$scope.show.entries = $scope.show.entries.concat(moreEntries);
 		}
@@ -262,20 +262,21 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
+	var onRouteChangeOff = $scope.$on('$locationChangeStart', routeChange);
 	$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries, true);
 	
-	function autoSave() {
-		console.log("autoSave ");
-		$scope.saveCurrentEntry();
-	};
+//	function autoSave() {
+//		console.log("autoSave ");
+//		$scope.saveCurrentEntry();
+//	};
 	
 	var autoSaveTimer;
 	function startAutoSaveTimer() {
 		if (angular.isDefined(autoSaveTimer)) {
 			return;
 		}
-//		autoSaveTimer = $interval(autoSave, 10000, 1);
-		autoSaveTimer = $interval($scope.saveCurrentEntry, 10000, 1);
+//		autoSaveTimer = $interval(autoSave, 5000, 1);
+		autoSaveTimer = $interval($scope.saveCurrentEntry, 5000, 1);
 	};
 	function cancelAutoSaveTimer() {
 		if (angular.isDefined(autoSaveTimer)) {
@@ -295,7 +296,49 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.$on('$destroy', function() {
 		cancelAutoSaveTimer();
+		$scope.saveCurrentEntry();
 	});
+	
+	function routeChange(event, newUrl) {
+		// TODO Remove 3 lines. Debug IJH 2014-03
+//		console.log("routeChange ");
+//		event.preventDefault();
+//		return;
+		
+		//Navigate to newUrl if the entry isn't dirty
+		if (! $scope.currentEntryIsDirty()) return;
+		
+		var modalOptions = {
+			closeButtonText: 'Cancel',
+			actionButtonText: 'Ignore Changes',
+			headerText: 'Unsaved Changes',
+			bodyText: 'You have unsaved changes. Leave the page?'
+		};
+		
+		$modal.showModal({}, modalOptions).then(function (result) {
+			if (result === 'ok') {
+				onRouteChangeOff(); //Stop listening for location changes
+				$location.path(newUrl); //Go to page they're interested in
+			}
+		});
+		
+		//prevent navigation by default since we'll handle it
+		//once the user selects a dialog option
+		event.preventDefault();
+		return;
+	};
+	
+	$window.onbeforeunload = function (event) {
+		var message = 'You have unsaved changes.';
+		if (typeof event == 'undefined') {
+			event = window.event;
+		}
+		if (! $scope.currentEntryIsDirty()) return;
+		if (event) {
+			event.returnValue = message;
+		}
+		return message;
+	};
 	
 	$scope.submitComment = function(comment) {
 		console.log('submitComment = ' + comment);
