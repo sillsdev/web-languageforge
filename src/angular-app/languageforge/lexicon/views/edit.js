@@ -77,8 +77,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			}
 		}
 		if (isNew) {
-			$scope.show.entries.unshift(entry);
-			$scope.entries.unshift(entry);
+			$scope.show.entries.unshift(toInsert);
+			$scope.entries.unshift(toInsert);
 		}
 	};
 	
