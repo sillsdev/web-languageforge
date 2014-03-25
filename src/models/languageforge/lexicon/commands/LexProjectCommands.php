@@ -37,7 +37,7 @@ class LexProjectCommands {
 		$allowedExtensions = array(".lift");
 		
 		// LIFT file
-		$base64data = substr($import['file']['data'], 13);
+		$base64data = substr($import['file']['data'], strpos($import['file']['data'], 'base64,')+7);
 		$liftXml = base64_decode($base64data);
 		
 		// LIFT file name
