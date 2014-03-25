@@ -34,7 +34,7 @@ class TestLexProjectCommands extends UnitTestCase {
 		$config = json_decode(json_encode(LexBaseViewDto::encode($projectId, $userId)['config']), true);
 		
 		$this->assertTrue($config['tasks']['addMeanings']['visible']);
-		$this->assertEqual($config['entry']['fields']['lexeme']['inputSystems'][0], 'en');
+		$this->assertEqual($config['entry']['fields']['lexeme']['inputSystems'][0], 'th');
 
 		$config['tasks']['addMeanings']['visible'] = false;
 		$config['entry']['fields']['lexeme']['inputSystems'] = array('my', 'th');
