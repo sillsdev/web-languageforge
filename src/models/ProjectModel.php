@@ -92,6 +92,8 @@ class ProjectModel extends \models\mapper\MapperModel
 			$user->removeProject($this->id->asString());
 			$user->write();
 		}
+		$this->rrmdir($this->getAssetsFolderPath());
+		
 		ProjectModelMongoMapper::instance()->drop($this->databaseName());
 		ProjectModelMongoMapper::instance()->remove($this->id->asString());
 	}
@@ -242,7 +244,21 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @var string
 	 */
 	public $appName;
+	
+	private function rrmdir($dir) {
+		if (is_dir($dir)) {
+			$objects = scandir($dir);
+			foreach ($objects as $object) {
+				if ($object != "." && $object != "..") {
+					if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object);
+				}
+			}
+			reset($objects);
+			rmdir($dir);
+		}
+	}
 }
+
 
 /**
  * This class is separate from the ProjectModel to protect the smsSettings and emailSettings which are managed
