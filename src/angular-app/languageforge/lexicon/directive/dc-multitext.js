@@ -11,6 +11,7 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 				control : "="
 			},
 			controller: ['$scope', 'lexConfigService', function($scope, configService) {
+				$scope.definitionHelperUsed = false;
 				
 				configService.registerListener(function() {
 					$scope.gConfig = configService.getConfig();
@@ -58,7 +59,6 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 				};
 			}],
 			link : function(scope, element, attrs, controller) {
-				scope.definitionHelperUsed = false;
 				scope.$watch('model', function() {
 					scope.makeValidModel();
 					if (!scope.definitionHelperUsed) scope.definitionGlossHelper();
