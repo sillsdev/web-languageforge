@@ -62,7 +62,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				};
 			});
 			if (foundLexeme) {
-				lexService.update($scope.currentEntry, function(result) {
+				lexService.update($scope.prepEntryForUpdate($scope.currentEntry), function(result) {
 					$scope.updateListWithEntry(result.data);
 					$scope.setCurrentEntry(result.data);
 					$scope.lastSavedDate = new Date();
@@ -76,6 +76,10 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			}
 		}
 		return true;
+	};
+	
+	$scope.prepEntryForUpdate = function(entry) {
+		return $scope.recursiveRemoveProperties(entry, ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
 	};
 	
 	$scope.updateListWithEntry = function(entry) {
@@ -322,6 +326,24 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				field[propName] = propValue;
 			};
 		});
+	};
+	
+	$scope.recursiveRemoveProperties = function(startAt, properties) {
+		angular.forEach(startAt, function(value, key) {
+			var deleted = false;
+			angular.forEach(properties, function(propName) {
+				//console.log ("key = " + key + "  && propName = " + propName);
+				if (!deleted && key == propName) {
+					//console.log("deleted " + key + " (" + startAt[key] + ")");
+					delete startAt[key];
+					deleted = true;
+				}
+			});
+			if (!deleted && angular.isObject(value)) {
+				$scope.recursiveRemoveProperties(startAt[key], properties);
+			}
+		});
+		return startAt;
 	};
 	
 	// When comments tab is clicked, set up new config for its interior
