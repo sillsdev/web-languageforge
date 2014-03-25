@@ -59,6 +59,8 @@ class TestLiftImport extends UnitTestCase {
 		$this->assertEqual($entries[0]['lexeme']['th']['value'], "ฉู่ฉี่หมูกรอบ");
 		$this->assertEqual(count($entries[0]['senses']), 1);
 		$this->assertEqual($entries[0]['senses'][0]['definition']['en']['value'], "incorrect definition");
+		$this->assertEqual($entries[0]['senses'][0]['gloss']['en']['value'], "incorrect gloss");
+		$this->assertEqual($entries[0]['senses'][0]['gloss']['th']['value'], "th incorrect gloss");
 		$this->assertEqual($entries[0]['senses'][0]['partOfSpeech']['value'], "Adjective");
 		$this->assertEqual($entries[0]['senses'][0]['semanticDomain']['values'][0], "5.2 Food");
 		$this->assertEqual($entries[0]['senses'][0]['semanticDomain']['values'][1], "1 Universe, creation");
