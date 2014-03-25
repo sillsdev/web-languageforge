@@ -3,23 +3,7 @@
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 
                         function ($scope, userService, sessionService, lexService, configService, $window, $modal, $interval, $filter, linkService) {
-	// see http://alistapart.com/article/expanding-text-areas-made-elegant
-	// for an idea on expanding text areas
-	
-	/* this is what an entry looks like
-	$scope.currentEntry = {
-		'id': '1234',
-		'lexeme': { 'en': '', 'th': '' },
-		'senses': [
-			{
-				'meaning': { 'en': '', 'th': '' },
-			}
-		]
-	};
-	*/
-	
-	
-	
+
 	var pristineEntry = {};
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
@@ -74,9 +58,59 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return $scope.recursiveRemoveProperties(entry, ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
 	};
 	
+	$scope.getDefinitionOrGloss = function(listEntry) {
+		var meaning = '';
+		if (listEntry.definition) {
+			meaning = listEntry.definition;
+		} else if (listEntry.gloss) {
+			meaning = listEntry.gloss;
+		}
+		return meaning;
+	};
+	
+	$scope.getLexemeForDisplay = function(listEntry) {
+		return (listEntry.lexeme) ? listEntry.lexeme : '[Empty]';
+	};
+	
+	var getDefinition = function(entry) {
+		var meaning = '';
+		if (angular.isDefined($scope.config.entry) && angular.isDefined(entry.senses[0]) && angular.isDefined(entry.senses[0]['definition'])) {
+			var ws = $scope.config.entry.fields.senses.fields.definition.inputSystems[0];
+			var def = entry.senses[0]['definition'];
+			if (angular.isDefined(def[ws])) {
+				meaning = def[ws].value;
+			}
+		}
+		return meaning;
+	};
+	
+	var getGloss = function(entry) {
+		var gloss = '';
+		if (angular.isDefined($scope.config.entry) && angular.isDefined(entry.senses) && angular.isDefined(entry.senses[0]) && angular.isDefined(entry.senses[0]['gloss'])) {
+			var ws = $scope.config.entry.fields.senses.fields.gloss.inputSystems[0];
+			var gl = entry.senses[0]['gloss'];
+			if (angular.isDefined(gl[ws])) {
+				gloss = gl[ws].value;
+			}
+		}
+		return gloss;
+	};
+
+	var getLexeme = function(entry) {
+		var title = "";
+		if (entry.lexeme && $scope.config && $scope.config.entry) {
+			var lexemeInputSystem = $scope.config.entry.fields.lexeme.inputSystems[0];
+			if (angular.isDefined(entry.lexeme[lexemeInputSystem]) && entry.lexeme[lexemeInputSystem].value != '') {
+				title = entry.lexeme[lexemeInputSystem].value;
+			}
+		}
+		return title;
+	};
+	
+
 	$scope.updateListWithEntry = function(entry) {
 		var isNew = true;
-		var toInsert = {id: entry.id, lexeme: $scope.getTitle(entry), definition: $scope.getMeaning(entry)};
+		var toInsert = {id: entry.id, lexeme: getLexeme(entry), definition: getDefinition(entry), gloss: getGloss(entry)};
 		for (var i=0; i<$scope.show.entries.length; i++) {
 			var e = $scope.show.entries[i];
 			if (e.id == entry.id) {
@@ -102,16 +136,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			}
 		}
 		return index;
-	};
-	
-	$scope.getMeaning = function(entry) {
-		var meaning = '';
-		if (entry.definition) {
-			meaning = entry.definition;
-		} else if (entry.gloss) {
-			meaning = entry.gloss;
-		} 
-		return meaning;
 	};
 	
 	$scope.setCurrentEntry = function(entry) {
@@ -143,23 +167,14 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		$scope.entriesTotalCount++;
 	};
 	
-	$scope.getTitle = function(entry) {
-		entry = entry || $scope.currentEntry;
-		var title = "[empty]";
-		if (entry.lexeme) {
-			title = entry.lexeme;
-		}
-		return title;
-	};
-
 	$scope.entryLoaded = function() {
 		return angular.isDefined($scope.currentEntry.id);
 	};
 	
 	$scope.deleteEntry = function(entry) {
-		if ($window.confirm("Are you sure you want to delete '" + $scope.getTitle(entry) + "'?")) {
+		if ($window.confirm("Are you sure you want to delete '" + $scope.getLexeme(entry) + "'?")) {
 			if ($scope.entryHasComments(entry)) {
-				if ($window.confirm("Are you sure you want to delete '" + $scope.getTitle(entry) + "'?")) {
+				if ($window.confirm("Are you sure you want to delete '" + $scope.getLexeme(entry) + "'?")) {
 					var entryIndex = $scope.getEntryIndexById(entry.id);
 					$scope.show.entries.splice(entryIndex, 1);
 					$scope.entries.splice(entryIndex, 1);
