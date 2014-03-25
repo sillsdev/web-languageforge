@@ -21,8 +21,8 @@
         			<typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
         				<ul>
         					<li typeahead-item="e" data-ng-repeat="e in typeahead.searchResults" class="typeahead-item">
-        						<p class="name">{{getTitle(e)}}</p>
-        						<p class="email">{{getMeaning(e)}}</p>
+        						<p class="name">{{getLexemeForDisplay(e)}}</p>
+        						<p class="email">{{getDefinitionOrGloss(e)}}</p>
         					</li>
         				</ul>
         			</typeahead>
@@ -36,8 +36,8 @@
     				<table class="table table-condensed ">
     					<tbody>
     						<tr data-ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" data-ng-repeat="e in show.entries track by e.id">
-    							<td title="{{getTitle(e)}}" data-ng-click="editEntry(e.id)">{{getTitle(e)| characters:40}}</td>
-    							<td title="{{getMeaning(e)}}" data-ng-click="editEntry(e.id)">{{getMeaning(e)| characters:40}}</td>
+    							<td title="{{getLexemeForDisplay(e)}}" data-ng-click="editEntry(e.id)">{{getLexemeForDisplay(e)| characters:40}}</td>
+    							<td title="{{getDefinitionOrGloss(e)}}" data-ng-click="editEntry(e.id)">{{getDefinitionOrGloss(e)| characters:40}}</td>
     						</tr>
     					</tbody>
     				</table>
