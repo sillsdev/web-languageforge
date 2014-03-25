@@ -37,11 +37,22 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 	private function getDefinition($entry) {
 		$senses = $entry['senses'];
 		if (count($senses) > 0 && array_key_exists('definition', $senses[0]) && count($senses[0]['definition']) > 0) {
-			// TODO: actually figure out the preferred writing system for display and use that
 			$ws = $this->_config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems[0];
-			$definition = $senses[0]['definition'];
+			$definition = $senses[0][LexiconConfigObj::DEFINITION];
 			if (isset($definition[$ws])) {
 				return $definition[$ws]['value'];
+			}
+		}
+		return '';
+	}
+
+	private function getGloss($entry) {
+		$senses = $entry['senses'];
+		if (count($senses) > 0 && array_key_exists('gloss', $senses[0]) && count($senses[0]['gloss']) > 0) {
+			$ws = $this->_config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems[0];
+			$gloss = $senses[0][LexiconConfigObj::GLOSS];
+			if (isset($gloss[$ws])) {
+				return $gloss[$ws]['value'];
 			}
 		}
 		return '';
@@ -141,6 +152,7 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 					$entriesToReturn[] = array(
 						'id' => $entry['id'],
 						'definition' => $this->getDefinition($entry),
+						'gloss' => $this->getGloss($entry),
 						'lexeme' => $this->getLexeme($entry)
 					);
 				}
@@ -152,6 +164,7 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 				$entriesToReturn[] = array(
 					'id' => $entry['id'],
 					'definition' => $this->getDefinition($entry),
+					'gloss' => $this->getGloss($entry),
 					'lexeme' => $this->getLexeme($entry)
 				);
 			}
