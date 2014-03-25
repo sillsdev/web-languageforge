@@ -134,9 +134,9 @@ angular.module(
 		};
 		
 		$scope.projectTypes = {
-			'sfchecks': 'Community Scripture Checking Project',
-			'rapuma': 'Publishing Project',
-			'lexicon': 'Web Dictionary Project'
+			'sfchecks': 'Community Scripture Checking',
+			'rapuma': 'Publishing',
+			'lexicon': 'Web Dictionary'
 		};
 		
 		$scope.projectTypesBySite = {
