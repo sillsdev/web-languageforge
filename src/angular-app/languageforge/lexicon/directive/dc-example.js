@@ -9,7 +9,8 @@ angular.module('palaso.ui.dc.example', ['palaso.ui.dc.multitext'])
 				model : "=",
 				index : "=",
 				remove : "=",
-				comment : "&"
+				comment : "&",
+				control : "="
 			},
 			controller: ['$scope', function($scope) {
 				$scope.makeValidModel = function() {

@@ -7,6 +7,7 @@ angular.module('palaso.ui.dc.multioptionlist', ['palaso.ui.dc.comments'])
 			scope : {
 				config : "=",
 				model : "=",
+				control: "="
 			},
 			controller: ['$scope', 'lexEntryService', function($scope, lexService) {
 				$scope.makeValidModel = function() {
