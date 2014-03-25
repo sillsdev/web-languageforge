@@ -7,7 +7,8 @@ angular.module('palaso.ui.dc.comments', ['angularjs-gravatardirective'])
 		scope: {
 			config : "=",
 			model : "=",
-			submitComment : "&submit"
+			submitComment : "&submit",
+			control: "="
 		},
 		controller: ['$scope', function($scope) {
 			$scope.data = {newComment: "", newReply: ""};

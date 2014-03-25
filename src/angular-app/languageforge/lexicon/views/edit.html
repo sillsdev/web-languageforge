@@ -50,19 +50,19 @@
 				<div class="control-group pull-right" data-ng-show="entryLoaded()">
 					<span style="color: grey; margin-right: 10px">
 						{{saveNotice()}}</span>
-					<button data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="Delete Word">
+					<button ng-show="control.canDeleteWord()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="Delete Word">
 						<i class="icon-remove"></i>{{config.entry.fields.lexeme.label}}</button>
 				</div>
 				
-				<tab heading="Edit">
+				<tab heading="Edit" active="editTab.active">
 					<div style="margin-top:20px" class="row">
 						<div class="animate-show" data-ng-show="entryLoaded()" id="entryItemView">
 							<p class="text-error" data-ng-show="lexemeFormRequired">At least one lexeme form is required</p>
-							<dc-entry config="config" model="currentEntry"></dc-entry>
+							<dc-entry config="config" model="currentEntry" control="control"></dc-entry>
 						</div>
 					</div>
 				</tab>
-				<tab heading="Comment" active="commentsTabActive" select="selectCommentsTab()" deselect="deselectCommentsTab()" disabled="currentEntry.id == ''">
+				<tab heading="Comment" active="commentsTab.active" disabled="currentEntry.id == ''">
 					<fieldset class="filter-controls override-bootstrap">
 						<legend class="override-bootstrap">Filters <i data-ng-click="toggleFilters()" style="cursor: pointer" data-ng-class="filter.chevronIcon"></i></legend>
 						<div class="filter-controls-inner" data-collapse="!filter.visible">
