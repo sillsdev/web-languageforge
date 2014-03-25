@@ -15,14 +15,18 @@
         	<button class="btn btn-small" data-ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Create New Project</button>
         </form>
         <div class="new-item" collapse="newProjectCollapsed">
-        	<form class="well" name="newProjectForm">
-        	    <fieldset>
+        	<form class="well" class="form-horizontal" name="newProjectForm">
+        	    <div class="control-group">
                	    <input type="text" data-ng-model="newProject.projectName" maxlength="50" required placeholder="Project Name"/>
-                    <label class="radio" ng-repeat="type in projectTypesBySite[site()]">
-                        <input type="radio" name="projectType" data-ng-model="newProject.appName" value="{{type}}">{{projectTypes[type]}}
-                    </label>
-            	<button type="submit" class="btn" data-ng-disabled="newProjectForm.$invalid" data-ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
-        	    </fieldset>
+               	</div>
+        	    <div class="control-group">
+                    <select rqeuired ng-model="newProject.appName" ng-options="type as projectTypes[type] for type in projectTypesBySite[site()]">
+                        <option value="">-- select type --</option>
+                    </select>
+               	</div>
+        	    <div class="control-group">
+                	<button type="submit" class="btn" data-ng-disabled="!(newProject.projectName && newProject.appName)" data-ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
+               	</div>
         	</form>
         </div>
         <hr />
