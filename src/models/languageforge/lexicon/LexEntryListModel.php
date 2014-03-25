@@ -1,12 +1,21 @@
 <?php 
 namespace models\languageforge\lexicon;
 
+use models\languageforge\lexicon\settings\LexConfiguration;
+
 use models\languageforge\lexicon\commands\LexEntryCommands;
+use models\ProjectModel;
 
 use models\languageforge\lexicon\settings\LexiconConfigObj;
 
 class LexEntryListModel extends \models\mapper\MapperListModel {
 
+	/**
+	 * 
+	 * @var LexConfiguration
+	 */
+	private $_config;
+	
 	public static function mapper($databaseName) {
 		static $instance = null;
 		if (null === $instance) {
@@ -15,7 +24,13 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		return $instance;
 	}
 
+	/**
+	 * 
+	 * @param ProjectModel $projectModel
+	 */
 	public function __construct($projectModel) {
+		$lexProject = new LexiconProjectModel($projectModel->id->asString());
+		$this->_config = $lexProject->settings;
 		parent::__construct( self::mapper($projectModel->databaseName()), array(), array('guid', 'lexeme', 'senses'));
 	}
 	
@@ -24,9 +39,9 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		$definition = new \stdClass();
 		if (count($senses) > 0 && array_key_exists('definition', $senses[0]) && count($senses[0]['definition']) > 0) {
 			// TODO: actually figure out the preferred writing system for display and use that
+			$ws = $this->_config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems[0];
 			$definition = $senses[0]['definition'];
-			$defKeys = array_keys($definition);
-			return $definition[$defKeys[0]]['value'];
+			return $definition[$ws]['value'];
 		}
 		return $definition;
 	}
@@ -34,9 +49,9 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 	private function getLexeme($entry) {
 		$lexeme = $entry['lexeme'];
 		if (count($lexeme) > 0) {
+			$ws = $this->_config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[0];
 			// TODO: actually figure out the preferred writing system for display and use that
-			$lexKeys = array_keys($lexeme);
-			return $lexeme[$lexKeys[0]]['value'];
+			return $lexeme[$ws]['value'];
 		}
 		return $definition;
 	}
