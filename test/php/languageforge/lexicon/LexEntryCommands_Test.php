@@ -286,7 +286,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$result = LexEntryCommands::listEntries($projectId);
 
 		$this->assertEqual($result->entries[0]['lexeme'], 'Apfel0');
-		$this->assertEqual(get_class($result->entries[0]['definition']), 'stdClass');
+		$this->assertEqual($result->entries[0]['definition'], '');
 		$this->assertEqual($result->entries[3]['definition'], 'apple');
 	}
 }
