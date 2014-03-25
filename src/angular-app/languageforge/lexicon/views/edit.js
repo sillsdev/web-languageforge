@@ -410,5 +410,22 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 //		console.log('Applying filters:', $scope.filter);
 		// TODO: Implement this
 	};
+	
+	
+	// search typeahead
+	$scope.typeahead = {term : '', searchResults : [], };
+	$scope.typeahead.searchEntries = function(query) {
+		if (query.length > 1) {
+			$scope.typeahead.searchResults = $filter('filter')($scope.entries, query);
+		} else {
+			$scope.typeahead.searchResults = [];
+		}
+	};
+	
+	$scope.typeahead.searchSelect = function(entry) {
+		$scope.typeahead.searchItemSelected = '';
+		$scope.editEntry(entry.id);
+	};
+	
 }])
 ;
