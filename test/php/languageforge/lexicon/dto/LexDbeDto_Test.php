@@ -65,13 +65,13 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		for ($i = 0; $i < 10; $i++) {
 			$entry = new LexEntryModel($project);
-			$entry->lexeme->form('en', 'Apfel' . $i);
+			$entry->lexeme->form('th', 'Apfel' . $i);
 			$entry->senses[] = $sense;
 			$entry->write();
 		}
 		
 		$entry = new LexEntryModel($project);
-		$entry->lexeme->form('en', 'Aardvark');
+		$entry->lexeme->form('th', 'Aardvark');
 		$entry->senses[] = $sense;
 		$entry->write();
 
@@ -80,7 +80,7 @@ class TestLexDbeDto extends UnitTestCase {
 		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 11);
 		$this->assertEqual($result['entriesTotalCount'], 11);
-		$this->assertEqual($result['entry']['lexeme']['en']['value'], 'Aardvark', 'Aardvark should sort first');
+		$this->assertEqual($result['entry']['lexeme']['th']['value'], 'Aardvark', 'Aardvark should sort first');
 	}
 	
 	function testEncode_EntriesAndLoadPartial_PartialOk() {
@@ -104,7 +104,7 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		for ($i = 9; $i >= 0; $i--) {
 			$entry = new LexEntryModel($project);
-			$entry->lexeme->form('en', 'Apfel' . $i);
+			$entry->lexeme->form('th', 'Apfel' . $i);
 			$entry->senses[] = $sense;
 			$entry->write();
 		}
@@ -114,14 +114,14 @@ class TestLexDbeDto extends UnitTestCase {
 		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 5);
 		$this->assertEqual($result['entriesTotalCount'], 10);
-		$this->assertEqual($result['entry']['lexeme']['en']['value'], 'Apfel0', 'Apfel0 should sort first');
+		$this->assertEqual($result['entry']['lexeme']['th']['value'], 'Apfel0', 'Apfel0 should sort first');
 
 		$result = LexDbeDto::encode($projectId, $userId, 4, 5);
 		
 		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 5);
 		$this->assertEqual($result['entriesTotalCount'], 10);
-		$this->assertEqual($result['entry']['lexeme']['en']['value'], 'Apfel4', 'Apfel4 should sort first');
+		$this->assertEqual($result['entry']['lexeme']['th']['value'], 'Apfel4', 'Apfel4 should sort first');
 	}
 	
 	function testReadEntry_NoComments_ReadBackOk() {

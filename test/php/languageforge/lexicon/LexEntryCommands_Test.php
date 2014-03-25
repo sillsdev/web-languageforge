@@ -157,14 +157,14 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 		for ($i = 0; $i < 10; $i++) {
 			$entry = new LexEntryModel($project);
-			$entry->lexeme->form('de', 'Apfel' . $i);
+			$entry->lexeme->form('th', 'Apfel' . $i);
 			$entry->senses[] = $sense;
 			$entry->write();
 		}
 		
 		$result = LexEntryCommands::listEntries($projectId);
 		$this->assertEqual($result->count, 10);
-		$this->assertEqual($result->entries[5]['lexeme']['de']['value'], 'Apfel5');
+		$this->assertEqual($result->entries[5]['lexeme'], 'Apfel5');
 	}
 	
 	function testListEntries_missingInfoDefinition_someEntries() {
@@ -182,14 +182,14 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 		for ($i = 0; $i < 10; $i++) {
 			$entry = new LexEntryModel($project);
-			$entry->lexeme->form('de', 'Apfel' . $i);
+			$entry->lexeme->form('th', 'Apfel' . $i);
 			if ($i % 2 == 0) {
 				$entry->senses[] = $sense;
 			}
 			$entry->write();
 		}
 		$entry = new LexEntryModel($project);
-		$entry->lexeme->form('de', 'Apfel');
+		$entry->lexeme->form('th', 'Apfel');
 		$entry->senses[] = $senseNoDef;
 		$entry->write();
 		
@@ -213,7 +213,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 		for ($i = 0; $i < 10; $i++) {
 			$entry = new LexEntryModel($project);
-			$entry->lexeme->form('de', 'Apfel' . $i);
+			$entry->lexeme->form('th', 'Apfel' . $i);
 			$entry->senses[] = $sense;
 			if ($i % 2 == 0) {
 				$entry->senses[] = $senseNoPos;
@@ -237,13 +237,13 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 		for ($i = 0; $i < 10; $i++) {
 			$entry = new LexEntryModel($project);
-			$entry->lexeme->form('de', 'Apfel' . $i);
+			$entry->lexeme->form('th', 'Apfel' . $i);
 			$sense = new Sense();
 			$sense->definition->form('en', 'apple');
 			$sense->partOfSpeech->value = 'noun';
 			$example = new Example();
 			if ($i % 2 == 0) {
-				$example->sentence->form('de', 'Ich esse Apfeln oft');
+				$example->sentence->form('th', 'Ich esse Apfeln oft');
 			}
 			if ($i % 3 == 0) {
 				$example->translation->form('en', 'I eat Apples often');
@@ -269,7 +269,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 		for ($i = 0; $i < 10; $i++) {
 			$entry = new LexEntryModel($project);
-			$entry->lexeme->form('de', 'Apfel' . $i);
+			$entry->lexeme->form('th', 'Apfel' . $i);
 			if ($i % 2 == 0) {
 				$sense = new Sense();
 				$entry->senses[] = $sense;
@@ -285,9 +285,9 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 		$result = LexEntryCommands::listEntries($projectId);
 
-		$this->assertEqual($result->entries[0]['lexeme']['de']['value'], 'Apfel0');
+		$this->assertEqual($result->entries[0]['lexeme'], 'Apfel0');
 		$this->assertEqual(get_class($result->entries[0]['definition']), 'stdClass');
-		$this->assertEqual($result->entries[3]['definition']['en']['value'], 'apple');
+		$this->assertEqual($result->entries[3]['definition'], 'apple');
 	}
 }
 
