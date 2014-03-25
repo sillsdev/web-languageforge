@@ -36,14 +36,15 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 	
 	private function getDefinition($entry) {
 		$senses = $entry['senses'];
-		$definition = new \stdClass();
 		if (count($senses) > 0 && array_key_exists('definition', $senses[0]) && count($senses[0]['definition']) > 0) {
 			// TODO: actually figure out the preferred writing system for display and use that
 			$ws = $this->_config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems[0];
 			$definition = $senses[0]['definition'];
-			return $definition[$ws]['value'];
+			if (isset($definition[$ws])) {
+				return $definition[$ws]['value'];
+			}
 		}
-		return $definition;
+		return '';
 	}
 	
 	private function getLexeme($entry) {
@@ -51,9 +52,11 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		if (count($lexeme) > 0) {
 			$ws = $this->_config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[0];
 			// TODO: actually figure out the preferred writing system for display and use that
-			return $lexeme[$ws]['value'];
+			if (isset($lexeme[$ws])) {
+				return $lexeme[$ws]['value'];
+			}
 		}
-		return $definition;
+		return '';	
 	}
 	
 	public function readForDto($missingInfo = '') {
