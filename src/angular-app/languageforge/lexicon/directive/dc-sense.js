@@ -27,7 +27,7 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
 				};
 				
 				$scope.deleteExample = function(index) {
-					if ($window.confirm("Are you sure you want to delete example #" + (index+1) + " ?")) {
+					if ($window.confirm("Are you sure you want to delete example #" + (index+1) + " ? (Comments will also be deleted)")) {
 						$scope.model.examples.splice(index, 1);
 					}
 				};
