@@ -106,11 +106,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.getMeaning = function(entry) {
 		var meaning = '';
-		if (angular.isDefined($scope.config.entry) && angular.isDefined(entry.definition)) {
-			var ws = $scope.config.entry.fields.senses.fields.definition.inputSystems[0];
-			if (angular.isDefined(entry.definition[ws])) {
-				meaning = entry.definition[ws].value;
-			}
+		if (angular.isDefined(entry.definition)) {
+			meaning = entry.definition;
 		}
 		return meaning;
 	};
@@ -147,11 +144,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.getTitle = function(entry) {
 		entry = entry || $scope.currentEntry;
 		var title = "[empty]";
-		if (entry.lexeme && $scope.config && $scope.config.entry) {
-			var lexemeInputSystem = $scope.config.entry.fields.lexeme.inputSystems[0];
-			if (angular.isDefined(entry.lexeme[lexemeInputSystem]) && entry.lexeme[lexemeInputSystem].value != '') {
-				title = entry.lexeme[lexemeInputSystem].value;
-			}
+		if (entry.lexeme) {
+			title = entry.lexeme;
 		}
 		return title;
 	};
