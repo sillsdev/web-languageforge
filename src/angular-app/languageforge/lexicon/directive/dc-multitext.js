@@ -37,10 +37,31 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 						return $scope.gConfig.inputSystems[inputSystem].abbreviation;
 					}
 				};
+				
+				$scope.definitionGlossHelper = function() {
+					// this is sort of a hack to mimick a feature in WeSay that automatically copies the gloss field to the definition field
+					if (angular.isDefined($scope.config) && angular.isDefined($scope.config.label) && $scope.config.label == 'Meaning') {
+						angular.forEach($scope.config.inputSystems, function(ws) {
+							var definitionMultiText = $scope.model;
+							var glossMultiText = $scope.$parent.$parent.$parent.$parent.model.gloss;
+							if (angular.isDefined(definitionMultiText) && angular.isDefined(definitionMultiText[ws])) {
+								if (angular.isDefined(glossMultiText) && angular.isDefined(glossMultiText[ws])) {
+									if ($scope.model[ws].value == '') {
+										$scope.definitionHelperUsed = true;
+										$scope.model[ws].value = glossMultiText[ws].value;
+									}
+								}
+							}
+						});
+						
+					}
+				};
 			}],
 			link : function(scope, element, attrs, controller) {
+				scope.definitionHelperUsed = false;
 				scope.$watch('model', function() {
 					scope.makeValidModel();
+					if (!scope.definitionHelperUsed) scope.definitionGlossHelper();
 				});
 			}
 		};
