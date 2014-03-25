@@ -7,31 +7,34 @@
 	
 	<div class="row outer-flex" style="margin-top:20px">
 		<!-- Left column: entry list control -->
-		<div class="span4" data-ng-show="show.entries.length > 0">
+		<div class="span4">
 			<!-- control buttons -->
 			<div class="control-group">
 				<button class="btn btn-success" data-ng-click="newEntry()"><i class="icon-plus"></i>New Word</button>
 			</div>
 			
-			<!-- entry list search -->
-			<div style="margin-bottom:10px">
-				<span class="pull-right">{{entriesTotalCount}} entries</span>
-				<input disabled width="4" placeholder="search filter" type="text" class="input-medium search-query" data-ng-model="searchText" />
-				<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''" data-ng-show="searchText && searchText != ''">
-					<i class="icon-remove" style="color:black; cursor: pointer"></i>
-				</span>
-			</div>
+			<div ng-show="show.entries.length > 0">
 			
-			<!-- entry list -->
-			<div id="entryList" data-pui-when-scrolled="show.more()">
-				<table class="table table-condensed ">
-					<tbody>
-						<tr data-ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" data-ng-repeat="e in show.entries track by e.id">
-							<td data-ng-click="editEntry(e.id)">{{e.lexeme| characters:40}}</td>
-							<td data-ng-click="editEntry(e.id)">{{e.definition | characters:40}}</td>
-						</tr>
-					</tbody>
-				</table>
+    			<!-- entry list search -->
+    			<div style="margin-bottom:10px">
+    				<span class="pull-right">{{entriesTotalCount}} entries</span>
+    				<input disabled width="4" placeholder="search filter" type="text" class="input-medium search-query" data-ng-model="searchText" />
+    				<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''" data-ng-show="searchText && searchText != ''">
+    					<i class="icon-remove" style="color:black; cursor: pointer"></i>
+    				</span>
+    			</div>
+    			
+    			<!-- entry list -->
+    			<div id="entryList" data-pui-when-scrolled="show.more()">
+    				<table class="table table-condensed ">
+    					<tbody>
+    						<tr data-ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" data-ng-repeat="e in show.entries track by e.id">
+    							<td data-ng-click="editEntry(e.id)">{{e.lexeme| characters:40}}</td>
+    							<td data-ng-click="editEntry(e.id)">{{e.definition | characters:40}}</td>
+    						</tr>
+    					</tbody>
+    				</table>
+    			</div>
 			</div>
 		</div>
 		
