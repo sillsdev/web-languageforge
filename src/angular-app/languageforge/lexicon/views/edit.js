@@ -106,9 +106,11 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.getMeaning = function(entry) {
 		var meaning = '';
-		if (angular.isDefined(entry.definition)) {
+		if (entry.definition) {
 			meaning = entry.definition;
-		}
+		} else if (entry.gloss) {
+			meaning = entry.gloss;
+		} 
 		return meaning;
 	};
 	
