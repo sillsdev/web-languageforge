@@ -17,7 +17,9 @@
 			</div>
 			<div class="comment-date-and-status">
 				<span class="comment-date">{{comment.dateModified | relativetime}}</span>
+				<!--
 				Comment status <span class="comment-status" ng-click="comment.status = nextStatus(comment.status)">{{comment.status}}</span>
+				-->
 				<!-- TODO: add CSS to give a specific width to the two spans so they will always line up vertically with each other -->
 			</div>
 			<div collapse="!replyBoxVisible">
@@ -25,7 +27,7 @@
 				<div style="margin-top:3px"><button type="submit" class="btn-sm btn-info" data-ng-click="newReplyClick(comment)">Post New Reply</button></div>
 			</div>
 			<div class="replies" data-ng-repeat="reply in comment.replies">
-			    <span class="reply-what">{{reply.content}}</span> - <span class="reply-who">{{reply.userRef.username}}</span> <span class="reply-when">{{reply.dateModified | relativetime}}</span>
+			    <span class="reply-what">{{reply.content}}</span> - <span class="reply-who">{{reply.userRef.username}}</span> <span class="comment-date">{{reply.dateModified | relativetime}}</span>
 			</div>
 		</div>
 	</div>

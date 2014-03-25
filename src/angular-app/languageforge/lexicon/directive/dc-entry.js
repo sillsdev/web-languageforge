@@ -25,7 +25,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 				};
 				
 				$scope.deleteSense = function(index) {
-					if ($window.confirm("Are you sure you want to delete sense #" + (index+1) + " ?")) {
+					if ($window.confirm("Are you sure you want to delete sense #" + (index+1) + " ? (Comments will also be deleted)")) {
 						$scope.model.senses.splice(index, 1);
 					}
 				};

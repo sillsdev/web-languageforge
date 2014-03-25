@@ -45,8 +45,9 @@ div.dc-comments {
 }
 
 .dc-comments .comment-date {
-	display: inline-block; /* So width will be respected */
-	width: 12em;
+	color: #606060;
+	padding-left:5px;
+	font-size: 12px;
 }
 
 .dc-comments .comment-status {
