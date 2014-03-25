@@ -156,6 +156,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 
 	$scope.newEntry = function() {
+		$scope.editTab.active = true;
 		$scope.editEntry();
 		$scope.entriesTotalCount++;
 	};
@@ -307,16 +308,25 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		});
 	};
 	
-	$scope.canDeleteSense = function() {
+	// permissions stuff
+	$scope.control = {};
+	$scope.control.canDeleteSense = function() {
 		return true;
 	};
 	
-	$scope.canDeleteWord = function() {
+	$scope.control.canDeleteWord = function() {
 		return true;
 	};
 	
-	$scope.canDeleteExample = function() {
+	$scope.control.canDeleteExample = function() {
 		return true;
+	};
+	
+	// defaults
+	$scope.editTab = {active: true};
+	$scope.commentsTab = {active: false};
+	$scope.control.showComments = function() {
+		return $scope.commentsTab.active;
 	};
 	
 	$scope.recursiveSetConfig = function(startAt, propName, propValue) {
@@ -353,14 +363,12 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	// When comments tab is clicked, set up new config for its interior
 	$scope.selectCommentsTab = function() {
-		if (angular.isDefined($scope.config.entry)) {
-			$scope.recursiveSetConfig($scope.config.entry, 'commentsVisible', true);
-		}
+		console.log('comments tab selected');
+		$scope.control.showComments = true;
 	};
-	$scope.deselectCommentsTab = function() {
-		if (angular.isDefined($scope.config.entry)) {
-			$scope.recursiveSetConfig($scope.config.entry, 'commentsVisible', false);
-		}
+	$scope.selectEditTab = function() {
+		console.log('edit tab selected');
+		$scope.control.showComments = false;
 	};
 
 	// TODO: Consider moving filter-related code and variables into its own controller

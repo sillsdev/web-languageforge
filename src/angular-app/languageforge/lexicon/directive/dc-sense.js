@@ -9,7 +9,8 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
 				model : "=",
 				index : "=",
 				remove : "=",
-				comment : "&"
+				comment : "&",
+				control : "="
 			},
 			controller: ['$scope', '$window', function($scope, $window) {
 				$scope.makeValidModel = function() {

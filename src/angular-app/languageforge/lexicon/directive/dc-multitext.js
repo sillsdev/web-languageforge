@@ -7,7 +7,8 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 			scope : {
 				config : "=",
 				model : "=",
-				comment : "&"
+				comment : "&",
+				control : "="
 			},
 			controller: ['$scope', 'lexConfigService', function($scope, configService) {
 				

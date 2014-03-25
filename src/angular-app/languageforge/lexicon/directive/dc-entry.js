@@ -6,7 +6,8 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 			templateUrl : '/angular-app/languageforge/lexicon/directive/dc-entry.html',
 			scope : {
 				config : "=",
-				model : "="
+				model : "=",
+				control : "="
 			},
 			controller: ["$scope", "$window", function($scope, $window) {
 				$scope.addSense = function() {
@@ -18,11 +19,6 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 					if (!$scope.model) {
 						$scope.model = {};
 					}
-					/*
-					if (!$scope.model.id) {
-						$scope.model.id = 0;
-					}
-					*/
 					if (!$scope.model.senses) {
 						$scope.model.senses = [{}];
 					}
@@ -52,7 +48,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 						comment.field = field;
 					}
 					comment.entryId = $scope.model.id;
-					// Note: cjh 2014-03: after hours of confusion, I have concluded that there is a bug either in my code or in angularjs that will not allow me to call a method on the parent scope via the normal directive "&" passthrough method.  It is working in child directives up to this point, but it doesn't work in this directive in this case, for some reason.  I instead resort to calling $parent as a hack/workaround
+					// Note: cjh 2014-03: after hours of confusion, I have concluded that there is a bug either in my code (that I cannot get past) or in angularjs that will not allow me to call a method on the parent scope via the normal directive "&" passthrough method.  It is working in child directives up to this point, but it doesn't work in this directive in this case, for some reason.  I instead resort to calling $parent as a hack/workaround
 					// call submitComment() on the parent, which is edit.js
 					$scope.$parent.submitComment(comment);
 				};
