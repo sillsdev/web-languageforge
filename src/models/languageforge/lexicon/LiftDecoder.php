@@ -80,12 +80,21 @@ class LiftDecoder {
 	/**
 	 * Reads a Sense from the XmlNode $sxeNode
 	 * @param SimpleXMLElement $sxeNode
+	 * @param Sense $sense
 	 * @return Sense
 	 */
 	public function readSense($sxeNode, $sense) {
 		// Definition
-		$definition = $sxeNode->definition;
-		$sense->definition = $this->readMultiText($definition, $this->_projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems);
+		if (isset($sxeNode->definition)) {
+			$definition = $sxeNode->definition;
+			$sense->definition = $this->readMultiText($definition, $this->_projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems);
+		}
+		
+		// Gloss
+		if (isset($sxeNode->gloss)) {
+			$gloss = $sxeNode->gloss;
+			$sense->gloss = $this->readMultiText($gloss, $this->_projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems);
+		}
 		
 		// Part Of Speech
 		if (isset($sxeNode->{'grammatical-info'})) {

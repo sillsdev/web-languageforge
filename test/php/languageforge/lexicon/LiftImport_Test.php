@@ -12,7 +12,7 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 require_once(dirname(__FILE__) . '/LexTestData.php');
 
 class TestLiftImport extends UnitTestCase {
-/*
+/* 2x Validation tests, removed until validation is working IJH 2014-03
 	function testLiftImportMerge_XmlOldVer_Exception() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
