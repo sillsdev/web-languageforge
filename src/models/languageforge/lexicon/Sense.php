@@ -10,6 +10,7 @@ class Sense {
 		$this->liftId = $liftId;
 		$this->id = uniqid();
 		$this->definition = new MultiText();
+		$this->gloss = new MultiText();
 		$this->partOfSpeech = new LexiconFieldWithComments();
 		$this->semanticDomain = new LexiconMultiValueFieldWithComments();
 		$this->examples = new ArrayOf(
@@ -26,12 +27,21 @@ class Sense {
 	 */
 	public $liftId;
 	
+	/**
+	 * uniqid
+	 * @var string
+	 */
 	public $id;
 
 	/**
 	 * @var MultiText
 	 */
 	public $definition;
+	
+	/**
+	 * @var MultiText
+	 */
+	public $gloss;
 	
 	/**
 	 * @var LexiconFieldWithComments
@@ -50,7 +60,6 @@ class Sense {
 	public $examples;
 
 	/**
-	 *
 	 * @var AuthorInfo
 	 */
 	public $authorInfo;

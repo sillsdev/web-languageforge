@@ -116,6 +116,7 @@ class TestLexEntryCommands extends UnitTestCase {
 
 		$sense = new Sense();
 		$sense->definition->form('en', 'red fruit');
+		$sense->gloss->form('en', 'rose fruit');
 		$sense->partOfSpeech->value = 'noun';
 		
 		$example = new Example();
@@ -138,6 +139,7 @@ class TestLexEntryCommands extends UnitTestCase {
 
 		$this->assertEqual($newEntry['lexeme']['th']['value'], 'rose apple');
 		$this->assertEqual($newEntry['senses'][0]['definition']['en']['value'], 'red fruit');
+		$this->assertEqual($newEntry['senses'][0]['gloss']['en']['value'], 'rose fruit');
 		$this->assertEqual($newEntry['senses'][0]['partOfSpeech']['value'], 'noun');
 		$this->assertEqual($newEntry['senses'][0]['examples'][0]['sentence']['th']['value'], 'example1');
 		$this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
