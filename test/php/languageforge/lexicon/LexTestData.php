@@ -73,6 +73,14 @@ file {
 					<text>incorrect definition</text>
 				</form>
 			</definition>
+			<gloss
+				lang="en">
+				<text>incorrect gloss</text>
+			</gloss>
+			<gloss
+				lang="th">
+				<text>th incorrect gloss</text>
+			</gloss>
 			<grammatical-info
 				value="Adjective" />
 			<example>
