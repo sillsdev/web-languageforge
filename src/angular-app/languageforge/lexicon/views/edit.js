@@ -51,35 +51,23 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.saveCurrentEntry = function(successCallback, failCallback) {
 		if ($scope.currentEntryIsDirty()) {
 			cancelAutoSaveTimer();
-			var foundLexeme = false;
-			angular.forEach($scope.config.entry.fields.lexeme.inputSystems, function(ws) {
-				if($scope.currentEntry.lexeme[ws].value != '') {
-					foundLexeme = true;
-				};
-			});
-			if (foundLexeme) {
-				saving = true;
-				lexService.update($scope.prepEntryForUpdate($scope.currentEntry), function(result) {
-					if (result.ok) {
-						$scope.updateListWithEntry(result.data);
-						if ($scope.currentEntry.id != '') { // new word button pressed - don't set current entry
-							$scope.setCurrentEntry(result.data);
-						}
-						$scope.lastSavedDate = new Date();
-						$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
-						saved = true;
-						(successCallback||angular.noop)();
-					} else {
-						(failCallback||angular.noop)();
+			saving = true;
+			lexService.update($scope.prepEntryForUpdate($scope.currentEntry), function(result) {
+				if (result.ok) {
+					$scope.updateListWithEntry(result.data);
+					if ($scope.currentEntry.id != '') { // new word button pressed - don't set current entry
+						$scope.setCurrentEntry(result.data);
 					}
-					saving = false;
-				});
-				return true;
-			} else {
-				return false;
-			}
+					$scope.lastSavedDate = new Date();
+					$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
+					saved = true;
+					(successCallback||angular.noop)();
+				} else {
+					(failCallback||angular.noop)();
+				}
+				saving = false;
+			});
 		}
-		return true;
 	};
 	
 	$scope.prepEntryForUpdate = function(entry) {
@@ -129,30 +117,23 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	$scope.setCurrentEntry = function(entry) {
 		entry = entry || {};
-		$scope.lexemeFormRequired = false;
 		$scope.currentEntry = entry;
 		pristineEntry = angular.copy(entry);
 		saved = false;
 	};
 	
 	$scope.editEntry = function(id) {
-		$scope.lexemeFormRequired = false;
 		if (angular.isUndefined(id) || $scope.currentEntry.id != id) {
-			if ($scope.saveCurrentEntry()) {
-				if (angular.isUndefined(id)) {
-					//if ($scope.currentEntry.id != '') {
-						var newEntry = {id:''};
-						$scope.setCurrentEntry(newEntry);
-						$scope.selectEditTab();
-						$scope.updateListWithEntry(newEntry);
-					//}
-				} else {
-					lexService.read(id, function(result) {
-						$scope.setCurrentEntry(result.data);
-					});
-				}
+			$scope.saveCurrentEntry();
+			if (angular.isUndefined(id)) {
+				var newEntry = {id:''};
+				$scope.setCurrentEntry(newEntry);
+				$scope.selectEditTab();
+				$scope.updateListWithEntry(newEntry);
 			} else {
-				$scope.lexemeFormRequired = true;
+				lexService.read(id, function(result) {
+					$scope.setCurrentEntry(result.data);
+				});
 			}
 		}
 	};
@@ -320,7 +301,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	
 	$scope.submitComment = function(comment) {
-		console.log('submitComment = ' + comment);
+//		console.log('submitComment = ' + comment);
 		lexService.updateComment(comment, function(result) {
 			if (result.ok) {
 				var entry = result.data;
@@ -385,13 +366,13 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	// When comments tab is clicked, set up new config for its interior
 	$scope.selectCommentsTab = function() {
-		console.log('comments tab selected');
+//		console.log('comments tab selected');
 		$scope.control.showComments = true;
 		$scope.editTab.active = false;
 		$scope.commentsTab.active = true;
 	};
 	$scope.selectEditTab = function() {
-		console.log('edit tab selected');
+//		console.log('edit tab selected');
 		$scope.control.showComments = false;
 		$scope.editTab.active = true;
 		$scope.commentsTab.active = false;
@@ -402,7 +383,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.filter.chevronIcon = "icon-chevron-up";
 	$scope.filter.visible = false;
 	$scope.toggleFilters = function() {
-		console.log('Filters toggled');
+//		console.log('Filters toggled');
 		if ($scope.filter.visible) {
 			$scope.filter.visible = false;
 			$scope.filter.chevronIcon = "icon-chevron-down";
@@ -430,7 +411,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	});
 	$scope.filter.showLangs['en'] = true; // DEBUG: To check appropriate checkbox in filter form
 	$scope.applyFilters = function() {
-		console.log('Applying filters:', $scope.filter);
+//		console.log('Applying filters:', $scope.filter);
 		// TODO: Implement this
 	};
 }])
