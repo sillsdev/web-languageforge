@@ -41,6 +41,10 @@ class LexCommentCommands {
 				$sense = $entry->getSense($comment['senseId']);
 				self::updateComment($sense->definition[$comment['inputSystem']], $comment, $userId);
 				break;
+			case 'sense_gloss':
+				$sense = $entry->getSense($comment['senseId']);
+				self::updateComment($sense->gloss[$comment['inputSystem']], $comment, $userId);
+				break;
 			case 'sense_partOfSpeech':
 			case 'sense_semanticDomain':
 				$field = substr($field, 6);
