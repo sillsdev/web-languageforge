@@ -92,8 +92,16 @@ class LiftDecoder {
 		
 		// Gloss
 		if (isset($sxeNode->gloss)) {
-			$gloss = $sxeNode->gloss;
-			$sense->gloss = $this->readMultiText($gloss, $this->_projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems);
+			$multiText = new MultiText();
+			$glossInputSystems = $this->_projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems;
+			foreach ($sxeNode->gloss as $glossNode) {
+				$inputSystemTag = (string) $glossNode->attributes()->lang;
+				$multiText->form($inputSystemTag, (string) $glossNode->text);
+				
+				$this->_projectModel->addInputSystem($inputSystemTag);
+				$glossInputSystems->value($inputSystemTag);
+			}
+			$sense->gloss = $multiText; 
 		}
 		
 		// Part Of Speech
