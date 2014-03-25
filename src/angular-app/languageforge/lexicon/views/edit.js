@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
-.controller('editCtrl', ['$scope', '$rootScope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 
-                        function ($scope, $rootScope, userService, sessionService, lexService, configService, $window, $modal, $interval, $filter, linkService) {
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 
+                        function ($scope, userService, sessionService, lexService, configService, $window, $modal, $interval, $filter, linkService) {
 	// see http://alistapart.com/article/expanding-text-areas-made-elegant
 	// for an idea on expanding text areas
 	
@@ -263,20 +263,13 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	var onRouteChangeOff = $scope.$on('$locationChangeStart', routeChange);
 	$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries, true);
-	
-//	function autoSave() {
-//		console.log("autoSave ");
-//		$scope.saveCurrentEntry();
-//	};
 	
 	var autoSaveTimer;
 	function startAutoSaveTimer() {
 		if (angular.isDefined(autoSaveTimer)) {
 			return;
 		}
-//		autoSaveTimer = $interval(autoSave, 5000, 1);
 		autoSaveTimer = $interval($scope.saveCurrentEntry, 5000, 1);
 	};
 	function cancelAutoSaveTimer() {
@@ -300,34 +293,19 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		$scope.saveCurrentEntry();
 	});
 	
-	function routeChange(event, newUrl) {
-		// TODO Remove 3 lines. Debug IJH 2014-03
-//		console.log("routeChange ");
-//		event.preventDefault();
-//		return;
-		
+	$scope.$on('$locationChangeStart', function (event, next, current) {
 		//Navigate to newUrl if the entry isn't dirty
 		if (! $scope.currentEntryIsDirty()) return;
 		
-		var modalOptions = {
-			closeButtonText: 'Cancel',
-			actionButtonText: 'Ignore Changes',
-			headerText: 'Unsaved Changes',
-			bodyText: 'You have unsaved changes. Leave the page?'
-		};
+		var answer = confirm("You have unsaved changes. Leave the page?");
+		if (!answer) {
+			//prevent navigation by default since we'll handle it
+			//once the user selects a dialog option
+			event.preventDefault();
+		}
 		
-		$modal.showModal({}, modalOptions).then(function (result) {
-			if (result === 'ok') {
-				onRouteChangeOff(); //Stop listening for location changes
-				$location.path(newUrl); //Go to page they're interested in
-			}
-		});
-		
-		//prevent navigation by default since we'll handle it
-		//once the user selects a dialog option
-		event.preventDefault();
 		return;
-	};
+	});
 	
 	$window.onbeforeunload = function (event) {
 		var message = 'You have unsaved changes.';
