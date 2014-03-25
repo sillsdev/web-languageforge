@@ -28,6 +28,11 @@
 						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['definition'].visible">
 							 {{fieldConfig['definition'].label}}</div>
 					</div>
+					<div data-ng-click="selectField('gloss')" 
+						data-ng-class="{selected:currentField.name == 'gloss'}">
+						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['gloss'].visible">
+							 {{fieldConfig['gloss'].label}}</div>
+					</div>
 					<div data-ng-click="selectField('partOfSpeech')" 
 						data-ng-class="{selected:currentField.name == 'partOfSpeech'}">
 						<div class="checkbox"><input type="checkbox" data-ng-model="fieldConfig['partOfSpeech'].visible">
