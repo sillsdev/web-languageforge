@@ -143,6 +143,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 					//if ($scope.currentEntry.id != '') {
 						var newEntry = {id:''};
 						$scope.setCurrentEntry(newEntry);
+						$scope.selectEditTab();
 						$scope.updateListWithEntry(newEntry);
 					//}
 				} else {
@@ -365,13 +366,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return true;
 	};
 	
-	// defaults
-	$scope.editTab = {active: true};
-	$scope.commentsTab = {active: false};
-	$scope.control.showComments = function() {
-		return $scope.commentsTab.active;
-	};
-	
+	/*
 	$scope.recursiveSetConfig = function(startAt, propName, propValue) {
 		// Go through the config tree starting at the startAt field, and
 		// set a given property to a given value in all fields below startAt.
@@ -385,6 +380,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			};
 		});
 	};
+	*/
 	
 	$scope.recursiveRemoveProperties = function(startAt, properties) {
 		angular.forEach(startAt, function(value, key) {
@@ -404,14 +400,23 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return startAt;
 	};
 	
+	// defaults
+	$scope.editTab = {active: true};
+	$scope.commentsTab = {active: false};
+	$scope.control.showComments = false;
+	
 	// When comments tab is clicked, set up new config for its interior
 	$scope.selectCommentsTab = function() {
 		console.log('comments tab selected');
 		$scope.control.showComments = true;
+		$scope.editTab.active = false;
+		$scope.commentsTab.active = true;
 	};
 	$scope.selectEditTab = function() {
 		console.log('edit tab selected');
 		$scope.control.showComments = false;
+		$scope.editTab.active = true;
+		$scope.commentsTab.active = false;
 	};
 
 	// TODO: Consider moving filter-related code and variables into its own controller

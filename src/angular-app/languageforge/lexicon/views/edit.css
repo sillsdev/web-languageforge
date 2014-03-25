@@ -1,6 +1,5 @@
-fieldset.override-bootstrap {
-	padding: inherit;
-	margin: inherit;
+fieldset.comment-filter {
+	margin: 20px;
 	border: 2px groove threedface;
 }
 
