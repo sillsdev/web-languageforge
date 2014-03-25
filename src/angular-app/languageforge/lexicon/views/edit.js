@@ -52,8 +52,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			if (foundLexeme) {
 				lexService.update($scope.currentEntry, function(result) {
 					$scope.updateListWithEntry(result.data);
+					$scope.setCurrentEntry(result.data);
 					$scope.lastSavedDate = new Date();
-					pristineEntry = angular.copy($scope.currentEntry);
 					$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
 				});
 				return true;
