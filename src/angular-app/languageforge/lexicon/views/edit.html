@@ -18,7 +18,14 @@
     			<!-- entry list search -->
     			<div style="margin-bottom:10px">
 				<span class="pull-right" style="color: grey">{{entriesTotalCount}} entries</span>
-    				<input disabled width="4" placeholder="search filter" type="text" class="input-medium search-query" data-ng-model="searchText" />
+        			<typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
+        				<ul>
+        					<li typeahead-item="e" data-ng-repeat="e in typeahead.searchResults" class="typeahead-item">
+        						<p class="name">{{getTitle(e)}}</p>
+        						<p class="email">{{getMeaning(e)}}</p>
+        					</li>
+        				</ul>
+        			</typeahead>
     				<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''" data-ng-show="searchText && searchText != ''">
     					<i class="icon-remove" style="color:black; cursor: pointer"></i>
     				</span>
