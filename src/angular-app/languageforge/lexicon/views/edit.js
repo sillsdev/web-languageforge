@@ -72,9 +72,9 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return (listEntry.lexeme) ? listEntry.lexeme : '[Empty]';
 	};
 	
-	var getDefinition = function(entry) {
+	function getDefinition(entry) {
 		var meaning = '';
-		if (angular.isDefined($scope.config.entry) && angular.isDefined(entry.senses[0]) && angular.isDefined(entry.senses[0]['definition'])) {
+		if (angular.isDefined($scope.config.entry) && angular.isDefined(entry.senses) && angular.isDefined(entry.senses[0]) && angular.isDefined(entry.senses[0]['definition'])) {
 			var ws = $scope.config.entry.fields.senses.fields.definition.inputSystems[0];
 			var def = entry.senses[0]['definition'];
 			if (angular.isDefined(def[ws])) {
@@ -84,7 +84,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return meaning;
 	};
 	
-	var getGloss = function(entry) {
+	function getGloss(entry) {
 		var gloss = '';
 		if (angular.isDefined($scope.config.entry) && angular.isDefined(entry.senses) && angular.isDefined(entry.senses[0]) && angular.isDefined(entry.senses[0]['gloss'])) {
 			var ws = $scope.config.entry.fields.senses.fields.gloss.inputSystems[0];
@@ -96,7 +96,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return gloss;
 	};
 
-	var getLexeme = function(entry) {
+	function getLexeme(entry) {
 		var title = "";
 		if (entry.lexeme && $scope.config && $scope.config.entry) {
 			var lexemeInputSystem = $scope.config.entry.fields.lexeme.inputSystems[0];
@@ -172,9 +172,9 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	
 	$scope.deleteEntry = function(entry) {
-		if ($window.confirm("Are you sure you want to delete '" + $scope.getLexeme(entry) + "'?")) {
+		if ($window.confirm("Are you sure you want to delete '" + getLexeme(entry) + "'?")) {
 			if ($scope.entryHasComments(entry)) {
-				if ($window.confirm("Are you sure you want to delete '" + $scope.getLexeme(entry) + "'?")) {
+				if ($window.confirm("Are you sure you want to delete '" + getLexeme(entry) + "'?")) {
 					var entryIndex = $scope.getEntryIndexById(entry.id);
 					$scope.show.entries.splice(entryIndex, 1);
 					$scope.entries.splice(entryIndex, 1);
