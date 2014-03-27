@@ -28,7 +28,7 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 	 */
 	public function __construct($projectModel) {
 		$lexProject = new LexiconProjectModel($projectModel->id->asString());
-		$this->_config = $lexProject->settings;
+		$this->_config = $lexProject->config;
 		parent::__construct( self::mapper($projectModel->databaseName()), array(), array('guid', 'lexeme', 'senses'));
 	}
 	

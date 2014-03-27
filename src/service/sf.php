@@ -433,8 +433,8 @@ class Sf
 		return LexBaseViewDto::encode($projectId, $this->_userId);
 	}
 	
-	public function lex_configuration_update($projectId, $settings) {
-		return LexProjectCommands::updateConfig($projectId, $settings);
+	public function lex_configuration_update($projectId, $config) {
+		return LexProjectCommands::updateConfig($projectId, $config);
 	}
 	
 	public function lex_import_lift($projectId, $import) {
