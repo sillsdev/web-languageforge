@@ -58,6 +58,30 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return $scope.recursiveRemoveProperties(entry, ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
 	};
 	
+	$scope.getLexemeForDisplay = function(listEntry) {
+		return (listEntry.lexeme) ? listEntry.lexeme : '[Empty]';
+	};
+	
+	$scope.lexemeAlign = function(listEntry) {
+		if ($scope.config && $scope.config.entry && listEntry.lexeme) {
+			var inputSystem = $scope.config.entry.fields.lexeme.inputSystems[0];
+			return ($scope.config.inputSystems[inputSystem].isRightToLeft) ? 'right' : 'left';
+		} else {
+			return 'left';
+		}
+	};
+	
+	function getLexeme(entry) {
+		var title = "";
+		if (entry.lexeme && $scope.config && $scope.config.entry) {
+			var lexemeInputSystem = $scope.config.entry.fields.lexeme.inputSystems[0];
+			if (angular.isDefined(entry.lexeme[lexemeInputSystem]) && entry.lexeme[lexemeInputSystem].value != '') {
+				title = entry.lexeme[lexemeInputSystem].value;
+			}
+		}
+		return title;
+	};
+
 	$scope.getDefinitionOrGloss = function(listEntry) {
 		var meaning = '';
 		if (listEntry.definition) {
@@ -68,8 +92,18 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return meaning;
 	};
 	
-	$scope.getLexemeForDisplay = function(listEntry) {
-		return (listEntry.lexeme) ? listEntry.lexeme : '[Empty]';
+	$scope.definitionOrGlossAlign = function(listEntry) {
+		if ($scope.config && $scope.config.entry && $scope.config.entry.fields.senses) {
+			if (listEntry.definition) {
+				var inputSystem = $scope.config.entry.fields.senses.fields.definition.inputSystems[0];
+				return ($scope.config.inputSystems[inputSystem].isRightToLeft) ? 'right' : 'left';
+			} else if (listEntry.gloss) {
+				var inputSystem = $scope.config.entry.fields.senses.fields.gloss.inputSystems[0];
+				return ($scope.config.inputSystems[inputSystem].isRightToLeft) ? 'right' : 'left';
+			}
+		} else {
+			return 'left';
+		}
 	};
 	
 	function getDefinition(entry) {
@@ -95,18 +129,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 		return gloss;
 	};
-
-	function getLexeme(entry) {
-		var title = "";
-		if (entry.lexeme && $scope.config && $scope.config.entry) {
-			var lexemeInputSystem = $scope.config.entry.fields.lexeme.inputSystems[0];
-			if (angular.isDefined(entry.lexeme[lexemeInputSystem]) && entry.lexeme[lexemeInputSystem].value != '') {
-				title = entry.lexeme[lexemeInputSystem].value;
-			}
-		}
-		return title;
-	};
-	
 
 	$scope.updateListWithEntry = function(entry) {
 		var isNew = true;
