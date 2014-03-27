@@ -38,6 +38,15 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 						return $scope.gConfig.inputSystems[inputSystem].abbreviation;
 					}
 				};
+				
+				$scope.getDirection = function(inputSystem) {
+					if (angular.isDefined($scope.gConfig)) {
+						return ($scope.gConfig.inputSystems[inputSystem].isRightToLeft) ? 'rtl' : 'ltr';
+					} else {
+						return 'auto';
+					}
+				};
+				
 			}],
 			link : function(scope, element, attrs, controller) {
 				scope.$watch('model', function() {
