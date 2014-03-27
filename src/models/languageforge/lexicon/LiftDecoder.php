@@ -2,7 +2,7 @@
 
 namespace models\languageforge\lexicon;
 
-use models\languageforge\lexicon\settings\LexiconConfigObj;
+use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\mapper\ArrayOf;
 
 class LiftDecoder {

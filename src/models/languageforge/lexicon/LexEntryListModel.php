@@ -1,12 +1,10 @@
 <?php 
 namespace models\languageforge\lexicon;
 
-use models\languageforge\lexicon\settings\LexConfiguration;
-
+use models\languageforge\lexicon\config\LexConfiguration;
+use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\commands\LexEntryCommands;
 use models\ProjectModel;
-
-use models\languageforge\lexicon\settings\LexiconConfigObj;
 
 class LexEntryListModel extends \models\mapper\MapperListModel {
 

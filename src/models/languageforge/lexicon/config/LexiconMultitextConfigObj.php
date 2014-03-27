@@ -1,9 +1,8 @@
 <?php
 
-namespace models\languageforge\lexicon\settings;
+namespace models\languageforge\lexicon\config;
 
 use models\mapper\ArrayOf;
-
 use models\mapper\MapOf;
 
 class LexiconMultitextConfigObj extends LexiconConfigObj {
@@ -18,24 +17,20 @@ class LexiconMultitextConfigObj extends LexiconConfigObj {
 	}
 	
 	/**
-	 * 
 	 * @var string
 	 */
 	public $label;
 	
 	/**
-	 * 
 	 * @var int
 	 */
 	public $width;
 	
 	/**
-	 * 
 	 * @var ArrayOf
 	 */
 	public $inputSystems;
 	
 }
-
 
 ?>

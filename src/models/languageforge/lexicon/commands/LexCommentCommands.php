@@ -2,22 +2,16 @@
 
 namespace models\languageforge\lexicon\commands;
 
-use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
-
-use models\languageforge\lexicon\LexCommentReply;
-
-use models\languageforge\lexicon\settings\LexiconConfigObj;
-
-use models\languageforge\lexicon\LexEntryListModel;
-
-use models\languageforge\lexicon\LexiconProjectModel;
-
-use models\languageforge\lexicon\LexEntryModel;
-
 use libraries\shared\palaso\CodeGuard;
-use models\mapper\JsonEncoder;
-use models\mapper\JsonDecoder;
+use models\languageforge\lexicon\config\LexiconConfigObj;
+use models\languageforge\lexicon\LexEntryModel;
+use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
+use models\languageforge\lexicon\LexEntryListModel;
 use models\languageforge\lexicon\LexComment;
+use models\languageforge\lexicon\LexCommentReply;
+use models\languageforge\lexicon\LexiconProjectModel;
+use models\mapper\JsonDecoder;
+use models\mapper\JsonEncoder;
 
 class LexCommentCommands {
 	/**

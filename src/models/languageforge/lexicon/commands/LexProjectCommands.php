@@ -4,8 +4,8 @@ namespace models\languageforge\lexicon\commands;
 
 use libraries\shared\palaso\CodeGuard;
 use libraries\lfdictionary\common\UserActionDeniedException;
-use models\languageforge\lexicon\settings\LexConfiguration;
-use models\languageforge\lexicon\settings\LexiconFieldListConfigObj;
+use models\languageforge\lexicon\config\LexConfiguration;
+use models\languageforge\lexicon\config\LexiconFieldListConfigObj;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LiftImport;
