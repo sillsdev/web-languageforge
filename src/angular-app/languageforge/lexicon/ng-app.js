@@ -8,8 +8,9 @@ angular.module('lexicon',
 		 'meaning',
 		 'examples',
 		 'lexicon.add-meanings',
-		 'lexicon.importExport',
 		 'lexicon.configuration',
+		 'lexicon.importExport',
+		 'lexicon.settings',
 		 'lexicon.manageUsers',
 		 'lexicon.services',
 		 'lexicon.filters',
@@ -62,6 +63,12 @@ angular.module('lexicon',
 				}
 			);
 		$routeProvider.when(
+				'/p/:projectId/settings',
+				{
+					templateUrl: '/angular-app/languageforge/lexicon/views/settings.html',
+				}
+			);
+		$routeProvider.when(
 				'/p/:projectId/users',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/manageUsers.html',
@@ -91,43 +98,6 @@ angular.module('lexicon',
 			};
 			return $scope.config.tasks[itemName].visible;
 		};
-		
-/*
- * TODO Remove. Used in previous menu system. IJH 2014-03
-		$scope.noSubmenuId = 0;
-		$scope.gatherSubmenuId = 1;
-		$scope.addSubmenuId = 2;
-		$scope.visibleSubmenu = $scope.noSubmenuId;
-		
-		$scope.showSubmenu = function(submenuId) {
-			$scope.visibleSubmenu = submenuId;
-		};
-		$scope.isSubmenuVisible = function(submenuId) {
-			return ($scope.visibleSubmenu == submenuId);
-		};
-		$scope.hideAllSubmenus = function(delay) {
-			// If no delay specified, undefined will work quite well since
-			// the default delay in $timeout is 0 milliseconds.
-			$scope.hidePromise = $timeout(function() {
-				$scope.visibleSubmenu = $scope.noSubmenuId;
-				delete $scope.hidePromise;
-			}, delay);
-		};
-		$scope.cancelHiding = function() {
-			if ($scope.hidePromise) {
-				$timeout.cancel($scope.hidePromise);
-			}
-		};
-		$scope.iconName = function(submenuId) {
-			var name = 'icon-chevron-';
-			if ($scope.isSubmenuVisible(submenuId)) {
-				name += 'up';
-			} else {
-				name += 'down';
-			};
-			return name;
-		};
-*/
 		
 		$scope.projectId = lexProjectService.getProjectId();
 		
