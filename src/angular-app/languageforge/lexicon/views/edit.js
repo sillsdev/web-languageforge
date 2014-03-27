@@ -20,17 +20,25 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	var saving = false;
 	var saved = false;
 	$scope.saveNotice = function() {
-		if ($scope.currentEntryIsDirty()) {
-			if (saving) {
-				return "Saving";
-			}
-		} else {
-			if (saved) {
-				return "Saved";
-			}
-		}
+//		if ($scope.currentEntryIsDirty()) {	// TODO. Disabled. until php can deliver completely valid entry model and directives no longer make valid models. IJH 2014-03
+//			if (saving) {
+//				return "Saving";
+//			}
+//		} else {
+//			if (saved) {
+//				return "Saved";
+//			}
+//		}
 		return "";
 	};
+	$scope.saveButtonTitle = function() {	// TODO. Remove. until php can deliver completely valid entry model and directives no longer make valid models. IJH 2014-03
+		if ($scope.currentEntryIsDirty()) {
+			return "Save Entry";
+		} else {
+			return "Entry saved";
+		}
+	};
+
 
 	$scope.saveCurrentEntry = function(successCallback, failCallback) {
 		if ($scope.currentEntryIsDirty()) {
@@ -297,7 +305,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		if (newValue != undefined) {
 			cancelAutoSaveTimer();
 			if ($scope.currentEntryIsDirty) {
-				startAutoSaveTimer();
+//				startAutoSaveTimer();	// TODO. Disabled. until php can deliver completely valid entry model and directives no longer make valid models. IJH 2014-03
 			}
 		}
 	}, true);

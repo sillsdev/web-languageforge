@@ -55,6 +55,8 @@
 			<tabset data-ng-show="entryLoaded()">
 				<!-- control buttons -->
 				<div class="control-group pull-right" data-ng-show="entryLoaded()">
+					<button class="btn btn-mini" style="margin-right: 140px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry()">
+						<i class="icon-save"></i>{{saveButtonTitle()}}</button>
 					<span style="color: grey; margin-right: 10px">
 						{{saveNotice()}}</span>
 					<button ng-show="control.canDeleteWord()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="Delete Word">
