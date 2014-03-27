@@ -1,6 +1,5 @@
 angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 .service('lexConfigService', [function(jsonRpc, $location) {
-
 	var _callbacks = [];
 	var _config = {};
 	
@@ -42,7 +41,6 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 }])
 .service('lexProjectService', ['jsonRpc', 'breadcrumbService', 'lexLinkService', '$location', function(jsonRpc, breadcrumbService, linkService, $location) {
 	jsonRpc.connect('/api/sf');
-
 	this.baseViewDto = function(view, label, callback) {
 		jsonRpc.call('lex_baseViewDto', [this.getProjectId()], function(result) {
 			if (result.ok) {
@@ -70,10 +68,32 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 		});
 	};
 	
+	this.readProject = function(callback) {
+		var projectId = this.getProjectId();
+		jsonRpc.call('lex_projectDto', [projectId], function(result) {
+			if (result.ok) {
+				result.data.project.id = projectId;
+				breadcrumbService.set('top',
+					[
+					 {href: '/app/projects', label: 'My Projects'},
+					 {href: linkService.project(), label: result.data.project.projectname},
+					 {href: linkService.projectView('settings'), label: 'Project Settings'},
+					]
+				);
+				callback(result);
+			}
+		});
+	};
+	
+	this.updateProject = function(project, callback) {
+		jsonRpc.call('lex_project_update', [project], callback);
+	};
+	
 	this.users = function(callback) {
 		var projectId = this.getProjectId();
 		jsonRpc.call('lex_manageUsersDto', [projectId], function(result) {
 			if (result.ok) {
+				result.data.project.id = projectId;
 				breadcrumbService.set('top',
 					[
 					 {href: '/app/projects', label: 'My Projects'},
@@ -81,7 +101,6 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 					 {href: linkService.projectView('users'), label: 'User Management'},
 					]
 				);
-				result.data.project.id = projectId;
 				callback(result);
 			}
 		});

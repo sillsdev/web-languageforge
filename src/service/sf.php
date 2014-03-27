@@ -21,6 +21,7 @@ use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\languageforge\lexicon\dto\LexDbeDto;
 use models\languageforge\lexicon\dto\LexManageUsersDto;
+use models\languageforge\lexicon\dto\LexProjectDto;
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\ActivityListDto;
 use models\shared\dto\RightsHelper;
@@ -433,12 +434,28 @@ class Sf
 		return LexBaseViewDto::encode($projectId, $this->_userId);
 	}
 	
+	public function lex_projectDto($projectId) {
+		return LexProjectDto::encode($projectId, $this->_userId);
+	}
+
+	public function lex_manageUsersDto($projectId) {
+		return LexManageUsersDto::encode($projectId, $this->_userId);
+	}
+
+	public function lex_dbeDto($projectId, $iEntryStart, $numberOfEntries) {
+		return LexDbeDto::encode($projectId, $this->_userId, $iEntryStart, $numberOfEntries);
+	}
+	
 	public function lex_configuration_update($projectId, $config) {
 		return LexProjectCommands::updateConfig($projectId, $config);
 	}
 	
 	public function lex_import_lift($projectId, $import) {
 		return LexProjectCommands::importLift($projectId, $import);
+	}
+	
+	public function lex_project_update($projectJson) {
+		return LexProjectCommands::updateProject($projectJson, $this->_userId);
 	}
 	
 	public function lex_entry_read($projectId, $entryId) {
@@ -453,14 +470,6 @@ class Sf
 		return LexEntryCommands::removeEntry($projectId, $entryId);
 	}
 	
-	public function lex_dbeDto($projectId, $iEntryStart, $numberOfEntries) {
-		return LexDbeDto::encode($projectId, $this->_userId, $iEntryStart, $numberOfEntries);
-	}
-	
-	public function lex_manageUsersDto($projectId) {
-		return LexManageUsersDto::encode($projectId, $this->_userId);
-	}
-
 	public function lex_entry_updateComment($projectId, $data) {
 		return LexCommentCommands::updateCommentOrReply($projectId, $data, $this->_userId);
 	}
@@ -501,7 +510,6 @@ class Sf
 			}
 		}
 	}
-	
 
 	public function update_last_activity($newtime = NULL) {
 		if (is_null($newtime)) {
@@ -510,7 +518,6 @@ class Sf
 		}
 		$this->_controller->session->set_userdata('last_activity', $newtime);
 	}
-	
 	
 }
 
