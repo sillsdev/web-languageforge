@@ -25,7 +25,7 @@ class LexProjectCommands {
 		$project = new LexiconProjectModel($projectId);
 		$configModel = new LexConfiguration();
 		JsonDecoder::decode($configModel, $config);
-		$project->settings = $configModel;
+		$project->config = $configModel;
 		$decoder = new JsonDecoder();
 		$decoder->decodeMapOf('', $project->inputSystems, $config['inputSystems']);
 		$project->write();

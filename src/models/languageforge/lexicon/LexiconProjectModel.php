@@ -17,7 +17,7 @@ class LexiconProjectModel extends LfProjectModel {
 			}
 		);
 		
-		$this->settings = new LexConfiguration();
+		$this->config = new LexConfiguration();
 
 		// default values
 		$this->inputSystems['en'] = new InputSystem('en', 'English', 'en');
@@ -36,7 +36,7 @@ class LexiconProjectModel extends LfProjectModel {
 	 * 
 	 * @var LexConfiguration
 	 */
-	public $settings;
+	public $config;
 	
 	/**
 	 * 
