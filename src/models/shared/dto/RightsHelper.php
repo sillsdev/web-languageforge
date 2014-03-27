@@ -63,6 +63,8 @@ class RightsHelper
 			case 'user_sendInvite':
 			case 'message_markRead':
 			case 'project_pageDto':
+			case 'lex_projectDto':
+			case 'lex_manageUsersDto':
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::VIEW);
 			case 'answer_vote_up':
 			case 'answer_vote_down':
@@ -101,7 +103,7 @@ class RightsHelper
 			case 'project_settings':
 			case 'project_updateSettings':
 			case 'project_readSettings':
-			case 'lex_manageUsersDto':
+			case 'lex_project_update':
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
 
 			case 'project_update':
