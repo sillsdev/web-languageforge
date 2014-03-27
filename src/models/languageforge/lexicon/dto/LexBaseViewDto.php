@@ -18,7 +18,7 @@ class LexBaseViewDto {
 		$user = new UserModel($userId);
 		$project = new LexiconProjectModel($projectId);
 		
-		$config = JsonEncoder::encode($project->settings);
+		$config = JsonEncoder::encode($project->config);
 		$config['inputSystems'] = JsonEncoder::encode($project->inputSystems);
 		
 		$data = array();

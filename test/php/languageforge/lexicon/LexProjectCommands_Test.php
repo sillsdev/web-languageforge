@@ -45,13 +45,13 @@ class TestLexProjectCommands extends UnitTestCase {
 		
 		// test for a few default values
 		$this->assertEqual($project2->inputSystems['en']->tag, 'en');
-		$this->assertTrue($project2->settings->tasks['dbe']->visible);
-		$this->assertEqual($project2->settings->entry->fields['lexeme']->label, 'Word');
+		$this->assertTrue($project2->config->tasks['dbe']->visible);
+		$this->assertEqual($project2->config->entry->fields['lexeme']->label, 'Word');
 		
 		// test for updated values
-		$this->assertFalse($project2->settings->tasks['addMeanings']->visible);
-		$this->assertEqual($project2->settings->entry->fields['lexeme']->inputSystems[0], 'my');
-		$this->assertEqual($project2->settings->entry->fields['lexeme']->inputSystems[1], 'th');
+		$this->assertFalse($project2->config->tasks['addMeanings']->visible);
+		$this->assertEqual($project2->config->entry->fields['lexeme']->inputSystems[0], 'my');
+		$this->assertEqual($project2->config->entry->fields['lexeme']->inputSystems[1], 'th');
 	}
 	
 	function testImportLift_EachDuplicateSetting_LiftFileAddedOk() {

@@ -42,7 +42,7 @@ class LiftDecoder {
 				$entry->guid = (string) $sxeNode['guid'];
 				$entry->authorInfo->createdDate = new \DateTime((string) $sxeNode['dateCreated']);
 				$entry->authorInfo->modifiedDate = new \DateTime((string) $sxeNode['dateModified']);
-				$entry->lexeme = $this->readMultiText($lexicalForms, $this->_projectModel->settings->entry->fields[LexiconConfigObj::LEXEME]->inputSystems);
+				$entry->lexeme = $this->readMultiText($lexicalForms, $this->_projectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems);
 			}
 			if (isset($sxeNode->sense)) {
 				foreach ($sxeNode->sense as $senseNode) {
@@ -87,13 +87,13 @@ class LiftDecoder {
 		// Definition
 		if (isset($sxeNode->definition)) {
 			$definition = $sxeNode->definition;
-			$sense->definition = $this->readMultiText($definition, $this->_projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems);
+			$sense->definition = $this->readMultiText($definition, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems);
 		}
 		
 		// Gloss
 		if (isset($sxeNode->gloss)) {
 			$multiText = new MultiText();
-			$glossInputSystems = $this->_projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems;
+			$glossInputSystems = $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems;
 			foreach ($sxeNode->gloss as $glossNode) {
 				$inputSystemTag = (string) $glossNode->attributes()->lang;
 				$multiText->form($inputSystemTag, (string) $glossNode->text);
@@ -139,11 +139,11 @@ class LiftDecoder {
 		
 		// Sentence multitext
 		$exampleXml = $sxeNode;
-		$example->sentence = $this->readMultiText($exampleXml, $this->_projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems);
+		$example->sentence = $this->readMultiText($exampleXml, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems);
 		// Translation multitext
 		$translationXml = $sxeNode->translation;
 		if (! empty($translationXml)) {
-			$example->translation = $this->readMultiText($translationXml, $this->_projectModel->settings->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems);
+			$example->translation = $this->readMultiText($translationXml, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems);
 		}
 		return $example;
 	}
