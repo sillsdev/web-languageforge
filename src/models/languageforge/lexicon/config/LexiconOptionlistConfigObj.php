@@ -1,6 +1,6 @@
 <?php
 
-namespace models\languageforge\lexicon\settings;
+namespace models\languageforge\lexicon\config;
 
 use models\mapper\MapOf;
 
@@ -14,13 +14,11 @@ class LexiconOptionlistConfigObj extends LexiconConfigObj {
 	}
 	
 	/**
-	 * 
 	 * @var string
 	 */
 	public $label;
 	
 	/**
-	 * 
 	 * @var MapOf
 	 */
 	public $values;

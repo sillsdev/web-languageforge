@@ -1,7 +1,7 @@
 <?php
 
-namespace models\languageforge\lexicon\settings;
-
+namespace models\languageforge\lexicon\config;
 
 class LexiconSettingsTask extends LexiconTask { }
+
 ?>

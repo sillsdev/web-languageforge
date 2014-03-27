@@ -1,28 +1,18 @@
 <?php
 
-use models\languageforge\lexicon\settings\LexiconConfigObj;
-
-use models\languageforge\lexicon\commands\LexProjectCommands;
-
 use models\languageforge\lexicon\commands\LexEntryCommands;
-
-use models\languageforge\lexicon\LexCommentReply;
-
-use models\languageforge\lexicon\LexComment;
-
+use models\languageforge\lexicon\commands\LexProjectCommands;
+use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\Example;
-
-use models\languageforge\lexicon\Sense;
-
-use models\languageforge\lexicon\LexiconFieldWithComments;
-
+use models\languageforge\lexicon\LexComment;
+use models\languageforge\lexicon\LexCommentReply;
 use models\languageforge\lexicon\LexEntryModel;
-
+use models\languageforge\lexicon\LexiconFieldWithComments;
 use models\languageforge\lexicon\LexiconProjectModel;
+use models\languageforge\lexicon\Sense;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestLexEntryCommands extends UnitTestCase {
