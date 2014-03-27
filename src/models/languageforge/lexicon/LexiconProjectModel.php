@@ -2,10 +2,10 @@
 
 namespace models\languageforge\lexicon;
 
-use models\mapper\MapOf;
-use models\languageforge\LfProjectModel;
-use models\languageforge\lexicon\settings\LexConfiguration;
 use libraries\shared\LanguageData;
+use models\languageforge\lexicon\config\LexConfiguration;
+use models\languageforge\LfProjectModel;
+use models\mapper\MapOf;
 
 class LexiconProjectModel extends LfProjectModel {
 	

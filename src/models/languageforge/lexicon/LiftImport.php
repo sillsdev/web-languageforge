@@ -3,7 +3,7 @@
 namespace models\languageforge\lexicon;
 
 use models\mapper\ArrayOf;
-use models\languageforge\lexicon\settings\LexiconConfigObj;
+use models\languageforge\lexicon\config\LexiconConfigObj;
 
 class LiftImport {
 	

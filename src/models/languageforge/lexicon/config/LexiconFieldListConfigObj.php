@@ -1,9 +1,8 @@
 <?php
 
-namespace models\languageforge\lexicon\settings;
+namespace models\languageforge\lexicon\config;
 
 use models\mapper\ArrayOf;
-
 use models\mapper\MapOf;
 
 class LexiconFieldListConfigObj extends LexiconConfigObj {
@@ -27,13 +26,10 @@ class LexiconFieldListConfigObj extends LexiconConfigObj {
 	public $fieldOrder;
 	
 	/**
-	 * 
 	 * @var MapOf<LexiconConfigObj>
 	 */
 	public $fields;
 	
-	
 }
-
 
 ?>
