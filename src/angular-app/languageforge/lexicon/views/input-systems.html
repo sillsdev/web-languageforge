@@ -54,6 +54,8 @@
 				<div class="controls">
 					<input type="text" id="abbrev" data-ng-model="inputSystems[currentInputSystemTag].abbreviation">
 				</div>
+				<label class="checkbox">
+					<input type="checkbox" data-ng-model="inputSystems[currentInputSystemTag].isRightToLeft"/>Right to left language</label>
 			</div>
 			<p class="text-warning" data-ng-show="inputSystems[currentInputSystemTag].fieldUseCount > 0">
 				<small>Some settings are disabled because {{inputSystems[currentInputSystemTag].fieldUseCount}} entry field{{(inputSystems[currentInputSystemTag].fieldUseCount == 1) ? ' is' : 's are'}} using this system.</small>

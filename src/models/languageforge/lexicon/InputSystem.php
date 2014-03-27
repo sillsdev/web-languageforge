@@ -8,13 +8,28 @@ class InputSystem {
 		$this->tag = $tag;
 		$this->abbreviation = $abbr;
 		$this->languageName = $name;
+		$this->isRightToLeft = false;
 	}
 
-    public $abbreviation;
+    /**
+     * @var string
+     */
+	public $abbreviation;
 
-    public $tag; // RFC5646 tag e.g. qaa-x-lang
+    /**
+     * @var string
+     */
+	public $tag; // RFC5646 tag e.g. qaa-x-lang
     
-    public $languageName;
+    /**
+     * @var string
+     */
+	public $languageName;
+    
+    /**
+     * @var boolean
+     */
+    public $isRightToLeft;
 
 }
 
