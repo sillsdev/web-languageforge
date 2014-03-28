@@ -4,11 +4,24 @@
 		<tab heading="Project Properties">
 			<form class="well" data-ng-submit="updateProject()">
 				<fieldset>
-					<label>Project Name</label>
-					<input type="text" placeholder="project name" data-ng-model="project.projectname"/>
-					<label>Project Code</label>
-					<input type="text" placeholder="project code" data-ng-model="project.projectCode"/>
-					<label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> Featured On Website</label>
+					<div class="control-group">
+						<label class="control-label" for="projName">Project Name</label>
+						<div class="controls">
+							<input id="projName" type="text" placeholder="project name" data-ng-model="project.projectname" />
+						</div>
+						<label class="control-label" for="language">Interface Language</label>
+						<div class="controls">
+							<select class="form-control" id="language" 
+								data-ng-model="project.languageCode" 
+								data-ng-options="selects.language.options[key] for key in selects.language.optionsOrder">
+								<option value="">-- choose a language --</option></select>
+						</div>
+						<label class="control-label" for="projCode">Project Code</label>
+						<div class="controls">
+							<input id="projCode" type="text" placeholder="project code" data-ng-model="project.projectCode" />
+						</div>
+						<label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> Featured On Website</label>
+					</div>
 				</fieldset>
 				<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 			</form>
@@ -31,7 +44,4 @@
 			</form>
 		</tab>
 	</tabset>
-	
-	<pre>project {{project | json}}</pre>
-	
 </div>
