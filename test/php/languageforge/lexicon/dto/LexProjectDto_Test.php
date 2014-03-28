@@ -22,6 +22,8 @@ class TestLexProjectDto extends UnitTestCase {
 		$projectId = $project->id->asString();
 		$project->projectCode = 'lf';
 		$project->featured = true;
+		$project->language = "English";
+		$project->languageCode = 'en';
 		
 		$project->addUser($userId, Roles::USER);
 		$user->addProject($projectId);
@@ -40,6 +42,8 @@ class TestLexProjectDto extends UnitTestCase {
 		$this->assertEqual($dto['project']['projectname'], SF_TESTPROJECT);
 		$this->assertEqual($dto['project']['projectCode'], 'lf');
 		$this->assertTrue($dto['project']['featured']);
+		$this->assertEqual($dto['project']['language'], "English");
+		$this->assertEqual($dto['project']['languageCode'], 'en');
 		$this->assertTrue(count($dto['rights']) > 0, "No rights in dto");
 	}
 	
