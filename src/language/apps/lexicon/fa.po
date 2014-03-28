@@ -1,0 +1,1 @@
+/* Persian, Iranian translation data for the lexicon app */
