@@ -103,10 +103,10 @@ class RightsHelper
 			case 'project_settings':
 			case 'project_updateSettings':
 			case 'project_readSettings':
-			case 'lex_project_update':
 				return self::userHasProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
 
 			case 'project_update':
+			case 'lex_project_update':
 				return (self::userHasProjectRight($params[0]['id'], $userId, Domain::PROJECTS + Operation::EDIT) ||
 						self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT));
 				
