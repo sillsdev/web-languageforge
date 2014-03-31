@@ -2,30 +2,30 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('lexicon', 
-		[
-		 'ngRoute',
-		 'dbe',
-		 'meaning',
-		 'examples',
-		 'lexicon.add-meanings',
-		 'lexicon.configuration',
-		 'lexicon.import-export',
-		 'lexicon.settings',
-		 'lexicon.manage-users',
-		 'lexicon.services',
-		 'lexicon.filters',
-		 'bellows.filters'
-		])
+	[
+		'ngRoute',
+		'dbe',
+		'meaning',
+		'examples',
+		'lexicon.add-meanings',
+		'lexicon.configuration',
+		'lexicon.import-export',
+		'lexicon.settings',
+		'lexicon.manage-users',
+		'lexicon.services',
+		'lexicon.filters',
+		'bellows.filters'
+	])
 	.config(['$routeProvider', function($routeProvider) {
 		// the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
-	    $routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } });
-
+		$routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } });
+		
 		$routeProvider.when( '/p/:projectId', { redirectTo: '/p/:projectId/dbe', });
 		$routeProvider.when( '/p/:projectId/view', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
 		$routeProvider.when( '/p/:projectId/gatherTexts', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
 		$routeProvider.when( '/p/:projectId/review', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
 		$routeProvider.when( '/p/:projectId/wordlist', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
-
+		
 		$routeProvider.when(
 				'/p/:projectId/dbe',
 				{
@@ -74,7 +74,28 @@ angular.module('lexicon',
 					templateUrl: '/angular-app/languageforge/lexicon/views/manage-users.html',
 				}
 			);
-	    $routeProvider.otherwise({redirectTo: '/projects'});
+		$routeProvider.otherwise({redirectTo: '/projects'});
+	}])
+	.controller('MainCtrl', ['$scope', 'lexConfigService', 'lexProjectService', function($scope, lexConfigService, lexProjectService) {
+		$scope.project = {};
+		$scope.project.user = {};
+		$scope.project.user.interfaceLanguageCode = $scope.project.interfaceLanguageCode; 
+		
+		$scope.selects = {};
+		$scope.selects.interfaceLanguages = {
+			'optionsOrder': ['en', 'fr', 'fa', 'es', 'th'],
+			'options': {
+				'en': 'English',
+				'es': 'Spanish',
+				'fa': 'Persian, Iranian',
+				'fr': 'French',
+				'th': 'Thai'
+			}
+		};
+		
+		lexConfigService.registerListener(function() {
+			$scope.config = lexConfigService.getConfig();
+		});
 	}])
 	.controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService', function($scope, $rootScope, breadcrumbService) {
 		$scope.idmap = breadcrumbService.idmap;
@@ -85,8 +106,8 @@ angular.module('lexicon',
 			$scope.breadcrumbs = breadcrumbService.read();
 		}, true);
 	}])
-	.controller('LexiconMenuCtrl', ['$scope', '$timeout', 'lexConfigService', 'lexProjectService', 
-	                                function($scope, $timeout, lexConfigService, lexProjectService) {
+	.controller('LexiconMenuCtrl', ['$scope', 'lexConfigService', 'lexProjectService', 
+	                                function($scope, lexConfigService, lexProjectService) {
 		$scope.isItemVisible = function(itemName) {
 			// Default to visible if config not defined
 			if (angular.isUndefined($scope.config)) {

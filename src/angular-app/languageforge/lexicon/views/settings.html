@@ -9,11 +9,11 @@
 						<div class="controls">
 							<input id="projName" type="text" placeholder="project name" data-ng-model="project.projectname" />
 						</div>
-						<label class="control-label" for="language">Interface Language</label>
+						<label class="control-label" for="language">Default Interface Language</label>
 						<div class="controls">
 							<select class="form-control" id="language" 
-								data-ng-model="project.languageCode" 
-								data-ng-options="selects.language.options[key] for key in selects.language.optionsOrder">
+								data-ng-model="project.interfaceLanguageCode" 
+								data-ng-options="selects.interfaceLanguages.options[code] for code in selects.interfaceLanguages.optionsOrder">
 								<option value="">-- choose a language --</option></select>
 						</div>
 						<label class="control-label" for="projCode">Project Code</label>

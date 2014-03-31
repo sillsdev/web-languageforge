@@ -198,6 +198,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public $projectname;
 	
+	/**
+	 * Web app interface language code
+	 * @var string
+	 */
+	public $interfaceLanguageCode;
 	
 	/**
 	 * @var string
