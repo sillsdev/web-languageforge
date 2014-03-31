@@ -53,9 +53,9 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 					$scope.lastSavedDate = new Date();
 					$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
 					saved = true;
-					(successCallback||angular.noop)();
+					(successCallback||angular.noop)(result);
 				} else {
-					(failCallback||angular.noop)();
+					(failCallback||angular.noop)(result);
 				}
 				saving = false;
 			});
@@ -63,7 +63,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	
 	$scope.prepEntryForUpdate = function(entry) {
-		return $scope.recursiveRemoveProperties(entry, ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+		return $scope.recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
 	};
 	
 	$scope.getLexemeForDisplay = function(listEntry) {
