@@ -24,6 +24,7 @@ window.session = <?php echo $jsonSession; ?>;
 	<script src="/js/lib/angular_stable_1.2.15/angular-route.js"></script>
 	<script src="/js/lib/angular_stable_1.2.15/angular-sanitize.js"></script>
 	<script src="/js/lib/angular-file-upload.js"></script>
+	<script src="/js/lib/angular-translate_2.0.1/angular-translate.js"></script>
 	<script src="/js/lib/angular-translate_2.0.1/angular-translate-loader-static-files.js"></script>
 	<script src="/js/lib/angularjs-gravatardirective.js"></script>
 	<script src="/js/lib/truncate.js"></script>
