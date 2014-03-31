@@ -9,9 +9,9 @@ angular.module('lexicon',
 		 'examples',
 		 'lexicon.add-meanings',
 		 'lexicon.configuration',
-		 'lexicon.importExport',
+		 'lexicon.import-export',
 		 'lexicon.settings',
-		 'lexicon.manageUsers',
+		 'lexicon.manage-users',
 		 'lexicon.services',
 		 'lexicon.filters',
 		 'bellows.filters'
@@ -71,7 +71,7 @@ angular.module('lexicon',
 		$routeProvider.when(
 				'/p/:projectId/users',
 				{
-					templateUrl: '/angular-app/languageforge/lexicon/views/manageUsers.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/manage-users.html',
 				}
 			);
 	    $routeProvider.otherwise({redirectTo: '/projects'});

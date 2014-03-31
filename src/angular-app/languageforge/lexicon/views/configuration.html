@@ -4,7 +4,7 @@
 <button class="btn btn-primary pull-right" data-ng-disabled="configForm.$pristine" data-ng-click="configurationApply()" ><i class="icon-ok"></i> Apply</button>
 <tabset>
 	<tab heading="Input Systems">
-		<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'"></div>
+		<div data-ng-include="'/angular-app/languageforge/lexicon/views/configuration-input-systems.html'"></div>
 	</tab>
 	<tab heading="Fields">
 		<div data-ng-controller="FieldConfigCtrl">
@@ -101,7 +101,7 @@
 						<button class="btn btn-primary pull-right" 
 							data-ng-click="editInputSystems.done()"><i class="icon-ok"></i> Done</button>
 						<h3 style="font-weight:normal">Edit Input Systems</h3>
-						<div data-ng-include="'/angular-app/languageforge/lexicon/views/input-systems.html'"></div>
+						<div data-ng-include="'/angular-app/languageforge/lexicon/views/configuration-input-systems.html'"></div>
 					</div>
 				</div>
 			</div>
