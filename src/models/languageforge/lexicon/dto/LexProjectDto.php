@@ -18,10 +18,9 @@ class LexProjectDto {
 		
 		$project = new LexiconProjectModel($projectId);
 		$projectJson = JsonEncoder::encode($project);
+		$data['project']['interfaceLanguageCode'] = $projectJson['interfaceLanguageCode'];
 		$data['project']['projectCode'] = $projectJson['projectCode'];
 		$data['project']['featured'] = $projectJson['featured'];
-		$data['project']['language'] = $projectJson['language'];
-		$data['project']['languageCode'] = $projectJson['languageCode'];
 		
 		return $data;
 	}

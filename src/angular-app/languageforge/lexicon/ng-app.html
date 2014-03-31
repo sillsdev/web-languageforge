@@ -1,5 +1,14 @@
-<div class="content container" data-ng-cloak>
+<div class="content container" data-ng-cloak data-ng-controller="MainCtrl" dir="ltr">
 	<div class="hdrnav">
+		<div class="control-group pull-right">
+			<!-- <label class="control-label" for="language">Interface Language</label> -->
+			<div class="controls">
+				<select class="form-control" id="language" 
+					data-ng-model="project.user.interfaceLanguageCode" 
+					data-ng-options="selects.interfaceLanguages.options[key] for key in selects.interfaceLanguages.optionsOrder">
+					<option value="">-- choose a language --</option></select>
+			</div>
+		</div>
 		<ul class="topNav">
 			<li class="here"><a href="/app/projects">My Projects</a></li>
 			<li><a href="/app/activity">Activity</a></li>
