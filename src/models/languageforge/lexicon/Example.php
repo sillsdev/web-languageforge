@@ -2,9 +2,13 @@
 
 namespace models\languageforge\lexicon;
 
-class Example {
+use models\mapper\ObjectForEncoding;
+
+class Example extends ObjectForEncoding {
 
 	function __construct($liftId = '') {
+		$this->setPrivateProp('liftId');
+		$this->setReadOnlyProp('authorInfo');
 		$this->liftId = $liftId;
 		$this->sentence = new MultiText();
 		$this->translation = new MultiText();
