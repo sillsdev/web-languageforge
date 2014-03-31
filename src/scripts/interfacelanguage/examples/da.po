@@ -1,0 +1,283 @@
+# Danish translation for wesay
+# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
+# This file is distributed under the same license as the wesay package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: wesay\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2007-11-23 05:56+0000\n"
+"PO-Revision-Date: 2007-12-09 17:27+0000\n"
+"Last-Translator: carson <Unknown>\n"
+"Language-Team: Danish <da@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2008-06-02 09:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#. The label for the 'dashboard'; the task which lets you see the status of other tasks and jump to them.
+msgid "Home"
+msgstr "Hjem"
+
+msgid "Dictionary Browse & Edit"
+msgstr ""
+
+msgid "Add Meanings"
+msgstr "Tilføj betydninger"
+
+msgid "Add meanings to entries where they are missing."
+msgstr "Tilføj betydninger hvor de mangler."
+
+msgid "Add Parts of Speech"
+msgstr ""
+
+msgid "Add a Part Of Speech to senses where they are missing."
+msgstr ""
+
+msgid "Add Examples"
+msgstr "Tilføj eksempler"
+
+msgid "Add example sentences to entries where they are missing."
+msgstr "Tilføj sætningseksempel hvor de mangler"
+
+msgid "Add Base Forms"
+msgstr ""
+
+msgid ""
+"Identify the \"base form\" word that this word is built from. In the printed "
+"dictionary, these can optionally be shown as subentries."
+msgstr ""
+
+msgid "Collect Word List (D)"
+msgstr ""
+
+msgid ""
+"Collect new words by translating from words in another language. This is a "
+"list of 1700 words from John Duerksen."
+msgstr ""
+
+msgid "Collect Word List (PNG)"
+msgstr ""
+
+msgid ""
+"Collect new words by translating from words in another language. This is a "
+"list of around 900 words and phrases from PNG."
+msgstr ""
+
+msgid "Collect Words By Semantic Domain"
+msgstr ""
+
+msgid ""
+"Collect new words organized by semantic domains and questions about those "
+"domains."
+msgstr ""
+
+msgid "Actions"
+msgstr "Handlinger"
+
+msgid "Looking for USB Keys..."
+msgstr "Kigger efter USB kort..."
+
+msgid "Backing Up..."
+msgstr "Laver sikkerhedskopi..."
+
+msgid "Backup Complete"
+msgstr "Sikkerhedskopiering gennemført"
+
+msgid "Files backed up to {0}"
+msgstr "Sikkerhedskopieret til {0}"
+
+msgid "Files were not backed up."
+msgstr "Filer blev ikke sikkerhedskopieret."
+
+msgid "Please insert the USB Key to backup to."
+msgstr "Indsæt USB kort til at lagre sikkerhedskopi på."
+
+msgid "&Cancel"
+msgstr "&Afbryd"
+
+#. Label for usb flash-drive backup action
+msgid "Backup To Device"
+msgstr "Sikkerhedskopi til medie"
+
+#. description of usb backup action
+msgid "Saves a backup on an external device, like a USB key."
+msgstr "Gen en sikkerhedskopi på et eksternt medie, som et USB kort."
+
+msgid "Email My Work to {0}"
+msgstr "E-mail mit arbejde til {0}"
+
+msgid "Send a zipped email containing all your WeSay work."
+msgstr "Send en zipped e-mail indeholdende alt dit WeSay arbejde."
+
+msgid "View Report"
+msgstr "Vis rapport"
+
+msgid "Shows some information about the lexicon."
+msgstr "Vis nogle informationer om leksikonet"
+
+msgid "Export to Word"
+msgstr "Eksportér til Word"
+
+msgid "Creates a very basic dictionary publication in Microsoft Word."
+msgstr "Skab en meget simpel ordbog i Microsoft Word."
+
+msgid "Export to HTML"
+msgstr "Eksportér til HTML"
+
+msgid "Creates a simple Html version of the dictionary, ready for printing."
+msgstr "Skab en simpel Html version af ordbog, klar til print."
+
+msgid "Export To SFM"
+msgstr "Eksport til SFM"
+
+msgid "Saves the lexicon in a form of standard format."
+msgstr "Gen leksikaet i et standard format"
+
+#. The description of the Actions task.
+msgid "Backup, print, etc."
+msgstr ""
+
+msgid "Current task:"
+msgstr "Aktuel opgave:"
+
+msgid "Tasks"
+msgstr "Opgaver"
+
+msgid "Switch tasks and see current status of tasks"
+msgstr "Skift opgave og se aktuel opgavestatus"
+
+msgid "Your dictionary has {0} words"
+msgstr "Din ordbog har {0} ord"
+
+msgid "Cannot find {0}"
+msgstr "Kan ikke finde {0}"
+
+msgid "No Senses"
+msgstr "Ingen mening"
+
+#. This is what shows if the user is listing words by the glossing language, but the word doesn't have a gloss.
+msgid "No Gloss"
+msgstr ""
+
+msgid "Hide Uncommon Fields"
+msgstr ""
+
+msgid "Show Uncommon Fields"
+msgstr ""
+
+msgid "&Delete This Word"
+msgstr "&Slet dette ord"
+
+msgid "&New Word"
+msgstr "&Nyt ord"
+
+msgid "&Show All Fields"
+msgstr ""
+
+#. The description of the 'Dictionary' task.  In place of the {0} will be the number of words in the dictionary.  In place of the {1} will be the name of the project.
+msgid "See all {0} {1} words."
+msgstr "Se alle {0} {1} ord."
+
+#. The label for the field showing the Lexeme Form of the entry.
+msgid "Word"
+msgstr "Ord"
+
+msgid "(Page Down Key)"
+msgstr "(Side ned tast)"
+
+msgid "(Enter Key)"
+msgstr "(Enter tast)"
+
+msgid "Try thinking of words you use to talk about these things."
+msgstr "Prøv at tænk på ord som du bruger til at tale om disse ting."
+
+msgid "Try thinking of ways to say these words in your language."
+msgstr "Prøv at tænke på måder at sige disse ord på dit sprog."
+
+msgid "Word:"
+msgstr "Ord:"
+
+#. This is the field containing an example sentence of a sense of a word.
+#. This is the field containing an example sentence of a sense of a word."), "Sentence
+msgid "Example"
+msgstr "Eksempel"
+
+#. This is the field for putting in a translation of an example sentence.
+msgid "Translation"
+msgstr "Oversættelse"
+
+#. This label is shown once, but has two roles.  1) it labels contains the gloss, and 2) marks the beginning of the set of fields which make up a sense. So, in english, if we labelled this 'gloss', it would describe the field well but wouldn't label the section well.
+msgid "Meaning"
+msgstr "Betydning"
+
+msgid "Congratulations. You have completed this task."
+msgstr "Tillykke. Du har afsluttet denne opgave."
+
+msgid "There is no work left to be done on this task."
+msgstr "Der er ikke mere arbejde tilbage på denne opgave."
+
+msgid "To Do:"
+msgstr ""
+
+msgid "Completed:"
+msgstr ""
+
+#. The user will click this to say that this word has no baseform.  E.g. Kindess has Kind as a baseform, but Kind has no other word as a baseform.
+msgid "This word has no Base Form"
+msgstr ""
+
+#. Appended to the name of a task, in its tab, while the user is waiting for the task to come up.
+msgid "Loading..."
+msgstr ""
+
+#. It's up to you whether to bother translating this or not.") + ": " + project.Name + "
+msgid "WeSay"
+msgstr "WeSay"
+
+#. The label for the field holding the citation form.
+msgid "CitationForm"
+msgstr ""
+
+#. The label for the field showing the definition of the word.
+msgid "Definition"
+msgstr "Definition"
+
+#. The label for the field showing the literal meaning of idiom or proverb.
+msgid "Literal Meaning"
+msgstr ""
+
+#. The label for the field showing a note.
+#. The label for the field showing a note.
+msgid "Note"
+msgstr "Kommentar"
+
+#. The label for the field showing Part Of Speech
+msgid "POS"
+msgstr "POS"
+
+#. The label for the field showing a picture.
+msgid "Picture"
+msgstr "Billede"
+
+#. The label for the field showing an example use of the word.
+msgid "Example Sentence"
+msgstr "Sætningseksempel"
+
+#. The label for the field showing the example sentence translated into other languages.
+msgid "Example Translation"
+msgstr ""
+
+#. The label for the field showing Semantic Domains
+msgid "Sem Dom"
+msgstr ""
+
+#. The label for the field showing the entry which this entry is derived from, is a subentry of, etc.
+msgid "Base Form"
+msgstr ""
+
+#. This is shown in a combo-box (list of options, like Part Of Speech) when no option has been chosen, or the user just doesn't know what to put in this field.
+msgid "unknown"
+msgstr "ukendt"
