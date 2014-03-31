@@ -2,7 +2,8 @@
 
 use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\rights\Roles;
-use models\UserModel;
+use models\ProjectProperties;
+use models\UserProfileModel;
 
 require_once(dirname(__FILE__) . '/../../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -15,7 +16,7 @@ class TestLexBaseViewDto extends UnitTestCase {
 		$e->clean();
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
-		$user = new UserModel($userId);
+		$user = new UserProfileModel($userId);
 		$user->role = Roles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
@@ -23,6 +24,7 @@ class TestLexBaseViewDto extends UnitTestCase {
 		
 		$project->addUser($userId, Roles::USER);
 		$user->addProject($projectId);
+		$user->projectsProperties[$projectId] = new ProjectProperties('th');
 		$user->write();
 		$project->write();
 				
@@ -35,6 +37,7 @@ class TestLexBaseViewDto extends UnitTestCase {
 		$this->assertEqual($dto['config']['entry']['fields']['lexeme']['label'], 'Word');
 		$this->assertEqual($dto['config']['entry']['fields']['lexeme']['label'], 'Word');
 		$this->assertEqual($dto['config']['entry']['fields']['senses']['fields']['partOfSpeech']['label'], 'Part of Speech');
+		$this->assertEqual($dto['user']['interfaceLanguageCode'], 'th');
 		$this->assertEqual($dto['project']['projectname'], SF_TESTPROJECT);
 		$this->assertTrue(count($dto['rights']) > 0, "No rights in dto");
 	}

@@ -11,13 +11,15 @@ use models\mapper\ReferenceList;
 use models\rights\Realm;
 use models\rights\Roles;
 
-class UserProfileModel extends \models\UserModel
-{
+class UserProfileModel extends \models\UserModel {
 	
 	public function __construct($id = '') {
 		$this->id = new Id();
+		$this->projectsProperties = new MapOf(function($data) {
+			return new ProjectProperties();
+		});
 		$this->projectUserProfiles = new MapOf(function($data) {
-			return new ProjectUserProfile();
+			return new SfchecksUserProfile();
 		});
 		parent::__construct($id);
 	}
@@ -56,13 +58,39 @@ class UserProfileModel extends \models\UserModel
 	
 	/**
 	 * 
-	 * @var MapOf<ProjectUserProfile>
+	 * @var MapOf <UserProjectProperties>
+	 */
+	public $projectsProperties;
+	
+	/**
+	 * TODO Depricated. Migrate to $this->projectsProperties->sfchecksUserProfile IJH 2014-03
+	 * @var MapOf <SfchecksUserProfile>
 	 */
 	public $projectUserProfiles;
 	
 }
 
-class ProjectUserProfile {
+class ProjectProperties {
+	
+	public function __construct($interfaceLanguageCode = '') {
+		$this->interfaceLanguageCode = $interfaceLanguageCode;
+	}
+	
+	/**
+	 * Users preferred interface language code
+	 * @var string
+	 */
+	public $interfaceLanguageCode;
+	
+	/**
+	 * 
+	 * @var SfchecksUserProfile
+	 */
+	public $sfchecksUserProfile;
+	
+}
+
+class SfchecksUserProfile {
 
 	/**
 	 * @var string
