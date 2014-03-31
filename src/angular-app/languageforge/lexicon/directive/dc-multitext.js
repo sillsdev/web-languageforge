@@ -8,7 +8,8 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 				config : "=",
 				model : "=",
 				comment : "&",
-				control : "="
+				control : "=",
+				multiline : "="
 			},
 			controller: ['$scope', 'lexConfigService', function($scope, configService) {
 				$scope.definitionHelperUsed = false;
@@ -28,20 +29,26 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 					}
 				};
 				
-				$scope.submitComment = function(comment, inputSystem) {
-					comment.inputSystem = inputSystem;
+				$scope.submitComment = function(comment, inputSystemTag) {
+					comment.inputSystem = inputSystemTag;
 					$scope.comment({comment:comment});
 				};
 				
-				$scope.getAbbreviation = function(inputSystem) {
+				$scope.getAbbreviation = function(inputSystemTag) {
 					if (angular.isDefined($scope.gConfig)) {
-						return $scope.gConfig.inputSystems[inputSystem].abbreviation;
+						return $scope.gConfig.inputSystems[inputSystemTag].abbreviation;
 					}
 				};
 				
-				$scope.getDirection = function(inputSystem) {
+				$scope.getInputSystemName = function(inputSystemTag) {
 					if (angular.isDefined($scope.gConfig)) {
-						return ($scope.gConfig.inputSystems[inputSystem].isRightToLeft) ? 'rtl' : 'ltr';
+						return InputSystems.getName($scope.gConfig.inputSystems[inputSystemTag].languageName, inputSystemTag);
+					}
+				};
+				
+				$scope.getDirection = function(inputSystemTag) {
+					if (angular.isDefined($scope.gConfig)) {
+						return ($scope.gConfig.inputSystems[inputSystemTag].isRightToLeft) ? 'rtl' : 'ltr';
 					} else {
 						return 'auto';
 					}
