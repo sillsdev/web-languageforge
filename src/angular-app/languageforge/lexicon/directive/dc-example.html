@@ -4,7 +4,7 @@
 		<div data-ng-if="config.fields[fieldName].visible">
 			<div data-ng-switch data-on="config.fields[fieldName].type">
 				<div data-ng-switch-when="multitext">
-					<dc-multitext config="config.fields[fieldName]" model="model[fieldName]" control="control" comment="submitComment(comment, fieldName)"></dc-multitext>
+					<dc-multitext config="config.fields[fieldName]" model="model[fieldName]" control="control" comment="submitComment(comment, fieldName)" multiline="true"></dc-multitext>
 				</div>
 				<div data-ng-switch-default>
 					unsupported type {{config.fields[fieldName].type}} for field {{fieldName}}
