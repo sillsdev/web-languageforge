@@ -21,6 +21,9 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	 * @param string $id
 	 */
 	public function __construct($projectModel, $id = '') {
+		$this->setPrivateProp('guid');
+		$this->setPrivateProp('mercurialSha');
+		$this->setReadOnlyProp('authorInfo');
 		$this->id = new Id();
 		$this->lexeme = new MultiText();
 		$this->senses = new ArrayOf(

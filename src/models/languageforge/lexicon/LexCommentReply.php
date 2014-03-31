@@ -2,11 +2,16 @@
 
 namespace models\languageforge\lexicon;
 
+use models\mapper\ObjectForEncoding;
+
 use models\mapper\IdReference;
 
-class LexCommentReply {
+class LexCommentReply extends ObjectForEncoding {
 	
 	public function __construct($content = '') {
+		$this->setReadOnlyProp('dateCreated');
+		$this->setReadOnlyProp('dateModified');
+		$this->setReadOnlyProp('userRef');
 		$this->content = $content;
 		$this->id = uniqid();
 		$this->dateCreated = new \DateTime();
