@@ -24,7 +24,6 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
 	$scope.readProject();
 	
 	$scope.updateProject = function() {
-		$scope.project.language = $scope.selects.language.options[$scope.project.languageCode];
 		lexProjectService.updateProject($scope.project, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
@@ -32,18 +31,6 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
 		});
 	};
 	
-	$scope.selects = {};
-	$scope.selects.language = {
-		'optionsOrder': ['en', 'fr', 'fa', 'es', 'th'],
-		'options': {
-			'en': 'English',
-			'es': 'Spanish',
-			'fa': 'Persian, Iranian',
-			'fr': 'French',
-			'th': 'Thai'
-		}
-	};
-
 	$scope.settings = {
 		'sms': {},
 		'email': {}
