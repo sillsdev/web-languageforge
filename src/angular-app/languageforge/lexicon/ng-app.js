@@ -14,9 +14,17 @@ angular.module('lexicon',
 		'lexicon.manage-users',
 		'lexicon.services',
 		'lexicon.filters',
-		'bellows.filters'
+		 'bellows.filters',
+		 'pascalprecht.translate' 
 	])
-	.config(['$routeProvider', function($routeProvider) {
+	.config(['$routeProvider', '$translateProvider', function($routeProvider, $translateProvider) {
+		// configure interface language filepath
+		$translateProvider.useStaticFilesLoader({
+			prefix: '/angular-app/languageforge/lexicon/lang',
+			suffix: '.json'
+		});
+		$translateProvider.preferredLanguage('en');
+		
 		// the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
 		$routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } });
 		
