@@ -1,11 +1,29 @@
 angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
-.service('lexConfigService', [function(jsonRpc, $location) {
+.service('lexBaseViewService', [function(jsonRpc, $location) {
 	var _callbacks = [];
-	var _config = {};
+	var _data = {
+		config: {},
+		user: {},
+		project: {},
+		rights: {}
+	};
+	
+	this.setData = function(data) {
+		_data = angular.copy(data);
+		if (angular.isDefined(_data.config.entry)) {
+			angular.forEach(_callbacks, function(callback) {
+				callback();
+			});
+		}
+	};
+	
+	this.getData = function() {
+		return _data;
+	};
 	
 	this.setConfig = function(config) {
-		_config = angular.copy(config);
-		if (angular.isDefined(_config.entry)) {
+		_data.config = angular.copy(config);
+		if (angular.isDefined(_data.config.entry)) {
 			angular.forEach(_callbacks, function(callback) {
 				callback();
 			});
@@ -13,12 +31,12 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 	};
 	
 	this.getConfig = function() {
-		return _config;
+		return _data.config;
 	};
 	
 	this.registerListener = function(callback) {
 		_callbacks.push(callback);
-		if (angular.isDefined(_config.entry)) {
+		if (angular.isDefined(_data.config.entry)) {
 			callback();
 		}
 	};

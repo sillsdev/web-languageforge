@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'palaso.ui.notice', 'palaso.ui.textdrop'])
-.controller('SettingsCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexConfigService',
-                             function($scope, userService, ss, notice, lexProjectService, configService) {
+.controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexBaseViewService', 
+                             function($scope, $filter, userService, ss, notice, lexProjectService, baseViewService) {
 	$scope.readProject = function() {
 		lexProjectService.readProject(function(result) {
 			if (result.ok) {
-				configService.setConfig(result.data.config);
+				baseViewService.setData(result.data);
 				$scope.project = result.data.project;
 				
 				// Rights

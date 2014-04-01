@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
-.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'lexConfigService', '$filter', '$modal', 
-                             function($scope, notice, lexProjectService, configService, $filter, $modal) {
+.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'lexBaseViewService', '$filter', '$modal', 
+                             function($scope, notice, lexProjectService, baseViewService, $filter, $modal) {
 	$scope.config = {};
 
 	$scope.haveConfig = function() {
@@ -98,7 +98,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 	lexProjectService.baseViewDto('configuration', 'Dictionary Configuration', function(result) {
 		if (result.ok) {
 			$scope.config = result.data.config;
-			configService.setConfig($scope.config);
+			baseViewService.setData(result.data);
 			$scope.setupView();
 		}
 	});
@@ -108,7 +108,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "Dictionary configuration updated successfully");
 				$scope.configForm.$setPristine();
-				configService.setConfig($scope.config);
+				baseViewService.setData(result.data);
 			}
 		});
 	};
