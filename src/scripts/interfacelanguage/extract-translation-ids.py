@@ -12,8 +12,8 @@ html_attr_re = re.compile(ur'{0}|{1}'.format(html_attr_re1, html_attr_re2))
 angular_expr_re = re.compile(ur'{{(.*?)}}')
 bar_translate_re = re.compile(ur'\|\s*translate')
 
-def parse_html_file(args):
-    with codecs.open(args.fname, 'rU', 'utf-8') as f:
+def parse_html_file(args, fname):
+    with codecs.open(fname, 'rU', 'utf-8') as f:
         for line in f:
             for m in html_attr_re.finditer(line):
                 print m.group(1)
@@ -43,8 +43,8 @@ def find_close_quote(mobj):
 js_filter_re = re.compile(ur"""\$filter\(\s*["']translate["']\s*\)""")
 paren_quote_re = re.compile(ur"""\s*\(\s*(["'])""")
 
-def parse_js_file(args):
-    with codecs.open(args.fname, 'rU', 'utf-8') as f:
+def parse_js_file(args, fname):
+    with codecs.open(fname, 'rU', 'utf-8') as f:
         for line in f:
             for m in js_comment_re.finditer(line):
                 print eval(m.group(1).strip())
@@ -54,17 +54,43 @@ def parse_js_file(args):
                 close_quote = find_close_quote(quote_m)
                 print close_quote.string[:close_quote.start(0)]
 
+def find_git_root(curdir=None):
+    if curdir is None:
+        curdir = os.getcwd()
+    curdir = os.path.abspath(curdir)
+    while not os.path.isdir(os.path.join(curdir, '.git')):
+        curdir = os.path.normpath(os.path.join(curdir, os.pardir))
+        # Sanity check: don't cross mount points (stop at / or C:\)
+        if os.path.ismount(curdir):
+            break
+    return curdir
+
+def walk_tree(args, root):
+    for path, dirs, files in os.walk(root):
+        # Don't descend into .git directory
+        if '.git' in dirs:
+            dirs.remove('.git')
+        for name in files:
+            absname = os.path.join(path, name)
+            if absname.endswith('.html'):
+                parse_html_file(args, absname)
+            elif absname.endswith('.js'):
+                parse_js_file(args, absname)
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('fname', nargs='?', help='Filename to process',
             default='examples/casestohandle.txt')
     parser.add_argument('--out-format', '-of', help="Output format (default POT)",
             default='pot')
+    parser.add_argument('--lang', '-l', help="Language to make a PO file for",
+            default='en')
     args = parser.parse_args()
     args.out_fname = 'app.{}'.format(args.out_format)
-    # print "Output filename:", args.out_fname
-    parse_html_file(args)
-    parse_js_file(args)
+    args.lang_fname = '{}.{}'.format(args.lang, args.out_format[:-1])
+    root = find_git_root()
+    print "Git found at:", root
+    walk_tree(args, root)
 
 if __name__ == '__main__':
     retcode = main()
