@@ -124,6 +124,10 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 		});
 	};
 	
+	this.updateUserProfile = function(user, callback) {
+		jsonRpc.call('user_updateProfile', [user], callback);
+	};
+	
 	this.getProjectId = function() {
 		var parts = $location.path().split('/');
 		// strip off the "/p/"
