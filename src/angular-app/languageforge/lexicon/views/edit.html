@@ -63,14 +63,14 @@
 						<i class="icon-remove"></i>{{ 'Word' | translate }}</button>
 				</div>
 				
-				<tab heading="Edit" active="editTab.active" select="selectEditTab()">
+				<tab heading="{{ 'Edit' | translate }}" active="editTab.active" select="selectEditTab()">
 					<div style="margin-top:20px" class="row">
 						<div class="animate-show" data-ng-show="entryLoaded()" id="entryItemView">
 							<dc-entry config="config" model="currentEntry" control="control"></dc-entry>
 						</div>
 					</div>
 				</tab>
-				<tab heading="Comment" active="commentsTab.active" select="selectCommentsTab()" disabled="currentEntry.id == ''">
+				<tab heading="{{ 'Comment' | translate }}" active="commentsTab.active" select="selectCommentsTab()" disabled="currentEntry.id == ''">
 					<div class="row">
     					<fieldset class="filter-controls comment-filter">
     						<legend class="override-bootstrap">Filters <i data-ng-click="toggleFilters()" style="cursor: pointer" data-ng-class="filter.chevronIcon"></i></legend>
