@@ -63,7 +63,7 @@ class UserProfileModel extends \models\UserModel {
 	public $projectsProperties;
 	
 	/**
-	 * TODO Depricated. Migrate to $this->projectsProperties->sfchecksUserProfile IJH 2014-03
+	 * TODO Deprecate. Migrate to $this->projectsProperties[<projectId>]->sfchecksUserProfile IJH 2014-03
 	 * @var MapOf <SfchecksUserProfile>
 	 */
 	public $projectUserProfiles;
