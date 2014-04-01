@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'angularFileUpload', 'lexicon.upload'])
-.controller('LiftImportCtrl', ['$scope', 'silNoticeService', 'fileReader', 'lexProjectService', 'lexConfigService', 
-                               function($scope, notice, fileReader, lexProjectService, configService) {
+.controller('LiftImportCtrl', ['$scope', 'silNoticeService', 'fileReader', 'lexProjectService', 'lexBaseViewService', 
+                               function($scope, notice, fileReader, lexProjectService, baseViewService) {
 	lexProjectService.baseViewDto('importExport', 'Import/export', function(result) {
 		if (result.ok) {
-			configService.setConfig(result.data.config);
+			baseViewService.setData(result.data);
 		}
 	});
 	

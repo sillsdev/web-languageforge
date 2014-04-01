@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop'])
-.controller('manageUsersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexConfigService',
-                                    function($scope, userService, projectService, ss, notice, lexProjectService, configService) {
+.controller('manageUsersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexBaseViewService',
+                                    function($scope, userService, projectService, ss, notice, lexProjectService, baseViewService) {
 
 	$scope.queryProjectUsers = function() {
 		lexProjectService.users(function(result) {
 			if (result.ok) {
-				configService.setConfig(result.data.config);
+				baseViewService.setData(result.data);
 				$scope.project = result.data.project;
 				$scope.list.users = result.data.users;
 				$scope.list.userCount = result.data.userCount;

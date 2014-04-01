@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexConfigService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 
-                        function ($scope, userService, sessionService, lexService, configService, $window, $modal, $interval, $filter, linkService) {
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexBaseViewService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 
+                        function ($scope, userService, sessionService, lexService, baseViewService, $window, $modal, $interval, $filter, linkService) {
 
 	var pristineEntry = {};
 	$scope.lastSavedDate = new Date();
@@ -259,7 +259,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		updateFirstEntry = typeof updateFirstEntry !== 'undefined' ? updateFirstEntry : false;
 		var gotDto = function (result) {
 			if (result.ok) {
-				configService.setConfig(result.data.config);
+				baseViewService.setData(result.data);
 				$scope.config = result.data.config;
 				$scope.entries = result.data.entries;
 				$scope.entriesTotalCount = result.data.entriesTotalCount;

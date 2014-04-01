@@ -4,9 +4,8 @@
 			<!-- <label class="control-label" for="language">Interface Language</label> -->
 			<div class="controls">
 				<select class="form-control" id="language" 
-					data-ng-model="project.user.interfaceLanguageCode" 
-					data-ng-options="selects.interfaceLanguages.options[key] for key in selects.interfaceLanguages.optionsOrder">
-					<option value="">-- choose a language --</option></select>
+					data-ng-options="selects.interfaceLanguages.options[code] for code in selects.interfaceLanguages.optionsOrder"
+					data-ng-model="user.interfaceLanguageCode"></select>
 			</div>
 		</div>
 		<ul class="topNav">
