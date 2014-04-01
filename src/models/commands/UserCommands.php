@@ -67,8 +67,11 @@ class UserCommands {
 	/**
 	 * User Profile Update
 	 * @param array $params - user model fields to update
+	 * @param string $userId
+	 * @return string $userId
 	 */
 	public static function updateUserProfile($params, $userId) {
+		$params['id'] = $userId;
 		$user = new UserProfileModel($userId);
 		
 		// don't allow the following keys to be persisted
