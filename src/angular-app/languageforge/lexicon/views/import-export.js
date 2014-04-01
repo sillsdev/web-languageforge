@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'angularFileUpload', 'lexicon.upload'])
-.controller('LiftImportCtrl', ['$scope', 'silNoticeService', 'fileReader', 'lexProjectService', 'lexBaseViewService', 
-                               function($scope, notice, fileReader, lexProjectService, baseViewService) {
+.controller('LiftImportCtrl', ['$scope', 'silNoticeService', 'fileReader', 'lexProjectService', 'lexBaseViewService', '$filter', 
+                               function($scope, notice, fileReader, lexProjectService, baseViewService, $filter) {
 	lexProjectService.baseViewDto('importExport', 'Import/export', function(result) {
 		if (result.ok) {
 			baseViewService.setData(result.data);
@@ -32,7 +32,7 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'pa
 		};
 		lexProjectService.importLift(importData, function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, "LIFT import completed successfully");
+				notice.push(notice.SUCCESS, $filter('translate')("LIFT import completed successfully"));
 			}
 		});
 	};
