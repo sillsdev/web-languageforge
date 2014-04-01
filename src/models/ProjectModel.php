@@ -27,6 +27,7 @@ class ProjectModel extends \models\mapper\MapperModel
 		});
 		$this->userProperties = new ProjectUserPropertiesSettings();
 		$this->themeName = 'default';
+		$this->interfaceLanguageCode = 'en';
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
 	
