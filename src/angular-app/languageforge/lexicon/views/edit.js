@@ -202,9 +202,10 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	
 	$scope.deleteEntry = function(entry) {
-		if ($window.confirm("Are you sure you want to delete '" + getLexeme(entry) + "'?")) {
+		var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?", {lexeme:getLexeme(entry)});
+		if ($window.confirm(deletemsg)) {
 			if ($scope.entryHasComments(entry)) {
-				if ($window.confirm("Are you sure you want to delete '" + getLexeme(entry) + "'?")) {
+				if ($window.confirm(deletemsg)) {
 					var entryIndex = $scope.getEntryIndexById(entry.id);
 					$scope.show.entries.splice(entryIndex, 1);
 					$scope.entries.splice(entryIndex, 1);
@@ -319,7 +320,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		//Navigate to newUrl if the entry isn't dirty
 		if (! $scope.currentEntryIsDirty()) return;
 		
-		var answer = confirm("You have unsaved changes. Leave the page?");
+		var answer = confirm($filter('translate')("You have unsaved changes. Leave the page?"));
 		if (!answer) {
 			//prevent navigation by default since we'll handle it
 			//once the user selects a dialog option
@@ -330,7 +331,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	});
 	
 	$window.onbeforeunload = function (event) {
-		var message = 'You have unsaved changes.';
+		var message = $filter('translate')('You have unsaved changes.');
 		if (typeof event == 'undefined') {
 			event = window.event;
 		}
