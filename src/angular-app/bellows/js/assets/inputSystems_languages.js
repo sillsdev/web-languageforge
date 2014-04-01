@@ -31404,6 +31404,7 @@ var _inputSystems_languages = [
     {
         "name": "Persian",
         "code": {
+            "two": "fa",
             "three": "fas"
         },
         "country": [
@@ -84967,7 +84968,6 @@ var _inputSystems_languages = [
     {
         "name": "Persian, Iranian",
         "code": {
-            "two": "fa",
             "three": "pes"
         },
         "country": [
