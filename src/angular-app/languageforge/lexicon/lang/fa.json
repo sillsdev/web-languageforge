@@ -36,21 +36,14 @@
 	"Import": "واردات",
 	"Import a LIFT File": "وارداتفایل LIFT",
 	"Import/Export": "واردات / صادرات",
-	""
-"Import the conflicting data and overwrite the current data (the importing "
-"data overrules the Language Forge data).": "وارد کردن داده ها متناقض و بازنویسی داده های فعلی ( که داده ها وارد overrules داده ها زبان فورج ) .",
-	""
-"Import the conflicting data into a new lexical entry or sense and I will "
-"make decisions myself later.": "وارد کردن داده ها متناقض به ورود واژگان جدید و یا احساس و من تصمیم خودم را بعد از آن را .",
-	""
-"In applications which support this option, fields with this input system "
-"will able to play and record voice.": "در برنامه های کاربردی که در حمایت از این گزینه ، با این سیستم ورودی را قادر به پخش و ضبط صدا زمینه .",
+	"Import the conflicting data and overwrite the current data (the importing data overrules the Language Forge data).": "وارد کردن داده ها متناقض و بازنویسی داده های فعلی ( که داده ها وارد overrules داده ها زبان فورج ) .",
+	"Import the conflicting data into a new lexical entry or sense and I will make decisions myself later.": "وارد کردن داده ها متناقض به ورود واژگان جدید و یا احساس و من تصمیم خودم را بعد از آن را .",
+	"In applications which support this option, fields with this input system will able to play and record voice.": "در برنامه های کاربردی که در حمایت از این گزینه ، با این سیستم ورودی را قادر به پخش و ضبط صدا زمینه .",
 	"Input Systems": "سیستم های ورودی",
 	"IPA transcription": "IPA نسخه برداری",
 	"LIFT Export": "LIFT صادرات",
 	"LIFT Import": "واردات LIFT",
-	"LIFT import completed successfully": "واردات LIFT با موفقیت انجام
-        شد",
+	"LIFT import completed successfully": "واردات LIFT با موفقیت انجام شد",
 	"Manager": "مدیر",
 	"Meaning": "یعنی",
 	"Member": "عضو",
@@ -99,5 +92,5 @@
 	"word": "کلمه",
 	"Word": "حرف",
 	"You have unsaved changes.": "شما تغییرات ذخیره نشده .",
-	"You have unsaved changes. Leave the page?": "شما تغییرات ذخیره نشده . ترک صفحه ؟",
+	"You have unsaved changes. Leave the page?": "شما تغییرات ذخیره نشده . ترک صفحه ؟"
 }

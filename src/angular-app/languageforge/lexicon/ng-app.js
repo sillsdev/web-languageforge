@@ -20,7 +20,7 @@ angular.module('lexicon',
 	.config(['$routeProvider', '$translateProvider', function($routeProvider, $translateProvider) {
 		// configure interface language filepath
 		$translateProvider.useStaticFilesLoader({
-			prefix: '/angular-app/languageforge/lexicon/lang',
+			prefix: '/angular-app/languageforge/lexicon/lang/',
 			suffix: '.json'
 		});
 		$translateProvider.preferredLanguage('en');
@@ -84,7 +84,7 @@ angular.module('lexicon',
 			);
 		$routeProvider.otherwise({redirectTo: '/projects'});
 	}])
-	.controller('MainCtrl', ['$scope', 'lexBaseViewService', 'lexProjectService', function($scope, lexBaseViewService, lexProjectService) {
+	.controller('MainCtrl', ['$scope', 'lexBaseViewService', 'lexProjectService', '$translate', function($scope, lexBaseViewService, lexProjectService, $translate) {
 		$scope.interfaceConfig = {};
 		$scope.interfaceConfig.userLanguageCode = 'en;';
 		$scope.interfaceConfig.selectLanguages = {
@@ -102,6 +102,8 @@ angular.module('lexicon',
 				var user = {};
 				user.id = '';
 				user.interfaceLanguageCode = $scope.interfaceConfig.userLanguageCode;
+				$translate.use(newVal);
+				
 				lexProjectService.updateUserProfile(user, function(result) {
 					if (result.ok) {
 						;// notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
