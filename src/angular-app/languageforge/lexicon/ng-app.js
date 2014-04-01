@@ -97,6 +97,19 @@ angular.module('lexicon',
 			$scope.interfaceConfig = baseViewData.interfaceConfig;
 		});
 		
+		$scope.$watch('interfaceConfig.userLanguageCode', function(newVal, scope) {
+			if (newVal) {
+				var user = {};
+				user.id = '';
+				user.interfaceLanguageCode = $scope.interfaceConfig.userLanguageCode;
+				lexProjectService.updateUserProfile(user, function(result) {
+					if (result.ok) {
+						;// notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
+					}
+				});
+			}
+		});
+		
 	}])
 	.controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService', function($scope, $rootScope, breadcrumbService) {
 		$scope.idmap = breadcrumbService.idmap;

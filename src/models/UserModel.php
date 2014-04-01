@@ -26,6 +26,7 @@ class UserModel extends \models\UserModelBase
 	 */
 	public function __construct($id = '') {
 		$this->projects = new ReferenceList();
+		$this->setReadOnlyProp('projects');
 		parent::__construct($id);
 	}
 	

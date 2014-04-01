@@ -24,7 +24,7 @@ class TestLexBaseViewDto extends UnitTestCase {
 		
 		$project->addUser($userId, Roles::USER);
 		$user->addProject($projectId);
-		$user->projectsProperties[$projectId] = new ProjectProperties('th');
+		$user->interfaceLanguageCode = 'th';
 		$user->write();
 		$project->write();
 				
