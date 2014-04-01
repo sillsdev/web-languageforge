@@ -1,18 +1,17 @@
 <?php
 
-use libraries\shared\Website;
-
 use libraries\scriptureforge\sfchecks\IDelivery;
+use libraries\shared\Website;
 use models\commands\UserCommands;
-use models\ProjectModel;
-use models\mapper\JsonDecoder;
-use models\UserModel;
-use models\shared\dto\CreateSimpleDto;
 use models\mapper\Id;
+use models\mapper\JsonDecoder;
+use models\shared\dto\CreateSimpleDto;
+use models\ProjectModel;
+use models\UserModel;
+use models\UserProfileModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class MockUserCommandsDelivery implements IDelivery {
@@ -44,6 +43,25 @@ class TestUserCommands extends UnitTestCase {
 		$userId = $e->createUser('somename', 'Some Name', 'somename@example.com');
 		
 		UserCommands::deleteUsers(array($userId), 'bogus auth userid');
+	}
+	
+	function testUpdateUserProfile_SetLangCode_LangCodeSet() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		// setup parameters
+		$userId = $e->createUser('username', 'name', 'name@example.com');
+		$params = array(
+			'id' => '',
+			'interfaceLanguageCode' => 'th'
+		);
+		
+		$newUserId = UserCommands::updateUserProfile($params, $userId);
+		
+		// user profile updated
+		$user = new UserProfileModel($newUserId);
+		$this->assertEqual($user->interfaceLanguageCode, 'th');
+		$this->assertEqual($userId, $newUserId);
 	}
 	
 	function testCreateSimple_CreateUser_PasswordAndJoinProject() {
