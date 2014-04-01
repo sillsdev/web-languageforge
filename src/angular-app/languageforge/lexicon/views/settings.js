@@ -26,7 +26,7 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
 	$scope.updateProject = function() {
 		lexProjectService.updateProject($scope.project, function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
+				notice.push(notice.SUCCESS, $filter('translate')("{projectName} settings updated successfully", {projectName: $scope.project.projectname}));
 			}
 		});
 	};
@@ -48,7 +48,7 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
 	$scope.updateCommunicationSettings = function() {
 		lexProjectService.updateSettings($scope.project.id, $scope.settings.sms, $scope.settings.email, function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, $scope.project.projectname + " SMS settings updated successfully");
+				notice.push(notice.SUCCESS, $filter('translate')("{projectName} SMS settings updated successfully", {projectName: $scope.project.projectname}));
 			}
 		});
 	};
