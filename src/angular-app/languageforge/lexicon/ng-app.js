@@ -86,29 +86,32 @@ angular.module('lexicon',
 	}])
 	.controller('MainCtrl', ['$scope', 'lexBaseViewService', 'lexProjectService', '$translate', function($scope, lexBaseViewService, lexProjectService, $translate) {
 		$scope.interfaceConfig = {};
-		$scope.interfaceConfig.userLanguageCode = 'en;';
+		$scope.interfaceConfig.userLanguageCode = 'en';
 		$scope.interfaceConfig.selectLanguages = {
 			'optionsOrder': ['en'],
 			'options': { 'en': 'English' }
 		};
+		var pristineLanguageCode = 'en';
 		
 		lexBaseViewService.registerListener(function() {
 			var baseViewData = lexBaseViewService.getData();
 			$scope.interfaceConfig = baseViewData.interfaceConfig;
+			pristineLanguageCode = angular.copy(baseViewData.interfaceConfig.userLanguageCode);
+			$translate.use(pristineLanguageCode);
 		});
 		
-		$scope.$watch('interfaceConfig.userLanguageCode', function(newVal, scope) {
-			if (newVal) {
+		$scope.$watch('interfaceConfig.userLanguageCode', function(newVal, oldVal) {
+			if (newVal && newVal != pristineLanguageCode) {
 				var user = {};
 				user.id = '';
-				user.interfaceLanguageCode = $scope.interfaceConfig.userLanguageCode;
-				$translate.use(newVal);
+				user.interfaceLanguageCode = newVal;
 				
 				lexProjectService.updateUserProfile(user, function(result) {
 					if (result.ok) {
-						;// notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
+//						console.log("Interface langauge changed successfully");
 					}
 				});
+				$translate.use(newVal);
 			}
 		});
 		
@@ -118,7 +121,7 @@ angular.module('lexicon',
 		$rootScope.$on('$routeChangeSuccess', function(event, current) {
 			$scope.breadcrumbs = breadcrumbService.read();
 		});
-		$scope.$watch('idmap', function(oldVal, newVal, scope) {
+		$scope.$watch('idmap', function(newVal, oldVal, scope) {
 			$scope.breadcrumbs = breadcrumbService.read();
 		}, true);
 	}])
