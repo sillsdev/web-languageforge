@@ -108,7 +108,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "Dictionary configuration updated successfully");
 				$scope.configForm.$setPristine();
-				baseViewService.setData(result.data);
+				baseViewService.setConfig($scope.config);
 			}
 		});
 	};
