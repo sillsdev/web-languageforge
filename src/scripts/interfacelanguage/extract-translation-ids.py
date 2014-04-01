@@ -12,8 +12,8 @@ html_attr_re = re.compile(ur'{0}|{1}'.format(html_attr_re1, html_attr_re2))
 angular_expr_re = re.compile(ur'{{(.*?)}}')
 bar_translate_re = re.compile(ur'\|\s*translate')
 
-def parse_html_file(fname):
-    with codecs.open(fname, 'rU', 'utf-8') as f:
+def parse_html_file(args):
+    with codecs.open(args.fname, 'rU', 'utf-8') as f:
         for line in f:
             for m in html_attr_re.finditer(line):
                 print m.group(1)
@@ -43,8 +43,8 @@ def find_close_quote(mobj):
 js_filter_re = re.compile(ur"""\$filter\(\s*["']translate["']\s*\)""")
 paren_quote_re = re.compile(ur"""\s*\(\s*(["'])""")
 
-def parse_js_file(fname):
-    with codecs.open(fname, 'rU', 'utf-8') as f:
+def parse_js_file(args):
+    with codecs.open(args.fname, 'rU', 'utf-8') as f:
         for line in f:
             for m in js_comment_re.finditer(line):
                 print eval(m.group(1).strip())
@@ -58,9 +58,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('fname', nargs='?', help='Filename to process',
             default='examples/casestohandle.txt')
+    parser.add_argument('--out-format', '-of', help="Output format (default POT)",
+            default='pot')
     args = parser.parse_args()
-    parse_html_file(args.fname)
-    parse_js_file(args.fname)
+    args.out_fname = 'app.{}'.format(args.out_format)
+    # print "Output filename:", args.out_fname
+    parse_html_file(args)
+    parse_js_file(args)
 
 if __name__ == '__main__':
     retcode = main()
