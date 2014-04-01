@@ -13,7 +13,8 @@ class LexBaseViewDto {
 	
 	/**
 	 * @param string $projectId
-	 * @returns array - the DTO array
+	 * @param string $userId
+	 * @return array - the DTO array
 	 */
 	public static function encode($projectId, $userId) {
 		$user = new UserProfileModel($userId);
@@ -23,8 +24,8 @@ class LexBaseViewDto {
 		$config['inputSystems'] = JsonEncoder::encode($project->inputSystems);
 		
 		$interfaceLanguageCode = $project->interfaceLanguageCode;
-		if (key_exists($projectId, $user->projectsProperties) && $user->projectsProperties[$projectId]->interfaceLanguageCode) {
-			$interfaceLanguageCode = $user->projectsProperties[$projectId]->interfaceLanguageCode;
+		if ($user->interfaceLanguageCode) {
+			$interfaceLanguageCode = $user->interfaceLanguageCode;
 		}
 		
 		$options = self::getInterfaceLanguages(APPPATH . 'angular-app/languageforge/lexicon/lang');

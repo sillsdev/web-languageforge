@@ -57,7 +57,13 @@ class UserProfileModel extends \models\UserModel {
 	public $gender;
 	
 	/**
-	 * 
+	 * Users preferred interface language code
+	 * @var string
+	 */
+	public $interfaceLanguageCode;
+	
+	/**
+	 * TODO Review. This was added but is not used in favour of language set per user rather than per user per project. IJH 2014-03
 	 * @var MapOf <UserProjectProperties>
 	 */
 	public $projectsProperties;
