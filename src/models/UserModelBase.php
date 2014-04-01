@@ -21,6 +21,7 @@ class UserModelBase extends \models\mapper\MapperModel
 	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->validationExpirationDate = new \DateTime();
+// 		$this->setReadOnlyProp('role');	// TODO Enhance. This currently causes API tests to fail but should be in for security. IJH 2014-03
 		parent::__construct(UserModelMongoMapper::instance(), $id);
 	}
 	
