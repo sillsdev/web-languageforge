@@ -15,16 +15,16 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 			'optionsOrder': ['none', 'ipaTranscription', 'voice', 'scriptRegionVariant'],
 			'options': {
 				'none': 'none',
-				'ipaTranscription': 'IPA transcription',
-				'voice': 'Voice',
-				'scriptRegionVariant': 'Script / Region / Variant'
+				'ipaTranscription': $filter('translate')('IPA transcription'),
+				'voice': $filter('translate')('Voice'),
+				'scriptRegionVariant': $filter('translate')('Script / Region / Variant')
 			}
 		},
 		'purpose': {
 			'optionsOrder': ['etic', 'emic'],
 			'options': {
-				'etic': 'Etic (raw phonetic transcription)',
-				'emic': 'Emic (uses the phonology of the language)'
+				'etic': $filter('translate')('Etic (raw phonetic transcription)'),
+				'emic': $filter('translate')('Emic (uses the phonology of the language)')
 			}
 		},
 		'script': {
@@ -106,7 +106,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 	$scope.configurationApply = function() {
 		lexProjectService.updateConfiguration($scope.config, function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, "Dictionary configuration updated successfully");
+				notice.push(notice.SUCCESS, $filter('translate')("Dictionary configuration updated successfully"));
 				$scope.configForm.$setPristine();
 				baseViewService.setConfig($scope.config);
 			}
