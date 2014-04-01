@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop'])
-.controller('manageUsersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexBaseViewService',
-                                    function($scope, userService, projectService, ss, notice, lexProjectService, baseViewService) {
+.controller('manageUsersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexBaseViewService', '$filter',
+                                    function($scope, userService, projectService, ss, notice, lexProjectService, baseViewService, $filter) {
 
 	$scope.queryProjectUsers = function() {
 		lexProjectService.users(function(result) {
@@ -55,9 +55,9 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 				$scope.queryProjectUsers();
 				$scope.selected = [];
 				if (userIds.length == 1) {
-					notice.push(notice.SUCCESS, "The user was removed from this project");
+					notice.push(notice.SUCCESS, $filter('translate')("The user was removed from this project"));
 				} else {
-					notice.push(notice.SUCCESS, userIds.length + " users were removed from this project");
+					notice.push(notice.SUCCESS, $filter('translate')("{numOfUsers} users were removed from this project", {numOfUsers: userIds.length}));
 				}
 			}
 		});
@@ -65,8 +65,8 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 	
 	// Roles in list
 	$scope.roles = [
-		{key: 'user', name: 'Member'},
-		{key: 'project_admin', name: 'Manager'}
+		{key: 'user', name: $filter('translate')('Member')},
+		{key: 'project_admin', name: $filter('translate')('Manager')}
 	];
 	
 	$scope.onRoleChange = function(user) {
@@ -76,7 +76,7 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 //		console.log('userchange...', model);
 		projectService.updateUser($scope.project.id, model, function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, user.username + "'s role was changed to " + user.role);
+				notice.push(notice.SUCCESS, $filter('translate')("{userName}'s role was changed to {role}", {userName: user.username, role: user.role}));
 			}
 		});
 	};
@@ -86,9 +86,9 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 	// ----------------------------------------------------------
 	$scope.users = [];
 	$scope.addModes = {
-		'addNew': { 'en': 'Create New User', 'icon': 'icon-user'},
-		'addExisting' : { 'en': 'Add Existing User', 'icon': 'icon-user'},
-		'invite': { 'en': 'Send Email Invite', 'icon': 'icon-envelope'}
+		'addNew': { 'en': $filter('translate')('Create New User'), 'icon': 'icon-user'},
+		'addExisting' : { 'en': $filter('translate')('Add Existing User'), 'icon': 'icon-user'},
+		'invite': { 'en': $filter('translate')('Send Email Invite'), 'icon': 'icon-envelope'}
 	};
 	$scope.addMode = 'addNew';
 	$scope.typeahead = {};
@@ -136,7 +136,7 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 		if ($scope.addMode == 'addNew') {
 			userService.createSimple($scope.typeahead.userName, $scope.project.id, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "User created.  Username: " + $scope.typeahead.userName + "    Password: " + result.data.password);
+					notice.push(notice.SUCCESS, $filter('translate')("User created.  Username: {userName}    Password: {password}", {userName: $scope.typeahead.userName, password: result.data.password}));
 					$scope.queryProjectUsers();
 				};
 			});
@@ -145,14 +145,14 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 			model.id = $scope.user.id;
 			projectService.updateUser($scope.project.id, model, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectname + " successfully");
+					notice.push(notice.SUCCESS, $filter('translate')("{userName} was added to {projectName} successfully.", {userName: $scope.user.name, projectName: $scope.project.projectname}));
 					$scope.queryProjectUsers();
 				}
 			});
 		} else if ($scope.addMode == 'invite') {
 			userService.sendInvite($scope.typeahead.userName, $scope.project.id, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.projectname);
+					notice.push(notice.SUCCESS, $filter('translate')("{userName} was invited to join the project {projectName}", {userName: $scope.typeahead.userName, projectName: $scope.project.projectname}));
 					$scope.queryProjectUsers();
 				}
 			});
