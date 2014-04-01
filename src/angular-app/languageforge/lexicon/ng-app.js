@@ -85,25 +85,18 @@ angular.module('lexicon',
 		$routeProvider.otherwise({redirectTo: '/projects'});
 	}])
 	.controller('MainCtrl', ['$scope', 'lexBaseViewService', 'lexProjectService', function($scope, lexBaseViewService, lexProjectService) {
-		$scope.user = {};
-		$scope.user.interfaceLanguageCode = 'en'; 
-		
-		$scope.selects = {};
-		$scope.selects.interfaceLanguages = {
-			'optionsOrder': ['en', 'fr', 'fa', 'es', 'th'],
-			'options': {
-				'en': 'English',
-				'es': 'Spanish',
-				'fa': 'Persian, Iranian',
-				'fr': 'French',
-				'th': 'Thai'
-			}
+		$scope.interfaceConfig = {};
+		$scope.interfaceConfig.userLanguageCode = 'en;';
+		$scope.interfaceConfig.selectLanguages = {
+			'optionsOrder': ['en'],
+			'options': { 'en': 'English' }
 		};
 		
 		lexBaseViewService.registerListener(function() {
 			var baseViewData = lexBaseViewService.getData();
-			$scope.user = baseViewData.user;
+			$scope.interfaceConfig = baseViewData.interfaceConfig;
 		});
+		
 	}])
 	.controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService', function($scope, $rootScope, breadcrumbService) {
 		$scope.idmap = breadcrumbService.idmap;
@@ -133,5 +126,6 @@ angular.module('lexicon',
 		lexBaseViewService.registerListener(function() {
 			$scope.config = lexBaseViewService.getConfig();
 		});
+		
 	}])
 	;

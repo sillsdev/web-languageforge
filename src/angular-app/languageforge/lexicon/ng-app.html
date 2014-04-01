@@ -3,9 +3,9 @@
 		<div class="control-group pull-right">
 			<!-- <label class="control-label" for="language">Interface Language</label> -->
 			<div class="controls">
-				<select class="form-control" id="language" 
-					data-ng-options="selects.interfaceLanguages.options[code] for code in selects.interfaceLanguages.optionsOrder"
-					data-ng-model="user.interfaceLanguageCode"></select>
+				<select class="form-control" id="language"
+					data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder"
+					data-ng-model="interfaceConfig.userLanguageCode"></select>
 			</div>
 		</div>
 		<ul class="topNav">
