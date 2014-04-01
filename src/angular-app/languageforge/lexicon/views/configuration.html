@@ -13,7 +13,7 @@
 		<!-- Left column: field list -->
 		<div class="span3 control-group">
 			<dl class="picklists">
-				<dt>Lex Entry</dt>
+				<dt translate="Entry Level Fields"></dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectField('lexeme')" 
 						data-ng-class="{selected:currentField.name == 'lexeme'}">
@@ -21,7 +21,7 @@
 							<input type="checkbox" disabled checked> {{fieldConfig['lexeme'].label}}</div>
 					</div>
 				</div></dd>
-				<dt>Lex Senses</dt>
+				<dt translate="Sense Level Fields"></dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectField('definition')" 
 						data-ng-class="{selected:currentField.name == 'definition'}">
@@ -44,7 +44,7 @@
 							 {{fieldConfig['semanticDomain'].label}}</div>
 					</div>
 				</div></dd>
-				<dt>Lex Examples</dt>
+				<dt translate="Example Level Fields"></dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectField('sentence')" 
 						data-ng-class="{selected:currentField.name == 'sentence'}">
