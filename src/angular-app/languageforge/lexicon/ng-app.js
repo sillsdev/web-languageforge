@@ -84,10 +84,9 @@ angular.module('lexicon',
 			);
 		$routeProvider.otherwise({redirectTo: '/projects'});
 	}])
-	.controller('MainCtrl', ['$scope', 'lexConfigService', 'lexProjectService', function($scope, lexConfigService, lexProjectService) {
-		$scope.project = {};
-		$scope.project.user = {};
-		$scope.project.user.interfaceLanguageCode = $scope.project.interfaceLanguageCode; 
+	.controller('MainCtrl', ['$scope', 'lexBaseViewService', 'lexProjectService', function($scope, lexBaseViewService, lexProjectService) {
+		$scope.user = {};
+		$scope.user.interfaceLanguageCode = 'en'; 
 		
 		$scope.selects = {};
 		$scope.selects.interfaceLanguages = {
@@ -101,8 +100,9 @@ angular.module('lexicon',
 			}
 		};
 		
-		lexConfigService.registerListener(function() {
-			$scope.config = lexConfigService.getConfig();
+		lexBaseViewService.registerListener(function() {
+			var baseViewData = lexBaseViewService.getData();
+			$scope.user = baseViewData.user;
 		});
 	}])
 	.controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService', function($scope, $rootScope, breadcrumbService) {
@@ -114,8 +114,8 @@ angular.module('lexicon',
 			$scope.breadcrumbs = breadcrumbService.read();
 		}, true);
 	}])
-	.controller('LexiconMenuCtrl', ['$scope', 'lexConfigService', 'lexProjectService', 
-	                                function($scope, lexConfigService, lexProjectService) {
+	.controller('LexiconMenuCtrl', ['$scope', 'lexBaseViewService', 'lexProjectService', 
+	                                function($scope, lexBaseViewService, lexProjectService) {
 		$scope.isItemVisible = function(itemName) {
 			// Default to visible if config not defined
 			if (angular.isUndefined($scope.config)) {
@@ -130,8 +130,8 @@ angular.module('lexicon',
 		
 		$scope.projectId = lexProjectService.getProjectId();
 		
-		lexConfigService.registerListener(function() {
-			$scope.config = lexConfigService.getConfig();
+		lexBaseViewService.registerListener(function() {
+			$scope.config = lexBaseViewService.getConfig();
 		});
 	}])
 	;
