@@ -1,10 +1,10 @@
 <div>
-<div class="row-fluid">
+<div class="row-fluid outer-flex">
 	<!-- Left column: input system list -->
 	<div class="span3">
 		<!-- control buttons -->
 		<div class="control-group">
-			<button class="btn btn-success" data-ng-click="openNewLanguageModal()"><i class="icon-plus"></i>{{ 'New' | translate }}</button>
+			<button class="btn btn-success" data-ng-click="openNewLanguageModal()"><i class="icon-plus"></i> {{'New' | translate}} </button>
 		</div>
 		
 		<!-- picklist -->
@@ -22,8 +22,8 @@
 		<!-- control buttons -->
 		<div class="control-group">
 			<div class="btn-group">
-				<a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#" style="font-weight:normal">
-					{{ 'More' | translate }} <span class="caret"></span></a>
+				<a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#" style="font-weight:normal"> 
+					{{'More' | translate}} <span class="caret"></span></a>
 				<ul class="dropdown-menu">
 					<li data-ng-class="{disabled: newExists(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[1])}">
 						<a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, inputSystems[currentInputSystemTag].languageName, selects.special.optionsOrder[1])">
@@ -44,7 +44,7 @@
 		
 		<!-- settings -->
 		<div class="well" data-ng-show="inputSystems[currentInputSystemTag]">
-			<div class="pull-right">
+			<div class="{{interfaceConfig.pullToSide}}">
 				<br />
 				<label class="control-label">{{currentInputSystemTag}}</label>
 			</div>
@@ -54,9 +54,11 @@
 				<div class="controls">
 					<input type="text" id="abbrev" data-ng-model="inputSystems[currentInputSystemTag].abbreviation">
 				</div>
-				<label class="checkbox">
-					<input type="checkbox" data-ng-model="inputSystems[currentInputSystemTag].isRightToLeft"/>{{ 'Right to left language' | translate }}</label>
+				<label class="checkbox {{interfaceConfig.pullNormal}}">
+					<input type="checkbox" data-ng-model="inputSystems[currentInputSystemTag].isRightToLeft"/>
+					{{ 'Right to left language' | translate }}</label>
 			</div>
+			<br />
 			<p class="text-warning" data-ng-show="inputSystems[currentInputSystemTag].fieldUseCount > 0">
 				<small>Some settings are disabled because {{inputSystems[currentInputSystemTag].fieldUseCount}} entry field{{(inputSystems[currentInputSystemTag].fieldUseCount == 1) ? ' is' : 's are'}} using this system.</small>
 			</p>
