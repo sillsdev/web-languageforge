@@ -1,6 +1,6 @@
-<div class="content container" data-ng-cloak data-ng-controller="MainCtrl" dir="ltr">
+<div class="content container" data-ng-cloak data-ng-controller="MainCtrl" dir="{{interfaceConfig.direction}}">
 	<div class="hdrnav">
-		<div class="control-group pull-right">
+		<div class="control-group {{interfaceConfig.pullToSide}}">
 			<!-- <label class="control-label" for="language">Interface Language</label> -->
 			<div class="controls">
 				<select class="form-control" id="language" style="width:100%"
@@ -19,10 +19,10 @@
 		<div class="control-group">
 		</div>
 		<div class="lexnav control-group">
-			<div class="btn-group pull-right">
-				<a class="btn dropdown-toggle" data-toggle="dropdown" data-tooltip-placement="left" data-tooltip="Settings" href="#">
+			<div class="btn-group {{interfaceConfig.pullToSide}}">
+				<a class="btn dropdown-toggle" data-toggle="dropdown" data-tooltip-placement="{{interfaceConfig.placementToSide}}" data-tooltip="Settings" href="#">
 					<i class="icon-cog icon-2x"></i>&nbsp;&nbsp;<span class="caret"></span></a>
-				<ul class="dropdown-menu pull-right">
+				<ul class="dropdown-menu {{interfaceConfig.pullToSide}}">
 					<li data-ng-show="isItemVisible('configuration')"><a href="#/p/{{projectId}}/configuration">Dictionary Configuration</a></li>
 					<li class="divider" data-ng-show="isItemVisible('configuration')"></li>
 					<li data-ng-show="isItemVisible('importExport')"><a href="#/p/{{projectId}}/importExport">Import/Export</a></li>
@@ -39,7 +39,7 @@
 			<div class="btn-group">
 				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 					<i class="icon-th icon-2x"></i> Gather Words <span class="caret"></span></a>
-				<ul class="dropdown-menu">
+				<ul class="dropdown-menu {{interfaceConfig.pullNormal}}">
 					<li data-ng-show="isItemVisible('dbe')"        ><a href="#/p/{{projectId}}/dbe">Browse and Edit</a></li>
 					<li class="divider" data-ng-show="isItemVisible('dbe')"></li>
 					<li data-ng-show="isItemVisible('gatherTexts')"><a href="#/p/{{projectId}}/gather-texts">*NYI* from Texts</a></li>
@@ -52,7 +52,7 @@
 			<div class="btn-group">
 				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 					<i class="icon-plus icon-2x"></i> *NYI* Add Information <span class="caret"></span></a>
-				<ul class="dropdown-menu">
+				<ul class="dropdown-menu {{interfaceConfig.pullNormal}}">
 						<li data-ng-show="isItemVisible('addMeanings')"><a href="#/p/{{projectId}}/add-meanings">add Meanings</a></li>
 						<li data-ng-show="isItemVisible('addGrammar')" ><a href="#/p/{{projectId}}/add-grammar">add Grammatical Usage</a></li>
 						<li data-ng-show="isItemVisible('addExamples')"><a href="#/p/{{projectId}}/add-examples">add Examples</a></li>

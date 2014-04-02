@@ -40,6 +40,10 @@ var InputSystems = {
 	'regions': function() {
 		return _inputSystems_regions;
 	},
+	'isRightToLeft': function(code) {
+		var rtlCodes = ['fa', 'fas'];	// TODO. Enhance. find a source for this list; manually update for now. IJH 2014-04
+		return (rtlCodes.indexOf(code) >= 0);
+	},
 	'getCode': function(tag) {
 		var tokens = tag.split('-');
 		return tokens[0];
