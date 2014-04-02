@@ -16,7 +16,7 @@ def parse_html_file(args, fname):
     with codecs.open(fname, 'rU', 'utf-8') as f:
         for line in f:
             for m in html_attr_re.finditer(line):
-                print m.group(1)
+                yield m.group(1)
             for m in angular_expr_re.finditer(line):
                 for m2 in bar_translate_re.finditer(m.group(1)):
                     before_bar = eval(m2.string[:m2.start(0)].strip())
@@ -25,7 +25,7 @@ def parse_html_file(args, fname):
                     # import HTMLParser
                     # p = HTMLParser.HTMLParser()
                     # before_bar = p.unescape(before_bar)
-                    print before_bar
+                    yield before_bar
 
 js_comment_re1 = ur'//\s*translate:(.*)'
 js_comment_re2 = ur'/\*\s*translate:(.*?)(?:\s*\*/)?'
@@ -47,12 +47,12 @@ def parse_js_file(args, fname):
     with codecs.open(fname, 'rU', 'utf-8') as f:
         for line in f:
             for m in js_comment_re.finditer(line):
-                print eval(m.group(1).strip())
+                yield eval(m.group(1).strip())
             for m in js_filter_re.finditer(line):
                 rest = m.string[m.end(0):]
                 quote_m = paren_quote_re.search(rest)
                 close_quote = find_close_quote(quote_m)
-                print close_quote.string[:close_quote.start(0)]
+                yield close_quote.string[:close_quote.start(0)]
 
 def find_git_root(curdir=None):
     if curdir is None:
@@ -68,14 +68,40 @@ def find_git_root(curdir=None):
 def walk_tree(args, root):
     for path, dirs, files in os.walk(root):
         # Don't descend into .git directory
-        if '.git' in dirs:
+        try:
             dirs.remove('.git')
+        except ValueError:
+            pass
+        msgids = set()
         for name in files:
             absname = os.path.join(path, name)
             if absname.endswith('.html'):
-                parse_html_file(args, absname)
+                for msgid in parse_html_file(args, absname):
+                    msgids.add(msgid)
             elif absname.endswith('.js'):
-                parse_js_file(args, absname)
+                for msgid in parse_js_file(args, absname):
+                    msgids.add(msgid)
+        if msgids:
+            try:
+                os.mkdir(os.path.join(path, 'lang'))
+            except OSError:
+                pass
+            app_pot = codecs.open(os.path.join(path, 'lang', 'app.pot'), 'w', 'utf-8')
+            en_po = codecs.open(os.path.join(path, 'lang', 'en.po'), 'w', 'utf-8')
+        for msgid in sorted(msgids):
+            app_pot.write("msgid ")
+            app_pot.write(repr(msgid.encode('utf-8')))
+            app_pot.write('\n')
+            app_pot.write('msgstr ""\n')
+            app_pot.write('\n')  # And one more blank line
+            en_po.write("msgid ")
+            en_po.write(repr(msgid.encode('utf-8')))
+            en_po.write('\n')
+            en_po.write("msgstr ")
+            en_po.write(repr(msgid.encode('utf-8')))
+            en_po.write('\n')
+            en_po.write('\n')  # And one more blank line
+            print msgid  # For debugging
 
 def main():
     parser = argparse.ArgumentParser()
@@ -89,8 +115,7 @@ def main():
     args.out_fname = 'app.{}'.format(args.out_format)
     args.lang_fname = '{}.{}'.format(args.lang, args.out_format[:-1])
     root = find_git_root()
-    print "Git found at:", root
-    walk_tree(args, root)
+    walk_tree(args, os.path.join(root, 'src', 'angular-app'))
 
 if __name__ == '__main__':
     retcode = main()
