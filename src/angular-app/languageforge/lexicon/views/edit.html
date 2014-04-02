@@ -1,7 +1,9 @@
 <div class="container" data-ng-cloak data-ng-controller="editCtrl">
-	<div class="row">
-		<div class="span6 offset4">
-		<h2 translate="Dictionary Browse and Edit"></h2>
+	<div class="row outer-flex">
+		<div class="span4">
+		</div>
+		<div class="span6">
+			<h2 data-translate="Dictionary Browse and Edit"></h2>
 		</div>
 	</div>
 	
@@ -10,17 +12,17 @@
 		<div class="span4">
 			<!-- control buttons -->
 			<div class="control-group">
-				<button class="btn btn-success" data-ng-click="newEntry()"><i class="icon-plus"></i>{{ 'New Word' | translate }}</button>
+				<button class="btn btn-success" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
 			</div>
 			
-			<div ng-show="show.entries.length > 0">
+			<div data-ng-show="show.entries.length > 0">
 			
     			<!-- entry list search -->
     			<div style="margin-bottom:10px">
-				<span class="pull-right" style="color: grey">{{ '{num} entries' | translate: '{ num: entriesTotalCount }' }}</span>
+				<span class="{{interfaceConfig.pullToSide}}" style="color: grey">{{ '{num} entries' | translate: '{ num: entriesTotalCount }' }}</span>
         			<typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
         				<ul>
-        					<li typeahead-item="e" data-ng-repeat="e in typeahead.searchResults" class="typeahead-item">
+        					<li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults" class="typeahead-item">
         						<p class="name">{{getLexemeForDisplay(e)}}</p>
         						<p class="email">{{getDefinitionOrGloss(e)}}</p>
         					</li>
@@ -54,23 +56,23 @@
 			
 			<tabset data-ng-show="entryLoaded()">
 				<!-- control buttons -->
-				<div class="control-group pull-right" data-ng-show="entryLoaded()">
-					<button class="btn btn-mini" style="margin-right: 140px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry()">
-						<i class="icon-save"></i>{{saveButtonTitle()}}</button>
-					<span style="color: grey; margin-right: 10px">
+				<div class="control-group {{interfaceConfig.pullToSide}}" data-ng-show="entryLoaded()">
+					<button class="btn btn-mini" style="margin-right: 130px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry()">
+						<i class="icon-save"></i> {{saveButtonTitle()}} </button>
+					<span style="color: grey; margin-left: 10px; margin-right: 10px">
 						{{saveNotice()}}</span>
-					<button ng-show="control.canDeleteWord()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Word' | translate }}">
-						<i class="icon-remove"></i>{{ 'Word' | translate }}</button>
+					<button data-ng-show="control.canDeleteWord()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Word' | translate }}">
+						<i class="icon-remove"></i> {{'Word' | translate}} </button>
 				</div>
 				
-				<tab heading="{{ 'Edit' | translate }}" active="editTab.active" select="selectEditTab()">
+				<tab heading="{{ 'Edit' | translate }}" class="{{interfaceConfig.pullNormal}}" active="editTab.active" select="selectEditTab()">
 					<div style="margin-top:20px" class="row">
 						<div class="animate-show" data-ng-show="entryLoaded()" id="entryItemView">
 							<dc-entry config="config" model="currentEntry" control="control"></dc-entry>
 						</div>
 					</div>
 				</tab>
-				<tab heading="{{ 'Comment' | translate }}" active="commentsTab.active" select="selectCommentsTab()" disabled="currentEntry.id == ''">
+				<tab heading="{{ 'Comment' | translate }}" class="{{interfaceConfig.pullNormal}}" active="commentsTab.active" select="selectCommentsTab()" disabled="currentEntry.id == ''">
 					<div class="row">
     					<fieldset class="filter-controls comment-filter">
     						<legend class="override-bootstrap">Filters <i data-ng-click="toggleFilters()" style="cursor: pointer" data-ng-class="filter.chevronIcon"></i></legend>
