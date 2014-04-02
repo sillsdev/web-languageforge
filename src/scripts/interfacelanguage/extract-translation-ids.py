@@ -4,6 +4,7 @@ import os, sys
 import codecs
 import argparse
 import re
+import unicodedata
 
 html_attr_re1 = ur'translate="([^"]*)"'
 html_attr_re2 = ur"translate='([^']*)'"
@@ -88,7 +89,16 @@ def walk_tree(args, root):
                 pass
             app_pot = codecs.open(os.path.join(path, 'lang', 'app.pot'), 'w', 'utf-8')
             en_po = codecs.open(os.path.join(path, 'lang', 'en.po'), 'w', 'utf-8')
-        for msgid in sorted(msgids):
+        def sorthelper(x):
+            # For use as a key function in sorted(). Sorts by alphanumeric
+            # values only, stripping all non-alphanum values from string.
+            if type(x) is bytes:
+                x = x.decode('utf-8')
+            x = unicodedata.normalize('NFKD', x).lower()
+            # unicodedata.category() returns Lx for letters, Nx for numbers
+            f = lambda c: unicodedata.category(c)[0] in ('L', 'N')
+            return filter(f, x)
+        for msgid in sorted(msgids, key=sorthelper):
             app_pot.write("msgid ")
             app_pot.write(repr(msgid.encode('utf-8')))
             app_pot.write('\n')
