@@ -87,31 +87,53 @@ angular.module('lexicon',
 	.controller('MainCtrl', ['$scope', 'lexBaseViewService', 'lexProjectService', '$translate', function($scope, lexBaseViewService, lexProjectService, $translate) {
 		$scope.interfaceConfig = {};
 		$scope.interfaceConfig.userLanguageCode = 'en';
+		$scope.interfaceConfig.direction = 'ltr';
+		$scope.interfaceConfig.pullToSide = 'pull-right';
+		$scope.interfaceConfig.pullNormal = 'pull-left';
+		$scope.interfaceConfig.placementToSide = 'left';
+		$scope.interfaceConfig.placementNormal = 'right';
 		$scope.interfaceConfig.selectLanguages = {
 			'optionsOrder': ['en'],
 			'options': { 'en': 'English' }
 		};
 		var pristineLanguageCode = 'en';
 		
+		function changeInterfaceLanguage(code) {
+			$translate.use(code);
+			pristineLanguageCode = angular.copy(code);
+			
+			$scope.interfaceConfig.direction = 'ltr';
+			$scope.interfaceConfig.pullToSide = 'pull-right';
+			$scope.interfaceConfig.pullNormal = 'pull-left';
+			$scope.interfaceConfig.placementToSide = 'left';
+			$scope.interfaceConfig.placementNormal = 'right';
+			if (InputSystems.isRightToLeft(code)) {
+				$scope.interfaceConfig.direction = 'rtl';
+				$scope.interfaceConfig.pullToSide = 'pull-left';
+				$scope.interfaceConfig.pullNormal = 'pull-right';
+				$scope.interfaceConfig.placementToSide = 'right';
+				$scope.interfaceConfig.placementNormal = 'left';
+			}
+		};
+		
 		lexBaseViewService.registerListener(function() {
 			var baseViewData = lexBaseViewService.getData();
 			$scope.interfaceConfig = baseViewData.interfaceConfig;
-			pristineLanguageCode = angular.copy(baseViewData.interfaceConfig.userLanguageCode);
-			$translate.use(pristineLanguageCode);
+//			pristineLanguageCode = angular.copy(baseViewData.interfaceConfig.userLanguageCode);
+			changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
 		});
 		
 		$scope.$watch('interfaceConfig.userLanguageCode', function(newVal, oldVal) {
 			if (newVal && newVal != pristineLanguageCode) {
 				var user = {};
-				user.id = '';
 				user.interfaceLanguageCode = newVal;
 				
 				lexProjectService.updateUserProfile(user, function(result) {
 					if (result.ok) {
-//						console.log("Interface langauge changed successfully");
+//						console.log("Interface langauge changed successfully: " + newVal);
 					}
 				});
-				$translate.use(newVal);
+				changeInterfaceLanguage(newVal);
 			}
 		});
 		
