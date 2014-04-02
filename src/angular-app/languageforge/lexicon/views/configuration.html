@@ -8,7 +8,7 @@
 	</tab>
 	<tab heading="Fields" class="{{interfaceConfig.pullNormal}}">
 		<div data-ng-controller="FieldConfigCtrl">
-		<div class="row">
+		<div class="row outer-flex">
 		
 		<!-- Left column: field list -->
 		<div class="span3 control-group">
@@ -78,7 +78,7 @@
 				
 				<div data-ng-if="fieldConfig[currentField.name].inputSystems != undefined">
 					<hr />
-					<div class="row control-group" data-ng-show="editInputSystems.collapsed">
+					<div class="row outer-flex control-group" data-ng-show="editInputSystems.collapsed">
 						<div class="span3 picklists">
 							<label class="control-label" for="inputSystem">{{ 'Input Systems' | translate }}</label>
 							<ul class="unstyled indent1"  id="inputSystem">
@@ -121,7 +121,7 @@ config.entry {{config.entry|json}}
 	</tab>
 	<tab heading="Tasks" class="{{interfaceConfig.pullNormal}}">
 		<div data-ng-controller="TaskConfigCtrl">
-		<div class="row">
+		<div class="row outer-flex">
 		
 		<!-- Left column: task list -->
 		<div class="span3 control-group">
