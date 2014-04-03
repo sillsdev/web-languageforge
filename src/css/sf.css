@@ -223,7 +223,7 @@ div#promotion-ribbon {
 	top: -6px;
 	right: -6px;
 	background: transparent url(../images/sf_sprite.png) no-repeat right -36px;
-	z-index: 10;
+	z-index: 3;
 }
 
 div.sub-promotion {
