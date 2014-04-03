@@ -643,6 +643,14 @@ p.applicationContent {
 	padding: .7em;
 }
 
+/* Application Styles */
+/* Header offset for logo */
+div.content h1 {
+	margin-left: 132px;
+	margin-top: 24px;
+	margin-bottom: 24px;
+}
+
 .banner {
 	padding: 30px 0 30px 0;
 }
