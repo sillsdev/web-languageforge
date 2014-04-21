@@ -1,0 +1,296 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: LanguageForge - lexicon\n"
+"POT-Creation-Date: 2014-04-01T20:29:49\n"
+"PO-Revision-Date: 2014-04-01 09:23+0000\n"
+"Last-Translator: palaso_admin <admin@palaso.org>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Abbreviation"
+msgstr "Abbreviation"
+
+msgid "About Language 639-1 Codes"
+msgstr "About Language 639-1 Codes"
+
+msgid "About Language 639-3 Codes"
+msgstr "About Language 639-3 Codes"
+
+msgid "Add a variant of {languageName}"
+msgstr "Add a variant of {languageName}"
+
+msgid "Add Existing User"
+msgstr "Add Existing User"
+
+msgid "Add IPA for {languageName}"
+msgstr "Add IPA for {languageName}"
+
+msgid "Add {languageName}"
+msgstr "Add {languageName}"
+
+msgid "Add Members"
+msgstr "Add Members"
+
+msgid "Add Voice for {languageName}"
+msgstr "Add Voice for {languageName}"
+
+msgid "Apply"
+msgstr "Apply"
+
+msgid "Are you sure you want to delete '{lexeme}'?"
+msgstr "Are you sure you want to delete '{lexeme}'?"
+
+msgid "Browse..."
+msgstr "Browse..."
+
+msgid "Comment"
+msgstr "Comment"
+
+msgid "Create New User"
+msgstr "Create New User"
+
+msgid "Default Interface Language"
+msgstr "Default Interface Language"
+
+msgid "Delete matching entry if deleted in import."
+msgstr "Delete matching entry if deleted in import."
+
+msgid "Delete Word"
+msgstr "Delete Word"
+
+msgid "Dictionary Browse and Edit"
+msgstr "Dictionary Browse and Edit"
+
+msgid "Dictionary Configuration"
+msgstr "Dictionary Configuration"
+
+msgid "Dictionary configuration updated successfully"
+msgstr "Dictionary configuration updated successfully"
+
+msgid "Display Name"
+msgstr "Display Name"
+
+msgid "Do not import the conflicting data (keep Language Forge data)."
+msgstr "Do not import the conflicting data (keep Language Forge data)."
+
+msgid "Drop a LIFT file here"
+msgstr "Drop a LIFT file here"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Edit input systems"
+msgstr "Edit input systems"
+
+msgid "Email From (reply-to) Address"
+msgstr "Email From (reply-to) Address"
+
+msgid "Email Name"
+msgstr "Email Name"
+
+msgid "Emic (uses the phonology of the language)"
+msgstr "Emic (uses the phonology of the language)"
+
+msgid "Entry Level Fields"
+msgstr "Entry Level Fields"
+
+msgid "Etic (raw phonetic transcription)"
+msgstr "Etic (raw phonetic transcription)"
+
+msgid "Example Level Fields"
+msgstr "Example Level Fields"
+
+msgid "Featured On Website"
+msgstr "Featured On Website"
+
+msgid "Full Name"
+msgstr "Full Name"
+
+msgid "Hidden if empty"
+msgstr "Hidden if empty"
+
+msgid "Import"
+msgstr "Import"
+
+msgid "Import a LIFT File"
+msgstr "Import a LIFT File"
+
+msgid "Import/Export"
+msgstr "Import/Export"
+
+msgid ""
+"Import the conflicting data and overwrite the current data (the importing "
+"data overrules the Language Forge data)."
+msgstr "Import the conflicting data and overwrite the current data (the importing data overrules the Language Forge data)."
+
+msgid ""
+"Import the conflicting data into a new lexical entry or sense and I will "
+"make decisions myself later."
+msgstr "Import the conflicting data into a new lexical entry or sense and I will make decisions myself later."
+
+msgid ""
+"In applications which support this option, fields with this input system "
+"will able to play and record voice."
+msgstr "In applications which support this option, fields with this input system will able to play and record voice."
+
+msgid "Input Systems"
+msgstr "Input Systems"
+
+msgid "IPA transcription"
+msgstr "IPA transcription"
+
+msgid "LIFT Export"
+msgstr "LIFT Export"
+
+msgid "LIFT Import"
+msgstr "LIFT Import"
+
+msgid "LIFT import completed successfully"
+msgstr "LIFT import completed successfully"
+
+msgid "Manager"
+msgstr "Manager"
+
+msgid "Member"
+msgstr "Member"
+
+msgid "More"
+msgstr "More"
+
+msgid "New"
+msgstr "New"
+
+msgid "New Word"
+msgstr "New Word"
+
+msgid "{num} entries"
+msgstr "{num} entries"
+
+msgid "{numOfUsers} users were removed from this project"
+msgstr "{numOfUsers} users were removed from this project"
+
+msgid "or if you prefer..."
+msgstr "or if you prefer..."
+
+msgid "Project Code"
+msgstr "Project Code"
+
+msgid "Project Name"
+msgstr "Project Name"
+
+msgid "{projectName} Settings"
+msgstr "{projectName} Settings"
+
+msgid "{projectName} settings updated successfully"
+msgstr "{projectName} settings updated successfully"
+
+msgid "{projectName} SMS settings updated successfully"
+msgstr "{projectName} SMS settings updated successfully"
+
+msgid "{projectName} User Management"
+msgstr "{projectName} User Management"
+
+msgid "Project Properties"
+msgstr "Project Properties"
+
+msgid "Purpose"
+msgstr "Purpose"
+
+msgid "Read more about IPA transcriptions"
+msgstr "Read more about IPA transcriptions"
+
+msgid "Read more about language identifiers"
+msgstr "Read more about language identifiers"
+
+msgid "Region"
+msgstr "Region"
+
+msgid "Remove {languageName}"
+msgstr "Remove {languageName}"
+
+msgid "Remove Members"
+msgstr "Remove Members"
+
+msgid "Right to left language"
+msgstr "Right to left language"
+
+msgid "Role"
+msgstr "Role"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Script"
+msgstr "Script"
+
+msgid "Script / Region / Variant"
+msgstr "Script / Region / Variant"
+
+msgid "Select a New Input System Language"
+msgstr "Select a New Input System Language"
+
+msgid "Send Email Invite"
+msgstr "Send Email Invite"
+
+msgid "Sense Level Fields"
+msgstr "Sense Level Fields"
+
+msgid "Settings Import"
+msgstr "Settings Import"
+
+msgid "Skip importing entries with identical modification times."
+msgstr "Skip importing entries with identical modification times."
+
+msgid "SMS From Number"
+msgstr "SMS From Number"
+
+msgid "Special"
+msgstr "Special"
+
+msgid "The user was removed from this project"
+msgstr "The user was removed from this project"
+
+msgid "Twilio Account Username"
+msgstr "Twilio Account Username"
+
+msgid "Twillio Auth Token"
+msgstr "Twillio Auth Token"
+
+msgid "User created.  Username: {userName}    Password: {password}"
+msgstr "User created.  Username: {userName}    Password: {password}"
+
+msgid "Username"
+msgstr "Username"
+
+msgid "{userName}'s role was changed to {role}"
+msgstr "{userName}'s role was changed to {role}"
+
+msgid "{userName} was added to {projectName} successfully."
+msgstr "{userName} was added to {projectName} successfully."
+
+msgid "{userName} was invited to join the project {projectName}"
+msgstr "{userName} was invited to join the project {projectName}"
+
+msgid "Variant"
+msgstr "Variant"
+
+msgid "Voice"
+msgstr "Voice"
+
+msgid "Whenever there is a conflict:"
+msgstr "Whenever there is a conflict:"
+
+msgid "Word"
+msgstr "Word"
+
+msgid "You have unsaved changes."
+msgstr "You have unsaved changes."
+
+msgid "You have unsaved changes. Leave the page?"
+msgstr "You have unsaved changes. Leave the page?"

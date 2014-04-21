@@ -1,0 +1,22 @@
+@CHARSET "UTF-8";
+
+.dc-rendered.word {
+	font-weight: bold;
+}
+
+.dc-rendered.definition {
+	margin-left: 10px;
+}
+
+.dc-rendered.definition .number {
+	font-weight: bold;
+}
+
+.dc-rendered.definition .partOfSpeech {
+	font-style: italic;
+}
+
+.dc-rendered.definition .definition-content {
+	font-weight: normal;
+	font-style: normal;
+}

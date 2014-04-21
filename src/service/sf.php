@@ -1,27 +1,34 @@
 <?php
 
-use libraries\sfchecks\ParatextExport;
-
-use models\commands\MessageCommands;
-
-use libraries\palaso\exceptions\UserNotAuthenticatedException;
-use libraries\palaso\exceptions\UserUnauthorizedException;
-use libraries\palaso\CodeGuard;
-use libraries\palaso\JsonRpcServer;
-use libraries\sfchecks\Communicate;
-use libraries\sfchecks\Email;
+use libraries\scriptureforge\sfchecks\ParatextExport;
+use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
+use libraries\shared\palaso\exceptions\UserUnauthorizedException;
+use libraries\shared\palaso\CodeGuard;
+use libraries\shared\palaso\JsonRpcServer;
+use libraries\shared\Website;
+use libraries\scriptureforge\sfchecks\Communicate;
+use libraries\scriptureforge\sfchecks\Email;
 use models\commands\ActivityCommands;
+use models\commands\MessageCommands;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
 use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
-use models\dto\ActivityListDto;
-use models\dto\ProjectSettingsDto;
-use models\dto\RightsHelper;
+use models\languageforge\lexicon\commands\LexCommentCommands;
+use models\languageforge\lexicon\commands\LexEntryCommands;
+use models\languageforge\lexicon\commands\LexProjectCommands;
+use models\languageforge\lexicon\dto\LexBaseViewDto;
+use models\languageforge\lexicon\dto\LexDbeDto;
+use models\languageforge\lexicon\dto\LexManageUsersDto;
+use models\languageforge\lexicon\dto\LexProjectDto;
+use models\scriptureforge\dto\ProjectSettingsDto;
+use models\shared\dto\ActivityListDto;
+use models\shared\dto\RightsHelper;
+use models\shared\dto\UserProfileDto;
 use models\mapper\Id;
-use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
+use models\mapper\JsonEncoder;
 use models\mapper\MongoStore;
 use models\rights\Domain;
 use models\rights\Operation;
@@ -34,10 +41,8 @@ use models\QuestionModel;
 use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserProfileModel;
-use models\dto\UserProfileDto;
 
 require_once(APPPATH . 'vendor/autoload.php');
-
 require_once(APPPATH . 'config/sf_config.php');
 require_once(APPPATH . 'models/ProjectModel.php');
 require_once(APPPATH . 'models/QuestionModel.php');
@@ -54,9 +59,12 @@ class Sf
 	
 	private $_controller;
 	
+	private $_site;
+	
 	public function __construct($controller) {
 		$this->_userId = (string)$controller->session->userdata('user_id');
 		$this->_controller = $controller;
+		$this->_site = Website::getSiteName();
 
 		// "Kick" session every time we use an API call, so it won't time out
 		$this->update_last_activity();
@@ -75,6 +83,18 @@ class Sf
 	// If an api method is ever renamed, remember to update the name in this method as well
 	//---------------------------------------------------------------
 	
+
+	/*
+	 * 
+ ____               ___       ___                                   
+/\  _`\            /\_ \     /\_ \                                  
+\ \ \L\ \     __   \//\ \    \//\ \      ___    __  __  __    ____  
+ \ \  _ <'  /'__`\   \ \ \     \ \ \    / __`\ /\ \/\ \/\ \  /',__\ 
+  \ \ \L\ \/\  __/    \_\ \_    \_\ \_ /\ \L\ \\ \ \_/ \_/ \/\__, `\
+   \ \____/\ \____\   /\____\   /\____\\ \____/ \ \___x___/'\/\____/
+    \/___/  \/____/   \/____/   \/____/ \/___/   \/__//__/   \/___/ 
+	
+	 */
 	
 	//---------------------------------------------------------------
 	// USER API
@@ -188,9 +208,68 @@ class Sf
 	
 	
 	//---------------------------------------------------------------
-	// PROJECT API
+	// GENERAL PROJECT API
 	//---------------------------------------------------------------
 	
+	/**
+	 * 
+	 * @param string $projectName
+	 * @param string $appName
+	 * @return string - projectId
+	 */
+	public function project_create($projectName, $appName) {
+		return ProjectCommands::createProject($projectName, $appName, $this->_userId, $this->_site);
+	}
+
+	/**
+	 * Delete projects
+	 * @param array<string> $projectIds
+	 * @return int Count of deleted projects
+	 */
+ 	public function project_delete($projectIds) {
+ 		return ProjectCommands::deleteProjects($projectIds);
+ 	}
+
+	// TODO Pretty sure this is going to want some paging params
+	public function project_list() {
+		return ProjectCommands::listProjects();
+	}
+	
+	public function project_list_dto() {
+		return \models\shared\dto\ProjectListDto::encode($this->_userId, $this->_site);
+	}
+	
+	public function project_updateUserRole($projectId, $params) {
+		return ProjectCommands::updateUserRole($projectId, $params);
+	}
+	
+	public function project_removeUsers($projectId, $userIds) {
+		return ProjectCommands::removeUsers($projectId, $userIds);
+	}
+	
+	
+	//---------------------------------------------------------------
+	// Activity Log
+	//---------------------------------------------------------------
+
+	public function activity_list_dto() {
+		return \models\shared\dto\ActivityListDto::getActivityForUser($this->_site, $this->_userId);
+	}
+	
+	
+	
+	/*
+	 *  ____   ___  ____  __  ____  ____  _  _  ____  ____    ____  __  ____   ___  ____ 
+	 * / ___) / __)(  _ \(  )(  _ \(_  _)/ )( \(  _ \(  __)  (  __)/  \(  _ \ / __)(  __)
+	 * \___ \( (__  )   / )(  ) __/  )(  ) \/ ( )   / ) _)    ) _)(  O ))   /( (_ \ ) _) 
+	 * (____/ \___)(__\_)(__)(__)   (__) \____/(__\_)(____)  (__)  \__/(__\_) \___/(____)
+	 * 
+	 */
+	
+	//---------------------------------------------------------------
+	// SCRIPTUREFORGE PROJECT API
+	//---------------------------------------------------------------
+
 	/**
 	 * Create/Update a Project
 	 * @param array $object
@@ -208,32 +287,6 @@ class Sf
 		return ProjectCommands::readProject($id);
 	}
 	
-	/**
-	 * Delete projects
-	 * @param array<string> $projectIds
-	 * @return int Count of deleted projects
-	 */
- 	public function project_delete($projectIds) {
- 		return ProjectCommands::deleteProjects($projectIds);
- 	}
-
-	// TODO Pretty sure this is going to want some paging params
-	public function project_list() {
-		return ProjectCommands::listProjects();
-	}
-	
-	public function project_list_dto() {
-		return \models\dto\ProjectListDto::encode($this->_userId);
-	}
-	
-	public function project_updateUserRole($projectId, $params) {
-		return ProjectCommands::updateUserRole($projectId, $params);
-	}
-	
-	public function project_removeUsers($projectId, $userIds) {
-		return ProjectCommands::removeUsers($projectId, $userIds);
-	}
-	
 	public function project_settings($projectId) {
 		return ProjectSettingsDto::encode($projectId, $this->_userId);
 	}
@@ -247,8 +300,9 @@ class Sf
 	}
 	
 	public function project_pageDto($projectId) {
-		return \models\dto\ProjectPageDto::encode($projectId, $this->_userId);
+		return \models\scriptureforge\dto\ProjectPageDto::encode($projectId, $this->_userId);
 	}
+
 	
 	//---------------------------------------------------------------
 	// MESSAGE API
@@ -279,11 +333,11 @@ class Sf
 	}
 	
 	public function text_list_dto($projectId) {
-		return \models\dto\TextListDto::encode($projectId, $this->_userId);
+		return \models\scriptureforge\dto\TextListDto::encode($projectId, $this->_userId);
 	}
 
 	public function text_settings_dto($projectId, $textId) {
-		return \models\dto\TextSettingsDto::encode($projectId, $textId, $this->_userId);
+		return \models\scriptureforge\dto\TextSettingsDto::encode($projectId, $textId, $this->_userId);
 	}
 	
 	public function text_exportComments($projectId, $params) {
@@ -323,11 +377,11 @@ class Sf
 	}
 	
 	public function question_comment_dto($projectId, $questionId) {
-		return \models\dto\QuestionCommentDto::encode($projectId, $questionId, $this->_userId);
+		return \models\scriptureforge\dto\QuestionCommentDto::encode($projectId, $questionId, $this->_userId);
 	}
 	
 	public function question_list_dto($projectId, $textId) {
-		return \models\dto\QuestionListDto::encode($projectId, $textId, $this->_userId);
+		return \models\scriptureforge\dto\QuestionListDto::encode($projectId, $textId, $this->_userId);
 	}
 	
 	public function answer_vote_up($projectId, $questionId, $answerId) {
@@ -358,13 +412,76 @@ class Sf
 		return QuestionTemplateCommands::listTemplates();
 	}
 	
+	
+	
+	
+	
+	/*
+	 * .____                                                        ___________                         
+	 * |    |   _____    ____    ____  __ _______     ____   ____   \_   _____/__________  ____   ____  
+	 * |    |   \__  \  /    \  / ___\|  |  \__  \   / ___\_/ __ \   |    __)/  _ \_  __ \/ ___\_/ __ \ 
+	 * |    |___ / __ \|   |  \/ /_/  >  |  // __ \_/ /_/  >  ___/   |     \(  <_> )  | \/ /_/  >  ___/ 
+	 * |_______ (____  /___|  /\___  /|____/(____  /\___  / \___  >  \___  / \____/|__|  \___  / \___  >
+	 *         \/    \/     \//_____/            \//_____/      \/       \/             /_____/      \/ 
+	 * 
+	 */
+	
 	//---------------------------------------------------------------
-	// Activity Log
+	// LANGUAGEFORGE PROJECT API
 	//---------------------------------------------------------------
-
-	public function activity_list_dto() {
-		return \models\dto\ActivityListDto::getActivityForUser($this->_userId);
+	
+	public function lex_baseViewDto($projectId) {
+		return LexBaseViewDto::encode($projectId, $this->_userId);
 	}
+	
+	public function lex_projectDto($projectId) {
+		return LexProjectDto::encode($projectId, $this->_userId);
+	}
+
+	public function lex_manageUsersDto($projectId) {
+		return LexManageUsersDto::encode($projectId, $this->_userId);
+	}
+
+	public function lex_dbeDto($projectId, $iEntryStart, $numberOfEntries) {
+		return LexDbeDto::encode($projectId, $this->_userId, $iEntryStart, $numberOfEntries);
+	}
+	
+	public function lex_configuration_update($projectId, $config) {
+		return LexProjectCommands::updateConfig($projectId, $config);
+	}
+	
+	public function lex_import_lift($projectId, $import) {
+		return LexProjectCommands::importLift($projectId, $import);
+	}
+	
+	public function lex_project_update($projectJson) {
+		return LexProjectCommands::updateProject($projectJson, $this->_userId);
+	}
+	
+	public function lex_entry_read($projectId, $entryId) {
+		return LexEntryCommands::readEntry($projectId, $entryId);
+	}
+	
+	public function lex_entry_update($projectId, $model) {
+		return LexEntryCommands::updateEntry($projectId, $model, $this->_userId);
+	}
+	
+	public function lex_entry_remove($projectId, $entryId) {
+		return LexEntryCommands::removeEntry($projectId, $entryId);
+	}
+	
+	public function lex_entry_updateComment($projectId, $data) {
+		return LexCommentCommands::updateCommentOrReply($projectId, $data, $this->_userId);
+	}
+	
+	
+		
+	
+	
+	
+	
+	
+	
 	
 	
 	//---------------------------------------------------------------
@@ -393,7 +510,6 @@ class Sf
 			}
 		}
 	}
-	
 
 	public function update_last_activity($newtime = NULL) {
 		if (is_null($newtime)) {
@@ -402,7 +518,6 @@ class Sf
 		}
 		$this->_controller->session->set_userdata('last_activity', $newtime);
 	}
-	
 	
 }
 

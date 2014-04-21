@@ -1,7 +1,7 @@
 <?php
 namespace models;
 
-require_once(APPPATH . '/models/ProjectModel.php');
+require_once(APPPATH . 'models/ProjectModel.php');
 
 class FeaturedProjectListModel extends \models\mapper\MapperListModel
 {

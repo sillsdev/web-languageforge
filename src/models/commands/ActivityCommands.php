@@ -160,7 +160,7 @@ class ActivityCommands
 		$activity = new ActivityModel($projectModel);
 		$question = new QuestionModel($projectModel, $questionId);
 		$text = new TextModel($projectModel, $question->textRef->asString());
-		$answer = $question->answers->data[$answerId];
+		$answer = $question->answers[$answerId];
 		$user = new UserModel($userId);
 		$user2 = new UserModel($answer->userRef->asString());
 		$activity = new ActivityModel($projectModel);
@@ -176,6 +176,57 @@ class ActivityCommands
 		$activityId = $activity->write();
 		UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
 		return $activityId;
+	}
+	
+	/**
+	 * 
+	 * @param ProjectModel $projectModel
+	 * @param string $userId
+	 * @param LexEntryModel $entry
+	 * @param Action $action
+	 * @return string activity id
+	 */
+	public static function writeEntry($projectModel, $userId, $entry, $action) {
+		$activity = new ActivityModel($projectModel);
+		$activity->userRef->id = $userId;
+		if($action == 'update'){
+			$activity->action = ActivityModel::UPDATE_ENTRY;
+		} else {
+			$activity->action = ActivityModel::ADD_ENTRY;
+		}
+		
+		$activity->addContent(ActivityModel::ENTRY, $entry);
+		return $activity->write();
+	}
+	
+	/**
+	 *
+	 * @param ProjectModel $projectModel
+	 * @param string $userId
+	 * @param string entry id
+	 * @return string activity id
+	 */
+	public static function deleteEntry($projectModel, $userId, $id) {
+		$activity = new ActivityModel($projectModel);
+		$activity->userRef->id = $userId;
+		$activity->action = ActivityModel::DELETE_ENTRY;
+	
+		$entry = self::getEntry($projectModel->id->asString(), $id);
+		$activity->addContent(ActivityModel::ENTRY, $entry->lexeme[$projectModel->languageCode]);
+		return $activity->write();
+	}
+	
+	/**
+	 * @param string $projectId
+	 * @param string entry id
+	 * @return LexEntryModel
+	 */
+	public static function getEntry($projectId, $id) {
+		$project = new ProjectModel($projectId);
+		ProjectModelFixer::ensureVLatest($project);
+	
+		$entry = new LexEntryModel($project, $id);
+		return $entry;
 	}
 	
 }

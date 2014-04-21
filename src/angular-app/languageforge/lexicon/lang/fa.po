@@ -1,0 +1,297 @@
+# 
+# Translators:
+# palaso_admin <admin@palaso.org>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: LanguageForge - lexicon\n"
+"POT-Creation-Date: 2014-04-01T20:29:49\n"
+"PO-Revision-Date: 2014-04-01 09:54+0000\n"
+"Last-Translator: palaso_admin <admin@palaso.org>\n"
+"Language-Team: Persian (http://www.transifex.com/projects/p/languageforge-lexicon/language/fa/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fa\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Abbreviation"
+msgstr "مخفف"
+
+msgid "About Language 639-1 Codes"
+msgstr "درباره زبان 639-1 کد"
+
+msgid "About Language 639-3 Codes"
+msgstr "درباره زبان 639-3 کد"
+
+msgid "Add a variant of {languageName}"
+msgstr "اضافه کردن یک نوع از {languageName}"
+
+msgid "Add Existing User"
+msgstr "اضافه کردن کاربر موجود"
+
+msgid "Add IPA for {languageName}"
+msgstr "اضافه کردن IPA برای {languageName}"
+
+msgid "Add {languageName}"
+msgstr "اضافه کردن {languageName}"
+
+msgid "Add Members"
+msgstr "اضافه کردن کاربران"
+
+msgid "Add Voice for {languageName}"
+msgstr "اضافه کردن صدا برای {languageName}"
+
+msgid "Apply"
+msgstr "درخواست"
+
+msgid "Are you sure you want to delete '{lexeme}'?"
+msgstr "آیا مطمئن هستید که می خواهید حذف کنید: ' {lexeme}'؟"
+
+msgid "Browse..."
+msgstr "مرور ..."
+
+msgid "Comment"
+msgstr "توضیح"
+
+msgid "Create New User"
+msgstr "ایجاد کاربر جدید"
+
+msgid "Default Interface Language"
+msgstr "به طور پیش فرض رابط زبان"
+
+msgid "Delete matching entry if deleted in import."
+msgstr "حذف تطبیق ورود اگر در واردات حذف شده است."
+
+msgid "Delete Word"
+msgstr "حذف کلمه"
+
+msgid "Dictionary Browse and Edit"
+msgstr "فرهنگ لغت جستجو و ویرایش"
+
+msgid "Dictionary Configuration"
+msgstr "تنظیمات فرهنگ لغت"
+
+msgid "Dictionary configuration updated successfully"
+msgstr "پیکربندی دیکشنری موفقیت به روز رسانی"
+
+msgid "Display Name"
+msgstr "نمایش نام"
+
+msgid "Do not import the conflicting data (keep Language Forge data)."
+msgstr "آیا داده های ضد و نقیضی وارد نشده ( نگه داشتن اطلاعات زبان فورج ) ."
+
+msgid "Drop a LIFT file here"
+msgstr "رها کردن یک فایل LIFT اینجا"
+
+msgid "Edit"
+msgstr "ویرایش"
+
+msgid "Edit input systems"
+msgstr "ویرایش سیستم های ورودی"
+
+msgid "Email From (reply-to) Address"
+msgstr "ارسال از ( پاسخ به ) آدرس"
+
+msgid "Email Name"
+msgstr "نام ایمیل"
+
+msgid "Emic (uses the phonology of the language)"
+msgstr "امیک ( با استفاده از واج شناسی زبان)"
+
+msgid "Entry Level Fields"
+msgstr "زمینه صعود به سطح ورودی"
+
+msgid "Etic (raw phonetic transcription)"
+msgstr "Etic (آوایی خام رونویسی )"
+
+msgid "Example Level Fields"
+msgstr "زمینه به عنوان مثال سطح"
+
+msgid "Featured On Website"
+msgstr "برجسته در وب سایت"
+
+msgid "Full Name"
+msgstr "نام و نام خانوادگی"
+
+msgid "Hidden if empty"
+msgstr "پنهان اگر خالی"
+
+msgid "Import"
+msgstr "واردات"
+
+msgid "Import a LIFT File"
+msgstr "وارداتفایل LIFT"
+
+msgid "Import/Export"
+msgstr "واردات / صادرات"
+
+msgid ""
+"Import the conflicting data and overwrite the current data (the importing "
+"data overrules the Language Forge data)."
+msgstr "وارد کردن داده ها متناقض و بازنویسی داده های فعلی ( که داده ها وارد overrules داده ها زبان فورج ) ."
+
+msgid ""
+"Import the conflicting data into a new lexical entry or sense and I will "
+"make decisions myself later."
+msgstr "وارد کردن داده ها متناقض به ورود واژگان جدید و یا احساس و من تصمیم خودم را بعد از آن را ."
+
+msgid ""
+"In applications which support this option, fields with this input system "
+"will able to play and record voice."
+msgstr "در برنامه های کاربردی که در حمایت از این گزینه ، با این سیستم ورودی را قادر به پخش و ضبط صدا زمینه ."
+
+msgid "Input Systems"
+msgstr "سیستم های ورودی"
+
+msgid "IPA transcription"
+msgstr "IPA نسخه برداری"
+
+msgid "LIFT Export"
+msgstr "LIFT صادرات"
+
+msgid "LIFT Import"
+msgstr "واردات LIFT"
+
+msgid "LIFT import completed successfully"
+msgstr "واردات LIFT با موفقیت انجام شد"
+
+msgid "Manager"
+msgstr "مدیر"
+
+msgid "Member"
+msgstr "عضو"
+
+msgid "More"
+msgstr "بیشتر"
+
+msgid "New"
+msgstr "جدید"
+
+msgid "New Word"
+msgstr "جدید ورد"
+
+msgid "{num} entries"
+msgstr " {num} نوشته های"
+
+msgid "{numOfUsers} users were removed from this project"
+msgstr "{numOfUsers} کاربران از این پروژه حذف شد"
+
+msgid "or if you prefer..."
+msgstr "و یا اگر شما ترجیح می دهند ..."
+
+msgid "Project Code"
+msgstr "کد پروژه"
+
+msgid "Project Name"
+msgstr "نام پروژه"
+
+msgid "{projectName} Settings"
+msgstr "{projectName} تنظیمات"
+
+msgid "{projectName} settings updated successfully"
+msgstr "{projectName} تنظیمات با موفقیت به روز شده"
+
+msgid "{projectName} SMS settings updated successfully"
+msgstr "{projectName} تنظیمات SMS با موفقیت به روز شده"
+
+msgid "{projectName} User Management"
+msgstr "{projectName} مدیریت کاربر"
+
+msgid "Project Properties"
+msgstr "خواص پروژه"
+
+msgid "Purpose"
+msgstr "هدف"
+
+msgid "Read more about IPA transcriptions"
+msgstr "اطلاعات بیشتر در مورد رونوشت IPA"
+
+msgid "Read more about language identifiers"
+msgstr "اطلاعات بیشتر در مورد شناسه های زبان"
+
+msgid "Region"
+msgstr "منطقه"
+
+msgid "Remove {languageName}"
+msgstr "حذف {languageName}"
+
+msgid "Remove Members"
+msgstr "حذف کاربران"
+
+msgid "Right to left language"
+msgstr "از راست به چپ زبان"
+
+msgid "Role"
+msgstr "نقش"
+
+msgid "Save"
+msgstr "جویی در هزینه"
+
+msgid "Script"
+msgstr "خط"
+
+msgid "Script / Region / Variant"
+msgstr "اسکریپت / منطقه / نوع"
+
+msgid "Select a New Input System Language"
+msgstr "انتخاب سیستم ورودی جدید زبان"
+
+msgid "Send Email Invite"
+msgstr "ارسال ایمیل دعوت از دوستان"
+
+msgid "Sense Level Fields"
+msgstr "زمینه رسیدن به سطح حس"
+
+msgid "Settings Import"
+msgstr "تنظیمات واردات"
+
+msgid "Skip importing entries with identical modification times."
+msgstr "پرش واردات نوشته های با زمان تغییر یکسان ."
+
+msgid "SMS From Number"
+msgstr "SMS از شماره"
+
+msgid "Special"
+msgstr "ویژه"
+
+msgid "The user was removed from this project"
+msgstr "کاربر از این پروژه حذف شد"
+
+msgid "Twilio Account Username"
+msgstr "حساب Twilio نام کاربری"
+
+msgid "Twillio Auth Token"
+msgstr "Twillio تایید رمز"
+
+msgid "User created.  Username: {userName}    Password: {password}"
+msgstr "کاربر ایجاد شده است. نام کاربری{userName} رمز عبور : {password}"
+
+msgid "Username"
+msgstr "نام کاربری"
+
+msgid "{userName}'s role was changed to {role}"
+msgstr "{userName} نقش به {role} تغییر یافت"
+
+msgid "{userName} was added to {projectName} successfully."
+msgstr "{userName} به {projectName} با موفقیت اضافه شد ."
+
+msgid "{userName} was invited to join the project {projectName}"
+msgstr "{userName} برای پیوستن به این پروژه {projectName} دعوت شد"
+
+msgid "Variant"
+msgstr "نوع دیگر"
+
+msgid "Voice"
+msgstr "صدا"
+
+msgid "Whenever there is a conflict:"
+msgstr "هر گاه یک درگیری وجود دارد :"
+
+msgid "Word"
+msgstr "کلمه"
+
+msgid "You have unsaved changes."
+msgstr "شما تغییرات ذخیره نشده ."
+
+msgid "You have unsaved changes. Leave the page?"
+msgstr "شما تغییرات ذخیره نشده . ترک صفحه ؟"

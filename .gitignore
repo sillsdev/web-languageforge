@@ -2,10 +2,9 @@
 .settings
 .externalToolBuilders
 /output
-nbproject/
-src/vendor/
+src/vendor/*
+src/vendor/*/
+!src/vendor/lift/
 src/cache/
-
 src/bower_components/
-src/audio/
 src/assets/
