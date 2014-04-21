@@ -167,11 +167,15 @@ class QuestionModel extends \models\mapper\MapperModel
 		$title = $this->title;
 		if ($title == "") {
 			$desc = $this->description;
-			$spacepos = strpos($desc, " ", 30);
-			if ($spacepos !== FALSE) {
-				$title = substr($desc, 0, $spacepos) . '...';	
+			if (strlen($desc) > 30) {
+				$spacepos = strpos($desc, " ", 30);
+				if ($spacepos !== FALSE) {
+					$title = substr($desc, 0, $spacepos) . '...';	
+				} else {
+					$title = substr($desc, 0, 30);
+				}
 			} else {
-				$title = substr($desc, 0, 30);
+				$title = $desc;
 			}
 		}
 		return $title;
