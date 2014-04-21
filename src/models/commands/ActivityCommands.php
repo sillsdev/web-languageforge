@@ -44,8 +44,8 @@ class ActivityCommands
 		$activity->textRef->id = $text->id->asString();
 		$activity->questionRef->id = $questionId;
 		$activity->addContent(ActivityModel::TEXT, $text->title);
-		$activity->addContent(ActivityModel::QUESTION, $question->title);
 		$activity->addContent(ActivityModel::ANSWER, $answer->content);
+		$activity->addContent(ActivityModel::QUESTION, $question->getTitleForDisplay());
 		$activity->addContent(ActivityModel::COMMENT, $commentModel->content);
 		$activity->addContent(ActivityModel::USER, $user->username);
 		$activity->addContent(ActivityModel::USER2, $user2->username);
@@ -78,7 +78,7 @@ class ActivityCommands
 		$activity->textRef->id = $text->id->asString();
 		$activity->questionRef->id = $questionId;
 		$activity->addContent(ActivityModel::TEXT, $text->title);
-		$activity->addContent(ActivityModel::QUESTION, $question->title);
+		$activity->addContent(ActivityModel::QUESTION, $question->getTitleForDisplay());
 		$activity->addContent(ActivityModel::ANSWER, $answerModel->content);
 		$activity->addContent(ActivityModel::USER, $user->username);
 		$activityId = $activity->write();
@@ -121,7 +121,7 @@ class ActivityCommands
 		$activity->textRef->id = $questionModel->textRef->asString();
 		$activity->questionRef->id = $questionId;
 		$activity->addContent(ActivityModel::TEXT, $text->title);
-		$activity->addContent(ActivityModel::QUESTION, $questionModel->title);
+		$activity->addContent(ActivityModel::QUESTION, $question->getTitleForDisplay());
 		$activityId = $activity->write();
 		UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
 		UnreadQuestionModel::markUnreadForProjectMembers($questionId, $projectModel);
@@ -169,7 +169,7 @@ class ActivityCommands
 		$activity->textRef->id = $text->id->asString();
 		$activity->questionRef->id = $questionId;
 		$activity->addContent(ActivityModel::TEXT, $text->title);
-		$activity->addContent(ActivityModel::QUESTION, $question->title);
+		$activity->addContent(ActivityModel::QUESTION, $question->getTitleForDisplay());
 		$activity->addContent(ActivityModel::ANSWER, $answer->content);
 		$activity->addContent(ActivityModel::USER, $user->username);
 		$activity->addContent(ActivityModel::USER, $user2->username);
@@ -177,6 +177,7 @@ class ActivityCommands
 		UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
 		return $activityId;
 	}
+	
 }
 
 ?>
