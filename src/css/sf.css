@@ -223,7 +223,7 @@ div#promotion-ribbon {
 	top: -6px;
 	right: -6px;
 	background: transparent url(../images/sf_sprite.png) no-repeat right -36px;
-	z-index: 10;
+	z-index: 3;
 }
 
 div.sub-promotion {
@@ -641,6 +641,14 @@ div.applicationTitle {
 
 p.applicationContent {
 	padding: .7em;
+}
+
+/* Application Styles */
+/* Header offset for logo */
+div.content h1 {
+	margin-left: 132px;
+	margin-top: 24px;
+	margin-bottom: 24px;
 }
 
 .banner {

@@ -129,9 +129,10 @@ class ActivityModel extends \models\mapper\MapperModel
 	
 	/**
 	 * 
-	 * @var ArrayOf
-	 * ArrayOf<string>
+	 * @var MapOf
+	 * MapOf<string>
 	 */
+	// cjh reminder on merge - remove ->data from FixActivityMissingQuestionTitles.php
 	public $actionContent;
 	
 	
