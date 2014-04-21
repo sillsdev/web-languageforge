@@ -121,7 +121,7 @@ class ActivityCommands
 		$activity->textRef->id = $questionModel->textRef->asString();
 		$activity->questionRef->id = $questionId;
 		$activity->addContent(ActivityModel::TEXT, $text->title);
-		$activity->addContent(ActivityModel::QUESTION, $question->getTitleForDisplay());
+		$activity->addContent(ActivityModel::QUESTION, $questionModel->getTitleForDisplay());
 		$activityId = $activity->write();
 		UnreadActivityModel::markUnreadForProjectMembers($activityId, $projectModel);
 		UnreadQuestionModel::markUnreadForProjectMembers($questionId, $projectModel);
