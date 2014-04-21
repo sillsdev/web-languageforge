@@ -3,7 +3,7 @@
 
 use models\commands\ProjectCommands;
 
-use models\dto\RightsHelper;
+use models\shared\dto\RightsHelper;
 use models\rights\Roles;
 use models\UserModel;
 

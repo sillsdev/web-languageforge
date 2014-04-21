@@ -1,0 +1,7 @@
+<div class="dc-entry">
+	<dc-multitext config="config.entry.fields.lexeme" model="model.lexeme" control="control" comment="submitComment(comment, 'lexeme')"></dc-multitext>
+	<div class="addItem"><a data-ng-click="addSense()">Add Meaning</a></div>
+		<div class="animate-repeat" data-ng-repeat="sense in model.senses">
+			<dc-sense remove="deleteSense" index="$index" config="config.entry.fields.senses" model="sense" control="control" comment="submitComment(comment, 'sense')"></dc-sense>
+		</div>
+</div>

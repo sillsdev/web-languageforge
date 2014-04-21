@@ -2,12 +2,18 @@
 
 namespace models\commands;
 
-use libraries\palaso\CodeGuard;
-use libraries\palaso\JsonRpcServer;
-use libraries\palaso\exceptions\UserNotAuthenticatedException;
-use libraries\palaso\exceptions\UserUnauthorizedException;
-use libraries\sfchecks\Communicate;
-use libraries\sfchecks\Email;
+use models\languageforge\LfProjectModel;
+
+use models\scriptureforge\SfProjectModel;
+
+use libraries\shared\Website;
+
+use libraries\shared\palaso\CodeGuard;
+use libraries\shared\palaso\JsonRpcServer;
+use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
+use libraries\shared\palaso\exceptions\UserUnauthorizedException;
+use libraries\scriptureforge\sfchecks\Communicate;
+use libraries\scriptureforge\sfchecks\Email;
 use models\AnswerModel;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
@@ -21,10 +27,10 @@ use models\commands\QuestionCommands;
 use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
-use models\dto\ActivityListDto;
-use models\dto\ProjectSettingsDto;
-use models\dto\RightsHelper;
-use models\dto\UserProfileDto;
+use models\shared\dto\ActivityListDto;
+use models\scriptureforge\dto\ProjectSettingsDto;
+use models\shared\dto\RightsHelper;
+use models\shared\dto\UserProfileDto;
 use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
@@ -74,6 +80,30 @@ class ProjectCommands
 		if ($isNewProject) {
 			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => Roles::PROJECT_ADMIN));
 		}
+		return $projectId;
+	}
+	
+	/**
+	 * Create a project, checking permissions as necessary
+	 * @param string $projectName
+	 * @param string $appName
+	 * @param string $userId
+	 * @param string $site
+	 */
+	public static function createProject($projectName, $appName, $userId, $site) {
+		if ($site == Website::SCRIPTUREFORGE) {
+			$project = new SfProjectModel();
+			$project->projectname = $projectName;
+			$project->appName = $appName;
+			$projectId = $project->write();
+			
+		} elseif ($site == Website::LANGUAGEFORGE) {
+			$project = new LfProjectModel();
+			$project->projectname = $projectName;
+			$project->appName = $appName;
+			$projectId = $project->write();
+		}
+		ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => Roles::PROJECT_ADMIN));
 		return $projectId;
 	}
 	

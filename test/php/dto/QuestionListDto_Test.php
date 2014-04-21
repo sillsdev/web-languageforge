@@ -1,7 +1,7 @@
 <?php
 
 
-use models\dto\QuestionListDto;
+use models\scriptureforge\dto\QuestionListDto;
 
 use models\TextModel;
 use models\QuestionModel;

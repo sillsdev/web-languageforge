@@ -1,6 +1,6 @@
 <?php
 
-use models\dto\ProjectSettingsDto;
+use models\scriptureforge\dto\ProjectSettingsDto;
 use models\UserModel;
 use models\rights\Roles;
 

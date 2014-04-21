@@ -1,6 +1,6 @@
 <?php
 
-use libraries\sfchecks\ParatextExport;
+use libraries\scriptureforge\sfchecks\ParatextExport;
 use models\TextModel;
 use models\UserModel;
 use models\ProjectModel;
@@ -49,7 +49,7 @@ class TestParatextExport extends UnitTestCase {
 		$answer->content = "first answer";
 		$answer->score = 10;
 		$answer->userRef->id = $user3Id;
-		$answer->tags->data = array('export', 'to review');
+		$answer->tags->exchangeArray(array('export', 'to review'));
 		$answer->textHightlight = "text highlight";
 		$answerId = $question->writeAnswer($answer);
 		
@@ -105,7 +105,7 @@ class TestParatextExport extends UnitTestCase {
 		$answer->content = "first answer";
 		$answer->score = 10;
 		$answer->userRef->id = $user1Id;
-		$answer->tags->data = array('export', 'to review');
+		$answer->tags->exchangeArray(array('export', 'to review'));
 		$answerId = $question->writeAnswer($answer);
 		
 		// Then to add an answer to a question
@@ -113,14 +113,14 @@ class TestParatextExport extends UnitTestCase {
 		$answer->content = "second answer - very long";
 		$answer->score = 2;
 		$answer->userRef->id = $user2Id;
-		$answer->tags->data = array('to review');
+		$answer->tags->exchangeArray(array('to review'));
 		$answerId = $question->writeAnswer($answer);
 		
 		// Then to add an answer to a question
 		$answer = new AnswerModel();
 		$answer->content = "third answer - very very very very long";
 		$answer->userRef->id = $user3Id;
-		$answer->tags->data = array('export');
+		$answer->tags->exchangeArray(array('export'));
 		$answerId = $question->writeAnswer($answer);
 		
 		$params = array(

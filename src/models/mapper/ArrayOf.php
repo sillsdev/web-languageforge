@@ -1,68 +1,69 @@
 <?php
 namespace models\mapper;
 
-class ArrayOf {
+use libraries\shared\palaso\CodeGuard;
+
+class ArrayOf extends \ArrayObject {
 	
 	/**
-	 * @var array<Of>
+	 * @param function The function <object> function($data = null) returns an instance of the object.
 	 */
-	public $data;
-	
-	/**
-	 * 
-	 * @var string
-	 */
-	private $_type;
+	public function __construct($generator = null) {
+		$this->_generator = $generator;
+	}
 	
 	/**
 	 * @var function The function <object> function($data = null) returns an instance of the object.
 	 */
 	private $_generator;
 	
-	const VALUE = 'value';
-	const OBJECT = 'object';
-	
-	/**
-	 * @param string Either ArrayOf::VALUE or ArrayOf::OBJECT
-	 * @param function The function <object> function($data = null) returns an instance of the object.
-	 */
-	public function __construct($type, $generator = null) {
-		$this->data = array();
-		$this->_type = $type;
-		$this->_generator = $generator;
-	}
+	private $data; // This is here to force client code using the older implementation to have a fatal error allowing us to identify code that needs upgrading. CP 2013-12
 	
 	public function generate($data = null) {
 		$function = $this->_generator;
 		return $function($data);
 	}
 	
-	public function getType() {
-		return $this->_type;
+	public function hasGenerator() {
+		return $this->_generator != null;
 	}
 	
-	public function append($var) {
-		$this->data[] = $var;
+	public function offsetGet($index) {
+		CodeGuard::checkTypeAndThrow($index, 'integer');
+		return parent::offsetGet($index);
 	}
 	
-	public function count() {
-		return count($this->data);
+	public function offsetSet($index, $newval) {
+		if ($index != NULL) {
+			CodeGuard::checkTypeAndThrow($index, 'integer');
+		}
+		parent::offsetSet($index, $newval);
 	}
 	
-	public function getById($id) {
-		if ($this->_type == ArrayOf::OBJECT) {
-			try {
-				foreach ($this->data as $obj) {
-					if ($obj->id == $id) {
-						return $obj;
-					}
-				}
-			} catch (Exception $e) {
-				// don't throw if $obj->id doesn't exist
+	/**
+	 * Appends $value if it doesn't already exist in the array
+	 * @param unknown $value
+	 */
+	public function value($value) {
+		if ($this->count() <= 0 || !$this->array_search($value)) {
+			$this[] = $value;
+		}
+	}
+	
+	/**
+	 * Return true if $item exists in the data
+	 * @param unknown $item
+	 * @return boolean
+	 */
+	public function array_search($item) {
+		foreach ($this as $value) {
+			if ($value == $item) {
+				return true;
 			}
 		}
-		return $this->generate();
+		return false;
 	}
+	
 }
 
 ?>

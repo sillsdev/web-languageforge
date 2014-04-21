@@ -1,16 +1,17 @@
 <?php
 
-use libraries\sfchecks\IDelivery;
+use libraries\scriptureforge\sfchecks\IDelivery;
+use libraries\shared\Website;
 use models\commands\UserCommands;
-use models\ProjectModel;
-use models\mapper\JsonDecoder;
-use models\UserModel;
-use models\dto\CreateSimpleDto;
 use models\mapper\Id;
+use models\mapper\JsonDecoder;
+use models\shared\dto\CreateSimpleDto;
+use models\ProjectModel;
+use models\UserModel;
+use models\UserProfileModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class MockUserCommandsDelivery implements IDelivery {
@@ -44,6 +45,25 @@ class TestUserCommands extends UnitTestCase {
 		UserCommands::deleteUsers(array($userId), 'bogus auth userid');
 	}
 	
+	function testUpdateUserProfile_SetLangCode_LangCodeSet() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		// setup parameters
+		$userId = $e->createUser('username', 'name', 'name@example.com');
+		$params = array(
+			'id' => '',
+			'interfaceLanguageCode' => 'th'
+		);
+		
+		$newUserId = UserCommands::updateUserProfile($params, $userId);
+		
+		// user profile updated
+		$user = new UserProfileModel($newUserId);
+		$this->assertEqual($user->interfaceLanguageCode, 'th');
+		$this->assertEqual($userId, $newUserId);
+	}
+	
 	function testCreateSimple_CreateUser_PasswordAndJoinProject() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
@@ -65,7 +85,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual(strlen($dto['password']), 4);
 		$projectUser = $sameProject->listUsers()->entries[0];
 		$this->assertEqual($projectUser['username'], "username");
-		$userProject = $user->listProjects()->entries[0];
+		$userProject = $user->listProjects(Website::SCRIPTUREFORGE)->entries[0];
 		$this->assertEqual($userProject['projectname'], SF_TESTPROJECT);
 	}
 	
@@ -73,7 +93,7 @@ class TestUserCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 	
-		$projectDomain = 'someprojectcode.example.com';
+		$projectDomain = 'someproject.scriptureforge.org';
 		$project = $e->createProject(SF_TESTPROJECT);
 		$project->projectCode = ProjectModel::domainToProjectCode($projectDomain);
 		$project->write();
@@ -87,15 +107,14 @@ class TestUserCommands extends UnitTestCase {
 				'captcha' => $validCode
 		);
 		$captcha_info = array('code' => $validCode);
-		$projectCode = $project->projectCode;
 		$delivery = new MockUserCommandsDelivery();
 		
-		$userId = UserCommands::register($params, $captcha_info, $projectCode, $delivery);
+		$userId = UserCommands::register($params, $captcha_info, $projectDomain, $delivery);
 		
 		$user = new UserModel($userId);
 		$this->assertEqual($user->username, $params['username']);
 		$this->assertEqual($project->listUsers()->count, 1);
-		$this->assertEqual($user->listProjects()->count, 1);
+		$this->assertEqual($user->listProjects(Website::SCRIPTUREFORGE)->count, 1);
 	}
 	
 	function testRegister_NoProjectCode_UserInNoProjects() {
@@ -114,11 +133,11 @@ class TestUserCommands extends UnitTestCase {
 		$captcha_info = array('code' => $validCode);
 		$delivery = new MockUserCommandsDelivery();
 		
-		$userId = UserCommands::register($params, $captcha_info, '', $delivery);
+		$userId = UserCommands::register($params, $captcha_info, 'www.scriptureforge.org', $delivery);
 		
 		$user = new UserModel($userId);
 		$this->assertEqual($user->username, $params['username']);
-		$this->assertEqual($user->listProjects()->count, 0);
+		$this->assertEqual($user->listProjects(Website::SCRIPTUREFORGE)->count, 0);
 	}
 	
 	function testReadForRegistration_ValidKey_ValidUserModel() {
@@ -243,7 +262,7 @@ class TestUserCommands extends UnitTestCase {
 		$project->write();
 		$delivery = new MockUserCommandsDelivery();
 	
-		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $project->id->asString(), $project->projectCode, $delivery);
+		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $project->id->asString(), 'someProjectCode.scriptureforge.org', $delivery);
 	
 		// What's in the delivery?
 		$toUser = new UserModel($toUserId);
