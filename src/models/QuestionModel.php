@@ -158,6 +158,24 @@ class QuestionModel extends \models\mapper\MapperModel
 		// TODO Review, what should we return CP 2013-08
 		return $mapper->removeSubDocument($questionId, "answers.$answerId.comments", $commentId);
 	}
+
+	/**
+	 * 
+	 * @return string - the title for display
+	 */
+	public function getTitleForDisplay() {
+		$title = $this->title;
+		if ($title == "") {
+			$desc = $this->description;
+			$spacepos = strpos($desc, " ", 30);
+			if ($spacepos !== FALSE) {
+				$title = substr($desc, 0, $spacepos) . '...';	
+			} else {
+				$title = substr($desc, 0, 30);
+			}
+		}
+		return $title;
+	}
 	
 	/**
 	 * @var Id
