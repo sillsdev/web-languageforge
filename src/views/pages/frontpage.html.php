@@ -5,21 +5,21 @@
 				array(
 					"title" => "Community Checking",
 					"summary" => "Scripture Forge enables communities to participate in the Scripture checking process like never before",
-					"social_media" => "{Social Media}",
+					"social_media" => "",
 					"image_url" => "community.jpg",
 					"target_url" => "/learn_scripture_forge"
 					),
 				array(
 					"title" => "Your Team, Expanded",
 					"summary" => "Improve your scripture checking project by adding more native speakers to your workflow",
-					"social_media" => "{Social Media}",
+					"social_media" => "",
 					"image_url" => "team.jpg",
 					"target_url" => "/learn_expand_your_team"
 					),
 				array(
 					"title" => "Make a Difference Today",
 					"summary" => "Speak a minority language?  See if your language has a scripture checking project in progress today",
-					"social_media" => "{Social Media}",
+					"social_media" => "",
 					"image_url" => "contribute.jpg",
 					"target_url" => "/learn_contribute"
 					)

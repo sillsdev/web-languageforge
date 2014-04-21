@@ -50,7 +50,7 @@
 					),
 				array(
 					"title" => "Get Started",
-					"summary" => "There are two ways you can start right away: Organize a face-to-face Psalms study group and share your group's insights with the translation team.Â  Create a log-in and begin interacting with the translators and others from the Jamaican community over the translation drafts they post on this website. Either way, you are helping to produce your Jamaican Psalms translation. It's that easy.",
+					"summary" => "There are two ways you can start right away: Organize a face-to-face Psalms study group and share your group's insights with the translation team.  Create a log-in and begin interacting with the translators and others from the Jamaican community over the translation drafts they post on this website. Either way, you are helping to produce your Jamaican Psalms translation. It's that easy.",
 					"button" => "Get Started Now",
 					"target_url" => "/signup"
 					)
