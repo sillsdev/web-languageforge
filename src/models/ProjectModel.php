@@ -4,7 +4,7 @@ namespace models;
 
 use models\mapper\ArrayOf;
 
-use libraries\palaso\CodeGuard;
+use libraries\shared\palaso\CodeGuard;
 use models\rights\Realm;
 use models\rights\Roles;
 use models\rights\ProjectRoleModel;
@@ -16,27 +16,6 @@ use models\mapper\Id;
 use models\UserList_ProjectModel;
 use models\sms\SmsSettings;
 
-require_once(APPPATH . '/models/ProjectModel.php');
-
-class ProjectModelMongoMapper extends \models\mapper\MongoMapper
-{
-	public static function instance()
-	{
-		static $instance = null;
-		if (null === $instance)
-		{
-			$instance = new ProjectModelMongoMapper(SF_DATABASE, 'projects');
-		}
-		return $instance;
-	}
-	
-	public function drop($databaseName) {
-		if (MongoStore::hasDB($databaseName)) {
-			$db = MongoStore::connect($databaseName);
-			$db->drop();
-		}
-	}
-}
 
 class ProjectModel extends \models\mapper\MapperModel
 {
@@ -47,6 +26,8 @@ class ProjectModel extends \models\mapper\MapperModel
 			return new ProjectRoleModel();
 		});
 		$this->userProperties = new ProjectUserPropertiesSettings();
+		$this->themeName = 'default';
+		$this->interfaceLanguageCode = 'en';
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
 	
@@ -82,10 +63,14 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public static function domainToProjectCode($domainName) {
 		$uriParts = explode('.', $domainName);
-		if ($uriParts[0] == 'www') {
+		if ($uriParts[0] == 'www' || $uriParts[0] == 'dev') {
 			array_shift($uriParts);
 		}
-		return $uriParts[0];
+		$projectCode = $uriParts[0];
+		if ($projectCode == 'scriptureforge' || $projectCode == 'languageforge') {
+			$projectCode = '';
+		}
+		return $projectCode;
 	}
 	
 	/**
@@ -103,11 +88,13 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * User references to this project are also removed
 	 */
 	public function remove() {
-		foreach ($this->users->data as $userId => $roleObj) {
+		foreach ($this->users as $userId => $roleObj) {
 			$user = new UserModel($userId);
 			$user->removeProject($this->id->asString());
 			$user->write();
 		}
+		$this->rrmdir($this->getAssetsFolderPath());
+		
 		ProjectModelMongoMapper::instance()->drop($this->databaseName());
 		ProjectModelMongoMapper::instance()->remove($this->id->asString());
 	}
@@ -123,7 +110,7 @@ class ProjectModel extends \models\mapper\MapperModel
 //		$ProjectModelMongoMapper::mongoID($userId)
 		$model = new ProjectRoleModel();
 		$model->role = $role;
-		$this->users->data[$userId] = $model; 
+		$this->users[$userId] = $model; 
 	}
 	
 	/**
@@ -131,7 +118,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @param string $userId
 	 */
 	public function removeUser($userId) {
-		unset($this->users->data[$userId]);
+		unset($this->users[$userId]);
 	}
 	
 	/**
@@ -140,7 +127,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @return bool
 	 */
 	public function userIsMember($userId) {
-		return 	key_exists($userId, $this->users->data);
+		return 	key_exists($userId, $this->users);
 	}
 
 	public function listUsers() {
@@ -148,12 +135,12 @@ class ProjectModel extends \models\mapper\MapperModel
 		$userList->read();
 		for ($i = 0, $l = count($userList->entries); $i < $l; $i++) {
 			$userId = $userList->entries[$i]['id'];
-			if (!key_exists($userId, $this->users->data)) {
+			if (!key_exists($userId, $this->users)) {
 				$projectId = $this->id->asString();
 				//error_log("User $userId is not a member of project $projectId");
 				continue;
 			}
-			$userList->entries[$i]['role'] = $this->users->data[$userId]->role;
+			$userList->entries[$i]['role'] = $this->users[$userId]->role;
 		}
  		return $userList;
 	}
@@ -166,8 +153,8 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public function hasRight($userId, $right) {
 		$hasRight = false;
-		if (key_exists($userId, $this->users->data)) {
-			$hasRight = Roles::hasRight(Realm::PROJECT, $this->users->data[$userId]->role, $right);
+		if (key_exists($userId, $this->users)) {
+			$hasRight = Roles::hasRight(Realm::PROJECT, $this->users[$userId]->role, $right);
 		}
 		return $hasRight;
 	}
@@ -179,13 +166,27 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public function getRightsArray($userId) {
 		CodeGuard::checkTypeAndThrow($userId, 'string');
-		if (!key_exists($userId, $this->users->data)) {
+		if (!key_exists($userId, $this->users)) {
 			$result = array();
 		} else {
-			$role = $this->users->data[$userId]->role;
+			$role = $this->users[$userId]->role;
 			$result = Roles::getRightsArray(Realm::PROJECT, $role);
 		}
 		return $result;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getViewsPath() {
+		return 'views/' . $this->siteName . '/' . $this->themeName;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getAssetsFolderPath() {
+		return APPPATH . 'assets/' . $this->siteName . '/' . $this->appName. '/' . $this->databaseName();
 	}
 	
 	/**
@@ -199,8 +200,15 @@ class ProjectModel extends \models\mapper\MapperModel
 	public $projectname;
 	
 	/**
+	 * Web app interface language code
 	 * @var string
 	 */
+	public $interfaceLanguageCode;
+	
+	/**
+	 * @var string
+	 */
+	// TODO move this to a subclass cjh 2014-02
 	public $language;
 	
 	/**
@@ -224,7 +232,39 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @var ProjectUserPropertiesSettings
 	 */
 	public $userProperties;
+	
+	/**
+	 * specifies the theme name for this project e.g. jamaicanpsalms || default
+	 * @var string
+	 */
+	public $themeName;
+	
+	/**
+	 * Specifies which site this project belongs to.  e.g. scriptureforge || languageforge  cf. Website class
+	 * @var string
+	 */
+	public $siteName;
+	
+	/**
+	 *  specifies the angular app this project is associated with e.g. sfchecks || lexicon  (note: these apps are site specific)
+	 * @var string
+	 */
+	public $appName;
+	
+	private function rrmdir($dir) {
+		if (is_dir($dir)) {
+			$objects = scandir($dir);
+			foreach ($objects as $object) {
+				if ($object != "." && $object != "..") {
+					if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object);
+				}
+			}
+			reset($objects);
+			rmdir($dir);
+		}
+	}
 }
+
 
 /**
  * This class is separate from the ProjectModel to protect the smsSettings and emailSettings which are managed
@@ -247,56 +287,6 @@ class ProjectSettingsModel extends ProjectModel
 	 * @var EmailSettings
 	 */
 	public $emailSettings;
-
-}
-
-/**
- * 
- * List of projects in the system
- *
- */
-class ProjectListModel extends \models\mapper\MapperListModel
-{
-	public function __construct()
-	{
-		parent::__construct(
-			ProjectModelMongoMapper::instance(),
-			array(),
-			array('projectname', 'language')
-		);
-	}
-}
-
-/**
- * List of projects of which a user is a member
- * 
- */
-class ProjectList_UserModel extends \models\mapper\MapperListModel
-{
-
-	public function __construct() {
-		parent::__construct(ProjectModelMongoMapper::instance());
-	}
-	
-	/**
-	 * Reads all projects
-	 */
-	function readAll() {
-		$query = array();
-		$fields = array('projectname');
-		return $this->_mapper->readList($this, $query, $fields);
-	}
-	
-	/**
-	 * Reads all projects in which the given $userId is a member.
-	 * @param string $userId
-	 */
-	function readUserProjects($userId) {
-		$query = array('users.' . $userId => array('$exists' => true));
-		$fields = array('projectname');
-		return $this->_mapper->readList($this, $query, $fields);
-	}
-	
 
 }
 

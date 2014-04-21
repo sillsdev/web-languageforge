@@ -4,7 +4,7 @@ namespace models;
 
 use models\mapper\Id;
 
-require_once(APPPATH . '/models/ProjectModel.php');
+require_once(APPPATH . 'models/ProjectModel.php');
 
 class TextModelMongoMapper extends \models\mapper\MongoMapper
 {

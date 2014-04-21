@@ -27,7 +27,7 @@ class ProjectUserPropertiesSettings
 		$this->userProfilePickLists = new MapOf(function($data) {
 			return new PickList();
 		});
-		$this->userProfilePropertiesEnabled = new ArrayOf(ArrayOf::VALUE);
+		$this->userProfilePropertiesEnabled = new ArrayOf();
 	}
 	
 	public function ensurePickListsExist() {
@@ -39,8 +39,8 @@ class ProjectUserPropertiesSettings
 	}
 	
 	private function ensurePickListExists($key, $name) {
-		if (!isset($this->userProfilePickLists->data[$key])) {
-			$this->userProfilePickLists->data[$key] = new PickList($name);
+		if (!isset($this->userProfilePickLists[$key])) {
+			$this->userProfilePickLists[$key] = new PickList($name);
 		}
 	}
 	

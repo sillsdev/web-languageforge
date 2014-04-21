@@ -1,6 +1,6 @@
 <?php
 
-use models\dto\ProjectListDto;
+use models\shared\dto\ProjectListDto;
 use models\TextModel;
 use models\UserModel;
 use models\rights\Roles;
@@ -33,13 +33,12 @@ class TestProjectListDto extends UnitTestCase {
 		$text2->content = "We had gone perhaps ten miles when the ground began to rise very rapidly. …";
 		$text2Id = $text2->write();
 
-		$dto = ProjectListDto::encode($userId);
+		$dto = ProjectListDto::encode($userId, $project->siteName);
 
 		$this->assertEqual($dto['count'], 1);
 		$this->assertIsA($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $projectId);
 		$this->assertEqual($dto['entries'][0]['projectname'], SF_TESTPROJECT);
-		$this->assertEqual($dto['entries'][0]['textCount'], 2);
 		$this->assertEqual($dto['entries'][0]['role'], Roles::NONE);
 	}
 
@@ -62,7 +61,7 @@ class TestProjectListDto extends UnitTestCase {
 		$project2 = $e->createProject($project2Name);
 		$projectId2 = $project2->id->asString();
 		
-		$dto = ProjectListDto::encode($userId);
+		$dto = ProjectListDto::encode($userId, $project1->siteName);
 	
 		$this->assertEqual($dto['count'], 2);
 		$this->assertIsA($dto['entries'], 'array');
@@ -93,7 +92,7 @@ class TestProjectListDto extends UnitTestCase {
 		$project2 = $e->createProject($project2Name);
 		$projectId2 = $project2->id->asString();
 		
-		$dto = ProjectListDto::encode($userId);
+		$dto = ProjectListDto::encode($userId, $project1->siteName);
 	
 		$this->assertEqual($dto['count'], 1);
 		$this->assertIsA($dto['entries'], 'array');

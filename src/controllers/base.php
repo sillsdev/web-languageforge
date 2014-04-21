@@ -1,6 +1,8 @@
 <?php
 
 
+use libraries\shared\Website;
+
 use models\ProjectListModel;
 use models\FeaturedProjectListModel;
 
@@ -19,7 +21,11 @@ class Base extends CI_Controller {
 	
 	protected $_user;
 	
-	protected $_project;
+	public $project;
+	
+	public $projectId; // TODO implement project context
+	
+	public $site;
 	
 	public function __construct() {
 		parent::__construct();
@@ -30,48 +36,40 @@ class Base extends CI_Controller {
 				$userId = (string)$this->session->userdata('user_id');
 				$this->_user = new \models\UserModel($userId);
 			} catch (Exception $e) {
-				error_log("User not found, logged out.\n" . $e->getMessage());
+				error_log("User $userId not found, logged out.\n" . $e->getMessage());
 				$this->ion_auth->logout();
 			}
 			// Check the role
+			/* this is migration code... we don't need this here
 			if (!$this->_user->role) {
 				error_log("Fixing role for user " .  $this->_user->id->asString());
 				$this->_user->role = Roles::USER;
 				$this->_user->write();
 			}
+			*/
 		}
-		$projectCode = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
-		if ($projectCode == 'scriptureforge' || $projectCode == 'dev') {
-			$this->_project = 'scriptureforge';
-		} else {
-			$this->_project = $projectCode;
-		}
-		
+		$this->project = Website::getProjectThemeNameFromDomain($_SERVER['HTTP_HOST']);
+		$this->site = Website::getSiteName();
 	}
 	
 	// all child classes should use this method to render their pages
-	protected function _render_page($view, $data=null, $render=true) {
+	protected function renderPage($view, $data=null, $render=true) {
 		$this->renderProjectPage($view, '', $data, $render);
 	}
 	
 	protected function renderProjectPage($view, $project = '', $data = array(), $render = true) {
 		$this->viewdata = $data;
-
-		$project = $this->_project;
+		$this->viewdata['contentTemplate'] = $this->getContentTemplatePath($view);
+		$this->viewdata['projectPath'] = $this->getProjectPath();
+		$this->viewdata['defaultProjectPath'] = $this->getProjectPath('default');
 		
-		if ($project == 'scriptureforge') {
-			$containerView = 'templates/container.html.php';
-		} else {
-// 			$view = 'projects/' . $project . '/' . $view;
-			$containerView = 'projects/' . $project . '/templates/container.html.php';
-		}
+		$this->populateHeaderMenuViewdata();
 		
-		if (file_exists(self::templateToPath($view))) {
-			$this->viewdata["page"] = $view . ".html.php";
-		} else if (file_exists(self::templateToPath($view, '.php'))) {
-			$this->viewdata["page"] = $view . ".php";
-		}
-		
+		$containerTemplatePath = $this->getSharedTemplatePath("container");
+		return $this->load->view($containerTemplatePath, $this->viewdata, !$render);
+	}
+	
+	protected function populateHeaderMenuViewdata() {
 		$this->viewdata['is_admin'] = false;
 		
 		// setup specific variables for header
@@ -87,9 +85,10 @@ class Base extends CI_Controller {
 			$this->viewdata['user_name'] = $this->_user->username;
 			$this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
 			$this->viewdata['small_avatar_url'] = $this->_user->avatar_ref;
-			$projects = $this->_user->listProjects();
+			$projects = $this->_user->listProjects($this->site);
 			$this->viewdata['projects_count'] = $projects->count;
 			$this->viewdata['projects'] = $projects->entries;
+			$this->viewdata['hostname'] = Website::getHostName();
 			if ($isAdmin) {
 				$projectList = new models\ProjectListModel();
 				$projectList->read();
@@ -97,17 +96,46 @@ class Base extends CI_Controller {
 				$this->viewdata['all_projects'] = $projectList->entries;
 			}
 		}
-		$view_html = $this->load->view($containerView, $this->viewdata, !$render);
-		
-		if (!$render) return $view_html;
 	}
 	
-	/**
-	 * @param string $templateName
-	 * @return string
-	 */
-	protected static function templateToPath($templateName, $suffix = '.html.php') {
-		return 'views/' .  $templateName . $suffix;
+	protected function getSharedTemplatePath($templateName) {
+		$viewPath = "shared/$templateName.html.php";
+		if (file_exists("views/$viewPath")) {
+			return $viewPath;
+		}
+		return '';
 	}
+	
+	protected function getProjectPath($project = "") {
+		if (!$project) {
+			$project = $this->project;
+		}
+		return $this->site . "/" . $project;
+	}
+	
+	protected function getContentTemplatePath($templateName) {
+		$sharedPath = $this->getSharedTemplatePath($templateName);
+		if ($sharedPath != '') {
+			return $sharedPath;
+		} else {
+			return $this->getProjectTemplatePath($templateName);
+		}
+	}
+	
+	protected function getProjectTemplatePath($templateName, $project = "") {
+		$viewPath = $this->getProjectPath() . "/$templateName.html.php";
+		if (file_exists("views/$viewPath")) {
+			return $viewPath;
+		} else {
+			$viewPath = $this->getProjectPath('default') . "/$templateName.html.php";
+			if (file_exists("views/$viewPath")) {
+				return $viewPath;
+			}
+		}
+		return '';
+	}
+	
+	
+	
 	
 }

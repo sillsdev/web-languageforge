@@ -2,33 +2,26 @@
 
 namespace models\commands;
 
-use libraries\palaso\exceptions\UserUnauthorizedException;
-
-use libraries\palaso\CodeGuard;
-use libraries\palaso\JsonRpcServer;
-use libraries\palaso\exceptions\UserNotAuthenticatedException;
-use libraries\sfchecks\Communicate;
-use libraries\sfchecks\Email;
-use libraries\sfchecks\IDelivery;
-use models\AnswerModel;
-use models\ProjectModel;
-use models\ProjectSettingsModel;
-use models\QuestionModel;
-use models\UnreadMessageModel;
-use models\UserModel;
-use models\UserModelWithPassword;
-use models\UserProfileModel;
+use libraries\scriptureforge\sfchecks\Communicate;
+use libraries\scriptureforge\sfchecks\Email;
+use libraries\scriptureforge\sfchecks\IDelivery;
+use libraries\shared\palaso\exceptions\UserUnauthorizedException;
+use libraries\shared\palaso\CodeGuard;
+use libraries\shared\palaso\JsonRpcServer;
+use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
+use libraries\shared\Website;
 use models\commands\ActivityCommands;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
 use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
-use models\dto\ActivityListDto;
-use models\dto\CreateSimpleDto;
-use models\dto\ProjectSettingsDto;
-use models\dto\RightsHelper;
-use models\dto\UserProfileDto;
+use models\scriptureforge\dto\ProjectSettingsDto;
+use models\shared\dto\ActivityListDto;
+use models\shared\dto\CreateSimpleDto;
+use models\shared\dto\RightsHelper;
+use models\shared\dto\UserProfileDto;
+use models\sms\SmsSettings;
 use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
@@ -37,14 +30,18 @@ use models\rights\Domain;
 use models\rights\Operation;
 use models\rights\Realm;
 use models\rights\Roles;
-use models\sms\SmsSettings;
+use models\AnswerModel;
+use models\ProjectModel;
+use models\ProjectSettingsModel;
+use models\QuestionModel;
+use models\UnreadMessageModel;
+use models\UserModel;
+use models\UserModelWithPassword;
+use models\UserProfileModel;
 
-
-class UserCommands
-{
+class UserCommands {
 	
 	/**
-	 * 
 	 * @param string $id
 	 * @return array
 	 */
@@ -52,6 +49,7 @@ class UserCommands
 		$user = new UserModel($id);
 		return JsonEncoder::encode($user);
 	}
+	
 	/**
 	 * User Create/Update
 	 * @param array $params - user model fields to update
@@ -67,28 +65,23 @@ class UserCommands
 	}
 	
 	/**
-	 * User Profile Create/Update
+	 * User Profile Update
 	 * @param array $params - user model fields to update
+	 * @param string $userId
+	 * @return string $userId
 	 */
-	public static function updateUserProfile($params) {
-		$user = new UserProfileModel();
-		if ($params['id']) {
-			$user->read($params['id']);
-		}
+	public static function updateUserProfile($params, $userId) {
+		$params['id'] = $userId;
+		$user = new UserProfileModel($userId);
 		
 		// don't allow the following keys to be persisted
-		if (array_key_exists('projects', $params)) {
-			unset($params['projects']);
-		}
 		if (array_key_exists('role', $params)) {
-					unset($params['role']);
+			unset($params['role']);
 		}
 		JsonDecoder::decode($user, $params);
 		$result = $user->write();
 		return $result;
-		
 	}
-	
 
 	/**
 	 * @param array $userIds
@@ -212,6 +205,7 @@ class UserCommands
 		}
 		
 		$projectCode = ProjectModel::domainToProjectCode($httpHost);
+		$site = Website::getSiteName($httpHost);
 
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
@@ -248,7 +242,7 @@ class UserCommands
 			}
 		}
 
-		Communicate::sendSignup($user, $project, $delivery);
+		Communicate::sendSignup($user, $site, $project, $delivery);
 		
 		return $userId;
 	}
@@ -256,8 +250,8 @@ class UserCommands
 	public static function getCaptchaSrc($controller) {
 		$controller->load->library('captcha');
 		$captcha_config = array(
-			'png_backgrounds' => array(APPPATH . 'images/captcha/captcha_bg.png'),
-			'fonts' => array(FCPATH.'/images/captcha/times_new_yorker.ttf'),
+			'png_backgrounds' => array(APPPATH . 'images/shared/captcha/captcha_bg.png'),
+			'fonts' => array(FCPATH.'/images/shared/captcha/times_new_yorker.ttf'),
 			'characters' => 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789',
 		);
 		$captcha_info = $controller->captcha->main($captcha_config);
@@ -294,7 +288,7 @@ class UserCommands
 			return $userId;
 		} else {
 				$projectCode = ProjectModel::domainToProjectCode($hostName);
-			if ($projectCode == 'scriptureforge') {
+			if ($projectCode == '') {
 				throw new \Exception("Sending an invitation without a project context is not supported.");
 			} else {
 				throw new \Exception("Cannot send invitation for unknown project '$projectCode'");

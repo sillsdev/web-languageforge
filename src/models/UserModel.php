@@ -2,6 +2,12 @@
 
 namespace models;
 
+use models\scriptureforge\SfProjectList_UserModel;
+
+use models\languageforge\LfProjectList_UserModel;
+
+use libraries\shared\Website;
+
 use models\UserModelMongoMapper;
 use models\mapper\Id;
 use models\mapper\IdReference;
@@ -10,7 +16,7 @@ use models\mapper\ReferenceList;
 use models\rights\Realm;
 use models\rights\Roles;
 
-require_once(APPPATH . '/models/ProjectModel.php');
+require_once(APPPATH . 'models/ProjectModel.php');
 
 class UserModel extends \models\UserModelBase
 {
@@ -20,6 +26,7 @@ class UserModel extends \models\UserModelBase
 	 */
 	public function __construct($id = '') {
 		$this->projects = new ReferenceList();
+		$this->setReadOnlyProp('projects');
 		parent::__construct($id);
 	}
 	
@@ -69,8 +76,8 @@ class UserModel extends \models\UserModelBase
 		//$projectModel->users->_removeRef($this->id);
 	}
 	
-	public function listProjects() {
-		$projectList = new ProjectList_UserModel();
+	public function listProjects($site) {
+		$projectList = new ProjectList_UserModel($site);
 		$projectList->readUserProjects($this->id->asString());
 		return $projectList;
 	}
