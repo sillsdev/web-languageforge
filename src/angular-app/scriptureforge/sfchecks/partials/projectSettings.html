@@ -24,12 +24,13 @@
 		<div collapse="newMessageCollapsed">
 			<form class="well" data-ng-submit="sendMessageToSelectedUsers()">
 			<fieldset>
+				<p style="color:red">All fields are required to message selected users</p>
 				<label>Email Subject</label>
 				<input name="emailSubject" required type="text" placeholder="Subject" data-ng-model="message.subject"/>
 				<label>Email Message</label>
 				<textarea name="emailTemplate" required data-ng-model="message.emailTemplate" pui-jqte="jqteOptions"></textarea>
-				<label>SMS Message</label>
-				<input required name="smsTemplate" type="text" placeholder="SMS Message" data-ng-model="message.smsTemplate"/>
+				<label>SMS Message <i>({{160 - message.smsTemplate.length}} characters remaining)</i></label>
+				<textarea required name="smsTemplate" placeholder="SMS Message" data-ng-model="message.smsTemplate" style="width:400px; height:80px" maxlength="160"></textarea>
 			</fieldset>
 			<button type="submit" class="btn"><i class="icon-ok"></i>Send Message Now</button>
 			
