@@ -241,10 +241,10 @@ angular.module(
 		};
 		
 		$scope.enhanceDto = function(items) {
-			for (var i in items) {
-				items[i].url = sfchecksLinkService.question(projectId, textId, items[i].id);
-				items[i].calculatedTitle = $scope.calculateTitle(items[i].title, items[i].description);
-			}
+			angular.forEach(items, function(item) {
+				item.url = sfchecksLinkService.question(projectId, textId, item.id);
+				item.calculatedTitle = $scope.calculateTitle(item.title, item.description);
+			});
 		};
 
 	}])
