@@ -89,7 +89,7 @@
 		<concat destfile="${build.libJsFile}" overwrite="yes" fixlastline="yes">
 			<fileset dir="src/angular-app"
 				includes="**/*.js"
-				excludes="**/*.min.js"
+				excludes="**/*.min.js,**/assets/**, **/vendor/**"
 			/>
 			<fileset dir="src/js/lib"
 				includes="ng-ui-*.js"
