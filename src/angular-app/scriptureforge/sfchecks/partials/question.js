@@ -12,8 +12,8 @@ angular.module(
 		  'palaso.ui.notice'
 		 ]
 	)
-	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService',
-	                             function($scope, $routeParams, questionService, ss, breadcrumbService, notice) {
+	.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService',
+	                             function($scope, $routeParams, questionService, ss, breadcrumbService, notice, linkService) {
 		$scope.jqteOptions = {
 			'placeholder': 'Type your answer here. Click "Done" when finished.',
 			'u': false,
@@ -99,9 +99,9 @@ angular.module(
 				breadcrumbService.set('top',
 						[
 						 {href: '/app/projects', label: 'My Projects'},
-						 {href: '/app/sfchecks#/p/' + $routeParams.projectId, label: $scope.project.projectname},
-						 {href: '/app/sfchecks#/p/' + $routeParams.projectId + '/' + $routeParams.textId, label: $scope.text.title},
-						 {href: '/app/sfchecks#/p/' + $routeParams.projectId + '/' + $routeParams.textId + '/' + $routeParams.questionId, label: $scope.question.title},
+						 {href: linkService.project($routeParams.projectId), label: $scope.project.projectname},
+						 {href: linkService.text($routeParams.projectId, $routeParams.textId), label: $scope.text.title},
+						 {href: linkService.question($routeParams.projectId, $routeParams.textId, $routeParams.questionId), label: $scope.question.title},
 						]
 				);
 
