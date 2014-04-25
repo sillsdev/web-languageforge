@@ -4,10 +4,14 @@
 			<li class="here"><a href="/app/projects">My Projects</a></li>
 			<li><a href="/app/activity">Activity</a></li>
 		</ul>
+		<br />
 	</div>
 	<div style="padding-top:10px">
 	<sil-notices></sil-notices>
-	<div>
+	<div data-wc-overlay="" data-wc-overlay-delay="800">
+    <img src="/images/shared/loading.gif" />&nbsp; Loading...
+    </div>
+	<div ng-show="finishedLoading">
 	    
         <h2 style="font-weight:normal">My Projects</h2>
         <form data-ng-show="rights.deleteOther" class="control-bar form-inline">
