@@ -1,3 +1,4 @@
+<div ng-show="finishedLoading">
 <h2 style="font-weight:normal">{{project.name}} Dashboard</h2>
 <div class="notices"><alert ng-repeat="message in messages" type="info" close="markMessageRead(message.id)"><b>{{message.subject}}</b><br /><span ng-bind-html="message.content"></span></alert></div>
 <form ng-show="rights.showControlBar" class="control-bar form-inline">
@@ -66,5 +67,6 @@
 		<li>{{getResponses(text)}} responses</li>
 	</ul>
 	<hr />
+</div>
 </div>
 </div>

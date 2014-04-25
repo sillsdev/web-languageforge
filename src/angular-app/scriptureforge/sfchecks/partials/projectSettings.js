@@ -5,6 +5,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
                                     function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService, sfchecksLinkService) {
 	var projectId = $routeParams.projectId;
 	$scope.project = {};
+	$scope.finishedLoading = false;
 	$scope.list = {};
 	$scope.project.id = projectId;
 
@@ -34,6 +35,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 						 {href: sfchecksLinkService.project($routeParams.projectId) + '/settings', label: 'Settings'},
 						]
 				);
+				$scope.finishedLoading = true;
 				
 			}
 		});
@@ -49,6 +51,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			if (result.ok) {
 				$scope.settings.sms = result.data.sms;
 				$scope.settings.email = result.data.email;
+				$scope.finishedLoading = true;
 			}
 		});
 	};
@@ -137,6 +140,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			qts.list(function(result) {
 				if (result.ok) {
 					$scope.templates = result.data.entries;
+					$scope.finishedLoading = true;
 				} else {
 					$scope.templates = [];
 				};
