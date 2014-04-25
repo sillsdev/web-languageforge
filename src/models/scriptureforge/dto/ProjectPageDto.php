@@ -55,6 +55,17 @@ class ProjectPageDto
 
 			$data['texts'][] = $entry;
 		}
+
+		// Default sort on text titles
+		usort($data['texts'], function ($a, $b) {
+			if (array_key_exists('title', $a) &&
+				array_key_exists('title', $b)
+			) {
+				return (strtolower($a['title']) > strtolower($b['title'])) ? 1 : -1;
+			} else {
+				return 0;
+			}
+		});
 		
 		// future support for members
 		$data['members'] = array();
