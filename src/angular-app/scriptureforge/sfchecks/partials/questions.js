@@ -43,15 +43,6 @@ angular.module(
 		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT);
 		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
 		
-		// Breadcrumb
-		breadcrumbService.set('top',
-				[
-				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
-				]
-		);
-
 		// Question templates
 		$scope.emptyTemplate = {
 			title: '(Select a template)',
@@ -134,8 +125,15 @@ angular.module(
 					$scope.text.url = sfchecksLinkService.text(projectId, textId);
 					//console.log($scope.project.name);
 					//console.log($scope.text.title);
-					breadcrumbService.updateCrumb('top', 1, {label: $scope.project.name});
-					breadcrumbService.updateCrumb('top', 2, {label: $scope.text.title});
+
+					// Breadcrumb
+					breadcrumbService.set('top',
+							[
+							 {href: '/app/projects', label: 'My Projects'},
+							 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.project.name},
+							 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: $scope.text.title},
+							]
+					);
 
 					var rights = result.data.rights;
 					$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.DELETE); 

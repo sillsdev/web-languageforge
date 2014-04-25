@@ -25,7 +25,7 @@
 				<?php if ($logged_in):?>
 					<div id="header-nav" class="pull-right">
 							<ul class="sf-menu">
-							<li><a href="/app/sfchecks#/projects">My Projects</a>
+							<li><a href="/app/projects">My Projects</a>
 								<ul>
 								<?php foreach($projects as $project): ?>
 									<?php 
