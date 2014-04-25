@@ -101,8 +101,8 @@ angular.module('sfchecks.services', ['jsonRpc'])
 		this.read = function(questionTemplateId, callback) {
 			jsonRpc.call('questionTemplate_read', [questionTemplateId], callback);
 		};
-		this.update = function(questionTemplate, callback) {
-			jsonRpc.call('questionTemplate_update', [questionTemplate], callback);
+		this.update = function(projectId, questionTemplate, callback) {
+			jsonRpc.call('questionTemplate_update', [projectId, questionTemplate], callback);
 		};
 		this.remove = function(questionTemplateIds, callback) {
 			jsonRpc.call('questionTemplate_delete', [questionTemplateIds], callback);
