@@ -2,10 +2,13 @@
 
 angular.module(
 		'projects',
-		[ 'bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice' ]
+		[ 'bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice', 'wc.Directives' ]
 )
 .controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', '$window',
                              function($scope, projectService, ss, notice, $window) {
+	
+		$scope.finishedLoading = false;
+
 		// Rights
 		$scope.rights = {};
 		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.DELETE); 
@@ -35,6 +38,7 @@ angular.module(
 				if (result.ok) {
 					$scope.projects = result.data.entries;
 					$scope.projectCount = result.data.count;
+					$scope.finishedLoading = true;
 				}
 			});
 		};
