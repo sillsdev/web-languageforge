@@ -1,16 +1,16 @@
-<div class="content container" ng-cloak>
+<div class="content container" data-ng-cloak>
 	<h1>Site Administration</h1>
 	<sil-notices></sil-notices>
 
 	<tabset>
 	<tab heading="Users">
-	<div class="row" ng-controller="UserCtrl" style="overflow:hidden">
+	<div class="row" data-ng-controller="UserCtrl" style="overflow:hidden">
 	<div class="span8">
 		<fieldset>
 		<legend>Users (total: {{users.length}})</legend>
 		<form class="control-bar form-inline">
-		<button class="btn" ng-click="removeUsers()"><i class="icon-remove"></i>Remove Users</button>
-		<button class="btn" ng-click="addRecord()"><i class="icon-plus"></i>Add New</button>
+		<button class="btn" data-ng-click="removeUsers()"><i class="icon-remove"></i>Remove Users</button>
+		<button class="btn" data-ng-click="addRecord()"><i class="icon-plus"></i>Add New</button>
 		</form>
 		<div listview search="queryUsers()" items="users" visible-items="visibleUsers" select="">
 		<table class="table" style="width: 100%">
@@ -23,9 +23,9 @@
 			</tr>
 			</thead>
 			<tbody>
-			<tr ng-repeat="user in visibleUsers" ng-class="{active: isSelected(user)}" >
-				<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(user)" ng-click="updateSelection($event, user)" /></td>
-				<td><a ng-click="selectRow($index, user)" title="Click to edit this user">{{user.username}}</a></td>
+			<tr data-ng-repeat="user in visibleUsers" data-ng-class="{active: isSelected(user)}" >
+				<td width="16px" align="center"><input type="checkbox" data-ng-checked="isSelected(user)" data-ng-click="updateSelection($event, user)" /></td>
+				<td><a data-ng-click="selectRow($index, user)" title="Click to edit this user">{{user.username}}</a></td>
 				<td>{{user.name}}</td>
 				<td>{{roleLabel(user.role)}}</td>
 			</tr>
@@ -36,43 +36,43 @@
 	</div>
 				
 	<div class="span4">
-		<form ng-submit="updateRecord(record)" ng-hide="(vars.editButtonName=='')" name="userForm">
+		<form data-ng-submit="updateRecord(record)" data-ng-hide="(vars.editButtonName=='')" name="userForm">
 		<fieldset>
 			<legend>User data</legend>
 			<div class="well">
 				<div>
 					<label>User Name</label>
-					<input ng-blur="checkUserName()" required type="text" placeholder="(username)" ng-model="record.username"/>
-					<span  ng-show="userNameLoading"><img id="userNameLoading" src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
-					<span  ng-show="userNameOk"><img id="userNameOk" src="/images/shared/tick.png" title="User name is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
-					<span  ng-show="userNameExists"><img id="userNameExists" src="/images/shared/exclamation.png" title="User name already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+					<input data-ng-blur="checkUserName()" required type="text" placeholder="(username)" data-ng-model="record.username"/>
+					<span  data-ng-show="userNameLoading"><img id="userNameLoading" src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+					<span  data-ng-show="userNameOk"><img id="userNameOk" src="/images/shared/tick.png" title="User name is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+					<span  data-ng-show="userNameExists"><img id="userNameExists" src="/images/shared/exclamation.png" title="User name already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
 				</div>
 				<div>
 					<label>Name</label>
-					<input required type="text" placeholder="(your name here)" ng-model="record.name"/>
+					<input required type="text" placeholder="(your name here)" data-ng-model="record.name"/>
 				</div>
 				<div>
 					<label>Email</label>
-					<input type="text" placeholder="(no email)" ng-model="record.email"/>
+					<input type="text" placeholder="(no email)" data-ng-model="record.email"/>
 				</div>
 				<div>
 					<label>Role</label>
-					<select required ng-model="record.role" ng-options="key as role.name for (key, role) in roles"></select>
+					<select required data-ng-model="record.role" data-ng-options="key as role.name for (key, role) in roles"></select>
 				</div>
 				<div>
-					<label style="margin-bottom:20px"><input type="checkbox" ng-model="record.active"/> Is Active</label>
+					<label style="margin-bottom:20px"><input type="checkbox" data-ng-model="record.active"/> Is Active</label>
 				</div>
-				<a ng-show="vars.state == 'update'" href="" ng-click="togglePasswordForm(); vars.inputfocus = false">Change {{record.username}}'s password</a>
-				<div ng-show="vars.showPasswordForm">
+				<a data-ng-show="vars.state == 'update'" href="" data-ng-click="togglePasswordForm(); vars.inputfocus = false">Change {{record.username}}'s password</a>
+				<div data-ng-show="vars.showPasswordForm">
 					<label>Password</label>
-					<input type="text" ng-model="record.password" ng-focus="vars.inputfocus" name="password"/>
+					<input type="text" data-ng-model="record.password" data-ng-focus="vars.inputfocus" name="password"/>
 				</div>
 				<table class="table">
-				<tr ng-show="record.created_on"><td><label style="cursor:default">Created On: {{ record.created_on * 1000 | date:shortDate }}</label></td></tr>
-				<tr ng-show="record.last_login"><td><label style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label></td></tr>
+				<tr data-ng-show="record.created_on"><td><label style="cursor:default">Created On: {{ record.created_on * 1000 | date:shortDate }}</label></td></tr>
+				<tr data-ng-show="record.last_login"><td><label style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label></td></tr>
 				</table>
 			</div>
-					<button class="btn btn-small" type="submit" ng-disabled="userForm.$invalid || userNameExists">
+					<button class="btn btn-small" type="submit" data-ng-disabled="userForm.$invalid || userNameExists">
 						<i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
 					</button>
 		</fieldset>
@@ -81,44 +81,9 @@
 	</div>
 	</div>
 	</tab>
-	<tab heading="Question Templates">
-		<div class="row" ng-controller="TemplateCtrl" style="overflow:hidden">
-			<form class="control-bar form-inline">
-				<button class="btn" ng-disabled="selected.length == 0" ng-click="removeTemplates()"><i class="icon-remove"></i>Remove Templates</button>
-				<button class="btn" ng-click="toggleTemplateEditor()"><i class="icon-plus"></i>Add New Template</button>
-			</form>
-			<div class="new-item" collapse="!templateEditorVisible">
-				<form class="well">
-				<fieldset>
-				<label>Question Template</label>
-				<textarea required ng-model="editedTemplate.description" class="span4" rows="4" placeholder="The Question"></textarea>
-				<label></label>
-				<input type="text" maxlength="35" required ng-model="editedTemplate.title" class="span4" rows="4" placeholder="One Line Summary for Title" />
-				<label></label>
-				<button type="submit" class="btn" ng-click="editTemplate()"><i class="icon-ok"></i>Save</button>
-				<a ng-click="hideTemplateEditor()">Cancel</a>
-				</fieldset>
-				</form>
-			</div>
-			<div listview search="queryTemplates()" items="templates" visible-items="visibleTemplates" select="">
-			<table style="width: 100%">
-				<tr>
-					<th></th>
-					<th class="span3">Question title</th>
-					<th>Question contents</th>
-				</tr>
-				<tr ng-repeat="template in visibleTemplates" ng-class="{active: isSelected(template)}" ng-click="selectRow($index, template)" >
-					<td width="16px" align="center"><input type="checkbox" ng-checked="isSelected(template)" ng-click="updateSelection($event, template)" /></td>
-					<td><a title="Click to edit this template" ng-click="showTemplateEditor(template)">{{template.title}}</a></td>
-					<td style="text-overflow: ellipsis">{{template.description}}</td>
-				</tr>
-			</table>
-			</div>
-		</div>
-	</tab>
 	<!-- 
 	<tab heading="Projects">
-		<div class="row" ng-controller="ProjectCtrl" style="overflow:hidden">
+		<div class="row" data-ng-controller="ProjectCtrl" style="overflow:hidden">
 		<div class="span8"><project-list/></div>
 		<div class="span4"><project-data/></div>
 		</div>
