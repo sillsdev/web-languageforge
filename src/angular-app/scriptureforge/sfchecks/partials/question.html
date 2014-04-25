@@ -7,7 +7,7 @@
 <div id="text" sil-selection sil-selected-text="selectedText" content="text.content">
 </div>
 </div>
-<div id="comments" class="span6">
+<div id="comments" class="span6" ng-show="finishedLoading">
 	<div class="question">
 	<h2>{{questionTitleCalculated}}</h2>
 	<h4 ng-show="questionIsClosed()" style="color:gray; font-style:italic">This question is marked closed</h4>

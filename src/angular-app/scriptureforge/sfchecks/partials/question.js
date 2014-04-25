@@ -35,7 +35,7 @@ angular.module(
 				['h4', 'Large']
 			]
 		};
-		
+		$scope.finishedLoading = false;
 		$scope.state = 'stop';
 		$scope.audioReady = false;
 		soundManager.setup({
@@ -108,6 +108,7 @@ angular.module(
 				// Keep track of answer count so we can show or hide "There are no answers" as appropriate
 				$scope.question.answerCount = Object.keys($scope.question.answers).length;
 				$scope.rights = result.data.rights;
+				$scope.finishedLoading = true;
 			}
 		});
 

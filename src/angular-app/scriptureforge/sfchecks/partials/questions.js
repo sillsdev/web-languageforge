@@ -10,6 +10,7 @@ angular.module(
 		var textId = $routeParams.textId;
 		$scope.projectId = projectId;
 		$scope.textId = textId;
+		$scope.finishedLoading = false;
 		
 		$scope.audioReady = false;
 		soundManager.setup({
@@ -144,6 +145,7 @@ angular.module(
 					if ($scope.rights.create) {
 						$scope.queryTemplates();
 					}
+					$scope.finishedLoading = true;
 				}
 			});
 		};
