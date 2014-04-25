@@ -80,7 +80,7 @@ angular.module(
 					breadcrumbService.set('top',
 							[
 							 {href: '/app/projects', label: 'My Projects'},
-							 {href: '/app/sfchecks#/p/' + $routeParams.projectId, label: $scope.project.name},
+							 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.project.name},
 							]
 					);
 
