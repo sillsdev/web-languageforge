@@ -396,8 +396,8 @@ class Sf
 	// QuestionTemplates API
 	//---------------------------------------------------------------
 
-	public function questionTemplate_update($params) {
-		return QuestionTemplateCommands::updateTemplate($params);
+	public function questionTemplate_update($projectId, $model) {
+		return QuestionTemplateCommands::updateTemplate($model);
 	}
 
 	public function questionTemplate_read($id) {
