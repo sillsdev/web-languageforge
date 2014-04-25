@@ -106,6 +106,19 @@ class UserCommands {
 	public static function listUsers() {
 		$list = new \models\UserListModel();
 		$list->read();
+		
+		// Default sort on username (currently needed to sort on Site Admin)
+		usort($list->entries, function ($a, $b) {
+			$sortOn = 'username';
+			if (array_key_exists($sortOn, $a) &&
+			array_key_exists($sortOn, $b)
+			) {
+				return (strtolower($a[$sortOn]) > strtolower($b[$sortOn])) ? 1 : -1;
+			} else {
+				return 0;
+			}
+		});
+		
 		return $list;
 	}
 	
