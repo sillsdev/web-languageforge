@@ -6,7 +6,7 @@
 	<a data-ng-show="rights.editOther" class="btn" href="#/p/{{projectId}}/{{textId}}/settings"><i class="icon-pencil"></i> Update Text Settings</a>
 </form>
 <div class="new-item" data-collapse="newQuestionCollapsed">
-	<form class="well span12" name="newQuestionForm">
+	<form class="well span11" name="newQuestionForm">
 	<fieldset class="span4">
 	<label>Question</label>
 	<textarea required data-ng-model="questionDescription" class="span4" rows="4" placeholder="The Question"></textarea>
@@ -31,7 +31,7 @@
     		<a data-ng-href="{{audioDownloadUrl}}"><i class="icon-download" data-tooltip="Download audio"></i></a>
     	</h2>
     	<h2>{{text.title}}</h2>
-        <div id="text" data-sil-selection data-content="text.content"> </div>
+        <div id="text" data-ng-bind-html="text.content"> </div>
     </div>
     <div class="span7">
         <div data-listview data-hide-if-empty="true" data-search="queryQuestions()" data-items="questions" data-visible-items="visibleQuestions" data-select="">
