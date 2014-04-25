@@ -9,7 +9,9 @@ angular.module('palaso.ui.selection', [])
 				content : "=",
 			},
 			controller: function() {
+				rangy.init();
 				this.cssApplier = rangy.createCssClassApplier('highlighted');
+
 			},
 			link: function(scope, element, attrs, controller) {
 				scope.$watch('content',
@@ -66,7 +68,9 @@ angular.module('palaso.ui.selection', [])
 						scope.oldHighlightedRange = range;
 
 						scope.$apply(function() {
-							scope.silSelectedText = selectedHtml;
+							if (scope.silSelectedText != undefined) {
+								scope.silSelectedText = selectedHtml;
+							}
 						});
 					}
 					scope.validMouseDown = false;
