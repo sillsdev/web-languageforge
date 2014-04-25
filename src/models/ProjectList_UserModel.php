@@ -34,7 +34,8 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 	function readAll() {
 		$query = array('siteName' => array('$in' => array($this->_site)));
 		$fields = array('projectname', 'appName', 'themeName', 'siteName');
-		return $this->_mapper->readList($this, $query, $fields);
+		$sortFields = array('projectname' => 1);
+		return $this->_mapper->readList($this, $query, $fields, $sortFields);
 	}
 	
 	/**
@@ -44,7 +45,8 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 	function readUserProjects($userId) {
 		$query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array($this->_site)));
 		$fields = array('projectname', 'appName', 'themeName', 'siteName');
-		return $this->_mapper->readList($this, $query, $fields);
+		$sortFields = array('projectname' => 1);
+		return $this->_mapper->readList($this, $query, $fields, $sortFields);
 	}
 
 

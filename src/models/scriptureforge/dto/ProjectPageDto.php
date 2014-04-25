@@ -58,10 +58,11 @@ class ProjectPageDto
 
 		// Default sort on text titles
 		usort($data['texts'], function ($a, $b) {
-			if (array_key_exists('title', $a) &&
-				array_key_exists('title', $b)
+			$sortOn = 'title';
+			if (array_key_exists($sortOn, $a) &&
+				array_key_exists($sortOn, $b)
 			) {
-				return (strtolower($a['title']) > strtolower($b['title'])) ? 1 : -1;
+				return (strtolower($a[$sortOn]) > strtolower($b[$sortOn])) ? 1 : -1;
 			} else {
 				return 0;
 			}
