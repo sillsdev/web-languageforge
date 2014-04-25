@@ -2,14 +2,10 @@
 namespace libraries\shared\scripts\migration;
 
 use models\scriptureforge\SfchecksProjectModel;
-
 use models\ProjectListModel;
-
 use models\ProjectModel;
-
-use models\UserModel;
-
 use models\UserListModel;
+use models\UserModel;
 
 class MakeAllSfchecksProjects {
 	
@@ -24,13 +20,16 @@ class MakeAllSfchecksProjects {
 		$projectsChanged = 0;
 		foreach ($projectlist->entries as $projectParams) { // foreach existing project
 			$projectId = $projectParams['id'];
-			$project = new SfchecksProjectModel($projectId);
-			$project->themeName = "jamaicanpsalms";
-			$message .= "Changed the " . $project->projectname . " to be a sfchecks/scriptureforge project with jamaican psalms theme\n";
-			if (!$testMode) {
-				$project->write();
+			$project = new ProjectModel($projectId);
+			if ($project->siteName == '') {
+				$sfproject = new SfchecksProjectModel($projectId);
+				$sfproject->themeName = "jamaicanpsalms";
+				$message .= "Changed the " . $sfproject->projectname . " to be a sfchecks/scriptureforge project with jamaican psalms theme\n";
+				if (!$testMode) {
+					$sfproject->write();
+				}
+				$projectsChanged++;
 			}
-			$projectsChanged++;
 		}
 		if ($projectsChanged > 0) {
 			$message .= "\n\nChanged $projectsChanged projects to be of sfchecks type under scriptureforge and jamaicanpsalms theme \n\n";
