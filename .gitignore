@@ -8,3 +8,5 @@ src/vendor/*/
 src/cache/
 src/bower_components/
 src/assets/
+
+src/js/lib/node_modules/protractor/selenium/
