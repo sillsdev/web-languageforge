@@ -183,7 +183,7 @@ angular.module(
 					$scope.queryQuestions();
 					notice.push(notice.SUCCESS, "'" + $scope.calculateTitle(model.title, model.description) + "' was added successfully");
 					if ($scope.saveAsTemplate) {
-						qts.update(model, function(result) {
+						qts.update(projectId, model, function(result) {
 							if (result.ok) {
 								notice.push(notice.SUCCESS, "'" + model.title + "' was added as a template question");
 							}
@@ -225,7 +225,7 @@ angular.module(
 			model.id = '';
 			model.title = $scope.selected[0].title;
 			model.description = $scope.selected[0].description;
-			qts.update(model, function(result) {
+			qts.update(projectId, model, function(result) {
 				if (result.ok) {
 					$scope.queryTemplates();
 					notice.push(notice.SUCCESS, "'" + model.title + "' was added as a template question");
