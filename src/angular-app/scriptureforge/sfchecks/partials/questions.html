@@ -1,3 +1,4 @@
+<div ng-show="finishedLoading">
 <h2 style="font-weight:normal">Questions for {{text.title}}</h2>
 <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
 	<button data-ng-show="rights.deleteOther" class="btn" data-ng-disabled="selected.length == 0" data-ng-click="removeQuestions()"><i class="icon-remove"></i>Remove Questions</button>
@@ -56,4 +57,4 @@
         </div>
     </div>
 </div>
-
+</div>
