@@ -32,12 +32,7 @@ window.session = <?php echo $jsonSession; ?>;
 	<script src="/js/lib/ng-ui-bootstrap-tpls-0.8.0.js"></script>
 	<script src="/js/lib/ng-ui-utils-validate.js"></script>
 <?php endif; ?>
-
-
-<?php foreach($jsNotMinifiedFiles as $filename): ?>
-<script src="/<?php echo $filename; ?>"></script>
-<?php endforeach; ?>
-
+	
 
 <?php if (SF_USE_MINIFIED_JS): ?>
 	<script src="/js/lib/<?php echo $site; ?>.min.js"></script>
@@ -46,6 +41,10 @@ window.session = <?php echo $jsonSession; ?>;
 	<script src="/<?php echo $filename; ?>"></script>
 	<?php endforeach; ?>
 <?php endif; ?>
+
+<?php foreach($jsNotMinifiedFiles as $filename): ?>
+<script src="/<?php echo $filename; ?>"></script>
+<?php endforeach; ?>
 
 
 <?php // this is necessary to fix a IE 10 bug where documentReady fires before all JS resources are loaded.
