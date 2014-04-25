@@ -114,7 +114,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	};
 	$scope.editTemplate = function() {
 		if ($scope.editedTemplate.title && $scope.editedTemplate.description) {
-			qts.update($scope.editedTemplate, function(result) {
+			qts.update($scope.project, $scope.editedTemplate, function(result) {
 				if (result.ok) {
 					if ($scope.editedTemplate.id) {
 						notice.push(notice.SUCCESS, "The template '" + $scope.editedTemplate.title + "' was updated successfully");
