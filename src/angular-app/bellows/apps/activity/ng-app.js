@@ -8,6 +8,7 @@ angular.module('activity',
 		 'ui.bootstrap',
 		 'activity.filters',
 		 'sgw.ui.breadcrumb',
+		 'wc.Directives'
 		])
 	.controller('ActivityCtrl', ['$scope', '$sce', 'activityPageService', 'sfchecksLinkService', 'sessionService','breadcrumbService',
 	                             function($scope, $sce, activityService, sfchecksLinkService, sessionService, breadcrumbService) {
