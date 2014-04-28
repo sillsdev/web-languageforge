@@ -18,7 +18,7 @@ exports.config = {
 
   // Spec patterns are relative to the current working directly when
   // protractor is called.
-  specs: ['node_modules/protractor/example/example_spec.js'],
+  specs: ['lib/node_modules/protractor/example/example_spec.js'],
 
   // Options to be passed to Jasmine-node.
   jasmineNodeOpts: {
