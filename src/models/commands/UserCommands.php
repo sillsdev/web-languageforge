@@ -107,7 +107,7 @@ class UserCommands {
 		$list = new \models\UserListModel();
 		$list->read();
 		
-		// Default sort on username (currently needed to sort on Site Admin)
+		// Default sort on username (currently needed to sort on Site Admin because MongoDB doesn't do case insensitive sorts)
 		usort($list->entries, function ($a, $b) {
 			$sortOn = 'username';
 			if (array_key_exists($sortOn, $a) &&

@@ -56,17 +56,17 @@ class ProjectPageDto
 			$data['texts'][] = $entry;
 		}
 
-		// Default sort on text titles
-		usort($data['texts'], function ($a, $b) {
-			$sortOn = 'title';
-			if (array_key_exists($sortOn, $a) &&
-				array_key_exists($sortOn, $b)
-			) {
-				return (strtolower($a[$sortOn]) > strtolower($b[$sortOn])) ? 1 : -1;
-			} else {
-				return 0;
-			}
-		});
+// 		// TODO remove: DDW Default sort Texts on createDate
+// 		usort($data['texts'], function ($a, $b) {
+// 			$sortOn = 'title';
+// 			if (array_key_exists($sortOn, $a) &&
+// 				array_key_exists($sortOn, $b)
+// 			) {
+// 				return (strtolower($a[$sortOn]) > strtolower($b[$sortOn])) ? 1 : -1;
+// 			} else {
+// 				return 0;
+// 			}
+// 		});
 		
 		// future support for members
 		$data['members'] = array();

@@ -34,8 +34,8 @@ class SfProjectList_UserModel extends ProjectList_UserModel
 	function readAll() {
 		$query = array('siteName' => array('$in' => array(Website::SCRIPTUREFORGE)));
 		$fields = array('projectname', 'appName', 'themeName', 'siteName');
-		$sortFields = array('username' => 1);
-		return $this->_mapper->readList($this, $query, $fields, $sortFields);
+		
+		return $this->_mapper->readList($this, $query, $fields);
 	}
 	
 	/**
@@ -45,8 +45,8 @@ class SfProjectList_UserModel extends ProjectList_UserModel
 	function readUserProjects($userId) {
 		$query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array(Website::SCRIPTUREFORGE)));
 		$fields = array('projectname', 'appName', 'themeName', 'siteName');
-		$sortFields = array('username' => 1);		
-		return $this->_mapper->readList($this, $query, $fields, $sortFields);
+
+		return $this->_mapper->readList($this, $query, $fields);
 	}
 	
 
