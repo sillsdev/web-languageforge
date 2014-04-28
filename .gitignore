@@ -9,4 +9,4 @@ src/cache/
 src/bower_components/
 src/assets/
 
-src/js/lib/node_modules/protractor/selenium/
+test/lib/node_modules/protractor/selenium/
