@@ -1,24 +1,26 @@
 'use strict';
 
-describe("E2E testing: Signup app", function() {
+describe('E2E testing: Signup app', function() {
 	
 	beforeEach(function() {
 	    browser.get('http://jamaicanpsalms.scriptureforge.local/signup');
 	});
 	
-	it("contains a user form", function() {
+	it('contains a user form', function() {
 		expect(element("form#userForm")).toBeDefined();
 	});
-/*	
-	it("finds the admin user already exists", function() {
+	
+	it('finds the admin user already exists', function() {
 		element(by.model('record.username')).sendKeys('admin');
 		
 		// trigger the username lookup
-		element("input#username").query(function (element, done) {
-			element.blur();
-			done();
-		});
-		expect(element("#userNameExists:visible").count()).toBe(1);
+//		element("input#username").query(function (element, done) {
+//			element.blur();
+//			done();
+//		});
+		element(by.model('record.username')).sendKeys(protractor.Key.ENTER);
+		
+		expect(element('#userNameExists:visible')).toBe(true);
 	});
 /*	
 	it("can verify that 'newuser' is an available username", function() {
