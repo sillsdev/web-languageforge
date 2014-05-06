@@ -25,7 +25,7 @@ describe('E2E testing: Change password', function() {
 	it('refuses to allow form submission if the confirm input does not match', function() {
 		sfChangePasswordPage.passwordInput.sendKeys('abc123').then(function() {
 			sfChangePasswordPage.confirmInput.sendKeys('abcd1234').then(function() {
-				expect(sfChangePasswordPage.signupButton.isDisabled()).toBeTruthy();
+				expect(sfChangePasswordPage.signupButton.isEnabled()).toBeFalsy();
 			});
 		});
 	});
