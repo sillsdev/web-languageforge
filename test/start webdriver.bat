@@ -1,1 +1,1 @@
-node C:\src\sfwebchecks\test\lib\node_modules\protractor\bin\webdriver-manager start
+node .\lib\node_modules\protractor\bin\webdriver-manager start
