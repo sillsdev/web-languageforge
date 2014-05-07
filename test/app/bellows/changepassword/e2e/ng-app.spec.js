@@ -6,29 +6,25 @@ var baseUrl = browser.baseUrl || 'http://jamaicanpsalms.scriptureforge.local';
 
 function noop() { ; }
 
-function login(username, password, nextStep) {
+function login(username, password) {
 	// Use base Webdriver instance (browser.driver.get) instead of browser.get
 	// since our login page doesn't use Angular.
-	browser.driver.get(baseUrl + '/auth/login').then(function() {
-		browser.driver.findElement(by.id('identity')).sendKeys(username).then(function() {
-			browser.driver.findElement(by.id('password')).sendKeys(password).then(function() {
-				browser.driver.findElement(by.id('password')).sendKeys(protractor.Key.ENTER).then(nextStep || noop);
-			});
-		});
-	});
+	browser.driver.get(baseUrl + '/auth/login');
+	browser.driver.findElement(by.id('identity')).sendKeys(username);
+	browser.driver.findElement(by.id('password')).sendKeys(password);
+	browser.driver.findElement(by.id('password')).sendKeys(protractor.Key.ENTER);
 };
 
-function logout(nextStep) {
-	browser.driver.get(baseUrl + '/auth/logout').then(nextStep || noop);
+function logout() {
+	browser.driver.get(baseUrl + '/auth/logout');
 };
 
 function checkSpecificUserLoggedIn(username) {
 	browser.sleep(500); // Allow time for the login operation to return us to the front page before proceeding
 	// Note that we can't use browser.waitForAngular() here because the front page doesn't have Angular on it.
 	// This was causing quite a number of test failures until I added the sleep() call. 2013-05 RM
-	browser.driver.get(baseUrl + '/app/userprofile').then(function() {
-		expect(element(by.binding('user.username')).getText()).toEqual(username);
-	});
+	browser.driver.get(baseUrl + '/app/userprofile');
+	expect(element(by.binding('user.username')).getText()).toEqual(username);
 };
 
 function checkLoggedOut() {
@@ -66,58 +62,42 @@ describe('E2E testing: Change password', function() {
 	});
 
 	it('refuses to allow form submission if the confirm input does not match', function() {
-		sfChangePasswordPage.passwordInput.sendKeys('abc123').then(function() {
-			sfChangePasswordPage.confirmInput.sendKeys('abcd1234').then(function() {
-				expect(sfChangePasswordPage.signupButton.isEnabled()).toBeFalsy();
-			});
-		});
+		sfChangePasswordPage.passwordInput.sendKeys('abc123');
+		sfChangePasswordPage.confirmInput.sendKeys('abcd1234');
+		expect(sfChangePasswordPage.signupButton.isEnabled()).toBeFalsy();
 	});
 
 	it('allows form submission if the confirm input matches', function() {
-		sfChangePasswordPage.passwordInput.sendKeys('abc123').then(function() {
-			sfChangePasswordPage.confirmInput.sendKeys('abc123').then(function() {
-				expect(sfChangePasswordPage.signupButton.isEnabled()).toBeTruthy();
-			});
-		});
+		sfChangePasswordPage.passwordInput.sendKeys('abc123');
+		sfChangePasswordPage.confirmInput.sendKeys('abc123');
+		expect(sfChangePasswordPage.signupButton.isEnabled()).toBeTruthy();
 	});
 
 	it('successfully changes user\'s password after form submission', function() {
-		sfChangePasswordPage.passwordInput.sendKeys(newPassword).then(function() {
-			sfChangePasswordPage.confirmInput.sendKeys(newPassword).then(function() {
-				sfChangePasswordPage.confirmInput.sendKeys(protractor.Key.ENTER).then(function() {
-					currentPassword = newPassword;
-					logout(function() {
-						login('testuser', currentPassword, function() {
-							checkLoggedIn();
-							checkSpecificUserLoggedIn('testuser');
-						});
-					});
-				});
-			});
-		});
+		sfChangePasswordPage.passwordInput.sendKeys(newPassword);
+		sfChangePasswordPage.confirmInput.sendKeys(newPassword);
+		sfChangePasswordPage.confirmInput.sendKeys(protractor.Key.ENTER);
+		currentPassword = newPassword;
+		logout();
+		login('testuser', currentPassword);
+		checkLoggedIn();
+		checkSpecificUserLoggedIn('testuser');
 	});
 
 	it('user\'s password has truly been changed', function() {
-		logout(function() {
-			login('testuser', originalPassword, function() {
-				checkLoggedOut();
-			});
-		});
+		logout();
+		login('testuser', originalPassword);
+		checkLoggedOut();
 	});
 
 	it('successfully changes user\'s password back to the original', function() {
-		sfChangePasswordPage.passwordInput.sendKeys(originalPassword).then(function() {
-			sfChangePasswordPage.confirmInput.sendKeys(originalPassword).then(function() {
-				sfChangePasswordPage.confirmInput.sendKeys(protractor.Key.ENTER).then(function() {
-					currentPassword = originalPassword;
-					logout(function() {
-						login('testuser', currentPassword, function() {
-							checkLoggedIn();
-							checkSpecificUserLoggedIn('testuser');
-						});
-					});
-				});
-			});
-		});
+		sfChangePasswordPage.passwordInput.sendKeys(originalPassword);
+		sfChangePasswordPage.confirmInput.sendKeys(originalPassword);
+		sfChangePasswordPage.confirmInput.sendKeys(protractor.Key.ENTER);
+		currentPassword = originalPassword;
+		logout();
+		login('testuser', currentPassword);
+		checkLoggedIn();
+		checkSpecificUserLoggedIn('testuser');
 	});
 });
