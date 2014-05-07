@@ -75,7 +75,7 @@ describe('E2E testing: Login app', function() {
 		//Select selectElement = new Select(e);
 		//selectElement.selectByValue("SMS");
 		
-		browser.pause();
+		//browser.pause();
 	});
 
 
