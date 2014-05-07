@@ -5,16 +5,16 @@ exports.config = {
   seleniumAddress: 'http://192.168.56.1:4444/wd/hub',
 
   // To run tests in a single browser, uncomment the following
-  // capabilities: {
-  //   'browserName': 'chrome'
-  // },
+  capabilities: {
+    'browserName': 'chrome'
+  },
 
   // To run tests in multiple browsers, uncomment the following
-  multiCapabilities: [{
-    'browserName': 'chrome'
-  }, {
-    'browserName': 'firefox'
-  }],
+  // multiCapabilities: [{
+  //   'browserName': 'chrome'
+  // }, {
+  //   'browserName': 'firefox'
+  // }],
 
   // Spec patterns are relative to the current working directly when
   // protractor is called.
