@@ -1,1 +1,1 @@
-node .\lib\node_modules\protractor\bin\webdriver-manager start
+node .\node_modules\protractor\bin\webdriver-manager start
