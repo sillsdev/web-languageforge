@@ -39,6 +39,9 @@ var radioByValue = function (name, value) {
     .click();
 };
 
+
+//}
+
 var UserPage = function() {
 
 };
@@ -46,37 +49,25 @@ var UserPage = function() {
 describe('E2E testing: Login app', function() {
 	var userPage = new UserPage();
 	
-	//This is the configuration file showing how a suite of tests might
-	//handle log-in using the onPrepare field.
-	var port =  + (process.env.HTTP_PORT || '8000'),
-	   baseUrl = 'http://jamaicanpsalms.scriptureforge.local/auth';
-	
-	it('Test logging in user', function() {
-		browser.driver.get(baseUrl + '/login');
-		browser.driver.findElement(by.id('identity')).sendKeys('New User');
-		browser.driver.findElement(by.id('password')).sendKeys('12345');
-		browser.driver.findElement(by.id('password')).sendKeys(protractor.Key.ENTER);
-	 
-	 // Find a way to click Submit button?
-	 //browser.driver.findElement(by.css(':button')).click(); //submit')).click();
-	
-	 // Find verification user successfully logged in
-	 //expect(browser.driver.findElement(by.id('avatar')).getText()).toBe('New User');
-	});
-	
+	var loginService = require('../../loginService.js');
+	loginService.loginAsUser();
+
 	it('Test My Account', function() {
 		browser.driver.get('http://jamaicanpsalms.scriptureforge.local/app/userprofile');
 		
 		browser.selectOption = selectOption.bind(browser);
-		browser.selectOption(protractor.By.model('user.avatar_color'),   'Chocolate');
-		browser.selectOption(protractor.By.model('user.avatar_shape'),   'Otter');
+		browser.selectOption(protractor.By.model('user.avatar_color'),   'Blue');
+		browser.selectOption(protractor.By.model('user.avatar_shape'),   'Elephant');
 		
+		// TODO: Select communication preferences
 		//WebElement e = browser.findElement(By.model('user.communicate_via'));
 		//Select selectElement = new Select(e);
 		//selectElement.selectByValue("SMS");
+
+		browser.driver.findElement(By.id('saveBtn')).click();
 		
+		//browser.driver.findElement(by.id('avatar'))
 		//browser.pause();
 	});
-
 
 });
