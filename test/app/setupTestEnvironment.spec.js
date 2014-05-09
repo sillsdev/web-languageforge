@@ -9,9 +9,21 @@ var constants = require('../testConstants');
 
 var siteAdminPage = Page.create({
 	url: { value: baseUrl + "/app/siteadmin" },
-	identity: { get: function() { return this.findElement(this.by.input('identity')); }},
-	password: { get: function() { return this.findElement(this.by.input('password')); }},
-	submit:   { get: function() { return this.findElement(this.by.id('submit')); }},
+	addBtn:         { get: function() { return this.findElement(this.by.buttonText('Add New')); }},
+	usernameInput:  { get: function() { return this.findElement(this.by.model('record.username')); }},
+	nameInput:      { get: function() { return this.findElement(this.by.model('record.name')); }},
+	emailInput:     { get: function() { return this.findElement(this.by.model('record.email')); }},
+	// roleInput:      { get: function() { return this.findElement(this.by.model('record.role')); }}, // Not needed right now as "User" is default role
+	activeCheckbox: { get: function() { return this.findElement(this.by.model('record.active')); }},
+	passwordInput:  { get: function() { return this.findElement(this.by.model('record.password')); }},
+
+	clearForm: { value: function() {
+		this.usernameInput.clear();
+		this.nameInput.clear();
+		this.emailInput.clear();
+		this.passwordInput.clear();
+		//this.activeCheckbox.clear();
+	}},
 });
 
 describe('Test setup', function() {
@@ -21,11 +33,40 @@ describe('Test setup', function() {
 		// Verify that I'm logged in as an admin by making sure I have a link to app/siteadmin in my user menu
 		expect(browser.driver.isElementPresent(by.xpath('.//a[@href="/app/siteadmin"]'))).toBeTruthy();
 	});
-	// Once a search feature is implemented in the site admin users list, the below will actually do something instead of just printing to the console
+
 	it('creates the test project, project manager, and project member accounts used in the rest of the E2E tests', function() {
-		// Eventually this will become a real setup that finds and creates the appropriate users. For now, it has to be done by hand
-		console.log('Please create a project named', 'test_project'); // TODO: Make that name a member variable in the projectPage page, which has yet to be created, instead of hardcoding it here.
-		console.log('Please create a user named', constants.managerUsername, 'with password', constants.managerPassword, 'and make sure it is a project manager in that project');
-		console.log('Please create a user named', constants.memberUsername,  'with password', constants.memberPassword,  'and make sure it is a member of that project');
+		siteAdminPage.go();
+
+		// Add project manager account
+		siteAdminPage.addBtn.click();
+		siteAdminPage.usernameInput.sendKeys(loginPage.managerUsername);
+		siteAdminPage.nameInput    .click(); // Make the onBlur() events fire on username input field
+		siteAdminPage.nameInput    .sendKeys('Test Manager');
+		siteAdminPage.emailInput   .sendKeys(loginPage.managerUsername + '@example.com');
+		// siteAdminPage.roleInput .doSomething(); // Not needed right now as "User" is default role
+		siteAdminPage.activeCheckbox.isSelected().then(function(checked) {
+			// Slightly complicated way to say "activeCheckbox = true", but that's how we need to do it in an E2E testing environment.
+			if (!checked) {
+				siteAdminPage.activeCheckbox.click();
+			};
+		});
+		siteAdminPage.passwordInput.sendKeys(loginPage.managerPassword);
+		siteAdminPage.passwordInput.sendKeys(protractor.Key.ENTER);
+
+		// Add regular user account
+		siteAdminPage.clearForm(); // Otherwise we could end up trying to add the user "test_runner_manager_usertest_runner_normal_user"
+		siteAdminPage.addBtn.click();
+		siteAdminPage.usernameInput.sendKeys(loginPage.memberUsername);
+		siteAdminPage.nameInput    .click(); // Make the onBlur() events fire on username input field
+		siteAdminPage.nameInput    .sendKeys('Test User');
+		siteAdminPage.emailInput   .sendKeys(loginPage.memberUsername + '@example.com');
+		siteAdminPage.activeCheckbox.isSelected().then(function(checked) {
+			// Slightly complicated way to say "activeCheckbox = true", but that's how we need to do it in an E2E testing environment.
+			if (!checked) {
+				siteAdminPage.activeCheckbox.click();
+			};
+		});
+		siteAdminPage.passwordInput.sendKeys(loginPage.memberPassword);
+		siteAdminPage.passwordInput.sendKeys(protractor.Key.ENTER);
 	});
 });
