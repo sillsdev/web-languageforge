@@ -5,10 +5,10 @@ var SfLoginPageWithoutAstrolabe = function() {
 
 	this.adminUsername   = 'test_runner_admin';
 	this.adminPassword   = 'hammertime';
-	this.managerUsername = 'test_runner_manager';
-	this.managerPassword = 'blacksmith571';
-	this.memberUsername  = 'testuser';
-	this.memberPassword  = 'test1234';
+	this.managerUsername = 'test_runner_manager_user';
+	this.managerPassword = 'manageruser1';
+	this.memberUsername  = 'test_runner_normal_user';
+	this.memberPassword  = 'normaluser1';
 
 	this.baseUrl = browser.baseUrl || 'http://jamaicanpsalms.scriptureforge.local';
 	this.get = function() {
