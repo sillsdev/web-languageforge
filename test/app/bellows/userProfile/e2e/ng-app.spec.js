@@ -25,50 +25,84 @@ function selectOption(selector, item){
         });
 }
 
-// Radio selector from https://gist.github.com/alanning/5564640
-/**
- * clicks a radio button element
- *
- * @method radioByValue
- * @param {string} name The name of the radio button group
- * @param {string} value The value of the option to select
- */
-var radioByValue = function (name, value) {
-  var locator = "input[name='" + name + "'][value='" + value + "']";
-  driver.findElement(webdriver.By.css(locator))
-    .click();
+var newMemberEmail  = 'test@123.com';
+var newColor        = 'Blue';
+var newShape        = 'Elephant';
+var contactButtonID = 'BothButton'; // [EmailButton, SMSButton, BothButton]
+var newFullName     = 'abracadabra';
+var newAge          = '33';
+var newGender       = 'Female';
+
+var SfUserPage = function() {
+	this.emailInput = element(by.model('user.email'));
+	
+	// Jamaican mobile phone number will move to Project scope, so intentionally not tested here
+	this.mobilePhoneInput = element(by.model('user.mobile_phone'));
+	
+	this.communicate_via = element(By.id(contactButtonID));
+	
+	this.fullName = element(by.model('user.name'));
+	this.age      = element(by.model('user.age'));
+	this.gender   = element(by.model('user.geneder'));
+
 };
 
-
-//}
-
-var UserPage = function() {
-
-};
-
-describe('E2E testing: Login app', function() {
-	var userPage = new UserPage();
+describe('E2E testing: User Profile page', function() {
+	var sfUserPage = new SfUserPage();
 	
 	var LoginPage = require('../../../pages/loginPage'); 
 	var loginPage = new LoginPage();
 	loginPage.loginAsUser();
 
-	it('Test My Account', function() {
+	it('Update My Account profile', function() {
 		browser.driver.get('http://jamaicanpsalms.scriptureforge.local/app/userprofile');
 		
 		browser.selectOption = selectOption.bind(browser);
-		browser.selectOption(protractor.By.model('user.avatar_color'),   'Blue');
-		browser.selectOption(protractor.By.model('user.avatar_shape'),   'Elephant');
+		browser.selectOption(protractor.By.model('user.avatar_color'), newColor);
+		browser.selectOption(protractor.By.model('user.avatar_shape'), newShape);
 		
-		// TODO: Select communication preferences
-		//WebElement e = browser.findElement(By.model('user.communicate_via'));
-		//Select selectElement = new Select(e);
-		//selectElement.selectByValue("SMS");
-
+		// Modify email address
+		sfUserPage.emailInput.click();
+		sfUserPage.emailInput.clear();
+		sfUserPage.emailInput.sendKeys(newMemberEmail);
+		
+		// Modify contact preference
+		sfUserPage.communicate_via.click();
+		
+		// Change Password tested in changepassword e2e
+		
+		// Submit updated profile
 		browser.driver.findElement(By.id('saveBtn')).click();
-		
-		//browser.driver.findElement(by.id('avatar'))
-		//browser.pause();
+	});
+	
+
+	it('Check updated usercolor is ' + newColor, function() {
+		browser.driver.get('http://jamaicanpsalms.scriptureforge.local/app/userprofile');
+
+		//var dropDown1 = browser.driver.findElement(By.id("smallAvatarURL"));
+		//System.out.println(dropDown1.getValue()); //image1 = browser.driver.findElement(By.xpath("//img[contains(@data-ng-src,'Blue')]"));
+//		expect(element(by.class('img-poloroid'))user.avatar_color')).value(), newColor);
 	});
 
+	it('Update About Me', function() {
+		browser.driver.findElement(By.id("AboutMeTab")).click();
+		
+		// Modify About me
+		sfUserPage.fullName.click();
+		sfUserPage.fullName.clear();	
+		sfUserPage.fullName.sendKeys(newFullName);
+		
+		sfUserPage.age.click();
+		sfUserPage.age.clear();
+		sfUserPage.age.sendKeys(newAge);
+		browser.selectOption = selectOption.bind(browser);
+		browser.selectOption(protractor.By.model('user.gender'), newGender);
+		
+		// Submit updated profile
+		browser.driver.findElement(By.id('saveBtn')).click();
+	});
+	
+	it('Check updated About Me', function() {
+
+	});
 });
