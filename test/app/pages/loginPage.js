@@ -45,6 +45,9 @@ var SfLoginPageWithoutAstrolabe = function() {
 	this.loginAsUser = this.loginAsMember = function() {
 		this.login(this.memberUsername, this.memberPassword);
 	};
+	this.logout = function() {
+		browser.driver.get(this.baseUrl + '/auth/logout');
+	};
 };
 
 // WARNING: SfLoginPageWithAstrolabe is NOT working yet. Do NOT use it while this comment is still in the code.
@@ -57,7 +60,7 @@ var SfLoginPageWithAstrolabe = astrolabe.Page.create({
 	memberUsername:  { value: 'test_runner_normal_user' },
 	memberPassword:  { value: 'normaluser1' },
 	baseUrl: { value: browser.baseUrl || 'http://jamaicanpsalms.scriptureforge.local' },
-	url:     { value: this.baseUrl + "/app/siteadmin" },
+	url:     { value: this.baseUrl + "/auth/login" },
 	username: { get: function() { return this.findElement(this.by.id('identity')); }},
 	password: { get: function() { return this.findElement(this.by.id('password')); }},
 	submit:   { get: function() { return this.findElement(this.by.xpath('//input[@type="submit"]')); }},
@@ -88,6 +91,10 @@ var SfLoginPageWithAstrolabe = astrolabe.Page.create({
 	loginAsMember: { value: function() {
 		this.login(this.memberUsername, this.memberPassword);
 	}},
+	logout: { value: function() {
+		browser.driver.get(this.baseUrl + '/auth/logout');
+	}}
+
 });
 
 module.exports = SfLoginPageWithoutAstrolabe;
