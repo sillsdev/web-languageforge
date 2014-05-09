@@ -49,8 +49,9 @@ var UserPage = function() {
 describe('E2E testing: Login app', function() {
 	var userPage = new UserPage();
 	
-	var loginService = require('../../loginService.js');
-	loginService.loginAsUser();
+	var LoginPage = require('../../../pages/loginPage'); 
+	var loginPage = new LoginPage();
+	loginPage.loginAsUser();
 
 	it('Test My Account', function() {
 		browser.driver.get('http://jamaicanpsalms.scriptureforge.local/app/userprofile');
