@@ -1,5 +1,38 @@
 'use strict';
 
+var baseUrl = browser.baseUrl || 'http://jamaicanpsalms.scriptureforge.local';
+// browser.baseUrl is specified on Protractor command line via "protractor --baseUrl=foo"
+// If the --baseUrl parameter is not given on command line, browser.baseUrl will be an empty string
+
+function noop() { ; }
+
+function checkSpecificUserLoggedIn(username) {
+	browser.sleep(500); // Allow time for the login operation to return us to the front page before proceeding
+	// Note that we can't use browser.waitForAngular() here because the front page doesn't have Angular on it.
+	// This was causing quite a number of test failures until I added the sleep() call. 2013-05 RM
+	browser.driver.get(baseUrl + '/app/userprofile');
+	expect(element(by.binding('user.username')).getText()).toEqual(username);
+};
+
+function checkLoggedOut() {
+	expect(browser.driver.isElementPresent(protractor.By.css('.login-btn'))).toBeTruthy();
+};
+function checkLoggedIn() {
+	expect(browser.driver.isElementPresent(protractor.By.css('.login-btn'))).toBeFalsy();
+};
+
+var constants = require('../../../../testConstants');
+var LoginPage = require('../../../pages/loginPage'); 
+var loginPage = new LoginPage();
+loginPage.loginAsUser();
+
+// TODO: Coordinate with other devs on picking a "standard" test username & password. 2014-05 RM
+var testUser          = constants.memberUsername;
+var originalPassword  = constants.memberPassword;
+var newPassword       = 'abc123';
+var incorrectPassword = newPassword + '4';
+var currentPassword   = originalPassword;
+
 var SfChangePasswordPage = function() {
 	var page = this; // For use inside our methods. Necessary when passing anonymous functions around, which lose access to "this".
 
