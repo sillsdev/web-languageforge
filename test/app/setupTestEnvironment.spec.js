@@ -1,7 +1,8 @@
 'use strict';
 
 var Page = require('astrolabe').Page,
-	baseUrl = protractor.baseUrl || "http://jamaicanpsalms.scriptureforge.local";
+	baseUrl = browser.baseUrl || "http://jamaicanpsalms.scriptureforge.local";
+console.log("My base URL is", baseUrl);
 
 var SfLoginPage = require('./pages/loginPage');
 var loginPage = new SfLoginPage();
@@ -25,6 +26,7 @@ var siteAdminPage = Page.create({
 		//this.activeCheckbox.clear();
 	}},
 });
+var ProjectsPage = require('./pages/projectsPage');
 
 describe('Test setup', function() {
 	it('verifies that the test_runner_admin account is valid (if this fails, EVERYTHING ELSE will fail!)', function() {
@@ -34,7 +36,7 @@ describe('Test setup', function() {
 		expect(browser.driver.isElementPresent(by.xpath('.//a[@href="/app/siteadmin"]'))).toBeTruthy();
 	});
 
-	it('creates the test project, project manager, and project member accounts used in the rest of the E2E tests', function() {
+	it('creates the project manager and project member accounts used in the rest of the E2E tests', function() {
 		siteAdminPage.go();
 
 		// Add project manager account
@@ -71,13 +73,21 @@ describe('Test setup', function() {
 	});
 
 	it('deletes and re-creates the test project', function() {
-		var ProjectsPage = require('./pages/projectsPage');
 		var projectsPage = new ProjectsPage();
 		projectsPage.get();
 		projectsPage.deleteProject(projectsPage.testProjectName);
 		// You could call deleteProject() several times without reloading the page, and it would work:
 		//projectsPage.deleteProject("FooBar");
 		//projectsPage.deleteProject("Quux");
-		projectsPage.addProject(projectsPage.testProjectName);
+		projectsPage.addNewProject(projectsPage.testProjectName);
 	});
+
+	it ('adds the appropriate test users to the project then logs out', function() {
+		var projectsPage = new ProjectsPage();
+		projectsPage.get();
+		projectsPage.addManagerToProject(projectsPage.testProjectName, constants.managerUsername);
+		projectsPage.addMemberToProject (projectsPage.testProjectName, constants.memberUsername);
+		loginPage.logout();
+	});
+
 });

@@ -9,13 +9,23 @@ var findDropdownByValue = function(dropdownElement, value) {
 	// Returns a promise that will resolve to the <option> with the given value (as returned by optionElement.getText())
 	var result = protractor.promise.defer();
 	var options = dropdownElement.$$('option');
-	options.map(function(elem) {
+	var check = function(elem) {
 		elem.getText().then(function(text) {
 			if (text === value) {
 				result.fulfill(elem);
 			}
 		});
-	});
+	};
+	if ("map" in options) {
+		options.map(check);
+	} else {
+		// Sometimes we get a promise that returns a basic list; deal with that here
+		options.then(function(list) {
+			for (var i=0; i<list.length; i++) {
+				check(list[i]);
+			}
+		});
+	};
 	return result;
 };
 
@@ -61,40 +71,94 @@ var SfProjectsPage = function() {
 		expect(element(by.selectedOption('itemsPerPage')).getText()).toEqual('100');
 	};
 
-	this.deleteProject = function(nameToDelete) {
-		var searchName = new RegExp(nameToDelete + ' \\(' + projectTypes['sf'] + '\\)');
-		var page = this; // For use inside the anonymous functions below
+	this.findProject = function(projectName) {
+		var result = protractor.promise.defer();
+		var searchName = new RegExp(projectName + ' \\(' + projectTypes['sf'] + '\\)');
 		this.select100ItemsPerPage(); // Ensure that the project *will* be on page 1, so we don't have to click through pagination links
-		var foundRow = undefined;
 		this.projectsList.map(function(row) {
 			row.getText().then(function(text) {
 				if (searchName.test(text)) {
-					foundRow = row;
+					result.fulfill(row);
 				};
 			});
-		}).then(function() {
-			// The .then() call is very important; it ensures that foundRow will be defined
-			// by the time we use it (if, of course, the project was found).
-			if (typeof foundRow === "undefined") {
-				// Project not found, so don't delete anything
-			} else {
-				var elem = foundRow.$("input[type='checkbox']");
-				elem.click();
-				page.deleteBtn.click();
-				// Clicking the delete button pops up an "are you sure?" alert
-				var alert = browser.switchTo().alert();
-				alert.accept();
-			};
+		});
+		return result;
+	};
+	this.deleteProject = function(nameToDelete) {
+		var page = this; // For use inside the anonymous functions below
+		this.findProject(nameToDelete).then(function(projectRow) {
+			var elem = projectRow.$("input[type='checkbox']");
+			elem.click();
+			page.deleteBtn.click();
+			// Clicking the delete button pops up an "are you sure?" alert
+			var alert = browser.switchTo().alert();
+			alert.accept();
 		});
 	};
 
-	this.addProject = function(nameToAdd) {
+	this.addNewProject = function(nameToAdd) {
 		var page = this;
 		this.createBtn.click();
 		this.newProjectNameInput.sendKeys(nameToAdd);
 		clickDropdownByValue(this.newProjectTypeSelect, projectTypes['sf']);
 		this.saveBtn.click();
-	}
+	};
+
+	this.addUserToProject = function(projectName, userName, roleText) {
+		this.findProject(projectName).then(function(projectRow) {
+//			var btn = projectRow.findElement(by.partialButtonText("Add me as " + roleText));
+//			btn.click();
+			var link = projectRow.$('a');
+			link.getAttribute('href').then(function(url) {
+				browser.get(url + '/settings');
+				// Users tab is selected by default, so the following check might not be needed
+//				var usersTab = element(by.xpath('//li[@heading="Users"]'));
+//				expect(usersTab.isElementPresent()).toBeTruthy();
+				var addMembersBtn = element(by.partialButtonText("Add Members"));
+				var newMembersDiv = $('#newMembersDiv');
+				var userNameInput = newMembersDiv.$('input[type="text"]');
+				addMembersBtn.click();
+				userNameInput.sendKeys(userName);
+				var typeaheadDiv = $('.typeahead');
+				var typeaheadItems = typeaheadDiv.$('ul li');
+				typeaheadItems.click(); // Thanks to Protractor, this "just works", because it waits for Angular to settle
+				var addToProjectBtn = newMembersDiv.$('button'); // This should be unique no matter what
+				expect(addToProjectBtn.getText()).toContain("Add Existing User");
+				addToProjectBtn.click();
+				// Now set the user to member or manager, as needed
+				var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
+				var foundUserRow;
+				projectMemberRows.map(function(row) {
+					var nameColumn = row.findElement(by.binding("{{user.username}}"));
+					nameColumn.getText().then(function(text) {
+						if (text === userName) {
+							foundUserRow = row;
+						};
+					});
+				}).then(function() {
+					if (foundUserRow) {
+						var select = foundUserRow.$('select');
+						clickDropdownByValue(select, roleText);
+					}
+				});
+			});
+//			link.click();
+//			browser.wait(function() {
+//				return browser.getCurrentUrl().then(function(url) {
+//					expect(url).toContain("/app/sfchecks#/p/");
+//				});
+//			}, 8000);
+//			browser.pause();
+			page.get(); // After all is finished, reload projects page
+		});
+	};
+	this.addManagerToProject = function(projectName, userName) {
+		this.addUserToProject(projectName, userName, "Manager");
+	};
+	this.addMemberToProject = function(projectName, userName) {
+		this.addUserToProject(projectName, userName, "Member");
+	};
+
 };
 
 module.exports = SfProjectsPage;

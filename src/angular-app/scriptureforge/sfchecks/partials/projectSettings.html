@@ -8,7 +8,7 @@
 			<button data-ng-show="rights.create" class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add Members</button>
 			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.create" class="btn" data-ng-click="newMessageCollapsed = !newMessageCollapsed"><i class="icon-envelope"></i>Message Selected Users</button>
 		</form>
-		<div class="new-item" data-collapse="!newUserCollapsed">
+		<div id="newMembersDiv" class="new-item" data-collapse="!newUserCollapsed">
 			<form class="well form-inline">
 			<typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
 				<ul>
@@ -22,7 +22,7 @@
 			<button data-ng-model="addMode" class="btn" data-ng-disabled="!typeahead.userName" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
 			</form>
 		</div>
-		<div data-collapse="newMessageCollapsed">
+		<div id="newMessageDiv" data-collapse="newMessageCollapsed">
 			<form class="well" data-ng-submit="sendMessageToSelectedUsers()">
 			<fieldset>
 				<p style="color:red">All fields are required to message selected users</p>
