@@ -3,6 +3,7 @@
 var SfLoginPageWithoutAstrolabe = function() {
 	var page = this; // For use inside our methods. Necessary when passing anonymous functions around, which lose access to "this".
 
+	this.loginURL        = '/auth/login';
 	this.adminUsername   = 'test_runner_admin';
 	this.adminPassword   = 'hammertime';
 	this.managerUsername = 'test_runner_manager_user';
@@ -10,9 +11,9 @@ var SfLoginPageWithoutAstrolabe = function() {
 	this.memberUsername  = 'test_runner_normal_user';
 	this.memberPassword  = 'normaluser1';
 
-	this.baseUrl = browser.baseUrl || 'http://jamaicanpsalms.scriptureforge.local';
+	this.baseUrl = browser.baseUrl;
 	this.get = function() {
-		return browser.driver.get(this.baseUrl + '/auth/login');
+		return browser.driver.get(this.baseUrl + this.loginURL);
 	};
 
 	// Note that we can't use browser.driver.findElement() yet, as that doesn't return a promise
