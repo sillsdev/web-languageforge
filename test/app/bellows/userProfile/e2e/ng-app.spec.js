@@ -25,26 +25,20 @@ function selectOption(selector, item){
         });
 }
 
-var newMemberEmail  = 'test@123.com';
-var newColor        = 'Blue';
-var newShape        = 'Elephant';
-var contactButtonID = 'BothButton'; // [EmailButton, SMSButton, BothButton]
-var newFullName     = 'abracadabra';
-var newAge          = '33';
-var newGender       = 'Female';
-
 var SfUserPage = function() {
-	this.emailInput = element(by.model('user.email'));
-	
-	// Jamaican mobile phone number will move to Project scope, so intentionally not tested here
-	this.mobilePhoneInput = element(by.model('user.mobile_phone'));
-	
-	this.communicate_via = element(By.id(contactButtonID));
-	
-	this.fullName = element(by.model('user.name'));
-	this.age      = element(by.model('user.age'));
-	this.gender   = element(by.model('user.geneder'));
+	// Get MyProfile->My Account tab
+	this.getMyAccount = function() {
+		this.baseUrl        = browser.baseUrl;
+		this.userProfileURL = '/app/userprofile';
 
+		browser.driver.get(this.baseUrl + this.userProfileURL);
+	}
+	
+	// Get MyProfile->About Me tab
+	this.getAboutMe = function() {
+		this.getMyAccount();
+		browser.driver.findElement(By.id("AboutMeTab")).click();
+	}
 };
 
 describe('E2E testing: User Profile page', function() {
@@ -53,56 +47,80 @@ describe('E2E testing: User Profile page', function() {
 	var LoginPage = require('../../../pages/loginPage'); 
 	var loginPage = new LoginPage();
 	loginPage.loginAsUser();
+	
+	it('should update and store "My Account" settings', function() {
+		sfUserPage.getMyAccount();
 
-	it('Update My Account profile', function() {
-		browser.driver.get('http://jamaicanpsalms.scriptureforge.local/app/userprofile');
+		var newColor         = 'Blue';
+		var newShape         = 'Elephant';
+		var newMemberEmail   = 'test@123.com';
+		var contactButtonID  = 'BothButton'; // Choose from [EmailButton, SMSButton, BothButton]
+		var avatarURL        = 'http://jamaicanpsalms.scriptureforge.local/images/shared/avatar/DodgerBlue-elephant-128x128.png';
+		var avatar           = element(by.id('avatarRef'));
+		var emailInput       = element(by.model('user.email'));
+		// Jamaican mobile phone number will move to Project scope, so intentionally not tested here
+		var mobilePhoneInput = element(by.model('user.mobile_phone'));
+		var communicate_via  = element(By.id(contactButtonID));
 		
 		browser.selectOption = selectOption.bind(browser);
 		browser.selectOption(protractor.By.model('user.avatar_color'), newColor);
 		browser.selectOption(protractor.By.model('user.avatar_shape'), newShape);
 		
 		// Modify email address
-		sfUserPage.emailInput.click();
-		sfUserPage.emailInput.clear();
-		sfUserPage.emailInput.sendKeys(newMemberEmail);
+		emailInput.click();
+		emailInput.clear();
+		emailInput.sendKeys(newMemberEmail);
 		
 		// Modify contact preference
-		sfUserPage.communicate_via.click();
+		communicate_via.click();
 		
 		// Change Password tested in changepassword e2e
 		
 		// Submit updated profile
 		browser.driver.findElement(By.id('saveBtn')).click();
+
+		// Verify values
+		sfUserPage.getMyAccount();
+
+		expect(avatar.getAttribute('src')).toBe(avatarURL);
+		expect(element(by.selectedOption("user.avatar_color")).getText()).toBe(newColor);
+		expect(element(by.selectedOption("user.avatar_shape")).getText()).toBe(newShape);
+		expect(emailInput.getAttribute('value')).toEqual(newMemberEmail);
+		expect(communicate_via.getText()).toContain('Both');
 	});
-	
 
-	it('Check updated usercolor is ' + newColor, function() {
-		browser.driver.get('http://jamaicanpsalms.scriptureforge.local/app/userprofile');
+	it('should update and store "About Me" settings', function() {
+		sfUserPage.getAboutMe();
 
-		//var dropDown1 = browser.driver.findElement(By.id("smallAvatarURL"));
-		//System.out.println(dropDown1.getValue()); //image1 = browser.driver.findElement(By.xpath("//img[contains(@data-ng-src,'Blue')]"));
-//		expect(element(by.class('img-poloroid'))user.avatar_color')).value(), newColor);
-	});
+		// New user profile to put in
+		var newFullName = 'abracadabra';
+		var newAge      = '3.1415';
+		var newGender   = 'Female';
+		var fullName    = element(by.model('user.name'));
+		var age         = element(by.model('user.age'));
+		var gender      = element(by.model('user.geneder'));
 
-	it('Update About Me', function() {
-		browser.driver.findElement(By.id("AboutMeTab")).click();
 		
 		// Modify About me
-		sfUserPage.fullName.click();
-		sfUserPage.fullName.clear();	
-		sfUserPage.fullName.sendKeys(newFullName);
+		fullName.click();
+		fullName.clear();	
+		fullName.sendKeys(newFullName);
 		
-		sfUserPage.age.click();
-		sfUserPage.age.clear();
-		sfUserPage.age.sendKeys(newAge);
+		age.click();
+		age.clear();
+		age.sendKeys(newAge);
 		browser.selectOption = selectOption.bind(browser);
 		browser.selectOption(protractor.By.model('user.gender'), newGender);
 		
 		// Submit updated profile
 		browser.driver.findElement(By.id('saveBtn')).click();
-	});
-	
-	it('Check updated About Me', function() {
 
+		// Verify values
+		sfUserPage.getAboutMe();
+
+		expect(fullName.getAttribute('value')).toEqual(newFullName);
+		expect(age.getAttribute('value')).toEqual(newAge);
+		expect(element(by.selectedOption('user.gender')).getText()).toBe(newGender);
+		
 	});
 });
