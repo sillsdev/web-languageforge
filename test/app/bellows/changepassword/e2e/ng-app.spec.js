@@ -1,5 +1,6 @@
 'use strict';
 
+var constants = require('../../../../testConstants');
 var baseUrl = browser.baseUrl || 'http://jamaicanpsalms.scriptureforge.local';
 // browser.baseUrl is specified on Protractor command line via "protractor --baseUrl=foo"
 // If the --baseUrl parameter is not given on command line, browser.baseUrl will be an empty string
@@ -75,8 +76,8 @@ describe('E2E testing: Change password', function() {
 	var loginPage = new LoginPage();
 
 	// TODO: Coordinate with other devs on picking a "standard" test username & password. 2014-05 RM
-	var testUser          = loginPage.memberUsername;
-	var originalPassword  = loginPage.memberPassword;
+	var testUser          = constants.memberUsername;
+	var originalPassword  = constants.memberPassword;
 	var newPassword       = 'abc123';
 	var incorrectPassword = newPassword + '4';
 	var currentPassword   = originalPassword;
