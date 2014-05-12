@@ -5,6 +5,7 @@ var Page = require('astrolabe').Page,
 
 var SfLoginPage = require('./pages/loginPage');
 var loginPage = new SfLoginPage();
+var constants = require('../testConstants');
 
 var siteAdminPage = Page.create({
 	url: { value: baseUrl + "/app/siteadmin" },
@@ -24,7 +25,7 @@ describe('Test setup', function() {
 	it('creates the test project, project manager, and project member accounts used in the rest of the E2E tests', function() {
 		// Eventually this will become a real setup that finds and creates the appropriate users. For now, it has to be done by hand
 		console.log('Please create a project named', 'test_project'); // TODO: Make that name a member variable in the projectPage page, which has yet to be created, instead of hardcoding it here.
-		console.log('Please create a user named', loginPage.managerUsername, 'with password', loginPage.managerPassword, 'and make sure it is a project manager in that project');
-		console.log('Please create a user named', loginPage.memberUsername,  'with password', loginPage.memberPassword,  'and make sure it is a member of that project');
+		console.log('Please create a user named', constants.managerUsername, 'with password', constants.managerPassword, 'and make sure it is a project manager in that project');
+		console.log('Please create a user named', constants.memberUsername,  'with password', constants.memberPassword,  'and make sure it is a member of that project');
 	});
 });
