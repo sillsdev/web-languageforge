@@ -69,4 +69,15 @@ describe('Test setup', function() {
 		siteAdminPage.passwordInput.sendKeys(loginPage.memberPassword);
 		siteAdminPage.passwordInput.sendKeys(protractor.Key.ENTER);
 	});
+
+	it('deletes and re-creates the test project', function() {
+		var ProjectsPage = require('./pages/projectsPage');
+		var projectsPage = new ProjectsPage();
+		projectsPage.get();
+		projectsPage.deleteProject(projectsPage.testProjectName);
+		// You could call deleteProject() several times without reloading the page, and it would work:
+		//projectsPage.deleteProject("FooBar");
+		//projectsPage.deleteProject("Quux");
+		projectsPage.addProject(projectsPage.testProjectName);
+	});
 });
