@@ -39,10 +39,10 @@ describe('Test setup', function() {
 
 		// Add project manager account
 		siteAdminPage.addBtn.click();
-		siteAdminPage.usernameInput.sendKeys(loginPage.managerUsername);
+		siteAdminPage.usernameInput.sendKeys(constants.managerUsername);
 		siteAdminPage.nameInput    .click(); // Make the onBlur() events fire on username input field
-		siteAdminPage.nameInput    .sendKeys('Test Manager');
-		siteAdminPage.emailInput   .sendKeys(loginPage.managerUsername + '@example.com');
+		siteAdminPage.nameInput    .sendKeys(constants.managerName);
+		siteAdminPage.emailInput   .sendKeys(constants.managerEmail);
 		// siteAdminPage.roleInput .doSomething(); // Not needed right now as "User" is default role
 		siteAdminPage.activeCheckbox.isSelected().then(function(checked) {
 			// Slightly complicated way to say "activeCheckbox = true", but that's how we need to do it in an E2E testing environment.
@@ -50,23 +50,23 @@ describe('Test setup', function() {
 				siteAdminPage.activeCheckbox.click();
 			};
 		});
-		siteAdminPage.passwordInput.sendKeys(loginPage.managerPassword);
+		siteAdminPage.passwordInput.sendKeys(constants.managerPassword);
 		siteAdminPage.passwordInput.sendKeys(protractor.Key.ENTER);
 
 		// Add regular user account
 		siteAdminPage.clearForm(); // Otherwise we could end up trying to add the user "test_runner_manager_usertest_runner_normal_user"
 		siteAdminPage.addBtn.click();
-		siteAdminPage.usernameInput.sendKeys(loginPage.memberUsername);
+		siteAdminPage.usernameInput.sendKeys(constants.memberUsername);
 		siteAdminPage.nameInput    .click(); // Make the onBlur() events fire on username input field
-		siteAdminPage.nameInput    .sendKeys('Test User');
-		siteAdminPage.emailInput   .sendKeys(loginPage.memberUsername + '@example.com');
+		siteAdminPage.nameInput    .sendKeys(constants.memberName);
+		siteAdminPage.emailInput   .sendKeys(constants.memberEmail);
 		siteAdminPage.activeCheckbox.isSelected().then(function(checked) {
 			// Slightly complicated way to say "activeCheckbox = true", but that's how we need to do it in an E2E testing environment.
 			if (!checked) {
 				siteAdminPage.activeCheckbox.click();
 			};
 		});
-		siteAdminPage.passwordInput.sendKeys(loginPage.memberPassword);
+		siteAdminPage.passwordInput.sendKeys(constants.memberPassword);
 		siteAdminPage.passwordInput.sendKeys(protractor.Key.ENTER);
 	});
 
