@@ -109,7 +109,11 @@ class UserTypeaheadModel extends \models\mapper\MapperListModel
 	{
 		parent::__construct(
 				UserModelMongoMapper::instance(),
-				array('name' => array('$regex' => $term, '$options' => '-i')),
+				array('$or' => array(
+						array('name' => array('$regex' => $term, '$options' => '-i')),
+						array('username' => array('$regex' => $term, '$options' => '-i')),
+						array('email' => array('$regex' => $term, '$options' => '-i')),
+				)),
 				array('username', 'email', 'name', 'avatarRef')
 		);
 	}	
