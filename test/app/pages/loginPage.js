@@ -1,15 +1,11 @@
 'use strict';
 
+var constants = require('../../testConstants');
+
 var SfLoginPageWithoutAstrolabe = function() {
 	var page = this; // For use inside our methods. Necessary when passing anonymous functions around, which lose access to "this".
 
 	this.loginURL        = '/auth/login';
-	this.adminUsername   = 'test_runner_admin';
-	this.adminPassword   = 'hammertime';
-	this.managerUsername = 'test_runner_manager_user';
-	this.managerPassword = 'manageruser1';
-	this.memberUsername  = 'test_runner_normal_user';
-	this.memberPassword  = 'normaluser1';
 
 	this.baseUrl = browser.baseUrl;
 	this.get = function() {
@@ -38,13 +34,13 @@ var SfLoginPageWithoutAstrolabe = function() {
 		browser.driver.findElement(page.submit).click();
 	};
 	this.loginAsAdmin = function() {
-		this.login(this.adminUsername, this.adminPassword);
+		this.login(constants.adminUsername, constants.adminPassword);
 	};
 	this.loginAsManager = function() {
-		this.login(this.managerUsername, this.managerPassword);
+		this.login(constants.managerUsername, constants.managerPassword);
 	};
 	this.loginAsUser = this.loginAsMember = function() {
-		this.login(this.memberUsername, this.memberPassword);
+		this.login(constants.memberUsername, constants.memberPassword);
 	};
 	this.logout = function() {
 		browser.driver.get(this.baseUrl + '/auth/logout');
@@ -81,16 +77,16 @@ var SfLoginPageWithAstrolabe = astrolabe.Page.create({
 		page.submit.click();
 	}},
 	loginAsAdmin: { value: function() {
-		this.login(this.adminUsername, this.adminPassword);
+		this.login(constants.adminUsername, constants.adminPassword);
 	}},
 	loginAsManager: { value: function() {
-		this.login(this.managerUsername, this.managerPassword);
+		this.login(constants.managerUsername, constants.managerPassword);
 	}},
 	loginAsUser: { value: function() {
-		this.login(this.memberUsername, this.memberPassword);
+		this.login(constants.memberUsername, constants.memberPassword);
 	}},
 	loginAsMember: { value: function() {
-		this.login(this.memberUsername, this.memberPassword);
+		this.login(constants.memberUsername, constants.memberPassword);
 	}},
 	logout: { value: function() {
 		browser.driver.get(this.baseUrl + '/auth/logout');
