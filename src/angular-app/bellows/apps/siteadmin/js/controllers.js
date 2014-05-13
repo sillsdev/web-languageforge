@@ -8,6 +8,7 @@ angular.module(
 )
 .controller('UserCtrl', ['$scope', 'userService', 'silNoticeService', function UserCtrl($scope, userService, notice) {
 
+	$scope.filterUsers = '';
 	$scope.vars = {
 		selectedIndex: -1,
 		editButtonName: "",
@@ -168,6 +169,7 @@ angular.module(
 		}
 		
 		$scope.resetCheckName();
+		$scope.filterUsers = '';
 		$scope.queryUsers(true);
 	};
 
