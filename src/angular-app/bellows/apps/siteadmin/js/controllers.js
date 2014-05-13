@@ -168,6 +168,7 @@ angular.module(
 		}
 		
 		$scope.resetCheckName();
+		$scope.filterUsers = '';
 		$scope.queryUsers(true);
 	};
 
