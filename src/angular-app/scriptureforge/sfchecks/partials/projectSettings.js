@@ -285,6 +285,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 }])
 .controller('ProjectSettingsUsersCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
                                  function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
+	$scope.userFilter = '';
 	$scope.message = {};
 	$scope.newMessageCollapsed = true;
 
