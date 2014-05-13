@@ -11,8 +11,9 @@
 		<form class="control-bar form-inline">
 		<button class="btn" data-ng-click="removeUsers()"><i class="icon-remove"></i>Remove Users</button>
 		<button class="btn" data-ng-click="addRecord()"><i class="icon-plus"></i>Add New</button>
+		<input class="pull-right" type="text" data-ng-model="filterUsers" placeholder="Filter user list"></input>
 		</form>
-		<div listview search="queryUsers()" items="users" visible-items="visibleUsers" select="">
+		<div listview search="queryUsers()" items="users | filter:filterUsers" visible-items="visibleUsers" select="">
 		<table class="table" style="width: 100%">
 			<thead>
 			<tr>
