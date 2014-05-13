@@ -28,10 +28,9 @@ function selectOption(selector, item){
 var SfUserPage = function() {
 	// Get MyProfile->My Account tab
 	this.getMyAccount = function() {
-		this.baseUrl        = browser.baseUrl;
-		this.userProfileURL = '/app/userprofile';
+		this.userProfileURL = browser.baseUrl + '/app/userprofile';
 
-		browser.driver.get(this.baseUrl + this.userProfileURL);
+		browser.driver.get(this.userProfileURL);
 	}
 	
 	// Get MyProfile->About Me tab
@@ -44,8 +43,10 @@ var SfUserPage = function() {
 describe('E2E testing: User Profile page', function() {
 	var sfUserPage = new SfUserPage();
 	
-	var LoginPage = require('../../../pages/loginPage'); 
-	var loginPage = new LoginPage();
+	var SfLoginPage = require('../../pages/loginPage');
+	var loginPage   = new SfLoginPage();
+	var constants   = require('../../../../testConstants');
+
 	loginPage.loginAsUser();
 	
 	it('should update and store "My Account" settings', function() {
@@ -55,7 +56,7 @@ describe('E2E testing: User Profile page', function() {
 		var newShape         = 'Elephant';
 		var newMemberEmail   = 'test@123.com';
 		var contactButtonID  = 'BothButton'; // Choose from [EmailButton, SMSButton, BothButton]
-		var avatarURL        = 'http://jamaicanpsalms.scriptureforge.local/images/shared/avatar/DodgerBlue-elephant-128x128.png';
+		var avatarURL        = browser.baseUrl + '/images/shared/avatar/DodgerBlue-elephant-128x128.png';
 		var avatar           = element(by.id('avatarRef'));
 		var emailInput       = element(by.model('user.email'));
 		// Jamaican mobile phone number will move to Project scope, so intentionally not tested here
@@ -98,7 +99,6 @@ describe('E2E testing: User Profile page', function() {
 		var newGender   = 'Female';
 		var fullName    = element(by.model('user.name'));
 		var age         = element(by.model('user.age'));
-		var gender      = element(by.model('user.geneder'));
 
 		
 		// Modify About me
