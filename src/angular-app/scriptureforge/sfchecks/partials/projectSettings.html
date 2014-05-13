@@ -1,12 +1,13 @@
 <div ng-show="finishedLoading">
 <h2 style="font-weight:normal">{{project.projectname}} Settings</h2>
 <tabset>
-	<tab heading="Users">
+	<tab heading="Members">
 		<div data-ng-controller="ProjectSettingsUsersCtrl">
 		<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
 			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther" class="btn" data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Members</button>
 			<button data-ng-show="rights.create" class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add Members</button>
 			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.create" class="btn" data-ng-click="newMessageCollapsed = !newMessageCollapsed"><i class="icon-envelope"></i>Message Selected Users</button>
+			<input type="text" ng-model="userFilter" placeholder="Member List Filter"/> <a ng-show="userFilter != ''" title="Clear Filter" ng-click="userFilter = ''"><i class="icon-remove" style="color:gray"></i></a>
 		</form>
 		<div id="newMembersDiv" class="new-item" data-collapse="!newUserCollapsed">
 			<form class="well form-inline">
@@ -37,7 +38,7 @@
 			
 			</form>
 		</div>
-		<div listview search="queryProjectSettings()" items="list.users" visible-items="list.visibleUsers" select="">
+		<div listview search="queryProjectSettings()" items="list.users | filter: userFilter" visible-items="list.visibleUsers" select="">
 		<!-- <div listview search="queryProjectUsers()" select=""> -->
 		<table class="table" style="width: 100%">
 			<thead>
