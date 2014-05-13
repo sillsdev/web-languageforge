@@ -55,7 +55,7 @@ describe('E2E testing: User Profile page', function() {
 		var newShape         = 'Elephant';
 		var newMemberEmail   = 'test@123.com';
 		var contactButtonID  = 'BothButton'; // Choose from [EmailButton, SMSButton, BothButton]
-		var avatarURL        = 'http://jamaicanpsalms.scriptureforge.local/images/shared/avatar/DodgerBlue-elephant-128x128.png';
+		var avatarURL        = sfUserPage.baseUrl + '/images/shared/avatar/DodgerBlue-elephant-128x128.png';
 		var avatar           = element(by.id('avatarRef'));
 		var emailInput       = element(by.model('user.email'));
 		// Jamaican mobile phone number will move to Project scope, so intentionally not tested here
