@@ -13,7 +13,7 @@
 		<button class="btn" data-ng-click="addRecord()"><i class="icon-plus"></i>Add New</button>
 		<div class="pull-right"><input type="text" data-ng-model="filterUsers" placeholder="Filter user list"></input> <a ng-show="filterUsers != ''" title="Clear Filter" ng-click="filterUsers = ''"><i class="icon-remove" style="color:gray"></i></a></div>
 		</form>
-		<div listview search="queryUsers()" items="users | filter:filterUsers" visible-items="visibleUsers" select="">
+		<div listview search="queryUsers()" items="users" items-filter="filterUsers" visible-items="visibleUsers" select="">
 		<table class="table" style="width: 100%">
 			<thead>
 			<tr>
