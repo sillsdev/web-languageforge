@@ -26,7 +26,10 @@ class ProjectModel extends \models\mapper\MapperModel
 			return new ProjectRoleModel();
 		});
 		$this->userProperties = new ProjectUserPropertiesSettings();
-		$this->themeName = 'default';
+		$this->themeName = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
+		if (!$this->themeName) {
+			$this->themeName = 'default';
+		}
 		$this->interfaceLanguageCode = 'en';
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
