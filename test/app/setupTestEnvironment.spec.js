@@ -8,9 +8,11 @@ var SfLoginPage = require('./pages/loginPage');
 var loginPage = new SfLoginPage();
 var constants = require('../testConstants');
 
+/* Replacing with non-Astrolabe page
 var siteAdminPage = Page.create({
 	url: { value: baseUrl + "/app/siteadmin" },
-	addBtn:         { get: function() { return this.findElement(this.by.buttonText('Add New')); }},
+	addBtn:         { get: function() { return this.findElement(this.by.partialButtonText('Add New')); }},
+	userFilterInput:{ get: function() { return this.findElement(this.by.model('filterUsers')); }},
 	usernameInput:  { get: function() { return this.findElement(this.by.model('record.username')); }},
 	nameInput:      { get: function() { return this.findElement(this.by.model('record.name')); }},
 	emailInput:     { get: function() { return this.findElement(this.by.model('record.email')); }},
@@ -26,6 +28,9 @@ var siteAdminPage = Page.create({
 		//this.activeCheckbox.clear();
 	}},
 });
+*/
+var SiteAdminPage = require('./pages/siteAdminPage');
+var siteAdminPage = new SiteAdminPage();
 var ProjectsPage = require('./pages/projectsPage');
 
 describe('Test setup', function() {
@@ -39,6 +44,8 @@ describe('Test setup', function() {
 	it('creates the project manager and project member accounts used in the rest of the E2E tests', function() {
 		siteAdminPage.go();
 
+//		siteAdminPage.userFilterInput.sendKeys(constants.managerUsername);
+//		browser.sleep(2000);
 		// Add project manager account
 		siteAdminPage.addBtn.click();
 		siteAdminPage.usernameInput.sendKeys(constants.managerUsername);
@@ -82,12 +89,15 @@ describe('Test setup', function() {
 		projectsPage.addNewProject(projectsPage.testProjectName);
 	});
 
-	it ('adds the appropriate test users to the project then logs out', function() {
+	it ('adds the appropriate test users to the project', function() {
 		var projectsPage = new ProjectsPage();
 		projectsPage.get();
 		projectsPage.addManagerToProject(projectsPage.testProjectName, constants.managerUsername);
 		projectsPage.addMemberToProject (projectsPage.testProjectName, constants.memberUsername);
-		loginPage.logout();
 	});
 
+	it ('logs out from the admin account and logs in as a normal user', function() {
+		loginPage.logout();
+		loginPage.loginAsMember();
+	});
 });
