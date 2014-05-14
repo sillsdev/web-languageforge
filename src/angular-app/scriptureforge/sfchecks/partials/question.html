@@ -41,7 +41,7 @@
 			<form ng-submit="submitAnswer()">
 				<textarea required ng-model="newAnswer.content" pui-jqte="jqteOptions"></textarea>
 				<div ng-hide="unreadResponseCount() == 0" class="right badge badge-important">{{unreadResponseCount()}} new response<span ng-show="unreadResponseCount() > 1">s</span></div>
-				<button type="submit" class="btn">Done</button>
+				<button type="submit" class="btn" id="doneBtn">Done</button>
 			</form>
 		</div>
 	</div>
