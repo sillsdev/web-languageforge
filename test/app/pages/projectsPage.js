@@ -104,6 +104,15 @@ var SfProjectsPage = function() {
 		this.saveBtn.click();
 	};
 
+	this.clickOnProject = function(projectName) {
+		this.findProject(projectName).then(function(projectRow) {
+			var link = projectRow.$('a');
+			link.getAttribute('href').then(function(url) {
+				browser.get(url);
+			});
+		});
+	};
+	
 	this.addUserToProject = function(projectName, userName, roleText) {
 		this.findProject(projectName).then(function(projectRow) {
 //			var btn = projectRow.findElement(by.partialButtonText("Add me as " + roleText));
