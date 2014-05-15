@@ -57,12 +57,8 @@
 		<td>
 			<div ng-class="{unread: isUnreadAnswer(answerId)}" class="answer"><!--<b>DEBUG:</b>answerId = {{answerId}}, answer.id = {{answer.id}}<br/>-->
 				<!--<b>DEBUG:</b>answer = {{answer}}<br/>-->
-				<div ng-show="answer.textHighlight" ng-bind-html="answer.textHighlight" class="scripture-quote">
-					{{answer.textHighlight}}
-				</div>
-				<div ng-bind-html="answer.content">
-					{{answer.content}}
-				</div>
+				<div ng-show="answer.textHighlight" ng-bind-html="answer.textHighlight" class="scripture-quote"></div>
+				<div class="answerContent" ng-bind-html="answer.content"></div>
 				<view-tags ng-show="$parent.rightsCreateTag()" tags="answer.tags" on-delete="deletedTags(answer)" rights-delete="rightsDeleteTag()"></view-tags>
 				<div class="by">
 					<img ng-src="{{answer.userRef.avatar_ref}}" width="32" height="32" /><div>answered {{answer.dateCreated | date:mediumDate}}<br/>by {{answer.userRef.username}}</div>

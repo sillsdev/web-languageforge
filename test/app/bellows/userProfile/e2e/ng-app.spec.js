@@ -1,29 +1,36 @@
 'use strict';
 
-// Selector grabbed from https://coderwall.com/p/tjx5zg
-function selectOption(selector, item){
-    var selectList, desiredOption;
+var findDropdownByValue = function(dropdownElement, value) {
+	// Returns a promise that will resolve to the <option> with the given value (as returned by optionElement.getText())
+	var result = protractor.promise.defer();
+	var options = dropdownElement.$$('option');
+	var check = function(elem) {
+		elem.getText().then(function(text) {
+			if (text === value) {
+				result.fulfill(elem);
+			}
+		});
+	};
+	if ("map" in options) {
+		options.map(check);
+	} else {
+		// Sometimes we get a promise that returns a basic list; deal with that here
+		options.then(function(list) {
+			for (var i=0; i<list.length; i++) {
+				check(list[i]);
+			}
+		});
+	};
+	return result;
+};
 
-    selectList = this.findElement(selector);
-    selectList.click();
-
-    selectList.findElements(protractor.By.tagName('option'))
-        .then(function findMatchingOption(options){
-            options.some(function(option){
-                option.getText().then(function doesOptionMatch(text){
-                    if (item === text){
-                        desiredOption = option;
-                        return true;
-                    }
-                });
-            });
-        })
-        .then(function clickOption(){
-            if (desiredOption){
-                desiredOption.click();
-            }
-        });
-}
+var clickDropdownByValue = function(dropdownElement, value) {
+	// Select an element of the dropdown based on its value (its text)
+	var option = findDropdownByValue(dropdownElement, value);
+	option.then(function(elem) {
+		elem.click();
+	});
+};
 
 var SfUserPage = function() {
 	// Get MyProfile->My Account tab
@@ -57,15 +64,16 @@ describe('E2E testing: User Profile page', function() {
 		var newMemberEmail   = 'test@123.com';
 		var contactButtonID  = 'BothButton'; // Choose from [EmailButton, SMSButton, BothButton]
 		var avatarURL        = browser.baseUrl + '/images/shared/avatar/DodgerBlue-elephant-128x128.png';
+		var avatarColor      = element(protractor.By.model('user.avatar_color'));
+		var avatarShape      = element(protractor.By.model('user.avatar_shape'));
 		var avatar           = element(by.id('avatarRef'));
 		var emailInput       = element(by.model('user.email'));
 		// Jamaican mobile phone number will move to Project scope, so intentionally not tested here
 		var mobilePhoneInput = element(by.model('user.mobile_phone'));
 		var communicate_via  = element(By.id(contactButtonID));
 		
-		browser.selectOption = selectOption.bind(browser);
-		browser.selectOption(protractor.By.model('user.avatar_color'), newColor);
-		browser.selectOption(protractor.By.model('user.avatar_shape'), newShape);
+		clickDropdownByValue(avatarColor, newColor);
+		clickDropdownByValue(avatarShape, newShape);
 		
 		// Modify email address
 		emailInput.click();
@@ -99,6 +107,7 @@ describe('E2E testing: User Profile page', function() {
 		var newGender   = 'Female';
 		var fullName    = element(by.model('user.name'));
 		var age         = element(by.model('user.age'));
+		var gender      = element(by.model('user.gender'));
 
 		
 		// Modify About me
@@ -109,8 +118,7 @@ describe('E2E testing: User Profile page', function() {
 		age.click();
 		age.clear();
 		age.sendKeys(newAge);
-		browser.selectOption = selectOption.bind(browser);
-		browser.selectOption(protractor.By.model('user.gender'), newGender);
+		clickDropdownByValue(gender, newGender);
 		
 		// Submit updated profile
 		browser.driver.findElement(By.id('saveBtn')).click();
