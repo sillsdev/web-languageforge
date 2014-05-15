@@ -83,19 +83,25 @@ describe('E2E testing: User Activity page', function() {
 	loginPage.loginAsUser();
 	
 	it('should display user\'s activity', function() {
+//      TODO: Goal is to follow this flow
+//		projectListPage = require('projectListPage');
+//		projListPage.get();
+//		projListPage.clickOnProject('test_project');
+//		textPage = new require('textPage');
+//		textPage.clickOnText('text1')l
+//		questionListPage = require('questionListPage');
+//		questionListPage.clickOnQuestion('question1');
+//		questionPage = require('questionPage');
+//		answers = questionPage.answers;
 		
+		// Perform some actions to populate the activity feed
 		projPage.get();
-		projPage.findProject('test_project').then(function(projectRow) {
-			var link = projectRow.$('a');
-			link.getAttribute('href').then(function(url) {
-				browser.get(url);
-			});
-			
-			// Select the text and question according to role
-			sfUserActivity.selectObj('text');
-			sfUserActivity.selectObj('question');
-		});
+		projPage.clickOnProject('test_project');
 		
+		// deprecate these lines
+		sfUserActivity.selectObj('text');
+		sfUserActivity.selectObj('question');
+
 		// Add your own answer
 		// TODO: Currently Chrome browser has issues and separates the string.
 		// Firefox 28.0 correctly sends the string, but Firefox 29.0.1 does not
@@ -103,7 +109,7 @@ describe('E2E testing: User Activity page', function() {
 		devElement.$(".jqte_editor").sendKeys(newAnswerText);
 
 		// TODO: Currently sending this extra "TAB" key appears to help sendKeys send the entire Answer
-		devElement.$(".jqte_editor").sendKeys(protractor.Key.TAB);
+		//devElement.$(".jqte_editor").sendKeys(protractor.Key.TAB);
 		devElement.findElement(sfUserActivity.done).click();
 		
 		// Add your own comment
