@@ -40,6 +40,10 @@ var SfProjectsPage = function() {
 		// Either way, the following expect() should be fulfilled
 		expect(element(by.selectedOption('itemsPerPage')).getText()).toEqual('100');
 	};
+	
+	this.projectExists = function() {
+		
+	};
 
 	this.findProject = function(projectName) {
 		var result = protractor.promise.defer();
@@ -137,6 +141,18 @@ var SfProjectsPage = function() {
 	this.addMemberToProject = function(projectName, userName) {
 		this.addUserToProject(projectName, userName, "Member");
 	};
+	
+	this.setup = {};
+	
+	this.setup.makeProjectIfNecessary = function(projectName) {
+		// this is somewhat faulty because it will not handle the case where a project exists but the user is NOT a member (ie. the project is not linked)
+		element.isElementPresent(by.partialLinkText(projectName)).then(function(isPresent) {
+			if(!isPresent) {
+				this.projectsList.getText().matches()
+				
+			}
+		});
+	};	
 
 	this.removeUserFromProject = function(projectName, userName) {
 		this.findProject(projectName).then(function(projectRow) {
@@ -157,4 +173,4 @@ var SfProjectsPage = function() {
 	};
 };
 
-module.exports = SfProjectsPage;
+module.exports = new SfProjectsPage();
