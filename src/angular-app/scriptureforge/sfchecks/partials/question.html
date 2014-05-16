@@ -107,7 +107,7 @@
 					<td></td>
 					<td>
 						<div ng-hide="questionIsClosed()">
-							<a ng-click="collapsed = !collapsed" class="btn btn-link">add comment</a>
+							<a ng-click="collapsed = !collapsed" class="btn btn-link addCommentLink">add comment</a>
 							<div collapse="!collapsed">
 							<form ng-submit="submitComment(answerId, answer); collapsed = !collapsed;">
 								<textarea required ng-model="newComment.content"></textarea><br/>
