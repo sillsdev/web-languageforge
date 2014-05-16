@@ -8,23 +8,11 @@ var SfProjectPage = function() {
 	};
 	
 	this.clickOnText = function(textTitle) {
-		var targetElement;
-		this.textList.map(function(row) {
-			//row.then(console.log);
-			row.findElement(by.binding('text.title')).getText().then(function(title) {
-				if (textTitle == title) {
-					//targetElement = row.findElement(by.binding('text.url'));
-					row.findElements(by.tagName('a')).then(function(elements) {
-						targetElement = elements[0];
-					});
-				}
-			});
-		}).then(function() {
-			targetElement.click();
-			browser.pause();
-		});
+		element(by.linkText(textTitle)).click();
 	};
-	this.textList = element.all(by.repeater('text in visibleTexts'));
+	
+	this.textNames = element.all(by.repeater('text in visibleTexts').column('title'));
+	
 };
 
 module.exports = new SfProjectPage();
