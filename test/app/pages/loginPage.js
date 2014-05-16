@@ -94,6 +94,6 @@ var SfLoginPageWithAstrolabe = astrolabe.Page.create({
 
 });
 
-module.exports = SfLoginPageWithoutAstrolabe;
+module.exports = new SfLoginPageWithoutAstrolabe();
 // This makes the result of calling require('./pages/loginPage') to be the SfLoginPage constructor function.
 // So you'd use this as "var LoginPage = require('./pages/loginPage'); var loginPage = new LoginPage();"
