@@ -5,37 +5,7 @@ var projectTypes = {
 	'lf': 'Web Dictionary', // LanguageForge
 };
 
-var findDropdownByValue = function(dropdownElement, value) {
-	// Returns a promise that will resolve to the <option> with the given value (as returned by optionElement.getText())
-	var result = protractor.promise.defer();
-	var options = dropdownElement.$$('option');
-	var check = function(elem) {
-		elem.getText().then(function(text) {
-			if (text === value) {
-				result.fulfill(elem);
-			}
-		});
-	};
-	if ("map" in options) {
-		options.map(check);
-	} else {
-		// Sometimes we get a promise that returns a basic list; deal with that here
-		options.then(function(list) {
-			for (var i=0; i<list.length; i++) {
-				check(list[i]);
-			}
-		});
-	};
-	return result;
-};
-
-var clickDropdownByValue = function(dropdownElement, value) {
-	// Select an element of the dropdown based on its value (its text)
-	var option = findDropdownByValue(dropdownElement, value);
-	option.then(function(elem) {
-		elem.click();
-	});
-};
+var util = require('./util');
 
 var SfProjectsPage = function() {
 	var page = this;
@@ -65,7 +35,7 @@ var SfProjectsPage = function() {
 			// this.itemsPerPageCtrl.$('option:nth-child(4)').click();
 		} else{
 			// A better way to do it, which allows for other options
-			clickDropdownByValue(this.itemsPerPageCtrl, "100");
+			util.clickDropdownByValue(this.itemsPerPageCtrl, "100");
 		};
 		// Either way, the following expect() should be fulfilled
 		expect(element(by.selectedOption('itemsPerPage')).getText()).toEqual('100');
@@ -100,7 +70,7 @@ var SfProjectsPage = function() {
 		var page = this;
 		this.createBtn.click();
 		this.newProjectNameInput.sendKeys(nameToAdd);
-		clickDropdownByValue(this.newProjectTypeSelect, projectTypes['sf']);
+		util.clickDropdownByValue(this.newProjectTypeSelect, projectTypes['sf']);
 		this.saveBtn.click();
 	};
 
@@ -147,7 +117,7 @@ var SfProjectsPage = function() {
 				}).then(function() {
 					if (foundUserRow) {
 						var select = foundUserRow.$('select');
-						clickDropdownByValue(select, roleText);
+						util.clickDropdownByValue(select, roleText);
 					}
 				});
 			});
