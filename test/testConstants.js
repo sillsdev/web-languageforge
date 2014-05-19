@@ -13,6 +13,8 @@ var constants = function() {
 	this.memberPassword  = 'normaluser1';
 	this.memberName      = 'Test User';
 	this.memberEmail     = 'test_runner_normal_user@example.com';
+
+	this.testProjectName = 'Test Project';
 };
 
 module.exports = new constants();
