@@ -1,5 +1,15 @@
 'use strict';
 
+var setCheckbox = function(checkboxElement, value) {
+	// Ensure a checkbox element will be either checked (true) or unchecked (false), regardless of what its current value is
+	checkboxElement.isSelected().then(function(checked) {
+		if (checked != value) {
+			checkboxElement.click();
+		};
+	});
+};
+module.exports.setCheckbox = setCheckbox;
+
 var findDropdownByValue = function(dropdownElement, value) {
 	// Returns a promise that will resolve to the <option> with the given value (as returned by optionElement.getText())
 	var result = protractor.promise.defer();

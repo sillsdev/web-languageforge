@@ -138,6 +138,23 @@ var SfProjectsPage = function() {
 		this.addUserToProject(projectName, userName, "Member");
 	};
 
+	this.removeUserFromProject = function(projectName, userName) {
+		this.findProject(projectName).then(function(projectRow) {
+			var link = projectRow.$('a');
+			link.getAttribute('href').then(function(url) {
+				browser.get(url + '/settings');
+				var userFilter = element(by.model('userFilter'));
+				userFilter.sendKeys(userName);
+				var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
+				var foundUserRow = projectMemberRows.first();
+				var rowCheckbox = foundUserRow.$('input[type="checkbox"]');
+				util.setCheckbox(rowCheckbox, true);
+				var removeMembersBtn = element(by.partialButtonText("Remove Members"));
+				removeMembersBtn.click();
+			});
+			page.get(); // After all is finished, reload projects page
+		});
+	};
 };
 
 module.exports = SfProjectsPage;
