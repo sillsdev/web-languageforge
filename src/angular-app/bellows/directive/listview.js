@@ -20,7 +20,7 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
 				$scope.currentPage = 1;
 				$scope.maxSize = 5;
 				$scope.itemsPerPage = 10;  // This should match the default value for the selector above
-				$scope.filteredItems = [];
+				$scope.items = []; // This prevents "cannot read property 'length' of undefined" errors on first page load
 				
 				this.activate = function(item) {
 					$scope.active = item;
