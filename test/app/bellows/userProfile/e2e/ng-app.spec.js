@@ -1,36 +1,6 @@
 'use strict';
 
-var findDropdownByValue = function(dropdownElement, value) {
-	// Returns a promise that will resolve to the <option> with the given value (as returned by optionElement.getText())
-	var result = protractor.promise.defer();
-	var options = dropdownElement.$$('option');
-	var check = function(elem) {
-		elem.getText().then(function(text) {
-			if (text === value) {
-				result.fulfill(elem);
-			}
-		});
-	};
-	if ("map" in options) {
-		options.map(check);
-	} else {
-		// Sometimes we get a promise that returns a basic list; deal with that here
-		options.then(function(list) {
-			for (var i=0; i<list.length; i++) {
-				check(list[i]);
-			}
-		});
-	};
-	return result;
-};
-
-var clickDropdownByValue = function(dropdownElement, value) {
-	// Select an element of the dropdown based on its value (its text)
-	var option = findDropdownByValue(dropdownElement, value);
-	option.then(function(elem) {
-		elem.click();
-	});
-};
+var util = require('../../../pages/util');
 
 var SfUserPage = function() {
 	// Get MyProfile->My Account tab
@@ -72,8 +42,8 @@ describe('E2E testing: User Profile page', function() {
 		var mobilePhoneInput = element(by.model('user.mobile_phone'));
 		var communicate_via  = element(By.id(contactButtonID));
 		
-		clickDropdownByValue(avatarColor, newColor);
-		clickDropdownByValue(avatarShape, newShape);
+		util.clickDropdownByValue(avatarColor, newColor);
+		util.clickDropdownByValue(avatarShape, newShape);
 		
 		// Modify email address
 		emailInput.click();
@@ -118,7 +88,7 @@ describe('E2E testing: User Profile page', function() {
 		age.click();
 		age.clear();
 		age.sendKeys(newAge);
-		clickDropdownByValue(gender, newGender);
+		util.clickDropdownByValue(gender, newGender);
 		
 		// Submit updated profile
 		browser.driver.findElement(By.id('saveBtn')).click();
