@@ -28,7 +28,7 @@
     
     .getText()
     
-    .isDisplay()
+    .isDisplayed()
     
     .isElementPresent()
     
