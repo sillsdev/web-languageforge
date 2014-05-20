@@ -15,9 +15,11 @@ describe('E2E testing: User Activity page', function() {
 
 	// Script of actions to perform which will then be verified on the activity feed.
 	// Currently, this list assumes normal user is doing the actions on his own contributions
+	// scope options:  {'answers', 'comments'}
+	// action options: {'add', 'addToLastAnswer', 'edit', 'upvote', 'archive'}
+	// value: free text
 	var script = [
 		{scope: 'answers',  action: 'add',              value: 'Beethoven was the speaker.'},
-		/*
 		{scope: 'comments', action: 'addToLastAnswer',  value: 'This comment is added in an E2E test.'},
 		/* TODO: add these actions 2014-05 DDW
 		{scope: 'comments', action: 'edit',             value: 'This is an edited comment for the E2E test.'},
@@ -66,42 +68,79 @@ describe('E2E testing: User Activity page', function() {
 		// of the activity feed so traverse the script in reverse order
 		activityPage.get();
 
+		// Print everything in the activity list for debugging purposes
 		//activityPage.printActivitiesNames();
-		
-		activityPage.getLength().then(function(len) {
 
-			var scriptIndex = script.length - 1;
-			var activityIndex = 0;
-			
-			while (scriptIndex >= 0) {
-				// Archive actions are not in the activity feed
-				if (script[scriptIndex].action == 'archive') {
-					scriptIndex--;
-					console.log('skipping archive action');
-					continue;
-				}
-				var activityString = activityPage.getActivity(activityIndex);
-					 
-					// Expect activity string to contain username, script scope, action, and value
-					//expect(activityString).toContain(constants.memberUsername);
-					//expect(activityString).toContain(script[scriptIndex].scope);
-					//expect(activityString).toContain(script[scriptIndex].action);
-					//expect(activityString).toContain(script[scriptIndex].value);
+		var scriptIndex = script.length - 1;
+		var activityIndex = 0;
+		var activityText = '';
+		
+		while (scriptIndex >= 0) {
+			// Archive actions are not in the activity feed
+			if (script[scriptIndex].action == 'archive') {
 				scriptIndex--;
-				activityIndex++;
-				
-			};
+				console.log('skipping archive action');
+				continue;
+			}
+
+			// Expect activity text to contain username, script scope, action, and value
+			activityText = activityPage.getActivityText(activityIndex);
+			expect(activityText).toContain(constants.memberUsername);
+			
+			// Truncate the ending 's' of the action string to match string comparison tenses
+			var expectedString = script[scriptIndex].scope;
+			expectedString = expectedString.replace(/s$/gi, '');
+			expect(activityText).toContain(expectedString);
+			
+
+			// TODO: add expectation on some actions?  2014-05 DDW
+			if (script[scriptIndex].action == 'edit') {
+				expect(activityText).toContain('updated');
+			}
+//			expectedString = ;
+//			switch (script[scriptIndex].action) {
+//			case 'add', 'addToLast' :
+//				expectedString = 'added';
+//				break;
+//			default :
+//				expectedString = script[scriptIndex].action;
+//			}
+//			expect(activityText).toContain(expectedString);
+			
+			expect(activityText).toContain(script[scriptIndex].value);
+
+			scriptIndex--;
+			activityIndex++;
+			
+		};
+
+		// Expect the last activity to be performed by admin
+		activityPage.getLength().then(function(len) {
+			activityText = activityPage.getActivityText(len - 1);
+			expect(activityText).toContain('admin');
+		});
+		
+		// Show only my activity
+		activityPage.clickOnShowOnlyMyActivity();
+		
+		// Expect the last activity to be performed by user
+		activityPage.getLength().then(function(len) {
+			activityText = activityPage.getActivityText(len - 1);
+			expect(activityText).toContain(constants.memberUsername);
+		});
+		
+		// Show all activity
+		activityPage.clickOnAllActivity();
+		
+		// Expect the last activity to be performed by admin
+		activityPage.getLength().then(function(len) {
+			activityText = activityPage.getActivityText(len - 1);
+			expect(activityText).toContain('admin');
 		});
 
-
 		//browser.debugger();
+	
 	});
 
 });
-
-
-
-
-
-
 
