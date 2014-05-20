@@ -1,5 +1,7 @@
 'use strict';
 
+var constants = require('../../../../../testConstants.json');
+
 var SfSignupPage = function() {
 	this.get = function() {
 		browser.get('http://jamaicanpsalms.scriptureforge.local/signup');
@@ -29,7 +31,7 @@ describe('E2E testing: Signup app', function() {
 	});
 	
 	it('finds the admin user already exists', function() {
-		sfSignupPage.usernameInput.sendKeys('admin');
+		sfSignupPage.usernameInput.sendKeys(constants.adminUsername);
 		
 		// trigger the username lookup
 		sfSignupPage.usernameInput.sendKeys(protractor.Key.ENTER);
