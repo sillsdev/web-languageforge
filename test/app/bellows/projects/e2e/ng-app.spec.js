@@ -3,7 +3,7 @@
 var util = require('../../../pages/util.js');
 var loginPage = require('../../../pages/loginPage.js');
 var projectsPage = require('../../../pages/projectsPage.js');
-var constants = require('../../../../testConstants.js');
+var constants = require('../../../../testConstants.json');
 
 describe('E2E Projects List App - Normal User', function() {
 	
