@@ -1,12 +1,22 @@
 <?php
 
+
 require_once('e2eTestConfig.php');
 
-rename(SFCONFIG, SFCONFIG . '.live');
-rename(SFCONFIG . '.fortest', SFCONFIG);
+copy(SFCONFIG . '.fortest', SFCONFIG);
 
 // use commands
 use models\commands\ProjectCommands;
+use models\commands\UserCommands;
+use models\rights\Roles;
 
+UserCommands::createUser(array(
+								'id' => '',
+								'name' => 'admin',
+							 	'username' => 'admin',
+							 	'password' => '1234',
+								'active' => true,
+								'role' => Roles::SYSTEM_ADMIN
+						));
 
 ?>
