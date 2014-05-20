@@ -144,7 +144,7 @@ var SfProjectsPage = function() {
 	
 	this.setup = {};
 	
-	this.setup.makeProjectIfNecessary = function(projectName) {
+	this.setup.makeProject = function(projectName) {
 		// this is somewhat faulty because it will not handle the case where a project exists but the user is NOT a member (ie. the project is not linked)
 		element.isElementPresent(by.partialLinkText(projectName)).then(function(isPresent) {
 			if(!isPresent) {
