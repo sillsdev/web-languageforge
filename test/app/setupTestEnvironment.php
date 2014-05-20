@@ -13,14 +13,17 @@ use models\rights\Roles;
 $db = \models\mapper\MongoStore::connect(SF_DATABASE);
 foreach ($db->listCollections() as $collection) { $collection->drop(); }
 
+$constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
+
 //print_r(UserCommands::listUsers());
 
 
 UserCommands::createUser(array(
 								'id' => '',
-								'name' => 'admin',
-							 	'username' => 'test_runner_admin',
-							 	'password' => '1234',
+								'name' => $constants['adminName'],
+								'email' => $constants['adminEmail'],
+							 	'username' => $constants['adminUsername'],
+							 	'password' => $constants['adminPassword'],
 								'active' => true,
 								'role' => Roles::SYSTEM_ADMIN
 						));
