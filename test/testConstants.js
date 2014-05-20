@@ -14,7 +14,8 @@ var constants = function() {
 	this.memberName      = 'Test User';
 	this.memberEmail     = 'test_runner_normal_user@example.com';
 
-	this.testProjectName = 'Test Project';
+	this.testProjectName  = 'Test Project';
+	this.otherProjectName = 'Other Project for Testing'; // Probably shouldn't have "Test Project" in the name, or some searches-by-text might fail
 };
 
 module.exports = new constants();

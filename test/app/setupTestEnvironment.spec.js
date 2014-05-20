@@ -4,8 +4,7 @@ var Page = require('astrolabe').Page,
 	baseUrl = browser.baseUrl || "http://jamaicanpsalms.scriptureforge.local";
 console.log("My base URL is", baseUrl);
 
-var SfLoginPage = require('./pages/loginPage');
-var loginPage = new SfLoginPage();
+var loginPage = require('./pages/loginPage');
 var constants = require('../testConstants');
 
 /* Replacing with non-Astrolabe page
@@ -31,7 +30,7 @@ var siteAdminPage = Page.create({
 */
 var SiteAdminPage = require('./pages/siteAdminPage');
 var siteAdminPage = new SiteAdminPage();
-var ProjectsPage = require('./pages/projectsPage');
+var projectsPage = require('./pages/projectsPage');
 
 describe('Test setup', function() {
 	it('verifies that the test_runner_admin account is valid (if this fails, EVERYTHING ELSE will fail!)', function() {
@@ -80,20 +79,21 @@ describe('Test setup', function() {
 	});
 
 	it('deletes and re-creates the test project', function() {
-		var projectsPage = new ProjectsPage();
 		projectsPage.get();
-		projectsPage.deleteProject(projectsPage.testProjectName);
-		// You could call deleteProject() several times without reloading the page, and it would work:
-		//projectsPage.deleteProject("FooBar");
-		//projectsPage.deleteProject("Quux");
-		projectsPage.addNewProject(projectsPage.testProjectName);
+		projectsPage.deleteProject(constants.testProjectName);
+		projectsPage.get();
+		projectsPage.addNewProject(constants.testProjectName);
+		projectsPage.get();
+		projectsPage.deleteProject(constants.otherProjectName);
+		projectsPage.get();
+		projectsPage.addNewProject(constants.otherProjectName);
 	});
 
 	it ('adds the appropriate test users to the project', function() {
-		var projectsPage = new ProjectsPage();
 		projectsPage.get();
-		projectsPage.addManagerToProject(projectsPage.testProjectName, constants.managerUsername);
-		projectsPage.addMemberToProject (projectsPage.testProjectName, constants.memberUsername);
+		projectsPage.addManagerToProject(constants.testProjectName, constants.managerUsername);
+		projectsPage.get();
+		projectsPage.addMemberToProject (constants.testProjectName, constants.memberUsername);
 	});
 
 	it ('logs out from the admin account and logs in as a normal user', function() {
