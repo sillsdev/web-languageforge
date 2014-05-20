@@ -23,8 +23,8 @@ function checkLoggedIn() {
 };
 
 var constants = require('../../../../testConstants');
-var LoginPage = require('../../../pages/loginPage'); 
-var loginPage = new LoginPage();
+var loginPage = require('../../../pages/loginPage'); 
+
 loginPage.loginAsUser();
 
 // TODO: Coordinate with other devs on picking a "standard" test username & password. 2014-05 RM
@@ -43,13 +43,13 @@ var SfChangePasswordPage = function() {
 		this.changePasswordURL = '/app/changepassword';
 
 		browser.driver.get(this.baseUrl + this.changePasswordURL);
-	}
+	};
 	this.getUserProfile = function() {
 		this.baseUrl          = browser.baseUrl;
 		this.userProfileURL   = '/app/userprofile';
 		
 		browser.driver.get(this.baseUrl + this.userProfileURL);
-	}
+	};
 	this.checkSpecificUserLoggedIn = function(username) {
 		browser.sleep(500); // Allow time for the login operation to return us to the front page before proceeding
 		// Note that we can't use browser.waitForAngular() here because the front page doesn't have Angular on it.
@@ -57,15 +57,15 @@ var SfChangePasswordPage = function() {
 		//page.getChangePassword();
 		page.getUserProfile();
 		expect(element(by.binding('user.username')).getText()).toEqual(username);
-	}
+	};
 
 	this.checkLoggedOut = function() {
 		expect(browser.driver.isElementPresent(protractor.By.css('.login-btn'))).toBeTruthy();
-	}
+	};
 	this.checkLoggedIn = function() {
 		page.getUserProfile();
 		expect(browser.driver.isElementPresent(protractor.By.css('.login-btn'))).toBeFalsy();
-	}
+	};
 	
 }; 
 

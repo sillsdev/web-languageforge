@@ -1,10 +1,8 @@
 'use strict';
 
 var util = require('../../../pages/util.js');
-var LoginPage = require('../../../pages/loginPage.js');
-var loginPage = new LoginPage();
-var ProjectsPage = require('../../../pages/projectsPage.js');
-var projectsPage = new ProjectsPage();
+var loginPage = require('../../../pages/loginPage.js');
+var projectsPage = require('../../../pages/projectsPage.js');
 var constants = require('../../../../testConstants.js');
 
 describe('E2E Projects List App - Normal User', function() {

@@ -29,15 +29,12 @@ describe('E2E testing: User Activity page', function() {
 	];
 	
 	var activityPage    = require('../../../pages/activityPage');
-	var SfLoginPage     = require('../../../pages/loginPage');
-	var SfProjListPage  = require('../../../pages/projectsPage');
+	var projectListPage = require('../../../pages/projectsPage');
 	var projectPage     = require('../../../pages/projectPage');
 	var questionPage    = require('../../../pages/questionPage');
 	var textPage        = require('../../../pages/textPage');
+	var loginPage       = require('../../../pages/loginPage');
 
-	var projectListPage = new SfProjListPage();
-	
-	var loginPage       = new SfLoginPage();
 	loginPage.loginAsUser();
 	
 	it('should perform some actions to populate the activity feed', function() {

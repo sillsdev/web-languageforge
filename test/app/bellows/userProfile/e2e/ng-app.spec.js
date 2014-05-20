@@ -20,8 +20,7 @@ var SfUserPage = function() {
 describe('E2E testing: User Profile page', function() {
 	var sfUserPage = new SfUserPage();
 	
-	var SfLoginPage = require('../../../pages/loginPage');
-	var loginPage   = new SfLoginPage();
+	var loginPage = require('../../../pages/loginPage');
 	var constants   = require('../../../../testConstants');
 
 	loginPage.loginAsUser();
