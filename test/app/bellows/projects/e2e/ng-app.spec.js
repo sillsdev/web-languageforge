@@ -19,15 +19,27 @@ describe('E2E Projects List App - Normal User', function() {
 	
 	
 	it('should list the project of which the user is a member', function() {
-		
+		loginPage.loginAsMember();
+		projectsPage.get();
+		expect(projectsPage.projectNames.get(0).getText()).toBe(constants.testProjectName + ' (Community Scripture Checking)'); // TODO: Move this string to testConstants.js
 	});
 	
 	it('should not list projects the user is not a member of', function() {
-		
+		projectsPage.get();
+		expect(projectsPage.projectsList.count()).toBe(1);
 	});
 	
 	it('can list two projects of which the user is a member', function() {
-		
+		loginPage.loginAsAdmin();
+		projectsPage = new projectsPage.constructor(); // Create a new object to try (unsuccessfully) to avoid "stale element reference" errors
+		projectsPage.get();
+		projectsPage.addMemberToProject(constants.otherProjectName, constants.memberUsername);
+		loginPage.loginAsMember();
+		projectsPage = new projectsPage.constructor(); // Create a new object to try (unsuccessfully) to avoid "stale element reference" errors
+		projectsPage.get();
+		//projectsPage.projectsList.then(console.log);
+		//projectsPage.projectsList.get(1).getOuterHtml().then(console.log);
+		expect(projectsPage.projectsList.count()).toBe(2);
 	});
 });
 
