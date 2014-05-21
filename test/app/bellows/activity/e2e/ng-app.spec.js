@@ -16,18 +16,19 @@ describe('E2E testing: User Activity page', function() {
 	// Currently, this list assumes test normal user has the role permissions for the actions
 	// scope options:  {'answers', 'comments'}
 	// action options: {'add', 'addToLastAnswer', 'edit', 'upvote', 'archive'}
-	// value: normally free text.  For upvote/downvote actions, value is then used as the index into the answers.list
+	// value: normally free text.  Can be an integer when used as index into the answers.list
+	//        If value is left blank, then perform the action on the last item
 	var script = [
 		{scope: 'answers',  action: 'add',              value: 'Beethoven was the speaker.'},
 		{scope: 'comments', action: 'addToLastAnswer',  value: 'This is an original comment.'},
 		{scope: 'comments', action: 'edit',             value: 'This is an edited comment for the E2E test.'},
 		{scope: 'answers',  action: 'edit',             value: 'Mozart was also the speaker.'},
-		{scope: 'answers',  action: 'upvote',           value: 0},
-		{scope: 'answers',  action: 'downvote',         value: 0},
-		/* TODO: add these actions 2014-05 DDW */
-/*		{scope: 'comments', action: 'archive',          value: ''},
-		{scope: 'answers',  action: 'archive',          value: ''}
-		*/
+		{scope: 'answers',  action: 'upvote',           value: 1},
+		{scope: 'answers',  action: 'downvote',         value: 1},
+		{scope: 'comments', action: 'archive',          value: 1},
+		{scope: 'answers',  action: 'archive',          value: 1},
+		{scope: 'comments', action: 'archive',          value: ''},
+		{scope: 'answers',  action: 'archive',          value: ''},
 	];
 	
 	var activityPage    = require('../../../pages/activityPage');
@@ -58,7 +59,7 @@ describe('E2E testing: User Activity page', function() {
 				script[i].value = script[i].value + new Date();
 			}
 			
-			//console.log('Scope: ' + script[i].scope + ' Action: ' + script[i].action);
+			//console.log('Scope: ' + script[i].scope + ' Action: ' + script[i].action + ' Value: ' + script[i].value);
 			questionPage[script[i].scope][script[i].action](script[i].value);
 			browser.debugger();
 		};
@@ -84,7 +85,7 @@ describe('E2E testing: User Activity page', function() {
 			// Skip verifying the following actions because they don't appear in the activity feed
 			if ((script[scriptIndex].action == 'archive') ||
 				(script[scriptIndex].action == 'downvote')) {
-				console.log('skip verifying action ' + script[scriptIndex].action);
+				//console.log('skip verifying action ' + script[scriptIndex].action);
 				scriptIndex--;
 				continue;
 			}
@@ -115,8 +116,11 @@ describe('E2E testing: User Activity page', function() {
 			activityIndex++;
 			
 		};
-
+	});
+	
+	it ('should verify filters work on the activity page', function() {
 		// Additional tests to verify activity page filtering
+		var activityText = '';
 		
 		// Expect the last activity to be performed by admin
 		activityPage.getLength().then(function(len) {
