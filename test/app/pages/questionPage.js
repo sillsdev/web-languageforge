@@ -12,8 +12,20 @@ var SfQuestionPage = function() {
 	this.answers  = {};
 	this.comments = {};
 
-	this.answers.list   = element.all(by.repeater('(answerId, answer) in question.answers'));
+	this.answers.list  = element.all(by.repeater('(answerId, answer) in question.answers'));
+	this.comments.list = element.all(by.repeater('comment in answer.comments'));
+
+	// Return the handle to the last answer in the list
+	this.answers.last = function() {
+		return page.answers.list.last();
+	};
 	
+	// Return the handle to the last comment in the list
+	this.comments.last = function() {
+		return page.comments.list.last();
+	};
+	
+	// Add new answer to the end of the answers list
 	this.answers.add = function(answer) {
 		this.answerCtrl = browser.findElement(by.id('comments')); // Using ID "Comments" contains Answers and Comments
 		this.answerCtrl.$(".jqte_editor").sendKeys(answer);
@@ -25,18 +37,26 @@ var SfQuestionPage = function() {
 		this.answerCtrl.findElement(by.id('doneBtn')).click();
 	};
 
-	// TBD
+	// Edit last answer
 	this.answers.edit = function(answer) {
+		this.editCtrl     = page.answers.last().$('.answer').findElement(by.linkText('edit'));
+
+		// Clicking 'edit' changes the DOM so these handles are updated here
+		this.editCtrl.click();
+		var answersField = page.answers.last().$('.answer').$(".jqte_editor");
+		var saveCtrl     = page.answers.last().$(".answerBtn");
+
+		answersField.clear();
+		answersField.sendKeys(answer);
+		answersField.sendKeys(protractor.Key.TAB);
+		
+		saveCtrl.click();
 	};
 	
 	// TBD: "delete" is a reserved word, and the functionality will be moved to "archive" at a later time
 	this.answers.archive = function(answer) {
 	};
 	
-	// Return the handle to the last answer in the list
-	this.answers.last = function() {
-		return (page.answers.list).last();
-	};
 
 	// Add a comment to the last (most recent) Answer on the page
 	this.comments.addToLastAnswer = function(comment) {
@@ -57,8 +77,22 @@ var SfQuestionPage = function() {
 		this.submit.click();
 	};
 
-	// TBD
+	// Edit the last comment.  Comments are interspersed with the answers
 	this.comments.edit = function(comment) {
+		this.editCtrl     = page.comments.last().findElement(by.linkText('edit'));
+
+		this.editCtrl.click();
+
+		// Clicking 'edit' changes the DOM so these handles are updated here
+		var commentsField = page.comments.last().$('textarea');
+		var saveCtrl      = page.comments.last().findElement(by.partialButtonText('Save'));
+
+		commentsField.clear();
+		commentsField.sendKeys(comment);
+		commentsField.sendKeys(protractor.Key.TAB);
+
+		saveCtrl.click();
+		browser.debugger();
 	};
 	
 	// TBD: "delete" is a reserved word, and the functionality will be moved to "archive" at a later time
