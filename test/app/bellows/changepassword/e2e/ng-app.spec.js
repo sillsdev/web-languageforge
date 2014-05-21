@@ -27,7 +27,6 @@ var loginPage = require('../../../pages/loginPage');
 
 loginPage.loginAsUser();
 
-// TODO: Coordinate with other devs on picking a "standard" test username & password. 2014-05 RM
 var testUser          = constants.memberUsername;
 var originalPassword  = constants.memberPassword;
 var newPassword       = 'abc123';
@@ -72,15 +71,7 @@ var SfChangePasswordPage = function() {
 describe('E2E testing: Change password', function() {
 	var sfChangePasswordPage = new SfChangePasswordPage();
 	
-	var LoginPage = require('../../../pages/loginPage'); 
-	var loginPage = new LoginPage();
-
-	// TODO: Coordinate with other devs on picking a "standard" test username & password. 2014-05 RM
-	var testUser          = constants.memberUsername;
-	var originalPassword  = constants.memberPassword;
-	var newPassword       = 'abc123';
-	var incorrectPassword = newPassword + '4';
-	var currentPassword   = originalPassword;
+	var loginPage = require('../../../pages/loginPage'); 
 
 	sfChangePasswordPage.getChangePassword();
 	
