@@ -58,6 +58,25 @@ var SfQuestionPage = function() {
 	};
 	
 
+	// Private method to handle the upvote or downvote of an answer.
+	// index: index of the answers.list to vote
+	// direction: 0=upvote, 1=downvote
+	var vote = function(index, direction) {
+		page.answers.list.get(index).$('.vote').$$('a').then(function(voteCtrls) {
+			voteCtrls[direction].click();
+		});
+	};
+
+	// Upvote the answer at the index of answers.list
+	this.answers.upvote = function(index) {
+		vote(index, 0);
+	};
+
+	// Downvote the answer at the index of the answers.list
+	this.answers.downvote = function(index) {
+		vote(index, 1);
+	};
+	
 	// Add a comment to the last (most recent) Answer on the page
 	this.comments.addToLastAnswer = function(comment) {
 		this.addCommentCtrl = page.answers.last().$('table.comments').$('a.addCommentLink');

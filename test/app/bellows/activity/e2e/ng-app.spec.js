@@ -13,18 +13,19 @@ describe('E2E testing: User Activity page', function() {
 	var testQuestion      = 'Who is speaking?';
 
 	// Script of actions to perform which will then be verified on the activity feed.
-	// Currently, this list assumes normal user is doing the actions on his own contributions
+	// Currently, this list assumes test normal user has the role permissions for the actions
 	// scope options:  {'answers', 'comments'}
 	// action options: {'add', 'addToLastAnswer', 'edit', 'upvote', 'archive'}
-	// value: free text
+	// value: normally free text.  For upvote/downvote actions, value is then used as the index into the answers.list
 	var script = [
 		{scope: 'answers',  action: 'add',              value: 'Beethoven was the speaker.'},
-		{scope: 'comments', action: 'addToLastAnswer',  value: 'This is an original comment.'},/**/
+		{scope: 'comments', action: 'addToLastAnswer',  value: 'This is an original comment.'},
 		{scope: 'comments', action: 'edit',             value: 'This is an edited comment for the E2E test.'},
 		{scope: 'answers',  action: 'edit',             value: 'Mozart was also the speaker.'},
+		{scope: 'answers',  action: 'upvote',           value: 0},
+		{scope: 'answers',  action: 'downvote',         value: 0},
 		/* TODO: add these actions 2014-05 DDW */
-/*		{scope: 'answers',  action: 'upvote',           value: ''},
-		{scope: 'comments', action: 'archive',          value: ''},
+/*		{scope: 'comments', action: 'archive',          value: ''},
 		{scope: 'answers',  action: 'archive',          value: ''}
 		*/
 	];
@@ -40,7 +41,8 @@ describe('E2E testing: User Activity page', function() {
 	
 	it('should perform some actions to populate the activity feed', function() {
 
-		// Perform the following actions to populate the activity feed
+		// Perform the following actions to populate the activity feed.
+		// Assumes admin/project manager has add a text and test question to the project
 		
 		// Navigate to the Test Project -> Text -> Question
 		projectListPage.get();
@@ -50,8 +52,9 @@ describe('E2E testing: User Activity page', function() {
 
 		// Evaluate the script actions
 		for (var i=0; i<script.length; i++) {
-			// Append timestamp for answer actions
-			if (script[i].scope == 'answers') {
+			// Append timestamp for answer add/edit actions
+			if ((script[i].scope == 'answers') && 
+				((script[i].action == 'add') || (script[i].action == 'edit'))) {
 				script[i].value = script[i].value + new Date();
 			}
 			
@@ -78,14 +81,16 @@ describe('E2E testing: User Activity page', function() {
 		var activityText = '';
 		
 		while (scriptIndex >= 0) {
-			// Archive actions are not in the activity feed
-			if (script[scriptIndex].action == 'archive') {
+			// Skip verifying the following actions because they don't appear in the activity feed
+			if ((script[scriptIndex].action == 'archive') ||
+				(script[scriptIndex].action == 'downvote')) {
+				console.log('skip verifying action ' + script[scriptIndex].action);
 				scriptIndex--;
-				console.log('skipping archive action');
 				continue;
 			}
 
-			// Expect activity text to contain username, script scope, action, and value
+			// Expect some combinations of username, script scope, action, and value
+			// to appear in the activity feed
 			activityText = activityPage.getActivityText(activityIndex);
 			expect(activityText).toContain(constants.memberUsername);
 			
@@ -98,15 +103,21 @@ describe('E2E testing: User Activity page', function() {
 			// TODO: Any expections on other actions?  2014-05 DDW
 			if (script[scriptIndex].action == 'edit') {
 				expect(activityText).toContain('updated');
-			}
+			} else if (script[scriptIndex].action == 'upvote') {
+				expect(activityText).toContain('+1\'d')
+			};
 			
-			expect(activityText).toContain(script[scriptIndex].value);
+			if (typeof script[scriptIndex].value == 'string') {
+				expect(activityText).toContain(script[scriptIndex].value);
+			};
 
 			scriptIndex--;
 			activityIndex++;
 			
 		};
 
+		// Additional tests to verify activity page filtering
+		
 		// Expect the last activity to be performed by admin
 		activityPage.getLength().then(function(len) {
 			activityText = activityPage.getActivityText(len - 1);
