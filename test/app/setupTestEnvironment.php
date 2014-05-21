@@ -17,15 +17,30 @@ use libraries\shared\Website;
 // Fake some $_SERVER variables like HTTP_HOST for the sake of the code that needs it
 $_SERVER['HTTP_HOST'] = 'scriptureforge.local'; // TODO: Consider parsing protractorConf.js and loading baseUrl from it
 
-//print_r($_SERVER);
-
 // start with a fresh database
 $db = \models\mapper\MongoStore::connect(SF_DATABASE);
 foreach ($db->listCollections() as $collection) { $collection->drop(); }
 
 $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
 
-//print_r(UserCommands::listUsers());
+// Also empty out databases for the test projects
+function dbNameForProject($projectName) {
+	// See ProjectModel->databaseName() in models/ProjectModel.php (line 85 as of now, 2014-05)
+	// We can't call it directly since we don't have a ProjectModel instance, so we will duplicate its logic
+	$name = strtolower($projectName);
+	$name = str_replace(' ', '_', $name);
+	return 'sf_' . $name;
+}
+
+$projectDbNames = array(
+	dbNameForProject($constants['testProjectName']),
+	dbNameForProject($constants['otherProjectName']),
+);
+
+foreach ($projectDbNames as $dbName) {
+	$db = \models\mapper\MongoStore::connect($dbName);
+	foreach ($db->listCollections() as $collection) { $collection->drop(); }
+}
 
 $adminUser = UserCommands::createUser(array(
 	'id' => '',
@@ -88,8 +103,6 @@ $text2 = TextCommands::updateText($testProject, array(
 	'content' => $constants['testText2Content']
 ));
 
-echo("$text1\n");
-
 $question1 = QuestionCommands::updateQuestion($testProject, array(
 	'id' => '',
 	'textRef' => $text1,
@@ -102,8 +115,5 @@ $question2 = QuestionCommands::updateQuestion($testProject, array(
 	'title' => $constants['testText1Question2Title'],
 	'description' => $constants['testText1Question2Content']
 ));
-
-echo("$question1\n");
-//print_r(UserCommands::listUsers());
 
 ?>
