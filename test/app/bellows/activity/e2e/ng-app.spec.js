@@ -9,7 +9,6 @@ var SfActivity = function() {
 describe('E2E testing: User Activity page', function() {
 	var sfUserActivity    = new SfActivity();
 	
-	var testProjectName   = 'test_project';
 	var testText          = 'Chapter 3';
 	var testQuestion      = 'Who is speaking?';
 
@@ -20,11 +19,11 @@ describe('E2E testing: User Activity page', function() {
 	// value: free text
 	var script = [
 		{scope: 'answers',  action: 'add',              value: 'Beethoven was the speaker.'},
-		{scope: 'comments', action: 'addToLastAnswer',  value: 'This comment is added in an E2E test.'},
-		/* TODO: add these actions 2014-05 DDW
+		{scope: 'comments', action: 'addToLastAnswer',  value: 'This is an original comment.'},/**/
 		{scope: 'comments', action: 'edit',             value: 'This is an edited comment for the E2E test.'},
-		{scope: 'answers',  action: 'edit',             value: 'Mozart was also the speaker.' + new Date()},
-		{scope: 'answers',  action: 'upvote',           value: ''},
+		{scope: 'answers',  action: 'edit',             value: 'Mozart was also the speaker.'},
+		/* TODO: add these actions 2014-05 DDW */
+/*		{scope: 'answers',  action: 'upvote',           value: ''},
 		{scope: 'comments', action: 'archive',          value: ''},
 		{scope: 'answers',  action: 'archive',          value: ''}
 		*/
@@ -45,7 +44,7 @@ describe('E2E testing: User Activity page', function() {
 		
 		// Navigate to the Test Project -> Text -> Question
 		projectListPage.get();
-		projectListPage.clickOnProject(testProjectName);
+		projectListPage.clickOnProject(constants.testProjectName);
 		projectPage.clickOnText(testText);
 		textPage.clickOnQuestion(testQuestion);
 
@@ -55,11 +54,14 @@ describe('E2E testing: User Activity page', function() {
 			if (script[i].scope == 'answers') {
 				script[i].value = script[i].value + new Date();
 			}
-
+			
+			//console.log('Scope: ' + script[i].scope + ' Action: ' + script[i].action);
 			questionPage[script[i].scope][script[i].action](script[i].value);
+			browser.debugger();
 		};
 
-		console.log('Script has ' + script.length + ' actions');
+		// Debug statement to check script actions
+		//console.log('Script has ' + script.length + ' actions');
 
 	});
 	
@@ -93,19 +95,10 @@ describe('E2E testing: User Activity page', function() {
 			expect(activityText).toContain(expectedString);
 			
 
-			// TODO: add expectation on some actions?  2014-05 DDW
+			// TODO: Any expections on other actions?  2014-05 DDW
 			if (script[scriptIndex].action == 'edit') {
 				expect(activityText).toContain('updated');
 			}
-//			expectedString = ;
-//			switch (script[scriptIndex].action) {
-//			case 'add', 'addToLast' :
-//				expectedString = 'added';
-//				break;
-//			default :
-//				expectedString = script[scriptIndex].action;
-//			}
-//			expect(activityText).toContain(expectedString);
 			
 			expect(activityText).toContain(script[scriptIndex].value);
 
