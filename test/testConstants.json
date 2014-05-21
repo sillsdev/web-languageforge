@@ -11,6 +11,18 @@
 	"memberPassword"  : "normaluser1",
 	"memberName"      : "Test User",
 	"memberEmail"     : "test_runner_normal_user@example.com",
+
 	"testProjectName"  : "Test Project",
-	"otherProjectName" : "Other Project for Testing"
+	"otherProjectName" : "Other Project for Testing",
+
+	"testText1Title"   : "Chapter 3",
+	"testText1Content" : "Content of chapter 3",
+	"testText2Title"   : "Chapter 4",
+	"testText2Content" : "Fourth chapter goes here",
+
+	"testText1Question1Title"   : "Who is speaking?",
+	"testText1Question1Content" : "Who is speaking in this text?",
+	"testText1Question2Title"   : "Where is the story happening?",
+	"testText1Question2Content" : "Where is the story in this text happening?"
+
 }
