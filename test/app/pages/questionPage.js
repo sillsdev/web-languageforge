@@ -53,8 +53,16 @@ var SfQuestionPage = function() {
 		saveCtrl.click();
 	};
 	
-	// TBD: "delete" is a reserved word, and the functionality will be moved to "archive" at a later time
-	this.answers.archive = function(answer) {
+	// Delete the answer at index.  If no index given, delete the last answer.
+	// Note: "delete" is a reserved word, and 
+	// the functionality will be moved to "archive" at a later time
+	this.answers.archive = function(index) {
+		if (index === "") {
+			page.answers.last().$('.answer').findElement(by.linkText('delete')).click();
+		} else {
+			//console.log('should delete answer at index ' + index);
+			page.answers.list.get(index).$('.answer').findElement(by.linkText('delete')).click();
+		}
 	};
 	
 
@@ -114,8 +122,17 @@ var SfQuestionPage = function() {
 		browser.debugger();
 	};
 	
-	// TBD: "delete" is a reserved word, and the functionality will be moved to "archive" at a later time
-	this.comments.archive = function(comment) {
+	// Delete the comment at index.  If no index given, delete the last comment.
+	// Note: "delete" is a reserved word, and 
+	// the functionality will be moved to "archive" at a later time
+	this.comments.archive = function(index) {
+		if (index === "") {
+			page.comments.last().findElement(by.linkText('delete')).click();
+		} else {
+			//console.log('should delete comment at index ' + index);
+			page.comments.list.get(index).findElement(by.linkText('delete')).click();
+		};
+		
 	};
 };
 
