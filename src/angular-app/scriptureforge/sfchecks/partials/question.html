@@ -70,7 +70,7 @@
 							<label for="inputtagstring">Add tags (comma-separated):</label>
 							<add-tags tags="tags"></add-tags>
 							<label></label>
-							<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+							<button type="submit" class="tagBtn"><i class="icon-ok"></i>Save</button>
 							<a ng-click="tagEditorVisible=false">Cancel</a>
 						</form>
 					</div>
@@ -81,7 +81,7 @@
 					<ng-switch on="answerEditorVisible(answerId)">
 					<form ng-submit="editAnswer(editedAnswer)" ng-switch-when="true">
 						<textarea required ng-model="editedAnswer.content" pui-jqte="jqteOptions"></textarea>
-						<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+						<button type="submit" class="btn answerBtn"><i class="icon-ok"></i>Save</button>
 						<a class="btn-link" ng-click="hideAnswerEditor()">Cancel</a>
 					</form>
 					</ng-switch>
