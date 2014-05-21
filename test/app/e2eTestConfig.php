@@ -10,6 +10,7 @@ require_once(APPPATH . 'vendor/autoload.php');
 
 define('SF_DATABASE', 'scriptureforge_test');
 define('SFCONFIG', APPPATH . 'config/sf_config.php');
+define('MONGOCONFIG', APPPATH . 'config/mongodb.php');
 require_once(SFCONFIG);
 
 require_once APPPATH . 'helpers/loader_helper.php';
