@@ -45,16 +45,10 @@ describe('E2E Projects List App - Normal User', function() {
 
 // Two helper functions to avoid duplicating the same checks in admin test below
 var expectProjectToBeLinked = function(projectRow) {
-	var inLink = projectRow.$('li > a > span');
-	var notInLink = projectRow.$('li > span');
-	expect(inLink.isDisplayed()).toBeTruthy();
-	expect(notInLink.isDisplayed()).toBeFalsy();
+	expect(projectRow.findElement(by.elemMatches('a', constants.testProjectName)).isDisplayed()).toBeTruthy();
 };
 var expectProjectNotToBeLinked = function(projectRow) {
-	var inLink = projectRow.$('li > a > span');
-	var notInLink = projectRow.$('li > span');
-	expect(inLink.isDisplayed()).toBeFalsy();
-	expect(notInLink.isDisplayed()).toBeTruthy();
+	expect(projectRow.findElement(by.elemMatches('a', constants.testProjectName)).isDisplayed()).toBeFalsy();
 };
 
 describe('E2E Projects List App - Site Admin User', function() {
