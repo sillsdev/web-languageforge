@@ -46,7 +46,7 @@ var SfQuestionPage = function() {
 		var answersField = page.answers.last().$('.answer').$(".jqte_editor");
 		var saveCtrl     = page.answers.last().$(".answerBtn");
 
-		answersField.clear();
+		answersField.sendKeys(protractor.Key.CONTROL, "a");
 		answersField.sendKeys(answer);
 		answersField.sendKeys(protractor.Key.TAB);
 		
@@ -114,7 +114,7 @@ var SfQuestionPage = function() {
 		var commentsField = page.comments.last().$('textarea');
 		var saveCtrl      = page.comments.last().findElement(by.partialButtonText('Save'));
 
-		commentsField.clear();
+		commentsField.sendKeys(protractor.Key.CONTROL, "a");
 		commentsField.sendKeys(comment);
 		commentsField.sendKeys(protractor.Key.TAB);
 
