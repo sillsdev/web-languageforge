@@ -3,8 +3,10 @@ exports.config = {
   // The address of a running selenium server.
   // seleniumAddress: 'http://localhost:4444/wd/hub',
   seleniumAddress: 'http://192.168.56.1:4444/wd/hub',
-  baseUrl: 'http://jamaicanpsalms.scriptureforge.local',
-
+  // TODO: Re-enable when Test Project can be created with the jamaicanpsalm theme   2014-05 DDW
+  //baseUrl: 'http://jamaicanpsalms.scriptureforge.local',
+  baseUrl: 'http://scriptureforge.local',
+  
   // To run tests in a single browser, uncomment the following
   capabilities: {
     'browserName': 'chrome'
