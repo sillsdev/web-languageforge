@@ -106,4 +106,24 @@ $question2 = QuestionCommands::updateQuestion($testProject, array(
 	'description' => $constants['testText1Question2Content']
 ));
 
+$answer1 = QuestionCommands::updateAnswer($testProject, $question1, array(
+	'id' => '', 
+	'content' => $constants['testText1Question1Answer']),
+	$managerUser);
+$answer1Id = array_keys($answer1)[0];
+$answer2 = QuestionCommands::updateAnswer($testProject, $question2, array(
+	'id' => '', 
+	'content' => $constants['testText1Question2Answer']),
+	$managerUser);
+$answer2Id = array_keys($answer2)[0];
+	
+$comment1 = QuestionCommands::updateComment($testProject, $question1, $answer1Id, array(
+	'id' => '', 
+	'content' => $constants['testText1Question1Answer1Comment']),
+	$managerUser);
+$comment2 = QuestionCommands::updateComment($testProject, $question2, $answer2Id, array(
+	'id' => '', 
+	'content' => $constants['testText1Question2Answer2Comment']),
+	$managerUser);
+
 ?>

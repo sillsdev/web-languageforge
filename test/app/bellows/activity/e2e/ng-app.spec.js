@@ -13,7 +13,7 @@ var loginPage       = require('../../../pages/loginPage');
 // Currently, this list assumes test normal user has the role permissions for the actions
 // scope options:  {'answers', 'comments'}
 // action options: {'add', 'addToLastAnswer', 'edit', 'upvote', 'archive'}
-// value: normally free text.  Can be an integer when used as index into the answers.list
+// value: normally free text.  Can be an integer when used as 0-based index into the answers.list
 //        If value is left blank, then perform the action on the last item
 var script = [
 	{scope: 'answers',   action: 'add',              value: 'Beethoven was the speaker.'},
@@ -41,29 +41,27 @@ var script = [
 
 
 // Comment out Manager while we troubleshoot control flow
-var roles = ['User', 'Manager'];
+// Array of test usernames to test Activity page with different roles
+var usernames = [constants.memberUsername,
+                 constants.managerUsername
+				 ];
 
-// Perform activity E2E tests according to the different roles
-function doEverything(role) {
-	describe('E2E testing: ' + role + ' Activity page', function() {
+// Run the Activity E2E as each test user
+usernames.forEach(function(expectedUsername){
 
-		beforeEach (function(){
-			if (role == 'User') {
+	// Perform activity E2E tests according to the different roles
+	describe('Activity Page E2E testing as: ' + expectedUsername, function() {
+
+		it('should populate the activity feed as ' + expectedUsername, function() {
+			// Login before test to ensure proper role
+			if (expectedUsername == constants.memberUsername) {
 				loginPage.loginAsUser();
-			} else if (role == 'Manager') {
+			} else if (expectedUsername == constants.managerUsername) {
 				loginPage.loginAsManager();
 			};
-		});
-		
-		// Logout to known state
-		afterEach (function() {
-			loginPage.logout();
-		});
-	
-		it('should perform some ' + role + ' actions to populate the activity feed', function() {
 
 			// Perform the following actions to populate the activity feed.
-			// Assumes admin/project manager has add a text and test question to the project
+			// Assumes test project has already been populated with a test text and question
 			
 			// Navigate to the Test Project -> Text -> Question
 			projectListPage.get();
@@ -89,14 +87,7 @@ function doEverything(role) {
 
 		});
 
-		var expectedUsername = '';
-		if (role == 'User') {
-			expectedUsername = constants.memberUsername;
-		} else if (role == 'Manager') {
-			expectedUsername = constants.managerUsername;
-		};
-		
-		it ('should verify ' + role + ' actions appear on the activity page', function() {
+		it ('should verify actions appear on the activity feed as ' + expectedUsername, function() {
 			// Now check the activity feed.  Current items are at the head
 			// of the activity feed so traverse the script in reverse order
 			activityPage.get();
@@ -122,7 +113,7 @@ function doEverything(role) {
 				activityText = activityPage.getActivityText(activityIndex);
 				expect(activityText).toContain(expectedUsername);
 				
-				// Truncate the ending 's' of the action string to match string comparison tenses
+				// Truncate the ending 's' of the action string to partially match strings with different verb tenses
 				var expectedString = script[scriptIndex].scope;
 				expectedString = expectedString.replace(/s$/gi, '');
 				expect(activityText).toContain(expectedString);
@@ -179,8 +170,4 @@ function doEverything(role) {
 		
 		});
 	});
-};
-
-for (var i=0; i<roles.length; i++) {
-	doEverything(roles[i]); 
-};
+});
