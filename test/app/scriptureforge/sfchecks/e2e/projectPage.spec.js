@@ -1,27 +1,34 @@
 'use strict';
 
-describe('the project dashboard AKA text list page', function() {
+describe('the project dashboard AKA text list page - normal user', function() {
 	var projectListPage = require('../../../pages/projectsPage.js');
 	var projectPage = require('../../../pages/projectPage.js');
 	var loginPage = require('../../../pages/loginPage.js');
+	var constants = require('../../../../testConstants.json');
 	
-	projectListPage.setup.makeSampleProject();
-
+	it('setup: logout, login as project member, go to project dashboard', function() {
+		loginPage.logout();
+		loginPage.loginAsMember();
+    	projectListPage.get();
+    	projectListPage.clickOnProject(constants.testProjectName);
+	});
+	
+	it('lists existing texts', function() {
+		expect(projectPage.textNames.count()).toBeGreaterThan(1);
+	});
+	
+	
 	it('can create a new text', function() {});
 	
-	it('lists existing texts', function() {});
 	
-	it('can click through to the questions page', function() {});
+	it('can click through to a questions page', function() {});
 	
 	it('can click through to the settings page', function() {});
 	
-	// TODO: how do we clean up the test data??? - cjh
-	
-	
+	/*
     it('can click on a text', function() {
     	loginPage.loginAsUser();
     	//loginPage.login('chris', '0JvbuHNYQrvib3n0iNls');
-    	projectsListPage.get();
     	
     	projectsListPage.setup.makeSampleProject
 
@@ -30,5 +37,6 @@ describe('the project dashboard AKA text list page', function() {
     	projectPage.clickOnText(firstTextName);
     	browser.pause();
     });
+    */
 
 });

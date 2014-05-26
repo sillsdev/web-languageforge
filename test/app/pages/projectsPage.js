@@ -142,18 +142,6 @@ var SfProjectsPage = function() {
 		this.addUserToProject(projectName, userName, "Member");
 	};
 	
-	this.setup = {};
-	
-	this.setup.makeProject = function(projectName) {
-		// this is somewhat faulty because it will not handle the case where a project exists but the user is NOT a member (ie. the project is not linked)
-		element.isElementPresent(by.partialLinkText(projectName)).then(function(isPresent) {
-			if(!isPresent) {
-				this.projectsList.getText().matches()
-				
-			}
-		});
-	};	
-
 	this.removeUserFromProject = function(projectName, userName) {
 		this.findProject(projectName).then(function(projectRow) {
 			var link = projectRow.$('a');
