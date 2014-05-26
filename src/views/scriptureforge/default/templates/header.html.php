@@ -3,7 +3,7 @@
 <![endif]-->
 		<div id="header">
 			<div class="container">
-				<div class="sf-logo-large">
+				<div class="sf-logo-medium">
 					<img src="/images/scriptureforge/default/sf_logo_medium.png" alt="Scripture Forge" style="width:92px; height:114px" />
 				</div>
 				<div id="header-nav" class="pull-left">
