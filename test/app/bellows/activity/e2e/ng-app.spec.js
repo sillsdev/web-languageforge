@@ -16,7 +16,7 @@ var loginPage       = require('../../../pages/loginPage');
 // value: normally free text.  Can be an integer when used as 0-based index into the answers.list
 //        If value is left blank, then perform the action on the last item
 var script = [
-	{scope: 'answers',   action: 'add',              value: 'Beethoven was the speaker.'},
+	/*{scope: 'answers',   action: 'add',              value: 'Beethoven was the speaker.'},
 	{scope: 'comments',  action: 'addToLastAnswer',  value: 'This is an original comment.'},
 	{scope: 'comments',  action: 'edit',             value: 'This is an edited comment for the E2E test.'},
 	{scope: 'answers',   action: 'edit',             value: 'Mozart was also the speaker.'},
@@ -29,20 +29,20 @@ var script = [
 	//{scope: 'comments',  action: 'archive',          value: 1},
 	//{scope: 'answers',   action: 'archive',          value: 1},
 	*/
-	{scope: 'comments',  action: 'archive',          value: ''},
+	/*{scope: 'comments',  action: 'archive',          value: ''},
 	{scope: 'answers',   action: 'archive',          value: ''},
 	/*
-	// TODO: Manager actions to add   2014-05 DDW
-	//{scope: 'texts',     action: 'add',             value: 'Some text to add'},
+	// TODO: Manager actions to add   2014-05 DDW */
+	{scope: 'texts',     action: 'add',             value: constants.testText3Title},
 	//{scope: 'questions', action: 'add',             value: 'Some question to add'},
 	//{scope: 'users',     action: 'add',             value: 'Some Username to add to project'},
-	*/
+	//*/
 ];
 
 
 // Comment out Manager while we troubleshoot control flow
 // Array of test usernames to test Activity page with different roles
-var usernames = [constants.memberUsername,
+var usernames = [//constants.memberUsername,
                  constants.managerUsername
 				 ];
 
@@ -77,8 +77,26 @@ usernames.forEach(function(expectedUsername){
 					script[i].value = script[i].value + Math.floor(new Date().getTime() / 1000);
 				}
 				
-				//console.log('Scope: ' + script[i].scope + ' Action: ' + script[i].action + ' Value: ' + script[i].value);
-				questionPage[script[i].scope][script[i].action](script[i].value);
+				switch (script[i].scope) {
+					case 'texts' :
+						console.log('Attempting to create new text');
+						projectListPage.get();
+						projectListPage.clickOnProject(constants.testProjectName);
+						projectPage.addNewText(script[i].value, projectPage.testData);
+
+
+					break;
+					case 'questions' :
+					textPage.clickOnQuestion(constants.testText1Question1Title);
+
+					break;
+					case 'users' :
+					break;
+					default :
+						//console.log('Scope: ' + script[i].scope + ' Action: ' + script[i].action + ' Value: ' + script[i].value);
+
+						questionPage[script[i].scope][script[i].action](script[i].value);
+				}
 				browser.debugger();
 			};
 
@@ -116,9 +134,12 @@ usernames.forEach(function(expectedUsername){
 				// Truncate the ending 's' of the action string to partially match strings with different verb tenses
 				var expectedString = script[scriptIndex].scope;
 				expectedString = expectedString.replace(/s$/gi, '');
-				expect(activityText).toContain(expectedString);
+				if (expectedString == 'text') {
+					expect(activityText).toContain(script[scriptIndex].value);
+				} else {
+					expect(activityText).toContain(expectedString);
+				};
 				
-
 				// TODO: Any expections on other actions?  2014-05 DDW
 				if (script[scriptIndex].action == 'edit') {
 					expect(activityText).toContain('updated');
@@ -152,9 +173,12 @@ usernames.forEach(function(expectedUsername){
 			activityPage.clickOnShowOnlyMyActivity();
 			
 			// Expect the last activity to be performed by current username
+			// If scope isn't texts
 			activityPage.getLength().then(function(len) {
 				activityText = activityPage.getActivityText(len - 1);
-				expect(activityText).toContain(expectedUsername);
+				if (script[script.lastIndex].scope != 'texts') {
+					expect(activityText).toContain(expectedUsername);
+				};
 			});
 			
 			// Show all activity

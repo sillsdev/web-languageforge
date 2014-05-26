@@ -27,11 +27,14 @@ var SfProjectPage = function() {
 	
 	this.addNewText = function(title, usx) {
 		expect(this.newText.showFormButton.isDisplayed()).toBe(true);
-		this.newText.showFormButton.click();
+		//this.newText.showFormButton.click();
+		element(by.partialButtonText('Add New Text')).click();
 		browser.driver.sleep(500); // wait for animation to finish
 		this.newText.title.sendKeys(title);
 		this.newText.usx.sendKeys(usx);
-		this.form.submit();
+		var saveFormButton = element(by.partialButtonText('Save'));
+		saveFormButton.click();
+		//this.form.submit();
 	};
 	
 	this.clickOnProjectSettings = function() {
