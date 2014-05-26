@@ -2,8 +2,7 @@
 require_once('e2eTestConfig.php');
 
 // put the test config into place
-copy(SFCONFIG . '.fortest', SFCONFIG);
-copy(MONGOCONFIG . '.fortest', MONGOCONFIG);
+system(TestPath . '/useTestConfig.sh');
 
 // use commands go here (after the e2eTestConfig)
 use models\commands\ProjectCommands;
@@ -12,6 +11,7 @@ use models\commands\TextCommands;
 use models\commands\QuestionCommands;
 use models\rights\Roles;
 use models\scriptureforge\SfProjectModel;
+use models\ProjectModel;
 use libraries\shared\Website;
 
 // Fake some $_SERVER variables like HTTP_HOST for the sake of the code that needs it
@@ -24,21 +24,11 @@ foreach ($db->listCollections() as $collection) { $collection->drop(); }
 $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
 
 // Also empty out databases for the test projects
-function dbNameForProject($projectName) {
-	// See ProjectModel->databaseName() in models/ProjectModel.php (line 85 as of now, 2014-05)
-	// We can't call it directly since we don't have a ProjectModel instance, so we will duplicate its logic
-	$name = strtolower($projectName);
-	$name = str_replace(' ', '_', $name);
-	return 'sf_' . $name;
-}
-
-$projectDbNames = array(
-	dbNameForProject($constants['testProjectName']),
-	dbNameForProject($constants['otherProjectName']),
-);
-
-foreach ($projectDbNames as $dbName) {
-	$db = \models\mapper\MongoStore::connect($dbName);
+$projectNames = array($constants['testProjectName'], $constants['otherProjectName']);
+foreach ($projectNames as $name) {
+	$projectModel = new ProjectModel();
+	$projectModel->projectname = $name;
+	$db = \models\mapper\MongoStore::connect($projectModel->databaseName());
 	foreach ($db->listCollections() as $collection) { $collection->drop(); }
 }
 
