@@ -46,15 +46,22 @@ var SfProjectsPage = function() {
 	};
 
 	this.findProject = function(projectName) {
+		var foundRow = undefined;
 		var result = protractor.promise.defer();
 		var searchName = new RegExp(projectName + ' \\(' + projectTypes['sf'] + '\\)');
 		this.select100ItemsPerPage(); // Ensure that the project *will* be on page 1, so we don't have to click through pagination links
 		this.projectsList.map(function(row) {
 			row.getText().then(function(text) {
 				if (searchName.test(text)) {
-					result.fulfill(row);
+					foundRow = row;
 				};
 			});
+		}).then(function() {
+			if (foundRow) {
+				result.fulfill(foundRow);
+			} else {
+				result.reject("Project " + projectName + " not found.");
+			}
 		});
 		return result;
 	};
