@@ -43,24 +43,15 @@ describe('E2E Projects List App - Normal User', function() {
 	});
 });
 
-// A few helper functions to avoid duplicating the same checks in admin test below
-var expectProjectToBeLinked = function(projectRow) {
-	expect(projectRow.findElement(by.elemMatches('a', constants.testProjectName)).isDisplayed()).toBeTruthy();
+// Two helper functions to avoid duplicating the same checks in admin test below
+var shouldProjectBeLinked = function(projectRow, bool) {
+	expect(projectRow.findElement(by.elemMatches('a', constants.testProjectName)).isDisplayed()).toBe(bool);
 };
-var expectProjectNotToBeLinked = function(projectRow) {
-	expect(projectRow.findElement(by.elemMatches('a', constants.testProjectName)).isDisplayed()).toBeFalsy();
-};
-var expectProjectToHaveButtons = function(projectRow) {
+var shouldProjectHaveButtons = function(projectRow, bool) {
 	var addAsManagerBtn = projectRow.findElement(by.partialButtonText("Add me as Manager"));
 	var addAsMemberBtn = projectRow.findElement(by.partialButtonText("Add me as Member"));
-	expect(addAsManagerBtn.isDisplayed()).toBeTruthy();
-	expect(addAsMemberBtn.isDisplayed()).toBeTruthy();
-};
-var expectProjectNotToHaveButtons = function(projectRow) {
-	var addAsManagerBtn = projectRow.findElement(by.partialButtonText("Add me as Manager"));
-	var addAsMemberBtn = projectRow.findElement(by.partialButtonText("Add me as Member"));
-	expect(addAsManagerBtn.isDisplayed()).toBeFalsy();
-	expect(addAsMemberBtn.isDisplayed()).toBeFalsy();
+	expect(addAsManagerBtn.isDisplayed()).toBe(bool);
+	expect(addAsMemberBtn.isDisplayed()).toBe(bool);
 };
 
 describe('E2E Projects List App - Site Admin User', function() {
@@ -70,7 +61,9 @@ describe('E2E Projects List App - Site Admin User', function() {
 		projectsPage.get();
 		expect(projectsPage.projectsList.count()).toBeGreaterThan(0);
 		// Check that the test project is around
-		projectsPage.findProject(constants.testProjectName).then(expectProjectToBeLinked);
+		projectsPage.findProject(constants.testProjectName).then(function(projectRow) {
+			shouldProjectBeLinked(projectRow, true);
+		});
 	});
 
 	it('should show add and delete buttons', function() {
@@ -100,8 +93,8 @@ describe('E2E Projects List App - Site Admin User', function() {
 		// The admin should not see "Add myself to project" buttons when he's already a project member or manager
 		// And the project name should be a clickable link
 		projectsPage.findProject(constants.testProjectName).then(function(projectRow) {
-			expectProjectToBeLinked(projectRow);
-			expectProjectNotToHaveButtons(projectRow);
+			shouldProjectBeLinked(projectRow, true);
+			shouldProjectHaveButtons(projectRow, false);
 		});
 		projectsPage.removeUserFromProject(constants.testProjectName, constants.adminUsername);
 		loginPage.loginAsAdmin();
@@ -109,15 +102,15 @@ describe('E2E Projects List App - Site Admin User', function() {
 		// Now the admin should have "Add myself to project" buttons
 		// And the project name should NOT be a clickable link
 		projectsPage.findProject(constants.testProjectName).then(function(projectRow) {
-			expectProjectNotToBeLinked(projectRow);
-			expectProjectToHaveButtons(projectRow);
+			shouldProjectBeLinked(projectRow, false);
+			shouldProjectHaveButtons(projectRow, true);
 			// Now add the admin back to the project
-			addAsManagerBtn.click();
+			projectRow.findElement(by.partialButtonText("Add me as Manager")).click();
 		});
 		// And the buttons should go away after one of them is clicked
 		projectsPage.findProject(constants.testProjectName).then(function(projectRow) {
-			expectProjectToBeLinked(projectRow);
-			expectProjectNotToHaveButtons(projectRow);
+			shouldProjectBeLinked(projectRow, true);
+			shouldProjectHaveButtons(projectRow, false);
 		});
 	});
 });
