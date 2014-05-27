@@ -17,28 +17,28 @@ var SfProjectPage = function() {
 		element(by.linkText(textTitle)).click();
 	};
 	
+	this.textLink = function(title) {
+		return element(by.linkText(title));
+	};
+	
 	this.textNames = element.all(by.repeater('text in visibleTexts').column('title'));
+	this.textList = element.all(by.repeater('text in visibleTexts'));
+	this.settingsButton = element(by.id('projectSettingsButton'));
+
 	this.newText = {
 		showFormButton: element(by.partialButtonText('Add New Text')),
 		form: element(by.name('newTextForm')),
 		title: element(by.model('title')),
-		usx: element(by.model('content'))
+		usx: element(by.model('content')),
+		saveButton: element(by.css('form[name="newTextForm"]')).element(by.partialButtonText('Save'))
 	};
 	
 	this.addNewText = function(title, usx) {
 		expect(this.newText.showFormButton.isDisplayed()).toBe(true);
-		//this.newText.showFormButton.click();
-		element(by.partialButtonText('Add New Text')).click();
-		browser.driver.sleep(500); // wait for animation to finish
+		this.newText.showFormButton.click();
 		this.newText.title.sendKeys(title);
 		this.newText.usx.sendKeys(usx);
-		var saveFormButton = element(by.partialButtonText('Save'));
-		saveFormButton.click();
-		//this.form.submit();
-	};
-	
-	this.clickOnProjectSettings = function() {
-		element(by.id('projectSettingsButton')).click();
+		this.newText.saveButton.click();
 	};
 	
 };
