@@ -260,16 +260,6 @@ angular.module(
 			id: textId,
 		};
 
-		// Breadcrumb
-		breadcrumbService.set('top',
-				[
-				 {href: '/app/sfchecks#/projects', label: 'My Projects'},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId, label: ''},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId, label: ''},
-				 {href: '/app/sfchecks#/project/' + $routeParams.projectId + '/' + $routeParams.textId + '/Settings', label: 'Settings'},
-				]
-		);
-
 		// Get name from text service. This really should be in the DTO, but this will work for now.
 		// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08
 		textService.settings_dto($scope.projectId, $scope.textId, function(result) {
@@ -281,8 +271,16 @@ angular.module(
 					editOther: ss.hasRight($scope.dto.rights, ss.domain.TEXTS, ss.operation.EDIT),
 				};
 //				console.log($scope.dto);
-				breadcrumbService.updateCrumb('top', 1, {label: $scope.dto.bcs.project.crumb});
-				breadcrumbService.updateCrumb('top', 2, {label: $scope.dto.text.title});
+
+				// Breadcrumb
+				breadcrumbService.set('top',
+						[
+						 {href: '/app/projects', label: 'My Projects'},
+						 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.dto.bcs.project.crumb},
+						 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: $scope.dto.text.title},
+						 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId) + '/Settings', label: 'Settings'},
+						]
+				);
 			}
 		});
 
