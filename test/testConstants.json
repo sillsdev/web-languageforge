@@ -31,7 +31,7 @@
 	"testText1Question2Answer"         : "Springfield",
 	"testText1Question2Answer2Comment" : "This is a manager's comment #2.",
 	"testText1Question3Title"          : "What is the meaning of life?",
-	"testText1Question3Content"        : "Meaning from Hitchhiker's Guide",
+	"testText1Question3Summary"        : "Meaning from Hitchhiker's Guide",
 	"testText1Question3Answer"         : "42"
 
 }
