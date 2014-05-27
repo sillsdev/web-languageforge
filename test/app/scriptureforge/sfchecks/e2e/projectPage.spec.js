@@ -56,9 +56,8 @@ describe('the project dashboard AKA text list page', function() {
 			expect(questionListPage.questionNames.count()).toBeGreaterThan(0);
 			browser.navigate().back();
 		});
-
 		
-		it('can create a new text', function() {
+		it('can create a new text (input text area)', function() {
 			expect(projectPage.newText.showFormButton.isDisplayed()).toBe(true);
 			projectPage.newText.showFormButton.click();
 			projectPage.newText.title.sendKeys(sampleTitle);
@@ -73,27 +72,43 @@ describe('the project dashboard AKA text list page', function() {
 		});
 		
 		it('can delete the text that was just created', function() {
-			//expect(projectPage.removeTextButton.isDisplayed()).toBe(true);
-			// expect the remove button is disabled
-			var firstCheckbox = projectPage.textList.first().findElement(by.css('input[type="checkbox"]'));
-			util.setCheckbox(firstCheckbox, true);
-			// expect the button is enabled
-			// click the delete button
-			// expect the text link to not be present
-
-			browser.driver.sleep(2000); // debug wait
-			
+			var deleteButton = projectPage.removeTextButton.find();
+			expect(deleteButton.isDisplayed()).toBe(true);
+			expect(deleteButton.isEnabled()).toBe(false);
+			util.setCheckbox(projectPage.getFirstCheckbox(), true);
+			expect(deleteButton.isEnabled()).toBe(true);
+			deleteButton.click();
+			browser.switchTo().alert().accept();
+			expect(deleteButton.isEnabled()).toBe(false);
+			expect(projectPage.textLink(sampleTitle).isPresent()).toBe(false);
 		});
 
-		it('can use the chapter trimmer to trim the USX when creating a new text', function() {});
+		// I am avoiding testing creating a new text using the file dialog for importing a USX file... - cjh
+		// according to http://stackoverflow.com/questions/8851051/selenium-webdriver-and-browsers-select-file-dialog
+		// you can have selenium interact with the file dialog by sending keystrokes but this is highly OS dependent
+		//it('can create a new text (file dialog)', function() {});
+		
+		it('can use the chapter trimmer to trim the USX when creating a new text', function() {
+			expect(projectPage.newText.showFormButton.isDisplayed()).toBe(true);
+			projectPage.newText.showFormButton.click();
+			projectPage.newText.title.sendKeys(sampleTitle);
+			projectPage.newText.usx.sendKeys(projectPage.testData.longUsx1);
+			projectPage.newText.fromChapter.sendKeys('1');
+			projectPage.newText.fromVerse.sendKeys('1');
+			projectPage.newText.toChapter.sendKeys('1');
+			projectPage.newText.toVerse.sendKeys('3');
+			projectPage.newText.saveButton.click();
+			expect(projectPage.textLink(sampleTitle).isDisplayed()).toBe(true);
+			projectPage.textLink(sampleTitle).click();
+			expect(questionListPage.textContent.getText()).not.toMatch('/Cana of Galilee/');
+			browser.navigate().back();
+
+			// clean up the text
+			util.setCheckbox(projectPage.getFirstCheckbox(), true);
+			var deleteButton = projectPage.removeTextButton.find();
+			deleteButton.click();
+			browser.switchTo().alert().accept();
+
+		});
 	});
-
-	
-
-	
-	
-	
-	
-	
-	
 });
