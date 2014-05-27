@@ -59,3 +59,40 @@ by.addLocator('elemMatches', function(selector, regexOrString, parentElem) {
 	});
 });
 // No need for a module.exports here, as we are adding this function to Protractor's "by" namespace
+
+var findRowByFunc = function(repeater, searchFunc) {
+	// Repeater can be either a string or an already-created by.repeater() object
+	if ("string" === typeof repeater) {
+		repeater = element.all(by.repeater(repeater));
+	}
+	var foundRow = undefined;
+	var result = protractor.promise.defer();
+	repeater.map(function(row) {
+		row.getText().then(function(rowText) {
+			if (searchFunc(rowText)) {
+				foundRow = row;
+			};
+		});
+	}).then(function() {
+		if (foundRow) {
+			result.fulfill(foundRow);
+		} else {
+			result.reject("Row not found.");
+		}
+	});
+	return result;
+};
+var findRowByText = function(repeater, searchText, regExpFlags) {
+	// regExpFlags is completely optional and can be left out.
+	// searchText can be a string, in which case it is turned into a RegExp (with specified flags, if given),
+	//      or it can be a RegExp
+	// repeater is as in findRowByFunc
+	if ("string" === typeof searchText) {
+		searchText = new RegExp(searchText, regExpFlags);
+	}
+	return findRowByFunc(repeater, function(rowText) {
+		return searchText.test(rowText);
+	});
+};
+module.exports.findRowByFunc = findRowByFunc;
+module.exports.findRowByText = findRowByText;
