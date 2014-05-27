@@ -36,7 +36,7 @@ var script = [
 	
 	// TODO: These actions are performed by only manager user   2014-05 DDW */
 	{scope: 'texts',     action: 'add',              value: constants.testText3Title},
-	//{scope: 'questions', action: 'add',             value: 'Some question to add'},
+	{scope: 'questions', action: 'add',              value: constants.testText1Question3Title},
 	//{scope: 'users',     action: 'add',             value: 'Some Username to add to project'},
 	//*/
 ];
@@ -108,7 +108,10 @@ describe('Activity Page E2E Test', function() {
 							browser.navigate().forward();
 						break;
 						case 'questions' :
-							textPage.clickOnQuestion(constants.testText1Question1Title);
+							browser.navigate().back();
+							textPage.addNewQuestion(script[i].value,
+													constants.testText1Question3Summary);
+							browser.navigate().forward();
 						break;
 						case 'users' :
 						break;

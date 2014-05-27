@@ -12,6 +12,25 @@ var SfTextPage = function() {
 	};
 	
 	this.questionNames = element.all(by.repeater('question in visibleQuestions').column('{{question.calculatedTitle}}'));
+	this.questionText = element(by.model('questionDescription'));
+	this.questionSummary = element(by.model('questionTitle'));
+	this.saveQuestion = element(by.partialButtonText('Save'));
+	
+	this.newQuestion = {
+		showFormButton:	element(by.partialButtonText('Add New Question')),
+		form:			element(by.name('newQuestionForm')),
+		description:	element(by.model('questionDescription')),
+		summary:		element(by.model('questionTitle')),
+		saveButton:		element(by.css('form[name="newQuestionForm"]')).element(by.partialButtonText('Save')),
+	};
+		
+	this.addNewQuestion = function(title, summary) {
+		expect(this.newQuestion.showFormButton.isDisplayed()).toBe(true);
+		this.newQuestion.showFormButton.click();
+		this.newQuestion.description.sendKeys(title);
+		this.newQuestion.summary.sendKeys(summary);
+		this.newQuestion.saveButton.click();
+	};
 	
 	this.printQuestionNames = function() {
 		this.questionNames.each(function(names) {
