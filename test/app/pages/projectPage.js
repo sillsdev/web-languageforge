@@ -14,10 +14,6 @@ var SfProjectPage = function() {
 		browser.get(this.urlprefix + '#/p/' + projectId);
 	};
 	
-	this.clickOnText = function(textTitle) {
-		element(by.linkText(textTitle)).click();
-	};
-	
 	this.textLink = function(title) {
 		return element(by.linkText(title));
 	};
