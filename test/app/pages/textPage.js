@@ -18,6 +18,8 @@ var SfTextPage = function() {
 			names.getText().then(console.log);
 		});
 	};
+	
+	this.textContent = element(by.id('text'));
 };
 
 module.exports = new SfTextPage();
