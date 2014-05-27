@@ -78,7 +78,7 @@
 	        <label><input type="checkbox" checked name="exportAnswers" disabled /> Export Answers</label>
 	        <label><input type="checkbox" checked name="exportComments" ng-model="exportConfig.exportComments" /> Export Comments</label>
             <label>Tags to Export: (<a ng-click="exportConfig.tagEditorVisible = !exportConfig.tagEditorVisible">Select Tags</a>) <p style="font-weight:bold" ng-show="exportConfig.tags.length == 0">None Selected</p><view-tags rights-delete="returnTrue()" tags="exportConfig.tags"></view-tags></label>
-	        <button ng-disabled="exportForm.$invalid || download.inprogress" ng-click="startExport()" class="btn">Prepare Export</button><span ng-show="download.inprogress"><img src="/images/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+	        <button ng-disabled="exportForm.$invalid || download.inprogress" ng-click="startExport()" class="btn">Prepare Export</button><span ng-show="download.inprogress"><img src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
 	        <p ng-show="download.complete && download.totalCount == 0" class="text-error">No answers/comments were exported.  Make sure you selected the correct tags and try again, or remove tags to export all answers/comments</p>
 	        </form>
 			<div class="overlay" ng-show="exportConfig.tagEditorVisible">
