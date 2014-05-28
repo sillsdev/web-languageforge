@@ -80,7 +80,7 @@ describe('Activity Page E2E Test', function() {
 				// Navigate to the Test Project -> Text -> Question
 				projectListPage.get();
 				projectListPage.clickOnProject(constants.testProjectName);
-				projectPage.clickOnText(constants.testText1Title);
+				projectPage.textLink(constants.testText1Title).click();
 				textPage.clickOnQuestion(constants.testText1Question1Title);
 
 				// Evaluate the script actions
