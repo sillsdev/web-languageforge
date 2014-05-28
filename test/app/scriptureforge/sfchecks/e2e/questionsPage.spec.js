@@ -16,20 +16,18 @@ describe('the questions list page AKA the text page', function() {
 			projectPage.textLink(constants.testText1Title).click();
 		});
 
-		it('should list the questions in the text', function() {
-			// Setup script creates two questions
-			expect(textPage.questionNames.first().getText()).toBe(constants.testText1Question1Title);
-			expect(textPage.questionNames.last() .getText()).toBe(constants.testText1Question2Title);
-		});
-
-		it('should list answer counts and responses for each question', function() {
+		it('should list questions, with answer counts and responses for each question', function() {
+			// Setup script creates two questions. Since we can't count on them being in specific positions
+			// as that might be modified by other tests that add questions, we'll search for them.
 			util.findRowByText(textPage.questionRows, constants.testText1Question1Title).then(function(row) {
+				expect("undefined" == typeof row).toBeFalsy(); // This seems to be the best way to check that the row exists
 				var answerCount = row.findElement(by.binding('{{getAnswerCount(question)}}'));
 				var responseCount = row.findElement(by.binding('{{getResponses(question)}}'));
 				expect(answerCount.getText()).toBe('1');
 				expect(responseCount.getText()).toBe('2 responses');
 			});
 			util.findRowByText(textPage.questionRows, constants.testText1Question2Title).then(function(row) {
+				expect("undefined" == typeof row).toBeFalsy(); // This seems to be the best way to check that the row exists
 				var answerCount = row.findElement(By.binding('{{getAnswerCount(question)}}'));
 				var responseCount = row.findElement(By.binding('{{getResponses(question)}}'));
 				expect(answerCount.getText()).toBe('1');
