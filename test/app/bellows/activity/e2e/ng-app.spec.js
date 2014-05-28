@@ -13,7 +13,8 @@ var loginPage       = require('../../../pages/loginPage');
 // Currently, this list assumes test normal user has the role permissions for the actions
 // scope options:  {'answers', 'comments'}
 // action options: {'add', 'addToLastAnswer', 'edit', 'upvote', 'archive'}
-// value: normally free text.  Can be an integer when used as 0-based index into the answers.list
+// value: normally free text.  For adding questions, the value is the question summary.
+//        Value can also be an integer when used as 0-based index into the answers.list
 //        If value is left blank, then perform the action on the last item
 var script = [
 	
@@ -36,7 +37,7 @@ var script = [
 	
 	// TODO: These actions are performed by only manager user   2014-05 DDW */
 	{scope: 'texts',     action: 'add',              value: constants.testText3Title},
-	{scope: 'questions', action: 'add',              value: constants.testText1Question3Title},
+	{scope: 'questions', action: 'add',              value: constants.testText1Question3Summary},
 	//{scope: 'users',     action: 'add',             value: 'Some Username to add to project'},
 	//*/
 ];
@@ -109,8 +110,8 @@ describe('Activity Page E2E Test', function() {
 						break;
 						case 'questions' :
 							browser.navigate().back();
-							textPage.addNewQuestion(script[i].value,
-													constants.testText1Question3Summary);
+							textPage.addNewQuestion(constants.testText1Question3Title,
+															script[i].value);
 							browser.navigate().forward();
 						break;
 						case 'users' :
@@ -146,13 +147,17 @@ describe('Activity Page E2E Test', function() {
 					// Expect some combinations of username, script scope, action, and value
 					// to appear in the activity feed
 					
-					// Normally, the activity page lists the username as performing the action.
-					// The exception is Project name adding texts
+					// Expectation for the subject in the activity page text
 					activityText = activityPage.getActivityText(activityIndex);
-					if (script[scriptIndex].scope != 'texts') {
-						expect(activityText).toContain(expectedUsername);
-					} else {
-						expect(activityText).toContain(constants.testProjectName);
+					switch (script[scriptIndex].scope) {
+						case 'texts' :
+							expect(activityText).toContain(constants.testProjectName);
+							break;
+						case 'questions' :
+							expect(activityText).toContain(constants.testText1Title);
+							break;
+						default :
+							expect(activityText).toContain(expectedUsername);
 					};
 					
 					// Truncate the ending 's' of the Scope string to partially match strings with different scope tenses
