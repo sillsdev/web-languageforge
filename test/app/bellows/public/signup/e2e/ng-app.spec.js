@@ -4,7 +4,7 @@ var constants = require('../../../../../testConstants.json');
 
 var SfSignupPage = function() {
 	this.get = function() {
-		browser.get('http://jamaicanpsalms.scriptureforge.local/signup');
+		browser.get('/signup');
 	};
 	
 	this.userForm = element('form#userForm');
