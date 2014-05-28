@@ -1,12 +1,13 @@
 'use strict';
 
-var constants       = require('../../../../testConstants');
-var activityPage    = require('../../../pages/activityPage');
-var projectListPage = require('../../../pages/projectsPage');
-var projectPage     = require('../../../pages/projectPage');
-var questionPage    = require('../../../pages/questionPage');
-var textPage        = require('../../../pages/textPage');
-var loginPage       = require('../../../pages/loginPage');
+var constants           = require('../../../../testConstants');
+var activityPage        = require('../../../pages/activityPage');
+var projectListPage     = require('../../../pages/projectsPage');
+var projectPage         = require('../../../pages/projectPage');
+var projectSettingsPage = require('../../../pages/projectSettingsPage');
+var questionPage        = require('../../../pages/questionPage');
+var textPage            = require('../../../pages/textPage');
+var loginPage           = require('../../../pages/loginPage');
 
 
 // Script of actions to perform which will then be verified on the activity feed.
@@ -19,6 +20,7 @@ var loginPage       = require('../../../pages/loginPage');
 var script = [
 	
 	// These actions are performed by both normal user and manager user
+	/*
 	{scope: 'answers',   action: 'add',              value: 'Beethoven was the speaker.'},
 	{scope: 'comments',  action: 'addToLastAnswer',  value: 'This is an original comment.'},
 	{scope: 'comments',  action: 'edit',             value: 'This is an edited comment for the E2E test.'},
@@ -32,19 +34,19 @@ var script = [
 	//{scope: 'comments',  action: 'archive',          value: 1},
 	//{scope: 'answers',   action: 'archive',          value: 1},
 	*/
-	{scope: 'comments',  action: 'archive',          value: ''},
+	/*{scope: 'comments',  action: 'archive',          value: ''},
 	{scope: 'answers',   action: 'archive',          value: ''},
 	
 	// TODO: These actions are performed by only manager user   2014-05 DDW */
-	{scope: 'texts',     action: 'add',              value: constants.testText3Title},
-	{scope: 'questions', action: 'add',              value: constants.testText1Question3Summary},
-	//{scope: 'users',     action: 'add',             value: 'Some Username to add to project'},
+	/*{scope: 'texts',     action: 'add',              value: constants.testText3Title},
+	{scope: 'questions', action: 'add',              value: constants.testText1Question3Summary},*/
+	{scope: 'users',     action: 'add',             value: 'JimmyCricket'},
 	//*/
 ];
 
 
 // Array of test usernames to test Activity page with different roles
-var usernames = [constants.memberUsername,
+var usernames = [//constants.memberUsername,
                  constants.managerUsername
 				 ];
 
@@ -115,6 +117,18 @@ describe('Activity Page E2E Test', function() {
 							browser.navigate().forward();
 						break;
 						case 'users' :
+							// Navigate back to Project Page
+							browser.navigate().back();
+							browser.navigate().back();
+
+							// Click on Project Settings
+							projectPage.settingsButton.click();
+							projectSettingsPage.membersTab.addButton.click();
+							browser.sleep(5000);
+							
+							// Return back to Question Page for rest of test.  (Forward doesn't work)
+							//browser.navigate().forward();
+							//browser.navigate().forward();
 						break;
 						default :
 							// Navigate Text -> Question -> then perform action
