@@ -1,8 +1,9 @@
 'use strict';
 
-var constants   = require('../../../../testConstants');
-var loginPage   = require('../../../pages/loginPage');
-var userProfile = require('../../../pages/userProfilePage');
+var constants       = require('../../../../testConstants');
+var loginPage       = require('../../../pages/loginPage');
+var projectListPage = require('../../../pages/projectsPage.js');
+var userProfile     = require('../../../pages/userProfilePage');
 
 // Array of test usernames to test Activity page with different roles
 var usernames = [constants.memberUsername,
@@ -26,6 +27,44 @@ describe('User Profile E2E Test', function() {
 				};
 			});
 	
+			it('Verify initial "My Account" settings created from setupTestEnvironment.php', function() {
+				userProfile.getMyAccount();
+	
+				var expectedEmail = '';
+				var expectedColor = '';
+				
+				if (expectedUsername == constants.memberUsername) {
+					expectedEmail  = constants.memberEmail;
+				} else if (expectedUsername == constants.managerUsername) {
+					expectedEmail  = constants.managerEmail;
+				};
+
+ 				expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(browser.baseUrl + constants.avatar);
+				expect(userProfile.myAccountTab.avatarColor.getText()).toBe('Select a Color...');
+				expect(userProfile.myAccountTab.avatarShape.getText()).toBe('Choose an animal...');
+				expect(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(expectedEmail);
+				expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value')).toEqual('');
+				expect(userProfile.myAccountTab.emailBtn.isSelected());
+			});
+			
+			it('Verify initial "About Me" settings created from setupTestEnvironment.php', function() {
+				userProfile.getAboutMe();
+				
+				var expectedFullname = '';
+				var expectedAge = '';
+				var expectedGender = '';
+				
+				if (expectedUsername == constants.memberUsername) {
+					expectedFullname = constants.memberName;
+				} else if (expectedUsername == constants.managerUsername) {
+					expectedFullname = constants.managerName;
+				};
+				
+				expect(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(expectedFullname);
+				expect(userProfile.aboutMeTab.age.getAttribute('value')).toEqual(expectedAge);
+				expect(userProfile.aboutMeTab.gender.getText()).toBe(expectedGender);
+			});
+				
 			it('Update and store "My Account" settings', function() {
 				userProfile.getMyAccount();
 
@@ -48,7 +87,8 @@ describe('User Profile E2E Test', function() {
 				// Submit updated profile
 				userProfile.myAccountTab.saveBtn.click();
 
-				// Verify values
+				// Verify values.  Browse to different URL first to force new page load
+				projectListPage.get();
 				userProfile.getMyAccount();
 
  				expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(userProfile.avatarURL);
@@ -76,13 +116,13 @@ describe('User Profile E2E Test', function() {
 				// Submit updated profile
 				userProfile.aboutMeTab.saveBtn.click();
 
-				// Verify values
+				// Verify values.  Browse to different URL first to force new page load
+				projectListPage.get();
 				userProfile.getAboutMe();
 
 				expect(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(newFullName);
 				expect(userProfile.aboutMeTab.age.getAttribute('value')).toEqual(newAge);
 				expect(userProfile.aboutMeTab.gender.getText()).toBe(newGender);
-			
 			});
 		});
 	});
