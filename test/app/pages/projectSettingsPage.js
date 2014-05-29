@@ -19,7 +19,7 @@ var SfProjectSettingsPage = function() {
 		newMember:		{
 							input:		element(by.model('term')),
 							button:		element(by.model('addMode')),
-							results:	$('.typeahead ul li')
+							results:	$('.typeahead').$('ul li')
 						}
 	};
 	
@@ -27,7 +27,6 @@ var SfProjectSettingsPage = function() {
 		this.tabs.members.click();
 		this.membersTab.addButton.click();
 		this.membersTab.newMember.input.sendKeys(name);
-		this.membersTab.newMember.results.click();
 		this.membersTab.newMember.button.click();
 	};
 

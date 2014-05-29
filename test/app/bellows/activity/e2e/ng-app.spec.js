@@ -20,7 +20,6 @@ var loginPage           = require('../../../pages/loginPage');
 var script = [
 	
 	// These actions are performed by both normal user and manager user
-	/*
 	{scope: 'answers',   action: 'add',              value: 'Beethoven was the speaker.'},
 	{scope: 'comments',  action: 'addToLastAnswer',  value: 'This is an original comment.'},
 	{scope: 'comments',  action: 'edit',             value: 'This is an edited comment for the E2E test.'},
@@ -34,19 +33,17 @@ var script = [
 	//{scope: 'comments',  action: 'archive',          value: 1},
 	//{scope: 'answers',   action: 'archive',          value: 1},
 	*/
-	/*{scope: 'comments',  action: 'archive',          value: ''},
+	{scope: 'comments',  action: 'archive',          value: ''},
 	{scope: 'answers',   action: 'archive',          value: ''},
-	
-	// TODO: These actions are performed by only manager user   2014-05 DDW */
-	/*{scope: 'texts',     action: 'add',              value: constants.testText3Title},
-	{scope: 'questions', action: 'add',              value: constants.testText1Question3Summary},*/
-	{scope: 'users',     action: 'add',             value: 'JimmyCricket'},
-	//*/
+	{scope: 'texts',     action: 'add',              value: constants.testText3Title},
+	{scope: 'questions', action: 'add',              value: constants.testText1Question3Summary},
+	// Adding a new username should be lower-case
+	{scope: 'users',     action: 'add',              value: 'jimmycricket'},
 ];
 
 
 // Array of test usernames to test Activity page with different roles
-var usernames = [//constants.memberUsername,
+var usernames = [constants.memberUsername,
                  constants.managerUsername
 				 ];
 
@@ -81,60 +78,61 @@ describe('Activity Page E2E Test', function() {
 
 			it('Performing a script of actions', function() {
 				// Navigate to the Test Project -> Text -> Question
+				// Save off the Question page URL so we can quickly navigate as needed for different actions
 				projectListPage.get();
 				projectListPage.clickOnProject(constants.testProjectName);
 				projectPage.textLink(constants.testText1Title).click();
 				textPage.clickOnQuestion(constants.testText1Question1Title);
+				browser.getCurrentUrl().then(function(questionPageURL) {
 
-				// Evaluate the script actions
-				for (var i=0; i<script.length; i++) {
-					// Append timestamp for answer/comment add/edit actions
-					if ( ((script[i].scope == 'answers') || (script[i].scope == 'comments')) && 
-						 ((script[i].action == 'add') || (script[i].action == 'edit')) ) {
-						script[i].value = script[i].value + Math.floor(new Date().getTime() / 1000);
-					};
-					
-					// Skip if user doesn't have role permissions for the scope/action
-					if (!isAllowed(script[i].scope, expectedUsername)) {
-						continue;
-					};
+					// Evaluate the script actions
+					for (var i=0; i<script.length; i++) {
+						// Append timestamp for answer/comment add/edit actions
+						if ( ((script[i].scope == 'answers') || (script[i].scope == 'comments')) && 
+							 ((script[i].action == 'add') || (script[i].action == 'edit')) ) {
+							script[i].value = script[i].value + Math.floor(new Date().getTime() / 1000);
+						};
+						
+						// Skip if user doesn't have role permissions for the scope/action
+						if (!isAllowed(script[i].scope, expectedUsername)) {
+							continue;
+						};
 
-					switch (script[i].scope) {
-						case 'texts' :
-							// Navigate back to Project Page
-							browser.navigate().back();
-							browser.navigate().back();
-							projectPage.addNewText(script[i].value, projectPage.testData);
-							
-							// Return back to Question Page for rest of test
-							browser.navigate().forward();
-							browser.navigate().forward();
-						break;
-						case 'questions' :
-							browser.navigate().back();
-							textPage.addNewQuestion(constants.testText1Question3Title,
-															script[i].value);
-							browser.navigate().forward();
-						break;
-						case 'users' :
-							// Navigate back to Project Page
-							browser.navigate().back();
-							browser.navigate().back();
+						switch (script[i].scope) {
+							case 'texts' :
+								// Navigate back to Project Page
+								browser.navigate().back();
+								browser.navigate().back();
+								projectPage.addNewText(script[i].value, projectPage.testData);
+								
+								// Return back to Question Page for rest of test
+								browser.navigate().forward();
+								browser.navigate().forward();
+							break;
+							case 'questions' :
+								browser.navigate().back();
+								textPage.addNewQuestion(constants.testText1Question3Title,
+																script[i].value);
+								browser.navigate().forward();
+							break;
+							case 'users' :
+								// Navigate back to Project Page
+								browser.navigate().back();
+								browser.navigate().back();
 
-							// Click on Project Settings
-							projectPage.settingsButton.click();
-							projectSettingsPage.membersTab.addButton.click();
-							browser.sleep(5000);
-							
-							// Return back to Question Page for rest of test.  (Forward doesn't work)
-							//browser.navigate().forward();
-							//browser.navigate().forward();
-						break;
-						default :
-							// Navigate Text -> Question -> then perform action
-							questionPage[script[i].scope][script[i].action](script[i].value);
+								// Click on Project Settings
+								projectPage.settingsButton.click();
+								projectSettingsPage.addNewMember(script[i].value);
+								
+								// Return back to Question Page for rest of test.
+								browser.get(questionPageURL);
+							break;
+							default :
+								// Default page is Question page, so perform action
+								questionPage[script[i].scope][script[i].action](script[i].value);
+						};
 					};
-				};
+				});
 			});
 
 			it ('Verify actions appear on the activity feed', function() {
@@ -143,14 +141,13 @@ describe('Activity Page E2E Test', function() {
 				activityPage.get();
 				var scriptIndex = script.length - 1;
 				var activityIndex = 0;
-				var activityText = '';
 
 				// Print everything in the activity list for debugging purposes
 				//activityPage.printActivitiesNames();
 
 				while (scriptIndex >= 0) {
-					// Skip verifying the following actions/scope because they don't appear in the activity feed
-					// or because normal user doesn't have role permissions to do them
+					// Skip verifying the following actions/scope because they don't appear in the
+					// activity feed or because normal user doesn't have role permissions to do them
 					if ( (script[scriptIndex].action == 'archive') || 
 					     (script[scriptIndex].action == 'downvote') || 
 						 (!isAllowed(script[scriptIndex].scope, expectedUsername)) ) {
@@ -162,7 +159,7 @@ describe('Activity Page E2E Test', function() {
 					// to appear in the activity feed
 					
 					// Expectation for the subject in the activity page text
-					activityText = activityPage.getActivityText(activityIndex);
+					var activityText = activityPage.getActivityText(activityIndex);
 					switch (script[scriptIndex].scope) {
 						case 'texts' :
 							expect(activityText).toContain(constants.testProjectName);
@@ -170,14 +167,18 @@ describe('Activity Page E2E Test', function() {
 						case 'questions' :
 							expect(activityText).toContain(constants.testText1Title);
 							break;
+						case 'users' :
+							expect(activityText).toContain(script[scriptIndex].value);
+							break;
 						default :
 							expect(activityText).toContain(expectedUsername);
 					};
 					
-					// Truncate the ending 's' of the Scope string to partially match strings with different scope tenses
+					// Truncate the ending 's' of the Scope string to partially 
+					// match strings with different scope tenses
 					var expectedString = script[scriptIndex].scope;
 					expectedString = expectedString.replace(/s$/gi, '');
-					if (expectedString != 'text') {
+					if ((expectedString != 'text') && (expectedString != 'user')) {
 						expect(activityText).toContain(expectedString);
 					};
 					
@@ -188,9 +189,14 @@ describe('Activity Page E2E Test', function() {
 						expect(activityText).toContain('+1\'d')
 					};
 					
-					// Verify values
+					// Verify values  
 					if (typeof script[scriptIndex].value == 'string') {
-						expect(activityText).toContain(script[scriptIndex].value);
+						// 'User' value already checked above, so check for project membership string
+						if (script[scriptIndex].scope == 'users') {
+							expect(activityText).toContain('is now a member of ' + constants.testProjectName);
+						} else {
+							expect(activityText).toContain(script[scriptIndex].value);
+						};
 					};
 
 					scriptIndex--;
