@@ -12,6 +12,8 @@
 	"memberName"      : "Test User",
 	"memberEmail"     : "test_runner_normal_user@example.com",
 
+	"avatar"           : "/images/shared/avatar/anonymoose.png",
+	
 	"testProjectName"  : "Test Project",
 	"testProjectCode"  : "test_project",
 	"otherProjectName" : "Other Project for Testing",
