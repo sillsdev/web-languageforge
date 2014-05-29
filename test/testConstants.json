@@ -13,7 +13,9 @@
 	"memberEmail"     : "test_runner_normal_user@example.com",
 
 	"testProjectName"  : "Test Project",
+	"testProjectCode"  : "test_project",
 	"otherProjectName" : "Other Project for Testing",
+	"thirdProjectName" : "new kid on the block",
 
 	"testText1Title"   : "Chapter 3",
 	"testText1Content" : "Content of chapter 3",

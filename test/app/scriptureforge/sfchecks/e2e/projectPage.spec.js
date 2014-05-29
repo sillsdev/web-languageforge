@@ -92,7 +92,7 @@ describe('the project dashboard AKA text list page', function() {
 			expect(projectPage.newText.showFormButton.isDisplayed()).toBe(true);
 			projectPage.newText.showFormButton.click();
 			projectPage.newText.title.sendKeys(sampleTitle);
-			projectPage.newText.usx.sendKeys(projectPage.testData.longUsx1);
+			util.sendText(projectPage.newText.usx, projectPage.testData.longUsx1);
 			projectPage.newText.fromChapter.sendKeys('1');
 			projectPage.newText.fromVerse.sendKeys('1');
 			projectPage.newText.toChapter.sendKeys('1');

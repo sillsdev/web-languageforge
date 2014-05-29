@@ -72,7 +72,7 @@ class ProjectCommands
 		$newDBName = $project->databaseName();
 		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
 			if (MongoStore::hasDB($newDBName)) {
-				throw new \Exception("New project name " . $object->projectname . " already exists. Not renaming.");
+				throw new \Exception("Cannot rename '$oldDBName' to '$newDBName'. New project name $newDBName already exists. Not renaming.");
 			}
 			MongoStore::renameDB($oldDBName, $newDBName);
 		}
