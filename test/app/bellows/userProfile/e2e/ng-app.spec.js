@@ -1,103 +1,89 @@
 'use strict';
 
-var util = require('../../../pages/util');
+var constants   = require('../../../../testConstants');
+var loginPage   = require('../../../pages/loginPage');
+var userProfile = require('../../../pages/userProfilePage');
 
-var SfUserPage = function() {
-	// Get MyProfile->My Account tab
-	this.getMyAccount = function() {
-		this.userProfileURL = browser.baseUrl + '/app/userprofile';
+// Array of test usernames to test Activity page with different roles
+var usernames = [constants.memberUsername,
+                 //constants.managerUsername
+				 ];
 
-		browser.driver.get(this.userProfileURL);
-	}
+describe('User Profile E2E Test', function() {
+
+	// Run the Activity E2E as each test user
+	usernames.forEach(function(expectedUsername){
+
+		// Perform activity E2E tests according to the different roles
+		describe('Running as: ' + expectedUsername, function() {
+
+			it('Logging in', function() {
+				// Login before test to ensure proper role
+				if (expectedUsername == constants.memberUsername) {
+					loginPage.loginAsUser();
+				} else if (expectedUsername == constants.managerUsername) {
+					loginPage.loginAsManager();
+				};
+			});
 	
-	// Get MyProfile->About Me tab
-	this.getAboutMe = function() {
-		this.getMyAccount();
-		browser.driver.findElement(By.id("AboutMeTab")).click();
-	}
-};
+			it('Update and store "My Account" settings', function() {
+				userProfile.getMyAccount();
 
-describe('E2E testing: User Profile page', function() {
-	var sfUserPage = new SfUserPage();
-	
-	var loginPage = require('../../../pages/loginPage');
-	var constants   = require('../../../../testConstants');
+				var newColor         = 'Blue';
+				var newShape         = 'Elephant';
+				var newMemberEmail   = 'test@123.com';
+				var newMobilePhone   = '5555555';
 
-	loginPage.loginAsUser();
-	
-	it('should update and store "My Account" settings', function() {
-		sfUserPage.getMyAccount();
+				userProfile.myAccountTab.selectColor(newColor);
+				userProfile.myAccountTab.selectShape(newShape);
+				
+				userProfile.myAccountTab.updateEmail(newMemberEmail);
+				userProfile.myAccountTab.updateMobilePhone(newMobilePhone);
+				
+				// Modify contact preference
+				userProfile.myAccountTab.bothBtn.click();
+				
+				// Change Password tested in changepassword e2e
+				
+				// Submit updated profile
+				userProfile.myAccountTab.saveBtn.click();
 
-		var newColor         = 'Blue';
-		var newShape         = 'Elephant';
-		var newMemberEmail   = 'test@123.com';
-		var contactButtonID  = 'BothButton'; // Choose from [EmailButton, SMSButton, BothButton]
-		var avatarURL        = browser.baseUrl + '/images/shared/avatar/DodgerBlue-elephant-128x128.png';
-		var avatarColor      = element(protractor.By.model('user.avatar_color'));
-		var avatarShape      = element(protractor.By.model('user.avatar_shape'));
-		var avatar           = element(by.id('avatarRef'));
-		var emailInput       = element(by.model('user.email'));
-		// Jamaican mobile phone number will move to Project scope, so intentionally not tested here
-		var mobilePhoneInput = element(by.model('user.mobile_phone'));
-		var communicate_via  = element(By.id(contactButtonID));
-		
-		util.clickDropdownByValue(avatarColor, newColor);
-		util.clickDropdownByValue(avatarShape, newShape);
-		
-		// Modify email address
-		emailInput.click();
-		emailInput.clear();
-		emailInput.sendKeys(newMemberEmail);
-		
-		// Modify contact preference
-		communicate_via.click();
-		
-		// Change Password tested in changepassword e2e
-		
-		// Submit updated profile
-		browser.driver.findElement(By.id('saveBtn')).click();
+				// Verify values
+				userProfile.getMyAccount();
 
-		// Verify values
-		sfUserPage.getMyAccount();
+ 				expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(userProfile.avatarURL);
+				expect(userProfile.myAccountTab.avatarColor.getText()).toBe(newColor);
+				expect(userProfile.myAccountTab.avatarShape.getText()).toBe(newShape);
+				expect(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(newMemberEmail);
+				expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value')).toEqual(newMobilePhone);
+				expect(userProfile.myAccountTab.bothBtn.isSelected());
+			});
 
-		expect(avatar.getAttribute('src')).toBe(avatarURL);
-		expect(element(by.selectedOption("user.avatar_color")).getText()).toBe(newColor);
-		expect(element(by.selectedOption("user.avatar_shape")).getText()).toBe(newShape);
-		expect(emailInput.getAttribute('value')).toEqual(newMemberEmail);
-		expect(communicate_via.getText()).toContain('Both');
-	});
+			it('Update and store "About Me" settings', function() {
+				userProfile.getAboutMe();
 
-	it('should update and store "About Me" settings', function() {
-		sfUserPage.getAboutMe();
+				// New user profile to put in
+				var newFullName = 'abracadabra';
+				var newAge      = '3.1415';
+				var newGender   = 'Female';
 
-		// New user profile to put in
-		var newFullName = 'abracadabra';
-		var newAge      = '3.1415';
-		var newGender   = 'Female';
-		var fullName    = element(by.model('user.name'));
-		var age         = element(by.model('user.age'));
-		var gender      = element(by.model('user.gender'));
+				// Modify About me
+				userProfile.aboutMeTab.updateFullName(newFullName);
+				
+				userProfile.aboutMeTab.updateAge(newAge);
+				userProfile.aboutMeTab.updateGender(newGender);
+				
+				// Submit updated profile
+				userProfile.aboutMeTab.saveBtn.click();
 
-		
-		// Modify About me
-		fullName.click();
-		fullName.clear();	
-		fullName.sendKeys(newFullName);
-		
-		age.click();
-		age.clear();
-		age.sendKeys(newAge);
-		util.clickDropdownByValue(gender, newGender);
-		
-		// Submit updated profile
-		browser.driver.findElement(By.id('saveBtn')).click();
+				// Verify values
+				userProfile.getAboutMe();
 
-		// Verify values
-		sfUserPage.getAboutMe();
-
-		expect(fullName.getAttribute('value')).toEqual(newFullName);
-		expect(age.getAttribute('value')).toEqual(newAge);
-		expect(element(by.selectedOption('user.gender')).getText()).toBe(newGender);
-		
+				expect(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(newFullName);
+				expect(userProfile.aboutMeTab.age.getAttribute('value')).toEqual(newAge);
+				expect(userProfile.aboutMeTab.gender.getText()).toBe(newGender);
+			
+			});
+		});
 	});
 });
