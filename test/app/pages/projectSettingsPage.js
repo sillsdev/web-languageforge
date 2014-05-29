@@ -15,7 +15,20 @@ var SfProjectSettingsPage = function() {
 		removeButton:	element(by.partialButtonText('Remove Members')),
 		messageButton:	element(by.partialButtonText('Message Selected Users')),
 		listFilter:		element(by.model('userFilter')),
-		list:			element.all(by.repeater('user in list.visibleUsers'))
+		list:			element.all(by.repeater('user in list.visibleUsers')),
+		newMember:		{
+							input:		element(by.model('term')),
+							button:		element(by.model('addMode')),
+							results:	$('.typeahead ul li')
+						}
+	};
+	
+	this.addNewMember = function(name) {
+		this.tabs.members.click();
+		this.membersTab.addButton.click();
+		this.membersTab.newMember.input.sendKeys(name);
+		this.membersTab.newMember.results.click();
+		this.membersTab.newMember.button.click();
 	};
 
 	this.templatesTab = {}; // NYI - wait for refactor
