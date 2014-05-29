@@ -96,3 +96,15 @@ var findRowByText = function(repeater, searchText, regExpFlags) {
 };
 module.exports.findRowByFunc = findRowByFunc;
 module.exports.findRowByText = findRowByText;
+
+/*
+ * This method is an alternative to sendKeys().  It attempts to write the textString to the value of the element instead of sending
+ * one keystroke at a time
+ * 
+ * @param elem - ElementFinder
+ * @param textString - string of text to set the value to
+ */
+var sendText = function(elem, textString) {
+	browser.executeScript("arguments[0].value = arguments[1];", elem.find(), textString);
+};
+module.exports.sendText = sendText;

@@ -32,6 +32,11 @@ foreach ($projectNames as $name) {
 	foreach ($db->listCollections() as $collection) { $collection->drop(); }
 }
 
+// drop the third database because it is used in a rename test
+$projectModel = new ProjectModel();
+$projectModel->projectname = $constants['thirdProjectName'];
+$db = \models\mapper\MongoStore::dropDB($projectModel->databaseName());
+
 $adminUser = UserCommands::createUser(array(
 	'id' => '',
 	'name' => $constants['adminName'],
@@ -66,6 +71,10 @@ $testProject = ProjectCommands::createProject(
 	$adminUser,
 	Website::SCRIPTUREFORGE
 );
+$testProjectModel = new ProjectModel($testProject);
+$testProjectModel->projectCode = $constants['testProjectCode'];
+$testProjectModel->write();
+
 $otherProject = ProjectCommands::createProject(
 	$constants['otherProjectName'],
 	SfProjectModel::SFCHECKS_APP, // TODO: Find out if there's a better constant for this. 2014-05 RM

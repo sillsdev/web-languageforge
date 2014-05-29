@@ -35,7 +35,8 @@ var SfProjectSettingsPage = function() {
 	this.propertiesTab = {
 		name:		element(by.model('project.projectname')),
 		code:		element(by.model('project.projectCode')),
-		featured:	element(by.model('project.featured'))
+		featured:	element(by.model('project.featured')),
+		button:		element(by.id('project_properties_save_button'))
 	};
 	
 	this.optionlistsTab = {}; // NYI - wait for refactor
@@ -47,9 +48,10 @@ var SfProjectSettingsPage = function() {
 			number:			element(by.model('settings.sms.fromNumber')),
 		},
 		email: {
-			address:		element(by.model('settings.sms.fromAddress')),
-			name:			element(by.model('settings.sms.fromName')),
-		}
+			address:		element(by.model('settings.email.fromAddress')),
+			name:			element(by.model('settings.email.fromName')),
+		},
+		button:				element(by.id('communication_settings_save_button'))
 	};
 	
 };
