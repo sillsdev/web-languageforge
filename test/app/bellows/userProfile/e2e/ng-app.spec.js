@@ -7,7 +7,7 @@ var userProfile     = require('../../../pages/userProfilePage');
 
 // Array of test usernames to test Activity page with different roles
 var usernames = [constants.memberUsername,
-                 //constants.managerUsername
+                 constants.managerUsername
 				 ];
 
 describe('User Profile E2E Test', function() {
@@ -64,14 +64,23 @@ describe('User Profile E2E Test', function() {
 				expect(userProfile.aboutMeTab.age.getAttribute('value')).toEqual(expectedAge);
 				expect(userProfile.aboutMeTab.gender.getText()).toBe(expectedGender);
 			});
-				
+			
 			it('Update and store "My Account" settings', function() {
 				userProfile.getMyAccount();
 
-				var newColor         = 'Blue';
-				var newShape         = 'Elephant';
-				var newMemberEmail   = 'test@123.com';
-				var newMobilePhone   = '5555555';
+				if (expectedUsername == constants.memberUsername) {
+					var newColor         = 'Blue';
+					var newShape         = 'Elephant';
+					var newMemberEmail   = 'test@123.com';
+					var newMobilePhone   = '5555555';
+					var expectedAvatar   = userProfile.blueElephantAvatarURL;
+				} else if (expectedUsername == constants.managerUsername) {
+					var newColor         = 'Gold';
+					var newShape         = 'Pig';
+					var newMemberEmail   = 'admintest@SF.com';
+					var newMobilePhone   = '911';
+					var expectedAvatar   = userProfile.goldPigAvatarURL;
+				};
 
 				userProfile.myAccountTab.selectColor(newColor);
 				userProfile.myAccountTab.selectShape(newShape);
@@ -83,15 +92,15 @@ describe('User Profile E2E Test', function() {
 				userProfile.myAccountTab.bothBtn.click();
 				
 				// Change Password tested in changepassword e2e
-				
 				// Submit updated profile
 				userProfile.myAccountTab.saveBtn.click();
 
-				// Verify values.  Browse to different URL first to force new page load
+				// Browse to different URL first to force new page load
 				projectListPage.get();
 				userProfile.getMyAccount();
 
- 				expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(userProfile.avatarURL);
+				// Verify values.
+ 				expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(expectedAvatar);
 				expect(userProfile.myAccountTab.avatarColor.getText()).toBe(newColor);
 				expect(userProfile.myAccountTab.avatarShape.getText()).toBe(newShape);
 				expect(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(newMemberEmail);
@@ -103,9 +112,15 @@ describe('User Profile E2E Test', function() {
 				userProfile.getAboutMe();
 
 				// New user profile to put in
-				var newFullName = 'abracadabra';
-				var newAge      = '3.1415';
-				var newGender   = 'Female';
+				if (expectedUsername == constants.memberUsername) {
+					var newFullName = 'abracadabra';
+					var newAge      = '3.1415';
+					var newGender   = 'Female';
+				} else if (expectedUsername == constants.managerUsername) {
+					var newFullName = 'MrAdmin';
+					var newAge      = '33.33';
+					var newGender   = 'Male';
+				};
 
 				// Modify About me
 				userProfile.aboutMeTab.updateFullName(newFullName);
