@@ -18,17 +18,19 @@ describe('the project settings page - project manager', function() {
 	});
 	
 	describe('members tab', function() {
+		var memberCount = 0;
 		it('setup: click on tab', function() {
 			expect(page.tabs.members.isPresent()).toBe(true);
 			page.tabs.members.click();
 		});
 
 		it('can list project members', function() {
-			expect(page.membersTab.list.count()).toBe(3);
+			expect(page.membersTab.list.count()).toBeGreaterThan(0);
+			page.membersTab.list.count().then(function(val) { memberCount = val; });
 		});
 
 		it('can filter the list of members', function() {
-			expect(page.membersTab.list.count()).toBe(3);
+			expect(page.membersTab.list.count()).toBe(memberCount);
 			page.membersTab.listFilter.sendKeys(constants.managerName);
 			expect(page.membersTab.list.count()).toBe(1);
 			page.membersTab.listFilter.clear();
@@ -39,7 +41,7 @@ describe('the project settings page - project manager', function() {
 			page.membersTab.newMember.input.sendKeys('dude');
 			//this.membersTab.newMember.results.click();
 			page.membersTab.newMember.button.click();
-			expect(page.membersTab.list.count()).toBe(4);
+			expect(page.membersTab.list.count()).toBe(memberCount+1);
 		});
 
 		it('can change the role of a member', function() {
@@ -57,7 +59,7 @@ describe('the project settings page - project manager', function() {
 			page.membersTab.listFilter.sendKeys('dude');
 			expect(page.membersTab.list.count()).toBe(0);
 			page.membersTab.listFilter.clear();
-			expect(page.membersTab.list.count()).toBe(3);
+			expect(page.membersTab.list.count()).toBe(memberCount);
 		});
 		//it('can message selected user', function() {});  // how can we test this? - cjh
 
