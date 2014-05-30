@@ -31,7 +31,7 @@ describe('the project settings page - project manager', function() {
 
 		it('can filter the list of members', function() {
 			expect(page.membersTab.list.count()).toBe(memberCount);
-			page.membersTab.listFilter.sendKeys(constants.managerName);
+			page.membersTab.listFilter.sendKeys(constants.managerUsername);
 			expect(page.membersTab.list.count()).toBe(1);
 			page.membersTab.listFilter.clear();
 		});
