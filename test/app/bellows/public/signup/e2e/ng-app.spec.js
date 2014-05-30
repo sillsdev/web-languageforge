@@ -16,7 +16,8 @@ var SfSignupPage = function() {
 	this.passwordInput = element(by.model('record.password'));
 	this.captchaInput = element(by.model('record.captcha'));
 	this.signupButton = element(by.id('submit'));
-	this.warnNotices = $('.notices').element.all(by.css('.alert div span'));
+	//this.warnNotices = $('.notices').element.all(by.css('.alert div span'));
+	this.noticeList  = element.all(by.repeater('notice in notices()'));
 }; 
 
 describe('E2E testing: Signup app', function() {
@@ -50,12 +51,10 @@ describe('E2E testing: Signup app', function() {
 		expect(sfSignupPage.userNameOk.isDisplayed()).toBeTruthy();
 	});
 	
-	/* I failed to figure out how to make this test pass.  For some reason the viewCaptcha PHP api is not returning an image in the test environment when it does return an image in a normal browser environment
-	 * cjh 2013-09
 	it("has a captcha image", function() {
-		expect(element("img#captcha").prop("naturalWidth")).toBeGreaterThan(0);
+		expect(element(by.id('captcha')).isDisplayed()).toBeTruthy;
 	});
-	*/
+	
 	
 	it('can submit a user registration request and captcha is invalid', function() {
 		sfSignupPage.usernameInput.sendKeys('newuser');
@@ -68,10 +67,10 @@ describe('E2E testing: Signup app', function() {
 		sfSignupPage.passwordInput.sendKeys('12345');
 		sfSignupPage.captchaInput.sendKeys('whatever');
 
-		expect(sfSignupPage.warnNotices.count()).toBe(0);
+		expect(sfSignupPage.noticeList.count()).toBe(0);
 		sfSignupPage.signupButton.click().then(function() {
-			expect(sfSignupPage.warnNotices.count()).toBe(1);
-//			expect(sfSignupPage.warnNotices[0].getText()).toContain('image verification failed');
+			expect(sfSignupPage.noticeList.count()).toBe(1);
+			expect(sfSignupPage.noticeList.get(0).getText()).toContain('image verification failed');
 		});
 	});
 	
