@@ -33,6 +33,10 @@ class TestProjectSettingsDto extends UnitTestCase {
 		$this->assertEqual($dto['entries'][0]['id'], $userId);
 		$this->assertEqual($dto['entries'][0]['name'], 'Name');
 		$this->assertEqual($dto['entries'][0]['role'], Roles::USER);
+		$this->assertIsA($dto['themeNames'], 'array');
+		$this->assertEqual(count($dto['themeNames']), 2);
+		$this->assertEqual($dto['themeNames'][0], 'default');
+		$this->assertEqual($dto['themeNames'][1], 'jamaicanpsalms');
 		$this->assertTrue(count($dto['rights']) > 0, "No rights in dto");
 		$this->assertEqual($dto['bcs']['op'], 'settings');
 		$this->assertEqual($dto['bcs']['project'], array('id' => $projectId, 'crumb' => SF_TESTPROJECT));
