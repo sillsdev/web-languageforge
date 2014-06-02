@@ -3,7 +3,7 @@
 
 use models\TextModel;
 
-use models\dto\QuestionCommentDto;
+use models\scriptureforge\dto\QuestionCommentDto;
 
 use models\CommentModel;
 

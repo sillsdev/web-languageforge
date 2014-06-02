@@ -37,7 +37,7 @@ class TestAnswerModel extends UnitTestCase {
 		
 		// List
 		$question->read($questionId);
-		$count = count($question->answers->data);
+		$count = count($question->answers);
 		$this->assertEqual(0, $count);
 		
 		// Create
@@ -54,10 +54,10 @@ class TestAnswerModel extends UnitTestCase {
 		
 		// Read back
 		$otherQuestion = new QuestionModel($projectModel, $questionId);
-		$otherAnswer = $otherQuestion->answers->data[$id];
+		$otherAnswer = $otherQuestion->answers[$id];
 		$this->assertEqual($id, $otherAnswer->id->asString());
 		$this->assertEqual('Some answer', $otherAnswer->content);
-		$this->assertEqual(1, count($otherAnswer->comments->data));
+		$this->assertEqual(1, count($otherAnswer->comments));
 // 		var_dump($id);
 // 		var_dump($otherAnswer->id->asString());
 		
@@ -65,27 +65,27 @@ class TestAnswerModel extends UnitTestCase {
 		$otherAnswer->content= 'Other answer';
 		// Note: Updates to the AnswerModel should not clobber child nodes such as comments.  Hence this test.
 		// See https://github.com/sillsdev/sfwebchecks/issues/39
-		unset($otherAnswer->comments->data[$commentId]);
+		unset($otherAnswer->comments[$commentId]);
 		$otherQuestion->read($otherQuestion->id->asString());
 		$otherId = $otherQuestion->writeAnswer($otherAnswer);
 		$this->assertEqual($id, $otherId);
 		
 		// Read back
 		$otherQuestion = new QuestionModel($projectModel, $questionId);
-		$otherAnswer = $otherQuestion->answers->data[$id];
+		$otherAnswer = $otherQuestion->answers[$id];
 		$this->assertEqual($id, $otherAnswer->id->asString());
 		$this->assertEqual('Other answer', $otherAnswer->content);
-		$this->assertEqual(1, count($otherAnswer->comments->data));
+		$this->assertEqual(1, count($otherAnswer->comments));
 		
 		// List
-		$this->assertEqual(1, count($otherQuestion->answers->data));
+		$this->assertEqual(1, count($otherQuestion->answers));
 
 		// Delete
 		QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $id);
 		
 		// List
 		$otherQuestion->read($questionId);
-		$this->assertEqual(0, count($otherQuestion->answers->data));
+		$this->assertEqual(0, count($otherQuestion->answers));
 		
 	}
 

@@ -16,7 +16,7 @@ class AnswerModel extends CommentModel
 			}
 		);
 		$this->score = 0;
-		$this->tags = new ArrayOf(ArrayOf::VALUE);
+		$this->tags = new ArrayOf();
 	}
 	
 	public function fixDecode() {

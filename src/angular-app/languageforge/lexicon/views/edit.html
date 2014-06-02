@@ -1,0 +1,113 @@
+<div class="container" data-ng-cloak data-ng-controller="editCtrl">
+	<div class="row outer-flex">
+		<div class="span4">
+		</div>
+		<div class="span6">
+			<h2 data-translate="Dictionary Browse and Edit"></h2>
+		</div>
+	</div>
+	
+	<div class="row outer-flex" style="margin-top:20px">
+		<!-- Left column: entry list control -->
+		<div class="span4">
+			<!-- control buttons -->
+			<div class="control-group">
+				<button class="btn btn-success" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
+			</div>
+			
+			<div data-ng-show="show.entries.length > 0">
+			
+    			<!-- entry list search -->
+    			<div style="margin-bottom:10px">
+				<span class="{{interfaceConfig.pullToSide}}" style="color: grey">{{ '{num} entries' | translate: '{ num: entriesTotalCount }' }}</span>
+        			<typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
+        				<ul>
+        					<li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults" class="typeahead-item">
+        						<p class="name">{{getLexemeForDisplay(e)}}</p>
+        						<p class="email">{{getDefinitionOrGloss(e)}}</p>
+        					</li>
+        				</ul>
+        			</typeahead>
+    				<span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''" data-ng-show="searchText && searchText != ''">
+    					<i class="icon-remove" style="color:black; cursor: pointer"></i>
+    				</span>
+    			</div>
+    			
+    			<!-- entry list -->
+    			<div id="entryList" data-pui-when-scrolled="show.more()">
+    				<table class="table table-condensed ">
+    					<tbody>
+    						<tr data-ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" data-ng-repeat="e in show.entries track by e.id">
+    							<td style="width:50%; text-align:{{lexemeAlign(e)}}" title="{{getLexemeForDisplay(e)}}" data-ng-click="editEntry(e.id)">{{getLexemeForDisplay(e)| characters:40}}</td>
+    							<td style="text-align:{{definitionOrGlossAlign(e)}}"title="{{getDefinitionOrGloss(e)}}" data-ng-click="editEntry(e.id)">{{getDefinitionOrGloss(e)| characters:40}}</td>
+    						</tr>
+    					</tbody>
+    				</table>
+    			</div>
+			</div>
+		</div>
+		
+		<!-- Right column: comment on/edit entry -->
+		<div class="span8">
+			<!-- entry label -->
+			<div style="margin-bottom: 20px">
+				<dc-rendered config="config" model="currentEntry" hide-if-empty="true"></dc-rendered>
+			</div>
+			
+			<tabset data-ng-show="entryLoaded()">
+				<!-- control buttons -->
+				<div class="control-group {{interfaceConfig.pullToSide}}" data-ng-show="entryLoaded()">
+					<button class="btn btn-mini" style="margin-right: 130px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry()">
+						<i class="icon-save"></i> {{saveButtonTitle()}} </button>
+					<span style="color: grey; margin-left: 10px; margin-right: 10px">
+						{{saveNotice()}}</span>
+					<button data-ng-show="control.canDeleteWord()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Word' | translate }}">
+						<i class="icon-remove"></i> {{'Word' | translate}} </button>
+				</div>
+				
+				<tab heading="{{ 'Edit' | translate }}" class="{{interfaceConfig.pullNormal}}" active="editTab.active" select="selectEditTab()">
+					<div style="margin-top:20px" class="row">
+						<div class="animate-show" data-ng-show="entryLoaded()" id="entryItemView">
+							<dc-entry config="config" model="currentEntry" control="control"></dc-entry>
+						</div>
+					</div>
+				</tab>
+				<tab heading="{{ 'Comment' | translate }}" class="{{interfaceConfig.pullNormal}}" active="commentsTab.active" select="selectCommentsTab()" disabled="currentEntry.id == ''">
+					<div class="row">
+    					<fieldset class="filter-controls comment-filter">
+    						<legend class="override-bootstrap">Filters <i data-ng-click="toggleFilters()" style="cursor: pointer" data-ng-class="filter.chevronIcon"></i></legend>
+    						<div class="filter-controls-inner" data-collapse="!filter.visible">
+    							<p><b>These controls are not implemented yet</b></p>
+    							<div class="horiz-controls flex-center">
+    								<div class="datepicker horiz-flex-element"><input type="checkbox" data-ng-model="useCreatedAfter" />Created after: <input type="text" size="8" data-datepicker-popup data-ng-model="createdAfter"></div>
+    								<div class="datepicker horiz-flex-element"><input type="checkbox" data-ng-model="useCreatedBefore" />Created before: <input type="text" size="8" data-datepicker-popup data-ng-model="createdBefore"></div>
+    							</div>
+    							<div class="created-by">Created by: <select><option>Everyone</option></select></div>
+    							<div class="status horiz-controls">Status: <div class="horiz-flex-element" data-ng-repeat="status in filter.validStatuses"><input data-ng-model="filter.searchFor[status]" type="checkbox" />{{status}}</div></div>
+    							<div class="containing-text">Containing text: <input type="text" size="50" /></div>
+    							<div class="languages-to-show horiz-controls">Languages to show: <div class="horiz-flex-element" data-ng-repeat="lang in getInputSystems()"><input data-ng-model="filter.showLangs[lang.abbreviation]" type="checkbox" />{{lang.languageName}} ({{lang.abbreviation}})</div></div>
+    							<button data-ng-click="applyFilters()" class="btn-info top-right-corner"><i class="icon-search"></i></button>
+    						</div>
+    					</fieldset>
+					</div>
+					<div style="margin-top:5px" class="row">
+						<div class="animate-show" data-ng-show="entryLoaded()" id="entryItemView">
+							<dc-entry config="config" model="currentEntry" control="control"></dc-entry>
+						</div>
+					</div>
+				</tab>
+			</tabset>
+		</div>
+	</div>
+<!-- 	
+	<div class="row">
+		<div class="span4">
+			<pre>show.entries list {{show.entries|json}}</pre>
+		</div>
+		<div class="span8">
+			<pre>currentEntry {{currentEntry|json}}</pre>
+			<pre>pristineEntry {{pristineEntry|json}}</pre>
+		</div>
+	</div>
+ -->
+</div>

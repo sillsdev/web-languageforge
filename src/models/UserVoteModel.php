@@ -25,7 +25,7 @@ class UserVoteModel extends UserRelationModel
 	 */
 	public function __construct($userId, $projectId, $questionId) {
 		$this->questionRef = new IdReference($questionId);
-		$this->votes = new ArrayOf(ArrayOf::OBJECT, function($data) { return new Vote(); } );
+		$this->votes = new ArrayOf(function($data) { return new Vote(); } );
 		parent::__construct('vote', $userId, $projectId);
 		$this->read();
 	}
@@ -47,10 +47,10 @@ class UserVoteModel extends UserRelationModel
 	public function addVote($answerId) {
 		$vote = new Vote();
 		$vote->answerRef->id = $answerId;
-		if (in_array($vote, $this->votes->data)) {
+		if (in_array($vote, (array)$this->votes)) {
 			return;
 		}
-		$this->votes->data[] = $vote;
+		$this->votes[] = $vote;
 	}
 	
 	/**
@@ -58,9 +58,9 @@ class UserVoteModel extends UserRelationModel
 	 * @param string $answerId
 	 */
 	public function removeVote($answerId) {
-		foreach ($this->votes->data as $key => $value) {
+		foreach ($this->votes as $key => $value) {
 			if ($value->answerRef->id == $answerId) {
-				unset($this->votes->data[$key]);
+				unset($this->votes[$key]);
 				break;
 			}
 		}
@@ -74,7 +74,7 @@ class UserVoteModel extends UserRelationModel
 	public function hasVote($answerId) {
 		$vote = new Vote();
 		$vote->answerRef->id = $answerId;
-		if (in_array($vote, $this->votes->data)) {
+		if (in_array($vote, (array)$this->votes)) {
 			return true;
 		}
 		return false;

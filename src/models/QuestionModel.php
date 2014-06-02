@@ -69,7 +69,7 @@ class QuestionModel extends \models\mapper\MapperModel
 			$id = $answer->id->id = QuestionModelMongoMapper::makeId();
 			$answerToWrite = $answer;
 		} else {
-			$answerToWrite = $this->answers->data[$id];
+			$answerToWrite = $this->answers[$id];
 			$properties = get_object_vars($answer);
 			$exclude = array('comments');
 			foreach ($properties as $key => $value) {
@@ -95,7 +95,7 @@ class QuestionModel extends \models\mapper\MapperModel
 	 * 
 	 */
 	public function readAnswer($answerId) {
-		return $this->answers->data[$answerId];
+		return $this->answers[$answerId];
 	}
 	
 	/**
@@ -105,8 +105,8 @@ class QuestionModel extends \models\mapper\MapperModel
 	 * @return CommentModel
 	 */
 	public function readComment($answerId, $commentId) {
-		$answer = $this->answers->data[$answerId];
-		return $answer->comments->data[$commentId];
+		$answer = $this->answers[$answerId];
+		return $answer->comments[$commentId];
 	}
 	
 	/**

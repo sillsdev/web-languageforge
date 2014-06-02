@@ -2,7 +2,7 @@
 
 namespace models\mapper;
 
-use libraries\palaso\CodeGuard;
+use libraries\shared\palaso\CodeGuard;
 
 class MapperModel
 {
@@ -23,7 +23,7 @@ class MapperModel
 	 * @var \DateTime
 	 */
 	public $dateCreated;
-	
+
 	/**
 	 * 
 	 * @var array
@@ -37,11 +37,17 @@ class MapperModel
 	private $_readOnlyProperties;
 	
 	protected function setReadOnlyProp($propertyName) {
+		if (!is_array($this->_readOnlyProperties)) {
+			$this->_readOnlyProperties = array();
+		}
 		if (!in_array($propertyName, $this->_readOnlyProperties)) {
 			$this->_readOnlyProperties[] = $propertyName;
 		}
 	}
 	protected function setPrivateProp($propertyName) {
+		if (!is_array($this->_privateProperties)) {
+			$this->_privateProperties = array();
+		}
 		if (!in_array($propertyName, $this->_privateProperties)) {
 			$this->_privateProperties[] = $propertyName;
 		}
@@ -62,8 +68,6 @@ class MapperModel
 	 * @param string $id
 	 */
 	protected function __construct($mapper, $id = '') {
-		$this->_privateProperties = array();
-		$this->_readOnlyProperties = array();
 		$this->_mapper = $mapper;
 		$this->dateModified = new \DateTime();
 		$this->dateCreated = new \DateTime();
@@ -73,6 +77,11 @@ class MapperModel
 		if (!empty($id)) {
 			$this->read($id);
 		}
+	}
+	
+        // TODO Would be nice to deprecate this. Should be removed. Derived models should do their own query, or have methods that do the right query not elsewhere in app code. CP 2013-11
+	public function findOneByQuery($query, $fields = array()) {
+		return $this->_mapper->findOneByQuery($this, $query, $fields = array());
 	}
 	
 	/**
