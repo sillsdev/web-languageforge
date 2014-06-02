@@ -1,5 +1,5 @@
 <?php
-namespace models\rights;
+namespace models\shared\rights;
 
 class ProjectRoleModel {
 
