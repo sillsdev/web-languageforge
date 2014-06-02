@@ -54,7 +54,6 @@ class UserUnreadModel extends UserRelationModel
 	 */
 	public function __construct($itemType, $userId, $projectId, $questionId = '') {
 		$this->unread = new ArrayOf(
-			ArrayOf::OBJECT, 
 			function($data) {
 				return new UnreadItem();
 			}
@@ -92,10 +91,10 @@ class UserUnreadModel extends UserRelationModel
 		$item = new UnreadItem();
 		$item->itemRef->id = $itemId;
 		$item->type = $this->_type;
-		if (in_array($item, $this->unread->data)) {
+		if (in_array($item, (array)$this->unread)) {
 			return;
 		}
-		$this->unread->data[] = $item;
+		$this->unread[] = $item;
 	}
 	
 	/**
@@ -106,17 +105,20 @@ class UserUnreadModel extends UserRelationModel
 		$item = new UnreadItem();
 		$item->itemRef->id = $itemId;
 		$item->type = $this->_type;
-		foreach ($this->unread->data as $key => $value) {
-			if ($value == $item) {
-				unset($this->unread->data[$key]);
+		$c = $this->unread->count();
+		for ($i = $c - 1; $i >= 0; $i--) {
+			if ($this->unread[$i] == $item) {
+				unset($this->unread[$i]);
+//				break; // The lack of a break here is consistent with the previous implementation, and currently isn't a performance issue. CP 2013-12
 			}
 		}
 	}
 	
 	public function markAllRead() {
-		foreach ($this->unread->data as $key => $value) {
-			if ($value->type == $this->_type) {
-				unset($this->unread->data[$key]);
+		$c = $this->unread->count();
+		for ($i = $c - 1; $i >= 0; $i--) {
+			if ($this->unread[$i]->type == $this->_type) {
+				unset($this->unread[$i]);
 			}
 		}
 	}
@@ -130,7 +132,7 @@ class UserUnreadModel extends UserRelationModel
 		$item = new UnreadItem();
 		$item->itemRef->id = $itemId;
 		$item->type = $this->_type;
-		return in_array($item, $this->unread->data);
+		return in_array($item, (array)$this->unread);
 	}
 	
 	/**
@@ -139,7 +141,7 @@ class UserUnreadModel extends UserRelationModel
 	 */
 	public function unreadItems() {
 		$items = array();
-		foreach ($this->unread->data as $key => $value) {
+		foreach ($this->unread as $value) {
 			if ($value->type == $this->_type) {
 				$items[] = $value->itemRef->asString();
 			}

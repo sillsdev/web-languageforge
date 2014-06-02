@@ -56,7 +56,9 @@ if (defined('ENVIRONMENT'))
  * as this file.
  *
  */
-	$system_path = '/var/www/scriptureforge.org/lib/CodeIgniter_2.1.3/system';
+	require_once 'libraries/shared/Website.php';
+	$site = \libraries\shared\Website::getSiteName();
+	$system_path = "/var/www/$site.org/lib/CodeIgniter_2.1.3/system";
 
 /*
  *---------------------------------------------------------------
@@ -72,7 +74,7 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  */
-	$application_folder = '/var/www/scriptureforge.org/htdocs';
+	$application_folder = "/var/www/$site.org/htdocs";
 
 /*
  * --------------------------------------------------------------------

@@ -1,0 +1,99 @@
+<h2 style="font-weight:normal">Update {{textTitle}}</h2>
+<div ng-show="rights.editOther">
+<tabset>
+	<tab heading="Edit Text">
+		<form class="well " ng-submit="updateText(editedText)">
+			<fieldset class="span4">
+				<table class="tableform">
+					<tr>
+						<td colspan="2">
+							<label>Title</label>
+							<input required ng-model="editedText.title" type="text" placeholder="Title"/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<label>USX Text</label>
+
+							<textarea textdrop ng-model="editedText.content" rows="4" placeholder="Paste the USX text here"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td>From</td>
+						<td><input type="number" ng-model="editedText.startCh" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="editedText.startVs" placeholder="Verse" style="width: 5em"></input></td>
+						<td><a ng-click="editedText.startCh = ''; editedText.startVs = ''" class="btn-link">reset</a></td>
+					</tr>
+					<tr>
+						<td>To</td>
+						<td><input type="number" ng-model="editedText.endCh" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="editedText.endVs" placeholder="Verse" style="width: 5em"></input></td>
+						<td><a ng-click="editedText.endCh = ''; editedText.endVs = ''" class="btn-link">reset</a></td>
+					</tr>
+				</table>
+				<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+			</fieldset>
+			<fieldset class="span4">
+				<div class="drop-box" ng-file-drop="onUsxFile($files)" ng-file-drop-available="dropSupported=true">
+					<h4>or drop a USX file here</h4>
+					<br/>
+					<p>or if you prefer...</p>
+					<input type="button" class="btn" value="Browse..." onclick="javascript:document.getElementById('usxfile').click();">
+					<input id="usxfile" type="file" style="display:none;" ng-file-select="onUsxFile($files)">
+				</div>
+				<div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+			</fieldset>
+			<div style="clear: left"></div>
+		</form>
+	</tab>
+	<tab heading="Audio File">
+		<form class="well " ng-submit="updateText(editedText)">
+			<label>Upload an Audio File</label>
+			<div class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">
+				<h4>Drop an MP3 file here</h4>
+				<br/>
+				<p>or if you prefer...</p>
+			    <input type="button" class="btn" value="Browse..." onclick="javascript:document.getElementById('audiofile').click();">
+			    <input id="audiofile" type="file" style="display:none;" ng-file-select="onFileSelect($files)">
+			</div>
+			<div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+			<br />
+			<div ng-show="file != null">
+				<p><strong>{{file.name}}</strong> {{file.size | bytes }}</p>
+				<div class="span4" margin-left="-50px"><progress percent="progress"></progress></div>&nbsp;
+			</div>
+			<label>&nbsp;</label>
+			<div ng-bind-html="uploadResult"></div>
+		</form>
+	</tab>
+	<tab heading="ParaTExt Export">
+	    <div ng-controller="ParatextExportTextCtrl" class="well">
+	        <h4>Export Text Answers/Comments to a ParaTExt XML file</h4>
+	        <div class="pull-right" style="margin-right:200px" ng-show="download.totalCount">
+    	        <p ng-show="download.totalCount > 0" class="text-success">Ready to Download: 
+    	            <span ng-show="download.answerCount > 0" class="label label-success">{{download.answerCount}} answer(s)</span>
+    	            <span ng-show="download.commentCount > 0" class="label label-info">{{download.commentCount}} comment(s)</span>
+                </p>
+    	        <button ng-click="downloadExport()" class="btn btn-primary">Download ParaTExt XML File</button>
+	        </div>
+	        <form name="exportForm">
+	        <label><input type="checkbox" checked name="exportAnswers" disabled /> Export Answers</label>
+	        <label><input type="checkbox" checked name="exportComments" ng-model="exportConfig.exportComments" /> Export Comments</label>
+            <label>Tags to Export: (<a ng-click="exportConfig.tagEditorVisible = !exportConfig.tagEditorVisible">Select Tags</a>) <p style="font-weight:bold" ng-show="exportConfig.tags.length == 0">None Selected</p><view-tags rights-delete="returnTrue()" tags="exportConfig.tags"></view-tags></label>
+	        <button ng-disabled="exportForm.$invalid || download.inprogress" ng-click="startExport()" class="btn">Prepare Export</button><span ng-show="download.inprogress"><img src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+	        <p ng-show="download.complete && download.totalCount == 0" class="text-error">No answers/comments were exported.  Make sure you selected the correct tags and try again, or remove tags to export all answers/comments</p>
+	        </form>
+			<div class="overlay" ng-show="exportConfig.tagEditorVisible">
+    			<div class="overlay-bg">
+    				<form>
+    					<label for="inputtagstring">Specify tags (comma-separated):</label>
+    					<add-tags tags="exportConfig.tags"></add-tags>
+    					<label></label>
+    					<button ng-click="exportConfig.tagEditorVisible=false" class="btn"><i class="icon-ok"></i>OK</button>
+    				</form>
+    			</div>
+			</div>
+	    </div>
+
+	</tab>
+</tabset>
+</div>
+<div ng-hide="rights.editOther"><p>You don't have permission to edit this text.</p></div>

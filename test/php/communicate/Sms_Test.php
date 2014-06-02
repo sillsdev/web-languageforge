@@ -1,8 +1,8 @@
 <?php
 
-use libraries\sms\SmsModel;
+use libraries\shared\sms\SmsModel;
 
-use libraries\sms\Sms;
+use libraries\shared\sms\Sms;
 use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');

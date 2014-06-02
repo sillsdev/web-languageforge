@@ -1,6 +1,6 @@
 <?php
 
-use models\dto\ProjectPageDto;
+use models\scriptureforge\dto\ProjectPageDto;
 
 use models\TextModel;
 use models\QuestionModel;

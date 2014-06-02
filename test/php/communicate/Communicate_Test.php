@@ -1,13 +1,15 @@
 <?php
 
+use libraries\shared\Website;
+
 use models\MessageModel;
 
 use models\UnreadMessageModel;
 
-use libraries\sfchecks\IDelivery;
-use libraries\sfchecks\Communicate;
-use libraries\sfchecks\Email;
-use libraries\sms\SmsModel;
+use libraries\scriptureforge\sfchecks\IDelivery;
+use libraries\scriptureforge\sfchecks\Communicate;
+use libraries\scriptureforge\sfchecks\Email;
+use libraries\shared\sms\SmsModel;
 use models\UserModel;
 use models\ProjectModel;
 
@@ -99,7 +101,7 @@ class TestCommunicate extends UnitTestCase {
 		$project = null;
 		$delivery = new MockCommunicateDelivery();
 		
-		Communicate::sendSignup($user, $project, $delivery);
+		Communicate::sendSignup($user, Website::SCRIPTUREFORGE, $project, $delivery);
 		
 		// What's in the delivery?
 		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
@@ -120,7 +122,7 @@ class TestCommunicate extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$delivery = new MockCommunicateDelivery();
 		
-		Communicate::sendSignup($user, $project, $delivery);
+		Communicate::sendSignup($user, Website::SCRIPTUREFORGE, $project, $delivery);
 		
 		// What's in the delivery?
 		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);

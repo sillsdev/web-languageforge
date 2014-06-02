@@ -1,6 +1,6 @@
 <?php
 
-use models\dto\UsxHelper;
+use models\scriptureforge\dto\UsxHelper;
 
 use models\TextListModel;
 

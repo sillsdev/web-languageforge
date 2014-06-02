@@ -2,7 +2,7 @@
 
 namespace models\mapper;
 
-use libraries\palaso\CodeGuard;
+use libraries\shared\palaso\CodeGuard;
 
 class MongoMapper
 {
@@ -76,8 +76,13 @@ class MongoMapper
 		return new \MongoId(); 
 	}
 	
-	public function readListAsModels($model, $query, $fields = array()) {
+	public function readListAsModels($model, $query, $fields = array(), $sortFields = array()) {
 		$cursor = $this->_collection->find($query, $fields);
+		if (count($sortFields)>0)
+		{
+			$cursor = $cursor->sort($sortFields);
+		}
+		
 		$data = array();
 		$data['count'] = $cursor->count();
 		$data['entries'] = array();
@@ -88,9 +93,21 @@ class MongoMapper
 	}
 	
 	
-	public function readList($model, $query, $fields = array()) {
+	public function readList($model, $query, $fields = array(), $sortFields = array(), 
+							$limit = 0)
+	{
 		$cursor = $this->_collection->find($query, $fields);
-		$model->count = $cursor->count();
+		
+		if (count($sortFields)>0)
+		{
+			$cursor = $cursor->sort($sortFields);
+		}
+		
+		if ($limit>0)
+		{
+			$cursor = $cursor->limit($limit);
+		}
+		
 		$model->entries = array();
 		foreach ($cursor as $item) {
 			$id = strval($item['_id']);
@@ -98,9 +115,25 @@ class MongoMapper
 			unset($item['_id']);
 			$model->entries[] = $item;
 		}
+		$model->count= count($model->entries);
 	}
 	
 	
+
+	public function findOneByQuery($model, $query, $fields = array())
+	{
+		$data = $this->_collection->findOne($query, $fields);
+		if ($data === NULL)
+		{
+			return;
+		}
+		try {
+			MongoDecoder::decode($model, $data, (string)$data['_id']);
+		} catch (\Exception $ex) {
+			throw new \Exception("Exception thrown while reading", $ex->getCode(), $ex);
+		}
+	}
+
 	/**
 	 * 
 	 * @param string $id
@@ -113,7 +146,7 @@ class MongoMapper
 		}
 		return true;
 	}
-	
+
 	/**
 	 * @param Object $model
 	 * @param string $id
@@ -128,7 +161,7 @@ class MongoMapper
 		try {
 			MongoDecoder::decode($model, $data, $id);
 		} catch (\Exception $ex) {
-			throw new \Exception("Exception thrown while reading '$id'", $ex->getCode(), $ex);
+			CodeGuard::exception("Exception thrown while decoding '$id'", $ex->getCode(), $ex);
 		}
 	}
 	
@@ -177,7 +210,6 @@ class MongoMapper
 		}
 		// TODO Check this out on nested sub docs > 1
 		$data = $data[$property][$id];
-		error_log(var_export($data, true));
 		MongoDecoder::decode($model, $data, $id);
 	}
 	
@@ -249,12 +281,14 @@ class MongoMapper
 		CodeGuard::checkTypeAndThrow($id, 'string');
 		if ($keyType == self::ID_IN_KEY) {
 			if (empty($rootId)) {
+				$mongoid = self::mongoId($id);
 				$result = $this->_collection->update(
-					array('_id' => self::mongoId($id)),
+					array('_id' => $mongoid),
 					array('$set' => $data),
 					array('upsert' => true, 'multiple' => false, 'safe' => true)
 				);
-				$id = isset($result['upserted']) ? $result['upserted'].$id : $id;
+				//$id = isset($result['upserted']) ? $result['upserted'].$id : $id;
+				$id = $mongoid->__toString();
 			} else {
 				CodeGuard::checkNullAndThrow($id, 'id');
 				CodeGuard::checkNullAndThrow($property, 'property');

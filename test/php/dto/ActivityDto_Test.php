@@ -4,9 +4,9 @@
 use models\rights\Roles;
 
 use models\commands\ActivityCommands;
-use models\dto\ActivityListDto;
+use models\shared\dto\ActivityListDto;
 use models\TextModel;
-use models\dto\QuestionCommentDto;
+use models\scriptureforge\dto\QuestionCommentDto;
 use models\CommentModel;
 use models\AnswerModel;
 use models\mapper\MongoStore;
@@ -103,7 +103,7 @@ class TestActivityDto extends UnitTestCase {
 		$text2Id = $text2->write();
 		$a2 = ActivityCommands::addText($project2, $text2Id, $text2);
 		
-		$dto = ActivityListDto::getActivityForUser($userId);
+		$dto = ActivityListDto::getActivityForUser($project1->siteName, $userId);
 		$dto = $dto['activity'];
 		
 		$this->assertEqual($dto[$a1]['action'], 'add_text');

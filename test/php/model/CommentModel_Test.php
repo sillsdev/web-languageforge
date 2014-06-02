@@ -42,7 +42,7 @@ class TestCommentModel extends UnitTestCase {
 		
 		// List
 		$question->read($questionId);
-		$count = count($question->answers->data[$answerId]->comments->data);
+		$count = count($question->answers[$answerId]->comments);
 		$this->assertEqual(0, $count);
 		
 		// Create
@@ -56,7 +56,7 @@ class TestCommentModel extends UnitTestCase {
 		
 		// Read back
 		$otherQuestion = new QuestionModel($projectModel, $questionId);
-		$otherComment = $otherQuestion->answers->data[$answerId]->comments->data[$id];
+		$otherComment = $otherQuestion->answers[$answerId]->comments[$id];
 		$this->assertEqual($id, $otherComment->id->asString());
 		$this->assertEqual('Some comment', $otherComment->content);
 // 		var_dump($id);
@@ -69,12 +69,12 @@ class TestCommentModel extends UnitTestCase {
 		
 		// Read back
 		$otherQuestion = new QuestionModel($projectModel, $questionId);
-		$otherComment = $otherQuestion->answers->data[$answerId]->comments->data[$id];
+		$otherComment = $otherQuestion->answers[$answerId]->comments[$id];
 		$this->assertEqual($id, $otherComment->id->asString());
 		$this->assertEqual('Other comment', $otherComment->content);
 				
 		// List
-		$count = count($otherQuestion->answers->data[$answerId]->comments->data);
+		$count = count($otherQuestion->answers[$answerId]->comments);
 		$this->assertEqual(1, $count);
 
 		// Delete
@@ -82,7 +82,7 @@ class TestCommentModel extends UnitTestCase {
 		
 		// List
 		$otherQuestion->read($questionId);
-		$count = count($otherQuestion->answers->data[$answerId]->comments->data);
+		$count = count($otherQuestion->answers[$answerId]->comments);
 		$this->assertEqual(0, $count);
 				
 	}
