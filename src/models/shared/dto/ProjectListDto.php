@@ -3,7 +3,6 @@
 namespace models\shared\dto;
 
 use libraries\shared\Website;
-
 use models\ProjectList_UserModel;
 use models\ProjectModel;
 use models\TextListModel;
@@ -32,16 +31,7 @@ class ProjectListDto
 		}
 
 		$data = array();
-		$data['themes'] = array();
-		$sitePath = APPPATH . 'views/' . $site;
-		if (is_dir($sitePath)) {
-			$folders = glob($sitePath . '/*' , GLOB_ONLYDIR);
-			foreach ($folders as &$folder) {
-				$folder = pathinfo($folder, PATHINFO_BASENAME);
-			}
-			$data['themes'] = $folders;
-		}
-		
+		$data['themeNames'] = Website::getProjectThemeNamesForSite($site);
 		$data['count'] = $projectList->count;
 		$data['entries'] = array();
 		foreach ($projectList->entries as $entry) {
