@@ -19,6 +19,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 				$scope.project = result.data.project;
 				$scope.list.users = result.data.entries;
 				$scope.list.userCount = result.data.count;
+				$scope.themeNames =  result.data.themeNames;
 				// Rights
 				var rights = result.data.rights;
 				$scope.rights = {};
