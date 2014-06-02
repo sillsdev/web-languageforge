@@ -2,7 +2,6 @@
 
 namespace models\shared\dto;
 
-use libraries\shared\Website;
 use models\ProjectList_UserModel;
 use models\ProjectModel;
 use models\TextListModel;
@@ -31,7 +30,6 @@ class ProjectListDto
 		}
 
 		$data = array();
-		$data['themeNames'] = Website::getProjectThemeNamesForSite($site);
 		$data['count'] = $projectList->count;
 		$data['entries'] = array();
 		foreach ($projectList->entries as $entry) {
