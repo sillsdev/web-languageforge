@@ -9,10 +9,10 @@ class Website {
 	const SCRIPTUREFORGE = 'scriptureforge';
 	const LANGUAGEFORGE = 'languageforge';
 	
-	public static function normalizeUrl($url = '');
+	//public static function normalizeUrl($url = '');
 	
 	// return 'http' or 'https'
-	public static function getProtocolForHostName($hostName = '');
+	//public static function getProtocolForHostName($hostName = '');
 	
 	
 	public static function getSiteName($domainName = '') {

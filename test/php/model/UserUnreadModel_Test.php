@@ -21,7 +21,7 @@ use models\commands\ActivityCommands;
 
 use models\UnreadActivityModel;
 
-use models\rights\Roles;
+use models\shared\rights\Roles;
 
 use models\mapper\MongoStore;
 use models\ProjectModel;

@@ -2,7 +2,7 @@
 
 use models\languageforge\lexicon\LexiconProjectModel;
 
-use models\rights\Roles;
+use models\shared\rights\Roles;
 
 require_once(TestPath . 'common/MockProjectModel.php');
 

@@ -8,9 +8,9 @@ use models\ProjectList_UserModel;
 use models\ProjectModel;
 use models\TextListModel;
 use models\UserModel;
-use models\rights\Operation;
-use models\rights\Domain;
-use models\rights\Roles;
+use models\shared\rights\Operation;
+use models\shared\rights\Domain;
+use models\shared\rights\Roles;
 
 class ProjectListDto
 {

@@ -3,9 +3,9 @@
 namespace models;
 
 use libraries\shared\palaso\CodeGuard;
-use models\rights\Realm;
-use models\rights\Roles;
-use models\rights\ProjectRoleModel;
+use models\shared\rights\Realm;
+use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoleModel;
 use models\mapper\MapOf;
 use models\mapper\MongoMapper;
 use models\mapper\MongoStore;

@@ -6,7 +6,7 @@ use models\ProjectSettingsModel;
 use models\commands\ProjectCommands;
 use models\UserModel;
 use models\ProjectModel;
-use models\rights\Roles;
+use models\shared\rights\Roles;
 use models\mapper\Id;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
