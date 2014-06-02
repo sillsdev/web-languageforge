@@ -69,7 +69,7 @@ class LexProjectCommands {
 		}
 		$projectId = $project->write();
 		if ($isNewProject) {
-			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => Roles::PROJECT_ADMIN));
+			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::PROJECT_MANAGER));
 		}
 		return $projectId;
 	}

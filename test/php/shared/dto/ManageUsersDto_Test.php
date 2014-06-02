@@ -21,7 +21,7 @@ class TestManageUsersDto extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::MEMBER);
 		$user->addProject($projectId);
 		$user->write();
 		$project->write();

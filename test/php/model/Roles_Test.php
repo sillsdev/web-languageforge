@@ -15,14 +15,14 @@ class TestRoles extends UnitTestCase {
 
 	function testHasRight_ProjectRealm_Ok() {
 		// User Roles
-		$result = Roles::hasRight(Realm::PROJECT, Roles::USER, Domain::ANSWERS + Operation::CREATE);
+		$result = Roles::hasRight(Realm::PROJECT, ProjectRoles::MEMBER, Domain::ANSWERS + Operation::CREATE);
 		$this->assertTrue($result);
-		$result = Roles::hasRight(Realm::PROJECT, Roles::USER, Domain::USERS + Operation::CREATE);
+		$result = Roles::hasRight(Realm::PROJECT, ProjectRoles::MEMBER, Domain::USERS + Operation::CREATE);
 		$this->assertFalse($result);
 		// Project Admin Roles
-		$result = Roles::hasRight(Realm::PROJECT, Roles::PROJECT_ADMIN, Domain::QUESTIONS + Operation::CREATE);
+		$result = Roles::hasRight(Realm::PROJECT, ProjectRoles::PROJECT_MANAGER, Domain::QUESTIONS + Operation::CREATE);
 		$this->assertTrue($result);
-		$result = Roles::hasRight(Realm::PROJECT, Roles::PROJECT_ADMIN, Domain::PROJECTS + Operation::CREATE);
+		$result = Roles::hasRight(Realm::PROJECT, ProjectRoles::PROJECT_MANAGER, Domain::PROJECTS + Operation::CREATE);
 		$this->assertFalse($result);
 		// System Admin Roles
 		$result = Roles::hasRight(Realm::PROJECT, Roles::SYSTEM_ADMIN, Domain::QUESTIONS + Operation::CREATE);
@@ -32,7 +32,7 @@ class TestRoles extends UnitTestCase {
 	}
 	
 	function testGetRights_Ok() {
-		$result = Roles::getRightsArray(Realm::PROJECT, Roles::USER);
+		$result = Roles::getRightsArray(Realm::PROJECT, ProjectRoles::MEMBER);
 		$this->assertIsA($result, 'array');
 	}
 	

@@ -2,14 +2,13 @@
 
 namespace models\scriptureforge\sfchecks;
 
-use models\shared\rights\RolesBase;
+use models\shared\rights\ProjectRoles;
 
-class SfchecksRoles extends RolesBase {
+class SfchecksRoles extends ProjectRoles {
 	
-	const PROJECT_MANAGER = 'project_manager';
-	const MEMBER = 'member';
-	const NONE = 'none';
 	// idea: role for an user who can add questions?
+	// const QUESTION_CONTRIBUTOR = 'question_contributor';
+	
 	
 	public static function init() {
 		parent::init();
