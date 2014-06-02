@@ -9,7 +9,7 @@
 		<script src="/js/lib/jquery.jsonrpc.js"></script>
 		<!--
 			<script type="text/javascript"
-		src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+		src="//www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
 		<script src="/js/lib/angular-recaptcha.min.js"></script>  -->
 		<script>
 			
