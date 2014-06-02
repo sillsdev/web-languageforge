@@ -9,7 +9,7 @@ use models\commands\ProjectCommands;
 use models\commands\UserCommands;
 use models\commands\TextCommands;
 use models\commands\QuestionCommands;
-use models\rights\Roles;
+use models\shared\rights\Roles;
 use models\scriptureforge\SfProjectModel;
 use models\ProjectModel;
 use libraries\shared\Website;

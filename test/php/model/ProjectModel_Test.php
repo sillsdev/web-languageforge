@@ -1,7 +1,7 @@
 <?php
-use models\rights\Operation;
-use models\rights\Domain;
-use models\rights\Roles;
+use models\shared\rights\Operation;
+use models\shared\rights\Domain;
+use models\shared\rights\Roles;
 use models\mapper\Id;
 use models\mapper\MongoStore;
 use models\UserModel;

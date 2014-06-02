@@ -2,7 +2,7 @@
 
 use models\shared\dto\ManageUsersDto;
 use models\UserModel;
-use models\rights\Roles;
+use models\shared\rights\Roles;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');

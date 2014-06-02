@@ -1,13 +1,13 @@
 <?php 
 
-use models\rights\Domain;
+use models\shared\rights\Domain;
 
-use models\rights\Operation;
+use models\shared\rights\Operation;
 
 use models\shared\dto\RightsHelper;
 
-use models\rights\Realm;
-use models\rights\Roles;
+use models\shared\rights\Realm;
+use models\shared\rights\Roles;
 
 require_once 'secure_base.php';
 

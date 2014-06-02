@@ -1,7 +1,7 @@
 <?php
 use libraries\shared\Website;
 
-use models\rights\Roles;
+use models\shared\rights\Roles;
 
 use models\mapper\Id;
 

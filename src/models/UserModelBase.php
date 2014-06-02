@@ -6,8 +6,8 @@ use models\UserModelMongoMapper;
 use models\mapper\Id;
 use models\mapper\IdReference;
 use models\mapper\MongoMapper;
-use models\rights\Realm;
-use models\rights\Roles;
+use models\shared\rights\Realm;
+use models\shared\rights\Roles;
 
 
 class UserModelBase extends \models\mapper\MapperModel

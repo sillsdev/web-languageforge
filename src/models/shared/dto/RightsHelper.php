@@ -2,14 +2,14 @@
 
 namespace models\shared\dto;
 
-use models\rights\Operation;
+use models\shared\rights\Operation;
 
-use models\rights\Domain;
+use models\shared\rights\Domain;
 
 use models\ProjectModel;
 use models\UserModel;
-use models\rights\Realm;
-use models\rights\Roles;
+use models\shared\rights\Realm;
+use models\shared\rights\Roles;
 
 class RightsHelper
 {
