@@ -1,6 +1,7 @@
 <?php 
 
-use models\shared\rights\Realm;
+use models\shared\rights\SiteRoles;
+
 use models\shared\rights\Roles;
 
 require_once 'secure_base.php';
@@ -30,7 +31,7 @@ class App extends Secure_base {
 		if (empty($role)) {
 			$role = Roles::USER;
 		}
-		$sessionData['userSiteRights'] = Roles::getRightsArray(Realm::SITE, $role);
+		$sessionData['userSiteRights'] = SiteRoles::getRightsArray($role);
 		$sessionData['site'] = $this->site;
 		
 		// File Size

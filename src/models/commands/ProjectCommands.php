@@ -37,7 +37,7 @@ use models\mapper\JsonEncoder;
 use models\mapper\MongoStore;
 use models\shared\rights\Domain;
 use models\shared\rights\Operation;
-use models\shared\rights\Realm;
+
 use models\shared\rights\Roles;
 use models\sms\SmsSettings;
 

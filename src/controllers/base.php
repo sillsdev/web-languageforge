@@ -1,6 +1,8 @@
 <?php
 
 
+use models\shared\rights\SiteRoles;
+
 use libraries\shared\Website;
 
 use models\ProjectListModel;
@@ -8,8 +10,6 @@ use models\FeaturedProjectListModel;
 
 use models\shared\rights\Operation;
 use models\shared\rights\Domain;
-use models\shared\rights\Realm;
-use models\shared\rights\Roles;
 use models\ProjectModel;
 
 require_once(APPPATH . "version.php");
@@ -80,7 +80,7 @@ class Base extends CI_Controller {
 		$this->viewdata['featuredProjects'] = $featuredProjectList->entries;
 		
 		if ($this->_isLoggedIn) {
-			$isAdmin = Roles::hasRight(Realm::SITE, $this->_user->role, Domain::USERS + Operation::CREATE);
+			$isAdmin = SiteRoles::hasRight($this->_user->role, Domain::USERS + Operation::CREATE);
 			$this->viewdata['is_admin'] = $isAdmin;
 			$this->viewdata['user_name'] = $this->_user->username;
 			$this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
@@ -89,12 +89,6 @@ class Base extends CI_Controller {
 			$this->viewdata['projects_count'] = $projects->count;
 			$this->viewdata['projects'] = $projects->entries;
 			$this->viewdata['hostname'] = Website::getHostName();
-			if ($isAdmin) {
-				$projectList = new models\ProjectListModel();
-				$projectList->read();
-				$this->viewdata['all_projects_count'] = $projectList->count;
-				$this->viewdata['all_projects'] = $projectList->entries;
-			}
 		}
 	}
 	

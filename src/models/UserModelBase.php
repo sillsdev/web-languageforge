@@ -6,7 +6,7 @@ use models\UserModelMongoMapper;
 use models\mapper\Id;
 use models\mapper\IdReference;
 use models\mapper\MongoMapper;
-use models\shared\rights\Realm;
+
 use models\shared\rights\Roles;
 
 
