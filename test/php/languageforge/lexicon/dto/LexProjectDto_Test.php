@@ -24,7 +24,7 @@ class TestLexProjectDto extends UnitTestCase {
 		$project->projectCode = 'lf';
 		$project->featured = true;
 		
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::MEMBER);
 		$user->addProject($projectId);
 		$user->write();
 		$project->write();

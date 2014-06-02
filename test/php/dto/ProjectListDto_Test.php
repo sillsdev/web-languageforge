@@ -54,7 +54,7 @@ class TestProjectListDto extends UnitTestCase {
 		$project1Name = 'SF_TESTPROJECT';
 		$project1 = $e->createProject($project1Name);
 		$projectId1 = $project1->id->asString();
-		$project1->addUser($userId, Roles::PROJECT_ADMIN);
+		$project1->addUser($userId, ProjectRoles::PROJECT_MANAGER);
 		$project1->write();
 		
 		$project2Name = 'SF_TESTPROJECT2';
@@ -67,7 +67,7 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertIsA($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $projectId1);
 		$this->assertEqual($dto['entries'][0]['projectname'], $project1Name);
-		$this->assertEqual($dto['entries'][0]['role'], Roles::PROJECT_ADMIN);
+		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::PROJECT_MANAGER);
 		$this->assertEqual($dto['entries'][1]['id'], $projectId2);
 		$this->assertEqual($dto['entries'][1]['projectname'], $project2Name);
 		$this->assertEqual($dto['entries'][1]['role'], Roles::NONE);
@@ -85,7 +85,7 @@ class TestProjectListDto extends UnitTestCase {
 		$project1Name = 'SF_TESTPROJECT';
 		$project1 = $e->createProject($project1Name);
 		$projectId1 = $project1->id->asString();
-		$project1->addUser($userId, Roles::USER);
+		$project1->addUser($userId, ProjectRoles::MEMBER);
 		$project1->write();
 		
 		$project2Name = 'SF_TESTPROJECT2';
@@ -98,7 +98,7 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertIsA($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $projectId1);
 		$this->assertEqual($dto['entries'][0]['projectname'], $project1Name);
-		$this->assertEqual($dto['entries'][0]['role'], Roles::USER);
+		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::MEMBER);
 	}
 
 }

@@ -61,7 +61,7 @@ class TestProjectModel extends UnitTestCase {
 		$projectId = $projectModel->id->asString();
 		
 		// create the reference
-		$projectModel->addUser($userId, Roles::USER);
+		$projectModel->addUser($userId, ProjectRoles::MEMBER);
 		$userModel->addProject($projectId);
 		$projectModel->write();
 		$userModel->write();
@@ -84,7 +84,7 @@ class TestProjectModel extends UnitTestCase {
 		$projectId = $projectModel->id->asString();
 
 		// create the reference
-		$projectModel->addUser($userId, Roles::USER);
+		$projectModel->addUser($userId, ProjectRoles::MEMBER);
 		$userModel->addProject($projectId);
 		$projectModel->write();
 		$userModel->write();
@@ -117,9 +117,9 @@ class TestProjectModel extends UnitTestCase {
 		$projectModel = $e->createProject('new project');
 		$projectId = $projectModel->id;
 		
-		$projectModel->addUser($userId, Roles::USER);
+		$projectModel->addUser($userId, ProjectRoles::MEMBER);
 		$this->assertEqual(1, count($projectModel->users));
-		$projectModel->addUser($userId, Roles::USER);
+		$projectModel->addUser($userId, ProjectRoles::MEMBER);
 		$this->assertEqual(1, count($projectModel->users));
 	}
 	
@@ -138,11 +138,11 @@ class TestProjectModel extends UnitTestCase {
 		$this->assertEqual(array(), $result->entries);
 				
 		// Add our two users
-		$project->addUser($userId1, Roles::USER);
+		$project->addUser($userId1, ProjectRoles::MEMBER);
 		$um1->addProject($projectId);
 		$um1->write();
 		
-		$project->addUser($userId2, Roles::USER);
+		$project->addUser($userId2, ProjectRoles::MEMBER);
 		$um2->addProject($projectId);
 		$um2->write();
 		$project->write();
@@ -192,7 +192,7 @@ class TestProjectModel extends UnitTestCase {
 	function testHasRight_Ok() {
 		$userId = MongoTestEnvironment::mockId();
 		$project = new ProjectModel();
-		$project->addUser($userId, Roles::PROJECT_ADMIN);
+		$project->addUser($userId, ProjectRoles::PROJECT_MANAGER);
 		$result = $project->hasRight($userId, Domain::QUESTIONS + Operation::CREATE);
 		$this->assertTrue($result);
 	}
@@ -200,7 +200,7 @@ class TestProjectModel extends UnitTestCase {
 	function testGetRightsArray_Ok() {
 		$userId = MongoTestEnvironment::mockId();
 		$project = new ProjectModel();
-		$project->addUser($userId, Roles::PROJECT_ADMIN);
+		$project->addUser($userId, ProjectRoles::PROJECT_MANAGER);
 		$result = $project->getRightsArray($userId);
 		$this->assertIsA($result, 'array');
 		$this->assertTrue(in_array(Domain::QUESTIONS + Operation::CREATE, $result));
@@ -232,7 +232,7 @@ class TestProjectModel extends UnitTestCase {
 		$userId = $e->createUser('user1', 'user1', 'user1');
 		$user = new UserModel($userId);
 		$project = $e->createProject('testProject');
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::MEMBER);
 		$projectId = $project->write();
 		$user->addProject($project->id->asString());
 		$user->write();

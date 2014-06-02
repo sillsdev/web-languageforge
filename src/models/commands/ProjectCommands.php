@@ -53,6 +53,7 @@ class ProjectCommands
 	 * @return string projectId
 	 */
 	public static function updateProject($object, $userId) {
+		// todo: do we still use updateProject to create new projects, now that there is a perfectly fine createProject method???  - cjh 2014-06
 		$project = new ProjectModel();
 		$id = $object['id'];
 		$isNewProject = ($id == '');
@@ -78,7 +79,7 @@ class ProjectCommands
 		}
 		$projectId = $project->write();
 		if ($isNewProject) {
-			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => Roles::PROJECT_ADMIN));
+			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::PROJECT_MANAGER));
 		}
 		return $projectId;
 	}
@@ -103,7 +104,7 @@ class ProjectCommands
 			$project->appName = $appName;
 			$projectId = $project->write();
 		}
-		ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => Roles::PROJECT_ADMIN));
+		ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::PROJECT_MANAGER));
 		return $projectId;
 	}
 	
@@ -158,7 +159,7 @@ class ProjectCommands
 		CodeGuard::checkNotFalseAndThrow($params['id'], 'id');
 		
 		// Add the user to the project
-		$role = array_key_exists('role', $params) && $params['role'] != '' ? $params['role'] : Roles::USER;
+		$role = array_key_exists('role', $params) && $params['role'] != '' ? $params['role'] : ProjectRoles::MEMBER;
 		$userId = $params['id'];
 		$user = new UserModel($userId);
 		$project = new ProjectModel($projectId);
