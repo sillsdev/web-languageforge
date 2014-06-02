@@ -37,7 +37,7 @@ class TestProjectCommands extends UnitTestCase {
 		$projectId = $project->id->asString();
 		$params = array(
 				'id' => $user->id->asString(),
-				'role' => Roles::PROJECT_ADMIN,
+				'role' => ProjectRoles::PROJECT_MANAGER,
 		);
 	
 		// update user role in project
@@ -49,7 +49,7 @@ class TestProjectCommands extends UnitTestCase {
 		
 		// user updated and joined to project
 		$this->assertEqual($updatedUser->id, $userId);
-		$this->assertNotEqual($updatedUser->role, Roles::PROJECT_ADMIN);
+		$this->assertNotEqual($updatedUser->role, ProjectRoles::PROJECT_MANAGER);
 		$projectUser = $sameProject->listUsers()->entries[0];
 		$this->assertEqual($projectUser['name'], "Existing Name");
 		$userProject = $updatedUser->listProjects(Website::SCRIPTUREFORGE)->entries[0];
@@ -138,9 +138,9 @@ class TestProjectCommands extends UnitTestCase {
 		$user1 = new UserModel($user1Id);
 		$user2 = new UserModel($user2Id);
 		$user3 = new UserModel($user3Id);
-		$project->addUser($user1->id->asString(), Roles::USER);
-		$project->addUser($user2->id->asString(), Roles::USER);
-		$project->addUser($user3->id->asString(), Roles::USER);
+		$project->addUser($user1->id->asString(), ProjectRoles::MEMBER);
+		$project->addUser($user2->id->asString(), ProjectRoles::MEMBER);
+		$project->addUser($user3->id->asString(), ProjectRoles::MEMBER);
 		$project->write();
 		$user1->addProject($project->id->asString());
 		$user1->write();

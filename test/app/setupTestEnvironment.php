@@ -84,11 +84,11 @@ $otherProject = ProjectCommands::createProject(
 
 ProjectCommands::updateUserRole($testProject, array(
 	'id' => $managerUser,
-	'role' => Roles::PROJECT_ADMIN
+	'role' => ProjectRoles::PROJECT_MANAGER
 ));
 ProjectCommands::updateUserRole($testProject, array(
 	'id' => $memberUser,
-	'role' => Roles::USER
+	'role' => ProjectRoles::MEMBER
 ));
 
 $text1 = TextCommands::updateText($testProject, array(
