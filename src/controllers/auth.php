@@ -49,7 +49,7 @@ class Auth extends Base {
 				$this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
 			}
 
-			$this->_render_page('auth/index', $this->data);
+			$this->renderPage('auth/index', $this->data);
 		}
 	}
 
@@ -82,9 +82,14 @@ class Auth extends Base {
 				else
 				{
 					$user = new \models\UserModel((string)$this->session->userdata('user_id'));
-					$projects = $user->listProjects();
-					$firstProjectId = $projects->entries[0]['id'];
-					redirect("/app/sfchecks#/project/$firstProjectId", 'location');
+					$projects = $user->listProjects($this->site);
+					if ($projects->count > 0) {
+						$proj = $projects->entries[0];
+						$url = "/app/" . $proj['appName'] . "#/p/" . $proj['id'];
+						redirect($url, 'location');
+					} else {
+						redirect('/', 'location');
+					}
 				}
 			}
 			else
@@ -120,7 +125,7 @@ class Auth extends Base {
 
 			//$this->data["page"] = "login";
 			//$this->load->view("auth/container", $this->data);
-			$this->_render_page('auth/login', $this->data);
+			$this->renderPage('auth/login', $this->data);
 		}
 	}
 
@@ -183,7 +188,7 @@ class Auth extends Base {
 			);
 
 			//render
-			$this->_render_page('auth/change_password', $this->data);
+			$this->renderPage('auth/change_password', $this->data);
 		}
 		else
 		{
@@ -226,7 +231,7 @@ class Auth extends Base {
 
 			//set any errors and display the form
 			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
-			$this->_render_page('auth/forgot_password', $this->data);
+			$this->renderPage('auth/forgot_password', $this->data);
 		}
 		else
 		{
@@ -259,7 +264,7 @@ class Auth extends Base {
 	{
 		if (!$code)
 		{
-			show_404();
+			show_404($this->site);
 		}
 
 		$user = $this->ion_auth->forgotten_password_check($code);
@@ -301,7 +306,7 @@ class Auth extends Base {
 				$this->data['code'] = $code;
 
 				//render
-				$this->_render_page('auth/reset_password', $this->data);
+				$this->renderPage('auth/reset_password', $this->data);
 			}
 			else
 			{
@@ -386,7 +391,7 @@ class Auth extends Base {
 			$this->data['csrf'] = $this->_get_csrf_nonce();
 			$this->data['user'] = $this->ion_auth->user($id)->row();
 
-			$this->_render_page('auth/deactivate_user', $this->data);
+			$this->renderPage('auth/deactivate_user', $this->data);
 		}
 		else
 		{
@@ -476,7 +481,7 @@ class Auth extends Base {
 				'value' => $this->form_validation->set_value('password_confirm'),
 			);
 
-			$this->_render_page('auth/create_user', $this->data);
+			$this->renderPage('auth/create_user', $this->data);
 		}
 	}
 
@@ -571,7 +576,7 @@ class Auth extends Base {
 			'type' => 'password'
 		);
 
-		$this->_render_page('auth/edit_user', $this->data);
+		$this->renderPage('auth/edit_user', $this->data);
 	}
 
 	// create a new group
@@ -618,7 +623,7 @@ class Auth extends Base {
 				'value' => $this->form_validation->set_value('description'),
 			);
 
-			$this->_render_page('auth/create_group', $this->data);
+			$this->renderPage('auth/create_group', $this->data);
 		}
 	}
 
@@ -681,7 +686,7 @@ class Auth extends Base {
 			'value' => $this->form_validation->set_value('group_description', $group->description),
 		);
 
-		$this->_render_page('auth/edit_group', $this->data);
+		$this->renderPage('auth/edit_group', $this->data);
 	}
 
 

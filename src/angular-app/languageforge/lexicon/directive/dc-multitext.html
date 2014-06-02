@@ -1,0 +1,13 @@
+<form class="form-horizontal dc-multitext">
+	<div data-ng-repeat="inputSystem in config.inputSystems" class="control-group">
+		<label data-ng-if="$first" class="control-label">{{config.label}}</label>
+		<div class="controls">
+			<span title="{{getInputSystemName(inputSystem)}}" class="wsid">{{getAbbreviation(inputSystem)}}</span>
+			<textarea data-ng-if="multiline" dir="{{getDirection(inputSystem)}}" width="{{config.width}}" type="text" 
+				data-ng-disabled="{{config.readonly}}" data-ng-model="model[inputSystem].value"></textarea>
+			<input data-ng-if="!multiline" dir="{{getDirection(inputSystem)}}" width="{{config.width}}" type="text" 
+				data-ng-disabled="{{config.readonly}}" data-ng-model="model[inputSystem].value" />
+		</div>
+		<dc-comments control="control" config="config" model="model[inputSystem]" submit="submitComment(comment, inputSystem)"></dc-comments>
+	</div>
+</form>

@@ -24,7 +24,7 @@ class PickList
 	public function __construct($name = '') {
 		$this->id = new Id();
 		$this->name = $name;
-		$this->items = new ArrayOf(ArrayOf::OBJECT, function($data) {
+		$this->items = new ArrayOf(function($data) {
 			return new PickItem();
 		});
 		

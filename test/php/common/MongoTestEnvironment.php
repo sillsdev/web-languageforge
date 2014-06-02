@@ -1,5 +1,7 @@
 <?php
 
+use models\languageforge\lexicon\LexiconProjectModel;
+
 use models\rights\Roles;
 
 require_once(TestPath . 'common/MockProjectModel.php');
@@ -62,28 +64,40 @@ class MongoTestEnvironment
 	 * @param string $name
 	 * @return ProjectModel
 	 */
-	public function createProject($name) {
+	public function createProject($name, $site = 'scriptureforge') {
 		$projectModel = new models\ProjectModel();
 		$projectModel->projectname = $name;
+		$projectModel->siteName = $site;
+		$projectModel->themeName = 'default';
+		$projectModel->appName = 'sfchecks';
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;
 	}
 	
-	public function createProjectSettings($name) {
+	public function createProjectSettings($name, $site = 'scriptureforge') {
 		$projectModel = new models\ProjectSettingsModel();
 		$projectModel->projectname = $name;
+		$projectModel->siteName = $site;
+		$projectModel->themeName = 'default';
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;
 	}
 	
-	private function cleanProjectEnvironment($projectModel) {
+	protected function cleanProjectEnvironment($projectModel) {
 		// clean out old db if it is present
 		$projectDb = \models\mapper\MongoStore::connect($projectModel->databaseName());
 		foreach ($projectDb->listCollections() as $collection) {
 			$collection->drop();
 		}
+		// clean up assets folder
+		$folderPath = $projectModel->getAssetsFolderPath();
+		$cleanupFiles = glob($folderPath . '/*');
+		foreach ($cleanupFiles as $cleanupFile) {
+			@unlink($cleanupFile);
+		}
+		@rmdir($folderPath);
 	}
 	
 	/**
@@ -119,4 +133,16 @@ class MongoTestEnvironment
 		return json_decode(json_encode($input), true);
 	}
 		
+}
+
+class LexiconMongoTestEnvironment extends MongoTestEnvironment {
+	
+	public function createProject($name, $site = 'languageforge') {
+		$projectModel = new LexiconProjectModel();
+		$projectModel->projectname = $name;
+		$this->cleanProjectEnvironment($projectModel);
+		$projectModel->write();
+		return $projectModel;
+	}
+	
 }

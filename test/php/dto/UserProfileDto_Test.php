@@ -1,7 +1,7 @@
 <?php
 
-use models\dto\UserProfileDto;
-use models\ProjectUserProfile;
+use models\shared\dto\UserProfileDto;
+use models\SfchecksUserProfile;
 use models\rights\Roles;
 use models\UserProfileModel;
 
@@ -25,9 +25,9 @@ class TestUserProfileDto extends UnitTestCase {
 		$project->addUser($userId, Roles::USER);
 		$user->addProject($projectId);
 		
-		$projectUserProfile = new ProjectUserProfile();
+		$projectUserProfile = new SfchecksUserProfile();
 		$projectUserProfile->city = 'myCity';
-		$user->projectUserProfiles->data[$projectId] = $projectUserProfile;
+		$user->projectUserProfiles[$projectId] = $projectUserProfile;
 		
 		$user->write();
 		$project->write();

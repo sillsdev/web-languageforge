@@ -1,7 +1,7 @@
 <?php
 namespace models\mapper;
 
-use libraries\palaso\CodeGuard;
+use libraries\shared\palaso\CodeGuard;
 
 class JsonDecoder {
 	
@@ -23,10 +23,10 @@ class JsonDecoder {
 		$propsToRemove = array();
 		
 		if (method_exists($model, 'getPrivateProperties')) {
-			$propsToRemove = $model->getPrivateProperties();
+			$propsToRemove = (array)$model->getPrivateProperties();
 		}
 		if (method_exists($model, 'getReadOnlyProperties')) {
-			$propsToRemove = array_merge($propsToRemove, $model->getReadOnlyProperties());
+			$propsToRemove = array_merge($propsToRemove, (array)$model->getReadOnlyProperties());
 		}
 		foreach ($propsToRemove as $prop) {
 			unset($values[$prop]);
@@ -109,45 +109,53 @@ class JsonDecoder {
 	}
 	
 	/**
+	 * @param string $key
 	 * @param ArrayOf $model
 	 * @param array $data
 	 * @throws \Exception
 	 */
 	public function decodeArrayOf($key, $model, $data) {
+		if ($data == null) {
+			$data = array();
+		}
 		CodeGuard::checkTypeAndThrow($data, 'array');
-		$model->data = array();
+		$model->exchangeArray(array());
 		foreach ($data as $item) {
-			if ($model->getType() == ArrayOf::OBJECT) {
+			if ($model->hasGenerator()) {
 				$object = $model->generate($item);
-				$this->_decode($object, $item, false);
-				$model->data[] = $object;
-			} else if ($model->getType() == ArrayOf::VALUE) {
+				$this->_decode($object, $item, '');
+				$model[] = $object;
+			} else {
 				if (is_array($item)) {
 					throw new \Exception("Must not decode array for value type '$key'");
 				}
-				$model->data[] = $item;
+				$model[] = $item;
 			}
 		}
 	}
 	
 	/**
+	 * @param string $key
 	 * @param MapOf $model
 	 * @param array $data
 	 * @throws \Exception
 	 */
 	public function decodeMapOf($key, $model, $data) {
+		if ($data == null) {
+			$data = array();
+		}
 		CodeGuard::checkTypeAndThrow($data, 'array');
-		$model->data = array();
+		$model->exchangeArray(array());
 		foreach ($data as $itemKey => $item) {
 			if ($model->hasGenerator()) {
 				$object = $model->generate($item);
-				$this->_decode($object, $item, false);
-				$model->data[$itemKey] = $object;
+				$this->_decode($object, $item, $itemKey);
+				$model[$itemKey] = $object;
 			} else {
 				if (is_array($item)) {
 					throw new \Exception("Must not decode array for value type '$key'");
 				}
-				$model->data[$itemKey] = $item;
+				$model[$itemKey] = $item;
 			}
 		}
 	}

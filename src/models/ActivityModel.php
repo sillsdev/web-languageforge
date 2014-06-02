@@ -44,6 +44,10 @@ class ActivityModel extends \models\mapper\MapperModel
 	const DECREASE_SCORE = 'decrease_score';
 	const ADD_USER_TO_PROJECT = 'add_user_to_project';
 	const UNKNOWN = 'unknown';
+	const ADD_ENTRY = 'add_entry';
+	const UPDATE_ENTRY = 'update_entry';
+	const DELETE_ENTRY = 'delete_entry';
+	
 	
 	// content types for use with the addContent method
 	const PROJECT = 'project';
@@ -53,6 +57,7 @@ class ActivityModel extends \models\mapper\MapperModel
 	const COMMENT = 'comment';
 	const USER = 'user';
 	const USER2 = 'user2';
+	const ENTRY = 'entry';
 	
 	/**
 	 * 
@@ -80,7 +85,7 @@ class ActivityModel extends \models\mapper\MapperModel
 	 * @param string $content
 	 */
 	public function addContent($type, $content) {
-		$this->actionContent->data[$type] = $content;
+		$this->actionContent[$type] = $content;
 	}
 	
 	// TODO add a userFilter ArrayOf type that we can use to query Mongo for activities that only apply to specific users
@@ -132,7 +137,6 @@ class ActivityModel extends \models\mapper\MapperModel
 	 * @var MapOf
 	 * MapOf<string>
 	 */
-	// cjh reminder on merge - remove ->data from FixActivityMissingQuestionTitles.php
 	public $actionContent;
 	
 	

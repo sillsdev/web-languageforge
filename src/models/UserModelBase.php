@@ -21,9 +21,14 @@ class UserModelBase extends \models\mapper\MapperModel
 	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->validationExpirationDate = new \DateTime();
+// 		$this->setReadOnlyProp('role');	// TODO Enhance. This currently causes API tests to fail but should be in for security. IJH 2014-03
 		parent::__construct(UserModelMongoMapper::instance(), $id);
 	}
 	
+	/**
+	 *	Removes a user from the collection
+	 *  Project references to this user are also removed
+	 */
 	public function remove() {
 		UserModelMongoMapper::instance()->remove($this->id->asString());
 	}
@@ -34,7 +39,7 @@ class UserModelBase extends \models\mapper\MapperModel
 			$this->communicate_via = self::COMMUNICATE_VIA_EMAIL;
 		}
 		if (!$this->avatar_ref) {
-			$default_avatar = "/images/avatar/anonymoose.png";
+			$default_avatar = "/images/shared/avatar/anonymoose.png";
 			$this->avatar_ref = $default_avatar;
 		}
 	}

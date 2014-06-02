@@ -1,9 +1,9 @@
 <?php
 
 
-use models\dto\QuestionCommentDto;
+use models\scriptureforge\dto\QuestionCommentDto;
 
-use models\dto\ActivityListDto;
+use models\shared\dto\ActivityListDto;
 
 use models\UnreadAnswerModel;
 
