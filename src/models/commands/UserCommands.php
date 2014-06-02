@@ -175,7 +175,7 @@ class UserCommands {
 		$user = new UserModel();
 		$user->name = $userName;
 		$user->username = strtolower(str_replace(' ', '.', $user->name));
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 		$user->active = true;
 		$userId = $user->write();
 		
@@ -226,7 +226,7 @@ class UserCommands {
 			return false;
 		}
 		$user->active = false;
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 		if (!$user->emailPending) {
 			if (!$user->email) {
 				throw new \Exception("Error: no email set for user signup.");

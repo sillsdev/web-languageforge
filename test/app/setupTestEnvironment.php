@@ -53,7 +53,7 @@ $managerUser = UserCommands::createUser(array(
 	'username' => $constants['managerUsername'],
 	'password' => $constants['managerPassword'],
 	'active' => true,
-	'role' => Roles::USER // Should this be Roles::PROJECT_ADMIN? I think not; I think that's set per-project. 2014-05 RM
+	'role' => SiteRoles::USER // Should this be Roles::PROJECT_ADMIN? I think not; I think that's set per-project. 2014-05 RM
 ));
 $memberUser = UserCommands::createUser(array(
 	'id' => '',
@@ -62,7 +62,7 @@ $memberUser = UserCommands::createUser(array(
 	'username' => $constants['memberUsername'],
 	'password' => $constants['memberPassword'],
 	'active' => true,
-	'role' => Roles::USER
+	'role' => SiteRoles::USER
 ));
 
 $testProject = ProjectCommands::createProject(

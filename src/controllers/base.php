@@ -43,7 +43,7 @@ class Base extends CI_Controller {
 			/* this is migration code... we don't need this here
 			if (!$this->_user->role) {
 				error_log("Fixing role for user " .  $this->_user->id->asString());
-				$this->_user->role = Roles::USER;
+				$this->_user->role = SiteRoles::USER;
 				$this->_user->write();
 			}
 			*/

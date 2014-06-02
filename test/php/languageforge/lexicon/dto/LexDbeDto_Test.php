@@ -26,7 +26,7 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -50,7 +50,7 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -89,7 +89,7 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
