@@ -4,7 +4,7 @@
 use models\commands\ProjectCommands;
 
 use models\shared\dto\RightsHelper;
-use models\rights\Roles;
+use models\shared\rights\Roles;
 use models\UserModel;
 
 

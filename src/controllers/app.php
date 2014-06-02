@@ -1,7 +1,7 @@
 <?php 
 
-use models\rights\Realm;
-use models\rights\Roles;
+use models\shared\rights\Realm;
+use models\shared\rights\Roles;
 
 require_once 'secure_base.php';
 

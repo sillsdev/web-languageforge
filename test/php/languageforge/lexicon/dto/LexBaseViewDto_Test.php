@@ -1,7 +1,7 @@
 <?php
 
 use models\languageforge\lexicon\dto\LexBaseViewDto;
-use models\rights\Roles;
+use models\shared\rights\Roles;
 use models\ProjectProperties;
 use models\UserProfileModel;
 
