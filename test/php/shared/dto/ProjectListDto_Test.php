@@ -5,7 +5,7 @@ use models\TextModel;
 use models\UserModel;
 use models\rights\Roles;
 
-require_once(dirname(__FILE__) . '/../TestConfig.php');
+require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
