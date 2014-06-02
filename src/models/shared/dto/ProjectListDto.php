@@ -32,6 +32,16 @@ class ProjectListDto
 		}
 
 		$data = array();
+		$data['themes'] = array();
+		$sitePath = APPPATH . 'views/' . $site;
+		if (is_dir($sitePath)) {
+			$folders = glob($sitePath . '/*' , GLOB_ONLYDIR);
+			foreach ($folders as &$folder) {
+				$folder = pathinfo($folder, PATHINFO_BASENAME);
+			}
+			$data['themes'] = $folders;
+		}
+		
 		$data['count'] = $projectList->count;
 		$data['entries'] = array();
 		foreach ($projectList->entries as $entry) {
