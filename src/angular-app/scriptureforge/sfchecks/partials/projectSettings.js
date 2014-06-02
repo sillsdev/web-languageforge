@@ -194,6 +194,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		var newProject = {
 			id: $scope.project.id,
 			projectname: $scope.project.projectname,
+			themeName: $scope.project.themeName,
 			projectCode: $scope.project.projectCode,
 			featured: $scope.project.featured
 		};
