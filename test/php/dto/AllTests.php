@@ -9,7 +9,6 @@ class AllDtoTests extends TestSuite {
  		$this->addFile(TestPath . 'dto/QuestionCommentDto_Test.php');
  		$this->addFile(TestPath . 'dto/ActivityDto_Test.php');
 		$this->addFile(TestPath . 'dto/ProjectPageDto_Test.php');
-		$this->addFile(TestPath . 'dto/ProjectSettingsDto_Test.php');
 		$this->addFile(TestPath . 'dto/QuestionListDto_Test.php');
 		$this->addFile(TestPath . 'dto/UserProfileDto_Test.php');
 		$this->addFile(TestPath . 'dto/UsxTrimHelper_Test.php');
