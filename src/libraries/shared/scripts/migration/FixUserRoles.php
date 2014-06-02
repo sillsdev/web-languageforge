@@ -20,7 +20,7 @@ class FixUserRoles {
 			$userId = $userParams['id'];
 			$user = new UserModel($userId);
 			if (!$user->role) {
-				$user->role = Roles::USER;
+				$user->role = SiteRoles::USER;
 				if (!$testMode) {
 					$user->write();
 				}

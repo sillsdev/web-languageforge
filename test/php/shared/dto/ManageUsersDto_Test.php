@@ -16,7 +16,7 @@ class TestManageUsersDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -32,7 +32,7 @@ class TestManageUsersDto extends UnitTestCase {
 		$this->assertIsA($dto['users'], 'array');
 		$this->assertEqual($dto['users'][0]['id'], $userId);
 		$this->assertEqual($dto['users'][0]['name'], 'Name');
-		$this->assertEqual($dto['users'][0]['role'], Roles::USER);
+		$this->assertEqual($dto['users'][0]['role'], SiteRoles::USER);
 		$this->assertFalse(isset($dto['rights']));
 		$this->assertFalse(isset($dto['project']));
 	}

@@ -49,7 +49,7 @@ class MongoTestEnvironment
 	 * @param string $email
 	 * @return string id
 	 */
-	public function createUser($username, $name, $email, $role = Roles::USER) {
+	public function createUser($username, $name, $email, $role = SiteRoles::USER) {
 		$userModel = new models\UserModel();
 		$userModel->username = $username;
 		$userModel->name = $name;
