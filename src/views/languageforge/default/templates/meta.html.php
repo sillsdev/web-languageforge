@@ -18,7 +18,7 @@
 		<link rel="icon" href="/images/languageforge/default/favicon.ico" type="image/x-icon" />
 		<link href="/css/shared/font-awesome.css" rel="stylesheet">
 		<!--
-		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700' rel='stylesheet' type='text/css'>
+		<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700" rel="stylesheet" type="text/css">
   -->
 		<script src="/js/lib/jquery-1.8.3.min.js"></script>
 		<!-- jquery must be the first js to be loaded -->
