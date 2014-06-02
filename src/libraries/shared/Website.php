@@ -52,6 +52,25 @@ class Website {
 		}
 		return $themeName;
 	}
+
+	/**
+	 * 
+	 * @param string $site
+	 * @return array
+	 */
+	public static function getProjectThemeNamesForSite($site) {
+		$themeNames = array();
+		$sitePath = APPPATH . 'views/' . $site;
+		if (is_dir($sitePath)) {
+			$folders = glob($sitePath . '/*' , GLOB_ONLYDIR);
+			foreach ($folders as &$folder) {
+				$folder = pathinfo($folder, PATHINFO_BASENAME);
+			}
+			$themeNames = $folders;
+		}
+		
+		return $themeNames;	
+	}
 	
 	/**
 	 * 

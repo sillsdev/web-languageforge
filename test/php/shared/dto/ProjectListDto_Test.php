@@ -73,10 +73,10 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertEqual($dto['entries'][1]['projectname'], $project2Name);
 		$this->assertEqual($dto['entries'][1]['themeName'], 'default');
 		$this->assertEqual($dto['entries'][1]['role'], Roles::NONE);
-		$this->assertIsA($dto['themes'], 'array');
-		$this->assertEqual(count($dto['themes']), 2);
-		$this->assertEqual($dto['themes'][0], 'default');
-		$this->assertEqual($dto['themes'][1], 'jamaicanpsalms');
+		$this->assertIsA($dto['themeNames'], 'array');
+		$this->assertEqual(count($dto['themeNames']), 2);
+		$this->assertEqual($dto['themeNames'][0], 'default');
+		$this->assertEqual($dto['themeNames'][1], 'jamaicanpsalms');
 	}
 	
 	function testEncode_UserOf1Project2Projects_DtoReturnsProjectCount1() {
