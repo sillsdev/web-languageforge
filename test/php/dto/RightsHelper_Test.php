@@ -23,7 +23,7 @@ class TestRightsHelper extends UnitTestCase {
 	function testuserCanAccessMethod_unknownMethodName_false() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-		$userId = $e->createUser('user', 'user', 'user@user.com', Roles::USER);
+		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
 		$this->expectException();
 		$result = RightsHelper::userCanAccessMethod($userId, 'bogusMethodName', array());
 	}
@@ -31,7 +31,7 @@ class TestRightsHelper extends UnitTestCase {
 	function testUserCanAccessMethod_projectSettings_projectManager_true() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-		$userId = $e->createUser('user', 'user', 'user@user.com', Roles::USER);
+		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
 		$user = new UserModel($userId);
 		$project = $e->createProject('projectForTest');
 		$projectId = $project->id->asString();
@@ -46,7 +46,7 @@ class TestRightsHelper extends UnitTestCase {
 	function testUserCanAccessMethod_projectSettings_projectMember_false() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-		$userId = $e->createUser('user', 'user', 'user@user.com', Roles::USER);
+		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
 		$user = new UserModel($userId);
 		$project = $e->createProject('projectForTest');
 		$projectId = $project->id->asString();
@@ -61,7 +61,7 @@ class TestRightsHelper extends UnitTestCase {
 	function testUserCanAccessMethod_projectPageDto_NotAMember_false() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-		$userId = $e->createUser('user', 'user', 'user@user.com', Roles::USER);
+		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
 		$project = $e->createProject('projectForTest');
 		$projectId = $project->id->asString();
 		$result = RightsHelper::userCanAccessMethod($userId, 'project_pageDto', array($projectId));

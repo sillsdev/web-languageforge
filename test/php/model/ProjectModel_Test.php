@@ -157,14 +157,14 @@ class TestProjectModel extends UnitTestCase {
 		          'name' => 'User One',
 		          'username' => 'user1',
 		          'id' => $userId1,
-				  'role' => Roles::USER
+				  'role' => SiteRoles::USER
 				), 
 				array(
 		          'email' => 'user2@example.com',
 		          'name' => 'User Two',
 		          'username' => 'user2',
 		          'id' => $userId2,
-				  'role' => Roles::USER
+				  'role' => SiteRoles::USER
 				)
 			), $result->entries
 		);

@@ -79,7 +79,7 @@ class TestProjectListDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 		$user->write();
 	
 		$project1Name = 'SF_TESTPROJECT';
