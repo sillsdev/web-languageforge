@@ -29,8 +29,6 @@ class TestRoles extends UnitTestCase {
 		$result = SfchecksRoles::hasRight(ProjectRoles::MANAGER, Domain::PROJECTS + Operation::CREATE);
 		$this->assertFalse($result);
 		// System Admin Roles
-		$result = SfchecksRoles::hasRight(Roles::SYSTEM_ADMIN, Domain::QUESTIONS + Operation::CREATE);
-		$this->assertTrue($result);
 		$result = SiteRoles::hasRight(SiteRoles::SYSTEM_ADMIN, Domain::USERS + Operation::CREATE);
 		$this->assertTrue($result);
 	}
