@@ -75,6 +75,7 @@ describe('the project settings page - project manager', function() {
 		var newName = constants.thirdProjectName;
 		var newTheme = 'jamaicanpsalms';
 //		var newCode = 'new_kid';
+		var myProjects = element(by.id('myProjects')).$('ul').all(by.css('li'));
 		it('setup: click on tab', function() {
 			expect(page.tabs.projectProperties.isPresent()).toBe(true);
 			page.tabs.projectProperties.click();
@@ -101,7 +102,7 @@ describe('the project settings page - project manager', function() {
 			expect(page.propertiesTab.theme.getText()).toEqual(newTheme);
 //			expect(page.propertiesTab.code.getAttribute('value')).toBe(newCode);
 			expect(page.propertiesTab.featured.getAttribute('checked')).toBeTruthy();
-			// expect(page).toContain(newTheme); // My Projects link for this project to contain newTheme IJH 2014-06
+			// expect(myProjects.first().findElement(by.css('a')).getAttribute('href')).toContain(newTheme); // My Projects link for this project to contain newTheme IJH 2014-06
 			util.clickDropdownByValue(page.propertiesTab.theme, constants.testProjectTheme);
 			page.propertiesTab.button.click();
 	    	projectListPage.get();
