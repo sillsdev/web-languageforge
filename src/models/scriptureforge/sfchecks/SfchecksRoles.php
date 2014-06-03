@@ -3,16 +3,15 @@
 namespace models\scriptureforge\sfchecks;
 
 use models\shared\rights\ProjectRoles;
+use models\shared\rights\Operation;
+use models\shared\rights\Domain;
 
 class SfchecksRoles extends ProjectRoles {
 	
 	// idea: role for an user who can add questions?
 	// const QUESTION_CONTRIBUTOR = 'question_contributor';
 	
-	
 	public static function init() {
-		parent::init();
-
 		// Project Member
 		$rights = array();
 		$rights[] = Domain::PROJECTS + Operation::VIEW;
@@ -53,6 +52,11 @@ class SfchecksRoles extends ProjectRoles {
 		self::grantAllOnDomain($rights, Domain::TEMPLATES);
 		self::$_rights[self::MANAGER] = $rights;
 	}
+
+	private static $_rights;
+	public static function hasRight($role, $right) { return self::_hasRight(self::$_rights, $role, $right); }
+	public static function getRightsArray($role) { return self::_getRightsArray(self::$_rights, $role); }
+	
 }
 SfchecksRoles::init();
 

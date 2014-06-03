@@ -14,7 +14,6 @@ class LexiconRoles extends ProjectRoles {
 	const CONTRIBUTOR = 'contributor';
 	
 	public static function init() {
-		parent::init();
 		
 		// Observer
 		$rights = array();
@@ -44,6 +43,11 @@ class LexiconRoles extends ProjectRoles {
 		self::grantAllOnDomain($rights[self::MANAGER], Domain::COMMENTS);
 		self::$_rights[self::MANAGER] = $rights;
 	}
+
+	private static $_rights;
+	public static function hasRight($role, $right) { return self::_hasRight(self::$_rights, $role, $right); }
+	public static function getRightsArray($role) { return self::_getRightsArray(self::$_rights, $role); }
+	
 	
 }
 LexiconRoles::init();
