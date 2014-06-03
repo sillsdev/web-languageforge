@@ -1,5 +1,7 @@
 <?php
 
+use models\shared\rights\SiteRoles;
+
 use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\shared\rights\ProjectRoles;
 use models\ProjectProperties;

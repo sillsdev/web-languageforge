@@ -1,5 +1,7 @@
 <?php
 
+use models\shared\rights\SiteRoles;
+
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\UserModel;
 use models\shared\rights\ProjectRoles;

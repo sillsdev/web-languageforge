@@ -2,6 +2,8 @@
 
 namespace models\scriptureforge\dto;
 
+use models\scriptureforge\SfchecksProjectModel;
+
 use models\shared\dto\RightsHelper;
 
 use models\mapper\JsonEncoder;
@@ -18,7 +20,7 @@ class ProjectSettingsDto
 	 */
 	public static function encode($projectId, $userId) {
 		$userModel = new UserModel($userId);
-		$projectModel = new ProjectModel($projectId);
+		$projectModel = new SfchecksProjectModel($projectId);
 
 		$list = $projectModel->listUsers();
 		$data = array();
