@@ -22,7 +22,7 @@ class TestLexBaseViewDto extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, ProjectRoles::MEMBER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$user->addProject($projectId);
 		$user->interfaceLanguageCode = 'th';
 		$user->write();

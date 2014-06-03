@@ -138,9 +138,9 @@ class TestProjectCommands extends UnitTestCase {
 		$user1 = new UserModel($user1Id);
 		$user2 = new UserModel($user2Id);
 		$user3 = new UserModel($user3Id);
-		$project->addUser($user1->id->asString(), ProjectRoles::MEMBER);
-		$project->addUser($user2->id->asString(), ProjectRoles::MEMBER);
-		$project->addUser($user3->id->asString(), ProjectRoles::MEMBER);
+		$project->addUser($user1->id->asString(), ProjectRoles::CONTRIBUTOR);
+		$project->addUser($user2->id->asString(), ProjectRoles::CONTRIBUTOR);
+		$project->addUser($user3->id->asString(), ProjectRoles::CONTRIBUTOR);
 		$project->write();
 		$user1->addProject($project->id->asString());
 		$user1->write();

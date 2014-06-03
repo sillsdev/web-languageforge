@@ -88,7 +88,7 @@ ProjectCommands::updateUserRole($testProject, array(
 ));
 ProjectCommands::updateUserRole($testProject, array(
 	'id' => $memberUser,
-	'role' => ProjectRoles::MEMBER
+	'role' => ProjectRoles::CONTRIBUTOR
 ));
 
 $text1 = TextCommands::updateText($testProject, array(

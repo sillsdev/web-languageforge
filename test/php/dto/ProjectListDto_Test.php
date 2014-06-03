@@ -85,7 +85,7 @@ class TestProjectListDto extends UnitTestCase {
 		$project1Name = 'SF_TESTPROJECT';
 		$project1 = $e->createProject($project1Name);
 		$projectId1 = $project1->id->asString();
-		$project1->addUser($userId, ProjectRoles::MEMBER);
+		$project1->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project1->write();
 		
 		$project2Name = 'SF_TESTPROJECT2';
@@ -98,7 +98,7 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertIsA($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $projectId1);
 		$this->assertEqual($dto['entries'][0]['projectname'], $project1Name);
-		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::MEMBER);
+		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::CONTRIBUTOR);
 	}
 
 }

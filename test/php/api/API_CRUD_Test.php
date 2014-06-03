@@ -68,7 +68,7 @@ class ApiCrudTestEnvironment {
 		$user->addProject($projectId);
 		$user->write();
 		$project = new ProjectModel($projectId);
-		$project->addUser($userId, ProjectRoles::MEMBER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project->write();
 		return $userId;
 	}

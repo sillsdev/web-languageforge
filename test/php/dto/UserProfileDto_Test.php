@@ -22,7 +22,7 @@ class TestUserProfileDto extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, ProjectRoles::MEMBER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$user->addProject($projectId);
 		
 		$projectUserProfile = new SfchecksUserProfile();
@@ -37,7 +37,7 @@ class TestUserProfileDto extends UnitTestCase {
 		$this->assertIsA($dto['userProfile'], 'array');
 		$this->assertEqual($dto['userProfile']['id'], $userId);
 		$this->assertEqual($dto['userProfile']['name'], 'Name');
-		$this->assertEqual($dto['userProfile']['role'], ProjectRoles::MEMBER);
+		$this->assertEqual($dto['userProfile']['role'], ProjectRoles::CONTRIBUTOR);
 		$this->assertTrue(array_key_exists('avatar_shape', $dto['userProfile']));
 		$this->assertTrue(array_key_exists('avatar_color', $dto['userProfile']));
 		$this->assertEqual($dto['userProfile']['projectUserProfiles'][$projectId]['city'], 'myCity');
