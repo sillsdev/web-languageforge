@@ -4,6 +4,7 @@ use models\shared\dto\ProjectListDto;
 use models\TextModel;
 use models\UserModel;
 use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -17,7 +18,7 @@ class TestProjectListDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::SYSTEM_ADMIN;
+		$user->role = SiteRoles::SYSTEM_ADMIN;
 		$user->write();
 
 		$project = $e->createProject(SF_TESTPROJECT);
@@ -48,7 +49,7 @@ class TestProjectListDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::SYSTEM_ADMIN;
+		$user->role = SiteRoles::SYSTEM_ADMIN;
 		$user->write();
 	
 		$project1Name = 'SF_TESTPROJECT';

@@ -1,4 +1,8 @@
 <?php
+use models\shared\rights\ProjectRoleModel;
+
+use models\shared\rights\SiteRoles;
+
 use models\shared\rights\Operation;
 use models\shared\rights\Domain;
 use models\shared\rights\ProjectRoles;
@@ -157,14 +161,14 @@ class TestProjectModel extends UnitTestCase {
 		          'name' => 'User One',
 		          'username' => 'user1',
 		          'id' => $userId1,
-				  'role' => SiteRoles::USER
+				  'role' => ProjectRoles::CONTRIBUTOR
 				), 
 				array(
 		          'email' => 'user2@example.com',
 		          'name' => 'User Two',
 		          'username' => 'user2',
 		          'id' => $userId2,
-				  'role' => SiteRoles::USER
+				  'role' => ProjectRoles::CONTRIBUTOR
 				)
 			), $result->entries
 		);
