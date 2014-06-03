@@ -39,7 +39,7 @@ class TestUserProfileDto extends UnitTestCase {
 		$this->assertIsA($dto['userProfile'], 'array');
 		$this->assertEqual($dto['userProfile']['id'], $userId);
 		$this->assertEqual($dto['userProfile']['name'], 'Name');
-		$this->assertEqual($dto['userProfile']['role'], ProjectRoles::CONTRIBUTOR);
+		$this->assertEqual($dto['userProfile']['role'], SiteRoles::USER);
 		$this->assertTrue(array_key_exists('avatar_shape', $dto['userProfile']));
 		$this->assertTrue(array_key_exists('avatar_color', $dto['userProfile']));
 		$this->assertEqual($dto['userProfile']['projectUserProfiles'][$projectId]['city'], 'myCity');
