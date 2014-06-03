@@ -19,6 +19,9 @@
 						</td>
 					</tr>
 					<tr>
+						<td colspan="2">
+						<input type="checkbox" ng-model="editedText.editPreviousText" class="no-margin"></input> <b>I know what I'm doing</b> and I want to edit the text (dangerous!)
+					<tr>
 						<td>From</td>
 						<td><input type="number" ng-model="editedText.startCh" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="editedText.startVs" placeholder="Verse" style="width: 5em"></input></td>
 						<td><a ng-click="editedText.startCh = ''; editedText.startVs = ''" class="btn-link">reset</a></td>

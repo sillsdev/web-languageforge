@@ -285,7 +285,7 @@ angular.module(
 		});
 
 		$scope.updateText = function(newText) {
-			if (!newText.content) {
+			if (!newText.content || !newText.editPreviousText) {
 				delete newText.content;
 			}
 			textService.update($scope.projectId, newText, function(result) {
@@ -295,6 +295,23 @@ angular.module(
 				}
 			});
 		};
+
+		$scope.$watch('editedText.editPreviousText', function(newval, oldval) {
+			var yesImSure = false;
+			if (oldval == newval) { return; }
+			if (angular.isUndefined(newval)) { return; }
+			if (newval) {
+				// Checkbox was just checked -- put old text in edit box
+				yesImSure = confirm("Caution: Editing the USX text can be dangerous. You can easily mess up your text with a typo. Are you really sure you want to do this?");
+				if (!yesImSure) { return; }
+				if ($scope.editedText.content && $scope.editedText.content != $scope.dto.text.content) {
+					// Wait; the user had already entered text. Pop up ANOTHER confirm box.
+					yesImSure = confirm("Caution: You had previous edits in the USX text box, which will be replaced if you proceed. Are you really sure you want to throw away your previous edits?");
+					if (!yesImSure) { return; }
+				}
+				$scope.editedText.content = $scope.dto.text.content;
+			}
+		});
 
 		$scope.onUsxFile = function($files) {
 			if (!$files || $files.length == 0) {
