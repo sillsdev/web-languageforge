@@ -159,7 +159,7 @@ class ProjectCommands
 		CodeGuard::checkNotFalseAndThrow($params['id'], 'id');
 		
 		// Add the user to the project
-		$role = array_key_exists('role', $params) && $params['role'] != '' ? $params['role'] : ProjectRoles::MEMBER;
+		$role = array_key_exists('role', $params) && $params['role'] != '' ? $params['role'] : ProjectRoles::CONTRIBUTOR;
 		$userId = $params['id'];
 		$user = new UserModel($userId);
 		$project = new ProjectModel($projectId);

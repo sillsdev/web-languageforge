@@ -43,7 +43,7 @@ class FixUserRoles {
 			$projectUserRefs = array_keys($project->users);
 			foreach ($projectUserRefs as $ref) { // foreach user that is a member of this project
 				if (!isset($project->users[$ref]->role)) {
-					$project->users[$ref]->role = ProjectRoles::MEMBER;
+					$project->users[$ref]->role = ProjectRoles::CONTRIBUTOR;
 					$badProjectUserRoles++;
 					$message .= "Fixed role of user $ref for project $projectId\n";
 				}

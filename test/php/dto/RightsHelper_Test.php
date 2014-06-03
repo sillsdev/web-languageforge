@@ -50,7 +50,7 @@ class TestRightsHelper extends UnitTestCase {
 		$user = new UserModel($userId);
 		$project = $e->createProject('projectForTest');
 		$projectId = $project->id->asString();
-		$project->addUser($userId, ProjectRoles::MEMBER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project->write();
 		$user->addProject($projectId);
 		$user->write();

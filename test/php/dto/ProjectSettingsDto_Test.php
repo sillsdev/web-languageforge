@@ -21,7 +21,7 @@ class TestProjectSettingsDto extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, ProjectRoles::MEMBER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$user->addProject($projectId);
 		$user->write();
 		$project->write();
@@ -32,7 +32,7 @@ class TestProjectSettingsDto extends UnitTestCase {
 		$this->assertIsA($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $userId);
 		$this->assertEqual($dto['entries'][0]['name'], 'Name');
-		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::MEMBER);
+		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::CONTRIBUTOR);
 		$this->assertTrue(count($dto['rights']) > 0, "No rights in dto");
 		$this->assertEqual($dto['bcs']['op'], 'settings');
 		$this->assertEqual($dto['bcs']['project'], array('id' => $projectId, 'crumb' => SF_TESTPROJECT));
