@@ -2,6 +2,7 @@
 
 use models\mapper\Id;
 use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
 use models\commands\UserCommands;
 use models\commands\QuestionTemplateCommands;
 use models\commands\QuestionCommands;
@@ -44,7 +45,7 @@ class ApiCrudTestEnvironment {
 	}
 	
 	function makeSiteAdminUser() {
-		$params = array('id' => '', 'username' => 'admin', 'name' => 'admin', 'role' => Roles::SYSTEM_ADMIN);
+		$params = array('id' => '', 'username' => 'admin', 'name' => 'admin', 'role' => SiteRoles::SYSTEM_ADMIN);
 		return UserCommands::updateUser($params);
 	}
 	
@@ -86,7 +87,7 @@ class TestApiCrud extends UnitTestCase {
 			'projectname' => SF_TESTPROJECT,
 			'language' => 'SomeLanguage'
 		);
-		$userId = $e->e->createUser('userName', 'User Name', 'user@example.com', Roles::SYSTEM_ADMIN);
+		$userId = $e->e->createUser('userName', 'User Name', 'user@example.com', SiteRoles::SYSTEM_ADMIN);
 		$id = ProjectCommands::updateProject($param, $userId);
 		$this->assertNotNull($id);
 		$this->assertEqual(24, strlen($id));

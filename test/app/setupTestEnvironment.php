@@ -1,4 +1,5 @@
 <?php
+
 require_once('e2eTestConfig.php');
 
 // put the test config into place
@@ -10,6 +11,7 @@ use models\commands\UserCommands;
 use models\commands\TextCommands;
 use models\commands\QuestionCommands;
 use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
 use models\scriptureforge\SfProjectModel;
 use models\ProjectModel;
 use libraries\shared\Website;
@@ -44,7 +46,7 @@ $adminUser = UserCommands::createUser(array(
 	'username' => $constants['adminUsername'],
 	'password' => $constants['adminPassword'],
 	'active' => true,
-	'role' => Roles::SYSTEM_ADMIN
+	'role' => SiteRoles::SYSTEM_ADMIN
 ));
 $managerUser = UserCommands::createUser(array(
 	'id' => '',

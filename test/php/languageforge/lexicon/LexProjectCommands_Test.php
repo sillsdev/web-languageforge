@@ -6,6 +6,7 @@ use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\commands\ProjectCommands;
 use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
 use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
@@ -65,7 +66,7 @@ class TestLexProjectCommands extends UnitTestCase {
 				'projectCode' => 'SomeCode',
 				'featured' => true
 		);
-		$userId = $e->createUser('userName', 'User Name', 'user@example.com', Roles::SYSTEM_ADMIN);
+		$userId = $e->createUser('userName', 'User Name', 'user@example.com', SiteRoles::SYSTEM_ADMIN);
 		$id = LexProjectCommands::updateProject($param, $userId);
 		$this->assertNotNull($id);
 		$this->assertEqual(24, strlen($id));
