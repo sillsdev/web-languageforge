@@ -34,7 +34,7 @@ class TestManageUsersDto extends UnitTestCase {
 		$this->assertIsA($dto['users'], 'array');
 		$this->assertEqual($dto['users'][0]['id'], $userId);
 		$this->assertEqual($dto['users'][0]['name'], 'Name');
-		$this->assertEqual($dto['users'][0]['role'], SiteRoles::USER);
+		$this->assertEqual($dto['users'][0]['role'], ProjectRoles::CONTRIBUTOR);
 		$this->assertFalse(isset($dto['rights']));
 		$this->assertFalse(isset($dto['project']));
 	}
