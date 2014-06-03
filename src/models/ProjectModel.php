@@ -183,7 +183,7 @@ class ProjectModel extends \models\mapper\MapperModel
 		} else {
 			$role = $this->users[$userId]->role;
 			$rolesClass = $this->rolesClass;
-			$result = $rolesClass::getRightsArray(Realm::PROJECT, $role);
+			$result = $rolesClass::getRightsArray($role);
 		}
 		return $result;
 	}

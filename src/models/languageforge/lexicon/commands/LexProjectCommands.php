@@ -53,10 +53,10 @@ class LexProjectCommands {
 				throw new UserUnauthorizedException("Insufficient privileges to create new project in method 'updateProject'");
 			}
 		} else {
-			if (!RightsHelper::userHasProjectRight($id, $userId, Domain::USERS + Operation::EDIT)) {
+			$project->read($id);
+			if ($project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
 				throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
 			}
-			$project->read($id);
 			$oldDBName = $project->databaseName();
 		}
 		JsonDecoder::decode($project, $projectJson);
