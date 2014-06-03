@@ -1,19 +1,10 @@
 <?php
 namespace models\shared\rights;
 
+use libraries\shared\palaso\CodeGuard;
+
 class RolesBase {
 	
-	/**
-	 * @var array
-	 */
-	protected static $_rights;
-	
-	/**
-	 * Roles subclasses should extend this method
-	 */
-	public static function init() {
-		self::$_rights = array();
-	}
 	
 	/**
 	 * @param array $rights
@@ -31,12 +22,12 @@ class RolesBase {
 	 * @param int $right
 	 * @return bool
 	 */
-	public static function hasRight($role, $right) {
+	protected static function _hasRight($rightsArray, $role, $right) {
 		CodeGuard::checkNotFalseAndThrow($role, 'role');
-		if (!array_key_exists($role, self::$_rights)) {
+		if (!array_key_exists($role, $rightsArray)) {
 			throw new \Exception("Role '$role' does not exist");
 		}
-		$result = in_array($right, self::$_rights[$role]);
+		$result = in_array($right, $rightsArray[$role]);
 		return $result;
 	}
 	
@@ -45,12 +36,12 @@ class RolesBase {
 	 * @param string $role
 	 * @return array
 	 */
-	public static function getRightsArray($role) {
+	protected static function _getRightsArray($rightsArray, $role) {
 		CodeGuard::checkNotFalseAndThrow($role, 'role');
-		if (!array_key_exists($role, self::$_rights)) {
+		if (!array_key_exists($role, $rightsArray)) {
 			throw new \Exception("Role '$role' does not exist.");
 		}
-		return self::$_rights[$role];
+		return $rightsArray[$role];
 	}
 	
 }
