@@ -12,13 +12,8 @@ class SiteRoles extends RolesBase {
 	const NONE = 'none';
 	
 	
-	/**
-	 * @var array
-	 */
-	private static $_rights;
-	
 	public static function init() {
-		parent::init();
+		self::$_rights = array();
 		
 		// User
 		$rights = array();
@@ -47,6 +42,12 @@ class SiteRoles extends RolesBase {
 		self::grantAllOnDomain($rights, Domain::PROJECTS);
 		self::$_rights[self::SYSTEM_ADMIN] = $rights;
 	}
+
+	private static $_rights;
+	public static function hasRight($role, $right) { return self::_hasRight(self::$_rights, $role, $right); }
+	public static function getRightsArray($role) { return self::_getRightsArray(self::$_rights, $role); }
+	
+	
 }
 SiteRoles::init();
 ?>
