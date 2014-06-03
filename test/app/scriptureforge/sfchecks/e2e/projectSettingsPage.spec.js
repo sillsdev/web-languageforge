@@ -93,6 +93,12 @@ describe('the project settings page - project manager', function() {
 			page.propertiesTab.featured.click();
 			page.propertiesTab.button.click();
 			browser.navigate().back();
+			browser.driver.wait(function() {
+				// Without this wait(), the next line of the test was sometimes executing too soon
+				return browser.driver.getCurrentUrl().then(function(url) {
+					return !(/settings$/.test(url));
+				});
+			});
 			projectPage.settingsButton.click();
 			page.tabs.projectProperties.click();
 			expect(page.propertiesTab.name.getAttribute('value')).toBe(newName);
