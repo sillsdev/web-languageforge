@@ -1,6 +1,6 @@
 <?php
 
-use models\rights\Roles;
+use models\rights\ProjectRoles;
 
 use models\AnswerModel;
 
@@ -88,12 +88,12 @@ class TestResetDb extends UnitTestCase {
 		}
 		$project = new ProjectModel();
 		$project->projectname = "jamaican project";
-		$project->addUser($userId, ProjectRoles::PROJECT_MANAGER);
+		$project->addUser($userId, ProjectRoles::MANAGER);
 		$project->write();
 		
 		$project2 = new ProjectModel();
 		$project2->projectname = "thai project";
-		$project2->addUser($userId, ProjectRoles::PROJECT_MANAGER);
+		$project2->addUser($userId, ProjectRoles::MANAGER);
 		$project2->write();
 	
 		echo "it worked!";

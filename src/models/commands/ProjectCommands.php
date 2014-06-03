@@ -38,7 +38,7 @@ use models\mapper\MongoStore;
 use models\shared\rights\Domain;
 use models\shared\rights\Operation;
 
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\sms\SmsSettings;
 
 class ProjectCommands
@@ -79,7 +79,7 @@ class ProjectCommands
 		}
 		$projectId = $project->write();
 		if ($isNewProject) {
-			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::PROJECT_MANAGER));
+			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::MANAGER));
 		}
 		return $projectId;
 	}
@@ -104,7 +104,7 @@ class ProjectCommands
 			$project->appName = $appName;
 			$projectId = $project->write();
 		}
-		ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::PROJECT_MANAGER));
+		ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::MANAGER));
 		return $projectId;
 	}
 	

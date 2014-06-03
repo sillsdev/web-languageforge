@@ -9,7 +9,7 @@ use models\commands\ProjectCommands;
 use models\commands\UserCommands;
 use models\commands\TextCommands;
 use models\commands\QuestionCommands;
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\scriptureforge\SfProjectModel;
 use models\ProjectModel;
 use libraries\shared\Website;
@@ -84,7 +84,7 @@ $otherProject = ProjectCommands::createProject(
 
 ProjectCommands::updateUserRole($testProject, array(
 	'id' => $managerUser,
-	'role' => ProjectRoles::PROJECT_MANAGER
+	'role' => ProjectRoles::MANAGER
 ));
 ProjectCommands::updateUserRole($testProject, array(
 	'id' => $memberUser,

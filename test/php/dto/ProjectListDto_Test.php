@@ -3,7 +3,7 @@
 use models\shared\dto\ProjectListDto;
 use models\TextModel;
 use models\UserModel;
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -39,7 +39,7 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertIsA($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $projectId);
 		$this->assertEqual($dto['entries'][0]['projectname'], SF_TESTPROJECT);
-		$this->assertEqual($dto['entries'][0]['role'], Roles::NONE);
+		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::NONE);
 	}
 
 	function testEncode_SiteAdmin2Projects_DtoReturnsProjectCount2() {
@@ -54,7 +54,7 @@ class TestProjectListDto extends UnitTestCase {
 		$project1Name = 'SF_TESTPROJECT';
 		$project1 = $e->createProject($project1Name);
 		$projectId1 = $project1->id->asString();
-		$project1->addUser($userId, ProjectRoles::PROJECT_MANAGER);
+		$project1->addUser($userId, ProjectRoles::MANAGER);
 		$project1->write();
 		
 		$project2Name = 'SF_TESTPROJECT2';
@@ -67,10 +67,10 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertIsA($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $projectId1);
 		$this->assertEqual($dto['entries'][0]['projectname'], $project1Name);
-		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::PROJECT_MANAGER);
+		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::MANAGER);
 		$this->assertEqual($dto['entries'][1]['id'], $projectId2);
 		$this->assertEqual($dto['entries'][1]['projectname'], $project2Name);
-		$this->assertEqual($dto['entries'][1]['role'], Roles::NONE);
+		$this->assertEqual($dto['entries'][1]['role'], ProjectRoles::NONE);
 	}
 	
 	function testEncode_UserOf1Project2Projects_DtoReturnsProjectCount1() {

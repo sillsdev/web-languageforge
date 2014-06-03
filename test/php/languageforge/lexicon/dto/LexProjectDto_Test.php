@@ -1,7 +1,7 @@
 <?php
 
 use models\languageforge\lexicon\dto\LexProjectDto;
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../../TestConfig.php');
