@@ -1,7 +1,5 @@
 <?php
 
-
-
 use models\shared\rights\SiteRoles;
 
 use models\scriptureforge\sfchecks\SfchecksRoles;
@@ -16,7 +14,7 @@ require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
 class TestRoles extends UnitTestCase {
-
+ 
 	function testHasRight_SfchecksProject_Ok() {
 		// User Roles
 		$result = SfchecksRoles::hasRight(ProjectRoles::CONTRIBUTOR, Domain::ANSWERS + Operation::CREATE);
