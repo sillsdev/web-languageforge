@@ -41,7 +41,7 @@
 				<?php if ($logged_in):?>
 					<div class="pull-right">
 						<ul id="header-nav" class="sf-menu">
-							<li><a href="/app/projects">My Projects</a>
+							<li id="myProjects"><a href="/app/projects">My Projects</a>
 								<ul>
 								<?php foreach($projects as $project): ?>
 									<?php 
