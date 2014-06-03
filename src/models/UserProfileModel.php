@@ -9,7 +9,7 @@ use models\mapper\MapOf;
 use models\mapper\MongoMapper;
 use models\mapper\ReferenceList;
 
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 
 class UserProfileModel extends \models\UserModel {
 	

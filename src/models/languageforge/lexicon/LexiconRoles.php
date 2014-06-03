@@ -1,13 +1,14 @@
 <?php
 namespace models\languageforge\lexicon;
 
+use models\shared\rights\ProjectRoles;
+
 use models\shared\rights\Operation;
 use models\shared\rights\Domain;
 use models\shared\rights\RolesBase;
 
-class LexiconRoles extends RolesBase {
+class LexiconRoles extends ProjectRoles {
 	
-	const PROJECT_MANAGER = 'project_manager';
 	const OBSERVER = 'observer';
 	const OBSERVER_WITH_COMMENT = 'observer_with_comment';
 	const CONTRIBUTOR = 'contributor';
@@ -38,10 +39,10 @@ class LexiconRoles extends RolesBase {
 		
 		// Manager
 		$rights = array();
-		self::grantAllOnDomain($rights[self::PROJECT_MANAGER], Domain::PROJECTS);
-		self::grantAllOnDomain($rights[self::PROJECT_MANAGER], Domain::ENTRIES);
-		self::grantAllOnDomain($rights[self::PROJECT_MANAGER], Domain::COMMENTS);
-		self::$_rights[self::PROJECT_MANAGER] = $rights;
+		self::grantAllOnDomain($rights[self::MANAGER], Domain::PROJECTS);
+		self::grantAllOnDomain($rights[self::MANAGER], Domain::ENTRIES);
+		self::grantAllOnDomain($rights[self::MANAGER], Domain::COMMENTS);
+		self::$_rights[self::MANAGER] = $rights;
 	}
 	
 }

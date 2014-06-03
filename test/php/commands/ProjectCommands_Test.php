@@ -6,7 +6,7 @@ use models\ProjectSettingsModel;
 use models\commands\ProjectCommands;
 use models\UserModel;
 use models\ProjectModel;
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\mapper\Id;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
@@ -37,7 +37,7 @@ class TestProjectCommands extends UnitTestCase {
 		$projectId = $project->id->asString();
 		$params = array(
 				'id' => $user->id->asString(),
-				'role' => ProjectRoles::PROJECT_MANAGER,
+				'role' => ProjectRoles::MANAGER,
 		);
 	
 		// update user role in project
@@ -49,7 +49,7 @@ class TestProjectCommands extends UnitTestCase {
 		
 		// user updated and joined to project
 		$this->assertEqual($updatedUser->id, $userId);
-		$this->assertNotEqual($updatedUser->role, ProjectRoles::PROJECT_MANAGER);
+		$this->assertNotEqual($updatedUser->role, ProjectRoles::MANAGER);
 		$projectUser = $sameProject->listUsers()->entries[0];
 		$this->assertEqual($projectUser['name'], "Existing Name");
 		$userProject = $updatedUser->listProjects(Website::SCRIPTUREFORGE)->entries[0];

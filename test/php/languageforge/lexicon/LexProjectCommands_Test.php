@@ -5,7 +5,7 @@ use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\commands\ProjectCommands;
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');

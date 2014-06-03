@@ -1,7 +1,7 @@
 <?php
 use models\shared\rights\Operation;
 use models\shared\rights\Domain;
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\mapper\Id;
 use models\mapper\MongoStore;
 use models\UserModel;
@@ -192,7 +192,7 @@ class TestProjectModel extends UnitTestCase {
 	function testHasRight_Ok() {
 		$userId = MongoTestEnvironment::mockId();
 		$project = new ProjectModel();
-		$project->addUser($userId, ProjectRoles::PROJECT_MANAGER);
+		$project->addUser($userId, ProjectRoles::MANAGER);
 		$result = $project->hasRight($userId, Domain::QUESTIONS + Operation::CREATE);
 		$this->assertTrue($result);
 	}
@@ -200,7 +200,7 @@ class TestProjectModel extends UnitTestCase {
 	function testGetRightsArray_Ok() {
 		$userId = MongoTestEnvironment::mockId();
 		$project = new ProjectModel();
-		$project->addUser($userId, ProjectRoles::PROJECT_MANAGER);
+		$project->addUser($userId, ProjectRoles::MANAGER);
 		$result = $project->getRightsArray($userId);
 		$this->assertIsA($result, 'array');
 		$this->assertTrue(in_array(Domain::QUESTIONS + Operation::CREATE, $result));

@@ -1,7 +1,7 @@
 <?php
 
 
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 
 use models\commands\ActivityCommands;
 use models\shared\dto\ActivityListDto;

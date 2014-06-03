@@ -4,7 +4,7 @@
 use models\commands\ProjectCommands;
 
 use models\shared\dto\RightsHelper;
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\UserModel;
 
 
@@ -35,7 +35,7 @@ class TestRightsHelper extends UnitTestCase {
 		$user = new UserModel($userId);
 		$project = $e->createProject('projectForTest');
 		$projectId = $project->id->asString();
-		$project->addUser($userId, ProjectRoles::PROJECT_MANAGER);
+		$project->addUser($userId, ProjectRoles::MANAGER);
 		$project->write();
 		$user->addProject($projectId);
 		$user->write();
