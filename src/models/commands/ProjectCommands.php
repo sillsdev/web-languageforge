@@ -63,7 +63,7 @@ class ProjectCommands
 				throw new UserUnauthorizedException("Insufficient privileges to create new project in method 'updateProject'");
 			}
 		} else {
-			if (!RightsHelper::userHasProjectRight($id, $userId, Domain::USERS + Operation::EDIT)) {
+			if (!RightsHelper::userHasSfchecksProjectRight($id, $userId, Domain::USERS + Operation::EDIT)) {
 				throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
 			}
 			$project->read($id);

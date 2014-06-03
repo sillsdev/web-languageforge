@@ -1,4 +1,6 @@
 <?php
+use models\scriptureforge\SfchecksProjectModel;
+
 use models\shared\rights\ProjectRoleModel;
 
 use models\shared\rights\SiteRoles;
@@ -195,7 +197,7 @@ class TestProjectModel extends UnitTestCase {
 	
 	function testHasRight_Ok() {
 		$userId = MongoTestEnvironment::mockId();
-		$project = new ProjectModel();
+		$project = new SfchecksProjectModel();
 		$project->addUser($userId, ProjectRoles::MANAGER);
 		$result = $project->hasRight($userId, Domain::QUESTIONS + Operation::CREATE);
 		$this->assertTrue($result);
@@ -203,7 +205,7 @@ class TestProjectModel extends UnitTestCase {
 	
 	function testGetRightsArray_Ok() {
 		$userId = MongoTestEnvironment::mockId();
-		$project = new ProjectModel();
+		$project = new SfchecksProjectModel();
 		$project->addUser($userId, ProjectRoles::MANAGER);
 		$result = $project->getRightsArray($userId);
 		$this->assertIsA($result, 'array');
