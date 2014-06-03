@@ -28,10 +28,10 @@ class SfchecksRoles extends ProjectRoles {
 		$rights[] = Domain::COMMENTS + Operation::CREATE;
 		$rights[] = Domain::COMMENTS + Operation::EDIT_OWN;
 		$rights[] = Domain::COMMENTS + Operation::DELETE_OWN;
-		self::$_rights[self::MEMBER] = $rights;
+		self::$_rights[self::CONTRIBUTOR] = $rights;
 		
 		// Project Manager (everything an user has... plus the following)
-		$rights = self::$_rights[self::MEMBER];
+		$rights = self::$_rights[self::CONTRIBUTOR];
 		$rights[] = Domain::PROJECTS + Operation::EDIT;
 		$rights[] = Domain::TEXTS + Operation::CREATE; 
 		$rights[] = Domain::TEXTS + Operation::EDIT;

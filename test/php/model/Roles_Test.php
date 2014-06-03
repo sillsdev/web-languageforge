@@ -19,9 +19,9 @@ class TestRoles extends UnitTestCase {
 
 	function testHasRight_SfchecksProject_Ok() {
 		// User Roles
-		$result = SfchecksRoles::hasRight(ProjectRoles::MEMBER, Domain::ANSWERS + Operation::CREATE);
+		$result = SfchecksRoles::hasRight(ProjectRoles::CONTRIBUTOR, Domain::ANSWERS + Operation::CREATE);
 		$this->assertTrue($result);
-		$result = SfchecksRoles::hasRight(ProjectRoles::MEMBER, Domain::USERS + Operation::CREATE);
+		$result = SfchecksRoles::hasRight(ProjectRoles::CONTRIBUTOR, Domain::USERS + Operation::CREATE);
 		$this->assertFalse($result);
 		// Project Admin Roles
 		$result = SfchecksRoles::hasRight(ProjectRoles::MANAGER, Domain::QUESTIONS + Operation::CREATE);
@@ -36,7 +36,7 @@ class TestRoles extends UnitTestCase {
 	}
 	
 	function testGetRights_Ok() {
-		$result = SfchecksRoles::getRightsArray(ProjectRoles::MEMBER);
+		$result = SfchecksRoles::getRightsArray(ProjectRoles::CONTRIBUTOR);
 		$this->assertIsA($result, 'array');
 	}
 	

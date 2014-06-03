@@ -85,10 +85,10 @@ class TestActivityDto extends UnitTestCase {
 		$project2 = $e->createProject(SF_TESTPROJECT2);
 		
 		$userId = $e->createUser("user1", "user1", "user1@email.com");
-		$project1->addUser($userId, ProjectRoles::MEMBER);
+		$project1->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project1->write();
 		
-		$project2->addUser($userId, ProjectRoles::MEMBER);
+		$project2->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project2->write();
 		
 		$text1 = new TextModel($project1);

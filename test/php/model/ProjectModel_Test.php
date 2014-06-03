@@ -61,7 +61,7 @@ class TestProjectModel extends UnitTestCase {
 		$projectId = $projectModel->id->asString();
 		
 		// create the reference
-		$projectModel->addUser($userId, ProjectRoles::MEMBER);
+		$projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$userModel->addProject($projectId);
 		$projectModel->write();
 		$userModel->write();
@@ -84,7 +84,7 @@ class TestProjectModel extends UnitTestCase {
 		$projectId = $projectModel->id->asString();
 
 		// create the reference
-		$projectModel->addUser($userId, ProjectRoles::MEMBER);
+		$projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$userModel->addProject($projectId);
 		$projectModel->write();
 		$userModel->write();
@@ -117,9 +117,9 @@ class TestProjectModel extends UnitTestCase {
 		$projectModel = $e->createProject('new project');
 		$projectId = $projectModel->id;
 		
-		$projectModel->addUser($userId, ProjectRoles::MEMBER);
+		$projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$this->assertEqual(1, count($projectModel->users));
-		$projectModel->addUser($userId, ProjectRoles::MEMBER);
+		$projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$this->assertEqual(1, count($projectModel->users));
 	}
 	
@@ -138,11 +138,11 @@ class TestProjectModel extends UnitTestCase {
 		$this->assertEqual(array(), $result->entries);
 				
 		// Add our two users
-		$project->addUser($userId1, ProjectRoles::MEMBER);
+		$project->addUser($userId1, ProjectRoles::CONTRIBUTOR);
 		$um1->addProject($projectId);
 		$um1->write();
 		
-		$project->addUser($userId2, ProjectRoles::MEMBER);
+		$project->addUser($userId2, ProjectRoles::CONTRIBUTOR);
 		$um2->addProject($projectId);
 		$um2->write();
 		$project->write();
@@ -232,7 +232,7 @@ class TestProjectModel extends UnitTestCase {
 		$userId = $e->createUser('user1', 'user1', 'user1');
 		$user = new UserModel($userId);
 		$project = $e->createProject('testProject');
-		$project->addUser($userId, ProjectRoles::MEMBER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$projectId = $project->write();
 		$user->addProject($project->id->asString());
 		$user->write();

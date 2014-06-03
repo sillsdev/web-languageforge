@@ -295,7 +295,7 @@ class UserCommands {
 			$newUser->emailPending = $toEmail;
 			$newUser->addProject($project->id->asString());
 			$userId = $newUser->write();
-			$project->addUser($userId, ProjectRoles::MEMBER);
+			$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 			$project->write();
 			Communicate::sendInvite($inviterUser, $newUser, $project, $delivery);
 			return $userId;
