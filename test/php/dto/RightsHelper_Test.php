@@ -1,6 +1,8 @@
 <?php
 
 
+use models\shared\rights\SiteRoles;
+
 use models\commands\ProjectCommands;
 
 use models\shared\dto\RightsHelper;

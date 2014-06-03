@@ -1,5 +1,7 @@
 <?php
 
+use models\shared\rights\SiteRoles;
+
 use models\languageforge\lexicon\dto\LexProjectDto;
 use models\shared\rights\ProjectRoles;
 use models\UserModel;

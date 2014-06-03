@@ -1,5 +1,7 @@
 <?php
 
+use models\shared\rights\SiteRoles;
+
 use models\shared\dto\UserProfileDto;
 use models\SfchecksUserProfile;
 use models\shared\rights\ProjectRoles;

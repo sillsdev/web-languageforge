@@ -1,5 +1,7 @@
 <?php
 
+use models\shared\rights\SiteRoles;
+
 use models\languageforge\lexicon\commands\LexEntryCommands;
 use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\languageforge\lexicon\dto\LexDbeDto;
@@ -13,6 +15,7 @@ use models\languageforge\lexicon\Example;
 use models\languageforge\lexicon\Sense;
 use models\shared\rights\ProjectRoles;
 use models\UserModel;
+
 
 require_once(dirname(__FILE__) . '/../../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
