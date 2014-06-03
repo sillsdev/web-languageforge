@@ -27,7 +27,6 @@ class RolesBase {
 	
 	/**
 	 * Returns true if the given $role has the $right in the $realm
-	 * @param string $realm
 	 * @param string $role
 	 * @param int $right
 	 * @return bool
@@ -43,7 +42,6 @@ class RolesBase {
 	
 	/**
 	 * Returns the array of rights for this $role in the given $realm
-	 * @param string $realm
 	 * @param string $role
 	 * @return array
 	 */

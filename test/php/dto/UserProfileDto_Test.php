@@ -2,7 +2,7 @@
 
 use models\shared\dto\UserProfileDto;
 use models\SfchecksUserProfile;
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\UserProfileModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');

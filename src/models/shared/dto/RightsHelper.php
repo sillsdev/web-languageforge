@@ -2,6 +2,8 @@
 
 namespace models\shared\dto;
 
+use models\shared\rights\SiteRoles;
+
 use models\shared\rights\Operation;
 
 use models\shared\rights\Domain;
@@ -9,7 +11,7 @@ use models\shared\rights\Domain;
 use models\ProjectModel;
 use models\UserModel;
 
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 
 class RightsHelper
 {
@@ -24,7 +26,7 @@ class RightsHelper
 	
 	public static function userHasSiteRight($userId, $right) {
 		$user = new UserModel($userId);
-		return Roles::hasRight(Realm::SITE, $user->role, $right);
+		return SiteRoles::hasRight($user->role, $right);
 	}
 	
 	public static function userHasProjectRightForAnyProject($userId, $right) {

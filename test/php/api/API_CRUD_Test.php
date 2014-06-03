@@ -1,7 +1,7 @@
 <?php
 
 use models\mapper\Id;
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\commands\UserCommands;
 use models\commands\QuestionTemplateCommands;
 use models\commands\QuestionCommands;

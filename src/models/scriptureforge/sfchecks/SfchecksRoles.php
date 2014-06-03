@@ -51,7 +51,7 @@ class SfchecksRoles extends ProjectRoles {
 		$rights[] = Domain::USERS + Operation::DELETE;
 		$rights[] = Domain::USERS + Operation::VIEW;
 		self::grantAllOnDomain($rights, Domain::TEMPLATES);
-		self::$_rights[self::PROJECT_MANAGER] = $rights;
+		self::$_rights[self::MANAGER] = $rights;
 	}
 }
 SfchecksRoles::init();

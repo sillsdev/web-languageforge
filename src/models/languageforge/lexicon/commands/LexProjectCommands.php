@@ -19,7 +19,7 @@ use models\mapper\JsonDecoder;
 use models\mapper\MongoStore;
 use models\shared\rights\Domain;
 use models\shared\rights\Operation;
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\shared\dto\RightsHelper;
 use models\UserModel;
 
@@ -69,7 +69,7 @@ class LexProjectCommands {
 		}
 		$projectId = $project->write();
 		if ($isNewProject) {
-			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::PROJECT_MANAGER));
+			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::MANAGER));
 		}
 		return $projectId;
 	}

@@ -11,7 +11,7 @@ use models\languageforge\lexicon\LexiconFieldWithComments;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\Example;
 use models\languageforge\lexicon\Sense;
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../../TestConfig.php');

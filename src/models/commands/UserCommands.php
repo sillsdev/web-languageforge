@@ -29,7 +29,7 @@ use models\mapper\MongoStore;
 use models\shared\rights\Domain;
 use models\shared\rights\Operation;
 
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\AnswerModel;
 use models\ProjectModel;
 use models\ProjectSettingsModel;

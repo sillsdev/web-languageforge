@@ -6,7 +6,7 @@ use libraries\shared\Website;
 
 use libraries\shared\palaso\CodeGuard;
 
-use models\shared\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\shared\rights\ProjectRoleModel;
 use models\mapper\MapOf;
 use models\mapper\MongoMapper;
