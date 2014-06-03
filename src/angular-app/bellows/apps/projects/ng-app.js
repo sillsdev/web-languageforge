@@ -11,7 +11,7 @@ angular.module(
 
 		// Rights
 		$scope.rights = {};
-		$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.DELETE); 
+		$scope.rights.deleteOther = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE); 
 		$scope.newProject = {};
 
 
