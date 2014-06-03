@@ -73,7 +73,8 @@ describe('the project settings page - project manager', function() {
 	
 	describe('project properties tab', function() {
 		var newName = constants.thirdProjectName;
-		var newCode = 'new_kid';
+		var newTheme = 'jamaicanpsalms';
+//		var newCode = 'new_kid';
 		it('setup: click on tab', function() {
 			expect(page.tabs.projectProperties.isPresent()).toBe(true);
 			page.tabs.projectProperties.click();
@@ -81,31 +82,36 @@ describe('the project settings page - project manager', function() {
 		
 		it('can read properties', function() {
 			expect(page.propertiesTab.name.getAttribute('value')).toBe(constants.testProjectName);
-			expect(page.propertiesTab.code.getAttribute('value')).toBe(constants.testProjectCode);
+			expect(page.propertiesTab.theme.getText()).toEqual(constants.testProjectTheme);
+//			expect(page.propertiesTab.code.getAttribute('value')).toBe(constants.testProjectCode);
 			expect(page.propertiesTab.featured.getAttribute('checked')).toBeFalsy();
 		});
 
 		it('can change properties and verify they persist', function() {
 			page.propertiesTab.name.clear();
 			page.propertiesTab.name.sendKeys(newName);
-			page.propertiesTab.code.clear();
-			page.propertiesTab.code.sendKeys(newCode);
+			util.clickDropdownByValue(page.propertiesTab.theme, newTheme);
+//			page.propertiesTab.code.clear();
+//			page.propertiesTab.code.sendKeys(newCode);
 			page.propertiesTab.featured.click();
 			page.propertiesTab.button.click();
-			browser.navigate().back();
-			projectPage.settingsButton.click();
+			browser.navigate().refresh();
 			page.tabs.projectProperties.click();
 			expect(page.propertiesTab.name.getAttribute('value')).toBe(newName);
-			expect(page.propertiesTab.code.getAttribute('value')).toBe(newCode);
+			expect(page.propertiesTab.theme.getText()).toEqual(newTheme);
+//			expect(page.propertiesTab.code.getAttribute('value')).toBe(newCode);
 			expect(page.propertiesTab.featured.getAttribute('checked')).toBeTruthy();
+			// expect(page).toContain(newTheme); // My Projects link for this project to contain newTheme IJH 2014-06
+			util.clickDropdownByValue(page.propertiesTab.theme, constants.testProjectTheme);
+			page.propertiesTab.button.click();
 	    	projectListPage.get();
 	    	projectListPage.clickOnProject(newName);
 	    	projectPage.settingsButton.click();
 			page.tabs.projectProperties.click();
 			page.propertiesTab.name.clear();
 			page.propertiesTab.name.sendKeys(constants.testProjectName);
-			page.propertiesTab.code.clear();
-			page.propertiesTab.code.sendKeys(constants.testProjectCode);
+//			page.propertiesTab.code.clear();
+//			page.propertiesTab.code.sendKeys(constants.testProjectCode);
 			page.propertiesTab.featured.click();
 			page.propertiesTab.button.click();
 		});
