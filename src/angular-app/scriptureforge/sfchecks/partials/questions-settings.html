@@ -6,32 +6,42 @@
 			<fieldset class="span4">
 				<table class="tableform">
 					<tr>
-						<td colspan="2">
+						<td>
 							<label>Title</label>
 							<input required ng-model="editedText.title" type="text" placeholder="Title"/>
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2">
+						<td>
 							<label>USX Text</label>
-
 							<textarea textdrop ng-model="editedText.content" rows="4" placeholder="Paste the USX text here"></textarea>
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2">
+						<td>
 						<input type="checkbox" ng-model="editedText.editPreviousText" class="no-margin"></input> <b>I know what I'm doing</b> and I want to edit the text (dangerous!)
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a ng-click="toggleRangeSelector()">Select limited verse range</a>
+						</td>
+					</tr>
+				</table>
+				<div collapse="rangeSelectorCollapsed">
+				<table>
 					<tr>
 						<td>From</td>
-						<td><input type="number" ng-model="editedText.startCh" min="0" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="editedText.startVs" min="0" placeholder="Verse" style="width: 5em"></input></td>
+						<td><input type="number" ng-model="editedText.startCh" min="0" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" ng-model="editedText.startVs" min="0" placeholder="Verse" style="width: 4em"></input></td>
 						<td><a ng-click="editedText.startCh = ''; editedText.startVs = ''" class="btn-link">reset</a></td>
 					</tr>
 					<tr>
 						<td>To</td>
-						<td><input type="number" ng-model="editedText.endCh" min="0" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="editedText.endVs" min="0" placeholder="Verse" style="width: 5em"></input></td>
+						<td><input type="number" ng-model="editedText.endCh" min="0" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" ng-model="editedText.endVs" min="0" placeholder="Verse" style="width: 4em"></input></td>
 						<td><a ng-click="editedText.endCh = ''; editedText.endVs = ''" class="btn-link">reset</a></td>
 					</tr>
 				</table>
+				</div>
 				<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 			</fieldset>
 			<fieldset class="span4">

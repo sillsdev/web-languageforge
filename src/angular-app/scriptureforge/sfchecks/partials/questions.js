@@ -259,6 +259,7 @@ angular.module(
 		$scope.editedText = {
 			id: textId,
 		};
+		$scope.rangeSelectorCollapsed = true;
 
 		// Get name from text service. This really should be in the DTO, but this will work for now.
 		// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08
@@ -295,6 +296,10 @@ angular.module(
 				}
 			});
 		};
+
+		$scope.toggleRangeSelector = function() {
+			$scope.rangeSelectorCollapsed = !$scope.rangeSelectorCollapsed;
+		}
 
 		$scope.$watch('editedText.editPreviousText', function(newval, oldval) {
 			var yesImSure = false;
