@@ -11,28 +11,37 @@
 	<fieldset class="span4">
 	<table class="tableform">
 		<tr>
-			<td colspan="2">
+			<td>
 				<label>Title</label>
 				<input required ng-model="title" type="text" placeholder="Title"/>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2">
+			<td>
 				<label>Text</label>
 				<textarea textdrop ng-model="content" rows="4" placeholder="Paste the USX text here"></textarea>
 			</td>
 		</tr>
 		<tr>
+			<td>
+				<a ng-click="toggleRangeSelector()">Select limited verse range</a>
+			</td>
+		</tr>
+	</table>
+	<div collapse="rangeSelectorCollapsed">
+	<table>
+		<tr>
 			<td>From</td>
-			<td><input type="number" ng-model="startCh" min="0" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="startVs" min="0" placeholder="Verse" style="width: 5em"></input></td>
+			<td><input type="number" ng-model="startCh" min="0" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" ng-model="startVs" min="0" placeholder="Verse" style="width: 4em"></input></td>
 			<td><a ng-click="startCh = ''; startVs = ''" class="btn-link">reset</a></td>
 		</tr>
 		<tr>
 			<td>To</td>
-			<td><input type="number" ng-model="endCh" min="0" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="endVs" min="0" placeholder="Verse" style="width: 5em"></input></td>
+			<td><input type="number" ng-model="endCh" min="0" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" ng-model="endVs" min="0" placeholder="Verse" style="width: 4em"></input></td>
 			<td><a ng-click="endCh = ''; endVs = ''" class="btn-link">reset</a></td>
 		</tr>
 	</table>
+	</div>
 	<button type="submit" class="btn" ng-disabled="newTextForm.$invalid" ng-click="addText(); newTextCollapsed = true"><i class="icon-ok"></i>Save</button>
 	</fieldset>
 	<fieldset class="span4">
