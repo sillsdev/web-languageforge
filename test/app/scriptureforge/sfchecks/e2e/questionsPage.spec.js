@@ -89,10 +89,11 @@ describe('the questions list page AKA the text page', function() {
 			util.setCheckbox(letMeEditCheckbox, true);
 			// Should pop up two alerts in a row
 			// First alert: "This is dangerous, are you sure?"
+			util.waitForAlert();
 			var alert = browser.switchTo().alert();
 			alert.accept();
-			browser.sleep(100); // Wait a bit for second alert to show up -- sometimes fails if this line omitted
 			// Second alert: "You have previous edits which will be replaced, are you really sure?"
+			util.waitForAlert();
 			alert = browser.switchTo().alert();
 			alert.accept();
 			// TODO: Check alert text for one or both alerts (see http://stackoverflow.com/a/19884387/2314532)
