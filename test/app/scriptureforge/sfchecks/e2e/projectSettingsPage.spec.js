@@ -17,7 +17,7 @@ describe('the project settings page - project manager', function() {
     	projectListPage.clickOnProject(constants.testProjectName);
     	projectPage.settingsButton.click();
 	});
-/*	
+	
 	describe('members tab', function() {
 		var memberCount = 0;
 		it('setup: click on tab', function() {
@@ -71,7 +71,7 @@ describe('the project settings page - project manager', function() {
 		// intentionally ignoring these tests because of an impending refactor regarding question templates
 		
 	});
-*/	
+	
 	describe('project properties tab', function() {
 		var newName = constants.thirdProjectName;
 		var newTheme = 'jamaicanpsalms';
@@ -94,18 +94,16 @@ describe('the project settings page - project manager', function() {
 			page.propertiesTab.featured.click();
 			page.propertiesTab.button.click();
 			browser.navigate().refresh();
-			browser.driver.wait(function() {
-				// Without this wait(), the next line of the test was sometimes executing too soon
-				return browser.driver.getCurrentUrl().then(function(url) {
-					return !(/settings$/.test(url));
-				});
-			});
 			page.tabs.projectProperties.click();
 			expect(page.propertiesTab.name.getAttribute('value')).toBe(newName);
 			expect(page.propertiesTab.theme.getText()).toEqual(newTheme);
 			expect(page.propertiesTab.featured.getAttribute('checked')).toBeTruthy();
 			expect(header.myProjects.links.first().findElement(by.css('a')).getAttribute('href')).toContain(newTheme);
-			browser.sleep(1000);
+//			header.myProjects.links.first().findElement(by.css('a')).getAttribute('href').then(function(href) {
+//				console.log('href = ' + href);
+//			});
+//			browser.sleep(1000);
+//			These next two lines appear to sometimes happen before the expect above on my slow PC at home, ie the expect fails. IJH 2014-06
 			util.clickDropdownByValue(page.propertiesTab.theme, constants.testProjectTheme);
 			page.propertiesTab.button.click();
 	    	projectListPage.get();
@@ -119,7 +117,7 @@ describe('the project settings page - project manager', function() {
 		});
 
 	});
-/*	
+	
 	describe('project setup tab - NYI', function() {
 		it('setup: click on tab', function() {});
 		// intentionally ignoring these tests because of an impending refactor regarding option lists
@@ -168,5 +166,5 @@ describe('the project settings page - project manager', function() {
 			});
 		});
 	});
-*/	
+	
 });
