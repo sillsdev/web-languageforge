@@ -76,7 +76,6 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  */
-	//$application_folder = '/var/www/scriptureforge.org_dev/htdocs';
 	$application_folder = "/var/www/$site.org_dev/htdocs";
 
 /*
