@@ -29,15 +29,15 @@
 						<div data-ng-show="showPassword">
 							<label>Password</label> 
 							<input required type="text"
-								data-ng-model="record.password" name="password" />
+								data-ng-model="record.password" name="password" id="visiblePassword" />
 							<label>Confirm password</label>
 			                <input type="text" disabled />
 						</div>
 						<div data-ng-hide="showPassword">
 			                <label>Password</label>
-			                <input required type="password" data-ng-model="record.password" name="password"/>
+			                <input required type="password" data-ng-model="record.password" name="password" id="password" />
 			                <label>Confirm password</label>
-			                <input required type="password" data-ng-model="confirmPassword" name="confirmPassword"/>
+			                <input required type="password" data-ng-model="confirmPassword" name="confirmPassword" />
 			                <span data-ng-show='record.password && record.password != confirmPassword'><img src="/images/shared/exclamation.png" title="Passwords do not match" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
 			                <span data-ng-show='record.password && record.password == confirmPassword'><img src="/images/shared/tick.png" title="Password OK" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
 						</div>
