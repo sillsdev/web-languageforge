@@ -187,17 +187,22 @@ class RightsHelper
 			case 'project_create':
 				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT);
 			
+				// TODO: refactor these permissions once questionTemplates are being properly stored on the project
 			case 'questionTemplate_update':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::TEMPLATES + Operation::EDIT);
+				return true;
+				//return self::userHasSfchecksProjectRight($params[0], $userId, Domain::TEMPLATES + Operation::EDIT);
 				
 			case 'questionTemplate_read':
-				return self::userHasSiteRight($userId, Domain::TEMPLATES + Operation::EDIT);
+				return true;
+				//return self::userHasSiteRight($userId, Domain::TEMPLATES + Operation::EDIT);
 
 			case 'questionTemplate_delete':
-				return self::userHasSiteRight($userId, Domain::TEMPLATES + Operation::DELETE);
+				return true;
+				//return self::userHasSiteRight($userId, Domain::TEMPLATES + Operation::DELETE);
 				
 			case 'questionTemplate_list':
-				return self::userHasSiteRight($userId, Domain::TEMPLATES + Operation::VIEW);
+				return true; // temporary until we refactor templates...
+				//return self::userHasSfchecksProjectRight($params[0], $userId, Domain::TEMPLATES + Operation::VIEW);
 
 
 			// User (site context)
