@@ -7,10 +7,10 @@ var BellowsChangePasswordPage = function() {
 		browser.get('/app/changepassword');
 	};
 
-	this.passwordForm  = element('form#passwordForm');
-	this.passwordInput = element(by.model('vars.password'));
-	this.confirmInput  = element(by.model('vars.confirm_password'));
-	this.signupButton  = element(by.tagName('button')); // Might need to change this...?
+	this.form  = element('form#passwordForm');
+	this.password = element(by.model('vars.password'));
+	this.confirm  = element(by.model('vars.confirm_password'));
+	this.submitButton = element(by.partialButtonText('Change Password'));
 };
 
 module.exports = new BellowsChangePasswordPage();
