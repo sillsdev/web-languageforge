@@ -10,6 +10,7 @@ src/bower_components/
 src/assets/
 
 test/node_modules/protractor/selenium/
+test/node_modules/.bin/
 
 src/js/lib/node_modules/protractor/selenium/chromedriver.exe
 src/js/lib/node_modules/protractor/selenium/chromedriver_2.9.zip
