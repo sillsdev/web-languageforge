@@ -99,11 +99,6 @@ describe('the project settings page - project manager', function() {
 			expect(page.propertiesTab.theme.getText()).toEqual(newTheme);
 			expect(page.propertiesTab.featured.getAttribute('checked')).toBeTruthy();
 			expect(header.myProjects.links.first().findElement(by.css('a')).getAttribute('href')).toContain(newTheme);
-//			header.myProjects.links.first().findElement(by.css('a')).getAttribute('href').then(function(href) {
-//				console.log('href = ' + href);
-//			});
-//			browser.sleep(1000);
-//			These next two lines appear to sometimes happen before the expect above on my slow PC at home, ie the expect fails. IJH 2014-06
 			util.clickDropdownByValue(page.propertiesTab.theme, constants.testProjectTheme);
 			page.propertiesTab.button.click();
 	    	projectListPage.get();
