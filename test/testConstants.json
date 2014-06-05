@@ -15,6 +15,7 @@
 	"avatar"           : "/images/shared/avatar/anonymoose.png",
 	
 	"testProjectName"  : "Test Project",
+	"testProjectTheme" : "default",
 	"testProjectCode"  : "test_project",
 	"otherProjectName" : "Other Project for Testing",
 	"thirdProjectName" : "new kid on the block",
