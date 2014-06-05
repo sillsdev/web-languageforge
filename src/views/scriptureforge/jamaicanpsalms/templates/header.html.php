@@ -35,7 +35,7 @@
 									}
 									?>
 
-									<li><a href="<?php echo "http://$theme$hostname/app/" . $project['appName'] . "#/p/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+									<li><a href="<?php echo "//$theme$hostname/app/" . $project['appName'] . "#/p/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
 								<?php endforeach;?>
 								</ul>
 							</li>
