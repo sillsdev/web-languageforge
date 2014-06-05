@@ -1,30 +1,30 @@
-<div class="content container" ng-cloak ng-controller="ProjectsCtrl">
-	<div id="sfchecks-hmenu" class="hdrnav">
-		<ul class="topNav">
-			<li class="here"><a href="/app/projects">My Projects</a></li>
-			<li><a href="/app/activity">Activity</a></li>
-		</ul>
-		<br />
-	</div>
-	<div style="padding-top:10px">
+<div class="content container" data-ng-cloak data-ng-controller="ProjectsCtrl">
+<div id="sfchecks-hmenu" class="hdrnav">
+	<ul class="topNav">
+		<li class="here"><a href="/app/projects">My Projects</a></li>
+		<li><a href="/app/activity">Activity</a></li>
+	</ul>
+	<br />
+</div>
+<div style="padding-top:10px">
 	<sil-notices></sil-notices>
 	<div data-wc-overlay="" data-wc-overlay-delay="800">
     <img src="/images/shared/loading.gif" />&nbsp; Loading...
     </div>
-	<div ng-show="finishedLoading">
+	<div data-ng-show="finishedLoading">
 	    
         <h2 style="font-weight:normal">My Projects</h2>
         <form data-ng-show="rights.deleteOther" class="control-bar form-inline">
         	<button data-ng-disabled="selected.length == 0" class="btn btn-small" data-ng-click="removeProject()"><i class="icon-remove"></i>Delete Selected</button>
         	<button class="btn btn-small" data-ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Create New Project</button>
         </form>
-        <div class="new-item" collapse="newProjectCollapsed">
+        <div class="new-item" data-collapse="newProjectCollapsed">
         	<form class="well" class="form-horizontal" name="newProjectForm">
         	    <div class="control-group">
                	    <input type="text" data-ng-model="newProject.projectName" maxlength="50" required placeholder="Project Name"/>
                	</div>
         	    <div class="control-group">
-                    <select rqeuired ng-model="newProject.appName" ng-options="type as projectTypes[type] for type in projectTypesBySite[site()]">
+                    <select required data-ng-model="newProject.appName" data-ng-options="type as projectTypes[type] for type in projectTypesBySite[site()]">
                         <option value="">-- select type --</option>
                     </select>
                	</div>
@@ -54,5 +54,5 @@
         </div>
 	    
 	</div>
-	</div>
+</div>
 </div>

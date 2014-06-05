@@ -6,7 +6,7 @@ use models\UserModel;
 use models\shared\rights\ProjectRoles;
 use models\shared\rights\SiteRoles;
 
-require_once(dirname(__FILE__) . '/../TestConfig.php');
+require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
@@ -69,9 +69,11 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertEqual($dto['entries'][0]['id'], $projectId1);
 		$this->assertEqual($dto['entries'][0]['projectname'], $project1Name);
 		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::MANAGER);
+		$this->assertEqual($dto['entries'][0]['themeName'], 'default');
 		$this->assertEqual($dto['entries'][1]['id'], $projectId2);
 		$this->assertEqual($dto['entries'][1]['projectname'], $project2Name);
 		$this->assertEqual($dto['entries'][1]['role'], ProjectRoles::NONE);
+		$this->assertEqual($dto['entries'][1]['themeName'], 'default');
 	}
 	
 	function testEncode_UserOf1Project2Projects_DtoReturnsProjectCount1() {

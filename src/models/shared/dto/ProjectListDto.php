@@ -2,8 +2,6 @@
 
 namespace models\shared\dto;
 
-use libraries\shared\Website;
-
 use models\ProjectList_UserModel;
 use models\ProjectModel;
 use models\TextListModel;

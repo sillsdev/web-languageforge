@@ -9,10 +9,26 @@ class Website {
 	const SCRIPTUREFORGE = 'scriptureforge';
 	const LANGUAGEFORGE = 'languageforge';
 	
-	//public static function normalizeUrl($url = '');
+	public static function normalizeUrl($url = '') {
+		return $url;
+	}
 	
 	// return 'http' or 'https'
-	//public static function getProtocolForHostName($hostName = '');
+	public static function getProtocolForHostName($hostName = '') {
+		if (!$hostName) {
+			$hostName = $_SERVER['HTTP_HOST'];
+		}
+		$default = 'http'; // Default to HTTP without specific reason for HTTPS
+		$projectName = ProjectModel::domainToProjectCode($hostName);
+		switch ($projectName) {
+			case "jamaicanpsalms":
+				$result = 'https';
+				break;
+			default:
+				$result = $default;
+		}
+		return $result;
+	}
 	
 	
 	public static function getSiteName($domainName = '') {
@@ -57,6 +73,25 @@ class Website {
 			$themeName = 'default';	
 		}
 		return $themeName;
+	}
+
+	/**
+	 * 
+	 * @param string $site
+	 * @return array
+	 */
+	public static function getProjectThemeNamesForSite($site) {
+		$themeNames = array();
+		$sitePath = APPPATH . 'views/' . $site;
+		if (is_dir($sitePath)) {
+			$folders = glob($sitePath . '/*' , GLOB_ONLYDIR);
+			foreach ($folders as &$folder) {
+				$folder = pathinfo($folder, PATHINFO_BASENAME);
+			}
+			$themeNames = $folders;
+		}
+		
+		return $themeNames;	
 	}
 	
 	/**
