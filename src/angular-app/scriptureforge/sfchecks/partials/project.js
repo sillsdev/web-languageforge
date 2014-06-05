@@ -137,6 +137,11 @@ angular.module(
 			});
 		};
 
+		$scope.rangeSelectorCollapsed = true;
+		$scope.toggleRangeSelector = function() {
+			$scope.rangeSelectorCollapsed = !$scope.rangeSelectorCollapsed;
+		}
+
 		$scope.getQuestionCount = function(text) {
 			return text.questionCount;
 		};
