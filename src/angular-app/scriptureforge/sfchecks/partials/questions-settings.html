@@ -32,12 +32,12 @@
 				<table>
 					<tr>
 						<td>From</td>
-						<td><input type="number" ng-model="editedText.startCh" min="0" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" ng-model="editedText.startVs" min="0" placeholder="Verse" style="width: 4em"></input></td>
+						<td><input type="number" ng-model="editedText.startCh" min="1" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" ng-model="editedText.startVs" min="1" placeholder="Verse" style="width: 4em"></input></td>
 						<td><a ng-click="editedText.startCh = ''; editedText.startVs = ''" class="btn-link">reset</a></td>
 					</tr>
 					<tr>
 						<td>To</td>
-						<td><input type="number" ng-model="editedText.endCh" min="0" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" ng-model="editedText.endVs" min="0" placeholder="Verse" style="width: 4em"></input></td>
+						<td><input type="number" ng-model="editedText.endCh" min="1" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" ng-model="editedText.endVs" min="1" placeholder="Verse" style="width: 4em"></input></td>
 						<td><a ng-click="editedText.endCh = ''; editedText.endVs = ''" class="btn-link">reset</a></td>
 					</tr>
 				</table>
