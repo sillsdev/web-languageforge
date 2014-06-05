@@ -29,6 +29,14 @@ class Base extends CI_Controller {
 	
 	public function __construct() {
 		parent::__construct();
+		$protocol = Website::getProtocolForHostName();
+		if ($protocol == 'https') {
+			// Redirect to same page with HTTPS if we accessed it with HTTP
+			if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == ""){
+				$redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+				header("Location: $redirect");
+			}
+		}
 		$this->load->library('ion_auth');
 		$this->_isLoggedIn = $this->ion_auth->logged_in();
 		if ($this->_isLoggedIn) {

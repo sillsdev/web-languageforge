@@ -24,12 +24,12 @@
 		</tr>
 		<tr>
 			<td>From</td>
-			<td><input type="number" ng-model="startCh" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="startVs" placeholder="Verse" style="width: 5em"></input></td>
+			<td><input type="number" ng-model="startCh" min="0" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="startVs" min="0" placeholder="Verse" style="width: 5em"></input></td>
 			<td><a ng-click="startCh = ''; startVs = ''" class="btn-link">reset</a></td>
 		</tr>
 		<tr>
 			<td>To</td>
-			<td><input type="number" ng-model="endCh" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="endVs" placeholder="Verse" style="width: 5em"></input></td>
+			<td><input type="number" ng-model="endCh" min="0" placeholder="Chapter" style="width: 5em"></input>&nbsp;:&nbsp;<input type="number" ng-model="endVs" min="0" placeholder="Verse" style="width: 5em"></input></td>
 			<td><a ng-click="endCh = ''; endVs = ''" class="btn-link">reset</a></td>
 		</tr>
 	</table>

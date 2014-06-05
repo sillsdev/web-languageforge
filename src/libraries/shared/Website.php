@@ -9,6 +9,28 @@ class Website {
 	const SCRIPTUREFORGE = 'scriptureforge';
 	const LANGUAGEFORGE = 'languageforge';
 	
+	public static function normalizeUrl($url = '') {
+		return $url;
+	}
+	
+	// return 'http' or 'https'
+	public static function getProtocolForHostName($hostName = '') {
+		if (!$hostName) {
+			$hostName = $_SERVER['HTTP_HOST'];
+		}
+		$default = 'http'; // Default to HTTP without specific reason for HTTPS
+		$projectName = ProjectModel::domainToProjectCode($hostName);
+		switch ($projectName) {
+			case "jamaicanpsalms":
+				$result = 'https';
+				break;
+			default:
+				$result = $default;
+		}
+		return $result;
+	}
+	
+	
 	public static function getSiteName($domainName = '') {
 		if (!$domainName) {
 			$domainName = $_SERVER['HTTP_HOST'];
