@@ -77,14 +77,14 @@ angular.module(
 		};
 
 		$scope.isInProject = function(project) {
-			if (project.role == 'user' || project.role == 'project_admin') {
+			if (project.role == 'contributor' || project.role == 'project_manager') {
 				return true;
 			}
 			return false;
 		};
 
 		$scope.isManager = function(project) {
-			if (project.role == 'project_admin') {
+			if (project.role == 'project_manager') {
 				return true;
 			}
 			return false;
@@ -95,7 +95,7 @@ angular.module(
 //			console.log("addManagerToProject(" + project.projectname + ")");
 			var user = {};
 			user.id = ss.currentUserId();
-			user.role = 'project_admin';
+			user.role = 'project_manager';
 			projectService.updateUser(project.id, user, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "You are now a Manager of the " + project.projectname + " project.");
@@ -109,10 +109,10 @@ angular.module(
 //			console.log("addMemberToProject(" + project.projectname + ")");
 			var user = {};
 			user.id = ss.currentUserId();
-			user.role = 'user';
+			user.role = 'contributor';
 			projectService.updateUser(project.id, user, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "You are now a Member of the " + project.projectname + " project.");
+					notice.push(notice.SUCCESS, "You are now a Contributor for the " + project.projectname + " project.");
 					$scope.queryProjectsForUser();
 				}
 			});
