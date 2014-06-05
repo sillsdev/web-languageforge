@@ -1,10 +1,14 @@
 'use strict';
 
+afterEach(function() {
+	var appFrame = require('../../../pages/appFrame.js');
+	expect(appFrame.errorMessage.isPresent()).toBe(false);
+});
+
 describe('the project settings page - project manager', function() {
 	var projectListPage = require('../../../pages/projectsPage.js');
 	var projectPage = require('../../../pages/projectPage.js');
 	var page = require('../../../pages/projectSettingsPage.js');
-
 	var loginPage = require('../../../pages/loginPage.js');
 	var util = require('../../../pages/util.js');
 	var constants = require('../../../../testConstants.json');

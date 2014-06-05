@@ -1,6 +1,5 @@
 'use strict';
 
-var constants = require('../../../../testConstants');
 var baseUrl = browser.baseUrl || 'http://jamaicanpsalms.scriptureforge.local';
 // browser.baseUrl is specified on Protractor command line via "protractor --baseUrl=foo"
 // If the --baseUrl parameter is not given on command line, browser.baseUrl will be an empty string
@@ -22,8 +21,6 @@ function checkLoggedIn() {
 	expect(browser.driver.isElementPresent(protractor.By.css('.login-btn'))).toBeFalsy();
 };
 
-var constants = require('../../../../testConstants');
-var loginPage = require('../../../pages/loginPage'); 
 
 loginPage.loginAsUser();
 
@@ -71,15 +68,12 @@ var SfChangePasswordPage = function() {
 describe('E2E testing: Change password', function() {
 	var sfChangePasswordPage = new SfChangePasswordPage();
 	
+	var constants = require('../../../../testConstants');
 	var loginPage = require('../../../pages/loginPage'); 
 
 	sfChangePasswordPage.getChangePassword();
 	
 	// Do the 
-	var passwordForm  = element('form#passwordForm');
-	var passwordInput = element(by.model('vars.password'));
-	var confirmInput  = element(by.model('vars.confirm_password'));
-	var signupButton  = element(by.tagName('button')); // Might need to change this...?
 
 	beforeEach(function() {
 		loginPage.login(testUser, currentPassword);
