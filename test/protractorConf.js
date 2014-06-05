@@ -9,7 +9,10 @@ exports.config = {
   
   // To run tests in a single browser, uncomment the following
   capabilities: {
-    'browserName': 'chrome'
+    'browserName': 'chrome',
+    'chromeOptions': {
+        'args': ['--start-maximized'],
+    },
   },
 
   // To run tests in multiple browsers, uncomment the following
