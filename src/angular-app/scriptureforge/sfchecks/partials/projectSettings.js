@@ -371,8 +371,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	
 	// Roles in list
 	$scope.roles = [
-        {key: 'user', name: 'Member'},
-        {key: 'project_admin', name: 'Manager'}
+        {key: 'contributor', name: 'Contributor'},
+        {key: 'project_manager', name: 'Manager'}
     ];
 	
 	$scope.onRoleChange = function(user) {
