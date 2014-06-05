@@ -2,10 +2,8 @@
 
 use libraries\shared\Website;
 
-
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 
 class TestWebsite extends UnitTestCase {
 
@@ -65,6 +63,15 @@ class TestWebsite extends UnitTestCase {
 		$domainName = 'languageforge.org';
 		$result = Website::getProjectThemeNameFromDomain($domainName);
 		$this->assertEqual($result, 'default');
+	}
+	
+	function testGetProjectThemeNamesForSite_Works() {
+		$themeNames = Website::getProjectThemeNamesForSite('scriptureforge');
+		$this->assertEqual($themeNames[0], 'default');
+		$this->assertEqual($themeNames[1], 'jamaicanpsalms');
+		
+		$themeNames = Website::getProjectThemeNamesForSite('languageforge');
+		$this->assertEqual($themeNames[0], 'default');
 	}
 	
 }
