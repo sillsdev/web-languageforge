@@ -35,6 +35,7 @@ var SfProjectPage = function() {
 		title:			element(by.model('title')),
 		usx:			element(by.model('content')),
 		saveButton:		element(by.css('form[name="newTextForm"]')).element(by.partialButtonText('Save')),
+		verseRangeLink:	element(by.linkText('Select limited verse range')),
 		fromChapter:	element(by.model('startCh')),
 		fromVerse:		element(by.model('startVs')),
 		toChapter:		element(by.model('endCh')),
