@@ -196,7 +196,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			projectname: $scope.project.projectname,
 			themeName: $scope.project.themeName,
 			projectCode: $scope.project.projectCode,
-			featured: $scope.project.featured
+			featured: $scope.project.featured,
+			allowAudioDownload: $scope.project.allowAudioDownload,
 		};
 
 		sfchecksProjectService.update(newProject, function(result) {

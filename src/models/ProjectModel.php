@@ -32,6 +32,7 @@ class ProjectModel extends \models\mapper\MapperModel
 		if (!$this->themeName) {
 			$this->themeName = 'default';
 		}
+		$this->allowAudioDownload = true;
 		$this->interfaceLanguageCode = 'en';
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
@@ -240,6 +241,12 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @var boolean
 	 */
 	public $featured;
+
+	/**
+	 * Flag to indicate if this project allows users to download audio files
+	 * @var boolean
+	 */
+	public $allowAudioDownload;
 
 	/**
 	 * @var ProjectUserPropertiesSettings
