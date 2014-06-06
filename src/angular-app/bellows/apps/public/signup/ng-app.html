@@ -1,65 +1,84 @@
-<div ng-controller="UserCtrl" class="content container" ng-cloak>
-    <div ng-hide="submissionComplete">
+<div data-ng-controller="UserCtrl" class="content container" data-ng-cloak>
+	<div data-ng-hide="submissionComplete">
 		<h1>Create an Account</h1>
 		<sil-notices></sil-notices>
 		<div class="span4">
-			<form ng-disabled="userRegistered" ng-submit="createUser(record)" id="userForm">
+			<form data-ng-disabled="userRegistered" data-ng-submit="createUser(record)" id="userForm" name="signupForm" novalidate>
 				<fieldset>
 					<legend>Sign Up Below</legend>
 					<div class="well">
 						<div>
 							<label>User Name</label> 
 							<input required type="text"
-								placeholder="pick a username" ng-model="record.username"
-								name="username" id="username" ng-blur="checkUserName()" /> 
-							<span ng-show="userNameLoading"><img id="userNameLoading" src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
-							<span ng-show="userNameOk"><img id="userNameOk" src="/images/shared/tick.png" title="User name is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
-							<span ng-show="userNameExists"><img id="userNameExists" src="/images/shared/exclamation.png" title="User name already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+								placeholder="pick a username" data-ng-model="record.username"
+								name="username" id="username" data-ng-blur="checkUserName()" /> 
+							<span data-ng-show="userNameLoading"><img id="userNameLoading" src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+							<span data-ng-show="userNameOk"><img id="userNameOk" src="/images/shared/tick.png" title="User name is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+							<span data-ng-show="userNameExists"><img id="userNameExists" src="/images/shared/exclamation.png" title="User name already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
 						</div>
 						<div>
 							<label>Name</label> 
 							<input required type="text"
-								placeholder="your name" ng-model="record.name" />
+								placeholder="your name" data-ng-model="record.name" />
 						</div>
 						<div>
 							<label>Email</label> 
-							<input required type="text"
-								placeholder="your email" ng-model="record.email" />
+							<input required type="email" name="email"
+								placeholder="your email" data-ng-model="record.email" />
+							<span data-ng-show="signupForm.email.$dirty && signupForm.$error.email"><img src="/images/shared/exclamation.png" title="Invalid email format!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
 						</div>
-						<div>
+						<div data-ng-show="showPassword">
 							<label>Password</label> 
-							<input required type="text"
-								ng-model="record.password" name="password" />
+							<input required type="text" 
+								data-ng-model="record.password" name="password" id="visiblePassword" 
+								title="Passwords must be at least 7 characters" />
+							<span data-ng-show='record.password && record.password.length < 7'><img src="/images/shared/exclamation.png" title="Passwords must be at least 7 characters!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+							<label>Confirm password</label>
+							<input type="text" disabled />
 						</div>
+						<div data-ng-hide="showPassword">
+							<label>Password</label>
+							<input required type="password"  
+								data-ng-model="record.password" name="password" id="password" 
+								title="Passwords must be at least 7 characters" />
+							<span data-ng-show='record.password && record.password.length < 7'><img src="/images/shared/exclamation.png" title="Passwords must be at least 7 characters!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+							<label>Confirm password</label>
+							<input data-ng-required="!showPassword" type="password" data-ng-disabled="showPassword"  
+								data-ng-model="confirmPassword" name="confirmPassword"
+								title="Passwords must be at least 7 characters" />
+							<span data-ng-show='record.password && record.password != confirmPassword'><img src="/images/shared/exclamation.png" title="Passwords do not match!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+							<span data-ng-show='record.password && record.password == confirmPassword'><img src="/images/shared/tick.png" title="Passwords match" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+						</div>
+						<label class="checkbox"><input type="checkbox" data-ng-model="showPassword"/> Show password</label>
 						<div>
 							<label>Verify the letters in this image</label> 
-							<img id="captcha" ng-src="{{captchaSrc}}" />
-							<label><a style="font-style:italic; font-size: 12px" ng-click="getCaptchaSrc()">I can't read the letters</a></label>
-							<input required type="text" ng-model="record.captcha" name="captcha" />
+							<img id="captcha" data-ng-src="{{captchaSrc}}" />
+							<label><a style="font-style:italic; font-size: 12px" data-ng-click="getCaptchaSrc()">I can't read the letters</a></label>
+							<input required type="text" data-ng-model="record.captcha" name="captcha" />
 						</div>
-					<button id="submit" class="btn btn-primary" type="submit"
-						ng-disabled="userNameExists || userForm.$invalid || submissionInProgress">
-						Sign Up <i style="margin-left: 5px" class="icon-thumbs-up"></i>
-					</button>
-					<span ng-show="submissionInProgress"><img src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+						<button id="submit" class="btn btn-primary" type="submit"
+							data-ng-disabled="userNameExists || signupForm.$invalid || submissionInProgress || (!showPassword && record.password != confirmPassword) || record.password.length < 7">
+							Sign Up <i style="margin-left: 5px" class="icon-thumbs-up"></i>
+						</button>
+						<span data-ng-show="submissionInProgress"><img src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
 					</div>
 				</fieldset>
 			</form>
 		</div>
-    </div>
-    <div class="row span9" style="font-size:16px" ng-show="submissionComplete">
+	</div>
+	<div class="row span9" style="font-size:16px" data-ng-show="submissionComplete">
 		<h1>You're Almost There...</h1>
-        <div class="row">
-            <div class="span2"><i style="font-size:100px; color: green" class="icon-check-sign"></i></div>
-            <div class="span7"><h2>Register</h2><div>Great!  You're already registered!</div></div>
-        </div>
-        <div class="row">
-            <div class="span2"><i style="font-size:110px;" class="icon-check-empty"></i></div>
-            <div class="span7"><h2>Check Your Email Now</h2><div>Click the validation link in the email we just sent you to validate your account.  Don't see it yet?  Be patient, and also check your SPAM folder just in case.</div></div>
-        </div>
-        <div class="row">
-            <div class="span2"><i style="font-size:110px;" class="icon-check-empty"></i></div>
-            <div class="span7"><h2>Login and Get Started</h2><div>After completing the steps above, <a href="/login">login</a> and get started working on your project.</div></div>
-        </div>
-    </div>
+		<div class="row">
+			<div class="span2"><i style="font-size:100px; color: green" class="icon-check-sign"></i></div>
+			<div class="span7"><h2>Register</h2><div>Great!  You're already registered!</div></div>
+		</div>
+		<div class="row">
+			<div class="span2"><i style="font-size:110px;" class="icon-check-empty"></i></div>
+			<div class="span7"><h2>Check Your Email Now</h2><div>Click the validation link in the email we just sent you to validate your account.  Don't see it yet?  Be patient, and also check your SPAM folder just in case.</div></div>
+		</div>
+		<div class="row">
+			<div class="span2"><i style="font-size:110px;" class="icon-check-empty"></i></div>
+			<div class="span7"><h2>Login and Get Started</h2><div>After completing the steps above, <a href="/login">login</a> and get started working on your project.</div></div>
+		</div>
+	</div>
 </div>
