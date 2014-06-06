@@ -98,17 +98,17 @@ angular.module('sfchecks.services', ['jsonRpc'])
 	}])
 	.service('questionTemplateService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf');
-		this.read = function(questionTemplateId, callback) {
-			jsonRpc.call('questionTemplate_read', [questionTemplateId], callback);
+		this.read = function(projectId, questionTemplateId, callback) {
+			jsonRpc.call('questionTemplate_read', [projectId, questionTemplateId], callback);
 		};
 		this.update = function(projectId, questionTemplate, callback) {
 			jsonRpc.call('questionTemplate_update', [projectId, questionTemplate], callback);
 		};
-		this.remove = function(questionTemplateIds, callback) {
-			jsonRpc.call('questionTemplate_delete', [questionTemplateIds], callback);
+		this.remove = function(projectId, questionTemplateIds, callback) {
+			jsonRpc.call('questionTemplate_delete', [projectId, questionTemplateIds], callback);
 		};
-		this.list = function(callback) {
-			jsonRpc.call('questionTemplate_list', [], callback);
+		this.list = function(projectId, callback) {
+			jsonRpc.call('questionTemplate_list', [projectId], callback);
 		};
 	}])
 	;

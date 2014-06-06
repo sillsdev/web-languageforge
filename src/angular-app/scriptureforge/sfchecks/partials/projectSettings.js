@@ -118,7 +118,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	};
 	$scope.editTemplate = function() {
 		if ($scope.editedTemplate.title && $scope.editedTemplate.description) {
-			qts.update($scope.project, $scope.editedTemplate, function(result) {
+			qts.update($scope.project.id, $scope.editedTemplate, function(result) {
 				if (result.ok) {
 					if ($scope.editedTemplate.id) {
 						notice.push(notice.SUCCESS, "The template '" + $scope.editedTemplate.title + "' was updated successfully");
@@ -138,7 +138,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	$scope.queryTemplates = function(invalidateCache) {
 		var forceReload = (invalidateCache || (!$scope.templates) || ($scope.templates.length == 0));
 		if (forceReload) {
-			qts.list(function(result) {
+			qts.list($scope.project.id, function(result) {
 				if (result.ok) {
 					$scope.templates = result.data.entries;
 					$scope.finishedLoading = true;
@@ -159,7 +159,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		if (l == 0) {
 			return;
 		}
-		qts.remove(templateIds, function(result) {
+		qts.remove($scope.project.id, templateIds, function(result) {
 			if (result.ok) {
 				if (templateIds.length == 1) {
 					notice.push(notice.SUCCESS, "The template was removed successfully");
