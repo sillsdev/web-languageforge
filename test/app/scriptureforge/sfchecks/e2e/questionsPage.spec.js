@@ -93,6 +93,7 @@ describe('the questions list page AKA the text page', function() {
 			var alert = browser.switchTo().alert();
 			alert.accept();
 			// Second alert: "You have previous edits which will be replaced, are you really sure?"
+			browser.sleep(100);
 			util.waitForAlert();
 			alert = browser.switchTo().alert();
 			alert.accept();
