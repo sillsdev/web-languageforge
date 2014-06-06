@@ -1,8 +1,5 @@
 <?php 
 
-use models\rights\Realm;
-use models\rights\Roles;
-
 require_once 'base.php';
 
 class Public_app extends Base {

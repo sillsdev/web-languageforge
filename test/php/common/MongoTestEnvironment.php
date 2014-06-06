@@ -1,8 +1,10 @@
 <?php
 
+use models\shared\rights\SiteRoles;
+
 use models\languageforge\lexicon\LexiconProjectModel;
 
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
 
 require_once(TestPath . 'common/MockProjectModel.php');
 
@@ -49,7 +51,7 @@ class MongoTestEnvironment
 	 * @param string $email
 	 * @return string id
 	 */
-	public function createUser($username, $name, $email, $role = Roles::USER) {
+	public function createUser($username, $name, $email, $role = SiteRoles::USER) {
 		$userModel = new models\UserModel();
 		$userModel->username = $username;
 		$userModel->name = $name;

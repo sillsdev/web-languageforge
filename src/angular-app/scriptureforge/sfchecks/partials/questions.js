@@ -41,7 +41,7 @@ angular.module(
 		$scope.rights.deleteOther = false; 
 		$scope.rights.create = false; 
 		$scope.rights.createTemplate = false; 
-		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT);
+		$scope.rights.editOther = false; //ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
 		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
 		
 		// Question templates

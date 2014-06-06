@@ -7,7 +7,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 
 	// Rights
 	$scope.rights = {};
-	$scope.rights.deleteOther = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.DELETE); 
+		$scope.rights.deleteOther = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE); 
 	$scope.newProject = {};
 
 
@@ -73,14 +73,14 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 	};
 
 	$scope.isInProject = function(project) {
-		if (project.role == 'user' || project.role == 'project_admin') {
+			if (project.role == 'contributor' || project.role == 'project_manager') {
 			return true;
 		}
 		return false;
 	};
 
 	$scope.isManager = function(project) {
-		if (project.role == 'project_admin') {
+			if (project.role == 'project_manager') {
 			return true;
 		}
 		return false;
@@ -91,7 +91,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 //		console.log("addManagerToProject(" + project.projectname + ")");
 		var user = {};
 		user.id = ss.currentUserId();
-		user.role = 'project_admin';
+			user.role = 'project_manager';
 		projectService.updateUser(project.id, user, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "You are now a Manager of the " + project.projectname + " project.");
@@ -105,10 +105,10 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 //		console.log("addMemberToProject(" + project.projectname + ")");
 		var user = {};
 		user.id = ss.currentUserId();
-		user.role = 'user';
+			user.role = 'contributor';
 		projectService.updateUser(project.id, user, function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, "You are now a Member of the " + project.projectname + " project.");
+					notice.push(notice.SUCCESS, "You are now a Contributor for the " + project.projectname + " project.");
 				$scope.queryProjectsForUser();
 			}
 		});
