@@ -1,8 +1,10 @@
 <?php
 
+use models\shared\rights\SiteRoles;
+
 use models\shared\dto\UserProfileDto;
 use models\SfchecksUserProfile;
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\UserProfileModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
@@ -17,12 +19,12 @@ class TestUserProfileDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserProfileModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$user->addProject($projectId);
 		
 		$projectUserProfile = new SfchecksUserProfile();
@@ -37,7 +39,7 @@ class TestUserProfileDto extends UnitTestCase {
 		$this->assertIsA($dto['userProfile'], 'array');
 		$this->assertEqual($dto['userProfile']['id'], $userId);
 		$this->assertEqual($dto['userProfile']['name'], 'Name');
-		$this->assertEqual($dto['userProfile']['role'], Roles::USER);
+		$this->assertEqual($dto['userProfile']['role'], SiteRoles::USER);
 		$this->assertTrue(array_key_exists('avatar_shape', $dto['userProfile']));
 		$this->assertTrue(array_key_exists('avatar_color', $dto['userProfile']));
 		$this->assertEqual($dto['userProfile']['projectUserProfiles'][$projectId]['city'], 'myCity');

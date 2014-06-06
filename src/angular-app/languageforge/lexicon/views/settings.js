@@ -16,7 +16,7 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
 				$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
 				$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
 				$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
-				$scope.rights.canEditCommunicationSettings = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT);
+				$scope.rights.canEditCommunicationSettings = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
 			}
 		});
 	};

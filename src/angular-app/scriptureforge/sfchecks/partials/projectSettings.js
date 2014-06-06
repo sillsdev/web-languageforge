@@ -10,7 +10,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	$scope.project.id = projectId;
 
 	$scope.canEditCommunicationSettings = function() {
-		return ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT);
+		return ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
 	};
 	
 	$scope.queryProjectSettings = function() {
@@ -373,8 +373,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	
 	// Roles in list
 	$scope.roles = [
-        {key: 'user', name: 'Member'},
-        {key: 'project_admin', name: 'Manager'}
+        {key: 'contributor', name: 'Contributor'},
+        {key: 'project_manager', name: 'Manager'}
     ];
 	
 	$scope.onRoleChange = function(user) {
