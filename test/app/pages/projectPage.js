@@ -50,6 +50,9 @@ var SfProjectPage = function() {
 		this.newText.saveButton.click();
 	};
 	
+	this.clickOnProjectSettings = function() {
+		element(by.id('projectSettingsButton')).click();
+	};
 };
 
 module.exports = new SfProjectPage();
