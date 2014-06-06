@@ -8,26 +8,27 @@ use models\mapper\MapperListModel;
 use models\mapper\Id;
 use models\mapper\IdReference;
 
-class QuestionTemplateModelMongoMapper extends \models\mapper\MongoMapper
+class QuestionTemplateModel extends \models\mapper\MapperModel
 {
-	public static function instance() {
+	private $_projectModel;
+	
+	public static function mapper($databaseName) {
 		static $instance = null;
 		if (null === $instance) {
-			$instance = new QuestionTemplateModelMongoMapper(SF_DATABASE, 'questiontemplates');
+			$instance = new \models\mapper\MongoMapper($databaseName, 'questionTemplates');
 		}
 		return $instance;
 	}
-}
 
-class QuestionTemplateModel extends \models\mapper\MapperModel
-{
-	public function __construct($id = '') {
+	public function __construct($projectModel, $id = '') {
+		$this->_projectModel = $projectModel;
 		$this->id = new Id();
-		parent::__construct(QuestionTemplateModelMongoMapper::instance(), $id);
+		$databaseName = $projectModel->databaseName();
+		parent::__construct(self::mapper($databaseName), $id);
 	}
 
 	public function remove() {
-		$result = QuestionTemplateModelMongoMapper::instance()->remove($this->id->asString());
+		$result = self::mapper($this->_projectModel->databaseName())->remove($this->id->asString());
 		return $result;
 	}
 
@@ -45,17 +46,6 @@ class QuestionTemplateModel extends \models\mapper\MapperModel
 	 * @var string A content description/explanation of the question being asked
 	 */
 	public $description;
-}
-
-class QuestionTemplateListModel extends \models\mapper\MapperListModel
-{
-	public function __construct() {
-		parent::__construct(
-			QuestionTemplateModelMongoMapper::instance(),
-			array(),
-			array('title', 'description')
-		);
-	}
 }
 
 ?>
