@@ -5,13 +5,13 @@
         <form ng-submit="updatePassword()" name="passwordForm">
             <fieldset>
                 <label>Password</label>
-                <input required type="password" ng-model="vars.password" name="password"/>
+                <input required type="password" ng-model="vars.password" name="password" pattern=".{7,}" title="Passwords must be at least 7 characters" />
                 <label>Confirm password</label>
-                <input required type="password" ng-model="vars.confirm_password" ui-validate=" '$value==vars.password' " ui-validate-watch=" 'password' " name="confirm_password"/>
+                <input required type="password" ng-model="vars.confirm_password" ui-validate=" '$value==vars.password' " ui-validate-watch=" 'password' " name="confirm_password" pattern=".{7,}" title="Passwords must be at least 7 characters" />
                 <span ng-show='vars.password && passwordForm.confirm_password.$error.validator'><img src="/images/shared/exclamation.png" title="Passwords do not match" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
                 <span ng-show='vars.password && vars.password == vars.confirm_password'><img src="/images/shared/tick.png" title="Password OK" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
                 <div>
-                	<button class="btn" ng-disabled="vars.password != vars.confirm_password" type="submit">Change Password</button>
+                	<button class="btn" ng-disabled="vars.password != vars.confirm_password || passwordForm.$invalid" type="submit">Change Password</button>
                 </div>
             </fieldset>
         </form>

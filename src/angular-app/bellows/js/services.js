@@ -98,9 +98,6 @@ angular.module('bellows.services', ['jsonRpc'])
 		return $window.session.site;
 	};
 	
-	this.realm = {
-		SITE: function() { return $window.session.userSiteRights; }
-	};
 	this.domain = {
 			ANY:       function() { return 1000;},
 			USERS:     function() { return 1100;},
@@ -110,7 +107,8 @@ angular.module('bellows.services', ['jsonRpc'])
 			ANSWERS:   function() { return 1500;},
 			COMMENTS:  function() { return 1600;},
 			TEMPLATES: function() { return 1700;},
-			TAGS:      function() { return 1800;}
+			TAGS:      function() { return 1800;},
+			ENTRIES:   function() { return 1900;},
 	};
 	this.operation = {
 			CREATE:       function() { return 1;},
@@ -121,6 +119,11 @@ angular.module('bellows.services', ['jsonRpc'])
 			VIEW_OWN:     function() { return 6;},
 			EDIT_OWN:     function() { return 7;},
 			DELETE_OWN:   function() { return 8;},
+			ARCHIVE:      function() { return 9;},
+	};
+	
+	this.hasSiteRight = function(domain, operation) {
+		return this.hasRight($window.session.userSiteRights, domain, operation);
 	};
 	
 	this.hasRight = function(rights, domain, operation) {

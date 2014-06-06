@@ -20,7 +20,7 @@ class FixUserRoles {
 			$userId = $userParams['id'];
 			$user = new UserModel($userId);
 			if (!$user->role) {
-				$user->role = Roles::USER;
+				$user->role = SiteRoles::USER;
 				if (!$testMode) {
 					$user->write();
 				}
@@ -43,7 +43,7 @@ class FixUserRoles {
 			$projectUserRefs = array_keys($project->users);
 			foreach ($projectUserRefs as $ref) { // foreach user that is a member of this project
 				if (!isset($project->users[$ref]->role)) {
-					$project->users[$ref]->role = Roles::USER;
+					$project->users[$ref]->role = ProjectRoles::CONTRIBUTOR;
 					$badProjectUserRoles++;
 					$message .= "Fixed role of user $ref for project $projectId\n";
 				}
