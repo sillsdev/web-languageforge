@@ -7,9 +7,9 @@ use libraries\shared\Website;
 use models\ProjectList_UserModel;
 use models\ProjectModelMongoMapper;
 use libraries\shared\palaso\CodeGuard;
-use models\rights\Realm;
-use models\rights\Roles;
-use models\rights\ProjectRoleModel;
+
+use models\shared\rights\ProjectRoles;
+use models\shared\rights\ProjectRoleModel;
 use models\mapper\MapOf;
 use models\mapper\MongoMapper;
 use models\mapper\MongoStore;

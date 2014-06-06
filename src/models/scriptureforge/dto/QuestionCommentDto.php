@@ -2,6 +2,8 @@
 
 namespace models\scriptureforge\dto;
 
+use models\scriptureforge\SfchecksProjectModel;
+
 use models\shared\dto\RightsHelper;
 
 use models\UnreadActivityModel;
@@ -28,7 +30,7 @@ class QuestionCommentDto
 	 */
 	public static function encode($projectId, $questionId, $userId) {
 		$userModel = new UserModel($userId);
-		$projectModel = new ProjectModel($projectId);
+		$projectModel = new SfchecksProjectModel($projectId);
 		
 		$questionModel = new QuestionModel($projectModel, $questionId);
 		$question = QuestionCommentDtoEncoder::encode($questionModel);

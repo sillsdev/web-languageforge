@@ -2,12 +2,14 @@
 
 namespace models;
 
+use models\shared\rights\SiteRoles;
+
 use models\UserModelMongoMapper;
 use models\mapper\Id;
 use models\mapper\IdReference;
 use models\mapper\MongoMapper;
-use models\rights\Realm;
-use models\rights\Roles;
+
+use models\shared\rights\ProjectRoles;
 
 
 class UserModelBase extends \models\mapper\MapperModel
@@ -72,7 +74,7 @@ class UserModelBase extends \models\mapper\MapperModel
 	 * @return bool
 	 */
 	public function hasRight($right) {
-		$result = Roles::hasRight(Realm::SITE, $this->role, $right);
+		$result = SiteRoles::hasRight($this->role, $right);
 		return $result;
 	}
 	

@@ -2,6 +2,8 @@
 
 namespace models\scriptureforge\dto;
 
+use models\scriptureforge\SfchecksProjectModel;
+
 use models\shared\dto\RightsHelper;
 
 use models\MessageModel;
@@ -29,7 +31,7 @@ class ProjectPageDto
 	public static function encode($projectId, $userId) {
 		// TODO: ensure that $userId has permission to view the project page
 		$userModel = new UserModel($userId);
-		$projectModel = new ProjectModel($projectId);
+		$projectModel = new SfchecksProjectModel($projectId);
 		$textList = new TextListModel($projectModel);
 		$textList->read();
 

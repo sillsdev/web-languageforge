@@ -8,8 +8,8 @@ use models\mapper\IdReference;
 use models\mapper\MapOf;
 use models\mapper\MongoMapper;
 use models\mapper\ReferenceList;
-use models\rights\Realm;
-use models\rights\Roles;
+
+use models\shared\rights\ProjectRoles;
 
 class UserProfileModel extends \models\UserModel {
 	
