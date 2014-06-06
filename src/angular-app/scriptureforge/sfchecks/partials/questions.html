@@ -29,7 +29,7 @@
     <div class="span5">
     	<h2 class="pull-left" data-ng-show="text.audioUrl && audioReady">
     		<a data-sgw-sound-player data-state="state" href="text.audioUrl"><i data-ng-class="$parent.audioIcon()" data-tooltip="Play audio"></i></a>
-    		<a data-ng-href="{{audioDownloadUrl}}"><i class="icon-download" data-tooltip="Download audio"></i></a>
+    		<a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}"><i class="icon-download" data-tooltip="Download audio"></i></a>
     	</h2>
     	<h2>{{text.title}}</h2>
         <div id="text" data-ng-bind-html="text.content"> </div>
