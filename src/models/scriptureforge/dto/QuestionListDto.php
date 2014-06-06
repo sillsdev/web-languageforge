@@ -34,6 +34,7 @@ class QuestionListDto
 		$data['entries'] = array();
 		$data['project'] = array(
 				'name' => $projectModel->projectname,
+				'allowAudioDownload' => $projectModel->allowAudioDownload,
 				'id' => $projectId);
 		$textModel = new TextModel($projectModel, $textId);
 		$data['text'] = JsonEncoder::encode($textModel);
