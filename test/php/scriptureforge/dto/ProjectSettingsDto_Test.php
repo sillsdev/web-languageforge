@@ -12,27 +12,34 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestProjectSettingsDto extends UnitTestCase {
 
-	function testEncode_ProjectWithUser_DtoCorrect() {
+	function testEncode_ProjectWith2Users1Unvalidated_DtoCorrect1User() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$userId = $e->createUser("User", "Name", "name@example.com");
-		$user = new UserModel($userId);
-		$user->role = SiteRoles::USER;
+		$user1Id = $e->createUser("", "", "");
+		$user1 = new UserModel($user1Id);
+		$user1->role = SiteRoles::USER;
+
+		$user2Id = $e->createUser("User", "Name", "name@example.com");
+		$user2 = new UserModel($user2Id);
+		$user2->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
-		$user->addProject($projectId);
-		$user->write();
+		$project->addUser($user1Id, ProjectRoles::CONTRIBUTOR);
+		$user1->addProject($projectId);
+		$user1->write();
+		$project->addUser($user2Id, ProjectRoles::CONTRIBUTOR);
+		$user2->addProject($projectId);
+		$user2->write();
 		$project->write();
 
-		$dto = ProjectSettingsDto::encode($projectId, $userId);
+		$dto = ProjectSettingsDto::encode($projectId, $user2Id);
 
 		$this->assertEqual($dto['count'], 1);
 		$this->assertIsA($dto['entries'], 'array');
-		$this->assertEqual($dto['entries'][0]['id'], $userId);
+		$this->assertEqual($dto['entries'][0]['id'], $user2Id);
 		$this->assertEqual($dto['entries'][0]['name'], 'Name');
 		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::CONTRIBUTOR);
 		$this->assertIsA($dto['themeNames'], 'array');
