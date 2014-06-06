@@ -17,9 +17,9 @@ use models\mapper\MapOf;
 use models\mapper\JsonEncoder;
 use models\mapper\JsonDecoder;
 use models\mapper\MongoStore;
-use models\rights\Domain;
-use models\rights\Operation;
-use models\rights\Roles;
+use models\shared\rights\Domain;
+use models\shared\rights\Operation;
+use models\shared\rights\ProjectRoles;
 use models\shared\dto\RightsHelper;
 use models\UserModel;
 
@@ -53,10 +53,10 @@ class LexProjectCommands {
 				throw new UserUnauthorizedException("Insufficient privileges to create new project in method 'updateProject'");
 			}
 		} else {
-			if (!RightsHelper::userHasProjectRight($id, $userId, Domain::USERS + Operation::EDIT)) {
+			$project->read($id);
+			if ($project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
 				throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
 			}
-			$project->read($id);
 			$oldDBName = $project->databaseName();
 		}
 		JsonDecoder::decode($project, $projectJson);
@@ -69,7 +69,7 @@ class LexProjectCommands {
 		}
 		$projectId = $project->write();
 		if ($isNewProject) {
-			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => Roles::PROJECT_ADMIN));
+			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::MANAGER));
 		}
 		return $projectId;
 	}

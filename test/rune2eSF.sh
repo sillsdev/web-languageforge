@@ -1,2 +1,8 @@
-# Shell script to run E2E testing on http://scriptureforge.local
-node ./node_modules/protractor/bin/protractor protractorConf.js --baseUrl http://scriptureforge.local
+php app/setupTestEnvironment.php
+if [ $# -eq 0 ]
+  then
+    node ./node_modules/protractor/bin/protractor protractorConf.js
+  else
+    node ./node_modules/protractor/bin/protractor protractorConf.js --specs "`find . -wholename "*$1*.spec.js" -printf "%p,"|perl -pi -e 's/,$//'`"
+fi
+php app/teardownTestEnvironment.php

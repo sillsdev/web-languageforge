@@ -11,6 +11,7 @@ class LexiconProjectModel extends LfProjectModel {
 	
 	public function __construct($id = '') {
 		$this->appName = LfProjectModel::LEXICON_APP;
+		$this->rolesClass = 'models\languageforge\lexicon\LexiconRoles';
 		$this->inputSystems = new MapOf(
 			function($data) {
 				return new InputSystem();
