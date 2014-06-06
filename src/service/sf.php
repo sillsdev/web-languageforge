@@ -397,19 +397,19 @@ class Sf
 	//---------------------------------------------------------------
 
 	public function questionTemplate_update($projectId, $model) {
-		return QuestionTemplateCommands::updateTemplate($model);
+		return QuestionTemplateCommands::updateTemplate($projectId, $model);
 	}
 
-	public function questionTemplate_read($id) {
-		return QuestionTemplateCommands::readTemplate($id);
+	public function questionTemplate_read($projectId, $id) {
+		return QuestionTemplateCommands::readTemplate($projectId, $id);
 	}
 
-	public function questionTemplate_delete($questionTemplateIds) {
-		return QuestionTemplateCommands::deleteQuestionTemplates($questionTemplateIds);
+	public function questionTemplate_delete($projectId, $questionTemplateIds) {
+		return QuestionTemplateCommands::deleteQuestionTemplates($projectId, $questionTemplateIds);
 	}
 
-	public function questionTemplate_list() {
-		return QuestionTemplateCommands::listTemplates();
+	public function questionTemplate_list($projectId) {
+		return QuestionTemplateCommands::listTemplates($projectId);
 	}
 	
 	
