@@ -13,67 +13,88 @@ var SfSignupPage = function() {
 	this.usernameInput = element(by.model('record.username'));
 	this.nameInput = element(by.model('record.name'));
 	this.emailInput = element(by.model('record.email'));
-//	this.passwordInput = element(by.model('record.password'));
-	this.passwordInput = element(by.id('visiblePassword'));
+	this.visiblePasswordInput = element(by.id('visiblePassword'));
+	this.passwordInput = element(by.id('password'));
+	this.confirmPasswordInput = element(by.model('confirmPassword'));
 	this.showPassword = element(by.model('showPassword'));
 	this.captchaInput = element(by.model('record.captcha'));
+	this.captchaImage = element(by.id('captcha'));
 	this.signupButton = element(by.id('submit'));
-	//this.warnNotices = $('.notices').element.all(by.css('.alert div span'));
 	this.noticeList  = element.all(by.repeater('notice in notices()'));
 }; 
 
 describe('E2E testing: Signup app', function() {
 	var page = new SfSignupPage();
 	
-	it('contains a user form', function() {
+	it('setup and contains a user form', function() {
 		page.get();
 		expect(page.userForm).toBeDefined();
 	});
 	
 	it('finds the admin user already exists', function() {
 		page.usernameInput.sendKeys(constants.adminUsername);
-		
-		// trigger the username lookup
-		page.usernameInput.sendKeys(protractor.Key.ENTER);
-		
-		expect(page.userNameExists.isDisplayed()).toBeTruthy();
-		expect(page.userNameOk.isDisplayed()).toBeFalsy();
+		page.usernameInput.sendKeys(protractor.Key.TAB);	// trigger the username lookup
+		expect(page.userNameExists.isDisplayed()).toBe(true);
+		expect(page.userNameOk.isDisplayed()).toBe(false);
+		page.usernameInput.clear();
 	});
 	
-	it("can verify that 'newuser' is an available username", function() {
-		page.get();
-		page.usernameInput.sendKeys('newuser');
-		
-		// trigger the username lookup
-		page.usernameInput.sendKeys(protractor.Key.ENTER);
+	it("can verify that an unused username is available", function() {
+		page.usernameInput.sendKeys(constants.notUsedUsername);
+		page.usernameInput.sendKeys(protractor.Key.TAB);	// trigger the username lookup
+		expect(page.userNameExists.isDisplayed()).toBe(false);
+		expect(page.userNameOk.isDisplayed()).toBe(true);
+		page.usernameInput.clear();
+	});
+	
+	it("cannot submit if passwords don't match", function() {
+		page.usernameInput.sendKeys(constants.notUsedUsername);
+		page.usernameInput.sendKeys(protractor.Key.TAB);	// trigger the username lookup
+		page.nameInput.sendKeys('New User');
+		page.emailInput.sendKeys(constants.emailValid);
+		page.passwordInput.sendKeys(constants.passwordValid);
+		page.captchaInput.sendKeys('whatever');
+		expect(page.signupButton.isEnabled()).toBe(false);
+	});
 
-		expect(page.userNameExists.isDisplayed()).toBeFalsy();
-		expect(page.userNameOk.isDisplayed()).toBeTruthy();
+	it("cannot submit if passwords match but are too short", function() {
+		page.passwordInput.clear();
+		page.passwordInput.sendKeys(constants.passwordTooShort);
+		page.confirmPasswordInput.sendKeys(constants.passwordTooShort);
+		expect(page.signupButton.isEnabled()).toBe(false);
 	});
-	
+
+	it("can submit if passwords match and long enough", function() {
+		page.passwordInput.clear();
+		page.passwordInput.sendKeys(constants.passwordValid);
+		page.confirmPasswordInput.clear();
+		page.confirmPasswordInput.sendKeys(constants.passwordValid);
+		expect(page.signupButton.isEnabled()).toBe(true);
+	});
+
+	it("can submit if password is showing, matching and long enough", function() {
+		page.confirmPasswordInput.clear();
+		page.showPassword.click();
+		expect(page.signupButton.isEnabled()).toBe(true);
+	});
+
+	it("cannot submit if email is invalid", function() {
+		page.emailInput.clear();
+		page.emailInput.sendKeys(constants.emailNoAt);
+		expect(page.signupButton.isEnabled()).toBe(false);
+		page.emailInput.clear();
+		page.emailInput.sendKeys(constants.emailValid);
+	});
+
 	it("has a captcha image", function() {
-		expect(element(by.id('captcha')).isDisplayed()).toBeTruthy;
+		expect(page.captchaImage.isDisplayed()).toBe(true);
 	});
-	
 	
 	it('can submit a user registration request and captcha is invalid', function() {
-		page.get();
-		page.usernameInput.sendKeys('newuser');
-		
-		// trigger the username lookup
-		page.usernameInput.sendKeys(protractor.Key.ENTER);
-
-		page.nameInput.sendKeys('New User');
-		page.emailInput.sendKeys('email@example.com');
-		page.showPassword.click();
-		page.passwordInput.sendKeys('12345');
-		page.captchaInput.sendKeys('whatever');
-
 		expect(page.noticeList.count()).toBe(0);
-		page.signupButton.click().then(function() {
-			expect(page.noticeList.count()).toBe(1);
-			expect(page.noticeList.get(0).getText()).toContain('image verification failed');
-		});
+		page.signupButton.click();
+		expect(page.noticeList.count()).toBe(1);
+		expect(page.noticeList.get(0).getText()).toContain('image verification failed');
 	});
 	
 });

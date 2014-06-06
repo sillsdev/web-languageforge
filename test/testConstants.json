@@ -11,6 +11,12 @@
 	"memberPassword"  : "normaluser1",
 	"memberName"      : "Test User",
 	"memberEmail"     : "test_runner_normal_user@example.com",
+	"notUsedUsername" : "not_used_user",
+
+	"passwordTooShort": "123456",
+	"passwordValid"   : "1234567",
+	"emailNoAt"       : "email",
+	"emailValid"      : "email@example.com",
 
 	"avatar"           : "/images/shared/avatar/anonymoose.png",
 	
