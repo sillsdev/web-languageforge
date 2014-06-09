@@ -14,7 +14,8 @@
 	<label></label>
 	<input type="text" data-ng-model="questionTitle" class="span4" maxlength="35" placeholder="One-line Summary For Title" />
 	<label></label>
-	<label style="float:right;margin-left:20px"><input title="A summary title is required for templates" data-ng-disabled="!questionTitle" type="checkbox" data-ng-model="saveAsTemplate" data-ng-show="rights.createTemplate" /> Also save as template</label>
+	<label><input title="A summary title is required for templates" data-ng-disabled="!questionTitle" type="checkbox" data-ng-model="saveAsTemplate" data-ng-show="rights.createTemplate" /> Also save as template</label>
+    <a class="pull-right" data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">Cancel</a>
 	<button type="submit" class="btn" data-ng-disabled="newQuestionForm.$invalid" data-ng-click="addQuestion()"><i class="icon-ok"></i>Save</button>
 	</fieldset>
 	<fieldset class="span4">
