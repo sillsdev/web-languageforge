@@ -2,6 +2,8 @@
 
 namespace models\commands;
 
+use models\shared\rights\SiteRoles;
+
 use libraries\scriptureforge\sfchecks\Communicate;
 use libraries\scriptureforge\sfchecks\Email;
 use libraries\scriptureforge\sfchecks\IDelivery;
@@ -26,10 +28,10 @@ use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
 use models\mapper\MongoStore;
-use models\rights\Domain;
-use models\rights\Operation;
-use models\rights\Realm;
-use models\rights\Roles;
+use models\shared\rights\Domain;
+use models\shared\rights\Operation;
+
+use models\shared\rights\ProjectRoles;
 use models\AnswerModel;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
@@ -175,7 +177,7 @@ class UserCommands {
 		$user = new UserModel();
 		$user->name = $userName;
 		$user->username = strtolower(str_replace(' ', '.', $user->name));
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 		$user->active = true;
 		$userId = $user->write();
 		
@@ -226,7 +228,7 @@ class UserCommands {
 			return false;
 		}
 		$user->active = false;
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 		if (!$user->emailPending) {
 			if (!$user->email) {
 				throw new \Exception("Error: no email set for user signup.");
@@ -295,7 +297,7 @@ class UserCommands {
 			$newUser->emailPending = $toEmail;
 			$newUser->addProject($project->id->asString());
 			$userId = $newUser->write();
-			$project->addUser($userId, Roles::USER);
+			$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 			$project->write();
 			Communicate::sendInvite($inviterUser, $newUser, $project, $delivery);
 			return $userId;

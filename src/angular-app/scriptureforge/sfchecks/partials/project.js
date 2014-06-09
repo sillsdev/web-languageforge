@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.project',
-		[ 'bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload' ]
+		[ 'bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload', 'ngRoute' ]
 )
 .controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'sfchecksLinkService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
                             function($scope, textService, $routeParams, ss, breadcrumbService, sfchecksLinkService, notice, sfchecksProjectService, messageService) {
@@ -14,7 +14,7 @@ angular.module(
 		$scope.rights = {};
 		$scope.rights.deleteOther = false; 
 		$scope.rights.create = false; 
-		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT);
+		$scope.rights.editOther = false; //ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
 		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 		
 		// Broadcast Messages
@@ -136,6 +136,11 @@ angular.module(
 				$scope.getPageDto();
 			});
 		};
+
+		$scope.rangeSelectorCollapsed = true;
+		$scope.toggleRangeSelector = function() {
+			$scope.rangeSelectorCollapsed = !$scope.rangeSelectorCollapsed;
+		}
 
 		$scope.getQuestionCount = function(text) {
 			return text.questionCount;

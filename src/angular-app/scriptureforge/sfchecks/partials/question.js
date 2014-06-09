@@ -3,6 +3,7 @@
 angular.module(
 		'sfchecks.question',
 		[ 'bellows.services','sfchecks.services',  
+		  'ngRoute',
 		  'palaso.ui.listview', 
 		  'palaso.ui.jqte', 
 		  'ui.bootstrap', 

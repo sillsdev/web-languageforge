@@ -2,15 +2,13 @@
 
 namespace models\shared\dto;
 
-use libraries\shared\Website;
-
 use models\ProjectList_UserModel;
 use models\ProjectModel;
 use models\TextListModel;
 use models\UserModel;
-use models\rights\Operation;
-use models\rights\Domain;
-use models\rights\Roles;
+use models\shared\rights\Operation;
+use models\shared\rights\Domain;
+use models\shared\rights\ProjectRoles;
 
 class ProjectListDto
 {
@@ -36,7 +34,7 @@ class ProjectListDto
 		$data['entries'] = array();
 		foreach ($projectList->entries as $entry) {
 			$projectModel = new ProjectModel($entry['id']);
-			$role = Roles::NONE;
+			$role = ProjectRoles::NONE;
 			if (count($projectModel->users) > 0) {
 				if (isset($projectModel->users[$userId]) && isset($projectModel->users[$userId]->role)) {
 					$role = $projectModel->users[$userId]->role;

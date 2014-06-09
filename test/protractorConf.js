@@ -9,7 +9,10 @@ exports.config = {
   
   // To run tests in a single browser, uncomment the following
   capabilities: {
-    'browserName': 'chrome'
+    'browserName': 'chrome',
+    'chromeOptions': {
+        'args': ['--start-maximized'],
+    },
   },
 
   // To run tests in multiple browsers, uncomment the following
@@ -30,6 +33,7 @@ exports.config = {
   // Options to be passed to Jasmine-node.
   jasmineNodeOpts: {
     showColors: true,
-    defaultTimeoutInterval: 50000
+    defaultTimeoutInterval: 50000,
+    //isVerbose: true,
   }
 };

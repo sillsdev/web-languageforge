@@ -1,7 +1,7 @@
 <?php
 use libraries\shared\Website;
 
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
 
 use models\mapper\Id;
 
@@ -99,9 +99,9 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(array(), $result->entries);
 				
 		// Add our two projects
-		$p1m->addUser($userModel->id->asString(), Roles::USER);
+		$p1m->addUser($userModel->id->asString(), ProjectRoles::CONTRIBUTOR);
 		$userModel->addProject($p1m->id->asString());
-		$p2m->addUser($userModel->id->asString(), Roles::USER);
+		$p2m->addUser($userModel->id->asString(), ProjectRoles::CONTRIBUTOR);
 		$userModel->addProject($p2m->id->asString());
 		$p1m->write();
 		$p2m->write();
@@ -177,7 +177,7 @@ class TestUserModel extends UnitTestCase {
 		$userId = $e->createUser('user1', 'user1', 'user1');
 		$user = new UserModel($userId);
 		$project = $e->createProject('testProject');
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project->write();
 		$user->addProject($project->id->asString());
 		$user->write();

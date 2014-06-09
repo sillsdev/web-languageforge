@@ -2,7 +2,7 @@
 
 angular.module(
 		'sfchecks.questions',
-		[ 'bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'angularFileUpload', 'ngSanitize' ]
+		[ 'bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'angularFileUpload', 'ngSanitize', 'ngRoute' ]
 	)
 	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService',
 	                              function($scope, questionsService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice) {
@@ -41,7 +41,7 @@ angular.module(
 		$scope.rights.deleteOther = false; 
 		$scope.rights.create = false; 
 		$scope.rights.createTemplate = false; 
-		$scope.rights.editOther = false; //ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT);
+		$scope.rights.editOther = false; //ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
 		$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
 		
 		// Question templates
@@ -259,6 +259,7 @@ angular.module(
 		$scope.editedText = {
 			id: textId,
 		};
+		$scope.rangeSelectorCollapsed = true;
 
 		// Get name from text service. This really should be in the DTO, but this will work for now.
 		// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08
@@ -285,7 +286,7 @@ angular.module(
 		});
 
 		$scope.updateText = function(newText) {
-			if (!newText.content) {
+			if (!newText.content || !newText.editPreviousText) {
 				delete newText.content;
 			}
 			textService.update($scope.projectId, newText, function(result) {
@@ -295,6 +296,27 @@ angular.module(
 				}
 			});
 		};
+
+		$scope.toggleRangeSelector = function() {
+			$scope.rangeSelectorCollapsed = !$scope.rangeSelectorCollapsed;
+		}
+
+		$scope.$watch('editedText.editPreviousText', function(newval, oldval) {
+			var yesImSure = false;
+			if (oldval == newval) { return; }
+			if (angular.isUndefined(newval)) { return; }
+			if (newval) {
+				// Checkbox was just checked -- put old text in edit box
+				yesImSure = confirm("Caution: Editing the USX text can be dangerous. You can easily mess up your text with a typo. Are you really sure you want to do this?");
+				if (!yesImSure) { $scope.editedText.editPreviousText = false; return; }
+				if ($scope.editedText.content && $scope.editedText.content != $scope.dto.text.content) {
+					// Wait; the user had already entered text. Pop up ANOTHER confirm box.
+					yesImSure = confirm("Caution: You had previous edits in the USX text box, which will be replaced if you proceed. Are you really sure you want to throw away your previous edits?");
+					if (!yesImSure) { $scope.editedText.editPreviousText = false; return; }
+				}
+				$scope.editedText.content = $scope.dto.text.content;
+			}
+		});
 
 		$scope.onUsxFile = function($files) {
 			if (!$files || $files.length == 0) {

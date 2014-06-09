@@ -8,11 +8,12 @@ describe('Project page (project.js)', function() {
 	var ctrl;
 
 	var testData = {
-		count: 2,
-		entries: [
+		texts: [
 			{title: "Foo", id: "1001", questionCount: 0},
 			{title: "Bar", id: "1002", questionCount: 1},
 		],
+		project: {
+		},
 	};
 
 	var testJsonResult = {
@@ -22,11 +23,20 @@ describe('Project page (project.js)', function() {
 		data: testData,
 	};
 
-	var mockTextService = {
-		list: function(projectId, callback) {
+	var mockSfchecksProjectService = {
+		pageDto: function(projectId, callback) {
 			callback(testJsonResult);
 		},
 	};
+
+	var mockSfchecksLinkService = {
+		project: function(projectId) {
+			return "http://example.com/";
+		},
+		text: function(projectId, textId) {
+			return "http://foo/bar"
+		},
+	}
 // If we wanted to mock JSON-RPC, we could create another mock object
 // like the following. But mocking the Angular service is a better level
 // of abstraction.
@@ -50,14 +60,13 @@ describe('Project page (project.js)', function() {
 		// Set up the controller with that fresh scope
 		ctrl = $controller('ProjectCtrl', {
 			$scope: scope,
-			textService: mockTextService,
+			sfchecksProjectService: mockSfchecksProjectService,
+			sfchecksLinkService: mockSfchecksLinkService,
 			//jsonRpc: mockJsonRpc,
 		});
 	}));
 
 	it('should load texts from the text service', function() {
-		expect(scope.texts.length).toBe(0);
-		scope.queryTexts();
 		expect(scope.texts.length).toBe(2);
 		expect(scope.texts[0].title).toBe("Foo");
 		expect(scope.texts[1].title).toBe("Bar");

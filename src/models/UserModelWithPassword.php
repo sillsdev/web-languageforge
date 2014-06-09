@@ -2,7 +2,7 @@
 
 namespace models;
 
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\mapper\Id;
 use libraries\Bcrypt;
 
