@@ -328,8 +328,8 @@ class Sf
 		return TextCommands::readText($projectId, $textId);
 	}
 	
-	public function text_delete($projectId, $textIds) {
-		return TextCommands::deleteTexts($projectId, $textIds);
+	public function text_archive($projectId, $textIds) {
+		return TextCommands::archiveTexts($projectId, $textIds);
 	}
 	
 	public function text_list_dto($projectId) {

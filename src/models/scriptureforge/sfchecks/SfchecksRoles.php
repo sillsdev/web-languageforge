@@ -12,7 +12,7 @@ class SfchecksRoles extends ProjectRoles {
 	// const QUESTION_CONTRIBUTOR = 'question_contributor';
 	
 	public static function init() {
-		// Project Member
+		// Project Contributor
 		$rights = array();
 		$rights[] = Domain::PROJECTS + Operation::VIEW;
 		$rights[] = Domain::TEXTS + Operation::VIEW;
@@ -34,7 +34,7 @@ class SfchecksRoles extends ProjectRoles {
 		$rights[] = Domain::PROJECTS + Operation::EDIT;
 		$rights[] = Domain::TEXTS + Operation::CREATE; 
 		$rights[] = Domain::TEXTS + Operation::EDIT;
-		$rights[] = Domain::TEXTS + Operation::DELETE;
+		$rights[] = Domain::TEXTS + Operation::ARCHIVE;
 		$rights[] = Domain::QUESTIONS + Operation::CREATE;
 		$rights[] = Domain::QUESTIONS + Operation::EDIT;
 		$rights[] = Domain::QUESTIONS + Operation::DELETE;
