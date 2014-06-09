@@ -9,10 +9,10 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 	
 	// Rights
 	$scope.rights = {};
-	$scope.rights.deleteOther = false; 
+	$scope.rights.archive = false; 
 	$scope.rights.create = false; 
-	$scope.rights.editOther = false; //ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-	$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
+	$scope.rights.edit = false; //ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
+	$scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.edit;
 	
 	// Broadcast Messages
 	// items are in the format of {id: id, subject: subject, content: content}
@@ -81,30 +81,36 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 				);
 
 				var rights = result.data.rights;
-				$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.DELETE); 
+				$scope.rights.archive = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE); 
 				$scope.rights.create = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE); 
-				$scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT);
-				$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
+				$scope.rights.edit = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT);
+				$scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.edit;
 				
 				$scope.finishedLoading = true;
 			}
 		});
 	};
 	
-	// Remove Text
-	$scope.removeTexts = function() {
-		//console.log("removeTexts()");
+	// Archive Text
+	$scope.archiveTexts = function() {
+		//console.log("archiveTexts()");
 		var textIds = [];
+		var message = '';
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			textIds.push($scope.selected[i].id);
 		}
-		if (window.confirm("Are you sure you want to delete the(se) " + textIds.length + " text(s)?")) {
-			textService.remove(projectId, textIds, function(result) {
+		if (textIds.length == 1) {
+			message = "Are you sure you want to archive the selected text?";
+		} else {
+			message = "Are you sure you want to archive the " + textIds.length + " selected texts?";
+		}
+		if (window.confirm(message)) {
+			textService.archive(projectId, textIds, function(result) {
 				if (result.ok) {
 					if (textIds.length == 1) {
-						notice.push(notice.SUCCESS, "The text was removed successfully");
+//						notice.push(notice.SUCCESS, "The text was archived successfully");
 					} else {
-						notice.push(notice.SUCCESS, "The texts were removed successfully");
+//						notice.push(notice.SUCCESS, "The texts were archived successfully");
 					}
 					$scope.selected = []; // Reset the selection
 					// TODO

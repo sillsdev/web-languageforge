@@ -41,8 +41,8 @@ angular.module('sfchecks.services', ['jsonRpc'])
 		this.update = function(projectId, model, callback) {
 			jsonRpc.call('text_update', [projectId, model], callback);
 		};
-		this.remove = function(projectId, textIds, callback) {
-			jsonRpc.call('text_delete', [projectId, textIds], callback);
+		this.archive = function(projectId, textIds, callback) {
+			jsonRpc.call('text_archive', [projectId, textIds], callback);
 		};
 		this.list = function(projectId, callback) {
 			jsonRpc.call('text_list_dto', [projectId], callback);
