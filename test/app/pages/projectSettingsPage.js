@@ -30,7 +30,16 @@ var SfProjectSettingsPage = function() {
 		this.membersTab.newMember.button.click();
 	};
 
-	this.templatesTab = {}; // NYI - wait for refactor
+	this.templatesTab = {
+		list:			element.all(by.repeater('template in visibleTemplates')),
+		addButton:		element(by.partialButtonText('Add New Template')),
+		removeButton:	element(by.partialButtonText('Remove Templates')),
+		editor:	{
+			title: 			element(by.model('editedTemplate.title')),
+			description:	element(by.model('editedTemplate.description')),
+			saveButton:		element(by.id('question_templates_save_button')),
+		},
+	};
 	
 	this.propertiesTab = {
 		name:		element(by.model('project.projectname')),
