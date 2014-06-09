@@ -71,15 +71,15 @@ describe('the project dashboard AKA text list page', function() {
 			browser.navigate().back();
 		});
 		
-		it('can delete the text that was just created', function() {
-			var deleteButton = projectPage.removeTextButton.find();
-			expect(deleteButton.isDisplayed()).toBe(true);
-			expect(deleteButton.isEnabled()).toBe(false);
+		it('can archive the text that was just created', function() {
+			var archiveButton = projectPage.archiveTextButton.find();
+			expect(archiveButton.isDisplayed()).toBe(true);
+			expect(archiveButton.isEnabled()).toBe(false);
 			util.setCheckbox(projectPage.getFirstCheckbox(), true);
-			expect(deleteButton.isEnabled()).toBe(true);
-			deleteButton.click();
+			expect(archiveButton.isEnabled()).toBe(true);
+			archiveButton.click();
 			browser.switchTo().alert().accept();
-			expect(deleteButton.isEnabled()).toBe(false);
+			expect(archiveButton.isEnabled()).toBe(false);
 			expect(projectPage.textLink(sampleTitle).isPresent()).toBe(false);
 		});
 
@@ -106,8 +106,8 @@ describe('the project dashboard AKA text list page', function() {
 
 			// clean up the text
 			util.setCheckbox(projectPage.getFirstCheckbox(), true);
-			var deleteButton = projectPage.removeTextButton.find();
-			deleteButton.click();
+			var archiveButton = projectPage.archiveTextButton.find();
+			archiveButton.click();
 			browser.switchTo().alert().accept();
 
 		});

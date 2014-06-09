@@ -185,8 +185,7 @@ describe('the project settings page - project manager', function() {
 				page.communicationTab.email.name.sendKeys(sample.e);
 				page.communicationTab.button.click();
 
-				browser.navigate().back();
-				projectPage.settingsButton.click();
+				browser.navigate().refresh();
 				page.tabs.communication.click();
 
 				expect(page.communicationTab.sms.accountId.getAttribute('value')).toBe(sample.a);

@@ -27,7 +27,7 @@ var SfProjectPage = function() {
 	};
 
 	this.settingsButton = element(by.id('projectSettingsButton'));
-	this.removeTextButton = element(by.partialButtonText('Remove Texts'));
+	this.archiveTextButton = element(by.partialButtonText('Archive Texts'));
 
 	this.newText = {
 		showFormButton:	element(by.partialButtonText('Add New Text')),
