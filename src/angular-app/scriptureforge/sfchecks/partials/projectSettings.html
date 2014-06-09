@@ -1,4 +1,4 @@
-<div ng-show="finishedLoading">
+<div data-ng-show="finishedLoading">
 <h2 style="font-weight:normal">{{project.projectname}} Settings</h2>
 <tabset>
 	<tab heading="Members">
@@ -97,6 +97,22 @@
 		</div>
 	</tab>
 	<tab heading="Archived Texts">
+		<hr />
+		<div listview hide-if-empty="true" items="texts" visible-items="visibleTexts" select="">
+			<div data-ng-repeat="text in visibleTexts" class="details-row">
+				<ul class="inline" data-ng-class="{active: isSelected(text)}">
+					<li data-ng-show="rights.archive" ><input type="checkbox" data-ng-checked="isSelected(text)" data-ng-click="updateSelection($event, text)" /></li>
+					<li>
+						<a href="{{text.url}}">
+							<span class="larger-text">{{text.title}}</span>
+						</a>
+					</li>
+					<li>{{text.questionCount}} questions</li>
+					<li>{{text.responseCount}} responses</li>
+				</ul>
+				<hr />
+			</div>
+		</div>
 	</tab>
 	<tab heading="Project Properties">
 		<div data-ng-controller="ProjectSettingsPropertiesCtrl">
