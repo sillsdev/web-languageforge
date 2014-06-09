@@ -5,9 +5,10 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
                                     function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService, sfchecksLinkService) {
 	var projectId = $routeParams.projectId;
 	$scope.project = {};
+	$scope.project.id = projectId;
 	$scope.finishedLoading = false;
 	$scope.list = {};
-	$scope.project.id = projectId;
+	$scope.texts = [];
 
 	$scope.canEditCommunicationSettings = function() {
 		return ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
@@ -20,9 +21,15 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 				$scope.list.users = result.data.entries;
 				$scope.list.userCount = result.data.count;
 				$scope.themeNames =  result.data.themeNames;
+				$scope.texts = result.data.texts;
+				$scope.textsCount = $scope.texts.length;
+				for (var i = 0; i < $scope.textsCount; i++) {
+					$scope.texts[i].url = sfchecksLinkService.text($scope.project.id, $scope.texts[i].id);
+				}
 				// Rights
 				var rights = result.data.rights;
 				$scope.rights = {};
+				$scope.rights.archive = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE); 
 				$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.DELETE); 
 				$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
 				$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
@@ -37,9 +44,23 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 						]
 				);
 				$scope.finishedLoading = true;
-				
 			}
 		});
+	};
+	
+	// Listview Selection
+	$scope.selected = [];
+	$scope.updateSelection = function(event, item) {
+		var selectedIndex = $scope.selected.indexOf(item);
+		var checkbox = event.target;
+		if (checkbox.checked && selectedIndex == -1) {
+			$scope.selected.push(item);
+		} else if (!checkbox.checked && selectedIndex != -1) {
+			$scope.selected.splice(selectedIndex, 1);
+		}
+	};
+	$scope.isSelected = function(item) {
+		return item != null && $scope.selected.indexOf(item) >= 0;
 	};
 	
 	$scope.settings = {
