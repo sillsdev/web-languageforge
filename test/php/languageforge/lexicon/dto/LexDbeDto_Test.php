@@ -1,5 +1,7 @@
 <?php
 
+use models\shared\rights\SiteRoles;
+
 use models\languageforge\lexicon\commands\LexEntryCommands;
 use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\languageforge\lexicon\dto\LexDbeDto;
@@ -11,8 +13,9 @@ use models\languageforge\lexicon\LexiconFieldWithComments;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\Example;
 use models\languageforge\lexicon\Sense;
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\UserModel;
+
 
 require_once(dirname(__FILE__) . '/../../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -26,12 +29,12 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$user->addProject($projectId);
 		$user->write();
 		$project->write();
@@ -50,12 +53,12 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$user->addProject($projectId);
 		$user->write();
 		$project->write();
@@ -89,12 +92,12 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$user->addProject($projectId);
 		$user->write();
 		$project->write();

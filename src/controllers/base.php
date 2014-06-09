@@ -1,15 +1,15 @@
 <?php
 
 
+use models\shared\rights\SiteRoles;
+
 use libraries\shared\Website;
 
 use models\ProjectListModel;
 use models\FeaturedProjectListModel;
 
-use models\rights\Operation;
-use models\rights\Domain;
-use models\rights\Realm;
-use models\rights\Roles;
+use models\shared\rights\Operation;
+use models\shared\rights\Domain;
 use models\ProjectModel;
 
 require_once(APPPATH . "version.php");
@@ -29,6 +29,14 @@ class Base extends CI_Controller {
 	
 	public function __construct() {
 		parent::__construct();
+		$protocol = Website::getProtocolForHostName();
+		if ($protocol == 'https') {
+			// Redirect to same page with HTTPS if we accessed it with HTTP
+			if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == ""){
+				$redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+				header("Location: $redirect");
+			}
+		}
 		$this->load->library('ion_auth');
 		$this->_isLoggedIn = $this->ion_auth->logged_in();
 		if ($this->_isLoggedIn) {
@@ -43,7 +51,7 @@ class Base extends CI_Controller {
 			/* this is migration code... we don't need this here
 			if (!$this->_user->role) {
 				error_log("Fixing role for user " .  $this->_user->id->asString());
-				$this->_user->role = Roles::USER;
+				$this->_user->role = SiteRoles::USER;
 				$this->_user->write();
 			}
 			*/
@@ -80,7 +88,7 @@ class Base extends CI_Controller {
 		$this->viewdata['featuredProjects'] = $featuredProjectList->entries;
 		
 		if ($this->_isLoggedIn) {
-			$isAdmin = Roles::hasRight(Realm::SITE, $this->_user->role, Domain::USERS + Operation::CREATE);
+			$isAdmin = SiteRoles::hasRight($this->_user->role, Domain::USERS + Operation::CREATE);
 			$this->viewdata['is_admin'] = $isAdmin;
 			$this->viewdata['user_name'] = $this->_user->username;
 			$this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
@@ -89,12 +97,6 @@ class Base extends CI_Controller {
 			$this->viewdata['projects_count'] = $projects->count;
 			$this->viewdata['projects'] = $projects->entries;
 			$this->viewdata['hostname'] = Website::getHostName();
-			if ($isAdmin) {
-				$projectList = new models\ProjectListModel();
-				$projectList->read();
-				$this->viewdata['all_projects_count'] = $projectList->count;
-				$this->viewdata['all_projects'] = $projectList->entries;
-			}
 		}
 	}
 	

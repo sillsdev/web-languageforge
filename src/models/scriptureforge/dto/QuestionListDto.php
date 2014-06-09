@@ -2,6 +2,8 @@
 
 namespace models\scriptureforge\dto;
 
+use models\scriptureforge\SfchecksProjectModel;
+
 use models\shared\dto\RightsHelper;
 
 use models\mapper\JsonEncoder;
@@ -22,7 +24,7 @@ class QuestionListDto
 	 */
 	public static function encode($projectId, $textId, $userId) {
 		$userModel = new UserModel($userId);
-		$projectModel = new ProjectModel($projectId);
+		$projectModel = new SfchecksProjectModel($projectId);
 		$questionList = new QuestionAnswersListModel($projectModel, $textId);
 		$questionList->read();
 
@@ -32,6 +34,7 @@ class QuestionListDto
 		$data['entries'] = array();
 		$data['project'] = array(
 				'name' => $projectModel->projectname,
+				'allowAudioDownload' => $projectModel->allowAudioDownload,
 				'id' => $projectId);
 		$textModel = new TextModel($projectModel, $textId);
 		$data['text'] = JsonEncoder::encode($textModel);

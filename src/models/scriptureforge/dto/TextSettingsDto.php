@@ -2,6 +2,8 @@
 
 namespace models\scriptureforge\dto;
 
+use models\scriptureforge\SfchecksProjectModel;
+
 use models\shared\dto\RightsHelper;
 
 use models\UserModel;
@@ -18,7 +20,7 @@ class TextSettingsDto
 	 */
 	public static function encode($projectId, $textId, $userId) {
 		$userModel = new UserModel($userId);
-		$projectModel = new ProjectModel($projectId);
+		$projectModel = new SfchecksProjectModel($projectId);
 		$textModel = new TextModel($projectModel, $textId);
 
 		$list = $projectModel->listUsers();

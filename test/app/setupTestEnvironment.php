@@ -1,4 +1,5 @@
 <?php
+
 require_once('e2eTestConfig.php');
 
 // put the test config into place
@@ -9,7 +10,8 @@ use models\commands\ProjectCommands;
 use models\commands\UserCommands;
 use models\commands\TextCommands;
 use models\commands\QuestionCommands;
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
 use models\scriptureforge\SfProjectModel;
 use models\ProjectModel;
 use libraries\shared\Website;
@@ -44,7 +46,7 @@ $adminUser = UserCommands::createUser(array(
 	'username' => $constants['adminUsername'],
 	'password' => $constants['adminPassword'],
 	'active' => true,
-	'role' => Roles::SYSTEM_ADMIN
+	'role' => SiteRoles::SYSTEM_ADMIN
 ));
 $managerUser = UserCommands::createUser(array(
 	'id' => '',
@@ -53,7 +55,7 @@ $managerUser = UserCommands::createUser(array(
 	'username' => $constants['managerUsername'],
 	'password' => $constants['managerPassword'],
 	'active' => true,
-	'role' => Roles::USER // Should this be Roles::PROJECT_ADMIN? I think not; I think that's set per-project. 2014-05 RM
+	'role' => SiteRoles::USER
 ));
 $memberUser = UserCommands::createUser(array(
 	'id' => '',
@@ -62,7 +64,7 @@ $memberUser = UserCommands::createUser(array(
 	'username' => $constants['memberUsername'],
 	'password' => $constants['memberPassword'],
 	'active' => true,
-	'role' => Roles::USER
+	'role' => SiteRoles::USER
 ));
 
 $testProject = ProjectCommands::createProject(
@@ -84,11 +86,11 @@ $otherProject = ProjectCommands::createProject(
 
 ProjectCommands::updateUserRole($testProject, array(
 	'id' => $managerUser,
-	'role' => Roles::PROJECT_ADMIN
+	'role' => ProjectRoles::MANAGER
 ));
 ProjectCommands::updateUserRole($testProject, array(
 	'id' => $memberUser,
-	'role' => Roles::USER
+	'role' => ProjectRoles::CONTRIBUTOR
 ));
 
 $text1 = TextCommands::updateText($testProject, array(

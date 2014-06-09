@@ -108,3 +108,17 @@ var sendText = function(elem, textString) {
 	browser.executeScript("arguments[0].value = arguments[1];", elem.find(), textString);
 };
 module.exports.sendText = sendText;
+
+var waitForAlert = function(timeout) {
+	if (!timeout) { timeout = 8000; }
+	browser.wait(function() {
+		var alertPresent = true;
+		try {
+			browser.switchTo().alert();
+		} catch (NoSuchAlertError) {
+			alertPresent = false;
+		}
+		return alertPresent;
+	}, timeout);
+};
+module.exports.waitForAlert = waitForAlert;

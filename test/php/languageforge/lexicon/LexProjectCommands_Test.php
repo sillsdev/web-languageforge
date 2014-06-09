@@ -5,7 +5,8 @@ use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\commands\ProjectCommands;
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
 use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
@@ -21,12 +22,12 @@ class TestLexProjectCommands extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$user->addProject($projectId);
 		$user->write();
 		$project->write();
@@ -65,7 +66,7 @@ class TestLexProjectCommands extends UnitTestCase {
 				'projectCode' => 'SomeCode',
 				'featured' => true
 		);
-		$userId = $e->createUser('userName', 'User Name', 'user@example.com', Roles::SYSTEM_ADMIN);
+		$userId = $e->createUser('userName', 'User Name', 'user@example.com', SiteRoles::SYSTEM_ADMIN);
 		$id = LexProjectCommands::updateProject($param, $userId);
 		$this->assertNotNull($id);
 		$this->assertEqual(24, strlen($id));
