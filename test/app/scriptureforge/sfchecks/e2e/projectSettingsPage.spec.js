@@ -70,9 +70,41 @@ describe('the project settings page - project manager', function() {
 
 	});
 	
-	describe('question templates tab - NYI', function() {
-		it('setup: click on tab', function() {});
-		// intentionally ignoring these tests because of an impending refactor regarding question templates
+	describe('question templates tab', function() {
+		it('setup: click on tab', function() {
+			expect(page.tabs.templates.isPresent()).toBe(true);
+			page.tabs.templates.click();
+		});
+		
+		it('can list templates', function() {
+			expect(page.templatesTab.list.count()).toBe(2);
+		});
+		
+		it('can add a template', function() {
+			page.templatesTab.addButton.click();
+			page.templatesTab.editor.title.sendKeys('sound check');
+			page.templatesTab.editor.description.sendKeys('What do you think of when I say the words... "boo"');
+			page.templatesTab.editor.saveButton.click();
+			expect(page.templatesTab.list.count()).toBe(3);
+			expect(page.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
+		});
+		
+		it('can update an existing template', function() {
+			page.templatesTab.list.last().findElement(by.linkText('sound check')).click();
+			expect(page.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
+			page.templatesTab.editor.title.clear();
+			page.templatesTab.editor.title.sendKeys('test12');
+			page.templatesTab.editor.saveButton.click();
+			expect(page.templatesTab.list.count()).toBe(3);
+
+		});
+		
+		it('can delete a template', function() {
+			page.templatesTab.list.last().findElement(by.css('input[type="checkbox"]')).click();
+			page.templatesTab.removeButton.click();
+			expect(page.templatesTab.list.count()).toBe(2);
+		});
+		
 		
 	});
 	
