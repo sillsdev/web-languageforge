@@ -6,7 +6,8 @@ class AllScriptureForgeTests extends TestSuite {
 	
     function __construct() {
         parent::__construct();
- 		$this->addFile(TestPath . 'scriptureforge/dto/AllTests.php');
+ 		$this->addFile(TestPath . 'scriptureforge/commands/AllTests.php');
+        $this->addFile(TestPath . 'scriptureforge/dto/AllTests.php');
     }
 
 }
