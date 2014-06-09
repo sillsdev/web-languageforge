@@ -7,8 +7,6 @@ class AllCommandsTests extends TestSuite {
     function __construct() {
         parent::__construct();
  		$this->addFile(TestPath . 'commands/ProjectCommands_Test.php');
- 		$this->addFile(TestPath . 'commands/QuestionCommands_Test.php');
- 		$this->addFile(TestPath . 'commands/TextCommands_Test.php');
  		$this->addFile(TestPath . 'commands/UserCommands_Test.php');
     }
 
