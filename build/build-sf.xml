@@ -48,7 +48,6 @@
 		 <exec executable="node" dir="test" output="${build.output}/AllKarmaTests.xml">
 			 <arg value="node_modules/karma/bin/karma" />
 			 <arg value="start" />
-			 <arg file="test/karma.conf.js" />
 			 <arg value="--reporters" />
 			 <arg value="teamcity" />
 			 <arg value="--single-run" />
