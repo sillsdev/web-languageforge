@@ -1,81 +1,83 @@
-<div ng-show="finishedLoading">
+<div data-ng-show="finishedLoading">
 <h2 style="font-weight:normal">{{project.name}} Dashboard</h2>
-<div class="notices"><alert ng-repeat="message in messages" type="info" close="markMessageRead(message.id)"><b>{{message.subject}}</b><br /><span ng-bind-html="message.content"></span></alert></div>
-<form ng-show="rights.showControlBar" class="control-bar form-inline">
-	<a id="projectSettingsButton" ng-show="rights.editOther" class="btn pull-right" href="{{project.url}}/settings"><i class="icon-cog icon-2x" tooltip="Project Settings"></i></a>
-	<button ng-disabled="selected.length == 0" ng-show="rights.deleteOther" class="btn" ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
-	<button ng-show="rights.create" class="btn" ng-click="newTextCollapsed = !newTextCollapsed"><i class="icon-plus"></i>Add New Text</button>
+<div class="notices">
+	<alert data-ng-repeat="message in messages" type="info" close="markMessageRead(message.id)"><b>{{message.subject}}</b><br /><span data-ng-bind-html="message.content"></span></alert>
+</div>
+<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+	<a id="projectSettingsButton" data-ng-show="rights.editOther" class="btn pull-right" href="{{project.url}}/settings"><i class="icon-cog icon-2x" data-tooltip="Project Settings"></i></a>
+	<button data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther" class="btn" data-ng-click="removeTexts()"><i class="icon-remove"></i>Remove Texts</button>
+	<button data-ng-show="rights.create" class="btn" data-ng-click="newTextCollapsed = !newTextCollapsed"><i class="icon-plus"></i>Add New Text</button>
 </form>
-<div class="new-item" collapse="newTextCollapsed">
+<div class="new-item" data-collapse="newTextCollapsed">
 	<form class="well" name="newTextForm">
 	<fieldset class="span4">
 	<table class="tableform">
 		<tr>
 			<td>
 				<label>Title</label>
-				<input required ng-model="title" type="text" placeholder="Title"/>
+				<input required data-ng-model="title" type="text" placeholder="Title"/>
 			</td>
 		</tr>
 		<tr>
 			<td>
 				<label>Text</label>
-				<textarea textdrop ng-model="content" rows="4" placeholder="Paste the USX text here"></textarea>
+				<textarea textdrop data-ng-model="content" rows="4" placeholder="Paste the USX text here"></textarea>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<a ng-click="toggleRangeSelector()">Select limited verse range</a>
+				<a data-ng-click="toggleRangeSelector()">Select limited verse range</a>
 			</td>
 		</tr>
 	</table>
-	<div collapse="rangeSelectorCollapsed">
+	<div data-collapse="rangeSelectorCollapsed">
 	<table>
 		<tr>
 			<td>From</td>
-			<td><input type="number" ng-model="startCh" min="1" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" ng-model="startVs" min="1" placeholder="Verse" style="width: 4em"></input></td>
-			<td><a ng-click="startCh = ''; startVs = ''" class="btn-link">reset</a></td>
+			<td><input type="number" data-ng-model="startCh" min="1" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" data-ng-model="startVs" min="1" placeholder="Verse" style="width: 4em"></input></td>
+			<td><a data-ng-click="startCh = ''; startVs = ''" class="btn-link">reset</a></td>
 		</tr>
 		<tr>
 			<td>To</td>
-			<td><input type="number" ng-model="endCh" min="1" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" ng-model="endVs" min="1" placeholder="Verse" style="width: 4em"></input></td>
-			<td><a ng-click="endCh = ''; endVs = ''" class="btn-link">reset</a></td>
+			<td><input type="number" data-ng-model="endCh" min="1" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" data-ng-model="endVs" min="1" placeholder="Verse" style="width: 4em"></input></td>
+			<td><a data-ng-click="endCh = ''; endVs = ''" class="btn-link">reset</a></td>
 		</tr>
 	</table>
 	</div>
-	<button type="submit" class="btn" ng-disabled="newTextForm.$invalid" ng-click="addText(); newTextCollapsed = true"><i class="icon-ok"></i>Save</button>
+	<button type="submit" class="btn" data-ng-disabled="newTextForm.$invalid" data-ng-click="addText(); newTextCollapsed = true"><i class="icon-ok"></i>Save</button>
 	</fieldset>
 	<fieldset class="span4">
-		<div class="drop-box" ng-file-drop="onUsxFile($files)" ng-file-drop-available="dropSupported=true">
+		<div class="drop-box" data-ng-file-drop="onUsxFile($files)" data-ng-file-drop-available="dropSupported=true">
 			<h4>Or drop a USX file here</h4>
 			<br/>
 			<p>or if you prefer...</p>
 			<input type="button" class="btn" value="Browse..." onclick="javascript:document.getElementById('usxfile').click();">
-			<input id="usxfile" type="file" style="display:none;" ng-file-select="onUsxFile($files)">
+			<input id="usxfile" type="file" style="display:none;" data-ng-file-select="onUsxFile($files)">
 		</div>
-		<div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+		<div data-ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
 	</fieldset>
 	<div style="clear: left"></div>
 	</form>
 </div>
 <hr />
 <div listview hide-if-empty="true" items="texts" visible-items="visibleTexts" select="">
-<div ng-repeat="text in visibleTexts" class="details-row">
-	<ul class="inline" ng-class="{active: isSelected(text)}">
-		<li ng-show="rights.deleteOther" ><input type="checkbox" ng-checked="isSelected(text)" ng-click="updateSelection($event, text)" /></li>
-		<li><a href="{{text.url}}">
-			<div class="attention-block">
-				<span class="count">{{getQuestionCount(text)}}</span><br />
-				<span class="subtitle">questions</span>
-			</div>
-		</a></li>
-		<li>
-			<a href="{{text.url}}">
-				<span class="larger-text">{{text.title}}</span>
-			</a>
-		</li>
-		<li>{{getResponses(text)}} responses</li>
-	</ul>
-	<hr />
-</div>
+	<div data-ng-repeat="text in visibleTexts" class="details-row">
+		<ul class="inline" data-ng-class="{active: isSelected(text)}">
+			<li data-ng-show="rights.deleteOther" ><input type="checkbox" data-ng-checked="isSelected(text)" data-ng-click="updateSelection($event, text)" /></li>
+			<li><a href="{{text.url}}">
+				<div class="attention-block">
+					<span class="count">{{getQuestionCount(text)}}</span><br />
+					<span class="subtitle">questions</span>
+				</div>
+			</a></li>
+			<li>
+				<a href="{{text.url}}">
+					<span class="larger-text">{{text.title}}</span>
+				</a>
+			</li>
+			<li>{{getResponses(text)}} responses</li>
+		</ul>
+		<hr />
+	</div>
 </div>
 </div>
