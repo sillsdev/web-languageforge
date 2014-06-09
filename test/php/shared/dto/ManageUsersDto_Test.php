@@ -1,8 +1,10 @@
 <?php
 
+use models\shared\rights\SiteRoles;
+
 use models\shared\dto\ManageUsersDto;
 use models\UserModel;
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -16,12 +18,12 @@ class TestManageUsersDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$user->addProject($projectId);
 		$user->write();
 		$project->write();
@@ -32,7 +34,7 @@ class TestManageUsersDto extends UnitTestCase {
 		$this->assertIsA($dto['users'], 'array');
 		$this->assertEqual($dto['users'][0]['id'], $userId);
 		$this->assertEqual($dto['users'][0]['name'], 'Name');
-		$this->assertEqual($dto['users'][0]['role'], Roles::USER);
+		$this->assertEqual($dto['users'][0]['role'], ProjectRoles::CONTRIBUTOR);
 		$this->assertFalse(isset($dto['rights']));
 		$this->assertFalse(isset($dto['project']));
 	}

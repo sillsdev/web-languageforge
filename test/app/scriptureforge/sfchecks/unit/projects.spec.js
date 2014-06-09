@@ -21,8 +21,8 @@ describe('Projects page (projects.js)', function() {
 	var testProjects = {
 		count: 2,
 		entries: [
-			{id: "1001", projectname: "Foo", language: "English", textCount: 0, users: ["1"]},
-			{id: "1002", projectname: "Bar", language: "Martian", textCount: 1, users: ["2"]},
+			{id: "1001", projectname: "Foo", appName: "sfchecks", language: "English", textCount: 0, users: ["1"]},
+			{id: "1002", projectname: "Bar", appName: "sfchecks", language: "Martian", textCount: 1, users: ["2"]},
 		],
 	};
 
@@ -39,7 +39,32 @@ describe('Projects page (projects.js)', function() {
 		},
 	};
 
-	beforeEach(module('sfchecks.projects'));
+	var mockWindowProvider = function() {
+		return {
+			// Mock $window.session for the sake of the sessionService
+			session: {
+				userId: 'nobody',
+				fileSizeMax: 1048576,
+				SITE: function() {
+					// Simulate an admin, which has all rights
+					var rights = [];
+					var MAX_DOMAIN = 1800; // Adjust these two values as needed to keep up with API changes
+					var MAX_OPERATION = 8;
+					for (var domain = 1000; domain <= MAX_DOMAIN; domain += 100) {
+						for (var operation = 1; operation <= MAX_OPERATION; operation++) {
+							rights.push(domain+operation);
+						}
+					}
+					return rights;
+				},
+			},
+		};
+	};
+
+	beforeEach(module('projects', function($provide) {
+		// Use mock window service instead of real one
+		$provide.service('$window', mockWindowProvider);
+	}));
 
 	beforeEach(inject(function($rootScope, $controller) {
 		// Keep the root scope around for the test functions to use

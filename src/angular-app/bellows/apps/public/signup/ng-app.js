@@ -4,7 +4,7 @@
 angular.module('signup', [ 'bellows.services', 'ui.bootstrap'])
 .controller('UserCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
                          function UserCtrl($scope, userService, sessionService, notice) {
-
+	$scope.showPassword = false;
 	$scope.record = {};
 	$scope.record.id = '';
 	$scope.userRegistered = false;
@@ -19,8 +19,6 @@ angular.module('signup', [ 'bellows.services', 'ui.bootstrap'])
 			
 		});
 	};
-	
-	
 	
 	$scope.createUser = function(record) {
 		$scope.submissionInProgress = true;
@@ -38,6 +36,7 @@ angular.module('signup', [ 'bellows.services', 'ui.bootstrap'])
 		});
 		return true;
 	};
+	
 	$scope.checkUserName = function() {
 		$scope.userNameOk = false;
 		$scope.userNameExists = false;
@@ -59,5 +58,6 @@ angular.module('signup', [ 'bellows.services', 'ui.bootstrap'])
 	};
 	
 	$scope.getCaptchaSrc();
+	
 }])
 ;

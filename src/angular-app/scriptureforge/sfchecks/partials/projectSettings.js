@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload'])
+angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload', 'ngRoute'])
 .controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService', 'sfchecksLinkService',
                                     function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService, sfchecksLinkService) {
 	var projectId = $routeParams.projectId;
@@ -10,7 +10,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	$scope.project.id = projectId;
 
 	$scope.canEditCommunicationSettings = function() {
-		return ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT);
+		return ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
 	};
 	
 	$scope.queryProjectSettings = function() {
@@ -19,6 +19,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 				$scope.project = result.data.project;
 				$scope.list.users = result.data.entries;
 				$scope.list.userCount = result.data.count;
+				$scope.themeNames =  result.data.themeNames;
 				// Rights
 				var rights = result.data.rights;
 				$scope.rights = {};
@@ -193,8 +194,10 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		var newProject = {
 			id: $scope.project.id,
 			projectname: $scope.project.projectname,
+			themeName: $scope.project.themeName,
 			projectCode: $scope.project.projectCode,
-			featured: $scope.project.featured
+			featured: $scope.project.featured,
+			allowAudioDownload: $scope.project.allowAudioDownload,
 		};
 
 		sfchecksProjectService.update(newProject, function(result) {
@@ -371,8 +374,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	
 	// Roles in list
 	$scope.roles = [
-        {key: 'user', name: 'Member'},
-        {key: 'project_admin', name: 'Manager'}
+        {key: 'contributor', name: 'Contributor'},
+        {key: 'project_manager', name: 'Manager'}
     ];
 	
 	$scope.onRoleChange = function(user) {

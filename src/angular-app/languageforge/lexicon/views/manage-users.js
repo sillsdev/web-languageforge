@@ -65,8 +65,8 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 	
 	// Roles in list
 	$scope.roles = [
-		{key: 'user', name: $filter('translate')('Member')},
-		{key: 'project_admin', name: $filter('translate')('Manager')}
+		{key: 'contributor', name: $filter('translate')('Contributor')},
+		{key: 'project_manager', name: $filter('translate')('Manager')}
 	];
 	
 	$scope.onRoleChange = function(user) {

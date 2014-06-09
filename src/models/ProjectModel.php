@@ -5,9 +5,9 @@ namespace models;
 use models\mapper\ArrayOf;
 
 use libraries\shared\palaso\CodeGuard;
-use models\rights\Realm;
-use models\rights\Roles;
-use models\rights\ProjectRoleModel;
+
+use models\shared\rights\ProjectRoles;
+use models\shared\rights\ProjectRoleModel;
 use models\mapper\MapOf;
 use models\mapper\MongoMapper;
 use models\mapper\MongoStore;
@@ -20,6 +20,8 @@ use models\sms\SmsSettings;
 class ProjectModel extends \models\mapper\MapperModel
 {
 	
+	protected $rolesClass;
+	
 	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->users = new MapOf(function($data) {
@@ -30,6 +32,7 @@ class ProjectModel extends \models\mapper\MapperModel
 		if (!$this->themeName) {
 			$this->themeName = 'default';
 		}
+		$this->allowAudioDownload = true;
 		$this->interfaceLanguageCode = 'en';
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
@@ -155,9 +158,13 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @return bool
 	 */
 	public function hasRight($userId, $right) {
+		if (!method_exists($this->rolesClass, 'hasRight')) {
+			throw new \Exception('hasRight method cannot be called directly from ProjectModel');
+		}
 		$hasRight = false;
 		if (key_exists($userId, $this->users)) {
-			$hasRight = Roles::hasRight(Realm::PROJECT, $this->users[$userId]->role, $right);
+			$rolesClass = $this->rolesClass;
+			$hasRight = $rolesClass::hasRight($this->users[$userId]->role, $right);
 		}
 		return $hasRight;
 	}
@@ -168,12 +175,16 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @return array
 	 */
 	public function getRightsArray($userId) {
+		if (!method_exists($this->rolesClass, 'getRightsArray')) {
+			throw new \Exception('getRightsArray method cannot be called directly from ProjectModel');
+		}
 		CodeGuard::checkTypeAndThrow($userId, 'string');
 		if (!key_exists($userId, $this->users)) {
 			$result = array();
 		} else {
 			$role = $this->users[$userId]->role;
-			$result = Roles::getRightsArray(Realm::PROJECT, $role);
+			$rolesClass = $this->rolesClass;
+			$result = $rolesClass::getRightsArray($role);
 		}
 		return $result;
 	}
@@ -230,6 +241,12 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @var boolean
 	 */
 	public $featured;
+
+	/**
+	 * Flag to indicate if this project allows users to download audio files
+	 * @var boolean
+	 */
+	public $allowAudioDownload;
 
 	/**
 	 * @var ProjectUserPropertiesSettings

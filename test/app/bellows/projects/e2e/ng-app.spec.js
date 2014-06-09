@@ -49,7 +49,7 @@ var shouldProjectBeLinked = function(projectRow, bool) {
 };
 var shouldProjectHaveButtons = function(projectRow, bool) {
 	var addAsManagerBtn = projectRow.findElement(by.partialButtonText("Add me as Manager"));
-	var addAsMemberBtn = projectRow.findElement(by.partialButtonText("Add me as Member"));
+	var addAsMemberBtn = projectRow.findElement(by.partialButtonText("Add me as Contributor"));
 	expect(addAsManagerBtn.isDisplayed()).toBe(bool);
 	expect(addAsMemberBtn.isDisplayed()).toBe(bool);
 };

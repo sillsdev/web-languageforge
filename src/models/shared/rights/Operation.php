@@ -1,5 +1,5 @@
 <?php
-namespace models\rights;
+namespace models\shared\rights;
 
 class Operation {
 
@@ -11,6 +11,8 @@ class Operation {
 	const VIEW_OWN		= 6;
 	const EDIT_OWN		= 7;
 	const DELETE_OWN	= 8;
+	const ARCHIVE		= 9;
+	// todo: change 'delete_own' to 'archive_own'
 	
 	public static $operations = array(
 			self::CREATE,
@@ -20,7 +22,8 @@ class Operation {
 			self::VIEW,
 			self::EDIT_OWN,
 			self::DELETE_OWN,
-			self::VIEW_OWN
+			self::VIEW_OWN,
+			self::ARCHIVE
 	);
 	
 }
