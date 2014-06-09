@@ -24,7 +24,7 @@ class Script extends Secure_base {
 
 					$script = new $classname;
 					$data['output'] = '';
-					if ($runtype == 'test') {
+					if ($runtype != 'run') {
 						$data['output'] .= "--------------- THIS IS A TEST RUN - The database should not be modified ----------------\n\n";
 					}
 					$data['output'] .= $script->run($runtype);
