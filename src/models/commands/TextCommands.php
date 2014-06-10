@@ -97,6 +97,23 @@ class TextCommands
 	/**
 	 * @param string $projectId
 	 * @param array $textIds
+	 * @return int Total number of texts published.
+	 */
+	public static function publishTexts($projectId, $textIds) {
+		$project = new ProjectModel($projectId);
+		$count = 0;
+		foreach ($textIds as $textId) {
+			$text = new TextModel($project, $textId);
+			$text->isArchived = false;
+			$text->write();
+			$count++;
+		}
+		return $count;
+	}
+
+	/**
+	 * @param string $projectId
+	 * @param array $textIds
 	 * @return int Total number of texts removed.
 	 */
 	public static function deleteTexts($projectId, $textIds) {

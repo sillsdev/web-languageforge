@@ -26,8 +26,11 @@ class TestRightsHelper extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
+		
+		$e->inhibitErrorDisplay();
 		$this->expectException();
 		$result = RightsHelper::userCanAccessMethod($userId, 'bogusMethodName', array());
+		$e->restoreErrorDisplay();
 	}
 
 	function testUserCanAccessMethod_projectSettings_projectManager_true() {
