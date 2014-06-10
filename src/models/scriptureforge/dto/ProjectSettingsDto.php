@@ -39,7 +39,7 @@ class ProjectSettingsDto
 		$data['project'] = JsonEncoder::encode($projectModel);
 		unset($data['project']['users']);
 
-		$data['texts'] = array();
+		$data['archivedTexts'] = array();
 		foreach ($textList->entries as $entry) {
 			$textModel = new TextModel($projectModel, $entry['id']);
 			if ($textModel->isArchived) {
@@ -54,8 +54,9 @@ class ProjectSettingsDto
 					}
 				}
 				$entry['responseCount'] = $responseCount;
+				$entry['dateModified'] = $textModel->dateModified->format(\DateTime::RFC2822);
 
-				$data['texts'][] = $entry;
+				$data['archivedTexts'][] = $entry;
 			}
 		}
 
