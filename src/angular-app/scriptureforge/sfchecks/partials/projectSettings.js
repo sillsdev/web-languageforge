@@ -204,6 +204,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		}
 		textService.publish($scope.project.id, textIds, function(result) {
 			if (result.ok) {
+				$scope.selected = []; // Reset the selection
 				$scope.queryProjectSettings();
 			}
 		});
