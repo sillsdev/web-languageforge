@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload', 'ngRoute'])
+angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'palaso.ui.picklistEditor', 'angularFileUpload', 'ngRoute'])
 .controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService', 'sfchecksLinkService',
                                     function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService, sfchecksLinkService) {
 	var projectId = $routeParams.projectId;
@@ -267,7 +267,16 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			}
 		});
 	};
-	
+
+	// For testing new picklist control - TODO: Remove me when done 2014-06 RM
+	$scope.picklistItems = [
+		'Python',
+		'Clojure',
+		'Javascript',
+		'PHP',
+		'C#',
+	];
+
 	$scope.currentListId = '';
 	$scope.selectList = function(listId) {
 //		console.log("selectList ", listId);
