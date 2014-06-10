@@ -13,7 +13,7 @@ var SfTextPage = function() {
 	this.addNewBtn = element(by.partialButtonText("Add New Question"));
 	this.deleteBtn = element(by.partialButtonText("Remove Questions"));
 	this.makeTemplateBtn = element(by.partialButtonText("Make Template"));
-	this.textSettingsBtn = element(by.partialLinkText("Update Text Settings"));
+	this.textSettingsBtn = element(by.id("text_settings_button"));
 	
 	this.clickOnQuestion = function(questionTitle) {
 		element(by.linkText(questionTitle)).click();
