@@ -5,6 +5,7 @@ var SfProjectSettingsPage = function() {
 	this.tabs = {
 		members:			element(by.linkText('Members')),
 		templates:			element(by.linkText('Question Templates')),
+		archiveTexts:		element(by.linkText('Archived Texts')),
 		projectProperties:	element(by.linkText('Project Properties')),
 		optionlists:		element(by.linkText('Project Setup')),
 		communication:		element(by.linkText('Communication Settings'))
