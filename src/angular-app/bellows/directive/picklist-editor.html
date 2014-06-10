@@ -2,19 +2,12 @@
 	<legend style="width:auto;">{{picklistName}}</legend>
 <!-- 	<label>Default Value</label> -->
 <!-- 	<select data-ng-model="project.userProperties.userProfilePickLists[currentListId].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists[currentListId].items"></select> -->
-	<table>
-		<thead>
-		<tr>
-			<td colspan="2"><input data-ng-model="newValue" type="text" placeholder="new value"/></td>
-			<td><a data-ng-click="pickAddItem()"><i class="icon-plus"></i></a></td>
-		</tr>
-		</thead>
-		<tbody>
-		<tr data-ng-repeat-reorder="value in values" data-ng-repeat-reorder-handle="i.icon-align-justify">
-			<td>{{value}}</td>
-			<td style="width: 2em"><a data-ng-click="pickRemoveItem($index)"><i class="icon-remove"></i></a></td>
-			<td><i class="icon-align-justify"></i><!-- In Font Awesome 4 we would use fa-bars instead --></td>
-		</tr>
-		</tbody>
-	</table>
+		<div>
+		<input data-ng-model="newValue" type="text" placeholder="new value"/>
+		<a data-ng-click="pickAddItem()"><i class="icon-plus"></i></a>
+		</div>
+		<div data-ng-repeat-reorder="value in values" data-ng-repeat-reorder-handle="i.icon-align-justify" class="picklist-group">
+			<input type="text" ng-model="value" class="picklist-row"></input><a data-ng-click="pickRemoveItem($index)"><i class="icon-remove"></i></a>
+			<i class="icon-align-justify"></i><!-- In Font Awesome 4 we would use fa-bars instead -->
+		</div>
 </div>
