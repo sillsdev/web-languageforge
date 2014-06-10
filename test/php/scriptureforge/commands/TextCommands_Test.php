@@ -51,6 +51,33 @@ class TestTextCommands extends UnitTestCase {
 		$this->assertEqual($text2->isArchived, false);
 	}
 	
+	function testPublishTexts_2ArchivedTexts_1Published() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		
+		$text1 = new TextModel($project);
+		$text1->title = "Some Title";
+		$text1->isArchived = true;
+		$text1->write();
+		$text2 = new TextModel($project);
+		$text2->title = "Another Title";
+		$text2->isArchived = true;
+		$text2->write();
+		
+		$this->assertEqual($text1->isArchived, true);
+		$this->assertEqual($text2->isArchived, true);
+		
+		$count = TextCommands::publishTexts($project->id->asString(), array($text1->id->asString()));
+		
+		$text1->read($text1->id->asString());
+		$text2->read($text2->id->asString());
+		$this->assertEqual($count, 1);
+		$this->assertEqual($text1->isArchived, false);
+		$this->assertEqual($text2->isArchived, true);
+	}
+	
 }
 
 ?>

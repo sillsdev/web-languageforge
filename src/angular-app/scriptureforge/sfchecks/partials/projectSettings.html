@@ -1,8 +1,8 @@
 <div data-ng-show="finishedLoading">
 <h2 style="font-weight:normal">{{project.projectname}} Settings</h2>
+			
 <tabset>
-	<tab heading="Members">
-		<div data-ng-controller="ProjectSettingsUsersCtrl">
+	<tab heading="Members" data-ng-controller="ProjectSettingsUsersCtrl">
 		<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
 			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther" class="btn" data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Members</button>
 			<button data-ng-show="rights.create" class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add Members</button>
@@ -59,46 +59,46 @@
 			</tbody>
 		</table>		
 		</div>
-		</div>
 	</tab>
-	<tab heading="Question Templates">
-		<div data-ng-controller="ProjectSettingsQTemplateCtrl" style="overflow:hidden">
-			<form class="control-bar form-inline">
-				<button class="btn" data-ng-disabled="selected.length == 0" data-ng-click="removeTemplates()"><i class="icon-remove"></i>Remove Templates</button>
-				<button class="btn" data-ng-click="toggleTemplateEditor()"><i class="icon-plus"></i>Add New Template</button>
+	<tab heading="Question Templates" data-ng-controller="ProjectSettingsQTemplateCtrl" style="overflow:hidden">
+		<form class="control-bar form-inline">
+			<button class="btn" data-ng-disabled="selected.length == 0" data-ng-click="removeTemplates()"><i class="icon-remove"></i>Remove Templates</button>
+			<button class="btn" data-ng-click="toggleTemplateEditor()"><i class="icon-plus"></i>Add New Template</button>
+		</form>
+		<div class="new-item" data-collapse="!templateEditorVisible">
+			<form class="well">
+			<fieldset>
+			<label>Question Template</label>
+			<textarea required data-ng-model="editedTemplate.description" class="span4" rows="4" placeholder="The Question"></textarea>
+			<label></label>
+			<input type="text" maxlength="35" required data-ng-model="editedTemplate.title" class="span4" rows="4" placeholder="One Line Summary for Title" />
+			<label></label>
+			<button id="question_templates_save_button" type="submit" class="btn" data-ng-click="editTemplate()"><i class="icon-ok"></i>Save</button>
+			<a data-ng-click="hideTemplateEditor()">Cancel</a>
+			</fieldset>
 			</form>
-			<div class="new-item" data-collapse="!templateEditorVisible">
-				<form class="well">
-				<fieldset>
-				<label>Question Template</label>
-				<textarea required data-ng-model="editedTemplate.description" class="span4" rows="4" placeholder="The Question"></textarea>
-				<label></label>
-				<input type="text" maxlength="35" required data-ng-model="editedTemplate.title" class="span4" rows="4" placeholder="One Line Summary for Title" />
-				<label></label>
-				<button id="question_templates_save_button" type="submit" class="btn" data-ng-click="editTemplate()"><i class="icon-ok"></i>Save</button>
-				<a data-ng-click="hideTemplateEditor()">Cancel</a>
-				</fieldset>
-				</form>
-			</div>
-			<div listview search="queryTemplates()" items="templates" visible-items="visibleTemplates" select="">
-			<table style="width: 100%">
-				<tr>
-					<th></th>
-					<th class="span3">Question title</th>
-					<th>Question contents</th>
-				</tr>
-				<tr data-ng-repeat="template in visibleTemplates" data-ng-class="{active: isSelected(template)}" data-ng-click="selectRow($index, template)" >
-					<td width="16px" align="center"><input type="checkbox" data-ng-checked="isSelected(template)" data-ng-click="updateSelection($event, template)" /></td>
-					<td><a title="Click to edit this template" data-ng-click="showTemplateEditor(template)">{{template.title}}</a></td>
-					<td style="text-overflow: ellipsis">{{template.description}}</td>
-				</tr>
-			</table>
-			</div>
+		</div>
+		<div listview search="queryTemplates()" items="templates" visible-items="visibleTemplates" select="">
+		<table style="width: 100%">
+			<tr>
+				<th></th>
+				<th class="span3">Question title</th>
+				<th>Question contents</th>
+			</tr>
+			<tr data-ng-repeat="template in visibleTemplates" data-ng-class="{active: isSelected(template)}" data-ng-click="selectRow($index, template)" >
+				<td width="16px" align="center"><input type="checkbox" data-ng-checked="isSelected(template)" data-ng-click="updateSelection($event, template)" /></td>
+				<td><a title="Click to edit this template" data-ng-click="showTemplateEditor(template)">{{template.title}}</a></td>
+				<td style="text-overflow: ellipsis">{{template.description}}</td>
+			</tr>
+		</table>
 		</div>
 	</tab>
-	<tab heading="Archived Texts">
+	<tab heading="Archived Texts" data-ng-controller="ProjectSettingsArchiveTextsCtrl">
+		<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn" data-ng-click="publishTexts()"><i class="icon-globe icon-large" style="color:black"></i>Re-publish Texts</button>
+		</form>
 		<hr />
-		<div listview hide-if-empty="true" items="texts" visible-items="visibleTexts" select="">
+		<div listview hide-if-empty="true" items="list.archivedTexts" visible-items="visibleTexts" select="">
 			<div data-ng-repeat="text in visibleTexts" class="details-row">
 				<ul class="inline" data-ng-class="{active: isSelected(text)}">
 					<li data-ng-show="rights.archive" ><input type="checkbox" data-ng-checked="isSelected(text)" data-ng-click="updateSelection($event, text)" /></li>
@@ -109,13 +109,13 @@
 					</li>
 					<li>{{text.questionCount}} questions</li>
 					<li>{{text.responseCount}} responses</li>
+					<li>Archived on {{text.dateModified | date:'fullDate'}}</li>
 				</ul>
 				<hr />
 			</div>
 		</div>
 	</tab>
-	<tab heading="Project Properties">
-		<div data-ng-controller="ProjectSettingsPropertiesCtrl">
+	<tab heading="Project Properties" data-ng-controller="ProjectSettingsPropertiesCtrl">
 		<form class="well" data-ng-submit="updateProject()">
 		<fieldset>
 			<label>Project Name</label>
@@ -135,10 +135,8 @@
 		</fieldset>
 		<button id="project_properties_save_button" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 		</form>
-		</div>
 	</tab>
-	<tab heading="Project Setup">
-		<div data-ng-controller="ProjectSettingsSetupCtrl">
+	<tab heading="Project Setup" data-ng-controller="ProjectSettingsSetupCtrl">
 		<form class="well" data-ng-submit="updateProject()">
 		<div class="row">
 		<div class="span4">
@@ -172,9 +170,8 @@
 		</div>
 		<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 		</form>
-		</div>
 	</tab>
-	<tab select="readCommunicationSettings()" data-ng-show="$parent.canEditCommunicationSettings()" heading="Communication Settings">
+	<tab heading="Communication Settings" select="readCommunicationSettings()" data-ng-show="$parent.canEditCommunicationSettings()">
 		<div data-ng-controller="ProjectSettingsCommunicationCtrl">
 		<form class="well" data-ng-submit="updateCommunicationSettings()">
 		<fieldset>
@@ -190,7 +187,6 @@
 			<input type="text" placeholder="(From Name)" data-ng-model="settings.email.fromName"/>
 		</fieldset>
 		<button id="communication_settings_save_button" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
-		
 		</form>
 		</div>
 	</tab>
