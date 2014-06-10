@@ -80,7 +80,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 
 
 }])
-.controller('ProjectSettingsQTemplateCtrl', ['$scope', 'jsonRpc', 'silNoticeService', 'questionTemplateService', function($scope, jsonRpc, notice, qts) {
+.controller('ProjectSettingsQTemplateCtrl', ['$scope', 'silNoticeService', 'questionTemplateService', function($scope, notice, qts) {
 	$scope.selected = [];
 	$scope.vars = {
 		selectedIndex: -1,
