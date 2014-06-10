@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+.dragging {
+	z-index: 11;
+	position: absolute;
+	/* background-color: yellow; */ /* For testing */
+}
+
+.dragging-before {
+	/* background-color: green; */ /* For testing */
+}
+
+.dragging-after {
+	/* background-color: red; */ /* For testing */
+}
+
+.ng-repeat-reorder-parent {
+	z-index: 10;
+	position: relative;
+}
+
+.active-drag-below {
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+}

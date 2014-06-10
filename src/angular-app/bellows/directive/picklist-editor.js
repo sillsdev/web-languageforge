@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.picklistEditor', [])
+angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 .directive('picklistEditor', function() {
 	console.log('Setting up picklistEditor directive');
 	return {
