@@ -42,6 +42,20 @@ var SfProjectSettingsPage = function() {
 		},
 	};
 	
+	this.archivedTextsTab = {
+		textNames:		element.all(by.repeater('text in visibleTexts').column('title')),
+		textList:		element.all(by.repeater('text in visibleTexts')),
+		publishButton:	element(by.partialButtonText('Re-publish Texts')),
+
+		textLink: function(title) {
+			return element(by.linkText(title));
+		}
+	};
+	// getFirstCheckbox has to be a function because the .first() method will actually resolve the finder
+	this.archivedTextsTabGetFirstCheckbox = function() {
+		return this.archivedTextsTab.textList.first().findElement(by.css('input[type="checkbox"]'));
+	};
+	
 	this.propertiesTab = {
 		name:		element(by.model('project.projectname')),
 		theme:		element(by.selectedOption('project.themeName')),

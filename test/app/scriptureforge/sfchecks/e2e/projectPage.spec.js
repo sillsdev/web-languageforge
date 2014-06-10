@@ -3,6 +3,7 @@
 describe('the project dashboard AKA text list page', function() {
 	var projectListPage = require('../../../pages/projectsPage.js');
 	var projectPage = require('../../../pages/projectPage.js');
+	var projectSettingsPage = require('../../../pages/projectSettingsPage.js');
 	var questionListPage = require('../../../pages/textPage.js');
 	var loginPage = require('../../../pages/loginPage.js');
 	var util = require('../../../pages/util.js');
@@ -84,7 +85,19 @@ describe('the project dashboard AKA text list page', function() {
 		});
 
 		it('can re-publish the text that was just archived (Project Settings)', function() {
-			
+			projectPage.settingsButton.click();
+			projectSettingsPage.tabs.archiveTexts.click();
+			expect(projectSettingsPage.archivedTextsTab.textLink(sampleTitle).isDisplayed()).toBe(true);
+			var publishButton = projectSettingsPage.archivedTextsTab.publishButton.find();
+			expect(publishButton.isDisplayed()).toBe(true);
+			expect(publishButton.isEnabled()).toBe(false);
+			util.setCheckbox(projectSettingsPage.archivedTextsTabGetFirstCheckbox(), true);
+			expect(publishButton.isEnabled()).toBe(true);
+			publishButton.click();
+			expect(projectSettingsPage.archivedTextsTab.textLink(sampleTitle).isPresent()).toBe(false);
+			expect(publishButton.isEnabled()).toBe(false);
+			browser.navigate().back();
+			expect(projectPage.textLink(sampleTitle).isDisplayed()).toBe(true);
 		});
 		
 		// I am avoiding testing creating a new text using the file dialog for importing a USX file... - cjh
@@ -113,7 +126,6 @@ describe('the project dashboard AKA text list page', function() {
 			var archiveButton = projectPage.archiveTextButton.find();
 			archiveButton.click();
 			browser.switchTo().alert().accept();
-
 		});
 	});
 });
