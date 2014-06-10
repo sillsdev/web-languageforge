@@ -48,9 +48,7 @@ describe('the questions list page AKA the text page', function() {
 		});
 
 		it('cannot edit text settings', function() {
-			// The text settings button should not even exist on the page for a normal user
-			expect(textPage.textSettingsBtn.isPresent()).toBeFalsy();
-			//expect(textPage.textSettingsBtn.isDisplayed()).toBeFalsy();
+			expect(textPage.textSettingsBtn.isDisplayed()).toBeFalsy();
 		});
 	});
 
