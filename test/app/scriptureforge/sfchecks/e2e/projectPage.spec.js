@@ -83,6 +83,10 @@ describe('the project dashboard AKA text list page', function() {
 			expect(projectPage.textLink(sampleTitle).isPresent()).toBe(false);
 		});
 
+		it('can re-publish the text that was just archived (Project Settings)', function() {
+			
+		});
+		
 		// I am avoiding testing creating a new text using the file dialog for importing a USX file... - cjh
 		// according to http://stackoverflow.com/questions/8851051/selenium-webdriver-and-browsers-select-file-dialog
 		// you can have selenium interact with the file dialog by sending keystrokes but this is highly OS dependent

@@ -108,6 +108,8 @@ describe('the project settings page - project manager', function() {
 		
 	});
 	
+	// The Archived Texts tab is tested as part of a process in the Project page tests. IJH 2014-06
+	
 	describe('project properties tab', function() {
 		var newName = constants.thirdProjectName;
 		var newTheme = 'jamaicanpsalms';
