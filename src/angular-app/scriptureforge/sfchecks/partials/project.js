@@ -91,7 +91,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 		});
 	};
 	
-	// Archive Text
+	// Archive Texts
 	$scope.archiveTexts = function() {
 		//console.log("archiveTexts()");
 		var textIds = [];

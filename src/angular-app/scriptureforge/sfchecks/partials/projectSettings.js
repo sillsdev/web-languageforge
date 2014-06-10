@@ -8,7 +8,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	$scope.project.id = projectId;
 	$scope.finishedLoading = false;
 	$scope.list = {};
-	$scope.texts = [];
+	$scope.list.archivedTexts = [];
 
 	$scope.canEditCommunicationSettings = function() {
 		return ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
@@ -18,13 +18,13 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		sfchecksProjectService.projectSettings($scope.project.id, function(result) {
 			if (result.ok) {
 				$scope.project = result.data.project;
+				$scope.themeNames =  result.data.themeNames;
 				$scope.list.users = result.data.entries;
 				$scope.list.userCount = result.data.count;
-				$scope.themeNames =  result.data.themeNames;
-				$scope.texts = result.data.texts;
-				$scope.textsCount = $scope.texts.length;
-				for (var i = 0; i < $scope.textsCount; i++) {
-					$scope.texts[i].url = sfchecksLinkService.text($scope.project.id, $scope.texts[i].id);
+				$scope.list.archivedTexts = result.data.archivedTexts;
+				for (var i = 0; i < $scope.list.archivedTexts.length; i++) {
+					$scope.list.archivedTexts[i].url = sfchecksLinkService.text($scope.project.id, $scope.list.archivedTexts[i].id);
+					$scope.list.archivedTexts[i].dateModified = new Date($scope.list.archivedTexts[i].dateModified);
 				}
 				// Rights
 				var rights = result.data.rights;
@@ -46,21 +46,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 				$scope.finishedLoading = true;
 			}
 		});
-	};
-	
-	// Listview Selection
-	$scope.selected = [];
-	$scope.updateSelection = function(event, item) {
-		var selectedIndex = $scope.selected.indexOf(item);
-		var checkbox = event.target;
-		if (checkbox.checked && selectedIndex == -1) {
-			$scope.selected.push(item);
-		} else if (!checkbox.checked && selectedIndex != -1) {
-			$scope.selected.splice(selectedIndex, 1);
-		}
-	};
-	$scope.isSelected = function(item) {
-		return item != null && $scope.selected.indexOf(item) >= 0;
 	};
 	
 	$scope.settings = {
@@ -194,6 +179,36 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		});
 	};
 
+}])
+.controller('ProjectSettingsArchiveTextsCtrl', ['$scope', 'textService', function($scope, textService) {
+	// Listview Selection
+	$scope.selected = [];
+	$scope.updateSelection = function(event, item) {
+		var selectedIndex = $scope.selected.indexOf(item);
+		var checkbox = event.target;
+		if (checkbox.checked && selectedIndex == -1) {
+			$scope.selected.push(item);
+		} else if (!checkbox.checked && selectedIndex != -1) {
+			$scope.selected.splice(selectedIndex, 1);
+		}
+	};
+	$scope.isSelected = function(item) {
+		return item != null && $scope.selected.indexOf(item) >= 0;
+	};
+	
+	// Publish Texts
+	$scope.publishTexts = function() {
+		var textIds = [];
+		for(var i = 0, l = $scope.selected.length; i < l; i++) {
+			textIds.push($scope.selected[i].id);
+		}
+		textService.publish($scope.project.id, textIds, function(result) {
+			if (result.ok) {
+				$scope.queryProjectSettings();
+			}
+		});
+	};
+	
 }])
 .controller('ProjectSettingsCommunicationCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
                                  function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService) {
