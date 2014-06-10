@@ -331,6 +331,10 @@ class Sf
 		return TextCommands::archiveTexts($projectId, $textIds);
 	}
 	
+	public function text_publish($projectId, $textIds) {
+		return TextCommands::publishTexts($projectId, $textIds);
+	}
+	
 	public function text_list_dto($projectId) {
 		return \models\scriptureforge\dto\TextListDto::encode($projectId, $this->_userId);
 	}
