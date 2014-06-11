@@ -1,5 +1,4 @@
-<div>
-	<legend style="width:auto;">{{picklistName}}</legend>
+	<div>
 		<label>Default Value</label>
 		<select data-ng-model="defaultItem" data-ng-options="item.value for item in items">
 			<option value="">(no default)</option>
@@ -15,4 +14,4 @@
 		</div>
 		<button data-ng-click="returnValuesToClient()" data-ng-disabled="!dataChanged">Save list</button>
 		<button data-ng-click="getValuesFromClient()" data-ng-disabled="!dataChanged">Reset list</button>
-</div>
+	</div>

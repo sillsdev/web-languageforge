@@ -21,7 +21,6 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 		scope: {
 			values: '=',
 			defaultValue: '=?',
-			picklistName: '@name',
 		},
 		controller: ['$scope', function($scope) {
 			$scope.getValuesFromClient = function() {
