@@ -146,29 +146,10 @@
   				<li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists" data-ng-class="{selected:currentListId == listId}"><div class="checkbox"><input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list.name}}</div></li>
 			</ul>
 		</fieldset>
-		<fieldset class="well">
-			<legend>New Picklist Editor</legend>
-			<picklist-editor name="Languages" values="picklistItems" default-value="defaultPicklistItem"><span style="color: green">New picklist editor goes here</span></picklist-editor>
-		</fieldset>
 		</div><div class="span4">
 		<fieldset class="well">
 			<legend style="width:auto;">{{project.userProperties.userProfilePickLists[currentListId].name}}</legend>
-			<label>Default Value</label>
-			<select data-ng-model="project.userProperties.userProfilePickLists[currentListId].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists[currentListId].items"></select>
-			<table>
-				<thead>
-				<tr>
-					<td><input data-ng-model="newValue" type="text" placeholder="new value"/></td>
-					<td><a data-ng-click="pickAddItem()"><i class="icon-plus"></i></a></td>
-				</tr>
-				</thead>
-				<tbody>
-				<tr data-ng-repeat="item in project.userProperties.userProfilePickLists[currentListId].items track by $index">
-					<td>{{item.value}}</td>
-					<td><a data-ng-click="pickRemoveItem($index)"><i class="icon-remove"></i></a></td>
-				</tr>
-				</tbody>
-			</table>
+			<picklist-editor items="project.userProperties.userProfilePickLists[currentListId].items" default-key="project.userProperties.userProfilePickLists[currentListId].defaultKey"></picklist-editor>
 		</fieldset>
 		</div>
 		</div>
