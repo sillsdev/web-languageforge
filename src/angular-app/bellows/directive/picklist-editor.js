@@ -1,6 +1,18 @@
 'use strict';
 
 angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
+.directive('onEnter', function() {
+	return function(scope, elem, attrs) {
+		elem.bind('keydown keypress', function(evt) {
+			if (evt.which == 13) {
+				scope.$apply(function() {
+					scope.$eval(attrs.onEnter);
+				});
+				evt.preventDefault();
+			}
+		});
+	};
+})
 .directive('picklistEditor', function() {
 	console.log('Setting up picklistEditor directive');
 	return {
@@ -51,8 +63,11 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 				$scope.deregisterItemWatcher = $scope.$watch('items', $scope.itemWatcher, true);
 			};
 
-			$scope.pickAddItem = function(newValue) {
-				$scope.items.push({value: newValue});
+			$scope.pickAddItem = function() {
+				if ($scope.newValue) {
+					$scope.items.push({value: $scope.newValue});
+					$scope.newValue = undefined;
+				}
 			}
 			$scope.pickRemoveItem = function(index) {
 				$scope.items.splice(index, 1);
