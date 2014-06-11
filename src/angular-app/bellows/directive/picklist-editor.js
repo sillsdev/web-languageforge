@@ -51,6 +51,14 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 				$scope.deregisterItemWatcher = $scope.$watch('items', $scope.itemWatcher, true);
 			};
 
+			$scope.pickAddItem = function(newValue) {
+				$scope.items.push({value: newValue});
+			}
+
+			$scope.pickRemoveItem = function(index) {
+				$scope.items.splice(index, 1);
+			}
+
 			$scope.getValuesFromClient();
 		}],
 	};

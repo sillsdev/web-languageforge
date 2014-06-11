@@ -4,7 +4,7 @@
 <!-- 	<select data-ng-model="project.userProperties.userProfilePickLists[currentListId].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists[currentListId].items"></select> -->
 		<div>
 		<input data-ng-model="newValue" type="text" placeholder="new value"/>
-		<a data-ng-click="pickAddItem()"><i class="icon-plus"></i></a>
+		<a data-ng-click="pickAddItem(newValue)"><i class="icon-plus"></i></a>
 		</div>
 		<div data-ng-repeat-reorder="item in items" data-ng-repeat-reorder-handle="i.icon-align-justify" class="picklist-group">
 			<input type="text" ng-model="item.value" class="picklist-row"><a data-ng-click="pickRemoveItem($index)"> <i class="icon-remove"></i></a>
