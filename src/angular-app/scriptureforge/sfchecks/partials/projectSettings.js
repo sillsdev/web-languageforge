@@ -276,6 +276,17 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		'PHP',
 		'C#',
 	];
+	$scope.$watch('picklistItems', function(newval, oldval) {
+		if (oldval !== newval) {
+			console.log("Picklist changed items. Old list:", oldval);
+			console.log("Picklist changed items. New list:", newval);
+		}
+	}, true);
+	$scope.$watch('defaultPicklistItem', function(newval, oldval) {
+		if (oldval !== newval) {
+			console.log("Picklist changed default item from", oldval, "to", newval);
+		}
+	});
 
 	$scope.currentListId = '';
 	$scope.selectList = function(listId) {
