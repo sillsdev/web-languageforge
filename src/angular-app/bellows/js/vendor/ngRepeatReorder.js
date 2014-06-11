@@ -331,7 +331,7 @@
             };
             isArrayLike = function(obj) {
               var _ref;
-              if (obj === null || (obj && obj.document && obj.location && obj.alert && obj.setInterval)) {
+              if (obj === null || obj === undefined || (obj && obj.document && obj.location && obj.alert && obj.setInterval)) {
                 return false;
               }
               length = obj.length;
