@@ -20,14 +20,20 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 		templateUrl: '/angular-app/bellows/directive/picklist-editor.html',
 		scope: {
 			values: '=',
+			defaultValue: '=?',
 			picklistName: '@name',
 		},
 		controller: ['$scope', function($scope) {
 			$scope.getValuesFromClient = function() {
 				$scope.items = [];
 				for (var i = 0, l = $scope.values.length; i < l; i++) {
-					$scope.items.push({value: $scope.values[i]});
+					var item = {value: $scope.values[i]};
+					if ($scope.defaultValue && $scope.defaultValue === item.value) {
+						$scope.defaultItem = item;
+					}
+					$scope.items.push(item);
 				}
+				$scope.defaultValue;
 				$scope.dataChanged = false;
 				$scope.startWatchingItems();
 			};
@@ -38,29 +44,39 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 					newValues.push($scope.items[i].value);
 				}
 				$scope.values = newValues.slice();
+				if ($scope.defaultItem) {
+					$scope.defaultValue = $scope.defaultItem.value;
+				} else {
+					$scope.defaultValue = null;
+				}
 				$scope.dataChanged = false;
 				$scope.startWatchingItems();
 			};
 
 			// Activate Save and Reset buttons only when values have changed
 			$scope.itemWatcher = function(newval, oldval) {
-				if (newval && newval != oldval) {
+				if (angular.isDefined(newval) && newval != oldval) {
 					$scope.dataChanged = true;
 					// Since a values watch is expensive, stop watching after first time data changes
 					$scope.stopWatchingItems();
 				}
 			};
+			$scope.defaultItemWatcher = $scope.itemWatcher; // Same exact function for watching defaultItems
 			$scope.stopWatchingItems = function() {
 				if ($scope.deregisterItemWatcher) {
 					$scope.deregisterItemWatcher();
+					$scope.deregisterDefaultItemWatcher();
 					$scope.deregisterItemWatcher = undefined;
+					$scope.deregisterDefaultItemWatcher = undefined;
 				}
 			};
 			$scope.startWatchingItems = function() {
 				if ($scope.deregisterItemWatcher) {
 					$scope.deregisterItemWatcher();
+					$scope.deregisterDefaultItemWatcher();
 				}
 				$scope.deregisterItemWatcher = $scope.$watch('items', $scope.itemWatcher, true);
+				$scope.deregisterDefaultItemWatcher = $scope.$watch('defaultItem', $scope.defaultItemWatcher);
 			};
 
 			$scope.pickAddItem = function() {
