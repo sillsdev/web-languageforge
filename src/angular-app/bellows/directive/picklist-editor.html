@@ -1,6 +1,6 @@
 	<div>
 		<label>Default Value</label>
-		<select data-ng-model="defaultItem" data-ng-options="item.value for item in items">
+		<select data-ng-model="defaultItem" data-ng-options="item.value for item in items" data-ng-change="noteDataChange()">
 			<option value="">(no default)</option>
 		</select>
 		<div>
@@ -9,7 +9,7 @@
 		</div>
 		<div data-ng-repeat-reorder="item in items" data-ng-repeat-reorder-handle="i.icon-align-justify" class="picklist-group">
 			<a data-ng-click="pickRemoveItem($index)"><i class="icon-remove"></i></a>
-			<input type="text" ng-model="item.value" class="picklist-row">
+			<input type="text" data-ng-model="item.value" data-ng-change="noteDataChange()" class="picklist-row">
 			<i class="icon-align-justify"></i><!-- In Font Awesome 4 we would use fa-bars instead --></input>
 		</div>
 		<button data-ng-click="returnValuesToClient()" data-ng-disabled="!dataChanged">Save list</button>
