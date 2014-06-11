@@ -54,7 +54,6 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 			$scope.pickAddItem = function(newValue) {
 				$scope.items.push({value: newValue});
 			}
-
 			$scope.pickRemoveItem = function(index) {
 				$scope.items.splice(index, 1);
 			}

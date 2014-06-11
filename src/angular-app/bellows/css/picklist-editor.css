@@ -3,15 +3,28 @@
 [data-ng-repeat-reorder].dragging {
 	z-index: 11;
 	position: absolute;
-	background-color: #E0E0A0; /* Yellowish gray */
+	-webkit-transform: rotate(4deg);
+	transform: rotate(4deg);
 }
 
+/*
 [data-ng-repeat-reorder].dragging-before {
-	background-color: #A0E0A0; /* Greenish gray */
+	-webkit-transform: translateX(10px);
+	transform: translateX(10px);
+}
+*/
+[data-ng-repeat-reorder].dragging-before input.picklist-row {
+	background-color: #e5e5e5;
 }
 
+/*
 [data-ng-repeat-reorder].dragging-after {
-	background-color: #E0A0A0; /* Reddish gray */
+	-webkit-transform: translateX(10px);
+	transform: translateX(10px);
+}
+*/
+[data-ng-repeat-reorder].dragging-after input.picklist-row {
+	background-color: #e5e5e5;
 }
 
 .ng-repeat-reorder-parent {
