@@ -14,39 +14,63 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 	};
 })
 .directive('picklistEditor', function() {
-	console.log('Setting up picklistEditor directive');
 	return {
 		restrict: 'AE',
 		templateUrl: '/angular-app/bellows/directive/picklist-editor.html',
 		scope: {
-			values: '=',
-			defaultValue: '=?',
+			clientItems: '=items',
+			defaultKey: '=?',
 		},
 		controller: ['$scope', function($scope) {
+			$scope.noteDataChange = function() {
+				$scope.dataChanged = true;
+			}
+			$scope.isKeyValueObject = function(item) {
+				return (item.hasOwnProperty("value"))
+			};
 			$scope.getValuesFromClient = function() {
-				$scope.items = [];
-				for (var i = 0, l = $scope.values.length; i < l; i++) {
-					var item = {value: $scope.values[i]};
-					if ($scope.defaultValue && $scope.defaultValue === item.value) {
-						$scope.defaultItem = item;
+				$scope.stopWatchingItems();
+				if (angular.isDefined($scope.clientItems)) { // Might be called during setup
+					$scope.items = [];
+					$scope.clientWantsObjects = true;
+					for (var i = 0, l = $scope.clientItems.length; i < l; i++) {
+						var clientItem = $scope.clientItems[i];
+						var item;
+						if (clientItem.hasOwnProperty("value")) {
+							item = angular.copy(clientItem);
+						} else {
+							item = {value: clientItem};
+							$scope.clientWantsObjects = false;
+						}
+						if (!item.hasOwnProperty("key")) {
+							// If client didn't supply keys, construct some
+							item.key = item.value.replace(/ /gi, '_');
+						}
+						if ($scope.defaultKey && $scope.defaultKey === item.key) {
+							$scope.defaultItem = item;
+						}
+						$scope.items.push(item);
 					}
-					$scope.items.push(item);
+					$scope.dataChanged = false;
 				}
-				$scope.defaultValue;
-				$scope.dataChanged = false;
 				$scope.startWatchingItems();
 			};
 			$scope.returnValuesToClient = function() {
-				// Build a new array, then copy it all at once with Array.prototype.slice()
-				var newValues = new Array();
-				for (var i = 0, l = $scope.items.length; i < l; i++) {
-					newValues.push($scope.items[i].value);
-				}
-				$scope.values = newValues.slice();
-				if ($scope.defaultItem) {
-					$scope.defaultValue = $scope.defaultItem.value;
+				$scope.stopWatchingItems();
+				if ($scope.clientWantsObjects) {
+					$scope.clientItems = $scope.items.slice();
 				} else {
-					$scope.defaultValue = null;
+					// Build an array of values, then copy it all at once with Array.prototype.slice()
+					var newValues = new Array();
+					for (var i = 0, l = $scope.items.length; i < l; i++) {
+						newValues.push($scope.items[i].value);
+					}
+					$scope.clientItems = newValues.slice();
+				}
+				if ($scope.defaultItem) {
+					$scope.defaultKey = $scope.defaultItem.key;
+				} else {
+					$scope.defaultKey = null;
 				}
 				$scope.dataChanged = false;
 				$scope.startWatchingItems();
@@ -55,27 +79,26 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 			// Activate Save and Reset buttons only when values have changed
 			$scope.itemWatcher = function(newval, oldval) {
 				if (angular.isDefined(newval) && newval != oldval) {
-					$scope.dataChanged = true;
-					// Since a values watch is expensive, stop watching after first time data changes
-					$scope.stopWatchingItems();
+					$scope.noteDataChange();
 				}
 			};
-			$scope.defaultItemWatcher = $scope.itemWatcher; // Same exact function for watching defaultItems
-			$scope.stopWatchingItems = function() {
-				if ($scope.deregisterItemWatcher) {
-					$scope.deregisterItemWatcher();
-					$scope.deregisterDefaultItemWatcher();
-					$scope.deregisterItemWatcher = undefined;
-					$scope.deregisterDefaultItemWatcher = undefined;
+			$scope.clientItemWatcher = function(newval, oldval) {
+				if (angular.isDefined(newval) && newval != oldval) {
+					$scope.getValuesFromClient(); // Might end up triggering after returnValuesToClient; figure out how to prevent that.
 				}
 			};
 			$scope.startWatchingItems = function() {
-				if ($scope.deregisterItemWatcher) {
-					$scope.deregisterItemWatcher();
-					$scope.deregisterDefaultItemWatcher();
+				$scope.stopWatchingItems();
+				$scope.disableItemWatcher = $scope.$watchCollection('items', $scope.itemWatcher);
+				$scope.disableClientItemWatcher = $scope.$watch('clientItems', $scope.clientItemWatcher, true);
+			};
+			$scope.stopWatchingItems = function() {
+				if ($scope.disableItemWatcher) {
+					$scope.disableItemWatcher();
+					$scope.disableClientItemWatcher();
+					$scope.disableItemWatcher = undefined;
+					$scope.disableClientItemWatcher = undefined;
 				}
-				$scope.deregisterItemWatcher = $scope.$watch('items', $scope.itemWatcher, true);
-				$scope.deregisterDefaultItemWatcher = $scope.$watch('defaultItem', $scope.defaultItemWatcher);
 			};
 
 			$scope.pickAddItem = function() {
@@ -83,10 +106,10 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 					$scope.items.push({value: $scope.newValue});
 					$scope.newValue = undefined;
 				}
-			}
+			};
 			$scope.pickRemoveItem = function(index) {
 				$scope.items.splice(index, 1);
-			}
+			};
 
 			$scope.getValuesFromClient();
 		}],
