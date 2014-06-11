@@ -3,13 +3,14 @@
 <!-- 	<label>Default Value</label> -->
 <!-- 	<select data-ng-model="project.userProperties.userProfilePickLists[currentListId].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists[currentListId].items"></select> -->
 		<div>
-		<input data-ng-model="newValue" type="text" placeholder="new value"/>
-		<a data-ng-click="pickAddItem(newValue)"><i class="icon-plus"></i></a>
+		<input data-ng-model="newValue" on-enter="pickAddItem()" type="text" placeholder="new value"/>
+		<a data-ng-click="pickAddItem()"><i class="icon-plus"></i></a>
 		</div>
 		<div data-ng-repeat-reorder="item in items" data-ng-repeat-reorder-handle="i.icon-align-justify" class="picklist-group">
-			<input type="text" ng-model="item.value" class="picklist-row"><a data-ng-click="pickRemoveItem($index)"> <i class="icon-remove"></i></a>
+			<a data-ng-click="pickRemoveItem($index)"><i class="icon-remove"></i></a>
+			<input type="text" ng-model="item.value" class="picklist-row">
 			<i class="icon-align-justify"></i><!-- In Font Awesome 4 we would use fa-bars instead --></input>
 		</div>
-		<button ng-click="returnValuesToClient()" ng-disabled="!dataChanged">Save</button>
-		<button ng-click="getValuesFromClient()" ng-disabled="!dataChanged">Reset</button>
+		<button data-ng-click="returnValuesToClient()" data-ng-disabled="!dataChanged">Save</button>
+		<button data-ng-click="getValuesFromClient()" data-ng-disabled="!dataChanged">Reset</button>
 </div>
