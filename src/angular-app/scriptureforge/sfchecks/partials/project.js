@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload', 'ngRoute'])
-.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'sfchecksLinkService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
-                            function($scope, textService, $routeParams, ss, breadcrumbService, sfchecksLinkService, notice, sfchecksProjectService, messageService) {
+.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'sfchecksLinkService', 'silNoticeService', 'sfchecksProjectService', 'messageService','modalService',
+                            function($scope, textService, $routeParams, ss, breadcrumbService, sfchecksLinkService, notice, sfchecksProjectService, messageService, modalService) {
 	var projectId = $routeParams.projectId;
 	$scope.projectId = projectId;
 	$scope.finishedLoading = false;
@@ -104,16 +104,25 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 		} else {
 			message = "Are you sure you want to archive the " + textIds.length + " selected texts?";
 		}
+		// The commented modalService below can be used instead of the window.confirm alert, but must change E2E tests using alerts. IJH 2014-06
+//		var modalOptions = {
+//			closeButtonText: 'Cancel',
+//			actionButtonText: 'Archive',
+//			headerText: 'Archive Texts?',
+//			bodyText: message
+//		};
+//		modalService.showModal({}, modalOptions).then(function (result) {
+//			textService.archive(projectId, textIds, function(result) {
+//				if (result.ok) {
+//					$scope.selected = []; // Reset the selection
+//				}
+//				$scope.getPageDto();
+//			});
+//		});
 		if (window.confirm(message)) {
 			textService.archive(projectId, textIds, function(result) {
 				if (result.ok) {
-					if (textIds.length == 1) {
-//						notice.push(notice.SUCCESS, "The text was archived successfully");
-					} else {
-//						notice.push(notice.SUCCESS, "The texts were archived successfully");
-					}
 					$scope.selected = []; // Reset the selection
-					// TODO
 				}
 				$scope.getPageDto();
 			});
