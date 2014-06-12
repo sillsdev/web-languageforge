@@ -275,6 +275,9 @@ div.notices .alert {
 	margin-top: 0px;
 	margin-bottom: 0px;
 }
+div.notices .animate-repeat {
+	line-height: inherit;
+}
 div.notices .alert-success, div.notices .alert-error, div.notices .alert-warn, div.notices .alert-info {
 	background-position: 6px 4px;
 }
