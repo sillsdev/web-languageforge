@@ -68,6 +68,9 @@ angular.module('sfchecks.services', ['jsonRpc'])
 		this.archive = function(projectId, questionIds, callback) {
 			jsonRpc.call('question_archive', [projectId, questionIds], callback);
 		};
+		this.publish = function(projectId, questionIds, callback) {
+			jsonRpc.call('question_publish', [projectId, questionIds], callback);
+		};
 		this.list = function(projectId, textId, callback) {
 			jsonRpc.call('question_list_dto', [projectId, textId], callback);
 		};

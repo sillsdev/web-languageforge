@@ -87,8 +87,19 @@ class TestQuestionListDto extends UnitTestCase {
 		
 		// make sure our text content is coming down into the dto
 		$this->assertTrue(strlen($dto['text']['content']) > 0);
-	}
+		
+		// archive 1 question
+		$question1->isArchived = true;
+		$question1->write();
+		
+		$dto = QuestionListDto::encode($projectId, $textId, $user1Id);
 
+		// Now check that it all still looks right
+		$this->assertEqual($dto['count'], 1);
+		$this->assertEqual($dto['entries'][0]['id'], $question2Id);
+		$this->assertEqual($dto['entries'][0]['title'], "Where is the storyteller?");
+	}
+	
 }
 
 ?>

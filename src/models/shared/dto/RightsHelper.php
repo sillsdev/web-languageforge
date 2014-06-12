@@ -164,6 +164,7 @@ class RightsHelper
 				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::QUESTIONS + Operation::EDIT);
 
 			case 'question_archive':
+			case 'question_publish':
 				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::QUESTIONS + Operation::ARCHIVE);
 
 

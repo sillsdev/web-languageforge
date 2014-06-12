@@ -363,6 +363,10 @@ class Sf
 		return QuestionCommands::archiveQuestions($projectId, $questionIds);
 	}
 	
+	public function question_publish($projectId, $questionIds) {
+		return QuestionCommands::publishQuestions($projectId, $questionIds);
+	}
+	
 	public function question_update_answer($projectId, $questionId, $answer) {
 		return QuestionCommands::updateAnswer($projectId, $questionId, $answer, $this->_userId);
 	}
