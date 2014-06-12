@@ -6,7 +6,7 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 		elem.bind('keydown keypress', function(evt) {
 			if (evt.which == 13) {
 				scope.$apply(function() {
-					scope.$eval(attrs.onEnter);
+					scope.$eval(attrs.onEnter, {thisElement: elem, event: evt});
 				});
 				evt.preventDefault();
 			}
@@ -30,6 +30,9 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 			};
 			$scope.pickRemoveItem = function(index) {
 				$scope.items.splice(index, 1);
+			};
+			$scope.blur = function(elem) {
+				elem.blur();
 			};
 		}],
 	};

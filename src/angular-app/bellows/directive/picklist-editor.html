@@ -9,7 +9,7 @@
 		</div>
 		<div data-ng-repeat-reorder="item in items" data-ng-repeat-reorder-handle="i.icon-align-justify" class="picklist-group">
 			<a data-ng-click="pickRemoveItem($index)"><i class="icon-remove"></i></a>
-			<input type="text" data-ng-model="item.value" class="picklist-row">
+			<input type="text" data-ng-model="item.value" data-on-enter="blur(thisElement)" class="picklist-row">
 			<i class="icon-align-justify"></i><!-- In Font Awesome 4 we would use fa-bars instead --></input>
 		</div>
 	</div>
