@@ -136,7 +136,6 @@ describe('the project settings page - project manager', function() {
 			expect(page.propertiesTab.name.getAttribute('value')).toBe(newName);
 			expect(page.propertiesTab.theme.getText()).toEqual(newTheme);
 			expect(page.propertiesTab.featured.getAttribute('checked')).toBeTruthy();
-			expect(header.myProjects.links.first().findElement(by.css('a')).getAttribute('href')).toContain(newTheme);
 			util.clickDropdownByValue(page.propertiesTab.theme, constants.testProjectTheme);
 			page.propertiesTab.button.click();
 	    	projectListPage.get();
