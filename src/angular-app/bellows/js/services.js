@@ -1,7 +1,6 @@
 'use strict';
 
-// Services
-// ScriptureForge common services
+// Common Services
 angular.module('bellows.services', ['jsonRpc'])
 .service('userService', ['jsonRpc', function(jsonRpc) {
 	jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
@@ -215,4 +214,12 @@ angular.module('bellows.services', ['jsonRpc'])
 	};
 	
 }])
+.service('utilService', function() {
+	this.uuid = function() {
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+		    return v.toString(16);
+		});
+	};
+})
 ;
