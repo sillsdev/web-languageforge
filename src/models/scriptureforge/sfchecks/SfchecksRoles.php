@@ -37,7 +37,7 @@ class SfchecksRoles extends ProjectRoles {
 		$rights[] = Domain::TEXTS + Operation::ARCHIVE;
 		$rights[] = Domain::QUESTIONS + Operation::CREATE;
 		$rights[] = Domain::QUESTIONS + Operation::EDIT;
-		$rights[] = Domain::QUESTIONS + Operation::DELETE;
+		$rights[] = Domain::QUESTIONS + Operation::ARCHIVE;
 		$rights[] = Domain::ANSWERS + Operation::EDIT;
 		$rights[] = Domain::ANSWERS + Operation::DELETE;
 		$rights[] = Domain::COMMENTS + Operation::EDIT;
