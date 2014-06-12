@@ -25,7 +25,6 @@ describe('Project Settings', function() {
 			// Set up the controller with that fresh scope
 			controller = $controller('ProjectSettingsQTemplateCtrl', {
 				$scope: scope,
-				silNoticeService: { push: function(type, message) {}},
 				questionTemplateService: qtServiceMock
 			});
 		}));
@@ -39,7 +38,7 @@ describe('Project Settings', function() {
 		it('can add templates', function() {
 			scope.editedTemplate.title = 'What color is her hair?';
 			scope.editedTemplate.description = 'In the story, what color is her hair?';
-			spyOn(qtServiceMock, 'update');
+			spyOn(qtServiceMock, 'update').and.callThrough();
 			scope.editTemplate();
 			expect(qtServiceMock.update).toHaveBeenCalled();
 		});
