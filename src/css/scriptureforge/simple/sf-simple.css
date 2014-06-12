@@ -937,13 +937,13 @@ label {
 
 #maincontainer {
 	min-height: 100%;
-	margin-bottom: -239px;
+	margin-bottom: -41px;
 	position: relative;
 	
 }
 
 #footercontainer {
-	height: 239px;
+	height: 41px;
 	position: relative;
 	
 }
