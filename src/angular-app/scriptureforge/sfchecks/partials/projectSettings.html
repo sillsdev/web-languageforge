@@ -143,9 +143,17 @@
 		<fieldset class="well picklists">
 			<legend>Show in the User's Profile</legend>
 			<ul class="unstyled">
-  				<li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists" data-ng-class="{selected:currentListId == listId}"><div class="checkbox"><input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list.name}}</div></li>
+  				<li data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"><div class="checkbox"><input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list.name}}</div></li>
 			</ul>
 		</fieldset>
+		<fieldset class="well picklists">
+			<legend>Edit list values</legend>
+			<ul class="unstyled">
+  				<li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists" data-ng-class="{selected:currentListId == listId}">{{list.name}}</li>
+			</ul>
+		</fieldset>
+		<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+		<span ng-show="unsavedChanges" class="unsaved-warning" style="color: red">You have unsaved changes.</span> <!-- Remove the style="" attr once class has real CSS definition -->
 		</div><div class="span4">
 		<fieldset class="well">
 			<legend style="width:auto;">{{project.userProperties.userProfilePickLists[currentListId].name}}</legend>
@@ -153,7 +161,6 @@
 		</fieldset>
 		</div>
 		</div>
-		<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 		</form>
 	</tab>
 	<tab heading="Communication Settings" select="readCommunicationSettings()" data-ng-show="$parent.canEditCommunicationSettings()">
