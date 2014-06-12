@@ -35,11 +35,11 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	
 	// Rights
 	$scope.rights = {};
-	$scope.rights.deleteOther = false; 
+	$scope.rights.archive = false; 
 	$scope.rights.create = false; 
 	$scope.rights.createTemplate = false; 
 	$scope.rights.editOther = false; //ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-	$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
+	$scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
 	
 	// Question templates
 	$scope.emptyTemplate = {
@@ -124,11 +124,11 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 				);
 				
 				var rights = result.data.rights;
-				$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.DELETE); 
+				$scope.rights.archive = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE); 
 				$scope.rights.create = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE); 
 				$scope.rights.createTemplate = ss.hasRight(rights, ss.domain.TEMPLATES, ss.operation.CREATE); 
 				$scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT);
-				$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
+				$scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
 				if ($scope.rights.create) {
 					$scope.queryTemplates();
 				}
@@ -137,24 +137,25 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		});
 	};
 	
-	// Remove questions
-	$scope.removeQuestions = function() {
-		//console.log("removeQuestions()");
+	// Archive questions
+	$scope.archiveQuestions = function() {
+		//console.log("archiveQuestions()");
 		var questionIds = [];
+		var message = '';
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			questionIds.push($scope.selected[i].id);
 		}
-		if (window.confirm("Are you sure you want to delete these " + questionIds.length + " question(s)?")) {
-			questionService.remove(projectId, questionIds, function(result) {
+		if (questionIds.length == 1) {
+			message = "Are you sure you want to archive the selected question?";
+		} else {
+			message = "Are you sure you want to archive the " + questionIds.length + " selected questions?";
+		}
+		if (window.confirm(message)) {
+			questionService.archive(projectId, questionIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
-					$scope.queryQuestions();
-					if (questionIds.length == 1) {
-						notice.push(notice.SUCCESS, "The question was removed successfully");
-					} else {
-						notice.push(notice.SUCCESS, "The questions were removed successfully");
-					}
 				}
+				$scope.queryQuestions();
 			});
 		}
 	};
