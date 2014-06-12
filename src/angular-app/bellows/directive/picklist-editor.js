@@ -35,13 +35,7 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 					$scope.clientWantsObjects = true;
 					for (var i = 0, l = $scope.clientItems.length; i < l; i++) {
 						var clientItem = $scope.clientItems[i];
-						var item;
-						if (clientItem.hasOwnProperty("value")) {
-							item = angular.copy(clientItem);
-						} else {
-							item = {value: clientItem};
-							$scope.clientWantsObjects = false;
-						}
+						var item = angular.copy(clientItem);
 						if (!item.hasOwnProperty("key")) {
 							// If client didn't supply keys, construct some
 							item.key = item.value.replace(/ /gi, '_');
@@ -57,16 +51,7 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 			};
 			$scope.returnValuesToClient = function() {
 				$scope.stopWatchingItems();
-				if ($scope.clientWantsObjects) {
-					$scope.clientItems = $scope.items.slice();
-				} else {
-					// Build an array of values, then copy it all at once with Array.prototype.slice()
-					var newValues = new Array();
-					for (var i = 0, l = $scope.items.length; i < l; i++) {
-						newValues.push($scope.items[i].value);
-					}
-					$scope.clientItems = newValues.slice();
-				}
+				$scope.clientItems = $scope.items.slice();
 				if ($scope.defaultItem) {
 					$scope.defaultKey = $scope.defaultItem.key;
 				} else {
