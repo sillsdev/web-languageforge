@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'angularFileUpload', 'ngSanitize', 'ngRoute'])
-.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService',
-                              function($scope, questionsService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice) {
+.controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService',
+                              function($scope, questionService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice) {
 	var projectId = $routeParams.projectId;
 	var textId = $routeParams.textId;
 	$scope.projectId = projectId;
@@ -97,7 +97,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	$scope.questions = [];
 	$scope.queryQuestions = function() {
 		//console.log("queryQuestions()");
-		questionsService.list(projectId, textId, function(result) {
+		questionService.list(projectId, textId, function(result) {
 			if (result.ok) {
 				$scope.selected = [];
 				$scope.questions = result.data.entries;
@@ -145,7 +145,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 			questionIds.push($scope.selected[i].id);
 		}
 		if (window.confirm("Are you sure you want to delete these " + questionIds.length + " question(s)?")) {
-			questionsService.remove(projectId, questionIds, function(result) {
+			questionService.remove(projectId, questionIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
 					$scope.queryQuestions();
@@ -167,7 +167,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		model.textRef = textId;
 		model.title = $scope.questionTitle;
 		model.description = $scope.questionDescription;
-		questionsService.update(projectId, model, function(result) {
+		questionService.update(projectId, model, function(result) {
 			if (result.ok) {
 				$scope.queryQuestions();
 				notice.push(notice.SUCCESS, "'" + $scope.calculateTitle(model.title, model.description) + "' was added successfully");

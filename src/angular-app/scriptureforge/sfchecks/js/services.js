@@ -57,10 +57,10 @@ angular.module('sfchecks.services', ['jsonRpc'])
 			jsonRpc.call('text_exportComments', [projectId, params], callback);
 		};
 	}])
-	.service('questionsService', ['jsonRpc', function(jsonRpc) {
-		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
+	.service('questionService', ['jsonRpc', function(jsonRpc) {
+		jsonRpc.connect('/api/sf');
 		this.read = function(projectId, questionId, callback) {
-			jsonRpc.call('question_read', [projectId, questionId], callback);
+			jsonRpc.call('question_comment_dto', [projectId, questionId], callback);
 		};
 		this.update = function(projectId, model, callback) {
 			jsonRpc.call('question_update', [projectId, model], callback);
@@ -70,15 +70,6 @@ angular.module('sfchecks.services', ['jsonRpc'])
 		};
 		this.list = function(projectId, textId, callback) {
 			jsonRpc.call('question_list_dto', [projectId, textId], callback);
-		};
-	}])
-	.service('questionService', ['jsonRpc', function(jsonRpc) {
-		jsonRpc.connect('/api/sf');
-		this.read = function(projectId, questionId, callback) {
-			jsonRpc.call('question_comment_dto', [projectId, questionId], callback);
-		};
-		this.update = function(projectId, model, callback) {
-			jsonRpc.call('question_update', [projectId, model], callback);
 		};
 		this.update_answer = function(projectId, questionId, model, callback) {
 			jsonRpc.call('question_update_answer', [projectId, questionId, model], callback);
