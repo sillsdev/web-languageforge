@@ -1,17 +1,15 @@
 	<div>
 		<label>Default Value</label>
-		<select data-ng-model="defaultItem" data-ng-options="item.value for item in items" data-ng-change="noteDataChange()">
+		<select data-ng-model="defaultKey" data-ng-options="item.key as item.value for item in items">
 			<option value="">(no default)</option>
 		</select>
 		<div>
-		<input data-ng-model="newValue" on-enter="pickAddItem()" type="text" placeholder="new value"/>
+		<input data-ng-model="newValue" data-on-enter="pickAddItem()" type="text" placeholder="new value"/>
 		<a data-ng-click="pickAddItem()"><i class="icon-plus"></i></a>
 		</div>
 		<div data-ng-repeat-reorder="item in items" data-ng-repeat-reorder-handle="i.icon-align-justify" class="picklist-group">
 			<a data-ng-click="pickRemoveItem($index)"><i class="icon-remove"></i></a>
-			<input type="text" data-ng-model="item.value" data-ng-change="noteDataChange()" class="picklist-row">
+			<input type="text" data-ng-model="item.value" class="picklist-row">
 			<i class="icon-align-justify"></i><!-- In Font Awesome 4 we would use fa-bars instead --></input>
 		</div>
-		<button data-ng-click="returnValuesToClient()" data-ng-disabled="!dataChanged">Save list</button>
-		<button data-ng-click="getValuesFromClient()" data-ng-disabled="!dataChanged">Reset list</button>
 	</div>
