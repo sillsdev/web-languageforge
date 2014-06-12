@@ -1,32 +1,23 @@
 <?php
 
-
-use models\shared\rights\ProjectRoles;
-
+use models\scriptureforge\dto\QuestionCommentDto;
 use models\commands\ActivityCommands;
 use models\shared\dto\ActivityListDto;
-use models\TextModel;
-use models\scriptureforge\dto\QuestionCommentDto;
-use models\CommentModel;
-use models\AnswerModel;
+use models\shared\rights\ProjectRoles;
 use models\mapper\MongoStore;
+use models\AnswerModel;
+use models\CommentModel;
 use models\ProjectModel;
-use models\UserModel;
 use models\QuestionModel;
+use models\TextModel;
+use models\UserModel;
 
-require_once(dirname(__FILE__) . '/../TestConfig.php');
+require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestActivityDto extends UnitTestCase {
 
-	function __construct()
-	{
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	}
-	
 	function testGetActivityForProject_DeletedUser_DtoAsExpected() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
@@ -119,7 +110,6 @@ class TestActivityDto extends UnitTestCase {
 		$this->assertEqual($dto[$a2]['content']['text'], $text2->title);
 		
 		$e->clean();
-		
 	}
 	
 	function testGetActivityForProject_ProjectWithTextQuestionAnswerAndComments_DtoAsExpected() {
@@ -184,7 +174,6 @@ class TestActivityDto extends UnitTestCase {
 		$comment1_updated->content = "first comment revised";
 		QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment1_updated);
 		$a10 = ActivityCommands::updateComment($project, $questionId, $answerId, $comment1_updated);
-		
 		
 		$dto = ActivityListDto::getActivityForProject($project);
 		
@@ -305,7 +294,6 @@ class TestActivityDto extends UnitTestCase {
 		$this->assertEqual($dto[$a10]['content']['user2'], 'user3');
 		$this->assertEqual($dto[$a10]['content']['answer'], $answer_updated->content);
 		$this->assertEqual($dto[$a10]['content']['comment'], $comment1_updated->content);
-		
 	}
 }
 
