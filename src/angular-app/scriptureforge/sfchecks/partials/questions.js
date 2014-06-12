@@ -250,6 +250,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		id: textId,
 	};
 	$scope.rangeSelectorCollapsed = true;
+	$scope.archivedQuestions = [];
 	
 	// Get name from text service. This really should be in the DTO, but this will work for now.
 	// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08
@@ -363,6 +364,47 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		} else {
 			$scope.uploadResult = file['name'] + " is too large.";
 		}
+	};
+	
+}])
+.controller('TextSettingsArchivedQuestionsCtrl', ['$scope', 'questionService', function($scope, questionService) {
+	// Listview Selection
+	$scope.selected = [];
+	$scope.updateSelection = function(event, item) {
+		var selectedIndex = $scope.selected.indexOf(item);
+		var checkbox = event.target;
+		if (checkbox.checked && selectedIndex == -1) {
+			$scope.selected.push(item);
+		} else if (!checkbox.checked && selectedIndex != -1) {
+			$scope.selected.splice(selectedIndex, 1);
+		}
+	};
+	
+	$scope.isSelected = function(item) {
+		if (item == null) {
+			return false;
+		} 
+		var i = $scope.selected.length;
+		while (i--) {
+			if ($scope.selected[i]['id'] === item.id) {
+				return true;
+			}
+		}
+		return false;
+	};
+	
+	// Publish Questions
+	$scope.publishQuestions = function() {
+		var questionsIds = [];
+		for(var i = 0, l = $scope.selected.length; i < l; i++) {
+			questionsIds.push($scope.selected[i].id);
+		}
+		questionService.publish($scope.project.id, questionsIds, function(result) {
+			if (result.ok) {
+				$scope.selected = []; // Reset the selection
+				// $scope.queryProjectSettings();
+			}
+		});
 	};
 	
 }])

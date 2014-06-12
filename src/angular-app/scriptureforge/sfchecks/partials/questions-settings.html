@@ -57,6 +57,28 @@
 			<div style="clear: left"></div>
 		</form>
 	</tab>
+	<tab heading="Archived Questions" data-ng-controller="TextSettingsArchivedQuestionsCtrl">
+		<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn" data-ng-click="publishQuestions()"><i class="icon-globe icon-large"></i>Re-publish Questions</button>
+		</form>
+		<hr />
+        <div listview hide-if-empty="true" items="archivedQuestions" visible-items="visibleArchivedQuestions" select="">
+			<div data-ng-repeat="question in visibleArchivedQuestions" class="details-row">
+				<ul class="inline" data-ng-class="{active: isSelected(question)}">
+					<li data-ng-show="rights.archive"><input type="checkbox" data-ng-click="updateSelection($event, question)" /></li>
+					<li>
+						<a href="{{question.url}}">
+							<span class="larger-text">{{question.calculatedTitle}}</span>
+						</a>
+					</li>
+					<li>{{getAnswerCount(question)}} answers</li>
+					<li>{{getResponses(question)}} responses</li>
+					<li>Archived on {{question.dateModified | date:'fullDate'}}</li>
+				</ul>
+				<hr />
+			</div>
+        </div>
+	</tab>
 	<tab heading="Audio File">
 		<form class="well " data-ng-submit="updateText(editedText)">
 			<label>Upload an Audio File</label>
