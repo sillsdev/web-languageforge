@@ -30,7 +30,7 @@ describe('Questions page (questions.js)', function() {
 		data: testQuestions,
 	};
 
-	var mockQuestionsService = {
+	var mockQuestionService = {
 		list: function(projectId, textId, callback) {
 			// Ignore project and text IDs for this mock
 			callback(testJsonResult);
@@ -49,7 +49,7 @@ describe('Questions page (questions.js)', function() {
 		// Set up the controller with that fresh scope
 		ctrl = $controller('QuestionsCtrl', {
 			$scope: scope,
-			questionsService: mockQuestionsService,
+			questionService: mockQuestionService,
 		});
 	}));
 
