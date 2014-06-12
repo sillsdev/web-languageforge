@@ -1,38 +1,25 @@
 <?php
 
-
-use models\TextModel;
-
 use models\scriptureforge\dto\QuestionCommentDto;
-
-use models\CommentModel;
-
-use models\AnswerModel;
-
 use models\mapper\MongoStore;
+use models\AnswerModel;
+use models\CommentModel;
 use models\ProjectModel;
-use models\UserModel;
 use models\QuestionModel;
+use models\TextModel;
+use models\UserModel;
 
-require_once(dirname(__FILE__) . '/../TestConfig.php');
+require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
-
 require_once(SourcePath . "models/ProjectModel.php");
 require_once(SourcePath . "models/QuestionModel.php");
 
-
 class TestQuestionCommentDto extends UnitTestCase {
 
-	function __construct()
-	{
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	}
-	
 	function testEncode_FullQuestionWithAnswersAndComments_DtoReturnsExpectedData() {
 		$e = new MongoTestEnvironment();
+		$e->clean();
 		
 		$project = $e->createProject(SF_TESTPROJECT);
 		
