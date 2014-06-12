@@ -44,14 +44,7 @@
 							<li id="myProjects"><a href="/app/projects">My Projects</a>
 								<ul>
 								<?php foreach($projects as $project): ?>
-									<?php 
-									$theme = '';
-									if ($project['themeName'] != 'default') {
-										$theme = $project['themeName'] . '.';
-									}
-									?>
-
-									<li><a href="<?php echo "//$theme$hostname/app/" . $project['appName'] . "#/p/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+									<li><a href="<?php echo "/app/" . $project['appName'] . "#/p/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
 								<?php endforeach;?>
 								</ul>
 							</li>
