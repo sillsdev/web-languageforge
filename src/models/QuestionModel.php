@@ -202,7 +202,6 @@ class QuestionModel extends \models\mapper\MapperModel
 	public $dateCreated;
 	
 	/**
-	 * 
 	 * @var \DateTime
 	 */
 	public $dateEdited;
@@ -223,6 +222,10 @@ class QuestionModel extends \models\mapper\MapperModel
 	 */
 	public $workflowState;
 	
+	/**
+	 * @var Boolean
+	 */
+	public $isArchived;
 	
 }
 
