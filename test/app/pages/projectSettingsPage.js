@@ -7,7 +7,7 @@ var SfProjectSettingsPage = function() {
 		templates:			element(by.linkText('Question Templates')),
 		archiveTexts:		element(by.linkText('Archived Texts')),
 		projectProperties:	element(by.linkText('Project Properties')),
-		optionlists:		element(by.linkText('Project Setup')),
+		optionlists:		element(by.linkText('User Profile Lists')),
 		communication:		element(by.linkText('Communication Settings'))
 	};
 	
