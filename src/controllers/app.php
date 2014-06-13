@@ -7,7 +7,7 @@ require_once 'secure_base.php';
 
 class App extends Secure_base {
 	
-	public function view($app = 'main', $project = 'default') {
+	public function view($app = 'main', $projectId = '') {
 		$appFolder = "angular-app/" . $this->site . "/$app";
 		if (!file_exists($appFolder)) {
 			$appFolder = "angular-app/bellows/apps/$app";
@@ -20,6 +20,11 @@ class App extends Secure_base {
 		$data['appName'] = $app;
 		$data['site'] = $this->site;
 		$data['appFolder'] = $appFolder;
+		
+		// add projectId to the session
+		if ($projectId != '' && $projectId != 'favicon.ico') {
+			$this->session->set_userdata('projectId', $projectId);
+		}
 		
 		// User Id
 		$sessionData = array();
