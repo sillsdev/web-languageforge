@@ -1,27 +1,20 @@
 <?php
 
-
 use models\scriptureforge\dto\QuestionListDto;
-
-use models\TextModel;
-use models\QuestionModel;
 use models\AnswerModel;
 use models\CommentModel;
+use models\QuestionModel;
+use models\TextModel;
 
-require_once(dirname(__FILE__) . '/../TestConfig.php');
+require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestQuestionListDto extends UnitTestCase {
 
-	function __construct()
-	{
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	}
-
 	function testEncode_QuestionWithAnswers_DtoReturnsExpectedData() {
 		$e = new MongoTestEnvironment();
+		$e->clean();
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -94,44 +87,19 @@ class TestQuestionListDto extends UnitTestCase {
 		
 		// make sure our text content is coming down into the dto
 		$this->assertTrue(strlen($dto['text']['content']) > 0);
+		
+		// archive 1 question
+		$question1->isArchived = true;
+		$question1->write();
+		
+		$dto = QuestionListDto::encode($projectId, $textId, $user1Id);
 
-	}
-
-}
-/*
-class TestProjectListDto extends UnitTestCase {
-
-	function __construct()
-	{
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	}
-
-	function testEncode_ProjectWithTexts_DtoReturnsExpectedData() {
-		$e = new MongoTestEnvironment();
-
-		$project = $e->createProject(SF_TESTPROJECT);
-
-		$text1 = new TextModel($project);
-		$text1->title = "Chapter 3";
-		$text1->content = "I opened my eyes upon a strange and weird landscape. I knew that I was on Mars; …";
-		$text1Id = $text1->write();
-
-		$text2 = new TextModel($project);
-		$text2->title = "Chapter 4";
-		$text2->content = "We had gone perhaps ten miles when the ground began to rise very rapidly. …";
-		$text2Id = $text2->write();
-
-		$dto = ProjectListDto::encode();
-
+		// Now check that it all still looks right
 		$this->assertEqual($dto['count'], 1);
-		$this->assertIsA($dto['entries'], 'array');
-		$this->assertEqual($dto['entries'][0]['id'], $project->id);
-		$this->assertEqual($dto['entries'][0]['projectname'], SF_TESTPROJECT);
-		$this->assertEqual($dto['entries'][0]['textCount'], 2);
-
+		$this->assertEqual($dto['entries'][0]['id'], $question2Id);
+		$this->assertEqual($dto['entries'][0]['title'], "Where is the storyteller?");
 	}
+	
 }
-*/
 
 ?>

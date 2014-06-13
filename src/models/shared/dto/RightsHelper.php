@@ -163,8 +163,9 @@ class RightsHelper
 			case 'question_read':
 				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::QUESTIONS + Operation::EDIT);
 
-			case 'question_delete':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::QUESTIONS + Operation::DELETE);
+			case 'question_archive':
+			case 'question_publish':
+				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::QUESTIONS + Operation::ARCHIVE);
 
 
 			// Admin (site context)
