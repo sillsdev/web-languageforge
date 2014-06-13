@@ -42,11 +42,8 @@ class TestTextSettingsDto extends UnitTestCase {
 		$question2->textRef->id = $textId;
 		$question2->isArchived = true;
 		$question2->write();
-
+		
 		$dto = TextSettingsDto::encode($projectId, $textId, $userId);
-		echo "<pre>";
-		var_dump($dto);
-		echo "</pre>";
 		
 		$this->assertIsA($dto['text'], 'array');
 		$this->assertEqual($dto['text']['id'], $textId);

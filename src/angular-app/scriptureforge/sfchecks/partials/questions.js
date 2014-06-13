@@ -227,43 +227,56 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
                                       function($scope, $http, ss, $routeParams, breadcrumbService, notice, textService, questionService, sfchecksLinkService) {
 	var projectId = $routeParams.projectId;
 	var textId = $routeParams.textId;
-	$scope.projectId = projectId;
+	$scope.project = {
+		id: projectId	
+	};
 	$scope.textId = textId;
 	$scope.editedText = {
 		id: textId,
 	};
 	$scope.rangeSelectorCollapsed = true;
-	$scope.archivedQuestions = [];
+	$scope.settings = {};
+	$scope.settings.archivedQuestions = [];
 	
 	// Get name from text service. This really should be in the DTO, but this will work for now.
-	// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08
-	textService.settings_dto($scope.projectId, $scope.textId, function(result) {
-		if (result.ok) {
-			$scope.dto = result.data;
-			$scope.textTitle = $scope.dto.text.title;
-			$scope.editedText.title = $scope.dto.text.title;
-			$scope.rights = {
-				editOther: ss.hasRight($scope.dto.rights, ss.domain.TEXTS, ss.operation.EDIT),
-			};
-			//console.log($scope.dto);
-			
-			// Breadcrumb
-			breadcrumbService.set('top',
-					[
-					 {href: '/app/projects', label: 'My Projects'},
-					 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.dto.bcs.project.crumb},
-					 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: $scope.dto.text.title},
-					 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId) + '/Settings', label: 'Settings'},
-					]
-			);
-		}
-	});
+	// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08. Appears to be in the DTO now. IJH 2014-06
+	$scope.queryTextSettings = function() {
+		textService.settings_dto($scope.project.id, $scope.textId, function(result) {
+			if (result.ok) {
+				$scope.dto = result.data;
+				$scope.textTitle = $scope.dto.text.title;
+				$scope.editedText.title = $scope.dto.text.title;
+				$scope.settings.archivedQuestions = result.data.archivedQuestions;
+				for (var i = 0; i < $scope.settings.archivedQuestions.length; i++) {
+					$scope.settings.archivedQuestions[i].url = sfchecksLinkService.question($scope.project.id, $scope.textId, $scope.settings.archivedQuestions[i].id);
+					$scope.settings.archivedQuestions[i].calculatedTitle = questionService.util.calculateTitle($scope.settings.archivedQuestions[i].title, $scope.settings.archivedQuestions[i].description);
+					$scope.settings.archivedQuestions[i].dateModified = new Date($scope.settings.archivedQuestions[i].dateModified);
+				}
+				// Rights
+				var rights = result.data.rights;
+				$scope.rights = {};
+				$scope.rights.archive = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE); 
+				$scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT);
+				$scope.rights.showControlBar = $scope.rights.archive || $scope.rights.editOther;
+				
+				// Breadcrumb
+				breadcrumbService.set('top',
+						[
+						 {href: '/app/projects', label: 'My Projects'},
+						 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.dto.bcs.project.crumb},
+						 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: $scope.dto.text.title},
+						 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId) + '/Settings', label: 'Settings'},
+						]
+				);
+			}
+		});
+	};
 	
 	$scope.updateText = function(newText) {
 		if (!newText.content || !newText.editPreviousText) {
 			delete newText.content;
 		}
-		textService.update($scope.projectId, newText, function(result) {
+		textService.update($scope.project.id, newText, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, newText.title + " settings successfully updated");
 				$scope.textTitle = newText.title;
@@ -385,7 +398,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		questionService.publish($scope.project.id, questionsIds, function(result) {
 			if (result.ok) {
 				$scope.selected = []; // Reset the selection
-				// $scope.queryProjectSettings();
+				$scope.queryTextSettings();
 			}
 		});
 	};
