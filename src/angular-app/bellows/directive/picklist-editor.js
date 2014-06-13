@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
+angular.module('palaso.ui.picklistEditor', ['angular-sortable-view'])
 .directive('onEnter', function() {
 	return function(scope, elem, attrs) {
 		elem.bind('keydown keypress', function(evt) {
@@ -20,11 +20,17 @@ angular.module('palaso.ui.picklistEditor', ['ngRepeatReorder'])
 		scope: {
 			items: '=',
 			defaultKey: '=?',
+			//keyFunc: '&',  // TODO: Figure out how to let the user *optionally* specify a key function. 2014-06 RM
 		},
 		controller: ['$scope', function($scope) {
+			$scope.defaultKeyFunc = function(value) {
+				return value.replace(/ /gi, '_');
+			}
 			$scope.pickAddItem = function() {
 				if ($scope.newValue) {
-					$scope.items.push({value: $scope.newValue});
+					var keyFunc = $scope.keyFunc || $scope.defaultKeyFunc;
+					var key = keyFunc($scope.newValue);
+					$scope.items.push({key: key, value: $scope.newValue});
 					$scope.newValue = undefined;
 				}
 			};
