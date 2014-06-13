@@ -21,22 +21,36 @@ use models\shared\rights\ProjectRoles;
 
 class RightsHelper
 {
+	private $_userId;
+	private $_projectId;
+	
+	/**
+	 * 
+	 * @param string $userId
+	 * @param string $projectId
+	 */
+	public function __construct($userId, $projectId) {
+		$this->_userId = $userId;
+		$this->_projectId = $projectId;
+	}
 
 	/**
 	 * @param UserModel $userModel
 	 * @param ProjectModel $projectModel
 	 */
-	public static function encode($userModel, $projectModel) {
+	public function encode($userModel, $projectModel) {
+		$userModel = new UserModel($this->_userId);
+		
 		return $projectModel->getRightsArray($userModel->id->asString());
 	}
 	
-	public static function userHasSiteRight($userId, $right) {
-		$user = new UserModel($userId);
+	public function userHasSiteRight($right) {
+		$user = new UserModel($this->_userId);
 		return SiteRoles::hasRight($user->role, $right);
 	}
 	
-	public static function userHasSfchecksProjectRightForAnyProject($userId, $right) {
-		$user = new UserModel($userId);
+	public function userHasSfchecksProjectRightForAnyProject($right) {
+		$user = new UserModel($this->_userId);
 		foreach ($user->projects->refs as $id) {
 			if (self::userHasSfchecksProjectRight($id->asString(), $userId, $right)) {
 				return true;
@@ -52,7 +66,7 @@ class RightsHelper
 	 * @param int $right
 	 * @return bool
 	 */
-	public static function userHasSfchecksProjectRight($projectId, $userId, $right) {
+	public function userHasSfchecksProjectRight($projectId, $userId, $right) {
 		$project = new SfchecksProjectModel($projectId);
 		return $project->hasRight($userId, $right);
 	}
@@ -64,7 +78,7 @@ class RightsHelper
 	 * @param int $right
 	 * @return bool
 	 */
-	public static function userHasLexiconProjectRight($projectId, $userId, $right) {
+	public function userHasLexiconProjectRight($projectId, $userId, $right) {
 		$project = new LexiconProjectModel($projectId);
 		return $project->hasRight($userId, $right);
 	}
@@ -76,7 +90,7 @@ class RightsHelper
 	 * @param int $right
 	 * @return bool
 	 */
-	public static function userHasRapumaProjectRight($projectId, $userId, $right) {
+	public function userHasRapumaProjectRight($projectId, $userId, $right) {
 		$project = new RapumaProjectModel($projectId);
 		return $project->hasRight($userId, $right);
 	}
@@ -88,7 +102,7 @@ class RightsHelper
 	 * @param array $params - parameters passed to the method
 	 * @return boolean
 	 */
-	public static function userCanAccessMethod($userId, $methodName, $params) {
+	public function userCanAccessMethod($methodName, $params) {
 		switch ($methodName) {
 			
 			// User Role (Project Context)
@@ -96,55 +110,55 @@ class RightsHelper
 			case 'message_markRead':
 			case 'project_pageDto':
 			case 'lex_projectDto':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::PROJECTS + Operation::VIEW);
+				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::PROJECTS + Operation::VIEW);
 			case 'answer_vote_up':
 			case 'answer_vote_down':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::ANSWERS + Operation::VIEW);
+				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::ANSWERS + Operation::VIEW);
 
 			case 'text_list_dto':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::TEXTS + Operation::VIEW);
+				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::TEXTS + Operation::VIEW);
 				
 			case 'question_update_answer':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::ANSWERS + Operation::EDIT_OWN);
+				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::ANSWERS + Operation::EDIT_OWN);
 				
 			case 'question_remove_answer':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::ANSWERS + Operation::DELETE_OWN);
+				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::ANSWERS + Operation::DELETE_OWN);
 				
 			case 'question_update_comment':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::COMMENTS + Operation::EDIT_OWN);
+				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::COMMENTS + Operation::EDIT_OWN);
 				
 			case 'question_remove_comment':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::COMMENTS + Operation::DELETE_OWN);
+				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::COMMENTS + Operation::DELETE_OWN);
 				
 			case 'question_comment_dto':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::ANSWERS + Operation::VIEW);
+				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::ANSWERS + Operation::VIEW);
 				
 			case 'question_list_dto':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::QUESTIONS + Operation::VIEW);
+				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::QUESTIONS + Operation::VIEW);
 
 			// Project Manager Role (Project Context)
 			case 'lex_manageUsersDto':
 			case 'user_createSimple':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::USERS + Operation::CREATE);
+				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::USERS + Operation::CREATE);
 				
 			case 'user_typeahead':
-				return self::userHasSfchecksProjectRightForAnyProject($userId, Domain::USERS + Operation::VIEW);
+				return self::userHasSfchecksProjectRightForAnyProject($this->_userId, Domain::USERS + Operation::VIEW);
 				
 			case 'message_send':
 			case 'project_read':
 			case 'project_settings':
 			case 'project_updateSettings':
 			case 'project_readSettings':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
+				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::PROJECTS + Operation::EDIT);
 
 			case 'project_update':
 			case 'lex_project_update':
-				return (self::userHasSfchecksProjectRight($params[0]['id'], $userId, Domain::PROJECTS + Operation::EDIT) ||
-						self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT));
+				return (self::userHasSfchecksProjectRight($params[0]['id'], $this->_userId, Domain::PROJECTS + Operation::EDIT) ||
+						self::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT));
 				
 			case 'project_updateUserRole':
-				return (self::userHasSfchecksProjectRight($params[0], $userId, Domain::USERS + Operation::EDIT) ||
-						self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT));
+				return (self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::USERS + Operation::EDIT) ||
+						self::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT));
 
 			case 'project_removeUsers':
 				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::USERS + Operation::DELETE);

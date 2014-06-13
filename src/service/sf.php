@@ -510,7 +510,8 @@ class Sf
 			if (!$this->_userId) {
 				throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
 			}
-			if (!RightsHelper::userCanAccessMethod($this->_userId, $methodName, $params)) {
+			$rightsHelper = new RightsHelper();
+			if (!RightsHelper::userCanAccessMethod($this->_userId, $this->_projectId, $methodName, $params)) {
 				throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
 			}
 		}
