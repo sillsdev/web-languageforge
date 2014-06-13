@@ -2,12 +2,12 @@
 
 namespace models\commands;
 
-use models\ProjectModel;
-use models\TextModel;
 use models\scriptureforge\dto\UsxTrimHelper;
+use models\commands\ActivityCommands;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
-use models\commands\ActivityCommands;
+use models\ProjectModel;
+use models\TextModel;
 
 class TextCommands
 {
@@ -70,7 +70,6 @@ class TextCommands
 	 * 
 	 * @param string $projectId
 	 * @param string $textId
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 */
 	public static function readText($projectId, $textId) {
 		$projectModel = new \models\ProjectModel($projectId);
@@ -81,8 +80,41 @@ class TextCommands
 	/**
 	 * @param string $projectId
 	 * @param array $textIds
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
-	 * @return int Total number of projects removed.
+	 * @return int Total number of texts archived.
+	 */
+	public static function archiveTexts($projectId, $textIds) {
+		$project = new ProjectModel($projectId);
+		$count = 0;
+		foreach ($textIds as $textId) {
+			$text = new TextModel($project, $textId);
+			$text->isArchived = true;
+			$text->write();
+			$count++;
+		}
+		return $count;
+	}
+
+	/**
+	 * @param string $projectId
+	 * @param array $textIds
+	 * @return int Total number of texts published.
+	 */
+	public static function publishTexts($projectId, $textIds) {
+		$project = new ProjectModel($projectId);
+		$count = 0;
+		foreach ($textIds as $textId) {
+			$text = new TextModel($project, $textId);
+			$text->isArchived = false;
+			$text->write();
+			$count++;
+		}
+		return $count;
+	}
+
+	/**
+	 * @param string $projectId
+	 * @param array $textIds
+	 * @return int Total number of texts removed.
 	 */
 	public static function deleteTexts($projectId, $textIds) {
 		$projectModel = new ProjectModel($projectId);

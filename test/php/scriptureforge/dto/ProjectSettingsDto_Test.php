@@ -1,10 +1,10 @@
 <?php
 
-use models\shared\rights\SiteRoles;
-
 use models\scriptureforge\dto\ProjectSettingsDto;
-use models\UserModel;
 use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
+use models\TextModel;
+use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -34,18 +34,28 @@ class TestProjectSettingsDto extends UnitTestCase {
 		$user2->addProject($projectId);
 		$user2->write();
 		$project->write();
+		
+		$text1 = new TextModel($project);
+		$text1->title = "Some Title";
+		$text1->write();
+		$text2 = new TextModel($project);
+		$text2->title = "Archived Title";
+		$text2->isArchived = true;
+		$text2->write();
 
 		$dto = ProjectSettingsDto::encode($projectId, $user2Id);
-
+		
 		$this->assertEqual($dto['count'], 1);
 		$this->assertIsA($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $user2Id);
 		$this->assertEqual($dto['entries'][0]['name'], 'Name');
 		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::CONTRIBUTOR);
 		$this->assertIsA($dto['themeNames'], 'array');
-		$this->assertEqual(count($dto['themeNames']), 2);
+		$this->assertEqual(count($dto['themeNames']), 3);
 		$this->assertEqual($dto['themeNames'][0], 'default');
 		$this->assertEqual($dto['themeNames'][1], 'jamaicanpsalms');
+		$this->assertEqual(count($dto['archivedTexts']), 1);
+		$this->assertEqual($dto['archivedTexts'][0]['title'], 'Archived Title');
 		$this->assertTrue(count($dto['rights']) > 0, "No rights in dto");
 		$this->assertEqual($dto['bcs']['op'], 'settings');
 		$this->assertEqual($dto['bcs']['project'], array('id' => $projectId, 'crumb' => SF_TESTPROJECT));

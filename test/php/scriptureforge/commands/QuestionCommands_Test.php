@@ -7,7 +7,7 @@ use models\AnswerModel;
 use models\commands\QuestionCommands;
 use models\QuestionModel;
 
-require_once(dirname(__FILE__) . '/../TestConfig.php');
+require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
@@ -93,17 +93,17 @@ class TestQuestionCommands extends UnitTestCase {
 		$answer0 = $dto[$e->answerId];
 		$this->assertEqual(0, $answer0['score']);
 		
- 		$dto = QuestionCommands::voteUp($e->userId, $e->projectId, $e->questionId, $e->answerId);
-//  	var_dump($dto, $e->answerId);
- 			
- 		$answer1 = $dto[$e->answerId];
- 		$this->assertEqual(1, $answer1['score']);
- 			
- 		$dto = QuestionCommands::voteDown($e->userId, $e->projectId, $e->questionId, $e->answerId);
- //  	var_dump($dto, $e->answerId);
- 		 	
+		$dto = QuestionCommands::voteUp($e->userId, $e->projectId, $e->questionId, $e->answerId);
+// 		var_dump($dto, $e->answerId);
+			
+		$answer1 = $dto[$e->answerId];
+		$this->assertEqual(1, $answer1['score']);
+			
+		$dto = QuestionCommands::voteDown($e->userId, $e->projectId, $e->questionId, $e->answerId);
+// 		var_dump($dto, $e->answerId);
+		
 		$answer2 = $dto[$e->answerId];
- 		$this->assertEqual(0, $answer2['score']);
+		$this->assertEqual(0, $answer2['score']);
 	}
 	
 	function testVoteUp_TwoVotes_NoChange() {

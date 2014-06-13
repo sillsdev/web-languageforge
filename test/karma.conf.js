@@ -7,6 +7,7 @@ module.exports = function(config) {
     files: [
       'src/js/lib/angular_stable_1.2.15/angular.js',
       'src/js/lib/angular_stable_1.2.15/angular-route.js',
+      'src/js/lib/angular_stable_1.2.15/angular-animate.js',
       'src/js/lib/angular_stable_1.2.15/angular-sanitize.js',
       'test/lib/angular/angular-mocks.js',
       'src/js/lib/angular-file-upload.js',
