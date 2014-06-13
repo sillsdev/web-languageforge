@@ -1,13 +1,14 @@
 'use strict';
 
-angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload', 'ngRoute'])
+angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'palaso.ui.picklistEditor', 'angularFileUpload', 'ngRoute'])
 .controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService', 'sfchecksLinkService',
                                     function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService, sfchecksLinkService) {
 	var projectId = $routeParams.projectId;
 	$scope.project = {};
+	$scope.project.id = projectId;
 	$scope.finishedLoading = false;
 	$scope.list = {};
-	$scope.project.id = projectId;
+	$scope.list.archivedTexts = [];
 
 	$scope.canEditCommunicationSettings = function() {
 		return ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
@@ -17,12 +18,18 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		sfchecksProjectService.projectSettings($scope.project.id, function(result) {
 			if (result.ok) {
 				$scope.project = result.data.project;
+				$scope.themeNames =  result.data.themeNames;
 				$scope.list.users = result.data.entries;
 				$scope.list.userCount = result.data.count;
-				$scope.themeNames =  result.data.themeNames;
+				$scope.list.archivedTexts = result.data.archivedTexts;
+				for (var i = 0; i < $scope.list.archivedTexts.length; i++) {
+					$scope.list.archivedTexts[i].url = sfchecksLinkService.text($scope.project.id, $scope.list.archivedTexts[i].id);
+					$scope.list.archivedTexts[i].dateModified = new Date($scope.list.archivedTexts[i].dateModified);
+				}
 				// Rights
 				var rights = result.data.rights;
 				$scope.rights = {};
+				$scope.rights.archive = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE); 
 				$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.DELETE); 
 				$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
 				$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
@@ -37,7 +44,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 						]
 				);
 				$scope.finishedLoading = true;
-				
 			}
 		});
 	};
@@ -59,7 +65,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 
 
 }])
-.controller('ProjectSettingsQTemplateCtrl', ['$scope', 'jsonRpc', 'silNoticeService', 'questionTemplateService', function($scope, jsonRpc, notice, qts) {
+.controller('ProjectSettingsQTemplateCtrl', ['$scope', 'silNoticeService', 'questionTemplateService', function($scope, notice, qts) {
 	$scope.selected = [];
 	$scope.vars = {
 		selectedIndex: -1,
@@ -118,7 +124,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	};
 	$scope.editTemplate = function() {
 		if ($scope.editedTemplate.title && $scope.editedTemplate.description) {
-			qts.update($scope.project, $scope.editedTemplate, function(result) {
+			qts.update($scope.project.id, $scope.editedTemplate, function(result) {
 				if (result.ok) {
 					if ($scope.editedTemplate.id) {
 						notice.push(notice.SUCCESS, "The template '" + $scope.editedTemplate.title + "' was updated successfully");
@@ -138,7 +144,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	$scope.queryTemplates = function(invalidateCache) {
 		var forceReload = (invalidateCache || (!$scope.templates) || ($scope.templates.length == 0));
 		if (forceReload) {
-			qts.list(function(result) {
+			qts.list($scope.project.id, function(result) {
 				if (result.ok) {
 					$scope.templates = result.data.entries;
 					$scope.finishedLoading = true;
@@ -159,7 +165,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		if (l == 0) {
 			return;
 		}
-		qts.remove(templateIds, function(result) {
+		qts.remove($scope.project.id, templateIds, function(result) {
 			if (result.ok) {
 				if (templateIds.length == 1) {
 					notice.push(notice.SUCCESS, "The template was removed successfully");
@@ -173,6 +179,37 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		});
 	};
 
+}])
+.controller('ProjectSettingsArchiveTextsCtrl', ['$scope', 'textService', function($scope, textService) {
+	// Listview Selection
+	$scope.selected = [];
+	$scope.updateSelection = function(event, item) {
+		var selectedIndex = $scope.selected.indexOf(item);
+		var checkbox = event.target;
+		if (checkbox.checked && selectedIndex == -1) {
+			$scope.selected.push(item);
+		} else if (!checkbox.checked && selectedIndex != -1) {
+			$scope.selected.splice(selectedIndex, 1);
+		}
+	};
+	$scope.isSelected = function(item) {
+		return item != null && $scope.selected.indexOf(item) >= 0;
+	};
+	
+	// Publish Texts
+	$scope.publishTexts = function() {
+		var textIds = [];
+		for(var i = 0, l = $scope.selected.length; i < l; i++) {
+			textIds.push($scope.selected[i].id);
+		}
+		textService.publish($scope.project.id, textIds, function(result) {
+			if (result.ok) {
+				$scope.selected = []; // Reset the selection
+				$scope.queryProjectSettings();
+			}
+		});
+	};
+	
 }])
 .controller('ProjectSettingsCommunicationCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
                                  function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService) {
@@ -229,48 +266,34 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 				notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
 			}
 		});
+		$scope.unsavedChanges = false;
+		$scope.startWatchingPicklists();
 	};
-	
+
 	$scope.currentListId = '';
 	$scope.selectList = function(listId) {
 //		console.log("selectList ", listId);
 		$scope.currentListId = listId;
 	};
-	
-	Array.prototype.containsKey = function(obj_key, key) {
-	    var i = this.length;
-	    while (i--) {
-	        if (this[i][key] === obj_key) {
-	            return true;
-	        }
-	    }
-	    return false;
-	};
-	
-	$scope.pickAddItem = function() {
-//		console.log("pickAddItem ", $scope.currentListId, " ", $scope.newValue);
-//		console.log($scope.project.userProperties.userProfilePickLists[$scope.currentListId]);
-		if ($scope.project.userProperties.userProfilePickLists[$scope.currentListId].items == undefined) {
-			$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items = [];
-		}
-		
-		if ($scope.newValue != undefined) {
-			var pickItem = {};
-			pickItem.key = $scope.newValue.replace(/ /gi,'_');
-			pickItem.value = $scope.newValue;
 
-			// check if item exists before adding
-			if (!$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.containsKey(pickItem.key, 'key')) {
-				$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.push(pickItem);
-			}
+	$scope.picklistWatcher = function(newval, oldval) {
+		if (angular.isDefined(newval) && newval != oldval) {
+			$scope.unsavedChanges = true;
+			// Since a values watch is expensive, stop watching after first time data changes
+			$scope.stopWatchingPicklists();
 		}
 	};
-
-	$scope.pickRemoveItem = function(index) {
-//		console.log("pickRemoveItem ", $scope.currentListId, " ", index);
-		$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.splice(index, 1);
+	$scope.stopWatchingPicklists = function() {
+		if ($scope.deregisterPicklistWatcher) {
+			$scope.deregisterPicklistWatcher();
+			$scope.deregisterPicklistWatcher = undefined;
+		}
 	};
-	
+	$scope.startWatchingPicklists = function() {
+		$scope.stopWatchingPicklists(); // Ensure we never register two expensive watches at once
+		$scope.deregisterPicklistWatcher = $scope.$watch('project.userProperties.userProfilePickLists', $scope.picklistWatcher, true);
+	};
+
 	$scope.$watch('project.userProperties', function(newValue) {
 //		console.log("project watch ", newValue);
 		if (newValue != undefined) {
@@ -283,6 +306,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 				$scope.currentListsEnabled[$scope.project.userProperties.userProfilePropertiesEnabled[i]] = true;
 			}
 		}
+		$scope.startWatchingPicklists();
 	});
 
 }])

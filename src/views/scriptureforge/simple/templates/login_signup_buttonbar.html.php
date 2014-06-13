@@ -1,0 +1,1 @@
+			<input type="button" value="Login" class="login-btn" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <input type="button" value="Create an Account" class="login-btn" onclick="window.location='/signup'"/>

@@ -2,32 +2,34 @@
 
 namespace models;
 
+// TODO: this class should be deleted after migration question templates to the project model
+
 use models\mapper\MongoMapper;
 use models\mapper\MapperModel;
 use models\mapper\MapperListModel;
 use models\mapper\Id;
 use models\mapper\IdReference;
 
-class QuestionTemplateModelMongoMapper extends \models\mapper\MongoMapper
+class GlobalQuestionTemplateModelMongoMapper extends \models\mapper\MongoMapper
 {
 	public static function instance() {
 		static $instance = null;
 		if (null === $instance) {
-			$instance = new QuestionTemplateModelMongoMapper(SF_DATABASE, 'questiontemplates');
+			$instance = new GlobalQuestionTemplateModelMongoMapper(SF_DATABASE, 'questiontemplates');
 		}
 		return $instance;
 	}
 }
 
-class QuestionTemplateModel extends \models\mapper\MapperModel
+class GlobalQuestionTemplateModel extends \models\mapper\MapperModel
 {
 	public function __construct($id = '') {
 		$this->id = new Id();
-		parent::__construct(QuestionTemplateModelMongoMapper::instance(), $id);
+		parent::__construct(GlobalQuestionTemplateModelMongoMapper::instance(), $id);
 	}
 
 	public function remove() {
-		$result = QuestionTemplateModelMongoMapper::instance()->remove($this->id->asString());
+		$result = GlobalQuestionTemplateModelMongoMapper::instance()->remove($this->id->asString());
 		return $result;
 	}
 
@@ -47,11 +49,11 @@ class QuestionTemplateModel extends \models\mapper\MapperModel
 	public $description;
 }
 
-class QuestionTemplateListModel extends \models\mapper\MapperListModel
+class GlobalQuestionTemplateListModel extends \models\mapper\MapperListModel
 {
 	public function __construct() {
 		parent::__construct(
-			QuestionTemplateModelMongoMapper::instance(),
+			GlobalQuestionTemplateModelMongoMapper::instance(),
 			array(),
 			array('title', 'description')
 		);

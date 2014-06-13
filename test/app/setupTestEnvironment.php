@@ -1,5 +1,7 @@
 <?php
 
+use models\commands\QuestionTemplateCommands;
+
 require_once('e2eTestConfig.php');
 
 // put the test config into place
@@ -116,6 +118,18 @@ $question2 = QuestionCommands::updateQuestion($testProject, array(
 	'title' => $constants['testText1Question2Title'],
 	'description' => $constants['testText1Question2Content']
 ));
+
+$template1 = QuestionTemplateCommands::updateTemplate($testProject, array(
+	'id' => '',
+	'title' => 'first template',
+	'description' => 'not particularly interesting'
+		));
+
+$template2 = QuestionTemplateCommands::updateTemplate($testProject, array(
+	'id' => '',
+	'title' => 'second template',
+	'description' => 'not entirely interesting'
+		));
 
 $answer1 = QuestionCommands::updateAnswer($testProject, $question1, array(
 	'id' => '', 

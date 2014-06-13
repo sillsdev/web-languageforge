@@ -5,8 +5,9 @@ var SfProjectSettingsPage = function() {
 	this.tabs = {
 		members:			element(by.linkText('Members')),
 		templates:			element(by.linkText('Question Templates')),
+		archiveTexts:		element(by.linkText('Archived Texts')),
 		projectProperties:	element(by.linkText('Project Properties')),
-		optionlists:		element(by.linkText('Project Setup')),
+		optionlists:		element(by.linkText('User Profile Lists')),
 		communication:		element(by.linkText('Communication Settings'))
 	};
 	
@@ -30,7 +31,30 @@ var SfProjectSettingsPage = function() {
 		this.membersTab.newMember.button.click();
 	};
 
-	this.templatesTab = {}; // NYI - wait for refactor
+	this.templatesTab = {
+		list:			element.all(by.repeater('template in visibleTemplates')),
+		addButton:		element(by.partialButtonText('Add New Template')),
+		removeButton:	element(by.partialButtonText('Remove Templates')),
+		editor:	{
+			title: 			element(by.model('editedTemplate.title')),
+			description:	element(by.model('editedTemplate.description')),
+			saveButton:		element(by.id('question_templates_save_button')),
+		},
+	};
+	
+	this.archivedTextsTab = {
+		textNames:		element.all(by.repeater('text in visibleTexts').column('title')),
+		textList:		element.all(by.repeater('text in visibleTexts')),
+		publishButton:	element(by.partialButtonText('Re-publish Texts')),
+
+		textLink: function(title) {
+			return element(by.linkText(title));
+		}
+	};
+	// getFirstCheckbox has to be a function because the .first() method will actually resolve the finder
+	this.archivedTextsTabGetFirstCheckbox = function() {
+		return this.archivedTextsTab.textList.first().findElement(by.css('input[type="checkbox"]'));
+	};
 	
 	this.propertiesTab = {
 		name:		element(by.model('project.projectname')),
