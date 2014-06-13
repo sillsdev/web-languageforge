@@ -62,7 +62,7 @@
 			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn" data-ng-click="publishQuestions()"><i class="icon-globe icon-large"></i>Re-publish Questions</button>
 		</form>
 		<hr />
-        <div listview hide-if-empty="true" items="archivedQuestions" visible-items="visibleArchivedQuestions" select="">
+        <div listview hide-if-empty="true" search="queryTextSettings()" items="settings.archivedQuestions" visible-items="visibleArchivedQuestions" select="">
 			<div data-ng-repeat="question in visibleArchivedQuestions" class="details-row">
 				<ul class="inline" data-ng-class="{active: isSelected(question)}">
 					<li data-ng-show="rights.archive"><input type="checkbox" data-ng-click="updateSelection($event, question)" /></li>
@@ -71,8 +71,8 @@
 							<span class="larger-text">{{question.calculatedTitle}}</span>
 						</a>
 					</li>
-					<li>{{getAnswerCount(question)}} answers</li>
-					<li>{{getResponses(question)}} responses</li>
+					<li>{{question.answerCount}} answers</li>
+					<li>{{question.responseCount}} responses</li>
 					<li>Archived on {{question.dateModified | date:'fullDate'}}</li>
 				</ul>
 				<hr />
