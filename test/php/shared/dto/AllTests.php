@@ -9,6 +9,8 @@ class AllSharedDtoTests extends TestSuite {
         parent::__construct();
         $this->addFile(TestPath . 'shared/dto/ManageUsersDto_Test.php');
 		$this->addFile(TestPath . 'shared/dto/ProjectListDto_Test.php');
+		$this->addFile(TestPath . 'shared/dto/RightsHelper_Test.php');
+		$this->addFile(TestPath . 'shared/dto/UserProfileDto_Test.php');
     }
 
 }

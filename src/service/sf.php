@@ -359,8 +359,12 @@ class Sf
 		return QuestionCommands::readQuestion($projectId, $questionId);
 	}
 	
-	public function question_delete($projectId, $questionIds) {
-		return QuestionCommands::deleteQuestions($projectId, $questionIds);
+	public function question_archive($projectId, $questionIds) {
+		return QuestionCommands::archiveQuestions($projectId, $questionIds);
+	}
+	
+	public function question_publish($projectId, $questionIds) {
+		return QuestionCommands::publishQuestions($projectId, $questionIds);
 	}
 	
 	public function question_update_answer($projectId, $questionId, $answer) {

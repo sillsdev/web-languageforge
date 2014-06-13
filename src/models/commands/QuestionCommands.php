@@ -2,15 +2,15 @@
 
 namespace models\commands;
 
-use models\UserVoteModel;
 use models\scriptureforge\dto\QuestionCommentDto;
-use models\CommentModel;
-use models\AnswerModel;
-use models\ProjectModel;
-use models\QuestionModel;
+use models\commands\ActivityCommands;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
-use models\commands\ActivityCommands;
+use models\AnswerModel;
+use models\CommentModel;
+use models\ProjectModel;
+use models\QuestionModel;
+use models\UserVoteModel;
 
 class QuestionCommands
 {
@@ -34,6 +34,40 @@ class QuestionCommands
 		$projectModel = new \models\ProjectModel($projectId);
 		$questionModel = new \models\QuestionModel($projectModel, $questionId);
 		return JsonEncoder::encode($questionModel);
+	}
+	
+	/**
+	 * @param string $projectId
+	 * @param array $questionIds
+	 * @return int Total number of questions archived.
+	 */
+	public static function archiveQuestions($projectId, $questionIds) {
+		$project = new ProjectModel($projectId);
+		$count = 0;
+		foreach ($questionIds as $questionId) {
+			$question = new QuestionModel($project, $questionId);
+			$question->isArchived = true;
+			$question->write();
+			$count++;
+		}
+		return $count;
+	}
+	
+	/**
+	 * @param string $projectId
+	 * @param array $questionIds
+	 * @return int Total number of questions published.
+	 */
+	public static function publishQuestions($projectId, $questionIds) {
+		$project = new ProjectModel($projectId);
+		$count = 0;
+		foreach ($questionIds as $questionId) {
+			$question = new QuestionModel($project, $questionId);
+			$question->isArchived = false;
+			$question->write();
+			$count++;
+		}
+		return $count;
 	}
 	
 	/**
