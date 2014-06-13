@@ -46,7 +46,6 @@ require_once(APPPATH . 'vendor/autoload.php');
 require_once(APPPATH . 'config/sf_config.php');
 require_once(APPPATH . 'models/ProjectModel.php');
 require_once(APPPATH . 'models/QuestionModel.php');
-require_once(APPPATH . 'models/QuestionTemplateModel.php');
 require_once(APPPATH . 'models/TextModel.php');
 require_once(APPPATH . 'models/UserModel.php');
 
@@ -328,8 +327,12 @@ class Sf
 		return TextCommands::readText($projectId, $textId);
 	}
 	
-	public function text_delete($projectId, $textIds) {
-		return TextCommands::deleteTexts($projectId, $textIds);
+	public function text_archive($projectId, $textIds) {
+		return TextCommands::archiveTexts($projectId, $textIds);
+	}
+	
+	public function text_publish($projectId, $textIds) {
+		return TextCommands::publishTexts($projectId, $textIds);
 	}
 	
 	public function text_list_dto($projectId) {
@@ -397,19 +400,19 @@ class Sf
 	//---------------------------------------------------------------
 
 	public function questionTemplate_update($projectId, $model) {
-		return QuestionTemplateCommands::updateTemplate($model);
+		return QuestionTemplateCommands::updateTemplate($projectId, $model);
 	}
 
-	public function questionTemplate_read($id) {
-		return QuestionTemplateCommands::readTemplate($id);
+	public function questionTemplate_read($projectId, $id) {
+		return QuestionTemplateCommands::readTemplate($projectId, $id);
 	}
 
-	public function questionTemplate_delete($questionTemplateIds) {
-		return QuestionTemplateCommands::deleteQuestionTemplates($questionTemplateIds);
+	public function questionTemplate_delete($projectId, $questionTemplateIds) {
+		return QuestionTemplateCommands::deleteQuestionTemplates($projectId, $questionTemplateIds);
 	}
 
-	public function questionTemplate_list() {
-		return QuestionTemplateCommands::listTemplates();
+	public function questionTemplate_list($projectId) {
+		return QuestionTemplateCommands::listTemplates($projectId);
 	}
 	
 	

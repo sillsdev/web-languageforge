@@ -44,9 +44,9 @@
 	<target name="build" />
 
 	<target name="test-js-unit" depends="composer">
-		 <exec executable="/usr/local/bin/karma">
+		 <exec executable="node" dir="test">
+			 <arg value="node_modules/karma/bin/karma" />
 			 <arg value="start" />
-			 <arg file="test/karma.conf.js" />
 			 <arg value="--reporters" />
 			 <arg value="teamcity" />
 			 <arg value="--single-run" />
@@ -54,13 +54,8 @@
 	</target>
 
 	<target name="test-js-e2e" depends="composer,installForE2eTest">
-		 <exec executable="/usr/local/bin/karma">
-			 <arg value="start" />
-			 <arg file="test/karma-e2e.conf.js" />
-			 <arg value="--single-run" />
-			 <arg value="--reporters" />
-			 <arg value="teamcity" />
-		 </exec>
+	    <!--
+  		-->
 	</target>
 	
 	<target name="test-php" depends="prepare,composer">
@@ -72,11 +67,9 @@
 	 </target>
 
 	<target name="test">
-	    <!-- commented out until these are revisited and made working again (the e2e tests are hanging as of 2013-10-24 cjh)
+		<antcall target="test-php" />
 		<antcall target="test-js-unit" />
 		<antcall target="test-js-e2e" />
-		-->
-		<antcall target="test-php" />
 	</target>
 	
 	<target name="composer">

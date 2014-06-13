@@ -155,8 +155,9 @@ class RightsHelper
 			case 'text_exportComments':
 				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::TEXTS + Operation::EDIT);
 
-			case 'text_delete':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::TEXTS + Operation::DELETE);
+			case 'text_archive':
+			case 'text_publish':
+				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::TEXTS + Operation::ARCHIVE);
 
 			case 'question_update':
 			case 'question_read':

@@ -20,7 +20,6 @@ require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-require_once(SourcePath . '/models/QuestionTemplateModel.php');
 
 class ApiCrudTestEnvironment {
 	
@@ -169,47 +168,48 @@ class TestApiCrud extends UnitTestCase {
 	
 	function testQuestionTemplateCRUD_CRUDOK() {
 		$e = new ApiCrudTestEnvironment();
+		$projectId = $e->makeProject();
 
 		// Initial List
-		$result = $e->json(QuestionTemplateCommands::listTemplates());
+		$result = $e->json(QuestionTemplateCommands::listTemplates($projectId));
 		$existingCount = $result['count'];
 
 		// Create
 		$model = array('id'=>'','title'=>'Template Title', 'description' => 'Nice and clear description');
-		$id = QuestionTemplateCommands::updateTemplate($model);
+		$id = QuestionTemplateCommands::updateTemplate($projectId, $model);
 		$this->assertNotNull($id);
 		$this->assertEqual(24, strlen($id));
 
 		// Create Second
 		$model = array('id'=>'','title'=>'Template Title 2', 'description' => 'Nice and clear description 2');
-		$id2 = QuestionTemplateCommands::updateTemplate($model);
+		$id2 = QuestionTemplateCommands::updateTemplate($projectId, $model);
 
 		// List
-		$result = $e->json(QuestionTemplateCommands::listTemplates());
+		$result = $e->json(QuestionTemplateCommands::listTemplates($projectId));
 		$this->assertEqual($result['count'], $existingCount + 2);
 		
 		
 		// Read
-		$result = $e->json(QuestionTemplateCommands::readTemplate($id));
+		$result = $e->json(QuestionTemplateCommands::readTemplate($projectId, $id));
 		$this->assertNotNull($result['id']);
 		$this->assertEqual('Template Title', $result['title']);
 		$this->assertEqual('Nice and clear description', $result['description']);
 
 		// Update
 		$result['description'] = 'Muddled description';
-		$newid = QuestionTemplateCommands::updateTemplate($result);
+		$newid = QuestionTemplateCommands::updateTemplate($projectId, $result);
 		$this->assertNotNull($newid);
 		$this->assertEqual($id, $newid);
 
 		// Verify update actually changed DB
-		$postUpdateResult = $e->json(QuestionTemplateCommands::readTemplate($id));
+		$postUpdateResult = $e->json(QuestionTemplateCommands::readTemplate($projectId, $id));
 		$this->assertNotNull($postUpdateResult['id']);
 		$this->assertEqual($postUpdateResult['description'], 'Muddled description');
 
 		// Delete
-		$result = QuestionTemplateCommands::deleteQuestionTemplates(array($id));
+		$result = QuestionTemplateCommands::deleteQuestionTemplates($projectId, array($id));
 		$this->assertTrue($result);
-		QuestionTemplateCommands::deleteQuestionTemplates(array($id2));
+		QuestionTemplateCommands::deleteQuestionTemplates($projectId, array($id2));
 	}
 	
 	function testTextCRUD_CRUDOK() {

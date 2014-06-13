@@ -3,6 +3,7 @@
 describe('the project dashboard AKA text list page', function() {
 	var projectListPage = require('../../../pages/projectsPage.js');
 	var projectPage = require('../../../pages/projectPage.js');
+	var projectSettingsPage = require('../../../pages/projectSettingsPage.js');
 	var questionListPage = require('../../../pages/textPage.js');
 	var loginPage = require('../../../pages/loginPage.js');
 	var util = require('../../../pages/util.js');
@@ -71,18 +72,34 @@ describe('the project dashboard AKA text list page', function() {
 			browser.navigate().back();
 		});
 		
-		it('can delete the text that was just created', function() {
-			var deleteButton = projectPage.removeTextButton.find();
-			expect(deleteButton.isDisplayed()).toBe(true);
-			expect(deleteButton.isEnabled()).toBe(false);
+		it('can archive the text that was just created', function() {
+			var archiveButton = projectPage.archiveTextButton.find();
+			expect(archiveButton.isDisplayed()).toBe(true);
+			expect(archiveButton.isEnabled()).toBe(false);
 			util.setCheckbox(projectPage.getFirstCheckbox(), true);
-			expect(deleteButton.isEnabled()).toBe(true);
-			deleteButton.click();
+			expect(archiveButton.isEnabled()).toBe(true);
+			archiveButton.click();
 			browser.switchTo().alert().accept();
-			expect(deleteButton.isEnabled()).toBe(false);
+			expect(archiveButton.isEnabled()).toBe(false);
 			expect(projectPage.textLink(sampleTitle).isPresent()).toBe(false);
 		});
 
+		it('can re-publish the text that was just archived (Project Settings)', function() {
+			projectPage.settingsButton.click();
+			projectSettingsPage.tabs.archiveTexts.click();
+			expect(projectSettingsPage.archivedTextsTab.textLink(sampleTitle).isDisplayed()).toBe(true);
+			var publishButton = projectSettingsPage.archivedTextsTab.publishButton.find();
+			expect(publishButton.isDisplayed()).toBe(true);
+			expect(publishButton.isEnabled()).toBe(false);
+			util.setCheckbox(projectSettingsPage.archivedTextsTabGetFirstCheckbox(), true);
+			expect(publishButton.isEnabled()).toBe(true);
+			publishButton.click();
+			expect(projectSettingsPage.archivedTextsTab.textLink(sampleTitle).isPresent()).toBe(false);
+			expect(publishButton.isEnabled()).toBe(false);
+			browser.navigate().back();
+			expect(projectPage.textLink(sampleTitle).isDisplayed()).toBe(true);
+		});
+		
 		// I am avoiding testing creating a new text using the file dialog for importing a USX file... - cjh
 		// according to http://stackoverflow.com/questions/8851051/selenium-webdriver-and-browsers-select-file-dialog
 		// you can have selenium interact with the file dialog by sending keystrokes but this is highly OS dependent
@@ -106,10 +123,9 @@ describe('the project dashboard AKA text list page', function() {
 
 			// clean up the text
 			util.setCheckbox(projectPage.getFirstCheckbox(), true);
-			var deleteButton = projectPage.removeTextButton.find();
-			deleteButton.click();
+			var archiveButton = projectPage.archiveTextButton.find();
+			archiveButton.click();
 			browser.switchTo().alert().accept();
-
 		});
 	});
 });

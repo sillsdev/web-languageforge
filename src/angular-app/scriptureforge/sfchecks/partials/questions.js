@@ -51,7 +51,7 @@ angular.module(
 		};
 		$scope.templates = [$scope.emptyTemplate];
 		$scope.queryTemplates = function() {
-			qts.list(function(result) {
+			qts.list(projectId, function(result) {
 				if (result.ok) {
 					$scope.templates = result.data.entries;
 					// Add "(Select a template)" as default value
