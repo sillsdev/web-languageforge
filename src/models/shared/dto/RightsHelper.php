@@ -23,9 +23,9 @@ class RightsHelper
 {
 	/**
 	 * 
-	 * @var UserModel
+	 * @var string
 	 */
-	private $_userModel;
+	private $_userId;
 	
 	/**
 	 * 
@@ -36,23 +36,20 @@ class RightsHelper
 	/**
 	 * 
 	 * @param string $userId
-	 * @param string $projectId
+	 * @param ProjectModel $projectModel
 	 */
-	public function __construct($userModel, $projectModel) {
-		$this->_userModel = $userModel;
+	public function __construct($userId, $projectModel) {
+		$this->_userId = $userModel;
 		$this->_projectModel = $projectModel;
 	}
 
-	/**
-	 * @param UserModel $userModel
-	 * @param ProjectModel $projectModel
-	 */
 	public function encode() {
-		return $this->_projectModel->getRightsArray($this->_userModel->id->asString());
+		return $this->_projectModel->getRightsArray($this->_userId);
 	}
 	
-	public function userHasSiteRight($right) {
-		return SiteRoles::hasRight($this->_userModel->role, $right);
+	private function userHasSiteRight($right) {
+		$userModel = new UserModel($this->_userId);
+		return SiteRoles::hasRight($userModel->role, $right);
 	}
 	
 	/**
@@ -60,8 +57,8 @@ class RightsHelper
 	 * @param int $right
 	 * @return bool
 	 */
-	public function userHasProjectRight($right) {
-		return $this->_projectModel->hasRight($this->_userModel->id->asString(), $right);
+	private function userHasProjectRight($right) {
+		return $this->_projectModel->hasRight($this->_userId, $right);
 	}
 
 	
