@@ -57,21 +57,6 @@ angular.module('sfchecks.services', ['jsonRpc'])
 			jsonRpc.call('text_exportComments', [projectId, params], callback);
 		};
 	}])
-	.service('questionsService', ['jsonRpc', function(jsonRpc) {
-		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
-		this.read = function(projectId, questionId, callback) {
-			jsonRpc.call('question_read', [projectId, questionId], callback);
-		};
-		this.update = function(projectId, model, callback) {
-			jsonRpc.call('question_update', [projectId, model], callback);
-		};
-		this.remove = function(projectId, questionIds, callback) {
-			jsonRpc.call('question_delete', [projectId, questionIds], callback);
-		};
-		this.list = function(projectId, textId, callback) {
-			jsonRpc.call('question_list_dto', [projectId, textId], callback);
-		};
-	}])
 	.service('questionService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf');
 		this.read = function(projectId, questionId, callback) {
@@ -79,6 +64,15 @@ angular.module('sfchecks.services', ['jsonRpc'])
 		};
 		this.update = function(projectId, model, callback) {
 			jsonRpc.call('question_update', [projectId, model], callback);
+		};
+		this.archive = function(projectId, questionIds, callback) {
+			jsonRpc.call('question_archive', [projectId, questionIds], callback);
+		};
+		this.publish = function(projectId, questionIds, callback) {
+			jsonRpc.call('question_publish', [projectId, questionIds], callback);
+		};
+		this.list = function(projectId, textId, callback) {
+			jsonRpc.call('question_list_dto', [projectId, textId], callback);
 		};
 		this.update_answer = function(projectId, questionId, model, callback) {
 			jsonRpc.call('question_update_answer', [projectId, questionId, model], callback);
@@ -97,6 +91,25 @@ angular.module('sfchecks.services', ['jsonRpc'])
 		};
 		this.answer_voteDown = function(projectId, questionId, answerId, callback) {
 			jsonRpc.call('answer_vote_down', [projectId, questionId, answerId], callback);
+		};
+		
+		// Utility functions
+		this.util = {};
+		this.util.calculateTitle = function(title, description) {
+			var questionTitleCalculated;
+			if (!title || title == '') {
+				var spaceIndex = description.indexOf(' ', 50);
+				var shortTitle;
+				if (spaceIndex > -1) {
+					shortTitle = description.slice(0, spaceIndex) + '...';
+				} else {
+					shortTitle = description;
+				}
+				questionTitleCalculated = shortTitle;
+			} else {
+				questionTitleCalculated = title;
+			}
+			return questionTitleCalculated;
 		};
 	}])
 	.service('questionTemplateService', ['jsonRpc', function(jsonRpc) {

@@ -1,23 +1,18 @@
 <?php
 
 use models\scriptureforge\dto\ProjectPageDto;
-
-use models\TextModel;
 use models\QuestionModel;
+use models\TextModel;
 
-require_once(dirname(__FILE__) . '/../TestConfig.php');
+require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestProjectPageDto extends UnitTestCase {
 
-	function __construct() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	}
-
 	function testEncode_TextWithQuestions_DtoReturnsExpectedData() {
 		$e = new MongoTestEnvironment();
+		$e->clean();
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -68,7 +63,6 @@ class TestProjectPageDto extends UnitTestCase {
 		$this->assertEqual($dto['texts'][1]['title'], "Chapter 4");
 		$this->assertEqual($dto['texts'][0]['questionCount'], 2);
 		$this->assertEqual($dto['texts'][1]['questionCount'], 1);
-
 	}
 
 }

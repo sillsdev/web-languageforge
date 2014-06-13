@@ -1,14 +1,16 @@
 'use strict';
 
-describe('the questions list page AKA the text page', function() {
+describe('the questions list page (AKA the text page)', function() {
 	var projectListPage = require('../../../pages/projectsPage.js');
 	var projectPage = require('../../../pages/projectPage.js');
 	var textPage = require('../../../pages/textPage.js');
+	var textSettingsPage = require('../../../pages/textSettingsPage.js');
 	var loginPage = require('../../../pages/loginPage.js');
 	var util = require('../../../pages/util.js');
 	var constants = require('../../../../testConstants.json');
 
 	describe('a normal user', function() {
+
 		it('setup: login as normal user', function() {
 			loginPage.loginAsMember();
 			projectListPage.get();
@@ -40,7 +42,7 @@ describe('the questions list page AKA the text page', function() {
 		});
 
 		it('cannot delete questions', function() {
-			expect(textPage.deleteBtn.isDisplayed()).toBeFalsy();
+			expect(textPage.archiveButton.isDisplayed()).toBeFalsy();
 		});
 
 		it('cannot create templates', function() {
@@ -53,6 +55,9 @@ describe('the questions list page AKA the text page', function() {
 	});
 
 	describe('a project manager', function() {
+		var questionTitle = '111TestQTitle1234';
+		var questionDesc = '111TestQDesc1234';
+		
 		it('setup: login as manager', function() {
 			loginPage.loginAsManager();
 			projectListPage.get();
@@ -62,10 +67,45 @@ describe('the questions list page AKA the text page', function() {
 
 		it('can add new questions', function() {
 			expect(textPage.addNewBtn.isDisplayed()).toBeTruthy();
+			textPage.addNewQuestion(questionDesc, questionTitle);
+			expect(textPage.questionLink(questionTitle).isDisplayed()).toBe(true);
 		});
 
+		it('can click through to newly created question', function() {
+			textPage.questionLink(questionTitle).click();
+			browser.navigate().back();
+		});
+		
+		it('can archive the question that was just created', function() {
+			var archiveButton = textPage.archiveButton.find();
+			expect(archiveButton.isDisplayed()).toBe(true);
+			expect(archiveButton.isEnabled()).toBe(false);
+			util.setCheckbox(textPage.getFirstCheckbox(), true);
+			expect(archiveButton.isEnabled()).toBe(true);
+			archiveButton.click();
+			browser.switchTo().alert().accept();
+			expect(archiveButton.isEnabled()).toBe(false);
+			expect(textPage.questionLink(questionTitle).isPresent()).toBe(false);
+		});
+
+		it('can re-publish the question that was just archived (Text Settings)', function() {
+			textPage.textSettingsBtn.click();
+			textSettingsPage.tabs.archiveQuestions.click();
+			expect(textSettingsPage.archivedQuestionsTab.questionLink(questionTitle).isDisplayed()).toBe(true);
+			var publishButton = textSettingsPage.archivedQuestionsTab.publishButton.find();
+			expect(publishButton.isDisplayed()).toBe(true);
+			expect(publishButton.isEnabled()).toBe(false);
+			util.setCheckbox(textSettingsPage.archivedQuestionsTabGetFirstCheckbox(), true);
+			expect(publishButton.isEnabled()).toBe(true);
+			publishButton.click();
+			expect(textSettingsPage.archivedQuestionsTab.questionLink(questionTitle).isPresent()).toBe(false);
+			expect(publishButton.isEnabled()).toBe(false);
+			browser.navigate().back();
+			expect(textPage.questionLink(questionTitle).isDisplayed()).toBe(true);
+		});
+		
 		it('can delete questions', function() {
-			expect(textPage.deleteBtn.isDisplayed()).toBeTruthy();
+			expect(textPage.archiveButton.isDisplayed()).toBeTruthy();
 		});
 
 		it('can create templates', function() {
@@ -113,7 +153,7 @@ describe('the questions list page AKA the text page', function() {
 		});
 
 		it('can delete questions', function() {
-			expect(textPage.deleteBtn.isDisplayed()).toBeTruthy();
+			expect(textPage.archiveButton.isDisplayed()).toBeTruthy();
 		});
 
 		it('can create templates', function() {
@@ -126,4 +166,5 @@ describe('the questions list page AKA the text page', function() {
 			expect(textPage.textSettingsBtn.isDisplayed()).toBeTruthy();
 		});
 	});
+	
 });

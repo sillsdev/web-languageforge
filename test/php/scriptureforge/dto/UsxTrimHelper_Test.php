@@ -2,9 +2,8 @@
 
 use models\scriptureforge\dto\UsxTrimHelper;
 
-require_once(dirname(__FILE__) . '/../TestConfig.php');
+require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestUsxTrimHelper extends UnitTestCase {
