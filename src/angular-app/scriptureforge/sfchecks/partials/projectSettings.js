@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload', 'ngRoute'])
+angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'palaso.ui.picklistEditor', 'angularFileUpload', 'ngRoute'])
 .controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService', 'sfchecksLinkService',
                                     function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService, sfchecksLinkService) {
 	var projectId = $routeParams.projectId;
@@ -266,48 +266,34 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 				notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
 			}
 		});
+		$scope.unsavedChanges = false;
+		$scope.startWatchingPicklists();
 	};
-	
+
 	$scope.currentListId = '';
 	$scope.selectList = function(listId) {
 //		console.log("selectList ", listId);
 		$scope.currentListId = listId;
 	};
-	
-	Array.prototype.containsKey = function(obj_key, key) {
-	    var i = this.length;
-	    while (i--) {
-	        if (this[i][key] === obj_key) {
-	            return true;
-	        }
-	    }
-	    return false;
-	};
-	
-	$scope.pickAddItem = function() {
-//		console.log("pickAddItem ", $scope.currentListId, " ", $scope.newValue);
-//		console.log($scope.project.userProperties.userProfilePickLists[$scope.currentListId]);
-		if ($scope.project.userProperties.userProfilePickLists[$scope.currentListId].items == undefined) {
-			$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items = [];
-		}
-		
-		if ($scope.newValue != undefined) {
-			var pickItem = {};
-			pickItem.key = $scope.newValue.replace(/ /gi,'_');
-			pickItem.value = $scope.newValue;
 
-			// check if item exists before adding
-			if (!$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.containsKey(pickItem.key, 'key')) {
-				$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.push(pickItem);
-			}
+	$scope.picklistWatcher = function(newval, oldval) {
+		if (angular.isDefined(newval) && newval != oldval) {
+			$scope.unsavedChanges = true;
+			// Since a values watch is expensive, stop watching after first time data changes
+			$scope.stopWatchingPicklists();
 		}
 	};
-
-	$scope.pickRemoveItem = function(index) {
-//		console.log("pickRemoveItem ", $scope.currentListId, " ", index);
-		$scope.project.userProperties.userProfilePickLists[$scope.currentListId].items.splice(index, 1);
+	$scope.stopWatchingPicklists = function() {
+		if ($scope.deregisterPicklistWatcher) {
+			$scope.deregisterPicklistWatcher();
+			$scope.deregisterPicklistWatcher = undefined;
+		}
 	};
-	
+	$scope.startWatchingPicklists = function() {
+		$scope.stopWatchingPicklists(); // Ensure we never register two expensive watches at once
+		$scope.deregisterPicklistWatcher = $scope.$watch('project.userProperties.userProfilePickLists', $scope.picklistWatcher, true);
+	};
+
 	$scope.$watch('project.userProperties', function(newValue) {
 //		console.log("project watch ", newValue);
 		if (newValue != undefined) {
@@ -320,6 +306,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 				$scope.currentListsEnabled[$scope.project.userProperties.userProfilePropertiesEnabled[i]] = true;
 			}
 		}
+		$scope.startWatchingPicklists();
 	});
 
 }])
