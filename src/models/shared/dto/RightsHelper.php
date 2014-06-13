@@ -21,83 +21,52 @@ use models\shared\rights\ProjectRoles;
 
 class RightsHelper
 {
-	private $_userId;
-	private $_projectId;
+	/**
+	 * 
+	 * @var UserModel
+	 */
+	private $_userModel;
+	
+	/**
+	 * 
+	 * @var ProjectModel
+	 */
+	private $_projectModel;
 	
 	/**
 	 * 
 	 * @param string $userId
 	 * @param string $projectId
 	 */
-	public function __construct($userId, $projectId) {
-		$this->_userId = $userId;
-		$this->_projectId = $projectId;
+	public function __construct($userModel, $projectModel) {
+		$this->_userModel = $userModel;
+		$this->_projectModel = $projectModel;
 	}
 
 	/**
 	 * @param UserModel $userModel
 	 * @param ProjectModel $projectModel
 	 */
-	public function encode($userModel, $projectModel) {
-		$userModel = new UserModel($this->_userId);
-		
-		return $projectModel->getRightsArray($userModel->id->asString());
+	public function encode() {
+		return $this->_projectModel->getRightsArray($this->_userModel->id->asString());
 	}
 	
 	public function userHasSiteRight($right) {
-		$user = new UserModel($this->_userId);
-		return SiteRoles::hasRight($user->role, $right);
-	}
-	
-	public function userHasSfchecksProjectRightForAnyProject($right) {
-		$user = new UserModel($this->_userId);
-		foreach ($user->projects->refs as $id) {
-			if (self::userHasSfchecksProjectRight($id->asString(), $userId, $right)) {
-				return true;
-			}
-		}
-		return false;	
+		return SiteRoles::hasRight($this->_userModel->role, $right);
 	}
 	
 	/**
 	 * 
-	 * @param string $projectId
-	 * @param string $userId
 	 * @param int $right
 	 * @return bool
 	 */
-	public function userHasSfchecksProjectRight($projectId, $userId, $right) {
-		$project = new SfchecksProjectModel($projectId);
-		return $project->hasRight($userId, $right);
+	public function userHasProjectRight($right) {
+		return $this->_projectModel->hasRight($this->_userModel->id->asString(), $right);
 	}
 
-	/**
-	 * 
-	 * @param string $projectId
-	 * @param string $userId
-	 * @param int $right
-	 * @return bool
-	 */
-	public function userHasLexiconProjectRight($projectId, $userId, $right) {
-		$project = new LexiconProjectModel($projectId);
-		return $project->hasRight($userId, $right);
-	}
-
-	/**
-	 * 
-	 * @param string $projectId
-	 * @param string $userId
-	 * @param int $right
-	 * @return bool
-	 */
-	public function userHasRapumaProjectRight($projectId, $userId, $right) {
-		$project = new RapumaProjectModel($projectId);
-		return $project->hasRight($userId, $right);
-	}
 	
 	/**
 	 * 
-	 * @param string $userId
 	 * @param string $methodName
 	 * @param array $params - parameters passed to the method
 	 * @return boolean
@@ -110,132 +79,129 @@ class RightsHelper
 			case 'message_markRead':
 			case 'project_pageDto':
 			case 'lex_projectDto':
-				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::PROJECTS + Operation::VIEW);
+				return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+
 			case 'answer_vote_up':
 			case 'answer_vote_down':
-				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::ANSWERS + Operation::VIEW);
+				return $this->userHasProjectRight(Domain::ANSWERS + Operation::VIEW);
 
 			case 'text_list_dto':
-				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::TEXTS + Operation::VIEW);
+				return $this->userHasProjectRight(Domain::TEXTS + Operation::VIEW);
 				
 			case 'question_update_answer':
-				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::ANSWERS + Operation::EDIT_OWN);
+				return $this->userHasProjectRight(Domain::ANSWERS + Operation::EDIT_OWN);
 				
 			case 'question_remove_answer':
-				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::ANSWERS + Operation::DELETE_OWN);
+				return $this->userHasProjectRight(Domain::ANSWERS + Operation::DELETE_OWN);
 				
 			case 'question_update_comment':
-				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::COMMENTS + Operation::EDIT_OWN);
+				return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT_OWN);
 				
 			case 'question_remove_comment':
-				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::COMMENTS + Operation::DELETE_OWN);
+				return $this->userHasProjectRight(Domain::COMMENTS + Operation::DELETE_OWN);
 				
 			case 'question_comment_dto':
-				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::ANSWERS + Operation::VIEW);
+				return $this->userHasProjectRight(Domain::ANSWERS + Operation::VIEW);
 				
 			case 'question_list_dto':
-				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::QUESTIONS + Operation::VIEW);
+				return $this->userHasProjectRight(Domain::QUESTIONS + Operation::VIEW);
 
 			// Project Manager Role (Project Context)
 			case 'lex_manageUsersDto':
 			case 'user_createSimple':
-				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::USERS + Operation::CREATE);
+				return $this->userHasProjectRight(Domain::USERS + Operation::CREATE);
 				
 			case 'user_typeahead':
-				return self::userHasSfchecksProjectRightForAnyProject($this->_userId, Domain::USERS + Operation::VIEW);
+				return $this->userHasProjectRight(Domain::USERS + Operation::VIEW);
 				
 			case 'message_send':
 			case 'project_read':
 			case 'project_settings':
 			case 'project_updateSettings':
 			case 'project_readSettings':
-				return self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::PROJECTS + Operation::EDIT);
+				return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
 			case 'project_update':
 			case 'lex_project_update':
-				return (self::userHasSfchecksProjectRight($params[0]['id'], $this->_userId, Domain::PROJECTS + Operation::EDIT) ||
-						self::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT));
+				// TODO: why do we have two permissions granted here??? cjh 2014-06
+				return ($this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT) || $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT));
 				
 			case 'project_updateUserRole':
-				return (self::userHasSfchecksProjectRight($params[0], $this->_userId, Domain::USERS + Operation::EDIT) ||
-						self::userHasSiteRight($this->_userId, Domain::PROJECTS + Operation::EDIT));
+				// TODO: why do we have two permissions granted here??? cjh 2014-06
+				return ($this->userHasProjectRight(Domain::USERS + Operation::EDIT) || $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT));
 
 			case 'project_removeUsers':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::USERS + Operation::DELETE);
+				return $this->userHasProjectRight(Domain::USERS + Operation::DELETE);
 
 			case 'text_update':
 			case 'text_read':
 			case 'text_settings_dto':
 			case 'text_exportComments':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::TEXTS + Operation::EDIT);
+				return $this->userHasProjectRight(Domain::TEXTS + Operation::EDIT);
 
 			case 'text_archive':
 			case 'text_publish':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::TEXTS + Operation::ARCHIVE);
+				return $this->userHasProjectRight(Domain::TEXTS + Operation::ARCHIVE);
 
 			case 'question_update':
 			case 'question_read':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::QUESTIONS + Operation::EDIT);
+				return $this->userHasProjectRight(Domain::QUESTIONS + Operation::EDIT);
 
 			case 'question_delete':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::QUESTIONS + Operation::DELETE);
+				return $this->userHasProjectRight(Domain::QUESTIONS + Operation::DELETE);
 
 
 			// Admin (site context)
 			case 'user_read':
 			case 'user_list':
-				return self::userHasSiteRight($userId, Domain::USERS + Operation::VIEW);
+				return $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
 
 			case 'user_update':
 			case 'user_create':
-				return self::userHasSiteRight($userId, Domain::USERS + Operation::EDIT);
+				return $this->userHasSiteRight(Domain::USERS + Operation::EDIT);
 				
 			case 'user_delete':
-				return self::userHasSiteRight($userId, Domain::USERS + Operation::DELETE);
+				return $this->userHasSiteRight(Domain::USERS + Operation::DELETE);
 				
 			case 'project_delete':
-				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::DELETE);
+				return $this->userHasSiteRight(Domain::PROJECTS + Operation::DELETE);
 				
 			case 'project_list':
-				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::VIEW);
+				return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);
 			
 			case 'project_create':
-				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT);
+				return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 			
 				// TODO: refactor these permissions once questionTemplates are being properly stored on the project
 			case 'questionTemplate_update':
-				return true;
-				//return self::userHasSfchecksProjectRight($params[0], $userId, Domain::TEMPLATES + Operation::EDIT);
+				return $this->userHasProjectRight(Domain::TEMPLATES + Operation::EDIT);
 				
 			case 'questionTemplate_read':
-				return true;
-				//return self::userHasSiteRight($userId, Domain::TEMPLATES + Operation::EDIT);
+				return $this->userHasSiteRight(Domain::TEMPLATES + Operation::VIEW);
 
 			case 'questionTemplate_delete':
-				return true;
-				//return self::userHasSiteRight($userId, Domain::TEMPLATES + Operation::DELETE);
+				return $this->userHasSiteRight(Domain::TEMPLATES + Operation::DELETE);
 				
 			case 'questionTemplate_list':
-				return true; // temporary until we refactor templates...
-				//return self::userHasSfchecksProjectRight($params[0], $userId, Domain::TEMPLATES + Operation::VIEW);
+				return $this->userHasProjectRight(Domain::TEMPLATES + Operation::VIEW);
 
 
 			// User (site context)
 			case 'user_readProfile':
-				return self::userHasSiteRight($userId, Domain::USERS + Operation::VIEW_OWN);
+				return $this->userHasSiteRight(Domain::USERS + Operation::VIEW_OWN);
 				
 			case 'user_updateProfile':
 			case 'change_password': // change_password requires additional protection in the method itself
-				return self::userHasSiteRight($userId, Domain::USERS + Operation::EDIT_OWN);
+				return $this->userHasSiteRight(Domain::USERS + Operation::EDIT_OWN);
 			case 'project_list_dto':
 			case 'activity_list_dto':
-				return self::userHasSiteRight($userId, Domain::PROJECTS + Operation::VIEW_OWN);
+				return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW_OWN);
 				
 				
 			// LanguageForge (lexicon)
 			case 'lex_configuration_update':
 			case 'lex_import_lift':
-				return self::userHasLexiconProjectRight($params[0], $userId, Domain::PROJECTS + Operation::EDIT);
+				return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 				
 			// grant general permission until a better, app-specific rightsHelper can be developed
 			// TODO: refactor rightshelper to be app specific!
@@ -245,7 +211,7 @@ class RightsHelper
 			case 'lex_entry_update':
 			case 'lex_entry_remove':
 			case 'lex_entry_updateComment':
-				return self::userHasLexiconProjectRight($params[0], $userId, Domain::PROJECTS + Operation::VIEW);
+				return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 				
 				
 				
