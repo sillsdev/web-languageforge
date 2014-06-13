@@ -743,4 +743,43 @@ label {
 	line-height: 1.4em;
 }
 
+/* Notifications */
+.alert {
+	margin-top: 8px;
+	margin-bottom: 4px;
+	padding: 7px 10px 7px 35px;
+}
+
+.alert .close {
+	top: 0px;
+	right: 0px;
+}
+
+.notification {
+	position: relative;
+	margin: 0 0 10px;
+	padding: 7px 10px 7px 35px;
+	line-height: 15px;
+	font-size: 0.9em;
+}
+
+.alert-error {
+	background: url(/images/shared/exclamation.png) no-repeat scroll 8px 8px #ffeeee;
+	border: 1px solid #e47b7b;
+}
+
+.alert-warn {
+	background: url(/images/shared/error.png) no-repeat scroll 8px 8px #FFFDF1;
+	border: 1px solid #FFE578;
+}
+
+.alert-success {
+	background: url(/images/shared/tick.png) no-repeat scroll 8px 8px #f4fff2;
+	border: 1px solid #81ca76;
+}
+
+.alert-info {
+	background: url(/images/shared/information.png) no-repeat scroll 8px 8px #F4FAFF;
+	border: 1px solid #AECEEF;
+}
 
