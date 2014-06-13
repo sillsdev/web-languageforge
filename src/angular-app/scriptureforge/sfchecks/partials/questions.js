@@ -188,23 +188,6 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		});
 	};
 	
-	$scope.calculateTitle = function(title, description) {
-		var questionTitleCalculated;
-		if (!title || title == '') {
-			var spaceIndex = description.indexOf(' ', 50);
-			var shortTitle;
-			if (spaceIndex > -1) {
-				shortTitle = description.slice(0, spaceIndex) + '...';
-			} else {
-				shortTitle = description;
-			}
-			questionTitleCalculated = shortTitle;
-		} else {
-			questionTitleCalculated = title;
-		}
-		return questionTitleCalculated;
-	};
-	
 	$scope.makeQuestionIntoTemplate = function() {
 		// Expects one, and only one, question to be selected (checked)
 		var l = $scope.selected.length;
@@ -235,13 +218,13 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	$scope.enhanceDto = function(items) {
 		angular.forEach(items, function(item) {
 			item.url = sfchecksLinkService.question(projectId, textId, item.id);
-			item.calculatedTitle = $scope.calculateTitle(item.title, item.description);
+			item.calculatedTitle = questionService.util.calculateTitle(item.title, item.description);
 		});
 	};
 	
 }])
-.controller('QuestionsSettingsCtrl', ['$scope', '$http', 'textService', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService',
-                                      function($scope, $http, textService, ss, $routeParams, breadcrumbService, notice, sfchecksLinkService) {
+.controller('QuestionsSettingsCtrl', ['$scope', '$http', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService',
+                                      function($scope, $http, ss, $routeParams, breadcrumbService, notice, textService, questionService, sfchecksLinkService) {
 	var projectId = $routeParams.projectId;
 	var textId = $routeParams.textId;
 	$scope.projectId = projectId;

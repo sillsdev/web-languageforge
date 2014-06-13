@@ -92,6 +92,25 @@ angular.module('sfchecks.services', ['jsonRpc'])
 		this.answer_voteDown = function(projectId, questionId, answerId, callback) {
 			jsonRpc.call('answer_vote_down', [projectId, questionId, answerId], callback);
 		};
+		
+		// Utility functions
+		this.util = {};
+		this.util.calculateTitle = function(title, description) {
+			var questionTitleCalculated;
+			if (!title || title == '') {
+				var spaceIndex = description.indexOf(' ', 50);
+				var shortTitle;
+				if (spaceIndex > -1) {
+					shortTitle = description.slice(0, spaceIndex) + '...';
+				} else {
+					shortTitle = description;
+				}
+				questionTitleCalculated = shortTitle;
+			} else {
+				questionTitleCalculated = title;
+			}
+			return questionTitleCalculated;
+		};
 	}])
 	.service('questionTemplateService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf');
