@@ -1,6 +1,7 @@
 <?php
 
 use models\scriptureforge\dto\QuestionCommentDto;
+use models\shared\rights\ProjectRoles;
 use models\mapper\MongoStore;
 use models\AnswerModel;
 use models\CommentModel;
@@ -81,6 +82,79 @@ class TestQuestionCommentDto extends UnitTestCase {
 		$this->assertEqual($dto['question']['answers'][$aid]['comments'][$cid2]['userRef']['username'], 'user2');
 		$this->assertEqual($dto['question']['answers'][$aid]['comments'][$cid2]['userRef']['avatar_ref'], 'user2.png');
 	}
+
+	function testEncode_ArchivedQuestion_ManagerCanViewContributorCannot() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+	
+		$project = $e->createProject(SF_TESTPROJECT);
+	
+		$managerId = $e->createUser("manager", "manager", "manager@email.com");
+		$contributorId = $e->createUser("contributor1", "contributor1", "contributor1@email.com");
+		$project->addUser($managerId, ProjectRoles::MANAGER);
+		$project->addUser($contributorId, ProjectRoles::CONTRIBUTOR);
+		$project->write();
+	
+		// Text not archived but Question is archived
+		$text = new TextModel($project);
+		$text->title = "Text 1";
+		$textId = $text->write();
+	
+		$question = new QuestionModel($project);
+		$question->title = "the question";
+		$question->description = "question description";
+		$question->textRef->id = $textId;
+		$question->isArchived = true;
+		$questionId = $question->write();
+	
+		$dto = QuestionCommentDto::encode($project->id->asString(), $questionId, $managerId);
+	
+		// Manager can view Question of archived Text
+		$this->assertEqual($dto['question']['title'], 'the question');
+	
+		// Contributor cannot view Question of archived Text, throw Exception
+		$e->inhibitErrorDisplay();
+		$this->expectException();
+		$dto = QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
+		$e->restoreErrorDisplay();
+	}
+	
+	function testEncode_ArchivedText_ManagerCanViewContributorCannot() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+	
+		$project = $e->createProject(SF_TESTPROJECT);
+	
+		$managerId = $e->createUser("manager", "manager", "manager@email.com");
+		$contributorId = $e->createUser("contributor1", "contributor1", "contributor1@email.com");
+		$project->addUser($managerId, ProjectRoles::MANAGER);
+		$project->addUser($contributorId, ProjectRoles::CONTRIBUTOR);
+		$project->write();
+	
+		// Question not archived but Text is archived
+		$text = new TextModel($project);
+		$text->title = "Text 1";
+		$text->isArchived = true;
+		$textId = $text->write();
+	
+		$question = new QuestionModel($project);
+		$question->title = "the question";
+		$question->description = "question description";
+		$question->textRef->id = $textId;
+		$questionId = $question->write();
+	
+		$dto = QuestionCommentDto::encode($project->id->asString(), $questionId, $managerId);
+	
+		// Manager can view Question of archived Text
+		$this->assertEqual($dto['question']['title'], 'the question');
+	
+		// Contributor cannot view Question of archived Text, throw Exception
+		$e->inhibitErrorDisplay();
+		$this->expectException();
+		$dto = QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
+		$e->restoreErrorDisplay();
+	}
+	
 }
 
 ?>
