@@ -4,7 +4,7 @@
 	<alert data-ng-repeat="message in messages" type="info" close="markMessageRead(message.id)"><b>{{message.subject}}</b><br /><span data-ng-bind-html="message.content"></span></alert>
 </div>
 <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-	<a id="projectSettingsButton" data-ng-show="rights.edit" class="btn pull-right" href="{{project.url}}/settings"><i class="icon-cog icon-2x" data-tooltip="Project Settings"></i></a>
+	<a id="projectSettingsButton" data-ng-show="rights.edit" class="btn pull-right" href="{{project.url}}/settings"><i class="icon-cog icon-large" data-tooltip="Project Settings"></i></a>
 	<button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn" data-ng-click="archiveTexts()"><i class="icon-archive icon-large" style="color:black"></i>Archive Texts</button>
 	<button data-ng-show="rights.create" class="btn" data-ng-click="newTextCollapsed = !newTextCollapsed"><i class="icon-plus"></i>Add New Text</button>
 </form>

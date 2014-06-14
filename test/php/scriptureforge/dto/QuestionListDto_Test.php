@@ -1,10 +1,12 @@
 <?php
 
+use models\shared\rights\ProjectRoles;
 use models\scriptureforge\dto\QuestionListDto;
 use models\AnswerModel;
 use models\CommentModel;
 use models\QuestionModel;
 use models\TextModel;
+use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -22,7 +24,6 @@ class TestQuestionListDto extends UnitTestCase {
 		$text = new TextModel($project);
 		$text->title = "Chapter 3";
 		$text->content = '<usx version="2.0"> <chapter number="1" style="c" /> <verse number="1" style="v" /> <para style="q1">Blessed is the man</para> <para style="q2">who does not walk in the counsel of the wicked</para> <para style="q1">or stand in the way of sinners</para> <usx>';
-		
 		$textId = $text->write();
 
 		// Answers are tied to specific users, so let's create some sample users
@@ -73,7 +74,7 @@ class TestQuestionListDto extends UnitTestCase {
 
 		$dto = QuestionListDto::encode($projectId, $textId, $user1Id);
 
-		// Now check that it all looks right
+		// Now check that it all looks right, 1 Text & 2 Questions
 		$this->assertEqual($dto['count'], 2);
 		$this->assertIsa($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $question1Id);
@@ -88,16 +89,48 @@ class TestQuestionListDto extends UnitTestCase {
 		// make sure our text content is coming down into the dto
 		$this->assertTrue(strlen($dto['text']['content']) > 0);
 		
-		// archive 1 question
+		// archive 1 Question
 		$question1->isArchived = true;
 		$question1->write();
 		
 		$dto = QuestionListDto::encode($projectId, $textId, $user1Id);
 
-		// Now check that it all still looks right
+		// Now check that it all still looks right, now only 1 Question
 		$this->assertEqual($dto['count'], 1);
 		$this->assertEqual($dto['entries'][0]['id'], $question2Id);
 		$this->assertEqual($dto['entries'][0]['title'], "Where is the storyteller?");
+	}
+	
+	function testEncode_ArchivedText_ManagerCanViewContributorCannot() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+
+		// archived Text
+		$text = new TextModel($project);
+		$text->title = "Chapter 3";
+		$text->isArchived = true;
+		$textId = $text->write();
+
+		// Answers are tied to specific users, so let's create some sample users
+		$managerId = $e->createUser("jcarter", "John Carter", "johncarter@example.com");
+		$contributorId = $e->createUser("dthoris", "Dejah Thoris", "princess@example.com");
+		$project->addUser($managerId, ProjectRoles::MANAGER);
+		$project->addUser($contributorId, ProjectRoles::CONTRIBUTOR);
+		$project->write();
+
+		$dto = QuestionListDto::encode($projectId, $textId, $managerId);
+		
+		// Manager can view archived Text
+		$this->assertEqual($dto['text']['title'], "Chapter 3");
+		
+		// Contributor cannot view archived Text, throw Exception
+		$e->inhibitErrorDisplay();
+		$this->expectException();
+		$dto = QuestionListDto::encode($projectId, $textId, $contributorId);
+		$e->restoreErrorDisplay();
 	}
 	
 }

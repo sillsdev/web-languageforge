@@ -3,6 +3,7 @@
 namespace models\scriptureforge\dto;
 
 use models\shared\dto\RightsHelper;
+use models\shared\rights\ProjectRoles;
 use models\scriptureforge\SfchecksProjectModel;
 use models\mapper\JsonEncoder;
 use models\ProjectModel;
@@ -21,24 +22,27 @@ class QuestionListDto
 	 * @returns array - the DTO array
 	 */
 	public static function encode($projectId, $textId, $userId) {
-		$userModel = new UserModel($userId);
-		$projectModel = new SfchecksProjectModel($projectId);
-		$questionList = new QuestionAnswersListModel($projectModel, $textId);
+		$project = new SfchecksProjectModel($projectId);
+		$text = new TextModel($project, $textId);
+		$user = new UserModel($userId);
+		if ($text->isArchived && $project->users[$userId]->role != ProjectRoles::MANAGER) {
+			throw new \Exception("This Text is no longer available.\nIf this is incorrect contact your project manager.\n");
+		}
+		$questionList = new QuestionAnswersListModel($project, $textId);
 		$questionList->read();
 
 		$data = array();
-		$data['rights'] = RightsHelper::encode($userModel, $projectModel);
+		$data['rights'] = RightsHelper::encode($user, $project);
 		$data['entries'] = array();
 		$data['project'] = array(
-				'name' => $projectModel->projectname,
-				'allowAudioDownload' => $projectModel->allowAudioDownload,
+				'name' => $project->projectname,
+				'allowAudioDownload' => $project->allowAudioDownload,
 				'id' => $projectId);
-		$textModel = new TextModel($projectModel, $textId);
-		$data['text'] = JsonEncoder::encode($textModel);
-		$usxHelper = new UsxHelper($textModel->content);
+		$data['text'] = JsonEncoder::encode($text);
+		$usxHelper = new UsxHelper($text->content);
 		$data['text']['content'] = $usxHelper->toHtml();
 		foreach ($questionList->entries as $questionData) {
-			$question = new QuestionModel($projectModel, $questionData['id']);
+			$question = new QuestionModel($project, $questionData['id']);
 			if (! $question->isArchived) {
 				// Just want answer count, not whole list
 				$questionData['answerCount'] = count($questionData['answers']);
