@@ -1,8 +1,6 @@
 @charset "UTF-8";
 
-[data-ng-repeat-reorder].dragging {
-	z-index: 11;
-	position: absolute;
+.sv-helper {
 	-webkit-transform: rotate(4deg);
 	transform: rotate(4deg);
 }
@@ -51,4 +49,5 @@
 [sv-placeholder] {
 	border: 1px dashed black !important;
 	backgrond-color: #e5e5e5;
+	opacity: 0.4;
 }
