@@ -2,6 +2,8 @@
 
 namespace models\commands;
 
+use models\scriptureforge\SfchecksProjectModel;
+
 use models\languageforge\LfProjectModel;
 
 use models\scriptureforge\SfProjectModel;
@@ -51,23 +53,29 @@ class ProjectCommands
 	 * @throws \Exception
 	 * @return string projectId
 	 */
-	public static function updateProject($object, $userId) {
-		// todo: do we still use updateProject to create new projects, now that there is a perfectly fine createProject method???  - cjh 2014-06
+	public static function updateProject($object, $userId, $projectId) {
+		
+		// todo: move this method to sfchecksprojectcommands
+		
+		// todo: remove ability to create projects with this method
+
 		$project = new ProjectModel();
 		$id = $object['id'];
 		$isNewProject = ($id == '');
 		$oldDBName = '';
 		if ($isNewProject) {
-			if (!RightsHelper::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT)) {
+			if (!RightsHelper::hasSiteRight($userId, Domain::PROJECTS + Operation::EDIT)) {
 				throw new UserUnauthorizedException("Insufficient privileges to create new project in method 'updateProject'");
 			}
 		} else {
-			if (!RightsHelper::userHasSfchecksProjectRight($id, $userId, Domain::USERS + Operation::EDIT)) {
+			$project = new SfchecksProjectModel($projectId);
+			if (!$project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
 				throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
 			}
 			$project->read($id);
 			$oldDBName = $project->databaseName();
 		}
+
 		JsonDecoder::decode($project, $object);
 		$newDBName = $project->databaseName();
 		if (($oldDBName != '') && ($oldDBName != $newDBName)) {

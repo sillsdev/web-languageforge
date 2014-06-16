@@ -22,14 +22,15 @@ class TestRightsHelper extends UnitTestCase {
 		$e->clean();
 	}
 
-	function testuserCanAccessMethod_unknownMethodName_false() {
+	function testuserCanAccessMethod_unknownMethodName_throws() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
+		$rh = new RightsHelper($userId);
 		
 		$e->inhibitErrorDisplay();
 		$this->expectException();
-		$result = RightsHelper::userCanAccessMethod($userId, 'bogusMethodName', array());
+		$result = $rh->userCanAccessMethod($userId, 'bogusMethodName', array());
 		$e->restoreErrorDisplay();
 	}
 
@@ -44,7 +45,8 @@ class TestRightsHelper extends UnitTestCase {
 		$project->write();
 		$user->addProject($projectId);
 		$user->write();
-		$result = RightsHelper::userCanAccessMethod($userId, 'project_settings', array($projectId));
+		$rh = new RightsHelper($userId, $project);
+		$result = $rh->userCanAccessMethod('project_settings', array($projectId));
 		$this->assertTrue($result);
 	}
 
@@ -59,7 +61,8 @@ class TestRightsHelper extends UnitTestCase {
 		$project->write();
 		$user->addProject($projectId);
 		$user->write();
-		$result = RightsHelper::userCanAccessMethod($userId, 'project_settings', array($projectId));
+		$rh = new RightsHelper($userId, $project);
+		$result = $rh->userCanAccessMethod('project_settings', array($projectId));
 		$this->assertFalse($result);
 	}
 	
@@ -69,7 +72,8 @@ class TestRightsHelper extends UnitTestCase {
 		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
 		$project = $e->createProject('projectForTest');
 		$projectId = $project->id->asString();
-		$result = RightsHelper::userCanAccessMethod($userId, 'project_pageDto', array($projectId));
+		$rh = new RightsHelper($userId, $project);
+		$result = $rh->userCanAccessMethod('project_pageDto', array($projectId));
 		$this->assertFalse($result);
 	}
 }
