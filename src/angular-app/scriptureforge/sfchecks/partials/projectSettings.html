@@ -143,22 +143,22 @@
 		<form class="well" data-ng-submit="updateProject()">
 		<div class="row">
 		<div class="span4">
-		<fieldset class="well picklists">
+		<fieldset class="well picklists" id="showInProfileFieldset">
 			<legend>Show in the User's Profile</legend>
 			<ul class="unstyled">
   				<li data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"><div class="checkbox"><input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list.name}}</div></li>
 			</ul>
 		</fieldset>
-		<fieldset class="well picklists">
+		<fieldset class="well picklists" id="editListValuesFieldset">
 			<legend>Edit list values</legend>
 			<ul class="unstyled">
   				<li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists" data-ng-class="{selected:currentListId == listId}">{{list.name}}</li>
 			</ul>
 		</fieldset>
-		<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+		<button id="user_profile_lists_save_button" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 		<span ng-show="unsavedChanges" class="unsaved-warning" style="color: red">You have unsaved changes.</span> <!-- Remove the style="" attr once class has real CSS definition -->
 		</div><div class="span4">
-		<fieldset class="well">
+		<fieldset class="well" id="picklistEditorFieldset">
 			<legend style="width:auto;">{{project.userProperties.userProfilePickLists[currentListId].name}}</legend>
 			<picklist-editor items="project.userProperties.userProfilePickLists[currentListId].items" default-key="project.userProperties.userProfilePickLists[currentListId].defaultKey"></picklist-editor>
 		</fieldset>
