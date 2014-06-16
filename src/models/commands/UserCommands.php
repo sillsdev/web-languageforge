@@ -141,7 +141,7 @@ class UserCommands {
 	 * @throws \Exception
 	 */
 	public static function changePassword($userId, $newPassword, $currUserId) {
-		if ($userId != $currUserId && !RightsHelper::userHasSiteRight($currUserId, Domain::USERS + Operation::EDIT)) {
+		if ($userId != $currUserId && !RightsHelper::hasSiteRight($currUserId, Domain::USERS + Operation::EDIT)) {
 			throw new UserUnauthorizedException();
 		}
 		$user = new \models\PasswordModel($userId);
