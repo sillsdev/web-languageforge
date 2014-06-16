@@ -46,7 +46,7 @@ class Base extends CI_Controller {
 				$userId = (string)$this->session->userdata('user_id');
 				$this->_userId = $userId;
 				$this->_user = new \models\UserModel($userId);
-				$this->_projectId = (string)$controller->session->userdata('projectId');
+				$this->_projectId = (string)$this->session->userdata('projectId');
 			} catch (Exception $e) {
 				error_log("User $userId not found, logged out.\n" . $e->getMessage());
 				$this->ion_auth->logout();
