@@ -33,21 +33,43 @@ class RightsHelper
 	 */
 	private $_projectModel;
 	
+	
+	/**
+	 * 
+	 * @param unknown $userModel
+	 * @param unknown $projectModel
+	 * @return multitype:
+	 */
+	public static function encode($userModel, $projectModel) {
+		return $this->_projectModel->getRightsArray($this->_userId);
+	}
+	
+	/**
+	 * 
+	 * @param unknown $userId
+	 * @param unknown $right
+	 * @return boolean
+	 */
+	// Note: there is a bug/annoyance in PHP5 whereby you cannot have an object method and a static method named the same
+	// I named this static function slightly different from the userHasSiteRight to avoid this naming conflict
+	// @see http://stackoverflow.com/questions/11331616/php-is-it-possible-to-declare-a-method-static-and-nonstatic
+	// @see https://bugs.php.net/bug.php?id=40837
+	public static function hasSiteRight($userId, $right) {
+		$userModel = new UserModel($userId);
+		return SiteRoles::hasRight($userModel->role, $right);
+	}
+	
 	/**
 	 * 
 	 * @param string $userId
 	 * @param ProjectModel $projectModel
 	 */
-	public function __construct($userId, $projectModel) {
+	public function __construct($userId, $projectModel = null) {
 		$this->_userId = $userModel;
 		$this->_projectModel = $projectModel;
 	}
 
-	public function encode() {
-		return $this->_projectModel->getRightsArray($this->_userId);
-	}
-	
-	private function userHasSiteRight($right) {
+	public function userHasSiteRight($right) {
 		$userModel = new UserModel($this->_userId);
 		return SiteRoles::hasRight($userModel->role, $right);
 	}
@@ -57,11 +79,11 @@ class RightsHelper
 	 * @param int $right
 	 * @return bool
 	 */
-	private function userHasProjectRight($right) {
+	public function userHasProjectRight($right) {
 		return $this->_projectModel->hasRight($this->_userId, $right);
 	}
-
 	
+
 	/**
 	 * 
 	 * @param string $methodName

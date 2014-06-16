@@ -43,13 +43,14 @@ class LexProjectCommands {
 	 * @throws \Exception
 	 * @return string projectId
 	 */
-	public static function updateProject($projectJson, $userId) {
+	public static function updateProject($projectId, $userId, $projectJson) {
+		// TODO: remove ability to create new projects with this method
 		$project = new LexiconProjectModel();
 		$id = $projectJson['id'];
 		$isNewProject = ($id == '');
 		$oldDBName = '';
 		if ($isNewProject) {
-			if (!RightsHelper::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT)) {
+			if (!RightsHelper::hasSiteRight($userId, Domain::PROJECTS + Operation::EDIT)) {
 				throw new UserUnauthorizedException("Insufficient privileges to create new project in method 'updateProject'");
 			}
 		} else {

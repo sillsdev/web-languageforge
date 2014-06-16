@@ -460,7 +460,7 @@ class Sf
 	}
 	
 	public function lex_project_update($projectJson) {
-		return LexProjectCommands::updateProject($projectJson, $this->_userId);
+		return LexProjectCommands::updateProject($this->_projectId, $this->_userId, $projectJson);
 	}
 	
 	public function lex_entry_read($entryId) {
