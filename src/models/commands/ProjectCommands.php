@@ -53,7 +53,7 @@ class ProjectCommands
 	 * @throws \Exception
 	 * @return string projectId
 	 */
-	public static function updateProject($object, $userId, $projectId) {
+	public static function updateProject($projectId, $userId, $object) {
 		
 		// todo: move this method to sfchecksprojectcommands
 		
@@ -97,6 +97,7 @@ class ProjectCommands
 	 * @param string $appName
 	 * @param string $userId
 	 * @param string $site
+	 * @return string - projectId
 	 */
 	public static function createProject($projectName, $appName, $userId, $site) {
 		if ($site == Website::SCRIPTUREFORGE) {

@@ -26,7 +26,7 @@ class TestRightsHelper extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
-		$rh = new RightsHelper($userId);
+		$rh = new RightsHelper($userId, null);
 		
 		$e->inhibitErrorDisplay();
 		$this->expectException();
