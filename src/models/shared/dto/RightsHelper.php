@@ -36,12 +36,12 @@ class RightsHelper
 	
 	/**
 	 * 
-	 * @param unknown $userModel
-	 * @param unknown $projectModel
+	 * @param UserModel $userModel
+	 * @param ProjectModel $projectModel
 	 * @return multitype:
 	 */
 	public static function encode($userModel, $projectModel) {
-		return $this->_projectModel->getRightsArray($this->_userId);
+		return $projectModel->getRightsArray($userModel->id->asString());
 	}
 	
 	/**
@@ -64,8 +64,8 @@ class RightsHelper
 	 * @param string $userId
 	 * @param ProjectModel $projectModel
 	 */
-	public function __construct($userId, $projectModel = null) {
-		$this->_userId = $userModel;
+	public function __construct($userId, $projectModel) {
+		$this->_userId = $userId;
 		$this->_projectModel = $projectModel;
 	}
 

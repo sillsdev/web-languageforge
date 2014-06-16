@@ -1,9 +1,12 @@
 <?php
 
+use libraries\shared\Website;
+
+use models\scriptureforge\SfchecksProjectModel;
+
 use models\shared\rights\SiteRoles;
 
 use models\languageforge\lexicon\LexiconProjectModel;
-
 use models\shared\rights\ProjectRoles;
 
 require_once(TestPath . 'common/MockProjectModel.php');
@@ -66,18 +69,21 @@ class MongoTestEnvironment
 	 * @param string $name
 	 * @return ProjectModel
 	 */
-	public function createProject($name, $site = 'scriptureforge') {
-		$projectModel = new models\ProjectModel();
+
+	public function createProject($name, $site = Website::SCRIPTUREFORGE) {
+		if ($site == Website::SCRIPTUREFORGE) {
+			$projectModel = new SfchecksProjectModel();
+		} else {
+			$projectModel = new LexiconProjectModel();
+		}
 		$projectModel->projectname = $name;
-		$projectModel->siteName = $site;
 		$projectModel->themeName = 'default';
-		$projectModel->appName = 'sfchecks';
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;
 	}
 	
-	public function createProjectSettings($name, $site = 'scriptureforge') {
+	public function createProjectSettings($name, $site = Website::SCRIPTUREFORGE) {
 		$projectModel = new models\ProjectSettingsModel();
 		$projectModel->projectname = $name;
 		$projectModel->siteName = $site;
