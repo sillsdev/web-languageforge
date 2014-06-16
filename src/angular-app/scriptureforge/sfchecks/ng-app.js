@@ -20,35 +20,35 @@ angular.module('sfchecks',
 	    $routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } }
 	    );
 	    $routeProvider.when(
-    		'/p/:projectId', 
+    		'/', 
     		{
     			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/project.html', 
     			controller: 'ProjectCtrl'
     		}
     	);
 	    $routeProvider.when(
-	    		'/p/:projectId/settings', 
+	    		'/settings', 
 	    		{
 	    			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/projectSettings.html', 
 	    			controller: 'ProjectSettingsCtrl'
 	    		}
 	    	);
 	    $routeProvider.when(
-    		'/p/:projectId/:textId', 
+    		'/:textId', 
     		{
     			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/questions.html', 
     			controller: 'QuestionsCtrl'
     		}
     	);
 	    $routeProvider.when(
-	    		'/p/:projectId/:textId/settings', 
+	    		'/:textId/settings', 
 	    		{
 	    			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/questions-settings.html', 
 	    			controller: 'QuestionsSettingsCtrl'
 	    		}
 	    	);
 	    $routeProvider.when(
-    		'/p/:projectId/:textId/:questionId',
+    		'/:textId/:questionId',
     		{
     			templateUrl: '/angular-app/scriptureforge/sfchecks/partials/question.html', 
     			controller: 'QuestionCtrl'

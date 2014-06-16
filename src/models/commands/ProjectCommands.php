@@ -46,52 +46,6 @@ class ProjectCommands
 {
 	
 	/**
-	 * Create or update project
-	 * @param array<projectModel> $object
-	 * @param string $userId
-	 * @throws UserUnauthorizedException
-	 * @throws \Exception
-	 * @return string projectId
-	 */
-	public static function updateProject($projectId, $userId, $object) {
-		
-		// todo: move this method to sfchecksprojectcommands
-		
-		// todo: remove ability to create projects with this method
-
-		$project = new ProjectModel();
-		$id = $object['id'];
-		$isNewProject = ($id == '');
-		$oldDBName = '';
-		if ($isNewProject) {
-			if (!RightsHelper::hasSiteRight($userId, Domain::PROJECTS + Operation::EDIT)) {
-				throw new UserUnauthorizedException("Insufficient privileges to create new project in method 'updateProject'");
-			}
-		} else {
-			$project = new SfchecksProjectModel($projectId);
-			if (!$project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
-				throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
-			}
-			$project->read($id);
-			$oldDBName = $project->databaseName();
-		}
-
-		JsonDecoder::decode($project, $object);
-		$newDBName = $project->databaseName();
-		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
-			if (MongoStore::hasDB($newDBName)) {
-				throw new \Exception("Cannot rename '$oldDBName' to '$newDBName'. New project name $newDBName already exists. Not renaming.");
-			}
-			MongoStore::renameDB($oldDBName, $newDBName);
-		}
-		$projectId = $project->write();
-		if ($isNewProject) {
-			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::MANAGER));
-		}
-		return $projectId;
-	}
-	
-	/**
 	 * Create a project, checking permissions as necessary
 	 * @param string $projectName
 	 * @param string $appName

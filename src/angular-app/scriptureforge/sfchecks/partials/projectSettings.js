@@ -3,9 +3,7 @@
 angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'palaso.ui.picklistEditor', 'angularFileUpload', 'ngRoute'])
 .controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService', 'sfchecksLinkService',
                                     function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService, sfchecksLinkService) {
-	var projectId = $routeParams.projectId;
 	$scope.project = {};
-	$scope.project.id = projectId;
 	$scope.finishedLoading = false;
 	$scope.list = {};
 	$scope.list.archivedTexts = [];
@@ -15,7 +13,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	};
 	
 	$scope.queryProjectSettings = function() {
-		sfchecksProjectService.projectSettings($scope.project.id, function(result) {
+		sfchecksProjectService.projectSettings(function(result) {
 			if (result.ok) {
 				$scope.project = result.data.project;
 				$scope.themeNames =  result.data.themeNames;
@@ -23,7 +21,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 				$scope.list.userCount = result.data.count;
 				$scope.list.archivedTexts = result.data.archivedTexts;
 				for (var i = 0; i < $scope.list.archivedTexts.length; i++) {
-					$scope.list.archivedTexts[i].url = sfchecksLinkService.text($scope.project.id, $scope.list.archivedTexts[i].id);
+					$scope.list.archivedTexts[i].url = sfchecksLinkService.text($scope.list.archivedTexts[i].id);
 					$scope.list.archivedTexts[i].dateModified = new Date($scope.list.archivedTexts[i].dateModified);
 				}
 				// Rights
@@ -39,8 +37,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 				breadcrumbService.set('top',
 						[
 						 {href: '/app/projects', label: 'My Projects'},
-						 {href: sfchecksLinkService.project($routeParams.projectId), label: result.data.bcs.project.crumb},
-						 {href: sfchecksLinkService.project($routeParams.projectId) + '/settings', label: 'Settings'},
+						 {href: sfchecksLinkService.project(), label: result.data.bcs.project.crumb},
+						 {href: sfchecksLinkService.project() + '/settings', label: 'Settings'},
 						]
 				);
 				$scope.finishedLoading = true;
@@ -54,7 +52,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	};
 		
 	$scope.readCommunicationSettings = function() {
-		sfchecksProjectService.readSettings($scope.project.id, function(result) {
+		sfchecksProjectService.readSettings(function(result) {
 			if (result.ok) {
 				$scope.settings.sms = result.data.sms;
 				$scope.settings.email = result.data.email;
@@ -124,7 +122,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	};
 	$scope.editTemplate = function() {
 		if ($scope.editedTemplate.title && $scope.editedTemplate.description) {
-			qts.update($scope.project.id, $scope.editedTemplate, function(result) {
+			qts.update($scope.editedTemplate, function(result) {
 				if (result.ok) {
 					if ($scope.editedTemplate.id) {
 						notice.push(notice.SUCCESS, "The template '" + $scope.editedTemplate.title + "' was updated successfully");
@@ -144,7 +142,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	$scope.queryTemplates = function(invalidateCache) {
 		var forceReload = (invalidateCache || (!$scope.templates) || ($scope.templates.length == 0));
 		if (forceReload) {
-			qts.list($scope.project.id, function(result) {
+			qts.list(function(result) {
 				if (result.ok) {
 					$scope.templates = result.data.entries;
 					$scope.finishedLoading = true;
@@ -165,7 +163,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		if (l == 0) {
 			return;
 		}
-		qts.remove($scope.project.id, templateIds, function(result) {
+		qts.remove(templateIds, function(result) {
 			if (result.ok) {
 				if (templateIds.length == 1) {
 					notice.push(notice.SUCCESS, "The template was removed successfully");
@@ -202,7 +200,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			textIds.push($scope.selected[i].id);
 		}
-		textService.publish($scope.project.id, textIds, function(result) {
+		textService.publish(textIds, function(result) {
 			if (result.ok) {
 				$scope.selected = []; // Reset the selection
 				$scope.queryProjectSettings();
@@ -214,7 +212,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 .controller('ProjectSettingsCommunicationCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
                                  function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService) {
 	$scope.updateCommunicationSettings = function() {
-		sfchecksProjectService.updateSettings($scope.project.id, $scope.settings.sms, $scope.settings.email, function(result) {
+		sfchecksProjectService.updateSettings($scope.settings.sms, $scope.settings.email, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, $scope.project.projectname + " SMS settings updated successfully");
 			}
@@ -228,8 +226,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	// TODO This can be moved to the page level controller, it is common with the Setup tab.
 	$scope.updateProject = function() {
 		// TODO this should be fine just being $scope.project from the dto.
-		var newProject = {
-			id: $scope.project.id,
+		var settings = {
 			projectname: $scope.project.projectname,
 			themeName: $scope.project.themeName,
 			projectCode: $scope.project.projectCode,
@@ -237,7 +234,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			allowAudioDownload: $scope.project.allowAudioDownload,
 		};
 
-		sfchecksProjectService.update(newProject, function(result) {
+		sfchecksProjectService.update(settings, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
 			}
@@ -344,7 +341,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			userIds.push($scope.selected[i].id);
 		}
-		messageService.send($scope.project.id, userIds, $scope.message.subject, $scope.message.emailTemplate, $scope.message.smsTemplate, function(result) {
+		messageService.send(userIds, $scope.message.subject, $scope.message.emailTemplate, $scope.message.smsTemplate, function(result) {
 			if (result.ok) {
 				$scope.message.subject = '';
 				$scope.message.emailTemplate = '';
@@ -383,7 +380,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			// TODO ERROR
 			return;
 		}
-		projectService.removeUsers($scope.project.id, userIds, function(result) {
+		projectService.removeUsers(userIds, function(result) {
 			if (result.ok) {
 				$scope.queryProjectSettings();
 				$scope.selected = [];
@@ -407,7 +404,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		model.id = user.id;
 		model.role = user.role;
 //		console.log('userchange...', model);
-		projectService.updateUser($scope.project.id, model, function(result) {
+		projectService.updateUser(model, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, user.username + "'s role was changed to " + user.role);
 			}
@@ -467,7 +464,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	
 	$scope.addProjectUser = function() {
 		if ($scope.addMode == 'addNew') {
-			userService.createSimple($scope.typeahead.userName, $scope.project.id, function(result) {
+			userService.createSimple($scope.typeahead.userName, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "User created.  Username: " + $scope.typeahead.userName + "    Password: " + result.data.password);
 					$scope.queryProjectSettings();
@@ -476,14 +473,14 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		} else if ($scope.addMode == 'addExisting') {
 			var model = {};
 			model.id = $scope.user.id;
-			projectService.updateUser($scope.project.id, model, function(result) {
+			projectService.updateUser(model, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectname + " successfully");
 					$scope.queryProjectSettings();
 				}
 			});
 		} else if ($scope.addMode == 'invite') {
-			userService.sendInvite($scope.typeahead.userName, $scope.project.id, function(result) {
+			userService.sendInvite($scope.typeahead.userName, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.projectname);
 					$scope.queryProjectSettings();

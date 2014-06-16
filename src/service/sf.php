@@ -1,5 +1,7 @@
 <?php
 
+use models\scriptureforge\sfchecks\commands\SfchecksProjectCommands;
+
 use libraries\scriptureforge\sfchecks\ParatextExport;
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
@@ -276,8 +278,8 @@ class Sf
 	 * @param array $object
 	 * @return string Id of written object
 	 */
-	public function project_update($object) {
-		return ProjectCommands::updateProject($this->_projectId, $this->_userId, $object);
+	public function project_update($settings) {
+		return SfchecksProjectCommands::updateProject($this->_projectId, $this->_userId, $settings);
 	}
 
 	/**

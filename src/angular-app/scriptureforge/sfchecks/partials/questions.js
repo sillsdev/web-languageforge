@@ -6,9 +6,7 @@ angular.module(
 	)
 	.controller('QuestionsCtrl', ['$scope', 'questionsService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService',
 	                              function($scope, questionsService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice) {
-		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
-		$scope.projectId = projectId;
 		$scope.textId = textId;
 		$scope.finishedLoading = false;
 		
@@ -51,7 +49,7 @@ angular.module(
 		};
 		$scope.templates = [$scope.emptyTemplate];
 		$scope.queryTemplates = function() {
-			qts.list(projectId, function(result) {
+			qts.list(function(result) {
 				if (result.ok) {
 					$scope.templates = result.data.entries;
 					// Add "(Select a template)" as default value
@@ -110,7 +108,7 @@ angular.module(
 		$scope.questions = [];
 		$scope.queryQuestions = function() {
 			//console.log("queryQuestions()");
-			questionsService.list(projectId, textId, function(result) {
+			questionsService.list(textId, function(result) {
 				if (result.ok) {
 					$scope.selected = [];
 					$scope.questions = result.data.entries;
@@ -123,7 +121,7 @@ angular.module(
 						$scope.text.audioUrl = '/' + $scope.text.audioUrl;
 					} 
 					$scope.project = result.data.project;
-					$scope.text.url = sfchecksLinkService.text(projectId, textId);
+					$scope.text.url = sfchecksLinkService.text(textId);
 					//console.log($scope.project.name);
 					//console.log($scope.text.title);
 
@@ -131,8 +129,8 @@ angular.module(
 					breadcrumbService.set('top',
 							[
 							 {href: '/app/projects', label: 'My Projects'},
-							 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.project.name},
-							 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: $scope.text.title},
+							 {href: sfchecksLinkService.project(), label: $scope.project.name},
+							 {href: sfchecksLinkService.text($routeParams.textId), label: $scope.text.title},
 							]
 					);
 
@@ -157,7 +155,7 @@ angular.module(
 				questionIds.push($scope.selected[i].id);
 			}
 			if (window.confirm("Are you sure you want to delete these " + questionIds.length + " question(s)?")) {
-				questionsService.remove(projectId, questionIds, function(result) {
+				questionsService.remove(questionIds, function(result) {
 					if (result.ok) {
 						$scope.selected = []; // Reset the selection
 						$scope.queryQuestions();
@@ -178,12 +176,12 @@ angular.module(
 			model.textRef = textId;
 			model.title = $scope.questionTitle;
 			model.description = $scope.questionDescription;
-			questionsService.update(projectId, model, function(result) {
+			questionsService.update(model, function(result) {
 				if (result.ok) {
 					$scope.queryQuestions();
 					notice.push(notice.SUCCESS, "'" + $scope.calculateTitle(model.title, model.description) + "' was added successfully");
 					if ($scope.saveAsTemplate) {
-						qts.update(projectId, model, function(result) {
+						qts.update(model, function(result) {
 							if (result.ok) {
 								notice.push(notice.SUCCESS, "'" + model.title + "' was added as a template question");
 							}
@@ -225,7 +223,7 @@ angular.module(
 			model.id = '';
 			model.title = $scope.selected[0].title;
 			model.description = $scope.selected[0].description;
-			qts.update(projectId, model, function(result) {
+			qts.update(model, function(result) {
 				if (result.ok) {
 					$scope.queryTemplates();
 					notice.push(notice.SUCCESS, "'" + model.title + "' was added as a template question");
@@ -244,7 +242,7 @@ angular.module(
 		
 		$scope.enhanceDto = function(items) {
 			angular.forEach(items, function(item) {
-				item.url = sfchecksLinkService.question(projectId, textId, item.id);
+				item.url = sfchecksLinkService.question(textId, item.id);
 				item.calculatedTitle = $scope.calculateTitle(item.title, item.description);
 			});
 		};
@@ -252,9 +250,7 @@ angular.module(
 	}])
 	.controller('QuestionsSettingsCtrl', ['$scope', '$http', 'textService', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService',
 	                                      function($scope, $http, textService, ss, $routeParams, breadcrumbService, notice, sfchecksLinkService) {
-		var projectId = $routeParams.projectId;
 		var textId = $routeParams.textId;
-		$scope.projectId = projectId;
 		$scope.textId = textId;
 		$scope.editedText = {
 			id: textId,
@@ -263,7 +259,7 @@ angular.module(
 
 		// Get name from text service. This really should be in the DTO, but this will work for now.
 		// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08
-		textService.settings_dto($scope.projectId, $scope.textId, function(result) {
+		textService.settings_dto($scope.textId, function(result) {
 			if (result.ok) {
 				$scope.dto = result.data;
 				$scope.textTitle = $scope.dto.text.title;
@@ -277,9 +273,9 @@ angular.module(
 				breadcrumbService.set('top',
 						[
 						 {href: '/app/projects', label: 'My Projects'},
-						 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.dto.bcs.project.crumb},
-						 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: $scope.dto.text.title},
-						 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId) + '/Settings', label: 'Settings'},
+						 {href: sfchecksLinkService.project(), label: $scope.dto.bcs.project.crumb},
+						 {href: sfchecksLinkService.text($routeParams.textId), label: $scope.dto.text.title},
+						 {href: sfchecksLinkService.text($routeParams.textId) + '/Settings', label: 'Settings'},
 						]
 				);
 			}
@@ -289,7 +285,7 @@ angular.module(
 			if (!newText.content || !newText.editPreviousText) {
 				delete newText.content;
 			}
-			textService.update($scope.projectId, newText, function(result) {
+			textService.update(newText, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, newText.title + " settings successfully updated");
 					$scope.textTitle = newText.title;
@@ -353,7 +349,6 @@ angular.module(
 				    url: '/upload',	// upload.php script
 //					headers: {'myHeaderKey': 'myHeaderVal'},
 					data: {
-						projectId: projectId,
 						textId: textId,
 					},
 					file: file
@@ -403,7 +398,7 @@ angular.module(
 		
 		$scope.startExport = function() {
 			$scope.download.inprogress = true;
-			textService.exportComments($routeParams.projectId, $scope.exportConfig, function(result) {
+			textService.exportComments($scope.exportConfig, function(result) {
 				if (result.ok) {
 					$scope.download = result.data;
 					$scope.download.complete = true;

@@ -19,8 +19,8 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.remove = function(userIds, callback) {
 		jsonRpc.call('user_delete', [userIds], callback);
 	};
-	this.createSimple = function(userName, projectId, callback) {
-		jsonRpc.call('user_createSimple', [projectId, userName], callback);
+	this.createSimple = function(userName, callback) {
+		jsonRpc.call('user_createSimple', [userName], callback);
 	};
 	this.list = function(callback) {
 		// TODO Paging CP 2013-07
@@ -47,8 +47,8 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.updateFromRegistration = function(validationKey, model, callback) {
 		jsonRpc.call('user_updateFromRegistration', [validationKey, model], callback);
 	};
-	this.sendInvite = function(toEmail, projectId, callback) {
-		jsonRpc.call('user_sendInvite', [projectId, toEmail], callback);
+	this.sendInvite = function(toEmail, callback) {
+		jsonRpc.call('user_sendInvite', [toEmail], callback);
 	};
 	
 }])
@@ -63,17 +63,17 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.list = function(callback) {
 		jsonRpc.call('project_list_dto', [], callback);
 	};
-	this.users = function(projectId, callback) {
-		jsonRpc.call('project_usersDto', [projectId], callback);
+	this.users = function(callback) {
+		jsonRpc.call('project_usersDto', [], callback);
 	};
-	this.readUser = function(projectId, userId, callback) {
-		jsonRpc.call('project_readUser', [projectId, userId], callback);
+	this.readUser = function(userId, callback) {
+		jsonRpc.call('project_readUser', [userId], callback);
 	};
-	this.updateUser = function(projectId, model, callback) {
-		jsonRpc.call('project_updateUserRole', [projectId, model], callback);
+	this.updateUser = function(model, callback) {
+		jsonRpc.call('project_updateUserRole', [model], callback);
 	};
-	this.removeUsers = function(projectId, users, callback) {
-		jsonRpc.call('project_removeUsers', [projectId, users], callback);
+	this.removeUsers = function(users, callback) {
+		jsonRpc.call('project_removeUsers', [users], callback);
 	};
 	
 }])
@@ -147,16 +147,16 @@ angular.module('bellows.services', ['jsonRpc'])
 		return '<a href="' + url + '">' + text + '</a>';
 	};
 	
-	this.project = function(projectId) {
-		return '/app/sfchecks#/p/' + projectId;
+	this.project = function() {
+		return '#';
 	};
 	
-	this.text = function(projectId, textId) {
-		return this.project(projectId) + "/" + textId;
+	this.text = function(textId) {
+		return this.project() + "/" + textId;
 	};
 	
-	this.question = function(projectId, textId, questionId) {
-		return this.text(projectId, textId) + "/" + questionId;
+	this.question = function(textId, questionId) {
+		return this.text(textId) + "/" + questionId;
 	};
 	
 	this.user = function(userId) {
