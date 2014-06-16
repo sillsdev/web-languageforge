@@ -67,8 +67,8 @@
 				<ul class="inline" data-ng-class="{active: isSelected(question)}">
 					<li data-ng-show="rights.archive"><input type="checkbox" data-ng-click="updateSelection($event, question)" /></li>
 					<li>
-						<a href="{{question.url}}">
-							<span class="span5 larger-text">{{question.calculatedTitle}}</span>
+						<a class="span5" href="{{question.url}}">
+							<span class="larger-text">{{question.calculatedTitle}}</span>
 						</a>
 					</li>
 					<li><a href="{{question.url}}">
