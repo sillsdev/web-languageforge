@@ -38,8 +38,7 @@
 			
 			</form>
 		</div>
-		<div listview search="queryProjectSettings()" items="list.users" items-filter="userFilter" visible-items="list.visibleUsers" select="">
-		<!-- <div listview search="queryProjectUsers()" select=""> -->
+		<listview search="queryProjectSettings()" items="list.users" items-filter="userFilter" visible-items="list.visibleUsers" select="">
 		<table class="table" style="width: 100%">
 			<thead>
 			<tr>
@@ -58,7 +57,7 @@
 			</tr>
 			</tbody>
 		</table>		
-		</div>
+		</listview>
 	</tab>
 	<tab heading="Question Templates" data-ng-controller="ProjectSettingsQTemplateCtrl" style="overflow:hidden">
 		<form class="control-bar form-inline">
@@ -78,7 +77,7 @@
 			</fieldset>
 			</form>
 		</div>
-		<div listview search="queryTemplates()" items="templates" visible-items="visibleTemplates" select="">
+		<listview search="queryTemplates()" items="templates" visible-items="visibleTemplates" select="">
 		<table style="width: 100%">
 			<tr>
 				<th></th>
@@ -91,29 +90,33 @@
 				<td style="text-overflow: ellipsis">{{template.description}}</td>
 			</tr>
 		</table>
-		</div>
+		</listview>
 	</tab>
 	<tab heading="Archived Texts" data-ng-controller="ProjectSettingsArchiveTextsCtrl">
 		<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
 			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn" data-ng-click="publishTexts()"><i class="icon-globe icon-large" style="color:black"></i>Re-publish Texts</button>
 		</form>
 		<hr />
-		<div listview hide-if-empty="true" items="list.archivedTexts" visible-items="visibleTexts" select="">
+		<listview hide-if-empty="true" items="list.archivedTexts" visible-items="visibleTexts" select="">
 			<div data-ng-repeat="text in visibleTexts" class="details-row">
 				<ul class="inline" data-ng-class="{active: isSelected(text)}">
 					<li data-ng-show="rights.archive" ><input type="checkbox" data-ng-checked="isSelected(text)" data-ng-click="updateSelection($event, text)" /></li>
 					<li>
 						<a href="{{text.url}}">
-							<span class="larger-text">{{text.title}}</span>
+							<span class="span5 larger-text">{{text.title}}</span>
 						</a>
 					</li>
-					<li>{{text.questionCount}} questions</li>
+					<li><a href="{{text.url}}">
+						<div class="attention-block">
+							<span class="subtitle">{{text.questionCount}} questions</span>
+						</div>
+					</a></li>
 					<li>{{text.responseCount}} responses</li>
 					<li>Archived on {{text.dateModified | date:'fullDate'}}</li>
 				</ul>
 				<hr />
 			</div>
-		</div>
+		</listview>
 	</tab>
 	<tab heading="Project Properties" data-ng-controller="ProjectSettingsPropertiesCtrl">
 		<form class="well" data-ng-submit="updateProject()">

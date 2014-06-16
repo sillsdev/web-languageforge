@@ -15,7 +15,7 @@
 	<input type="text" data-ng-model="questionTitle" class="span4" maxlength="35" placeholder="One-line Summary For Title" />
 	<label></label>
 	<label><input title="A summary title is required for templates" data-ng-disabled="!questionTitle" type="checkbox" data-ng-model="saveAsTemplate" data-ng-show="rights.createTemplate" /> Also save as template</label>
-    <a class="pull-right" data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">Cancel</a>
+	<a class="pull-right" data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">Cancel</a>
 	<button type="submit" class="btn" data-ng-disabled="newQuestionForm.$invalid" data-ng-click="addQuestion()"><i class="icon-ok"></i>Save</button>
 	</fieldset>
 	<fieldset class="span4">
@@ -27,35 +27,34 @@
 <hr />
 
 <div class="row">
-    <div class="span5" oncopy="return false;">
-    	<h2 class="pull-left" data-ng-show="text.audioUrl && audioReady">
-    		<a data-sgw-sound-player data-state="state" href="text.audioUrl"><i data-ng-class="$parent.audioIcon()" data-tooltip="Play audio"></i></a>
-    		<a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}"><i class="icon-download" data-tooltip="Download audio"></i></a>
-    	</h2>
-    	<h2>{{text.title}}</h2>
-        <div id="text" data-ng-bind-html="text.content"> </div>
-    </div>
-    <div class="span7">
-        <div data-listview data-hide-if-empty="true" data-search="queryQuestions()" data-items="questions" data-visible-items="visibleQuestions" data-select="">
-        <div data-ng-repeat="question in visibleQuestions" class="details-row">
-        	<ul class="inline" data-ng-class="{active: isSelected(question)}">
-        		<li data-ng-show="rights.archive"><input type="checkbox" data-ng-click="updateSelection($event, question)" /></li>
-        		<li><a href="{{question.url}}">
-        			<div class="attention-block">
-        				<span class="count">{{getAnswerCount(question)}}</span><br />
-        				<span class="subtitle">answers</span>
-        			</div>
-        		</a></li>
-        		<li>
-        			<a href="{{question.url}}">
-        				<span class="larger-text">{{question.calculatedTitle}}</span>
-        			</a>
-        		</li>
-        		<li>{{getResponses(question)}} responses</li>
-        	</ul>
-        	<hr />
-        </div>
-        </div>
-    </div>
+	<div class="span5" data-oncopy="return false;">
+		<h2 class="pull-left" data-ng-show="text.audioUrl && audioReady">
+			<a data-sgw-sound-player data-state="state" href="text.audioUrl"><i data-ng-class="$parent.audioIcon()" data-tooltip="Play audio"></i></a>
+			<a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}"><i class="icon-download" data-tooltip="Download audio"></i></a>
+		</h2>
+		<h2>{{text.title}}</h2>
+		<div id="text" data-ng-bind-html="text.content"> </div>
+	</div>
+	<div class="span7">
+		<listview hide-if-empty="true" search="queryQuestions()" items="questions" visible-items="visibleQuestions" select="">
+		<div data-ng-repeat="question in visibleQuestions" class="details-row">
+			<ul class="inline" data-ng-class="{active: isSelected(question)}">
+				<li data-ng-show="rights.archive"><input type="checkbox" data-ng-click="updateSelection($event, question)" /></li>
+				<li>
+					<a href="{{question.url}}">
+						<span class="span3 larger-text">{{question.calculatedTitle}}</span>
+					</a>
+				</li>
+				<li><a href="{{question.url}}">
+					<div class="attention-block">
+						<span class="subtitle">{{question.answerCount}} answers</span>
+					</div>
+				</a></li>
+				<li>{{question.responseCount}} responses</li>
+			</ul>
+			<hr />
+		</div>
+	</listview>
+	</div>
 </div>
 </div>

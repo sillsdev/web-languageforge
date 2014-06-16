@@ -62,22 +62,26 @@
 			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn" data-ng-click="publishQuestions()"><i class="icon-globe icon-large"></i>Re-publish Questions</button>
 		</form>
 		<hr />
-        <div listview hide-if-empty="true" search="queryTextSettings()" items="settings.archivedQuestions" visible-items="visibleArchivedQuestions" select="">
+        <listview hide-if-empty="true" search="queryTextSettings()" items="settings.archivedQuestions" visible-items="visibleArchivedQuestions" select="">
 			<div data-ng-repeat="question in visibleArchivedQuestions" class="details-row">
 				<ul class="inline" data-ng-class="{active: isSelected(question)}">
 					<li data-ng-show="rights.archive"><input type="checkbox" data-ng-click="updateSelection($event, question)" /></li>
 					<li>
 						<a href="{{question.url}}">
-							<span class="larger-text">{{question.calculatedTitle}}</span>
+							<span class="span5 larger-text">{{question.calculatedTitle}}</span>
 						</a>
 					</li>
-					<li>{{question.answerCount}} answers</li>
+					<li><a href="{{question.url}}">
+						<div class="attention-block">
+							<span class="subtitle">{{question.answerCount}} answers</span>
+						</div>
+					</a></li>
 					<li>{{question.responseCount}} responses</li>
 					<li>Archived on {{question.dateModified | date:'fullDate'}}</li>
 				</ul>
 				<hr />
 			</div>
-        </div>
+        </listview>
 	</tab>
 	<tab heading="Audio File">
 		<form class="well " data-ng-submit="updateText(editedText)">
