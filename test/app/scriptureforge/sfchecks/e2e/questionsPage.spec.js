@@ -23,16 +23,16 @@ describe('the questions list page (AKA the text page)', function() {
 			// as that might be modified by other tests that add questions, we'll search for them.
 			util.findRowByText(textPage.questionRows, constants.testText1Question1Title).then(function(row) {
 				expect("undefined" == typeof row).toBeFalsy(); // This seems to be the best way to check that the row exists
-				var answerCount = row.findElement(by.binding('{{question.answerCount}}'));
-				var responseCount = row.findElement(by.binding('{{question.responseCount}}'));
-				expect(answerCount.getText()).toBe('1');
+				var answerCount = row.findElement(by.binding('question.answerCount'));
+				var responseCount = row.findElement(by.binding('question.responseCount'));
+				expect(answerCount.getText()).toBe('1 answers');
 				expect(responseCount.getText()).toBe('2 responses');
 			});
 			util.findRowByText(textPage.questionRows, constants.testText1Question2Title).then(function(row) {
 				expect("undefined" == typeof row).toBeFalsy(); // This seems to be the best way to check that the row exists
-				var answerCount = row.findElement(By.binding('{{question.answerCount}}'));
-				var responseCount = row.findElement(By.binding('{{question.responseCount}}'));
-				expect(answerCount.getText()).toBe('1');
+				var answerCount = row.findElement(By.binding('question.answerCount'));
+				var responseCount = row.findElement(By.binding('question.responseCount'));
+				expect(answerCount.getText()).toBe('1 answers');
 				expect(responseCount.getText()).toBe('2 responses');
 			});
 		});
@@ -165,6 +165,7 @@ describe('the questions list page (AKA the text page)', function() {
 			expect(textPage.textSettingsBtn.isPresent()).toBeTruthy();
 			expect(textPage.textSettingsBtn.isDisplayed()).toBeTruthy();
 		});
+		
 	});
 	
 });
