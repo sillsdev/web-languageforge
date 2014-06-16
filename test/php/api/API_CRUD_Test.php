@@ -1,5 +1,7 @@
 <?php
 
+use libraries\shared\Website;
+
 use models\mapper\Id;
 use models\shared\rights\ProjectRoles;
 use models\shared\rights\SiteRoles;
@@ -34,8 +36,7 @@ class ApiCrudTestEnvironment {
 		if (!$userId) {
 			$userId = $this->makeSiteAdminUser();	
 		}
-		$model = array( 'id' => '', 'projectname' => SF_TESTPROJECT, 'language' => 'SomeLanguage');
-		return ProjectCommands::updateProject($model, $userId);
+		return ProjectCommands::createProject(SF_TESTPROJECT, 'sfchecks', $userId, Website::SCRIPTUREFORGE);
 	}
 	
 	function makeUser($username) {
@@ -80,14 +81,8 @@ class TestApiCrud extends UnitTestCase {
 	function testProjectCRUD_CRUDOK() {
 		$e = new ApiCrudTestEnvironment();
 		
-		// Create
-		$param = array(
-			'id' => '',
-			'projectname' => SF_TESTPROJECT,
-			'language' => 'SomeLanguage'
-		);
 		$userId = $e->e->createUser('userName', 'User Name', 'user@example.com', SiteRoles::SYSTEM_ADMIN);
-		$id = ProjectCommands::updateProject($param, $userId);
+		$id = ProjectCommands::createProject(SF_TESTPROJECT, 'sfchecks', $userId, Website::SCRIPTUREFORGE);
 		$this->assertNotNull($id);
 		$this->assertEqual(24, strlen($id));
 		
@@ -95,11 +90,10 @@ class TestApiCrud extends UnitTestCase {
 		$result = ProjectCommands::readProject($id);
 		$this->assertNotNull($result['id']);
 		$this->assertEqual(SF_TESTPROJECT, $result['projectname']);
-		$this->assertEqual('SomeLanguage', $result['language']);
 		
 		// Update
 		$result['language'] = 'AnotherLanguage';
-		$id = ProjectCommands::updateProject($e->json($result), $userId);
+		$id = ProjectCommands::updateProject($id, $userId, $e->json($result));
 		$this->assertNotNull($id);
 		$this->assertEqual($result['id'], $id);
 		
