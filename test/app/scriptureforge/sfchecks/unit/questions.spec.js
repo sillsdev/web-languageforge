@@ -35,6 +35,11 @@ describe('Questions page (questions.js)', function() {
 			// Ignore project and text IDs for this mock
 			callback(testJsonResult);
 		},
+		util: {
+			calculateTitle: function(title, description) {
+				return title;
+			},
+		},
 	};
 
 	beforeEach(module('sfchecks.questions'));
