@@ -207,14 +207,6 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		});
 	};
 	
-	$scope.getAnswerCount = function(question) {
-		return question.answerCount;
-	};
-	
-	$scope.getResponses = function(question) {
-		return question.responseCount;
-	};
-	
 	$scope.enhanceDto = function(items) {
 		angular.forEach(items, function(item) {
 			item.url = sfchecksLinkService.question(projectId, textId, item.id);
