@@ -153,14 +153,6 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 		$scope.rangeSelectorCollapsed = !$scope.rangeSelectorCollapsed;
 	};
 
-	$scope.getQuestionCount = function(text) {
-		return text.questionCount;
-	};
-
-	$scope.getResponses = function(text) {
-		return text.responseCount;
-	};
-	
 	$scope.enhanceDto = function(items) {
 		for (var i in items) {
 			items[i].url = sfchecksLinkService.text($scope.projectId, items[i].id);
