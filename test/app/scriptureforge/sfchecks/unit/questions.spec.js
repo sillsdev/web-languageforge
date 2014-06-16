@@ -31,7 +31,7 @@ describe('Questions page (questions.js)', function() {
 	};
 
 	var mockQuestionsService = {
-		list: function(projectId, textId, callback) {
+		list: function(textId, callback) {
 			// Ignore project and text IDs for this mock
 			callback(testJsonResult);
 		},

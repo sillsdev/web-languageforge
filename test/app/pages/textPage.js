@@ -3,13 +3,6 @@
 var SfTextPage = function() {
 	this.urlprefix = '/app/sfchecks';
 
-	this.getUrl = function(projectId, textId) {
-		return this.urlprefix + '#/p/' + projectId + '/' + textId;
-	};
-	this.get = function(projectId, textId) {
-		browser.get(this.getUrl(projectId, textId));
-	}
-	
 	this.addNewBtn = element(by.partialButtonText("Add New Question"));
 	this.deleteBtn = element(by.partialButtonText("Remove Questions"));
 	this.makeTemplateBtn = element(by.partialButtonText("Make Template"));
