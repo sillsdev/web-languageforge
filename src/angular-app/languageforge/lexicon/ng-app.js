@@ -28,56 +28,56 @@ angular.module('lexicon',
 		// the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
 		$routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } });
 		
-		$routeProvider.when( '/p/:projectId', { redirectTo: '/p/:projectId/dbe', });
-		$routeProvider.when( '/p/:projectId/view', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
-		$routeProvider.when( '/p/:projectId/gatherTexts', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
-		$routeProvider.when( '/p/:projectId/review', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
-		$routeProvider.when( '/p/:projectId/wordlist', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
+		$routeProvider.when( '/', { redirectTo: '/dbe', });
+		$routeProvider.when( '/view', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
+		$routeProvider.when( '/gatherTexts', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
+		$routeProvider.when( '/review', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
+		$routeProvider.when( '/wordlist', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
 		
 		$routeProvider.when(
-				'/p/:projectId/dbe',
+				'/dbe',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
 				}
 			);
 		$routeProvider.when(
-				'/p/:projectId/add-grammar',
+				'/add-grammar',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
 				}
 			);
 		$routeProvider.when(
-				'/p/:projectId/add-examples',
+				'/add-examples',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
 				}
 			);
 		$routeProvider.when(
-				'/p/:projectId/add-meanings',
+				'/add-meanings',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
 				}
 			);
 		$routeProvider.when(
-				'/p/:projectId/importExport',
+				'/importExport',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/import-export.html',
 				}
 			);
 		$routeProvider.when(
-				'/p/:projectId/configuration',
+				'/configuration',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/configuration.html',
 				}
 			);
 		$routeProvider.when(
-				'/p/:projectId/settings',
+				'/settings',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/settings.html',
 				}
 			);
 		$routeProvider.when(
-				'/p/:projectId/users',
+				'/users',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/manage-users.html',
 				}
@@ -161,7 +161,7 @@ angular.module('lexicon',
 			return $scope.config.tasks[itemName].visible;
 		};
 		
-		$scope.projectId = lexProjectService.getProjectId();
+		projectId = lexProjectService.getProjectId();
 		
 		lexBaseViewService.registerListener(function() {
 			$scope.config = lexBaseViewService.getConfig();

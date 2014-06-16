@@ -1,5 +1,7 @@
 <?php
 
+use models\scriptureforge\sfchecks\commands\SfchecksProjectCommands;
+
 use libraries\shared\Website;
 
 use models\mapper\Id;
@@ -93,7 +95,7 @@ class TestApiCrud extends UnitTestCase {
 		
 		// Update
 		$result['language'] = 'AnotherLanguage';
-		$id = ProjectCommands::updateProject($id, $userId, $e->json($result));
+		$id = SfchecksProjectCommands::updateProject($id, $userId, $e->json($result));
 		$this->assertNotNull($id);
 		$this->assertEqual($result['id'], $id);
 		

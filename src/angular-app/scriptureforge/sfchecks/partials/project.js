@@ -3,8 +3,6 @@
 angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload', 'ngRoute'])
 .controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'sfchecksLinkService', 'silNoticeService', 'sfchecksProjectService', 'messageService','modalService',
                             function($scope, textService, $routeParams, ss, breadcrumbService, sfchecksLinkService, notice, sfchecksProjectService, messageService, modalService) {
-	var projectId = $routeParams.projectId;
-	$scope.projectId = projectId;
 	$scope.finishedLoading = false;
 	
 	// Rights
@@ -29,7 +27,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 			var m = $scope.messages[i];
 			if (m.id == id) {
 				$scope.messages.splice(i, 1);
-				messageService.markRead(projectId, id);
+				messageService.markRead(id);
 				break;
 			}
 		}
@@ -55,7 +53,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 	
 	// Page Dto
 	$scope.getPageDto = function() {
-		sfchecksProjectService.pageDto(projectId, function(result) {
+		sfchecksProjectService.pageDto(function(result) {
 			if (result.ok) {
 				$scope.texts = result.data.texts;
 				$scope.textsCount = $scope.texts.length;
@@ -70,13 +68,13 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 					
 
 				$scope.project = result.data.project;
-				$scope.project.url = sfchecksLinkService.project(projectId);
+				$scope.project.url = sfchecksLinkService.project();
 				
 				// Breadcrumb
 				breadcrumbService.set('top',
 						[
 						 {href: '/app/projects', label: 'My Projects'},
-						 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.project.name},
+						 {href: sfchecksLinkService.project(), label: $scope.project.name},
 						]
 				);
 
@@ -112,7 +110,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 //			bodyText: message
 //		};
 //		modalService.showModal({}, modalOptions).then(function (result) {
-//			textService.archive(projectId, textIds, function(result) {
+//			textService.archive(textIds, function(result) {
 //				if (result.ok) {
 //					$scope.selected = []; // Reset the selection
 //				}
@@ -120,7 +118,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 //			});
 //		});
 		if (window.confirm(message)) {
-			textService.archive(projectId, textIds, function(result) {
+			textService.archive(textIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
 				}
@@ -140,7 +138,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 		model.startVs = $scope.startVs;
 		model.endCh = $scope.endCh;
 		model.endVs = $scope.endVs;
-		textService.update(projectId, model, function(result) {
+		textService.update(model, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "The text '" + model.title + "' was added successfully");
 			}
@@ -163,7 +161,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 	
 	$scope.enhanceDto = function(items) {
 		for (var i in items) {
-			items[i].url = sfchecksLinkService.text($scope.projectId, items[i].id);
+			items[i].url = sfchecksLinkService.text(items[i].id);
 		}
 	};
 
