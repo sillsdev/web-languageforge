@@ -87,20 +87,21 @@ class TestQuestionListDto extends UnitTestCase {
 		$this->assertEqual($dto['entries'][1]['answerCount'], 1);
 		// Specifically check if comments got included in answer count
 		$this->assertNotEqual($dto['entries'][1]['answerCount'], 3, "Comments should not be included in answer count.");
-		
+		$this->assertEqual($dto['entries'][0]['responseCount'], 3);
+		$this->assertEqual($dto['entries'][1]['responseCount'], 1);
 		// make sure our text content is coming down into the dto
 		$this->assertTrue(strlen($dto['text']['content']) > 0);
 		
 		// archive 1 Question
-		$question1->isArchived = true;
-		$question1->write();
+		$question2->isArchived = true;
+		$question2->write();
 		
 		$dto = QuestionListDto::encode($projectId, $textId, $user1Id);
 
 		// Now check that it all still looks right, now only 1 Question
 		$this->assertEqual($dto['count'], 1);
-		$this->assertEqual($dto['entries'][0]['id'], $question2Id);
-		$this->assertEqual($dto['entries'][0]['title'], "Where is the storyteller?");
+		$this->assertEqual($dto['entries'][0]['id'], $question1Id);
+		$this->assertEqual($dto['entries'][0]['title'], "Who is speaking?");
 	}
 	
 	function testEncode_ArchivedText_ManagerCanViewContributorCannot() {
