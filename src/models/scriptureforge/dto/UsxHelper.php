@@ -42,6 +42,8 @@ class UsxHelper {
 			'endVerse' => null,
 			'bookCode' => null
 		);
+		$this->_footnotes = array();
+		$this->_tagStack = array();
 	}
 	
 	public function toHtml() {
@@ -51,6 +53,7 @@ class UsxHelper {
 		$this->_stateCData = false;
 		$this->_stateCapturing = false;
 		$this->_footnoteNumber = 0;
+		$this->_footnoteCaller = '';
 		$this->_footnotes = array();
 		xml_parse($this->_parser, $this->_usx);
 		//echo $this->_out;
@@ -203,13 +206,16 @@ class UsxHelper {
 	// For now, we're going with simple. If that feature is requested, we can add it later.
 	
 	private function onNote($caller, $style) {
-		if ($caller == "+") {
+		if ($caller == "-") {
+			// USFM spec says this "indicates that no caller should be generated, and is not used." We will ignore these notes.
+			$fnChar = "";
+		} else if ($style == "x") {
+			// We will not process cross-reference footnotes either
+			$fnChar = "";
+		} else if ($caller == "+") {
 			// USFM spec says this "indicates that the caller should be generated automatically"
 			$fnNum = $this->nextFootnoteNumber();
 			$fnChar = $this->num2alpha($fnNum);
-		} else if ($caller == "-") {
-			// USFM spec says this "indicates that no caller should be generated, and is not used"
-			$fnChar = "";
 		} else {
 			$fnChar = $caller;
 		}
@@ -220,6 +226,10 @@ class UsxHelper {
 	
 	private function onNoteClose() {
 		$fnText = $this->stopCapturing();
+		if ($this->_footnoteCaller == "") {
+			// Notes with no caller should be ignored
+			return;
+		}
 		$fnText = str_replace('"', "&quot;", $fnText);
 		$this->outputText("<a data-ng-click=\"\" tooltip-html-unsafe=\"$fnText\"><sup>$this->_footnoteCaller</sup></a>");
 		$footnote = array("fnCaller" => $this->_footnoteCaller, "fnText" => $fnText);
@@ -227,14 +237,17 @@ class UsxHelper {
 	}
 	
 	private function onUsxClose() {
-		$this->outputText("<div id=\"footnotes\"><p>");
-		foreach ($this->_footnotes as $footnote) {
-			$fnText = $footnote["fnText"];
-			$fnCaller = $footnote["fnCaller"];
-			$this->outputText("<a data-ng-click=\"\">$fnCaller</a>. " . $fnText . "<br>");
+		if (!empty($this->_footnotes)) {
+			$this->outputText("<div id=\"footnotes\"><hr><p>");
+			foreach ($this->_footnotes as $footnote) {
+				$fnText = $footnote["fnText"];
+				$fnCaller = $footnote["fnCaller"];
+				$this->outputText("<a data-ng-click=\"\">$fnCaller</a>. " . $fnText . "<br>");
+				}
+			$this->outputText("</p></div>");
 			}
 		}
-	
+		
 	private function onBook($code) {
 		$this->_info['bookCode'] = $code;
 	}
