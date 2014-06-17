@@ -142,12 +142,10 @@ class RightsHelper
 
 			case 'project_update':
 			case 'lex_project_update':
-				// TODO: why do we have two permissions granted here??? cjh 2014-06
-				return ($this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT) || $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT));
+				return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 				
 			case 'project_updateUserRole':
-				// TODO: why do we have two permissions granted here??? cjh 2014-06
-				return ($this->userHasProjectRight(Domain::USERS + Operation::EDIT) || $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT));
+				return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 
 			case 'project_removeUsers':
 				return $this->userHasProjectRight(Domain::USERS + Operation::DELETE);
