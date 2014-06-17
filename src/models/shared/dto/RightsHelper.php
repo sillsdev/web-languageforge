@@ -196,10 +196,10 @@ class RightsHelper
 				return $this->userHasProjectRight(Domain::TEMPLATES + Operation::EDIT);
 				
 			case 'questionTemplate_read':
-				return $this->userHasSiteRight(Domain::TEMPLATES + Operation::VIEW);
+				return $this->userHasProjectRight(Domain::TEMPLATES + Operation::VIEW);
 
 			case 'questionTemplate_delete':
-				return $this->userHasSiteRight(Domain::TEMPLATES + Operation::DELETE);
+				return $this->userHasProjectRight(Domain::TEMPLATES + Operation::DELETE);
 				
 			case 'questionTemplate_list':
 				return $this->userHasProjectRight(Domain::TEMPLATES + Operation::VIEW);
