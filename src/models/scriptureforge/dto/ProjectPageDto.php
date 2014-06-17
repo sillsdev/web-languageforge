@@ -2,23 +2,16 @@
 
 namespace models\scriptureforge\dto;
 
-use models\scriptureforge\SfchecksProjectModel;
-
 use models\shared\dto\RightsHelper;
-
+use models\scriptureforge\SfchecksProjectModel;
 use models\MessageModel;
-
-use models\UnreadMessageModel;
-use models\UnreadActivityModel;
-
-use models\UserModel;
-
 use models\ProjectModel;
-
+use models\QuestionModel;
 use models\TextListModel;
-
 use models\TextModel;
-
+use models\UnreadActivityModel;
+use models\UnreadMessageModel;
+use models\UserModel;
 
 class ProjectPageDto
 {
@@ -46,12 +39,16 @@ class ProjectPageDto
 			if (! $text->isArchived) {
 				$questionList = $text->listQuestionsWithAnswers();
 				// Just want count of questions and responses, not whole list
-				$entry['questionCount'] = $questionList->count;
+				$entry['questionCount'] = 0;
 				$responseCount = 0; // "Responses" = answers + comments
 				foreach ($questionList->entries as $q) {
-					foreach ($q['answers'] as $a) {
-						$commentCount = count($a['comments']);
-						$responseCount += ($commentCount+1); // +1 for this answer
+					$question = new QuestionModel($project, $q['id']);
+					if (! $question->isArchived) {
+						$entry['questionCount']++;
+						foreach ($q['answers'] as $a) {
+							$commentCount = count($a['comments']);
+							$responseCount += ($commentCount+1); // +1 for this answer
+						}
 					}
 				}
 				$entry['responseCount'] = $responseCount;

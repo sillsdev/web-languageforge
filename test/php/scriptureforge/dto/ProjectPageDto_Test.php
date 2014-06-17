@@ -1,6 +1,8 @@
 <?php
 
 use models\scriptureforge\dto\ProjectPageDto;
+use models\AnswerModel;
+use models\CommentModel;
 use models\QuestionModel;
 use models\TextModel;
 
@@ -54,17 +56,58 @@ class TestProjectPageDto extends UnitTestCase {
 		$question3->textRef->id = $text2Id;
 		$question3Id = $question3->write();
 
+		// One answer for question 1...
+		$answer1 = new AnswerModel();
+		$answer1->content = "Me, John Carter.";
+		$answer1->score = 10;
+		$answer1->userRef->id = $user1Id;
+		$answer1->textHightlight = "I knew that I was on Mars";
+		$answer1Id = $question1->writeAnswer($answer1);
+
+		// ... and two answers for question 2...
+		$answer2 = new AnswerModel();
+		$answer2->content = "On Mars.";
+		$answer2->score = 1;
+		$answer2->userRef->id = $user1Id;
+		$answer2->textHightlight = "I knew that I was on Mars";
+		$answer2Id = $question2->writeAnswer($answer2);
+
+		$answer3 = new AnswerModel();
+		$answer3->content = "On the planet we call Barsoom, which you inhabitants of Earth normally call Mars.";
+		$answer3->score = 7;
+		$answer3->userRef->id = $user2Id;
+		$answer3->textHightlight = "I knew that I was on Mars";
+		$answer3Id = $question2->writeAnswer($answer3);
+
+		// ... and 1 comment.
+		$comment1 = new CommentModel();
+		$comment1->content = "By the way, our name for Earth is Jasoom.";
+		$comment1->userRef->id = $user2Id;
+		$comment1Id = QuestionModel::writeComment($project->databaseName(), $question2Id, $answer3Id, $comment1);
+
 		$dto = ProjectPageDto::encode($projectId, $user1Id);
 		
 		// Now check that it all looks right
 		$this->assertIsa($dto['texts'], 'array');
 		$this->assertEqual($dto['texts'][0]['id'], $text2Id);
 		$this->assertEqual($dto['texts'][1]['id'], $text1Id);
-		// The rest should fail... for now.
 		$this->assertEqual($dto['texts'][0]['title'], "Chapter 4");
 		$this->assertEqual($dto['texts'][1]['title'], "Chapter 3");
 		$this->assertEqual($dto['texts'][0]['questionCount'], 1);
 		$this->assertEqual($dto['texts'][1]['questionCount'], 2);
+		$this->assertEqual($dto['texts'][0]['responseCount'], 0);
+		$this->assertEqual($dto['texts'][1]['responseCount'], 4);
+		
+		// archive 1 Question
+		$question2->isArchived = true;
+		$question2->write();
+		
+		$dto = ProjectPageDto::encode($projectId, $user1Id);
+		
+		$this->assertEqual($dto['texts'][0]['questionCount'], 1);
+		$this->assertEqual($dto['texts'][1]['questionCount'], 1);
+		$this->assertEqual($dto['texts'][0]['responseCount'], 0);
+		$this->assertEqual($dto['texts'][1]['responseCount'], 1);
 	}
 
 }
