@@ -51,6 +51,7 @@ class UsxHelper {
 		$this->_stateCData = false;
 		$this->_stateCapturing = false;
 		$this->_footnoteNumber = 0;
+		$this->_footnotes = array();
 		xml_parse($this->_parser, $this->_usx);
 		//echo $this->_out;
 		return $this->_out;
