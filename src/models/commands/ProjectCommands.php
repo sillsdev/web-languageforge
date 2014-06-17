@@ -124,7 +124,7 @@ class ProjectCommands
 		$role = array_key_exists('role', $params) && $params['role'] != '' ? $params['role'] : ProjectRoles::CONTRIBUTOR;
 		$userId = $params['id'];
 		$user = new UserModel($userId);
-		$project = new ProjectModel($projectId);
+		$project = ProjectModel::getById($projectId);
 		$project->addUser($userId, $role);
 		$user->addProject($projectId);
 		$project->write();

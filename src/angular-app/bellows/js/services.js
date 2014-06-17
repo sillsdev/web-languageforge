@@ -69,8 +69,8 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.readUser = function(userId, callback) {
 		jsonRpc.call('project_readUser', [userId], callback);
 	};
-	this.updateUser = function(model, callback) {
-		jsonRpc.call('project_updateUserRole', [model], callback);
+	this.updateUser = function(projectId, model, callback) {
+		jsonRpc.call('project_updateUserRole', [projectId, model], callback);
 	};
 	this.removeUsers = function(users, callback) {
 		jsonRpc.call('project_removeUsers', [users], callback);
