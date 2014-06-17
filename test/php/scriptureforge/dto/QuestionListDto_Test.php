@@ -30,13 +30,15 @@ class TestQuestionListDto extends UnitTestCase {
 		$user1Id = $e->createUser("jcarter", "John Carter", "johncarter@example.com");
 		$user2Id = $e->createUser("dthoris", "Dejah Thoris", "princess@example.com");
 
-		// Two questions, with different numbers of answers
+		// Two questions, with different numbers of answers and different create dates
 		$question1 = new QuestionModel($project);
 		$question1->title = "Who is speaking?";
 		$question1->description = "Who is telling the story in this text?";
 		$question1->textRef->id = $textId;
+		$question1->write();
+		$question1->dateCreated->sub(date_interval_create_from_date_string('1 day'));
 		$question1Id = $question1->write();
-
+		
 		$question2 = new QuestionModel($project);
 		$question2->title = "Where is the storyteller?";
 		$question2->description = "The person telling this story has just arrived somewhere. Where is he?";
@@ -73,16 +75,16 @@ class TestQuestionListDto extends UnitTestCase {
 		$comment1Id = QuestionModel::writeComment($project->databaseName(), $question2Id, $answer3Id, $comment1);
 
 		$dto = QuestionListDto::encode($projectId, $textId, $user1Id);
-
+		
 		// Now check that it all looks right, 1 Text & 2 Questions
 		$this->assertEqual($dto['count'], 2);
 		$this->assertIsa($dto['entries'], 'array');
-		$this->assertEqual($dto['entries'][0]['id'], $question1Id);
-		$this->assertEqual($dto['entries'][1]['id'], $question2Id);
-		$this->assertEqual($dto['entries'][0]['title'], "Who is speaking?");
-		$this->assertEqual($dto['entries'][1]['title'], "Where is the storyteller?");
-		$this->assertEqual($dto['entries'][0]['answerCount'], 1);
-		$this->assertEqual($dto['entries'][1]['answerCount'], 2);
+		$this->assertEqual($dto['entries'][0]['id'], $question2Id);
+		$this->assertEqual($dto['entries'][1]['id'], $question1Id);
+		$this->assertEqual($dto['entries'][0]['title'], "Where is the storyteller?");
+		$this->assertEqual($dto['entries'][1]['title'], "Who is speaking?");
+		$this->assertEqual($dto['entries'][0]['answerCount'], 2);
+		$this->assertEqual($dto['entries'][1]['answerCount'], 1);
 		// Specifically check if comments got included in answer count
 		$this->assertNotEqual($dto['entries'][1]['answerCount'], 3, "Comments should not be included in answer count.");
 		
