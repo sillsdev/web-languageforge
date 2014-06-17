@@ -1,5 +1,7 @@
 <?php 
 
+use models\ProjectModel;
+
 use models\shared\rights\SiteRoles;
 
 
@@ -15,6 +17,7 @@ class App extends Secure_base {
 				show_404($this->site); // this terminates PHP
 			}
 		}
+		if ($projectId == 'favicon.ico') { $projectId = ''; }
 	
 		$data = array();
 		$data['appName'] = $app;
@@ -22,8 +25,7 @@ class App extends Secure_base {
 		$data['appFolder'] = $appFolder;
 		
 		// add projectId to the session
-		if ($projectId != '' && $projectId != 'favicon.ico') {
-			$this->session->set_userdata('projectId', $projectId);
+		if ($projectId != '') {
 		}
 		
 		// User Id
@@ -36,6 +38,12 @@ class App extends Secure_base {
 			$role = SiteRoles::USER;
 		}
 		$sessionData['userSiteRights'] = SiteRoles::getRightsArray($role);
+
+		if ($projectId) {
+			$this->session->set_userdata('projectId', $projectId);
+			$project = ProjectModel::getById($projectId);
+			$sessionData['userProjectRights'] = $project->getRightsArray($sessionData['userId']);
+		}
 		$sessionData['site'] = $this->site;
 		
 		// File Size
