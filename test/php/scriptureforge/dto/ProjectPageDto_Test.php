@@ -17,12 +17,14 @@ class TestProjectPageDto extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 
-		// Two texts, with different numbers of questions for each text
+		// Two texts, with different numbers of questions for each text and different create dates
 		$text1 = new TextModel($project);
 		$text1->title = "Chapter 3";
 		$text1->content = "I opened my eyes upon a strange and weird landscape. I knew that I was on Mars; …";
+		$text1->write();
+		$text1->dateCreated->sub(date_interval_create_from_date_string('1 day'));
 		$text1Id = $text1->write();
-
+		
 		$text2 = new TextModel($project);
 		$text2->title = "Chapter 4";
 		$text2->content = "We had gone perhaps ten miles when the ground began to rise very rapidly. …";
@@ -53,16 +55,16 @@ class TestProjectPageDto extends UnitTestCase {
 		$question3Id = $question3->write();
 
 		$dto = ProjectPageDto::encode($projectId, $user1Id);
-
+		
 		// Now check that it all looks right
 		$this->assertIsa($dto['texts'], 'array');
-		$this->assertEqual($dto['texts'][0]['id'], $text1Id);
-		$this->assertEqual($dto['texts'][1]['id'], $text2Id);
+		$this->assertEqual($dto['texts'][0]['id'], $text2Id);
+		$this->assertEqual($dto['texts'][1]['id'], $text1Id);
 		// The rest should fail... for now.
-		$this->assertEqual($dto['texts'][0]['title'], "Chapter 3");
-		$this->assertEqual($dto['texts'][1]['title'], "Chapter 4");
-		$this->assertEqual($dto['texts'][0]['questionCount'], 2);
-		$this->assertEqual($dto['texts'][1]['questionCount'], 1);
+		$this->assertEqual($dto['texts'][0]['title'], "Chapter 4");
+		$this->assertEqual($dto['texts'][1]['title'], "Chapter 3");
+		$this->assertEqual($dto['texts'][0]['questionCount'], 1);
+		$this->assertEqual($dto['texts'][1]['questionCount'], 2);
 	}
 
 }

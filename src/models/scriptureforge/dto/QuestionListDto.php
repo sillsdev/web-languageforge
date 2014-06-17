@@ -53,10 +53,23 @@ class QuestionListDto
 				}
 				$questionData['responseCount'] = $responseCount;
 				unset($questionData['answers']);
-
+				$questionData['dateCreated'] = $question->dateCreated->format(\DateTime::RFC2822);
+				
 				$data['entries'][] = $questionData;
 			}
 		}
+		
+ 		// sort Questions with newest at the top
+		usort($data['entries'], function ($a, $b) {
+		 	$sortOn = 'dateCreated';
+ 			if (array_key_exists($sortOn, $a) && array_key_exists($sortOn, $b)) {
+ 				return (strtotime($a[$sortOn]) < strtotime($b[$sortOn])) ? 1 : -1;
+ 			} else {
+ 				return 0;
+ 			}
+		});
+		
+		
 		$data['count'] = count($data['entries']);
 
 		return $data;
