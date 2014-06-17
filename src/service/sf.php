@@ -291,7 +291,7 @@ class Sf
 	}
 	
 	public function project_settings() {
-		return ProjectSettingsDto::encode($this->_userId);
+		return ProjectSettingsDto::encode($this->_projectId, $this->_userId);
 	}
 	
 	public function project_updateSettings($smsSettingsArray, $emailSettingsArray) {
@@ -303,7 +303,7 @@ class Sf
 	}
 	
 	public function project_pageDto() {
-		return \models\scriptureforge\dto\ProjectPageDto::encode($this->_userId);
+		return \models\scriptureforge\dto\ProjectPageDto::encode($this->_projectId, $this->_userId);
 	}
 
 	
