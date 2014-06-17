@@ -249,7 +249,7 @@ class UserCommands {
 			if (!$project) {
 				error_log("Error: Could not create project from project code '$projectCode'");
 			} else {
-				$project->addUser($user->id->asString(), $user->role);
+				$project->addUser($user->id->asString(), ProjectRoles::CONTRIBUTOR);
 				$user->addProject($project->id->asString());
 				$project->write();
 				$user->write();
