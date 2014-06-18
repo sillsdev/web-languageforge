@@ -26,8 +26,14 @@ angular.module('bellows.services', ['jsonRpc'])
 		// TODO Paging CP 2013-07
 		jsonRpc.call('user_list', [], callback);
 	};
-	this.typeahead = function(term, callback) {
-		jsonRpc.call('user_typeahead', [term], callback);
+	this.typeahead = function(term, projectIdToExclude, callback) {
+		// projectIdToExclude's default value if not specified: '' (empty string)
+		if (typeof callback === 'undefined') {
+			// If called with just two parameters, this was typeahead(term, callback)
+			callback = projectIdToExclude;
+			projectIdToExclude = '';
+		}
+		jsonRpc.call('user_typeahead', [term, projectIdToExclude], callback);
 	};
 	this.changePassword = function(userId, newPassword, callback) {
 		jsonRpc.call('change_password', [userId, newPassword], callback);
