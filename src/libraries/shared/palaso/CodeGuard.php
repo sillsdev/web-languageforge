@@ -30,6 +30,12 @@ class CodeGuard {
 		}
 	}
 	
+	public static function assertInArrayOrThrow($var, $array) {
+		if (!in_array($var, $array)) {
+			self::exception("'$var' does not match one of the specified values");
+		}
+	}
+	
 	public static function checkEmptyAndThrow($var, $name) {
 		if (empty($var)) {
 			self::exception("'$name' should not be empty");

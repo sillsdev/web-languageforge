@@ -66,7 +66,7 @@ class ProjectCommands
 			$project->appName = $appName;
 			$projectId = $project->write();
 		}
-		ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::MANAGER));
+		ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::MANAGER);
 		return $projectId;
 	}
 	
@@ -113,16 +113,16 @@ class ProjectCommands
 	/**
 	 * Update the user role in the project
 	 * @param string $projectId
-	 * @param array $params
-	 * @return unknown|string
+	 * @param string $userId
+	 * @param string $role
+	 * @return string - userId
 	 */
-	public static function updateUserRole($projectId, $params) {
+	public static function updateUserRole($projectId, $userId, $role = ProjectRoles::CONTRIBUTOR) {
 		CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
-		CodeGuard::checkNotFalseAndThrow($params['id'], 'id');
+		CodeGuard::checkNotFalseAndThrow($userId, 'userId');
+		CodeGuard::assertInArrayOrThrow($role, array(ProjectRoles::CONTRIBUTOR, ProjectRoles::MANAGER));
 		
 		// Add the user to the project
-		$role = array_key_exists('role', $params) && $params['role'] != '' ? $params['role'] : ProjectRoles::CONTRIBUTOR;
-		$userId = $params['id'];
 		$user = new UserModel($userId);
 		$project = ProjectModel::getById($projectId);
 		$project->addUser($userId, $role);

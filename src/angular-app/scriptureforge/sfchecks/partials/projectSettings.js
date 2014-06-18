@@ -307,8 +307,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	});
 
 }])
-.controller('ProjectSettingsUsersCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
-                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, ss, notice, messageService) {
+.controller('ProjectSettingsUsersCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
+                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, sfchecksProjectService, ss, notice, messageService) {
 	$scope.userFilter = '';
 	$scope.message = {};
 	$scope.newMessageCollapsed = true;
@@ -400,11 +400,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     ];
 	
 	$scope.onRoleChange = function(user) {
-		var model = {};
-		model.id = user.id;
-		model.role = user.role;
-//		console.log('userchange...', model);
-		projectService.updateUser(model, function(result) {
+		sfchecksProjectService.updateUserRole(user.id, user.role, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, user.username + "'s role was changed to " + user.role);
 			}
@@ -471,9 +467,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 				};
 			});
 		} else if ($scope.addMode == 'addExisting') {
-			var model = {};
-			model.id = $scope.user.id;
-			projectService.updateUser(model, function(result) {
+			sfchecksProjectService.updateUserRole($scope.user.id, 'contributor', function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectname + " successfully");
 					$scope.queryProjectSettings();
