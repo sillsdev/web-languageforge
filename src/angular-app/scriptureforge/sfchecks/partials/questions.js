@@ -171,7 +171,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		questionService.update(projectId, model, function(result) {
 			if (result.ok) {
 				$scope.queryQuestions();
-				notice.push(notice.SUCCESS, "'" + $scope.calculateTitle(model.title, model.description) + "' was added successfully");
+				notice.push(notice.SUCCESS, "'" + questionService.util.calculateTitle(model.title, model.description) + "' was added successfully");
 				if ($scope.saveAsTemplate) {
 					qts.update(projectId, model, function(result) {
 						if (result.ok) {
