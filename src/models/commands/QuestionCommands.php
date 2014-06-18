@@ -105,7 +105,6 @@ class QuestionCommands
 	 * @see AnswerModel
 	 */
 	public static function updateAnswer($projectId, $questionId, $answer, $userId) {
-		// TODO: validate $userId as authorized to perform this action
 		$projectModel = new ProjectModel($projectId);
 		$questionModel = new QuestionModel($projectModel, $questionId);
 		$authorId = $userId;
@@ -130,9 +129,50 @@ class QuestionCommands
 		return self::encodeAnswer($newAnswer);
 	}
 	
+	/**
+	 * 
+	 * @param string $projectId
+	 * @param string $questionId
+	 * @param string $answerId
+	 * @return object $result
+	 */
 	public static function removeAnswer($projectId, $questionId, $answerId) {
 		$projectModel = new \models\ProjectModel($projectId);
 		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId);
+	}
+	
+	/**
+	 * Updates an answer's isToBeExported flag.
+	 * @param string $projectId
+	 * @param string $questionId
+	 * @param array $answer	The $answer will be decoded into an AnswerModel
+	 * @param string $userId
+	 * @return array Returns an encoded QuestionDTO fragment for the Answer
+	 * @see AnswerModel
+	 */
+	public static function updateAnswerExportFlag($projectId, $questionId, $answer, $userId) {
+		$projectModel = new ProjectModel($projectId);
+		$questionModel = new QuestionModel($projectModel, $questionId);
+		$authorId = $userId;
+		if ($answer['id'] != '') {
+			// update existing answer
+			$oldAnswer = $questionModel->readAnswer($answer['id']);
+			$authorId = $oldAnswer->userRef->asString();
+		}
+		$answerModel = new AnswerModel();
+		JsonDecoder::decode($answerModel, $answer);
+		$answerModel->userRef->id = $authorId;
+		$answerId = $questionModel->writeAnswer($answerModel);
+		// Re-read question model to pick up new answer
+		$questionModel->read($questionId);
+		$newAnswer = $questionModel->readAnswer($answerId);
+		if ($answer['id'] != '') {
+			// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
+			ActivityCommands::updateAnswer($projectModel, $questionId, $newAnswer);
+		} else {
+			ActivityCommands::addAnswer($projectModel, $questionId, $newAnswer);
+		}
+		return self::encodeAnswer($newAnswer);
 	}
 	
 	/**
