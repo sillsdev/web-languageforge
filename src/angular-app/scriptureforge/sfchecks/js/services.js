@@ -95,10 +95,11 @@ angular.module('sfchecks.services', ['jsonRpc'])
 		
 		// Utility functions
 		this.util = {};
-		this.util.calculateTitle = function(title, description) {
+		this.util.calculateTitle = function(title, description, charLimit) {
+			charLimit = charLimit || 50;
 			var questionTitleCalculated;
 			if (!title || title == '') {
-				var spaceIndex = description.indexOf(' ', 50);
+				var spaceIndex = description.indexOf(' ', charLimit);
 				var shortTitle;
 				if (spaceIndex > -1) {
 					shortTitle = description.slice(0, spaceIndex) + '...';
