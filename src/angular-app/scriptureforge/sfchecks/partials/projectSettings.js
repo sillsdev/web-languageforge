@@ -476,10 +476,25 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		} else if ($scope.addMode == 'addExisting') {
 			var model = {};
 			model.id = $scope.user.id;
-			projectService.updateUser($scope.project.id, model, function(result) {
+			// Check existing users to see if we're adding someone that already exists in the project
+			projectService.users($scope.project.id, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectname + " successfully");
-					$scope.queryProjectSettings();
+					for (var i=0, l=result.data.users.length; i<l; i++) {
+						// This approach works, but is unnecessarily slow. We should have an "is user in project?" API,
+						// rather than returning all users then searching through them in O(N) time.
+						// TODO: Make an "is user in project?" query API. 2014-06 RM
+						var thisUser = result.data.users[i];
+						if (thisUser.id == model.id) {
+							notice.push(notice.WARN, "'" + $scope.user.name + "' is already a member of " + $scope.project.projectname + ".");
+							return;
+						}
+					}
+					projectService.updateUser($scope.project.id, model, function(result) {
+						if (result.ok) {
+							notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectname + " successfully");
+							$scope.queryProjectSettings();
+						}
+					});
 				}
 			});
 		} else if ($scope.addMode == 'invite') {
