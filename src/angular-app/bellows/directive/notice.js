@@ -1,5 +1,5 @@
 angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnimate', 'ngSanitize'])
-.factory('silNoticeService', ['$interval', 'utilService', function($interval, util) {
+.factory('silNoticeService', ['$interval', 'utilService', '$sanitize', function($interval, util, $sanitize) {
 	var notices = [];
 	var timers = {};
 	
@@ -18,7 +18,28 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
 				var localFactory = this;
 				timers[id] = $interval(function() {localFactory.removeById(id); }, 10 * 1000, 1);
 			}
-			notices.push({type: type(), message: message, id: id, details: details, showDetails: false, toggleDetails: function() {this.showDetails = !this.showDetails;}});
+			
+			var obj = {
+					type: type(),
+					message: message,
+					id: id,
+					details: details,
+					nobind: false,
+					showDetails: false,
+					toggleDetails: function() {this.showDetails = !this.showDetails;},
+			};
+
+			if (details) {
+				obj.details = details;
+				// try to fix up html in details
+				details = details.replace(/->/g, '-&gt;');
+				details = details.replace(/<\\\//g, '</');
+			
+				// extra logic to prevent $sanitize from throwing in the template because of improper html
+				try { $sanitize(details); } catch (e) { obj.nobind = true; }
+			}
+			
+			notices.push(obj);
 		},
 		removeById: function(id) {
 			this.remove(getIndexById(id));
