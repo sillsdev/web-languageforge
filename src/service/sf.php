@@ -242,17 +242,8 @@ class Sf
 		return \models\shared\dto\ProjectListDto::encode($this->_userId, $this->_site);
 	}
 	
-	public function project_updateUserRole($userId, $role) {
-		return ProjectCommands::updateUserRole($this->_projectId, $userId, $role);
-	}
-	
 	public function project_joinProject($projectId, $role) {
 		return ProjectCommands::updateUserRole($projectId, $this->_userId, $role);
-	}
-	
-	// REVIEW: should this be part of the general project API ?
-	public function project_removeUsers($userIds) {
-		return ProjectCommands::removeUsers($this->_projectId, $userIds);
 	}
 	
 	
@@ -286,6 +277,17 @@ class Sf
 	public function project_update($settings) {
 		return SfchecksProjectCommands::updateProject($this->_projectId, $this->_userId, $settings);
 	}
+
+	public function project_updateUserRole($userId, $role) {
+		return ProjectCommands::updateUserRole($this->_projectId, $userId, $role);
+	}
+
+	// REVIEW: should this be part of the general project API ?
+	public function project_removeUsers($userIds) {
+		return ProjectCommands::removeUsers($this->_projectId, $userIds);
+	}
+	
+	
 
 	/**
 	 * Read a project from the given $id

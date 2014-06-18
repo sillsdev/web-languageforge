@@ -25,6 +25,7 @@ class SfchecksProjectCommands {
 		}
 		$oldDBName = $project->databaseName();
 
+		$object['id'] = $projectId;
 		JsonDecoder::decode($project, $object);
 		$newDBName = $project->databaseName();
 		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
