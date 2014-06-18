@@ -134,6 +134,11 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 		return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.DELETE);
 	};
 	
+	// Rights: Export
+	$scope.rightsExport = function() {
+		return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
+	};
+	
 	$scope.workflowStates = [
 		{
 			state: "open",
@@ -476,6 +481,19 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	$scope.deletedTags = function(answer) {
 		// console.log('Tags deleted');
 		updateAnswer(projectId, questionId, answer);
+	};
+	
+	$scope.flagForExport = function(answer) {
+		answer.isToBeExported = !answer.isToBeExported;
+		questionService.update_answer(projectId, questionId, answer, function(result) {
+			if (result.ok) {
+				if (answer.isToBeExported) {
+					notice.push(notice.SUCCESS, "The answer was flagged for export successfully");
+				} else {
+					notice.push(notice.SUCCESS, "The answer was cleared from export successfully");
+				}
+			}
+		});
 	};
 	
 }])
