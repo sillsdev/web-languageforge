@@ -245,6 +245,10 @@ class Sf
 	public function project_removeUsers($projectId, $userIds) {
 		return ProjectCommands::removeUsers($projectId, $userIds);
 	}
+
+	public function project_usersDto($projectId) {
+		return ProjectCommands::usersDto($projectId);
+	}
 	
 	
 	//---------------------------------------------------------------

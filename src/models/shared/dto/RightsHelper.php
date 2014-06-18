@@ -146,6 +146,9 @@ class RightsHelper
 				return (self::userHasSfchecksProjectRight($params[0], $userId, Domain::USERS + Operation::EDIT) ||
 						self::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT));
 
+			case 'project_usersDto':
+				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::USERS + Operation::VIEW);
+
 			case 'project_removeUsers':
 				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::USERS + Operation::DELETE);
 
