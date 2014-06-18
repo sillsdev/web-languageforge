@@ -145,6 +145,9 @@ class RightsHelper
 				return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 				
 			case 'project_updateUserRole':
+				return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+				
+			case 'project_joinProject':
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 
 			case 'project_removeUsers':
