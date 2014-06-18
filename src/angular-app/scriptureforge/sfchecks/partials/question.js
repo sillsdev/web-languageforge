@@ -3,6 +3,7 @@
 angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'sgw.soundmanager', 'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice'])
 .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService',
                              function($scope, $routeParams, questionService, ss, breadcrumbService, notice, linkService) {
+	var Q_TITLE_LIMIT = 30;
 	$scope.jqteOptions = {
 		'placeholder': 'Type your answer here. Click "Done" when finished.',
 		'u': false,
@@ -182,30 +183,18 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	
 	$scope.questionTitleCalculated = '';
 	$scope.$watch('question.title', function(newval) {
-		$scope.calculateTitle();
-	});
-	$scope.$watch('question.description', function(newval) {
-		$scope.calculateTitle();
-	});
-		
-	$scope.calculateTitle = function() {
 		if ($scope.question) {
-			if (!$scope.question.title || $scope.question.title == '') {
-				var spaceIndex = $scope.question.description.indexOf(' ', 30);
-				var shortTitle;
-				if (spaceIndex > -1) {
-					shortTitle = $scope.question.description.slice(0, spaceIndex) + '...';
-				} else {
-					shortTitle = $scope.question.description;
-				}
-				$scope.questionTitleCalculated = shortTitle;
-			} else {
-				$scope.questionTitleCalculated = $scope.question.title;
-			}
+			$scope.questionTitleCalculated = questionService.util.calculateTitle($scope.question.title, $scope.question.description, Q_TITLE_LIMIT); 
 			breadcrumbService.updateCrumb('top', 3, {label: $scope.questionTitleCalculated});
 		}
-	};
-	
+	});
+	$scope.$watch('question.description', function(newval) {
+		if ($scope.question) {
+			$scope.questionTitleCalculated = questionService.util.calculateTitle($scope.question.title, $scope.question.description, Q_TITLE_LIMIT); 
+			breadcrumbService.updateCrumb('top', 3, {label: $scope.questionTitleCalculated});
+		}
+	});
+		
 	$scope.updateQuestion = function(newQuestion) {
 		questionService.update(projectId, newQuestion, function(result) {
 			if (result.ok) {
