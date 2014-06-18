@@ -20,6 +20,7 @@ var SfProjectSettingsPage = function() {
 		newMember:		{
 							input:		element(by.model('term')),
 							button:		element(by.model('addMode')),
+							warning:	element(by.binding('warningText')),
 							results:	$('.typeahead').$('ul li')
 						}
 	};

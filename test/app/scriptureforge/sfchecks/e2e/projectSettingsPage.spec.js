@@ -49,6 +49,14 @@ describe('the project settings page - project manager', function() {
 			expect(page.membersTab.list.count()).toBe(memberCount+1);
 		});
 
+		it('can not add the same user twice', function() {
+			page.membersTab.newMember.input.clear();
+			page.membersTab.newMember.input.sendKeys('dude');
+			expect(page.membersTab.newMember.button.isEnabled()).toBeFalsy();
+			expect(page.membersTab.newMember.warning.isDisplayed()).toBeTruthy();
+			page.membersTab.newMember.input.clear();
+		});
+
 		it('can change the role of a member', function() {
 			page.membersTab.listFilter.sendKeys('dude');
 			util.clickDropdownByValue(page.membersTab.list.first().findElement(by.model('user.role')), 'Manager');
