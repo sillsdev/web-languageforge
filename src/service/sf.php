@@ -161,8 +161,8 @@ class Sf
 		return UserCommands::listUsers();
 	}
 	
-	public function user_typeahead($term) {
-		return UserCommands::userTypeaheadList($term);
+	public function user_typeahead($term, $projectIdToExclude = '') {
+		return UserCommands::userTypeaheadList($term, $projectIdToExclude);
 	}
 	
 	public function change_password($userId, $newPassword) {

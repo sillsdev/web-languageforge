@@ -429,7 +429,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	
 	$scope.queryUser = function(userName) {
 //		console.log('searching for ', userName);
-		userService.typeahead(userName, function(result) {
+		userService.typeahead(userName, $scope.project.id, function(result) {
 			// TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
 			if (result.ok) {
 				$scope.users = result.data.entries;
