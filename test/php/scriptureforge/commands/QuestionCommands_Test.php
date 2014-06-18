@@ -189,7 +189,7 @@ class TestQuestionCommands extends UnitTestCase {
 		$this->assertEqual(0, $answer1['score']);
 	}
 	
-	function testUpdateAnswer_existingAnswer_originalAuthorIsPreserved() {
+	function testUpdateAnswer_ExistingAnswer_OriginalAuthorIsPreserved() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
@@ -209,12 +209,46 @@ class TestQuestionCommands extends UnitTestCase {
 		);
 		
 		QuestionCommands::updateAnswer($project->id->asString(), $questionId, $answerArray, $user2Id);
+		
 		$question->read($questionId);
 		$newAnswer = $question->readAnswer($answerId);
 		$this->assertEqual($user1Id, $newAnswer->userRef->asString());
 	}
 	
-	function testUpdateComment_existingComment_originalAuthorIsPreserved() {
+	function testUpdateAnswer_ExistingAnswer_CantUpdateTagsOrExportFlag() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$project = $e->createProject(SF_TESTPROJECT);
+		$question = new QuestionModel($project);
+		$questionId = $question->write();
+		
+		$answer = new AnswerModel();
+		$answer->content = "the answer";
+		$user1Id = $e->createUser("user1", "user1", "user1");
+		$user2Id = $e->createUser("user2", "user2", "user2");
+		$answer->userRef->id = $user1Id;
+		$answer->tags[] = 'originalTag';
+		$answer->isToBeExported = true;
+		$answerId = $question->writeAnswer($answer);
+		$answerArray = array(
+			"id" => $answerId,
+			"content" => "updated answer",
+			"tags" => array('updatedTag'),
+			"isToBeExported" => false
+		);
+		
+		QuestionCommands::updateAnswer($project->id->asString(), $questionId, $answerArray, $user2Id);
+		
+		$question->read($questionId);
+		$newAnswer = $question->readAnswer($answerId);
+		$this->assertEqual($newAnswer->content, "updated answer");
+		$this->assertEqual(count($newAnswer->tags), 1);
+		$this->assertEqual($newAnswer->tags[0], 'originalTag');
+		$this->assertEqual($newAnswer->isToBeExported, true);
+	}
+	
+	function testUpdateComment_ExistingComment_OriginalAuthorIsPreserved() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
