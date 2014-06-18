@@ -242,8 +242,12 @@ class Sf
 		return \models\shared\dto\ProjectListDto::encode($this->_userId, $this->_site);
 	}
 	
-	public function project_updateUserRole($projectId, $params) {
-		return ProjectCommands::updateUserRole($projectId, $params);
+	public function project_updateUserRole($userId, $role) {
+		return ProjectCommands::updateUserRole($this->_projectId, $userId, $role);
+	}
+	
+	public function project_joinProject($projectId, $role) {
+		return ProjectCommands::updateUserRole($projectId, $this->_userId, $role);
 	}
 	
 	// REVIEW: should this be part of the general project API ?

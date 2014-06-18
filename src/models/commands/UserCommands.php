@@ -191,7 +191,7 @@ class UserCommands {
 		$userWithPassword->write();
 		
 		if ($projectId) {
-			ProjectCommands::updateUserRole($projectId, array('id' => $userId));
+			ProjectCommands::updateUserRole($projectId, $userId);
 			
 			if ($currentUserId) {
 				$toUser = new UserModel($currentUserId);

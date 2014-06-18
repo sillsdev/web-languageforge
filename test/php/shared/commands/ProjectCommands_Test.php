@@ -41,7 +41,7 @@ class TestProjectCommands extends UnitTestCase {
 		);
 	
 		// update user role in project
-		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params, 'bogus userid');
+		$updatedUserId = ProjectCommands::updateUserRole($projectId, $user->id->asString(), ProjectRoles::MANAGER);
 	
 		// read from disk
 		$updatedUser = new UserModel($updatedUserId);
@@ -69,7 +69,7 @@ class TestProjectCommands extends UnitTestCase {
 		);
 		
 		// update user role in project once
-		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params, 'bogus userid');
+		$updatedUserId = ProjectCommands::updateUserRole($projectId, $userId);
 		
 		// read from disk
 		$sameUser = new UserModel($updatedUserId);
@@ -80,7 +80,7 @@ class TestProjectCommands extends UnitTestCase {
 		$this->assertEqual($sameUser->listProjects(Website::SCRIPTUREFORGE)->count, 1);
 		
 		// update user role in project again
-		$updatedUserId = ProjectCommands::updateUserRole($projectId, $params, 'bogus userid');
+		$updatedUserId = ProjectCommands::updateUserRole($projectId, $userId);
 		
 		// read from disk again
 		$sameProject->read($projectId);

@@ -88,11 +88,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 
 	// Add user as Manager of project
 	$scope.addManagerToProject = function(project) {
-//		console.log("addManagerToProject(" + project.projectname + ")");
-		var user = {};
-		user.id = ss.currentUserId();
-			user.role = 'project_manager';
-		projectService.updateUser(project.id, user, function(result) {
+		projectService.joinProject(project.id, 'project_manager', function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "You are now a Manager of the " + project.projectname + " project.");
 				$scope.queryProjectsForUser();
@@ -102,11 +98,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 
 	// Add user as Member of project
 	$scope.addMemberToProject = function(project) {
-//		console.log("addMemberToProject(" + project.projectname + ")");
-		var user = {};
-		user.id = ss.currentUserId();
-			user.role = 'contributor';
-		projectService.updateUser(project.id, user, function(result) {
+		projectService.joinProject(project.id, 'contributor', function(result) {
 			if (result.ok) {
 					notice.push(notice.SUCCESS, "You are now a Contributor for the " + project.projectname + " project.");
 				$scope.queryProjectsForUser();
