@@ -105,35 +105,46 @@ class UserListModel extends \models\mapper\MapperListModel
 
 class UserTypeaheadModel extends \models\mapper\MapperListModel
 {
-	public function __construct($term, $projectIdToExclude = '')
+	public function __construct($term, $projectIdOrIds = '', $include = false)
 	{
 		$query = array('$or' => array(
 						array('name' => array('$regex' => $term, '$options' => '-i')),
 						array('username' => array('$regex' => $term, '$options' => '-i')),
 						array('email' => array('$regex' => $term, '$options' => '-i')),
 				));
-		if (!empty($projectIdToExclude)) {
-			// Allow $projectIdToExclude to be either an array or a single ID
-			if (is_array($projectIdToExclude)) {
-				$idsToExclude = $projectIdToExclude;
+		if (!empty($projectIdOrIds)) {
+			// Allow $projectIdOrIds to be either an array or a single ID
+			if (is_array($projectIdOrIds)) {
+				$idsForQuery = $projectIdOrIds;
 			} else {
-				$idsToExclude = array($projectIdToExclude);
+				$idsForQuery = array($projectIdOrIds);
 			}
 			// If passed string IDs, convert to MongoID objects
-			$idsToExclude = array_map(function($id) {
+			$idsForQuery = array_map(function($id) {
 				if (is_string($id)) {
 					return MongoMapper::mongoID($id);
 				} else {
 					return $id;
 				}
-			}, $idsToExclude);
-			$query['projects'] = array('$nin' => $idsToExclude);
+			}, $idsForQuery);
+			$inOrNotIn = $include ? '$in' : '$nin';
+			$query['projects'] = array($inOrNotIn => $idsForQuery);
+			//error_log("Query: " . print_r($query, true));
 		}
 		parent::__construct(
 				UserModelMongoMapper::instance(),
 				$query,
 				array('username', 'email', 'name', 'avatarRef')
 		);
+		// If we were called with a project filter that excluded certain users, also
+		// return a list of specifically which users were excluded. Which happens to
+		// be another typeahead search with the same query term, but *including* only
+		// the ones matching this project.
+		if ($projectIdOrIds && !$include) {
+			$this->excludedUsers = new UserTypeaheadModel($term, $projectIdOrIds, true);
+			$this->excludedUsers->read();
+		}
+		//echo("Result: " . print_r($this, true));
 	}	
 }
 
