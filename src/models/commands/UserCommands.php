@@ -128,8 +128,8 @@ class UserCommands {
 	 * @param string $term
 	 * @return \models\UserTypeaheadModel
 	 */
-	public static function userTypeaheadList($term) {
-		$list = new \models\UserTypeaheadModel($term);
+	public static function userTypeaheadList($term, $projectIdToExclude = '') {
+		$list = new \models\UserTypeaheadModel($term, $projectIdToExclude);
 		$list->read();
 		return $list;
 	}

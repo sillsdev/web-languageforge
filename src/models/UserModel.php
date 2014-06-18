@@ -56,7 +56,7 @@ class UserModel extends \models\UserModelBase
 	
 	/**
 	 *	Adds the user as a member of $projectId
-	 *  You do must call write() as both the user model and the project model!!!
+	 *  You must call write() on both the user model and the project model!!!
 	 * @param string $projectId
 	 */
 	public function addProject($projectId) {
@@ -105,19 +105,36 @@ class UserListModel extends \models\mapper\MapperListModel
 
 class UserTypeaheadModel extends \models\mapper\MapperListModel
 {
-	public function __construct($term)
+	public function __construct($term, $projectIdToExclude = '')
 	{
-		parent::__construct(
-				UserModelMongoMapper::instance(),
-				array('$or' => array(
+		$query = array('$or' => array(
 						array('name' => array('$regex' => $term, '$options' => '-i')),
 						array('username' => array('$regex' => $term, '$options' => '-i')),
 						array('email' => array('$regex' => $term, '$options' => '-i')),
-				)),
+				));
+		if (!empty($projectIdToExclude)) {
+			// Allow $projectIdToExclude to be either an array or a single ID
+			if (is_array($projectIdToExclude)) {
+				$idsToExclude = $projectIdToExclude;
+			} else {
+				$idsToExclude = array($projectIdToExclude);
+			}
+			// If passed string IDs, convert to MongoID objects
+			$idsToExclude = array_map(function($id) {
+				if (is_string($id)) {
+					return MongoMapper::mongoID($id);
+				} else {
+					return $id;
+				}
+			}, $idsToExclude);
+			$query['projects'] = array('$nin' => $idsToExclude);
+		}
+		parent::__construct(
+				UserModelMongoMapper::instance(),
+				$query,
 				array('username', 'email', 'name', 'avatarRef')
 		);
 	}	
-	
 }
 
 
