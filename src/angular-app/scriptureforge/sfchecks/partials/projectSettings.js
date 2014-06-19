@@ -423,7 +423,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	
 	$scope.queryUser = function(userName) {
 //		console.log('searching for ', userName);
-		userService.typeahead(userName, $scope.project.id, function(result) {
+		userService.typeaheadExclusive(userName, $scope.project.id, function(result) {
 			// TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
 			if (result.ok) {
 				$scope.users = result.data.entries;
@@ -458,7 +458,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		// the given username. E.g. when creating a new user Bob Jones with username "bjones",
 		// after typing "bjo" the "excluded users" list will include Bob Johnson (bjohnson).
 		if (!$scope.excludedUsers) { return false; }
-		console.log($scope.excludedUsers);
 		for (var i=0, l=$scope.excludedUsers.length; i<l; i++) {
 			if (userName == $scope.excludedUsers[i].username ||
 				userName == $scope.excludedUsers[i].name     ||
@@ -501,7 +500,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		if ($scope.addMode == 'addNew') {
 			userService.createSimple($scope.typeahead.userName, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "User created.  Username: " + $scope.typeahead.userName + "    Password: " + result.data.password);
+					notice.push(notice.INFO, "User created.  Username: " + $scope.typeahead.userName + "    Password: " + result.data.password);
 					$scope.queryProjectSettings();
 				};
 			});
@@ -509,7 +508,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			var model = {};
 			model.id = $scope.user.id;
 			// Check existing users to see if we're adding someone that already exists in the project
-			projectService.users($scope.project.id, function(result) {
+			projectService.users(function(result) {
 				if (result.ok) {
 					for (var i=0, l=result.data.users.length; i<l; i++) {
 						// This approach works, but is unnecessarily slow. We should have an "is user in project?" API,

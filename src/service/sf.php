@@ -168,7 +168,12 @@ class Sf
 	public function user_typeahead($term, $projectIdToExclude = '') {
 		return UserCommands::userTypeaheadList($term, $projectIdToExclude);
 	}
-	
+
+	public function user_typeaheadExclusive($term, $projectIdToExclude = '') {
+		$projectIdToExclude = empty($projectIdToExclude) ? $this->_projectId : $projectIdToExclude;
+		return UserCommands::userTypeaheadList($term, $projectIdToExclude);
+	}
+
 	public function change_password($userId, $newPassword) {
 		return UserCommands::changePassword($userId, $newPassword, $this->_userId);
 	}
