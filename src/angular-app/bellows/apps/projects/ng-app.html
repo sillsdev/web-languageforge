@@ -8,9 +8,9 @@
 </div>
 <div style="padding-top:10px">
 	<sil-notices></sil-notices>
-	<div data-wc-overlay="" data-wc-overlay-delay="2000">
+	<!-- <div data-wc-overlay="" data-wc-overlay-delay="6000">
     <img src="/images/shared/loading.gif" />&nbsp; Loading...
-    </div>
+    </div> -->
 	<div data-ng-show="finishedLoading">
 	    
         <h2 style="font-weight:normal">My Projects</h2>
@@ -39,7 +39,7 @@
         		<ul class="inline" data-ng-class="{active: isSelected(project)}">
         			<li data-ng-show="rights.deleteOther"><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
         			<li style="width: 80%">
-        				<a data-ng-show="isInProject(project)" href="/app/{{project.appName}}#/p/{{project.id}}">
+        				<a data-ng-show="isInProject(project)" href="/app/{{project.appName}}/{{project.id}}/">
         					<span class="larger-text">{{project.projectname}} ({{projectTypes[project.appName]}})</span>
         				</a>
         				<span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectname}} ({{projectTypes[project.appName]}})</span>

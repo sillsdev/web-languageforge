@@ -86,14 +86,8 @@ $otherProject = ProjectCommands::createProject(
 	Website::SCRIPTUREFORGE
 );
 
-ProjectCommands::updateUserRole($testProject, array(
-	'id' => $managerUser,
-	'role' => ProjectRoles::MANAGER
-));
-ProjectCommands::updateUserRole($testProject, array(
-	'id' => $memberUser,
-	'role' => ProjectRoles::CONTRIBUTOR
-));
+ProjectCommands::updateUserRole($testProject, $managerUser, ProjectRoles::MANAGER);
+ProjectCommands::updateUserRole($testProject, $memberUser, ProjectRoles::CONTRIBUTOR);
 
 $text1 = TextCommands::updateText($testProject, array(
 	'id' => '',

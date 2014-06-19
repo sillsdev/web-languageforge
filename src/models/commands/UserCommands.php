@@ -128,8 +128,8 @@ class UserCommands {
 	 * @param string $term
 	 * @return \models\UserTypeaheadModel
 	 */
-	public static function userTypeaheadList($term) {
-		$list = new \models\UserTypeaheadModel($term);
+	public static function userTypeaheadList($term, $projectIdToExclude = '') {
+		$list = new \models\UserTypeaheadModel($term, $projectIdToExclude);
 		$list->read();
 		return $list;
 	}
@@ -141,7 +141,7 @@ class UserCommands {
 	 * @throws \Exception
 	 */
 	public static function changePassword($userId, $newPassword, $currUserId) {
-		if ($userId != $currUserId && !RightsHelper::userHasSiteRight($currUserId, Domain::USERS + Operation::EDIT)) {
+		if ($userId != $currUserId && !RightsHelper::hasSiteRight($currUserId, Domain::USERS + Operation::EDIT)) {
 			throw new UserUnauthorizedException();
 		}
 		$user = new \models\PasswordModel($userId);
@@ -191,7 +191,7 @@ class UserCommands {
 		$userWithPassword->write();
 		
 		if ($projectId) {
-			ProjectCommands::updateUserRole($projectId, array('id' => $userId));
+			ProjectCommands::updateUserRole($projectId, $userId);
 			
 			if ($currentUserId) {
 				$toUser = new UserModel($currentUserId);
