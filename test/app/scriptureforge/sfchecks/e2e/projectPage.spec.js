@@ -31,6 +31,10 @@ describe('the project dashboard AKA text list page', function() {
 			expect(projectPage.settingsButton.isDisplayed()).toBe(false);
 		});
 
+		it('does not have access to the invite-a-friend button', function() {
+			expect(projectPage.inviteButton.isDisplayed()).toBe(false);
+		});
+
 	});
 
 	describe('project manager', function() {
@@ -40,6 +44,10 @@ describe('the project dashboard AKA text list page', function() {
 			loginPage.loginAsManager();
 	    	projectListPage.get();
 	    	projectListPage.clickOnProject(constants.testProjectName);
+		});
+
+		it('has access to the invite-a-friend button', function() {
+			expect(projectPage.inviteButton.isDisplayed()).toBe(true);
 		});
 
 		it('can click on settings button', function() {
