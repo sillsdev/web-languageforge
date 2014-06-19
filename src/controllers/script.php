@@ -15,7 +15,7 @@ class Script extends Secure_base {
 			show_404($this->site);
 		} else {
 			$userId = (string)$this->session->userdata('user_id');
-			if (! RightsHelper::userHasSiteRight($userId, Domain::PROJECTS + Operation::DELETE)) {
+			if (! RightsHelper::hasSiteRight($userId, Domain::PROJECTS + Operation::DELETE)) {
 				show_error("You have insufficient privileges to run scripts", 403, 'Insufficient Privileges');
 			} else {
 				try {

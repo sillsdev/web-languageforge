@@ -20,7 +20,8 @@
 					</li>
 				</ul>
 			</typeahead>
-			<button data-ng-model="addMode" class="btn" data-ng-disabled="!typeahead.userName" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+			<button data-ng-model="addMode" class="btn" data-ng-disabled="disableAddButton" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+			<span class="warning" data-ng-show="warningText">{{warningText}}</span>
 			</form>
 		</div>
 		<div id="newMessageDiv" data-collapse="newMessageCollapsed">

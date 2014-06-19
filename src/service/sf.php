@@ -1,5 +1,7 @@
 <?php
 
+use models\scriptureforge\sfchecks\commands\SfchecksProjectCommands;
+
 use libraries\scriptureforge\sfchecks\ParatextExport;
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
@@ -55,6 +57,7 @@ class Sf
 	 * @var string
 	 */
 	private $_userId;
+	private $_projectId;
 	
 	private $_controller;
 	
@@ -62,6 +65,7 @@ class Sf
 	
 	public function __construct($controller) {
 		$this->_userId = (string)$controller->session->userdata('user_id');
+		$this->_projectId = (string)$controller->session->userdata('projectId');
 		$this->_controller = $controller;
 		$this->_site = Website::getSiteName();
 
@@ -70,6 +74,7 @@ class Sf
 
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
  		ini_set('display_errors', 0);
+ 		
 	}
 	
 	//---------------------------------------------------------------
@@ -146,11 +151,10 @@ class Sf
 
  	/**
  	 * @param string $userName
- 	 * @param string $projectId
  	 * @return CreateSimpleDto
  	 */
- 	public function user_createSimple($projectId, $userName) {
- 		return UserCommands::createSimple($userName, $projectId, $this->_userId);
+ 	public function user_createSimple($userName) {
+ 		return UserCommands::createSimple($userName, $this->_projectId, $this->_userId);
  	}
  	
  	// TODO Pretty sure this is going to want some paging params
@@ -161,8 +165,8 @@ class Sf
 		return UserCommands::listUsers();
 	}
 	
-	public function user_typeahead($term) {
-		return UserCommands::userTypeaheadList($term);
+	public function user_typeahead($term, $projectIdToExclude = '') {
+		return UserCommands::userTypeaheadList($term, $projectIdToExclude);
 	}
 	
 	public function change_password($userId, $newPassword) {
@@ -199,8 +203,8 @@ class Sf
 		return UserCommands::updateFromRegistration($validationKey, $params);
 	}
 	
-	public function user_sendInvite($projectId, $toEmail) {
-		return UserCommands::sendInvite($this->_userId, $toEmail, $projectId, $_SERVER['HTTP_HOST']);
+	public function user_sendInvite($toEmail) {
+		return UserCommands::sendInvite($this->_userId, $toEmail, $this->_projectId, $_SERVER['HTTP_HOST']);
 	}
 	
 	
@@ -238,12 +242,13 @@ class Sf
 		return \models\shared\dto\ProjectListDto::encode($this->_userId, $this->_site);
 	}
 	
-	public function project_updateUserRole($projectId, $params) {
-		return ProjectCommands::updateUserRole($projectId, $params);
+	public function project_joinProject($projectId, $role) {
+		return ProjectCommands::updateUserRole($projectId, $this->_userId, $role);
 	}
 	
-	public function project_removeUsers($projectId, $userIds) {
-		return ProjectCommands::removeUsers($projectId, $userIds);
+
+	public function project_usersDto($projectId) {
+		return ProjectCommands::usersDto($projectId);
 	}
 	
 	
@@ -274,9 +279,20 @@ class Sf
 	 * @param array $object
 	 * @return string Id of written object
 	 */
-	public function project_update($object) {
-		return ProjectCommands::updateProject($object, $this->_userId);
+	public function project_update($settings) {
+		return SfchecksProjectCommands::updateProject($this->_projectId, $this->_userId, $settings);
 	}
+
+	public function project_updateUserRole($userId, $role) {
+		return ProjectCommands::updateUserRole($this->_projectId, $userId, $role);
+	}
+
+	// REVIEW: should this be part of the general project API ?
+	public function project_removeUsers($userIds) {
+		return ProjectCommands::removeUsers($this->_projectId, $userIds);
+	}
+	
+	
 
 	/**
 	 * Read a project from the given $id
@@ -286,32 +302,32 @@ class Sf
 		return ProjectCommands::readProject($id);
 	}
 	
-	public function project_settings($projectId) {
-		return ProjectSettingsDto::encode($projectId, $this->_userId);
+	public function project_settings() {
+		return ProjectSettingsDto::encode($this->_projectId, $this->_userId);
 	}
 	
-	public function project_updateSettings($projectId, $smsSettingsArray, $emailSettingsArray) {
-		return ProjectCommands::updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray);
+	public function project_updateSettings($smsSettingsArray, $emailSettingsArray) {
+		return ProjectCommands::updateProjectSettings($this->_projectId, $smsSettingsArray, $emailSettingsArray);
 	}
 	
-	public function project_readSettings($projectId) {
-		return ProjectCommands::readProjectSettings($projectId);
+	public function project_readSettings() {
+		return ProjectCommands::readProjectSettings($this->_projectId);
 	}
 	
-	public function project_pageDto($projectId) {
-		return \models\scriptureforge\dto\ProjectPageDto::encode($projectId, $this->_userId);
+	public function project_pageDto() {
+		return \models\scriptureforge\dto\ProjectPageDto::encode($this->_projectId, $this->_userId);
 	}
 
 	
 	//---------------------------------------------------------------
 	// MESSAGE API
 	//---------------------------------------------------------------
-	public function message_markRead($projectId, $messageId) {
-		return MessageCommands::markMessageRead($projectId, $messageId, $this->_userId);
+	public function message_markRead($messageId) {
+		return MessageCommands::markMessageRead($this->_projectId, $messageId, $this->_userId);
 	}
 	
-	public function message_send($projectId, $userIds, $subject, $emailTemplate, $smsTemplate) {
-		return MessageCommands::sendMessage($projectId, $userIds, $subject, $emailTemplate, $smsTemplate);
+	public function message_send($userIds, $subject, $emailTemplate, $smsTemplate) {
+		return MessageCommands::sendMessage($this->_projectId, $userIds, $subject, $emailTemplate, $smsTemplate);
 	}
 	
 	
@@ -319,104 +335,104 @@ class Sf
 	// TEXT API
 	//---------------------------------------------------------------
 	
-	public function text_update($projectId, $object) {
-		return TextCommands::updateText($projectId, $object);
+	public function text_update($object) {
+		return TextCommands::updateText($this->_projectId, $object);
 	}
 	
-	public function text_read($projectId, $textId) {
-		return TextCommands::readText($projectId, $textId);
+	public function text_read($textId) {
+		return TextCommands::readText($this->_projectId, $textId);
 	}
 	
-	public function text_archive($projectId, $textIds) {
-		return TextCommands::archiveTexts($projectId, $textIds);
+	public function text_archive($textIds) {
+		return TextCommands::archiveTexts($this->_projectId, $textIds);
 	}
 	
-	public function text_publish($projectId, $textIds) {
-		return TextCommands::publishTexts($projectId, $textIds);
+	public function text_publish($textIds) {
+		return TextCommands::publishTexts($this->_projectId, $textIds);
 	}
 	
-	public function text_list_dto($projectId) {
-		return \models\scriptureforge\dto\TextListDto::encode($projectId, $this->_userId);
+	public function text_list_dto() {
+		return \models\scriptureforge\dto\TextListDto::encode($this->_projectId, $this->_userId);
 	}
 
-	public function text_settings_dto($projectId, $textId) {
-		return \models\scriptureforge\dto\TextSettingsDto::encode($projectId, $textId, $this->_userId);
+	public function text_settings_dto($textId) {
+		return \models\scriptureforge\dto\TextSettingsDto::encode($this->_projectId, $textId, $this->_userId);
 	}
 	
-	public function text_exportComments($projectId, $params) {
-		return ParatextExport::exportCommentsForText($projectId, $params['textId'], $params);
+	public function text_exportComments($params) {
+		return ParatextExport::exportCommentsForText($this->_projectId, $params['textId'], $params);
 	}
 	
 	//---------------------------------------------------------------
 	// Question / Answer / Comment API
 	//---------------------------------------------------------------
 	
-	public function question_update($projectId, $object) {
-		return QuestionCommands::updateQuestion($projectId, $object);
+	public function question_update($object) {
+		return QuestionCommands::updateQuestion($this->_projectId, $object);
 	}
 	
-	public function question_read($projectId, $questionId) {
-		return QuestionCommands::readQuestion($projectId, $questionId);
+	public function question_read($questionId) {
+		return QuestionCommands::readQuestion($this->_projectId, $questionId);
 	}
 	
-	public function question_archive($projectId, $questionIds) {
-		return QuestionCommands::archiveQuestions($projectId, $questionIds);
+	public function question_archive($questionIds) {
+		return QuestionCommands::archiveQuestions($questionIds);
 	}
 	
 	public function question_publish($projectId, $questionIds) {
 		return QuestionCommands::publishQuestions($projectId, $questionIds);
 	}
 	
-	public function question_update_answer($projectId, $questionId, $answer) {
-		return QuestionCommands::updateAnswer($projectId, $questionId, $answer, $this->_userId);
+	public function question_update_answer($questionId, $answer) {
+		return QuestionCommands::updateAnswer($this->_projectId, $questionId, $answer, $this->_userId);
 	}
 	
-	public function question_remove_answer($projectId, $questionId, $answerId) {
-		return QuestionCommands::removeAnswer($projectId, $questionId, $answerId);
+	public function question_remove_answer($questionId, $answerId) {
+		return QuestionCommands::removeAnswer($this->_projectId, $questionId, $answerId);
 	}
 	
-	public function question_update_comment($projectId, $questionId, $answerId, $comment) {
-		return QuestionCommands::updateComment($projectId, $questionId, $answerId, $comment, $this->_userId);
+	public function question_update_comment($questionId, $answerId, $comment) {
+		return QuestionCommands::updateComment($this->_projectId, $questionId, $answerId, $comment, $this->_userId);
 	}
 	
-	public function question_remove_comment($projectId, $questionId, $answerId, $commentId) {
-		return QuestionCommands::removeComment($projectId, $questionId, $answerId, $commentId);
+	public function question_remove_comment($questionId, $answerId, $commentId) {
+		return QuestionCommands::removeComment($this->_projectId, $questionId, $answerId, $commentId);
 	}
 	
-	public function question_comment_dto($projectId, $questionId) {
-		return \models\scriptureforge\dto\QuestionCommentDto::encode($projectId, $questionId, $this->_userId);
+	public function question_comment_dto($questionId) {
+		return \models\scriptureforge\dto\QuestionCommentDto::encode($this->_projectId, $questionId, $this->_userId);
 	}
 	
-	public function question_list_dto($projectId, $textId) {
-		return \models\scriptureforge\dto\QuestionListDto::encode($projectId, $textId, $this->_userId);
+	public function question_list_dto($textId) {
+		return \models\scriptureforge\dto\QuestionListDto::encode($this->_projectId, $textId, $this->_userId);
 	}
 	
-	public function answer_vote_up($projectId, $questionId, $answerId) {
-		return QuestionCommands::voteUp($this->_userId, $projectId, $questionId, $answerId);
+	public function answer_vote_up($questionId, $answerId) {
+		return QuestionCommands::voteUp($this->_userId, $this->_projectId, $questionId, $answerId);
 	}
 	
-	public function answer_vote_down($projectId, $questionId, $answerId) {
-		return QuestionCommands::voteDown($this->_userId, $projectId, $questionId, $answerId);
+	public function answer_vote_down($questionId, $answerId) {
+		return QuestionCommands::voteDown($this->_userId, $this->_projectId, $questionId, $answerId);
 	}
 
 	//---------------------------------------------------------------
 	// QuestionTemplates API
 	//---------------------------------------------------------------
 
-	public function questionTemplate_update($projectId, $model) {
-		return QuestionTemplateCommands::updateTemplate($projectId, $model);
+	public function questionTemplate_update($model) {
+		return QuestionTemplateCommands::updateTemplate($this->_projectId, $model);
 	}
 
-	public function questionTemplate_read($projectId, $id) {
-		return QuestionTemplateCommands::readTemplate($projectId, $id);
+	public function questionTemplate_read($id) {
+		return QuestionTemplateCommands::readTemplate($this->_projectId, $id);
 	}
 
-	public function questionTemplate_delete($projectId, $questionTemplateIds) {
-		return QuestionTemplateCommands::deleteQuestionTemplates($projectId, $questionTemplateIds);
+	public function questionTemplate_delete($questionTemplateIds) {
+		return QuestionTemplateCommands::deleteQuestionTemplates($this->_projectId, $questionTemplateIds);
 	}
 
-	public function questionTemplate_list($projectId) {
-		return QuestionTemplateCommands::listTemplates($projectId);
+	public function questionTemplate_list() {
+		return QuestionTemplateCommands::listTemplates($this->_projectId);
 	}
 	
 	
@@ -437,48 +453,48 @@ class Sf
 	// LANGUAGEFORGE PROJECT API
 	//---------------------------------------------------------------
 	
-	public function lex_baseViewDto($projectId) {
-		return LexBaseViewDto::encode($projectId, $this->_userId);
+	public function lex_baseViewDto() {
+		return LexBaseViewDto::encode($this->_projectId, $this->_userId);
 	}
 	
-	public function lex_projectDto($projectId) {
-		return LexProjectDto::encode($projectId, $this->_userId);
+	public function lex_projectDto() {
+		return LexProjectDto::encode($this->_projectId, $this->_userId);
 	}
 
-	public function lex_manageUsersDto($projectId) {
-		return LexManageUsersDto::encode($projectId, $this->_userId);
+	public function lex_manageUsersDto() {
+		return LexManageUsersDto::encode($this->_projectId, $this->_userId);
 	}
 
-	public function lex_dbeDto($projectId, $iEntryStart, $numberOfEntries) {
-		return LexDbeDto::encode($projectId, $this->_userId, $iEntryStart, $numberOfEntries);
+	public function lex_dbeDto($iEntryStart, $numberOfEntries) {
+		return LexDbeDto::encode($this->_projectId, $this->_userId, $iEntryStart, $numberOfEntries);
 	}
 	
-	public function lex_configuration_update($projectId, $config) {
-		return LexProjectCommands::updateConfig($projectId, $config);
+	public function lex_configuration_update($config) {
+		return LexProjectCommands::updateConfig($this->_projectId, $config);
 	}
 	
-	public function lex_import_lift($projectId, $import) {
-		return LexProjectCommands::importLift($projectId, $import);
+	public function lex_import_lift($import) {
+		return LexProjectCommands::importLift($this->_projectId, $import);
 	}
 	
 	public function lex_project_update($projectJson) {
-		return LexProjectCommands::updateProject($projectJson, $this->_userId);
+		return LexProjectCommands::updateProject($this->_projectId, $this->_userId, $projectJson);
 	}
 	
-	public function lex_entry_read($projectId, $entryId) {
-		return LexEntryCommands::readEntry($projectId, $entryId);
+	public function lex_entry_read($entryId) {
+		return LexEntryCommands::readEntry($this->_projectId, $entryId);
 	}
 	
-	public function lex_entry_update($projectId, $model) {
-		return LexEntryCommands::updateEntry($projectId, $model, $this->_userId);
+	public function lex_entry_update($model) {
+		return LexEntryCommands::updateEntry($this->_projectId, $model, $this->_userId);
 	}
 	
-	public function lex_entry_remove($projectId, $entryId) {
-		return LexEntryCommands::removeEntry($projectId, $entryId);
+	public function lex_entry_remove($entryId) {
+		return LexEntryCommands::removeEntry($this->_projectId, $entryId);
 	}
 	
-	public function lex_entry_updateComment($projectId, $data) {
-		return LexCommentCommands::updateCommentOrReply($projectId, $data, $this->_userId);
+	public function lex_entry_updateComment($data) {
+		return LexCommentCommands::updateCommentOrReply($this->_projectId, $data, $this->_userId);
 	}
 	
 	
@@ -512,7 +528,13 @@ class Sf
 			if (!$this->_userId) {
 				throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
 			}
-			if (!RightsHelper::userCanAccessMethod($this->_userId, $methodName, $params)) {
+			try {
+				$projectModel = ProjectModel::getById($this->_projectId);
+			} catch (\Exception $e) {
+				$projectModel = null;
+			}
+			$rightsHelper = new RightsHelper($this->_userId, $projectModel);
+			if (!$rightsHelper->userCanAccessMethod($methodName, $params)) {
 				throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
 			}
 		}

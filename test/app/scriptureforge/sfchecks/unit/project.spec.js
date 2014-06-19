@@ -24,19 +24,19 @@ describe('Project page (project.js)', function() {
 	};
 
 	var mockSfchecksProjectService = {
-		pageDto: function(projectId, callback) {
+		pageDto: function(callback) {
 			callback(testJsonResult);
 		},
 	};
 
 	var mockSfchecksLinkService = {
-		project: function(projectId) {
+		project: function() {
 			return "http://example.com/";
 		},
-		text: function(projectId, textId) {
-			return "http://foo/bar"
+		text: function(textId) {
+			return "http://foo/bar";
 		},
-	}
+	};
 // If we wanted to mock JSON-RPC, we could create another mock object
 // like the following. But mocking the Angular service is a better level
 // of abstraction.

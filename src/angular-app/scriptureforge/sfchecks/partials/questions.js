@@ -4,9 +4,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService',
                               function($scope, questionService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice) {
 	var Q_TITLE_LIMIT = 50;
-	var projectId = $routeParams.projectId;
 	var textId = $routeParams.textId;
-	$scope.projectId = projectId;
 	$scope.textId = textId;
 	$scope.finishedLoading = false;
 	
@@ -49,7 +47,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	};
 	$scope.templates = [$scope.emptyTemplate];
 	$scope.queryTemplates = function() {
-		qts.list(projectId, function(result) {
+			qts.list(function(result) {
 			if (result.ok) {
 				$scope.templates = result.data.entries;
 				// Add "(Select a template)" as default value
@@ -98,7 +96,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	$scope.questions = [];
 	$scope.queryQuestions = function() {
 		//console.log("queryQuestions()");
-		questionService.list(projectId, textId, function(result) {
+			questionService.list(textId, function(result) {
 			if (result.ok) {
 				$scope.selected = [];
 				$scope.questions = result.data.entries;
@@ -111,7 +109,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 					$scope.text.audioUrl = '/' + $scope.text.audioUrl;
 				} 
 				$scope.project = result.data.project;
-				$scope.text.url = sfchecksLinkService.text(projectId, textId);
+				$scope.text.url = sfchecksLinkService.text(textId);
 				//console.log($scope.project.name);
 				//console.log($scope.text.title);
 				
@@ -119,8 +117,8 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 				breadcrumbService.set('top',
 						[
 						 {href: '/app/projects', label: 'My Projects'},
-						 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.project.name},
-						 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: $scope.text.title},
+						 {href: sfchecksLinkService.project(), label: $scope.project.name},
+						 {href: sfchecksLinkService.text($routeParams.textId), label: $scope.text.title},
 						]
 				);
 				
@@ -152,7 +150,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 			message = "Are you sure you want to archive the " + questionIds.length + " selected questions?";
 		}
 		if (window.confirm(message)) {
-			questionService.archive(projectId, questionIds, function(result) {
+			questionService.archive(questionIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
 				}
@@ -169,12 +167,12 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		model.textRef = textId;
 		model.title = $scope.questionTitle;
 		model.description = $scope.questionDescription;
-		questionService.update(projectId, model, function(result) {
+			questionService.update(model, function(result) {
 			if (result.ok) {
 				$scope.queryQuestions();
 				notice.push(notice.SUCCESS, "'" + questionService.util.calculateTitle(model.title, model.description, Q_TITLE_LIMIT) + "' was added successfully");
 				if ($scope.saveAsTemplate) {
-					qts.update(projectId, model, function(result) {
+						qts.update(model, function(result) {
 						if (result.ok) {
 							notice.push(notice.SUCCESS, "'" + model.title + "' was added as a template question");
 						}
@@ -199,7 +197,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		model.id = '';
 		model.title = $scope.selected[0].title;
 		model.description = $scope.selected[0].description;
-		qts.update(projectId, model, function(result) {
+			qts.update(model, function(result) {
 			if (result.ok) {
 				$scope.queryTemplates();
 				notice.push(notice.SUCCESS, "'" + model.title + "' was added as a template question");
@@ -210,7 +208,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	
 	$scope.enhanceDto = function(items) {
 		angular.forEach(items, function(item) {
-			item.url = sfchecksLinkService.question(projectId, textId, item.id);
+			item.url = sfchecksLinkService.question(textId, item.id);
 			item.calculatedTitle = questionService.util.calculateTitle(item.title, item.description, Q_TITLE_LIMIT);
 		});
 	};
@@ -219,9 +217,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 .controller('QuestionsSettingsCtrl', ['$scope', '$http', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService',
                                       function($scope, $http, ss, $routeParams, breadcrumbService, notice, textService, questionService, sfchecksLinkService) {
 	var Q_TITLE_LIMIT = 50;
-	var projectId = $routeParams.projectId;
 	var textId = $routeParams.textId;
-	$scope.project = {
 		id: projectId	
 	};
 	$scope.textId = textId;
@@ -235,7 +231,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	// Get name from text service. This really should be in the DTO, but this will work for now.
 	// TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08. Appears to be in the DTO now. IJH 2014-06
 	$scope.queryTextSettings = function() {
-		textService.settings_dto($scope.project.id, $scope.textId, function(result) {
+		textService.settings_dto($scope.textId, function(result) {
 			if (result.ok) {
 				$scope.dto = result.data;
 				$scope.textTitle = $scope.dto.text.title;
@@ -257,9 +253,9 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 				breadcrumbService.set('top',
 						[
 						 {href: '/app/projects', label: 'My Projects'},
-						 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.dto.bcs.project.crumb},
-						 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId), label: $scope.dto.text.title},
-						 {href: sfchecksLinkService.text($routeParams.projectId, $routeParams.textId) + '/Settings', label: 'Settings'},
+						 {href: sfchecksLinkService.project(), label: $scope.dto.bcs.project.crumb},
+						 {href: sfchecksLinkService.text($routeParams.textId), label: $scope.dto.text.title},
+						 {href: sfchecksLinkService.text($routeParams.textId) + '/Settings', label: 'Settings'},
 						]
 				);
 			}
@@ -270,7 +266,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		if (!newText.content || !newText.editPreviousText) {
 			delete newText.content;
 		}
-		textService.update($scope.project.id, newText, function(result) {
+			textService.update(newText, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, newText.title + " settings successfully updated");
 				$scope.textTitle = newText.title;
@@ -334,7 +330,6 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 			    url: '/upload',	// upload.php script
 				// headers: {'myHeaderKey': 'myHeaderVal'},
 				data: {
-					projectId: projectId,
 					textId: textId,
 				},
 				file: file
@@ -422,7 +417,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	
 	$scope.startExport = function() {
 		$scope.download.inprogress = true;
-		textService.exportComments($routeParams.projectId, $scope.exportConfig, function(result) {
+		textService.exportComments($scope.exportConfig, function(result) {
 			if (result.ok) {
 				$scope.download = result.data;
 				$scope.download.complete = true;

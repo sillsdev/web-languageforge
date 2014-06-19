@@ -2,6 +2,12 @@
 
 namespace models;
 
+use models\scriptureforge\RapumaProjectModel;
+
+use models\languageforge\lexicon\LexiconProjectModel;
+
+use models\scriptureforge\SfchecksProjectModel;
+
 use models\mapper\ArrayOf;
 
 use libraries\shared\palaso\CodeGuard;
@@ -187,6 +193,25 @@ class ProjectModel extends \models\mapper\MapperModel
 			$result = $rolesClass::getRightsArray($role);
 		}
 		return $result;
+	}
+	
+	/**
+	 * 
+	 * @param string $projectId
+	 * @return appropriate project model for the type
+	 */
+	public static function getById($projectId) {
+		$m = new ProjectModel($projectId);
+		switch ($m->appName) {
+			case 'sfchecks':
+				return new SfchecksProjectModel($projectId);
+			case 'rapuma':
+				return new RapumaProjectModel($projectId);
+			case 'lexicon':
+				return new LexiconProjectModel($projectId);
+			default:
+				return new ProjectModel($projectId);
+		}
 	}
 
 	/**

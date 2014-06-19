@@ -5,13 +5,6 @@ var SfTextPage = function() {
 	
 	this.urlprefix = '/app/sfchecks';
 
-	this.getUrl = function(projectId, textId) {
-		return this.urlprefix + '#/p/' + projectId + '/' + textId;
-	};
-	this.get = function(projectId, textId) {
-		browser.get(this.getUrl(projectId, textId));
-	};
-	
 	this.archiveButton = element(by.partialButtonText("Archive Questions"));
 	this.makeTemplateBtn = element(by.partialButtonText("Make Template"));
 	this.addNewBtn = element(by.partialButtonText("Add New Question"));

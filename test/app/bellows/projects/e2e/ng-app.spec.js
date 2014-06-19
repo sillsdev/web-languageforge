@@ -31,14 +31,10 @@ describe('E2E Projects List App - Normal User', function() {
 	
 	it('can list two projects of which the user is a member', function() {
 		loginPage.loginAsAdmin();
-		projectsPage = new projectsPage.constructor(); // Create a new object to try (unsuccessfully) to avoid "stale element reference" errors
 		projectsPage.get();
 		projectsPage.addMemberToProject(constants.otherProjectName, constants.memberUsername);
 		loginPage.loginAsMember();
-		projectsPage = new projectsPage.constructor(); // Create a new object to try (unsuccessfully) to avoid "stale element reference" errors
 		projectsPage.get();
-		//projectsPage.projectsList.then(console.log);
-		//projectsPage.projectsList.get(1).getOuterHtml().then(console.log);
 		expect(projectsPage.projectsList.count()).toBe(2);
 	});
 });

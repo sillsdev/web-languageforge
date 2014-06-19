@@ -51,7 +51,6 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 		return map[$scope.state];
 	};
 
-	var projectId = $routeParams.projectId;
 	var questionId = $routeParams.questionId;
 
 	$scope.votes = {};
@@ -70,8 +69,7 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 		return ($.inArray(id, $scope.unreadAnswers) > -1 || $.inArray(id, $scope.myResponses) > -1);
 	};
 	
-	questionService.read(projectId, questionId, function(result) {
-		//console.log('questionService.read(', projectId, questionId, ')');
+	questionService.read(questionId, function(result) {
 		if (result.ok) {
 			$scope.text = result.data.text;
 			if ($scope.text.audioUrl != '') {
@@ -89,9 +87,9 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 			breadcrumbService.set('top',
 					[
 					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project($routeParams.projectId), label: $scope.project.projectname},
-					 {href: linkService.text($routeParams.projectId, $routeParams.textId), label: $scope.text.title},
-					 {href: linkService.question($routeParams.projectId, $routeParams.textId, $routeParams.questionId), label: $scope.question.title},
+					 {href: linkService.project(), label: $scope.project.projectname},
+					 {href: linkService.text($routeParams.textId), label: $scope.text.title},
+					 {href: linkService.question($routeParams.textId, $routeParams.questionId), label: $scope.question.title},
 					]
 			);
 
@@ -201,10 +199,10 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	});
 		
 	$scope.updateQuestion = function(newQuestion) {
-		questionService.update(projectId, newQuestion, function(result) {
+		questionService.update(newQuestion, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "The question was updated successfully");
-				questionService.read(projectId, newQuestion.id, function(result) {
+				questionService.read(newQuestion.id, function(result) {
 					if (result.ok) {
 						$scope.question = result.data.question;
 						// Recalculate answer count since the DB doesn't store it
@@ -319,7 +317,7 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	};
 	
 	$scope.updateComment = function(answerId, answer, newComment) {
-		questionService.update_comment(projectId, questionId, answerId, newComment, function(result) {
+		questionService.update_comment(questionId, answerId, newComment, function(result) {
 			if (result.ok) {
 				if (newComment.id == '') {
 					notice.push(notice.SUCCESS, "The comment was submitted successfully");
@@ -354,7 +352,7 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	
 	$scope.commentDelete = function(answer, commentId) {
 		// console.log('delete ', commentId);
-		questionService.remove_comment(projectId, questionId, answer.id, commentId, function(result) {
+		questionService.remove_comment(questionId, answer.id, commentId, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "The comment was removed successfully");
 				// Delete locally
@@ -376,7 +374,7 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 		if ($scope.votes[answerId] == true || $scope.questionIsClosed()) {
 			return;
 		}
-		questionService.answer_voteUp(projectId, questionId, answerId, function(result) {
+		questionService.answer_voteUp(questionId, answerId, function(result) {
 			if (result.ok) {
 				// console.log('vote up ok');
 				$scope.votes[answerId] = true;
@@ -389,7 +387,7 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 		if ($scope.votes[answerId] != true || $scope.questionIsClosed()) {
 			return;
 		}
-		questionService.answer_voteDown(projectId, questionId, answerId, function(result) {
+		questionService.answer_voteDown(questionId, answerId, function(result) {
 			if (result.ok) {
 				// console.log('vote down ok');
 				delete $scope.votes[answerId];
@@ -398,8 +396,8 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 		});
 	};
 	
-	var updateAnswer = function(projectId, questionId, answer) {
-		questionService.update_answer(projectId, questionId, answer, function(result) {
+	var updateAnswer = function(questionId, answer) {
+		questionService.update_answer(questionId, answer, function(result) {
 			if (result.ok) {
 				if (answer.id == '') {
 					notice.push(notice.SUCCESS, "The answer was submitted successfully");
@@ -417,7 +415,7 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 			'content': $scope.newAnswer.content,
 			'textHighlight': $scope.newAnswer.textHighlight,
 		};
-		updateAnswer(projectId, questionId, answer);
+		updateAnswer(questionId, answer);
 		$scope.newAnswer.content = '';
 		$scope.newAnswer.textHighlight = '';
 		$scope.selectedText = '';
@@ -425,14 +423,14 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	
 	$scope.editAnswer = function(answer) {
 		if ($scope.rightsEditResponse(answer.userRef.userid)) {
-			updateAnswer(projectId, questionId, answer);
+			updateAnswer(questionId, answer);
 		}
 		$scope.hideAnswerEditor();
 	};
 	
 	$scope.answerDelete = function(answerId) {
 		// console.log('delete ', answerId);
-		questionService.remove_answer(projectId, questionId, answerId, function(result) {
+		questionService.remove_answer(questionId, answerId, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "The answer was removed successfully");
 				// Delete locally
@@ -475,12 +473,12 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	$scope.addTags = function(tags, answer) {
 		// console.log('Tags to add', tags, answer);
 		answer.tags = mergeArrays(tags, answer.tags);
-		updateAnswer(projectId, questionId, answer);
+		updateAnswer(questionId, answer);
 	};
 	
 	$scope.deletedTags = function(answer) {
 		// console.log('Tags deleted');
-		updateAnswer(projectId, questionId, answer);
+		updateAnswer(questionId, answer);
 	};
 	
 	$scope.flagForExport = function(answer) {
