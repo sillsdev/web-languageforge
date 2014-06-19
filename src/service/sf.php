@@ -387,6 +387,10 @@ class Sf
 		return QuestionCommands::updateAnswer($this->_projectId, $questionId, $answer, $this->_userId);
 	}
 	
+	public function question_update_answerExportFlag($questionId, $answerId, $isToBeExported) {
+		return QuestionCommands::updateAnswerExportFlag($this->_projectId, $questionId, $answerId, $isToBeExported);
+	}
+	
 	public function question_remove_answer($questionId, $answerId) {
 		return QuestionCommands::removeAnswer($this->_projectId, $questionId, $answerId);
 	}
