@@ -11,6 +11,7 @@ use models\CommentModel;
 use models\ProjectModel;
 use models\QuestionModel;
 use models\UserVoteModel;
+use libraries\shared\palaso\CodeGuard;
 
 class QuestionCommands
 {
@@ -145,34 +146,18 @@ class QuestionCommands
 	 * Updates an answer's isToBeExported flag.
 	 * @param string $projectId
 	 * @param string $questionId
-	 * @param array $answer	The $answer will be decoded into an AnswerModel
-	 * @param string $userId
+	 * @param string $answerId
+	 * @param Boolean $isToBeExported
 	 * @return array Returns an encoded QuestionDTO fragment for the Answer
-	 * @see AnswerModel
 	 */
-	public static function updateAnswerExportFlag($projectId, $questionId, $answer, $userId) {
-		$projectModel = new ProjectModel($projectId);
-		$questionModel = new QuestionModel($projectModel, $questionId);
-		$authorId = $userId;
-		if ($answer['id'] != '') {
-			// update existing answer
-			$oldAnswer = $questionModel->readAnswer($answer['id']);
-			$authorId = $oldAnswer->userRef->asString();
-		}
-		$answerModel = new AnswerModel();
-		JsonDecoder::decode($answerModel, $answer);
-		$answerModel->userRef->id = $authorId;
-		$answerId = $questionModel->writeAnswer($answerModel);
-		// Re-read question model to pick up new answer
-		$questionModel->read($questionId);
-		$newAnswer = $questionModel->readAnswer($answerId);
-		if ($answer['id'] != '') {
-			// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
-			ActivityCommands::updateAnswer($projectModel, $questionId, $newAnswer);
-		} else {
-			ActivityCommands::addAnswer($projectModel, $questionId, $newAnswer);
-		}
-		return self::encodeAnswer($newAnswer);
+	public static function updateAnswerExportFlag($projectId, $questionId, $answerId, $isToBeExported) {
+		CodeGuard::checkNotFalseAndThrow($answerId, 'answerId');
+		$project = new ProjectModel($projectId);
+		$question = new QuestionModel($project, $questionId);
+		$answer = $question->readAnswer($answerId);
+		$answer->isToBeExported = $isToBeExported;
+		$answerId = $question->writeAnswer($answer);
+		return self::encodeAnswer($answer);
 	}
 	
 	/**
@@ -185,7 +170,6 @@ class QuestionCommands
 	 * @return array Dto
 	 */
 	public static function updateComment($projectId, $questionId, $answerId, $comment, $userId) {
-		// TODO: validate $userId as authorized to perform this action
 		$projectModel = new ProjectModel($projectId);
 		$questionModel = new QuestionModel($projectModel, $questionId);
 		$authorId = $userId;

@@ -134,7 +134,7 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	
 	// Rights: Export
 	$scope.rightsExport = function() {
-		return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
+		return ss.hasRight($scope.rights, ss.domain.TEXTS, ss.operation.EDIT);
 	};
 	
 	$scope.workflowStates = [
@@ -483,7 +483,7 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	
 	$scope.flagForExport = function(answer) {
 		answer.isToBeExported = !answer.isToBeExported;
-		questionService.update_answer(projectId, questionId, answer, function(result) {
+		questionService.update_answerExportFlag(questionId, answer.id, answer.isToBeExported, function(result) {
 			if (result.ok) {
 				if (answer.isToBeExported) {
 					notice.push(notice.SUCCESS, "The answer was flagged for export successfully");
