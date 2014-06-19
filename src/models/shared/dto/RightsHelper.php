@@ -110,9 +110,6 @@ class RightsHelper
 			case 'question_update_answer':
 				return $this->userHasProjectRight(Domain::ANSWERS + Operation::EDIT_OWN);
 				
-			case 'question_update_answerExportFlag':
-				return $this->userHasProjectRight(Domain::TEXTS + Operation::EDIT);
-				
 			case 'question_remove_answer':
 				return $this->userHasProjectRight(Domain::ANSWERS + Operation::DELETE_OWN);
 				
@@ -173,6 +170,12 @@ class RightsHelper
 			case 'question_read':
 				return $this->userHasProjectRight(Domain::QUESTIONS + Operation::EDIT);
 
+			case 'question_update_answerExportFlag':
+				return $this->userHasProjectRight(Domain::TEXTS + Operation::EDIT);
+				
+			case 'question_update_answerTags':
+				return $this->userHasProjectRight(Domain::TAGS + Operation::EDIT);
+				
 			case 'question_archive':
 			case 'question_publish':
 				return $this->userHasProjectRight(Domain::QUESTIONS + Operation::ARCHIVE);
