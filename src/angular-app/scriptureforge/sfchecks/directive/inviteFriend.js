@@ -8,12 +8,6 @@ angular.module('sf.ui.invitefriend', ['bellows.services', 'palaso.ui.notice'])
 		
 		$scope.checkVisibility = function() {
 			$scope.showInviteDiv = true;
-			if (!$routeParams.projectId) {
-				var projectCode = $location.$$host.slice(0, $location.$$host.indexOf('.'));
-				if (projectCode == 'www' || projectCode == 'scriptureforge' || projectCode == 'dev') {
-					$scope.showInviteDiv = false;
-				}
-			}
 		};
 		
 		$rootScope.$on('$viewContentLoaded', function (event, next, current) {
@@ -21,7 +15,7 @@ angular.module('sf.ui.invitefriend', ['bellows.services', 'palaso.ui.notice'])
 		});
 		
 		$scope.sendInvite = function() {
-			userService.sendInvite($scope.email, $routeParams.projectId, function(result) {
+			userService.sendInvite($scope.email, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "An invitation email has been sent to " + $scope.email);
 					$scope.showInviteForm = false;

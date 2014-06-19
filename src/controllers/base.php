@@ -20,10 +20,12 @@ class Base extends CI_Controller {
 	protected $_isLoggedIn;
 	
 	protected $_user;
+	protected $_userId;
 	
+	// this should probably be renamed to projectCode or something
 	public $project;
 	
-	public $projectId; // TODO implement project context
+	protected $_projectId;
 	
 	public $site;
 	
@@ -42,7 +44,9 @@ class Base extends CI_Controller {
 		if ($this->_isLoggedIn) {
 			try {
 				$userId = (string)$this->session->userdata('user_id');
+				$this->_userId = $userId;
 				$this->_user = new \models\UserModel($userId);
+				$this->_projectId = (string)$this->session->userdata('projectId');
 			} catch (Exception $e) {
 				error_log("User $userId not found, logged out.\n" . $e->getMessage());
 				$this->ion_auth->logout();

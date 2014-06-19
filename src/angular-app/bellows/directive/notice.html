@@ -1,0 +1,19 @@
+<div class="notices">
+    <div ng-repeat="notice in notices()">
+        <alert class="animate-repeat" type="notice.type" close="closeNotice(notice.id)">
+            <div ng-bind-html="notice.message"></div>
+            <div ng-if="notice.details">
+                <a ng-click="notice.toggleDetails()">Click for details</a>
+                <div ng-show="notice.showDetails">
+                    <hr />
+                    <div ng-hide="notice.nobind" ng-bind-html="notice.details"></div>
+                    <div ng-show="notice.nobind">{{notice.details}}</div>
+                    <div ng-if="notice.type == 'error'">
+                        <a target="_blank" href="https://github.com/sillsdev/sfwebchecks/issues/new">Report this bug to the developers</a><br /><i>Please copy error above and include screenshot</i>
+                        <!-- TODO: automate this via https://developer.github.com/v3/issues/#create-an-issue -->
+                    </div>
+                </div>
+            </div>
+        </alert>
+    </div>
+</div>

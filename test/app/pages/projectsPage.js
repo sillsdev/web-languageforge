@@ -99,7 +99,7 @@ var SfProjectsPage = function() {
 //			btn.click();
 			var link = projectRow.$('a');
 			link.getAttribute('href').then(function(url) {
-				browser.get(url + '/settings');
+				browser.get(url + '#/settings');
 				// Users tab is selected by default, so the following check might not be needed
 //				var usersTab = element(by.xpath('//li[@heading="Users"]'));
 //				expect(usersTab.isElementPresent()).toBeTruthy();
@@ -152,7 +152,7 @@ var SfProjectsPage = function() {
 		this.findProject(projectName).then(function(projectRow) {
 			var link = projectRow.$('a');
 			link.getAttribute('href').then(function(url) {
-				browser.get(url + '/settings');
+				browser.get(url + '#/settings');
 				var userFilter = element(by.model('userFilter'));
 				userFilter.sendKeys(userName);
 				var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
