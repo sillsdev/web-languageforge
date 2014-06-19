@@ -473,12 +473,22 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	$scope.addTags = function(tags, answer) {
 		// console.log('Tags to add', tags, answer);
 		answer.tags = mergeArrays(tags, answer.tags);
-		updateAnswer(questionId, answer);
+//		updateAnswer(questionId, answer);
+		questionService.update_answerTags(questionId, answer.id, answer.tags, function(result) {
+			if (result.ok) {
+				notice.push(notice.SUCCESS, "The answer tag was added successfully");
+			}
+		});
 	};
 	
 	$scope.deletedTags = function(answer) {
 		// console.log('Tags deleted');
-		updateAnswer(questionId, answer);
+//		updateAnswer(questionId, answer);
+		questionService.update_answerTags(questionId, answer.id, answer.tags, function(result) {
+			if (result.ok) {
+				notice.push(notice.SUCCESS, "The answer tags were deleted successfully");
+			}
+		});
 	};
 	
 	$scope.flagForExport = function(answer) {

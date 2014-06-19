@@ -1,6 +1,7 @@
 <?php
 
 use models\commands\QuestionCommands;
+use models\mapper\ArrayOf;
 use models\AnswerModel;
 use models\CommentModel;
 use models\QuestionModel;
@@ -247,22 +248,6 @@ class TestQuestionCommands extends UnitTestCase {
 		$this->assertEqual($newAnswer->isToBeExported, true);
 	}
 	
-	function testUpdateAnswerExportFlag_NoExistingAnswer_Throw() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-		
-		$project = $e->createProject(SF_TESTPROJECT);
-		$question = new QuestionModel($project);
-		$questionId = $question->write();
-		$answerId = '';
-		$isToBeExported = false;
-		
-		$e->inhibitErrorDisplay();
-		$this->expectException();
-		$dto = QuestionCommands::updateAnswerExportFlag($project->id->asString(), $questionId, $answerId, $isToBeExported);
-		$e->restoreErrorDisplay();
-	}
-	
 	function testUpdateAnswerExportFlag_ExistingAnswer_ChangePersists() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
@@ -283,6 +268,29 @@ class TestQuestionCommands extends UnitTestCase {
 		$newAnswer = $question->readAnswer($answerId);
 		$this->assertTrue($newAnswer->isToBeExported);
 		$this->assertTrue($dto[$answerId]['isToBeExported']);
+	}
+	
+	function testUpdateAnswerTags_ExistingAnswer_ChangePersists() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$question = new QuestionModel($project);
+		$questionId = $question->write();
+		
+		$answer = new AnswerModel();
+		$answer->content = "the answer";
+		$answer->tags[] = 'originalTag';
+		$answerId = $question->writeAnswer($answer);
+		$tagsArray = array('updatedTag');
+				
+		$dto = QuestionCommands::updateAnswerTags($project->id->asString(), $questionId, $answerId, $tagsArray);
+				
+		$question->read($questionId);
+		$newAnswer = $question->readAnswer($answerId);
+		$this->assertEqual(count($newAnswer->tags), 1);
+		$this->assertEqual($newAnswer->tags[0], 'updatedTag');
+		$this->assertEqual($dto[$answerId]['tags'][0], 'updatedTag');
 	}
 	
 	function testUpdateComment_ExistingComment_OriginalAuthorIsPreserved() {

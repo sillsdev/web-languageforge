@@ -12,6 +12,7 @@ use models\ProjectModel;
 use models\QuestionModel;
 use models\UserVoteModel;
 use libraries\shared\palaso\CodeGuard;
+use models\mapper\ArrayOf;
 
 class QuestionCommands
 {
@@ -100,32 +101,43 @@ class QuestionCommands
 	 * Creates or updates an answer for the given $questionId.
 	 * @param string $projectId
 	 * @param string $questionId
-	 * @param array $answer	The $answer will be decoded into an AnswerModel
+	 * @param array $answerJson	is decoded into an AnswerModel
 	 * @param string $userId
 	 * @return array Returns an encoded QuestionDTO fragment for the Answer
 	 * @see AnswerModel
 	 */
-	public static function updateAnswer($projectId, $questionId, $answer, $userId) {
-		$projectModel = new ProjectModel($projectId);
-		$questionModel = new QuestionModel($projectModel, $questionId);
+	public static function updateAnswer($projectId, $questionId, $answerJson, $userId) {
+// 		CodeGuard::checkNotFalseAndThrow($answerJson['id'], "answerJson['id']");
+// 		CodeGuard::checkNotFalseAndThrow($answerJson['content'], "answerJson['content']");
+		// whitelist updatable items
+		$answerId = $answerJson['id'];
+		$answerContent = $answerJson['content'];
+		$answerTextHighlight = '';
+		if (array_key_exists('textHighlight', $answerJson)) {
+			$answerTextHighlight = $answerJson['textHighlight'];
+		}
+		
+		$project = new ProjectModel($projectId);
+		$question = new QuestionModel($project, $questionId);
 		$authorId = $userId;
-		if ($answer['id'] != '') {
+		if ($answerJson['id'] != '') {
 			// update existing answer
-			$oldAnswer = $questionModel->readAnswer($answer['id']);
+			$oldAnswer = $question->readAnswer($answerJson['id']);
 			$authorId = $oldAnswer->userRef->asString();
 		}
-		$answerModel = new AnswerModel();
-		JsonDecoder::decode($answerModel, $answer);
-		$answerModel->userRef->id = $authorId;
-		$answerId = $questionModel->writeAnswer($answerModel);
+		$answer = new AnswerModel();
+		JsonDecoder::decode($answer, $answerJson);
+		$answer->userRef->id = $authorId;
+		$answerId = $question->writeAnswer($answer);
+		
 		// Re-read question model to pick up new answer
-		$questionModel->read($questionId);
-		$newAnswer = $questionModel->readAnswer($answerId);
-		if ($answer['id'] != '') {
+		$question->read($questionId);
+		$newAnswer = $question->readAnswer($answerId);
+		if ($answerJson['id'] != '') {
 			// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
-			ActivityCommands::updateAnswer($projectModel, $questionId, $newAnswer);
+			ActivityCommands::updateAnswer($project, $questionId, $newAnswer);
 		} else {
-			ActivityCommands::addAnswer($projectModel, $questionId, $newAnswer);
+			ActivityCommands::addAnswer($project, $questionId, $newAnswer);
 		}
 		return self::encodeAnswer($newAnswer);
 	}
@@ -156,6 +168,27 @@ class QuestionCommands
 		$question = new QuestionModel($project, $questionId);
 		$answer = $question->readAnswer($answerId);
 		$answer->isToBeExported = $isToBeExported;
+		$answerId = $question->writeAnswer($answer);
+		return self::encodeAnswer($answer);
+	}
+	
+	/**
+	 * Updates an answer's tags.
+	 * @param string $projectId
+	 * @param string $questionId
+	 * @param string $answerId
+	 * @param array $tagsArray
+	 * @return array Returns an encoded QuestionDTO fragment for the Answer
+	 */
+	public static function updateAnswerTags($projectId, $questionId, $answerId, $tagsArray) {
+		CodeGuard::checkNotFalseAndThrow($answerId, 'answerId');
+		$project = new ProjectModel($projectId);
+		$question = new QuestionModel($project, $questionId);
+		$answer = $question->readAnswer($answerId);
+		$answer->tags = new ArrayOf();
+		foreach ($tagsArray as $tag) {
+			$answer->tags[] = $tag;
+		}
 		$answerId = $question->writeAnswer($answer);
 		return self::encodeAnswer($answer);
 	}
