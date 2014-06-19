@@ -458,7 +458,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		// the given username. E.g. when creating a new user Bob Jones with username "bjones",
 		// after typing "bjo" the "excluded users" list will include Bob Johnson (bjohnson).
 		if (!$scope.excludedUsers) { return false; }
-		console.log($scope.excludedUsers);
 		for (var i=0, l=$scope.excludedUsers.length; i<l; i++) {
 			if (userName == $scope.excludedUsers[i].username ||
 				userName == $scope.excludedUsers[i].name     ||
