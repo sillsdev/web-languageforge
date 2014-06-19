@@ -151,7 +151,7 @@ class RightsHelper
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 
 			case 'project_usersDto':
-				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::USERS + Operation::VIEW);
+				return $this->userHasProjectRight(Domain::USERS + Operation::VIEW);
 
 			case 'project_removeUsers':
 				return $this->userHasProjectRight(Domain::USERS + Operation::DELETE);
