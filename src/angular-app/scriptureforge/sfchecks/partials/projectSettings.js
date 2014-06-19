@@ -509,7 +509,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			var model = {};
 			model.id = $scope.user.id;
 			// Check existing users to see if we're adding someone that already exists in the project
-			projectService.users($scope.project.id, function(result) {
+			projectService.users(function(result) {
 				if (result.ok) {
 					for (var i=0, l=result.data.users.length; i<l; i++) {
 						// This approach works, but is unnecessarily slow. We should have an "is user in project?" API,
