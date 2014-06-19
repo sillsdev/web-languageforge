@@ -11,7 +11,7 @@ use models\shared\dto\RightsHelper;
 use models\TextModel;
 use models\ProjectModel;
 
-require_once 'base.php';
+require_once 'secure_base.php';
 
 class Upload extends Secure_base {
 

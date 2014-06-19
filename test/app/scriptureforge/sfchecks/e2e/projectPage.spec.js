@@ -6,6 +6,7 @@ describe('the project dashboard AKA text list page', function() {
 	var projectSettingsPage = require('../../../pages/projectSettingsPage.js');
 	var questionListPage = require('../../../pages/textPage.js');
 	var loginPage = require('../../../pages/loginPage.js');
+	var appFrame = require('../../../pages/appFrame.js');
 	var util = require('../../../pages/util.js');
 	var constants = require('../../../../testConstants.json');
 	
@@ -31,6 +32,10 @@ describe('the project dashboard AKA text list page', function() {
 			expect(projectPage.settingsButton.isDisplayed()).toBe(false);
 		});
 
+		it('does not have access to the invite-a-friend button', function() {
+			expect(projectPage.invite.showFormButton.isDisplayed()).toBe(false);
+		});
+
 	});
 
 	describe('project manager', function() {
@@ -40,6 +45,18 @@ describe('the project dashboard AKA text list page', function() {
 			loginPage.loginAsManager();
 	    	projectListPage.get();
 	    	projectListPage.clickOnProject(constants.testProjectName);
+		});
+
+		it('has access to the invite-a-friend button', function() {
+			expect(projectPage.invite.showFormButton.isDisplayed()).toBe(true);
+		});
+
+		it('can invite a friend to join the project', function() {
+			projectPage.invite.showFormButton.click();
+			projectPage.invite.emailInput.sendKeys('nobody@example.com');
+			projectPage.invite.sendButton.click();
+			// TODO: Should we expect() a success message to show up? Or an error message to *not* show up?
+			appFrame.checkMsg("An invitation email has been sent to nobody@example.com", "success");
 		});
 
 		it('can click on settings button', function() {
