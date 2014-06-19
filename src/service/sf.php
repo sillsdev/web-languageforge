@@ -247,8 +247,8 @@ class Sf
 	}
 	
 
-	public function project_usersDto($projectId) {
-		return ProjectCommands::usersDto($projectId);
+	public function project_usersDto() {
+		return ProjectCommands::usersDto($this->_projectId);
 	}
 	
 	
@@ -376,11 +376,11 @@ class Sf
 	}
 	
 	public function question_archive($questionIds) {
-		return QuestionCommands::archiveQuestions($questionIds);
+		return QuestionCommands::archiveQuestions($this->_projectId, $questionIds);
 	}
 	
-	public function question_publish($projectId, $questionIds) {
-		return QuestionCommands::publishQuestions($projectId, $questionIds);
+	public function question_publish($questionIds) {
+		return QuestionCommands::publishQuestions($this->_projectId, $questionIds);
 	}
 	
 	public function question_update_answer($questionId, $answer) {
