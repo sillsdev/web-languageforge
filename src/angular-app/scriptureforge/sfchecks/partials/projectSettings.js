@@ -417,15 +417,21 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     	'invite': { 'en': 'Send Email Invite', 'icon': 'icon-envelope'}
     };
     $scope.addMode = 'addNew';
+    $scope.disableAddButton = false;
     $scope.typeahead = {};
     $scope.typeahead.userName = '';
 	
 	$scope.queryUser = function(userName) {
 //		console.log('searching for ', userName);
-		userService.typeahead(userName, function(result) {
+		userService.typeahead(userName, $scope.project.id, function(result) {
 			// TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
 			if (result.ok) {
 				$scope.users = result.data.entries;
+				if (result.data.excludedUsers) {
+					$scope.excludedUsers = result.data.excludedUsers.entries;
+				} else {
+					$scope.excludedUsers = [];
+				}
 				$scope.updateAddMode();
 			}
 		});
@@ -445,16 +451,49 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		}
 	};
 	
+	$scope.isExcludedUser = function(userName) {
+		// Is this userName in the "excluded users" list? (I.e., users already in current project)
+		// Note that it's not enough to check whether the "excluded users" list is non-empty,
+		// as the "excluded users" list might include some users that had a partial match on
+		// the given username. E.g. when creating a new user Bob Jones with username "bjones",
+		// after typing "bjo" the "excluded users" list will include Bob Johnson (bjohnson).
+		if (!$scope.excludedUsers) { return false; }
+		console.log($scope.excludedUsers);
+		for (var i=0, l=$scope.excludedUsers.length; i<l; i++) {
+			if (userName == $scope.excludedUsers[i].username ||
+				userName == $scope.excludedUsers[i].name     ||
+				userName == $scope.excludedUsers[i].email) {
+				return $scope.excludedUsers[i];
+			}
+		}
+		return false;
+	}
 	$scope.calculateAddMode = function() {
 		// TODO This isn't adequate.  Need to watch the 'typeahead.userName' and 'selection' also. CP 2013-07
-		if ($scope.typeahead.userName.indexOf('@') != -1) {
+		if (!$scope.typeahead.userName) {
+			$scope.addMode = 'addNew';
+			$scope.disableAddButton = true;
+			$scope.warningText = '';
+		} else if ($scope.isExcludedUser($scope.typeahead.userName)) {
+			var excludedUser = $scope.isExcludedUser($scope.typeahead.userName);
+			$scope.addMode = 'addExisting';
+			$scope.disableAddButton = true;
+			$scope.warningText = excludedUser.name +
+			                     " (username '" + excludedUser.username +
+			                     "', email " + excludedUser.email +
+			                     ") is already a member.";
+		} else if ($scope.typeahead.userName.indexOf('@') != -1) {
 			$scope.addMode = 'invite';
+			$scope.disableAddButton = false;
+			$scope.warningText = '';
 		} else if ($scope.users.length == 0) {
 			$scope.addMode = 'addNew';
-		} else if (!$scope.typeahead.userName) {
-			$scope.addMode = 'addNew';
+			$scope.disableAddButton = false;
+			$scope.warningText = '';
 		} else {
 			$scope.addMode = 'addExisting';
+			$scope.disableAddButton = false;
+			$scope.warningText = '';
 		}
 	};
 	
@@ -467,10 +506,27 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 				};
 			});
 		} else if ($scope.addMode == 'addExisting') {
-			sfchecksProjectService.updateUserRole($scope.user.id, 'contributor', function(result) {
+			var model = {};
+			model.id = $scope.user.id;
+			// Check existing users to see if we're adding someone that already exists in the project
+			projectService.users($scope.project.id, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectname + " successfully");
-					$scope.queryProjectSettings();
+					for (var i=0, l=result.data.users.length; i<l; i++) {
+						// This approach works, but is unnecessarily slow. We should have an "is user in project?" API,
+						// rather than returning all users then searching through them in O(N) time.
+						// TODO: Make an "is user in project?" query API. 2014-06 RM
+						var thisUser = result.data.users[i];
+						if (thisUser.id == model.id) {
+							notice.push(notice.WARN, "'" + $scope.user.name + "' is already a member of " + $scope.project.projectname + ".");
+							return;
+						}
+					}
+					sfchecksProjectService.updateUserRole($scope.user.id, 'contributor', function(result) {
+						if (result.ok) {
+							notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectname + " successfully");
+							$scope.queryProjectSettings();
+						}
+					});
 				}
 			});
 		} else if ($scope.addMode == 'invite') {

@@ -20,6 +20,7 @@ var SfProjectSettingsPage = function() {
 		newMember:		{
 							input:		element(by.model('term')),
 							button:		element(by.model('addMode')),
+							warning:	element(by.binding('warningText')),
 							results:	$('.typeahead').$('ul li')
 						}
 	};
@@ -64,7 +65,21 @@ var SfProjectSettingsPage = function() {
 		button:		element(by.id('project_properties_save_button'))
 	};
 	
-	this.optionlistsTab = {}; // NYI - wait for refactor
+	this.optionlistsTab = {
+		// TODO: Find better names for these
+		showList:			element(by.id('showInProfileFieldset')).element.all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
+		editList:			element(by.id('editListValuesFieldset')).element.all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
+		editContentsList:	element(by.id('picklistEditorFieldset')).element.all(by.repeater('item in items')),
+		defaultValue:		element(by.id('picklistEditorFieldset')).element(by.model('defaultKey')),
+		addInput:			element(by.id('picklistEditorFieldset')).element(by.model('newValue')),
+		addButton:			element(by.id('picklistEditorFieldset')).element(by.css('input[type="text"] + a')),
+		saveButton:			element(by.id('user_profile_lists_save_button')),
+		unsavedWarning:		element(by.css('span.unsaved-warning')),
+		deleteButton: function(repeaterRow) {
+			// Given a single repeater row in the picklist, return the delete button for that row
+			return repeaterRow.findElement(by.css('a:first-of-type'));
+		},
+	}; // NYI - wait for refactor
 	
 	this.communicationTab = {
 		sms: {

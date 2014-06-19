@@ -21,7 +21,7 @@ describe('the project settings page - project manager', function() {
     	projectListPage.clickOnProject(constants.testProjectName);
     	projectPage.settingsButton.click();
 	});
-	
+
 	describe('members tab', function() {
 		var memberCount = 0;
 		it('setup: click on tab', function() {
@@ -47,6 +47,14 @@ describe('the project settings page - project manager', function() {
 			//this.membersTab.newMember.results.click();
 			page.membersTab.newMember.button.click();
 			expect(page.membersTab.list.count()).toBe(memberCount+1);
+		});
+
+		it('can not add the same user twice', function() {
+			page.membersTab.newMember.input.clear();
+			page.membersTab.newMember.input.sendKeys('dude');
+			expect(page.membersTab.newMember.button.isEnabled()).toBeFalsy();
+			expect(page.membersTab.newMember.warning.isDisplayed()).toBeTruthy();
+			page.membersTab.newMember.input.clear();
 		});
 
 		it('can change the role of a member', function() {
@@ -149,10 +157,44 @@ describe('the project settings page - project manager', function() {
 		});
 
 	});
-	
+
 	describe('project setup tab - NYI', function() {
-		it('setup: click on tab', function() {});
-		// intentionally ignoring these tests because of an impending refactor regarding option lists
+		it('setup: click on tab and select the Location list for editing', function() {
+			page.tabs.optionlists.click();
+			util.findRowByText(page.optionlistsTab.editList, "Study Group").then(function(row) {
+				row.click();
+			});
+		});
+		it('can add two values to a list', function() {
+			expect(page.optionlistsTab.editContentsList.count()).toBe(0);
+			page.optionlistsTab.addInput.sendKeys("foo");
+			page.optionlistsTab.addButton.click();
+			expect(page.optionlistsTab.editContentsList.count()).toBe(1);
+			page.optionlistsTab.addInput.sendKeys("bar");
+			page.optionlistsTab.addButton.click();
+			expect(page.optionlistsTab.editContentsList.count()).toBe(2);
+		});
+		/* Skipping this test because testing the drag-and-drop is proving much harder than expected. 2013-06 RM
+		it('can rearrange the values', function() {
+			var foo = util.findRowByText(page.optionlistsTab.editContentsList, "foo");
+			var bar = util.findRowByText(page.optionlistsTab.editContentsList, "bar");
+			util.findRowByFunc(page.optionlistsTab.editContentsList, console.log).then(function() {
+				console.log("That's all, folks.");
+			});
+			foo.then(function(elem) {
+				console.log("Found it.");
+				//browser.actions().dragAndDrop(elem.find(), { x: 0, y: 30 } ).perform();
+			});
+			browser.sleep(5000);
+		});
+		*/
+		it('can delete values from the list', function() {
+			expect(page.optionlistsTab.editContentsList.count()).toBe(2);
+			page.optionlistsTab.editContentsList.first().then(function(elem) { page.optionlistsTab.deleteButton(elem).click(); });
+			expect(page.optionlistsTab.editContentsList.count()).toBe(1);
+			page.optionlistsTab.editContentsList.first().then(function(elem) { page.optionlistsTab.deleteButton(elem).click(); });
+			expect(page.optionlistsTab.editContentsList.count()).toBe(0);
+		});
 	});
 
 	describe('communication settings tab', function() {
@@ -197,5 +239,5 @@ describe('the project settings page - project manager', function() {
 			});
 		});
 	});
-	
+
 });
