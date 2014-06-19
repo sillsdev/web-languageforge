@@ -1,4 +1,8 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php use models\ProjectModel;
+
+use libraries\shared\Website;
+
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once 'base.php';
 
@@ -70,9 +74,13 @@ class Auth extends Base {
 
 			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember))
 			{
-				//if the login is successful
-				//redirect them back to the home page
+				// successful login
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
+				
+				// set the project context to user's default project
+				$user = new \models\UserModel((string)$this->session->userdata('user_id'));
+				$projectId = $user->getDefaultProjectId(Website::getSiteName());
+				$this->session->set_userdata('projectId', $projectId);
 				
 				$referer = $this->session->userdata('referer_url');
 				$this->session->unset_userdata('referer_url');
@@ -81,15 +89,9 @@ class Auth extends Base {
 				}
 				else
 				{
-					$user = new \models\UserModel((string)$this->session->userdata('user_id'));
-					$projects = $user->listProjects($this->site);
-					if ($projects->count == 1) {
-						$proj = $projects->entries[0];
-						$url = "/app/" . $proj['appName'] . "/" . $proj['id'] . "/";
-						redirect($url, 'location');
-					} else {
-						redirect('/', 'location');
-					}
+					$project = ProjectModel::getById($projectId);
+					$url = "/app/" . $project->appName . "/$projectId";
+					redirect($url, 'location');
 				}
 			}
 			else
