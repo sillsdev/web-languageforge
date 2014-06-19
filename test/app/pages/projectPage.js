@@ -20,6 +20,7 @@ var SfProjectPage = function() {
 		return this.textList.first().findElement(by.css('input[type="checkbox"]'));
 	};
 
+	this.inviteButton = element(by.partialButtonText('Invite a Friend'));
 	this.settingsButton = element(by.id('projectSettingsButton'));
 	this.archiveTextButton = element(by.partialButtonText('Archive Texts'));
 
