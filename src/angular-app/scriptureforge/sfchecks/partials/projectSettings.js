@@ -501,7 +501,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		if ($scope.addMode == 'addNew') {
 			userService.createSimple($scope.typeahead.userName, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "User created.  Username: " + $scope.typeahead.userName + "    Password: " + result.data.password);
+					notice.push(notice.INFO, "User created.  Username: " + $scope.typeahead.userName + "    Password: " + result.data.password);
 					$scope.queryProjectSettings();
 				};
 			});
