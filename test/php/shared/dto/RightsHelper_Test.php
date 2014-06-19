@@ -1,26 +1,16 @@
 <?php
 
-
-use models\shared\rights\SiteRoles;
-
-use models\commands\ProjectCommands;
-
 use models\shared\dto\RightsHelper;
 use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
+use models\commands\ProjectCommands;
 use models\UserModel;
 
-
-require_once(dirname(__FILE__) . '/../TestConfig.php');
+require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestRightsHelper extends UnitTestCase {
-
-	function __construct()
-	{
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	}
 
 	function testuserCanAccessMethod_unknownMethodName_throws() {
 		$e = new MongoTestEnvironment();

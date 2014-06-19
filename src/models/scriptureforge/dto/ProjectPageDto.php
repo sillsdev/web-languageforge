@@ -2,23 +2,16 @@
 
 namespace models\scriptureforge\dto;
 
-use models\scriptureforge\SfchecksProjectModel;
-
 use models\shared\dto\RightsHelper;
-
+use models\scriptureforge\SfchecksProjectModel;
 use models\MessageModel;
-
-use models\UnreadMessageModel;
-use models\UnreadActivityModel;
-
-use models\UserModel;
-
 use models\ProjectModel;
-
+use models\QuestionModel;
 use models\TextListModel;
-
 use models\TextModel;
-
+use models\UnreadActivityModel;
+use models\UnreadMessageModel;
+use models\UserModel;
 
 class ProjectPageDto
 {
@@ -30,43 +23,46 @@ class ProjectPageDto
 	 */
 	public static function encode($projectId, $userId) {
 		// TODO: ensure that $userId has permission to view the project page
-		$userModel = new UserModel($userId);
-		$projectModel = new SfchecksProjectModel($projectId);
-		$textList = new TextListModel($projectModel);
+		$user = new UserModel($userId);
+		$project = new SfchecksProjectModel($projectId);
+		$textList = new TextListModel($project);
 		$textList->read();
 
 		$data = array();
-		$data['rights'] = RightsHelper::encode($userModel, $projectModel);
+		$data['rights'] = RightsHelper::encode($user, $project);
 		$data['project'] = array(
-				'name' => $projectModel->projectname,
+				'name' => $project->projectname,
 				'id' => $projectId);
 		$data['texts'] = array();
 		foreach ($textList->entries as $entry) {
-			$textModel = new TextModel($projectModel, $entry['id']);
-			if (! $textModel->isArchived) {
-				$questionList = $textModel->listQuestionsWithAnswers();
+			$text = new TextModel($project, $entry['id']);
+			if (! $text->isArchived) {
+				$questionList = $text->listQuestionsWithAnswers();
 				// Just want count of questions and responses, not whole list
-				$entry['questionCount'] = $questionList->count;
+				$entry['questionCount'] = 0;
 				$responseCount = 0; // "Responses" = answers + comments
 				foreach ($questionList->entries as $q) {
-					foreach ($q['answers'] as $a) {
-						$commentCount = count($a['comments']);
-						$responseCount += ($commentCount+1); // +1 for this answer
+					$question = new QuestionModel($project, $q['id']);
+					if (! $question->isArchived) {
+						$entry['questionCount']++;
+						foreach ($q['answers'] as $a) {
+							$commentCount = count($a['comments']);
+							$responseCount += ($commentCount+1); // +1 for this answer
+						}
 					}
 				}
 				$entry['responseCount'] = $responseCount;
-
+				$entry['dateCreated'] = $text->dateCreated->format(\DateTime::RFC2822);
+				
 				$data['texts'][] = $entry;
 			}
 		}
 
- 		// TODO remove: DDW Default sort Texts on createDate
+ 		// sort Texts with newest at the top
  		usort($data['texts'], function ($a, $b) {
- 			$sortOn = 'title';
- 			if (array_key_exists($sortOn, $a) &&
- 				array_key_exists($sortOn, $b)
- 			) {
- 				return (strtolower($a[$sortOn]) > strtolower($b[$sortOn])) ? 1 : -1;
+ 			$sortOn = 'dateCreated';
+ 			if (array_key_exists($sortOn, $a) && array_key_exists($sortOn, $b)) {
+ 				return (strtotime($a[$sortOn]) < strtotime($b[$sortOn])) ? 1 : -1;
  			} else {
  				return 0;
  			}
@@ -85,7 +81,7 @@ class ProjectPageDto
 		$messageIds = $unreadMessages->unreadItems();
 		$messages = array();
 		foreach ($messageIds as $messageId) {
-			$message = new MessageModel($projectModel, $messageId);
+			$message = new MessageModel($project, $messageId);
 			$messages[] = array(
 				'id' => $message->id->asString(),
 				'subject' => $message->subject,

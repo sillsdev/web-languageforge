@@ -34,6 +34,8 @@ class QuestionModel extends \models\mapper\MapperModel
 	public function __construct($projectModel, $id = '') {
 		$this->id = new Id();
 		$this->workflowState = "open"; // default workflow state
+		$this->description = '';
+		$this->title = '';
 		$this->dateCreated = new \DateTime();
 		$this->dateEdited = new \DateTime();
 		$this->textRef = new IdReference();
@@ -202,7 +204,6 @@ class QuestionModel extends \models\mapper\MapperModel
 	public $dateCreated;
 	
 	/**
-	 * 
 	 * @var \DateTime
 	 */
 	public $dateEdited;
@@ -223,6 +224,10 @@ class QuestionModel extends \models\mapper\MapperModel
 	 */
 	public $workflowState;
 	
+	/**
+	 * @var Boolean
+	 */
+	public $isArchived;
 	
 }
 

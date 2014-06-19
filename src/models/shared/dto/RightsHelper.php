@@ -150,6 +150,9 @@ class RightsHelper
 			case 'project_joinProject':
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 
+			case 'project_usersDto':
+				return self::userHasSfchecksProjectRight($params[0], $userId, Domain::USERS + Operation::VIEW);
+
 			case 'project_removeUsers':
 				return $this->userHasProjectRight(Domain::USERS + Operation::DELETE);
 
@@ -167,8 +170,9 @@ class RightsHelper
 			case 'question_read':
 				return $this->userHasProjectRight(Domain::QUESTIONS + Operation::EDIT);
 
-			case 'question_delete':
-				return $this->userHasProjectRight(Domain::QUESTIONS + Operation::DELETE);
+			case 'question_archive':
+			case 'question_publish':
+				return $this->userHasProjectRight(Domain::QUESTIONS + Operation::ARCHIVE);
 
 
 			// Admin (site context)

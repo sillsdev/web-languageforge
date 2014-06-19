@@ -1,15 +1,12 @@
 <?php
 
-use models\CommentModel;
-
-use models\AnswerModel;
-
 use models\commands\QuestionCommands;
+use models\AnswerModel;
+use models\CommentModel;
 use models\QuestionModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class UserVoteTestEnvironment {
@@ -65,10 +62,6 @@ class UserVoteTestEnvironment {
 
 class TestQuestionCommands extends UnitTestCase {
 
-	function __construct()
-	{
-	}
-	
 	function testDeleteQuestions_NoThrow() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
@@ -79,8 +72,59 @@ class TestQuestionCommands extends UnitTestCase {
 		$question->write();
 		
 		$questionId = $question->id->asString();
-		QuestionCommands::deleteQuestions($projectId, array($questionId), 'bogus auth userid');
+		QuestionCommands::deleteQuestions($projectId, array($questionId));
+	}
+	
+	function testArchiveQuestions_2Questions_1Archived() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
 		
+		$project = $e->createProject(SF_TESTPROJECT);
+		
+		$question1 = new QuestionModel($project);
+		$question1->title = "Some Title";
+		$question1->write();
+		$question2 = new QuestionModel($project);
+		$question2->title = "Another Title";
+		$question2->write();
+		
+		$this->assertEqual($question1->isArchived, false);
+		$this->assertEqual($question2->isArchived, false);
+		
+		$count = QuestionCommands::archiveQuestions($project->id->asString(), array($question1->id->asString()));
+		
+		$question1->read($question1->id->asString());
+		$question2->read($question2->id->asString());
+		$this->assertEqual($count, 1);
+		$this->assertEqual($question1->isArchived, true);
+		$this->assertEqual($question2->isArchived, false);
+	}
+	
+	function testPublishQuestions_2ArchivedQuestions_1Published() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		
+		$question1 = new QuestionModel($project);
+		$question1->title = "Some Title";
+		$question1->isArchived = true;
+		$question1->write();
+		$question2 = new QuestionModel($project);
+		$question2->title = "Another Title";
+		$question2->isArchived = true;
+		$question2->write();
+		
+		$this->assertEqual($question1->isArchived, true);
+		$this->assertEqual($question2->isArchived, true);
+		
+		$count = QuestionCommands::publishQuestions($project->id->asString(), array($question1->id->asString()));
+		
+		$question1->read($question1->id->asString());
+		$question2->read($question2->id->asString());
+		$this->assertEqual($count, 1);
+		$this->assertEqual($question1->isArchived, false);
+		$this->assertEqual($question2->isArchived, true);
 	}
 	
 	function testVoteUp_NoVotesThenUpAndDown_VoteGoesUpAndDown() {
@@ -200,7 +244,6 @@ class TestQuestionCommands extends UnitTestCase {
 		$question->read($questionId);
 		$newComment = $question->readComment($answerId, $commentId);
 		$this->assertEqual($user1Id, $newComment->userRef->asString());
-		
 	}
 }
 

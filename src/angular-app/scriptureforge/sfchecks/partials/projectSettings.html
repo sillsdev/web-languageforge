@@ -20,7 +20,8 @@
 					</li>
 				</ul>
 			</typeahead>
-			<button data-ng-model="addMode" class="btn" data-ng-disabled="!typeahead.userName" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+			<button data-ng-model="addMode" class="btn" data-ng-disabled="disableAddButton" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+			<span class="warning" data-ng-show="warningText">{{warningText}}</span>
 			</form>
 		</div>
 		<div id="newMessageDiv" data-collapse="newMessageCollapsed">
@@ -38,8 +39,7 @@
 			
 			</form>
 		</div>
-		<div listview search="queryProjectSettings()" items="list.users" items-filter="userFilter" visible-items="list.visibleUsers" select="">
-		<!-- <div listview search="queryProjectUsers()" select=""> -->
+		<listview search="queryProjectSettings()" items="list.users" items-filter="userFilter" visible-items="list.visibleUsers" select="">
 		<table class="table" style="width: 100%">
 			<thead>
 			<tr>
@@ -58,7 +58,7 @@
 			</tr>
 			</tbody>
 		</table>		
-		</div>
+		</listview>
 	</tab>
 	<tab heading="Question Templates" data-ng-controller="ProjectSettingsQTemplateCtrl" style="overflow:hidden">
 		<form class="control-bar form-inline">
@@ -78,7 +78,7 @@
 			</fieldset>
 			</form>
 		</div>
-		<div listview search="queryTemplates()" items="templates" visible-items="visibleTemplates" select="">
+		<listview search="queryTemplates()" items="templates" visible-items="visibleTemplates" select="">
 		<table style="width: 100%">
 			<tr>
 				<th></th>
@@ -91,29 +91,33 @@
 				<td style="text-overflow: ellipsis">{{template.description}}</td>
 			</tr>
 		</table>
-		</div>
+		</listview>
 	</tab>
 	<tab heading="Archived Texts" data-ng-controller="ProjectSettingsArchiveTextsCtrl">
 		<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
 			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn" data-ng-click="publishTexts()"><i class="icon-globe icon-large" style="color:black"></i>Re-publish Texts</button>
 		</form>
 		<hr />
-		<div listview hide-if-empty="true" items="list.archivedTexts" visible-items="visibleTexts" select="">
+		<listview hide-if-empty="true" items="list.archivedTexts" visible-items="visibleTexts" select="">
 			<div data-ng-repeat="text in visibleTexts" class="details-row">
 				<ul class="inline" data-ng-class="{active: isSelected(text)}">
 					<li data-ng-show="rights.archive" ><input type="checkbox" data-ng-checked="isSelected(text)" data-ng-click="updateSelection($event, text)" /></li>
 					<li>
-						<a href="{{text.url}}">
+						<a class="span5" href="{{text.url}}">
 							<span class="larger-text">{{text.title}}</span>
 						</a>
 					</li>
-					<li>{{text.questionCount}} questions</li>
+					<li><a href="{{text.url}}">
+						<div class="attention-block">
+							<span class="subtitle">{{text.questionCount}} questions</span>
+						</div>
+					</a></li>
 					<li>{{text.responseCount}} responses</li>
 					<li>Archived on {{text.dateModified | date:'fullDate'}}</li>
 				</ul>
 				<hr />
 			</div>
-		</div>
+		</listview>
 	</tab>
 	<tab heading="Project Properties" data-ng-controller="ProjectSettingsPropertiesCtrl">
 		<form class="well" data-ng-submit="updateProject()">
@@ -140,22 +144,22 @@
 		<form class="well" data-ng-submit="updateProject()">
 		<div class="row">
 		<div class="span4">
-		<fieldset class="well picklists">
+		<fieldset class="well picklists" id="showInProfileFieldset">
 			<legend>Show in the User's Profile</legend>
 			<ul class="unstyled">
   				<li data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"><div class="checkbox"><input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>{{list.name}}</div></li>
 			</ul>
 		</fieldset>
-		<fieldset class="well picklists">
+		<fieldset class="well picklists" id="editListValuesFieldset">
 			<legend>Edit list values</legend>
 			<ul class="unstyled">
   				<li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists" data-ng-class="{selected:currentListId == listId}">{{list.name}}</li>
 			</ul>
 		</fieldset>
-		<button type="submit" class="btn"><i class="icon-ok"></i>Save</button>
+		<button id="user_profile_lists_save_button" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
 		<span ng-show="unsavedChanges" class="unsaved-warning" style="color: red">You have unsaved changes.</span> <!-- Remove the style="" attr once class has real CSS definition -->
 		</div><div class="span4">
-		<fieldset class="well">
+		<fieldset class="well" id="picklistEditorFieldset">
 			<legend style="width:auto;">{{project.userProperties.userProfilePickLists[currentListId].name}}</legend>
 			<picklist-editor items="project.userProperties.userProfilePickLists[currentListId].items" default-key="project.userProperties.userProfilePickLists[currentListId].defaultKey"></picklist-editor>
 		</fieldset>

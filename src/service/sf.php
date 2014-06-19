@@ -165,8 +165,8 @@ class Sf
 		return UserCommands::listUsers();
 	}
 	
-	public function user_typeahead($term) {
-		return UserCommands::userTypeaheadList($term);
+	public function user_typeahead($term, $projectIdToExclude = '') {
+		return UserCommands::userTypeaheadList($term, $projectIdToExclude);
 	}
 	
 	public function change_password($userId, $newPassword) {
@@ -244,6 +244,11 @@ class Sf
 	
 	public function project_joinProject($projectId, $role) {
 		return ProjectCommands::updateUserRole($projectId, $this->_userId, $role);
+	}
+	
+
+	public function project_usersDto($projectId) {
+		return ProjectCommands::usersDto($projectId);
 	}
 	
 	
@@ -370,8 +375,12 @@ class Sf
 		return QuestionCommands::readQuestion($this->_projectId, $questionId);
 	}
 	
-	public function question_delete($questionIds) {
-		return QuestionCommands::deleteQuestions($this->_projectId, $questionIds);
+	public function question_archive($questionIds) {
+		return QuestionCommands::archiveQuestions($questionIds);
+	}
+	
+	public function question_publish($projectId, $questionIds) {
+		return QuestionCommands::publishQuestions($projectId, $questionIds);
 	}
 	
 	public function question_update_answer($questionId, $answer) {
