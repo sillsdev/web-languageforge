@@ -107,27 +107,25 @@ class QuestionCommands
 	 * @see AnswerModel
 	 */
 	public static function updateAnswer($projectId, $questionId, $answerJson, $userId) {
-// 		CodeGuard::checkNotFalseAndThrow($answerJson['id'], "answerJson['id']");
-// 		CodeGuard::checkNotFalseAndThrow($answerJson['content'], "answerJson['content']");
-		// whitelist updatable items
-		$answerId = $answerJson['id'];
-		$answerContent = $answerJson['content'];
-		$answerTextHighlight = '';
-		if (array_key_exists('textHighlight', $answerJson)) {
-			$answerTextHighlight = $answerJson['textHighlight'];
-		}
-		
+		CodeGuard::assertKeyExistsOrThrow('id', $answerJson, "answerJson");
+		CodeGuard::checkNotFalseAndThrow($answerJson['content'], "answerJson['content']");
 		$project = new ProjectModel($projectId);
 		$question = new QuestionModel($project, $questionId);
-		$authorId = $userId;
+		
+		// whitelist updatable items
 		if ($answerJson['id'] != '') {
 			// update existing answer
-			$oldAnswer = $question->readAnswer($answerJson['id']);
-			$authorId = $oldAnswer->userRef->asString();
+			$answer = $question->readAnswer($answerJson['id']);
+			$answer->content = $answerJson['content'];
+		} else {
+			// create new answer
+			$answer = new AnswerModel();
+			JsonDecoder::decode($answer, array('id' => '', 'content' => $answerJson['content']));
+			$answer->userRef->id = $userId;
 		}
-		$answer = new AnswerModel();
-		JsonDecoder::decode($answer, $answerJson);
-		$answer->userRef->id = $authorId;
+		if (array_key_exists('textHighlight', $answerJson)) {
+			$answer->textHighlight = $answerJson['answerTextHighlight'];
+		}
 		$answerId = $question->writeAnswer($answer);
 		
 		// Re-read question model to pick up new answer
