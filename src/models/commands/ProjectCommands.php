@@ -32,6 +32,7 @@ use models\shared\dto\ActivityListDto;
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\RightsHelper;
 use models\shared\dto\UserProfileDto;
+use models\shared\dto\ManageUsersDto;
 use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
@@ -108,6 +109,19 @@ class ProjectCommands
 		$list = new \models\ProjectListModel();
 		$list->read();
 		return $list;
+	}
+
+	/**
+	 * List users in the project
+	 * @param string $projectId
+	 */
+	public static function usersDto($projectId) {
+		CodeGuard::checkTypeAndThrow($projectId, 'string');
+		CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
+
+		$usersDto = ManageUsersDto::encode($projectId);
+		error_log(print_r($usersDto, true));
+		return $usersDto;
 	}
 
 	/**

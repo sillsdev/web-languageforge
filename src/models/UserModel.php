@@ -56,7 +56,7 @@ class UserModel extends \models\UserModelBase
 	
 	/**
 	 *	Adds the user as a member of $projectId
-	 *  You do must call write() as both the user model and the project model!!!
+	 *  You must call write() on both the user model and the project model!!!
 	 * @param string $projectId
 	 */
 	public function addProject($projectId) {
@@ -105,19 +105,47 @@ class UserListModel extends \models\mapper\MapperListModel
 
 class UserTypeaheadModel extends \models\mapper\MapperListModel
 {
-	public function __construct($term)
+	public function __construct($term, $projectIdOrIds = '', $include = false)
 	{
-		parent::__construct(
-				UserModelMongoMapper::instance(),
-				array('$or' => array(
+		$query = array('$or' => array(
 						array('name' => array('$regex' => $term, '$options' => '-i')),
 						array('username' => array('$regex' => $term, '$options' => '-i')),
 						array('email' => array('$regex' => $term, '$options' => '-i')),
-				)),
+				));
+		if (!empty($projectIdOrIds)) {
+			// Allow $projectIdOrIds to be either an array or a single ID
+			if (is_array($projectIdOrIds)) {
+				$idsForQuery = $projectIdOrIds;
+			} else {
+				$idsForQuery = array($projectIdOrIds);
+			}
+			// If passed string IDs, convert to MongoID objects
+			$idsForQuery = array_map(function($id) {
+				if (is_string($id)) {
+					return MongoMapper::mongoID($id);
+				} else {
+					return $id;
+				}
+			}, $idsForQuery);
+			$inOrNotIn = $include ? '$in' : '$nin';
+			$query['projects'] = array($inOrNotIn => $idsForQuery);
+			//error_log("Query: " . print_r($query, true));
+		}
+		parent::__construct(
+				UserModelMongoMapper::instance(),
+				$query,
 				array('username', 'email', 'name', 'avatarRef')
 		);
+		// If we were called with a project filter that excluded certain users, also
+		// return a list of specifically which users were excluded. Which happens to
+		// be another typeahead search with the same query term, but *including* only
+		// the ones matching this project.
+		if ($projectIdOrIds && !$include) {
+			$this->excludedUsers = new UserTypeaheadModel($term, $projectIdOrIds, true);
+			$this->excludedUsers->read();
+		}
+		//echo("Result: " . print_r($this, true));
 	}	
-	
 }
 
 

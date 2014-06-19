@@ -128,6 +128,13 @@ class MongoTestEnvironment
 		return $usx;
 	}
 	
+	public static function usxSampleWithNotes() {
+		global $rootPath;
+		$testFilePath = $rootPath . 'docs/usx/CEV_PSA001.usx';
+		$usx = file_get_contents($testFilePath);
+		return $usx;
+	}
+	
 	public function inhibitErrorDisplay() {
 		$this->_display = ini_get('display_errors');
 		ini_set('display_errors', false);
