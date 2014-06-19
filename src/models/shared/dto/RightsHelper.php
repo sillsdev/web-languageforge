@@ -131,6 +131,7 @@ class RightsHelper
 				return $this->userHasProjectRight(Domain::USERS + Operation::CREATE);
 				
 			case 'user_typeahead':
+			case 'user_typeaheadExclusive':
 				return $this->userHasProjectRight(Domain::USERS + Operation::VIEW);
 				
 			case 'message_send':
