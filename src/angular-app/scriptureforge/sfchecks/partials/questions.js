@@ -216,8 +216,6 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 .controller('QuestionsSettingsCtrl', ['$scope', '$http', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService',
                                       function($scope, $http, ss, $routeParams, breadcrumbService, notice, textService, questionService, sfchecksLinkService) {
 	var textId = $routeParams.textId;
-		id: projectId	
-	};
 	$scope.textId = textId;
 	$scope.editedText = {
 		id: textId,
@@ -236,7 +234,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 				$scope.editedText.title = $scope.dto.text.title;
 				$scope.settings.archivedQuestions = result.data.archivedQuestions;
 				for (var i = 0; i < $scope.settings.archivedQuestions.length; i++) {
-					$scope.settings.archivedQuestions[i].url = sfchecksLinkService.question($scope.project.id, $scope.textId, $scope.settings.archivedQuestions[i].id);
+					$scope.settings.archivedQuestions[i].url = sfchecksLinkService.question($scope.textId, $scope.settings.archivedQuestions[i].id);
 					$scope.settings.archivedQuestions[i].calculatedTitle = questionService.util.calculateTitle($scope.settings.archivedQuestions[i].title, $scope.settings.archivedQuestions[i].description);
 					$scope.settings.archivedQuestions[i].dateModified = new Date($scope.settings.archivedQuestions[i].dateModified);
 				}
@@ -382,7 +380,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			questionsIds.push($scope.selected[i].id);
 		}
-		questionService.publish($scope.project.id, questionsIds, function(result) {
+		questionService.publish(questionsIds, function(result) {
 			if (result.ok) {
 				$scope.selected = []; // Reset the selection
 				$scope.queryTextSettings();
