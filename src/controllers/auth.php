@@ -80,18 +80,21 @@ class Auth extends Base {
 				// set the project context to user's default project
 				$user = new \models\UserModel((string)$this->session->userdata('user_id'));
 				$projectId = $user->getDefaultProjectId(Website::getSiteName());
-				$this->session->set_userdata('projectId', $projectId);
+				
+				if ($projectId) {
+					$this->session->set_userdata('projectId', $projectId);
+				}
 				
 				$referer = $this->session->userdata('referer_url');
-				$this->session->unset_userdata('referer_url');
 				if ($referer && strpos($referer, "/app") !== false) {
+					$this->session->unset_userdata('referer_url');
 					redirect($referer, 'location');
-				}
-				else
-				{
+				} else if ($projectId) {
 					$project = ProjectModel::getById($projectId);
 					$url = "/app/" . $project->appName . "/$projectId";
 					redirect($url, 'location');
+				} else {
+					redirect('/', 'location');
 				}
 			}
 			else
