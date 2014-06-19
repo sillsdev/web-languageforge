@@ -131,6 +131,10 @@ angular.module('bellows.services', ['jsonRpc'])
 		return this.hasRight($window.session.userSiteRights, domain, operation);
 	};
 	
+	this.hasProjectRight = function(domain, operation) {
+		return this.hasRight($window.session.userProjectRights, domain, operation);
+	};
+	
 	this.hasRight = function(rights, domain, operation) {
 		if (rights) {
 			var right = domain() + operation();
