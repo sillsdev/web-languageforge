@@ -226,7 +226,6 @@ class TestQuestionCommands extends UnitTestCase {
 		$answer = new AnswerModel();
 		$answer->content = "the answer";
 		$user1Id = $e->createUser("user1", "user1", "user1");
-		$user2Id = $e->createUser("user2", "user2", "user2");
 		$answer->userRef->id = $user1Id;
 		$answer->tags[] = 'originalTag';
 		$answer->isToBeExported = true;
@@ -238,7 +237,7 @@ class TestQuestionCommands extends UnitTestCase {
 			"isToBeExported" => false
 		);
 		
-		QuestionCommands::updateAnswer($project->id->asString(), $questionId, $answerArray, $user2Id);
+		QuestionCommands::updateAnswer($project->id->asString(), $questionId, $answerArray, $user1Id);
 		
 		$question->read($questionId);
 		$newAnswer = $question->readAnswer($answerId);
@@ -246,6 +245,44 @@ class TestQuestionCommands extends UnitTestCase {
 		$this->assertEqual(count($newAnswer->tags), 1);
 		$this->assertEqual($newAnswer->tags[0], 'originalTag');
 		$this->assertEqual($newAnswer->isToBeExported, true);
+	}
+	
+	function testUpdateAnswerExportFlag_NoExistingAnswer_Throw() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$question = new QuestionModel($project);
+		$questionId = $question->write();
+		$answerId = '';
+		$isToBeExported = false;
+		
+		$e->inhibitErrorDisplay();
+		$this->expectException();
+		$dto = QuestionCommands::updateAnswerExportFlag($project->id->asString(), $questionId, $answerId, $isToBeExported);
+		$e->restoreErrorDisplay();
+	}
+	
+	function testUpdateAnswerExportFlag_ExistingAnswer_ChangePersists() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$question = new QuestionModel($project);
+		$questionId = $question->write();
+		
+		$answer = new AnswerModel();
+		$answer->content = "the answer";
+		$answer->isToBeExported = false;
+		$answerId = $question->writeAnswer($answer);
+		$isToBeExported = true;
+		
+		$dto = QuestionCommands::updateAnswerExportFlag($project->id->asString(), $questionId, $answerId, $isToBeExported);
+		
+		$question->read($questionId);
+		$newAnswer = $question->readAnswer($answerId);
+		$this->assertTrue($newAnswer->isToBeExported);
+		$this->assertTrue($dto[$answerId]['isToBeExported']);
 	}
 	
 	function testUpdateComment_ExistingComment_OriginalAuthorIsPreserved() {
