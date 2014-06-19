@@ -83,6 +83,9 @@ angular.module('sfchecks.services', ['jsonRpc'])
 		this.update_answerExportFlag = function(questionId, answerId, isToBeExported, callback) {
 			jsonRpc.call('question_update_answerExportFlag', [questionId, answerId, isToBeExported], callback);
 		};
+		this.update_answerTags = function(questionId, answerId, tags, callback) {
+			jsonRpc.call('question_update_answerTags', [questionId, answerId, tags], callback);
+		};
 		this.remove_answer = function(questionId, answerId, callback) {
 			jsonRpc.call('question_remove_answer', [questionId, answerId], callback);
 		};
