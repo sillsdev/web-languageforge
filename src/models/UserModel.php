@@ -60,7 +60,11 @@ class UserModel extends \models\UserModelBase
 	public function getDefaultProjectId($site) {
 		// note: this method could be refactored to use an actual "default project" value on the user model
 		$projectList = $this->listProjects($site);
-		return $projectList->entries[0]['id'];
+		if (count($projectList->entries) > 0) {
+			return $projectList->entries[0]['id'];
+		} else {
+			return '';
+		}
 	}
 			
 	
