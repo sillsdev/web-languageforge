@@ -1,7 +1,5 @@
 <?php
 
-use models\commands\QuestionTemplateCommands;
-
 require_once('e2eTestConfig.php');
 
 // put the test config into place
@@ -12,6 +10,7 @@ use models\commands\ProjectCommands;
 use models\commands\UserCommands;
 use models\commands\TextCommands;
 use models\commands\QuestionCommands;
+use models\commands\QuestionTemplateCommands;
 use models\shared\rights\ProjectRoles;
 use models\shared\rights\SiteRoles;
 use models\scriptureforge\SfProjectModel;
