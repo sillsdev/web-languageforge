@@ -10,7 +10,7 @@
 			<p>Below is a list of Scriptureforge.org projects that you can learn more about:</p>
 			
 				<?php foreach($featuredProjects as $project): ?>
-					<h3><a href="<?php echo "/projects/" . str_replace(" ", "_", strtolower($project['projectname'])); ?>"><?php echo $project['projectname']; ?></a></h3>
+					<h3><a href="<?php echo "/projects/" . str_replace(" ", "_", strtolower($project['projectName'])); ?>"><?php echo $project['projectName']; ?></a></h3>
 				<?php endforeach; ?>
 			
 			<?php else: ?>

@@ -1,5 +1,5 @@
 <div data-ng-show="finishedLoading">
-<h2 style="font-weight:normal">{{project.projectname}} Settings</h2>
+<h2 style="font-weight:normal">{{project.projectName}} Settings</h2>
 			
 <tabset>
 	<tab heading="Members" data-ng-controller="ProjectSettingsUsersCtrl">
@@ -123,7 +123,7 @@
 		<form class="well" data-ng-submit="updateProject()">
 		<fieldset>
 			<label>Project Name</label>
-			<input type="text" placeholder="project name" data-ng-model="project.projectname"/>
+			<input type="text" placeholder="project name" data-ng-model="project.projectName"/>
 			<label>Project Theme</label>
 			<div class="control-group">
 				<select required data-ng-model="project.themeName" data-ng-options="themeName for themeName in themeNames">

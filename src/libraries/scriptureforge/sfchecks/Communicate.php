@@ -207,8 +207,8 @@ class Communicate
 		} else {
 			// project in scope, signup to project on site
 			$projectTheme = $projectModel->themeName;
-			$from = array(SF_DEFAULT_EMAIL => $projectModel->projectname . ' on ' . SF_DEFAULT_EMAIL_NAME);
-			$subject = $projectModel->projectname . ' project on ScriptureForge account validation';
+			$from = array(SF_DEFAULT_EMAIL => $projectModel->projectName . ' on ' . SF_DEFAULT_EMAIL_NAME);
+			$subject = $projectModel->projectName . ' project on ScriptureForge account validation';
 			$vars = array(
 					'user' => $userModel,
 					'project' => $projectModel,
@@ -231,10 +231,10 @@ class Communicate
 	 * 
 	 * @param UserModelBase $inviterUserModel
 	 * @param UserModelBase $toUserModel
-	 * @param ProjectModel $projectModel
+	 * @param Website $website
 	 * @param IDelivery $delivery
 	 */
-	public static function sendInvite($inviterUserModel, $toUserModel, $projectModel, IDelivery $delivery = null) {
+	public static function sendInvite($inviterUserModel, $toUserModel, $website, IDelivery $delivery = null) {
 		$toUserModel->setValidation(7);
 		$toUserModel->write();
 		$vars = array(

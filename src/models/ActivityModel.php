@@ -74,7 +74,7 @@ class ActivityModel extends \models\mapper\MapperModel
 		$this->action = $this::UNKNOWN;
 		$this->date = new \DateTime(); // set the timestamp to now
 		$this->actionContent = new MapOf(); // strings
-		$this->addContent($this::PROJECT, $projectModel->projectname);
+		$this->addContent($this::PROJECT, $projectModel->projectName);
 		$databaseName = $projectModel->databaseName();
 		parent::__construct(ActivityModelMongoMapper::connect($databaseName), $id);
 	}	

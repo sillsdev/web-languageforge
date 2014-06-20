@@ -76,18 +76,17 @@ class MongoTestEnvironment
 		} else {
 			$projectModel = new LexiconProjectModel();
 		}
-		$projectModel->projectname = $name;
-		$projectModel->themeName = 'default';
+		$projectModel->projectName = $name;
+		$projectModel->siteName = $site;
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;
 	}
 	
-	public function createProjectSettings($name, $site = Website::SCRIPTUREFORGE) {
+	public function createProjectSettings($name, $site = 'www.scriptureforge.org') {
 		$projectModel = new models\ProjectSettingsModel();
-		$projectModel->projectname = $name;
+		$projectModel->projectName = $name;
 		$projectModel->siteName = $site;
-		$projectModel->themeName = 'default';
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;
@@ -154,7 +153,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment {
 	
 	public function createProject($name, $site = 'languageforge') {
 		$projectModel = new LexiconProjectModel();
-		$projectModel->projectname = $name;
+		$projectModel->projectName = $name;
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;

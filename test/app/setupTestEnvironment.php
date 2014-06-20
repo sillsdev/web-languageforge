@@ -31,14 +31,14 @@ $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), tr
 $projectNames = array($constants['testProjectName'], $constants['otherProjectName']);
 foreach ($projectNames as $name) {
 	$projectModel = new ProjectModel();
-	$projectModel->projectname = $name;
+	$projectModel->projectName = $name;
 	$db = \models\mapper\MongoStore::connect($projectModel->databaseName());
 	foreach ($db->listCollections() as $collection) { $collection->drop(); }
 }
 
 // drop the third database because it is used in a rename test
 $projectModel = new ProjectModel();
-$projectModel->projectname = $constants['thirdProjectName'];
+$projectModel->projectName = $constants['thirdProjectName'];
 $db = \models\mapper\MongoStore::dropDB($projectModel->databaseName());
 
 $adminUser = UserCommands::createUser(array(
