@@ -39,6 +39,7 @@ class ProjectModel extends \models\mapper\MapperModel
 			$this->themeName = 'default';
 		}
 		$this->allowAudioDownload = true;
+		$this->allowInviteAFriend = true;
 		$this->interfaceLanguageCode = 'en';
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
@@ -273,6 +274,12 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public $allowAudioDownload;
 
+	/**
+	 * Flag to indicate if this project allows users to invite a friend
+	 * @var boolean
+	 */
+	public $allowInviteAFriend;
+	
 	/**
 	 * @var ProjectUserPropertiesSettings
 	 */
