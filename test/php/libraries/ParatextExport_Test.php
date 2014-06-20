@@ -71,9 +71,9 @@ class TestParatextExport extends UnitTestCase {
 			'exportComments' => true
 		);
 		$download = ParatextExport::exportCommentsForText($project->id->asString(), $textId, $params);
- 		
- 		$this->assertPattern('/<Contents>first comment \(by user1/', $download['xml']);
- 		$this->assertPattern('/\(Tags: export, to review\) \(10 Votes\)<\/Contents>/', $download['xml']);
+		
+		$this->assertPattern('/<Contents>first comment \(by user1/', $download['xml']);
+		$this->assertPattern('/\(Tags: export, to review\) \(10 Votes\)<\/Contents>/', $download['xml']);
 		
 		
 	}
@@ -130,14 +130,12 @@ class TestParatextExport extends UnitTestCase {
 			'exportComments' => true
 		);
 		$download = ParatextExport::exportCommentsForText($project->id->asString(), $textId, $params);
- 		//echo "<pre>" . print_r($download) . "</pre>";
- 		
- 		$this->assertPattern('/<Contents>third answer - very very very very long \(by user3/', $download['xml']);
- 		$this->assertNoPattern('/<Contents>second answer/', $download['xml']);
- 		$this->assertPattern('/<Contents>first answer/', $download['xml']);
+		//echo "<pre>" . print_r($download) . "</pre>";
+		
+		$this->assertPattern('/<Contents>third answer - very very very very long \(by user3/', $download['xml']);
+		$this->assertNoPattern('/<Contents>second answer/', $download['xml']);
+		$this->assertPattern('/<Contents>first answer/', $download['xml']);
 	}
-	
-
 	
 }
 
