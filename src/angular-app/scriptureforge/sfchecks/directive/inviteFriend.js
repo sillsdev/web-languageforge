@@ -11,7 +11,7 @@ angular.module('sf.ui.invitefriend', ['bellows.services', 'palaso.ui.notice'])
 		};
 
 		$scope.checkVisibility = function() {
-			$scope.showInviteDiv = $scope.canCreateUsers();
+			$scope.showInviteDiv = ss.getProjectSetting('allowInviteAFriend') || $scope.canCreateUsers();
 		};
 		
 		$rootScope.$on('$viewContentLoaded', function (event, next, current) {
