@@ -220,6 +220,10 @@ class RightsHelper
 			case 'project_list_dto':
 			case 'activity_list_dto':
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW_OWN);
+
+			case 'session_getSessionData':
+				// Are there any circumstances where this should be denied? Should this just be "return true;"?
+				return $this->userHasSiteRight(Domain::USERS + Operation::VIEW_OWN);
 				
 				
 			// LanguageForge (lexicon)
