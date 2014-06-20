@@ -146,6 +146,17 @@ angular.module('bellows.services', ['jsonRpc'])
 		return false;
 	};
 	
+	this.getSetting = function(settings, key) {
+		if (settings) {
+			return settings[key];
+		} else {
+			return null; // Or undefined? Or false?
+		}
+	};
+	this.getProjectSetting = function(key) {
+		return this.getSetting($window.session.projectSettings, key);
+	};
+
 	this.session = function() {
 		return $window.session;
 	};
@@ -153,7 +164,15 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.getCaptchaSrc = function(callback) {
 		jsonRpc.call('get_captcha_src', [], callback);
 	};
-	
+
+	this.refresh = function(callback) {
+		jsonRpc.connect('/api/sf');
+		jsonRpc.call('session_getSessionData', [], function(newSessionData) {
+			$window.session = newSessionData;
+			(callback || angular.noop)();
+		});
+	};
+
 }])
 .service('sfchecksLinkService', function() {
 	this.href = function(url, text) {
