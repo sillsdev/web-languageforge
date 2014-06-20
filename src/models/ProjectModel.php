@@ -39,6 +39,7 @@ class ProjectModel extends \models\mapper\MapperModel
 			$this->themeName = 'default';
 		}
 		$this->allowAudioDownload = true;
+		$this->allowInviteAFriend = true;
 		$this->interfaceLanguageCode = 'en';
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
@@ -194,6 +195,19 @@ class ProjectModel extends \models\mapper\MapperModel
 		}
 		return $result;
 	}
+
+	/**
+	 * Returns the "public" settings of this project (the ones that everyone
+	 * is allowed to see, with no security concerns)
+	 * Base classes should expand on this to add more settings
+	 */
+	public function getPublicSettings() {
+		$settings = array(
+			"allowAudioDownload" => $this->allowAudioDownload,
+			"allowInviteAFriend" => $this->allowInviteAFriend,
+		);
+		return $settings;
+	}
 	
 	/**
 	 * 
@@ -273,6 +287,12 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public $allowAudioDownload;
 
+	/**
+	 * Flag to indicate if this project allows users to invite a friend
+	 * @var boolean
+	 */
+	public $allowInviteAFriend;
+	
 	/**
 	 * @var ProjectUserPropertiesSettings
 	 */
