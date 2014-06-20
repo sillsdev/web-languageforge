@@ -395,8 +395,8 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
                                        function($scope, textService, $routeParams, $location) {
 	$scope.exportConfig = {
 		'textId': $routeParams.textId,
-		'tagEditorVisible' : false,
 		'exportComments' : false,
+		'exportFlagged' : true,
 		'tags' : []
 	};
 	

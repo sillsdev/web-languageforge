@@ -8,10 +8,8 @@ use models\QuestionModel;
 use models\AnswerModel;
 use models\CommentModel;
 
-
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestParatextExport extends UnitTestCase {
@@ -22,7 +20,7 @@ class TestParatextExport extends UnitTestCase {
 		$e->clean();
 	}
 	
-	function testExportCommentsForText_NoTagsSelected_ExportAll() {
+	function testExportCommentsForText_ExportAll_AllExported() {
 		$e = new MongoTestEnvironment();
 		
 		$project = $e->createProject(SF_TESTPROJECT);
@@ -66,19 +64,17 @@ class TestParatextExport extends UnitTestCase {
 		
 		$params = array(
 			'textId' => $textId,
-			'tags' => array(),
-			'username' => 'Joe User',
-			'exportComments' => true
+			'exportComments' => true,
+			'exportFlagged' => false,
+			'tags' => array()
 		);
 		$download = ParatextExport::exportCommentsForText($project->id->asString(), $textId, $params);
 		
 		$this->assertPattern('/<Contents>first comment \(by user1/', $download['xml']);
 		$this->assertPattern('/\(Tags: export, to review\) \(10 Votes\)<\/Contents>/', $download['xml']);
-		
-		
 	}
 	
-	function testExportCommentsForText_TagsSelected_ExportSubset() {
+	function testExportCommentsForText_OnlyExportFlagged_OnlyFlaggedExported() {
 		$e = new MongoTestEnvironment();
 		
 		$project = $e->createProject(SF_TESTPROJECT);
@@ -106,6 +102,7 @@ class TestParatextExport extends UnitTestCase {
 		$answer->score = 10;
 		$answer->userRef->id = $user1Id;
 		$answer->tags->exchangeArray(array('export', 'to review'));
+		$answer->isToBeExported = true;
 		$answerId = $question->writeAnswer($answer);
 		
 		// Then to add an answer to a question
@@ -114,6 +111,7 @@ class TestParatextExport extends UnitTestCase {
 		$answer->score = 2;
 		$answer->userRef->id = $user2Id;
 		$answer->tags->exchangeArray(array('to review'));
+		$answer->isToBeExported = false;
 		$answerId = $question->writeAnswer($answer);
 		
 		// Then to add an answer to a question
@@ -121,13 +119,14 @@ class TestParatextExport extends UnitTestCase {
 		$answer->content = "third answer - very very very very long";
 		$answer->userRef->id = $user3Id;
 		$answer->tags->exchangeArray(array('export'));
+		$answer->isToBeExported = true;
 		$answerId = $question->writeAnswer($answer);
 		
 		$params = array(
 			'textId' => $textId,
-			'tags' => array('export'),
-			'username' => 'Joe User',
-			'exportComments' => true
+			'exportComments' => true,
+			'exportFlagged' => true,
+			'tags' => array()
 		);
 		$download = ParatextExport::exportCommentsForText($project->id->asString(), $textId, $params);
 		//echo "<pre>" . print_r($download) . "</pre>";
