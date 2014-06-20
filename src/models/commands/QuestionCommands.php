@@ -124,7 +124,7 @@ class QuestionCommands
 			$answer->userRef->id = $userId;
 		}
 		if (array_key_exists('textHighlight', $answerJson)) {
-			$answer->textHighlight = $answerJson['answerTextHighlight'];
+			$answer->textHighlight = $answerJson['textHighlight'];
 		}
 		$answerId = $question->writeAnswer($answer);
 		
