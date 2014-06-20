@@ -197,7 +197,6 @@ class RightsHelper
 			case 'project_create':
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 			
-				// TODO: refactor these permissions once questionTemplates are being properly stored on the project
 			case 'questionTemplate_update':
 				return $this->userHasProjectRight(Domain::TEMPLATES + Operation::EDIT);
 				
