@@ -23,7 +23,11 @@
 	"testProjectName"  : "Test Project",
 	"testProjectTheme" : "default",
 	"testProjectCode"  : "test_project",
+	"testProjectAllowInvites" : false,
 	"otherProjectName" : "Other Project for Testing",
+	"otherProjectTheme": "simple",
+	"otherProjectCode" : "other_project",
+	"otherProjectAllowInvites": true,
 	"thirdProjectName" : "new kid on the block",
 
 	"testText1Title"   : "Chapter 3",
