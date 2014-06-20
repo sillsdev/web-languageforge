@@ -56,7 +56,6 @@ class TestSessionCommands extends UnitTestCase {
 		$e = new SessionTestEnvironment();
 		$e->create();
 		$data = SessionCommands::getSessionData($e->projectId, $e->userId);
-		print_r($data); // TODO: Remove when done writing this test
 
 		// Session data should contain a userId and projectId
 		$this->assertTrue(array_key_exists('userId', $data));
