@@ -13,6 +13,7 @@ use libraries\scriptureforge\sfchecks\Email;
 use models\commands\ActivityCommands;
 use models\commands\MessageCommands;
 use models\commands\ProjectCommands;
+use models\commands\SessionCommands;
 use models\commands\QuestionCommands;
 use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
@@ -255,6 +256,16 @@ class Sf
 	public function project_usersDto() {
 		return ProjectCommands::usersDto($this->_projectId);
 	}
+
+
+	//---------------------------------------------------------------
+	// SESSION API
+	//---------------------------------------------------------------
+
+	public function session_getSessionData() {
+		return SessionCommands::getSessionData($this->_projectId, $this->_userId);
+	}
+	
 	
 	
 	//---------------------------------------------------------------
