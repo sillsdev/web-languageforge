@@ -10,23 +10,19 @@ require_once 'secure_base.php';
 class App extends Secure_base {
 	
 	public function view($app = 'main', $projectId = '') {
-		$appFolder = "angular-app/" . $this->site . "/$app";
+		$appFolder = "angular-app/" . $this->website->base . "/$app";
 		if (!file_exists($appFolder)) {
 			$appFolder = "angular-app/bellows/apps/$app";
 			if (!file_exists($appFolder)) {
-				show_404($this->site); // this terminates PHP
+				show_404($this->website->base); // this terminates PHP
 			}
 		}
 		if ($projectId == 'favicon.ico') { $projectId = ''; }
 	
 		$data = array();
 		$data['appName'] = $app;
-		$data['site'] = $this->site;
+		$data['baseSite'] = $this->website->base; // used to add the right minified JS file
 		$data['appFolder'] = $appFolder;
-		
-		// add projectId to the session
-		if ($projectId != '') {
-		}
 		
 		// User Id
 		$sessionData = array();
@@ -44,7 +40,7 @@ class App extends Secure_base {
 			$project = ProjectModel::getById($projectId);
 			$sessionData['userProjectRights'] = $project->getRightsArray($sessionData['userId']);
 		}
-		$sessionData['site'] = $this->site;
+		$sessionData['baseSite'] = $this->website->base;
 		
 		// File Size
 		$postMax = self::fromValueWithSuffix(ini_get("post_max_size"));
@@ -71,7 +67,7 @@ class App extends Secure_base {
 		self::addCssFiles("angular-app/bellows/css", $data['cssFiles']);
 		self::addCssFiles($appFolder, $data['cssFiles']);
 
-		$data['title'] = $this->site;
+		$data['title'] = $this->domain;
 		
 		$this->renderPage("angular-app", $data);
 	}

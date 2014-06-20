@@ -35,7 +35,7 @@ window.session = <?php echo $jsonSession; ?>;
 	
 
 <?php if (SF_USE_MINIFIED_JS): ?>
-	<script src="/js/lib/<?php echo $site; ?>.min.js"></script>
+	<script src="/js/lib/<?php echo $baseSite; ?>.min.js"></script>
 <?php else: ?>
 	<?php foreach($jsFiles as $filename): ?>
 	<script src="/<?php echo $filename; ?>"></script>

@@ -33,7 +33,7 @@ class LfProjectList_UserModel extends ProjectList_UserModel
 	 */
 	function readAll() {
 		$query = array('siteName' => array('$in' => array(Website::LANGUAGEFORGE)));
-		$fields = array('projectname', 'appName', 'themeName', 'siteName');
+		$fields = array('projectName', 'appName', 'siteName');
 		return $this->_mapper->readList($this, $query, $fields);
 	}
 	
@@ -43,7 +43,7 @@ class LfProjectList_UserModel extends ProjectList_UserModel
 	 */
 	function readUserProjects($userId) {
 		$query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array(Website::LANGUAGEFORGE)));
-		$fields = array('projectname', 'appName', 'themeName', 'siteName');
+		$fields = array('projectName', 'appName', 'siteName');
 		return $this->_mapper->readList($this, $query, $fields);
 	}
 	

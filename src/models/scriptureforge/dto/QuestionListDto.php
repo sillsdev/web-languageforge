@@ -35,7 +35,7 @@ class QuestionListDto
 		$data['rights'] = RightsHelper::encode($user, $project);
 		$data['entries'] = array();
 		$data['project'] = array(
-				'name' => $project->projectname,
+				'name' => $project->projectName,
 				'allowAudioDownload' => $project->allowAudioDownload,
 				'id' => $projectId);
 		$data['text'] = JsonEncoder::encode($text);

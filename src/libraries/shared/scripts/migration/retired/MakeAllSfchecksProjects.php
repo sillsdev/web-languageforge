@@ -24,7 +24,7 @@ class MakeAllSfchecksProjects {
 			if ($project->siteName == '') {
 				$sfproject = new SfchecksProjectModel($projectId);
 				$sfproject->themeName = "jamaicanpsalms";
-				$message .= "Changed the " . $sfproject->projectname . " to be a sfchecks/scriptureforge project with jamaican psalms theme\n";
+				$message .= "Changed the " . $sfproject->projectName . " to be a sfchecks/scriptureforge project with jamaican psalms theme\n";
 				if (!$testMode) {
 					$sfproject->write();
 				}

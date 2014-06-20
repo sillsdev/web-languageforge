@@ -91,7 +91,7 @@ class TestApiCrud extends UnitTestCase {
 		// Read
 		$result = ProjectCommands::readProject($id);
 		$this->assertNotNull($result['id']);
-		$this->assertEqual(SF_TESTPROJECT, $result['projectname']);
+		$this->assertEqual(SF_TESTPROJECT, $result['projectName']);
 		
 		// Update
 		$result['language'] = 'AnotherLanguage';

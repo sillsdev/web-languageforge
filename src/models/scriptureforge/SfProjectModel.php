@@ -13,7 +13,6 @@ class SfProjectModel extends ProjectModel {
 	
 	public function __construct($id = '') {
 		parent::__construct($id);
-		$this->siteName = Website::SCRIPTUREFORGE;
 	}
 }
 ?>

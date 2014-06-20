@@ -53,7 +53,7 @@ class TestProjectCommands extends UnitTestCase {
 		$projectUser = $sameProject->listUsers()->entries[0];
 		$this->assertEqual($projectUser['name'], "Existing Name");
 		$userProject = $updatedUser->listProjects(Website::SCRIPTUREFORGE)->entries[0];
-		$this->assertEqual($userProject['projectname'], SF_TESTPROJECT);
+		$this->assertEqual($userProject['projectName'], SF_TESTPROJECT);
 	}
 	
 	function testUpdateUserRole_JoinTwice_JoinedOnce() {
@@ -157,11 +157,11 @@ class TestProjectCommands extends UnitTestCase {
 		
 		// each user in project, project has each user
 		$user1Project = $otherUser1->listProjects(Website::SCRIPTUREFORGE)->entries[0];
-		$this->assertEqual($user1Project['projectname'], SF_TESTPROJECT);
+		$this->assertEqual($user1Project['projectName'], SF_TESTPROJECT);
 		$user2Project = $otherUser1->listProjects(Website::SCRIPTUREFORGE)->entries[0];
-		$this->assertEqual($user2Project['projectname'], SF_TESTPROJECT);
+		$this->assertEqual($user2Project['projectName'], SF_TESTPROJECT);
 		$user3Project = $otherUser1->listProjects(Website::SCRIPTUREFORGE)->entries[0];
-		$this->assertEqual($user3Project['projectname'], SF_TESTPROJECT);
+		$this->assertEqual($user3Project['projectName'], SF_TESTPROJECT);
 		$projectUser1 = $otherProject->listUsers()->entries[0];
 		$this->assertEqual($projectUser1['username'], "user1name");
 		$projectUser2 = $otherProject->listUsers()->entries[1];

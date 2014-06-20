@@ -53,7 +53,7 @@ class LexProjectCommands {
 		$newDBName = $project->databaseName();
 		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
 			if (MongoStore::hasDB($newDBName)) {
-				throw new \Exception("New project name " . $projectJson->projectname . " already exists. Not renaming.");
+				throw new \Exception("New project name " . $projectJson->projectName . " already exists. Not renaming.");
 			}
 			MongoStore::renameDB($oldDBName, $newDBName);
 		}
