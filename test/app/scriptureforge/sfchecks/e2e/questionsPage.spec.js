@@ -37,16 +37,16 @@ describe('the questions list page (AKA the text page)', function() {
 			});
 		});
 
-		it('cannot add new questions', function() {
-			expect(textPage.addNewBtn.isDisplayed()).toBeFalsy();
-		});
-
-		it('cannot delete questions', function() {
+		it('cannot archive questions', function() {
 			expect(textPage.archiveButton.isDisplayed()).toBeFalsy();
 		});
 
 		it('cannot create templates', function() {
 			expect(textPage.makeTemplateBtn.isDisplayed()).toBeFalsy();
+		});
+
+		it('cannot add new questions', function() {
+			expect(textPage.addNewBtn.isDisplayed()).toBeFalsy();
 		});
 
 		it('cannot edit text settings', function() {
@@ -114,7 +114,7 @@ describe('the questions list page (AKA the text page)', function() {
 
 		it('can edit text settings', function() {
 			// The text settings button should both exist and be displayed for a manager
-			expect(textPage.textSettingsBtn.isPresent()).toBeTruthy(); // Why falsy? Shouldn't it be truthy?
+			expect(textPage.textSettingsBtn.isPresent()).toBeTruthy();
 			expect(textPage.textSettingsBtn.isDisplayed()).toBeTruthy();
 		});
 
