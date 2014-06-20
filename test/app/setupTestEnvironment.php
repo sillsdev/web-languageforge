@@ -76,6 +76,7 @@ $testProject = ProjectCommands::createProject(
 );
 $testProjectModel = new ProjectModel($testProject);
 $testProjectModel->projectCode = $constants['testProjectCode'];
+$testProjectModel->allowInviteAFriend = $constants['testProjectAllowInvites'];
 $testProjectModel->write();
 
 $otherProject = ProjectCommands::createProject(
@@ -84,6 +85,10 @@ $otherProject = ProjectCommands::createProject(
 	$adminUser,
 	Website::SCRIPTUREFORGE
 );
+$otherProjectModel = new ProjectModel($otherProject);
+$otherProjectModel->projectCode = $constants['otherProjectCode'];
+$otherProjectModel->allowInviteAFriend = $constants['otherProjectAllowInvites'];
+$otherProjectModel->write();
 
 ProjectCommands::updateUserRole($testProject, $managerUser, ProjectRoles::MANAGER);
 ProjectCommands::updateUserRole($testProject, $memberUser, ProjectRoles::CONTRIBUTOR);
