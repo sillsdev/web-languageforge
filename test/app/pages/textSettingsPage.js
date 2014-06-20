@@ -34,6 +34,15 @@ var SfTextSettingsPage = function() {
 	};
 	
 	this.paratextExportTab = {
+		exportAnswers:	element(by.id('exportAnswers')),
+		exportComments:	element(by.model('exportConfig.exportComments')),
+		exportFlagged:	element(by.model('exportConfig.exportFlagged')),
+		prepareButton:	element(by.partialButtonText('Prepare')),
+		noExportMsg:	element(by.id('noExportMsg')),
+		
+		answerCount:	element(by.binding('download.answerCount')),
+		commentCount:	element(by.binding('download.commentCount')),
+		downloadButton:	element(by.partialButtonText('Download')),
 	};
 	
 };
