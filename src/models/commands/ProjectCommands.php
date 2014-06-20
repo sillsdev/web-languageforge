@@ -51,22 +51,20 @@ class ProjectCommands
 	 * @param string $projectName
 	 * @param string $appName
 	 * @param string $userId
-	 * @param string $site
+	 * @param Website $website
 	 * @return string - projectId
 	 */
-	public static function createProject($projectName, $appName, $userId, $site) {
-		if ($site == Website::SCRIPTUREFORGE) {
+	public static function createProject($projectName, $appName, $userId, $website) {
+		if ($website->base == Website::SCRIPTUREFORGE) {
 			$project = new SfProjectModel();
-			$project->projectname = $projectName;
-			$project->appName = $appName;
-			$projectId = $project->write();
 			
-		} elseif ($site == Website::LANGUAGEFORGE) {
+		} elseif ($website->base == Website::LANGUAGEFORGE) {
 			$project = new LfProjectModel();
-			$project->projectname = $projectName;
-			$project->appName = $appName;
-			$projectId = $project->write();
 		}
+		$project->projectName = $projectName;
+		$project->appName = $appName;
+		$project->siteName = $website->domain;
+		$projectId = $project->write();
 		ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::MANAGER);
 		return $projectId;
 	}

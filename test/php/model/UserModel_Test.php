@@ -112,18 +112,16 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(
 			array(
 				array(
-		          'projectname' => 'p1',
+		          'projectName' => 'p1',
 		          'id' => $p1,
 				  'appName' => 'sfchecks',
-				  'siteName' => Website::SCRIPTUREFORGE,
-				  'themeName' => 'default'
+				  'siteName' => Website::SCRIPTUREFORGE
 				),
 				array(
-		          'projectname' => 'p2',
+		          'projectName' => 'p2',
 		          'id' => $p2,
 				  'appName' => 'sfchecks',
-				  'siteName' => Website::SCRIPTUREFORGE,
-				  'themeName' => 'default'
+				  'siteName' => Website::SCRIPTUREFORGE
 				)
 			), $result->entries
 		);

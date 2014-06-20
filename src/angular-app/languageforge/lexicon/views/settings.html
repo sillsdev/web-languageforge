@@ -1,5 +1,5 @@
 <div class="container" data-ng-cloak data-ng-controller="SettingsCtrl">
-	<h2 translate="{projectName} Settings" translate-values="{projectName: project.projectname}"></h2>
+	<h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2>
 	<tabset>
 		<tab heading="{{ 'Project Properties' | translate }}">
 			<form class="well" data-ng-submit="updateProject()">
@@ -7,7 +7,7 @@
 					<div class="control-group">
 						<label class="control-label" for="projName" translate="Project Name"></label>
 						<div class="controls">
-							<input id="projName" type="text" placeholder="project name" data-ng-model="project.projectname" />
+							<input id="projName" type="text" placeholder="project name" data-ng-model="project.projectName" />
 						</div>
 						<label class="control-label" for="language" translate="Default Interface Language"></label>
 						<div class="controls">

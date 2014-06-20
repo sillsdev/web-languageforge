@@ -33,7 +33,7 @@ class SfProjectList_UserModel extends ProjectList_UserModel
 	 */
 	function readAll() {
 		$query = array('siteName' => array('$in' => array(Website::SCRIPTUREFORGE)));
-		$fields = array('projectname', 'appName', 'themeName', 'siteName');
+		$fields = array('projectName', 'appName', 'themeName', 'siteName');
 		
 		return $this->_mapper->readList($this, $query, $fields);
 	}
@@ -44,7 +44,7 @@ class SfProjectList_UserModel extends ProjectList_UserModel
 	 */
 	function readUserProjects($userId) {
 		$query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array(Website::SCRIPTUREFORGE)));
-		$fields = array('projectname', 'appName', 'themeName', 'siteName');
+		$fields = array('projectName', 'appName', 'themeName', 'siteName');
 
 		return $this->_mapper->readList($this, $query, $fields);
 	}

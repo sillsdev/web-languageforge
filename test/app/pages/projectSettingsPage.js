@@ -58,7 +58,7 @@ var SfProjectSettingsPage = function() {
 	};
 	
 	this.propertiesTab = {
-		name:		element(by.model('project.projectname')),
+		name:		element(by.model('project.projectName')),
 		theme:		element(by.selectedOption('project.themeName')),
 		code:		element(by.model('project.projectCode')),
 		featured:	element(by.model('project.featured')),

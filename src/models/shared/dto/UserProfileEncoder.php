@@ -25,7 +25,7 @@ class UserProfileEncoder extends JsonEncoder {
 					try {
 						$projectModel = new ProjectModel($id->asString());
 						$projectDto['id'] = $id->asString();
-						$projectDto['name'] = $projectModel->projectname;
+						$projectDto['name'] = $projectModel->projectName;
 						$projectDto['userProperties'] = self::encode($projectModel->userProperties);
 					} catch (\Exception $e) {
 						

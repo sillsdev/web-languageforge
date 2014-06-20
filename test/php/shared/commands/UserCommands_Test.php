@@ -86,7 +86,7 @@ class TestUserCommands extends UnitTestCase {
 		$projectUser = $sameProject->listUsers()->entries[0];
 		$this->assertEqual($projectUser['username'], "username");
 		$userProject = $user->listProjects(Website::SCRIPTUREFORGE)->entries[0];
-		$this->assertEqual($userProject['projectname'], SF_TESTPROJECT);
+		$this->assertEqual($userProject['projectName'], SF_TESTPROJECT);
 	}
 	
 	function testRegister_WithProjectCode_UserInProjectAndProjectHasUser() {
@@ -262,7 +262,7 @@ class TestUserCommands extends UnitTestCase {
 		$project->write();
 		$delivery = new MockUserCommandsDelivery();
 	
-		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $project->id->asString(), 'someProjectCode.scriptureforge.org', $delivery);
+		$toUserId = UserCommands::sendInvite($project->id->asString(), $inviterUserId, $toEmail, $delivery);
 	
 		// What's in the delivery?
 		$toUser = new UserModel($toUserId);
@@ -274,39 +274,6 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertPattern('/Test Project/', $delivery->content);
 		$this->assertPattern('/' . $toUser->validationKey . '/', $delivery->content);
 	}
-	
-	function testSendInvite_NoProjectContext_ThrowException() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	
-		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
-		$toEmail = 'someone@example.com';
-		$projectId = '';
-		$hostName = 'someProjectCode.scriptureforge.org';
-		$delivery = new MockUserCommandsDelivery();
-	
-		$e->inhibitErrorDisplay();
-		$this->expectException(new \Exception("Cannot send invitation for unknown project 'someProjectCode'"));
-		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $projectId, $hostName, $delivery);
-		$e->restoreErrorDisplay();
-	}
-	
-	function testSendInvite_NoProjectContextNoProjectCode_ThrowException() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	
-		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
-		$toEmail = 'someone@example.com';
-		$projectId = '';
-		$hostName = 'scriptureforge.org';
-		$delivery = new MockUserCommandsDelivery();
-	
-		$e->inhibitErrorDisplay();
-		$this->expectException(new \Exception("Sending an invitation without a project context is not supported."));
-		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $projectId, $hostName, $delivery);
-		$e->restoreErrorDisplay();
-	}
-	
 }
 
 ?>

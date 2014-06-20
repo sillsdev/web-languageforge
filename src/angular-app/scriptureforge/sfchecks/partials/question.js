@@ -98,7 +98,7 @@ angular.module(
 				breadcrumbService.set('top',
 						[
 						 {href: '/app/projects', label: 'My Projects'},
-						 {href: linkService.project(), label: $scope.project.projectname},
+						 {href: linkService.project(), label: $scope.project.projectName},
 						 {href: linkService.text($routeParams.textId), label: $scope.text.title},
 						 {href: linkService.question($routeParams.textId, $routeParams.questionId), label: $scope.question.title},
 						]

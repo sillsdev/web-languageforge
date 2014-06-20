@@ -33,7 +33,7 @@ class TestProjectModel extends UnitTestCase {
 	function testWrite_ReadBackSame() {
 		$model = new ProjectModel();
 		$model->language = "SomeLanguage";
-		$model->projectname = "SomeProject";
+		$model->projectName = "SomeProject";
 		//$model->users->refs = array('1234');
 		$id = $model->write();
 		$this->assertNotNull($id);
@@ -42,7 +42,7 @@ class TestProjectModel extends UnitTestCase {
 		$otherModel = new ProjectModel($id);
 		$this->assertEqual($id, $otherModel->id->asString());
 		$this->assertEqual('SomeLanguage', $otherModel->language);
-		$this->assertEqual('SomeProject', $otherModel->projectname);
+		$this->assertEqual('SomeProject', $otherModel->projectName);
 		//$this->assertEqual(array('1234'), $otherModel->users->refs);
 		
 		$this->_someProjectId = $id;
@@ -190,7 +190,7 @@ class TestProjectModel extends UnitTestCase {
 	
 	function testDatabaseName_Ok() {
 		$project = new ProjectModel();
-		$project->projectname = 'Some Project';
+		$project->projectName = 'Some Project';
 		$result = $project->databaseName();
 		$this->assertEqual('sf_some_project', $result);
 	}

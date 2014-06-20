@@ -44,6 +44,20 @@ class ProjectModel extends \models\mapper\MapperModel
 	}
 	
 	/**
+	 * 
+	 * @param Website $website
+	 * @return ProjectModel
+	 */
+	public static function getDefaultProject($website) {
+		$project = new ProjectModel();
+		if ($project->readByProperties(array('projectName' => $website->defaultProjectName, 'siteName' => $website->domain))) {
+			return ProjectModel::getById($project->id->asString());
+		} else {
+			return null;
+		}
+	}
+	
+	/**
 	 * @param string $domainName
 	 * @return \models\ProjectModel
 	 */
@@ -90,7 +104,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @see \models\mapper\MapperModel::databaseName()
 	 */
 	public function databaseName() {
-		$name = strtolower($this->projectname);
+		$name = strtolower($this->projectName);
 		$name = str_replace(' ', '_', $name);
 		return 'sf_' . $name;
 	}
@@ -236,7 +250,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	/**
 	 * @var string
 	 */
-	public $projectname;
+	public $projectName;
 	
 	/**
 	 * Web app interface language code
@@ -277,12 +291,6 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @var ProjectUserPropertiesSettings
 	 */
 	public $userProperties;
-	
-	/**
-	 * specifies the theme name for this project e.g. jamaicanpsalms || default
-	 * @var string
-	 */
-	public $themeName;
 	
 	/**
 	 * Specifies which site this project belongs to.  e.g. scriptureforge || languageforge  cf. Website class
