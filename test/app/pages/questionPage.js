@@ -65,6 +65,14 @@ var SfQuestionPage = function() {
 		}
 	};
 	
+	// Flag for Export
+	this.answers.flags = {};
+	this.answers.flags.lastButtonSet = function () {
+		return page.answers.last().$('.answer').findElement(by.css('.icon-flag'));
+	};
+	this.answers.flags.lastButtonClear = function () {
+		return page.answers.last().$('.answer').findElement(by.css('.icon-flag-alt'));		
+	};
 
 	// Private method to handle the upvote or downvote of an answer.
 	// index: index of the answers.list to vote
@@ -135,6 +143,5 @@ var SfQuestionPage = function() {
 		
 	};
 };
-
 
 module.exports = new SfQuestionPage;

@@ -79,8 +79,8 @@
 					<a data-ng-show="rightsEditResponse(answer.userRef.userid) && !questionIsClosed()" class="btn-link" data-ng-click="showAnswerEditor(answerId)">edit</a>&nbsp;&nbsp;
 					<a data-ng-show="rightsDeleteResponse(answer.userRef.userid) && !questionIsClosed()" data-ng-click="answerDelete(answerId)" class="btn-link">delete</a>&nbsp;&nbsp;
 					<a data-ng-show="rightsExport() && !questionIsClosed()" data-ng-click="flagForExport(answer)" class="btn-link">
-						<i data-ng-if="answer.isToBeExported" class="icon-flag" data-tooltip="Flagged for export" style="color:red"></i>
-						<i data-ng-if="!answer.isToBeExported" class="icon-flag-alt" data-tooltip="Click to flag for export"></i>
+						<i data-ng-show="answer.isToBeExported" class="icon-flag" data-tooltip="Flagged for export" style="color:red"></i>
+						<i data-ng-show="!answer.isToBeExported" class="icon-flag-alt" data-tooltip="Click to flag for export"></i>
 					</a>
 					<ng-switch on="answerEditorVisible(answerId)">
 					<form data-ng-submit="editAnswer(editedAnswer)" data-ng-switch-when="true">
