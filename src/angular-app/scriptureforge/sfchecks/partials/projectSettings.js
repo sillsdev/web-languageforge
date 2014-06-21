@@ -232,6 +232,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			projectCode: $scope.project.projectCode,
 			featured: $scope.project.featured,
 			allowAudioDownload: $scope.project.allowAudioDownload,
+			allowInviteAFriend: $scope.project.allowInviteAFriend,
 		};
 
 		sfchecksProjectService.update(settings, function(result) {

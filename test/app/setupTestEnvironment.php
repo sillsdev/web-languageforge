@@ -1,7 +1,5 @@
 <?php
 
-use models\commands\QuestionTemplateCommands;
-
 require_once('e2eTestConfig.php');
 
 // put the test config into place
@@ -12,6 +10,7 @@ use models\commands\ProjectCommands;
 use models\commands\UserCommands;
 use models\commands\TextCommands;
 use models\commands\QuestionCommands;
+use models\commands\QuestionTemplateCommands;
 use models\shared\rights\ProjectRoles;
 use models\shared\rights\SiteRoles;
 use models\scriptureforge\SfProjectModel;
@@ -77,6 +76,7 @@ $testProject = ProjectCommands::createProject(
 );
 $testProjectModel = new ProjectModel($testProject);
 $testProjectModel->projectCode = $constants['testProjectCode'];
+$testProjectModel->allowInviteAFriend = $constants['testProjectAllowInvites'];
 $testProjectModel->write();
 
 $otherProject = ProjectCommands::createProject(
@@ -85,6 +85,10 @@ $otherProject = ProjectCommands::createProject(
 	$adminUser,
 	Website::SCRIPTUREFORGE
 );
+$otherProjectModel = new ProjectModel($otherProject);
+$otherProjectModel->projectCode = $constants['otherProjectCode'];
+$otherProjectModel->allowInviteAFriend = $constants['otherProjectAllowInvites'];
+$otherProjectModel->write();
 
 ProjectCommands::updateUserRole($testProject, $managerUser, ProjectRoles::MANAGER);
 ProjectCommands::updateUserRole($testProject, $memberUser, ProjectRoles::CONTRIBUTOR);
