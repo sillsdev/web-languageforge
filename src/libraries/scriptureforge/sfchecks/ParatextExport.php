@@ -28,7 +28,7 @@ class ParatextExport
 		foreach ($questionlist->entries as $question) {
 			if (! array_key_exists('isArchived', $question) || ! $question['isArchived']) {
 				foreach ($question['answers'] as $answerId => $answer) {
-					if (! $params['exportFlagged'] || $answer['isToBeExported']) { // if the answer is tagged with an export tag
+					if (! $params['exportFlagged'] || (array_key_exists('isToBeExported', $answer) && $answer['isToBeExported'])) { // if the answer is tagged with an export tag
 						$dl['answerCount']++;
 						$dl['xml'] .= self::makeCommentXml($answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
 						if ($params['exportComments']) {
