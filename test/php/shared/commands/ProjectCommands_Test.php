@@ -186,6 +186,31 @@ class TestProjectCommands extends UnitTestCase {
 		$this->assertEqual($sameUser3->listProjects(Website::SCRIPTUREFORGE)->count, 0);
 	}
 	
+	function testProjectCodeExists_codeExists_true() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$code = 'project1';
+		$project = $e->createProject(SF_TESTPROJECT);
+		$project->projectCode = $code;
+		$project->write();
+		$website = new Website(Website::SCRIPTUREFORGE);
+		
+		$this->assertTrue(ProjectCommands::projectCodeExists($website, $code));
+	}
+	
+	function testProjectCodeExists_codeDoesNotExist_false() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$code = 'project1';
+		$project = $e->createProject(SF_TESTPROJECT);
+		$project->projectCode = $code;
+		$project->write();
+		$website = new Website(Website::SCRIPTUREFORGE);
+		
+		$this->assertFalse(ProjectCommands::projectCodeExists($website, 'randomcode'));
+	}
 }
 
 ?>

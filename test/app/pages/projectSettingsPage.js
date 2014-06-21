@@ -59,7 +59,6 @@ var SfProjectSettingsPage = function() {
 	
 	this.propertiesTab = {
 		name:		element(by.model('project.projectName')),
-		theme:		element(by.selectedOption('project.themeName')),
 		code:		element(by.model('project.projectCode')),
 		featured:	element(by.model('project.featured')),
 		button:		element(by.id('project_properties_save_button'))

@@ -17,6 +17,12 @@ class Website {
 	
 	/**
 	 * 
+	 * @var string
+	 */
+	public $name;
+	
+	/**
+	 * 
 	 * @var string - the theme name of this website
 	 */
 	public $theme;
@@ -37,7 +43,7 @@ class Website {
 	 * 
 	 * @var string - the name of the default project for this site, if any
 	 */
-	public $defaultProjectName;
+	public $defaultProjectCode;
 	
 	/**
 	 * 
@@ -82,12 +88,13 @@ class Website {
 	 * @param string $theme - theme name
 	 * @param bool $ssl - whether or not to force HTTPS for this website
 	 */
-	public function __construct($domain, $base = self::SCRIPTUREFORGE, $theme = 'default', $ssl = false, $defaultProjectName = '') {
+	public function __construct($domain, $base = self::SCRIPTUREFORGE, $theme = 'default', $ssl = false, $defaultProjectCode = '') {
 		$this->domain = $domain;
+		$this->name = $domain;
 		$this->base = $base;
 		$this->theme = $theme;
 		$this->ssl = $ssl;
-		$this->defaultProjectName = $defaultProjectName;
+		$this->defaultProjectCode = $defaultProjectCode;
 	}
 	
 	public static function get($hostname = '') {
@@ -159,6 +166,19 @@ class Website {
 		return array_pop($uriParts);
 	}
 	
+	public function baseUrl() {
+		$protocol = ($this->ssl) ? "https" : "http";
+		return $protocol . "://" . $this->domain;
+	}
+	
+	public function templatePath($templateFile) {
+		$path = APPPATH . "views/" . $this->base . '/' . $this->theme . "/$templateFile";
+		if (!file_exists($path)) {
+			$path = APPPATH . "views/" . $this->base . "/default/$templateFile";
+		}
+		return $path;
+	}
+	
 	public static function getSiteName($hostname = '') {
 		if (!$hostname) {
 			$hostname = $_SERVER['HTTP_HOST'];
@@ -177,10 +197,10 @@ class Website {
 	
 	/**
 	 * get an array of available project themes for a base site (scriptureforge or languageforge)
-	 * note: not currently used
 	 * @param string $baseSite
 	 * @return array
 	 */
+	/* note: not currently used
 	public static function getProjectThemeNamesForSite($baseSite = self::SCRIPTUREFORGE) {
 		$themeNames = array();
 		$sitePath = APPPATH . 'views/' . $baseSite;
@@ -194,6 +214,7 @@ class Website {
 		
 		return $themeNames;	
 	}
+	*/
 	
 }
 Website::init();
