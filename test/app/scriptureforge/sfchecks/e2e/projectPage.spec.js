@@ -33,6 +33,7 @@ describe('the project dashboard AKA text list page', function() {
 		});
 
 		it('does not have access to the invite-a-friend button', function() {
+			// Note that the test project has been created with allowInviteAFriend = false
 			expect(projectPage.invite.showFormButton.isDisplayed()).toBe(false);
 		});
 

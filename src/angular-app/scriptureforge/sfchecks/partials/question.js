@@ -4,27 +4,6 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService',
                              function($scope, $routeParams, questionService, ss, breadcrumbService, notice, linkService) {
 	var Q_TITLE_LIMIT = 30;
-	$scope.jqteOptions = {
-		'placeholder': 'Type your answer here. Click "Done" when finished.',
-		'u': false,
-		'indent': false,
-		'outdent': false,
-		'left': false,
-		'center': false,
-		'right': false,
-		'rule': false,
-		'source': false,
-		'link': false,
-		'unlink': false,
-		'fsize': false,
-		'sub': false,
-		'color': false,
-		'format': false,
-		'formats': [
-			['p', 'Normal'],
-			['h4', 'Large']
-		]
-	};
 	$scope.finishedLoading = false;
 	$scope.state = 'stop';
 	$scope.audioReady = false;
