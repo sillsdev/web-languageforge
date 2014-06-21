@@ -330,14 +330,15 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	};
 	
 	$scope.commentDelete = function(answer, commentId) {
-		// console.log('delete ', commentId);
-		questionService.remove_comment(questionId, answer.id, commentId, function(result) {
-			if (result.ok) {
-				notice.push(notice.SUCCESS, "The comment was removed successfully");
-				// Delete locally
-				delete answer.comments[commentId];
-			}
-		});
+		if (window.confirm("Are you sure you want to delete this Comment?")) {
+			questionService.remove_comment(questionId, answer.id, commentId, function(result) {
+				if (result.ok) {
+					notice.push(notice.SUCCESS, "The comment was removed successfully");
+					// Delete locally
+					delete answer.comments[commentId];
+				}
+			});
+		}
 	};
 
 	var afterUpdateAnswer = function(answersDto) {
@@ -408,16 +409,17 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	};
 	
 	$scope.answerDelete = function(answerId) {
-		// console.log('delete ', answerId);
-		questionService.remove_answer(questionId, answerId, function(result) {
-			if (result.ok) {
-				notice.push(notice.SUCCESS, "The answer was removed successfully");
-				// Delete locally
-				delete $scope.question.answers[answerId];
-				// Recalculate answer count as it just changed
-				$scope.question.answerCount = Object.keys($scope.question.answers).length;
-			}
-		});
+		if (window.confirm("Are you sure you want to delete this Answer?")) {
+			questionService.remove_answer(questionId, answerId, function(result) {
+				if (result.ok) {
+					notice.push(notice.SUCCESS, "The answer was removed successfully");
+					// Delete locally
+					delete $scope.question.answers[answerId];
+					// Recalculate answer count as it just changed
+					$scope.question.answerCount = Object.keys($scope.question.answers).length;
+				}
+			});
+		}
 	};
 
 	$scope.selectedText = '';
