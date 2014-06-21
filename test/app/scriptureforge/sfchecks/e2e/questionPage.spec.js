@@ -23,6 +23,12 @@ describe('the question page', function() {
 		it('cannot edit question settings - NYI', function() {
 		});
 
+		it('cannot edit comment - NYI', function() {
+		});
+
+		it('cannot delete comment - NYI', function() {
+		});
+
 		it('cannot tag answer - NYI', function() {
 		});
 
@@ -35,12 +41,6 @@ describe('the question page', function() {
 		it('cannot flag answer for export', function() {
 			expect(page.answers.flags.lastButtonSet().isDisplayed()).toBeFalsy();
 			expect(page.answers.flags.lastButtonClear().isDisplayed()).toBeFalsy();
-		});
-
-		it('cannot edit comment - NYI', function() {
-		});
-
-		it('cannot delete comment - NYI', function() {
 		});
 
 	});
@@ -56,6 +56,12 @@ describe('the question page', function() {
 		});
 
 		it('can edit question settings - NYI', function() {
+		});
+
+		it('can edit comment - NYI', function() {
+		});
+
+		it('can delete comment - NYI', function() {
 		});
 
 		it('can tag answer - NYI', function() {
@@ -75,12 +81,38 @@ describe('the question page', function() {
 			expect(page.answers.flags.lastButtonClear().isDisplayed()).toBeFalsy();
 		});
 
-		it('can edit comment - NYI', function() {
-		});
+		describe('paratext export of flagged answer', function() {
 
-		it('can delete comment - NYI', function() {
+			it('setup: back to Text, click settings, click on tab', function() {
+				browser.navigate().back();		// TODO change to use breadcrumb text link (back has indeterminant finish) IJH 2014-06
+				textPage.textSettingsBtn.click();
+				textSettingsPage.tabs.paratextExport.click();
+			});
+			
+			it('can prepare export for answers flagged for export without comments', function() {
+				expect(textSettingsPage.paratextExportTab.exportAnswers.getAttribute('checked')).toBeTruthy;
+				expect(textSettingsPage.paratextExportTab.exportComments.getAttribute('checked')).toBeFalsy();
+				expect(textSettingsPage.paratextExportTab.exportFlagged.getAttribute('checked')).toBeTruthy;
+				expect(textSettingsPage.paratextExportTab.prepareButton.isPresent()).toBe(true);
+				textSettingsPage.paratextExportTab.prepareButton.click();
+				expect(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
+				expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual("1 answer(s)");
+				expect(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(false);
+				expect(textSettingsPage.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
+			});
+			
+			it('can prepare export for answers flagged for export with comments', function() {
+				textSettingsPage.paratextExportTab.exportComments.click();
+				textSettingsPage.paratextExportTab.prepareButton.click();
+				expect(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
+				expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual("1 answer(s)");
+				expect(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(true);
+				expect(textSettingsPage.paratextExportTab.commentCount.getText()).toEqual("1 comment(s)");
+				expect(textSettingsPage.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
+			});
+			
 		});
-
+		
 	});
 
 	describe('a site admin', function() {
@@ -93,6 +125,12 @@ describe('the question page', function() {
 		});
 
 		it('can edit question settings - NYI', function() {
+		});
+
+		it('can edit comment - NYI', function() {
+		});
+
+		it('can delete comment - NYI', function() {
 		});
 
 		it('can tag answer - NYI', function() {
@@ -110,12 +148,6 @@ describe('the question page', function() {
 			page.answers.flags.lastButtonSet().click();
 			expect(page.answers.flags.lastButtonSet().isDisplayed()).toBeFalsy();
 			expect(page.answers.flags.lastButtonClear().isDisplayed()).toBe(true);
-		});
-
-		it('can edit comment - NYI', function() {
-		});
-
-		it('can delete comment - NYI', function() {
 		});
 
 	});
