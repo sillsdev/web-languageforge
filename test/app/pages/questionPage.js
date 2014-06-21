@@ -7,6 +7,7 @@
 // Note: "delete" is a reserved word, and the functionality will be moved to "archiving" at a later time
 */
 var SfQuestionPage = function() {
+	var util = require('./util.js');
 	var page = this; // For use inside our methods. Necessary when passing anonymous functions around, which lose access to "this".
 	
 	this.answers  = {};
@@ -63,6 +64,9 @@ var SfQuestionPage = function() {
 			//console.log('should delete answer at index ' + index);
 			page.answers.list.get(index).$('.answer').findElement(by.linkText('delete')).click();
 		}
+		util.waitForAlert();
+		var alert = browser.switchTo().alert();
+		alert.accept();
 	};
 	
 	// Flag for Export
@@ -140,8 +144,11 @@ var SfQuestionPage = function() {
 			//console.log('should delete comment at index ' + index);
 			page.comments.list.get(index).findElement(by.linkText('delete')).click();
 		};
-		
+		util.waitForAlert();
+		var alert = browser.switchTo().alert();
+		alert.accept();
 	};
+	
 };
 
 module.exports = new SfQuestionPage;
