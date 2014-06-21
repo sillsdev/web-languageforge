@@ -3,7 +3,7 @@
 use models\ProjectModel;
 
 use models\shared\rights\SiteRoles;
-
+use models\commands\SessionCommands;
 
 require_once 'secure_base.php';
 
@@ -26,32 +26,11 @@ class App extends Secure_base {
 		
 		// add projectId to the session
 		if ($projectId != '') {
-		}
-		
-		// User Id
-		$sessionData = array();
-		$sessionData['userId'] = (string)$this->session->userdata('user_id');
-		
-		// Rights
-		$role = $this->_user->role;
-		if (empty($role)) {
-			$role = SiteRoles::USER;
-		}
-		$sessionData['userSiteRights'] = SiteRoles::getRightsArray($role);
-
-		if ($projectId) {
 			$this->session->set_userdata('projectId', $projectId);
-			$project = ProjectModel::getById($projectId);
-			$sessionData['userProjectRights'] = $project->getRightsArray($sessionData['userId']);
 		}
-		$sessionData['site'] = $this->site;
 		
-		// File Size
-		$postMax = self::fromValueWithSuffix(ini_get("post_max_size"));
-		$uploadMax = self::fromValueWithSuffix(ini_get("upload_max_filesize"));
-		$fileSizeMax = min(array($postMax, $uploadMax));
-		$sessionData['fileSizeMax'] = $fileSizeMax;
-		
+		// Other session data
+		$sessionData = SessionCommands::getSessionData($projectId, (string)$this->session->userdata('user_id'));
 		$jsonSessionData = json_encode($sessionData);
 		$data['jsonSession'] = $jsonSessionData;
 
