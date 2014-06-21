@@ -96,7 +96,7 @@
 					<td></td>
 					<td data-ng-class="{unread: isUnreadComment(comment.id)}">
 						{{comment.content}} - {{comment.userRef.username}} - {{comment.dateCreated | date:mediumdate}}
-						<a data-ng-show="rightsEditResponse(comment.userRef.userid) && !questionIsClosed()" class="btn-link" data-ng-click="showCommentEditor(comment.id)">edit</a>
+						<a data-ng-show="rightsEditResponse(comment.userRef.userid) && !questionIsClosed()" class="btn-link" data-ng-click="showCommentEditor(comment.id)">edit</a>&nbsp;
 						<a data-ng-show="rightsDeleteResponse(comment.userRef.userid) && !questionIsClosed()" data-ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
 						<ng-switch on="commentEditorVisible(comment.id)">
 						<form data-ng-submit="editComment(answerId, answer, editedComment)" data-ng-switch-when="true">
