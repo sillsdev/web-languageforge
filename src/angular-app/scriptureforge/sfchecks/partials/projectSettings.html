@@ -124,12 +124,6 @@
 		<fieldset>
 			<label>Project Name</label>
 			<input type="text" placeholder="project name" data-ng-model="project.projectName"/>
-			<label>Project Theme</label>
-			<div class="control-group">
-				<select required data-ng-model="project.themeName" data-ng-options="themeName for themeName in themeNames">
-					<option value="">-- select theme --</option>
-				</select>
-			</div>
 			<!-- Project Code is not used now that we have themes, however a project page customization would still use this. IJH 2014-06
 			<label>Project Code</label>
 			<input type="text" placeholder="project code" data-ng-model="project.projectCode"/>

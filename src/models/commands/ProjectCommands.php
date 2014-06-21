@@ -186,6 +186,17 @@ class ProjectCommands
 		);
 	}
 	
+	/**
+	 * 
+	 * @param Website $website
+	 * @param string $code
+	 * @return bool
+	 */
+	public static function projectCodeExists($website, $code) {
+		$project = new ProjectModel();
+		return $project->readByProperties(array('projectCode' => $code, 'siteName' => $website->domain));
+	}
+	
 }
 
 ?>

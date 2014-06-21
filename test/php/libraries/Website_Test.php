@@ -33,6 +33,7 @@ class TestWebsite extends UnitTestCase {
 		$this->assertEqual($result, 'scriptureforge');
 	}
 	
+	/* -- currently not in use so commented out cjh 2014-06
 	function testGetProjectThemeNamesForSite_Works() {
 		$themeNames = Website::getProjectThemeNamesForSite('scriptureforge');
 		$this->assertEqual($themeNames[0], 'default');
@@ -41,6 +42,7 @@ class TestWebsite extends UnitTestCase {
 		$themeNames = Website::getProjectThemeNamesForSite('languageforge');
 		$this->assertEqual($themeNames[0], 'default');
 	}
+	*/
 	
 }
 

@@ -170,9 +170,10 @@ class UserCommands {
 	 * @param string $userName
 	 * @param string $projectId
 	 * @param string $currentUserId
+	 * @param Website $website
 	 * @return CreateSimpleDto
 	 */
-	public static function createSimple($userName, $projectId = '', $currentUserId = '') {
+	public static function createSimple($userName, $projectId, $currentUserId, $website) {
 		$user = new UserModel();
 		$user->name = $userName;
 		$user->username = strtolower(str_replace(' ', '.', $user->name));
@@ -190,16 +191,11 @@ class UserCommands {
 		$userWithPassword->setPassword($password);
 		$userWithPassword->write();
 		
-		if ($projectId) {
-			ProjectCommands::updateUserRole($projectId, $userId);
-			
-			if ($currentUserId) {
-				$toUser = new UserModel($currentUserId);
-				$project = new ProjectModel($projectId);
-				Communicate::sendNewUserInProject($toUser, $user->username, $password, $project);
-			}
-		}
-		
+		ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::CONTRIBUTOR);
+		$toUser = new UserModel($currentUserId);
+		$project = new ProjectModel($projectId);
+		Communicate::sendNewUserInProject($toUser, $user->username, $password, $website, $project);
+
 		$dto = new CreateSimpleDto($userId, $password);
 		return $dto->encode();
 	}
@@ -208,12 +204,12 @@ class UserCommands {
 	 * Register a new user
 	 * @param array $params
 	 * @param string $captcha_info
-	 * @param string $siteName
+	 * @param Website $website
 	 * @param IDelivery $delivery
 	 * @throws \Exception
 	 * @return string $userId
 	 */
-	public static function register($params, $captcha_info, $siteName, IDelivery $delivery = null) {
+	public static function register($params, $captcha_info, $website, IDelivery $delivery = null) {
 		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
 			return false;  // captcha does not match
 		}
@@ -239,21 +235,16 @@ class UserCommands {
 		$userPassword->setPassword($params['password']);
 		$userPassword->write();
 
-		// if signup from project page then add user to project
-		$project = null;
-		if ($projectCode) {
-			$project = ProjectModel::createFromDomain($projectCode);
-			if (!$project) {
-				error_log("Error: Could not create project from project code '$projectCode'");
-			} else {
-				$project->addUser($user->id->asString(), ProjectRoles::CONTRIBUTOR);
-				$user->addProject($project->id->asString());
-				$project->write();
-				$user->write();
-			}
+		// if website has a default project then add them to that project
+		$project = ProjectModel::getDefaultProject($website);
+		if ($project) {
+			$project->addUser($user->id->asString(), ProjectRoles::CONTRIBUTOR);
+			$user->addProject($project->id->asString());
+			$project->write();
+			$user->write();
 		}
 
-		Communicate::sendSignup($user, $siteName, $project, $delivery);
+		Communicate::sendSignup($user, $website, $project, $delivery);
 		
 		return $userId;
 	}
