@@ -154,7 +154,7 @@ class Sf
  	 * @return CreateSimpleDto
  	 */
  	public function user_createSimple($userName) {
- 		return UserCommands::createSimple($userName, $this->_projectId, $this->_userId);
+ 		return UserCommands::createSimple($userName, $this->_projectId, $this->_userId, $this->_website);
  	}
  	
  	// TODO Pretty sure this is going to want some paging params
@@ -180,7 +180,7 @@ class Sf
 	
 	/**
 	 * Register a new user with password and optionally add them to a project if allowed by permissions
-	 * @param UserModel $json
+	 * @param array $params
 	 * @return string Id of written object
 	 */
 	public function user_register($params) {
@@ -249,6 +249,11 @@ class Sf
 
 	public function project_usersDto() {
 		return ProjectCommands::usersDto($this->_projectId);
+	}
+	
+	// todo: implement the UI for this in angular
+	public function projectcode_exists($code) {
+		return ProjectCommands::projectCodeExists($this->_website, $code);
 	}
 	
 	

@@ -34,10 +34,6 @@ class ProjectModel extends \models\mapper\MapperModel
 			return new ProjectRoleModel();
 		});
 		$this->userProperties = new ProjectUserPropertiesSettings();
-		$this->themeName = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
-		if (!$this->themeName) {
-			$this->themeName = 'default';
-		}
 		$this->allowAudioDownload = true;
 		$this->interfaceLanguageCode = 'en';
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
@@ -50,25 +46,13 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public static function getDefaultProject($website) {
 		$project = new ProjectModel();
-		if ($project->readByProperties(array('projectName' => $website->defaultProjectName, 'siteName' => $website->domain))) {
+		if ($project->readByProperties(array('projectCode' => $website->defaultProjectCode, 'siteName' => $website->domain))) {
 			return ProjectModel::getById($project->id->asString());
 		} else {
 			return null;
 		}
 	}
 	
-	/**
-	 * @param string $domainName
-	 * @return \models\ProjectModel
-	 */
-	public static function createFromDomain($domainName) {
-		$projectCode = self::domainToProjectCode($domainName);
-		$project = new ProjectModel();
-		if (!$project->readByProperty('projectCode', $projectCode)) {
-			return null;
-		}
-		return $project;
-	}
 	
 	/**
 	 * Reads the model from the mongo collection
@@ -228,13 +212,6 @@ class ProjectModel extends \models\mapper\MapperModel
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getViewsPath() {
-		return 'views/' . $this->siteName . '/' . $this->themeName;
-	}
-	
 	/**
 	 * @return string
 	 */

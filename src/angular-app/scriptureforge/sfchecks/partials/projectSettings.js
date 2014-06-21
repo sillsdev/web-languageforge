@@ -16,7 +16,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		sfchecksProjectService.projectSettings(function(result) {
 			if (result.ok) {
 				$scope.project = result.data.project;
-				$scope.themeNames =  result.data.themeNames;
 				$scope.list.users = result.data.entries;
 				$scope.list.userCount = result.data.count;
 				$scope.list.archivedTexts = result.data.archivedTexts;
@@ -228,7 +227,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		// TODO this should be fine just being $scope.project from the dto.
 		var settings = {
 			projectName: $scope.project.projectName,
-			themeName: $scope.project.themeName,
 			projectCode: $scope.project.projectCode,
 			featured: $scope.project.featured,
 			allowAudioDownload: $scope.project.allowAudioDownload,
