@@ -118,26 +118,6 @@ describe('the questions list page (AKA the text page)', function() {
 			expect(textPage.textSettingsBtn.isDisplayed()).toBeTruthy();
 		});
 
-		it('can edit text content', function() {
-			textPage.textSettingsBtn.click();
-			// TODO: Use actual USX from projectPage.testData (maybe move it to testConstants) for this test, then verify it shows up properly on the question page
-			var letMeEditCheckbox = element(by.model('editedText.editPreviousText'));
-			var contentEditor = element(by.model('editedText.content'));
-			contentEditor.sendKeys('Hello, world!');
-			util.setCheckbox(letMeEditCheckbox, true);
-			// Should pop up two alerts in a row
-			// First alert: "This is dangerous, are you sure?"
-			util.waitForAlert();
-			var alert = browser.switchTo().alert();
-			alert.accept();
-			// Second alert: "You have previous edits which will be replaced, are you really sure?"
-			browser.sleep(100);
-			util.waitForAlert();
-			alert = browser.switchTo().alert();
-			alert.accept();
-			// TODO: Check alert text for one or both alerts (see http://stackoverflow.com/a/19884387/2314532)
-			expect(contentEditor.getAttribute('value')).toBe(constants.testText1Content);
-		});
 	});
 
 	describe('a site admin', function() {
