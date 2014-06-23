@@ -13,7 +13,7 @@ var SfTextSettingsPage = function() {
 	this.editTextTab = {
 		title: 				element(by.model('editedText.title')),
 		usxText:			element(by.model('editedText.content')),
-		letMeEditCheckbox:	element(by.model('editedText.editPreviousText')),
+		letMeEditLink:		element(by.partialLinkText('Edit previous text')),
 		contentEditor:	 	element(by.model('editedText.content')),
 		saveButton:			element(by.partialButtonText('Save')),
 	};
