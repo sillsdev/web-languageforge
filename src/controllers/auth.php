@@ -78,8 +78,9 @@ class Auth extends Base {
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
 				
 				// set the project context to user's default project
+				$website = Website::getOrRedirect();
 				$user = new \models\UserModel((string)$this->session->userdata('user_id'));
-				$projectId = $user->getDefaultProjectId(Website::getSiteName());
+				$projectId = $user->getDefaultProjectId($website->domain);
 				
 				if ($projectId) {
 					$this->session->set_userdata('projectId', $projectId);
