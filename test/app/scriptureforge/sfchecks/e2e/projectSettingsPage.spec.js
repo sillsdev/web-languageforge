@@ -21,6 +21,7 @@ describe('the project settings page - project manager', function() {
     	projectListPage.clickOnProject(constants.testProjectName);
     	projectPage.settingsButton.click();
 	});
+	
 
 	describe('members tab', function() {
 		var memberCount = 0;
@@ -120,7 +121,6 @@ describe('the project settings page - project manager', function() {
 	
 	describe('project properties tab', function() {
 		var newName = constants.thirdProjectName;
-		var newTheme = 'jamaicanpsalms';
 
 		it('setup: click on tab', function() {
 			expect(page.tabs.projectProperties.isPresent()).toBe(true);
@@ -129,22 +129,21 @@ describe('the project settings page - project manager', function() {
 		
 		it('can read properties', function() {
 			expect(page.propertiesTab.name.getAttribute('value')).toBe(constants.testProjectName);
-			expect(page.propertiesTab.theme.getText()).toEqual(constants.testProjectTheme);
 			expect(page.propertiesTab.featured.getAttribute('checked')).toBeFalsy();
+			expect(page.propertiesTab.allowAudioDownload.getAttribute('checked')).toBeTruthy();
 		});
 
 		it('can change properties and verify they persist', function() {
 			page.propertiesTab.name.clear();
 			page.propertiesTab.name.sendKeys(newName);
-			util.clickDropdownByValue(page.propertiesTab.theme, newTheme);
 			page.propertiesTab.featured.click();
+			page.propertiesTab.allowAudioDownload.click();
 			page.propertiesTab.button.click();
 			browser.navigate().refresh();
 			page.tabs.projectProperties.click();
 			expect(page.propertiesTab.name.getAttribute('value')).toBe(newName);
-			expect(page.propertiesTab.theme.getText()).toEqual(newTheme);
 			expect(page.propertiesTab.featured.getAttribute('checked')).toBeTruthy();
-			util.clickDropdownByValue(page.propertiesTab.theme, constants.testProjectTheme);
+			expect(page.propertiesTab.allowAudioDownload.getAttribute('checked')).toBeFalsy();
 			page.propertiesTab.button.click();
 	    	projectListPage.get();
 	    	projectListPage.clickOnProject(newName);
@@ -158,7 +157,7 @@ describe('the project settings page - project manager', function() {
 
 	});
 
-	describe('project setup tab - NYI', function() {
+	describe('user profile lists', function() {
 		it('setup: click on tab and select the Location list for editing', function() {
 			page.tabs.optionlists.click();
 			util.findRowByText(page.optionlistsTab.editList, "Study Group").then(function(row) {
@@ -188,6 +187,7 @@ describe('the project settings page - project manager', function() {
 			browser.sleep(5000);
 		});
 		*/
+		 
 		it('can delete values from the list', function() {
 			expect(page.optionlistsTab.editContentsList.count()).toBe(2);
 			page.optionlistsTab.editContentsList.first().then(function(elem) { page.optionlistsTab.deleteButton(elem).click(); });

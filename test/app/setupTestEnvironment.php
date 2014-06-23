@@ -73,7 +73,7 @@ $testProject = ProjectCommands::createProject(
 	$constants['testProjectName'],
 	SfProjectModel::SFCHECKS_APP,
 	$adminUser,
-	Website::get('www.scriptureforge.org')
+	Website::get('scriptureforge.local')
 );
 $testProjectModel = new ProjectModel($testProject);
 $testProjectModel->projectCode = $constants['testProjectCode'];
@@ -83,7 +83,7 @@ $otherProject = ProjectCommands::createProject(
 	$constants['otherProjectName'],
 	SfProjectModel::SFCHECKS_APP,
 	$adminUser,
-	Website::get('www.scriptureforge.org')
+	Website::get('scriptureforge.local')
 );
 
 ProjectCommands::updateUserRole($testProject, $managerUser, ProjectRoles::MANAGER);
