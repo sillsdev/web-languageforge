@@ -223,10 +223,11 @@ class Communicate
 	 * 
 	 * @param UserModelBase $inviterUserModel
 	 * @param UserModelBase $toUserModel
+	 * @param ProjectModel $projectModel
 	 * @param Website $website
 	 * @param IDelivery $delivery
 	 */
-	public static function sendInvite($inviterUserModel, $toUserModel, $website, IDelivery $delivery = null) {
+	public static function sendInvite($inviterUserModel, $toUserModel, $projectModel, $website, IDelivery $delivery = null) {
 		$toUserModel->setValidation(7);
 		$toUserModel->write();
 
@@ -236,6 +237,7 @@ class Communicate
 		$vars = array(
 			'user' => $inviterUserModel,
 			'website' => $website,
+			'project' => $projectModel,
 			'link' => $website->baseUrl() . '/registration#/?v=' . $toUserModel->validationKey,
 		);
 		$templateFile = $website->base . "/" . $website->theme . "/email/en/InvitationValidate.html";

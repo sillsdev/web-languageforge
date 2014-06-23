@@ -85,10 +85,13 @@ class TestUserModel extends UnitTestCase {
 		$e->clean();
 		
 		$p1m = $e->createProject('p1');
+		$p1m->appName = 'sfchecks';
+		$p1m->write();
 		$p1 = $p1m->id->asString();
-		$p1m = new ProjectModel($p1);
 		$p2m = $e->createProject('p2');
 		$p2 = $p2m->id->asString();
+		$p2m->appName = 'sfchecks';
+		$p2m->write();
 		
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@smith.com');
 		$userModel = new UserModel($userId);
