@@ -194,9 +194,8 @@ class TestProjectCommands extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$project->projectCode = $code;
 		$project->write();
-		$website = new Website($e->website->domain);
 		
-		$this->assertTrue(ProjectCommands::projectCodeExists($website, $code));
+		$this->assertTrue(ProjectCommands::projectCodeExists($e->website, $code));
 	}
 	
 	function testProjectCodeExists_codeDoesNotExist_false() {
@@ -207,9 +206,8 @@ class TestProjectCommands extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$project->projectCode = $code;
 		$project->write();
-		$website = new Website($e->website->domain);
 		
-		$this->assertFalse(ProjectCommands::projectCodeExists($website, 'randomcode'));
+		$this->assertFalse(ProjectCommands::projectCodeExists($e->website, 'randomcode'));
 	}
 }
 

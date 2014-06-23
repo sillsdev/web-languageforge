@@ -279,7 +279,8 @@ class UserCommands {
 		$userId = $newUser->write();
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project->write();
-		Communicate::sendInvite($inviterUser, $newUser, $website, $delivery);
+		Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
+		return $userId;
     }
     
     /**
