@@ -85,7 +85,7 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual(strlen($dto['password']), 4);
 		$projectUser = $sameProject->listUsers()->entries[0];
 		$this->assertEqual($projectUser['username'], "username");
-		$userProject = $user->listProjects(Website::SCRIPTUREFORGE)->entries[0];
+		$userProject = $user->listProjects($e->website->domain)->entries[0];
 		$this->assertEqual($userProject['projectName'], SF_TESTPROJECT);
 	}
 	
@@ -113,7 +113,7 @@ class TestUserCommands extends UnitTestCase {
 		
 		$user = new UserModel($userId);
 		$this->assertEqual($user->username, $params['username']);
-		$this->assertEqual($user->listProjects(Website::SCRIPTUREFORGE)->count, 0);
+		$this->assertEqual($user->listProjects($e->website->domain)->count, 0);
 	}
 	
 	function testReadForRegistration_ValidKey_ValidUserModel() {

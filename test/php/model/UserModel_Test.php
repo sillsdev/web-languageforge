@@ -94,7 +94,7 @@ class TestUserModel extends UnitTestCase {
 		$userModel = new UserModel($userId);
 		
 		// Check that list projects is empty
-		$result = $userModel->listProjects(Website::SCRIPTUREFORGE);
+		$result = $userModel->listProjects($e->website->domain);
 		$this->assertEqual(0, $result->count);
 		$this->assertEqual(array(), $result->entries);
 				
@@ -107,7 +107,7 @@ class TestUserModel extends UnitTestCase {
 		$p2m->write();
 		$userModel->write();
 		
-		$result = $userModel->listProjects(Website::SCRIPTUREFORGE);
+		$result = $userModel->listProjects($e->website->domain);
 		$this->assertEqual(2, $result->count);
 		$this->assertEqual(
 			array(
@@ -115,13 +115,13 @@ class TestUserModel extends UnitTestCase {
 		          'projectName' => 'p1',
 		          'id' => $p1,
 				  'appName' => 'sfchecks',
-				  'siteName' => Website::SCRIPTUREFORGE
+				  'siteName' => $e->website->domain
 				),
 				array(
 		          'projectName' => 'p2',
 		          'id' => $p2,
 				  'appName' => 'sfchecks',
-				  'siteName' => Website::SCRIPTUREFORGE
+				  'siteName' => $e->website->domain
 				)
 			), $result->entries
 		);
