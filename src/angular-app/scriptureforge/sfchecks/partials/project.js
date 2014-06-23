@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload', 'ngRoute'])
-.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'sfchecksLinkService', 'silNoticeService', 'sfchecksProjectService', 'messageService','modalService',
-                            function($scope, textService, $routeParams, ss, breadcrumbService, sfchecksLinkService, notice, sfchecksProjectService, messageService, modalService) {
+.controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService', 'sfchecksLinkService', 'silNoticeService', 'sfchecksProjectService', 'messageService','modalService',
+                            function($scope, textService, ss, breadcrumbService, sfchecksLinkService, notice, sfchecksProjectService, messageService, modalService) {
 	$scope.finishedLoading = false;
 	
 	// Rights
@@ -113,16 +113,26 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 //			textService.archive(textIds, function(result) {
 //				if (result.ok) {
 //					$scope.selected = []; // Reset the selection
+//					$scope.getPageDto();
+//					if (textIds.length == 1) {
+//						notice.push(notice.SUCCESS, "The text was archived successfully");
+//					} else {
+//						notice.push(notice.SUCCESS, "The texts were archived successfully");
+//					}
 //				}
-//				$scope.getPageDto();
 //			});
 //		});
 		if (window.confirm(message)) {
 			textService.archive(textIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
+					$scope.getPageDto();
+					if (textIds.length == 1) {
+						notice.push(notice.SUCCESS, "The text was archived successfully");
+					} else {
+						notice.push(notice.SUCCESS, "The texts were archived successfully");
+					}
 				}
-				$scope.getPageDto();
 			});
 		}
 	};
