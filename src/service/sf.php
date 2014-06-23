@@ -1,7 +1,5 @@
 <?php
 
-use models\scriptureforge\sfchecks\commands\SfchecksProjectCommands;
-
 use libraries\scriptureforge\sfchecks\ParatextExport;
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
@@ -25,8 +23,10 @@ use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\languageforge\lexicon\dto\LexDbeDto;
 use models\languageforge\lexicon\dto\LexManageUsersDto;
 use models\languageforge\lexicon\dto\LexProjectDto;
+use models\scriptureforge\sfchecks\commands\SfchecksProjectCommands;
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\ActivityListDto;
+use models\shared\dto\ProjectListDto;
 use models\shared\dto\RightsHelper;
 use models\shared\dto\UserProfileDto;
 use models\mapper\Id;
@@ -74,8 +74,8 @@ class Sf
 		$this->update_last_activity();
 
 		// TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
- 		ini_set('display_errors', 0);
- 		
+		ini_set('display_errors', 0);
+		
 	}
 	
 	//---------------------------------------------------------------
@@ -146,19 +146,19 @@ class Sf
 	 * @param array<string> $userIds
 	 * @return int Count of deleted users
 	 */
- 	public function user_delete($userIds) {
- 		return UserCommands::deleteUsers($userIds);
- 	}
-
- 	/**
- 	 * @param string $userName
- 	 * @return CreateSimpleDto
- 	 */
- 	public function user_createSimple($userName) {
- 		return UserCommands::createSimple($userName, $this->_projectId, $this->_userId);
- 	}
- 	
- 	// TODO Pretty sure this is going to want some paging params
+	public function user_delete($userIds) {
+		return UserCommands::deleteUsers($userIds);
+	}
+	
+	/**
+	 * @param string $userName
+	 * @return CreateSimpleDto
+	 */
+	public function user_createSimple($userName) {
+		return UserCommands::createSimple($userName, $this->_projectId, $this->_userId);
+	}
+	
+	// TODO Pretty sure this is going to want some paging params
 	/**
 	 * @return \models\UserListModel
 	 */
@@ -229,30 +229,34 @@ class Sf
 	public function project_create($projectName, $appName) {
 		return ProjectCommands::createProject($projectName, $appName, $this->_userId, $this->_site);
 	}
-
+	
 	/**
-	 * Delete projects
+	 * Archive projects
 	 * @param array<string> $projectIds
-	 * @return int Count of deleted projects
+	 * @return int Count of archived projects
 	 */
- 	public function project_archive($projectIds) {
- 		return ProjectCommands::archiveProjects($projectIds);
- 	}
-
+	public function project_archive($projectIds) {
+		return ProjectCommands::archiveProjects($projectIds);
+	}
+	
+	public function project_archivedList() {
+		return ProjectListDto::encode($this->_userId, $this->_site, true);
+	}
+	
 	// TODO Pretty sure this is going to want some paging params
 	public function project_list() {
 		return ProjectCommands::listProjects();
 	}
 	
 	public function project_list_dto() {
-		return \models\shared\dto\ProjectListDto::encode($this->_userId, $this->_site);
+		return ProjectListDto::encode($this->_userId, $this->_site);
 	}
 	
 	public function project_joinProject($projectId, $role) {
 		return ProjectCommands::updateUserRole($projectId, $this->_userId, $role);
 	}
 	
-
+	
 	public function project_usersDto() {
 		return ProjectCommands::usersDto($this->_projectId);
 	}
