@@ -3,6 +3,7 @@
 namespace models\scriptureforge\dto;
 
 use models\shared\dto\RightsHelper;
+use models\shared\rights\ProjectRoles;
 use models\scriptureforge\SfchecksProjectModel;
 use models\MessageModel;
 use models\ProjectModel;
@@ -22,9 +23,11 @@ class ProjectPageDto
 	 * @returns array - the DTO array
 	 */
 	public static function encode($projectId, $userId) {
-		// TODO: ensure that $userId has permission to view the project page
 		$user = new UserModel($userId);
 		$project = new SfchecksProjectModel($projectId);
+		if ($project->isArchived && $project->users[$userId]->role != ProjectRoles::MANAGER) {
+			throw new \Exception("This Project is no longer available.\nIf this is incorrect contact your project manager.\n");
+		}
 		$textList = new TextListModel($project);
 		$textList->read();
 
