@@ -11,9 +11,11 @@ var SfTextSettingsPage = function() {
 	};
 	
 	this.editTextTab = {
-		title: 			element(by.model('editedText.title')),
-		usxText:		element(by.model('editedText.content')),
-		saveButton:		element(by.partialButtonText('Save')),
+		title: 				element(by.model('editedText.title')),
+		usxText:			element(by.model('editedText.content')),
+		letMeEditCheckbox:	element(by.model('editedText.editPreviousText')),
+		contentEditor:	 	element(by.model('editedText.content')),
+		saveButton:			element(by.partialButtonText('Save')),
 	};
 	
 	this.archivedQuestionsTab = {

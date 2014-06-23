@@ -1,9 +1,11 @@
 'use strict';
 
+/* This is called globally; it can be un-commented if this test is run individually. IJH 2014-06
 afterEach(function() {
 	var appFrame = require('../../../pages/appFrame.js');
 	expect(appFrame.errorMessage.isPresent()).toBe(false);
 });
+*/
 
 describe('the project settings page - project manager', function() {
 	var projectListPage = require('../../../pages/projectsPage.js');
@@ -24,8 +26,32 @@ describe('the project settings page - project manager', function() {
 		textPage.textSettingsBtn.click();
 	});
 	
-	// The Edit Text tab is tested as part of a process in the Text (Questions) page tests. IJH 2014-06
-	// TODO refactor to bring Edit Text test in here. IJH 2014-06
+	describe('edit text tab', function() {
+
+		it('setup: click on tab', function() {
+			expect(page.tabs.editText.isPresent()).toBe(true);
+			page.tabs.editText.click();
+		});
+		
+		it('can edit text content', function() {
+			// TODO: Use actual USX from projectPage.testData (maybe move it to testConstants) for this test, then verify it shows up properly on the question page
+			page.editTextTab.contentEditor.sendKeys('Hello, world!');
+			util.setCheckbox(page.editTextTab.letMeEditCheckbox, true);
+			// Should pop up two alerts in a row
+			// First alert: "This is dangerous, are you sure?"
+			util.waitForAlert();
+			var alert = browser.switchTo().alert();
+			alert.accept();
+			// Second alert: "You have previous edits which will be replaced, are you really sure?"
+			browser.sleep(100);
+			util.waitForAlert();
+			alert = browser.switchTo().alert();
+			alert.accept();
+			// TODO: Check alert text for one or both alerts (see http://stackoverflow.com/a/19884387/2314532)
+			expect(page.editTextTab.contentEditor.getAttribute('value')).toBe(constants.testText1Content);
+		});
+			
+	});
 
 	// The Archived Questions tab is tested as part of a process in the Text (Questions) page tests. IJH 2014-06
 	
