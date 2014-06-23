@@ -194,8 +194,8 @@ class RightsHelper
 			case 'user_delete':
 				return $this->userHasSiteRight(Domain::USERS + Operation::DELETE);
 				
-			case 'project_delete':
-				return $this->userHasSiteRight(Domain::PROJECTS + Operation::DELETE);
+			case 'project_archive':
+				return $this->userHasSiteRight(Domain::PROJECTS + Operation::ARCHIVE);
 				
 			case 'project_list':
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);

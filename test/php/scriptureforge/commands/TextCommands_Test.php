@@ -12,7 +12,19 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestTextCommands extends UnitTestCase {
 
-	function testDeleteTexts_1Text_1Removed() {
+	function testDeleteTexts_NoThrow() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$text = new TextModel($project);
+		$text->title = "Some Title";
+		$text->write();
+		
+		TextCommands::deleteTexts($project->id->asString(), array($text->id->asString()));
+	}
+	
+	function testArchiveTexts_1Text_1Removed() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
