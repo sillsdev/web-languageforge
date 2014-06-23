@@ -69,6 +69,9 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.archive = function(projectIds, callback) {
 		jsonRpc.call('project_archive', [projectIds], callback);
 	};
+	this.archivedList = function(callback) {
+		jsonRpc.call('project_archivedList', [], callback);
+	};
 	this.list = function(callback) {
 		jsonRpc.call('project_list_dto', [], callback);
 	};

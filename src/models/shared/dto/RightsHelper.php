@@ -195,6 +195,7 @@ class RightsHelper
 				return $this->userHasSiteRight(Domain::USERS + Operation::DELETE);
 				
 			case 'project_archive':
+			case 'project_archivedList':
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::ARCHIVE);
 				
 			case 'project_list':
