@@ -88,6 +88,18 @@ angular.module('bellows.services', ['jsonRpc'])
 		jsonRpc.call('project_joinProject', [projectId, role], callback);
 	};
 	
+	// data constants
+	this.data = {};
+	this.data.projectTypes = {
+		'sfchecks': 'Community Scripture Checking',
+		'rapuma': 'Publishing',
+		'lexicon': 'Web Dictionary'
+	};
+	this.data.projectTypesBySite = {
+		'scriptureforge': ['sfchecks'],
+		'languageforge': ['lexicon']
+	};
+	
 }])
 .service('activityPageService', ['jsonRpc', function(jsonRpc) {
 	jsonRpc.connect('/api/sf');

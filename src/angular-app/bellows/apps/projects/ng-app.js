@@ -133,15 +133,8 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 		}
 	};
 	
-	$scope.projectTypes = {
-		'sfchecks': 'Community Scripture Checking',
-		'rapuma': 'Publishing',
-		'lexicon': 'Web Dictionary'
-	};
+	$scope.projectTypes = projectService.data.projectTypes;
+	$scope.projectTypesBySite = projectService.data.projectTypesBySite;
 	
-	$scope.projectTypesBySite = {
-		'scriptureforge': ['sfchecks'],
-		'languageforge': ['lexicon']
-	};
 }])
 ;
