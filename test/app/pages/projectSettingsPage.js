@@ -61,6 +61,7 @@ var SfProjectSettingsPage = function() {
 		name:		element(by.model('project.projectName')),
 		code:		element(by.model('project.projectCode')),
 		featured:	element(by.model('project.featured')),
+		allowAudioDownload:	element(by.model('project.allowAudioDownload')),
 		button:		element(by.id('project_properties_save_button'))
 	};
 	
