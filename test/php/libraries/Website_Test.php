@@ -9,28 +9,27 @@ class TestWebsite extends UnitTestCase {
 
 	function testGet_Works() {
 		
+		$website = Website::get('www.scriptureforge.org');
+		$this->assertEqual($website->domain, 'www.scriptureforge.org');
+		$this->assertEqual($website->base, 'scriptureforge');
+		$this->assertEqual($website->theme, 'default');
+		
+		$website = Website::get('randomdomain.com');
+		$this->assertNull($website);
 	}
 	
 	function testGetRedirect_Works() {
+		$redirect = Website::getRedirect('randomdomain.com');
+		$this->assertEqual($redirect, '');
 		
-	}
-	
-	function testGetSiteName_Works() {
-		$domainName = 'www.languageforge.org';
-		$result = Website::getSiteName($domainName);
-		$this->assertEqual($result, 'languageforge');
-
-		$domainName = 'languageforge.org';
-		$result = Website::getSiteName($domainName);
-		$this->assertEqual($result, 'languageforge');
-
-		$domainName = 'languageforge.local';
-		$result = Website::getSiteName($domainName);
-		$this->assertEqual($result, 'languageforge');
-
-		$domainName = 'jamaicanpsalms.dev.scriptureforge.org';
-		$result = Website::getSiteName($domainName);
-		$this->assertEqual($result, 'scriptureforge');
+		$redirect = Website::getRedirect('www.scriptureforge.org');
+		$this->assertEqual($redirect, '');
+		
+		$redirect = Website::getRedirect('scriptureforge.org');
+		$this->assertEqual($redirect, 'http://www.scriptureforge.org');
+		
+		$redirect = Website::getRedirect('jamaicanpsalms.org');
+		$this->assertEqual($redirect, 'https://jamaicanpsalms.com');
 	}
 	
 	/* -- currently not in use so commented out cjh 2014-06

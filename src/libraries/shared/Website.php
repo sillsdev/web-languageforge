@@ -35,7 +35,7 @@ class Website {
 	
 	/**
 	 * 
-	 * @var the base site for this website: either scriptureforge or languageforge
+	 * @var string - the base site for this website: either scriptureforge or languageforge
 	 */
 	public $base;
 	
@@ -97,6 +97,10 @@ class Website {
 		$this->defaultProjectCode = $defaultProjectCode;
 	}
 	
+	/**
+	 * @param string $hostname
+	 * @return Website
+	 */
 	public static function get($hostname = '') {
 		if (!$hostname) {
 			$hostname = $_SERVER['HTTP_HOST'];
@@ -108,6 +112,10 @@ class Website {
 		}
 	}
 	
+	/**
+	 * @param string $hostname
+	 * @return string
+	 */
 	public static function getRedirect($hostname = '') {
 		if (!$hostname) {
 			$hostname = $_SERVER['HTTP_HOST'];
@@ -126,9 +134,9 @@ class Website {
 	
 	/**
 	 * Convenience function to get the website object or redirect based upon ssl setting or a redirect list
+	 * FYI Not testable  because of the inclusion of the header() method : test get() and getRedirect() instead
 	 * @param string $hostname
-	 * @return Ambigous <NULL, \libraries\shared\array<Website>>|NULL
-	 * FYI Not testable - test get() and getRedirect() instead
+	 * @return Website
 	 */
 	public static function getOrRedirect($hostname = '') {
 		if (!$hostname) {
@@ -177,22 +185,6 @@ class Website {
 			$path = APPPATH . "views/" . $this->base . "/default/$templateFile";
 		}
 		return $path;
-	}
-	
-	public static function getSiteName($hostname = '') {
-		if (!$hostname) {
-			$hostname = $_SERVER['HTTP_HOST'];
-		}
-		$uriParts = explode('.', $domainName);
-		array_pop($uriParts); // pop off the .org
-		$site = array_pop($uriParts);
-
-		// exception list for custom standalone domains
-		if ($site == 'jamaicanpsalms') {
-			$site = self::SCRIPTUREFORGE;
-		}
-
-		return $site;
 	}
 	
 	/**
