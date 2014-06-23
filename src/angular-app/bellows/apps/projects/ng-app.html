@@ -40,9 +40,9 @@
         			<li data-ng-show="rights.deleteOther"><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
         			<li style="width: 80%">
         				<a data-ng-show="isInProject(project)" href="/app/{{project.appName}}/{{project.id}}/">
-        					<span class="larger-text">{{project.projectName}} ({{projectTypes[project.appName]}})</span>
+        					<span class="larger-text">{{project.projectName}} ({{projectTypeNames[project.appName]}})</span>
         				</a>
-        				<span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectName}} ({{projectTypes[project.appName]}})</span>
+        				<span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectName}} ({{projectTypeNames[project.appName]}})</span>
         			</li>
         			<li data-ng-show="rights.deleteOther" style="width: 20%">
         				<button class="btn" data-ng-show="!isManager(project)" data-ng-click="addManagerToProject(project)"><i class="icon-plus"></i>Add me as Manager</button>
