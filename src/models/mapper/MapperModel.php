@@ -109,7 +109,7 @@ class MapperModel
 	 * @return boolean
 	 */
 	public function readByProperties($properties) {
-		return $this->_mapper->readByProperties($$this, $properties);
+		return $this->_mapper->readByProperties($this, $properties);
 	}
 	
 	/**

@@ -73,8 +73,10 @@ class TestUserCommands extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
+		$currentUserId = $e->createUser('test1', 'test1', 'test@test.com');
+		
 		// create user
-		$dto = UserCommands::createSimple($userName, $projectId);
+		$dto = UserCommands::createSimple($userName, $projectId, $currentUserId, $e->website);
 		
 		// read from disk
 		$user = new UserModel($dto['id']);
@@ -109,7 +111,7 @@ class TestUserCommands extends UnitTestCase {
 		$captcha_info = array('code' => $validCode);
 		$delivery = new MockUserCommandsDelivery();
 		
-		$userId = UserCommands::register($params, $captcha_info, 'www.scriptureforge.org', $delivery);
+		$userId = UserCommands::register($params, $captcha_info, $e->website, $delivery);
 		
 		$user = new UserModel($userId);
 		$this->assertEqual($user->username, $params['username']);
@@ -238,7 +240,7 @@ class TestUserCommands extends UnitTestCase {
 		$project->write();
 		$delivery = new MockUserCommandsDelivery();
 	
-		$toUserId = UserCommands::sendInvite($project->id->asString(), $inviterUserId, $toEmail, $delivery);
+		$toUserId = UserCommands::sendInvite($project->id->asString(), $inviterUserId, $e->website, $toEmail, $delivery);
 	
 		// What's in the delivery?
 		$toUser = new UserModel($toUserId);
