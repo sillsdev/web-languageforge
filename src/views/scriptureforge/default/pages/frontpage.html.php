@@ -24,7 +24,7 @@
 					"target_url" => "/learn_contribute"
 					)
 			);
-			$this->load->view("RightsHelper::hasSiteRight/templates/slideshow.html.php", $data);
+			$this->load->view("$themePath/templates/slideshow.html.php", $data);
 			
 			$data['columns'] = array(
 				array(
@@ -43,7 +43,7 @@
 					"target_url" => "/learn_contribute"
 					)
 			);
-			$this->load->view("RightsHelper::hasSiteRight/templates/3column.html.php", $data);
+			$this->load->view("$themePath/templates/3column.html.php", $data);
 			?>
 		
 			<div class="container">
