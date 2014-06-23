@@ -2,23 +2,22 @@
 
 namespace models\shared\dto;
 
+use models\shared\rights\Domain;
+use models\shared\rights\Operation;
+use models\shared\rights\ProjectRoles;
 use models\ProjectList_UserModel;
 use models\ProjectModel;
 use models\TextListModel;
 use models\UserModel;
-use models\shared\rights\Operation;
-use models\shared\rights\Domain;
-use models\shared\rights\ProjectRoles;
 
 class ProjectListDto
 {
 	/**
-	 *
 	 * @param string $userId
+	 * @param string $site
 	 * @returns array - the DTO array
 	 */
 	public static function encode($userId, $site) {
-		
 		$user = new UserModel($userId);
 		$canListAllProjects = $user->hasRight(Domain::PROJECTS + Operation::VIEW);
 
@@ -30,20 +29,23 @@ class ProjectListDto
 		}
 
 		$data = array();
-		$data['count'] = $projectList->count;
 		$data['entries'] = array();
+		$count = 0;
 		foreach ($projectList->entries as $entry) {
-			$projectModel = new ProjectModel($entry['id']);
-			$role = ProjectRoles::NONE;
-			if (count($projectModel->users) > 0) {
-				if (isset($projectModel->users[$userId]) && isset($projectModel->users[$userId]->role)) {
-					$role = $projectModel->users[$userId]->role;
+			$project = new ProjectModel($entry['id']);
+			if (! $project->isArchived) {
+				$role = ProjectRoles::NONE;
+				if (count($project->users) > 0) {
+					if (isset($project->users[$userId]) && isset($project->users[$userId]->role)) {
+						$role = $project->users[$userId]->role;
+					}
 				}
+				$entry['role'] = $role;
+				$data['entries'][] = $entry;
+				$count++;
 			}
-			$entry['role'] = $role;
-				
-			$data['entries'][] = $entry;
 		}
+		$data['count'] = $count;
 		
 		// Default sort list on project names
 		usort($data['entries'], function ($a, $b) {
