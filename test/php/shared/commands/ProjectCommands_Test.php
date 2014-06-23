@@ -1,17 +1,15 @@
 <?php
+
 use libraries\shared\Website;
-
-use models\ProjectSettingsModel;
-
-use models\commands\ProjectCommands;
-use models\UserModel;
-use models\ProjectModel;
 use models\shared\rights\ProjectRoles;
+use models\commands\ProjectCommands;
 use models\mapper\Id;
+use models\ProjectModel;
+use models\ProjectSettingsModel;
+use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestProjectCommands extends UnitTestCase {
@@ -23,7 +21,40 @@ class TestProjectCommands extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		ProjectCommands::deleteProjects(array($projectId), 'bogus userid');
+		ProjectCommands::deleteProjects(array($projectId));
+	}
+
+	function testArchiveProjects_PublishedProject_ProjectArchived() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$projectId = $project->id->asString();
+		
+		$this->assertFalse($project->isArchived);
+		
+		$count = ProjectCommands::archiveProjects(array($projectId));
+		
+		$project->read($projectId);
+		$this->assertEqual($count, 1);
+		$this->assertTrue($project->isArchived);
+	}
+
+	function testPublishProjects_ArchivedProject_ProjectPublished() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$project->isArchived = true;
+		$projectId = $project->write();
+		
+		$this->assertTrue($project->isArchived);
+		
+		$count = ProjectCommands::publishProjects(array($projectId));
+		
+		$project->read($projectId);
+		$this->assertEqual($count, 1);
+		$this->assertFalse($project->isArchived);
 	}
 
 	function testUpdateUserRole_UpdateUserInProject_UserJoinedProject() {

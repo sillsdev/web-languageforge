@@ -102,6 +102,40 @@ class ProjectCommands
 	}
 	
 	/**
+	 * @param array $projectIds
+	 * @return int Total number of projects archived.
+	 */
+	public static function archiveProjects($projectIds) {
+		CodeGuard::checkTypeAndThrow($projectIds, 'array');
+		$count = 0;
+		foreach ($projectIds as $projectId) {
+			CodeGuard::checkTypeAndThrow($projectId, 'string');
+			$project = new \models\ProjectModel($projectId);
+			$project->isArchived = true;
+			$project->write();
+			$count++;
+		}
+		return $count;
+	}
+	
+	/**
+	 * @param array $projectIds
+	 * @return int Total number of projects published.
+	 */
+	public static function publishProjects($projectIds) {
+		CodeGuard::checkTypeAndThrow($projectIds, 'array');
+		$count = 0;
+		foreach ($projectIds as $projectId) {
+			CodeGuard::checkTypeAndThrow($projectId, 'string');
+			$project = new ProjectModel($projectId);
+			$project->isArchived = false;
+			$project->write();
+			$count++;
+		}
+		return $count;
+	}
+
+	/**
 	 * 
 	 * @return \models\ProjectListModel
 	 */

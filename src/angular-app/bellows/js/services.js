@@ -66,8 +66,8 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.create = function(projectName, appName, callback) {
 		jsonRpc.call('project_create', [projectName, appName], callback);
 	};
-	this.remove = function(projectIds, callback) {
-		jsonRpc.call('project_delete', [projectIds], callback);
+	this.archive = function(projectIds, callback) {
+		jsonRpc.call('project_archive', [projectIds], callback);
 	};
 	this.list = function(callback) {
 		jsonRpc.call('project_list_dto', [], callback);
