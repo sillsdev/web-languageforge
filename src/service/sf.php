@@ -235,8 +235,8 @@ class Sf
 	 * @param array<string> $projectIds
 	 * @return int Count of deleted projects
 	 */
- 	public function project_delete($projectIds) {
- 		return ProjectCommands::deleteProjects($projectIds);
+ 	public function project_archive($projectIds) {
+ 		return ProjectCommands::archiveProjects($projectIds);
  	}
 
 	// TODO Pretty sure this is going to want some paging params

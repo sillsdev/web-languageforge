@@ -33,6 +33,7 @@ class ProjectModel extends \models\mapper\MapperModel
 		$this->users = new MapOf(function($data) {
 			return new ProjectRoleModel();
 		});
+		$this->isArchived = false;
 		$this->userProperties = new ProjectUserPropertiesSettings();
 		$this->themeName = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
 		if (!$this->themeName) {
@@ -293,6 +294,12 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public $allowInviteAFriend;
 	
+	/**
+	 * Flag to indicate if this project is archived
+	 * @var boolean
+	 */
+	public $isArchived;
+		
 	/**
 	 * @var ProjectUserPropertiesSettings
 	 */
