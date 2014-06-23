@@ -15,7 +15,7 @@
 					"summary" => "Connecting with the book of Psalms and with each other like never before. Speak your mind. Ask Questions. Improve it!"
 					)
 			);
-			$this->load->view("RightsHelper::hasSiteRight/templates/slideshow.html.php", $data);
+			$this->load->view("$themePath/templates/slideshow.html.php", $data);
 			?>
 			
 			
@@ -55,7 +55,7 @@
 					"target_url" => "/signup"
 					)
 			);
-			$this->load->view("RightsHelper::hasSiteRight/templates/3column.html.php", $data);
+			$this->load->view("$themePath/templates/3column.html.php", $data);
 			?>
 			
 			
