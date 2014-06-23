@@ -36,7 +36,7 @@ describe('the project settings page - project manager', function() {
 		it('can edit text content', function() {
 			// TODO: Use actual USX from projectPage.testData (maybe move it to testConstants) for this test, then verify it shows up properly on the question page
 			page.editTextTab.contentEditor.sendKeys('Hello, world!');
-			util.setCheckbox(page.editTextTab.letMeEditCheckbox, true);
+			page.editTextTab.letMeEditLink.click();
 			// Should pop up two alerts in a row
 			// First alert: "This is dangerous, are you sure?"
 			util.waitForAlert();
