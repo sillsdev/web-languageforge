@@ -38,7 +38,7 @@ class ApiCrudTestEnvironment {
 		if (!$userId) {
 			$userId = $this->makeSiteAdminUser();	
 		}
-		return ProjectCommands::createProject(SF_TESTPROJECT, 'sfchecks', $userId, Website::SCRIPTUREFORGE);
+		return ProjectCommands::createProject(SF_TESTPROJECT, 'sfchecks', $userId, Website::get('www.scriptureforge.org'));
 	}
 	
 	function makeUser($username) {
@@ -84,7 +84,7 @@ class TestApiCrud extends UnitTestCase {
 		$e = new ApiCrudTestEnvironment();
 		
 		$userId = $e->e->createUser('userName', 'User Name', 'user@example.com', SiteRoles::SYSTEM_ADMIN);
-		$id = ProjectCommands::createProject(SF_TESTPROJECT, 'sfchecks', $userId, Website::SCRIPTUREFORGE);
+		$id = ProjectCommands::createProject(SF_TESTPROJECT, 'sfchecks', $userId, Website::get('www.scriptureforge.org'));
 		$this->assertNotNull($id);
 		$this->assertEqual(24, strlen($id));
 		

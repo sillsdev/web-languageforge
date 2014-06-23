@@ -71,9 +71,9 @@ $memberUser = UserCommands::createUser(array(
 
 $testProject = ProjectCommands::createProject(
 	$constants['testProjectName'],
-	SfProjectModel::SFCHECKS_APP, // TODO: Find out if there's a better constant for this. 2014-05 RM
+	SfProjectModel::SFCHECKS_APP,
 	$adminUser,
-	Website::SCRIPTUREFORGE
+	Website::get('www.scriptureforge.org')
 );
 $testProjectModel = new ProjectModel($testProject);
 $testProjectModel->projectCode = $constants['testProjectCode'];
@@ -81,9 +81,9 @@ $testProjectModel->write();
 
 $otherProject = ProjectCommands::createProject(
 	$constants['otherProjectName'],
-	SfProjectModel::SFCHECKS_APP, // TODO: Find out if there's a better constant for this. 2014-05 RM
+	SfProjectModel::SFCHECKS_APP,
 	$adminUser,
-	Website::SCRIPTUREFORGE
+	Website::get('www.scriptureforge.org')
 );
 
 ProjectCommands::updateUserRole($testProject, $managerUser, ProjectRoles::MANAGER);

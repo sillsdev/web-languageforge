@@ -55,12 +55,7 @@ class ProjectCommands
 	 * @return string - projectId
 	 */
 	public static function createProject($projectName, $appName, $userId, $website) {
-		if ($website->base == Website::SCRIPTUREFORGE) {
-			$project = new SfProjectModel();
-			
-		} elseif ($website->base == Website::LANGUAGEFORGE) {
-			$project = new LfProjectModel();
-		}
+		$project = new ProjectModel();
 		$project->projectName = $projectName;
 		$project->appName = $appName;
 		$project->siteName = $website->domain;

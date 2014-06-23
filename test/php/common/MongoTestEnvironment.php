@@ -1,5 +1,7 @@
 <?php
 
+use models\ProjectModel;
+
 use libraries\shared\Website;
 
 use models\scriptureforge\SfchecksProjectModel;
@@ -19,9 +21,15 @@ class MongoTestEnvironment
 	 */
 	private $_db;
 	
+	/**
+	 * @var Website
+	 */
+	public $website;
 	
-	public function __construct() {
+	
+	public function __construct($domain = 'www.scriptureforge.org') {
 		$this->_db = \models\mapper\MongoStore::connect(SF_DATABASE);
+		$this->website = Website::get($domain);
 	}
 
 	/**
@@ -67,26 +75,22 @@ class MongoTestEnvironment
 	/**
 	 * Writes a project to the projects collection.
 	 * @param string $name
+	 * @param string $domain
 	 * @return ProjectModel
 	 */
-
-	public function createProject($name, $site = Website::SCRIPTUREFORGE) {
-		if ($site == Website::SCRIPTUREFORGE) {
-			$projectModel = new SfchecksProjectModel();
-		} else {
-			$projectModel = new LexiconProjectModel();
-		}
+	public function createProject($name) {
+		$projectModel = new ProjectModel();
 		$projectModel->projectName = $name;
-		$projectModel->siteName = $site;
+		$projectModel->siteName = $this->website->domain;
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;
 	}
 	
-	public function createProjectSettings($name, $site = 'www.scriptureforge.org') {
+	public function createProjectSettings($name) {
 		$projectModel = new models\ProjectSettingsModel();
 		$projectModel->projectName = $name;
-		$projectModel->siteName = $site;
+		$projectModel->siteName = $this->website->domain;
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;
@@ -151,9 +155,14 @@ class MongoTestEnvironment
 
 class LexiconMongoTestEnvironment extends MongoTestEnvironment {
 	
-	public function createProject($name, $site = 'languageforge') {
+	public function __construct() {
+		parent::__construct('www.languageforge.org');
+	}
+	
+	public function createProject($name) {
 		$projectModel = new LexiconProjectModel();
 		$projectModel->projectName = $name;
+		$projectModel->siteName = $this->website->domain;
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;

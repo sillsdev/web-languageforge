@@ -60,11 +60,11 @@ class Website {
 		$redirect = array();
 		
 		// SCRIPTUREFORGE WEBSITES
-		$sites['scriptureforge.local'] = new Website('scriptureforge.local', self::SCRIPTUREFORGE);
-		$sites['www.scriptureforge.org'] = new Website('www.scriptureforge.org', self::SCRIPTUREFORGE);
-		$sites['dev.scriptureforge.org'] = new Website('dev.scriptureforge.org', self::SCRIPTUREFORGE);
-		$sites['jamaicanpsalms.dev.scriptureforge.org'] = new Website('jamaicanpsalms.dev.scriptureforge.org', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
-		$sites['jamaicanpsalms.com'] = new Website('jamaicanpsalms.com', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
+		$sites['scriptureforge.local'] = new Website('scriptureforge.local', 'ScriptureForge', self::SCRIPTUREFORGE);
+		$sites['www.scriptureforge.org'] = new Website('www.scriptureforge.org', 'ScriptureForge', self::SCRIPTUREFORGE);
+		$sites['dev.scriptureforge.org'] = new Website('dev.scriptureforge.org', 'ScriptureForge', self::SCRIPTUREFORGE);
+		$sites['jamaicanpsalms.dev.scriptureforge.org'] = new Website('jamaicanpsalms.dev.scriptureforge.org', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
+		$sites['jamaicanpsalms.com'] = new Website('jamaicanpsalms.com', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
 		
 		// SCRIPTUREFORGE REDIRECTS
 		$redirect['scriptureforge.org'] = 'www.scriptureforge.org';
@@ -73,9 +73,9 @@ class Website {
 		$redirect['jamaicanpsalms.org'] = 'jamaicanpsalms.com';
 
 		// LANGUAGEFORGE WEBSITES
-		$sites['languageforge.local'] = new Website('languageforge.local', self::LANGUAGEFORGE);
-		$sites['www.languageforge.org'] = new Website('www.languageforge.org', self::LANGUAGEFORGE);
-		$sites['dev.languageforge.org'] = new Website('dev.languageforge.org', self::LANGUAGEFORGE);
+		$sites['languageforge.local'] = new Website('languageforge.local', 'LanguageForge', self::LANGUAGEFORGE);
+		$sites['www.languageforge.org'] = new Website('www.languageforge.org', 'LanguageForge', self::LANGUAGEFORGE);
+		$sites['dev.languageforge.org'] = new Website('dev.languageforge.org', 'LanguageForge', self::LANGUAGEFORGE);
 		
 		self::$_sites = $sites;
 		self::$_redirect = $redirect;
@@ -84,13 +84,14 @@ class Website {
 	/**
 	 * 
 	 * @param string $domain - domain / hostname of the website
-	 * @param string $base - either scriptureforge or languageforge
+	 * @param string $name - display name of the website
+	 * @param string $base - either 'scriptureforge' or 'languageforge'
 	 * @param string $theme - theme name
 	 * @param bool $ssl - whether or not to force HTTPS for this website
 	 */
-	public function __construct($domain, $base = self::SCRIPTUREFORGE, $theme = 'default', $ssl = false, $defaultProjectCode = '') {
+	public function __construct($domain, $name, $base = self::SCRIPTUREFORGE, $theme = 'default', $ssl = false, $defaultProjectCode = '') {
 		$this->domain = $domain;
-		$this->name = $domain;
+		$this->name = $name;
 		$this->base = $base;
 		$this->theme = $theme;
 		$this->ssl = $ssl;
@@ -120,13 +121,18 @@ class Website {
 		if (!$hostname) {
 			$hostname = $_SERVER['HTTP_HOST'];
 		}
-		if (array_key_exists($hostname, self::$_sites)) {
-			$website = self::$_sites[self::$_redirect[$hostname]];
-			$protocol = 'http';
-			if ($website->ssl) {
-				$protocol = 'https';
+		if (array_key_exists($hostname, self::$_redirect)) {
+			$redirectTo = self::$_redirect[$hostname];
+			if (array_key_exists($redirectTo, self::$_sites)) {
+				$website = self::$_sites[$redirectTo];
+				$protocol = 'http';
+				if ($website->ssl) {
+					$protocol = 'https';
+				}
+				return "$protocol://" . $website->domain;
+			} else {
+				throw new \Exception('Trying to redirect from $hostname to $redirectTo but $redirectTo is not a valid website!');
 			}
-			return "$protocol://" . $website->domain;
 		} else {
 			return '';
 		}
@@ -146,7 +152,7 @@ class Website {
 		if ($website) {
 			// check for https
 			if ($website->ssl && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "")) {
-				header("Location: https://" . $hostname . $_SERVER['REQUEST_URI']);
+				header("Location: " . $website->baseUrl() . $_SERVER['REQUEST_URI']);
 			} else {
 				return $website;
 			}
