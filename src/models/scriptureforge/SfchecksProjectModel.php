@@ -8,5 +8,11 @@ class SfchecksProjectModel extends SfProjectModel {
 		$this->rolesClass = 'models\scriptureforge\sfchecks\SfchecksRoles';
 		$this->appName = SfProjectModel::SFCHECKS_APP;
 	}
+	
+	public function getPublicSettings() {
+		$settings = parent::getPublicSettings();
+		// $settings['somethingElse'] = $this->somethingElse; // Add settings from child class, if any
+		return $settings;
+	}
 }
 ?>

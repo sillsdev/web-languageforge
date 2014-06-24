@@ -9,31 +9,22 @@
 				<div id="header-nav" class="pull-left">
 					<ul class="sf-menu">
 						<li><a href="/">Home</a></li>
+						<!--
 						<li><a href="/explore">Explore</a>
 							<ul>
 							<?php foreach($featuredProjects as $project): ?>
 								<li><a href="<?php echo "/projects/" . str_replace(" ", "_", strtolower($project['projectName'])); ?>"><?php echo $project['projectName']; ?></a></li>
 							<?php endforeach; ?>
-								<!--
-								<li><a href="#">Sub Menu Item 2</a>
-									<ul>
-										<li><a href="#">Another Sub Menu Item 1</a></li>
-										<li><a href="#">Another Sub Menu Item 2</a></li>
-										<li><a href="#">Another Sub Menu Item 3</a></li>
-									</ul>
-								</li>
-								-->
 							</ul>
 						</li>
+						-->
 						<li><a href="/learn_scripture_forge">Learn</a>
 							<ul>
 								<li><a href="/learn_faq">Frequently Asked Questions</a></li>
 								<li><a href="/learn_scripture_forge">About Scripture Forge</a></li>
 								<li><a href="/learn_expand_your_team">Expand Your Team</a></li>
-								<li><a href="/learn_contribute">Contribute</a></li>
 							</ul>
 						</li>
-						<li><a href="/learn_contribute">Contribute</a></li>
 						<li><a href="/discuss">Discuss</a></li>
 					</ul>
 				</div>

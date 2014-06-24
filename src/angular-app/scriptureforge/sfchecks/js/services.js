@@ -80,6 +80,12 @@ angular.module('sfchecks.services', ['jsonRpc'])
 		this.update_answer = function(questionId, model, callback) {
 			jsonRpc.call('question_update_answer', [questionId, model], callback);
 		};
+		this.update_answerExportFlag = function(questionId, answerId, isToBeExported, callback) {
+			jsonRpc.call('question_update_answerExportFlag', [questionId, answerId, isToBeExported], callback);
+		};
+		this.update_answerTags = function(questionId, answerId, tags, callback) {
+			jsonRpc.call('question_update_answerTags', [questionId, answerId, tags], callback);
+		};
 		this.remove_answer = function(questionId, answerId, callback) {
 			jsonRpc.call('question_remove_answer', [questionId, answerId], callback);
 		};
@@ -98,10 +104,11 @@ angular.module('sfchecks.services', ['jsonRpc'])
 		
 		// Utility functions
 		this.util = {};
-		this.util.calculateTitle = function(title, description) {
+		this.util.calculateTitle = function(title, description, charLimit) {
+			charLimit = charLimit || 50;
 			var questionTitleCalculated;
 			if (!title || title == '') {
-				var spaceIndex = description.indexOf(' ', 50);
+				var spaceIndex = description.indexOf(' ', charLimit);
 				var shortTitle;
 				if (spaceIndex > -1) {
 					shortTitle = description.slice(0, spaceIndex) + '...';

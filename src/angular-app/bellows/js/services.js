@@ -26,14 +26,17 @@ angular.module('bellows.services', ['jsonRpc'])
 		// TODO Paging CP 2013-07
 		jsonRpc.call('user_list', [], callback);
 	};
-	this.typeahead = function(term, projectIdToExclude, callback) {
+	this.typeahead = function(term, callback) {
+		jsonRpc.call('user_typeahead', [term], callback);
+	};
+	this.typeaheadExclusive = function(term, projectIdToExclude, callback) {
 		// projectIdToExclude's default value if not specified: '' (empty string)
 		if (typeof callback === 'undefined') {
 			// If called with just two parameters, this was typeahead(term, callback)
 			callback = projectIdToExclude;
 			projectIdToExclude = '';
 		}
-		jsonRpc.call('user_typeahead', [term, projectIdToExclude], callback);
+		jsonRpc.call('user_typeaheadExclusive', [term, projectIdToExclude], callback);
 	};
 	this.changePassword = function(userId, newPassword, callback) {
 		jsonRpc.call('change_password', [userId, newPassword], callback);
@@ -143,6 +146,17 @@ angular.module('bellows.services', ['jsonRpc'])
 		return false;
 	};
 	
+	this.getSetting = function(settings, key) {
+		if (settings) {
+			return settings[key];
+		} else {
+			return null; // Or undefined? Or false?
+		}
+	};
+	this.getProjectSetting = function(key) {
+		return this.getSetting($window.session.projectSettings, key);
+	};
+
 	this.session = function() {
 		return $window.session;
 	};
@@ -150,7 +164,15 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.getCaptchaSrc = function(callback) {
 		jsonRpc.call('get_captcha_src', [], callback);
 	};
-	
+
+	this.refresh = function(callback) {
+		jsonRpc.connect('/api/sf');
+		jsonRpc.call('session_getSessionData', [], function(newSessionData) {
+			$window.session = newSessionData;
+			(callback || angular.noop)();
+		});
+	};
+
 }])
 .service('sfchecksLinkService', function() {
 	this.href = function(url, text) {
