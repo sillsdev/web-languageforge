@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'angularFileUpload', 'ngSanitize', 'ngRoute'])
-.controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService',
-                              function($scope, questionService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice) {
+.controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService', 'modalService',
+                              function($scope, questionService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice, modalService) {
 	var Q_TITLE_LIMIT = 50;
 	var textId = $routeParams.textId;
 	$scope.textId = textId;
@@ -149,7 +149,13 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		} else {
 			message = "Are you sure you want to archive the " + questionIds.length + " selected questions?";
 		}
-		if (window.confirm(message)) {
+		var modalOptions = {
+			closeButtonText: 'Cancel',
+			actionButtonText: 'Archive',
+			headerText: 'Archive Questions?',
+			bodyText: message
+		};
+		modalService.showModal({}, modalOptions).then(function (result) {
 			questionService.archive(questionIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
@@ -161,7 +167,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 					}
 				}
 			});
-		}
+		});
 	};
 	
 	// Add question
@@ -219,8 +225,8 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	};
 	
 }])
-.controller('QuestionsSettingsCtrl', ['$scope', '$http', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService',
-                                      function($scope, $http, ss, $routeParams, breadcrumbService, notice, textService, questionService, sfchecksLinkService) {
+.controller('QuestionsSettingsCtrl', ['$scope', '$http', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService', 'modalService',
+                                      function($scope, $http, ss, $routeParams, breadcrumbService, notice, textService, questionService, sfchecksLinkService, modalService) {
 	var Q_TITLE_LIMIT = 50;
 	var textId = $routeParams.textId;
 	$scope.textId = textId;
@@ -282,15 +288,31 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	};
 	
 	$scope.editPreviousText = function() {
-		var yesImSure = false;
-		yesImSure = confirm("Caution: Editing the USX text can be dangerous. You can easily mess up your text with a typo. Are you really sure you want to do this?");
-		if (!yesImSure) { return; }
-		if ($scope.editedText.content && $scope.editedText.content != $scope.dto.text.content) {
-			// Wait; the user had already entered text. Pop up ANOTHER confirm box.
-			yesImSure = confirm("Caution: You had previous edits in the USX text box, which will be replaced if you proceed. Are you really sure you want to throw away your previous edits?");
-			if (!yesImSure) { return; }
-		}
-		$scope.editedText.content = $scope.dto.text.content;
+		var msg;
+		msg = "Caution: Editing the USX text can be dangerous. You can easily mess up your text with a typo. Are you really sure you want to do this?";
+		var modalOptions = {
+			closeButtonText: 'Cancel',
+			actionButtonText: 'Edit',
+			headerText: 'Edit USX text?',
+			bodyText: msg
+		};
+		modalService.showModal({}, modalOptions).then(function (result) {
+			if ($scope.editedText.content && $scope.editedText.content != $scope.dto.text.content) {
+				// Wait; the user had already entered text. Pop up ANOTHER confirm box.
+				msg = "Caution: You had previous edits in the USX text box, which will be replaced if you proceed. Are you really sure you want to throw away your previous edits?";
+				var modalOptions = {
+					closeButtonText: 'Cancel',
+					actionButtonText: 'Replace',
+					headerText: 'Replace previous edits?',
+					bodyText: msg
+				};
+				modalService.showModal({}, modalOptions).then(function (result) {
+					$scope.editedText.content = $scope.dto.text.content;
+				});
+			} else {
+				$scope.editedText.content = $scope.dto.text.content;
+			}
+		});
 	};
 	
 	$scope.onUsxFile = function($files) {

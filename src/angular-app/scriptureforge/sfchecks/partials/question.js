@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'sgw.soundmanager', 'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice'])
-.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService',
-                             function($scope, $routeParams, questionService, ss, breadcrumbService, notice, linkService) {
+.controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService', 'modalService',
+                             function($scope, $routeParams, questionService, ss, breadcrumbService, notice, linkService, modalService) {
 	var Q_TITLE_LIMIT = 30;
 	$scope.finishedLoading = false;
 	$scope.state = 'stop';
@@ -330,7 +330,14 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	};
 	
 	$scope.commentDelete = function(answer, commentId) {
-		if (window.confirm("Are you sure you want to delete this Comment?")) {
+		var message = "Are you sure you want to delete this Comment?";
+		var modalOptions = {
+			closeButtonText: 'Cancel',
+			actionButtonText: 'Delete',
+			headerText: 'Delete Comment?',
+			bodyText: message
+		};
+		modalService.showModal({}, modalOptions).then(function (result) {
 			questionService.remove_comment(questionId, answer.id, commentId, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "The comment was removed successfully");
@@ -338,7 +345,7 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 					delete answer.comments[commentId];
 				}
 			});
-		}
+		});
 	};
 
 	var afterUpdateAnswer = function(answersDto) {
@@ -409,7 +416,14 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 	};
 	
 	$scope.answerDelete = function(answerId) {
-		if (window.confirm("Are you sure you want to delete this Answer?")) {
+		var message = "Are you sure you want to delete this Answer?";
+		var modalOptions = {
+			closeButtonText: 'Cancel',
+			actionButtonText: 'Delete',
+			headerText: 'Delete Answer?',
+			bodyText: message
+		};
+		modalService.showModal({}, modalOptions).then(function (result) {
 			questionService.remove_answer(questionId, answerId, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "The answer was removed successfully");
@@ -419,7 +433,7 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 					$scope.question.answerCount = Object.keys($scope.question.answers).length;
 				}
 			});
-		}
+		});
 	};
 
 	$scope.selectedText = '';

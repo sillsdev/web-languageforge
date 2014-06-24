@@ -103,26 +103,13 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 			message = "Are you sure you want to archive the " + textIds.length + " selected texts?";
 		}
 		// The commented modalService below can be used instead of the window.confirm alert, but must change E2E tests using alerts. IJH 2014-06
-//		var modalOptions = {
-//			closeButtonText: 'Cancel',
-//			actionButtonText: 'Archive',
-//			headerText: 'Archive Texts?',
-//			bodyText: message
-//		};
-//		modalService.showModal({}, modalOptions).then(function (result) {
-//			textService.archive(textIds, function(result) {
-//				if (result.ok) {
-//					$scope.selected = []; // Reset the selection
-//					$scope.getPageDto();
-//					if (textIds.length == 1) {
-//						notice.push(notice.SUCCESS, "The text was archived successfully");
-//					} else {
-//						notice.push(notice.SUCCESS, "The texts were archived successfully");
-//					}
-//				}
-//			});
-//		});
-		if (window.confirm(message)) {
+		var modalOptions = {
+			closeButtonText: 'Cancel',
+			actionButtonText: 'Archive',
+			headerText: 'Archive Texts?',
+			bodyText: message
+		};
+		modalService.showModal({}, modalOptions).then(function (result) {
 			textService.archive(textIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
@@ -134,7 +121,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 					}
 				}
 			});
-		}
+		});
 	};
 	
 	// Add Text
