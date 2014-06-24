@@ -30,14 +30,14 @@ $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), tr
 $projectNames = array($constants['testProjectName'], $constants['otherProjectName']);
 foreach ($projectNames as $name) {
 	$projectModel = new ProjectModel();
-	$projectModel->projectname = $name;
+	$projectModel->projectName = $name;
 	$db = \models\mapper\MongoStore::connect($projectModel->databaseName());
 	foreach ($db->listCollections() as $collection) { $collection->drop(); }
 }
 
 // drop the third database because it is used in a rename test
 $projectModel = new ProjectModel();
-$projectModel->projectname = $constants['thirdProjectName'];
+$projectModel->projectName = $constants['thirdProjectName'];
 $db = \models\mapper\MongoStore::dropDB($projectModel->databaseName());
 
 $adminUser = UserCommands::createUser(array(
@@ -70,9 +70,9 @@ $memberUser = UserCommands::createUser(array(
 
 $testProject = ProjectCommands::createProject(
 	$constants['testProjectName'],
-	SfProjectModel::SFCHECKS_APP, // TODO: Find out if there's a better constant for this. 2014-05 RM
+	SfProjectModel::SFCHECKS_APP,
 	$adminUser,
-	Website::SCRIPTUREFORGE
+	Website::get('scriptureforge.local')
 );
 $testProjectModel = new ProjectModel($testProject);
 $testProjectModel->projectCode = $constants['testProjectCode'];
@@ -81,9 +81,9 @@ $testProjectModel->write();
 
 $otherProject = ProjectCommands::createProject(
 	$constants['otherProjectName'],
-	SfProjectModel::SFCHECKS_APP, // TODO: Find out if there's a better constant for this. 2014-05 RM
+	SfProjectModel::SFCHECKS_APP,
 	$adminUser,
-	Website::SCRIPTUREFORGE
+	Website::get('scriptureforge.local')
 );
 $otherProjectModel = new ProjectModel($otherProject);
 $otherProjectModel->projectCode = $constants['otherProjectCode'];

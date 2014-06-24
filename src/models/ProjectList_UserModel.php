@@ -38,7 +38,7 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 		} else {
 			$query = array('siteName' => array('$in' => array($this->_site)), 'isArchived' => array('$ne' => true));
 		}
-		$fields = array('projectname', 'appName', 'themeName', 'siteName');
+		$fields = array('projectName', 'appName', 'siteName');
 		
 		return $this->_mapper->readList($this, $query, $fields);
 	}
@@ -49,13 +49,13 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 	 */
 	function readUserProjects($userId) {
 		$query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array($this->_site)), 'isArchived' => array('$ne' => true));
-		$fields = array('projectname', 'appName', 'themeName', 'siteName');
+		$fields = array('projectName', 'appName', 'siteName');
 		
 		$this->_mapper->readList($this, $query, $fields);
 		
 		// Default sort list on project names
 		usort($this->entries, function ($a, $b) {
-			$sortOn = 'projectname';
+			$sortOn = 'projectName';
 			if (array_key_exists($sortOn, $a) &&
 			array_key_exists($sortOn, $b)){
 				return (strtolower($a[$sortOn]) > strtolower($b[$sortOn])) ? 1 : -1;

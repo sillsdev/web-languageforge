@@ -1,5 +1,5 @@
 <div data-ng-show="finishedLoading">
-<h2 style="font-weight:normal">{{project.projectname}} Settings</h2>
+<h2 style="font-weight:normal">{{project.projectName}} Settings</h2>
 			
 <tabset>
 	<tab heading="Members" data-ng-controller="ProjectSettingsUsersCtrl">
@@ -123,13 +123,7 @@
 		<form class="well" data-ng-submit="updateProject()">
 		<fieldset>
 			<label>Project Name</label>
-			<input type="text" placeholder="project name" data-ng-model="project.projectname"/>
-			<label>Project Theme</label>
-			<div class="control-group">
-				<select required data-ng-model="project.themeName" data-ng-options="themeName for themeName in themeNames">
-					<option value="">-- select theme --</option>
-				</select>
-			</div>
+			<input type="text" placeholder="project name" data-ng-model="project.projectName"/>
 			<!-- Project Code is not used now that we have themes, however a project page customization would still use this. IJH 2014-06
 			<label>Project Code</label>
 			<input type="text" placeholder="project code" data-ng-model="project.projectCode"/>

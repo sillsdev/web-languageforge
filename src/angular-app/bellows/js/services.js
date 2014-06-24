@@ -120,8 +120,8 @@ angular.module('bellows.services', ['jsonRpc'])
 		return $window.session.fileSizeMax;
 	};
 	
-	this.site = function() {
-		return $window.session.site;
+	this.baseSite = function() {
+		return $window.session.baseSite;
 	};
 	
 	this.domain = {

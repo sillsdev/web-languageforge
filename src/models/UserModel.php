@@ -2,9 +2,7 @@
 
 namespace models;
 
-use models\scriptureforge\SfProjectList_UserModel;
 
-use models\languageforge\LfProjectList_UserModel;
 
 use libraries\shared\Website;
 

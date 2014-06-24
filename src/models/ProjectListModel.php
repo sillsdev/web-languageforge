@@ -21,7 +21,7 @@ class ProjectListModel extends \models\mapper\MapperListModel
 		parent::__construct(
 			ProjectModelMongoMapper::instance(),
 			array(),
-			array('projectname', 'language')
+			array('projectName', 'language')
 		);
 	}
 }

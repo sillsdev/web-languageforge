@@ -58,7 +58,8 @@ if (defined('ENVIRONMENT'))
  *
  */
 	require_once 'libraries/shared/Website.php';
-	$site = \libraries\shared\Website::getSiteName();
+	$website = \libraries\shared\Website::getOrRedirect();
+	$site = $website->base;
 	//$system_path = '/var/www/scriptureforge.org_dev/lib/CodeIgniter_2.1.3/system';
 	$system_path = "/var/www/$site.org_dev/lib/CodeIgniter_2.1.3/system";
 

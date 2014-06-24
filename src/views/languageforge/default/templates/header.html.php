@@ -14,7 +14,8 @@
 								<li><a href="#">Jamaica Project 2</a></li>
 								<li><a href="#">Jamaica Project 3</a></li>
 								<?php foreach($featuredProjects as $project): ?>
-											<li><a href="<?php echo "/app/project/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+											<!--  not sure about this <li><a href="<?php echo "/app/" . $project['appName'] . "/" . $project['id'] . "/"; ?>"><?php echo $project['projectName']; ?></a></li>-->
+											<li><a href="<?php echo "/app/project/" . $project['id']; ?>"><?php echo $project['projectName']; ?></a></li>
 								<?php endforeach;?>
 							</ul>
 						</li>
@@ -34,16 +35,9 @@
 							<ul class="sf-menu">
 								<li><a href="/app/projects">My Projects</a>
 									<ul>
-										<?php foreach($projects as $project): ?>
-											<?php 
-											$theme = '';
-											if ($project['themeName'] != 'default') {
-												$theme = $project['themeName'] . '.';
-											}
-											?>
-		
-											<li><a href="<?php echo "//$theme$hostname/app/" . $project['appName'] . "#/p/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
-										<?php endforeach;?>
+									<?php foreach($projects as $project): ?>
+										<li><a href="<?php echo "/app/" . $project['appName'] . "/" . $project['id'] . "/"; ?>"><?php echo $project['projectName']; ?></a></li>
+									<?php endforeach;?>
 									</ul>
 								</li>
 							</ul>
