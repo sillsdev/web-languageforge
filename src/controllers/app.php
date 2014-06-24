@@ -24,11 +24,15 @@ class App extends Secure_base {
 		$data['baseSite'] = $this->website->base; // used to add the right minified JS file
 		$data['appFolder'] = $appFolder;
 		
+		// update the projectId in the session if it is not empty
+		if ($projectId) {
 			$this->session->set_userdata('projectId', $projectId);
+		} else {
+			$projectId = (string)$this->session->userdata('projectId');
 		}
 		
 		// Other session data
-		$sessionData = SessionCommands::getSessionData($projectId, (string)$this->session->userdata('user_id'));
+		$sessionData = SessionCommands::getSessionData($projectId, (string)$this->session->userdata('user_id'), $this->website);
 		$jsonSessionData = json_encode($sessionData);
 		$data['jsonSession'] = $jsonSessionData;
 
