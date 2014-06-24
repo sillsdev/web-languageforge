@@ -60,7 +60,7 @@ class Website {
 		$redirect = array();
 		
 		// SCRIPTUREFORGE WEBSITES
-		$sites['scriptureforge.local'] = new Website('scriptureforge.local', 'ScriptureForge', self::SCRIPTUREFORGE);
+		$sites['scriptureforge.local'] = new Website('scriptureforge.local', 'ScriptureForge', self::SCRIPTUREFORGE, 'default', true);
 		$sites['www.scriptureforge.org'] = new Website('www.scriptureforge.org', 'ScriptureForge', self::SCRIPTUREFORGE);
 		$sites['dev.scriptureforge.org'] = new Website('dev.scriptureforge.org', 'ScriptureForge', self::SCRIPTUREFORGE);
 		$sites['jamaicanpsalms.dev.scriptureforge.org'] = new Website('jamaicanpsalms.dev.scriptureforge.org', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
@@ -161,23 +161,9 @@ class Website {
 			if ($url) {
 				header("Location: $url", true, 302); 
 			} else {
-				return null;	
+				header("Location: http://" . substr($hostname, strpos($hostname, '.')+1), true, 302); 
 			}
 		}
-	}
-	
-	/**
-	 * 
-	 * @param string $hostname - HTTP_HOST header or equivalent
-	 * @return string - returns the second to last token in the domain name. Ideally returns either 'scriptureforge' or 'languageforge'
-	 */
-	public static function guessBaseSite($hostname = '') {
-		if (!$hostname) {
-			$hostname = $_SERVER['HTTP_HOST'];
-		}
-		$uriParts = explode('.', $hostname);
-		array_pop($uriParts); // pop off the .org
-		return array_pop($uriParts);
 	}
 	
 	public function baseUrl() {

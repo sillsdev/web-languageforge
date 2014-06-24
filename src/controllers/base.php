@@ -30,10 +30,7 @@ class Base extends CI_Controller {
 	public function __construct() {
 		parent::__construct();
 		
-		$website = Website::getOrRedirect();
-		if (!$website) {
-			show_404(Website::guessBaseSite()); // this terminates PHP
-		}
+		$website = Website::get();
 		$this->load->library('ion_auth');
 		$this->_isLoggedIn = $this->ion_auth->logged_in();
 		if ($this->_isLoggedIn) {
