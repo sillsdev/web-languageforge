@@ -60,12 +60,17 @@ class Website {
 		$redirect = array();
 		
 		// SCRIPTUREFORGE WEBSITES
-		$sites['scriptureforge.local'] = new Website('scriptureforge.local', 'ScriptureForge', self::SCRIPTUREFORGE, 'default', true);
-		$sites['www.scriptureforge.org'] = new Website('www.scriptureforge.org', 'ScriptureForge', self::SCRIPTUREFORGE);
-		$sites['dev.scriptureforge.org'] = new Website('dev.scriptureforge.org', 'ScriptureForge', self::SCRIPTUREFORGE);
+		$sites['scriptureforge.local'] = new Website('scriptureforge.local', 'Scripture Forge', self::SCRIPTUREFORGE, 'default', true);
+		$sites['jamaicanpsalms.scriptureforge.local'] = new Website('jamaicanpsalms.scriptureforge.local', 'Jamaican Psalms', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
+		$sites['demo.scriptureforge.local'] = new Website('demo.scriptureforge.local', 'Scripture Forge', self::SCRIPTUREFORGE, 'simple', true);
+
+		$sites['dev.scriptureforge.org'] = new Website('dev.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE, 'default', true);
+		$sites['demo.dev.scriptureforge.org'] = new Website('demo.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE, 'simple', true);
 		$sites['jamaicanpsalms.dev.scriptureforge.org'] = new Website('jamaicanpsalms.dev.scriptureforge.org', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
-		$sites['jamaicanpsalms.com'] = new Website('jamaicanpsalms.com', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
 		
+		$sites['www.scriptureforge.org'] = new Website('www.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE);
+		$sites['jamaicanpsalms.com'] = new Website('jamaicanpsalms.com', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
+
 		// SCRIPTUREFORGE REDIRECTS
 		$redirect['scriptureforge.org'] = 'www.scriptureforge.org';
 		$redirect['www.jamaicanpsalms.com'] = 'jamaicanpsalms.com';
