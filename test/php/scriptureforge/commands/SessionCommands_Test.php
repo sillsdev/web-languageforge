@@ -35,12 +35,17 @@ class SessionTestEnvironment {
 	 * @var string
 	 */
 	public $userId;
+	
+	public $website;
 
 	public function create() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
+		$this->website = $e->website;
 	
 		$this->project = $e->createProject(SF_TESTPROJECT);
+		$this->project->appName = 'sfchecks';
+		$this->project->write();
 		$this->question = new QuestionModel($this->project);
 		$this->question->write();
 	
@@ -55,7 +60,7 @@ class TestSessionCommands extends UnitTestCase {
 	function testSessionData_userIsNotPartOfProject() {
 		$e = new SessionTestEnvironment();
 		$e->create();
-		$data = SessionCommands::getSessionData($e->projectId, $e->userId);
+		$data = SessionCommands::getSessionData($e->projectId, $e->userId, $e->website);
 
 		// Session data should contain a userId and projectId
 		$this->assertTrue(array_key_exists('userId', $data));
@@ -66,8 +71,8 @@ class TestSessionCommands extends UnitTestCase {
 		$this->assertEqual($data['projectId'], $e->projectId);
 
 		// Session data should also contain "site", a string...
-		$this->assertTrue(array_key_exists('site', $data));
-		$this->assertTrue(is_string($data['site']));
+		$this->assertTrue(array_key_exists('baseSite', $data));
+		$this->assertTrue(is_string($data['baseSite']));
 		// ... and "fileSizeMax", an integer
 		$this->assertTrue(array_key_exists('fileSizeMax', $data));
 		$this->assertTrue(is_integer($data['fileSizeMax']));
@@ -96,7 +101,7 @@ class TestSessionCommands extends UnitTestCase {
 		$e = new SessionTestEnvironment();
 		$e->create();
 		ProjectCommands::updateUserRole($e->projectId, $e->userId);
-		$data = SessionCommands::getSessionData($e->projectId, $e->userId);
+		$data = SessionCommands::getSessionData($e->projectId, $e->userId, $e->website);
 
 		// Session data should contain user project rights, an array of integers
 		$this->assertTrue(array_key_exists('userProjectRights', $data));
