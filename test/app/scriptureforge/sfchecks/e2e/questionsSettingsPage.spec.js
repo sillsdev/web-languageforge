@@ -39,14 +39,11 @@ describe('the project settings page - project manager', function() {
 			page.editTextTab.letMeEditLink.click();
 			// Should pop up two alerts in a row
 			// First alert: "This is dangerous, are you sure?"
-			util.waitForAlert();
-			var alert = browser.switchTo().alert();
-			alert.accept();
+			util.checkModalTextMatches('Caution: Editing the USX text can be dangerous');
+			util.clickModalButton('Edit');
 			// Second alert: "You have previous edits which will be replaced, are you really sure?"
-			browser.sleep(100);
-			util.waitForAlert();
-			alert = browser.switchTo().alert();
-			alert.accept();
+			util.checkModalTextMatches('Caution: You had previous edits in the USX text box');
+			util.clickModalButton('Replace');
 			// TODO: Check alert text for one or both alerts (see http://stackoverflow.com/a/19884387/2314532)
 			expect(page.editTextTab.contentEditor.getAttribute('value')).toBe(constants.testText1Content);
 		});

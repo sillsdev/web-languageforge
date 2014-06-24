@@ -71,8 +71,7 @@ var SfProjectsPage = function() {
 			elem.click();
 			page.deleteBtn.click();
 			// Clicking the delete button pops up an "are you sure?" alert
-			var alert = browser.switchTo().alert();
-			alert.accept();
+			util.clickModalButton('Archive');
 		});
 	};
 

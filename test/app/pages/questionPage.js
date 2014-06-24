@@ -64,9 +64,7 @@ var SfQuestionPage = function() {
 			//console.log('should delete answer at index ' + index);
 			page.answers.list.get(index).$('.answer').findElement(by.linkText('delete')).click();
 		}
-		util.waitForAlert();
-		var alert = browser.switchTo().alert();
-		alert.accept();
+		util.clickModalButton('Delete');
 	};
 	
 	// Flag for Export
@@ -144,9 +142,7 @@ var SfQuestionPage = function() {
 			//console.log('should delete comment at index ' + index);
 			page.comments.list.get(index).findElement(by.linkText('delete')).click();
 		};
-		util.waitForAlert();
-		var alert = browser.switchTo().alert();
-		alert.accept();
+		util.clickModalButton('Delete');
 	};
 	
 };
