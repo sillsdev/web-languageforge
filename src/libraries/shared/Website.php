@@ -109,12 +109,23 @@ class Website {
 	 */
 	public static function get($hostname = '') {
 		if (!$hostname) {
-			$hostname = $_SERVER['HTTP_HOST'];
+			$hostname = self::getHostname();
 		}
 		if (array_key_exists($hostname, self::$_sites)) {
 			return self::$_sites[$hostname];
 		} else {
 			return null;
+		}
+	}
+	
+	private static function getHostname() {
+		// special exception for reverse proxy on dev.scriptureforge.org
+		if (array_key_exists('HTTP_X_FORWARDED_SERVER', $_SERVER) &&
+				array_key_exists('HTTP_FORWARDED_HOST', $_SERVER) &&
+				$_SERVER['HTTP_X_FORWARDED_SERVER'] == 'dev.scriptureforge.org') {
+			return $_SERVER['HTTP_X_FORWARDED_HOST'];	
+		} else {
+			return $_SERVER['HTTP_HOST'];
 		}
 	}
 	
@@ -124,7 +135,7 @@ class Website {
 	 */
 	public static function getRedirect($hostname = '') {
 		if (!$hostname) {
-			$hostname = $_SERVER['HTTP_HOST'];
+			$hostname = self::getHostname();
 		}
 		if (array_key_exists($hostname, self::$_redirect)) {
 			$redirectTo = self::$_redirect[$hostname];
@@ -151,7 +162,7 @@ class Website {
 	 */
 	public static function getOrRedirect($hostname = '') {
 		if (!$hostname) {
-			$hostname = $_SERVER['HTTP_HOST'];
+			$hostname = self::getHostname();
 		}
 		$website = self::get($hostname);
 		if ($website) {
