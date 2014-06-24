@@ -25,8 +25,8 @@ var SfProjectsPage = function() {
 	this.itemsPerPageCtrl = element(by.model('itemsPerPage'));
 	this.projectsCtrl =     element(by.repeater('project in visibleProjects'));
 	this.projectsList = element.all(by.repeater('project in visibleProjects'));
-	this.projectNames = element.all(by.repeater('project in visibleProjects').column('{{project.projectname}}'));
-	this.projectTypes = element.all(by.repeater('project in visibleProjects').column('{{project.projectname}} ({{projectTypes[project.appName]}})'));
+	this.projectNames = element.all(by.repeater('project in visibleProjects').column('{{project.projectName}}'));
+	this.projectTypes = element.all(by.repeater('project in visibleProjects').column('{{project.projectName}} ({{projectTypes[project.appName]}})'));
 
 	this.select100ItemsPerPage = function() {
 		if (false) {

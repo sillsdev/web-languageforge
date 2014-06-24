@@ -62,13 +62,13 @@ class Sf
 	
 	private $_controller;
 	
-	private $_site;
+	private $_website;
 	
 	public function __construct($controller) {
 		$this->_userId = (string)$controller->session->userdata('user_id');
 		$this->_projectId = (string)$controller->session->userdata('projectId');
 		$this->_controller = $controller;
-		$this->_site = Website::getSiteName();
+		$this->_website = Website::get();
 
 		// "Kick" session every time we use an API call, so it won't time out
 		$this->update_last_activity();
@@ -155,7 +155,7 @@ class Sf
 	 * @return CreateSimpleDto
 	 */
 	public function user_createSimple($userName) {
-		return UserCommands::createSimple($userName, $this->_projectId, $this->_userId);
+		return UserCommands::createSimple($userName, $this->_projectId, $this->_userId, $this->_website);
 	}
 	
 	// TODO Pretty sure this is going to want some paging params
@@ -185,12 +185,12 @@ class Sf
 	}
 	
 	/**
-	 * Register a new user with password
-	 * @param UserModel $json
+	 * Register a new user with password and optionally add them to a project if allowed by permissions
+	 * @param array $params
 	 * @return string Id of written object
 	 */
 	public function user_register($params) {
-		return UserCommands::register($params, $this->_controller->session->userdata('captcha_info'), $_SERVER['HTTP_HOST']);
+		return UserCommands::register($params, $this->_controller->session->userdata('captcha_info'), $this->_website);
 	}
 	
 	public function user_create($params) {
@@ -210,7 +210,7 @@ class Sf
 	}
 	
 	public function user_sendInvite($toEmail) {
-		return UserCommands::sendInvite($this->_userId, $toEmail, $this->_projectId, $_SERVER['HTTP_HOST']);
+		return UserCommands::sendInvite($this->_projectId, $this->_userId, $this->_website, $toEmail);
 	}
 	
 	
@@ -227,7 +227,7 @@ class Sf
 	 * @return string - projectId
 	 */
 	public function project_create($projectName, $appName) {
-		return ProjectCommands::createProject($projectName, $appName, $this->_userId, $this->_site);
+		return ProjectCommands::createProject($projectName, $appName, $this->_userId, $this->_website);
 	}
 	
 	/**
@@ -258,7 +258,7 @@ class Sf
 	}
 	
 	public function project_list_dto() {
-		return ProjectListDto::encode($this->_userId, $this->_site);
+		return \models\shared\dto\ProjectListDto::encode($this->_userId, $this->_website->domain);
 	}
 	
 	public function project_joinProject($projectId, $role) {
@@ -280,13 +280,18 @@ class Sf
 	}
 	
 	
+	// todo: implement the UI for this in angular
+	public function projectcode_exists($code) {
+		return ProjectCommands::projectCodeExists($this->_website, $code);
+	}
+	
 	
 	//---------------------------------------------------------------
 	// Activity Log
 	//---------------------------------------------------------------
 
 	public function activity_list_dto() {
-		return \models\shared\dto\ActivityListDto::getActivityForUser($this->_site, $this->_userId);
+		return \models\shared\dto\ActivityListDto::getActivityForUser($this->_website->domain, $this->_userId);
 	}
 	
 	

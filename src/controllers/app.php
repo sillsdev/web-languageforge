@@ -10,27 +10,29 @@ require_once 'secure_base.php';
 class App extends Secure_base {
 	
 	public function view($app = 'main', $projectId = '') {
-		$appFolder = "angular-app/" . $this->site . "/$app";
+		$appFolder = "angular-app/" . $this->website->base . "/$app";
 		if (!file_exists($appFolder)) {
 			$appFolder = "angular-app/bellows/apps/$app";
 			if (!file_exists($appFolder)) {
-				show_404($this->site); // this terminates PHP
+				show_404($this->website->base); // this terminates PHP
 			}
 		}
 		if ($projectId == 'favicon.ico') { $projectId = ''; }
 	
 		$data = array();
 		$data['appName'] = $app;
-		$data['site'] = $this->site;
+		$data['baseSite'] = $this->website->base; // used to add the right minified JS file
 		$data['appFolder'] = $appFolder;
 		
-		// add projectId to the session
-		if ($projectId != '') {
+		// update the projectId in the session if it is not empty
+		if ($projectId) {
 			$this->session->set_userdata('projectId', $projectId);
+		} else {
+			$projectId = (string)$this->session->userdata('projectId');
 		}
 		
 		// Other session data
-		$sessionData = SessionCommands::getSessionData($projectId, (string)$this->session->userdata('user_id'));
+		$sessionData = SessionCommands::getSessionData($projectId, (string)$this->session->userdata('user_id'), $this->website);
 		$jsonSessionData = json_encode($sessionData);
 		$data['jsonSession'] = $jsonSessionData;
 
@@ -50,7 +52,7 @@ class App extends Secure_base {
 		self::addCssFiles("angular-app/bellows/css", $data['cssFiles']);
 		self::addCssFiles($appFolder, $data['cssFiles']);
 
-		$data['title'] = $this->site;
+		$data['title'] = $this->website->name;
 		
 		$this->renderPage("angular-app", $data);
 	}

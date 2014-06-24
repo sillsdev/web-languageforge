@@ -49,7 +49,7 @@ class ProjectListDto
 		
 		// Default sort list on project names
 		usort($data['entries'], function ($a, $b) {
-			$sortOn = 'projectname';
+			$sortOn = 'projectName';
 			if (array_key_exists($sortOn, $a) &&
 				array_key_exists($sortOn, $b)){
 				return (strtolower($a[$sortOn]) > strtolower($b[$sortOn])) ? 1 : -1;

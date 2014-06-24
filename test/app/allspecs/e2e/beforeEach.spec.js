@@ -1,8 +1,10 @@
 'use strict';
 
+var appFrame = require('../../pages/appFrame.js');
+var body = require('../../pages/pageBody.js');
 afterEach(function() {
-	var appFrame = require('../../pages/appFrame.js');
 	//browser.ignoreSyncronization = true;
 	expect(appFrame.errorMessage.isPresent()).toBe(false);
+	expect(body.phpError.isPresent()).toBe(false);
 	//browser.ignoreSyncronization = false;
 });

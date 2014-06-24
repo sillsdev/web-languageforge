@@ -232,6 +232,9 @@ describe('Activity Page E2E Test', function() {
 				// Show all activity
 				activityPage.clickOnAllActivity();
 				
+				// cjh note: maybe we need to put a waitForAngular() at this point to ensure that this test does not fail prematurely
+				
+				
 				// Expect the last activity to be performed by admin
 				activityPage.getLength().then(function(len) {
 					activityText = activityPage.getActivityText(len - 1);

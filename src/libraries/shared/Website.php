@@ -9,80 +9,199 @@ class Website {
 	const SCRIPTUREFORGE = 'scriptureforge';
 	const LANGUAGEFORGE = 'languageforge';
 	
-	public static function normalizeUrl($url = '') {
-		return $url;
-	}
+	/**
+	 * 
+	 * @var string - the domain / hostname of the website
+	 */
+	public $domain;
 	
-	// return 'http' or 'https'
-	public static function getProtocolForHostName($hostName = '') {
-		if (!$hostName) {
-			$hostName = $_SERVER['HTTP_HOST'];
-		}
-		$default = 'http'; // Default to HTTP without specific reason for HTTPS
-		$projectName = ProjectModel::domainToProjectCode($hostName);
-		switch ($projectName) {
-			case "jamaicanpsalms":
-				$result = 'https';
-				break;
-			default:
-				$result = $default;
-		}
-		return $result;
-	}
+	/**
+	 * 
+	 * @var string
+	 */
+	public $name;
 	
+	/**
+	 * 
+	 * @var string - the theme name of this website
+	 */
+	public $theme;
 	
-	public static function getSiteName($domainName = '') {
-		if (!$domainName) {
-			$domainName = $_SERVER['HTTP_HOST'];
-		}
-		$uriParts = explode('.', $domainName);
-		array_pop($uriParts); // pop off the .org
-		$site = array_pop($uriParts);
+	/**
+	 * 
+	 * @var bool - whether or not to force HTTPS for this website
+	 */
+	public $ssl;
+	
+	/**
+	 * 
+	 * @var string - the base site for this website: either scriptureforge or languageforge
+	 */
+	public $base;
+	
+	/**
+	 * 
+	 * @var string - the name of the default project for this site, if any
+	 */
+	public $defaultProjectCode;
+	
+	/**
+	 * 
+	 * @var array<Website>
+	 */
+	private static $_sites;
+	/**
+	 * 
+	 * @var array
+	 */
+	private static $_redirect;
+	public static function init() {
+		$sites = array();
+		$redirect = array();
+		
+		// SCRIPTUREFORGE WEBSITES
+		$sites['scriptureforge.local'] = new Website('scriptureforge.local', 'ScriptureForge', self::SCRIPTUREFORGE);
+		$sites['www.scriptureforge.org'] = new Website('www.scriptureforge.org', 'ScriptureForge', self::SCRIPTUREFORGE);
+		$sites['dev.scriptureforge.org'] = new Website('dev.scriptureforge.org', 'ScriptureForge', self::SCRIPTUREFORGE);
+		$sites['jamaicanpsalms.dev.scriptureforge.org'] = new Website('jamaicanpsalms.dev.scriptureforge.org', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
+		$sites['jamaicanpsalms.com'] = new Website('jamaicanpsalms.com', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
+		
+		// SCRIPTUREFORGE REDIRECTS
+		$redirect['scriptureforge.org'] = 'www.scriptureforge.org';
+		$redirect['www.jamaicanpsalms.com'] = 'jamaicanpsalms.com';
+		$redirect['www.jamaicanpsalms.org'] = 'jamaicanpsalms.com';
+		$redirect['jamaicanpsalms.org'] = 'jamaicanpsalms.com';
 
-		// exception list for custom standalone domains
-		if ($site == 'jamaicanpsalms') {
-			$site = self::SCRIPTUREFORGE;
-		}
-
-		return $site;
-	}
-	
-	public static function getHostName($domainName = '') {
-		if (!$domainName) {
-			$domainName = $_SERVER['HTTP_HOST'];
-		}
-		$uriParts = explode('.', $domainName);
-		$stopWords = array(self::LANGUAGEFORGE, self::SCRIPTUREFORGE, 'www', 'dev');
-		while (count($uriParts) > 0 && !in_array($uriParts[0], $stopWords)) {
-			array_shift($uriParts);
-		}
-		return implode('.', $uriParts);
+		// LANGUAGEFORGE WEBSITES
+		$sites['languageforge.local'] = new Website('languageforge.local', 'LanguageForge', self::LANGUAGEFORGE);
+		$sites['www.languageforge.org'] = new Website('www.languageforge.org', 'LanguageForge', self::LANGUAGEFORGE);
+		$sites['dev.languageforge.org'] = new Website('dev.languageforge.org', 'LanguageForge', self::LANGUAGEFORGE);
+		
+		self::$_sites = $sites;
+		self::$_redirect = $redirect;
 	}
 	
 	/**
 	 * 
-	 * @param string $domainName
+	 * @param string $domain - domain / hostname of the website
+	 * @param string $name - display name of the website
+	 * @param string $base - either 'scriptureforge' or 'languageforge'
+	 * @param string $theme - theme name
+	 * @param bool $ssl - whether or not to force HTTPS for this website
+	 */
+	public function __construct($domain, $name, $base = self::SCRIPTUREFORGE, $theme = 'default', $ssl = false, $defaultProjectCode = '') {
+		$this->domain = $domain;
+		$this->name = $name;
+		$this->base = $base;
+		$this->theme = $theme;
+		$this->ssl = $ssl;
+		$this->defaultProjectCode = $defaultProjectCode;
+	}
+	
+	/**
+	 * @param string $hostname
+	 * @return Website
+	 */
+	public static function get($hostname = '') {
+		if (!$hostname) {
+			$hostname = $_SERVER['HTTP_HOST'];
+		}
+		if (array_key_exists($hostname, self::$_sites)) {
+			return self::$_sites[$hostname];
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * @param string $hostname
 	 * @return string
 	 */
-	public static function getProjectThemeNameFromDomain($domainName = '') {
-		if (!$domainName) {
-			$domainName = $_SERVER['HTTP_HOST'];
+	public static function getRedirect($hostname = '') {
+		if (!$hostname) {
+			$hostname = $_SERVER['HTTP_HOST'];
 		}
-		$themeName = ProjectModel::domainToProjectCode($domainName);
-		if (!$themeName) {
-			$themeName = 'default';	
+		if (array_key_exists($hostname, self::$_redirect)) {
+			$redirectTo = self::$_redirect[$hostname];
+			if (array_key_exists($redirectTo, self::$_sites)) {
+				$website = self::$_sites[$redirectTo];
+				$protocol = 'http';
+				if ($website->ssl) {
+					$protocol = 'https';
+				}
+				return "$protocol://" . $website->domain;
+			} else {
+				throw new \Exception('Trying to redirect from $hostname to $redirectTo but $redirectTo is not a valid website!');
+			}
+		} else {
+			return '';
 		}
-		return $themeName;
 	}
-
+	
+	/**
+	 * Convenience function to get the website object or redirect based upon ssl setting or a redirect list
+	 * FYI Not testable  because of the inclusion of the header() method : test get() and getRedirect() instead
+	 * @param string $hostname
+	 * @return Website
+	 */
+	public static function getOrRedirect($hostname = '') {
+		if (!$hostname) {
+			$hostname = $_SERVER['HTTP_HOST'];
+		}
+		$website = self::get($hostname);
+		if ($website) {
+			// check for https
+			if ($website->ssl && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "")) {
+				header("Location: " . $website->baseUrl() . $_SERVER['REQUEST_URI']);
+			} else {
+				return $website;
+			}
+		} else {
+			$url = self::getRedirect($hostname);
+			if ($url) {
+				header("Location: $url", true, 302); 
+			} else {
+				return null;	
+			}
+		}
+	}
+	
 	/**
 	 * 
-	 * @param string $site
+	 * @param string $hostname - HTTP_HOST header or equivalent
+	 * @return string - returns the second to last token in the domain name. Ideally returns either 'scriptureforge' or 'languageforge'
+	 */
+	public static function guessBaseSite($hostname = '') {
+		if (!$hostname) {
+			$hostname = $_SERVER['HTTP_HOST'];
+		}
+		$uriParts = explode('.', $hostname);
+		array_pop($uriParts); // pop off the .org
+		return array_pop($uriParts);
+	}
+	
+	public function baseUrl() {
+		$protocol = ($this->ssl) ? "https" : "http";
+		return $protocol . "://" . $this->domain;
+	}
+	
+	public function templatePath($templateFile) {
+		$path = APPPATH . "views/" . $this->base . '/' . $this->theme . "/$templateFile";
+		if (!file_exists($path)) {
+			$path = APPPATH . "views/" . $this->base . "/default/$templateFile";
+		}
+		return $path;
+	}
+	
+	/**
+	 * get an array of available project themes for a base site (scriptureforge or languageforge)
+	 * @param string $baseSite
 	 * @return array
 	 */
-	public static function getProjectThemeNamesForSite($site) {
+	/* note: not currently used
+	public static function getProjectThemeNamesForSite($baseSite = self::SCRIPTUREFORGE) {
 		$themeNames = array();
-		$sitePath = APPPATH . 'views/' . $site;
+		$sitePath = APPPATH . 'views/' . $baseSite;
 		if (is_dir($sitePath)) {
 			$folders = glob($sitePath . '/*' , GLOB_ONLYDIR);
 			foreach ($folders as &$folder) {
@@ -93,27 +212,9 @@ class Website {
 		
 		return $themeNames;	
 	}
+	*/
 	
-	/**
-	 * 
-	 * @param string $domainName
-	 * @return string
-	 */
-	public static function getProjectViewsPathFromDomain($domainName = '') {
-		if (!$domainName) {
-			$domainName = $_SERVER['HTTP_HOST'];
-		}
-		return 'views/' . self::getSiteName($domainName) . '/' . self::getProjectThemeNameFromDomain($domainName);
-	}
-	
-	
-	public static function getProjectImagesPath() {
-		
-	}
-	
-	public static function getProjectCssPath() {
-		
-	}
 }
+Website::init();
 
 ?>

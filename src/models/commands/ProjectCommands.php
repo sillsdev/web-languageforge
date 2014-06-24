@@ -51,22 +51,15 @@ class ProjectCommands
 	 * @param string $projectName
 	 * @param string $appName
 	 * @param string $userId
-	 * @param string $site
+	 * @param Website $website
 	 * @return string - projectId
 	 */
-	public static function createProject($projectName, $appName, $userId, $site) {
-		if ($site == Website::SCRIPTUREFORGE) {
-			$project = new SfProjectModel();
-			$project->projectname = $projectName;
-			$project->appName = $appName;
-			$projectId = $project->write();
-			
-		} elseif ($site == Website::LANGUAGEFORGE) {
-			$project = new LfProjectModel();
-			$project->projectname = $projectName;
-			$project->appName = $appName;
-			$projectId = $project->write();
-		}
+	public static function createProject($projectName, $appName, $userId, $website) {
+		$project = new ProjectModel();
+		$project->projectName = $projectName;
+		$project->appName = $appName;
+		$project->siteName = $website->domain;
+		$projectId = $project->write();
 		ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::MANAGER);
 		return $projectId;
 	}
@@ -219,6 +212,17 @@ class ProjectCommands
 			'sms' => JsonEncoder::encode($project->smsSettings),
 			'email' => JsonEncoder::encode($project->emailSettings)
 		);
+	}
+	
+	/**
+	 * 
+	 * @param Website $website
+	 * @param string $code
+	 * @return bool
+	 */
+	public static function projectCodeExists($website, $code) {
+		$project = new ProjectModel();
+		return $project->readByProperties(array('projectCode' => $code, 'siteName' => $website->domain));
 	}
 	
 }

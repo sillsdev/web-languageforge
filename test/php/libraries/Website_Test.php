@@ -7,64 +7,32 @@ require_once(SimpleTestPath . 'autorun.php');
 
 class TestWebsite extends UnitTestCase {
 
-	function testGetHostName_Works() {
-		$domainName = 'www.scriptureforge.org';
-		$result = Website::getHostName($domainName);
-		$this->assertEqual($result, 'www.scriptureforge.org');
-
-		$domainName = 'dev.languageforge.org';
-		$result = Website::getHostName($domainName);
-		$this->assertEqual($result, 'dev.languageforge.org');
-
-		$domainName = 'jamaicanpsalms.scriptureforge.org';
-		$result = Website::getHostName($domainName);
-		$this->assertEqual($result, 'scriptureforge.org');
-
-		$domainName = 'jamaicanpsalms.scriptureforge.local';
-		$result = Website::getHostName($domainName);
-		$this->assertEqual($result, 'scriptureforge.local');
-
-		$domainName = 'jamaicanpsalms.dev.scriptureforge.org';
-		$result = Website::getHostName($domainName);
-		$this->assertEqual($result, 'dev.scriptureforge.org');
+	function testGet_Works() {
+		
+		$website = Website::get('www.scriptureforge.org');
+		$this->assertEqual($website->domain, 'www.scriptureforge.org');
+		$this->assertEqual($website->base, 'scriptureforge');
+		$this->assertEqual($website->theme, 'default');
+		
+		$website = Website::get('randomdomain.com');
+		$this->assertNull($website);
 	}
 	
-	function testGetSiteName_Works() {
-		$domainName = 'www.languageforge.org';
-		$result = Website::getSiteName($domainName);
-		$this->assertEqual($result, 'languageforge');
-
-		$domainName = 'languageforge.org';
-		$result = Website::getSiteName($domainName);
-		$this->assertEqual($result, 'languageforge');
-
-		$domainName = 'languageforge.local';
-		$result = Website::getSiteName($domainName);
-		$this->assertEqual($result, 'languageforge');
-
-		$domainName = 'jamaicanpsalms.dev.scriptureforge.org';
-		$result = Website::getSiteName($domainName);
-		$this->assertEqual($result, 'scriptureforge');
+	function testGetRedirect_Works() {
+		$redirect = Website::getRedirect('randomdomain.com');
+		$this->assertEqual($redirect, '');
+		
+		$redirect = Website::getRedirect('www.scriptureforge.org');
+		$this->assertEqual($redirect, '');
+		
+		$redirect = Website::getRedirect('scriptureforge.org');
+		$this->assertEqual($redirect, 'http://www.scriptureforge.org');
+		
+		$redirect = Website::getRedirect('jamaicanpsalms.org');
+		$this->assertEqual($redirect, 'https://jamaicanpsalms.com');
 	}
 	
-	function testGetProjectThemeNameFromDomain_Works() {
-		$domainName = 'www.languageforge.org';
-		$result = Website::getProjectThemeNameFromDomain($domainName);
-		$this->assertEqual($result, 'default');
-
-		$domainName = 'dev.languageforge.org';
-		$result = Website::getProjectThemeNameFromDomain($domainName);
-		$this->assertEqual($result, 'default');
-
-		$domainName = 'jamaicanpsalms.scriptureforge.org';
-		$result = Website::getProjectThemeNameFromDomain($domainName);
-		$this->assertEqual($result, 'jamaicanpsalms');
-
-		$domainName = 'languageforge.org';
-		$result = Website::getProjectThemeNameFromDomain($domainName);
-		$this->assertEqual($result, 'default');
-	}
-	
+	/* -- currently not in use so commented out cjh 2014-06
 	function testGetProjectThemeNamesForSite_Works() {
 		$themeNames = Website::getProjectThemeNamesForSite('scriptureforge');
 		$this->assertEqual($themeNames[0], 'default');
@@ -73,6 +41,7 @@ class TestWebsite extends UnitTestCase {
 		$themeNames = Website::getProjectThemeNamesForSite('languageforge');
 		$this->assertEqual($themeNames[0], 'default');
 	}
+	*/
 	
 }
 

@@ -64,7 +64,7 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 				breadcrumbService.set('top',
 					[
 					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectname},
+					 {href: linkService.project(), label: result.data.project.projectName},
 					 {href: linkService.projectView(view), label: label},
 					]
 				);
@@ -92,7 +92,7 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 				breadcrumbService.set('top',
 					[
 					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectname},
+					 {href: linkService.project(), label: result.data.project.projectName},
 					 {href: linkService.projectView('settings'), label: 'Project Settings'},
 					]
 				);
@@ -112,7 +112,7 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 				breadcrumbService.set('top',
 					[
 					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectname},
+					 {href: linkService.project(), label: result.data.project.projectName},
 					 {href: linkService.projectView('users'), label: 'User Management'},
 					]
 				);
@@ -151,7 +151,7 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 				breadcrumbService.set('top',
 					[
 					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectname},
+					 {href: linkService.project(), label: result.data.project.projectName},
 					 {href: linkService.projectView('dbe'), label: 'Browse And Edit'},
 					]
 				);

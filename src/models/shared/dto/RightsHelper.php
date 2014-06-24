@@ -240,7 +240,6 @@ class RightsHelper
 				return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 				
 			// grant general permission until a better, app-specific rightsHelper can be developed
-			// TODO: refactor rightshelper to be app specific!
 			case 'lex_baseViewDto':
 			case 'lex_dbeDto':
 			case 'lex_entry_read':

@@ -98,7 +98,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 	$scope.addManagerToProject = function(project) {
 		projectService.joinProject(project.id, 'project_manager', function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, "You are now a Manager of the " + project.projectname + " project.");
+				notice.push(notice.SUCCESS, "You are now a Manager of the " + project.projectName + " project.");
 				$scope.queryProjectsForUser();
 			}
 		});
@@ -108,32 +108,13 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 	$scope.addMemberToProject = function(project) {
 		projectService.joinProject(project.id, 'contributor', function(result) {
 			if (result.ok) {
-					notice.push(notice.SUCCESS, "You are now a Contributor for the " + project.projectname + " project.");
+					notice.push(notice.SUCCESS, "You are now a Contributor for the " + project.projectName + " project.");
 				$scope.queryProjectsForUser();
 			}
 		});
 	};
 
-	$scope.site = ss.site;
-	
-	$scope.getBaseHost = function(hostname) {
-		var parts = hostname.split('.');
-		if (parts[0] == 'www' || parts[0] == 'dev' || parts[0] == 'scriptureforge' || parts[0] == 'languageforge') {
-			return hostname;
-		}
-		return hostname.substring(hostname.indexOf('.') + 1);
-	};
-	
-	$scope.getProjectHost = function(theme) {
-		var baseHost = $scope.getBaseHost($window.location.hostname);
-		if (theme != 'default') {
-			return $window.location.protocol + '//' + theme + '.' + baseHost;
-		} else {
-			return $window.location.protocol + '//' + baseHost;
-		}
-	};
-	
-	$scope.projectTypes = projectService.data.projectTypes;
+	$scope.projectTypeNames = projectService.data.projectTypeNames;
 	$scope.projectTypesBySite = projectService.data.projectTypesBySite;
 	
 }])
