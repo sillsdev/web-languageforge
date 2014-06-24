@@ -78,9 +78,9 @@ class Website {
 		$redirect['jamaicanpsalms.org'] = 'jamaicanpsalms.com';
 
 		// LANGUAGEFORGE WEBSITES
-		$sites['languageforge.local'] = new Website('languageforge.local', 'LanguageForge', self::LANGUAGEFORGE);
-		$sites['www.languageforge.org'] = new Website('www.languageforge.org', 'LanguageForge', self::LANGUAGEFORGE);
-		$sites['dev.languageforge.org'] = new Website('dev.languageforge.org', 'LanguageForge', self::LANGUAGEFORGE);
+		$sites['languageforge.local'] = new Website('languageforge.local', 'Language Forge', self::LANGUAGEFORGE);
+		$sites['www.languageforge.org'] = new Website('www.languageforge.org', 'Language Forge', self::LANGUAGEFORGE);
+		$sites['dev.languageforge.org'] = new Website('dev.languageforge.org', 'Language Forge', self::LANGUAGEFORGE);
 		
 		self::$_sites = $sites;
 		self::$_redirect = $redirect;
