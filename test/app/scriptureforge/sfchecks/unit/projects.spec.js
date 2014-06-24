@@ -37,6 +37,10 @@ describe('Projects page (projects.js)', function() {
 		list: function(callback) {
 			callback(testJsonResult);
 		},
+		data: {
+			projectTypes: {},
+			projectTypesBySite: {},
+		},
 	};
 
 	var mockWindowProvider = function() {
