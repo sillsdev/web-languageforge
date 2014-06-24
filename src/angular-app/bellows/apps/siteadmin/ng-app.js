@@ -224,7 +224,7 @@ angular.module('siteadmin', [
 }])
 .controller('ArchivedProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', function($scope, projectService, ss, notice) {
 	$scope.finishedLoading = false;
-	$scope.projectTypes = projectService.data.projectTypes;
+	$scope.projectTypeNames = projectService.data.projectTypeNames;
 	$scope.list = {};
 	$scope.list.archivedProjects = [];
 	// Rights
