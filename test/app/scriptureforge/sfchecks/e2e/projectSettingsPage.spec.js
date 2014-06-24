@@ -129,20 +129,20 @@ describe('the project settings page - project manager', function() {
 		
 		it('can read properties', function() {
 			expect(page.propertiesTab.name.getAttribute('value')).toBe(constants.testProjectName);
-			expect(page.propertiesTab.featured.getAttribute('checked')).toBeFalsy();
+			//expect(page.propertiesTab.featured.getAttribute('checked')).toBeFalsy();
 			expect(page.propertiesTab.allowAudioDownload.getAttribute('checked')).toBeTruthy();
 		});
 
 		it('can change properties and verify they persist', function() {
 			page.propertiesTab.name.clear();
 			page.propertiesTab.name.sendKeys(newName);
-			page.propertiesTab.featured.click();
+			//page.propertiesTab.featured.click();
 			page.propertiesTab.allowAudioDownload.click();
 			page.propertiesTab.button.click();
 			browser.navigate().refresh();
 			page.tabs.projectProperties.click();
 			expect(page.propertiesTab.name.getAttribute('value')).toBe(newName);
-			expect(page.propertiesTab.featured.getAttribute('checked')).toBeTruthy();
+			//expect(page.propertiesTab.featured.getAttribute('checked')).toBeTruthy();
 			expect(page.propertiesTab.allowAudioDownload.getAttribute('checked')).toBeFalsy();
 			page.propertiesTab.button.click();
 	    	projectListPage.get();
@@ -151,7 +151,7 @@ describe('the project settings page - project manager', function() {
 			page.tabs.projectProperties.click();
 			page.propertiesTab.name.clear();
 			page.propertiesTab.name.sendKeys(constants.testProjectName);
-			page.propertiesTab.featured.click();
+			//page.propertiesTab.featured.click();
 			page.propertiesTab.button.click();
 		});
 
