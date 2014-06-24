@@ -244,7 +244,7 @@ class UserCommands {
 			$user->write();
 		}
 
-		Communicate::sendSignup($user, $website, $project, $delivery);
+		Communicate::sendSignup($user, $website, $delivery);
 		
 		return $userId;
 	}
