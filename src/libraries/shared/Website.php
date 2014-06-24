@@ -119,14 +119,15 @@ class Website {
 	}
 	
 	private static function getHostname() {
-		// special exception for reverse proxy on dev.scriptureforge.org
-		if (array_key_exists('HTTP_X_FORWARDED_SERVER', $_SERVER) &&
-				array_key_exists('HTTP_X_FORWARDED_HOST', $_SERVER) &&
-				$_SERVER['HTTP_X_FORWARDED_SERVER'] == 'dev.scriptureforge.org') {
-			return $_SERVER['HTTP_X_FORWARDED_HOST'];	
-		} else {
-			return $_SERVER['HTTP_HOST'];
+		if (key_exists('HTTP_X_FORWARDED_SERVER', $_SERVER) && key_exists('HTTP_X_FORWARDED_HOST', $_SERVER)) {
+			// special exception for reverse proxy on dev.scriptureforge.org
+			$forwardedServer = $_SERVER['HTTP_X_FORWARDED_SERVER'];
+			$forwardedHost = $_SERVER['HTTP_X_FORWARDED_HOST'];
+			if ($forwardedServer == 'dev.scriptureforge.org' || $forwardedServer == 'dev.languageforge.org') {
+				return $forwardedHost;
+			}
 		}
+		return $_SERVER['HTTP_HOST'];
 	}
 	
 	/**
