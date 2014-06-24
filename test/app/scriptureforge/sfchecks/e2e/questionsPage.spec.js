@@ -83,7 +83,7 @@ describe('the questions list page (AKA the text page)', function() {
 			util.setCheckbox(textPage.getFirstCheckbox(), true);
 			expect(archiveButton.isEnabled()).toBe(true);
 			archiveButton.click();
-			browser.switchTo().alert().accept();
+			util.clickModalButton('Archive');
 			expect(archiveButton.isEnabled()).toBe(false);
 			expect(textPage.questionLink(questionTitle).isPresent()).toBe(false);
 		});

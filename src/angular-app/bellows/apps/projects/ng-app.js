@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice', 'wc.Directives'])
-.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', '$window',
-                             function($scope, projectService, ss, notice, $window) {
+.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', 'modalService', '$window',
+                             function($scope, projectService, ss, notice, modalService, $window) {
 	$scope.finishedLoading = false;
 
 	// Rights
@@ -54,7 +54,13 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 		} else {
 			message = "Are you sure you want to archive the " + projectIds.length + " selected projects?";
 		}
-		if (window.confirm(message)) {
+		var modalOptions = {
+				closeButtonText: 'Cancel',
+				actionButtonText: 'Archive',
+				headerText: 'Archive Project?',
+				bodyText: message
+			};
+		modalService.showModal({}, modalOptions).then(function (result) {
 			projectService.archive(projectIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
@@ -66,7 +72,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 					}
 				}
 			});
-		}
+		});
 	};
 	
 	// Add new project

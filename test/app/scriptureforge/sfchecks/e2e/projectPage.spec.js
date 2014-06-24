@@ -97,7 +97,7 @@ describe('the project dashboard AKA text list page', function() {
 			util.setCheckbox(projectPage.getFirstCheckbox(), true);
 			expect(archiveButton.isEnabled()).toBe(true);
 			archiveButton.click();
-			browser.switchTo().alert().accept();
+			util.clickModalButton('Archive');
 			expect(archiveButton.isEnabled()).toBe(false);
 			expect(projectPage.textLink(sampleTitle).isPresent()).toBe(false);
 		});
@@ -143,7 +143,7 @@ describe('the project dashboard AKA text list page', function() {
 			util.setCheckbox(projectPage.getFirstCheckbox(), true);
 			var archiveButton = projectPage.archiveTextButton.find();
 			archiveButton.click();
-			browser.switchTo().alert().accept();
+			util.clickModalButton('Archive');
 		});
 	});
 });
