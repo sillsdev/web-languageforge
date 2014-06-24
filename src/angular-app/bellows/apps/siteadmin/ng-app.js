@@ -233,10 +233,11 @@ angular.module('siteadmin', [
 	$scope.rights.showControlBar = $scope.rights.archive;
 
 	$scope.queryArchivedProjects = function() {
-		console.log('on select archive tab');
 		projectService.archivedList(function(result) {
 			if (result.ok) {
-				console.log(result.data.entries);
+				for (var i = 0; i < result.data.entries.length; i++) {
+					result.data.entries[i].dateModified = new Date(result.data.entries[i].dateModified);
+				}
 				$scope.list.archivedProjects = result.data.entries;
 
 				$scope.finishedLoading = true;
