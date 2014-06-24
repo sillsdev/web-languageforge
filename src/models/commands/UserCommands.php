@@ -170,9 +170,10 @@ class UserCommands {
 	 * @param string $userName
 	 * @param string $projectId
 	 * @param string $currentUserId
+	 * @param Website $website
 	 * @return CreateSimpleDto
 	 */
-	public static function createSimple($userName, $projectId = '', $currentUserId = '') {
+	public static function createSimple($userName, $projectId, $currentUserId, $website) {
 		$user = new UserModel();
 		$user->name = $userName;
 		$user->username = strtolower(str_replace(' ', '.', $user->name));
@@ -190,37 +191,29 @@ class UserCommands {
 		$userWithPassword->setPassword($password);
 		$userWithPassword->write();
 		
-		if ($projectId) {
-			ProjectCommands::updateUserRole($projectId, $userId);
-			
-			if ($currentUserId) {
-				$toUser = new UserModel($currentUserId);
-				$project = new ProjectModel($projectId);
-				Communicate::sendNewUserInProject($toUser, $user->username, $password, $project);
-			}
-		}
-		
+		ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::CONTRIBUTOR);
+		$toUser = new UserModel($currentUserId);
+		$project = new ProjectModel($projectId);
+		Communicate::sendNewUserInProject($toUser, $user->username, $password, $website, $project);
+
 		$dto = new CreateSimpleDto($userId, $password);
 		return $dto->encode();
 	}
 	
 	/**
-	 * Register a new user, add to project if in context
+	 * Register a new user
 	 * @param array $params
 	 * @param string $captcha_info
-	 * @param string $httpHost
+	 * @param Website $website
 	 * @param IDelivery $delivery
 	 * @throws \Exception
 	 * @return string $userId
 	 */
-	public static function register($params, $captcha_info, $httpHost, IDelivery $delivery = null) {
+	public static function register($params, $captcha_info, $website, IDelivery $delivery = null) {
 		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
 			return false;  // captcha does not match
 		}
 		
-		$projectCode = ProjectModel::domainToProjectCode($httpHost);
-		$site = Website::getSiteName($httpHost);
-
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
 		if (UserModel::userNameExists($user->username)) {
@@ -242,21 +235,16 @@ class UserCommands {
 		$userPassword->setPassword($params['password']);
 		$userPassword->write();
 
-		// if signup from project page then add user to project
-		$project = null;
-		if ($projectCode) {
-			$project = ProjectModel::createFromDomain($projectCode);
-			if (!$project) {
-				error_log("Error: Could not create project from project code '$projectCode'");
-			} else {
-				$project->addUser($user->id->asString(), ProjectRoles::CONTRIBUTOR);
-				$user->addProject($project->id->asString());
-				$project->write();
-				$user->write();
-			}
+		// if website has a default project then add them to that project
+		$project = ProjectModel::getDefaultProject($website);
+		if ($project) {
+			$project->addUser($user->id->asString(), ProjectRoles::CONTRIBUTOR);
+			$user->addProject($project->id->asString());
+			$project->write();
+			$user->write();
 		}
 
-		Communicate::sendSignup($user, $site, $project, $delivery);
+		Communicate::sendSignup($user, $website, $project, $delivery);
 		
 		return $userId;
 	}
@@ -276,38 +264,23 @@ class UserCommands {
 	
     /**
     * Sends an email to invite emailee to join the project
-	* @param UserModel $inviterUser
-    * @param string $toEmail
     * @param string $projectId
-	* @param string $hostName
+	* @param string $inviterUserId
+    * @param string $toEmail
+    * @param Website $website
     * @param IDelivery $delivery
-    * @return string $userId
     */
-	public static function sendInvite($inviterUserId, $toEmail, $projectId, $hostName, IDelivery $delivery = null) {
+	public static function sendInvite($projectId, $inviterUserId, $website, $toEmail, IDelivery $delivery = null) {
 		$newUser = new UserModel();
 		$inviterUser = new UserModel($inviterUserId);
-		$project = null;
-		if ($projectId) {
-			$project = new ProjectModel($projectId);
-		} else {
-			$project = ProjectModel::createFromDomain($hostName);
-		}
-		if ($project) {
-			$newUser->emailPending = $toEmail;
-			$newUser->addProject($project->id->asString());
-			$userId = $newUser->write();
-			$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
-			$project->write();
-			Communicate::sendInvite($inviterUser, $newUser, $project, $delivery);
-			return $userId;
-		} else {
-				$projectCode = ProjectModel::domainToProjectCode($hostName);
-			if ($projectCode == '') {
-				throw new \Exception("Sending an invitation without a project context is not supported.");
-			} else {
-				throw new \Exception("Cannot send invitation for unknown project '$projectCode'");
-			}
-		}
+		$project = new ProjectModel($projectId);
+		$newUser->emailPending = $toEmail;
+		$newUser->addProject($project->id->asString());
+		$userId = $newUser->write();
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
+		$project->write();
+		Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
+		return $userId;
     }
     
     /**

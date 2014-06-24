@@ -13,7 +13,7 @@
 						<li><a href="/explore">Explore</a>
 							<ul>
 							<?php foreach($featuredProjects as $project): ?>
-								<li><a href="<?php echo "/projects/" . str_replace(" ", "_", strtolower($project['projectname'])); ?>"><?php echo $project['projectname']; ?></a></li>
+								<li><a href="<?php echo "/projects/" . str_replace(" ", "_", strtolower($project['projectName'])); ?>"><?php echo $project['projectName']; ?></a></li>
 							<?php endforeach; ?>
 							</ul>
 						</li>
@@ -35,7 +35,7 @@
 							<li id="myProjects"><a href="/app/projects">My Projects</a>
 								<ul>
 								<?php foreach($projects as $project): ?>
-									<li><a href="<?php echo "/app/" . $project['appName'] . "/" . $project['id'] . "/"; ?>"><?php echo $project['projectname']; ?></a></li>
+									<li><a href="<?php echo "/app/" . $project['appName'] . "/" . $project['id'] . "/"; ?>"><?php echo $project['projectName']; ?></a></li>
 								<?php endforeach;?>
 								</ul>
 							</li>

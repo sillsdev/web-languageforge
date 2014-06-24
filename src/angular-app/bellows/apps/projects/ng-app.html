@@ -24,8 +24,8 @@
                	    <input type="text" data-ng-model="newProject.projectName" maxlength="50" required placeholder="Project Name"/>
                	</div>
         	    <div class="control-group">
-                    <select required data-ng-model="newProject.appName" data-ng-options="type as projectTypes[type] for type in projectTypesBySite[site()]">
-                        <option value="">-- select type --</option>
+                    <select required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
+                        <option value="">-- Select Type --</option>
                     </select>
                	</div>
         	    <div class="control-group">
@@ -40,11 +40,11 @@
         			<li data-ng-show="rights.archive"><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
         			<li style="width: 70%">
         				<a data-ng-show="isInProject(project)" href="/app/{{project.appName}}/{{project.id}}/">
-        					<span class="larger-text">{{project.projectname}}</span>
+        					<span class="larger-text">{{project.projectName}}</span>
         				</a>
-        				<span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectname}}</span>
+        				<span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectName}}</span>
         				<br />
-        				<small class="muted">{{projectTypes[project.appName]}}</small>
+        				<small class="muted">{{projectTypeNames[project.appName]}}</small>
         			</li>
         			<li data-ng-show="rights.edit" style="width: 20%">
         				<button class="btn" data-ng-show="!isManager(project)" data-ng-click="addManagerToProject(project)"><i class="icon-plus"></i>Add me as Manager</button>

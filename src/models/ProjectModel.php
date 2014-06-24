@@ -35,10 +35,6 @@ class ProjectModel extends \models\mapper\MapperModel
 		});
 		$this->isArchived = false;
 		$this->userProperties = new ProjectUserPropertiesSettings();
-		$this->themeName = ProjectModel::domainToProjectCode($_SERVER['HTTP_HOST']);
-		if (!$this->themeName) {
-			$this->themeName = 'default';
-		}
 		$this->allowAudioDownload = true;
 		$this->allowInviteAFriend = true;
 		$this->interfaceLanguageCode = 'en';
@@ -46,17 +42,19 @@ class ProjectModel extends \models\mapper\MapperModel
 	}
 	
 	/**
-	 * @param string $domainName
-	 * @return \models\ProjectModel
+	 * 
+	 * @param Website $website
+	 * @return ProjectModel
 	 */
-	public static function createFromDomain($domainName) {
-		$projectCode = self::domainToProjectCode($domainName);
+	public static function getDefaultProject($website) {
 		$project = new ProjectModel();
-		if (!$project->readByProperty('projectCode', $projectCode)) {
+		if ($project->readByProperties(array('projectCode' => $website->defaultProjectCode, 'siteName' => $website->domain))) {
+			return ProjectModel::getById($project->id->asString());
+		} else {
 			return null;
 		}
-		return $project;
 	}
+	
 	
 	/**
 	 * Reads the model from the mongo collection
@@ -92,7 +90,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @see \models\mapper\MapperModel::databaseName()
 	 */
 	public function databaseName() {
-		$name = strtolower($this->projectname);
+		$name = strtolower($this->projectName);
 		$name = str_replace(' ', '_', $name);
 		return 'sf_' . $name;
 	}
@@ -232,13 +230,6 @@ class ProjectModel extends \models\mapper\MapperModel
 	/**
 	 * @return string
 	 */
-	public function getViewsPath() {
-		return 'views/' . $this->siteName . '/' . $this->themeName;
-	}
-	
-	/**
-	 * @return string
-	 */
 	public function getAssetsFolderPath() {
 		return APPPATH . 'assets/' . $this->siteName . '/' . $this->appName. '/' . $this->databaseName();
 	}
@@ -251,7 +242,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	/**
 	 * @var string
 	 */
-	public $projectname;
+	public $projectName;
 	
 	/**
 	 * Web app interface language code
@@ -304,12 +295,6 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @var ProjectUserPropertiesSettings
 	 */
 	public $userProperties;
-	
-	/**
-	 * specifies the theme name for this project e.g. jamaicanpsalms || default
-	 * @var string
-	 */
-	public $themeName;
 	
 	/**
 	 * Specifies which site this project belongs to.  e.g. scriptureforge || languageforge  cf. Website class

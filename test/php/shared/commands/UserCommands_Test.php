@@ -73,8 +73,10 @@ class TestUserCommands extends UnitTestCase {
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
+		$currentUserId = $e->createUser('test1', 'test1', 'test@test.com');
+		
 		// create user
-		$dto = UserCommands::createSimple($userName, $projectId);
+		$dto = UserCommands::createSimple($userName, $projectId, $currentUserId, $e->website);
 		
 		// read from disk
 		$user = new UserModel($dto['id']);
@@ -85,36 +87,12 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual(strlen($dto['password']), 4);
 		$projectUser = $sameProject->listUsers()->entries[0];
 		$this->assertEqual($projectUser['username'], "username");
-		$userProject = $user->listProjects(Website::SCRIPTUREFORGE)->entries[0];
-		$this->assertEqual($userProject['projectname'], SF_TESTPROJECT);
+		$userProject = $user->listProjects($e->website->domain)->entries[0];
+		$this->assertEqual($userProject['projectName'], SF_TESTPROJECT);
 	}
 	
 	function testRegister_WithProjectCode_UserInProjectAndProjectHasUser() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	
-		$projectDomain = 'someproject.scriptureforge.org';
-		$project = $e->createProject(SF_TESTPROJECT);
-		$project->projectCode = ProjectModel::domainToProjectCode($projectDomain);
-		$project->write();
-		$validCode = 'validCode';
-		$params = array(
-				'id' => '',
-				'username' => 'someusername',
-				'name' => 'Some Name',
-				'email' => 'someone@example.com',
-				'password' => 'somepassword',
-				'captcha' => $validCode
-		);
-		$captcha_info = array('code' => $validCode);
-		$delivery = new MockUserCommandsDelivery();
-		
-		$userId = UserCommands::register($params, $captcha_info, $projectDomain, $delivery);
-		
-		$user = new UserModel($userId);
-		$this->assertEqual($user->username, $params['username']);
-		$this->assertEqual($project->listUsers()->count, 1);
-		$this->assertEqual($user->listProjects(Website::SCRIPTUREFORGE)->count, 1);
+		// todo: implement this - register within a project context
 	}
 	
 	function testRegister_NoProjectCode_UserInNoProjects() {
@@ -133,11 +111,11 @@ class TestUserCommands extends UnitTestCase {
 		$captcha_info = array('code' => $validCode);
 		$delivery = new MockUserCommandsDelivery();
 		
-		$userId = UserCommands::register($params, $captcha_info, 'www.scriptureforge.org', $delivery);
+		$userId = UserCommands::register($params, $captcha_info, $e->website, $delivery);
 		
 		$user = new UserModel($userId);
 		$this->assertEqual($user->username, $params['username']);
-		$this->assertEqual($user->listProjects(Website::SCRIPTUREFORGE)->count, 0);
+		$this->assertEqual($user->listProjects($e->website->domain)->count, 0);
 	}
 	
 	function testReadForRegistration_ValidKey_ValidUserModel() {
@@ -262,7 +240,7 @@ class TestUserCommands extends UnitTestCase {
 		$project->write();
 		$delivery = new MockUserCommandsDelivery();
 	
-		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $project->id->asString(), 'someProjectCode.scriptureforge.org', $delivery);
+		$toUserId = UserCommands::sendInvite($project->id->asString(), $inviterUserId, $e->website, $toEmail, $delivery);
 	
 		// What's in the delivery?
 		$toUser = new UserModel($toUserId);
@@ -274,39 +252,6 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertPattern('/Test Project/', $delivery->content);
 		$this->assertPattern('/' . $toUser->validationKey . '/', $delivery->content);
 	}
-	
-	function testSendInvite_NoProjectContext_ThrowException() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	
-		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
-		$toEmail = 'someone@example.com';
-		$projectId = '';
-		$hostName = 'someProjectCode.scriptureforge.org';
-		$delivery = new MockUserCommandsDelivery();
-	
-		$e->inhibitErrorDisplay();
-		$this->expectException(new \Exception("Cannot send invitation for unknown project 'someProjectCode'"));
-		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $projectId, $hostName, $delivery);
-		$e->restoreErrorDisplay();
-	}
-	
-	function testSendInvite_NoProjectContextNoProjectCode_ThrowException() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	
-		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
-		$toEmail = 'someone@example.com';
-		$projectId = '';
-		$hostName = 'scriptureforge.org';
-		$delivery = new MockUserCommandsDelivery();
-	
-		$e->inhibitErrorDisplay();
-		$this->expectException(new \Exception("Sending an invitation without a project context is not supported."));
-		$toUserId = UserCommands::sendInvite($inviterUserId, $toEmail, $projectId, $hostName, $delivery);
-		$e->restoreErrorDisplay();
-	}
-	
 }
 
 ?>

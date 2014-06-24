@@ -1,5 +1,7 @@
 <?php
 
+use models\ProjectModel;
+
 use models\shared\dto\RightsHelper;
 use models\shared\rights\ProjectRoles;
 use models\shared\rights\SiteRoles;
@@ -32,11 +34,13 @@ class TestRightsHelper extends UnitTestCase {
 		$project = $e->createProject('projectForTest');
 		$projectId = $project->id->asString();
 		$project->addUser($userId, ProjectRoles::MANAGER);
+		$project->appName = 'sfchecks';
 		$project->write();
 		$user->addProject($projectId);
 		$user->write();
+		$project = ProjectModel::getById($projectId);
 		$rh = new RightsHelper($userId, $project);
-		$result = $rh->userCanAccessMethod('project_settings', array($projectId));
+		$result = $rh->userCanAccessMethod('project_settings', array());
 		$this->assertTrue($result);
 	}
 
@@ -48,11 +52,13 @@ class TestRightsHelper extends UnitTestCase {
 		$project = $e->createProject('projectForTest');
 		$projectId = $project->id->asString();
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
+		$project->appName = 'sfchecks';
 		$project->write();
 		$user->addProject($projectId);
 		$user->write();
+		$project = ProjectModel::getById($projectId);
 		$rh = new RightsHelper($userId, $project);
-		$result = $rh->userCanAccessMethod('project_settings', array($projectId));
+		$result = $rh->userCanAccessMethod('project_settings', array());
 		$this->assertFalse($result);
 	}
 	
@@ -61,9 +67,12 @@ class TestRightsHelper extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
 		$project = $e->createProject('projectForTest');
+		$project->appName = 'sfchecks';
+		$project->write();
 		$projectId = $project->id->asString();
+		$project = ProjectModel::getById($projectId);
 		$rh = new RightsHelper($userId, $project);
-		$result = $rh->userCanAccessMethod('project_pageDto', array($projectId));
+		$result = $rh->userCanAccessMethod('project_pageDto', array());
 		$this->assertFalse($result);
 	}
 }

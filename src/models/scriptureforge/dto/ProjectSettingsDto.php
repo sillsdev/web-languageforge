@@ -33,7 +33,6 @@ class ProjectSettingsDto
 		}
 		
 		$data = array();
-		$data['themeNames'] = Website::getProjectThemeNamesForSite(Website::SCRIPTUREFORGE);
 		$data['count'] = count($list->entries);
 		$data['entries'] = array_values($list->entries);	// re-index array
 		$data['project'] = JsonEncoder::encode($projectModel);

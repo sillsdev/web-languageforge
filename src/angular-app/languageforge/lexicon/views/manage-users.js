@@ -145,14 +145,14 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 			model.id = $scope.user.id;
 			projectService.updateUser(model, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, $filter('translate')("{userName} was added to {projectName} successfully.", {userName: $scope.user.name, projectName: $scope.project.projectname}));
+					notice.push(notice.SUCCESS, $filter('translate')("{userName} was added to {projectName} successfully.", {userName: $scope.user.name, projectName: $scope.project.projectName}));
 					$scope.queryProjectUsers();
 				}
 			});
 		} else if ($scope.addMode == 'invite') {
 			userService.sendInvite($scope.typeahead.userName, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, $filter('translate')("{userName} was invited to join the project {projectName}", {userName: $scope.typeahead.userName, projectName: $scope.project.projectname}));
+					notice.push(notice.SUCCESS, $filter('translate')("{userName} was invited to join the project {projectName}", {userName: $scope.typeahead.userName, projectName: $scope.project.projectName}));
 					$scope.queryProjectUsers();
 				}
 			});

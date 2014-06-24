@@ -16,7 +16,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		sfchecksProjectService.projectSettings(function(result) {
 			if (result.ok) {
 				$scope.project = result.data.project;
-				$scope.themeNames =  result.data.themeNames;
 				$scope.list.users = result.data.entries;
 				$scope.list.userCount = result.data.count;
 				$scope.list.archivedTexts = result.data.archivedTexts;
@@ -219,7 +218,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	$scope.updateCommunicationSettings = function() {
 		sfchecksProjectService.updateSettings($scope.settings.sms, $scope.settings.email, function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, $scope.project.projectname + " SMS settings updated successfully");
+				notice.push(notice.SUCCESS, $scope.project.projectName + " SMS settings updated successfully");
 			}
 		});
 	};
@@ -232,8 +231,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	$scope.updateProject = function() {
 		// TODO this should be fine just being $scope.project from the dto.
 		var settings = {
-			projectname: $scope.project.projectname,
-			themeName: $scope.project.themeName,
+			projectName: $scope.project.projectName,
 			projectCode: $scope.project.projectCode,
 			featured: $scope.project.featured,
 			allowAudioDownload: $scope.project.allowAudioDownload,
@@ -242,7 +240,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 
 		sfchecksProjectService.update(settings, function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
+				notice.push(notice.SUCCESS, $scope.project.projectName + " settings updated successfully");
 			}
 		});
 	};
@@ -266,7 +264,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 
 		sfchecksProjectService.update($scope.project, function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, $scope.project.projectname + " settings updated successfully");
+				notice.push(notice.SUCCESS, $scope.project.projectName + " settings updated successfully");
 			}
 		});
 		$scope.unsavedChanges = false;
@@ -522,13 +520,13 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 						// TODO: Make an "is user in project?" query API. 2014-06 RM
 						var thisUser = result.data.users[i];
 						if (thisUser.id == model.id) {
-							notice.push(notice.WARN, "'" + $scope.user.name + "' is already a member of " + $scope.project.projectname + ".");
+							notice.push(notice.WARN, "'" + $scope.user.name + "' is already a member of " + $scope.project.projectName + ".");
 							return;
 						}
 					}
 					sfchecksProjectService.updateUserRole($scope.user.id, 'contributor', function(result) {
 						if (result.ok) {
-							notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectname + " successfully");
+							notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectName + " successfully");
 							$scope.queryProjectSettings();
 						}
 					});
@@ -537,7 +535,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		} else if ($scope.addMode == 'invite') {
 			userService.sendInvite($scope.typeahead.userName, function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.projectname);
+					notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.projectName);
 					$scope.queryProjectSettings();
 				}
 			});
