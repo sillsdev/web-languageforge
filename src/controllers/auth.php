@@ -145,7 +145,7 @@ class Auth extends Base {
 
 		//redirect them to the login page
 		$this->session->set_flashdata('message', $this->ion_auth->messages());
-		redirect('auth/login', 'refresh');
+		redirect('/auth/login', 'location');
 	}
 
 	//change password
