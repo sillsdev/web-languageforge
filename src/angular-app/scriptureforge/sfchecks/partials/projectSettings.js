@@ -230,6 +230,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			projectCode: $scope.project.projectCode,
 			featured: $scope.project.featured,
 			allowAudioDownload: $scope.project.allowAudioDownload,
+			allowInviteAFriend: $scope.project.allowInviteAFriend,
 		};
 
 		sfchecksProjectService.update(settings, function(result) {
@@ -421,7 +422,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	
 	$scope.queryUser = function(userName) {
 //		console.log('searching for ', userName);
-		userService.typeahead(userName, $scope.project.id, function(result) {
+		userService.typeaheadExclusive(userName, $scope.project.id, function(result) {
 			// TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
 			if (result.ok) {
 				$scope.users = result.data.entries;
@@ -456,7 +457,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 		// the given username. E.g. when creating a new user Bob Jones with username "bjones",
 		// after typing "bjo" the "excluded users" list will include Bob Johnson (bjohnson).
 		if (!$scope.excludedUsers) { return false; }
-		console.log($scope.excludedUsers);
 		for (var i=0, l=$scope.excludedUsers.length; i<l; i++) {
 			if (userName == $scope.excludedUsers[i].username ||
 				userName == $scope.excludedUsers[i].name     ||

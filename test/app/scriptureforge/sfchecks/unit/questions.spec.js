@@ -36,7 +36,7 @@ describe('Questions page (questions.js)', function() {
 			callback(testJsonResult);
 		},
 		util: {
-			calculateTitle: function(title, description) {
+			calculateTitle: function(title, description, charLimit) {
 				return title;
 			},
 		},

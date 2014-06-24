@@ -7,18 +7,10 @@
 				<div id="header-nav" class="left">
 					<ul class="sf-menu">
 						<li><a href="/">Home</a></li>
+						<!--
 						<li><a href="#">Explore</a>
 							<ul>
 								<li><a href="#">Jamaica Project 1</a></li>
-								<!--
-								<li><a href="#">Sub Menu Item 2</a>
-									<ul>
-										<li><a href="#">Another Sub Menu Item 1</a></li>
-										<li><a href="#">Another Sub Menu Item 2</a></li>
-										<li><a href="#">Another Sub Menu Item 3</a></li>
-									</ul>
-								</li>
-								-->
 								<li><a href="#">Jamaica Project 2</a></li>
 								<li><a href="#">Jamaica Project 3</a></li>
 								<?php foreach($featuredProjects as $project): ?>
@@ -27,14 +19,13 @@
 								<?php endforeach;?>
 							</ul>
 						</li>
+						-->
 						<li><a href="/learn_language_forge">Learn</a>
 							<ul>
 								<li><a href="/learn_language_forge">About Language Forge</a></li>
 								<li><a href="/learn_expand_your_team">Expand Your Team</a></li>
-								<li><a href="/learn_contribute">Contribute</a></li>
 							</ul>
 						</li>
-						<li><a href="/contribute">Contribute</a></li>
 						<li><a href="/discuss">Discuss</a></li>
 					</ul>
 				</div>

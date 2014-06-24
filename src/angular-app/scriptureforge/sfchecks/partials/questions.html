@@ -4,7 +4,7 @@
 	<button data-ng-show="rights.archive" class="btn" data-ng-disabled="selected.length == 0" data-ng-click="archiveQuestions()"><i class="icon-archive icon-large"></i>Archive Questions</button>
 	<button data-ng-show="rights.createTemplate" data-ng-disabled="selected.length == 0 || selected.length > 1" class="btn" data-ng-click="makeQuestionIntoTemplate()"><i class="icon-pushpin"></i>Make Template</button>
 	<button data-ng-show="rights.create" class="btn" data-ng-click="newQuestionCollapsed = !newQuestionCollapsed"><i class="icon-plus"></i>Add New Question</button>
-	<a id="text_settings_button" data-ng-show="rights.editOther" class="btn pull-right" href="#/{{textId}}/settings"><i class="icon-cog icon-2x" data-tooltip="Text Settings"></i></a>
+	<a id="text_settings_button" data-ng-show="rights.editOther" class="btn pull-right" href="#/{{textId}}/settings"><i class="icon-cog icon-large" data-tooltip="Text Settings"></i></a>
 </form>
 <div class="new-item" data-collapse="newQuestionCollapsed">
 	<form class="well span11" name="newQuestionForm">
