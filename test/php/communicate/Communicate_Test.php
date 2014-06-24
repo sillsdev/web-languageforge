@@ -50,7 +50,7 @@ class TestCommunicate extends UnitTestCase {
 		$project = $e->createProjectSettings(SF_TESTPROJECT);
 		$subject = 'TestSubject';
 		$project->emailSettings->fromAddress = 'projectName@scriptureforge.org';
-		$project->emailSettings->fromName = 'ScriptureForge ProjectName';
+		$project->emailSettings->fromName = 'Scripture Forge ProjectName';
 		$smsTemplate = '';
 		$emailTemplate = 'TestMessage';
 		$delivery = new MockCommunicateDelivery();
@@ -76,7 +76,7 @@ class TestCommunicate extends UnitTestCase {
 		$project = $e->createProjectSettings(SF_TESTPROJECT);
 		$subject = 'TestSubject';
 		$project->emailSettings->fromAddress = 'projectName@scriptureforge.org';
-		$project->emailSettings->fromName = 'ScriptureForge ProjectName';
+		$project->emailSettings->fromName = 'Scripture Forge ProjectName';
 		$smsTemplate = '';
 		$emailTemplate = 'TestMessage';
 		$delivery = new MockCommunicateDelivery();
