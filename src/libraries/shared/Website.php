@@ -65,7 +65,7 @@ class Website {
 		$sites['demo.scriptureforge.local'] = new Website('demo.scriptureforge.local', 'Scripture Forge', self::SCRIPTUREFORGE, 'simple', true);
 
 		$sites['dev.scriptureforge.org'] = new Website('dev.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE, 'default', true);
-		$sites['demo.dev.scriptureforge.org'] = new Website('demo.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE, 'simple', true);
+		$sites['demo.dev.scriptureforge.org'] = new Website('demo.dev.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE, 'simple', true);
 		$sites['jamaicanpsalms.dev.scriptureforge.org'] = new Website('jamaicanpsalms.dev.scriptureforge.org', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
 		
 		$sites['www.scriptureforge.org'] = new Website('www.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE);
