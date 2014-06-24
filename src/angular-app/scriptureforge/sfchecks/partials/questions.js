@@ -153,8 +153,13 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 			questionService.archive(questionIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
+					$scope.queryQuestions();
+					if (questionIds.length == 1) {
+						notice.push(notice.SUCCESS, "The question was archived successfully");
+					} else {
+						notice.push(notice.SUCCESS, "The questions were archived successfully");
+					}
 				}
-				$scope.queryQuestions();
 			});
 		}
 	};
@@ -345,7 +350,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	};
 	
 }])
-.controller('TextSettingsArchivedQuestionsCtrl', ['$scope', 'questionService', function($scope, questionService) {
+.controller('TextSettingsArchivedQuestionsCtrl', ['$scope', 'questionService', 'silNoticeService', function($scope, questionService, notice) {
 	// Listview Selection
 	$scope.selected = [];
 	$scope.updateSelection = function(event, item) {
@@ -373,14 +378,19 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	
 	// Publish Questions
 	$scope.publishQuestions = function() {
-		var questionsIds = [];
+		var questionIds = [];
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
-			questionsIds.push($scope.selected[i].id);
+			questionIds.push($scope.selected[i].id);
 		}
-		questionService.publish(questionsIds, function(result) {
+		questionService.publish(questionIds, function(result) {
 			if (result.ok) {
 				$scope.selected = []; // Reset the selection
 				$scope.queryTextSettings();
+				if (questionIds.length == 1) {
+					notice.push(notice.SUCCESS, "The question was re-published successfully");
+				} else {
+					notice.push(notice.SUCCESS, "The questions were re-published successfully");
+				}
 			}
 		});
 	};
