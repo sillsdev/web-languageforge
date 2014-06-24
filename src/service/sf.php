@@ -243,6 +243,15 @@ class Sf
 		return ProjectListDto::encode($this->_userId, $this->_site, true);
 	}
 	
+	/**
+	 * Publish projects
+	 * @param array<string> $projectIds
+	 * @return int Count of published projects
+	 */
+	public function project_publish($projectIds) {
+		return ProjectCommands::publishProjects($projectIds);
+	}
+	
 	// TODO Pretty sure this is going to want some paging params
 	public function project_list() {
 		return ProjectCommands::listProjects();
