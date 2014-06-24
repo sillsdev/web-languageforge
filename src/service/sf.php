@@ -240,7 +240,7 @@ class Sf
 	}
 	
 	public function project_archivedList() {
-		return ProjectListDto::encode($this->_userId, $this->_site, true);
+		return ProjectListDto::encode($this->_userId, $this->_website->domain, true);
 	}
 	
 	/**
@@ -258,7 +258,7 @@ class Sf
 	}
 	
 	public function project_list_dto() {
-		return \models\shared\dto\ProjectListDto::encode($this->_userId, $this->_website->domain);
+		return ProjectListDto::encode($this->_userId, $this->_website->domain);
 	}
 	
 	public function project_joinProject($projectId, $role) {
