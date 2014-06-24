@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'palaso.ui.picklistEditor', 'angularFileUpload', 'ngRoute'])
-.controller('ProjectSettingsCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService', 'sfchecksLinkService',
-                                    function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService, sfchecksLinkService) {
+.controller('ProjectSettingsCtrl', ['$scope', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService', 'sfchecksLinkService',
+                                    function($scope, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService, sfchecksLinkService) {
 	$scope.project = {};
 	$scope.finishedLoading = false;
 	$scope.list = {};
@@ -178,7 +178,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	};
 
 }])
-.controller('ProjectSettingsArchiveTextsCtrl', ['$scope', 'textService', function($scope, textService) {
+.controller('ProjectSettingsArchiveTextsCtrl', ['$scope', 'textService', 'silNoticeService', function($scope, textService, notice) {
 	// Listview Selection
 	$scope.selected = [];
 	$scope.updateSelection = function(event, item) {
@@ -204,6 +204,11 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			if (result.ok) {
 				$scope.selected = []; // Reset the selection
 				$scope.queryProjectSettings();
+				if (textIds.length == 1) {
+					notice.push(notice.SUCCESS, "The text was re-published successfully");
+				} else {
+					notice.push(notice.SUCCESS, "The texts were re-published successfully");
+				}
 			}
 		});
 	};

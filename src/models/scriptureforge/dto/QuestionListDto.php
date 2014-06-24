@@ -25,7 +25,7 @@ class QuestionListDto
 		$project = new SfchecksProjectModel($projectId);
 		$text = new TextModel($project, $textId);
 		$user = new UserModel($userId);
-		if ($text->isArchived && $project->users[$userId]->role != ProjectRoles::MANAGER) {
+		if (($project->isArchived || $text->isArchived) && $project->users[$userId]->role != ProjectRoles::MANAGER) {
 			throw new \Exception("This Text is no longer available.\nIf this is incorrect contact your project manager.\n");
 		}
 		$questionList = new QuestionAnswersListModel($project, $textId);
