@@ -13,6 +13,7 @@ use libraries\scriptureforge\sfchecks\Email;
 use models\commands\ActivityCommands;
 use models\commands\MessageCommands;
 use models\commands\ProjectCommands;
+use models\commands\SessionCommands;
 use models\commands\QuestionCommands;
 use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
@@ -168,7 +169,12 @@ class Sf
 	public function user_typeahead($term, $projectIdToExclude = '') {
 		return UserCommands::userTypeaheadList($term, $projectIdToExclude);
 	}
-	
+
+	public function user_typeaheadExclusive($term, $projectIdToExclude = '') {
+		$projectIdToExclude = empty($projectIdToExclude) ? $this->_projectId : $projectIdToExclude;
+		return UserCommands::userTypeaheadList($term, $projectIdToExclude);
+	}
+
 	public function change_password($userId, $newPassword) {
 		return UserCommands::changePassword($userId, $newPassword, $this->_userId);
 	}
@@ -250,6 +256,16 @@ class Sf
 	public function project_usersDto() {
 		return ProjectCommands::usersDto($this->_projectId);
 	}
+
+
+	//---------------------------------------------------------------
+	// SESSION API
+	//---------------------------------------------------------------
+
+	public function session_getSessionData() {
+		return SessionCommands::getSessionData($this->_projectId, $this->_userId);
+	}
+	
 	
 	// todo: implement the UI for this in angular
 	public function projectcode_exists($code) {
@@ -390,6 +406,14 @@ class Sf
 	
 	public function question_update_answer($questionId, $answer) {
 		return QuestionCommands::updateAnswer($this->_projectId, $questionId, $answer, $this->_userId);
+	}
+	
+	public function question_update_answerExportFlag($questionId, $answerId, $isToBeExported) {
+		return QuestionCommands::updateAnswerExportFlag($this->_projectId, $questionId, $answerId, $isToBeExported);
+	}
+	
+	public function question_update_answerTags($questionId, $answerId, $tags) {
+		return QuestionCommands::updateAnswerTags($this->_projectId, $questionId, $answerId, $tags);
 	}
 	
 	public function question_remove_answer($questionId, $answerId) {

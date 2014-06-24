@@ -11,9 +11,11 @@ var SfTextSettingsPage = function() {
 	};
 	
 	this.editTextTab = {
-		title: 			element(by.model('editedText.title')),
-		usxText:		element(by.model('editedText.content')),
-		saveButton:		element(by.partialButtonText('Save')),
+		title: 				element(by.model('editedText.title')),
+		usxText:			element(by.model('editedText.content')),
+		letMeEditLink:		element(by.partialLinkText('Edit previous text')),
+		contentEditor:	 	element(by.model('editedText.content')),
+		saveButton:			element(by.partialButtonText('Save')),
 	};
 	
 	this.archivedQuestionsTab = {
@@ -34,6 +36,15 @@ var SfTextSettingsPage = function() {
 	};
 	
 	this.paratextExportTab = {
+		exportAnswers:	element(by.id('exportAnswers')),
+		exportComments:	element(by.model('exportConfig.exportComments')),
+		exportFlagged:	element(by.model('exportConfig.exportFlagged')),
+		prepareButton:	element(by.partialButtonText('Prepare')),
+		noExportMsg:	element(by.id('noExportMsg')),
+		
+		answerCount:	element(by.binding('download.answerCount')),
+		commentCount:	element(by.binding('download.commentCount')),
+		downloadButton:	element(by.partialButtonText('Download')),
 	};
 	
 };

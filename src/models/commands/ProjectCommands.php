@@ -113,7 +113,6 @@ class ProjectCommands
 		CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
 
 		$usersDto = ManageUsersDto::encode($projectId);
-		error_log(print_r($usersDto, true));
 		return $usersDto;
 	}
 

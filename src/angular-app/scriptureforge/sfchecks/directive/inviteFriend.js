@@ -1,13 +1,17 @@
 'use strict';
 
 angular.module('sf.ui.invitefriend', ['bellows.services', 'palaso.ui.notice'])
-	.controller('inviteAFriend', ['$scope', 'userService', 'silNoticeService', '$location', '$rootScope', '$routeParams', function($scope, userService, notice, $location, $rootScope, $routeParams) {
+	.controller('inviteAFriend', ['$scope', 'userService', 'sessionService', 'silNoticeService', '$location', '$rootScope', '$routeParams', function($scope, userService, ss, notice, $location, $rootScope, $routeParams) {
 		
 		$scope.showInviteForm = false;
 		$scope.showInviteDiv = true;
 		
+		$scope.canCreateUsers = function() {
+			return ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE);
+		};
+
 		$scope.checkVisibility = function() {
-			$scope.showInviteDiv = true;
+			$scope.showInviteDiv = ss.getProjectSetting('allowInviteAFriend') || $scope.canCreateUsers();
 		};
 		
 		$rootScope.$on('$viewContentLoaded', function (event, next, current) {

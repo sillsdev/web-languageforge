@@ -131,6 +131,7 @@ class RightsHelper
 				return $this->userHasProjectRight(Domain::USERS + Operation::CREATE);
 				
 			case 'user_typeahead':
+			case 'user_typeaheadExclusive':
 				return $this->userHasProjectRight(Domain::USERS + Operation::VIEW);
 				
 			case 'message_send':
@@ -170,6 +171,12 @@ class RightsHelper
 			case 'question_read':
 				return $this->userHasProjectRight(Domain::QUESTIONS + Operation::EDIT);
 
+			case 'question_update_answerExportFlag':
+				return $this->userHasProjectRight(Domain::TEXTS + Operation::EDIT);
+				
+			case 'question_update_answerTags':
+				return $this->userHasProjectRight(Domain::TAGS + Operation::EDIT);
+				
 			case 'question_archive':
 			case 'question_publish':
 				return $this->userHasProjectRight(Domain::QUESTIONS + Operation::ARCHIVE);
@@ -196,7 +203,6 @@ class RightsHelper
 			case 'project_create':
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 			
-				// TODO: refactor these permissions once questionTemplates are being properly stored on the project
 			case 'questionTemplate_update':
 				return $this->userHasProjectRight(Domain::TEMPLATES + Operation::EDIT);
 				
@@ -220,6 +226,10 @@ class RightsHelper
 			case 'project_list_dto':
 			case 'activity_list_dto':
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW_OWN);
+
+			case 'session_getSessionData':
+				// Are there any circumstances where this should be denied? Should this just be "return true;"?
+				return $this->userHasSiteRight(Domain::USERS + Operation::VIEW_OWN);
 				
 				
 			// LanguageForge (lexicon)

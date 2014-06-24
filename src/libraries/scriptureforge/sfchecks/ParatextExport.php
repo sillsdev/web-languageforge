@@ -1,14 +1,11 @@
 <?php
 namespace libraries\scriptureforge\sfchecks;
 
-
 use models\scriptureforge\dto\UsxHelper;
-
-use models\UserModel;
 use models\ProjectModel;
-use models\TextModel;
 use models\QuestionAnswersListModel;
-
+use models\TextModel;
+use models\UserModel;
 
 class ParatextExport
 {
@@ -29,14 +26,16 @@ class ParatextExport
 			'xml' => "<CommentList>\n"
 		);
 		foreach ($questionlist->entries as $question) {
-			foreach ($question['answers'] as $answerId => $answer) {
-				if (count($params['tags']) == 0 || count(array_intersect($params['tags'], $answer['tags'])) > 0) { // if the answer is tagged with an export tag
-					$dl['answerCount']++;
-					$dl['xml'] .= self::makeCommentXml($answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
-					if ($params['exportComments']) {
-						foreach ($answer['comments'] as $commentId => $comment) {
-							$dl['xml'] .= self::makeCommentXml(array(), 0, $textInfo, $commentId, $comment);
-							$dl['commentCount']++;
+			if (! array_key_exists('isArchived', $question) || ! $question['isArchived']) {
+				foreach ($question['answers'] as $answerId => $answer) {
+					if (! $params['exportFlagged'] || (array_key_exists('isToBeExported', $answer) && $answer['isToBeExported'])) { // if the answer is tagged with an export tag
+						$dl['answerCount']++;
+						$dl['xml'] .= self::makeCommentXml($answer['tags'], $answer['score'], $textInfo, $answerId, $answer);
+						if ($params['exportComments']) {
+							foreach ($answer['comments'] as $commentId => $comment) {
+								$dl['xml'] .= self::makeCommentXml(array(), 0, $textInfo, $commentId, $comment);
+								$dl['commentCount']++;
+							}
 						}
 					}
 				}

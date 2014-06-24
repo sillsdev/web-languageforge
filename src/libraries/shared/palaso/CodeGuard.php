@@ -36,6 +36,12 @@ class CodeGuard {
 		}
 	}
 	
+	public static function assertKeyExistsOrThrow($key, $array, $name) {
+		if (!array_key_exists($key, $array)) {
+			self::exception("'$key' does not exist in array '$name'");
+		}
+	}
+	
 	public static function checkEmptyAndThrow($var, $name) {
 		if (empty($var)) {
 			self::exception("'$name' should not be empty");

@@ -3,6 +3,7 @@
 angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'angularFileUpload', 'ngSanitize', 'ngRoute'])
 .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService',
                               function($scope, questionService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice) {
+	var Q_TITLE_LIMIT = 50;
 	var textId = $routeParams.textId;
 	$scope.textId = textId;
 	$scope.finishedLoading = false;
@@ -169,7 +170,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 			questionService.update(model, function(result) {
 			if (result.ok) {
 				$scope.queryQuestions();
-				notice.push(notice.SUCCESS, "'" + questionService.util.calculateTitle(model.title, model.description) + "' was added successfully");
+				notice.push(notice.SUCCESS, "'" + questionService.util.calculateTitle(model.title, model.description, Q_TITLE_LIMIT) + "' was added successfully");
 				if ($scope.saveAsTemplate) {
 						qts.update(model, function(result) {
 						if (result.ok) {
@@ -208,13 +209,14 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	$scope.enhanceDto = function(items) {
 		angular.forEach(items, function(item) {
 			item.url = sfchecksLinkService.question(textId, item.id);
-			item.calculatedTitle = questionService.util.calculateTitle(item.title, item.description);
+			item.calculatedTitle = questionService.util.calculateTitle(item.title, item.description, Q_TITLE_LIMIT);
 		});
 	};
 	
 }])
 .controller('QuestionsSettingsCtrl', ['$scope', '$http', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService',
                                       function($scope, $http, ss, $routeParams, breadcrumbService, notice, textService, questionService, sfchecksLinkService) {
+	var Q_TITLE_LIMIT = 50;
 	var textId = $routeParams.textId;
 	$scope.textId = textId;
 	$scope.editedText = {
@@ -235,7 +237,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 				$scope.settings.archivedQuestions = result.data.archivedQuestions;
 				for (var i = 0; i < $scope.settings.archivedQuestions.length; i++) {
 					$scope.settings.archivedQuestions[i].url = sfchecksLinkService.question($scope.textId, $scope.settings.archivedQuestions[i].id);
-					$scope.settings.archivedQuestions[i].calculatedTitle = questionService.util.calculateTitle($scope.settings.archivedQuestions[i].title, $scope.settings.archivedQuestions[i].description);
+					$scope.settings.archivedQuestions[i].calculatedTitle = questionService.util.calculateTitle($scope.settings.archivedQuestions[i].title, $scope.settings.archivedQuestions[i].description, Q_TITLE_LIMIT);
 					$scope.settings.archivedQuestions[i].dateModified = new Date($scope.settings.archivedQuestions[i].dateModified);
 				}
 				// Rights
@@ -259,7 +261,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 	};
 	
 	$scope.updateText = function(newText) {
-		if (!newText.content || !newText.editPreviousText) {
+		if (!newText.content) {
 			delete newText.content;
 		}
 			textService.update(newText, function(result) {
@@ -274,22 +276,17 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
 		$scope.rangeSelectorCollapsed = !$scope.rangeSelectorCollapsed;
 	};
 	
-	$scope.$watch('editedText.editPreviousText', function(newval, oldval) {
+	$scope.editPreviousText = function() {
 		var yesImSure = false;
-		if (oldval == newval) { return; }
-		if (angular.isUndefined(newval)) { return; }
-		if (newval) {
-			// Checkbox was just checked -- put old text in edit box
-			yesImSure = confirm("Caution: Editing the USX text can be dangerous. You can easily mess up your text with a typo. Are you really sure you want to do this?");
-			if (!yesImSure) { $scope.editedText.editPreviousText = false; return; }
-			if ($scope.editedText.content && $scope.editedText.content != $scope.dto.text.content) {
-				// Wait; the user had already entered text. Pop up ANOTHER confirm box.
-				yesImSure = confirm("Caution: You had previous edits in the USX text box, which will be replaced if you proceed. Are you really sure you want to throw away your previous edits?");
-				if (!yesImSure) { $scope.editedText.editPreviousText = false; return; }
-			}
-			$scope.editedText.content = $scope.dto.text.content;
+		yesImSure = confirm("Caution: Editing the USX text can be dangerous. You can easily mess up your text with a typo. Are you really sure you want to do this?");
+		if (!yesImSure) { return; }
+		if ($scope.editedText.content && $scope.editedText.content != $scope.dto.text.content) {
+			// Wait; the user had already entered text. Pop up ANOTHER confirm box.
+			yesImSure = confirm("Caution: You had previous edits in the USX text box, which will be replaced if you proceed. Are you really sure you want to throw away your previous edits?");
+			if (!yesImSure) { return; }
 		}
-	});
+		$scope.editedText.content = $scope.dto.text.content;
+	};
 	
 	$scope.onUsxFile = function($files) {
 		if (!$files || $files.length == 0) {
@@ -393,8 +390,8 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
                                        function($scope, textService, $routeParams, $location) {
 	$scope.exportConfig = {
 		'textId': $routeParams.textId,
-		'tagEditorVisible' : false,
 		'exportComments' : false,
+		'exportFlagged' : true,
 		'tags' : []
 	};
 	

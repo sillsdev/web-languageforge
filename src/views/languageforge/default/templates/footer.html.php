@@ -9,7 +9,7 @@
 						</div>
 						<div class="left footer-nav">
 							<h4>Navigate</h4>
-							<p class="small"><a href="/">Home</a><br /><a href="/explore">Explore</a><br /><a href="/learn_language_forge">Learn</a><br /><a href="/contribute">Contribute</a><br /><a href="/discuss">Discuss</a></p>
+							<p class="small"><a href="/">Home</a><br /><a href="/learn_language_forge">Learn</a><br /><a href="/discuss">Discuss</a></p>
 						</div>
 					</div>
 				</div>
