@@ -29,21 +29,26 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 	}
 	
 	/**
-	 * Reads all projects
+	 * Reads all published projects or all archived projects
+	 * @param boolean $isArchivedList
 	 */
-	function readAll() {
-		$query = array('siteName' => array('$in' => array($this->_site)));
+	function readAll($isArchivedList = false) {
+		if ($isArchivedList) {
+			$query = array('siteName' => array('$in' => array($this->_site)), 'isArchived' => true);
+		} else {
+			$query = array('siteName' => array('$in' => array($this->_site)), 'isArchived' => array('$ne' => true));
+		}
 		$fields = array('projectname', 'appName', 'themeName', 'siteName');
 		
 		return $this->_mapper->readList($this, $query, $fields);
 	}
 	
 	/**
-	 * Reads all projects in which the given $userId is a member.
+	 * Reads all published projects in which the given $userId is a member.
 	 * @param string $userId
 	 */
 	function readUserProjects($userId) {
-		$query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array($this->_site)));
+		$query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array($this->_site)), 'isArchived' => array('$ne' => true));
 		$fields = array('projectname', 'appName', 'themeName', 'siteName');
 		
 		$this->_mapper->readList($this, $query, $fields);

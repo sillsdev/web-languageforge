@@ -24,7 +24,7 @@ class ProjectListDto
 
 		$projectList = new ProjectList_UserModel($site);
 		if ($canListAllProjects) {
-			$projectList->readAll();
+			$projectList->readAll($isArchivedList);
 		} else {
 			$projectList->readUserProjects($userId);
 		}
@@ -34,18 +34,16 @@ class ProjectListDto
 		$count = 0;
 		foreach ($projectList->entries as $entry) {
 			$project = new ProjectModel($entry['id']);
-			if (! ($project->isArchived xor $isArchivedList )) {
-				$role = ProjectRoles::NONE;
-				if (count($project->users) > 0) {
-					if (isset($project->users[$userId]) && isset($project->users[$userId]->role)) {
-						$role = $project->users[$userId]->role;
-					}
+			$role = ProjectRoles::NONE;
+			if (count($project->users) > 0) {
+				if (isset($project->users[$userId]) && isset($project->users[$userId]->role)) {
+					$role = $project->users[$userId]->role;
 				}
-				$entry['role'] = $role;
-				$entry['dateModified'] = $project->dateModified->format(\DateTime::RFC2822);
-				$data['entries'][] = $entry;
-				$count++;
 			}
+			$entry['role'] = $role;
+			$entry['dateModified'] = $project->dateModified->format(\DateTime::RFC2822);
+			$data['entries'][] = $entry;
+			$count++;
 		}
 		$data['count'] = $count;
 		
