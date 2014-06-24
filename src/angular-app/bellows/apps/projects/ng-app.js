@@ -7,7 +7,10 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 
 	// Rights
 	$scope.rights = {};
-		$scope.rights.deleteOther = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE); 
+	$scope.rights.edit = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT); 
+	$scope.rights.archive = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE); 
+	$scope.rights.create = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.CREATE);
+	$scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create;
 	$scope.newProject = {};
 
 
@@ -39,22 +42,27 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 		});
 	};
 	
-	// Remove project
-	$scope.removeProject = function() {
-		//console.log("removeProject()");
+	// Archive projects
+	$scope.archiveProjects = function() {
 		var projectIds = [];
+		var message = '';
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			projectIds.push($scope.selected[i].id);
 		}
-		if (window.confirm("Are you sure you want to delete the(se) " + projectIds.length + " project(s)? (Deleting a project is a big deal)")) {
-			projectService.remove(projectIds, function(result) {
+		if (projectIds.length == 1) {
+			message = "Are you sure you want to archive the selected project?";
+		} else {
+			message = "Are you sure you want to archive the " + projectIds.length + " selected projects?";
+		}
+		if (window.confirm(message)) {
+			projectService.archive(projectIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
 					$scope.queryProjectsForUser();
 					if (projectIds.length == 1) {
-						notice.push(notice.SUCCESS, "The project was removed successfully");
+						notice.push(notice.SUCCESS, "The project was archived successfully");
 					} else {
-						notice.push(notice.SUCCESS, "The projects were removed successfully");
+						notice.push(notice.SUCCESS, "The projects were archived successfully");
 					}
 				}
 			});
@@ -125,15 +133,8 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 		}
 	};
 	
-	$scope.projectTypes = {
-		'sfchecks': 'Community Scripture Checking',
-		'rapuma': 'Publishing',
-		'lexicon': 'Web Dictionary'
-	};
+	$scope.projectTypes = projectService.data.projectTypes;
+	$scope.projectTypesBySite = projectService.data.projectTypesBySite;
 	
-	$scope.projectTypesBySite = {
-		'scriptureforge': ['sfchecks'],
-		'languageforge': ['lexicon']
-	};
 }])
 ;

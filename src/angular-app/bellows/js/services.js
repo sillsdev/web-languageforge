@@ -66,8 +66,14 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.create = function(projectName, appName, callback) {
 		jsonRpc.call('project_create', [projectName, appName], callback);
 	};
-	this.remove = function(projectIds, callback) {
-		jsonRpc.call('project_delete', [projectIds], callback);
+	this.archive = function(projectIds, callback) {
+		jsonRpc.call('project_archive', [projectIds], callback);
+	};
+	this.archivedList = function(callback) {
+		jsonRpc.call('project_archivedList', [], callback);
+	};
+	this.publish = function(projectIds, callback) {
+		jsonRpc.call('project_publish', [projectIds], callback);
 	};
 	this.list = function(callback) {
 		jsonRpc.call('project_list_dto', [], callback);
@@ -83,6 +89,18 @@ angular.module('bellows.services', ['jsonRpc'])
 	};
 	this.joinProject = function(projectId, role, callback) {
 		jsonRpc.call('project_joinProject', [projectId, role], callback);
+	};
+	
+	// data constants
+	this.data = {};
+	this.data.projectTypes = {
+		'sfchecks': 'Community Scripture Checking',
+		'rapuma': 'Publishing',
+		'lexicon': 'Web Dictionary'
+	};
+	this.data.projectTypesBySite = {
+		'scriptureforge': ['sfchecks'],
+		'languageforge': ['lexicon']
 	};
 	
 }])

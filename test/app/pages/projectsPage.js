@@ -16,7 +16,7 @@ var SfProjectsPage = function() {
 
 	this.testProjectName = 'Test Project';
 
-	this.deleteBtn = element(by.partialButtonText('Delete Selected'));
+	this.archiveButton = element(by.partialButtonText('Archive Selected Projects'));
 	this.createBtn = element(by.partialButtonText('Create New Project'));
 	this.newProjectNameInput  = element(by.model('newProject.projectName'));
 	this.newProjectTypeSelect = element(by.model('newProject.appName'));
@@ -48,7 +48,7 @@ var SfProjectsPage = function() {
 	this.findProject = function(projectName) {
 		var foundRow = undefined;
 		var result = protractor.promise.defer();
-		var searchName = new RegExp(projectName + ' \\(' + projectTypes['sf'] + '\\)');
+		var searchName = new RegExp(projectName);
 		this.projectsList.map(function(row) {
 			row.getText().then(function(text) {
 				if (searchName.test(text)) {
