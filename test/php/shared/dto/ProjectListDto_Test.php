@@ -99,7 +99,7 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertEqual($dto['count'], 1);
 		$this->assertIsA($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $projectId2);
-		$this->assertEqual($dto['entries'][0]['projectname'], $project2Name);
+		$this->assertEqual($dto['entries'][0]['projectName'], $project2Name);
 		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::NONE);
 
 		$dto = ProjectListDto::encode($userId, $project1->siteName, true);
@@ -107,7 +107,7 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertEqual($dto['count'], 1);
 		$this->assertIsA($dto['entries'], 'array');
 		$this->assertEqual($dto['entries'][0]['id'], $projectId1);
-		$this->assertEqual($dto['entries'][0]['projectname'], $project1Name);
+		$this->assertEqual($dto['entries'][0]['projectName'], $project1Name);
 		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::MANAGER);
 	}
 	

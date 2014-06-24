@@ -61,7 +61,7 @@ angular.module('bellows.services', ['jsonRpc'])
 	};
 	
 }])
-.service('projectService', ['jsonRpc', function(jsonRpc) {
+.service('projectService', ['jsonRpc', 'sessionService', function(jsonRpc, ss) {
 	jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
 	this.create = function(projectName, appName, callback) {
 		jsonRpc.call('project_create', [projectName, appName], callback);
@@ -93,14 +93,17 @@ angular.module('bellows.services', ['jsonRpc'])
 	
 	// data constants
 	this.data = {};
-	this.data.projectTypes = {
+	this.data.projectTypeNames = {
 		'sfchecks': 'Community Scripture Checking',
 		'rapuma': 'Publishing',
 		'lexicon': 'Web Dictionary'
 	};
-	this.data.projectTypesBySite = {
-		'scriptureforge': ['sfchecks'],
-		'languageforge': ['lexicon']
+	this.data.projectTypesBySite = function() {
+		var types = {
+			'scriptureforge': ['sfchecks'],
+			'languageforge': ['lexicon']
+		};
+		return types[ss.baseSite()];
 	};
 	
 }])

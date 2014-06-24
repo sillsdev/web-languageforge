@@ -38,7 +38,7 @@ describe('Projects page (projects.js)', function() {
 			callback(testJsonResult);
 		},
 		data: {
-			projectTypes: {},
+			projectTypeNames: {},
 			projectTypesBySite: {},
 		},
 	};
