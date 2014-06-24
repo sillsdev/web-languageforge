@@ -121,7 +121,7 @@ class Website {
 	private static function getHostname() {
 		// special exception for reverse proxy on dev.scriptureforge.org
 		if (array_key_exists('HTTP_X_FORWARDED_SERVER', $_SERVER) &&
-				array_key_exists('HTTP_FORWARDED_HOST', $_SERVER) &&
+				array_key_exists('HTTP_X_FORWARDED_HOST', $_SERVER) &&
 				$_SERVER['HTTP_X_FORWARDED_SERVER'] == 'dev.scriptureforge.org') {
 			return $_SERVER['HTTP_X_FORWARDED_HOST'];	
 		} else {
