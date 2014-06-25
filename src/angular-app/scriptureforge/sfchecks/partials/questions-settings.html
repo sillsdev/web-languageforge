@@ -97,7 +97,7 @@
 			<br />
 			<div data-ng-show="file != null">
 				<p><strong>{{file.name}}</strong> {{file.size | bytes }}</p>
-				<div class="span4"><progress data-percent="progress"></progress></div>&nbsp;
+				<div class="span4"><progressbar data-value="progress" data-max="100.0"></progressbar></div>&nbsp;
 			</div>
 			<label>&nbsp;</label>
 			<div data-ng-bind-html="uploadResult"></div>
