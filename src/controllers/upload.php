@@ -62,7 +62,7 @@ class Upload extends Secure_base {
 				}
 				$text->write();
 
-				echo "File uploaded succesfully.";
+				echo "File uploaded successfully.";
 			} else {
 				$allowedExtensionsStr = implode(", ", $allowedExtensions);
 				if (count($allowedExtensions) < 1) {
