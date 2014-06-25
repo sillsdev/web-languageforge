@@ -312,6 +312,7 @@ class UserCommands {
 				JsonDecoder::decode($user, $params);
 				$user->setPassword($params['password']);
 				$user->validate();
+				$user->role = SiteRoles::USER;
 				$user->active = true;
 				return $user->write();
 			} else {
