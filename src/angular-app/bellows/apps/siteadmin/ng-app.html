@@ -63,10 +63,10 @@
 				<div>
 					<label style="margin-bottom:20px"><input type="checkbox" data-ng-model="record.active"/> Is Active</label>
 				</div>
-				<a data-ng-show="vars.state == 'update'" href="" data-ng-click="togglePasswordForm(); vars.inputfocus = false">Change {{record.username}}'s password</a>
+				<a data-ng-show="vars.state == 'update'" href="" data-ng-click="togglePasswordForm(); vars.inputfocus = vars.showPasswordForm">Change {{record.username}}'s password</a>
 				<div data-ng-show="vars.showPasswordForm">
 					<label>Password</label>
-					<input type="text" data-ng-model="record.password" data-ng-focus="vars.inputfocus" name="password"/>
+					<input type="text" data-ng-model="record.password" data-focus-me="vars.inputfocus" name="password"/>
 				</div>
 				<table class="table">
 				<tr data-ng-show="record.created_on"><td><label style="cursor:default">Created On: {{ record.created_on * 1000 | date:shortDate }}</label></td></tr>
