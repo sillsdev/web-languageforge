@@ -262,7 +262,6 @@ angular.module('siteadmin', [
 	
 	// Publish Projects
 	$scope.publishProjects = function() {
-		console.log("publishProjects");
 		var projectIds = [];
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			projectIds.push($scope.selected[i].id);
