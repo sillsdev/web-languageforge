@@ -15,7 +15,7 @@
 					"summary" => "Connecting with the book of Psalms and with each other like never before. Speak your mind. Ask Questions. Improve it!"
 					)
 			);
-			$this->load->view("$projectPath/templates/slideshow.html.php", $data);
+			$this->load->view("$themePath/templates/slideshow.html.php", $data);
 			?>
 			
 			
@@ -27,7 +27,7 @@
 						<p>Imagine hundreds, maybe thousands, of Jamaicans from all over the world (male and female, all ages, all churches and job backgrounds), helping to translate their favourite Psalms into Jamaican. We do this face-to-face in our home and church groups using this Jamaican Psalms translation website. This is a translation of the Psalms by Jamaicans for Jamaicans. Gad wod iina fi wi langwij! Join the cause by creating a user account now. It frii!</p>
 					</div>
 					<div class="span5">
-						<iframe width="380" height="285" src="http://www.youtube.com/embed/hYlECJ35Wos" frameborder="0" allowfullscreen></iframe>
+						<iframe width="380" height="285" src="//www.youtube.com/embed/hYlECJ35Wos" frameborder="0" allowfullscreen></iframe>
 					</div>
 					</div>
 			</div>
@@ -50,12 +50,12 @@
 					),
 				array(
 					"title" => "Get Started",
-					"summary" => "There are two ways you can start right away: Organize a face-to-face Psalms study group and share your group's insights with the translation team.Â  Create a log-in and begin interacting with the translators and others from the Jamaican community over the translation drafts they post on this website. Either way, you are helping to produce your Jamaican Psalms translation. It's that easy.",
+					"summary" => "There are two ways you can start right away: Organize a face-to-face Psalms study group and share your group's insights with the translation team.� Create a log-in and begin interacting with the translators and others from the Jamaican community over the translation drafts they post on this website. Either way, you are helping to produce your Jamaican Psalms translation. It's that easy.",
 					"button" => "Get Started Now",
 					"target_url" => "/signup"
 					)
 			);
-			$this->load->view("$projectPath/templates/3column.html.php", $data);
+			$this->load->view("$themePath/templates/3column.html.php", $data);
 			?>
 			
 			
@@ -64,10 +64,11 @@
 			<div id="sub-foot">
 				<div class="container">
 					<div class="row">
-						<div class="span3"><img src="/images/scriptureforge/jamaicanpsalms/sf-sub-footer-pic.png" alt="Israel's Story" style="width:210px;height:210px;margin-top:52px" /></div>
+						<div class="span3"><img src="/images/scriptureforge/jamaicanpsalms/sf-sub-footer-pic.png" alt="Israel's Story" style="width:146px;height:150px;margin-top:72px; margin-left:60px" /></div>
 						<div class="span9">
 							<h3>The Impact of the Bible</h3>
-							<p>Many Jamaicans have been touched by the Jamaican New Testament! Take Israel, for example, a young British-Jamaican girl living in England. She talks to us regularly on our Facebook page. Ever so often she reads for her family members from the Jamaican New Testament (JNT). One day, she read to her grandmother from the JNT. Her grandmother then told her pastor about the JNT. The pastor was curious, so Israel was asked to take her JNT to church and read from it during worship! Israel messaged us after the service, this was what she said:</p>
+							<p>Many Jamaicans have been touched by the Jamaican New Testament! Take Israel, for example, a young British-Jamaican young man living in England. He talks to us regularly on our Facebook page. Ever so often he reads for his family members from the Jamaican New Testament (JNT). One day, he read to his grandmother from the JNT. His grandmother then told her pastor about the JNT. The pastor was curious, so Israel was asked to take his JNT to church and read from it during worship! Israel messaged us after the service, this was what he said:</p>
+
 							<p>"I've just got home from church. Believe me when I tell you that they LOVE the JNT! Thank you for my copy of the JNT in my own language. I've come to realise that when you listen to the Bible in your language, it is more meaningful to you."</p>
 <!-- 							<p><a href="/create_account" class="arrowed">Get Involved Today</a></p> -->
 							<p>

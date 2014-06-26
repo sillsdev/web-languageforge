@@ -1,19 +1,17 @@
 'use strict';
 
 angular.module('sf.ui.invitefriend', ['bellows.services', 'palaso.ui.notice'])
-	.controller('inviteAFriend', ['$scope', 'userService', 'silNoticeService', '$location', '$rootScope', '$routeParams', function($scope, userService, notice, $location, $rootScope, $routeParams) {
+	.controller('inviteAFriend', ['$scope', 'userService', 'sessionService', 'silNoticeService', '$location', '$rootScope', '$routeParams', function($scope, userService, ss, notice, $location, $rootScope, $routeParams) {
 		
 		$scope.showInviteForm = false;
 		$scope.showInviteDiv = true;
 		
+		$scope.canCreateUsers = function() {
+			return ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE);
+		};
+
 		$scope.checkVisibility = function() {
-			$scope.showInviteDiv = true;
-			if (!$routeParams.projectId) {
-				var projectCode = $location.$$host.slice(0, $location.$$host.indexOf('.'));
-				if (projectCode == 'www' || projectCode == 'scriptureforge' || projectCode == 'dev') {
-					$scope.showInviteDiv = false;
-				}
-			}
+			$scope.showInviteDiv = ss.getProjectSetting('allowInviteAFriend') || $scope.canCreateUsers();
 		};
 		
 		$rootScope.$on('$viewContentLoaded', function (event, next, current) {
@@ -21,7 +19,7 @@ angular.module('sf.ui.invitefriend', ['bellows.services', 'palaso.ui.notice'])
 		});
 		
 		$scope.sendInvite = function() {
-			userService.sendInvite($scope.email, $routeParams.projectId, function(result) {
+			userService.sendInvite($scope.email, function(result) {
 				if (result.ok) {
 					notice.push(notice.SUCCESS, "An invitation email has been sent to " + $scope.email);
 					$scope.showInviteForm = false;

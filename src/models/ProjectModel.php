@@ -2,12 +2,18 @@
 
 namespace models;
 
+use models\scriptureforge\RapumaProjectModel;
+
+use models\languageforge\lexicon\LexiconProjectModel;
+
+use models\scriptureforge\SfchecksProjectModel;
+
 use models\mapper\ArrayOf;
 
 use libraries\shared\palaso\CodeGuard;
-use models\rights\Realm;
-use models\rights\Roles;
-use models\rights\ProjectRoleModel;
+
+use models\shared\rights\ProjectRoles;
+use models\shared\rights\ProjectRoleModel;
 use models\mapper\MapOf;
 use models\mapper\MongoMapper;
 use models\mapper\MongoStore;
@@ -20,29 +26,35 @@ use models\sms\SmsSettings;
 class ProjectModel extends \models\mapper\MapperModel
 {
 	
+	protected $rolesClass;
+	
 	public function __construct($id = '') {
 		$this->id = new Id();
 		$this->users = new MapOf(function($data) {
 			return new ProjectRoleModel();
 		});
+		$this->isArchived = false;
 		$this->userProperties = new ProjectUserPropertiesSettings();
-		$this->themeName = 'default';
+		$this->allowAudioDownload = true;
+		$this->allowInviteAFriend = true;
 		$this->interfaceLanguageCode = 'en';
 		parent::__construct(ProjectModelMongoMapper::instance(), $id);
 	}
 	
 	/**
-	 * @param string $domainName
-	 * @return \models\ProjectModel
+	 * 
+	 * @param Website $website
+	 * @return ProjectModel
 	 */
-	public static function createFromDomain($domainName) {
-		$projectCode = self::domainToProjectCode($domainName);
+	public static function getDefaultProject($website) {
 		$project = new ProjectModel();
-		if (!$project->readByProperty('projectCode', $projectCode)) {
+		if ($project->readByProperties(array('projectCode' => $website->defaultProjectCode, 'siteName' => $website->domain))) {
+			return ProjectModel::getById($project->id->asString());
+		} else {
 			return null;
 		}
-		return $project;
 	}
+	
 	
 	/**
 	 * Reads the model from the mongo collection
@@ -78,7 +90,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @see \models\mapper\MapperModel::databaseName()
 	 */
 	public function databaseName() {
-		$name = strtolower($this->projectname);
+		$name = strtolower($this->projectName);
 		$name = str_replace(' ', '_', $name);
 		return 'sf_' . $name;
 	}
@@ -152,9 +164,13 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @return bool
 	 */
 	public function hasRight($userId, $right) {
+		if (!method_exists($this->rolesClass, 'hasRight')) {
+			throw new \Exception('hasRight method cannot be called directly from ProjectModel');
+		}
 		$hasRight = false;
 		if (key_exists($userId, $this->users)) {
-			$hasRight = Roles::hasRight(Realm::PROJECT, $this->users[$userId]->role, $right);
+			$rolesClass = $this->rolesClass;
+			$hasRight = $rolesClass::hasRight($this->users[$userId]->role, $right);
 		}
 		return $hasRight;
 	}
@@ -165,23 +181,52 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * @return array
 	 */
 	public function getRightsArray($userId) {
+		if (!method_exists($this->rolesClass, 'getRightsArray')) {
+			throw new \Exception('getRightsArray method cannot be called directly from ProjectModel');
+		}
 		CodeGuard::checkTypeAndThrow($userId, 'string');
 		if (!key_exists($userId, $this->users)) {
 			$result = array();
 		} else {
 			$role = $this->users[$userId]->role;
-			$result = Roles::getRightsArray(Realm::PROJECT, $role);
+			$rolesClass = $this->rolesClass;
+			$result = $rolesClass::getRightsArray($role);
 		}
 		return $result;
 	}
 
 	/**
-	 * @return string
+	 * Returns the "public" settings of this project (the ones that everyone
+	 * is allowed to see, with no security concerns)
+	 * Base classes should expand on this to add more settings
 	 */
-	public function getViewsPath() {
-		return 'views/' . $this->siteName . '/' . $this->themeName;
+	public function getPublicSettings() {
+		$settings = array(
+			"allowAudioDownload" => $this->allowAudioDownload,
+			"allowInviteAFriend" => $this->allowInviteAFriend,
+		);
+		return $settings;
 	}
 	
+	/**
+	 * 
+	 * @param string $projectId
+	 * @return appropriate project model for the type
+	 */
+	public static function getById($projectId) {
+		$m = new ProjectModel($projectId);
+		switch ($m->appName) {
+			case 'sfchecks':
+				return new SfchecksProjectModel($projectId);
+			case 'rapuma':
+				return new RapumaProjectModel($projectId);
+			case 'lexicon':
+				return new LexiconProjectModel($projectId);
+			default:
+				return new ProjectModel($projectId);
+		}
+	}
+
 	/**
 	 * @return string
 	 */
@@ -197,7 +242,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	/**
 	 * @var string
 	 */
-	public $projectname;
+	public $projectName;
 	
 	/**
 	 * Web app interface language code
@@ -229,15 +274,27 @@ class ProjectModel extends \models\mapper\MapperModel
 	public $featured;
 
 	/**
+	 * Flag to indicate if this project allows users to download audio files
+	 * @var boolean
+	 */
+	public $allowAudioDownload;
+
+	/**
+	 * Flag to indicate if this project allows users to invite a friend
+	 * @var boolean
+	 */
+	public $allowInviteAFriend;
+	
+	/**
+	 * Flag to indicate if this project is archived
+	 * @var boolean
+	 */
+	public $isArchived;
+		
+	/**
 	 * @var ProjectUserPropertiesSettings
 	 */
 	public $userProperties;
-	
-	/**
-	 * specifies the theme name for this project e.g. jamaicanpsalms || default
-	 * @var string
-	 */
-	public $themeName;
 	
 	/**
 	 * Specifies which site this project belongs to.  e.g. scriptureforge || languageforge  cf. Website class

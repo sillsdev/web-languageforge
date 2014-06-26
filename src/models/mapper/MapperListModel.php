@@ -30,22 +30,29 @@ class MapperListModel
 	protected $_fields;
 	
 	/**
+	 * @var array
+	 */
+	protected $_sortFields;
+	
+	/**
 	 * @param MongoMapper $mapper
 	 * @param array $query
 	 * @param array $fields
+	 * @param array $sortFields
 	 */
-	protected function __construct($mapper, $query = array(), $fields = array()) {
+	protected function __construct($mapper, $query = array(), $fields = array(), $sortFields = array()) {
 		$this->_mapper = $mapper;
 		$this->_query = $query;
 		$this->_fields = $fields;
+		$this->_sortFields = $sortFields;
 	}
 
 	function read() {
-		return $this->_mapper->readList($this, $this->_query, $this->_fields);
+		return $this->_mapper->readList($this, $this->_query, $this->_fields, $this->_sortFields);
 	}
 	
 	function readAsModels() {
-		return $this->_mapper->readListAsModels($this, $this->_query, $this->_fields);
+		return $this->_mapper->readListAsModels($this, $this->_query, $this->_fields, $this->_sortFields);
 	}
 
 	// TODO Would be nice to deprecate this or at least have it protected not public. Derived models can run their own specific query. CP 2013-11

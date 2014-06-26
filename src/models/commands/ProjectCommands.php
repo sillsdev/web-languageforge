@@ -2,6 +2,8 @@
 
 namespace models\commands;
 
+use models\scriptureforge\SfchecksProjectModel;
+
 use models\languageforge\LfProjectModel;
 
 use models\scriptureforge\SfProjectModel;
@@ -24,86 +26,41 @@ use models\UserProfileModel;
 use models\commands\ActivityCommands;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
-use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
 use models\shared\dto\ActivityListDto;
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\RightsHelper;
 use models\shared\dto\UserProfileDto;
+use models\shared\dto\ManageUsersDto;
 use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
 use models\mapper\MongoStore;
-use models\rights\Domain;
-use models\rights\Operation;
-use models\rights\Realm;
-use models\rights\Roles;
+use models\shared\rights\Domain;
+use models\shared\rights\Operation;
+
+use models\shared\rights\ProjectRoles;
 use models\sms\SmsSettings;
 
 class ProjectCommands
 {
 	
 	/**
-	 * Create or update project
-	 * @param array<projectModel> $object
-	 * @param string $userId
-	 * @throws UserUnauthorizedException
-	 * @throws \Exception
-	 * @return string projectId
-	 */
-	public static function updateProject($object, $userId) {
-		$project = new ProjectModel();
-		$id = $object['id'];
-		$isNewProject = ($id == '');
-		$oldDBName = '';
-		if ($isNewProject) {
-			if (!RightsHelper::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT)) {
-				throw new UserUnauthorizedException("Insufficient privileges to create new project in method 'updateProject'");
-			}
-		} else {
-			if (!RightsHelper::userHasProjectRight($id, $userId, Domain::USERS + Operation::EDIT)) {
-				throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
-			}
-			$project->read($id);
-			$oldDBName = $project->databaseName();
-		}
-		JsonDecoder::decode($project, $object);
-		$newDBName = $project->databaseName();
-		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
-			if (MongoStore::hasDB($newDBName)) {
-				throw new \Exception("New project name " . $object->projectname . " already exists. Not renaming.");
-			}
-			MongoStore::renameDB($oldDBName, $newDBName);
-		}
-		$projectId = $project->write();
-		if ($isNewProject) {
-			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => Roles::PROJECT_ADMIN));
-		}
-		return $projectId;
-	}
-	
-	/**
 	 * Create a project, checking permissions as necessary
 	 * @param string $projectName
 	 * @param string $appName
 	 * @param string $userId
-	 * @param string $site
+	 * @param Website $website
+	 * @return string - projectId
 	 */
-	public static function createProject($projectName, $appName, $userId, $site) {
-		if ($site == Website::SCRIPTUREFORGE) {
-			$project = new SfProjectModel();
-			$project->projectname = $projectName;
-			$project->appName = $appName;
-			$projectId = $project->write();
-			
-		} elseif ($site == Website::LANGUAGEFORGE) {
-			$project = new LfProjectModel();
-			$project->projectname = $projectName;
-			$project->appName = $appName;
-			$projectId = $project->write();
-		}
-		ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => Roles::PROJECT_ADMIN));
+	public static function createProject($projectName, $appName, $userId, $website) {
+		$project = new ProjectModel();
+		$project->projectName = $projectName;
+		$project->appName = $appName;
+		$project->siteName = $website->domain;
+		$projectId = $project->write();
+		ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::MANAGER);
 		return $projectId;
 	}
 	
@@ -138,6 +95,40 @@ class ProjectCommands
 	}
 	
 	/**
+	 * @param array $projectIds
+	 * @return int Total number of projects archived.
+	 */
+	public static function archiveProjects($projectIds) {
+		CodeGuard::checkTypeAndThrow($projectIds, 'array');
+		$count = 0;
+		foreach ($projectIds as $projectId) {
+			CodeGuard::checkTypeAndThrow($projectId, 'string');
+			$project = new \models\ProjectModel($projectId);
+			$project->isArchived = true;
+			$project->write();
+			$count++;
+		}
+		return $count;
+	}
+	
+	/**
+	 * @param array $projectIds
+	 * @return int Total number of projects published.
+	 */
+	public static function publishProjects($projectIds) {
+		CodeGuard::checkTypeAndThrow($projectIds, 'array');
+		$count = 0;
+		foreach ($projectIds as $projectId) {
+			CodeGuard::checkTypeAndThrow($projectId, 'string');
+			$project = new ProjectModel($projectId);
+			$project->isArchived = false;
+			$project->write();
+			$count++;
+		}
+		return $count;
+	}
+
+	/**
 	 * 
 	 * @return \models\ProjectListModel
 	 */
@@ -148,20 +139,32 @@ class ProjectCommands
 	}
 
 	/**
+	 * List users in the project
+	 * @param string $projectId
+	 */
+	public static function usersDto($projectId) {
+		CodeGuard::checkTypeAndThrow($projectId, 'string');
+		CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
+
+		$usersDto = ManageUsersDto::encode($projectId);
+		return $usersDto;
+	}
+
+	/**
 	 * Update the user role in the project
 	 * @param string $projectId
-	 * @param array $params
-	 * @return unknown|string
+	 * @param string $userId
+	 * @param string $role
+	 * @return string - userId
 	 */
-	public static function updateUserRole($projectId, $params) {
+	public static function updateUserRole($projectId, $userId, $role = ProjectRoles::CONTRIBUTOR) {
 		CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
-		CodeGuard::checkNotFalseAndThrow($params['id'], 'id');
+		CodeGuard::checkNotFalseAndThrow($userId, 'userId');
+		CodeGuard::assertInArrayOrThrow($role, array(ProjectRoles::CONTRIBUTOR, ProjectRoles::MANAGER));
 		
 		// Add the user to the project
-		$role = array_key_exists('role', $params) && $params['role'] != '' ? $params['role'] : Roles::USER;
-		$userId = $params['id'];
 		$user = new UserModel($userId);
-		$project = new ProjectModel($projectId);
+		$project = ProjectModel::getById($projectId);
 		$project->addUser($userId, $role);
 		$user->addProject($projectId);
 		$project->write();
@@ -209,6 +212,17 @@ class ProjectCommands
 			'sms' => JsonEncoder::encode($project->smsSettings),
 			'email' => JsonEncoder::encode($project->emailSettings)
 		);
+	}
+	
+	/**
+	 * 
+	 * @param Website $website
+	 * @param string $code
+	 * @return bool
+	 */
+	public static function projectCodeExists($website, $code) {
+		$project = new ProjectModel();
+		return $project->readByProperties(array('projectCode' => $code, 'siteName' => $website->domain));
 	}
 	
 }

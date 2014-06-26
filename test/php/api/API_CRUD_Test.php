@@ -1,7 +1,12 @@
 <?php
 
+use models\scriptureforge\sfchecks\commands\SfchecksProjectCommands;
+
+use libraries\shared\Website;
+
 use models\mapper\Id;
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
 use models\commands\UserCommands;
 use models\commands\QuestionTemplateCommands;
 use models\commands\QuestionCommands;
@@ -19,7 +24,6 @@ require_once(SimpleTestPath . 'autorun.php');
 
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
-require_once(SourcePath . '/models/QuestionTemplateModel.php');
 
 class ApiCrudTestEnvironment {
 	
@@ -34,8 +38,7 @@ class ApiCrudTestEnvironment {
 		if (!$userId) {
 			$userId = $this->makeSiteAdminUser();	
 		}
-		$model = array( 'id' => '', 'projectname' => SF_TESTPROJECT, 'language' => 'SomeLanguage');
-		return ProjectCommands::updateProject($model, $userId);
+		return ProjectCommands::createProject(SF_TESTPROJECT, 'sfchecks', $userId, Website::get('www.scriptureforge.org'));
 	}
 	
 	function makeUser($username) {
@@ -44,7 +47,7 @@ class ApiCrudTestEnvironment {
 	}
 	
 	function makeSiteAdminUser() {
-		$params = array('id' => '', 'username' => 'admin', 'name' => 'admin', 'role' => Roles::SYSTEM_ADMIN);
+		$params = array('id' => '', 'username' => 'admin', 'name' => 'admin', 'role' => SiteRoles::SYSTEM_ADMIN);
 		return UserCommands::updateUser($params);
 	}
 	
@@ -68,7 +71,7 @@ class ApiCrudTestEnvironment {
 		$user->addProject($projectId);
 		$user->write();
 		$project = new ProjectModel($projectId);
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project->write();
 		return $userId;
 	}
@@ -80,26 +83,19 @@ class TestApiCrud extends UnitTestCase {
 	function testProjectCRUD_CRUDOK() {
 		$e = new ApiCrudTestEnvironment();
 		
-		// Create
-		$param = array(
-			'id' => '',
-			'projectname' => SF_TESTPROJECT,
-			'language' => 'SomeLanguage'
-		);
-		$userId = $e->e->createUser('userName', 'User Name', 'user@example.com', Roles::SYSTEM_ADMIN);
-		$id = ProjectCommands::updateProject($param, $userId);
+		$userId = $e->e->createUser('userName', 'User Name', 'user@example.com', SiteRoles::SYSTEM_ADMIN);
+		$id = ProjectCommands::createProject(SF_TESTPROJECT, 'sfchecks', $userId, Website::get('www.scriptureforge.org'));
 		$this->assertNotNull($id);
 		$this->assertEqual(24, strlen($id));
 		
 		// Read
 		$result = ProjectCommands::readProject($id);
 		$this->assertNotNull($result['id']);
-		$this->assertEqual(SF_TESTPROJECT, $result['projectname']);
-		$this->assertEqual('SomeLanguage', $result['language']);
+		$this->assertEqual(SF_TESTPROJECT, $result['projectName']);
 		
 		// Update
 		$result['language'] = 'AnotherLanguage';
-		$id = ProjectCommands::updateProject($e->json($result), $userId);
+		$id = SfchecksProjectCommands::updateProject($id, $userId, $e->json($result));
 		$this->assertNotNull($id);
 		$this->assertEqual($result['id'], $id);
 		
@@ -168,47 +164,48 @@ class TestApiCrud extends UnitTestCase {
 	
 	function testQuestionTemplateCRUD_CRUDOK() {
 		$e = new ApiCrudTestEnvironment();
+		$projectId = $e->makeProject();
 
 		// Initial List
-		$result = $e->json(QuestionTemplateCommands::listTemplates());
+		$result = $e->json(QuestionTemplateCommands::listTemplates($projectId));
 		$existingCount = $result['count'];
 
 		// Create
 		$model = array('id'=>'','title'=>'Template Title', 'description' => 'Nice and clear description');
-		$id = QuestionTemplateCommands::updateTemplate($model);
+		$id = QuestionTemplateCommands::updateTemplate($projectId, $model);
 		$this->assertNotNull($id);
 		$this->assertEqual(24, strlen($id));
 
 		// Create Second
 		$model = array('id'=>'','title'=>'Template Title 2', 'description' => 'Nice and clear description 2');
-		$id2 = QuestionTemplateCommands::updateTemplate($model);
+		$id2 = QuestionTemplateCommands::updateTemplate($projectId, $model);
 
 		// List
-		$result = $e->json(QuestionTemplateCommands::listTemplates());
+		$result = $e->json(QuestionTemplateCommands::listTemplates($projectId));
 		$this->assertEqual($result['count'], $existingCount + 2);
 		
 		
 		// Read
-		$result = $e->json(QuestionTemplateCommands::readTemplate($id));
+		$result = $e->json(QuestionTemplateCommands::readTemplate($projectId, $id));
 		$this->assertNotNull($result['id']);
 		$this->assertEqual('Template Title', $result['title']);
 		$this->assertEqual('Nice and clear description', $result['description']);
 
 		// Update
 		$result['description'] = 'Muddled description';
-		$newid = QuestionTemplateCommands::updateTemplate($result);
+		$newid = QuestionTemplateCommands::updateTemplate($projectId, $result);
 		$this->assertNotNull($newid);
 		$this->assertEqual($id, $newid);
 
 		// Verify update actually changed DB
-		$postUpdateResult = $e->json(QuestionTemplateCommands::readTemplate($id));
+		$postUpdateResult = $e->json(QuestionTemplateCommands::readTemplate($projectId, $id));
 		$this->assertNotNull($postUpdateResult['id']);
 		$this->assertEqual($postUpdateResult['description'], 'Muddled description');
 
 		// Delete
-		$result = QuestionTemplateCommands::deleteQuestionTemplates(array($id));
+		$result = QuestionTemplateCommands::deleteQuestionTemplates($projectId, array($id));
 		$this->assertTrue($result);
-		QuestionTemplateCommands::deleteQuestionTemplates(array($id2));
+		QuestionTemplateCommands::deleteQuestionTemplates($projectId, array($id2));
 	}
 	
 	function testTextCRUD_CRUDOK() {

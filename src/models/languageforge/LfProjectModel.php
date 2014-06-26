@@ -12,7 +12,6 @@ class LfProjectModel extends ProjectModel {
 	
 	public function __construct($id = '') {
 		parent::__construct($id);
-		$this->siteName = Website::LANGUAGEFORGE;
 	}
 	
 	/**

@@ -3,9 +3,9 @@
 namespace models;
 
 use libraries\shared\palaso\CodeGuard;
-use models\rights\Realm;
-use models\rights\Roles;
-use models\rights\ProjectRoleModel;
+
+use models\shared\rights\ProjectRoles;
+use models\shared\rights\ProjectRoleModel;
 use models\mapper\MapOf;
 use models\mapper\MongoMapper;
 use models\mapper\MongoStore;
@@ -21,7 +21,7 @@ class ProjectListModel extends \models\mapper\MapperListModel
 		parent::__construct(
 			ProjectModelMongoMapper::instance(),
 			array(),
-			array('projectname', 'language')
+			array('projectName', 'language')
 		);
 	}
 }
