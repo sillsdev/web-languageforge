@@ -188,34 +188,26 @@ class Communicate
 	/**
 	 * Send an email to validate a user when they sign up.
 	 * @param UserModelBase $userModel
-	 * @param string $site - e.g. scriptureforge || languageforge
-	 * @param ProjectModel $projectModel
+	 * @param Website $website
 	 * @param IDelivery $delivery
 	 */
-	public static function sendSignup($userModel, $site, $projectModel = null, IDelivery $delivery = null) {
+	public static function sendSignup($userModel, $website, IDelivery $delivery = null) {
 		$userModel->setValidation(7);
 		$userModel->write();
-		if (is_null($projectModel)) { 
-			// no project in scope, signup to ScriptureForge only
-			$from = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
-			$subject = 'ScriptureForge account validation';
-			$vars = array(
-					'user' => $userModel,
-					'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/validate/' . $userModel->validationKey,
-			);
-			$t = CommunicateHelper::templateFromFile("$site/default/email/en/SignupValidate.html");
-		} else {
-			// project in scope, signup to project on site
-			$projectTheme = $projectModel->themeName;
-			$from = array(SF_DEFAULT_EMAIL => $projectModel->projectname . ' on ' . SF_DEFAULT_EMAIL_NAME);
-			$subject = $projectModel->projectname . ' project on ScriptureForge account validation';
-			$vars = array(
-					'user' => $userModel,
-					'project' => $projectModel,
-					'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/validate/' . $userModel->validationKey,
-			);
-			$t = CommunicateHelper::templateFromFile("$site/$projectTheme/email/en/SignupWithProjectValidate.html");
+
+		$from = array(SF_DEFAULT_EMAIL => $website->name);
+		$subject = $website->name . ' account signup validation';
+		
+		$vars = array(
+				'user' => $userModel,
+				'link' => $website->baseUrl() . '/validate/' . $userModel->validationKey,
+				'website' => $website
+		);
+		$templateFile = $website->base . "/" . $website->theme . "/email/en/SignupValidate.html";
+		if (!file_exists($templateFile)) {
+			$templateFile = $website->base . "/default/email/en/SignupValidate.html";
 		}
+		$t = CommunicateHelper::templateFromFile($templateFile);
 		$html = $t->render($vars);
 
 		CommunicateHelper::deliverEmail(
@@ -232,23 +224,33 @@ class Communicate
 	 * @param UserModelBase $inviterUserModel
 	 * @param UserModelBase $toUserModel
 	 * @param ProjectModel $projectModel
+	 * @param Website $website
 	 * @param IDelivery $delivery
 	 */
-	public static function sendInvite($inviterUserModel, $toUserModel, $projectModel, IDelivery $delivery = null) {
+	public static function sendInvite($inviterUserModel, $toUserModel, $projectModel, $website, IDelivery $delivery = null) {
 		$toUserModel->setValidation(7);
 		$toUserModel->write();
+
+		$from = array(SF_DEFAULT_EMAIL => $website->name);
+		$subject = $website->name . ' account signup validation';
+		
 		$vars = array(
 			'user' => $inviterUserModel,
+			'website' => $website,
 			'project' => $projectModel,
-			'link' => 'http://' . $_SERVER['SERVER_NAME'] . '/registration#/?v=' . $toUserModel->validationKey,
+			'link' => $website->baseUrl() . '/registration#/?v=' . $toUserModel->validationKey,
 		);
-		$t = CommunicateHelper::templateFromFile($projectModel->siteName . '/' . $projectModel->themeName . "/email/en/InvitationValidate.html");
+		$templateFile = $website->base . "/" . $website->theme . "/email/en/InvitationValidate.html";
+		if (!file_exists($templateFile)) {
+			$templateFile = $website->base . "/default/email/en/InvitationValidate.html";
+		}
+		$t = CommunicateHelper::templateFromFile($templateFile);
 		$html = $t->render($vars);
 
 		CommunicateHelper::deliverEmail(
-			array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME),
+			$from,
 			array($toUserModel->emailPending => $toUserModel->name),
-			'ScriptureForge account signup validation',
+			$subject,
 			$html,
 			$delivery
 		);
@@ -259,23 +261,32 @@ class Communicate
 	 * @param UserModel $toUserModel
 	 * @param string $newUserName
 	 * @param string $newUserPassword
-	 * @param ProjectModel $projectModel
+	 * @param Website $website
+	 * @param ProjectModel $project
 	 * @param IDelivery $delivery
 	 */
-	public static function sendNewUserInProject($toUserModel, $newUserName, $newUserPassword, $projectModel, IDelivery $delivery = null) {
+	public static function sendNewUserInProject($toUserModel, $newUserName, $newUserPassword, $website, $project, IDelivery $delivery = null) {
 		$vars = array(
 				'user' => $toUserModel,
 				'newUserName' => $newUserName,
 				'newUserPassword' => $newUserPassword,
-				'project' => $projectModel,
+				'website' => $website,
+				'project' => $project
 		);
-		$t = CommunicateHelper::templateFromFile($projectModel->siteName . '/' . $projectModel->themeName . '/email/en/NewUserInProject.html');
+		$templateFile = $website->base . "/" . $website->theme . "/email/en/NewUserInProject.html";
+		if (!file_exists($templateFile)) {
+			$templateFile = $website->base . "/default/email/en/NewUserInProject.html";
+		}
+		$t = CommunicateHelper::templateFromFile($templateFile);
 		$html = $t->render($vars);
+
+		$from = array(SF_DEFAULT_EMAIL => $website->name);
+		$subject = $website->name . ' new user login for project ' . $project->projectName;
 	
 		CommunicateHelper::deliverEmail(
-			array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME),
+			$from,
 			array($toUserModel->email => $toUserModel->name),
-			'ScriptureForge new user login for project',
+			$subject,
 			$html,
 			$delivery
 		);

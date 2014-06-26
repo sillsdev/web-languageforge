@@ -1,7 +1,7 @@
 <div class="content container">
 <h1>Frequently Asked Questions</h1>
-<h2>Q. What web browsers work best with ScriptureForge?</h2>
-<p>ScriptureForge is an html5 web application.  Any modern standards compliant web browser should work well with this web site.  We recommend:
+<h2>Q. What web browsers work best with Scripture Forge?</h2>
+<p>Scripture Forge is an html5 web application.  Any modern standards compliant web browser should work well with this web site.  We recommend:
 <ul>
 <li>Chrome (<a href=https://www.google.com/intl/en/chrome/browser/>Download Chrome</a>)</li>
 <li>FireFox (<a href="http://www.mozilla.org/en-US/firefox/new/">Download FireFox</a>)</li>

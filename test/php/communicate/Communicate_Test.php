@@ -50,7 +50,7 @@ class TestCommunicate extends UnitTestCase {
 		$project = $e->createProjectSettings(SF_TESTPROJECT);
 		$subject = 'TestSubject';
 		$project->emailSettings->fromAddress = 'projectName@scriptureforge.org';
-		$project->emailSettings->fromName = 'ScriptureForge ProjectName';
+		$project->emailSettings->fromName = 'Scripture Forge ProjectName';
 		$smsTemplate = '';
 		$emailTemplate = 'TestMessage';
 		$delivery = new MockCommunicateDelivery();
@@ -76,7 +76,7 @@ class TestCommunicate extends UnitTestCase {
 		$project = $e->createProjectSettings(SF_TESTPROJECT);
 		$subject = 'TestSubject';
 		$project->emailSettings->fromAddress = 'projectName@scriptureforge.org';
-		$project->emailSettings->fromName = 'ScriptureForge ProjectName';
+		$project->emailSettings->fromName = 'Scripture Forge ProjectName';
 		$smsTemplate = '';
 		$emailTemplate = 'TestMessage';
 		$delivery = new MockCommunicateDelivery();
@@ -93,15 +93,15 @@ class TestCommunicate extends UnitTestCase {
 		$this->assertEqual($message->content, $emailTemplate);
 	}
 	
-	function testSendSignup_NoProject_PropertiesToFromBodyOk() {
+	function testSendSignup_NoDefaultProject_PropertiesToFromBodyOk() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$project = null;
 		$delivery = new MockCommunicateDelivery();
+		$website = Website::get('www.scriptureforge.org');
 		
-		Communicate::sendSignup($user, Website::SCRIPTUREFORGE, $project, $delivery);
+		Communicate::sendSignup($user, $website, $delivery);
 		
 		// What's in the delivery?
 		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
@@ -120,19 +120,22 @@ class TestCommunicate extends UnitTestCase {
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
 		$project = $e->createProject(SF_TESTPROJECT);
+		$project->projectCode = 'test_project';
+		$project->write();
 		$delivery = new MockCommunicateDelivery();
+		$website = Website::get('www.scriptureforge.org');
+		$website->defaultProjectCode = 'test_project';
 		
-		Communicate::sendSignup($user, Website::SCRIPTUREFORGE, $project, $delivery);
+		Communicate::sendSignup($user, $website, $delivery);
 		
 		// What's in the delivery?
 		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
 		$expectedTo = array($user->emailPending => $user->name);
-		$this->assertPattern('/' . SF_TESTPROJECT . '/', $delivery->from[SF_DEFAULT_EMAIL]);
+		$this->assertPattern('/' . $e->website->name . '/', $delivery->from[SF_DEFAULT_EMAIL]);
 		$this->assertEqual($expectedTo, $delivery->to);
-		$this->assertPattern('/' . SF_TESTPROJECT . '/', $delivery->subject);
+		$this->assertPattern('/' . $e->website->name . '/', $delivery->subject);
 		$this->assertPattern('/Name/', $delivery->content);
 		$this->assertPattern('/' . $user->validationKey . '/', $delivery->content);
-		$this->assertPattern('/' . SF_TESTPROJECT . ' Team/', $delivery->content);
 	}
 
 	function testCommunicateToUser_SendSms_PropertiesToFromMessageProviderInfoOk() {
@@ -175,7 +178,7 @@ class TestCommunicate extends UnitTestCase {
 		$project = $e->createProjectSettings(SF_TESTPROJECT);
 		$delivery = new MockCommunicateDelivery();
 		
-		Communicate::sendNewUserInProject($toUser, $newUserName, $newUserPassword, $project, $delivery);
+		Communicate::sendNewUserInProject($toUser, $newUserName, $newUserPassword, $e->website, $project, $delivery);
 		
 		// What's in the delivery?
 		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);

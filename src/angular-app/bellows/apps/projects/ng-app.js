@@ -1,13 +1,16 @@
 'use strict';
 
 angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice', 'wc.Directives'])
-.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', '$window',
-                             function($scope, projectService, ss, notice, $window) {
+.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', 'modalService', '$window',
+                             function($scope, projectService, ss, notice, modalService, $window) {
 	$scope.finishedLoading = false;
 
 	// Rights
 	$scope.rights = {};
-		$scope.rights.deleteOther = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE); 
+	$scope.rights.edit = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT); 
+	$scope.rights.archive = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE); 
+	$scope.rights.create = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.CREATE);
+	$scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create;
 	$scope.newProject = {};
 
 
@@ -39,26 +42,37 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 		});
 	};
 	
-	// Remove project
-	$scope.removeProject = function() {
-		//console.log("removeProject()");
+	// Archive projects
+	$scope.archiveProjects = function() {
 		var projectIds = [];
+		var message = '';
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			projectIds.push($scope.selected[i].id);
 		}
-		if (window.confirm("Are you sure you want to delete the(se) " + projectIds.length + " project(s)? (Deleting a project is a big deal)")) {
-			projectService.remove(projectIds, function(result) {
+		if (projectIds.length == 1) {
+			message = "Are you sure you want to archive the selected project?";
+		} else {
+			message = "Are you sure you want to archive the " + projectIds.length + " selected projects?";
+		}
+		var modalOptions = {
+				closeButtonText: 'Cancel',
+				actionButtonText: 'Archive',
+				headerText: 'Archive Project?',
+				bodyText: message
+			};
+		modalService.showModal({}, modalOptions).then(function (result) {
+			projectService.archive(projectIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
 					$scope.queryProjectsForUser();
 					if (projectIds.length == 1) {
-						notice.push(notice.SUCCESS, "The project was removed successfully");
+						notice.push(notice.SUCCESS, "The project was archived successfully");
 					} else {
-						notice.push(notice.SUCCESS, "The projects were removed successfully");
+						notice.push(notice.SUCCESS, "The projects were archived successfully");
 					}
 				}
 			});
-		}
+		});
 	};
 	
 	// Add new project
@@ -88,13 +102,9 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 
 	// Add user as Manager of project
 	$scope.addManagerToProject = function(project) {
-//		console.log("addManagerToProject(" + project.projectname + ")");
-		var user = {};
-		user.id = ss.currentUserId();
-			user.role = 'project_manager';
-		projectService.updateUser(project.id, user, function(result) {
+		projectService.joinProject(project.id, 'project_manager', function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, "You are now a Manager of the " + project.projectname + " project.");
+				notice.push(notice.SUCCESS, "You are now a Manager of the " + project.projectName + " project.");
 				$scope.queryProjectsForUser();
 			}
 		});
@@ -102,46 +112,16 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 
 	// Add user as Member of project
 	$scope.addMemberToProject = function(project) {
-//		console.log("addMemberToProject(" + project.projectname + ")");
-		var user = {};
-		user.id = ss.currentUserId();
-			user.role = 'contributor';
-		projectService.updateUser(project.id, user, function(result) {
+		projectService.joinProject(project.id, 'contributor', function(result) {
 			if (result.ok) {
-					notice.push(notice.SUCCESS, "You are now a Contributor for the " + project.projectname + " project.");
+					notice.push(notice.SUCCESS, "You are now a Contributor for the " + project.projectName + " project.");
 				$scope.queryProjectsForUser();
 			}
 		});
 	};
 
-	$scope.site = ss.site;
+	$scope.projectTypeNames = projectService.data.projectTypeNames;
+	$scope.projectTypesBySite = projectService.data.projectTypesBySite;
 	
-	$scope.getBaseHost = function(hostname) {
-		var parts = hostname.split('.');
-		if (parts[0] == 'www' || parts[0] == 'dev' || parts[0] == 'scriptureforge' || parts[0] == 'languageforge') {
-			return hostname;
-		}
-		return hostname.substring(hostname.indexOf('.') + 1);
-	};
-	
-	$scope.getProjectHost = function(theme) {
-		var baseHost = $scope.getBaseHost($window.location.hostname);
-		if (theme != 'default') {
-			return $window.location.protocol + '//' + theme + '.' + baseHost;
-		} else {
-			return $window.location.protocol + '//' + baseHost;
-		}
-	};
-	
-	$scope.projectTypes = {
-		'sfchecks': 'Community Scripture Checking',
-		'rapuma': 'Publishing',
-		'lexicon': 'Web Dictionary'
-	};
-	
-	$scope.projectTypesBySite = {
-		'scriptureforge': ['sfchecks'],
-		'languageforge': ['lexicon']
-	};
 }])
 ;

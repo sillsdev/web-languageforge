@@ -7,6 +7,7 @@
 // Note: "delete" is a reserved word, and the functionality will be moved to "archiving" at a later time
 */
 var SfQuestionPage = function() {
+	var util = require('./util.js');
 	var page = this; // For use inside our methods. Necessary when passing anonymous functions around, which lose access to "this".
 	
 	this.answers  = {};
@@ -28,12 +29,12 @@ var SfQuestionPage = function() {
 	// Add new answer to the end of the answers list
 	this.answers.add = function(answer) {
 		this.answerCtrl = browser.findElement(by.id('comments')); // Using ID "Comments" contains Answers and Comments
-		this.answerCtrl.$(".jqte_editor").sendKeys(answer);
+		this.answerCtrl.$("textarea.newAnswer").sendKeys(answer);
 		
 		// TODO: Currently Chrome browser has issues and separates the string.
 		// Firefox 28.0 correctly sends the string, but Firefox 29.0.1 does not
 		// TODO: Currently sending this extra "TAB" key appears to help sendKeys send the entire answer
-		this.answerCtrl.$(".jqte_editor").sendKeys(protractor.Key.TAB);
+		this.answerCtrl.$("textarea.newAnswer").sendKeys(protractor.Key.TAB);
 		this.answerCtrl.findElement(by.id('doneBtn')).click();
 	};
 
@@ -43,7 +44,7 @@ var SfQuestionPage = function() {
 
 		// Clicking 'edit' changes the DOM so these handles are updated here
 		this.editCtrl.click();
-		var answersField = page.answers.last().$('.answer').$(".jqte_editor");
+		var answersField = page.answers.last().$('.answer').$("textarea.editAnswer");
 		var saveCtrl     = page.answers.last().$(".answerBtn");
 
 		answersField.sendKeys(protractor.Key.CONTROL, "a");
@@ -63,8 +64,17 @@ var SfQuestionPage = function() {
 			//console.log('should delete answer at index ' + index);
 			page.answers.list.get(index).$('.answer').findElement(by.linkText('delete')).click();
 		}
+		util.clickModalButton('Delete');
 	};
 	
+	// Flag for Export
+	this.answers.flags = {};
+	this.answers.flags.lastButtonSet = function () {
+		return page.answers.last().$('.answer').findElement(by.css('.icon-flag'));
+	};
+	this.answers.flags.lastButtonClear = function () {
+		return page.answers.last().$('.answer').findElement(by.css('.icon-flag-alt'));		
+	};
 
 	// Private method to handle the upvote or downvote of an answer.
 	// index: index of the answers.list to vote
@@ -132,9 +142,9 @@ var SfQuestionPage = function() {
 			//console.log('should delete comment at index ' + index);
 			page.comments.list.get(index).findElement(by.linkText('delete')).click();
 		};
-		
+		util.clickModalButton('Delete');
 	};
+	
 };
-
 
 module.exports = new SfQuestionPage;

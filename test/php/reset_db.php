@@ -87,12 +87,12 @@ class TestResetDb extends UnitTestCase {
 			$db->projects->drop();
 		}
 		$project = new ProjectModel();
-		$project->projectname = "jamaican project";
+		$project->projectName = "jamaican project";
 		$project->addUser($userId, ProjectRoles::MANAGER);
 		$project->write();
 		
 		$project2 = new ProjectModel();
-		$project2->projectname = "thai project";
+		$project2->projectName = "thai project";
 		$project2->addUser($userId, ProjectRoles::MANAGER);
 		$project2->write();
 	

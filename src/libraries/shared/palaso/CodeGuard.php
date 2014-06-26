@@ -30,6 +30,18 @@ class CodeGuard {
 		}
 	}
 	
+	public static function assertInArrayOrThrow($var, $array) {
+		if (!in_array($var, $array)) {
+			self::exception("'$var' does not match one of the specified values");
+		}
+	}
+	
+	public static function assertKeyExistsOrThrow($key, $array, $name) {
+		if (!array_key_exists($key, $array)) {
+			self::exception("'$key' does not exist in array '$name'");
+		}
+	}
+	
 	public static function checkEmptyAndThrow($var, $name) {
 		if (empty($var)) {
 			self::exception("'$name' should not be empty");
@@ -42,7 +54,7 @@ class CodeGuard {
 		}
 	}
 	
-	private static function printStackTrace($trace = null) {
+	public static function getStackTrace($trace = null) {
 		if (is_null($trace)) {
 			$trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 20);
 		}
@@ -58,17 +70,34 @@ class CodeGuard {
 				return '';
 			}
 		};
-		print "<pre style='font-weight:bold'>";
-		foreach ($trace as $item) {
-			$file = substr($item['file'], strrpos($item['file'], '/')+1);
-			$line = $item['line'];
-			$function = $item['function'];
-			$type = $item['type'];
-			$class = substr($item['class'], strrpos($item['class'], '\\')+1);
-			$args = implode(', ', array_map($getString, $item['args']));
-			print "<p>$file line $line, $class$type$function($args)</p>";
+		$out = "<pre style='font-weight:bold'>";
+		try {
+			foreach ($trace as $item) {
+				$file = ''; $line = ''; $function = ''; $type = ''; $class = '';
+				if (array_key_exists('file', $item)) {
+					$file = substr($item['file'], strrpos($item['file'], '/')+1);
+				}
+				if (array_key_exists('line', $item)) {
+					$line = $item['line'];
+				}
+				if (array_key_exists('function', $item)) {
+					$function = $item['function'];
+				}
+				if (array_key_exists('type', $item)) {
+					$type = $item['type'];
+				}
+				if (array_key_exists('class', $item)) {
+					$class = substr($item['class'], strrpos($item['class'], '\\')+1);
+				}
+				$args = implode(', ', array_map($getString, $item['args']));
+				$out .= "<p>$file line $line, $class$type$function($args)</p>";
+			}
+		} catch (\Exception $e) {
+			$out .= "Exception: " . $e->getMessage();
+			// ignore exceptions inside this method
 		}
-		print "</pre>";
+		$out .= "</pre>";
+		return $out;
 	} 
 	
 	/**
@@ -81,9 +110,9 @@ class CodeGuard {
 	public static function exception($message = null, $code = null, $previous = null) {
 		if (!is_null($previous)) {
 			self::printException($previous);
-			self::printStackTrace($previous->getTrace());
+			print self::getStackTrace($previous->getTrace());
 		}
-		self::printStackTrace();
+		print self::getStackTrace();
 		throw new \Exception($message, $code, $previous);
 	}
 	

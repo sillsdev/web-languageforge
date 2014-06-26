@@ -1,19 +1,19 @@
 <div class="content container" data-ng-cloak>
-	<h1>Site Administration</h1>
-	<sil-notices></sil-notices>
+<h1>Site Administration</h1>
+<sil-notices></sil-notices>
 
-	<tabset>
+<tabset>
 	<tab heading="Users">
 	<div class="row" data-ng-controller="UserCtrl" style="overflow:hidden">
 	<div class="span8">
 		<fieldset>
 		<legend>Users (total: {{users.length}})</legend>
 		<form class="control-bar form-inline">
-		<button class="btn" data-ng-click="removeUsers()"><i class="icon-remove"></i>Remove Users</button>
+		<button class="btn" data-ng-disabled="selected.length == 0" data-ng-click="removeUsers()"><i class="icon-remove"></i>Remove Users</button>
 		<button class="btn" data-ng-click="addRecord()"><i class="icon-plus"></i>Add New</button>
-		<div class="pull-right"><input type="text" data-ng-model="filterUsers" placeholder="Filter user list"></input> <a ng-show="filterUsers != ''" title="Clear Filter" ng-click="filterUsers = ''"><i class="icon-remove" style="color:gray"></i></a></div>
+		<div class="pull-right"><input type="text" data-ng-model="filterUsers" placeholder="Filter user list"></input> <a data-ng-show="filterUsers != ''" title="Clear Filter" data-ng-click="filterUsers = ''"><i class="icon-remove" style="color:gray"></i></a></div>
 		</form>
-		<div listview search="queryUsers()" items="users" items-filter="filterUsers" visible-items="visibleUsers" select="">
+		<listview search="queryUsers()" items="users" items-filter="filterUsers" visible-items="visibleUsers" select="">
 		<table class="table" style="width: 100%">
 			<thead>
 			<tr>
@@ -32,7 +32,7 @@
 			</tr>
 			</tbody>
 		</table>
-		</div>
+		</listview>
 		</fieldset>
 	</div>
 				
@@ -63,10 +63,10 @@
 				<div>
 					<label style="margin-bottom:20px"><input type="checkbox" data-ng-model="record.active"/> Is Active</label>
 				</div>
-				<a data-ng-show="vars.state == 'update'" href="" data-ng-click="togglePasswordForm(); vars.inputfocus = false">Change {{record.username}}'s password</a>
+				<a data-ng-show="vars.state == 'update'" href="" data-ng-click="togglePasswordForm(); vars.inputfocus = vars.showPasswordForm">Change {{record.username}}'s password</a>
 				<div data-ng-show="vars.showPasswordForm">
 					<label>Password</label>
-					<input type="text" data-ng-model="record.password" data-ng-focus="vars.inputfocus" name="password"/>
+					<input type="text" data-ng-model="record.password" data-focus-me="vars.inputfocus" name="password"/>
 				</div>
 				<table class="table">
 				<tr data-ng-show="record.created_on"><td><label style="cursor:default">Created On: {{ record.created_on * 1000 | date:shortDate }}</label></td></tr>
@@ -90,5 +90,29 @@
 		</div>
 	</tab>
 	-->
-	</tabset>
+	<tab heading="Archived Projects" data-ng-controller="ArchivedProjectsCtrl" select="queryArchivedProjects()">
+		<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+			<button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn" data-ng-click="publishProjects()"><i class="icon-globe icon-large" style="color:black"></i>Re-publish Projects</button>
+		</form>
+		<hr />
+		<listview hide-if-empty="true" items="list.archivedProjects" visible-items="visibleProjects" select="">
+			<div data-ng-repeat="project in visibleProjects" class="details-row">
+				<ul class="inline" data-ng-class="{active: isSelected(project)}">
+					<li data-ng-show="rights.archive" ><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
+					<li>
+					<span class="span5">
+						<a href="/app/{{project.appName}}/{{project.id}}/">
+							<span class="larger-text">{{project.projectName}}</span>
+						</a>
+						<br />
+						<small class="muted">{{projectTypeNames[project.appName]}}</small>
+					</span>
+					</li>
+					<li>Archived on {{project.dateModified | date:'fullDate'}}</li>
+				</ul>
+				<hr />
+			</div>
+		</listview>
+	</tab>
+</tabset>
 </div>

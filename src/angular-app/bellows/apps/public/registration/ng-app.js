@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('registration', [ 'bellows.services', 'ui.bootstrap', 'palaso.ui.notice'])
-.controller('UserCtrl', ['$scope', '$location', 'userService', 'sessionService', 'silNoticeService', function UserCtrl($scope, $location, userService, sessionService, notice) {
+.controller('UserCtrl', ['$scope', '$location', 'userService', 'sessionService', 'silNoticeService', '$window', 
+                         function UserCtrl($scope, $location, userService, sessionService, notice, $window) {
 
 	$scope.record = {};
 	$scope.record.id = '';

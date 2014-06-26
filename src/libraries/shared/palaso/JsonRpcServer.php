@@ -82,7 +82,7 @@ class JsonRpcServer {
 			$response = array (
 				'id' => $request['id'],
 				'result' => NULL,
-				'error' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile());
+				'error' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " . CodeGuard::getStackTrace($e->getTrace()));
 
 			$message = '';
 			$message .= $e->getMessage() . "\n";

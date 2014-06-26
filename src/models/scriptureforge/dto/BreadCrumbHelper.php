@@ -15,7 +15,7 @@ class BreadCrumbHelper
 	public static function encode($operation, $project, $text, $question) {
 		$result = array();
 		$result['op'] = $operation;
-		$result['project'] = array('id' => $project->id->asString(), 'crumb' => $project->projectname);
+		$result['project'] = array('id' => $project->id->asString(), 'crumb' => $project->projectName);
 		if ($text) {
 			$result['text'] = array('id' => $text->id->asString(), 'crumb' => $text->title);
 		}

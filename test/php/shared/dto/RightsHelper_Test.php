@@ -1,35 +1,28 @@
 <?php
 
-
-use models\shared\rights\SiteRoles;
-
-use models\commands\ProjectCommands;
+use models\ProjectModel;
 
 use models\shared\dto\RightsHelper;
 use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
+use models\commands\ProjectCommands;
 use models\UserModel;
 
-
-require_once(dirname(__FILE__) . '/../TestConfig.php');
+require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestRightsHelper extends UnitTestCase {
 
-	function __construct()
-	{
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	}
-
-	function testuserCanAccessMethod_unknownMethodName_false() {
+	function testuserCanAccessMethod_unknownMethodName_throws() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
+		$rh = new RightsHelper($userId, null);
 		
 		$e->inhibitErrorDisplay();
 		$this->expectException();
-		$result = RightsHelper::userCanAccessMethod($userId, 'bogusMethodName', array());
+		$result = $rh->userCanAccessMethod($userId, 'bogusMethodName', array());
 		$e->restoreErrorDisplay();
 	}
 
@@ -41,10 +34,13 @@ class TestRightsHelper extends UnitTestCase {
 		$project = $e->createProject('projectForTest');
 		$projectId = $project->id->asString();
 		$project->addUser($userId, ProjectRoles::MANAGER);
+		$project->appName = 'sfchecks';
 		$project->write();
 		$user->addProject($projectId);
 		$user->write();
-		$result = RightsHelper::userCanAccessMethod($userId, 'project_settings', array($projectId));
+		$project = ProjectModel::getById($projectId);
+		$rh = new RightsHelper($userId, $project);
+		$result = $rh->userCanAccessMethod('project_settings', array());
 		$this->assertTrue($result);
 	}
 
@@ -56,10 +52,13 @@ class TestRightsHelper extends UnitTestCase {
 		$project = $e->createProject('projectForTest');
 		$projectId = $project->id->asString();
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
+		$project->appName = 'sfchecks';
 		$project->write();
 		$user->addProject($projectId);
 		$user->write();
-		$result = RightsHelper::userCanAccessMethod($userId, 'project_settings', array($projectId));
+		$project = ProjectModel::getById($projectId);
+		$rh = new RightsHelper($userId, $project);
+		$result = $rh->userCanAccessMethod('project_settings', array());
 		$this->assertFalse($result);
 	}
 	
@@ -68,8 +67,12 @@ class TestRightsHelper extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
 		$project = $e->createProject('projectForTest');
+		$project->appName = 'sfchecks';
+		$project->write();
 		$projectId = $project->id->asString();
-		$result = RightsHelper::userCanAccessMethod($userId, 'project_pageDto', array($projectId));
+		$project = ProjectModel::getById($projectId);
+		$rh = new RightsHelper($userId, $project);
+		$result = $rh->userCanAccessMethod('project_pageDto', array());
 		$this->assertFalse($result);
 	}
 }

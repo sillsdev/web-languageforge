@@ -1,9 +1,14 @@
 <?php
 
+use models\ProjectModel;
+
+use libraries\shared\Website;
+
+use models\scriptureforge\SfchecksProjectModel;
+
 use models\shared\rights\SiteRoles;
 
 use models\languageforge\lexicon\LexiconProjectModel;
-
 use models\shared\rights\ProjectRoles;
 
 require_once(TestPath . 'common/MockProjectModel.php');
@@ -16,9 +21,15 @@ class MongoTestEnvironment
 	 */
 	private $_db;
 	
+	/**
+	 * @var Website
+	 */
+	public $website;
 	
-	public function __construct() {
+	
+	public function __construct($domain = 'www.scriptureforge.org') {
 		$this->_db = \models\mapper\MongoStore::connect(SF_DATABASE);
+		$this->website = Website::get($domain);
 	}
 
 	/**
@@ -64,24 +75,22 @@ class MongoTestEnvironment
 	/**
 	 * Writes a project to the projects collection.
 	 * @param string $name
+	 * @param string $domain
 	 * @return ProjectModel
 	 */
-	public function createProject($name, $site = 'scriptureforge') {
-		$projectModel = new models\ProjectModel();
-		$projectModel->projectname = $name;
-		$projectModel->siteName = $site;
-		$projectModel->themeName = 'default';
-		$projectModel->appName = 'sfchecks';
+	public function createProject($name) {
+		$projectModel = new ProjectModel();
+		$projectModel->projectName = $name;
+		$projectModel->siteName = $this->website->domain;
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;
 	}
 	
-	public function createProjectSettings($name, $site = 'scriptureforge') {
+	public function createProjectSettings($name) {
 		$projectModel = new models\ProjectSettingsModel();
-		$projectModel->projectname = $name;
-		$projectModel->siteName = $site;
-		$projectModel->themeName = 'default';
+		$projectModel->projectName = $name;
+		$projectModel->siteName = $this->website->domain;
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;
@@ -122,6 +131,13 @@ class MongoTestEnvironment
 		return $usx;
 	}
 	
+	public static function usxSampleWithNotes() {
+		global $rootPath;
+		$testFilePath = $rootPath . 'docs/usx/CEV_PSA001.usx';
+		$usx = file_get_contents($testFilePath);
+		return $usx;
+	}
+	
 	public function inhibitErrorDisplay() {
 		$this->_display = ini_get('display_errors');
 		ini_set('display_errors', false);
@@ -139,9 +155,14 @@ class MongoTestEnvironment
 
 class LexiconMongoTestEnvironment extends MongoTestEnvironment {
 	
-	public function createProject($name, $site = 'languageforge') {
+	public function __construct() {
+		parent::__construct('www.languageforge.org');
+	}
+	
+	public function createProject($name) {
 		$projectModel = new LexiconProjectModel();
-		$projectModel->projectname = $name;
+		$projectModel->projectName = $name;
+		$projectModel->siteName = $this->website->domain;
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
 		return $projectModel;
