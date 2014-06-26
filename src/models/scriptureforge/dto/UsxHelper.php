@@ -10,8 +10,14 @@ class UsxHelper {
 	
 	private $_out;
 	
+	private $_capturedOutput;
+	
 	private $_tagStack;
 	
+	private $_footnoteNumber;
+	private $_footnoteCaller;
+	private $_footnoteStyle;
+	private $_footnotes;
 	
 	/**
 	 * 
@@ -21,6 +27,7 @@ class UsxHelper {
 	
 	// States
 	private $_stateCData;
+	private $_stateCapturing;
 	
 	public function __construct($usx) {
 		$this->_usx = $usx;
@@ -35,12 +42,19 @@ class UsxHelper {
 			'endVerse' => null,
 			'bookCode' => null
 		);
+		$this->_footnotes = array();
+		$this->_tagStack = array();
 	}
 	
 	public function toHtml() {
 		$this->_out = '';
+		$this->_capturedOutput = '';
 		$this->_tagStack = array();
 		$this->_stateCData = false;
+		$this->_stateCapturing = false;
+		$this->_footnoteNumber = 0;
+		$this->_footnoteCaller = '';
+		$this->_footnotes = array();
 		xml_parse($this->_parser, $this->_usx);
 		//echo $this->_out;
 		return $this->_out;
@@ -72,6 +86,9 @@ class UsxHelper {
 			case 'BOOK':
 				$this->onBook($attributes['CODE']);
 				break;
+			case 'NOTE':
+				$this->onNote($attributes['CALLER'], $attributes['STYLE']);
+				break;
 			default:
 // 				echo 'to:';
 // 				var_dump($tag, $attributes);
@@ -84,9 +101,17 @@ class UsxHelper {
 			case 'PARA':
 				$this->onParagraphClose();
 				break;
+			case 'NOTE':
+				$this->onNoteClose();
+				break;
 			case 'CHAPTER':
 			case 'VERSE':
+				break;
 			case 'CHAR':
+				$this->onCharClose();
+				break;
+			case 'USX':
+				$this->onUsxClose();
 				break;
 			default:
 // 				echo 'tc:';
@@ -96,11 +121,29 @@ class UsxHelper {
 		array_pop($this->_tagStack);
 	}
 	
+	private function outputText($text) {
+		if ($this->_stateCapturing) {
+			$this->_capturedOutput .= $text;
+		} else {
+			$this->_out .= $text;
+		}
+	}
+	
+	private function startCapturing() {
+		$this->_capturedOutput = '';
+		$this->_stateCapturing = true;
+	}
+	
+	private function stopCapturing() {
+		$this->_stateCapturing = false;
+		return $this->_capturedOutput;
+	}
+	
 	private function onCData($parser, $cdata) {
 // 		echo 'cd:';
 // 		var_dump($cdata);
 		if ($this->_stateCData) {
-			$this->_out .= $cdata;
+			$this->outputText($cdata);
 		}
 	}
 	
@@ -112,14 +155,14 @@ class UsxHelper {
 		}
 		$this->_stateCData = true;
 		if ($style != 'p') {
-			$this->_out .= "<p class=\"$style\">";
+			$this->outputText("<p class=\"$style\">");
 		} else {
-			$this->_out .= "<p>";
+			$this->outputText("<p>");
 		}
 	}
 	
 	private function onParagraphClose() {
-		$this->_out .= "</p>";
+		$this->outputText("</p>");
 		$this->_stateCData = false;
 	}
 	
@@ -128,7 +171,7 @@ class UsxHelper {
 			$this->_info['startChapter'] = $number;
 		}
 		$this->_info['endChapter'] = $number;
-		$this->_out .= "<div class=\"$style\">Chapter $number</div>";
+		$this->outputText("<div class=\"$style\">Chapter $number</div>");
 	}
 	
 	private function onVerse($number, $style) {
@@ -136,13 +179,75 @@ class UsxHelper {
 			$this->_info['startVerse'] = $number;
 		}
 		$this->_info['endVerse'] = $number;
-		$this->_out .= "<sup>$number</sup>";
+		$this->outputText("<sup>$number</sup>");
 	}
 	
 	private function onChar($style) {
-		
+		$this->outputText("<span class=\"$style\">");
 	}
 	
+	private function onCharClose() {
+		$this->outputText("</span>");
+	}
+	
+	private function nextFootnoteNumber() {
+		$this->_footnoteNumber++;
+		return $this->_footnoteNumber;
+	}
+	private function num2alpha($n) {
+		// Based on http://stackoverflow.com/a/5554413/2314532 but without bugs
+		for ($result = ""; $n > 0; $n = intval(($n-1) / 26)) {
+			$result = chr(($n-1) % 26 + 0x61) . $result;
+		}
+		return $result;
+	}
+	// NOTE: That works great for Latin-based scripts. What about other scripts,
+	// where footnote markers based on their own alphabet would be more appropriate?
+	// For now, we're going with simple. If that feature is requested, we can add it later.
+	
+	private function onNote($caller, $style) {
+		if ($caller == "-") {
+			// USFM spec says this "indicates that no caller should be generated, and is not used." We will ignore these notes.
+			$fnChar = "";
+		} else if ($style == "x") {
+			// We will not process cross-reference footnotes either
+			$fnChar = "";
+		} else if ($caller == "+") {
+			// USFM spec says this "indicates that the caller should be generated automatically"
+			$fnNum = $this->nextFootnoteNumber();
+			$fnChar = $this->num2alpha($fnNum);
+		} else {
+			$fnChar = $caller;
+		}
+		$this->startCapturing();
+		$this->_footnoteCaller = $fnChar;
+		$this->_footnoteStyle = $style;
+	}
+	
+	private function onNoteClose() {
+		$fnText = $this->stopCapturing();
+		if ($this->_footnoteCaller == "") {
+			// Notes with no caller should be ignored
+			return;
+		}
+		$fnText = str_replace('"', "&quot;", $fnText);
+		$this->outputText("<a data-ng-click=\"\" tooltip-html-unsafe=\"$fnText\"><sup>$this->_footnoteCaller</sup></a>");
+		$footnote = array("fnCaller" => $this->_footnoteCaller, "fnText" => $fnText);
+		$this->_footnotes[] = $footnote;
+	}
+	
+	private function onUsxClose() {
+		if (!empty($this->_footnotes)) {
+			$this->outputText("<div id=\"footnotes\"><hr><p>");
+			foreach ($this->_footnotes as $footnote) {
+				$fnText = $footnote["fnText"];
+				$fnCaller = $footnote["fnCaller"];
+				$this->outputText("<a data-ng-click=\"\">$fnCaller</a>. " . $fnText . "<br>");
+				}
+			$this->outputText("</p></div>");
+			}
+		}
+		
 	private function onBook($code) {
 		$this->_info['bookCode'] = $code;
 	}

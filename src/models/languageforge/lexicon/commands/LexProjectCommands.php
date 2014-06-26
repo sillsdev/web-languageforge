@@ -43,34 +43,21 @@ class LexProjectCommands {
 	 * @throws \Exception
 	 * @return string projectId
 	 */
-	public static function updateProject($projectJson, $userId) {
-		$project = new LexiconProjectModel();
-		$id = $projectJson['id'];
-		$isNewProject = ($id == '');
-		$oldDBName = '';
-		if ($isNewProject) {
-			if (!RightsHelper::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT)) {
-				throw new UserUnauthorizedException("Insufficient privileges to create new project in method 'updateProject'");
-			}
-		} else {
-			$project->read($id);
-			if ($project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
-				throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
-			}
-			$oldDBName = $project->databaseName();
+	public static function updateProject($projectId, $userId, $projectJson) {
+		$project = new LexiconProjectModel($projectId);
+		if ($project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
+			throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
 		}
+		$oldDBName = $project->databaseName();
 		JsonDecoder::decode($project, $projectJson);
 		$newDBName = $project->databaseName();
 		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
 			if (MongoStore::hasDB($newDBName)) {
-				throw new \Exception("New project name " . $projectJson->projectname . " already exists. Not renaming.");
+				throw new \Exception("New project name " . $projectJson->projectName . " already exists. Not renaming.");
 			}
 			MongoStore::renameDB($oldDBName, $newDBName);
 		}
 		$projectId = $project->write();
-		if ($isNewProject) {
-			ProjectCommands::updateUserRole($projectId, array('id' => $userId, 'role' => ProjectRoles::MANAGER));
-		}
 		return $projectId;
 	}
 	

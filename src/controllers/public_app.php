@@ -5,17 +5,17 @@ require_once 'base.php';
 class Public_app extends Base {
 	
 	public function view($app = 'main') {
-		$appFolder = "angular-app/" . $this->site . "/public/$app";
+		$appFolder = "angular-app/" . $this->website->base . "/public/$app";
 		if (!file_exists($appFolder)) {
 			$appFolder = "angular-app/bellows/apps/public/$app";
 			if (!file_exists($appFolder)) {
-				show_404($this->site); // this terminates PHP
+				show_404($this->website->base); // this terminates PHP
 			}
 		}
 
 		$data = array();
 		$data['appName'] = $app;
-		$data['site'] = $this->site;
+		$data['baseSite'] = $this->website->base;
 		$data['appFolder'] = $appFolder;
 		
 		$data['jsFiles'] = array();
@@ -34,7 +34,7 @@ class Public_app extends Base {
 		self::addCssFiles("angular-app/bellows/css", $data['cssFiles']);
 		self::addCssFiles("$appFolder", $data['cssfiles']);
 			
-		$data['title'] = $this->site;
+		$data['title'] = $this->website->name;
 		$data['jsonSession'] = '"";'; // empty json session data that angular-app template needs to be happy
 		
 		$this->renderPage("angular-app", $data);

@@ -5,8 +5,8 @@ angular.module('activity',
 		[
 		 'ngRoute',
 		 'bellows.services',
+		 'bellows.filters',
 		 'ui.bootstrap',
-		 'activity.filters',
 		 'sgw.ui.breadcrumb',
 		 'wc.Directives'
 		])

@@ -12,28 +12,34 @@ use models\TextModel;
 class TextCommands
 {
 	
-	private static function hasRange($object) {
+	private static function makeValidRange(&$object) {
 		if (isset($object['startCh'])) {
 			$sc = (int)$object['startCh'];
 		} else {
 			$sc = 0;
 		}
+		$object['startCh'] = $sc;
 		if (isset($object['startVs'])) {
 			$sv = (int)$object['startVs'];
 		} else {
 			$sv = 0;
 		}
+		$object['startVs'] = $sv;
 		if (isset($object['endCh'])) {
 			$ec = (int)$object['endCh'];
 		} else {
 			$ec = 0;
 		}
+		$object['endCh'] = $ec;
 		if (isset($object['endVs'])) {
 			$ev = (int)$object['endVs'];
 		} else {
 			$ev = 0;
 		}
-		return ($sc || $sv || $ec || $ev);
+		$object['endVs'] = $ev;
+	}
+	private static function hasRange($object) {
+		return ((int)$object['startCh'] || (int)$object['startVs'] || (int)$object['endCh'] || (int)$object['endVs']);
 	}
 
 	/**
@@ -49,13 +55,14 @@ class TextCommands
 			$textModel->read($object['id']);
 		}
 		JsonDecoder::decode($textModel, $object);
+		TextCommands::makeValidRange($object);
 		if (TextCommands::hasRange($object)) {
 			$usxTrimHelper = new UsxTrimHelper(
 				$textModel->content,
-				$object['startCh'],
-				$object['startVs'],
-				$object['endCh'],
-				$object['endVs']
+				$object['startCh'] || 0,
+				$object['startVs'] || 0,
+				$object['endCh'] || 0,
+				$object['endVs'] || 0
 			);
 			$textModel->content = $usxTrimHelper->trimUsx();
 		}

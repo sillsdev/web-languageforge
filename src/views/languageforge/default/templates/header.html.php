@@ -7,33 +7,25 @@
 				<div id="header-nav" class="left">
 					<ul class="sf-menu">
 						<li><a href="/">Home</a></li>
+						<!--
 						<li><a href="#">Explore</a>
 							<ul>
 								<li><a href="#">Jamaica Project 1</a></li>
-								<!--
-								<li><a href="#">Sub Menu Item 2</a>
-									<ul>
-										<li><a href="#">Another Sub Menu Item 1</a></li>
-										<li><a href="#">Another Sub Menu Item 2</a></li>
-										<li><a href="#">Another Sub Menu Item 3</a></li>
-									</ul>
-								</li>
-								-->
 								<li><a href="#">Jamaica Project 2</a></li>
 								<li><a href="#">Jamaica Project 3</a></li>
 								<?php foreach($featuredProjects as $project): ?>
-											<li><a href="<?php echo "/app/project/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+											<!--  not sure about this <li><a href="<?php echo "/app/" . $project['appName'] . "/" . $project['id'] . "/"; ?>"><?php echo $project['projectName']; ?></a></li>-->
+											<li><a href="<?php echo "/app/project/" . $project['id']; ?>"><?php echo $project['projectName']; ?></a></li>
 								<?php endforeach;?>
 							</ul>
 						</li>
+						-->
 						<li><a href="/learn_language_forge">Learn</a>
 							<ul>
 								<li><a href="/learn_language_forge">About Language Forge</a></li>
 								<li><a href="/learn_expand_your_team">Expand Your Team</a></li>
-								<li><a href="/learn_contribute">Contribute</a></li>
 							</ul>
 						</li>
-						<li><a href="/contribute">Contribute</a></li>
 						<li><a href="/discuss">Discuss</a></li>
 					</ul>
 				</div>
@@ -43,16 +35,9 @@
 							<ul class="sf-menu">
 								<li><a href="/app/projects">My Projects</a>
 									<ul>
-										<?php foreach($projects as $project): ?>
-											<?php 
-											$theme = '';
-											if ($project['themeName'] != 'default') {
-												$theme = $project['themeName'] . '.';
-											}
-											?>
-		
-											<li><a href="<?php echo "//$theme$hostname/app/" . $project['appName'] . "#/p/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
-										<?php endforeach;?>
+									<?php foreach($projects as $project): ?>
+										<li><a href="<?php echo "/app/" . $project['appName'] . "/" . $project['id'] . "/"; ?>"><?php echo $project['projectName']; ?></a></li>
+									<?php endforeach;?>
 									</ul>
 								</li>
 							</ul>

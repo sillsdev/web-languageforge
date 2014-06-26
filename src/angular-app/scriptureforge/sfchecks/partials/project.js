@@ -1,10 +1,8 @@
 'use strict';
 
 angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'angularFileUpload', 'ngRoute'])
-.controller('ProjectCtrl', ['$scope', 'textService', '$routeParams', 'sessionService', 'breadcrumbService', 'sfchecksLinkService', 'silNoticeService', 'sfchecksProjectService', 'messageService','modalService',
-                            function($scope, textService, $routeParams, ss, breadcrumbService, sfchecksLinkService, notice, sfchecksProjectService, messageService, modalService) {
-	var projectId = $routeParams.projectId;
-	$scope.projectId = projectId;
+.controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService', 'sfchecksLinkService', 'silNoticeService', 'sfchecksProjectService', 'messageService','modalService',
+                            function($scope, textService, ss, breadcrumbService, sfchecksLinkService, notice, sfchecksProjectService, messageService, modalService) {
 	$scope.finishedLoading = false;
 	
 	// Rights
@@ -29,7 +27,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 			var m = $scope.messages[i];
 			if (m.id == id) {
 				$scope.messages.splice(i, 1);
-				messageService.markRead(projectId, id);
+				messageService.markRead(id);
 				break;
 			}
 		}
@@ -55,7 +53,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 	
 	// Page Dto
 	$scope.getPageDto = function() {
-		sfchecksProjectService.pageDto(projectId, function(result) {
+		sfchecksProjectService.pageDto(function(result) {
 			if (result.ok) {
 				$scope.texts = result.data.texts;
 				$scope.textsCount = $scope.texts.length;
@@ -70,13 +68,13 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 					
 
 				$scope.project = result.data.project;
-				$scope.project.url = sfchecksLinkService.project(projectId);
+				$scope.project.url = sfchecksLinkService.project();
 				
 				// Breadcrumb
 				breadcrumbService.set('top',
 						[
 						 {href: '/app/projects', label: 'My Projects'},
-						 {href: sfchecksLinkService.project($routeParams.projectId), label: $scope.project.name},
+						 {href: sfchecksLinkService.project(), label: $scope.project.name},
 						]
 				);
 
@@ -105,28 +103,25 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 			message = "Are you sure you want to archive the " + textIds.length + " selected texts?";
 		}
 		// The commented modalService below can be used instead of the window.confirm alert, but must change E2E tests using alerts. IJH 2014-06
-//		var modalOptions = {
-//			closeButtonText: 'Cancel',
-//			actionButtonText: 'Archive',
-//			headerText: 'Archive Texts?',
-//			bodyText: message
-//		};
-//		modalService.showModal({}, modalOptions).then(function (result) {
-//			textService.archive(projectId, textIds, function(result) {
-//				if (result.ok) {
-//					$scope.selected = []; // Reset the selection
-//				}
-//				$scope.getPageDto();
-//			});
-//		});
-		if (window.confirm(message)) {
-			textService.archive(projectId, textIds, function(result) {
+		var modalOptions = {
+			closeButtonText: 'Cancel',
+			actionButtonText: 'Archive',
+			headerText: 'Archive Texts?',
+			bodyText: message
+		};
+		modalService.showModal({}, modalOptions).then(function (result) {
+			textService.archive(textIds, function(result) {
 				if (result.ok) {
 					$scope.selected = []; // Reset the selection
+					$scope.getPageDto();
+					if (textIds.length == 1) {
+						notice.push(notice.SUCCESS, "The text was archived successfully");
+					} else {
+						notice.push(notice.SUCCESS, "The texts were archived successfully");
+					}
 				}
-				$scope.getPageDto();
 			});
-		}
+		});
 	};
 	
 	// Add Text
@@ -140,7 +135,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 		model.startVs = $scope.startVs;
 		model.endCh = $scope.endCh;
 		model.endVs = $scope.endVs;
-		textService.update(projectId, model, function(result) {
+		textService.update(model, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "The text '" + model.title + "' was added successfully");
 			}
@@ -153,17 +148,9 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 		$scope.rangeSelectorCollapsed = !$scope.rangeSelectorCollapsed;
 	};
 
-	$scope.getQuestionCount = function(text) {
-		return text.questionCount;
-	};
-
-	$scope.getResponses = function(text) {
-		return text.responseCount;
-	};
-	
 	$scope.enhanceDto = function(items) {
 		for (var i in items) {
-			items[i].url = sfchecksLinkService.text($scope.projectId, items[i].id);
+			items[i].url = sfchecksLinkService.text(items[i].id);
 		}
 	};
 

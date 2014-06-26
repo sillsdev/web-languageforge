@@ -49,7 +49,7 @@ class MigrateQuestionTemplates {
 		}
 		if (!is_null($project)) {
 			
-			$message .= "Migrating global templates to the '" . $project->projectname . "' project\n\n";
+			$message .= "Migrating global templates to the '" . $project->projectName . "' project\n\n";
 			
 			foreach ($templateList->entries as $globalTemplate) {
 				$template = new QuestionTemplateModel($project);

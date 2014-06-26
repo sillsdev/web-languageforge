@@ -21,10 +21,10 @@
 					"summary" => "Speak a minority language?  See if your language has a scripture checking project in progress today",
 					"social_media" => "",
 					"image_url" => "contribute.jpg",
-					"target_url" => "/learn_contribute"
+					"target_url" => "/learn_scripture_forge"
 					)
 			);
-			$this->load->view("$projectPath/templates/slideshow.html.php", $data);
+			$this->load->view("$themePath/templates/slideshow.html.php", $data);
 			
 			$data['columns'] = array(
 				array(
@@ -40,10 +40,10 @@
 				array(
 					"title" => "Contribute",
 					"summary" => "Your ability to think and speak in your mother tongue is a powerful gift.  You could make an eternal difference by bringing God's Word into your own language through participating as a Scripture reviewer.  You can comment on text, answer questions, and follow up on other comments.  What are you waiting for?  Sign up today!",
-					"target_url" => "/learn_contribute"
+					"target_url" => "/learn_scripture_forge"
 					)
 			);
-			$this->load->view("$projectPath/templates/3column.html.php", $data);
+			$this->load->view("$themePath/templates/3column.html.php", $data);
 			?>
 		
 			<div class="container">
@@ -55,7 +55,7 @@
 					<div class="span8">
 						<h3>The Power of Collaboration</h3>
 						<p>When everyone plays their part in getting Scripture translated and into the right hands, everyone benefits.  It&rsquo;s the power of collaboration that gets Scripture checking done faster and better. Our technology brings Scripture checking to the masses, in a positive environment that focuses participants on the task and works wherever they are. On the tablet, phone or web, Scripture Forge is there.</p>
-						<p><a href="/learn_contribute" class="arrowed">Get Involved Today</a></p>
+						<p><a href="/signup" class="arrowed">Get Involved Today</a></p>
 					</div>
 				</div>
 				</div>

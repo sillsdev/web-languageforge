@@ -57,7 +57,7 @@ class Captcha
 		}
 		
 		// Generate image src
-		$image_src = site_url('viewcaptcha').'?t=' . urlencode(microtime());
+		$image_src = '/viewcaptcha?t=' . urlencode(microtime());
 		//$image_src = '/' . ltrim(preg_replace('/\\\\/', '/', $image_src), '/');
 
 		$captcha_array = array(

@@ -15,7 +15,7 @@
 					"summary" => "Connecting with the book of Psalms and with each other like never before. Speak your mind. Ask Questions. Improve it!"
 					)
 			);
-			$this->load->view("$projectPath/templates/slideshow.html.php", $data);
+			$this->load->view("$themePath/templates/slideshow.html.php", $data);
 			?>
 			
 			
@@ -50,12 +50,12 @@
 					),
 				array(
 					"title" => "Get Started",
-					"summary" => "There are two ways you can start right away: Organize a face-to-face Psalms study group and share your group's insights with the translation team.  Create a log-in and begin interacting with the translators and others from the Jamaican community over the translation drafts they post on this website. Either way, you are helping to produce your Jamaican Psalms translation. It's that easy.",
+					"summary" => "There are two ways you can start right away: Organize a face-to-face Psalms study group and share your group's insights with the translation team.ï¿½ Create a log-in and begin interacting with the translators and others from the Jamaican community over the translation drafts they post on this website. Either way, you are helping to produce your Jamaican Psalms translation. It's that easy.",
 					"button" => "Get Started Now",
 					"target_url" => "/signup"
 					)
 			);
-			$this->load->view("$projectPath/templates/3column.html.php", $data);
+			$this->load->view("$themePath/templates/3column.html.php", $data);
 			?>
 			
 			

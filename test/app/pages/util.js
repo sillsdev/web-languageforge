@@ -122,3 +122,15 @@ var waitForAlert = function(timeout) {
 	}, timeout);
 };
 module.exports.waitForAlert = waitForAlert;
+
+var checkModalTextMatches = function(expectedText) {
+	var modalBody = $('.modal-body');
+	expect(modalBody.getText()).toMatch(expectedText);
+};
+module.exports.checkModalTextMatches = checkModalTextMatches;
+var clickModalButton = function(btnText) {
+	var modalFooter = $('.modal-footer');
+	var btn = modalFooter.element(by.partialButtonText(btnText));
+	btn.click();
+};
+module.exports.clickModalButton = clickModalButton;

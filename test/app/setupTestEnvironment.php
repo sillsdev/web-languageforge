@@ -1,7 +1,5 @@
 <?php
 
-use models\commands\QuestionTemplateCommands;
-
 require_once('e2eTestConfig.php');
 
 // put the test config into place
@@ -12,6 +10,7 @@ use models\commands\ProjectCommands;
 use models\commands\UserCommands;
 use models\commands\TextCommands;
 use models\commands\QuestionCommands;
+use models\commands\QuestionTemplateCommands;
 use models\shared\rights\ProjectRoles;
 use models\shared\rights\SiteRoles;
 use models\scriptureforge\SfProjectModel;
@@ -31,14 +30,14 @@ $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), tr
 $projectNames = array($constants['testProjectName'], $constants['otherProjectName']);
 foreach ($projectNames as $name) {
 	$projectModel = new ProjectModel();
-	$projectModel->projectname = $name;
+	$projectModel->projectName = $name;
 	$db = \models\mapper\MongoStore::connect($projectModel->databaseName());
 	foreach ($db->listCollections() as $collection) { $collection->drop(); }
 }
 
 // drop the third database because it is used in a rename test
 $projectModel = new ProjectModel();
-$projectModel->projectname = $constants['thirdProjectName'];
+$projectModel->projectName = $constants['thirdProjectName'];
 $db = \models\mapper\MongoStore::dropDB($projectModel->databaseName());
 
 $adminUser = UserCommands::createUser(array(
@@ -71,29 +70,28 @@ $memberUser = UserCommands::createUser(array(
 
 $testProject = ProjectCommands::createProject(
 	$constants['testProjectName'],
-	SfProjectModel::SFCHECKS_APP, // TODO: Find out if there's a better constant for this. 2014-05 RM
+	SfProjectModel::SFCHECKS_APP,
 	$adminUser,
-	Website::SCRIPTUREFORGE
+	Website::get('scriptureforge.local')
 );
 $testProjectModel = new ProjectModel($testProject);
 $testProjectModel->projectCode = $constants['testProjectCode'];
+$testProjectModel->allowInviteAFriend = $constants['testProjectAllowInvites'];
 $testProjectModel->write();
 
 $otherProject = ProjectCommands::createProject(
 	$constants['otherProjectName'],
-	SfProjectModel::SFCHECKS_APP, // TODO: Find out if there's a better constant for this. 2014-05 RM
+	SfProjectModel::SFCHECKS_APP,
 	$adminUser,
-	Website::SCRIPTUREFORGE
+	Website::get('scriptureforge.local')
 );
+$otherProjectModel = new ProjectModel($otherProject);
+$otherProjectModel->projectCode = $constants['otherProjectCode'];
+$otherProjectModel->allowInviteAFriend = $constants['otherProjectAllowInvites'];
+$otherProjectModel->write();
 
-ProjectCommands::updateUserRole($testProject, array(
-	'id' => $managerUser,
-	'role' => ProjectRoles::MANAGER
-));
-ProjectCommands::updateUserRole($testProject, array(
-	'id' => $memberUser,
-	'role' => ProjectRoles::CONTRIBUTOR
-));
+ProjectCommands::updateUserRole($testProject, $managerUser, ProjectRoles::MANAGER);
+ProjectCommands::updateUserRole($testProject, $memberUser, ProjectRoles::CONTRIBUTOR);
 
 $text1 = TextCommands::updateText($testProject, array(
 	'id' => '',
