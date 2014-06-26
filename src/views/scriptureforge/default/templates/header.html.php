@@ -3,37 +3,28 @@
 <![endif]-->
 		<div id="header">
 			<div class="container">
-				<div class="sf-logo-large">
+				<div class="sf-logo-medium">
 					<img src="/images/scriptureforge/default/sf_logo_medium.png" alt="Scripture Forge" style="width:92px; height:114px" />
 				</div>
 				<div id="header-nav" class="pull-left">
 					<ul class="sf-menu">
 						<li><a href="/">Home</a></li>
+						<!--
 						<li><a href="/explore">Explore</a>
 							<ul>
 							<?php foreach($featuredProjects as $project): ?>
-								<li><a href="<?php echo "/projects/" . str_replace(" ", "_", strtolower($project['projectname'])); ?>"><?php echo $project['projectname']; ?></a></li>
+								<li><a href="<?php echo "/projects/" . str_replace(" ", "_", strtolower($project['projectName'])); ?>"><?php echo $project['projectName']; ?></a></li>
 							<?php endforeach; ?>
-								<!--
-								<li><a href="#">Sub Menu Item 2</a>
-									<ul>
-										<li><a href="#">Another Sub Menu Item 1</a></li>
-										<li><a href="#">Another Sub Menu Item 2</a></li>
-										<li><a href="#">Another Sub Menu Item 3</a></li>
-									</ul>
-								</li>
-								-->
 							</ul>
 						</li>
+						-->
 						<li><a href="/learn_scripture_forge">Learn</a>
 							<ul>
 								<li><a href="/learn_faq">Frequently Asked Questions</a></li>
 								<li><a href="/learn_scripture_forge">About Scripture Forge</a></li>
 								<li><a href="/learn_expand_your_team">Expand Your Team</a></li>
-								<li><a href="/learn_contribute">Contribute</a></li>
 							</ul>
 						</li>
-						<li><a href="/learn_contribute">Contribute</a></li>
 						<li><a href="/discuss">Discuss</a></li>
 					</ul>
 				</div>
@@ -41,22 +32,15 @@
 				<?php if ($logged_in):?>
 					<div class="pull-right">
 						<ul id="header-nav" class="sf-menu">
-							<li><a href="/app/projects">My Projects</a>
+							<li id="myProjects"><a href="/app/projects">My Projects</a>
 								<ul>
 								<?php foreach($projects as $project): ?>
-									<?php 
-									$theme = '';
-									if ($project['themeName'] != 'default') {
-										$theme = $project['themeName'] . '.';
-									}
-									?>
-
-									<li><a href="<?php echo "http://$theme$hostname/app/" . $project['appName'] . "#/p/" . $project['id']; ?>"><?php echo $project['projectname']; ?></a></li>
+									<li><a href="<?php echo "/app/" . $project['appName'] . "/" . $project['id'] . "/"; ?>"><?php echo $project['projectName']; ?></a></li>
 								<?php endforeach;?>
 								</ul>
 							</li>
 							<li>
-							<a href="#"><img src="<?php echo $small_avatar_url; ?>" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid white; margin-right:10px" />Hi, <?php echo $user_name; ?></a>
+							<a href="#"><img src="<?php echo $small_avatar_url; ?>" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid white; margin-right:10px" id="smallAvatarURL" />Hi, <?php echo $user_name; ?></a>
 								<ul>
 									<?php if ($is_admin):?>
 									<li><a href="/app/siteadmin">Site Administration</a></li>

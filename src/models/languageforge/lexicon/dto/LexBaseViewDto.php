@@ -37,7 +37,7 @@ class LexBaseViewDto {
 		
 		$data = array();
 		$data['config'] = $config;
-		$data['project'] = array('projectname' => $project->projectname);
+		$data['project'] = array('projectName' => $project->projectName);
 		$data['interfaceConfig'] = array('userLanguageCode' => $interfaceLanguageCode);
 		$data['interfaceConfig']['selectLanguages'] = $selectInterfaceLanguages;
 		$data['rights'] = RightsHelper::encode($user, $project);

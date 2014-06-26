@@ -83,7 +83,7 @@ class ActivityListDto
 		$activityList->readAsModels();
 		$dto = ActivityListDtoEncoder::encodeModel($activityList, $projectModel);
 		self::prepareDto($dto);
-		return $dto['entries'];
+		return (is_array($dto['entries'])) ? $dto['entries'] : array();
 	}
 	
 	/**

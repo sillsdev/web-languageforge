@@ -8,6 +8,7 @@ class AllLibrariesTests extends TestSuite {
         parent::__construct();
  		$this->addFile(TestPath . 'libraries/ParatextExport_Test.php');
  		$this->addFile(TestPath . 'libraries/LanguageData_Test.php');
+ 		$this->addFile(TestPath . 'libraries/Website_Test.php');
     }
 
 }

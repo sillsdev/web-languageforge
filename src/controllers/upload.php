@@ -1,13 +1,27 @@
 <?php
 
+use models\shared\rights\Operation;
+
+use models\shared\rights\Domain;
+
+use models\scriptureforge\SfchecksProjectModel;
+
+use models\shared\dto\RightsHelper;
+
 use models\TextModel;
 use models\ProjectModel;
 
-require_once 'base.php';
+require_once 'secure_base.php';
 
-class Upload extends Base {
+class Upload extends Secure_base {
 
 	public function receive() {
+		$projectModel = new SfchecksProjectModel($this->_projectId);
+		if (!$projectModel->hasRight($this->_userId, Domain::TEXTS + Operation::EDIT)) {
+			throw new \Exception("Insufficient privilege to upload");
+		}
+		
+		// Note: ideally in the future this would have been implemented as an API method to take advantage of the security measures in place - cjh
 		$allowedTypes = array("audio/mpeg", "audio/mp3");	// type: documented, observed
 		$allowedExtensions = array(".mp3");
 		
@@ -17,7 +31,7 @@ class Upload extends Base {
 		$fileName = str_replace(array('/', '\\', '?', '%', '*', ':', '|', '"', '<', '>'), '_', $fileName);	// replace special characters with _
 		$fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
 
-		$projectId = $_POST['projectId'];
+		$projectId = $this->_projectId;
 		$textId = $_POST['textId'];
 		
 		if ($file['error'] == UPLOAD_ERR_OK) {
@@ -48,7 +62,7 @@ class Upload extends Base {
 				}
 				$text->write();
 
-				echo "File uploaded succesfully.";
+				echo "File uploaded successfully.";
 			} else {
 				$allowedExtensionsStr = implode(", ", $allowedExtensions);
 				if (count($allowedExtensions) < 1) {

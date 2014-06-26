@@ -37,6 +37,7 @@ class TextModel extends \models\mapper\MapperModel
 	{
 		$this->id = new Id();
 		$this->_projectModel = $projectModel;
+		$this->isArchived = false;
 		$databaseName = $projectModel->databaseName();
 		parent::__construct(TextModelMongoMapper::connect($databaseName), $id);
 	}
@@ -64,6 +65,8 @@ class TextModel extends \models\mapper\MapperModel
 	public $audioUrl;
 	
 	public $content;
+	
+	public $isArchived;
 	
 }
 

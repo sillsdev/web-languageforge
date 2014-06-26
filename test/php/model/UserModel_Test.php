@@ -1,7 +1,7 @@
 <?php
 use libraries\shared\Website;
 
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
 
 use models\mapper\Id;
 
@@ -85,45 +85,46 @@ class TestUserModel extends UnitTestCase {
 		$e->clean();
 		
 		$p1m = $e->createProject('p1');
+		$p1m->appName = 'sfchecks';
+		$p1m->write();
 		$p1 = $p1m->id->asString();
-		$p1m = new ProjectModel($p1);
 		$p2m = $e->createProject('p2');
 		$p2 = $p2m->id->asString();
+		$p2m->appName = 'sfchecks';
+		$p2m->write();
 		
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@smith.com');
 		$userModel = new UserModel($userId);
 		
 		// Check that list projects is empty
-		$result = $userModel->listProjects(Website::SCRIPTUREFORGE);
+		$result = $userModel->listProjects($e->website->domain);
 		$this->assertEqual(0, $result->count);
 		$this->assertEqual(array(), $result->entries);
 				
 		// Add our two projects
-		$p1m->addUser($userModel->id->asString(), Roles::USER);
+		$p1m->addUser($userModel->id->asString(), ProjectRoles::CONTRIBUTOR);
 		$userModel->addProject($p1m->id->asString());
-		$p2m->addUser($userModel->id->asString(), Roles::USER);
+		$p2m->addUser($userModel->id->asString(), ProjectRoles::CONTRIBUTOR);
 		$userModel->addProject($p2m->id->asString());
 		$p1m->write();
 		$p2m->write();
 		$userModel->write();
 		
-		$result = $userModel->listProjects(Website::SCRIPTUREFORGE);
+		$result = $userModel->listProjects($e->website->domain);
 		$this->assertEqual(2, $result->count);
 		$this->assertEqual(
 			array(
 				array(
-		          'projectname' => 'p1',
+		          'projectName' => 'p1',
 		          'id' => $p1,
 				  'appName' => 'sfchecks',
-				  'siteName' => Website::SCRIPTUREFORGE,
-				  'themeName' => 'default'
+				  'siteName' => $e->website->domain
 				),
 				array(
-		          'projectname' => 'p2',
+		          'projectName' => 'p2',
 		          'id' => $p2,
 				  'appName' => 'sfchecks',
-				  'siteName' => Website::SCRIPTUREFORGE,
-				  'themeName' => 'default'
+				  'siteName' => $e->website->domain
 				)
 			), $result->entries
 		);
@@ -177,7 +178,7 @@ class TestUserModel extends UnitTestCase {
 		$userId = $e->createUser('user1', 'user1', 'user1');
 		$user = new UserModel($userId);
 		$project = $e->createProject('testProject');
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project->write();
 		$user->addProject($project->id->asString());
 		$user->write();

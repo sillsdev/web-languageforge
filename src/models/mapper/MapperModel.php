@@ -102,6 +102,15 @@ class MapperModel
 	public function readByProperty($property, $value) {
 		return $this->_mapper->readByProperty($this, $property, $value);
 	}
+
+	/**
+	 * 
+	 * @param array $properties
+	 * @return boolean
+	 */
+	public function readByProperties($properties) {
+		return $this->_mapper->readByProperties($this, $properties);
+	}
 	
 	/**
 	 * Writes the model to the mongo collection

@@ -1,13 +1,10 @@
 <?php 
 
-use models\rights\Domain;
+use models\shared\rights\Domain;
 
-use models\rights\Operation;
+use models\shared\rights\Operation;
 
 use models\shared\dto\RightsHelper;
-
-use models\rights\Realm;
-use models\rights\Roles;
 
 require_once 'secure_base.php';
 
@@ -18,8 +15,8 @@ class Script extends Secure_base {
 			show_404($this->site);
 		} else {
 			$userId = (string)$this->session->userdata('user_id');
-			if (! RightsHelper::userHasSiteRight($userId, Domain::PROJECTS + Operation::EDIT)) {
-				show_error("You must be a site admin to run scripts", 403, 'Insufficient Privileges');
+			if (! RightsHelper::hasSiteRight($userId, Domain::PROJECTS + Operation::DELETE)) {
+				show_error("You have insufficient privileges to run scripts", 403, 'Insufficient Privileges');
 			} else {
 				try {
 					$data = array();
@@ -27,7 +24,7 @@ class Script extends Secure_base {
 
 					$script = new $classname;
 					$data['output'] = '';
-					if ($runtype == 'test') {
+					if ($runtype != 'run') {
 						$data['output'] .= "--------------- THIS IS A TEST RUN - The database should not be modified ----------------\n\n";
 					}
 					$data['output'] .= $script->run($runtype);

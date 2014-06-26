@@ -3,19 +3,17 @@
 namespace models\scriptureforge\dto;
 
 use models\shared\dto\RightsHelper;
-
-use models\UnreadActivityModel;
-
-use models\UnreadAnswerModel;
-use models\UnreadCommentModel;
-
-use models\UserVoteModel;
-
+use models\shared\rights\ProjectRoles;
+use models\scriptureforge\SfchecksProjectModel;
+use models\mapper\JsonEncoder;
 use models\ProjectModel;
 use models\QuestionModel;
 use models\TextModel;
+use models\UnreadActivityModel;
+use models\UnreadAnswerModel;
+use models\UnreadCommentModel;
 use models\UserModel;
-use models\mapper\JsonEncoder;
+use models\UserVoteModel;
 
 class QuestionCommentDto
 {
@@ -27,17 +25,17 @@ class QuestionCommentDto
 	 * @return array - The DTO.
 	 */
 	public static function encode($projectId, $questionId, $userId) {
-		$userModel = new UserModel($userId);
-		$projectModel = new ProjectModel($projectId);
-		
-		$questionModel = new QuestionModel($projectModel, $questionId);
-		$question = QuestionCommentDtoEncoder::encode($questionModel);
-		
-		$textId = $questionModel->textRef->asString();
-		$textModel = new TextModel($projectModel, $textId);
-		$usxHelper = new UsxHelper($textModel->content);
+		$user = new UserModel($userId);
+		$project = new SfchecksProjectModel($projectId);
+		$question = new QuestionModel($project, $questionId);
+		$textId = $question->textRef->asString();
+		$text = new TextModel($project, $textId);
+		if (($text->isArchived || $question->isArchived) && $project->users[$userId]->role != ProjectRoles::MANAGER) {
+			throw new \Exception("This Question is no longer available.\nIf this is incorrect contact your project manager.\n");
+		}
+		$usxHelper = new UsxHelper($text->content);
 		//echo $usxHelper->toHtml();
-		//echo $textModel->content;
+		//echo $text->content;
 		
 		$votes = new UserVoteModel($userId, $projectId, $questionId);
 		$votesDto = array();
@@ -45,12 +43,12 @@ class QuestionCommentDto
 			$votesDto[$vote->answerRef->id] = true;
 		}
 		
-		$unreadAnswerModel = new UnreadAnswerModel($userId, $projectModel->id->asString(), $questionId);
+		$unreadAnswerModel = new UnreadAnswerModel($userId, $project->id->asString(), $questionId);
 		$unreadAnswers = $unreadAnswerModel->unreadItems();
 		$unreadAnswerModel->markAllRead();
 		$unreadAnswerModel->write();
 		
-		$unreadCommentModel = new UnreadCommentModel($userId, $projectModel->id->asString(), $questionId);
+		$unreadCommentModel = new UnreadCommentModel($userId, $project->id->asString(), $questionId);
 		$unreadComments = $unreadCommentModel->unreadItems();
 		$unreadCommentModel->markAllRead();
 		$unreadCommentModel->write();
@@ -59,12 +57,12 @@ class QuestionCommentDto
 		$unreadActivity = $unreadActivityModel->unreadItems();
 		
 		$dto = array();
-		$dto['question'] = $question;
+		$dto['question'] = QuestionCommentDtoEncoder::encode($question);
 		$dto['votes'] = $votesDto;
-		$dto['text'] = JsonEncoder::encode($textModel);
+		$dto['text'] = JsonEncoder::encode($text);
 		$dto['text']['content'] = $usxHelper->toHtml();
-		$dto['project'] = JsonEncoder::encode($projectModel);
-		$dto['rights'] = RightsHelper::encode($userModel, $projectModel);
+		$dto['project'] = JsonEncoder::encode($project);
+		$dto['rights'] = RightsHelper::encode($user, $project);
 		$dto['unreadAnswers'] = $unreadAnswers;
 		$dto['unreadComments'] = $unreadComments;
 		$dto['unreadActivityCount'] = count($unreadActivity);
