@@ -1,7 +1,7 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once 'libraries/shared/Website.php';
-$website = \libraries\shared\Website::get();
+//require_once 'libraries/shared/Website.php';
+//$website = \libraries\shared\Website::get();
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -16,7 +16,8 @@ $website = \libraries\shared\Website::get();
 | path to your installation.
 |
 */
-$config['base_url']	= $website->baseUrl();
+//$config['base_url']	= $website->baseUrl();
+$config['base_url']	= '';
 
 /*
 |--------------------------------------------------------------------------
