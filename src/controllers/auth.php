@@ -255,12 +255,12 @@ class Auth extends Base {
 			{
 				//if there were no errors
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
-				redirect("auth/login", 'refresh'); //we should display a confirmation page here instead of the login page
+				redirect("/auth/login", 'refresh'); //we should display a confirmation page here instead of the login page
 			}
 			else
 			{
 				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				redirect("auth/forgot_password", 'refresh');
+				redirect("/auth/forgot_password", 'refresh');
 			}
 		}
 	}
@@ -351,7 +351,7 @@ class Auth extends Base {
 		{
 			//if the code is invalid then send them back to the forgot password page
 			$this->session->set_flashdata('message', $this->ion_auth->errors());
-			redirect("auth/forgot_password", 'refresh');
+			redirect("/auth/forgot_password", 'refresh');
 		}
 	}
 
@@ -372,13 +372,13 @@ class Auth extends Base {
 		{
 			//redirect them to the auth page
 			$this->session->set_flashdata('message', $this->ion_auth->messages());
-			redirect("auth", 'refresh');
+			redirect("/auth", 'refresh');
 		}
 		else
 		{
 			//redirect them to the forgot password page
 			$this->session->set_flashdata('message', $this->ion_auth->errors());
-			redirect("auth/forgot_password", 'refresh');
+			redirect("/auth/forgot_password", 'refresh');
 		}
 	}
 
@@ -454,7 +454,7 @@ class Auth extends Base {
 			//check to see if we are creating the user
 			//redirect them back to the admin page
 			$this->session->set_flashdata('message', $this->ion_auth->messages());
-			redirect("auth", 'refresh');
+			redirect("/auth", 'refresh');
 		}
 		else
 		{
@@ -550,7 +550,7 @@ class Auth extends Base {
 				//check to see if we are creating the user
 				//redirect them back to the admin page
 				$this->session->set_flashdata('message', "User Saved");
-				redirect("auth", 'refresh');
+				redirect("/auth", 'refresh');
 			}
 		}
 
@@ -607,7 +607,7 @@ class Auth extends Base {
 				// check to see if we are creating the group
 				// redirect them back to the admin page
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
-				redirect("auth", 'refresh');
+				redirect("/auth", 'refresh');
 			}
 		}
 		else
@@ -669,7 +669,7 @@ class Auth extends Base {
 				{
 					$this->session->set_flashdata('message', $this->ion_auth->errors());
 				}
-				redirect("auth", 'refresh');
+				redirect("/auth", 'refresh');
 			}
 		}
 
