@@ -12,7 +12,7 @@
 						<div class="span2">
 							<h4>Navigate</h4>
 							<small>
-							<a href="/">Home</a><br /><a href="/learn_scripture_forge">Learn</a><br /><a href="/contribute">Contribute</a><br /><a href="/discuss">Discuss</a>
+							<a href="/">Home</a><br /><a href="/learn_scripture_forge">Learn</a><br /><a href="/discuss">Discuss</a>
 							</small>
 						</div>
 						

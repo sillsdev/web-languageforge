@@ -29,28 +29,33 @@ class ProjectList_UserModel extends \models\mapper\MapperListModel
 	}
 	
 	/**
-	 * Reads all projects
+	 * Reads all published projects or all archived projects
+	 * @param boolean $isArchivedList
 	 */
-	function readAll() {
-		$query = array('siteName' => array('$in' => array($this->_site)));
-		$fields = array('projectname', 'appName', 'themeName', 'siteName');
+	function readAll($isArchivedList = false) {
+		if ($isArchivedList) {
+			$query = array('siteName' => array('$in' => array($this->_site)), 'isArchived' => true);
+		} else {
+			$query = array('siteName' => array('$in' => array($this->_site)), 'isArchived' => array('$ne' => true));
+		}
+		$fields = array('projectName', 'appName', 'siteName');
 		
 		return $this->_mapper->readList($this, $query, $fields);
 	}
 	
 	/**
-	 * Reads all projects in which the given $userId is a member.
+	 * Reads all published projects in which the given $userId is a member.
 	 * @param string $userId
 	 */
 	function readUserProjects($userId) {
-		$query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array($this->_site)));
-		$fields = array('projectname', 'appName', 'themeName', 'siteName');
+		$query = array('users.' . $userId => array('$exists' => true), 'siteName' => array('$in' => array($this->_site)), 'isArchived' => array('$ne' => true));
+		$fields = array('projectName', 'appName', 'siteName');
 		
 		$this->_mapper->readList($this, $query, $fields);
 		
 		// Default sort list on project names
 		usort($this->entries, function ($a, $b) {
-			$sortOn = 'projectname';
+			$sortOn = 'projectName';
 			if (array_key_exists($sortOn, $a) &&
 			array_key_exists($sortOn, $b)){
 				return (strtolower($a[$sortOn]) > strtolower($b[$sortOn])) ? 1 : -1;

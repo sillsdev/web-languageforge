@@ -21,8 +21,8 @@ describe('Projects page (projects.js)', function() {
 	var testProjects = {
 		count: 2,
 		entries: [
-			{id: "1001", projectname: "Foo", appName: "sfchecks", language: "English", textCount: 0, users: ["1"]},
-			{id: "1002", projectname: "Bar", appName: "sfchecks", language: "Martian", textCount: 1, users: ["2"]},
+			{id: "1001", projectName: "Foo", appName: "sfchecks", language: "English", textCount: 0, users: ["1"]},
+			{id: "1002", projectName: "Bar", appName: "sfchecks", language: "Martian", textCount: 1, users: ["2"]},
 		],
 	};
 
@@ -36,6 +36,10 @@ describe('Projects page (projects.js)', function() {
 	var mockProjectService = {
 		list: function(callback) {
 			callback(testJsonResult);
+		},
+		data: {
+			projectTypeNames: {},
+			projectTypesBySite: {},
 		},
 	};
 
@@ -84,8 +88,8 @@ describe('Projects page (projects.js)', function() {
 		expect(scope.projects.length).toBe(0);
 		scope.queryProjectsForUser();
 		expect(scope.projects.length).toBe(2);
-		expect(scope.projects[0].projectname).toBe("Foo");
-		expect(scope.projects[1].projectname).toBe("Bar");
+		expect(scope.projects[0].projectName).toBe("Foo");
+		expect(scope.projects[1].projectName).toBe("Bar");
 		expect(scope.projects[0].language).toBe("English");
 		expect(scope.projects[1].language).toBe("Martian");
 	});

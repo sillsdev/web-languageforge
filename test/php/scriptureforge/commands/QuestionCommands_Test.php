@@ -1,15 +1,13 @@
 <?php
 
-use models\CommentModel;
-
-use models\AnswerModel;
-
 use models\commands\QuestionCommands;
+use models\mapper\ArrayOf;
+use models\AnswerModel;
+use models\CommentModel;
 use models\QuestionModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class UserVoteTestEnvironment {
@@ -65,10 +63,6 @@ class UserVoteTestEnvironment {
 
 class TestQuestionCommands extends UnitTestCase {
 
-	function __construct()
-	{
-	}
-	
 	function testDeleteQuestions_NoThrow() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
@@ -79,8 +73,59 @@ class TestQuestionCommands extends UnitTestCase {
 		$question->write();
 		
 		$questionId = $question->id->asString();
-		QuestionCommands::deleteQuestions($projectId, array($questionId), 'bogus auth userid');
+		QuestionCommands::deleteQuestions($projectId, array($questionId));
+	}
+	
+	function testArchiveQuestions_2Questions_1Archived() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
 		
+		$project = $e->createProject(SF_TESTPROJECT);
+		
+		$question1 = new QuestionModel($project);
+		$question1->title = "Some Title";
+		$question1->write();
+		$question2 = new QuestionModel($project);
+		$question2->title = "Another Title";
+		$question2->write();
+		
+		$this->assertEqual($question1->isArchived, false);
+		$this->assertEqual($question2->isArchived, false);
+		
+		$count = QuestionCommands::archiveQuestions($project->id->asString(), array($question1->id->asString()));
+		
+		$question1->read($question1->id->asString());
+		$question2->read($question2->id->asString());
+		$this->assertEqual($count, 1);
+		$this->assertEqual($question1->isArchived, true);
+		$this->assertEqual($question2->isArchived, false);
+	}
+	
+	function testPublishQuestions_2ArchivedQuestions_1Published() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		
+		$question1 = new QuestionModel($project);
+		$question1->title = "Some Title";
+		$question1->isArchived = true;
+		$question1->write();
+		$question2 = new QuestionModel($project);
+		$question2->title = "Another Title";
+		$question2->isArchived = true;
+		$question2->write();
+		
+		$this->assertEqual($question1->isArchived, true);
+		$this->assertEqual($question2->isArchived, true);
+		
+		$count = QuestionCommands::publishQuestions($project->id->asString(), array($question1->id->asString()));
+		
+		$question1->read($question1->id->asString());
+		$question2->read($question2->id->asString());
+		$this->assertEqual($count, 1);
+		$this->assertEqual($question1->isArchived, false);
+		$this->assertEqual($question2->isArchived, true);
 	}
 	
 	function testVoteUp_NoVotesThenUpAndDown_VoteGoesUpAndDown() {
@@ -145,7 +190,7 @@ class TestQuestionCommands extends UnitTestCase {
 		$this->assertEqual(0, $answer1['score']);
 	}
 	
-	function testUpdateAnswer_existingAnswer_originalAuthorIsPreserved() {
+	function testUpdateAnswer_ExistingAnswer_OriginalAuthorIsPreserved() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
@@ -165,12 +210,90 @@ class TestQuestionCommands extends UnitTestCase {
 		);
 		
 		QuestionCommands::updateAnswer($project->id->asString(), $questionId, $answerArray, $user2Id);
+		
 		$question->read($questionId);
 		$newAnswer = $question->readAnswer($answerId);
 		$this->assertEqual($user1Id, $newAnswer->userRef->asString());
 	}
 	
-	function testUpdateComment_existingComment_originalAuthorIsPreserved() {
+	function testUpdateAnswer_ExistingAnswer_CantUpdateTagsOrExportFlag() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$project = $e->createProject(SF_TESTPROJECT);
+		$question = new QuestionModel($project);
+		$questionId = $question->write();
+		
+		$answer = new AnswerModel();
+		$answer->content = "the answer";
+		$user1Id = $e->createUser("user1", "user1", "user1");
+		$answer->userRef->id = $user1Id;
+		$answer->tags[] = 'originalTag';
+		$answer->isToBeExported = true;
+		$answerId = $question->writeAnswer($answer);
+		$answerArray = array(
+			"id" => $answerId,
+			"content" => "updated answer",
+			"tags" => array('updatedTag'),
+			"isToBeExported" => false
+		);
+		
+		QuestionCommands::updateAnswer($project->id->asString(), $questionId, $answerArray, $user1Id);
+		
+		$question->read($questionId);
+		$newAnswer = $question->readAnswer($answerId);
+		$this->assertEqual($newAnswer->content, "updated answer");
+		$this->assertEqual(count($newAnswer->tags), 1);
+		$this->assertEqual($newAnswer->tags[0], 'originalTag');
+		$this->assertEqual($newAnswer->isToBeExported, true);
+	}
+	
+	function testUpdateAnswerExportFlag_ExistingAnswer_ChangePersists() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$question = new QuestionModel($project);
+		$questionId = $question->write();
+		
+		$answer = new AnswerModel();
+		$answer->content = "the answer";
+		$answer->isToBeExported = false;
+		$answerId = $question->writeAnswer($answer);
+		$isToBeExported = true;
+		
+		$dto = QuestionCommands::updateAnswerExportFlag($project->id->asString(), $questionId, $answerId, $isToBeExported);
+		
+		$question->read($questionId);
+		$newAnswer = $question->readAnswer($answerId);
+		$this->assertTrue($newAnswer->isToBeExported);
+		$this->assertTrue($dto[$answerId]['isToBeExported']);
+	}
+	
+	function testUpdateAnswerTags_ExistingAnswer_ChangePersists() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$project = $e->createProject(SF_TESTPROJECT);
+		$question = new QuestionModel($project);
+		$questionId = $question->write();
+		
+		$answer = new AnswerModel();
+		$answer->content = "the answer";
+		$answer->tags[] = 'originalTag';
+		$answerId = $question->writeAnswer($answer);
+		$tagsArray = array('updatedTag');
+				
+		$dto = QuestionCommands::updateAnswerTags($project->id->asString(), $questionId, $answerId, $tagsArray);
+				
+		$question->read($questionId);
+		$newAnswer = $question->readAnswer($answerId);
+		$this->assertEqual(count($newAnswer->tags), 1);
+		$this->assertEqual($newAnswer->tags[0], 'updatedTag');
+		$this->assertEqual($dto[$answerId]['tags'][0], 'updatedTag');
+	}
+	
+	function testUpdateComment_ExistingComment_OriginalAuthorIsPreserved() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
@@ -200,7 +323,6 @@ class TestQuestionCommands extends UnitTestCase {
 		$question->read($questionId);
 		$newComment = $question->readComment($answerId, $commentId);
 		$this->assertEqual($user1Id, $newComment->userRef->asString());
-		
 	}
 }
 

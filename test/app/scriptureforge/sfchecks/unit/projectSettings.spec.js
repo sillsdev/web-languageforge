@@ -14,8 +14,8 @@ describe('Project Settings', function() {
 		    {id: '3', title: 'Who died?', description: 'the butcher or the baker?'},
 		];
 		var qtServiceMock = { 
-				list: function(projectId, callback) { callback({ok: true, data:{entries:mockTemplates}}); },
-				update: function(projectId, template, callback) { callback({ok: true});}
+				list: function(callback) { callback({ok: true, data:{entries:mockTemplates}}); },
+				update: function(template, callback) { callback({ok: true});}
 		};
 		beforeEach(inject(function($rootScope, $controller) {
 			scope = $rootScope.$new();

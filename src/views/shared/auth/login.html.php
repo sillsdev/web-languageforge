@@ -6,7 +6,7 @@
 <div class="alert alert-info"><?php echo $message;?></div>
 <?php endif;?>
 
-<?php echo form_open("auth/login");?>
+<form method="post" accept-charset="utf-8">
 
   <p>
     <?php echo lang('login_identity_label', 'identity');?>

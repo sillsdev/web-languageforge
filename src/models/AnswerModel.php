@@ -3,7 +3,6 @@
 namespace models;
 
 use models\mapper\ArrayOf;
-
 use models\mapper\MapOf;
 
 class AnswerModel extends CommentModel
@@ -17,6 +16,7 @@ class AnswerModel extends CommentModel
 		);
 		$this->score = 0;
 		$this->tags = new ArrayOf();
+		$this->isToBeExported = false;
 	}
 	
 	public function fixDecode() {
@@ -41,6 +41,13 @@ class AnswerModel extends CommentModel
 	 * @var ArrayOf<string>
 	 */
 	public $tags;
+	
+	/**
+	 * Flag to be exported for ParaTExt Export
+	 * @var Boolean
+	 */
+	public $isToBeExported;
+	
 }
 
 ?>

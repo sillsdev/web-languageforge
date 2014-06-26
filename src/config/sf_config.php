@@ -21,6 +21,6 @@ if (!defined('SF_USE_MINIFIED_JS')) {
 }
 
 define('SF_DEFAULT_EMAIL',      'no-reply@scriptureforge.org');
-define('SF_DEFAULT_EMAIL_NAME', 'ScriptureForge');
+define('SF_DEFAULT_EMAIL_NAME', 'Scripture Forge');
 
 ?>

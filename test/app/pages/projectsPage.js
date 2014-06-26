@@ -16,7 +16,7 @@ var SfProjectsPage = function() {
 
 	this.testProjectName = 'Test Project';
 
-	this.deleteBtn = element(by.partialButtonText('Delete Selected'));
+	this.archiveButton = element(by.partialButtonText('Archive Selected Projects'));
 	this.createBtn = element(by.partialButtonText('Create New Project'));
 	this.newProjectNameInput  = element(by.model('newProject.projectName'));
 	this.newProjectTypeSelect = element(by.model('newProject.appName'));
@@ -25,8 +25,8 @@ var SfProjectsPage = function() {
 	this.itemsPerPageCtrl = element(by.model('itemsPerPage'));
 	this.projectsCtrl =     element(by.repeater('project in visibleProjects'));
 	this.projectsList = element.all(by.repeater('project in visibleProjects'));
-	this.projectNames = element.all(by.repeater('project in visibleProjects').column('{{project.projectname}}'));
-	this.projectTypes = element.all(by.repeater('project in visibleProjects').column('{{project.projectname}} ({{projectTypes[project.appName]}})'));
+	this.projectNames = element.all(by.repeater('project in visibleProjects').column('{{project.projectName}}'));
+	this.projectTypes = element.all(by.repeater('project in visibleProjects').column('{{project.projectName}} ({{projectTypes[project.appName]}})'));
 
 	this.select100ItemsPerPage = function() {
 		if (false) {
@@ -48,8 +48,7 @@ var SfProjectsPage = function() {
 	this.findProject = function(projectName) {
 		var foundRow = undefined;
 		var result = protractor.promise.defer();
-		var searchName = new RegExp(projectName + ' \\(' + projectTypes['sf'] + '\\)');
-		this.select100ItemsPerPage(); // Ensure that the project *will* be on page 1, so we don't have to click through pagination links
+		var searchName = new RegExp(projectName);
 		this.projectsList.map(function(row) {
 			row.getText().then(function(text) {
 				if (searchName.test(text)) {
@@ -72,8 +71,7 @@ var SfProjectsPage = function() {
 			elem.click();
 			page.deleteBtn.click();
 			// Clicking the delete button pops up an "are you sure?" alert
-			var alert = browser.switchTo().alert();
-			alert.accept();
+			util.clickModalButton('Archive');
 		});
 	};
 
@@ -100,7 +98,7 @@ var SfProjectsPage = function() {
 //			btn.click();
 			var link = projectRow.$('a');
 			link.getAttribute('href').then(function(url) {
-				browser.get(url + '/settings');
+				browser.get(url + '#/settings');
 				// Users tab is selected by default, so the following check might not be needed
 //				var usersTab = element(by.xpath('//li[@heading="Users"]'));
 //				expect(usersTab.isElementPresent()).toBeTruthy();
@@ -153,7 +151,7 @@ var SfProjectsPage = function() {
 		this.findProject(projectName).then(function(projectRow) {
 			var link = projectRow.$('a');
 			link.getAttribute('href').then(function(url) {
-				browser.get(url + '/settings');
+				browser.get(url + '#/settings');
 				var userFilter = element(by.model('userFilter'));
 				userFilter.sendKeys(userName);
 				var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));

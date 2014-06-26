@@ -21,7 +21,7 @@ describe('E2E Projects List App - Normal User', function() {
 	it('should list the project of which the user is a member', function() {
 		loginPage.loginAsMember();
 		projectsPage.get();
-		expect(projectsPage.projectNames.get(0).getText()).toBe(constants.testProjectName + ' (Community Scripture Checking)'); // TODO: Move this string to testConstants.js
+		expect(projectsPage.projectNames.get(0).getText()).toBe(constants.testProjectName); // TODO: Move this string to testConstants.js
 	});
 	
 	it('should not list projects the user is not a member of', function() {
@@ -31,14 +31,10 @@ describe('E2E Projects List App - Normal User', function() {
 	
 	it('can list two projects of which the user is a member', function() {
 		loginPage.loginAsAdmin();
-		projectsPage = new projectsPage.constructor(); // Create a new object to try (unsuccessfully) to avoid "stale element reference" errors
 		projectsPage.get();
 		projectsPage.addMemberToProject(constants.otherProjectName, constants.memberUsername);
 		loginPage.loginAsMember();
-		projectsPage = new projectsPage.constructor(); // Create a new object to try (unsuccessfully) to avoid "stale element reference" errors
 		projectsPage.get();
-		//projectsPage.projectsList.then(console.log);
-		//projectsPage.projectsList.get(1).getOuterHtml().then(console.log);
 		expect(projectsPage.projectsList.count()).toBe(2);
 	});
 });
@@ -68,20 +64,20 @@ describe('E2E Projects List App - Site Admin User', function() {
 
 	it('should show add and delete buttons', function() {
 //		projectsPage.createBtn.getOuterHtml().then(console.log);
-//		projectsPage.deleteBtn.getOuterHtml().then(console.log);
+//		projectsPage.archiveButton.getOuterHtml().then(console.log);
 		expect(projectsPage.createBtn.isDisplayed()).toBeTruthy();
-		expect(projectsPage.deleteBtn.isDisplayed()).toBeTruthy();
+		expect(projectsPage.archiveButton.isDisplayed()).toBeTruthy();
 	});
 
 	it('should disable the delete button when no projects are selected', function() {
-		expect(projectsPage.deleteBtn.isEnabled()).toBeFalsy();
+		expect(projectsPage.archiveButton.isEnabled()).toBeFalsy();
 	});
 
 	it('should enable the delete button when at least one project is selected', function() {
 		projectsPage.findProject(constants.testProjectName).then(function(projectRow) {
 			var checkbox = projectRow.$('input[type="checkbox"]');
 			util.setCheckbox(checkbox, true);
-			expect(projectsPage.deleteBtn.isEnabled()).toBeTruthy();
+			expect(projectsPage.archiveButton.isEnabled()).toBeTruthy();
 			util.setCheckbox(checkbox, false); // Just in case, let's be on the safe side
 		});
 	});
