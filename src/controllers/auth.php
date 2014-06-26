@@ -34,7 +34,7 @@ class Auth extends Base {
 		if (!$this->ion_auth->logged_in())
 		{
 			//redirect them to the login page
-			redirect('auth/login', 'refresh');
+			redirect('/auth/login', 'refresh');
 		}
 		elseif (!$this->ion_auth->is_admin())
 		{
@@ -103,7 +103,7 @@ class Auth extends Base {
 				//if the login was un-successful
 				//redirect them back to the login page
 				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				redirect('auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+				redirect('/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
 			}
 		}
 		else
@@ -157,7 +157,7 @@ class Auth extends Base {
 
 		if (!$this->ion_auth->logged_in())
 		{
-			redirect('auth/login', 'refresh');
+			redirect('/auth/login', 'refresh');
 		}
 
 		$user = $this->ion_auth->user()->row();
@@ -211,7 +211,7 @@ class Auth extends Base {
 			else
 			{
 				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				redirect('auth/change_password', 'refresh');
+				redirect('/auth/change_password', 'refresh');
 			}
 		}
 	}
@@ -342,7 +342,7 @@ class Auth extends Base {
 					else
 					{
 						$this->session->set_flashdata('message', $this->ion_auth->errors());
-						redirect('auth/reset_password/' . $code, 'refresh');
+						redirect('/auth/reset_password/' . $code, 'refresh');
 					}
 				}
 			}
@@ -418,7 +418,7 @@ class Auth extends Base {
 			}
 
 			//redirect them back to the auth page
-			redirect('auth', 'refresh');
+			redirect('/auth', 'refresh');
 		}
 	}
 
@@ -429,7 +429,7 @@ class Auth extends Base {
 
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
 		{
-			redirect('auth', 'refresh');
+			redirect('/auth', 'refresh');
 		}
 
 		//validate form input
@@ -498,7 +498,7 @@ class Auth extends Base {
 
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
 		{
-			redirect('auth', 'refresh');
+			redirect('/auth', 'refresh');
 		}
 
 		$user = $this->ion_auth->user($id)->row();
@@ -592,7 +592,7 @@ class Auth extends Base {
 
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
 		{
-			redirect('auth', 'refresh');
+			redirect('/auth', 'refresh');
 		}
 
 		//validate form input
@@ -639,14 +639,14 @@ class Auth extends Base {
 		// bail if no group id given
 		if(!$id || empty($id))
 		{
-			redirect('auth', 'refresh');
+			redirect('/auth', 'refresh');
 		}
 
 		$this->data['title'] = $this->lang->line('edit_group_title');
 
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
 		{
-			redirect('auth', 'refresh');
+			redirect('/auth', 'refresh');
 		}
 
 		$group = $this->ion_auth->group($id)->row();
