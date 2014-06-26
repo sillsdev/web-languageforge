@@ -108,12 +108,13 @@ class Auth extends Base {
 		}
 		else
 		{
-			if (!$this->session->userdata('referer_url')) {
+			if (!$this->session->userdata('came_from_logout')) {
 				$referer = $this->input->server('HTTP_REFERER');
 				if (strpos($referer, '/auth') === false) {
 					$this->session->set_userdata('referer_url', $this->input->server('HTTP_REFERER'));
 				}
 			}
+			$this->session->unset_userdata('came_from_logout');
 			
 			//the user is not logging in so display the login page
 			//set the flash data error message if there is one
@@ -145,6 +146,7 @@ class Auth extends Base {
 
 		//redirect them to the login page
 		$this->session->set_flashdata('message', $this->ion_auth->messages());
+		$this->session->set_userdata('came_from_logout', true);
 		redirect('/auth/login', 'location');
 	}
 
