@@ -10,7 +10,7 @@ class FeaturedProjectListModel extends \models\mapper\MapperListModel
 		parent::__construct(
 			ProjectModelMongoMapper::instance(),
 			array('featured' => true),
-			array('projectname', 'language')
+			array('projectName', 'language')
 		);
 	}
 }

@@ -1,7 +1,9 @@
 <?php
 
+use models\shared\rights\SiteRoles;
+
 use models\languageforge\lexicon\dto\LexProjectDto;
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../../TestConfig.php');
@@ -16,7 +18,7 @@ class TestLexProjectDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
@@ -24,7 +26,7 @@ class TestLexProjectDto extends UnitTestCase {
 		$project->projectCode = 'lf';
 		$project->featured = true;
 		
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$user->addProject($projectId);
 		$user->write();
 		$project->write();
@@ -38,7 +40,7 @@ class TestLexProjectDto extends UnitTestCase {
 		$this->assertEqual($dto['config']['entry']['fields']['lexeme']['label'], 'Word');
 		$this->assertEqual($dto['config']['entry']['fields']['lexeme']['label'], 'Word');
 		$this->assertEqual($dto['config']['entry']['fields']['senses']['fields']['partOfSpeech']['label'], 'Part of Speech');
-		$this->assertEqual($dto['project']['projectname'], SF_TESTPROJECT);
+		$this->assertEqual($dto['project']['projectName'], SF_TESTPROJECT);
 		$this->assertEqual($dto['project']['interfaceLanguageCode'], 'en');
 		$this->assertEqual($dto['project']['projectCode'], 'lf');
 		$this->assertTrue($dto['project']['featured']);

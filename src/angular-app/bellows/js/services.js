@@ -1,7 +1,6 @@
 'use strict';
 
-// Services
-// ScriptureForge common services
+// Common Services
 angular.module('bellows.services', ['jsonRpc'])
 .service('userService', ['jsonRpc', function(jsonRpc) {
 	jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
@@ -20,8 +19,8 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.remove = function(userIds, callback) {
 		jsonRpc.call('user_delete', [userIds], callback);
 	};
-	this.createSimple = function(userName, projectId, callback) {
-		jsonRpc.call('user_createSimple', [projectId, userName], callback);
+	this.createSimple = function(userName, callback) {
+		jsonRpc.call('user_createSimple', [userName], callback);
 	};
 	this.list = function(callback) {
 		// TODO Paging CP 2013-07
@@ -29,6 +28,15 @@ angular.module('bellows.services', ['jsonRpc'])
 	};
 	this.typeahead = function(term, callback) {
 		jsonRpc.call('user_typeahead', [term], callback);
+	};
+	this.typeaheadExclusive = function(term, projectIdToExclude, callback) {
+		// projectIdToExclude's default value if not specified: '' (empty string)
+		if (typeof callback === 'undefined') {
+			// If called with just two parameters, this was typeahead(term, callback)
+			callback = projectIdToExclude;
+			projectIdToExclude = '';
+		}
+		jsonRpc.call('user_typeaheadExclusive', [term, projectIdToExclude], callback);
 	};
 	this.changePassword = function(userId, newPassword, callback) {
 		jsonRpc.call('change_password', [userId, newPassword], callback);
@@ -48,33 +56,54 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.updateFromRegistration = function(validationKey, model, callback) {
 		jsonRpc.call('user_updateFromRegistration', [validationKey, model], callback);
 	};
-	this.sendInvite = function(toEmail, projectId, callback) {
-		jsonRpc.call('user_sendInvite', [projectId, toEmail], callback);
+	this.sendInvite = function(toEmail, callback) {
+		jsonRpc.call('user_sendInvite', [toEmail], callback);
 	};
 	
 }])
-.service('projectService', ['jsonRpc', function(jsonRpc) {
+.service('projectService', ['jsonRpc', 'sessionService', function(jsonRpc, ss) {
 	jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
 	this.create = function(projectName, appName, callback) {
 		jsonRpc.call('project_create', [projectName, appName], callback);
 	};
-	this.remove = function(projectIds, callback) {
-		jsonRpc.call('project_delete', [projectIds], callback);
+	this.archive = function(projectIds, callback) {
+		jsonRpc.call('project_archive', [projectIds], callback);
+	};
+	this.archivedList = function(callback) {
+		jsonRpc.call('project_archivedList', [], callback);
+	};
+	this.publish = function(projectIds, callback) {
+		jsonRpc.call('project_publish', [projectIds], callback);
 	};
 	this.list = function(callback) {
 		jsonRpc.call('project_list_dto', [], callback);
 	};
-	this.users = function(projectId, callback) {
-		jsonRpc.call('project_usersDto', [projectId], callback);
+	this.users = function(callback) {
+		jsonRpc.call('project_usersDto', [], callback);
 	};
-	this.readUser = function(projectId, userId, callback) {
-		jsonRpc.call('project_readUser', [projectId, userId], callback);
+	this.readUser = function(userId, callback) {
+		jsonRpc.call('project_readUser', [userId], callback);
 	};
-	this.updateUser = function(projectId, model, callback) {
-		jsonRpc.call('project_updateUserRole', [projectId, model], callback);
+	this.removeUsers = function(users, callback) {
+		jsonRpc.call('project_removeUsers', [users], callback);
 	};
-	this.removeUsers = function(projectId, users, callback) {
-		jsonRpc.call('project_removeUsers', [projectId, users], callback);
+	this.joinProject = function(projectId, role, callback) {
+		jsonRpc.call('project_joinProject', [projectId, role], callback);
+	};
+	
+	// data constants
+	this.data = {};
+	this.data.projectTypeNames = {
+		'sfchecks': 'Community Scripture Checking',
+		'rapuma': 'Publishing',
+		'lexicon': 'Web Dictionary'
+	};
+	this.data.projectTypesBySite = function() {
+		var types = {
+			'scriptureforge': ['sfchecks'],
+			'languageforge': ['lexicon']
+		};
+		return types[ss.baseSite()];
 	};
 	
 }])
@@ -94,13 +123,10 @@ angular.module('bellows.services', ['jsonRpc'])
 		return $window.session.fileSizeMax;
 	};
 	
-	this.site = function() {
-		return $window.session.site;
+	this.baseSite = function() {
+		return $window.session.baseSite;
 	};
 	
-	this.realm = {
-		SITE: function() { return $window.session.userSiteRights; }
-	};
 	this.domain = {
 			ANY:       function() { return 1000;},
 			USERS:     function() { return 1100;},
@@ -110,7 +136,8 @@ angular.module('bellows.services', ['jsonRpc'])
 			ANSWERS:   function() { return 1500;},
 			COMMENTS:  function() { return 1600;},
 			TEMPLATES: function() { return 1700;},
-			TAGS:      function() { return 1800;}
+			TAGS:      function() { return 1800;},
+			ENTRIES:   function() { return 1900;},
 	};
 	this.operation = {
 			CREATE:       function() { return 1;},
@@ -121,6 +148,15 @@ angular.module('bellows.services', ['jsonRpc'])
 			VIEW_OWN:     function() { return 6;},
 			EDIT_OWN:     function() { return 7;},
 			DELETE_OWN:   function() { return 8;},
+			ARCHIVE:      function() { return 9;},
+	};
+	
+	this.hasSiteRight = function(domain, operation) {
+		return this.hasRight($window.session.userSiteRights, domain, operation);
+	};
+	
+	this.hasProjectRight = function(domain, operation) {
+		return this.hasRight($window.session.userProjectRights, domain, operation);
 	};
 	
 	this.hasRight = function(rights, domain, operation) {
@@ -131,6 +167,17 @@ angular.module('bellows.services', ['jsonRpc'])
 		return false;
 	};
 	
+	this.getSetting = function(settings, key) {
+		if (settings) {
+			return settings[key];
+		} else {
+			return null; // Or undefined? Or false?
+		}
+	};
+	this.getProjectSetting = function(key) {
+		return this.getSetting($window.session.projectSettings, key);
+	};
+
 	this.session = function() {
 		return $window.session;
 	};
@@ -138,23 +185,31 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.getCaptchaSrc = function(callback) {
 		jsonRpc.call('get_captcha_src', [], callback);
 	};
-	
+
+	this.refresh = function(callback) {
+		jsonRpc.connect('/api/sf');
+		jsonRpc.call('session_getSessionData', [], function(newSessionData) {
+			$window.session = newSessionData;
+			(callback || angular.noop)();
+		});
+	};
+
 }])
 .service('sfchecksLinkService', function() {
 	this.href = function(url, text) {
 		return '<a href="' + url + '">' + text + '</a>';
 	};
 	
-	this.project = function(projectId) {
-		return '/app/sfchecks#/p/' + projectId;
+	this.project = function() {
+		return '#';
 	};
 	
-	this.text = function(projectId, textId) {
-		return this.project(projectId) + "/" + textId;
+	this.text = function(textId) {
+		return this.project() + "/" + textId;
 	};
 	
-	this.question = function(projectId, textId, questionId) {
-		return this.text(projectId, textId) + "/" + questionId;
+	this.question = function(textId, questionId) {
+		return this.text(textId) + "/" + questionId;
 	};
 	
 	this.user = function(userId) {
@@ -197,7 +252,7 @@ angular.module('bellows.services', ['jsonRpc'])
 		angular.extend(tempModalOptions, modalOptions, customModalOptions);
 		
 		if (!tempModalDefaults.controller) {
-			tempModalDefaults.controller = function ($scope, $modalInstance) {
+			tempModalDefaults.controller = ['$scope', '$modalInstance', function ($scope, $modalInstance) {
 				$scope.modalOptions = tempModalOptions;
 				$scope.modalOptions.ok = function (result) {
 					$modalInstance.close(result);
@@ -205,11 +260,19 @@ angular.module('bellows.services', ['jsonRpc'])
 				$scope.modalOptions.close = function (result) {
 					$modalInstance.dismiss('cancel');
 				};
-			};
+			}];
 		}
 		
 		return $modal.open(tempModalDefaults).result;
 	};
 	
 }])
+.service('utilService', function() {
+	this.uuid = function() {
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+		    return v.toString(16);
+		});
+	};
+})
 ;

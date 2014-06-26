@@ -7,7 +7,8 @@ class AllSharedTests extends TestSuite {
 	
     function __construct() {
         parent::__construct();
- 		$this->addFile(TestPath . 'shared/dto/AllTests.php');
+ 		$this->addFile(TestPath . 'shared/commands/AllTests.php');
+        $this->addFile(TestPath . 'shared/dto/AllTests.php');
     }
 
 }

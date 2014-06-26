@@ -1,44 +1,38 @@
 <?php 
 
-use models\rights\Realm;
-use models\rights\Roles;
+use models\ProjectModel;
+
+use models\shared\rights\SiteRoles;
+use models\commands\SessionCommands;
 
 require_once 'secure_base.php';
 
 class App extends Secure_base {
 	
-	public function view($app = 'main', $project = 'default') {
-		$appFolder = "angular-app/" . $this->site . "/$app";
+	public function view($app = 'main', $projectId = '') {
+		$appFolder = "angular-app/" . $this->website->base . "/$app";
 		if (!file_exists($appFolder)) {
 			$appFolder = "angular-app/bellows/apps/$app";
 			if (!file_exists($appFolder)) {
-				show_404($this->site); // this terminates PHP
+				show_404($this->website->base); // this terminates PHP
 			}
 		}
+		if ($projectId == 'favicon.ico') { $projectId = ''; }
 	
 		$data = array();
 		$data['appName'] = $app;
-		$data['site'] = $this->site;
+		$data['baseSite'] = $this->website->base; // used to add the right minified JS file
 		$data['appFolder'] = $appFolder;
 		
-		// User Id
-		$sessionData = array();
-		$sessionData['userId'] = (string)$this->session->userdata('user_id');
-		
-		// Rights
-		$role = $this->_user->role;
-		if (empty($role)) {
-			$role = Roles::USER;
+		// update the projectId in the session if it is not empty
+		if ($projectId) {
+			$this->session->set_userdata('projectId', $projectId);
+		} else {
+			$projectId = (string)$this->session->userdata('projectId');
 		}
-		$sessionData['userSiteRights'] = Roles::getRightsArray(Realm::SITE, $role);
-		$sessionData['site'] = $this->site;
 		
-		// File Size
-		$postMax = self::fromValueWithSuffix(ini_get("post_max_size"));
-		$uploadMax = self::fromValueWithSuffix(ini_get("upload_max_filesize"));
-		$fileSizeMax = min(array($postMax, $uploadMax));
-		$sessionData['fileSizeMax'] = $fileSizeMax;
-		
+		// Other session data
+		$sessionData = SessionCommands::getSessionData($projectId, (string)$this->session->userdata('user_id'), $this->website);
 		$jsonSessionData = json_encode($sessionData);
 		$data['jsonSession'] = $jsonSessionData;
 
@@ -58,7 +52,7 @@ class App extends Secure_base {
 		self::addCssFiles("angular-app/bellows/css", $data['cssFiles']);
 		self::addCssFiles($appFolder, $data['cssFiles']);
 
-		$data['title'] = $this->site;
+		$data['title'] = $this->website->name;
 		
 		$this->renderPage("angular-app", $data);
 	}

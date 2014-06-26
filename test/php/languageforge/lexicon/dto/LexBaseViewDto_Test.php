@@ -1,7 +1,9 @@
 <?php
 
+use models\shared\rights\SiteRoles;
+
 use models\languageforge\lexicon\dto\LexBaseViewDto;
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
 use models\ProjectProperties;
 use models\UserProfileModel;
 
@@ -17,12 +19,12 @@ class TestLexBaseViewDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserProfileModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$user->addProject($projectId);
 		$user->interfaceLanguageCode = 'th';
 		$user->write();
@@ -37,7 +39,7 @@ class TestLexBaseViewDto extends UnitTestCase {
 		$this->assertEqual($dto['config']['entry']['fields']['lexeme']['label'], 'Word');
 		$this->assertEqual($dto['config']['entry']['fields']['lexeme']['label'], 'Word');
 		$this->assertEqual($dto['config']['entry']['fields']['senses']['fields']['partOfSpeech']['label'], 'Part of Speech');
-		$this->assertEqual($dto['project']['projectname'], SF_TESTPROJECT);
+		$this->assertEqual($dto['project']['projectName'], SF_TESTPROJECT);
 		$this->assertEqual($dto['interfaceConfig']['userLanguageCode'], 'th');
 		$this->assertEqual($dto['interfaceConfig']['selectLanguages']['options']['en'], 'English');
 		$this->assertTrue(count($dto['rights']) > 0, "No rights in dto");

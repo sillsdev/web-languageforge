@@ -5,12 +5,16 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     // list of files / patterns to load in the browser
     files: [
-      'src/js/lib/angular_stable_1.2.0-rc.2/angular.js',
+      'src/js/lib/angular_stable_1.2.15/angular.js',
+      'src/js/lib/angular_stable_1.2.15/angular-route.js',
+      'src/js/lib/angular_stable_1.2.15/angular-animate.js',
+      'src/js/lib/angular_stable_1.2.15/angular-sanitize.js',
       'test/lib/angular/angular-mocks.js',
+      'src/js/lib/angular-file-upload.js',
+      'src/js/lib/jquery-1.8.3.min.js',
       'src/js/lib/*ui-bootstrap*.js',
       'src/angular-app/**/*.js',
-      'test/app/admin/unit/controllersSpec.js',
-      'test/spec/**/*.spec.js'
+      'test/app/**/unit/*.spec.js'
     ],
 
     // list of files to exclude

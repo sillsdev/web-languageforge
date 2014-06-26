@@ -3,7 +3,7 @@
 
 <div id="infoMessage"><?php echo $message;?></div>
 
-<?php echo form_open("auth/change_password");?>
+<form method="post" accept-charset="utf-8">
 
       <p>
             <?php echo lang('change_password_old_password_label', 'old_password');?> <br />

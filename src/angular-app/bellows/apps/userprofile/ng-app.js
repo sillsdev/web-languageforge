@@ -1,20 +1,19 @@
 'use strict';
 
-function getAvatarUrl(color, shape) {
-	var imgPath = "/images/shared/avatar";
-	if (!color || !shape) {
-		return imgPath + "/anonymoose.png";
-	}
-	return imgPath + "/" + color + "-" + shape + "-128x128.png";
-}
-
 
 angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice'])
-.controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
-		function userProfileCtrl($scope, userService, ss, notice) {
-	$scope.user = {};
-	$scope.user.avatar_color = '';
-	$scope.user.avatar_shape = '';
+.controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', '$window', function userProfileCtrl($scope, userService, ss, notice, $window) {
+
+	function getAvatarUrl(color, shape) {
+		var imgPath = "/images/shared/avatar";
+		if (!color || !shape) {
+			return imgPath + "/anonymoose.png";
+		}
+		return imgPath + "/" + color + "-" + shape + "-128x128.png";
+	}
+	var initColor = ''; var initShape = '';
+
+	$scope.user = {avatar_color: '', avatar_shape: ''};
 	$scope.user.avatar_ref = getAvatarUrl('', '');
 	
 	$scope.$watch('user.avatar_color', function() {
@@ -28,6 +27,8 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'p
 		userService.readProfile(function(result) {
 			if (result.ok) {
 				$scope.user = result.data.userProfile;
+				initColor = $scope.user.avatar_color;
+				initShape = $scope.user.avatar_shape;
 				$scope.projectsSettings = result.data.projectsSettings;
 				
 				// populate the project pickList default values with the userProfile picked values 
@@ -62,6 +63,10 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'p
 		userService.updateProfile($scope.user, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "Profile updated successfully");
+				if ($scope.user.avatar_color != initColor || $scope.user.avatar_shape != initShape) {
+					notice.push(notice.SUCCESS, "Now refreshing avatar image");
+					$window.location.href = '/app/userprofile';
+				}
 			}
 		});
 	};
@@ -108,138 +113,5 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'p
 		{value:'tortoise', label:'Tortoise'},
 	];
 	
-	$scope.dropdown.bibleVersions = [
-		{label:'Amplified'},
-		{label:'CEV'},
-		{label:'ESV'},
-		{label:'KJV'},
-		{label:'NIV'},
-		{label:'Message'},
-		{label:'Other'}
-	];
-	
-	$scope.dropdown.religiousAffiliations = [
-		{label:'Protestant'},
-		{label:'Catholic'},
-		{label:'Other'}
-	];
-	
-	$scope.dropdown.studyGroups = [
-		{label:'Study Group #1'},
-		{label:'Study Group #2'},
-		{label:'Study Group #3'}
-	];
-	
-	$scope.dropdown.feedbackGroups = [
-		{label:'Feedback group #1'},
-		{label:'Feedback group #2'},
-		{label:'Feedback group #3'}
-	];
-	
-	$scope.dropdown.jamaicanTowns = [
-		{label:"Above Rocks"},
-		{label:"Albert Town"},
-		{label:"Alexandria"},
-		{label:"Alligator Pond"},
-		{label:"Anchovy"},
-		{label:"Annotto Bay"},
-		{label:"Balaclava"},
-		{label:"Bamboo"},
-		{label:"Bath"},
-		{label:"Bethel Town"},
-		{label:"Black River"},
-		{label:"Bluefields"},
-		{label:"Bog Walk"},
-		{label:"Brown's Town"},
-		{label:"Buff Bay"},
-		{label:"Bull Savanna"},
-		{label:"Cambridge"},
-		{label:"Cascade"},
-		{label:"Cave Valley"},
-		{label:"Chapelton"},
-		{label:"Sanguinetti"},
-		{label:"Christiana"},
-		{label:"Claremont"},
-		{label:"Clark's Town"},
-		{label:"Coleyville"},
-		{label:"Constant Spring"},
-		{label:"Croft's Hill"},
-		{label:"Dalvey"},
-		{label:"Darliston"},
-		{label:"Discovery Bay (Dry Harbour)"},
-		{label:"Duncans"},
-		{label:"Easington"},
-		{label:"Ewarton"},
-		{label:"Falmouth"},
-		{label:"Frankfield"},
-		{label:"Frome"},
-		{label:"Gayle"},
-		{label:"Seaford Town"},
-		{label:"Golden Grove"},
-		{label:"Gordon Town"},
-		{label:"Grange Hill"},
-		{label:"Green Island"},
-		{label:"Guy's Hill"},
-		{label:"Hayes"},
-		{label:"Highgate"},
-		{label:"Hope Bay"},
-		{label:"Hopewell"},
-		{label:"Islington"},
-		{label:"Kellits"},
-		{label:"Kingston"},
-		{label:"Lacovia"},
-		{label:"Linstead"},
-		{label:"Lionel Town"},
-		{label:"Little London"},
-		{label:"Lluidas Vale"},
-		{label:"Lucea"},
-		{label:"Lucky Hill"},
-		{label:"Maggotty"},
-		{label:"Malvern"},
-		{label:"Manchioneal"},
-		{label:"Mandeville"},
-		{label:"Maroon Town"},
-		{label:"Mavis Bank"},
-		{label:"May Pen"},
-		{label:"Moneague"},
-		{label:"Montego Bay"},
-		{label:"Moore Town"},
-		{label:"Morant Bay"},
-		{label:"Nain"},
-		{label:"Negril"},
-		{label:"Ocho Rios"},
-		{label:"Old Harbour"},
-		{label:"Old Harbour Bay"},
-		{label:"Oracabessa"},
-		{label:"Osbourne Store"},
-		{label:"Petersfield"},
-		{label:"Point Hill"},
-		{label:"Port Antonio"},
-		{label:"Port Maria"},
-		{label:"Port Royal"},
-		{label:"Portmore"},
-		{label:"Porus"},
-		{label:"Race Course"},
-		{label:"Richmond"},
-		{label:"Rio Bueno"},
-		{label:"Riversdale"},
-		{label:"Rocky Point"},
-		{label:"Runaway Bay"},
-		{label:"Saint Ann's Bay"},
-		{label:"Sandy Bay"},
-		{label:"Santa Cruz"},
-		{label:"Savanna-la-Mar"},
-		{label:"Seaforth"},
-		{label:"Siloah"},
-		{label:"Southfield"},
-		{label:"Spanish Town"},
-		{label:"Stony Hill"},
-		{label:"Trinity Ville"},
-		{label:"Ulster Spring"},
-		{label:"Wakefield"},
-		{label:"White House"},
-		{label:"Williamsfield"},
-		{label:"Yallahs"}
-	];
 }])
 ;

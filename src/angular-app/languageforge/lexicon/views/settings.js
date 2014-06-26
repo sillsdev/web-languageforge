@@ -16,7 +16,7 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
 				$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
 				$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
 				$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
-				$scope.rights.canEditCommunicationSettings = ss.hasRight(ss.realm.SITE(), ss.domain.PROJECTS, ss.operation.EDIT);
+				$scope.rights.canEditCommunicationSettings = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
 			}
 		});
 	};
@@ -26,7 +26,7 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
 	$scope.updateProject = function() {
 		lexProjectService.updateProject($scope.project, function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, $filter('translate')("{projectName} settings updated successfully", {projectName: $scope.project.projectname}));
+				notice.push(notice.SUCCESS, $filter('translate')("{projectName} settings updated successfully", {projectName: $scope.project.projectName}));
 			}
 		});
 	};
@@ -37,7 +37,7 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
 	};
 		
 	$scope.readCommunicationSettings = function() {
-		lexProjectService.readSettings($scope.project.id, function(result) {
+		lexProjectService.readSettings(function(result) {
 			if (result.ok) {
 				$scope.settings.sms = result.data.sms;
 				$scope.settings.email = result.data.email;
@@ -46,9 +46,9 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
 	};
 
 	$scope.updateCommunicationSettings = function() {
-		lexProjectService.updateSettings($scope.project.id, $scope.settings.sms, $scope.settings.email, function(result) {
+		lexProjectService.updateSettings($scope.settings.sms, $scope.settings.email, function(result) {
 			if (result.ok) {
-				notice.push(notice.SUCCESS, $filter('translate')("{projectName} SMS settings updated successfully", {projectName: $scope.project.projectname}));
+				notice.push(notice.SUCCESS, $filter('translate')("{projectName} SMS settings updated successfully", {projectName: $scope.project.projectName}));
 			}
 		});
 	};

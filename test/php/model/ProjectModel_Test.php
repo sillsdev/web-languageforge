@@ -1,7 +1,13 @@
 <?php
-use models\rights\Operation;
-use models\rights\Domain;
-use models\rights\Roles;
+use models\scriptureforge\SfchecksProjectModel;
+
+use models\shared\rights\ProjectRoleModel;
+
+use models\shared\rights\SiteRoles;
+
+use models\shared\rights\Operation;
+use models\shared\rights\Domain;
+use models\shared\rights\ProjectRoles;
 use models\mapper\Id;
 use models\mapper\MongoStore;
 use models\UserModel;
@@ -27,7 +33,7 @@ class TestProjectModel extends UnitTestCase {
 	function testWrite_ReadBackSame() {
 		$model = new ProjectModel();
 		$model->language = "SomeLanguage";
-		$model->projectname = "SomeProject";
+		$model->projectName = "SomeProject";
 		//$model->users->refs = array('1234');
 		$id = $model->write();
 		$this->assertNotNull($id);
@@ -36,7 +42,7 @@ class TestProjectModel extends UnitTestCase {
 		$otherModel = new ProjectModel($id);
 		$this->assertEqual($id, $otherModel->id->asString());
 		$this->assertEqual('SomeLanguage', $otherModel->language);
-		$this->assertEqual('SomeProject', $otherModel->projectname);
+		$this->assertEqual('SomeProject', $otherModel->projectName);
 		//$this->assertEqual(array('1234'), $otherModel->users->refs);
 		
 		$this->_someProjectId = $id;
@@ -61,7 +67,7 @@ class TestProjectModel extends UnitTestCase {
 		$projectId = $projectModel->id->asString();
 		
 		// create the reference
-		$projectModel->addUser($userId, Roles::USER);
+		$projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$userModel->addProject($projectId);
 		$projectModel->write();
 		$userModel->write();
@@ -84,7 +90,7 @@ class TestProjectModel extends UnitTestCase {
 		$projectId = $projectModel->id->asString();
 
 		// create the reference
-		$projectModel->addUser($userId, Roles::USER);
+		$projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$userModel->addProject($projectId);
 		$projectModel->write();
 		$userModel->write();
@@ -117,9 +123,9 @@ class TestProjectModel extends UnitTestCase {
 		$projectModel = $e->createProject('new project');
 		$projectId = $projectModel->id;
 		
-		$projectModel->addUser($userId, Roles::USER);
+		$projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$this->assertEqual(1, count($projectModel->users));
-		$projectModel->addUser($userId, Roles::USER);
+		$projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$this->assertEqual(1, count($projectModel->users));
 	}
 	
@@ -138,11 +144,11 @@ class TestProjectModel extends UnitTestCase {
 		$this->assertEqual(array(), $result->entries);
 				
 		// Add our two users
-		$project->addUser($userId1, Roles::USER);
+		$project->addUser($userId1, ProjectRoles::CONTRIBUTOR);
 		$um1->addProject($projectId);
 		$um1->write();
 		
-		$project->addUser($userId2, Roles::USER);
+		$project->addUser($userId2, ProjectRoles::CONTRIBUTOR);
 		$um2->addProject($projectId);
 		$um2->write();
 		$project->write();
@@ -157,14 +163,14 @@ class TestProjectModel extends UnitTestCase {
 		          'name' => 'User One',
 		          'username' => 'user1',
 		          'id' => $userId1,
-				  'role' => Roles::USER
+				  'role' => ProjectRoles::CONTRIBUTOR
 				), 
 				array(
 		          'email' => 'user2@example.com',
 		          'name' => 'User Two',
 		          'username' => 'user2',
 		          'id' => $userId2,
-				  'role' => Roles::USER
+				  'role' => ProjectRoles::CONTRIBUTOR
 				)
 			), $result->entries
 		);
@@ -184,55 +190,35 @@ class TestProjectModel extends UnitTestCase {
 	
 	function testDatabaseName_Ok() {
 		$project = new ProjectModel();
-		$project->projectname = 'Some Project';
+		$project->projectName = 'Some Project';
 		$result = $project->databaseName();
 		$this->assertEqual('sf_some_project', $result);
 	}
 	
 	function testHasRight_Ok() {
 		$userId = MongoTestEnvironment::mockId();
-		$project = new ProjectModel();
-		$project->addUser($userId, Roles::PROJECT_ADMIN);
+		$project = new SfchecksProjectModel();
+		$project->addUser($userId, ProjectRoles::MANAGER);
 		$result = $project->hasRight($userId, Domain::QUESTIONS + Operation::CREATE);
 		$this->assertTrue($result);
 	}
 	
 	function testGetRightsArray_Ok() {
 		$userId = MongoTestEnvironment::mockId();
-		$project = new ProjectModel();
-		$project->addUser($userId, Roles::PROJECT_ADMIN);
+		$project = new SfchecksProjectModel();
+		$project->addUser($userId, ProjectRoles::MANAGER);
 		$result = $project->getRightsArray($userId);
 		$this->assertIsA($result, 'array');
 		$this->assertTrue(in_array(Domain::QUESTIONS + Operation::CREATE, $result));
 	}
 
-	function testCreateFromDomain_3Projects_MatchingProjectCodeSelected() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-	
-		$project1 = $e->createProject('Project1Name');
-		$project1->projectCode = ProjectModel::domainToProjectCode('dev.scriptureforge.org');
-		$project1->write();
-		$project2 = $e->createProject('Project2Name');
-		$project2->projectCode = ProjectModel::domainToProjectCode('jamaicanpsalms.scriptureforge.org');
-		$project2->write();
-		$project3 = $e->createProject('Project3Name');
-		$project3->projectCode = ProjectModel::domainToProjectCode('scriptureforge.local');
-		$project3->write();
-		$projectDomain = 'jamaicanpsalms.local';
-	
-		$project = ProjectModel::createFromDomain($projectDomain);
-	
-		$this->assertEqual($project->projectCode, ProjectModel::domainToProjectCode($projectDomain));
-	}
-	
 	function testRemoveProject_ProjectHasMembers_UserRefsToProjectAreRemoved() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		$userId = $e->createUser('user1', 'user1', 'user1');
 		$user = new UserModel($userId);
 		$project = $e->createProject('testProject');
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$projectId = $project->write();
 		$user->addProject($project->id->asString());
 		$user->write();

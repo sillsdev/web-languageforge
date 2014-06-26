@@ -5,7 +5,8 @@ use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\commands\ProjectCommands;
-use models\rights\Roles;
+use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
 use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
@@ -21,12 +22,12 @@ class TestLexProjectCommands extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT);
 		$projectId = $project->id->asString();
 		
-		$project->addUser($userId, Roles::USER);
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$user->addProject($projectId);
 		$user->write();
 		$project->write();
@@ -52,42 +53,6 @@ class TestLexProjectCommands extends UnitTestCase {
 		$this->assertFalse($project2->config->tasks['addMeanings']->visible);
 		$this->assertEqual($project2->config->entry->fields['lexeme']->inputSystems[0], 'my');
 		$this->assertEqual($project2->config->entry->fields['lexeme']->inputSystems[1], 'th');
-	}
-	
-	function testProjectCRUD_CRUDOK() {
-		$e = new LexiconMongoTestEnvironment();
-		$e->clean();
-			
-		// Create
-		$param = array(
-				'id' => '',
-				'projectname' => SF_TESTPROJECT,
-				'projectCode' => 'SomeCode',
-				'featured' => true
-		);
-		$userId = $e->createUser('userName', 'User Name', 'user@example.com', Roles::SYSTEM_ADMIN);
-		$id = LexProjectCommands::updateProject($param, $userId);
-		$this->assertNotNull($id);
-		$this->assertEqual(24, strlen($id));
-	
-		// Read
-		$result = LexProjectCommands::readProject($id);
-		$this->assertNotNull($result['id']);
-		$this->assertEqual(SF_TESTPROJECT, $result['projectname']);
-		$this->assertEqual('SomeCode', $result['projectCode']);
-		$this->assertTrue($result['featured']);
-		$this->assertTrue(isset($result['inputSystems']));
-		$this->assertTrue(isset($result['config']));
-		
-		// Update
-		$result['projectCode'] = 'AnotherCode';
-		$id = LexProjectCommands::updateProject($e->fixJson($result), $userId);
-		$this->assertNotNull($id);
-		$this->assertEqual($result['id'], $id);
-	
-		// Delete
-		$result = ProjectCommands::deleteProjects(array($id));
-		$this->assertTrue($result);
 	}
 	
 	function testImportLift_EachDuplicateSetting_LiftFileAddedOk() {

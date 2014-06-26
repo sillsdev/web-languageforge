@@ -2,6 +2,8 @@
 
 namespace models\commands;
 
+use models\shared\rights\SiteRoles;
+
 use libraries\scriptureforge\sfchecks\Communicate;
 use libraries\scriptureforge\sfchecks\Email;
 use libraries\scriptureforge\sfchecks\IDelivery;
@@ -13,7 +15,6 @@ use libraries\shared\Website;
 use models\commands\ActivityCommands;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
-use models\commands\QuestionTemplateCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
 use models\scriptureforge\dto\ProjectSettingsDto;
@@ -26,10 +27,10 @@ use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
 use models\mapper\MongoStore;
-use models\rights\Domain;
-use models\rights\Operation;
-use models\rights\Realm;
-use models\rights\Roles;
+use models\shared\rights\Domain;
+use models\shared\rights\Operation;
+
+use models\shared\rights\ProjectRoles;
 use models\AnswerModel;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
@@ -106,6 +107,19 @@ class UserCommands {
 	public static function listUsers() {
 		$list = new \models\UserListModel();
 		$list->read();
+		
+		// Default sort on username (currently needed to sort on Site Admin because MongoDB doesn't do case insensitive sorts)
+		usort($list->entries, function ($a, $b) {
+			$sortOn = 'username';
+			if (array_key_exists($sortOn, $a) &&
+			array_key_exists($sortOn, $b)
+			) {
+				return (strtolower($a[$sortOn]) > strtolower($b[$sortOn])) ? 1 : -1;
+			} else {
+				return 0;
+			}
+		});
+		
 		return $list;
 	}
 	
@@ -114,8 +128,8 @@ class UserCommands {
 	 * @param string $term
 	 * @return \models\UserTypeaheadModel
 	 */
-	public static function userTypeaheadList($term) {
-		$list = new \models\UserTypeaheadModel($term);
+	public static function userTypeaheadList($term, $projectIdToExclude = '') {
+		$list = new \models\UserTypeaheadModel($term, $projectIdToExclude);
 		$list->read();
 		return $list;
 	}
@@ -127,7 +141,7 @@ class UserCommands {
 	 * @throws \Exception
 	 */
 	public static function changePassword($userId, $newPassword, $currUserId) {
-		if ($userId != $currUserId && !RightsHelper::userHasSiteRight($currUserId, Domain::USERS + Operation::EDIT)) {
+		if ($userId != $currUserId && !RightsHelper::hasSiteRight($currUserId, Domain::USERS + Operation::EDIT)) {
 			throw new UserUnauthorizedException();
 		}
 		$user = new \models\PasswordModel($userId);
@@ -156,13 +170,14 @@ class UserCommands {
 	 * @param string $userName
 	 * @param string $projectId
 	 * @param string $currentUserId
+	 * @param Website $website
 	 * @return CreateSimpleDto
 	 */
-	public static function createSimple($userName, $projectId = '', $currentUserId = '') {
+	public static function createSimple($userName, $projectId, $currentUserId, $website) {
 		$user = new UserModel();
 		$user->name = $userName;
 		$user->username = strtolower(str_replace(' ', '.', $user->name));
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 		$user->active = true;
 		$userId = $user->write();
 		
@@ -176,44 +191,36 @@ class UserCommands {
 		$userWithPassword->setPassword($password);
 		$userWithPassword->write();
 		
-		if ($projectId) {
-			ProjectCommands::updateUserRole($projectId, array('id' => $userId));
-			
-			if ($currentUserId) {
-				$toUser = new UserModel($currentUserId);
-				$project = new ProjectModel($projectId);
-				Communicate::sendNewUserInProject($toUser, $user->username, $password, $project);
-			}
-		}
-		
+		ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::CONTRIBUTOR);
+		$toUser = new UserModel($currentUserId);
+		$project = new ProjectModel($projectId);
+		Communicate::sendNewUserInProject($toUser, $user->username, $password, $website, $project);
+
 		$dto = new CreateSimpleDto($userId, $password);
 		return $dto->encode();
 	}
 	
 	/**
-	 * Register a new user, add to project if in context
+	 * Register a new user
 	 * @param array $params
 	 * @param string $captcha_info
-	 * @param string $httpHost
+	 * @param Website $website
 	 * @param IDelivery $delivery
 	 * @throws \Exception
 	 * @return string $userId
 	 */
-	public static function register($params, $captcha_info, $httpHost, IDelivery $delivery = null) {
+	public static function register($params, $captcha_info, $website, IDelivery $delivery = null) {
 		if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
 			return false;  // captcha does not match
 		}
 		
-		$projectCode = ProjectModel::domainToProjectCode($httpHost);
-		$site = Website::getSiteName($httpHost);
-
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
 		if (UserModel::userNameExists($user->username)) {
 			return false;
 		}
 		$user->active = false;
-		$user->role = Roles::USER;
+		$user->role = SiteRoles::USER;
 		if (!$user->emailPending) {
 			if (!$user->email) {
 				throw new \Exception("Error: no email set for user signup.");
@@ -228,21 +235,16 @@ class UserCommands {
 		$userPassword->setPassword($params['password']);
 		$userPassword->write();
 
-		// if signup from project page then add user to project
-		$project = null;
-		if ($projectCode) {
-			$project = ProjectModel::createFromDomain($projectCode);
-			if (!$project) {
-				error_log("Error: Could not create project from project code '$projectCode'");
-			} else {
-				$project->addUser($user->id->asString(), $user->role);
-				$user->addProject($project->id->asString());
-				$project->write();
-				$user->write();
-			}
+		// if website has a default project then add them to that project
+		$project = ProjectModel::getDefaultProject($website);
+		if ($project) {
+			$project->addUser($user->id->asString(), ProjectRoles::CONTRIBUTOR);
+			$user->addProject($project->id->asString());
+			$project->write();
+			$user->write();
 		}
 
-		Communicate::sendSignup($user, $site, $project, $delivery);
+		Communicate::sendSignup($user, $website, $delivery);
 		
 		return $userId;
 	}
@@ -262,38 +264,23 @@ class UserCommands {
 	
     /**
     * Sends an email to invite emailee to join the project
-	* @param UserModel $inviterUser
-    * @param string $toEmail
     * @param string $projectId
-	* @param string $hostName
+	* @param string $inviterUserId
+    * @param string $toEmail
+    * @param Website $website
     * @param IDelivery $delivery
-    * @return string $userId
     */
-	public static function sendInvite($inviterUserId, $toEmail, $projectId, $hostName, IDelivery $delivery = null) {
+	public static function sendInvite($projectId, $inviterUserId, $website, $toEmail, IDelivery $delivery = null) {
 		$newUser = new UserModel();
 		$inviterUser = new UserModel($inviterUserId);
-		$project = null;
-		if ($projectId) {
-			$project = new ProjectModel($projectId);
-		} else {
-			$project = ProjectModel::createFromDomain($hostName);
-		}
-		if ($project) {
-			$newUser->emailPending = $toEmail;
-			$newUser->addProject($project->id->asString());
-			$userId = $newUser->write();
-			$project->addUser($userId, Roles::USER);
-			$project->write();
-			Communicate::sendInvite($inviterUser, $newUser, $project, $delivery);
-			return $userId;
-		} else {
-				$projectCode = ProjectModel::domainToProjectCode($hostName);
-			if ($projectCode == '') {
-				throw new \Exception("Sending an invitation without a project context is not supported.");
-			} else {
-				throw new \Exception("Cannot send invitation for unknown project '$projectCode'");
-			}
-		}
+		$project = new ProjectModel($projectId);
+		$newUser->emailPending = $toEmail;
+		$newUser->addProject($project->id->asString());
+		$userId = $newUser->write();
+		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
+		$project->write();
+		Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
+		return $userId;
     }
     
     /**
@@ -325,6 +312,7 @@ class UserCommands {
 				JsonDecoder::decode($user, $params);
 				$user->setPassword($params['password']);
 				$user->validate();
+				$user->role = SiteRoles::USER;
 				$user->active = true;
 				return $user->write();
 			} else {

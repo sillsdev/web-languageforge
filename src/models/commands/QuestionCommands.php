@@ -2,15 +2,17 @@
 
 namespace models\commands;
 
-use models\UserVoteModel;
 use models\scriptureforge\dto\QuestionCommentDto;
-use models\CommentModel;
-use models\AnswerModel;
-use models\ProjectModel;
-use models\QuestionModel;
+use models\commands\ActivityCommands;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
-use models\commands\ActivityCommands;
+use models\AnswerModel;
+use models\CommentModel;
+use models\ProjectModel;
+use models\QuestionModel;
+use models\UserVoteModel;
+use libraries\shared\palaso\CodeGuard;
+use models\mapper\ArrayOf;
 
 class QuestionCommands
 {
@@ -34,6 +36,40 @@ class QuestionCommands
 		$projectModel = new \models\ProjectModel($projectId);
 		$questionModel = new \models\QuestionModel($projectModel, $questionId);
 		return JsonEncoder::encode($questionModel);
+	}
+	
+	/**
+	 * @param string $projectId
+	 * @param array $questionIds
+	 * @return int Total number of questions archived.
+	 */
+	public static function archiveQuestions($projectId, $questionIds) {
+		$project = new ProjectModel($projectId);
+		$count = 0;
+		foreach ($questionIds as $questionId) {
+			$question = new QuestionModel($project, $questionId);
+			$question->isArchived = true;
+			$question->write();
+			$count++;
+		}
+		return $count;
+	}
+	
+	/**
+	 * @param string $projectId
+	 * @param array $questionIds
+	 * @return int Total number of questions published.
+	 */
+	public static function publishQuestions($projectId, $questionIds) {
+		$project = new ProjectModel($projectId);
+		$count = 0;
+		foreach ($questionIds as $questionId) {
+			$question = new QuestionModel($project, $questionId);
+			$question->isArchived = false;
+			$question->write();
+			$count++;
+		}
+		return $count;
 	}
 	
 	/**
@@ -65,40 +101,94 @@ class QuestionCommands
 	 * Creates or updates an answer for the given $questionId.
 	 * @param string $projectId
 	 * @param string $questionId
-	 * @param array $answer	The $answer will be decoded into an AnswerModel
+	 * @param array $answerJson	is decoded into an AnswerModel
 	 * @param string $userId
 	 * @return array Returns an encoded QuestionDTO fragment for the Answer
 	 * @see AnswerModel
 	 */
-	public static function updateAnswer($projectId, $questionId, $answer, $userId) {
-		// TODO: validate $userId as authorized to perform this action
-		$projectModel = new ProjectModel($projectId);
-		$questionModel = new QuestionModel($projectModel, $questionId);
-		$authorId = $userId;
-		if ($answer['id'] != '') {
+	public static function updateAnswer($projectId, $questionId, $answerJson, $userId) {
+		CodeGuard::assertKeyExistsOrThrow('id', $answerJson, "answerJson");
+		CodeGuard::checkNotFalseAndThrow($answerJson['content'], "answerJson['content']");
+		$project = new ProjectModel($projectId);
+		$question = new QuestionModel($project, $questionId);
+		
+		// whitelist updatable items
+		if ($answerJson['id'] != '') {
 			// update existing answer
-			$oldAnswer = $questionModel->readAnswer($answer['id']);
-			$authorId = $oldAnswer->userRef->asString();
-		}
-		$answerModel = new AnswerModel();
-		JsonDecoder::decode($answerModel, $answer);
-		$answerModel->userRef->id = $authorId;
-		$answerId = $questionModel->writeAnswer($answerModel);
-		// Re-read question model to pick up new answer
-		$questionModel->read($questionId);
-		$newAnswer = $questionModel->readAnswer($answerId);
-		if ($answer['id'] != '') {
-			// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
-			ActivityCommands::updateAnswer($projectModel, $questionId, $newAnswer);
+			$answer = $question->readAnswer($answerJson['id']);
+			$answer->content = $answerJson['content'];
 		} else {
-			ActivityCommands::addAnswer($projectModel, $questionId, $newAnswer);
+			// create new answer
+			$answer = new AnswerModel();
+			JsonDecoder::decode($answer, array('id' => '', 'content' => $answerJson['content']));
+			$answer->userRef->id = $userId;
+		}
+		if (array_key_exists('textHighlight', $answerJson)) {
+			$answer->textHighlight = $answerJson['textHighlight'];
+		}
+		$answerId = $question->writeAnswer($answer);
+		
+		// Re-read question model to pick up new answer
+		$question->read($questionId);
+		$newAnswer = $question->readAnswer($answerId);
+		if ($answerJson['id'] != '') {
+			// TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
+			ActivityCommands::updateAnswer($project, $questionId, $newAnswer);
+		} else {
+			ActivityCommands::addAnswer($project, $questionId, $newAnswer);
 		}
 		return self::encodeAnswer($newAnswer);
 	}
 	
+	/**
+	 * 
+	 * @param string $projectId
+	 * @param string $questionId
+	 * @param string $answerId
+	 * @return object $result
+	 */
 	public static function removeAnswer($projectId, $questionId, $answerId) {
 		$projectModel = new \models\ProjectModel($projectId);
 		return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId);
+	}
+	
+	/**
+	 * Updates an answer's isToBeExported flag.
+	 * @param string $projectId
+	 * @param string $questionId
+	 * @param string $answerId
+	 * @param Boolean $isToBeExported
+	 * @return array Returns an encoded QuestionDTO fragment for the Answer
+	 */
+	public static function updateAnswerExportFlag($projectId, $questionId, $answerId, $isToBeExported) {
+		CodeGuard::checkNotFalseAndThrow($answerId, 'answerId');
+		$project = new ProjectModel($projectId);
+		$question = new QuestionModel($project, $questionId);
+		$answer = $question->readAnswer($answerId);
+		$answer->isToBeExported = $isToBeExported;
+		$answerId = $question->writeAnswer($answer);
+		return self::encodeAnswer($answer);
+	}
+	
+	/**
+	 * Updates an answer's tags.
+	 * @param string $projectId
+	 * @param string $questionId
+	 * @param string $answerId
+	 * @param array $tagsArray
+	 * @return array Returns an encoded QuestionDTO fragment for the Answer
+	 */
+	public static function updateAnswerTags($projectId, $questionId, $answerId, $tagsArray) {
+		CodeGuard::checkNotFalseAndThrow($answerId, 'answerId');
+		$project = new ProjectModel($projectId);
+		$question = new QuestionModel($project, $questionId);
+		$answer = $question->readAnswer($answerId);
+		$answer->tags = new ArrayOf();
+		foreach ($tagsArray as $tag) {
+			$answer->tags[] = $tag;
+		}
+		$answerId = $question->writeAnswer($answer);
+		return self::encodeAnswer($answer);
 	}
 	
 	/**
@@ -111,7 +201,6 @@ class QuestionCommands
 	 * @return array Dto
 	 */
 	public static function updateComment($projectId, $questionId, $answerId, $comment, $userId) {
-		// TODO: validate $userId as authorized to perform this action
 		$projectModel = new ProjectModel($projectId);
 		$questionModel = new QuestionModel($projectModel, $questionId);
 		$authorId = $userId;

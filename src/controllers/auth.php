@@ -1,4 +1,8 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php use models\ProjectModel;
+
+use libraries\shared\Website;
+
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once 'base.php';
 
@@ -30,7 +34,7 @@ class Auth extends Base {
 		if (!$this->ion_auth->logged_in())
 		{
 			//redirect them to the login page
-			redirect('auth/login', 'refresh');
+			redirect('/auth/login', 'refresh');
 		}
 		elseif (!$this->ion_auth->is_admin())
 		{
@@ -70,26 +74,28 @@ class Auth extends Base {
 
 			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember))
 			{
-				//if the login is successful
-				//redirect them back to the home page
+				// successful login
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
 				
-				$referer = $this->session->userdata('referer_url');
-				$this->session->unset_userdata('referer_url');
-				if ($referer && strpos($referer, "/app") !== false) {
-					redirect($referer, 'location');
+				// set the project context to user's default project
+				$website = Website::get();
+				$user = new \models\UserModel((string)$this->session->userdata('user_id'));
+				$projectId = $user->getDefaultProjectId($website->domain);
+				
+				if ($projectId) {
+					$this->session->set_userdata('projectId', $projectId);
 				}
-				else
-				{
-					$user = new \models\UserModel((string)$this->session->userdata('user_id'));
-					$projects = $user->listProjects($this->site);
-					if ($projects->count > 0) {
-						$proj = $projects->entries[0];
-						$url = "/app/" . $proj['appName'] . "#/p/" . $proj['id'];
-						redirect($url, 'location');
-					} else {
-						redirect('/', 'location');
-					}
+				
+				$referer = $this->session->userdata('referer_url');
+				if ($referer && strpos($referer, "/app") !== false) {
+					$this->session->unset_userdata('referer_url');
+					redirect($referer, 'location');
+				} else if ($projectId) {
+					$project = ProjectModel::getById($projectId);
+					$url = "/app/" . $project->appName . "/$projectId";
+					redirect($url, 'location');
+				} else {
+					redirect('/', 'location');
 				}
 			}
 			else
@@ -97,17 +103,18 @@ class Auth extends Base {
 				//if the login was un-successful
 				//redirect them back to the login page
 				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				redirect('auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+				redirect('/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
 			}
 		}
 		else
 		{
-			if (!$this->session->userdata('referer_url')) {
+			if (!$this->session->userdata('came_from_logout')) {
 				$referer = $this->input->server('HTTP_REFERER');
 				if (strpos($referer, '/auth') === false) {
 					$this->session->set_userdata('referer_url', $this->input->server('HTTP_REFERER'));
 				}
 			}
+			$this->session->unset_userdata('came_from_logout');
 			
 			//the user is not logging in so display the login page
 			//set the flash data error message if there is one
@@ -139,7 +146,8 @@ class Auth extends Base {
 
 		//redirect them to the login page
 		$this->session->set_flashdata('message', $this->ion_auth->messages());
-		redirect('auth/login', 'refresh');
+		$this->session->set_userdata('came_from_logout', true);
+		redirect('/auth/login', 'location');
 	}
 
 	//change password
@@ -151,7 +159,7 @@ class Auth extends Base {
 
 		if (!$this->ion_auth->logged_in())
 		{
-			redirect('auth/login', 'refresh');
+			redirect('/auth/login', 'refresh');
 		}
 
 		$user = $this->ion_auth->user()->row();
@@ -205,7 +213,7 @@ class Auth extends Base {
 			else
 			{
 				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				redirect('auth/change_password', 'refresh');
+				redirect('/auth/change_password', 'refresh');
 			}
 		}
 	}
@@ -249,12 +257,12 @@ class Auth extends Base {
 			{
 				//if there were no errors
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
-				redirect("auth/login", 'refresh'); //we should display a confirmation page here instead of the login page
+				redirect("/auth/login", 'location'); //we should display a confirmation page here instead of the login page
 			}
 			else
 			{
 				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				redirect("auth/forgot_password", 'refresh');
+				redirect("/auth/forgot_password", 'location');
 			}
 		}
 	}
@@ -336,7 +344,7 @@ class Auth extends Base {
 					else
 					{
 						$this->session->set_flashdata('message', $this->ion_auth->errors());
-						redirect('auth/reset_password/' . $code, 'refresh');
+						redirect('/auth/reset_password/' . $code, 'refresh');
 					}
 				}
 			}
@@ -345,7 +353,7 @@ class Auth extends Base {
 		{
 			//if the code is invalid then send them back to the forgot password page
 			$this->session->set_flashdata('message', $this->ion_auth->errors());
-			redirect("auth/forgot_password", 'refresh');
+			redirect("/auth/forgot_password", 'refresh');
 		}
 	}
 
@@ -366,13 +374,13 @@ class Auth extends Base {
 		{
 			//redirect them to the auth page
 			$this->session->set_flashdata('message', $this->ion_auth->messages());
-			redirect("auth", 'refresh');
+			redirect("/auth", 'refresh');
 		}
 		else
 		{
 			//redirect them to the forgot password page
 			$this->session->set_flashdata('message', $this->ion_auth->errors());
-			redirect("auth/forgot_password", 'refresh');
+			redirect("/auth/forgot_password", 'refresh');
 		}
 	}
 
@@ -412,7 +420,7 @@ class Auth extends Base {
 			}
 
 			//redirect them back to the auth page
-			redirect('auth', 'refresh');
+			redirect('/auth', 'refresh');
 		}
 	}
 
@@ -423,7 +431,7 @@ class Auth extends Base {
 
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
 		{
-			redirect('auth', 'refresh');
+			redirect('/auth', 'refresh');
 		}
 
 		//validate form input
@@ -448,7 +456,7 @@ class Auth extends Base {
 			//check to see if we are creating the user
 			//redirect them back to the admin page
 			$this->session->set_flashdata('message', $this->ion_auth->messages());
-			redirect("auth", 'refresh');
+			redirect("/auth", 'refresh');
 		}
 		else
 		{
@@ -492,7 +500,7 @@ class Auth extends Base {
 
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
 		{
-			redirect('auth', 'refresh');
+			redirect('/auth', 'refresh');
 		}
 
 		$user = $this->ion_auth->user($id)->row();
@@ -544,7 +552,7 @@ class Auth extends Base {
 				//check to see if we are creating the user
 				//redirect them back to the admin page
 				$this->session->set_flashdata('message', "User Saved");
-				redirect("auth", 'refresh');
+				redirect("/auth", 'refresh');
 			}
 		}
 
@@ -586,7 +594,7 @@ class Auth extends Base {
 
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
 		{
-			redirect('auth', 'refresh');
+			redirect('/auth', 'refresh');
 		}
 
 		//validate form input
@@ -601,7 +609,7 @@ class Auth extends Base {
 				// check to see if we are creating the group
 				// redirect them back to the admin page
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
-				redirect("auth", 'refresh');
+				redirect("/auth", 'refresh');
 			}
 		}
 		else
@@ -633,14 +641,14 @@ class Auth extends Base {
 		// bail if no group id given
 		if(!$id || empty($id))
 		{
-			redirect('auth', 'refresh');
+			redirect('/auth', 'refresh');
 		}
 
 		$this->data['title'] = $this->lang->line('edit_group_title');
 
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
 		{
-			redirect('auth', 'refresh');
+			redirect('/auth', 'refresh');
 		}
 
 		$group = $this->ion_auth->group($id)->row();
@@ -663,7 +671,7 @@ class Auth extends Base {
 				{
 					$this->session->set_flashdata('message', $this->ion_auth->errors());
 				}
-				redirect("auth", 'refresh');
+				redirect("/auth", 'refresh');
 			}
 		}
 

@@ -1,27 +1,31 @@
-<div class="content container" ng-cloak ng-controller="ProjectsCtrl">
-	<div id="sfchecks-hmenu" class="hdrnav">
-		<ul class="topNav">
-			<li class="here"><a href="/app/projects">My Projects</a></li>
-			<li><a href="/app/activity">Activity</a></li>
-		</ul>
-	</div>
-	<div style="padding-top:10px">
+<div class="content container" data-ng-cloak data-ng-controller="ProjectsCtrl">
+<div id="sfchecks-hmenu" class="hdrnav">
+	<ul class="topNav">
+		<li class="here"><a href="/app/projects">My Projects</a></li>
+		<li><a href="/app/activity">Activity</a></li>
+	</ul>
+	<br />
+</div>
+<div style="padding-top:10px">
 	<sil-notices></sil-notices>
-	<div>
+	<!-- <div data-wc-overlay="" data-wc-overlay-delay="6000">
+    <img src="/images/shared/loading.gif" />&nbsp; Loading...
+    </div> -->
+	<div data-ng-show="finishedLoading">
 	    
         <h2 style="font-weight:normal">My Projects</h2>
-        <form data-ng-show="rights.deleteOther" class="control-bar form-inline">
-        	<button data-ng-disabled="selected.length == 0" class="btn btn-small" data-ng-click="removeProject()"><i class="icon-remove"></i>Delete Selected</button>
-        	<button class="btn btn-small" data-ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Create New Project</button>
+        <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+        	<button data-ng-show="rights.archive" data-ng-disabled="selected.length == 0" class="btn" data-ng-click="archiveProjects()"><i class="icon-archive icon-large"></i>Archive Selected Projects</button>
+        	<button data-ng-show="rights.create" class="btn" data-ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Create New Project</button>
         </form>
-        <div class="new-item" collapse="newProjectCollapsed">
+        <div class="new-item" data-collapse="newProjectCollapsed">
         	<form class="well" class="form-horizontal" name="newProjectForm">
         	    <div class="control-group">
                	    <input type="text" data-ng-model="newProject.projectName" maxlength="50" required placeholder="Project Name"/>
                	</div>
         	    <div class="control-group">
-                    <select rqeuired ng-model="newProject.appName" ng-options="type as projectTypes[type] for type in projectTypesBySite[site()]">
-                        <option value="">-- select type --</option>
+                    <select required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
+                        <option value="">-- Select Type --</option>
                     </select>
                	</div>
         	    <div class="control-group">
@@ -30,25 +34,27 @@
         	</form>
         </div>
         <hr />
-        <div listview hide-if-empty="true" search="queryProjectsForUser()" items="projects" visible-items="visibleProjects" select="">
+        <listview hide-if-empty="true" search="queryProjectsForUser()" items="projects" visible-items="visibleProjects" select="">
         	<div data-ng-repeat="project in visibleProjects" class="details-row">
         		<ul class="inline" data-ng-class="{active: isSelected(project)}">
-        			<li data-ng-show="rights.deleteOther"><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
-        			<li style="width: 80%">
-        				<a data-ng-show="isInProject(project)" href="{{getProjectHost(project.themeName)}}/app/{{project.appName}}#/p/{{project.id}}">
-        					<span class="larger-text">{{project.projectname}} ({{projectTypes[project.appName]}})</span>
+        			<li data-ng-show="rights.archive"><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
+        			<li style="width: 70%">
+        				<a data-ng-show="isInProject(project)" href="/app/{{project.appName}}/{{project.id}}/">
+        					<span class="larger-text">{{project.projectName}}</span>
         				</a>
-        				<span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectname}} ({{projectTypes[project.appName]}})</span>
+        				<span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectName}}</span>
+        				<br />
+        				<small class="muted">{{projectTypeNames[project.appName]}}</small>
         			</li>
-        			<li data-ng-show="rights.deleteOther" style="width: 20%">
+        			<li data-ng-show="rights.edit" style="width: 20%">
         				<button class="btn" data-ng-show="!isManager(project)" data-ng-click="addManagerToProject(project)"><i class="icon-plus"></i>Add me as Manager</button>
-        				<button class="btn" data-ng-show="!isInProject(project)" data-ng-click="addMemberToProject(project)"><i class="icon-plus"></i>Add me as Member</button>
+        				<button class="btn" data-ng-show="!isInProject(project)" data-ng-click="addMemberToProject(project)"><i class="icon-plus"></i>Add me as Contributor</button>
         			</li>
         		</ul>
         		<hr />
         	</div>
-        </div>
+        </listview>
 	    
 	</div>
-	</div>
+</div>
 </div>
