@@ -7,19 +7,6 @@
 				<div id="header-nav" class="left">
 					<ul class="sf-menu">
 						<li><a href="/">Home</a></li>
-						<!--
-						<li><a href="#">Explore</a>
-							<ul>
-								<li><a href="#">Jamaica Project 1</a></li>
-								<li><a href="#">Jamaica Project 2</a></li>
-								<li><a href="#">Jamaica Project 3</a></li>
-								<?php foreach($featuredProjects as $project): ?>
-											<!--  not sure about this <li><a href="<?php echo "/app/" . $project['appName'] . "/" . $project['id'] . "/"; ?>"><?php echo $project['projectName']; ?></a></li>-->
-											<li><a href="<?php echo "/app/project/" . $project['id']; ?>"><?php echo $project['projectName']; ?></a></li>
-								<?php endforeach;?>
-							</ul>
-						</li>
-						-->
 						<li><a href="/learn_language_forge">Learn</a>
 							<ul>
 								<li><a href="/learn_language_forge">About Language Forge</a></li>

@@ -161,8 +161,6 @@ angular.module('lexicon',
 			return $scope.config.tasks[itemName].visible;
 		};
 		
-		projectId = lexProjectService.getProjectId();
-		
 		lexBaseViewService.registerListener(function() {
 			$scope.config = lexBaseViewService.getConfig();
 		});
