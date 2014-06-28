@@ -38,9 +38,9 @@ class LexiconRoles extends ProjectRoles {
 		
 		// Manager
 		$rights = array();
-		self::grantAllOnDomain($rights[self::MANAGER], Domain::PROJECTS);
-		self::grantAllOnDomain($rights[self::MANAGER], Domain::ENTRIES);
-		self::grantAllOnDomain($rights[self::MANAGER], Domain::COMMENTS);
+		self::grantAllOnDomain($rights, Domain::PROJECTS);
+		self::grantAllOnDomain($rights, Domain::ENTRIES);
+		self::grantAllOnDomain($rights, Domain::COMMENTS);
 		self::$_rights[self::MANAGER] = $rights;
 	}
 
