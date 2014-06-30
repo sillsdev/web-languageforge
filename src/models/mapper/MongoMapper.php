@@ -140,11 +140,13 @@ class MongoMapper
 	 */
 	public function exists($id) {
 		CodeGuard::checkTypeAndThrow($id, 'string');
-		$data = $this->_collection->findOne(array("_id" => self::mongoID($id)));
-		if ($data == NULL) {
-			return false;	
-		}
-		return true;
+		try {
+			$data = $this->_collection->findOne(array("_id" => self::mongoID($id)));
+			if ($data != NULL) {
+				return true;
+			}
+		} catch (\Exception $e) { }
+		return false;
 	}
 
 	/**
