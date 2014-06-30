@@ -38,10 +38,10 @@ angular.module('activity',
 					items[i].projectHref = sfchecksLinkService.project(items[i].projectRef);
 				}
 				if ('textRef' in items[i]) {
-					items[i].textHref = sfchecksLinkService.text(items[i].projectRef, items[i].textRef);
+					items[i].textHref = sfchecksLinkService.text(items[i].textRef, items[i].projectRef);
 				}
 				if ('questionRef' in items[i]) {
-					items[i].questionHref = sfchecksLinkService.question(items[i].projectRef, items[i].textRef, items[i].questionRef);				}
+					items[i].questionHref = sfchecksLinkService.question(items[i].textRef, items[i].questionRef, items[i].projectRef);				}
 				if ('content' in items[i]) {
 					if ('answer' in items[i]['content']) {
 						items[i]['content']['answer'] = $sce.trustAsHtml(items[i]['content']['answer']);
