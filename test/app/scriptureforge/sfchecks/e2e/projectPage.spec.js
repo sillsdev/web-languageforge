@@ -8,7 +8,7 @@ describe('the project dashboard AKA text list page', function() {
 	var loginPage = require('../../../pages/loginPage.js');
 	var appFrame = require('../../../pages/appFrame.js');
 	var util = require('../../../pages/util.js');
-	var constants = require('../../../../testConstants.json');
+	var constants = require('../../../testConstants.json');
 	
 	describe('project member/user', function() {
 		it('setup: logout, login as project member, go to project dashboard', function() {

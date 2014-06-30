@@ -1,6 +1,6 @@
 'use strict';
 
-var constants           = require('../../../../testConstants');
+var constants           = require('../../../testConstants');
 var activityPage        = require('../../../pages/activityPage');
 var projectListPage     = require('../../../pages/projectsPage');
 var projectPage         = require('../../../pages/projectPage');
