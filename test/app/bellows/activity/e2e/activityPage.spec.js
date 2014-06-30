@@ -1,13 +1,13 @@
 'use strict';
 
 var constants           = require('../../../testConstants');
-var activityPage        = require('../../../pages/activityPage');
-var projectListPage     = require('../../../pages/projectsPage');
-var projectPage         = require('../../../pages/projectPage');
-var projectSettingsPage = require('../../../pages/projectSettingsPage');
-var questionPage        = require('../../../pages/questionPage');
-var textPage            = require('../../../pages/textPage');
-var loginPage           = require('../../../pages/loginPage');
+var loginPage           = require('../../pages/loginPage');
+var activityPage        = require('../../pages/activityPage');
+var projectListPage     = require('../../pages/projectsPage');
+var projectPage         = require('../../../scriptureforge/sfchecks/pages/projectPage');
+var projectSettingsPage = require('../../../scriptureforge/sfchecks/pages/projectSettingsPage');
+var questionPage        = require('../../../scriptureforge/sfchecks/pages/questionPage');
+var textPage            = require('../../../scriptureforge/sfchecks/pages/textPage');
 
 
 // Script of actions to perform which will then be verified on the activity feed.

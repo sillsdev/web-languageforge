@@ -1,9 +1,9 @@
 'use strict';
 
 var constants       = require('../../../testConstants');
-var loginPage       = require('../../../pages/loginPage');
-var projectListPage = require('../../../pages/projectsPage.js');
-var userProfile     = require('../../../pages/userProfilePage');
+var loginPage       = require('../../pages/loginPage');
+var projectListPage = require('../../pages/projectsPage.js');
+var userProfile     = require('../../pages/userProfilePage');
 
 // Array of test usernames to test Activity page with different roles
 var usernames = [constants.memberUsername,

@@ -1,18 +1,18 @@
 'use strict';
 
 afterEach(function() {
-	var appFrame = require('../../../pages/appFrame.js');
+	var appFrame = require('../../../bellows/pages/appFrame.js');
 	expect(appFrame.errorMessage.isPresent()).toBe(false);
 });
 
 describe('the project settings page - project manager', function() {
-	var projectListPage = require('../../../pages/projectsPage.js');
-	var projectPage = require('../../../pages/projectPage.js');
-	var page = require('../../../pages/projectSettingsPage.js');
-	var header = require('../../../pages/pageHeader.js');
-	var loginPage = require('../../../pages/loginPage.js');
-	var util = require('../../../pages/util.js');
-	var constants = require('../../../testConstants.json');
+	var constants 		= require('../../../testConstants.json');
+	var loginPage 		= require('../../../bellows/pages/loginPage.js');
+	var util 			= require('../../../bellows/pages/util.js');
+	var projectListPage = require('../../../bellows/pages/projectsPage.js');
+	var header 			= require('../../../bellows/pages/pageHeader.js');
+	var projectPage 	= require('../pages/projectPage.js');
+	var page 			= require('../pages/projectSettingsPage.js');
 	
 	it('setup: logout, login as project manager, go to project settings', function() {
 		loginPage.logout();
