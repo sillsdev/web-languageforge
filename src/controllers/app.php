@@ -25,7 +25,8 @@ class App extends Secure_base {
 		$data['appFolder'] = $appFolder;
 		
 		// update the projectId in the session if it is not empty
-		if ($projectId) {
+		$projectModel = new ProjectModel();
+		if ($projectId && $projectModel->exists($projectId)) {
 			$this->session->set_userdata('projectId', $projectId);
 		} else {
 			$projectId = (string)$this->session->userdata('projectId');
