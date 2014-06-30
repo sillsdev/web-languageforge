@@ -1,14 +1,14 @@
 'use strict';
 
 describe('the project dashboard AKA text list page', function() {
-	var projectListPage = require('../../../pages/projectsPage.js');
-	var projectPage = require('../../../pages/projectPage.js');
-	var projectSettingsPage = require('../../../pages/projectSettingsPage.js');
-	var questionListPage = require('../../../pages/textPage.js');
-	var loginPage = require('../../../pages/loginPage.js');
-	var appFrame = require('../../../pages/appFrame.js');
-	var util = require('../../../pages/util.js');
-	var constants = require('../../../testConstants.json');
+	var constants 			= require('../../../testConstants.json');
+	var loginPage 			= require('../../../bellows/pages/loginPage.js');
+	var util 				= require('../../../bellows/pages/util.js');
+	var appFrame 			= require('../../../bellows/pages/appFrame.js');
+	var projectListPage 	= require('../../../bellows/pages/projectsPage.js');
+	var projectPage 		= require('../pages/projectPage.js');
+	var projectSettingsPage = require('../pages/projectSettingsPage.js');
+	var questionListPage 	= require('../pages/textPage.js');
 	
 	describe('project member/user', function() {
 		it('setup: logout, login as project member, go to project dashboard', function() {

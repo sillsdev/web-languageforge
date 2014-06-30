@@ -7,7 +7,7 @@
 // Note: "delete" is a reserved word, and the functionality will be moved to "archiving" at a later time
 */
 var SfQuestionPage = function() {
-	var util = require('./util.js');
+	var util = require('../../../bellows/pages/util.js');
 	var page = this; // For use inside our methods. Necessary when passing anonymous functions around, which lose access to "this".
 	
 	this.answers  = {};

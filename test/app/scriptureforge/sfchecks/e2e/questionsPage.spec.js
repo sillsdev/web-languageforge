@@ -1,13 +1,13 @@
 'use strict';
 
 describe('the questions list page (AKA the text page)', function() {
-	var projectListPage = require('../../../pages/projectsPage.js');
-	var projectPage = require('../../../pages/projectPage.js');
-	var textPage = require('../../../pages/textPage.js');
-	var textSettingsPage = require('../../../pages/textSettingsPage.js');
-	var loginPage = require('../../../pages/loginPage.js');
-	var util = require('../../../pages/util.js');
-	var constants = require('../../../testConstants.json');
+	var constants 			= require('../../../testConstants.json');
+	var loginPage 			= require('../../../bellows/pages/loginPage.js');
+	var util 				= require('../../../bellows/pages/util.js');
+	var projectListPage 	= require('../../../bellows/pages/projectsPage.js');
+	var projectPage 		= require('../pages/projectPage.js');
+	var textPage 			= require('../pages/textPage.js');
+	var textSettingsPage 	= require('../pages/textSettingsPage.js');
 
 	describe('a normal user', function() {
 
