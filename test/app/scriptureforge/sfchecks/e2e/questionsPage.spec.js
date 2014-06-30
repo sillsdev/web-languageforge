@@ -7,7 +7,7 @@ describe('the questions list page (AKA the text page)', function() {
 	var textSettingsPage = require('../../../pages/textSettingsPage.js');
 	var loginPage = require('../../../pages/loginPage.js');
 	var util = require('../../../pages/util.js');
-	var constants = require('../../../../testConstants.json');
+	var constants = require('../../../testConstants.json');
 
 	describe('a normal user', function() {
 
