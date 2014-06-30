@@ -27,10 +27,10 @@
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> commented on <a href="{{item.userHref2}}">{{item.userRef2.username}}'s</a> answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+						<span>{{item.userRef.username}} commented on {{item.userRef2.username}}'s answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
 						<p class="indented" ng-bind-html="item.content.answer"></p>
 						<hr />
-						<p class="indented">{{item.content.comment}} - <a href="{{item.userHref}}">{{item.userRef.username}}</a></p>
+						<p class="indented">{{item.content.comment}} - {{item.userRef.username}}</p>
 					</div>
 					</div>
 				</div> 
@@ -46,10 +46,10 @@
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> updated their comment on <a href="{{item.userHref2}}">{{item.userRef2.username}}'s</a> answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+						<span>{{item.userRef.username}} updated their comment on {{item.userRef2.username}}'s answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
 						<p class="indented" ng-bind-html="item.content.answer"></p>
 						<hr />
-						<p class="indented">{{item.content.comment}} - <a href="{{item.userHref}}">{{item.userRef.username}}</a></p>
+						<p class="indented">{{item.content.comment}} - {{item.userRef.username}}</p>
 					</div>
 					</div>
 				</div> 
@@ -98,7 +98,7 @@
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span><a href="{{item.userHref}}">{{item.content.user}}</a> is now a member of <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+						<span>{{item.content.user}} is now a member of <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
 					</div>
 					</div>
 				</div> 
@@ -130,7 +130,7 @@
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> answered &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+						<span>{{item.userRef.username}} answered &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
 						<p class="indented" ng-bind-html="item.content.answer"></p>
 					</div>
 					</div>
@@ -147,7 +147,7 @@
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> updated their answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+						<span>{{item.userRef.username}} updated their answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
 						<div ng-bind-html="item.content.answer"></div>
 					</div>
 					</div>
@@ -164,7 +164,7 @@
 					    {{item.date|relativetime}}
 					</div>
 					<div class="span8 activity-content">
-						<span><a href="{{item.userHref}}">{{item.userRef.username}}</a> +1'd your answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+						<span>{{item.userRef.username}} +1'd your answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
 					</div>
 					</div>
 				</div> 
