@@ -200,16 +200,28 @@ angular.module('bellows.services', ['jsonRpc'])
 		return '<a href="' + url + '">' + text + '</a>';
 	};
 	
-	this.project = function() {
-		return '#';
+	this.project = function(projectId) {
+		if (angular.isDefined(projectId)) {
+			return '/app/sfchecks/' + projectId + '/#';
+		} else {
+			return '#';
+		};
 	};
 	
-	this.text = function(textId) {
-		return this.project() + "/" + textId;
+	this.text = function(textId, projectId) {
+		if (angular.isDefined(projectId)) {
+			return this.project(projectId) + "/" + textId;
+		} else {
+			return this.project() + "/" + textId;
+		};
 	};
 	
-	this.question = function(textId, questionId) {
-		return this.text(textId) + "/" + questionId;
+	this.question = function(textId, questionId, projectId) {
+		if (angular.isDefined(projectId)) {
+			return this.text(textId, projectId) + "/" + questionId; 
+		} else {
+			return this.text(textId) + "/" + questionId;
+		};
 	};
 	
 	this.user = function(userId) {
