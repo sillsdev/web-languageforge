@@ -199,6 +199,8 @@ angular.module('siteadmin', [
 			// Whether result was OK or error, wipe selected list and reload data
 			$scope.selected = [];
 			$scope.vars.selectedIndex = -1;
+			$scope.vars.editButtonName= [];
+			$scope.record = {};
 			$scope.queryUsers(true);
 		});
 	};
