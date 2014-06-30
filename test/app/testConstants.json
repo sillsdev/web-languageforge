@@ -1,4 +1,7 @@
 {
+	"Bellows_Test_Constants" : "",
+	
+
 	"adminUsername"   : "test_runner_admin",
 	"adminPassword"   : "hammertime",
 	"adminName"       : "Test Admin",
@@ -21,14 +24,17 @@
 	"avatar"           : "/images/shared/avatar/anonymoose.png",
 	
 	"testProjectName"  : "Test Project",
-	"testProjectTheme" : "default",
 	"testProjectCode"  : "test_project",
 	"testProjectAllowInvites" : false,
 	"otherProjectName" : "Other Project for Testing",
-	"otherProjectTheme": "simple",
 	"otherProjectCode" : "other_project",
 	"otherProjectAllowInvites": true,
 	"thirdProjectName" : "new kid on the block",
+
+
+
+	"ScriptureForge_Test_Constants" : "",
+
 
 	"testText1Title"   : "Chapter 3",
 	"testText1Content" : "Content of chapter 3",
@@ -47,6 +53,11 @@
 	"testText1Question2Answer2Comment" : "This is a manager's comment #2.",
 	"testText1Question3Title"          : "What is the meaning of life?",
 	"testText1Question3Summary"        : "Meaning from Hitchhiker's Guide",
-	"testText1Question3Answer"         : "42"
+	"testText1Question3Answer"         : "42",
+
+
+
+	"LanguageForge_Test_Constants" : ""
+
 
 }

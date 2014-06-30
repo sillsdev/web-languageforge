@@ -26,7 +26,7 @@ exports.config = {
   // protractor is called.
   specs: [
       // 'app/setupTestEnvironment.spec.js',
-      'app/**/e2e/*.spec.js',
+      '**/e2e/*.spec.js',
       // 'app/teardownTestEnvironment.spec.js'
   ],
 

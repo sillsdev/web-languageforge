@@ -8,7 +8,7 @@ describe('the question page', function() {
 	var page = require('../../../pages/questionPage.js');
 	var loginPage = require('../../../pages/loginPage.js');
 	var util = require('../../../pages/util.js');
-	var constants = require('../../../../testConstants.json');
+	var constants = require('../../../testConstants.json');
 
 	describe('a normal user', function() {
 

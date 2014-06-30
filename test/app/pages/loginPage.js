@@ -1,6 +1,6 @@
 'use strict';
 
-var constants = require('../../testConstants');
+var constants = require('../testConstants');
 
 var SfLoginPageWithoutAstrolabe = function() {
 	var page = this; // For use inside our methods. Necessary when passing anonymous functions around, which lose access to "this".

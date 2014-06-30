@@ -12,7 +12,7 @@ describe('the project settings page - project manager', function() {
 	var header = require('../../../pages/pageHeader.js');
 	var loginPage = require('../../../pages/loginPage.js');
 	var util = require('../../../pages/util.js');
-	var constants = require('../../../../testConstants.json');
+	var constants = require('../../../testConstants.json');
 	
 	it('setup: logout, login as project manager, go to project settings', function() {
 		loginPage.logout();
