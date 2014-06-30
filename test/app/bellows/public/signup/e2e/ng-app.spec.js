@@ -1,8 +1,8 @@
 'use strict';
 
 var constants 	= require('../../../../testConstants.json');
-var page 		= require('../../../../pages/signupPage.js');
-var body 		= require('../../../../pages/pageBody.js');
+var page 		= require('../../../pages/signupPage.js');
+var body 		= require('../../../pages/pageBody.js');
 
 describe('E2E testing: Signup app', function() {
 
