@@ -2,6 +2,7 @@
 
 namespace models\scriptureforge\dto;
 
+use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
 use models\shared\dto\RightsHelper;
 use models\shared\rights\ProjectRoles;
 use models\scriptureforge\SfchecksProjectModel;
@@ -26,7 +27,7 @@ class ProjectPageDto
 		$user = new UserModel($userId);
 		$project = new SfchecksProjectModel($projectId);
 		if ($project->isArchived && $project->users[$userId]->role != ProjectRoles::MANAGER) {
-			throw new \Exception("This Project is no longer available.\nIf this is incorrect contact your project manager.\n");
+			throw new ResourceNotAvailableException("This Project is no longer available. If this is incorrect contact your project manager.");
 		}
 		$textList = new TextListModel($project);
 		$textList->read();

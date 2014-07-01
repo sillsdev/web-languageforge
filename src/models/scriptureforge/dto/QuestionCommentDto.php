@@ -2,6 +2,7 @@
 
 namespace models\scriptureforge\dto;
 
+use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
 use models\shared\dto\RightsHelper;
 use models\shared\rights\ProjectRoles;
 use models\scriptureforge\SfchecksProjectModel;
@@ -31,7 +32,7 @@ class QuestionCommentDto
 		$textId = $question->textRef->asString();
 		$text = new TextModel($project, $textId);
 		if (($text->isArchived || $question->isArchived) && $project->users[$userId]->role != ProjectRoles::MANAGER) {
-			throw new \Exception("This Question is no longer available.\nIf this is incorrect contact your project manager.\n");
+			throw new ResourceNotAvailableException("This Question is no longer available. If this is incorrect contact your project manager.");
 		}
 		$usxHelper = new UsxHelper($text->content);
 		//echo $usxHelper->toHtml();
