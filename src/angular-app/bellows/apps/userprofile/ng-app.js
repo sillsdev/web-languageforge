@@ -1,7 +1,7 @@
 'use strict';
 
 
-angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice'])
+angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice' , 'palaso.ui.intlTelInput'])
 .controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', '$window', function userProfileCtrl($scope, userService, ss, notice, $window) {
 
 	function getAvatarUrl(color, shape) {

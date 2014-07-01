@@ -72,13 +72,13 @@ describe('User Profile E2E Test', function() {
 					var newColor         = 'Blue';
 					var newShape         = 'Elephant';
 					var newMemberEmail   = 'test@123.com';
-					var newMobilePhone   = '5555555';
+					var newMobilePhone   = '+1876 5555555';
 					var expectedAvatar   = userProfile.blueElephantAvatarURL;
 				} else if (expectedUsername == constants.managerUsername) {
 					var newColor         = 'Gold';
 					var newShape         = 'Pig';
 					var newMemberEmail   = 'admintest@SF.com';
-					var newMobilePhone   = '911';
+					var newMobilePhone   = '+1876 911';
 					var expectedAvatar   = userProfile.goldPigAvatarURL;
 				};
 

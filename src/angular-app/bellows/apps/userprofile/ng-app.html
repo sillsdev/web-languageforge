@@ -15,9 +15,9 @@
 					<div><select data-ng-model="user.avatar_shape" data-ng-options="s.value as s.label for s in dropdown.avatarShapes"><option value="">Choose an animal...</option></select></div>
 					<label>Email Address</label>
 					<input type="text" placeholder="(email)" data-ng-model="user.email"/>
-					<label>Jamaica Mobile Phone Number</label>
-					<input type="text" placeholder="###-####" data-ng-model="user.mobile_phone"/>
-					<label>I preferred to be contacted via</label>
+					<label>Mobile Phone Number</label>
+					<input type="tel" data-pui-intl-tel-input placeholder="###-####" data-ng-model="user.mobile_phone"/>
+					<label>Receive updates via</label>
 					<div class="btn-group">
 						<button type="button" class="btn" data-ng-model="user.communicate_via" btn-radio="'email'" id="EmailButton">Email</button>
 						<button type="button" class="btn" data-ng-model="user.communicate_via" btn-radio="'sms'"   id="SMSButton">SMS</button>
