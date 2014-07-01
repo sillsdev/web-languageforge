@@ -11,6 +11,7 @@ window.session = <?php echo $jsonSession; ?>;
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-animate.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-sanitize.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="/js/lib/angular-file-upload.min.js"></script>
 	<script src="/js/lib/angular-translate_2.0.1/angular-translate.min.js"></script>
 	<script src="/js/lib/angular-translate_2.0.1/angular-translate-loader-static-files.min.js"></script>
