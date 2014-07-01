@@ -11,6 +11,7 @@ use models\QuestionAnswersListModel;
 use models\QuestionModel;
 use models\TextModel;
 use models\UserModel;
+use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
 
 class QuestionListDto
 {
@@ -26,7 +27,7 @@ class QuestionListDto
 		$text = new TextModel($project, $textId);
 		$user = new UserModel($userId);
 		if (($project->isArchived || $text->isArchived) && $project->users[$userId]->role != ProjectRoles::MANAGER) {
-			throw new \Exception("This Text is no longer available.\nIf this is incorrect contact your project manager.\n");
+			throw new ResourceNotAvailableException("This Text is no longer available. If this is incorrect contact your project manager.");
 		}
 		$questionList = new QuestionAnswersListModel($project, $textId);
 		$questionList->read();
@@ -35,9 +36,9 @@ class QuestionListDto
 		$data['rights'] = RightsHelper::encode($user, $project);
 		$data['entries'] = array();
 		$data['project'] = array(
-				'name' => $project->projectName,
-				'allowAudioDownload' => $project->allowAudioDownload,
-				'id' => $projectId);
+			'name' => $project->projectName,
+			'allowAudioDownload' => $project->allowAudioDownload,
+			'id' => $projectId);
 		$data['text'] = JsonEncoder::encode($text);
 		$usxHelper = new UsxHelper($text->content);
 		$data['text']['content'] = $usxHelper->toHtml();

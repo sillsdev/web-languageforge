@@ -24,8 +24,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 namespace libraries\shared\palaso;
 
 use libraries\shared\palaso\exceptions\ErrorHandler;
-
+use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
+use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 
 /**
  * This class build a json-RPC Server 1.0
@@ -64,26 +65,42 @@ class JsonRpcServer {
 			$object->checkPermissions($request['method'], $request['params']);
 			if (method_exists($object, $request['method'])) {
 				$result = call_user_func_array(array($object,$request['method']),$request['params']);
-				$response = array (
+				$response = array(
 					'jsonrpc' => '2.0',
 					'id' => $request['id'],
 					'result' => $result,
 					'error' => NULL
 				);
 			} else {
-				$response = array (
+				$response = array(
 					'jsonrpc' => '2.0',
 					'id' => $request['id'],
 					'result' => NULL,
-					'error' => sprintf("unknown method '%s' on class '%s'", $request['method'], get_class($object))
+					'error' => array(
+						'type' => 'UnknownMethod',
+						'message' => sprintf("unknown method '%s' on class '%s'", $request['method'], get_class($object)) 
+					)
 				);
 			}
 		} catch (\Exception $e) {
-			$response = array (
+			$response = array(
 				'id' => $request['id'],
 				'result' => NULL,
-				'error' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " . CodeGuard::getStackTrace($e->getTrace()));
-
+				'error' => array(
+					'type' => get_class($e),
+					'message' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " . CodeGuard::getStackTrace($e->getTrace()) 
+				)
+			);
+			if ($e instanceof ResourceNotAvailableException) {
+				$response['error']['type'] = 'ResourceNotAvailableException';
+				$response['error']['message'] = $e->getMessage();
+			} elseif ($e instanceof UserNotAuthenticatedException) {
+				$response['error']['type'] = 'UserNotAuthenticatedException';
+				$response['error']['message'] = $e->getMessage();
+			} elseif ($e instanceof UserUnauthorizedException) {
+				$response['error']['type'] = 'UserUnauthorizedException';
+				$response['error']['message'] = $e->getMessage();
+			} 
 			$message = '';
 			$message .= $e->getMessage() . "\n";
 			$message .= $e->getTraceAsString() . "\n";
