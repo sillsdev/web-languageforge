@@ -1,7 +1,9 @@
 <div class="container" data-ng-cloak data-ng-controller="ConfigCtrl">
 <h2>{{ 'Dictionary Configuration' | translate }}</h2>
-<form name="configForm">
-<button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-disabled="configForm.$pristine" data-ng-click="configurationApply()" ><i class="icon-ok"></i> {{ 'Apply' | translate }}</button>
+<form name="configForm" novalidate>
+<button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="configurationApply()"  
+	data-ng-disabled="configForm.$pristine || !(fieldConfig['definition'].visible || fieldConfig['gloss'].visible || fieldConfig['partOfSpeech'].visible || fieldConfig['semanticDomain'].visible)">
+	<i class="icon-ok"></i> {{ 'Apply' | translate }}</button>
 <tabset>
 	<tab heading="Input Systems" class="{{interfaceConfig.pullNormal}}">
 		<div data-ng-include="'/angular-app/languageforge/lexicon/views/configuration-input-systems.html'"></div>
@@ -21,7 +23,10 @@
 							<input type="checkbox" disabled checked> {{fieldConfig['lexeme'].label}}</div>
 					</div>
 				</div></dd>
-				<dt translate="Sense Level Fields"></dt>
+				<dt>
+					{{'Sense Level Fields' | translate}} 
+					<span data-ng-hide="fieldConfig['definition'].visible || fieldConfig['gloss'].visible || fieldConfig['partOfSpeech'].visible || fieldConfig['semanticDomain'].visible">
+					<img src="/images/shared/exclamation.png" title="{{'At least one Sense field must be enabled!' | translate}}" style="position: absolute; padding-left: 5px;"/></span></dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectField('definition')" 
 						data-ng-class="{selected:currentField.name == 'definition'}">
@@ -111,7 +116,7 @@
 		</div>
 		
 		</div>
-<!-- 
+<!--  
 <pre>
 currentField {{currentField | json}}
 config.entry {{config.entry|json}}
