@@ -9,8 +9,5 @@ src/cache/
 src/bower_components/
 src/assets/
 
-test/node_modules/protractor/selenium/
-test/node_modules/.bin/
-
 test/app/node_modules/protractor/selenium/
-test/app/node_modules/.bin/
+
