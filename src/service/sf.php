@@ -223,11 +223,12 @@ class Sf
 	/**
 	 * 
 	 * @param string $projectName
+	 * @param string $projectCode
 	 * @param string $appName
 	 * @return string - projectId
 	 */
-	public function project_create($projectName, $appName) {
-		return ProjectCommands::createProject($projectName, $appName, $this->_userId, $this->_website);
+	public function project_create($projectName, $projectCode, $appName) {
+		return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->_userId, $this->_website);
 	}
 	
 	/**
