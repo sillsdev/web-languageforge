@@ -203,6 +203,7 @@ class RightsHelper
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);
 			
 			case 'project_create':
+			case 'projectcode_exists':
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 			
 			case 'questionTemplate_update':

@@ -87,6 +87,10 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.removeUsers = function(users, callback) {
 		jsonRpc.call('project_removeUsers', [users], callback);
 	};
+	this.projectCodeExists = function(projectCode, callback) {
+		jsonRpc.call('projectcode_exists', [projectCode], callback);
+	};
+	
 	this.joinProject = function(projectId, role, callback) {
 		jsonRpc.call('project_joinProject', [projectId, role], callback);
 	};

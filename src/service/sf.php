@@ -281,9 +281,8 @@ class Sf
 	}
 	
 	
-	// todo: implement the UI for this in angular
 	public function projectcode_exists($code) {
-		return ProjectCommands::projectCodeExists($this->_website, $code);
+		return ProjectCommands::projectCodeExists($code);
 	}
 	
 	
