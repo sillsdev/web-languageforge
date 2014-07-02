@@ -68,7 +68,6 @@ json_rpc.factory('jsonRpc', ['$http', '$window', 'error', function($http, $windo
 				return;
 			}
 			if (data.error != null) {
-				// TODO error handling for jsonRpc CP 2013-07
 				var type = '';
 				switch(data.error.type) {
 					case 'ResourceNotAvailableException':
@@ -76,6 +75,10 @@ json_rpc.factory('jsonRpc', ['$http', '$window', 'error', function($http, $windo
 						break;
 					case 'UserNotAuthenticatedException':
 						type = "You're not currently signed in.";
+						// redirect to login page with message
+						error.error("You will now be redirected to the login page.");
+						$window.location.href = "/login";
+						return;
 						break;
 					case 'UserUnauthorizedException':
 						type = "You don't have sufficient privileges.";
@@ -85,12 +88,6 @@ json_rpc.factory('jsonRpc', ['$http', '$window', 'error', function($http, $windo
 				}
 				error.error(type, data.error.message);
 				
-				// TODO refactor this hack to support a proper error DTO - cjh 2013-12
-				if (data.error.message.indexOf("Please login again") != -1) {
-					// redirect to login page with message
-					error.error("You will now be redirected to the login page.");
-					$window.location.href = "/login";
-				}
 				return;
 			}
 			if (data.error == null) {

@@ -12,8 +12,6 @@ use libraries\shared\Website;
 
 use libraries\shared\palaso\CodeGuard;
 use libraries\shared\palaso\JsonRpcServer;
-use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
-use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\scriptureforge\sfchecks\Communicate;
 use libraries\scriptureforge\sfchecks\Email;
 use models\AnswerModel;

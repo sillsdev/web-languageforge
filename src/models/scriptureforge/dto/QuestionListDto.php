@@ -2,6 +2,7 @@
 
 namespace models\scriptureforge\dto;
 
+use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
 use models\shared\dto\RightsHelper;
 use models\shared\rights\ProjectRoles;
 use models\scriptureforge\SfchecksProjectModel;
@@ -11,7 +12,6 @@ use models\QuestionAnswersListModel;
 use models\QuestionModel;
 use models\TextModel;
 use models\UserModel;
-use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
 
 class QuestionListDto
 {
