@@ -35,7 +35,7 @@
                     </select>
                 </div>
                 <div class="control-group">
-                    <button type="submit" class="btn" data-ng-disabled="!(newProject.projectName && newProject.projectCode && newProject.appName)" data-ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
+                    <button type="submit" class="btn" data-ng-disabled="!(newProject.projectName && newProject.projectCode && projectCodeOk && newProject.appName)" data-ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
                 </div>
             </form>
         </div>
