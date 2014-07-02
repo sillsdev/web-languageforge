@@ -119,7 +119,27 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 			}
 		});
 	};
-
+	
+	$scope.checkProjectCode = function() {
+		$scope.projectCodeOk = false;
+		$scope.projectCodeExists = false;
+		if ($scope.newProject.projectCode) {
+			$scope.projectCodeLoading = true;
+			projectService.projectCodeExists($scope.newProject.projectCode, function(result) {
+				$scope.projectCodeLoading = false;
+				if (result.ok) {
+					if (result.data) {
+						$scope.projectCodeOk = false;
+						$scope.projectCodeExists = true;
+					} else {
+						$scope.projectCodeOk = true;
+						$scope.projectCodeExists = false;
+					}
+				}
+			});
+		}
+	};
+	
 	$scope.projectTypeNames = projectService.data.projectTypeNames;
 	$scope.projectTypesBySite = projectService.data.projectTypesBySite;
 	
