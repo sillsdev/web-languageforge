@@ -119,7 +119,7 @@ class TestCommunicate extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$project->projectCode = 'test_project';
 		$project->write();
 		$delivery = new MockCommunicateDelivery();
@@ -145,7 +145,7 @@ class TestCommunicate extends UnitTestCase {
 		$user = new UserModel($userId);
 		$user->communicate_via = UserModel::COMMUNICATE_VIA_SMS;
 		$user->mobile_phone = '+66837610205';
-		$project = $e->createProjectSettings(SF_TESTPROJECT);
+		$project = $e->createProjectSettings(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$project->smsSettings->fromNumber = '13852904211';
 		$project->smsSettings->accountId = 'ACc03c2767c2c9c138bde0aa0b30ac9d6e';
 		$project->smsSettings->authToken = 'be77f02cd3b6b13d3b42d8a64050fd35';
@@ -175,7 +175,7 @@ class TestCommunicate extends UnitTestCase {
 		$toUser = new UserModel($toUserId);
 		$newUserName = 'newusername';
 		$newUserPassword = 'password';
-		$project = $e->createProjectSettings(SF_TESTPROJECT);
+		$project = $e->createProjectSettings(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$delivery = new MockCommunicateDelivery();
 		
 		Communicate::sendNewUserInProject($toUser, $newUserName, $newUserPassword, $e->website, $project, $delivery);

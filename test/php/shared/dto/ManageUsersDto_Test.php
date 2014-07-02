@@ -20,7 +20,7 @@ class TestManageUsersDto extends UnitTestCase {
 		$user = new UserModel($userId);
 		$user->role = SiteRoles::USER;
 
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);

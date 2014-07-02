@@ -18,7 +18,7 @@ class TestQuestionListDto extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 
 		$text = new TextModel($project);
@@ -108,7 +108,7 @@ class TestQuestionListDto extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 
 		// archived Text

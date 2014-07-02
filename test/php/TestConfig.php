@@ -17,8 +17,11 @@ require_once(APPPATH . 'helpers/loader_helper.php');
 require_once(APPPATH . 'vendor/autoload.php');
 
 define('SF_DATABASE', 'scriptureforge_test');
-define('SF_TESTPROJECT', 'Test Project');
-define('SF_TESTPROJECT2', 'Test Project2');
+define('SF_TESTPROJECT',      'Test Project');
+define('SF_TESTPROJECTCODE',  'TestCode1');
+define('SF_TESTPROJECT2',     'Test Project2');
+define('SF_TESTPROJECTCODE2', 'TestCode2');
+
 
 require_once(APPPATH . 'config/sf_config.php');
 

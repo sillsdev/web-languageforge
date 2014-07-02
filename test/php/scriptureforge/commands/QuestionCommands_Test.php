@@ -41,7 +41,7 @@ class UserVoteTestEnvironment {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$this->project = $e->createProject(SF_TESTPROJECT);
+		$this->project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$this->question = new QuestionModel($this->project);
 		$this->question->write();
 		
@@ -67,7 +67,7 @@ class TestQuestionCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 				
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		$question = new QuestionModel($project);
 		$question->write();
@@ -80,7 +80,7 @@ class TestQuestionCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		
 		$question1 = new QuestionModel($project);
 		$question1->title = "Some Title";
@@ -105,7 +105,7 @@ class TestQuestionCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		
 		$question1 = new QuestionModel($project);
 		$question1->title = "Some Title";
@@ -194,7 +194,7 @@ class TestQuestionCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$question = new QuestionModel($project);
 		$questionId = $question->write();
 		
@@ -220,7 +220,7 @@ class TestQuestionCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$question = new QuestionModel($project);
 		$questionId = $question->write();
 		
@@ -252,7 +252,7 @@ class TestQuestionCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$question = new QuestionModel($project);
 		$questionId = $question->write();
 		
@@ -274,7 +274,7 @@ class TestQuestionCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$question = new QuestionModel($project);
 		$questionId = $question->write();
 		
@@ -297,7 +297,7 @@ class TestQuestionCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$question = new QuestionModel($project);
 		$questionId = $question->write();
 		
