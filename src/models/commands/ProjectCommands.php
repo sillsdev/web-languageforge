@@ -58,6 +58,9 @@ class ProjectCommands
 		$project->projectCode = $projectCode;
 		$project->appName = $appName;
 		$project->siteName = $website->domain;
+		if (ProjectCommands::projectCodeExists($projectCode)) {
+			return false;
+		}		
 		$projectId = $project->write();
 		ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::MANAGER);
 		return $projectId;
@@ -219,9 +222,9 @@ class ProjectCommands
 	 * @param string $code
 	 * @return bool
 	 */
-	public static function projectCodeExists($website, $code) {
+	public static function projectCodeExists($code) {
 		$project = new ProjectModel();
-		return $project->readByProperties(array('projectCode' => $code, 'siteName' => $website->domain));
+		return $project->readByProperties(array('projectCode' => $code));
 	}
 	
 }

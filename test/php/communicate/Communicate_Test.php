@@ -73,7 +73,7 @@ class TestCommunicate extends UnitTestCase {
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
 		$user->communicate_via = UserModel::COMMUNICATE_VIA_EMAIL;
-		$project = $e->createProjectSettings(SF_TESTPROJECT);
+		$project = $e->createProjectSettings(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$subject = 'TestSubject';
 		$project->emailSettings->fromAddress = 'projectName@scriptureforge.org';
 		$project->emailSettings->fromName = 'Scripture Forge ProjectName';
