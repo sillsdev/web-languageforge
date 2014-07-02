@@ -10,7 +10,6 @@ use libraries\scriptureforge\sfchecks\IDelivery;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\shared\palaso\CodeGuard;
 use libraries\shared\palaso\JsonRpcServer;
-use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\Website;
 use models\commands\ActivityCommands;
 use models\commands\ProjectCommands;
