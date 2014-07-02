@@ -70,6 +70,7 @@ $memberUser = UserCommands::createUser(array(
 
 $testProject = ProjectCommands::createProject(
 	$constants['testProjectName'],
+	$constants['testProjectCode'],
 	SfProjectModel::SFCHECKS_APP,
 	$adminUser,
 	Website::get('scriptureforge.local')
@@ -81,6 +82,7 @@ $testProjectModel->write();
 
 $otherProject = ProjectCommands::createProject(
 	$constants['otherProjectName'],
+	$constants['otherProjectCode'],
 	SfProjectModel::SFCHECKS_APP,
 	$adminUser,
 	Website::get('scriptureforge.local')
