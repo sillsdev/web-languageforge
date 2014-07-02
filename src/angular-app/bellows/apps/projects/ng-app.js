@@ -77,7 +77,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 	
 	// Add new project
 	$scope.addProject = function() {
-		projectService.create($scope.newProject.projectName, $scope.newProject.appName, function(result) {
+		projectService.create($scope.newProject.projectName, $scope.newProject.projectCode, $scope.newProject.appName, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "The " + $scope.newProject.projectName + " project was created successfully");
 				$scope.queryProjectsForUser();

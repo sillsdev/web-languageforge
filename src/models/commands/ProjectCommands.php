@@ -52,9 +52,10 @@ class ProjectCommands
 	 * @param Website $website
 	 * @return string - projectId
 	 */
-	public static function createProject($projectName, $appName, $userId, $website) {
+	public static function createProject($projectName, $projectCode, $appName, $userId, $website) {
 		$project = new ProjectModel();
 		$project->projectName = $projectName;
+		$project->projectCode = $projectCode;
 		$project->appName = $appName;
 		$project->siteName = $website->domain;
 		$projectId = $project->write();

@@ -63,8 +63,8 @@ angular.module('bellows.services', ['jsonRpc'])
 }])
 .service('projectService', ['jsonRpc', 'sessionService', function(jsonRpc, ss) {
 	jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
-	this.create = function(projectName, appName, callback) {
-		jsonRpc.call('project_create', [projectName, appName], callback);
+	this.create = function(projectName, projectCode, appName, callback) {
+		jsonRpc.call('project_create', [projectName, projectCode, appName], callback);
 	};
 	this.archive = function(projectIds, callback) {
 		jsonRpc.call('project_archive', [projectIds], callback);
