@@ -229,13 +229,13 @@ class Auth extends Base {
 				'id' => 'email',
 			);
 
-// 			if ( $this->config->item('identity', 'ion_auth') == 'username' ){
-// 				$this->data['identity_label'] = $this->lang->line('forgot_password_username_identity_label');
-// 			}
-// 			else
-// 			{
+			if ( $this->config->item('identity', 'ion_auth') == 'username' ){
+				$this->data['identity_label'] = $this->lang->line('forgot_password_username_identity_label');
+			}
+			else
+			{
 				$this->data['identity_label'] = $this->lang->line('forgot_password_email_identity_label');
-// 			}
+			}
 
 			//set any errors and display the form
 			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
@@ -243,12 +243,23 @@ class Auth extends Base {
 		}
 		else
 		{
-			// get identity for that email
+			// get identity from username or email
 			$config_tables = $this->config->item('tables', 'ion_auth');
 			// RM - error for some reason: $identity = $this->mongo_db->where('email', $this->input->post('email'))->limit('1')->get($config_tables['users'])->row();
-			$result = $this->mongo_db->where('email', $this->input->post('email'))->limit('1')->get($config_tables['users']);
+			if ( $this->config->item('identity', 'ion_auth') == 'username' ) {
+				// IJH - error for some reason: $identity = $this->ion_auth->where('username', strtolower($this->input->post('email')))->users()->row();
+				$result = $this->mongo_db->where('username', $this->input->post('email'))->limit('1')->get($config_tables['users']);
+			} else {
+				// IJH - error for some reason: $identity = $this->ion_auth->where('email', strtolower($this->input->post('email')))->users()->row();
+				$result = $this->mongo_db->where('email', $this->input->post('email'))->limit('1')->get($config_tables['users']);
+			}
 			$identity = $result[0];
-
+			if (empty($identity)) {
+				$this->ion_auth->set_message('forgot_password_email_not_found');
+				$this->session->set_flashdata('message', $this->ion_auth->messages());
+				redirect("auth/forgot_password", 'refresh');
+			}
+			
 			//run the forgotten password method to email an activation code to the user
 			// RM - error "Trying to get member of non-object:" $forgotten = $this->ion_auth->forgotten_password($identity->{$this->config->item('identity', 'ion_auth')});
 			$forgotten = $this->ion_auth->forgotten_password($identity[$this->config->item('identity', 'ion_auth')]);
