@@ -23,13 +23,16 @@
         	    <div class="control-group">
                	    <input type="text" data-ng-model="newProject.projectName" maxlength="50" required placeholder="Project Name"/>
                	</div>
+               	<div class="control-group">
+               		<input type="text" data-ng-model="newProject.projectCode" maxlength="50" required placeholder="Project Code"/> 
+               	</div>
         	    <div class="control-group">
                     <select required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
                         <option value="">-- Select Type --</option>
                     </select>
                	</div>
         	    <div class="control-group">
-                	<button type="submit" class="btn" data-ng-disabled="!(newProject.projectName && newProject.appName)" data-ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
+                	<button type="submit" class="btn" data-ng-disabled="!(newProject.projectName && newProject.projectCode && newProject.appName)" data-ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
                	</div>
         	</form>
         </div>
