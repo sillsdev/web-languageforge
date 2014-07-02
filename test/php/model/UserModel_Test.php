@@ -84,11 +84,11 @@ class TestUserModel extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$p1m = $e->createProject('p1');
+		$p1m = $e->createProject('p1', 'p1Code');
 		$p1m->appName = 'sfchecks';
 		$p1m->write();
 		$p1 = $p1m->id->asString();
-		$p2m = $e->createProject('p2');
+		$p2m = $e->createProject('p2', 'p2Code');
 		$p2 = $p2m->id->asString();
 		$p2m->appName = 'sfchecks';
 		$p2m->write();
@@ -177,7 +177,7 @@ class TestUserModel extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('user1', 'user1', 'user1');
 		$user = new UserModel($userId);
-		$project = $e->createProject('testProject');
+		$project = $e->createProject('testProject', 'testProjectCode');
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project->write();
 		$user->addProject($project->id->asString());

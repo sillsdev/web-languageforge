@@ -22,7 +22,7 @@ class TestActivityDto extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		
 		$text = new TextModel($project);
 		$text->title = "Text 1";
@@ -72,8 +72,8 @@ class TestActivityDto extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project1 = $e->createProject(SF_TESTPROJECT);
-		$project2 = $e->createProject(SF_TESTPROJECT2);
+		$project1 = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+		$project2 = $e->createProject(SF_TESTPROJECT2, SF_TESTPROJECTCODE2);
 		
 		$userId = $e->createUser("user1", "user1", "user1@email.com");
 		$project1->addUser($userId, ProjectRoles::CONTRIBUTOR);
@@ -116,7 +116,7 @@ class TestActivityDto extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		
 		$text = new TextModel($project);
 		$text->title = "Text 1";

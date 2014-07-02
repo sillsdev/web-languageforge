@@ -76,7 +76,7 @@ class TestTextModel extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$projectModel = $e->createProject(SF_TESTPROJECT);
+		$projectModel = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$databaseName = $projectModel->databaseName();
 		
 		$projectModel->remove();

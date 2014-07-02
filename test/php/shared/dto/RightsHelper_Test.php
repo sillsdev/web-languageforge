@@ -31,7 +31,7 @@ class TestRightsHelper extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
 		$user = new UserModel($userId);
-		$project = $e->createProject('projectForTest');
+		$project = $e->createProject('projectForTest', 'projTestCode');
 		$projectId = $project->id->asString();
 		$project->addUser($userId, ProjectRoles::MANAGER);
 		$project->appName = 'sfchecks';
@@ -49,7 +49,7 @@ class TestRightsHelper extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
 		$user = new UserModel($userId);
-		$project = $e->createProject('projectForTest');
+		$project = $e->createProject('projectForTest', 'projTestCode');
 		$projectId = $project->id->asString();
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project->appName = 'sfchecks';
@@ -66,7 +66,7 @@ class TestRightsHelper extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
-		$project = $e->createProject('projectForTest');
+		$project = $e->createProject('projectForTest', 'projTestCode');
 		$project->appName = 'sfchecks';
 		$project->write();
 		$projectId = $project->id->asString();

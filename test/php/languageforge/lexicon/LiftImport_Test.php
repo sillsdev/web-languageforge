@@ -17,7 +17,7 @@ class TestLiftImport extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$liftXml = LexTestData::liftOneEntryV0_12;
 		
 		$e->inhibitErrorDisplay();
@@ -30,7 +30,7 @@ class TestLiftImport extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$liftXml = LexTestData::liftInvalidAttribute;
 		
 		$e->inhibitErrorDisplay();
@@ -43,7 +43,7 @@ class TestLiftImport extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$liftXml = LexTestData::liftTwoEntriesV0_13;
 		$mergeRule =  LiftMergeRule::IMPORT_WINS;
 		$skipSameModTime = false;
@@ -76,7 +76,7 @@ class TestLiftImport extends UnitTestCase {
 	function testLiftImportMerge_ExistingDataAndImportWins_MergeOk() {
 		$e = new LexiconMongoTestEnvironment();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$liftXml = LexTestData::liftTwoEntriesV0_13;
 		LiftImport::merge($liftXml, $project);	// create existing data
 		$liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
@@ -101,7 +101,7 @@ class TestLiftImport extends UnitTestCase {
 	function testLiftImportMerge_ExistingDataAndImportWinsAndSkip_NoMerge() {
 		$e = new LexiconMongoTestEnvironment();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$liftXml = LexTestData::liftTwoEntriesV0_13;
 		LiftImport::merge($liftXml, $project);	// create existing data
 		$liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
@@ -126,7 +126,7 @@ class TestLiftImport extends UnitTestCase {
 	function testLiftImportMerge_ExistingDataAndImportWinsAndSkip_MergeOk() {
 		$e = new LexiconMongoTestEnvironment();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$liftXml = LexTestData::liftTwoEntriesV0_13;
 		LiftImport::merge($liftXml, $project);	// create existing data
 		$liftXml = LexTestData::liftTwoEntriesModifiedV0_13;
@@ -153,7 +153,7 @@ class TestLiftImport extends UnitTestCase {
 	function testLiftImportMerge_ExistingDataAndImportWinsAndDeleteMatchingEntry_EntryDeleted() {
 		$e = new LexiconMongoTestEnvironment();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$liftXml = LexTestData::liftTwoEntriesV0_13;
 		LiftImport::merge($liftXml, $project);	// create existing data
 		$liftXml = LexTestData::liftTwoEntriesOneCorrectedOneDeletedV0_13;
@@ -174,7 +174,7 @@ class TestLiftImport extends UnitTestCase {
 	function testLiftImportMerge_ExistingDataAndImportWinsAndSkipSameModTimeAndDeleteMatchingEntry_EntryDeletedAndOtherEntryNotCorrected() {
 		$e = new LexiconMongoTestEnvironment();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$liftXml = LexTestData::liftTwoEntriesV0_13;
 		LiftImport::merge($liftXml, $project);	// create existing data
 		$liftXml = LexTestData::liftTwoEntriesOneCorrectedOneDeletedV0_13;
@@ -195,7 +195,7 @@ class TestLiftImport extends UnitTestCase {
 	function testLiftImportMerge_ExistingDataAndImportWins_EntryNotDeleted() {
 		$e = new LexiconMongoTestEnvironment();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$liftXml = LexTestData::liftTwoEntriesV0_13;
 		LiftImport::merge($liftXml, $project);	// create existing data
 		$liftXml = LexTestData::liftTwoEntriesOneCorrectedOneDeletedV0_13;
@@ -218,7 +218,7 @@ class TestLiftImport extends UnitTestCase {
 	function testLiftImportMerge_ExistingDataAndImportLoses_NoMerge() {
 		$e = new LexiconMongoTestEnvironment();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$liftXml = LexTestData::liftTwoEntriesV0_13;
 		LiftImport::merge($liftXml, $project);	// create existing data
 		$liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
@@ -243,7 +243,7 @@ class TestLiftImport extends UnitTestCase {
 	function testLiftImportMerge_ExistingDataAndCreateDuplicates_DuplicatesCreated() {
 		$e = new LexiconMongoTestEnvironment();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$liftXml = LexTestData::liftTwoEntriesV0_13;
 		LiftImport::merge($liftXml, $project);	// create existing data
 		$liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
@@ -275,7 +275,7 @@ class TestLiftImport extends UnitTestCase {
 	function testLiftImportMerge_ExistingDataAndCreateDuplicatesAndSkip_NoMerge() {
 		$e = new LexiconMongoTestEnvironment();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$liftXml = LexTestData::liftTwoEntriesV0_13;
 		LiftImport::merge($liftXml, $project);	// create existing data
 		$liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;

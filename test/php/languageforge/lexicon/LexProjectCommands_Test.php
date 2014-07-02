@@ -24,7 +24,7 @@ class TestLexProjectCommands extends UnitTestCase {
 		$user = new UserModel($userId);
 		$user->role = SiteRoles::USER;
 
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
@@ -59,7 +59,7 @@ class TestLexProjectCommands extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		$import = LexTestData::Import(LiftMergeRule::IMPORT_LOSES, false);
 		

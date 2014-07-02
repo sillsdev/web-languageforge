@@ -43,7 +43,7 @@ class SessionTestEnvironment {
 		$e->clean();
 		$this->website = $e->website;
 	
-		$this->project = $e->createProject(SF_TESTPROJECT);
+		$this->project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$this->project->appName = 'sfchecks';
 		$this->project->write();
 		$this->question = new QuestionModel($this->project);

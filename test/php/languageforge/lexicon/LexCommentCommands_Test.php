@@ -23,7 +23,7 @@ class TestLexCommentCommands extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('joe', 'joe', 'joe');
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
@@ -70,7 +70,7 @@ class TestLexCommentCommands extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('joe', 'joe', 'joe');
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
@@ -133,7 +133,7 @@ class TestLexCommentCommands extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('joe', 'joe', 'joe');
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
@@ -192,7 +192,7 @@ class TestLexCommentCommands extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('joe', 'joe', 'joe');
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
@@ -262,7 +262,7 @@ class TestLexCommentCommands extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('joe', 'joe', 'joe');
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
@@ -326,7 +326,7 @@ class TestLexCommentCommands extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('joe', 'joe', 'joe');
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
@@ -400,7 +400,7 @@ class TestLexCommentCommands extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('joe', 'joe', 'joe');
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
@@ -454,7 +454,7 @@ class TestLexCommentCommands extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('joe', 'joe', 'joe');
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);

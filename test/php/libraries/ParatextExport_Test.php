@@ -23,7 +23,7 @@ class TestParatextExport extends UnitTestCase {
 	function testExportCommentsForText_ExportAll_AllExported() {
 		$e = new MongoTestEnvironment();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		
 		$text = new TextModel($project);
 		$text->title = "Text 1";
@@ -77,7 +77,7 @@ class TestParatextExport extends UnitTestCase {
 	function testExportCommentsForText_OnlyExportFlagged_OnlyFlaggedExportedExceptArchived() {
 		$e = new MongoTestEnvironment();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		
 		$text = new TextModel($project);
 		$text->title = "Text 1";
@@ -139,7 +139,7 @@ class TestParatextExport extends UnitTestCase {
 	function testExportCommentsForText_QuestionArchived_NoneExported() {
 		$e = new MongoTestEnvironment();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		
 		$text = new TextModel($project);
 		$text->title = "Text 1";

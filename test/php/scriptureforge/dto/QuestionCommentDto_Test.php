@@ -22,7 +22,7 @@ class TestQuestionCommentDto extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		
 		$text = new TextModel($project);
 		$text->title = "Text 1";
@@ -87,7 +87,7 @@ class TestQuestionCommentDto extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 	
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 	
 		$managerId = $e->createUser("manager", "manager", "manager@email.com");
 		$contributorId = $e->createUser("contributor1", "contributor1", "contributor1@email.com");
@@ -123,7 +123,7 @@ class TestQuestionCommentDto extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 	
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 	
 		$managerId = $e->createUser("manager", "manager", "manager@email.com");
 		$contributorId = $e->createUser("contributor1", "contributor1", "contributor1@email.com");
