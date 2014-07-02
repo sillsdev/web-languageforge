@@ -16,7 +16,7 @@ class TestProjectPageDto extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 
 		// Two texts, with different numbers of questions for each text and different create dates

@@ -43,7 +43,7 @@ class TestUserUnreadModel extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject("unread_test");
+		$project = $e->createProject("unread_test", "unreadCode");
 		
 		$userId1 = $e->createUser('user1', 'user1', 'user1');
 		$user1 = new UserModel($userId1);
@@ -78,7 +78,7 @@ class TestUserUnreadModel extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject("unread_test");
+		$project = $e->createProject("unread_test", "unreadCode");
 		$userId1 = $e->createUser('user1', 'user1', 'user1');
 		$activityId = ActivityCommands::addUserToProject($project, $userId1);
 		
@@ -95,7 +95,7 @@ class TestUserUnreadModel extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject("unread_test");
+		$project = $e->createProject("unread_test", "unreadCode");
 		$userId1 = $e->createUser('user1', 'user1', 'user1');
 		$activityId = ActivityCommands::addUserToProject($project, $userId1);
 		
@@ -117,7 +117,7 @@ class TestUserUnreadModel extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject("unread_test");
+		$project = $e->createProject("unread_test", "unreadCode");
 		$userId1 = $e->createUser('user1', 'user1', 'user1');
 		$userId2 = $e->createUser('user2', 'user2', 'user2');
 		$activityId1 = ActivityCommands::addUserToProject($project, $userId1);
@@ -143,7 +143,7 @@ class TestUserUnreadModel extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject("unread_test");
+		$project = $e->createProject("unread_test", "unreadCode");
 		$userId1 = $e->createUser('user1', 'user1', 'user1');
 		$userId2 = $e->createUser('user2', 'user2', 'user2');
 		$activityId1 = ActivityCommands::addUserToProject($project, $userId1);
@@ -171,7 +171,7 @@ class TestUserUnreadModel extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject("unread_test");
+		$project = $e->createProject("unread_test", "unreadCode");
 		$userId1 = $e->createUser('user1', 'user1', 'user1');
 		$userId2 = $e->createUser('user2', 'user2', 'user2');
 		$q1 = new QuestionModel($project);
@@ -201,7 +201,7 @@ class TestUserUnreadModel extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject("unread_test");
+		$project = $e->createProject("unread_test", "unreadCode");
 		$projectId = $project->id->asString();
 		
 		$userId1 = $e->createUser('user1', 'user1', 'user1');
@@ -242,7 +242,7 @@ class TestUserUnreadModel extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject("unread_test");
+		$project = $e->createProject("unread_test", "unreadCode");
 		$projectId = $project->id->asString();
 		
 		$userId1 = $e->createUser('user1', 'user1', 'user1');

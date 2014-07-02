@@ -21,7 +21,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
@@ -56,7 +56,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
@@ -96,7 +96,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$userId = $e->createUser('john', 'john', 'john');
@@ -141,7 +141,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$sense = new Sense();
@@ -163,7 +163,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$sense = new Sense();
@@ -193,7 +193,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$sense = new Sense();
@@ -222,7 +222,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		
@@ -256,7 +256,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		for ($i = 0; $i < 10; $i++) {

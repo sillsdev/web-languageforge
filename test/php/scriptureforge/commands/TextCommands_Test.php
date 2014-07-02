@@ -16,7 +16,7 @@ class TestTextCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$text = new TextModel($project);
 		$text->title = "Some Title";
 		$text->write();
@@ -28,7 +28,7 @@ class TestTextCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$text = new TextModel($project);
 		$text->title = "Some Title";
 		$text->write();
@@ -42,7 +42,7 @@ class TestTextCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		
 		$text1 = new TextModel($project);
 		$text1->title = "Some Title";
@@ -67,7 +67,7 @@ class TestTextCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		
 		$text1 = new TextModel($project);
 		$text1->title = "Some Title";

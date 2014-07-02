@@ -78,9 +78,10 @@ class MongoTestEnvironment
 	 * @param string $domain
 	 * @return ProjectModel
 	 */
-	public function createProject($name) {
+	public function createProject($name, $code) {
 		$projectModel = new ProjectModel();
 		$projectModel->projectName = $name;
+		$projectModel->projectCode = $code;
 		$projectModel->siteName = $this->website->domain;
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
@@ -159,9 +160,10 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment {
 		parent::__construct('www.languageforge.org');
 	}
 	
-	public function createProject($name) {
+	public function createProject($name, $code) {
 		$projectModel = new LexiconProjectModel();
 		$projectModel->projectName = $name;
+		$projectModel->projectCode = $code;
 		$projectModel->siteName = $this->website->domain;
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();

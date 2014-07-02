@@ -18,7 +18,7 @@ class TestProjectCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		ProjectCommands::deleteProjects(array($projectId));
@@ -28,7 +28,7 @@ class TestProjectCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$this->assertFalse($project->isArchived);
@@ -44,7 +44,7 @@ class TestProjectCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$project->isArchived = true;
 		$projectId = $project->write();
 		
@@ -64,7 +64,7 @@ class TestProjectCommands extends UnitTestCase {
 		// setup parameters: user, project and params
 		$userId = $e->createUser("existinguser", "Existing Name", "existing@example.com");
 		$user = new UserModel($userId);
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		$params = array(
 				'id' => $user->id->asString(),
@@ -92,7 +92,7 @@ class TestProjectCommands extends UnitTestCase {
 		$e->clean();
 		
 		// setup user and project
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		$userId = $e->createUser("existinguser", "Existing Name", "existing@example.com");
 		$params = array(
@@ -127,7 +127,7 @@ class TestProjectCommands extends UnitTestCase {
 		$e->clean();
 		
 		// setup parameters: project and users
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		$userIds = array();
 		
@@ -143,7 +143,7 @@ class TestProjectCommands extends UnitTestCase {
 		$e->clean();
 
 		// setup project and users
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		$projectSettings = new ProjectSettingsModel($projectId);
 		$projectSettings->smsSettings->accountId = "12345";
@@ -161,7 +161,7 @@ class TestProjectCommands extends UnitTestCase {
 		$e->clean();
 
 		// setup project and users
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		$user1Id = $e->createUser("user1name", "User1 Name", "user1@example.com");
 		$user2Id = $e->createUser("user2name", "User2 Name", "user2@example.com");
@@ -222,7 +222,7 @@ class TestProjectCommands extends UnitTestCase {
 		$e->clean();
 
 		$code = 'project1';
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$project->projectCode = $code;
 		$project->write();
 		
@@ -234,7 +234,7 @@ class TestProjectCommands extends UnitTestCase {
 		$e->clean();
 
 		$code = 'project1';
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$project->projectCode = $code;
 		$project->write();
 		

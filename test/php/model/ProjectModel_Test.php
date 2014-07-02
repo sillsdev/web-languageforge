@@ -63,7 +63,7 @@ class TestProjectModel extends UnitTestCase {
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
-		$projectModel = $e->createProject('new project');
+		$projectModel = $e->createProject('new project', 'newProjCode');
 		$projectId = $projectModel->id->asString();
 		
 		// create the reference
@@ -86,7 +86,7 @@ class TestProjectModel extends UnitTestCase {
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
-		$projectModel = $e->createProject('new project');
+		$projectModel = $e->createProject('new project', 'newProjCode');
 		$projectId = $projectModel->id->asString();
 
 		// create the reference
@@ -120,7 +120,7 @@ class TestProjectModel extends UnitTestCase {
 		// setup user and projects
 		$userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
 		$userModel = new UserModel($userId);
-		$projectModel = $e->createProject('new project');
+		$projectModel = $e->createProject('new project', 'newProjCode');
 		$projectId = $projectModel->id;
 		
 		$projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
@@ -135,7 +135,7 @@ class TestProjectModel extends UnitTestCase {
 		$um1 = new UserModel($userId1);
 		$userId2 = $e->createUser('user2', 'User Two', 'user2@example.com');
 		$um2 = new UserModel($userId2);
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		// Check the list users is empty
@@ -217,7 +217,7 @@ class TestProjectModel extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('user1', 'user1', 'user1');
 		$user = new UserModel($userId);
-		$project = $e->createProject('testProject');
+		$project = $e->createProject('testProject', 'testProjCode');
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$projectId = $project->write();
 		$user->addProject($project->id->asString());

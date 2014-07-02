@@ -21,7 +21,7 @@ class TestLexBaseViewDto extends UnitTestCase {
 		$user = new UserProfileModel($userId);
 		$user->role = SiteRoles::USER;
 
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);

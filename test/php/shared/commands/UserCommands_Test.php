@@ -70,7 +70,7 @@ class TestUserCommands extends UnitTestCase {
 
 		// setup parameters: username and project
 		$userName = 'username';
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
 		
 		$currentUserId = $e->createUser('test1', 'test1', 'test@test.com');
@@ -235,7 +235,7 @@ class TestUserCommands extends UnitTestCase {
 	
 		$inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
 		$toEmail = 'someone@example.com';
-		$project = $e->createProject(SF_TESTPROJECT);
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$project->projectCode = 'someProjectCode';
 		$project->write();
 		$delivery = new MockUserCommandsDelivery();
