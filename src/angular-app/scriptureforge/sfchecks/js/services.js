@@ -23,9 +23,6 @@ angular.module('sfchecks.services', ['jsonRpc'])
 		this.pageDto = function(callback) {
 			jsonRpc.call('project_pageDto', [], callback);
 		};
-		this.updateUserRole = function(userId, role, callback) {
-			jsonRpc.call('project_updateUserRole', [userId, role], callback);
-		};
 	}])
 	.service('messageService', ['jsonRpc', function(jsonRpc) {
 		jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.

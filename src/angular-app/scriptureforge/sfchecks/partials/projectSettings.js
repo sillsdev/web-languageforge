@@ -213,8 +213,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	};
 	
 }])
-.controller('ProjectSettingsCommunicationCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
-                                 function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService) {
+.controller('ProjectSettingsCommunicationCtrl', ['$scope', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
+                                                 function($scope, userService, sfchecksProjectService, ss, notice, messageService) {
 	$scope.updateCommunicationSettings = function() {
 		sfchecksProjectService.updateSettings($scope.settings.sms, $scope.settings.email, function(result) {
 			if (result.ok) {
@@ -224,8 +224,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	};
 	
 }])
-.controller('ProjectSettingsPropertiesCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
-                                 function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService) {
+.controller('ProjectSettingsPropertiesCtrl', ['$scope', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
+                                              function($scope, userService, sfchecksProjectService, ss, notice, messageService) {
 
 	// TODO This can be moved to the page level controller, it is common with the Setup tab.
 	$scope.updateProject = function() {
@@ -247,14 +247,13 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	
 
 }])
-.controller('ProjectSettingsSetupCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
-                                 function($scope, $location, $routeParams, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService) {
+.controller('ProjectSettingsSetupCtrl', ['$scope', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
+                                         function($scope, userService, sfchecksProjectService, ss, notice, messageService) {
 
 	// TODO This can be moved to the page level controller, it is common with the Setup tab.
 	$scope.currentListsEnabled = [];
 	$scope.updateProject = function() {
 		// populate the list of enabled user profile properties
-//		console.log("updateProject ", $scope.currentListsEnabled, ' ', $scope.project.userProperties.userProfilePropertiesEnabled);
 		$scope.project.userProperties.userProfilePropertiesEnabled = [];
 		for (var listId in $scope.currentListsEnabled) {
 			if ($scope.currentListsEnabled[listId]) {
@@ -273,7 +272,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 
 	$scope.currentListId = '';
 	$scope.selectList = function(listId) {
-//		console.log("selectList ", listId);
 		$scope.currentListId = listId;
 	};
 
@@ -296,7 +294,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	};
 
 	$scope.$watch('project.userProperties', function(newValue) {
-//		console.log("project watch ", newValue);
 		if (newValue != undefined) {
 			for (var key in newValue.userProfilePickLists) {
 				$scope.currentListId = key;
@@ -311,8 +308,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	});
 
 }])
-.controller('ProjectSettingsUsersCtrl', ['$scope', '$location', '$routeParams', 'breadcrumbService', 'userService', 'projectService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
-                                 function($scope, $location, $routeParams, breadcrumbService, userService, projectService, sfchecksProjectService, ss, notice, messageService) {
+.controller('ProjectSettingsUsersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
+                                         function($scope, userService, projectService, ss, notice, messageService) {
 	$scope.userFilter = '';
 	$scope.message = {};
 	$scope.newMessageCollapsed = true;
@@ -375,7 +372,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	};
 	
 	$scope.removeProjectUsers = function() {
-//		console.log("removeUsers");
 		var userIds = [];
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			userIds.push($scope.selected[i].id);
@@ -404,7 +400,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     ];
 	
 	$scope.onRoleChange = function(user) {
-		sfchecksProjectService.updateUserRole(user.id, user.role, function(result) {
+		projectService.updateUserRole(user.id, user.role, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, user.username + "'s role was changed to " + user.role);
 			}
@@ -426,7 +422,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     $scope.typeahead.userName = '';
 	
 	$scope.queryUser = function(userName) {
-//		console.log('searching for ', userName);
 		userService.typeaheadExclusive(userName, $scope.project.id, function(result) {
 			// TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
 			if (result.ok) {
@@ -470,7 +465,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			}
 		}
 		return false;
-	}
+	};
+	
 	$scope.calculateAddMode = function() {
 		// TODO This isn't adequate.  Need to watch the 'typeahead.userName' and 'selection' also. CP 2013-07
 		if (!$scope.typeahead.userName) {
@@ -524,7 +520,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 							return;
 						}
 					}
-					sfchecksProjectService.updateUserRole($scope.user.id, 'contributor', function(result) {
+					projectService.updateUserRole($scope.user.id, 'contributor', function(result) {
 						if (result.ok) {
 							notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectName + " successfully");
 							$scope.queryProjectSettings();
@@ -543,7 +539,6 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	};
 
 	$scope.selectUser = function(item) {
-//		console.log('user selected', item);
 		$scope.user = item;
 		$scope.typeahead.userName = item.name;
 		$scope.updateAddMode('addExisting');
