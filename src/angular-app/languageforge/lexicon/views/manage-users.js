@@ -2,7 +2,7 @@
 
 angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop'])
 .controller('manageUsersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexBaseViewService', '$filter',
-                                    function($scope, userService, projectService, ss, notice, lexProjectService, baseViewService, $filter) {
+                                function($scope, userService, projectService, ss, notice, lexProjectService, baseViewService, $filter) {
 
 	$scope.queryProjectUsers = function() {
 		lexProjectService.users(function(result) {
@@ -70,11 +70,7 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 	];
 	
 	$scope.onRoleChange = function(user) {
-		var model = {};
-		model.id = user.id;
-		model.role = user.role;
-//		console.log('userchange...', model);
-		projectService.updateUser(model, function(result) {
+		projectService.updateUserRole(user.id, user.role, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, $filter('translate')("{userName}'s role was changed to {role}", {userName: user.username, role: user.role}));
 			}
@@ -143,10 +139,25 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 		} else if ($scope.addMode == 'addExisting') {
 			var model = {};
 			model.id = $scope.user.id;
-			projectService.updateUser(model, function(result) {
+			// Check existing users to see if we're adding someone that already exists in the project
+			projectService.users(function(result) {
 				if (result.ok) {
-					notice.push(notice.SUCCESS, $filter('translate')("{userName} was added to {projectName} successfully.", {userName: $scope.user.name, projectName: $scope.project.projectName}));
-					$scope.queryProjectUsers();
+					for (var i=0, l=result.data.users.length; i<l; i++) {
+						// This approach works, but is unnecessarily slow. We should have an "is user in project?" API,
+						// rather than returning all users then searching through them in O(N) time.
+						// TODO: Make an "is user in project?" query API. 2014-06 RM
+						var thisUser = result.data.users[i];
+						if (thisUser.id == model.id) {
+							notice.push(notice.WARN, $filter('translate')("'{userName}' is already a member of {projectName}.", {userName: $scope.user.name, projectName: $scope.project.projectName}));
+							return;
+						}
+					}
+					projectService.updateUserRole($scope.user.id, 'contributor', function(result) {
+						if (result.ok) {
+							notice.push(notice.SUCCESS, $filter('translate')("{userName} was added to {projectName} successfully.", {userName: $scope.user.name, projectName: $scope.project.projectName}));
+							$scope.queryProjectSettings();
+						}
+					});
 				}
 			});
 		} else if ($scope.addMode == 'invite') {
