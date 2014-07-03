@@ -6,8 +6,19 @@ use models\UserModel;
 use models\mapper\JsonEncoder;
 use models\ProjectModel;
 use libraries\shared\palaso\CodeGuard;
+use libraries\shared\Website;
 
 class UserProfileEncoder extends JsonEncoder {
+
+	/**
+	 * 
+	 * @var Website
+	 */
+	private $_website;
+	
+	public function __construct($website) {
+		$this->_website = $website;
+	}
 	
 	/**
 	 * @param string $key
@@ -18,15 +29,24 @@ class UserProfileEncoder extends JsonEncoder {
 		if ($key != 'projects') {
  			return parent::encodeReferenceList($key, $model);
 		}
+		$domain = $this->_website->domain;
 		$result = array_map(
-				function($id) {
+				function($id) use ($domain) {
 					CodeGuard::checkTypeAndThrow($id, 'models\mapper\Id');
-					$projectDto = array();
+					$projectDto = NULL;
 					try {
 						$projectModel = new ProjectModel($id->asString());
-						$projectDto['id'] = $id->asString();
-						$projectDto['name'] = $projectModel->projectName;
-						$projectDto['userProperties'] = self::encode($projectModel->userProperties);
+						// Filter for active projects on the same domain.  
+						// Also exclude projects that don't have things to modify on User Profile
+						// userProfilePropertiesEnabled is type ArrayOf, so testing for empty() didn't work 
+						if ( 	(! $projectModel->isArchived) && 
+								($projectModel->siteName == $domain) && 
+								(count($projectModel->userProperties->userProfilePropertiesEnabled)>0) ){
+							$projectDto = array();
+							$projectDto['id'] = $id->asString();
+							$projectDto['name'] = $projectModel->projectName;
+							$projectDto['userProperties'] = self::encode($projectModel->userProperties);
+						}
 					} catch (\Exception $e) {
 						
 					}
@@ -34,11 +54,13 @@ class UserProfileEncoder extends JsonEncoder {
 				},
 				$model->refs
 		);
-		return $result;
+		// Filter out empty entries in the project list
+		return array_values(array_filter($result));
 	}
 	
-	public static function encode($model) {
-		$e = new UserProfileEncoder();
+	// Not using encode because we need the additional $website param
+	public static function encodeModel($model, $website) {
+		$e = new UserProfileEncoder($website);
 		return $e->_encode($model);
 	}
 }

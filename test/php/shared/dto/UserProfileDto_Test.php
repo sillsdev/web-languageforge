@@ -33,7 +33,7 @@ class TestUserProfileDto extends UnitTestCase {
 		$user->write();
 		$project->write();
 				
-		$dto = UserProfileDto::encode($userId);
+		$dto = UserProfileDto::encode($userId, $e->website);
 		
 		$this->assertIsA($dto['userProfile'], 'array');
 		$this->assertEqual($dto['userProfile']['id'], $userId);

@@ -116,11 +116,10 @@ class Sf
 	
 	/**
 	 * Read the user profile from $id
-	 * @param string $id
 	 * @return UserProfileDto
 	 */
 	public function user_readProfile() {
-		return UserProfileDto::encode($this->_userId);
+		return UserProfileDto::encode($this->_userId, $this->_website);
 	}
 	
 	/**
