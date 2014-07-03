@@ -55,52 +55,19 @@ class Website {
 	 * @var array
 	 */
 	private static $_redirect;
-	public static function init() {
-		$sites = array();
-		$redirect = array();
-		
-		// SCRIPTUREFORGE WEBSITES
-		$sites['scriptureforge.local'] = new Website('scriptureforge.local', 'Scripture Forge', self::SCRIPTUREFORGE, 'default', true);
-		$sites['jamaicanpsalms.scriptureforge.local'] = new Website('jamaicanpsalms.scriptureforge.local', 'Jamaican Psalms', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
-		$sites['demo.scriptureforge.local'] = new Website('demo.scriptureforge.local', 'Scripture Forge', self::SCRIPTUREFORGE, 'simple', true);
-
-		$sites['dev.scriptureforge.org'] = new Website('dev.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE, 'default', true);
-		$sites['demo.dev.scriptureforge.org'] = new Website('demo.dev.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE, 'simple', true);
-		$sites['jamaicanpsalms.dev.scriptureforge.org'] = new Website('jamaicanpsalms.dev.scriptureforge.org', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
-		
-		$sites['www.scriptureforge.org'] = new Website('www.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE);
-		$sites['jamaicanpsalms.com'] = new Website('jamaicanpsalms.com', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
-
-		// SCRIPTUREFORGE REDIRECTS
-		$redirect['scriptureforge.org'] = 'www.scriptureforge.org';
-		$redirect['www.jamaicanpsalms.com'] = 'jamaicanpsalms.com';
-		$redirect['www.jamaicanpsalms.org'] = 'jamaicanpsalms.com';
-		$redirect['jamaicanpsalms.org'] = 'jamaicanpsalms.com';
-
-		// LANGUAGEFORGE WEBSITES
-		$sites['languageforge.local'] = new Website('languageforge.local', 'Language Forge', self::LANGUAGEFORGE);
-		$sites['www.languageforge.org'] = new Website('www.languageforge.org', 'Language Forge', self::LANGUAGEFORGE);
-		$sites['dev.languageforge.org'] = new Website('dev.languageforge.org', 'Language Forge', self::LANGUAGEFORGE);
-		
-		self::$_sites = $sites;
-		self::$_redirect = $redirect;
-	}
-	
 	/**
 	 * 
 	 * @param string $domain - domain / hostname of the website
-	 * @param string $name - display name of the website
 	 * @param string $base - either 'scriptureforge' or 'languageforge'
-	 * @param string $theme - theme name
-	 * @param bool $ssl - whether or not to force HTTPS for this website
 	 */
-	public function __construct($domain, $name, $base = self::SCRIPTUREFORGE, $theme = 'default', $ssl = false, $defaultProjectCode = '') {
+	public function __construct($domain, $base) {
+		if ($base != self::SCRIPTUREFORGE && $base != self::LANGUAGEFORGE) { throw new \Exception('website->base must be either scriptureforge or languageforge'); }
 		$this->domain = $domain;
-		$this->name = $name;
+		$this->name = $domain;
 		$this->base = $base;
-		$this->theme = $theme;
-		$this->ssl = $ssl;
-		$this->defaultProjectCode = $defaultProjectCode;
+		$this->theme = 'default';
+		$this->ssl = false;
+		$this->defaultProjectCode = '';
 	}
 	
 	/**
@@ -216,6 +183,130 @@ class Website {
 		return $themeNames;	
 	}
 	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * This function contains the "definitions" for each website/domain
+	 */
+	public static function init() {
+		$sites = array();
+		$redirect = array();
+		
+		/*
+		 * **************************
+		 * SCRIPTURE FORGE WEBSITES
+		 * **************************
+		 */
+
+		// scriptureforge.local sites
+		$w = new Website('scriptureforge.local', self::SCRIPTUREFORGE);
+		$w->name = 'Scripture Forge'; 
+		$w->ssl = true;
+		$sites['scriptureforge.local'] = $w;
+		
+		$w = new Website('jamaicanpsalms.scriptureforge.local', self::SCRIPTUREFORGE);
+		$w->name = 'The Jamaican Psalms Project'; 
+		$w->ssl = true;
+		$w->theme = 'jamaicanpsalms';
+		$w->defaultProjectCode = 'jamaicanpsalms';
+		$sites['jamaicanpsalms.scriptureforge.local'] = $w;
+		
+		$w = new Website('demo.scriptureforge.local', self::SCRIPTUREFORGE);
+		$w->name = 'Scripture Forge'; 
+		$w->ssl = true;
+		$w->theme = 'simple';
+		$sites['demo.scriptureforge.local'] = $w;
+		
+		
+		// dev.scriptureforge.org sites
+		$w = new Website('dev.scriptureforge.org', self::SCRIPTUREFORGE);
+		$w->name = 'Scripture Forge'; 
+		$w->ssl = true;
+		$sites['dev.scriptureforge.org'] = $w;
+		
+		$w = new Website('demo.dev.scriptureforge.org', self::SCRIPTUREFORGE);
+		$w->name = 'Scripture Forge'; 
+		$w->ssl = true;
+		$w->theme = 'simple';
+		$sites['demo.dev.scriptureforge.org'] = $w;
+
+		$w = new Website('jamaicanpsalms.dev.scriptureforge.org', self::SCRIPTUREFORGE);
+		$w->name = 'The Jamaican Psalms Project'; 
+		$w->ssl = true;
+		$w->theme = 'jamaicanpsalms';
+		$w->defaultProjectCode = 'jamaicanpsalms';
+		$sites['jamaicanpsalms.dev.scriptureforge.org'] = $w;
+
+		
+		// scriptureforge.org 
+		$w = new Website('www.scriptureforge.org', self::SCRIPTUREFORGE);
+		$w->name = 'Scripture Forge'; 
+		$w->ssl = true;
+		$sites['www.scriptureforge.org'] = $w;
+
+		
+		// jamaicanpsalms.com
+		$w = new Website('jamaicanpsalms.com', self::SCRIPTUREFORGE);
+		$w->name = 'The Jamaican Psalms Project'; 
+		$w->ssl = true;
+		$w->theme = 'jamaicanpsalms';
+		$w->defaultProjectCode = 'jamaicanpsalms';
+		$sites['jamaicanpsalms.com'] = $w;
+
+
+		/*
+		 * **************************
+		 * LANGUAGE FORGE WEBSITES
+		 * **************************
+		 */
+
+		// languageforge.local sites
+		$w = new Website('languageforge.local', self::LANGUAGEFORGE);
+		$w->name = 'Language Forge'; 
+		$w->ssl = true;
+		$sites['languageforge.local'] = $w;
+		
+		// dev.languageforge.org sites
+		$w = new Website('dev.languageforge.org', self::LANGUAGEFORGE);
+		$w->name = 'Language Forge'; 
+		$w->ssl = true;
+		$sites['dev.languageforge.org'] = $w;
+		
+		// languageforge.org
+		$w = new Website('www.languageforge.org', self::LANGUAGEFORGE);
+		$w->name = 'Language Forge'; 
+		$w->ssl = true;
+		$sites['www.languageforge.org'] = $w;
+		
+		
+		/*
+		 * **************************
+		 * REDIRECTS
+		 * **************************
+		 */
+		
+		$redirect['scriptureforge.org'] = 'www.scriptureforge.org';
+		$redirect['languageforge.org'] = 'www.languageforge.org';
+		$redirect['www.jamaicanpsalms.com'] = 'jamaicanpsalms.com';
+		$redirect['www.jamaicanpsalms.org'] = 'jamaicanpsalms.com';
+		$redirect['jamaicanpsalms.org'] = 'jamaicanpsalms.com';
+
+		
+		self::$_sites = $sites;
+		self::$_redirect = $redirect;
+	}
 	
 }
 Website::init();
