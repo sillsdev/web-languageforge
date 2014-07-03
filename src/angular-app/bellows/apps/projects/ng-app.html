@@ -27,7 +27,8 @@
                     <input type="text" data-ng-model="newProject.projectCode" maxlength="50" required placeholder="Project Code" data-ng-blur="checkProjectCode()"/> 
                     <span  ng-show="projectCodeLoading"><img id="projectCodeLoading" src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
                     <span  ng-show="projectCodeOk"><img id="projectCodeOk" src="/images/shared/tick.png" title="Project Code is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
-                    <span  ng-show="projectCodeExists"><img id="projectCodeExists" src="/images/shared/exclamation.png" title="Project Code already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                    <span  ng-show="projectCodeExists"><img id="projectCodeExists" src="/images/shared/exclamation.png" title="Project Code already exists!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                    <span  ng-show="!projectCodeAlphanumeric && !projectCodeLoading"><img id="projectCodeAlphanumeric" src="/images/shared/exclamation.png" title="Project Code th{newProject.projectCode} not alphanumeric!" style="position: absolute; padding-left: 5px; padding-tyop: 8px;"/></span>
                 </div>
                 <div class="control-group">
                     <select required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
@@ -35,7 +36,7 @@
                     </select>
                 </div>
                 <div class="control-group">
-                    <button type="submit" class="btn" data-ng-disabled="!(newProject.projectName && newProject.projectCode && projectCodeOk && newProject.appName)" data-ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
+                    <button type="submit" class="btn" data-ng-disabled="!(newProject.projectName && newProject.projectCode && projectCodeOk && projectCodeAlphanumeric && newProject.appName)" data-ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
                 </div>
             </form>
         </div>
