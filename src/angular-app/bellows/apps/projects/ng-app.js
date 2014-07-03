@@ -121,10 +121,15 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 	};
 	
 	$scope.checkProjectCode = function() {
+		var patt = /^[a-zA-Z0-9]+$/i;
 		$scope.projectCodeOk = false;
 		$scope.projectCodeExists = false;
-		if ($scope.newProject.projectCode) {
+		$scope.projectCodeAlphanumeric = false;
+		
+		// Check projectCode is alphanumeric
+		if (patt.test($scope.newProject.projectCode)) {
 			$scope.projectCodeLoading = true;
+			$scope.projectCodeAlphanumeric = true;
 			projectService.projectCodeExists($scope.newProject.projectCode, function(result) {
 				$scope.projectCodeLoading = false;
 				if (result.ok) {
