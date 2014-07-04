@@ -84,7 +84,14 @@ angular.module('lexicon',
 			);
 		$routeProvider.otherwise({redirectTo: '/projects'});
 	}])
-	.controller('MainCtrl', ['$scope', 'lexBaseViewService', 'lexProjectService', '$translate', function($scope, lexBaseViewService, lexProjectService, $translate) {
+	.controller('MainCtrl', ['$scope', 'sessionService', 'lexBaseViewService', 'lexProjectService', '$translate', 
+	                         function($scope, ss, lexBaseViewService, lexProjectService, $translate) {
+		$scope.rights = {};
+		$scope.rights.remove = ss.hasProjectRight(ss.domain.USERS, ss.operation.DELETE); 
+		$scope.rights.create = ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE); 
+		$scope.rights.edit = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
+		$scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create || $scope.rights.edit;
+		
 		$scope.interfaceConfig = {};
 		$scope.interfaceConfig.userLanguageCode = 'en';
 		$scope.interfaceConfig.direction = 'ltr';
@@ -150,13 +157,13 @@ angular.module('lexicon',
 	.controller('LexiconMenuCtrl', ['$scope', 'lexBaseViewService', 'lexProjectService', 
 	                                function($scope, lexBaseViewService, lexProjectService) {
 		$scope.isItemVisible = function(itemName) {
-			// Default to visible if config not defined
+			// Default to invisible if config not defined
 			if (angular.isUndefined($scope.config)) {
 				return false;
 			};
-			// Default to invisible if nothing specified in config
+			// Default to visible if nothing specified in config
 			if (angular.isUndefined($scope.config.tasks[itemName])) {
-				return false;
+				return true;
 			};
 			return $scope.config.tasks[itemName].visible;
 		};
