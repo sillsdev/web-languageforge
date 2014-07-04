@@ -2,11 +2,10 @@
 
 namespace models\commands;
 
+use libraries\shared\Website;
 use models\shared\rights\SiteRoles;
 use models\ProjectModel;
 use models\UserModel;
-use libraries\shared\Website;
-
 
 class SessionCommands {
 	
@@ -19,7 +18,6 @@ class SessionCommands {
 	public static function getSessionData($projectId, $userId, $website) {
 		$sessionData = array();
 		$sessionData['userId'] = (string)$userId;
-		$sessionData['projectId'] = (string)$projectId;
 		$sessionData['baseSite'] = $website->base;
 
 		// Rights
@@ -31,9 +29,13 @@ class SessionCommands {
 		$sessionData['userSiteRights'] = SiteRoles::getRightsArray($role);
 
 		if ($projectId) {
+			$sessionData['projectId'] = (string)$projectId;
 			$project = ProjectModel::getById($projectId);
+			$sessionData['project'] = array();
+			$sessionData['project']['id'] = (string)$projectId;
+			$sessionData['project']['projectName'] = $project->projectName;
 			$sessionData['userProjectRights'] = $project->getRightsArray($userId);
-			$sessionData['projectSettings'] = $project->getPublicSettings();
+			$sessionData['projectSettings'] = $project->getPublicSettings($userId);
 		}
 
 		// File Size
