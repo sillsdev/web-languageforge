@@ -29,7 +29,6 @@ class SessionCommands {
 		$sessionData['userSiteRights'] = SiteRoles::getRightsArray($role);
 
 		if ($projectId) {
-			$sessionData['projectId'] = (string)$projectId;
 			$project = ProjectModel::getById($projectId);
 			$sessionData['project'] = array();
 			$sessionData['project']['id'] = (string)$projectId;
