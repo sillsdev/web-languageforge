@@ -199,10 +199,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	 * Returns the "public" settings of this project (the ones that everyone
 	 * is allowed to see, with no security concerns)
 	 * Base classes should expand on this to add more settings
+	 * @param string $userId
+	 * @return array
 	 */
-	public function getPublicSettings() {
+	public function getPublicSettings($userId) {
 		$settings = array(
-			"allowAudioDownload" => $this->allowAudioDownload,
 			"allowInviteAFriend" => $this->allowInviteAFriend,
 		);
 		return $settings;

@@ -40,11 +40,9 @@ class TestLexProjectDto extends UnitTestCase {
 		$this->assertEqual($dto['config']['entry']['fields']['lexeme']['label'], 'Word');
 		$this->assertEqual($dto['config']['entry']['fields']['lexeme']['label'], 'Word');
 		$this->assertEqual($dto['config']['entry']['fields']['senses']['fields']['partOfSpeech']['label'], 'Part of Speech');
-		$this->assertEqual($dto['project']['projectName'], SF_TESTPROJECT);
 		$this->assertEqual($dto['project']['interfaceLanguageCode'], 'en');
 		$this->assertEqual($dto['project']['projectCode'], 'lf');
 		$this->assertTrue($dto['project']['featured']);
-		$this->assertTrue(count($dto['rights']) > 0, "No rights in dto");
 	}
 	
 }
