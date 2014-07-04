@@ -2,12 +2,12 @@
 
 namespace models\languageforge\lexicon\dto;
 
+use libraries\shared\LanguageData;
 use models\languageforge\lexicon\LexiconProjectModel;
-use models\mapper\JsonEncoder;
 use models\shared\dto\RightsHelper;
+use models\mapper\JsonEncoder;
 use models\ProjectModel;
 use models\UserProfileModel;
-use libraries\shared\LanguageData;
 
 class LexBaseViewDto {
 	
@@ -37,10 +37,8 @@ class LexBaseViewDto {
 		
 		$data = array();
 		$data['config'] = $config;
-		$data['project'] = array('projectName' => $project->projectName);
 		$data['interfaceConfig'] = array('userLanguageCode' => $interfaceLanguageCode);
 		$data['interfaceConfig']['selectLanguages'] = $selectInterfaceLanguages;
-		$data['rights'] = RightsHelper::encode($user, $project);
 		
 		return $data;
 	}

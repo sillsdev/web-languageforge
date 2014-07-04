@@ -8,7 +8,6 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 		lexProjectService.users(function(result) {
 			if (result.ok) {
 				baseViewService.setData(result.data);
-				$scope.project = result.data.project;
 				$scope.list.users = result.data.users;
 				$scope.list.userCount = result.data.userCount;
 			}

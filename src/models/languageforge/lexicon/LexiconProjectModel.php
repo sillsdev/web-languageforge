@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon;
 
 use libraries\shared\LanguageData;
 use models\languageforge\lexicon\config\LexConfiguration;
+use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\languageforge\LfProjectModel;
 use models\mapper\MapOf;
 
@@ -66,6 +67,11 @@ class LexiconProjectModel extends LfProjectModel {
 			}
 			$this->inputSystems[$tag] = new InputSystem($tag, $name, $abbr);
 		}
+	}
+	
+	public function getPublicSettings($userId) {
+		$settings = parent::getPublicSettings($userId);
+		return array_merge($settings, LexBaseViewDto::encode($this->id->asString(), $userId));
 	}
 	
 }

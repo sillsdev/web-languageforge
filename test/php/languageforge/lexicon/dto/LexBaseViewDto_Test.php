@@ -39,10 +39,8 @@ class TestLexBaseViewDto extends UnitTestCase {
 		$this->assertEqual($dto['config']['entry']['fields']['lexeme']['label'], 'Word');
 		$this->assertEqual($dto['config']['entry']['fields']['lexeme']['label'], 'Word');
 		$this->assertEqual($dto['config']['entry']['fields']['senses']['fields']['partOfSpeech']['label'], 'Part of Speech');
-		$this->assertEqual($dto['project']['projectName'], SF_TESTPROJECT);
 		$this->assertEqual($dto['interfaceConfig']['userLanguageCode'], 'th');
 		$this->assertEqual($dto['interfaceConfig']['selectLanguages']['options']['en'], 'English');
-		$this->assertTrue(count($dto['rights']) > 0, "No rights in dto");
 	}
 	
 }

@@ -7,6 +7,8 @@ angular.module('lexicon',
 		'dbe',
 		'meaning',
 		'examples',
+		'bellows.services',
+		'bellows.filters',
 		'lexicon.add-meanings',
 		'lexicon.configuration',
 		'lexicon.import-export',
@@ -14,8 +16,7 @@ angular.module('lexicon',
 		'lexicon.manage-users',
 		'lexicon.services',
 		'lexicon.filters',
-		 'bellows.filters',
-		 'pascalprecht.translate' 
+		'pascalprecht.translate' 
 	])
 	.config(['$routeProvider', '$translateProvider', function($routeProvider, $translateProvider) {
 		// configure interface language filepath
@@ -92,18 +93,10 @@ angular.module('lexicon',
 		$scope.rights.edit = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
 		$scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create || $scope.rights.edit;
 		
-		$scope.interfaceConfig = {};
-		$scope.interfaceConfig.userLanguageCode = 'en';
-		$scope.interfaceConfig.direction = 'ltr';
-		$scope.interfaceConfig.pullToSide = 'pull-right';
-		$scope.interfaceConfig.pullNormal = 'pull-left';
-		$scope.interfaceConfig.placementToSide = 'left';
-		$scope.interfaceConfig.placementNormal = 'right';
-		$scope.interfaceConfig.selectLanguages = {
-			'optionsOrder': ['en'],
-			'options': { 'en': 'English' }
-		};
-		var pristineLanguageCode = 'en';
+		$scope.project = ss.session().project;
+		$scope.config = ss.session().projectSettings.config;
+		$scope.interfaceConfig = ss.session().projectSettings.interfaceConfig;
+		var pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
 		
 		function changeInterfaceLanguage(code) {
 			$translate.use(code);

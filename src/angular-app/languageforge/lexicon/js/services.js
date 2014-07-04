@@ -1,4 +1,4 @@
-angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
+angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.breadcrumb'])
 .service('lexBaseViewService', [function(jsonRpc, $location) {
 	var _callbacks = [];
 	var _data = {
@@ -56,7 +56,8 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 		return 0;
 	};
 }])
-.service('lexProjectService', ['jsonRpc', 'breadcrumbService', 'lexLinkService', '$location', function(jsonRpc, breadcrumbService, linkService, $location) {
+.service('lexProjectService', ['jsonRpc', 'sessionService', 'breadcrumbService', 'lexLinkService', '$location', 
+                               function(jsonRpc, ss, breadcrumbService, linkService, $location) {
 	jsonRpc.connect('/api/sf');
 	this.baseViewDto = function(view, label, callback) {
 		jsonRpc.call('lex_baseViewDto', [], function(result) {
@@ -64,7 +65,7 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 				breadcrumbService.set('top',
 					[
 					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectName},
+					 {href: linkService.project(), label: ss.session().project.projectName},
 					 {href: linkService.projectView(view), label: label},
 					]
 				);
@@ -112,7 +113,7 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 				breadcrumbService.set('top',
 					[
 					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectName},
+					 {href: linkService.project(), label: ss.session().project.projectName},
 					 {href: linkService.projectView('users'), label: 'User Management'},
 					]
 				);
@@ -131,7 +132,8 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 		return parts[2];
 	};
 }])
-.service('lexEntryService', ['jsonRpc', 'lexProjectService', 'breadcrumbService', 'lexLinkService', function(jsonRpc, projectService, breadcrumbService, linkService) {
+.service('lexEntryService', ['jsonRpc', 'sessionService', 'lexProjectService', 'breadcrumbService', 'lexLinkService', 
+                             function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
 	jsonRpc.connect('/api/sf');
 	this.read = function(id, callback) {
 		jsonRpc.call('lex_entry_read', [id], callback);
@@ -151,7 +153,7 @@ angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
 				breadcrumbService.set('top',
 					[
 					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectName},
+					 {href: linkService.project(), label: ss.session().project.projectName},
 					 {href: linkService.projectView('dbe'), label: 'Browse And Edit'},
 					]
 				);
