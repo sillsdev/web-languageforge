@@ -1,5 +1,5 @@
 <div class="container" data-ng-cloak data-ng-controller="SettingsCtrl">
-	<h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2>
+	<h2>{{project.projectName}} <span translate="Settings"></span></h2>
 	<tabset>
 		<tab heading="{{ 'Project Properties' | translate }}">
 			<form class="well" data-ng-submit="updateProject()">
@@ -13,7 +13,7 @@
 						<div class="controls">
 							<select class="form-control" id="language" 
 								data-ng-model="project.interfaceLanguageCode" 
-								data-ng-options="selects.interfaceLanguages.options[code] for code in selects.interfaceLanguages.optionsOrder">
+								data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder">
 								<option value="">-- choose a language --</option></select>
 						</div>
 						<label class="control-label" for="projCode" translate="Project Code"></label>
