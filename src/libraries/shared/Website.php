@@ -2,6 +2,8 @@
 
 namespace libraries\shared;
 
+use models\shared\rights\SiteRoles;
+
 use models\ProjectModel;
 
 class Website {
@@ -47,6 +49,18 @@ class Website {
 	
 	/**
 	 * 
+	 * @var string - a role constant from SiteRoles
+	 */
+	public $userDefaultSiteRole;
+	
+	/**
+	 * 
+	 * @var bool
+	 */
+	public $allowSignupFromOtherSites;
+	
+	/**
+	 * 
 	 * @var array<Website>
 	 */
 	private static $_sites;
@@ -68,6 +82,8 @@ class Website {
 		$this->theme = 'default';
 		$this->ssl = false;
 		$this->defaultProjectCode = '';
+		$this->userDefaultSiteRole = SiteRoles::USER;
+		$this->allowSignupFromOtherSites = true;
 	}
 	
 	/**
