@@ -93,7 +93,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 				breadcrumbService.set('top',
 					[
 					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectName},
+					 {href: linkService.project(), label: ss.session().project.projectName},
 					 {href: linkService.projectView('settings'), label: 'Project Settings'},
 					]
 				);
