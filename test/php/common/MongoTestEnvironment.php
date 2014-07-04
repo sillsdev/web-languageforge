@@ -82,6 +82,7 @@ class MongoTestEnvironment
 		$projectModel = new ProjectModel();
 		$projectModel->projectName = $name;
 		$projectModel->projectCode = $code;
+		$projectModel->isArchived = false;
 		$projectModel->siteName = $this->website->domain;
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
