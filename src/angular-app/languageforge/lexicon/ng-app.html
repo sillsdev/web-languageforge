@@ -19,15 +19,15 @@
 		<div class="control-group">
 		</div>
 		<div class="lexnav control-group">
-			<div class="btn-group {{interfaceConfig.pullToSide}}">
+			<div class="btn-group {{interfaceConfig.pullToSide}}" data-ng-show="rights.edit">
 				<a class="btn dropdown-toggle" data-toggle="dropdown" data-tooltip-placement="{{interfaceConfig.placementToSide}}" data-tooltip="Settings" href="#">
 					<i class="icon-cog icon-2x"></i>&nbsp;&nbsp;<span class="caret"></span></a>
 				<ul class="dropdown-menu {{interfaceConfig.pullToSide}}">
 					<li data-ng-show="isItemVisible('configuration')"><a href="#/configuration">Dictionary Configuration</a></li>
 					<li class="divider" data-ng-show="isItemVisible('configuration')"></li>
 					<li data-ng-show="isItemVisible('importExport')"><a href="#/importExport">Import/Export</a></li>
-					<li data-ng-show="true"><a href="#/settings">Project Settings</a></li>
-					<li data-ng-show="true"><a href="#/users">User Management</a></li>
+					<li data-ng-show="isItemVisible('settings')"><a href="#/settings">Project Settings</a></li>
+					<li data-ng-show="isItemVisible('users')"><a href="#/users">User Management</a></li>
 				</ul>
 			</div>
 			<div class="btn-group" data-ng-show="isItemVisible('dashboard')">
