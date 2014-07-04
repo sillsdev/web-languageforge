@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop'])
-.controller('manageUsersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexBaseViewService', '$filter',
-                                function($scope, userService, projectService, ss, notice, lexProjectService, baseViewService, $filter) {
+.controller('manageUsersCtrl', ['$scope', 'userService', 'projectService', 'silNoticeService', 'lexProjectService', 'lexBaseViewService', '$filter',
+                                function($scope, userService, projectService, notice, lexProjectService, baseViewService, $filter) {
 
 	$scope.queryProjectUsers = function() {
 		lexProjectService.users(function(result) {
@@ -11,14 +11,6 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 				$scope.project = result.data.project;
 				$scope.list.users = result.data.users;
 				$scope.list.userCount = result.data.userCount;
-				
-				// Rights
-				var rights = result.data.rights;
-				$scope.rights = {};
-				$scope.rights.deleteOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.DELETE); 
-				$scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE); 
-				$scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
-				$scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
 			}
 		});
 	};
@@ -41,7 +33,6 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 	};
 	
 	$scope.removeProjectUsers = function() {
-//		console.log("removeUsers");
 		var userIds = [];
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
 			userIds.push($scope.selected[i].id);
@@ -91,7 +82,6 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 	$scope.typeahead.userName = '';
 	
 	$scope.queryUser = function(userName) {
-//		console.log('searching for ', userName);
 		userService.typeahead(userName, function(result) {
 			// TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
 			if (result.ok) {
@@ -171,7 +161,6 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 	};
 
 	$scope.selectUser = function(item) {
-//		console.log('user selected', item);
 		$scope.user = item;
 		$scope.typeahead.userName = item.name;
 		$scope.updateAddMode('addExisting');
