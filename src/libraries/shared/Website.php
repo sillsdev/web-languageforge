@@ -2,9 +2,7 @@
 
 namespace libraries\shared;
 
-use models\shared\rights\SiteRoles;
-
-use models\ProjectModel;
+// this class is loaded early in index.php and therefore cannot have any dependencies on other libraries
 
 class Website {
 	
@@ -82,7 +80,7 @@ class Website {
 		$this->theme = 'default';
 		$this->ssl = false;
 		$this->defaultProjectCode = '';
-		$this->userDefaultSiteRole = SiteRoles::USER;
+		$this->userDefaultSiteRole = 'user'; // must match SiteRoles::USER;
 		$this->allowSignupFromOtherSites = true;
 	}
 	
