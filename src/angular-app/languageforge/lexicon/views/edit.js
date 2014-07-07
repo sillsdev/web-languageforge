@@ -1,14 +1,13 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', 'lexBaseViewService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 
-                        function ($scope, userService, sessionService, lexService, baseViewService, $window, $modal, $interval, $filter, linkService) {
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 
+                         function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService) {
 
 	var pristineEntry = {};
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
 	$scope.entries = [];
-	$scope.config = {};
 	
 	$scope.currentEntryIsDirty = function() {
 		if ($scope.entryLoaded()) {
@@ -260,8 +259,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		updateFirstEntry = typeof updateFirstEntry !== 'undefined' ? updateFirstEntry : false;
 		var gotDto = function (result) {
 			if (result.ok) {
-				baseViewService.setData(result.data);
-				$scope.config = result.data.config;
 				$scope.entries = result.data.entries;
 				$scope.entriesTotalCount = result.data.entriesTotalCount;
 				if (updateFirstEntry && result.data.entry.id != '') {

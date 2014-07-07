@@ -7,7 +7,6 @@ use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryListModel;
 use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
 use models\languageforge\lexicon\LexiconProjectModel;
-use models\mapper\JsonEncoder;
 
 class LexDbeDto {
 	
@@ -18,10 +17,7 @@ class LexDbeDto {
 	 * @param int $numberOfEntries
 	 */
 	public static function encode($projectId, $userId, $iEntryStart = 0, $numberOfEntries = null) {
-		$data = LexBaseViewDto::encode($projectId, $userId);
-		
 		$project = new LexiconProjectModel($projectId);
-		
 		$entriesModel = new LexEntryListModel($project);
 		$entriesModel->readForDto();
 		$entries = $entriesModel->entries;
@@ -43,6 +39,7 @@ class LexDbeDto {
 			$firstEntry = new LexEntryModel($project, $entries[0]['id']);
 		}
 		
+		$data = array();
 		$data['entries'] = $entries;
 		$data['entriesTotalCount'] = count($entriesModel->entries);
 		$data['entry'] = LexEntryWithCommentsEncoder::encode($firstEntry);
