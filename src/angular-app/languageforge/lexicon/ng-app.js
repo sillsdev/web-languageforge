@@ -93,10 +93,11 @@ angular.module('lexicon',
 		$scope.rights.edit = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
 		$scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create || $scope.rights.edit;
 		
-		$scope.project = ss.session().project;
-		$scope.config = ss.session().projectSettings.config;
-		$scope.interfaceConfig = ss.session().projectSettings.interfaceConfig;
+		$scope.project = ss.session.project;
+		$scope.config = ss.session.projectSettings.config;
+		$scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
 		var pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
+		changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
 		
 		function changeInterfaceLanguage(code) {
 			$translate.use(code);
@@ -115,13 +116,6 @@ angular.module('lexicon',
 				$scope.interfaceConfig.placementNormal = 'left';
 			}
 		};
-		
-		lexBaseViewService.registerListener(function() {
-			var baseViewData = lexBaseViewService.getData();
-			$scope.interfaceConfig = baseViewData.interfaceConfig;
-//			pristineLanguageCode = angular.copy(baseViewData.interfaceConfig.userLanguageCode);
-			changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
-		});
 		
 		$scope.$watch('interfaceConfig.userLanguageCode', function(newVal, oldVal) {
 			if (newVal && newVal != pristineLanguageCode) {
