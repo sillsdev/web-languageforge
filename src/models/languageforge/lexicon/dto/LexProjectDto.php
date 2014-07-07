@@ -4,7 +4,6 @@ namespace models\languageforge\lexicon\dto;
 
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\mapper\JsonEncoder;
-use models\shared\dto\ManageUsersDto;
 
 class LexProjectDto {
 	
@@ -14,10 +13,11 @@ class LexProjectDto {
 	 * @returns array - the DTO array
 	 */
 	public static function encode($projectId, $userId) {
-		$data = LexBaseViewDto::encode($projectId, $userId);
-		
 		$project = new LexiconProjectModel($projectId);
 		$projectJson = JsonEncoder::encode($project);
+
+		$data = array();
+		$data['project'] = array();
 		$data['project']['interfaceLanguageCode'] = $projectJson['interfaceLanguageCode'];
 		$data['project']['projectCode'] = $projectJson['projectCode'];
 		$data['project']['featured'] = $projectJson['featured'];

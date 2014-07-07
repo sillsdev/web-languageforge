@@ -1,5 +1,6 @@
 <div class="container" data-ng-cloak data-ng-controller="manageUsersCtrl">
 	<h2>{{project.projectName}} <span translate="User Management"></span></h2>
+	<!-- <h2 translate="{projectName} User Management" translate-values="{projectName: project.projectName}"></h2> -->
 	<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
 		<button data-ng-disabled="selected.length == 0" data-ng-show="rights.remove" class="btn" data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>{{ 'Remove Members' | translate }}</button>
 		<button data-ng-show="rights.create" class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>{{ 'Add Members' | translate }}</button>
