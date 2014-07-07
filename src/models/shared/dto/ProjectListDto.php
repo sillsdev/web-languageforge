@@ -14,15 +14,15 @@ class ProjectListDto
 {
 	/**
 	 * @param string $userId
-	 * @param string $site
+	 * @param Website $website
 	 * @param boolean $isArchivedList - set true to list archived projects
 	 * @return array - the DTO array
 	 */
-	public static function encode($userId, $site, $isArchivedList = false) {
+	public static function encode($userId, $website, $isArchivedList = false) {
 		$user = new UserModel($userId);
-		$canListAllProjects = $user->hasRight(Domain::PROJECTS + Operation::VIEW);
+		$canListAllProjects = $user->hasRight(Domain::PROJECTS + Operation::VIEW, $website);
 
-		$projectList = new ProjectList_UserModel($site);
+		$projectList = new ProjectList_UserModel($website->domain);
 		if ($canListAllProjects) {
 			$projectList->readAll($isArchivedList);
 		} else {

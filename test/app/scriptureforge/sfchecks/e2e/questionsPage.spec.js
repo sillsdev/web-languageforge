@@ -120,7 +120,7 @@ describe('the questions list page (AKA the text page)', function() {
 
 	});
 
-	describe('a site admin', function() {
+	describe('a system admin', function() {
 		it('setup: login as admin', function() {
 			loginPage.loginAsAdmin();
 			projectListPage.get();

@@ -6,7 +6,7 @@ use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\commands\ProjectCommands;
 use models\shared\rights\ProjectRoles;
-use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
@@ -22,7 +22,7 @@ class TestLexProjectCommands extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = SiteRoles::USER;
+		$user->role = SystemRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();

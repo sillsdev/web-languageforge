@@ -12,8 +12,9 @@ use models\scriptureforge\SfchecksProjectModel;
 class SfchecksProjectCommands {
 	/**
 	 * Create or update project
-	 * @param array<projectModel> $object
+	 * @param string $projectId
 	 * @param string $userId
+	 * @param array<projectModel> $object
 	 * @throws UserUnauthorizedException
 	 * @throws \Exception
 	 * @return string projectId

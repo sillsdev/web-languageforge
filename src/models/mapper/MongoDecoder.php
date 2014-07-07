@@ -85,6 +85,11 @@ class MongoDecoder extends JsonDecoder {
 		}
 	}
 	
+	public function decodeMapOf($key, $model, $data) {
+		$key = str_replace('___DOT___', '.', $key);
+		parent::decodeMapOf($key, $model, $data);
+	}
+	
 	
 }
 

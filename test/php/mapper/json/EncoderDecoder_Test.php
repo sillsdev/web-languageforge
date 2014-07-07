@@ -11,11 +11,11 @@ require_once(SimpleTestPath . 'autorun.php');
 
 class PropertiesTest extends UserModel {
 	public function __construct($id = '') {
-		parent::__construct($id);
 		$this->setPrivateProp('shouldBePrivate');
 		$this->setReadOnlyProp('shouldBeReadOnly');
 		$this->shouldBePrivate = 'default';
 		$this->shouldBeReadOnly = 'default';
+		parent::__construct($id);
 	}
 	
 	public $shouldBeReadOnly;
@@ -35,8 +35,7 @@ class TestJsonEncoderDecoder extends UnitTestCase {
 		$test->name = 'test';
 		$test->shouldBePrivate = 'this is private';
 		
-		$data = JsonEncoder::encode($test);
-		
+		$data = json_decode(json_encode(JsonEncoder::encode($test)), true);
 		$this->assertTrue(array_key_exists('name', $data));
 		$this->assertFalse(array_key_exists('shouldBePrivate', $data));
 		
@@ -58,7 +57,7 @@ class TestJsonEncoderDecoder extends UnitTestCase {
 		$test->name = 'test';
 		$test->shouldBeReadOnly = 'cannot change this';
 		
-		$data = JsonEncoder::encode($test);
+		$data = json_decode(json_encode(JsonEncoder::encode($test)), true);
 		
 		$this->assertTrue(array_key_exists('name', $data));
 		$this->assertTrue(array_key_exists('shouldBeReadOnly', $data));

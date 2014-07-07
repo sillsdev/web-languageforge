@@ -2,7 +2,7 @@
 
 use models\scriptureforge\dto\TextSettingsDto;
 use models\shared\rights\ProjectRoles;
-use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 use models\QuestionModel;
 use models\TextModel;
 use models\UserModel;
@@ -19,7 +19,7 @@ class TestTextSettingsDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = SiteRoles::USER;
+		$user->role = SystemRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
