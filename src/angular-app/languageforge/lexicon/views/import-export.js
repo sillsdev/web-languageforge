@@ -1,13 +1,9 @@
 'use strict';
 
 angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'angularFileUpload', 'lexicon.upload'])
-.controller('LiftImportCtrl', ['$scope', 'silNoticeService', 'fileReader', 'lexProjectService', 'lexBaseViewService', '$filter', 
-                               function($scope, notice, fileReader, lexProjectService, baseViewService, $filter) {
-	lexProjectService.baseViewDto('importExport', 'Import/export', function(result) {
-		if (result.ok) {
-			baseViewService.setData(result.data);
-		}
-	});
+.controller('LiftImportCtrl', ['$scope', 'silNoticeService', 'fileReader', 'lexProjectService', '$filter', 
+                               function($scope, notice, fileReader, lexProjectService, $filter) {
+	lexProjectService.setBreadcrumbs('importExport', 'Import/export');
 	
 	$scope.mergeRule = 'createDuplicates';
 	$scope.skipSameModTime = true;

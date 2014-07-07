@@ -73,6 +73,14 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 		});
 	};
 
+	this.setBreadcrumbs = function(view, label) {
+		breadcrumbService.set('top', [
+			{href: '/app/projects', label: 'My Projects'},
+			{href: linkService.project(), label: ss.session.project.projectName},
+			{href: linkService.projectView(view), label: label},
+		]);
+	};
+
 	this.updateConfiguration = function(config, callback) {
 		jsonRpc.call('lex_configuration_update', [config], callback);
 	};
