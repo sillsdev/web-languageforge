@@ -4,7 +4,7 @@ use models\ProjectModel;
 
 use models\shared\dto\RightsHelper;
 use models\shared\rights\ProjectRoles;
-use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 use models\commands\ProjectCommands;
 use models\UserModel;
 
@@ -17,8 +17,8 @@ class TestRightsHelper extends UnitTestCase {
 	function testuserCanAccessMethod_unknownMethodName_throws() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
-		$rh = new RightsHelper($userId, null);
+		$userId = $e->createUser('user', 'user', 'user@user.com', SystemRoles::USER);
+		$rh = new RightsHelper($userId, null, $e->website);
 		
 		$e->inhibitErrorDisplay();
 		$this->expectException();
@@ -29,7 +29,7 @@ class TestRightsHelper extends UnitTestCase {
 	function testUserCanAccessMethod_projectSettings_projectManager_true() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
+		$userId = $e->createUser('user', 'user', 'user@user.com', SystemRoles::USER);
 		$user = new UserModel($userId);
 		$project = $e->createProject('projectForTest', 'projTestCode');
 		$projectId = $project->id->asString();
@@ -39,7 +39,7 @@ class TestRightsHelper extends UnitTestCase {
 		$user->addProject($projectId);
 		$user->write();
 		$project = ProjectModel::getById($projectId);
-		$rh = new RightsHelper($userId, $project);
+		$rh = new RightsHelper($userId, $project, $e->website);
 		$result = $rh->userCanAccessMethod('project_settings', array());
 		$this->assertTrue($result);
 	}
@@ -47,7 +47,7 @@ class TestRightsHelper extends UnitTestCase {
 	function testUserCanAccessMethod_projectSettings_projectMember_false() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
+		$userId = $e->createUser('user', 'user', 'user@user.com', SystemRoles::USER);
 		$user = new UserModel($userId);
 		$project = $e->createProject('projectForTest', 'projTestCode');
 		$projectId = $project->id->asString();
@@ -57,7 +57,7 @@ class TestRightsHelper extends UnitTestCase {
 		$user->addProject($projectId);
 		$user->write();
 		$project = ProjectModel::getById($projectId);
-		$rh = new RightsHelper($userId, $project);
+		$rh = new RightsHelper($userId, $project, $e->website);
 		$result = $rh->userCanAccessMethod('project_settings', array());
 		$this->assertFalse($result);
 	}
@@ -65,13 +65,13 @@ class TestRightsHelper extends UnitTestCase {
 	function testUserCanAccessMethod_projectPageDto_NotAMember_false() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-		$userId = $e->createUser('user', 'user', 'user@user.com', SiteRoles::USER);
+		$userId = $e->createUser('user', 'user', 'user@user.com', SystemRoles::USER);
 		$project = $e->createProject('projectForTest', 'projTestCode');
 		$project->appName = 'sfchecks';
 		$project->write();
 		$projectId = $project->id->asString();
 		$project = ProjectModel::getById($projectId);
-		$rh = new RightsHelper($userId, $project);
+		$rh = new RightsHelper($userId, $project, $e->website);
 		$result = $rh->userCanAccessMethod('project_pageDto', array());
 		$this->assertFalse($result);
 	}

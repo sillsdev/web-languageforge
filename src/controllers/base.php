@@ -1,7 +1,7 @@
 <?php
 
 
-use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 use libraries\shared\Website;
 use models\ProjectListModel;
 use models\FeaturedProjectListModel;
@@ -70,7 +70,7 @@ class Base extends CI_Controller {
 		$this->viewdata['featuredProjects'] = $featuredProjectList->entries;
 		
 		if ($this->_isLoggedIn) {
-			$isAdmin = SiteRoles::hasRight($this->_user->role, Domain::USERS + Operation::CREATE);
+			$isAdmin = SystemRoles::hasRight($this->_user->role, Domain::USERS + Operation::CREATE);
 			$this->viewdata['is_admin'] = $isAdmin;
 			$this->viewdata['user_name'] = $this->_user->username;
 			$this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");

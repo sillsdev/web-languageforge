@@ -1,6 +1,5 @@
 <?php
 
-use models\shared\rights\SiteRoles;
 
 use models\scriptureforge\sfchecks\SfchecksRoles;
 
@@ -9,6 +8,7 @@ use models\shared\rights\Operation;
 use models\shared\rights\Domain;
 
 use models\shared\rights\ProjectRoles;
+use models\shared\rights\SystemRoles;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -27,7 +27,7 @@ class TestRoles extends UnitTestCase {
 		$result = SfchecksRoles::hasRight(ProjectRoles::MANAGER, Domain::PROJECTS + Operation::CREATE);
 		$this->assertFalse($result);
 		// System Admin Roles
-		$result = SiteRoles::hasRight(SiteRoles::SYSTEM_ADMIN, Domain::USERS + Operation::CREATE);
+		$result = SystemRoles::hasRight(SystemRoles::SYSTEM_ADMIN, Domain::USERS + Operation::CREATE);
 		$this->assertTrue($result);
 	}
 	

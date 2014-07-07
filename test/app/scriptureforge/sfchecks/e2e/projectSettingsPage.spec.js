@@ -201,8 +201,8 @@ describe('the project settings page - project manager', function() {
 		it('is not visible for project manager', function() {
 			expect(page.tabs.communication.isPresent()).toBe(false);
 		});
-		describe('as a site admin', function() {
-			it('setup: logout, login as site admin, go to project settings', function() {
+		describe('as a system admin', function() {
+			it('setup: logout, login as system admin, go to project settings', function() {
 				loginPage.logout();
 				loginPage.loginAsAdmin();
 		    	projectListPage.get();

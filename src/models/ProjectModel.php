@@ -241,6 +241,11 @@ class ProjectModel extends \models\mapper\MapperModel
 	public $id;
 	
 	/**
+	 * @var Id
+	 */
+	public $ownerId;
+	
+	/**
 	 * @var string
 	 */
 	public $projectName;

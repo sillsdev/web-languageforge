@@ -6,7 +6,7 @@ use libraries\shared\Website;
 
 use models\mapper\Id;
 use models\shared\rights\ProjectRoles;
-use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 use models\commands\UserCommands;
 use models\commands\QuestionTemplateCommands;
 use models\commands\QuestionCommands;
@@ -36,9 +36,9 @@ class ApiCrudTestEnvironment {
 	
 	function makeProject($userId = '') {
 		if (!$userId) {
-			$userId = $this->makeSiteAdminUser();	
+			$userId = $this->makeSystemAdminUser();	
 		}
-		return ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, 'sfchecks', $userId, Website::get('www.scriptureforge.org'));
+		return ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, 'sfchecks', $userId, $this->e->website);
 	}
 	
 	function makeUser($username) {
@@ -46,8 +46,8 @@ class ApiCrudTestEnvironment {
 		return UserCommands::updateUser($params);
 	}
 	
-	function makeSiteAdminUser() {
-		$params = array('id' => '', 'username' => 'admin', 'name' => 'admin', 'role' => SiteRoles::SYSTEM_ADMIN);
+	function makeSystemAdminUser() {
+		$params = array('id' => '', 'username' => 'admin', 'name' => 'admin', 'role' => SystemRoles::SYSTEM_ADMIN);
 		return UserCommands::updateUser($params);
 	}
 	
@@ -83,8 +83,8 @@ class TestApiCrud extends UnitTestCase {
 	function testProjectCRUD_CRUDOK() {
 		$e = new ApiCrudTestEnvironment();
 		
-		$userId = $e->e->createUser('userName', 'User Name', 'user@example.com', SiteRoles::SYSTEM_ADMIN);
-		$id = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, 'sfchecks', $userId, Website::get('www.scriptureforge.org'));
+		$userId = $e->e->createUser('userName', 'User Name', 'user@example.com', SystemRoles::SYSTEM_ADMIN);
+		$id = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, 'sfchecks', $userId, $e->e->website);
 		$this->assertNotNull($id);
 		$this->assertEqual(24, strlen($id));
 		

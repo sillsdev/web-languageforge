@@ -2,7 +2,6 @@
 
 use models\ProjectModel;
 
-use models\shared\rights\SiteRoles;
 use models\commands\SessionCommands;
 
 require_once 'secure_base.php';

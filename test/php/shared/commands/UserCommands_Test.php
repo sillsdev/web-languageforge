@@ -168,7 +168,7 @@ class TestUserCommands extends UnitTestCase {
 			'name'     => 'joe user',
 			'password' => 'password'
 		);
-		UserCommands::updateFromRegistration($key, $userArray);
+		UserCommands::updateFromRegistration($key, $userArray, $e->website);
 		
 		$user = new UserModel($userId);
 		
@@ -193,7 +193,7 @@ class TestUserCommands extends UnitTestCase {
 			'name'     => 'joe user',
 			'password' => 'password'
 		);
-		UserCommands::updateFromRegistration('bogus key', $userArray);
+		UserCommands::updateFromRegistration('bogus key', $userArray, $e->website);
 		
 		$user = new UserModel($userId);
 		
@@ -221,7 +221,7 @@ class TestUserCommands extends UnitTestCase {
 		);
 		$e->inhibitErrorDisplay();
 		$this->expectException();
-		UserCommands::updateFromRegistration($key, $userArray);
+		UserCommands::updateFromRegistration($key, $userArray, $e->website);
 		
 		$user = new UserModel($userId);
 		

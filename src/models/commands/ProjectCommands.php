@@ -162,7 +162,7 @@ class ProjectCommands
 	public static function updateUserRole($projectId, $userId, $role = ProjectRoles::CONTRIBUTOR) {
 		CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
 		CodeGuard::checkNotFalseAndThrow($userId, 'userId');
-		CodeGuard::assertInArrayOrThrow($role, array(ProjectRoles::CONTRIBUTOR, ProjectRoles::MANAGER));
+		//CodeGuard::assertInArrayOrThrow($role, array(ProjectRoles::CONTRIBUTOR, ProjectRoles::MANAGER));
 		
 		// Add the user to the project
 		$user = new UserModel($userId);

@@ -6,7 +6,7 @@ use libraries\shared\Website;
 
 use models\scriptureforge\SfchecksProjectModel;
 
-use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\shared\rights\ProjectRoles;
@@ -60,22 +60,24 @@ class MongoTestEnvironment
 	 * @param string $username
 	 * @param string $name
 	 * @param string $email
+	 * @param string $role
 	 * @return string id
 	 */
-	public function createUser($username, $name, $email, $role = SiteRoles::USER) {
+	public function createUser($username, $name, $email, $role = SystemRoles::USER) {
 		$userModel = new models\UserModel();
 		$userModel->username = $username;
 		$userModel->name = $name;
 		$userModel->email = $email;
 		$userModel->avatar_ref = $username . ".png";
 		$userModel->role = $role;
+		$userModel->siteRole[$this->website->domain] = $this->website->userDefaultSiteRole;
 		return $userModel->write();
 	}
 	
 	/**
 	 * Writes a project to the projects collection.
 	 * @param string $name
-	 * @param string $domain
+	 * @param string $code
 	 * @return ProjectModel
 	 */
 	public function createProject($name, $code) {

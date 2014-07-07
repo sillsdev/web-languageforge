@@ -1,6 +1,6 @@
 <?php
 
-use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 
 use models\languageforge\lexicon\commands\LexEntryCommands;
 use models\languageforge\lexicon\commands\LexProjectCommands;
@@ -29,7 +29,7 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = SiteRoles::USER;
+		$user->role = SystemRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
@@ -52,7 +52,7 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = SiteRoles::USER;
+		$user->role = SystemRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();
@@ -90,7 +90,7 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = SiteRoles::USER;
+		$user->role = SystemRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();

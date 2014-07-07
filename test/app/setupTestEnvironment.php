@@ -12,7 +12,7 @@ use models\commands\TextCommands;
 use models\commands\QuestionCommands;
 use models\commands\QuestionTemplateCommands;
 use models\shared\rights\ProjectRoles;
-use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 use models\scriptureforge\SfProjectModel;
 use models\ProjectModel;
 use libraries\shared\Website;
@@ -27,10 +27,14 @@ foreach ($db->listCollections() as $collection) { $collection->drop(); }
 $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
 
 // Also empty out databases for the test projects
-$projectNames = array($constants['testProjectName'], $constants['otherProjectName']);
-foreach ($projectNames as $name) {
+$projectArrays = array(
+	$constants['testProjectName']  => $constants['testProjectCode'], 
+	$constants['otherProjectName'] => $constants['otherProjectCode']);
+
+foreach ($projectArrays as $projectName => $projectCode) {
 	$projectModel = new ProjectModel();
-	$projectModel->projectName = $name;
+	$projectModel->projectName = $projectName;
+	$projectModel->projectCode = $projectCode;
 	$db = \models\mapper\MongoStore::connect($projectModel->databaseName());
 	foreach ($db->listCollections() as $collection) { $collection->drop(); }
 }
@@ -38,6 +42,7 @@ foreach ($projectNames as $name) {
 // drop the third database because it is used in a rename test
 $projectModel = new ProjectModel();
 $projectModel->projectName = $constants['thirdProjectName'];
+$projectModel->projectCode = $constants['thirdProjectCode'];
 $db = \models\mapper\MongoStore::dropDB($projectModel->databaseName());
 
 $adminUser = UserCommands::createUser(array(
@@ -47,7 +52,7 @@ $adminUser = UserCommands::createUser(array(
 	'username' => $constants['adminUsername'],
 	'password' => $constants['adminPassword'],
 	'active' => true,
-	'role' => SiteRoles::SYSTEM_ADMIN
+	'role' => SystemRoles::SYSTEM_ADMIN
 ));
 $managerUser = UserCommands::createUser(array(
 	'id' => '',
@@ -56,7 +61,7 @@ $managerUser = UserCommands::createUser(array(
 	'username' => $constants['managerUsername'],
 	'password' => $constants['managerPassword'],
 	'active' => true,
-	'role' => SiteRoles::USER
+	'role' => SystemRoles::USER
 ));
 $memberUser = UserCommands::createUser(array(
 	'id' => '',
@@ -65,7 +70,7 @@ $memberUser = UserCommands::createUser(array(
 	'username' => $constants['memberUsername'],
 	'password' => $constants['memberPassword'],
 	'active' => true,
-	'role' => SiteRoles::USER
+	'role' => SystemRoles::USER
 ));
 
 $testProject = ProjectCommands::createProject(

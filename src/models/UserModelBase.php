@@ -3,6 +3,7 @@
 namespace models;
 
 use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 
 use models\UserModelMongoMapper;
 use models\mapper\Id;
@@ -10,6 +11,7 @@ use models\mapper\IdReference;
 use models\mapper\MongoMapper;
 
 use models\shared\rights\ProjectRoles;
+use models\mapper\MapOf;
 
 
 class UserModelBase extends \models\mapper\MapperModel
@@ -22,6 +24,7 @@ class UserModelBase extends \models\mapper\MapperModel
 	
 	public function __construct($id = '') {
 		$this->id = new Id();
+		$this->siteRole = new MapOf();
 		$this->validationExpirationDate = new \DateTime();
 // 		$this->setReadOnlyProp('role');	// TODO Enhance. This currently causes API tests to fail but should be in for security. IJH 2014-03
 		parent::__construct(UserModelMongoMapper::instance(), $id);
@@ -68,14 +71,27 @@ class UserModelBase extends \models\mapper\MapperModel
 	
 	
 	/**
-	 * Returns true if the given $userId has the $right in this site.
-	 * @param string $userId
+	 * Returns true if the current user has $right to $website.
 	 * @param int $right
+	 * @param Website $website
 	 * @return bool
 	 */
-	public function hasRight($right) {
-		$result = SiteRoles::hasRight($this->role, $right);
+	public function hasRight($right, $website) {
+		$result = SiteRoles::hasRight($this->siteRole, $right, $website) || 
+				SystemRoles::hasRight($this->role, $right);
 		return $result;
+	}
+	
+	/**
+	 * 
+	 * @param Website $website
+	 * @return array:
+	 */
+	public function getRightsArray($website) {
+		$siteRightsArray = SiteRoles::getRightsArray($this->siteRole, $website);
+		$systemRightsArray = SystemRoles::getRightsArray($this->role);
+		$mergeArray = array_merge($siteRightsArray, $systemRightsArray);
+		return (array_unique($mergeArray));
 	}
 	
 	/**
@@ -161,6 +177,7 @@ class UserModelBase extends \models\mapper\MapperModel
 	/**
 	 * @var string
 	 * @see Roles
+	 * Note: this is system role
 	 */
 	public $role;
 	
@@ -176,6 +193,10 @@ class UserModelBase extends \models\mapper\MapperModel
 	 */
 	public $communicate_via;
 	
+	/**
+	 * @var MapOf<string> 
+	 */
+	public $siteRole;
 }
 
 ?>

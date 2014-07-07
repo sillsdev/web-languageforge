@@ -107,6 +107,11 @@ class MongoEncoder {
 		$result = array();
 		$count = 0;
 		foreach ($model as $key => $item) {
+			// Mongo can't handle '.' or '$' on array keys.
+			// We're only replacing the dots here
+			if (strpos($key, '.') > -1) {
+				$key = str_replace('.', '___DOT___', $key);
+			}
 			if (is_object($item)) {
 				$result[$key] = $this->_encode($item, false);
 			} else {

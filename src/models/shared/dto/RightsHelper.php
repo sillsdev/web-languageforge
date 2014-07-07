@@ -8,8 +8,6 @@ use models\languageforge\lexicon\LexiconProjectModel;
 
 use models\scriptureforge\SfchecksProjectModel;
 
-use models\shared\rights\SiteRoles;
-
 use models\shared\rights\Operation;
 
 use models\shared\rights\Domain;
@@ -18,6 +16,9 @@ use models\ProjectModel;
 use models\UserModel;
 
 use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
+use libraries\shared\Website;
 
 class RightsHelper
 {
@@ -33,6 +34,11 @@ class RightsHelper
 	 */
 	private $_projectModel;
 	
+	/**
+	 * 
+	 * @var Website
+	 */
+	private $_website;
 	
 	/**
 	 * 
@@ -46,32 +52,49 @@ class RightsHelper
 	
 	/**
 	 * 
-	 * @param unknown $userId
-	 * @param unknown $right
+	 * @param string $userId
+	 * @param int $right
 	 * @return boolean
 	 */
 	// Note: there is a bug/annoyance in PHP5 whereby you cannot have an object method and a static method named the same
-	// I named this static function slightly different from the userHasSiteRight to avoid this naming conflict
+	// I named this static function slightly different from userHasSiteRight to avoid this naming conflict
 	// @see http://stackoverflow.com/questions/11331616/php-is-it-possible-to-declare-a-method-static-and-nonstatic
 	// @see https://bugs.php.net/bug.php?id=40837
 	public static function hasSiteRight($userId, $right) {
 		$userModel = new UserModel($userId);
-		return SiteRoles::hasRight($userModel->role, $right);
+		return SiteRoles::hasRight($userModel->role, $right, $this->_website);
 	}
 	
 	/**
 	 * 
 	 * @param string $userId
 	 * @param ProjectModel $projectModel
+	 * @param Website $website
 	 */
-	public function __construct($userId, $projectModel) {
+	public function __construct($userId, $projectModel, $website) {
 		$this->_userId = $userId;
 		$this->_projectModel = $projectModel;
+		$this->_website = $website;
 	}
 
+	/**
+	 * 
+	 * @param int $right
+	 * @return bool
+	 */
+	public function userHasSystemRight($right) {
+		return SystemRoles::hasRight($userModel->role, $right);
+	}
+	
+	/**
+	 * 
+	 * @param int $right
+	 * @return bool
+	 */
 	public function userHasSiteRight($right) {
 		$userModel = new UserModel($this->_userId);
-		return SiteRoles::hasRight($userModel->role, $right);
+		return (SiteRoles::hasRight($userModel->siteRole, $right, $this->_website) ||
+				SystemRoles::hasRight($userModel->role, $right));
 	}
 	
 	/**
@@ -181,7 +204,7 @@ class RightsHelper
 				return $this->userHasProjectRight(Domain::QUESTIONS + Operation::ARCHIVE);
 
 
-			// Admin (site context)
+			// Admin (system context)
 			case 'user_read':
 			case 'user_list':
 				return $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
@@ -202,6 +225,7 @@ class RightsHelper
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);
 			
 			case 'project_create':
+				return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
 			case 'projectcode_exists':
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 			
