@@ -11,12 +11,10 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 				control : "=",
 				multiline : "="
 			},
-			controller: ['$scope', 'lexBaseViewService', function($scope, baseViewService) {
+			controller: ['$scope', 'sessionService', function($scope, ss) {
 				$scope.definitionHelperUsed = false;
+				$scope.gConfig = ss.session.projectSettings.config;
 				
-				baseViewService.registerListener(function() {
-					$scope.gConfig = baseViewService.getConfig();
-				});
 				$scope.makeValidModel = function() {
 					// if the model doesn't exist, create an object for it based upon the config
 					if (!$scope.model) {
