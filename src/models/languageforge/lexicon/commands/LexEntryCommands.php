@@ -65,8 +65,15 @@ class LexEntryCommands {
 			unset($entry[LexiconConfigObj::LEXEME][$form][LexiconConfigObj::COMMENTS_LIST]);
 		}
 		foreach ($entry[LexiconConfigObj::SENSES_LIST] as $senseKey => $sense) {
-			foreach ($sense[LexiconConfigObj::DEFINITION] as $form => $definition) {
-				unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::DEFINITION][$form][LexiconConfigObj::COMMENTS_LIST]);
+			if (array_key_exists(LexiconConfigObj::DEFINITION, $sense)) {
+				foreach ($sense[LexiconConfigObj::DEFINITION] as $form => $definition) {
+					unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::DEFINITION][$form][LexiconConfigObj::COMMENTS_LIST]);
+				}
+			}
+			if (array_key_exists(LexiconConfigObj::GLOSS, $sense)) {
+				foreach ($sense[LexiconConfigObj::GLOSS] as $form => $definition) {
+					unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::GLOSS][$form][LexiconConfigObj::COMMENTS_LIST]);
+				}
 			}
 			unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::POS][LexiconConfigObj::COMMENTS_LIST]);
 			unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::SEMDOM][LexiconConfigObj::COMMENTS_LIST]);
