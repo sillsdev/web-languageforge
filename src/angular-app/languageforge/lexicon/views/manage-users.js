@@ -143,7 +143,7 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 					projectService.updateUserRole($scope.user.id, 'contributor', function(result) {
 						if (result.ok) {
 							notice.push(notice.SUCCESS, $filter('translate')("{userName} was added to {projectName} successfully.", {userName: $scope.user.name, projectName: $scope.project.projectName}));
-							$scope.queryProjectSettings();
+							$scope.queryProjectUsers();
 						}
 					});
 				}
