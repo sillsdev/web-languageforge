@@ -1,47 +1,4 @@
 angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.breadcrumb'])
-.service('lexBaseViewService', [function(jsonRpc, $location) {
-	var _callbacks = [];
-	var _data = {
-		config: {},
-		user: {},
-		project: {},
-		rights: {}
-	};
-	
-	this.setData = function(data) {
-		_data = angular.copy(data);
-		if (angular.isDefined(_data.config.entry)) {
-			angular.forEach(_callbacks, function(callback) {
-				callback();
-			});
-		}
-	};
-	
-	this.getData = function() {
-		return _data;
-	};
-	
-	this.setConfig = function(config) {
-		_data.config = angular.copy(config);
-		if (angular.isDefined(_data.config.entry)) {
-			angular.forEach(_callbacks, function(callback) {
-				callback();
-			});
-		}
-	};
-	
-	this.getConfig = function() {
-		return _data.config;
-	};
-	
-	this.registerListener = function(callback) {
-		_callbacks.push(callback);
-		if (angular.isDefined(_data.config.entry)) {
-			callback();
-		}
-	};
-	
-}])
 .service('lexLinkService', ['$location', 'sessionService', function($location, ss) {
 	this.project = function () {
 		return '/app/lexicon/' + this.getProjectId();
@@ -58,20 +15,6 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 .service('lexProjectService', ['jsonRpc', 'sessionService', 'breadcrumbService', 'lexLinkService', '$location', 
                                function(jsonRpc, ss, breadcrumbService, linkService, $location) {
 	jsonRpc.connect('/api/sf');
-	this.baseViewDto = function(view, label, callback) {
-		jsonRpc.call('lex_baseViewDto', [], function(result) {
-			if (result.ok) {
-				breadcrumbService.set('top',
-					[
-					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: ss.session.project.projectName},
-					 {href: linkService.projectView(view), label: label},
-					]
-				);
-				callback(result);
-			}
-		});
-	};
 
 	this.setBreadcrumbs = function(view, label) {
 		breadcrumbService.set('top', [
@@ -79,6 +22,16 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 			{href: linkService.project(), label: ss.session.project.projectName},
 			{href: linkService.projectView(view), label: label},
 		]);
+	};
+
+	this.baseViewDto = function(view, label, callback) {
+		var setBreadcrumbs = this.setBreadcrumbs;
+		jsonRpc.call('lex_baseViewDto', [], function(result) {
+			if (result.ok) {
+				setBreadcrumbs(view, label);
+				callback(result);
+			}
+		});
 	};
 
 	this.updateConfiguration = function(config, callback) {
@@ -94,16 +47,10 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	};
 	
 	this.readProject = function(callback) {
-		var projectId = this.getProjectId();
+		var setBreadcrumbs = this.setBreadcrumbs;
 		jsonRpc.call('lex_projectDto', [], function(result) {
 			if (result.ok) {
-				breadcrumbService.set('top',
-					[
-					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: ss.session.project.projectName},
-					 {href: linkService.projectView('settings'), label: 'Project Settings'},
-					]
-				);
+				setBreadcrumbs('settings', 'Project Settings');
 				callback(result);
 			}
 		});
@@ -114,16 +61,10 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	};
 	
 	this.users = function(callback) {
-		var projectId = this.getProjectId();
+		var setBreadcrumbs = this.setBreadcrumbs;
 		jsonRpc.call('project_usersDto', [], function(result) {
 			if (result.ok) {
-				breadcrumbService.set('top',
-					[
-					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: ss.session.project.projectName},
-					 {href: linkService.projectView('users'), label: 'User Management'},
-					]
-				);
+				setBreadcrumbs('users', 'User Management');
 				callback(result);
 			}
 		});
@@ -134,9 +75,10 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	};
 	
 	this.getProjectId = function() {
-		var parts = $location.path().split('/');
-		// strip off the "/p/"
-		return parts[2];
+		return ss.session.project.id;
+//		var parts = $location.path().split('/');
+//		// strip off the "/p/"
+//		return parts[2];
 	};
 }])
 .service('lexEntryService', ['jsonRpc', 'sessionService', 'lexProjectService', 'breadcrumbService', 'lexLinkService', 

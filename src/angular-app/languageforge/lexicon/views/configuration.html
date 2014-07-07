@@ -91,7 +91,7 @@
 									data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" 
 									data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
 									<div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
-										{{config.inputSystems[inputSystemTag].abbreviation}}</div>
+										{{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
 								</li>
 							</ul>
 							<a href="" data-ng-click="editInputSystems.collapsed = false">{{ 'Edit input systems' | translate }}</a>
@@ -119,7 +119,7 @@
 <!--  
 <pre>
 currentField {{currentField | json}}
-config.entry {{config.entry|json}}
+configDirty.entry {{configDirty.entry|json}}
 </pre>
  -->
 		</div>
@@ -134,52 +134,52 @@ config.entry {{config.entry|json}}
 				<dt>Dashboard</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectTask('dashboard')" data-ng-class="{selected:currentTaskName == 'dashboard'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['dashboard'].visible"> Dashboard</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="configDirty.tasks['dashboard'].visible"> Dashboard</div>
 					</div>
 				</div></dd>
 				<dt>Dictionary</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectTask('dbe')" data-ng-class="{selected:currentTaskName == 'dbe'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['dbe'].visible"> Browse &amp; Edit</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="configDirty.tasks['dbe'].visible"> Browse &amp; Edit</div>
 					</div>
 				</div></dd>
 				<dt>Add Information</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectTask('addMeanings')" data-ng-class="{selected:currentTaskName == 'addMeanings'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['addMeanings'].visible"> Add Meanings</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="configDirty.tasks['addMeanings'].visible"> Add Meanings</div>
 					</div>
 					<div data-ng-click="selectTask('addGrammar')" data-ng-class="{selected:currentTaskName == 'addGrammar'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['addGrammar'].visible"> Add Parts of Speech</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="configDirty.tasks['addGrammar'].visible"> Add Parts of Speech</div>
 					</div>
 					<div data-ng-click="selectTask('addExamples')" data-ng-class="{selected:currentTaskName == 'addExamples'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['addExamples'].visible"> Add Example Sentences</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="configDirty.tasks['addExamples'].visible"> Add Example Sentences</div>
 					</div>
 				</div></dd>
 				<dt>Gather Words</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectTask('gatherTexts')" data-ng-class="{selected:currentTaskName == 'gatherTexts'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['gatherTexts'].visible"> From Texts</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="configDirty.tasks['gatherTexts'].visible"> From Texts</div>
 					</div>
 					<div data-ng-click="selectTask('wordlist')" data-ng-class="{selected:currentTaskName == 'wordlist'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['wordlist'].visible"> From a Word List</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="configDirty.tasks['wordlist'].visible"> From a Word List</div>
 					</div>
 					<div data-ng-click="selectTask('semdom')" data-ng-class="{selected:currentTaskName == 'semdom'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['semdom'].visible"> From Semantic Domains</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="configDirty.tasks['semdom'].visible"> From Semantic Domains</div>
 					</div>
 				</div></dd>
 				<dt>Review</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectTask('review')" data-ng-class="{selected:currentTaskName == 'review'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['review'].visible"> Review</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="configDirty.tasks['review'].visible"> Review</div>
 					</div>
 				</div></dd>
 				<dt>Settings</dt>
 				<dd><div class="controls">
 					<div data-ng-click="selectTask('importExport')" data-ng-class="{selected:currentTaskName == 'importExport'}">
-						<div class="checkbox"><input type="checkbox" data-ng-model="config.tasks['importExport'].visible">Import/Export</div>
+						<div class="checkbox"><input type="checkbox" data-ng-model="configDirty.tasks['importExport'].visible">Import/Export</div>
 					</div>
 					<div data-ng-click="selectTask('configuration')" data-ng-class="{selected:currentTaskName == 'configuration'}">
-						<div class="checkbox"><input type="checkbox" disabled data-ng-model="config.tasks['configuration'].visible">Dictionary Configuration</div>
+						<div class="checkbox"><input type="checkbox" disabled data-ng-model="configDirty.tasks['configuration'].visible">Dictionary Configuration</div>
 					</div>
 				</div></dd>
 			</dl>
@@ -193,7 +193,7 @@ config.entry {{config.entry|json}}
 					<label class="control-label" for="timeRange">Activity time range</label>
 					<div class="controls">
 						<select class="form-control" id="timeRange" 
-							data-ng-model="config.tasks['dashboard'].timeRange" 
+							data-ng-model="configDirty.tasks['dashboard'].timeRange" 
 							data-ng-options="selects.timeRange.options[key] for key in selects.timeRange.optionsOrder">
 							<option value="">-- choose a time range --</option></select>
 					</div>
@@ -202,7 +202,7 @@ config.entry {{config.entry|json}}
 					<label class="control-label" for="wordCount">Target word count</label>
 					<div class="controls">
 						<input type="number" min="0" id="wordCount" 
-							data-ng-model="config.tasks['dashboard'].targetWordCount">
+							data-ng-model="configDirty.tasks['dashboard'].targetWordCount">
 					</div>
 				</div>
 			</div>
@@ -212,7 +212,7 @@ config.entry {{config.entry|json}}
 					<label class="control-label" for="language">Language</label>
 					<div class="controls">
 						<select class="form-control" id="language" 
-							data-ng-model="config.tasks['semdom'].language" 
+							data-ng-model="configDirty.tasks['semdom'].language" 
 							data-ng-options="key as option for (key, option) in selects.language.options">
 							<option value="">-- choose a language --</option></select>
 					</div>
@@ -224,10 +224,10 @@ config.entry {{config.entry|json}}
 						<dd>
 							<div class="controls">
 								<label class="checkbox {{interfaceConfig.pullNormal}}">
-									<input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.definition">
+									<input type="checkbox" data-ng-model="configDirty.tasks['semdom'].visibleFields.definition">
 									 Definition (Meaning)</label>
 								<label class="checkbox {{interfaceConfig.pullNormal}}">
-									<input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.partOfSpeech">
+									<input type="checkbox" data-ng-model="configDirty.tasks['semdom'].visibleFields.partOfSpeech">
 									 Part Of Speech</label>
 							</div>
 						</dd>
@@ -235,10 +235,10 @@ config.entry {{config.entry|json}}
 						<dd>
 							<div class="controls">
 								<label class="checkbox {{interfaceConfig.pullNormal}}">
-									<input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.sentence">
+									<input type="checkbox" data-ng-model="configDirty.tasks['semdom'].visibleFields.sentence">
 									 Example Sentence</label>
 								<label class="checkbox {{interfaceConfig.pullNormal}}">
-									<input type="checkbox" data-ng-model="config.tasks['semdom'].visibleFields.translation">
+									<input type="checkbox" data-ng-model="configDirty.tasks['semdom'].visibleFields.translation">
 									 Example Translation</label>
 							</div>
 						</dd>
@@ -250,7 +250,7 @@ config.entry {{config.entry|json}}
 		</div>
 <!-- 
 <pre>
-config.tasks['{{currentTaskName}}'] = {{config.tasks[currentTaskName] | json}}
+configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] | json}}
 </pre>
  -->
 		</div>

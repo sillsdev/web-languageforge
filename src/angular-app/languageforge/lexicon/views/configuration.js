@@ -1,12 +1,13 @@
 'use strict';
 
 angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
-.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'lexBaseViewService', '$filter', '$modal', 
-                             function($scope, notice, lexProjectService, baseViewService, $filter, $modal) {
-	$scope.config = {};
+.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 
+                           function($scope, notice, lexProjectService, ss, $filter, $modal) {
+	lexProjectService.setBreadcrumbs('configuration', 'Dictionary Configuration');
+	$scope.configDirty = angular.copy($scope.config);
 
 	$scope.haveConfig = function() {
-		return angular.isDefined($scope.config.entry);
+		return angular.isDefined($scope.configDirty.entry);
 	};
 
 	$scope.inputSystems = {};
@@ -14,7 +15,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 		'special': {
 			'optionsOrder': ['none', 'ipaTranscription', 'voice', 'scriptRegionVariant'],
 			'options': {
-				'none': 'none',
+				'none': $filter('translate')('none'),
 				'ipaTranscription': $filter('translate')('IPA transcription'),
 				'voice': $filter('translate')('Voice'),
 				'scriptRegionVariant': $filter('translate')('Script / Region / Variant')
@@ -40,13 +41,15 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 		$scope.currentInputSystemTag = inputSystemTag;
 	};
 	
-	$scope.sortInputSystemsList = function () {
-		return $filter('orderBy')($filter('orderAsArray')($scope.config.inputSystems, 'tag'), 'name');
+	setupView();
+
+	function sortInputSystemsList() {
+		return $filter('orderBy')($filter('orderAsArray')($scope.configDirty.inputSystems, 'tag'), 'name');
 	};
-	
-	$scope.setupView = function() {
-		if (angular.isDefined($scope.config.inputSystems)) {
-			$scope.inputSystems = $scope.config.inputSystems;
+
+	function setupView() {
+		if (angular.isDefined($scope.configDirty.inputSystems)) {
+			$scope.inputSystems = $scope.configDirty.inputSystems;
 			for (var tag in $scope.inputSystems) {
 				var script = InputSystems.getScript(tag);
 				var privateUse = InputSystems.getPrivateUse(tag);
@@ -76,7 +79,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 						$scope.inputSystems[tag].variant = privateUse;
 				}
 			};
-			$scope.inputSystemsList = $scope.sortInputSystemsList();
+			$scope.inputSystemsList = sortInputSystemsList();
 			
 			// select the first items
 			$scope.selectInputSystem($scope.inputSystemsList[0].tag);
@@ -84,31 +87,24 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 			
 			// for FieldConfigCtrl
 			$scope.fieldConfig = {
-				'lexeme': $scope.config.entry.fields['lexeme'],
-				'definition': $scope.config.entry.fields.senses.fields['definition'],
-				'gloss': $scope.config.entry.fields.senses.fields['gloss'],
-				'partOfSpeech': $scope.config.entry.fields.senses.fields['partOfSpeech'],
-				'semanticDomain': $scope.config.entry.fields.senses.fields['semanticDomain'],
-				'sentence': $scope.config.entry.fields.senses.fields.examples.fields['sentence'],
-				'translation': $scope.config.entry.fields.senses.fields.examples.fields['translation']
+				'lexeme': $scope.configDirty.entry.fields['lexeme'],
+				'definition': $scope.configDirty.entry.fields.senses.fields['definition'],
+				'gloss': $scope.configDirty.entry.fields.senses.fields['gloss'],
+				'partOfSpeech': $scope.configDirty.entry.fields.senses.fields['partOfSpeech'],
+				'semanticDomain': $scope.configDirty.entry.fields.senses.fields['semanticDomain'],
+				'sentence': $scope.configDirty.entry.fields.senses.fields.examples.fields['sentence'],
+				'translation': $scope.configDirty.entry.fields.senses.fields.examples.fields['translation']
 			};
 		}
 	};
 	
-	lexProjectService.baseViewDto('configuration', 'Dictionary Configuration', function(result) {
-		if (result.ok) {
-			$scope.config = result.data.config;
-			baseViewService.setData(result.data);
-			$scope.setupView();
-		}
-	});
-	
 	$scope.configurationApply = function() {
-		lexProjectService.updateConfiguration($scope.config, function(result) {
+		lexProjectService.updateConfiguration($scope.configDirty, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, $filter('translate')("Dictionary configuration updated successfully"));
 				$scope.configForm.$setPristine();
-				baseViewService.setConfig($scope.config);
+				$scope.config = angular.copy($scope.configDirty);
+				setupView();
 			}
 		});
 	};
@@ -160,7 +156,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 	};
 	$scope.removeInputSystem = function(currentInputSystemTag) {
 		delete $scope.inputSystems[currentInputSystemTag];
-		$scope.inputSystemsList = $scope.sortInputSystemsList();
+		$scope.inputSystemsList = sortInputSystemsList();
 		$scope.configForm.$setDirty();
 		// select the first items
 		$scope.selectInputSystem($scope.inputSystemsList[0].tag);
@@ -218,7 +214,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 				delete $scope.inputSystems[tag];
 				$scope.selectInputSystem(newTag);
 			}
-			$scope.inputSystemsList = $scope.sortInputSystemsList();
+			$scope.inputSystemsList = sortInputSystemsList();
 		}
 	});
 
@@ -242,7 +238,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 		// if the field uses input systems, add the selected systems first then the unselected systems
 		if ($scope.fieldConfig[fieldName].inputSystems) {
 			$scope.currentField.inputSystems.fieldOrder = $scope.fieldConfig[fieldName].inputSystems;
-			angular.forEach($scope.config.inputSystems, function(inputSystem, tag) {
+			angular.forEach($scope.configDirty.inputSystems, function(inputSystem, tag) {
 				if(! (tag in $scope.currentField.inputSystems.selecteds)) {
 					$scope.currentField.inputSystems.fieldOrder.push(tag);
 				}
@@ -282,9 +278,9 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 		}
 	};
 	
-	$scope.$watch('config', function (newValue) {
+	$scope.$watch('configDirty', function (newValue) {
 		if (angular.isDefined(newValue) && $scope.haveConfig()) {
-			// when config is updated select the first field in the list
+			// when configDirty is updated select the first field in the list
 			$scope.selectField('lexeme');
 		}
 	});
