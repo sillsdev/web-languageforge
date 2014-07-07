@@ -85,8 +85,8 @@ angular.module('lexicon',
 			);
 		$routeProvider.otherwise({redirectTo: '/projects'});
 	}])
-	.controller('MainCtrl', ['$scope', 'sessionService', 'lexBaseViewService', 'lexProjectService', '$translate', 
-	                         function($scope, ss, lexBaseViewService, lexProjectService, $translate) {
+	.controller('MainCtrl', ['$scope', 'sessionService', 'lexProjectService', '$translate', 
+	                         function($scope, ss, lexProjectService, $translate) {
 		$scope.rights = {};
 		$scope.rights.remove = ss.hasProjectRight(ss.domain.USERS, ss.operation.DELETE); 
 		$scope.rights.create = ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE); 
@@ -141,8 +141,7 @@ angular.module('lexicon',
 			$scope.breadcrumbs = breadcrumbService.read();
 		}, true);
 	}])
-	.controller('LexiconMenuCtrl', ['$scope', 'lexBaseViewService', 'lexProjectService', 
-	                                function($scope, lexBaseViewService, lexProjectService) {
+	.controller('LexiconMenuCtrl', ['$scope', function($scope) {
 		$scope.isItemVisible = function(itemName) {
 			// Default to invisible if config not defined
 			if (angular.isUndefined($scope.config)) {
@@ -154,10 +153,6 @@ angular.module('lexicon',
 			};
 			return $scope.config.tasks[itemName].visible;
 		};
-		
-		lexBaseViewService.registerListener(function() {
-			$scope.config = lexBaseViewService.getConfig();
-		});
 		
 	}])
 	;

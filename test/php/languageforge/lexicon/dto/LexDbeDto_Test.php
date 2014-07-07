@@ -41,7 +41,6 @@ class TestLexDbeDto extends UnitTestCase {
 				
 		$result = LexDbeDto::encode($projectId, $userId);
 		
-		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 0);
 		$this->assertEqual($result['entriesTotalCount'], 0);
 		$this->assertEqual(get_class($result['entry']['lexeme']), 'stdClass', 'blank first entry is not valid');
@@ -80,7 +79,6 @@ class TestLexDbeDto extends UnitTestCase {
 
 		$result = LexDbeDto::encode($projectId, $userId);
 		
-		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 11);
 		$this->assertEqual($result['entriesTotalCount'], 11);
 		$this->assertEqual($result['entry']['lexeme']['th']['value'], 'Aardvark', 'Aardvark should sort first');
@@ -114,14 +112,12 @@ class TestLexDbeDto extends UnitTestCase {
 		
 		$result = LexDbeDto::encode($projectId, $userId, 0, 5);
 		
-		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 5);
 		$this->assertEqual($result['entriesTotalCount'], 10);
 		$this->assertEqual($result['entry']['lexeme']['th']['value'], 'Apfel0', 'Apfel0 should sort first');
 
 		$result = LexDbeDto::encode($projectId, $userId, 4, 5);
 		
-		$this->assertEqual($result['config']['entry']['type'], 'fields', 'dto config is not valid');
 		$this->assertEqual(count($result['entries']), 5);
 		$this->assertEqual($result['entriesTotalCount'], 10);
 		$this->assertEqual($result['entry']['lexeme']['th']['value'], 'Apfel4', 'Apfel4 should sort first');
