@@ -50,7 +50,7 @@ var shouldProjectHaveButtons = function(projectRow, bool) {
 	expect(addAsMemberBtn.isDisplayed()).toBe(bool);
 };
 
-describe('E2E Projects List App - Site Admin User', function() {
+describe('E2E Projects List App - System Admin User', function() {
 
 	it('should list all projects for ScriptureForge', function() {
 		loginPage.loginAsAdmin();

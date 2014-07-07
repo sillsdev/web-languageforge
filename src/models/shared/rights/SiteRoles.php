@@ -3,11 +3,12 @@
 namespace models\shared\rights;
 
 use libraries\shared\palaso\CodeGuard;
+use models\mapper\MapOf;
 
 class SiteRoles extends RolesBase {
 	
-	const SYSTEM_ADMIN = 'system_admin';  // highest possible level
-	const SITE_MANAGER = 'site_manager';  // intermediate permission level with various management responsibilities like creating projects
+	const SITE_MANAGER    = 'site_manager';    // highest possible level for site: various management responsibilities like creating projects
+	const PROJECT_CREATOR = 'project_creator'; // permission to create a project
 	const USER = 'user';
 	const NONE = 'none';
 	
@@ -25,28 +26,48 @@ class SiteRoles extends RolesBase {
 		//$rights[] = Domain::USERS + Operation::DELETE_OWN;
 		self::$_rights[self::USER] = $rights;
 
-		// Site Manager (everything the user has, plus some)
+		// Project Creator (User plus ability to create projects)
 		$rights = self::$_rights[self::USER];
-		$rights[] = Domain::USERS + Operation::CREATE;
-		$rights[] = Domain::USERS + Operation::EDIT;
-		$rights[] = Domain::USERS + Operation::VIEW;
-		$rights[] = Domain::USERS + Operation::ARCHIVE;
 		$rights[] = Domain::PROJECTS + Operation::CREATE;
-		$rights[] = Domain::PROJECTS + Operation::EDIT;
-		$rights[] = Domain::PROJECTS + Operation::VIEW;
+		self::$_rights[self::PROJECT_CREATOR] = $rights;
+		
+		// Site Manager (all rights on projects)
+		$rights = self::$_rights[self::USER];
+		self::grantAllOnDomain($rights, Domain::PROJECTS);
 		self::$_rights[self::SITE_MANAGER] = $rights;
 		
-		// System Admin
-		$rights = array();
-		self::grantAllOnDomain($rights, Domain::USERS);
-		self::grantAllOnDomain($rights, Domain::PROJECTS);
-		self::$_rights[self::SYSTEM_ADMIN] = $rights;
 	}
 
 	private static $_rights;
-	public static function hasRight($role, $right) { return self::_hasRight(self::$_rights, $role, $right); }
-	public static function getRightsArray($role) { return self::_getRightsArray(self::$_rights, $role); }
 	
+	/**
+	 * 
+	 * @param MapOf $roleMap
+	 * @param Website $website
+	 * @return array
+	 */
+	public static function getRightsArray($roleMap, $website) {
+		if ($roleMap->offsetExists($website->domain)) {
+			return self::_getRightsArray(self::$_rights, $roleMap[$website->domain]);
+		}
+		return array();
+	}
+		
+	
+	/**
+	 * 
+	 * @param MapOf $roleMap
+	 * @param int $right
+	 * @param Website $website
+	 * @return bool
+	 */
+	public static function hasRight($roleMap, $right, $website) {
+		CodeGuard::checkTypeAndThrow($website, 'libraries\shared\Website');
+		if ($roleMap->offsetExists($website->domain)) {
+			return self::_hasRight(self::$_rights, $roleMap[$website->domain], $right);
+		}
+		return false;
+	}
 	
 }
 SiteRoles::init();

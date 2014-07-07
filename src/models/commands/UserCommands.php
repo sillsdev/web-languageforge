@@ -2,8 +2,6 @@
 
 namespace models\commands;
 
-use models\shared\rights\SiteRoles;
-
 use libraries\scriptureforge\sfchecks\Communicate;
 use libraries\scriptureforge\sfchecks\Email;
 use libraries\scriptureforge\sfchecks\IDelivery;
@@ -38,6 +36,7 @@ use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserModelWithPassword;
 use models\UserProfileModel;
+use models\shared\rights\SystemRoles;
 
 class UserCommands {
 	
@@ -176,7 +175,8 @@ class UserCommands {
 		$user = new UserModel();
 		$user->name = $userName;
 		$user->username = strtolower(str_replace(' ', '.', $user->name));
-		$user->role = SiteRoles::USER;
+		$user->role = SystemRoles::USER;
+		$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
 		$user->active = true;
 		$userId = $user->write();
 		
@@ -219,7 +219,7 @@ class UserCommands {
 			return false;
 		}
 		$user->active = false;
-		$user->role = SiteRoles::USER;
+		$user->role = $website->userDefaultSiteRole;
 		if (!$user->emailPending) {
 			if (!$user->email) {
 				throw new \Exception("Error: no email set for user signup.");
@@ -302,8 +302,9 @@ class UserCommands {
 	* 
 	* @param string $validationKey
 	* @param array $params
+	* @param Website $website
 	*/
-	public static function updateFromRegistration($validationKey, $params) {
+	public static function updateFromRegistration($validationKey, $params, $website) {
 		$user = new \models\UserModelWithPassword();
 		if ($user->readByProperty('validationKey', $validationKey)) {
 			if ($user->validate()) {
@@ -311,7 +312,7 @@ class UserCommands {
 				JsonDecoder::decode($user, $params);
 				$user->setPassword($params['password']);
 				$user->validate();
-				$user->role = SiteRoles::USER;
+				$user->role = $website->userDefaultSiteRole;
 				$user->active = true;
 				return $user->write();
 			} else {

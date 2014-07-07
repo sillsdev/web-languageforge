@@ -1,6 +1,6 @@
 <?php
 
-use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 
 use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\shared\rights\ProjectRoles;
@@ -19,7 +19,7 @@ class TestLexBaseViewDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserProfileModel($userId);
-		$user->role = SiteRoles::USER;
+		$user->role = SystemRoles::USER;
 
 		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$projectId = $project->id->asString();

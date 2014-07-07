@@ -5,6 +5,7 @@ use models\TextModel;
 use models\UserModel;
 use models\shared\rights\ProjectRoles;
 use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -18,7 +19,7 @@ class TestProjectListDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = SiteRoles::SYSTEM_ADMIN;
+		$user->role = SystemRoles::SYSTEM_ADMIN;
 		$user->write();
 
 		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -34,7 +35,7 @@ class TestProjectListDto extends UnitTestCase {
 		$text2->content = "We had gone perhaps ten miles when the ground began to rise very rapidly. …";
 		$text2Id = $text2->write();
 
-		$dto = ProjectListDto::encode($userId, $project->siteName);
+		$dto = ProjectListDto::encode($userId, $e->website);
 
 		$this->assertEqual($dto['count'], 1);
 		$this->assertIsA($dto['entries'], 'array');
@@ -43,13 +44,13 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::NONE);
 	}
 
-	function testEncode_SiteAdmin2Projects_DtoReturnsProjectCount2() {
+	function testEncode_SystemAdmin2Projects_DtoReturnsProjectCount2() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = SiteRoles::SYSTEM_ADMIN;
+		$user->role = SystemRoles::SYSTEM_ADMIN;
 		$user->write();
 	
 		$project1 = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -60,7 +61,7 @@ class TestProjectListDto extends UnitTestCase {
 		$project2 = $e->createProject(SF_TESTPROJECT2, SF_TESTPROJECTCODE2);
 		$projectId2 = $project2->id->asString();
 		
-		$dto = ProjectListDto::encode($userId, $project1->siteName);
+		$dto = ProjectListDto::encode($userId, $e->website);
 	
 		$this->assertEqual($dto['count'], 2);
 		$this->assertIsA($dto['entries'], 'array');
@@ -72,13 +73,13 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertEqual($dto['entries'][1]['role'], ProjectRoles::NONE);
 	}
 	
-	function testEncode_SiteAdmin2Projects1Archived_DtoReturnsProjectCount1() {
+	function testEncode_SystemAdmin2Projects1Archived_DtoReturnsProjectCount1() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = SiteRoles::SYSTEM_ADMIN;
+		$user->role = SystemRoles::SYSTEM_ADMIN;
 		$user->write();
 	
 		$project1 = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -90,7 +91,7 @@ class TestProjectListDto extends UnitTestCase {
 		$project2 = $e->createProject(SF_TESTPROJECT2, SF_TESTPROJECTCODE2);
 		$projectId2 = $project2->id->asString();
 		
-		$dto = ProjectListDto::encode($userId, $project1->siteName);
+		$dto = ProjectListDto::encode($userId, $e->website);
 	
 		$this->assertEqual($dto['count'], 1);
 		$this->assertIsA($dto['entries'], 'array');
@@ -98,7 +99,7 @@ class TestProjectListDto extends UnitTestCase {
 		$this->assertEqual($dto['entries'][0]['projectName'], SF_TESTPROJECT2);
 		$this->assertEqual($dto['entries'][0]['role'], ProjectRoles::NONE);
 
-		$dto = ProjectListDto::encode($userId, $project1->siteName, true);
+		$dto = ProjectListDto::encode($userId, $e->website, true);
 	
 		$this->assertEqual($dto['count'], 1);
 		$this->assertIsA($dto['entries'], 'array');
@@ -113,7 +114,7 @@ class TestProjectListDto extends UnitTestCase {
 		
 		$userId = $e->createUser("User", "Name", "name@example.com");
 		$user = new UserModel($userId);
-		$user->role = SiteRoles::USER;
+		$user->role = SystemRoles::USER;
 		$user->write();
 	
 		$project1 = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -124,7 +125,7 @@ class TestProjectListDto extends UnitTestCase {
 		$project2 = $e->createProject(SF_TESTPROJECT2, SF_TESTPROJECTCODE2);
 		$projectId2 = $project2->id->asString();
 		
-		$dto = ProjectListDto::encode($userId, $project1->siteName);
+		$dto = ProjectListDto::encode($userId, $e->website);
 	
 		$this->assertEqual($dto['count'], 1);
 		$this->assertIsA($dto['entries'], 'array');

@@ -258,7 +258,7 @@ class Sf
 	}
 	
 	public function project_list_dto() {
-		return ProjectListDto::encode($this->_userId, $this->_website->domain);
+		return ProjectListDto::encode($this->_userId, $this->_website);
 	}
 	
 	public function project_joinProject($projectId, $role) {
@@ -570,7 +570,7 @@ class Sf
 			} catch (\Exception $e) {
 				$projectModel = null;
 			}
-			$rightsHelper = new RightsHelper($this->_userId, $projectModel);
+			$rightsHelper = new RightsHelper($this->_userId, $projectModel, $this->_website);
 			if (!$rightsHelper->userCanAccessMethod($methodName, $params)) {
 				throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
 			}

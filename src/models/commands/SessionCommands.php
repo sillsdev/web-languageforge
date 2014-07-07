@@ -2,17 +2,18 @@
 
 namespace models\commands;
 
-use libraries\shared\Website;
-use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 use models\ProjectModel;
 use models\UserModel;
+use libraries\shared\Website;
+
 
 class SessionCommands {
 	
 	/**
-	 * @param string $userId
 	 * @param string $projectId
-	 * @param Website
+	 * @param string $userId
+	 * @param Website $website
 	 * @return array
 	 */
 	public static function getSessionData($projectId, $userId, $website) {
@@ -22,11 +23,8 @@ class SessionCommands {
 
 		// Rights
 		$user = new UserModel($userId);
-		$role = $user->role;
-		if (empty($role)) {
-			$role = SiteRoles::USER;
-		}
-		$sessionData['userSiteRights'] = SiteRoles::getRightsArray($role);
+		$sessionData['userSiteRights'] = $user->getRightsArray($website);
+
 
 		if ($projectId) {
 			$project = ProjectModel::getById($projectId);
