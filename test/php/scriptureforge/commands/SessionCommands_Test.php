@@ -66,9 +66,10 @@ class TestSessionCommands extends UnitTestCase {
 		$this->assertTrue(array_key_exists('userId', $data));
 		$this->assertTrue(is_string($data['userId']));
 		$this->assertEqual($data['userId'], $e->userId);
-		$this->assertTrue(array_key_exists('projectId', $data));
-		$this->assertTrue(is_string($data['projectId']));
-		$this->assertEqual($data['projectId'], $e->projectId);
+		$this->assertTrue(array_key_exists('project', $data));
+		$this->assertTrue(array_key_exists('id', $data['project']));
+		$this->assertTrue(is_string($data['project']['id']));
+		$this->assertEqual($data['project']['id'], $e->projectId);
 
 		// Session data should also contain "site", a string...
 		$this->assertTrue(array_key_exists('baseSite', $data));
