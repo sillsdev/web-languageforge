@@ -184,9 +184,7 @@ angular.module('bellows.services', ['jsonRpc'])
 		return this.getSetting($window.session.projectSettings, key);
 	};
 
-	this.session = function() {
-		return $window.session;
-	};
+	this.session = $window.session;
 	
 	this.getCaptchaSrc = function(callback) {
 		jsonRpc.call('get_captcha_src', [], callback);

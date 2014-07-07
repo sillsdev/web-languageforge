@@ -1,10 +1,9 @@
 'use strict';
 
 angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'palaso.ui.notice', 'palaso.ui.textdrop'])
-.controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexBaseViewService', 
-                             function($scope, $filter, userService, ss, notice, lexProjectService, baseViewService) {
+.controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService',  
+                             function($scope, $filter, userService, ss, notice, lexProjectService) {
 	$scope.rights.canEditCommunicationSettings = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-	baseViewService.setData(ss.session().projectSettings);
 	
 	$scope.readProject = function() {
 		lexProjectService.readProject(function(result) {
