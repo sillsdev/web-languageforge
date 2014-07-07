@@ -42,7 +42,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	};
 	
 }])
-.service('lexLinkService', ['$location', function($location) {
+.service('lexLinkService', ['$location', 'sessionService', function($location, ss) {
 	this.project = function () {
 		return '/app/lexicon/' + this.getProjectId();
 	};
@@ -52,8 +52,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	};
 
 	this.getProjectId = function() {
-		// todo: make this work - cjh 2014-06
-		return 0;
+		return ss.session.project.id;
 	};
 }])
 .service('lexProjectService', ['jsonRpc', 'sessionService', 'breadcrumbService', 'lexLinkService', '$location', 
