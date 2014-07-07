@@ -2,10 +2,8 @@
 
 namespace models\languageforge\lexicon\config;
 
-
-
 use models\languageforge\lexicon\InputSystem;
-
+use models\languageforge\lexicon\LexiconRoles;
 use models\mapper\MapOf;
 
 class LexConfiguration {
@@ -46,7 +44,7 @@ class LexConfiguration {
 			return new LexRoleViewConfig();
 		});
 		
-		// default values
+		// default tasks values
 		$this->tasks[LexiconTask::VIEW] = new LexiconTask();
 		$this->tasks[LexiconTask::DASHBOARD] = new LexiconDashboardTask();
 		$this->tasks[LexiconTask::GATHERTEXTS] = new LexiconTask();
@@ -60,7 +58,7 @@ class LexConfiguration {
 		$this->tasks[LexiconTask::IMPORTEXPORT] = new LexiconTask();
 		$this->tasks[LexiconTask::CONFIGURATION] = new LexiconTask();
 		
-		// default values for the entry config
+		// default entry fields values
 		$this->entry = new LexiconFieldListConfigObj();
 		$this->entry->fieldOrder[] = LexiconConfigObj::LEXEME;
 		$this->entry->fieldOrder[] = LexiconConfigObj::SENSES_LIST;
@@ -183,7 +181,20 @@ class LexConfiguration {
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->label = 'Translation';
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->visible = true;
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems[] = 'en';
-
+		
+		// default role views values
+		$this->roleViews[LexiconRoles::OBSERVER]->fields = array(
+				LexiconConfigObj::LEXEME,
+				LexiconConfigObj::DEFINITION, LexiconConfigObj::GLOSS, LexiconConfigObj::POS, LexiconConfigObj::SEMDOM,
+				LexiconConfigObj::EXAMPLE_SENTENCE, LexiconConfigObj::EXAMPLE_TRANSLATION
+		);
+		$this->roleViews[LexiconRoles::OBSERVER]->tasks = array(
+				LexiconTask::VIEW, LexiconTask::DASHBOARD, LexiconTask::GATHERTEXTS, 
+				LexiconTask::SEMDOM, LexiconTask::WORDLIST, LexiconTask::DBE, 
+				LexiconTask::ADDMEANINGS, LexiconTask::ADDGRAMMAR, LexiconTask::ADDEXAMPLES, 
+				LexiconTask::REVIEW
+		);
+		
 	}
 }
 

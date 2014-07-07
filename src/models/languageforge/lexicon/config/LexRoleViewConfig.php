@@ -1,7 +1,9 @@
 <?php
+
 namespace models\languageforge\lexicon\config;
 
 class LexRoleViewConfig {
+	
 	/**
 	 * 
 	 * @var array
@@ -15,3 +17,5 @@ class LexRoleViewConfig {
 	public $fields;
 	
 }
+
+?>
