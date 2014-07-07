@@ -502,10 +502,6 @@ class Sf
 		return LexProjectDto::encode($this->_projectId, $this->_userId);
 	}
 
-	public function lex_manageUsersDto() {
-		return LexManageUsersDto::encode($this->_projectId, $this->_userId);
-	}
-
 	public function lex_dbeDto($iEntryStart, $numberOfEntries) {
 		return LexDbeDto::encode($this->_projectId, $this->_userId, $iEntryStart, $numberOfEntries);
 	}

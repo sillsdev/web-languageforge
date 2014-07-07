@@ -126,7 +126,6 @@ class RightsHelper
 				return $this->userHasProjectRight(Domain::QUESTIONS + Operation::VIEW);
 
 			// Project Manager Role (Project Context)
-			case 'lex_manageUsersDto':
 			case 'user_createSimple':
 				return $this->userHasProjectRight(Domain::USERS + Operation::CREATE);
 				
