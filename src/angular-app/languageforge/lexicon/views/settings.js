@@ -4,11 +4,11 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
 .controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexBaseViewService', 
                              function($scope, $filter, userService, ss, notice, lexProjectService, baseViewService) {
 	$scope.rights.canEditCommunicationSettings = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
+	baseViewService.setData(ss.session().projectSettings);
 	
 	$scope.readProject = function() {
 		lexProjectService.readProject(function(result) {
 			if (result.ok) {
-				baseViewService.setData(result.data);
 				$.extend($scope.project, result.data.project);
 			}
 		});
