@@ -22,6 +22,12 @@ class LexConfiguration {
 	 */
 	public $entry;
 	
+	/**
+	 * 
+	 * @var MapOf<LexRoleViewConfig>
+	 */
+	public $roleViews;
+	
 	function __construct() {
 		$this->tasks = new MapOf(
 			function($data) {
@@ -35,6 +41,10 @@ class LexConfiguration {
 				}
 			}	
 		);
+		
+		$this->roleViews = new MapOf(function($data) {
+			return new LexRoleViewConfig();
+		});
 		
 		// default values
 		$this->tasks[LexiconTask::VIEW] = new LexiconTask();
