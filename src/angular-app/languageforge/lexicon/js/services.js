@@ -108,7 +108,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	
 	this.users = function(callback) {
 		var projectId = this.getProjectId();
-		jsonRpc.call('lex_manageUsersDto', [], function(result) {
+		jsonRpc.call('project_usersDto', [], function(result) {
 			if (result.ok) {
 				breadcrumbService.set('top',
 					[
