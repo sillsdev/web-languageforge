@@ -153,13 +153,13 @@ class ProjectCommands
 	}
 
 	/**
-	 * Update the user role in the project
+	 * Update the user project role in the project
 	 * @param string $projectId
 	 * @param string $userId
-	 * @param string $role
+	 * @param string $projectRole
 	 * @return string - userId
 	 */
-	public static function updateUserRole($projectId, $userId, $role = ProjectRoles::CONTRIBUTOR) {
+	public static function updateUserRole($projectId, $userId, $projectRole = ProjectRoles::CONTRIBUTOR) {
 		CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
 		CodeGuard::checkNotFalseAndThrow($userId, 'userId');
 		//CodeGuard::assertInArrayOrThrow($role, array(ProjectRoles::CONTRIBUTOR, ProjectRoles::MANAGER));
@@ -167,7 +167,7 @@ class ProjectCommands
 		// Add the user to the project
 		$user = new UserModel($userId);
 		$project = ProjectModel::getById($projectId);
-		$project->addUser($userId, $role);
+		$project->addUser($userId, $projectRole);
 		$user->addProject($projectId);
 		$project->write();
 		$user->write();
