@@ -66,6 +66,12 @@ a:hover {
 	border: 1px dashed #f95a79;
 }
 
+/* offset for header logo */
+div.content h1 {
+	margin-left: 132px;
+	margin-top: 24px;
+	margin-bottom: 24px;
+}
 
 /* Clearfix */
 .cf:before, .cf:after { content: ""; display: table; }
