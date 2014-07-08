@@ -148,19 +148,19 @@ class UserCommands {
 	}
 	
 	/**
-	 * 
+	 * Create a user with only username and default site role.
 	 * @param string $params
+	 * @param Website $website
 	 * @return boolean|string
 	 */
-	public static function createUser($params) {
+	public static function createUser($params, $website) {
 		$user = new \models\UserModelWithPassword();
 		JsonDecoder::decode($user, $params);
 		if (UserModel::userNameExists($user->username)) {
 			return false;
 		}
 		$user->setPassword($params['password']);
-		// TODO: create siteRole  DDW 07 July 2014
-		//$user->siteRole[]
+		$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
 		return $user->write();
 	}
 	
@@ -221,7 +221,8 @@ class UserCommands {
 			return false;
 		}
 		$user->active = false;
-		$user->role = $website->userDefaultSiteRole;
+		$user->role = SystemRoles::USER; 
+		$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
 		if (!$user->emailPending) {
 			if (!$user->email) {
 				throw new \Exception("Error: no email set for user signup.");
@@ -314,7 +315,8 @@ class UserCommands {
 				JsonDecoder::decode($user, $params);
 				$user->setPassword($params['password']);
 				$user->validate();
-				$user->role = $website->userDefaultSiteRole;
+				$user->role = SystemRoles::USER;
+				$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
 				$user->active = true;
 				return $user->write();
 			} else {
