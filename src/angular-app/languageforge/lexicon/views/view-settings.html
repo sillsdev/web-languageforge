@@ -1,0 +1,92 @@
+<div class="container" data-ng-cloak data-ng-controller="ViewSettingsCtrl">
+<h2>{{ 'View Settings' | translate }}</h2>
+<form name="viewSettingForm" novalidate>
+<button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="settingsApply()"  
+	data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense()">
+	<i class="icon-ok"></i> {{'Apply' | translate}}</button>
+<tabset>
+	<tab data-ng-repeat="roleView in roleViews" heading="{{roleView.name | translate}}" class="{{interfaceConfig.pullNormal}}">
+		<div class="row outer-flex">
+		
+		<!-- Left column: field view settings -->
+		<div class="span4 control-group">
+			<h3 translate="Field View Settings"></h3>
+			<dl>
+				<dt translate="Entry Level Fields"></dt>
+				<dd><div class="controls">
+					<label class="checkbox">
+						<input type="checkbox" disabled checked> {{fieldConfig['lexeme'].label | translate}}</label>
+				</div></dd>
+				<dt>{{'Sense Level Fields' | translate}} 
+					<span data-ng-hide="isAtLeastOneSense(roleView.view)">
+					<img src="/images/shared/exclamation.png" title="{{'At least one Sense field must be enabled!' | translate}}" style="position: absolute; padding-left: 5px;"/></span></dt>
+				<dd><div class="controls">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isFieldsVisible['definition']">
+						 {{fieldConfig['definition'].label | translate}}</label>
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isFieldsVisible['gloss']">
+						 {{fieldConfig['gloss'].label | translate}}</label>
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isFieldsVisible['partOfSpeech']">
+						 {{fieldConfig['partOfSpeech'].label | translate}}</label>
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isFieldsVisible['semanticDomain']">
+						 {{fieldConfig['semanticDomain'].label | translate}}</label>
+				</div></dd>
+				<dt translate="Example Level Fields"></dt>
+				<dd><div class="controls">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isFieldsVisible['sentence']">
+						 {{fieldConfig['sentence'].label | translate}}</label>
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isFieldsVisible['translation']">
+						 {{fieldConfig['translation'].label | translate}}</label>
+				</div></dd>
+			</dl>
+		</div>
+		
+		<!-- Right column: task view settings -->
+		<div class="span4 control-group">
+			<h3 translate="Task View Settings"></h3>
+			<dl>
+				<dt translate="Dashboard"></dt>
+				<dd><div class="controls">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isTasksVisible['dashboard']">
+						{{'Dashboard' | translate}}</label>
+				</div></dd>
+				<dt translate="Dictionary"></dt>
+				<dd><div class="controls">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isTasksVisible['dbe']">
+						{{'Browse &amp; Edit' | translate}}</label>
+				</div></dd>
+				<dt translate="Add Information"></dt>
+				<dd><div class="controls">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isTasksVisible['addMeanings']">
+						{{'Add Meanings' | translate}}</label>
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isTasksVisible['addGrammar']">
+						{{'Add Parts of Speech' | translate}}</label>
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isTasksVisible['addExamples']">
+						{{'Add Example Sentences' | translate}}</label>
+				</div></dd>
+				<dt translate="Gather Words"></dt>
+				<dd><div class="controls">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isTasksVisible['gatherTexts']">
+						{{'From Texts' | translate}}</label>
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isTasksVisible['wordlist']">
+						{{'From a Word List' | translate}}</label>
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isTasksVisible['semdom']">
+						{{'From Semantic Domains' | translate}}</label>
+				</div></dd>
+				<dt translate="Review"></dt>
+				<dd><div class="controls">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.isTasksVisible['review']">
+						{{'Review' | translate}}</label>
+				</div></dd>
+			</dl>
+		</div>
+		
+		</div>
+	</tab>
+</tabset>
+</form>
+<!--   
+<pre>
+configDirty.roleViews {{configDirty.roleViews | json}}
+</pre>
+ -->
+</div>

@@ -11,6 +11,7 @@ angular.module('lexicon',
 		'bellows.filters',
 		'lexicon.add-meanings',
 		'lexicon.configuration',
+		'lexicon.view.settings',
 		'lexicon.import-export',
 		'lexicon.settings',
 		'lexicon.manage-users',
@@ -60,15 +61,21 @@ angular.module('lexicon',
 				}
 			);
 		$routeProvider.when(
-				'/importExport',
-				{
-					templateUrl: '/angular-app/languageforge/lexicon/views/import-export.html',
-				}
-			);
-		$routeProvider.when(
 				'/configuration',
 				{
 					templateUrl: '/angular-app/languageforge/lexicon/views/configuration.html',
+				}
+			);
+		$routeProvider.when(
+				'/viewSettings',
+				{
+					templateUrl: '/angular-app/languageforge/lexicon/views/view-settings.html',
+				}
+			);
+		$routeProvider.when(
+				'/importExport',
+				{
+					templateUrl: '/angular-app/languageforge/lexicon/views/import-export.html',
 				}
 			);
 		$routeProvider.when(
@@ -103,17 +110,18 @@ angular.module('lexicon',
 			$translate.use(code);
 			pristineLanguageCode = angular.copy(code);
 			
-			$scope.interfaceConfig.direction = 'ltr';
-			$scope.interfaceConfig.pullToSide = 'pull-right';
-			$scope.interfaceConfig.pullNormal = 'pull-left';
-			$scope.interfaceConfig.placementToSide = 'left';
-			$scope.interfaceConfig.placementNormal = 'right';
 			if (InputSystems.isRightToLeft(code)) {
 				$scope.interfaceConfig.direction = 'rtl';
 				$scope.interfaceConfig.pullToSide = 'pull-left';
 				$scope.interfaceConfig.pullNormal = 'pull-right';
 				$scope.interfaceConfig.placementToSide = 'right';
 				$scope.interfaceConfig.placementNormal = 'left';
+			} else {
+				$scope.interfaceConfig.direction = 'ltr';
+				$scope.interfaceConfig.pullToSide = 'pull-right';
+				$scope.interfaceConfig.pullNormal = 'pull-left';
+				$scope.interfaceConfig.placementToSide = 'left';
+				$scope.interfaceConfig.placementNormal = 'right';
 			}
 		};
 		

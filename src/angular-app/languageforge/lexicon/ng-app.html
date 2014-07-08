@@ -23,11 +23,12 @@
 				<a class="btn dropdown-toggle" data-toggle="dropdown" data-tooltip-placement="{{interfaceConfig.placementToSide}}" data-tooltip="Settings" href="#">
 					<i class="icon-cog icon-2x"></i>&nbsp;&nbsp;<span class="caret"></span></a>
 				<ul class="dropdown-menu {{interfaceConfig.pullToSide}}">
-					<li data-ng-show="isItemVisible('configuration')"><a href="#/configuration">Dictionary Configuration</a></li>
-					<li class="divider" data-ng-show="isItemVisible('configuration')"></li>
-					<li data-ng-show="isItemVisible('importExport')"><a href="#/importExport">Import/Export</a></li>
-					<li data-ng-show="isItemVisible('settings')"><a href="#/settings">Project Settings</a></li>
-					<li data-ng-show="isItemVisible('users')"><a href="#/users">User Management</a></li>
+					<li data-ng-show="isItemVisible('configuration')"><a href="#/configuration" translate="Dictionary Configuration"></a></li>
+					<li data-ng-show="isItemVisible('viewSettings')"><a href="#/viewSettings" translate="View Settings"></a></li>
+					<li class="divider" data-ng-show="isItemVisible('configuration') || isItemVisible('viewSettings')"></li>
+					<li data-ng-show="isItemVisible('importExport')"><a href="#/importExport" translate="Import/Export"></a></li>
+					<li data-ng-show="isItemVisible('settings')"><a href="#/settings" translate="Project Settings"></a></li>
+					<li data-ng-show="isItemVisible('users')"><a href="#/users" translate="User Management"></a></li>
 				</ul>
 			</div>
 			<div class="btn-group" data-ng-show="isItemVisible('dashboard')">
@@ -40,7 +41,7 @@
 				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 					<i class="icon-th icon-2x"></i> Gather Words <span class="caret"></span></a>
 				<ul class="dropdown-menu {{interfaceConfig.pullNormal}}">
-					<li data-ng-show="isItemVisible('dbe')"        ><a href="#/dbe">Browse and Edit</a></li>
+					<li data-ng-show="isItemVisible('dbe')"        ><a href="#/dbe" translate="Browse and Edit"></a></li>
 					<li class="divider" data-ng-show="isItemVisible('dbe')"></li>
 					<li data-ng-show="isItemVisible('gatherTexts')"><a href="#/gather-texts">*NYI* from Texts</a></li>
 					<li data-ng-show="isItemVisible('semdom')"     ><a href="#/semdom">*NYI* from Semantic Domains</a></li>
@@ -53,9 +54,9 @@
 				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 					<i class="icon-plus icon-2x"></i> *NYI* Add Information <span class="caret"></span></a>
 				<ul class="dropdown-menu {{interfaceConfig.pullNormal}}">
-						<li data-ng-show="isItemVisible('addMeanings')"><a href="#/add-meanings">add Meanings</a></li>
-						<li data-ng-show="isItemVisible('addGrammar')" ><a href="#/add-grammar">add Grammatical Usage</a></li>
-						<li data-ng-show="isItemVisible('addExamples')"><a href="#/add-examples">add Examples</a></li>
+						<li data-ng-show="isItemVisible('addMeanings')"><a href="#/add-meanings" translate="add Meanings"></a></li>
+						<li data-ng-show="isItemVisible('addGrammar')" ><a href="#/add-grammar" translate="add Grammatical Usage"></a></li>
+						<li data-ng-show="isItemVisible('addExamples')"><a href="#/add-examples" translate="add Examples"></a></li>
 				</ul>
 			</div>
 		</div>
