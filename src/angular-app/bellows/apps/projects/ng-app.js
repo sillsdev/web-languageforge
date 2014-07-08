@@ -120,28 +120,35 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 		});
 	};
 	
+	/*
+	// State of the projectCode being validated:
+	// 'empty'   : no project code entered
+	// 'loading' : project code entered, being validated
+	// 'exist'   : project code already exists
+	// 'invalid' : project code does not meet the criteria of starting with a letter 
+	//				and only containing lower-case letters, numbers, or dashes
+	// 'ok'      : project code valid and unique
+	*/
+	$scope.projectCodeState = 'empty';
+	
+	// Check projectCode is unique and valid
 	$scope.checkProjectCode = function() {
-		var patt = /^[a-zA-Z0-9]+$/i;
-		$scope.projectCodeOk = false;
-		$scope.projectCodeExists = false;
-		$scope.projectCodeAlphanumeric = false;
+		// valid pattern start with a letter and only containing lower-case letters, numbers, or dashes 
+		var patt = /^[a-z][a-z0-9\-_]*$/;
 		
-		// Check projectCode is alphanumeric
 		if (patt.test($scope.newProject.projectCode)) {
-			$scope.projectCodeLoading = true;
-			$scope.projectCodeAlphanumeric = true;
+			$scope.projectCodeState = 'loading';
 			projectService.projectCodeExists($scope.newProject.projectCode, function(result) {
-				$scope.projectCodeLoading = false;
 				if (result.ok) {
 					if (result.data) {
-						$scope.projectCodeOk = false;
-						$scope.projectCodeExists = true;
+						$scope.projectCodeState = 'exists';
 					} else {
-						$scope.projectCodeOk = true;
-						$scope.projectCodeExists = false;
+						$scope.projectCodeState = 'ok';
 					}
 				}
 			});
+		} else {
+			$scope.projectCodeState = 'invalid';
 		}
 	};
 	

@@ -227,7 +227,7 @@ class RightsHelper
 			case 'project_create':
 				return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
 			case 'projectcode_exists':
-				return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
+				return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
 			
 			case 'questionTemplate_update':
 				return $this->userHasProjectRight(Domain::TEMPLATES + Operation::EDIT);

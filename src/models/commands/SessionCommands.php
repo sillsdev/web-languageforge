@@ -2,6 +2,7 @@
 
 namespace models\commands;
 
+use models\shared\rights\SiteRoles;
 use models\shared\rights\SystemRoles;
 use models\ProjectModel;
 use models\UserModel;

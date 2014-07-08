@@ -86,7 +86,15 @@ class MongoDecoder extends JsonDecoder {
 	}
 	
 	public function decodeMapOf($key, $model, $data) {
-		$key = str_replace('___DOT___', '.', $key);
+		// Mongo can't handle '.' or '$' on array keys.
+		// We're only replacing the dots here
+		foreach ($data as $k => $item) {
+			if (strpos($k, '___DOT___') > -1) {
+				$newK = str_replace('___DOT___', '.', $k);
+				$data[$newK] = $data[$k];
+				unset($data[$k]);
+			}
+		}
 		parent::decodeMapOf($key, $model, $data);
 	}
 	
