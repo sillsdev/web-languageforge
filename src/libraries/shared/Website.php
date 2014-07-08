@@ -4,11 +4,18 @@ namespace libraries\shared;
 
 // this class is loaded early in index.php and therefore cannot have any dependencies on other libraries
 
+
 class Website {
 	
 	const SCRIPTUREFORGE = 'scriptureforge';
 	const LANGUAGEFORGE = 'languageforge';
 	
+	// TODO: figure out how to use SiteRoles instead of these constants (required because we cannot load SiteRoles directly)
+	const SITEROLE_NONE = 'none';
+	const SITEROLE_USER = 'user';
+	const SITEROLE_PROJECT_CREATOR = 'project_creator';
+	const SITEROLE_SITE_MANAGER = 'site_manager';
+
 	/**
 	 * 
 	 * @var string - the domain / hostname of the website
@@ -80,7 +87,7 @@ class Website {
 		$this->theme = 'default';
 		$this->ssl = false;
 		$this->defaultProjectCode = '';
-		$this->userDefaultSiteRole = 'user'; // must match SiteRoles::USER;
+		$this->userDefaultSiteRole = self::SITEROLE_USER; // must match SiteRoles::USER;
 		$this->allowSignupFromOtherSites = true;
 	}
 	
@@ -228,6 +235,7 @@ class Website {
 		$w = new Website('scriptureforge.local', self::SCRIPTUREFORGE);
 		$w->name = 'Scripture Forge'; 
 		$w->ssl = true;
+		$w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
 		$sites['scriptureforge.local'] = $w;
 		
 		$w = new Website('jamaicanpsalms.scriptureforge.local', self::SCRIPTUREFORGE);
@@ -241,6 +249,7 @@ class Website {
 		$w->name = 'Scripture Forge'; 
 		$w->ssl = true;
 		$w->theme = 'simple';
+		$w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
 		$sites['demo.scriptureforge.local'] = $w;
 		
 		
@@ -248,12 +257,14 @@ class Website {
 		$w = new Website('dev.scriptureforge.org', self::SCRIPTUREFORGE);
 		$w->name = 'Scripture Forge'; 
 		$w->ssl = true;
+		$w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
 		$sites['dev.scriptureforge.org'] = $w;
 		
 		$w = new Website('demo.dev.scriptureforge.org', self::SCRIPTUREFORGE);
 		$w->name = 'Scripture Forge'; 
 		$w->ssl = true;
 		$w->theme = 'simple';
+		$w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
 		$sites['demo.dev.scriptureforge.org'] = $w;
 
 		$w = new Website('jamaicanpsalms.dev.scriptureforge.org', self::SCRIPTUREFORGE);
@@ -268,6 +279,7 @@ class Website {
 		$w = new Website('www.scriptureforge.org', self::SCRIPTUREFORGE);
 		$w->name = 'Scripture Forge'; 
 		$w->ssl = true;
+		$w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
 		$sites['www.scriptureforge.org'] = $w;
 
 		
@@ -290,17 +302,20 @@ class Website {
 		$w = new Website('languageforge.local', self::LANGUAGEFORGE);
 		$w->name = 'Language Forge'; 
 		$w->ssl = true;
+		$w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
 		$sites['languageforge.local'] = $w;
 		
 		// dev.languageforge.org sites
 		$w = new Website('dev.languageforge.org', self::LANGUAGEFORGE);
 		$w->name = 'Language Forge'; 
 		$w->ssl = true;
+		$w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
 		$sites['dev.languageforge.org'] = $w;
 		
 		// languageforge.org
 		$w = new Website('www.languageforge.org', self::LANGUAGEFORGE);
 		$w->name = 'Language Forge'; 
+		$w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
 		$w->ssl = true;
 		$sites['www.languageforge.org'] = $w;
 		
