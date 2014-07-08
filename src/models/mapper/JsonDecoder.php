@@ -17,6 +17,7 @@ class JsonDecoder {
 	 * Sets the public properties of $model to values from $values[propertyName]
 	 * @param object $model
 	 * @param array $values A mixed array of JSON (like) data.
+	 * @param string $id
 	 */
 	public static function decode($model, $values, $id = '') {
 		$decoder = new JsonDecoder();
