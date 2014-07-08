@@ -7,21 +7,21 @@ use models\mapper\MapOf;
 class LexRoleViewConfig {
 	
 	public function __construct() {
-		$this->isFieldsVisible = new MapOf();
-		$this->isTasksVisible = new MapOf();
+		$this->showFields = new MapOf();
+		$this->showTasks = new MapOf();
 	}
 	
 	/**
 	 * key is LexiconConfigObj field const
 	 * @var MapOf <boolean>
 	 */
-	public $isFieldsVisible;
+	public $showFields;
 	
 	/**
-	 * key is LexiconConfigObj task const
+	 * key is LexiconTask const
 	 * @var MapOf <booelan>
 	 */
-	public $isTasksVisible;
+	public $showTasks;
 	
 }
 
