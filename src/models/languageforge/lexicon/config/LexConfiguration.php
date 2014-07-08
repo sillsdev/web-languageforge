@@ -10,7 +10,7 @@ class LexConfiguration {
 
 	/**
 	 * 
-	 * @var MapOf<LexiconTask>
+	 * @var MapOf <LexiconTask>
 	 */
 	public $tasks;
 	
@@ -21,8 +21,8 @@ class LexConfiguration {
 	public $entry;
 	
 	/**
-	 * 
-	 * @var MapOf<LexRoleViewConfig>
+	 * uses LexiconRoles as key
+	 * @var MapOf <LexRoleViewConfig>
 	 */
 	public $roleViews;
 	
@@ -187,32 +187,41 @@ class LexConfiguration {
 		$this->roleViews[LexiconRoles::OBSERVER_WITH_COMMENT] = new LexRoleViewConfig();
 		$this->roleViews[LexiconRoles::CONTRIBUTOR] = new LexRoleViewConfig();
 		$this->roleViews[LexiconRoles::MANAGER] = new LexRoleViewConfig();
-		$roleViewFields = array(
-			LexiconConfigObj::LEXEME,
-			LexiconConfigObj::DEFINITION, LexiconConfigObj::POS, LexiconConfigObj::SEMDOM,
-			LexiconConfigObj::EXAMPLE_SENTENCE, LexiconConfigObj::EXAMPLE_TRANSLATION
-		);
-		$this->roleViews[LexiconRoles::OBSERVER]->fields->exchangeArray($roleViewFields);
-		$this->roleViews[LexiconRoles::OBSERVER_WITH_COMMENT]->fields->exchangeArray($roleViewFields);
-		$this->roleViews[LexiconRoles::CONTRIBUTOR]->fields->exchangeArray($roleViewFields);
-		$this->roleViews[LexiconRoles::MANAGER]->fields->exchangeArray($roleViewFields);
-		$roleViewTasks = array(
-			LexiconTask::VIEW, LexiconTask::DASHBOARD, LexiconTask::DBE 
-		);
-		$this->roleViews[LexiconRoles::OBSERVER]->tasks->exchangeArray($roleViewTasks);
-		$this->roleViews[LexiconRoles::OBSERVER_WITH_COMMENT]->tasks->exchangeArray($roleViewTasks);
-		$roleViewTasks = array(
-			LexiconTask::VIEW, LexiconTask::DASHBOARD, LexiconTask::DBE, 
-			LexiconTask::ADDMEANINGS, LexiconTask::ADDGRAMMAR, LexiconTask::ADDEXAMPLES 
-		);
-		$this->roleViews[LexiconRoles::CONTRIBUTOR]->tasks->exchangeArray($roleViewTasks);
-		$roleViewTasks = array(
-			LexiconTask::VIEW, LexiconTask::DASHBOARD, LexiconTask::GATHERTEXTS, 
-			LexiconTask::SEMDOM, LexiconTask::WORDLIST, LexiconTask::DBE, 
-			LexiconTask::ADDMEANINGS, LexiconTask::ADDGRAMMAR, LexiconTask::ADDEXAMPLES, 
-			LexiconTask::REVIEW
-		);
-		$this->roleViews[LexiconRoles::MANAGER]->tasks->exchangeArray($roleViewTasks);
+		
+		$this->roleViews[LexiconRoles::OBSERVER]->isFieldsVisible[LexiconConfigObj::LEXEME] = true;
+		$this->roleViews[LexiconRoles::OBSERVER]->isFieldsVisible[LexiconConfigObj::DEFINITION] = true;
+		$this->roleViews[LexiconRoles::OBSERVER]->isFieldsVisible[LexiconConfigObj::GLOSS] = false;
+		$this->roleViews[LexiconRoles::OBSERVER]->isFieldsVisible[LexiconConfigObj::POS] = true;
+		$this->roleViews[LexiconRoles::OBSERVER]->isFieldsVisible[LexiconConfigObj::SEMDOM] = true;
+		$this->roleViews[LexiconRoles::OBSERVER]->isFieldsVisible[LexiconConfigObj::EXAMPLE_SENTENCE] = true;
+		$this->roleViews[LexiconRoles::OBSERVER]->isFieldsVisible[LexiconConfigObj::EXAMPLE_TRANSLATION] = true;
+		$this->roleViews[LexiconRoles::OBSERVER_WITH_COMMENT]->isFieldsVisible = clone $this->roleViews[LexiconRoles::OBSERVER]->isFieldsVisible;
+		$this->roleViews[LexiconRoles::CONTRIBUTOR]->isFieldsVisible = clone $this->roleViews[LexiconRoles::OBSERVER]->isFieldsVisible;
+		$this->roleViews[LexiconRoles::MANAGER]->isFieldsVisible = clone $this->roleViews[LexiconRoles::OBSERVER]->isFieldsVisible;
+		
+		$this->roleViews[LexiconRoles::OBSERVER]->isTasksVisible[LexiconTask::VIEW] = true;
+		$this->roleViews[LexiconRoles::OBSERVER]->isTasksVisible[LexiconTask::DASHBOARD] = true;
+		$this->roleViews[LexiconRoles::OBSERVER]->isTasksVisible[LexiconTask::GATHERTEXTS] = false;
+		$this->roleViews[LexiconRoles::OBSERVER]->isTasksVisible[LexiconTask::SEMDOM] = false;
+		$this->roleViews[LexiconRoles::OBSERVER]->isTasksVisible[LexiconTask::WORDLIST] = false;
+		$this->roleViews[LexiconRoles::OBSERVER]->isTasksVisible[LexiconTask::DBE] = true;
+		$this->roleViews[LexiconRoles::OBSERVER]->isTasksVisible[LexiconTask::ADDMEANINGS] = false;
+		$this->roleViews[LexiconRoles::OBSERVER]->isTasksVisible[LexiconTask::ADDGRAMMAR] = false;
+		$this->roleViews[LexiconRoles::OBSERVER]->isTasksVisible[LexiconTask::ADDEXAMPLES] = false;
+		$this->roleViews[LexiconRoles::OBSERVER]->isTasksVisible[LexiconTask::REVIEW] = false;
+		
+		$this->roleViews[LexiconRoles::OBSERVER_WITH_COMMENT]->isTasksVisible = clone $this->roleViews[LexiconRoles::OBSERVER]->isTasksVisible;
+		
+		$this->roleViews[LexiconRoles::CONTRIBUTOR]->isTasksVisible = clone $this->roleViews[LexiconRoles::OBSERVER]->isTasksVisible;
+		$this->roleViews[LexiconRoles::CONTRIBUTOR]->isTasksVisible[LexiconTask::ADDMEANINGS] = true;
+		$this->roleViews[LexiconRoles::CONTRIBUTOR]->isTasksVisible[LexiconTask::ADDGRAMMAR] = true;
+		$this->roleViews[LexiconRoles::CONTRIBUTOR]->isTasksVisible[LexiconTask::ADDEXAMPLES] = true;
+		
+		$this->roleViews[LexiconRoles::MANAGER]->isTasksVisible = clone $this->roleViews[LexiconRoles::CONTRIBUTOR]->isTasksVisible;
+		$this->roleViews[LexiconRoles::MANAGER]->isTasksVisible[LexiconTask::GATHERTEXTS] = true;
+		$this->roleViews[LexiconRoles::MANAGER]->isTasksVisible[LexiconTask::SEMDOM] = true;
+		$this->roleViews[LexiconRoles::MANAGER]->isTasksVisible[LexiconTask::WORDLIST] = true;
+		$this->roleViews[LexiconRoles::MANAGER]->isTasksVisible[LexiconTask::REVIEW] = true;
 		
 	}
 }
