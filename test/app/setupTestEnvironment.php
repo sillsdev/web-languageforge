@@ -12,6 +12,7 @@ use models\commands\TextCommands;
 use models\commands\QuestionCommands;
 use models\commands\QuestionTemplateCommands;
 use models\shared\rights\ProjectRoles;
+use models\shared\rights\SiteRoles;
 use models\shared\rights\SystemRoles;
 use models\scriptureforge\SfProjectModel;
 use models\ProjectModel;
@@ -19,6 +20,7 @@ use libraries\shared\Website;
 
 // Fake some $_SERVER variables like HTTP_HOST for the sake of the code that needs it
 $_SERVER['HTTP_HOST'] = 'scriptureforge.local'; // TODO: Consider parsing protractorConf.js and loading baseUrl from it
+$website = Website::get('scriptureforge.local');
 
 // start with a fresh database
 $db = \models\mapper\MongoStore::connect(SF_DATABASE);
@@ -52,8 +54,9 @@ $adminUser = UserCommands::createUser(array(
 	'username' => $constants['adminUsername'],
 	'password' => $constants['adminPassword'],
 	'active' => true,
-	'role' => SystemRoles::SYSTEM_ADMIN
-));
+	'role' => SystemRoles::SYSTEM_ADMIN),
+	$website
+);
 $managerUser = UserCommands::createUser(array(
 	'id' => '',
 	'name' => $constants['managerName'],
@@ -61,8 +64,9 @@ $managerUser = UserCommands::createUser(array(
 	'username' => $constants['managerUsername'],
 	'password' => $constants['managerPassword'],
 	'active' => true,
-	'role' => SystemRoles::USER
-));
+	'role' => SystemRoles::USER),
+	$website
+);
 $memberUser = UserCommands::createUser(array(
 	'id' => '',
 	'name' => $constants['memberName'],
@@ -70,15 +74,16 @@ $memberUser = UserCommands::createUser(array(
 	'username' => $constants['memberUsername'],
 	'password' => $constants['memberPassword'],
 	'active' => true,
-	'role' => SystemRoles::USER
-));
+	'role' => SystemRoles::USER),
+	$website
+);
 
 $testProject = ProjectCommands::createProject(
 	$constants['testProjectName'],
 	$constants['testProjectCode'],
 	SfProjectModel::SFCHECKS_APP,
 	$adminUser,
-	Website::get('scriptureforge.local')
+	$website
 );
 $testProjectModel = new ProjectModel($testProject);
 $testProjectModel->projectCode = $constants['testProjectCode'];
@@ -90,7 +95,7 @@ $otherProject = ProjectCommands::createProject(
 	$constants['otherProjectCode'],
 	SfProjectModel::SFCHECKS_APP,
 	$adminUser,
-	Website::get('scriptureforge.local')
+	$website
 );
 $otherProjectModel = new ProjectModel($otherProject);
 $otherProjectModel->projectCode = $constants['otherProjectCode'];

@@ -193,7 +193,7 @@ class Sf
 	}
 	
 	public function user_create($params) {
-		return UserCommands::createUser($params);
+		return UserCommands::createUser($params, $this->_website);
 	}
 	
 	public function get_captcha_src() {
