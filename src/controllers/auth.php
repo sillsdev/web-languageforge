@@ -1,6 +1,8 @@
 <?php use models\ProjectModel;
 
 use libraries\shared\Website;
+use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -77,25 +79,37 @@ class Auth extends Base {
 				// successful login
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
 				
-				// set the project context to user's default project
 				$website = Website::get();
 				$user = new \models\UserModel((string)$this->session->userdata('user_id'));
-				$projectId = $user->getDefaultProjectId($website->domain);
 				
-				if ($projectId) {
-					$this->session->set_userdata('projectId', $projectId);
-				}
-				
-				$referer = $this->session->userdata('referer_url');
-				if ($referer && strpos($referer, "/app") !== false) {
-					$this->session->unset_userdata('referer_url');
-					redirect($referer, 'location');
-				} else if ($projectId) {
-					$project = ProjectModel::getById($projectId);
-					$url = "/app/" . $project->appName . "/$projectId";
-					redirect($url, 'location');
+				// Validate user is admin or has a role on the site.  Otherwise, redirect to logout
+				if ( ($user->role == SystemRoles::SYSTEM_ADMIN) ||
+					($user->siteRole->offsetExists($website->domain) &&
+					($user->siteRole[$website->domain] != SiteRoles::NONE)) ) {
+					// set the project context to user's default project
+					$projectId = $user->getDefaultProjectId($website->domain);
+					
+					if ($projectId) {
+						$this->session->set_userdata('projectId', $projectId);
+					}
+					
+					$referer = $this->session->userdata('referer_url');
+					if ($referer && strpos($referer, "/app") !== false) {
+						$this->session->unset_userdata('referer_url');
+						redirect($referer, 'location');
+					} else if ($projectId) {
+						$project = ProjectModel::getById($projectId);
+						$url = "/app/" . $project->appName . "/$projectId";
+						redirect($url, 'location');
+					} else {
+						redirect('/', 'location');
+					}
 				} else {
-					redirect('/', 'location');
+					//log out with error msg
+					// TODO: refactor this to handle cross-site logins
+					$logout = $this->ion_auth->logout();
+					$this->session->set_flashdata('message', 'You are not authorized to use this site');
+					redirect('/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
 				}
 			}
 			else

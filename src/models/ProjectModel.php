@@ -114,7 +114,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	/**
 	 * Adds the $userId as a member of this project.
 	 * @param string $userId
-	 * @param string $role The role the user has in this project.
+	 * @param string $role The system role the user has.
 	 * @see Roles;
 	 */
 	public function addUser($userId, $role) {

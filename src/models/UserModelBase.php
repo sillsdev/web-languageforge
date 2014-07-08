@@ -91,7 +91,7 @@ class UserModelBase extends \models\mapper\MapperModel
 		$siteRightsArray = SiteRoles::getRightsArray($this->siteRole, $website);
 		$systemRightsArray = SystemRoles::getRightsArray($this->role);
 		$mergeArray = array_merge($siteRightsArray, $systemRightsArray);
-		return (array_unique($mergeArray));
+		return (array_values(array_unique($mergeArray)));
 	}
 	
 	/**

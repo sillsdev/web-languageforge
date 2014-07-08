@@ -159,6 +159,8 @@ class UserCommands {
 			return false;
 		}
 		$user->setPassword($params['password']);
+		// TODO: create siteRole  DDW 07 July 2014
+		//$user->siteRole[]
 		return $user->write();
 	}
 	
