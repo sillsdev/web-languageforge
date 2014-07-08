@@ -183,17 +183,20 @@ class LexConfiguration {
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems[] = 'en';
 		
 		// default role views values
-		$this->roleViews[LexiconRoles::OBSERVER]->fields = array(
+		$this->roleViews[LexiconRoles::OBSERVER] = new LexRoleViewConfig();
+		$roleViewFields = array(
 				LexiconConfigObj::LEXEME,
 				LexiconConfigObj::DEFINITION, LexiconConfigObj::GLOSS, LexiconConfigObj::POS, LexiconConfigObj::SEMDOM,
 				LexiconConfigObj::EXAMPLE_SENTENCE, LexiconConfigObj::EXAMPLE_TRANSLATION
 		);
-		$this->roleViews[LexiconRoles::OBSERVER]->tasks = array(
+		$this->roleViews[LexiconRoles::OBSERVER]->fields->exchangeArray($roleViewFields);
+		$roleViewTasks = array(
 				LexiconTask::VIEW, LexiconTask::DASHBOARD, LexiconTask::GATHERTEXTS, 
 				LexiconTask::SEMDOM, LexiconTask::WORDLIST, LexiconTask::DBE, 
 				LexiconTask::ADDMEANINGS, LexiconTask::ADDGRAMMAR, LexiconTask::ADDEXAMPLES, 
 				LexiconTask::REVIEW
 		);
+		$this->roleViews[LexiconRoles::OBSERVER]->tasks->exchangeArray($roleViewTasks);
 		
 	}
 }

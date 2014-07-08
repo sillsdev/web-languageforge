@@ -2,19 +2,26 @@
 
 namespace models\languageforge\lexicon\config;
 
+use models\mapper\ArrayOf;
+
 class LexRoleViewConfig {
 	
-	/**
-	 * 
-	 * @var array
-	 */
-	public $tasks;
+	public function __construct() {
+		$this->fields = new ArrayOf();
+		$this->tasks = new ArrayOf();
+	}
 	
 	/**
-	 * 
-	 * @var array
+	 * Include LexiconConfigObj field const if it is visible
+	 * @var ArrayOf <string>
 	 */
 	public $fields;
+	
+	/**
+	 * Include LexiconConfigObj task const if it is visible
+	 * @var ArrayOf <string>
+	 */
+	public $tasks;
 	
 }
 
