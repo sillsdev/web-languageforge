@@ -50,6 +50,7 @@ class Base extends CI_Controller {
 	// all child classes should use this method to render their pages
 	protected function renderPage($view, $data=array(), $render=true) {
 		$this->viewdata = $data;
+		$this->viewdata['controller'] = $this;
 		$this->viewdata['contentTemplate'] = $this->getContentTemplatePath($view);
 		$this->viewdata['themePath'] = $this->getThemePath();
 		
@@ -103,6 +104,10 @@ class Base extends CI_Controller {
 		} else {
 			return $this->getProjectTemplatePath($templateName);
 		}
+	}
+	
+	public function template($templateName) {
+		return $this->getContentTemplatePath($templateName);
 	}
 	
 	protected function getProjectTemplatePath($templateName, $project = "") {
