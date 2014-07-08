@@ -39,6 +39,8 @@ class TestLexBaseViewDto extends UnitTestCase {
 		$this->assertEqual($dto['config']['entry']['fields']['lexeme']['label'], 'Word');
 		$this->assertEqual($dto['config']['entry']['fields']['lexeme']['label'], 'Word');
 		$this->assertEqual($dto['config']['entry']['fields']['senses']['fields']['partOfSpeech']['label'], 'Part of Speech');
+		$this->assertTrue($dto['config']['roleViews']['contributor']['showFields']['lexeme']);
+		$this->assertTrue($dto['config']['roleViews']['contributor']['showTasks']['dbe']);
 		$this->assertEqual($dto['interfaceConfig']['userLanguageCode'], 'th');
 		$this->assertEqual($dto['interfaceConfig']['selectLanguages']['options']['en'], 'English');
 	}

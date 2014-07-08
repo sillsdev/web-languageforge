@@ -23,8 +23,8 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
 	};
 	
 	$scope.isAtLeastOneSense = function(view) {
-		return view.isFieldsVisible['definition'] || view.isFieldsVisible['gloss'] || 
-			view.isFieldsVisible['partOfSpeech'] || view.isFieldsVisible['semanticDomain'];
+		return view.showFields['definition'] || view.showFields['gloss'] || 
+			view.showFields['partOfSpeech'] || view.showFields['semanticDomain'];
 	};
 	
 	$scope.allRolesHaveAtLeastOneSense = function() {
