@@ -184,19 +184,35 @@ class LexConfiguration {
 		
 		// default role views values
 		$this->roleViews[LexiconRoles::OBSERVER] = new LexRoleViewConfig();
+		$this->roleViews[LexiconRoles::OBSERVER_WITH_COMMENT] = new LexRoleViewConfig();
+		$this->roleViews[LexiconRoles::CONTRIBUTOR] = new LexRoleViewConfig();
+		$this->roleViews[LexiconRoles::MANAGER] = new LexRoleViewConfig();
 		$roleViewFields = array(
-				LexiconConfigObj::LEXEME,
-				LexiconConfigObj::DEFINITION, LexiconConfigObj::GLOSS, LexiconConfigObj::POS, LexiconConfigObj::SEMDOM,
-				LexiconConfigObj::EXAMPLE_SENTENCE, LexiconConfigObj::EXAMPLE_TRANSLATION
+			LexiconConfigObj::LEXEME,
+			LexiconConfigObj::DEFINITION, LexiconConfigObj::POS, LexiconConfigObj::SEMDOM,
+			LexiconConfigObj::EXAMPLE_SENTENCE, LexiconConfigObj::EXAMPLE_TRANSLATION
 		);
 		$this->roleViews[LexiconRoles::OBSERVER]->fields->exchangeArray($roleViewFields);
+		$this->roleViews[LexiconRoles::OBSERVER_WITH_COMMENT]->fields->exchangeArray($roleViewFields);
+		$this->roleViews[LexiconRoles::CONTRIBUTOR]->fields->exchangeArray($roleViewFields);
+		$this->roleViews[LexiconRoles::MANAGER]->fields->exchangeArray($roleViewFields);
 		$roleViewTasks = array(
-				LexiconTask::VIEW, LexiconTask::DASHBOARD, LexiconTask::GATHERTEXTS, 
-				LexiconTask::SEMDOM, LexiconTask::WORDLIST, LexiconTask::DBE, 
-				LexiconTask::ADDMEANINGS, LexiconTask::ADDGRAMMAR, LexiconTask::ADDEXAMPLES, 
-				LexiconTask::REVIEW
+			LexiconTask::VIEW, LexiconTask::DASHBOARD, LexiconTask::DBE 
 		);
 		$this->roleViews[LexiconRoles::OBSERVER]->tasks->exchangeArray($roleViewTasks);
+		$this->roleViews[LexiconRoles::OBSERVER_WITH_COMMENT]->tasks->exchangeArray($roleViewTasks);
+		$roleViewTasks = array(
+			LexiconTask::VIEW, LexiconTask::DASHBOARD, LexiconTask::DBE, 
+			LexiconTask::ADDMEANINGS, LexiconTask::ADDGRAMMAR, LexiconTask::ADDEXAMPLES 
+		);
+		$this->roleViews[LexiconRoles::CONTRIBUTOR]->tasks->exchangeArray($roleViewTasks);
+		$roleViewTasks = array(
+			LexiconTask::VIEW, LexiconTask::DASHBOARD, LexiconTask::GATHERTEXTS, 
+			LexiconTask::SEMDOM, LexiconTask::WORDLIST, LexiconTask::DBE, 
+			LexiconTask::ADDMEANINGS, LexiconTask::ADDGRAMMAR, LexiconTask::ADDEXAMPLES, 
+			LexiconTask::REVIEW
+		);
+		$this->roleViews[LexiconRoles::MANAGER]->tasks->exchangeArray($roleViewTasks);
 		
 	}
 }
