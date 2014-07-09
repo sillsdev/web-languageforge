@@ -15,27 +15,27 @@
 				<dt translate="Entry Level Fields"></dt>
 				<dd><div class="controls">
 					<label class="checkbox">
-						<input type="checkbox" disabled checked> {{fieldConfig['lexeme'].label | translate}}</label>
+						<input type="checkbox" disabled checked> {{fieldConfig['lexeme'].label}}</label>
 				</div></dd>
 				<dt>{{'Sense Level Fields' | translate}} 
 					<span data-ng-hide="isAtLeastOneSense(roleView.view)">
 					<img src="/images/shared/exclamation.png" title="{{'At least one Sense field must be enabled!' | translate}}" style="position: absolute; padding-left: 5px;"/></span></dt>
 				<dd><div class="controls">
 					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showFields['definition']">
-						 {{fieldConfig['definition'].label | translate}}</label>
+						 {{fieldConfig['definition'].label}}</label>
 					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showFields['gloss']">
-						 {{fieldConfig['gloss'].label | translate}}</label>
+						 {{fieldConfig['gloss'].label}}</label>
 					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showFields['partOfSpeech']">
-						 {{fieldConfig['partOfSpeech'].label | translate}}</label>
+						 {{fieldConfig['partOfSpeech'].label}}</label>
 					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showFields['semanticDomain']">
-						 {{fieldConfig['semanticDomain'].label | translate}}</label>
+						 {{fieldConfig['semanticDomain'].label}}</label>
 				</div></dd>
 				<dt translate="Example Level Fields"></dt>
 				<dd><div class="controls">
 					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showFields['sentence']">
-						 {{fieldConfig['sentence'].label | translate}}</label>
+						 {{fieldConfig['sentence'].label}}</label>
 					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showFields['translation']">
-						 {{fieldConfig['translation'].label | translate}}</label>
+						 {{fieldConfig['translation'].label}}</label>
 				</div></dd>
 			</dl>
 		</div>
