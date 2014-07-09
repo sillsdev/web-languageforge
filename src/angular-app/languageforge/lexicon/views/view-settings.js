@@ -5,7 +5,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
                                  function($scope, notice, lexProjectService, ss, $filter, $modal) {
 	lexProjectService.setBreadcrumbs('viewSettings', 'View Settings');
 	
-	$scope.configDirty = angular.copy($scope.config);
+	$scope.configDirty = angular.copy($scope.projectSettings.config);
 	$scope.roleViews = [
 		{name: 'Observer', role: 'observer', view: $scope.configDirty.roleViews['observer']},
 		{name: 'Commenter', role: 'observer_with_comment', view: $scope.configDirty.roleViews['observer_with_comment']},
@@ -40,7 +40,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
 			if (result.ok) {
 				notice.push(notice.SUCCESS, $filter('translate')("View settings updated successfully"));
 				$scope.viewSettingForm.$setPristine();
-				$scope.config = angular.copy($scope.configDirty);
+				$scope.projectSettings.config = angular.copy($scope.configDirty);
 			}
 		});
 	};
