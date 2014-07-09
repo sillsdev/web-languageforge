@@ -5,7 +5,11 @@
 	data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense()">
 	<i class="icon-ok"></i> {{'Apply' | translate}}</button>
 <tabset>
-	<tab data-ng-repeat="roleView in roleViews" heading="{{roleView.name | translate}}" class="{{interfaceConfig.pullNormal}}">
+	<tab data-ng-repeat="roleView in roleViews" class="{{interfaceConfig.pullNormal}}">
+		<tab-heading>{{roleView.name | translate}}
+			<span data-ng-hide="isAtLeastOneSense(roleView.view)">
+				<img src="/images/shared/exclamation.png" title="{{'At least one Sense field must be enabled!' | translate}}" style="padding-left: 5px;"/></span>
+		</tab-heading>
 		<div class="row outer-flex">
 		
 		<!-- Left column: field view settings -->
