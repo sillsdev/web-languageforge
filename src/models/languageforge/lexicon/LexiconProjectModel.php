@@ -71,6 +71,7 @@ class LexiconProjectModel extends LfProjectModel {
 	
 	public function getPublicSettings($userId) {
 		$settings = parent::getPublicSettings($userId);
+		$settings['currentUserRole'] = $this->users[$userId]->role;
 		return array_merge($settings, LexBaseViewDto::encode($this->id->asString(), $userId));
 	}
 	
