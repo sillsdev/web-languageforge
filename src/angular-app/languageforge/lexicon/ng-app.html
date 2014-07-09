@@ -42,15 +42,15 @@
 					<i class="icon-th icon-2x"></i> Gather Words <span class="caret"></span></a>
 				<ul class="dropdown-menu {{interfaceConfig.pullNormal}}">
 					<li data-ng-show="isTaskEnabled('dbe')"        ><a href="#/dbe" translate="Browse and Edit"></a></li>
-					<li class="divider" data-ng-show="isTaskEnabled('dbe')"></li>
+					<li class="divider" data-ng-show="isTaskEnabled('dbe') && (isTaskEnabled('gatherTexts') || isTaskEnabled('wordlist') || isTaskEnabled('semdom'))"></li>
 					<li data-ng-show="isTaskEnabled('gatherTexts')"><a href="#/gather-texts">*NYI* from Texts</a></li>
-					<li data-ng-show="isTaskEnabled('semdom')"     ><a href="#/semdom">*NYI* from Semantic Domains</a></li>
 					<li data-ng-show="isTaskEnabled('wordlist')"   ><a href="#/wordlist">*NYI* from a Word List</a></li>
-					<li class="divider" data-ng-show="isTaskEnabled('review')"></li>
+					<li data-ng-show="isTaskEnabled('semdom')"     ><a href="#/semdom">*NYI* from Semantic Domains</a></li>
+					<li class="divider" data-ng-show="isTaskEnabled('review') && (isTaskEnabled('dbe') || isTaskEnabled('gatherTexts') || isTaskEnabled('wordlist') || isTaskEnabled('semdom'))"></li>
 					<li data-ng-show="isTaskEnabled('review')"     ><a href="#/review">*NYI* Review</a></li>
 				</ul>
 			</div>
-			<div class="btn-group">
+			<div class="btn-group" data-ng-show="isTaskEnabled('addMeanings') || isTaskEnabled('addGrammar') || isTaskEnabled('addExamples')">
 				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 					<i class="icon-plus icon-2x"></i> *NYI* Add Information <span class="caret"></span></a>
 				<ul class="dropdown-menu {{interfaceConfig.pullNormal}}">
