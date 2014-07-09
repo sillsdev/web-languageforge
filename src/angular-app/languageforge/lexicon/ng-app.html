@@ -21,7 +21,7 @@
 		<div class="lexnav control-group">
 			<div class="btn-group {{interfaceConfig.pullToSide}}" data-ng-show="rights.edit">
 				<a class="btn dropdown-toggle" data-toggle="dropdown" data-tooltip-placement="{{interfaceConfig.placementToSide}}" data-tooltip="Settings" href="#">
-					<i class="icon-cog icon-2x"></i>&nbsp;&nbsp;<span class="caret"></span></a>
+					<i class="icon-cog icon-large"></i>&nbsp;&nbsp;<span class="caret"></span></a>
 				<ul class="dropdown-menu {{interfaceConfig.pullToSide}}">
 					<li data-ng-show="isTaskEnabled('configuration')"><a href="#/configuration" translate="Dictionary Configuration"></a></li>
 					<li data-ng-show="isTaskEnabled('viewSettings')"><a href="#/viewSettings" translate="View Settings"></a></li>
@@ -32,14 +32,14 @@
 				</ul>
 			</div>
 			<div class="btn-group" data-ng-show="isTaskEnabled('dashboard')">
-				<a class="btn" href="#"><i class="icon-bookmark icon-2x"></i> *NYI*  Dashboard</a>
+				<a class="btn" href="#"><i class="icon-bookmark icon-large"></i> *NYI*  Dashboard</a>
 			</div>
 			<div class="btn-group" data-ng-show="isTaskEnabled('view')">
-				<a class="btn" href="#/view"><i class="icon-eye-open icon-2x"></i> *NYI*  View</a>
+				<a class="btn" href="#/view"><i class="icon-eye-open icon-large"></i> *NYI*  View</a>
 			</div>
 			<div class="btn-group">
 				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-					<i class="icon-th icon-2x"></i> Gather Words <span class="caret"></span></a>
+					<i class="icon-th icon-large"></i> Gather Words <span class="caret"></span></a>
 				<ul class="dropdown-menu {{interfaceConfig.pullNormal}}">
 					<li data-ng-show="isTaskEnabled('dbe')"        ><a href="#/dbe" translate="Browse and Edit"></a></li>
 					<li class="divider" data-ng-show="isTaskEnabled('dbe') && (isTaskEnabled('gatherTexts') || isTaskEnabled('wordlist') || isTaskEnabled('semdom'))"></li>
@@ -52,7 +52,7 @@
 			</div>
 			<div class="btn-group" data-ng-show="isTaskEnabled('addMeanings') || isTaskEnabled('addGrammar') || isTaskEnabled('addExamples')">
 				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-					<i class="icon-plus icon-2x"></i> *NYI* Add Information <span class="caret"></span></a>
+					<i class="icon-plus icon-large"></i> *NYI* Add Information <span class="caret"></span></a>
 				<ul class="dropdown-menu {{interfaceConfig.pullNormal}}">
 						<li data-ng-show="isTaskEnabled('addMeanings')"><a href="#/add-meanings" translate="add Meanings"></a></li>
 						<li data-ng-show="isTaskEnabled('addGrammar')" ><a href="#/add-grammar" translate="add Grammatical Usage"></a></li>
