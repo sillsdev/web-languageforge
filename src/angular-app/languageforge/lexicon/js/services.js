@@ -91,11 +91,11 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	this.update = function(entry, callback) {
 		jsonRpc.call('lex_entry_update', [entry], callback);
 	};
-
+	
 	this.remove = function(id, callback) {
 		jsonRpc.call('lex_entry_remove', [id], callback);
 	};
-
+	
 	this.dbeDto = function(iEntryStart, numberOfEntries, callback) {
 		jsonRpc.call('lex_dbeDto', [iEntryStart, numberOfEntries], function(result) {
 			if (result.ok) {
@@ -113,6 +113,22 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	
 	this.updateComment = function(comment, callback) {
 		jsonRpc.call('lex_entry_updateComment', [comment], callback);
+	};
+	
+	this.isFieldEnabled = function(fieldName) {
+		var gConfig = ss.session.projectSettings.config;
+		var currentUserRole = ss.session.projectSettings.currentUserRole;
+		
+		// Default to invisible if config not defined
+		if (angular.isUndefined(gConfig)) {
+			return false;
+		};
+		
+		// Default to visible if nothing specified in config
+		if (angular.isUndefined(gConfig.roleViews[currentUserRole].showFields[fieldName])) {
+			return true;
+		};
+		return gConfig.roleViews[currentUserRole].showFields[fieldName];
 	};
 	
 	

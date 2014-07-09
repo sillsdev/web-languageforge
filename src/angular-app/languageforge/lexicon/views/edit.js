@@ -3,8 +3,8 @@
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 
                          function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService) {
-
 	var pristineEntry = {};
+	$scope.config = $scope.projectSettings.config;
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
 	$scope.entries = [];
