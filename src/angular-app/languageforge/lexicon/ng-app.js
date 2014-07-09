@@ -101,10 +101,25 @@ angular.module('lexicon',
 		$scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create || $scope.rights.edit;
 		
 		$scope.project = ss.session.project;
-		$scope.config = ss.session.projectSettings.config;
+		$scope.projectSettings = ss.session.projectSettings;
+		$scope.config = $scope.projectSettings.config;
+		$scope.currentUserRole = ss.session.projectSettings.currentUserRole;
 		$scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
 		var pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
 		changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
+
+		$scope.isTaskEnabled = function(taskName) {
+			// Default to invisible if config not defined
+			if (angular.isUndefined($scope.projectSettings.config)) {
+				return false;
+			};
+			
+			// Default to visible if nothing specified in config
+			if (angular.isUndefined($scope.projectSettings.config.roleViews[$scope.currentUserRole].showTasks[taskName])) {
+				return true;
+			};
+			return $scope.projectSettings.config.roleViews[$scope.currentUserRole].showTasks[taskName];
+		};
 		
 		function changeInterfaceLanguage(code) {
 			$translate.use(code);
@@ -148,19 +163,5 @@ angular.module('lexicon',
 		$scope.$watch('idmap', function(newVal, oldVal, scope) {
 			$scope.breadcrumbs = breadcrumbService.read();
 		}, true);
-	}])
-	.controller('LexiconMenuCtrl', ['$scope', function($scope) {
-		$scope.isItemVisible = function(itemName) {
-			// Default to invisible if config not defined
-			if (angular.isUndefined($scope.config)) {
-				return false;
-			};
-			// Default to visible if nothing specified in config
-			if (angular.isUndefined($scope.config.tasks[itemName])) {
-				return true;
-			};
-			return $scope.config.tasks[itemName].visible;
-		};
-		
 	}])
 	;

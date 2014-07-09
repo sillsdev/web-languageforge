@@ -4,7 +4,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 
                            function($scope, notice, lexProjectService, ss, $filter, $modal) {
 	lexProjectService.setBreadcrumbs('configuration', 'Dictionary Configuration');
-	$scope.configDirty = angular.copy($scope.config);
+	$scope.configDirty = angular.copy($scope.projectSettings.config);
 
 	$scope.haveConfig = function() {
 		return angular.isDefined($scope.configDirty.entry);
@@ -103,7 +103,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 			if (result.ok) {
 				notice.push(notice.SUCCESS, $filter('translate')("Dictionary configuration updated successfully"));
 				$scope.configForm.$setPristine();
-				$scope.config = angular.copy($scope.configDirty);
+				$scope.projectSettings.config = angular.copy($scope.configDirty);
 				setupView();
 			}
 		});
