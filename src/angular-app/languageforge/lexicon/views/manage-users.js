@@ -54,6 +54,8 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 	
 	// Roles in list
 	$scope.roles = [
+		{key: 'observer', name: $filter('translate')('Observer')},
+		{key: 'observer_with_comment', name: $filter('translate')('Commenter')},
 		{key: 'contributor', name: $filter('translate')('Contributor')},
 		{key: 'project_manager', name: $filter('translate')('Manager')}
 	];

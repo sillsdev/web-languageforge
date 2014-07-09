@@ -10,7 +10,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
 		{name: 'Observer', role: 'observer', view: $scope.configDirty.roleViews['observer']},
 		{name: 'Commenter', role: 'observer_with_comment', view: $scope.configDirty.roleViews['observer_with_comment']},
 		{name: 'Contributor', role: 'contributor', view: $scope.configDirty.roleViews['contributor']},
-		{name: 'Project Manager', role: 'project_manager', view: $scope.configDirty.roleViews['project_manager']}
+		{name: 'Manager', role: 'project_manager', view: $scope.configDirty.roleViews['project_manager']}
 	];
 	$scope.fieldConfig = {
 		'lexeme': $scope.configDirty.entry.fields['lexeme'],
