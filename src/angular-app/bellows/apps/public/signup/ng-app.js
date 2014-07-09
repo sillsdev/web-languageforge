@@ -1,8 +1,16 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module('signup', [ 'bellows.services', 'ui.bootstrap'])
-.controller('UserCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
+angular.module('signup', ['bellows.services', 'ui.bootstrap', 'pascalprecht.translate'])
+.config(['$translateProvider', function($translateProvider) {
+	// configure interface language filepath
+	$translateProvider.useStaticFilesLoader({
+		prefix: '/angular-app/languageforge/lexicon/lang/',
+		suffix: '.json'
+	});
+	$translateProvider.preferredLanguage('en');
+}])
+.controller('UserCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',  
                          function UserCtrl($scope, userService, sessionService, notice) {
 	$scope.showPassword = false;
 	$scope.record = {};
@@ -16,7 +24,6 @@ angular.module('signup', [ 'bellows.services', 'ui.bootstrap'])
 				$scope.captchaSrc = result.data;
 				$scope.record.captcha = "";
 			}
-			
 		});
 	};
 	
