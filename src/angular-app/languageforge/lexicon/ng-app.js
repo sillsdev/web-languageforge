@@ -102,7 +102,6 @@ angular.module('lexicon',
 		
 		$scope.project = ss.session.project;
 		$scope.projectSettings = ss.session.projectSettings;
-		$scope.config = $scope.projectSettings.config;
 		$scope.currentUserRole = ss.session.projectSettings.currentUserRole;
 		$scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
 		var pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
