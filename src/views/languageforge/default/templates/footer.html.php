@@ -25,7 +25,7 @@
 				<div class="three-col">
 					<div class="three-col-3">
 						<a href="http://ic.payap.ac.th/"><img src="/images/shared/PAYAP_logo.png" alt="PAYAP" width="170" height="50" class="right png_bg"></a>
-						<a href="http://www.sil.org"><img src="/images/shared/SIL_logo.png" alt="SIL" width="50" height="49" class="right png_bg" style="margin-right: 30px;"></a>
+						<a href="http://www.sil.org"><img src="/images/shared/2014_sil_logo.png" alt="SIL" width="110" height="50" class="right png_bg" style="margin-right: 30px;"></a>
 					</div>
 				</div>
 			
