@@ -91,9 +91,9 @@ class MongoTestEnvironment
 		return $projectModel;
 	}
 	
-	public function createProjectSettings($name) {
+	public function createProjectSettings($code) {
 		$projectModel = new models\ProjectSettingsModel();
-		$projectModel->projectName = $name;
+		$projectModel->projectCode = $code;
 		$projectModel->siteName = $this->website->domain;
 		$this->cleanProjectEnvironment($projectModel);
 		$projectModel->write();
