@@ -62,7 +62,7 @@ class ProjectCommands
 		$project->projectCode = $projectCode;
 		$project->appName = $appName;
 		$project->siteName = $website->domain;
-		$project->ownerId = $userId;
+		$project->ownerRef->id = $userId;
 		$projectId = $project->write();
 		ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::MANAGER);
 		return $projectId;
@@ -153,19 +153,6 @@ class ProjectCommands
 		return $usersDto;
 	}
 
-	/**
-	 * Get the user ID of the project creator/owner
-	 * @param string $projectId
-	 * @return string - userId
-	 */
-	public static function getProjectOwner($projectId) {
-		CodeGuard::checkTypeAndThrow($projectId, 'string');
-		CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
-		$project = ProjectModel::getById($projectId);
-		
-		return $project->ownerId;
-	}
-	
 	/**
 	 * Update the user project role in the project
 	 * @param string $projectId
