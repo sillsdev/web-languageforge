@@ -72,29 +72,14 @@ class ProjectModel extends \models\mapper\MapperModel
 	
 	
 	/**
-	 * @param string $domainName
-	 * @return string
-	 */
-	public static function domainToProjectCode($domainName) {
-		$uriParts = explode('.', $domainName);
-		if ($uriParts[0] == 'www' || $uriParts[0] == 'dev') {
-			array_shift($uriParts);
-		}
-		$projectCode = $uriParts[0];
-		if ($projectCode == 'scriptureforge' || $projectCode == 'languageforge') {
-			$projectCode = '';
-		}
-		return $projectCode;
-	}
-	
-	/**
 	 * (non-PHPdoc)
 	 * @see \models\mapper\MapperModel::databaseName()
 	 */
 	public function databaseName() {
-		$name = strtolower($this->projectName);
-		$name = str_replace(' ', '_', $name);
-		return 'sf_' . $name;
+        CodeGuard::checkEmptyAndThrow($this->projectCode, 'projectCode');
+        $name = strtolower($this->projectCode);
+        $name = str_replace(' ', '_', $name);
+        return 'sf_' . $name;
 	}
 
 	/**
