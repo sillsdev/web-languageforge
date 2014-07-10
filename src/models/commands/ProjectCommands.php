@@ -43,24 +43,26 @@ use models\sms\SmsSettings;
 
 class ProjectCommands
 {
-	
 	/**
 	 * Create a project, checking permissions as necessary
 	 * @param string $projectName
+	 * @param string $projectCode
 	 * @param string $appName
 	 * @param string $userId
 	 * @param Website $website
 	 * @return string - projectId
 	 */
 	public static function createProject($projectName, $projectCode, $appName, $userId, $website) {
+		// Check for unique project code
+		if (ProjectCommands::projectCodeExists($projectCode)) {
+			return false;
+		}
 		$project = new ProjectModel();
 		$project->projectName = $projectName;
 		$project->projectCode = $projectCode;
 		$project->appName = $appName;
 		$project->siteName = $website->domain;
-		if (ProjectCommands::projectCodeExists($projectCode)) {
-			return false;
-		}		
+		$project->ownerId = $userId;
 		$projectId = $project->write();
 		ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::MANAGER);
 		return $projectId;
@@ -69,7 +71,6 @@ class ProjectCommands
 	/**
 	 * 
 	 * @param string $id
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 */
 	public static function readProject($id) {
 		$project = new \models\ProjectModel($id);
@@ -152,6 +153,19 @@ class ProjectCommands
 		return $usersDto;
 	}
 
+	/**
+	 * Get the user ID of the project creator/owner
+	 * @param string $projectId
+	 * @return string - userId
+	 */
+	public static function getProjectOwner($projectId) {
+		CodeGuard::checkTypeAndThrow($projectId, 'string');
+		CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
+		$project = ProjectModel::getById($projectId);
+		
+		return $project->ownerId;
+	}
+	
 	/**
 	 * Update the user project role in the project
 	 * @param string $projectId

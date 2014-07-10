@@ -87,6 +87,9 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.updateUserRole = function(userId, role, callback) {
 		jsonRpc.call('project_updateUserRole', [userId, role], callback);
 	};
+	this.getOwner = function(projectId, callback) {
+		jsonRpc.call('project_getOwner', [projectId], callback);
+	};
 	this.removeUsers = function(users, callback) {
 		jsonRpc.call('project_removeUsers', [users], callback);
 	};
