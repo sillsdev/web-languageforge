@@ -239,8 +239,10 @@ class TestProjectCommands extends UnitTestCase {
 		
 		// remove users from project.  user1 still remains as project owner
 		$userIds = array($user1->id->asString(), $user2->id->asString());
+		$this->expectException();
+		$e->inhibitErrorDisplay();
 		ProjectCommands::removeUsers($projectId, $userIds, 'bogus auth userids');
-		
+		$e->restoreErrorDisplay();
 		// read from disk
 		$sameProject = new ProjectModel($projectId);
 		$sameUser1 = new UserModel($user1Id);
