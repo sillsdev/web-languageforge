@@ -1,0 +1,37 @@
+<div class="row">
+<div class="col-sm-8 col-sm-offset-2">
+
+	<div id="form-container">
+
+		<div class="page-header text-center">
+			<h1 translate="Create an Account"></h1>
+			<sil-notices></sil-notices>
+			
+			
+			<!-- the links to our nested states using relative paths -->
+			<!-- add the active class if the state matches our ui-sref -->
+			<div id="status-buttons" class="text-center">
+				<a data-ui-sref-active="active" data-ui-sref=".indentity"><span class="btn" data-ng-class="{btn-success: active}">1</span> Identity</a>
+				<a data-ui-sref-active="active" data-ui-sref=".details"><span class="btn" data-ng-class="{btn-success: active}">2</span> Details</a>
+				<a data-ui-sref-active="active" data-ui-sref=".complete"><span class="btn" data-ng-class="{btn-success: active}">3</span> Complete</a>
+			</div>
+		</div>
+		
+		<!-- use ng-submit to catch the form submission and use our Angular function
+		<form id="signup-form" ng-submit="processForm()"> -->
+		<form data-ng-submit="createUser(record)" id="signupForm" name="signupForm" novalidate>
+
+			<!-- our nested state views will be injected here -->
+			<div id="form-views" data-ui-view></div>
+		</form>
+
+	</div>
+
+	<!-- show our form data as it is being typed -->
+	<pre>
+		{{ record }}
+	</pre>
+
+
+</div>
+</div>
