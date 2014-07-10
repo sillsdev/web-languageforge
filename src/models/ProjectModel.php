@@ -240,7 +240,8 @@ class ProjectModel extends \models\mapper\MapperModel
 	 */
 	public $id;
 	
-	/**
+	/** 
+	 * ID of the user that created the project
 	 * @var Id
 	 */
 	public $ownerId;
