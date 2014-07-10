@@ -1,8 +1,45 @@
 'use strict';
 
+// based on http://scotch.io/tutorials/javascript/angularjs-multi-step-form-using-ui-router
+// also http://www.ng-newsletter.com/posts/angular-ui-router.html
+
 // Declare app level module which depends on filters, and services
-angular.module('signup', ['bellows.services', 'ui.bootstrap', 'pascalprecht.translate'])
-.config(['$translateProvider', function($translateProvider) {
+angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.router', 'pascalprecht.translate'])
+.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', 
+         function($stateProvider, $urlRouterProvider, $translateProvider) {
+	
+	$stateProvider
+		// route to show our basic form (/form)
+		.state('form', {
+			url: '/form',
+			templateUrl: '/angular-app/bellows/apps/public/signup/views/form.html',
+			controller: 'SignupCtrl'
+		})
+		
+		// nested states 
+		// each of these sections have their own view
+		// url will be nested (/form/identity)
+		.state('form.identity', {
+			url: '/identity',
+			templateUrl: '/angular-app/bellows/apps/public/signup/views/form-identity.html'
+		})
+		
+		// url will be /form/details
+		.state('form.details', {
+			url: '/details',
+			templateUrl: '/angular-app/bellows/apps/public/signup/views/form-details.html'
+		})
+		
+		// url will be /form/complete
+		.state('form.complete', {
+			url: '/complete',
+			templateUrl: '/angular-app/bellows/apps/public/signup/views/form-complete.html'
+		});
+	
+	// catch all route
+	// send users to the form page 
+	$urlRouterProvider.otherwise('/form/identity');
+	
 	// configure interface language filepath
 	$translateProvider.useStaticFilesLoader({
 		prefix: '/angular-app/languageforge/lexicon/lang/',
@@ -10,13 +47,13 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'pascalprecht.tran
 	});
 	$translateProvider.preferredLanguage('en');
 }])
-.controller('UserCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',  
-                         function UserCtrl($scope, userService, sessionService, notice) {
+.controller('SignupCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',  
+                           function($scope, userService, sessionService, notice) {
 	$scope.showPassword = false;
 	$scope.record = {};
 	$scope.record.id = '';
-	$scope.userRegistered = false;
 	$scope.captchaSrc = '';
+	$scope.status = '';
 	
 	$scope.getCaptchaSrc = function() {
 		sessionService.getCaptchaSrc(function(result) {
@@ -25,6 +62,10 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'pascalprecht.tran
 				$scope.record.captcha = "";
 			}
 		});
+	};
+	
+	$scope.processForm = function() {
+		alert('awesome!');
 	};
 	
 	$scope.createUser = function(record) {

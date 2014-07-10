@@ -5,7 +5,7 @@ var SignupPage = function() {
 		browser.get('/signup');
 	};
 	
-	this.userForm = element('form#userForm');
+	this.signupForm = element('form#signupForm');
 	this.userNameExists = element(by.id('userNameExists'));
 	this.userNameOk = element(by.id('userNameOk'));
 	this.usernameInput = element(by.model('record.username'));
