@@ -21,6 +21,7 @@ use models\mapper\ReferenceList;
 use models\mapper\Id;
 use models\UserList_ProjectModel;
 use models\sms\SmsSettings;
+use models\mapper\IdReference;
 
 
 class ProjectModel extends \models\mapper\MapperModel
@@ -30,6 +31,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	
 	public function __construct($id = '') {
 		$this->id = new Id();
+		$this->ownerRef = new IdReference();
 		$this->users = new MapOf(function($data) {
 			return new ProjectRoleModel();
 		});
@@ -242,9 +244,9 @@ class ProjectModel extends \models\mapper\MapperModel
 	
 	/** 
 	 * ID of the user that created the project
-	 * @var Id
+	 * @var IdReference
 	 */
-	public $ownerId;
+	public $ownerRef;
 	
 	/**
 	 * @var string

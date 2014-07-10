@@ -11,6 +11,36 @@ use models\TextModel;
 use models\UserModel;
 use models\ProjectModel;
 
+class ProjectSettingsDtoEncoder extends JsonEncoder {
+	public function encodeIdReference($key, $model) {
+		if ($key == 'ownerRef') {
+			$user = new UserModel();
+			if ($user->exists($model->asString())) {
+				$user->read($model->asString());
+				return array(
+						'id' => $user->id->asString(),
+						'username' => $user->username);
+			} else {
+				return '';
+			}
+		} else {
+			return $model->asString();
+		}
+	}
+	
+	public static function encode($model) {
+		$encoder = new ProjectSettingsDtoEncoder();
+		$data = $encoder->_encode($model);
+		if (method_exists($model, 'getPrivateProperties')) {
+			$privateProperties = (array)$model->getPrivateProperties();
+			foreach ($privateProperties as $prop) {
+				unset($data[$prop]);
+			}
+		}
+		return $data;
+	}
+}
+
 class ProjectSettingsDto
 {
 	/**
@@ -35,7 +65,7 @@ class ProjectSettingsDto
 		$data = array();
 		$data['count'] = count($list->entries);
 		$data['entries'] = array_values($list->entries);	// re-index array
-		$data['project'] = JsonEncoder::encode($projectModel);
+		$data['project'] = ProjectSettingsDtoEncoder::encode($projectModel);
 		unset($data['project']['users']);
 
 		$data['archivedTexts'] = array();

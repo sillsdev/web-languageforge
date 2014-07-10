@@ -251,14 +251,6 @@ class Sf
 	public function project_publish($projectIds) {
 		return ProjectCommands::publishProjects($projectIds);
 	}
-	/**
-	 * Return the owner ID of a project
-	 * @param string $projectId
-	 * @return string $ownerId
-	 */
-	public function project_getOwner($projectId) {
-		return ProjectCommands::getProjectOwner($projectId);
-	}
 	
 	// TODO Pretty sure this is going to want some paging params
 	public function project_list() {

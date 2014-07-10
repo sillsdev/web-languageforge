@@ -237,14 +237,18 @@ class TestProjectCommands extends UnitTestCase {
 		$this->assertFalse(ProjectCommands::projectCodeExists('randomcode'));
 	}
 	
-	function testProjectOwnerExists() {
+	function testCreateProject_newProject_projectOwnerSet() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
-		
 		$user1Id = $e->createUser("user1name", "User1 Name", "user1@example.com");
+		
+		
 		$user1 = new UserModel($user1Id);
 		$projectID = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, 'sfchecks', $user1->id->asString(), $e->website);
-		$this->assertTrue(ProjectCommands::getProjectOwner($projectID) == $user1->id->asString());
+		
+		
+		$projectModel = new ProjectModel($projectID);
+		$this->assertTrue($projectModel->ownerRef->asString() == $user1->id->asString());
 	}
 }
 
