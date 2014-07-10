@@ -13,7 +13,7 @@ describe('E2E testing: Signup app', function() {
 
 	it('setup and contains a user form', function() {
 		page.get();
-		expect(page.userForm).toBeDefined();
+		expect(page.signupForm).toBeDefined();
 	});
 	
 	it('finds the admin user already exists', function() {
