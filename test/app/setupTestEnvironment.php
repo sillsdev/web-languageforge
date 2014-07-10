@@ -94,7 +94,7 @@ $otherProject = ProjectCommands::createProject(
 	$constants['otherProjectName'],
 	$constants['otherProjectCode'],
 	SfProjectModel::SFCHECKS_APP,
-	$adminUser,
+	$managerUser,
 	$website
 );
 $otherProjectModel = new ProjectModel($otherProject);
@@ -104,6 +104,7 @@ $otherProjectModel->write();
 
 ProjectCommands::updateUserRole($testProject, $managerUser, ProjectRoles::MANAGER);
 ProjectCommands::updateUserRole($testProject, $memberUser, ProjectRoles::CONTRIBUTOR);
+ProjectCommands::updateUserRole($otherProject, $adminUser, ProjectRoles::MANAGER);
 
 $text1 = TextCommands::updateText($testProject, array(
 	'id' => '',

@@ -185,11 +185,14 @@ class ProjectCommands
 	public static function removeUsers($projectId, $userIds) {
 		$project = new ProjectModel($projectId);
 		foreach ($userIds as $userId) {
-			$user = new UserModel($userId);
-			$project->removeUser($user->id->asString());
-			$user->removeProject($project->id->asString());
-			$project->write();
-			$user->write();
+			// Guard against removing project owner
+			if ($userId != $project->ownerRef->id) {
+				$user = new UserModel($userId);
+				$project->removeUser($user->id->asString());
+				$user->removeProject($project->id->asString());
+				$project->write();
+				$user->write();
+			}
 		}
 	}
 	
