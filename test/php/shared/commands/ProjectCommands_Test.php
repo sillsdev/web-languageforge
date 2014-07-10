@@ -216,6 +216,41 @@ class TestProjectCommands extends UnitTestCase {
 		$this->assertEqual($sameUser2->listProjects($e->website->domain)->count, 0);
 		$this->assertEqual($sameUser3->listProjects($e->website->domain)->count, 0);
 	}
+
+	function testRemoveUsers_ProjectOwner_NotRemovedFromProject() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		// setup project and users.  user1 is the project owner
+		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+		$projectId = $project->id->asString();
+		$user1Id = $e->createUser("user1name", "User1 Name", "user1@example.com");
+		$user2Id = $e->createUser("user2name", "User2 Name", "user2@example.com");
+		$user1 = new UserModel($user1Id);
+		$user2 = new UserModel($user2Id);
+		$project->addUser($user1->id->asString(), ProjectRoles::CONTRIBUTOR);
+		$project->addUser($user2->id->asString(), ProjectRoles::CONTRIBUTOR);
+		$project->ownerRef = $user1Id;
+		$project->write();
+		$user1->addProject($project->id->asString());
+		$user1->write();
+		$user2->addProject($project->id->asString());
+		$user2->write();
+		
+		// remove users from project.  user1 still remains as project owner
+		$userIds = array($user1->id->asString(), $user2->id->asString());
+		ProjectCommands::removeUsers($projectId, $userIds, 'bogus auth userids');
+		
+		// read from disk
+		$sameProject = new ProjectModel($projectId);
+		$sameUser1 = new UserModel($user1Id);
+		$sameUser2 = new UserModel($user2Id);
+		
+		// project still has project owner
+		$this->assertEqual($sameProject->listUsers()->count, 1);
+		$this->assertEqual($sameUser1->listProjects($e->website->domain)->count, 1);
+		$this->assertEqual($sameUser2->listProjects($e->website->domain)->count, 0);
+	}
 	
 	function testProjectCodeExists_codeExists_true() {
 		$e = new MongoTestEnvironment();
@@ -250,6 +285,7 @@ class TestProjectCommands extends UnitTestCase {
 		$projectModel = new ProjectModel($projectID);
 		$this->assertTrue($projectModel->ownerRef->asString() == $user1->id->asString());
 	}
+	
 }
 
 ?>
