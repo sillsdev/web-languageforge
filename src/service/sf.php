@@ -178,9 +178,11 @@ class Sf
 		return UserCommands::changePassword($userId, $newPassword, $this->_userId);
 	}
 	
-	public function username_exists($username) {
+	public function identity_exists($username, $email) {
 		// intentionally we have no security here: people can see what users exist by trial and error
-		return UserModel::userNameExists($username);
+		$data = array();
+		$data['usernameExists'] = UserModel::userNameExists($username);
+		return $data;
 	}
 	
 	/**
@@ -550,7 +552,7 @@ class Sf
 
 	private static function isAnonymousMethod($methodName) {
 		$methods = array(
-				'username_exists',
+				'identity_exists',
 				'user_register',
 				'get_captcha_src',
 				'user_readForRegistration',
