@@ -21,7 +21,7 @@ class CodeGuard {
 		if ($type == 'object') {
 			$type = get_class($var);
 		}
-		self::exception("Type Exception: Expected '" . $expectedType . "' given '" . $type . "' :: $var");
+		self::exception("Type Exception: Expected '" . $expectedType . "' given '" . $type . "' :: " . print_r($var, true));
 	}
 	
 	public static function checkNullAndThrow($var, $name) {
