@@ -1,5 +1,5 @@
 angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnimate', 'ngSanitize'])
-.factory('silNoticeService', ['$interval', 'utilService', '$sanitize', function($interval, util, $sanitize) {
+.factory('silNoticeService', ['$interval', 'utilService', '$sce', function($interval, util, $sce) {
 	var notices = [];
 	var timers = {};
 	
@@ -24,19 +24,18 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
 					message: message,
 					id: id,
 					details: details,
-					nobind: false,
 					showDetails: false,
-					toggleDetails: function() {this.showDetails = !this.showDetails;},
+					toggleDetails: function() {this.showDetails = !this.showDetails;}
 			};
 
 			if (details) {
-				obj.details = details;
-				// try to fix up html in details
-				details = details.replace(/->/g, '-&gt;');
-				details = details.replace(/<\\\//g, '</');
-			
-				// extra logic to prevent $sanitize from throwing in the template because of improper html
-				try { $sanitize(details); } catch (e) { obj.nobind = true; }
+                details = details.replace(/<p>/gm, "\n");
+                details = details.replace(/<pre>/gm, "\n");
+                details = details.replace(/<\/p>/gm, "\n");
+                details = details.replace(/<\/pre>/gm, "\n");
+                details = details.replace(/<[^>]+>/gm, ''); // remove HTML
+                details = details.replace(/\\\//g, '/');
+                obj.details = details;
 			}
 			
 			notices.push(obj);
