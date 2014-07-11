@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
+angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor'])
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 
                            function($scope, notice, lexProjectService, ss, $filter, $modal) {
 	lexProjectService.setBreadcrumbs('configuration', 'Dictionary Configuration');
@@ -328,5 +328,20 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 		$scope.currentTaskName = taskName;
 	};
 
+}])
+.controller('OptionListCtrl', ['$scope', function($scope) {
+	$scope.optionLists = {
+		pos:{
+			id: 'pos',
+			name: 'Part of Speech',
+			items: $scope.projectSettings.config.entry.fields.senses.fields.partOfSpeech.values,
+			defaultKey: 'noun'
+		}
+	};
+	$scope.currentListId = 'pos';
+
+	$scope.selectList = function(listId) {
+		$scope.currentListId = listId;
+	};
 }])
 ;
