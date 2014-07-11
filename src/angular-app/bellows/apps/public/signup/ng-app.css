@@ -1,13 +1,10 @@
 /* form styling */
 #form-container { 
 	margin-bottom: 20px;
-    border-radius: 5px; 
 }
 #form-container .page-header { 
 	margin: 0; 
 	padding: 30px; 
-    border-top-left-radius: 5px; 
-    border-top-right-radius: 5px; 
 }
 
 /* numbered buttons */
@@ -30,14 +27,16 @@
 	/* background: #080808; 
 	color: #FFF;*/
 	display: block; 
-	/*height: 25px;*/ 
+	/* height: 25px;*/ 
 	margin: 0 auto 10px; 
 	padding-top: 5px; 
-	/*width: 30px;*/ 
+	width: 10px;
     border-radius: 50%; 
 }
 
 /* active buttons turn light green-blue*/
 #status-buttons a.active span { 
+	background: #080808; 
+	color: #FFF;
 	/* background: #00BC8C;*/ 
 }
