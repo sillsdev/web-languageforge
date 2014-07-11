@@ -74,18 +74,19 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 						$state.go('form.register');
 						$scope.getCaptchaSrc();
 					}
-					
 				});
 				break;
 			case 'form.register':
-				$scope.createUser();
+				registerUser(function() {
+					$state.go('validate');
+				});
 				break;
 			default:
 				break;
 		}
 	};
 	
-	$scope.createUser = function() {
+	function registerUser(successCallback) {
 		$scope.submissionInProgress = true;
 		userService.register($scope.record, function(result) {
 			$scope.submissionInProgress = false;
@@ -95,11 +96,10 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 					$scope.getCaptchaSrc();
 				} else {
 					$scope.submissionComplete = true;
-					//notice.push(notice.SUCCESS, "Thank you for signing up.  We've sent you an email to confirm your registration. Please click the link in the email to activate your account.  If you don't see your activation email, check your email's SPAM folder.");
+					(successCallback || angular.noop)();
 				}
 			}
 		});
-		return true;
 	};
 	
 	$scope.checkIdentity = function(callback) {
