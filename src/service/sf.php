@@ -240,7 +240,7 @@ class Sf
 	}
 	
 	public function project_archivedList() {
-		return ProjectListDto::encode($this->_userId, $this->_website->domain, true);
+		return ProjectListDto::encode($this->_userId, $this->_website, true);
 	}
 	
 	/**
