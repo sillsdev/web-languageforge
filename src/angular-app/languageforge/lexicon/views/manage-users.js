@@ -33,7 +33,13 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 	$scope.removeProjectUsers = function() {
 		var userIds = [];
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
-			userIds.push($scope.selected[i].id);
+			// Guard against project owner being removed
+			if ($scope.selected[i].id != $scope.project.ownerRef) {
+				userIds.push($scope.selected[i].id);
+			}
+			else {
+				notice.push(notice.WARN, "Project owner cannot be removed");
+			}
 		}
 		if (l == 0) {
 			// TODO ERROR
