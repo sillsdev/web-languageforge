@@ -72,6 +72,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 				$scope.checkIdentity(function(){
 					if ($scope.usernameOk) {
 						$state.go('form.register');
+						$scope.getCaptchaSrc();
 					}
 					
 				});
@@ -124,8 +125,6 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 			});
 		}
 	};
-	
-	$scope.getCaptchaSrc();
 	
 }])
 ;
