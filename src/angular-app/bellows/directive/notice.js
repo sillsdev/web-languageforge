@@ -16,7 +16,7 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
 			if (type() == this.SUCCESS()) {
 				// success alert messages will auto-close after 10 seconds
 				var localFactory = this;
-				timers[id] = $interval(function() {localFactory.removeById(id); }, 10 * 1000, 1);
+				timers[id] = $interval(function() {localFactory.removeById(id); }, 6 * 1000, 1);
 			}
 			
 			var obj = {
