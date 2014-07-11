@@ -89,17 +89,18 @@ class LexConfiguration {
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->label = 'Part of Speech';
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->visible = true;
 		$basicPosList = array(
-			'Adjective' => 'Adjective',
-			'Preposition' => 'Preposition',
-			'Adverb' => 'Adverb',
-			'Classifier' => 'Classifier',
-			'Numeral' => 'Numeral',
-			'Noun' => 'Noun',
-			'Proper Noun' => 'Proper Noun',
-			'Particle' => 'Particle',
-			'Pronoun' => 'Pronoun',
-			'Verb' => 'Verb'
+			new LexiconOptionListItem('Adjective'),
+			new LexiconOptionListItem('Preposition'),
+			new LexiconOptionListItem('Adverb'),
+			new LexiconOptionListItem('Classifier'),
+			new LexiconOptionListItem('Numeral'),
+			new LexiconOptionListItem('Noun'),
+			new LexiconOptionListItem('Proper Noun'),
+			new LexiconOptionListItem('Particle'),
+			new LexiconOptionListItem('Pronoun'),
+			new LexiconOptionListItem('Verb')
 		);
+
 		$fullPosList = array(
 			'Adjective' => 'Adjective',
 			'Adposition' => 'Adposition',
@@ -160,7 +161,7 @@ class LexConfiguration {
 			'Intransitive verb' => 'Intransitive verb',
 			'Transitive verb' => 'Transitive verb'
 		);
-		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->values->exchangeArray($fullPosList);
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->values->exchangeArray($basicPosList);
 		
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM] = new LexiconOptionlistConfigObj();
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM]->label = 'Semantic Domain';
