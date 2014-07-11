@@ -54,7 +54,7 @@ class QuestionCommentDto
 		$unreadCommentModel->markAllRead();
 		$unreadCommentModel->write();
 		
-		$unreadActivityModel = new UnreadActivityModel($userId);
+		$unreadActivityModel = new UnreadActivityModel($userId, $projectId);
 		$unreadActivity = $unreadActivityModel->unreadItems();
 		
 		$dto = array();
