@@ -19,16 +19,16 @@ describe('E2E testing: Signup app', function() {
 	it('finds the admin user already exists', function() {
 		page.usernameInput.sendKeys(constants.adminUsername);
 		page.usernameInput.sendKeys(protractor.Key.TAB);	// trigger the username lookup
-		expect(page.userNameExists.isDisplayed()).toBe(true);
-		expect(page.userNameOk.isDisplayed()).toBe(false);
+		expect(page.usernameExists.isDisplayed()).toBe(true);
+		expect(page.usernameOk.isDisplayed()).toBe(false);
 		page.usernameInput.clear();
 	});
 	
 	it("can verify that an unused username is available", function() {
 		page.usernameInput.sendKeys(constants.notUsedUsername);
 		page.usernameInput.sendKeys(protractor.Key.TAB);	// trigger the username lookup
-		expect(page.userNameExists.isDisplayed()).toBe(false);
-		expect(page.userNameOk.isDisplayed()).toBe(true);
+		expect(page.usernameExists.isDisplayed()).toBe(false);
+		expect(page.usernameOk.isDisplayed()).toBe(true);
 		page.usernameInput.clear();
 	});
 	

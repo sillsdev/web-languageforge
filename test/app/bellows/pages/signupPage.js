@@ -6,8 +6,8 @@ var SignupPage = function() {
 	};
 	
 	this.signupForm = element('form#signupForm');
-	this.userNameExists = element(by.id('userNameExists'));
-	this.userNameOk = element(by.id('userNameOk'));
+	this.usernameExists = element(by.id('usernameExists'));
+	this.usernameOk = element(by.id('usernameOk'));
 	this.usernameInput = element(by.model('record.username'));
 	this.nameInput = element(by.model('record.name'));
 	this.emailInput = element(by.model('record.email'));

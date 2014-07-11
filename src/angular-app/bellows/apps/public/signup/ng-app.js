@@ -11,6 +11,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 	$stateProvider
 		// route to show our basic form (/form)
 		.state('form', {
+			abstract: true,
 			url: '/form',
 			templateUrl: '/angular-app/bellows/apps/public/signup/views/form.html',
 			controller: 'SignupCtrl'
@@ -18,27 +19,28 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 		
 		// nested states 
 		// each of these sections have their own view
-		// url will be nested (/form/identity)
-		.state('form.identity', {
-			url: '/identity',
-			templateUrl: '/angular-app/bellows/apps/public/signup/views/form-identity.html'
+		// url will be nested (/form/identify)
+		.state('form.identify', {
+			url: '/identify',
+			templateUrl: '/angular-app/bellows/apps/public/signup/views/form-identify.html'
 		})
 		
-		// url will be /form/details
-		.state('form.details', {
-			url: '/details',
-			templateUrl: '/angular-app/bellows/apps/public/signup/views/form-details.html'
+		// url will be /form/register
+		.state('form.register', {
+			url: '/register',
+			templateUrl: '/angular-app/bellows/apps/public/signup/views/form-register.html'
 		})
 		
-		// url will be /form/complete
-		.state('form.complete', {
-			url: '/complete',
-			templateUrl: '/angular-app/bellows/apps/public/signup/views/form-complete.html'
-		});
+		// url will be /validate
+		.state('validate', {
+			url: '/validate',
+			templateUrl: '/angular-app/bellows/apps/public/signup/views/validate.html'
+		})
+	;
 	
 	// catch all route
 	// send users to the form page 
-	$urlRouterProvider.otherwise('/form/identity');
+	$urlRouterProvider.otherwise('/form/identify');
 	
 	// configure interface language filepath
 	$translateProvider.useStaticFilesLoader({
@@ -47,13 +49,13 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 	});
 	$translateProvider.preferredLanguage('en');
 }])
-.controller('SignupCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',  
-                           function($scope, userService, sessionService, notice) {
+.controller('SignupCtrl', ['$scope', '$state', 'userService', 'sessionService', 'silNoticeService',  
+                           function($scope, $state, userService, sessionService, notice) {
 	$scope.showPassword = false;
 	$scope.record = {};
 	$scope.record.id = '';
 	$scope.captchaSrc = '';
-	$scope.status = '';
+	$scope.currentState = $state.current;
 	
 	$scope.getCaptchaSrc = function() {
 		sessionService.getCaptchaSrc(function(result) {
@@ -65,12 +67,26 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 	};
 	
 	$scope.processForm = function() {
-		alert('awesome!');
+		switch ($state.current.name) {
+			case 'form.identify':
+				$scope.checkIdentity(function(){
+					if ($scope.usernameOk) {
+						$state.go('form.register');
+					}
+					
+				});
+				break;
+			case 'form.register':
+				$scope.createUser();
+				break;
+			default:
+				break;
+		}
 	};
 	
-	$scope.createUser = function(record) {
+	$scope.createUser = function() {
 		$scope.submissionInProgress = true;
-		userService.register(record, function(result) {
+		userService.register($scope.record, function(result) {
 			$scope.submissionInProgress = false;
 			if (result.ok) {
 				if (!result.data) {
@@ -85,12 +101,15 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 		return true;
 	};
 	
-	$scope.checkUserName = function() {
+	$scope.checkIdentity = function(callback) {
 		$scope.usernameOk = false;
 		$scope.usernameExists = false;
 		if ($scope.record.username) {
 			$scope.usernameLoading = true;
-			userService.identityExists($scope.record.username, '', function(result) {
+			if (! $scope.record.email) {
+				$scope.record.email = '';
+			}
+			userService.identityExists($scope.record.username, $scope.record.email, function(result) {
 				$scope.usernameLoading = false;
 				if (result.ok) {
 					if (result.data.usernameExists) {
@@ -101,6 +120,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 						$scope.usernameExists = false;
 					}
 				}
+				(callback || angular.noop)();
 			});
 		}
 	};
