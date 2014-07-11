@@ -2,6 +2,7 @@
 
 namespace models;
 
+use libraries\shared\Website;
 use models\scriptureforge\RapumaProjectModel;
 
 use models\languageforge\lexicon\LexiconProjectModel;
@@ -221,6 +222,13 @@ class ProjectModel extends \models\mapper\MapperModel
 	public function getAssetsFolderPath() {
 		return APPPATH . 'assets/' . $this->siteName . '/' . $this->appName. '/' . $this->databaseName();
 	}
+
+    /**
+     * @return Website
+     */
+    public function website() {
+        return Website::get($this->siteName);
+    }
 	
 	/**
 	 * @var Id
