@@ -111,7 +111,6 @@ class TestActivityDto extends UnitTestCase {
 		
 		$e->clean();
 	}
-/*
 	function testGetActivityForUser_TwoProjectsTwoDomains_DtoHasOneProject() {
 		$e = new MongoTestEnvironment('www.scriptureforge.org');
 		$e->clean();
@@ -185,9 +184,8 @@ class TestActivityDto extends UnitTestCase {
         $dto = ActivityListDto::getActivityForUser($project1->siteName, $userId);
 
         $this->assertEqual(count($dto['unread']), 1);
-        var_dump($dto);
     }
-	*/
+
 	function testGetActivityForProject_ProjectWithTextQuestionAnswerAndComments_DtoAsExpected() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
