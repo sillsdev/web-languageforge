@@ -101,6 +101,8 @@ class LexConfiguration {
 			new LexiconOptionListItem('Verb')
 		);
 
+		/*
+		 * TODO: Add these back as needed
 		$fullPosList = array(
 			'Adjective' => 'Adjective',
 			'Adposition' => 'Adposition',
@@ -161,6 +163,7 @@ class LexConfiguration {
 			'Intransitive verb' => 'Intransitive verb',
 			'Transitive verb' => 'Transitive verb'
 		);
+		*/
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->values->exchangeArray($basicPosList);
 		
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM] = new LexiconOptionlistConfigObj();
