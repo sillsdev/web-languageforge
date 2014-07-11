@@ -86,19 +86,19 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 	};
 	
 	$scope.checkUserName = function() {
-		$scope.userNameOk = false;
-		$scope.userNameExists = false;
+		$scope.usernameOk = false;
+		$scope.usernameExists = false;
 		if ($scope.record.username) {
-			$scope.userNameLoading = true;
-			userService.userNameExists($scope.record.username, function(result) {
-				$scope.userNameLoading = false;
+			$scope.usernameLoading = true;
+			userService.identityExists($scope.record.username, '', function(result) {
+				$scope.usernameLoading = false;
 				if (result.ok) {
-					if (result.data) {
-						$scope.userNameOk = false;
-						$scope.userNameExists = true;
+					if (result.data.usernameExists) {
+						$scope.usernameOk = false;
+						$scope.usernameExists = true;
 					} else {
-						$scope.userNameOk = true;
-						$scope.userNameExists = false;
+						$scope.usernameOk = true;
+						$scope.usernameExists = false;
 					}
 				}
 			});
