@@ -1,5 +1,5 @@
-<div class="row">
-<div class="col-sm-8 col-sm-offset-2">
+<div class="row outer-flex">
+<div class="span8 offset2">
 
 	<div id="form-container">
 
@@ -7,19 +7,25 @@
 			<h1 translate="Create an Account"></h1>
 			<sil-notices></sil-notices>
 			
-			
 			<!-- the links to our nested states using relative paths -->
 			<!-- add the active class if the state matches our ui-sref -->
 			<div id="status-buttons" class="text-center">
-				<a data-ui-sref-active="active" data-ui-sref=".identity"><span class="btn" data-ng-class="{btn-success: active}">1</span> Identity</a>
-				<a data-ui-sref-active="active" data-ui-sref=".details"><span class="btn" data-ng-class="{btn-success: active}">2</span> Details</a>
-				<a data-ui-sref-active="active" data-ui-sref=".complete"><span class="btn" data-ng-class="{btn-success: active}">3</span> Complete</a>
+				<a data-ui-sref-active="active" data-ui-sref=".identify">
+					<span class="btn btn-success" translate="1"></span>
+					{{'Identify' | translate}}</a>
+				<a data-ui-sref-active="active" data-ui-sref=".register"
+					data-ng-disabled="signupForm.$invalid">
+					<span class="btn" data-ng-class="{btnSuccess: active}" translate="2"></span>
+					{{'Register' | translate}}</a>
+				<a data-ui-sref-active="active" data-ui-sref="validate" >
+					<span class="btn" data-ng-class="{btnSuccess: active}" translate="3"></span>
+					{{'Validate' | translate}}</a>
 			</div>
 		</div>
 		
 		<!-- use ng-submit to catch the form submission and use our Angular function
 		<form id="signup-form" ng-submit="processForm()"> -->
-		<form data-ng-submit="createUser(record)" id="signupForm" name="signupForm" novalidate>
+		<form data-ng-submit="processForm()" id="signupForm" name="signupForm" novalidate>
 
 			<!-- our nested state views will be injected here -->
 			<div id="form-views" data-ui-view></div>
@@ -27,11 +33,11 @@
 
 	</div>
 
-	<!-- show our form data as it is being typed -->
-	<pre>
-		{{ record }}
-	</pre>
-
+<!-- show our form data as it is being typed -->
+<pre>
+currentState: {{currentState | json}}
+record = {{record | json}}
+</pre>
 
 </div>
 </div>

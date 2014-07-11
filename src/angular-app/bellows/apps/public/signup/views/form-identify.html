@@ -1,0 +1,35 @@
+<fieldset>
+	<h3 translate="Lets get started..."></h3>
+	<div class="well">
+		<div class="control-group">
+			<label class="control-label" for="username" translate="User Name"></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<span class="add-on">@</span>
+					<input class="span2" id="username"
+						required type="text" name="username"
+						placeholder="{{'pick a username' | translate}}" 
+						data-ng-model="record.username" />
+					<span data-ng-show="usernameLoading"><img id="usernameLoading" src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+				</div>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="email" translate="Email"></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<span class="add-on"><i class="icon-envelope"></i></span>
+					<input class="span2" id="email"
+						required type="email" name="email"
+						placeholder="{{'your email' | translate}}" data-ng-model="record.email" />
+					<span data-ng-show="signupForm.email.$dirty && signupForm.$error.email"><img src="/images/shared/exclamation.png" title="Invalid email format!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<button class="btn btn-info pull-right" 
+		data-ng-disabled="signupForm.$invalid">
+		{{'Next' | translate}} <i style="margin-left: 5px" class="icon-circle-arrow-right"></i>
+	</button>
+</fieldset>
+
