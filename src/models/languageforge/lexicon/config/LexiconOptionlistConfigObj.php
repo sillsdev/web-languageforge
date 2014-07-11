@@ -2,13 +2,16 @@
 
 namespace models\languageforge\lexicon\config;
 
+use models\mapper\ArrayOf;
 use models\mapper\MapOf;
 
 class LexiconOptionlistConfigObj extends LexiconConfigObj {
 	public function __construct() {
 		$this->type = LexiconConfigObj::OPTIONLIST;
-		$this->values = new MapOf();
-		
+		$this->values = new ArrayOf(function($data) {
+			return new LexiconOptionListItem('');
+		});
+
 		// default values
 		$this->label = '';
 	}
@@ -19,7 +22,7 @@ class LexiconOptionlistConfigObj extends LexiconConfigObj {
 	public $label;
 	
 	/**
-	 * @var MapOf
+	 * @var ArrayOf
 	 */
 	public $values;
 	
