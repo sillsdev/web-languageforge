@@ -4,7 +4,10 @@
 }
 #form-container .page-header { 
 	margin: 0; 
-	padding: 30px; 
+	padding-bottom: 30px; 
+}
+#form-container .page-header h1 { 
+	margin-left: 0; 
 }
 
 /* numbered buttons */

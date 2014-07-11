@@ -3,29 +3,28 @@
 
 	<div id="form-container">
 
-		<div class="page-header text-center">
+		<div class="page-header" align="center">
 			<h1 translate="Create an Account"></h1>
 			<sil-notices></sil-notices>
 			
 			<!-- the links to our nested states using relative paths -->
 			<!-- add the active class if the state matches our ui-sref -->
-			<div id="status-buttons" class="text-center">
+			<div id="status-buttons" align="center">
 				<a data-ui-sref-active="active" data-ui-sref=".identify">
 					<span class="btn btn-success" translate="1"></span>
 					{{'Identify' | translate}}</a>
-				<a data-ui-sref-active="active" data-ui-sref=".register"
-					data-ng-disabled="signupForm.$invalid">
-					<span class="btn" data-ng-class="{btnSuccess: active}" translate="2"></span>
+				<a data-ui-sref-active="active" data-ui-sref=".register">
+					<span class="btn" translate="2"></span>
 					{{'Register' | translate}}</a>
 				<a data-ui-sref-active="active" data-ui-sref="validate" >
-					<span class="btn" data-ng-class="{btnSuccess: active}" translate="3"></span>
+					<span class="btn" translate="3"></span>
 					{{'Validate' | translate}}</a>
 			</div>
 		</div>
 		
 		<!-- use ng-submit to catch the form submission and use our Angular function
 		<form id="signup-form" ng-submit="processForm()"> -->
-		<form data-ng-submit="processForm()" id="signupForm" name="signupForm" novalidate>
+		<form class="form-horizontal" data-ng-submit="processForm()" id="signupForm" name="signupForm" novalidate>
 
 			<!-- our nested state views will be injected here -->
 			<div id="form-views" data-ui-view></div>
@@ -33,11 +32,10 @@
 
 	</div>
 
-<!-- show our form data as it is being typed -->
+<!-- show our form data as it is being typed
 <pre>
-currentState: {{currentState | json}}
 record = {{record | json}}
 </pre>
-
+ -->
 </div>
 </div>
