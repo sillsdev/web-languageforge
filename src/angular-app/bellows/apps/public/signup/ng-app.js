@@ -36,6 +36,12 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 			url: '/validate',
 			templateUrl: '/angular-app/bellows/apps/public/signup/views/validate.html'
 		})
+		
+		// url will be /form/activate
+		.state('form.activate', {
+			url: '/activate',
+			templateUrl: '/angular-app/bellows/apps/public/signup/views/form-activate.html'
+		})
 	;
 	
 	// catch all route
