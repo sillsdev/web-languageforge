@@ -134,12 +134,20 @@ class UserCommands {
 	/**
 	 * @param string $username
 	 * @param string $email
-	 * @return array $dto - $dto['usernameExists'] true if the username exists, false otherwise;
+	 * @return array $dto['usernameExists'] true if the username exists, false otherwise
+	 * 				 $dto['emailIsEmpty'] true if account email is empty
+	 * 				 $dto['emailMatchesAccount'] true if email matches the account email
 	 */
 	static public function checkIdentity($username, $email) {
+		CodeGuard::checkEmptyAndThrow($username, 'username');
 		$user = new UserModel();
 		$dto = array();
 		$dto['usernameExists'] = $user->readByUserName($username);
+		$dto['emailIsEmpty'] = empty($user->email);
+		$dto['emailMatchesAccount'] = false;
+		if (! $dto['emailIsEmpty']  && ! empty($email)) {
+			$dto['emailMatchesAccount'] = ($user->email === $email);
+		}
 		return $dto;
 	}
 	
