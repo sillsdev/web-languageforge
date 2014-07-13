@@ -1,20 +1,16 @@
 <?php
+
 use libraries\shared\Website;
-
 use models\shared\rights\ProjectRoles;
-
-use models\mapper\Id;
-
 use models\commands\LinkCommands;
-use models\UserModel;
-use models\UserListModel;
+use models\mapper\Id;
 use models\ProjectModel;
+use models\UserListModel;
+use models\UserModel;
 
 require_once(dirname(__FILE__) . '/../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
-
 require_once(TestPath . 'common/MongoTestEnvironment.php');
-
 require_once(SourcePath . "models/ProjectModel.php");
 require_once(SourcePath . "models/UserModel.php");
 
@@ -153,23 +149,6 @@ class TestUserModel extends UnitTestCase {
 		$result = $user->readByUserName('adam');
 		$this->assertFalse($result);
 		$this->assertEqual($user->email, '');
-	}
-	
-	function testUserNameExists_userExists_true() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-		
-		$e->createUser('jsmith', 'joe smith','joe@smith.com');
-		$result = UserModel::userNameExists('jsmith');
-		$this->assertTrue($result);
-		
-	}
-	function testUserNameExists_doesNotExist_false() {
-		$e = new MongoTestEnvironment();
-		$e->clean();
-		
-		$result = UserModel::userNameExists('jsmith');
-		$this->assertFalse($result);
 	}
 	
 	function testUserRemove_UserMemberOfProject_ProjectLinkRemovedAsWell() {

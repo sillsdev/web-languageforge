@@ -124,7 +124,7 @@ angular.module('siteadmin', [
 		$scope.userNameExists = false;
 		if ($scope.record.username && $scope.vars.state == "add") {
 			$scope.userNameLoading = true;
-			userService.identityExists($scope.record.username, '', function(result) {
+			userService.identityCheck($scope.record.username, '', function(result) {
 				$scope.userNameLoading = false;
 				if (result.ok) {
 					if (result.data.usernameExists) {

@@ -52,16 +52,6 @@ class UserModelBase extends \models\mapper\MapperModel
 	/**
 	 * 
 	 * @param string $username
-	 * @return boolean - true if the username exists, false otherwise
-	 */
-	static public function userNameExists($username) {
-		$user = new UserModel();
-		return $user->readByUserName($username);
-	}
-	
-	/**
-	 * 
-	 * @param string $username
 	 * @return boolean - true of the username exists, false otherwise
 	 */
 	public function readByUserName($username) {
