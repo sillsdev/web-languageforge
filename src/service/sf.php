@@ -180,7 +180,7 @@ class Sf
 	
 	public function identity_check($username, $email) {
 		// intentionally we have no security here: people can see what users exist by trial and error
-		return UserCommands::checkIdentity($username, $email);
+		return UserCommands::checkIdentity($username, $email, $this->_website);
 	}
 	
 	/**

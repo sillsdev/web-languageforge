@@ -134,15 +134,27 @@ class UserCommands {
 	/**
 	 * @param string $username
 	 * @param string $email
+	 * @param Website $website
 	 * @return array $dto['usernameExists'] true if the username exists, false otherwise
+	 * 				 $dto['usernameExistsOnThisSite'] true if username exists on the supplied website
+	 * 				 $dto['emailExists'] true if email exists
 	 * 				 $dto['emailIsEmpty'] true if account email is empty
 	 * 				 $dto['emailMatchesAccount'] true if email matches the account email
 	 */
-	static public function checkIdentity($username, $email) {
+	static public function checkIdentity($username, $email = '', $website = null) {
 		CodeGuard::checkEmptyAndThrow($username, 'username');
 		$user = new UserModel();
+		$otherUser = new UserModel();
 		$dto = array();
 		$dto['usernameExists'] = $user->readByUserName($username);
+		$dto['usernameExistsOnThisSite'] = false;
+		if ($dto['usernameExists'] && $website) {
+			$dto['usernameExistsOnThisSite'] = false;	// TODO: implement
+		}
+		$dto['emailExists'] = false;
+		if ($email) {
+			$dto['emailExists'] = $otherUser->readByProperty('email', $email);
+		}
 		$dto['emailIsEmpty'] = empty($user->email);
 		$dto['emailMatchesAccount'] = false;
 		if (! $dto['emailIsEmpty']  && ! empty($email)) {
@@ -175,7 +187,7 @@ class UserCommands {
 	public static function createUser($params, $website) {
 		$user = new \models\UserModelWithPassword();
 		JsonDecoder::decode($user, $params);
-		$identityCheck = self::checkIdentity($user->username, '');
+		$identityCheck = self::checkIdentity($user->username);
 		if ($identityCheck['usernameExists']) {
 			return false;
 		}
@@ -237,7 +249,7 @@ class UserCommands {
 		
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
-		$identityCheck = self::checkIdentity($user->username, '');
+		$identityCheck = self::checkIdentity($user->username);
 		if ($identityCheck['usernameExists']) {
 			return false;
 		}
