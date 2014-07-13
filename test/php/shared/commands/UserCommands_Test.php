@@ -73,6 +73,7 @@ class TestUserCommands extends UnitTestCase {
 		$identityCheck = UserCommands::checkIdentity('jsmith', '');
 
 		$this->assertTrue($identityCheck['usernameExists']);
+		$this->assertFalse($identityCheck['emailExists']);
 		$this->assertTrue($identityCheck['emailIsEmpty']);
 		$this->assertFalse($identityCheck['emailMatchesAccount']);
 	}
@@ -86,6 +87,7 @@ class TestUserCommands extends UnitTestCase {
 		$identityCheck = UserCommands::checkIdentity('jsmith', 'joe@smith.com');
 
 		$this->assertTrue($identityCheck['usernameExists']);
+		$this->assertTrue($identityCheck['emailExists']);
 		$this->assertFalse($identityCheck['emailIsEmpty']);
 		$this->assertTrue($identityCheck['emailMatchesAccount']);
 	}
@@ -95,10 +97,12 @@ class TestUserCommands extends UnitTestCase {
 		$e->clean();
 		
 		$e->createUser('jsmith', 'joe smith','joe@smith.com');
-
-		$identityCheck = UserCommands::checkIdentity('jsmith', 'zed@smith.com');
+		$e->createUser('zedUser', 'zed user','zed@example.com');
+		
+		$identityCheck = UserCommands::checkIdentity('jsmith', 'zed@example.com');
 
 		$this->assertTrue($identityCheck['usernameExists']);
+		$this->assertTrue($identityCheck['emailExists']);
 		$this->assertFalse($identityCheck['emailIsEmpty']);
 		$this->assertFalse($identityCheck['emailMatchesAccount']);
 	}
@@ -112,6 +116,7 @@ class TestUserCommands extends UnitTestCase {
 		$identityCheck = UserCommands::checkIdentity('jsmith', '');
 
 		$this->assertTrue($identityCheck['usernameExists']);
+		$this->assertFalse($identityCheck['emailExists']);
 		$this->assertFalse($identityCheck['emailIsEmpty']);
 		$this->assertFalse($identityCheck['emailMatchesAccount']);
 	}
@@ -120,9 +125,12 @@ class TestUserCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$identityCheck = UserCommands::checkIdentity('jsmith', 'joe@smith.com');
+		$e->createUser('jsmith', 'joe smith','joe@smith.com');
+
+		$identityCheck = UserCommands::checkIdentity('zedUser', 'zed@example.com');
 				
 		$this->assertFalse($identityCheck['usernameExists']);
+		$this->assertFalse($identityCheck['emailExists']);
 		$this->assertTrue($identityCheck['emailIsEmpty']);
 		$this->assertFalse($identityCheck['emailMatchesAccount']);
 	}
