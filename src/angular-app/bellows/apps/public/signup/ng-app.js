@@ -82,9 +82,21 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 		switch ($state.current.name) {
 			case 'form.identify':
 				$scope.checkIdentity(function(){
-					if ($scope.usernameOk) {
+					if ($scope.usernameOk && ! $scope.emailExists) {
 						$state.go('form.register');
 						$scope.getCaptchaSrc();
+					} else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite && $scope.emailIsEmpty) {
+						$state.go('form.activate');
+					} else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite && ! $scope.emailIsEmpty && $scope.emailMatchesAccount) {
+						$state.go('form.login');
+					} else {
+						// error messages
+						if ($scope.usernameExists) {
+							$scope.signupForm.username.$setPristine();
+						}
+						if ($scope.emailExists) {
+							$scope.signupForm.email.$setPristine();
+						}
 					}
 				});
 				break;
@@ -117,6 +129,10 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 	$scope.checkIdentity = function(callback) {
 		$scope.usernameOk = false;
 		$scope.usernameExists = false;
+		$scope.usernameExistsOnThisSite = false;
+		$scope.emailExists = false;
+		$scope.emailIsEmpty = true;
+		$scope.emailMatchesAccount = false;
 		if ($scope.record.username) {
 			$scope.usernameLoading = true;
 			if (! $scope.record.email) {
@@ -125,13 +141,12 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 			userService.identityCheck($scope.record.username, $scope.record.email, function(result) {
 				$scope.usernameLoading = false;
 				if (result.ok) {
-					if (result.data.usernameExists) {
-						$scope.usernameOk = false;
-						$scope.usernameExists = true;
-					} else {
-						$scope.usernameOk = true;
-						$scope.usernameExists = false;
-					}
+					$scope.usernameExists = result.data.usernameExists;
+					$scope.usernameOk = ! $scope.usernameExists;
+					$scope.usernameExistsOnThisSite = result.data.usernameExistsOnThisSite;
+					$scope.emailExists = result.data.emailExists;
+					$scope.emailIsEmpty = result.data.emailIsEmpty;
+					$scope.emailMatchesAccount = result.data.emailMatchesAccount;
 				}
 				(callback || angular.noop)();
 			});
