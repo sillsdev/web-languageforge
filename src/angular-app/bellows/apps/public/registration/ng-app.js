@@ -47,7 +47,7 @@ angular.module('registration', [ 'bellows.services', 'ui.bootstrap', 'palaso.ui.
 		$scope.userNameExists = false;
 		if ($scope.record.username) {
 			$scope.userNameLoading = true;
-			userService.identityExists($scope.record.username, '', function(result) {
+			userService.identityCheck($scope.record.username, '', function(result) {
 				$scope.userNameLoading = false;
 				if (result.ok) {
 					if (result.data.usernameExists) {
