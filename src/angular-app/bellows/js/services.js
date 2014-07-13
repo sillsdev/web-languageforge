@@ -41,8 +41,8 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.changePassword = function(userId, newPassword, callback) {
 		jsonRpc.call('change_password', [userId, newPassword], callback);
 	};
-	this.identityExists = function(username, email, callback) {
-		jsonRpc.call('identity_exists', [username, email], callback);
+	this.identityCheck = function(username, email, callback) {
+		jsonRpc.call('identity_check', [username, email], callback);
 	};
 	this.create = function(model, callback) {
 		jsonRpc.call('user_create', [model], callback);

@@ -64,6 +64,26 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($userId, $newUserId);
 	}
 	
+	function testCheckIdentity_userExists_UsernameExists() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$e->createUser('jsmith', 'joe smith','joe@smith.com');
+
+		$identityCheck = UserCommands::checkIdentity('jsmith', '');
+
+		$this->assertTrue($identityCheck['usernameExists']);
+		
+	}
+	function testCheckIdentity_doesNotExist_UsernameDoesNotExist() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$identityCheck = UserCommands::checkIdentity('jsmith', '');
+				
+		$this->assertFalse($identityCheck['usernameExists']);
+	}
+	
 	function testCreateSimple_CreateUser_PasswordAndJoinProject() {
 		$e = new MongoTestEnvironment();
 		$e->clean();

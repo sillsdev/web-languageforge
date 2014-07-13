@@ -122,7 +122,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 			if (! $scope.record.email) {
 				$scope.record.email = '';
 			}
-			userService.identityExists($scope.record.username, $scope.record.email, function(result) {
+			userService.identityCheck($scope.record.username, $scope.record.email, function(result) {
 				$scope.usernameLoading = false;
 				if (result.ok) {
 					if (result.data.usernameExists) {

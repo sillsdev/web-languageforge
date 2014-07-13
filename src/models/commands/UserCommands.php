@@ -9,25 +9,25 @@ use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\shared\palaso\CodeGuard;
 use libraries\shared\palaso\JsonRpcServer;
 use libraries\shared\Website;
-use models\commands\ActivityCommands;
-use models\commands\ProjectCommands;
-use models\commands\QuestionCommands;
-use models\commands\TextCommands;
-use models\commands\UserCommands;
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\ActivityListDto;
 use models\shared\dto\CreateSimpleDto;
 use models\shared\dto\RightsHelper;
 use models\shared\dto\UserProfileDto;
-use models\sms\SmsSettings;
+use models\shared\rights\Domain;
+use models\shared\rights\Operation;
+use models\shared\rights\ProjectRoles;
+use models\shared\rights\SystemRoles;
+use models\commands\ActivityCommands;
+use models\commands\ProjectCommands;
+use models\commands\QuestionCommands;
+use models\commands\TextCommands;
+use models\commands\UserCommands;
 use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
 use models\mapper\MongoStore;
-use models\shared\rights\Domain;
-use models\shared\rights\Operation;
-
-use models\shared\rights\ProjectRoles;
+use models\sms\SmsSettings;
 use models\AnswerModel;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
@@ -36,7 +36,6 @@ use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserModelWithPassword;
 use models\UserProfileModel;
-use models\shared\rights\SystemRoles;
 
 class UserCommands {
 	
@@ -133,6 +132,18 @@ class UserCommands {
 	}
 	
 	/**
+	 * @param string $username
+	 * @param string $email
+	 * @return array $dto - $dto['usernameExists'] true if the username exists, false otherwise;
+	 */
+	static public function checkIdentity($username, $email) {
+		$user = new UserModel();
+		$dto = array();
+		$dto['usernameExists'] = $user->readByUserName($username);
+		return $dto;
+	}
+	
+	/**
 	 * 
 	 * @param string $userId
 	 * @param string $newPassword
@@ -156,7 +167,8 @@ class UserCommands {
 	public static function createUser($params, $website) {
 		$user = new \models\UserModelWithPassword();
 		JsonDecoder::decode($user, $params);
-		if (UserModel::userNameExists($user->username)) {
+		$identityCheck = self::checkIdentity($user->username, '');
+		if ($identityCheck['usernameExists']) {
 			return false;
 		}
 		$user->setPassword($params['password']);
@@ -217,7 +229,8 @@ class UserCommands {
 		
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
-		if (UserModel::userNameExists($user->username)) {
+		$identityCheck = self::checkIdentity($user->username, '');
+		if ($identityCheck['usernameExists']) {
 			return false;
 		}
 		$user->active = false;
