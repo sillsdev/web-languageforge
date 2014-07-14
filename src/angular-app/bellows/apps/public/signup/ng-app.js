@@ -85,9 +85,9 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 					if ($scope.usernameOk && ! $scope.emailExists) {
 						$state.go('form.register');
 						$scope.getCaptchaSrc();
-					} else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite && $scope.emailIsEmpty) {
+					} else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite && $scope.emailIsEmpty && $scope.allowSignupFromOtherSites) {
 						$state.go('form.activate');
-					} else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite && ! $scope.emailIsEmpty && $scope.emailMatchesAccount) {
+					} else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite && ! $scope.emailIsEmpty && $scope.emailMatchesAccount && $scope.allowSignupFromOtherSites) {
 						$state.go('form.login');
 					} else {
 						// error messages
@@ -103,6 +103,16 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 			case 'form.register':
 				registerUser(function() {
 					$state.go('validate');
+				});
+				break;
+			case 'form.activate':
+				activateUser(function() {
+					$state.go('validate');
+				});
+				break;
+			case 'form.login':
+				loginActivateUser(function() {
+					;	// go to /app/lexicon
 				});
 				break;
 			default:
@@ -126,10 +136,26 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 		});
 	};
 	
+	function activateUser(successCallback) {
+		$scope.submissionInProgress = true;
+		userService.activate($scope.record.username, $scope.record.password, $scope.record.email, function(result) {
+			$scope.submissionInProgress = false;
+			if (result.ok) {
+				if (!result.data) {
+					notice.push(notice.ERROR, "Login failed.<br /><br />If this is NOT your account, click <b>Back</b> to create a different account.");
+				} else {
+					$scope.submissionComplete = true;
+					(successCallback || angular.noop)();
+				}
+			}
+		});
+	};
+	
 	$scope.checkIdentity = function(callback) {
 		$scope.usernameOk = false;
 		$scope.usernameExists = false;
 		$scope.usernameExistsOnThisSite = false;
+		$scope.allowSignupFromOtherSites = false;
 		$scope.emailExists = false;
 		$scope.emailIsEmpty = true;
 		$scope.emailMatchesAccount = false;
@@ -143,6 +169,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 				if (result.ok) {
 					$scope.usernameExists = result.data.usernameExists;
 					$scope.usernameOk = ! $scope.usernameExists;
+					$scope.usernameExistsOnThisSite = result.data.usernameExistsOnThisSite;
 					$scope.usernameExistsOnThisSite = result.data.usernameExistsOnThisSite;
 					$scope.emailExists = result.data.emailExists;
 					$scope.emailIsEmpty = result.data.emailIsEmpty;
