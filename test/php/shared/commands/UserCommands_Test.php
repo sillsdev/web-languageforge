@@ -70,9 +70,10 @@ class TestUserCommands extends UnitTestCase {
 		
 		$e->createUser('jsmith', 'joe smith','');
 
-		$identityCheck = UserCommands::checkIdentity('jsmith', '');
+		$identityCheck = UserCommands::checkIdentity('jsmith', '', $e->website);
 
 		$this->assertTrue($identityCheck['usernameExists']);
+		$this->assertTrue($identityCheck['usernameExistsOnThisSite']);
 		$this->assertFalse($identityCheck['emailExists']);
 		$this->assertTrue($identityCheck['emailIsEmpty']);
 		$this->assertFalse($identityCheck['emailMatchesAccount']);
@@ -84,9 +85,10 @@ class TestUserCommands extends UnitTestCase {
 		
 		$e->createUser('jsmith', 'joe smith','joe@smith.com');
 
-		$identityCheck = UserCommands::checkIdentity('jsmith', 'joe@smith.com');
+		$identityCheck = UserCommands::checkIdentity('jsmith', 'joe@smith.com', null);
 
 		$this->assertTrue($identityCheck['usernameExists']);
+		$this->assertFalse($identityCheck['usernameExistsOnThisSite']);
 		$this->assertTrue($identityCheck['emailExists']);
 		$this->assertFalse($identityCheck['emailIsEmpty']);
 		$this->assertTrue($identityCheck['emailMatchesAccount']);
@@ -96,12 +98,15 @@ class TestUserCommands extends UnitTestCase {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$e->createUser('jsmith', 'joe smith','joe@smith.com');
 		$e->createUser('zedUser', 'zed user','zed@example.com');
+		$originalWebsite = clone $e->website;
+		$e->website->domain = 'default.local';
+		$e->createUser('jsmith', 'joe smith','joe@smith.com');
 		
-		$identityCheck = UserCommands::checkIdentity('jsmith', 'zed@example.com');
+		$identityCheck = UserCommands::checkIdentity('jsmith', 'zed@example.com', $originalWebsite);
 
 		$this->assertTrue($identityCheck['usernameExists']);
+		$this->assertFalse($identityCheck['usernameExistsOnThisSite']);
 		$this->assertTrue($identityCheck['emailExists']);
 		$this->assertFalse($identityCheck['emailIsEmpty']);
 		$this->assertFalse($identityCheck['emailMatchesAccount']);
@@ -113,9 +118,10 @@ class TestUserCommands extends UnitTestCase {
 		
 		$e->createUser('jsmith', 'joe smith','joe@smith.com');
 
-		$identityCheck = UserCommands::checkIdentity('jsmith', '');
+		$identityCheck = UserCommands::checkIdentity('jsmith', '', $e->website);
 
 		$this->assertTrue($identityCheck['usernameExists']);
+		$this->assertTrue($identityCheck['usernameExistsOnThisSite']);
 		$this->assertFalse($identityCheck['emailExists']);
 		$this->assertFalse($identityCheck['emailIsEmpty']);
 		$this->assertFalse($identityCheck['emailMatchesAccount']);
@@ -127,9 +133,10 @@ class TestUserCommands extends UnitTestCase {
 		
 		$e->createUser('jsmith', 'joe smith','joe@smith.com');
 
-		$identityCheck = UserCommands::checkIdentity('zedUser', 'zed@example.com');
+		$identityCheck = UserCommands::checkIdentity('zedUser', 'zed@example.com', $e->website);
 				
 		$this->assertFalse($identityCheck['usernameExists']);
+		$this->assertFalse($identityCheck['usernameExistsOnThisSite']);
 		$this->assertFalse($identityCheck['emailExists']);
 		$this->assertTrue($identityCheck['emailIsEmpty']);
 		$this->assertFalse($identityCheck['emailMatchesAccount']);
