@@ -3,6 +3,7 @@
 namespace models\shared\dto;
 
 use models\ActivityListModel;
+use models\GlobalUnreadActivityModel;
 use models\QuestionModel;
 use models\TextModel;
 use models\UnreadActivityModel;
@@ -85,6 +86,23 @@ class ActivityListDto
 		self::prepareDto($dto);
 		return (is_array($dto['entries'])) ? $dto['entries'] : array();
 	}
+
+    // note: it could be argued that this is a migration method that is not necessary if we were to migrate the database of existing activity entries with no projectId cjh 2014-07
+    public static function getGlobalUnreadActivityForUser($userId) {
+        $unreadActivity = new GlobalUnreadActivityModel($userId);
+        $items = $unreadActivity->unreadItems();
+        $unreadActivity->markAllRead();
+        $unreadActivity->write();
+        return $items;
+    }
+
+    public static function getUnreadActivityForUserInProject($userId, $projectId) {
+        $unreadActivity = new UnreadActivityModel($userId, $projectId);
+        $items = $unreadActivity->unreadItems();
+        $unreadActivity->markAllRead();
+        $unreadActivity->write();
+        return $items;
+    }
 	
 	/**
 	 * @param string $site
@@ -95,15 +113,14 @@ class ActivityListDto
 		$projectList = new ProjectList_UserModel($site);
 		$projectList->readUserProjects($userId);
 		$activity = array();
+        $unreadItems = array();
 		foreach ($projectList->entries as $project) {
 			$projectModel = new ProjectModel($project['id']);
 			$activity = array_merge($activity, self::getActivityForProject($projectModel));
+            $unreadItems = array_merge($unreadItems, self::getUnreadActivityForUserInProject($userId, $project['id']));
 		}
+        $unreadItems = array_merge($unreadItems, self::getGlobalUnreadActivityForUser($userId));
 		uasort($activity, array('self', 'sortActivity'));
-		$unreadActivity = new UnreadActivityModel($userId);
-		$unreadItems = $unreadActivity->unreadItems();
-		$unreadActivity->markAllRead();
-		$unreadActivity->write();
 		$dto = array(
 				'activity' => $activity,
 				'unread' => $unreadItems

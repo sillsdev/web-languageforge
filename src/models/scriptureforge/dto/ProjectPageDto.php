@@ -76,7 +76,7 @@ class ProjectPageDto
 		$data['members'] = array();
 		
 		// unread activity count
-		$unreadActivity = new UnreadActivityModel($userId);
+		$unreadActivity = new UnreadActivityModel($userId, $projectId);
 		$unreadItems = $unreadActivity->unreadItems();
 		$data['activityUnreadCount'] = count($unreadItems);
 		

@@ -2,6 +2,7 @@
 
 namespace models;
 
+use libraries\shared\Website;
 use models\scriptureforge\RapumaProjectModel;
 
 use models\languageforge\lexicon\LexiconProjectModel;
@@ -21,6 +22,7 @@ use models\mapper\ReferenceList;
 use models\mapper\Id;
 use models\UserList_ProjectModel;
 use models\sms\SmsSettings;
+use models\mapper\IdReference;
 
 
 class ProjectModel extends \models\mapper\MapperModel
@@ -30,6 +32,7 @@ class ProjectModel extends \models\mapper\MapperModel
 	
 	public function __construct($id = '') {
 		$this->id = new Id();
+		$this->ownerRef = new IdReference();
 		$this->users = new MapOf(function($data) {
 			return new ProjectRoleModel();
 		});
@@ -70,29 +73,14 @@ class ProjectModel extends \models\mapper\MapperModel
 	
 	
 	/**
-	 * @param string $domainName
-	 * @return string
-	 */
-	public static function domainToProjectCode($domainName) {
-		$uriParts = explode('.', $domainName);
-		if ($uriParts[0] == 'www' || $uriParts[0] == 'dev') {
-			array_shift($uriParts);
-		}
-		$projectCode = $uriParts[0];
-		if ($projectCode == 'scriptureforge' || $projectCode == 'languageforge') {
-			$projectCode = '';
-		}
-		return $projectCode;
-	}
-	
-	/**
 	 * (non-PHPdoc)
 	 * @see \models\mapper\MapperModel::databaseName()
 	 */
 	public function databaseName() {
-		$name = strtolower($this->projectName);
-		$name = str_replace(' ', '_', $name);
-		return 'sf_' . $name;
+        CodeGuard::checkEmptyAndThrow($this->projectCode, 'projectCode');
+        $name = strtolower($this->projectCode);
+        $name = str_replace(' ', '_', $name);
+        return 'sf_' . $name;
 	}
 
 	/**
@@ -234,16 +222,24 @@ class ProjectModel extends \models\mapper\MapperModel
 	public function getAssetsFolderPath() {
 		return APPPATH . 'assets/' . $this->siteName . '/' . $this->appName. '/' . $this->databaseName();
 	}
+
+    /**
+     * @return Website
+     */
+    public function website() {
+        return Website::get($this->siteName);
+    }
 	
 	/**
 	 * @var Id
 	 */
 	public $id;
 	
-	/**
-	 * @var Id
+	/** 
+	 * ID of the user that created the project
+	 * @var IdReference
 	 */
-	public $ownerId;
+	public $ownerRef;
 	
 	/**
 	 * @var string

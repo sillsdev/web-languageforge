@@ -211,10 +211,14 @@ describe('Activity Page E2E Test', function() {
 
 				activityPage.get();
 				
-				// Expect the last activity to be performed by admin
+				// Expect the last activity to be performed by admin or manager
 				activityPage.getLength().then(function(len) {
 					activityText = activityPage.getActivityText(len - 1);
-					expect(activityText).toContain('admin');
+					if (expectedUsername == constants.memberUsername) {
+						expect(activityText).toContain(constants.adminUsername);
+					} else if (expectedUsername == constants.managerUsername) {
+						expect(activityText).toContain(constants.managerUsername);
+					};
 				});
 				
 				// Show only my activity
@@ -234,11 +238,15 @@ describe('Activity Page E2E Test', function() {
 				
 				// cjh note: maybe we need to put a waitForAngular() at this point to ensure that this test does not fail prematurely
 				
-				
-				// Expect the last activity to be performed by admin
+				// Expect the last activity to be performed by admin or manager
 				activityPage.getLength().then(function(len) {
 					activityText = activityPage.getActivityText(len - 1);
-					expect(activityText).toContain('admin');
+					
+					if (expectedUsername == constants.memberUsername) {
+						expect(activityText).toContain(constants.adminUsername);
+					} else if (expectedUsername == constants.managerUsername) {
+						expect(activityText).toContain(constants.managerUsername);
+					};
 				});
 
 				//browser.debugger();

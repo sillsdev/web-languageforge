@@ -258,6 +258,37 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
  -->
 		</div>
 	</tab>
+	<tab heading="Option Lists" class="{{interfaceConfig.pullNormal}}">
+		<div data-ng-controller="OptionListCtrl">
+			<div class="row outer-flex">
+
+				<!-- Left column: task list -->
+				<div class="span3 control-group picklists">
+					<fieldset class="well" id="editListValuesFieldset">
+						<legend>Select a list</legend>
+						<ul class="unstyled">
+							<li ng-click="selectList('pos')" data-ng-class="{selected:currentListId == 'pos'}">Part of Speech</li>
+							<!-- future lists go here -->
+						</ul>
+					</fieldset>
+				</div>
+
+				<!-- Right column: task setup -->
+				<div class="span9">
+					<fieldset class="well" id="picklistEditorFieldset">
+						<legend style="width:auto;">{{optionLists[currentListId].name}}</legend>
+						<picklist-editor items="optionLists[currentListId].items" default-key="optionLists[currentListId].defaultKey"></picklist-editor>
+					</fieldset>
+				</div>
+
+			</div>
+			<!--
+			<pre>
+			configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] | json}}
+			</pre>
+			 -->
+		</div>
+	</tab>
 </tabset>
 </form>
 </div>
