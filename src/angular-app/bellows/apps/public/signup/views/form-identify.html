@@ -1,5 +1,21 @@
 <fieldset>
-	<h3 align="center" translate="Lets get started..."></h3>
+	<div align="center">
+		<ul class="inline" id="progress-indicator">
+			<li><a data-ui-sref="form.identify">
+				<i class="icon-check-empty"></i>
+				{{'Identify' | translate}}</a></li>
+			<li>&gt;</li>
+			<li><i class="icon-check-empty"></i>
+				<span>{{'Register' | translate}}</span></li>
+			<li>&gt;</li>
+			<li><i class="icon-check-empty"></i>
+				<span>{{'Validate' | translate}}</span></li>
+			<li>&gt;</li>
+			<li><i class="icon-check-empty"></i>
+				<span>{{'Login' | translate}}</span></li>
+		</ul>
+		<h3 translate="Lets get started..."></h3>
+	</div>
 	<div class="well">
 		<div class="control-group">
 			<label class="control-label" for="username" translate="User Name"></label>

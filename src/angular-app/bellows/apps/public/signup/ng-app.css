@@ -4,10 +4,29 @@
 }
 #form-container .page-header { 
 	margin: 0; 
-	padding-bottom: 30px; 
+	border-bottom: none;
 }
 #form-container .page-header h1 { 
 	margin-left: 0; 
+	margin-bottom: 0;
+}
+
+/* progess indicator */
+#progress-indicator {
+	padding-bottom: 30px;
+	border-bottom: 1px solid #eeeeee;
+}
+#progress-indicator i {
+	display: block; 
+	font-size: 55px; 
+}
+#progress-indicator i.icon-check-sign {
+	color: green;
+	font-size: 50px;
+	height: 56px; 
+}
+#progress-indicator a:hover { 
+	text-decoration: none; 
 }
 
 /* numbered buttons */
