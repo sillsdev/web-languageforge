@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'angularFileUpload', 'lexicon.upload'])
-.controller('LiftImportCtrl', ['$scope', 'silNoticeService', 'fileReader', 'lexProjectService', '$filter', 
-                               function($scope, notice, fileReader, lexProjectService, $filter) {
+.controller('LiftImportCtrl', ['$scope', 'silNoticeService', 'fileReader', 'lexProjectService', '$filter', '$location',
+                               function($scope, notice, fileReader, lexProjectService, $filter, $location) {
 	lexProjectService.setBreadcrumbs('importExport', 'Import/export');
 	
 	$scope.mergeRule = 'createDuplicates';
@@ -23,13 +23,18 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'pa
 			settings: {
 				mergeRule: $scope.mergeRule,
 				skipSameModTime: $scope.skipSameModTime,
-				deleteMatchingEntry: $scope.deleteMatchingEntry,
-			},
+				deleteMatchingEntry: $scope.deleteMatchingEntry
+			}
 		};
+        notice.setLoading('Importing LIFT file...');
+        $scope.importStarted = true;
 		lexProjectService.importLift(importData, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, $filter('translate')("LIFT import completed successfully"));
+                notice.push(notice.INFO, $filter('translate')('Your project was successfully imported.  Carefully review the dictionary configuration below before continuing, especially the input systems and fields tabs'));
+                $location.path('/configuration');
 			}
+            notice.cancelLoading();
 		});
 	};
 
