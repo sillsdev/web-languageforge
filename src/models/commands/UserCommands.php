@@ -149,7 +149,7 @@ class UserCommands {
 		$dto['usernameExists'] = $user->readByUserName($username);
 		$dto['usernameExistsOnThisSite'] = false;
 		if ($dto['usernameExists'] && $website) {
-			$dto['usernameExistsOnThisSite'] = false;	// TODO: implement
+			$dto['usernameExistsOnThisSite'] = $user->hasRoleOnSite($website);
 		}
 		$dto['emailExists'] = false;
 		if ($email) {

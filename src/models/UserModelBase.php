@@ -85,6 +85,15 @@ class UserModelBase extends \models\mapper\MapperModel
 	}
 	
 	/**
+	 * Returns whether the user has a role on the requested website
+	 * @param Website $website
+	 * @return bool true if the user has any role on the website, otherwise false
+	 */
+	public function hasRoleOnSite($website) {
+		return $this->siteRole->offsetExists($website->domain);
+	}
+	
+	/**
 	 * 
 	 * @param bool $consumeKey - if true the validationKey will be destroyed upon validate()
 	 * @return boolean
