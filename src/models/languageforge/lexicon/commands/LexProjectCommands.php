@@ -95,6 +95,8 @@ class LexProjectCommands {
 		// make the Assets folder if it doesn't exist
 		$project = new LexiconProjectModel($projectId);
 		$folderPath = $project->getAssetsFolderPath();
+        $filePath =  $folderPath . '/' . $fileName;
+        $project->liftFilePath = $filePath;
 		if (!file_exists($folderPath) and !is_dir($folderPath)) {
 			mkdir($folderPath, 0777, true);
 		};
@@ -107,19 +109,17 @@ class LexProjectCommands {
 			foreach ($cleanupFiles as $cleanupFile) {
 				@unlink($cleanupFile);
 			}
-			
-			// put the LIFT file into Assets
-			$filePath =  $folderPath . '/' . $fileName;
-			$moveOk = file_put_contents($filePath, $liftXml);
-			
-			// update database with file location
-			$project->liftFilePath = '';
-			if ($moveOk) {
-				$project->liftFilePath = $filePath;
-			}
 		}
-		
 		$project->write();
+
+        /* Note: I once got the following error on import - cjh 2014-07
+         * PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 2764920 bytes)
+         * we unset the project variable to free up memory for the file write operation
+        */
+        unset($project);
+
+        // put the LIFT file into Assets
+        file_put_contents($filePath, $liftXml);
 	}
 	
 }
