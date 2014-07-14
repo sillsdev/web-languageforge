@@ -43,33 +43,38 @@ use models\sms\SmsSettings;
 
 class ProjectCommands
 {
-	
 	/**
 	 * Create a project, checking permissions as necessary
 	 * @param string $projectName
+	 * @param string $projectCode
 	 * @param string $appName
 	 * @param string $userId
 	 * @param Website $website
 	 * @return string - projectId
 	 */
 	public static function createProject($projectName, $projectCode, $appName, $userId, $website) {
+		// Check for unique project code
+		if (ProjectCommands::projectCodeExists($projectCode)) {
+			return false;
+		}
 		$project = new ProjectModel();
 		$project->projectName = $projectName;
 		$project->projectCode = $projectCode;
 		$project->appName = $appName;
 		$project->siteName = $website->domain;
-		if (ProjectCommands::projectCodeExists($projectCode)) {
-			return false;
-		}		
+		$project->ownerRef->id = $userId;
+		$project->addUser($userId, ProjectRoles::MANAGER);
 		$projectId = $project->write();
-		ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::MANAGER);
+		$user = new UserModel($userId);
+		$user->addProject($projectId);
+		$user->write();
+		ActivityCommands::addUserToProject($project, $userId);
 		return $projectId;
 	}
 	
 	/**
 	 * 
 	 * @param string $id
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
 	 */
 	public static function readProject($id) {
 		$project = new \models\ProjectModel($id);
@@ -143,6 +148,7 @@ class ProjectCommands
 	/**
 	 * List users in the project
 	 * @param string $projectId
+	 * @return array - the DTO array
 	 */
 	public static function usersDto($projectId) {
 		CodeGuard::checkTypeAndThrow($projectId, 'string');
@@ -152,6 +158,7 @@ class ProjectCommands
 		return $usersDto;
 	}
 
+	
 	/**
 	 * Update the user project role in the project
 	 * @param string $projectId
@@ -167,11 +174,21 @@ class ProjectCommands
 		// Add the user to the project
 		$user = new UserModel($userId);
 		$project = ProjectModel::getById($projectId);
+		
+		if ($userId == $project->ownerRef->asString()) {
+			throw new \Exception("Cannot update role for project owner");
+		}
+		
+		// TODO: Only trigger activity if this is the first time they have been added to project
+		$usersDto = ProjectCommands::usersDto($projectId);
+		if (!$project->users->offsetExists($userId)) {
+			ActivityCommands::addUserToProject($project, $userId);
+		}
+		
 		$project->addUser($userId, $projectRole);
 		$user->addProject($projectId);
 		$project->write();
 		$user->write();
-		ActivityCommands::addUserToProject($project, $userId);
 		
 		return $userId;
 	}
@@ -184,11 +201,16 @@ class ProjectCommands
 	public static function removeUsers($projectId, $userIds) {
 		$project = new ProjectModel($projectId);
 		foreach ($userIds as $userId) {
-			$user = new UserModel($userId);
-			$project->removeUser($user->id->asString());
-			$user->removeProject($project->id->asString());
-			$project->write();
-			$user->write();
+			// Guard against removing project owner
+			if ($userId != $project->ownerRef->id) {
+				$user = new UserModel($userId);
+				$project->removeUser($user->id->asString());
+				$user->removeProject($project->id->asString());
+				$project->write();
+				$user->write();
+			} else {
+				throw new \Exception("Cannot remove project owner");
+			}
 		}
 	}
 	

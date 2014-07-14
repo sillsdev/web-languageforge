@@ -34,6 +34,7 @@ class TestProjectModel extends UnitTestCase {
 		$model = new ProjectModel();
 		$model->language = "SomeLanguage";
 		$model->projectName = "SomeProject";
+        $model->projectCode = 'project_code';
 		//$model->users->refs = array('1234');
 		$id = $model->write();
 		$this->assertNotNull($id);
@@ -190,7 +191,7 @@ class TestProjectModel extends UnitTestCase {
 	
 	function testDatabaseName_Ok() {
 		$project = new ProjectModel();
-		$project->projectName = 'Some Project';
+		$project->projectCode = 'Some Project';
 		$result = $project->databaseName();
 		$this->assertEqual('sf_some_project', $result);
 	}

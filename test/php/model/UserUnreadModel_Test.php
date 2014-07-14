@@ -64,13 +64,13 @@ class TestUserUnreadModel extends UnitTestCase {
 		
 		UnreadActivityModel::markUnreadForProjectMembers($activityId, $project);	
 		
-		$unreadModel = new UnreadActivityModel($userId1);
+		$unreadModel = new UnreadActivityModel($userId1, $project->id->asString());
 		$this->assertTrue($unreadModel->isUnread($activityId));
 		
-		$unreadModel = new UnreadActivityModel($userId2);
+		$unreadModel = new UnreadActivityModel($userId2, $project->id->asString());
 		$this->assertTrue($unreadModel->isUnread($activityId));
 		
-		$unreadModel = new UnreadActivityModel($userId3);
+		$unreadModel = new UnreadActivityModel($userId3, $project->id->asString());
 		$this->assertTrue($unreadModel->isUnread($activityId));
 	}
 	
@@ -82,12 +82,12 @@ class TestUserUnreadModel extends UnitTestCase {
 		$userId1 = $e->createUser('user1', 'user1', 'user1');
 		$activityId = ActivityCommands::addUserToProject($project, $userId1);
 		
-		$unreadModel = new UnreadActivityModel($userId1);
+		$unreadModel = new UnreadActivityModel($userId1, $project->id->asString());
 		$this->assertFalse($unreadModel->isUnread($activityId));
 		$unreadModel->markUnread($activityId);
 		$unreadModel->write();
 		
-		$otherUnreadModel = new UnreadActivityModel($userId1);
+		$otherUnreadModel = new UnreadActivityModel($userId1, $project->id->asString());
 		$this->assertTrue($otherUnreadModel->isUnread($activityId));
 	}
 	
@@ -99,12 +99,12 @@ class TestUserUnreadModel extends UnitTestCase {
 		$userId1 = $e->createUser('user1', 'user1', 'user1');
 		$activityId = ActivityCommands::addUserToProject($project, $userId1);
 		
-		$unreadModel = new UnreadActivityModel($userId1);
+		$unreadModel = new UnreadActivityModel($userId1, $project->id->asString());
 		$this->assertFalse($unreadModel->isUnread($activityId));
 		$unreadModel->markUnread($activityId);
 		$unreadModel->write();
 		
-		$otherUnreadModel = new UnreadActivityModel($userId1);
+		$otherUnreadModel = new UnreadActivityModel($userId1, $project->id->asString());
 		$otherUnreadModel->markRead($activityId);
 		$otherUnreadModel->write();
 		
@@ -123,12 +123,12 @@ class TestUserUnreadModel extends UnitTestCase {
 		$activityId1 = ActivityCommands::addUserToProject($project, $userId1);
 		$activityId2 = ActivityCommands::addUserToProject($project, $userId2);
 		
-		$unreadModel = new UnreadActivityModel($userId1);
+		$unreadModel = new UnreadActivityModel($userId1, $project->id->asString());
 		$unreadModel->markUnread($activityId1);
 		$unreadModel->markUnread($activityId2);
 		$unreadModel->write();
 		
-		$otherUnreadModel = new UnreadActivityModel($userId1);
+		$otherUnreadModel = new UnreadActivityModel($userId1, $project->id->asString());
 		$this->assertTrue($otherUnreadModel->isUnread($activityId1));
 		$this->assertTrue($otherUnreadModel->isUnread($activityId2));
 		$otherUnreadModel->markAllRead();
@@ -149,12 +149,12 @@ class TestUserUnreadModel extends UnitTestCase {
 		$activityId1 = ActivityCommands::addUserToProject($project, $userId1);
 		$activityId2 = ActivityCommands::addUserToProject($project, $userId2);
 		
-		$unreadModel = new UnreadActivityModel($userId1);
+		$unreadModel = new UnreadActivityModel($userId1, $project->id->asString());
 		$unreadModel->markUnread($activityId1);
 		$unreadModel->markUnread($activityId2);
 		$unreadModel->write();
 		
-		$otherUnreadModel = new UnreadActivityModel($userId1);
+		$otherUnreadModel = new UnreadActivityModel($userId1, $project->id->asString());
 		
 		$unreadItems = $otherUnreadModel->unreadItems();
 		$this->assertEqual(count($unreadItems), 2);
