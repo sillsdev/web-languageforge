@@ -29,6 +29,7 @@ use models\mapper\JsonEncoder;
 use models\mapper\MongoStore;
 use models\sms\SmsSettings;
 use models\AnswerModel;
+use models\PasswordModel;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
 use models\QuestionModel;
@@ -132,6 +133,21 @@ class UserCommands {
 	}
 	
 	/**
+	 * 
+	 * @param string $userId
+	 * @param string $newPassword
+	 * @throws \Exception
+	 */
+	public static function changePassword($userId, $newPassword, $currUserId) {
+		if ($userId != $currUserId && !RightsHelper::hasSiteRight($currUserId, Domain::USERS + Operation::EDIT)) {
+			throw new UserUnauthorizedException();
+		}
+		$user = new PasswordModel($userId);
+		$user->changePassword($newPassword);
+		$user->write();
+	}
+	
+	/**
 	 * @param string $username
 	 * @param string $email
 	 * @param Website $website
@@ -141,15 +157,19 @@ class UserCommands {
 	 * 				 $dto['emailIsEmpty'] true if account email is empty
 	 * 				 $dto['emailMatchesAccount'] true if email matches the account email
 	 */
-	static public function checkIdentity($username, $email = '', $website = null) {
+	public static function checkIdentity($username, $email = '', $website = null) {
 		CodeGuard::checkEmptyAndThrow($username, 'username');
 		$user = new UserModel();
 		$otherUser = new UserModel();
 		$dto = array();
 		$dto['usernameExists'] = $user->readByUserName($username);
 		$dto['usernameExistsOnThisSite'] = false;
-		if ($dto['usernameExists'] && $website) {
-			$dto['usernameExistsOnThisSite'] = $user->hasRoleOnSite($website);
+		$dto['allowSignupFromOtherSites'] = false;
+		if ($website) {
+			$dto['allowSignupFromOtherSites'] = $website->allowSignupFromOtherSites;
+			if ($dto['usernameExists']) {
+				$dto['usernameExistsOnThisSite'] = $user->hasRoleOnSite($website);
+			}
 		}
 		$dto['emailExists'] = false;
 		if ($email) {
@@ -164,18 +184,42 @@ class UserCommands {
 	}
 	
 	/**
-	 * 
-	 * @param string $userId
-	 * @param string $newPassword
-	 * @throws \Exception
+	 * Activate a user on the specified site and validate email
+	 * @param string $username
+	 * @param string $password
+	 * @param Website $website
+	 * @return string|boolean $userId|false otherwise
 	 */
-	public static function changePassword($userId, $newPassword, $currUserId) {
-		if ($userId != $currUserId && !RightsHelper::hasSiteRight($currUserId, Domain::USERS + Operation::EDIT)) {
-			throw new UserUnauthorizedException();
+	public static function activate($username, $password, $email, $website, IDelivery $delivery = null) {
+		CodeGuard::checkEmptyAndThrow($username, 'username');
+		CodeGuard::checkEmptyAndThrow($password, 'password');
+		CodeGuard::checkEmptyAndThrow($email, 'email');
+		CodeGuard::checkNullAndThrow($website, 'website');
+		if ($website->allowSignupFromOtherSites) {
+			$user = new PasswordModel();
+			if ($user->readByProperty('username', $username)) {
+				if ($user->verifyPassword($password)) {
+					$user = new UserModel($user->id->asString());
+					$user->emailPending = $email;
+					$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+					$userId = $user->write();
+			
+					// if website has a default project then add them to that project
+					$project = ProjectModel::getDefaultProject($website);
+					if ($project) {
+						$project->addUser($user->id->asString(), ProjectRoles::CONTRIBUTOR);
+						$user->addProject($project->id->asString());
+						$project->write();
+						$user->write();
+					}
+			
+					Communicate::sendSignup($user, $website, $delivery);
+			
+					return $userId;
+				}
+			}
 		}
-		$user = new \models\PasswordModel($userId);
-		$user->changePassword($newPassword);
-		$user->write();
+		return false;
 	}
 	
 	/**
@@ -195,7 +239,6 @@ class UserCommands {
 		$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
 		return $user->write();
 	}
-	
 
 	/**
 	 * Create a user with only username, add user to project if in context, creating user gets email of new user credentials

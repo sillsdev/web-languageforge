@@ -74,6 +74,7 @@ class TestUserCommands extends UnitTestCase {
 
 		$this->assertTrue($identityCheck['usernameExists']);
 		$this->assertTrue($identityCheck['usernameExistsOnThisSite']);
+		$this->assertTrue($identityCheck['allowSignupFromOtherSites']);
 		$this->assertFalse($identityCheck['emailExists']);
 		$this->assertTrue($identityCheck['emailIsEmpty']);
 		$this->assertFalse($identityCheck['emailMatchesAccount']);
