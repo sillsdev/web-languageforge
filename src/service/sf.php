@@ -183,6 +183,10 @@ class Sf
 		return UserCommands::checkIdentity($username, $email, $this->_website);
 	}
 	
+	public function user_activate($username, $password, $email) {
+		return UserCommands::activate($username, $password, $email, $this->_website);
+	}
+	
 	/**
 	 * Register a new user with password and optionally add them to a project if allowed by permissions
 	 * @param array $params
@@ -552,6 +556,7 @@ class Sf
 	private static function isAnonymousMethod($methodName) {
 		$methods = array(
 				'identity_check',
+				'user_activate',
 				'user_register',
 				'get_captcha_src',
 				'user_readForRegistration',
