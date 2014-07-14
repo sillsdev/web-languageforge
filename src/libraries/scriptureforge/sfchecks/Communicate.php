@@ -195,7 +195,8 @@ class Communicate
 		$userModel->setValidation(7);
 		$userModel->write();
 
-		$from = array(SF_DEFAULT_EMAIL => $website->name);
+		$senderEmail = 'no-reply@' . $website->domain;
+		$from = array($senderEmail => $website->name);
 		$subject = $website->name . ' account signup validation';
 		
 		$vars = array(
@@ -231,7 +232,8 @@ class Communicate
 		$toUserModel->setValidation(7);
 		$toUserModel->write();
 
-		$from = array(SF_DEFAULT_EMAIL => $website->name);
+		$senderEmail = 'no-reply@' . $website->domain;
+		$from = array($senderEmail => $website->name);
 		$subject = $website->name . ' account signup validation';
 		
 		$vars = array(
@@ -280,7 +282,8 @@ class Communicate
 		$t = CommunicateHelper::templateFromFile($templateFile);
 		$html = $t->render($vars);
 
-		$from = array(SF_DEFAULT_EMAIL => $website->name);
+		$senderEmail = 'no-reply@' . $website->domain;
+		$from = array($senderEmail => $website->name);
 		$subject = $website->name . ' new user login for project ' . $project->projectName;
 	
 		CommunicateHelper::deliverEmail(

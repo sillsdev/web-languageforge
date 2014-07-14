@@ -322,7 +322,9 @@ class TestUserCommands extends UnitTestCase {
 	
 		// What's in the delivery?
 		$toUser = new UserModel($toUserId);
-		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
+		
+		$senderEmail = 'no-reply@' . $e->website->domain;
+		$expectedFrom = array($senderEmail => $e->website->name);
 		$expectedTo = array($toUser->emailPending => $toUser->name);
 		$this->assertEqual($expectedFrom, $delivery->from);
 		$this->assertEqual($expectedTo, $delivery->to);
