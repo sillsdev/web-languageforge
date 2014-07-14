@@ -16,4 +16,9 @@
             <div ng-hide="notice.details" ng-bind-html="notice.message"></div>
         </alert>
     </div>
+    <div class="alert" style="padding:0; display:flex; min-height: 50px; " ng-show="isLoading()">
+        <div style="margin:auto">
+            <img src="/images/shared/loading-small.gif" style="margin-right:10px" /> <b>Please wait.  {{getLoadingMessage()}}</b>
+        </div>
+    </div>
 </div>
