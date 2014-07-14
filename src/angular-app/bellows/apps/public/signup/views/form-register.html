@@ -1,10 +1,6 @@
 <fieldset>
 	<div align="center">
 		<ul class="inline" id="progress-indicator">
-			<li><a data-ui-sref="form.identify">
-				<i class="icon-check-sign"></i>
-				{{'Identify' | translate}}</a></li>
-			<li>&gt;</li>
 			<li><i class="icon-check-empty"></i>
 				<span>{{'Register' | translate}}</span></li>
 			<li>&gt;</li>
@@ -126,7 +122,10 @@
 		</div>
 	</div>
 	<div align="center">
-		<button class="btn btn-primary" type="submit" id="submit" 
+		<a class="btn pull-left" data-ui-sref="form.identify">
+			<i class="icon-circle-arrow-left"></i>
+			{{'Back' | translate}}</a>
+		<button class="btn btn-primary" type="submit" id="submit"
 			data-ng-disabled="submissionInProgress || signupForm.$invalid || (!showPassword && record.password != confirmPassword) || record.password.length < 7">
 			{{'Sign Up' | translate}} <i style="margin-left: 5px" class="icon-thumbs-up"></i>
 		</button>
