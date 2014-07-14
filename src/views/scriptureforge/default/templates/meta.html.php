@@ -1,6 +1,6 @@
 		<meta charset="utf-8" />
 		<!--  <meta name="viewport" content="width=device-width" />-->
-		<title>Scripture Forge</title>
+		<title><?php echo $controller->website->name; ?></title>
 		
 		<link rel="stylesheet" href="/css/shared/bootstrap.css" />
 		<link rel="stylesheet" href="/css/shared/jquery-te-1.4.0.css" />

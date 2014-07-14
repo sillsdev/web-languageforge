@@ -111,7 +111,81 @@ class TestActivityDto extends UnitTestCase {
 		
 		$e->clean();
 	}
-	
+	function testGetActivityForUser_TwoProjectsTwoDomains_DtoHasOneProject() {
+		$e = new MongoTestEnvironment('www.scriptureforge.org');
+		$e->clean();
+		
+        $project1 = $e->createProject(SF_TESTPROJECTCODE, SF_TESTPROJECTCODE);
+        $project2 = $e->createProject(SF_TESTPROJECTCODE2, SF_TESTPROJECTCODE2);
+		$project2->siteName = 'www.languageforge.org';
+		$project2->write();
+		
+		$userId = $e->createUser('joe', 'joe', 'joe');
+		
+		$user = new UserModel($userId);
+		$user->addProject($project1->id->asString());
+		$user->addProject($project2->id->asString());
+		$project1->addUser($userId, ProjectRoles::CONTRIBUTOR);
+		$project2->addUser($userId, ProjectRoles::CONTRIBUTOR);
+		$user->write();
+		$project1->write();
+		$project2->write();
+		
+		$text = new TextModel($project1);
+		$text->title = "Text 1";
+		$text->content = "text content";
+		$textId = $text->write();
+		$a1 = ActivityCommands::addText($project1, $textId, $text);
+		
+		$text = new TextModel($project2);
+		$text->title = "Text 2";
+		$text->content = "text content";
+		$textId = $text->write();
+		$a2 = ActivityCommands::addText($project2, $textId, $text);
+		
+		$dto = ActivityListDto::getActivityForUser($project1->siteName, $userId);
+		
+		$this->assertTrue(array_key_exists($a1, $dto['activity']));
+		$this->assertFalse(array_key_exists($a2, $dto['activity']));
+	}
+
+    function testGetActivityForUser_TwoProjectsTwoDomains_UnreadHasOneProject() {
+        $e = new MongoTestEnvironment('www.scriptureforge.org');
+        $e->clean();
+
+        $project1 = $e->createProject(SF_TESTPROJECTCODE, SF_TESTPROJECTCODE);
+        $project2 = $e->createProject(SF_TESTPROJECTCODE2, SF_TESTPROJECTCODE2);
+        $project2->siteName = 'www.languageforge.org';
+        $project2->write();
+
+        $userId = $e->createUser('joe', 'joe', 'joe');
+
+        $user = new UserModel($userId);
+        $user->addProject($project1->id->asString());
+        $user->addProject($project2->id->asString());
+        $project1->addUser($userId, ProjectRoles::CONTRIBUTOR);
+        $project2->addUser($userId, ProjectRoles::CONTRIBUTOR);
+        $user->write();
+        $project1->write();
+        $project2->write();
+
+        $text = new TextModel($project1);
+        $text->title = "Text 1";
+        $text->content = "text content";
+        $textId = $text->write();
+        $a1 = ActivityCommands::addText($project1, $textId, $text);
+
+        $text = new TextModel($project2);
+        $text->title = "Text 2";
+        $text->content = "text content";
+        $textId = $text->write();
+        $a2 = ActivityCommands::addText($project2, $textId, $text);
+
+        $dto = ActivityListDto::getActivityForUser($project1->siteName, $userId);
+
+        $this->assertEqual(count($dto['unread']), 1);
+    }
+
 	function testGetActivityForProject_ProjectWithTextQuestionAnswerAndComments_DtoAsExpected() {
 		$e = new MongoTestEnvironment();
 		$e->clean();

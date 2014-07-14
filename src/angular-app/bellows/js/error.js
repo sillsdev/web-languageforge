@@ -6,7 +6,7 @@ angular.module('sf.error', ['palaso.ui.notice'])
 
 		this.error = function(title, message) {
 			$log.error('Error: ' + title + ' - ' + message);
-			var errorMessage = '<b>Oh. Error.</b><br /><b>' + title + "</b>";
+			var errorMessage = '<b>Oh. ' + title + "</b>";
 			noticeService.push(noticeService.ERROR, errorMessage, message);
 		};
 	}])

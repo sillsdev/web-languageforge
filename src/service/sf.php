@@ -240,7 +240,7 @@ class Sf
 	}
 	
 	public function project_archivedList() {
-		return ProjectListDto::encode($this->_userId, $this->_website->domain, true);
+		return ProjectListDto::encode($this->_userId, $this->_website, true);
 	}
 	
 	/**
@@ -320,6 +320,7 @@ class Sf
 		return ProjectCommands::updateUserRole($this->_projectId, $userId, $role);
 	}
 
+	
 	// REVIEW: should this be part of the general project API ?
 	public function project_removeUsers($userIds) {
 		return ProjectCommands::removeUsers($this->_projectId, $userIds);
