@@ -8,6 +8,7 @@ use libraries\scriptureforge\sfchecks\IDelivery;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\shared\palaso\CodeGuard;
 use libraries\shared\palaso\JsonRpcServer;
+use libraries\shared\AuthHelper;
 use libraries\shared\Website;
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\ActivityListDto;
@@ -175,24 +176,30 @@ class UserCommands {
 	}
 	
 	/**
-	 * Activate a user on the specified site and validate email
+	 * Activate a user on the specified site and validate email if it was empty, otherwise login
 	 * @param string $username
 	 * @param string $password
 	 * @param Website $website
+	 * @param CodeIgniterController $controller
+	 * @param IDelivery $delivery
 	 * @return string|boolean $userId|false otherwise
 	 */
-	public static function activate($username, $password, $email, $website, IDelivery $delivery = null) {
+	public static function activate($username, $password, $email, $website, $controller, IDelivery $delivery = null) {
 		CodeGuard::checkEmptyAndThrow($username, 'username');
 		CodeGuard::checkEmptyAndThrow($password, 'password');
-		CodeGuard::checkEmptyAndThrow($email, 'email');
 		CodeGuard::checkNullAndThrow($website, 'website');
-		if ($website->allowSignupFromOtherSites) {
+		$identityCheck = self::checkIdentity($username, $email, $website);
+		if ($website->allowSignupFromOtherSites && 
+				$identityCheck->usernameExists && ! $identityCheck->usernameExistsOnThisSite && 
+				($identityCheck->emailIsEmpty || $identityCheck->emailMatchesAccount)) {
 			$user = new PasswordModel();
 			if ($user->readByProperty('username', $username)) {
 				if ($user->verifyPassword($password)) {
 					$user = new UserModel($user->id->asString());
-					$user->emailPending = $email;
 					$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+					if ($identityCheck->emailIsEmpty) {
+						$user->emailPending = $email;
+					}
 					$userId = $user->write();
 			
 					// if website has a default project then add them to that project
@@ -204,7 +211,14 @@ class UserCommands {
 						$user->write();
 					}
 			
-					Communicate::sendSignup($user, $website, $delivery);
+					if ($identityCheck->emailIsEmpty) {
+						Communicate::sendSignup($user, $website, $delivery);
+					}
+					if ($identityCheck->emailMatchesAccount) {
+						$controller->load->library('ion_auth');
+						$auth = new AuthHelper($controller->ion_auth, $controller->session);
+						$auth->login($username, $password);
+					}
 			
 					return $userId;
 				}

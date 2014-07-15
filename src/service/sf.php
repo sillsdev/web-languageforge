@@ -185,7 +185,7 @@ class Sf
 	}
 	
 	public function user_activate($username, $password, $email) {
-		return UserCommands::activate($username, $password, $email, $this->_website);
+		return UserCommands::activate($username, $password, $email, $this->_website, $this->_controller);
 	}
 	
 	/**
