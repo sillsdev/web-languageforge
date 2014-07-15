@@ -85,9 +85,11 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 					if ($scope.usernameOk && ! $scope.emailExists) {
 						$state.go('form.register');
 						$scope.getCaptchaSrc();
-					} else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite && $scope.emailIsEmpty && $scope.allowSignupFromOtherSites) {
+					} else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite && 
+					    $scope.allowSignupFromOtherSites && $scope.emailIsEmpty) {
 						$state.go('form.activate');
-					} else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite && ! $scope.emailIsEmpty && $scope.emailMatchesAccount && $scope.allowSignupFromOtherSites) {
+					} else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite && 
+					    $scope.allowSignupFromOtherSites && $scope.emailMatchesAccount) {
 						$state.go('form.login');
 					} else {
 						// error messages
@@ -111,8 +113,8 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 				});
 				break;
 			case 'form.login':
-				loginActivateUser(function() {
-					;	// go to /app/lexicon
+				activateUser(function() {
+					console.log('activate and login');
 				});
 				break;
 			default:
@@ -170,7 +172,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 					$scope.usernameExists = result.data.usernameExists;
 					$scope.usernameOk = ! $scope.usernameExists;
 					$scope.usernameExistsOnThisSite = result.data.usernameExistsOnThisSite;
-					$scope.usernameExistsOnThisSite = result.data.usernameExistsOnThisSite;
+					$scope.allowSignupFromOtherSites = result.data.allowSignupFromOtherSites;
 					$scope.emailExists = result.data.emailExists;
 					$scope.emailIsEmpty = result.data.emailIsEmpty;
 					$scope.emailMatchesAccount = result.data.emailMatchesAccount;
