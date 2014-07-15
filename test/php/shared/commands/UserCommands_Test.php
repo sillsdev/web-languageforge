@@ -64,6 +64,17 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($userId, $newUserId);
 	}
 	
+	function testCheckIdentity_userDoesNotExistNoEmail_defaults() {
+		$identityCheck = UserCommands::checkIdentity('', '', null);
+		
+		$this->assertFalse($identityCheck->usernameExists);
+		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertFalse($identityCheck->allowSignupFromOtherSites);
+		$this->assertFalse($identityCheck->emailExists);
+		$this->assertTrue($identityCheck->emailIsEmpty);
+		$this->assertFalse($identityCheck->emailMatchesAccount);
+	}
+	
 	function testCheckIdentity_userExistsNoEmail_UsernameExistsEmailEmpty() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
@@ -71,13 +82,13 @@ class TestUserCommands extends UnitTestCase {
 		$e->createUser('jsmith', 'joe smith','');
 
 		$identityCheck = UserCommands::checkIdentity('jsmith', '', $e->website);
-
-		$this->assertTrue($identityCheck['usernameExists']);
-		$this->assertTrue($identityCheck['usernameExistsOnThisSite']);
-		$this->assertTrue($identityCheck['allowSignupFromOtherSites']);
-		$this->assertFalse($identityCheck['emailExists']);
-		$this->assertTrue($identityCheck['emailIsEmpty']);
-		$this->assertFalse($identityCheck['emailMatchesAccount']);
+		
+		$this->assertTrue($identityCheck->usernameExists);
+		$this->assertTrue($identityCheck->usernameExistsOnThisSite);
+		$this->assertTrue($identityCheck->allowSignupFromOtherSites);
+		$this->assertFalse($identityCheck->emailExists);
+		$this->assertTrue($identityCheck->emailIsEmpty);
+		$this->assertFalse($identityCheck->emailMatchesAccount);
 	}
 	
 	function testCheckIdentity_userExistsWithEmail_UsernameExistsEmailMatches() {
@@ -88,11 +99,11 @@ class TestUserCommands extends UnitTestCase {
 
 		$identityCheck = UserCommands::checkIdentity('jsmith', 'joe@smith.com', null);
 
-		$this->assertTrue($identityCheck['usernameExists']);
-		$this->assertFalse($identityCheck['usernameExistsOnThisSite']);
-		$this->assertTrue($identityCheck['emailExists']);
-		$this->assertFalse($identityCheck['emailIsEmpty']);
-		$this->assertTrue($identityCheck['emailMatchesAccount']);
+		$this->assertTrue($identityCheck->usernameExists);
+		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertTrue($identityCheck->emailExists);
+		$this->assertFalse($identityCheck->emailIsEmpty);
+		$this->assertTrue($identityCheck->emailMatchesAccount);
 	}
 	
 	function testCheckIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatch() {
@@ -106,11 +117,11 @@ class TestUserCommands extends UnitTestCase {
 		
 		$identityCheck = UserCommands::checkIdentity('jsmith', 'zed@example.com', $originalWebsite);
 
-		$this->assertTrue($identityCheck['usernameExists']);
-		$this->assertFalse($identityCheck['usernameExistsOnThisSite']);
-		$this->assertTrue($identityCheck['emailExists']);
-		$this->assertFalse($identityCheck['emailIsEmpty']);
-		$this->assertFalse($identityCheck['emailMatchesAccount']);
+		$this->assertTrue($identityCheck->usernameExists);
+		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertTrue($identityCheck->emailExists);
+		$this->assertFalse($identityCheck->emailIsEmpty);
+		$this->assertFalse($identityCheck->emailMatchesAccount);
 	}
 	
 	function testCheckIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatchEmpty() {
@@ -121,11 +132,11 @@ class TestUserCommands extends UnitTestCase {
 
 		$identityCheck = UserCommands::checkIdentity('jsmith', '', $e->website);
 
-		$this->assertTrue($identityCheck['usernameExists']);
-		$this->assertTrue($identityCheck['usernameExistsOnThisSite']);
-		$this->assertFalse($identityCheck['emailExists']);
-		$this->assertFalse($identityCheck['emailIsEmpty']);
-		$this->assertFalse($identityCheck['emailMatchesAccount']);
+		$this->assertTrue($identityCheck->usernameExists);
+		$this->assertTrue($identityCheck->usernameExistsOnThisSite);
+		$this->assertFalse($identityCheck->emailExists);
+		$this->assertFalse($identityCheck->emailIsEmpty);
+		$this->assertFalse($identityCheck->emailMatchesAccount);
 	}
 	
 	function testCheckIdentity_doesNotExist_UsernameDoesNotExist() {
@@ -136,11 +147,11 @@ class TestUserCommands extends UnitTestCase {
 
 		$identityCheck = UserCommands::checkIdentity('zedUser', 'zed@example.com', $e->website);
 				
-		$this->assertFalse($identityCheck['usernameExists']);
-		$this->assertFalse($identityCheck['usernameExistsOnThisSite']);
-		$this->assertFalse($identityCheck['emailExists']);
-		$this->assertTrue($identityCheck['emailIsEmpty']);
-		$this->assertFalse($identityCheck['emailMatchesAccount']);
+		$this->assertFalse($identityCheck->usernameExists);
+		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertFalse($identityCheck->emailExists);
+		$this->assertTrue($identityCheck->emailIsEmpty);
+		$this->assertFalse($identityCheck->emailMatchesAccount);
 	}
 	
 	function testCreateSimple_CreateUser_PasswordAndJoinProject() {
