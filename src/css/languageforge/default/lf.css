@@ -246,27 +246,34 @@ div.sub-promotion img {
 	padding-right: 20px;
 }
 
+div#footerContainer {
+    height:192px;
+    position:relative;
+}
+
 div#footer {
 	position: relative;
 	width: 100%;
 	height: auto;
-	margin-top: 40px;
+	margin-top: 87px;
 	padding: 40px 0 40px 0;
 	background-color: #104060;
 	/* background: #104060 url(/images/languageforge/default/sf_sprite.png) no-repeat center -139px; */
 	color: #fff;
 }
 
-div#footer, div#footer a {
-	color: #f4f4f6;
+#maincontainer {
+    min-height: 100%;
+    margin-bottom: 118px;
+    position: relative;
+
+}
+.clearfooter {
+    clear: both;
 }
 
-div#footerBaseline {
-	position: relative;
-	width: 100%;
-	height: 26px;
-	padding-top: 14px;
-	background-color: #104060;
+div#footer, div#footer a {
+	color: #f4f4f6;
 }
 
 div.footer-nav {
@@ -438,6 +445,7 @@ input.error, textarea.error {
 	width: auto;
 	height: auto;
 	padding: 0.3em 1.2em 0.4em 1.2em;
+    margin-top: -2px;
 	color: #eee;
 	font-size: 1.0em;
 	font-weight: bold;
