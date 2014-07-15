@@ -151,36 +151,27 @@ class UserCommands {
 	 * @param string $username
 	 * @param string $email
 	 * @param Website $website
-	 * @return array $dto['usernameExists'] true if the username exists, false otherwise
-	 * 				 $dto['usernameExistsOnThisSite'] true if username exists on the supplied website
-	 * 				 $dto['emailExists'] true if email exists
-	 * 				 $dto['emailIsEmpty'] true if account email is empty
-	 * 				 $dto['emailMatchesAccount'] true if email matches the account email
+	 * @return IdentityCheck
 	 */
 	public static function checkIdentity($username, $email = '', $website = null) {
-		CodeGuard::checkEmptyAndThrow($username, 'username');
+		$identityCheck = new IdentityCheck();
 		$user = new UserModel();
-		$otherUser = new UserModel();
-		$dto = array();
-		$dto['usernameExists'] = $user->readByUserName($username);
-		$dto['usernameExistsOnThisSite'] = false;
-		$dto['allowSignupFromOtherSites'] = false;
+		$emailUser = new UserModel();
+		$identityCheck->usernameExists = $user->readByUserName($username);
 		if ($website) {
-			$dto['allowSignupFromOtherSites'] = $website->allowSignupFromOtherSites;
-			if ($dto['usernameExists']) {
-				$dto['usernameExistsOnThisSite'] = $user->hasRoleOnSite($website);
+			$identityCheck->allowSignupFromOtherSites = $website->allowSignupFromOtherSites;
+			if ($identityCheck->usernameExists) {
+				$identityCheck->usernameExistsOnThisSite = $user->hasRoleOnSite($website);
 			}
 		}
-		$dto['emailExists'] = false;
 		if ($email) {
-			$dto['emailExists'] = $otherUser->readByProperty('email', $email);
+			$identityCheck->emailExists = $emailUser->readByProperty('email', $email);
 		}
-		$dto['emailIsEmpty'] = empty($user->email);
-		$dto['emailMatchesAccount'] = false;
-		if (! $dto['emailIsEmpty']  && ! empty($email)) {
-			$dto['emailMatchesAccount'] = ($user->email === $email);
+		$identityCheck->emailIsEmpty = empty($user->email);
+		if (! $identityCheck->emailIsEmpty  && ! empty($email)) {
+			$identityCheck->emailMatchesAccount = ($user->email === $email);
 		}
-		return $dto;
+		return $identityCheck;
 	}
 	
 	/**
@@ -232,7 +223,7 @@ class UserCommands {
 		$user = new \models\UserModelWithPassword();
 		JsonDecoder::decode($user, $params);
 		$identityCheck = self::checkIdentity($user->username);
-		if ($identityCheck['usernameExists']) {
+		if ($identityCheck->usernameExists) {
 			return false;
 		}
 		$user->setPassword($params['password']);
@@ -293,7 +284,7 @@ class UserCommands {
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
 		$identityCheck = self::checkIdentity($user->username);
-		if ($identityCheck['usernameExists']) {
+		if ($identityCheck->usernameExists) {
 			return false;
 		}
 		$user->active = false;
@@ -402,4 +393,47 @@ class UserCommands {
     }
 }
 
+class IdentityCheck {
+
+	public function __construct() {
+		$this->usernameExists = false;
+		$this->usernameExistsOnThisSite = false;
+		$this->allowSignupFromOtherSites = false;
+		$this->emailExists = false;
+		$this->emailIsEmpty = true;
+		$this->emailMatchesAccount = false;
+	}
+	
+	/**
+	 * @var bool true if the username exists, false otherwise
+	 */
+	public $usernameExists;
+	
+		/**
+	 * @var bool true if username exists on the supplied website
+	 */
+	public $usernameExistsOnThisSite;
+	
+	/**
+	 * @var bool true if the supplied website allows signup from other sites
+	 */
+	public $allowSignupFromOtherSites;
+	
+	/**
+	 * @var bool true if account email exists
+	 */
+	public $emailExists;
+	
+	/**
+	 * @var bool true if account email is empty
+	 */
+	public $emailIsEmpty;
+	
+	/**
+	 * @var bool true if email matches the account email
+	 */
+	public $emailMatchesAccount;
+	
+}
+	
 ?>
