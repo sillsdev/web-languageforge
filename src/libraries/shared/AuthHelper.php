@@ -54,35 +54,45 @@ class AuthHelper {
 				$referer = $this->_session->userdata('referer_url');
 				if ($referer && strpos($referer, "/app") !== false) {
 					$this->_session->unset_userdata('referer_url');
-					// static::redirect($website, $referer, 'location');
-					return array('status' => self::LOGIN_SUCCESS, 'redirect' => $referer);
+					return static::result(self::LOGIN_SUCCESS, $referer, 'location');
 				} else if ($projectId) {
 					$project = ProjectModel::getById($projectId);
 					$url = "/app/" . $project->appName . "/$projectId";
-					// static::redirect($website, $url, 'location');
-					return array('status' => self::LOGIN_SUCCESS, 'redirect' => $website->baseUrl() . $url);
+					return static::result(self::LOGIN_SUCCESS, $website->baseUrl() . $url, 'location');
 				} else {
-					// static::redirect($website, '/', 'location');
-					return array('status' => self::LOGIN_SUCCESS, 'redirect' => $website->baseUrl() . '/');
+					return static::result(self::LOGIN_SUCCESS, $website->baseUrl() . '/', 'location');
 				}
 			} else {
 				//log out with error msg
 				$logout = $this->_ion_auth->logout();
 				$this->_session->set_flashdata('message', 'You are not authorized to use this site');
-				// static::redirect($website, '/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
-				return array('status' => self::LOGIN_FAIL_USER_UNAUTHORIZED, 'redirect' => $website->baseUrl() . '/auth/login');
+				return static::result(self::LOGIN_FAIL_USER_UNAUTHORIZED, '/auth/login', 'refresh');
 			}
 		} else {
 			//if the login was un-successful
 			//redirect them back to the login page
 			$this->_session->set_flashdata('message', $this->_ion_auth->errors());
-			// static::redirect($website, '/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
-			return array('status' => self::LOGIN_FAIL, 'redirect' => $website->baseUrl() . '/auth/login');
+			return static::result(self::LOGIN_FAIL, '/auth/login', 'refresh');
 		}
 	}
 	
 	public function logout() {
 		$this->_ion_auth->logout();
+	}
+	
+	/**
+	 * @param string $status
+	 * @param string $uri
+	 * @param string $method
+	 */
+	public static function result($status, $uri, $method = 'location') {
+		return array(
+			'status' => $status, 
+			'redirect' => array( 
+				'url' => $uri,
+				'method' => $method
+			)
+		);
 	}
 	
 }
