@@ -122,6 +122,9 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertTrue($identityCheck->emailExists);
 		$this->assertFalse($identityCheck->emailIsEmpty);
 		$this->assertFalse($identityCheck->emailMatchesAccount);
+		
+		// cleanup so following tests are OK
+		$e->website->domain = $originalWebsite->domain;
 	}
 	
 	function testCheckIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatchEmpty() {

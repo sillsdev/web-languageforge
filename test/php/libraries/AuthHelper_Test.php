@@ -80,7 +80,8 @@ class TestAuthHelper extends UnitTestCase {
 		$username = 'testUsername';
 		$password = 'testPassword';
 		$userId = $e->createUser($username, 'test user','test@example.com');
- 		$e->website->domain = 'default.local';
+		$originalWebsite = clone $e->website;
+		$e->website->domain = 'default.local';
 		
 		$controller = new MockAuthController();
 		$controller->session->set_userdata('user_id', $userId);
@@ -89,6 +90,9 @@ class TestAuthHelper extends UnitTestCase {
 		$result = $auth->login($e->website, $username, $password);
 		
 		$this->assertEqual($result['status'], AuthHelper::LOGIN_FAIL_USER_UNAUTHORIZED);
+
+		// cleanup so following tests are OK
+		$e->website->domain = $originalWebsite->domain;
 	}
 	
 	function testLogin_Password_Success() {
