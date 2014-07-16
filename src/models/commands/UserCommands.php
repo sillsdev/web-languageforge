@@ -223,7 +223,7 @@ class UserCommands {
 						return $auth->login($website, $username, $password);
 					}
 					
-					return array('userId' => $userId);
+					return AuthHelper::result(AuthHelper::LOGIN_SUCCESS, '', '');
 				}
 			}
 		}
