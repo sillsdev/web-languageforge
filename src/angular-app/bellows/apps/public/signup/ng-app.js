@@ -62,8 +62,8 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
     });
     $translateProvider.preferredLanguage('en');
   }])
-  .controller('SignupCtrl', ['$scope', '$state', 'userService', 'sessionService', 'silNoticeService',  
-                             function($scope, $state, userService, sessionService, notice) {
+  .controller('SignupCtrl', ['$scope', '$state', '$location', '$window', 'userService', 'sessionService', 'silNoticeService',  
+                             function($scope, $state, $location, $window, userService, sessionService, notice) {
     $scope.showPassword = false;
     $scope.record = {};
     $scope.record.id = '';
@@ -110,13 +110,15 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
           });
           break;
         case 'form.activate':
-          activateUser(function() {
+          activateUser(function(redirect) {
             $state.go('validate');
           });
           break;
         case 'form.login':
-          activateUser(function() {
-            console.log('activate and login');
+          activateUser(function(redirect) {
+//            console.log('activate and login, redirect from: ' + $location.absUrl() + ' to: ' + redirect);
+            $window.location.href = redirect;
+//            $location.absUrl(redirect).replace(); // couldn't make this work
           });
           break;
         default:
@@ -149,7 +151,11 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
             notice.push(notice.ERROR, "Login failed.<br /><br />If this is NOT your account, click <b>Back</b> to create a different account.");
           } else {
             $scope.submissionComplete = true;
-            (successCallback || angular.noop)();
+            if (result.data.status = 'loginSuccess') {
+              (successCallback || angular.noop)(result.data.redirect);
+            } else {
+              notice.push(notice.ERROR, "Login failed.<br /><br />If this is NOT your account, click <b>Back</b> to create a different account.");
+            }
           }
         }
       });

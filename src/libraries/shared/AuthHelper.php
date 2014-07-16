@@ -11,7 +11,7 @@ use models\languageforge\lexicon\Example;
 
 class AuthHelper {
 	
-	// return results
+	// return status
 	const LOGIN_FAIL = 'loginFail';
 	const LOGIN_FAIL_USER_UNAUTHORIZED = 'loginFailUserUnauthorized';
 	const LOGIN_SUCCESS = 'loginSuccess';
@@ -54,56 +54,35 @@ class AuthHelper {
 				$referer = $this->_session->userdata('referer_url');
 				if ($referer && strpos($referer, "/app") !== false) {
 					$this->_session->unset_userdata('referer_url');
-					static::redirect($website, $referer, 'location');
+					// static::redirect($website, $referer, 'location');
+					return array('status' => self::LOGIN_SUCCESS, 'redirect' => $referer);
 				} else if ($projectId) {
 					$project = ProjectModel::getById($projectId);
 					$url = "/app/" . $project->appName . "/$projectId";
-					static::redirect($website, $url, 'location');
+					// static::redirect($website, $url, 'location');
+					return array('status' => self::LOGIN_SUCCESS, 'redirect' => $website->baseUrl() . $url);
 				} else {
-					static::redirect($website, '/', 'location');
+					// static::redirect($website, '/', 'location');
+					return array('status' => self::LOGIN_SUCCESS, 'redirect' => $website->baseUrl() . '/');
 				}
-				return self::LOGIN_SUCCESS;
 			} else {
 				//log out with error msg
 				$logout = $this->_ion_auth->logout();
 				$this->_session->set_flashdata('message', 'You are not authorized to use this site');
-				static::redirect($website, '/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
-				return self::LOGIN_FAIL_USER_UNAUTHORIZED;
+				// static::redirect($website, '/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+				return array('status' => self::LOGIN_FAIL_USER_UNAUTHORIZED, 'redirect' => $website->baseUrl() . '/auth/login');
 			}
 		} else {
 			//if the login was un-successful
 			//redirect them back to the login page
 			$this->_session->set_flashdata('message', $this->_ion_auth->errors());
-			static::redirect($website, '/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
-			return self::LOGIN_FAIL;
+			// static::redirect($website, '/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+			return array('status' => self::LOGIN_FAIL, 'redirect' => $website->baseUrl() . '/auth/login');
 		}
 	}
 	
 	public function logout() {
 		$this->_ion_auth->logout();
-	}
-	
-	/**
-	 * @param Website $website
-	 * @param string $uri
-	 * @param string $method
-	 * @param number $http_response_code
-	 */
-	public static function redirect($website, $uri = '', $method = 'location', $http_response_code = 302) {
-		if ( ! preg_match('#^https?://#i', $uri)) {
-// 			$uri = site_url($uri);
-			$uri = $website->baseUrl();
-		}
-	
-		switch($method) {
-			case 'refresh': 
-				header("Refresh:0;url=".$uri);
-				break;
-			default: 
-				header("Location: ".$uri, true, $http_response_code);
-				break;
-		}
-// 		exit;
 	}
 	
 }
