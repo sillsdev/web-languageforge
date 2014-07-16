@@ -2,30 +2,48 @@
 
 namespace libraries\shared;
 
-class AuthHelper {
+use libraries\shared\Website;
+use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
+use models\ProjectModel;
+use models\UserModel;
+use models\languageforge\lexicon\Example;
 
-	private $_auth;
+class AuthHelper {
+	
+	// return results
+	const LOGIN_FAIL = 'loginFail';
+	const LOGIN_FAIL_USER_UNAUTHORIZED = 'loginFailUserUnauthorized';
+	const LOGIN_SUCCESS = 'loginSuccess';
+	
+	private $_ion_auth;
 	
 	private $_session;
 	
-	public function __construct($ionAuth, $session) {
-		$this->_auth = $ionAuth;
+	public function __construct($ion_auth, $session) {
+		$this->_ion_auth = $ion_auth;
 		$this->_session = $session;
 	}
 	
-	public function login($identity, $password, $remember = false) {
-		if ($this->_auth->login($identity, $password, $remember)) {
+	/**
+	 * 
+	 * @param string $identity
+	 * @param string $password
+	 * @param Website $website
+	 * @param bool $remember
+	 */
+	public function login($website, $identity, $password, $remember = false) {
+		if ($this->_ion_auth->login($identity, $password, $remember)) {
 			
 			// successful login
-			$this->_session->set_flashdata('message', $this->_auth->messages());
+			$this->_session->set_flashdata('message', $this->_ion_auth->messages());
 		
-			$website = Website::get();
-			$user = new \models\UserModel((string)$this->_session->userdata('user_id'));
-		
+			$user = new UserModel((string)$this->_session->userdata('user_id'));
+			
 			// Validate user is admin or has a role on the site.  Otherwise, redirect to logout
-			if ( ($user->role == SystemRoles::SYSTEM_ADMIN) ||
-			($user->siteRole->offsetExists($website->domain) &&
-					($user->siteRole[$website->domain] != SiteRoles::NONE)) ) {
+			if (($user->role == SystemRoles::SYSTEM_ADMIN) ||
+					($user->siteRole->offsetExists($website->domain) &&
+					($user->siteRole[$website->domain] != SiteRoles::NONE))) {
 				// set the project context to user's default project
 				$projectId = $user->getDefaultProjectId($website->domain);
 					
@@ -36,32 +54,56 @@ class AuthHelper {
 				$referer = $this->_session->userdata('referer_url');
 				if ($referer && strpos($referer, "/app") !== false) {
 					$this->_session->unset_userdata('referer_url');
-					redirect($referer, 'location');
+					static::redirect($website, $referer, 'location');
 				} else if ($projectId) {
 					$project = ProjectModel::getById($projectId);
 					$url = "/app/" . $project->appName . "/$projectId";
-					redirect($url, 'location');
+					static::redirect($website, $url, 'location');
 				} else {
-					redirect('/', 'location');
+					static::redirect($website, '/', 'location');
 				}
+				return self::LOGIN_SUCCESS;
 			} else {
 				//log out with error msg
-				// TODO: refactor this to handle cross-site logins
-				$logout = $this->_auth->logout();
+				$logout = $this->_ion_auth->logout();
 				$this->_session->set_flashdata('message', 'You are not authorized to use this site');
-				redirect('/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+				static::redirect($website, '/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+				return self::LOGIN_FAIL_USER_UNAUTHORIZED;
 			}
 		} else {
 			//if the login was un-successful
 			//redirect them back to the login page
-			$this->_session->set_flashdata('message', $this->_auth->errors());
-			redirect('/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+			$this->_session->set_flashdata('message', $this->_ion_auth->errors());
+			static::redirect($website, '/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+			return self::LOGIN_FAIL;
 		}
-		
 	}
 	
 	public function logout() {
-		$this->_auth->logout();
+		$this->_ion_auth->logout();
+	}
+	
+	/**
+	 * @param Website $website
+	 * @param string $uri
+	 * @param string $method
+	 * @param number $http_response_code
+	 */
+	public static function redirect($website, $uri = '', $method = 'location', $http_response_code = 302) {
+		if ( ! preg_match('#^https?://#i', $uri)) {
+// 			$uri = site_url($uri);
+			$uri = $website->baseUrl();
+		}
+	
+		switch($method) {
+			case 'refresh': 
+				header("Refresh:0;url=".$uri);
+				break;
+			default: 
+				header("Location: ".$uri, true, $http_response_code);
+				break;
+		}
+// 		exit;
 	}
 	
 }

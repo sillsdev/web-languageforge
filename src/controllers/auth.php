@@ -1,8 +1,9 @@
-<?php use models\ProjectModel;
+<?php 
 
 use libraries\shared\Website;
 use models\shared\rights\SiteRoles;
 use models\shared\rights\SystemRoles;
+use models\ProjectModel;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 

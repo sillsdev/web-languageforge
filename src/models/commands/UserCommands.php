@@ -180,13 +180,14 @@ class UserCommands {
 	 * @param string $username
 	 * @param string $password
 	 * @param Website $website
-	 * @param CodeIgniterController $controller
+	 * @param CI_Controller $controller
 	 * @param IDelivery $delivery
 	 * @return string|boolean $userId|false otherwise
 	 */
 	public static function activate($username, $password, $email, $website, $controller, IDelivery $delivery = null) {
 		CodeGuard::checkEmptyAndThrow($username, 'username');
 		CodeGuard::checkEmptyAndThrow($password, 'password');
+		CodeGuard::checkEmptyAndThrow($email, 'email');
 		CodeGuard::checkNullAndThrow($website, 'website');
 		$identityCheck = self::checkIdentity($username, $email, $website);
 		if ($website->allowSignupFromOtherSites && 
@@ -215,11 +216,13 @@ class UserCommands {
 						Communicate::sendSignup($user, $website, $delivery);
 					}
 					if ($identityCheck->emailMatchesAccount) {
-						$controller->load->library('ion_auth');
+						if (! $controller->ion_auth) {
+							$controller->load->library('ion_auth');
+						}
 						$auth = new AuthHelper($controller->ion_auth, $controller->session);
-						$auth->login($username, $password);
+						$auth->login($website, $username, $password);
 					}
-			
+					
 					return $userId;
 				}
 			}

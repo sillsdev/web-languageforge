@@ -129,7 +129,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
       userService.register($scope.record, function(result) {
         $scope.submissionInProgress = false;
         if (result.ok) {
-          if (!result.data) {
+          if (! result.data) {
             notice.push(notice.WARN, "The image verification failed.  Please try again");
             $scope.getCaptchaSrc();
           } else {
@@ -145,7 +145,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
       userService.activate($scope.record.username, $scope.record.password, $scope.record.email, function(result) {
         $scope.submissionInProgress = false;
         if (result.ok) {
-          if (!result.data) {
+          if (! result.data) {
             notice.push(notice.ERROR, "Login failed.<br /><br />If this is NOT your account, click <b>Back</b> to create a different account.");
           } else {
             $scope.submissionComplete = true;
