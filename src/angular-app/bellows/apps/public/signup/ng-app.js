@@ -110,13 +110,13 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
           });
           break;
         case 'form.activate':
-          activateUser(function(redirect) {
+          activateUser(function(url) {
             $state.go('validate');
           });
           break;
         case 'form.login':
-          activateUser(function(redirect) {
-            $window.location.href = redirect;
+          activateUser(function(url) {
+            $window.location.href = url;
           });
           break;
         default:
@@ -145,15 +145,11 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
       userService.activate($scope.record.username, $scope.record.password, $scope.record.email, function(result) {
         $scope.submissionInProgress = false;
         if (result.ok) {
-          if (! result.data) {
-            notice.push(notice.ERROR, "Login failed.<br /><br />If this is NOT your account, click <b>Back</b> to create a different account.");
-          } else {
+          if (result.data && result.data.status == 'loginSuccess') {
             $scope.submissionComplete = true;
-            if (result.data.status = 'loginSuccess') {
-              (successCallback || angular.noop)(result.data.redirect);
-            } else {
-              notice.push(notice.ERROR, "Login failed.<br /><br />If this is NOT your account, click <b>Back</b> to create a different account.");
-            }
+            (successCallback || angular.noop)(result.data.redirect.url);
+          } else {
+            notice.push(notice.ERROR, "Login failed.<br /><br />If this is NOT your account, click <b>Back</b> to create a different account.");
           }
         }
       });
