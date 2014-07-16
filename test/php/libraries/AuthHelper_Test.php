@@ -57,11 +57,6 @@ class MockAuthController {
 	}
 }
 
-class MockAuthHelper extends AuthHelper {
-	// override redirect so it doesn't redirect during testing
-	public static function redirect($website, $uri = '', $method = 'location', $http_response_code = 302) {}
-}
-
 class TestAuthHelper extends UnitTestCase {
 
 	function testLogin_NoUser_Fails() {
@@ -72,10 +67,10 @@ class TestAuthHelper extends UnitTestCase {
 		$password = '';
 		
 		$controller = new MockAuthController();
-		$auth = new MockAuthHelper($controller->ion_auth, $controller->session);
+		$auth = new AuthHelper($controller->ion_auth, $controller->session);
 		$result = $auth->login($e->website, $username, $password);
 		
-		$this->assertEqual($result, AuthHelper::LOGIN_FAIL);
+		$this->assertEqual($result['status'], AuthHelper::LOGIN_FAIL);
 	}
 	
 	function testLogin_NoPassword_FailUnauthorized() {
@@ -90,10 +85,10 @@ class TestAuthHelper extends UnitTestCase {
 		$controller = new MockAuthController();
 		$controller->session->set_userdata('user_id', $userId);
 		
-		$auth = new MockAuthHelper($controller->ion_auth, $controller->session);
+		$auth = new AuthHelper($controller->ion_auth, $controller->session);
 		$result = $auth->login($e->website, $username, $password);
 		
-		$this->assertEqual($result, AuthHelper::LOGIN_FAIL_USER_UNAUTHORIZED);
+		$this->assertEqual($result['status'], AuthHelper::LOGIN_FAIL_USER_UNAUTHORIZED);
 	}
 	
 	function testLogin_Password_Success() {
@@ -107,10 +102,10 @@ class TestAuthHelper extends UnitTestCase {
 		$controller = new MockAuthController();
 		$controller->session->set_userdata('user_id', $userId);
 		
-		$auth = new MockAuthHelper($controller->ion_auth, $controller->session);
+		$auth = new AuthHelper($controller->ion_auth, $controller->session);
 		$result = $auth->login($e->website, $username, $password);
 		
-		$this->assertEqual($result, AuthHelper::LOGIN_SUCCESS);
+		$this->assertEqual($result['status'], AuthHelper::LOGIN_SUCCESS);
 	}
 	
 }

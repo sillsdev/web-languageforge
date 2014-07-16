@@ -220,10 +220,10 @@ class UserCommands {
 							$controller->load->library('ion_auth');
 						}
 						$auth = new AuthHelper($controller->ion_auth, $controller->session);
-						$auth->login($website, $username, $password);
+						return $auth->login($website, $username, $password);
 					}
 					
-					return $userId;
+					return array('userId' => $userId);
 				}
 			}
 		}
