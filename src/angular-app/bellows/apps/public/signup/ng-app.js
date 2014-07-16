@@ -62,8 +62,8 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
     });
     $translateProvider.preferredLanguage('en');
   }])
-  .controller('SignupCtrl', ['$scope', '$state', '$location', '$window', 'userService', 'sessionService', 'silNoticeService',  
-                             function($scope, $state, $location, $window, userService, sessionService, notice) {
+  .controller('SignupCtrl', ['$scope', '$state', '$window', 'userService', 'sessionService', 'silNoticeService',  
+                             function($scope, $state, $window, userService, sessionService, notice) {
     $scope.showPassword = false;
     $scope.record = {};
     $scope.record.id = '';
@@ -116,9 +116,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
           break;
         case 'form.login':
           activateUser(function(redirect) {
-//            console.log('activate and login, redirect from: ' + $location.absUrl() + ' to: ' + redirect);
             $window.location.href = redirect;
-//            $location.absUrl(redirect).replace(); // couldn't make this work
           });
           break;
         default:
