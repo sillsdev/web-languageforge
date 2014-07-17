@@ -1,4 +1,4 @@
-<div data-ng-cloak data-ng-controller="editCtrl">
+<div data-ng-cloak data-ng-controller="editCtrl" id="lexAppContainer">
     <a style="position:relative; top:10px; left:115px" ng-show="entryLoaded()" class="btn pull-left" ng-click="returnToList()" tooltip="{{'Return to main list'|translate}}"><i class="icon-large icon-long-arrow-left"></i> {{'Back'|translate}}</a>
     <h2 style="text-align: center" data-translate="Dictionary Browse and Edit"></h2>
 
@@ -33,11 +33,11 @@
     <!-- edit view -->
     <div id="lexAppEditView" ng-show="entryLoaded()">
         <div style="flex: 1; border-right: 1px #dcdcdc solid">
-            <div style="margin: 5px">
+            <div style="margin: 5px 5px 5px 0">
                 <button class="btn btn-success btn-small" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
-                <small style="color: grey">{{entriesTotalCount}} {{'entries' | translate}}</small>
+                <small style="color: grey; margin-left:2px">{{entriesTotalCount}} {{'entries' | translate}}</small>
             </div>
-            <div style="margin: 5px">
+            <div style="margin: 5px 5px 5px 0">
                 <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
                     <ul>
                         <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
@@ -49,15 +49,16 @@
             </div>
             <div style="margin-right: 10px; display:flex; flex-direction: column">
                 <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-                    <div title="{{getWordForDisplay(entry)}} | {{getMeaningForDisplay(entry)}}" class="lexiconListItemCompact" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntry(entry.id)">
+                    <div ng-class="{selected: entry.id == currentEntry.id}" title="{{entry.id}} | {{getWordForDisplay(entry)}} | {{getMeaningForDisplay(entry)}}" class="lexiconListItemCompact" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntry(entry.id)">
                         <div class="listItemPrimary" ng-bind-html="getWordForDisplay(entry)"></div>
                         <div class="listItemSecondary" ng-bind-html="getMeaningForDisplay(entry)"></div>
+
                     </div>
                 </div>
             </div>
         </div>
 
-        <div style="flex: 4; border: 1px red solid">
+        <div style="flex: 4">
             <div style="margin-bottom: 20px">
                 <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
             </div>
@@ -74,7 +75,7 @@
 
                 <tab heading="{{ 'Edit' | translate }}" class="{{interfaceConfig.pullNormal}}" active="editTab.active" select="selectEditTab()">
                     <div style="margin-top:20px" class="row">
-                        <div class="animate-show" data-ng-show="entryLoaded()" id="entryItemView">
+                        <div class="animate-show entryItemView" data-ng-show="entryLoaded()">
                             <dc-entry config="config" model="currentEntry" control="control"></dc-entry>
                         </div>
                     </div>
@@ -98,7 +99,7 @@
                         </fieldset>
                     </div>
                     <div style="margin-top:5px" class="row">
-                        <div class="animate-show" data-ng-show="entryLoaded()" id="entryItemView">
+                        <div class="animate-show entryItemView" data-ng-show="entryLoaded()">
                             <dc-entry config="config" model="currentEntry" control="control"></dc-entry>
                         </div>
                     </div>
@@ -106,14 +107,14 @@
             </tabset>
         </div>
     </div>
-    <!--
+<!--
     <div class="row">
         <div class="span8">
             <pre>currentEntry {{currentEntry|json}}</pre>
             <pre>pristineEntry {{pristineEntry|json}}</pre>
         </div>
     </div>
-    -->
+-->
 </div>
 
 <!--
