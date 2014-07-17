@@ -194,12 +194,13 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 
 
         var _getFirstField = function _getFirstField(config, node, fieldName) {
-            var ws, result = '';
+            var ws, field, result = '';
             if (node[fieldName] && config && config.fields) {
                 for (var i=0; i<config.fields[fieldName].inputSystems.length; i++) {
                     ws = config.fields[fieldName].inputSystems[i];
-                    if (angular.isDefined(node[fieldName][ws]) && node[fieldName][ws].value != '') {
-                        result = node[fieldName][ws].value;
+                    field = node[fieldName][ws];
+                    if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '') {
+                        result = field.value;
                         break;
                     }
                 }
