@@ -13,15 +13,24 @@ angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
 			},
 			controller: ['$scope', 'lexUtils', function($scope, utils) {
 				$scope.render = function() {
+                    var sense, lastPos, pos;
                     $scope.entry = {
                         word: '',
                         senses: []
                     };
                     $scope.entry.word = utils.getWord($scope.config, $scope.model);
                     angular.forEach($scope.model.senses, function (senseModel) {
-                        var sense = {
+                        pos = utils.getPartOfSpeechAbbreviation(senseModel.partOfSpeech);
+
+                        // do not repeat parts of speech
+                        if (lastPos == pos) {
+                            pos = '';
+                        } else {
+                            lastPos = pos;
+                        }
+                        sense = {
                             meaning: utils.getMeaning($scope.config.fields.senses, senseModel),
-                            partOfSpeech: utils.getPartOfSpeechAbbreviation(senseModel.partOfSpeech),
+                            partOfSpeech: pos,
                             examples: []
                         };
                         angular.forEach(senseModel.examples, function (exampleModel) {
