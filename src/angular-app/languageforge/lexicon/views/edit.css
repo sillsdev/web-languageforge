@@ -132,6 +132,18 @@ legend.override-bootstrap {
 	align-items: stretch;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 .lexiconHeaderContainer {
     width: 100%;
     display:flex;
@@ -143,13 +155,17 @@ legend.override-bootstrap {
     margin:auto;
 }
 
-.lexiconItemListContainer {
-    display:flex;
-    flex-flow:column;
+.flexColumnContainer {
+}
+
+#lexAppListView .lexiconItemListContainer {
+    display: flex;
+    flex-flow: column;
     align-items: center;
-    height: 400px;
+    height: 500px;
     overflow-y: scroll;
     overflow-x: hidden;
+    margin-bottom: 15px;
 }
 
 .lexiconListItem {
@@ -165,13 +181,57 @@ legend.override-bootstrap {
     align-items: center;
 }
 
-.lexiconListItem:hover {
+.lexiconListItem:hover, .lexiconListItemCompact:hover {
     background-color: #EDFFE8;
     cursor:pointer;
 }
 
-.lexiconHeaderContainer .typeahead input {
+#lexAppListView .typeahead input, #lexAppListView .typeahead-item {
     width:300px;
 }
 
+div#lexAppEditView {
+    display:flex;
+    flex-direction: row;
+    width:100%;
+}
+
+#lexAppEditView .lexiconItemListContainer {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    height: 560px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+}
+
+#lexAppEditView .typeahead-item {
+    width:300px;
+}
+
+.listItemPrimary {
+    font-size: 1.0em;
+    font-weight:bold;
+    overflow: hidden;
+    height: 20px;
+    line-height: 2.0em;
+    margin: 0 0 2px 2px;
+}
+
+.listItemSecondary {
+    font-size: 0.8em;
+    color: #666666;
+    overflow: hidden;
+    height: 12px;
+    line-height: 1.0em;
+    margin: 0 0 2px 2px;
+}
+.lexiconListItemCompact {
+    overflow-y: hidden;
+    min-height: 40px;
+    height: 40px;
+    border-bottom: solid 1px darkgrey;
+    width: 100%;
+}
 
