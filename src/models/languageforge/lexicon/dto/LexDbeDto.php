@@ -29,7 +29,7 @@ class LexDbeDto {
             $lexeme1 = $a[LexiconConfigObj::LEXEME];
             $lexeme1Value = '';
             foreach ($lexemeInputSystems as $ws) {
-                if (array_key_exists($ws, $lexeme1)) {
+                if (array_key_exists($ws, $lexeme1) && $lexeme1[$ws]['value'] != '') {
                     $lexeme1Value = $lexeme1[$ws]['value'];
                     break;
                 }
@@ -37,7 +37,7 @@ class LexDbeDto {
             $lexeme2 = $b[LexiconConfigObj::LEXEME];
             $lexeme2Value = '';
             foreach ($lexemeInputSystems as $ws) {
-                if (array_key_exists($ws, $lexeme2)) {
+                if (array_key_exists($ws, $lexeme2) && $lexeme2[$ws]['value'] != '') {
                     $lexeme2Value = $lexeme2[$ws]['value'];
                     break;
                 }
