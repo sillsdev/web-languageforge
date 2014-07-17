@@ -1,0 +1,7 @@
+<div>
+    <input dir="auto" style="margin:0px" placeholder="{{placeholder}}" ng-model="term" ng-change="query()" type="text" autocomplete="off"/>
+    <span style="position:relative; left:-22px;top:1px" title="Clear Filter" data-ng-click="term = ''" data-ng-show="term && term != ''">
+        <i class="icon-remove" style="color:#808080; cursor: pointer"></i>
+    </span>
+    <div ng-transclude></div>
+</div>
