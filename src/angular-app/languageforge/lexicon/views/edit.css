@@ -140,9 +140,8 @@ legend.override-bootstrap {
 
 
 
-
-
-
+#lexAppContainer {
+}
 
 .lexiconHeaderContainer {
     width: 100%;
@@ -166,6 +165,7 @@ legend.override-bootstrap {
     overflow-y: scroll;
     overflow-x: hidden;
     margin-bottom: 15px;
+    font-family: "Bookman", Georgia, "Times New Roman", serif;
 }
 
 .lexiconListItem {
@@ -188,6 +188,7 @@ legend.override-bootstrap {
 
 #lexAppListView .typeahead input, #lexAppListView .typeahead-item {
     width:300px;
+    font-family: "Bookman", Georgia, "Times New Roman", serif;
 }
 
 div#lexAppEditView {
@@ -203,18 +204,19 @@ div#lexAppEditView {
     height: 560px;
     overflow-y: scroll;
     overflow-x: hidden;
-
+    font-family: "Bookman", Georgia, "Times New Roman", serif;
 }
 
 #lexAppEditView .typeahead-item {
     width:300px;
+    font-family: "Bookman", Georgia, "Times New Roman", serif;
 }
 
 .listItemPrimary {
     font-size: 1.0em;
     font-weight:bold;
     overflow: hidden;
-    height: 20px;
+    height: 25px;
     line-height: 2.0em;
     margin: 0 0 2px 2px;
 }
@@ -223,9 +225,9 @@ div#lexAppEditView {
     font-size: 0.8em;
     color: #666666;
     overflow: hidden;
-    height: 12px;
-    line-height: 1.0em;
-    margin: 0 0 2px 2px;
+    height: 15px;
+    line-height: 1.7em;
+    margin: -9px 0 2px 2px !important;
 }
 .lexiconListItemCompact {
     overflow-y: hidden;
@@ -233,5 +235,9 @@ div#lexAppEditView {
     height: 40px;
     border-bottom: solid 1px darkgrey;
     width: 100%;
+}
+
+.lexiconItemListContainer .selected {
+    background-color: #e4e5ff;
 }
 
