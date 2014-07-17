@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.breadcrumb'])
 .service('lexLinkService', ['$location', 'sessionService', function($location, ss) {
 	this.project = function () {
@@ -20,7 +22,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 		breadcrumbService.set('top', [
 			{href: '/app/projects', label: 'My Projects'},
 			{href: linkService.project(), label: ss.session.project.projectName},
-			{href: linkService.projectView(view), label: label},
+			{href: linkService.projectView(view), label: label}
 		]);
 	};
 
@@ -103,7 +105,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 					[
 					 {href: '/app/projects', label: 'My Projects'},
 					 {href: linkService.project(), label: ss.session.project.projectName},
-					 {href: linkService.projectView('dbe'), label: 'Browse And Edit'},
+					 {href: linkService.projectView('dbe'), label: 'Browse And Edit'}
 					]
 				);
 				callback(result);
@@ -188,6 +190,70 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	// --- END TEST CODE ---
 	*/
 }])
+    .service('lexUtils', [function() {
+
+
+        var _getFirstField = function _getFirstField(config, node, fieldName) {
+            var ws, result = '';
+            if (node[fieldName] && config && config.fields) {
+                for (var i=0; i<config.fields[fieldName].inputSystems.length; i++) {
+                    ws = config.fields[fieldName].inputSystems[i];
+                    if (angular.isDefined(node[fieldName][ws]) && node[fieldName][ws].value != '') {
+                        result = node[fieldName][ws].value;
+                        break;
+                    }
+                }
+            }
+            return result;
+        };
+
+
+
+        /**
+         *
+         * @param config - entry config obj
+         * @param entry
+         * @returns {string}
+         */
+        this.getLexeme = function getLexeme(config, entry) {
+            return _getFirstField(config, entry, 'lexeme');
+        };
+        this.getDefinition = function getDefinition(config, sense) {
+            return _getFirstField(config, sense, 'definition');
+        };
+        this.getGloss = function getGloss(config, sense) {
+            return _getFirstField(config, sense, 'gloss');
+        };
+        this.getWord = function getWord(config, entry) {
+            return this.getLexeme(config, entry);
+        };
+        this.getExampleSentence = function getExampleSentence(config, example) {
+            return _getFirstField(config, example, 'sentence');
+        };
+
+        this.getMeaning = function getMeaning(config, sense) {
+            var meaning = '';
+            meaning = this.getDefinition(config, sense);
+            if (!meaning) {
+                meaning = this.getGloss(config, sense);
+            }
+            return meaning;
+        };
+
+        this.getPartOfSpeechAbbreviation = function getPartOfSpeechAbbreviation(posModel) {
+            var match, myRegexp = /(\(.*\))/; // capture text inside parens
+            if (posModel && angular.isDefined(posModel.value)) {
+                match = myRegexp.exec(posModel.value);
+                if (match && match.length > 0) {
+                    return match[0];
+                } else {
+                    return posModel.value;
+                }
+            }
+            return '';
+        };
+
+    }])
 ;
 
 

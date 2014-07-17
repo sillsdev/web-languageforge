@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 
-                         function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService) {
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 'lexUtils',
+                         function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService, utils) {
 	var pristineEntry = {};
 	$scope.config = $scope.projectSettings.config;
 	$scope.lastSavedDate = new Date();
@@ -39,13 +39,13 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 
 
-	$scope.saveCurrentEntry = function(successCallback, failCallback) {
+	$scope.saveCurrentEntry = function saveCurrentEntry(successCallback, failCallback) {
 		if ($scope.currentEntryIsDirty()) {
 			cancelAutoSaveTimer();
 			saving = true;
 			lexService.update($scope.prepEntryForUpdate($scope.currentEntry), function(result) {
 				if (result.ok) {
-					$scope.updateListWithEntry(result.data);
+					//$scope.updateListWithEntry(result.data);
 					if ($scope.currentEntry.id != '') { // new word button pressed - don't set current entry
 						$scope.setCurrentEntry(result.data);
 					}
@@ -65,8 +65,12 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return $scope.recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
 	};
 	
-	$scope.getLexemeForDisplay = function(listEntry) {
-		return (listEntry.lexeme) ? listEntry.lexeme : '[Empty]';
+	$scope.getWordForDisplay = function(entry) {
+        var lexeme = utils.getLexeme($scope.config.entry, entry);
+        if (!lexeme) {
+            return '[Empty]';
+        }
+        return lexeme;
 	};
 	
 	$scope.lexemeAlign = function(listEntry) {
@@ -78,27 +82,17 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	function getLexeme(entry) {
-		var title = "";
-		if (entry.lexeme && $scope.config && $scope.config.entry) {
-			var lexemeInputSystem = $scope.config.entry.fields.lexeme.inputSystems[0];
-			if (angular.isDefined(entry.lexeme[lexemeInputSystem]) && entry.lexeme[lexemeInputSystem].value != '') {
-				title = entry.lexeme[lexemeInputSystem].value;
-			}
-		}
-		return title;
+	$scope.getMeaningForDisplay = function(entry) {
+		var meaning = '';
+        if (angular.isDefined(entry.senses[0])) {
+            meaning = utils.getMeaning($scope.config.entry.fields.senses, entry.senses[0]);
+        }
+        if (!meaning) {
+            return '[Empty]';
+        }
+        return meaning;
 	};
 
-	$scope.getDefinitionOrGloss = function(listEntry) {
-		var meaning = '';
-		if (listEntry.definition) {
-			meaning = listEntry.definition;
-		} else if (listEntry.gloss) {
-			meaning = listEntry.gloss;
-		}
-		return meaning;
-	};
-	
 	$scope.definitionOrGlossAlign = function(listEntry) {
 		if ($scope.config && $scope.config.entry && $scope.config.entry.fields.senses) {
 			if (listEntry.definition) {
@@ -113,33 +107,10 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	function getDefinition(entry) {
-		var meaning = '';
-		if (angular.isDefined($scope.config.entry) && angular.isDefined(entry.senses) && angular.isDefined(entry.senses[0]) && angular.isDefined(entry.senses[0]['definition'])) {
-			var ws = $scope.config.entry.fields.senses.fields.definition.inputSystems[0];
-			var def = entry.senses[0]['definition'];
-			if (angular.isDefined(def[ws])) {
-				meaning = def[ws].value;
-			}
-		}
-		return meaning;
-	};
-	
-	function getGloss(entry) {
-		var gloss = '';
-		if (angular.isDefined($scope.config.entry) && angular.isDefined(entry.senses) && angular.isDefined(entry.senses[0]) && angular.isDefined(entry.senses[0]['gloss'])) {
-			var ws = $scope.config.entry.fields.senses.fields.gloss.inputSystems[0];
-			var gl = entry.senses[0]['gloss'];
-			if (angular.isDefined(gl[ws])) {
-				gloss = gl[ws].value;
-			}
-		}
-		return gloss;
-	};
 
 	$scope.updateListWithEntry = function(entry) {
 		var isNew = true;
-		var toInsert = {id: entry.id, lexeme: getLexeme(entry), definition: getDefinition(entry), gloss: getGloss(entry)};
+		var toInsert = {id: entry.id, lexeme: utils.getLexeme($scope.config.entry, entry), definition: utilgetDefinition(entry), gloss: getGloss(entry)};
 		for (var i=0; i<$scope.show.entries.length; i++) {
 			var e = $scope.show.entries[i];
 			if (e.id == entry.id) {
@@ -181,7 +152,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				var newEntry = {id:''};
 				$scope.setCurrentEntry(newEntry);
 				$scope.selectEditTab();
-				$scope.updateListWithEntry(newEntry);
+				//$scope.updateListWithEntry(newEntry);
 			} else {
 				lexService.read(id, function(result) {
 					$scope.setCurrentEntry(result.data);
@@ -199,9 +170,13 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.entryLoaded = function() {
 		return angular.isDefined($scope.currentEntry.id);
 	};
+
+     $scope.returnToList = function returnToList() {
+         $scope.setCurrentEntry();
+     };
 	
 	$scope.deleteEntry = function(entry) {
-		var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?", {lexeme:getLexeme(entry)});
+		var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?", {lexeme:utils.getLexeme($scope.config.entry, entry)});
 		if ($window.confirm(deletemsg)) {
 			if ($scope.entryHasComments(entry)) {
 				if ($window.confirm(deletemsg)) {
@@ -238,8 +213,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.show = {
 		iEntryStart: 0,
 		numberOfEntries: 50,
-		entries: [],
-	}; 
+		entries: []
+    };
 	$scope.show.initial = function() {
 		$scope.show.iEntryStart = 0;
 		$scope.show.numberOfEntries = 50;
@@ -339,13 +314,13 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return message;
 	};
 	
-	$scope.submitComment = function(comment) {
+	$scope.submitComment = function submitComment(comment) {
 //		console.log('submitComment = ' + comment);
 		lexService.updateComment(comment, function(result) {
 			if (result.ok) {
 				var entry = result.data;
 				$scope.setCurrentEntry(entry);
-				$scope.updateListWithEntry(entry);
+				//$scope.updateListWithEntry(entry);
 			}
 		});
 	};
@@ -434,8 +409,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.filter.validStatuses = [ // TODO: Get this from appropriate service or API call, rather than hardcoded list
 		"To Do",
 		"Reviewed",
-		"Resolved",
-	];
+		"Resolved"
+    ];
 	$scope.filter.searchFor = {};
 	angular.forEach($scope.validStatuses, function(status) {
 		$scope.filter.searchFor[status] = false;
@@ -456,7 +431,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	
 	// search typeahead
-	$scope.typeahead = {term : '', searchResults : [], };
+	$scope.typeahead = {term : '', searchResults : []};
 	$scope.typeahead.searchEntries = function(query) {
 		if (query.length > 1) {
 			$scope.typeahead.searchResults = $filter('filter')($scope.entries, query);
