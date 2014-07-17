@@ -163,14 +163,14 @@ form.dc-multitext .wsid {
 }
 
 
-#entryItemView {
+.entryItemView {
 	overflow-y: scroll;
 	height: 500px;
 	padding-right:20px;
 	padding-bottom: 20px;
 }
 
-#entryItemView i.icon-remove {
+.entryItemView i.icon-remove {
 	cursor: pointer; 
 	color:#CCC;
 }
@@ -191,7 +191,7 @@ form.dc-multitext .wsid {
 	display: inline-block;
 }
 
-#entryItemView i.icon-remove:hover {
+.entryItemView i.icon-remove:hover {
 	color:red;
 }
 

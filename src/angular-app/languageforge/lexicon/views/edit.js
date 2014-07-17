@@ -41,7 +41,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 
 	$scope.saveCurrentEntry = function saveCurrentEntry(successCallback, failCallback) {
 		if ($scope.currentEntryIsDirty()) {
-			cancelAutoSaveTimer();
+			//cancelAutoSaveTimer();
 			saving = true;
 			lexService.update($scope.prepEntryForUpdate($scope.currentEntry), function(result) {
 				if (result.ok) {
@@ -236,9 +236,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			if (result.ok) {
 				$scope.entries = result.data.entries;
 				$scope.entriesTotalCount = result.data.entriesTotalCount;
-				if (updateFirstEntry && result.data.entry.id != '') {
-					$scope.setCurrentEntry(result.data.entry);
-				}
 				$scope.show.initial();
 			}
 		};
