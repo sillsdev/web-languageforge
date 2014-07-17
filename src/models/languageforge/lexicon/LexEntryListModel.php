@@ -158,15 +158,17 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 			$this->entries = $entriesToReturn;
 			$this->count = count($this->entries);
 		} else {
-			foreach ($this->entries as $entry) {
-				$entriesToReturn[] = array(
-					'id' => $entry['id'],
-					'definition' => $this->getDefinition($entry),
-					'gloss' => $this->getGloss($entry),
-					'lexeme' => $this->getLexeme($entry)
-				);
-			}
-			$this->entries = $entriesToReturn;
+            /*
+            foreach ($this->entries as $entry) {
+                $entriesToReturn[] = array(
+                    'id' => $entry['id'],
+                    'definition' => $this->getDefinition($entry),
+                    'gloss' => $this->getGloss($entry),
+                    'lexeme' => $this->getLexeme($entry)
+                );
+            }
+            $this->entries = $entriesToReturn;
+            */
 		}
 	}
 

@@ -131,3 +131,47 @@ legend.override-bootstrap {
 	flex-direction: row;
 	align-items: stretch;
 }
+
+.lexiconHeaderContainer {
+    width: 100%;
+    display:flex;
+    flex-flow: row;
+    justify-content: space-between;
+}
+
+.lexiconHeaderItem {
+    margin:auto;
+}
+
+.lexiconItemListContainer {
+    display:flex;
+    flex-flow:column;
+    align-items: center;
+    height: 400px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.lexiconListItem {
+    width: 99%;
+    overflow-y: hidden;
+    text-align: center;
+    padding: 2px;
+    min-height: 70px;
+    height: 70px;
+    border-bottom: solid 1px darkgrey;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lexiconListItem:hover {
+    background-color: #EDFFE8;
+    cursor:pointer;
+}
+
+.lexiconHeaderContainer .typeahead input {
+    width:300px;
+}
+
+
