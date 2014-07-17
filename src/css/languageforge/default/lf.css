@@ -253,7 +253,7 @@ div#footer {
 	position: relative;
 	width: 100%;
 	height: auto;
-	margin-top: 87px;
+	margin-top: 15px;
 	padding: 40px 0 40px 0;
 	background-color: #104060;
 	/* background: #104060 url(/images/languageforge/default/sf_sprite.png) no-repeat center -139px; */
@@ -262,7 +262,7 @@ div#footer {
 
 #maincontainer {
     min-height: 100%;
-    margin-bottom: 118px;
+    margin-bottom: 15px;
     position: relative;
 
 }
