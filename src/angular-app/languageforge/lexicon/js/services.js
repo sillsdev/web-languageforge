@@ -242,12 +242,12 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 
         this.getPartOfSpeechAbbreviation = function getPartOfSpeechAbbreviation(posModel) {
             var match, myRegexp = /(\(.*\))/; // capture text inside parens
-            if (posModel && angular.isDefined(posModel.value)) {
+            if (posModel && angular.isDefined) {
                 match = myRegexp.exec(posModel.value);
                 if (match && match.length > 0) {
                     return match[0];
                 } else {
-                    return posModel.value;
+                    return posModel.value.toLowerCase().substring(0,5);
                 }
             }
             return '';
