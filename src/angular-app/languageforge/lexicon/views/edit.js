@@ -259,7 +259,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	
 	$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries, true);
-	
+
+ /* disable autosave feature until it's ready
 	var autoSaveTimer;
 	function startAutoSaveTimer() {
 		if (angular.isDefined(autoSaveTimer)) {
@@ -313,6 +314,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 		return message;
 	};
+	*/
 	
 	$scope.submitComment = function submitComment(comment) {
 //		console.log('submitComment = ' + comment);
