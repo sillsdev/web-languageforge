@@ -178,27 +178,19 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.deleteEntry = function(entry) {
 		var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?", {lexeme:utils.getLexeme($scope.config.entry, entry)});
 		if ($window.confirm(deletemsg)) {
-			if ($scope.entryHasComments(entry)) {
-				if ($window.confirm(deletemsg)) {
-					var entryIndex = $scope.getEntryIndexById(entry.id);
-					$scope.show.entries.splice(entryIndex, 1);
-					$scope.entries.splice(entryIndex, 1);
-					$scope.entriesTotalCount--;
-					if (entry.id != '') {
-						lexService.remove(entry.id, function(){});
-					}
-					$scope.setCurrentEntry({});
-				}
-			} else {
-				var entryIndex = $scope.getEntryIndexById(entry.id);
-				$scope.show.entries.splice(entryIndex, 1);
-				$scope.entries.splice(entryIndex, 1);
-				$scope.entriesTotalCount--;
-				if (entry.id != '') {
-					lexService.remove(entry.id, function(){});
-				}
-				$scope.setCurrentEntry({});
-			}
+            var entryIndex = $scope.getEntryIndexById(entry.id);
+            $scope.show.entries.splice(entryIndex, 1);
+            $scope.entries.splice(entryIndex, 1);
+            $scope.entriesTotalCount--;
+            if ($scope.entries.length > 0) {
+                if (entryIndex != 0) entryIndex--;
+                $scope.setCurrentEntry($scope.entries[entryIndex]);
+            } else {
+                $scope.setCurrentEntry();
+            }
+            if (entry.id != '') {
+                lexService.remove(entry.id, function(){});
+            }
 		}
 	};
 	
@@ -229,7 +221,18 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			$scope.show.entries = $scope.show.entries.concat(moreEntries);
 		}
 	};
-	
+
+     $scope.getCompactItemListOverlay = function getCompactItemListOverlay(entry) {
+         var title, subtitle;
+         title = $scope.getWordForDisplay(entry);
+         subtitle = $scope.getMeaningForDisplay(entry);
+         if (title.length > 19 || subtitle.length > 25) {
+             return title + '         ' + subtitle;
+         } else {
+             return '';
+         }
+     };
+
 	$scope.refreshView = function(iEntryStart, numberOfEntries, updateFirstEntry) {
 		updateFirstEntry = typeof updateFirstEntry !== 'undefined' ? updateFirstEntry : false;
 		var gotDto = function (result) {
