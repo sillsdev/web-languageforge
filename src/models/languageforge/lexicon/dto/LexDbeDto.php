@@ -3,6 +3,7 @@
 namespace models\languageforge\lexicon\dto;
 
 use models\languageforge\lexicon\commands\LexProjectCommands;
+use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryListModel;
 use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
@@ -22,18 +23,28 @@ class LexDbeDto {
 		$entriesModel->readForDto();
 		$entries = $entriesModel->entries;
 
-        /*
-		usort($entries, function ($a, $b) { 
-			if (array_key_exists('lexeme', $a) && 
-				array_key_exists('lexeme', $b)
-			) {
-				return (strtolower($a['lexeme']) > strtolower($b['lexeme'])) ? 1 : -1;
-			} else {
-				return 0;
-			}
+        $lexemeInputSystems = $project->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems;
+
+		usort($entries, function ($a, $b) use ($lexemeInputSystems) {
+            $lexeme1 = $a[LexiconConfigObj::LEXEME];
+            $lexeme1Value = '';
+            foreach ($lexemeInputSystems as $ws) {
+                if (array_key_exists($ws, $lexeme1)) {
+                    $lexeme1Value = $lexeme1[$ws]['value'];
+                    break;
+                }
+            }
+            $lexeme2 = $b[LexiconConfigObj::LEXEME];
+            $lexeme2Value = '';
+            foreach ($lexemeInputSystems as $ws) {
+                if (array_key_exists($ws, $lexeme2)) {
+                    $lexeme2Value = $lexeme2[$ws]['value'];
+                    break;
+                }
+            }
+            return (strtolower($lexeme1Value) > strtolower($lexeme2Value)) ? 1 : -1;
 		});
-        */
-		
+
 		$entries = array_slice($entries, $iEntryStart, $numberOfEntries);
 		
 		$firstEntry = new LexEntryModel($project);
