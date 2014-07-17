@@ -5,8 +5,8 @@
     -->
 	<span class="dc-rendered-word" ng-bind-html="entry.word"></span>
 	<span class="dc-rendered-senseContainer" ng-repeat="sense in entry.senses">
+        <span dir="ltr" ng-hide="entry.senses.length == 1" class="dc-rendered-senseNumber">{{$index + 1}})</span>
         <span class="dc-rendered-partOfSpeech" ng-bind-html="sense.partOfSpeech"></span>
-        <span ng-hide="entry.senses.length == 1" class="dc-rendered-senseNumber">{{$index + 1}})</span>
         <span class="dc-rendered-definition" ng-bind-html="sense.meaning"></span>
         <span class="dc-rendered-exampleContainer" ng-repeat="example in sense.examples">
             <span class="dc-rendered-exampleSentence" ng-bind-html="example.sentence"></span>
