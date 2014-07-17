@@ -91,37 +91,33 @@ class LexProjectCommands {
 			}
 			throw new \Exception($message);
 		}
-		
-		// make the Assets folder if it doesn't exist
-		$project = new LexiconProjectModel($projectId);
-		$folderPath = $project->getAssetsFolderPath();
-        $filePath =  $folderPath . '/' . $fileName;
-        $project->liftFilePath = $filePath;
-		if (!file_exists($folderPath) and !is_dir($folderPath)) {
-			mkdir($folderPath, 0777, true);
-		};
-		
-		LiftImport::merge($liftXml, $project, $import['settings']['mergeRule'], $import['settings']['skipSameModTime'], $import['settings']['deleteMatchingEntry']);
-		
-		if (!$project->liftFilePath || $import['settings']['mergeRule'] != LiftMergeRule::IMPORT_LOSES) {
-			// cleanup previous files of any allowed extension
-			$cleanupFiles = glob($folderPath . '/*[' . implode(', ', $allowedExtensions) . ']');
-			foreach ($cleanupFiles as $cleanupFile) {
-				@unlink($cleanupFile);
-			}
-		}
-		$project->write();
+        // make the Assets folder if it doesn't exist
+        $project = new LexiconProjectModel($projectId);
+        $folderPath = $project->getAssetsFolderPath();
+        if (!file_exists($folderPath) and !is_dir($folderPath)) {
+            mkdir($folderPath, 0777, true);
+        };
 
-        /* Note: I once got the following error on import - cjh 2014-07
-         * PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 2764920 bytes)
-         * we unset the project variable to free up memory for the file write operation
-        */
-        unset($project);
+        LiftImport::merge($liftXml, $project, $import['settings']['mergeRule'], $import['settings']['skipSameModTime'], $import['settings']['deleteMatchingEntry']);
+        $project->write();
 
-        // put the LIFT file into Assets
-        file_put_contents($filePath, $liftXml);
-	}
-	
+        if (!$project->liftFilePath || $import['settings']['mergeRule'] != LiftMergeRule::IMPORT_LOSES) {
+            // cleanup previous files of any allowed extension
+            $cleanupFiles = glob($folderPath . '/*[' . implode(', ', $allowedExtensions) . ']');
+            foreach ($cleanupFiles as $cleanupFile) {
+                @unlink($cleanupFile);
+            }
+
+            // put the LIFT file into Assets
+            $filePath =  $folderPath . '/' . $fileName;
+            $project->liftFilePath = $filePath;
+            $project->write();
+            unset($project); // to free memory - not sure if this actually helps
+            file_put_contents($filePath, $liftXml);
+
+        }
+    }
+
 }
 
 ?>
