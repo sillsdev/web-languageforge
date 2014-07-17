@@ -21,7 +21,8 @@ class LexDbeDto {
 		$entriesModel = new LexEntryListModel($project);
 		$entriesModel->readForDto();
 		$entries = $entriesModel->entries;
-		
+
+        /*
 		usort($entries, function ($a, $b) { 
 			if (array_key_exists('lexeme', $a) && 
 				array_key_exists('lexeme', $b)
@@ -31,6 +32,7 @@ class LexDbeDto {
 				return 0;
 			}
 		});
+        */
 		
 		$entries = array_slice($entries, $iEntryStart, $numberOfEntries);
 		

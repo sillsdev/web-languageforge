@@ -1,5 +1,38 @@
 @CHARSET "UTF-8";
 
+.dc-rendered-entryContainer {
+    font-size:12px;
+    font-family: "Bookman", Georgia, "Times New Roman", serif;
+}
+
+.dc-rendered-word {
+    font-weight: bold;
+
+}
+
+.dc-rendered-senseContainer {
+
+}
+
+.dc-rendered-partOfSpeech {
+    font-style: italic;
+
+}
+
+.dc-rendered-senseNumber {
+
+}
+.dc-rendered-definition {
+
+}
+.dc-rendered-exampleContainer {}
+
+.dc-rendered-exampleSentence {
+
+}
+
+
+
 .dc-rendered.word {
 	font-weight: bold;
 }
