@@ -47,16 +47,11 @@ class LexDbeDto {
 
 		$entries = array_slice($entries, $iEntryStart, $numberOfEntries);
 		
-		$firstEntry = new LexEntryModel($project);
-		if (count($entries) > 0) {
-			$firstEntry = new LexEntryModel($project, $entries[0]['id']);
-		}
-		
 		$data = array();
 		$data['entries'] = $entries;
 		$data['entriesTotalCount'] = count($entriesModel->entries);
-		$data['entry'] = LexEntryWithCommentsEncoder::encode($firstEntry);
-		
+        $data['comments'] = array(); // TODO implement comments
+
 		return $data;
 	}
 }

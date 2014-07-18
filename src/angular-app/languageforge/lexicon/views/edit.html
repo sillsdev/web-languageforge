@@ -12,9 +12,10 @@
                 <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
                     <ul>
                         <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
-                            <p class="name">{{getWordForDisplay(e)}}</p>
-                            <p class="email">{{getMeaningForDisplay(e)}}</p>
+                            <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
+                            <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
                         </li>
+                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-show="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
                     </ul>
                 </typeahead>
             </div>
@@ -44,12 +45,13 @@
                             <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
                             <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
                         </li>
+                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-show="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
                     </ul>
                 </typeahead>
             </div>
             <div style="margin-right: 10px; display:flex; flex-direction: column">
                 <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-                    <div ng-class="{selected: entry.id == currentEntry.id}" title="{{getCompactItemListOverlay(entry)}}" class="lexiconListItemCompact" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntry(entry.id)">
+                    <div id="entryId_{{entry.id}}" ng-class="{selected: entry.id == currentEntry.id}" title="{{getCompactItemListOverlay(entry)}}" class="lexiconListItemCompact" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntry(entry.id)">
                         <div class="listItemPrimary" ng-bind-html="getWordForDisplay(entry)"></div>
                         <div class="listItemSecondary" ng-bind-html="getMeaningForDisplay(entry)"></div>
 
@@ -75,7 +77,7 @@
 
                 <tab heading="{{ 'Edit' | translate }}" class="{{interfaceConfig.pullNormal}}" active="editTab.active" select="selectEditTab()">
                     <div style="margin-top:20px" class="row">
-                        <div class="animate-show entryItemView" data-ng-show="entryLoaded()">
+                        <div class="entryItemView" data-ng-show="entryLoaded()">
                             <dc-entry config="config" model="currentEntry" control="control"></dc-entry>
                         </div>
                     </div>
@@ -99,7 +101,7 @@
                         </fieldset>
                     </div>
                     <div style="margin-top:5px" class="row">
-                        <div class="animate-show entryItemView" data-ng-show="entryLoaded()">
+                        <div class="entryItemView" data-ng-show="entryLoaded()">
                             <dc-entry config="config" model="currentEntry" control="control"></dc-entry>
                         </div>
                     </div>
