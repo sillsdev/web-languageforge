@@ -25,7 +25,7 @@
         </div>
         <div style="border-bottom: 1px solid darkgray; width:100%;margin-top:15px"></div>
         <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-            <div class="lexiconListItem" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntry(entry.id)">
+            <div class="lexiconListItem" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntryAndScroll(entry.id)">
                 <dc-rendered config="config.entry" model="entry"></dc-rendered>
             </div>
         </div>
@@ -50,7 +50,7 @@
                 </typeahead>
             </div>
             <div style="margin-right: 10px; display:flex; flex-direction: column">
-                <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
+                <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
                     <div id="entryId_{{entry.id}}" ng-class="{selected: entry.id == currentEntry.id}" title="{{getCompactItemListOverlay(entry)}}" class="lexiconListItemCompact" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntry(entry.id)">
                         <div class="listItemPrimary" ng-bind-html="getWordForDisplay(entry)"></div>
                         <div class="listItemSecondary" ng-bind-html="getMeaningForDisplay(entry)"></div>

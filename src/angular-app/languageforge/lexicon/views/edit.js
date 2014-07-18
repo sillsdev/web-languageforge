@@ -2,13 +2,13 @@
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService',
-        function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService, utils, modal) {
-            var pristineEntry = {};
+function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService, utils, modal) {
+    var pristineEntry = {};
 	$scope.config = $scope.projectSettings.config;
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
 	$scope.entries = [];
-    var scrollListToCurrentEntry, getEntryIndexInList, refreshView, setCurrentEntry, prepEntryForUpdate, recursiveRemoveProperties;
+    var scrollListToEntryId, _scrollDivToId, getEntryIndexInList, refreshView, setCurrentEntry, prepEntryForUpdate, recursiveRemoveProperties;
 	
 	$scope.currentEntryIsDirty = function() {
 		if ($scope.entryLoaded()) {
@@ -130,24 +130,47 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	*/
 
-    scrollListToCurrentEntry = function scrollListToCurrentEntry() {
-        var index, id = $scope.currentEntry.id;
-        if ($scope.entryLoaded()) {
-
-            // make sure the item is visible in the list
-            // todo implement lazy "up" scrolling to make this more efficient
-            while(true) {
-                index = getEntryIndexInList(id, $scope.show.entries);
-                if (angular.isDefined(index)) {
-                    window.alert('found entry ' + id + ' at position ' + index);
-                    break;
-                }
-                $scope.show.more();
+    _scrollDivToId = function _scrollDivToId(containerId, divId) {
+        var offsetTop, div = $(divId), containerDiv = $(containerId);
+        if (div && containerDiv) {
+            if (angular.isUndefined(div.offsetTop)) {
+                div = div[0];
             }
+            if (angular.isUndefined(div.offsetTop)) {
 
-            // this is pretty hackish but it is a start.  see http://www.benlesh.com/2013/02/angular-js-scrolling-to-element-by-id.html
-            //$location.hash('entryId_' + id);
-            //$anchorScroll();
+                offsetTop = div.offset().top - 450;
+            } else {
+                offsetTop = div.offsetTop - 450;
+            }
+            if (offsetTop < 0) offsetTop = 0;
+            containerDiv.scrollTop(offsetTop);
+        }
+    };
+
+    $scope.editEntryAndScroll = function editEntryAndScroll(id) {
+        var index, entryDivId = '#entryId_'+id, listDivId = '#compactEntryListContainer';
+
+        $scope.editEntry(id);
+
+        // make sure the item is visible in the list
+        // todo implement lazy "up" scrolling to make this more efficient
+        while(true) {
+            index = getEntryIndexInList(id, $scope.show.entries);
+            if (angular.isDefined(index)) {
+                break;
+            }
+            $scope.show.more();
+        }
+
+        // note: ':visible' is a JQuery invention that means 'it takes up space on the page'.  It may actually not be visible on the page at the moment
+        if ($(listDivId).is(':visible') && $(entryDivId).is(':visible')) {
+            _scrollDivToId(listDivId, entryDivId);
+        }
+        else {
+            // wait then try to scroll
+            $interval(function(){
+                _scrollDivToId(listDivId, entryDivId);
+            }, 200, 1);
         }
     };
 
@@ -161,7 +184,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
                 return index;
 			}
 		}
-        throw 'Could not find entry in list!'
+        return undefined;
 	};
 	
 	setCurrentEntry = function setCurrentEntry(entry) {
@@ -169,8 +192,6 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		$scope.currentEntry = entry;
 		pristineEntry = angular.copy(entry);
 		saved = false;
-
-        // scroll list to current entry
 	};
 
 
@@ -205,6 +226,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 
      $scope.returnToList = function returnToList() {
+         $scope.saveCurrentEntry();
          setCurrentEntry();
      };
 	
@@ -482,7 +504,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.typeahead.searchSelect = function(entry) {
 		$scope.typeahead.searchItemSelected = '';
         $scope.typeahead.searchResults = [];
-		$scope.editEntry(entry.id);
+		$scope.editEntryAndScroll(entry.id);
 	};
 	
 }])
