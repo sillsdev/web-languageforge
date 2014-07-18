@@ -10,14 +10,14 @@ use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
 use models\languageforge\lexicon\LexiconProjectModel;
 
 class LexDbeDto {
-	
-	/**
-	 * @param string $projectId
-	 * @param string $userId
-	 * @param int $iEntryStart
-	 * @param int $numberOfEntries
-	 */
-	public static function encode($projectId, $userId, $iEntryStart = 0, $numberOfEntries = null) {
+
+    /**
+     * @param string $projectId
+     * @param bool $returnOnlyUpdates
+     * @throws \Exception
+     * @return array
+     */
+	public static function encode($projectId, $returnOnlyUpdates = true) {
 		$project = new LexiconProjectModel($projectId);
 		$entriesModel = new LexEntryListModel($project);
 		$entriesModel->readForDto();
@@ -45,8 +45,7 @@ class LexDbeDto {
             return (strtolower($lexeme1Value) > strtolower($lexeme2Value)) ? 1 : -1;
 		});
 
-		$entries = array_slice($entries, $iEntryStart, $numberOfEntries);
-		
+
 		$data = array();
 		$data['entries'] = $entries;
 		$data['entriesTotalCount'] = count($entriesModel->entries);
