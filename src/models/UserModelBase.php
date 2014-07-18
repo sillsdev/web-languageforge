@@ -77,7 +77,7 @@ class UserModelBase extends \models\mapper\MapperModel
 	 * @return bool
 	 */
 	public function hasRight($right, $website) {
-		$result = SiteRoles::hasRight($this->siteRole, $right, $website) || 
+		$result = SiteRoles::hasRight($this->siteRole, $right) ||
 				SystemRoles::hasRight($this->role, $right);
 		return $result;
 	}

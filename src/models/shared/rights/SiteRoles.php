@@ -52,19 +52,20 @@ class SiteRoles extends RolesBase {
 		}
 		return array();
 	}
-		
-	
-	/**
-	 * 
-	 * @param MapOf $roleMap
-	 * @param int $right
-	 * @param Website $website
-	 * @return bool
-	 */
-	public static function hasRight($roleMap, $right, $website) {
-		CodeGuard::checkTypeAndThrow($website, 'libraries\shared\Website');
-		if ($roleMap->offsetExists($website->domain)) {
-			return self::_hasRight(self::$_rights, $roleMap[$website->domain], $right);
+
+
+    /**
+     *
+     * @param MapOf $roleMap
+     * @param int $right
+     * @throws \Exception
+     * @internal param Website $website
+     * @return bool
+     */
+	public static function hasRight($roleMap, $right) {
+        global $WEBSITE;
+		if ($roleMap->offsetExists($WEBSITE->domain)) {
+			return self::_hasRight(self::$_rights, $roleMap[$WEBSITE->domain], $right);
 		}
 		return false;
 	}
