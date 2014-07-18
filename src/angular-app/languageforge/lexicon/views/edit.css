@@ -241,3 +241,14 @@ div#lexAppEditView {
     background-color: #e4e5ff;
 }
 
+.entryItemView {
+    overflow-y: scroll;
+    height: 588px;
+    padding-right:5px;
+}
+
+.entryItemView i.icon-remove {
+    cursor: pointer;
+    color:#CCC;
+}
+
