@@ -258,6 +258,16 @@ angular.module('bellows.services', ['jsonRpc'])
 		customModalDefaults.backdrop = 'static';
 		return this.show(customModalDefaults, customModalOptions);
 	};
+
+    this.showModalSimple = function showModalSimple(headerText, messageText, closeButtonText, actionButtonText) {
+        var opts = {
+            headerText: headerText,
+            bodyText: messageText
+        };
+        if (closeButtonText) opts.closeButtonText = closeButtonText;
+        if (actionButtonText) opts.actionButtonText = actionButtonText;
+        return this.showModal({}, opts);
+    };
 	
 	this.show = function (customModalDefaults, customModalOptions) {
 		// Create temp objects to work with since we're in a singleton service
