@@ -1,13 +1,14 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 'lexUtils',
-                         function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService, utils) {
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 'lexUtils', '$location', '$anchorScroll',
+function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService, utils, $location, $anchorScroll) {
 	var pristineEntry = {};
 	$scope.config = $scope.projectSettings.config;
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
 	$scope.entries = [];
+    var scrollListToCurrentEntry, getEntryIndexInList, refreshView, setCurrentEntry, prepEntryForUpdate, recursiveRemoveProperties;
 	
 	$scope.currentEntryIsDirty = function() {
 		if ($scope.entryLoaded()) {
@@ -18,6 +19,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	var saving = false;
 	var saved = false;
+
 	$scope.saveNotice = function() {
 //		if ($scope.currentEntryIsDirty()) {	// TODO. Disabled. until php can deliver completely valid entry model and directives no longer make valid models. IJH 2014-03
 //			if (saving) {
@@ -43,14 +45,14 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		if ($scope.currentEntryIsDirty()) {
 			//cancelAutoSaveTimer();
 			saving = true;
-			lexService.update($scope.prepEntryForUpdate($scope.currentEntry), function(result) {
+			lexService.update(prepEntryForUpdate($scope.currentEntry), function(result) {
 				if (result.ok) {
 					//$scope.updateListWithEntry(result.data);
 					if ($scope.currentEntry.id != '') { // new word button pressed - don't set current entry
-						$scope.setCurrentEntry(result.data);
+						setCurrentEntry(result.data);
 					}
 					$scope.lastSavedDate = new Date();
-					$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
+					refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
 					saved = true;
 					(successCallback||angular.noop)(result);
 				} else {
@@ -61,8 +63,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	$scope.prepEntryForUpdate = function(entry) {
-		return $scope.recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+	prepEntryForUpdate = function prepEntryForUpdate(entry) {
+		return recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
 	};
 	
 	$scope.getWordForDisplay = function(entry) {
@@ -107,7 +109,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-
+// do we need this any more?
+    /*
 	$scope.updateListWithEntry = function(entry) {
 		var isNew = true;
 		var toInsert = {id: entry.id, lexeme: utils.getLexeme($scope.config.entry, entry), definition: utilgetDefinition(entry), gloss: getGloss(entry)};
@@ -125,38 +128,68 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			$scope.entries.unshift(toInsert);
 		}
 	};
-	
-	$scope.getEntryIndexById = function(id) {
+	*/
+
+    scrollListToCurrentEntry = function scrollListToCurrentEntry() {
+        var index, id = $scope.currentEntry.id;
+        if ($scope.entryLoaded()) {
+
+            // make sure the item is visible in the list
+            // todo implement lazy "up" scrolling to make this more efficient
+            while(true) {
+                index = getEntryIndexInList(id, $scope.show.entries);
+                if (angular.isDefined(index)) {
+                    window.alert('found entry ' + id + ' at position ' + index);
+                    break;
+                }
+                $scope.show.more();
+            }
+
+            // this is pretty hackish but it is a start.  see http://www.benlesh.com/2013/02/angular-js-scrolling-to-element-by-id.html
+            //$location.hash('entryId_' + id);
+            //$anchorScroll();
+        }
+    };
+
+
+    getEntryIndexInList = function getEntryIndexInList(id, list) {
 		var index = undefined;
-		for (var i=0; i<$scope.show.entries.length; i++) {
-			var e = $scope.show.entries[i];
+		for (var i=0; i<list.length; i++) {
+			var e = list[i];
 			if (e.id == id) {
 				index = i;
-				break;
+                return index;
 			}
 		}
-		return index;
+        throw 'Could not find entry in list!'
 	};
 	
-	$scope.setCurrentEntry = function(entry) {
+	setCurrentEntry = function setCurrentEntry(entry) {
 		entry = entry || {};
 		$scope.currentEntry = entry;
 		pristineEntry = angular.copy(entry);
 		saved = false;
+
+        // scroll list to current entry
 	};
+
+
 	
 	$scope.editEntry = function(id) {
 		if (angular.isUndefined(id) || $scope.currentEntry.id != id) {
 			$scope.saveCurrentEntry();
 			if (angular.isUndefined(id)) {
 				var newEntry = {id:''};
-				$scope.setCurrentEntry(newEntry);
+				setCurrentEntry(newEntry);
 				$scope.selectEditTab();
 				//$scope.updateListWithEntry(newEntry);
 			} else {
+                setCurrentEntry($scope.entries[getEntryIndexInList(id, $scope.entries)]);
+                /*
 				lexService.read(id, function(result) {
 					$scope.setCurrentEntry(result.data);
 				});
+				*/
 			}
 		}
 	};
@@ -172,21 +205,22 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 
      $scope.returnToList = function returnToList() {
-         $scope.setCurrentEntry();
+         setCurrentEntry();
      };
 	
 	$scope.deleteEntry = function(entry) {
 		var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?", {lexeme:utils.getLexeme($scope.config.entry, entry)});
 		if ($window.confirm(deletemsg)) {
-            var entryIndex = $scope.getEntryIndexById(entry.id);
-            $scope.show.entries.splice(entryIndex, 1);
-            $scope.entries.splice(entryIndex, 1);
+            var entryIndexInShowList = getEntryIndexInList(entry.id, $scope.show.entries);
+            var entryIndexInFullList = getEntryIndexInList(entry.id, $scope.entries);
+            $scope.show.entries.splice(entryIndexInShowList, 1);
+            $scope.entries.splice(entryIndexInFullList, 1);
             $scope.entriesTotalCount--;
             if ($scope.entries.length > 0) {
-                if (entryIndex != 0) entryIndex--;
-                $scope.setCurrentEntry($scope.entries[entryIndex]);
+                if (entryIndexInShowList != 0) entryIndexInShowList--;
+                setCurrentEntry($scope.show.entries[entryIndexInShowList]);
             } else {
-                $scope.setCurrentEntry();
+                setCurrentEntry();
             }
             if (entry.id != '') {
                 lexService.remove(entry.id, function(){});
@@ -233,8 +267,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
          }
      };
 
-	$scope.refreshView = function(iEntryStart, numberOfEntries, updateFirstEntry) {
-		updateFirstEntry = typeof updateFirstEntry !== 'undefined' ? updateFirstEntry : false;
+	refreshView = function refreshView(iEntryStart, numberOfEntries) {
 		var gotDto = function (result) {
 			if (result.ok) {
 				$scope.entries = result.data.entries;
@@ -258,7 +291,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries, true);
+	refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
 
  /* disable autosave feature until it's ready
 	var autoSaveTimer;
@@ -315,17 +348,19 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		return message;
 	};
 	*/
-	
+
+    /*
 	$scope.submitComment = function submitComment(comment) {
 //		console.log('submitComment = ' + comment);
 		lexService.updateComment(comment, function(result) {
 			if (result.ok) {
 				var entry = result.data;
-				$scope.setCurrentEntry(entry);
+				setCurrentEntry(entry);
 				//$scope.updateListWithEntry(entry);
 			}
 		});
 	};
+	*/
 	
 	// permissions stuff
 	$scope.control = {};
@@ -357,7 +392,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	*/
 	
-	$scope.recursiveRemoveProperties = function(startAt, properties) {
+	recursiveRemoveProperties = function recursiveRemoveProperties(startAt, properties) {
 		angular.forEach(startAt, function(value, key) {
 			var deleted = false;
 			angular.forEach(properties, function(propName) {
@@ -369,7 +404,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				}
 			});
 			if (!deleted && angular.isObject(value)) {
-				$scope.recursiveRemoveProperties(startAt[key], properties);
+				recursiveRemoveProperties(startAt[key], properties);
 			}
 		});
 		return startAt;
@@ -435,15 +470,12 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	// search typeahead
 	$scope.typeahead = {term : '', searchResults : []};
 	$scope.typeahead.searchEntries = function(query) {
-		if (query.length > 1) {
-			$scope.typeahead.searchResults = $filter('filter')($scope.entries, query);
-		} else {
-			$scope.typeahead.searchResults = [];
-		}
+        $scope.typeahead.searchResults = $filter('filter')($scope.entries, query);
 	};
 	
 	$scope.typeahead.searchSelect = function(entry) {
 		$scope.typeahead.searchItemSelected = '';
+        $scope.typeahead.searchResults = [];
 		$scope.editEntry(entry.id);
 	};
 	
