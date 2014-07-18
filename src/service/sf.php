@@ -503,9 +503,14 @@ class Sf
 		return LexProjectDto::encode($this->_projectId, $this->_userId);
 	}
 
-	public function lex_dbeDto($iEntryStart, $numberOfEntries) {
-		return LexDbeDto::encode($this->_projectId, $this->_userId, $iEntryStart, $numberOfEntries);
+	public function lex_dbeDto() {
 	}
+    public function lex_dbeDtoFull() {
+        return LexDbeDto::encode($this->_projectId, $returnOnlyUpdates);
+    }
+    public function lex_dbeDtoUpdatesOnly() {
+
+    }
 	
 	public function lex_configuration_update($config) {
 		return LexProjectCommands::updateConfig($this->_projectId, $config);
