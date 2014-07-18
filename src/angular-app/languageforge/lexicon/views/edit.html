@@ -60,53 +60,23 @@
             </div>
         </div>
 
-        <div style="flex: 4">
-            <div style="margin-bottom: 20px">
+        <div style="flex: 4;padding:5px;display: flex; flex-direction: column">
+            <div style="margin-bottom: 20px; border-bottom: solid black 1px">
+                <div ng-show="control.canEditEntry()" style="float:right; position:relative; top:-5px">
+                    <button class="btn btn-mini" style="margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry()"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
+                    <span style="color: grey;">{{saveNotice()}}</span>
+                </div>
                 <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
             </div>
-
-            <tabset>
-                <div class="control-group {{interfaceConfig.pullToSide}}" data-ng-show="entryLoaded()">
-                    <button class="btn btn-mini" style="margin-right: 130px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry()">
-                        <i class="icon-save"></i> {{saveButtonTitle()}} </button>
-					<span style="color: grey; margin-left: 10px; margin-right: 10px">
-						{{saveNotice()}}</span>
-                    <button data-ng-show="control.canDeleteWord()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Word' | translate }}">
-                        <i class="icon-remove"></i> {{'Word' | translate}} </button>
+            <div >
+                <button data-ng-show="control.canDeleteWord()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Word' | translate }}">
+                    <i class="icon-remove"></i> {{'Word' | translate}} </button>
+            </div>
+            <div style="margin-top:20px">
+                <div class="entryItemView" data-ng-show="entryLoaded()">
+                    <dc-entry config="config" model="currentEntry" control="control"></dc-entry>
                 </div>
-
-                <tab heading="{{ 'Edit' | translate }}" class="{{interfaceConfig.pullNormal}}" active="editTab.active" select="selectEditTab()">
-                    <div style="margin-top:20px" class="row">
-                        <div class="entryItemView" data-ng-show="entryLoaded()">
-                            <dc-entry config="config" model="currentEntry" control="control"></dc-entry>
-                        </div>
-                    </div>
-                </tab>
-                <tab heading="{{ 'Comment' | translate }}" class="{{interfaceConfig.pullNormal}}" active="commentsTab.active" select="selectCommentsTab()" disabled="currentEntry.id == ''">
-                    <div class="row">
-                        <fieldset class="filter-controls comment-filter">
-                            <legend class="override-bootstrap">Filters <i data-ng-click="toggleFilters()" style="cursor: pointer" data-ng-class="filter.chevronIcon"></i></legend>
-                            <div class="filter-controls-inner" data-collapse="!filter.visible">
-                                <p><b>These controls are not implemented yet</b></p>
-                                <div class="horiz-controls flex-center">
-                                    <div class="datepicker horiz-flex-element"><input type="checkbox" data-ng-model="useCreatedAfter" />Created after: <input type="text" size="8" data-datepicker-popup data-ng-model="createdAfter"></div>
-                                    <div class="datepicker horiz-flex-element"><input type="checkbox" data-ng-model="useCreatedBefore" />Created before: <input type="text" size="8" data-datepicker-popup data-ng-model="createdBefore"></div>
-                                </div>
-                                <div class="created-by">Created by: <select><option>Everyone</option></select></div>
-                                <div class="status horiz-controls">Status: <div class="horiz-flex-element" data-ng-repeat="status in filter.validStatuses"><input data-ng-model="filter.searchFor[status]" type="checkbox" />{{status}}</div></div>
-                                <div class="containing-text">Containing text: <input type="text" size="50" /></div>
-                                <div class="languages-to-show horiz-controls">Languages to show: <div class="horiz-flex-element" data-ng-repeat="lang in getInputSystems()"><input data-ng-model="filter.showLangs[lang.abbreviation]" type="checkbox" />{{lang.languageName}} ({{lang.abbreviation}})</div></div>
-                                <button data-ng-click="applyFilters()" class="btn-info top-right-corner"><i class="icon-search"></i></button>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <div style="margin-top:5px" class="row">
-                        <div class="entryItemView" data-ng-show="entryLoaded()">
-                            <dc-entry config="config" model="currentEntry" control="control"></dc-entry>
-                        </div>
-                    </div>
-                </tab>
-            </tabset>
+            </div>
         </div>
     </div>
 <!--

@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 'lexUtils', '$location', '$anchorScroll',
-function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService, utils, $location, $anchorScroll) {
-	var pristineEntry = {};
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService',
+        function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService, utils, modal) {
+            var pristineEntry = {};
 	$scope.config = $scope.projectSettings.config;
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
@@ -209,23 +209,25 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
      };
 	
 	$scope.deleteEntry = function(entry) {
-		var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?", {lexeme:utils.getLexeme($scope.config.entry, entry)});
-		if ($window.confirm(deletemsg)) {
-            var entryIndexInShowList = getEntryIndexInList(entry.id, $scope.show.entries);
-            var entryIndexInFullList = getEntryIndexInList(entry.id, $scope.entries);
-            $scope.show.entries.splice(entryIndexInShowList, 1);
-            $scope.entries.splice(entryIndexInFullList, 1);
-            $scope.entriesTotalCount--;
-            if ($scope.entries.length > 0) {
-                if (entryIndexInShowList != 0) entryIndexInShowList--;
-                setCurrentEntry($scope.show.entries[entryIndexInShowList]);
-            } else {
-                setCurrentEntry();
+        var deletemsg = "Are you sure you want to delete the word <b>' " + utils.getLexeme($scope.config.entry, entry) + " '</b>";
+		//var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?", {lexeme:utils.getLexeme($scope.config.entry, entry)});
+        modal.showModalSimple('Delete Word', deletemsg, 'Cancel', 'Delete Word').then(function() {
+                var entryIndexInShowList = getEntryIndexInList(entry.id, $scope.show.entries);
+                var entryIndexInFullList = getEntryIndexInList(entry.id, $scope.entries);
+                $scope.show.entries.splice(entryIndexInShowList, 1);
+                $scope.entries.splice(entryIndexInFullList, 1);
+                $scope.entriesTotalCount--;
+                if ($scope.entries.length > 0) {
+                    if (entryIndexInShowList != 0) entryIndexInShowList--;
+                    setCurrentEntry($scope.show.entries[entryIndexInShowList]);
+                } else {
+                    setCurrentEntry();
+                }
+                if (entry.id != '') {
+                    lexService.remove(entry.id, function(){});
+                }
             }
-            if (entry.id != '') {
-                lexService.remove(entry.id, function(){});
-            }
-		}
+        );
 	};
 	
 	$scope.entryHasComments = function(entry) {
@@ -375,6 +377,10 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 	$scope.control.canDeleteExample = function() {
 		return true;
 	};
+
+    $scope.control.canEditEntry = function() {
+        return true;
+    }
 	
 	/*
 	$scope.recursiveSetConfig = function(startAt, propName, propValue) {
