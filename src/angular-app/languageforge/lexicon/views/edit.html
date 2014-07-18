@@ -10,7 +10,7 @@
             </div>
             <div ng-hide="show.entries.length === 0" style="width:340px;" class="lexiconHeaderItem">
                 <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
-                    <ul>
+                    <ul ng-show="typeahead.searchResults.length > 0">
                         <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
                             <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
                             <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
@@ -40,7 +40,7 @@
             </div>
             <div style="margin: 5px 5px 5px 0">
                 <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
-                    <ul>
+                    <ul ng-show="typeahead.searchResults.length > 0">
                         <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
                             <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
                             <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
@@ -61,18 +61,17 @@
         </div>
 
         <div style="flex: 4;padding:5px;display: flex; flex-direction: column">
-            <div style="margin-bottom: 20px; border-bottom: solid black 1px">
+            <div style="margin-bottom: 5px; border-bottom: solid black 1px">
                 <div ng-show="control.canEditEntry()" style="float:right; position:relative; top:-5px">
-                    <button class="btn btn-mini" style="margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry()"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
+                    <button data-ng-show="control.canDeleteWord()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Word' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
+                    <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry()"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
                     <span style="color: grey;">{{saveNotice()}}</span>
+                </div>
+                <div >
                 </div>
                 <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
             </div>
-            <div >
-                <button data-ng-show="control.canDeleteWord()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Word' | translate }}">
-                    <i class="icon-remove"></i> {{'Word' | translate}} </button>
-            </div>
-            <div style="margin-top:20px">
+            <div style="margin-top:5px">
                 <div class="entryItemView" data-ng-show="entryLoaded()">
                     <dc-entry config="config" model="currentEntry" control="control"></dc-entry>
                 </div>

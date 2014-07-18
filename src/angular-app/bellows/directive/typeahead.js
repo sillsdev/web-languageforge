@@ -1,4 +1,4 @@
-
+'use strict';
 angular.module('palaso.ui.typeahead', [])
   // Typeahead
   .directive('typeahead', ["$timeout", function($timeout) {
@@ -50,6 +50,11 @@ angular.module('palaso.ui.typeahead', [])
 						$scope.hide = true;
 					}
 				};
+
+                $scope.clearSearch = function clearSearch() {
+                    $scope.term = '';
+                    $scope.items = [];
+                };
 			}],
 			link : function(scope, element, attrs, controller) {
 				var $input = element.find('> input');
