@@ -1,8 +1,10 @@
 'use strict';
 
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService',
-function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService, utils, modal) {
+angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry',
+    'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window',
+        '$modal', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService',
+function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService, utils, modal, notice) {
     var pristineEntry = {};
 	$scope.config = $scope.projectSettings.config;
 	$scope.lastSavedDate = new Date();
@@ -47,10 +49,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 			saving = true;
 			lexService.update(prepEntryForUpdate($scope.currentEntry), function(result) {
 				if (result.ok) {
-					//$scope.updateListWithEntry(result.data);
-					if ($scope.currentEntry.id != '') { // new word button pressed - don't set current entry
-						setCurrentEntry(result.data);
-					}
+                    setCurrentEntry($scope.currentEntry);
 					$scope.lastSavedDate = new Date();
 					refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
 					saved = true;
@@ -216,7 +215,6 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 	};
 
 	$scope.newEntry = function() {
-		$scope.editTab.active = true;
 		$scope.editEntry();
 		$scope.entriesTotalCount++;
 	};
@@ -291,12 +289,14 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
          }
      };
 
-	refreshView = function refreshView(iEntryStart, numberOfEntries) {
+	refreshView = function refreshView(iEntryStart, numberOfEntries, fullRefresh) {
+        if (fullRefresh) notice.setLoading('Loading Dictionary');
 		var gotDto = function (result) {
+            notice.cancelLoading();
 			if (result.ok) {
 				$scope.entries = result.data.entries;
 				$scope.entriesTotalCount = result.data.entriesTotalCount;
-				$scope.show.initial();
+                if (fullRefresh) $scope.show.initial();
 			}
 		};
 		var view = 'dbe';
@@ -315,7 +315,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 		}
 	};
 	
-	refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
+	refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries, true);
 
  /* disable autosave feature until it's ready
 	var autoSaveTimer;
