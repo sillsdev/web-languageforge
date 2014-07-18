@@ -67,7 +67,7 @@ a:hover {
 }
 
 /* offset for header logo */
-div.content h1 {
+div.content h1, div.content h2 {
 	margin-left: 132px;
 	margin-top: 24px;
 	margin-bottom: 24px;
