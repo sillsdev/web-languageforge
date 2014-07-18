@@ -22,6 +22,8 @@ define('SF_TESTPROJECTCODE',  'TestCode1');
 define('SF_TESTPROJECT2',     'Test Project2');
 define('SF_TESTPROJECTCODE2', 'TestCode2');
 
+global $WEBSITE;
+$WEBSITE = \libraries\shared\Website::get('dev.scriptureforge.org');
 
 require_once(APPPATH . 'config/sf_config.php');
 
