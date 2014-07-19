@@ -17,9 +17,9 @@ class LexDbeDto {
      * @throws \Exception
      * @return array
      */
-	public static function encode($projectId, $returnOnlyUpdates = true) {
+	public static function encode($projectId, $lastFetchTime = null) {
 		$project = new LexiconProjectModel($projectId);
-		$entriesModel = new LexEntryListModel($project);
+		$entriesModel = new LexEntryListModel($project, $lastFetchTime);
 		$entriesModel->readForDto();
 		$entries = $entriesModel->entries;
 
