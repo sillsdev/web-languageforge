@@ -48,6 +48,7 @@ class LexDbeDto {
 
 		$data = array();
 		$data['entries'] = $entries;
+        $data['deletedEntries'] = array();  // TODO implement array of deleted entry ids since the last fetch time
 		$data['entriesTotalCount'] = count($entriesModel->entries);
         $data['comments'] = array(); // TODO implement comments
 
