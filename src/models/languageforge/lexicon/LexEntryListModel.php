@@ -25,14 +25,15 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 	/**
 	 * 
 	 * @param ProjectModel $projectModel
+     * @param int $newerThanTimestamp
 	 */
-	public function __construct($projectModel, $newerThanDate = null) {
+	public function __construct($projectModel, $newerThanTimestamp = null) {
 		$lexProject = new LexiconProjectModel($projectModel->id->asString());
 		$this->_config = $lexProject->config;
 
 
-        if (!is_null($newerThanDate)) {
-            $startDate = new \MongoDate(strtotime($newerThanDate));
+        if (!is_null($newerThanTimestamp)) {
+            $startDate = new \MongoDate($newerThanTimestamp);
             parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate)), array('guid', 'lexeme', 'senses'));
         } else {
 		    parent::__construct( self::mapper($projectModel->databaseName()), array(), array('guid', 'lexeme', 'senses'));
