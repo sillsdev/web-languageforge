@@ -12,7 +12,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 	$scope.currentEntry = {};
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
     var scrollListToEntry, _scrollDivToId, getEntryIndexInList, refreshView, setCurrentEntry,
-        prepEntryForUpdate, recursiveRemoveProperties, removeEntryFromLists, addEntryToTopOfLists;
+        prepEntryForUpdate, recursiveRemoveProperties, removeEntryFromList, addEntryToTopOfLists;
 	
 	$scope.currentEntryIsDirty = function() {
 		if ($scope.entryLoaded()) {
@@ -53,13 +53,18 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 				if (result.ok) {
                     var entry = result.data;
                     if ($scope.currentEntry.id == '') {
-                        removeEntryFromLists('');
-                        addEntryToTopOfLists(entry);
-                        scrollListToEntry(entry.id, 'top');
+                        removeEntryFromList('');
+                        //$scope.entries.unshift(entry);
+                        //$scope.show.initial();
+                        // no need to scroll - we are at the top of the list
                     }
                     setCurrentEntry(entry);
 					$scope.lastSavedDate = new Date();
-					refreshView(false);
+
+                    // refresh view will add the new entry to the entries list
+					refreshView(false, function() {
+                        scrollListToEntry(entry.id, 'middle');
+                    });
 					saved = true;
 					(successCallback||angular.noop)(result);
 				} else {
@@ -118,21 +123,31 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 	
     _scrollDivToId = function _scrollDivToId(containerId, divId, posOffset) {
         var offsetTop, div = $(divId), containerDiv = $(containerId);
+        var foundDiv = false;
         if (angular.isUndefined(posOffset)) {
             posOffset = 0;
         }
+
+        // todo: refactor this spaghetti logic
         if (div && containerDiv) {
             if (angular.isUndefined(div.offsetTop)) {
-                div = div[0];
+                if (angular.isDefined(div[0])) {
+                    div = div[0];
+                    foundDiv = true;
+                } else {
+                    console.log('Error: unable to scroll to div with div id ' + divId);
+                }
             }
-            if (angular.isUndefined(div.offsetTop)) {
+            if (foundDiv) {
+                if (angular.isUndefined(div.offsetTop)) {
 
-                offsetTop = div.offset().top - 450;
-            } else {
-                offsetTop = div.offsetTop - 450;
+                    offsetTop = div.offset().top - 450;
+                } else {
+                    offsetTop = div.offsetTop - 450;
+                }
+                if (offsetTop < 0) offsetTop = 0;
+                containerDiv.scrollTop(offsetTop);
             }
-            if (offsetTop < 0) offsetTop = 0;
-            containerDiv.scrollTop(offsetTop);
         }
     };
 
@@ -142,12 +157,18 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 
         // make sure the item is visible in the list
         // todo implement lazy "up" scrolling to make this more efficient
-        while($scope.show.entries.length < $scope.entries.length) {
-            index = getEntryIndexInList(id, $scope.show.entries);
-            if (angular.isDefined(index)) {
-                break;
+
+        // only expand the "show window" if we know that the entry is actually in the entry list - a safe guard
+        if (angular.isDefined(getEntryIndexInList(id, $scope.entries))) {
+            while($scope.show.entries.length < $scope.entries.length) {
+                index = getEntryIndexInList(id, $scope.show.entries);
+                if (angular.isDefined(index)) {
+                    break;
+                }
+                $scope.show.more();
             }
-            $scope.show.more();
+        } else {
+            throw 'Error: tried to scroll to an entry that is not in the entry list!';
         }
 
         // note: ':visible' is a JQuery invention that means 'it takes up space on the page'.
@@ -159,7 +180,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
             // wait then try to scroll
             $interval(function(){
                 _scrollDivToId(listDivId, entryDivId, posOffset);
-            }, 200, 1);
+            }, 1200, 1);
         }
     };
 
@@ -214,11 +235,11 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
          setCurrentEntry();
      };
 
-    removeEntryFromLists = function removeEntryFromLists(id) {
-        var iShowList = getEntryIndexInList(id, $scope.show.entries);
+    removeEntryFromList = function removeEntryFromList(id) {
         var iFullList = getEntryIndexInList(id, $scope.entries);
-        $scope.show.entries.splice(iShowList, 1);
-        $scope.entries.splice(iFullList, 1);
+        if (angular.isDefined(iFullList)) {
+            $scope.entries.splice(iFullList, 1);
+        }
     };
 
     addEntryToTopOfLists = function addEntryToTopOfLists(entry) {
@@ -230,7 +251,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
         var deletemsg = "Are you sure you want to delete the word <b>' " + utils.getLexeme($scope.config.entry, entry) + " '</b>";
 		//var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?", {lexeme:utils.getLexeme($scope.config.entry, entry)});
         modal.showModalSimple('Delete Word', deletemsg, 'Cancel', 'Delete Word').then(function() {
-                var iShowList = getEntryIndexInList(id, $scope.show.entries);
+                var iShowList = getEntryIndexInList(entry.id, $scope.show.entries);
                 removeEntryFromLists(entry.id);
                 if ($scope.entries.length > 0) {
                     if (iShowList != 0) iShowList--;
@@ -288,7 +309,8 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 
 
 
-	refreshView = function refreshView(fullRefresh) {
+	refreshView = function refreshView(fullRefresh, callback) {
+        callback = callback||angular.noop;
         if (fullRefresh) notice.setLoading('Loading Dictionary');
 		var processDbeDto = function (result) {
             notice.cancelLoading();
@@ -322,6 +344,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 
                 }
 			}
+            callback();
 		};
 		var view = 'dbe';
 		switch (view) {
