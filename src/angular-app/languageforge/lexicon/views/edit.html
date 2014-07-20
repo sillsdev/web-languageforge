@@ -64,7 +64,7 @@
             <div style="margin-bottom: 5px; border-bottom: solid black 1px">
                 <div ng-show="control.canEditEntry()" style="float:right; position:relative; top:-5px">
                     <button data-ng-show="control.canDeleteWord()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Word' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
-                    <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry()"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
+                    <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
                     <span style="color: grey;">{{saveNotice()}}</span>
                 </div>
                 <div >
@@ -78,12 +78,14 @@
             </div>
         </div>
     </div>
+    <!--
     <div class="row">
         <div class="span10">
             <pre>currentEntry {{currentEntry|json}}</pre>
             <pre>show.entries {{show.entries|json}}</pre>
         </div>
     </div>
+    -->
 </div>
 
 <!--
