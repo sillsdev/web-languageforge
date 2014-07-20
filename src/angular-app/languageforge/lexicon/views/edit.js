@@ -11,9 +11,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
-    var scrollListToEntry, _scrollDivToId, getEntryIndexInList, refreshView, setCurrentEntry,
-        prepEntryForUpdate, recursiveRemoveProperties, removeEntryFromList, addEntryToTopOfLists;
-	
+
 	$scope.currentEntryIsDirty = function() {
 		if ($scope.entryLoaded()) {
 			return !angular.equals($scope.currentEntry, pristineEntry);
@@ -45,25 +43,37 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 	};
 
 
-	$scope.saveCurrentEntry = function saveCurrentEntry(successCallback, failCallback) {
+	$scope.saveCurrentEntry = function saveCurrentEntry(setEntry, successCallback, failCallback) {
+        var isNewEntry = false;
+        if (angular.isUndefined(setEntry)) {
+            // setEntry is mainly used for when the save button is pressed, that is when the user is saving the current entry and is NOT going to a different entry (as is the case with editing another entry
+            setEntry = false;
+        }
 		if ($scope.currentEntryIsDirty()) {
 			//cancelAutoSaveTimer();
 			saving = true;
+            isNewEntry = ($scope.currentEntry.id == '');
+            if (isNewEntry) {
+                removeEntryFromLists('');
+            }
 			lexService.update(prepEntryForUpdate($scope.currentEntry), function(result) {
 				if (result.ok) {
                     var entry = result.data;
-                    if ($scope.currentEntry.id == '') {
-                        removeEntryFromList('');
-                        //$scope.entries.unshift(entry);
-                        //$scope.show.initial();
-                        // no need to scroll - we are at the top of the list
+                    if (isNewEntry) {
+                        // note: we have to reset the show window, because we don't know where the new entry will show up in the list
+                        // we can solve this problem by implementing a sliding "scroll window" that only shows a few entries at a time (say 30?)
+                        $scope.show.initial();
                     }
-                    setCurrentEntry(entry);
+                    if (setEntry) {
+                        setCurrentEntry(entry);
+                    }
 					$scope.lastSavedDate = new Date();
 
                     // refresh view will add the new entry to the entries list
 					refreshView(false, function() {
-                        scrollListToEntry(entry.id, 'middle');
+                        if (isNewEntry && setEntry) {
+                            scrollListToEntry(entry.id, 'top');
+                        }
                     });
 					saved = true;
 					(successCallback||angular.noop)(result);
@@ -74,8 +84,8 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 			});
 		}
 	};
-	
-	prepEntryForUpdate = function prepEntryForUpdate(entry) {
+
+	var prepEntryForUpdate = function prepEntryForUpdate(entry) {
 		return recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
 	};
 	
@@ -121,7 +131,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 		}
 	};
 	
-    _scrollDivToId = function _scrollDivToId(containerId, divId, posOffset) {
+    var _scrollDivToId = function _scrollDivToId(containerId, divId, posOffset) {
         var offsetTop, div = $(divId), containerDiv = $(containerId);
         var foundDiv = false;
         if (angular.isUndefined(posOffset)) {
@@ -141,9 +151,9 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
             if (foundDiv) {
                 if (angular.isUndefined(div.offsetTop)) {
 
-                    offsetTop = div.offset().top - 450;
+                    offsetTop = div.offset().top - posOffset;
                 } else {
-                    offsetTop = div.offsetTop - 450;
+                    offsetTop = div.offsetTop - posOffset;
                 }
                 if (offsetTop < 0) offsetTop = 0;
                 containerDiv.scrollTop(offsetTop);
@@ -151,8 +161,8 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
         }
     };
 
-    scrollListToEntry = function scrollListToEntry(id, position) {
-        var posOffset = (position == 'top') ? 300 : 450;
+    var scrollListToEntry = function scrollListToEntry(id, position) {
+        var posOffset = (position == 'top') ? 237 : 450;
         var index, entryDivId = '#entryId_'+id, listDivId = '#compactEntryListContainer';
 
         // make sure the item is visible in the list
@@ -180,7 +190,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
             // wait then try to scroll
             $interval(function(){
                 _scrollDivToId(listDivId, entryDivId, posOffset);
-            }, 1200, 1);
+            }, 200, 1);
         }
     };
 
@@ -190,7 +200,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
     };
 
 
-    getEntryIndexInList = function getEntryIndexInList(id, list) {
+    var getEntryIndexInList = function getEntryIndexInList(id, list) {
 		var index = undefined;
 		for (var i=0; i<list.length; i++) {
 			var e = list[i];
@@ -202,7 +212,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
         return undefined;
 	};
 	
-	setCurrentEntry = function setCurrentEntry(entry) {
+	var setCurrentEntry = function setCurrentEntry(entry) {
 		entry = entry || {};
 		$scope.currentEntry = entry;
 		pristineEntry = angular.copy(entry);
@@ -222,8 +232,9 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
         $scope.saveCurrentEntry();
         var newEntry = {id:''};
         setCurrentEntry(newEntry);
-        $scope.show.entries.unshift(newEntry);
-        $scope.entries.unshift(newEntry);
+        addEntryToEntryList(newEntry);
+        $scope.show.initial();
+        scrollListToEntry('', 'top');
 	};
 	
 	$scope.entryLoaded = function entryLoaded() {
@@ -235,15 +246,23 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
          setCurrentEntry();
      };
 
-    removeEntryFromList = function removeEntryFromList(id) {
+    var removeEntryFromLists = function removeEntryFromLists(id) {
         var iFullList = getEntryIndexInList(id, $scope.entries);
         if (angular.isDefined(iFullList)) {
             $scope.entries.splice(iFullList, 1);
+            /* not yet implemented
+            if ($scope.show.startOfWindow != 0) {
+                $scope.show.startOfWindow--;
+            }
+            */
+        }
+        var iShowList = getEntryIndexInList(id, $scope.show.entries);
+        if (angular.isDefined(iShowList)) {
+            $scope.show.entries.splice(iShowList, 1);
         }
     };
 
-    addEntryToTopOfLists = function addEntryToTopOfLists(entry) {
-        $scope.show.entries.unshift(entry);
+    var addEntryToEntryList = function addEntryToTopOfList(entry) {
         $scope.entries.unshift(entry);
     };
 
@@ -269,29 +288,22 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 	$scope.entryHasComments = function(entry) {
 		return false;
 	};
-	
-	$scope.load = {
-		iEntryStart: 0,
-		numberOfEntries: null	// use null to grab all data from iEntryStart onwards
-	}; 
+
+    /* TODO implement a proper sliding window that can go back and forward */
 	$scope.show = {
-		iEntryStart: 0,
-		numberOfEntries: 50,
+		//startOfWindow: 0,
 		entries: []
     };
-	$scope.show.initial = function() {
-		$scope.show.iEntryStart = 0;
-		$scope.show.numberOfEntries = 50;
-		$scope.show.entries = $scope.entries.slice($scope.show.iEntryStart, $scope.show.iEntryStart + $scope.show.numberOfEntries);
+	$scope.show.initial = function showInitial() {
+        //var windowSize = 50;
+		$scope.show.entries = $scope.entries.slice(0, 50);
 	};
-	$scope.show.more = function() {
-		$scope.show.iEntryStart += $scope.show.numberOfEntries;
-		if ($scope.show.iEntryStart > $scope.entries.length) {
-			$scope.show.iEntryStart = $scope.entries.length;
-		} else {
-			var moreEntries = $scope.entries.slice($scope.show.iEntryStart, $scope.show.iEntryStart + $scope.show.numberOfEntries);
-			$scope.show.entries = $scope.show.entries.concat(moreEntries);
-		}
+	$scope.show.more = function showMore() {
+        var increment = 50;
+
+        if (this.entries.length < $scope.entries.length) {
+            this.entries = $scope.entries.slice(0, this.entries.length + increment);
+        }
 	};
 
     $scope.getCompactItemListOverlay = function getCompactItemListOverlay(entry) {
@@ -306,10 +318,26 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
     };
 
 
+    /*
+    // for debugging
+    var assertNoDuplicateIds = function assertNoDuplicateIds(arr) {
+        // check for duplicate ids???
+        var ids = [];
+        for (var i=0; i<arr.length; i++) {
+            var e = arr[i];
+            if (ids.indexOf(e.id) > -1) {
+                console.log('Ouch!  Somehow we got a duplicate id in the entries array! id = ' + e.id);
+                console.log(e);
+                //throw 'duplicate id in array!';
+            };
+            ids.push(e.id);
+        }
+    };
+    */
 
 
 
-	refreshView = function refreshView(fullRefresh, callback) {
+	var refreshView = function refreshView(fullRefresh, callback) {
         callback = callback||angular.noop;
         if (fullRefresh) notice.setLoading('Loading Dictionary');
 		var processDbeDto = function (result) {
@@ -317,6 +345,8 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 			if (result.ok) {
                 if (fullRefresh) {
                     $scope.entries = result.data.entries;
+                    //assertNoDuplicateIds($scope.entries); // for debugging only
+
                     $scope.show.initial();
                 } else {
                     // splice updates into entry lists
@@ -326,16 +356,23 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
                         // splice into $scope.entries
                         i = getEntryIndexInList(e.id, $scope.entries);
                         if (angular.isDefined(i)) {
+                            //console.log('refreshing entry in $scope.entries:');
+                            //console.log(e);
                             $scope.entries[i] = e;
                         } else {
-                            $scope.entries.unshift(e);
+                            addEntryToEntryList(e);
+//                            console.log('adding new entry into $scope.entries:');
+//                            console.log(e);
                         }
 
                         // splice into $scope.show.entries
                         i = getEntryIndexInList(e.id, $scope.show.entries);
                         if (angular.isDefined(i)) {
+//                            console.log('refreshing entry in $scope.show.entries:');
+//                            console.log(e);
                             $scope.show.entries[i] = e;
                         } else {
+//                            console.log('new entry isnt in view so we dont do anything');
                             // don't do anything.  The entry is not in view so we don't need to update it
                         }
                     });
@@ -453,7 +490,9 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
     $scope.control.canEditEntry = function() {
         return true;
     }
-	
+
+
+
 	/*
 	$scope.recursiveSetConfig = function(startAt, propName, propValue) {
 		// Go through the config tree starting at the startAt field, and
@@ -470,7 +509,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 	};
 	*/
 	
-	recursiveRemoveProperties = function recursiveRemoveProperties(startAt, properties) {
+	var recursiveRemoveProperties = function recursiveRemoveProperties(startAt, properties) {
 		angular.forEach(startAt, function(value, key) {
 			var deleted = false;
 			angular.forEach(properties, function(propName) {
