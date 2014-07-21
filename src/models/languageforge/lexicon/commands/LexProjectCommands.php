@@ -91,37 +91,33 @@ class LexProjectCommands {
 			}
 			throw new \Exception($message);
 		}
-		
-		// make the Assets folder if it doesn't exist
-		$project = new LexiconProjectModel($projectId);
-		$folderPath = $project->getAssetsFolderPath();
-		if (!file_exists($folderPath) and !is_dir($folderPath)) {
-			mkdir($folderPath, 0777, true);
-		};
-		
-		LiftImport::merge($liftXml, $project, $import['settings']['mergeRule'], $import['settings']['skipSameModTime'], $import['settings']['deleteMatchingEntry']);
-		
-		if (!$project->liftFilePath || $import['settings']['mergeRule'] != LiftMergeRule::IMPORT_LOSES) {
-			// cleanup previous files of any allowed extension
-			$cleanupFiles = glob($folderPath . '/*[' . implode(', ', $allowedExtensions) . ']');
-			foreach ($cleanupFiles as $cleanupFile) {
-				@unlink($cleanupFile);
-			}
-			
-			// put the LIFT file into Assets
-			$filePath =  $folderPath . '/' . $fileName;
-			$moveOk = file_put_contents($filePath, $liftXml);
-			
-			// update database with file location
-			$project->liftFilePath = '';
-			if ($moveOk) {
-				$project->liftFilePath = $filePath;
-			}
-		}
-		
-		$project->write();
-	}
-	
+        // make the Assets folder if it doesn't exist
+        $project = new LexiconProjectModel($projectId);
+        $folderPath = $project->getAssetsFolderPath();
+        if (!file_exists($folderPath) and !is_dir($folderPath)) {
+            mkdir($folderPath, 0777, true);
+        };
+
+        LiftImport::merge($liftXml, $project, $import['settings']['mergeRule'], $import['settings']['skipSameModTime'], $import['settings']['deleteMatchingEntry']);
+        $project->write();
+
+        if (!$project->liftFilePath || $import['settings']['mergeRule'] != LiftMergeRule::IMPORT_LOSES) {
+            // cleanup previous files of any allowed extension
+            $cleanupFiles = glob($folderPath . '/*[' . implode(', ', $allowedExtensions) . ']');
+            foreach ($cleanupFiles as $cleanupFile) {
+                @unlink($cleanupFile);
+            }
+
+            // put the LIFT file into Assets
+            $filePath =  $folderPath . '/' . $fileName;
+            $project->liftFilePath = $filePath;
+            $project->write();
+            unset($project); // to free memory - not sure if this actually helps
+            file_put_contents($filePath, $liftXml);
+
+        }
+    }
+
 }
 
 ?>

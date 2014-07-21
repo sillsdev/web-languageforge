@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.breadcrumb'])
 .service('lexLinkService', ['$location', 'sessionService', function($location, ss) {
 	this.project = function () {
@@ -20,7 +22,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 		breadcrumbService.set('top', [
 			{href: '/app/projects', label: 'My Projects'},
 			{href: linkService.project(), label: ss.session.project.projectName},
-			{href: linkService.projectView(view), label: label},
+			{href: linkService.projectView(view), label: label}
 		]);
 	};
 
@@ -82,54 +84,59 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	};
 }])
 .service('lexEntryService', ['jsonRpc', 'sessionService', 'lexProjectService', 'breadcrumbService', 'lexLinkService', 
-                             function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
-	jsonRpc.connect('/api/sf');
-	this.read = function(id, callback) {
-		jsonRpc.call('lex_entry_read', [id], callback);
-	};
-	
-	this.update = function(entry, callback) {
-		jsonRpc.call('lex_entry_update', [entry], callback);
-	};
-	
-	this.remove = function(id, callback) {
-		jsonRpc.call('lex_entry_remove', [id], callback);
-	};
-	
-	this.dbeDto = function(iEntryStart, numberOfEntries, callback) {
-		jsonRpc.call('lex_dbeDto', [iEntryStart, numberOfEntries], function(result) {
-			if (result.ok) {
-				breadcrumbService.set('top',
-					[
-					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: ss.session.project.projectName},
-					 {href: linkService.projectView('dbe'), label: 'Browse And Edit'},
-					]
-				);
-				callback(result);
-			}
-		});
-	};
-	
-	this.updateComment = function(comment, callback) {
-		jsonRpc.call('lex_entry_updateComment', [comment], callback);
-	};
-	
-	this.isFieldEnabled = function(fieldName) {
-		var gConfig = ss.session.projectSettings.config;
-		var currentUserRole = ss.session.projectSettings.currentUserRole;
-		
-		// Default to invisible if config not defined
-		if (angular.isUndefined(gConfig)) {
-			return false;
-		};
-		
-		// Default to visible if nothing specified in config
-		if (angular.isUndefined(gConfig.roleViews[currentUserRole].showFields[fieldName])) {
-			return true;
-		};
-		return gConfig.roleViews[currentUserRole].showFields[fieldName];
-	};
+function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
+    jsonRpc.connect('/api/sf');
+    this.read = function(id, callback) {
+        jsonRpc.call('lex_entry_read', [id], callback);
+    };
+
+    this.update = function(entry, callback) {
+        jsonRpc.call('lex_entry_update', [entry], callback);
+    };
+
+    this.remove = function(id, callback) {
+        jsonRpc.call('lex_entry_remove', [id], callback);
+    };
+
+    this.dbeDto = function(browserId, fullRefresh, callback) {
+        if (fullRefresh) {
+            jsonRpc.call('lex_dbeDtoFull', [browserId], function(result) {
+                if (result.ok) {
+                    // todo move breadcrumbs back to controller - cjh 2014-07
+                    breadcrumbService.set('top',
+                        [
+                            {href: '/app/projects', label: 'My Projects'},
+                            {href: linkService.project(), label: ss.session.project.projectName},
+                            {href: linkService.projectView('dbe'), label: 'Browse And Edit'}
+                        ]
+                    );
+                    callback(result);
+                }
+            });
+        } else {
+            jsonRpc.call('lex_dbeDtoUpdatesOnly', [browserId], callback);
+        }
+    };
+
+    this.updateComment = function(comment, callback) {
+        jsonRpc.call('lex_entry_updateComment', [comment], callback);
+    };
+
+    this.isFieldEnabled = function(fieldName) {
+        var gConfig = ss.session.projectSettings.config;
+        var currentUserRole = ss.session.projectSettings.currentUserRole;
+
+        // Default to invisible if config not defined
+        if (angular.isUndefined(gConfig)) {
+            return false;
+        };
+
+        // Default to visible if nothing specified in config
+        if (angular.isUndefined(gConfig.roleViews[currentUserRole].showFields[fieldName])) {
+            return true;
+        };
+        return gConfig.roleViews[currentUserRole].showFields[fieldName];
+    };
 	
 	
 	
@@ -188,6 +195,71 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	// --- END TEST CODE ---
 	*/
 }])
+    .service('lexUtils', [function() {
+
+
+        var _getFirstField = function _getFirstField(config, node, fieldName) {
+            var ws, field, result = '';
+            if (node[fieldName] && config && config.fields) {
+                for (var i=0; i<config.fields[fieldName].inputSystems.length; i++) {
+                    ws = config.fields[fieldName].inputSystems[i];
+                    field = node[fieldName][ws];
+                    if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '') {
+                        result = field.value;
+                        break;
+                    }
+                }
+            }
+            return result;
+        };
+
+
+
+        /**
+         *
+         * @param config - entry config obj
+         * @param entry
+         * @returns {string}
+         */
+        this.getLexeme = function getLexeme(config, entry) {
+            return _getFirstField(config, entry, 'lexeme');
+        };
+        this.getDefinition = function getDefinition(config, sense) {
+            return _getFirstField(config, sense, 'definition');
+        };
+        this.getGloss = function getGloss(config, sense) {
+            return _getFirstField(config, sense, 'gloss');
+        };
+        this.getWord = function getWord(config, entry) {
+            return this.getLexeme(config, entry);
+        };
+        this.getExampleSentence = function getExampleSentence(config, example) {
+            return _getFirstField(config, example, 'sentence');
+        };
+
+        this.getMeaning = function getMeaning(config, sense) {
+            var meaning = '';
+            meaning = this.getDefinition(config, sense);
+            if (!meaning) {
+                meaning = this.getGloss(config, sense);
+            }
+            return meaning;
+        };
+
+        this.getPartOfSpeechAbbreviation = function getPartOfSpeechAbbreviation(posModel) {
+            var match, myRegexp = /(\(.*\))/; // capture text inside parens
+            if (posModel && angular.isDefined) {
+                match = myRegexp.exec(posModel.value);
+                if (match && match.length > 0) {
+                    return match[0];
+                } else {
+                    return posModel.value.toLowerCase().substring(0,5);
+                }
+            }
+            return '';
+        };
+
+    }])
 ;
 
 

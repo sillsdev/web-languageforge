@@ -89,16 +89,16 @@ class LexConfiguration {
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->label = 'Part of Speech';
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->visible = true;
 		$basicPosList = array(
-			new LexiconOptionListItem('Adjective'),
-			new LexiconOptionListItem('Preposition'),
-			new LexiconOptionListItem('Adverb'),
-			new LexiconOptionListItem('Classifier'),
-			new LexiconOptionListItem('Numeral'),
-			new LexiconOptionListItem('Noun'),
-			new LexiconOptionListItem('Proper Noun'),
-			new LexiconOptionListItem('Particle'),
-			new LexiconOptionListItem('Pronoun'),
-			new LexiconOptionListItem('Verb')
+			new LexiconOptionListItem('Adjective (adj)'),
+			new LexiconOptionListItem('Preposition (prep)'),
+			new LexiconOptionListItem('Adverb (adv)'),
+			new LexiconOptionListItem('Classifier (cla)'),
+			new LexiconOptionListItem('Numeral (num)'),
+			new LexiconOptionListItem('Noun (n)'),
+			new LexiconOptionListItem('Proper Noun (nprop)'),
+			new LexiconOptionListItem('Particle (p)'),
+			new LexiconOptionListItem('Pronoun (pro)'),
+			new LexiconOptionListItem('Verb (v)')
 		);
 
 		/*

@@ -937,7 +937,7 @@ label {
 
 #maincontainer {
 	min-height: 100%;
-	margin-bottom: -239px;
+	margin-bottom: -291px;
 	position: relative;
 	
 }
@@ -949,7 +949,7 @@ label {
 }
 
 .clearfooter {
-	height: 239px;
+	height: 291px;
 	clear: both;
 }
 

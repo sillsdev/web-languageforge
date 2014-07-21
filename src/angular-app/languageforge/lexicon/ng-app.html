@@ -1,7 +1,7 @@
 <div class="content container" data-ng-cloak data-ng-controller="MainCtrl" dir="{{interfaceConfig.direction}}">
 	<div class="hdrnav">
+        <!--
 		<div class="control-group {{interfaceConfig.pullToSide}}">
-			<!-- <label class="control-label" for="language">Interface Language</label> -->
 			<div class="controls">
 				<select class="form-control" id="language" style="width:100%"
 					data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder"
@@ -12,6 +12,7 @@
 			<li class="here"><a href="/app/projects">My Projects</a></li>
 			<li><a href="/app/activity">Activity</a></li>
 		</ul>
+        -->
 		<ul id="top" class="topCrumbs" breadcrumbs></ul>
 	</div>
 	<div id="lexicon-hmenu" style="clear:both">
@@ -28,6 +29,7 @@
 					<li data-ng-show="isTaskEnabled('users')"><a href="#/users" translate="User Management"></a></li>
 				</ul>
 			</div>
+            <!--
 			<div class="btn-group" data-ng-show="isTaskEnabled('dashboard')">
 				<a class="btn" href="#"><i class="icon-bookmark icon-large"></i> *NYI*  Dashboard</a>
 			</div>
@@ -56,6 +58,7 @@
 						<li data-ng-show="isTaskEnabled('addExamples')"><a href="#/add-examples" translate="add Examples"></a></li>
 				</ul>
 			</div>
+			-->
 		</div>
 	</div>
 	<div data-sil-notices></div>

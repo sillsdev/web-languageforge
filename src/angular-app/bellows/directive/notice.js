@@ -1,7 +1,10 @@
+'use strict';
+
 angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnimate', 'ngSanitize'])
 .factory('silNoticeService', ['$interval', 'utilService', '$sce', function($interval, util, $sce) {
 	var notices = [];
 	var timers = {};
+    var loadingMessage, isLoading = false;
 	
 	var getIndexById = function(id) {
 		for (var i=0; i<notices.length; i++) {
@@ -52,10 +55,24 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
 		get: function() {
 			return notices;
 		},
+        getLoadingMessage: function() {
+            return loadingMessage;
+        },
+        setLoading: function(message) {
+            loadingMessage = message;
+            isLoading = true;
+        },
+        cancelLoading: function() {
+            loadingMessage = '';
+            isLoading = false;
+        },
+        isLoading: function() {
+            return isLoading;
+        },
 		ERROR:   function() { return 'error'; },
 		WARN:    function() { return 'warn'; },
 		INFO:    function() { return 'info'; },
-		SUCCESS: function() { return 'success'; },
+		SUCCESS: function() { return 'success'; }
 	};
 }])
 .directive('silNotices', ['silNoticeService', function(noticeService) {
@@ -71,6 +88,8 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
 				$scope.notices = function() {
 					return noticeService.get();
 				};
+                $scope.getLoadingMessage = noticeService.getLoadingMessage;
+                $scope.isLoading = noticeService.isLoading;
 			};
 		}
 	};
