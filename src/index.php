@@ -58,10 +58,16 @@ if (defined('ENVIRONMENT'))
  *
  */
 	require_once 'libraries/shared/Website.php';
-	$website = \libraries\shared\Website::getOrRedirect();
-	$site = $website->base;
-	//$system_path = '/var/www/scriptureforge.org_dev/lib/CodeIgniter_2.1.3/system';
-	$system_path = "/var/www/$site.org_dev/lib/CodeIgniter_2.1.3/system";
+    global $WEBSITE;
+	$WEBSITE = \libraries\shared\Website::getOrRedirect();
+    if ($WEBSITE) {
+        $site = $WEBSITE->base;
+        //$system_path = '/var/www/scriptureforge.org_dev/lib/CodeIgniter_2.1.3/system';
+        $system_path = "/var/www/$site.org_dev/lib/CodeIgniter_2.1.3/system";
+    } else {
+        print "dead: could not get website instance;";
+        exit;
+    }
 
 /*
  *---------------------------------------------------------------

@@ -42,7 +42,7 @@
 							<input type="checkbox" data-ng-model="deleteMatchingEntry"/>{{ 'Delete matching entry if deleted in import.' | translate }}</label>
 					</div>
 				</div>
-				<button class="btn btn-primary" data-ng-click="importLift()">
+				<button ng-disabled="importStarted" class="btn btn-primary" data-ng-click="importLift()">
 					<i class="icon-upload"></i>{{ 'Import' | translate }}</button><strong> {{file.name}}</strong> ({{file.size | bytes }})
 			</form>
 		</div>

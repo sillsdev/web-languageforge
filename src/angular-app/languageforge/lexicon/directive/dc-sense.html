@@ -12,7 +12,7 @@
 				<div data-ng-switch-when="fields">
 					<div data-ng-switch data-on="fieldName">
 						<div data-ng-switch-when="examples" data-ng-show="isFieldEnabled('sentence') || isFieldEnabled('translation')">
-							<div class="animate-repeat" data-ng-repeat="example in model.examples"> 
+							<div data-ng-repeat="example in model.examples">
 								<dc-example control="control" remove="deleteExample" index="$index" config="config.fields[fieldName]" model="example" comment="submitComment(comment, fieldName)"></dc-example>
 							</div>
 							<div class="addItem"><a data-ng-click="addExample()">Add Example</a></div>

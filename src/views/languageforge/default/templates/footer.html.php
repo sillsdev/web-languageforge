@@ -1,3 +1,4 @@
+    <div id="footerContainer">
 		<div id="footer" class="png_bg">
 			<div class="sfcontainer cf">
 			
@@ -31,11 +32,4 @@
 			
 			</div>
 		</div>
-		
-		<div id="footerBaseline">
-		<!-- we don't have a languageforge darkTextLogo that I know of - cjh 2014-02
-			<div class="sfcontainer">
-				<div class="darkTextLogo png_bg"></div>
-			</div>
-		-->
-		</div>
+	</div>
