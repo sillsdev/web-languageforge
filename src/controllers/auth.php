@@ -75,6 +75,7 @@ class Auth extends Base {
 			//check for "remember me"
 			$remember = (bool) $this->input->post('remember');
 
+			// TODO: refactor this to use AuthHelper::login. IJH 2014-07
 			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember))
 			{
 				// successful login
@@ -107,7 +108,6 @@ class Auth extends Base {
 					}
 				} else {
 					//log out with error msg
-					// TODO: refactor this to handle cross-site logins
 					$logout = $this->ion_auth->logout();
 					$this->session->set_flashdata('message', 'You are not authorized to use this site');
 					redirect('/auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
