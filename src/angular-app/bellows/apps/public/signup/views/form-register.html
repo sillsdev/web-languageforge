@@ -122,13 +122,12 @@
 		</div>
 	</div>
 	<div align="center">
-		<a class="btn pull-left" data-ui-sref="form.identify">
+		<a class="btn pull-left" data-ui-sref="form.identify" id="back">
 			<i class="icon-circle-arrow-left"></i>
 			{{'Back' | translate}}</a>
 		<button class="btn btn-primary" type="submit" id="submit"
 			data-ng-disabled="submissionInProgress || signupForm.$invalid || (!showPassword && record.password != confirmPassword) || record.password.length < 7">
-			{{'Sign Up' | translate}} <i style="margin-left: 5px" class="icon-thumbs-up"></i>
-		</button>
+			{{'Sign Up' | translate}} <i style="margin-left: 5px" class="icon-thumbs-up"></i></button>
 		<span data-ng-show="submissionInProgress"><img src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
 	</div>
 </fieldset>
