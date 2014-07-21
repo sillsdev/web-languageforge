@@ -18,6 +18,8 @@ class LexiconFieldListConfigObj extends LexiconConfigObj {
 						return new LexiconMultitextConfigObj();
 					case LexiconConfigObj::OPTIONLIST:
 						return new LexiconOptionlistConfigObj();
+                    case LexiconConfigObj::MULTIOPTIONLIST:
+                        return new LexiconMultiOptionlistConfigObj();
 				}
 			}
 		);
