@@ -64,7 +64,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
     
     // configure interface language filepath
     $translateProvider.useStaticFilesLoader({
-      prefix: '/angular-app/languageforge/lexicon/lang/',
+      prefix: '/angular-app/bellows/apps/public/signup/lang/',
       suffix: '.json'
     });
     $translateProvider.preferredLanguage('en');
