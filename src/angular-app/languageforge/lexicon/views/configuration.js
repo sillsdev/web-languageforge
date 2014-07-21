@@ -219,7 +219,11 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 	});
 
 }])
-.controller('FieldConfigCtrl', ['$scope', function($scope) {
+.controller('FieldConfigCtrl', ['$scope', '$modal', function($scope, $modal) {
+  $scope.newCustomField = {
+    'name': ''
+  };
+  
 	$scope.currentField = {
 		'name': '',
 		'inputSystems': {
@@ -270,7 +274,32 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 		});
 		$scope.configForm.$setDirty();
 	};
+	
+	$scope.addCustomField = function() {
+	  console.log('addCustomField ');
+	};
 
+  $scope.openNewCustomFieldModal = function() {
+    var modalInstance = $modal.open({
+      templateUrl: '/angular-app/languageforge/lexicon/views/new-custom-field.html',
+      controller: function($scope, $modalInstance) {
+        $scope.newCustomField = {
+            'name': ''
+          };
+        $scope.addCustomField = function () {
+          console.log('addCustomField ', $scope.newCustomField);
+          $modalInstance.close($scope.newCustomField);
+        };
+        
+      }
+    });
+    
+    modalInstance.result.then(function (newCustomField) {
+      $scope.newCustomField = newCustomField;
+    });
+
+  };
+  
 	$scope.editInputSystems = {
 		'collapsed': true,
 		'done': function() {
