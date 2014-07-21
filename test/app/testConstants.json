@@ -15,6 +15,8 @@
   "memberName"      : "Test User",
   "memberEmail"     : "test_runner_normal_user@example.com",
   "notUsedUsername" : "not_used_user",
+  "notUsedEmail" 		: "not_used_user@example.com",
+  "notUsedName"     : "Test Not a User",
 
   "passwordTooShort": "123456",
   "passwordValid"   : "1234567",

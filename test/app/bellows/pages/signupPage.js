@@ -17,7 +17,9 @@ var SignupPage = function() {
   this.showPassword = element(by.model('showPassword'));
   this.captchaInput = element(by.model('record.captcha'));
   this.captchaImage = element(by.id('captcha'));
+  this.nextButton = element(by.id('identify'));
   this.signupButton = element(by.id('submit'));
+  this.backButton = element(by.id('back'));
   this.noticeList  = element.all(by.repeater('notice in notices()'));
 };
 
