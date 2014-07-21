@@ -13,7 +13,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
       // route to show our basic form (/form)
       .state('form', {
         abstract: true,
-        url: '/form',
+        // url: '/form',
         templateUrl: '/angular-app/bellows/apps/public/signup/views/form-.html',
         controller: 'SignupCtrl'
       })
@@ -22,38 +22,45 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
       // each of these sections have their own view
       // url will be nested (/form/identify)
       .state('form.identify', {
-        url: '/identify',
+        // url: '/identify',
         templateUrl: '/angular-app/bellows/apps/public/signup/views/form-identify.html'
       })
       
       // url will be /form/register
       .state('form.register', {
-        url: '/register',
+        // url: '/register',
         templateUrl: '/angular-app/bellows/apps/public/signup/views/form-register.html'
       })
       
       // url will be /form/activate
       .state('form.activate', {
-        url: '/activate',
+        // url: '/activate',
         templateUrl: '/angular-app/bellows/apps/public/signup/views/form-activate.html'
       })
       
       // url will be /validate
       .state('validate', {
-        url: '/validate',
+        // url: '/validate',
         templateUrl: '/angular-app/bellows/apps/public/signup/views/validate.html'
       })
       
       // url will be /form/login
       .state('form.login', {
-        url: '/login',
+        // url: '/login',
         templateUrl: '/angular-app/bellows/apps/public/signup/views/form-login.html'
       })
-    ;
+      ;
     
     // catch all route
     // send users to the form page 
-    $urlRouterProvider.otherwise('/form/identify');
+    $urlRouterProvider
+      .when('', ['$state', function ($state) {
+        if (! $state.$current.navigable) {
+          $state.go('form.identify');
+        }
+      }])
+//      .otherwise('/form')
+      ;
     
     // configure interface language filepath
     $translateProvider.useStaticFilesLoader({
@@ -61,6 +68,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
       suffix: '.json'
     });
     $translateProvider.preferredLanguage('en');
+    
   }])
   .controller('SignupCtrl', ['$scope', '$state', '$window', 'userService', 'sessionService', 'silNoticeService',  
                              function($scope, $state, $window, userService, sessionService, notice) {
