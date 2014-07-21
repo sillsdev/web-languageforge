@@ -25,11 +25,19 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 	/**
 	 * 
 	 * @param ProjectModel $projectModel
+     * @param int $newerThanTimestamp
 	 */
-	public function __construct($projectModel) {
+	public function __construct($projectModel, $newerThanTimestamp = null) {
 		$lexProject = new LexiconProjectModel($projectModel->id->asString());
 		$this->_config = $lexProject->config;
-		parent::__construct( self::mapper($projectModel->databaseName()), array(), array('guid', 'lexeme', 'senses'));
+
+
+        if (!is_null($newerThanTimestamp)) {
+            $startDate = new \MongoDate($newerThanTimestamp);
+            parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate)), array('guid', 'lexeme', 'senses'));
+        } else {
+		    parent::__construct( self::mapper($projectModel->databaseName()), array(), array('guid', 'lexeme', 'senses'));
+        }
 	}
 	
 	private function getDefinition($entry) {
@@ -147,26 +155,11 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 					}
 				}
 				if ($foundMissingInfo) {
-					$entriesToReturn[] = array(
-						'id' => $entry['id'],
-						'definition' => $this->getDefinition($entry),
-						'gloss' => $this->getGloss($entry),
-						'lexeme' => $this->getLexeme($entry)
-					);
+					$entriesToReturn[] = $entry;
 				}
 			} // end of foreach
 			$this->entries = $entriesToReturn;
 			$this->count = count($this->entries);
-		} else {
-			foreach ($this->entries as $entry) {
-				$entriesToReturn[] = array(
-					'id' => $entry['id'],
-					'definition' => $this->getDefinition($entry),
-					'gloss' => $this->getGloss($entry),
-					'lexeme' => $this->getLexeme($entry)
-				);
-			}
-			$this->entries = $entriesToReturn;
 		}
 	}
 

@@ -508,9 +508,22 @@ class Sf
 		return LexProjectDto::encode($this->_projectId, $this->_userId);
 	}
 
-	public function lex_dbeDto($iEntryStart, $numberOfEntries) {
-		return LexDbeDto::encode($this->_projectId, $this->_userId, $iEntryStart, $numberOfEntries);
-	}
+    public function lex_dbeDtoFull($browserId) {
+        $sessionLabel = 'lexDbeFetch_' . $browserId;
+        $this->_controller->session->set_userdata($sessionLabel, time());
+        return LexDbeDto::encode($this->_projectId);
+    }
+    public function lex_dbeDtoUpdatesOnly($browserId) {
+        $sessionLabel = 'lexDbeFetch_' . $browserId;
+        $lastFetchTime = $this->_controller->session->userdata($sessionLabel);
+        $this->_controller->session->set_userdata($sessionLabel, time());
+        if ($lastFetchTime) {
+            $lastFetchTime = $lastFetchTime - 5;  // 5 second buffer
+            return LexDbeDto::encode($this->_projectId, $lastFetchTime);
+        } else {
+            return LexDbeDto::encode($this->_projectId);
+        }
+    }
 	
 	public function lex_configuration_update($config) {
 		return LexProjectCommands::updateConfig($this->_projectId, $config);

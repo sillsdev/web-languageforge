@@ -1,14 +1,17 @@
 'use strict';
 
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll'])
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$modal', '$interval', '$filter', 'lexLinkService', 
-                         function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService) {
-	var pristineEntry = {};
+angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry',
+    'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window',
+        '$modal', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService',
+function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService, utils, modal, notice) {
+    var pristineEntry = {};
+    var browserId = Math.floor(Math.random() * 1000);
 	$scope.config = $scope.projectSettings.config;
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
-	$scope.entries = [];
-	
+    // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
+
 	$scope.currentEntryIsDirty = function() {
 		if ($scope.entryLoaded()) {
 			return !angular.equals($scope.currentEntry, pristineEntry);
@@ -18,6 +21,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	var saving = false;
 	var saved = false;
+
 	$scope.saveNotice = function() {
 //		if ($scope.currentEntryIsDirty()) {	// TODO. Disabled. until php can deliver completely valid entry model and directives no longer make valid models. IJH 2014-03
 //			if (saving) {
@@ -39,18 +43,38 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 
 
-	$scope.saveCurrentEntry = function(successCallback, failCallback) {
+	$scope.saveCurrentEntry = function saveCurrentEntry(setEntry, successCallback, failCallback) {
+        var isNewEntry = false;
+        if (angular.isUndefined(setEntry)) {
+            // setEntry is mainly used for when the save button is pressed, that is when the user is saving the current entry and is NOT going to a different entry (as is the case with editing another entry
+            setEntry = false;
+        }
 		if ($scope.currentEntryIsDirty()) {
-			cancelAutoSaveTimer();
+			//cancelAutoSaveTimer();
 			saving = true;
-			lexService.update($scope.prepEntryForUpdate($scope.currentEntry), function(result) {
+            isNewEntry = ($scope.currentEntry.id == '');
+            if (isNewEntry) {
+                removeEntryFromLists('');
+            }
+			lexService.update(prepEntryForUpdate($scope.currentEntry), function(result) {
 				if (result.ok) {
-					$scope.updateListWithEntry(result.data);
-					if ($scope.currentEntry.id != '') { // new word button pressed - don't set current entry
-						$scope.setCurrentEntry(result.data);
-					}
+                    var entry = result.data;
+                    if (isNewEntry) {
+                        // note: we have to reset the show window, because we don't know where the new entry will show up in the list
+                        // we can solve this problem by implementing a sliding "scroll window" that only shows a few entries at a time (say 30?)
+                        $scope.show.initial();
+                    }
+                    if (setEntry) {
+                        setCurrentEntry(entry);
+                    }
 					$scope.lastSavedDate = new Date();
-					$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries);
+
+                    // refresh view will add the new entry to the entries list
+					refreshView(false, function() {
+                        if (isNewEntry && setEntry) {
+                            scrollListToEntry(entry.id, 'top');
+                        }
+                    });
 					saved = true;
 					(successCallback||angular.noop)(result);
 				} else {
@@ -60,13 +84,17 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 			});
 		}
 	};
-	
-	$scope.prepEntryForUpdate = function(entry) {
-		return $scope.recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+
+	var prepEntryForUpdate = function prepEntryForUpdate(entry) {
+		return recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
 	};
 	
-	$scope.getLexemeForDisplay = function(listEntry) {
-		return (listEntry.lexeme) ? listEntry.lexeme : '[Empty]';
+	$scope.getWordForDisplay = function(entry) {
+        var lexeme = utils.getLexeme($scope.config.entry, entry);
+        if (!lexeme) {
+            return '[Empty]';
+        }
+        return lexeme;
 	};
 	
 	$scope.lexemeAlign = function(listEntry) {
@@ -78,27 +106,17 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	function getLexeme(entry) {
-		var title = "";
-		if (entry.lexeme && $scope.config && $scope.config.entry) {
-			var lexemeInputSystem = $scope.config.entry.fields.lexeme.inputSystems[0];
-			if (angular.isDefined(entry.lexeme[lexemeInputSystem]) && entry.lexeme[lexemeInputSystem].value != '') {
-				title = entry.lexeme[lexemeInputSystem].value;
-			}
-		}
-		return title;
+	$scope.getMeaningForDisplay = function(entry) {
+		var meaning = '';
+        if (entry.senses && entry.senses[0]) {
+            meaning = utils.getMeaning($scope.config.entry.fields.senses, entry.senses[0]);
+        }
+        if (!meaning) {
+            return '[Empty]';
+        }
+        return meaning;
 	};
 
-	$scope.getDefinitionOrGloss = function(listEntry) {
-		var meaning = '';
-		if (listEntry.definition) {
-			meaning = listEntry.definition;
-		} else if (listEntry.gloss) {
-			meaning = listEntry.gloss;
-		}
-		return meaning;
-	};
-	
 	$scope.definitionOrGlossAlign = function(listEntry) {
 		if ($scope.config && $scope.config.entry && $scope.config.entry.fields.senses) {
 			if (listEntry.definition) {
@@ -113,164 +131,262 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 	};
 	
-	function getDefinition(entry) {
-		var meaning = '';
-		if (angular.isDefined($scope.config.entry) && angular.isDefined(entry.senses) && angular.isDefined(entry.senses[0]) && angular.isDefined(entry.senses[0]['definition'])) {
-			var ws = $scope.config.entry.fields.senses.fields.definition.inputSystems[0];
-			var def = entry.senses[0]['definition'];
-			if (angular.isDefined(def[ws])) {
-				meaning = def[ws].value;
-			}
-		}
-		return meaning;
-	};
-	
-	function getGloss(entry) {
-		var gloss = '';
-		if (angular.isDefined($scope.config.entry) && angular.isDefined(entry.senses) && angular.isDefined(entry.senses[0]) && angular.isDefined(entry.senses[0]['gloss'])) {
-			var ws = $scope.config.entry.fields.senses.fields.gloss.inputSystems[0];
-			var gl = entry.senses[0]['gloss'];
-			if (angular.isDefined(gl[ws])) {
-				gloss = gl[ws].value;
-			}
-		}
-		return gloss;
-	};
+    var _scrollDivToId = function _scrollDivToId(containerId, divId, posOffset) {
+        var offsetTop, div = $(divId), containerDiv = $(containerId);
+        var foundDiv = false;
+        if (angular.isUndefined(posOffset)) {
+            posOffset = 0;
+        }
 
-	$scope.updateListWithEntry = function(entry) {
-		var isNew = true;
-		var toInsert = {id: entry.id, lexeme: getLexeme(entry), definition: getDefinition(entry), gloss: getGloss(entry)};
-		for (var i=0; i<$scope.show.entries.length; i++) {
-			var e = $scope.show.entries[i];
-			if (e.id == entry.id) {
-				$scope.show.entries[i] = toInsert;
-				$scope.entries[i] = toInsert;
-				isNew = false;
-				break;
-			}
-		}
-		if (isNew) {
-			$scope.show.entries.unshift(toInsert);
-			$scope.entries.unshift(toInsert);
-		}
-	};
-	
-	$scope.getEntryIndexById = function(id) {
+        // todo: refactor this spaghetti logic
+        if (div && containerDiv) {
+            if (angular.isUndefined(div.offsetTop)) {
+                if (angular.isDefined(div[0])) {
+                    div = div[0];
+                    foundDiv = true;
+                } else {
+                    console.log('Error: unable to scroll to div with div id ' + divId);
+                }
+            }
+            if (foundDiv) {
+                if (angular.isUndefined(div.offsetTop)) {
+
+                    offsetTop = div.offset().top - posOffset;
+                } else {
+                    offsetTop = div.offsetTop - posOffset;
+                }
+                if (offsetTop < 0) offsetTop = 0;
+                containerDiv.scrollTop(offsetTop);
+            }
+        }
+    };
+
+    var scrollListToEntry = function scrollListToEntry(id, position) {
+        var posOffset = (position == 'top') ? 237 : 450;
+        var index, entryDivId = '#entryId_'+id, listDivId = '#compactEntryListContainer';
+
+        // make sure the item is visible in the list
+        // todo implement lazy "up" scrolling to make this more efficient
+
+        // only expand the "show window" if we know that the entry is actually in the entry list - a safe guard
+        if (angular.isDefined(getEntryIndexInList(id, $scope.entries))) {
+            while($scope.show.entries.length < $scope.entries.length) {
+                index = getEntryIndexInList(id, $scope.show.entries);
+                if (angular.isDefined(index)) {
+                    break;
+                }
+                $scope.show.more();
+            }
+        } else {
+            throw 'Error: tried to scroll to an entry that is not in the entry list!';
+        }
+
+        // note: ':visible' is a JQuery invention that means 'it takes up space on the page'.
+        // It may actually not be visible at the moment because it may down inside a scrolling div or scrolled off the view of the page
+        if ($(listDivId).is(':visible') && $(entryDivId).is(':visible')) {
+            _scrollDivToId(listDivId, entryDivId, posOffset);
+        }
+        else {
+            // wait then try to scroll
+            $interval(function(){
+                _scrollDivToId(listDivId, entryDivId, posOffset);
+            }, 200, 1);
+        }
+    };
+
+    $scope.editEntryAndScroll = function editEntryAndScroll(id) {
+        $scope.editEntry(id);
+        scrollListToEntry(id, 'middle');
+    };
+
+
+    var getEntryIndexInList = function getEntryIndexInList(id, list) {
 		var index = undefined;
-		for (var i=0; i<$scope.show.entries.length; i++) {
-			var e = $scope.show.entries[i];
+		for (var i=0; i<list.length; i++) {
+			var e = list[i];
 			if (e.id == id) {
 				index = i;
-				break;
+                return index;
 			}
 		}
-		return index;
+        return undefined;
 	};
 	
-	$scope.setCurrentEntry = function(entry) {
+	var setCurrentEntry = function setCurrentEntry(entry) {
 		entry = entry || {};
 		$scope.currentEntry = entry;
 		pristineEntry = angular.copy(entry);
 		saved = false;
 	};
+
+
 	
 	$scope.editEntry = function(id) {
-		if (angular.isUndefined(id) || $scope.currentEntry.id != id) {
+		if ($scope.currentEntry.id != id) {
 			$scope.saveCurrentEntry();
-			if (angular.isUndefined(id)) {
-				var newEntry = {id:''};
-				$scope.setCurrentEntry(newEntry);
-				$scope.selectEditTab();
-				$scope.updateListWithEntry(newEntry);
-			} else {
-				lexService.read(id, function(result) {
-					$scope.setCurrentEntry(result.data);
-				});
-			}
+            setCurrentEntry($scope.entries[getEntryIndexInList(id, $scope.entries)]);
 		}
 	};
 
-	$scope.newEntry = function() {
-		$scope.editTab.active = true;
-		$scope.editEntry();
-		$scope.entriesTotalCount++;
+	$scope.newEntry = function newEntry() {
+        $scope.saveCurrentEntry();
+        var newEntry = {id:''};
+        setCurrentEntry(newEntry);
+        addEntryToEntryList(newEntry);
+        $scope.show.initial();
+        scrollListToEntry('', 'top');
 	};
 	
-	$scope.entryLoaded = function() {
+	$scope.entryLoaded = function entryLoaded() {
 		return angular.isDefined($scope.currentEntry.id);
 	};
-	
-	$scope.deleteEntry = function(entry) {
-		var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?", {lexeme:getLexeme(entry)});
-		if ($window.confirm(deletemsg)) {
-			if ($scope.entryHasComments(entry)) {
-				if ($window.confirm(deletemsg)) {
-					var entryIndex = $scope.getEntryIndexById(entry.id);
-					$scope.show.entries.splice(entryIndex, 1);
-					$scope.entries.splice(entryIndex, 1);
-					$scope.entriesTotalCount--;
-					if (entry.id != '') {
-						lexService.remove(entry.id, function(){});
-					}
-					$scope.setCurrentEntry({});
-				}
-			} else {
-				var entryIndex = $scope.getEntryIndexById(entry.id);
-				$scope.show.entries.splice(entryIndex, 1);
-				$scope.entries.splice(entryIndex, 1);
-				$scope.entriesTotalCount--;
-				if (entry.id != '') {
-					lexService.remove(entry.id, function(){});
-				}
-				$scope.setCurrentEntry({});
-			}
-		}
+
+     $scope.returnToList = function returnToList() {
+         $scope.saveCurrentEntry();
+         setCurrentEntry();
+     };
+
+    var removeEntryFromLists = function removeEntryFromLists(id) {
+        var iFullList = getEntryIndexInList(id, $scope.entries);
+        if (angular.isDefined(iFullList)) {
+            $scope.entries.splice(iFullList, 1);
+            /* not yet implemented
+            if ($scope.show.startOfWindow != 0) {
+                $scope.show.startOfWindow--;
+            }
+            */
+        }
+        var iShowList = getEntryIndexInList(id, $scope.show.entries);
+        if (angular.isDefined(iShowList)) {
+            $scope.show.entries.splice(iShowList, 1);
+        }
+    };
+
+    var addEntryToEntryList = function addEntryToTopOfList(entry) {
+        $scope.entries.unshift(entry);
+    };
+
+	$scope.deleteEntry = function deleteEntry(entry) {
+        var deletemsg = "Are you sure you want to delete the word <b>' " + utils.getLexeme($scope.config.entry, entry) + " '</b>";
+		//var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?", {lexeme:utils.getLexeme($scope.config.entry, entry)});
+        modal.showModalSimple('Delete Word', deletemsg, 'Cancel', 'Delete Word').then(function() {
+                var iShowList = getEntryIndexInList(entry.id, $scope.show.entries);
+                removeEntryFromLists(entry.id);
+                if ($scope.entries.length > 0) {
+                    if (iShowList != 0) iShowList--;
+                    setCurrentEntry($scope.show.entries[iShowList]);
+                } else {
+                    setCurrentEntry();
+                }
+                if (entry.id != '') {
+                    lexService.remove(entry.id, angular.noop);
+                }
+            }
+        );
 	};
 	
 	$scope.entryHasComments = function(entry) {
 		return false;
 	};
-	
-	$scope.load = {
-		iEntryStart: 0,
-		numberOfEntries: null	// use null to grab all data from iEntryStart onwards
-	}; 
+
+    /* TODO implement a proper sliding window that can go back and forward */
 	$scope.show = {
-		iEntryStart: 0,
-		numberOfEntries: 50,
-		entries: [],
-	}; 
-	$scope.show.initial = function() {
-		$scope.show.iEntryStart = 0;
-		$scope.show.numberOfEntries = 50;
-		$scope.show.entries = $scope.entries.slice($scope.show.iEntryStart, $scope.show.iEntryStart + $scope.show.numberOfEntries);
+		//startOfWindow: 0,
+		entries: []
+    };
+	$scope.show.initial = function showInitial() {
+        //var windowSize = 50;
+		$scope.show.entries = $scope.entries.slice(0, 50);
 	};
-	$scope.show.more = function() {
-		$scope.show.iEntryStart += $scope.show.numberOfEntries;
-		if ($scope.show.iEntryStart > $scope.entriesTotalCount) {
-			$scope.show.iEntryStart = $scope.entriesTotalCount;
-		} else {
-			var moreEntries = $scope.entries.slice($scope.show.iEntryStart, $scope.show.iEntryStart + $scope.show.numberOfEntries);
-			$scope.show.entries = $scope.show.entries.concat(moreEntries);
-		}
+	$scope.show.more = function showMore() {
+        var increment = 50;
+
+        if (this.entries.length < $scope.entries.length) {
+            this.entries = $scope.entries.slice(0, this.entries.length + increment);
+        }
 	};
-	
-	$scope.refreshView = function(iEntryStart, numberOfEntries, updateFirstEntry) {
-		updateFirstEntry = typeof updateFirstEntry !== 'undefined' ? updateFirstEntry : false;
-		var gotDto = function (result) {
+
+    $scope.getCompactItemListOverlay = function getCompactItemListOverlay(entry) {
+        var title, subtitle;
+        title = $scope.getWordForDisplay(entry);
+        subtitle = $scope.getMeaningForDisplay(entry);
+        if (title.length > 19 || subtitle.length > 25) {
+            return title + '         ' + subtitle;
+        } else {
+            return '';
+        }
+    };
+
+
+    /*
+    // for debugging
+    var assertNoDuplicateIds = function assertNoDuplicateIds(arr) {
+        // check for duplicate ids???
+        var ids = [];
+        for (var i=0; i<arr.length; i++) {
+            var e = arr[i];
+            if (ids.indexOf(e.id) > -1) {
+                console.log('Ouch!  Somehow we got a duplicate id in the entries array! id = ' + e.id);
+                console.log(e);
+                //throw 'duplicate id in array!';
+            };
+            ids.push(e.id);
+        }
+    };
+    */
+
+
+
+	var refreshView = function refreshView(fullRefresh, callback) {
+        callback = callback||angular.noop;
+        if (fullRefresh) notice.setLoading('Loading Dictionary');
+		var processDbeDto = function (result) {
+            notice.cancelLoading();
 			if (result.ok) {
-				$scope.entries = result.data.entries;
-				$scope.entriesTotalCount = result.data.entriesTotalCount;
-				if (updateFirstEntry && result.data.entry.id != '') {
-					$scope.setCurrentEntry(result.data.entry);
-				}
-				$scope.show.initial();
+                if (fullRefresh) {
+                    $scope.entries = result.data.entries;
+                    //assertNoDuplicateIds($scope.entries); // for debugging only
+
+                    $scope.show.initial();
+                } else {
+                    // splice updates into entry lists
+                    angular.forEach(result.data.entries, function(e) {
+                        var i;
+
+                        // splice into $scope.entries
+                        i = getEntryIndexInList(e.id, $scope.entries);
+                        if (angular.isDefined(i)) {
+                            //console.log('refreshing entry in $scope.entries:');
+                            //console.log(e);
+                            $scope.entries[i] = e;
+                        } else {
+                            addEntryToEntryList(e);
+//                            console.log('adding new entry into $scope.entries:');
+//                            console.log(e);
+                        }
+
+                        // splice into $scope.show.entries
+                        i = getEntryIndexInList(e.id, $scope.show.entries);
+                        if (angular.isDefined(i)) {
+//                            console.log('refreshing entry in $scope.show.entries:');
+//                            console.log(e);
+                            $scope.show.entries[i] = e;
+                        } else {
+//                            console.log('new entry isnt in view so we dont do anything');
+                            // don't do anything.  The entry is not in view so we don't need to update it
+                        }
+                    });
+
+                    // todo: sort both lists after splicing in updates
+
+                }
 			}
+            callback();
 		};
 		var view = 'dbe';
 		switch (view) {
 			case 'dbe':
-				lexService.dbeDto(iEntryStart, numberOfEntries, gotDto);
+				lexService.dbeDto(browserId, fullRefresh, processDbeDto);
 				break;
 			case 'add-grammar':
 				break;
@@ -282,9 +398,13 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				break;
 		}
 	};
-	
-	$scope.refreshView($scope.load.iEntryStart, $scope.load.numberOfEntries, true);
-	
+
+    // only refresh the full view if we have not yet loaded the dictionary for the first time
+    if ($scope.entries.length == 0) {
+        refreshView(true);
+    }
+
+ /* disable autosave feature until it's ready
 	var autoSaveTimer;
 	function startAutoSaveTimer() {
 		if (angular.isDefined(autoSaveTimer)) {
@@ -338,17 +458,20 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 		}
 		return message;
 	};
-	
-	$scope.submitComment = function(comment) {
+	*/
+
+    /*
+	$scope.submitComment = function submitComment(comment) {
 //		console.log('submitComment = ' + comment);
 		lexService.updateComment(comment, function(result) {
 			if (result.ok) {
 				var entry = result.data;
-				$scope.setCurrentEntry(entry);
-				$scope.updateListWithEntry(entry);
+				setCurrentEntry(entry);
+				//$scope.updateListWithEntry(entry);
 			}
 		});
 	};
+	*/
 	
 	// permissions stuff
 	$scope.control = {};
@@ -363,7 +486,13 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.control.canDeleteExample = function() {
 		return true;
 	};
-	
+
+    $scope.control.canEditEntry = function() {
+        return true;
+    }
+
+
+
 	/*
 	$scope.recursiveSetConfig = function(startAt, propName, propValue) {
 		// Go through the config tree starting at the startAt field, and
@@ -380,7 +509,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	};
 	*/
 	
-	$scope.recursiveRemoveProperties = function(startAt, properties) {
+	var recursiveRemoveProperties = function recursiveRemoveProperties(startAt, properties) {
 		angular.forEach(startAt, function(value, key) {
 			var deleted = false;
 			angular.forEach(properties, function(propName) {
@@ -392,7 +521,7 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 				}
 			});
 			if (!deleted && angular.isObject(value)) {
-				$scope.recursiveRemoveProperties(startAt[key], properties);
+				recursiveRemoveProperties(startAt[key], properties);
 			}
 		});
 		return startAt;
@@ -434,8 +563,8 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	$scope.filter.validStatuses = [ // TODO: Get this from appropriate service or API call, rather than hardcoded list
 		"To Do",
 		"Reviewed",
-		"Resolved",
-	];
+		"Resolved"
+    ];
 	$scope.filter.searchFor = {};
 	angular.forEach($scope.validStatuses, function(status) {
 		$scope.filter.searchFor[status] = false;
@@ -456,18 +585,15 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 	
 	
 	// search typeahead
-	$scope.typeahead = {term : '', searchResults : [], };
+	$scope.typeahead = {term : '', searchResults : []};
 	$scope.typeahead.searchEntries = function(query) {
-		if (query.length > 1) {
-			$scope.typeahead.searchResults = $filter('filter')($scope.entries, query);
-		} else {
-			$scope.typeahead.searchResults = [];
-		}
+        $scope.typeahead.searchResults = $filter('filter')($scope.entries, query);
 	};
 	
 	$scope.typeahead.searchSelect = function(entry) {
 		$scope.typeahead.searchItemSelected = '';
-		$scope.editEntry(entry.id);
+        $scope.typeahead.searchResults = [];
+		$scope.editEntryAndScroll(entry.id);
 	};
 	
 }])

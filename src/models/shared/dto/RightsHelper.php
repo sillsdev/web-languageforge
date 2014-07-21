@@ -62,7 +62,7 @@ class RightsHelper
 	// @see https://bugs.php.net/bug.php?id=40837
 	public static function hasSiteRight($userId, $right) {
 		$userModel = new UserModel($userId);
-		return SiteRoles::hasRight($userModel->role, $right, $this->_website);
+		return SiteRoles::hasRight($userModel->role, $right);
 	}
 	
 	/**
@@ -83,6 +83,7 @@ class RightsHelper
 	 * @return bool
 	 */
 	public function userHasSystemRight($right) {
+        $userModel = new UserModel($this->_userId);
 		return SystemRoles::hasRight($userModel->role, $right);
 	}
 	
@@ -93,7 +94,7 @@ class RightsHelper
 	 */
 	public function userHasSiteRight($right) {
 		$userModel = new UserModel($this->_userId);
-		return (SiteRoles::hasRight($userModel->siteRole, $right, $this->_website) ||
+		return (SiteRoles::hasRight($userModel->siteRole, $right) ||
 				SystemRoles::hasRight($userModel->role, $right));
 	}
 	
@@ -263,15 +264,23 @@ class RightsHelper
 			case 'lex_import_lift':
 				return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 				
-			// grant general permission until a better, app-specific rightsHelper can be developed
 			case 'lex_baseViewDto':
-			case 'lex_dbeDto':
-			case 'lex_entry_read':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+			case 'lex_dbeDtoFull':
+            case 'lex_dbeDtoUpdatesOnly':
+                return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
+
+			//case 'lex_entry_read':
 			case 'lex_entry_update':
+                return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
+
 			case 'lex_entry_remove':
+                return $this->userHasProjectRight(Domain::ENTRIES + Operation::DELETE);
 			case 'lex_entry_updateComment':
-				return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
-				
+				return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT_OWN);
+            case 'lex_entry_deleteComment':
+                return $this->userHasProjectRight(Domain::COMMENTS + Operation::DELETE_OWN);
+
 				
 				
 			default:
