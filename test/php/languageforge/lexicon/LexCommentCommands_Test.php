@@ -8,7 +8,6 @@ use models\languageforge\lexicon\Example;
 use models\languageforge\lexicon\LexComment;
 use models\languageforge\lexicon\LexCommentReply;
 use models\languageforge\lexicon\LexEntryModel;
-use models\languageforge\lexicon\LexiconFieldWithComments;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\Sense;
 
