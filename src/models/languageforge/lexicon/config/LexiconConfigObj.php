@@ -10,6 +10,7 @@ class LexiconConfigObj extends ObjectForEncoding {
 	const FIELDLIST = 'fields';
 	const MULTITEXT = 'multitext';
 	const OPTIONLIST = 'optionlist';
+	const MULTIOPTIONLIST = 'multioptionlist';
 	
 	// fields
 	const LEXEME = 'lexeme';
@@ -23,6 +24,8 @@ class LexiconConfigObj extends ObjectForEncoding {
 	// field lists
 	const SENSES_LIST = 'senses';
 	const EXAMPLES_LIST = 'examples';
+	const CUSTOM_FIELDS_LIST = 'customFields';
+	
 
 	// comments
 	const COMMENTS_LIST = 'comments';

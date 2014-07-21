@@ -2,6 +2,7 @@
 
 namespace models\languageforge\lexicon;
 
+use libraries\shared\palaso\CodeGuard;
 use models\mapper\ArrayOf;
 
 class Sense {
@@ -16,6 +17,18 @@ class Sense {
 		$this->examples = new ArrayOf(
 			function($data) {
 				return new Example();
+			}
+		);
+		$this->customFields = new ArrayOf(
+			function($data) {
+				CodeGuard::checkTypeAndThrow($data, 'array');
+				if (array_key_exists('value', $data)) {
+					return new LexiconField();
+				} elseif (array_key_exists('values', $data)) {
+					return new LexiconMultiValueField();
+				} else {
+					return new MultiText();
+				}
 			}
 		);
 		$this->authorInfo = new AuthorInfo();
@@ -58,6 +71,11 @@ class Sense {
 	 * @var ArrayOf<Example>
 	 */
 	public $examples;
+
+	/**
+	 * @var ArrayOf <>
+	 */
+	public $customFields;
 
 	/**
 	 * @var AuthorInfo
