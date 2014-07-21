@@ -2,6 +2,7 @@
 
 namespace models\languageforge\lexicon;
 
+use libraries\shared\palaso\CodeGuard;
 use models\mapper\Id;
 use models\mapper\ArrayOf;
 use models\ProjectModel;
@@ -29,6 +30,18 @@ class LexEntryModel extends \models\mapper\MapperModel {
 		$this->senses = new ArrayOf(
 			function($data) {
 				return new Sense();
+			}
+		);
+		$this->customFields = new ArrayOf(
+			function($data) {
+				CodeGuard::checkTypeAndThrow($data, 'array');
+				if (array_key_exists('value', $data)) {
+					return new LexiconField();
+				} elseif (array_key_exists('values', $data)) {
+					return new LexiconMultiValueField();
+				} else {
+					return new MultiText();
+				}
 			}
 		);
 		$this->authorInfo = new AuthorInfo();
@@ -63,6 +76,11 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	 * @var ArrayOf ArrayOf<Sense>
 	 */
 	public $senses;
+	
+	/**
+	 * @var ArrayOf <>
+	 */
+	public $customFields;
 
 	/**
 	 *
