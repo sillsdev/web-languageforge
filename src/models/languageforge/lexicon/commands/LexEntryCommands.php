@@ -14,13 +14,14 @@ use models\mapper\JsonEncoder;
 use models\ProjectModel;
 
 class LexEntryCommands {
-	
+
+    // Note: this is not actually used anymore...but we'll keep it around just in case - cjh 2014-07
 	public static function readEntry($projectId, $entryId) {
 		$project = new LexiconProjectModel($projectId);
 		$entry = new LexEntryModel($project, $entryId);
 		return LexEntryWithCommentsEncoder::encode($entry);
 	}
-	
+
 	/*
 	public static function addEntry($projectId, $params) {
 		CodeGuard::checkTypeAndThrow($params, 'array');
@@ -47,48 +48,34 @@ class LexEntryCommands {
 		$entry->authorInfo->modifiedDate = new \DateTime();
 		$entry->authorInfo->modifiedByUserRef->id = $userId;
 
-		// comments should not be updated via this method
-		$params = self::removeComments($params);
-
+        $params = self::recursiveRemoveEmptyFieldValues($params);
 		JsonDecoder::decode($entry, $params);
+
 		$entry->write();
 		return LexEntryWithCommentsEncoder::encode($entry);
 	}
-	
-	/**
-	 * 
-	 * @param array $entry - an array representation of an entry
-	 * @return array - the entry array with comments removed
-	 */
-	public static function removeComments($entry) {
-		foreach ($entry[LexiconConfigObj::LEXEME] as $form => $lexeme) {
-			unset($entry[LexiconConfigObj::LEXEME][$form][LexiconConfigObj::COMMENTS_LIST]);
-		}
-		foreach ($entry[LexiconConfigObj::SENSES_LIST] as $senseKey => $sense) {
-			if (array_key_exists(LexiconConfigObj::DEFINITION, $sense)) {
-				foreach ($sense[LexiconConfigObj::DEFINITION] as $form => $definition) {
-					unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::DEFINITION][$form][LexiconConfigObj::COMMENTS_LIST]);
-				}
-			}
-			if (array_key_exists(LexiconConfigObj::GLOSS, $sense)) {
-				foreach ($sense[LexiconConfigObj::GLOSS] as $form => $definition) {
-					unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::GLOSS][$form][LexiconConfigObj::COMMENTS_LIST]);
-				}
-			}
-			unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::POS][LexiconConfigObj::COMMENTS_LIST]);
-			unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::SEMDOM][LexiconConfigObj::COMMENTS_LIST]);
-			foreach ($sense[LexiconConfigObj::EXAMPLES_LIST] as $exampleKey => $example) {
-				foreach ($example[LexiconConfigObj::EXAMPLE_SENTENCE] as $form => $sentence) {
-					unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::EXAMPLES_LIST][$exampleKey][LexiconConfigObj::EXAMPLE_SENTENCE][$form][LexiconConfigObj::COMMENTS_LIST]);
-				}
-				foreach ($example[LexiconConfigObj::EXAMPLE_TRANSLATION] as $form => $sentence) {
-					unset($entry[LexiconConfigObj::SENSES_LIST][$senseKey][LexiconConfigObj::EXAMPLES_LIST][$exampleKey][LexiconConfigObj::EXAMPLE_TRANSLATION][$form][LexiconConfigObj::COMMENTS_LIST]);
-				}
-			}
-		}
-		return $entry;
-	}
-	
+
+    /**
+     * @param array $arr
+     * @return array
+     */
+    public static function recursiveRemoveEmptyFieldValues($arr) {
+        foreach ($arr as $key => $item) {
+            if (is_string($item)) {
+                if (trim($item) === '') {
+                    unset($arr[$key]);
+                }
+            } elseif (is_array($item)) {
+                $arr[$key] = self::recursiveRemoveEmptyFieldValues($item);
+            } else {
+                // don't do anything for other types (e.g. boolean)
+            }
+        }
+        return $arr;
+    }
+
+
+
 	/**
 	 * 
 	 * @param string $projectId
