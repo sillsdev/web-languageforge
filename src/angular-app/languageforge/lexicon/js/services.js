@@ -86,9 +86,11 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 .service('lexEntryService', ['jsonRpc', 'sessionService', 'lexProjectService', 'breadcrumbService', 'lexLinkService', 
 function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
     jsonRpc.connect('/api/sf');
+    /* not currently used
     this.read = function(id, callback) {
         jsonRpc.call('lex_entry_read', [id], callback);
     };
+    */
 
     this.update = function(entry, callback) {
         jsonRpc.call('lex_entry_update', [entry], callback);
@@ -122,22 +124,7 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
         jsonRpc.call('lex_entry_updateComment', [comment], callback);
     };
 
-    this.isFieldEnabled = function(fieldName) {
-        var gConfig = ss.session.projectSettings.config;
-        var currentUserRole = ss.session.projectSettings.currentUserRole;
 
-        // Default to invisible if config not defined
-        if (angular.isUndefined(gConfig)) {
-            return false;
-        };
-
-        // Default to visible if nothing specified in config
-        if (angular.isUndefined(gConfig.roleViews[currentUserRole].showFields[fieldName])) {
-            return true;
-        };
-        return gConfig.roleViews[currentUserRole].showFields[fieldName];
-    };
-	
 	
 	
 	
@@ -247,11 +234,11 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
         };
 
         this.getPartOfSpeechAbbreviation = function getPartOfSpeechAbbreviation(posModel) {
-            var match, myRegexp = /(\(.*\))/; // capture text inside parens
+            var match, myRegexp = /\((.*)\)/; // capture text inside parens
             if (posModel && angular.isDefined) {
                 match = myRegexp.exec(posModel.value);
-                if (match && match.length > 0) {
-                    return match[0];
+                if (match && match.length > 1) {
+                    return match[1];
                 } else {
                     return posModel.value.toLowerCase().substring(0,5);
                 }

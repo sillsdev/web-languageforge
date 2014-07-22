@@ -7,7 +7,6 @@ use models\languageforge\lexicon\Example;
 use models\languageforge\lexicon\LexComment;
 use models\languageforge\lexicon\LexCommentReply;
 use models\languageforge\lexicon\LexEntryModel;
-use models\languageforge\lexicon\LexiconFieldWithComments;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\Sense;
 
@@ -52,6 +51,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 	}
 
+    /*
 	function testReadEntry_HasComments_ReadBackOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
@@ -91,6 +91,7 @@ class TestLexEntryCommands extends UnitTestCase {
 
 
 	}
+    */
 	
 	function testUpdateEntry_DataPersists() {
 		$e = new LexiconMongoTestEnvironment();
@@ -121,8 +122,7 @@ class TestLexEntryCommands extends UnitTestCase {
 
 		$params = LexEntryCommands::readEntry($projectId, $entryId);
 		$params['lexeme']['th']['value'] = 'rose apple';
-		$params['senses'][0]['partOfSpeech']['comments'] = array(array('content' => 'i vote for adj'));
-		
+
 		LexEntryCommands::updateEntry($projectId, $params, $userId);
 		
 		$newEntry = LexEntryCommands::readEntry($projectId, $entryId);
@@ -133,8 +133,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$this->assertEqual($newEntry['senses'][0]['partOfSpeech']['value'], 'noun');
 		$this->assertEqual($newEntry['senses'][0]['examples'][0]['sentence']['th']['value'], 'example1');
 		$this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
-		$this->assertEqual($newEntry['senses'][0]['partOfSpeech']['comments'], array());
-		
+
 	}
 
     // todo get these working again after the refactor - cjh 2014-07
