@@ -4,7 +4,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 
                            function($scope, notice, lexProjectService, ss, $filter, $modal) {
 	lexProjectService.setBreadcrumbs('configuration', 'Dictionary Configuration');
-	$scope.configDirty = angular.copy($scope.projectSettings.config);
+	$scope.configDirty = angular.copy(ss.session.projectSettings.config);
 
 	$scope.haveConfig = function() {
 		return angular.isDefined($scope.configDirty.entry);
@@ -33,7 +33,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 		},
 		'region': {
 			'options': InputSystems.regions()
-		},
+		}
 	};
 	
 	$scope.currentInputSystemTag = '';
