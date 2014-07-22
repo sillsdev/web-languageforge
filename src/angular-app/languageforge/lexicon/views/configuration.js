@@ -33,7 +33,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       },
       'region': {
         'options': InputSystems.regions()
-      },
+      }
     };
     
     $scope.currentInputSystemTag = '';

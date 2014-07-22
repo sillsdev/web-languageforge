@@ -127,6 +127,8 @@ angular.module('bellows.services', ['jsonRpc'])
 	
 }])
 .service('sessionService', ['jsonRpc', '$window', function(jsonRpc, $window) {
+    var privateData = angular.copy($window.session);
+
 	this.currentUserId = function() {
 		return $window.session.userId;
 	};
@@ -197,9 +199,15 @@ angular.module('bellows.services', ['jsonRpc'])
 	};
 
 	this.refresh = function(callback) {
+        var ref = this;
 		jsonRpc.connect('/api/sf');
-		jsonRpc.call('session_getSessionData', [], function(newSessionData) {
-			$window.session = newSessionData;
+		jsonRpc.call('session_getSessionData', [], function(result) {
+            ref.session = result.data;
+            /*
+            angular.forEach(result.data, function(value, key) {
+               ref.session[key] = value;
+            });
+            */
 			(callback || angular.noop)();
 		});
 	};

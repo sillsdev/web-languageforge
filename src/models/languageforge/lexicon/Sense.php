@@ -12,8 +12,8 @@ class Sense {
 		$this->id = uniqid();
 		$this->definition = new MultiText();
 		$this->gloss = new MultiText();
-		$this->partOfSpeech = new LexiconFieldWithComments();
-		$this->semanticDomain = new LexiconMultiValueFieldWithComments();
+		$this->partOfSpeech = new LexiconField();
+		$this->semanticDomain = new LexiconMultiValueField();
 		$this->examples = new ArrayOf(
 			function($data) {
 				return new Example();
@@ -57,13 +57,13 @@ class Sense {
 	public $gloss;
 	
 	/**
-	 * @var LexiconFieldWithComments
+	 * @var LexiconField
 	 */
 	public $partOfSpeech;
 	
 
 	/**
-	 * @var LexiconMultiValueFieldWithComments
+	 * @var LexiconMultiValueField
 	 */
 	public $semanticDomain;
 

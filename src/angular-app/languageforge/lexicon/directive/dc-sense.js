@@ -1,6 +1,6 @@
-angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.optionlist', 'palaso.ui.dc.example', 'ngAnimate'])
+angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.optionlist', 'palaso.ui.dc.multioptionlist', 'palaso.ui.dc.example', 'ngAnimate', 'bellows.services'])
 // Palaso UI Dictionary Control: Sense
-.directive('dcSense', [function() {
+.directive('dcSense', ['lexUtils', 'modalService', function(utils, modal) {
 	return {
 		restrict : 'E',
 		templateUrl : '/angular-app/languageforge/lexicon/directive/dc-sense.html',
@@ -9,46 +9,23 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
 			model : "=",
 			index : "=",
 			remove : "=",
-			comment : "&",
 			control : "="
 		},
-		controller: ['$scope', 'lexEntryService', '$window', function($scope, lexEntryService, $window) {
-			$scope.isFieldEnabled = lexEntryService.isFieldEnabled;
-			
-			$scope.makeValidModel = function() {
-				if (!$scope.model) {
-					$scope.model = {};
-				}
-				if (!$scope.model.examples) {
-					$scope.model.examples = [{}];
-				}
-			};
-			
+		controller: ['$scope', 'lexEntryService', function($scope, lexEntryService) {
 			$scope.addExample = function() {
-				$scope.model.examples.push({});
+                var newExample = {};
+                $scope.control.makeValidModelRecursive($scope.config.fields.examples, newExample);
+                $scope.model.examples.push(newExample);
 			};
-			
+
 			$scope.deleteExample = function(index) {
-				if ($window.confirm("Are you sure you want to delete example #" + (index+1) + " ? (Comments will also be deleted)")) {
-					$scope.model.examples.splice(index, 1);
-				}
-			};
-			
-			$scope.submitComment = function(comment, field) {
-				if (angular.isDefined(comment.field)) {
-					comment.field = field + "_" + comment.field;
-				} else {
-					comment.field = field;
-				}
-				comment.senseId = $scope.model.id;
-				$scope.comment({comment:comment});
-				//console.log(comment);
+                var deletemsg = "Are you sure you want to delete the example <b>' " + utils.getExampleSentence($scope.config.fields.examples, $scope.model.examples[index])  + " '</b>";
+                modal.showModalSimple('Delete Example', deletemsg, 'Cancel', 'Delete Example').then(function() {
+                    $scope.model.examples.splice(index, 1);
+                });
 			};
 		}],
 		link : function(scope, element, attrs, controller) {
-			scope.$watch('model', function() {
-				scope.makeValidModel();
-			});
 		}
 	};
 }])
