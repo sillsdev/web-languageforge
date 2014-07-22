@@ -23,42 +23,45 @@
 			<dl class="picklists">
 				<dt translate="Entry Level Fields"></dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectField('lexeme')" 
-						data-ng-class="{selected:currentField.name == 'lexeme'}">
-						{{fieldConfig['lexeme'].label}}
+					<div data-ng-repeat="fieldname in configDirty.entry.fieldOrder" 
+						data-ng-click="selectField(fieldname)" 
+						data-ng-class="{selected:currentField.name == fieldname}">
+						<div data-ng-if="fieldConfig[fieldname] != undefined">
+							{{fieldConfig[fieldname].label}}
+						</div>
+						<i data-ng-if="fieldConfig[fieldname] == undefined">
+							{{customFieldConfig.entry[fieldname].label}}
+						</i>
 					</div>
 				</div></dd>
 				<dt translate="Sense Level Fields"></dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectField('definition')" 
-						data-ng-class="{selected:currentField.name == 'definition'}">
-						{{fieldConfig['definition'].label}}
-					</div>
-					<div data-ng-click="selectField('gloss')" 
-						data-ng-class="{selected:currentField.name == 'gloss'}">
-						{{fieldConfig['gloss'].label}}
-					</div>
-					<div data-ng-click="selectField('partOfSpeech')" 
-						data-ng-class="{selected:currentField.name == 'partOfSpeech'}">
-						{{fieldConfig['partOfSpeech'].label}}
-					</div>
-					<div data-ng-click="selectField('semanticDomain')" 
-						data-ng-class="{selected:currentField.name == 'semanticDomain'}">
-						{{fieldConfig['semanticDomain'].label}}
+					<div data-ng-repeat="fieldname in configDirty.entry.fields.senses.fieldOrder" 
+						data-ng-click="selectField(fieldname)" 
+						data-ng-class="{selected:currentField.name == fieldname}">
+						<div data-ng-if="fieldConfig[fieldname] != undefined">
+							{{fieldConfig[fieldname].label}}
+						</div>
+						<i data-ng-if="fieldConfig[fieldname] == undefined">
+							{{customFieldConfig.senses[fieldname].label}}
+						</i>
 					</div>
 				</div></dd>
 				<dt translate="Example Level Fields"></dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectField('sentence')" 
-						data-ng-class="{selected:currentField.name == 'sentence'}">
-						{{fieldConfig['sentence'].label}}
-					</div>
-					<div data-ng-click="selectField('translation')" 
-						data-ng-class="{selected:currentField.name == 'translation'}">
-						{{fieldConfig['translation'].label}}
+					<div data-ng-repeat="fieldname in configDirty.entry.fields.senses.fields.examples.fieldOrder" 
+						data-ng-click="selectField(fieldname)" 
+						data-ng-class="{selected:currentField.name == fieldname}">
+						<div data-ng-if="fieldConfig[fieldname] != undefined">
+							{{fieldConfig[fieldname].label}}
+						</div>
+						<i data-ng-if="fieldConfig[fieldname] == undefined">
+							{{customFieldConfig.examples[fieldname].label}}
+						</i>
 					</div>
 				</div></dd>
 			</dl>
+			<small translate="Custom Fields shown in <i>italics</i>"></small>
 		</div>
 		
 		<!-- Right column: field setup -->
