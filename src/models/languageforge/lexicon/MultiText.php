@@ -8,7 +8,7 @@ class MultiText extends MapOf {
 	
 	public function __construct() {
 		parent::__construct(function($data) {
-			return new LexiconFieldWithComments();
+			return new LexiconField();
 		});
 	}
 	
@@ -16,7 +16,7 @@ class MultiText extends MapOf {
 		if (array_key_exists($inputSystem, $this)) {
 			$this[$inputSystem]->value = $value;
 		} else {
-			$this[$inputSystem] = new LexiconFieldWithComments($value);
+			$this[$inputSystem] = new LexiconField($value);
 		}
 	}
 	
