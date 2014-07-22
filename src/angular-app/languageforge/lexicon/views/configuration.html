@@ -67,7 +67,7 @@
 			<div class="control-group">
 				<button class="btn" data-ng-click=""
 					data-ng-disabled="true">
-					<i class="icon-remove"></i> {{'Remove' | translate}} </button>
+					<i class="icon-remove"></i> {{'Remove Custom Field' | translate}} </button>
 			</div>
 			
 			<!-- settings -->
@@ -120,12 +120,12 @@
 		</div>
 		
 		</div>
-<!--  
+<!--  -->  
 <pre>
 currentField {{currentField | json}}
 configDirty.entry {{configDirty.entry|json}}
 </pre>
- -->
+
 		</div>
 	</tab>
 	<tab heading="Tasks" class="{{interfaceConfig.pullNormal}}">
@@ -216,7 +216,7 @@ configDirty.entry {{configDirty.entry|json}}
 						<select class="form-control" id="timeRange" 
 							data-ng-model="configDirty.tasks['dashboard'].timeRange" 
 							data-ng-options="selects.timeRange.options[key] for key in selects.timeRange.optionsOrder">
-							<option value="">-- choose a time range --</option></select>
+							<option value="">-- {{'choose a time range' | translate}} --</option></select>
 					</div>
 				</div>
 				<div class="control-group">
@@ -235,7 +235,7 @@ configDirty.entry {{configDirty.entry|json}}
 						<select class="form-control" id="language" 
 							data-ng-model="configDirty.tasks['semdom'].language" 
 							data-ng-options="key as option for (key, option) in selects.language.options">
-							<option value="">-- choose a language --</option></select>
+							<option value="">-- {{'choose a language' | translate}} --</option></select>
 					</div>
 				</div>
 				<div class="control-group">
