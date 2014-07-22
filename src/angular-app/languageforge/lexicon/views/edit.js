@@ -312,6 +312,11 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
                 break;
             case 'multitext':
            //     console.log('multitext cfg:', config);
+                // when a multitext is completely empty for a field, and sent down the wire, it will come as a [] because of the way
+                // that the PHP JSON default encode works.  We change this to be {} for an empty multitext
+                if (angular.isArray(data)) {
+                    data = {};
+                }
                 angular.forEach(config.inputSystems, function(ws) {
                     if (angular.isUndefined(data[ws])) {
                         data[ws] = {value:''};
