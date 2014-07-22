@@ -348,11 +348,11 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         newCustomData.type = newCustomField.type;
         switch (newCustomField.type) {
           case 'multitext':
-            newCustomData.displayMode = 'singleline';
+            newCustomData.displayMultiline = false;
             break;
           case 'multitextlines':
             newCustomData.type = 'multitext';
-            newCustomData.displayMode = 'multiline';
+            newCustomData.displayMultiline = true;
             break;
         }
         
