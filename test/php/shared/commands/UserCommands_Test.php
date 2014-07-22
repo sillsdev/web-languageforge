@@ -64,6 +64,99 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertEqual($userId, $newUserId);
 	}
 	
+	function testCheckIdentity_userDoesNotExistNoEmail_defaults() {
+		$identityCheck = UserCommands::checkIdentity('', '', null);
+		
+		$this->assertFalse($identityCheck->usernameExists);
+		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertFalse($identityCheck->allowSignupFromOtherSites);
+		$this->assertFalse($identityCheck->emailExists);
+		$this->assertTrue($identityCheck->emailIsEmpty);
+		$this->assertFalse($identityCheck->emailMatchesAccount);
+	}
+	
+	function testCheckIdentity_userExistsNoEmail_UsernameExistsEmailEmpty() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$e->createUser('jsmith', 'joe smith','');
+
+		$identityCheck = UserCommands::checkIdentity('jsmith', '', $e->website);
+		
+		$this->assertTrue($identityCheck->usernameExists);
+		$this->assertTrue($identityCheck->usernameExistsOnThisSite);
+		$this->assertTrue($identityCheck->allowSignupFromOtherSites);
+		$this->assertFalse($identityCheck->emailExists);
+		$this->assertTrue($identityCheck->emailIsEmpty);
+		$this->assertFalse($identityCheck->emailMatchesAccount);
+	}
+	
+	function testCheckIdentity_userExistsWithEmail_UsernameExistsEmailMatches() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$e->createUser('jsmith', 'joe smith','joe@smith.com');
+
+		$identityCheck = UserCommands::checkIdentity('jsmith', 'joe@smith.com', null);
+
+		$this->assertTrue($identityCheck->usernameExists);
+		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertTrue($identityCheck->emailExists);
+		$this->assertFalse($identityCheck->emailIsEmpty);
+		$this->assertTrue($identityCheck->emailMatchesAccount);
+	}
+	
+	function testCheckIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatch() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$e->createUser('zedUser', 'zed user','zed@example.com');
+		$originalWebsite = clone $e->website;
+		$e->website->domain = 'default.local';
+		$e->createUser('jsmith', 'joe smith','joe@smith.com');
+		
+		$identityCheck = UserCommands::checkIdentity('jsmith', 'zed@example.com', $originalWebsite);
+
+		$this->assertTrue($identityCheck->usernameExists);
+		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertTrue($identityCheck->emailExists);
+		$this->assertFalse($identityCheck->emailIsEmpty);
+		$this->assertFalse($identityCheck->emailMatchesAccount);
+		
+		// cleanup so following tests are OK
+		$e->website->domain = $originalWebsite->domain;
+	}
+	
+	function testCheckIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatchEmpty() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$e->createUser('jsmith', 'joe smith','joe@smith.com');
+
+		$identityCheck = UserCommands::checkIdentity('jsmith', '', $e->website);
+
+		$this->assertTrue($identityCheck->usernameExists);
+		$this->assertTrue($identityCheck->usernameExistsOnThisSite);
+		$this->assertFalse($identityCheck->emailExists);
+		$this->assertFalse($identityCheck->emailIsEmpty);
+		$this->assertFalse($identityCheck->emailMatchesAccount);
+	}
+	
+	function testCheckIdentity_doesNotExist_UsernameDoesNotExist() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$e->createUser('jsmith', 'joe smith','joe@smith.com');
+
+		$identityCheck = UserCommands::checkIdentity('zedUser', 'zed@example.com', $e->website);
+				
+		$this->assertFalse($identityCheck->usernameExists);
+		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertFalse($identityCheck->emailExists);
+		$this->assertTrue($identityCheck->emailIsEmpty);
+		$this->assertFalse($identityCheck->emailMatchesAccount);
+	}
+	
 	function testCreateSimple_CreateUser_PasswordAndJoinProject() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
@@ -244,7 +337,9 @@ class TestUserCommands extends UnitTestCase {
 	
 		// What's in the delivery?
 		$toUser = new UserModel($toUserId);
-		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
+		
+		$senderEmail = 'no-reply@' . $e->website->domain;
+		$expectedFrom = array($senderEmail => $e->website->name);
 		$expectedTo = array($toUser->emailPending => $toUser->name);
 		$this->assertEqual($expectedFrom, $delivery->from);
 		$this->assertEqual($expectedTo, $delivery->to);

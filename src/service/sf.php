@@ -1,21 +1,13 @@
 <?php
 
+use libraries\scriptureforge\sfchecks\Email;
+use libraries\scriptureforge\sfchecks\Communicate;
 use libraries\scriptureforge\sfchecks\ParatextExport;
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\shared\palaso\CodeGuard;
 use libraries\shared\palaso\JsonRpcServer;
 use libraries\shared\Website;
-use libraries\scriptureforge\sfchecks\Communicate;
-use libraries\scriptureforge\sfchecks\Email;
-use models\commands\ActivityCommands;
-use models\commands\MessageCommands;
-use models\commands\ProjectCommands;
-use models\commands\SessionCommands;
-use models\commands\QuestionCommands;
-use models\commands\QuestionTemplateCommands;
-use models\commands\TextCommands;
-use models\commands\UserCommands;
 use models\languageforge\lexicon\commands\LexCommentCommands;
 use models\languageforge\lexicon\commands\LexEntryCommands;
 use models\languageforge\lexicon\commands\LexProjectCommands;
@@ -29,13 +21,21 @@ use models\shared\dto\ActivityListDto;
 use models\shared\dto\ProjectListDto;
 use models\shared\dto\RightsHelper;
 use models\shared\dto\UserProfileDto;
+use models\shared\rights\Domain;
+use models\shared\rights\Operation;
+use models\shared\rights\ProjectRoles;
+use models\commands\ActivityCommands;
+use models\commands\MessageCommands;
+use models\commands\ProjectCommands;
+use models\commands\SessionCommands;
+use models\commands\QuestionCommands;
+use models\commands\QuestionTemplateCommands;
+use models\commands\TextCommands;
+use models\commands\UserCommands;
 use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
 use models\mapper\MongoStore;
-use models\shared\rights\Domain;
-use models\shared\rights\Operation;
-use models\shared\rights\ProjectRoles;
 use models\sms\SmsSettings;
 use models\AnswerModel;
 use models\ProjectModel;
@@ -178,9 +178,14 @@ class Sf
 		return UserCommands::changePassword($userId, $newPassword, $this->_userId);
 	}
 	
-	public function username_exists($username) {
+	public function identity_check($username, $email) {
 		// intentionally we have no security here: people can see what users exist by trial and error
-		return UserModel::userNameExists($username);
+		$identityCheck = UserCommands::checkIdentity($username, $email, $this->_website);
+		return JsonEncoder::encode($identityCheck);
+	}
+	
+	public function user_activate($username, $password, $email) {
+		return UserCommands::activate($username, $password, $email, $this->_website, $this->_controller);
 	}
 	
 	/**
@@ -564,7 +569,8 @@ class Sf
 
 	private static function isAnonymousMethod($methodName) {
 		$methods = array(
-				'username_exists',
+				'identity_check',
+				'user_activate',
 				'user_register',
 				'get_captcha_src',
 				'user_readForRegistration',

@@ -8,27 +8,29 @@ use libraries\scriptureforge\sfchecks\IDelivery;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\shared\palaso\CodeGuard;
 use libraries\shared\palaso\JsonRpcServer;
+use libraries\shared\AuthHelper;
 use libraries\shared\Website;
-use models\commands\ActivityCommands;
-use models\commands\ProjectCommands;
-use models\commands\QuestionCommands;
-use models\commands\TextCommands;
-use models\commands\UserCommands;
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\ActivityListDto;
 use models\shared\dto\CreateSimpleDto;
 use models\shared\dto\RightsHelper;
 use models\shared\dto\UserProfileDto;
-use models\sms\SmsSettings;
+use models\shared\rights\Domain;
+use models\shared\rights\Operation;
+use models\shared\rights\ProjectRoles;
+use models\shared\rights\SystemRoles;
+use models\commands\ActivityCommands;
+use models\commands\ProjectCommands;
+use models\commands\QuestionCommands;
+use models\commands\TextCommands;
+use models\commands\UserCommands;
 use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
 use models\mapper\MongoStore;
-use models\shared\rights\Domain;
-use models\shared\rights\Operation;
-
-use models\shared\rights\ProjectRoles;
+use models\sms\SmsSettings;
 use models\AnswerModel;
+use models\PasswordModel;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
 use models\QuestionModel;
@@ -36,7 +38,6 @@ use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserModelWithPassword;
 use models\UserProfileModel;
-use models\shared\rights\SystemRoles;
 
 class UserCommands {
 	
@@ -142,9 +143,91 @@ class UserCommands {
 		if ($userId != $currUserId && !RightsHelper::hasSiteRight($currUserId, Domain::USERS + Operation::EDIT)) {
 			throw new UserUnauthorizedException();
 		}
-		$user = new \models\PasswordModel($userId);
+		$user = new PasswordModel($userId);
 		$user->changePassword($newPassword);
 		$user->write();
+	}
+	
+	/**
+	 * @param string $username
+	 * @param string $email
+	 * @param Website $website
+	 * @return IdentityCheck
+	 */
+	public static function checkIdentity($username, $email = '', $website = null) {
+		$identityCheck = new IdentityCheck();
+		$user = new UserModel();
+		$emailUser = new UserModel();
+		$identityCheck->usernameExists = $user->readByUserName($username);
+		if ($website) {
+			$identityCheck->allowSignupFromOtherSites = $website->allowSignupFromOtherSites;
+			if ($identityCheck->usernameExists) {
+				$identityCheck->usernameExistsOnThisSite = $user->hasRoleOnSite($website);
+			}
+		}
+		if ($email) {
+			$identityCheck->emailExists = $emailUser->readByProperty('email', $email);
+		}
+		$identityCheck->emailIsEmpty = empty($user->email);
+		if (! $identityCheck->emailIsEmpty  && ! empty($email)) {
+			$identityCheck->emailMatchesAccount = ($user->email === $email);
+		}
+		return $identityCheck;
+	}
+	
+	/**
+	 * Activate a user on the specified site and validate email if it was empty, otherwise login
+	 * @param string $username
+	 * @param string $password
+	 * @param Website $website
+	 * @param CI_Controller $controller
+	 * @param IDelivery $delivery
+	 * @return string|boolean $userId|false otherwise
+	 */
+	public static function activate($username, $password, $email, $website, $controller, IDelivery $delivery = null) {
+		CodeGuard::checkEmptyAndThrow($username, 'username');
+		CodeGuard::checkEmptyAndThrow($password, 'password');
+		CodeGuard::checkEmptyAndThrow($email, 'email');
+		CodeGuard::checkNullAndThrow($website, 'website');
+		$identityCheck = self::checkIdentity($username, $email, $website);
+		if ($website->allowSignupFromOtherSites && 
+				$identityCheck->usernameExists && ! $identityCheck->usernameExistsOnThisSite && 
+				($identityCheck->emailIsEmpty || $identityCheck->emailMatchesAccount)) {
+			$user = new PasswordModel();
+			if ($user->readByProperty('username', $username)) {
+				if ($user->verifyPassword($password)) {
+					$user = new UserModel($user->id->asString());
+					$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+					if ($identityCheck->emailIsEmpty) {
+						$user->emailPending = $email;
+					}
+					$userId = $user->write();
+			
+					// if website has a default project then add them to that project
+					$project = ProjectModel::getDefaultProject($website);
+					if ($project) {
+						$project->addUser($user->id->asString(), ProjectRoles::CONTRIBUTOR);
+						$user->addProject($project->id->asString());
+						$project->write();
+						$user->write();
+					}
+			
+					if ($identityCheck->emailIsEmpty) {
+						Communicate::sendSignup($user, $website, $delivery);
+					}
+					if ($identityCheck->emailMatchesAccount) {
+						if (! $controller->ion_auth) {
+							$controller->load->library('ion_auth');
+						}
+						$auth = new AuthHelper($controller->ion_auth, $controller->session);
+						return $auth->login($website, $username, $password);
+					}
+					
+					return AuthHelper::result(AuthHelper::LOGIN_SUCCESS, '', '');
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -156,14 +239,14 @@ class UserCommands {
 	public static function createUser($params, $website) {
 		$user = new \models\UserModelWithPassword();
 		JsonDecoder::decode($user, $params);
-		if (UserModel::userNameExists($user->username)) {
+		$identityCheck = self::checkIdentity($user->username);
+		if ($identityCheck->usernameExists) {
 			return false;
 		}
 		$user->setPassword($params['password']);
 		$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
 		return $user->write();
 	}
-	
 
 	/**
 	 * Create a user with only username, add user to project if in context, creating user gets email of new user credentials
@@ -217,7 +300,8 @@ class UserCommands {
 		
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
-		if (UserModel::userNameExists($user->username)) {
+		$identityCheck = self::checkIdentity($user->username);
+		if ($identityCheck->usernameExists) {
 			return false;
 		}
 		$user->active = false;
@@ -326,4 +410,47 @@ class UserCommands {
     }
 }
 
+class IdentityCheck {
+
+	public function __construct() {
+		$this->usernameExists = false;
+		$this->usernameExistsOnThisSite = false;
+		$this->allowSignupFromOtherSites = false;
+		$this->emailExists = false;
+		$this->emailIsEmpty = true;
+		$this->emailMatchesAccount = false;
+	}
+	
+	/**
+	 * @var bool true if the username exists, false otherwise
+	 */
+	public $usernameExists;
+	
+		/**
+	 * @var bool true if username exists on the supplied website
+	 */
+	public $usernameExistsOnThisSite;
+	
+	/**
+	 * @var bool true if the supplied website allows signup from other sites
+	 */
+	public $allowSignupFromOtherSites;
+	
+	/**
+	 * @var bool true if account email exists
+	 */
+	public $emailExists;
+	
+	/**
+	 * @var bool true if account email is empty
+	 */
+	public $emailIsEmpty;
+	
+	/**
+	 * @var bool true if email matches the account email
+	 */
+	public $emailMatchesAccount;
+	
+}
+	
 ?>
