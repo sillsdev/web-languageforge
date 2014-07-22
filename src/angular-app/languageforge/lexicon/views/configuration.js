@@ -3,7 +3,7 @@
 angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor'])
   .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 
                              function($scope, notice, lexProjectService, ss, $filter, $modal) {
-    lexProjectService.setBreadcrumbs('configuration', 'Dictionary Configuration');
+    lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
     $scope.configDirty = angular.copy($scope.projectSettings.config);
     
     $scope.haveConfig = function haveConfig() {
@@ -94,6 +94,11 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
           'semanticDomain': $scope.configDirty.entry.fields.senses.fields['semanticDomain'],
           'sentence': $scope.configDirty.entry.fields.senses.fields.examples.fields['sentence'],
           'translation': $scope.configDirty.entry.fields.senses.fields.examples.fields['translation']
+        };
+        $scope.customFieldConfig = {
+          'entry'   : $scope.configDirty.entry.fields.customFields.fields,  
+          'senses'  : $scope.configDirty.entry.fields.senses.fields.customFields.fields,  
+          'examples': $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields,  
         };
       }
     };
@@ -352,20 +357,26 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         }
         
         switch (newCustomField.level) {
-        case 'examples':
-          $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[newCustomKey] = newCustomData;
-          $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder.push(newCustomKey);
-          break;
-        case 'senses':
-          $scope.configDirty.entry.fields.senses.fields.customFields.fields[newCustomKey] = newCustomData;
-          $scope.configDirty.entry.fields.senses.fieldOrder.push(newCustomKey);
-          break;
-          
-        // 'none'
-        default: 
-          $scope.configDirty.entry.fields.customFields.fields[newCustomKey] = newCustomData;
-          $scope.configDirty.entry.fieldOrder.push(newCustomKey);
-      }
+          case 'examples':
+            $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[newCustomKey] = newCustomData;
+            if (! (newCustomKey in $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder)) {
+              $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder.push(newCustomKey);
+            }
+            break;
+          case 'senses':
+            $scope.configDirty.entry.fields.senses.fields.customFields.fields[newCustomKey] = newCustomData;
+            if (! (newCustomKey in $scope.configDirty.entry.fields.senses.fieldOrder)) {
+              $scope.configDirty.entry.fields.senses.fieldOrder.push(newCustomKey);
+            }
+            break;
+            
+          // 'none'
+          default: 
+            $scope.configDirty.entry.fields.customFields.fields[newCustomKey] = newCustomData;
+            if (! (newCustomKey in $scope.configDirty.entry.fieldOrder)) {
+              $scope.configDirty.entry.fieldOrder.push(newCustomKey);
+            }
+        }
       });
     };
     
