@@ -52,16 +52,6 @@ class UserModelBase extends \models\mapper\MapperModel
 	/**
 	 * 
 	 * @param string $username
-	 * @return boolean - true if the username exists, false otherwise
-	 */
-	static public function userNameExists($username) {
-		$user = new UserModel();
-		return $user->readByUserName($username);
-	}
-	
-	/**
-	 * 
-	 * @param string $username
 	 * @return boolean - true of the username exists, false otherwise
 	 */
 	public function readByUserName($username) {
@@ -92,6 +82,15 @@ class UserModelBase extends \models\mapper\MapperModel
 		$systemRightsArray = SystemRoles::getRightsArray($this->role);
 		$mergeArray = array_merge($siteRightsArray, $systemRightsArray);
 		return (array_values(array_unique($mergeArray)));
+	}
+	
+	/**
+	 * Returns whether the user has a role on the requested website
+	 * @param Website $website
+	 * @return bool true if the user has any role on the website, otherwise false
+	 */
+	public function hasRoleOnSite($website) {
+		return $this->siteRole->offsetExists($website->domain);
 	}
 	
 	/**

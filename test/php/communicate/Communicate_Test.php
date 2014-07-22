@@ -104,7 +104,8 @@ class TestCommunicate extends UnitTestCase {
 		Communicate::sendSignup($user, $website, $delivery);
 		
 		// What's in the delivery?
-		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
+		$senderEmail = 'no-reply@' . $e->website->domain;
+		$expectedFrom = array($senderEmail => $e->website->name);
 		$expectedTo = array($user->emailPending => $user->name);
 		$this->assertEqual($expectedFrom, $delivery->from);
 		$this->assertEqual($expectedTo, $delivery->to);
@@ -129,9 +130,10 @@ class TestCommunicate extends UnitTestCase {
 		Communicate::sendSignup($user, $website, $delivery);
 		
 		// What's in the delivery?
-		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
+		$senderEmail = 'no-reply@' . $e->website->domain;
+		$expectedFrom = array($senderEmail => $e->website->name);
 		$expectedTo = array($user->emailPending => $user->name);
-		$this->assertPattern('/' . $e->website->name . '/', $delivery->from[SF_DEFAULT_EMAIL]);
+		$this->assertPattern('/' . $e->website->name . '/', $delivery->from[$senderEmail]);
 		$this->assertEqual($expectedTo, $delivery->to);
 		$this->assertPattern('/' . $e->website->name . '/', $delivery->subject);
 		$this->assertPattern('/Name/', $delivery->content);
@@ -181,7 +183,8 @@ class TestCommunicate extends UnitTestCase {
 		Communicate::sendNewUserInProject($toUser, $newUserName, $newUserPassword, $e->website, $project, $delivery);
 		
 		// What's in the delivery?
-		$expectedFrom = array(SF_DEFAULT_EMAIL => SF_DEFAULT_EMAIL_NAME);
+		$senderEmail = 'no-reply@' . $e->website->domain;
+		$expectedFrom = array($senderEmail => $e->website->name);
 		$expectedTo = array($toUser->email => $toUser->name);
 		$this->assertEqual($expectedFrom, $delivery->from);
 		$this->assertEqual($expectedTo, $delivery->to);

@@ -32,7 +32,7 @@ class Public_app extends Base {
 			
 		$data['cssFiles'] = array();
 		self::addCssFiles("angular-app/bellows/css", $data['cssFiles']);
-		self::addCssFiles("$appFolder", $data['cssfiles']);
+		self::addCssFiles($appFolder, $data['cssFiles']);
 			
 		$data['title'] = $this->website->name;
 		$data['jsonSession'] = '"";'; // empty json session data that angular-app template needs to be happy
