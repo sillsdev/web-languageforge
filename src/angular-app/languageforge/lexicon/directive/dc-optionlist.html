@@ -1,9 +1,8 @@
 <form class="form-horizontal dc-optionlist">
     <label class="control-label">{{config.label}}</label>
         <div class="controls">
-            <select ng-model="model.value" ng-options="key as label for (key, label) in config.values">
+            <select ng-model="model.value" ng-options="item.key as item.value for item in config.values">
                 <option value="">Unknown</option>
             </select>
         </div>
-        <dc-comments control="control" config="config" model="model" submit="submitComment(comment)"></dc-comments>
 </form>

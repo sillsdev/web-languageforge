@@ -3,14 +3,14 @@
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry',
     'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window',
-        '$modal', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService',
-function ($scope, userService, sessionService, lexService, $window, $modal, $interval, $filter, linkService, utils, modal, notice) {
+        '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService',
+function ($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice) {
     var pristineEntry = {};
     var browserId = Math.floor(Math.random() * 1000);
-	$scope.config = $scope.projectSettings.config;
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
+
 
 	$scope.currentEntryIsDirty = function() {
 		if ($scope.entryLoaded()) {
@@ -85,9 +85,9 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 		}
 	};
 
-	var prepEntryForUpdate = function prepEntryForUpdate(entry) {
+	function prepEntryForUpdate(entry) {
 		return recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
-	};
+	}
 	
 	$scope.getWordForDisplay = function(entry) {
         var lexeme = utils.getLexeme($scope.config.entry, entry);
@@ -131,7 +131,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 		}
 	};
 	
-    var _scrollDivToId = function _scrollDivToId(containerId, divId, posOffset) {
+    function _scrollDivToId(containerId, divId, posOffset) {
         var offsetTop, div = $(divId), containerDiv = $(containerId);
         var foundDiv = false;
         if (angular.isUndefined(posOffset)) {
@@ -159,9 +159,9 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
                 containerDiv.scrollTop(offsetTop);
             }
         }
-    };
+    }
 
-    var scrollListToEntry = function scrollListToEntry(id, position) {
+    function scrollListToEntry(id, position) {
         var posOffset = (position == 'top') ? 237 : 450;
         var index, entryDivId = '#entryId_'+id, listDivId = '#compactEntryListContainer';
 
@@ -200,7 +200,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
     };
 
 
-    var getEntryIndexInList = function getEntryIndexInList(id, list) {
+    function getEntryIndexInList(id, list) {
 		var index = undefined;
 		for (var i=0; i<list.length; i++) {
 			var e = list[i];
@@ -212,15 +212,16 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
         return undefined;
 	};
 	
-	var setCurrentEntry = function setCurrentEntry(entry) {
+	function setCurrentEntry(entry) {
 		entry = entry || {};
+
+        // auto-make a valid model but stop at the examples array
+        entry = $scope.makeValidModelRecursive($scope.config.entry, entry, 'examples');
 		$scope.currentEntry = entry;
 		pristineEntry = angular.copy(entry);
 		saved = false;
-	};
+	}
 
-
-	
 	$scope.editEntry = function(id) {
 		if ($scope.currentEntry.id != id) {
 			$scope.saveCurrentEntry();
@@ -246,7 +247,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
          setCurrentEntry();
      };
 
-    var removeEntryFromLists = function removeEntryFromLists(id) {
+    function removeEntryFromLists(id) {
         var iFullList = getEntryIndexInList(id, $scope.entries);
         if (angular.isDefined(iFullList)) {
             $scope.entries.splice(iFullList, 1);
@@ -260,11 +261,77 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
         if (angular.isDefined(iShowList)) {
             $scope.show.entries.splice(iShowList, 1);
         }
-    };
+    }
 
-    var addEntryToEntryList = function addEntryToTopOfList(entry) {
+    function addEntryToEntryList(entry) {
         $scope.entries.unshift(entry);
-    };
+    }
+
+    $scope.makeValidModelRecursive = function makeValidModelRecursive(config, data, stopAtNodes) {
+        if (angular.isString(stopAtNodes)) {
+            var node = stopAtNodes;
+            stopAtNodes = [];
+            stopAtNodes.push(node);
+        } else if (angular.isArray(stopAtNodes)) {
+            // array
+        } else {
+            stopAtNodes = [];
+        }
+
+        //console.log('makeValid: cfg: ' + config, 'data: ', data);
+
+
+        switch (config.type) {
+            case 'fields':
+                angular.forEach(config.fieldOrder, function(f) {
+                    if (angular.isUndefined(data[f])) {
+                        if (config.fields[f].type == 'fields') {
+//                            console.log('field ' + f + ' is array');
+                            data[f] = [];
+                        } else {
+         //                   console.log('field ' + f + ' is object');
+                            data[f] = {};
+                        }
+                    }
+
+                    // only recurse if the field is not in our node stoplist
+                    if (stopAtNodes.indexOf(f) == -1) {
+          //              console.log('calling recursive: config.fields[f], data[f], f= ', f);
+                        if (config.fields[f].type == 'fields') {
+                            if (data[f].length == 0) {
+                                data[f].push({});
+                            }
+                            for (var i=0; i<data[f].length; i++) {
+                                data[f][i] = $scope.makeValidModelRecursive(config.fields[f], data[f][i], stopAtNodes);
+                            }
+                        } else {
+                            data[f] = $scope.makeValidModelRecursive(config.fields[f], data[f], stopAtNodes);
+                        }
+                    }
+                });
+                break;
+            case 'multitext':
+           //     console.log('multitext cfg:', config);
+                angular.forEach(config.inputSystems, function(ws) {
+                    if (angular.isUndefined(data[ws])) {
+                        data[ws] = {value:''};
+                    }
+                });
+                break;
+            case 'optionlist':
+                if (angular.isUndefined(data['value'])) {
+                    data['value'] = '';
+                }
+                break;
+            case 'multioptionlist':
+                if (angular.isUndefined(data['values'])) {
+                    data['values'] = [];
+                }
+                break;
+        }
+//        console.log('end data: ', data);
+        return data;
+    }
 
 	$scope.deleteEntry = function deleteEntry(entry) {
         var deletemsg = "Are you sure you want to delete the word <b>' " + utils.getLexeme($scope.config.entry, entry) + " '</b>";
@@ -285,9 +352,6 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
         );
 	};
 	
-	$scope.entryHasComments = function(entry) {
-		return false;
-	};
 
     /* TODO implement a proper sliding window that can go back and forward */
 	$scope.show = {
@@ -337,7 +401,7 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 
 
 
-	var refreshView = function refreshView(fullRefresh, callback) {
+	function refreshView(fullRefresh, callback) {
         callback = callback||angular.noop;
         if (fullRefresh) notice.setLoading('Loading Dictionary');
 		var processDbeDto = function (result) {
@@ -472,24 +536,37 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 		});
 	};
 	*/
-	
-	// permissions stuff
-	$scope.control = {};
-	$scope.control.canDeleteSense = function() {
-		return true;
-	};
-	
-	$scope.control.canDeleteWord = function() {
-		return true;
-	};
-	
-	$scope.control.canDeleteExample = function() {
-		return true;
-	};
 
-    $scope.control.canEditEntry = function() {
-        return true;
-    }
+    // hack to pass down the parent scope down into all child directives (i.e. entry, sense, etc)
+	$scope.control = $scope;
+
+    // permissions stuff
+
+    $scope.rights = {
+        canEditEntry: function canEditEntry() {
+            return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.EDIT);
+        },
+        canDeleteEntry: function canDeleteEntry() {
+            return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.DELETE);
+        },
+        canComment: function canComment() {
+            return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.CREATE);
+        },
+        canDeleteComment: function canDeleteComment(commentAuthorId) {
+            if (sessionService.currentUserId == commentAuthorId) {
+                return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE_OWN);
+            } else {
+                return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE);
+            }
+        },
+        canEditComment: function canEditComment(commentAuthorId) {
+            if (sessionService.currentUserId == commentAuthorId) {
+                return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT_OWN);
+            } else {
+                return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT);
+            }
+        }
+    };
 
 
 
@@ -593,7 +670,9 @@ function ($scope, userService, sessionService, lexService, $window, $modal, $int
 	$scope.typeahead.searchSelect = function(entry) {
 		$scope.typeahead.searchItemSelected = '';
         $scope.typeahead.searchResults = [];
-		$scope.editEntryAndScroll(entry.id);
+        if (entry.id) {
+            $scope.editEntryAndScroll(entry.id);
+        }
 	};
 	
 }])
