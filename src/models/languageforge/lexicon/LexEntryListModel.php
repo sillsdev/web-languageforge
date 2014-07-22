@@ -39,7 +39,8 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		    parent::__construct( self::mapper($projectModel->databaseName()), array(), array('guid', 'lexeme', 'senses'));
         }
 	}
-	
+
+    /*
 	private function getDefinition($entry) {
 		$senses = $entry['senses'];
 		if (count($senses) > 0 && array_key_exists('definition', $senses[0]) && count($senses[0]['definition']) > 0) {
@@ -75,6 +76,7 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		}
 		return '';	
 	}
+    */
 	
 	public function readForDto($missingInfo = '') {
 		parent::read();
