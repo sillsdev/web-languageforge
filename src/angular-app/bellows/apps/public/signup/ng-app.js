@@ -12,7 +12,9 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
     
       // route to show our basic form (/form)
       .state('form', {
-        abstract: true,
+        // note: 'abstract' is a javascript keyword that interferes with the YUI compressor, so we must reference it with quotes to make the YUI compressor work - cjh 2014-07
+        'abstract': true,
+
         // url: '/form',
         templateUrl: '/angular-app/bellows/apps/public/signup/views/form-.html',
         controller: 'SignupCtrl'
