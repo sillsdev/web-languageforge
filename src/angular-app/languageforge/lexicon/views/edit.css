@@ -175,7 +175,7 @@ legend.override-bootstrap {
     padding: 2px;
     min-height: 70px;
     height: 70px;
-    border-bottom: solid 1px darkgrey;
+    border-bottom: solid 1px #d3d3d3;
     display:flex;
     justify-content: center;
     align-items: center;

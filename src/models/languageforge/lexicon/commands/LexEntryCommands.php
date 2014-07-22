@@ -33,7 +33,6 @@ class LexEntryCommands {
 	*/
 	
 	public static function updateEntry($projectId, $params, $userId) {
-		// TODO: we need to do checking of rights for updating comments, parts of the entry, etc - cjh
 		CodeGuard::checkTypeAndThrow($params, 'array');
 		$project = new LexiconProjectModel($projectId);
 		if (array_key_exists('id', $params) && $params['id'] != '') {
@@ -52,6 +51,7 @@ class LexEntryCommands {
 		JsonDecoder::decode($entry, $params);
 
 		$entry->write();
+        // todo: review this encoder as we are no longer doing comments on the entry - cjh 2014-07
 		return LexEntryWithCommentsEncoder::encode($entry);
 	}
 
@@ -61,14 +61,16 @@ class LexEntryCommands {
      */
     public static function recursiveRemoveEmptyFieldValues($arr) {
         foreach ($arr as $key => $item) {
-            if (is_string($item)) {
-                if (trim($item) === '') {
-                    unset($arr[$key]);
+            if ($key != 'id') {
+                if (is_string($item)) {
+                    if (trim($item) === '') {
+                        unset($arr[$key]);
+                    }
+                } elseif (is_array($item)) {
+                    $arr[$key] = self::recursiveRemoveEmptyFieldValues($item);
+                } else {
+                    // don't do anything for other types (e.g. boolean)
                 }
-            } elseif (is_array($item)) {
-                $arr[$key] = self::recursiveRemoveEmptyFieldValues($item);
-            } else {
-                // don't do anything for other types (e.g. boolean)
             }
         }
         return $arr;

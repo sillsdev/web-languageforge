@@ -92,8 +92,9 @@ angular.module('lexicon',
 			);
 		$routeProvider.otherwise({redirectTo: '/projects'});
 	}])
-	.controller('MainCtrl', ['$scope', 'sessionService', 'lexProjectService', '$translate', 
-	                         function($scope, ss, lexProjectService, $translate) {
+	.controller('MainCtrl', ['$scope', 'sessionService', 'lexProjectService', '$translate',
+    function($scope, ss, lexProjectService, $translate) {
+
 		$scope.rights = {};
 		$scope.rights.remove = ss.hasProjectRight(ss.domain.USERS, ss.operation.DELETE); 
 		$scope.rights.create = ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE); 
@@ -102,23 +103,31 @@ angular.module('lexicon',
 	    $scope.entries = []; // persist the entries array across all controllers
 		$scope.project = ss.session.project;
 		$scope.projectSettings = ss.session.projectSettings;
+        $scope.config = $scope.projectSettings.config;
 		$scope.currentUserRole = ss.session.projectSettings.currentUserRole;
 		$scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
 		var pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
 		changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
 
-		$scope.isTaskEnabled = function(taskName) {
-			// Default to invisible if config not defined
-			if (angular.isUndefined($scope.projectSettings.config)) {
-				return false;
-			};
-			
+
+		$scope.isTaskEnabled = function isTaskEnabled(taskName) {
 			// Default to visible if nothing specified in config
-			if (angular.isUndefined($scope.projectSettings.config.roleViews[$scope.currentUserRole].showTasks[taskName])) {
+			if (angular.isUndefined($scope.config.roleViews[$scope.currentUserRole].showTasks[taskName])) {
 				return true;
 			};
-			return $scope.projectSettings.config.roleViews[$scope.currentUserRole].showTasks[taskName];
+			return $scope.config.roleViews[$scope.currentUserRole].showTasks[taskName];
 		};
+
+
+        $scope.isFieldEnabled = function isFieldEnabled(fieldName) {
+            // Default to visible if nothing specified in config
+            if (angular.isUndefined($scope.config.roleViews[$scope.currentUserRole].showFields[fieldName])) {
+                return true;
+            };
+            return $scope.config.roleViews[$scope.currentUserRole].showFields[fieldName];
+        };
+
+
 		
 		function changeInterfaceLanguage(code) {
 			$translate.use(code);
@@ -138,6 +147,8 @@ angular.module('lexicon',
 				$scope.interfaceConfig.placementNormal = 'right';
 			}
 		};
+
+
 		
 		$scope.$watch('interfaceConfig.userLanguageCode', function(newVal, oldVal) {
 			if (newVal && newVal != pristineLanguageCode) {

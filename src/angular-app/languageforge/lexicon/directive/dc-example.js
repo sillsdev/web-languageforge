@@ -9,30 +9,12 @@ angular.module('palaso.ui.dc.example', ['palaso.ui.dc.multitext'])
 			model : "=",
 			index : "=",
 			remove : "=",
-			comment : "&",
 			control : "="
 		},
-		controller: ['$scope', 'lexEntryService', function($scope, lexEntryService) {
-			$scope.isFieldEnabled = lexEntryService.isFieldEnabled;
-			
-			$scope.makeValidModel = function() {
-				if (!$scope.model) {
-					$scope.model = {};
-				}
-			};
-			
-			$scope.submitComment = function(comment, field) {
-				if (angular.isDefined(field)) {
-					comment.field = field;
-				}
-				comment.exampleId = $scope.model.id;
-				$scope.comment({comment: comment});
-			};
+		controller: ['$scope', function($scope) {
+
 		}],
 		link : function(scope, element, attrs, controller) {
-			scope.$watch('model', function() {
-				scope.makeValidModel();
-			});
 		}
 	};
 }])

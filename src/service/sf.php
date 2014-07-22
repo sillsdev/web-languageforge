@@ -205,7 +205,7 @@ class Sf
 	}
 	
 	public function user_updateFromRegistration($validationKey, $params) {
-		return UserCommands::updateFromRegistration($validationKey, $params);
+		return UserCommands::updateFromRegistration($validationKey, $params, $this->_website);
 	}
 	
 	public function user_sendInvite($toEmail) {
@@ -276,7 +276,7 @@ class Sf
 	//---------------------------------------------------------------
 
 	public function session_getSessionData() {
-		return SessionCommands::getSessionData($this->_projectId, $this->_userId);
+		return SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->_website);
 	}
 	
 	

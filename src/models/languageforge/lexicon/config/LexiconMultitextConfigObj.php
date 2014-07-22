@@ -12,6 +12,7 @@ class LexiconMultitextConfigObj extends LexiconConfigObj {
 		
 		// default values
 		$this->label = '';
+        $this->displayMultiline = false;
 		$this->width = 20;
 		$this->inputSystems = new ArrayOf();
 	}
@@ -30,6 +31,11 @@ class LexiconMultitextConfigObj extends LexiconConfigObj {
 	 * @var ArrayOf
 	 */
 	public $inputSystems;
+
+    /**
+     * @var bool
+     */
+    public $displayMultiline;
 	
 }
 
