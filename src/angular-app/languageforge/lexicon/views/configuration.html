@@ -71,8 +71,8 @@
 		<div class="span9">
 			<!-- control buttons -->
 			<div class="control-group" style="height: 30px">
-				<button class="btn" data-ng-click=""
-					data-ng-disabled="true" data-ng-show="false">
+				<button class="btn" data-ng-click="removeSelectedCustomField()"
+					data-ng-show="fieldIsCustom(currentField.name)">
 					<i class="icon-remove"></i> {{'Remove Custom Field' | translate}} </button>
 			</div>
 			
