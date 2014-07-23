@@ -23,40 +23,43 @@
 			<dl class="picklists">
 				<dt translate="Entry Level Fields"></dt>
 				<dd><div class="controls">
-					<div data-ng-repeat="fieldname in configDirty.entry.fieldOrder" 
-						data-ng-click="selectField(fieldname)" 
-						data-ng-class="{selected:currentField.name == fieldname}">
-						<div data-ng-if="fieldConfig[fieldname] != undefined">
-							{{fieldConfig[fieldname].label}}
+					<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder" 
+						data-ng-class="{selected:currentField.name == fieldName}">
+						<div data-ng-if="! fieldIsCustom(fieldName)"
+							data-ng-click="selectField('fixed', 'entry', fieldName)">
+							{{fieldConfig.fixed.entry[fieldName].label}}
 						</div>
-						<i data-ng-if="fieldConfig[fieldname] == undefined">
-							{{customFieldConfig.entry[fieldname].label}}
+						<i data-ng-if="fieldIsCustom(fieldName)"
+							data-ng-click="selectField('custom', 'entry', fieldName)">
+							{{fieldConfig.custom.entry[fieldName].label}}
 						</i>
 					</div>
 				</div></dd>
 				<dt translate="Sense Level Fields"></dt>
 				<dd><div class="controls">
-					<div data-ng-repeat="fieldname in configDirty.entry.fields.senses.fieldOrder" 
-						data-ng-click="selectField(fieldname)" 
-						data-ng-class="{selected:currentField.name == fieldname}">
-						<div data-ng-if="fieldConfig[fieldname] != undefined">
-							{{fieldConfig[fieldname].label}}
+					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder" 
+						data-ng-class="{selected:currentField.name == fieldName}">
+						<div data-ng-if="! fieldIsCustom(fieldName)"
+							data-ng-click="selectField('fixed', 'senses', fieldName)">
+							{{fieldConfig.fixed.senses[fieldName].label}}
 						</div>
-						<i data-ng-if="fieldConfig[fieldname] == undefined">
-							{{customFieldConfig.senses[fieldname].label}}
+						<i data-ng-if="fieldIsCustom(fieldName)"
+							data-ng-click="selectField('custom', 'senses', fieldName)">
+							{{fieldConfig.custom.senses[fieldName].label}}
 						</i>
 					</div>
 				</div></dd>
 				<dt translate="Example Level Fields"></dt>
 				<dd><div class="controls">
-					<div data-ng-repeat="fieldname in configDirty.entry.fields.senses.fields.examples.fieldOrder" 
-						data-ng-click="selectField(fieldname)" 
-						data-ng-class="{selected:currentField.name == fieldname}">
-						<div data-ng-if="fieldConfig[fieldname] != undefined">
-							{{fieldConfig[fieldname].label}}
+					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder" 
+						data-ng-class="{selected:currentField.name == fieldName}">
+						<div data-ng-if="! fieldIsCustom(fieldName)"
+							data-ng-click="selectField('fixed', 'examples', fieldName)">
+							{{fieldConfig.fixed.examples[fieldName].label}}
 						</div>
-						<i data-ng-if="fieldConfig[fieldname] == undefined">
-							{{customFieldConfig.examples[fieldname].label}}
+						<i data-ng-if="fieldIsCustom(fieldName)"
+							data-ng-click="selectField('custom', 'examples', fieldName)">
+							{{fieldConfig.custom.examples[fieldName].label}}
 						</i>
 					</div>
 				</div></dd>
@@ -67,28 +70,28 @@
 		<!-- Right column: field setup -->
 		<div class="span9">
 			<!-- control buttons -->
-			<div class="control-group">
+			<div class="control-group" style="height: 30px">
 				<button class="btn" data-ng-click=""
-					data-ng-disabled="true">
+					data-ng-disabled="true" data-ng-show="false">
 					<i class="icon-remove"></i> {{'Remove Custom Field' | translate}} </button>
 			</div>
 			
 			<!-- settings -->
 			<div class="well">
-				<h3>{{fieldConfig[currentField.name].label}} Field Setup</h3>
+				<h3>{{fieldConfig[currentField.group][currentField.level][currentField.name].label}} {{'Field Setup' | translate}}</h3>
 				<div class="control-group">
 					<label class="control-label" for="displayName">{{'Display Name' | translate}}</label>
 					<div class="controls">
-						<input type="text" id="displayName" data-ng-model="fieldConfig[currentField.name].label"/>
+						<input type="text" id="displayName" data-ng-model="fieldConfig[currentField.group][currentField.level][currentField.name].label"/>
 					</div>
 					<div class="controls">
 						<label class="checkbox {{interfaceConfig.pullNormal}}">
-							<input type="checkbox" disabled data-ng-model="fieldConfig[currentField.name].hideEmpty"/>{{'Hidden if empty' | translate}}</label>
+							<input type="checkbox" disabled data-ng-model="fieldConfig[currentField.group][currentField.level][currentField.name].hideEmpty"/>{{'Hidden if empty' | translate}}</label>
 					</div>
 					<br />
 				</div>
 				
-				<div data-ng-if="fieldConfig[currentField.name].inputSystems != undefined">
+				<div data-ng-if="fieldConfig[currentField.group][currentField.level][currentField.name].inputSystems != undefined">
 					<hr />
 					<div class="row outer-flex control-group" data-ng-show="editInputSystems.collapsed">
 						<div class="span3 picklists">
@@ -126,7 +129,7 @@
 <!--  -->  
 <pre>
 currentField {{currentField | json}}
-configDirty.entry {{configDirty.entry|json}}
+configDirty.entry {{configDirty.entry | json}}
 </pre>
 
 		</div>
