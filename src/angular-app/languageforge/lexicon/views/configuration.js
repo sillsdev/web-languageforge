@@ -248,25 +248,26 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     
     $scope.selectField = function selectField(group, level, fieldName) {
       var inputSystems;
-      
-      $scope.currentField.group = group;
-      $scope.currentField.level = level;
-      $scope.currentField.name = fieldName;
-      inputSystems = $scope.fieldConfig[group][level][fieldName].inputSystems;
-      
-      $scope.currentField.inputSystems.selecteds = {};
-      angular.forEach(inputSystems, function(tag) {
-        $scope.currentField.inputSystems.selecteds[tag] = true;
-      });
-      
-      // if the field uses input systems, add the selected systems first then the unselected systems
-      if (inputSystems) {
-        $scope.currentField.inputSystems.fieldOrder = inputSystems;
-        angular.forEach($scope.configDirty.inputSystems, function(inputSystem, tag) {
-          if(! (tag in $scope.currentField.inputSystems.selecteds)) {
-            $scope.currentField.inputSystems.fieldOrder.push(tag);
-          }
+      if ($scope.currentField.name !== fieldName) {
+        $scope.currentField.group = group;
+        $scope.currentField.level = level;
+        $scope.currentField.name = fieldName;
+        inputSystems = $scope.fieldConfig[group][level][fieldName].inputSystems;
+        
+        $scope.currentField.inputSystems.selecteds = {};
+        angular.forEach(inputSystems, function(tag) {
+          $scope.currentField.inputSystems.selecteds[tag] = true;
         });
+        
+        // if the field uses input systems, add the selected systems first then the unselected systems
+        if (inputSystems) {
+          $scope.currentField.inputSystems.fieldOrder = inputSystems;
+          angular.forEach($scope.configDirty.inputSystems, function(inputSystem, tag) {
+            if(! (tag in $scope.currentField.inputSystems.selecteds)) {
+              $scope.currentField.inputSystems.fieldOrder.push(tag);
+            }
+          });
+        }
       }
     };
     $scope.selectField('fixed', 'entry', 'lexeme');
