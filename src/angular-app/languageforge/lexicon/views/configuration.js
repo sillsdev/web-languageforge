@@ -334,7 +334,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 		pos:{
 			id: 'pos',
 			name: 'Part of Speech',
-			items: $scope.projectSettings.config.entry.fields.senses.fields.partOfSpeech.values,
+			items: $scope.configDirty.entry.fields.senses.fields.partOfSpeech.values,
 			defaultKey: 'noun'
 		}
 	};
@@ -343,5 +343,12 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 	$scope.selectList = function(listId) {
 		$scope.currentListId = listId;
 	};
+
+	$scope.$watch('optionLists.pos.items', function(newval, oldval) {
+		if (angular.isDefined(newval) && newval != oldval) {
+			$scope.configForm.$setDirty();
+		}
+	}, true);
+
 }])
 ;
