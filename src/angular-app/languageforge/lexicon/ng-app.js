@@ -39,9 +39,21 @@ angular.module('lexicon',
 		$routeProvider.when(
 				'/dbe',
 				{
-					templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
+					templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
 				}
 			);
+        $routeProvider.when(
+            '/dbe/:entryId',
+            {
+                templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
+            }
+        );
+        $routeProvider.when(
+            '/dbe/:entryId/comments',
+            {
+                templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
+            }
+        );
 		$routeProvider.when(
 				'/add-grammar',
 				{
