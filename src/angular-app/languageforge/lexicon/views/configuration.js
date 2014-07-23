@@ -4,7 +4,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
   .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 
                              function($scope, notice, lexProjectService, ss, $filter, $modal) {
     lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
-    $scope.configDirty = angular.copy($scope.projectSettings.config);
+    $scope.configDirty = angular.copy(ss.session.projectSettings.config);
     
     $scope.inputSystems = {};
     $scope.selects = {
@@ -300,6 +300,10 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         }
       });
       $scope.configForm.$setDirty();
+    };
+    
+    $scope.fieldConfigItemExists = function fieldConfigItemExists(itemName) {
+      return itemName in $scope.fieldConfig[$scope.currentField.group][$scope.currentField.level][$scope.currentField.name];
     };
     
     $scope.fieldIsCustom = function fieldIsCustom(fieldName) {
