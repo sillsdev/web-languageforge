@@ -246,10 +246,6 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       }
     };
     
-    $scope.fieldIsCustom = function fieldIsCustom(fieldName) {
-      return fieldName.search('customField_') === 0;
-    };
-    
     $scope.selectField = function selectField(group, level, fieldName) {
       var inputSystems;
       
@@ -304,6 +300,10 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         }
       });
       $scope.configForm.$setDirty();
+    };
+    
+    $scope.fieldIsCustom = function fieldIsCustom(fieldName) {
+      return fieldName.search('customField_') === 0;
     };
     
     $scope.openNewCustomFieldModal = function openNewCustomFieldModal() {
@@ -393,6 +393,33 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         }
         $scope.configForm.$setDirty();
       });
+    };
+    
+    $scope.removeSelectedCustomField = function removeSelectedCustomField() {
+      var group = $scope.currentField.group,
+        level = $scope.currentField.level,
+        name = $scope.currentField.name,
+        i;
+      if ($scope.fieldIsCustom(name)) {
+        delete $scope.fieldConfig[group][level][name];
+        
+        // remove field name from fieldOrder
+        i = $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder.indexOf(name);
+        if (i > -1) {
+          $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder.splice(i, 1);
+        }
+        i = $scope.configDirty.entry.fields.senses.fieldOrder.indexOf(name);
+        if (i > -1) {
+          $scope.configDirty.entry.fields.senses.fieldOrder.splice(i, 1);
+        }
+        i = $scope.configDirty.entry.fieldOrder.indexOf(name);
+        if (i > -1) {
+          $scope.configDirty.entry.fieldOrder.splice(i, 1);
+        }
+        
+        $scope.configForm.$setDirty();
+        $scope.selectField('fixed', 'entry', 'lexeme');
+      }
     };
     
     $scope.editInputSystems = {
