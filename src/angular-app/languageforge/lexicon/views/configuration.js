@@ -464,5 +464,12 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     $scope.selectList = function(listId) {
       $scope.currentListId = listId;
     };
+    
+    $scope.$watch('optionLists.pos.items', function(newval, oldval) {
+      if (angular.isDefined(newval) && newval != oldval) {
+        $scope.configForm.$setDirty();
+      }
+    }, true);
+    
   }])
   ;
