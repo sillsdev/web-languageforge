@@ -6,10 +6,6 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
     $scope.configDirty = angular.copy($scope.projectSettings.config);
     
-    $scope.haveConfig = function haveConfig() {
-      return angular.isDefined($scope.configDirty.entry);
-    };
-    
     $scope.inputSystems = {};
     $scope.selects = {
       'special': {
@@ -87,18 +83,16 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         
         // for FieldConfigCtrl
         $scope.fieldConfig = {
-          'lexeme': $scope.configDirty.entry.fields['lexeme'],
-          'definition': $scope.configDirty.entry.fields.senses.fields['definition'],
-          'gloss': $scope.configDirty.entry.fields.senses.fields['gloss'],
-          'partOfSpeech': $scope.configDirty.entry.fields.senses.fields['partOfSpeech'],
-          'semanticDomain': $scope.configDirty.entry.fields.senses.fields['semanticDomain'],
-          'sentence': $scope.configDirty.entry.fields.senses.fields.examples.fields['sentence'],
-          'translation': $scope.configDirty.entry.fields.senses.fields.examples.fields['translation']
-        };
-        $scope.customFieldConfig = {
-          'entry'   : $scope.configDirty.entry.fields.customFields.fields,  
-          'senses'  : $scope.configDirty.entry.fields.senses.fields.customFields.fields,  
-          'examples': $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields,  
+          'fixed' : {
+            'entry'   : $scope.configDirty.entry.fields,  
+            'senses'  : $scope.configDirty.entry.fields.senses.fields,  
+            'examples': $scope.configDirty.entry.fields.senses.fields.examples.fields
+          },
+          'custom'  : {
+            'entry'   : $scope.configDirty.entry.fields.customFields.fields,  
+            'senses'  : $scope.configDirty.entry.fields.senses.fields.customFields.fields,  
+            'examples': $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields,  
+          }
         };
       }
     };
@@ -106,7 +100,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     $scope.configurationApply = function() {
       lexProjectService.updateConfiguration($scope.configDirty, function(result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, $filter('translate')("Dictionary configuration updated successfully"));
+          notice.push(notice.SUCCESS, $filter('translate')('Dictionary configuration updated successfully'));
           $scope.configForm.$setPristine();
           $scope.projectSettings.config = angular.copy($scope.configDirty);
           setupView();
@@ -251,17 +245,27 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         'selecteds': {}
       }
     };
-    $scope.selectField = function selectField(fieldName) {
+    
+    $scope.fieldIsCustom = function fieldIsCustom(fieldName) {
+      return fieldName.search('customField_') === 0;
+    };
+    
+    $scope.selectField = function selectField(group, level, fieldName) {
+      var inputSystems;
+      
+      $scope.currentField.group = group;
+      $scope.currentField.level = level;
       $scope.currentField.name = fieldName;
+      inputSystems = $scope.fieldConfig[group][level][fieldName].inputSystems;
       
       $scope.currentField.inputSystems.selecteds = {};
-      angular.forEach($scope.fieldConfig[fieldName].inputSystems, function(tag) {
+      angular.forEach(inputSystems, function(tag) {
         $scope.currentField.inputSystems.selecteds[tag] = true;
       });
       
       // if the field uses input systems, add the selected systems first then the unselected systems
-      if ($scope.fieldConfig[fieldName].inputSystems) {
-        $scope.currentField.inputSystems.fieldOrder = $scope.fieldConfig[fieldName].inputSystems;
+      if (inputSystems) {
+        $scope.currentField.inputSystems.fieldOrder = inputSystems;
         angular.forEach($scope.configDirty.inputSystems, function(inputSystem, tag) {
           if(! (tag in $scope.currentField.inputSystems.selecteds)) {
             $scope.currentField.inputSystems.fieldOrder.push(tag);
@@ -269,28 +273,34 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         });
       }
     };
-    $scope.selectField('lexeme');
+    $scope.selectField('fixed', 'entry', 'lexeme');
     
     $scope.moveUp = function moveUp(currentTag) {
-      var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
+      var group = $scope.currentField.group,
+        level = $scope.currentField.level,
+        name = $scope.currentField.name,
+        currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
       $scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1];
       $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1] = currentTag;
-      $scope.fieldConfig[$scope.currentField.name].inputSystems = [];
+      $scope.fieldConfig[group][level][name].inputSystems = [];
       angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
         if ($scope.currentField.inputSystems.selecteds[tag]) {
-          $scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
+          $scope.fieldConfig[group][level][name].inputSystems.push(tag);
         }
       });
       $scope.configForm.$setDirty();
     };
     $scope.moveDown = function moveDown(currentTag) {
-      var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
+      var group = $scope.currentField.group,
+        level = $scope.currentField.level,
+        name = $scope.currentField.name,
+        currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
       $scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1];
       $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1] = currentTag;
-      $scope.fieldConfig[$scope.currentField.name].inputSystems = [];
+      $scope.fieldConfig[group][level][name].inputSystems = [];
       angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
         if ($scope.currentField.inputSystems.selecteds[tag]) {
-          $scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
+          $scope.fieldConfig[group][level][name].inputSystems.push(tag);
         }
       });
       $scope.configForm.$setDirty();
@@ -349,10 +359,14 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         switch (newCustomField.type) {
           case 'multitext':
             newCustomData.displayMultiline = false;
+            newCustomData.width = 20;
+            newCustomData.inputSystems = [];
             break;
           case 'multitextlines':
             newCustomData.type = 'multitext';
             newCustomData.displayMultiline = true;
+            newCustomData.width = 20;
+            newCustomData.inputSystems = [];
             break;
         }
         
@@ -377,6 +391,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
               $scope.configDirty.entry.fieldOrder.push(newCustomKey);
             }
         }
+        $scope.configForm.$setDirty();
       });
     };
     
@@ -388,12 +403,15 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     };
     
     $scope.$watchCollection('currentField.inputSystems.selecteds', function(newValue) {
-      if (angular.isDefined(newValue) && $scope.haveConfig()) {
-        if ($scope.fieldConfig[$scope.currentField.name].inputSystems) {
-          $scope.fieldConfig[$scope.currentField.name].inputSystems = [];
+      if (angular.isDefined(newValue)) {
+        var group = $scope.currentField.group,
+          level = $scope.currentField.level,
+          name = $scope.currentField.name;
+        if (angular.isDefined($scope.fieldConfig[group][level][name].inputSystems)) {
+          $scope.fieldConfig[group][level][name].inputSystems = [];
           angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
             if ($scope.currentField.inputSystems.selecteds[tag]) {
-              $scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
+              $scope.fieldConfig[group][level][name].inputSystems.push(tag);
             }
           });
         }
