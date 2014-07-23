@@ -3,12 +3,27 @@
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry',
     'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window',
-        '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService',
-function ($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice) {
+        '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location',
+function ($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location) {
+
+    // redefine the $location.path function as per http://joelsaupe.com/programming/angularjs-change-path-without-reloading/
+    var originalPathFunction = $location.path;
+    $location.path = function (path, reload) {
+        if (reload === false) {
+            var lastRoute = $route.current;
+            var un = $rootScope.$on('$locationChangeSuccess', function () {
+                $route.current = lastRoute;
+                un();
+            });
+        }
+        return originalPathFunction.apply($location, [path]);
+    };
+
     var pristineEntry = {};
     var browserId = Math.floor(Math.random() * 1000);
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
+    $scope.state = 'list'; // default state.  State is one of 'list', 'edit', or 'comment'
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
 
 
@@ -69,8 +84,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
                     }
 					$scope.lastSavedDate = new Date();
 
-                    // refresh view will add the new entry to the entries list
-					refreshView(false, function() {
+                    // refresh data will add the new entry to the entries list
+					refreshData(false, function() {
                         if (isNewEntry && setEntry) {
                             scrollListToEntry(entry.id, 'top');
                         }
@@ -227,6 +242,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 			$scope.saveCurrentEntry();
             setCurrentEntry($scope.entries[getEntryIndexInList(id, $scope.entries)]);
 		}
+        $scope.state = 'edit';
+        $location.path('/dbe/' + id, false);
 	};
 
 	$scope.newEntry = function newEntry() {
@@ -236,6 +253,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         addEntryToEntryList(newEntry);
         $scope.show.initial();
         scrollListToEntry('', 'top');
+        $scope.state = 'edit';
+        $location.path('/dbe', false);
 	};
 	
 	$scope.entryLoaded = function entryLoaded() {
@@ -245,6 +264,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
      $scope.returnToList = function returnToList() {
          $scope.saveCurrentEntry();
          setCurrentEntry();
+         $scope.state = 'list';
+         $location.path('/dbe', false);
      };
 
     function removeEntryFromLists(id) {
@@ -406,7 +427,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
 
 
-	function refreshView(fullRefresh, callback) {
+	function refreshData(fullRefresh, callback) {
         callback = callback||angular.noop;
         if (fullRefresh) notice.setLoading('Loading Dictionary');
 		var processDbeDto = function (result) {
@@ -468,10 +489,48 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		}
 	};
 
-    // only refresh the full view if we have not yet loaded the dictionary for the first time
-    if ($scope.entries.length == 0) {
-        refreshView(true);
+    function evaluateState() {
+        var match, path = $location.path();
+
+        var goToState = function goToState() {
+            match = /dbe\/(.+)\/comments/.exec(path);
+            if (match) {
+                $scope.show.initial();
+                $scope.showComments(match[1]);
+                return;
+            }
+
+            match = /dbe\/(.+)$/.exec(path);
+            if (match) {
+                $scope.show.initial();
+                $scope.editEntry(match[1]);
+                return;
+            }
+
+            $scope.returnToList();
+        };
+
+        // refresh the data and go to state
+        if ($scope.entries.length == 0) {
+            refreshData(true, goToState);
+        } else {
+            refreshData(false, goToState);
+        }
     }
+
+    $scope.showComments = function showComments(entryId, fieldName) {
+        if ($scope.entryLoaded()) {
+            $scope.saveCurrentEntry();
+        } else {
+            setCurrentEntry($scope.entries[getEntryIndexInList(entryId, $scope.entries)]);
+        }
+        $scope.state = 'comment';
+        $location.path('/dbe/' + entryId + '/comments', false);
+    };
+
+    // only refresh the full view if we have not yet loaded the dictionary for the first time
+
+    evaluateState();
 
  /* disable autosave feature until it's ready
 	var autoSaveTimer;
