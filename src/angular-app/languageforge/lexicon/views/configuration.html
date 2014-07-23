@@ -71,8 +71,8 @@
 		<div class="span9">
 			<!-- control buttons -->
 			<div class="control-group" style="height: 30px">
-				<button class="btn" data-ng-click=""
-					data-ng-disabled="true" data-ng-show="false">
+				<button class="btn" data-ng-click="removeSelectedCustomField()"
+					data-ng-show="fieldIsCustom(currentField.name)">
 					<i class="icon-remove"></i> {{'Remove Custom Field' | translate}} </button>
 			</div>
 			
@@ -82,16 +82,37 @@
 				<div class="control-group">
 					<label class="control-label" for="displayName">{{'Display Name' | translate}}</label>
 					<div class="controls">
-						<input type="text" id="displayName" data-ng-model="fieldConfig[currentField.group][currentField.level][currentField.name].label"/>
+						<input type="text" id="displayName" 
+							data-ng-model="fieldConfig[currentField.group][currentField.level][currentField.name].label"/>
 					</div>
 					<div class="controls">
 						<label class="checkbox {{interfaceConfig.pullNormal}}">
-							<input type="checkbox" disabled data-ng-model="fieldConfig[currentField.group][currentField.level][currentField.name].hideEmpty"/>{{'Hidden if empty' | translate}}</label>
+							<input type="checkbox" 
+								disabled data-ng-model="fieldConfig[currentField.group][currentField.level][currentField.name].hideEmpty"/>
+							{{'Hidden if empty' | translate}}</label>
 					</div>
 					<br />
 				</div>
+				<div class="control-group">
+					<div class="controls"
+						data-ng-if="fieldConfigItemExists('displayMultiline')">
+						<label class="checkbox {{interfaceConfig.pullNormal}}">
+							<input type="checkbox" 
+								data-ng-model="fieldConfig[currentField.group][currentField.level][currentField.name].displayMultiline"/>
+							{{'Display as multi-line text' | translate}}</label>
+						<br />
+					</div>
+				</div>
+				<div class="control-group"
+					data-ng-if="fieldConfigItemExists('width')">
+					<label class="control-label" for="width">{{'Width' | translate}}</label>
+					<div class="controls">
+						<input type="number" id="width" min="0" max="40"
+							data-ng-model="fieldConfig[currentField.group][currentField.level][currentField.name].width"/>
+					</div>
+				</div>
 				
-				<div data-ng-if="fieldConfig[currentField.group][currentField.level][currentField.name].inputSystems != undefined">
+				<div data-ng-if="fieldConfigItemExists('inputSystems')">
 					<hr />
 					<div class="row outer-flex control-group" data-ng-show="editInputSystems.collapsed">
 						<div class="span3 picklists">
