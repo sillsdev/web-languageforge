@@ -260,33 +260,34 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
 	</tab>
 	<tab heading="Option Lists" class="{{interfaceConfig.pullNormal}}">
 		<div data-ng-controller="OptionListCtrl">
-			<div class="row outer-flex">
+		<div class="row outer-flex">
 
-				<!-- Left column: task list -->
-				<div class="span3 control-group picklists">
-					<fieldset class="well" id="editListValuesFieldset">
-						<legend>Select a list</legend>
-						<ul class="unstyled">
-							<li ng-click="selectList('pos')" data-ng-class="{selected:currentListId == 'pos'}">Part of Speech</li>
-							<!-- future lists go here -->
-						</ul>
-					</fieldset>
+		<!-- Left column: task list -->
+		<div class="span3 control-group">
+			<dl class="picklists">
+				<dt translate="Select a list" id="editListValuesFieldset"></dt>
+				<dd><div class="controls">
+					<div data-ng-click="selectList('pos')"
+						 data-ng-class="{selected:currentListId == 'pos'}"
+							translate="Part of Speech">
+					</div>
+				</div></dd>
+				<!-- future lists go here -->
+			</dl>
+		</div>
+
+		<!-- Right column: task setup -->
+		<div class="span9">
+			<div class="well" id="picklistEditorFieldset">
+				<h3 class="control-label" translate="{{optionLists[currentListId].name}}"></h3>
+				<div class="controls">
+					<picklist-editor items="optionLists[currentListId].items" default-key="optionLists[currentListId].defaultKey"></picklist-editor>
 				</div>
-
-				<!-- Right column: task setup -->
-				<div class="span9">
-					<fieldset class="well" id="picklistEditorFieldset">
-						<legend style="width:auto;">{{optionLists[currentListId].name}}</legend>
-						<picklist-editor items="optionLists[currentListId].items" default-key="optionLists[currentListId].defaultKey"></picklist-editor>
-					</fieldset>
-				</div>
-
 			</div>
-			<!--
-			<pre>
-			configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] | json}}
-			</pre>
-			 -->
+
+		</div>
+
+		</div>
 		</div>
 	</tab>
 </tabset>
