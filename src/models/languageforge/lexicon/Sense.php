@@ -109,7 +109,113 @@ class Sense {
 			}
 		}
 	}
-	
+
+
+
+	// less common fields used in FLEx
+
+	/**
+	 * @var MultiText
+	 */
+	public $scientificName;
+
+	/**
+	 * @var MultiText
+	 */
+	public $anthropologyNote;
+
+	/**
+	 * @var MultiText
+	 */
+	public $senseBibliography;
+
+	/**
+	 * @var MultiText
+	 */
+	public $discourseNote;
+
+	/**
+	 * @var MultiText
+	 */
+	public $encyclopedicNote;
+
+	/**
+	 * @var MultiText
+	 */
+	public $generalNote;
+
+	/**
+	 * @var MultiText
+	 */
+	public $grammarNote;
+
+	/**
+	 * @var MultiText
+	 */
+	public $phonologyNote;
+
+	/**
+	 * @var MultiText
+	 */
+	public $senseRestrictions;
+
+	/**
+	 * @var MultiText
+	 */
+	public $semanticsNote;
+
+	/**
+	 * @var MultiText
+	 */
+	public $sociolinguisticsNote;
+
+	/**
+	 * @var MultiText
+	 */
+	public $source;
+
+	/**
+	 * @var LexiconMultiValueField
+	 */
+	public $usages;
+
+	// TODO 07-2014 DDW make this Taglist
+	/**
+	 * @var Taglist
+	 */
+	public $reversalEntries;
+
+	/**
+	 * @var LexiconField
+	 */
+	public $senseType;
+
+	/**
+	 * @var LexiconMultiValueField
+	 */
+	public $academicDomains;
+
+	/**
+	 * @var LexiconMultiValueField
+	 */
+	public $sensePublishIn;
+
+	/**
+	 * @var LexiconMultiValueField
+	 */
+	public $anthropologyCategories;
+
+	/**
+	 * @var MultiText
+	 */
+	public $senseImportResidue;
+
+	/**
+	 * @var LexiconMultiValueField
+	 */
+	public $status;
+
+
 }
 
 ?>
