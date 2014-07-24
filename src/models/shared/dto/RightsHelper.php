@@ -276,9 +276,12 @@ class RightsHelper
 
 			case 'lex_entry_remove':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::DELETE);
+
 			case 'lex_entry_updateComment':
+            case 'lex_entry_updateReply':
 				return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT_OWN);
             case 'lex_entry_deleteComment':
+            case 'lex_entry_deleteReply':
                 return $this->userHasProjectRight(Domain::COMMENTS + Operation::DELETE_OWN);
 
 				

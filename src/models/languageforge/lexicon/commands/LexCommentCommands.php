@@ -7,13 +7,38 @@ use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
 use models\languageforge\lexicon\LexEntryListModel;
-use models\languageforge\lexicon\LexComment;
+use models\languageforge\lexicon\LexCommentModel;
 use models\languageforge\lexicon\LexCommentReply;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
 
 class LexCommentCommands {
+    public static function updateComment($projectId, $userId, $params) {
+        // if this is an update, assert that the $userId and the userRef on the comment are the same, otherwise throw
+
+    }
+
+    public static function updateReply($projectId, $userId, $commentId, $params) {
+        // if this is an update, assert that the $userId and the userRef on the comment are the same, otherwise throw
+
+    }
+
+    public static function deleteComment($projectId, $userId, $commentId) {
+        // if the userId is different from the author, throw if user does not have DELETE privilege
+
+    }
+
+    public static function deleteReply($projectId, $userId, $commentId, $replyId) {
+        // if the userId is different from the author, throw if user does not have DELETE privilege
+
+    }
+
+
+
+
+
+
 	/**
 	 * 
 	 * @param string $projectId
@@ -21,7 +46,8 @@ class LexCommentCommands {
 	 * @param string $userId
 	 * @throws \Exception
 	 * @return array
-	 */	
+	 */
+    /*
 	public static function updateCommentOrReply($projectId, $comment, $userId) {
 		CodeGuard::checkTypeAndThrow($comment, 'array');
 		$project = new LexiconProjectModel($projectId);
@@ -64,6 +90,7 @@ class LexCommentCommands {
 	public static function deleteCommentById($projectId, $entryId, $commentId) {
 		// loop through all possible comment arrays and remove the comment with the matching id...
 	}
+    */
 
 	
 	/**
@@ -72,6 +99,7 @@ class LexCommentCommands {
 	 * @param array $data
 	 * @param string $userId
 	 */
+    /*
 	private static function updateComment($field, $data, $userId) {
 		$id = $data['id'];
 		$existing = ($id != '');
@@ -95,7 +123,7 @@ class LexCommentCommands {
 			if ($existing) {
 				$comment = $field->getComment($id);
 			} else {
-				$comment = new LexComment();
+				$comment = new LexCommentModel();
 				$comment->regarding = $data['regarding'];
 			}
 			$comment->content = $data['content'];
@@ -109,6 +137,7 @@ class LexCommentCommands {
 			}
 		}
 	}
+    */
 	
 }
 

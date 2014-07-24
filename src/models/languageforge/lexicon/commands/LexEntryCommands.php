@@ -7,7 +7,7 @@ use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
 use models\languageforge\lexicon\LexEntryListModel;
-use models\languageforge\lexicon\LexComment;
+use models\languageforge\lexicon\LexCommentModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
