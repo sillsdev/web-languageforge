@@ -18,6 +18,10 @@
 			<div class="control-group">
 				<button class="btn btn-success" data-ng-click="openNewCustomFieldModal()"><i class="icon-plus"></i> {{'New Custom Field' | translate}} </button>
 			</div>
+			<div class="control-group">
+				<label class="checkbox"><input type="checkbox" data-ng-click="showAllFields = ! showAllFields">
+					{{'Show All Fields' | translate}}</label>
+			</div>
 			
 			<!-- picklist -->
 			<dl class="picklists">
@@ -25,11 +29,11 @@
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
-						<div data-ng-if="! fieldIsCustom(fieldName)"
+						<div data-ng-if="! fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName)"
 							data-ng-click="selectField(fieldName)">
 							{{fieldConfig[fieldName].label}}
 						</div>
-						<i data-ng-if="fieldIsCustom(fieldName)"
+						<i data-ng-if="fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName)"
 							data-ng-click="selectField(fieldName)">
 							{{fieldConfig[fieldName].label}}
 						</i>
@@ -39,11 +43,11 @@
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
-						<div data-ng-if="! fieldIsCustom(fieldName)"
+						<div data-ng-if="! fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName)"
 							data-ng-click="selectField(fieldName)">
 							{{fieldConfig[fieldName].label}}
 						</div>
-						<i data-ng-if="fieldIsCustom(fieldName)"
+						<i data-ng-if="fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName)"
 							data-ng-click="selectField(fieldName)">
 							{{fieldConfig[fieldName].label}}
 						</i>
@@ -53,11 +57,11 @@
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
-						<div data-ng-if="! fieldIsCustom(fieldName)"
+						<div data-ng-if="! fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName)"
 							data-ng-click="selectField(fieldName)">
 							{{fieldConfig[fieldName].label}}
 						</div>
-						<i data-ng-if="fieldIsCustom(fieldName)"
+						<i data-ng-if="fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName)"
 							data-ng-click="selectField(fieldName)">
 							{{fieldConfig[fieldName].label}}
 						</i>
@@ -88,7 +92,7 @@
 					<div class="controls">
 						<label class="checkbox {{interfaceConfig.pullNormal}}">
 							<input type="checkbox" 
-								disabled data-ng-model="fieldConfig[currentField.name].hideEmpty"/>
+								data-ng-model="fieldConfig[currentField.name].hideIfEmpty"/>
 							{{'Hidden if empty' | translate}}</label>
 					</div>
 					<br />
