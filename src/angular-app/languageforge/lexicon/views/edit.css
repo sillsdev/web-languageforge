@@ -252,3 +252,8 @@ div#lexAppEditView {
     color:#CCC;
 }
 
+.flex100 {
+    display:flex;
+    width:100%;
+}
+

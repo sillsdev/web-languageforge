@@ -1,6 +1,9 @@
 <div class="dc-entry">
-	<dc-multitext config="config.fields.lexeme" model="model.lexeme" control="control"></dc-multitext>
-	<div ng-show="control.rights.canEditEntry()" class="addItem">
+    <div style="width:100%;display:flex;">
+        <dc-multitext config="config.fields.lexeme" model="model.lexeme" control="control"></dc-multitext>
+        <comment-bubble control="control" count="control.getFieldCommentCount('lexeme')"></comment-bubble>
+    </div>
+	<div ng-show="control.rights.canEditEntry() && control.state == 'edit'" class="addItem">
         <a data-ng-click="addSense()">Add Meaning</a>
     </div>
     <div data-ng-repeat="sense in model.senses">

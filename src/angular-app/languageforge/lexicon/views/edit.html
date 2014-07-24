@@ -1,9 +1,19 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="lexAppContainer">
-    <a style="position:relative; top:10px; left:115px" ng-show="entryLoaded()" class="btn pull-left" ng-click="returnToList()" tooltip="{{'Return to main list'|translate}}"><i class="icon-large icon-long-arrow-left"></i> {{'Back'|translate}}</a>
-    <h2 style="text-align: center" data-translate="Dictionary Browse and Edit"></h2>
+    <div style="display:flex;justify-content:space-between; margin-top:45px;margin-bottom: 10px">
+        <div>
+            <a ng-show="state == 'edit'" class="btn" ng-click="returnToList()" tooltip="{{'Back to List'|translate}}"><i class="icon-large icon-long-arrow-left"></i> {{'List'|translate}}</a>
+            <a ng-show="state == 'comment'" class="btn" ng-click="editEntry(currentEntry.id)" tooltip="{{'Return to Edit Entry'|translate}}"><i class="icon-large icon-long-arrow-left"></i> {{'Edit'|translate}}</a>
+        </div>
+        <div>
+            <h2 style="text-align: center;margin:0" data-translate="Dictionary Browse and Edit"></h2>
+        </div>
+        <div>
+            <a ng-show="state == 'edit'" style="color:white" class="btn btn-warning" ng-click="showComments()" tooltip="{{'Show Comments'|translate}}">{{getCommentCountForDisplay()}} {{'Comments'|translate}} <i class="icon-large icon-long-arrow-right"></i></a>
+        </div>
+    </div>
 
     <!-- entry list view -->
-    <div id="lexAppListView" ng-hide="entryLoaded()">
+    <div id="lexAppListView" ng-show="state == 'list'">
         <div class="lexiconHeaderContainer">
             <div class="lexiconHeaderItem">
                 <button class="btn btn-success" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
@@ -32,7 +42,7 @@
     </div>
 
     <!-- edit view -->
-    <div id="lexAppEditView" ng-show="entryLoaded()">
+    <div id="lexAppEditView" ng-show="state == 'edit'">
         <div style="flex: 1; border-right: 1px #dcdcdc solid">
             <div style="margin: 5px 5px 5px 0">
                 <button class="btn btn-success btn-small" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
@@ -85,6 +95,55 @@
         </div>
     </div>
     -->
+
+
+    <!-- comment view -->
+    <div id="lexAppCommentView" ng-show="state == 'comment'">
+        <div style="flex: 1;padding:5px;display: flex; flex-direction: column">
+            <div style="margin-bottom: 5px; border-bottom: solid black 1px">
+                <div ng-show="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
+                    <button data-ng-show="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
+                    <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
+                    <span style="color: grey;">{{saveNotice()}}</span>
+                </div>
+                <div >
+                </div>
+                <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
+            </div>
+            <div style="margin-top:5px">
+                <div class="entryItemView" data-ng-show="entryLoaded()">
+                    <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 2;padding:5px;display: flex; flex-direction: column">
+            <div style="margin-bottom: 5px; border-bottom: solid black 1px">
+                <div ng-show="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
+                    <button data-ng-show="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
+                    <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
+                    <span style="color: grey;">{{saveNotice()}}</span>
+                </div>
+                <div >
+                </div>
+                <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
+            </div>
+            <div style="margin-top:5px">
+                <div class="entryItemView" data-ng-show="entryLoaded()">
+                    <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
+    <div class="row">
+        <div class="span10">
+            <pre>currentEntry {{currentEntry|json}}</pre>
+        </div>
+    </div>
+    -->
+
+
+
 </div>
 
 <!--

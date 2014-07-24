@@ -1,4 +1,4 @@
-angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multitext', 'ngAnimate', 'lexicon.services', 'bellows.services'])
+angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multitext', 'ngAnimate', 'lexicon.services', 'bellows.services', 'palaso.ui.commentBubble'])
   // Palaso UI Dictionary Control: Entry
   .directive('dcEntry', ['lexUtils', 'modalService', function(utils, modal) {
 		return {
