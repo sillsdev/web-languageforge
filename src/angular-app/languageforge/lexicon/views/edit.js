@@ -496,6 +496,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             match = /dbe\/(.+)\/comments/.exec(path);
             if (match) {
                 $scope.show.initial();
+                $scope.editEntryAndScroll(match[1]);
                 $scope.showComments(match[1]);
                 return;
             }
@@ -503,7 +504,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             match = /dbe\/(.+)$/.exec(path);
             if (match) {
                 $scope.show.initial();
-                $scope.editEntry(match[1]);
+                $scope.editEntryAndScroll(match[1]);
                 return;
             }
 
@@ -672,7 +673,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             count = 5;
         } else {
             // get all unresolved comments for this entry
-            count = 1;
+            count = 10;
         }
         return count;
     };
