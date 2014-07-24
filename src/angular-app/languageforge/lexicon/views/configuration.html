@@ -26,12 +26,12 @@
 					<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
 						<div data-ng-if="! fieldIsCustom(fieldName)"
-							data-ng-click="selectField('fixed', 'entry', fieldName)">
-							{{fieldConfig.fixed.entry[fieldName].label}}
+							data-ng-click="selectField(fieldName)">
+							{{fieldConfig[fieldName].label}}
 						</div>
 						<i data-ng-if="fieldIsCustom(fieldName)"
-							data-ng-click="selectField('custom', 'entry', fieldName)">
-							{{fieldConfig.custom.entry[fieldName].label}}
+							data-ng-click="selectField(fieldName)">
+							{{fieldConfig[fieldName].label}}
 						</i>
 					</div>
 				</div></dd>
@@ -40,12 +40,12 @@
 					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
 						<div data-ng-if="! fieldIsCustom(fieldName)"
-							data-ng-click="selectField('fixed', 'senses', fieldName)">
-							{{fieldConfig.fixed.senses[fieldName].label}}
+							data-ng-click="selectField(fieldName)">
+							{{fieldConfig[fieldName].label}}
 						</div>
 						<i data-ng-if="fieldIsCustom(fieldName)"
-							data-ng-click="selectField('custom', 'senses', fieldName)">
-							{{fieldConfig.custom.senses[fieldName].label}}
+							data-ng-click="selectField(fieldName)">
+							{{fieldConfig[fieldName].label}}
 						</i>
 					</div>
 				</div></dd>
@@ -54,12 +54,12 @@
 					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
 						<div data-ng-if="! fieldIsCustom(fieldName)"
-							data-ng-click="selectField('fixed', 'examples', fieldName)">
-							{{fieldConfig.fixed.examples[fieldName].label}}
+							data-ng-click="selectField(fieldName)">
+							{{fieldConfig[fieldName].label}}
 						</div>
 						<i data-ng-if="fieldIsCustom(fieldName)"
-							data-ng-click="selectField('custom', 'examples', fieldName)">
-							{{fieldConfig.custom.examples[fieldName].label}}
+							data-ng-click="selectField(fieldName)">
+							{{fieldConfig[fieldName].label}}
 						</i>
 					</div>
 				</div></dd>
@@ -78,17 +78,17 @@
 			
 			<!-- settings -->
 			<div class="well">
-				<h3>{{fieldConfig[currentField.group][currentField.level][currentField.name].label}} {{'Field Setup' | translate}}</h3>
+				<h3>{{fieldConfig[currentField.name].label}} {{'Field Setup' | translate}}</h3>
 				<div class="control-group">
 					<label class="control-label" for="displayName">{{'Display Name' | translate}}</label>
 					<div class="controls">
 						<input type="text" id="displayName" 
-							data-ng-model="fieldConfig[currentField.group][currentField.level][currentField.name].label"/>
+							data-ng-model="fieldConfig[currentField.name].label"/>
 					</div>
 					<div class="controls">
 						<label class="checkbox {{interfaceConfig.pullNormal}}">
 							<input type="checkbox" 
-								disabled data-ng-model="fieldConfig[currentField.group][currentField.level][currentField.name].hideEmpty"/>
+								disabled data-ng-model="fieldConfig[currentField.name].hideEmpty"/>
 							{{'Hidden if empty' | translate}}</label>
 					</div>
 					<br />
@@ -98,7 +98,7 @@
 						data-ng-if="fieldConfigItemExists('displayMultiline')">
 						<label class="checkbox {{interfaceConfig.pullNormal}}">
 							<input type="checkbox" 
-								data-ng-model="fieldConfig[currentField.group][currentField.level][currentField.name].displayMultiline"/>
+								data-ng-model="fieldConfig[currentField.name].displayMultiline"/>
 							{{'Display as multi-line text' | translate}}</label>
 						<br />
 					</div>
@@ -108,7 +108,7 @@
 					<label class="control-label" for="width">{{'Width' | translate}}</label>
 					<div class="controls">
 						<input type="number" id="width" min="20" max="40"
-							data-ng-model="fieldConfig[currentField.group][currentField.level][currentField.name].width"/>
+							data-ng-model="fieldConfig[currentField.name].width"/>
 					</div>
 				</div>
 				
