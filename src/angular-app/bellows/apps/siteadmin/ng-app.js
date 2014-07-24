@@ -149,7 +149,7 @@ angular.module('siteadmin', [
 					if (result.data) {
 						notice.push(notice.SUCCESS, "The user " + record.username + " was successfully added");
 					} else {
-						notice.push(notice.ERROR, "API Error: the username already exists!  (this should not happen)");
+						notice.push(notice.ERROR, "API Error: the username/email already exists!  (this should not happen)");
 					}
 				}
 				

@@ -30,19 +30,11 @@ describe('User Profile E2E Test', function() {
 			it('Verify initial "My Account" settings created from setupTestEnvironment.php', function() {
 				userProfile.getMyAccount();
 	
-				var expectedEmail = '';
 				var expectedColor = '';
 				
-				if (expectedUsername == constants.memberUsername) {
-					expectedEmail  = constants.memberEmail;
-				} else if (expectedUsername == constants.managerUsername) {
-					expectedEmail  = constants.managerEmail;
-				};
-
  				expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(browser.baseUrl + constants.avatar);
 				expect(userProfile.myAccountTab.avatarColor.getText()).toBe('Select a Color...');
 				expect(userProfile.myAccountTab.avatarShape.getText()).toBe('Choose an animal...');
-				expect(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(expectedEmail);
 				expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value')).toEqual('');
 				expect(userProfile.myAccountTab.emailBtn.isSelected());
 			});
@@ -71,13 +63,11 @@ describe('User Profile E2E Test', function() {
 				if (expectedUsername == constants.memberUsername) {
 					var newColor         = 'Blue';
 					var newShape         = 'Elephant';
-					var newMemberEmail   = 'test@123.com';
 					var newMobilePhone   = '+1876 5555555';
 					var expectedAvatar   = userProfile.blueElephantAvatarURL;
 				} else if (expectedUsername == constants.managerUsername) {
 					var newColor         = 'Gold';
 					var newShape         = 'Pig';
-					var newMemberEmail   = 'admintest@SF.com';
 					var newMobilePhone   = '+1876 911';
 					var expectedAvatar   = userProfile.goldPigAvatarURL;
 				};
@@ -85,7 +75,6 @@ describe('User Profile E2E Test', function() {
 				userProfile.myAccountTab.selectColor(newColor);
 				userProfile.myAccountTab.selectShape(newShape);
 				
-				userProfile.myAccountTab.updateEmail(newMemberEmail);
 				userProfile.myAccountTab.updateMobilePhone(newMobilePhone);
 				
 				// Modify contact preference
@@ -103,7 +92,6 @@ describe('User Profile E2E Test', function() {
  				expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(expectedAvatar);
 				expect(userProfile.myAccountTab.avatarColor.getText()).toBe(newColor);
 				expect(userProfile.myAccountTab.avatarShape.getText()).toBe(newShape);
-				expect(userProfile.myAccountTab.emailInput.getAttribute('value')).toEqual(newMemberEmail);
 				expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value')).toEqual(newMobilePhone);
 				expect(userProfile.myAccountTab.bothBtn.isSelected());
 			});
