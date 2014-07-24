@@ -113,6 +113,7 @@ angular.module('lexicon',
 		$scope.rights.edit = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
 		$scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create || $scope.rights.edit;
 	    $scope.entries = []; // persist the entries array across all controllers
+        $scope.comments = [];
 		$scope.project = ss.session.project;
 		$scope.projectSettings = ss.session.projectSettings;
         $scope.config = $scope.projectSettings.config;

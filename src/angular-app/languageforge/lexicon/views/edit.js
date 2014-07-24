@@ -518,14 +518,10 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         }
     }
 
-    $scope.showComments = function showComments(entryId, fieldName) {
-        if ($scope.entryLoaded()) {
-            $scope.saveCurrentEntry();
-        } else {
-            setCurrentEntry($scope.entries[getEntryIndexInList(entryId, $scope.entries)]);
-        }
+    $scope.showComments = function showComments(fieldName) {
+        $scope.saveCurrentEntry();
         $scope.state = 'comment';
-        $location.path('/dbe/' + entryId + '/comments', false);
+        $location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);
     };
 
     // only refresh the full view if we have not yet loaded the dictionary for the first time
@@ -667,25 +663,20 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		});
 		return startAt;
 	};
+
+
+    // todo implement this
+    $scope.getFieldCommentCount = function getFieldCommentCount(fieldName) {
+        var count;
+        if (fieldName) {
+            count = 5;
+        } else {
+            // get all unresolved comments for this entry
+            count = 1;
+        }
+        return count;
+    };
 	
-	// defaults
-	$scope.editTab = {active: true};
-	$scope.commentsTab = {active: false};
-	$scope.control.showComments = false;
-	
-	// When comments tab is clicked, set up new config for its interior
-	$scope.selectCommentsTab = function() {
-//		console.log('comments tab selected');
-		$scope.control.showComments = true;
-		$scope.editTab.active = false;
-		$scope.commentsTab.active = true;
-	};
-	$scope.selectEditTab = function() {
-//		console.log('edit tab selected');
-		$scope.control.showComments = false;
-		$scope.editTab.active = true;
-		$scope.commentsTab.active = false;
-	};
 
 	// TODO: Consider moving filter-related code and variables into its own controller
 	$scope.filter = {};
