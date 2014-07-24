@@ -31,6 +31,10 @@ class LexiconConfigObj extends ObjectForEncoding {
 	const COMMENTS_LIST = 'comments';
 	const REPLIES_LIST = 'replies';
 	
+	public function __construct() {
+		$this->hideIfEmpty = false;
+	}
+	
 	/**
 	 * @var string
 	 */
@@ -39,7 +43,7 @@ class LexiconConfigObj extends ObjectForEncoding {
 	/**
 	 * @var boolean
 	 */
-	public $visible;
+	public $hideIfEmpty;
 
 }
 
