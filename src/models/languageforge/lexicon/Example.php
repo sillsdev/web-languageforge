@@ -62,6 +62,20 @@ class Example extends ObjectForEncoding {
 	 */
 	public $id;
 
+
+
+	// less common fields used in FLEx
+
+	/**
+	 * @var MultiText
+	 */
+	public $reference;
+
+	/**
+	 * @var LexiconMultiValueField
+	 */
+	public $examplePublishIn;
+
 }
 
 ?>
