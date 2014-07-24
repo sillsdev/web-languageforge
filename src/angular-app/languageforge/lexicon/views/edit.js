@@ -5,8 +5,12 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window',
         '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService',
 function ($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice) {
-    var pristineEntry = {};
-    var browserId = Math.floor(Math.random() * 1000);
+  var pristineEntry = {},
+    browserId = Math.floor(Math.random() * 1000),
+    saving = false,
+    saved = false;
+    
+    $scope.config = $scope.projectSettings.config;
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
@@ -19,9 +23,6 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		return false;
 	};
 	
-	var saving = false;
-	var saved = false;
-
 	$scope.saveNotice = function() {
 //		if ($scope.currentEntryIsDirty()) {	// TODO. Disabled. until php can deliver completely valid entry model and directives no longer make valid models. IJH 2014-03
 //			if (saving) {
