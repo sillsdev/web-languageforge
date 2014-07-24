@@ -260,6 +260,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
   
   }])
   .controller('FieldConfigCtrl', ['$scope', '$modal', function($scope, $modal) {
+    $scope.showAllFields = false;
     $scope.currentField = {
       'name': '',
       'inputSystems': {
@@ -315,6 +316,11 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         }
       });
       $scope.configForm.$setDirty();
+    };
+    
+    $scope.fieldIsHidden= function fieldIsHidden(fieldName) {
+      if (fieldName === 'senses' || fieldName === 'examples' ) return true;
+      return !$scope.showAllFields && $scope.fieldConfig[fieldName].hideIfEmpty;
     };
     
     $scope.fieldConfigItemExists = function fieldConfigItemExists(itemName) {

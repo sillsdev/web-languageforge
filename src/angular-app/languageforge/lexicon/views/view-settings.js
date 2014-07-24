@@ -48,14 +48,9 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       }
     });
     
-    $scope.isEntryField = function isEntryField(fieldName) {
-      return $scope.configDirty.entry.fields[fieldName].type !== 'fields';
-    };
-    $scope.isSensesField = function isSensesField(fieldName) {
-      return $scope.configDirty.entry.fields.senses.fields[fieldName].type !== 'fields';
-    };
-    $scope.isExamplesField = function isExamplesField(fieldName) {
-      return $scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName].type !== 'fields';
+    $scope.fieldIsHidden= function fieldIsHidden(fieldName, showAllFields) {
+      if (fieldName === 'senses' || fieldName === 'examples' ) return true;
+      return !showAllFields && $scope.fieldConfig[fieldName].hideIfEmpty;
     };
     
     $scope.isAtLeastOneSense = function isAtLeastOneSense(view) {

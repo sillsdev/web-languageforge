@@ -15,11 +15,15 @@
 		<!-- Left column: field view settings -->
 		<div class="span4 control-group">
 			<h3 translate="Enabled Fields"></h3>
+			<div class="control-group">
+				<label class="checkbox"><input type="checkbox" data-ng-click="showAllFields = ! showAllFields">
+					{{'Show All Fields' | translate}}</label>
+			</div>
 			<dl>
 				<dt translate="Entry Level Fields"></dt>
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder">
-						<div data-ng-if="! fieldIsCustom(fieldName) && isEntryField(fieldName)">
+						<div data-ng-if="! fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName, showAllFields)">
 							<label class="checkbox">
 								<input type="checkbox" data-ng-disabled="fieldName == 'lexeme'" data-ng-model="roleView.view.showFields[fieldName]">
 								{{fieldConfig[fieldName].label}}</label>
@@ -36,7 +40,7 @@
 					<img src="/images/shared/exclamation.png" title="{{'At least one Sense field must be enabled!' | translate}}" style="position: absolute; padding-left: 5px;"/></span></dt>
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder">
-						<div data-ng-if="! fieldIsCustom(fieldName) && isSensesField(fieldName)">
+						<div data-ng-if="! fieldIsCustom(fieldName) &&  ! fieldIsHidden(fieldName, showAllFields)">
 							<label class="checkbox">
 								<input type="checkbox" data-ng-model="roleView.view.showFields[fieldName]">
 								{{fieldConfig[fieldName].label}}</label>
@@ -51,7 +55,7 @@
 				<dt translate="Example Level Fields"></dt>
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder">
-						<div data-ng-if="! fieldIsCustom(fieldName) && isExamplesField(fieldName)">
+						<div data-ng-if="! fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName, showAllFields)">
 							<label class="checkbox">
 								<input type="checkbox" data-ng-model="roleView.view.showFields[fieldName]">
 								{{fieldConfig[fieldName].label}}</label>
