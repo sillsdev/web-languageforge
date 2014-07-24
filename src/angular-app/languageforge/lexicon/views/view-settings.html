@@ -18,30 +18,53 @@
 			<dl>
 				<dt translate="Entry Level Fields"></dt>
 				<dd><div class="controls">
-					<label class="checkbox">
-						<input type="checkbox" disabled checked> {{fieldConfig['lexeme'].label}}</label>
+					<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder">
+						<div data-ng-if="! fieldIsCustom(fieldName) && isEntryField(fieldName)">
+							<label class="checkbox">
+								<input type="checkbox" data-ng-disabled="fieldName == 'lexeme'" data-ng-model="roleView.view.showFields[fieldName]">
+								{{fieldConfig[fieldName].label}}</label>
+						</div>
+						<i data-ng-if="fieldIsCustom(fieldName)">
+							<label class="checkbox">
+								<input type="checkbox" data-ng-model="roleView.view.showFields[fieldName]"> 
+								{{fieldConfig[fieldName].label}}</label>
+						</i>
+					</div>
 				</div></dd>
 				<dt>{{'Sense Level Fields' | translate}} 
 					<span data-ng-hide="isAtLeastOneSense(roleView.view)">
 					<img src="/images/shared/exclamation.png" title="{{'At least one Sense field must be enabled!' | translate}}" style="position: absolute; padding-left: 5px;"/></span></dt>
 				<dd><div class="controls">
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showFields['definition']">
-						 {{fieldConfig['definition'].label}}</label>
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showFields['gloss']">
-						 {{fieldConfig['gloss'].label}}</label>
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showFields['partOfSpeech']">
-						 {{fieldConfig['partOfSpeech'].label}}</label>
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showFields['semanticDomain']">
-						 {{fieldConfig['semanticDomain'].label}}</label>
+					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder">
+						<div data-ng-if="! fieldIsCustom(fieldName) && isSensesField(fieldName)">
+							<label class="checkbox">
+								<input type="checkbox" data-ng-model="roleView.view.showFields[fieldName]">
+								{{fieldConfig[fieldName].label}}</label>
+						</div>
+						<i data-ng-if="fieldIsCustom(fieldName)">
+							<label class="checkbox">
+								<input type="checkbox" data-ng-model="roleView.view.showFields[fieldName]"> 
+								{{fieldConfig[fieldName].label}}</label>
+						</i>
+					</div>
 				</div></dd>
 				<dt translate="Example Level Fields"></dt>
 				<dd><div class="controls">
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showFields['sentence']">
-						 {{fieldConfig['sentence'].label}}</label>
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showFields['translation']">
-						 {{fieldConfig['translation'].label}}</label>
+					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder">
+						<div data-ng-if="! fieldIsCustom(fieldName) && isExamplesField(fieldName)">
+							<label class="checkbox">
+								<input type="checkbox" data-ng-model="roleView.view.showFields[fieldName]">
+								{{fieldConfig[fieldName].label}}</label>
+						</div>
+						<i data-ng-if="fieldIsCustom(fieldName)">
+							<label class="checkbox">
+								<input type="checkbox" data-ng-model="roleView.view.showFields[fieldName]"> 
+								{{fieldConfig[fieldName].label}}</label>
+						</i>
+					</div>
 				</div></dd>
 			</dl>
+			<small translate="Custom Fields shown in <i>italics</i>"></small>
 		</div>
 		
 		<!-- Right column: task view settings -->
@@ -88,9 +111,10 @@
 	</tab>
 </tabset>
 </form>
-<!--   
+<!--    
 <pre>
 configDirty.roleViews {{configDirty.roleViews | json}}
+configDirty.entry {{configDirty.entry | json}}
 </pre>
  -->
 </div>
