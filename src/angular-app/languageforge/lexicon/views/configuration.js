@@ -357,7 +357,6 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             'name': ''
           };
           $scope.add = function add() {
-            console.log('addCustomField ', $scope.newCustomField);
             $modalInstance.close($scope.newCustomField);
           };
           
@@ -377,6 +376,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
           newCustomKey = 'customField_' + newCustomField.level + '_' + newCustomField.code;
         newCustomData.label = newCustomField.name;   
         newCustomData.type = newCustomField.type;
+        newCustomData.hideIfEmpty = false;
         switch (newCustomField.type) {
           case 'multitext':
             newCustomData.displayMultiline = false;
