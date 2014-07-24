@@ -142,6 +142,93 @@ class LexEntryModel extends \models\mapper\MapperModel {
 		self::mapper($databaseName)->remove($id);
 	}
 
+
+
+
+
+
+	// Less common fields used in FLEx
+
+	/**
+	 * @var MultiText
+	 */
+	public $citationForm;
+
+	/**
+	 * @var LexiconMultiValueField
+	 */
+	public $environments;
+
+	/**
+	 * @var MultiText
+	 */
+	public $pronunciation;
+
+	/**
+	 * @var MultiText
+	 */
+	public $cvPattern;
+
+	/**
+	 * @var MultiText
+	 */
+	public $tone;
+
+	/**
+	 * @var LexiconField
+	 */
+	public $location;
+
+	/**
+	 * @var MultiText
+	 */
+	public $etymology;
+
+	/**
+	 * @var MultiText
+	 */
+	public $etymologyGloss;
+
+	/**
+	 * @var MultiText
+	 */
+	public $etymologyComment;
+
+	/**
+	 * @var MultiText
+	 */
+	public $etymologySource;
+
+	/**
+	 * @var MultiText
+	 */
+	public $note;
+
+	/**
+	 * @var MultiText
+	 */
+	public $literalMeaning;
+
+	/**
+	 * @var MultiText
+	 */
+	public $entryBibliography;
+
+	/**
+	 * @var MultiText
+	 */
+	public $entryRestrictions;
+
+	/**
+	 * @var MultiText
+	 */
+	public $summaryDefinition;
+
+	/**
+	 * @var MultiText
+	 */
+	public $entryImportResidue;
+
 }
 
 
