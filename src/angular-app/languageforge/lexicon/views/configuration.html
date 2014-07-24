@@ -29,42 +29,33 @@
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
-						<div data-ng-if="! fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName)"
+						<span data-ng-hide="fieldIsHidden(fieldName)"
+							data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
 							data-ng-click="selectField(fieldName)">
 							{{fieldConfig[fieldName].label}}
-						</div>
-						<i data-ng-if="fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName)"
-							data-ng-click="selectField(fieldName)">
-							{{fieldConfig[fieldName].label}}
-						</i>
+						</span>
 					</div>
 				</div></dd>
 				<dt translate="Sense Level Fields"></dt>
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
-						<div data-ng-if="! fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName)"
+						<span data-ng-hide="fieldIsHidden(fieldName)"
+							data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
 							data-ng-click="selectField(fieldName)">
 							{{fieldConfig[fieldName].label}}
-						</div>
-						<i data-ng-if="fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName)"
-							data-ng-click="selectField(fieldName)">
-							{{fieldConfig[fieldName].label}}
-						</i>
+						</span>
 					</div>
 				</div></dd>
 				<dt translate="Example Level Fields"></dt>
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
-						<div data-ng-if="! fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName)"
+						<span data-ng-hide="fieldIsHidden(fieldName)"
+							data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
 							data-ng-click="selectField(fieldName)">
 							{{fieldConfig[fieldName].label}}
-						</div>
-						<i data-ng-if="fieldIsCustom(fieldName) && ! fieldIsHidden(fieldName)"
-							data-ng-click="selectField(fieldName)">
-							{{fieldConfig[fieldName].label}}
-						</i>
+						</span>
 					</div>
 				</div></dd>
 			</dl>
