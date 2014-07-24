@@ -5,7 +5,7 @@ use models\languageforge\lexicon\commands\LexEntryCommands;
 use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\Example;
-use models\languageforge\lexicon\LexComment;
+use models\languageforge\lexicon\LexCommentModel;
 use models\languageforge\lexicon\LexCommentReply;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexiconProjectModel;

@@ -550,8 +550,20 @@ class Sf
 	}
 	
 	public function lex_entry_updateComment($data) {
-		return LexCommentCommands::updateCommentOrReply($this->_projectId, $data, $this->_userId);
+		return LexCommentCommands::updateComment($this->_projectId, $this->_userId, $data);
 	}
+
+    public function lex_entry_updateReply($commentId, $data) {
+        return LexCommentCommands::updateReply($this->_projectId, $this->_userId, $commentId, $params);
+    }
+
+    public function lex_entry_deleteComment($commentId) {
+        return LexCommentCommands::deleteComment($this->_projectId, $this->_userId, $commentId);
+    }
+
+    public function lex_entry_deleteReply($commentId, $replyId) {
+        return LexCommentCommands::deleteReply($this->_projectId, $this->_userId, $commentId, $replyId);
+    }
 	
 	
 		
