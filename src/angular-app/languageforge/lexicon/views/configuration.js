@@ -307,19 +307,15 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       return itemName in $scope.fieldConfig[$scope.currentField.group][$scope.currentField.level][$scope.currentField.name];
     };
     
-    $scope.fieldIsCustom = function fieldIsCustom(fieldName) {
-      return fieldName.search('customField_') === 0;
-    };
-    
     $scope.openNewCustomFieldModal = function openNewCustomFieldModal() {
       var modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/new-custom-field.html',
         controller: ['$scope', '$filter', '$modalInstance', function($scope, $filter,  $modalInstance) {
           $scope.selects = {};
           $scope.selects.level = {
-            'optionsOrder': ['none', 'senses', 'examples'],
+            'optionsOrder': ['entry', 'senses', 'examples'],
             'options': {
-              'none'    : $filter('translate')('Entry Level'),
+              'entry'    : $filter('translate')('Entry Level'),
               'senses'  : $filter('translate')('Sense Level'),
               'examples': $filter('translate')('Example Level')
             }
@@ -358,7 +354,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       
       modalInstance.result.then(function(newCustomField) {
         var newCustomData = {}, 
-          newCustomKey = 'customField_' + newCustomField.code;
+          newCustomKey = 'customField_' + newCustomField.level + '_' + newCustomField.code;
         newCustomData.label = newCustomField.name;   
         newCustomData.type = newCustomField.type;
         switch (newCustomField.type) {
@@ -389,7 +385,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             }
             break;
             
-          // 'none'
+          // 'entry'
           default: 
             $scope.configDirty.entry.fields.customFields.fields[newCustomKey] = newCustomData;
             if (! (newCustomKey in $scope.configDirty.entry.fieldOrder)) {

@@ -131,6 +131,11 @@ angular.module('lexicon',
       return $scope.projectSettings.config.roleViews[$scope.currentUserRole].showFields[fieldName];
     };
     
+    // used in Configuration and View Settings
+    $scope.fieldIsCustom = function fieldIsCustom(fieldName) {
+      return fieldName.search('customField_') === 0;
+    };
+    
     function changeInterfaceLanguage(code) {
       $translate.use(code);
       pristineLanguageCode = angular.copy(code);
