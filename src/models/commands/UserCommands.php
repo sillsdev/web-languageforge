@@ -59,6 +59,7 @@ class UserCommands {
 		if ($params['id']) {
 			$user->read($params['id']);
 		}
+		UserCommands::assertUniqueIdentity($user, $params['username'], $params['email']);
 		JsonDecoder::decode($user, $params);
 		$result = $user->write();
 		return $result;
@@ -77,6 +78,13 @@ class UserCommands {
 		// don't allow the following keys to be persisted
 		if (array_key_exists('role', $params)) {
 			unset($params['role']);
+		}
+		// TODO 07-2014 DDW Need to revalidate any email updates
+		if (array_key_exists('email', $params)) {
+			unset($params['email']);
+		}
+		if (array_key_exists('username', $params)) {
+			unset($params['username']);
 		}
 		JsonDecoder::decode($user, $params);
 		$result = $user->write();
@@ -174,7 +182,31 @@ class UserCommands {
 		}
 		return $identityCheck;
 	}
-	
+
+	/**
+	 * Utility to assert unique username and email
+	 * @param UserModel $user
+	 * @param string $updatedUsername
+	 * @param string $updatedEmail
+	 * @throws \Exception
+	 */
+	private static function assertUniqueIdentity($user, $updatedUsername, $updatedEmail) {
+		$identityCheck = self::checkIdentity($updatedUsername, $updatedEmail);
+
+		// Check for unique non-blank updated username
+		if (($identityCheck->usernameExists) &&
+			($updatedUsername) &&
+			($user->username != $updatedUsername)) {
+			throw new \Exception('This username is already associated with another account');
+		}
+
+		// Check for unique updated email address
+		if (($identityCheck->emailExists) &&
+			(!$identityCheck->emailMatchesAccount)){
+			throw new \Exception('This email is already associated with another account');
+		}
+	}
+
 	/**
 	 * Activate a user on the specified site and validate email if it was empty, otherwise login
 	 * @param string $username
@@ -239,10 +271,7 @@ class UserCommands {
 	public static function createUser($params, $website) {
 		$user = new \models\UserModelWithPassword();
 		JsonDecoder::decode($user, $params);
-		$identityCheck = self::checkIdentity($user->username);
-		if ($identityCheck->usernameExists) {
-			return false;
-		}
+		UserCommands::assertUniqueIdentity($user, $params['username'], $params['email']);
 		$user->setPassword($params['password']);
 		$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
 		return $user->write();
@@ -300,10 +329,7 @@ class UserCommands {
 		
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
-		$identityCheck = self::checkIdentity($user->username);
-		if ($identityCheck->usernameExists) {
-			return false;
-		}
+		UserCommands::assertUniqueIdentity($user, $params['username'], $params['email']);
 		$user->active = false;
 		$user->role = SystemRoles::USER; 
 		$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
@@ -348,19 +374,21 @@ class UserCommands {
 	}
 	
 	
-    /**
-    * Sends an email to invite emailee to join the project
-    * @param string $projectId
+	/**
+	* Sends an email to invite emailee to join the project
+	* @param string $projectId
 	* @param string $inviterUserId
-    * @param string $toEmail
-    * @param Website $website
-    * @param IDelivery $delivery
-    */
+	* @param Website $website
+	* @param string $toEmail
+	* @param IDelivery $delivery
+	*/
 	public static function sendInvite($projectId, $inviterUserId, $website, $toEmail, IDelivery $delivery = null) {
 		$newUser = new UserModel();
 		$inviterUser = new UserModel($inviterUserId);
 		$project = new ProjectModel($projectId);
 		$newUser->emailPending = $toEmail;
+		// Check for unique email.  Blank usernames OK
+		UserCommands::assertUniqueIdentity($newUser, '', $toEmail);
 		$newUser->addProject($project->id->asString());
 		$userId = $newUser->write();
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
