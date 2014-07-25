@@ -261,6 +261,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
   }])
   .controller('FieldConfigCtrl', ['$scope', '$modal', function($scope, $modal) {
     $scope.showAllFields = false;
+    
     $scope.currentField = {
       'name': '',
       'inputSystems': {
@@ -268,7 +269,6 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         'selecteds': {}
       }
     };
-    
     $scope.selectField = function selectField(fieldName) {
       if ($scope.currentField.name !== fieldName) {
         var inputSystems = $scope.fieldConfig[fieldName].inputSystems;
@@ -312,7 +312,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       $scope.fieldConfig[$scope.currentField.name].inputSystems = [];
       angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
         if ($scope.currentField.inputSystems.selecteds[tag]) {
-          $scope.fieldConfig[$scope.currentField.namename].inputSystems.push(tag);
+          $scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
         }
       });
       $scope.configForm.$setDirty();

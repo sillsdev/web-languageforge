@@ -26,6 +26,12 @@ class LexConfiguration {
 	 */
 	public $roleViews;
 	
+	/**
+	 * key is userId
+	 * @var MapOf <LexUserViewConfig>
+	 */
+	public $userViews;
+	
 	function __construct() {
 		$this->tasks = new MapOf(
 			function($data) {
@@ -42,6 +48,10 @@ class LexConfiguration {
 		
 		$this->roleViews = new MapOf(function($data) {
 			return new LexRoleViewConfig();
+		});
+		
+		$this->userViews = new MapOf(function($data) {
+			return new LexUserViewConfig();
 		});
 		
 		// default tasks values
