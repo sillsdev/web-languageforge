@@ -49,7 +49,9 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     });
     
     $scope.fieldIsHidden= function fieldIsHidden(fieldName, showAllFields) {
-      if (fieldName === 'senses' || fieldName === 'examples' ) return true;
+      if (angular.isUndefined($scope.fieldConfig[fieldName]) || ! ('hideIfEmpty' in $scope.fieldConfig[fieldName])) {
+        return true;
+      }
       return !showAllFields && $scope.fieldConfig[fieldName].hideIfEmpty;
     };
     
