@@ -375,7 +375,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       
       modalInstance.result.then(function(newCustomField) {
         var newCustomData = {}, 
-          newCustomKey = 'customField_' + newCustomField.level + '_' + newCustomField.code;
+          customFieldName = 'customField_' + newCustomField.level + '_' + newCustomField.code;
         newCustomData.label = newCustomField.name;   
         newCustomData.type = newCustomField.type;
         newCustomData.hideIfEmpty = false;
@@ -395,23 +395,26 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         
         switch (newCustomField.level) {
           case 'examples':
-            $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[newCustomKey] = newCustomData;
-            if (! (newCustomKey in $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder)) {
-              $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder.push(newCustomKey);
+            $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[customFieldName] = newCustomData;
+            $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[customFieldName];
+            if (! (customFieldName in $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder)) {
+              $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder.push(customFieldName);
             }
             break;
           case 'senses':
-            $scope.configDirty.entry.fields.senses.fields.customFields.fields[newCustomKey] = newCustomData;
-            if (! (newCustomKey in $scope.configDirty.entry.fields.senses.fieldOrder)) {
-              $scope.configDirty.entry.fields.senses.fieldOrder.push(newCustomKey);
+            $scope.configDirty.entry.fields.senses.fields.customFields.fields[customFieldName] = newCustomData;
+            $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.senses.fields.customFields.fields[customFieldName];
+            if (! (customFieldName in $scope.configDirty.entry.fields.senses.fieldOrder)) {
+              $scope.configDirty.entry.fields.senses.fieldOrder.push(customFieldName);
             }
             break;
             
           // 'entry'
           default: 
-            $scope.configDirty.entry.fields.customFields.fields[newCustomKey] = newCustomData;
-            if (! (newCustomKey in $scope.configDirty.entry.fieldOrder)) {
-              $scope.configDirty.entry.fieldOrder.push(newCustomKey);
+            $scope.configDirty.entry.fields.customFields.fields[customFieldName] = newCustomData;
+            $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.customFields.fields[customFieldName];
+            if (! (customFieldName in $scope.configDirty.entry.fieldOrder)) {
+              $scope.configDirty.entry.fieldOrder.push(customFieldName);
             }
         }
         $scope.configForm.$setDirty();
