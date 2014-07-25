@@ -552,6 +552,10 @@ class Sf
 	public function lex_entry_updateComment($data) {
 		return LexCommentCommands::updateCommentOrReply($this->_projectId, $data, $this->_userId);
 	}
+
+    public function lex_optionlist_update($data) {
+        return \models\languageforge\lexicon\commands\LexOptionListCommands::updateList($this->_projectId, $data);
+    }
 	
 	
 		
