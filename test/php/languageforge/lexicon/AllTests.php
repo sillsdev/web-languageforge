@@ -12,6 +12,7 @@ class AllLexiconAppTests extends TestSuite {
         $this->addFile(TestPath . 'languageforge/lexicon/LexProjectCommands_Test.php');
         $this->addFile(TestPath . 'languageforge/lexicon/LexCommentCommands_Test.php');
         $this->addFile(TestPath . 'languageforge/lexicon/LiftImport_Test.php');
+        $this->addFile(TestPath . 'languageforge/lexicon/LexiconProjectModel_Test.php');
     }
 
 }

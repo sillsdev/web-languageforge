@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon\dto;
 
 use libraries\shared\LanguageData;
 use models\languageforge\lexicon\LexiconProjectModel;
+use models\languageforge\lexicon\LexOptionListListModel;
 use models\shared\dto\RightsHelper;
 use models\mapper\JsonEncoder;
 use models\ProjectModel;
@@ -34,9 +35,13 @@ class LexBaseViewDto {
 			'optionsOrder' => array_keys($options),
 			'options' => $options
 		);
+
+        $optionlistListModel = new LexOptionListListModel($project);
+        $optionlistListModel->read();
 		
 		$data = array();
 		$data['config'] = $config;
+        $data['optionlists'] = $optionlistListModel->entries;
 		$data['interfaceConfig'] = array('userLanguageCode' => $interfaceLanguageCode);
 		$data['interfaceConfig']['selectLanguages'] = $selectInterfaceLanguages;
 		

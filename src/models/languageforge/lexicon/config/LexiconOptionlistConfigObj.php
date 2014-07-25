@@ -14,18 +14,19 @@ class LexiconOptionlistConfigObj extends LexiconConfigObj {
 
 		// default values
 		$this->label = '';
+        $this->listCode = '';
 	}
 	
 	/**
 	 * @var string
 	 */
 	public $label;
-	
-	/**
-	 * @var ArrayOf
-	 */
-	public $values;
-	
+
+    /**
+     * @var string
+     */
+    public $listCode;
+
 }
 
 
