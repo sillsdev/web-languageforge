@@ -10,6 +10,7 @@ use libraries\shared\palaso\JsonRpcServer;
 use libraries\shared\Website;
 use models\languageforge\lexicon\commands\LexCommentCommands;
 use models\languageforge\lexicon\commands\LexEntryCommands;
+use models\languageforge\lexicon\commands\LexOptionListCommands;
 use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\languageforge\lexicon\dto\LexDbeDto;
@@ -525,8 +526,9 @@ class Sf
         }
     }
 	
-	public function lex_configuration_update($config) {
-		return LexProjectCommands::updateConfig($this->_projectId, $config);
+	public function lex_configuration_update($config, $optionlist) {
+		LexProjectCommands::updateConfig($this->_projectId, $config);
+		return LexOptionListCommands::updateList($this->_projectId, $optionlist);
 	}
 	
 	public function lex_import_lift($import) {
