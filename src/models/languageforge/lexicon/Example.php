@@ -27,6 +27,14 @@ class Example extends ObjectForEncoding {
 			}
 		);
 		$this->authorInfo = new AuthorInfo();
+
+
+
+		$this->reference = new MultiText();
+		$this->examplePublishIn = new LexiconMultiValueField();
+
+
+
 		$this->id = uniqid();
 	}
 
