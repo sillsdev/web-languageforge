@@ -335,7 +335,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
           $scope.selects.level = {
             'optionsOrder': ['entry', 'senses', 'examples'],
             'options': {
-              'entry'    : $filter('translate')('Entry Level'),
+              'entry'   : $filter('translate')('Entry Level'),
               'senses'  : $filter('translate')('Sense Level'),
               'examples': $filter('translate')('Example Level')
             }
@@ -346,11 +346,11 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
                 'multitext'       : $filter('translate')('Single-line Text'),
                 'multitextlines'  : $filter('translate')('Multi-paragraph Text'),
                 'optionlist'      : $filter('translate')('Option List'),
-                'multioptionlist' : $filter('translate')('Multi-option List'),
-                'reference'       : $filter('translate')('Entry Reference'),
-                'picture'         : $filter('translate')('Picture'),
-                'date'            : $filter('translate')('Date'),
-                'number'          : $filter('translate')('Number')
+                'multioptionlist' : $filter('translate')('Multi-option List')
+                // 'reference'       : $filter('translate')('Entry Reference'),
+                // 'picture'         : $filter('translate')('Picture'),
+                // 'date'            : $filter('translate')('Date'),
+                // 'number'          : $filter('translate')('Number')
               }
             };
           $scope.newCustomField = {
