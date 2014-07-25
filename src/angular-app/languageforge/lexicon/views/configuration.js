@@ -331,6 +331,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     
     $scope.openNewCustomFieldModal = function openNewCustomFieldModal() {
       var modalInstance = $modal.open({
+        scope: $scope,
         templateUrl: '/angular-app/languageforge/lexicon/views/new-custom-field.html',
         controller: ['$scope', '$filter', '$modalInstance', function($scope, $filter,  $modalInstance) {
           $scope.selects = {};
@@ -355,54 +356,58 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
                 'number'          : $filter('translate')('Number')
               }
             };
-          $scope.newCustomField = {
+          $scope.newCustomData = {
             'name': ''
           };
+          $scope.customFieldNameExists = function customFieldNameExists(level, code) {
+            var customFieldName = 'customField_' + level + '_' + code;
+            return customFieldName in $scope.fieldConfig;
+          };
           $scope.add = function add() {
-            $modalInstance.close($scope.newCustomField);
+            $modalInstance.close($scope.newCustomData);
           };
           
-          $scope.$watch('newCustomField.name', function(newValue, oldValue) {
+          $scope.$watch('newCustomData.name', function(newValue, oldValue) {
             if (angular.isDefined(newValue) && newValue !== oldValue) {
               
               // replace spaces with underscore 
-              $scope.newCustomField.code = newValue.replace(/ /g, '_');
+              $scope.newCustomData.code = newValue.replace(/ /g, '_');
             }
           });
           
         }]
       });
       
-      modalInstance.result.then(function(newCustomField) {
-        var newCustomData = {}, 
-          customFieldName = 'customField_' + newCustomField.level + '_' + newCustomField.code;
-        newCustomData.label = newCustomField.name;   
-        newCustomData.type = newCustomField.type;
-        newCustomData.hideIfEmpty = false;
-        switch (newCustomField.type) {
+      modalInstance.result.then(function(newCustomData) {
+        var customField = {}, 
+          customFieldName = 'customField_' + newCustomData.level + '_' + newCustomData.code;
+        customField.label = newCustomData.name;   
+        customField.type = newCustomData.type;
+        customField.hideIfEmpty = false;
+        switch (newCustomData.type) {
           case 'multitext':
-            newCustomData.displayMultiline = false;
-            newCustomData.width = 20;
-            newCustomData.inputSystems = [];
+            customField.displayMultiline = false;
+            customField.width = 20;
+            customField.inputSystems = [];
             break;
           case 'multitextlines':
-            newCustomData.type = 'multitext';
-            newCustomData.displayMultiline = true;
-            newCustomData.width = 20;
-            newCustomData.inputSystems = [];
+            customField.type = 'multitext';
+            customField.displayMultiline = true;
+            customField.width = 20;
+            customField.inputSystems = [];
             break;
         }
         
-        switch (newCustomField.level) {
+        switch (newCustomData.level) {
           case 'examples':
-            $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[customFieldName] = newCustomData;
+            $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[customFieldName] = customField;
             $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[customFieldName];
             if (! (customFieldName in $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder)) {
               $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder.push(customFieldName);
             }
             break;
           case 'senses':
-            $scope.configDirty.entry.fields.senses.fields.customFields.fields[customFieldName] = newCustomData;
+            $scope.configDirty.entry.fields.senses.fields.customFields.fields[customFieldName] = customField;
             $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.senses.fields.customFields.fields[customFieldName];
             if (! (customFieldName in $scope.configDirty.entry.fields.senses.fieldOrder)) {
               $scope.configDirty.entry.fields.senses.fieldOrder.push(customFieldName);
@@ -411,7 +416,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             
           // 'entry'
           default: 
-            $scope.configDirty.entry.fields.customFields.fields[customFieldName] = newCustomData;
+            $scope.configDirty.entry.fields.customFields.fields[customFieldName] = customField;
             $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.customFields.fields[customFieldName];
             if (! (customFieldName in $scope.configDirty.entry.fieldOrder)) {
               $scope.configDirty.entry.fieldOrder.push(customFieldName);
