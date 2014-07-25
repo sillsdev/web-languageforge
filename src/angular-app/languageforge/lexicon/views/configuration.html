@@ -14,64 +14,100 @@
 		
 		<!-- Left column: field list -->
 		<div class="span3 control-group">
+			<!-- control buttons -->
+			<div class="control-group">
+				<button class="btn btn-success" data-ng-click="openNewCustomFieldModal()"><i class="icon-plus"></i> {{'New Custom Field' | translate}} </button>
+			</div>
+			<div class="control-group">
+				<label class="checkbox"><input type="checkbox" data-ng-click="showAllFields = ! showAllFields">
+					{{'Show All Fields' | translate}}</label>
+			</div>
+			
+			<!-- picklist -->
 			<dl class="picklists">
 				<dt translate="Entry Level Fields"></dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectField('lexeme')" 
-						data-ng-class="{selected:currentField.name == 'lexeme'}">
-						{{fieldConfig['lexeme'].label}}
+					<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder" 
+						data-ng-class="{selected:currentField.name == fieldName}">
+						<span data-ng-hide="fieldIsHidden(fieldName)"
+							data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
+							data-ng-click="selectField(fieldName)">
+							{{fieldConfig[fieldName].label}}
+						</span>
 					</div>
 				</div></dd>
 				<dt translate="Sense Level Fields"></dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectField('definition')" 
-						data-ng-class="{selected:currentField.name == 'definition'}">
-						{{fieldConfig['definition'].label}}
-					</div>
-					<div data-ng-click="selectField('gloss')" 
-						data-ng-class="{selected:currentField.name == 'gloss'}">
-						{{fieldConfig['gloss'].label}}
-					</div>
-					<div data-ng-click="selectField('partOfSpeech')" 
-						data-ng-class="{selected:currentField.name == 'partOfSpeech'}">
-						{{fieldConfig['partOfSpeech'].label}}
-					</div>
-					<div data-ng-click="selectField('semanticDomain')" 
-						data-ng-class="{selected:currentField.name == 'semanticDomain'}">
-						{{fieldConfig['semanticDomain'].label}}
+					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder" 
+						data-ng-class="{selected:currentField.name == fieldName}">
+						<span data-ng-hide="fieldIsHidden(fieldName)"
+							data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
+							data-ng-click="selectField(fieldName)">
+							{{fieldConfig[fieldName].label}}
+						</span>
 					</div>
 				</div></dd>
 				<dt translate="Example Level Fields"></dt>
 				<dd><div class="controls">
-					<div data-ng-click="selectField('sentence')" 
-						data-ng-class="{selected:currentField.name == 'sentence'}">
-						{{fieldConfig['sentence'].label}}
-					</div>
-					<div data-ng-click="selectField('translation')" 
-						data-ng-class="{selected:currentField.name == 'translation'}">
-						{{fieldConfig['translation'].label}}
+					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder" 
+						data-ng-class="{selected:currentField.name == fieldName}">
+						<span data-ng-hide="fieldIsHidden(fieldName)"
+							data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
+							data-ng-click="selectField(fieldName)">
+							{{fieldConfig[fieldName].label}}
+						</span>
 					</div>
 				</div></dd>
 			</dl>
+			<small translate="Custom Fields shown in <i>italics</i>"></small>
 		</div>
 		
 		<!-- Right column: field setup -->
 		<div class="span9">
+			<!-- control buttons -->
+			<div class="control-group" style="height: 30px">
+				<button class="btn" data-ng-click="removeSelectedCustomField()"
+					data-ng-show="fieldIsCustom(currentField.name)">
+					<i class="icon-remove"></i> {{'Remove Custom Field' | translate}} </button>
+			</div>
+			
+			<!-- settings -->
 			<div class="well">
-				<h3>{{fieldConfig[currentField.name].label}} Field Setup</h3>
+				<h3>{{fieldConfig[currentField.name].label}} {{'Field Setup' | translate}}</h3>
 				<div class="control-group">
 					<label class="control-label" for="displayName">{{'Display Name' | translate}}</label>
 					<div class="controls">
-						<input type="text" id="displayName" data-ng-model="fieldConfig[currentField.name].label"/>
+						<input type="text" id="displayName" 
+							data-ng-model="fieldConfig[currentField.name].label"/>
 					</div>
 					<div class="controls">
 						<label class="checkbox {{interfaceConfig.pullNormal}}">
-							<input type="checkbox" disabled data-ng-model="fieldConfig[currentField.name].hideEmpty"/>{{'Hidden if empty' | translate}}</label>
+							<input type="checkbox" 
+								data-ng-model="fieldConfig[currentField.name].hideIfEmpty"/>
+							{{'Hidden if empty' | translate}}</label>
 					</div>
 					<br />
 				</div>
+				<div class="control-group">
+					<div class="controls"
+						data-ng-if="fieldConfigItemExists('displayMultiline')">
+						<label class="checkbox {{interfaceConfig.pullNormal}}">
+							<input type="checkbox" 
+								data-ng-model="fieldConfig[currentField.name].displayMultiline"/>
+							{{'Display as multi-line text' | translate}}</label>
+						<br />
+					</div>
+				</div>
+				<div class="control-group"
+					data-ng-if="fieldConfigItemExists('width')">
+					<label class="control-label" for="width">{{'Width' | translate}}</label>
+					<div class="controls">
+						<input type="number" id="width" min="20" max="40"
+							data-ng-model="fieldConfig[currentField.name].width"/>
+					</div>
+				</div>
 				
-				<div data-ng-if="fieldConfig[currentField.name].inputSystems != undefined">
+				<div data-ng-if="fieldConfigItemExists('inputSystems')">
 					<hr />
 					<div class="row outer-flex control-group" data-ng-show="editInputSystems.collapsed">
 						<div class="span3 picklists">
@@ -106,10 +142,10 @@
 		</div>
 		
 		</div>
-<!--  
+<!--   
 <pre>
 currentField {{currentField | json}}
-configDirty.entry {{configDirty.entry|json}}
+configDirty.entry {{configDirty.entry | json}}
 </pre>
  -->
 		</div>
@@ -202,7 +238,7 @@ configDirty.entry {{configDirty.entry|json}}
 						<select class="form-control" id="timeRange" 
 							data-ng-model="configDirty.tasks['dashboard'].timeRange" 
 							data-ng-options="selects.timeRange.options[key] for key in selects.timeRange.optionsOrder">
-							<option value="">-- choose a time range --</option></select>
+							<option value="">-- {{'choose a time range' | translate}} --</option></select>
 					</div>
 				</div>
 				<div class="control-group">
@@ -221,7 +257,7 @@ configDirty.entry {{configDirty.entry|json}}
 						<select class="form-control" id="language" 
 							data-ng-model="configDirty.tasks['semdom'].language" 
 							data-ng-options="key as option for (key, option) in selects.language.options">
-							<option value="">-- choose a language --</option></select>
+							<option value="">-- {{'choose a language' | translate}} --</option></select>
 					</div>
 				</div>
 				<div class="control-group">
@@ -260,33 +296,34 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
 	</tab>
 	<tab heading="Option Lists" class="{{interfaceConfig.pullNormal}}">
 		<div data-ng-controller="OptionListCtrl">
-			<div class="row outer-flex">
+		<div class="row outer-flex">
 
-				<!-- Left column: task list -->
-				<div class="span3 control-group picklists">
-					<fieldset class="well" id="editListValuesFieldset">
-						<legend>Select a list</legend>
-						<ul class="unstyled">
-							<li ng-click="selectList('pos')" data-ng-class="{selected:currentListId == 'pos'}">Part of Speech</li>
-							<!-- future lists go here -->
-						</ul>
-					</fieldset>
+		<!-- Left column: task list -->
+		<div class="span3 control-group">
+			<dl class="picklists">
+				<dt translate="Select a list" id="editListValuesFieldset"></dt>
+				<dd><div class="controls">
+					<div data-ng-click="selectList('pos')"
+						 data-ng-class="{selected:currentListId == 'pos'}"
+							translate="Part of Speech">
+					</div>
+				</div></dd>
+				<!-- future lists go here -->
+			</dl>
+		</div>
+
+		<!-- Right column: task setup -->
+		<div class="span9">
+			<div class="well" id="picklistEditorFieldset">
+				<h3 class="control-label" translate="{{optionLists[currentListId].name}}"></h3>
+				<div class="controls">
+					<picklist-editor items="optionLists[currentListId].items" default-key="optionLists[currentListId].defaultKey"></picklist-editor>
 				</div>
-
-				<!-- Right column: task setup -->
-				<div class="span9">
-					<fieldset class="well" id="picklistEditorFieldset">
-						<legend style="width:auto;">{{optionLists[currentListId].name}}</legend>
-						<picklist-editor items="optionLists[currentListId].items" default-key="optionLists[currentListId].defaultKey"></picklist-editor>
-					</fieldset>
-				</div>
-
 			</div>
-			<!--
-			<pre>
-			configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] | json}}
-			</pre>
-			 -->
+
+		</div>
+
+		</div>
 		</div>
 	</tab>
 </tabset>

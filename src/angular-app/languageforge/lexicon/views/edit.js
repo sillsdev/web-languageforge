@@ -21,6 +21,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
     var pristineEntry = {};
     var browserId = Math.floor(Math.random() * 1000);
+    $scope.config = $scope.projectSettings.config;
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
     $scope.state = 'list'; // default state.  State is one of 'list', 'edit', or 'comment'
