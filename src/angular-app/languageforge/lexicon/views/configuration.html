@@ -74,12 +74,15 @@
 			<!-- settings -->
 			<div class="well">
 				<h3>{{fieldConfig[currentField.name].label}} {{'Field Setup' | translate}}</h3>
-				<div class="control-group">
+				<div class="control-group"
+					data-ng-show="fieldIsCustom(currentField.name)">
 					<label class="control-label" for="displayName">{{'Display Name' | translate}}</label>
 					<div class="controls">
 						<input type="text" id="displayName" 
 							data-ng-model="fieldConfig[currentField.name].label"/>
 					</div>
+				</div>
+				<div class="control-group">
 					<div class="controls">
 						<label class="checkbox {{interfaceConfig.pullNormal}}">
 							<input type="checkbox" 
