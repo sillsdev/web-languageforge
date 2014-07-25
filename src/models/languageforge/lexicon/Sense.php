@@ -32,6 +32,34 @@ class Sense {
 			}
 		);
 		$this->authorInfo = new AuthorInfo();
+
+
+
+		$this->scientificName = new MultiText();
+		$this->anthropologyNote = new MultiText();
+		$this->senseBibliography = new MultiText();
+		$this->discourseNote = new MultiText();
+		$this->encyclopedicNote = new MultiText();
+		$this->generalNote = new MultiText();
+		$this->grammarNote = new MultiText();
+		$this->phonologyNote = new MultiText();
+		$this->senseRestrictions = new MultiText();
+		$this->semanticsNote = new MultiText();
+		$this->sociolinguisticsNote = new MultiText();
+		$this->source = new MultiText();
+		$this->usages = new LexiconMultiValueField();
+
+		// TODO reversalEntries needs to be a Taglist 07-2014 DDW
+		$this->reversalEntries = new LexiconMultiValueField();
+		$this->senseType = new LexiconField();
+		$this->academicDomains = new LexiconMultiValueField();
+		$this->sensePublishIn = new LexiconMultiValueField();
+		$this->anthropologyCategories = new LexiconMultiValueField();
+		$this->senseImportResidue = new MultiText();
+		$this->status = new LexiconMultiValueField();
+
+
+
 	}
 
 	/**

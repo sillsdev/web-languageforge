@@ -120,7 +120,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 		$entryId = $entry->write();
 
-		$params = LexEntryCommands::readEntry($projectId, $entryId);
+		$params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
 		$params['lexeme']['th']['value'] = 'rose apple';
 
 		LexEntryCommands::updateEntry($projectId, $params, $userId);
