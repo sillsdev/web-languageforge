@@ -93,7 +93,9 @@ class LexEntryCommands {
 	
 	public static function removeEntry($projectId, $entryId) {
 		$project = new ProjectModel($projectId);
-		return LexEntryModel::remove($project, $entryId);
+        $entry = new LexEntryModel($project, $entryId);
+        $entry->isDeleted = true;
+        $entry->write();
 	}
 }
 
