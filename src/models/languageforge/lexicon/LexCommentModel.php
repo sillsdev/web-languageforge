@@ -24,6 +24,10 @@ class LexCommentModel extends \models\mapper\MapperModel {
      * @param string $id
      */
     public function __construct($projectModel, $id = '') {
+        $this->setReadOnlyProp('authorInfo');
+        $this->setReadOnlyProp('replies');
+        $this->setReadOnlyProp('score');
+        $this->setReadOnlyProp('status');
         $this->id = new Id();
         $this->replies = new ArrayOf(
             function($data) {

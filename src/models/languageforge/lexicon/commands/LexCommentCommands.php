@@ -3,6 +3,7 @@
 namespace models\languageforge\lexicon\commands;
 
 use libraries\shared\palaso\CodeGuard;
+use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
@@ -15,17 +16,69 @@ use models\mapper\JsonEncoder;
 
 class LexCommentCommands {
     public static function updateComment($projectId, $userId, $params) {
-        // if this is an update, assert that the $userId and the userRef on the comment are the same, otherwise throw
+        CodeGuard::checkTypeAndThrow($params, 'array');
+        $project = new LexiconProjectModel($projectId);
+        $isNew = ($params['id'] == '');
+        if (isNew) {
+            $comment = new LexCommentModel($project);
+        } else {
+            $comment = new LexCommentModel($project, $params['id']);
+            if ($comment->authorInfo->createdByUserRef->asString() != $userId) {
+                throw new \Exception("You cannot update other people's lex comments!");
+            }
+        }
 
+        JsonDecoder::decode($comment, $params);
+
+        if ($isNew) {
+            $comment->authorInfo->createdByUserRef->id = $userId;
+            $comment->authorInfo->createdDate = new \DateTime();
+            $comment->authorInfo->modifiedByUserRef->id = $userId;
+        } else {
+            $comment->authorInfo->modifiedDate = new \DateTime();
+        }
+
+
+
+        return $comment->write();
     }
 
     public static function updateReply($projectId, $userId, $commentId, $params) {
-        // if this is an update, assert that the $userId and the userRef on the comment are the same, otherwise throw
+        CodeGuard::checkTypeAndThrow($params, 'array');
+        CodeGuard::checkEmptyAndThrow($commentId, 'commentId in updateReply()');
+        $project = new LexiconProjectModel($projectId);
+        $comment = new LexCommentModel($project, $commentId);
+        $replyId = $params['id'];
+        if (array_key_exists('id', $params) && $replyId != '') {
+            $reply = $comment->getReply($replyId);
+            if ($reply->authorInfo->createdByUserRef->asString() != $userId) {
+                throw new \Exception("You cannot update other people's lex comment replies!");
+            }
+            if ($reply->content != $params['content']) {
+                $reply->authorInfo->modifiedDate = new \DateTime();
+            }
+            $reply->content = $params['content'];
+            $comment->setReply($replyId, $reply);
+        } else {
+            $reply = new LexCommentReply();
+            $reply->content = $params['content'];
+            $reply->authorInfo->createdByUserRef->id = $userId;
+            $reply->authorInfo->modifiedByUserRef->id = $userId;
+            $reply->authorInfo->createdDate = new \DateTime();
+        }
+        return $comment->write();
+    }
 
+    public static function plusOneComment($projectId, $userId, $commentId) {
+        // need to implement user relation role, similar to the score in SF
+    }
+
+    public static function updateCommentStatus($projectId, $commentId, $status) {
     }
 
     public static function deleteComment($projectId, $userId, $commentId) {
         // if the userId is different from the author, throw if user does not have DELETE privilege
+        // we really can delete comments
 
     }
 
@@ -39,106 +92,6 @@ class LexCommentCommands {
 
 
 
-	/**
-	 * 
-	 * @param string $projectId
-	 * @param array $comment - comment data array to create or update
-	 * @param string $userId
-	 * @throws \Exception
-	 * @return array
-	 */
-    /*
-	public static function updateCommentOrReply($projectId, $comment, $userId) {
-		CodeGuard::checkTypeAndThrow($comment, 'array');
-		$project = new LexiconProjectModel($projectId);
-		$entry = new LexEntryModel($project, $comment['entryId']);
-		$field = $comment['field'];
-		switch ($field) {
-			case 'lexeme':
-				self::updateComment($entry->lexeme[$comment['inputSystem']], $comment, $userId);
-				break;
-			case 'sense_definition':
-				$sense = $entry->getSense($comment['senseId']);
-				self::updateComment($sense->definition[$comment['inputSystem']], $comment, $userId);
-				break;
-			case 'sense_gloss':
-				$sense = $entry->getSense($comment['senseId']);
-				self::updateComment($sense->gloss[$comment['inputSystem']], $comment, $userId);
-				break;
-			case 'sense_partOfSpeech':
-			case 'sense_semanticDomain':
-				$field = substr($field, 6);
-				$sense = $entry->getSense($comment['senseId']);
-				self::updateComment($sense->$field, $comment, $userId);
-				break;
-			case 'sense_example_sentence':
-			case 'sense_example_translation':
-				$field = substr($field, 14);
-				$sense = $entry->getSense($comment['senseId']);
-				$example = $sense->getExample($comment['exampleId']);
-				$multitext = $example->$field;
-				self::updateComment($multitext[$comment['inputSystem']], $comment, $userId);
-				break;
-			default:
-				throw new \Exception("unknown comment field '$field' in LexCommentCommands::updateComment");
-		}
-		$entry->write();
-		return LexEntryWithCommentsEncoder::encode($entry);
-	}
-	
-	
-	public static function deleteCommentById($projectId, $entryId, $commentId) {
-		// loop through all possible comment arrays and remove the comment with the matching id...
-	}
-    */
-
-	
-	/**
-	 * 
-	 * @param LexiconFieldWithComments $field
-	 * @param array $data
-	 * @param string $userId
-	 */
-    /*
-	private static function updateComment($field, $data, $userId) {
-		$id = $data['id'];
-		$existing = ($id != '');
-		if (key_exists('parentId', $data)) {
-			$comment = $field->getComment($data['parentId']);
-			if ($existing) {
-				$reply = $comment->getReply($id);
-			} else {
-				$reply = new LexCommentReply();
-			}
-			$reply->content = $data['content'];
-			$reply->dateModified = new \DateTime();
-			$reply->userRef->id = $userId;
-			
-			if ($existing) {
-				$comment->setReply($id, $reply);
-			} else {
-				$comment->replies[] = $reply;
-			}
-		} else {
-			if ($existing) {
-				$comment = $field->getComment($id);
-			} else {
-				$comment = new LexCommentModel();
-				$comment->regarding = $data['regarding'];
-			}
-			$comment->content = $data['content'];
-			$comment->dateModified = new \DateTime();
-			$comment->userRef->id = $userId;
-			
-			if ($existing) {
-				$field->setComment($id, $comment);
-			} else {
-				$field->comments[] = $comment;
-			}
-		}
-	}
-    */
-	
 }
 
 ?>
