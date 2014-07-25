@@ -42,12 +42,12 @@ class ApiCrudTestEnvironment {
 	}
 	
 	function makeUser($username) {
-		$params = array('id' => '', 'username' => $username, 'name' => $username);
+		$params = array('id' => '', 'username' => $username, 'name' => $username, 'email' => 'user@example.com');;
 		return UserCommands::updateUser($params);
 	}
 	
 	function makeSystemAdminUser() {
-		$params = array('id' => '', 'username' => 'admin', 'name' => 'admin', 'role' => SystemRoles::SYSTEM_ADMIN);
+		$params = array('id' => '', 'username' => 'admin', 'name' => 'admin', 'email' => 'admin@example.com', 'role' => SystemRoles::SYSTEM_ADMIN);
 		return UserCommands::updateUser($params);
 	}
 	
@@ -66,7 +66,7 @@ class ApiCrudTestEnvironment {
 	}
 	
 	function getProjectMember($projectId, $userName) {
-		$userId = $this->e->createUser($userName, $userName, $userName);
+		$userId = $this->e->createUser($userName, $userName, 'user@example.com');
 		$user = new UserModel($userId);
 		$user->addProject($projectId);
 		$user->write();
