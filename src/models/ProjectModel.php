@@ -229,6 +229,11 @@ class ProjectModel extends \models\mapper\MapperModel
     public function website() {
         return Website::get($this->siteName);
     }
+
+
+    public function initializeNewProject() {
+        // this method should be overridden by child classes
+    }
 	
 	/**
 	 * @var Id

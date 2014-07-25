@@ -22,7 +22,6 @@ use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserProfileModel;
 use models\commands\ActivityCommands;
-use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
 use models\commands\TextCommands;
 use models\commands\UserCommands;
@@ -68,6 +67,9 @@ class ProjectCommands
 		$user = new UserModel($userId);
 		$user->addProject($projectId);
 		$user->write();
+
+        $project = ProjectModel::getById($projectId);
+        $project->initializeNewProject();
 		ActivityCommands::addUserToProject($project, $userId);
 		return $projectId;
 	}
