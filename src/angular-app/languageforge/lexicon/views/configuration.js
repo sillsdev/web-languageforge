@@ -343,16 +343,16 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             }
           };
           $scope.selects.type = {
-              'optionsOrder': ['multitext', 'multitextlines', 'optionlist', 'multioptionlist', 'reference', 'picture', 'date', 'number'],
+              'optionsOrder': ['multitext', 'multitextlines', 'optionlist', 'multioptionlist'],
               'options': {
                 'multitext'       : $filter('translate')('Single-line Text'),
                 'multitextlines'  : $filter('translate')('Multi-paragraph Text'),
                 'optionlist'      : $filter('translate')('Option List'),
-                'multioptionlist' : $filter('translate')('Multi-option List')
-                // 'reference'       : $filter('translate')('Entry Reference'),
-                // 'picture'         : $filter('translate')('Picture'),
-                // 'date'            : $filter('translate')('Date'),
-                // 'number'          : $filter('translate')('Number')
+                'multioptionlist' : $filter('translate')('Multi-option List'),
+                'reference'       : $filter('translate')('Entry Reference'),
+                'picture'         : $filter('translate')('Picture'),
+                'date'            : $filter('translate')('Date'),
+                'number'          : $filter('translate')('Number')
               }
             };
           $scope.newCustomField = {
