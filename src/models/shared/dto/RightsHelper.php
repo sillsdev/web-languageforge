@@ -281,6 +281,9 @@ class RightsHelper
             case 'lex_entry_deleteComment':
                 return $this->userHasProjectRight(Domain::COMMENTS + Operation::DELETE_OWN);
 
+            case 'lex_optionlist_update':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+
 				
 				
 			default:
