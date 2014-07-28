@@ -23,9 +23,9 @@ class LexCommentListModel extends \models\mapper\MapperListModel {
 
         if (!is_null($newerThanTimestamp)) {
             $startDate = new \MongoDate($newerThanTimestamp);
-            parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate)), array());
+            parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false, 'dateModified'=> array('$gte' => $startDate)), array());
         } else {
-		    parent::__construct( self::mapper($projectModel->databaseName()), array(), array());
+		    parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false), array());
         }
 	}
 }

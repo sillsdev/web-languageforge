@@ -29,6 +29,7 @@ class LexCommentModel extends \models\mapper\MapperModel {
         $this->setReadOnlyProp('score');
         $this->setReadOnlyProp('status');
         $this->id = new Id();
+        $this->isDeleted = false;
         $this->replies = new ArrayOf(
             function($data) {
                 return new LexCommentReply();
@@ -40,6 +41,13 @@ class LexCommentModel extends \models\mapper\MapperModel {
         $this->regarding = new LexCommentFieldReference();
         $databaseName = $projectModel->databaseName();
         parent::__construct(self::mapper($databaseName), $id);
+    }
+
+    public static function remove($projectModel, $commentId) {
+        //self:mapper($projectModel->databaseName())->remove($commentId);
+        $comment = new self($projectModel, $commentId);
+        $comment->isDeleted = true;
+        $comment->write();
     }
 
     /**
@@ -70,7 +78,12 @@ class LexCommentModel extends \models\mapper\MapperModel {
 	 * @var string - see status constants above
 	 */
 	public $status;
-	
+
+    /**
+     * @var bool
+     */
+    public $isDeleted;
+
 	/**
 	 * 
 	 * @param string $id
