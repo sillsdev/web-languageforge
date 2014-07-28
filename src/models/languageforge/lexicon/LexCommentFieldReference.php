@@ -22,4 +22,16 @@ class LexCommentFieldReference extends ObjectForEncoding {
      */
     public $inputSystem;
 
+    // The EntryContext and SenseContext are strings storing the value of the effective "word" (the entry context) and "meaning" (the sense context) at the time the comment was made
+
+    /**
+     * @var string
+     */
+    public $entryContext;
+
+    /**
+     * @var string
+     */
+    public $senseContext;
+
 } 

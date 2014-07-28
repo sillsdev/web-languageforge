@@ -18,13 +18,14 @@ use models\shared\rights\Domain;
 use models\shared\rights\Operation;
 use models\UserGenericVoteModel;
 use models\UserVoteModel;
+use models\mapper\Id;
 
 class LexCommentCommands {
     public static function updateComment($projectId, $userId, $params) {
         CodeGuard::checkTypeAndThrow($params, 'array');
         $project = new LexiconProjectModel($projectId);
         $isNew = ($params['id'] == '');
-        if (isNew) {
+        if ($isNew) {
             $comment = new LexCommentModel($project);
         } else {
             $comment = new LexCommentModel($project, $params['id']);
@@ -42,9 +43,6 @@ class LexCommentCommands {
         } else {
             $comment->authorInfo->modifiedDate = new \DateTime();
         }
-
-
-
         return $comment->write();
     }
 
