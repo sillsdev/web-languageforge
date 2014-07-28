@@ -44,7 +44,7 @@ class LexCommentModel extends \models\mapper\MapperModel {
     }
 
     public static function remove($projectModel, $commentId) {
-        //self:mapper($projectModel->databaseName())->remove($commentId);
+        // old method self:mapper($projectModel->databaseName())->remove($commentId);
         $comment = new self($projectModel, $commentId);
         $comment->isDeleted = true;
         $comment->write();
@@ -105,6 +105,19 @@ class LexCommentModel extends \models\mapper\MapperModel {
 			}
 		}
 	}
+
+    public function deleteReply($id) {
+        $keyToDelete = null;
+        foreach ($this->replies as $key => $reply) {
+            if ($reply->id == $id) {
+                $keyToDelete = $key;
+                break;
+            }
+        }
+        if (!is_null($keyToDelete)) {
+            unset($this->replies[$keyToDelete]);
+        }
+    }
 }
 
 ?>
