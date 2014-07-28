@@ -1,17 +1,22 @@
 'use strict';
 
 angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
-  .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 
-                                   function($scope, notice, lexProjectService, ss, $filter, $modal) {
+  .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService', 'lexProjectService', 'sessionService', '$filter', '$modal', 
+                                   function($scope, notice, userService, lexProjectService, ss, $filter, $modal) {
     lexProjectService.setBreadcrumbs('viewSettings', $filter('translate')('View Settings'));
     
     $scope.configDirty = angular.copy($scope.projectSettings.config);
-    $scope.roleViews = [
-      {name: $filter('translate')('Observer'), role: 'observer', view: $scope.configDirty.roleViews['observer']},
+    $scope.roleTabs = [
+      {name: $filter('translate')('Observer'), role: 'observer', view: $scope.configDirty.roleViews['observer'], active: true},
       {name: $filter('translate')('Commenter'), role: 'observer_with_comment', view: $scope.configDirty.roleViews['observer_with_comment']},
       {name: $filter('translate')('Contributor'), role: 'contributor', view: $scope.configDirty.roleViews['contributor']},
       {name: $filter('translate')('Manager'), role: 'project_manager', view: $scope.configDirty.roleViews['project_manager']}
     ];
+    $scope.state = 'userList';
+    $scope.states = ['userList', 'userSettings'];
+    $scope.list = {};
+    
+    queryProjectUsers();
     
     $scope.fieldConfig = {};
     angular.forEach($scope.configDirty.entry.fieldOrder, function(fieldName) {
@@ -48,6 +53,16 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       }
     });
 
+    $scope.settingsApply = function settingsApply() {
+      lexProjectService.updateConfiguration($scope.configDirty, function(result) {
+        if (result.ok) {
+          notice.push(notice.SUCCESS, $filter('translate')("View settings updated successfully"));
+          $scope.viewSettingForm.$setPristine();
+          $scope.projectSettings.config = angular.copy($scope.configDirty);
+        }
+      });
+    };
+  
     $scope.currentField = {
       'name': '',
       'inputSystems': {
@@ -129,15 +144,85 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       return atLeastOne;
     };
     
-    $scope.settingsApply = function settingsApply() {
-      lexProjectService.updateConfiguration($scope.configDirty, function(result) {
+    $scope.selectUser = function selectUser(userId) {
+      $scope.currentUserId = userId;
+      $scope.state = 'userSettings';
+    };
+    
+    /* ----------------------------------------------------------
+     * Typeahead
+     * ---------------------------------------------------------- */
+    $scope.add = {};
+    $scope.add.users = [];
+    $scope.add.disableAddButton = false;
+    $scope.add.typeahead = {};
+    $scope.add.typeahead.userName = '';
+    
+    $scope.add.queryProjectUsers = queryProjectUsers;
+    
+    function queryProjectUsers() {
+      lexProjectService.users(function(result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, $filter('translate')("View settings updated successfully"));
-          $scope.viewSettingForm.$setPristine();
-          $scope.projectSettings.config = angular.copy($scope.configDirty);
+          $scope.add.users = result.data.users;
+          $scope.add.excludedUsers = [];
+          $scope.list.users = {};
+          angular.forEach($scope.add.users, function(user) {
+            if (user.id in $scope.configDirty.userViews) {
+              $scope.add.excludedUsers.push(user);
+              $scope.list.users[user.id] = user;
+            }
+          });
+          checkExcludedUsers();
         }
       });
     };
-  
+    
+    $scope.add.selectUser = function addSelectuser(user) {
+      $scope.add.user = user;
+      $scope.add.typeahead.userName = user.name;
+      checkExcludedUsers();
+    };
+    
+    $scope.addUser = function addUser() {
+      if ($scope.add.user) {
+        var user = $scope.add.user, 
+          userView;
+        $scope.add.excludedUsers.push(user);
+        $scope.list.users[user.id] = user;
+        userView = $scope.configDirty.roleViews[user.role];
+        $scope.configDirty.userViews[user.id] = userView;
+      }
+    };
+
+    $scope.imageSource = function(avatarRef) {
+      return avatarRef ? '/images/shared/avatar/' + avatarRef : '/images/shared/avatar/anonymous02.png';
+    };
+    
+    function checkExcludedUsers() {
+      var excludedUser;
+      excludedUser = isExcludedUser($scope.add.typeahead.userName, $scope.add.excludedUsers);
+      if (excludedUser) {
+        $scope.add.disableAddButton = true;
+        $scope.add.warningText = excludedUser.name +
+          " (" + excludedUser.username +
+          ") already has member specific settings.";
+      } else {
+        $scope.add.disableAddButton = false;
+        $scope.add.warningText = '';
+      }
+    };
+
+    function isExcludedUser(userName, excludedUsers) {
+      if (!excludedUsers) return false;
+      for (var i = 0, l = excludedUsers.length; i < l; i++) {
+        if (userName == excludedUsers[i].username ||
+          userName == excludedUsers[i].name     ||
+          userName == excludedUsers[i].email) {
+          return excludedUsers[i];
+        }
+      }
+      return false;
+    };
+    
   }])
   ;
