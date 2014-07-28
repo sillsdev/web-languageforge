@@ -14,6 +14,7 @@ use models\languageforge\lexicon\LexCommentReply;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\Sense;
+use models\ProjectModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -22,29 +23,51 @@ require_once(dirname(__FILE__) . '/LexTestData.php');
 
 class TestLexOptionListCommands extends UnitTestCase {
 
-	function testUpdateList() {
+	function testUpdateList_newList_createsOK() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 
 		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-
 		$optionlists = new LexOptionListListModel($project);
 		$optionlists->read();
-		$project = \models\ProjectModel::getById($project->id->asString());
+
+		// Initial project has no optionlists populated
+		$this->assertEqual($optionlists->count, 0);
+
+		// Initialized project has part of speech optionlist defined
 		$project->initializeNewProject();
+		$optionlists->read();
+		$this->assertEqual($optionlists->count, 1);
+		$initialValue = $optionlists->entries[0]['items'][0]['value'];
+		$this->assertEqual($initialValue, 'Adjective (adj)');
+
+		// Swap first and last items of parts of speech list
+		$count = count($optionlists->entries[0]['items']);
+		$swap = $optionlists->entries[0]['items'][0];
+		$optionlists->entries[0]['items'][0] = $optionlists->entries[0]['items'][$count-1];
+		$optionlists->entries[0]['items'][$count-1] = $swap;
+		LexOptionListCommands::updateList($project->id->asString(), $optionlists->entries[0]);
 
 		$optionlists->read();
-		$initialCount = count($optionlists->entries[0]['items']);
-		var_dump($initialCount);
+		$newValue = $optionlists->entries[0]['items'][0]['value'];
+		$this->assertEqual($newValue, 'Verb (v)');
 
-		$fruits = array('a' => 'apple', 'b' => 'berry', 'c' => 'cherry', 'g' => 'grape', 'm' => 'mango', 'p' => 'pineapple');
-		LexOptionListCommands::updateList($project->id->asString(), $fruits);
+		// Create part of speech list for fruits
+		$fruits = array(array('key'=>'a','value'=> 'apple'),
+						array('key'=>'b','value'=> 'berry'),
+						array('key'=>'c','value'=> 'cherry'),
+						array('key'=>'g','value'=> 'grape'),
+						array('key'=>'m','value'=> 'mango'),
+						array('key'=>'p','value'=> 'pineapple'));
+		$data = array('id'=>'',
+						'name'=>'List of Fruits',
+						'code'=>'fruits',
+						'items' => $fruits,
+						'canDelete' => false);
+		LexOptionListCommands::updateList($project->id->asString(), $data);
+		$optionlists->read();
 
-		$newCount = count($optionlists->entries[1]['items']);
-
-		$this->assertTrue($initialCount != $newCount);
-
-
+		$this->assertEqual($optionlists->count, 2);
 	}
 
 }

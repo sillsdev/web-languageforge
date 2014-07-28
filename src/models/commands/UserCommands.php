@@ -23,7 +23,6 @@ use models\commands\ActivityCommands;
 use models\commands\ProjectCommands;
 use models\commands\QuestionCommands;
 use models\commands\TextCommands;
-use models\commands\UserCommands;
 use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
