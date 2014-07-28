@@ -5,9 +5,9 @@
 	data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense()">
 	<i class="icon-ok"></i> {{'Apply' | translate}}</button>
 <tabset>
-	<tab data-ng-repeat="roleView in roleViews" class="{{interfaceConfig.pullNormal}}">
-		<tab-heading>{{roleView.name | translate}}
-			<span data-ng-hide="isAtLeastOneSense(roleView.view)">
+	<tab data-ng-repeat="roleTab in roleTabs" class="{{interfaceConfig.pullNormal}}" active="roleTab.active">
+		<tab-heading>{{roleTab.name | translate}}
+			<span data-ng-hide="isAtLeastOneSense(roleTab.view)">
 				<img src="/images/shared/exclamation.png" title="{{'At least one Sense field must be enabled!' | translate}}" style="padding-left: 5px;"/></span>
 		</tab-heading>
 		<div class="row outer-flex">
@@ -22,8 +22,8 @@
 					{{'Show All Fields' | translate}}</label>
 			</div>
 			
-			<!-- picklist -->
-			<dl class="picklists" style="height: 200px; overflow-y: scroll; overflow-x: hidden">
+			<!-- select list -->
+			<dl class="picklists" style="height: 200px; overflow-y: auto;">
 				<dt translate="Entry Level Fields"></dt>
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder"
@@ -35,7 +35,7 @@
 					</div>
 				</div></dd>
 				<dt>{{'Sense Level Fields' | translate}} 
-					<span data-ng-hide="isAtLeastOneSense(roleView.view)">
+					<span data-ng-hide="isAtLeastOneSense(roleTab.view)">
 					<img src="/images/shared/exclamation.png" title="{{'At least one Sense field must be enabled!' | translate}}" style="position: absolute; padding-left: 5px;"/></span></dt>
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder"
@@ -71,7 +71,7 @@
 						<label class="checkbox {{interfaceConfig.pullNormal}}">
 							<input type="checkbox" 
 								data-ng-disabled="currentField.name == 'lexeme'" 
-								data-ng-model="roleView.view.fields[currentField.name].show"/>
+								data-ng-model="roleTab.view.fields[currentField.name].show"/>
 							{{'Show field' | translate}}</label>
 					</div>
 					<br />
@@ -80,12 +80,12 @@
 					<div class="controls">
 						<label class="checkbox {{interfaceConfig.pullNormal}}">
 							<input type="checkbox" 
-								data-ng-model="roleView.view.fields[currentField.name].overrideInputSystems"/>
+								data-ng-model="roleTab.view.fields[currentField.name].overrideInputSystems"/>
 							{{'Override Input Systems' | translate}}</label>
 						<br />
 					</div>
 				</div>
-				<div data-ng-show="roleView.view.fields[currentField.name].overrideInputSystems">
+				<div data-ng-show="roleTab.view.fields[currentField.name].overrideInputSystems">
 					<hr />
 					<div class="row outer-flex control-group">
 						<div class="span3 picklists">
@@ -122,35 +122,35 @@
 			<dl>
 				<dt translate="Dashboard"></dt>
 				<dd><div class="controls">
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showTasks['dashboard']">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleTab.view.showTasks['dashboard']">
 						{{'Dashboard' | translate}}</label>
 				</div></dd>
 				<dt translate="Dictionary"></dt>
 				<dd><div class="controls">
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showTasks['dbe']">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleTab.view.showTasks['dbe']">
 						{{'Browse &amp; Edit' | translate}}</label>
 				</div></dd>
 				<dt translate="Add Information"></dt>
 				<dd><div class="controls">
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showTasks['addMeanings']">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleTab.view.showTasks['addMeanings']">
 						{{'add Meanings' | translate}}</label>
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showTasks['addGrammar']">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleTab.view.showTasks['addGrammar']">
 						{{'add Grammatical Usage (Part of Speech)' | translate}}</label>
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showTasks['addExamples']">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleTab.view.showTasks['addExamples']">
 						{{'add Examples' | translate}}</label>
 				</div></dd>
 				<dt translate="Gather Words"></dt>
 				<dd><div class="controls">
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showTasks['gatherTexts']">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleTab.view.showTasks['gatherTexts']">
 						{{'from Texts' | translate}}</label>
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showTasks['wordlist']">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleTab.view.showTasks['wordlist']">
 						{{'from a Word List' | translate}}</label>
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showTasks['semdom']">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleTab.view.showTasks['semdom']">
 						{{'from Semantic Domains' | translate}}</label>
 				</div></dd>
 				<dt translate="Review"></dt>
 				<dd><div class="controls">
-					<label class="checkbox"><input type="checkbox" data-ng-model="roleView.view.showTasks['review']">
+					<label class="checkbox"><input type="checkbox" data-ng-model="roleTab.view.showTasks['review']">
 						{{'Review' | translate}}</label>
 				</div></dd>
 			</dl>
@@ -158,12 +158,56 @@
 			
 		</div>
 	</tab>
+	<tab heading="{{'Member Specific' | translate}}">
+		<div data-ng-show="state === 'userList'">
+
+			<!-- control buttons -->
+			<form class="form-inline">
+				<typeahead class="typeahead" items="add.users" term="add.typeahead.userName" search="add.queryProjectUsers" select="add.selectUser">
+					<ul>
+						<li typeahead-item="user" data-ng-repeat="user in add.users" class="typeahead-item">
+							<img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
+							<p class="name">{{user.name}}</p>
+							<p class="email">{{user.email}}</p>
+						</li>
+					</ul>
+				</typeahead>
+				<button class="btn btn-success" data-ng-disabled="add.disableAddButton" data-ng-click="addUser()"><i class="icon-plus"></i>{{'Add Member Specific Settings' | translate}}</button>
+				<span class="warning" data-ng-show="add.warningText">{{add.warningText}}</span>
+				<br /><br />
+			</form>
+		
+			<div class="row outer-flex">
+			
+				<!-- Left column: user list -->
+				<div class="span3">
+					
+					<!-- picklist -->
+					<div class="control-group picklists">
+						<ul class="unstyled">
+							<li data-ng-click="selectUser(userId)" data-ng-repeat="(userId, userView) in configDirty.userViews" 
+								data-ng-class="{selected:currentUserId == userId}"> 
+								{{list.users[userId].name}} ({{list.users[userId].username}})</li>
+						</ul>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		<div data-ng-show="state === 'userSettings'">
+				<!-- control buttons -->
+				<div class="control-group">
+					<button class="btn" data-ng-click="state = 'userList'"><i class="icon-chevron-left"></i> {{'Back' | translate}}</button>
+				</div>
+		
+		</div>
+	</tab>
 </tabset>
 </form>
 <!-- 
 <pre>
 currentField {{currentField | json}}
-configDirty.roleViews {{configDirty.roleViews | json}}
+configDirty.roleTabs {{configDirty.roleTabs | json}}
 </pre>
  -->
 </div>
