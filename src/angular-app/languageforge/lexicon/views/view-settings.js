@@ -47,6 +47,62 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         }
       }
     });
+
+    $scope.currentField = {
+      'name': '',
+      'inputSystems': {
+        'fieldOrder': [],
+        'selecteds': {}
+      }
+    };
+    $scope.selectField = function selectField(fieldName) {
+      if ($scope.currentField.name !== fieldName) {
+        var inputSystems = $scope.fieldConfig[fieldName].inputSystems;
+        
+        $scope.currentField.name = fieldName;
+        
+        $scope.currentField.inputSystems.selecteds = {};
+        angular.forEach(inputSystems, function(tag) {
+          $scope.currentField.inputSystems.selecteds[tag] = true;
+        });
+        
+        // if the field uses input systems, add the selected systems first then the unselected systems
+        if (inputSystems) {
+          $scope.currentField.inputSystems.fieldOrder = inputSystems;
+          angular.forEach($scope.configDirty.inputSystems, function(inputSystem, tag) {
+            if(! (tag in $scope.currentField.inputSystems.selecteds)) {
+              $scope.currentField.inputSystems.fieldOrder.push(tag);
+            }
+          });
+        }
+      }
+    };
+    $scope.selectField('lexeme');
+    
+    $scope.moveUp = function moveUp(currentTag) {
+      var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
+      $scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1];
+      $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1] = currentTag;
+      $scope.fieldConfig[$scope.currentField.name].inputSystems = [];
+      angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
+        if ($scope.currentField.inputSystems.selecteds[tag]) {
+          $scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
+        }
+      });
+      $scope.viewSettingForm.$setDirty();
+    };
+    $scope.moveDown = function moveDown(currentTag) {
+      var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
+      $scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1];
+      $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1] = currentTag;
+      $scope.fieldConfig[$scope.currentField.name].inputSystems = [];
+      angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
+        if ($scope.currentField.inputSystems.selecteds[tag]) {
+          $scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
+        }
+      });
+      $scope.viewSettingForm.$setDirty();
+    };
     
     $scope.fieldIsHidden= function fieldIsHidden(fieldName, showAllFields) {
       if (angular.isUndefined($scope.fieldConfig[fieldName]) || ! ('hideIfEmpty' in $scope.fieldConfig[fieldName])) {
@@ -58,7 +114,9 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     $scope.isAtLeastOneSense = function isAtLeastOneSense(view) {
       var atLeastOne = false;
       angular.forEach($scope.configDirty.entry.fields.senses.fieldOrder, function(fieldName) {
-        atLeastOne = atLeastOne || view.showFields[fieldName];
+        if (fieldName in view.fields) {
+          atLeastOne = atLeastOne || view.fields[fieldName].show;
+        }
       });
       return atLeastOne;
     };
