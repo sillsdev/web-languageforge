@@ -75,7 +75,10 @@ class LexiconProjectModel extends LfProjectModel {
 		return array_merge($settings, LexBaseViewDto::encode($this->id->asString(), $userId));
 	}
 
-    public function initializeNewProject() {
+	/**
+	 * Initialize the optionlists in a project
+	 */
+	public function initializeNewProject() {
         // setup default option lists
         $optionList = new LexOptionListModel($this);
         $optionList->name = 'Part Of Speech';
