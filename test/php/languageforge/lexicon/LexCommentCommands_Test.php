@@ -10,6 +10,7 @@ use models\languageforge\lexicon\LexCommentReply;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\Sense;
+use models\languageforge\lexicon\LexCommentListModel;
 
 require_once(dirname(__FILE__) . '/../../TestConfig.php');
 require_once(SimpleTestPath . 'autorun.php');
@@ -17,494 +18,98 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestLexCommentCommands extends UnitTestCase {
 
-    // comment out these tests until the refactor is complete
-    /*
-	function testUpdateLexemeComment_NewComment_CommentAdded() {
-		$e = new LexiconMongoTestEnvironment();
-		$e->clean();
-		$userId = $e->createUser('joe', 'joe', 'joe');
-		
-		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-		$projectId = $project->id->asString();
-		
-		$entry = new LexEntryModel($project);
-		$ws = 'th';
-		$entry->lexeme->form($ws, 'apple');
+    function testUpdateComment_NewComment_CommentAdded() {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
 
-		$sense = new Sense();
-		$sense->definition->form('en', 'red fruit');
-		$sense->partOfSpeech->value = 'noun';
-		
-		$example = new Example();
-		$example->sentence->form('th', 'example1');
-		$example->translation->form('en', 'trans1');
-		
-		$sense->examples[] = $example;
-		
-		$entry->senses[] = $sense;
-		
-		$entryId = $entry->write();
-		
-		$commentData = array(
-			'id' => '',
-			'content' => 'I like this lexeme a lot',
-			'regarding' => 'apple',
-			'score' => 5,
-			'entryId' => $entryId,
-			'field' => 'lexeme',
-			'inputSystem' => $ws
-		);
-		
-		LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
-		
-		$entry->read($entryId);
-		
-		$comment = $entry->lexeme[$ws]->comments[0];
-		$this->assertEqual($comment->content, 'I like this lexeme a lot');
-		$this->assertEqual($comment->score, 0, "comment score should not be updated by this method");
-		$this->assertEqual($comment->regarding, 'apple');
-		$this->assertNotEqual($comment->id, '', 'comment should have a unique id');
-	}
-	
-	function testUpdateLexemeComment_ExistingComment_CommentUpdatedOk() {
-		$e = new LexiconMongoTestEnvironment();
-		$e->clean();
-		$userId = $e->createUser('joe', 'joe', 'joe');
-		
-		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-		$projectId = $project->id->asString();
-		
-		$entry = new LexEntryModel($project);
-		$ws = 'th';
-		$entry->lexeme->form($ws, 'apple');
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $userId = $e->createUser('joe', 'joe', 'joe');
 
-		$sense = new Sense();
-		$sense->definition->form('en', 'red fruit');
-		$sense->partOfSpeech->value = 'noun';
-		
-		$example = new Example();
-		$example->sentence->form('th', 'example1');
-		$example->translation->form('en', 'trans1');
-		
-		$sense->examples[] = $example;
-		
-		$entry->senses[] = $sense;
-		
-		$entryId = $entry->write();
-		
-		$commentData = array(
-			'id' => '',
-			'content' => 'I like this lexeme a lot',
-			'regarding' => 'apple',
-			'score' => 5,
-			'entryId' => $entryId,
-			'field' => 'lexeme',
-			'inputSystem' => $ws
-		);
-		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
-		
-		$commentId = $entryArray['lexeme'][$ws]['comments'][0]['id'];
+        $commentContent = "My first comment";
 
-		$commentData = array(
-			'id' => $commentId,
-			'content' => 'I changed my mind.  Not so much',
-			'regarding' => 'apple2',
-			'score' => 2,
-			'entryId' => $entryId,
-			'field' => 'lexeme',
-			'inputSystem' => $ws
-		);
-		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
-		
-		$entry->read($entryId);
+        $regarding = array(
+            'fieldName' => 'lexeme',
+            'content' => 'Word 1',
+            'inputSystem' => 'th',
+            'entryContext' => '',
+            'senseContext' => ''
+        );
 
-		$comment = $entry->lexeme[$ws]->comments[0];
-		$this->assertEqual($comment->content, 'I changed my mind.  Not so much');
-		$this->assertEqual($comment->score, 0, "comment score should not be updated by this method");
-		$this->assertEqual($comment->regarding, 'apple', "regarding field should not be updated on existing comment");
-		$this->assertNotEqual($comment->id, '', 'comment should have a unique id');
-		$this->assertEqual($entryArray['lexeme'][$ws]['comments'][0]['userRef']['username'], 'joe');
-		
-	}
-	
-	function testUpdateLexemeReply_NewReply_ReplyAdded() {
-		$e = new LexiconMongoTestEnvironment();
-		$e->clean();
-		$userId = $e->createUser('joe', 'joe', 'joe');
-		
-		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-		$projectId = $project->id->asString();
-		
-		$entry = new LexEntryModel($project);
-		$ws = 'th';
-		$entry->lexeme->form($ws, 'apple');
+        $data = array(
+            'id' => '',
+            'content' => $commentContent,
+            'regarding' => $regarding
+        );
 
-		$sense = new Sense();
-		$sense->definition->form('en', 'red fruit');
-		$sense->partOfSpeech->value = 'noun';
-		
-		$example = new Example();
-		$example->sentence->form('th', 'example1');
-		$example->translation->form('en', 'trans1');
-		
-		$sense->examples[] = $example;
-		
-		$entry->senses[] = $sense;
-		
-		$entryId = $entry->write();
-		
-		$commentData = array(
-			'id' => '',
-			'content' => 'I like this lexeme a lot',
-			'regarding' => 'apple',
-			'score' => 5,
-			'entryId' => $entryId,
-			'field' => 'lexeme',
-			'inputSystem' => $ws
-		);
-		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
-		
-		$commentId = $entryArray['lexeme'][$ws]['comments'][0]['id'];
+        $commentList = new LexCommentListModel($project);
+        $commentList->read();
+        $this->assertEqual($commentList->count, 0);
 
-		$replyData = array(
-			'id' => '',
-			'content' => 'Plus 1',
-			'entryId' => $entryId,
-			'field' => 'lexeme',
-			'parentId' => $commentId,
-			'inputSystem' => $ws
-		);
-		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, $userId);
-		
-		$entry->read($entryId);
+        LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
 
-		$reply = $entry->lexeme[$ws]->comments[0]->replies[0];
-		$this->assertEqual($reply->content, 'Plus 1');
-		$this->assertNotEqual($reply->id, '', 'comment should have a unique id');
-		
-	}
-	
-	function testUpdateLexemeReply_ExistingReply_ReplyUpdatedOk() {
-		$e = new LexiconMongoTestEnvironment();
-		$e->clean();
-		$userId = $e->createUser('joe', 'joe', 'joe');
-		
-		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-		$projectId = $project->id->asString();
-		
-		$entry = new LexEntryModel($project);
-		$ws = 'th';
-		$entry->lexeme->form($ws, 'apple');
+        $commentList->read();
+        $this->assertEqual($commentList->count, 1);
+        $commentArray = $commentList->entries[0];
+        $this->assertEqual($commentArray['content'], $commentContent);
+        $this->assertEqual($commentArray['regarding'], $regarding);
+        $this->assertEqual($commentArray['score'], 0);
+        $this->assertEqual($commentArray['status'], 'open');
+    }
 
-		$sense = new Sense();
-		$sense->definition->form('en', 'red fruit');
-		$sense->partOfSpeech->value = 'noun';
-		
-		$example = new Example();
-		$example->sentence->form('th', 'example1');
-		$example->translation->form('en', 'trans1');
-		
-		$sense->examples[] = $example;
-		
-		$entry->senses[] = $sense;
-		
-		$entryId = $entry->write();
-		
-		$commentData = array(
-			'id' => '',
-			'content' => 'I like this lexeme a lot',
-			'regarding' => 'apple',
-			'score' => 5,
-			'entryId' => $entryId,
-			'field' => 'lexeme',
-			'inputSystem' => $ws
-		);
-		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
-		
-		$commentId = $entryArray['lexeme'][$ws]['comments'][0]['id'];
+    function testUpdateComment_ExistingComment_CommentUpdated() {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
 
-		$replyData = array(
-			'id' => '',
-			'content' => 'Plus 1',
-			'entryId' => $entryId,
-			'field' => 'lexeme',
-			'inputSystem' => $ws,
-			'parentId' => $commentId
-		);
-		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, $userId);
-		
-		$replyId = $entryArray['lexeme'][$ws]['comments'][0]['replies'][0]['id'];
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $userId = $e->createUser('joe', 'joe', 'joe');
 
-		$replyData = array(
-			'id' => $replyId,
-			'content' => 'Plus 2',
-			'entryId' => $entryId,
-			'inputSystem' => $ws,
-			'field' => 'lexeme',
-			'parentId' => $commentId
-		);
+        $regarding = array(
+            'fieldName' => 'lexeme',
+            'content' => 'Word 1',
+            'inputSystem' => 'th',
+            'entryContext' => '',
+            'senseContext' => ''
+        );
+        $data = array(
+            'id' => '',
+            'content' => 'hi there!',
+            'regarding' => $regarding
+        );
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
 
-		LexCommentCommands::updateCommentOrReply($projectId, $replyData, $userId);
-		
-		$entry->read($entryId);
+        $newCommentContent = "My first comment";
 
-		$reply = $entry->lexeme[$ws]->comments[0]->replies[0];
-		$this->assertEqual($reply->content, 'Plus 2');
-	}
+        $data = array(
+            'id' => $commentId,
+            'content' => $newCommentContent,
+        );
+        LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
 
-	function testUpdateSenseComment_ExistingComment_UpdatesOk() {
-		$e = new LexiconMongoTestEnvironment();
-		$e->clean();
-		$userId = $e->createUser('joe', 'joe', 'joe');
-		
-		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-		$projectId = $project->id->asString();
-		
-		$entry = new LexEntryModel($project);
-		$entry->lexeme->form('th', 'apple');
+        $comment = new LexCommentModel($project, $commentId);
 
-		$sense = new Sense();
-		$ws = 'en';
-		$sense->definition->form($ws, 'red fruit');
-		$sense->partOfSpeech->value = 'noun';
-		
-		$example = new Example();
-		$example->sentence->form('th', 'example1');
-		$example->translation->form('en', 'trans1');
-		
-		$sense->examples[] = $example;
-		
-		$entry->senses[] = $sense;
-		
-		$entryId = $entry->write();
-		
-		$commentData = array(
-			'id' => '',
-			'content' => 'I like this lexeme a lot',
-			'regarding' => 'apple',
-			'score' => 5,
-			'entryId' => $entryId,
-			'inputSystem' => $ws,
-			'senseId' => $sense->id,
-			'field' => 'sense_definition'
-		);
-		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
-		
-		$commentId = $entryArray['senses'][0]['definition'][$ws]['comments'][0]['id'];
+        $this->assertEqual($comment->content, $newCommentContent);
+        $this->assertEqual($comment->score, 0);
+        $this->assertEqual($comment->status, 'open');
 
-		$commentData = array(
-			'id' => $commentId,
-			'content' => 'I changed my mind.  Not so much',
-			'regarding' => 'apple2',
-			'score' => 2,
-			'entryId' => $entryId,
-			'inputSystem' => $ws,
-			'senseId' => $sense->id,
-			'field' => 'sense_definition'
-		);
-		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
-		
-		$entry->read($entryId);
+    }
 
-		$comment = $entry->senses[0]->definition[$ws]->comments[0];
-		$this->assertEqual($comment->content, 'I changed my mind.  Not so much');
-		$this->assertEqual($comment->score, 0, "comment score should not be updated by this method");
-		$this->assertEqual($comment->regarding, 'apple', "regarding field should not be updated on existing comment");
-		$this->assertNotEqual($comment->id, '', 'comment should have a unique id');
-		
-	}
-	
-	function testUpdateSenseReply_ExistingReply_UpdatesOk() {
-		$e = new LexiconMongoTestEnvironment();
-		$e->clean();
-		$userId = $e->createUser('joe', 'joe', 'joe');
-		
-		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-		$projectId = $project->id->asString();
-		
-		$entry = new LexEntryModel($project);
-		$ws = 'en';
-		$entry->lexeme->form('th', 'apple');
+    function testUpdateReply_NewReply_ReplyAdded() {}
 
-		$sense = new Sense();
-		$sense->definition->form($ws, 'red fruit');
-		$sense->partOfSpeech->value = 'noun';
-		
-		$example = new Example();
-		$example->sentence->form('th', 'example1');
-		$example->translation->form('en', 'trans1');
-		
-		$sense->examples[] = $example;
-		
-		$entry->senses[] = $sense;
-		
-		$entryId = $entry->write();
-		
-		$commentData = array(
-			'id' => '',
-			'content' => 'I like this lexeme a lot',
-			'regarding' => 'apple',
-			'score' => 5,
-			'entryId' => $entryId,
-			'inputSystem' => $ws,
-			'senseId' => $sense->id,
-			'field' => 'sense_definition'
-		);
-		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
-		
-		$commentId = $entryArray['senses'][0]['definition'][$ws]['comments'][0]['id'];
+    function testUpdateReply_ExistingReply_ReplyAdded() {}
 
-		$replyData = array(
-			'id' => '',
-			'content' => 'Plus 1',
-			'entryId' => $entryId,
-			'inputSystem' => $ws,
-			'senseId' => $sense->id,
-			'field' => 'sense_definition',
-			'parentId' => $commentId
-		);
-		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, $userId);
-		
-		$replyId = $entryArray['senses'][0]['definition'][$ws]['comments'][0]['replies'][0]['id'];
+    function testDeleteComment_CommentMarkedDeleted() {}
 
-		$replyData = array(
-			'id' => $replyId,
-			'content' => 'Plus 2',
-			'entryId' => $entryId,
-			'inputSystem' => $ws,
-			'senseId' => $sense->id,
-			'field' => 'sense_definition',
-			'parentId' => $commentId
-		);
+    function testDeleteReply_ReplyDeleted() {}
 
-		LexCommentCommands::updateCommentOrReply($projectId, $replyData, $userId);
-		
-		$entry->read($entryId);
+    function testUpdateCommentStatus_ValidStatus_StatusUpdated() {}
 
-		$reply = $entry->senses[0]->definition[$ws]->comments[0]->replies[0];
-		$this->assertEqual($reply->content, 'Plus 2');
-		$this->assertNotEqual($reply->id, '', 'comment should have a unique id');
-	}
+    function testUpdateCommentStatus_InvalidStatus_Throws() {}
 
-	function testUpdateExampleComment_ExistingComment_UpdatesOk() {
-		$e = new LexiconMongoTestEnvironment();
-		$e->clean();
-		$userId = $e->createUser('joe', 'joe', 'joe');
-		
-		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-		$projectId = $project->id->asString();
-		
-		$entry = new LexEntryModel($project);
-		$entry->lexeme->form('th', 'apple');
+    function testPlusOneComment_UserFirstTime_IncreasedScore() {}
 
-		$sense = new Sense();
-		$sense->definition->form('en', 'red fruit');
-		$sense->partOfSpeech->value = 'noun';
-		
-		$ws = 'th';
-		$comment = new LexComment('test comment');
-		$comment->regarding = 'example1';
-		$commentId = $comment->id;
-		$example = new Example();
-		$example->sentence->form($ws, 'example1');
-		$example->sentence[$ws]->comments[] = $comment;
-		$example->translation->form('en', 'trans1');
-		
-		$sense->examples[] = $example;
-		
-		$entry->senses[] = $sense;
-		
-		$entryId = $entry->write();
-		
-		$commentData = array(
-			'id' => $commentId,
-			'content' => 'improved comment',
-			'regarding' => 'whatever',
-			'score' => 5,
-			'entryId' => $entryId,
-			'inputSystem' => $ws,
-			'senseId' => $sense->id,
-			'field' => 'sense_example_sentence',
-			'exampleId' => $example->id
-		);
-		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $commentData, $userId);
-		
-		$entry->read($entryId);
+    function testPlusOneComment_UserAlready_ScoreIsSame() {}
 
-		$comment = $entry->senses[0]->examples[0]->sentence[$ws]->comments[0];
-		$this->assertEqual($comment->content, 'improved comment');
-		$this->assertEqual($comment->score, 0, "comment score should not be updated by this method");
-		$this->assertEqual($comment->regarding, 'example1', "regarding field should not be updated on existing comment");
-		$this->assertNotEqual($comment->id, '', 'comment should have a unique id');
-		
-	}
-	
-	function testUpdateExampleReply_ExistingReply_UpdatesOk() {
-		$e = new LexiconMongoTestEnvironment();
-		$e->clean();
-		$userId = $e->createUser('joe', 'joe', 'joe');
-		
-		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-		$projectId = $project->id->asString();
-		
-		$entry = new LexEntryModel($project);
-		$entry->lexeme->form('th', 'apple');
 
-		$sense = new Sense();
-		$sense->definition->form('en', 'red fruit');
-		$sense->partOfSpeech->value = 'noun';
-		
-		$ws = 'th';
-		$reply = new LexCommentReply('simple reply');
-		$replyId = $reply->id;
-		$comment = new LexComment('test comment');
-		$comment->regarding = 'example1';
-		$comment->replies[] = $reply;
-		$commentId = $comment->id;
-		$example = new Example();
-		$example->sentence->form($ws, 'example1');
-		$example->sentence[$ws]->comments[] = $comment;
-		$example->translation->form('en', 'trans1');
-		
-		$sense->examples[] = $example;
-		
-		$entry->senses[] = $sense;
-		
-		$entryId = $entry->write();
-		
-		$replyData = array(
-			'id' => $replyId,
-			'content' => 'improved reply',
-			'entryId' => $entryId,
-			'inputSystem' => $ws,
-			'senseId' => $sense->id,
-			'field' => 'sense_example_sentence',
-			'exampleId' => $example->id,
-			'parentId' => $commentId
-		);
-		
-		$entryArray = LexCommentCommands::updateCommentOrReply($projectId, $replyData, $userId);
-		
-		$entry->read($entryId);
-
-		$reply = $entry->senses[0]->examples[0]->sentence[$ws]->comments[0]->replies[0];
-		$this->assertEqual($reply->content, 'improved reply');
-		$this->assertNotEqual($reply->id, '', 'comment should have a unique id');
-		
-	}
-    */
-	
 }
 
 ?>

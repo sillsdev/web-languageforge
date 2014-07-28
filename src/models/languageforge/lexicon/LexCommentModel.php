@@ -3,6 +3,7 @@
 namespace models\languageforge\lexicon;
 
 use models\mapper\ArrayOf;
+use models\mapper\Id;
 
 class LexCommentModel extends \models\mapper\MapperModel {
 
@@ -83,6 +84,11 @@ class LexCommentModel extends \models\mapper\MapperModel {
      * @var bool
      */
     public $isDeleted;
+
+    /**
+     * @var string
+     */
+    public $content;
 
 	/**
 	 * 
