@@ -126,7 +126,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
           notice.push(notice.SUCCESS, $filter('translate')('Dictionary configuration updated successfully'));
           $scope.configForm.$setPristine();
           $scope.projectSettings.config = angular.copy($scope.configDirty);
-          $scope.projectSettings.optionlist = angular.copy($scope.optionilistDirty);
+          $scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
           setupView();
         }
       });

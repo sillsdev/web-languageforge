@@ -11,17 +11,22 @@ use models\mapper\JsonDecoder;
 
 class LexOptionListCommands {
 
-    public static function updateList($projectId, $data) {
-        CodeGuard::checkTypeAndThrow($data, 'array');
-        $project = new LexiconProjectModel($projectId);
-        if (array_key_exists('id', $data) && $data['id'] != '') {
-            $optionlist = new LexOptionListModel($project, $data['id']);
-        } else {
-            $optionlist = new LexOptionListModel($project);
-        }
+	/**
+	 * Update the optionlist with params
+	 * @param $projectId
+	 * @param LexOptionListModel $params
+	 */
+	public static function updateList($projectId, $params) {
+		CodeGuard::checkTypeAndThrow($params, 'array');
+		$project = new LexiconProjectModel($projectId);
+		if (array_key_exists('id', $params) && $params['id'] != '') {
+			$optionlist = new LexOptionListModel($project, $params['id']);
+		} else {
+			$optionlist = new LexOptionListModel($project);
+		}
 
-        JsonDecoder::decode($optionlist, $data);
-        $optionlist->write();
+		JsonDecoder::decode($optionlist, $params);
+		$optionlist->write();
     }
 
 } 

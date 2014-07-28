@@ -526,9 +526,12 @@ class Sf
         }
     }
 	
-	public function lex_configuration_update($config, $optionlist) {
+	public function lex_configuration_update($config, $optionlists) {
 		LexProjectCommands::updateConfig($this->_projectId, $config);
-		return LexOptionListCommands::updateList($this->_projectId, $optionlist);
+		foreach($optionlists as $optionlist) {
+			LexOptionListCommands::updateList($this->_projectId, $optionlist);
+		}
+		return;
 	}
 	
 	public function lex_import_lift($import) {
@@ -555,8 +558,8 @@ class Sf
 		return LexCommentCommands::updateCommentOrReply($this->_projectId, $data, $this->_userId);
 	}
 
-    public function lex_optionlist_update($data) {
-        return \models\languageforge\lexicon\commands\LexOptionListCommands::updateList($this->_projectId, $data);
+    public function lex_optionlists_update($params) {
+        return LexOptionListCommands::updateList($this->_projectId, $params);
     }
 	
 	
