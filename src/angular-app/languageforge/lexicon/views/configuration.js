@@ -5,6 +5,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
                              function($scope, notice, lexProjectService, ss, $filter, $modal) {
     lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
     $scope.configDirty = angular.copy(ss.session.projectSettings.config);
+    $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
     
     $scope.inputSystems = {};
     $scope.selects = {
@@ -120,14 +121,16 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     };
     
     $scope.configurationApply = function() {
-      lexProjectService.updateConfiguration($scope.configDirty, function(result) {
+      lexProjectService.updateConfiguration($scope.configDirty, $scope.optionlistDirty, function(result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, $filter('translate')('Dictionary configuration updated successfully'));
           $scope.configForm.$setPristine();
           $scope.projectSettings.config = angular.copy($scope.configDirty);
+          $scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
           setupView();
         }
       });
+
     };
     
   // InputSystemsConfigCtrl
@@ -508,7 +511,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       pos:{
         id: 'pos',
         name: 'Part of Speech',
-        items: $scope.configDirty.entry.fields.senses.fields.partOfSpeech.values,
+        items: $scope.optionlistDirty[0].items,
         defaultKey: 'noun'
       }
     };

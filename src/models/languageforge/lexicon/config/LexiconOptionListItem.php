@@ -7,7 +7,7 @@ class LexiconOptionListItem {
 	public $key;
 	public $value;
 
-	function __construct($value, $key = null)
+	function __construct($value = '', $key = null)
 	{
 		$this->value = $value;
 		if (is_null($key)) {
