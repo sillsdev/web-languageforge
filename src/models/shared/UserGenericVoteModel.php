@@ -1,5 +1,5 @@
 <?php
-namespace models;
+namespace models\shared;
 
 use models\mapper\ArrayOf;
 
@@ -16,7 +16,7 @@ class Vote
 	public $ref;
 }
 
-class UserGenericVoteModel extends UserRelationModel
+class UserGenericVoteModel extends \models\UserRelationModel
 {
 	/**
 	 * @param string $userId
