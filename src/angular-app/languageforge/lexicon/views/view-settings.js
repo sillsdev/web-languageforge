@@ -54,7 +54,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     });
 
     $scope.settingsApply = function settingsApply() {
-      lexProjectService.updateConfiguration($scope.configDirty, function(result) {
+      lexProjectService.updateConfiguration($scope.configDirty, [], function(result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, $filter('translate')("View settings updated successfully"));
           $scope.viewSettingForm.$setPristine();
@@ -128,6 +128,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     
     $scope.isAtLeastOneSense = function isAtLeastOneSense(view) {
       var atLeastOne = false;
+      if (! view) return false;
       angular.forEach($scope.configDirty.entry.fields.senses.fieldOrder, function(fieldName) {
         if (fieldName in view.fields) {
           atLeastOne = atLeastOne || view.fields[fieldName].show;
@@ -140,6 +141,14 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       var atLeastOne = true;
       angular.forEach($scope.roleViews, function(roleView) {
         atLeastOne = atLeastOne && $scope.isAtLeastOneSense(roleView.view);
+      });
+      return atLeastOne;
+    };
+    
+    $scope.allUsersHaveAtLeastOneSense = function allUsersHaveAtLeastOneSense() {
+      var atLeastOne = true;
+      angular.forEach($scope.configDirty.userViews, function(userView) {
+        atLeastOne = atLeastOne && $scope.isAtLeastOneSense(userView);
       });
       return atLeastOne;
     };
@@ -167,9 +176,9 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
           $scope.add.excludedUsers = [];
           $scope.list.users = {};
           angular.forEach($scope.add.users, function(user) {
+            $scope.list.users[user.id] = user;
             if (user.id in $scope.configDirty.userViews) {
               $scope.add.excludedUsers.push(user);
-              $scope.list.users[user.id] = user;
             }
           });
           checkExcludedUsers();
@@ -189,8 +198,10 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
           userView;
         $scope.add.excludedUsers.push(user);
         $scope.list.users[user.id] = user;
-        userView = $scope.configDirty.roleViews[user.role];
+        userView = angular.copy($scope.configDirty.roleViews[user.role]);
         $scope.configDirty.userViews[user.id] = userView;
+        $scope.add.typeahead.userName = '';
+        $scope.viewSettingForm.$setDirty();
       }
     };
 
@@ -222,6 +233,27 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         }
       }
       return false;
+    };
+    
+    $scope.goBack = function goBack() {
+      $scope.state = 'userList';
+      $scope.currentUserId = '';
+    };
+    
+    $scope.removeSelectedMemberSettings = function removeSelectedMemberSettings() {
+      var userIndex = - 1;
+      angular.forEach($scope.add.excludedUsers, function(excludedUser, i) {
+        if (excludedUser.id === $scope.currentUserId) {
+          userIndex = i;
+          return;
+        }
+      });
+      if (userIndex > -1) {
+        $scope.add.excludedUsers.splice(userIndex, 1);
+      }
+      delete $scope.configDirty.userViews[$scope.currentUserId];
+      $scope.viewSettingForm.$setDirty();
+      $scope.goBack();
     };
     
   }])
