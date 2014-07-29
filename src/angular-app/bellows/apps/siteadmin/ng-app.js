@@ -23,13 +23,6 @@ angular.module('siteadmin', [
 		state: "add" // can be either "add" or "update"
 	};
 	
-	$scope.resetCheckName = function() {
-		$scope.userNameLoading = false;
-		$scope.userNameExists = false;
-		$scope.userNameOk = false;
-	};
-	$scope.resetCheckName();
-	
 	$scope.focusInput = function() {
 		$scope.vars.inputfocus = true;
 	};
@@ -87,7 +80,7 @@ angular.module('siteadmin', [
 		if (newId) {
 			userService.read(newId, function(result) {
 				$scope.record = result.data;
-				$scope.resetCheckName();
+				$scope.uniqueUserState = 'empty';
 			});
 		} else {
 			// Clear data table
@@ -118,21 +111,32 @@ angular.module('siteadmin', [
 		}
 		return $scope.roles[role].name;
 	};
-	
-	$scope.checkUserName = function() {
-		$scope.userNameOk = false;
-		$scope.userNameExists = false;
-		if ($scope.record.username && $scope.vars.state == "add") {
-			$scope.userNameLoading = true;
-			userService.identityCheck($scope.record.username, '', function(result) {
-				$scope.userNameLoading = false;
+
+	/*
+	// State of the username and email address being validated:
+	// 'empty'           : no username or email entered
+	// 'loading'         : username and email entered, being validated
+	// 'usernameExists'  : username already exists and belongs to someone else
+	// 'emailExists'     : email already exists and belongs to someone else
+	// 'ok'              : username and email address are unique
+	*/
+	$scope.uniqueUserState = 'empty';
+
+	// Check for unique username and email
+	$scope.checkUniqueUser = function() {
+		if (($scope.record.username) &&
+			($scope.record.email)) {
+			$scope.uniqueUserState = 'loading';
+			userService.checkUniqueIdentity($scope.record.id, $scope.record.username, $scope.record.email, function(result) {
 				if (result.ok) {
-					if (result.data.usernameExists) {
-						$scope.userNameOk = false;
-						$scope.userNameExists = true;
+					if (result.data.usernameExists &&
+						!result.data.usernameMatchesAccount) {
+						$scope.uniqueUserState = 'usernameExists';
+					} else if (result.data.emailExists &&
+						!result.data.emailMatchesAccount) {
+						$scope.uniqueUserState = 'emailExists';
 					} else {
-						$scope.userNameOk = true;
-						$scope.userNameExists = false;
+						$scope.uniqueUserState = 'ok';
 					}
 				}
 			});
@@ -172,8 +176,8 @@ angular.module('siteadmin', [
 			}
 			$scope.blurInput();
 		}
-		
-		$scope.resetCheckName();
+
+		$scope.uniqueUserState = 'empty';
 		$scope.queryUsers(true);
 	};
 
