@@ -132,87 +132,11 @@ class LexConfiguration {
 
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS] = new LexiconOptionlistConfigObj();
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->label = 'Part of Speech';
-		$basicPosList = array(
-			new LexiconOptionListItem('Adjective (adj)'),
-			new LexiconOptionListItem('Preposition (prep)'),
-			new LexiconOptionListItem('Adverb (adv)'),
-			new LexiconOptionListItem('Classifier (cla)'),
-			new LexiconOptionListItem('Numeral (num)'),
-			new LexiconOptionListItem('Noun (n)'),
-			new LexiconOptionListItem('Proper Noun (nprop)'),
-			new LexiconOptionListItem('Particle (p)'),
-			new LexiconOptionListItem('Pronoun (pro)'),
-			new LexiconOptionListItem('Verb (v)')
-		);
-
-		/*
-		 * TODO: Add these back as needed
-		$fullPosList = array(
-			'Adjective' => 'Adjective',
-			'Adposition' => 'Adposition',
-			'Postposition' => 'Postposition',
-			'Preposition' => 'Preposition',
-			'Adverb' => 'Adverb',
-			'Classifier' => 'Classifier',
-			'Noun classifier' => 'Noun classifier',
-			'Connective' => 'Connective',
-			'Coordinating connective' => 'Coordinating connective',
-			'Correlative connective' => 'Correlative connective',
-			'Subordinating connective' => 'Subordinating connective',
-			'Adverbializer' => 'Adverbializer',
-			'Complementizer' => 'Complementizer',
-			'Relativizer' => 'Relativizer',
-			'Determiner' => 'Determiner',
-			'Article' => 'Article',
-			'Definite article' => 'Definite article',
-			'Indefinite Article' => 'Indefinite Article',
-			'Demonstrative' => 'Demonstrative',
-			'Quantifier' => 'Quantifier',
-			'Numeral' => 'Numeral',
-			'Cardinal numeral' => 'Cardinal numeral',
-			'Distributive numeral' => 'Distributive numeral',
-			'Multiplicative numeral' => 'Multiplicative numeral',
-			'Ordinal numeral' => 'Ordinal numeral',
-			'Partitive numeral' => 'Partitive numeral',
-			'Existential marker' => 'Existential marker',
-			'Expletive' => 'Expletive',
-			'Interjective' => 'Interjective',
-			'Noun' => 'Noun',
-			'Nominal' => 'Nominal',
-			'Gerund' => 'Gerund',
-			'Proper Noun' => 'Proper Noun',
-			'Substantive' => 'Substantive',
-			'Participle' => 'Participle',
-			'Particle' => 'Particle',
-			'Nominal particle' => 'Nominal particle',
-			'Question particle' => 'Question particle',
-			'Verbal particle' => 'Verbal particle',
-			'Prenoun' => 'Prenoun',
-			'Preverb' => 'Preverb',
-			'Pro-form' => 'Pro-form',
-			'Interrogative pro-form' => 'Interrogative pro-form',
-			'Pro-adjective' => 'Pro-adjective',
-			'Pro-adverb' => 'Pro-adverb',
-			'Pronoun' => 'Pronoun',
-			'Indefinite pronoun' => 'Indefinite pronoun',
-			'Personal pronoun' => 'Personal pronoun',
-			'Emphatic pronoun' => 'Emphatic pronoun',
-			'Possessive pronoun' => 'Possessive pronoun',
-			'Reflexive pronoun' => 'Reflexive pronoun',
-			'Reciprocal pronoun' => 'Reciprocal pronoun',
-			'Relative pronoun' => 'Relative pronoun',
-			'Verb' => 'Verb',
-			'Copulative verb' => 'Copulative verb',
-			'Ditransitive verb' => 'Ditransitive verb',
-			'Intransitive verb' => 'Intransitive verb',
-			'Transitive verb' => 'Transitive verb'
-		);
-		*/
-		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->values->exchangeArray($basicPosList);
+		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->listCode = 'partOfSpeech';
 		
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM] = new LexiconMultiOptionlistConfigObj();
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM]->label = 'Semantic Domain';
-		// $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM]->values is not used for semdom (values are populated in the client itself)
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM]->listCode = 'semdom';
 
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST] = new LexiconFieldListConfigObj();
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fieldOrder[] = LexiconConfigObj::EXAMPLE_SENTENCE;

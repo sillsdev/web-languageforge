@@ -295,6 +295,9 @@ class RightsHelper
 
 
 
+            case 'lex_optionlist_update':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+
 				
 				
 			default:
