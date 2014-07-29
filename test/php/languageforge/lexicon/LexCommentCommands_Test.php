@@ -93,21 +93,294 @@ class TestLexCommentCommands extends UnitTestCase {
 
     }
 
-    function testUpdateReply_NewReply_ReplyAdded() {}
+    function testUpdateReply_NewReply_ReplyAdded() {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
 
-    function testUpdateReply_ExistingReply_ReplyAdded() {}
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $userId = $e->createUser('joe', 'joe', 'joe');
 
-    function testDeleteComment_CommentMarkedDeleted() {}
+        $regarding = array(
+            'fieldName' => 'lexeme',
+            'content' => 'Word 1',
+            'inputSystem' => 'th',
+            'entryContext' => '',
+            'senseContext' => ''
+        );
+        $data = array(
+            'id' => '',
+            'content' => 'hi there!',
+            'regarding' => $regarding
+        );
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $comment = new LexCommentModel($project, $commentId);
+        $replyData = array(
+            'id' => '',
+            'content' => 'my first reply'
+        );
 
-    function testDeleteReply_ReplyDeleted() {}
+        $this->assertEqual(count($comment->replies), 0);
 
-    function testUpdateCommentStatus_ValidStatus_StatusUpdated() {}
+        $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $commentId, $replyData);
+        $comment->read($commentId);
 
-    function testUpdateCommentStatus_InvalidStatus_Throws() {}
+        $reply = $comment->getReply($replyId);
 
-    function testPlusOneComment_UserFirstTime_IncreasedScore() {}
+        $this->assertEqual(count($comment->replies), 1);
+        $this->assertEqual($reply->content, $replyData['content']);
+    }
 
-    function testPlusOneComment_UserAlready_ScoreIsSame() {}
+    function testUpdateReply_ExistingReply_ReplyAdded() {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $userId = $e->createUser('joe', 'joe', 'joe');
+
+        $regarding = array(
+            'fieldName' => 'lexeme',
+            'content' => 'Word 1',
+            'inputSystem' => 'th',
+            'entryContext' => '',
+            'senseContext' => ''
+        );
+        $data = array(
+            'id' => '',
+            'content' => 'hi there!',
+            'regarding' => $regarding
+        );
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $comment = new LexCommentModel($project, $commentId);
+        $replyData = array(
+            'id' => '',
+            'content' => 'my first reply'
+        );
+
+        // add two replies
+        LexCommentCommands::updateReply($project->id->asString(), $userId, $commentId, $replyData);
+        $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $commentId, $replyData);
+
+        $comment->read($commentId);
+        $reply = $comment->getReply($replyId);
+
+        $this->assertEqual($reply->content, $replyData['content']);
+
+        $replyData = array(
+            'id' => $replyId,
+            'content' => 'an updated reply'
+        );
+
+        LexCommentCommands::updateReply($project->id->asString(), $userId, $commentId, $replyData);
+        $comment->read($commentId);
+        $reply = $comment->getReply($replyId);
+
+        $this->assertEqual(count($comment->replies), 2);
+        $this->assertEqual($reply->content, $replyData['content']);
+    }
+
+    function testDeleteComment_CommentMarkedDeletedAndNotInList() {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $userId = $e->createUser('joe', 'joe', 'joe');
+
+        $regarding = array(
+            'fieldName' => 'lexeme',
+            'content' => 'Word 1',
+            'inputSystem' => 'th',
+            'entryContext' => '',
+            'senseContext' => ''
+        );
+        $data = array(
+            'id' => '',
+            'content' => 'hi there!',
+            'regarding' => $regarding
+        );
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $comment = new LexCommentModel($project, $commentId);
+        $this->assertFalse($comment->isDeleted);
+
+        $commentList = new LexCommentListModel($project);
+        $commentList->read();
+        $this->assertEqual($commentList->count, 1);
+
+        LexCommentCommands::deleteComment($project->id->asString(), $userId, $e->website, $commentId);
+
+        $commentList->read();
+        $comment->read($commentId);
+
+        $this->assertEqual($commentList->count, 0);
+        $this->assertTrue($comment->isDeleted);
+    }
+
+    function testDeleteReply_ReplyDeleted() {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $userId = $e->createUser('joe', 'joe', 'joe');
+
+        $regarding = array(
+            'fieldName' => 'lexeme',
+            'content' => 'Word 1',
+            'inputSystem' => 'th',
+            'entryContext' => '',
+            'senseContext' => ''
+        );
+        $data = array(
+            'id' => '',
+            'content' => 'hi there!',
+            'regarding' => $regarding
+        );
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $comment = new LexCommentModel($project, $commentId);
+        $replyData = array(
+            'id' => '',
+            'content' => 'my first reply'
+        );
+
+        // add two replies
+        LexCommentCommands::updateReply($project->id->asString(), $userId, $commentId, $replyData);
+        $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $commentId, $replyData);
+
+        $comment->read($commentId);
+
+        $this->assertEqual(count($comment->replies), 2);
+
+        LexCommentCommands::deleteReply($project->id->asString(), $userId, $e->website, $commentId, $replyId);
+
+        $comment->read($commentId);
+        $this->assertEqual(count($comment->replies), 1);
+    }
+
+    function testUpdateCommentStatus_ValidStatus_StatusUpdated() {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $userId = $e->createUser('joe', 'joe', 'joe');
+
+        $regarding = array(
+            'fieldName' => 'lexeme',
+            'content' => 'Word 1',
+            'inputSystem' => 'th',
+            'entryContext' => '',
+            'senseContext' => ''
+        );
+        $data = array(
+            'id' => '',
+            'content' => 'hi there!',
+            'regarding' => $regarding
+        );
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $comment = new LexCommentModel($project, $commentId);
+
+        $this->assertEqual($comment->status, LexCommentModel::STATUS_OPEN);
+
+        LexCommentCommands::updateCommentStatus($project->id->asString(), $commentId, LexCommentModel::STATUS_RESOLVED);
+
+        $comment->read($commentId);
+
+        $this->assertEqual($comment->status, LexCommentModel::STATUS_RESOLVED);
+    }
+
+    function testUpdateCommentStatus_InvalidStatus_Throws() {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $userId = $e->createUser('joe', 'joe', 'joe');
+
+        $regarding = array(
+            'fieldName' => 'lexeme',
+            'content' => 'Word 1',
+            'inputSystem' => 'th',
+            'entryContext' => '',
+            'senseContext' => ''
+        );
+        $data = array(
+            'id' => '',
+            'content' => 'hi there!',
+            'regarding' => $regarding
+        );
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $comment = new LexCommentModel($project, $commentId);
+
+        $this->assertEqual($comment->status, LexCommentModel::STATUS_OPEN);
+
+        $this->expectException();
+        $e->inhibitErrorDisplay();
+        LexCommentCommands::updateCommentStatus($project->id->asString(), $commentId, 'malicious code; rm -rf');
+        $e->restoreErrorDisplay();
+
+        $comment->read($commentId);
+
+        $this->assertEqual($comment->status, LexCommentModel::STATUS_OPEN);
+
+    }
+
+    function testPlusOneComment_UserFirstTime_IncreasedScore() {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $user1Id = $e->createUser('joe', 'joe', 'joe');
+        $user2Id = $e->createUser('jim', 'jim', 'jim');
+
+        $regarding = array(
+            'fieldName' => 'lexeme',
+            'content' => 'Word 1',
+            'inputSystem' => 'th',
+            'entryContext' => '',
+            'senseContext' => ''
+        );
+        $data = array(
+            'id' => '',
+            'content' => 'hi there!',
+            'regarding' => $regarding
+        );
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $user1Id, $data);
+        $comment = new LexCommentModel($project, $commentId);
+
+        $this->assertEqual($comment->score, 0);
+        LexCommentCommands::plusOneComment($project->id->asString(), $user1Id, $commentId);
+        LexCommentCommands::plusOneComment($project->id->asString(), $user2Id, $commentId);
+
+        $comment->read($commentId);
+        $this->assertEqual($comment->score, 2);
+    }
+
+    function testPlusOneComment_UserAlready_ScoreIsSame() {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $user1Id = $e->createUser('joe', 'joe', 'joe');
+
+        $regarding = array(
+            'fieldName' => 'lexeme',
+            'content' => 'Word 1',
+            'inputSystem' => 'th',
+            'entryContext' => '',
+            'senseContext' => ''
+        );
+        $data = array(
+            'id' => '',
+            'content' => 'hi there!',
+            'regarding' => $regarding
+        );
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $user1Id, $data);
+        $comment = new LexCommentModel($project, $commentId);
+
+        $this->assertEqual($comment->score, 0);
+        LexCommentCommands::plusOneComment($project->id->asString(), $user1Id, $commentId);
+        LexCommentCommands::plusOneComment($project->id->asString(), $user1Id, $commentId);
+
+        $comment->read($commentId);
+        $this->assertEqual($comment->score, 1);
+
+    }
 
 
 }

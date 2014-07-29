@@ -16,7 +16,7 @@ use models\mapper\JsonEncoder;
 use models\shared\dto\RightsHelper;
 use models\shared\rights\Domain;
 use models\shared\rights\Operation;
-use models\UserGenericVoteModel;
+use models\shared\UserGenericVoteModel;
 use models\UserVoteModel;
 use models\mapper\Id;
 
@@ -68,8 +68,11 @@ class LexCommentCommands {
             $reply->authorInfo->createdByUserRef->id = $userId;
             $reply->authorInfo->modifiedByUserRef->id = $userId;
             $reply->authorInfo->createdDate = new \DateTime();
+            $comment->replies->append($reply);
+            $replyId = $reply->id;
         }
-        return $comment->write();
+        $comment->write();
+        return $replyId;
     }
 
     public static function plusOneComment($projectId, $userId, $commentId) {
