@@ -9,7 +9,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 				model : "=",
 				control : "="
 			},
-			controller: ["$scope", function($scope) {
+			controller: ["$scope", 'lexConfigService', function($scope, lexConfigService) {
 				$scope.addSense = function() {
                     var newSense = {};
                     $scope.control.makeValidModelRecursive($scope.config.fields.senses, newSense, 'examples');
@@ -23,6 +23,10 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
                         $scope.model.senses.splice(index, 1);
 					});
 				};
+
+                $scope.isFieldEnabled = lexConfigService.isFieldEnabled;
+
+                $scope.isUncommonField = lexConfigService.isUncommonField;
 
 
 			}],

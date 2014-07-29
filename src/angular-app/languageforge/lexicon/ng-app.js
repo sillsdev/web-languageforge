@@ -105,8 +105,8 @@ angular.module('lexicon',
       );
     $routeProvider.otherwise({redirectTo: '/projects'});
   }])
-  .controller('MainCtrl', ['$scope', 'sessionService', 'lexProjectService', '$translate',
-  function($scope, ss, lexProjectService, $translate) {
+  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate',
+  function($scope, ss, lexConfigService, lexProjectService, $translate) {
     var pristineLanguageCode;
     
     $scope.rights = {};
@@ -126,24 +126,8 @@ angular.module('lexicon',
     pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
     changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
     
-    $scope.isTaskEnabled = function isTaskEnabled(taskName) {
-      
-      // Default to visible if nothing specified in config
-      if (angular.isUndefined($scope.projectSettings.config.roleViews[$scope.currentUserRole].showTasks[taskName])) {
-        return true;
-      };
-      return $scope.projectSettings.config.roleViews[$scope.currentUserRole].showTasks[taskName];
-    };
-    
-    $scope.isFieldEnabled = function isFieldEnabled(fieldName) {
-      
-      // Default to visible if nothing specified in config
-      if (angular.isUndefined($scope.projectSettings.config.roleViews[$scope.currentUserRole].showFields[fieldName])) {
-        return true;
-      };
-      return $scope.projectSettings.config.roleViews[$scope.currentUserRole].showFields[fieldName];
-    };
-    
+    $scope.isTaskEnabled = lexConfigService.isTaskEnabled;
+
     // used in Configuration and View Settings
     $scope.fieldIsCustom = function fieldIsCustom(fieldName) {
       return fieldName.search('customField_') === 0;

@@ -1,4 +1,4 @@
-angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.optionlist', 'palaso.ui.dc.multioptionlist', 'palaso.ui.dc.example', 'ngAnimate', 'bellows.services'])
+angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.optionlist', 'palaso.ui.dc.multioptionlist', 'palaso.ui.dc.example', 'ngAnimate', 'bellows.services', 'lexicon.services'])
 // Palaso UI Dictionary Control: Sense
 .directive('dcSense', ['lexUtils', 'modalService', function(utils, modal) {
 	return {
@@ -11,7 +11,7 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
 			remove : "=",
 			control : "="
 		},
-		controller: ['$scope', 'lexEntryService', function($scope, lexEntryService) {
+		controller: ['$scope', 'lexConfigService', function($scope, lexConfigService) {
 			$scope.addExample = function() {
                 var newExample = {};
                 $scope.control.makeValidModelRecursive($scope.config.fields.examples, newExample);
@@ -24,6 +24,9 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
                     $scope.model.examples.splice(index, 1);
                 });
 			};
+
+            $scope.isFieldEnabled = lexConfigService.isFieldEnabled;
+            $scope.isUncommonField = lexConfigService.isUncommonField;
 		}],
 		link : function(scope, element, attrs, controller) {
 		}
