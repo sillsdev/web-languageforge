@@ -154,8 +154,54 @@ class UserCommands {
 		$user->changePassword($newPassword);
 		$user->write();
 	}
-	
+
 	/**
+	 * Utility to check if user is updating to a unique set of username and email.
+	 * @param UserModel $user
+	 * @param string $updatedUsername
+	 * @param string $updatedEmail
+	 * @return IdentityCheck
+	 */
+	public static function checkUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '', $website = '') {
+		$identityCheck = self::checkIdentity($updatedUsername, $updatedEmail, $website);
+
+		// Check for new username or unique non-blank updated username
+		if ((!$identityCheck->usernameExists) ||
+
+			(($identityCheck->usernameExists) &&
+			($updatedUsername) &&
+			($user->username != $updatedUsername))) {
+			$identityCheck->usernameMatchesAccount = false;
+		}
+
+		return $identityCheck;
+	}
+
+	/**
+	 * Utility to assert user is updating to a unique set of username and email
+	 * @param UserModel $user
+	 * @param string $updatedUsername
+	 * @param string $updatedEmail
+	 * @throws \Exception
+	 */
+	private static function assertUniqueIdentity($user, $updatedUsername, $updatedEmail) {
+		$identityCheck = self::checkUniqueIdentity($user, $updatedUsername, $updatedEmail);
+
+		// Check for unique non-blank updated username
+		if (($identityCheck->usernameExists) &&
+			(!$identityCheck->usernameMatchesAccount)) {
+			throw new \Exception('This username is already associated with another account');
+		}
+
+		// Check for unique updated email address
+		if (($identityCheck->emailExists) &&
+			(!$identityCheck->emailMatchesAccount)){
+			throw new \Exception('This email is already associated with another account');
+		}
+	}
+
+	/**
+	 * Utility to check if a username already exists and if an email address matches the account
 	 * @param string $username
 	 * @param string $email
 	 * @param Website $website
@@ -166,6 +212,8 @@ class UserCommands {
 		$user = new UserModel();
 		$emailUser = new UserModel();
 		$identityCheck->usernameExists = $user->readByUserName($username);
+		// This utility assumes username matches the account
+		$identityCheck->usernameMatchesAccount = true;
 		if ($website) {
 			$identityCheck->allowSignupFromOtherSites = $website->allowSignupFromOtherSites;
 			if ($identityCheck->usernameExists) {
@@ -180,30 +228,6 @@ class UserCommands {
 			$identityCheck->emailMatchesAccount = ($user->email === $email);
 		}
 		return $identityCheck;
-	}
-
-	/**
-	 * Utility to assert unique username and email
-	 * @param UserModel $user
-	 * @param string $updatedUsername
-	 * @param string $updatedEmail
-	 * @throws \Exception
-	 */
-	private static function assertUniqueIdentity($user, $updatedUsername, $updatedEmail) {
-		$identityCheck = self::checkIdentity($updatedUsername, $updatedEmail);
-
-		// Check for unique non-blank updated username
-		if (($identityCheck->usernameExists) &&
-			($updatedUsername) &&
-			($user->username != $updatedUsername)) {
-			throw new \Exception('This username is already associated with another account');
-		}
-
-		// Check for unique updated email address
-		if (($identityCheck->emailExists) &&
-			(!$identityCheck->emailMatchesAccount)){
-			throw new \Exception('This email is already associated with another account');
-		}
 	}
 
 	/**
@@ -442,6 +466,7 @@ class IdentityCheck {
 	public function __construct() {
 		$this->usernameExists = false;
 		$this->usernameExistsOnThisSite = false;
+		$this->usernameMatchesAccount = false;
 		$this->allowSignupFromOtherSites = false;
 		$this->emailExists = false;
 		$this->emailIsEmpty = true;
@@ -453,11 +478,16 @@ class IdentityCheck {
 	 */
 	public $usernameExists;
 	
-		/**
+	/**
 	 * @var bool true if username exists on the supplied website
 	 */
 	public $usernameExistsOnThisSite;
-	
+
+	/**
+	 * @var bool true if the username matches the account username
+	 */
+	public $usernameMatchesAccount;
+
 	/**
 	 * @var bool true if the supplied website allows signup from other sites
 	 */
