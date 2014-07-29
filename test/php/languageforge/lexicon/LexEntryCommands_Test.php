@@ -16,7 +16,7 @@ require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestLexEntryCommands extends UnitTestCase {
 	
-	function testReadEntry_NoComments_ReadBackOk() {
+	function testReadEntry_ReadBackOk() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
 		
@@ -51,48 +51,6 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 	}
 
-    /*
-	function testReadEntry_HasComments_ReadBackOk() {
-		$e = new LexiconMongoTestEnvironment();
-		$e->clean();
-		
-		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-		$projectId = $project->id->asString();
-		
-		$entry = new LexEntryModel($project);
-		$entry->lexeme->form('th', 'apple');
-		
-		$reply = new LexCommentReply('reply1');
-		$comment = new LexComment('this is a comment');
-		$comment->score = 5;
-		$comment->regarding = "apple";
-		$comment->replies[] = $reply;
-		
-		$entry->lexeme['th']->comments[] = $comment;
-		
-
-		$sense = new Sense();
-		$sense->definition->form('en', 'red fruit');
-		$sense->partOfSpeech->value = 'noun';
-		
-		$entry->senses[] = $sense;
-		
-		$entryId = $entry->write();
-		
-		$newEntry = LexEntryCommands::readEntry($projectId, $entryId);
-		
-		$this->assertEqual($newEntry['lexeme']['th']['value'], 'apple');
-		$this->assertEqual($newEntry['senses'][0]['definition']['en']['value'], 'red fruit');
-		$this->assertEqual($newEntry['senses'][0]['partOfSpeech']['value'], 'noun');
-		$this->assertEqual($newEntry['lexeme']['th']['comments'][0]['content'], 'this is a comment');
-		$this->assertEqual($newEntry['lexeme']['th']['comments'][0]['score'], 5);
-		$this->assertEqual($newEntry['lexeme']['th']['comments'][0]['regarding'], 'apple');
-		$this->assertEqual($newEntry['lexeme']['th']['comments'][0]['replies'][0]['content'], 'reply1');
-
-
-	}
-    */
-	
 	function testUpdateEntry_DataPersists() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
@@ -137,7 +95,6 @@ class TestLexEntryCommands extends UnitTestCase {
 	}
 
     // todo get these working again after the refactor - cjh 2014-07
-    /*
 	function testListEntries_allEntries() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
@@ -157,9 +114,9 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 		$result = LexEntryCommands::listEntries($projectId);
 		$this->assertEqual($result->count, 10);
-		$this->assertEqual($result->entries[5]['lexeme'], 'Apfel5');
+		$this->assertEqual($result->entries[5]['lexeme']['th']['value'], 'Apfel5');
 	}
-	
+
 	function testListEntries_missingInfoDefinition_someEntries() {
 		$e = new LexiconMongoTestEnvironment();
 		$e->clean();
@@ -278,11 +235,10 @@ class TestLexEntryCommands extends UnitTestCase {
 		
 		$result = LexEntryCommands::listEntries($projectId);
 
-		$this->assertEqual($result->entries[0]['lexeme'], 'Apfel0');
-		$this->assertEqual($result->entries[0]['definition'], '');
-		$this->assertEqual($result->entries[3]['definition'], 'apple');
+		$this->assertEqual($result->entries[0]['lexeme']['th']['value'], 'Apfel0');
+		$this->assertEqual($result->entries[0]['senses'][0]['definition'], array());
+		$this->assertEqual($result->entries[3]['senses'][0]['definition']['en']['value'], 'apple');
 	}
-    */
 }
 
 ?>
