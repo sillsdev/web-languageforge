@@ -83,6 +83,144 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 //		return parts[2];
 	};
 }])
+.service('lexCommentService', ['jsonRpc',
+function(jsonRpc) {
+    jsonRpc.connect('/api/sf');
+
+    this.update = function update(comment, callback) {
+        jsonRpc.call('lex_comment_update', [comment], callback);
+    };
+
+    this.updateReply = function updateReply(commentId, reply, callback) {
+        jsonRpc.call('lex_commentReply_update', [commentId, reply], callback);
+    };
+
+    this.delete = function deleteComment(commentId, callback) {
+        jsonRpc.call('lex_comment_delete', [commentId], callback);
+    };
+
+    this.deleteReply = function deleteReply(commentId, replyId, callback) {
+        jsonRpc.call('lex_comment_delete', [commentId, replyId], callback);
+    };
+
+    this.plusOne = function plusOne(commentId, callback) {
+        jsonRpc.call('lex_comment_plusOne', [commentId], callback);
+    };
+
+    this.updateStatus = function updateStatus(commentId, status, callback) {
+        jsonRpc.call('lex_comment_updateStatus', [commentId, status], callback);
+    };
+}])
+.service('lexConfigService', ['sessionService',
+function(ss) {
+
+    this.isTaskEnabled = function(taskName) {
+        var config = ss.session.projectSettings.config;
+        var role = ss.session.projectSettings.currentUserRole;
+
+        return config.roleViews[role].showTasks[taskName];
+    };
+
+    this.isFieldEnabled = function(fieldName, ws) {
+
+        var config = ss.session.projectSettings.config;
+        var userId = ss.session.userId;
+        var role = ss.session.projectSettings.currentUserRole;
+        var fieldConfig;
+
+        // use an user-based field config if defined
+        if (angular.isDefined(config.userViews[userId])) {
+            fieldConfig = config.userViews[userId].fields[fieldName];
+        } else {
+            // fallback to role-based field config
+            fieldConfig = config.roleViews[role].fields[fieldName];
+        }
+
+        if (!fieldConfig) {
+            console.log(fieldName);
+        }
+
+        // field-level visibility
+        var show = fieldConfig.show;
+
+        // input system level visibility
+        if (ws && fieldConfig.show && fieldConfig.overrideInputSystems) {
+            if (fieldConfig.inputSystems.indexOf(ws) != -1) {
+                show = true;
+            } else {
+                show = false;
+            }
+        }
+        return show;
+    };
+
+    this.isUncommonField = function isUncommonField(fieldName) {
+        var fieldConfig = getFieldConfig(fieldName);
+        return fieldConfig.hideIfEmpty;
+    };
+
+    /**
+     *
+     * @param boolean showUncommon - flag specifying whether we should show uncommon fields if they are empty
+     * @param string fieldName
+     * @param string type - field type
+     * @param model - field data model
+     * @returns {boolean}
+     */
+    this.isFieldVisible = function isFieldVisible(showUncommon, fieldName, type, model) {
+        if (type == 'fields') return true;
+
+        // check if field is enabled in config
+        var isVisible = this.isFieldEnabled(fieldName);
+
+        if (!showUncommon && this.isUncommonField(fieldName)) {
+            isVisible = false;
+            switch (type) {
+                case 'multitext':
+                    angular.forEach(model, function(ws) {
+                        if (model[ws].value != '') {
+                            isVisible = true;
+                        }
+                    });
+                    break;
+                case 'optionlist':
+                case 'multioptionlist':
+                    if (model.value != '') {
+                        isVisible = true;
+                    }
+                    break;
+            }
+        }
+
+        return isVisible;
+
+    };
+
+    /**
+     *
+     * @param fieldName - unique field name
+     */
+    function getFieldConfig(fieldName) {
+        var config = ss.session.projectSettings.config;
+
+        var search = config.entry;
+        if (angular.isDefined(search.fields[fieldName])) {
+            return search.fields[fieldName];
+        }
+
+        search = config.entry.fields.senses.fields;
+        if (angular.isDefined(search.fields[fieldName])) {
+            return search.fields[fieldName];
+        }
+
+        search = config.entry.fields.senses.fields.examples.fields;
+        if (angular.isDefined(search.fields[fieldName])) {
+            return search.fields[fieldName];
+        }
+        return undefined;
+    }
+}])
+
 .service('lexEntryService', ['jsonRpc', 'sessionService', 'lexProjectService', 'breadcrumbService', 'lexLinkService', 
 function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
     jsonRpc.connect('/api/sf');
@@ -124,63 +262,6 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
         jsonRpc.call('lex_entry_updateComment', [comment], callback);
     };
 
-
-	
-	
-	
-	
-	
-	/*
-	
-	this.addExampleDto = function(callback) {
-		var dtoConfig = angular.copy(_config);
-		// We just want to see the definition and part of speech, but leave rest of config alone
-		angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
-			field.visible = false;
-		});
-		dtoConfig.entry.fields.senses.fields['definition'].visible = true;
-		dtoConfig.entry.fields.senses.fields['examples'].visible = true;
-		// Definition should be read-only
-		dtoConfig.entry.fields.senses.fields.definition.readonly = true;
-		this.setConfig(dtoConfig);
-		(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
-	};
-	this.addGrammarDto = function(callback) {
-		var dtoConfig = angular.copy(_config);
-		// We just want to see the definition and part of speech, but leave rest of config alone
-		angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
-			field.visible = false;
-		});
-		dtoConfig.entry.fields.senses.fields['definition'].visible = true;
-		dtoConfig.entry.fields.senses.fields['partOfSpeech'].visible = true;
-		// Definition should be read-only
-		dtoConfig.entry.fields.senses.fields.definition.readonly = true;
-		this.setConfig(dtoConfig);
-		(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
-	};
-	this.addMeaningsDto = function(callback) {
-		var dtoConfig = angular.copy(_config);
-		// We just want to see the definition and part of speech, but leave rest of config alone
-		angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
-			field.visible = false;
-		});
-		dtoConfig.entry.fields.senses.fields['definition'].visible = true;
-		this.setConfig(dtoConfig);
-		(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
-	};
-	*/
-
-	/*
-	// --- BEGIN TEST CODE ---
-	// Set up sample data when service first created
-	// (This will be removed once a real server is available)
-	for (var _idx = 0; _idx < sampleData.length; _idx++) {
-		var entry = sampleData[_idx];
-		this.update(entry);
-	};
-	this.saveNow();
-	// --- END TEST CODE ---
-	*/
 }])
     .service('lexUtils', [function() {
 
@@ -248,137 +329,3 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
 
     }])
 ;
-
-
-	/*
-	var _config = {
-		'inputSystems': {
-			'en': {
-				'languageName': 'English',
-				'abbreviation': 'en',
-				'fieldUseCount': 11
-			},
-			'qaa': {
-				'languageName': 'Unlisted Language',
-				'abbreviation': 'qaa',
-				'fieldUseCount': 0
-			},
-			'th': {
-				'languageName': 'Thai',
-				'abbreviation': 'th',
-				'fieldUseCount': 11
-			},
-			'th-fonipa-x-etic': {
-				'languageName': 'Thai',
-				'abbreviation': 'thipa',
-				'fieldUseCount': 11
-			},
-			'mi-Zxxx-x-audio': {
-				'languageName': 'Maori',
-				'abbreviation': 'mi',
-				'fieldUseCount': 0
-			},
-			'mi-Latn-NZ-x-Ngati': {
-				'languageName': 'Maori',
-				'abbreviation': 'miNgati',
-				'fieldUseCount': 0
-			}
-		},
-		'entry': {
-			'type': 'fields',
-			'fieldOrder': ['lexeme', 'senses'],
-			'fields': {
-				'lexeme': {
-					'type': 'multitext',
-					'label': 'Word',
-					'visible': true,
-					'inputSystems': ['th-fonipa-x-etic'],
-					'width': 20
-				},
-				'senses': {
-					'type': 'fields',
-					'fieldOrder': ['definition', 'partOfSpeech', 'semanticDomain', 'examples'],
-					'fields': {
-						'definition': {
-							'type': 'multitext',
-							'label': 'Meaning',
-							'visible': true,
-							'inputSystems': ['th', 'en'],
-							'width': 20
-						},
-						'partOfSpeech': {
-							'type': 'optionlist',
-							'label': 'Part of Speech',
-							'visible': true,
-							'values': {
-								'noun': 'Noun',
-								'verb': 'Verb',
-								'adjective': 'Adjective'
-							},
-							'width': 20
-						},
-						'semanticDomain': {
-							'type': 'optionlist',
-							'label': 'Semantic Domain',
-							'visible': true,
-							'values': {
-								'2.1': '2.1 Body',
-								'2.2': '2.2 Head and Shoulders',
-								'2.3': '2.3 Feet'
-							},
-							'width': 20
-						},
-						'examples': {
-							'type': 'fields',
-							'visible': true,
-							'fieldOrder': ['example', 'translation'],
-							'fields': {
-								'example': {
-									'type': 'multitext',
-									'label': 'Example Sentence',
-									'visible': true,
-									'inputSystems': ['th'],
-									'width': 20
-								},
-								'translation': {
-									'type': 'multitext',
-									'label': 'Example Translation',
-									'visible': true,
-									'inputSystems': ['en'],
-									'width': 20
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		'tasks': {
-			'view': {'visible': true},
-			'dashboard': {
-				'visible': true,
-				'timeRange': '30days',
-				'targetWordCount': 0
-			},
-			'gather-texts': {'visible': true},
-			'semdom': {
-				'visible': true,
-				'language': 'en',
-				'visibleFields': {
-					'definition': true,
-					'partOfSpeech': true,
-					'example': true,
-					'translation': true
-				}
-			},
-			'wordlist': {'visible': true},
-			'dbe': {'visible': true},
-			'add-meanings': {'visible': true},
-			'add-grammar': {'visible': true},
-			'add-examples': {'visible': true},
-			'settings': {'visible': true},
-			'review': {'visible': true}
-		}
-	};
-	*/
-

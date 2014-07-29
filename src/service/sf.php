@@ -567,7 +567,10 @@ class Sf
 
     public function lex_comment_plusOne($commentId) {
         return LexCommentCommands::plusOneComment($this->_projectId, $this->_userId, $commentId);
+    }
 
+    public function lex_comment_updateStatus($commentId, $status) {
+        return LexCommentCommands::updateCommentStatus($this->_projectId, $commentId, $status);
     }
 	
 	

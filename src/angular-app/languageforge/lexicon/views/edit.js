@@ -20,11 +20,13 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     };
 
     var pristineEntry = {};
-    var browserId = Math.floor(Math.random() * 1000);
+    var browserInstanceId = Math.floor(Math.random() * 1000);
     $scope.config = $scope.projectSettings.config;
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
     $scope.state = 'list'; // default state.  State is one of 'list', 'edit', or 'comment'
+    $scope.showUncommonFields = false;
+
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
 
 
@@ -477,7 +479,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		var view = 'dbe';
 		switch (view) {
 			case 'dbe':
-				lexService.dbeDto(browserId, fullRefresh, processDbeDto);
+				lexService.dbeDto(browserInstanceId, fullRefresh, processDbeDto);
 				break;
 			case 'add-grammar':
 				break;
