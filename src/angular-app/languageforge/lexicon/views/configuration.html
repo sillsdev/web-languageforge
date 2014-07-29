@@ -19,12 +19,12 @@
 				<button class="btn btn-success" data-ng-click="openNewCustomFieldModal()"><i class="icon-plus"></i> {{'New Custom Field' | translate}} </button>
 			</div>
 			<div class="control-group">
-				<label class="checkbox"><input type="checkbox" data-ng-click="showAllFields = ! showAllFields">
-					{{'Show All Fields' | translate}}</label>
+				<a href="" data-ng-click="showAllFields = ! showAllFields">
+					{{showAllFields ? 'Show Common Fields' : 'Show All Fields' | translate}}</a>
 			</div>
 			
 			<!-- picklist -->
-			<dl class="picklists">
+			<dl class="picklists" style="height: 300px; overflow: auto;">
 				<dt translate="Entry Level Fields"></dt>
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder" 
