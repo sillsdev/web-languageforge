@@ -12,7 +12,9 @@
 		<link rel="stylesheet" media="screen" href="/css/languageforge/default/superfish.css" />
 		<link rel="stylesheet" media="screen" href="/css/languageforge/default/slides.css" />
 		<link rel="stylesheet" media="screen" href="/css/shared/jquery.fileupload-ui.css" />
+		<!-- 
 		<link rel="stylesheet" href="/css/languageforge/default/lf-dictionary.css" />
+  -->
 		<link rel="stylesheet" href="/css/languageforge/default/lf.css" />
 		<link rel="stylesheet" href="/css/languageforge/default/lexiquepro.css" />
 		<link rel="icon" href="/images/languageforge/default/favicon.ico" type="image/x-icon" />
