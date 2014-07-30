@@ -242,3 +242,13 @@ div.notices .alert-success, div.notices .alert-error, div.notices .alert-warn, d
 	background-position: 6px 4px;
 }
 
+/* Select language directive */
+pui-select-language div.scroll-table {
+	max-height: 330px;
+	overflow-y: auto;
+	margin-bottom: 20px;
+}
+
+pui-select-language div.scroll-table table {
+	margin-bottom: 0px;
+}
