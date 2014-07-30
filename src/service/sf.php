@@ -186,7 +186,11 @@ class Sf
 	}
 
 	public function check_unique_identity($userId, $updatedUsername, $updatedEmail) {
-		$user = new UserModel($userId);
+		if ($userId) {
+			$user = new UserModel($userId);
+		} else {
+			$user = new UserModel();
+		}
 		$identityCheck = UserCommands::checkUniqueIdentity($user, $updatedUsername, $updatedEmail);
 		return JsonEncoder::encode($identityCheck);
 	}

@@ -166,12 +166,25 @@ class UserCommands {
 		$identityCheck = self::checkIdentity($updatedUsername, $updatedEmail, $website);
 
 		// Check for new username or unique non-blank updated username
-		if ((!$identityCheck->usernameExists) ||
+		/*if ((!$identityCheck->usernameExists) ||
 
 			(($identityCheck->usernameExists) &&
 			($updatedUsername) &&
 			($user->username != $updatedUsername))) {
 			$identityCheck->usernameMatchesAccount = false;
+		}*/
+		if ($user->username == $updatedUsername) {
+			$identityCheck->usernameMatchesAccount = true;
+		} else {
+			$identityCheck->usernameMatchesAccount = false;
+		}
+
+		// Override if emails match.  checkIdentity doesn't have enough information to
+		// know current user email and updated email are the same
+		if ($user->email == $updatedEmail) {
+			$identityCheck->emailMatchesAccount = true;
+		} else {
+			$identityCheck->emailMatchesAccount = false;
 		}
 
 		return $identityCheck;
@@ -184,8 +197,8 @@ class UserCommands {
 	 * @param string $updatedEmail
 	 * @throws \Exception
 	 */
-	private static function assertUniqueIdentity($user, $updatedUsername, $updatedEmail) {
-		$identityCheck = self::checkUniqueIdentity($user, $updatedUsername, $updatedEmail);
+	private static function assertUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '', $website = '') {
+		$identityCheck = self::checkUniqueIdentity($user, $updatedUsername, $updatedEmail, $website);
 
 		// Check for unique non-blank updated username
 		if (($identityCheck->usernameExists) &&
@@ -294,7 +307,7 @@ class UserCommands {
 	public static function createUser($params, $website) {
 		$user = new \models\UserModelWithPassword();
 		JsonDecoder::decode($user, $params);
-		UserCommands::assertUniqueIdentity($user, $params['username'], $params['email']);
+		UserCommands::assertUniqueIdentity($user, $params['username'], $params['email'], $website);
 		$user->setPassword($params['password']);
 		$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
 		return $user->write();
@@ -352,7 +365,7 @@ class UserCommands {
 		
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
-		UserCommands::assertUniqueIdentity($user, $params['username'], $params['email']);
+		UserCommands::assertUniqueIdentity($user, $params['username'], $params['email'], $website);
 		$user->active = false;
 		$user->role = SystemRoles::USER; 
 		$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
@@ -411,7 +424,7 @@ class UserCommands {
 		$project = new ProjectModel($projectId);
 		$newUser->emailPending = $toEmail;
 		// Check for unique email.  Blank usernames OK
-		UserCommands::assertUniqueIdentity($newUser, '', $toEmail);
+		UserCommands::assertUniqueIdentity($newUser, '', $toEmail, $website);
 		$newUser->addProject($project->id->asString());
 		$userId = $newUser->write();
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
