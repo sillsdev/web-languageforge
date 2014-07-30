@@ -417,19 +417,37 @@ class UserCommands {
 	* @param Website $website
 	* @param string $toEmail
 	* @param IDelivery $delivery
+	* @throws \Exception
+	* @return string $userId
 	*/
 	public static function sendInvite($projectId, $inviterUserId, $website, $toEmail, IDelivery $delivery = null) {
 		$newUser = new UserModel();
 		$inviterUser = new UserModel($inviterUserId);
 		$project = new ProjectModel($projectId);
 		$newUser->emailPending = $toEmail;
-		// Check for unique email.  Blank usernames OK
-		UserCommands::assertUniqueIdentity($newUser, '', $toEmail, $website);
+
+		// Check if email already exists in an account
+		$identityCheck = UserCommands::checkIdentity('', $toEmail, $website);
+		if ($identityCheck->emailExists) {
+			$newUser->readByProperty('email', $toEmail);
+
+			// Determine if user is already a member of the project
+			if ($project->userIsMember($newUser->id->asString())) {
+				throw new \Exception("User is already a member of this project");
+				return $newUser->id;
+			}
+		}
+
+		// Add the user to the project
 		$newUser->addProject($project->id->asString());
 		$userId = $newUser->write();
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project->write();
-		Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
+
+		// Email communication with new user
+		if (!$identityCheck->emailExists) {
+			Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
+		}
 		return $userId;
     }
     
