@@ -184,7 +184,17 @@ class Sf
 		$identityCheck = UserCommands::checkIdentity($username, $email, $this->_website);
 		return JsonEncoder::encode($identityCheck);
 	}
-	
+
+	public function check_unique_identity($userId, $updatedUsername, $updatedEmail) {
+		if ($userId) {
+			$user = new UserModel($userId);
+		} else {
+			$user = new UserModel();
+		}
+		$identityCheck = UserCommands::checkUniqueIdentity($user, $updatedUsername, $updatedEmail);
+		return JsonEncoder::encode($identityCheck);
+	}
+
 	public function user_activate($username, $password, $email) {
 		return UserCommands::activate($username, $password, $email, $this->_website, $this->_controller);
 	}
