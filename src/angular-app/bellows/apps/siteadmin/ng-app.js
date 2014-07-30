@@ -114,11 +114,12 @@ angular.module('siteadmin', [
 
 	/*
 	// State of the username and email address being validated:
-	// 'empty'           : no username or email entered
-	// 'loading'         : username and email entered, being validated
-	// 'usernameExists'  : username already exists and belongs to someone else
-	// 'emailExists'     : email already exists and belongs to someone else
-	// 'ok'              : username and email address are unique
+	// 'empty'                  : no username or email entered
+	// 'loading'                : username and email entered, being validated
+	// 'usernameExists'         : username already exists and belongs to another account
+	// 'emailExists'            : email already exists and belongs to another account
+	// 'usernameAndEmailExists' : both username and email already exist and belong to another account
+	// 'ok'                     : username and email address are unique
 	*/
 	$scope.uniqueUserState = 'empty';
 
@@ -132,6 +133,12 @@ angular.module('siteadmin', [
 					if (result.data.usernameExists &&
 						!result.data.usernameMatchesAccount) {
 						$scope.uniqueUserState = 'usernameExists';
+
+						if (result.data.emailExists &&
+							!result.data.emailMatchesAccount) {
+
+							$scope.uniqueUserState = 'usernameAndEmailExists';
+						}
 					} else if (result.data.emailExists &&
 						!result.data.emailMatchesAccount) {
 						$scope.uniqueUserState = 'emailExists';
