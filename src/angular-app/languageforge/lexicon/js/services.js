@@ -31,8 +31,8 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 		jsonRpc.call('lex_baseViewDto', [], function(result) {
 			if (result.ok) {
 				setBreadcrumbs(view, label);
-				callback(result);
 			}
+      callback(result);
 		});
 	};
 
@@ -45,11 +45,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
     };
 	
 	this.importLift = function(importData, callback) {
-		jsonRpc.call('lex_import_lift', [importData], function(result) {
-			if (result.ok) {
-				callback(result);
-			}
-		});
+		jsonRpc.call('lex_import_lift', [importData], callback);
 	};
 	
 	this.readProject = function(callback) {
@@ -57,8 +53,8 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 		jsonRpc.call('lex_projectDto', [], function(result) {
 			if (result.ok) {
 				setBreadcrumbs('settings', 'Project Settings');
-				callback(result);
 			}
+      callback(result);
 		});
 	};
 	
@@ -71,8 +67,8 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 		jsonRpc.call('project_usersDto', [], function(result) {
 			if (result.ok) {
 				setBreadcrumbs('users', 'User Management');
-				callback(result);
 			}
+      callback(result);
 		});
 	};
 	
@@ -116,8 +112,8 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
                             {href: linkService.projectView('dbe'), label: 'Browse And Edit'}
                         ]
                     );
-                    callback(result);
                 }
+                callback(result);
             });
         } else {
             jsonRpc.call('lex_dbeDtoUpdatesOnly', [browserId], callback);
