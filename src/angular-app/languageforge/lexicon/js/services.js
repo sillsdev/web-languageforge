@@ -49,13 +49,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	};
 	
 	this.readProject = function(callback) {
-		var setBreadcrumbs = this.setBreadcrumbs;
-		jsonRpc.call('lex_projectDto', [], function(result) {
-			if (result.ok) {
-				setBreadcrumbs('settings', 'Project Settings');
-			}
-      callback(result);
-		});
+		jsonRpc.call('lex_projectDto', [], callback);
 	};
 	
 	this.updateProject = function(project, callback) {
@@ -63,13 +57,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
 	};
 	
 	this.users = function(callback) {
-		var setBreadcrumbs = this.setBreadcrumbs;
-		jsonRpc.call('project_usersDto', [], function(result) {
-			if (result.ok) {
-				setBreadcrumbs('users', 'User Management');
-			}
-      callback(result);
-		});
+		jsonRpc.call('project_usersDto', [], callback);
 	};
 	
 	this.updateUserProfile = function(user, callback) {
