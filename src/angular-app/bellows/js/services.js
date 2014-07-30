@@ -44,6 +44,9 @@ angular.module('bellows.services', ['jsonRpc'])
 	this.identityCheck = function(username, email, callback) {
 		jsonRpc.call('identity_check', [username, email], callback);
 	};
+	this.checkUniqueIdentity = function(userId, updatedUsername, updatedEmail, callback) {
+		jsonRpc.call('check_unique_identity', [userId, updatedUsername, updatedEmail], callback);
+	};
 	this.activate = function(username, password, email, callback) {
 		jsonRpc.call('user_activate', [username, password, email], callback);
 	};
