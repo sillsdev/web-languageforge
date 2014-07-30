@@ -69,94 +69,140 @@ class TestUserCommands extends UnitTestCase {
 		
 		$this->assertFalse($identityCheck->usernameExists);
 		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertTrue($identityCheck->usernameMatchesAccount);
 		$this->assertFalse($identityCheck->allowSignupFromOtherSites);
 		$this->assertFalse($identityCheck->emailExists);
 		$this->assertTrue($identityCheck->emailIsEmpty);
 		$this->assertFalse($identityCheck->emailMatchesAccount);
 	}
 	
-	function testCheckIdentity_userExistsNoEmail_UsernameExistsEmailEmpty() {
+	function testCheckUniqueIdentity_userExistsNoEmail_UsernameExistsEmailEmpty() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$e->createUser('jsmith', 'joe smith','');
+		$userId = $e->createUser('jsmith', 'joe smith','');
+		$joeUser = new UserModel($userId);
 
-		$identityCheck = UserCommands::checkIdentity('jsmith', '', $e->website);
-		
+		$identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'jsmith', '', $e->website);
+
 		$this->assertTrue($identityCheck->usernameExists);
 		$this->assertTrue($identityCheck->usernameExistsOnThisSite);
+		$this->assertTrue($identityCheck->usernameMatchesAccount);
 		$this->assertTrue($identityCheck->allowSignupFromOtherSites);
 		$this->assertFalse($identityCheck->emailExists);
 		$this->assertTrue($identityCheck->emailIsEmpty);
-		$this->assertFalse($identityCheck->emailMatchesAccount);
+		$this->assertTrue($identityCheck->emailMatchesAccount);
 	}
 	
-	function testCheckIdentity_userExistsWithEmail_UsernameExistsEmailMatches() {
+	function testCheckUniqueIdentity_userExistsWithEmail_UsernameExistsEmailMatches() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$e->createUser('jsmith', 'joe smith','joe@smith.com');
+		$userId = $e->createUser('jsmith', 'joe smith','joe@smith.com');
+		$joeUser = new UserModel($userId);
 
-		$identityCheck = UserCommands::checkIdentity('jsmith', 'joe@smith.com', null);
+		$identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'jsmith', 'joe@smith.com', null);
 
 		$this->assertTrue($identityCheck->usernameExists);
 		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertTrue($identityCheck->usernameMatchesAccount);
 		$this->assertTrue($identityCheck->emailExists);
 		$this->assertFalse($identityCheck->emailIsEmpty);
 		$this->assertTrue($identityCheck->emailMatchesAccount);
 	}
 	
-	function testCheckIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatch() {
+	function testCheckUniqueIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatch() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$e->createUser('zedUser', 'zed user','zed@example.com');
+		$user1Id = $e->createUser('zedUser', 'zed user','zed@example.com');
+		$zedUser = new UserModel($user1Id);
 		$originalWebsite = clone $e->website;
 		$e->website->domain = 'default.local';
-		$e->createUser('jsmith', 'joe smith','joe@smith.com');
+		$user2Id = $e->createUser('jsmith', 'joe smith','joe@smith.com');
 		
-		$identityCheck = UserCommands::checkIdentity('jsmith', 'zed@example.com', $originalWebsite);
+		$identityCheck = UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'zed@example.com', $originalWebsite);
 
 		$this->assertTrue($identityCheck->usernameExists);
 		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertFalse($identityCheck->usernameMatchesAccount);
 		$this->assertTrue($identityCheck->emailExists);
 		$this->assertFalse($identityCheck->emailIsEmpty);
-		$this->assertFalse($identityCheck->emailMatchesAccount);
+		$this->assertTrue($identityCheck->emailMatchesAccount);
 		
 		// cleanup so following tests are OK
 		$e->website->domain = $originalWebsite->domain;
 	}
 	
-	function testCheckIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatchEmpty() {
+	function testCheckUniqueIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatchEmpty() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$e->createUser('jsmith', 'joe smith','joe@smith.com');
+		$userId = $e->createUser('jsmith', 'joe smith','joe@smith.com');
+		$joeUser = new UserModel($userId);
 
-		$identityCheck = UserCommands::checkIdentity('jsmith', '', $e->website);
+		$identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'jsmith', '', $e->website);
 
 		$this->assertTrue($identityCheck->usernameExists);
 		$this->assertTrue($identityCheck->usernameExistsOnThisSite);
+		$this->assertTrue($identityCheck->usernameMatchesAccount);
 		$this->assertFalse($identityCheck->emailExists);
 		$this->assertFalse($identityCheck->emailIsEmpty);
 		$this->assertFalse($identityCheck->emailMatchesAccount);
 	}
 	
-	function testCheckIdentity_doesNotExist_UsernameDoesNotExist() {
+	function testCheckUniqueIdentity_doesNotExist_UsernameDoesNotExist() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
 		
-		$e->createUser('jsmith', 'joe smith','joe@smith.com');
+		$userId = $e->createUser('jsmith', 'joe smith','joe@smith.com');
+		$joeUser = new UserModel($userId);
 
-		$identityCheck = UserCommands::checkIdentity('zedUser', 'zed@example.com', $e->website);
-				
+		$identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'zedUser', 'zed@example.com', $e->website);
 		$this->assertFalse($identityCheck->usernameExists);
 		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertFalse($identityCheck->usernameMatchesAccount);
 		$this->assertFalse($identityCheck->emailExists);
 		$this->assertTrue($identityCheck->emailIsEmpty);
 		$this->assertFalse($identityCheck->emailMatchesAccount);
 	}
-	
+
+	function testCheckUniqueIdentity_emailExist_UsernameDoesNotExist() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$userId = $e->createUser('jsmith', 'joe smith','joe@smith.com');
+		$joeUser = new UserModel($userId);
+
+		$identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'zedUser', 'joe@smith.com', $e->website);
+
+		$this->assertFalse($identityCheck->usernameExists);
+		$this->assertFalse($identityCheck->usernameExistsOnThisSite);
+		$this->assertFalse($identityCheck->usernameMatchesAccount);
+		$this->assertTrue($identityCheck->emailExists);
+		$this->assertTrue($identityCheck->emailIsEmpty);
+		$this->assertTrue($identityCheck->emailMatchesAccount);
+	}
+
+	function testCheckUniqueIdentity_userExist() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$user1Id = $e->createUser('jsmith', 'joe smith','joe@smith.com');
+		$joeUser = new UserModel($user1Id);
+		$user2Id = $e->createUser('zedUser', 'zed user','zed@example.com');
+		$zedUser = new UserModel($user2Id);
+
+		$identityCheck = UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'joe@smith.com', $e->website);
+
+		$this->assertTrue($identityCheck->usernameExists);
+		$this->assertTrue($identityCheck->usernameExistsOnThisSite);
+		$this->assertFalse($identityCheck->usernameMatchesAccount);
+		$this->assertTrue($identityCheck->emailExists);
+		$this->assertFalse($identityCheck->emailIsEmpty);
+		$this->assertFalse($identityCheck->emailMatchesAccount);
+	}
+
 	function testCreateSimple_CreateUser_PasswordAndJoinProject() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
