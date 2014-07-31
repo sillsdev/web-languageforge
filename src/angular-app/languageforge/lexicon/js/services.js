@@ -105,8 +105,13 @@ function(ss) {
     this.isTaskEnabled = function(taskName) {
         var config = ss.session.projectSettings.config;
         var role = ss.session.projectSettings.currentUserRole;
-
-        return config.roleViews[role].showTasks[taskName];
+        var userId = ss.session.userId;
+        if (angular.isDefined(config.userViews[userId])) {
+            return config.userViews[userId].showTasks[taskName];
+        } else {
+            // fallback to role-based field config
+            return config.roleViews[role].showTasks[taskName];
+        }
     };
 
     this.getConfigForUser = function() {
@@ -118,8 +123,6 @@ function(ss) {
             config.optionlists[optionlist.code] = optionlist;
         });
         config.optionlists = angular.copy(ss.session.projectSettings.optionlists);
-
-
 
         var userId = ss.session.userId;
         var role = ss.session.projectSettings.currentUserRole;
@@ -133,17 +136,9 @@ function(ss) {
             fieldsConfig = config.roleViews[role];
         }
 
-        console.log('before remove');
-        console.log(config);
         removeDisabledConfigFields(config.entry, fieldsConfig);
-        console.log('after remove entry');
-        console.log(config);
         removeDisabledConfigFields(config.entry.fields.senses, fieldsConfig);
-        console.log('after remove sense');
-        console.log(config);
         removeDisabledConfigFields(config.entry.fields.senses.fields.examples, fieldsConfig);
-        console.log('after remove example');
-        console.log(config);
 
         return config;
     };
@@ -170,7 +165,7 @@ function(ss) {
     };
 
     function removeDisabledConfigFields(config, fieldsConfig) {
-        angular.forEach(config.fields, function(field, fieldName) {
+        angular.forEach(config.fieldOrder, function(fieldName) {
             if (fieldName != 'senses' && fieldName != 'examples') {
                 var fieldConfig = fieldsConfig.fields[fieldName];
 
@@ -191,6 +186,11 @@ function(ss) {
             }
         });
     }
+
+    this.isCustomField = function isCustomField(fieldName) {
+        return fieldName.search('customField_') === 0;
+    };
+
 
     /*
     this.isFieldEnabled = function(fieldName, ws) {
