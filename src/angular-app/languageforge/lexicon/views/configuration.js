@@ -436,7 +436,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     $scope.removeSelectedCustomField = function removeSelectedCustomField() {
       var fieldName = $scope.currentField.name,
         i;
-      if ($scope.fieldIsCustom(fieldName)) {
+      if ($scope.isCustomField(fieldName)) {
         delete $scope.fieldConfig[fieldName];
         
         // remove field name from fieldOrder
