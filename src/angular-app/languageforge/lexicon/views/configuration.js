@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor'])
-  .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 
-  function($scope, notice, lexProjectService, ss, $filter, $modal) {
+angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor', 'lexicon.services'])
+  .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService',
+  function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigService) {
     lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
     $scope.configDirty = angular.copy(ss.session.projectSettings.config);
     $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
@@ -32,7 +32,8 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         'options': InputSystems.regions()
       }
     };
-    
+
+    $scope.isCustomField = lexConfigService.isCustomField;
     $scope.currentInputSystemTag = '';
     $scope.selectInputSystem = function selectInputSystem(inputSystemTag) {
       $scope.currentInputSystemTag = inputSystemTag;
@@ -89,33 +90,36 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             if ($scope.configDirty.entry.fields[fieldName].type !== 'fields') {
               $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields[fieldName];
             }
+          }
+              /*
           } else {
             if ($scope.configDirty.entry.fields.customFields.fields[fieldName].type !== 'fields') {
               $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.customFields.fields[fieldName];
             }
-          }
+            */
         });
         angular.forEach($scope.configDirty.entry.fields.senses.fieldOrder, function(fieldName) {
           if (angular.isDefined($scope.configDirty.entry.fields.senses.fields[fieldName])) {
             if ($scope.configDirty.entry.fields.senses.fields[fieldName].type !== 'fields') {
               $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields[fieldName];
             }
-          } else {
-            if ($scope.configDirty.entry.fields.senses.fields.customFields.fields[fieldName].type !== 'fields') {
-              $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.customFields.fields[fieldName];
-            }
+
           }
+//          } else {
+//            if ($scope.configDirty.entry.fields.senses.fields.customFields.fields[fieldName].type !== 'fields') {
+//              $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.customFields.fields[fieldName];
+//            }
         });
         angular.forEach($scope.configDirty.entry.fields.senses.fields.examples.fieldOrder, function(fieldName) {
           if (angular.isDefined($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName])) {
             if ($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName].type !== 'fields') {
               $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName];
             }
-          } else {
-            if ($scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[fieldName].type !== 'fields') {
-              $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[fieldName];
-            }
           }
+//          } else {
+//            if ($scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[fieldName].type !== 'fields') {
+//              $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[fieldName];
+//            }
         });
         
         // suggested languages from lexical data
@@ -407,15 +411,15 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         
         switch (newCustomData.level) {
           case 'examples':
-            $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[customFieldName] = customField;
-            $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[customFieldName];
+            $scope.configDirty.entry.fields.senses.fields.examples.fields[customFieldName] = customField;
+            $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields[customFieldName];
             if (! (customFieldName in $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder)) {
               $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder.push(customFieldName);
             }
             break;
           case 'senses':
-            $scope.configDirty.entry.fields.senses.fields.customFields.fields[customFieldName] = customField;
-            $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.senses.fields.customFields.fields[customFieldName];
+            $scope.configDirty.entry.fields.senses.fields[customFieldName] = customField;
+            $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.senses.fields[customFieldName];
             if (! (customFieldName in $scope.configDirty.entry.fields.senses.fieldOrder)) {
               $scope.configDirty.entry.fields.senses.fieldOrder.push(customFieldName);
             }
@@ -423,8 +427,8 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             
           // 'entry'
           default: 
-            $scope.configDirty.entry.fields.customFields.fields[customFieldName] = customField;
-            $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.customFields.fields[customFieldName];
+            $scope.configDirty.entry.fields[customFieldName] = customField;
+            $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields[customFieldName];
             if (! (customFieldName in $scope.configDirty.entry.fieldOrder)) {
               $scope.configDirty.entry.fieldOrder.push(customFieldName);
             }
