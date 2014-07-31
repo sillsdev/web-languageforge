@@ -9,34 +9,16 @@ use models\mapper\IdReference;
 class LexCommentReply extends ObjectForEncoding {
 	
 	public function __construct($content = '') {
-		$this->setReadOnlyProp('dateCreated');
-		$this->setReadOnlyProp('dateModified');
-		$this->setReadOnlyProp('userRef');
 		$this->content = $content;
 		$this->id = uniqid();
-		$this->dateCreated = new \DateTime();
-		$this->dateModified = new \DateTime();
-		$this->userRef = new IdReference();
+        $this->authorInfo = new AuthorInfo();
 	}
-	
-	/**
-	 * 
-	 * @var IdReference
-	 */
-	public $userRef;
-	
-	/**
-	 * 
-	 * @var \DateTime
-	 */
-	public $dateModified;
-	
-	/**
-	 * 
-	 * @var \DateTime
-	 */
-	public $dateCreated;
-	
+
+    /**
+     * @var AuthorInfo
+     */
+    public $authorInfo;
+
 	/**
 	 * 
 	 * @var string

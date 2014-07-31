@@ -27,6 +27,7 @@ class LexEntryModel extends \models\mapper\MapperModel {
 		$this->setReadOnlyProp('authorInfo');
 		$this->id = new Id();
 		$this->lexeme = new MultiText();
+        $this->isDeleted = false;
 		$this->senses = new ArrayOf(
 			function($data) {
 				return new Sense();
@@ -74,7 +75,13 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	 * @var IdReference
 	 */
 	public $id;
-	
+
+
+    /**
+     * @var bool
+     */
+    public $isDeleted;
+
 	/**
 	 * 
 	 * @var string

@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon\dto;
 
 use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\languageforge\lexicon\config\LexiconConfigObj;
+use models\languageforge\lexicon\LexDeletedEntryListModel;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryListModel;
 use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
@@ -22,6 +23,9 @@ class LexDbeDto {
 		$entriesModel = new LexEntryListModel($project, $lastFetchTime);
 		$entriesModel->readForDto();
 		$entries = $entriesModel->entries;
+
+        $deletedEntriesModel = new LexDeletedEntryListModel($project, $lastFetchTime);
+        $deletedEntriesModel->read();
 
         $lexemeInputSystems = $project->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems;
 
@@ -46,9 +50,10 @@ class LexDbeDto {
 		});
 
 
+
 		$data = array();
 		$data['entries'] = $entries;
-        $data['deletedEntries'] = array();  // TODO implement array of deleted entry ids since the last fetch time
+        $data['deletedEntries'] = array_map(function ($e) {return $e['id']; }, $deletedEntriesModel->entries);
 		$data['entriesTotalCount'] = count($entriesModel->entries);
         $data['comments'] = array(); // TODO implement comments
 

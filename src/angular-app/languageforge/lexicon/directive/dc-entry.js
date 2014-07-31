@@ -1,4 +1,4 @@
-angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multitext', 'ngAnimate', 'lexicon.services', 'bellows.services'])
+angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multitext', 'ngAnimate', 'lexicon.services', 'bellows.services', 'palaso.ui.commentBubble'])
   // Palaso UI Dictionary Control: Entry
   .directive('dcEntry', ['lexUtils', 'modalService', function(utils, modal) {
 		return {
@@ -9,7 +9,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 				model : "=",
 				control : "="
 			},
-			controller: ["$scope", function($scope) {
+			controller: ["$scope", 'lexConfigService', function($scope, lexConfigService) {
 				$scope.addSense = function() {
                     var newSense = {};
                     $scope.control.makeValidModelRecursive($scope.config.fields.senses, newSense, 'examples');
@@ -24,7 +24,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 					});
 				};
 
-
+                $scope.fieldContainsData = lexConfigService.fieldContainsData;
 			}],
 			link : function(scope, element, attrs, controller) {
 			}

@@ -7,7 +7,7 @@ use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
 use models\languageforge\lexicon\LexEntryListModel;
-use models\languageforge\lexicon\LexComment;
+use models\languageforge\lexicon\LexCommentModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
@@ -93,7 +93,9 @@ class LexEntryCommands {
 	
 	public static function removeEntry($projectId, $entryId) {
 		$project = new ProjectModel($projectId);
-		return LexEntryModel::remove($project, $entryId);
+        $entry = new LexEntryModel($project, $entryId);
+        $entry->isDeleted = true;
+        $entry->write();
 	}
 }
 

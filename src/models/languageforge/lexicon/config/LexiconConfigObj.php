@@ -70,7 +70,7 @@ class LexiconConfigObj extends ObjectForEncoding {
 	// field lists
 	const SENSES_LIST = 'senses';
 	const EXAMPLES_LIST = 'examples';
-	const CUSTOM_FIELDS_LIST = 'customFields';
+	//const CUSTOM_FIELDS_LIST = 'customFields';
 	
 
 	// comments

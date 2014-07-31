@@ -3,17 +3,23 @@
 namespace models\languageforge\lexicon;
 
 use models\mapper\IdReference;
+use models\mapper\ObjectForEncoding;
 
 /**
  * This class contains author information for the lex entry element and it sub-elements
  */
-class AuthorInfo {
+class AuthorInfo extends ObjectForEncoding {
 
 	public function __construct() {
 		$this->createdByUserRef = new IdReference();
 		$this->createdDate = new \DateTime();
 		$this->modifiedByUserRef = new IdReference();
 		$this->modifiedDate = new \DateTime();
+
+        $this->setReadOnlyProp('createdByUserRef');
+        $this->setReadOnlyProp('createdDate');
+        $this->setReadOnlyProp('modifiedByUserRef');
+        $this->setReadOnlyProp('modifiedDate');
 	}
 	
 	/**

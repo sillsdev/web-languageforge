@@ -37,12 +37,24 @@ angular.module('lexicon',
     $routeProvider.when( '/review', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
     $routeProvider.when( '/wordlist', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
     
-    $routeProvider.when(
-        '/dbe',
-        {
-          templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
-        }
-      );
+	$routeProvider.when(
+            '/dbe',
+            {
+                templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
+	    }
+	);
+        $routeProvider.when(
+            '/dbe/:entryId',
+            {
+                templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
+            }
+        );
+        $routeProvider.when(
+            '/dbe/:entryId/comments',
+            {
+                templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
+            }
+        );
     $routeProvider.when(
         '/add-grammar',
         {
@@ -93,8 +105,8 @@ angular.module('lexicon',
       );
     $routeProvider.otherwise({redirectTo: '/projects'});
   }])
-  .controller('MainCtrl', ['$scope', 'sessionService', 'lexProjectService', '$translate',
-  function($scope, ss, lexProjectService, $translate) {
+  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate',
+  function($scope, ss, lexConfigService, lexProjectService, $translate) {
     var pristineLanguageCode;
     
     $scope.rights = {};
@@ -102,6 +114,7 @@ angular.module('lexicon',
     $scope.rights.create = ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE); 
     $scope.rights.edit = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
     $scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create || $scope.rights.edit;
+        $scope.comments = [];
     $scope.project = ss.session.project;
     $scope.projectSettings = ss.session.projectSettings;
     
@@ -113,29 +126,8 @@ angular.module('lexicon',
     pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
     changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
     
-    $scope.isTaskEnabled = function isTaskEnabled(taskName) {
-      
-      // Default to visible if nothing specified in config
-      if (angular.isUndefined($scope.projectSettings.config.roleViews[$scope.currentUserRole].showTasks[taskName])) {
-        return true;
-      };
-      return $scope.projectSettings.config.roleViews[$scope.currentUserRole].showTasks[taskName];
-    };
-    
-    $scope.isFieldEnabled = function isFieldEnabled(fieldName) {
-      
-      // Default to visible if nothing specified in config
-      if (angular.isUndefined($scope.projectSettings.config.roleViews[$scope.currentUserRole].showFields[fieldName])) {
-        return true;
-      };
-      return $scope.projectSettings.config.roleViews[$scope.currentUserRole].showFields[fieldName];
-    };
-    
-    // used in Configuration and View Settings
-    $scope.fieldIsCustom = function fieldIsCustom(fieldName) {
-      return fieldName.search('customField_') === 0;
-    };
-    
+    $scope.isTaskEnabled = lexConfigService.isTaskEnabled;
+
     function changeInterfaceLanguage(code) {
       $translate.use(code);
       pristineLanguageCode = angular.copy(code);

@@ -147,9 +147,9 @@ class LexConfiguration {
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->label = 'Translation';
 		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems[] = 'en';
 		
-		$this->entry->fields[LexiconConfigObj::CUSTOM_FIELDS_LIST] = new LexiconFieldListConfigObj();
-		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::CUSTOM_FIELDS_LIST] = new LexiconFieldListConfigObj();
-		$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::CUSTOM_FIELDS_LIST] = new LexiconFieldListConfigObj();
+		//$this->entry->fields[LexiconConfigObj::CUSTOM_FIELDS_LIST] = new LexiconFieldListConfigObj();
+		//$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::CUSTOM_FIELDS_LIST] = new LexiconFieldListConfigObj();
+		//$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::CUSTOM_FIELDS_LIST] = new LexiconFieldListConfigObj();
 
 		/*  Configuration for less common fields (mostly used in FLEx are defined below) */
 
