@@ -4,12 +4,14 @@ namespace models\languageforge\lexicon;
 
 use models\mapper\MapOf;
 
+function _MultiTextFunctor($data) {
+	return new LexiconField();
+}
+
 class MultiText extends MapOf {
 	
 	public function __construct() {
-		parent::__construct(function($data) {
-			return new LexiconField();
-		});
+		parent::__construct('_MultiTextFunctor');
 	}
 	
 	public function form($inputSystem, $value) {
