@@ -122,15 +122,17 @@
             </div>
         </div>
         <div style="flex: 9;padding:5px;display: flex; flex-direction: column">
-            <div style="margin-bottom: 5px; border-bottom: solid black 1px">
-                <div ng-if="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
-                    <button data-ng-if="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
-                    <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
-                    <span style="color: grey;">{{saveNotice()}}</span>
+            <div style="margin-bottom: 5px; border-bottom: solid black 1px; display:flex; justify-content: space-between">
+                <div style="position:relative;">
+                    <input dir="auto" style="margin:0px; padding-right:25px" placeholder="Filter Comments" ng-model="commentsFilter" type="text" />&nbsp;<span style="position:absolute; right:13px; top:5px" ng-show="commentsFilter != ''" title="Clear Filter" ng-click="commentsFilter = ''">
+                    <i class="icon-remove" style="color:#808080; cursor: pointer"></i>
+                    </span>
                 </div>
-                <div >
+                <div><select ng-show="control.rights.canEditComment()" style="width:110px" ng-model="commentStatusFilter"><option value="any">Any</option><option value="unresolved">Unresolved</option></select></div>
+                <div>
+                    <div ng-show="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryComments.length}} {{'Comments' | translate}}</div>
+                    <div ng-hide="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryCommentsFiltered.length}} of {{currentEntryComments.length}}</div>
                 </div>
-                <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
             </div>
             <div style="margin-top:5px">
                 <div class="entryItemView" data-ng-if="entryLoaded()">

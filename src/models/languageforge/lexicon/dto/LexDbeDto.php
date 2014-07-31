@@ -4,7 +4,9 @@ namespace models\languageforge\lexicon\dto;
 
 use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\languageforge\lexicon\config\LexiconConfigObj;
+use models\languageforge\lexicon\LexCommentListModel;
 use models\languageforge\lexicon\LexDeletedEntryListModel;
+use models\languageforge\lexicon\LexDeletedCommentListModel;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryListModel;
 use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
@@ -26,6 +28,12 @@ class LexDbeDto {
 
         $deletedEntriesModel = new LexDeletedEntryListModel($project, $lastFetchTime);
         $deletedEntriesModel->read();
+
+        $commentsModel = new LexCommentListModel($project, $lastFetchTime);
+        $commentsModel->read();
+
+        $deletedCommentsModel = new LexDeletedCommentListModel($project, $lastFetchTime);
+        $deletedCommentsModel->read();
 
         $lexemeInputSystems = $project->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems;
 
@@ -53,9 +61,10 @@ class LexDbeDto {
 
 		$data = array();
 		$data['entries'] = $entries;
-        $data['deletedEntries'] = array_map(function ($e) {return $e['id']; }, $deletedEntriesModel->entries);
-		$data['entriesTotalCount'] = count($entriesModel->entries);
-        $data['comments'] = array(); // TODO implement comments
+        $data['deletedEntryIds'] = array_map(function ($e) {return $e['id']; }, $deletedEntriesModel->entries);
+        $data['comments'] = $commentsModel->entries;
+        $data['deletedCommentIds'] = array_map(function ($c) {return $c['id']; }, $deletedCommentsModel->entries);
+        $data['timeOnServer'] = time(); // future use for offline syncing
 
 		return $data;
 	}

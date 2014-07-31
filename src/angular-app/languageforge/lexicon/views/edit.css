@@ -270,3 +270,10 @@ legend.override-bootstrap {
     width:100%;
 }
 
+#lexAppCommentView .commentCount {
+    color: #faa732;
+    font-weight: bold;
+    padding: 5px;
+    width: 120px;
+    text-align: right;
+}
