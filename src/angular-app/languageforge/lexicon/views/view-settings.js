@@ -150,8 +150,8 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     
     $scope.allRolesHaveAtLeastOneSense = function allRolesHaveAtLeastOneSense() {
       var atLeastOne = true;
-      angular.forEach($scope.roleViews, function(roleView) {
-        atLeastOne = atLeastOne && $scope.isAtLeastOneSense(roleView.view);
+      angular.forEach($scope.roleTabs, function(roleTab) {
+        atLeastOne = atLeastOne && $scope.isAtLeastOneSense(roleTab.view);
       });
       return atLeastOne;
     };
