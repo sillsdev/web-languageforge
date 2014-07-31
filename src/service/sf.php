@@ -564,9 +564,29 @@ class Sf
 		return LexEntryCommands::removeEntry($this->_projectId, $entryId);
 	}
 	
-	public function lex_entry_updateComment($data) {
-		return LexCommentCommands::updateCommentOrReply($this->_projectId, $data, $this->_userId);
+	public function lex_comment_update($data) {
+		return LexCommentCommands::updateComment($this->_projectId, $this->_userId, $data);
 	}
+
+    public function lex_commentReply_update($commentId, $data) {
+        return LexCommentCommands::updateReply($this->_projectId, $this->_userId, $commentId, $data);
+    }
+
+    public function lex_comment_delete($commentId) {
+        return LexCommentCommands::deleteComment($this->_projectId, $this->_userId, $this->_website, $commentId);
+    }
+
+    public function lex_commentReply_delete($commentId, $replyId) {
+        return LexCommentCommands::deleteReply($this->_projectId, $this->_userId, $this->_website, $commentId, $replyId);
+    }
+
+    public function lex_comment_plusOne($commentId) {
+        return LexCommentCommands::plusOneComment($this->_projectId, $this->_userId, $commentId);
+    }
+
+    public function lex_comment_updateStatus($commentId, $status) {
+        return LexCommentCommands::updateCommentStatus($this->_projectId, $commentId, $status);
+    }
 
     public function lex_optionlists_update($params) {
         return LexOptionListCommands::updateList($this->_projectId, $params);

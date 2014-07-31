@@ -267,6 +267,7 @@ class RightsHelper
 				
 			case 'lex_baseViewDto':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+
 			case 'lex_dbeDtoFull':
             case 'lex_dbeDtoUpdatesOnly':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
@@ -277,10 +278,23 @@ class RightsHelper
 
 			case 'lex_entry_remove':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::DELETE);
-			case 'lex_entry_updateComment':
+
+			case 'lex_comment_update':
+            case 'lex_commentReply_update':
 				return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT_OWN);
-            case 'lex_entry_deleteComment':
+
+            case 'lex_comment_delete':
+            case 'lex_commentReply_delete':
                 return $this->userHasProjectRight(Domain::COMMENTS + Operation::DELETE_OWN);
+
+            case 'lex_comment_updateStatus':
+                return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT);
+
+            case 'lex_comment_plusOne':
+                return $this->userHasProjectRight(Domain::COMMENTS + Operation::VIEW);
+
+
+
 
             case 'lex_optionlist_update':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);

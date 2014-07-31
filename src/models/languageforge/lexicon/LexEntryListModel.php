@@ -34,12 +34,13 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 
         if (!is_null($newerThanTimestamp)) {
             $startDate = new \MongoDate($newerThanTimestamp);
-            parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate)), array('guid', 'lexeme', 'senses'));
+            parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate), 'isDeleted' => false), array('guid', 'lexeme', 'senses'));
         } else {
-		    parent::__construct( self::mapper($projectModel->databaseName()), array(), array('guid', 'lexeme', 'senses'));
+		    parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false), array('guid', 'lexeme', 'senses'));
         }
 	}
-	
+
+    /*
 	private function getDefinition($entry) {
 		$senses = $entry['senses'];
 		if (count($senses) > 0 && array_key_exists('definition', $senses[0]) && count($senses[0]['definition']) > 0) {
@@ -75,6 +76,7 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		}
 		return '';	
 	}
+    */
 	
 	public function readForDto($missingInfo = '') {
 		parent::read();
