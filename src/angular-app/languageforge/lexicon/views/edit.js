@@ -15,6 +15,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	$scope.currentEntry = {};
     $scope.state = 'list'; // default state.  State is one of 'list', 'edit', or 'comment'
     $scope.showUncommonFields = false;
+    $scope.commentsFilter = '';
+    $scope.commentStatusFilter = 'any';
 
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
 
@@ -176,9 +178,9 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         // todo implement lazy "up" scrolling to make this more efficient
 
         // only expand the "show window" if we know that the entry is actually in the entry list - a safe guard
-        if (angular.isDefined(getEntryIndexInList(id, $scope.entries))) {
+        if (angular.isDefined(getIndexInList(id, $scope.entries))) {
             while($scope.show.entries.length < $scope.entries.length) {
-                index = getEntryIndexInList(id, $scope.show.entries);
+                index = getIndexInList(id, $scope.show.entries);
                 if (angular.isDefined(index)) {
                     break;
                 }
@@ -207,16 +209,16 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     };
 
 
-    function getEntryIndexInList(id, list) {
+    function getIndexInList(id, list) {
 		var index = undefined;
 		for (var i=0; i<list.length; i++) {
 			var e = list[i];
 			if (e.id == id) {
 				index = i;
-                return index;
+                break;
 			}
 		}
-        return undefined;
+        return index;
 	};
 	
 	function setCurrentEntry(entry) {
@@ -232,7 +234,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	$scope.editEntry = function(id) {
 		if ($scope.currentEntry.id != id) {
 			$scope.saveCurrentEntry();
-            setCurrentEntry($scope.entries[getEntryIndexInList(id, $scope.entries)]);
+            setCurrentEntry($scope.entries[getIndexInList(id, $scope.entries)]);
 		}
         $scope.state = 'edit';
         //$location.path('/dbe/' + id, false);
@@ -261,7 +263,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
      };
 
     function removeEntryFromLists(id) {
-        var iFullList = getEntryIndexInList(id, $scope.entries);
+        var iFullList = getIndexInList(id, $scope.entries);
         if (angular.isDefined(iFullList)) {
             $scope.entries.splice(iFullList, 1);
             /* not yet implemented
@@ -270,7 +272,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             }
             */
         }
-        var iShowList = getEntryIndexInList(id, $scope.show.entries);
+        var iShowList = getIndexInList(id, $scope.show.entries);
         if (angular.isDefined(iShowList)) {
             $scope.show.entries.splice(iShowList, 1);
         }
@@ -355,7 +357,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         var deletemsg = "Are you sure you want to delete the word <b>' " + utils.getLexeme($scope.config.entry, entry) + " '</b>";
 		//var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?", {lexeme:utils.getLexeme($scope.config.entry, entry)});
         modal.showModalSimple('Delete Word', deletemsg, 'Cancel', 'Delete Word').then(function() {
-                var iShowList = getEntryIndexInList(entry.id, $scope.show.entries);
+                var iShowList = getIndexInList(entry.id, $scope.show.entries);
                 removeEntryFromLists(entry.id);
                 if ($scope.entries.length > 0) {
                     if (iShowList != 0) iShowList--;
@@ -427,39 +429,58 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 			if (result.ok) {
                 if (fullRefresh) {
                     $scope.entries = result.data.entries;
-                    //assertNoDuplicateIds($scope.entries); // for debugging only
+                    $scope.comments = result.data.comments;
 
                     $scope.show.initial();
                 } else {
+
                     // splice updates into entry lists
                     angular.forEach(result.data.entries, function(e) {
                         var i;
 
                         // splice into $scope.entries
-                        i = getEntryIndexInList(e.id, $scope.entries);
+                        i = getIndexInList(e.id, $scope.entries);
                         if (angular.isDefined(i)) {
-                            //console.log('refreshing entry in $scope.entries:');
-                            //console.log(e);
                             $scope.entries[i] = e;
                         } else {
                             addEntryToEntryList(e);
-//                            console.log('adding new entry into $scope.entries:');
-//                            console.log(e);
                         }
 
                         // splice into $scope.show.entries
-                        i = getEntryIndexInList(e.id, $scope.show.entries);
+                        i = getIndexInList(e.id, $scope.show.entries);
                         if (angular.isDefined(i)) {
-//                            console.log('refreshing entry in $scope.show.entries:');
-//                            console.log(e);
                             $scope.show.entries[i] = e;
                         } else {
-//                            console.log('new entry isnt in view so we dont do anything');
                             // don't do anything.  The entry is not in view so we don't need to update it
                         }
                     });
 
-                    // todo: sort both lists after splicing in updates
+                    // splice comment updates into comments list
+                    angular.forEach(result.data.comments, function(c) {
+                        var i = getIndexInList(c.id, $scope.comments);
+                        if (angular.isDefined(i)) {
+                            $scope.comments[i] = c;
+                        } else {
+                            $scope.comments.push(c);
+                        }
+                    });
+
+
+                    // remove deleted entries according to deleted ids
+                    angular.forEach(result.data.deletedEntryIds, removeEntryFromLists);
+
+                    // todo remove deleted comments according to deleted ids
+                    angular.forEach(result.data.deletedCommentIds, function(id) {
+                        var i = getIndexInList(id, $scope.comments);
+                        if (angular.isDefined(i)) {
+                            $scope.comments.splice(i, 1);
+                        }
+                    });
+
+
+                    // todo: maybe sort both lists after splicing in updates ???
+
+                    // todo: probably update currentEntryCommentsList?
 
                 }
 			}
