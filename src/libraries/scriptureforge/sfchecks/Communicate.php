@@ -267,7 +267,7 @@ class Communicate
 	 * @param Website $website
 	 * @param IDelivery $delivery
 	 */
-	public static function sendNewUserInProject($toUserModel, $newUserName, $newUserPassword, $project, $website, IDelivery $delivery = null) {
+	public static function sendNewUserInProject($toUserModel, $newUserName, $newUserPassword, $website, $project, IDelivery $delivery = null) {
 		$vars = array(
 				'user' => $toUserModel,
 				'newUserName' => $newUserName,
