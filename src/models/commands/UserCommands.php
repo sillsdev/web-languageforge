@@ -154,8 +154,67 @@ class UserCommands {
 		$user->changePassword($newPassword);
 		$user->write();
 	}
-	
+
 	/**
+	 * Utility to check if user is updating to a unique set of username and email.
+	 * @param UserModel $user
+	 * @param string $updatedUsername
+	 * @param string $updatedEmail
+	 * @return IdentityCheck
+	 */
+	public static function checkUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '', $website = '') {
+		$identityCheck = self::checkIdentity($updatedUsername, $updatedEmail, $website);
+
+		// Check for new username or unique non-blank updated username
+		/*if ((!$identityCheck->usernameExists) ||
+
+			(($identityCheck->usernameExists) &&
+			($updatedUsername) &&
+			($user->username != $updatedUsername))) {
+			$identityCheck->usernameMatchesAccount = false;
+		}*/
+		if ($user->username == $updatedUsername) {
+			$identityCheck->usernameMatchesAccount = true;
+		} else {
+			$identityCheck->usernameMatchesAccount = false;
+		}
+
+		// Override if emails match.  checkIdentity doesn't have enough information to
+		// know current user email and updated email are the same
+		if ($user->email == $updatedEmail) {
+			$identityCheck->emailMatchesAccount = true;
+		} else {
+			$identityCheck->emailMatchesAccount = false;
+		}
+
+		return $identityCheck;
+	}
+
+	/**
+	 * Utility to assert user is updating to a unique set of username and email
+	 * @param UserModel $user
+	 * @param string $updatedUsername
+	 * @param string $updatedEmail
+	 * @throws \Exception
+	 */
+	private static function assertUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '', $website = '') {
+		$identityCheck = self::checkUniqueIdentity($user, $updatedUsername, $updatedEmail, $website);
+
+		// Check for unique non-blank updated username
+		if (($identityCheck->usernameExists) &&
+			(!$identityCheck->usernameMatchesAccount)) {
+			throw new \Exception('This username is already associated with another account');
+		}
+
+		// Check for unique updated email address
+		if (($identityCheck->emailExists) &&
+			(!$identityCheck->emailMatchesAccount)){
+			throw new \Exception('This email is already associated with another account');
+		}
+	}
+
+	/**
+	 * Utility to check if a username already exists and if an email address matches the account
 	 * @param string $username
 	 * @param string $email
 	 * @param Website $website
@@ -166,6 +225,8 @@ class UserCommands {
 		$user = new UserModel();
 		$emailUser = new UserModel();
 		$identityCheck->usernameExists = $user->readByUserName($username);
+		// This utility assumes username matches the account
+		$identityCheck->usernameMatchesAccount = true;
 		if ($website) {
 			$identityCheck->allowSignupFromOtherSites = $website->allowSignupFromOtherSites;
 			if ($identityCheck->usernameExists) {
@@ -180,30 +241,6 @@ class UserCommands {
 			$identityCheck->emailMatchesAccount = ($user->email === $email);
 		}
 		return $identityCheck;
-	}
-
-	/**
-	 * Utility to assert unique username and email
-	 * @param UserModel $user
-	 * @param string $updatedUsername
-	 * @param string $updatedEmail
-	 * @throws \Exception
-	 */
-	private static function assertUniqueIdentity($user, $updatedUsername, $updatedEmail) {
-		$identityCheck = self::checkIdentity($updatedUsername, $updatedEmail);
-
-		// Check for unique non-blank updated username
-		if (($identityCheck->usernameExists) &&
-			($updatedUsername) &&
-			($user->username != $updatedUsername)) {
-			throw new \Exception('This username is already associated with another account');
-		}
-
-		// Check for unique updated email address
-		if (($identityCheck->emailExists) &&
-			(!$identityCheck->emailMatchesAccount)){
-			throw new \Exception('This email is already associated with another account');
-		}
 	}
 
 	/**
@@ -270,7 +307,7 @@ class UserCommands {
 	public static function createUser($params, $website) {
 		$user = new \models\UserModelWithPassword();
 		JsonDecoder::decode($user, $params);
-		UserCommands::assertUniqueIdentity($user, $params['username'], $params['email']);
+		UserCommands::assertUniqueIdentity($user, $params['username'], $params['email'], $website);
 		$user->setPassword($params['password']);
 		$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
 		return $user->write();
@@ -328,7 +365,7 @@ class UserCommands {
 		
 		$user = new UserModel();
 		JsonDecoder::decode($user, $params);
-		UserCommands::assertUniqueIdentity($user, $params['username'], $params['email']);
+		UserCommands::assertUniqueIdentity($user, $params['username'], $params['email'], $website);
 		$user->active = false;
 		$user->role = SystemRoles::USER; 
 		$user->siteRole[$website->domain] = $website->userDefaultSiteRole;
@@ -380,19 +417,44 @@ class UserCommands {
 	* @param Website $website
 	* @param string $toEmail
 	* @param IDelivery $delivery
+	* @throws \Exception
+	* @return string $userId
 	*/
 	public static function sendInvite($projectId, $inviterUserId, $website, $toEmail, IDelivery $delivery = null) {
 		$newUser = new UserModel();
 		$inviterUser = new UserModel($inviterUserId);
 		$project = new ProjectModel($projectId);
 		$newUser->emailPending = $toEmail;
-		// Check for unique email.  Blank usernames OK
-		UserCommands::assertUniqueIdentity($newUser, '', $toEmail);
+
+		// Check if email already exists in an account
+		$identityCheck = UserCommands::checkIdentity('', $toEmail, $website);
+		if ($identityCheck->emailExists) {
+			$newUser->readByProperty('email', $toEmail);
+		}
+
+		// Make sure the user exists on the site
+		if (!$newUser->hasRoleOnSite($website)) {
+			$newUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
+		}
+
+		// Determine if user is already a member of the project
+		if ($project->userIsMember($newUser->id->asString())) {
+			return $newUser->id;
+		}
+
+		// Add the user to the project
 		$newUser->addProject($project->id->asString());
 		$userId = $newUser->write();
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project->write();
-		Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
+
+		if (!$identityCheck->emailExists) {
+			// Email communication with new user
+			Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
+		} else {
+			// Tell existing user they're now part of the project
+			Communicate::sendAddedToProject($inviterUser, $newUser, $website, $project, $delivery);
+		}
 		return $userId;
     }
     
@@ -442,6 +504,7 @@ class IdentityCheck {
 	public function __construct() {
 		$this->usernameExists = false;
 		$this->usernameExistsOnThisSite = false;
+		$this->usernameMatchesAccount = false;
 		$this->allowSignupFromOtherSites = false;
 		$this->emailExists = false;
 		$this->emailIsEmpty = true;
@@ -453,11 +516,16 @@ class IdentityCheck {
 	 */
 	public $usernameExists;
 	
-		/**
+	/**
 	 * @var bool true if username exists on the supplied website
 	 */
 	public $usernameExistsOnThisSite;
-	
+
+	/**
+	 * @var bool true if the username matches the account username
+	 */
+	public $usernameMatchesAccount;
+
 	/**
 	 * @var bool true if the supplied website allows signup from other sites
 	 */

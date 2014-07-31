@@ -1,5 +1,5 @@
 <div class="container" data-ng-cloak data-ng-controller="ViewSettingsCtrl">
-<h2>{{ 'View Settings' | translate }}</h2>
+<h2>{{'View Settings' | translate}}</h2>
 <form name="viewSettingForm" novalidate>
 <button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="settingsApply()"  
 	data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense() || !allUsersHaveAtLeastOneSense()">
@@ -169,21 +169,20 @@
 			<span data-ng-hide="allUsersHaveAtLeastOneSense()">
 				<img src="/images/shared/exclamation.png" title="{{'At least one Sense field must be enabled!' | translate}}" style="padding-left: 5px;"/></span>
 		</tab-heading>
-		<div data-ng-show="state === 'userList'">
+		<div data-ng-show="state === 'userSelectList'">
 
 			<!-- control buttons -->
 			<form class="form-inline">
-				<typeahead class="typeahead" items="add.users" term="add.typeahead.userName" select="add.selectUser">
+				<typeahead class="typeahead" items="typeahead.users" term="typeahead.userName" search="typeahead.searchUsers" select="typeahead.selectUser">
 					<ul>
-						<li class="typeahead-item" typeahead-item="user" data-ng-repeat="user in add.users">
+						<li class="typeahead-item" typeahead-item="user" data-ng-repeat="user in typeahead.users">
 							<img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
 							<p class="name">{{user.name}}</p>
 							<p class="email">{{user.email}}</p>
 						</li>
 					</ul>
 				</typeahead>
-				<button class="btn btn-success" data-ng-disabled="add.disableAddButton" data-ng-click="addUser()"><i class="icon-plus"></i>{{'Add Member Specific Settings' | translate}}</button>
-				<span class="warning" data-ng-show="add.warningText">{{add.warningText}}</span>
+				<button class="btn btn-success" data-ng-click="addUser()"><i class="icon-plus"></i>{{'Add Member Specific Settings' | translate}}</button>
 				<br /><br />
 			</form>
 		
@@ -194,7 +193,7 @@
 						<ul class="unstyled">
 							<li data-ng-click="selectUser(userId)" data-ng-repeat="(userId, userView) in configDirty.userViews" 
 								data-ng-class="{selected:currentUserId == userId}"> 
-								{{list.users[userId].name}} ({{list.users[userId].username}})
+								{{usersWithSettings[userId].name}} ({{usersWithSettings[userId].username}})
 								<span data-ng-hide="isAtLeastOneSense(userView)">
 									<img src="/images/shared/exclamation.png" title="{{'At least one Sense field must be enabled!' | translate}}" style="padding-left: 5px;"/></span>
 							</li>
@@ -205,20 +204,16 @@
 		</div>
 		<div data-ng-show="state === 'userSettings'">
 			<h2 style="margin-left: 0px; margin-bottom: 24px;">
-				{{list.users[currentUserId].name}} ({{list.users[currentUserId].username}}) View Settings</h2>
+				{{usersWithSettings[currentUserId].name}} ({{usersWithSettings[currentUserId].username}}) View Settings</h2>
 			
 			<!-- control buttons -->
 			<div class="row outer-flex">
 				<div class="span3 control-group">
-					<div class="control-group">
-						<button class="btn" data-ng-click="goBack()"><i class="icon-chevron-left"></i> {{'Back' | translate}}</button>
-					</div>
+					<button class="btn" data-ng-click="goSelectUser()"><i class="icon-chevron-left"></i> {{'Select Member' | translate}}</button>
 				</div>
-				<div class="span9">
-					<div class="control-group" style="height: 30px">
-						<button class="btn" data-ng-click="removeSelectedMemberSettings()">
-							<i class="icon-remove"></i> {{'Remove Member Specific Settings' | translate}} </button>
-					</div>
+				<div class="span9 control-group" style="height: 30px">
+					<button class="btn" data-ng-click="removeSelectedMemberSettings()">
+						<i class="icon-remove"></i> {{'Remove Member Specific Settings' | translate}} </button>
 				</div>
 			</div>
 			
@@ -380,13 +375,12 @@
 	</tab>
 </tabset>
 </form>
-<!--  -->
+<!-- 
 <pre>
 currentUserId {{currentUserId | json}}
-add.excludedUsers {{add.excludedUsers | json}}
 configDirty.userViews {{configDirty.userViews | json}}
 currentField {{currentField | json}}
 configDirty.roleViews {{configDirty.roleViews | json}}
 </pre>
-
+ -->
 </div>

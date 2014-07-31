@@ -52,7 +52,7 @@ class UserModelBase extends \models\mapper\MapperModel
 	/**
 	 * 
 	 * @param string $username
-	 * @return boolean - true of the username exists, false otherwise
+	 * @return boolean - true if the username exists, false otherwise
 	 */
 	public function readByUserName($username) {
 		return $this->readByProperty('username', $username);

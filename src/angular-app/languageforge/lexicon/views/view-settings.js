@@ -2,7 +2,7 @@
 
 angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
   .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService', 'lexProjectService', 'sessionService', '$filter', '$modal', 
-                                   function($scope, notice, userService, lexProjectService, ss, $filter, $modal) {
+  function($scope, notice, userService, lexProjectService, ss, $filter, $modal) {
     lexProjectService.setBreadcrumbs('viewSettings', $filter('translate')('View Settings'));
     
     $scope.configDirty = angular.copy($scope.projectSettings.config);
@@ -12,11 +12,22 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       {name: $filter('translate')('Contributor'), role: 'contributor', view: $scope.configDirty.roleViews['contributor']},
       {name: $filter('translate')('Manager'), role: 'project_manager', view: $scope.configDirty.roleViews['project_manager']}
     ];
-    $scope.state = 'userList';
-    $scope.states = ['userList', 'userSettings'];
+    $scope.state = 'userSelectList';
     $scope.list = {};
     
-    queryProjectUsers();
+    lexProjectService.users(function(result) {
+      if (result.ok) {
+        $scope.users = result.data.users;
+        $scope.usersWithSettings = {};
+        $scope.usersWithoutSettings = [];
+        angular.forEach($scope.users, function(user) {
+          $scope.usersWithSettings[user.id] = user;
+          if (! (user.id in $scope.configDirty.userViews)) {
+            $scope.usersWithoutSettings.push(user);
+          }
+        });
+      }
+    });
     
     $scope.fieldConfig = {};
     angular.forEach($scope.configDirty.entry.fieldOrder, function(fieldName) {
@@ -139,8 +150,8 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     
     $scope.allRolesHaveAtLeastOneSense = function allRolesHaveAtLeastOneSense() {
       var atLeastOne = true;
-      angular.forEach($scope.roleViews, function(roleView) {
-        atLeastOne = atLeastOne && $scope.isAtLeastOneSense(roleView.view);
+      angular.forEach($scope.roleTabs, function(roleTab) {
+        atLeastOne = atLeastOne && $scope.isAtLeastOneSense(roleTab.view);
       });
       return atLeastOne;
     };
@@ -158,49 +169,26 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       $scope.state = 'userSettings';
     };
     
-    /* ----------------------------------------------------------
-     * Typeahead
-     * ---------------------------------------------------------- */
-    $scope.add = {};
-    $scope.add.users = [];
-    $scope.add.disableAddButton = false;
-    $scope.add.typeahead = {};
-    $scope.add.typeahead.userName = '';
-    
-    $scope.add.queryProjectUsers = queryProjectUsers;
-    
-    function queryProjectUsers() {
-      lexProjectService.users(function(result) {
-        if (result.ok) {
-          $scope.add.users = result.data.users;
-          $scope.add.excludedUsers = [];
-          $scope.list.users = {};
-          angular.forEach($scope.add.users, function(user) {
-            $scope.list.users[user.id] = user;
-            if (user.id in $scope.configDirty.userViews) {
-              $scope.add.excludedUsers.push(user);
-            }
-          });
-          checkExcludedUsers();
-        }
-      });
+    $scope.typeahead = {};
+    $scope.typeahead.users = [];
+    $scope.typeahead.userName = '';
+    $scope.typeahead.searchUsers = function searchUsers(query) {
+      $scope.typeahead.users = $filter('filter')($scope.usersWithoutSettings, query);
     };
     
-    $scope.add.selectUser = function addSelectuser(user) {
-      $scope.add.user = user;
-      $scope.add.typeahead.userName = user.name;
-      checkExcludedUsers();
+    $scope.typeahead.selectUser = function selectuser(user) {
+      $scope.typeahead.user = user;
+      $scope.typeahead.userName = user.name;
     };
     
     $scope.addUser = function addUser() {
-      if ($scope.add.user) {
-        var user = $scope.add.user, 
-          userView;
-        $scope.add.excludedUsers.push(user);
-        $scope.list.users[user.id] = user;
-        userView = angular.copy($scope.configDirty.roleViews[user.role]);
+      if ($scope.typeahead.user) {
+        var user = $scope.typeahead.user, 
+          userView = angular.copy($scope.configDirty.roleViews[user.role]);
+        deleteFromArray(user, 'id', $scope.usersWithoutSettings);
+        $scope.usersWithSettings[user.id] = user;
         $scope.configDirty.userViews[user.id] = userView;
-        $scope.add.typeahead.userName = '';
+        $scope.typeahead.userName = '';
         $scope.viewSettingForm.$setDirty();
       }
     };
@@ -209,51 +197,30 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       return avatarRef ? '/images/shared/avatar/' + avatarRef : '/images/shared/avatar/anonymous02.png';
     };
     
-    function checkExcludedUsers() {
-      var excludedUser;
-      excludedUser = isExcludedUser($scope.add.typeahead.userName, $scope.add.excludedUsers);
-      if (excludedUser) {
-        $scope.add.disableAddButton = true;
-        $scope.add.warningText = excludedUser.name +
-          " (" + excludedUser.username +
-          ") already has member specific settings.";
-      } else {
-        $scope.add.disableAddButton = false;
-        $scope.add.warningText = '';
-      }
-    };
-
-    function isExcludedUser(userName, excludedUsers) {
-      if (!excludedUsers) return false;
-      for (var i = 0, l = excludedUsers.length; i < l; i++) {
-        if (userName == excludedUsers[i].username ||
-          userName == excludedUsers[i].name     ||
-          userName == excludedUsers[i].email) {
-          return excludedUsers[i];
-        }
-      }
-      return false;
-    };
-    
-    $scope.goBack = function goBack() {
-      $scope.state = 'userList';
+    $scope.goSelectUser = function goSelectUser() {
+      $scope.state = 'userSelectList';
       $scope.currentUserId = '';
     };
     
     $scope.removeSelectedMemberSettings = function removeSelectedMemberSettings() {
-      var userIndex = - 1;
-      angular.forEach($scope.add.excludedUsers, function(excludedUser, i) {
-        if (excludedUser.id === $scope.currentUserId) {
-          userIndex = i;
+      $scope.usersWithoutSettings.push($scope.usersWithSettings[$scope.currentUserId]);
+      delete $scope.usersWithSettings[$scope.currentUserId];
+      delete $scope.configDirty.userViews[$scope.currentUserId];
+      $scope.viewSettingForm.$setDirty();
+      $scope.goSelectUser();
+    };
+    
+    function deleteFromArray(deleteItem, key, items) {
+      var itemIndex = - 1;
+      angular.forEach(items, function(item, i) {
+        if (item[key] === deleteItem[key]) {
+          itemIndex = i;
           return;
         }
       });
-      if (userIndex > -1) {
-        $scope.add.excludedUsers.splice(userIndex, 1);
+      if (itemIndex > -1) {
+        items.splice(itemIndex, 1);
       }
-      delete $scope.configDirty.userViews[$scope.currentUserId];
-      $scope.viewSettingForm.$setDirty();
-      $scope.goBack();
     };
     
   }])

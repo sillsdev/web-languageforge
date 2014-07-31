@@ -1,14 +1,28 @@
 <form name="languageSearch">
-	<input width="4" placeholder="search" type="text" 
-		class="input-medium search-query" data-ng-model="searchText" />
-	<button class="btn btn-success" data-ng-click="search()" data-ng-show="searchText && searchText != ''">
-		<i class="icon-search"></i>Search</button>
-	<span style="margin-left:10px" title="Clear Search" data-ng-click="clearSearch()" 
-		data-ng-show="searchText && searchText != ''">
-		<i class="icon-remove" style="color:black; cursor: pointer"></i></span>
+	<a class="btn pull-right"
+		data-ng-show="!showSuggestions && puiSuggestedLanguageCodes.length > 0" 
+		data-ng-click="suggest()"
+		style="font-weight:normal">
+		Suggest Languages from Lexical Data</a>
+	<div data-ng-show="showSuggestions">
+		<a class="btn pull-right"
+			data-ng-click="clearSearch()"
+			style="font-weight:normal">
+			<i class="icon-remove"></i> Clear Suggestions</a>
+		<span>&nbsp;</span>
+	</div>
+	<div data-ng-hide="showSuggestions">
+		<input width="4" placeholder="search" type="text" 
+			class="input-medium search-query" data-ng-model="searchText" />
+		<button class="btn btn-success" data-ng-click="search()" data-ng-show="searchText && searchText != ''">
+			<i class="icon-search"></i>Search</button>
+		<span style="margin-left:10px" title="Clear Search" data-ng-click="clearSearch()" 
+			data-ng-show="searchText && searchText != ''">
+			<i class="icon-remove" style="color:black; cursor: pointer"></i></span>
+	</div>
 </form>
-	
-<div>
+
+<div class="scroll-table">
 	<table class="table table-condensed table-hover">
 		<thead>
 			<tr>
