@@ -18,24 +18,12 @@ class LiftDecoder {
 	private $_projectModel;
 	
 	/**
-	 * @param LexiconProjectModel $projectModel
-	 * @param SimpleXMLElement $sxeNode
-	 * @param LexEntryModel $entry
-	 * @param LiftMergeRule $mergeRule
-	 */
-	public static function decode($projectModel, $sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
-		$decoder = new LiftDecoder($projectModel);
-		$projectModel = $decoder->_decode($sxeNode, $entry, $mergeRule);
-	}
-	
-	/**
 	 * @param SimpleXMLElement $sxeNode
 	 * @param LexEntryModel $entry
 	 * @param LiftMergeRule $mergeRule
 	 * @throws \Exception
-	 * @return LexiconProjectModel
 	 */
-	protected function _decode($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
+	public function decode($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
 		$lexicalForms = $sxeNode->{'lexical-unit'};
 		if ($lexicalForms) {
 			if ($mergeRule != LiftMergeRule::IMPORT_LOSES) {
@@ -73,8 +61,6 @@ class LiftDecoder {
 				}
 			}
 		}
-		
-		return $this->_projectModel;
 	}
 
 	/**
