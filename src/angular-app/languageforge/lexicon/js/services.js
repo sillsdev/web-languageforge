@@ -125,6 +125,90 @@ function(ss) {
         return config.roleViews[role].showTasks[taskName];
     };
 
+    this.getConfigForUser = function() {
+        var config = angular.copy(ss.session.projectSettings.config);
+
+        // copy option lists to config object
+        config.optionlists = {};
+        angular.forEach(ss.session.projectSettings.optionlists, function(optionlist) {
+            config.optionlists[optionlist.code] = optionlist;
+        });
+        config.optionlists = angular.copy(ss.session.projectSettings.optionlists);
+
+
+
+        var userId = ss.session.userId;
+        var role = ss.session.projectSettings.currentUserRole;
+        var fieldsConfig;
+
+        // use an user-based field config if defined
+        if (angular.isDefined(config.userViews[userId])) {
+            fieldsConfig = config.userViews[userId];
+        } else {
+            // fallback to role-based field config
+            fieldsConfig = config.roleViews[role];
+        }
+
+        console.log('before remove');
+        console.log(config);
+        removeDisabledConfigFields(config.entry, fieldsConfig);
+        console.log('after remove entry');
+        console.log(config);
+        removeDisabledConfigFields(config.entry.fields.senses, fieldsConfig);
+        console.log('after remove sense');
+        console.log(config);
+        removeDisabledConfigFields(config.entry.fields.senses.fields.examples, fieldsConfig);
+        console.log('after remove example');
+        console.log(config);
+
+        return config;
+    };
+
+    this.fieldContainsData = function fieldContainsData(type, model) {
+        if (type == 'fields') return true;
+        var containsData = false;
+        switch (type) {
+            case 'multitext':
+                angular.forEach(model, function(ws) {
+                    if (model[ws].value != '') {
+                        containsData = true;
+                    }
+                });
+                break;
+            case 'optionlist':
+            case 'multioptionlist':
+                if (model.value != '') {
+                    containsData = true;
+                }
+                break;
+        }
+        return containsData;
+    };
+
+    function removeDisabledConfigFields(config, fieldsConfig) {
+        angular.forEach(config.fields, function(field, fieldName) {
+            if (fieldName != 'senses' && fieldName != 'examples') {
+                var fieldConfig = fieldsConfig.fields[fieldName];
+
+                if (fieldConfig && fieldConfig.show) {
+                    // field is enabled
+
+                    // override input systems if specified
+                    if (fieldConfig.overrideInputSystems) {
+                        config.fields[fieldName].inputSystems = angular.copy(fieldConfig.inputSystems);
+                    }
+                } else {
+                    // remove config field
+                    delete config.fields[fieldName];
+
+                    // remove field from fieldOrder array
+                    config.fieldOrder.splice(config.fieldOrder.indexOf(fieldName), 1);
+                }
+            }
+        });
+    }
+
+    /*
     this.isFieldEnabled = function(fieldName, ws) {
 
         var config = ss.session.projectSettings.config;
@@ -163,19 +247,10 @@ function(ss) {
         return fieldConfig.hideIfEmpty;
     };
 
-    /**
-     *
-     * @param boolean showUncommon - flag specifying whether we should show uncommon fields if they are empty
-     * @param string fieldName
-     * @param string type - field type
-     * @param model - field data model
-     * @returns {boolean}
-     */
+
     this.isFieldVisible = function isFieldVisible(showUncommon, fieldName, type, model) {
         if (type == 'fields') return true;
-
-        // check if field is enabled in config
-        var isVisible = this.isFieldEnabled(fieldName);
+        var isVisible = true;
 
         if (!showUncommon && this.isUncommonField(fieldName)) {
             isVisible = false;
@@ -200,10 +275,6 @@ function(ss) {
 
     };
 
-    /**
-     *
-     * @param fieldName - unique field name
-     */
     function getFieldConfig(fieldName) {
         var config = ss.session.projectSettings.config;
 
@@ -223,6 +294,7 @@ function(ss) {
         }
         return undefined;
     }
+    */
 }])
 
 .service('lexEntryService', ['jsonRpc', 'sessionService', 'lexProjectService', 'breadcrumbService', 'lexLinkService', 
