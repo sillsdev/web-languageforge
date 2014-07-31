@@ -180,7 +180,7 @@ class TestCommunicate extends UnitTestCase {
 		$project = $e->createProjectSettings(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 		$delivery = new MockCommunicateDelivery();
 		
-		Communicate::sendNewUserInProject($toUser, $newUserName, $newUserPassword, $e->website, $project, $delivery);
+		Communicate::sendNewUserInProject($toUser, $newUserName, $newUserPassword, $project, $e->website, $delivery);
 		
 		// What's in the delivery?
 		$senderEmail = 'no-reply@' . $e->website->domain;
@@ -193,6 +193,32 @@ class TestCommunicate extends UnitTestCase {
 		$this->assertPattern('/' . $newUserPassword . '/', $delivery->content);
 	}
 
+	function testSendAddedToProject_PropertiesFromToBodyOk() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		$inviterUserId = $e->createUser("inviterUser", "Inviter User", "inviter@example.com");
+		$inviterUser = new UserModel($inviterUserId);
+		$toUserId = $e->createUser("touser", "To Name", "toname@example.com");
+		$toUser = new UserModel($toUserId);
+		$newUserName = 'newusername';
+		$newUserPassword = 'password';
+		$project = $e->createProjectSettings(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+		$delivery = new MockCommunicateDelivery();
+		$project->addUser($inviterUserId, $e->website->userDefaultSiteRole);
+		$project->write();
+		$inviterUser->addProject($project->id->asString());
+		$inviterUser->write();		
+		Communicate::sendAddedToProject($inviterUser, $toUser, $project, $e->website, $delivery);
+		
+		// What's in the delivery?
+		$senderEmail = 'no-reply@' . $e->website->domain;
+		$expectedFrom = array($senderEmail => $e->website->name);
+		$expectedTo = array($toUser->email => $toUser->name);
+		$this->assertEqual($expectedFrom, $delivery->from);
+		$this->assertEqual($expectedTo, $delivery->to);
+		$this->assertPattern('/To Name/', $delivery->content);
+	}
+	
 }
 
 ?>

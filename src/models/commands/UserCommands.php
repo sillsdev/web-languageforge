@@ -343,7 +343,7 @@ class UserCommands {
 		ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::CONTRIBUTOR);
 		$toUser = new UserModel($currentUserId);
 		$project = new ProjectModel($projectId);
-		Communicate::sendNewUserInProject($toUser, $user->username, $password, $website, $project);
+		Communicate::sendNewUserInProject($toUser, $user->username, $password, $project, $website);
 
 		$dto = new CreateSimpleDto($userId, $password);
 		return $dto->encode();
@@ -453,7 +453,7 @@ class UserCommands {
 			Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
 		} else {
 			// Tell existing user they're now part of the project
-			Communicate::sendAddedToProject($inviterUser, $newUser, $website, $project, $delivery);
+			Communicate::sendAddedToProject($inviterUser, $newUser, $project, $website, $delivery);
 		}
 		return $userId;
     }
