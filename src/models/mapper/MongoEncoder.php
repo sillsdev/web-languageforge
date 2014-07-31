@@ -22,16 +22,16 @@ class MongoEncoder {
 		$data = array();
 		$properties = get_object_vars($model);
 		foreach ($properties as $key => $value) {
-			if (is_a($value, 'models\mapper\IdReference')) {
+			if (is_a($value, 'models\mapper\ArrayOf')) {
+				$data[$key] = $this->encodeArrayOf($model->$key);
+			} else if (is_a($value, 'models\mapper\MapOf')) {
+				$data[$key] = $this->encodeMapOf($model->$key);
+			} else if (is_a($value, 'models\mapper\IdReference')) {
 				$data[$key] = $this->encodeIdReference($model->$key);
 			} else if (is_a($value, 'models\mapper\Id')) {
 				if ($encodeId) {
 					$data[$key] = $this->encodeId($model->$key);
 				}
-			} else if (is_a($value, 'models\mapper\ArrayOf')) {
-				$data[$key] = $this->encodeArrayOf($model->$key);
-			} else if (is_a($value, 'models\mapper\MapOf')) {
-				$data[$key] = $this->encodeMapOf($model->$key);
 			} else if (is_a($value, 'DateTime')) {
 				$data[$key] = $this->encodeDateTime($model->$key);
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
