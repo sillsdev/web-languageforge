@@ -7,6 +7,10 @@ use models\mapper\Id;
 use models\mapper\ArrayOf;
 use models\ProjectModel;
 
+function _SenseFunctor($data) {
+	return new Sense();
+}
+
 class LexEntryModel extends \models\mapper\MapperModel {
 
 	public static function mapper($databaseName) {
@@ -27,23 +31,8 @@ class LexEntryModel extends \models\mapper\MapperModel {
 		$this->setReadOnlyProp('authorInfo');
 		$this->id = new Id();
 		$this->lexeme = new MultiText();
-		$this->senses = new ArrayOf(
-			function($data) {
-				return new Sense();
-			}
-		);
-		$this->customFields = new ArrayOf(
-			function($data) {
-				CodeGuard::checkTypeAndThrow($data, 'array');
-				if (array_key_exists('value', $data)) {
-					return new LexiconField();
-				} elseif (array_key_exists('values', $data)) {
-					return new LexiconMultiValueField();
-				} else {
-					return new MultiText();
-				}
-			}
-		);
+		$this->senses = new ArrayOf('_SenseFunctor');
+		$this->customFields = new ArrayOf('_CustomFieldFunctor');
 		$this->authorInfo = new AuthorInfo();
 
 
