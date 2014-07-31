@@ -16,7 +16,7 @@ class LiftImport {
 	 */
 	public static function merge($xml, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false) {
 // 		self::validate($xml);	// TODO Fix. The XML Reader validator doesn't work with <optional> in the RelaxNG schema. IJH 2014-03
-		
+
 		$entryList = new LexEntryListModel($projectModel);
 		$entryList->read();
 		if ($entryList->count <= 0) {
@@ -27,9 +27,11 @@ class LiftImport {
 			$projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems = new ArrayOf();
 			$projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems = new ArrayOf();
 		}
-				
+		
 		$reader = new \XMLReader();
 		$reader->XML($xml);
+
+		$liftDecoder = new LiftDecoder($projectModel);
 		
 		while ($reader->read()) {
 			if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
@@ -38,7 +40,7 @@ class LiftImport {
 				$n = $dom->importNode($node, true); // expands the node for that particular guid
 				$sxeNode = simplexml_import_dom($n);
 				
-				$guid = $reader->getAttribute('guid');
+ 				$guid = $reader->getAttribute('guid');
 				$existingEntry = $entryList->searchEntriesFor('guid', $guid);
 				if ($existingEntry) {
 					$entry = new LexEntryModel($projectModel, $existingEntry['id']);
@@ -46,12 +48,12 @@ class LiftImport {
 					if (self::differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
 						if ($mergeRule == LiftMergeRule::CREATE_DUPLICATES) {
 							$entry = new LexEntryModel($projectModel);
-							LiftDecoder::decode($projectModel, $sxeNode, $entry, $mergeRule);
+							$liftDecoder->decode($projectModel, $sxeNode, $entry, $mergeRule);
 							$entry->guid = '';
 							$entry->write();
 						} else {
 							if (isset($sxeNode->{'lexical-unit'})) {
-								LiftDecoder::decode($projectModel, $sxeNode, $entry, $mergeRule);
+								$liftDecoder->decode($sxeNode, $entry, $mergeRule);
 								$entry->write();
 							} else if (isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
 								LexEntryModel::remove($projectModel, $existingEntry['id']);
@@ -64,11 +66,10 @@ class LiftImport {
 						}
 					}
 				} else {
-					if (isset($sxeNode->{'lexical-unit'})) {
-						$entry = new LexEntryModel($projectModel);
-						LiftDecoder::decode($projectModel, $sxeNode, $entry, $mergeRule);
+ 					if (isset($sxeNode->{'lexical-unit'})) {
+ 						$entry = new LexEntryModel($projectModel);
 						$entry->write();
-					}
+ 					}
 				}
 			}
 		}
