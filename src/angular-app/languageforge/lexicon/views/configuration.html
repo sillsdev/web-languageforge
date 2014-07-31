@@ -3,7 +3,7 @@
 <form name="configForm" novalidate>
 <button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="configurationApply()"  
 	data-ng-disabled="configForm.$pristine">
-	<i class="icon-ok"></i> {{'Apply' | translate}}</button>
+	<i class="icon-ok"></i>{{'Apply' | translate}}</button>
 <tabset>
 	<tab heading="Input Systems" class="{{interfaceConfig.pullNormal}}">
 		<div data-ng-include="'/angular-app/languageforge/lexicon/views/configuration-input-systems.html'"></div>
@@ -16,7 +16,7 @@
 		<div class="span3 control-group">
 			<!-- control buttons -->
 			<div class="control-group">
-				<button class="btn btn-success" data-ng-click="openNewCustomFieldModal()"><i class="icon-plus"></i> {{'New Custom Field' | translate}} </button>
+				<button class="btn btn-success" data-ng-click="openNewCustomFieldModal()"><i class="icon-plus"></i>{{'New Custom Field' | translate}} </button>
 			</div>
 			<div class="control-group">
 				<a href="" data-ng-click="showAllFields = ! showAllFields">
@@ -68,7 +68,7 @@
 			<div class="control-group" style="height: 30px">
 				<button class="btn" data-ng-click="removeSelectedCustomField()"
 					data-ng-show="fieldIsCustom(currentField.name)">
-					<i class="icon-remove"></i> {{'Remove Custom Field' | translate}} </button>
+					<i class="icon-remove"></i>{{'Remove Custom Field' | translate}} </button>
 			</div>
 			
 			<!-- settings -->
@@ -136,7 +136,7 @@
 					</div>
 					<div data-collapse="editInputSystems.collapsed">
 						<button class="btn btn-primary {{interfaceConfig.pullToSide}}" 
-							data-ng-click="editInputSystems.done()"><i class="icon-ok"></i> {{'Done' | translate}}</button>
+							data-ng-click="editInputSystems.done()"><i class="icon-ok"></i>{{'Done' | translate}}</button>
 						<h3 style="font-weight:normal" translate="Edit Input Systems"></h3>
 						<div data-ng-include="'/angular-app/languageforge/lexicon/views/configuration-input-systems.html'"></div>
 					</div>
