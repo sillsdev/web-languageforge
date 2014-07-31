@@ -7,6 +7,7 @@ use models\UserModel;
 use models\UserModelForRegistration;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
+use libraries\shared\Website;
 use libraries\shared\sms\SmsModel;
 use libraries\shared\sms\SmsQueue;
 
@@ -238,7 +239,6 @@ class Communicate
 		
 		$vars = array(
 			'user' => $inviterUserModel,
-			'website' => $website,
 			'project' => $projectModel,
 			'link' => $website->baseUrl() . '/registration#/?v=' . $toUserModel->validationKey,
 		);
@@ -263,11 +263,11 @@ class Communicate
 	 * @param UserModel $toUserModel
 	 * @param string $newUserName
 	 * @param string $newUserPassword
-	 * @param Website $website
 	 * @param ProjectModel $project
+	 * @param Website $website
 	 * @param IDelivery $delivery
 	 */
-	public static function sendNewUserInProject($toUserModel, $newUserName, $newUserPassword, $website, $project, IDelivery $delivery = null) {
+	public static function sendNewUserInProject($toUserModel, $newUserName, $newUserPassword, $project, $website, IDelivery $delivery = null) {
 		$vars = array(
 				'user' => $toUserModel,
 				'newUserName' => $newUserName,
@@ -294,7 +294,41 @@ class Communicate
 			$delivery
 		);
 	}
-	
+
+
+	/**
+	 * Notify existing user they've been added to a project
+	 * @param UserModel $inviterUserModel
+	 * @param UserModel $toUserModel
+	 * @param Website $website
+	 * @param ProjectModel $projectModel
+	 * @param IDelivery $delivery
+	 */
+	public static function sendAddedToProject($inviterUserModel, $toUserModel, $website, $projectModel, IDelivery $delivery = null) {
+		$senderEmail = 'no-reply@' . $website->domain;
+		$from = array($senderEmail => $website->name);
+		$subject = $website->name . ' added to project ' . $projectModel->projectName;
+
+		$vars = array(
+			'toUser' => $toUserModel,
+			'inviterUser' => $inviterUserModel,
+			'project' => $projectModel
+		);
+		$templateFile = $website->base . "/" . $website->theme . "/email/en/AddedToProject.html";
+		if (!file_exists($templateFile)) {
+			$templateFile = $website->base . "/default/email/en/AddedToProject.html";
+		}
+		$t = CommunicateHelper::templateFromFile($templateFile);
+		$html = $t->render($vars);
+
+		CommunicateHelper::deliverEmail(
+			$from,
+			array($toUserModel->email => $toUserModel->name),
+			$subject,
+			$html,
+			$delivery
+		);
+	}
 }
 
 ?>
