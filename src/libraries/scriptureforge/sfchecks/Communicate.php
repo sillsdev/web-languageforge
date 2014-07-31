@@ -267,7 +267,7 @@ class Communicate
 	 * @param Website $website
 	 * @param IDelivery $delivery
 	 */
-	public static function sendNewUserInProject($toUserModel, $newUserName, $newUserPassword, $website, $project, IDelivery $delivery = null) {
+	public static function sendNewUserInProject($toUserModel, $newUserName, $newUserPassword, $project, $website, IDelivery $delivery = null) {
 		$vars = array(
 				'user' => $toUserModel,
 				'newUserName' => $newUserName,
@@ -300,11 +300,11 @@ class Communicate
 	 * Notify existing user they've been added to a project
 	 * @param UserModel $inviterUserModel
 	 * @param UserModel $toUserModel
-	 * @param Website $website
 	 * @param ProjectModel $projectModel
+	 * @param Website $website
 	 * @param IDelivery $delivery
 	 */
-	public static function sendAddedToProject($inviterUserModel, $toUserModel, $website, $projectModel, IDelivery $delivery = null) {
+	public static function sendAddedToProject($inviterUserModel, $toUserModel, $projectModel, $website, IDelivery $delivery = null) {
 		$senderEmail = 'no-reply@' . $website->domain;
 		$from = array($senderEmail => $website->name);
 		$subject = $website->name . ' added to project ' . $projectModel->projectName;
