@@ -3,10 +3,12 @@
         <dc-multitext config="config.fields.lexeme" model="model.lexeme" control="control"></dc-multitext>
         <comment-bubble control="control" count="control.getFieldCommentCount('lexeme')"></comment-bubble>
     </div>
-	<div ng-show="control.rights.canEditEntry() && control.state == 'edit'" class="addItem">
-        <a data-ng-click="addSense()">Add Meaning</a>
-    </div>
-    <div data-ng-repeat="sense in model.senses">
-        <dc-sense remove="deleteSense" index="$index" config="config.fields.senses" model="sense" control="control"></dc-sense>
+    <div ng-if="config.fields.senses.fields.length > 0">
+        <div ng-if="control.rights.canEditEntry() && control.state == 'edit'" class="addItem">
+            <a data-ng-click="addSense()">Add Meaning</a>
+        </div>
+        <div data-ng-repeat="sense in model.senses">
+            <dc-sense remove="deleteSense" index="$index" config="config.fields.senses" model="sense" control="control"></dc-sense>
+        </div>
     </div>
 </div>
