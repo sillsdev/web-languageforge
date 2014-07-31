@@ -1,5 +1,5 @@
 <div class="content container" data-ng-cloak data-ng-controller="MainCtrl" dir="{{interfaceConfig.direction}}">
-	<div class="hdrnav">
+	<div class="hdrnav" style="width:88%;display:flex">
         <!--
 		<div class="control-group {{interfaceConfig.pullToSide}}">
 			<div class="controls">
@@ -13,22 +13,24 @@
 			<li><a href="/app/activity">Activity</a></li>
 		</ul>
         -->
-		<ul id="top" class="topCrumbs" breadcrumbs></ul>
+        <div style="flex:4">
+            <ul id="top" class="topCrumbs" breadcrumbs></ul>
+        </div>
+        <div style="flex:1" class="btn-group" data-ng-show="rights.edit">
+            <a class="btn dropdown-toggle {{interfaceConfig.pullToSide}}" data-toggle="dropdown" data-tooltip-placement="{{interfaceConfig.placementToSide}}" data-tooltip="Settings" href="#">
+                <i class="icon-cog icon-large"></i>&nbsp;&nbsp;<span class="caret"></span></a>
+            <ul class="dropdown-menu {{interfaceConfig.pullToSide}}">
+                <li><a href="#/configuration" translate="Dictionary Configuration"></a></li>
+                <li><a href="#/viewSettings" translate="View Settings"></a></li>
+                <li class="divider"></li>
+                <li><a href="#/importExport" translate="Import/Export"></a></li>
+                <li><a href="#/settings" translate="Project Settings"></a></li>
+                <li><a href="#/users" translate="User Management"></a></li>
+            </ul>
+        </div>
 	</div>
 	<div id="lexicon-hmenu" style="clear:both">
 		<div class="lexnav control-group">
-			<div class="btn-group {{interfaceConfig.pullToSide}}" data-ng-show="rights.edit">
-				<a class="btn dropdown-toggle" data-toggle="dropdown" data-tooltip-placement="{{interfaceConfig.placementToSide}}" data-tooltip="Settings" href="#">
-					<i class="icon-cog icon-large"></i>&nbsp;&nbsp;<span class="caret"></span></a>
-				<ul class="dropdown-menu {{interfaceConfig.pullToSide}}">
-					<li data-ng-show="isTaskEnabled('configuration')"><a href="#/configuration" translate="Dictionary Configuration"></a></li>
-					<li data-ng-show="isTaskEnabled('viewSettings')"><a href="#/viewSettings" translate="View Settings"></a></li>
-					<li class="divider" data-ng-show="isTaskEnabled('configuration') || isTaskEnabled('viewSettings')"></li>
-					<li data-ng-show="isTaskEnabled('importExport')"><a href="#/importExport" translate="Import/Export"></a></li>
-					<li data-ng-show="isTaskEnabled('settings')"><a href="#/settings" translate="Project Settings"></a></li>
-					<li data-ng-show="isTaskEnabled('users')"><a href="#/users" translate="User Management"></a></li>
-				</ul>
-			</div>
             <!--
 			<div class="btn-group" data-ng-show="isTaskEnabled('dashboard')">
 				<a class="btn" href="#"><i class="icon-bookmark icon-large"></i> *NYI*  Dashboard</a>

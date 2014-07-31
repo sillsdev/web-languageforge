@@ -30,7 +30,7 @@
 					<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
 						<span data-ng-hide="fieldIsHidden(fieldName)"
-							data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
+							data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
 							data-ng-click="selectField(fieldName)">
 							{{fieldConfig[fieldName].label}}
 						</span>
@@ -41,7 +41,7 @@
 					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
 						<span data-ng-hide="fieldIsHidden(fieldName)"
-							data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
+							data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
 							data-ng-click="selectField(fieldName)">
 							{{fieldConfig[fieldName].label}}
 						</span>
@@ -52,7 +52,7 @@
 					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
 						<span data-ng-hide="fieldIsHidden(fieldName)"
-							data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
+							data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
 							data-ng-click="selectField(fieldName)">
 							{{fieldConfig[fieldName].label}}
 						</span>
@@ -67,7 +67,7 @@
 			<!-- control buttons -->
 			<div class="control-group" style="height: 30px">
 				<button class="btn" data-ng-click="removeSelectedCustomField()"
-					data-ng-show="fieldIsCustom(currentField.name)">
+					data-ng-show="isCustomField(currentField.name)">
 					<i class="icon-remove"></i>{{'Remove Custom Field' | translate}} </button>
 			</div>
 			
@@ -75,7 +75,7 @@
 			<div class="well">
 				<h3>{{fieldConfig[currentField.name].label}} {{'Field Setup' | translate}}</h3>
 				<div class="control-group"
-					data-ng-show="fieldIsCustom(currentField.name)">
+					data-ng-show="isCustomField(currentField.name)">
 					<label class="control-label" for="displayName">{{'Display Name' | translate}}</label>
 					<div class="controls">
 						<input type="text" id="displayName" 

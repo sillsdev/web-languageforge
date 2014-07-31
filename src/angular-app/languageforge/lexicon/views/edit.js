@@ -3,16 +3,19 @@
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry',
     'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window',
-        '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService',
-function ($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice) {
-  var pristineEntry = {},
-    browserId = Math.floor(Math.random() * 1000),
-    saving = false,
-    saved = false;
-    
-    $scope.config = $scope.projectSettings.config;
+        '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService',
+function ($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location, configService) {
+
+    // TODO use ui-router for this instead!
+
+    var pristineEntry = {};
+    var browserInstanceId = Math.floor(Math.random() * 1000);
+    $scope.config = configService.getConfigForUser();
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
+    $scope.state = 'list'; // default state.  State is one of 'list', 'edit', or 'comment'
+    $scope.showUncommonFields = false;
+
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
 
 
@@ -23,6 +26,9 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		return false;
 	};
 	
+	var saving = false;
+	var saved = false;
+
 	$scope.saveNotice = function() {
 //		if ($scope.currentEntryIsDirty()) {	// TODO. Disabled. until php can deliver completely valid entry model and directives no longer make valid models. IJH 2014-03
 //			if (saving) {
@@ -70,8 +76,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
                     }
 					$scope.lastSavedDate = new Date();
 
-                    // refresh view will add the new entry to the entries list
-					refreshView(false, function() {
+                    // refresh data will add the new entry to the entries list
+					refreshData(false, function() {
                         if (isNewEntry && setEntry) {
                             scrollListToEntry(entry.id, 'top');
                         }
@@ -228,6 +234,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 			$scope.saveCurrentEntry();
             setCurrentEntry($scope.entries[getEntryIndexInList(id, $scope.entries)]);
 		}
+        $scope.state = 'edit';
+        //$location.path('/dbe/' + id, false);
 	};
 
 	$scope.newEntry = function newEntry() {
@@ -237,6 +245,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         addEntryToEntryList(newEntry);
         $scope.show.initial();
         scrollListToEntry('', 'top');
+        $scope.state = 'edit';
+        //$location.path('/dbe', false);
 	};
 	
 	$scope.entryLoaded = function entryLoaded() {
@@ -246,6 +256,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
      $scope.returnToList = function returnToList() {
          $scope.saveCurrentEntry();
          setCurrentEntry();
+         $scope.state = 'list';
+         //$location.path('/dbe', false);
      };
 
     function removeEntryFromLists(id) {
@@ -313,6 +325,11 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
                 break;
             case 'multitext':
            //     console.log('multitext cfg:', config);
+                // when a multitext is completely empty for a field, and sent down the wire, it will come as a [] because of the way
+                // that the PHP JSON default encode works.  We change this to be {} for an empty multitext
+                if (angular.isArray(data)) {
+                    data = {};
+                }
                 angular.forEach(config.inputSystems, function(ws) {
                     if (angular.isUndefined(data[ws])) {
                         data[ws] = {value:''};
@@ -402,7 +419,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
 
 
-	function refreshView(fullRefresh, callback) {
+	function refreshData(fullRefresh, callback) {
         callback = callback||angular.noop;
         if (fullRefresh) notice.setLoading('Loading Dictionary');
 		var processDbeDto = function (result) {
@@ -451,7 +468,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		var view = 'dbe';
 		switch (view) {
 			case 'dbe':
-				lexService.dbeDto(browserId, fullRefresh, processDbeDto);
+				lexService.dbeDto(browserInstanceId, fullRefresh, processDbeDto);
 				break;
 			case 'add-grammar':
 				break;
@@ -464,10 +481,46 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		}
 	};
 
-    // only refresh the full view if we have not yet loaded the dictionary for the first time
-    if ($scope.entries.length == 0) {
-        refreshView(true);
+    function evaluateState() {
+        var match, path = $location.path();
+        // TODO implement this using ui-router!!!
+
+        var goToState = function goToState() {
+            match = /dbe\/(.+)\/comments/.exec(path);
+            if (match) {
+                $scope.show.initial();
+                $scope.editEntryAndScroll(match[1]);
+                $scope.showComments(match[1]);
+                return;
+            }
+
+            match = /dbe\/(.+)$/.exec(path);
+            if (match) {
+                $scope.show.initial();
+                $scope.editEntryAndScroll(match[1]);
+                return;
+            }
+
+            $scope.returnToList();
+        };
+
+        // refresh the data and go to state
+        if ($scope.entries.length == 0) {
+            refreshData(true, goToState);
+        } else {
+            refreshData(false, goToState);
+        }
     }
+
+    $scope.showComments = function showComments(fieldName) {
+        $scope.saveCurrentEntry();
+        $scope.state = 'comment';
+        //$location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);
+    };
+
+    // only refresh the full view if we have not yet loaded the dictionary for the first time
+
+    evaluateState();
 
  /* disable autosave feature until it's ready
 	var autoSaveTimer;
@@ -604,25 +657,20 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		});
 		return startAt;
 	};
+
+
+    // todo implement this
+    $scope.getFieldCommentCount = function getFieldCommentCount(fieldName) {
+        var count;
+        if (fieldName) {
+            count = 5;
+        } else {
+            // get all unresolved comments for this entry
+            count = 10;
+        }
+        return count;
+    };
 	
-	// defaults
-	$scope.editTab = {active: true};
-	$scope.commentsTab = {active: false};
-	$scope.control.showComments = false;
-	
-	// When comments tab is clicked, set up new config for its interior
-	$scope.selectCommentsTab = function() {
-//		console.log('comments tab selected');
-		$scope.control.showComments = true;
-		$scope.editTab.active = false;
-		$scope.commentsTab.active = true;
-	};
-	$scope.selectEditTab = function() {
-//		console.log('edit tab selected');
-		$scope.control.showComments = false;
-		$scope.editTab.active = true;
-		$scope.commentsTab.active = false;
-	};
 
 	// TODO: Consider moving filter-related code and variables into its own controller
 	$scope.filter = {};

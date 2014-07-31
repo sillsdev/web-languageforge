@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate'])
-  .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService', 'lexProjectService', 'sessionService', '$filter', '$modal', 
-  function($scope, notice, userService, lexProjectService, ss, $filter, $modal) {
+angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'lexicon.services'])
+  .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService',
+  function($scope, notice, userService, lexProjectService, ss, $filter, $modal, lexConfigService) {
     lexProjectService.setBreadcrumbs('viewSettings', $filter('translate')('View Settings'));
     
     $scope.configDirty = angular.copy($scope.projectSettings.config);
@@ -28,17 +28,19 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         });
       }
     });
-    
+
+    $scope.isCustomField = lexConfigService.isCustomField;
+
     $scope.fieldConfig = {};
     angular.forEach($scope.configDirty.entry.fieldOrder, function(fieldName) {
       if (angular.isDefined($scope.configDirty.entry.fields[fieldName])) {
         if ($scope.configDirty.entry.fields[fieldName].type !== 'fields') {
           $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields[fieldName];
         }
-      } else {
-        if ($scope.configDirty.entry.fields.customFields.fields[fieldName].type !== 'fields') {
-          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.customFields.fields[fieldName];
-        }
+//      } else {
+//        if ($scope.configDirty.entry.fields.customFields.fields[fieldName].type !== 'fields') {
+//          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.customFields.fields[fieldName];
+//        }
       }
     });
     angular.forEach($scope.configDirty.entry.fields.senses.fieldOrder, function(fieldName) {
@@ -46,10 +48,10 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         if ($scope.configDirty.entry.fields.senses.fields[fieldName].type !== 'fields') {
           $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields[fieldName];
         }
-      } else {
-        if ($scope.configDirty.entry.fields.senses.fields.customFields.fields[fieldName].type !== 'fields') {
-          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.customFields.fields[fieldName];
-        }
+//      } else {
+//        if ($scope.configDirty.entry.fields.senses.fields.customFields.fields[fieldName].type !== 'fields') {
+//          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.customFields.fields[fieldName];
+//        }
       }
     });
     angular.forEach($scope.configDirty.entry.fields.senses.fields.examples.fieldOrder, function(fieldName) {
@@ -57,10 +59,10 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         if ($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName].type !== 'fields') {
           $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName];
         }
-      } else {
-        if ($scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[fieldName].type !== 'fields') {
-          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[fieldName];
-        }
+//      } else {
+//        if ($scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[fieldName].type !== 'fields') {
+//          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[fieldName];
+//        }
       }
     });
 

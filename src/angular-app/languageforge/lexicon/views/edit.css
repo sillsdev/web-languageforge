@@ -191,11 +191,24 @@ legend.override-bootstrap {
     font-family: "Bookman", Georgia, "Times New Roman", serif;
 }
 
-div#lexAppEditView {
+#lexAppEditView {
     display:flex;
     flex-direction: row;
     width:100%;
 }
+
+#lexAppCommentView {
+    display:flex;
+    width:100%;
+}
+
+.uneditable-input {
+    width: 150px;
+    cursor: auto;
+    color: inherit;
+    background-color: white;
+}
+
 
 #lexAppEditView .lexiconItemListContainer {
     display: flex;
@@ -250,5 +263,10 @@ div#lexAppEditView {
 .entryItemView i.icon-remove {
     cursor: pointer;
     color:#CCC;
+}
+
+.flex100 {
+    display:flex;
+    width:100%;
 }
 
