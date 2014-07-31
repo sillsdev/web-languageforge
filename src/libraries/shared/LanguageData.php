@@ -57,14 +57,19 @@ class Language {
 	
 }
 
+function _LanguageFunctor($data) {
+	return new Language();
+}
+
+/* LanguageData performance notes CP 2014-07
+ * Uses 47M RAM (Measured pre 6.4M post 53M
+ * Takes 1.2 seconds to read
+ * Good candidate for going in the database.
+ */
 class LanguageData extends MapOf {
 	
 	public function __construct() {
-		parent::__construct(
-			function ($data) {
-				return new Language();
-			}
-		);
+		parent::__construct('_LanguageFunctor');
 		
 		if (is_null(self::$_data)) {
 			$this->read();
@@ -77,14 +82,13 @@ class LanguageData extends MapOf {
 	private static $_data;
 	
 	public function read() {
-		$languagesFile = file_get_contents(APPPATH . "angular-app/bellows/js/assets/inputSystems_languages.js");
-		$json = str_replace(";", "", substr($languagesFile, strpos($languagesFile, '[')));
+		$json = file_get_contents(APPPATH . "angular-app/bellows/js/assets/inputSystems_languages.js");
+		$json = str_replace(";", "", substr($json, strpos($json, '[')));
 		$arr = json_decode($json, true);
-
-		$decoder = new JsonDecoder();
+		
 		foreach ($arr as $obj) {
 			$language = new Language();
-			$decoder->decode($language, $obj);
+			JsonDecoder::decode($language, $obj);
 			$this[$language->code->three] = $language;
 			
 			// duplicate any two letter code languages with two letter code keys

@@ -5,6 +5,21 @@ namespace models\languageforge\lexicon;
 use libraries\shared\palaso\CodeGuard;
 use models\mapper\ArrayOf;
 
+function _ExampleFunctor($data) {
+	return new Example();
+}
+
+function _CustomFieldFunctor($data) {
+	CodeGuard::checkTypeAndThrow($data, 'array');
+	if (array_key_exists('value', $data)) {
+		return new LexiconField();
+	} elseif (array_key_exists('values', $data)) {
+		return new LexiconMultiValueField();
+	} else {
+		return new MultiText();
+	}
+}
+
 class Sense {
 
 	function __construct($liftId = '') {
@@ -14,26 +29,9 @@ class Sense {
 		$this->gloss = new MultiText();
 		$this->partOfSpeech = new LexiconField();
 		$this->semanticDomain = new LexiconMultiValueField();
-		$this->examples = new ArrayOf(
-			function($data) {
-				return new Example();
-			}
-		);
-		$this->customFields = new ArrayOf(
-			function($data) {
-				CodeGuard::checkTypeAndThrow($data, 'array');
-				if (array_key_exists('value', $data)) {
-					return new LexiconField();
-				} elseif (array_key_exists('values', $data)) {
-					return new LexiconMultiValueField();
-				} else {
-					return new MultiText();
-				}
-			}
-		);
+		$this->examples = new ArrayOf('_ExampleFunctor');
+		$this->customFields = new ArrayOf('_CustomFieldFunctor');
 		$this->authorInfo = new AuthorInfo();
-
-
 
 		$this->scientificName = new MultiText();
 		$this->anthropologyNote = new MultiText();

@@ -53,13 +53,16 @@ class LexiconProjectModel extends LfProjectModel {
 	 * @param string $name
 	 */
 	public function addInputSystem($tag, $abbr = '', $name = '') {
+		static $languages = null;
 		if (! key_exists($tag, $this->inputSystems)) {
 			if (! $abbr) {
 				$abbr = $tag;
 			}
 			if (! $name) {
 				$name = $tag;
-				$languages = new LanguageData();
+				if (!$languages) {
+					$languages = new LanguageData();
+				}
 				$languageCode = $languages->getCode($tag);
 				if (key_exists($languageCode, $languages)) {
 					$name = $languages[$languageCode]->name;
