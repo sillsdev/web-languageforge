@@ -129,7 +129,7 @@ angular.module('lexicon',
     $scope.isTaskEnabled = lexConfigService.isTaskEnabled;
 
     // used in Configuration and View Settings
-    $scope.fieldIsCustom = function fieldIsCustom(fieldName) {
+    $scope.isCustomField = function isCustomField(fieldName) {
       return fieldName.search('customField_') === 0;
     };
     
