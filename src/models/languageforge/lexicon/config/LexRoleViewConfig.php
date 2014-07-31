@@ -36,6 +36,7 @@ class LexViewFieldConfig {
 	
 	public function __construct($show = false) {
 		$this->show = $show;
+		$this->type = 'basic';
 	}
 	
 	/**
@@ -43,12 +44,18 @@ class LexViewFieldConfig {
 	 */
 	public $show;
 	
+	/**
+	 * @var string
+	 */
+	public $type;
+	
 }
 
 class LexViewMultiTextFieldConfig extends LexViewFieldConfig {
 	
 	public function __construct($show = false) {
 		parent::__construct($show);
+		$this->type = 'multitext';
 		$this->overrideInputSystems = false;
 		$this->inputSystems = new ArrayOf();
 	}
