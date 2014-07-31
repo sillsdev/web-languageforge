@@ -12,16 +12,26 @@ angular.module('palaso.ui.language', [])
         puiCode : "=",
         puiLanguage : "=",
         puiAddDisabled : "=",
-        puiSuggestedLanguages : "=",
+        puiSuggestedLanguageCodes : "=",
         puiShowLinks : "="
       },
       controller: ['$scope', '$filter', function($scope, $filter) {
         
         // TODO Enhance. Could use infinite scrolling since search can return large results. See example here http://jsfiddle.net/W6wJ2/. IJH 2014-02
-        $scope.languages = InputSystems.languages();
         $scope.currentCode = '';
         $scope.puiAddDisabled = true;
         $scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
+        $scope.allLanguages = InputSystems.languages();
+        $scope.languages = $scope.allLanguages;
+        $scope.suggestedLanguages = [];
+        angular.forEach($scope.puiSuggestedLanguageCodes, function(code) {
+          angular.forEach($scope.allLanguages, function (language) {
+            if (language.code.two === code || language.code.three === code) {
+              $scope.suggestedLanguages.push(language);
+              return;
+            }
+          });
+        });
         
         $scope.search = function search() {
           $scope.filterText = $scope.searchText;
@@ -33,7 +43,7 @@ angular.module('palaso.ui.language', [])
           $scope.searchText = '';
           $scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
           delete $scope.languages;
-          $scope.languages = InputSystems.languages();
+          $scope.languages = $scope.allLanguages;
           $scope.showSuggestions = false;
         };
         
@@ -46,7 +56,7 @@ angular.module('palaso.ui.language', [])
         
         $scope.suggest = function suggest() {
           delete $scope.languages;
-          $scope.languages = $scope.puiSuggestedLanguages;
+          $scope.languages = $scope.suggestedLanguages;
           $scope.filterText = '';
           $scope.showSuggestions = true;
         };
