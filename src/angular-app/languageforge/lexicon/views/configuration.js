@@ -2,7 +2,7 @@
 
 angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor'])
   .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 
-                             function($scope, notice, lexProjectService, ss, $filter, $modal) {
+  function($scope, notice, lexProjectService, ss, $filter, $modal) {
     lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
     $scope.configDirty = angular.copy(ss.session.projectSettings.config);
     $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
@@ -117,6 +117,9 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             }
           }
         });
+        
+        // suggested languages from lexical data
+        $scope.suggestedLanguageCodes = [];
       }
     };
     
@@ -190,6 +193,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       $scope.inputSystems[tag].variant = '';
       $scope.currentInputSystemTag = tag;
     };
+    
     $scope.removeInputSystem = function removeInputSystem(currentInputSystemTag) {
       delete $scope.inputSystems[currentInputSystemTag];
       $scope.inputSystemsList = sortInputSystemsList();
@@ -199,7 +203,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       $scope.selectInputSystem($scope.inputSystemsList[0].tag);
     };
     
-    $scope.openNewLanguageModal = function openNewLanguageModal() {
+    $scope.openNewLanguageModal = function openNewLanguageModal(suggestedLanguageCodes) {
       var modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
         controller: function($scope, $modalInstance) {
@@ -210,7 +214,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
           $scope.add = function () {
             $modalInstance.close($scope.selected);
           };
-          
+          $scope.suggestedLanguageCodes = suggestedLanguageCodes;
         }
       });
       

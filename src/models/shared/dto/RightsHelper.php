@@ -248,6 +248,7 @@ class RightsHelper
 				return $this->userHasSiteRight(Domain::USERS + Operation::VIEW_OWN);
 				
 			case 'user_updateProfile':
+			case 'check_unique_identity':
 			case 'change_password': // change_password requires additional protection in the method itself
 				return $this->userHasSiteRight(Domain::USERS + Operation::EDIT_OWN);
 			case 'project_list_dto':
