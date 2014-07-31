@@ -31,7 +31,7 @@
 						<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder"
 							data-ng-class="{selected:currentField.name == fieldName}">
 							<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
-								data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
+								data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
 								data-ng-click="selectField(fieldName)">
 								{{fieldConfig[fieldName].label}}</span>
 						</div>
@@ -43,7 +43,7 @@
 						<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder"
 							data-ng-class="{selected:currentField.name == fieldName}">
 							<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
-								data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
+								data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
 								data-ng-click="selectField(fieldName)">
 								{{fieldConfig[fieldName].label}}</span>
 						</div>
@@ -53,7 +53,7 @@
 						<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder"
 							data-ng-class="{selected:currentField.name == fieldName}">
 							<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
-								data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
+								data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
 								data-ng-click="selectField(fieldName)">
 								{{fieldConfig[fieldName].label}}</span>
 						</div>
@@ -64,7 +64,8 @@
 		
 			<!-- Right column: field view settings -->
 			<div class="span9 control-group">
-				
+
+                <pre>{{roleTab|json}}</pre>
 				<!-- settings -->
 				<div class="well">
 					<h3>{{fieldConfig[currentField.name].label}} {{'Field View Settings' | translate}}</h3>
@@ -238,7 +239,7 @@
 							<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder"
 								data-ng-class="{selected:currentField.name == fieldName}">
 								<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
-									data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
+									data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
 									data-ng-click="selectField(fieldName)">
 									{{fieldConfig[fieldName].label}}</span>
 							</div>
@@ -250,7 +251,7 @@
 							<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder"
 								data-ng-class="{selected:currentField.name == fieldName}">
 								<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
-									data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
+									data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
 									data-ng-click="selectField(fieldName)">
 									{{fieldConfig[fieldName].label}}</span>
 							</div>
@@ -260,7 +261,7 @@
 							<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder"
 								data-ng-class="{selected:currentField.name == fieldName}">
 								<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
-									data-ng-style="{'font-style': fieldIsCustom(fieldName) ? 'italic' : 'normal'}"
+									data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
 									data-ng-click="selectField(fieldName)">
 									{{fieldConfig[fieldName].label}}</span>
 							</div>
