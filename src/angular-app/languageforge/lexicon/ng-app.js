@@ -128,11 +128,6 @@ angular.module('lexicon',
     
     $scope.isTaskEnabled = lexConfigService.isTaskEnabled;
 
-    // used in Configuration and View Settings
-    $scope.isCustomField = function isCustomField(fieldName) {
-      return fieldName.search('customField_') === 0;
-    };
-    
     function changeInterfaceLanguage(code) {
       $translate.use(code);
       pristineLanguageCode = angular.copy(code);
