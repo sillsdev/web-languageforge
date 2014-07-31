@@ -24,11 +24,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 					});
 				};
 
-                $scope.isFieldEnabled = lexConfigService.isFieldEnabled;
-
-                $scope.isUncommonField = lexConfigService.isUncommonField;
-
-
+                $scope.fieldContainsData = lexConfigService.fieldContainsData;
 			}],
 			link : function(scope, element, attrs, controller) {
 			}

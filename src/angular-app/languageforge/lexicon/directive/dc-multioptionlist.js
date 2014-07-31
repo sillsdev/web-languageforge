@@ -12,10 +12,13 @@ angular.module('palaso.ui.dc.multioptionlist', [])
 			controller: ['$scope', function($scope) {
 				$scope.getDisplayName = function(value) {
                     var displayName = value;
-                    for (var i=0; i<config.values.length; i++) {
-                        if (config.values[i].key == value) {
-                            displayName = config.values[i].value;
-                            break;
+                    var optionlist = $scope.control.config.optionlists[$scope.config.listCode];
+                    if (angular.isDefined(optionlist)) {
+                        for (var i=0; i< optionlist.items.length; i++) {
+                            if (optionlist.items[i].key == value) {
+                                displayName = optionlist.items[i].value;
+                                break;
+                            }
                         }
                     }
 					return displayName;

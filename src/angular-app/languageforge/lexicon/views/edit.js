@@ -3,25 +3,14 @@
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry',
     'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window',
-        '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location',
-function ($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location) {
+        '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService',
+function ($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location, configService) {
 
-    // redefine the $location.path function as per http://joelsaupe.com/programming/angularjs-change-path-without-reloading/
-    var originalPathFunction = $location.path;
-    $location.path = function (path, reload) {
-        if (reload === false) {
-            var lastRoute = $route.current;
-            var un = $rootScope.$on('$locationChangeSuccess', function () {
-                $route.current = lastRoute;
-                un();
-            });
-        }
-        return originalPathFunction.apply($location, [path]);
-    };
+    // TODO use ui-router for this instead!
 
     var pristineEntry = {};
     var browserInstanceId = Math.floor(Math.random() * 1000);
-    $scope.config = $scope.projectSettings.config;
+    $scope.config = configService.getConfigForUser();
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
     $scope.state = 'list'; // default state.  State is one of 'list', 'edit', or 'comment'
@@ -246,7 +235,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             setCurrentEntry($scope.entries[getEntryIndexInList(id, $scope.entries)]);
 		}
         $scope.state = 'edit';
-        $location.path('/dbe/' + id, false);
+        //$location.path('/dbe/' + id, false);
 	};
 
 	$scope.newEntry = function newEntry() {
@@ -257,7 +246,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         $scope.show.initial();
         scrollListToEntry('', 'top');
         $scope.state = 'edit';
-        $location.path('/dbe', false);
+        //$location.path('/dbe', false);
 	};
 	
 	$scope.entryLoaded = function entryLoaded() {
@@ -268,7 +257,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
          $scope.saveCurrentEntry();
          setCurrentEntry();
          $scope.state = 'list';
-         $location.path('/dbe', false);
+         //$location.path('/dbe', false);
      };
 
     function removeEntryFromLists(id) {
@@ -494,6 +483,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
     function evaluateState() {
         var match, path = $location.path();
+        // TODO implement this using ui-router!!!
 
         var goToState = function goToState() {
             match = /dbe\/(.+)\/comments/.exec(path);
@@ -525,7 +515,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     $scope.showComments = function showComments(fieldName) {
         $scope.saveCurrentEntry();
         $scope.state = 'comment';
-        $location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);
+        //$location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);
     };
 
     // only refresh the full view if we have not yet loaded the dictionary for the first time

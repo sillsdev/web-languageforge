@@ -9,7 +9,7 @@
         </div>
         <div>
             <a ng-show="state == 'edit'" style="color:white" class="btn btn-warning" ng-click="showComments()" tooltip="{{'Show Comments'|translate}}">
-                <span ng-show="getFieldCommentCount() > 1">
+                <span ng-if="getFieldCommentCount() > 1">
                     {{getFieldCommentCount()}} {{'Comments'|translate}}
                 </span>
                 <span ng-hide="getFieldCommentCount() > 1">
@@ -21,19 +21,19 @@
 
 
     <!-- entry list view -->
-    <div id="lexAppListView" ng-show="state == 'list'">
+    <div id="lexAppListView" ng-if="state == 'list'">
         <div class="lexiconHeaderContainer">
             <div class="lexiconHeaderItem">
                 <button class="btn btn-success" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
             </div>
             <div ng-hide="show.entries.length === 0" style="width:340px;" class="lexiconHeaderItem">
                 <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
-                    <ul ng-show="typeahead.searchResults.length > 0">
+                    <ul ng-if="typeahead.searchResults.length > 0">
                         <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
                             <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
                             <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
                         </li>
-                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-show="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
+                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
                     </ul>
                 </typeahead>
             </div>
@@ -51,7 +51,7 @@
 
 
     <!-- edit view -->
-    <div id="lexAppEditView" ng-show="state == 'edit'">
+    <div id="lexAppEditView" ng-if="state == 'edit'">
         <div style="flex: 1; border-right: 1px #dcdcdc solid">
             <div style="margin: 5px 5px 5px 0">
                 <button class="btn btn-success btn-small" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
@@ -59,21 +59,20 @@
             </div>
             <div style="margin: 5px 5px 5px 0">
                 <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
-                    <ul ng-show="typeahead.searchResults.length > 0">
+                    <ul ng-if="typeahead.searchResults.length > 0">
                         <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
                             <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
                             <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
                         </li>
-                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-show="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
+                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
                     </ul>
                 </typeahead>
             </div>
             <div style="margin-right: 10px; display:flex; flex-direction: column">
                 <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
                     <div id="entryId_{{entry.id}}" ng-class="{selected: entry.id == currentEntry.id}" title="{{getCompactItemListOverlay(entry)}}" class="lexiconListItemCompact" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntry(entry.id)">
-                        <div class="listItemPrimary" ng-bind-html="getWordForDisplay(entry)"></div>
-                        <div class="listItemSecondary" ng-bind-html="getMeaningForDisplay(entry)"></div>
-
+                        <div dir="auto" class="listItemPrimary" ng-bind-html="getWordForDisplay(entry)"></div>
+                        <div dir="auto" class="listItemSecondary" ng-bind-html="getMeaningForDisplay(entry)"></div>
                     </div>
                 </div>
             </div>
@@ -81,15 +80,15 @@
 
         <div style="flex: 4;padding:5px;display: flex; flex-direction: column">
             <div style="margin-bottom: 5px; border-bottom: solid black 1px">
-                <div ng-show="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
-                    <button data-ng-show="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
+                <div ng-if="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
+                    <button data-ng-if="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
                     <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
                     <span style="color: grey;">{{saveNotice()}}</span>
                 </div>
                 <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
             </div>
             <div style="margin-top:5px">
-                <div class="entryItemView" data-ng-show="entryLoaded()">
+                <div class="entryItemView" data-ng-if="entryLoaded()">
                     <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
                 </div>
             </div>
@@ -102,24 +101,29 @@
         </div>
     </div>
     -->
+    <div class="row">
+        <div class="span10">
+            <pre>config {{config|json}}</pre>
+        </div>
+    </div>
 
 
     <!-- comment view -->
-    <div id="lexAppCommentView" ng-show="state == 'comment'">
+    <div id="lexAppCommentView" ng-if="state == 'comment'">
         <div style="flex: 10;padding:5px;display: flex; flex-direction: column">
             <div style="margin-bottom: 5px; border-bottom: solid black 1px">
                 <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
             </div>
             <div style="margin-top:5px">
-                <div class="entryItemView" data-ng-show="entryLoaded()">
+                <div class="entryItemView" data-ng-if="entryLoaded()">
                     <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
                 </div>
             </div>
         </div>
         <div style="flex: 9;padding:5px;display: flex; flex-direction: column">
             <div style="margin-bottom: 5px; border-bottom: solid black 1px">
-                <div ng-show="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
-                    <button data-ng-show="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
+                <div ng-if="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
+                    <button data-ng-if="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
                     <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
                     <span style="color: grey;">{{saveNotice()}}</span>
                 </div>
@@ -128,7 +132,7 @@
                 <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
             </div>
             <div style="margin-top:5px">
-                <div class="entryItemView" data-ng-show="entryLoaded()">
+                <div class="entryItemView" data-ng-if="entryLoaded()">
                     <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
                 </div>
             </div>
