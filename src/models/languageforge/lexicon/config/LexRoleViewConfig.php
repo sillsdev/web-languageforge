@@ -9,7 +9,11 @@ class LexRoleViewConfig {
 	
 	public function __construct() {
 		$this->fields = new MapOf(function($data) {
-			return new LexViewFieldConfig();
+			if (array_key_exists('overrideInputSystems', $data)) {
+				return new LexViewMultiTextFieldConfig();
+			} else {
+				return new LexViewFieldConfig();
+			}
 		});
 		$this->showTasks = new MapOf();
 	}
@@ -30,16 +34,24 @@ class LexRoleViewConfig {
 
 class LexViewFieldConfig {
 	
-	public function __construct() {
-		$this->show = true;
-		$this->overrideInputSystems = false;
-		$this->inputSystems = new ArrayOf();
+	public function __construct($show = false) {
+		$this->show = $show;
 	}
 	
 	/**
 	 * @var bool
 	 */
 	public $show;
+	
+}
+
+class LexViewMultiTextFieldConfig extends LexViewFieldConfig {
+	
+	public function __construct($show = false) {
+		parent::__construct($show);
+		$this->overrideInputSystems = false;
+		$this->inputSystems = new ArrayOf();
+	}
 	
 	/**
 	 * @var bool
