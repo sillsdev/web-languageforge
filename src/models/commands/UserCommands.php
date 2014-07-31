@@ -430,12 +430,16 @@ class UserCommands {
 		$identityCheck = UserCommands::checkIdentity('', $toEmail, $website);
 		if ($identityCheck->emailExists) {
 			$newUser->readByProperty('email', $toEmail);
+		}
 
-			// Determine if user is already a member of the project
-			if ($project->userIsMember($newUser->id->asString())) {
-				throw new \Exception("User is already a member of this project");
-				return $newUser->id;
-			}
+		// Make sure the user exists on the site
+		if (!$newUser->hasRoleOnSite($website)) {
+			$newUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
+		}
+
+		// Determine if user is already a member of the project
+		if ($project->userIsMember($newUser->id->asString())) {
+			return $newUser->id;
 		}
 
 		// Add the user to the project
@@ -444,9 +448,12 @@ class UserCommands {
 		$project->addUser($userId, ProjectRoles::CONTRIBUTOR);
 		$project->write();
 
-		// Email communication with new user
 		if (!$identityCheck->emailExists) {
+			// Email communication with new user
 			Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
+		} else {
+			// Tell existing user they're now part of the project
+			Communicate::sendAddedToProject($inviterUser, $newUser, $website, $project, $delivery);
 		}
 		return $userId;
     }
