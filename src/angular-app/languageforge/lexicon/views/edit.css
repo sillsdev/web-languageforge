@@ -277,3 +277,22 @@ legend.override-bootstrap {
     width: 120px;
     text-align: right;
 }
+
+div.commentListContainer {
+
+}
+
+div.newCommentForm {
+    padding-bottom:10px;
+    border-bottom: 1px solid #d8d8d8;
+}
+
+div.newCommentForm textarea {
+    width:300px;
+
+}
+div.newCommentForm button {
+    height:25px;
+    width:70px;
+    margin-top:30px
+}

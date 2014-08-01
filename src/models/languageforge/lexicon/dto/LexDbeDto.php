@@ -30,6 +30,11 @@ class LexDbeDto {
         $commentsModel = new LexCommentListModel($project, $lastFetchTime);
         $commentsModel->read();
 
+        // fix up entryRef - maybe move this to a custom encoder?
+        foreach ($commentsModel->entries as $key => $comment) {
+            $commentsModel->entries[$key]['entryRef'] = $commentsModel->entries[$key]['entryRef']->{'$id'};
+        }
+
         if (!is_null($lastFetchTime)) {
             $deletedEntriesModel = new LexDeletedEntryListModel($project, $lastFetchTime);
             $deletedEntriesModel->read();
