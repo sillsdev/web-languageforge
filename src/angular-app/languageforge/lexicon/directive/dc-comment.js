@@ -1,13 +1,12 @@
-angular.module('palaso.ui.dc.comments', ['angularjs-gravatardirective'])
+angular.module('palaso.ui.dc.comment', ['angularjs-gravatardirective'])
 // Palaso UI Dictionary Control: Comments
 .directive('dcComments', [function() {
 	return {
 		restrict: 'E',
-		templateUrl: '/angular-app/languageforge/lexicon/directive/dc-comments.html',
+		templateUrl: '/angular-app/languageforge/lexicon/directive/dc-comment.html',
 		scope: {
 			config : "=",
 			model : "=",
-			submitComment : "&submit",
 			control: "="
 		},
 		controller: ['$scope', function($scope) {
