@@ -444,11 +444,11 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         }
         
         angular.forEach($scope.configDirty.roleViews, function(roleView) {
-          roleView.fields[customFieldName] = customViewField;
+          roleView.fields[customFieldName] = angular.copy(customViewField);
         });
         $scope.configDirty.roleViews['project_manager'].fields[customFieldName].show = true;
         angular.forEach($scope.configDirty.userViews, function(userView) {
-          userView.fields[customFieldName] = customViewField;
+          userView.fields[customFieldName] = angular.copy(customViewField);
         });
         
         $scope.selectField(customFieldName);
