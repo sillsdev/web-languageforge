@@ -69,7 +69,6 @@
 			<!-- Right column: field view settings -->
 			<div class="span9 control-group">
 
-                <pre>{{roleTab|json}}</pre>
 				<!-- settings -->
 				<div class="well">
 					<h3>{{fieldConfig[currentField.name].label}} {{'Field View Settings' | translate}}</h3>
@@ -118,7 +117,7 @@
 						</div>
 					</div>
 				</div>
-			
+				
 			</div>
 		
 			</div>
@@ -298,7 +297,7 @@
 							<br />
 						</div>
 						<div class="control-group" 
-							data-ng-show="roleTab.view.fields[currentField.name].type === 'multitext'">
+							data-ng-show="configDirty.userViews[currentUserId].fields[currentField.name].type === 'multitext'">
 							<div class="controls">
 								<label class="checkbox {{interfaceConfig.pullNormal}}">
 									<input type="checkbox" 
@@ -392,8 +391,12 @@
 <pre>
 currentField {{currentField | json}}
 configDirty.roleViews {{configDirty.roleViews | json}}
-currentUserId {{currentUserId | json}}
-configDirty.userViews {{configDirty.userViews | json}}
 </pre>
  -->
+<!-- 
+<pre>
+currentUserId {{currentUserId | json}}
+configDirty.userViews {{configDirty.userViews | json}}
 </div>
+</pre>
+ -->

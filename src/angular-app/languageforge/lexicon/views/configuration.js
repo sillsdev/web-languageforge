@@ -391,21 +391,30 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       
       modalInstance.result.then(function(newCustomData) {
         var customField = {}, 
+          customViewField = {}, 
           customFieldName = 'customField_' + newCustomData.level + '_' + newCustomData.code;
         customField.label = newCustomData.name;   
         customField.type = newCustomData.type;
         customField.hideIfEmpty = false;
+        customViewField.type = 'basic';
+        customViewField.show = false;
         switch (newCustomData.type) {
           case 'multitext':
             customField.displayMultiline = false;
             customField.width = 20;
-            customField.inputSystems = [];
+            customField.inputSystems = [$scope.inputSystemsList[0].tag];
+            customViewField.type = 'multitext';
+            customViewField.overrideInputSystems = false;
+            customViewField.inputSystems = [];
             break;
           case 'multitextlines':
             customField.type = 'multitext';
             customField.displayMultiline = true;
             customField.width = 20;
-            customField.inputSystems = [];
+            customField.inputSystems = [$scope.inputSystemsList[0].tag];
+            customViewField.type = 'multitext';
+            customViewField.overrideInputSystems = false;
+            customViewField.inputSystems = [];
             break;
         }
         
@@ -433,6 +442,16 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
               $scope.configDirty.entry.fieldOrder.push(customFieldName);
             }
         }
+        
+        angular.forEach($scope.configDirty.roleViews, function(roleView) {
+          roleView.fields[customFieldName] = customViewField;
+        });
+        $scope.configDirty.roleViews['project_manager'].fields[customFieldName].show = true;
+        angular.forEach($scope.configDirty.userViews, function(userView) {
+          userView.fields[customFieldName] = customViewField;
+        });
+        
+        $scope.selectField(customFieldName);
         $scope.configForm.$setDirty();
       });
     };
