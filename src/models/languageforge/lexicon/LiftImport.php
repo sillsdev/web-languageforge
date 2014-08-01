@@ -48,7 +48,7 @@ class LiftImport {
 					if (self::differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
 						if ($mergeRule == LiftMergeRule::CREATE_DUPLICATES) {
 							$entry = new LexEntryModel($projectModel);
-							$liftDecoder->decode($projectModel, $sxeNode, $entry, $mergeRule);
+							$liftDecoder->decode($sxeNode, $entry, $mergeRule);
 							$entry->guid = '';
 							$entry->write();
 						} else {
@@ -68,7 +68,8 @@ class LiftImport {
 				} else {
  					if (isset($sxeNode->{'lexical-unit'})) {
  						$entry = new LexEntryModel($projectModel);
-						$entry->write();
+						$liftDecoder->decode($sxeNode, $entry, $mergeRule);
+ 						$entry->write();
  					}
 				}
 			}
