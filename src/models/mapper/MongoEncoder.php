@@ -105,7 +105,7 @@ class MongoEncoder {
 	 * Replace '.' with '___DOT___'
 	 * @param string key
 	 */
-	public function encodeDollarDot(&$key) {
+	public static function encodeDollarDot(&$key) {
 		if (strpos($key, '$') > -1) {
 			$key = str_replace('$', '___DOLLAR___', $key);
 		}
