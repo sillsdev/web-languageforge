@@ -293,7 +293,7 @@ class TestApiCrud extends UnitTestCase {
 		$this->assertEqual($result['id'], $id);
 
 		// typeahead
-		$result = $e->json(UserCommands::userTypeaheadList('ome'));
+		$result = $e->json(UserCommands::userTypeaheadList('ome', '', $e->e->website));
 		$this->assertTrue($result['count'] > 0);
 		
 		// change password

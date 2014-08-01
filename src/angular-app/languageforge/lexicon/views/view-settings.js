@@ -83,9 +83,9 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         'selecteds': {}
       }
     };
-    $scope.selectField = function selectField(fieldName) {
+    $scope.selectField = function selectField(fieldName, view) {
       if ($scope.currentField.name !== fieldName) {
-        var inputSystems = $scope.fieldConfig[fieldName].inputSystems;
+        var inputSystems = view.fields[fieldName].inputSystems;
         
         $scope.currentField.name = fieldName;
         
@@ -105,7 +105,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         }
       }
     };
-    $scope.selectField('lexeme');
+    $scope.selectField('lexeme', $scope.configDirty.roleViews['observer']);
     
     $scope.moveUp = function moveUp(currentTag) {
       var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
@@ -224,6 +224,39 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         items.splice(itemIndex, 1);
       }
     };
+    
+    function activeTabRole() {
+      var active = $scope.roleTabs.filter(function(roletab) {
+          return roletab.active;
+        })[0];
+      if (angular.isUndefined(active)) return false;
+      return active.role;
+    };
+    
+    $scope.$watchCollection('currentField.inputSystems.selecteds', function(newValue) {
+      if (angular.isDefined(newValue)) {
+        var role = activeTabRole();
+        if (role) {
+          if (angular.isDefined($scope.configDirty.roleViews[role].fields[$scope.currentField.name].inputSystems)) {
+            $scope.configDirty.roleViews[role].fields[$scope.currentField.name].inputSystems = [];
+            angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
+              if ($scope.currentField.inputSystems.selecteds[tag]) {
+                $scope.configDirty.roleViews[role].fields[$scope.currentField.name].inputSystems.push(tag);
+              }
+            });
+          }
+        } else {
+          if (angular.isDefined($scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems)) {
+            $scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems = [];
+            angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
+              if ($scope.currentField.inputSystems.selecteds[tag]) {
+                $scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems.push(tag);
+              }
+            });
+          }
+        }
+      }
+    });
     
   }])
   ;

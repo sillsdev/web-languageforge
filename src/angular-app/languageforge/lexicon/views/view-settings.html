@@ -34,7 +34,7 @@
 							data-ng-class="{selected:currentField.name == fieldName}">
 							<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 								data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-								data-ng-click="selectField(fieldName)">
+								data-ng-click="selectField(fieldName, roleTab.view)">
 								{{fieldConfig[fieldName].label}}</span>
 						</div>
 					</div></dd>
@@ -48,7 +48,7 @@
 							data-ng-class="{selected:currentField.name == fieldName}">
 							<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 								data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-								data-ng-click="selectField(fieldName)">
+								data-ng-click="selectField(fieldName, roleTab.view)">
 								{{fieldConfig[fieldName].label}}</span>
 						</div>
 					</div></dd>
@@ -58,7 +58,7 @@
 							data-ng-class="{selected:currentField.name == fieldName}">
 							<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 								data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-								data-ng-click="selectField(fieldName)">
+								data-ng-click="selectField(fieldName, roleTab.view)">
 								{{fieldConfig[fieldName].label}}</span>
 						</div>
 					</div></dd>
@@ -69,7 +69,6 @@
 			<!-- Right column: field view settings -->
 			<div class="span9 control-group">
 
-                <pre>{{roleTab|json}}</pre>
 				<!-- settings -->
 				<div class="well">
 					<h3>{{fieldConfig[currentField.name].label}} {{'Field View Settings' | translate}}</h3>
@@ -83,42 +82,43 @@
 						</div>
 						<br />
 					</div>
-					<div class="control-group" 
-						data-ng-show="roleTab.view.fields[currentField.name].type === 'multitext'">
-						<div class="controls">
-							<label class="checkbox {{interfaceConfig.pullNormal}}">
-								<input type="checkbox" 
-									data-ng-model="roleTab.view.fields[currentField.name].overrideInputSystems"/>
-								{{'Override Input Systems' | translate}}</label>
-							<br />
-						</div>
-					</div>
-					<div data-ng-show="roleTab.view.fields[currentField.name].overrideInputSystems">
-						<hr />
-						<div class="row outer-flex control-group">
-							<div class="span3 picklists">
-								<label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
-								<ul class="unstyled indent1"  id="inputSystem">
-									<li data-ng-click="currentField.inputSystems.tag = inputSystemTag" 
-										data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" 
-										data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
-										<div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
-											{{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
-									</li>
-								</ul>
+					<div data-ng-show="roleTab.view.fields[currentField.name].type === 'multitext'">
+						<div class="control-group">
+							<div class="controls">
+								<label class="checkbox {{interfaceConfig.pullNormal}}">
+									<input type="checkbox" 
+										data-ng-model="roleTab.view.fields[currentField.name].overrideInputSystems"/>
+									{{'Override Input Systems' | translate}}</label>
+								<br />
 							</div>
-							<div class="span1 btn-group btn-group-vertical">
-								<button class="btn" data-ng-click="moveUp(currentField.inputSystems.tag)" 
-									data-ng-disabled="currentField.inputSystems.fieldOrder[0] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
-									&nbsp;&nbsp;<i class="icon-arrow-up"></i></button>
-								<button class="btn" data-ng-click="moveDown(currentField.inputSystems.tag)" 
-									data-ng-disabled="currentField.inputSystems.fieldOrder[currentField.inputSystems.fieldOrder.length - 1] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
-									&nbsp;&nbsp;<i class="icon-arrow-down"></i></button>
+						</div>
+						<div data-ng-show="roleTab.view.fields[currentField.name].overrideInputSystems">
+							<hr />
+							<div class="row outer-flex control-group">
+								<div class="span3 picklists">
+									<label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
+									<ul class="unstyled indent1"  id="inputSystem">
+										<li data-ng-click="currentField.inputSystems.tag = inputSystemTag" 
+											data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" 
+											data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
+											<div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
+												{{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
+										</li>
+									</ul>
+								</div>
+								<div class="span1 btn-group btn-group-vertical">
+									<button class="btn" data-ng-click="moveUp(currentField.inputSystems.tag)" 
+										data-ng-disabled="currentField.inputSystems.fieldOrder[0] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
+										&nbsp;&nbsp;<i class="icon-arrow-up"></i></button>
+									<button class="btn" data-ng-click="moveDown(currentField.inputSystems.tag)" 
+										data-ng-disabled="currentField.inputSystems.fieldOrder[currentField.inputSystems.fieldOrder.length - 1] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
+										&nbsp;&nbsp;<i class="icon-arrow-down"></i></button>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			
+				
 			</div>
 		
 			</div>
@@ -249,7 +249,7 @@
 								data-ng-class="{selected:currentField.name == fieldName}">
 								<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 									data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-									data-ng-click="selectField(fieldName)">
+									data-ng-click="selectField(fieldName, configDirty.userViews[currentUserId])">
 									{{fieldConfig[fieldName].label}}</span>
 							</div>
 						</div></dd>
@@ -263,7 +263,7 @@
 								data-ng-class="{selected:currentField.name == fieldName}">
 								<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 									data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-									data-ng-click="selectField(fieldName)">
+									data-ng-click="selectField(fieldName, configDirty.userViews[currentUserId])">
 									{{fieldConfig[fieldName].label}}</span>
 							</div>
 						</div></dd>
@@ -273,7 +273,7 @@
 								data-ng-class="{selected:currentField.name == fieldName}">
 								<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 									data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-									data-ng-click="selectField(fieldName)">
+									data-ng-click="selectField(fieldName, configDirty.userViews[currentUserId])">
 									{{fieldConfig[fieldName].label}}</span>
 							</div>
 						</div></dd>
@@ -297,37 +297,38 @@
 							</div>
 							<br />
 						</div>
-						<div class="control-group" 
-							data-ng-show="roleTab.view.fields[currentField.name].type === 'multitext'">
-							<div class="controls">
-								<label class="checkbox {{interfaceConfig.pullNormal}}">
-									<input type="checkbox" 
-										data-ng-model="configDirty.userViews[currentUserId].fields[currentField.name].overrideInputSystems"/>
-									{{'Override Input Systems' | translate}}</label>
-								<br />
-							</div>
-						</div>
-						<div data-ng-show="configDirty.userViews[currentUserId].fields[currentField.name].overrideInputSystems">
-							<hr />
-							<div class="row outer-flex control-group">
-								<div class="span3 picklists">
-									<label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
-									<ul class="unstyled indent1"  id="inputSystem">
-										<li data-ng-click="currentField.inputSystems.tag = inputSystemTag" 
-											data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" 
-											data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
-											<div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
-												{{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
-										</li>
-									</ul>
+						<div data-ng-show="configDirty.userViews[currentUserId].fields[currentField.name].type === 'multitext'">
+							<div class="control-group">
+								<div class="controls">
+									<label class="checkbox {{interfaceConfig.pullNormal}}">
+										<input type="checkbox" 
+											data-ng-model="configDirty.userViews[currentUserId].fields[currentField.name].overrideInputSystems"/>
+										{{'Override Input Systems' | translate}}</label>
+									<br />
 								</div>
-								<div class="span1 btn-group btn-group-vertical">
-									<button class="btn" data-ng-click="moveUp(currentField.inputSystems.tag)" 
-										data-ng-disabled="currentField.inputSystems.fieldOrder[0] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
-										&nbsp;&nbsp;<i class="icon-arrow-up"></i></button>
-									<button class="btn" data-ng-click="moveDown(currentField.inputSystems.tag)" 
-										data-ng-disabled="currentField.inputSystems.fieldOrder[currentField.inputSystems.fieldOrder.length - 1] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
-										&nbsp;&nbsp;<i class="icon-arrow-down"></i></button>
+							</div>
+							<div data-ng-show="configDirty.userViews[currentUserId].fields[currentField.name].overrideInputSystems">
+								<hr />
+								<div class="row outer-flex control-group">
+									<div class="span3 picklists">
+										<label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
+										<ul class="unstyled indent1"  id="inputSystem">
+											<li data-ng-click="currentField.inputSystems.tag = inputSystemTag" 
+												data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" 
+												data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
+												<div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
+													{{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
+											</li>
+										</ul>
+									</div>
+									<div class="span1 btn-group btn-group-vertical">
+										<button class="btn" data-ng-click="moveUp(currentField.inputSystems.tag)" 
+											data-ng-disabled="currentField.inputSystems.fieldOrder[0] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
+											&nbsp;&nbsp;<i class="icon-arrow-up"></i></button>
+										<button class="btn" data-ng-click="moveDown(currentField.inputSystems.tag)" 
+											data-ng-disabled="currentField.inputSystems.fieldOrder[currentField.inputSystems.fieldOrder.length - 1] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
+											&nbsp;&nbsp;<i class="icon-arrow-down"></i></button>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -390,10 +391,11 @@
 </form>
 <!-- 
 <pre>
+currentUserId {{currentUserId | json}}
 currentField {{currentField | json}}
 configDirty.roleViews {{configDirty.roleViews | json}}
-currentUserId {{currentUserId | json}}
 configDirty.userViews {{configDirty.userViews | json}}
 </pre>
  -->
 </div>
+
