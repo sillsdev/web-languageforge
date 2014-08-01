@@ -356,10 +356,9 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             }
           };
           $scope.selects.type = {
-              'optionsOrder': ['multitext', 'multitextlines', 'optionlist', 'multioptionlist'],
+              'optionsOrder': ['multitext', 'optionlist', 'multioptionlist'],
               'options': {
-                'multitext'       : $filter('translate')('Single-line Text'),
-                'multitextlines'  : $filter('translate')('Multi-paragraph Text'),
+                'multitext'       : $filter('translate')('Multi-Input-System Text'),
                 'optionlist'      : $filter('translate')('Option List'),
                 'multioptionlist' : $filter('translate')('Multi-option List'),
                 'reference'       : $filter('translate')('Entry Reference'),
@@ -399,24 +398,13 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         customField.hideIfEmpty = false;
         customViewField.type = 'basic';
         customViewField.show = false;
-        switch (newCustomData.type) {
-          case 'multitext':
-            customField.displayMultiline = false;
-            customField.width = 20;
-            customField.inputSystems = [$scope.inputSystemsList[0].tag];
-            customViewField.type = 'multitext';
-            customViewField.overrideInputSystems = false;
-            customViewField.inputSystems = [];
-            break;
-          case 'multitextlines':
-            customField.type = 'multitext';
-            customField.displayMultiline = true;
-            customField.width = 20;
-            customField.inputSystems = [$scope.inputSystemsList[0].tag];
-            customViewField.type = 'multitext';
-            customViewField.overrideInputSystems = false;
-            customViewField.inputSystems = [];
-            break;
+        if (newCustomData.type === 'multitext') {
+          customField.displayMultiline = false;
+          customField.width = 20;
+          customField.inputSystems = [$scope.inputSystemsList[0].tag];
+          customViewField.type = 'multitext';
+          customViewField.overrideInputSystems = false;
+          customViewField.inputSystems = [];
         }
         
         switch (newCustomData.level) {
@@ -445,11 +433,11 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         }
         
         angular.forEach($scope.configDirty.roleViews, function(roleView) {
-          roleView.fields[customFieldName] = customViewField;
+          roleView.fields[customFieldName] = angular.copy(customViewField);
         });
         $scope.configDirty.roleViews['project_manager'].fields[customFieldName].show = true;
         angular.forEach($scope.configDirty.userViews, function(userView) {
-          userView.fields[customFieldName] = customViewField;
+          userView.fields[customFieldName] = angular.copy(customViewField);
         });
         
         $scope.selectField(customFieldName);
