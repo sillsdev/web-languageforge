@@ -118,8 +118,9 @@ angular.module('lexicon',
     $scope.project = ss.session.project;
     $scope.projectSettings = ss.session.projectSettings;
     
-    // persist the entries array across all controllers
-    $scope.entries = []; 
+    // persist the entries and comments array across all controllers
+    $scope.entries = [];
+    $scope.comments = [];
     
     $scope.currentUserRole = ss.session.projectSettings.currentUserRole;
     $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;

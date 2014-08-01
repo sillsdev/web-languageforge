@@ -21,19 +21,24 @@ class LexDbeDto {
      * @return array
      */
 	public static function encode($projectId, $lastFetchTime = null) {
+        $data = array();
 		$project = new LexiconProjectModel($projectId);
 		$entriesModel = new LexEntryListModel($project, $lastFetchTime);
 		$entriesModel->readForDto();
 		$entries = $entriesModel->entries;
 
-        $deletedEntriesModel = new LexDeletedEntryListModel($project, $lastFetchTime);
-        $deletedEntriesModel->read();
-
         $commentsModel = new LexCommentListModel($project, $lastFetchTime);
         $commentsModel->read();
 
-        $deletedCommentsModel = new LexDeletedCommentListModel($project, $lastFetchTime);
-        $deletedCommentsModel->read();
+        if (!is_null($lastFetchTime)) {
+            $deletedEntriesModel = new LexDeletedEntryListModel($project, $lastFetchTime);
+            $deletedEntriesModel->read();
+            $data['deletedEntryIds'] = array_map(function ($e) {return $e['id']; }, $deletedEntriesModel->entries);
+
+            $deletedCommentsModel = new LexDeletedCommentListModel($project, $lastFetchTime);
+            $deletedCommentsModel->read();
+            $data['deletedCommentIds'] = array_map(function ($c) {return $c['id']; }, $deletedCommentsModel->entries);
+        }
 
         $lexemeInputSystems = $project->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems;
 
@@ -59,11 +64,8 @@ class LexDbeDto {
 
 
 
-		$data = array();
 		$data['entries'] = $entries;
-        $data['deletedEntryIds'] = array_map(function ($e) {return $e['id']; }, $deletedEntriesModel->entries);
         $data['comments'] = $commentsModel->entries;
-        $data['deletedCommentIds'] = array_map(function ($c) {return $c['id']; }, $deletedCommentsModel->entries);
         $data['timeOnServer'] = time(); // future use for offline syncing
 
 		return $data;

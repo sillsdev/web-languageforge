@@ -3,8 +3,8 @@
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry',
     'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window',
-        '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService',
-function ($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location, configService) {
+        '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
+function ($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location, configService, commentService) {
 
     // TODO use ui-router for this instead!
 
@@ -13,6 +13,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     $scope.config = configService.getConfigForUser();
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
+    $scope.currentEntryComments = {};
+    $scope.currentEntryCommentCounts = {total:0, fields:{}};
     $scope.state = 'list'; // default state.  State is one of 'list', 'edit', or 'comment'
     $scope.showUncommonFields = false;
     $scope.commentsFilter = '';
@@ -533,11 +535,191 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       // Comments View
+
     $scope.showComments = function showComments(fieldName) {
         $scope.saveCurrentEntry();
         $scope.state = 'comment';
+        loadCurrentEntryComments();
         //$location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);
     };
+
+    function loadCurrentEntryComments() {
+        var comments = {};
+        var count = {total:0, fields:{}};
+        for (var i=0; i<$scope.comments.length; i++) {
+            var c = $scope.comments[i];
+            var fieldName = c.regarding.fieldName;
+            if (c.entryRef == $scope.currentEntry.id) {
+                if (angular.isUndefined(comments[fieldName])) {
+                    comments[fieldName] = [];
+                }
+                if (angular.isUndefined(count.fields[fieldName])) {
+                    count.fields[fieldName] = 0;
+                }
+
+                // add comment to the correct 'field' container
+                comments[fieldName].push(comment);
+
+                // update the appropriate count for this field
+                // and update the total count
+                if (c.status != 'resolved') {
+                    count.fields[fieldName]++;
+                    count.total++;
+                }
+            }
+        }
+        $scope.currentEntryComments = comments;
+        $scope.currentEntryCommentCounts = count;
+    }
+
+    function _deleteCommentInList(commentId, replyId, list) {
+       var deleteComment = true;
+       if (angular.isDefined(replyId)) {
+           deleteComment = false;
+       }
+       for (var i=list.length; i>0; i--) {
+           var c = list[i];
+           if (deleteComment) {
+               if (c.id == commentId) {
+                   list.splice(i, 1);
+               }
+           } else {
+
+               // delete Reply
+               for (var j=c.replies.length; j>0; j--) {
+                   var r = c.replies[j];
+                   if (r.id == replyId) {
+                       c.replies.splie(j, 1);
+                   }
+               }
+           }
+       }
+    }
+
+    function removeCommentFromLists(commentId, replyId) {
+        _deleteCommentInList(commentId, replyId, $scope.comments);
+
+        angular.forEach($scope.currentEntryComments, function(commentsListByField) {
+            _deleteCommentInList(commentId, replyId, commentsListByField);
+        });
+    }
+
+    $scope.updateComment = function updateComment(comment) {
+       commentService.update(comment, function(result) {
+           if (result.ok) {
+               refreshData(false, function() {
+                   loadCurrentEntryComments();
+               });
+           }
+       });
+    };
+
+    $scope.deleteComment = function deleteComment(commentId) {
+       commentService.delete(commentId, function(result) {
+           if (result.ok) {
+               refreshData(false, function() {
+                   loadCurrentEntryComments();
+               });
+           }
+       });
+       removeCommentFromLists(commentId);
+    };
+
+    $scope.updateReply = function updateReply(commentId, reply) {
+       commentService.updateReply(commentId, reply, function(result) {
+           if (result.ok) {
+               refreshData(false, function() {
+                   loadCurrentEntryComments();
+               });
+           }
+       });
+    };
+
+    $scope.plusOneComment = function plusOneComment(commentId) {
+       commentService.plusOne(commentId, function(result) {
+           if (result.ok) {
+               refreshData(false, function() {
+                   loadCurrentEntryComments();
+               });
+           }
+       });
+    };
+
+    $scope.deleteCommentReply = function deleteCommentReply(commentId, replyId) {
+        commentService.deleteReply(commentId, replyId, function(result) {
+            if (result.ok) {
+                refreshData(false, function () {
+                    loadCurrentEntryComments();
+                });
+            }
+        });
+        removeCommentFromLists(commentId, replyId);
+    };
+
+    $scope.updateCommentStatus = function updateCommentStatus(commentId, status) {
+       commentService.updateStatus(commentId, status, function(result) {
+           if (result.ok) {
+               refreshData(false, function() {
+                   loadCurrentEntryComments();
+               });
+           }
+       });
+    };
+
+    /* Note: currentEntryComments has the following structure:
+    {
+    'lexeme': [array of comment objects],
+    'definition': [array of comment objects],
+    etc.
+    }
+
+    currentEntryCommentCounts has the following structure:
+    {
+    'total': int total count
+    'fields': {
+        'lexeme': int count of comments for lexeme field,
+        'definition': int count of comments for definition field,
+        }
+    }
+    */
+
+
+    $scope.getFieldCommentCount = function getFieldCommentCount(fieldName) {
+        var count = 0;
+        if (fieldName) {
+            if (angular.isDefined($scope.currentEntryCommentCounts.fields[fieldName])) {
+                count = $scope.currentEntryCommentCounts.fields[fieldName];
+            }
+        } else {
+            count = $scope.currentEntryCommentCounts.total;
+        }
+        return count;
+    };
+
+
+
+
+
 
     // only refresh the full view if we have not yet loaded the dictionary for the first time
 
@@ -678,20 +860,6 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		});
 		return startAt;
 	};
-
-
-    // todo implement this
-    $scope.getFieldCommentCount = function getFieldCommentCount(fieldName) {
-        var count;
-        if (fieldName) {
-            count = 5;
-        } else {
-            // get all unresolved comments for this entry
-            count = 10;
-        }
-        return count;
-    };
-	
 
 	// TODO: Consider moving filter-related code and variables into its own controller
 	$scope.filter = {};
