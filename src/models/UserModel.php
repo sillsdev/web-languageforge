@@ -9,6 +9,7 @@ use libraries\shared\Website;
 use models\UserModelMongoMapper;
 use models\mapper\Id;
 use models\mapper\IdReference;
+use models\mapper\MongoEncoder;
 use models\mapper\MongoMapper;
 use models\mapper\ReferenceList;
 
@@ -118,7 +119,13 @@ class UserListModel extends \models\mapper\MapperListModel
 
 class UserTypeaheadModel extends \models\mapper\MapperListModel
 {
-	public function __construct($term, $projectIdOrIds = '', $include = false)
+	/**
+	 * @param MongoMapper $term
+	 * @param string or array $projectIdOrIds
+	 * @param Website $website
+	 * @param bool $include
+	 */
+	public function __construct($term, $projectIdOrIds = '', $website, $include = false)
 	{
 		$query = array('$or' => array(
 						array('name' => array('$regex' => $term, '$options' => '-i')),
@@ -154,7 +161,7 @@ class UserTypeaheadModel extends \models\mapper\MapperListModel
 		// be another typeahead search with the same query term, but *including* only
 		// the ones matching this project.
 		if ($projectIdOrIds && !$include) {
-			$this->excludedUsers = new UserTypeaheadModel($term, $projectIdOrIds, true);
+			$this->excludedUsers = new UserTypeaheadModel($term, $projectIdOrIds, $website, true);
 			$this->excludedUsers->read();
 		}
 		//echo("Result: " . print_r($this, true));
