@@ -84,16 +84,35 @@ class MongoDecoder extends JsonDecoder {
 			$model->setTimeStamp($data->sec);
 		}
 	}
-	
+
+	/**
+	 * Mongo can't handle '.' or '$' on array keys.
+	 * Replace '___DOLLAR___' with '$'
+	 * Replace '___DOT___' with '.'
+	 * @param string $key
+	 * @param MongoDate $data
+	 */
+	public function decodeDollarDot($key, &$data) {
+		if (strpos($key, '___DOLLAR___') > -1) {
+			$newK = str_replace('___DOLLAR___', '$', $key);
+			$data[$newK] = $data[$key];
+			unset($data[$key]);
+		}
+		if (strpos($key, '___DOT___') > -1) {
+			$newK = str_replace('___DOT___', '.', $key);
+			$data[$newK] = $data[$key];
+			unset($data[$key]);
+		}
+	}
+
+	/**
+	 * @param string $key
+	 * @param object $model
+	 * @param MongoDate $data
+	 */
 	public function decodeMapOf($key, $model, $data) {
-		// Mongo can't handle '.' or '$' on array keys.
-		// We're only replacing the dots here
 		foreach ($data as $k => $item) {
-			if (strpos($k, '___DOT___') > -1) {
-				$newK = str_replace('___DOT___', '.', $k);
-				$data[$newK] = $data[$k];
-				unset($data[$k]);
-			}
+			self::decodeDollarDot($k, $data);
 		}
 		parent::decodeMapOf($key, $model, $data);
 	}

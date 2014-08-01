@@ -89,6 +89,7 @@ class MongoEncoder {
 			} else {
 				// Data type protection
 				if (is_array($item)) {
+					// TODO Fix missing parameter ($key missing for a long time?)  2014-08 DDW
 					throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
 				}
 				// Default encode
@@ -97,7 +98,22 @@ class MongoEncoder {
 		}
 		return $result;
 	}
-	
+
+	/*
+	 * Mongo can't handle '$' or '.' on array keys.
+	 * Replace '$' with '___DOLLAR___'
+	 * Replace '.' with '___DOT___'
+	 * @param string key
+	 */
+	public function encodeDollarDot(&$key) {
+		if (strpos($key, '$') > -1) {
+			$key = str_replace('$', '___DOLLAR___', $key);
+		}
+		if (strpos($key, '.') > -1) {
+			$key = str_replace('.', '___DOT___', $key);
+		}
+	}
+
 	/**
 	 * @param MapOf $model
 	 * @return array
@@ -107,11 +123,8 @@ class MongoEncoder {
 		$result = array();
 		$count = 0;
 		foreach ($model as $key => $item) {
-			// Mongo can't handle '.' or '$' on array keys.
-			// We're only replacing the dots here
-			if (strpos($key, '.') > -1) {
-				$key = str_replace('.', '___DOT___', $key);
-			}
+			self::encodeDollarDot($key);
+
 			if (is_object($item)) {
 				$result[$key] = $this->_encode($item, false);
 			} else {

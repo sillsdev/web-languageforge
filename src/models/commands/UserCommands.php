@@ -132,10 +132,12 @@ class UserCommands {
 	/**
 	 * 
 	 * @param string $term
+	 * @param string $projectIdToExclude
+	 * @param Website website
 	 * @return \models\UserTypeaheadModel
 	 */
-	public static function userTypeaheadList($term, $projectIdToExclude = '') {
-		$list = new \models\UserTypeaheadModel($term, $projectIdToExclude);
+	public static function userTypeaheadList($term, $projectIdToExclude = '', $website) {
+		$list = new \models\UserTypeaheadModel($term, $projectIdToExclude, $website);
 		$list->read();
 		return $list;
 	}
