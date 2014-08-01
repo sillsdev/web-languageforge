@@ -31,10 +31,10 @@
 					<dt translate="Entry Level Fields"></dt>
 					<dd><div class="controls">
 						<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder"
-							data-ng-class="{selected:currentField.name == fieldName}">
+							data-ng-class="{selected:roleTab.currentField.name == fieldName}">
 							<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 								data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-								data-ng-click="selectField(fieldName, roleTab.view)">
+								data-ng-click="selectField(fieldName, roleTab.currentField, roleTab.view)">
 								{{fieldConfig[fieldName].label}}</span>
 						</div>
 					</div></dd>
@@ -45,20 +45,20 @@
 							style="position: absolute; padding-left: 5px;"/></span></dt>
 					<dd><div class="controls">
 						<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder"
-							data-ng-class="{selected:currentField.name == fieldName}">
+							data-ng-class="{selected:roleTab.currentField.name == fieldName}">
 							<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 								data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-								data-ng-click="selectField(fieldName, roleTab.view)">
+								data-ng-click="selectField(fieldName, roleTab.currentField, roleTab.view)">
 								{{fieldConfig[fieldName].label}}</span>
 						</div>
 					</div></dd>
 					<dt translate="Example Level Fields"></dt>
 					<dd><div class="controls">
 						<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder"
-							data-ng-class="{selected:currentField.name == fieldName}">
+							data-ng-class="{selected:roleTab.currentField.name == fieldName}">
 							<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 								data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-								data-ng-click="selectField(fieldName, roleTab.view)">
+								data-ng-click="selectField(fieldName, roleTab.currentField, roleTab.view)">
 								{{fieldConfig[fieldName].label}}</span>
 						</div>
 					</div></dd>
@@ -71,54 +71,60 @@
 
 				<!-- settings -->
 				<div class="well">
-					<h3>{{fieldConfig[currentField.name].label}} {{'Field View Settings' | translate}}</h3>
+					<h3>{{fieldConfig[roleTab.currentField.name].label}} {{'Field View Settings' | translate}}</h3>
 					<div class="control-group">
 						<div class="controls">
 							<label class="checkbox {{interfaceConfig.pullNormal}}">
 								<input type="checkbox" 
-									data-ng-disabled="currentField.name == 'lexeme'" 
-									data-ng-model="roleTab.view.fields[currentField.name].show"/>
+									data-ng-disabled="roleTab.currentField.name == 'lexeme'" 
+									data-ng-model="roleTab.view.fields[roleTab.currentField.name].show"/>
 								{{'Show field' | translate}}</label>
 						</div>
 						<br />
 					</div>
-					<div data-ng-show="roleTab.view.fields[currentField.name].type === 'multitext'">
+					<!-- <div data-ng-show="roleTab.view.fields[roleTab.currentField.name].type === 'multitext'"> -->
+					<div data-ng-show="false">
 						<div class="control-group">
 							<div class="controls">
 								<label class="checkbox {{interfaceConfig.pullNormal}}">
 									<input type="checkbox" 
-										data-ng-model="roleTab.view.fields[currentField.name].overrideInputSystems"/>
+										data-ng-model="roleTab.view.fields[roleTab.currentField.name].overrideInputSystems"/>
 									{{'Override Input Systems' | translate}}</label>
 								<br />
 							</div>
 						</div>
-						<div data-ng-show="roleTab.view.fields[currentField.name].overrideInputSystems">
+						<div data-ng-show="roleTab.view.fields[roleTab.currentField.name].overrideInputSystems">
 							<hr />
 							<div class="row outer-flex control-group">
 								<div class="span3 picklists">
 									<label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
 									<ul class="unstyled indent1"  id="inputSystem">
-										<li data-ng-click="currentField.inputSystems.tag = inputSystemTag" 
-											data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" 
-											data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
-											<div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
+										<li data-ng-click="roleTab.currentField.inputSystems.tag = inputSystemTag" 
+											data-ng-repeat="inputSystemTag in roleTab.currentField.inputSystems.fieldOrder" 
+											data-ng-class="{selected:roleTab.currentField.inputSystems.tag == inputSystemTag}">
+											<div class="checkbox"><input data-ng-model="roleTab.currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
 												{{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
 										</li>
 									</ul>
 								</div>
 								<div class="span1 btn-group btn-group-vertical">
-									<button class="btn" data-ng-click="moveUp(currentField.inputSystems.tag)" 
-										data-ng-disabled="currentField.inputSystems.fieldOrder[0] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
+									<button class="btn" data-ng-click="moveUp(roleTab.currentField.inputSystems.tag, roleTab.currentField, roleTab.view)" 
+										data-ng-disabled="roleTab.currentField.inputSystems.fieldOrder[0] == roleTab.currentField.inputSystems.tag || !roleTab.currentField.inputSystems.tag">
 										&nbsp;&nbsp;<i class="icon-arrow-up"></i></button>
-									<button class="btn" data-ng-click="moveDown(currentField.inputSystems.tag)" 
-										data-ng-disabled="currentField.inputSystems.fieldOrder[currentField.inputSystems.fieldOrder.length - 1] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
+									<button class="btn" data-ng-click="moveDown(roleTab.currentField.inputSystems.tag, roleTab.currentField, roleTab.view)" 
+										data-ng-disabled="roleTab.currentField.inputSystems.fieldOrder[roleTab.currentField.inputSystems.fieldOrder.length - 1] == roleTab.currentField.inputSystems.tag || !roleTab.currentField.inputSystems.tag">
 										&nbsp;&nbsp;<i class="icon-arrow-down"></i></button>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				
+<!-- 
+<pre>
+roleTab.view.fields[roleTab.currentField.name].inputSystems {{roleTab.view.fields[roleTab.currentField.name].inputSystems | json}}
+roleTab.currentField {{roleTab.currentField | json}}
+</pre>				
+ -->				
 			</div>
 		
 			</div>
@@ -246,10 +252,10 @@
 						<dt translate="Entry Level Fields"></dt>
 						<dd><div class="controls">
 							<div data-ng-repeat="fieldName in configDirty.entry.fieldOrder"
-								data-ng-class="{selected:currentField.name == fieldName}">
+								data-ng-class="{selected:userCurrentField[currentUserId].name == fieldName}">
 								<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 									data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-									data-ng-click="selectField(fieldName, configDirty.userViews[currentUserId])">
+									data-ng-click="selectField(fieldName, userCurrentField[currentUserId], configDirty.userViews[currentUserId])">
 									{{fieldConfig[fieldName].label}}</span>
 							</div>
 						</div></dd>
@@ -260,20 +266,20 @@
 								style="position: absolute; padding-left: 5px;"/></span></dt>
 						<dd><div class="controls">
 							<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder"
-								data-ng-class="{selected:currentField.name == fieldName}">
+								data-ng-class="{selected:userCurrentField[currentUserId].name == fieldName}">
 								<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 									data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-									data-ng-click="selectField(fieldName, configDirty.userViews[currentUserId])">
+									data-ng-click="selectField(fieldName, userCurrentField[currentUserId], configDirty.userViews[currentUserId])">
 									{{fieldConfig[fieldName].label}}</span>
 							</div>
 						</div></dd>
 						<dt translate="Example Level Fields"></dt>
 						<dd><div class="controls">
 							<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder"
-								data-ng-class="{selected:currentField.name == fieldName}">
+								data-ng-class="{selected:userCurrentField[currentUserId].name == fieldName}">
 								<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 									data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-									data-ng-click="selectField(fieldName, configDirty.userViews[currentUserId])">
+									data-ng-click="selectField(fieldName, userCurrentField[currentUserId], configDirty.userViews[currentUserId])">
 									{{fieldConfig[fieldName].label}}</span>
 							</div>
 						</div></dd>
@@ -286,54 +292,60 @@
 					
 					<!-- settings -->
 					<div class="well">
-						<h3>{{fieldConfig[currentField.name].label}} {{'Field View Settings' | translate}}</h3>
+						<h3>{{fieldConfig[userCurrentField[currentUserId].name].label}} {{'Field View Settings' | translate}}</h3>
 						<div class="control-group">
 							<div class="controls">
 								<label class="checkbox {{interfaceConfig.pullNormal}}">
 									<input type="checkbox" 
-										data-ng-disabled="currentField.name == 'lexeme'" 
-										data-ng-model="configDirty.userViews[currentUserId].fields[currentField.name].show"/>
+										data-ng-disabled="userCurrentField[currentUserId].name == 'lexeme'" 
+										data-ng-model="configDirty.userViews[currentUserId].fields[userCurrentField[currentUserId].name].show"/>
 									{{'Show field' | translate}}</label>
 							</div>
 							<br />
 						</div>
-						<div data-ng-show="configDirty.userViews[currentUserId].fields[currentField.name].type === 'multitext'">
+						<!-- <div data-ng-show="configDirty.userViews[currentUserId].fields[userCurrentField[currentUserId].name].type === 'multitext'"> -->
+						<div data-ng-show="false">
 							<div class="control-group">
 								<div class="controls">
 									<label class="checkbox {{interfaceConfig.pullNormal}}">
 										<input type="checkbox" 
-											data-ng-model="configDirty.userViews[currentUserId].fields[currentField.name].overrideInputSystems"/>
+											data-ng-model="configDirty.userViews[currentUserId].fields[userCurrentField[currentUserId].name].overrideInputSystems"/>
 										{{'Override Input Systems' | translate}}</label>
 									<br />
 								</div>
 							</div>
-							<div data-ng-show="configDirty.userViews[currentUserId].fields[currentField.name].overrideInputSystems">
+							<div data-ng-show="configDirty.userViews[currentUserId].fields[userCurrentField[currentUserId].name].overrideInputSystems">
 								<hr />
 								<div class="row outer-flex control-group">
 									<div class="span3 picklists">
 										<label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
 										<ul class="unstyled indent1"  id="inputSystem">
-											<li data-ng-click="currentField.inputSystems.tag = inputSystemTag" 
-												data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" 
-												data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
-												<div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
+											<li data-ng-click="userCurrentField[currentUserId].inputSystems.tag = inputSystemTag" 
+												data-ng-repeat="inputSystemTag in userCurrentField[currentUserId].inputSystems.fieldOrder" 
+												data-ng-class="{selected:userCurrentField[currentUserId].inputSystems.tag == inputSystemTag}">
+												<div class="checkbox"><input data-ng-model="userCurrentField[currentUserId].inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
 													{{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
 											</li>
 										</ul>
 									</div>
 									<div class="span1 btn-group btn-group-vertical">
-										<button class="btn" data-ng-click="moveUp(currentField.inputSystems.tag)" 
-											data-ng-disabled="currentField.inputSystems.fieldOrder[0] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
+										<button class="btn" data-ng-click="moveUp(userCurrentField[currentUserId].inputSystems.tag, userCurrentField[currentUserId], configDirty.userViews[currentUserId])" 
+											data-ng-disabled="userCurrentField[currentUserId].inputSystems.fieldOrder[0] == userCurrentField[currentUserId].inputSystems.tag || !userCurrentField[currentUserId].inputSystems.tag">
 											&nbsp;&nbsp;<i class="icon-arrow-up"></i></button>
-										<button class="btn" data-ng-click="moveDown(currentField.inputSystems.tag)" 
-											data-ng-disabled="currentField.inputSystems.fieldOrder[currentField.inputSystems.fieldOrder.length - 1] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
+										<button class="btn" data-ng-click="moveDown(userCurrentField[currentUserId].inputSystems.tag, userCurrentField[currentUserId], configDirty.userViews[currentUserId])" 
+											data-ng-disabled="userCurrentField[currentUserId].inputSystems.fieldOrder[userCurrentField[currentUserId].inputSystems.fieldOrder.length - 1] == userCurrentField[currentUserId].inputSystems.tag || !userCurrentField[currentUserId].inputSystems.tag">
 											&nbsp;&nbsp;<i class="icon-arrow-down"></i></button>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				
+<!-- 
+<pre>
+configDirty.userViews[currentUserId].fields[userCurrentField[currentUserId].name].inputSystems {{configDirty.userViews[currentUserId].fields[userCurrentField[currentUserId].name].inputSystems | json}}
+userCurrentField[currentUserId] {{userCurrentField[currentUserId] | json}}
+</pre>					
+ -->				
 				</div>
 			
 				</div>
@@ -391,9 +403,10 @@
 </form>
 <!-- 
 <pre>
-currentUserId {{currentUserId | json}}
-currentField {{currentField | json}}
+roleTabs {{roleTabs | json}}
 configDirty.roleViews {{configDirty.roleViews | json}}
+currentUserId {{currentUserId | json}}
+userCurrentField[currentUserId] {{userCurrentField[currentUserId] | json}}
 configDirty.userViews {{configDirty.userViews | json}}
 </pre>
  -->
