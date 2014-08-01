@@ -266,27 +266,25 @@ class TestApiCrud extends UnitTestCase {
 		$count = $result['count'];
 		
 		// Create
-		$model = array(
-			'id' => '',
-			'username' =>'SomeUser',
-			'name' =>'SomeUser',
-			'email' => 'user@example.com'
-		);
-		$id = UserCommands::updateUser($model);
-		$this->assertNotNull($id);
-		$this->assertEqual(24, strlen($id));
+		$userId = $e->e->createUser('someuser', 'SomeUser','some@example.com');
+		$someUser = new UserModel($userId);
+		$this->assertNotNull($someUser);
+		$this->assertEqual(24, strlen($someUser->id->asString()));
+		// create project
+		$projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, 'sfchecks', $someUser->id->asString(), $e->e->website);
 
 		// list
 		$result = $e->json(UserCommands::listUsers());
 		$this->assertEqual($count + 1, $result['count']);
 		
 		// Read
-		$result = $e->json(UserCommands::readUser($id));
+		$result = $e->json(UserCommands::readUser($someUser->id->asString()));
 		$this->assertNotNull($result['id']);
-		$this->assertEqual('SomeUser', $result['username']);
-		$this->assertEqual('user@example.com', $result['email']);
+		$this->assertEqual('someuser', $result['username']);
+		$this->assertEqual('some@example.com', $result['email']);
 		
 		// Update
+		$result['username'] = 'other';
 		$result['email'] = 'other@example.com';
 		$id = UserCommands::updateUser($result);
 		$this->assertNotNull($id);
