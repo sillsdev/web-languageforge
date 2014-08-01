@@ -7,7 +7,7 @@ use models\mapper\Id;
 use models\mapper\ArrayOf;
 use models\ProjectModel;
 
-function _SenseFunctor($data) {
+function _createSense($data) {
 	return new Sense();
 }
 
@@ -32,8 +32,8 @@ class LexEntryModel extends \models\mapper\MapperModel {
 		$this->id = new Id();
 		$this->lexeme = new MultiText();
         $this->isDeleted = false;
-		$this->senses = new ArrayOf('_SenseFunctor');
-		$this->customFields = new ArrayOf('_CustomFieldFunctor');
+		$this->senses = new ArrayOf('models\languageforge\lexicon\_createSense');
+		$this->customFields = new ArrayOf('models\languageforge\lexicon\_createCustomField');
 		$this->authorInfo = new AuthorInfo();
 
 		$this->citationForm = new MultiText();
