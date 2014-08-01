@@ -135,8 +135,9 @@
                 </div>
             </div>
             <div style="margin-top:5px">
-                <div class="entryItemView" data-ng-if="entryLoaded()">
-                    <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
+                <div class="new-comment-form">
+                    <div><textarea data-ng-model="newComment.content" placeholder="Post a comment here"></textarea></div>
+                    <div style="margin-top:3px"><button class="btn-sm btn-success" ng-click="updateComment()">Post</button></div>
                 </div>
             </div>
         </div>

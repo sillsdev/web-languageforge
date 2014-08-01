@@ -32,6 +32,10 @@ class LexCommentCommands {
             if ($comment->authorInfo->createdByUserRef->asString() != $userId) {
                 throw new \Exception("You cannot update other people's lex comments!");
             }
+
+            // don't allow setting these update
+            unset($params['regarding']);
+            unset($params['entryRef']);
         }
 
         JsonDecoder::decode($comment, $params);
