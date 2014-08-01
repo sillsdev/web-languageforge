@@ -27,15 +27,15 @@ class TestUserModel extends UnitTestCase {
 	
 	function testWrite_ReadBackSame()
 	{
-		$model = new UserModel();
-		$model->email = "user@example.com";
-		$model->username = "SomeUser";
-		$model->name = "Some User";
-		$model->avatar_ref = "images/avatar/pinkbat.png";
-		$id = $model->write();
+		$user = new UserModel();
+		$user->email = "user@example.com";
+		$user->username = "SomeUser";
+		$user->name = "Some User";
+		$user->avatar_ref = "images/avatar/pinkbat.png";
+		$id = $user->write();
 		$this->assertNotNull($id);
 		$this->assertIsA($id, 'string');
-		$this->assertEqual($id, $model->id);
+		$this->assertEqual($id, $user->id);
 		$otherModel = new UserModel($id);
 		$this->assertEqual($id, $otherModel->id);
 		$this->assertEqual('user@example.com', $otherModel->email);
@@ -48,7 +48,16 @@ class TestUserModel extends UnitTestCase {
 
 	function testUserTypeahead_HasSomeEntries()
 	{
-		$model = new models\UserTypeaheadModel('');
+		$e = new MongoTestEnvironment();
+		$e->clean();
+
+		$user = new UserModel();
+		$user->email = "user@example.com";
+		$user->username = "SomeUser";
+		$user->name = "Some User";
+		$user->avatar_ref = "images/avatar/pinkbat.png";
+		$id = $user->write();
+		$model = new models\UserTypeaheadModel('', '', $e->website);
 		$model->read();
 		
 		$this->assertEqual(1, $model->count);
@@ -58,7 +67,15 @@ class TestUserModel extends UnitTestCase {
 	
 	function testUserTypeahead_HasMatchingEntries()
 	{
-		$model = new models\UserTypeaheadModel('ome');
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		$user = new UserModel();
+		$user->email = "user@example.com";
+		$user->username = "SomeUser";
+		$user->name = "Some User";
+		$user->avatar_ref = "images/avatar/pinkbat.png";
+		$id = $user->write();
+		$model = new models\UserTypeaheadModel('ome', '', $e->website);
 		$model->read();
 		
 		$this->assertEqual(1, $model->count);
@@ -68,7 +85,15 @@ class TestUserModel extends UnitTestCase {
 	
 	function testUserTypeahead_HasNoMatchingEntries()
 	{
-		$model = new models\UserTypeaheadModel('Bogus');
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		$user = new UserModel();
+		$user->email = "user@example.com";
+		$user->username = "SomeUser";
+		$user->name = "Some User";
+		$user->avatar_ref = "images/avatar/pinkbat.png";
+		$id = $user->write();
+		$model = new models\UserTypeaheadModel('Bogus', '', $e->website);
 		$model->read();
 		
 		$this->assertEqual(0, $model->count);
