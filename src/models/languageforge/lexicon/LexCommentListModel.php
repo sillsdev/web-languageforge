@@ -19,13 +19,12 @@ class LexCommentListModel extends \models\mapper\MapperListModel {
      * @param int $newerThanTimestamp
 	 */
 	public function __construct($projectModel, $newerThanTimestamp = null) {
-		$lexProject = new LexiconProjectModel($projectModel->id->asString());
-
+        // sort ascending by creation date
         if (!is_null($newerThanTimestamp)) {
             $startDate = new \MongoDate($newerThanTimestamp);
-            parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false, 'dateModified'=> array('$gte' => $startDate)), array());
+            parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false, 'dateModified'=> array('$gte' => $startDate)), array(), array('dateCreated' => 1));
         } else {
-		    parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false), array());
+		    parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false), array(), array('dateCreated' => 1));
         }
 	}
 }
