@@ -3,6 +3,8 @@
 angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'lexicon.services'])
   .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService',
   function($scope, notice, userService, lexProjectService, ss, $filter, $modal, lexConfigService) {
+    var roleTabOrder = ['observer', 'observer_with_comment', 'contributor', 'project_manager'];
+
     lexProjectService.setBreadcrumbs('viewSettings', $filter('translate')('View Settings'));
     
     $scope.configDirty = angular.copy($scope.projectSettings.config);
@@ -12,6 +14,25 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       {name: $filter('translate')('Contributor'), role: 'contributor', view: $scope.configDirty.roleViews['contributor']},
       {name: $filter('translate')('Manager'), role: 'project_manager', view: $scope.configDirty.roleViews['project_manager']}
     ];
+    angular.forEach($scope.roleTabs, function(roleTab) {
+      roleTab.currentField = {
+        'name': '',
+        'inputSystems': {
+          'fieldOrder': [],
+          'selecteds': {}
+        }
+      };
+    });
+    $scope.userCurrentField = {};
+    angular.forEach($scope.configDirty.userViews, function(userView, userId) {
+      $scope.userCurrentField[userId] = {
+        'name': '',
+        'inputSystems': {
+          'fieldOrder': [],
+          'selecteds': {}
+        }
+      };
+    });
     $scope.state = 'userSelectList';
     $scope.list = {};
     
@@ -83,50 +104,54 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         'selecteds': {}
       }
     };
-    $scope.selectField = function selectField(fieldName, view) {
-      if ($scope.currentField.name !== fieldName) {
+    $scope.selectField = function selectField(fieldName, currentField, view) {
+      if (currentField.name !== fieldName) {
         var inputSystems = view.fields[fieldName].inputSystems;
         
-        $scope.currentField.name = fieldName;
+        currentField.name = fieldName;
         
-        $scope.currentField.inputSystems.selecteds = {};
+        delete currentField.inputSystems.selecteds;
+        currentField.inputSystems.selecteds = {};
         angular.forEach(inputSystems, function(tag) {
-          $scope.currentField.inputSystems.selecteds[tag] = true;
+          currentField.inputSystems.selecteds[tag] = true;
         });
         
         // if the field uses input systems, add the selected systems first then the unselected systems
         if (inputSystems) {
-          $scope.currentField.inputSystems.fieldOrder = inputSystems;
+          delete currentField.inputSystems.fieldOrder;
+          currentField.inputSystems.fieldOrder = inputSystems;
           angular.forEach($scope.configDirty.inputSystems, function(inputSystem, tag) {
-            if(! (tag in $scope.currentField.inputSystems.selecteds)) {
-              $scope.currentField.inputSystems.fieldOrder.push(tag);
+            if(! (tag in currentField.inputSystems.selecteds)) {
+              currentField.inputSystems.fieldOrder.push(tag);
             }
           });
         }
       }
     };
-    $scope.selectField('lexeme', $scope.configDirty.roleViews['observer']);
+    angular.forEach($scope.roleTabs, function(roleTab) {
+      $scope.selectField('lexeme', roleTab.currentField, roleTab.view);
+    });
     
-    $scope.moveUp = function moveUp(currentTag) {
-      var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
-      $scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1];
-      $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1] = currentTag;
-      $scope.fieldConfig[$scope.currentField.name].inputSystems = [];
-      angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
-        if ($scope.currentField.inputSystems.selecteds[tag]) {
-          $scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
+    $scope.moveUp = function moveUp(currentTag, currentField, view) {
+      var currentTagIndex = currentField.inputSystems.fieldOrder.indexOf(currentTag);
+      currentField.inputSystems.fieldOrder[currentTagIndex] = currentField.inputSystems.fieldOrder[currentTagIndex - 1];
+      currentField.inputSystems.fieldOrder[currentTagIndex - 1] = currentTag;
+      view.fields[currentField.name].inputSystems = [];
+      angular.forEach(currentField.inputSystems.fieldOrder, function(tag) {
+        if (currentField.inputSystems.selecteds[tag]) {
+          view.fields[currentField.name].inputSystems.push(tag);
         }
       });
       $scope.viewSettingForm.$setDirty();
     };
-    $scope.moveDown = function moveDown(currentTag) {
-      var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
-      $scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1];
-      $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1] = currentTag;
-      $scope.fieldConfig[$scope.currentField.name].inputSystems = [];
-      angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
-        if ($scope.currentField.inputSystems.selecteds[tag]) {
-          $scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
+    $scope.moveDown = function moveDown(currentTag, currentField, view) {
+      var currentTagIndex = currentField.inputSystems.fieldOrder.indexOf(currentTag);
+      currentField.inputSystems.fieldOrder[currentTagIndex] = currentField.inputSystems.fieldOrder[currentTagIndex + 1];
+      currentField.inputSystems.fieldOrder[currentTagIndex + 1] = currentTag;
+      view.fields[currentField.name].inputSystems = [];
+      angular.forEach(currentField.inputSystems.fieldOrder, function(tag) {
+        if (currentField.inputSystems.selecteds[tag]) {
+          view.fields[currentField.name].inputSystems.push(tag);
         }
       });
       $scope.viewSettingForm.$setDirty();
@@ -224,7 +249,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         items.splice(itemIndex, 1);
       }
     };
-    
+/*    
     function activeTabRole() {
       var active = $scope.roleTabs.filter(function(roletab) {
           return roletab.active;
@@ -233,24 +258,123 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       return active.role;
     };
     
+    $scope.$watchCollection('roleTabs[0].currentField.inputSystems.selecteds', function(newValue) {
+      if (angular.isDefined(newValue)) {
+        var currentField = $scope.roleTabs[0].currentField;
+        if (angular.isDefined($scope.configDirty.roleViews[roleTabOrder[0]].fields[currentField.name].inputSystems)) {
+          $scope.configDirty.roleViews[roleTabOrder[0]].fields[currentField.name].inputSystems = [];
+          angular.forEach(currentField.inputSystems.fieldOrder, function(tag) {
+            if (currentField.inputSystems.selecteds[tag]) {
+              $scope.configDirty.roleViews[roleTabOrder[0]].fields[currentField.name].inputSystems.push(tag);
+            }
+          });
+        }
+      }
+    });
+    
+    $scope.$watch('roleTabs[0].currentField.overrideInputSystems', function(newValue, oldValue) {
+      if (angular.isDefined(newValue) && newValue !== oldValue && newValue) {
+        var currentField = $scope.roleTabs[0].currentField;
+        if (angular.isDefined($scope.configDirty.roleViews[roleTabOrder[0]].fields[currentField.name].inputSystems) &&
+            $scope.configDirty.roleViews[roleTabOrder[0]].fields[currentField.name].inputSystems.length <= 0) {
+          $scope.configDirty.roleViews[roleTabOrder[0]].fields[currentField.name].inputSystems = $scope.fieldConfig[currentField.name].inputSystems;
+        }
+      }
+    });
+    
+    $scope.$watchCollection('roleTabs[1].currentField.inputSystems.selecteds', function(newValue) {
+      if (angular.isDefined(newValue)) {
+        var currentField = $scope.roleTabs[1].currentField;
+        if (angular.isDefined($scope.configDirty.roleViews[roleTabOrder[1]].fields[currentField.name].inputSystems)) {
+          $scope.configDirty.roleViews[roleTabOrder[1]].fields[currentField.name].inputSystems = [];
+          angular.forEach(currentField.inputSystems.fieldOrder, function(tag) {
+            if (currentField.inputSystems.selecteds[tag]) {
+              $scope.configDirty.roleViews[roleTabOrder[1]].fields[currentField.name].inputSystems.push(tag);
+            }
+          });
+        }
+      }
+    });
+    
+    $scope.$watch('roleTabs[1].currentField.overrideInputSystems', function(newValue, oldValue) {
+      if (angular.isDefined(newValue) && newValue !== oldValue && newValue) {
+        var currentField = $scope.roleTabs[1].currentField;
+        if (angular.isDefined($scope.configDirty.roleViews[roleTabOrder[1]].fields[currentField.name].inputSystems) &&
+            $scope.configDirty.roleViews[roleTabOrder[1]].fields[currentField.name].inputSystems.length <= 0) {
+          $scope.configDirty.roleViews[roleTabOrder[1]].fields[currentField.name].inputSystems = $scope.fieldConfig[currentField.name].inputSystems;
+        }
+      }
+    });
+    
+    $scope.$watchCollection('roleTabs[2].currentField.inputSystems.selecteds', function(newValue) {
+      if (angular.isDefined(newValue)) {
+        var currentField = $scope.roleTabs[2].currentField;
+        if (angular.isDefined($scope.configDirty.roleViews[roleTabOrder[2]].fields[currentField.name].inputSystems)) {
+          $scope.configDirty.roleViews[roleTabOrder[2]].fields[currentField.name].inputSystems = [];
+          angular.forEach(currentField.inputSystems.fieldOrder, function(tag) {
+            if (currentField.inputSystems.selecteds[tag]) {
+              $scope.configDirty.roleViews[roleTabOrder[2]].fields[currentField.name].inputSystems.push(tag);
+            }
+          });
+        }
+      }
+    });
+    
+    $scope.$watch('roleTabs[2].currentField.overrideInputSystems', function(newValue, oldValue) {
+      if (angular.isDefined(newValue) && newValue !== oldValue && newValue) {
+        var currentField = $scope.roleTabs[2].currentField;
+        if (angular.isDefined($scope.configDirty.roleViews[roleTabOrder[2]].fields[currentField.name].inputSystems) &&
+            $scope.configDirty.roleViews[roleTabOrder[2]].fields[currentField.name].inputSystems.length <= 0) {
+          $scope.configDirty.roleViews[roleTabOrder[2]].fields[currentField.name].inputSystems = $scope.fieldConfig[currentField.name].inputSystems;
+        }
+      }
+    });
+    
+    $scope.$watchCollection('roleTabs[3].currentField.inputSystems.selecteds', function(newValue) {
+      if (angular.isDefined(newValue)) {
+        var currentField = $scope.roleTabs[0].currentField;
+        if (angular.isDefined($scope.configDirty.roleViews[roleTabOrder[3]].fields[currentField.name].inputSystems)) {
+          $scope.configDirty.roleViews[roleTabOrder[3]].fields[currentField.name].inputSystems = [];
+          angular.forEach(currentField.inputSystems.fieldOrder, function(tag) {
+            if (currentField.inputSystems.selecteds[tag]) {
+              $scope.configDirty.roleViews[roleTabOrder[3]].fields[currentField.name].inputSystems.push(tag);
+            }
+          });
+        }
+      }
+    });
+    
+    $scope.$watch('roleTabs[3].currentField.overrideInputSystems', function(newValue, oldValue) {
+      if (angular.isDefined(newValue) && newValue !== oldValue && newValue) {
+        var currentField = $scope.roleTabs[3].currentField;
+        if (angular.isDefined($scope.configDirty.roleViews[roleTabOrder[3]].fields[currentField.name].inputSystems) &&
+            $scope.configDirty.roleViews[roleTabOrder[3]].fields[currentField.name].inputSystems.length <= 0) {
+          $scope.configDirty.roleViews[roleTabOrder[3]].fields[currentField.name].inputSystems = $scope.fieldConfig[currentField.name].inputSystems;
+        }
+      }
+    });
+    
     $scope.$watchCollection('currentField.inputSystems.selecteds', function(newValue) {
       if (angular.isDefined(newValue)) {
-        var role = activeTabRole();
+        var role = activeTabRole(),
+          currentField;
         if (role) {
-          if (angular.isDefined($scope.configDirty.roleViews[role].fields[$scope.currentField.name].inputSystems)) {
-            $scope.configDirty.roleViews[role].fields[$scope.currentField.name].inputSystems = [];
-            angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
-              if ($scope.currentField.inputSystems.selecteds[tag]) {
-                $scope.configDirty.roleViews[role].fields[$scope.currentField.name].inputSystems.push(tag);
+          currentField = $scope.roleTabs[$scope.roleTabOrder[role]].currentField;
+          if (angular.isDefined($scope.configDirty.roleViews[role].fields[currentField.name].inputSystems)) {
+            $scope.configDirty.roleViews[role].fields[currentField.name].inputSystems = [];
+            angular.forEach(currentField.inputSystems.fieldOrder, function(tag) {
+              if (currentField.inputSystems.selecteds[tag]) {
+                $scope.configDirty.roleViews[role].fields[currentField.name].inputSystems.push(tag);
               }
             });
           }
         } else {
-          if (angular.isDefined($scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems)) {
-            $scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems = [];
-            angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
-              if ($scope.currentField.inputSystems.selecteds[tag]) {
-                $scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems.push(tag);
+          currentField = $scope.userCurrentField[$scope.currentUserId].currentField;
+          if (angular.isDefined($scope.configDirty.userViews[$scope.currentUserId].fields[currentField.name].inputSystems)) {
+            $scope.configDirty.userViews[$scope.currentUserId].fields[currentField.name].inputSystems = [];
+            angular.forEach(currentField.inputSystems.fieldOrder, function(tag) {
+              if (currentField.inputSystems.selecteds[tag]) {
+                $scope.configDirty.userViews[$scope.currentUserId].fields[currentField.name].inputSystems.push(tag);
               }
             });
           }
@@ -258,5 +382,25 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       }
     });
     
+    $scope.$watch('currentField.overrideInputSystems', function(newValue, oldValue) {
+      if (angular.isDefined(newValue) && newValue !== oldValue && newValue) {
+        var role = activeTabRole(),
+          currentField;
+        if (role) {
+          currentField = $scope.roleTabs[$scope.roleTabOrder[role]].currentField;
+          if (angular.isDefined($scope.configDirty.roleViews[role].fields[currentField.name].inputSystems) &&
+              $scope.configDirty.roleViews[role].fields[currentField.name].inputSystems.length <= 0) {
+            $scope.configDirty.roleViews[role].fields[currentField.name].inputSystems = $scope.fieldConfig[currentField.name].inputSystems;
+          }
+        } else {
+          currentField = $scope.userCurrentField[$scope.currentUserId].currentField;
+          if (angular.isDefined($scope.configDirty.userViews[$scope.currentUserId].fields[currentField.name].inputSystems) &&
+              $scope.configDirty.userViews[$scope.currentUserId].fields[currentField.name].inputSystems.length <= 0) {
+            $scope.configDirty.userViews[$scope.currentUserId].fields[currentField.name].inputSystems = $scope.fieldConfig[currentField.name].inputSystems;
+          }
+        }
+      }
+    });
+*/    
   }])
   ;
