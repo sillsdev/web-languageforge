@@ -28,11 +28,13 @@ class TestLexCommentCommands extends UnitTestCase {
         $commentContent = "My first comment";
 
         $regarding = array(
-            'fieldName' => 'lexeme',
-            'content' => 'Word 1',
+            'field' => 'lexeme',
+            'fieldValue' => 'Word 1',
+            'fieldNameForDisplay' => 'Word',
+            'inputSystemAbbreviation' => 'th',
             'inputSystem' => 'th',
-            'entryContext' => '',
-            'senseContext' => ''
+            'word' => '',
+            'meaning' => ''
         );
 
         $data = array(
@@ -64,11 +66,11 @@ class TestLexCommentCommands extends UnitTestCase {
         $userId = $e->createUser('joe', 'joe', 'joe');
 
         $regarding = array(
-            'fieldName' => 'lexeme',
-            'content' => 'Word 1',
+            'field' => 'lexeme',
+            'fieldValue' => 'Word 1',
             'inputSystem' => 'th',
-            'entryContext' => '',
-            'senseContext' => ''
+            'word' => '',
+            'meaning' => ''
         );
         $data = array(
             'id' => '',
@@ -101,11 +103,11 @@ class TestLexCommentCommands extends UnitTestCase {
         $userId = $e->createUser('joe', 'joe', 'joe');
 
         $regarding = array(
-            'fieldName' => 'lexeme',
-            'content' => 'Word 1',
+            'field' => 'lexeme',
+            'fieldValue' => 'Word 1',
             'inputSystem' => 'th',
-            'entryContext' => '',
-            'senseContext' => ''
+            'word' => '',
+            'meaning' => ''
         );
         $data = array(
             'id' => '',
@@ -138,11 +140,11 @@ class TestLexCommentCommands extends UnitTestCase {
         $userId = $e->createUser('joe', 'joe', 'joe');
 
         $regarding = array(
-            'fieldName' => 'lexeme',
-            'content' => 'Word 1',
+            'field' => 'lexeme',
+            'fieldValue' => 'Word 1',
             'inputSystem' => 'th',
-            'entryContext' => '',
-            'senseContext' => ''
+            'word' => '',
+            'meaning' => ''
         );
         $data = array(
             'id' => '',
@@ -186,11 +188,11 @@ class TestLexCommentCommands extends UnitTestCase {
         $userId = $e->createUser('joe', 'joe', 'joe');
 
         $regarding = array(
-            'fieldName' => 'lexeme',
-            'content' => 'Word 1',
+            'field' => 'lexeme',
+            'fieldValue' => 'Word 1',
             'inputSystem' => 'th',
-            'entryContext' => '',
-            'senseContext' => ''
+            'word' => '',
+            'meaning' => ''
         );
         $data = array(
             'id' => '',
@@ -222,11 +224,11 @@ class TestLexCommentCommands extends UnitTestCase {
         $userId = $e->createUser('joe', 'joe', 'joe');
 
         $regarding = array(
-            'fieldName' => 'lexeme',
-            'content' => 'Word 1',
+            'field' => 'lexeme',
+            'fieldValue' => 'Word 1',
             'inputSystem' => 'th',
-            'entryContext' => '',
-            'senseContext' => ''
+            'word' => '',
+            'meaning' => ''
         );
         $data = array(
             'id' => '',
@@ -262,11 +264,11 @@ class TestLexCommentCommands extends UnitTestCase {
         $userId = $e->createUser('joe', 'joe', 'joe');
 
         $regarding = array(
-            'fieldName' => 'lexeme',
-            'content' => 'Word 1',
+            'field' => 'lexeme',
+            'fieldValue' => 'Word 1',
             'inputSystem' => 'th',
-            'entryContext' => '',
-            'senseContext' => ''
+            'word' => '',
+            'meaning' => ''
         );
         $data = array(
             'id' => '',
@@ -293,11 +295,11 @@ class TestLexCommentCommands extends UnitTestCase {
         $userId = $e->createUser('joe', 'joe', 'joe');
 
         $regarding = array(
-            'fieldName' => 'lexeme',
-            'content' => 'Word 1',
+            'field' => 'lexeme',
+            'fieldValue' => 'Word 1',
             'inputSystem' => 'th',
-            'entryContext' => '',
-            'senseContext' => ''
+            'word' => '',
+            'meaning' => ''
         );
         $data = array(
             'id' => '',
@@ -329,11 +331,11 @@ class TestLexCommentCommands extends UnitTestCase {
         $user2Id = $e->createUser('jim', 'jim', 'jim');
 
         $regarding = array(
-            'fieldName' => 'lexeme',
-            'content' => 'Word 1',
+            'field' => 'lexeme',
+            'fieldValue' => 'Word 1',
             'inputSystem' => 'th',
-            'entryContext' => '',
-            'senseContext' => ''
+            'word' => '',
+            'meaning' => ''
         );
         $data = array(
             'id' => '',
@@ -359,11 +361,11 @@ class TestLexCommentCommands extends UnitTestCase {
         $user1Id = $e->createUser('joe', 'joe', 'joe');
 
         $regarding = array(
-            'fieldName' => 'lexeme',
-            'content' => 'Word 1',
+            'field' => 'lexeme',
+            'fieldValue' => 'Word 1',
             'inputSystem' => 'th',
-            'entryContext' => '',
-            'senseContext' => ''
+            'word' => '',
+            'meaning' => ''
         );
         $data = array(
             'id' => '',
