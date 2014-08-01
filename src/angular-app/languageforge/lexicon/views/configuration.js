@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor', 'lexicon.services'])
+angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
+    'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor', 'lexicon.services', 'palaso.util.model.transform'])
   .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService',
   function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigService) {
     lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));

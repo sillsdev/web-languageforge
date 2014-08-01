@@ -14,9 +14,7 @@ form.dc-multitext label, form.dc-optionlist label {
 }
 
 form.dc-multitext .wsid {
-    margin-right:5px;
-    color: #ffffcc;
-    background-color: #4488cc;
-    padding: 6px;
-    border-radius: 5px;
+    width: 30px;
+    color: #777;
+    text-align: right;
 }
