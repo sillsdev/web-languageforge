@@ -1,33 +1,55 @@
-<div class="dc-comments" >
-	<div class="comment">
- 		<div class="scorecontrol">
-			<div class="scorearrow"><a ng-click="incScore(model)"><i class="icon-caret-up icon-2x"></i></a></div>
-			<div class="score">{{model.score}}</div>
-			<div class="scorearrow"><a ng-click="decScore(model)"><i class="icon-caret-down icon-2x"></i></a></div>
-		</div>
-		<div class="all-but-score">
-			<div class="avatar-and-content">
-				<div class="avatar">
-                    <img width="50px" height="50px" ng-src="{{model.userRef.avatar_ref}}" />
-					<div>{{model.userRef.username}}</div>
-				</div>
-				<div class="comment-content">{{model.content}}</div>
-				<div class="comment-replylink"><a ng-click="replyBoxVisible = !replyBoxVisible">Reply</a></div> <!-- TODO: Change "x = !x" to a function call -->
-			</div>
-			<div class="comment-date-and-status">
-				<span class="comment-date">{{model.dateModified | relativetime}}</span>
-				<!--
-				Comment status <span class="comment-status" ng-click="comment.status = nextStatus(comment.status)">{{comment.status}}</span>
-				-->
-				<!-- TODO: add CSS to give a specific width to the two spans so they will always line up vertically with each other -->
-			</div>
-			<div collapse="!replyBoxVisible">
-				<div><textarea data-ng-model="data.newReply"></textarea></div>
-				<div style="margin-top:3px"><button type="submit" class="btn-sm btn-info" data-ng-click="newReplyClick(model)">Post New Reply</button></div>
-			</div>
-			<div class="replies" data-ng-repeat="reply in comment.replies">
-			    <span class="reply-what">{{reply.content}}</span> - <span class="reply-who">{{reply.userRef.username}}</span> <span class="comment-date">{{reply.dateModified | relativetime}}</span>
-			</div>
-		</div>
-	</div>
+<div class="commentContainer">
+    <div class="commentLeftSide">
+        <img width="50px" height="50px" ng-src="{{model.userRef.avatar_ref}}" />
+        <div>{{model.authorInfo.createdByUserRef.name}}</div>
+        <div class="commentDate">{{model.authorInfo.createdDate | relativetime}}</div>
+        <div class="commentPlusOne">{{model.score}}
+            <i ng-show="control.canPlusOneComment(model.id)" ng-click="control.plusOneComment(model.id)" class="icon-thumbs-up"></i>
+            <i ng-hide="control.canPlusOneComment(model.id)" class="icon-thumbs-up-alt"></i>
+        </div>
+    </div>
+    <div class="commentRightSide">
+        <div class="commentContent" ng-bind="model.content"></div>
+        <div class="commentRegarding" ng-show="model.regarding.field">
+            <span class="regardingFieldName">{{model.regarding.fieldNameForDisplay}}</span>
+            <span class="regardingInputSystem" ng-show="model.regarding.inputSystem">{{model.regarding.inputSystemAbbreviation}}</span>
+            <span class="regardingFieldValue">{{model.regarding.fieldValue}}</span>
+            <div class="regardingContext"><b>{{model.regarding.word}}</b> <em>{{model.regarding.meaning}}</em></div>
+        </div>
+    </div>
+</div>
+<div class="commentRepliesContainer">
+    <div ng-repeat="reply in model.replies">
+        <span class="replyContent">{{reply.content}}</span> - <span class="replyUser">{{reply.authorInfo.createdByUserRef.name}}</span>
+        <span class="commentDate">{{reply.authorInfo.createdDate | relativetime}}</span> <span>Edit</span>
+    </div>
+</div>
+<div class="commentBottomBar">
+    <div ng-show="showButtons">
+        <button ng-show="control.rights.canEditComment(model.authorInfo.createdByUserRef.id)">Edit</button>
+    </div>
+</div>
+
+
+
+
+        <div class="avatar-and-content">
+            <div class="avatar">
+            </div>
+            <div class="comment-content">{{model.content}}</div>
+            <div class="comment-replylink"><a ng-click="replyBoxVisible = !replyBoxVisible">Reply</a></div> <!-- TODO: Change "x = !x" to a function call -->
+        </div>
+        <div class="comment-date-and-status">
+            <!--
+            Comment status <span class="comment-status" ng-click="comment.status = nextStatus(comment.status)">{{comment.status}}</span>
+            -->
+            <!-- TODO: add CSS to give a specific width to the two spans so they will always line up vertically with each other -->
+        </div>
+        <div collapse="!replyBoxVisible">
+            <div><textarea data-ng-model="data.newReply"></textarea></div>
+            <div style="margin-top:3px"><button type="submit" class="btn-sm btn-info" data-ng-click="newReplyClick(model)">Post New Reply</button></div>
+        </div>
+        <div class="replies" data-ng-repeat="reply in comment.replies">
+        </div>
+    </div>
 </div>

@@ -565,11 +565,11 @@ class Sf
 	}
 	
 	public function lex_comment_update($data) {
-		return LexCommentCommands::updateComment($this->_projectId, $this->_userId, $data);
+		return LexCommentCommands::updateComment($this->_projectId, $this->_userId, $this->_website, $data);
 	}
 
     public function lex_commentReply_update($commentId, $data) {
-        return LexCommentCommands::updateReply($this->_projectId, $this->_userId, $commentId, $data);
+        return LexCommentCommands::updateReply($this->_projectId, $this->_userId, $this->_website, $commentId, $data);
     }
 
     public function lex_comment_delete($commentId) {

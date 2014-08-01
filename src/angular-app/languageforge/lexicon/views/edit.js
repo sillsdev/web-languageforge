@@ -19,7 +19,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     $scope.showUncommonFields = false;
     $scope.commentsFilter = '';
     $scope.commentStatusFilter = 'any';
-    $scope.newComment = {id: '', content: '', regarding: {fieldName:'', inputSystem: '', content: ''}}; // model for new comment content
+    $scope.newComment = {id: '', content: '', regarding: {}}; // model for new comment content
 
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
 
@@ -238,6 +238,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		if ($scope.currentEntry.id != id) {
 			$scope.saveCurrentEntry();
             setCurrentEntry($scope.entries[getIndexInList(id, $scope.entries)]);
+            loadCurrentEntryComments();
 		}
         $scope.state = 'edit';
         //$location.path('/dbe/' + id, false);
@@ -560,31 +561,30 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     $scope.showComments = function showComments(fieldName) {
         $scope.saveCurrentEntry();
         $scope.state = 'comment';
-        loadCurrentEntryComments();
         //$location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);
     };
 
     function loadCurrentEntryComments() {
-        var comments = {};
+        var comments = [];
         var count = {total:0, fields:{}};
         for (var i=0; i<$scope.comments.length; i++) {
-            var c = $scope.comments[i];
-            var fieldName = c.regarding.fieldName;
-            if (c.entryRef == $scope.currentEntry.id) {
-                if (angular.isUndefined(comments[fieldName])) {
-                    comments[fieldName] = [];
-                }
-                if (angular.isUndefined(count.fields[fieldName])) {
+            var comment = $scope.comments[i];
+
+            var fieldName = comment.regarding.fieldName;
+            if (comment.entryRef == $scope.currentEntry.id) {
+                if (fieldName && angular.isUndefined(count.fields[fieldName])) {
                     count.fields[fieldName] = 0;
                 }
 
                 // add comment to the correct 'field' container
-                comments[fieldName].push(comment);
+                comments.push(comment);
 
                 // update the appropriate count for this field
                 // and update the total count
-                if (c.status != 'resolved') {
-                    count.fields[fieldName]++;
+                if (comment.status != 'resolved') {
+                    if (fieldName) {
+                        count.fields[fieldName]++;
+                    }
                     count.total++;
                 }
             }
@@ -625,12 +625,27 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         });
     }
 
+    $scope.getNewCommentPlaceholderText = function getNewCommentPlaceholderText() {
+        var label;
+        if ($scope.currentEntryComments.length == 0) {
+            label = $filter('translate')("Your comment goes here.  Be the first to share!");
+        } else if ($scope.currentEntryComments.length < 3) {
+            label = $filter('translate')("Start a conversation.  Enter your comment here.");
+        } else {
+            label = $filter('translate')("Join the discussion and type your comment here.");
+        }
+        return label;
+    };
+
     $scope.updateComment = function updateComment(comment) {
         if (angular.isUndefined(comment)) {
             comment = angular.copy($scope.newComment);
+            // comment.content is already set in the form
             comment.entryRef = $scope.currentEntry.id;
-            comment.regarding.senseContext = $scope.getMeaningForDisplay($scope.currentEntry);
-            comment.regarding.entryContext = $scope.getWordForDisplay($scope.currentEntry);
+            comment.regarding.meaning = $scope.getMeaningForDisplay($scope.currentEntry);
+            comment.regarding.word = $scope.getWordForDisplay($scope.currentEntry);
+
+            // other comment.regarding fields are set via the click selection of which field to select
         }
 
         commentService.update(comment, function(result) {
@@ -640,7 +655,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
                });
 
                // reset newComment
-               $scope.newComment = {id: '', content: '', regarding: {fieldName:'', inputSystem: '', content: ''}}; // model for new comment content
+               $scope.newComment = {id: '', content: '', regarding: {}}; // model for new comment content
            }
         });
     };
@@ -675,6 +690,12 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
            }
        });
     };
+
+    $scope.canPlusOneComment = function canPlusOneComment(commentId) {
+        // todo implement this
+        return true;
+
+    }
 
     $scope.deleteCommentReply = function deleteCommentReply(commentId, replyId) {
         commentService.deleteReply(commentId, replyId, function(result) {
