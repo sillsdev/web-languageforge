@@ -167,7 +167,7 @@ class Sf
 	}
 	
 	public function user_typeahead($term, $projectIdToExclude = '') {
-		return UserCommands::userTypeaheadList($term, $projectIdToExclude);
+		return UserCommands::userTypeaheadList($term, $projectIdToExclude, $this->_website);
 	}
 
 	public function user_typeaheadExclusive($term, $projectIdToExclude = '') {
