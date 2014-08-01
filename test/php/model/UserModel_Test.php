@@ -3,6 +3,7 @@
 use libraries\shared\Website;
 use models\shared\rights\ProjectRoles;
 use models\commands\LinkCommands;
+use models\commands\ProjectCommands;
 use models\mapper\Id;
 use models\ProjectModel;
 use models\UserListModel;
@@ -53,9 +54,6 @@ class TestUserModel extends UnitTestCase {
 
 		$userId = $e->createUser('someuser', 'Some User','user@example.com');
 		$someUser = new UserModel($userId);
-		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-		$projectId = $project->id->asString();
-		$project->addUser($userId, $e->website->userDefaultSiteRole);
 
 		$model = new models\UserTypeaheadModel('', '', $e->website);
 		$model->read();
@@ -71,9 +69,6 @@ class TestUserModel extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('someuser', 'Some User','user@example.com');
 		$someUser = new UserModel($userId);
-		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-		$projectId = $project->id->asString();
-		$project->addUser($userId, $e->website->userDefaultSiteRole);
 
 		$model = new models\UserTypeaheadModel('', '', $e->website);
 		$model->read();
@@ -89,9 +84,6 @@ class TestUserModel extends UnitTestCase {
 		$e->clean();
 		$userId = $e->createUser('someuser', 'Some User','user@example.com');
 		$someUser = new UserModel($userId);
-		$project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-		$projectId = $project->id->asString();
-		$project->addUser($userId, $e->website->userDefaultSiteRole);
 
 		$model = new models\UserTypeaheadModel('Bogus', '', $e->website);
 		$model->read();
@@ -100,7 +92,22 @@ class TestUserModel extends UnitTestCase {
 		$this->assertEqual(array(), $model->entries);
 	}
 	
-	
+	function testUserTypeahead_CrossSiteNoMatchingEntries()
+	{
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		$userId = $e->createUser('someuser', 'Some User','user@example.com');
+		$someUser = new UserModel($userId);
+
+		// Check no users exist on another website
+		$website = new Website('languageforge.local', Website::LANGUAGEFORGE);
+		$model = new models\UserTypeaheadModel('some', '', $website);
+		$model->read();
+
+		$this->assertEqual(0, $model->count);
+		$this->assertEqual(array(), $model->entries);
+	}
+
 	function testUserListProjects_TwoProjects_ListHasDetails() {
 		$e = new MongoTestEnvironment();
 		$e->clean();
