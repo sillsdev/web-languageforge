@@ -1,8 +1,8 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="lexAppContainer">
     <div style="display:flex;justify-content:space-between; margin-top:45px;margin-bottom: 10px">
         <div>
-            <a ng-show="state == 'edit'" class="btn" ng-click="returnToList()" tooltip="{{'Back to List'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-long-arrow-left"></i> {{'List'|translate}}</a>
-            <a ng-show="state == 'comment'" class="btn" ng-click="editEntry(currentEntry.id)" tooltip="{{'Return to Edit Entry'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-long-arrow-left"></i> {{'Edit'|translate}}</a>
+            <a ng-show="state == 'edit'" class="btn" ng-click="returnToList()" tooltip="{{'Back to List'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'List'|translate}}</a>
+            <a ng-show="state == 'comment'" class="btn" ng-click="editEntry(currentEntry.id)" tooltip="{{'Return to Edit Entry'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'Edit'|translate}}</a>
         </div>
         <div>
             <h2 style="text-align: center;margin:0" data-translate="Dictionary Browse and Edit"></h2>
@@ -15,7 +15,7 @@
                 <span ng-hide="getFieldCommentCount() > 1">
                     {{getFieldCommentCount()}} {{'Comment'|translate}}
                 </span>
-                <i style="position: relative; top:1px;left:5px" class="icon-large icon-long-arrow-right"></i></a>
+                <i style="position: relative; top:1px;left:5px" class="icon-large icon-chevron-right"></i></a>
         </div>
     </div>
 
