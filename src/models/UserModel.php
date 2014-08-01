@@ -151,6 +151,10 @@ class UserTypeaheadModel extends \models\mapper\MapperListModel
 			$query['projects'] = array($inOrNotIn => $idsForQuery);
 			//error_log("Query: " . print_r($query, true));
 		}
+		// Filter for only users on the current site
+		$encodedDomain = $website->domain;
+		MongoEncoder::encodeDollarDot($encodedDomain);
+		$query['siteRole.'.$encodedDomain] = array('$exists' => true);
 		parent::__construct(
 				UserModelMongoMapper::instance(),
 				$query,
