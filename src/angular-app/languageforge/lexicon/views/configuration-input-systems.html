@@ -50,9 +50,9 @@
 			</div>
 			<h3>{{inputSystems[currentInputSystemTag].name}}</h3>
 			<div class="control-group">
-				<label class="control-label" for="abbrev" translate="Display Abbreviation"></label>
+				<label class="control-label" for="abbrev" translate="Display Abbreviation (limited to 4 lowercase characters)"></label>
 				<div class="controls">
-					<input type="text" id="abbrev" data-ng-model="inputSystems[currentInputSystemTag].abbreviation">
+					<input type="text" id="abbrev" model-transform-limit="4" data-ng-model="inputSystems[currentInputSystemTag].abbreviation">
 				</div>
 				<label class="checkbox {{interfaceConfig.pullNormal}}">
 					<input type="checkbox" data-ng-model="inputSystems[currentInputSystemTag].isRightToLeft"/> 
