@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry',
-    'palaso.ui.dc.comments', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
+    'palaso.ui.dc.comment', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window',
         '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
 function ($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location, configService, commentService) {
@@ -19,6 +19,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     $scope.showUncommonFields = false;
     $scope.commentsFilter = '';
     $scope.commentStatusFilter = 'any';
+    $scope.newComment = {id: '', content: '', regarding: {fieldName:'', inputSystem: '', content: ''}}; // model for new comment content
 
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
 
@@ -625,13 +626,23 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     }
 
     $scope.updateComment = function updateComment(comment) {
-       commentService.update(comment, function(result) {
+        if (angular.isUndefined(comment)) {
+            comment = angular.copy($scope.newComment);
+            comment.entryRef = $scope.currentEntry.id;
+            comment.regarding.senseContext = $scope.getMeaningForDisplay($scope.currentEntry);
+            comment.regarding.entryContext = $scope.getWordForDisplay($scope.currentEntry);
+        }
+
+        commentService.update(comment, function(result) {
            if (result.ok) {
                refreshData(false, function() {
                    loadCurrentEntryComments();
                });
+
+               // reset newComment
+               $scope.newComment = {id: '', content: '', regarding: {fieldName:'', inputSystem: '', content: ''}}; // model for new comment content
            }
-       });
+        });
     };
 
     $scope.deleteComment = function deleteComment(commentId) {

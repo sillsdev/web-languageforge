@@ -30,6 +30,8 @@ class LexCommentModel extends \models\mapper\MapperModel {
         $this->setReadOnlyProp('replies');
         $this->setReadOnlyProp('score');
         $this->setReadOnlyProp('status');
+        $this->setPrivateProp('isDeleted');
+
         $this->id = new Id();
         $this->entryRef = new IdReference();
         $this->isDeleted = false;
