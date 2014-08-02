@@ -2,7 +2,7 @@
 
 angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'lexicon.services'])
   .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService',
-  function($scope, notice, userService, lexProjectService, ss, $filter, $modal, lexConfigService) {
+  function ViewSettingsCtrl($scope, notice, userService, lexProjectService, ss, $filter, $modal, lexConfigService) {
     lexProjectService.setBreadcrumbs('viewSettings', $filter('translate')('View Settings'));
     
     $scope.configDirty = angular.copy($scope.projectSettings.config);
@@ -69,12 +69,29 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     $scope.settingsApply = function settingsApply() {
       lexProjectService.updateConfiguration($scope.configDirty, [], function(result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, $filter('translate')("View settings updated successfully"));
+          notice.push(notice.SUCCESS, $filter('translate')('View settings updated successfully'));
           $scope.viewSettingForm.$setPristine();
           $scope.projectSettings.config = angular.copy($scope.configDirty);
         }
       });
     };
+    
+    function createCurrentInputSystems(inputSystems) {
+      angular.forEach(inputSystems, function(tag) {
+        $scope.currentField.inputSystems.selecteds[tag] = true;
+      });
+      
+      // if the field uses input systems, add the selected systems first then the unselected systems
+      if (inputSystems) {
+        $scope.currentField.inputSystems.fieldOrder = inputSystems;
+        angular.forEach($scope.configDirty.inputSystems, function(inputSystem, tag) {
+          if (! (tag in $scope.currentField.inputSystems.selecteds) &&
+              $scope.currentField.inputSystems.fieldOrder.indexOf(tag) == -1) {
+            $scope.currentField.inputSystems.fieldOrder.push(tag);
+          }
+        });
+      }
+    }
   
     $scope.currentField = {
       'name': '',
@@ -84,25 +101,17 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       }
     };
     $scope.selectField = function selectField(fieldName, view) {
-      if ($scope.currentField.name !== fieldName) {
-        var inputSystems = view.fields[fieldName].inputSystems;
-        
-        $scope.currentField.name = fieldName;
-        
-        $scope.currentField.inputSystems.selecteds = {};
-        angular.forEach(inputSystems, function(tag) {
-          $scope.currentField.inputSystems.selecteds[tag] = true;
-        });
-        
-        // if the field uses input systems, add the selected systems first then the unselected systems
-        if (inputSystems) {
-          $scope.currentField.inputSystems.fieldOrder = inputSystems;
-          angular.forEach($scope.configDirty.inputSystems, function(inputSystem, tag) {
-            if(! (tag in $scope.currentField.inputSystems.selecteds)) {
-              $scope.currentField.inputSystems.fieldOrder.push(tag);
-            }
-          });
+      $scope.currentField.name = fieldName;
+      $scope.currentField.inputSystems.selecteds = {};
+      if (angular.isDefined(view.fields[fieldName].overrideInputSystems)) {
+        if (angular.isDefined(view.fields[fieldName].inputSystems)) {
+          if (view.fields[fieldName].inputSystems.length <= 0) {
+            view.fields[fieldName].inputSystems = $scope.fieldConfig[fieldName].inputSystems;
+          }
+        } else {
+          view.fields[fieldName].inputSystems = $scope.fieldConfig[fieldName].inputSystems;
         }
+        createCurrentInputSystems(view.fields[fieldName].inputSystems);
       }
     };
     $scope.selectField('lexeme', $scope.roleTabs[0].view);
@@ -195,7 +204,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       }
     };
 
-    $scope.imageSource = function(avatarRef) {
+    $scope.imageSource = function imageSource(avatarRef) {
       return avatarRef ? '/images/shared/avatar/' + avatarRef : '/images/shared/avatar/anonymous02.png';
     };
     
@@ -233,7 +242,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       return active.role;
     };
     
-    $scope.$watchCollection('currentField.inputSystems.selecteds', function(newValue) {
+    $scope.$watchCollection('currentField.inputSystems.selecteds', function watchCurrentSelecteds(newValue) {
       if (angular.isDefined(newValue)) {
         var role = activeTabRole();
         if (role) {
@@ -253,23 +262,6 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
                 $scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems.push(tag);
               }
             });
-          }
-        }
-      }
-    });
-    
-    $scope.$watch('currentField.overrideInputSystems', function(newValue, oldValue) {
-      if (angular.isDefined(newValue) && newValue !== oldValue && newValue) {
-        var role = activeTabRole();
-        if (role) {
-          if (angular.isDefined($scope.configDirty.roleViews[role].fields[$scope.currentField.name].inputSystems) &&
-              $scope.configDirty.roleViews[role].fields[$scope.currentField.name].inputSystems.length <= 0) {
-            $scope.configDirty.roleViews[role].fields[$scope.currentField.name].inputSystems = $scope.fieldConfig[$scope.currentField.name].inputSystems;
-          }
-        } else {
-          if (angular.isDefined($scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems) &&
-              $scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems.length <= 0) {
-            $scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems = $scope.fieldConfig[$scope.currentField.name].inputSystems;
           }
         }
       }

@@ -5,7 +5,8 @@
 	data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense() || !allUsersHaveAtLeastOneSense()">
 	<i class="icon-ok"></i> {{'Apply' | translate}}</button>
 <tabset>
-	<tab data-ng-repeat="roleTab in roleTabs" class="{{interfaceConfig.pullNormal}}" active="roleTab.active">
+	<tab data-ng-repeat="roleTab in roleTabs" class="{{interfaceConfig.pullNormal}}" active="roleTab.active"
+		data-ng-click="selectField(currentField.name, roleTab.view)">
 		<tab-heading>{{roleTab.name | translate}}
 			<span data-ng-hide="isAtLeastOneSense(roleTab.view)">
 				<img src="/images/shared/exclamation.png" 
@@ -82,8 +83,7 @@
 						</div>
 						<br />
 					</div>
-					<!-- <div data-ng-show="roleTab.view.fields[currentField.name].type === 'multitext'"> -->
-					<div data-ng-show="false">
+					<div data-ng-show="roleTab.view.fields[currentField.name].type === 'multitext'">
 						<div class="control-group">
 							<div class="controls">
 								<label class="checkbox {{interfaceConfig.pullNormal}}">
@@ -119,12 +119,12 @@
 						</div>
 					</div>
 				</div>
-<!-- 
+<!--  -->
 <pre>
 roleTab.view.fields[currentField.name].inputSystems {{roleTab.view.fields[currentField.name].inputSystems | json}}
 currentField {{currentField | json}}
 </pre>				
- -->				
+				
 			</div>
 		
 			</div>
@@ -176,7 +176,7 @@ currentField {{currentField | json}}
 		</accordion-group>
 	</accordion>
 	</tab>
-	<tab>
+	<tab data-ng-click="selectField(currentField.name, configDirty.userViews[currentUserId])">
 		<tab-heading>{{'Member Specific' | translate}}
 			<span data-ng-hide="allUsersHaveAtLeastOneSense()">
 				<img src="/images/shared/exclamation.png" 
@@ -303,8 +303,7 @@ currentField {{currentField | json}}
 							</div>
 							<br />
 						</div>
-						<!-- <div data-ng-show="configDirty.userViews[currentUserId].fields[currentField.name].type === 'multitext'"> -->
-						<div data-ng-show="false">
+						<div data-ng-show="configDirty.userViews[currentUserId].fields[currentField.name].type === 'multitext'">
 							<div class="control-group">
 								<div class="controls">
 									<label class="checkbox {{interfaceConfig.pullNormal}}">
@@ -340,12 +339,12 @@ currentField {{currentField | json}}
 							</div>
 						</div>
 					</div>
-<!-- 
+<!--  --> 
 <pre>
 configDirty.userViews[currentUserId].fields[currentField.name].inputSystems {{configDirty.userViews[currentUserId].fields[currentField.name].inputSystems | json}}
 currentField {{currentField | json}}
 </pre>					
- -->				
+				
 				</div>
 			
 				</div>
