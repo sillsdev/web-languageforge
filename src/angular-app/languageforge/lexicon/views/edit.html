@@ -138,22 +138,20 @@
                     <div class="commentCount">{{currentEntryComments.length}} {{'Comments' | translate}}</div>
                 </div>
             </div>
-            <div style="margin-top:5px">
-                <div class="newCommentForm">
-                    <div class="flex100" style="justify-content: space-around">
-                        <textarea data-ng-model="newComment.content" placeholder="{{getNewCommentPlaceholderText()}}"></textarea>
-                        <button ng-disabled="!newComment.content" class="btn-sm" ng-click="updateComment()">Post</button>
+            <div ng-show="control.rights.canComment()" class="newCommentForm">
+                <div class="flex100" style="justify-content: space-around">
+                    <textarea data-ng-model="newComment.content" placeholder="{{getNewCommentPlaceholderText()}}"></textarea>
+                    <button ng-disabled="!newComment.content" class="btn-sm" ng-click="updateComment()">Post</button>
+                </div>
+                <div class="commentRegarding">
+                    <small class="muted"><em>This comment is regarding</em></small>
+                    <div ng-show="newComment.regarding.field">
+                        <span class="regardingFieldName">{{newComment.regarding.fieldNameForDisplay}}</span>
+                        <span class="regardingInputSystem" ng-show="newComment.regarding.inputSystem">{{newComment.regarding.inputSystemAbbreviation}}</span>
+                        <span class="regardingFieldValue">{{newComment.regarding.fieldValue}}</span>
+                        <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
                     </div>
-                    <div class="commentRegarding">
-                        <small class="muted"><em>This comment is regarding</em></small>
-                        <div ng-show="newComment.regarding.field">
-                            <span class="regardingFieldName">{{newComment.regarding.fieldNameForDisplay}}</span>
-                            <span class="regardingInputSystem" ng-show="newComment.regarding.inputSystem">{{newComment.regarding.inputSystemAbbreviation}}</span>
-                            <span class="regardingFieldValue">{{newComment.regarding.fieldValue}}</span>
-                            <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
-                        </div>
-                        <div ng-hide="newComment.regarding.field" translate="this entry in general"></div>
-                    </div>
+                    <div ng-hide="newComment.regarding.field" translate="this entry in general"></div>
                 </div>
             </div>
             <div class="commentListContainer">

@@ -4,12 +4,16 @@
         <div>{{model.authorInfo.createdByUserRef.name}}</div>
         <div class="commentDate">{{model.authorInfo.createdDate | relativetime}}</div>
         <div class="commentPlusOne">{{model.score}}
-            <i ng-show="control.canPlusOneComment(model.id)" ng-click="control.plusOneComment(model.id)" class="icon-thumbs-up"></i>
-            <i ng-hide="control.canPlusOneComment(model.id)" class="icon-thumbs-up-alt"></i>
+            <i ng-show="control.canPlusOneComment(model.id) && control.rights.canComment()" ng-click="control.plusOneComment(model.id)" tooltip="Like this comment" class="icon-thumbs-up"></i>
+            <i ng-hide="control.canPlusOneComment(model.id) && control.rights.canComment()" class="icon-thumbs-up-alt"></i>
         </div>
     </div>
     <div class="commentRightSide">
-        <div class="commentContent" ng-bind="model.content"></div>
+        <div class="commentContent" ng-hide="model.editing" ng-bind="model.content"></div>
+        <div ng-show="model.editing" class="flex100" style="justify-content: space-around">
+            <textarea data-ng-model="model.content"></textarea>
+            <button ng-disabled="!model.content" class="btn-sm" ng-click="updateComment(model)">Update</button> <a ng-click="model.editing = false">Cancel</a>
+        </div>
         <div class="commentRegarding" ng-show="model.regarding.field">
             <span class="regardingFieldName">{{model.regarding.fieldNameForDisplay}}</span>
             <span class="regardingInputSystem" ng-show="model.regarding.inputSystem">{{model.regarding.inputSystemAbbreviation}}</span>
@@ -20,36 +24,30 @@
 </div>
 <div class="commentRepliesContainer">
     <div ng-repeat="reply in model.replies">
-        <span class="replyContent">{{reply.content}}</span> - <span class="replyUser">{{reply.authorInfo.createdByUserRef.name}}</span>
-        <span class="commentDate">{{reply.authorInfo.createdDate | relativetime}}</span> <span>Edit</span>
+        <div ng-hide="reply.editing">
+            <span class="replyContent">{{reply.content}}</span> - <span class="replyUser">{{reply.authorInfo.createdByUserRef.name}}</span>
+            <span class="commentDate">{{reply.authorInfo.createdDate | relativetime}}</span>
+            <span class="editReplyLink"><a ng-click="reply.editing = true">Edit</a></span>
+        </div>
+        <div ng-show="reply.editing">
+            <input type="text" ng-model="reply.content" class="input-xlarge"/> <button class="btn" ng-click="submitReply(reply)">Update</button> <a ng-click="reply.editing = false">Cancel</a>
+        </div>
+    </div>
+    <div class="commentNewReplyForm" ng-show="showNewReplyForm">
+        <input type="text" ng-model="newReply.content" class="input-xlarge"/> <button class="btn" ng-click="submitReply(newReply)">Post</button>
     </div>
 </div>
 <div class="commentBottomBar">
     <div ng-show="showButtons">
-        <button ng-show="control.rights.canEditComment(model.authorInfo.createdByUserRef.id)">Edit</button>
-    </div>
-</div>
-
-
-
-
-        <div class="avatar-and-content">
-            <div class="avatar">
-            </div>
-            <div class="comment-content">{{model.content}}</div>
-            <div class="comment-replylink"><a ng-click="replyBoxVisible = !replyBoxVisible">Reply</a></div> <!-- TODO: Change "x = !x" to a function call -->
+        <div>
+            <i class="icon-remove" ng-show="control.rights.canDeleteComment(model.authorInfo.createdByUserRef.id)" ng-click="control.deleteComment(model.id)"></i>
+            <i class="icon-ok" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'resolved'" tooltip="Mark as Resolved" ng-click="control.updateCommentStatus(model.id, 'resolved')"></i>
+            <i class="icon-edit" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'todo'" tooltip="Mark as Todo" ng-click="control.updateCommentStatus(model.id, 'todo')"></i>
+            <i class="icon-edit" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'open'" tooltip="Mark as Open" ng-click="control.updateCommentStatus(model.id, 'open')"></i>
         </div>
-        <div class="comment-date-and-status">
-            <!--
-            Comment status <span class="comment-status" ng-click="comment.status = nextStatus(comment.status)">{{comment.status}}</span>
-            -->
-            <!-- TODO: add CSS to give a specific width to the two spans so they will always line up vertically with each other -->
-        </div>
-        <div collapse="!replyBoxVisible">
-            <div><textarea data-ng-model="data.newReply"></textarea></div>
-            <div style="margin-top:3px"><button type="submit" class="btn-sm btn-info" data-ng-click="newReplyClick(model)">Post New Reply</button></div>
-        </div>
-        <div class="replies" data-ng-repeat="reply in comment.replies">
+        <div>
+            <button class="btn btn-mini" ng-show="control.rights.canEditComment(model.authorInfo.createdByUserRef.id)" ng-click="doReply()"><i class="icon-chevron-sign-up"></i> Edit</button>
+            <button class="btn btn-mini" ng-show="control.rights.canComment()"><i class="icon-reply"></i> Reply</button>
         </div>
     </div>
 </div>

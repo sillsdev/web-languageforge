@@ -11,18 +11,24 @@ angular.module('palaso.ui.dc.comment', [])
 		},
 		controller: ['$scope', function($scope) {
 
+            $scope.showNewReplyForm = false;
+
+            $scope.newReply = {id:'', content:''};
+
             // I don't necessarily like this, but we keep the comment methods on edit.js so
             // that the view can be refreshed after an update or delete - cjh 2014-08
 
-            // do we even need these on the controller?
-            $scope.editComment = function editComment() {  };
+            $scope.doReply = function doReply() {
+                $scope.showNewReplyForm = !$scope.showNewReplyForm;
+            };
 
-            $scope.editReply = function editReply() {};
-
-            $scope.deleteComment = function deleteComment() {};
-
-            $scope.deleteReply = function deleteReply() {};
-
+            $scope.submitReply = function submitReply(reply) {
+                $scope.control.updateReply($scope.model.id, reply);
+                $scope.newReply = {id:'', content:''};
+                for (var i=0; i< $scope.model.replies.length; i++) {
+                    $scope.model.replies[i].editing = false;
+                }
+            };
 
 		}],
 		link: function(scope, element, attrs, controller) {
