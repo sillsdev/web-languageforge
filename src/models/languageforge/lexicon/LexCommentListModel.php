@@ -2,6 +2,7 @@
 namespace models\languageforge\lexicon;
 
 use models\ProjectModel;
+use models\mapper\MapOf;
 
 class LexCommentListModel extends \models\mapper\MapperListModel {
 
@@ -19,6 +20,7 @@ class LexCommentListModel extends \models\mapper\MapperListModel {
      * @param int $newerThanTimestamp
 	 */
 	public function __construct($projectModel, $newerThanTimestamp = null) {
+        $this->entries = new MapOf(function($data) use ($projectModel) { return new LexCommentModel($projectModel); });
         // sort ascending by creation date
         if (!is_null($newerThanTimestamp)) {
             $startDate = new \MongoDate($newerThanTimestamp);
