@@ -57,7 +57,7 @@ class JsonEncoder {
 					$data[$key] = $this->_encode($value);
 				} else {
 					// Default encode
-					if ($value == null) {
+					if (is_null($value)) {
 						$value = '';
 					}
 					$data[$key] = $value;
