@@ -66,7 +66,7 @@ class MongoDecoder extends JsonDecoder {
 		foreach ($refsArray as $objectId) {
 			if (!is_a($objectId, 'MongoId')) {
 				throw new \Exception(
-						"Invalid type '" . gettype($objectId) . "' in ref collection '$key'"
+						"Invalid type '" . gettype($objectId) . "' in ref collection"
 				);
 			}
 			array_push($model->refs, new Id((string)$objectId));

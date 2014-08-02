@@ -21,17 +21,6 @@ class JsonDecoder {
 	 */
 	public static function decode($model, $values, $id = '') {
 		$decoder = new JsonDecoder();
-		$propsToRemove = array();
-		
-		if (method_exists($model, 'getPrivateProperties')) {
-			$propsToRemove = (array)$model->getPrivateProperties();
-		}
-		if (method_exists($model, 'getReadOnlyProperties')) {
-			$propsToRemove = array_merge($propsToRemove, (array)$model->getReadOnlyProperties());
-		}
-		foreach ($propsToRemove as $prop) {
-			unset($values[$prop]);
-		}
 
 		$decoder->_decode($model, $values, $id);
 	}
@@ -45,7 +34,22 @@ class JsonDecoder {
 	protected function _decode($model, $values, $id) {
 		CodeGuard::checkTypeAndThrow($values, 'array');
 		$properties = get_object_vars($model);
+        $propsToIgnore = array();
+
+        if (get_class($this) == 'models\mapper\JsonDecoder') {
+
+            if (method_exists($model, 'getPrivateProperties')) {
+                $propsToIgnore = (array)$model->getPrivateProperties();
+            }
+            if (method_exists($model, 'getReadOnlyProperties')) {
+                $propsToIgnore = array_merge($propsToIgnore, (array)$model->getReadOnlyProperties());
+            }
+        }
+
 		foreach ($properties as $key => $value) {
+            if (in_array($key, $propsToIgnore)) {
+                continue;
+            }
 			if (is_a($value, 'models\mapper\IdReference')) {
 				if (array_key_exists($key, $values)) {
 					$this->decodeIdReference($key, $model, $values);
