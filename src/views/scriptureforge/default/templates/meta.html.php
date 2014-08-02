@@ -3,7 +3,7 @@
 		<title><?php echo $controller->website->name; ?></title>
 		
 		<link rel="stylesheet" href="/css/shared/bootstrap.css" />
-		<link rel="stylesheet" href="/css/shared/jquery-te-1.4.0.css" />
+        <link rel="stylesheet" href="/css/shared/animate.css" />
 		<?php if (isset($cssFiles)): ?>
 		<?php foreach($cssFiles as $filename): ?>
 		<link rel=stylesheet href="/<?php echo $filename; ?>" />
