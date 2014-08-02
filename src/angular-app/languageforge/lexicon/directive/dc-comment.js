@@ -11,6 +11,8 @@ angular.module('palaso.ui.dc.comment', [])
 		},
 		controller: ['$scope', function($scope) {
 
+            $scope.show = {buttons: false};
+
             $scope.showNewReplyForm = false;
 
             $scope.newReply = {id:'', content:''};
