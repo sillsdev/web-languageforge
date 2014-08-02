@@ -47,7 +47,7 @@ class TestLexCommentCommands extends UnitTestCase {
         $commentList->read();
         $this->assertEqual($commentList->count, 0);
 
-        LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        LexCommentCommands::updateComment($project->id->asString(), $userId, $e->website, $data);
 
         $commentList->read();
         $this->assertEqual($commentList->count, 1);
@@ -77,7 +77,7 @@ class TestLexCommentCommands extends UnitTestCase {
             'content' => 'hi there!',
             'regarding' => $regarding
         );
-        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $e->website, $data);
 
         $newCommentContent = "My first comment";
 
@@ -85,7 +85,7 @@ class TestLexCommentCommands extends UnitTestCase {
             'id' => $commentId,
             'content' => $newCommentContent,
         );
-        LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        LexCommentCommands::updateComment($project->id->asString(), $userId, $e->website, $data);
 
         $comment = new LexCommentModel($project, $commentId);
 
@@ -114,7 +114,7 @@ class TestLexCommentCommands extends UnitTestCase {
             'content' => 'hi there!',
             'regarding' => $regarding
         );
-        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $e->website, $data);
         $comment = new LexCommentModel($project, $commentId);
         $replyData = array(
             'id' => '',
@@ -123,7 +123,7 @@ class TestLexCommentCommands extends UnitTestCase {
 
         $this->assertEqual(count($comment->replies), 0);
 
-        $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $commentId, $replyData);
+        $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $e->website, $commentId, $replyData);
         $comment->read($commentId);
 
         $reply = $comment->getReply($replyId);
@@ -151,7 +151,7 @@ class TestLexCommentCommands extends UnitTestCase {
             'content' => 'hi there!',
             'regarding' => $regarding
         );
-        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $e->website, $data);
         $comment = new LexCommentModel($project, $commentId);
         $replyData = array(
             'id' => '',
@@ -159,8 +159,8 @@ class TestLexCommentCommands extends UnitTestCase {
         );
 
         // add two replies
-        LexCommentCommands::updateReply($project->id->asString(), $userId, $commentId, $replyData);
-        $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $commentId, $replyData);
+        LexCommentCommands::updateReply($project->id->asString(), $userId, $e->website, $commentId, $replyData);
+        $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $e->website, $commentId, $replyData);
 
         $comment->read($commentId);
         $reply = $comment->getReply($replyId);
@@ -172,7 +172,7 @@ class TestLexCommentCommands extends UnitTestCase {
             'content' => 'an updated reply'
         );
 
-        LexCommentCommands::updateReply($project->id->asString(), $userId, $commentId, $replyData);
+        LexCommentCommands::updateReply($project->id->asString(), $userId, $e->website, $commentId, $replyData);
         $comment->read($commentId);
         $reply = $comment->getReply($replyId);
 
@@ -199,7 +199,7 @@ class TestLexCommentCommands extends UnitTestCase {
             'content' => 'hi there!',
             'regarding' => $regarding
         );
-        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $e->website, $data);
         $comment = new LexCommentModel($project, $commentId);
         $this->assertFalse($comment->isDeleted);
 
@@ -235,7 +235,7 @@ class TestLexCommentCommands extends UnitTestCase {
             'content' => 'hi there!',
             'regarding' => $regarding
         );
-        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $e->website, $data);
         $comment = new LexCommentModel($project, $commentId);
         $replyData = array(
             'id' => '',
@@ -243,8 +243,8 @@ class TestLexCommentCommands extends UnitTestCase {
         );
 
         // add two replies
-        LexCommentCommands::updateReply($project->id->asString(), $userId, $commentId, $replyData);
-        $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $commentId, $replyData);
+        LexCommentCommands::updateReply($project->id->asString(), $userId, $e->website, $commentId, $replyData);
+        $replyId = LexCommentCommands::updateReply($project->id->asString(), $userId, $e->website, $commentId, $replyData);
 
         $comment->read($commentId);
 
@@ -275,7 +275,7 @@ class TestLexCommentCommands extends UnitTestCase {
             'content' => 'hi there!',
             'regarding' => $regarding
         );
-        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $e->website, $data);
         $comment = new LexCommentModel($project, $commentId);
 
         $this->assertEqual($comment->status, LexCommentModel::STATUS_OPEN);
@@ -306,7 +306,7 @@ class TestLexCommentCommands extends UnitTestCase {
             'content' => 'hi there!',
             'regarding' => $regarding
         );
-        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $data);
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $userId, $e->website, $data);
         $comment = new LexCommentModel($project, $commentId);
 
         $this->assertEqual($comment->status, LexCommentModel::STATUS_OPEN);
@@ -342,7 +342,7 @@ class TestLexCommentCommands extends UnitTestCase {
             'content' => 'hi there!',
             'regarding' => $regarding
         );
-        $commentId = LexCommentCommands::updateComment($project->id->asString(), $user1Id, $data);
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $user1Id, $e->website, $data);
         $comment = new LexCommentModel($project, $commentId);
 
         $this->assertEqual($comment->score, 0);
@@ -372,7 +372,7 @@ class TestLexCommentCommands extends UnitTestCase {
             'content' => 'hi there!',
             'regarding' => $regarding
         );
-        $commentId = LexCommentCommands::updateComment($project->id->asString(), $user1Id, $data);
+        $commentId = LexCommentCommands::updateComment($project->id->asString(), $user1Id, $e->website, $data);
         $comment = new LexCommentModel($project, $commentId);
 
         $this->assertEqual($comment->score, 0);

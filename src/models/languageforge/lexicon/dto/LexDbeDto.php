@@ -9,7 +9,6 @@ use models\languageforge\lexicon\LexDeletedEntryListModel;
 use models\languageforge\lexicon\LexDeletedCommentListModel;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryListModel;
-use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\mapper\JsonEncoder;
 use models\UserModel;
@@ -34,7 +33,7 @@ class LexDbeDtoCommentsEncoder extends JsonEncoder {
         }
     }
 
-    public static function encodeModel($model) {
+    public static function encode($model) {
         $e = new LexDbeDtoCommentsEncoder();
         return $e->_encode($model);
     }
@@ -97,7 +96,7 @@ class LexDbeDto {
 
 
 		$data['entries'] = $entries;
-        $data['comments'] = LexDbeDtoCommentsEncoder::encodeModel($commentsModel);
+        $data['comments'] = LexDbeDtoCommentsEncoder::encode($commentsModel);
         $data['timeOnServer'] = time(); // future use for offline syncing
 
 		return $data;
