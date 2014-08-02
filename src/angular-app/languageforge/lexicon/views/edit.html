@@ -117,7 +117,6 @@
             </div>
             <div style="margin-top:5px">
                 <div class="entryItemView" data-ng-if="entryLoaded()">
-                    <div style="text-align:center; color: #e67345;margin-bottom: 8px"><em>Click on a context field below for your comment</em></div>
                     <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
                 </div>
             </div>
@@ -129,7 +128,7 @@
                     <i class="icon-remove" style="color:#808080; cursor: pointer"></i>
                     </span>
                 </div>
-                <div><select ng-show="control.rights.canEditComment()" style="width:110px" ng-model="commentStatusFilter"><option value="any">Any</option><option value="unresolved">Unresolved</option></select></div>
+                <div><select ng-show="control.rights.canUpdateCommentStatus()" style="width:110px" ng-model="commentStatusFilter"><option value="any">Any</option><option value="unresolved">Unresolved</option></select></div>
                 <div>
                     <!-- cant get this working at the moment
                     <div ng-show="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryComments.length}} {{'Comments' | translate}}</div>
@@ -151,7 +150,7 @@
                         <span class="regardingFieldValue">{{newComment.regarding.fieldValue}}</span>
                         <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
                     </div>
-                    <div ng-hide="newComment.regarding.field" translate="this entry in general"></div>
+                    <div ng-hide="newComment.regarding.field" style="text-align:center; color: #e67345;margin-bottom: 8px"><em translate="Click on a field to the left and give context to your comment"></em></div>
                 </div>
             </div>
             <div class="commentListContainer">

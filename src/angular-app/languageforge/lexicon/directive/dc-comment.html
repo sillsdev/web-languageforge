@@ -1,53 +1,56 @@
-<div class="commentContainer">
-    <div class="commentLeftSide">
-        <img width="50px" height="50px" ng-src="{{model.userRef.avatar_ref}}" />
-        <div>{{model.authorInfo.createdByUserRef.name}}</div>
-        <div class="commentDate">{{model.authorInfo.createdDate | relativetime}}</div>
-        <div class="commentPlusOne">{{model.score}}
-            <i ng-show="control.canPlusOneComment(model.id) && control.rights.canComment()" ng-click="control.plusOneComment(model.id)" tooltip="Like this comment" class="icon-thumbs-up"></i>
-            <i ng-hide="control.canPlusOneComment(model.id) && control.rights.canComment()" class="icon-thumbs-up-alt"></i>
+<div class="commentContainer" ng-mouseenter="show.buttons = true" ng-mouseleave="show.buttons = false">
+    <div class="commentContentContainer">
+        <div class="commentLeftSide">
+            <img width="50px" height="50px" ng-src="{{model.authorInfo.createdByUserRef.avatar_ref}}" />
+            <div class="commentAuthor">{{model.authorInfo.createdByUserRef.name}}</div>
+            <div class="commentDate">{{model.authorInfo.createdDate | relativetime}}</div>
+            <div class="commentPlusOne">{{model.score}}
+                <i ng-show="control.canPlusOneComment(model.id) && control.rights.canComment()" style="cursor: pointer" ng-click="control.plusOneComment(model.id)" tooltip="Like this comment" class="icon-thumbs-up-alt"></i>
+                <i ng-hide="control.canPlusOneComment(model.id) && control.rights.canComment()" class="icon-thumbs-up-alt"></i>
+            </div>
+        </div>
+        <div class="commentRightSide">
+            <div class="commentContent" ng-hide="model.editing" ng-bind="model.content"></div>
+            <div ng-show="model.editing" class="flex100" style="justify-content: space-around">
+                <textarea data-ng-model="model.content"></textarea>
+                <button ng-disabled="!model.content" class="btn-sm" ng-click="updateComment(model)">Update</button> <a ng-click="model.editing = false">Cancel</a>
+            </div>
+            <div class="commentRegarding" ng-show="model.regarding.field">
+                <span class="regardingFieldName">{{model.regarding.fieldNameForDisplay}}</span>
+                <span class="regardingInputSystem" ng-show="model.regarding.inputSystem">{{model.regarding.inputSystemAbbreviation}}</span>
+                <span class="regardingFieldValue">{{model.regarding.fieldValue}}</span>
+                <div class="regardingContext"><b>{{model.regarding.word}}</b> <em>{{model.regarding.meaning}}</em></div>
+            </div>
         </div>
     </div>
-    <div class="commentRightSide">
-        <div class="commentContent" ng-hide="model.editing" ng-bind="model.content"></div>
-        <div ng-show="model.editing" class="flex100" style="justify-content: space-around">
-            <textarea data-ng-model="model.content"></textarea>
-            <button ng-disabled="!model.content" class="btn-sm" ng-click="updateComment(model)">Update</button> <a ng-click="model.editing = false">Cancel</a>
+    <div class="commentRepliesContainer">
+        <div ng-repeat="reply in model.replies">
+            <div ng-hide="reply.editing">
+                <span class="replyContent">{{reply.content}}</span> - <span class="replyUser">{{reply.authorInfo.createdByUserRef.name}}</span>
+                <span class="commentDate">{{reply.authorInfo.createdDate | relativetime}}</span>
+                <span class="editReplyLink"><a ng-click="reply.editing = true">Edit</a></span>
+            </div>
+            <div ng-show="reply.editing">
+                <input type="text" ng-model="reply.content" class="input-xlarge"/> <button class="btn" ng-click="submitReply(reply)">Update</button> <a ng-click="reply.editing = false">Cancel</a>
+            </div>
         </div>
-        <div class="commentRegarding" ng-show="model.regarding.field">
-            <span class="regardingFieldName">{{model.regarding.fieldNameForDisplay}}</span>
-            <span class="regardingInputSystem" ng-show="model.regarding.inputSystem">{{model.regarding.inputSystemAbbreviation}}</span>
-            <span class="regardingFieldValue">{{model.regarding.fieldValue}}</span>
-            <div class="regardingContext"><b>{{model.regarding.word}}</b> <em>{{model.regarding.meaning}}</em></div>
-        </div>
-    </div>
-</div>
-<div class="commentRepliesContainer">
-    <div ng-repeat="reply in model.replies">
-        <div ng-hide="reply.editing">
-            <span class="replyContent">{{reply.content}}</span> - <span class="replyUser">{{reply.authorInfo.createdByUserRef.name}}</span>
-            <span class="commentDate">{{reply.authorInfo.createdDate | relativetime}}</span>
-            <span class="editReplyLink"><a ng-click="reply.editing = true">Edit</a></span>
-        </div>
-        <div ng-show="reply.editing">
-            <input type="text" ng-model="reply.content" class="input-xlarge"/> <button class="btn" ng-click="submitReply(reply)">Update</button> <a ng-click="reply.editing = false">Cancel</a>
+        <div class="commentNewReplyForm" ng-show="showNewReplyForm">
+            <input type="text" ng-model="newReply.content" class="input-xlarge"/> <button class="btn" ng-click="submitReply(newReply)">Post</button>
         </div>
     </div>
-    <div class="commentNewReplyForm" ng-show="showNewReplyForm">
-        <input type="text" ng-model="newReply.content" class="input-xlarge"/> <button class="btn" ng-click="submitReply(newReply)">Post</button>
-    </div>
-</div>
-<div class="commentBottomBar">
-    <div ng-show="showButtons">
-        <div>
-            <i class="icon-remove" ng-show="control.rights.canDeleteComment(model.authorInfo.createdByUserRef.id)" ng-click="control.deleteComment(model.id)"></i>
-            <i class="icon-ok" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'resolved'" tooltip="Mark as Resolved" ng-click="control.updateCommentStatus(model.id, 'resolved')"></i>
-            <i class="icon-edit" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'todo'" tooltip="Mark as Todo" ng-click="control.updateCommentStatus(model.id, 'todo')"></i>
-            <i class="icon-edit" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'open'" tooltip="Mark as Open" ng-click="control.updateCommentStatus(model.id, 'open')"></i>
-        </div>
-        <div>
-            <button class="btn btn-mini" ng-show="control.rights.canEditComment(model.authorInfo.createdByUserRef.id)" ng-click="doReply()"><i class="icon-chevron-sign-up"></i> Edit</button>
-            <button class="btn btn-mini" ng-show="control.rights.canComment()"><i class="icon-reply"></i> Reply</button>
+    <div style="height:30px">
+        <div class="commentBottomBar" ng-show="show.buttons">
+            <div>
+                Status: {{model.status}}
+                <i class="icon-remove" ng-show="control.rights.canDeleteComment(model.authorInfo.createdByUserRef.id)" ng-click="control.deleteComment(model.id)"></i>
+                <i class="icon-ok" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'resolved'" tooltip="Mark as Resolved" ng-click="control.updateCommentStatus(model.id, 'resolved')"></i>
+                <i class="icon-edit" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'todo'" tooltip="Mark as Todo" ng-click="control.updateCommentStatus(model.id, 'todo')"></i>
+                <i class="icon-edit" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'open'" tooltip="Mark as Open" ng-click="control.updateCommentStatus(model.id, 'open')"></i>
+            </div>
+            <div>
+                <button class="btn btn-mini" ng-show="control.rights.canEditComment(model.authorInfo.createdByUserRef.id)" ng-click="doReply()"><i class="icon-chevron-sign-up"></i> Edit</button>
+                <button class="btn btn-mini" ng-show="control.rights.canComment()"><i class="icon-reply"></i> Reply</button>
+            </div>
         </div>
     </div>
 </div>

@@ -84,7 +84,7 @@ class LexCommentCommands {
         $project = new LexiconProjectModel($projectId);
         $comment = new LexCommentModel($project, $commentId);
 
-        $vote = new UserGenericVoteModel($userId, $projectId);
+        $vote = new UserGenericVoteModel($userId, $projectId, 'lexCommentPlusOne');
         if (!$vote->hasVote($commentId)) {
             $comment->score++;
             $comment->write();
