@@ -295,7 +295,8 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         if (inputSystems) {
           $scope.currentField.inputSystems.fieldOrder = inputSystems;
           angular.forEach($scope.configDirty.inputSystems, function(inputSystem, tag) {
-            if(! (tag in $scope.currentField.inputSystems.selecteds)) {
+            if (! (tag in $scope.currentField.inputSystems.selecteds) &&
+                $scope.currentField.inputSystems.fieldOrder.indexOf(tag) == -1) {
               $scope.currentField.inputSystems.fieldOrder.push(tag);
             }
           });
@@ -357,7 +358,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
           $scope.selects.type = {
               'optionsOrder': ['multitext', 'optionlist', 'multioptionlist'],
               'options': {
-                'multitext'       : $filter('translate')('Multi-Input-System Text'),
+                'multitext'       : $filter('translate')('Multi-input-system Text'),
                 'optionlist'      : $filter('translate')('Option List'),
                 'multioptionlist' : $filter('translate')('Multi-option List'),
                 'reference'       : $filter('translate')('Entry Reference'),
