@@ -522,7 +522,7 @@ class Sf
     public function lex_dbeDtoFull($browserId) {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
         $this->_controller->session->set_userdata($sessionLabel, time());
-        return LexDbeDto::encode($this->_projectId);
+        return LexDbeDto::encode($this->_projectId, $this->_userId);
     }
     public function lex_dbeDtoUpdatesOnly($browserId) {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
@@ -530,9 +530,9 @@ class Sf
         $this->_controller->session->set_userdata($sessionLabel, time());
         if ($lastFetchTime) {
             $lastFetchTime = $lastFetchTime - 5;  // 5 second buffer
-            return LexDbeDto::encode($this->_projectId, $lastFetchTime);
+            return LexDbeDto::encode($this->_projectId, $this->_userId, $lastFetchTime);
         } else {
-            return LexDbeDto::encode($this->_projectId);
+            return LexDbeDto::encode($this->_projectId, $this->_userId);
         }
     }
 	

@@ -11,6 +11,7 @@ use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryListModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\mapper\JsonEncoder;
+use models\shared\UserGenericVoteModel;
 use models\UserModel;
 
 class LexDbeDtoCommentsEncoder extends JsonEncoder {
@@ -42,11 +43,13 @@ class LexDbeDto {
 
     /**
      * @param string $projectId
-     * @param bool $returnOnlyUpdates
+     * @param $userId
+     * @param null $lastFetchTime
      * @throws \Exception
+     * @internal param bool $returnOnlyUpdates
      * @return array
      */
-	public static function encode($projectId, $lastFetchTime = null) {
+	public static function encode($projectId, $userId, $lastFetchTime = null) {
         $data = array();
 		$project = new LexiconProjectModel($projectId);
 		$entriesModel = new LexEntryListModel($project, $lastFetchTime);
@@ -55,11 +58,20 @@ class LexDbeDto {
 
         $commentsModel = new LexCommentListModel($project, $lastFetchTime);
         $commentsModel->readAsModels();
+        $encodedComments = LexDbeDtoCommentsEncoder::encode($commentsModel);
+        $data['comments'] = $encodedComments['entries'];
+        /*
+        $commentsModel->read();
+        $data['comments'] = $commentsModel->entries;
+        */
 
-        // fix up entryRef - maybe move this to a custom encoder?
-//        foreach ($commentsModel->entries as $key => $comment) {
-//            $commentsModel->entries[$key]['entryRef'] = $commentsModel->entries[$key]['entryRef']->{'$id'};
-//        }
+
+        $votes = new UserGenericVoteModel($userId, $projectId, 'lexCommentPlusOne');
+        $votesDto = array();
+        foreach ($votes->votes as $vote) {
+            $votesDto[$vote->ref->id] = true;
+        }
+        $data['commentsUserPlusOne'] = $votesDto;
 
         if (!is_null($lastFetchTime)) {
             $deletedEntriesModel = new LexDeletedEntryListModel($project, $lastFetchTime);
@@ -96,7 +108,7 @@ class LexDbeDto {
 
 
 		$data['entries'] = $entries;
-        $data['comments'] = LexDbeDtoCommentsEncoder::encode($commentsModel);
+
         $data['timeOnServer'] = time(); // future use for offline syncing
 
 		return $data;

@@ -1,4 +1,4 @@
-div.commentRegarding {
+.commentRegarding {
     border: 1px solid #d3d3d3;
     background-color: #f3f3f3;
     margin: 0 10px 0 10px;
@@ -6,6 +6,42 @@ div.commentRegarding {
 
 }
 
-.commentContainer .icon-thumbs-up-alt {
+.commentContainer {
+    margin: 20px 0 20px 0;
+}
+
+.commentContentContainer {
+    display:flex;
+    width: 100%;
+}
+
+.commentBottomBar {
+    background-color: #f4f4f4;
+    display:flex;
+    justify-content: space-between;
+}
+
+.commentLeftSide {
+    text-align: center;
+    flex:1;
+}
+
+.commentRightSide {
+    flex:5;
+    padding: 3px;
+}
+
+
+.commentPlusOne .icon-thumbs-up-alt {
     color: darkblue;
+}
+
+.commentLeftSide .commentAuthor {
+    font-size: small;
+    color: #808080;
+}
+
+.commentLeftSide .commentDate {
+    font-size: x-small;
+    color: #808080;
 }

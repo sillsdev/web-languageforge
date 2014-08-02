@@ -14,6 +14,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
     $scope.currentEntryComments = {};
+    $scope.commentsUserPlusOne = [];
     $scope.currentEntryCommentCounts = {total:0, fields:{}};
     $scope.state = 'list'; // default state.  State is one of 'list', 'edit', or 'comment'
     $scope.showUncommonFields = false;
@@ -431,6 +432,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		var processDbeDto = function (result) {
             notice.cancelLoading();
 			if (result.ok) {
+                $scope.commentsUserPlusOne = result.data.commentsUserPlusOne;
                 if (fullRefresh) {
                     $scope.entries = result.data.entries;
                     $scope.comments = result.data.comments;
@@ -692,10 +694,11 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     };
 
     $scope.canPlusOneComment = function canPlusOneComment(commentId) {
-        // todo implement this
+        if (angular.isDefined($scope.commentsUserPlusOne[commentId])) {
+            return false;
+        }
         return true;
-
-    }
+    };
 
     $scope.deleteCommentReply = function deleteCommentReply(commentId, replyId) {
         commentService.deleteReply(commentId, replyId, function(result) {
