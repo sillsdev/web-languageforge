@@ -852,8 +852,11 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             if (sessionService.currentUserId == commentAuthorId) {
                 return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT_OWN);
             } else {
-                return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT);
+                return false;
             }
+        },
+        canUpdateCommentStatus: function canUpdateCommentStatus() {
+            return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT);
         }
     };
 
