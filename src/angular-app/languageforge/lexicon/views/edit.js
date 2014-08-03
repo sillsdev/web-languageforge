@@ -19,7 +19,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     $scope.state = 'list'; // default state.  State is one of 'list', 'edit', or 'comment'
     $scope.showUncommonFields = false;
     $scope.commentsFilter = '';
-    $scope.commentStatusFilter = 'any';
+    $scope.commentStatusFilter = 'all';
     $scope.newComment = {id: '', content: '', regarding: {}}; // model for new comment content
 
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
@@ -600,7 +600,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
        if (angular.isDefined(replyId)) {
            deleteComment = false;
        }
-       for (var i=list.length; i>0; i--) {
+       for (var i=list.length-1; i>=0; i--) {
            var c = list[i];
            if (deleteComment) {
                if (c.id == commentId) {
@@ -609,10 +609,10 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
            } else {
 
                // delete Reply
-               for (var j=c.replies.length; j>0; j--) {
+               for (var j=c.replies.length-1; j>=0; j--) {
                    var r = c.replies[j];
                    if (r.id == replyId) {
-                       c.replies.splie(j, 1);
+                       c.replies.splice(j, 1);
                    }
                }
            }
@@ -621,10 +621,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
     function removeCommentFromLists(commentId, replyId) {
         _deleteCommentInList(commentId, replyId, $scope.comments);
-
-        angular.forEach($scope.currentEntryComments, function(commentsListByField) {
-            _deleteCommentInList(commentId, replyId, commentsListByField);
-        });
+        _deleteCommentInList(commentId, replyId, $scope.currentEntryComments);
     }
 
     $scope.getNewCommentPlaceholderText = function getNewCommentPlaceholderText() {
@@ -640,7 +637,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     };
 
     $scope.updateComment = function updateComment(comment) {
-        if (angular.isUndefined(comment)) {
+        var isNewComment = angular.isUndefined(comment);
+        if (isNewComment) {
             comment = angular.copy($scope.newComment);
             // comment.content is already set in the form
             comment.entryRef = $scope.currentEntry.id;
@@ -656,21 +654,31 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
                    loadCurrentEntryComments();
                });
 
-               // reset newComment
-               $scope.newComment = {id: '', content: '', regarding: {}}; // model for new comment content
+               if (isNewComment) { // reset newComment
+                   $scope.newComment = {id: '', content: '', regarding: {}}; // model for new comment content
+               }
            }
         });
     };
 
-    $scope.deleteComment = function deleteComment(commentId) {
-       commentService.delete(commentId, function(result) {
-           if (result.ok) {
-               refreshData(false, function() {
-                   loadCurrentEntryComments();
-               });
-           }
-       });
-       removeCommentFromLists(commentId);
+    $scope.deleteComment = function deleteComment(comment) {
+        var deletemsg;
+        if (sessionService.session.userId == comment.authorInfo.createdByUserRef.id) {
+            deletemsg = "Are you sure you want to delete your own comment?";
+        } else {
+            deletemsg = "Are you sure you want to delete " + comment.authorInfo.createdByUserRef.name + "'s comment?";
+        }
+
+        modal.showModalSimple('Delete Comment', deletemsg, 'Cancel', 'Delete Comment').then(function() {
+            commentService.delete(comment.id, function(result) {
+                if (result.ok) {
+                    refreshData(false, function() {
+                        loadCurrentEntryComments();
+                    });
+                }
+            });
+            removeCommentFromLists(comment.id);
+        });
     };
 
     $scope.updateReply = function updateReply(commentId, reply) {
@@ -700,15 +708,24 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         return true;
     };
 
-    $scope.deleteCommentReply = function deleteCommentReply(commentId, replyId) {
-        commentService.deleteReply(commentId, replyId, function(result) {
-            if (result.ok) {
-                refreshData(false, function () {
-                    loadCurrentEntryComments();
-                });
-            }
+    $scope.deleteCommentReply = function deleteCommentReply(commentId, reply) {
+        var deletemsg;
+        if (sessionService.session.userId == reply.authorInfo.createdByUserRef.id) {
+            deletemsg = "Are you sure you want to delete your own comment reply?";
+        } else {
+            deletemsg = "Are you sure you want to delete " + reply.authorInfo.createdByUserRef.name + "'s comment reply?";
+        }
+
+        modal.showModalSimple('Delete Reply', deletemsg, 'Cancel', 'Delete Reply').then(function() {
+            commentService.deleteReply(commentId, reply.id, function (result) {
+                if (result.ok) {
+                    refreshData(false, function () {
+                        loadCurrentEntryComments();
+                    });
+                }
+            });
+            removeCommentFromLists(commentId, reply.id);
         });
-        removeCommentFromLists(commentId, replyId);
     };
 
     $scope.updateCommentStatus = function updateCommentStatus(commentId, status) {
@@ -845,14 +862,14 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.CREATE);
         },
         canDeleteComment: function canDeleteComment(commentAuthorId) {
-            if (sessionService.currentUserId == commentAuthorId) {
+            if (sessionService.session.userId == commentAuthorId) {
                 return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE_OWN);
             } else {
                 return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE);
             }
         },
         canEditComment: function canEditComment(commentAuthorId) {
-            if (sessionService.currentUserId == commentAuthorId) {
+            if (sessionService.session.userId == commentAuthorId) {
                 return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT_OWN);
             } else {
                 return false;
