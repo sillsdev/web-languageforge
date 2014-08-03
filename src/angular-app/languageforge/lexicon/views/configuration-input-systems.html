@@ -34,8 +34,8 @@
 					<li data-ng-class="{disabled: newExists(inputSystems[currentInputSystemTag].code, selects.special.optionsOrder[3])}">
 						<a tabindex="-1" data-ng-click="addInputSystem(inputSystems[currentInputSystemTag].code, inputSystems[currentInputSystemTag].languageName, selects.special.optionsOrder[3])">
 						<i class="icon-plus"></i> {{'Add a variant of' | translate}} {{inputSystems[currentInputSystemTag].languageName}}</a></li>
-					<li class="divider"></li>
-					<li data-ng-class="{disabled: (inputSystems[currentInputSystemTag].fieldUseCount > 0)}">
+					<li class="divider" data-ng-show="projectSettings.config.inputSystems[currentInputSystemTag] == undefined"></li>
+					<li data-ng-show="projectSettings.config.inputSystems[currentInputSystemTag] == undefined">
 						<a tabindex="-1" data-ng-click="removeInputSystem(currentInputSystemTag)">
 						<i class="icon-remove"></i> {{'Remove' | translate}} {{inputSystems[currentInputSystemTag].name}}</a></li>
 				</ul>
