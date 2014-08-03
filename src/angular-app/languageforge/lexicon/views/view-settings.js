@@ -103,7 +103,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     $scope.selectField = function selectField(fieldName, view) {
       $scope.currentField.name = fieldName;
       $scope.currentField.inputSystems.selecteds = {};
-      if (angular.isDefined(view.fields[fieldName].overrideInputSystems)) {
+      if (angular.isDefined(view) && angular.isDefined(view.fields[fieldName].overrideInputSystems)) {
         if (angular.isDefined(view.fields[fieldName].inputSystems)) {
           if (view.fields[fieldName].inputSystems.length <= 0) {
             view.fields[fieldName].inputSystems = $scope.fieldConfig[fieldName].inputSystems;
@@ -255,7 +255,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
             });
           }
         } else {
-          if (angular.isDefined($scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems)) {
+          if ($scope.currentUserId && angular.isDefined($scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems)) {
             $scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems = [];
             angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
               if ($scope.currentField.inputSystems.selecteds[tag]) {
