@@ -5,7 +5,6 @@ namespace models\languageforge\lexicon\commands;
 use libraries\shared\palaso\CodeGuard;
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\LexEntryModel;
-use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
 use models\languageforge\lexicon\LexEntryListModel;
 use models\languageforge\lexicon\LexCommentModel;
 use models\languageforge\lexicon\LexiconProjectModel;
@@ -19,7 +18,7 @@ class LexEntryCommands {
 	public static function readEntry($projectId, $entryId) {
 		$project = new LexiconProjectModel($projectId);
 		$entry = new LexEntryModel($project, $entryId);
-		return LexEntryWithCommentsEncoder::encode($entry);
+		return JsonEncoder::encode($entry);
 	}
 
 	/*
@@ -51,8 +50,7 @@ class LexEntryCommands {
 		JsonDecoder::decode($entry, $params);
 
 		$entry->write();
-        // todo: review this encoder as we are no longer doing comments on the entry - cjh 2014-07
-		return LexEntryWithCommentsEncoder::encode($entry);
+		return JsonEncoder::encode($entry);
 	}
 
     /**

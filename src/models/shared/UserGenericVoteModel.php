@@ -18,12 +18,20 @@ class Vote
 
 class UserGenericVoteModel extends \models\UserRelationModel
 {
+    /**
+     * @var string
+     */
+    public $namespace;
+
+
 	/**
 	 * @param string $userId
 	 * @param string $projectId
+     * @param string $namespace - an arbitrary string representing a namespace for this vote model within the project
 	 */
-	public function __construct($userId, $projectId) {
+	public function __construct($userId, $projectId, $namespace) {
 		$this->votes = new ArrayOf(function($data) { return new Vote(); } );
+        $this->namespace = $namespace;
 		parent::__construct('vote', $userId, $projectId);
 		$this->read();
 	}
@@ -32,6 +40,7 @@ class UserGenericVoteModel extends \models\UserRelationModel
 		$mapper = self::mapper();
 		$mapper->readByProperties($this, array(
 				'type' => 'vote',
+                'namespace' => $this->namespace,
 				'userRef' => MongoMapper::mongoID($this->userRef->asString()),
 				'projectRef' => MongoMapper::mongoID($this->projectRef->asString())
 		));

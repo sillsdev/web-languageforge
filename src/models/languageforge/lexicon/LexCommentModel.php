@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon;
 
 use models\mapper\ArrayOf;
 use models\mapper\Id;
+use models\mapper\IdReference;
 
 class LexCommentModel extends \models\mapper\MapperModel {
 
@@ -29,7 +30,10 @@ class LexCommentModel extends \models\mapper\MapperModel {
         $this->setReadOnlyProp('replies');
         $this->setReadOnlyProp('score');
         $this->setReadOnlyProp('status');
+        $this->setPrivateProp('isDeleted');
+
         $this->id = new Id();
+        $this->entryRef = new IdReference();
         $this->isDeleted = false;
         $this->replies = new ArrayOf(
             function($data) {
@@ -52,9 +56,14 @@ class LexCommentModel extends \models\mapper\MapperModel {
     }
 
     /**
-     * @var IdReference
+     * @var Id
      */
     public $id;
+
+    /**
+     * @var IdReference
+     */
+    public $entryRef;
 
 	/**
 	 * 
