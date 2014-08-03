@@ -4,28 +4,84 @@ namespace models\languageforge\lexicon\dto;
 
 use models\languageforge\lexicon\commands\LexProjectCommands;
 use models\languageforge\lexicon\config\LexiconConfigObj;
+use models\languageforge\lexicon\LexCommentListModel;
 use models\languageforge\lexicon\LexDeletedEntryListModel;
+use models\languageforge\lexicon\LexDeletedCommentListModel;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryListModel;
-use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
 use models\languageforge\lexicon\LexiconProjectModel;
+use models\mapper\JsonEncoder;
+use models\shared\UserGenericVoteModel;
+use models\UserModel;
 
+class LexDbeDtoCommentsEncoder extends JsonEncoder {
+
+	public function encodeIdReference($key, $model) {
+        if ($key == 'createdByUserRef' || $key == 'modifiedByUserRef') {
+            $user = new UserModel();
+            if ($user->exists($model->asString())) {
+                $user->read($model->asString());
+                return array(
+                    'id' => $user->id->asString(),
+                    'avatar_ref' => $user->avatar_ref,
+                    'name' => $user->name,
+                    'username' => $user->username);
+            } else {
+                return '';
+            }
+        } else {
+            return $model->asString();
+        }
+    }
+
+    public static function encode($model) {
+        $e = new LexDbeDtoCommentsEncoder();
+        return $e->_encode($model);
+    }
+}
 class LexDbeDto {
 
     /**
      * @param string $projectId
-     * @param bool $returnOnlyUpdates
+     * @param $userId
+     * @param null $lastFetchTime
      * @throws \Exception
+     * @internal param bool $returnOnlyUpdates
      * @return array
      */
-	public static function encode($projectId, $lastFetchTime = null) {
+	public static function encode($projectId, $userId, $lastFetchTime = null) {
+        $data = array();
 		$project = new LexiconProjectModel($projectId);
 		$entriesModel = new LexEntryListModel($project, $lastFetchTime);
 		$entriesModel->readForDto();
 		$entries = $entriesModel->entries;
 
-        $deletedEntriesModel = new LexDeletedEntryListModel($project, $lastFetchTime);
-        $deletedEntriesModel->read();
+        $commentsModel = new LexCommentListModel($project, $lastFetchTime);
+        $commentsModel->readAsModels();
+        $encodedComments = LexDbeDtoCommentsEncoder::encode($commentsModel);
+        $data['comments'] = $encodedComments['entries'];
+        /*
+        $commentsModel->read();
+        $data['comments'] = $commentsModel->entries;
+        */
+
+
+        $votes = new UserGenericVoteModel($userId, $projectId, 'lexCommentPlusOne');
+        $votesDto = array();
+        foreach ($votes->votes as $vote) {
+            $votesDto[$vote->ref->id] = true;
+        }
+        $data['commentsUserPlusOne'] = $votesDto;
+
+        if (!is_null($lastFetchTime)) {
+            $deletedEntriesModel = new LexDeletedEntryListModel($project, $lastFetchTime);
+            $deletedEntriesModel->read();
+            $data['deletedEntryIds'] = array_map(function ($e) {return $e['id']; }, $deletedEntriesModel->entries);
+
+            $deletedCommentsModel = new LexDeletedCommentListModel($project, $lastFetchTime);
+            $deletedCommentsModel->read();
+            $data['deletedCommentIds'] = array_map(function ($c) {return $c['id']; }, $deletedCommentsModel->entries);
+        }
 
         $lexemeInputSystems = $project->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems;
 
@@ -51,11 +107,9 @@ class LexDbeDto {
 
 
 
-		$data = array();
 		$data['entries'] = $entries;
-        $data['deletedEntries'] = array_map(function ($e) {return $e['id']; }, $deletedEntriesModel->entries);
-		$data['entriesTotalCount'] = count($entriesModel->entries);
-        $data['comments'] = array(); // TODO implement comments
+
+        $data['timeOnServer'] = time(); // future use for offline syncing
 
 		return $data;
 	}

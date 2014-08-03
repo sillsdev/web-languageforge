@@ -1,21 +1,21 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="lexAppContainer">
     <div style="display:flex;justify-content:space-between; margin-top:45px;margin-bottom: 10px">
         <div>
-            <a ng-show="state == 'edit'" class="btn" ng-click="returnToList()" tooltip="{{'Back to List'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-long-arrow-left"></i> {{'List'|translate}}</a>
-            <a ng-show="state == 'comment'" class="btn" ng-click="editEntry(currentEntry.id)" tooltip="{{'Return to Edit Entry'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-long-arrow-left"></i> {{'Edit'|translate}}</a>
+            <a ng-show="state == 'edit'" class="btn" ng-click="returnToList()" tooltip="{{'Back to List'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'List'|translate}}</a>
+            <a ng-show="state == 'comment'" class="btn" ng-click="editEntry(currentEntry.id)" tooltip="{{'Return to Edit Entry'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'Edit'|translate}}</a>
         </div>
         <div>
             <h2 style="text-align: center;margin:0" data-translate="Dictionary Browse and Edit"></h2>
         </div>
         <div>
             <a ng-show="state == 'edit'" style="color:white" class="btn btn-warning" ng-click="showComments()" tooltip="{{'Show Comments'|translate}}">
-                <span ng-if="getFieldCommentCount() > 1">
+                <span ng-if="getFieldCommentCount() !== 1">
                     {{getFieldCommentCount()}} {{'Comments'|translate}}
                 </span>
-                <span ng-hide="getFieldCommentCount() > 1">
+                <span ng-if="getFieldCommentCount() === 1">
                     {{getFieldCommentCount()}} {{'Comment'|translate}}
                 </span>
-                <i style="position: relative; top:1px;left:5px" class="icon-large icon-long-arrow-right"></i></a>
+                <i style="position: relative; top:1px;left:5px" class="icon-large icon-chevron-right"></i></a>
         </div>
     </div>
 
@@ -122,19 +122,47 @@
             </div>
         </div>
         <div style="flex: 9;padding:5px;display: flex; flex-direction: column">
-            <div style="margin-bottom: 5px; border-bottom: solid black 1px">
-                <div ng-if="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
-                    <button data-ng-if="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
-                    <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
-                    <span style="color: grey;">{{saveNotice()}}</span>
+            <div style="margin-bottom: 5px; border-bottom: solid black 1px; display:flex; justify-content: space-between">
+                <div style="position:relative;">
+                    <input dir="auto" style="width: 140px; margin-left:12px; padding-right:25px" placeholder="Filter Comments" ng-model="commentsFilter" type="text" />&nbsp;<span style="position:absolute; right:13px; top:5px" ng-show="commentsFilter != ''" title="Clear Filter" ng-click="commentsFilter = ''">
+                    <i class="icon-remove" style="color:#808080; cursor: pointer"></i>
+                    </span>
                 </div>
-                <div >
+                <div><select ng-show="control.rights.canUpdateCommentStatus()" style="width:110px" ng-model="commentStatusFilter"><option value="all">Show All</option><option value="unresolved">Unresolved</option><option value="todo">Todo</option></select></div>
+                <div>
+                    <!-- cant get this working at the moment
+                    <div ng-show="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryComments.length}} {{'Comments' | translate}}</div>
+                    <div ng-hide="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryCommentsFiltered.length}} of {{currentEntryComments.length}}</div>
+                    -->
+                    <div class="commentCount">{{currentEntryComments.length}} {{'Comments' | translate}}</div>
                 </div>
-                <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
             </div>
-            <div style="margin-top:5px">
-                <div class="entryItemView" data-ng-if="entryLoaded()">
-                    <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
+            <div class="commentListView">
+                <div ng-show="control.rights.canComment()" class="newCommentForm">
+                    <div class="flex100" style="justify-content: space-around">
+                        <textarea data-ng-model="newComment.content" placeholder="{{getNewCommentPlaceholderText()}}"></textarea>
+                        <button ng-disabled="!newComment.content" class="btn-sm" ng-click="updateComment()">Post</button>
+                    </div>
+                    <div class="commentRegarding">
+                        <small class="muted"><em>This comment is regarding</em></small>
+                        <div ng-show="newComment.regarding.field">
+                            <span class="regardingFieldName">{{newComment.regarding.fieldNameForDisplay}}</span>
+                            <span class="regardingInputSystem" ng-show="newComment.regarding.inputSystem">{{newComment.regarding.inputSystemAbbreviation}}</span>
+                            <span class="regardingFieldValue">{{newComment.regarding.fieldValue}}</span>
+                            <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
+                        </div>
+                        <div ng-hide="newComment.regarding.field" style="text-align:center; color: #e67345;margin-bottom: 8px"><em translate="Click on a field to the left and give context to your comment"></em></div>
+                    </div>
+                </div>
+                <div class="commentListContainer">
+                    <div ng-repeat="comment in currentEntryComments">
+                        <dc-comment control="control" model="comment"></dc-comment>
+                    </div>
+                    <!--
+                    <pre>{{currentEntryComments|json}}</pre>
+                    <pre>{{comments|json}}</pre>
+                    -->
+
                 </div>
             </div>
         </div>
@@ -146,51 +174,4 @@
         </div>
     </div>
     -->
-
-
-
 </div>
-
-<!--
-<div class="row outer-flex" style="margin-top:20px">
-<-- Left column: entry list control ->
-<div class="span4">
-    <-- control buttons ->
-    <div class="control-group">
-        <button class="btn btn-success" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
-    </div>
-
-    <div data-ng-show="show.entries.length > 0">
-
-        <!-- entry list search ->
-        <div style="margin-bottom:10px">
-            <span class="{{interfaceConfig.pullToSide}}" style="color: grey"><span>{{entriesTotalCount}}</span> {{'entries' | translate}}</span>
-            <!-- <span class="{{interfaceConfig.pullToSide}}" style="color: grey">{{ '{num} entries' | translate: '{ num: entriesTotalCount }' }}</span> ->
-            <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
-                <ul>
-                    <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults" class="typeahead-item">
-                        <p class="name">{{getWordForDisplay(e)}}</p>
-                        <p class="email">{{getDefinitionOrGloss(e)}}</p>
-                    </li>
-                </ul>
-            </typeahead>
-            <span style="margin-left:10px" title="Clear Filter" data-ng-click="searchText = ''" data-ng-show="searchText && searchText != ''">
-                <i class="icon-remove" style="color:black; cursor: pointer"></i>
-            </span>
-        </div>
-
-        <!-- entry list ->
-        <div id="entryList" data-pui-when-scrolled="show.more()">
-            <table class="table table-condensed ">
-                <tbody>
-                    <tr data-ng-class="{selected: e.id == currentEntry.id}" class="animate-repeat" data-ng-repeat="e in show.entries track by e.id">
-                        <td style="width:50%; text-align:{{lexemeAlign(e)}}" title="{{getWordForDisplay(e)}}" data-ng-click="editEntry(e.id)">{{getWordForDisplay(e)| characters:40}}</td>
-                        <td style="text-align:{{definitionOrGlossAlign(e)}}"title="{{getDefinitionOrGloss(e)}}" data-ng-click="editEntry(e.id)">{{getDefinitionOrGloss(e)| characters:40}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
--->
-		

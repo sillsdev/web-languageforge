@@ -6,7 +6,6 @@ use libraries\shared\palaso\CodeGuard;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\LexEntryModel;
-use models\languageforge\lexicon\LexEntryWithCommentsEncoder;
 use models\languageforge\lexicon\LexEntryListModel;
 use models\languageforge\lexicon\LexCommentModel;
 use models\languageforge\lexicon\LexCommentReply;
@@ -21,17 +20,22 @@ use models\UserVoteModel;
 use models\mapper\Id;
 
 class LexCommentCommands {
-    public static function updateComment($projectId, $userId, $params) {
+    public static function updateComment($projectId, $userId, $website, $params) {
         CodeGuard::checkTypeAndThrow($params, 'array');
         $project = new LexiconProjectModel($projectId);
+        $rightsHelper = new RightsHelper($userId, $project, $website);
         $isNew = ($params['id'] == '');
         if ($isNew) {
             $comment = new LexCommentModel($project);
         } else {
             $comment = new LexCommentModel($project, $params['id']);
-            if ($comment->authorInfo->createdByUserRef->asString() != $userId) {
-                throw new \Exception("You cannot update other people's lex comments!");
+            if ($comment->authorInfo->createdByUserRef->asString() != $userId && !$rightsHelper->userHasProjectRight(Domain::COMMENTS + Operation::EDIT)) {
+                throw new \Exception("No permission to update other people's lex comments!");
             }
+
+            // don't allow setting these on update
+            unset($params['regarding']);
+            unset($params['entryRef']);
         }
 
         JsonDecoder::decode($comment, $params);
@@ -46,16 +50,17 @@ class LexCommentCommands {
         return $comment->write();
     }
 
-    public static function updateReply($projectId, $userId, $commentId, $params) {
+    public static function updateReply($projectId, $userId, $website, $commentId, $params) {
         CodeGuard::checkTypeAndThrow($params, 'array');
         CodeGuard::checkEmptyAndThrow($commentId, 'commentId in updateReply()');
         $project = new LexiconProjectModel($projectId);
         $comment = new LexCommentModel($project, $commentId);
+        $rightsHelper = new RightsHelper($userId, $project, $website);
         $replyId = $params['id'];
         if (array_key_exists('id', $params) && $replyId != '') {
             $reply = $comment->getReply($replyId);
-            if ($reply->authorInfo->createdByUserRef->asString() != $userId) {
-                throw new \Exception("You cannot update other people's lex comment replies!");
+            if ($reply->authorInfo->createdByUserRef->asString() != $userId && !$rightsHelper->userHasProjectRight(Domain::COMMENTS + Operation::EDIT)) {
+                throw new \Exception("No permission to update other people's lex comment replies!");
             }
             if ($reply->content != $params['content']) {
                 $reply->authorInfo->modifiedDate = new \DateTime();
@@ -79,7 +84,7 @@ class LexCommentCommands {
         $project = new LexiconProjectModel($projectId);
         $comment = new LexCommentModel($project, $commentId);
 
-        $vote = new UserGenericVoteModel($userId, $projectId);
+        $vote = new UserGenericVoteModel($userId, $projectId, 'lexCommentPlusOne');
         if (!$vote->hasVote($commentId)) {
             $comment->score++;
             $comment->write();
