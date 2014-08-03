@@ -87,7 +87,12 @@ class MongoMapper
 		$data['count'] = $cursor->count();
 		$data['entries'] = array();
 		foreach ($cursor as $item) {
-			$data['entries'][(string)$item['_id']] = $item;
+            if (get_class($model->entries) == 'models\mapper\ArrayOf') {
+                $item['id'] = (string)$item['_id'];
+                $data['entries'][] = $item;
+            } else {
+                $data['entries'][(string)$item['_id']] = $item;
+            }
 		}
 		MongoDecoder::decode($model, $data);
 	}

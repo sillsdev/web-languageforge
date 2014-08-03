@@ -12,14 +12,7 @@ class JsonEncoder {
 	 */
 	public static function encode($model) {
 		$encoder = new JsonEncoder();
-		$data = $encoder->_encode($model);
-		if (method_exists($model, 'getPrivateProperties')) {
-			$privateProperties = (array)$model->getPrivateProperties();
-			foreach ($privateProperties as $prop) {
-				unset($data[$prop]);
-			}
-		}
-		return $data;
+		return $encoder->_encode($model);
 	}
 	
 	/**
@@ -30,7 +23,15 @@ class JsonEncoder {
 	protected function _encode($model) {
 		$data = array();
 		$properties = get_object_vars($model);
+        $privateProperties = array();
+        if (method_exists($model, 'getPrivateProperties')) {
+            $privateProperties = (array)$model->getPrivateProperties();
+        }
+
 		foreach ($properties as $key => $value) {
+            if (in_array($key, $privateProperties)) {
+                continue;
+            }
 			if (is_a($value, 'models\mapper\IdReference')) {
 				$data[$key] = $this->encodeIdReference($key, $model->$key);
 			} else if (is_a($value, 'models\mapper\Id')) {
@@ -56,7 +57,7 @@ class JsonEncoder {
 					$data[$key] = $this->_encode($value);
 				} else {
 					// Default encode
-					if ($value == null) {
+					if (is_null($value)) {
 						$value = '';
 					}
 					$data[$key] = $value;

@@ -1,4 +1,4 @@
-angular.module('palaso.ui.dc.optionlist', ['palaso.ui.dc.comments'])
+angular.module('palaso.ui.dc.optionlist', [])
   // Palaso UI Optionlist
   .directive('dcOptionlist', [function() {
 		return {

@@ -2,12 +2,14 @@
 	<div data-ng-repeat="tag in config.inputSystems" class="control-group">
 		<label ng-show="$first" class="control-label">{{config.label}}</label>
 		<div class="controls">
-			<span title="{{inputSystems[tag].languageName}}" class="wsid">{{inputSystems[tag].abbreviation}}</span>
-			<textarea ng-show="config.displayMultiline && control.state == 'edit'" dir="{{inputSystemDirection(tag)}}" width="{{config.width}}" type="text"
-				data-ng-model="model[tag].value"></textarea>
-			<input ng-show="!config.displayMultiline && control.state == 'edit'" dir="{{inputSystemDirection(tag)}}" width="{{config.width}}" type="text"
-				data-ng-model="model[tag].value" />
-            <span class="uneditable-input" ng-show="control.state != 'edit'" ng-bind="model[tag].value"></span>
+            <div class="input-prepend">
+                <span class="add-on wsid" title="{{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
+                <textarea ng-show="config.displayMultiline && control.state == 'edit'" dir="{{inputSystemDirection(tag)}}" width="{{config.width}}" type="text"
+                    data-ng-model="model[tag].value"></textarea>
+                <input ng-show="!config.displayMultiline && control.state == 'edit'" dir="{{inputSystemDirection(tag)}}" width="{{config.width}}" type="text"
+                    data-ng-model="model[tag].value" />
+                <span class="uneditable-input" ng-show="control.state != 'edit'" ng-bind="model[tag].value"></span>
+            </div>
 		</div>
 	</div>
 </form>
