@@ -128,7 +128,7 @@
                     <i class="icon-remove" style="color:#808080; cursor: pointer"></i>
                     </span>
                 </div>
-                <div><select ng-show="control.rights.canUpdateCommentStatus()" style="width:110px" ng-model="commentStatusFilter"><option value="any">Any</option><option value="unresolved">Unresolved</option></select></div>
+                <div><select ng-show="control.rights.canUpdateCommentStatus()" style="width:110px" ng-model="commentStatusFilter"><option value="all">Show All</option><option value="unresolved">Unresolved</option><option value="todo">Todo</option></select></div>
                 <div>
                     <!-- cant get this working at the moment
                     <div ng-show="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryComments.length}} {{'Comments' | translate}}</div>
@@ -137,31 +137,33 @@
                     <div class="commentCount">{{currentEntryComments.length}} {{'Comments' | translate}}</div>
                 </div>
             </div>
-            <div ng-show="control.rights.canComment()" class="newCommentForm">
-                <div class="flex100" style="justify-content: space-around">
-                    <textarea data-ng-model="newComment.content" placeholder="{{getNewCommentPlaceholderText()}}"></textarea>
-                    <button ng-disabled="!newComment.content" class="btn-sm" ng-click="updateComment()">Post</button>
-                </div>
-                <div class="commentRegarding">
-                    <small class="muted"><em>This comment is regarding</em></small>
-                    <div ng-show="newComment.regarding.field">
-                        <span class="regardingFieldName">{{newComment.regarding.fieldNameForDisplay}}</span>
-                        <span class="regardingInputSystem" ng-show="newComment.regarding.inputSystem">{{newComment.regarding.inputSystemAbbreviation}}</span>
-                        <span class="regardingFieldValue">{{newComment.regarding.fieldValue}}</span>
-                        <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
+            <div class="commentListView">
+                <div ng-show="control.rights.canComment()" class="newCommentForm">
+                    <div class="flex100" style="justify-content: space-around">
+                        <textarea data-ng-model="newComment.content" placeholder="{{getNewCommentPlaceholderText()}}"></textarea>
+                        <button ng-disabled="!newComment.content" class="btn-sm" ng-click="updateComment()">Post</button>
                     </div>
-                    <div ng-hide="newComment.regarding.field" style="text-align:center; color: #e67345;margin-bottom: 8px"><em translate="Click on a field to the left and give context to your comment"></em></div>
+                    <div class="commentRegarding">
+                        <small class="muted"><em>This comment is regarding</em></small>
+                        <div ng-show="newComment.regarding.field">
+                            <span class="regardingFieldName">{{newComment.regarding.fieldNameForDisplay}}</span>
+                            <span class="regardingInputSystem" ng-show="newComment.regarding.inputSystem">{{newComment.regarding.inputSystemAbbreviation}}</span>
+                            <span class="regardingFieldValue">{{newComment.regarding.fieldValue}}</span>
+                            <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
+                        </div>
+                        <div ng-hide="newComment.regarding.field" style="text-align:center; color: #e67345;margin-bottom: 8px"><em translate="Click on a field to the left and give context to your comment"></em></div>
+                    </div>
                 </div>
-            </div>
-            <div class="commentListContainer">
-                <div ng-repeat="comment in currentEntryComments">
-                    <dc-comment control="control" model="comment"></dc-comment>
-                </div>
-                <!--
-                <pre>{{currentEntryComments|json}}</pre>
-                <pre>{{comments|json}}</pre>
-                -->
+                <div class="commentListContainer">
+                    <div ng-repeat="comment in currentEntryComments">
+                        <dc-comment control="control" model="comment"></dc-comment>
+                    </div>
+                    <!--
+                    <pre>{{currentEntryComments|json}}</pre>
+                    <pre>{{comments|json}}</pre>
+                    -->
 
+                </div>
             </div>
         </div>
     </div>

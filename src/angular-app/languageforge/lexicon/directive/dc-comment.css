@@ -8,6 +8,13 @@
 
 .commentContainer {
     margin: 20px 0 20px 0;
+    position:relative;
+}
+
+.commentContainer a{
+    font-size: small;
+    font-weight: normal;
+
 }
 
 .commentContentContainer {
@@ -15,10 +22,33 @@
     width: 100%;
 }
 
+.commentContent {
+    padding-right:20px;
+}
+
+.replyContent {
+    font-size: small;
+    color: #808080;
+}
+
 .commentBottomBar {
     background-color: #f4f4f4;
     display:flex;
     justify-content: space-between;
+}
+
+.commentBottomBar i.icon-remove, .commentBottomBar i.icon-edit, .commentBottomBar i.icon-ok,  {
+    cursor: pointer;
+    color: #7c7c7c;
+}
+.commentBottomBar i.icon-remove:hover {
+    color: #ed364f;
+}
+.commentBottomBar i.icon-edit:hover {
+    color: #247aff;
+}
+.commentBottomBar i.icon-ok:hover {
+    color: #8be25c;
 }
 
 .commentLeftSide {
@@ -34,14 +64,34 @@
 
 .commentPlusOne .icon-thumbs-up-alt {
     color: darkblue;
+    margin-left:5px;
 }
 
-.commentLeftSide .commentAuthor {
+.commentPlusOne {
+    font-weight: bold;
+}
+
+.commentAuthor {
     font-size: small;
     color: #808080;
 }
 
-.commentLeftSide .commentDate {
+.commentDate {
     font-size: x-small;
     color: #808080;
+    line-height: 1.2em;
+    margin:5px;
 }
+
+.commentRepliesContainer input[type=text] {
+    width: 300px;
+    margin: 0px;
+}
+
+.editReplyLink {
+    padding-right:10px;
+}
+
+.deleteReplyLink {
+}
+
