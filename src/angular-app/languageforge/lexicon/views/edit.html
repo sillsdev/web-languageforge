@@ -9,11 +9,11 @@
         </div>
         <div>
             <a ng-show="state == 'edit'" style="color:white" class="btn btn-warning" ng-click="showComments()" tooltip="{{'Show Comments'|translate}}">
-                <span ng-if="getFieldCommentCount() !== 1">
-                    {{getFieldCommentCount()}} {{'Comments'|translate}}
+                <span ng-if="currentEntryCommentCounts.total !== 1">
+                    {{currentEntryCommentCounts.total}} {{'Comments'|translate}}
                 </span>
-                <span ng-if="getFieldCommentCount() === 1">
-                    {{getFieldCommentCount()}} {{'Comment'|translate}}
+                <span ng-if="currentEntryCommentCounts.total === 1">
+                    {{currentEntryCommentCounts.total}} {{'Comment'|translate}}
                 </span>
                 <i style="position: relative; top:1px;left:5px" class="icon-large icon-chevron-right"></i></a>
         </div>
@@ -45,6 +45,8 @@
         <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
             <div class="lexiconListItem" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntryAndScroll(entry.id)">
                 <dc-rendered config="config.entry" model="entry"></dc-rendered>
+                <div ng-show="getEntryCommentCount(entry.id) > 0" style="position:absolute; right:5px;top:3px"><i style="color: #faa732;" class="icon-comment"></i></div>
+
             </div>
         </div>
     </div>
