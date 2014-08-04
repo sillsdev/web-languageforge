@@ -1,5 +1,5 @@
 "use strict";
-angular.module('palaso.ui.dc.comment', [])
+angular.module('palaso.ui.dc.comment', ['palaso.ui.utils'])
 // Palaso UI Dictionary Control: Comments
 .directive('dcComment', [function() {
 	return {
@@ -31,6 +31,7 @@ angular.module('palaso.ui.dc.comment', [])
             };
 
             $scope.submitReply = function submitReply(reply) {
+                hideInputFields();
                 $scope.control.updateReply($scope.model.id, reply);
                 $scope.newReply = {id:'', content:''};
             };
@@ -41,6 +42,7 @@ angular.module('palaso.ui.dc.comment', [])
             };
 
             $scope.updateComment = function updateComment() {
+                hideInputFields();
                 $scope.control.updateComment($scope.model);
             };
 
