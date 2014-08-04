@@ -557,9 +557,10 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
        // Comments View
 
 
-    $scope.currentEntryComments = {};
+    $scope.currentEntryComments = [];
     $scope.commentsUserPlusOne = [];
     $scope.currentEntryCommentCounts = {total:0, fields:{}};
+    $scope.currentEntryCommentsFiltered = [];
 
     $scope.commentFilter = {
         text: '',
@@ -593,6 +594,26 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             return false;
         }
     };
+
+    function getFilteredComments() {
+        var comments = $filter('filter')($scope.currentEntryComments, $scope.commentFilter.byText);
+        return $filter('filter')(comments, $scope.commentFilter.byStatus);
+    }
+
+    $scope.$watch('commentFilter.text', function(newVal, oldVal){
+        if (newVal != oldVal) {
+            $scope.currentEntryCommentsFiltered = getFilteredComments();
+        }
+
+    });
+
+    $scope.$watch('commentFilter.status', function(newVal, oldVal){
+        if (newVal != oldVal) {
+            $scope.currentEntryCommentsFiltered = getFilteredComments();
+        }
+
+    });
+
     $scope.newComment = {id: '', content: '', regarding: {}}; // model for new comment content
 
     $scope.showComments = function showComments(fieldName) {
@@ -636,6 +657,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             }
         }
         $scope.currentEntryComments = comments;
+        $scope.currentEntryCommentsFiltered = getFilteredComments();
         $scope.currentEntryCommentCounts = count;
         $scope.entryCommentCounts = entryCommentsCounts;
     }
