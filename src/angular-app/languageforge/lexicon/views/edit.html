@@ -141,19 +141,21 @@
             </div>
             <div class="commentListView">
                 <div ng-show="control.rights.canComment()" class="newCommentForm">
-                    <div class="flex100" style="justify-content: space-around">
+                    <div style="display:flex; flex-direction: column">
                         <textarea data-ng-model="newComment.content" placeholder="{{getNewCommentPlaceholderText()}}"></textarea>
-                        <button ng-disabled="!newComment.content" class="btn-sm" ng-click="updateComment()">Post</button>
-                    </div>
-                    <div class="commentRegarding">
-                        <small class="muted"><em>This comment is regarding</em></small>
-                        <div ng-show="newComment.regarding.field">
-                            <span class="regardingFieldName">{{newComment.regarding.fieldNameForDisplay}}</span>
-                            <span class="regardingInputSystem" ng-show="newComment.regarding.inputSystem">{{newComment.regarding.inputSystemAbbreviation}}</span>
-                            <span class="regardingFieldValue">{{newComment.regarding.fieldValue}}</span>
-                            <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
+                        <div class="commentRegarding">
+                            <small class="muted"><em>This comment is regarding</em></small>
+                            <div ng-show="newComment.regarding.field">
+                                <span class="regardingFieldName">{{newComment.regarding.fieldNameForDisplay}}</span>
+                                <span class="regardingInputSystem" ng-show="newComment.regarding.inputSystem">{{newComment.regarding.inputSystemAbbreviation}}</span>
+                                <span class="regardingFieldValue">{{newComment.regarding.fieldValue}}</span>
+                                <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
+                            </div>
+                            <div ng-hide="newComment.regarding.field" style="text-align:center; color: #e67345;margin-bottom: 8px"><em translate="Click on a field to the left and give context to your comment"></em></div>
                         </div>
-                        <div ng-hide="newComment.regarding.field" style="text-align:center; color: #e67345;margin-bottom: 8px"><em translate="Click on a field to the left and give context to your comment"></em></div>
+                        <div style="text-align: right; margin-right:10px">
+                            <button ng-disabled="!newComment.content" class="btn-sm" ng-click="updateComment()">Post</button>
+                        </div>
                     </div>
                 </div>
                 <div class="commentListContainer">
