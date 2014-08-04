@@ -2,7 +2,7 @@
 
 angular.module('siteadmin', [
 	'ngRoute', 'sfAdmin.filters', 'sfAdmin.services', 'sfAdmin.directives',
-	'bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'ui.bootstrap'
+	'bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'ui.bootstrap', 'palaso.ui.utils'
 ])
 /*
 .config(['$routeProvider', function($routeProvider) {
@@ -98,6 +98,11 @@ angular.module('siteadmin', [
 		$scope.showPasswordForm();
 		$scope.focusInput();
 	};
+
+    $scope.resetValidateUserForm = function resetValidateUserForm() {
+        $scope.uniqueUserState = 'empty';
+
+    };
 
 	// Roles in list
 	$scope.roles = {

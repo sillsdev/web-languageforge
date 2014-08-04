@@ -43,7 +43,7 @@
 			<div class="well">
 				<div>
 					<label>User Name</label>
-					<input data-ng-blur="checkUniqueUser()" required type="text" placeholder="(username)" data-ng-model="record.username"/>
+					<input idle-validate="checkUniqueUser()" idle-validate-keypress="resetValidateUserForm()" required type="text" placeholder="(username)" data-ng-model="record.username"/>
 					<span  data-ng-show="record.username.length > 0">
 					<span  data-ng-show="uniqueUserState == 'loading'"><img id="userNameLoading" src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
 					<span  data-ng-show="uniqueUserState == 'ok'"><img id="userNameOk" src="/images/shared/tick.png" title="User name is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
@@ -56,7 +56,7 @@
 				</div>
 				<div>
 					<label>Email</label>
-					<input data-ng-blur="checkUniqueUser()" required type="text" placeholder="(no email)" data-ng-model="record.email"/>
+					<input idle-validate="checkUniqueUser()" idle-validate-keypress="resetValidateUserForm()" idle-validate-msec="300" required type="text" placeholder="(no email)" data-ng-model="record.email"/>
 					<span  data-ng-show="record.email.length > 0">
 					<span  data-ng-show="uniqueUserState == 'loading'"><img id="userEmailLoading" src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
 					<span  data-ng-show="uniqueUserState == 'ok'"><img id="userEmailOk" src="/images/shared/tick.png" title="User email is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
