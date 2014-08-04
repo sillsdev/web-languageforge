@@ -445,6 +445,16 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       });
     };
     
+    $scope.showRemoveCustomField = function showRemoveCustomField(fieldName) {
+      if ($scope.isCustomField(fieldname) &&
+          angular.isUndefined($scope.projectSettings.config.entry.fields[fieldName]) &&
+          angular.isUndefined($scope.projectSettings.config.entry.fields.senses.fields[fieldName]) &&
+          angular.isUndefined($scope.projectSettings.config.entry.fields.senses.fields.examples.fields[fieldName]) ) {
+        return true;
+      }
+      return false;
+    };
+
     $scope.removeSelectedCustomField = function removeSelectedCustomField() {
       var fieldName = $scope.currentField.name,
         i;
