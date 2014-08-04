@@ -13,14 +13,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     $scope.config = configService.getConfigForUser();
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
-    $scope.currentEntryComments = {};
-    $scope.commentsUserPlusOne = [];
-    $scope.currentEntryCommentCounts = {total:0, fields:{}};
     $scope.state = 'list'; // default state.  State is one of 'list', 'edit', or 'comment'
     $scope.showUncommonFields = false;
-    $scope.commentsFilter = '';
-    $scope.commentStatusFilter = 'all';
-    $scope.newComment = {id: '', content: '', regarding: {}}; // model for new comment content
 
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
 
@@ -561,6 +555,45 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
 
        // Comments View
+
+
+    $scope.currentEntryComments = {};
+    $scope.commentsUserPlusOne = [];
+    $scope.currentEntryCommentCounts = {total:0, fields:{}};
+
+    $scope.commentFilter = {
+        text: '',
+        status:'all',
+        byText: function byText(comment) {
+            if (comment.content.toLowerCase().indexOf($scope.commentFilter.text.toLowerCase()) != -1) {
+                return true;
+            }
+            for (var i=0; i<comment.replies.length; i++) {
+                var reply = comment.replies[i];
+                if (reply.content.toLowerCase().indexOf($scope.commentFilter.text.toLowerCase()) != -1) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        byStatus: function byStatus(comment) {
+            if (angular.isDefined(comment)) {
+                if ($scope.commentFilter.status == 'all') {
+                    return true;
+                } else if ($scope.commentFilter.status == 'todo') {
+                    if (comment.status == 'todo') {
+                        return true;
+                    }
+                } else {  // show unresolved comments
+                    if (comment.status != 'resolved') {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    };
+    $scope.newComment = {id: '', content: '', regarding: {}}; // model for new comment content
 
     $scope.showComments = function showComments(fieldName) {
         $scope.saveCurrentEntry();
