@@ -170,6 +170,7 @@ legend.override-bootstrap {
 
 .lexiconListItem {
     width: 99%;
+    position:relative;
     overflow-y: hidden;
     text-align: center;
     padding: 2px;
