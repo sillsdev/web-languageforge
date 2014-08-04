@@ -36,18 +36,18 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	var saved = false;
 
 	$scope.saveNotice = function() {
-//		if ($scope.currentEntryIsDirty()) {	// TODO. Disabled. until php can deliver completely valid entry model and directives no longer make valid models. IJH 2014-03
-//			if (saving) {
-//				return "Saving";
-//			}
-//		} else {
-//			if (saved) {
-//				return "Saved";
-//			}
-//		}
+		if ($scope.currentEntryIsDirty()) {
+			if (saving) {
+				return "Saving";
+			}
+		} else {
+			if (saved) {
+				return "Saved";
+			}
+		}
 		return "";
 	};
-	$scope.saveButtonTitle = function() {	// TODO. Remove. until php can deliver completely valid entry model and directives no longer make valid models. IJH 2014-03
+	$scope.saveButtonTitle = function() {
 		if ($scope.currentEntryIsDirty()) {
 			return "Save Entry";
 		} else {
@@ -56,14 +56,15 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	};
 
 
-	$scope.saveCurrentEntry = function saveCurrentEntry(setEntry, successCallback, failCallback) {
+	$scope.saveCurrentEntry = function saveCurrentEntry(doSetEntry, successCallback, failCallback) {
         var isNewEntry = false;
-        if (angular.isUndefined(setEntry)) {
-            // setEntry is mainly used for when the save button is pressed, that is when the user is saving the current entry and is NOT going to a different entry (as is the case with editing another entry
-            setEntry = false;
+        if (angular.isUndefined(doSetEntry)) {
+            // doSetEntry is mainly used for when the save button is pressed,
+            // that is when the user is saving the current entry and is NOT going to a different entry (as is the case with editing another entry
+            doSetEntry = false;
         }
 		if ($scope.currentEntryIsDirty()) {
-			//cancelAutoSaveTimer();
+			cancelAutoSaveTimer();
 			saving = true;
             isNewEntry = ($scope.currentEntry.id == '');
             if (isNewEntry) {
@@ -77,14 +78,14 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
                         // we can solve this problem by implementing a sliding "scroll window" that only shows a few entries at a time (say 30?)
                         $scope.show.initial();
                     }
-                    if (setEntry) {
+                    if (doSetEntry) {
                         setCurrentEntry(entry);
                     }
 					$scope.lastSavedDate = new Date();
 
                     // refresh data will add the new entry to the entries list
 					refreshData(false, function() {
-                        if (isNewEntry && setEntry) {
+                        if (isNewEntry && doSetEntry) {
                             scrollListToEntry(entry.id, 'top');
                         }
                     });
@@ -306,25 +307,19 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             stopAtNodes = [];
         }
 
-        //console.log('makeValid: cfg: ' + config, 'data: ', data);
-
-
         switch (config.type) {
             case 'fields':
                 angular.forEach(config.fieldOrder, function(f) {
                     if (angular.isUndefined(data[f])) {
                         if (config.fields[f].type == 'fields') {
-//                            console.log('field ' + f + ' is array');
                             data[f] = [];
                         } else {
-         //                   console.log('field ' + f + ' is object');
                             data[f] = {};
                         }
                     }
 
                     // only recurse if the field is not in our node stoplist
                     if (stopAtNodes.indexOf(f) == -1) {
-          //              console.log('calling recursive: config.fields[f], data[f], f= ', f);
                         if (config.fields[f].type == 'fields') {
                             if (data[f].length == 0) {
                                 data[f].push({});
@@ -339,7 +334,6 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
                 });
                 break;
             case 'multitext':
-           //     console.log('multitext cfg:', config);
                 // when a multitext is completely empty for a field, and sent down the wire, it will come as a [] because of the way
                 // that the PHP JSON default encode works.  We change this to be {} for an empty multitext
                 if (angular.isArray(data)) {
@@ -782,10 +776,8 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
 
     // only refresh the full view if we have not yet loaded the dictionary for the first time
-
     evaluateState();
 
- /* disable autosave feature until it's ready
 	var autoSaveTimer;
 	function startAutoSaveTimer() {
 		if (angular.isDefined(autoSaveTimer)) {
@@ -804,7 +796,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		if (newValue != undefined) {
 			cancelAutoSaveTimer();
 			if ($scope.currentEntryIsDirty) {
-//				startAutoSaveTimer();	// TODO. Disabled. until php can deliver completely valid entry model and directives no longer make valid models. IJH 2014-03
+                startAutoSaveTimer();
 			}
 		}
 	}, true);
@@ -815,19 +807,11 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	});
 	
 	$scope.$on('$locationChangeStart', function (event, next, current) {
-		//Navigate to newUrl if the entry isn't dirty
-		if (! $scope.currentEntryIsDirty()) return;
-		
-		var answer = confirm($filter('translate')("You have unsaved changes. Leave the page?"));
-		if (!answer) {
-			//prevent navigation by default since we'll handle it
-			//once the user selects a dialog option
-			event.preventDefault();
-		}
-		
-		return;
+        cancelAutoSaveTimer();
+        $scope.saveCurrentEntry();
 	});
-	
+
+                           /*
 	$window.onbeforeunload = function (event) {
 		var message = $filter('translate')('You have unsaved changes.');
 		if (typeof event == 'undefined') {
@@ -841,18 +825,6 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	};
 	*/
 
-    /*
-	$scope.submitComment = function submitComment(comment) {
-//		console.log('submitComment = ' + comment);
-		lexService.updateComment(comment, function(result) {
-			if (result.ok) {
-				var entry = result.data;
-				setCurrentEntry(entry);
-				//$scope.updateListWithEntry(entry);
-			}
-		});
-	};
-	*/
 
     // hack to pass down the parent scope down into all child directives (i.e. entry, sense, etc)
 	$scope.control = $scope;
@@ -890,23 +862,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
 
 
-	/*
-	$scope.recursiveSetConfig = function(startAt, propName, propValue) {
-		// Go through the config tree starting at the startAt field, and
-		// set a given property to a given value in all fields below startAt.
-		angular.forEach(startAt.fieldOrder, function(fieldName) {
-			var field = startAt.fields[fieldName];
-			if (angular.isUndefined(field)) { return; }
-			if (field.type == "fields") {
-				$scope.recursiveSetConfig(field, propName, propValue);
-			} else {
-				field[propName] = propValue;
-			};
-		});
-	};
-	*/
-	
-	var recursiveRemoveProperties = function recursiveRemoveProperties(startAt, properties) {
+	function recursiveRemoveProperties(startAt, properties) {
 		angular.forEach(startAt, function(value, key) {
 			var deleted = false;
 			angular.forEach(properties, function(propName) {
@@ -924,44 +880,6 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		return startAt;
 	};
 
-	// TODO: Consider moving filter-related code and variables into its own controller
-	$scope.filter = {};
-	$scope.filter.chevronIcon = "icon-chevron-up";
-	$scope.filter.visible = false;
-	$scope.toggleFilters = function() {
-//		console.log('Filters toggled');
-		if ($scope.filter.visible) {
-			$scope.filter.visible = false;
-			$scope.filter.chevronIcon = "icon-chevron-down";
-		} else {
-			$scope.filter.visible = true;
-			$scope.filter.chevronIcon = "icon-chevron-up";
-		}
-	};
-	$scope.filter.validStatuses = [ // TODO: Get this from appropriate service or API call, rather than hardcoded list
-		"To Do",
-		"Reviewed",
-		"Resolved"
-    ];
-	$scope.filter.searchFor = {};
-	angular.forEach($scope.validStatuses, function(status) {
-		$scope.filter.searchFor[status] = false;
-	});
-	$scope.filter.searchFor['To Do'] = true; // DEBUG: To check appropriate checkbox in filter form
-	$scope.getInputSystems = function() {
-		return $scope.config.inputSystems; // TODO: Add filtering if needed, i.e. only show a checkbox for input systems that have comments below
-	};
-	$scope.filter.showLangs = {};
-	angular.forEach($scope.getInputSystems(), function(inputSystem) {
-		$scope.filter.showLangs[inputSystem.abbreviation] = false;
-	});
-	$scope.filter.showLangs['en'] = true; // DEBUG: To check appropriate checkbox in filter form
-	$scope.applyFilters = function() {
-//		console.log('Applying filters:', $scope.filter);
-		// TODO: Implement this
-	};
-	
-	
 	// search typeahead
 	$scope.typeahead = {term : '', searchResults : []};
 	$scope.typeahead.searchEntries = function(query) {
