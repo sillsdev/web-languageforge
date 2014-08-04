@@ -289,12 +289,14 @@ div.newCommentForm {
 }
 
 div.newCommentForm textarea {
-    width:300px;
+    width: 382px;
+    margin: 0 10px 10px 10px;
+    height:90px;
 
 }
 div.newCommentForm button {
     width:70px;
-    margin-top:30px
+    margin-top:10px
 }
 
 .commentListView {
