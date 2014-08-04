@@ -447,9 +447,9 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     
     $scope.showRemoveCustomField = function showRemoveCustomField(fieldName) {
       if ($scope.isCustomField(fieldname) &&
-          angular.isUndefined($scope.projectSettings.config.entry.fields[fieldName]) &&
-          angular.isUndefined($scope.projectSettings.config.entry.fields.senses.fields[fieldName]) &&
-          angular.isUndefined($scope.projectSettings.config.entry.fields.senses.fields.examples.fields[fieldName]) ) {
+          ! (fieldName in $scope.projectSettings.config.entry.fields) &&
+          ! (fieldName in $scope.projectSettings.config.entry.fields.senses.fields) &&
+          ! (fieldName in $scope.projectSettings.config.entry.fields.senses.fields.examples.fields) ) {
         return true;
       }
       return false;
