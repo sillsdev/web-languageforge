@@ -25,6 +25,13 @@
 .commentContent {
     padding-right:20px;
 }
+.commentContentContainer i.icon-remove:hover, .commentRepliesContainer i.icon-remove:hover {
+    color: #ed364f;
+}
+.commentContentContainer i.icon-remove, .commentRepliesContainer i.icon-remove {
+    cursor: pointer;
+    color: #7c7c7c;
+}
 
 .replyContent {
     font-size: small;
@@ -37,18 +44,20 @@
     justify-content: space-between;
 }
 
-.commentBottomBar i.icon-remove, .commentBottomBar i.icon-edit, .commentBottomBar i.icon-ok,  {
+.commentBottomBar i.icon-edit, .commentBottomBar i.icon-ok,  {
     cursor: pointer;
     color: #7c7c7c;
-}
-.commentBottomBar i.icon-remove:hover {
-    color: #ed364f;
 }
 .commentBottomBar i.icon-edit:hover {
     color: #247aff;
 }
 .commentBottomBar i.icon-ok:hover {
     color: #8be25c;
+}
+
+.commentBottomBar i.icon-ok, .commentBottomBar i.icon-edit, .commentBottomBar i.icon-chevron-sign-up {
+    padding-left:10px;
+    cursor: pointer;
 }
 
 .commentLeftSide {
@@ -76,6 +85,10 @@
     color: #808080;
 }
 
+.commentRepliesContainer .commentAuthor {
+    font-style: italic;
+}
+
 .commentDate {
     font-size: x-small;
     color: #808080;
@@ -90,8 +103,13 @@
 
 .editReplyLink {
     padding-right:10px;
+    cursor: pointer;
 }
 
 .deleteReplyLink {
+    cursor: pointer;
 }
 
+.resolvedComment {
+    opacity: .5;
+}
