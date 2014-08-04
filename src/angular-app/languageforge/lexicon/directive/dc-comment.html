@@ -39,13 +39,13 @@
                     <span tooltip="Delete reply" data-tooltip-placement="left" ng-show="control.rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)" class="deleteReplyLink" ng-click="control.deleteCommentReply(model.id, reply)"><i class="icon-remove"></i></span>
                 </div>
             </div>
-            <div ng-show="reply.editing">
-                <input type="text" ng-model="reply.content"> <button class="btn-sm" ng-click="submitReply(reply)">Update</button> <a ng-click="reply.editing = false">Cancel</a>
-            </div>
+            <form ng-show="reply.editing" ng-submit="submitReply(reply)">
+                <input type="text" ng-model="reply.content" set-focus="reply.editing"> <button ng-disabled="reply.content == ''" style="margin-top:-2px" type="submit" class="btn-sm">Update</button> <a ng-click="reply.editing = false">Cancel</a>
+            </form>
         </div>
-        <div class="commentNewReplyForm" ng-show="showNewReplyForm">
-            <input type="text" ng-model="newReply.content"> <button class="btn-sm" ng-click="submitReply(newReply)">Post Reply</button> <a ng-click="showNewReplyForm = false">Cancel</a>
-        </div>
+        <form class="commentNewReplyForm" ng-show="showNewReplyForm" ng-submit="submitReply(newReply)">
+            <input type="text" ng-model="newReply.content" set-focus="showNewReplyForm"> <button ng-disabled="newReply.content == ''" style="margin-top:-2px" type="submit" class="btn-sm">Post Reply</button> <a ng-click="showNewReplyForm = false">Cancel</a>
+        </form>
     </div>
     <div style="height:30px">
         <div class="commentBottomBar" ng-show="hover.comment && control.rights.canComment()">
