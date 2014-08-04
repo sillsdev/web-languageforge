@@ -15,8 +15,8 @@
                 <div class="commentAuthor">{{model.authorInfo.createdByUserRef.name}}</div>
                 <div class="commentDate">{{model.authorInfo.createdDate | relativetime}}</div>
                 <div class="commentPlusOne">{{model.score}}
-                    <i ng-show="control.canPlusOneComment(model.id) && control.rights.canComment()" style="cursor: pointer" ng-click="control.plusOneComment(model.id)" tooltip="Like comment" class="icon-thumbs-up-alt"></i>
-                    <i ng-hide="control.canPlusOneComment(model.id) && control.rights.canComment()" class="icon-thumbs-up-alt"></i>
+                    <i ng-show="control.canPlusOneComment(model.id) && control.rights.canComment() && model.status != 'resolved'" style="cursor: pointer" ng-click="control.plusOneComment(model.id)" tooltip="Like comment" class="icon-thumbs-up-alt"></i>
+                    <i ng-hide="control.canPlusOneComment(model.id) && control.rights.canComment() && model.status != 'resolved'" class="icon-thumbs-up-alt"></i>
                 </div>
             </div>
             <div class="commentRightSide">
