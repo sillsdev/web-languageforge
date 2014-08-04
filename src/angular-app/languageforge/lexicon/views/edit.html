@@ -126,11 +126,11 @@
         <div style="flex: 9;padding:5px;display: flex; flex-direction: column">
             <div style="margin-bottom: 5px; border-bottom: solid black 1px; display:flex; justify-content: space-between">
                 <div style="position:relative;">
-                    <input dir="auto" style="width: 140px; margin-left:12px; padding-right:25px" placeholder="Filter Comments" ng-model="commentsFilter" type="text" />&nbsp;<span style="position:absolute; right:13px; top:5px" ng-show="commentsFilter != ''" title="Clear Filter" ng-click="commentsFilter = ''">
+                    <input dir="auto" style="width: 140px; margin-left:12px; padding-right:25px" placeholder="Filter Comments" ng-model="commentFilter.text" type="text" />&nbsp;<span style="position:absolute; right:13px; top:5px" ng-show="commentsFilter != ''" title="Clear Filter" ng-click="commentsFilter = ''">
                     <i class="icon-remove" style="color:#808080; cursor: pointer"></i>
                     </span>
                 </div>
-                <div><select ng-show="control.rights.canUpdateCommentStatus()" style="width:110px" ng-model="commentStatusFilter"><option value="all">Show All</option><option value="unresolved">Unresolved</option><option value="todo">Todo</option></select></div>
+                <div><select ng-show="control.rights.canUpdateCommentStatus()" style="width:110px" ng-model="commentFilter.status"><option value="all">Show All</option><option value="unresolved">Unresolved</option><option ng-if="rights.canUpdateCommentStatus()" value="todo">Todo</option></select></div>
                 <div>
                     <!-- cant get this working at the moment
                     <div ng-show="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryComments.length}} {{'Comments' | translate}}</div>
@@ -157,7 +157,7 @@
                     </div>
                 </div>
                 <div class="commentListContainer">
-                    <div ng-repeat="comment in currentEntryComments">
+                    <div ng-repeat="comment in currentEntryComments | filter: commentFilter.byText |filter: commentFilter.byStatus">
                         <dc-comment control="control" model="comment"></dc-comment>
                     </div>
                     <!--
