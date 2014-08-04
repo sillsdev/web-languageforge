@@ -1,6 +1,9 @@
 'use strict';
 
-function changePasswordCtrl($scope, userService, sessionService, notice) {
+angular.module('changepassword', [
+	'jsonRpc', 'ui.bootstrap', 'bellows.services', 'ui.validate', 'palaso.ui.notice', 'palaso.ui.utils'
+])
+.controller('changePasswordCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', function changePasswordCtrl($scope, userService, sessionService, notice) {
 	$scope.notify = {};
 	
 	$scope.updatePassword = function() {
@@ -13,8 +16,7 @@ function changePasswordCtrl($scope, userService, sessionService, notice) {
 			});
 		}
 	};
-}
-
-angular.module('changepassword', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'ui.validate', 'palaso.ui.notice']).
-controller('changePasswordCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', changePasswordCtrl])
+}])
 ;
+
+

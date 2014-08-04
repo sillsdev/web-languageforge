@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice', 'wc.Directives'])
+angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice', 'palaso.ui.utils', 'wc.Directives'])
 .controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', 'modalService', '$window',
                              function($scope, projectService, ss, notice, modalService, $window) {
 	$scope.finishedLoading = false;
@@ -119,8 +119,13 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 			}
 		});
 	};
-	
-	/*
+
+ $scope.resetValidateProjectForm = function resetValidateProjectForm() {
+
+	 $scope.projectCodeState = 'empty';
+ };
+
+ 	/*
 	// State of the projectCode being validated:
 	// 'empty'   : no project code entered
 	// 'loading' : project code entered, being validated
