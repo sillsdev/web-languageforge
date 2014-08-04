@@ -4,8 +4,9 @@
 	<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
 		<button data-ng-disabled="selected.length == 0" data-ng-show="rights.remove" class="btn" data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>{{ 'Remove Members' | translate }}</button>
 		<button data-ng-show="rights.create" class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>{{ 'Add Members' | translate }}</button>
+		<input type="text" ng-model="userFilter" placeholder="Member List Filter"/> <a ng-show="userFilter != ''" title="Clear Filter" ng-click="userFilter = ''"><i class="icon-remove" style="color:gray"></i></a>
 	</form>
-	<div class="new-item" data-collapse="!newUserCollapsed">
+	<div id="newMembersDiv" class="new-item" data-collapse="!newUserCollapsed">
 		<form class="well form-inline">
 		<typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
 			<ul>
@@ -16,10 +17,11 @@
 				</li>
 			</ul>
 		</typeahead>
-		<button data-ng-model="addMode" class="btn" data-ng-disabled="!typeahead.userName" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+		<button data-ng-model="addMode" class="btn" data-ng-disabled="disableAddButton" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+		<span class="warning" data-ng-show="warningText">{{warningText}}</span>
 		</form>
 	</div>
-	<div listview search="queryProjectUsers()" items="list.users" visible-items="list.visibleUsers" select="">
+	<div listview search="queryProjectUsers()" items="list.users" items-filter="userFilter" visible-items="list.visibleUsers" select="">
 		<table class="table" style="width: 100%">
 			<thead>
 			<tr>

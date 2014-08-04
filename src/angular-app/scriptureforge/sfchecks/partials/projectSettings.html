@@ -51,20 +51,15 @@
 			</thead>
 			<tbody>
 			<tr data-ng-repeat="user in list.visibleUsers" data-ng-class="{active: isSelected(user)}" >
-
 				<td width="16px" align="center"><input data-ng-show="rights.deleteOther" type="checkbox" data-ng-checked="isSelected(user)" data-ng-click="updateSelection($event, user)" /></td>
 				<td>{{user.username}}</td>
 				<td>{{user.name}}</td>
-				
-				
 				<td ng-show="user.id == project.ownerRef.id"><select disabled="true"><option>Manager and Project Owner</option></select></td>
 				<td ng-hide="user.id == project.ownerRef.id"><select data-ng-model="user.role" data-ng-change="onRoleChange(user)" data-ng-options="role.key as role.name for role in roles"></select></td>
-
-
 			</tr>
 			</tbody>
-		</table>		
-		</listview>
+		</table>
+	</listview>
 	</tab>
 	<tab heading="Question Templates" data-ng-controller="ProjectSettingsQTemplateCtrl" style="overflow:hidden">
 		<form class="control-bar form-inline">

@@ -37,7 +37,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 						[
 						 {href: '/app/projects', label: 'My Projects'},
 						 {href: sfchecksLinkService.project(), label: result.data.bcs.project.crumb},
-						 {href: sfchecksLinkService.project() + '/settings', label: 'Settings'},
+						 {href: sfchecksLinkService.project() + '/settings', label: 'Settings'}
 						]
 				);
 				$scope.finishedLoading = true;
@@ -65,7 +65,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 .controller('ProjectSettingsQTemplateCtrl', ['$scope', 'silNoticeService', 'questionTemplateService', function($scope, notice, qts) {
 	$scope.selected = [];
 	$scope.vars = {
-		selectedIndex: -1,
+		selectedIndex: -1
 	};
 	$scope.updateSelection = function(event, item) {
 		var selectedIndex = $scope.selected.indexOf(item);
@@ -95,7 +95,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	$scope.editedTemplate = {
 		id: '',
 		title: '',
-		description: '',
+		description: ''
 	};
 	$scope.templateEditorVisible = false;
 	$scope.showTemplateEditor = function(template) {
@@ -235,7 +235,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			projectCode: $scope.project.projectCode,
 			featured: $scope.project.featured,
 			allowAudioDownload: $scope.project.allowAudioDownload,
-			allowInviteAFriend: $scope.project.allowInviteAFriend,
+			allowInviteAFriend: $scope.project.allowInviteAFriend
 		};
 
 		sfchecksProjectService.update(settings, function(result) {
@@ -374,6 +374,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 	$scope.removeProjectUsers = function() {
 		var userIds = [];
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
+
 			// Guard against project owner being removed
 			if ($scope.selected[i].id != $scope.project.ownerRef.id) {
 				userIds.push($scope.selected[i].id);
@@ -383,6 +384,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 			}
 		}
 		if (l == 0) {
+
 			// TODO ERROR
 			return;
 		}
@@ -423,7 +425,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     	'invite': { 'en': 'Send Email Invite', 'icon': 'icon-envelope'}
     };
     $scope.addMode = 'addNew';
-    $scope.disableAddButton = false;
+    $scope.disableAddButton = true;
     $scope.typeahead = {};
     $scope.typeahead.userName = '';
 	
