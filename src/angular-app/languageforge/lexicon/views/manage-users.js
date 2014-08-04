@@ -53,17 +53,20 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 			// TODO ERROR
 			return;
 		}
-		projectService.removeUsers(userIds, function(result) {
-			if (result.ok) {
-				$scope.queryProjectUsers();
-				$scope.selected = [];
-				if (userIds.length == 1) {
-					notice.push(notice.SUCCESS, $filter('translate')("The user was removed from this project"));
-				} else {
-					notice.push(notice.SUCCESS, userIds.length +  " users were removed from this project");
+
+		if (userIds.length > 0) {
+			projectService.removeUsers(userIds, function(result) {
+				if (result.ok) {
+					$scope.queryProjectUsers();
+					$scope.selected = [];
+					if (userIds.length == 1) {
+						notice.push(notice.SUCCESS, $filter('translate')("The user was removed from this project"));
+					} else {
+						notice.push(notice.SUCCESS, userIds.length +  " users were removed from this project");
+					}
 				}
-			}
-		});
+			});
+		}
 	};
 
 		// Roles in list
