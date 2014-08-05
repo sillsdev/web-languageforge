@@ -6,6 +6,8 @@ use models\commands\UserCommands;
 use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\shared\dto\CreateSimpleDto;
+use models\shared\rights\SystemRoles;
+use models\PasswordModel;
 use models\ProjectModel;
 use models\UserModel;
 use models\UserProfileModel;
@@ -392,6 +394,26 @@ class TestUserCommands extends UnitTestCase {
 		$this->assertPattern('/Inviter Name/', $delivery->content);
 		$this->assertPattern('/Test Project/', $delivery->content);
 		$this->assertPattern('/' . $toUser->validationKey . '/', $delivery->content);
+	}
+	
+	function testChangePassword_SystemAdminChangeOtherUser_Succeeds() {
+		$e = new MongoTestEnvironment();
+		$e->clean();
+		
+		$adminModel = new models\UserModel();
+		$adminModel->username = 'admin';
+		$adminModel->role = SystemRoles::SYSTEM_ADMIN;
+		$adminId = $adminModel->write();
+		$userModel = new models\UserModel();
+		$userModel->username = 'user';
+		$userModel->role = SystemRoles::NONE;
+		$userId = $userModel->write();
+		
+		$this->assertNotEqual($adminId, $userId);
+		UserCommands::changePassword($userId, 'somepass', $adminId);
+		$passwordModel = new PasswordModel($userId);
+		$result = $passwordModel->verifyPassword('somepass');
+		$this->assertTrue($result, 'Could not verify changed password');
 	}
 }
 
