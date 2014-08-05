@@ -33,7 +33,7 @@
                     </span>
                 </div>
                 <div class="control-group">
-                    <select required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
+                    <select ng-show="projectTypesBySite.length == 1" required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
                         <option value="">-- Select Type --</option>
                     </select>
                 </div>
