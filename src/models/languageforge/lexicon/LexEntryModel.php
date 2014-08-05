@@ -51,6 +51,7 @@ class LexEntryModel extends \models\mapper\MapperModel {
 		$this->entryRestrictions = new MultiText();
 		$this->summaryDefinition = new MultiText();
 		$this->entryImportResidue = new MultiText();
+        $this->tone = new MultiText();
 
 
 

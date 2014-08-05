@@ -154,7 +154,7 @@ angular.module('bellows.services', ['jsonRpc'])
 			COMMENTS:  function() { return 1600;},
 			TEMPLATES: function() { return 1700;},
 			TAGS:      function() { return 1800;},
-			ENTRIES:   function() { return 1900;},
+			ENTRIES:   function() { return 1900;}
 	};
 	this.operation = {
 			CREATE:       function() { return 1;},
@@ -165,7 +165,7 @@ angular.module('bellows.services', ['jsonRpc'])
 			VIEW_OWN:     function() { return 6;},
 			EDIT_OWN:     function() { return 7;},
 			DELETE_OWN:   function() { return 8;},
-			ARCHIVE:      function() { return 9;},
+			ARCHIVE:      function() { return 9;}
 	};
 	
 	this.hasSiteRight = function(domain, operation) {

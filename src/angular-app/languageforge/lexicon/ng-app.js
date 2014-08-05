@@ -121,6 +121,7 @@ angular.module('lexicon',
     // persist the entries and comments array across all controllers
     $scope.entries = [];
     $scope.comments = [];
+    $scope.entryCommentCounts = {};
     
     $scope.currentUserRole = ss.session.projectSettings.currentUserRole;
     $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
