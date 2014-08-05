@@ -238,7 +238,7 @@
 			<arg value="--seleniumAddress" />
 			<arg value="http://ba-wxp32a.psonet:4444/wd/hub" />
 			<arg value="--baseUrl" />
-			<arg value="http://e2etest.scriptureforge.local" />
+			<arg value="http://scriptureforge.local" />
 		</exec>
 		<exec dir="${build.installForTestPath}/test/app/" executable="php">
 			<arg value="teardownTestEnvironment.php" />
