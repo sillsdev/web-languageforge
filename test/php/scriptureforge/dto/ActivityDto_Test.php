@@ -117,7 +117,7 @@ class TestActivityDto extends UnitTestCase {
 		
         $project1 = $e->createProject(SF_TESTPROJECTCODE, SF_TESTPROJECTCODE);
         $project2 = $e->createProject(SF_TESTPROJECTCODE2, SF_TESTPROJECTCODE2);
-		$project2->siteName = 'www.languageforge.org';
+		$project2->siteName = 'languageforge.org';
 		$project2->write();
 		
 		$userId = $e->createUser('joe', 'joe', 'joe');
@@ -155,7 +155,7 @@ class TestActivityDto extends UnitTestCase {
 
         $project1 = $e->createProject(SF_TESTPROJECTCODE, SF_TESTPROJECTCODE);
         $project2 = $e->createProject(SF_TESTPROJECTCODE2, SF_TESTPROJECTCODE2);
-        $project2->siteName = 'www.languageforge.org';
+        $project2->siteName = 'languageforge.org';
         $project2->write();
 
         $userId = $e->createUser('joe', 'joe', 'joe');
