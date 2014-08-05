@@ -186,6 +186,9 @@
 	
 	<target name="installForE2ETest" depends="packageForE2ETest, cleanInstallForE2eTest">
 		<untar src="${build.packageFileForTest}" dest="${build.installForTestPath}" compression="gzip" />
+		<replace file="${build.installForTestPath}/test/app/e2eTestConfig.php">
+			<replacefilter token="define('APPPATH', $rootPath . '/src/');" value="define('APPPATH', $rootPath . '/htdocs/');" />
+		</replace>
 		<!--
 		<replace file="${build.installForTestPath}/htdocs/config/mongodb.php">
 		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
