@@ -210,6 +210,11 @@
 		<replace file="${build.installForTestPath}/test/app/useLiveConfig.sh">
 			<replacefilter token="../src/config" value="../htdocs/config" />
 		</replace>
+		<chmod type="both" perm="ugo+x">
+			<fileset dir="${build.installForTestPath}/test/app/">
+				<include name="use*Config.sh" />
+			</fileset>
+		</chmod>
 		<!--
 		<replace file="${build.installForTestPath}/htdocs/config/mongodb.php">
 		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
