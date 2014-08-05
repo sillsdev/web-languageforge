@@ -159,6 +159,9 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 	
 	$scope.projectTypeNames = projectService.data.projectTypeNames;
 	$scope.projectTypesBySite = projectService.data.projectTypesBySite;
-	
+
+	if (projectService.data.projectTypesBySite().length == 1) {
+		$scope.newProject.appName = $scope.projectTypesBySite()[0];
+	}
 }])
 ;
