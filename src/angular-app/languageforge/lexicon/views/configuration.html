@@ -1,7 +1,8 @@
 <div class="container" data-ng-cloak data-ng-controller="ConfigCtrl">
 <h2>{{'Dictionary Configuration' | translate}}</h2>
 <form name="configForm" novalidate>
-<button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="configurationApply()"  
+<button style="margin-left:15px" tooltip="View the dictionary" class="btn {{interfaceConfig.pullToSide}}" data-ng-click="backToDictionary()"><i class="icon-reply"></i>{{'Dictionary' | translate}}</button>
+<button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="configurationApply()"
 	data-ng-disabled="configForm.$pristine">
 	<i class="icon-ok"></i>{{'Apply' | translate}}</button>
 <tabset>
