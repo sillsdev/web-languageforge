@@ -83,7 +83,7 @@ function(jsonRpc) {
         jsonRpc.call('lex_commentReply_update', [commentId, reply], callback);
     };
 
-    this.delete = function deleteComment(commentId, callback) {
+    this.remove = function deleteComment(commentId, callback) {
         jsonRpc.call('lex_comment_delete', [commentId], callback);
     };
 

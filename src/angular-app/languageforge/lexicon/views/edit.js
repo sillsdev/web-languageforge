@@ -737,7 +737,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         }
 
         modal.showModalSimple('Delete Comment', deletemsg, 'Cancel', 'Delete Comment').then(function() {
-            commentService.delete(comment.id, function(result) {
+            commentService.remove(comment.id, function(result) {
                 if (result.ok) {
                     refreshData(false, function() {
                         loadEntryComments();
