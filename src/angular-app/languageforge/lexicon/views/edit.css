@@ -227,6 +227,7 @@ legend.override-bootstrap {
 }
 
 .listItemPrimary {
+    padding-right: 3px;
     font-size: 1.0em;
     font-weight:bold;
     overflow: hidden;
