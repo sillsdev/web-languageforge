@@ -24,7 +24,7 @@
     <div id="lexAppListView" ng-if="state == 'list'">
         <div class="lexiconHeaderContainer">
             <div class="lexiconHeaderItem">
-                <button class="btn btn-success" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
+                <button class="btn btn-success" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
             </div>
             <div ng-hide="show.entries.length === 0" style="width:340px;" class="lexiconHeaderItem">
                 <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
@@ -56,7 +56,7 @@
     <div id="lexAppEditView" ng-if="state == 'edit'">
         <div style="flex: 1; border-right: 1px #dcdcdc solid">
             <div style="margin: 5px 5px 5px 0">
-                <button class="btn btn-success btn-small" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
+                <button class="btn btn-success btn-small" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
                 <small style="color: grey; margin-left:2px">{{entries.length}} {{'entries' | translate}}</small>
             </div>
             <div style="margin: 5px 5px 5px 0">
