@@ -1,5 +1,5 @@
 "use strict";
-angular.module('palaso.ui.dc.comment', [])
+angular.module('palaso.ui.dc.comment', ['palaso.ui.utils'])
 // Palaso UI Dictionary Control: Comments
 .directive('dcComment', [function() {
 	return {
@@ -15,7 +15,9 @@ angular.module('palaso.ui.dc.comment', [])
 
             $scope.showNewReplyForm = false;
 
-            $scope.newReply = {id:'', content:''};
+            $scope.newReply = {id:'', editingContent:''};
+
+            $scope.editingCommentContent = '';
 
             // I don't necessarily like this, but we keep the comment methods on edit.js so
             // that the view can be refreshed after an update or delete - cjh 2014-08
@@ -28,20 +30,28 @@ angular.module('palaso.ui.dc.comment', [])
             $scope.editReply = function editReply(reply) {
                 hideInputFields();
                 reply.editing = true;
+                reply.editingContent = angular.copy(reply.content);
             };
 
             $scope.submitReply = function submitReply(reply) {
+                hideInputFields();
+                reply.content = angular.copy(reply.editingContent);
+                delete reply.editingContent;
                 $scope.control.updateReply($scope.model.id, reply);
-                $scope.newReply = {id:'', content:''};
+                $scope.newReply = {id:'', editingContent:''};
             };
 
             $scope.editComment = function editComment() {
                 hideInputFields();
                 $scope.model.editing = true;
+                $scope.editingCommentContent = angular.copy($scope.model.content);
             };
 
             $scope.updateComment = function updateComment() {
+                hideInputFields();
+                $scope.model.content = angular.copy($scope.editingCommentContent);
                 $scope.control.updateComment($scope.model);
+                $scope.editingCommentContent = '';
             };
 
             function hideInputFields() {
