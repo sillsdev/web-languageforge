@@ -205,12 +205,8 @@
 		<exec dir="${build.installForTestPath}/test/app/" executable="php">
 			<arg value="setupTestEnvironment.php" />
 		</exec>
-		<exec dir="${build.installForTestPath}/test/app/" executable="runE2e.sh" failonerror="true">
-			<arg value="--seleniumAddress" />
-			<arg value="http://ba-wxp32a.psonet:4444/wd/hub" />
-			<!-- TODO: Consider another design where multiple protractor.conf files can be selected -->
-			<!-- TODO: Figure out how to connect to the Windows build agent and start the Selenium server -->
-		</exec>
+		<!-- TODO: Consider another design where multiple protractor.conf files can be selected -->
+		<!-- TODO: Figure out how to connect to the Windows build agent and start the Selenium server -->
 		<exec dir="${build.installForTestPath}/test/app/" executable="node">
 			<arg value="node_modules/protractor/bin/protractor" />
 			<arg value="protractorConf.js" />
