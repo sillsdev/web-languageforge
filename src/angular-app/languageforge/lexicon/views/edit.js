@@ -138,6 +138,10 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 			return 'left';
 		}
 	};
+
+    $scope.navigateToLiftImport = function navigateToLiftImport() {
+       $location.path('/importExport');
+    };
 	
     function _scrollDivToId(containerId, divId, posOffset) {
         var offsetTop, div = $(divId), containerDiv = $(containerId);
@@ -878,6 +882,9 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     // permissions stuff
 
     $scope.rights = {
+        canEditProject: function canEditProject() {
+            return sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
+        },
         canEditEntry: function canEditEntry() {
             return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.EDIT);
         },
