@@ -139,7 +139,11 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       });
 
     };
-    
+
+    $scope.showInputSystems = function() {
+      return ! ($scope.currentInputSystemTag in $scope.projectSettings.config.inputSystems);
+    };
+
   // InputSystemsConfigCtrl
     $scope.newExists = function(code, special) {
       var tag = code;
@@ -446,7 +450,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     };
     
     $scope.showRemoveCustomField = function showRemoveCustomField(fieldName) {
-      if ($scope.isCustomField(fieldname) &&
+      if ($scope.isCustomField(fieldName) &&
           ! (fieldName in $scope.projectSettings.config.entry.fields) &&
           ! (fieldName in $scope.projectSettings.config.entry.fields.senses.fields) &&
           ! (fieldName in $scope.projectSettings.config.entry.fields.senses.fields.examples.fields) ) {
