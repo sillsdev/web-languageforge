@@ -8,6 +8,7 @@ class AllLexiconAppTests extends TestSuite {
     function __construct() {
         parent::__construct();
         $this->addFile(TestPath . 'languageforge/lexicon/dto/AllTests.php');
+        $this->addFile(TestPath . 'languageforge/lexicon/models/AllTests.php');
         $this->addFile(TestPath . 'languageforge/lexicon/LexEntryCommands_Test.php');
 		$this->addFile(TestPath . 'languageforge/lexicon/LexOptionListCommands_Test.php');
         $this->addFile(TestPath . 'languageforge/lexicon/LexProjectCommands_Test.php');

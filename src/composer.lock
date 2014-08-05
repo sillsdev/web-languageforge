@@ -1,10 +1,67 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "86fb5c182f5717f208dd13c50194c7a1",
+    "hash": "dbd6dd410acadda899ad6c6ce1dab3b8",
     "packages": [
+        {
+            "name": "ocramius/lazy-property",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cambell-prince/LazyProperty.git",
+                "reference": "c6f420f934a633b3bcccb6b057a8c10a8cdcc908"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cambell-prince/LazyProperty/zipball/c6f420f934a633b3bcccb6b057a8c10a8cdcc908",
+                "reference": "c6f420f934a633b3bcccb6b057a8c10a8cdcc908",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.4"
+            },
+            "require-dev": {
+                "athletic/athletic": "~0.1.7",
+                "phpunit/phpunit": "~3.8",
+                "squizlabs/php_codesniffer": "1.4.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "LazyProperty\\": "src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marco Pivetta",
+                    "email": "ocramius@gmail.com",
+                    "homepage": "http://ocramius.github.io/"
+                }
+            ],
+            "description": "A library that provides lazy instantiation logic for object properties",
+            "homepage": "https://github.com/Ocramius/LazyProperty",
+            "keywords": [
+                "lazy",
+                "lazy instantiation",
+                "lazy loading",
+                "utility"
+            ],
+            "support": {
+                "source": "https://github.com/cambell-prince/LazyProperty/tree/master"
+            },
+            "time": "2014-02-23 16:28:10"
+        },
         {
             "name": "swiftmailer/swiftmailer",
             "version": "v5.0.2",
@@ -201,21 +258,14 @@
             "time": "2013-09-28 18:56:04"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "twig/extensions": 20,
-        "twilio/sdk": 20
+        "twilio/sdk": 20,
+        "ocramius/lazy-property": 20
     },
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "platform": [],
+    "platform-dev": []
 }
