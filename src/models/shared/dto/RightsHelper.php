@@ -62,7 +62,7 @@ class RightsHelper
 	// @see https://bugs.php.net/bug.php?id=40837
 	public static function hasSiteRight($userId, $right) {
 		$userModel = new UserModel($userId);
-		return SiteRoles::hasRight($userModel->role, $right);
+		return SiteRoles::hasRight($userModel->siteRole, $right);
 	}
 	
 	/**
