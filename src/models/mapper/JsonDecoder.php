@@ -36,6 +36,10 @@ class JsonDecoder {
 		$properties = get_object_vars($model);
         $propsToIgnore = array();
 
+        if (method_exists($model, 'getLazyProperties')) {
+        	$properties = array_merge($properties, $model->getLazyProperties());
+        }
+        
         if (get_class($this) == 'models\mapper\JsonDecoder') {
 
             if (method_exists($model, 'getPrivateProperties')) {
@@ -47,40 +51,29 @@ class JsonDecoder {
         }
 
 		foreach ($properties as $key => $value) {
-            if (in_array($key, $propsToIgnore)) {
-                continue;
+			if (is_a($value, 'models\mapper\Id') && get_class($value) == 'models\mapper\Id') {
+			     $this->decodeId($key, $model, $values, $id);
+			     continue;
+			}
+			if (!array_key_exists($key, $values) || in_array($key, $propsToIgnore)) {
+            	continue;
+            }
+            if ($value === false) {
+            	$value = $model->$key; // To force the lazy evaluation to create the property.
             }
 			if (is_a($value, 'models\mapper\IdReference')) {
-				if (array_key_exists($key, $values)) {
-					$this->decodeIdReference($key, $model, $values);
-				}
-			} else if (is_a($value, 'models\mapper\Id')) {
-			     $this->decodeId($key, $model, $values, $id);
+				$this->decodeIdReference($key, $model, $values);
 			} else if (is_a($value, 'models\mapper\ArrayOf')) {
-				if (array_key_exists($key, $values)) {
-					$this->decodeArrayOf($key, $model->$key, $values[$key]);
-				}
+				$this->decodeArrayOf($key, $model->$key, $values[$key]);
 			} else if (is_a($value, 'models\mapper\MapOf')) {
-				if (array_key_exists($key, $values)) {
-					$this->decodeMapOf($key, $model->$key, $values[$key]);
-				}
+				$this->decodeMapOf($key, $model->$key, $values[$key]);
 			} else if (is_a($value, 'DateTime')) {
-				if (array_key_exists($key, $values)) {
-					$this->decodeDateTime($key, $model->$key, $values[$key]);
-				}
+				$this->decodeDateTime($key, $model->$key, $values[$key]);
 			} else if (is_a($value, 'models\mapper\ReferenceList')) {
-				if (array_key_exists($key, $values)) {
-					$this->decodeReferenceList($model->$key, $values[$key]);
-				}
+				$this->decodeReferenceList($model->$key, $values[$key]);
 			} else if (is_object($value)) {
-				if (array_key_exists($key, $values)) {
-					$this->_decode($model->$key, $values[$key], '');
-				}
+				$this->_decode($model->$key, $values[$key], '');
 			} else {
-				if (!array_key_exists($key, $values)) {
-					// oops // TODO Add to list, throw at end CP 2013-06
-					continue;
-				}
 				if (is_array($values[$key])) {
 					throw new \Exception("Must not decode array in '" . get_class($model) . "->" . $key . "'");
 				}
