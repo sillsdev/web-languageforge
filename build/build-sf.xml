@@ -210,7 +210,6 @@
 		<replace file="${build.installForTestPath}/test/app/useLiveConfig.sh">
 			<replacefilter token="../src/config" value="../htdocs/config" />
 		</replace>
-		<chgrp type="both" group="www-data">
 		<!--
 		<replace file="${build.installForTestPath}/htdocs/config/mongodb.php">
 		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
