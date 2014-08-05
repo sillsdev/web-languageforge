@@ -13,6 +13,8 @@ function _createSense($data) {
 
 class LexEntryModel extends \models\mapper\MapperModel {
 
+	use \LazyProperty\LazyPropertiesTrait;
+	
 	public static function mapper($databaseName) {
 		static $instance = null;
 		if (null === $instance) {
@@ -29,34 +31,68 @@ class LexEntryModel extends \models\mapper\MapperModel {
 		$this->setPrivateProp('guid');
 		$this->setPrivateProp('mercurialSha');
 		$this->setReadOnlyProp('authorInfo');
-		$this->id = new Id();
-		$this->lexeme = new MultiText();
+		
+		$this->initLazyProperties([
+				'senses',
+				'customFields',
+				'authorInfo',
+				'lexeme',
+				'pronunciation',
+				'cvPattern',
+				'citationForm',
+				'etymology',
+				'etymologyGloss',
+				'etymologyComment',
+				'etymologySource',
+				'note',
+				'literalMeaning',
+				'entryBibliography',
+				'entryRestrictions',
+				'summaryDefinition',
+				'entryImportResidue',
+				'tone',
+				'environments',
+				'location'
+		], false);
+		
         $this->isDeleted = false;
-		$this->senses = new ArrayOf('models\languageforge\lexicon\_createSense');
-		$this->customFields = new ArrayOf('models\languageforge\lexicon\_createCustomField');
-		$this->authorInfo = new AuthorInfo();
-
-		$this->citationForm = new MultiText();
-		$this->environments = new LexiconMultiValueField();
-		$this->pronunciation = new MultiText();
-		$this->cvPattern = new MultiText();
-		$this->location = new LexiconField();
-		$this->etymology = new MultiText();
-		$this->etymologyGloss = new MultiText();
-		$this->etymologyComment = new MultiText();
-		$this->etymologySource = new MultiText();
-		$this->note = new MultiText();
-		$this->literalMeaning = new MultiText();
-		$this->entryBibliography = new MultiText();
-		$this->entryRestrictions = new MultiText();
-		$this->summaryDefinition = new MultiText();
-		$this->entryImportResidue = new MultiText();
-        $this->tone = new MultiText();
-
-
+		
+        $this->id = new Id();
 
 		$databaseName = $projectModel->databaseName();
 		parent::__construct(self::mapper($databaseName), $id);
+	}
+	
+	protected function & createProperty($name) {
+		switch ($name) {
+			case 'senses':
+				return new ArrayOf('models\languageforge\lexicon\_createSense');
+			case 'customFields':
+				return new ArrayOf('models\languageforge\lexicon\_createCustomField');
+			case 'authorInfo':
+				return new AuthorInfo();
+			case 'lexeme':
+			case 'pronunciation':
+			case 'cvPattern':
+			case 'citationForm':
+			case 'etymology':
+			case 'etymologyGloss':
+			case 'etymologyComment':
+			case 'etymologySource':
+			case 'note':
+			case 'literalMeaning':
+			case 'entryBibliography':
+			case 'entryRestrictions':
+			case 'summaryDefinition':
+			case 'entryImportResidue':
+			case 'tone':
+				return new MultiText();
+			case 'environments':
+				return new LexiconMultiValueField();
+			case 'location':
+				return new LexiconField();
+				
+		}
 	}
 	
 	/**

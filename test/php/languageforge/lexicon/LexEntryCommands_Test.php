@@ -24,6 +24,7 @@ class TestLexEntryCommands extends UnitTestCase {
 		$projectId = $project->id->asString();
 		
 		$entry = new LexEntryModel($project);
+		var_dump($entry);
 		$entry->lexeme->form('th', 'apple');
 
 		$sense = new Sense();
@@ -41,6 +42,9 @@ class TestLexEntryCommands extends UnitTestCase {
 		$entryId = $entry->write();
 		
 		$newEntry = LexEntryCommands::readEntry($projectId, $entryId);
+		
+		var_dump($entry);
+		var_dump($newEntry);
 		
 		$this->assertEqual($newEntry['lexeme']['th']['value'], 'apple');
 		$this->assertEqual($newEntry['senses'][0]['definition']['en']['value'], 'red fruit');
