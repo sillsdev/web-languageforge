@@ -160,7 +160,7 @@ class MongoTestEnvironment
 class LexiconMongoTestEnvironment extends MongoTestEnvironment {
 	
 	public function __construct() {
-		parent::__construct('www.languageforge.org');
+		parent::__construct('languageforge.org');
 	}
 	
 	public function createProject($name, $code) {

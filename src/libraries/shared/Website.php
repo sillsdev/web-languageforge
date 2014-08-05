@@ -301,7 +301,7 @@ class Website {
 		// languageforge.local sites
 		$w = new Website('languageforge.local', self::LANGUAGEFORGE);
 		$w->name = 'Language Forge'; 
-		$w->ssl = true;
+		$w->ssl = false;
 		$w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
 		$sites['languageforge.local'] = $w;
 		
@@ -313,11 +313,11 @@ class Website {
 		$sites['dev.languageforge.org'] = $w;
 		
 		// languageforge.org
-		$w = new Website('www.languageforge.org', self::LANGUAGEFORGE);
+		$w = new Website('languageforge.org', self::LANGUAGEFORGE);
 		$w->name = 'Language Forge'; 
 		$w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
-		$w->ssl = true;
-		$sites['www.languageforge.org'] = $w;
+		$w->ssl = false;
+		$sites['languageforge.org'] = $w;
 		
 		
 		/*
