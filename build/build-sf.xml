@@ -186,9 +186,31 @@
 	
 	<target name="installForE2ETest" depends="packageForE2ETest, cleanInstallForE2eTest">
 		<untar src="${build.packageFileForTest}" dest="${build.installForTestPath}" compression="gzip" />
+		<chgrp type="both" group="www-data">
+			<dirset dir="${build.installForTestPath}/htdocs/" />
+			<fileset dir="${build.installForTestPath}/htdocs/">
+			    <include name="**/*"/>
+			</fileset>
+			<dirset dir="${build.installForTestPath}/lib/" />
+			<fileset dir="${build.installForTestPath}/lib/">
+			    <include name="**/*"/>
+			</fileset>
+		</chgrp>
+		<chmod type="both" perm="g+w">
+			<dirset dir="${build.installForTestPath}/htdocs/cache/" />
+			<dirset dir="${build.installForTestPath}/htdocs/assets/" />
+			<dirset dir="${build.installForTestPath}/htdocs/config/" /> <!-- So E2E test config can be put in place -->
+		</chmod>
 		<replace file="${build.installForTestPath}/test/app/e2eTestConfig.php">
 			<replacefilter token="define('APPPATH', $rootPath . '/src/');" value="define('APPPATH', $rootPath . '/htdocs/');" />
 		</replace>
+		<replace file="${build.installForTestPath}/test/app/useTestConfig.sh">
+			<replacefilter token="../src/config" value="../htdocs/config" />
+		</replace>
+		<replace file="${build.installForTestPath}/test/app/useLiveConfig.sh">
+			<replacefilter token="../src/config" value="../htdocs/config" />
+		</replace>
+		<chgrp type="both" group="www-data">
 		<!--
 		<replace file="${build.installForTestPath}/htdocs/config/mongodb.php">
 		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
@@ -206,7 +228,7 @@
 		</exec>
 		<!-- TODO: Consider another design where multiple protractor.conf files can be selected -->
 		<!-- TODO: Figure out how to connect to the Windows build agent and start the Selenium server -->
-		<exec dir="${build.installForTestPath}/test/app/" executable="node">
+		<exec dir="${build.installForTestPath}/test/" executable="node">
 			<arg value="node_modules/protractor/bin/protractor" />
 			<arg value="protractorConf.js" />
 			<arg value="--seleniumAddress" />
