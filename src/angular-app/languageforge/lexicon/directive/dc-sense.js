@@ -1,3 +1,4 @@
+"use strict";
 angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.optionlist', 'palaso.ui.dc.multioptionlist', 'palaso.ui.dc.example', 'ngAnimate', 'bellows.services', 'lexicon.services'])
 // Palaso UI Dictionary Control: Sense
 .directive('dcSense', ['lexUtils', 'modalService', function(utils, modal) {
@@ -28,6 +29,8 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
             $scope.fieldContainsData = lexConfigService.fieldContainsData;
 		}],
 		link : function(scope, element, attrs, controller) {
+            scope.optionlists = scope.control.config.optionlists;
+
 		}
 	};
 }])
