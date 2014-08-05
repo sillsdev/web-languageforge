@@ -715,6 +715,10 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         var isNewComment = angular.isUndefined(comment);
         if (isNewComment) {
             comment = angular.copy($scope.newComment);
+
+            // dont submit empty comments
+            if (comment.content == '') return;
+
             // comment.content is already set in the form
             comment.entryRef = $scope.currentEntry.id;
             comment.regarding.meaning = $scope.getMeaningForDisplay($scope.currentEntry);
