@@ -16,7 +16,7 @@
                 <div class="commentDate">{{model.authorInfo.createdDate | relativetime}}</div>
                 <div class="commentPlusOne">{{model.score}}
                     <i ng-show="control.canPlusOneComment(model.id) && control.rights.canComment() && model.status != 'resolved'" style="cursor: pointer" ng-click="control.plusOneComment(model.id)" tooltip="Like comment" class="icon-thumbs-up-alt"></i>
-                    <i ng-hide="control.canPlusOneComment(model.id) && control.rights.canComment() && model.status != 'resolved'" class="icon-thumbs-up-alt"></i>
+                    <i ng-hide="control.canPlusOneComment(model.id) && control.rights.canComment() && model.status != 'resolved'" style="opacity: 0.5" class="icon-thumbs-up-alt"></i>
                 </div>
             </div>
             <div class="commentRightSide">
@@ -49,11 +49,11 @@
                     </div>
                 </div>
                 <form ng-show="reply.editing" ng-submit="submitReply(reply)">
-                    <input type="text" style="font-size:12px;" ng-model="reply.editingContent" set-focus="reply.editing"> <a ng-click="reply.editing = false">Cancel</a>
+                    <input type="text" style="font-size:12px;" ng-model="reply.editingContent" set-focus="reply.editing"> <button type="submit" class="btn btn-small">OK</button> <a ng-click="reply.editing = false"><i class="icon-remove"></i></a>
                 </form>
             </div>
             <form class="commentNewReplyForm" ng-show="showNewReplyForm" ng-submit="submitReply(newReply)">
-                <input type="text" style="font-size:12px;" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" set-focus="showNewReplyForm"> <a ng-click="showNewReplyForm = false">Cancel</a>
+                <input type="text" style="font-size:12px;" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" set-focus="showNewReplyForm"> <button type="submit" class="btn btn-small">OK</button> <a ng-click="showNewReplyForm = false"><i class="icon-remove"></i></a>
             </form>
         </div>
         <div style="height:30px">

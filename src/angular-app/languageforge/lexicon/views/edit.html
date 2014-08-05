@@ -137,7 +137,14 @@
                     <div ng-show="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryComments.length}} {{'Comments' | translate}}</div>
                     <div ng-hide="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryCommentsFiltered.length}} of {{currentEntryComments.length}}</div>
                     -->
-                    <div class="commentCount">{{currentEntryComments.length}} {{'Comments' | translate}}</div>
+                    <div class="commentCount">
+                        <span ng-if="currentEntryCommentCounts.total !== 1">
+                            {{currentEntryCommentCounts.total}} {{'Comments'|translate}}
+                        </span>
+                        <span ng-if="currentEntryCommentCounts.total === 1">
+                            {{currentEntryCommentCounts.total}} {{'Comment'|translate}}
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="commentListView">
@@ -155,7 +162,7 @@
                             <div ng-hide="newComment.regarding.field" style="text-align:center; color: #e67345;margin-bottom: 8px"><em translate="Click on a field to the left and give context to your comment"></em></div>
                         </div>
                         <div style="text-align: right; margin-right:10px">
-                            <button ng-disabled="!newComment.content" class="btn-sm" ng-click="updateComment()">Post</button>
+                            <button class="btn-sm" ng-click="updateComment()">Post</button>
                         </div>
                     </div>
                 </div>
