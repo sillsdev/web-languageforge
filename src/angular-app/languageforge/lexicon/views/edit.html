@@ -43,7 +43,7 @@
         </div>
         <div style="border-bottom: 1px solid darkgray; width:100%;margin-top:15px"></div>
         <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-            <div ng-show="entries.length == 0 && rights.canEditProject()" style="text-align: center;margin-top:50px"><h4>Looks like there are no entries yet.</h4><button class="btn btn-primary" ng-click="navigateToLiftImport()">Import entries from LIFT</button></div>
+            <div ng-show="entries.length == 0 && rights.canEditProject() && !fullRefreshInProgress" style="text-align: center;margin-top:50px"><h4>Looks like there are no entries yet.</h4><button class="btn btn-primary" ng-click="navigateToLiftImport()">Import entries from LIFT</button></div>
             <div class="lexiconListItem" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntryAndScroll(entry.id)">
                 <dc-rendered config="config.entry" model="entry"></dc-rendered>
                 <div ng-show="getEntryCommentCount(entry.id) > 0" style="position:absolute; right:5px;top:3px"><i style="color: #faa732;" class="icon-comment"></i></div>
