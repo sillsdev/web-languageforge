@@ -328,7 +328,7 @@ function(ss) {
     
     var _getFirstField = function _getFirstField(config, node, fieldName) {
         var ws, field, result = '';
-        if (node[fieldName] && config && config.fields) {
+        if (node[fieldName] && config && config.fields && config.fields[fieldName] && config.fields[fieldName].inputSystems) {
             for (var i=0; i<config.fields[fieldName].inputSystems.length; i++) {
                 ws = config.fields[fieldName].inputSystems[i];
                 field = node[fieldName][ws];
