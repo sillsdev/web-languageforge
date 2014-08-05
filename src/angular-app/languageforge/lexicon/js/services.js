@@ -122,7 +122,6 @@ function(ss) {
         angular.forEach(ss.session.projectSettings.optionlists, function(optionlist) {
             config.optionlists[optionlist.code] = optionlist;
         });
-        config.optionlists = angular.copy(ss.session.projectSettings.optionlists);
 
         var userId = ss.session.userId;
         var role = ss.session.projectSettings.currentUserRole;

@@ -7,7 +7,8 @@ angular.module('palaso.ui.dc.optionlist', [])
 			scope : {
 				config : "=",
 				model : "=",
-				control : "="
+				control : "=",
+                items : "="
 			},
 			controller: ['$scope', function($scope) {
 
