@@ -428,9 +428,13 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
 	function refreshData(fullRefresh, callback) {
         callback = callback||angular.noop;
-        if (fullRefresh) notice.setLoading('Loading Dictionary');
+        if (fullRefresh) {
+            notice.setLoading('Loading Dictionary');
+            $scope.fullRefreshInProgress = true;
+        }
 		var processDbeDto = function (result) {
             notice.cancelLoading();
+            $scope.fullRefreshInProgress = false;
 			if (result.ok) {
                 $scope.commentsUserPlusOne = result.data.commentsUserPlusOne;
                 if (fullRefresh) {
