@@ -2,6 +2,8 @@
 
 namespace models\commands;
 
+use models\shared\rights\SiteRoles;
+
 use libraries\scriptureforge\sfchecks\Communicate;
 use libraries\scriptureforge\sfchecks\Email;
 use libraries\scriptureforge\sfchecks\IDelivery;
@@ -146,11 +148,17 @@ class UserCommands {
 	 * 
 	 * @param string $userId
 	 * @param string $newPassword
+	 * @param string $currentUserId
 	 * @throws \Exception
 	 */
-	public static function changePassword($userId, $newPassword, $currUserId) {
-		if ($userId != $currUserId && !RightsHelper::hasSiteRight($currUserId, Domain::USERS + Operation::EDIT)) {
-			throw new UserUnauthorizedException();
+	public static function changePassword($userId, $newPassword, $currentUserId) {
+		if ($userId != $currentUserId) {
+			$currentUserModel = new UserModel($currentUserId);
+			if (!SiteRoles::hasRight($currentUserModel->siteRole, Domain::USERS + Operation::EDIT) &&
+				!SystemRoles::hasRight($currentUserModel->role, Domain::USERS + Operation::EDIT)
+			) {
+				throw new UserUnauthorizedException();
+			}
 		}
 		$user = new PasswordModel($userId);
 		$user->changePassword($newPassword);
