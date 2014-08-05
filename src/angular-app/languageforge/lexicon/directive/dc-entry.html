@@ -4,11 +4,11 @@
         <div ng-if="!config.fields[fieldName].hideIfEmpty || (config.fields[fieldName].hideIfEmtpy && fieldContainsData(config.fields[fieldName].type, model[fieldName]))">
             <div data-ng-switch data-on="config.fields[fieldName].type">
                 <div class="flex100" data-ng-switch-when="optionlist">
-                    <dc-optionlist control="control" config="config.fields[fieldName]" model="model[fieldName]"></dc-optionlist>
+                    <dc-optionlist control="control" config="config.fields[fieldName]" model="model[fieldName]" items="optionlists[fieldName].items"></dc-optionlist>
                     <comment-bubble control="control" count="control.getFieldCommentCount(fieldName)"></comment-bubble>
                 </div>
                 <div class="flex100" data-ng-switch-when="multioptionlist">
-                    <dc-multioptionlist control="control" config="config.fields[fieldName]" model="model[fieldName]"></dc-multioptionlist>
+                    <dc-multioptionlist control="control" config="config.fields[fieldName]" model="model[fieldName]" items="optionlists[fieldName].items"></dc-multioptionlist>
                     <comment-bubble control="control" count="control.getFieldCommentCount(fieldName)"></comment-bubble>
                 </div>
                 <div class="flex100" data-ng-switch-when="multitext">
