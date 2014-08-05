@@ -57,7 +57,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             // that is when the user is saving the current entry and is NOT going to a different entry (as is the case with editing another entry
             doSetEntry = false;
         }
-		if ($scope.currentEntryIsDirty()) {
+		if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
 			cancelAutoSaveTimer();
 			saving = true;
             isNewEntry = ($scope.currentEntry.id == '');
@@ -847,15 +847,6 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		}
 	};
 	
-	$scope.$watch('currentEntry', function(newValue) {
-		if (newValue != undefined) {
-			cancelAutoSaveTimer();
-			if ($scope.currentEntryIsDirty) {
-                startAutoSaveTimer();
-			}
-		}
-	}, true);
-	
 	$scope.$on('$destroy', function() {
 		cancelAutoSaveTimer();
 		$scope.saveCurrentEntry();
@@ -915,9 +906,19 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         }
     };
 
+    // conditionally register watch
+    if ($scope.rights.canEditEntry()) {
+        $scope.$watch('currentEntry', function(newValue) {
+            if (newValue != undefined) {
+                cancelAutoSaveTimer();
+                if ($scope.currentEntryIsDirty) {
+                    startAutoSaveTimer();
+                }
+            }
+        }, true);
+    }
 
-
-	function recursiveRemoveProperties(startAt, properties) {
+    function recursiveRemoveProperties(startAt, properties) {
 		angular.forEach(startAt, function(value, key) {
 			var deleted = false;
 			angular.forEach(properties, function(propName) {
