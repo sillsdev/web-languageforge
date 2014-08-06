@@ -40,20 +40,20 @@ class LexProjectCommands {
 	 * Create or update project
 	 * @param string $projectId
 	 * @param string $userId
-	 * @param array<projectModel> $projectJson
+	 * @param array<projectModel> $object
 	 * @throws UserUnauthorizedException
 	 * @throws \Exception
 	 * @return string projectId
 	 */
-	public static function updateProject($projectId, $userId, $projectJson) {
+	public static function updateProject($projectId, $userId, $object) {
 		$project = new LexiconProjectModel($projectId);
 		if (!$project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
 			throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
 		}
 		$oldDBName = $project->databaseName();
 
-		$projectJson['id'] = $projectId;
-		JsonDecoder::decode($project, $projectJson);
+		$object['id'] = $projectId;
+		JsonDecoder::decode($project, $object);
 		$newDBName = $project->databaseName();
 		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
 			if (MongoStore::hasDB($newDBName)) {
