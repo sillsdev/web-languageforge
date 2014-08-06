@@ -65,11 +65,11 @@
 
 	<target name="test">
 	    <!-- commented out until these are revisited and made working again (the e2e tests are hanging as of 2013-10-24 cjh)
-		Uncommented E2E tests since we switched to Protractor and they work now: 2014-08-05 RM
+		E2E tests still commented out since we are changing how they work (they will now be run from a Windows build agent instead of from the Ant build script): 2014-08-06 RM
+		<antcall target="test-js-e2e" />
 		-->
 		<antcall target="test-php" />
 		<antcall target="test-js-unit" />
-		<antcall target="test-js-e2e" />
 	</target>
 	
 	<target name="composer">
