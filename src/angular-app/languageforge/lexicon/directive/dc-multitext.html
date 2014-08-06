@@ -2,7 +2,7 @@
 	<div data-ng-repeat="tag in config.inputSystems" class="control-group">
 		<label ng-show="$first" class="control-label">{{config.label}}</label>
 		<div class="controls">
-            <div class="input-prepend">
+            <div class="input-prepend" ng-click="selectInputSystem(tag)" ng-class="{selectableInputSystemFieldForComment: control.state == 'comment' && control.rights.canComment()}">
                 <span class="add-on wsid" title="{{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
                 <textarea ng-show="config.displayMultiline && control.state == 'edit' && control.rights.canEditEntry()" dir="{{inputSystemDirection(tag)}}" width="{{config.width}}" type="text"
                     data-ng-model="model[tag].value"></textarea>
