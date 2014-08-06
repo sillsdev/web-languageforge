@@ -9,6 +9,8 @@ use models\mapper\JsonEncoder;
 
 class LexProjectDtoEncoder extends JsonEncoder {
 	public function encodeIdReference($key, $model) {
+		// TODO ownerRef is declared in ProjectModel as an IdReference.  Here, it gets encoded as an Array 2014-08 DDW
+		// Trello: https://trello.com/c/Zw0aLLYv
 		if ($key == 'ownerRef') {
 			$user = new UserModel();
 			if ($user->exists($model->asString())) {

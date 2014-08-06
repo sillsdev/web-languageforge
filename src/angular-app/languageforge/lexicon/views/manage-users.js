@@ -36,6 +36,14 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 		return item != null && $scope.selected.indexOf(item) >= 0;
 	};
 
+	$scope.showProjectOwner = function(userId) {
+		if ($scope.project.ownerRef['id']) {
+			return (userId == $scope.project.ownerRef['id']);
+		} else {
+			return (userId == $scope.project.ownerRef);
+		}
+	};
+
 	$scope.removeProjectUsers = function() {
 		var userIds = [];
 		for(var i = 0, l = $scope.selected.length; i < l; i++) {
