@@ -38,23 +38,26 @@ class LexProjectCommands {
 	
 	/**
 	 * Create or update project
-	 * @param array<projectModel> $projectJson
+	 * @param string $projectId
 	 * @param string $userId
+	 * @param array<projectModel> $projectJson
 	 * @throws UserUnauthorizedException
 	 * @throws \Exception
 	 * @return string projectId
 	 */
 	public static function updateProject($projectId, $userId, $projectJson) {
 		$project = new LexiconProjectModel($projectId);
-		if ($project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
+		if (!$project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
 			throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
 		}
 		$oldDBName = $project->databaseName();
+
+		$projectJson['id'] = $projectId;
 		JsonDecoder::decode($project, $projectJson);
 		$newDBName = $project->databaseName();
 		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
 			if (MongoStore::hasDB($newDBName)) {
-				throw new \Exception("New project name " . $projectJson->projectName . " already exists. Not renaming.");
+				throw new \Exception("Cannot rename '$oldDBName' to ' $newDBName' . New project name $newDBName already exists.  Not renaming.");
 			}
 			MongoStore::renameDB($oldDBName, $newDBName);
 		}
