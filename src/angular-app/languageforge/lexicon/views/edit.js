@@ -630,6 +630,59 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         //$location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);
     };
 
+    function getFieldValue(model, inputSystem) {
+
+        // get value of option list
+        if (angular.isDefined(model.value)) {
+
+            // todo return display value
+            return model.value;
+        }
+
+        // get value of multi-option list
+        if (angular.isDefined(model.values)) {
+
+            // todo return display values
+            return model.values.join(' ');
+
+        }
+
+        // get value of multi-text with specified inputSystem
+        if (angular.isDefined(inputSystem) && angular.isDefined(model[inputSystem])) {
+            return model[inputSystem].value;
+        }
+
+        // get first inputSystem of a multi-text (no inputSystem specified)
+        var valueToReturn = undefined;
+        angular.forEach(model, function(prop) {
+            if (angular.isUndefined(valueToReturn)) {
+                valueToReturn = prop.value;
+            }
+        });
+        return valueToReturn;
+    }
+
+    $scope.selectFieldForComment = function selectFieldForComment(fieldName, model, inputSystem) {
+        if ($scope.state == 'comment' && $scope.rights.canComment()) {
+            var fieldConfig = configService.getFieldConfig(fieldName);
+            $scope.newComment.regarding.field = fieldName;
+            $scope.newComment.regarding.fieldNameForDisplay = fieldConfig.label;
+            if (inputSystem) {
+
+                // I set the inputsystem values delayed by 10ms to deal with a double ng-click fire (nested divs, each with ng-click)
+                $interval(function() {
+                    $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
+                    $scope.newComment.regarding.inputSystem = inputSystem;
+                    $scope.newComment.regarding.inputSystemAbbreviation = $scope.config.inputSystems[inputSystem].abbreviation;
+                }, 10, 1);
+            } else {
+                $scope.newComment.regarding.fieldValue = getFieldValue(model);
+                delete $scope.newComment.regarding.inputSystem;
+                delete $scope.newComment.regarding.inputSystemAbbreviation;
+            }
+        }
+    };
+
     function loadEntryComments() {
         var comments = [];
         var count = {total:0, fields:{}};

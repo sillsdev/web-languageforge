@@ -190,6 +190,25 @@ function(ss) {
         return fieldName.search('customField_') === 0;
     };
 
+    this.getFieldConfig = function getFieldConfig(fieldName) {
+        var config = ss.session.projectSettings.config;
+
+        var search = config.entry.fields;
+        if (angular.isDefined(search[fieldName])) {
+            return search[fieldName];
+        }
+
+        search = config.entry.fields.senses.fields;
+        if (angular.isDefined(search[fieldName])) {
+            return search[fieldName];
+        }
+
+        search = config.entry.fields.senses.fields.examples.fields;
+        if (angular.isDefined(search[fieldName])) {
+            return search[fieldName];
+        }
+        return undefined;
+    };
 
     /*
     this.isFieldEnabled = function(fieldName, ws) {
@@ -258,26 +277,7 @@ function(ss) {
 
     };
 
-    function getFieldConfig(fieldName) {
-        var config = ss.session.projectSettings.config;
-
-        var search = config.entry;
-        if (angular.isDefined(search.fields[fieldName])) {
-            return search.fields[fieldName];
-        }
-
-        search = config.entry.fields.senses.fields;
-        if (angular.isDefined(search.fields[fieldName])) {
-            return search.fields[fieldName];
-        }
-
-        search = config.entry.fields.senses.fields.examples.fields;
-        if (angular.isDefined(search.fields[fieldName])) {
-            return search.fields[fieldName];
-        }
-        return undefined;
-    }
-    */
+     */
 }])
 
   .service('lexEntryService', ['jsonRpc', 'sessionService', 'lexProjectService', 'breadcrumbService', 'lexLinkService', 
