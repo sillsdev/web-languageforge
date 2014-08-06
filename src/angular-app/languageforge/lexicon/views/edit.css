@@ -308,3 +308,19 @@ div.newCommentForm button {
 .commentListView button {
     height: 25px;
 }
+
+.selectableFieldForComment:hover {
+    background-color: #eee;
+    border: 1px solid #888;
+}
+.selectableFieldForComment, .selectableInputSystemFieldForComment {
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+.selectableInputSystemFieldForComment:hover {
+    background-color: hsla(80, 100%, 50%, 0.1);
+    border: 1px solid #888;
+}
+.selectableInputSystemFieldForComment .uneditable-input, .selectableFieldForComment .uneditable-input {
+    cursor: pointer;
+}
