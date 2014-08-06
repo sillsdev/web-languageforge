@@ -62,8 +62,7 @@ if (defined('ENVIRONMENT'))
 	$WEBSITE = \libraries\shared\Website::getOrRedirect();
     if ($WEBSITE) {
         $site = $WEBSITE->base;
-        //$system_path = '/var/www/scriptureforge.org_dev/lib/CodeIgniter_2.1.3/system';
-        $system_path = "/var/www/$site.org_dev/lib/CodeIgniter_2.1.3/system";
+        $system_path = realpath('../lib/CodeIgniter_2.1.3/system');
     } else {
         print "dead: could not get website instance;";
         exit;
@@ -83,7 +82,7 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  */
-	$application_folder = "/var/www/$site.org_dev/htdocs";
+	$application_folder = realpath('.');
 
 /*
  * --------------------------------------------------------------------
