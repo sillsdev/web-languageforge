@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon;
 
 use libraries\shared\palaso\CodeGuard;
 use models\mapper\ArrayOf;
+use models\mapper\MapOf;
 
 function _createExample($data) {
 	return new Example();
@@ -30,7 +31,7 @@ class Sense {
 		$this->partOfSpeech = new LexiconField();
 		$this->semanticDomain = new LexiconMultiValueField();
 		$this->examples = new ArrayOf('\models\languageforge\lexicon\_createExample');
-		$this->customFields = new ArrayOf('\models\languageforge\lexicon\_createCustomField');
+		$this->customFields = new MapOf('\models\languageforge\lexicon\_createCustomField');
 		$this->authorInfo = new AuthorInfo();
 
 		$this->scientificName = new MultiText();
@@ -99,7 +100,7 @@ class Sense {
 	public $examples;
 
 	/**
-	 * @var ArrayOf <>
+	 * @var MapOf <>
 	 */
 	public $customFields;
 
