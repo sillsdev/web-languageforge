@@ -14,7 +14,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
       return ss.session.project.id;
     };
   }])
-  .service('lexProjectService', ['jsonRpc', 'sessionService', 'breadcrumbService', 'lexLinkService', '$location', 
+  .service('lexProjectService', ['jsonRpc', 'sessionService', 'breadcrumbService', 'lexLinkService', '$location',
   function(jsonRpc, ss, breadcrumbService, linkService, $location) {
     jsonRpc.connect('/api/sf');
     
@@ -55,7 +55,12 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
     this.updateProject = function(project, callback) {
       jsonRpc.call('lex_project_update', [project], callback);
     };
-    
+    this.updateSettings = function(smsSettings, emailSettings, callback) {
+      jsonRpc.call('project_updateSettings', [smsSettings, emailSettings], callback);
+    };
+     this.readSettings = function(callback) {
+      jsonRpc.call('project_readSettings', [], callback);
+    };
     this.users = function(callback) {
       jsonRpc.call('project_usersDto', [], callback);
     };
