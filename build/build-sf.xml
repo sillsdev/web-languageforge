@@ -227,6 +227,10 @@
 	</target>
 	
 	<target name="test-js-e2e" depends="composer,installForE2ETest">
+	</target>
+	
+	<target name="test-js-e2e-disabled" depends="composer,installForE2ETest">
+		<!-- Disabled because we're changing how the E2E tests are run. 2014-08-06 RM -->
 		<exec dir="${build.installForTestPath}/test/app/" executable="php">
 			<arg value="setupTestEnvironment.php" />
 		</exec>
