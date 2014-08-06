@@ -18,7 +18,13 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
     $scope.readProject();
     
     $scope.updateProject = function() {
-      lexProjectService.updateProject($scope.project, function(result) {
+       var settings = {
+            projectName: $scope.project.projectName,
+            interfaceLanguageCode: $scope.project.interfaceLanguageCode,
+            featured: $scope.project.featured
+       };
+
+      lexProjectService.updateProject(settings, function(result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, $scope.project.projectName + " settings updated successfully");
         }
