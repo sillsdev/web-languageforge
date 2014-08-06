@@ -5,6 +5,7 @@ namespace models\languageforge\lexicon;
 use libraries\shared\palaso\CodeGuard;
 use models\mapper\Id;
 use models\mapper\ArrayOf;
+use models\mapper\MapOf;
 use models\ProjectModel;
 
 function _createSense($data) {
@@ -33,7 +34,7 @@ class LexEntryModel extends \models\mapper\MapperModel {
 		$this->lexeme = new MultiText();
         $this->isDeleted = false;
 		$this->senses = new ArrayOf('models\languageforge\lexicon\_createSense');
-		$this->customFields = new ArrayOf('models\languageforge\lexicon\_createCustomField');
+		$this->customFields = new MapOf('models\languageforge\lexicon\_createCustomField');
 		$this->authorInfo = new AuthorInfo();
 
 		$this->citationForm = new MultiText();
@@ -94,7 +95,7 @@ class LexEntryModel extends \models\mapper\MapperModel {
 	public $senses;
 	
 	/**
-	 * @var ArrayOf <>
+	 * @var MapOf <>
 	 */
 	public $customFields;
 
