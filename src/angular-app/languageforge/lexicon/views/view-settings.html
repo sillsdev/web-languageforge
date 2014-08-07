@@ -22,11 +22,10 @@
 			<div class="span3 control-group">
 				
 				<!-- control buttons -->
-				<div class="control-group">
-					<a href="" data-ng-click="showAllFields = ! showAllFields">
-						{{showAllFields ? 'Show Common Fields' : 'Show All Fields' | translate}}</a>
-				</div>
-				
+                <div class="control-group">
+                    <button data-ng-click="showAllFields = ! showAllFields" class="btn btn-small">{{showAllFields ? 'Show Only Common Fields' : 'Show All Fields' | translate}}</button>
+                </div>
+
 				<!-- select list -->
 				<dl class="picklists" style="height: 200px; overflow: auto;">
 					<dt translate="Entry Level Fields"></dt>
