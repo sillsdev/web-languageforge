@@ -1,7 +1,7 @@
 <div class="dc-entry">
 
     <div data-ng-repeat="fieldName in config.fieldOrder">
-        <div ng-if="!config.fields[fieldName].hideIfEmpty || (config.fields[fieldName].hideIfEmtpy && fieldContainsData(config.fields[fieldName].type, model[fieldName]))" ng-class="{selectableFieldForComment: control.state == 'comment' && control.rights.canComment()}" ng-click="control.selectFieldForComment(fieldName, model[fieldName])">
+        <div ng-if="!config.fields[fieldName].hideIfEmpty || control.show.emptyFields || (config.fields[fieldName].hideIfEmtpy && fieldContainsData(config.fields[fieldName].type, model[fieldName]))" ng-class="{selectableFieldForComment: control.state == 'comment' && control.rights.canComment()}" ng-click="control.selectFieldForComment(fieldName, model[fieldName])">
             <div data-ng-switch data-on="config.fields[fieldName].type">
                 <div class="flex100" data-ng-switch-when="optionlist">
                     <dc-optionlist control="control" config="config.fields[fieldName]" model="model[fieldName]" items="optionlists[fieldName].items"></dc-optionlist>
