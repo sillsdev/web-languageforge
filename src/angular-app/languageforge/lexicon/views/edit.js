@@ -94,7 +94,9 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	};
 
 	function prepEntryForUpdate(entry) {
-		return recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+        var entryForUpdate = recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+        entryForUpdate = prepCustomFieldsForUpdate(entryForUpdate);
+        return entryForUpdate;
 	}
 	
 	$scope.getWordForDisplay = function(entry) {
@@ -227,12 +229,46 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	function setCurrentEntry(entry) {
 		entry = entry || {};
 
+        // align custom fields into model
+        entry = alignCustomFieldsInData(entry);
+
         // auto-make a valid model but stop at the examples array
         entry = $scope.makeValidModelRecursive($scope.config.entry, entry, 'examples');
+
+
 		$scope.currentEntry = entry;
 		pristineEntry = angular.copy(entry);
 		saved = false;
 	}
+
+    function alignCustomFieldsInData(data) {
+        if (angular.isDefined(data['customFields'])) {
+            angular.forEach(data['customFields'], function(item, key) {
+                data[key] = item;
+            });
+        }
+        if (angular.isDefined(data['senses'])) {
+            data['senses'] = alignCustomFieldsInData(data['senses']);
+        }
+        if (angular.isDefined(data['examples'])) {
+            data['examples'] = alignCustomFieldsInData(data['examples']);
+        }
+        return data;
+    }
+
+    function prepCustomFieldsForUpdate(data) {
+        data['customFields'] = {};
+        angular.forEach(data, function(item, key) {
+            if (/^customField_/.test(key)) {
+                data['customFields'][key] = item;
+            }
+            if (key == 'senses' || key == 'examples') {
+                data[key] = prepCustomFieldsForUpdate(item);
+            }
+        });
+        return data;
+
+    }
 
 	$scope.editEntry = function(id) {
 		if ($scope.currentEntry.id != id) {
@@ -624,7 +660,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
     $scope.newComment = {id: '', content: '', regarding: {}}; // model for new comment content
 
-    $scope.showComments = function showComments(fieldName) {
+    $scope.showComments = function showComments() {
         $scope.saveCurrentEntry();
         $scope.state = 'comment';
         //$location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);

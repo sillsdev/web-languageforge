@@ -47,7 +47,7 @@ class LexEntryCommands {
 		$entry->authorInfo->modifiedByUserRef->id = $userId;
 
         $params = self::recursiveRemoveEmptyFieldValues($params);
-        $params = self::recursiveAlignCustomFieldsWithModel($params);
+        //$params = self::recursiveAlignCustomFieldsWithModel($params);
 		JsonDecoder::decode($entry, $params);
 
 		$entry->write();
@@ -97,6 +97,7 @@ class LexEntryCommands {
         $entry->write();
 	}
 
+    /*
     private static function recursiveAlignCustomFieldsWithModel($params) {
         if (!array_key_exists('customFields', $params)) {
             $params['customFields'] = array();
@@ -111,6 +112,7 @@ class LexEntryCommands {
         }
         return $params;
     }
+    */
 }
 
 ?>
