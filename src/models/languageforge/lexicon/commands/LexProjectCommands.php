@@ -2,7 +2,6 @@
 
 namespace models\languageforge\lexicon\commands;
 
-use libraries\lfdictionary\common\UserActionDeniedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\shared\palaso\CodeGuard;
 use models\languageforge\lexicon\config\LexConfiguration;
@@ -120,7 +119,6 @@ class LexProjectCommands {
 
         }
     }
-
 }
 
 ?>
