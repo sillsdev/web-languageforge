@@ -14,7 +14,6 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
     $scope.state = 'list'; // default state.  State is one of 'list', 'edit', or 'comment'
-    $scope.showUncommonFields = false;
 
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
 
@@ -416,6 +415,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
     /* TODO implement a proper sliding window that can go back and forward */
 	$scope.show = {
+        emptyFields: false,
 		//startOfWindow: 0,
 		entries: []
     };
