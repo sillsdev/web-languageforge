@@ -287,6 +287,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         $scope.show.initial();
         scrollListToEntry('', 'top');
         $scope.state = 'edit';
+        loadEntryComments();
         //$location.path('/dbe', false);
 	};
 	
@@ -661,7 +662,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     $scope.newComment = {id: '', content: '', regarding: {}}; // model for new comment content
 
     $scope.showComments = function showComments() {
-        $scope.saveCurrentEntry();
+        $scope.saveCurrentEntry(true);
         $scope.state = 'comment';
         //$location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);
     };
