@@ -219,7 +219,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     $scope.openNewLanguageModal = function openNewLanguageModal(suggestedLanguageCodes) {
       var modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
-        controller: function($scope, $modalInstance) {
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
           $scope.selected = {
             code: '',
             language: {}
@@ -228,7 +228,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             $modalInstance.close($scope.selected);
           };
           $scope.suggestedLanguageCodes = suggestedLanguageCodes;
-        }
+        }]
       });
       
       modalInstance.result.then(function(selected) {
