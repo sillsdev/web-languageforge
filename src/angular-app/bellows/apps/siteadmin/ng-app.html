@@ -52,7 +52,7 @@
 				</div>
 				<div>
 					<label>Name</label>
-					<input required type="text" placeholder="(your name here)" data-ng-model="record.name"/>
+					<input idle-validate="checkUniqueUser()" idle-validate-keypress="resetValidateUserForm()" idle-validate=msec="500" required type="text" placeholder="(your name here)" data-ng-model="record.name"/>
 				</div>
 				<div>
 					<label>Email</label>
