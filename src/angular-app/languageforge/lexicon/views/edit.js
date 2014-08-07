@@ -903,7 +903,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		if (angular.isDefined(autoSaveTimer)) {
 			return;
 		}
-		autoSaveTimer = $interval($scope.saveCurrentEntry, 5000, 1);
+		autoSaveTimer = $interval(function () { $scope.saveCurrentEntry(true); }, 5000, 1);
 	};
 	function cancelAutoSaveTimer() {
 		if (angular.isDefined(autoSaveTimer)) {
