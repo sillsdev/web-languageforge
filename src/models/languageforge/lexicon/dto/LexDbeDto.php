@@ -91,6 +91,8 @@ class LexDbeDto {
             foreach ($lexemeInputSystems as $ws) {
                 if (array_key_exists($ws, $lexeme1) && $lexeme1[$ws]['value'] != '') {
                     $lexeme1Value = $lexeme1[$ws]['value'];
+                    // '\P{xx} matches all characters without the Unicode property XX. L is the Unicode property "letter".
+                    $lexeme1Value = preg_replace('/^\P{L}+/', '', $lexeme1Value); // Strip non-letter characters from front of word for sorting
                     break;
                 }
             }
@@ -99,6 +101,7 @@ class LexDbeDto {
             foreach ($lexemeInputSystems as $ws) {
                 if (array_key_exists($ws, $lexeme2) && $lexeme2[$ws]['value'] != '') {
                     $lexeme2Value = $lexeme2[$ws]['value'];
+                    $lexeme2Value = preg_replace('/^\P{L}+/', '', $lexeme2Value); // Strip non-letter characters from front of word for sorting
                     break;
                 }
             }
