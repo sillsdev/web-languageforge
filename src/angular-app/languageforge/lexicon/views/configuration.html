@@ -17,11 +17,7 @@
 		<div class="span3 control-group">
 			<!-- control buttons -->
 			<div class="control-group">
-				<button class="btn btn-success" data-ng-click="openNewCustomFieldModal()"><i class="icon-plus"></i>{{'New Custom Field' | translate}} </button>
-			</div>
-			<div class="control-group">
-				<a href="" data-ng-click="showAllFields = ! showAllFields">
-					{{showAllFields ? 'Show Common Fields' : 'Show All Fields' | translate}}</a>
+                <button data-ng-click="showAllFields = ! showAllFields" class="btn btn-small">{{showAllFields ? 'Show Only Common Fields' : 'Show All Fields' | translate}}</button>
 			</div>
 			
 			<!-- picklist -->
@@ -61,6 +57,9 @@
 				</div></dd>
 			</dl>
 			<small translate="Custom Fields shown in <i>italics</i>"></small>
+            <div class="control-group">
+                <button class="btn btn-small" data-ng-click="openNewCustomFieldModal()"><i class="icon-plus"></i>{{'New Custom Field' | translate}} </button>
+            </div>
 		</div>
 		
 		<!-- Right column: field setup -->
