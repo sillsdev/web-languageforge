@@ -1,6 +1,4 @@
 		<div id="promotion" class="sfcontainer">
-			<div id="promotion-ribbon" class="png_bg"></div>
-			<div id="promotionCutout" class="png_bg"></div>
 			<div id="slides">
 				<div class="slides_container">
 				
