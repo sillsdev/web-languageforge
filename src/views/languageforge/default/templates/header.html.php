@@ -2,7 +2,7 @@
 			
 			<div class="sfcontainer">
 				<div class="lf-logo">
-					<img src="/images/languageforge/default/lf_logo.png" alt="Language Forge" width="96" height="117" class="png_bg" />
+					<img src="/images/languageforge/default/lf_logo-beta.png" alt="Language Forge" width="96" height="117" class="png_bg" />
 				</div>
 				<div id="header-nav" class="left">
 					<ul class="sf-menu">
