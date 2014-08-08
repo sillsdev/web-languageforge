@@ -307,7 +307,7 @@ class Communicate
 	public static function sendAddedToProject($inviterUserModel, $toUserModel, $projectModel, $website, IDelivery $delivery = null) {
 		$senderEmail = 'no-reply@' . $website->domain;
 		$from = array($senderEmail => $website->name);
-		$subject = $website->name . ' added to project ' . $projectModel->projectName;
+		$subject = 'You\'ve been added to the project ' . $projectModel->projectName . ' on ' . $website->name;
 
 		$vars = array(
 			'toUser' => $toUserModel,
