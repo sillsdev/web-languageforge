@@ -12,7 +12,7 @@ function _createSense($data) {
 	return new Sense();
 }
 
-function _createCustomField($data) {
+function _createCustomFieldOnEntry($data) {
     CodeGuard::checkTypeAndThrow($data, 'array');
     if (array_key_exists('value', $data)) {
         return new LexiconField();
@@ -45,7 +45,7 @@ class LexEntryModel extends \models\mapper\MapperModel {
 		$this->lexeme = new MultiText();
         $this->isDeleted = false;
 		$this->senses = new ArrayOf('models\languageforge\lexicon\_createSense');
-		$this->customFields = new MapOf('models\languageforge\lexicon\_createCustomField');
+		$this->customFields = new MapOf('models\languageforge\lexicon\_createCustomFieldOnEntry');
 		$this->authorInfo = new AuthorInfo();
 
 		$this->citationForm = new MultiText();
