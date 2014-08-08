@@ -220,7 +220,7 @@
 		</exec>
 	</target>
 	
-	<target name="run-protractor" depends="unzip-chromedriver">
+	<target name="run-protractor">
 		<exec dir="test/app/" executable="node">
 			<arg value="node_modules/protractor/bin/protractor" />
 			<arg value="protractorConf.js" />
@@ -228,8 +228,6 @@
 			<arg value="http://localhost:4444/wd/hub" />
 			<arg value="--baseUrl" />
 			<arg value="http://languageforge.local" />
-			<arg value="--chromeDriver" />
-			<arg value="${webdriver.chrome.driver}" />
 		</exec>
 	</target>
 	
@@ -255,7 +253,7 @@
 		</last>
 	</pathconvert>
 	
-	<target name="start-selenium">
+	<target name="start-selenium" depends="unzip-chromedriver">
 		<java fork="true" spawn="true" jar="${selenium.server}">
 			<jvmarg value="-Dwebdriver.chrome.driver" />
 			<jvmarg file="${webdriver.chrome.driver}" />
