@@ -233,32 +233,24 @@
 	
 	<pathconvert property="selenium.server">
 		<!-- Highest version number among selenium-server-standalone-*.jar files -->
-		<first>
+		<last>
 			<sort>
-				<reverse>
-					<name>
-						<fileset dir="${build.installForTestPath}/test/node_modules/protractor/selenium/">
-							<include name="selenium-server-standalone-*.jar" />
-						</fileset>
-					</name>
-				</reverse>
+				<fileset dir="${build.installForTestPath}/test/node_modules/protractor/selenium/">
+					<include name="selenium-server-standalone-*.jar" />
+				</fileset>
 			</sort>
-		</first>
+		</last>
 	</pathconvert>
 	
 	<pathconvert property="chromedriver.zip">
 		<!-- Highest version number among chromedriver_*.zip files -->
-		<first>
+		<last>
 			<sort>
-				<reverse>
-					<name>
-						<fileset dir="${build.installForTestPath}/test/node_modules/protractor/selenium/">
-							<include name="chromedriver_*.zip" />
-						</fileset>
-					</name>
-				</reverse>
+				<fileset dir="${build.installForTestPath}/test/node_modules/protractor/selenium/">
+					<include name="chromedriver_*.zip" />
+				</fileset>
 			</sort>
-		</first>
+		</last>
 	</pathconvert>
 	
 	<target name="start-selenium">
