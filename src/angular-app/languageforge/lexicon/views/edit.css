@@ -223,6 +223,7 @@ legend.override-bootstrap {
 }
 
 .listItemPrimary {
+    z-index:2;
     padding-right: 3px;
     font-size: 1.0em;
     font-weight:bold;
@@ -233,6 +234,7 @@ legend.override-bootstrap {
 }
 
 .listItemSecondary {
+    z-index:2;
     font-size: 0.8em;
     color: #666666;
     overflow: hidden;
@@ -241,6 +243,7 @@ legend.override-bootstrap {
     margin: -9px 0 2px 2px !important;
 }
 .lexiconListItemCompact {
+    position:relative;
     overflow-y: hidden;
     min-height: 40px;
     height: 40px;
