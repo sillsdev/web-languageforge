@@ -221,7 +221,7 @@
 	</target>
 	
 	<target name="run-protractor" depends=""> <!-- TODO: Figure out dependencies -->
-		<exec dir="${build.installForTestPath}/test/" executable="node">
+		<exec dir="${build.installForTestPath}/test/app/" executable="node">
 			<arg value="node_modules/protractor/bin/protractor" />
 			<arg value="protractorConf.js" />
 			<arg value="--seleniumAddress" />
@@ -235,7 +235,7 @@
 		<!-- Highest version number among selenium-server-standalone-*.jar files -->
 		<last>
 			<sort>
-				<fileset dir="${build.installForTestPath}/test/node_modules/protractor/selenium/">
+				<fileset dir="${build.installForTestPath}/test/app/node_modules/protractor/selenium/">
 					<include name="selenium-server-standalone-*.jar" />
 				</fileset>
 			</sort>
@@ -246,7 +246,7 @@
 		<!-- Highest version number among chromedriver_*.zip files -->
 		<last>
 			<sort>
-				<fileset dir="${build.installForTestPath}/test/node_modules/protractor/selenium/">
+				<fileset dir="${build.installForTestPath}/test/app/node_modules/protractor/selenium/">
 					<include name="chromedriver_*.zip" />
 				</fileset>
 			</sort>
