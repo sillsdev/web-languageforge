@@ -222,6 +222,7 @@ angular.module('lexicon.manage-users', ['bellows.services', 'palaso.ui.listview'
 				}
 			});
 		}
+		$scope.typeahead.userName = '';
 	};
 
 	$scope.selectUser = function(item) {
