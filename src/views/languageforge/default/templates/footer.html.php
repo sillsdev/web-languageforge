@@ -18,8 +18,8 @@
 				<div class="three-col">
 					<div class="three-col-2">
 						<h4 style="margin-left: 80px;">Credits</h4>
-						<p class="small" style="margin-left: 80px;">Copyright <?php echo strftime("%Y"); ?> SIL International. All rights reserved.</p>
-						<p class="small" style="margin-left: 80px;">Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</p>
+						<p class="small" style="margin-left: 80px;">Copyright <?php echo strftime("%Y"); ?> SIL International.<br>All rights reserved.</p>
+						<p class="small" style="margin-left: 80px;">Use of this site is governed by our <br><a href="/terms_and_conditions">terms and conditions</a> of use.</p>
 					</div>
 				</div>
 				
