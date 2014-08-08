@@ -3,26 +3,33 @@
 			
 			$data['slides'] = array(
 				array(
-					"title" => "Develop a dictionary",
-					"summary" => "Language Forge enables communities to participate in the dictionary development like never before.",
-					"social_media" => "",
-					"image_url" => "community.jpg",
-					"target_url" => "/learn_language_forge"
-					),
-				array(
-					"title" => "Your Team, Expanded",
-					"summary" => "Improve your dictionary project by adding more native speakers to your workflow.",
+					"title" => "Expand your team",
+					"summary" => "No applications or plug-ins to install.  Just invite people to contribute to a project, and they'll be able to make updates from their web browser anytime, anywhere.",
 					"social_media" => "",
 					"image_url" => "team.jpg",
 					"target_url" => "/learn_expand_your_team"
-					),
+				),
 				array(
-					"title" => "Make a Difference Today",
-					"summary" => "Speak a minority language?  Help us to build a dictionary in your language.",
+					"title" => "Rapidly develop a dictionary online",
+					"summary" => "Language Forge enables communities to participate in the dictionary development like never before.  Create brand new projects.  Or bring existing WeSay or FieldWorks projects into the cloud for online collaboration",
 					"social_media" => "",
-					"image_url" => "contribute.jpg",
+					"image_url" => "lf_edit_view.png",
 					"target_url" => "/learn_language_forge"
-					)
+				),
+				array(
+					"title" => "Customize your project",
+					"summary" => "Give members roles on a project as Observers, Commenters, Contributors, or fellow Managers.  Each of them can get a custom view so they only see the fields applicable to their role.  Determine which fields are visible in the entries, senses, and examples.",
+					"social_media" => "",
+					"image_url" => "lf_roles.png",
+					"target_url" => "/learn_language_forge" // TODO learn_roles 2014-08 DDW
+				),
+				array(
+					"title" => "Get feedback along the way",
+					"summary" => "With the commenting system, people can have discussions about the lexical entries, tagged down to the field.  Prioritize comments as \"Todo\" and then \"Resolve\" when they're complete.",
+					"social_media" => "",
+					"image_url" => "lf_comments_view.png",
+					"target_url" => "/learn_language_forge" // TODO learn_comments 2014-08 DDW
+				)
 			);
 			$this->load->view("$themePath/templates/slideshow.html.php", $data);
 			
