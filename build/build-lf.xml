@@ -220,6 +220,65 @@
 		</exec>
 	</target>
 	
+	<target name="run-protractor" depends=""> <!-- TODO: Figure out dependencies -->
+		<exec dir="${build.installForTestPath}/test/" executable="node">
+			<arg value="node_modules/protractor/bin/protractor" />
+			<arg value="protractorConf.js" />
+			<arg value="--seleniumAddress" />
+			<arg value="http://localhost:4444/wd/hub" />
+			<arg value="--baseUrl" />
+			<arg value="http://scriptureforge.local" />
+		</exec>
+	</target>
+	
+	<pathconvert property="selenium.server">
+		<!-- Highest version number among selenium-server-standalone-*.jar files -->
+		<first>
+			<sort>
+				<reverse>
+					<name>
+						<fileset dir="${build.installForTestPath}/test/node_modules/protractor/selenium/">
+							<include name="selenium-server-standalone-*.jar" />
+						</fileset>
+					</name>
+				</reverse>
+			</sort>
+		</first>
+	</pathconvert>
+	
+	<pathconvert property="chromedriver.zip">
+		<!-- Highest version number among chromedriver_*.zip files -->
+		<first>
+			<sort>
+				<reverse>
+					<name>
+						<fileset dir="${build.installForTestPath}/test/node_modules/protractor/selenium/">
+							<include name="chromedriver_*.zip" />
+						</fileset>
+					</name>
+				</reverse>
+			</sort>
+		</first>
+	</pathconvert>
+	
+	<target name="start-selenium">
+		<java fork="true" spawn="true" jar="${selenium.server}" />
+	</target>
+	
+	<target name="test-start-selenium">
+		<echo message="Selenium server JAR is ${selenium.server}" />
+		<echo message="Java home is ${java.home}" />
+	</target>
+	
+	<target name="stop-selenium">
+		<get src="http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer" dest="NUL" />
+	</target>
+	
+	<target name="unzip-chromedriver">
+		<unzip src="${chromedriver.zip}">
+		</unzip>
+	</target>
+	
 	<target name="restartWebServer">
 		<exec executable="/etc/init.d/apache2">
 			<arg value="restart" />
