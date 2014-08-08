@@ -735,7 +735,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
                 entryCommentsCounts[comment.entryRef]++;
             }
 
-            var fieldName = comment.regarding.fieldName;
+            var fieldName = comment.regarding.field;
             if (comment.entryRef == $scope.currentEntry.id) {
                 if (fieldName && angular.isUndefined(count.fields[fieldName])) {
                     count.fields[fieldName] = 0;
