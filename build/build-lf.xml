@@ -256,7 +256,10 @@
 	</pathconvert>
 	
 	<target name="start-selenium">
-		<java fork="true" spawn="true" jar="${selenium.server}" />
+		<java fork="true" spawn="true" jar="${selenium.server}">
+			<jvmarg value="-Dwebdriver.chrome.driver" />
+			<jvmarg file="${webdriver.chrome.driver}" />
+		</java>
 	</target>
 	
 	<target name="test-start-selenium">
