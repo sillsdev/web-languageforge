@@ -235,8 +235,8 @@
 		<!-- Highest version number among selenium-server-standalone-*.jar files -->
 		<last>
 			<sort>
-				<fileset dir="${build.installForTestPath}/test/app/node_modules/protractor/selenium/">
-					<include name="selenium-server-standalone-*.jar" />
+				<fileset dir="${build.installForTestPath}/test/app/node_modules/protractor/">
+					<include name="selenium/selenium-server-standalone-*.jar" />
 				</fileset>
 			</sort>
 		</last>
@@ -246,8 +246,8 @@
 		<!-- Highest version number among chromedriver_*.zip files -->
 		<last>
 			<sort>
-				<fileset dir="${build.installForTestPath}/test/app/node_modules/protractor/selenium/">
-					<include name="chromedriver_*.zip" />
+				<fileset dir="${build.installForTestPath}/test/app/node_modules/protractor/">
+					<include name="selenium/chromedriver_*.zip" />
 				</fileset>
 			</sort>
 		</last>
