@@ -227,7 +227,7 @@
 			<arg value="--seleniumAddress" />
 			<arg value="http://localhost:4444/wd/hub" />
 			<arg value="--baseUrl" />
-			<arg value="http://scriptureforge.local" />
+			<arg value="http://languageforge.local" />
 		</exec>
 	</target>
 	
