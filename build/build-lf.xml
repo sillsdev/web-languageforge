@@ -220,7 +220,7 @@
 		</exec>
 	</target>
 	
-	<target name="run-protractor" depends=""> <!-- TODO: Figure out dependencies -->
+	<target name="run-protractor" depends="unzip-chromedriver">
 		<exec dir="test/app/" executable="node">
 			<arg value="node_modules/protractor/bin/protractor" />
 			<arg value="protractorConf.js" />
@@ -228,6 +228,8 @@
 			<arg value="http://localhost:4444/wd/hub" />
 			<arg value="--baseUrl" />
 			<arg value="http://languageforge.local" />
+			<arg value="--chromeDriver" />
+			<arg value="selenium/chromedriver.exe" /> <!-- Windows-specific -->
 		</exec>
 	</target>
 	
