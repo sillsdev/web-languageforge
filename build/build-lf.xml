@@ -258,6 +258,11 @@
 			<jvmarg value="-Dwebdriver.chrome.driver" />
 			<jvmarg file="${webdriver.chrome.driver}" />
 		</java>
+		<!-- Now check on Selenium status and output results to the TeamCity log (via the Ant console) -->
+		<get src="http://localhost:4444/selenium-server/driver/?cmd=getLogMessages" dest="selenium-status.txt" />
+		<concat>  <!-- Default destination is the console, which ends up in the TeamCity log -->
+			<fileset files="selenium-status.txt" />
+		</concat>
 	</target>
 	
 	<target name="test-start-selenium">
