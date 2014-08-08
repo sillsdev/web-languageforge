@@ -269,7 +269,7 @@
 	</target>
 	
 	<target name="unzip-chromedriver">
-		<unzip src="${chromedriver.zip}">
+		<unzip src="${chromedriver.zip}" dest="test/app/node_modules/protractor/selenium">
 		</unzip>
 	</target>
 	
