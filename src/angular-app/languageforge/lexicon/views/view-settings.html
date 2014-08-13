@@ -1,8 +1,9 @@
 <div class="container" data-ng-cloak data-ng-controller="ViewSettingsCtrl">
 <h2>{{'View Settings' | translate}}</h2>
 <form name="viewSettingForm" novalidate>
+<fieldset data-ng-disabled="isSaving">
 <button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="settingsApply()"  
-	data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense() || !allUsersHaveAtLeastOneSense()">
+	data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense() || !allUsersHaveAtLeastOneSense() || isSaving">
 	<i class="icon-ok"></i> {{'Apply' | translate}}</button>
 <tabset>
 	<tab data-ng-repeat="roleTab in roleTabs" class="{{interfaceConfig.pullNormal}}" active="roleTab.active"
@@ -402,6 +403,7 @@ currentField {{currentField | json}}
 		</div>
 	</tab>
 </tabset>
+</fieldset>
 </form>
 <!-- 
 <pre>
