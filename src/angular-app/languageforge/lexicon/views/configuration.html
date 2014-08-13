@@ -2,8 +2,9 @@
 <h2>{{'Dictionary Configuration' | translate}}</h2>
 <form name="configForm" novalidate>
 <button style="margin-left:15px" tooltip="View the dictionary" class="btn {{interfaceConfig.pullToSide}}" data-ng-click="backToDictionary()"><i class="icon-reply"></i>{{'Dictionary' | translate}}</button>
+<fieldset data-ng-disabled="isSaving">
 <button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="configurationApply()"
-	data-ng-disabled="configForm.$pristine">
+	data-ng-disabled="configForm.$pristine || isSaving">
 	<i class="icon-ok"></i>{{'Apply' | translate}}</button>
 <tabset>
 	<tab heading="Input Systems" class="{{interfaceConfig.pullNormal}}">
@@ -330,5 +331,6 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
 		</div>
 	</tab>
 </tabset>
+</fieldset>
 </form>
 </div>

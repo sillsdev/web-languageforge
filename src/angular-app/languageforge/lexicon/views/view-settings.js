@@ -13,6 +13,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       {name: $filter('translate')('Manager'), role: 'project_manager', view: $scope.configDirty.roleViews['project_manager']}
     ];
     $scope.state = 'userSelectList';
+	$scope.isSaving = false;
     $scope.list = {};
     
     lexProjectService.users(function(result) {
@@ -67,12 +68,14 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     });
 
     $scope.settingsApply = function settingsApply() {
+		$scope.isSaving = true;
       lexProjectService.updateConfiguration($scope.configDirty, [], function(result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, $filter('translate')('View settings updated successfully'));
           $scope.viewSettingForm.$setPristine();
           $scope.projectSettings.config = angular.copy($scope.configDirty);
         }
+		  $scope.isSaving = false;
       });
     };
     
