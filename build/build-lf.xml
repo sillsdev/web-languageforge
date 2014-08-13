@@ -258,7 +258,7 @@
 			<jvmarg value="-Dwebdriver.chrome.driver" />
 			<jvmarg file="${webdriver.chrome.driver}" />
 			<arg value="-log"/>
-			<arg file="selenium-log.txt"/>
+			<arg file="${build.output}/selenium-log.txt"/>
 		</java>
 		<!-- Now check on Selenium status and output results to the TeamCity log (via the Ant console) -->
 		<waitfor maxwait="15" maxwaitunit="second">
@@ -268,7 +268,7 @@
 			</and>
 		</waitfor>
 		<concat>  <!-- Default destination is the console, which ends up in the TeamCity log -->
-			<fileset includes="selenium-*.txt" />
+			<fileset dir="${build.output}" includes="selenium-*.txt" />
 		</concat>
 	</target>
 	
