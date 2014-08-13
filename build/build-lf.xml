@@ -268,7 +268,7 @@
 			</and>
 		</waitfor>
 		<concat>  <!-- Default destination is the console, which ends up in the TeamCity log -->
-			<fileset files="selenium-*.txt" />
+			<fileset includes="selenium-*.txt" />
 		</concat>
 	</target>
 	
