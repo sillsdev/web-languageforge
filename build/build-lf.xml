@@ -261,13 +261,12 @@
 			<arg file="selenium-log.txt"/>
 		</java>
 		<!-- Now check on Selenium status and output results to the TeamCity log (via the Ant console) -->
-		<waitfor maxwait="45" maxwaitunit="second">
+		<waitfor maxwait="15" maxwaitunit="second">
 			<and>
 				<socket server="localhost" port="4444" />
 				<http url="http://localhost:4444/selenium-server/driver/?cmd=getLogMessages" />
 			</and>
 		</waitfor>
-		<get src="http://localhost:4444/selenium-server/driver/?cmd=getLogMessages" dest="selenium-status.txt" />
 		<concat>  <!-- Default destination is the console, which ends up in the TeamCity log -->
 			<fileset files="selenium-*.txt" />
 		</concat>
