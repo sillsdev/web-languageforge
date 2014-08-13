@@ -7,7 +7,8 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
     $scope.configDirty = angular.copy(ss.session.projectSettings.config);
     $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
-    
+    $scope.isSaving = false;
+
     $scope.inputSystems = {};
     $scope.selects = {
       'special': {
@@ -129,6 +130,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     };
     
     $scope.configurationApply = function() {
+      $scope.isSaving = true;
       lexProjectService.updateConfiguration($scope.configDirty, $scope.optionlistDirty, function(result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, $filter('translate')('Dictionary configuration updated successfully'));
@@ -137,6 +139,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
           $scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
           setupView();
         }
+		  $scope.isSaving = false;
       });
 
     };
