@@ -253,7 +253,7 @@
 		</last>
 	</pathconvert>
 	
-	<target name="start-selenium" depends="unzip-chromedriver">
+	<target name="start-selenium" depends="prepare,unzip-chromedriver">
 		<java fork="true" spawn="true" jar="${selenium.server}">
 			<jvmarg value="-Dwebdriver.chrome.driver" />
 			<jvmarg file="${webdriver.chrome.driver}" />
