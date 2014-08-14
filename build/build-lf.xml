@@ -211,13 +211,9 @@
 		<waitfor maxwait="3" maxwaitunit="second" timeoutproperty="selenium.server.notfound">
 			<http url="http://${e2etest.selenium.server.host}:${e2etest.selenium.server.port}/wd/hub/status" />
 		</waitfor>
-		<echo if="selenium.server.notfound" message="Selenium server not found; skipping E2E tests." />
-        <echo unless="selenium.server.notfound" message="Selenium server present and ready." />  <!-- For now, only check for server presence, but do not actually run the tests. -->
-		<!-- Commented out for testing. 2014-08-14 RM
 		<antcall target="setupE2ETestEnvironment"    unless="selenium.server.notfound" />
 		<antcall target="runE2ETests"                unless="selenium.server.notfound" />
 		<antcall target="teardownE2ETestEnvironment" unless="selenium.server.notfound" />
-		-->
 	</target>
 	
 	<target name="setupE2ETestEnvironment">
