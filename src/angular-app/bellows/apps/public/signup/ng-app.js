@@ -79,7 +79,8 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
     $scope.record.id = '';
     $scope.captchaSrc = '';
     $scope.currentState = $state.current;
-    
+    $scope.location = $window.location;
+
     $scope.getCaptchaSrc = function() {
       sessionService.getCaptchaSrc(function(result) {
         if (result.ok) {
