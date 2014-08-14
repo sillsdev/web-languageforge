@@ -203,11 +203,11 @@
 		</replace>
 		-->
 		<replace dir="${build.installForTestPath}/test/app">
-			<include name="setupTestEnvironment.php">
-			<include name="teardownTestEnvironment.php">
-			<include name="e2eTestConfig.php">
-			<include name="useTestConfig.sh">
-			<include name="useLiveConfig.sh">
+			<include name="setupTestEnvironment.php" />
+			<include name="teardownTestEnvironment.php" />
+			<include name="e2eTestConfig.php" />
+			<include name="useTestConfig.sh" />
+			<include name="useLiveConfig.sh" />
 			<replacefilter token="src/" value="htdocs/" />
 		</replace>
 		<antcall target="restartWebServer" /> 
