@@ -211,9 +211,19 @@
 		<waitfor maxwait="3" maxwaitunit="second" timeoutproperty="selenium.server.notfound">
 			<http url="http://${e2etest.selenium.server.host}:${e2etest.selenium.server.port}/wd/hub/status" />
 		</waitfor>
+		<antcall target="echoServerNotFound" />
+		<antcall target="echoServerFound" />
 		<antcall target="setupE2ETestEnvironment"/>
 		<antcall target="runE2ETests"/>
 		<antcall target="teardownE2ETestEnvironment"/>
+	</target>
+	
+	<target name="echoServerNotFound" if="selenium.server.notfound">
+		<echo message="Selenium server not found. Skipping E2E tests." />
+	</target>
+	
+	<target name="echoServerFound" unless="selenium.server.notfound">
+		<echo message="Selenium server found. E2E Tests will be run." />
 	</target>
 	
 	<target name="setupE2ETestEnvironment" unless="selenium.server.notfound">
