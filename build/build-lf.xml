@@ -202,6 +202,29 @@
 		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
 		</replace>
 		-->
+		<chgrp type="both" group="www-data">
+			<dirset dir="${build.installForTestPath}/htdocs/" />
+			<fileset dir="${build.installForTestPath}/htdocs/">
+			    <include name="**/*"/>
+			</fileset>
+			<dirset dir="${build.installForTestPath}/lib/" />
+			<fileset dir="${build.installForTestPath}/lib/">
+			    <include name="**/*"/>
+			</fileset>
+			<dirset dir="${build.installForTestPath}/test/" />
+			<fileset dir="${build.installForTestPath}/test/">
+			    <include name="**/*"/>
+			</fileset>
+		</chgrp>
+		<chmod type="both" perm="g+w">
+			<dirset dir="${build.installForTestPath}/htdocs/cache/" />
+			<dirset dir="${build.installForTestPath}/htdocs/assets/" />
+		</chmod>
+		<chmod type="both" perm="ug+x">
+			<fileset dir="${build.installForTestPath}/test/app">
+			    <include name="use*Config.sh"/>
+			</fileset>
+		</chmod>
 		<replace dir="${build.installForTestPath}/test/app">
 			<include name="setupTestEnvironment.php" />
 			<include name="teardownTestEnvironment.php" />
