@@ -219,6 +219,7 @@
 		<chmod type="both" perm="g+w">
 			<dirset dir="${build.installForTestPath}/htdocs/cache/" />
 			<dirset dir="${build.installForTestPath}/htdocs/assets/" />
+			<dirset dir="${build.installForTestPath}/htdocs/config/" />
 		</chmod>
 		<chmod type="both" perm="ug+x">
 			<fileset dir="${build.installForTestPath}/test/app">
@@ -268,7 +269,7 @@
 			<arg value="node_modules/protractor/bin/protractor" />
 			<arg value="${e2etest.protractor.conf}" />
 			<arg value="--seleniumAddress" />
-			<arg value="http://${selenium.server.url}:${selenium.server.port}/wd/hub" />
+			<arg value="http://${e2etest.selenium.server.host}:${e2etest.selenium.server.port}/wd/hub" />
 			<arg value="--baseUrl" />
 			<arg value="http://${e2etest.webserver.host}/" />
 		</exec>
