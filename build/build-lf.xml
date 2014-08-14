@@ -12,6 +12,10 @@
 	<property name="build.installPath" value="/var/www/languageforge.org_dev" />
 	<property name="build.installForTestPath" value="/var/www/languageforge.org_e2etest" />
 	<property name="build.uploadPath" value="/var/www/languageforge.org" />
+	<property name="e2etest.selenium.server.host" value="ba-wxp32c.psonet" />
+	<property name="e2etest.selenium.server.port" value="4444" />
+	<property name="e2etest.webserver.host" value="e2etest.languageforge.local" />
+	<property name="e2etest.protractor.conf" value="protractorConf.js" />  <!-- Filename with base dir test/app/ -->
 
 	<target name="clean" depends="cleanLibs">
 		<delete dir="${build.output}" quiet="true" />
@@ -65,11 +69,11 @@
 
 	<target name="test">
 	    <!-- commented out until these are revisited and made working again (the e2e tests are hanging as of 2013-10-24 cjh)
-		E2E tests still commented out since we are changing how they work (they will now be run from a Windows build agent instead of from the Ant build script): 2014-08-06 RM
-		<antcall target="test-js-e2e" />
+		Uncommented E2E tests since we switched to Protractor and they work now: 2014-08-05 RM
 		-->
 		<antcall target="test-php" />
 		<antcall target="test-js-unit" />
+		<antcall target="test-js-e2e" />
 	</target>
 	
 	<target name="composer">
@@ -202,88 +206,41 @@
 	</target>
 	
 	<target name="test-js-e2e" depends="composer,installForE2ETest">
+		<!-- TODO: Consider another design where multiple protractor.conf files can be selected -->
+		<!-- TODO: Figure out how to connect to the Windows build agent and start the Selenium server -->
+		<waitfor maxwait="3" maxwaitunit="second" timeoutproperty="selenium.server.notfound">
+			<http url="http://${e2etest.selenium.server.host}:${e2etest.selenium.server.port}/wd/hub/status" />
+		</waitfor>
+		<echo if="selenium.server.notfound" message="Selenium server not found; skipping E2E tests." />
+        <echo unless="selenium.server.notfound" message="Selenium server present and ready." />  <!-- For now, only check for server presence, but do not actually run the tests. -->
+		<!-- Commented out for testing. 2014-08-14 RM
+		<antcall target="setupE2ETestEnvironment"    unless="selenium.server.notfound" />
+		<antcall target="runE2ETests"                unless="selenium.server.notfound" />
+		<antcall target="teardownE2ETestEnvironment" unless="selenium.server.notfound" />
+		-->
+	</target>
+	
+	<target name="setupE2ETestEnvironment">
 		<exec dir="${build.installForTestPath}/test/app/" executable="php">
 			<arg value="setupTestEnvironment.php" />
 		</exec>
-		<!-- TODO: Consider another design where multiple protractor.conf files can be selected -->
-		<!-- TODO: Figure out how to connect to the Windows build agent and start the Selenium server -->
-		<exec dir="${build.installForTestPath}/test/app/" executable="node">
+	</target>
+	
+	<target name="runE2ETests">
+		<exec dir="${build.installForTestPath}/test/app/" executable="node" unless="selenium.server.notfound">
 			<arg value="node_modules/protractor/bin/protractor" />
-			<arg value="protractorConf.js" />
+			<arg value="${e2etest.protractor.conf}" />
 			<arg value="--seleniumAddress" />
-			<arg value="http://ba-wxp32a.psonet:4444/wd/hub" />
+			<arg value="http://${selenium.server.url}:${selenium.server.port}/wd/hub" />
 			<arg value="--baseUrl" />
-			<arg value="http://e2etest.languageforge.local/" />
+			<arg value="http://${e2etest.webserver.host}/" />
 		</exec>
+	</target>
+	
+	<target name="teardownE2ETestEnvironment">
 		<exec dir="${build.installForTestPath}/test/app/" executable="php">
 			<arg value="teardownTestEnvironment.php" />
 		</exec>
-	</target>
-	
-	<target name="run-protractor">
-		<exec dir="test/app/" executable="node">
-			<arg value="node_modules/protractor/bin/protractor" />
-			<arg value="protractorConf.js" />
-			<arg value="--seleniumAddress" />
-			<arg value="http://localhost:4444/wd/hub" />
-			<arg value="--baseUrl" />
-			<arg value="http://languageforge.local" />
-		</exec>
-	</target>
-	
-	<pathconvert property="selenium.server">
-		<!-- Highest version number among selenium-server-standalone-*.jar files -->
-		<last>
-			<sort>
-				<fileset dir="test/app/node_modules/protractor/">
-					<include name="selenium/selenium-server-standalone-*.jar" />
-				</fileset>
-			</sort>
-		</last>
-	</pathconvert>
-	
-	<pathconvert property="chromedriver.zip">
-		<!-- Highest version number among chromedriver_*.zip files -->
-		<last>
-			<sort>
-				<fileset dir="test/app/node_modules/protractor/">
-					<include name="selenium/chromedriver_*.zip" />
-				</fileset>
-			</sort>
-		</last>
-	</pathconvert>
-	
-	<target name="start-selenium" depends="prepare,unzip-chromedriver">
-		<java fork="true" spawn="true" jar="${selenium.server}">
-			<jvmarg value="-Dwebdriver.chrome.driver" />
-			<jvmarg file="${webdriver.chrome.driver}" />
-			<arg value="-log"/>
-			<arg file="${build.output}/selenium-log.txt"/>
-		</java>
-		<!-- Now check on Selenium status and output results to the TeamCity log (via the Ant console) -->
-		<waitfor maxwait="15" maxwaitunit="second">
-			<and>
-				<socket server="localhost" port="4444" />
-				<http url="http://localhost:4444/selenium-server/driver/?cmd=getLogMessages" />
-			</and>
-		</waitfor>
-		<concat>  <!-- Default destination is the console, which ends up in the TeamCity log -->
-			<fileset dir="${build.output}" includes="selenium-*.txt" />
-		</concat>
-	</target>
-	
-	<target name="test-start-selenium">
-		<echo message="Selenium server JAR is ${selenium.server}" />
-		<echo message="Java home is ${java.home}" />
-	</target>
-	
-	<target name="stop-selenium">
-		<get src="http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer" dest="NUL" />
-	</target>
-	
-	<target name="unzip-chromedriver">
-		<unzip src="${chromedriver.zip}" dest="test/app/node_modules/protractor/selenium">
-		</unzip>
 	</target>
 	
 	<target name="restartWebServer">
