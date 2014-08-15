@@ -9,12 +9,12 @@
 	<property name="build.minJsFile" value="${build.output}/${application.name}.min.js" />
 	<property name="build.packageFile" value="${build.output}/${application.name}.tgz" />
 	<property name="build.packageFileForTest" value="${build.output}/${application.name}_e2etest.tgz" />
-	<property name="build.installPath" value="/var/www/languageforge.org_dev" />
-	<property name="build.installForTestPath" value="/var/www/languageforge.org_e2etest" />
-	<property name="build.uploadPath" value="/var/www/languageforge.org" />
+	<property name="build.installPath" value="/var/www/${application.name}.org_dev" />
+	<property name="build.installForTestPath" value="/var/www/${application.name}.org_e2etest" />
+	<property name="build.uploadPath" value="/var/www/${application.name}.org" />
 	<property name="e2etest.selenium.server.host" value="ba-wxp32c.psonet" />
 	<property name="e2etest.selenium.server.port" value="4444" />
-	<property name="e2etest.webserver.host" value="languageforge.local" />
+	<property name="e2etest.webserver.host" value="${application.name}.local" />
 	<property name="e2etest.protractor.conf" value="protractorConf.js" />  <!-- Filename with base dir test/app/ -->
 
 	<target name="clean" depends="cleanLibs">
@@ -52,7 +52,7 @@
 		<exec dir="test/app" executable="node">
 			<arg value="node_modules/karma/bin/karma" />
 			<arg value="start" />
-			<arg file="test/karma.conf.js" />
+			<arg file="test/app/karma.conf.js" />
 			<arg value="--reporters" />
 			<arg value="teamcity" />
 			<arg value="--single-run" />
