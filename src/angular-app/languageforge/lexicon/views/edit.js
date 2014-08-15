@@ -706,15 +706,16 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             $scope.newComment.regarding.fieldNameForDisplay = fieldConfig.label;
             if (inputSystem) {
 
-                // I set the inputsystem values delayed by 10ms to deal with a double ng-click fire (nested divs, each with ng-click)
+                // I set the inputsystem abbreviation values delayed by 10ms to deal with a double ng-click fire (nested divs, each with ng-click)
                 $interval(function() {
                     $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
-                    $scope.newComment.regarding.inputSystem = inputSystem;
+                    $scope.newComment.regarding.inputSystem = $scope.config.inputSystems[inputSystem].languageName;
                     $scope.newComment.regarding.inputSystemAbbreviation = $scope.config.inputSystems[inputSystem].abbreviation;
                 }, 10, 1);
             } else {
                 $scope.newComment.regarding.fieldValue = getFieldValue(model);
                 delete $scope.newComment.regarding.inputSystem;
+	            delete $scope.newComment.regarding.languageName;
                 delete $scope.newComment.regarding.inputSystemAbbreviation;
             }
         }
