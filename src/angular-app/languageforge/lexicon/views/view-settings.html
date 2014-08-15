@@ -11,7 +11,7 @@
 		<tab-heading>{{roleTab.name | translate}}
 			<span data-ng-hide="isAtLeastOneSense(roleTab.view)">
 				<img src="/images/shared/exclamation.png" 
-					title="{{'At least one Sense field must be enabled!' | translate}}" 
+					title="{{'At least one Meaning field must be enabled!' | translate}}"
 					style="padding-left: 5px;"/></span>
 		</tab-heading>
 		<accordion close-others="true">
@@ -39,10 +39,10 @@
 								{{fieldConfig[fieldName].label}}</span>
 						</div>
 					</div></dd>
-					<dt>{{'Sense Level Fields' | translate}} 
+					<dt>{{'Meaning Level Fields' | translate}}
 						<span data-ng-hide="isAtLeastOneSense(roleTab.view)">
 						<img src="/images/shared/exclamation.png" 
-							title="{{'At least one Sense field must be enabled!' | translate}}" 
+							title="{{'At least one Meaning field must be enabled!' | translate}}"
 							style="position: absolute; padding-left: 5px;"/></span></dt>
 					<dd><div class="controls">
 						<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder"
@@ -182,7 +182,7 @@ currentField {{currentField | json}}
 		<tab-heading>{{'Member Specific' | translate}}
 			<span data-ng-hide="allUsersHaveAtLeastOneSense()">
 				<img src="/images/shared/exclamation.png" 
-					title="{{'At least one Sense field must be enabled!' | translate}}" 
+					title="{{'At least one Meaning field must be enabled!' | translate}}"
 					style="padding-left: 5px;"/></span>
 		</tab-heading>
 		<div data-ng-show="state === 'userSelectList'">
@@ -212,7 +212,7 @@ currentField {{currentField | json}}
 								{{usersWithSettings[userId].name}} ({{usersWithSettings[userId].username}})
 								<span data-ng-hide="isAtLeastOneSense(userView)">
 									<img src="/images/shared/exclamation.png" 
-										title="{{'At least one Sense field must be enabled!' | translate}}" 
+										title="{{'At least one Meaning field must be enabled!' | translate}}"
 										style="padding-left: 5px;"/></span>
 							</li>
 						</ul>
@@ -261,10 +261,10 @@ currentField {{currentField | json}}
 									{{fieldConfig[fieldName].label}}</span>
 							</div>
 						</div></dd>
-						<dt>{{'Sense Level Fields' | translate}} 
+						<dt>{{'Meaning Level Fields' | translate}}
 							<span data-ng-hide="isAtLeastOneSense(configDirty.userViews[currentUserId])">
 							<img src="/images/shared/exclamation.png" 
-								title="{{'At least one Sense field must be enabled!' | translate}}" 
+								title="{{'At least one Meaning field must be enabled!' | translate}}"
 								style="position: absolute; padding-left: 5px;"/></span></dt>
 						<dd><div class="controls">
 							<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder"
