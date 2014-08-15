@@ -268,7 +268,7 @@
 			<arg value="--seleniumAddress" />
 			<arg value="http://${e2etest.selenium.server.host}:${e2etest.selenium.server.port}/wd/hub" />
 			<arg value="--baseUrl" />
-			<arg value="http://${e2etest.webserver.host}" />
+			<arg value="https://${e2etest.webserver.host}" />
 		</exec>
 	</target>
 	
