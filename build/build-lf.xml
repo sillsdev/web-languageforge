@@ -14,7 +14,7 @@
 	<property name="build.uploadPath" value="/var/www/languageforge.org" />
 	<property name="e2etest.selenium.server.host" value="ba-wxp32c.psonet" />
 	<property name="e2etest.selenium.server.port" value="4444" />
-	<property name="e2etest.webserver.host" value="e2etest.languageforge.local" />
+	<property name="e2etest.webserver.host" value="languageforge.local" />
 	<property name="e2etest.protractor.conf" value="protractorConf.js" />  <!-- Filename with base dir test/app/ -->
 
 	<target name="clean" depends="cleanLibs">
@@ -271,7 +271,7 @@
 			<arg value="--seleniumAddress" />
 			<arg value="http://${e2etest.selenium.server.host}:${e2etest.selenium.server.port}/wd/hub" />
 			<arg value="--baseUrl" />
-			<arg value="http://${e2etest.webserver.host}/" />
+			<arg value="http://${e2etest.webserver.host}" />
 		</exec>
 	</target>
 	
