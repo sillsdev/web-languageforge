@@ -14,7 +14,7 @@
 	<property name="build.uploadPath" value="/var/www/${application.name}.org" />
 	<property name="e2etest.selenium.server.host" value="ba-wxp32c.psonet" />
 	<property name="e2etest.selenium.server.port" value="4444" />
-	<property name="e2etest.webserver.host" value="${application.name}.local" />
+	<property name="e2etest.webserver.host" value="e2etest.${application.name}.local" />
 	<property name="e2etest.protractor.conf" value="protractorConf.js" />  <!-- Filename with base dir test/app/ -->
 
 	<target name="clean" depends="cleanLibs">
@@ -202,6 +202,14 @@
 		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
 		</replace>
 		-->
+		<replace dir="${build.installForTestPath}/test/app">
+			<include name="setupTestEnvironment.php" />
+			<include name="teardownTestEnvironment.php" />
+			<include name="e2eTestConfig.php" />
+			<include name="useTestConfig.sh" />
+			<include name="useLiveConfig.sh" />
+			<replacefilter token="src/" value="htdocs/" />
+		</replace>
 		<chgrp type="both" group="www-data">
 			<dirset dir="${build.installForTestPath}/htdocs/" />
 			<fileset dir="${build.installForTestPath}/htdocs/">
@@ -226,14 +234,6 @@
 			    <include name="use*Config.sh"/>
 			</fileset>
 		</chmod>
-		<replace dir="${build.installForTestPath}/test/app">
-			<include name="setupTestEnvironment.php" />
-			<include name="teardownTestEnvironment.php" />
-			<include name="e2eTestConfig.php" />
-			<include name="useTestConfig.sh" />
-			<include name="useLiveConfig.sh" />
-			<replacefilter token="src/" value="htdocs/" />
-		</replace>
 		<antcall target="restartWebServer" /> 
 	</target>
 	
