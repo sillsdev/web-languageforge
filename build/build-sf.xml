@@ -191,6 +191,14 @@
 	
 	<target name="installForE2ETest" depends="packageForE2ETest, cleanInstallForE2eTest">
 		<untar src="${build.packageFileForTest}" dest="${build.installForTestPath}" compression="gzip" />
+		<replace dir="${build.installForTestPath}/test/app">
+			<include name="setupTestEnvironment.php" />
+			<include name="teardownTestEnvironment.php" />
+			<include name="e2eTestConfig.php" />
+			<include name="useTestConfig.sh" />
+			<include name="useLiveConfig.sh" />
+			<replacefilter token="src/" value="htdocs/" />
+		</replace>
 		<chgrp type="both" group="www-data">
 			<dirset dir="${build.installForTestPath}/htdocs/" />
 			<fileset dir="${build.installForTestPath}/htdocs/">
@@ -215,14 +223,6 @@
 				<include name="use*Config.sh" />
 			</fileset>
 		</chmod>
-		<replace dir="${build.installForTestPath}/test/app">
-			<include name="setupTestEnvironment.php" />
-			<include name="teardownTestEnvironment.php" />
-			<include name="e2eTestConfig.php" />
-			<include name="useTestConfig.sh" />
-			<include name="useLiveConfig.sh" />
-			<replacefilter token="src/" value="htdocs/" />
-		</replace>
 		<!--
 		<replace file="${build.installForTestPath}/htdocs/config/mongodb.php">
 		    <replacefilter token="${application.name}" value="${application.name}_e2etest" />
