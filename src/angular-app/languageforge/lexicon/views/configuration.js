@@ -363,7 +363,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             'optionsOrder': ['entry', 'senses', 'examples'],
             'options': {
               'entry'   : $filter('translate')('Entry Level'),
-              'senses'  : $filter('translate')('Sense Level'),
+              'senses'  : $filter('translate')('Meaning Level'),
               'examples': $filter('translate')('Example Level')
             }
           };
