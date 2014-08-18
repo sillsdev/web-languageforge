@@ -21,7 +21,7 @@
         <div class="new-item" data-collapse="newProjectCollapsed">
             <form class="well" class="form-horizontal" name="newProjectForm">
                 <div class="control-group">
-                   <input type="text" data-ng-model="newProject.projectName" maxlength="50" required placeholder="Project Name"/>
+                   <input type="text" data-ng-model="newProject.projectName" set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name"/>
                 </div>
                 <div class="control-group">
                     <input type="text" data-ng-model="newProject.projectCode" data-ng-trim="false" maxlength="50" required placeholder="Project Code" idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
@@ -33,7 +33,7 @@
                     </span>
                 </div>
                 <div class="control-group">
-                    <select required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
+                    <select ng-show="projectTypesBySite.length == 1" required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
                         <option value="">-- Select Type --</option>
                     </select>
                 </div>

@@ -4,7 +4,7 @@
 // also http://www.ng-newsletter.com/posts/angular-ui-router.html
 
 // Declare app level module which depends on filters, and services
-angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.router', 'pascalprecht.translate'])
+angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.router', 'pascalprecht.translate', 'palaso.util.model.transform'])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', 
            function($stateProvider, $urlRouterProvider, $translateProvider) {
     
@@ -79,7 +79,8 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
     $scope.record.id = '';
     $scope.captchaSrc = '';
     $scope.currentState = $state.current;
-    
+    $scope.location = $window.location;
+
     $scope.getCaptchaSrc = function() {
       sessionService.getCaptchaSrc(function(result) {
         if (result.ok) {

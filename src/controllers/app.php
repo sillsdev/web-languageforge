@@ -30,7 +30,14 @@ class App extends Secure_base {
 		} else {
 			$projectId = (string)$this->session->userdata('projectId');
 		}
-		
+
+		// Verify user has rights to the project
+		$projectModel = $projectModel->getById($projectId);
+		if (!$projectModel->userIsMember((string)$this->session->userdata('user_id'))) {
+			$error_msg = 'Uh oh, you are not an authorized member of this ' . $this->website->domain . ' project.  Please contact the Project Manager to be added to the project';
+			show_error($error_msg, 403, '403 Forbidden: User not authorized');
+		}
+
 		// Other session data
 		$sessionData = SessionCommands::getSessionData($projectId, (string)$this->session->userdata('user_id'), $this->website);
 		$jsonSessionData = json_encode($sessionData);

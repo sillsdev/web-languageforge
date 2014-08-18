@@ -14,7 +14,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
       return ss.session.project.id;
     };
   }])
-  .service('lexProjectService', ['jsonRpc', 'sessionService', 'breadcrumbService', 'lexLinkService', '$location', 
+  .service('lexProjectService', ['jsonRpc', 'sessionService', 'breadcrumbService', 'lexLinkService', '$location',
   function(jsonRpc, ss, breadcrumbService, linkService, $location) {
     jsonRpc.connect('/api/sf');
     
@@ -55,7 +55,12 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
     this.updateProject = function(project, callback) {
       jsonRpc.call('lex_project_update', [project], callback);
     };
-    
+    this.updateSettings = function(smsSettings, emailSettings, callback) {
+      jsonRpc.call('project_updateSettings', [smsSettings, emailSettings], callback);
+    };
+     this.readSettings = function(callback) {
+      jsonRpc.call('project_readSettings', [], callback);
+    };
     this.users = function(callback) {
       jsonRpc.call('project_usersDto', [], callback);
     };
@@ -122,7 +127,6 @@ function(ss) {
         angular.forEach(ss.session.projectSettings.optionlists, function(optionlist) {
             config.optionlists[optionlist.code] = optionlist;
         });
-        config.optionlists = angular.copy(ss.session.projectSettings.optionlists);
 
         var userId = ss.session.userId;
         var role = ss.session.projectSettings.currentUserRole;
@@ -191,6 +195,25 @@ function(ss) {
         return fieldName.search('customField_') === 0;
     };
 
+    this.getFieldConfig = function getFieldConfig(fieldName) {
+        var config = ss.session.projectSettings.config;
+
+        var search = config.entry.fields;
+        if (angular.isDefined(search[fieldName])) {
+            return search[fieldName];
+        }
+
+        search = config.entry.fields.senses.fields;
+        if (angular.isDefined(search[fieldName])) {
+            return search[fieldName];
+        }
+
+        search = config.entry.fields.senses.fields.examples.fields;
+        if (angular.isDefined(search[fieldName])) {
+            return search[fieldName];
+        }
+        return undefined;
+    };
 
     /*
     this.isFieldEnabled = function(fieldName, ws) {
@@ -259,26 +282,7 @@ function(ss) {
 
     };
 
-    function getFieldConfig(fieldName) {
-        var config = ss.session.projectSettings.config;
-
-        var search = config.entry;
-        if (angular.isDefined(search.fields[fieldName])) {
-            return search.fields[fieldName];
-        }
-
-        search = config.entry.fields.senses.fields;
-        if (angular.isDefined(search.fields[fieldName])) {
-            return search.fields[fieldName];
-        }
-
-        search = config.entry.fields.senses.fields.examples.fields;
-        if (angular.isDefined(search.fields[fieldName])) {
-            return search.fields[fieldName];
-        }
-        return undefined;
-    }
-    */
+     */
 }])
 
   .service('lexEntryService', ['jsonRpc', 'sessionService', 'lexProjectService', 'breadcrumbService', 'lexLinkService', 
@@ -328,7 +332,7 @@ function(ss) {
     
     var _getFirstField = function _getFirstField(config, node, fieldName) {
         var ws, field, result = '';
-        if (node[fieldName] && config && config.fields) {
+        if (node[fieldName] && config && config.fields && config.fields[fieldName] && config.fields[fieldName].inputSystems) {
             for (var i=0; i<config.fields[fieldName].inputSystems.length; i++) {
                 ws = config.fields[fieldName].inputSystems[i];
                 field = node[fieldName][ws];
