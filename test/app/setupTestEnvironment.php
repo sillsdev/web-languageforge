@@ -15,18 +15,19 @@ use models\shared\rights\ProjectRoles;
 use models\shared\rights\SiteRoles;
 use models\shared\rights\SystemRoles;
 use models\scriptureforge\SfProjectModel;
+use models\languageforge\LfProjectModel;
 use models\ProjectModel;
 use libraries\shared\Website;
 
+$constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
+
 // Fake some $_SERVER variables like HTTP_HOST for the sake of the code that needs it
-$_SERVER['HTTP_HOST'] = 'scriptureforge.local'; // TODO: Consider parsing protractorConf.js and loading baseUrl from it
-$website = Website::get('scriptureforge.local');
+$_SERVER['HTTP_HOST'] = $constants['siteHostname'];
+$website = Website::get($constants['siteHostname']);
 
 // start with a fresh database
 $db = \models\mapper\MongoStore::connect(SF_DATABASE);
 foreach ($db->listCollections() as $collection) { $collection->drop(); }
-
-$constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
 
 // Also empty out databases for the test projects
 $projectArrays = array(
@@ -78,10 +79,15 @@ $memberUser = UserCommands::createUser(array(
 	$website
 );
 
+if ($constants['siteType'] == 'scriptureforge') {
+	$projectType = SfProjectModel::SFCHECKS_APP;
+} else if ($constants['siteType'] == 'languageforge') {
+	$projectType = LfProjectModel::LEXICON_APP;
+}
 $testProject = ProjectCommands::createProject(
 	$constants['testProjectName'],
 	$constants['testProjectCode'],
-	SfProjectModel::SFCHECKS_APP,
+	$projectType,
 	$adminUser,
 	$website
 );
@@ -93,7 +99,7 @@ $testProjectModel->write();
 $otherProject = ProjectCommands::createProject(
 	$constants['otherProjectName'],
 	$constants['otherProjectCode'],
-	SfProjectModel::SFCHECKS_APP,
+	$projectType,
 	$managerUser,
 	$website
 );
@@ -106,60 +112,64 @@ ProjectCommands::updateUserRole($testProject, $managerUser, ProjectRoles::MANAGE
 ProjectCommands::updateUserRole($testProject, $memberUser, ProjectRoles::CONTRIBUTOR);
 ProjectCommands::updateUserRole($otherProject, $adminUser, ProjectRoles::MANAGER);
 
-$text1 = TextCommands::updateText($testProject, array(
-	'id' => '',
-	'title' => $constants['testText1Title'],
-	'content' => $constants['testText1Content']
-));
-$text2 = TextCommands::updateText($testProject, array(
-	'id' => '',
-	'title' => $constants['testText2Title'],
-	'content' => $constants['testText2Content']
-));
+if ($constants['siteType'] == 'scriptureforge') {
+	$text1 = TextCommands::updateText($testProject, array(
+		'id' => '',
+		'title' => $constants['testText1Title'],
+		'content' => $constants['testText1Content']
+	));
+	$text2 = TextCommands::updateText($testProject, array(
+		'id' => '',
+		'title' => $constants['testText2Title'],
+		'content' => $constants['testText2Content']
+	));
 
-$question1 = QuestionCommands::updateQuestion($testProject, array(
-	'id' => '',
-	'textRef' => $text1,
-	'title' => $constants['testText1Question1Title'],
-	'description' => $constants['testText1Question1Content']
-));
-$question2 = QuestionCommands::updateQuestion($testProject, array(
-	'id' => '',
-	'textRef' => $text1,
-	'title' => $constants['testText1Question2Title'],
-	'description' => $constants['testText1Question2Content']
-));
+	$question1 = QuestionCommands::updateQuestion($testProject, array(
+		'id' => '',
+		'textRef' => $text1,
+		'title' => $constants['testText1Question1Title'],
+		'description' => $constants['testText1Question1Content']
+	));
+	$question2 = QuestionCommands::updateQuestion($testProject, array(
+		'id' => '',
+		'textRef' => $text1,
+		'title' => $constants['testText1Question2Title'],
+		'description' => $constants['testText1Question2Content']
+	));
 
-$template1 = QuestionTemplateCommands::updateTemplate($testProject, array(
-	'id' => '',
-	'title' => 'first template',
-	'description' => 'not particularly interesting'
-		));
+	$template1 = QuestionTemplateCommands::updateTemplate($testProject, array(
+		'id' => '',
+		'title' => 'first template',
+		'description' => 'not particularly interesting'
+			));
 
-$template2 = QuestionTemplateCommands::updateTemplate($testProject, array(
-	'id' => '',
-	'title' => 'second template',
-	'description' => 'not entirely interesting'
-		));
+	$template2 = QuestionTemplateCommands::updateTemplate($testProject, array(
+		'id' => '',
+		'title' => 'second template',
+		'description' => 'not entirely interesting'
+			));
 
-$answer1 = QuestionCommands::updateAnswer($testProject, $question1, array(
-	'id' => '', 
-	'content' => $constants['testText1Question1Answer']),
-	$managerUser);
-$answer1Id = array_keys($answer1)[0];
-$answer2 = QuestionCommands::updateAnswer($testProject, $question2, array(
-	'id' => '', 
-	'content' => $constants['testText1Question2Answer']),
-	$managerUser);
-$answer2Id = array_keys($answer2)[0];
-	
-$comment1 = QuestionCommands::updateComment($testProject, $question1, $answer1Id, array(
-	'id' => '', 
-	'content' => $constants['testText1Question1Answer1Comment']),
-	$managerUser);
-$comment2 = QuestionCommands::updateComment($testProject, $question2, $answer2Id, array(
-	'id' => '', 
-	'content' => $constants['testText1Question2Answer2Comment']),
-	$managerUser);
+	$answer1 = QuestionCommands::updateAnswer($testProject, $question1, array(
+		'id' => '', 
+		'content' => $constants['testText1Question1Answer']),
+		$managerUser);
+	$answer1Id = array_keys($answer1)[0];
+	$answer2 = QuestionCommands::updateAnswer($testProject, $question2, array(
+		'id' => '', 
+		'content' => $constants['testText1Question2Answer']),
+		$managerUser);
+	$answer2Id = array_keys($answer2)[0];
+
+	$comment1 = QuestionCommands::updateComment($testProject, $question1, $answer1Id, array(
+		'id' => '', 
+		'content' => $constants['testText1Question1Answer1Comment']),
+		$managerUser);
+	$comment2 = QuestionCommands::updateComment($testProject, $question2, $answer2Id, array(
+		'id' => '', 
+		'content' => $constants['testText1Question2Answer2Comment']),
+		$managerUser);
+} else if ($constants['siteType'] == 'languageforge') {
+	// Set up LanguageForge E2E test envrionment here
+}
 
 ?>
