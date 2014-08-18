@@ -245,6 +245,7 @@
 		</waitfor>
 		<antcall target="echoServerNotFound" />
 		<antcall target="echoServerFound" />
+		<antcall target="replaceBaseUrl" />
 		<antcall target="setupE2ETestEnvironment"/>
 		<antcall target="runE2ETests"/>
 		<antcall target="teardownE2ETestEnvironment"/>
@@ -256,6 +257,24 @@
 	
 	<target name="echoServerFound" unless="selenium.server.notfound">
 		<echo message="Selenium server found. E2E Tests will be run." />
+	</target>
+	
+	<target name="replaceBaseUrl" unless="selenium.server.notfound">
+		<replaceregexp
+			file="${build.installForTestPath}/test/app/testConstants.json"
+			match='(\s*)"siteType"(\s*):(\s*)"([^"]*)",'
+			replace='\1"siteType"\2:\3"${application.name}",'
+			/>
+		<replaceregexp
+			file="${build.installForTestPath}/test/app/testConstants.json"
+			match='(\s*)"siteHostname"(\s*):(\s*)"([^"]*)",'
+			replace='\1"siteHostname"\2:\3"${e2etest.webserver.host}",'
+			/>
+		<replaceregexp
+			file="${build.installForTestPath}/test/app/testConstants.json"
+			match='(\s*)"baseUrl"(\s*):(\s*)"([^"]*)",'
+			replace='\1"baseUrl"\2:\3"http://${e2etest.webserver.host}",'
+			/>
 	</target>
 	
 	<target name="setupE2ETestEnvironment" unless="selenium.server.notfound">
@@ -270,8 +289,6 @@
 			<arg value="${e2etest.protractor.conf}" />
 			<arg value="--seleniumAddress" />
 			<arg value="http://${e2etest.selenium.server.host}:${e2etest.selenium.server.port}/wd/hub" />
-			<arg value="--baseUrl" />
-			<arg value="http://${e2etest.webserver.host}" />
 		</exec>
 	</target>
 	
