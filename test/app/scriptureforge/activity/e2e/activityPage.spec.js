@@ -1,13 +1,13 @@
 'use strict';
 
 var constants           = require('../../../testConstants');
-var loginPage           = require('../../pages/loginPage');
-var activityPage        = require('../../pages/activityPage');
-var projectListPage     = require('../../pages/projectsPage');
-var projectPage         = require('../../../scriptureforge/sfchecks/pages/projectPage');
-var projectSettingsPage = require('../../../scriptureforge/sfchecks/pages/projectSettingsPage');
-var questionPage        = require('../../../scriptureforge/sfchecks/pages/questionPage');
-var textPage            = require('../../../scriptureforge/sfchecks/pages/textPage');
+var loginPage           = require('../../../bellows/pages/loginPage');
+var activityPage        = require('../../../bellows/pages/activityPage');
+var projectListPage     = require('../../../bellows/pages/projectsPage');
+var projectPage         = require('../../sfchecks/pages/projectPage');
+var projectSettingsPage = require('../../sfchecks/pages/projectSettingsPage');
+var questionPage        = require('../../sfchecks/pages/questionPage');
+var textPage            = require('../../sfchecks/pages/textPage');
 
 // Script of actions to perform which will then be verified on the activity feed.
 // Currently, this list assumes test normal user has the role permissions for the actions
