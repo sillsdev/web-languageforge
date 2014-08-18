@@ -1,8 +1,9 @@
 <div class="container" data-ng-cloak data-ng-controller="ViewSettingsCtrl">
 <h2>{{'View Settings' | translate}}</h2>
 <form name="viewSettingForm" novalidate>
+<fieldset data-ng-disabled="isSaving">
 <button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="settingsApply()"  
-	data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense() || !allUsersHaveAtLeastOneSense()">
+	data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense() || !allUsersHaveAtLeastOneSense() || isSaving">
 	<i class="icon-ok"></i> {{'Apply' | translate}}</button>
 <tabset>
 	<tab data-ng-repeat="roleTab in roleTabs" class="{{interfaceConfig.pullNormal}}" active="roleTab.active"
@@ -10,7 +11,7 @@
 		<tab-heading>{{roleTab.name | translate}}
 			<span data-ng-hide="isAtLeastOneSense(roleTab.view)">
 				<img src="/images/shared/exclamation.png" 
-					title="{{'At least one Sense field must be enabled!' | translate}}" 
+					title="{{'At least one Meaning field must be enabled!' | translate}}"
 					style="padding-left: 5px;"/></span>
 		</tab-heading>
 		<accordion close-others="true">
@@ -22,11 +23,10 @@
 			<div class="span3 control-group">
 				
 				<!-- control buttons -->
-				<div class="control-group">
-					<a href="" data-ng-click="showAllFields = ! showAllFields">
-						{{showAllFields ? 'Show Common Fields' : 'Show All Fields' | translate}}</a>
-				</div>
-				
+                <div class="control-group">
+                    <button data-ng-click="showAllFields = ! showAllFields" class="btn btn-small">{{showAllFields ? 'Show Only Common Fields' : 'Show All Fields' | translate}}</button>
+                </div>
+
 				<!-- select list -->
 				<dl class="picklists" style="height: 200px; overflow: auto;">
 					<dt translate="Entry Level Fields"></dt>
@@ -39,10 +39,10 @@
 								{{fieldConfig[fieldName].label}}</span>
 						</div>
 					</div></dd>
-					<dt>{{'Sense Level Fields' | translate}} 
+					<dt>{{'Meaning Level Fields' | translate}}
 						<span data-ng-hide="isAtLeastOneSense(roleTab.view)">
 						<img src="/images/shared/exclamation.png" 
-							title="{{'At least one Sense field must be enabled!' | translate}}" 
+							title="{{'At least one Meaning field must be enabled!' | translate}}"
 							style="position: absolute; padding-left: 5px;"/></span></dt>
 					<dd><div class="controls">
 						<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder"
@@ -182,7 +182,7 @@ currentField {{currentField | json}}
 		<tab-heading>{{'Member Specific' | translate}}
 			<span data-ng-hide="allUsersHaveAtLeastOneSense()">
 				<img src="/images/shared/exclamation.png" 
-					title="{{'At least one Sense field must be enabled!' | translate}}" 
+					title="{{'At least one Meaning field must be enabled!' | translate}}"
 					style="padding-left: 5px;"/></span>
 		</tab-heading>
 		<div data-ng-show="state === 'userSelectList'">
@@ -212,7 +212,7 @@ currentField {{currentField | json}}
 								{{usersWithSettings[userId].name}} ({{usersWithSettings[userId].username}})
 								<span data-ng-hide="isAtLeastOneSense(userView)">
 									<img src="/images/shared/exclamation.png" 
-										title="{{'At least one Sense field must be enabled!' | translate}}" 
+										title="{{'At least one Meaning field must be enabled!' | translate}}"
 										style="padding-left: 5px;"/></span>
 							</li>
 						</ul>
@@ -261,10 +261,10 @@ currentField {{currentField | json}}
 									{{fieldConfig[fieldName].label}}</span>
 							</div>
 						</div></dd>
-						<dt>{{'Sense Level Fields' | translate}} 
+						<dt>{{'Meaning Level Fields' | translate}}
 							<span data-ng-hide="isAtLeastOneSense(configDirty.userViews[currentUserId])">
 							<img src="/images/shared/exclamation.png" 
-								title="{{'At least one Sense field must be enabled!' | translate}}" 
+								title="{{'At least one Meaning field must be enabled!' | translate}}"
 								style="position: absolute; padding-left: 5px;"/></span></dt>
 						<dd><div class="controls">
 							<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder"
@@ -403,6 +403,7 @@ currentField {{currentField | json}}
 		</div>
 	</tab>
 </tabset>
+</fieldset>
 </form>
 <!-- 
 <pre>

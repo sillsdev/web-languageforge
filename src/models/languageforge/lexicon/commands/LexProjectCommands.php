@@ -2,7 +2,6 @@
 
 namespace models\languageforge\lexicon\commands;
 
-use libraries\lfdictionary\common\UserActionDeniedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\shared\palaso\CodeGuard;
 use models\languageforge\lexicon\config\LexConfiguration;
@@ -38,23 +37,26 @@ class LexProjectCommands {
 	
 	/**
 	 * Create or update project
-	 * @param array<projectModel> $projectJson
+	 * @param string $projectId
 	 * @param string $userId
+	 * @param array<projectModel> $object
 	 * @throws UserUnauthorizedException
 	 * @throws \Exception
 	 * @return string projectId
 	 */
-	public static function updateProject($projectId, $userId, $projectJson) {
+	public static function updateProject($projectId, $userId, $object) {
 		$project = new LexiconProjectModel($projectId);
-		if ($project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
+		if (!$project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
 			throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
 		}
 		$oldDBName = $project->databaseName();
-		JsonDecoder::decode($project, $projectJson);
+
+		$object['id'] = $projectId;
+		JsonDecoder::decode($project, $object);
 		$newDBName = $project->databaseName();
 		if (($oldDBName != '') && ($oldDBName != $newDBName)) {
 			if (MongoStore::hasDB($newDBName)) {
-				throw new \Exception("New project name " . $projectJson->projectName . " already exists. Not renaming.");
+				throw new \Exception("Cannot rename '$oldDBName' to ' $newDBName' . New project name $newDBName already exists.  Not renaming.");
 			}
 			MongoStore::renameDB($oldDBName, $newDBName);
 		}
@@ -117,7 +119,6 @@ class LexProjectCommands {
 
         }
     }
-
 }
 
 ?>

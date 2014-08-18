@@ -305,6 +305,12 @@ class Website {
 		$w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
 		$sites['languageforge.local'] = $w;
 		
+		$w = new Website('e2etest.languageforge.local', self::LANGUAGEFORGE);
+		$w->name = 'Language Forge';
+		$w->ssl = false;
+		$w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
+		$sites['e2etest.languageforge.local'] = $w;
+		
 		// dev.languageforge.org sites
 		$w = new Website('dev.languageforge.org', self::LANGUAGEFORGE);
 		$w->name = 'Language Forge'; 

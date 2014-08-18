@@ -18,8 +18,8 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 				
 				
 				$scope.deleteSense = function(index) {
-                    var deletemsg = "Are you sure you want to delete the sense <b>' " + utils.getMeaning($scope.config.fields.senses, $scope.model.senses[index])  + " '</b>";
-                    modal.showModalSimple('Delete Sense', deletemsg, 'Cancel', 'Delete Sense').then(function() {
+                    var deletemsg = "Are you sure you want to delete the meaning <b>' " + utils.getMeaning($scope.config.fields.senses, $scope.model.senses[index])  + " '</b>";
+                    modal.showModalSimple('Delete Meaning', deletemsg, 'Cancel', 'Delete Meaning').then(function() {
                         $scope.model.senses.splice(index, 1);
 					});
 				};

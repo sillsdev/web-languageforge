@@ -5,7 +5,10 @@ form.dc-multitext .control-group {
 /* todo this needs work to accommodate multi-line text boxes and variable width text boxes */
 form.dc-multitext .controls {
     width:280px;
-    text-align: right;
+}
+
+form.dc-multitext .controls input[type="text"] {
+    width:165px;
 }
 
 form.dc-multitext label, form.dc-optionlist label {
@@ -18,3 +21,4 @@ form.dc-multitext .wsid {
     color: #777;
     text-align: right;
 }
+

@@ -3,26 +3,33 @@
 			
 			$data['slides'] = array(
 				array(
-					"title" => "Develop a dictionary",
-					"summary" => "Language Forge enables communities to participate in the dictionary development like never before.",
-					"social_media" => "",
-					"image_url" => "community.jpg",
-					"target_url" => "/learn_language_forge"
-					),
-				array(
-					"title" => "Your Team, Expanded",
-					"summary" => "Improve your dictionary project by adding more native speakers to your workflow.",
+					"title" => "Expand your team",
+					"summary" => "No applications or plug-ins to install.  Just invite people to contribute to a project, and they'll be able to make updates from their web browser anytime, anywhere.",
 					"social_media" => "",
 					"image_url" => "team.jpg",
 					"target_url" => "/learn_expand_your_team"
-					),
+				),
 				array(
-					"title" => "Make a Difference Today",
-					"summary" => "Speak a minority language?  Help us to build a dictionary in your language.",
+					"title" => "Rapidly develop a dictionary online",
+					"summary" => "Language Forge enables communities to participate in the dictionary development like never before.  Create brand new projects.  Or bring existing WeSay or FieldWorks projects into the cloud for online collaboration",
 					"social_media" => "",
-					"image_url" => "contribute.jpg",
+					"image_url" => "lf_edit_view.png",
 					"target_url" => "/learn_language_forge"
-					)
+				),
+				array(
+					"title" => "Customize your project",
+					"summary" => "Give members roles on a project as Observers, Commenters, Contributors, or fellow Managers.  Each of them can get a custom view so they only see the fields applicable to their role.  Determine which fields are visible in the entries, senses, and examples.",
+					"social_media" => "",
+					"image_url" => "lf_roles.png",
+					"target_url" => "/learn_language_forge" // TODO learn_roles 2014-08 DDW
+				),
+				array(
+					"title" => "Get feedback along the way",
+					"summary" => "With the commenting system, people can have discussions about the lexical entries, tagged down to the field.  Prioritize comments as \"Todo\" and then \"Resolve\" when they're complete.",
+					"social_media" => "",
+					"image_url" => "lf_comments_view.png",
+					"target_url" => "/learn_language_forge" // TODO learn_comments 2014-08 DDW
+				)
 			);
 			$this->load->view("$themePath/templates/slideshow.html.php", $data);
 			
@@ -51,35 +58,4 @@
 			<h2>The Power of Collaboration</h2>
 			<p>When everyone plays their part in producing a dictionary in your language, everyone benefits.  It's the power of collaboration that provides richer and more accurate dictionaries.  Our technology brings dictionary development to the masses, in a positive environment that focuses participants on the task and works wherever they are.  On the tablet, phone or web, Language Forge is there.</p>
 			<p><a href="/signup" class="arrowed">Get Involved Today</a></p>
-		</div>
-		
-		<div class="sfcontainer cf">
-			<h2>Latest News</h2>
-			
-			<div class="three-col">
-				<div class="three-col-1">
-					<p>July 2014</p>
-					<h3>Language Forge 0.5 development is underway</h3>
-					<p>We are currently in the process of building the system to the point that we can start sharing dictionaries between Language Forge, <a href="http://wesay.palaso.org/" target="_blank">WeSay</a>, and <a href="http://fieldworks.sil.org/flex/" target="_blank" >FieldWorks Language Explorer</a>. We anticipate Language Forge being open to beta testers beginning in August.</p>
-				</div>
-			</div>
-			
-			<div class="three-col">
-				<div class="three-col-2">
-					<p>2012-2013</p>
-					<h3>Experimentation with environments</h3>
-					<p>In 2012 we implemented an equivalent to part of the interface using GWT and embedded this into a Drupal site. We were not able to get the Drupal part of the site working well however</p>
-					<!-- <p><a href="#" class="arrowed">Read Article</a></p> -->
-				</div>
-			</div>
-			
-			<div class="three-col">
-				<div class="three-col-3">
-					<p>2011</p>
-					<h3>Initiation of the Lexical Web app</h3>
-					<p>In 2011 we started experimenting with develpoment of a Web app that would integrate with the mature tools that SIL has created for lexical development. A plan was then created for further development.</p>
-					<!-- <p><a href="#" class="arrowed">Read Article</a></p> -->
-				</div>
-			</div>
-			
 		</div>

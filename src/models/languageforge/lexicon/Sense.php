@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon;
 
 use libraries\shared\palaso\CodeGuard;
 use models\mapper\ArrayOf;
+use models\mapper\MapOf;
 
 function _createExample($data) {
 	return new Example();
@@ -135,7 +136,7 @@ class Sense {
 	public $examples;
 
 	/**
-	 * @var ArrayOf <>
+	 * @var MapOf <>
 	 */
 	public $customFields;
 
