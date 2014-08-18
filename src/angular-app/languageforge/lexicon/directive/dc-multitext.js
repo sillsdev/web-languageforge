@@ -8,7 +8,8 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services'])
 			scope : {
 				config : "=",
 				model : "=",
-				control : "="
+				control : "=",
+                selectField : "&"
 			},
 			controller: ['$scope', 'sessionService', function($scope, ss) {
                 $scope.inputSystems = ss.session.projectSettings.config.inputSystems;
@@ -16,6 +17,10 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services'])
 				$scope.inputSystemDirection = function inputSystemDirection(tag) {
                     return ($scope.inputSystems[tag].isRightToLeft) ? 'rtl' : 'ltr';
 				};
+
+                $scope.selectInputSystem = function selectInputSystem(tag) {
+                    $scope.selectField({inputSystem: tag});
+                };
 				
 			}],
 			link : function(scope, element, attrs, controller) {

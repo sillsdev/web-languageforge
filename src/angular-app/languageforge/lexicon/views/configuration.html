@@ -1,8 +1,10 @@
 <div class="container" data-ng-cloak data-ng-controller="ConfigCtrl">
 <h2>{{'Dictionary Configuration' | translate}}</h2>
 <form name="configForm" novalidate>
-<button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="configurationApply()"  
-	data-ng-disabled="configForm.$pristine">
+<button style="margin-left:15px" tooltip="View the dictionary" class="btn {{interfaceConfig.pullToSide}}" data-ng-click="backToDictionary()"><i class="icon-reply"></i>{{'Dictionary' | translate}}</button>
+<fieldset data-ng-disabled="isSaving">
+<button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="configurationApply()"
+	data-ng-disabled="configForm.$pristine || isSaving">
 	<i class="icon-ok"></i>{{'Apply' | translate}}</button>
 <tabset>
 	<tab heading="Input Systems" class="{{interfaceConfig.pullNormal}}">
@@ -16,11 +18,7 @@
 		<div class="span3 control-group">
 			<!-- control buttons -->
 			<div class="control-group">
-				<button class="btn btn-success" data-ng-click="openNewCustomFieldModal()"><i class="icon-plus"></i>{{'New Custom Field' | translate}} </button>
-			</div>
-			<div class="control-group">
-				<a href="" data-ng-click="showAllFields = ! showAllFields">
-					{{showAllFields ? 'Show Common Fields' : 'Show All Fields' | translate}}</a>
+                <button data-ng-click="showAllFields = ! showAllFields" class="btn btn-small">{{showAllFields ? 'Show Only Common Fields' : 'Show All Fields' | translate}}</button>
 			</div>
 			
 			<!-- picklist -->
@@ -36,7 +34,7 @@
 						</span>
 					</div>
 				</div></dd>
-				<dt translate="Sense Level Fields"></dt>
+				<dt translate="Meaning Level Fields"></dt>
 				<dd><div class="controls">
 					<div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder" 
 						data-ng-class="{selected:currentField.name == fieldName}">
@@ -60,6 +58,9 @@
 				</div></dd>
 			</dl>
 			<small translate="Custom Fields shown in <i>italics</i>"></small>
+            <div class="control-group">
+                <button class="btn btn-small" data-ng-click="openNewCustomFieldModal()"><i class="icon-plus"></i>{{'New Custom Field' | translate}} </button>
+            </div>
 		</div>
 		
 		<!-- Right column: field setup -->
@@ -67,7 +68,7 @@
 			<!-- control buttons -->
 			<div class="control-group" style="height: 30px">
 				<button class="btn" data-ng-click="removeSelectedCustomField()"
-					data-ng-show="isCustomField(currentField.name)">
+					data-ng-show="showRemoveCustomField(currentField.name)">
 					<i class="icon-remove"></i>{{'Remove Custom Field' | translate}} </button>
 			</div>
 			
@@ -266,11 +267,11 @@ configDirty.entry {{configDirty.entry | json}}
 				<div class="control-group">
 					<label class="control-label" for="fields" translate="Fields to gather along with the Word"></label>
 					<dl class="indent1" id="fields">
-						<dt translate="Senses"></dt>
+						<dt translate="Meaning"></dt>
 						<dd><div class="controls">
 							<label class="checkbox">
 								<input type="checkbox" data-ng-model="configDirty.tasks['semdom'].visibleFields.definition">
-								 {{'Definition (Meaning)' | translate}}</label>
+								 {{'Definition' | translate}}</label>
 							<label class="checkbox">
 								<input type="checkbox" data-ng-model="configDirty.tasks['semdom'].visibleFields.partOfSpeech">
 								 {{'Part Of Speech' | translate}}</label>
@@ -330,5 +331,6 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
 		</div>
 	</tab>
 </tabset>
+</fieldset>
 </form>
 </div>

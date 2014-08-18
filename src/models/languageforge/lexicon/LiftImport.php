@@ -2,6 +2,7 @@
 
 namespace models\languageforge\lexicon;
 
+use models\languageforge\lexicon\config\LexiconOptionListItem;
 use models\mapper\ArrayOf;
 use models\languageforge\lexicon\config\LexiconConfigObj;
 
@@ -19,7 +20,15 @@ class LiftImport {
 
 		$entryList = new LexEntryListModel($projectModel);
 		$entryList->read();
-		if ($entryList->count <= 0) {
+
+        $initialImport = $entryList->count == 0;
+
+        // I consider this to be a stopgap to support importing of part of speech until we have a way to import lift ranges - cjh 2014-08
+        $partOfSpeechValues = array();
+
+		if ($initialImport) {
+            // Do the following on first import (number of entries == 0
+
 			// clear entry field input systems config if their are no entries (only use imported input systems)
 			$projectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems = new ArrayOf();
 			$projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems = new ArrayOf();
@@ -65,15 +74,34 @@ class LiftImport {
 							LexEntryModel::remove($projectModel, $existingEntry['id']);
 						}
 					}
+                    self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
 				} else {
  					if (isset($sxeNode->{'lexical-unit'})) {
  						$entry = new LexEntryModel($projectModel);
 						$liftDecoder->decode($sxeNode, $entry, $mergeRule);
  						$entry->write();
+                        self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
  					}
 				}
 			}
 		}
+
+        if ($initialImport) {
+            // replace part of speech option list with values from imported data
+            // todo: remove this functionality when we have a way to import lift ranges (option lists) - cjh 2014-08
+            if (count($partOfSpeechValues) > 0) {
+                $partOfSpeechOptionList = new LexOptionListModel($projectModel);
+                $partOfSpeechOptionList->readByProperty('code', 'partOfSpeech');
+
+                // start with an empty list
+                $partOfSpeechOptionList->items->exchangeArray(array());
+
+                foreach ($partOfSpeechValues as $value) {
+                    $partOfSpeechOptionList->items->append(new LexiconOptionListItem($value));
+                }
+                $partOfSpeechOptionList->write();
+            }
+        }
 	}
 
 	/**
@@ -117,7 +145,19 @@ class LiftImport {
 		$dateModified = new \DateTime($importDateModified);
 		return ($dateModified->getTimestamp() != $entryDateModified->getTimestamp());
 	}
-	
+
+    /**
+     * @param $arr array - list to append to
+     * @param $entryModel LexEntryModel
+     */
+    private static function addPartOfSpeechValuesToList(&$arr, $entryModel) {
+        foreach ($entryModel->senses as $sense) {
+            $pos = $sense->partOfSpeech->value;
+            if (!in_array($pos, $arr)) {
+                array_push($arr, $pos);
+            }
+        }
+    }
 }
 
 ?>

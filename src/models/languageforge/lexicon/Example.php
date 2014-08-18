@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon;
 
 use libraries\shared\palaso\CodeGuard;
 use models\mapper\ArrayOf;
+use models\mapper\MapOf;
 use models\mapper\ObjectForEncoding;
 
 class Example extends ObjectForEncoding {
@@ -14,7 +15,7 @@ class Example extends ObjectForEncoding {
 		$this->liftId = $liftId;
 		$this->sentence = new MultiText();
 		$this->translation = new MultiText();
-		$this->customFields = new ArrayOf(
+		$this->customFields = new MapOf(
 			function($data) {
 				CodeGuard::checkTypeAndThrow($data, 'array');
 				if (array_key_exists('value', $data)) {
@@ -55,7 +56,7 @@ class Example extends ObjectForEncoding {
 	public $translation;
 
 	/**
-	 * @var ArrayOf <>
+	 * @var MapOf <>
 	 */
 	public $customFields;
 

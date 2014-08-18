@@ -81,7 +81,13 @@ class JsonDecoder {
 			}
 		}
 		$this->_id = null;
-		$this->postDecode($model);
+
+        // support for nested MapOf
+        if (is_a($model, 'models\mapper\MapOf')) {
+            $this->decodeMapOf($id, $model, $values);
+        }
+
+        $this->postDecode($model);
 	}
 	
 	protected function postDecode($model) {
@@ -139,7 +145,7 @@ class JsonDecoder {
 	 * @throws \Exception
 	 */
 	public function decodeMapOf($key, $model, $data) {
-		if ($data == null) {
+		if (is_null($data)) {
 			$data = array();
 		}
 		CodeGuard::checkTypeAndThrow($data, 'array');

@@ -2,12 +2,13 @@
 
 angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
     'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor', 'lexicon.services', 'palaso.util.model.transform'])
-  .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService',
-  function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigService) {
+  .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService', '$location',
+  function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigService, $location) {
     lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
     $scope.configDirty = angular.copy(ss.session.projectSettings.config);
     $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
-    
+    $scope.isSaving = false;
+
     $scope.inputSystems = {};
     $scope.selects = {
       'special': {
@@ -129,6 +130,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     };
     
     $scope.configurationApply = function() {
+      $scope.isSaving = true;
       lexProjectService.updateConfiguration($scope.configDirty, $scope.optionlistDirty, function(result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, $filter('translate')('Dictionary configuration updated successfully'));
@@ -137,10 +139,19 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
           $scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
           setupView();
         }
+		  $scope.isSaving = false;
       });
 
     };
-    
+
+    $scope.backToDictionary = function backToDictionary() {
+      $location.path('/dbe');
+    };
+
+    $scope.showInputSystems = function() {
+      return ! ($scope.currentInputSystemTag in $scope.projectSettings.config.inputSystems);
+    };
+
   // InputSystemsConfigCtrl
     $scope.newExists = function(code, special) {
       var tag = code;
@@ -211,7 +222,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
     $scope.openNewLanguageModal = function openNewLanguageModal(suggestedLanguageCodes) {
       var modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
-        controller: function($scope, $modalInstance) {
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
           $scope.selected = {
             code: '',
             language: {}
@@ -220,7 +231,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             $modalInstance.close($scope.selected);
           };
           $scope.suggestedLanguageCodes = suggestedLanguageCodes;
-        }
+        }]
       });
       
       modalInstance.result.then(function(selected) {
@@ -352,7 +363,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             'optionsOrder': ['entry', 'senses', 'examples'],
             'options': {
               'entry'   : $filter('translate')('Entry Level'),
-              'senses'  : $filter('translate')('Sense Level'),
+              'senses'  : $filter('translate')('Meaning Level'),
               'examples': $filter('translate')('Example Level')
             }
           };
@@ -446,6 +457,16 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       });
     };
     
+    $scope.showRemoveCustomField = function showRemoveCustomField(fieldName) {
+      if ($scope.isCustomField(fieldName) &&
+          ! (fieldName in $scope.projectSettings.config.entry.fields) &&
+          ! (fieldName in $scope.projectSettings.config.entry.fields.senses.fields) &&
+          ! (fieldName in $scope.projectSettings.config.entry.fields.senses.fields.examples.fields) ) {
+        return true;
+      }
+      return false;
+    };
+
     $scope.removeSelectedCustomField = function removeSelectedCustomField() {
       var fieldName = $scope.currentField.name,
         i;

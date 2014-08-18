@@ -547,9 +547,14 @@ class Sf
 	public function lex_import_lift($import) {
 		return LexProjectCommands::importLift($this->_projectId, $import);
 	}
-	
-	public function lex_project_update($projectJson) {
-		return LexProjectCommands::updateProject($this->_projectId, $this->_userId, $projectJson);
+
+	/**
+	 * Create/Update a Project
+	 * @param array $object
+	 * @return string Id of written object
+	 */
+	public function lex_project_update($settings) {
+		return LexProjectCommands::updateProject($this->_projectId, $this->_userId, $settings);
 	}
 	
 	public function lex_entry_read($entryId) {

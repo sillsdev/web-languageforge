@@ -14,7 +14,6 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	$scope.lastSavedDate = new Date();
 	$scope.currentEntry = {};
     $scope.state = 'list'; // default state.  State is one of 'list', 'edit', or 'comment'
-    $scope.showUncommonFields = false;
 
     // Note: $scope.entries is declared on the MainCtrl so that each view refresh will not cause a full dictionary reload
 
@@ -57,7 +56,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
             // that is when the user is saving the current entry and is NOT going to a different entry (as is the case with editing another entry
             doSetEntry = false;
         }
-		if ($scope.currentEntryIsDirty()) {
+		if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
 			cancelAutoSaveTimer();
 			saving = true;
             isNewEntry = ($scope.currentEntry.id == '');
@@ -94,7 +93,9 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	};
 
 	function prepEntryForUpdate(entry) {
-		return recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'comments', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+        var entryForUpdate = recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+        entryForUpdate = prepCustomFieldsForUpdate(entryForUpdate);
+        return entryForUpdate;
 	}
 	
 	$scope.getWordForDisplay = function(entry) {
@@ -138,6 +139,10 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 			return 'left';
 		}
 	};
+
+    $scope.navigateToLiftImport = function navigateToLiftImport() {
+       $location.path('/importExport');
+    };
 	
     function _scrollDivToId(containerId, divId, posOffset) {
         var offsetTop, div = $(divId), containerDiv = $(containerId);
@@ -223,12 +228,46 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 	function setCurrentEntry(entry) {
 		entry = entry || {};
 
+        // align custom fields into model
+        entry = alignCustomFieldsInData(entry);
+
         // auto-make a valid model but stop at the examples array
         entry = $scope.makeValidModelRecursive($scope.config.entry, entry, 'examples');
+
+
 		$scope.currentEntry = entry;
 		pristineEntry = angular.copy(entry);
 		saved = false;
 	}
+
+    function alignCustomFieldsInData(data) {
+        if (angular.isDefined(data['customFields'])) {
+            angular.forEach(data['customFields'], function(item, key) {
+                data[key] = item;
+            });
+        }
+        if (angular.isDefined(data['senses'])) {
+            data['senses'] = alignCustomFieldsInData(data['senses']);
+        }
+        if (angular.isDefined(data['examples'])) {
+            data['examples'] = alignCustomFieldsInData(data['examples']);
+        }
+        return data;
+    }
+
+    function prepCustomFieldsForUpdate(data) {
+        data['customFields'] = {};
+        angular.forEach(data, function(item, key) {
+            if (/^customField_/.test(key)) {
+                data['customFields'][key] = item;
+            }
+            if (key == 'senses' || key == 'examples') {
+                data[key] = prepCustomFieldsForUpdate(item);
+            }
+        });
+        return data;
+
+    }
 
 	$scope.editEntry = function(id) {
 		if ($scope.currentEntry.id != id) {
@@ -248,6 +287,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         $scope.show.initial();
         scrollListToEntry('', 'top');
         $scope.state = 'edit';
+        loadEntryComments();
         //$location.path('/dbe', false);
 	};
 	
@@ -376,6 +416,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
     /* TODO implement a proper sliding window that can go back and forward */
 	$scope.show = {
+        emptyFields: false,
 		//startOfWindow: 0,
 		entries: []
     };
@@ -424,9 +465,13 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
 	function refreshData(fullRefresh, callback) {
         callback = callback||angular.noop;
-        if (fullRefresh) notice.setLoading('Loading Dictionary');
+        if (fullRefresh) {
+            notice.setLoading('Loading Dictionary');
+            $scope.fullRefreshInProgress = true;
+        }
 		var processDbeDto = function (result) {
             notice.cancelLoading();
+            $scope.fullRefreshInProgress = false;
 			if (result.ok) {
                 $scope.commentsUserPlusOne = result.data.commentsUserPlusOne;
                 if (fullRefresh) {
@@ -616,10 +661,64 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
     $scope.newComment = {id: '', content: '', regarding: {}}; // model for new comment content
 
-    $scope.showComments = function showComments(fieldName) {
-        $scope.saveCurrentEntry();
+    $scope.showComments = function showComments() {
+        $scope.saveCurrentEntry(true);
         $scope.state = 'comment';
         //$location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);
+    };
+
+    function getFieldValue(model, inputSystem) {
+
+        // get value of option list
+        if (angular.isDefined(model.value)) {
+
+            // todo return display value
+            return model.value;
+        }
+
+        // get value of multi-option list
+        if (angular.isDefined(model.values)) {
+
+            // todo return display values
+            return model.values.join(' ');
+
+        }
+
+        // get value of multi-text with specified inputSystem
+        if (angular.isDefined(inputSystem) && angular.isDefined(model[inputSystem])) {
+            return model[inputSystem].value;
+        }
+
+        // get first inputSystem of a multi-text (no inputSystem specified)
+        var valueToReturn = undefined;
+        angular.forEach(model, function(prop) {
+            if (angular.isUndefined(valueToReturn)) {
+                valueToReturn = prop.value;
+            }
+        });
+        return valueToReturn;
+    }
+
+    $scope.selectFieldForComment = function selectFieldForComment(fieldName, model, inputSystem) {
+        if ($scope.state == 'comment' && $scope.rights.canComment()) {
+            var fieldConfig = configService.getFieldConfig(fieldName);
+            $scope.newComment.regarding.field = fieldName;
+            $scope.newComment.regarding.fieldNameForDisplay = fieldConfig.label;
+            if (inputSystem) {
+
+                // I set the inputsystem abbreviation values delayed by 10ms to deal with a double ng-click fire (nested divs, each with ng-click)
+                $interval(function() {
+                    $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
+                    $scope.newComment.regarding.inputSystem = $scope.config.inputSystems[inputSystem].languageName;
+                    $scope.newComment.regarding.inputSystemAbbreviation = $scope.config.inputSystems[inputSystem].abbreviation;
+                }, 10, 1);
+            } else {
+                $scope.newComment.regarding.fieldValue = getFieldValue(model);
+                delete $scope.newComment.regarding.inputSystem;
+	            delete $scope.newComment.regarding.languageName;
+                delete $scope.newComment.regarding.inputSystemAbbreviation;
+            }
+        }
     };
 
     function loadEntryComments() {
@@ -637,7 +736,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
                 entryCommentsCounts[comment.entryRef]++;
             }
 
-            var fieldName = comment.regarding.fieldName;
+            var fieldName = comment.regarding.field;
             if (comment.entryRef == $scope.currentEntry.id) {
                 if (fieldName && angular.isUndefined(count.fields[fieldName])) {
                     count.fields[fieldName] = 0;
@@ -707,6 +806,10 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         var isNewComment = angular.isUndefined(comment);
         if (isNewComment) {
             comment = angular.copy($scope.newComment);
+
+            // dont submit empty comments
+            if (comment.content == '') return;
+
             // comment.content is already set in the form
             comment.entryRef = $scope.currentEntry.id;
             comment.regarding.meaning = $scope.getMeaningForDisplay($scope.currentEntry);
@@ -838,7 +941,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		if (angular.isDefined(autoSaveTimer)) {
 			return;
 		}
-		autoSaveTimer = $interval($scope.saveCurrentEntry, 5000, 1);
+		autoSaveTimer = $interval(function () { $scope.saveCurrentEntry(true); }, 5000, 1);
 	};
 	function cancelAutoSaveTimer() {
 		if (angular.isDefined(autoSaveTimer)) {
@@ -846,15 +949,6 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 			autoSaveTimer = undefined;
 		}
 	};
-	
-	$scope.$watch('currentEntry', function(newValue) {
-		if (newValue != undefined) {
-			cancelAutoSaveTimer();
-			if ($scope.currentEntryIsDirty) {
-                startAutoSaveTimer();
-			}
-		}
-	}, true);
 	
 	$scope.$on('$destroy', function() {
 		cancelAutoSaveTimer();
@@ -887,6 +981,9 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
     // permissions stuff
 
     $scope.rights = {
+        canEditProject: function canEditProject() {
+            return sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
+        },
         canEditEntry: function canEditEntry() {
             return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.EDIT);
         },
@@ -915,9 +1012,19 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         }
     };
 
+    // conditionally register watch
+    if ($scope.rights.canEditEntry()) {
+        $scope.$watch('currentEntry', function(newValue) {
+            if (newValue != undefined) {
+                cancelAutoSaveTimer();
+                if ($scope.currentEntryIsDirty) {
+                    startAutoSaveTimer();
+                }
+            }
+        }, true);
+    }
 
-
-	function recursiveRemoveProperties(startAt, properties) {
+    function recursiveRemoveProperties(startAt, properties) {
 		angular.forEach(startAt, function(value, key) {
 			var deleted = false;
 			angular.forEach(properties, function(propName) {
