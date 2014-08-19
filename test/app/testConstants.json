@@ -1,9 +1,9 @@
 {
   "Bellows_Test_Constants" : "",
   
-  "siteType"        : "languageforge",
-  "siteHostname"    : "languageforge.local",
-  "baseUrl"         : "http://languageforge.local",
+  "siteType"        : "scriptureforge",
+  "siteHostname"    : "scriptureforge.local",
+  "baseUrl"         : "http://scriptureforge.local",
 
   "adminUsername"   : "test_runner_admin",
   "adminPassword"   : "hammertime",
