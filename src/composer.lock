@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dbd6dd410acadda899ad6c6ce1dab3b8",
+    "hash": "b42ec3e1bb44fc610a12f50dbf549d1e",
     "packages": [
         {
             "name": "ocramius/lazy-property",
-            "version": "dev-master",
+            "version": "dev-feature/factory",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cambell-prince/LazyProperty.git",
-                "reference": "c6f420f934a633b3bcccb6b057a8c10a8cdcc908"
+                "reference": "f737cd125f2fca567b92dd2bb84738b904b391ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cambell-prince/LazyProperty/zipball/c6f420f934a633b3bcccb6b057a8c10a8cdcc908",
-                "reference": "c6f420f934a633b3bcccb6b057a8c10a8cdcc908",
+                "url": "https://api.github.com/repos/cambell-prince/LazyProperty/zipball/f737cd125f2fca567b92dd2bb84738b904b391ce",
+                "reference": "f737cd125f2fca567b92dd2bb84738b904b391ce",
                 "shasum": ""
             },
             "require": {
@@ -58,9 +58,9 @@
                 "utility"
             ],
             "support": {
-                "source": "https://github.com/cambell-prince/LazyProperty/tree/master"
+                "source": "https://github.com/cambell-prince/LazyProperty/tree/feature/factory"
             },
-            "time": "2014-02-23 16:28:10"
+            "time": "2014-08-05 14:55:54"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -258,14 +258,23 @@
             "time": "2013-09-28 18:56:04"
         }
     ],
-    "packages-dev": [],
-    "aliases": [],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "twig/extensions": 20,
         "twilio/sdk": 20,
         "ocramius/lazy-property": 20
     },
-    "platform": [],
-    "platform-dev": []
+    "prefer-stable": false,
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
 }
