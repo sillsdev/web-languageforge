@@ -106,6 +106,10 @@ class LexEntryModel extends \models\mapper\MapperModel {
 		}
 	}
 	
+	public function hasSenses() {
+		return isset($this->senses);
+	}
+	
 	/**
 	 * @var IdReference
 	 */

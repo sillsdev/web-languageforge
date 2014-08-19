@@ -84,19 +84,17 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 		
 		if ($missingInfo != '') {
 			foreach ($this->entries as $entry) {
-				$senses = $entry['senses'];
 				$foundMissingInfo = false;
-				if (count($senses) == 0) {
+				if (!array_key_exists('senses', $entry) || count($entry['senses'] == 0)) {
 					$foundMissingInfo = true;
 				} else {
-					foreach ($senses as $sense) {
+					foreach ($entry['senses'] as $sense) {
 						switch ($missingInfo) {
 							case LexiconConfigObj::DEFINITION:
-								$definition = $sense['definition'];
-								if (count($definition) == 0) {
+								if (!array_key_exists('definition', $sense) || count($sense['definition']) == 0) {
 									$foundMissingInfo = true;
 								} else {
-									foreach ($definition as $form) {
+									foreach ($sense['definition'] as $form) {
 										if ($form['value'] == '') {
 											$foundMissingInfo = true;
 										}
@@ -111,11 +109,10 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 								break;
 	
 							case LexiconConfigObj::EXAMPLE_SENTENCE:
-								$examples = $sense['examples'];
-								if (count($examples) == 0) {
+								if (!array_key_exists('examples', $sense['examples']) || count($sense['examples']) == 0) {
 									$foundMissingInfo = true;
 								} else {
-									foreach ($examples as $example) {
+									foreach ($sense['examples'] as $example) {
 										if (!array_key_exists('sentence', $example) || count($example['sentence']) == 0) {
 											$foundMissingInfo = true;
 										} else {
@@ -130,11 +127,10 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 								break;
 	
 							case LexiconConfigObj::EXAMPLE_TRANSLATION:
-								$examples = $sense['examples'];
-								if (count($examples) == 0) {
+								if (!array_key_exists('examples', $sense) || count($sense['examples']) == 0) {
 									$foundMissingInfo = true;
 								} else {
-									foreach ($examples as $example) {
+									foreach ($sense['examples'] as $example) {
 										if (!array_key_exists('translation', $example) || count($example['translation']) == 0) {
 											$foundMissingInfo = true;
 										} else {
