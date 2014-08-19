@@ -1,66 +1,22 @@
 <div class="content container" data-ng-cloak data-ng-controller="MainCtrl" dir="{{interfaceConfig.direction}}">
 	<div class="hdrnav" style="width:88%;display:flex">
-        <!--
-		<div class="control-group {{interfaceConfig.pullToSide}}">
-			<div class="controls">
-				<select class="form-control" id="language" style="width:100%"
-					data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder"
-					data-ng-model="interfaceConfig.userLanguageCode"></select>
-			</div>
+		<div style="flex:4">
+			<ul id="top" class="topCrumbs" breadcrumbs></ul>
 		</div>
-		<ul class="topNav">
-			<li class="here"><a href="/app/projects">My Projects</a></li>
-			<li><a href="/app/activity">Activity</a></li>
-		</ul>
-        -->
-        <div style="flex:4">
-            <ul id="top" class="topCrumbs" breadcrumbs></ul>
-        </div>
-        <div style="flex:1" class="btn-group" data-ng-show="rights.edit">
-            <a class="btn dropdown-toggle {{interfaceConfig.pullToSide}}" data-toggle="dropdown" data-tooltip-placement="{{interfaceConfig.placementToSide}}" data-tooltip="Settings" href="#">
-                <i class="icon-cog icon-large"></i>&nbsp;&nbsp;<span class="caret"></span></a>
-            <ul class="dropdown-menu {{interfaceConfig.pullToSide}}">
-                <li><a href="#/configuration" translate="Dictionary Configuration"></a></li>
-                <li><a href="#/viewSettings" translate="View Settings"></a></li>
-                <li class="divider"></li>
-                <li><a href="#/importExport" translate="Import/Export"></a></li>
-                <li><a href="#/settings" translate="Project Settings"></a></li>
-                <li><a href="#/users" translate="User Management"></a></li>
-            </ul>
-        </div>
+		<div style="width:8%" class="dropdown {{interfaceConfig.pullToSide}}" data-ng-show="rights.edit">
+			<a class="btn {{interfaceConfig.pullToSide}}" href="#"><i class="icon-cog icon-large"></i>&nbsp;&nbsp;<span class="caret"></span></a>
+			<ul class="dropdown-menu {{interfaceConfig.pullToSide}}">
+				<li><a href="#/configuration" translate="Dictionary Configuration"></a></li>
+				<li><a href="#/viewSettings" translate="View Settings"></a></li>
+				<li class="divider"></li>
+				<li><a href="#/importExport" translate="Import/Export"></a></li>
+				<li><a href="#/settings" translate="Project Settings"></a></li>
+				<li><a href="#/users" translate="User Management"></a></li>
+			</ul>
+		</div>
 	</div>
 	<div id="lexicon-hmenu" style="clear:both">
 		<div class="lexnav control-group">
-            <!--
-			<div class="btn-group" data-ng-show="isTaskEnabled('dashboard')">
-				<a class="btn" href="#"><i class="icon-bookmark icon-large"></i> *NYI*  Dashboard</a>
-			</div>
-			<div class="btn-group" data-ng-show="isTaskEnabled('view')">
-				<a class="btn" href="#/view"><i class="icon-eye-open icon-large"></i> *NYI*  View</a>
-			</div>
-			<div class="btn-group">
-				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-					<i class="icon-th icon-large"></i> Gather Words <span class="caret"></span></a>
-				<ul class="dropdown-menu {{interfaceConfig.pullNormal}}">
-					<li data-ng-show="isTaskEnabled('dbe')"        ><a href="#/dbe" translate="Browse and Edit"></a></li>
-					<li class="divider" data-ng-show="isTaskEnabled('dbe') && (isTaskEnabled('gatherTexts') || isTaskEnabled('wordlist') || isTaskEnabled('semdom'))"></li>
-					<li data-ng-show="isTaskEnabled('gatherTexts')"><a href="#/gather-texts">*NYI* from Texts</a></li>
-					<li data-ng-show="isTaskEnabled('wordlist')"   ><a href="#/wordlist">*NYI* from a Word List</a></li>
-					<li data-ng-show="isTaskEnabled('semdom')"     ><a href="#/semdom">*NYI* from Semantic Domains</a></li>
-					<li class="divider" data-ng-show="isTaskEnabled('review') && (isTaskEnabled('dbe') || isTaskEnabled('gatherTexts') || isTaskEnabled('wordlist') || isTaskEnabled('semdom'))"></li>
-					<li data-ng-show="isTaskEnabled('review')"     ><a href="#/review">*NYI* Review</a></li>
-				</ul>
-			</div>
-			<div class="btn-group" data-ng-show="isTaskEnabled('addMeanings') || isTaskEnabled('addGrammar') || isTaskEnabled('addExamples')">
-				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-					<i class="icon-plus icon-large"></i> *NYI* Add Information <span class="caret"></span></a>
-				<ul class="dropdown-menu {{interfaceConfig.pullNormal}}">
-						<li data-ng-show="isTaskEnabled('addMeanings')"><a href="#/add-meanings" translate="add Meanings"></a></li>
-						<li data-ng-show="isTaskEnabled('addGrammar')" ><a href="#/add-grammar" translate="add Grammatical Usage"></a></li>
-						<li data-ng-show="isTaskEnabled('addExamples')"><a href="#/add-examples" translate="add Examples"></a></li>
-				</ul>
-			</div>
-			-->
 		</div>
 	</div>
 	<div data-sil-notices></div>
