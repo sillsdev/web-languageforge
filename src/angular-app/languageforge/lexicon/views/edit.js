@@ -619,15 +619,11 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         text: '',
         status:'all',
         byText: function byText(comment) {
-            if (comment.content.toLowerCase().indexOf($scope.commentFilter.text.toLowerCase()) != -1) {
-                return true;
-            }
-            for (var i=0; i<comment.replies.length; i++) {
-                var reply = comment.replies[i];
-                if (reply.content.toLowerCase().indexOf($scope.commentFilter.text.toLowerCase()) != -1) {
-                    return true;
-                }
-            }
+	        // Convert entire comment object to a big string and search for filter.
+	        // Note: This has a slight side effect of ID and avatar information matching the filter.
+	        if (JSON.stringify(comment).toLowerCase().indexOf($scope.commentFilter.text.toLowerCase()) != -1) {
+		        return true;
+	        }
             return false;
         },
         byStatus: function byStatus(comment) {
