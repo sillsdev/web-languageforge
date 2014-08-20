@@ -80,6 +80,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 //                    if (doSetEntry) {
 //                        setCurrentEntry(entry);
 //                    }
+					pristineEntry = angular.copy($scope.currentEntry);
 					$scope.lastSavedDate = new Date();
 
                     // refresh data will add the new entry to the entries list
