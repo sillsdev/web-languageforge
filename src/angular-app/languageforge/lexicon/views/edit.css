@@ -33,8 +33,7 @@ legend.override-bootstrap {
 /*animate*/
 .animate-switch-container {
 	position:relative;
-	height: 100%;
-	border:1px solid black;
+	height: 500px;
 	overflow:hidden;
 }
 
@@ -51,7 +50,7 @@ legend.override-bootstrap {
 
 .animate-switch.ng-leave.ng-leave-active,
 .animate-switch.ng-enter {
-	right:400px;
+	right:721px;
 }
 .animate-switch.ng-leave,
 .animate-switch.ng-enter.ng-enter-active {
