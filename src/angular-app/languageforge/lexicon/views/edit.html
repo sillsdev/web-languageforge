@@ -1,6 +1,7 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="lexAppContainer">
     <div style="display:flex;justify-content:space-between; margin-top:45px;margin-bottom: 10px">
         <div>
+	        <label ng-show="state == 'list' " style="height:25px"></label>
             <a ng-show="state == 'edit'" class="btn" ng-click="returnToList()" tooltip="{{'Back to List'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'List'|translate}}</a>
             <a ng-show="state == 'comment'" class="btn" ng-click="editEntry(currentEntry.id)" tooltip="{{'Return to Edit Entry'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'Edit'|translate}}</a>
         </div>
@@ -17,38 +18,33 @@
     </div>
 
 	<div class="animate-switch-container" data-ng-switch on=state>
+
 	    <!-- entry list view -->
 	    <div id="lexAppListView" class="animate-switch" data-ng-switch-when="list">
-	        <div class="lexiconHeaderContainer">
-	            <div class="lexiconHeaderItem">
-	                <span style="color: grey">{{entries.length}} {{'entries' | translate}}</span>
-	            </div>
-	            <div ng-hide="show.entries.length === 0" style="width:340px;" class="lexiconHeaderItem">
-	                <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
-	                    <ul ng-if="typeahead.searchResults.length > 0">
-	                        <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
-	                            <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
-	                            <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
-	                        </li>
-	                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
-	                    </ul>
-	                </typeahead>
-	            </div>
-	            <div class="lexiconHeaderItem">
-	                <button class="btn btn-success" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
-	            </div>
-	        </div>
+            <div style="margin: 5px 5px 5px 0">
+                <small style="color: grey">{{entries.length}} {{'entries' | translate}}</small>
+	            <button class="btn btn-success btn-small pull-right" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
+            </div>
+            <div ng-hide="show.entries.length === 0" style="width:340px; margin:0 auto;" >
+                <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
+                    <ul ng-if="typeahead.searchResults.length > 0">
+                        <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
+                            <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
+                            <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
+                        </li>
+                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
+                    </ul>
+                </typeahead>
+            </div>
 	        <div style="border-bottom: 1px solid darkgray; width:100%;margin-top:15px"></div>
 	        <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
 	            <div ng-show="entries.length == 0 && rights.canEditProject() && !fullRefreshInProgress" style="text-align: center;margin-top:50px"><h4>Looks like there are no entries yet.</h4><button class="btn btn-primary" ng-click="navigateToLiftImport()">Import entries from LIFT</button></div>
 	            <div class="lexiconListItem" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntryAndScroll(entry.id)">
 	                <dc-rendered config="config.entry" model="entry"></dc-rendered>
 	                <div ng-show="getEntryCommentCount(entry.id) > 0" style="position:absolute; right:5px;top:3px"><i style="color: #faa732;" class="icon-comment"></i></div>
-
 	            </div>
 	        </div>
 	    </div>
-
 
 	    <!-- edit view -->
 	    <div id="lexAppEditView" class="animate-switch" data-ng-switch-when="edit">
@@ -84,7 +80,7 @@
 	                <div ng-if="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
 	                    <button data-ng-if="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
 	                    <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
-	                    <span style="color: grey;">{{saveNotice()}}</span>
+	                    <span style="color: grey; margin-right: 10px">{{saveNotice()}}</span>
 	                </div>
 	                <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
 	            </div>
