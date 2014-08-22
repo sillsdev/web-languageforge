@@ -2,11 +2,11 @@
     <div style="display:flex;justify-content:space-between; margin-top:45px;margin-bottom: 10px">
         <div>
 	        <label ng-show="state == 'list' " style="height:25px"></label>
-            <a ng-show="state == 'edit'" class="btn" ng-click="returnToList()" tooltip="{{'Back to List'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'List'|translate}}</a>
-            <a ng-show="state == 'comment'" class="btn" ng-click="editEntry(currentEntry.id)" tooltip="{{'Return to Edit Entry'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'Edit'|translate}}</a>
+            <a id="toListLink" ng-show="state == 'edit'" class="btn" ng-click="returnToList()" tooltip="{{'Back to List'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'List'|translate}}</a>
+            <a id="toEditLink" ng-show="state == 'comment'" class="btn" ng-click="editEntry(currentEntry.id)" tooltip="{{'Return to Edit Entry'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'Edit'|translate}}</a>
         </div>
         <div>
-            <a ng-show="state == 'edit'" style="color:white" class="btn btn-warning" ng-click="showComments()" tooltip="{{'Show Comments'|translate}}">
+            <a id="toCommentsLink" ng-show="state == 'edit'" style="color:white" class="btn btn-warning" ng-click="showComments()" tooltip="{{'Show Comments'|translate}}">
                 <span ng-if="currentEntryCommentCounts.total !== 1">
                     {{currentEntryCommentCounts.total}} {{'Comments'|translate}}
                 </span>
