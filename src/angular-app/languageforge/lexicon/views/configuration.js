@@ -196,8 +196,8 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
           break;
           
         // Script / Region / Variant
-        case $scope.selects.special.optionsOrder[3]:    
-          script = 'unspecified';
+        case $scope.selects.special.optionsOrder[3]:
+          script = '';
           $scope.inputSystems[tag].script = script;
           $scope.inputSystems[tag].abbreviation = code + '-';
           break;
@@ -218,7 +218,11 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       // select the first items
       $scope.selectInputSystem($scope.inputSystemsList[0].tag);
     };
-    
+
+	$scope.isUnlistedLanguage = function isUnlistedLanguage() {
+		return ($scope.inputSystems[$scope.currentInputSystemTag].code == 'qaa');
+	}
+
     $scope.openNewLanguageModal = function openNewLanguageModal(suggestedLanguageCodes) {
       var modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
@@ -258,9 +262,10 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             break;
             
           // Script / Region / Variant
-          case $scope.selects.special.optionsOrder[3]:    
-            if (! $scope.inputSystems[tag].script && ! $scope.inputSystems[tag].region)  {
-              $scope.inputSystems[tag].script = 'unspecified';
+          case $scope.selects.special.optionsOrder[3]:
+            // Default script for Unlisted language is "Code for undetermined script"
+            if (tag == 'qaa' && ! $scope.inputSystems[tag].script && ! $scope.inputSystems[tag].region)  {
+              $scope.inputSystems[tag].script = 'Zyyy';
             }
             newTag += ($scope.inputSystems[tag].script) ? '-' + $scope.inputSystems[tag].script : '';
             newTag += ($scope.inputSystems[tag].region) ? '-' + $scope.inputSystems[tag].region : '';
