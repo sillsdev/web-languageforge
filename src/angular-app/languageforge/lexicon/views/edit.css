@@ -31,9 +31,13 @@ legend.override-bootstrap {
 }
 
 /*animate*/
+/*
+// TODO: analyze height property: 625px.  This seems to be related to where the footer is.  Too big, and the footer "tears" on animation
+// 2014-08 DDW
+*/
 .animate-switch-container {
 	position:relative;
-	height: 500px;
+	height: 625px;
 	overflow:hidden;
 }
 
