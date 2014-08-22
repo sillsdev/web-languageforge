@@ -48,7 +48,10 @@
 				<br />
 				<label class="control-label">{{currentInputSystemTag}}</label>
 			</div>
-			<h3>{{inputSystems[currentInputSystemTag].name}}</h3>
+			<h3 data-ng-show="!isUnlistedLanguage()">{{inputSystems[currentInputSystemTag].languageName}}</h3>
+			<input type="text" id="languageName" style="font-size: 1.35em; color: black; font-weight: 700; border: 0px; height: 32px; width: 365px"
+					data-ng-model="inputSystems[currentInputSystemTag].languageName"
+					data-ng-show="isUnlistedLanguage()">
 			<div class="control-group">
 				<label class="control-label" for="abbrev" translate="Display Abbreviation (limited to 4 lowercase characters)"></label>
 				<div class="controls">
