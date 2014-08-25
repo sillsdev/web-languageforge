@@ -67,9 +67,9 @@ var SfProjectSettingsPage = function() {
 	
 	this.optionlistsTab = {
 		// TODO: Find better names for these
-		showList:			element(by.id('showInProfileFieldset')).element.all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
-		editList:			element(by.id('editListValuesFieldset')).element.all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
-		editContentsList:	element(by.id('picklistEditorFieldset')).element.all(by.repeater('item in items')),
+		showList:			element(by.id('showInProfileFieldset')).all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
+		editList:			element(by.id('editListValuesFieldset')).all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
+		editContentsList:	element(by.id('picklistEditorFieldset')).all(by.repeater('item in items')),
 		defaultValue:		element(by.id('picklistEditorFieldset')).element(by.model('defaultKey')),
 		addInput:			element(by.id('picklistEditorFieldset')).element(by.model('newValue')),
 		addButton:			element(by.id('picklistEditorFieldset')).element(by.css('input[type="text"] + a')),

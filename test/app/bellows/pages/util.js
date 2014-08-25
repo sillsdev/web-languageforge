@@ -117,7 +117,7 @@ module.exports.findRowByText = findRowByText;
  * @param textString - string of text to set the value to
  */
 var sendText = function(elem, textString) {
-	browser.executeScript("arguments[0].value = arguments[1];", elem.find(), textString);
+	browser.executeScript("arguments[0].value = arguments[1];", elem.getWebElement(), textString);
 };
 module.exports.sendText = sendText;
 
