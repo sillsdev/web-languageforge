@@ -76,7 +76,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
               $scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[3];
               $scope.inputSystems[tag].script = script;
               $scope.inputSystems[tag].region = InputSystems.getRegion(tag);
-              $scope.inputSystems[tag].variant = privateUse;
+              $scope.inputSystems[tag].variant = InputSystems.getVariant(tag);
           }
         };
         $scope.inputSystemsList = sortInputSystemsList();

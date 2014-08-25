@@ -109,10 +109,11 @@
 						data-ng-options="key as option for (key, option) in selects.region.options">
 						<option value="">-- select a region --</option></select>
 				</div>
-				<label class="control-label" for="variant" translate="Variant"></label>
+				<label class="control-label" for="variant" translate="Variant (limited to letters or numbers, no spaces)"></label>
 				<div class="controls">
-					<input type="text" id="variant" 
-						data-ng-model="inputSystems[currentInputSystemTag].variant" 
+					<input type="text" id="variant"
+						model-transform-limit="30" model-transform-no-space data-ng-trim="false"
+						data-ng-model="inputSystems[currentInputSystemTag].variant"
 						data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount">
 				</div>
 			</div>
