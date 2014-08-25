@@ -21,7 +21,19 @@ var findDropdownByValue = function(dropdownElement, value) {
 			}
 		});
 	};
-	if ("map" in options) {
+	if ("filter" in options) {
+		options.filter(function(elem) {
+			return elem.getText().then(function(text) {
+				return text === value;
+			});
+		}).then(function(list) {
+			if (list.length > 0) {
+				result.fulfill(list[0]);
+			} else {
+				result.reject('Value \"' + value.toString() + '" not found in dropdown');
+			}
+		});
+	} else if ("map" in options) {
 		options.map(check);
 	} else {
 		// Sometimes we get a promise that returns a basic list; deal with that here

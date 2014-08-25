@@ -60,14 +60,14 @@ describe('the project settings page - project manager', function() {
 
 		it('can change the role of a member', function() {
 			page.membersTab.listFilter.sendKeys('dude');
-			util.clickDropdownByValue(page.membersTab.list.first().findElement(by.model('user.role')), 'Manager');
-			expect(page.membersTab.list.first().findElement(by.selectedOption('user.role')).getText()).toEqual('Manager');
+			util.clickDropdownByValue(page.membersTab.list.first().element(by.model('user.role')), 'Manager');
+			expect(page.membersTab.list.first().element(by.model('user.role')).$('option:checked').getText()).toEqual('Manager');
 			page.membersTab.listFilter.clear();
 		});
 
 		it('can remove a member', function() {
 			page.membersTab.listFilter.sendKeys('dude');
-			page.membersTab.list.first().findElement(by.css('input[type="checkbox"]')).click();
+			page.membersTab.list.first().element(by.css('input[type="checkbox"]')).click();
 			page.membersTab.removeButton.click();
 			page.membersTab.listFilter.clear();
 			page.membersTab.listFilter.sendKeys('dude');
@@ -99,7 +99,7 @@ describe('the project settings page - project manager', function() {
 		});
 		
 		it('can update an existing template', function() {
-			page.templatesTab.list.last().findElement(by.linkText('sound check')).click();
+			page.templatesTab.list.last().element(by.linkText('sound check')).click();
 			expect(page.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
 			page.templatesTab.editor.title.clear();
 			page.templatesTab.editor.title.sendKeys('test12');
@@ -109,7 +109,7 @@ describe('the project settings page - project manager', function() {
 		});
 		
 		it('can delete a template', function() {
-			page.templatesTab.list.last().findElement(by.css('input[type="checkbox"]')).click();
+			page.templatesTab.list.last().element(by.css('input[type="checkbox"]')).click();
 			page.templatesTab.removeButton.click();
 			expect(page.templatesTab.list.count()).toBe(2);
 		});
