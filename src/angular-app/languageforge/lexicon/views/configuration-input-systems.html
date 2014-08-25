@@ -8,15 +8,19 @@
 		</div>
 		
 		<!-- picklist -->
-		<div class="control-group picklists">
-			<ul class="unstyled">
-				<li data-ng-click="selectInputSystem(inputSystem.tag)" data-ng-repeat="inputSystem in inputSystemsList" 
-					data-ng-class="{selected:currentInputSystemTag == inputSystem.tag}" 
-					data-ng-style="{marginBottom:((inputSystem.code != inputSystemsList[$index + 1].code) ? '10px' : '0px')}">{{inputSystem.name}}</li>
-			</ul>
-		</div>
+		<dl class="picklists" style="height: 300px; overflow: auto;">
+			<dt translate="Language Names"></dt>
+			<dd><div class="controls">
+				<div data-ng-click="selectInputSystem(inputSystem.tag)" data-ng-repeat="inputSystem in inputSystemsList"
+					data-ng-class="{selected:currentInputSystemTag == inputSystem.tag}" >
+					<span data-ng-style="{'font-style': (isUnlistedLanguage(inputSystem.code) ? 'italic' : 'normal')}; ">{{inputSystem.name}}</span>
+				</div>
+				</div>
+			</dd>
+		</dl>
+		<small translate="Unlisted language names shown in <i>italics</i> can be renamed"></small>
 	</div>
-		
+
 	<!-- Right column: input system setup -->
 	<div class="span9">
 		<!-- control buttons -->
@@ -48,10 +52,12 @@
 				<br />
 				<label class="control-label">{{currentInputSystemTag}}</label>
 			</div>
-			<h3 data-ng-show="!isUnlistedLanguage()">{{inputSystems[currentInputSystemTag].languageName}}</h3>
+			<!-- listed language name -->
+			<h3 data-ng-show="!isUnlistedLanguage(inputSystems[currentInputSystemTag].code)">{{inputSystems[currentInputSystemTag].languageName}}</h3>
+			<!-- unlisted language name -->
 			<input type="text" id="languageName" style="font-size: 1.35em; color: black; font-weight: 700; border: 0px; height: 32px; width: 365px"
 					data-ng-model="inputSystems[currentInputSystemTag].languageName"
-					data-ng-show="isUnlistedLanguage()">
+					data-ng-show="isUnlistedLanguage(inputSystems[currentInputSystemTag].code)">
 			<div class="control-group">
 				<label class="control-label" for="abbrev" translate="Display Abbreviation (limited to 4 lowercase characters)"></label>
 				<div class="controls">

@@ -219,8 +219,8 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       $scope.selectInputSystem($scope.inputSystemsList[0].tag);
     };
 
-	$scope.isUnlistedLanguage = function isUnlistedLanguage() {
-		return ($scope.inputSystems[$scope.currentInputSystemTag].code == 'qaa');
+	$scope.isUnlistedLanguage = function isUnlistedLanguage(code) {
+		return (code == 'qaa');
 	}
 
     $scope.openNewLanguageModal = function openNewLanguageModal(suggestedLanguageCodes) {
