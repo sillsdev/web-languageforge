@@ -77,14 +77,19 @@ describe('the questions list page (AKA the text page)', function() {
 		});
 		
 		it('can archive the question that was just created', function() {
-			var archiveButton = textPage.archiveButton.find();
+			var archiveButton = textPage.archiveButton.getWebElement();
 			expect(archiveButton.isDisplayed()).toBe(true);
 			expect(archiveButton.isEnabled()).toBe(false);
 			util.setCheckbox(textPage.getFirstCheckbox(), true);
 			expect(archiveButton.isEnabled()).toBe(true);
 			archiveButton.click();
 			util.clickModalButton('Archive');
-			expect(archiveButton.isEnabled()).toBe(false);
+			// Wait for archive button to become disabled again
+			browser.wait(function() {
+				return archiveButton.isEnabled().then(function(bool) {
+					return !bool;
+				});
+			}, 1000);
 			expect(textPage.questionLink(questionTitle).isPresent()).toBe(false);
 		});
 
@@ -92,7 +97,7 @@ describe('the questions list page (AKA the text page)', function() {
 			textPage.textSettingsBtn.click();
 			textSettingsPage.tabs.archiveQuestions.click();
 			expect(textSettingsPage.archivedQuestionsTab.questionLink(questionTitle).isDisplayed()).toBe(true);
-			var publishButton = textSettingsPage.archivedQuestionsTab.publishButton.find();
+			var publishButton = textSettingsPage.archivedQuestionsTab.publishButton.getWebElement();
 			expect(publishButton.isDisplayed()).toBe(true);
 			expect(publishButton.isEnabled()).toBe(false);
 			util.setCheckbox(textSettingsPage.archivedQuestionsTabGetFirstCheckbox(), true);

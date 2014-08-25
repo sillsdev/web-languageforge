@@ -132,7 +132,7 @@ var SfProjectsPage = function() {
 					});
 				}).then(function() {
 					if (foundUserRow) {
-						var select = foundUserRow.$('select');
+						var select = foundUserRow.$('select:not([disabled])');
 						util.clickDropdownByValue(select, roleText);
 					}
 				});
@@ -151,8 +151,7 @@ var SfProjectsPage = function() {
 		this.addUserToProject(projectName, userName, "Manager");
 	};
 	this.addMemberToProject = function(projectName, userName) {
-		var roleText = (constants.siteType == "languageforge" ? "Contributor" : "Member");
-		this.addUserToProject(projectName, userName, roleText);
+		this.addUserToProject(projectName, userName, "Contributor");
 	};
 	
 	this.removeUserFromProject = function(projectName, userName) {

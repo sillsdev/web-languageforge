@@ -100,10 +100,14 @@ describe('the project settings page - project manager', function() {
 		
 		it('can update an existing template', function() {
 			page.templatesTab.list.last().element(by.linkText('sound check')).click();
-			expect(page.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
+			browser.wait(function() {
+				return page.templatesTab.editor.saveButton.isDisplayed();
+			});
+			expect(page.templatesTab.editor.saveButton.isDisplayed()).toBe(true);
 			page.templatesTab.editor.title.clear();
 			page.templatesTab.editor.title.sendKeys('test12');
 			page.templatesTab.editor.saveButton.click();
+			expect(page.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
 			expect(page.templatesTab.list.count()).toBe(3);
 
 		});
@@ -182,7 +186,7 @@ describe('the project settings page - project manager', function() {
 			});
 			foo.then(function(elem) {
 				console.log("Found it.");
-				//browser.actions().dragAndDrop(elem.find(), { x: 0, y: 30 } ).perform();
+				//browser.actions().dragAndDrop(elem.getWebElement(), { x: 0, y: 30 } ).perform();
 			});
 			browser.sleep(5000);
 		});
