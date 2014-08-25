@@ -54,7 +54,7 @@ var SfProjectSettingsPage = function() {
 	};
 	// getFirstCheckbox has to be a function because the .first() method will actually resolve the finder
 	this.archivedTextsTabGetFirstCheckbox = function() {
-		return this.archivedTextsTab.textList.first().findElement(by.css('input[type="checkbox"]'));
+		return this.archivedTextsTab.textList.first().element(by.css('input[type="checkbox"]'));
 	};
 	
 	this.propertiesTab = {
@@ -77,7 +77,7 @@ var SfProjectSettingsPage = function() {
 		unsavedWarning:		element(by.css('span.unsaved-warning')),
 		deleteButton: function(repeaterRow) {
 			// Given a single repeater row in the picklist, return the delete button for that row
-			return repeaterRow.findElement(by.css('a:first-of-type'));
+			return repeaterRow.element(by.css('a:first-of-type'));
 		},
 	}; // NYI - wait for refactor
 	

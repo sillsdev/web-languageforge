@@ -23,7 +23,7 @@ var LfDbePage = function() {
 		var result = protractor.promise.defer();
 		var re = new RegExp(lexeme);
 		this.entriesList.map(function(row) {
-			row.findElement(by.binding('entry.word')).getText().then(function(word) {
+			row.element(by.binding('entry.word')).getText().then(function(word) {
 				if (re.test(word)) {
 					foundRow = row;
 				};
