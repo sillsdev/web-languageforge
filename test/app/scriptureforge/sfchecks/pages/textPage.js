@@ -26,7 +26,7 @@ var SfTextPage = function() {
 	
 	// getFirstCheckbox has to be a function because the .first() method will actually resolve the finder
 	this.getFirstCheckbox = function() {
-		return this.questionRows.first().findElement(by.css('input[type="checkbox"]'));
+		return this.questionRows.first().element(by.css('input[type="checkbox"]'));
 	};
 
 	this.newQuestion = {
