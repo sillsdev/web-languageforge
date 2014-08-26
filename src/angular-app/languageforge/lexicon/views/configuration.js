@@ -47,28 +47,11 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       return $filter('orderBy')($filter('orderAsArray')($scope.configDirty.inputSystems, 'tag'), 'name');
     };
 
-	  function appendSpecialNames(tag) {
-		  if (tag == 'qaa-Zxxx-x-audio') {
-			  console.log('undefined: ' + tag);
-		  }
-		  $scope.inputSystems[tag].name = $scope.inputSystems[tag].languageName;
-		  // Special cases
-		  //$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[0];
-		  if ($scope.inputSystems[tag].variant == 'fonipa') {
-			  //$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[1];
-			  $scope.inputSystems[tag].name += ' (IPA)';
-		  }
-		  if ($scope.inputSystems[tag].script == 'Zxxx') {
-			  //$scope.inputSystems[tag].special = $scope.selects.special.optionsOrder[2];
-			  $scope.inputSystems[tag].name += ' (Voice)';
-		  }
-	  }
     function setupView() {
       if (angular.isDefined($scope.configDirty.inputSystems)) {
         $scope.inputSystems = $scope.configDirty.inputSystems;
         for (var tag in $scope.inputSystems) {
-	        InputSystems.parseTag($scope.inputSystems[tag], tag);
-			appendSpecialNames(tag);
+	        InputSystems.parseTag($scope.inputSystems[tag], tag, $scope.selects.special.optionsOrder);
         }
         $scope.inputSystemsList = sortInputSystemsList();
         
@@ -161,9 +144,13 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         // Script / Region / Variant
         case $scope.selects.special.optionsOrder[3]:    
           break;
+
+          default :
+              console.log('special not set here');
       }
       return (tag in $scope.inputSystems);
     };
+      // TODO This is broken when adding input system from More dropdown.  2014-08 DDW
     $scope.addInputSystem = function addInputSystem(code, languageName, special) {
       var tag = 'xxNewTagxx';
       var script = '';
@@ -195,6 +182,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       $scope.inputSystems[tag].purpose = '';
       $scope.inputSystems[tag].region = '';
       $scope.inputSystems[tag].variant = '';
+      $scope.inputSystems[tag].privateUsage = '';
       $scope.currentInputSystemTag = tag;
     };
     
@@ -232,19 +220,16 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
       
     };
 
-	  var recurseCount = 0;
     $scope.$watchCollection('inputSystems[currentInputSystemTag]', function(newValue) {
-	    console.log('RC1: ' + recurseCount++);
 	    if (newValue == undefined) {
 		    return;
 	    }
         var tag = $scope.currentInputSystemTag;
         var newTag = $scope.inputSystems[tag].code;
-	      console.log('watch1: ' + tag + ' Name: ' + $scope.inputSystems[tag].name);
-	      //console.log('watch2: ' + newTag);
-	      //console.log('watch3: ' + $scope.inputSystems);
-		    console.log('watch4: ' + $scope.inputSystems[tag].special);
 
+        if ($scope.inputSystems[tag].special == undefined) {
+            console.log('special: ' + $scope.inputSystems[tag].special);
+        }
 
 	      switch($scope.inputSystems[tag].special) {
           
@@ -261,7 +246,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
           // Voice
           case $scope.selects.special.optionsOrder[2]:    
             newTag += '-Zxxx-x-audio';
-            newTag += ($scope.inputSystems[tag].variant) ? '-' + $scope.inputSystems[tag].variant : '';
+            newTag += ($scope.inputSystems[tag].privateUsage) ? '-' + $scope.inputSystems[tag].privateUsage : '';
             break;
             
           // Script / Region / Variant
@@ -273,7 +258,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             newTag += ($scope.inputSystems[tag].script) ? '-' + $scope.inputSystems[tag].script : '';
             newTag += ($scope.inputSystems[tag].region) ? '-' + $scope.inputSystems[tag].region : '';
             //newTag += ($scope.inputSystems[tag].variant) ? '-x-' + $scope.inputSystems[tag].variant : '';
-            //newTag += ($scope.inputSystems[tag].privateUsage) ? '-' + $scope.inputSystems[tag].privateUsage : '';
+            newTag += ($scope.inputSystems[tag].privateUsage) ? '-x-' + $scope.inputSystems[tag].privateUsage : '';
             break;
         }
 	       //$scope.inputSystems[tag].name = $scope.inputSystems[tag].languageName;
@@ -285,8 +270,8 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
             $scope.inputSystems[newTag] = $scope.inputSystems[tag];
 	          // TODO fix watched language name 2014-08 DDW
 	          console.log('newTag: ' + newTag);
-	          InputSystems.parseTag($scope.inputSystems[newTag], newTag);
-	          appendSpecialNames(newTag);
+	          InputSystems.parseTag($scope.inputSystems[newTag], newTag, $scope.selects.special.optionsOrder);
+
 
             $scope.configForm.$setDirty();
           // Review CP 2014-08 This is going to cause problems if we have a ui that allows the same language code to
@@ -297,8 +282,6 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
         }
         $scope.inputSystemsList = sortInputSystemsList();
       }
-	    console.log('RC2: ' + --recurseCount);
-
     });
   
   }])
