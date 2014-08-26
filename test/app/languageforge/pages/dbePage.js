@@ -99,6 +99,38 @@ var LfDbePage = function() {
 		});
 	};
 	
+	this.edit.getVisibleFields = function() {
+		return page.edit.fields.map(function(div) {
+			var label = div.$('label:not(.ng-hide)');
+			return label.isPresent().then(function(present) {
+				if (present) {
+					return label.getText().then(function(labelText) {
+						return {
+							label: labelText,
+							div: div,
+						};
+					});
+				} else {
+					var promise = protractor.promise.defer();
+					promise.fulfill(undefined);
+					return promise;
+				}
+			});
+		}).then(function(results) {
+			return results.filter(function(x) { return (typeof(x) != "undefined"); });
+		});
+	};
+
+	this.edit.getLabelsOfVisibleFields = function() {
+		return page.edit.getVisibleFields().then(function(fields) {
+			var result = [];
+			fields.forEach(function(field) {
+				result.push(field.label);
+			});
+			return result;
+		});
+	};
+	
 	// --- Comment view ---
 	this.comment = {};
 };
