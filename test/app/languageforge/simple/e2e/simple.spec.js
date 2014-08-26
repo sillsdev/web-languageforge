@@ -13,9 +13,12 @@ describe('E2E testing: sample LF test', function() {
 		projectsPage.get();
 		projectsPage.clickOnProject(constants.testProjectName);
 
+		expect(dbePage.browse.entriesList.count()).toEqual(dbePage.browse.getEntryCount());
+		expect(dbePage.browse.getEntryCount()).toBe(2);
+
 		// Word 1
 		dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-		dbePage.edit.getFirstLexeme().then(function(word) {
+		dbePage.edit.getLexemeByWsid('th').then(function(word) {
 			expect(word).toBe(constants.testEntry1.lexeme.th.value);
 		});
 		dbePage.edit.getLexemeDivByWsid('th').then(function(elems) {
@@ -36,7 +39,7 @@ describe('E2E testing: sample LF test', function() {
 		
 		// Word 2
 		dbePage.browse.clickEntryByLexeme(constants.testEntry2.lexeme.th.value);
-		dbePage.edit.getFirstLexeme().then(function(word) {
+		dbePage.edit.getLexemeByWsid('th').then(function(word) {
 			expect(word).toBe(constants.testEntry2.lexeme.th.value);
 		});
 		dbePage.edit.getLexemeDivByWsid('th').then(function(elems) {

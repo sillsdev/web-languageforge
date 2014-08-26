@@ -22,6 +22,12 @@ var LfDbePage = function() {
 	// --- Browse view ---
 	this.browse = {};
 	this.browse.newWordBtn = this.browseDiv.element(by.partialButtonText('New Word'));
+	this.browse.entryCountSpan = this.browseDiv.element(by.binding('entries.length'));
+	this.browse.getEntryCount = function() {
+		return page.browse.entryCountSpan.getText().then(function(s) {
+			return parseInt(s, 10);
+		});
+	};
 	this.browse.entriesList = this.browseDiv.all(by.repeater('entry in show.entries'));
 
 	this.browse.findEntryByLexeme = function(lexeme) {
