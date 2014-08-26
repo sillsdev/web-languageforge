@@ -86,6 +86,7 @@ var LfDbePage = function() {
 	};
 
 	this.edit.getLexemes = function() {
+		// Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
 		var lexeme = page.edit.fields.get(0);
 		var writingSystemDivs = lexeme.all(by.repeater('tag in config.inputSystems'));
 		return writingSystemDivs.map(function(div) {
@@ -102,6 +103,7 @@ var LfDbePage = function() {
 		});
 	};
 	this.edit.getLexemesAsObject = function() {
+		// Returns lexemes in the format [{en: 'word'}, {de: 'Wort'}]
 		return page.edit.getLexemes().then(function(lexemeList) {
 			var result = {};
 			for (var i=0,l=lexemeList.length; i<l; i++) {
@@ -111,6 +113,7 @@ var LfDbePage = function() {
 		});
 	};
 	this.edit.getFirstLexeme = function() {
+		// Returns the first (topmost) lexeme regarless of its wsid
 		return page.edit.getLexemes().then(function(lexemeList) {
 			return lexemeList[0].value;
 		});
