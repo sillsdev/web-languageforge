@@ -29,7 +29,7 @@ var SfTextSettingsPage = function() {
 	};
 	// getFirstCheckbox has to be a function because the .first() method will actually resolve the finder
 	this.archivedQuestionsTabGetFirstCheckbox = function() {
-		return this.archivedQuestionsTab.questionList.first().findElement(by.css('input[type="checkbox"]'));
+		return this.archivedQuestionsTab.questionList.first().element(by.css('input[type="checkbox"]'));
 	};
 	
 	this.audioFileTab = {
