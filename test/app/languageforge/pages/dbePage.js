@@ -57,7 +57,7 @@ var dcMultiOptionListToValue = function(elem) {
 };
 
 var dcParsingFuncs = {
-	'multitext': dcMultitextToValue,
+	'multitext': dcMultitextToObject,
 	'optionlist': dcOptionListToValue,
 	'multioptionlist': dcMultiOptionListToValue,
 };
