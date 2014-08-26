@@ -91,8 +91,24 @@
 						data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
 						<option value="">unspecified</option></select>
 				</div>
+				<label class="control-label" for="variant" translate="Variant/Private Use (limited to letters or numbers, no spaces)"></label>
+				<div class="controls">
+					<input type="text" id="ipaVariant"
+					       model-transform-limit="30" model-transform-no-space data-ng-trim="false"
+					       data-ng-model="inputSystems[currentInputSystemTag].variant"
+					       data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount">
+				</div>
 			</div>
-			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[3]">		<!-- Script / Region / Variant -->
+			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[2]">	<!-- Voice -->
+				<label class="control-label" for="variant" translate="Variant/Private Use (limited to letters or numbers, no spaces)"></label>
+				<div class="controls">
+					<input type="text" id="voiceVariant"
+					       model-transform-limit="30" model-transform-no-space data-ng-trim="false"
+					       data-ng-model="inputSystems[currentInputSystemTag].variant"
+					       data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount">
+				</div>
+			</div>
+			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[3]">	<!-- Script / Region / Variant -->
 				<label class="control-label" for="script" translate="Script"></label>
 				<div class="controls">
 					<select class="form-control" id="script" 
@@ -109,7 +125,7 @@
 						data-ng-options="key as option for (key, option) in selects.region.options">
 						<option value="">-- select a region --</option></select>
 				</div>
-				<label class="control-label" for="variant" translate="Variant (limited to letters or numbers, no spaces)"></label>
+				<label class="control-label" for="variant" translate="Variant/Private Use (limited to letters or numbers, no spaces)"></label>
 				<div class="controls">
 					<input type="text" id="variant"
 						model-transform-limit="30" model-transform-no-space data-ng-trim="false"
@@ -123,10 +139,10 @@
 				<a href="http://en.wikipedia.org/wiki/International_Phonetic_Alphabet" target="_blank">
 					<i class="icon-globe"></i> {{ 'Read more about IPA transcriptions' | translate }}</a>
 			</div>
-			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[2]">		<!-- Voice -->
+			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[2]">	<!-- Voice -->
 				<small translate="In applications which support this option, fields with this input system will able to play and record voice."></small>
 			</div>
-			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[3]">		<!-- Script / Region / Variant -->
+			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[3]">	<!-- Script / Region / Variant -->
 				<a href="http://www.w3.org/International/questions/qa-choosing-language-tags" target="_blank">
 					<i class="icon-globe"></i> 	{{ 'Read more about language identifiers' | translate }}</a>
 			</div>
