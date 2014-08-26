@@ -7,6 +7,42 @@ var projectTypes = {
 
 var util = require('../../bellows/pages/util');  // TODO: Remove if not used once page implemented
 
+var dcMultitextToArray = function(elem) {
+	// Return the multitext's values as [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
+	// NOTE: Returns a promise. Use .then() to access the actual data.
+	var inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
+	return inputSystemDivs.map(function(div) {
+		var wsidSpan = div.element(by.css('span.wsid'));
+		var wordElem = div.element(by.css('input'));
+		return wsidSpan.getText().then(function(wsid) {
+			return wordElem.getAttribute('value').then(function(word) {
+				return {
+					wsid: wsid,
+					value: word,
+				};
+			});
+		});
+	});
+};
+var dcMultitextToObject = function(elem) {
+	// Return the multitext's values as [{en: 'word', de: 'Wort'}]
+	// NOTE: Returns a promise. Use .then() to access the actual data.
+	return dcMultitextToArray(elem).then(function(values) {
+		var result = {};
+		for (var i=0,l=values.length; i<l; i++) {
+			result[values[i].wsid] = values[i].value;
+		}
+		return result;
+	});
+};
+var dcMultitextToValue = function(elem) {
+	// Returns the value of the multitext's first writing system, no matter what writing system is first
+	// NOTE: Returns a promise. Use .then() to access the actual data.
+	return dcMultitextToArray(elem).then(function(values) {
+		return values[0].value;
+	});
+};
+
 var LfDbePage = function() {
 	var page = this;
 	this.url = "/app/lexicon";
@@ -68,35 +104,17 @@ var LfDbePage = function() {
 	this.edit.getLexemes = function() {
 		// Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
 		var lexeme = page.edit.fields.get(0);
-		var writingSystemDivs = lexeme.all(by.repeater('tag in config.inputSystems'));
-		return writingSystemDivs.map(function(div) {
-			var wsidSpan = div.element(by.css('span.wsid'));
-			var wordElem = div.element(by.css('input'));
-			return wsidSpan.getText().then(function(wsid) {
-				return wordElem.getAttribute('value').then(function(word) {
-					return {
-						wsid: wsid,
-						value: word,
-					};
-				});
-			});
-		});
+		return dcMultitextToArray(lexeme);
 	};
 	this.edit.getLexemesAsObject = function() {
-		// Returns lexemes in the format [{en: 'word'}, {de: 'Wort'}]
-		return page.edit.getLexemes().then(function(lexemeList) {
-			var result = {};
-			for (var i=0,l=lexemeList.length; i<l; i++) {
-				result[lexemeList[i].wsid] = lexemeList[i].value;
-			}
-			return result;
-		});
+		// Returns lexemes in the format [{en: 'word', de: 'Wort'}]
+		var lexeme = page.edit.fields.get(0);
+		return dcMultitextToObject(lexeme);
 	};
 	this.edit.getFirstLexeme = function() {
 		// Returns the first (topmost) lexeme regarless of its wsid
-		return page.edit.getLexemes().then(function(lexemeList) {
-			return lexemeList[0].value;
-		});
+		var lexeme = page.edit.fields.get(0);
+		return dcMultitextToValue(lexeme);
 	};
 	
 	this.edit.getVisibleFields = function() {
