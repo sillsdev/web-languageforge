@@ -21,7 +21,10 @@ describe('E2E testing: sample LF test', function() {
 		dbePage.edit.getLexemeByWsid('th').then(function(word) {
 			expect(word).toBe(constants.testEntry1.lexeme.th.value);
 		});
-		dbePage.edit.getLabelsOfVisibleFields().then(console.log);
+		dbePage.edit.getLexemes().then(console.log);
+//		dbePage.edit.getVisibleFieldsByLabel().then(function(fields) {
+//			dbePage.dcOptionListToValue(fields['Part of Speech']).then(console.log);
+//		});
 		
 		// Back to list to check word 2
 		dbePage.edit.toListLink.click();
@@ -31,14 +34,13 @@ describe('E2E testing: sample LF test', function() {
 		dbePage.edit.getLexemeByWsid('th').then(function(word) {
 			expect(word).toBe(constants.testEntry2.lexeme.th.value);
 		});
-		dbePage.edit.getLabelsOfVisibleFields().then(console.log);
-//		dbePage.edit.getVisibleFields().then(function(fields) {
-//			fields.forEach(function(field) {
-//				console.log('Field ' + field.label + ':');
-//				//console.log(field.div);
-//				field.div.getOuterHtml().then(console.log);
-//			});
-//			console.log(' *** ');
-//		});
+//		dbePage.edit.getLabelsOfVisibleFields().then(console.log);
+		dbePage.edit.getVisibleFieldsAndValues().then(function(fields) {
+			for (var key in fields) {
+				console.log("Field", key, "has value:");
+				fields[key].then(console.log);
+			};
+			expect(fields['Part of Speech']).toBe("Noun (n)");
+		});
 	});
 });

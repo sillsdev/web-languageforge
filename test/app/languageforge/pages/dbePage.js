@@ -12,8 +12,8 @@ var dcMultitextToArray = function(elem) {
 	// NOTE: Returns a promise. Use .then() to access the actual data.
 	var inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
 	return inputSystemDivs.map(function(div) {
-		var wsidSpan = div.element(by.css('span.wsid'));
-		var wordElem = div.element(by.css('input'));
+		var wsidSpan = div.$('.controls span.wsid');
+		var wordElem = div.$('.controls input');
 		return wsidSpan.getText().then(function(wsid) {
 			return wordElem.getAttribute('value').then(function(word) {
 				return {
@@ -41,6 +41,25 @@ var dcMultitextToValue = function(elem) {
 	return dcMultitextToArray(elem).then(function(values) {
 		return values[0].value;
 	});
+};
+
+var dcOptionListToValue = function(elem) {
+	var select = elem.$('.controls select');
+	return select.$('option:checked').getText().then(function(text) {
+		return text;
+	});
+};
+
+var dcMultiOptionListToValue = function(elem) {
+	// At the moment these are identical to dc-optionlist directives.
+	// When they change, this function will need to be rewritten
+	return dcOptionListToValue(elem);
+};
+
+var dcParsingFuncs = {
+	'multitext': dcMultitextToValue,
+	'optionlist': dcOptionListToValue,
+	'multioptionlist': dcMultiOptionListToValue,
 };
 
 var LfDbePage = function() {
@@ -138,12 +157,36 @@ var LfDbePage = function() {
 			return results.filter(function(x) { return (typeof(x) != "undefined"); });
 		});
 	};
+	
+	this.edit.getVisibleFieldsByLabel = function() {
+		return page.edit.getVisibleFields().then(function(fields) {
+			var result = {};
+			fields.forEach(function(field) {
+				result[field.label] = field.div;
+			});
+			return result;
+		});
+	};
 
 	this.edit.getLabelsOfVisibleFields = function() {
 		return page.edit.getVisibleFields().then(function(fields) {
 			var result = [];
 			fields.forEach(function(field) {
 				result.push(field.label);
+			});
+			return result;
+		});
+	};
+	
+	this.edit.getVisibleFieldsAndValues = function() {
+		return page.edit.getVisibleFields().then(function(fields) {
+			var result = {};
+			fields.forEach(function(field) {
+				var switchDiv = field.div.$('[data-on="config.fields[fieldName].type"] > div');
+				switchDiv.getAttribute('data-ng-switch-when').then(function(fieldType) {
+					var value = dcParsingFuncs[fieldType](field.div);
+					result[field.label] = value;
+				});
 			});
 			return result;
 		});
