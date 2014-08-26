@@ -24,44 +24,18 @@ var LfDbePage = function() {
 	this.browse.newWordBtn = this.browseDiv.element(by.partialButtonText('New Word'));
 	this.browse.entriesList = this.browseDiv.all(by.repeater('entry in show.entries'));
 
-	this.browse.old_findEntryByLexeme = function(lexeme) {
-		var foundRow = undefined;
-		var result = protractor.promise.defer();
-		var re = new RegExp(lexeme);
-		page.browse.entriesList.map(function(row) {
-			row.element(by.binding('entry.word')).getText().then(function(word) {
-				if (re.test(word)) {
-					foundRow = row;
-				};
-			});
-		}).then(function() {
-			if (foundRow) {
-				result.fulfill(foundRow);
-			} else {
-				result.reject("Entry \"" + lexeme + "\" not found.");
-			}
-		});
-		return result;
-	};
-	this.browse.old_clickEntryByLexeme = function(lexeme) {
-		page.browse.old_findEntryByLexeme().then(function(row) {
-			row.click();
-		});
-	};
-	this.browse.better_findEntryByLexeme = function(lexeme) {
+	this.browse.findEntryByLexeme = function(lexeme) {
 		return page.browse.entriesList.filter(function(row) {
 			return row.element(by.binding('entry.word')).getText().then(function(word) {
 				return (word == lexeme);
 			});
 		});
 	};
-	this.browse.better_clickEntryByLexeme = function(lexeme) {
-		page.browse.better_findEntryByLexeme(lexeme).then(function(matched_rows) {
+	this.browse.clickEntryByLexeme = function(lexeme) {
+		page.browse.findEntryByLexeme(lexeme).then(function(matched_rows) {
 			matched_rows[0].click();
 		});
 	};
-	this.browse.findEntryByLexeme = this.browse.better_findEntryByLexeme;
-	this.browse.clickEntryByLexeme = this.browse.better_clickEntryByLexeme;
 	
 	// --- Edit view ---
 	this.edit = {};
