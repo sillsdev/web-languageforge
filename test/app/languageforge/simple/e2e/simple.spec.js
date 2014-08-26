@@ -21,18 +21,7 @@ describe('E2E testing: sample LF test', function() {
 		dbePage.edit.getLexemeByWsid('th').then(function(word) {
 			expect(word).toBe(constants.testEntry1.lexeme.th.value);
 		});
-		dbePage.edit.getLexemeDivByWsid('th').then(function(elems) {
-			if (elems.length > 0) { elems[0].$('input').getAttribute('value').then(console.log); }
-		});
-		dbePage.edit.getLexemeByWsid('thipa').then(function(lexeme) {
-			console.log(lexeme);
-		});
-		expect(dbePage.edit.getLexemes()).toEqual([
-			{ wsid: 'th'   , value: constants.testEntry1.lexeme.th.value },
-			{ wsid: 'thipa', value: constants.testEntry1.lexeme['th-fonipa'].value },
-		]);
-		dbePage.edit.getLexemesAsObject().then(console.log);
-		dbePage.edit.getFirstLexeme().then(console.log);
+		dbePage.edit.getLabelsOfVisibleFields().then(console.log);
 		
 		// Back to list to check word 2
 		dbePage.edit.toListLink.click();
@@ -42,17 +31,14 @@ describe('E2E testing: sample LF test', function() {
 		dbePage.edit.getLexemeByWsid('th').then(function(word) {
 			expect(word).toBe(constants.testEntry2.lexeme.th.value);
 		});
-		dbePage.edit.getLexemeDivByWsid('th').then(function(elems) {
-			if (elems.length > 0) { elems[0].$('input').getAttribute('value').then(console.log); }
-		});
-		dbePage.edit.getLexemeByWsid('thipa').then(function(lexeme) {
-			console.log(lexeme);
-		});
-		expect(dbePage.edit.getLexemes()).toEqual([
-			{ wsid: 'th'   , value: constants.testEntry2.lexeme.th.value },
-			{ wsid: 'thipa', value: constants.testEntry2.lexeme['th-fonipa'].value },
-		]);
-		dbePage.edit.getLexemesAsObject().then(console.log);
-		dbePage.edit.getFirstLexeme().then(console.log);
+		dbePage.edit.getLabelsOfVisibleFields().then(console.log);
+//		dbePage.edit.getVisibleFields().then(function(fields) {
+//			fields.forEach(function(field) {
+//				console.log('Field ' + field.label + ':');
+//				//console.log(field.div);
+//				field.div.getOuterHtml().then(console.log);
+//			});
+//			console.log(' *** ');
+//		});
 	});
 });
