@@ -91,20 +91,20 @@
 						data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
 						<option value="">unspecified</option></select>
 				</div>
-				<label class="control-label" for="variant" translate="Variant/Private Use (limited to letters or numbers, no spaces)"></label>
+				<label class="control-label" for="ipaVariant" translate="Variant (limited to letters or numbers, no spaces)"></label>
 				<div class="controls">
-					<input type="text" id="ipaVariant"
-					       model-transform-limit="30" model-transform-no-space data-ng-trim="false"
-					       data-ng-model="inputSystems[currentInputSystemTag].variant"
+					<input type="text" id="ipaVariant" size="25"
+					       model-transform-limit="35" model-transform-no-space data-ng-trim="false"
+					       data-ng-model="inputSystems[currentInputSystemTag].privateUsage"
 					       data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount">
 				</div>
 			</div>
 			<div class="control-group" data-ng-show="inputSystems[currentInputSystemTag].special == selects.special.optionsOrder[2]">	<!-- Voice -->
-				<label class="control-label" for="variant" translate="Variant/Private Use (limited to letters or numbers, no spaces)"></label>
+				<label class="control-label" for="voiceVariant" translate="Variant (limited to letters or numbers, no spaces)"></label>
 				<div class="controls">
-					<input type="text" id="voiceVariant"
-					       model-transform-limit="30" model-transform-no-space data-ng-trim="false"
-					       data-ng-model="inputSystems[currentInputSystemTag].variant"
+					<input type="text" id="voiceVariant" size="25"
+					       model-transform-limit="35" model-transform-no-space data-ng-trim="false"
+					       data-ng-model="inputSystems[currentInputSystemTag].privateUsage"
 					       data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount">
 				</div>
 			</div>
@@ -125,11 +125,11 @@
 						data-ng-options="key as option for (key, option) in selects.region.options">
 						<option value="">-- select a region --</option></select>
 				</div>
-				<label class="control-label" for="variant" translate="Variant/Private Use (limited to letters or numbers, no spaces)"></label>
+				<label class="control-label" for="variant" translate="Variant (limited to letters or numbers, no spaces)"></label>
 				<div class="controls">
-					<input type="text" id="variant"
-						model-transform-limit="30" model-transform-no-space data-ng-trim="false"
-						data-ng-model="inputSystems[currentInputSystemTag].variant"
+					<input type="text" id="variant" size="25"
+						model-transform-limit="35" model-transform-no-space data-ng-trim="false"
+						data-ng-model="inputSystems[currentInputSystemTag].privateUsage"
 						data-ng-disabled="inputSystems[currentInputSystemTag].fieldUseCount">
 				</div>
 			</div>
