@@ -1,3 +1,19 @@
+## v2.42.1
+
+* FIXED: 7465: Fixed `net.getLoopbackAddress` on Windows
+* FIXED: 7277: Support `done` callback in Mocha's BDD interface
+* FIXED: 7156: `Promise#thenFinally` should not suppress original error
+
+## v2.42.0
+
+* Removed deprecated functions `Promise#addCallback()`,
+    `Promise#addCallbacks()`, `Promise#addErrback()`, and `Promise#addBoth()`.
+* Fail with a more descriptive error if the server returns a malformed redirect
+* FIXED: 7300: Connect to ChromeDriver using the loopback address since
+    ChromeDriver 2.10.267517 binds to localhost by default.
+* FIXED: 7339: Preserve wrapped test function's string representation for
+    Mocha's BDD interface.
+
 ## v2.41.0
 
 * FIXED: 7138: export logging API from webdriver module.

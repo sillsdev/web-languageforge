@@ -75,7 +75,7 @@
     
     by.select
     
-    by.selectedOption
+    by.selectedOption - DEPRECATED, use element(by.model('foo')).$('option:checked')
     
     by.input
     
