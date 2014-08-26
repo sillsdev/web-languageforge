@@ -38,7 +38,7 @@
 	</target>
 
 	<target name="version">
-	    <property name="version" value="${build.number}" />
+		<property name="version" value="${build.number}" />
 		<echo>${version}</echo>
 	</target>
 	
@@ -56,30 +56,30 @@
 			<arg value="--reporters" />
 			<arg value="teamcity" />
 			<arg value="--single-run" />
-		 </exec>
+		</exec>
 	</target>
 
 	<target name="test-php" depends="prepare,composer">
-		 <echo>##teamcity[importData type='junit' path='${build.output}/AllTests.xml']</echo>
-		 <exec executable="php" dir="test/php" output="${build.output}/AllTests.xml"  error="${build.output}/error.log" failonerror="true">
+		<echo>##teamcity[importData type='junit' path='${build.output}/AllTests.xml']</echo>
+		<exec executable="php" dir="test/php" output="${build.output}/AllTests.xml"  error="${build.output}/error.log" failonerror="true">
 			<arg line="AllTests.php" />
 			<arg value="-j" />
-		 </exec>
+		</exec>
 	 </target>
 
 	<target name="test">
-	    <!-- commented out until these are revisited and made working again (the e2e tests are hanging as of 2013-10-24 cjh)
-		Uncommented E2E tests since we switched to Protractor and they work now: 2014-08-05 RM
+		<!-- Commented out Karma tests: they are completely out of date and are superseded by E2E tests. 2014-08-26 RM
+		NOTE: If re-enabling the Karma tests, ensure they are updated: they may have been written against old APIs.
+		<antcall target="test-js-unit" />
 		-->
 		<antcall target="test-php" />
-		<antcall target="test-js-unit" />
 		<antcall target="test-js-e2e" />
 	</target>
 	
 	<target name="composer">
-		 <exec executable="composer" dir="src" failonerror="true">
+		<exec executable="composer" dir="src" failonerror="true">
 			<arg line="install" />
-		 </exec>	    
+		</exec>
 	</target>
 
 	<target name="minify" depends="prepare">
