@@ -13,7 +13,7 @@
 			<dd><div class="controls">
 				<div data-ng-click="selectInputSystem(inputSystem.inputSystem.tag)" data-ng-repeat="inputSystem in inputSystemViewModels | filter:query | orderBy: 'languageName'"
 					data-ng-class="{selected:currentInputSystemTag == inputSystem.inputSystem.tag}" >
-					<span data-ng-style="{'font-style': (isUnlistedLanguage(inputSystem.inputSystem.language) ? 'italic' : 'normal')}; ">{{inputSystem.inputSystem.languageName}}</span>
+					<span data-ng-style="{'font-style': (isUnlistedLanguage(inputSystem.language) ? 'italic' : 'normal')}; ">{{inputSystem.inputSystem.languageName}}</span>
 				</div>
 				</div>
 			</dd>
@@ -31,13 +31,13 @@
 				<ul class="dropdown-menu">
 					<li data-ng-class="{disabled: newExists(selects.special.optionsOrder[1])}">
 						<a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[currentInputSystemTag].code, inputSystemViewModels[currentInputSystemTag].languageName, selects.special.optionsOrder[1])">
-						<i class="icon-plus"></i> {{'Add IPA for' | translate}} {{inputSystemViewModels[currentInputSystemTag].languageName}}</a></li>
+						<i class="icon-plus"></i> {{'Add IPA for' | translate}} {{inputSystemViewModels[currentInputSystemTag].inputSystem.languageName}}</a></li>
 					<li data-ng-class="{disabled: newExists(selects.special.optionsOrder[2])}">
 						<a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[currentInputSystemTag].code, inputSystemViewModels[currentInputSystemTag].languageName, selects.special.optionsOrder[2])">
-						<i class="icon-plus"></i> {{'Add Voice for' | translate}} {{inputSystemViewModels[currentInputSystemTag].languageName}}</a></li>
+						<i class="icon-plus"></i> {{'Add Voice for' | translate}} {{inputSystemViewModels[currentInputSystemTag].inputSystem.languageName}}</a></li>
 					<li data-ng-class="{disabled: newExists(selects.special.optionsOrder[3])}">
 						<a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[currentInputSystemTag].code, inputSystemViewModels[currentInputSystemTag].languageName, selects.special.optionsOrder[3])">
-						<i class="icon-plus"></i> {{'Add a variant of' | translate}} {{inputSystemViewModels[currentInputSystemTag].languageName}}</a></li>
+						<i class="icon-plus"></i> {{'Add a variant of' | translate}} {{inputSystemViewModels[currentInputSystemTag].inputSystem.languageName}}</a></li>
 					<li class="divider" data-ng-show="showInputSystems()"></li>
 					<li data-ng-show="showInputSystems()">
 						<a tabindex="-1" data-ng-click="removeInputSystem(currentInputSystemTag)">
@@ -53,15 +53,15 @@
 				<label class="control-label">{{currentInputSystemTag}}</label>
 			</div>
 			<!-- listed language name -->
-			<h3 data-ng-show="!isUnlistedLanguage(inputSystemViewModels[currentInputSystemTag].code)">{{inputSystemViewModels[currentInputSystemTag].languageName}}</h3>
+			<h3 data-ng-show="!isUnlistedLanguage(inputSystemViewModels[currentInputSystemTag].language)">{{inputSystemViewModels[currentInputSystemTag].inputSystem.languageName}}</h3>
 			<!-- unlisted language name -->
 			<input type="text" id="languageName" style="font-size: 1.35em; color: black; font-weight: 700; border: 0px; height: 32px; width: 365px"
-					data-ng-model="inputSystemViewModels[currentInputSystemTag].languageName"
-					data-ng-show="isUnlistedLanguage(inputSystemViewModels[currentInputSystemTag].code)">
+					data-ng-model="inputSystemViewModels[currentInputSystemTag].inputSystem.languageName"
+					data-ng-show="isUnlistedLanguage(inputSystemViewModels[currentInputSystemTag].language)">
 			<div class="control-group">
 				<label class="control-label" for="abbrev" translate="Display Abbreviation (limited to 4 lowercase characters)"></label>
 				<div class="controls">
-					<input type="text" id="abbrev" model-transform-limit="4" data-ng-model="inputSystemViewModels[currentInputSystemTag].abbreviation">
+					<input type="text" id="abbrev" model-transform-limit="4" data-ng-model="inputSystemViewModels[currentInputSystemTag].inputSystem.abbreviation">
 				</div>
 				<label class="checkbox {{interfaceConfig.pullNormal}}">
 					<input type="checkbox" data-ng-model="inputSystemViewModels[currentInputSystemTag].isRightToLeft"/>
@@ -86,7 +86,7 @@
 				<label class="control-label" for="purpose" translate="Purpose"></label>
 				<div class="controls">
 					<select class="form-control" id="purpose" 
-						data-ng-model="inputSystemViewModels[currentInputSystemTag].purpose"
+						data-ng-model="inputSystemViewModels[currentInputSystemTag].inputSystem.purpose"
 						data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount"
 						data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
 						<option value="">unspecified</option></select>
@@ -95,7 +95,7 @@
 				<div class="controls">
 					<input type="text" id="ipaVariant" size="25"
 					       model-transform-limit="35" model-transform-no-space data-ng-trim="false"
-					       data-ng-model="inputSystemViewModels[currentInputSystemTag].privateUsage"
+					       data-ng-model="inputSystemViewModels[currentInputSystemTag].generalPrivateUse"
 					       data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount">
 				</div>
 			</div>
@@ -104,7 +104,7 @@
 				<div class="controls">
 					<input type="text" id="voiceVariant" size="25"
 					       model-transform-limit="35" model-transform-no-space data-ng-trim="false"
-					       data-ng-model="inputSystemViewModels[currentInputSystemTag].privateUsage"
+					       data-ng-model="inputSystemViewModels[currentInputSystemTag].generalPrivateUse"
 					       data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount">
 				</div>
 			</div>
@@ -129,7 +129,7 @@
 				<div class="controls">
 					<input type="text" id="variant" size="25"
 						model-transform-limit="35" model-transform-no-space data-ng-trim="false"
-						data-ng-model="inputSystemViewModels[currentInputSystemTag].privateUsage"
+						data-ng-model="inputSystemViewModels[currentInputSystemTag].generalPrivateUse"
 						data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount">
 				</div>
 			</div>
