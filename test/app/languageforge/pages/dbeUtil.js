@@ -56,10 +56,10 @@ var dbeUtil = function() {
 	
 	this.dcParsingFuncs = {
 		'multitext': {
-			'as_object': self.dcMultitextToObject,
-			'as_value':  self.dcMultitextToValue,
-			'as_array':  self.dcMultitextToArray,
-			'default_strategy': 'as_object',
+			'multitext_as_object': self.dcMultitextToObject,
+			'multitext_as_value':  self.dcMultitextToValue,
+			'multitext_as_array':  self.dcMultitextToArray,
+			'default_strategy': 'multitext_as_object',
 		},
 		'optionlist': self.dcOptionListToValue,
 		'multioptionlist': self.dcMultiOptionListToValue,
