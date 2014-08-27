@@ -103,6 +103,27 @@ var LfDbePage = function() {
 	this.edit.fields = this.editDiv.all(by.repeater('fieldName in config.fieldOrder'));
 	this.edit.toListLink     = $('#toListLink');
 	this.edit.toCommentsLink = $('#toCommentsLink');
+	
+	// This button changes its text when clicked
+	this.edit.toggleUncommonFieldsBtn = this.editDiv.$('#toggleUncommonFieldsBtn');
+	this.edit.toggleUncommonFieldsBtnText = {
+		'show': 'Show All Fields',
+		'hide': 'Hide Uncommon Fields',
+	};
+	this.edit.showUncommonFields = function() {
+		page.edit.toggleUncommonFieldsBtn.getText().then(function(text) {
+			if (text == page.edit.toggleUncommonFieldsBtnText.show) {
+				page.edit.toggleUncommonFieldsBtn.click();
+			}
+		});
+	};
+	this.edit.hideUncommonFields = function() {
+		page.edit.toggleUncommonFieldsBtn.getText().then(function(text) {
+			if (text == page.edit.toggleUncommonFieldsBtnText.hide) {
+				page.edit.toggleUncommonFieldsBtn.click();
+			}
+		});
+	};
 
 	this.edit.getLexemeDivByWsid = function(searchWsid) {
 		var lexeme = page.edit.fields.get(0);
