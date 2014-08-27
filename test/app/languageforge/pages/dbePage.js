@@ -17,7 +17,7 @@ var LfDbePage = function() {
 	};
 	
 	this.browseDiv  = $('#lexAppListView');
-	page.editDiv    = $('#lexAppEditView');
+	this.editDiv    = $('#lexAppEditView');
 	this.commentDiv = $('#lexAppCommentView');
 
 	// --- Browse view ---
@@ -62,103 +62,104 @@ var LfDbePage = function() {
 	};
 
 	// --- Edit view ---
-	this.edit = {};
-	this.edit.fields = page.editDiv.all(by.repeater('fieldName in config.fieldOrder'));
-	this.edit.toListLink     = $('#toListLink');
-	this.edit.toCommentsLink = $('#toCommentsLink');
-	
-	// Show/Hide fields button and associated functions
-	this.edit.toggleUncommonFieldsBtn = page.editDiv.$('#toggleUncommonFieldsBtn');
-	this.edit.toggleUncommonFieldsBtnText = {
-		'show': 'Show All Fields',
-		'hide': 'Hide Uncommon Fields',
-	};
-	this.edit.showUncommonFields = function() {
-		// Only click the button if it will result in fields being shown
-		page.edit.toggleUncommonFieldsBtn.getText().then(function(text) {
-			if (text == page.edit.toggleUncommonFieldsBtnText.show) {
-				page.edit.toggleUncommonFieldsBtn.click();
-			}
-		});
-	};
-	this.edit.hideUncommonFields = function() {
-		// Only click the button if it will result in fields being hidden
-		page.edit.toggleUncommonFieldsBtn.getText().then(function(text) {
-			if (text == page.edit.toggleUncommonFieldsBtnText.hide) {
-				page.edit.toggleUncommonFieldsBtn.click();
-			}
-		});
-	};
-
-	// Helper functions for retrieving various field values
-	this.edit.getLexemes = function() {
-		// Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
-		var lexeme = page.edit.fields.get(0);
-		return dbeUtil.dcMultitextToArray(lexeme);
-	};
-	this.edit.getLexemesAsObject = function() {
-		// Returns lexemes in the format [{en: 'word', de: 'Wort'}]
-		var lexeme = page.edit.fields.get(0);
-		return dbeUtil.dcMultitextToObject(lexeme);
-	};
-	this.edit.getFirstLexeme = function() {
-		// Returns the first (topmost) lexeme regardless of its wsid
-		var lexeme = page.edit.fields.get(0);
-		return dbeUtil.dcMultitextToFirstValue(lexeme);
-	};
-	this.edit.getLexemeByWsid = function(searchWsid) {
-		var lexeme = page.edit.fields.get(0);
-		return dbeUtil.dcMultitextToObject(lexeme).then(function(lexemes) {
-			return lexemes[searchWsid];
-		});
-	};
-
-	this.edit.getVisibleFields = function() {
-		return page.edit.fields.map(function(div) {
-			var label = div.$('label:not(.ng-hide)');
-			return label.isPresent().then(function(present) {
-				if (present) {
-					return label.getText().then(function(labelText) {
-						return { label: labelText, div: div };
-					});
-				} else {
-					// Return undefined to mean "skip this field", but wrapped in a promise for API consistency
-					return protractor.promise.fulfilled(undefined);
+	this.edit = {
+		fields: page.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
+		toListLink    : $('#toListLink'),
+		toCommentsLink: $('#toCommentsLink'),
+		
+		// Show/Hide fields button and associated functions
+		toggleUncommonFieldsBtn: page.editDiv.$('#toggleUncommonFieldsBtn'),
+		toggleUncommonFieldsBtnText: {
+			'show': 'Show All Fields',
+			'hide': 'Hide Uncommon Fields',
+		},
+		showUncommonFields: function() {
+			// Only click the button if it will result in fields being shown
+			this.toggleUncommonFieldsBtn.getText().then(function(text) {
+				if (text == page.edit.toggleUncommonFieldsBtnText.show) {
+					page.edit.toggleUncommonFieldsBtn.click();
 				}
 			});
-		}).then(function(results) {
-			return results.filter(function(x) { return (typeof(x) != "undefined"); });
-		});
-	};
+		},
+		hideUncommonFields: function() {
+			// Only click the button if it will result in fields being hidden
+			this.toggleUncommonFieldsBtn.getText().then(function(text) {
+				if (text == page.edit.toggleUncommonFieldsBtnText.hide) {
+					page.edit.toggleUncommonFieldsBtn.click();
+				}
+			});
+		},
 	
-	this.edit.getVisibleFieldsByLabel = function() {
-		return page.edit.getVisibleFields().then(function(fields) {
-			var result = {};
-			fields.forEach(function(field) {
-				result[field.label] = field.div;
+		// Helper functions for retrieving various field values
+		getLexemes: function() {
+			// Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
+			var lexeme = this.fields.get(0);
+			return dbeUtil.dcMultitextToArray(lexeme);
+		},
+		getLexemesAsObject: function() {
+			// Returns lexemes in the format [{en: 'word', de: 'Wort'}]
+			var lexeme = this.fields.get(0);
+			return dbeUtil.dcMultitextToObject(lexeme);
+		},
+		getFirstLexeme: function() {
+			// Returns the first (topmost) lexeme regardless of its wsid
+			var lexeme = this.fields.get(0);
+			return dbeUtil.dcMultitextToFirstValue(lexeme);
+		},
+		getLexemeByWsid: function(searchWsid) {
+			var lexeme = this.fields.get(0);
+			return dbeUtil.dcMultitextToObject(lexeme).then(function(lexemes) {
+				return lexemes[searchWsid];
 			});
-			return result;
-		});
-	};
-
-	this.edit.getLabelsOfVisibleFields = function() {
-		return page.edit.getVisibleFields().then(function(fields) {
-			var result = [];
-			fields.forEach(function(field) {
-				result.push(field.label);
-			});
-			return result;
-		});
-	};
+		},
 	
-	this.edit.getVisibleFieldsAndValues = function() {
-		return page.edit.getVisibleFields().then(function(fields) {
-			var result = {};
-			fields.forEach(function(field) {
-				result[field.label] = dbeUtil.dcParse(field.div);
+		getVisibleFields: function() {
+			return this.fields.map(function(div) {
+				var label = div.$('label:not(.ng-hide)');
+				return label.isPresent().then(function(present) {
+					if (present) {
+						return label.getText().then(function(labelText) {
+							return { label: labelText, div: div };
+						});
+					} else {
+						// Return undefined to mean "skip this field", but wrapped in a promise for API consistency
+						return protractor.promise.fulfilled(undefined);
+					}
+				});
+			}).then(function(results) {
+				return results.filter(function(x) { return (typeof(x) != "undefined"); });
 			});
-			return result;
-		});
+		},
+		
+		getVisibleFieldsByLabel: function() {
+			return this.getVisibleFields().then(function(fields) {
+				var result = {};
+				fields.forEach(function(field) {
+					result[field.label] = field.div;
+				});
+				return result;
+			});
+		},
+	
+		getLabelsOfVisibleFields: function() {
+			return this.getVisibleFields().then(function(fields) {
+				var result = [];
+				fields.forEach(function(field) {
+					result.push(field.label);
+				});
+				return result;
+			});
+		},
+		
+		getVisibleFieldsAndValues: function() {
+			return this.getVisibleFields().then(function(fields) {
+				var result = {};
+				fields.forEach(function(field) {
+					result[field.label] = dbeUtil.dcParse(field.div);
+				});
+				return result;
+			});
+		},
 	};
 	
 	// --- Comment view ---
