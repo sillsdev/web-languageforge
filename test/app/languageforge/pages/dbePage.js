@@ -50,13 +50,14 @@ var LfDbePage = function() {
 	this.edit.toListLink     = $('#toListLink');
 	this.edit.toCommentsLink = $('#toCommentsLink');
 	
-	// This button changes its text when clicked
+	// Show/Hide fields button and associated functions
 	this.edit.toggleUncommonFieldsBtn = this.editDiv.$('#toggleUncommonFieldsBtn');
 	this.edit.toggleUncommonFieldsBtnText = {
 		'show': 'Show All Fields',
 		'hide': 'Hide Uncommon Fields',
 	};
 	this.edit.showUncommonFields = function() {
+		// Only click the button if it will result in fields being shown
 		page.edit.toggleUncommonFieldsBtn.getText().then(function(text) {
 			if (text == page.edit.toggleUncommonFieldsBtnText.show) {
 				page.edit.toggleUncommonFieldsBtn.click();
@@ -64,6 +65,7 @@ var LfDbePage = function() {
 		});
 	};
 	this.edit.hideUncommonFields = function() {
+		// Only click the button if it will result in fields being hidden
 		page.edit.toggleUncommonFieldsBtn.getText().then(function(text) {
 			if (text == page.edit.toggleUncommonFieldsBtnText.hide) {
 				page.edit.toggleUncommonFieldsBtn.click();
@@ -98,9 +100,9 @@ var LfDbePage = function() {
 		return dbeUtil.dcMultitextToObject(lexeme);
 	};
 	this.edit.getFirstLexeme = function() {
-		// Returns the first (topmost) lexeme regarless of its wsid
+		// Returns the first (topmost) lexeme regardless of its wsid
 		var lexeme = page.edit.fields.get(0);
-		return dbeUtil.dcMultitextToValue(lexeme);
+		return dbeUtil.dcMultitextToFirstValue(lexeme);
 	};
 	
 	this.edit.getVisibleFields = function() {
