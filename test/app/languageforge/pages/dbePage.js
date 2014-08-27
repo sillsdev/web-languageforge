@@ -21,42 +21,46 @@ var LfDbePage = function() {
 	this.commentDiv = $('#lexAppCommentView');
 
 	// --- Browse view ---
-	this.browse = {};
-	this.browse.newWordBtn = this.browseDiv.element(by.partialButtonText('New Word'));
-	this.browse.entryCountSpan = this.browseDiv.element(by.binding('entries.length'));
-	this.browse.getEntryCount = function() {
-		// Inside this function, "this" == page.browse
-		return this.entryCountSpan.getText().then(function(s) {
-			return parseInt(s, 10);
-		});
-	};
-	this.browse.search = {
-		input: page.browseDiv.$('div.typeahead').$('input'),
-		clearBtn: page.browseDiv.$('div.typeahead').$('i.icon-remove'),
-		results: page.browseDiv.$('div.typeahead').all(by.repeater('e in typeahead.searchResults')),
-		matchCountSpan: page.browseDiv.$('div.typeahead').element(by.binding('typeahead.searchResults.length')),
-		getMatchCount: function() {
-			// Inside this function, "this" == page.browse.search
-			return this.matchCountSpan.getText().then(function(s) {
+	this.browse = {
+		// Top row UI elements
+		newWordBtn: page.browseDiv.element(by.partialButtonText('New Word')),
+		entryCountSpan: page.browseDiv.element(by.binding('entries.length')),
+		getEntryCount: function() {
+			return this.entryCountSpan.getText().then(function(s) {
 				return parseInt(s, 10);
 			});
 		},
-	};
-	this.browse.entriesList = this.browseDiv.all(by.repeater('entry in show.entries'));
 
-	this.browse.findEntryByLexeme = function(lexeme) {
-		return page.browse.entriesList.filter(function(row) {
-			return row.element(by.binding('entry.word')).getText().then(function(word) {
-				return (word == lexeme);
+		// Search typeahead
+		search: {
+			input: page.browseDiv.$('div.typeahead').$('input'),
+			clearBtn: page.browseDiv.$('div.typeahead').$('i.icon-remove'),
+			results: page.browseDiv.$('div.typeahead').all(by.repeater('e in typeahead.searchResults')),
+			matchCountSpan: page.browseDiv.$('div.typeahead').element(by.binding('typeahead.searchResults.length')),
+			getMatchCount: function() {
+				// Inside this function, "this" == page.browse.search
+				return this.matchCountSpan.getText().then(function(s) {
+					return parseInt(s, 10);
+				});
+			},
+		},
+
+		// Entries list (main body of view)
+		entriesList: page.browseDiv.all(by.repeater('entry in show.entries')),
+		findEntryByLexeme: function(lexeme) {
+			return this.entriesList.filter(function(row) {
+				return row.element(by.binding('entry.word')).getText().then(function(word) {
+					return (word == lexeme);
+				});
 			});
-		});
+		},
+		clickEntryByLexeme: function(lexeme) {
+			this.findEntryByLexeme(lexeme).then(function(matched_rows) {
+				matched_rows[0].click();
+			});
+		},
 	};
-	this.browse.clickEntryByLexeme = function(lexeme) {
-		page.browse.findEntryByLexeme(lexeme).then(function(matched_rows) {
-			matched_rows[0].click();
-		});
-	};
-	
+
 	// --- Edit view ---
 	this.edit = {};
 	this.edit.fields = this.editDiv.all(by.repeater('fieldName in config.fieldOrder'));
