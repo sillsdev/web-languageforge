@@ -109,15 +109,11 @@ var LfDbePage = function() {
 			return label.isPresent().then(function(present) {
 				if (present) {
 					return label.getText().then(function(labelText) {
-						return {
-							label: labelText,
-							div: div,
-						};
+						return { label: labelText, div: div };
 					});
 				} else {
-					var promise = protractor.promise.defer();
-					promise.fulfill(undefined);
-					return promise;
+					// Return undefined to mean "skip this field", but wrapped in a promise for API consistency
+					return protractor.promise.fulfilled(undefined);
 				}
 			});
 		}).then(function(results) {
