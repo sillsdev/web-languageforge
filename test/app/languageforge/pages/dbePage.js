@@ -25,9 +25,22 @@ var LfDbePage = function() {
 	this.browse.newWordBtn = this.browseDiv.element(by.partialButtonText('New Word'));
 	this.browse.entryCountSpan = this.browseDiv.element(by.binding('entries.length'));
 	this.browse.getEntryCount = function() {
-		return page.browse.entryCountSpan.getText().then(function(s) {
+		// Inside this function, "this" == page.browse
+		return this.entryCountSpan.getText().then(function(s) {
 			return parseInt(s, 10);
 		});
+	};
+	this.browse.search = {
+		input: page.browseDiv.$('div.typeahead').$('input'),
+		clearBtn: page.browseDiv.$('div.typeahead').$('i.icon-remove'),
+		results: page.browseDiv.$('div.typeahead').all(by.repeater('e in typeahead.searchResults')),
+		matchCountSpan: page.browseDiv.$('div.typeahead').element(by.binding('typeahead.searchResults.length')),
+		getMatchCount: function() {
+			// Inside this function, "this" == page.browse.search
+			return this.matchCountSpan.getText().then(function(s) {
+				return parseInt(s, 10);
+			});
+		},
 	};
 	this.browse.entriesList = this.browseDiv.all(by.repeater('entry in show.entries'));
 

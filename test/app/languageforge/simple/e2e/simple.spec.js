@@ -16,6 +16,10 @@ describe('E2E testing: sample LF test', function() {
 		expect(dbePage.browse.entriesList.count()).toEqual(dbePage.browse.getEntryCount());
 		expect(dbePage.browse.getEntryCount()).toBe(2);
 
+		dbePage.browse.search.input.sendKeys('asparagus');
+		expect(dbePage.browse.search.getMatchCount()).toBe(1);
+		dbePage.browse.search.clearBtn.click();
+
 		// Word 1
 		dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
 		dbePage.edit.getLexemeByWsid('th').then(function(word) {
