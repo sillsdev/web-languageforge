@@ -50,5 +50,8 @@ describe('E2E testing: sample LF test', function() {
 			};
 			expect(fields['Part of Speech']).toBe("Noun (n)");
 		});
+		dbePage.edit.renderedDiv.getText().then(function(text) {
+			console.log('Rendered:', text);
+		});
 	});
 });
