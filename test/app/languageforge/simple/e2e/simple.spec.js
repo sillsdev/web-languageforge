@@ -35,6 +35,10 @@ describe('E2E testing: sample LF test', function() {
 			expect(word).toBe(constants.testEntry2.lexeme.th.value);
 		});
 //		dbePage.edit.getLabelsOfVisibleFields().then(console.log);
+//		dbePage.edit.showUncommonFields();
+//		dbePage.edit.getLabelsOfVisibleFields().then(console.log);
+//		dbePage.edit.hideUncommonFields();
+//		dbePage.edit.getLabelsOfVisibleFields().then(console.log);
 		dbePage.edit.getVisibleFieldsAndValues().then(function(fields) {
 			for (var key in fields) {
 				console.log("Field", key, "has value:");
