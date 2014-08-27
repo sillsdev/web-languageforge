@@ -33,7 +33,7 @@ var dbeUtil = function() {
 			return result;
 		});
 	};
-	this.dcMultitextToValue = function(elem) {
+	this.dcMultitextToFirstValue = function(elem) {
 		// Returns the value of the multitext's first writing system, no matter what writing system is first
 		// NOTE: Returns a promise. Use .then() to access the actual data.
 		return self.dcMultitextToArray(elem).then(function(values) {
@@ -57,8 +57,8 @@ var dbeUtil = function() {
 	this.dcParsingFuncs = {
 		'multitext': {
 			'multitext_as_object': self.dcMultitextToObject,
-			'multitext_as_value':  self.dcMultitextToValue,
 			'multitext_as_array':  self.dcMultitextToArray,
+			'multitext_as_first_value': self.dcMultitextToFirstValue,
 			'default_strategy': 'multitext_as_object',
 		},
 		'optionlist': self.dcOptionListToValue,
