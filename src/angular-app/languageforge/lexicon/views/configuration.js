@@ -172,13 +172,13 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 						}
 					}
 
-					this.inputSystem.languageName = this.generateName();
+					//this.inputSystem.languageName = this.generateName();
 				};
 
 				// Utility to generate language names that appear the view's list of language names
 				this.generateName = function () {
 					// Generate name
-					var name = this.languageName;
+					var name = this.inputSystem.languageName;
 
 					// Additional name information
 					if (this.variant == 'fonipa') {
@@ -189,7 +189,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 					return name;
 				};
 
-
+                //this.parseTag(this.inputSystem.tag);
 			};
 
 			$scope.inputSystemViewModels = {};
@@ -242,6 +242,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 				angular.forEach($scope.configDirty.inputSystems, function (item) {
 					//!!! This is fine for construction of a new presenter, but inadequate for updating after a save. Currently it is used in both situations.
 					var vm = new InputSystemsViewModel(item);
+                    vm.parseTag(item.tag);
 					$scope.inputSystemViewModels[vm.uuid] = vm;
 				});
 
