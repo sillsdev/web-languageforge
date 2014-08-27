@@ -89,7 +89,34 @@ var LfDbePage = function() {
 				}
 			});
 		},
-	
+
+		// Left sidebar UI elements
+		newWordBtn: page.editDiv.$('button[data-ng-click="newEntry()'),
+		entryCountSpan: page.editDiv.element(by.binding('entries.length')),
+		getEntryCount: function() {
+			return page.edit.entryCountSpan.getText().then(function(s) {
+				return parseInt(s, 10);
+			});
+		},
+		entriesList: page.editDiv.all(by.repeater('entry in show.entries')),
+		search: {
+			input: page.editDiv.$('div.typeahead').$('input'),
+			clearBtn: page.editDiv.$('div.typeahead').$('i.icon-remove'),
+			results: page.editDiv.$('div.typeahead').all(by.repeater('e in typeahead.searchResults')),
+			matchCountSpan: page.editDiv.$('div.typeahead').element(by.binding('typeahead.searchResults.length')),
+			getMatchCount: function() {
+				// Inside this function, "this" == page.edit.search
+				return this.matchCountSpan.getText().then(function(s) {
+					return parseInt(s, 10);
+				});
+			},
+		},
+
+		// Top-row UI elements
+		renderedDiv: page.editDiv.$('dc-rendered'),
+		deleteBtn:   page.editDiv.$('button[data-ng-click="deleteEntry(currentEntry)"]'),
+		saveBtn:     page.editDiv.$('button[data-ng-click="saveCurrentEntry(true)"]'),
+
 		// Helper functions for retrieving various field values
 		getLexemes: function() {
 			// Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
