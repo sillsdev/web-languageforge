@@ -6,61 +6,7 @@ var projectTypes = {
 };
 
 var util = require('../../bellows/pages/util');  // TODO: Remove if not used once page implemented
-
-var dcMultitextToArray = function(elem) {
-	// Return the multitext's values as [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
-	// NOTE: Returns a promise. Use .then() to access the actual data.
-	var inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
-	return inputSystemDivs.map(function(div) {
-		var wsidSpan = div.$('.controls span.wsid');
-		var wordElem = div.$('.controls input');
-		return wsidSpan.getText().then(function(wsid) {
-			return wordElem.getAttribute('value').then(function(word) {
-				return {
-					wsid: wsid,
-					value: word,
-				};
-			});
-		});
-	});
-};
-var dcMultitextToObject = function(elem) {
-	// Return the multitext's values as [{en: 'word', de: 'Wort'}]
-	// NOTE: Returns a promise. Use .then() to access the actual data.
-	return dcMultitextToArray(elem).then(function(values) {
-		var result = {};
-		for (var i=0,l=values.length; i<l; i++) {
-			result[values[i].wsid] = values[i].value;
-		}
-		return result;
-	});
-};
-var dcMultitextToValue = function(elem) {
-	// Returns the value of the multitext's first writing system, no matter what writing system is first
-	// NOTE: Returns a promise. Use .then() to access the actual data.
-	return dcMultitextToArray(elem).then(function(values) {
-		return values[0].value;
-	});
-};
-
-var dcOptionListToValue = function(elem) {
-	var select = elem.$('.controls select');
-	return select.$('option:checked').getText().then(function(text) {
-		return text;
-	});
-};
-
-var dcMultiOptionListToValue = function(elem) {
-	// At the moment these are identical to dc-optionlist directives.
-	// When they change, this function will need to be rewritten
-	return dcOptionListToValue(elem);
-};
-
-var dcParsingFuncs = {
-	'multitext': dcMultitextToObject,
-	'optionlist': dcOptionListToValue,
-	'multioptionlist': dcMultiOptionListToValue,
-};
+var dbeUtil = require('./dbeUtil');
 
 var LfDbePage = function() {
 	var page = this;
@@ -144,17 +90,17 @@ var LfDbePage = function() {
 	this.edit.getLexemes = function() {
 		// Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
 		var lexeme = page.edit.fields.get(0);
-		return dcMultitextToArray(lexeme);
+		return dbeUtil.dcMultitextToArray(lexeme);
 	};
 	this.edit.getLexemesAsObject = function() {
 		// Returns lexemes in the format [{en: 'word', de: 'Wort'}]
 		var lexeme = page.edit.fields.get(0);
-		return dcMultitextToObject(lexeme);
+		return dbeUtil.dcMultitextToObject(lexeme);
 	};
 	this.edit.getFirstLexeme = function() {
 		// Returns the first (topmost) lexeme regarless of its wsid
 		var lexeme = page.edit.fields.get(0);
-		return dcMultitextToValue(lexeme);
+		return dbeUtil.dcMultitextToValue(lexeme);
 	};
 	
 	this.edit.getVisibleFields = function() {
@@ -203,11 +149,7 @@ var LfDbePage = function() {
 		return page.edit.getVisibleFields().then(function(fields) {
 			var result = {};
 			fields.forEach(function(field) {
-				var switchDiv = field.div.$('[data-on="config.fields[fieldName].type"] > div');
-				switchDiv.getAttribute('data-ng-switch-when').then(function(fieldType) {
-					var value = dcParsingFuncs[fieldType](field.div);
-					result[field.label] = value;
-				});
+				result[field.label] = dbeUtil.dcParse(field.div);
 			});
 			return result;
 		});
