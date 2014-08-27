@@ -73,22 +73,6 @@ var LfDbePage = function() {
 		});
 	};
 
-	this.edit.getLexemeDivByWsid = function(searchWsid) {
-		var lexeme = page.edit.fields.get(0);
-		var writingSystemDivs = lexeme.all(by.repeater('tag in config.inputSystems'));
-		return writingSystemDivs.filter(function(div) {
-			return div.$('span.wsid').getText().then(function(text) {
-				return (text == searchWsid);
-			});
-		});
-	};
-	this.edit.getLexemeByWsid = function(searchWsid) {
-		return page.edit.getLexemeDivByWsid(searchWsid).then(function(elems) {
-			if (!elems.length) { return undefined; }
-			return elems[0].$('input').getAttribute('value');
-		});
-	};
-
 	this.edit.getLexemes = function() {
 		// Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
 		var lexeme = page.edit.fields.get(0);
@@ -104,7 +88,13 @@ var LfDbePage = function() {
 		var lexeme = page.edit.fields.get(0);
 		return dbeUtil.dcMultitextToFirstValue(lexeme);
 	};
-	
+	this.edit.getLexemeByWsid = function(searchWsid) {
+		var lexeme = page.edit.fields.get(0);
+		return dbeUtil.dcMultitextToObject(lexeme).then(function(lexemes) {
+			return lexemes[searchWsid];
+		});
+	};
+
 	this.edit.getVisibleFields = function() {
 		return page.edit.fields.map(function(div) {
 			var label = div.$('label:not(.ng-hide)');
