@@ -17,7 +17,7 @@ var LfDbePage = function() {
 	};
 	
 	this.browseDiv  = $('#lexAppListView');
-	this.editDiv    = $('#lexAppEditView');
+	page.editDiv    = $('#lexAppEditView');
 	this.commentDiv = $('#lexAppCommentView');
 
 	// --- Browse view ---
@@ -63,12 +63,12 @@ var LfDbePage = function() {
 
 	// --- Edit view ---
 	this.edit = {};
-	this.edit.fields = this.editDiv.all(by.repeater('fieldName in config.fieldOrder'));
+	this.edit.fields = page.editDiv.all(by.repeater('fieldName in config.fieldOrder'));
 	this.edit.toListLink     = $('#toListLink');
 	this.edit.toCommentsLink = $('#toCommentsLink');
 	
 	// Show/Hide fields button and associated functions
-	this.edit.toggleUncommonFieldsBtn = this.editDiv.$('#toggleUncommonFieldsBtn');
+	this.edit.toggleUncommonFieldsBtn = page.editDiv.$('#toggleUncommonFieldsBtn');
 	this.edit.toggleUncommonFieldsBtnText = {
 		'show': 'Show All Fields',
 		'hide': 'Hide Uncommon Fields',
@@ -90,6 +90,7 @@ var LfDbePage = function() {
 		});
 	};
 
+	// Helper functions for retrieving various field values
 	this.edit.getLexemes = function() {
 		// Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid: 'de', value: 'Wort'}]
 		var lexeme = page.edit.fields.get(0);
