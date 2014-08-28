@@ -303,6 +303,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 
 			$scope.configurationApply = function () {
 				$scope.isSaving = true;
+				// TODO configDirty does not contain the added input system 2014-08 DDW
 				lexProjectService.updateConfiguration($scope.configDirty, $scope.optionlistDirty, function (result) {
 					if (result.ok) {
 						notice.push(notice.SUCCESS, $filter('translate')('Dictionary configuration updated successfully'));
@@ -321,7 +322,8 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 			};
 
 			$scope.showInputSystems = function () {
-				return !($scope.currentInputSystemTag in $scope.projectSettings.config.inputSystems);
+				return !($scope.inputSystemViewModels[$scope.currentInputSystemTag].inputSystem.tag in $scope.projectSettings.config.inputSystems);
+				//return !($scope.currentInputSystemTag in $scope.projectSettings.config.inputSystems);
 			};
 
 			// InputSystemsConfigCtrl
