@@ -86,137 +86,25 @@ var dbeUtil = function() {
 		});
 	};
 
-	// --- Parsing entries ---
-	this.getVisibleFields = function(elems) {
-		// Parameter elems should be an ElementArrayFinder, e.g. element.all(by.repeater('foo in bar'))
-		return elems.map(function(div) {
-			var label = div.$('label:not(.ng-hide)');
-			return label.isPresent().then(function(present) {
-				if (present) {
-					return label.getText().then(function(labelText) {
-						return { label: labelText, div: div };
-					});
-				} else {
-					// Return undefined to mean "skip this field", but wrapped in a promise for API consistency
-					return protractor.promise.fulfilled(undefined);
-				}
-			});
-		}).then(function(results) {
-			return results.filter(function(x) { return (typeof(x) != "undefined"); });
+	this.getFields = function(searchLabel, rootElem) {
+		if (typeof(rootElem) === "undefined") {
+			rootElem = $('dc-entry');
+		}
+		return rootElem.all(by.cssContainingText('div[data-ng-repeat="fieldName in config.fieldOrder"]', searchLabel));
+	};
+	this.getFieldsWithValues = function(searchLabel, multitext_strategy, rootElem) {
+		return self.getFields(searchLabel, rootElem).map(function(fieldElem) {
+			return self.parseDcField(fieldElem, multitext_strategy);
 		});
 	};
-	this.getFieldsByLabel = function(elems) {
-		return this.getVisibleFields(elems).then(function(fields) {
-			var result = {};
-			fields.forEach(function(field) {
-				result[field.label] = field.div;
-			});
-			return result;
-		});
+	this.getSingleField = function(searchLabel, idx, rootElem) {
+		if (typeof(idx) === "undefined") { idx = 0; }
+		return self.getFields(searchLabel, rootElem).get(idx);
 	};
-	
-	this.getElemsOfDcEntry = function(elem) {
-		var rootDiv = elem.$('div.dc-entry');
-		// var fieldDivs = elem.all(by.repeater('fieldName in config.fieldOrder')); // NOPE. Grabs descendants too.
-		var fieldDivs = elem.$$('div.dc-entry > div[data-ng-repeat="fieldName in config.fieldOrder"]');
-		var sensesDiv = elem.$( 'div.dc-entry > div[ng-if="config.fields.senses.fieldOrder.length > 0"]');
-		var senses = sensesDiv.all(by.repeater('sense in model.senses'));
-		return this.getFieldsByLabel(fieldDivs).then(function(entryFields) {
-			entryFields.senses = senses.map(function(senseDiv) {
-				return self.getElemsOfDcSense(senseDiv);
-			});
-			return entryFields;
+	this.getSingleFieldWithValues = function(searchLabel, idx, multitext_strategy, rootElem) {
+		return self.getSingleField(searchLabel, idx, rootElem).then(function(fieldElem) {
+			return self.parseDcField(fieldElem, multitext_strategy);
 		});
-	};
-	
-	this.getElemsOfDcSense = function(elem) {
-		var fieldDivs   = elem.$$('div.dc-sense > div[data-ng-repeat="fieldName in config.fieldOrder"]');
-		var examplesDiv = elem.$( 'div.dc-sense > div[data-ng-if="config.fields.examples.fieldOrder.length > 0"]');
-		var examples = examplesDiv.all(by.repeater('example in model.examples'))
-		return this.getFieldsByLabel(fieldDivs).then(function(senseFields) {
-			senseFields.examples = examples.map(function(exampleDiv) {
-				return self.getElemsOfDcExample(exampleDiv);
-			});
-			return senseFields;
-		});
-	};
-	
-	this.getElemsOfDcExample = function(elem) {
-		var fieldDivs = elem.$$('div.dc-example > div[data-ng-repeat="fieldName in config.fieldOrder"]');
-		return this.getFieldsByLabel(fieldDivs);
-	};
-	
-	this.parseDcEntry = function(elem) {
-		// Might want to re-write it so the calling code calls the getElems function, for consistency
-		return this.getElemsOfDcEntry(elem).then(function(data) {
-			for (var label in data) {
-				if (label == "senses") {
-					data[label] = self.parseDcSenses(data[label]);
-				} else {
-					data[label] = self.parseDcField(data[label]);
-				}
-			}
-			return data;
-		});
-	};
-	this.parseDcSenses = function(senses) {
-		return senses.then(function(sensesData) {
-			// Senses data will be a list of { 'Label 1': elementFinder1, 'Label 2': elementFinder2 } objects
-			var result = [];
-			sensesData.forEach(function(fields) {
-				for (var label in fields) {
-					if (label == "examples") {
-						fields[label] = self.parseDcExamples(fields[label]);
-					} else {
-						fields[label] = self.parseDcField(fields[label]);
-					}
-				}
-				result.push(fields);
-			});
-			return result;
-		});
-	};
-	this.parseDcExamples = function(examplesData) {
-		// Note that this function does NOT receive a promise, unlike parseDcSenses
-		// Examples data will be a list of { 'Label 1': elementFinder1, 'Label 2': elementFinder2 } objects
-		var result = [];
-		examplesData.forEach(function(fields) {
-			for (var label in fields) {
-				var div = fields[label];
-				fields[label] = self.parseDcField(div);
-			}
-			result.push(fields);
-		});
-		return result;
 	};
 };
 module.exports = new dbeUtil();
-
-// New parser for dc-entry elements.
-// Structure returned:
-//{
-//	'Word': {'th': 'ว่า', 'thipa': 'wâa'},
-//	// Other fields like "Import Residue" would go here if visible
-//	senses: [{
-//		'Meaning': {'en': 'that, as'},
-//		'Part of Speech': 'prep',
-//		'General Note': {'en': 'Most common usage'},
-//		examples: [{'Example': {'th': 'ผมยังอดสงสัยไม่ได้ว่า'},
-//		            'Translation': {'en': 'I can\'t help but think that...'}},
-//		            {'Example': {'th': 'เชื่อกันมานมนานแล้วว่า'},
-//		             'Translation': {'en': 'We have believed for a long time that...'}}],
-//	}, {
-//		'Meaning': {'en': 'say, speak'},
-//		'Part of Speech': 'v',
-//		'General Note': {'en': 'This meaning is almost as common'},
-//		examples: [{'Example': {'th': 'คำนี้ภาษาอังกฤษว่ายังไง'},
-//		            'Translation': {'en': 'How do you say this word in English?'}},
-//		            {'Example': {'th': 'ว่าแต่เขา อิเหนาเป็นเอง'},
-//		             'Translation': {'en': 'The pot calls the kettle black.'}}],
-//	}],
-//}
-
-// Note that the "senses" array will always be present, even if empty. The "examples" array may be absent.
-// IMPORTANT NOTE: The values in that structure will be PROMISES, not actual values (yet). You can use
-// them in expect(foo).toBe(bar), but if trying to print them, don't forget to do "foo.then(console.log);".
-
