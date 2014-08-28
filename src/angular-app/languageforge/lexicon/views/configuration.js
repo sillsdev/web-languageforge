@@ -77,6 +77,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 					}
 
 					this.inputSystem.tag = newTag;
+					//console.log('newTag: ' + newTag);
 					return newTag;
 				};
 
@@ -84,7 +85,6 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 				InputSystemsViewModel.prototype.parseTag = function (tag) {
 					var tokens = tag.split('-');
 					var lookForPrivateUsage = false;
-					//this.privateUsage = '';
 
 					// Assumption we will never have an entire tag that is private
 					// usage or grandfathered (entire tag starts with x- or i-)
@@ -155,9 +155,18 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 									continue;
 									break;
 								default :
-									// General Private Usage
-									if (this.variantString) {
-										this.variantString += '-';
+									// General Private Usage used to populate variantString
+									if (tokens[i]) {
+
+										// If Special hasn't been set, presence of a token here means
+										// Special must have been set to Script/Region/Variant
+										if (this.special == specialOptionsOrder[0]) {
+											this.special = specialOptionsOrder[3];
+										}
+
+										if (this.variantString.length > 0) {
+											this.variantString += '-';
+										}
 									}
 									this.variantString += tokens[i];
 									continue;
@@ -173,9 +182,13 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 					var specialOptions = $scope.selects.special.optionsOrder;
 
 					if (this.special == specialOptions[1]) {
-						name += ' (IPA)';
+						name += ' (IPA';
+						name += (this.variantString) ? '-' + this.variantString : '';
+						name += ')';
 					} else if (this.special == specialOptions[2]) {
-						name += ' (Voice)'
+						name += ' (Voice';
+						name += (this.variantString) ? '-' + this.variantString : '';
+						name += ')';
 					} else if (this.special == specialOptions[3]) {
 						name += ' (' + this.variantString + ')';
 					}
