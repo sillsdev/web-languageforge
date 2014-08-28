@@ -60,13 +60,26 @@ describe('E2E testing: sample LF test', function() {
 */
 		// Word 3 (multiple meaning entry 1)
 		dbePage.browse.clickEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value);
+		//dbePage.edit.toCommentsLink.click();
 
 		var fields = element.all(by.repeater('fieldName in config.fieldOrder'));
-		fields.map(function(div) {
+/*		fields.map(function(div) {
 			var label = div.$('label:not(.ng-hide)');
 			label.isPresent().then(function(present) {
 				if (present) { label.getText().then(console.log); }
 			});
 		});
+
+*/		
+//		var other = $('dc-entry').all(by.cssContainingText('div[data-ng-repeat="fieldName in config.fieldOrder"]', 'Word'));
+//		other.map(function(elem) {
+//			elem.$$('div.controls input').map(function(elem) {
+//				elem.getAttribute('value').then(console.log);
+//			});
+//		});
+		var word = dbeUtil.getSingleFieldWithValues('Word');
+		word.then(console.log);
+		expect(word).toEqual({'th': constants.testMultipleMeaningEntry1.lexeme.th.value,
+		                      'thipa': constants.testMultipleMeaningEntry1.lexeme['th-fonipa'].value});
 	});
 });
