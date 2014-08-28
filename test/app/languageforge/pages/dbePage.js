@@ -182,7 +182,7 @@ var LfDbePage = function() {
 			return this.getVisibleFields().then(function(fields) {
 				var result = {};
 				fields.forEach(function(field) {
-					result[field.label] = dbeUtil.dcParse(field.div);
+					result[field.label] = dbeUtil.parseDcField(field.div);
 				});
 				return result;
 			});
