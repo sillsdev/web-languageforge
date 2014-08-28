@@ -2,22 +2,32 @@
 
 angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
 	'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor', 'lexicon.services', 'palaso.util.model.transform'])
-	.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService', '$location',
-		function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigService, $location) {
+	.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService', '$location', 'utilService',
+		function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigService, $location, util) {
 			lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
 			$scope.configDirty = angular.copy(ss.session.projectSettings.config);
 			$scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
 			$scope.isSaving = false;
 
 			// InputSystemsViewModel based on BCP 47
-			// TODO: This is currently only a partial implementation.  2014-08 DDW
 			// References: http://en.wikipedia.org/wiki/IETF_language_tag
 			//             http://tools.ietf.org/html/rfc5646#page-15
 			var InputSystemsViewModel = function(inputSystem) {
-				this.uuid = inputSystem.tag; // TODO Need to make this a valid uuid on construction.
+
+				if (inputSystem == undefined) {
+					inputSystem = {};
+				}
+
+				this.uuid = util.uuid();
 
 				// Manage the Special dropdown on the View
 				this.special = '';
+
+				// Manage the Purpose dropdown on the View
+				this.purpose = '';
+
+				// Manage the Variant textbox on the View.
+				this.variantString = '';
 
 				// 2-3 letter (RFC 5646 2.2.1 Primary Language Subtag)
 				this.language = '';
@@ -30,78 +40,51 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 				// 2-letter or 3-number (RFC 5646 2.2.4 Region Subtag)
 				this.region = '';
 
-				// 5+ letter or 1-number 3+ character (RFC 5646 2.2.5 Variant Subtag)
-				// Although the spec says we can have multiple variants, we really only use 'fonipa'
-				this.variant = '';
-
 				// RFC 5646 2.2.7 Private Use Subtag)
-
-				// Array of SIL 'registered' private use tags
-				//       x-etic : raw phonetic transcription
-				//       x-emic : uses the phonology of the language
-				//       x-audio: audio transcript (voice)
-				this.silPrivateUse = [];
-
-				// Array of all other private use tags.  Typically used to designate language group
-				this.generalPrivateUse = [];
 
 				this.inputSystem = inputSystem;
 
-				this.hasPrivateUse = function() {
-					return ((this.silPrivateUse.length > 0) ||
-							(this.generalPrivateUse.length > 0));
-				};
-
-				// Utility to concatenate all the private use strings as '-x-...-...'
-				this.privateUseAsString = function() {
-					var str = '';
-					if (this.hasPrivateUse()) {
-						str += '-x';
-					}
-					this.silPrivateUse.forEach(function(entry) {
-						str += '-' + entry;
-					});
-					this.generalPrivateUse.forEach(function(entry) {
-						str += '-' + entry;
-					});
-					return str;
-				};
-
 				// Create a language tag based on the view
-				this.buildTag = function () {
+				InputSystemsViewModel.prototype.buildTag = function () {
 					var newTag = this.language;
-
-					var optionsOrder = $scope.selects.special.optionsOrder;
+					var specialOptions = $scope.selects.special.optionsOrder;
+					var scriptOptionsOrder = $scope.selects.script.optionsOrder;
 					switch (this.special) {
 						// IPA transcription
-						case optionsOrder[1]:
+						case specialOptions[1]:
 							newTag += '-fonipa';
+							if (this.purpose || this.variantString.length > 0) {
+								newTag += '-x';
+							}
+							newTag += (this.purpose) ? '-' + this.purpose : '';
+							newTag += (this.variantString) ? '-' + this.variantString : '';
 							break;
 
 						// Voice
-						case optionsOrder[2]:
+						case specialOptions[2]:
 							newTag += '-Zxxx';
+							newTag += '-x';
+							newTag += '-audio';
+							newTag += (this.variantString) ? '-' + this.variantString : '';
 							break;
 
 						// Script / Region / Variant
-						case optionsOrder[3]:
-							// Default script for Unlisted language is "Code for undetermined script"
-							if (this.language == 'qaa' && !this.script && !this.region) {
-								this.script = 'Zyyy';
-							}
+						case specialOptions[3]:
 							newTag += (this.script) ? '-' + this.script : '';
 							newTag += (this.region) ? '-' + this.region : '';
+							newTag += (this.variantString) ? '-x-' + this.variantString : '';
 							break;
 					}
 
-					newTag += this.privateUseAsString();
+					this.inputSystem.tag = newTag;
+					return newTag;
 				};
 
 				// Parse the language tag and populate InputSystemsViewModel
-				this.parseTag = function (tag) {
+				InputSystemsViewModel.prototype.parseTag = function (tag) {
 					var tokens = tag.split('-');
 					var lookForPrivateUsage = false;
-					this.privateUsage = '';
+					//this.privateUsage = '';
 
 					// Assumption we will never have an entire tag that is private
 					// usage or grandfathered (entire tag starts with x- or i-)
@@ -109,8 +92,12 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 					// Language code
 					this.language = tokens[0];
 
-					var optionsOrder = $scope.selects.special.optionsOrder;
-					this.special = optionsOrder[0];
+					var specialOptionsOrder = $scope.selects.special.optionsOrder;
+					this.special = specialOptionsOrder[0];
+
+					var purposeOptionsOrder = $scope.selects.purpose.optionsOrder;
+					this.purpose = '';
+					this.variantString = '';
 
 					// Parse the rest of the language tag
 					for (var i = 1, l = tokens.length; i < l; i++) {
@@ -118,28 +105,27 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 						if (!lookForPrivateUsage) {
 							// Script
 							if ((/^[a-zA-Z]{4}$/.test(tokens[i])) &&
-								(tokens[i] in _inputSystems_scripts)) { //!!!
+								(tokens[i] in _inputSystems_scripts)) { // scripts would be better obtained from a service CP 2014-08
 								this.script = tokens[i];
-								this.special = optionsOrder[3];
+								this.special = specialOptionsOrder[3];
 								continue;
 							}
 
 							// Region
 							if ((/^[a-zA-Z]{2}$/.test(tokens[i]) ||
 								/^[0-9]{3}$/.test(tokens[i])) &&
-								(tokens[i] in _inputSystems_regions)) { //!!!
+								(tokens[i] in _inputSystems_regions)) {  // scripts would be better obtained from a service CP 2014-08
 								this.region = tokens[i];
-								this.special = optionsOrder[3];
+								this.special = specialOptionsOrder[3];
 								continue;
 							}
 
 							// Variant
 							if (/^[a-zA-Z]{5,}$/.test(tokens[i]) ||
 								/^[0-9][0-9a-zA-Z]{3,}$/.test(tokens[i])) {
-								//console.log('variant IPA: ' + tokens[i]);
 								this.variant = tokens[i];
 								if (tokens[i] == 'fonipa') {
-									this.special = optionsOrder[1];
+									this.special = specialOptionsOrder[1];
 								}
 								continue;
 							}
@@ -152,44 +138,53 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 
 							// Parse for the rest of the private usage tags
 						} else {
-							// SIL registered private use tags
-							if (tokens[i] == 'audio') {
-								this.silPrivateUse.push(tokens[i]);
-								this.special = optionsOrder[2];
-								continue;
-							}
-							if ((tokens[i] == 'etic') ||
-								(tokens[i] == 'emic')) {
-								console.log('purpose: ' + tokens[i]);
-								this.silPrivateUse.push(tokens[i]);
-								continue;
-							}
-
-							// General Private Usage
-							console.log('concat priv: ' + tokens[i]);
-							this.generalPrivateUse.push(tokens[i]);
-							continue;
+							// SIL registered private use tags are audio, etic, and emic
+							switch (tokens[i]) {
+								case 'audio' :
+									this.special = specialOptionsOrder[2];
+									continue;
+									break;
+								case 'etic' :
+									this.special = specialOptionsOrder[1];
+									this.purpose = purposeOptionsOrder[0];
+									continue;
+									break;
+								case 'emic' :
+									this.special = specialOptionsOrder[1];
+									this.purpose = purposeOptionsOrder[1];
+									continue;
+									break;
+								default :
+									// General Private Usage
+									if (this.variantString) {
+										this.variantString += '-';
+									}
+									this.variantString += tokens[i];
+									continue;
+									break;
+							};
 						}
 					}
-
-					//this.inputSystem.languageName = this.generateName();
 				};
 
-				// Utility to generate language names that appear the view's list of language names
-				this.generateName = function () {
-					// Generate name
+				// Compute the language name for display
+				InputSystemsViewModel.prototype.languageDisplayName = function () {
 					var name = this.inputSystem.languageName;
+					var specialOptions = $scope.selects.special.optionsOrder;
 
-					// Additional name information
-					if (this.variant == 'fonipa') {
+					if (this.special == specialOptions[1]) {
 						name += ' (IPA)';
-					} else if (this.silPrivateUse.indexOf('audio') != -1) {
-						name += ' (Voice)';
+					} else if (this.special == specialOptions[2]) {
+						name += ' (Voice)'
+					} else if (this.special == specialOptions[3]) {
+						name += ' (' + this.variantString + ')';
 					}
 					return name;
 				};
 
-                //this.parseTag(this.inputSystem.tag);
+				if (inputSystem.tag != undefined) {
+					this.parseTag(inputSystem.tag);
+				}
 			};
 
 			$scope.inputSystemViewModels = {};
@@ -220,13 +215,13 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 
 			$scope.isCustomField = lexConfigService.isCustomField;
 			$scope.currentInputSystemTag = '';
-			$scope.selectInputSystem = function selectInputSystem(inputSystemTag) {
-				$scope.currentInputSystemTag = inputSystemTag;
+			$scope.selectInputSystem = function selectInputSystem(id) {
+				$scope.currentInputSystemTag = id;
 			};
 
 			setupView();
 
-
+			// TODO Fix sorting 2014-08 DDW
 			function sortInputSystemsList() {
 				return $filter('orderBy')($filter('orderAsArray')($scope.inputSystemViewModels, 'tag'), 'languageName');
 				//return $filter('orderBy')($filter('orderAsArray')($scope.configDirty.inputSystems, 'tag'), 'languageName');
@@ -240,16 +235,14 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 				// InputSystemsViewModels
 				$scope.inputSystemViewModels = {};
 				angular.forEach($scope.configDirty.inputSystems, function (item) {
-					//!!! This is fine for construction of a new presenter, but inadequate for updating after a save. Currently it is used in both situations.
 					var vm = new InputSystemsViewModel(item);
-                    vm.parseTag(item.tag);
 					$scope.inputSystemViewModels[vm.uuid] = vm;
 				});
 
 				$scope.inputSystemsList = sortInputSystemsList();
 
 				// select the first items
-				$scope.selectInputSystem($scope.inputSystemsList[0].tag);
+				$scope.selectInputSystem($scope.inputSystemsList[0].uuid);
 				$scope.currentTaskName = 'dashboard';
 
 				// for FieldConfigCtrl
@@ -303,8 +296,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 						$scope.configForm.$setPristine();
 						$scope.projectSettings.config = angular.copy($scope.configDirty);
 						$scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
-						//!!! Need to check the response and fixup our uuid -> id mapping This could be done inside setupView
-						setupView(); //!!! Calling setupview after save is not a good idea.
+						//setupView();
 					}
 					$scope.isSaving = false;
 				});
@@ -321,21 +313,26 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 
 			// InputSystemsConfigCtrl
 			$scope.newExists = function (special) {
-				var code = $scope.inputSystemViewModels[$scope.currentInputSystemTag].inputSystem.language;
-				var viewModel = new InputSystemsViewModel({'language': code});
+				var viewModel = new InputSystemsViewModel();
+				viewModel.language = $scope.inputSystemViewModels[$scope.currentInputSystemTag].language;
 				viewModel.special = special;
 				var tag = viewModel.buildTag();
-				return (tag in $scope.inputSystemViewModels);
+				for (var uuid in $scope.inputSystemViewModels) {
+					if ($scope.inputSystemViewModels[uuid].inputSystem.tag == tag) {
+						return true;
+					}
+				}
+				return false;
 			};
-			// TODO This is broken when adding input system from More dropdown.  2014-08 DDW
+
 			$scope.addInputSystem = function addInputSystem(code, languageName, special) {
-				//var tag = 'xxNewTagxx'; // Assume this is done inside the 'constructor'.  Make it so :-)
 				var viewModel = new InputSystemsViewModel({
-					'language': code,
+					'tag': code,
 					'languageName': languageName,
 					'abbreviation': code
 				});
 				viewModel.special = special;
+				viewModel.buildTag();
 				$scope.inputSystemViewModels[viewModel.uuid] = viewModel;
 				$scope.currentInputSystemTag = viewModel.uuid;
 			};
@@ -346,7 +343,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 				$scope.configForm.$setDirty();
 
 				// select the first items
-				$scope.selectInputSystem($scope.inputSystemsList[0].tag);
+				$scope.selectInputSystem($scope.inputSystemsList[0].uuid);
 			};
 
 			$scope.isUnlistedLanguage = function isUnlistedLanguage(code) {
@@ -374,31 +371,13 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 
 			};
 
-			$scope.$watchCollection('inputSystems[currentInputSystemTag]', function (newValue) {
+			$scope.$watchCollection('inputSystemViewModels[currentInputSystemTag]', function(newValue, oldValue) {
 				if (newValue == undefined) {
 					return;
 				}
-
-				//$scope.inputSystemViewModels[tag].name = $scope.inputSystemViewModels[tag].languageName;
-				//$scope.inputSystemViewModels[tag].name = InputSystems.getName($scope.inputSystemViewModels[tag].languageName, newTag);
-				if (tag != newTag) {
-					if (!(newTag in $scope.inputSystemViewModels)) {
-						$scope.inputSystemViewModels[tag].tag = newTag;
-						$scope.inputSystemViewModels[newTag] = $scope.inputSystemViewModels[tag];
-						// TODO fix watched language name 2014-08 DDW
-						console.log('newTag: ' + newTag);
-						InputSystems.parseTag($scope.inputSystemViewModels[newTag], newTag, $scope.selects.special.optionsOrder);
-
-
-						$scope.configForm.$setDirty();
-						// Review CP 2014-08 This is going to cause problems if we have a ui that allows the same language code to
-						// change between different specials. Ideally there would be some immutable key that we could use, at least
-						// for the duration of editing in the ui.
-						delete $scope.inputSystemViewModels[tag];
-						$scope.selectInputSystem(newTag);
-					}
-					$scope.inputSystemsList = sortInputSystemsList();
-				}
+				newValue.buildTag();
+				$scope.configForm.$setDirty();
+				$scope.inputSystemsList = sortInputSystemsList();
 			});
 
 		}])
