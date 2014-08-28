@@ -11,9 +11,9 @@
 		<dl class="picklists" style="height: 300px; overflow: auto;">
 			<dt translate="Language Names"></dt>
 			<dd><div class="controls">
-				<div data-ng-click="selectInputSystem(inputSystem.inputSystem.tag)" data-ng-repeat="inputSystem in inputSystemViewModels | filter:query | orderBy: 'languageName'"
-					data-ng-class="{selected:currentInputSystemTag == inputSystem.inputSystem.tag}" >
-					<span data-ng-style="{'font-style': (isUnlistedLanguage(inputSystem.language) ? 'italic' : 'normal')}; ">{{inputSystem.inputSystem.languageName}}</span>
+				<div data-ng-click="selectInputSystem(inputSystem.uuid)" data-ng-repeat="inputSystem in inputSystemViewModels | filter:query | orderBy: 'languageName'"
+					data-ng-class="{selected:currentInputSystemTag == inputSystem.uuid}" >
+					<span data-ng-style="{'font-style': (isUnlistedLanguage(inputSystem.language) ? 'italic' : 'normal')}; ">{{inputSystem.languageDisplayName()}}</span>
 				</div>
 				</div>
 			</dd>
@@ -30,13 +30,13 @@
 					{{'More' | translate}} <span class="caret"></span></a>
 				<ul class="dropdown-menu">
 					<li data-ng-class="{disabled: newExists(selects.special.optionsOrder[1])}">
-						<a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[currentInputSystemTag].code, inputSystemViewModels[currentInputSystemTag].languageName, selects.special.optionsOrder[1])">
+						<a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[currentInputSystemTag].language, inputSystemViewModels[currentInputSystemTag].inputSystem.languageName, selects.special.optionsOrder[1])">
 						<i class="icon-plus"></i> {{'Add IPA for' | translate}} {{inputSystemViewModels[currentInputSystemTag].inputSystem.languageName}}</a></li>
 					<li data-ng-class="{disabled: newExists(selects.special.optionsOrder[2])}">
-						<a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[currentInputSystemTag].code, inputSystemViewModels[currentInputSystemTag].languageName, selects.special.optionsOrder[2])">
+						<a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[currentInputSystemTag].language, inputSystemViewModels[currentInputSystemTag].inputSystem.languageName, selects.special.optionsOrder[2])">
 						<i class="icon-plus"></i> {{'Add Voice for' | translate}} {{inputSystemViewModels[currentInputSystemTag].inputSystem.languageName}}</a></li>
-					<li data-ng-class="{disabled: newExists(selects.special.optionsOrder[3])}">
-						<a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[currentInputSystemTag].code, inputSystemViewModels[currentInputSystemTag].languageName, selects.special.optionsOrder[3])">
+					<li>
+						<a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[currentInputSystemTag].language, inputSystemViewModels[currentInputSystemTag].inputSystem.languageName, selects.special.optionsOrder[3])">
 						<i class="icon-plus"></i> {{'Add a variant of' | translate}} {{inputSystemViewModels[currentInputSystemTag].inputSystem.languageName}}</a></li>
 					<li class="divider" data-ng-show="showInputSystems()"></li>
 					<li data-ng-show="showInputSystems()">
@@ -50,10 +50,10 @@
 		<div class="well" data-ng-show="inputSystemViewModels[currentInputSystemTag]">
 			<div class="{{interfaceConfig.pullToSide}}">
 				<br />
-				<label class="control-label">{{currentInputSystemTag}}</label>
+				<label class="control-label">{{inputSystemViewModels[currentInputSystemTag].inputSystem.tag}}</label>
 			</div>
 			<!-- listed language name -->
-			<h3 data-ng-show="!isUnlistedLanguage(inputSystemViewModels[currentInputSystemTag].language)">{{inputSystemViewModels[currentInputSystemTag].inputSystem.languageName}}</h3>
+			<h3 data-ng-show="!isUnlistedLanguage(inputSystemViewModels[currentInputSystemTag].language)">{{inputSystemViewModels[currentInputSystemTag].languageDisplayName()}}</h3>
 			<!-- unlisted language name -->
 			<input type="text" id="languageName" style="font-size: 1.35em; color: black; font-weight: 700; border: 0px; height: 32px; width: 365px"
 					data-ng-model="inputSystemViewModels[currentInputSystemTag].inputSystem.languageName"
@@ -86,7 +86,7 @@
 				<label class="control-label" for="purpose" translate="Purpose"></label>
 				<div class="controls">
 					<select class="form-control" id="purpose" 
-						data-ng-model="inputSystemViewModels[currentInputSystemTag].inputSystem.purpose"
+						data-ng-model="inputSystemViewModels[currentInputSystemTag].purpose"
 						data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount"
 						data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
 						<option value="">unspecified</option></select>
@@ -95,7 +95,7 @@
 				<div class="controls">
 					<input type="text" id="ipaVariant" size="25"
 					       model-transform-limit="35" model-transform-no-space data-ng-trim="false"
-					       data-ng-model="inputSystemViewModels[currentInputSystemTag].generalPrivateUse"
+					       data-ng-model="inputSystemViewModels[currentInputSystemTag].variantString"
 					       data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount">
 				</div>
 			</div>
@@ -104,7 +104,7 @@
 				<div class="controls">
 					<input type="text" id="voiceVariant" size="25"
 					       model-transform-limit="35" model-transform-no-space data-ng-trim="false"
-					       data-ng-model="inputSystemViewModels[currentInputSystemTag].generalPrivateUse"
+					       data-ng-model="inputSystemViewModels[currentInputSystemTag].variantString"
 					       data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount">
 				</div>
 			</div>
@@ -129,7 +129,7 @@
 				<div class="controls">
 					<input type="text" id="variant" size="25"
 						model-transform-limit="35" model-transform-no-space data-ng-trim="false"
-						data-ng-model="inputSystemViewModels[currentInputSystemTag].generalPrivateUse"
+						data-ng-model="inputSystemViewModels[currentInputSystemTag].variantString"
 						data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount">
 				</div>
 			</div>
