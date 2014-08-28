@@ -24,9 +24,9 @@ var LfDbePage = function() {
 	this.browse = {
 		// Top row UI elements
 		newWordBtn: page.browseDiv.element(by.partialButtonText('New Word')),
-		entryCountSpan: page.browseDiv.element(by.binding('entries.length')),
+		entryCountElem: page.browseDiv.element(by.binding('entries.length')),
 		getEntryCount: function() {
-			return this.entryCountSpan.getText().then(function(s) {
+			return this.entryCountElem.getText().then(function(s) {
 				return parseInt(s, 10);
 			});
 		},
@@ -36,10 +36,10 @@ var LfDbePage = function() {
 			input: page.browseDiv.$('div.typeahead').$('input'),
 			clearBtn: page.browseDiv.$('div.typeahead').$('i.icon-remove'),
 			results: page.browseDiv.$('div.typeahead').all(by.repeater('e in typeahead.searchResults')),
-			matchCountSpan: page.browseDiv.$('div.typeahead').element(by.binding('typeahead.searchResults.length')),
+			matchCountElem: page.browseDiv.$('div.typeahead').element(by.binding('typeahead.searchResults.length')),
 			getMatchCount: function() {
 				// Inside this function, "this" == page.browse.search
-				return this.matchCountSpan.getText().then(function(s) {
+				return this.matchCountElem.getText().then(function(s) {
 					return parseInt(s, 10);
 				});
 			},
@@ -92,9 +92,9 @@ var LfDbePage = function() {
 
 		// Left sidebar UI elements
 		newWordBtn: page.editDiv.$('button[data-ng-click="newEntry()'),
-		entryCountSpan: page.editDiv.element(by.binding('entries.length')),
+		entryCountElem: page.editDiv.element(by.binding('entries.length')),
 		getEntryCount: function() {
-			return page.edit.entryCountSpan.getText().then(function(s) {
+			return page.edit.entryCountElem.getText().then(function(s) {
 				return parseInt(s, 10);
 			});
 		},
@@ -103,10 +103,10 @@ var LfDbePage = function() {
 			input: page.editDiv.$('div.typeahead').$('input'),
 			clearBtn: page.editDiv.$('div.typeahead').$('i.icon-remove'),
 			results: page.editDiv.$('div.typeahead').all(by.repeater('e in typeahead.searchResults')),
-			matchCountSpan: page.editDiv.$('div.typeahead').element(by.binding('typeahead.searchResults.length')),
+			matchCountElem: page.editDiv.$('div.typeahead').element(by.binding('typeahead.searchResults.length')),
 			getMatchCount: function() {
 				// Inside this function, "this" == page.edit.search
-				return this.matchCountSpan.getText().then(function(s) {
+				return this.matchCountElem.getText().then(function(s) {
 					return parseInt(s, 10);
 				});
 			},
