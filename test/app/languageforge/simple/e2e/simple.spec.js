@@ -17,7 +17,7 @@ describe('E2E testing: sample LF test', function() {
 		expect(dbePage.browse.entriesList.count()).toEqual(dbePage.browse.getEntryCount());
 		expect(dbePage.browse.getEntryCount()).toBe(3);
 
-		dbePage.browse.search.input.sendKeys('asparagus');
+/*		dbePage.browse.search.input.sendKeys('asparagus');
 		expect(dbePage.browse.search.getMatchCount()).toBe(1);
 		dbePage.browse.search.clearBtn.click();
 
@@ -57,29 +57,15 @@ describe('E2E testing: sample LF test', function() {
 		
 		// Back to list to check word 3
 		dbePage.edit.toListLink.click();
-
+*/
 		// Word 3 (multiple meaning entry 1)
 		dbePage.browse.clickEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value);
 
-		var elems = dbeUtil.parseDcEntry(element(by.css("dc-entry")));
-		elems.then(function(data) {
-			data.senses.then(function(sensesData) {
-				sensesData.forEach(function(sense) {
-					sense.Meaning.then(function(meaning) {
-						console.log('Meaning:', meaning);
-					});
-					sense['Part of Speech'].then(function(pos) {
-						console.log('Part of Speech:', pos);
-					});
-					sense.examples.forEach(function(example) {
-						example.Example.then(function(exampleText) {
-							console.log('Example:', exampleText);
-						});
-						example.Translation.then(function(translationText) {
-							console.log('Translation:', translationText);
-						});
-					});
-				});
+		var fields = element.all(by.repeater('fieldName in config.fieldOrder'));
+		fields.map(function(div) {
+			var label = div.$('label:not(.ng-hide)');
+			label.isPresent().then(function(present) {
+				if (present) { label.getText().then(console.log); }
 			});
 		});
 	});
