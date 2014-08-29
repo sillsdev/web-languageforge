@@ -94,7 +94,7 @@ var LfDbePage = function() {
 		newWordBtn: page.editDiv.$('button[data-ng-click="newEntry()'),
 		entryCountElem: page.editDiv.element(by.binding('entries.length')),
 		getEntryCount: function() {
-			return page.edit.entryCountElem.getText().then(function(s) {
+			return this.entryCountElem.getText().then(function(s) {
 				return parseInt(s, 10);
 			});
 		},
@@ -140,53 +140,10 @@ var LfDbePage = function() {
 			});
 		},
 	
-		getVisibleFields: function() {
-			return this.fields.map(function(div) {
-				var label = div.$('label:not(.ng-hide)');
-				return label.isPresent().then(function(present) {
-					if (present) {
-						return label.getText().then(function(labelText) {
-							return { label: labelText, div: div };
-						});
-					} else {
-						// Return undefined to mean "skip this field", but wrapped in a promise for API consistency
-						return protractor.promise.fulfilled(undefined);
-					}
-				});
-			}).then(function(results) {
-				return results.filter(function(x) { return (typeof(x) != "undefined"); });
-			});
-		},
-		
-		getVisibleFieldsByLabel: function() {
-			return this.getVisibleFields().then(function(fields) {
-				var result = {};
-				fields.forEach(function(field) {
-					result[field.label] = field.div;
-				});
-				return result;
-			});
-		},
-	
-		getLabelsOfVisibleFields: function() {
-			return this.getVisibleFields().then(function(fields) {
-				var result = [];
-				fields.forEach(function(field) {
-					result.push(field.label);
-				});
-				return result;
-			});
-		},
-		
-		getVisibleFieldsAndValues: function() {
-			return this.getVisibleFields().then(function(fields) {
-				var result = {};
-				fields.forEach(function(field) {
-					result[field.label] = dbeUtil.parseDcField(field.div);
-				});
-				return result;
-			});
-		},
+		getFields: dbeUtil.getFields,
+		getSingleField: dbeUtil.getSingleField,
+		getFieldsWithValues: dbeUtil.getFieldsWithValues,
+		getSingleFieldWithValues: dbeUtil.getSingleFieldWithValues,
 	};
 	
 	// --- Comment view ---
