@@ -1,4 +1,4 @@
-		<div id="promotion" class="sfcontainer">
+		<div id="promotion" class="container">
 			<div id="slides">
 				<div class="slides_container">
 				
