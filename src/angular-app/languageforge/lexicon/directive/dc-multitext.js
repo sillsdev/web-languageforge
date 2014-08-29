@@ -15,6 +15,9 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services'])
                 $scope.inputSystems = ss.session.projectSettings.config.inputSystems;
 
 				$scope.inputSystemDirection = function inputSystemDirection(tag) {
+					if (! (tag in $scope.inputSystems)) {
+						return 'ltr';
+					}
                     return ($scope.inputSystems[tag].isRightToLeft) ? 'rtl' : 'ltr';
 				};
 
