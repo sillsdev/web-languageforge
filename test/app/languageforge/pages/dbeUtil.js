@@ -106,5 +106,25 @@ var dbeUtil = function() {
 			return self.parseDcField(fieldElem, multitext_strategy);
 		});
 	};
+	
+	this.partOfSpeechNames = {
+		// For convenience in writing test code, since the values in testConstants don't match the displayed values
+		// No need to worry about localization here, since E2E tests are all run in the English-language interface
+		adj:   'Adjective',
+		adv:   'Adverb',
+		cla:   'Classifier',
+		n:     'Noun',
+		nprop: 'Proper Noun',
+		num:   'Numeral',
+		p:     'Particle',
+		prep:  'Preposition',
+		pro:   'Pronoun',
+		v:     'Verb',
+	};
+	this.expandPartOfSpeech = function(posAbbrev) {
+		// Take an abbreviation for a part of speech and return the value that will appear
+		// in the Part of Speech dropdown (for convenience in E2E tests).
+		return self.partOfSpeechNames[posAbbrev] + ' (' + posAbbrev + ')';
+	};
 };
 module.exports = new dbeUtil();
