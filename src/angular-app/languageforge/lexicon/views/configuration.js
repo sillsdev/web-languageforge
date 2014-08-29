@@ -81,7 +81,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 					return newTag;
 				};
 
-				// Parse the language tag and populate InputSystemsViewModel
+				// Parse the language tag to populate InputSystemsViewModel
 				InputSystemsViewModel.prototype.parseTag = function (tag) {
 					var tokens = tag.split('-');
 					var lookForPrivateUsage = false;
@@ -303,7 +303,13 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 
 			$scope.configurationApply = function () {
 				$scope.isSaving = true;
-				// TODO configDirty does not contain the added input system 2014-08 DDW
+
+				// Publish updates in configDirty to send to server
+				$scope.configDirty.inputSystems = {};
+				angular.forEach($scope.inputSystemViewModels, function (viewModel) {
+					$scope.configDirty.inputSystems[viewModel.inputSystem.tag] = viewModel.inputSystem;
+				});
+
 				lexProjectService.updateConfiguration($scope.configDirty, $scope.optionlistDirty, function (result) {
 					if (result.ok) {
 						notice.push(notice.SUCCESS, $filter('translate')('Dictionary configuration updated successfully'));
@@ -348,6 +354,14 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 				});
 				viewModel.special = special;
 				viewModel.buildTag();
+
+				// Verify newly created tag doesn't already exist before adding it to the list
+				for (var uuid in $scope.inputSystemViewModels) {
+					if ($scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag) {
+						notice.push(notice.ERROR, $filter('translate')('Input system for ' + viewModel.inputSystem.languageName + ' already exists'));
+						return;
+					}
+				}
 				$scope.inputSystemViewModels[viewModel.uuid] = viewModel;
 				$scope.currentInputSystemTag = viewModel.uuid;
 			};
