@@ -159,9 +159,9 @@ var LfDbePage = function() {
 		},
 	
 		getFields: dbeUtil.getFields,
-		getSingleField: dbeUtil.getSingleField,
-		getFieldsWithValues: dbeUtil.getFieldsWithValues,
-		getSingleFieldWithValues: dbeUtil.getSingleFieldWithValues,
+		getOneField: dbeUtil.getOneField,
+		getFieldValues: dbeUtil.getFieldValues,
+		getOneFieldValue: dbeUtil.getOneFieldValue,
 	};
 	
 	// --- Comment view ---

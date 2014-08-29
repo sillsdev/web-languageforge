@@ -92,17 +92,17 @@ var dbeUtil = function() {
 		}
 		return rootElem.all(by.cssContainingText('div[data-ng-repeat="fieldName in config.fieldOrder"]', searchLabel));
 	};
-	this.getFieldsWithValues = function(searchLabel, multitext_strategy, rootElem) {
+	this.getFieldValues = function(searchLabel, multitext_strategy, rootElem) {
 		return self.getFields(searchLabel, rootElem).map(function(fieldElem) {
 			return self.parseDcField(fieldElem, multitext_strategy);
 		});
 	};
-	this.getSingleField = function(searchLabel, idx, rootElem) {
+	this.getOneField = function(searchLabel, idx, rootElem) {
 		if (typeof(idx) === "undefined") { idx = 0; }
 		return self.getFields(searchLabel, rootElem).get(idx);
 	};
-	this.getSingleFieldWithValues = function(searchLabel, idx, multitext_strategy, rootElem) {
-		return self.getSingleField(searchLabel, idx, rootElem).then(function(fieldElem) {
+	this.getOneFieldValue = function(searchLabel, idx, multitext_strategy, rootElem) {
+		return self.getOneField(searchLabel, idx, rootElem).then(function(fieldElem) {
 			return self.parseDcField(fieldElem, multitext_strategy);
 		});
 	};

@@ -34,10 +34,10 @@ describe('Browse and edit page (DBE)', function() {
 	});
 
 	it('word 1: edit page has correct meaning, part of speech', function() {
-		expect(dbePage.edit.getFieldsWithValues('Meaning')).toEqual([
+		expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
 			{'en': constants.testEntry1.senses[0].definition.en.value},
 		]);
-		expect(dbePage.edit.getFieldsWithValues('Part of Speech')).toEqual([
+		expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
 			dbeUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value),
 		]);
 	});
@@ -47,10 +47,10 @@ describe('Browse and edit page (DBE)', function() {
 	});
 
 	it('word 2: edit page has correct meaning, part of speech', function() {
-		expect(dbePage.edit.getFieldsWithValues('Meaning')).toEqual([
+		expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
 			{'en': constants.testEntry2.senses[0].definition.en.value},
 		]);
-		expect(dbePage.edit.getFieldsWithValues('Part of Speech')).toEqual([
+		expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
 			dbeUtil.expandPartOfSpeech(constants.testEntry2.senses[0].partOfSpeech.value),
 		]);
 	});
@@ -60,24 +60,24 @@ describe('Browse and edit page (DBE)', function() {
 	});
 
 	it('word with multiple meanings: edit page has correct meanings, parts of speech', function() {
-		expect(dbePage.edit.getFieldsWithValues('Meaning')).toEqual([
+		expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
 			{'en': constants.testMultipleMeaningEntry1.senses[0].definition.en.value},
 			{'en': constants.testMultipleMeaningEntry1.senses[1].definition.en.value},
 		]);
-		expect(dbePage.edit.getFieldsWithValues('Part of Speech')).toEqual([
+		expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
 			dbeUtil.expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[0].partOfSpeech.value),
 			dbeUtil.expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[1].partOfSpeech.value),
 		]);
 	});
 
 	it('word with multiple meanings: edit page has correct examples, translations', function() {
-		expect(dbePage.edit.getFieldsWithValues('Example')).toEqual([
+		expect(dbePage.edit.getFieldValues('Example')).toEqual([
 			{'th': constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value},
 			{'th': constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value},
 			{'th': constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value},
 			{'th': constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value},
 		]);
-		expect(dbePage.edit.getFieldsWithValues('Translation')).toEqual([
+		expect(dbePage.edit.getFieldValues('Translation')).toEqual([
 			{'en': constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value},
 			{'en': constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value},
 			{'en': constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value},
