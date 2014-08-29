@@ -24,7 +24,7 @@ describe('Browse and edit page (DBE)', function() {
 		dbePage.browse.search.clearBtn.click();
 	});
 
-	it('setup: click on first word', function() {
+	it('click on first word', function() {
 		dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
 	});
 
@@ -42,9 +42,8 @@ describe('Browse and edit page (DBE)', function() {
 		]);
 	});
 
-	it('setup: back to browse list, click on second word', function() {
-		dbePage.edit.toListLink.click();
-		dbePage.browse.clickEntryByLexeme(constants.testEntry2.lexeme.th.value);
+	it('click on second word (found by definition)', function() {
+		dbePage.edit.clickEntryByDefinition(constants.testEntry2.senses[0].definition.en.value);
 	});
 
 	it('word 2: edit page has correct meaning, part of speech', function() {
@@ -56,9 +55,8 @@ describe('Browse and edit page (DBE)', function() {
 		]);
 	});
 
-	it('setup: back to browse list, click on word with multiple meanings', function() {
-		dbePage.edit.toListLink.click();
-		dbePage.browse.clickEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value);
+	it('setup: click on word with multiple meanings (found by lexeme)', function() {
+		dbePage.edit.clickEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value);
 	});
 
 	it('word with multiple meanings: edit page has correct meanings, parts of speech', function() {
@@ -86,5 +84,4 @@ describe('Browse and edit page (DBE)', function() {
 			{'en': constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value},
 		]);
 	});
-
 });
