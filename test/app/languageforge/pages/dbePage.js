@@ -99,6 +99,24 @@ var LfDbePage = function() {
 			});
 		},
 		entriesList: page.editDiv.all(by.repeater('entry in show.entries')),
+		findEntryByLexeme: function(lexeme) {
+			var div = page.editDiv.$('#compactEntryListContainer');
+			return div.element(by.cssContainingText('[ng-bind-html="getWordForDisplay(entry)"', lexeme));
+		},
+		clickEntryByLexeme: function(lexeme) {
+			this.findEntryByLexeme(lexeme).then(function(elem) {
+				elem.click();
+			});
+		},
+		findEntryByDefinition: function(definition) {
+			var div = page.editDiv.$('#compactEntryListContainer');
+			return div.element(by.cssContainingText('[ng-bind-html="getMeaningForDisplay(entry)"', definition));
+		},
+		clickEntryByDefinition: function(definition) {
+			this.findEntryByDefinition(definition).then(function(elem) {
+				elem.click();
+			});
+		},
 		search: {
 			input: page.editDiv.$('div.typeahead').$('input'),
 			clearBtn: page.editDiv.$('div.typeahead').$('i.icon-remove'),
