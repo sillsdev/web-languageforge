@@ -166,6 +166,8 @@ var LfDbePage = function() {
 	
 	// --- Comment view ---
 	this.comment = {
+		toEditLink: $('#toEditLink'),
+
 		// Top-row UI elements
 		renderedDiv: page.commentDiv.$('dc-rendered'),
 		filter: {
