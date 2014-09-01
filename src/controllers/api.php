@@ -7,7 +7,6 @@ class Api extends CI_Controller {
 		parent::__construct();
 	}
 	
-	// TODO add in security controller when that's available CP 2013-06
 	public function service($api) {
 		$serviceFileName = strtolower($api) . '.php';
 		$serviceClassName = str_replace(' ', '', ucwords(preg_replace('/[\s_]+/', ' ', $api)));

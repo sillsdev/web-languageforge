@@ -54,7 +54,7 @@ $route['app/(:any)'] = 'app/view/$1';
 $route['script/(:any)'] = 'script/view/$1';
 $route['download/assets/(:any)/(:any)'] = 'download/assets/$1/$2';
 $route['(:any)/app/(:any)'] = 'app/view/$2/$1';
-$route['upload'] = 'upload/receive';
+$route['upload/(:any)/(:any)'] = 'upload/receive/$1/$2';
 $route['(:any)'] = "pages/view/$1";
 
 

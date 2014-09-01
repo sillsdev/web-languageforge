@@ -45,6 +45,7 @@ use models\QuestionModel;
 use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserProfileModel;
+use models\scriptureforge\sfchecks\commands\SfchecksUploadCommands;
 
 require_once(APPPATH . 'vendor/autoload.php');
 require_once(APPPATH . 'config/sf_config.php');
@@ -492,6 +493,16 @@ class Sf
 	public function questionTemplate_list() {
 		return QuestionTemplateCommands::listTemplates($this->_projectId);
 	}
+
+	//---------------------------------------------------------------
+	// Upload API
+	//---------------------------------------------------------------
+	
+	public function sfChecks_uploadFile($fileType) {
+		return SfchecksUploadCommands::uploadFile($this->_projectId, $fileType);	
+	}
+	
+	
 	
 	
 	
