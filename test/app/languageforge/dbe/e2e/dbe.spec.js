@@ -4,6 +4,7 @@ describe('Browse and edit page (DBE)', function() {
 	var constants    = require('../../../testConstants');
 	var loginPage    = require('../../../bellows/pages/loginPage.js');
 	var projectsPage = require('../../../bellows/pages/projectsPage.js');
+	var util         = require('../../../bellows/pages/util.js');
 	var dbePage      = require('../../pages/dbePage.js');
 	var dbeUtil      = require('../../pages/dbeUtil.js');
 	
@@ -163,5 +164,44 @@ describe('Browse and edit page (DBE)', function() {
 		expect(comment.plusOne.getAttribute('ng-click')).toBe(null); // Should NOT be clickable
 		comment.plusOne.click();
 		expect(comment.score.getText()).toEqual('1'); // Should not change from previous test
+	});
+
+	it('back to browse page, create new word', function() {
+		dbePage.comment.toEditLink.click();
+		dbePage.edit.toListLink.click();
+		dbePage.browse.newWordBtn.click();
+	});
+
+	it('check that word count is still correct', function() {
+		expect(dbePage.edit.entriesList.count()).toEqual(dbePage.edit.getEntryCount());
+		expect(dbePage.edit.getEntryCount()).toBe(4);
+	});
+
+	it('create new word', function() {
+		var word    = constants.testEntry3.lexeme.th.value;
+		var meaning = constants.testEntry3.senses[0].definition.en.value;
+		// TODO: Figure out a good page-object API for entering values in these fields; this is a bit clunky.
+		dbePage.edit.getOneField('Word').$$('input').first().sendKeys(word);
+		dbePage.edit.getOneField('Meaning').$('input').sendKeys(meaning);
+		util.clickDropdownByValue(dbePage.edit.getOneField('Part of Speech').$('select'), 'Noun \\(n\\)');
+		dbePage.edit.saveBtn.click();
+	});
+
+	it('new word is visible in edit page', function() {
+		dbePage.edit.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
+		expect(dbePage.edit.search.getMatchCount()).toBe(1);
+		dbePage.edit.search.clearBtn.click();
+	});
+
+	it('new word is visible in browse page', function() {
+		dbePage.edit.toListLink.click();
+		dbePage.browse.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
+		expect(dbePage.browse.search.getMatchCount()).toBe(1);
+		dbePage.browse.search.clearBtn.click();
+	});
+
+	it('check that word count is still correct in browse page', function() {
+		expect(dbePage.browse.entriesList.count()).toEqual(dbePage.browse.getEntryCount());
+		expect(dbePage.browse.getEntryCount()).toBe(4);
 	});
 });
