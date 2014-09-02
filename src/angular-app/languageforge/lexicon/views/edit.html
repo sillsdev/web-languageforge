@@ -1,11 +1,12 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="lexAppContainer">
     <div style="display:flex;justify-content:space-between; margin-top:45px;margin-bottom: 10px">
         <div>
-            <a ng-show="state == 'edit'" class="btn" ng-click="returnToList()" tooltip="{{'Back to List'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'List'|translate}}</a>
-            <a ng-show="state == 'comment'" class="btn" ng-click="editEntry(currentEntry.id)" tooltip="{{'Return to Edit Entry'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'Edit'|translate}}</a>
+	        <label ng-show="state == 'list' " style="height:25px"></label>
+            <a id="toListLink" ng-show="state == 'edit'" class="btn" ng-click="returnToList()" tooltip="{{'Back to List'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'List'|translate}}</a>
+            <a id="toEditLink" ng-show="state == 'comment'" class="btn" ng-click="editEntry(currentEntry.id)" tooltip="{{'Return to Edit Entry'|translate}}"><i style="position: relative; top:1px; right:5px" class="icon-large icon-chevron-left"></i> {{'Edit'|translate}}</a>
         </div>
         <div>
-            <a ng-show="state == 'edit'" style="color:white" class="btn btn-warning" ng-click="showComments()" tooltip="{{'Show Comments'|translate}}">
+            <a id="toCommentsLink" ng-show="state == 'edit'" style="color:white" class="btn btn-warning" ng-click="showComments()" tooltip="{{'Show Comments'|translate}}">
                 <span ng-if="currentEntryCommentCounts.total !== 1">
                     {{currentEntryCommentCounts.total}} {{'Comments'|translate}}
                 </span>
@@ -16,14 +17,15 @@
         </div>
     </div>
 
+	<div class="animate-switch-container" data-ng-switch on=state>
 
-    <!-- entry list view -->
-    <div id="lexAppListView" ng-if="state == 'list'">
-        <div class="lexiconHeaderContainer">
-            <div class="lexiconHeaderItem">
-                <span style="color: grey">{{entries.length}} {{'entries' | translate}}</span>
+	    <!-- entry list view -->
+	    <div id="lexAppListView" class="animate-switch" data-ng-switch-when="list">
+            <div style="margin: 5px 5px 5px 0">
+                <small style="color: grey">{{entries.length}} {{'entries' | translate}}</small>
+	            <button class="btn btn-success btn-small pull-right" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
             </div>
-            <div ng-hide="show.entries.length === 0" style="width:340px;" class="lexiconHeaderItem">
+            <div ng-hide="show.entries.length === 0" style="width:340px; margin:0 auto;" >
                 <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
                     <ul ng-if="typeahead.searchResults.length > 0">
                         <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
@@ -34,159 +36,155 @@
                     </ul>
                 </typeahead>
             </div>
-            <div class="lexiconHeaderItem">
-                <button class="btn btn-success" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
-            </div>
-        </div>
-        <div style="border-bottom: 1px solid darkgray; width:100%;margin-top:15px"></div>
-        <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-            <div ng-show="entries.length == 0 && rights.canEditProject() && !fullRefreshInProgress" style="text-align: center;margin-top:50px"><h4>Looks like there are no entries yet.</h4><button class="btn btn-primary" ng-click="navigateToLiftImport()">Import entries from LIFT</button></div>
-            <div class="lexiconListItem" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntryAndScroll(entry.id)">
-                <dc-rendered config="config.entry" model="entry"></dc-rendered>
-                <div ng-show="getEntryCommentCount(entry.id) > 0" style="position:absolute; right:5px;top:3px"><i style="color: #faa732;" class="icon-comment"></i></div>
+	        <div style="border-bottom: 1px solid darkgray; width:100%;margin-top:15px"></div>
+	        <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
+	            <div ng-show="entries.length == 0 && rights.canEditProject() && !fullRefreshInProgress" style="text-align: center;margin-top:50px"><h4>Looks like there are no entries yet.</h4><button class="btn btn-primary" ng-click="navigateToLiftImport()">Import entries from LIFT</button></div>
+	            <div class="lexiconListItem" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntryAndScroll(entry.id)">
+	                <dc-rendered config="config.entry" model="entry"></dc-rendered>
+	                <div ng-show="getEntryCommentCount(entry.id) > 0" style="position:absolute; right:5px;top:3px"><i style="color: #faa732;" class="icon-comment"></i></div>
+	            </div>
+	        </div>
+	    </div>
 
-            </div>
-        </div>
-    </div>
+	    <!-- edit view -->
+	    <div id="lexAppEditView" class="animate-switch" data-ng-switch-when="edit">
+	        <div style="flex: 1; border-right: 1px #dcdcdc solid">
+	            <div style="display:flex; justify-content: space-between; margin: 5px 5px 5px 0">
+	                <small style="color: grey; margin: 3px 0 0 2px">{{entries.length}} {{'entries' | translate}}</small>
+	                <button class="btn btn-success btn-small" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
+	            </div>
+	            <div style="margin: 5px 5px 5px 0">
+	                <typeahead style="margin:0px; width:162px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
+	                    <ul ng-if="typeahead.searchResults.length > 0">
+	                        <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
+	                            <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
+	                            <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
+	                        </li>
+	                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
+	                    </ul>
+	                </typeahead>
+	            </div>
+	            <div style="margin-right: 10px; display:flex; flex-direction: column">
+	                <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
+	                    <div id="entryId_{{entry.id}}" ng-class="{selected: entry.id == currentEntry.id}" title="{{getCompactItemListOverlay(entry)}}" class="lexiconListItemCompact" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntry(entry.id)">
+	                        <div ng-show="getEntryCommentCount(entry.id) > 0" style="position:absolute; left:60px;top:3px;z-index: 1; opacity: .35"><i style="color: #faa732;" class="icon-comment icon-2x"></i></div>
+	                        <div dir="auto" class="listItemPrimary" ng-bind-html="getWordForDisplay(entry)"></div>
+	                        <div dir="auto" class="listItemSecondary" ng-bind-html="getMeaningForDisplay(entry)"></div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
 
+	        <div style="flex: 4;padding:5px;display: flex; flex-direction: column">
+	            <div style="margin-bottom: 5px; border-bottom: solid black 1px">
+	                <div ng-if="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
+	                    <button data-ng-if="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
+	                    <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
+	                    <span style="color: grey; margin-right: 10px">{{saveNotice()}}</span>
+	                </div>
+	                <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
+	            </div>
+	            <div style="margin-top:5px">
+	                <div class="entryItemView" data-ng-if="entryLoaded()">
+	                    <button id="toggleUncommonFieldsBtn" ng-show="rights.canEditEntry()" class="pull-right btn btn-mini" style="margin:10px" ng-click="show.emptyFields = !show.emptyFields">{{show.emptyFields ? 'Hide Uncommon Fields' : 'Show All Fields' |translate}}</button>
+	                    <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
 
-    <!-- edit view -->
-    <div id="lexAppEditView" ng-if="state == 'edit'">
-        <div style="flex: 1; border-right: 1px #dcdcdc solid">
-            <div style="display:flex; justify-content: space-between; margin: 5px 5px 5px 0">
-                <small style="color: grey; margin: 3px 0 0 2px">{{entries.length}} {{'entries' | translate}}</small>
-                <button class="btn btn-success btn-small" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
-            </div>
-            <div style="margin: 5px 5px 5px 0">
-                <typeahead style="margin:0px; width:162px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
-                    <ul ng-if="typeahead.searchResults.length > 0">
-                        <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
-                            <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
-                            <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
-                        </li>
-                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
-                    </ul>
-                </typeahead>
-            </div>
-            <div style="margin-right: 10px; display:flex; flex-direction: column">
-                <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-                    <div id="entryId_{{entry.id}}" ng-class="{selected: entry.id == currentEntry.id}" title="{{getCompactItemListOverlay(entry)}}" class="lexiconListItemCompact" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntry(entry.id)">
-                        <div ng-show="getEntryCommentCount(entry.id) > 0" style="position:absolute; left:60px;top:3px;z-index: 1; opacity: .35"><i style="color: #faa732;" class="icon-comment icon-2x"></i></div>
-                        <div dir="auto" class="listItemPrimary" ng-bind-html="getWordForDisplay(entry)"></div>
-                        <div dir="auto" class="listItemSecondary" ng-bind-html="getMeaningForDisplay(entry)"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div style="flex: 4;padding:5px;display: flex; flex-direction: column">
-            <div style="margin-bottom: 5px; border-bottom: solid black 1px">
-                <div ng-if="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
-                    <button data-ng-if="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
-                    <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
-                    <span style="color: grey;">{{saveNotice()}}</span>
-                </div>
-                <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
-            </div>
-            <div style="margin-top:5px">
-                <div class="entryItemView" data-ng-if="entryLoaded()">
-                    <button ng-show="rights.canEditEntry()" class="pull-right btn btn-mini" style="margin:10px" ng-click="show.emptyFields = !show.emptyFields">{{show.emptyFields ? 'Hide Uncommon Fields' : 'Show All Fields' |translate}}</button>
-                    <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--
-    <div class="row">
-        <div class="span10">
-            <pre>{{currentEntryCommentCounts|json}}</pre>
-        </div>
-    </div>
-    <div class="row">
-        <div class="span10">
-            <pre>currentEntry {{currentEntry|json}}</pre>
-        </div>
-    </div>
-    <div class="row">
-        <div class="span10">
-            <pre>config {{config|json}}</pre>
-        </div>
-    </div>
-    -->
+	    <!--
+	    <div class="row">
+	        <div class="span10">
+	            <pre>{{currentEntryCommentCounts|json}}</pre>
+	        </div>
+	    </div>
+	    <div class="row">
+	        <div class="span10">
+	            <pre>currentEntry {{currentEntry|json}}</pre>
+	        </div>
+	    </div>
+	    <div class="row">
+	        <div class="span10">
+	            <pre>config {{config|json}}</pre>
+	        </div>
+	    </div>
+	    -->
 
 
-    <!-- comment view -->
-    <div id="lexAppCommentView" ng-if="state == 'comment'">
-        <div style="flex: 10;padding:5px;display: flex; flex-direction: column">
-            <div style="margin: 20px 0 5px; border-bottom: solid black 1px">
-                <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
-            </div>
-            <div style="margin-top:5px">
-                <div class="entryItemView" data-ng-if="entryLoaded()">
-                    <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
-                </div>
-            </div>
-        </div>
-        <div style="flex: 9;padding:5px;display: flex; flex-direction: column">
-            <div style="margin-bottom: 5px; border-bottom: solid black 1px; display:flex; justify-content: space-between">
-                <div style="position:relative;">
-                    <input dir="auto" style="width: 140px; margin-left:12px; padding-right:25px" placeholder="Filter Comments" ng-model="commentFilter.text" type="text" />&nbsp;<span style="position:absolute; right:13px; top:5px" ng-show="commentFilter.text != ''" title="Clear Filter" ng-click="commentFilter.text = ''">
-                    <i class="icon-remove" style="color:#808080; cursor: pointer"></i>
-                    </span>
-                </div>
-                <div><select ng-show="control.rights.canUpdateCommentStatus()" style="width:110px" ng-model="commentFilter.status"><option value="all">Show All</option><option value="unresolved">Unresolved</option><option ng-if="rights.canUpdateCommentStatus()" value="todo">Todo</option></select></div>
-                <div>
-                    <!-- cant get this working at the moment
-                    <div ng-show="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryComments.length}} {{'Comments' | translate}}</div>
-                    <div ng-hide="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryCommentsFiltered.length}} of {{currentEntryComments.length}}</div>
-                    -->
-                    <div class="commentCount">
-                        <span ng-if="currentEntryCommentCounts.total !== 1">
-                            {{currentEntryCommentCounts.total}} {{'Comments'|translate}}
-                        </span>
-                        <span ng-if="currentEntryCommentCounts.total === 1">
-                            {{currentEntryCommentCounts.total}} {{'Comment'|translate}}
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="commentListView">
-                <div ng-show="control.rights.canComment()" class="newCommentForm">
-                    <div style="display:flex; flex-direction: column">
-                        <textarea data-ng-model="newComment.content" placeholder="{{getNewCommentPlaceholderText()}}"></textarea>
-                        <div class="commentRegarding">
-                            <i class="icon-remove" style="float:right; color:#808080; cursor: pointer" ng-click="newComment.regarding = {}" ng-show="newComment.regarding.field"></i>
+	    <!-- comment view -->
+	    <div id="lexAppCommentView" class="animate-switch" data-ng-switch-when="comment">
+	        <div style="flex: 10;padding:5px;display: flex; flex-direction: column">
+	            <div style="margin: 20px 0 5px; border-bottom: solid black 1px">
+	                <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
+	            </div>
+	            <div style="margin-top:5px">
+	                <div class="entryItemView" data-ng-if="entryLoaded()">
+	                    <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
+	                </div>
+	            </div>
+	        </div>
+	        <div style="flex: 9;padding:5px;display: flex; flex-direction: column">
+	            <div style="margin-bottom: 5px; border-bottom: solid black 1px; display:flex; justify-content: space-between">
+	                <div style="position:relative;">
+	                    <input dir="auto" style="width: 140px; margin-left:12px; padding-right:25px" placeholder="Filter Comments" ng-model="commentFilter.text" type="text" />&nbsp;<span style="position:absolute; right:13px; top:5px" ng-show="commentFilter.text != ''" title="Clear Filter" ng-click="commentFilter.text = ''">
+	                    <i class="icon-remove" style="color:#808080; cursor: pointer"></i>
+	                    </span>
+	                </div>
+	                <div><select ng-show="control.rights.canUpdateCommentStatus()" style="width:110px" ng-model="commentFilter.status"><option value="all">Show All</option><option value="unresolved">Unresolved</option><option ng-if="rights.canUpdateCommentStatus()" value="todo">Todo</option></select></div>
+	                <div>
+	                    <!-- cant get this working at the moment
+	                    <div ng-show="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryComments.length}} {{'Comments' | translate}}</div>
+	                    <div ng-hide="currentEntryComments.length == currentEntryCommentsFiltered.length" class="commentCount">{{currentEntryCommentsFiltered.length}} of {{currentEntryComments.length}}</div>
+	                    -->
+	                    <div class="commentCount">
+	                        <span ng-if="currentEntryCommentCounts.total !== 1">
+	                            {{currentEntryCommentCounts.total}} {{'Comments'|translate}}
+	                        </span>
+	                        <span ng-if="currentEntryCommentCounts.total === 1">
+	                            {{currentEntryCommentCounts.total}} {{'Comment'|translate}}
+	                        </span>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="commentListView">
+	                <div ng-show="control.rights.canComment()" class="newCommentForm">
+	                    <div style="display:flex; flex-direction: column">
+	                        <textarea data-ng-model="newComment.content" placeholder="{{getNewCommentPlaceholderText()}}"></textarea>
+	                        <div class="commentRegarding">
+	                            <i class="icon-remove" style="float:right; color:#808080; cursor: pointer" ng-click="newComment.regarding = {}" ng-show="newComment.regarding.field"></i>
 
-                            <span class="muted"><em>This comment is regarding</em></span>
-                            <div ng-show="newComment.regarding.field">
-                                <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
-                                <span class="regardingFieldName">{{newComment.regarding.fieldNameForDisplay}}</span>
-                                <div class="input-prepend">
-                                    <span ng-if="newComment.regarding.inputSystem" class="add-on wsid regardingInputSystem" title="{{newComment.regarding.inputSystem}}">{{newComment.regarding.inputSystemAbbreviation}}</span>
-                                    <span class="uneditable-input regardingFieldValue" ng-bind="newComment.regarding.fieldValue"></span>
-                                </div>
-                            </div>
-                            <div ng-hide="newComment.regarding.field" style="text-align:center; color: #e67345;margin-bottom: 8px"><em translate="Click on a field to the left and give context to your comment"></em></div>
-                        </div>
-                        <div style="text-align: right; margin-right:10px">
-                            <button class="btn-sm" ng-click="updateComment()">Post</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="commentListContainer">
-                    <div ng-repeat="comment in currentEntryCommentsFiltered">
-                        <dc-comment control="control" model="comment"></dc-comment>
-                    </div>
-                    <!--
-                    <pre>{{currentEntryComments|json}}</pre>
-                    <pre>{{comments|json}}</pre>
-                    -->
+	                            <span class="muted"><em>This comment is regarding</em></span>
+	                            <div ng-show="newComment.regarding.field">
+	                                <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
+	                                <span class="regardingFieldName">{{newComment.regarding.fieldNameForDisplay}}</span>
+	                                <div class="input-prepend">
+	                                    <span ng-if="newComment.regarding.inputSystem" class="add-on wsid regardingInputSystem" title="{{newComment.regarding.inputSystem}}">{{newComment.regarding.inputSystemAbbreviation}}</span>
+	                                    <span class="uneditable-input regardingFieldValue" ng-bind="newComment.regarding.fieldValue"></span>
+	                                </div>
+	                            </div>
+	                            <div ng-hide="newComment.regarding.field" style="text-align:center; color: #e67345;margin-bottom: 8px"><em translate="Click on a field to the left and give context to your comment"></em></div>
+	                        </div>
+	                        <div style="text-align: right; margin-right:10px">
+	                            <button class="btn-sm" ng-click="updateComment()">Post</button>
+	                        </div>
+	                    </div>
+	                </div>
+	                <div class="commentListContainer">
+	                    <div ng-repeat="comment in currentEntryCommentsFiltered">
+	                        <dc-comment control="control" model="comment"></dc-comment>
+	                    </div>
+	                    <!--
+	                    <pre>{{currentEntryComments|json}}</pre>
+	                    <pre>{{comments|json}}</pre>
+	                    -->
 
-                </div>
-            </div>
-        </div>
-    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+
+	</div>
     <!--
     <div class="row">
         <div class="span10">

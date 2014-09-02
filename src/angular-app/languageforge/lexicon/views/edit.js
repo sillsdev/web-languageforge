@@ -25,18 +25,17 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 		return false;
 	};
 	
+
+	// Reviewed CP 2014-08: Um, shouldn't these two be mutually exclusive.
 	var saving = false;
 	var saved = false;
 
 	$scope.saveNotice = function() {
-		if ($scope.currentEntryIsDirty()) {
-			if (saving) {
-				return "Saving";
-			}
-		} else {
-			if (saved) {
-				return "Saved";
-			}
+		if (saving) {
+			return "Saving";
+		}
+		if (saved) {
+			return "Saved";
 		}
 		return "";
 	};
@@ -71,9 +70,17 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
                         // we can solve this problem by implementing a sliding "scroll window" that only shows a few entries at a time (say 30?)
                         $scope.show.initial();
                     }
-                    if (doSetEntry) {
-                        setCurrentEntry(entry);
-                    }
+
+					/* Reviewed CP 2014-08: It seems that currently the setCurrentEntry will never do anything.
+					Currently it has the side effect of causing the focus to be lost. Given that we save the entire model
+					We will never get data returned other than what we just caused to be saved.
+
+					One day we hope to send deltas which will fix this problem and give a better real time experience.
+					*/
+//                    if (doSetEntry) {
+//                        setCurrentEntry(entry);
+//                    }
+					pristineEntry = angular.copy($scope.currentEntry);
 					$scope.lastSavedDate = new Date();
 
                     // refresh data will add the new entry to the entries list
@@ -237,6 +244,7 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
 
 		$scope.currentEntry = entry;
 		pristineEntry = angular.copy(entry);
+		saving = false; // This should be redundant.
 		saved = false;
 	}
 
@@ -611,15 +619,11 @@ function ($scope, userService, sessionService, lexService, $window, $interval, $
         text: '',
         status:'all',
         byText: function byText(comment) {
-            if (comment.content.toLowerCase().indexOf($scope.commentFilter.text.toLowerCase()) != -1) {
-                return true;
-            }
-            for (var i=0; i<comment.replies.length; i++) {
-                var reply = comment.replies[i];
-                if (reply.content.toLowerCase().indexOf($scope.commentFilter.text.toLowerCase()) != -1) {
-                    return true;
-                }
-            }
+	        // Convert entire comment object to a big string and search for filter.
+	        // Note: This has a slight side effect of ID and avatar information matching the filter.
+	        if (JSON.stringify(comment).toLowerCase().indexOf($scope.commentFilter.text.toLowerCase()) != -1) {
+		        return true;
+	        }
             return false;
         },
         byStatus: function byStatus(comment) {

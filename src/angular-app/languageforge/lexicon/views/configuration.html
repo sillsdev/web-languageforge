@@ -1,5 +1,5 @@
 <div class="container" data-ng-cloak data-ng-controller="ConfigCtrl">
-<h2>{{'Dictionary Configuration' | translate}}</h2>
+<br><h2 style="font-weight:normal">{{'Dictionary Configuration' | translate}}</h2>
 <form name="configForm" novalidate>
 <button style="margin-left:15px" tooltip="View the dictionary" class="btn {{interfaceConfig.pullToSide}}" data-ng-click="backToDictionary()"><i class="icon-reply"></i>{{'Dictionary' | translate}}</button>
 <fieldset data-ng-disabled="isSaving">
@@ -117,17 +117,16 @@
 						<div class="span3 picklists">
 							<label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
 							<ul class="unstyled indent1"  id="inputSystem">
-								<li data-ng-click="currentField.inputSystems.tag = inputSystemTag" 
-									data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" 
-									data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
+								<li data-ng-click="currentField.inputSystems.tag = inputSystemTag"
+								    data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder"
+								    data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
 									<div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
 										{{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
-								</li>
 							</ul>
 							<a href="" data-ng-click="editInputSystems.collapsed = false">{{'Edit input systems' | translate}}</a>
 						</div>
 						<div class="span1 btn-group btn-group-vertical">
-							<button class="btn" data-ng-click="moveUp(currentField.inputSystems.tag)" 
+							<button class="btn" data-ng-click="moveUp(currentField.inputSystems.tag)"
 								data-ng-disabled="currentField.inputSystems.fieldOrder[0] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
 								&nbsp;&nbsp;<i class="icon-arrow-up"></i></button>
 							<button class="btn" data-ng-click="moveDown(currentField.inputSystems.tag)" 

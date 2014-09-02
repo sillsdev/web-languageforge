@@ -17,6 +17,9 @@ use models\shared\rights\SystemRoles;
 use models\scriptureforge\SfProjectModel;
 use models\languageforge\LfProjectModel;
 use models\ProjectModel;
+use models\languageforge\lexicon\LexiconProjectModel;
+use models\languageforge\lexicon\commands\LexEntryCommands;
+use models\languageforge\lexicon\config\LexiconConfigObj;
 use libraries\shared\Website;
 
 $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
@@ -170,6 +173,29 @@ if ($constants['siteType'] == 'scriptureforge') {
 		$managerUser);
 } else if ($constants['siteType'] == 'languageforge') {
 	// Set up LanguageForge E2E test envrionment here
+    $testProjectModel = new LexiconProjectModel($testProject);
+    $testProjectModel->addInputSystem("th-fonipa", "thipa", "Thai IPA");
+    $testProjectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[] = 'th-fonipa';
+    $testProjectModel->write();
+
+	$entry1 = LexEntryCommands::updateEntry($testProject,
+		array(
+			'id' => '',
+			'lexeme' => $constants['testEntry1']['lexeme'],
+			'senses' => $constants['testEntry1']['senses']
+		), $managerUser);
+	$entry2 = LexEntryCommands::updateEntry($testProject,
+		array(
+			'id' => '',
+			'lexeme' => $constants['testEntry2']['lexeme'],
+			'senses' => $constants['testEntry2']['senses']
+		), $managerUser);
+	$multipleMeaningEntry1 = LexEntryCommands::updateEntry($testProject,
+		array(
+			'id' => '',
+			'lexeme' => $constants['testMultipleMeaningEntry1']['lexeme'],
+			'senses' => $constants['testMultipleMeaningEntry1']['senses']
+		), $managerUser);
 }
 
 ?>
