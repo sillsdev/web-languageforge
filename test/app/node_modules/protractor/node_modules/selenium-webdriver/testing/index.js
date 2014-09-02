@@ -27,10 +27,11 @@
  *   <li>xit
  * </ul>
  *
- * <p>The provided wrappers leverage the webdriver.promise.ControlFlow to
- * simplify writing asynchronous tests:
+ * <p>The provided wrappers leverage the {@link webdriver.promise.ControlFlow}
+ * to simplify writing asynchronous tests:
  * <pre><code>
  * var webdriver = require('selenium-webdriver'),
+ *     portprober = require('selenium-webdriver/net/portprober'),
  *     remote = require('selenium-webdriver/remote'),
  *     test = require('selenium-webdriver/testing');
  *
@@ -38,9 +39,9 @@
  *   var driver, server;
  *
  *   test.before(function() {
- *     server = new remote.SeleniumServer({
- *       jar: 'path/to/selenium-server-standalone.jar'
- *     });
+ *     server = new remote.SeleniumServer(
+ *         'path/to/selenium-server-standalone.jar',
+ *         {port: portprober.findFreePort()});
  *     server.start();
  *
  *     driver = new webdriver.Builder().
@@ -79,7 +80,8 @@
  * </code></pre>
  */
 
-var flow = require('..').promise.controlFlow();
+var promise = require('..').promise;
+var flow = promise.controlFlow();
 
 
 /**
@@ -118,16 +120,27 @@ function wrapped(globalFn) {
   };
 
   function asyncTestFn(fn) {
-    return function(done) {
+    var ret = function(done) {
       this.timeout(0);
       var timeout = this.timeout;
       this.timeout = undefined;  // Do not let tests change the timeout.
       try {
-        flow.execute(fn.bind(this)).then(seal(done), done);
+        var testFn = fn.bind(this);
+        flow.execute(function() {
+          var done = promise.defer();
+          promise.asap(testFn(done.reject), done.fulfill, done.reject);
+          return done.promise;
+        }).then(seal(done), done);
       } finally {
         this.timeout = timeout;
       }
     };
+
+    ret.toString = function() {
+      return fn.toString();
+    };
+
+    return ret;
   }
 }
 

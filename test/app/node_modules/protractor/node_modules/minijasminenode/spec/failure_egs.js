@@ -1,8 +1,9 @@
 describe('a pass and a failure', function(){
-  it('should pass', function(){
-    expect(1+2).toEqual(3);
+  describe('pass', function() {
+    it('should pass', function(){
+      expect(1+2).toEqual(3);
+    });
   });
-
   describe('failure', function(){
     it('should report failure (THIS IS EXPECTED)', function(){
       expect(true).toBeFalsy();

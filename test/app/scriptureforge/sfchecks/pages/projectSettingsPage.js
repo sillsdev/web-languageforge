@@ -54,7 +54,7 @@ var SfProjectSettingsPage = function() {
 	};
 	// getFirstCheckbox has to be a function because the .first() method will actually resolve the finder
 	this.archivedTextsTabGetFirstCheckbox = function() {
-		return this.archivedTextsTab.textList.first().findElement(by.css('input[type="checkbox"]'));
+		return this.archivedTextsTab.textList.first().element(by.css('input[type="checkbox"]'));
 	};
 	
 	this.propertiesTab = {
@@ -67,9 +67,9 @@ var SfProjectSettingsPage = function() {
 	
 	this.optionlistsTab = {
 		// TODO: Find better names for these
-		showList:			element(by.id('showInProfileFieldset')).element.all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
-		editList:			element(by.id('editListValuesFieldset')).element.all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
-		editContentsList:	element(by.id('picklistEditorFieldset')).element.all(by.repeater('item in items')),
+		showList:			element(by.id('showInProfileFieldset')).all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
+		editList:			element(by.id('editListValuesFieldset')).all(by.repeater('(listId, list) in project.userProperties.userProfilePickLists')),
+		editContentsList:	element(by.id('picklistEditorFieldset')).all(by.repeater('item in items')),
 		defaultValue:		element(by.id('picklistEditorFieldset')).element(by.model('defaultKey')),
 		addInput:			element(by.id('picklistEditorFieldset')).element(by.model('newValue')),
 		addButton:			element(by.id('picklistEditorFieldset')).element(by.css('input[type="text"] + a')),
@@ -77,7 +77,7 @@ var SfProjectSettingsPage = function() {
 		unsavedWarning:		element(by.css('span.unsaved-warning')),
 		deleteButton: function(repeaterRow) {
 			// Given a single repeater row in the picklist, return the delete button for that row
-			return repeaterRow.findElement(by.css('a:first-of-type'));
+			return repeaterRow.element(by.css('a:first-of-type'));
 		},
 	}; // NYI - wait for refactor
 	

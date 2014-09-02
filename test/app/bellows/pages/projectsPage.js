@@ -6,6 +6,7 @@ var projectTypes = {
 };
 
 var util = require('./util');
+var constants = require('../../testConstants.json');
 
 var SfProjectsPage = function() {
 	var page = this;
@@ -38,7 +39,7 @@ var SfProjectsPage = function() {
 			util.clickDropdownByValue(this.itemsPerPageCtrl, "100");
 		};
 		// Either way, the following expect() should be fulfilled
-		expect(element(by.selectedOption('itemsPerPage')).getText()).toEqual('100');
+		expect(element(by.model('itemsPerPage')).$('option:checked').getText()).toEqual('100');
 	};
 	
 	this.projectExists = function() {
@@ -94,11 +95,17 @@ var SfProjectsPage = function() {
 	
 	this.addUserToProject = function(projectName, userName, roleText) {
 		this.findProject(projectName).then(function(projectRow) {
-//			var btn = projectRow.findElement(by.partialButtonText("Add me as " + roleText));
+//			var btn = projectRow.element(by.partialButtonText("Add me as " + roleText));
 //			btn.click();
 			var link = projectRow.$('a');
 			link.getAttribute('href').then(function(url) {
-				browser.get(url + '#/settings');
+				var extraUrlPart = '';
+				if (constants.siteType == 'scriptureforge') {
+					extraUrlPart = '#/settings';
+				} else if (constants.siteType == 'languageforge') {
+					extraUrlPart = '#/users';
+				}
+				browser.get(url + extraUrlPart);
 				// Users tab is selected by default, so the following check might not be needed
 //				var usersTab = element(by.xpath('//li[@heading="Users"]'));
 //				expect(usersTab.isElementPresent()).toBeTruthy();
@@ -117,7 +124,7 @@ var SfProjectsPage = function() {
 				var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
 				var foundUserRow;
 				projectMemberRows.map(function(row) {
-					var nameColumn = row.findElement(by.binding("{{user.username}}"));
+					var nameColumn = row.element(by.binding("{{user.username}}"));
 					nameColumn.getText().then(function(text) {
 						if (text === userName) {
 							foundUserRow = row;
@@ -125,7 +132,7 @@ var SfProjectsPage = function() {
 					});
 				}).then(function() {
 					if (foundUserRow) {
-						var select = foundUserRow.$('select');
+						var select = foundUserRow.$('select:not([disabled])');
 						util.clickDropdownByValue(select, roleText);
 					}
 				});
@@ -144,14 +151,20 @@ var SfProjectsPage = function() {
 		this.addUserToProject(projectName, userName, "Manager");
 	};
 	this.addMemberToProject = function(projectName, userName) {
-		this.addUserToProject(projectName, userName, "Member");
+		this.addUserToProject(projectName, userName, "Contributor");
 	};
 	
 	this.removeUserFromProject = function(projectName, userName) {
 		this.findProject(projectName).then(function(projectRow) {
 			var link = projectRow.$('a');
 			link.getAttribute('href').then(function(url) {
-				browser.get(url + '#/settings');
+				var extraUrlPart;
+				if (constants.siteType == 'scriptureforge') {
+					extraUrlPart = '#/settings';
+				} else if (constants.siteType == 'languageforge') {
+					extraUrlPart = '#/users';
+				}
+				browser.get(url + extraUrlPart);
 				var userFilter = element(by.model('userFilter'));
 				userFilter.sendKeys(userName);
 				var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
