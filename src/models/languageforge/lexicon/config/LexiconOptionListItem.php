@@ -2,18 +2,18 @@
 
 namespace models\languageforge\lexicon\config;
 
+class LexiconOptionListItem
+{
+    public $key;
+    public $value;
 
-class LexiconOptionListItem {
-	public $key;
-	public $value;
-
-	function __construct($value = '', $key = null)
-	{
-		$this->value = $value;
-		if (is_null($key)) {
-			$this->key = $value;
-		} else {
-			$this->key = $key;
-		}
-	}
-} 
+    public function __construct($value = '', $key = null)
+    {
+        $this->value = $value;
+        if (is_null($key)) {
+            $this->key = $value;
+        } else {
+            $this->key = $key;
+        }
+    }
+}

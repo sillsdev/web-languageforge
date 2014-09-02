@@ -1,6 +1,6 @@
 		<meta charset="utf-8" />
 		<title><?php echo $controller->website->name; ?></title>
-		
+
 		<link rel="stylesheet" href="/css/shared/bootstrap.css" />
 		<link rel="stylesheet" href="/css/shared/animate.css" />
 		<?php if (isset($cssFiles)): ?>
@@ -11,7 +11,7 @@
 		<link rel="stylesheet" media="screen" href="/css/languageforge/default/superfish.css" />
 		<link rel="stylesheet" media="screen" href="/css/languageforge/default/slides.css" />
 		<link rel="stylesheet" media="screen" href="/css/shared/jquery.fileupload-ui.css" />
-		<!-- 
+		<!--
 		<link rel="stylesheet" href="/css/languageforge/default/lf-dictionary.css" />
   -->
 		<link rel="stylesheet" href="/css/languageforge/default/lf.css" />

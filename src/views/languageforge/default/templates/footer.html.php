@@ -1,5 +1,5 @@
 		<div id="footercontainer">
-			
+
 			<div id="footer">
 				<div class="container">
 					<div class="row">
@@ -14,15 +14,15 @@
 								<a href="/">Home</a><br /><a href="/learn_language_forge">Learn</a><br /><a href="/discuss">Discuss</a>
 							</small>
 						</div>
-						
+
 						<div class="span1 offset4">
 						</div>
-				
+
 						<div class="span3">
 							<p><a href="http://ic.payap.ac.th/"><img src="/images/shared/PAYAP_logo.png" alt="PAYAP" width="170" height="50" class="right png_bg" /></a></p>
 						</div>
 				</div>
-				
+
 			</div>
 		</div>
 

@@ -6,26 +6,29 @@ use models\mapper\ArrayOf;
 use models\mapper\Id;
 use models\mapper\IdReference;
 
-class LexCommentModel extends \models\mapper\MapperModel {
-
+class LexCommentModel extends \models\mapper\MapperModel
+{
     // Comment statuses
     const STATUS_OPEN = 'open';
     const STATUS_RESOLVED = 'resolved';
     const STATUS_TODO = 'todo';
 
-    public static function mapper($databaseName) {
+    public static function mapper($databaseName)
+    {
         static $instance = null;
         if (null === $instance) {
             $instance = new \models\mapper\MongoMapper($databaseName, 'lexiconComments');
         }
+
         return $instance;
     }
 
     /**
      * @param ProjectModel $projectModel
-     * @param string $id
+     * @param string       $id
      */
-    public function __construct($projectModel, $id = '') {
+    public function __construct($projectModel, $id = '')
+    {
         $this->setReadOnlyProp('authorInfo');
         $this->setReadOnlyProp('replies');
         $this->setReadOnlyProp('score');
@@ -36,7 +39,7 @@ class LexCommentModel extends \models\mapper\MapperModel {
         $this->entryRef = new IdReference();
         $this->isDeleted = false;
         $this->replies = new ArrayOf(
-            function($data) {
+            function ($data) {
                 return new LexCommentReply();
             }
         );
@@ -48,7 +51,8 @@ class LexCommentModel extends \models\mapper\MapperModel {
         parent::__construct(self::mapper($databaseName), $id);
     }
 
-    public static function remove($projectModel, $commentId) {
+    public static function remove($projectModel, $commentId)
+    {
         // old method self:mapper($projectModel->databaseName())->remove($commentId);
         $comment = new self($projectModel, $commentId);
         $comment->isDeleted = true;
@@ -65,29 +69,29 @@ class LexCommentModel extends \models\mapper\MapperModel {
      */
     public $entryRef;
 
-	/**
-	 * 
+    /**
+	 *
 	 * @var LexCommentFieldReference
 	 */
-	public $regarding;
-	
-	/**
-	 * 
+    public $regarding;
+
+    /**
+	 *
 	 * @var int
 	 */
-	public $score;
-	
-	/**
-	 * 
+    public $score;
+
+    /**
+	 *
 	 * @var ArrayOf<LexCommentReply>
 	 */
-	public $replies;
-	
-	/**
-	 * 
+    public $replies;
+
+    /**
+	 *
 	 * @var string - see status constants above
 	 */
-	public $status;
+    public $status;
 
     /**
      * @var bool
@@ -99,29 +103,32 @@ class LexCommentModel extends \models\mapper\MapperModel {
      */
     public $content;
 
-	/**
-	 * 
+    /**
+	 *
 	 * @param string $id
 	 * @return LexCommentReply
 	 */
-	public function getReply($id) {
-		foreach ($this->replies as $reply) {
-			if ($reply->id == $id) {
-				return $reply;
-			}
-		}
-	}
+    public function getReply($id)
+    {
+        foreach ($this->replies as $reply) {
+            if ($reply->id == $id) {
+                return $reply;
+            }
+        }
+    }
 
-	public function setReply($id, $model) {
-		foreach ($this->replies as $key => $reply) {
-			if ($reply->id == $id) {
-				$this->replies[$key] = $model;
-				break;
-			}
-		}
-	}
+    public function setReply($id, $model)
+    {
+        foreach ($this->replies as $key => $reply) {
+            if ($reply->id == $id) {
+                $this->replies[$key] = $model;
+                break;
+            }
+        }
+    }
 
-    public function deleteReply($id) {
+    public function deleteReply($id)
+    {
         $keyToDelete = null;
         foreach ($this->replies as $key => $reply) {
             if ($reply->id == $id) {
@@ -134,5 +141,3 @@ class LexCommentModel extends \models\mapper\MapperModel {
         }
     }
 }
-
-?>

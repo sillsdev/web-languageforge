@@ -2,14 +2,13 @@
 
 namespace models\languageforge\lexicon;
 
-
 use models\languageforge\lexicon\config\LexiconOptionListItem;
 use models\mapper\ArrayOf;
 use models\mapper\Id;
 use models\ProjectModel;
 
-class LexOptionListModel extends \models\mapper\MapperModel {
-
+class LexOptionListModel extends \models\mapper\MapperModel
+{
     /**
      * @var Id
      */
@@ -35,23 +34,23 @@ class LexOptionListModel extends \models\mapper\MapperModel {
      */
     public $canDelete;
 
-
-
-    public static function mapper($databaseName) {
+    public static function mapper($databaseName)
+    {
         static $instance = null;
         if (null === $instance) {
             $instance = new \models\mapper\MongoMapper($databaseName, 'optionlists');
         }
+
         return $instance;
     }
 
     /**
      * @param \models\ProjectModel $projectModel
-     * @param string $id
+     * @param string               $id
      */
-    public function __construct($projectModel, $id = '') {
-
-        $this->items = new ArrayOf(function($data) {
+    public function __construct($projectModel, $id = '')
+    {
+        $this->items = new ArrayOf(function ($data) {
             return new LexiconOptionListItem();
         });
         $this->id = new Id();
@@ -60,7 +59,8 @@ class LexOptionListModel extends \models\mapper\MapperModel {
         parent::__construct(self::mapper($databaseName), $id);
     }
 
-    public function readFromJson($filePath) {
+    public function readFromJson($filePath)
+    {
         if (file_exists($filePath)) {
             $json = json_decode(file_get_contents($filePath), true);
 
@@ -75,4 +75,4 @@ class LexOptionListModel extends \models\mapper\MapperModel {
         }
     }
 
-} 
+}
