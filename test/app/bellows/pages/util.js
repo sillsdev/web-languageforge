@@ -10,7 +10,7 @@ var setCheckbox = function(checkboxElement, value) {
 };
 module.exports.setCheckbox = setCheckbox;
 
-var findDropdownByValue = function(dropdownElement, value) {
+var old_findDropdownByValue = function(dropdownElement, value) {
 	// Returns a promise that will resolve to the <option> with the given value (as returned by optionElement.getText())
 	var result = protractor.promise.defer();
 	var options = dropdownElement.$$('option');
@@ -21,7 +21,19 @@ var findDropdownByValue = function(dropdownElement, value) {
 			}
 		});
 	};
-	if ("map" in options) {
+	if ("filter" in options) {
+		options.filter(function(elem) {
+			return elem.getText().then(function(text) {
+				return text === value;
+			});
+		}).then(function(list) {
+			if (list.length > 0) {
+				result.fulfill(list[0]);
+			} else {
+				result.reject('Value \"' + value.toString() + '" not found in dropdown');
+			}
+		});
+	} else if ("map" in options) {
 		options.map(check);
 	} else {
 		// Sometimes we get a promise that returns a basic list; deal with that here
@@ -33,9 +45,21 @@ var findDropdownByValue = function(dropdownElement, value) {
 	};
 	return result;
 };
+var findDropdownByValue = function(dropdownElement, value) {
+	// Simpler (MUCH simpler) approach based on our custom elemMatches locator (defined below)
+	return dropdownElement.element(by.elemMatches('option', value));
+};
 // Need to explicitly specify exported names: see http://openmymind.net/2012/2/3/Node-Require-and-Exports/
 module.exports.findDropdownByValue = findDropdownByValue;
+module.exports.old_findDropdownByValue = old_findDropdownByValue;
 
+var old_clickDropdownByValue = function(dropdownElement, value) {
+	// Select an element of the dropdown based on its value (its text)
+	var option = old_findDropdownByValue(dropdownElement, value);
+	option.then(function(elem) {
+		elem.click();
+	});
+};
 var clickDropdownByValue = function(dropdownElement, value) {
 	// Select an element of the dropdown based on its value (its text)
 	var option = findDropdownByValue(dropdownElement, value);
@@ -44,6 +68,7 @@ var clickDropdownByValue = function(dropdownElement, value) {
 	});
 };
 module.exports.clickDropdownByValue = clickDropdownByValue;
+module.exports.old_clickDropdownByValue = old_clickDropdownByValue;
 
 // New locator to find elements that match a CSS selector, whose text (via elem.innerText in the browser) matches a regex
 // Call as by.elemMatches('a', /my regular expression/)
@@ -105,7 +130,7 @@ module.exports.findRowByText = findRowByText;
  * @param textString - string of text to set the value to
  */
 var sendText = function(elem, textString) {
-	browser.executeScript("arguments[0].value = arguments[1];", elem.find(), textString);
+	browser.executeScript("arguments[0].value = arguments[1];", elem.getWebElement(), textString);
 };
 module.exports.sendText = sendText;
 

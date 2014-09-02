@@ -18,7 +18,7 @@
   "memberName"      : "Test User",
   "memberEmail"     : "test_runner_normal_user@example.com",
   "notUsedUsername" : "not_used_user",
-  "notUsedEmail" 		: "not_used_user@example.com",
+  "notUsedEmail"    : "not_used_user@example.com",
   "notUsedName"     : "Test Not a User",
 
   "passwordTooShort": "123456",
@@ -63,7 +63,65 @@
 
 
 
-  "LanguageForge_Test_Constants" : ""
+  "LanguageForge_Test_Constants" : "",
 
+  "Entries added during setup" : "",
+  "testEntry1" : {
+    "lexeme": {"th":        {"value": "ข้าวผัดหมู"},
+               "th-fonipa": {"value": "khâaw phàt mǔu"}},
+    "senses": [{"definition": {"en": {"value": "fried rice with pork"}},
+                "partOfSpeech": {"value": "n"}}]
+  },
+  "testEntry2" : {
+    "lexeme": {"th":        {"value": "หน่อไม้ฝรั่งผัดกุ้ง"},
+               "th-fonipa": {"value": "nɔ̀máay fàràŋ phàt kûŋ"}},
+    "senses": [{"definition": {"en": {"value": "asparagus with shrimp over rice"}},
+                "partOfSpeech": {"value": "n"}}]
+  },
+
+  "Entries added by various tests" : "",
+  "testEntry3" : {
+    "lexeme": {"th":        {"value": "ผัดชีอิ้วหมู"},
+               "th-fonipa": {"value": "phàt siiʔ ǐw mǔu"}},
+    "senses": [{"definition": {"en": {"value": "noodles fried in soy sauce with pork"}},
+                "partOfSpeech": {"value": "n"}}]
+  },
+  "testEntry4" : {
+    "lexeme": {"th":        {"value": "กระเพาหมู"},
+               "th-fonipa": {"value": "krapâw mǔu"}},
+    "senses": [{"definition": {"en": {"value": "stir fried basil and pork over rice"}},
+                "partOfSpeech": {"value": "n"}}]
+  },
+  "testEntry5" : {
+    "lexeme": {"th":        {"value": "ไก่สกกระเกียม"},
+               "th-fonipa": {"value": "kài sòt kràthiam"}},
+    "senses": [{"definition": {"en": {"value": "stir fried garlic chicken over rice"}},
+                "partOfSpeech": {"value": "n"}}]
+  },
+
+  "Entries with multiple meanings and optional fields": "",
+  "testMultipleMeaningEntry1" : {
+    "lexeme": {"th":        {"value": "ว่า"},
+               "th-fonipa": {"value": "wâa"}},
+    "senses": [{"definition": {"en": {"value": "that, as"}},
+                "partOfSpeech": {"value": "prep"},
+                "generalNote": {"en": {"value": "Most common usage"}},
+                "examples": [{"sentence": {"th": {"value": "ผมยังอดสงสัยไม่ได้ว่า"}},
+                              "translation": {"en": {"value": "I can't help but think that..."}}},
+                             {"sentence": {"th": {"value": "เชื่อกันมานมนานแล้วว่า"}},
+                              "translation": {"en": {"value": "We have believed for a long time that..."}}}],
+                "source": {"en": {"value": "http://www.thai-language.com/id/131403"}}},
+               {"definition": {"en": {"value": "say, speak"}},
+                "partOfSpeech": {"value": "v"},
+                "generalNote": {"en": {"value": "This meaning is almost as common"}},
+                "examples": [{"sentence": {"th": {"value": "คำนี้ภาษาอังกฤษว่ายังไง"}},
+                              "translation": {"en": {"value": "How do you say this word in English?"}}},
+                             {"sentence": {"th": {"value": "ว่าแต่เขา อิเหนาเป็นเอง"}},
+                              "translation": {"en": {"value": "The pot calls the kettle black."}}}],
+                "source": {"en": {"value": "http://www.thai-language.com/id/131403#def1c"}}
+              }]
+  },
+  
+  "End_of_constants" : ""
 
 }

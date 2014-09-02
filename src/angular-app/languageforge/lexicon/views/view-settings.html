@@ -1,5 +1,5 @@
 <div class="container" data-ng-cloak data-ng-controller="ViewSettingsCtrl">
-<h2>{{'View Settings' | translate}}</h2>
+<br><h2 style="font-weight:normal" >{{'View Settings' | translate}}</h2>
 <form name="viewSettingForm" novalidate>
 <fieldset data-ng-disabled="isSaving">
 <button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="settingsApply()"  
@@ -72,7 +72,7 @@
 
 				<!-- settings -->
 				<div class="well">
-					<h3>{{fieldConfig[currentField.name].label}} {{'Field View Settings' | translate}}</h3>
+					<h3 style="font-weight:normal">{{fieldConfig[currentField.name].label}} {{'Field View Settings' | translate}}</h3>
 					<div class="control-group">
 						<div class="controls">
 							<label class="checkbox {{interfaceConfig.pullNormal}}">
