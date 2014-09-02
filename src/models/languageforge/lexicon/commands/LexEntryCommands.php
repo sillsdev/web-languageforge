@@ -6,23 +6,25 @@ use libraries\shared\palaso\CodeGuard;
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryListModel;
-use models\languageforge\lexicon\LexCommentModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
 use models\ProjectModel;
 
-class LexEntryCommands {
-
+class LexEntryCommands
+{
     // Note: this is not actually used anymore...but we'll keep it around just in case - cjh 2014-07
-	public static function readEntry($projectId, $entryId) {
-		$project = new LexiconProjectModel($projectId);
-		$entry = new LexEntryModel($project, $entryId);
-		return JsonEncoder::encode($entry);
-	}
+    public static function readEntry($projectId, $entryId)
+    {
+        $project = new LexiconProjectModel($projectId);
+        $entry = new LexEntryModel($project, $entryId);
 
-	/*
-	public static function addEntry($projectId, $params) {
+        return JsonEncoder::encode($entry);
+    }
+
+    /*
+	public static function addEntry($projectId, $params)
+	{
 		CodeGuard::checkTypeAndThrow($params, 'array');
 		$project = new LexiconProjectModel($projectId);
 		$entry = new LexEntryModel($project);
@@ -30,35 +32,38 @@ class LexEntryCommands {
 		return $entry->write();
 	}
 	*/
-	
-	public static function updateEntry($projectId, $params, $userId) {
-		CodeGuard::checkTypeAndThrow($params, 'array');
-		$project = new LexiconProjectModel($projectId);
-		if (array_key_exists('id', $params) && $params['id'] != '') {
-			$entry = new LexEntryModel($project, $params['id']);
-		} else {
-			$entry = new LexEntryModel($project);
-			$entry->authorInfo->createdByUserRef->id = $userId;
-			$entry->authorInfo->createdDate = new \DateTime();
-		}
-		
-		// set authorInfo
-		$entry->authorInfo->modifiedDate = new \DateTime();
-		$entry->authorInfo->modifiedByUserRef->id = $userId;
+
+    public static function updateEntry($projectId, $params, $userId)
+    {
+        CodeGuard::checkTypeAndThrow($params, 'array');
+        $project = new LexiconProjectModel($projectId);
+        if (array_key_exists('id', $params) && $params['id'] != '') {
+            $entry = new LexEntryModel($project, $params['id']);
+        } else {
+            $entry = new LexEntryModel($project);
+            $entry->authorInfo->createdByUserRef->id = $userId;
+            $entry->authorInfo->createdDate = new \DateTime();
+        }
+
+        // set authorInfo
+        $entry->authorInfo->modifiedDate = new \DateTime();
+        $entry->authorInfo->modifiedByUserRef->id = $userId;
 
         $params = self::recursiveRemoveEmptyFieldValues($params);
         //$params = self::recursiveAlignCustomFieldsWithModel($params);
-		JsonDecoder::decode($entry, $params);
+        JsonDecoder::decode($entry, $params);
 
-		$entry->write();
-		return JsonEncoder::encode($entry);
-	}
+        $entry->write();
+
+        return JsonEncoder::encode($entry);
+    }
 
     /**
-     * @param array $arr
+     * @param  array $arr
      * @return array
      */
-    public static function recursiveRemoveEmptyFieldValues($arr) {
+    public static function recursiveRemoveEmptyFieldValues($arr)
+    {
         foreach ($arr as $key => $item) {
             if ($key != 'id') {
                 if (is_string($item)) {
@@ -72,33 +77,36 @@ class LexEntryCommands {
                 }
             }
         }
+
         return $arr;
     }
 
-
-
-	/**
-	 * 
+    /**
+	 *
 	 * @param string $projectId
 	 * @param string $missingInfo - if empty, returns all entries.
 	 * 								if matches one of LexiconConfigObj constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
 	 */
-	public static function listEntries($projectId, $missingInfo = '') {
-		$project = new LexiconProjectModel($projectId);
-		$lexEntries = new LexEntryListModel($project);
-		$lexEntries->readForDto($missingInfo);
-		return $lexEntries;
-	}
-	
-	public static function removeEntry($projectId, $entryId) {
-		$project = new ProjectModel($projectId);
+    public static function listEntries($projectId, $missingInfo = '')
+    {
+        $project = new LexiconProjectModel($projectId);
+        $lexEntries = new LexEntryListModel($project);
+        $lexEntries->readForDto($missingInfo);
+
+        return $lexEntries;
+    }
+
+    public static function removeEntry($projectId, $entryId)
+    {
+        $project = new ProjectModel($projectId);
         $entry = new LexEntryModel($project, $entryId);
         $entry->isDeleted = true;
         $entry->write();
-	}
+    }
 
     /*
-    private static function recursiveAlignCustomFieldsWithModel($params) {
+    private static function recursiveAlignCustomFieldsWithModel($params)
+    {
         if (!array_key_exists('customFields', $params)) {
             $params['customFields'] = array();
         }
@@ -110,9 +118,8 @@ class LexEntryCommands {
                 $params[$key] = self::recursiveAlignCustomFieldsWithModel($params[$key]);
             }
         }
+
         return $params;
     }
     */
 }
-
-?>

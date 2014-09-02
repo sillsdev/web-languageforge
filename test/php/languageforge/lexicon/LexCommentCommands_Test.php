@@ -1,24 +1,17 @@
 <?php
 
 use models\languageforge\lexicon\commands\LexCommentCommands;
-use models\languageforge\lexicon\commands\LexEntryCommands;
-use models\languageforge\lexicon\commands\LexProjectCommands;
-use models\languageforge\lexicon\config\LexiconConfigObj;
-use models\languageforge\lexicon\Example;
 use models\languageforge\lexicon\LexCommentModel;
-use models\languageforge\lexicon\LexCommentReply;
-use models\languageforge\lexicon\LexEntryModel;
-use models\languageforge\lexicon\LexiconProjectModel;
-use models\languageforge\lexicon\Sense;
 use models\languageforge\lexicon\LexCommentListModel;
 
-require_once(dirname(__FILE__) . '/../../TestConfig.php');
-require_once(SimpleTestPath . 'autorun.php');
-require_once(TestPath . 'common/MongoTestEnvironment.php');
+require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once SimpleTestPath . 'autorun.php';
+require_once TestPath . 'common/MongoTestEnvironment.php';
 
-class TestLexCommentCommands extends UnitTestCase {
-
-    function testUpdateComment_NewComment_CommentAdded() {
+class TestLexCommentCommands extends UnitTestCase
+{
+    public function testUpdateComment_NewComment_CommentAdded()
+    {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -58,7 +51,8 @@ class TestLexCommentCommands extends UnitTestCase {
         $this->assertEqual($commentArray['status'], 'open');
     }
 
-    function testUpdateComment_ExistingComment_CommentUpdated() {
+    public function testUpdateComment_ExistingComment_CommentUpdated()
+    {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -95,7 +89,8 @@ class TestLexCommentCommands extends UnitTestCase {
 
     }
 
-    function testUpdateReply_NewReply_ReplyAdded() {
+    public function testUpdateReply_NewReply_ReplyAdded()
+    {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -132,7 +127,8 @@ class TestLexCommentCommands extends UnitTestCase {
         $this->assertEqual($reply->content, $replyData['content']);
     }
 
-    function testUpdateReply_ExistingReply_ReplyAdded() {
+    public function testUpdateReply_ExistingReply_ReplyAdded()
+    {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -180,7 +176,8 @@ class TestLexCommentCommands extends UnitTestCase {
         $this->assertEqual($reply->content, $replyData['content']);
     }
 
-    function testDeleteComment_CommentMarkedDeletedAndNotInList() {
+    public function testDeleteComment_CommentMarkedDeletedAndNotInList()
+    {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -216,7 +213,8 @@ class TestLexCommentCommands extends UnitTestCase {
         $this->assertTrue($comment->isDeleted);
     }
 
-    function testDeleteReply_ReplyDeleted() {
+    public function testDeleteReply_ReplyDeleted()
+    {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -256,7 +254,8 @@ class TestLexCommentCommands extends UnitTestCase {
         $this->assertEqual(count($comment->replies), 1);
     }
 
-    function testUpdateCommentStatus_ValidStatus_StatusUpdated() {
+    public function testUpdateCommentStatus_ValidStatus_StatusUpdated()
+    {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -287,7 +286,8 @@ class TestLexCommentCommands extends UnitTestCase {
         $this->assertEqual($comment->status, LexCommentModel::STATUS_RESOLVED);
     }
 
-    function testUpdateCommentStatus_InvalidStatus_Throws() {
+    public function testUpdateCommentStatus_InvalidStatus_Throws()
+    {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -322,7 +322,8 @@ class TestLexCommentCommands extends UnitTestCase {
 
     }
 
-    function testPlusOneComment_UserFirstTime_IncreasedScore() {
+    public function testPlusOneComment_UserFirstTime_IncreasedScore()
+    {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -353,7 +354,8 @@ class TestLexCommentCommands extends UnitTestCase {
         $this->assertEqual($comment->score, 2);
     }
 
-    function testPlusOneComment_UserAlready_ScoreIsSame() {
+    public function testPlusOneComment_UserAlready_ScoreIsSame()
+    {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -384,7 +386,4 @@ class TestLexCommentCommands extends UnitTestCase {
 
     }
 
-
 }
-
-?>

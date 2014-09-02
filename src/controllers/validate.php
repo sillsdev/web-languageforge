@@ -6,29 +6,27 @@ use models\UserModel;
 
 require_once 'base.php';
 
-class Validate extends Base {
+class validate extends Base
+{
+    public function check($validateKeySubmitted = '')
+    {
+        $userActivated = false;
+        $userModel = new UserModelBase();
+        if ($userModel->readByProperty('validationKey', $validateKeySubmitted)) {
+            if ($userModel->validate()) {
+                $userModel->active = true;
+                $userModel->write();
+                $userActivated = true;
+            }
+        }
 
-	public function check($validateKeySubmitted = '') {
-		$userActivated = false;
-		$userModel = new UserModelBase();
-		if ($userModel->readByProperty('validationKey', $validateKeySubmitted)) {
-			if ($userModel->validate()) {
-				$userModel->active = true;
-				$userModel->write();
-				$userActivated = true;
-			}
-		}
-		
-		if ($userActivated) {
-			$this->renderPage("validate/validate", array());
-		} else {
-			$this->load->helper('url');
- 			// if the validation has expired, chances are they have already validated.  Redirect to login
-			redirect('/login', 'location');
-		}
-		
-	}
+        if ($userActivated) {
+            $this->renderPage("validate/validate", array());
+        } else {
+            $this->load->helper('url');
+            // if the validation has expired, chances are they have already validated.  Redirect to login
+            redirect('/login', 'location');
+        }
+
+    }
 }
-
-
-?>
