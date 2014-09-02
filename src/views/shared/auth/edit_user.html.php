@@ -24,16 +24,16 @@
 	<?php foreach ($groups as $group):?>
 	<label class="checkbox">
 	<?php
-		$gID=$group['id'];
-		$checked = null;
-		$item = null;
-		foreach($currentGroups as $grp) {
-			if ($gID == $grp->id) {
-				$checked= ' checked="checked"';
-			break;
-			}
-		}
-	?>
+        $gID=$group['id'];
+        $checked = null;
+        $item = null;
+        foreach ($currentGroups as $grp) {
+            if ($gID == $grp->id) {
+                $checked= ' checked="checked"';
+            break;
+            }
+        }
+    ?>
 	<input type="checkbox" name="groups[]" value="<?php echo $group['id'];?>"<?php echo $checked;?>>
 	<?php echo $group['name'];?>
 	</label>

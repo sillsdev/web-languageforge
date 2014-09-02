@@ -1,51 +1,53 @@
 <?php
 namespace models\mapper;
 
-class MongoEncoder {
-	
+class MongoEncoder
+{
 	/**
 	 * Sets key/values in the array from the public properties of $model
 	 * @param object $model
 	 * @return array
 	 */
-	public static function encode($model) {
+	public static function encode($model)
+	{
 		$encoder = new MongoEncoder();
 		return $encoder->_encode($model);
 	}
-	
+
 	/**
 	 * Sets key/values in the array from the public properties of $model
 	 * @param object $model
 	 * @return array
 	 */
-	protected function _encode($model, $encodeId = false) {
+	protected function _encode($model, $encodeId = false)
+	{
 		$data = array();
 		$properties = get_object_vars($model);
 		foreach ($properties as $key => $value) {
 			if (is_a($value, 'models\mapper\ArrayOf')) {
 				$data[$key] = $this->encodeArrayOf($model->$key);
-			} else if (is_a($value, 'models\mapper\MapOf')) {
+			} elseif (is_a($value, 'models\mapper\MapOf')) {
 				$data[$key] = $this->encodeMapOf($model->$key);
-			} else if (is_a($value, 'models\mapper\IdReference')) {
+			} elseif (is_a($value, 'models\mapper\IdReference')) {
 				$data[$key] = $this->encodeIdReference($model->$key);
-			} else if (is_a($value, 'models\mapper\Id')) {
+			} elseif (is_a($value, 'models\mapper\Id')) {
 				if ($encodeId) {
 					$data[$key] = $this->encodeId($model->$key);
 				}
-			} else if (is_a($value, 'DateTime')) {
+			} elseif (is_a($value, 'DateTime')) {
 				$data[$key] = $this->encodeDateTime($model->$key);
-			} else if (is_a($value, 'models\mapper\ReferenceList')) {
+			} elseif (is_a($value, 'models\mapper\ReferenceList')) {
 				$data[$key] = $this->encodeReferenceList($model->$key);
 			} else {
 				// Data type protection
-				if (is_array($value)) {
+                if (is_array($value)) {
 					throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
 				}
 				if (is_object($value)) {
 					$data[$key] = $this->_encode($value, true);
 				} else {
 					// Default encode
-					$data[$key] = $value;
+                    $data[$key] = $value;
 				}
 			}
 		}
@@ -56,7 +58,8 @@ class MongoEncoder {
 	 * @param IdReference $model
 	 * @return string
 	 */
-	public function encodeIdReference($model) {
+	public function encodeIdReference($model)
+	{
 		if (Id::isEmpty($model)) {
 			return null;
 		}
@@ -68,10 +71,11 @@ class MongoEncoder {
 	 * @param Id $model
 	 * @return string
 	 */
-	public function encodeId($model) {
+	public function encodeId($model)
+	{
 		$mongoId = MongoMapper::mongoID($model->id);
 		if (empty($model->id)) {
-			$model->id = (string)$mongoId;
+			$model->id = (string) $mongoId;
 		}
 		return $mongoId;
 	}
@@ -81,19 +85,20 @@ class MongoEncoder {
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function encodeArrayOf($model) {
+	public function encodeArrayOf($model)
+	{
 		$result = array();
 		foreach ($model as $item) {
 			if (is_object($item)) {
 				$result[] = $this->_encode($item, true);
 			} else {
 				// Data type protection
-				if (is_array($item)) {
+                if (is_array($item)) {
 					// TODO Fix missing parameter ($key missing for a long time?)  2014-08 DDW
-					throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
+                    throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
 				}
 				// Default encode
-				$result[] = $item;
+                $result[] = $item;
 			}
 		}
 		return $result;
@@ -105,7 +110,8 @@ class MongoEncoder {
 	 * Replace '.' with '___DOT___'
 	 * @param string key
 	 */
-	public static function encodeDollarDot(&$key) {
+	public static function encodeDollarDot(&$key)
+	{
 		if (strpos($key, '$') > -1) {
 			$key = str_replace('$', '___DOLLAR___', $key);
 		}
@@ -119,7 +125,8 @@ class MongoEncoder {
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function encodeMapOf($model) {
+	public function encodeMapOf($model)
+	{
 		$result = array();
 		$count = 0;
 		foreach ($model as $key => $item) {
@@ -129,40 +136,39 @@ class MongoEncoder {
 				$result[$key] = $this->_encode($item, false);
 			} else {
 				// Data type protection
-				if (is_array($item)) {
+                if (is_array($item)) {
 					throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
 				}
 				// Default encode
-				$result[$key] = $item;
+                $result[$key] = $item;
 			}
 			$count++;
 		}
 		return $count == 0 ? new \stdClass() : $result;
 	}
-	
+
 	/**
 	 * @param ReferenceList $model
 	 * @return array
 	 */
-	public function encodeReferenceList($model) {
+	public function encodeReferenceList($model)
+	{
 		$result = array_map(
-			function($id) {
+			function ($id) {
 				return MongoMapper::mongoID($id->asString());
 			},
 			$model->refs
 		);
 		return $result;
 	}
-	
+
 	/**
 	 * @param DateTime $model
 	 * @return string;
 	 */
-	public function encodeDateTime($model) {
+	public function encodeDateTime($model)
+	{
 		return new \MongoDate($model->getTimeStamp());
 	}
-	
+
 }
-
-
-?>

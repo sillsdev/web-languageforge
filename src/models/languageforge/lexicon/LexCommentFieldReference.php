@@ -2,11 +2,10 @@
 
 namespace models\languageforge\lexicon;
 
-
 use models\mapper\ObjectForEncoding;
 
-class LexCommentFieldReference extends ObjectForEncoding {
-
+class LexCommentFieldReference extends ObjectForEncoding
+{
     /**
      * @var string - the field name e.g. "lexeme"
      */
@@ -44,4 +43,4 @@ class LexCommentFieldReference extends ObjectForEncoding {
      */
     public $meaning;
 
-} 
+}

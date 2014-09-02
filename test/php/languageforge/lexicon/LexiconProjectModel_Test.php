@@ -1,25 +1,14 @@
 <?php
 
-use models\languageforge\lexicon\commands\LexCommentCommands;
-use models\languageforge\lexicon\commands\LexEntryCommands;
-use models\languageforge\lexicon\commands\LexProjectCommands;
-use models\languageforge\lexicon\config\LexiconOptionListItem;
-use models\languageforge\lexicon\LexOptionListModel;
-use models\languageforge\lexicon\config\LexiconConfigObj;
-use models\languageforge\lexicon\Example;
-use models\languageforge\lexicon\LexComment;
-use models\languageforge\lexicon\LexCommentReply;
-use models\languageforge\lexicon\LexEntryModel;
-use models\languageforge\lexicon\LexiconProjectModel;
-use models\languageforge\lexicon\Sense;
 
-require_once(dirname(__FILE__) . '/../../TestConfig.php');
-require_once(SimpleTestPath . 'autorun.php');
-require_once(TestPath . 'common/MongoTestEnvironment.php');
+require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once SimpleTestPath . 'autorun.php';
+require_once TestPath . 'common/MongoTestEnvironment.php';
 
-class TestLexiconProjectModel extends UnitTestCase {
-
-    function testInitializeNewProject_defaultPartOfSpeechOptionListExists() {
+class TestLexiconProjectModel extends UnitTestCase
+{
+    public function testInitializeNewProject_defaultPartOfSpeechOptionListExists()
+    {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -41,5 +30,3 @@ class TestLexiconProjectModel extends UnitTestCase {
 
     }
 }
-
-?>
