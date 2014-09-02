@@ -1,17 +1,16 @@
 <?php
 
-use models\shared\dto\RightsHelper;
-use models\shared\rights\Domain;
-use models\shared\rights\Operation;
-use models\scriptureforge\SfchecksProjectModel;
-use models\ProjectModel;
-use models\TextModel;
-
 require_once 'secure_base.php';
 
 class Upload extends Secure_base {
 
-	public function receive($app, $fileType) { // e.g. 'lf', 'entry-audio'
+	public function receive($app, $uploadType) { // e.g. 'lf', 'entry-audio'
+		
+		// Need to require this after the autoloader is loaded, hence it is here.
+		require_once 'service/sf.php';
+
+		$result = array();
+		
 		$file = $_FILES['file'];
 		
 		if ($file['error'] == UPLOAD_ERR_OK) {
@@ -22,21 +21,21 @@ class Upload extends Secure_base {
 				
 				// Do whatever permissions / rights check that should be done.
 				
-				$result = $api->sfChecks_uploadFile($fileType);
+				$result = $api->sfChecks_uploadFile($uploadType);
 				
 			} else if ($app == 'lf-lexicon') {
 				$api = new Sf($this);
 				
 				// Do whatever permissions / rights check that should be done.
 				
-				$result = $api->lex_uploadFile($fileType);
+				$result = $api->lex_uploadFile($uploadType);
 				
 			} else {
 				// Return some kind of programmer isn't that clever error.
 			}
 
 		}
-//  		header("Content-Type", "text/javascript");
+// 		header("Content-type: text/javascript");
 		return json_encode($result); // Might need to set the header to get the content type ?
 	}
 	
