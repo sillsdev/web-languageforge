@@ -1,5 +1,5 @@
 		<div id="footercontainer">
-			
+
 			<div id="footerBaseline">
 				<div class="container">
 					<div class="row">
@@ -11,5 +11,5 @@
 					</div>
 				</div>
 			</div>
-		
+
 		</div>

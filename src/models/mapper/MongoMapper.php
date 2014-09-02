@@ -6,10 +6,10 @@ use libraries\shared\palaso\CodeGuard;
 
 class MongoMapper
 {
-	
+
 	const ID_IN_KEY = 0;
 	const ID_IN_DOC = 1;
-	
+
 	/**
 	 * @var MongoDB
 	 */
@@ -19,7 +19,7 @@ class MongoMapper
 	 * @var MongoCollection
 	 */
 	protected $_collection;
-	
+
 	/**
 	 * @var string
 	 */
@@ -30,89 +30,92 @@ class MongoMapper
 	 * @param string $collection
 	 * @param string $idKey defaults to id
 	 */
-	public function __construct($database, $collection, $idKey = 'id') {
+	public function __construct($database, $collection, $idKey = 'id')
+	{
 		$this->_db = MongoStore::connect($database);
 		$this->_collection = $this->_db->$collection;
 		$this->_idKey = $idKey;
 	}
-	
+
 	/**
 	 * Private clone to prevent copies of the singleton.
 	 */
-	private function __clone() {
+	private function __clone()
+	{
 	}
 
 	/**
-	 * Creates a string suitable for use as a key from the given string $s 
+	 * Creates a string suitable for use as a key from the given string $s
 	 * @param string $s
 	 * @return string
 	 */
-	public static function makeKey($s) {
+	public static function makeKey($s)
+	{
 		$s = str_replace(array(' ', '-', '_'), '', $s);
 		return $s;
 	}
-	
+
 	/**
 	 * @return string
 	 */
-	public static function makeId() {
+	public static function makeId()
+	{
 		$id = new \MongoId();
-		return (string)$id;
+		return (string) $id;
 	}
-	
+
 	/**
 	 * Returns the name of the database.
 	 * @return string
 	 */
-	public function databaseName() {
-		return (string)$this->_db;
+	public function databaseName()
+	{
+		return (string) $this->_db;
 	}
-	
-	public static function mongoID($id = '') {
+
+	public static function mongoID($id = '')
+	{
 		CodeGuard::checkTypeAndThrow($id, 'string');
 		if (!empty($id)) {
 			return new \MongoId($id);
 		}
-		return new \MongoId(); 
+		return new \MongoId();
 	}
-	
-	public function readListAsModels($model, $query, $fields = array(), $sortFields = array()) {
+
+	public function readListAsModels($model, $query, $fields = array(), $sortFields = array())
+	{
 		$cursor = $this->_collection->find($query, $fields);
-		if (count($sortFields)>0)
-		{
+		if (count($sortFields)>0) {
 			$cursor = $cursor->sort($sortFields);
 		}
-		
+
 		$data = array();
 		$data['count'] = $cursor->count();
 		$data['entries'] = array();
 		foreach ($cursor as $item) {
             if (get_class($model->entries) == 'models\mapper\ArrayOf') {
-                $item['id'] = (string)$item['_id'];
+                $item['id'] = (string) $item['_id'];
                 $data['entries'][] = $item;
             } else {
-                $data['entries'][(string)$item['_id']] = $item;
+                $data['entries'][(string) $item['_id']] = $item;
             }
 		}
 		MongoDecoder::decode($model, $data);
 	}
-	
-	
-	public function readList($model, $query, $fields = array(), $sortFields = array(), 
+
+	public function readList($model, $query, $fields = array(), $sortFields = array(),
 							$limit = 0)
 	{
 		$cursor = $this->_collection->find($query, $fields);
-		
-		if (count($sortFields)>0)
-		{
+
+		if (count($sortFields)>0) {
 			$cursor = $cursor->sort($sortFields);
 		}
-		
-		if ($limit>0)
-		{
+
+		if ($limit>0) {
 			$cursor = $cursor->limit($limit);
 		}
-		
+
 		$model->entries = array();
 		foreach ($cursor as $item) {
 			$id = strval($item['_id']);
@@ -122,28 +125,26 @@ class MongoMapper
 		}
 		$model->count= count($model->entries);
 	}
-	
-	
 
 	public function findOneByQuery($model, $query, $fields = array())
 	{
 		$data = $this->_collection->findOne($query, $fields);
-		if ($data === NULL)
-		{
+		if ($data === NULL) {
 			return;
 		}
 		try {
-			MongoDecoder::decode($model, $data, (string)$data['_id']);
+			MongoDecoder::decode($model, $data, (string) $data['_id']);
 		} catch (\Exception $ex) {
 			throw new \Exception("Exception thrown while reading", $ex->getCode(), $ex);
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 * @param string $id
 	 */
-	public function exists($id) {
+	public function exists($id)
+	{
 		CodeGuard::checkTypeAndThrow($id, 'string');
 		try {
 			$data = $this->_collection->findOne(array("_id" => self::mongoID($id)));
@@ -158,11 +159,12 @@ class MongoMapper
 	 * @param Object $model
 	 * @param string $id
 	 */
-	public function read($model, $id) {
+	public function read($model, $id)
+	{
 		CodeGuard::checkTypeAndThrow($id, 'string');
 		$data = $this->_collection->findOne(array("_id" => self::mongoID($id)));
 		if ($data === NULL) {
-			$collection = (string)$this->_collection;
+			$collection = (string) $this->_collection;
 			throw new \Exception("Could not find id '$id'in '$collection'");
 		}
 		try {
@@ -171,44 +173,46 @@ class MongoMapper
 			CodeGuard::exception("Exception thrown while decoding '$id'", $ex->getCode(), $ex);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param Object $model
 	 * @param string $property
 	 * @param string $value
 	 * @return bool true on document found, false otherwise
 	 * Note that unlike the read() method, readByProperty() does NOT throw an exception if no document is found
-	 * 
+	 *
 	 */
-	public function readByProperty($model, $property, $value) {
+	public function readByProperty($model, $property, $value)
+	{
 		CodeGuard::checkTypeAndThrow($property, 'string');
 		CodeGuard::checkTypeAndThrow($value, 'string');
 		$data = $this->_collection->findOne(array($property => $value));
 		if ($data != NULL) {
-			MongoDecoder::decode($model, $data, (string)$data['_id']);
+			MongoDecoder::decode($model, $data, (string) $data['_id']);
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param Object $model
 	 * @param array  $properties
 	 */
-	public function readByProperties($model, $properties) {
+	public function readByProperties($model, $properties)
+	{
 		CodeGuard::checkTypeAndThrow($properties, 'array');
 		$data = $this->_collection->findOne($properties);
 		if ($data != NULL) {
-			MongoDecoder::decode($model, $data, (string)$data['_id']);
+			MongoDecoder::decode($model, $data, (string) $data['_id']);
 			return true;
 		}
 		return false;
 	}
-	
-	
-	public function readSubDocument($model, $rootId, $property, $id) {
+
+	public function readSubDocument($model, $rootId, $property, $id)
+	{
 		CodeGuard::checkTypeAndThrow($rootId, 'string');
 		CodeGuard::checkTypeAndThrow($id, 'string');
 		$data = $this->_collection->findOne(array("_id" => self::mongoID($rootId)), array($property . '.' . $id));
@@ -216,10 +220,10 @@ class MongoMapper
 			throw new \Exception("Could not find $property=$id in $rootId");
 		}
 		// TODO Check this out on nested sub docs > 1
-		$data = $data[$property][$id];
+        $data = $data[$property][$id];
 		MongoDecoder::decode($model, $data, $id);
 	}
-	
+
 	/**
 	 * @param object $model
 	 * @param string $id
@@ -230,14 +234,15 @@ class MongoMapper
 	 * @see ID_IN_DOC
 	 * @return string
 	 */
-	public function write($model, $id, $keyStyle = MongoMapper::ID_IN_KEY, $rootId = '', $property = '') {
+	public function write($model, $id, $keyStyle = MongoMapper::ID_IN_KEY, $rootId = '', $property = '')
+	{
 		CodeGuard::checkTypeAndThrow($rootId, 'string');
 		CodeGuard::checkTypeAndThrow($property, 'string');
 		CodeGuard::checkTypeAndThrow($id, 'string');
 		$data = MongoEncoder::encode($model); // TODO Take into account key style for stripping key out of the model if needs be
-		if (empty($rootId)) {
+        if (empty($rootId)) {
 			// We're doing a root level update, only $model, $id are relevant
-			$id = $this->update($data, $id, self::ID_IN_KEY, '', '');
+            $id = $this->update($data, $id, self::ID_IN_KEY, '', '');
 		} else {
 			if ($keyStyle == self::ID_IN_KEY) {
 				CodeGuard::checkNullAndThrow($id, 'id');
@@ -245,7 +250,7 @@ class MongoMapper
 			} else {
 				if (empty($id)) {
 					// TODO would be nice if the encode above gave us the id it generated so we could return it to be consistent. CP 2013-08
-					$this->appendSubDocument($data, $rootId, $property);
+                    $this->appendSubDocument($data, $rootId, $property);
 				} else {
 					$id = $this->update($data, $id, self::ID_IN_DOC, $rootId, $property);
 				}
@@ -253,8 +258,9 @@ class MongoMapper
 		}
 		return $id;
 	}
-	
-	public function remove($id) {
+
+	public function remove($id)
+	{
 		CodeGuard::checkTypeAndThrow($id, 'string');
 		$result = $this->_collection->remove(
 			array('_id' => self::mongoID($id)),
@@ -262,8 +268,9 @@ class MongoMapper
 		);
 		return $result['n'];
 	}
-	
-	public function removeSubDocument($rootId, $property, $id) {
+
+	public function removeSubDocument($rootId, $property, $id)
+	{
 		CodeGuard::checkTypeAndThrow($rootId, 'string');
 		CodeGuard::checkTypeAndThrow($id, 'string');
 		$result = $this->_collection->update(
@@ -272,9 +279,10 @@ class MongoMapper
 				array('multiple' => false, 'safe' => true)
 		);
 		// TODO Have a closer look at $result and throw if things go wrong CP 2013-07
-		return $result['ok'] ? $result['n'] : 0;
+
+        return $result['ok'] ? $result['n'] : 0;
 	}
-	
+
 	/**
 	 * @param array $data
 	 * @param string $id
@@ -283,7 +291,8 @@ class MongoMapper
 	 * @param string $property
 	 * @return string
 	 */
-	protected function update($data, $id, $keyType, $rootId, $property) {
+	protected function update($data, $id, $keyType, $rootId, $property)
+	{
 		CodeGuard::checkTypeAndThrow($rootId, 'string');
 		CodeGuard::checkTypeAndThrow($id, 'string');
 		if ($keyType == self::ID_IN_KEY) {
@@ -295,7 +304,7 @@ class MongoMapper
 					array('upsert' => true, 'multiple' => false, 'safe' => true)
 				);
 				//$id = isset($result['upserted']) ? $result['upserted'].$id : $id;
-				$id = $mongoid->__toString();
+                $id = $mongoid->__toString();
 			} else {
 				CodeGuard::checkNullAndThrow($id, 'id');
 				CodeGuard::checkNullAndThrow($property, 'property');
@@ -316,9 +325,5 @@ class MongoMapper
 		}
 		return $id;
 	}
-	
-	
 
 }
-
-?>

@@ -9,12 +9,12 @@ $this->load->view($controller->template('templates/meta'));
 <div id="maincontainer">
 <?php
 $this->load->view($controller->template('templates/header'));
-$this->load->view($contentTemplate); 
+$this->load->view($contentTemplate);
 $this->load->view($controller->template('templates/script'));
 ?>
 <div class="clearfooter"></div>
 </div>
-<?php 
+<?php
 $this->load->view($controller->template('templates/footer'));
 $this->load->view($controller->template('templates/analytics'));
  ?>

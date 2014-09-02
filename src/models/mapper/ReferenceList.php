@@ -3,10 +3,12 @@ namespace models\mapper;
 
 use libraries\shared\palaso\CodeGuard;
 
-class ReferenceList {
+class ReferenceList
+{
 	public $refs;
 
-	public function __construct() {
+	public function __construct()
+	{
 		$this->refs = array();
 	}
 
@@ -16,7 +18,8 @@ class ReferenceList {
 	 * @param string $myId - the id of the model containing this reference list
 	 */
 	/*
-	 public function addRef($theirId, $theirRefList, $myId) {
+	 public function addRef($theirId, $theirRefList, $myId)
+	 {
 	$this->_addRef($theirId);
 	$theirRefList->_addRef($myId);
 	}
@@ -26,15 +29,16 @@ class ReferenceList {
 	 * @see addRef - this should only be called by the addRef method of other ReferenceLists
 	 * @param string $id
 	 */
-	public function _addRef($id) {
-		CodeGuard::checkTypeAndThrow($id, 'string');
-		// CARRY ON HERE CP :-)
-		$idModel = new Id($id);
-		if (!in_array($idModel, $this->refs)) {
+	public function _addRef($id)
+	{
+        CodeGuard::checkTypeAndThrow($id, 'string');
+        // CARRY ON HERE CP :-)
+        $idModel = new Id($id);
+        if (!in_array($idModel, $this->refs)) {
 			$this->refs[] = $idModel;
 		}
 		// TODO log if ref already exists?
-	}
+    }
 
 	/**
 	 * @param string $theirId - the id of the referent
@@ -42,7 +46,8 @@ class ReferenceList {
 	 * @param string $myId - the id of the model containing this reference list
 	 */
 	/*
-	 public function removeRef($theirId, $theirRefList, $myId) {
+	 public function removeRef($theirId, $theirRefList, $myId)
+	 {
 	$this->_removeRef($theirId);
 	$theirRefList->_removeRef($myId);
 	}
@@ -52,12 +57,13 @@ class ReferenceList {
 	 * @see removeRef - this should only be called by the removeRef method of other ReferenceLists
 	 * @param string $id
 	 */
-	public function _removeRef($id) {
+	public function _removeRef($id)
+	{
 		if (in_array($id, $this->refs)) {
 			$this->refs = array_diff($this->refs, array($id));
 		}
 		// TODO Log if ref doesn't exist?
-	}
+    }
 
 	/**
 	 * Removes References back to me contained in my own ReferenceList
@@ -68,7 +74,8 @@ class ReferenceList {
 	 * @param string $theirRefListName - the property name of the reference list on their model e.g. 'users'
 	 */
 	/*
-	 public function removeOtherRefs($myId, $theirModelName, $theirRefListName) {
+	 public function removeOtherRefs($myId, $theirModelName, $theirRefListName)
+	 {
 	foreach ($this->refs as $theirId) {
 	$theirModel = new $theirModelName($theirId);
 	$theirRefList = $theirModel->$theirRefListName;
@@ -78,5 +85,3 @@ class ReferenceList {
 	}
 	*/
 }
-
-?>

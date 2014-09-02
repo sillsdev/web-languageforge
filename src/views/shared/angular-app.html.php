@@ -1,11 +1,11 @@
 <?php
-require_once(APPPATH . "$appFolder/ng-app.html");
+require_once APPPATH . "$appFolder/ng-app.html";
 ?>
-	
+
 <script type="text/javascript">
 window.session = <?php echo $jsonSession; ?>;
 </script>
-	
+
 <?php if (SF_USE_MINIFIED_JS): ?>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-animate.min.js"></script>
@@ -34,7 +34,7 @@ window.session = <?php echo $jsonSession; ?>;
 	<script src="/js/lib/ng-ui-bootstrap-tpls-0.8.0.js"></script>
 	<script src="/js/lib/ng-ui-utils-validate.js"></script>
 <?php endif; ?>
-	
+
 
 <?php if (SF_USE_MINIFIED_JS): ?>
 	<script src="/js/lib/<?php echo $baseSite; ?>.min.js"></script>
