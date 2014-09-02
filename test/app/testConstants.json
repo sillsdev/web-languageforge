@@ -98,6 +98,29 @@
     "senses": [{"definition": {"en": {"value": "stir fried garlic chicken over rice"}},
                 "partOfSpeech": {"value": "n"}}]
   },
+
+  "Entries with multiple meanings and optional fields": "",
+  "testMultipleMeaningEntry1" : {
+    "lexeme": {"th":        {"value": "ว่า"},
+               "th-fonipa": {"value": "wâa"}},
+    "senses": [{"definition": {"en": {"value": "that, as"}},
+                "partOfSpeech": {"value": "prep"},
+                "generalNote": {"en": {"value": "Most common usage"}},
+                "examples": [{"sentence": {"th": {"value": "ผมยังอดสงสัยไม่ได้ว่า"}},
+                              "translation": {"en": {"value": "I can't help but think that..."}}},
+                             {"sentence": {"th": {"value": "เชื่อกันมานมนานแล้วว่า"}},
+                              "translation": {"en": {"value": "We have believed for a long time that..."}}}],
+                "source": {"en": {"value": "http://www.thai-language.com/id/131403"}}},
+               {"definition": {"en": {"value": "say, speak"}},
+                "partOfSpeech": {"value": "v"},
+                "generalNote": {"en": {"value": "This meaning is almost as common"}},
+                "examples": [{"sentence": {"th": {"value": "คำนี้ภาษาอังกฤษว่ายังไง"}},
+                              "translation": {"en": {"value": "How do you say this word in English?"}}},
+                             {"sentence": {"th": {"value": "ว่าแต่เขา อิเหนาเป็นเอง"}},
+                              "translation": {"en": {"value": "The pot calls the kettle black."}}}],
+                "source": {"en": {"value": "http://www.thai-language.com/id/131403#def1c"}}
+              }]
+  },
   
   "End_of_constants" : ""
 
