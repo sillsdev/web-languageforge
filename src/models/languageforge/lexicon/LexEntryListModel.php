@@ -79,13 +79,14 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
     */
 	
 	public function readForDto($missingInfo = '') {
+		// TODO This can be refactored to perform missing info based on the data type, rather than the property name. There is much repitition in the code below CP 2014-08
 		parent::read();
 		$entriesToReturn = array();
 		
 		if ($missingInfo != '') {
 			foreach ($this->entries as $entry) {
 				$foundMissingInfo = false;
-				if (!array_key_exists('senses', $entry) || count($entry['senses'] == 0)) {
+				if (!array_key_exists('senses', $entry) || count($entry['senses']) == 0) {
 					$foundMissingInfo = true;
 				} else {
 					foreach ($entry['senses'] as $sense) {
@@ -103,13 +104,13 @@ class LexEntryListModel extends \models\mapper\MapperListModel {
 								break;
 	
 							case LexiconConfigObj::POS:
-								if (!array_key_exists('value', $sense['partOfSpeech']) || $sense['partOfSpeech']['value'] == '') {
+								if (!array_key_exists('partOfSpeech', $sense) || !array_key_exists('value', $sense['partOfSpeech']) || $sense['partOfSpeech']['value'] == '') {
 									$foundMissingInfo = true;
 								}
 								break;
 	
 							case LexiconConfigObj::EXAMPLE_SENTENCE:
-								if (!array_key_exists('examples', $sense['examples']) || count($sense['examples']) == 0) {
+								if (!array_key_exists('examples', $sense) || count($sense['examples']) == 0) {
 									$foundMissingInfo = true;
 								} else {
 									foreach ($sense['examples'] as $example) {

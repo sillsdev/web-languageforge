@@ -89,13 +89,13 @@ class TestLiftImport extends UnitTestCase {
 		$entryList->read();
 		$entries = $entryList->entries;
 		$this->assertEqual($entryList->count, 2);
-		$this->assertEqual($entries[1]['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
-		$this->assertEqual($entries[1]['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
-		$this->assertEqual(count($entries[1]['senses']), 1);
-		$this->assertEqual($entries[1]['senses'][0]['definition']['en']['value'], "A kind of curry fried with crispy pork");
-		$this->assertEqual($entries[1]['senses'][0]['partOfSpeech']['value'], "Noun");
-		$this->assertEqual($entries[0]['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
-		$this->assertEqual($entries[0]['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
+		$this->assertEqual($entries[0]['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
+		$this->assertEqual($entries[0]['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
+		$this->assertEqual(count($entries[0]['senses']), 1);
+		$this->assertEqual($entries[0]['senses'][0]['definition']['en']['value'], "A kind of curry fried with crispy pork");
+		$this->assertEqual($entries[0]['senses'][0]['partOfSpeech']['value'], "Noun");
+		$this->assertEqual($entries[1]['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
+		$this->assertEqual($entries[1]['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
 	}
 
 	function testLiftImportMerge_ExistingDataAndImportWinsAndSkip_NoMerge() {
@@ -209,10 +209,10 @@ class TestLiftImport extends UnitTestCase {
 		$entryList->read();
 		$entries = $entryList->entries;
 		$this->assertEqual($entryList->count, 2);
-		$this->assertEqual($entries[1]['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
-		$this->assertEqual($entries[1]['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
-		$this->assertEqual($entries[0]['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
-		$this->assertEqual($entries[0]['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
+		$this->assertEqual($entries[0]['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
+		$this->assertEqual($entries[0]['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
+		$this->assertEqual($entries[1]['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
+		$this->assertEqual($entries[1]['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
 	}
 
 	function testLiftImportMerge_ExistingDataAndImportLoses_NoMerge() {
