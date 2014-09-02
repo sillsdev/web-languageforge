@@ -2277,6 +2277,7 @@ table th[class*="span"],
 
 .dropdown:hover .dropdown-menu {
     display: block;
+    margin-top: 0px;
 }
 
 .icon-glass {
