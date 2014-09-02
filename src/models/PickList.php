@@ -7,48 +7,47 @@ use models\mapper\ArrayOf;
 
 class PickItem
 {
-	/**
+    /**
 	 * @var string
 	 */
-	public $key;
-	
-	/**
+    public $key;
+
+    /**
 	 * @var string
 	 */
-	public $value;
-	
+    public $value;
+
 }
 
 class PickList
 {
-	public function __construct($name = '') {
-		$this->id = new Id();
-		$this->name = $name;
-		$this->items = new ArrayOf(function($data) {
-			return new PickItem();
-		});
-		
-	}
-	
-	/**
+    public function __construct($name = '')
+    {
+        $this->id = new Id();
+        $this->name = $name;
+        $this->items = new ArrayOf(function ($data) {
+            return new PickItem();
+        });
+
+    }
+
+    /**
 	 * @var string
 	 */
-	public $id;
-	
-	/**
+    public $id;
+
+    /**
 	 * @var string
 	 */
-	public $name;
-	
-	/**
+    public $name;
+
+    /**
 	 * @var ArrayOf ArrayOf<PickItem>
 	 */
-	public $items;
-	
-	/**
+    public $items;
+
+    /**
 	 * @var string
 	 */
-	public $defaultKey;
+    public $defaultKey;
 }
-
-?>

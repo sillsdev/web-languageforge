@@ -1,24 +1,24 @@
-			<?php 
-			// perhaps this data array should be put into the controller?
-			
-			$data['slides'] = array(
-				array(
-					"title" => "Di Jamiekan Saamz (The Jamaican Psalms)",
-					"summary" => "Jamaicans from all over the world helping to translate their favourite Psalms into the Jamaican language!"
-					),
-				array(
-					"title" => "Di Jamiekan Saamz (The Jamaican Psalms)",
-					"summary" => "Jamaicans from all churches and backgrounds working together for the good of Jamaica and the Jamiekan Saamz translation."
-					),
-				array(
-					"title" => "Di Jamiekan Saamz (The Jamaican Psalms)",
-					"summary" => "Connecting with the book of Psalms and with each other like never before. Speak your mind. Ask Questions. Improve it!"
-					)
-			);
-			$this->load->view("$themePath/templates/slideshow.html.php", $data);
-			?>
-			
-			
+			<?php
+            // perhaps this data array should be put into the controller?
+
+            $data['slides'] = array(
+                array(
+                    "title" => "Di Jamiekan Saamz (The Jamaican Psalms)",
+                    "summary" => "Jamaicans from all over the world helping to translate their favourite Psalms into the Jamaican language!"
+                    ),
+                array(
+                    "title" => "Di Jamiekan Saamz (The Jamaican Psalms)",
+                    "summary" => "Jamaicans from all churches and backgrounds working together for the good of Jamaica and the Jamiekan Saamz translation."
+                    ),
+                array(
+                    "title" => "Di Jamiekan Saamz (The Jamaican Psalms)",
+                    "summary" => "Connecting with the book of Psalms and with each other like never before. Speak your mind. Ask Questions. Improve it!"
+                    )
+            );
+            $this->load->view("$themePath/templates/slideshow.html.php", $data);
+            ?>
+
+
 			<div class="container">
 				<div class="row">
 					<div class="span7">
@@ -31,35 +31,35 @@
 					</div>
 					</div>
 			</div>
-		
-		
+
+
 			<?php
-			
-			$data['columns'] = array(
-				array(
-					"title" => "Your Role",
-					"summary" => "A few translation experts can know many things, but they can't know everything to produce the best possible translation. This is where you come in.  You also have things to contribute to the translation. Your experiences, knowledge, spiritual gifts, special insights, talents, and many other things can benefit the translation team in important ways.",
-					"button" => "Learn More",
-					"target_url" => "#"
-					),
-				array(
-					"title" => "How it Works",
-					"summary" => "First, the team of trained translators meets with Jamaicans from various church denominations, universities and professions (pastors, teachers, and others). Together you talk about the Psalms chapters to be translated. Next, based on your help, the translation team produces a first draft and they post it on this website. Then you and everyone who has created a user account on the website can...",
-					"button" => "Read More",
-					"target_url" => "/learn_how_it_works"
-					),
-				array(
-					"title" => "Get Started",
-					"summary" => "There are two ways you can start right away: Organize a face-to-face Psalms study group and share your group's insights with the translation team.� Create a log-in and begin interacting with the translators and others from the Jamaican community over the translation drafts they post on this website. Either way, you are helping to produce your Jamaican Psalms translation. It's that easy.",
-					"button" => "Get Started Now",
-					"target_url" => "/signup"
-					)
-			);
-			$this->load->view("$themePath/templates/3column.html.php", $data);
-			?>
-			
-			
-			
+
+            $data['columns'] = array(
+                array(
+                    "title" => "Your Role",
+                    "summary" => "A few translation experts can know many things, but they can't know everything to produce the best possible translation. This is where you come in.  You also have things to contribute to the translation. Your experiences, knowledge, spiritual gifts, special insights, talents, and many other things can benefit the translation team in important ways.",
+                    "button" => "Learn More",
+                    "target_url" => "#"
+                    ),
+                array(
+                    "title" => "How it Works",
+                    "summary" => "First, the team of trained translators meets with Jamaicans from various church denominations, universities and professions (pastors, teachers, and others). Together you talk about the Psalms chapters to be translated. Next, based on your help, the translation team produces a first draft and they post it on this website. Then you and everyone who has created a user account on the website can...",
+                    "button" => "Read More",
+                    "target_url" => "/learn_how_it_works"
+                    ),
+                array(
+                    "title" => "Get Started",
+                    "summary" => "There are two ways you can start right away: Organize a face-to-face Psalms study group and share your group's insights with the translation team.� Create a log-in and begin interacting with the translators and others from the Jamaican community over the translation drafts they post on this website. Either way, you are helping to produce your Jamaican Psalms translation. It's that easy.",
+                    "button" => "Get Started Now",
+                    "target_url" => "/signup"
+                    )
+            );
+            $this->load->view("$themePath/templates/3column.html.php", $data);
+            ?>
+
+
+
 			<div class="sub-foot-detailing"></div>
 			<div id="sub-foot">
 				<div class="container">

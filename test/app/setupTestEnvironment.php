@@ -190,6 +190,12 @@ if ($constants['siteType'] == 'scriptureforge') {
 			'lexeme' => $constants['testEntry2']['lexeme'],
 			'senses' => $constants['testEntry2']['senses']
 		), $managerUser);
+	$multipleMeaningEntry1 = LexEntryCommands::updateEntry($testProject,
+		array(
+			'id' => '',
+			'lexeme' => $constants['testMultipleMeaningEntry1']['lexeme'],
+			'senses' => $constants['testMultipleMeaningEntry1']['senses']
+		), $managerUser);
 }
 
 ?>

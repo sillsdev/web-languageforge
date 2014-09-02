@@ -8,80 +8,85 @@ use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\languageforge\LfProjectModel;
 use models\mapper\MapOf;
 
-class LexiconProjectModel extends LfProjectModel {
-	
-	public function __construct($id = '') {
-		$this->appName = LfProjectModel::LEXICON_APP;
-		$this->rolesClass = 'models\languageforge\lexicon\LexiconRoles';
-		$this->inputSystems = new MapOf(
-			function($data) {
-				return new InputSystem();
-			}
-		);
-		
-		$this->config = new LexConfiguration();
+class LexiconProjectModel extends LfProjectModel
+{
+    public function __construct($id = '')
+    {
+        $this->appName = LfProjectModel::LEXICON_APP;
+        $this->rolesClass = 'models\languageforge\lexicon\LexiconRoles';
+        $this->inputSystems = new MapOf(
+            function ($data) {
+                return new InputSystem();
+            }
+        );
 
-		// default values
-		$this->inputSystems['en'] = new InputSystem('en', 'English', 'en');
-		$this->inputSystems['th'] = new InputSystem('th', 'Thai', 'th');
+        $this->config = new LexConfiguration();
 
-		parent::__construct($id);
-	}
-	
-	/**
-	 * 
+        // default values
+        $this->inputSystems['en'] = new InputSystem('en', 'English', 'en');
+        $this->inputSystems['th'] = new InputSystem('th', 'Thai', 'th');
+
+        parent::__construct($id);
+    }
+
+    /**
+	 *
 	 * @var MapOf <InputSystem>
 	 */
-	public $inputSystems;
-	
-	/**
-	 * 
+    public $inputSystems;
+
+    /**
+	 *
 	 * @var LexConfiguration
 	 */
-	public $config;
-	
-	/**
-	 * 
+    public $config;
+
+    /**
+	 *
 	 * @var string
 	 */
-	public $liftFilePath;
-	
-	/**
+    public $liftFilePath;
+
+    /**
 	 * Adds an input system if it doesn't already exist
 	 * @param string $tag
 	 * @param string $abbr
 	 * @param string $name
 	 */
-	public function addInputSystem($tag, $abbr = '', $name = '') {
-		static $languages = null;
-		if (! key_exists($tag, $this->inputSystems)) {
-			if (! $abbr) {
-				$abbr = $tag;
-			}
-			if (! $name) {
-				$name = $tag;
-				if (!$languages) {
-					$languages = new LanguageData();
-				}
-				$languageCode = $languages->getCode($tag);
-				if (key_exists($languageCode, $languages)) {
-					$name = $languages[$languageCode]->name;
-				}
-			}
-			$this->inputSystems[$tag] = new InputSystem($tag, $name, $abbr);
-		}
-	}
-	
-	public function getPublicSettings($userId) {
-		$settings = parent::getPublicSettings($userId);
-		$settings['currentUserRole'] = $this->users[$userId]->role;
-		return array_merge($settings, LexBaseViewDto::encode($this->id->asString(), $userId));
-	}
+    public function addInputSystem($tag, $abbr = '', $name = '')
+    {
+        static $languages = null;
+        if (! key_exists($tag, $this->inputSystems)) {
+            if (! $abbr) {
+                $abbr = $tag;
+            }
+            if (! $name) {
+                $name = $tag;
+                if (!$languages) {
+                    $languages = new LanguageData();
+                }
+                $languageCode = $languages->getCode($tag);
+                if (key_exists($languageCode, $languages)) {
+                    $name = $languages[$languageCode]->name;
+                }
+            }
+            $this->inputSystems[$tag] = new InputSystem($tag, $name, $abbr);
+        }
+    }
 
-	/**
+    public function getPublicSettings($userId)
+    {
+        $settings = parent::getPublicSettings($userId);
+        $settings['currentUserRole'] = $this->users[$userId]->role;
+
+        return array_merge($settings, LexBaseViewDto::encode($this->id->asString(), $userId));
+    }
+
+    /**
 	 * Initialize the optionlists in a project
 	 */
-	public function initializeNewProject() {
+    public function initializeNewProject()
+    {
         // setup default option lists
         $optionList = new LexOptionListModel($this);
         $optionList->name = 'Part Of Speech';
@@ -110,7 +115,5 @@ class LexiconProjectModel extends LfProjectModel {
         // repeat for other delivered option list types
 
     }
-	
-}
 
-?>
+}

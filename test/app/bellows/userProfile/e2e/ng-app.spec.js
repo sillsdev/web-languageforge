@@ -72,7 +72,7 @@ describe('User Profile E2E Test', function() {
 					var expectedAvatar   = userProfile.goldPigAvatarURL;
 				};
 
-				userProfile.myAccountTab.selectColor(newColor);
+				userProfile.myAccountTab.selectColor('^' + newColor + '$'); // Ensure "Blue" won't match "Steel Blue", etc.
 				userProfile.myAccountTab.selectShape(newShape);
 				
 				userProfile.myAccountTab.updateMobilePhone(newMobilePhone);
