@@ -1,7 +1,7 @@
 		<div class="container">
 			<div class="row">
 			<?php foreach ($columns as $num => $column): ?>
-				<div class="span4">					
+				<div class="span4">
 					<h3><?php echo $column['title'] ?></h3>
 					<p><?php echo $column['summary']?></p>
 					<?php if ($column['target_url']): ?>

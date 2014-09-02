@@ -6,243 +6,277 @@ use libraries\shared\palaso\CodeGuard;
 use models\mapper\ArrayOf;
 use models\mapper\MapOf;
 
-function _createExample($data) {
-	return new Example();
+function _createExample($data)
+{
+    return new Example();
 }
 
-function _createCustomField($data) {
-	CodeGuard::checkTypeAndThrow($data, 'array');
-	if (array_key_exists('value', $data)) {
-		return new LexiconField();
-	} elseif (array_key_exists('values', $data)) {
-		return new LexiconMultiValueField();
-	} else {
-		return new MultiText();
-	}
+function _createCustomField($data)
+{
+    CodeGuard::checkTypeAndThrow($data, 'array');
+    if (array_key_exists('value', $data)) {
+        return new LexiconField();
+    } elseif (array_key_exists('values', $data)) {
+        return new LexiconMultiValueField();
+    } else {
+        return new MultiText();
+    }
 }
 
-class Sense {
+class Sense
+{
+    use \LazyProperty\LazyPropertiesTrait;
 
-	function __construct($liftId = '') {
-		$this->liftId = $liftId;
-		$this->id = uniqid();
-		$this->definition = new MultiText();
-		$this->gloss = new MultiText();
-		$this->partOfSpeech = new LexiconField();
-		$this->semanticDomain = new LexiconMultiValueField();
-		$this->examples = new ArrayOf('\models\languageforge\lexicon\_createExample');
-		$this->customFields = new MapOf('\models\languageforge\lexicon\_createCustomField');
-		$this->authorInfo = new AuthorInfo();
+    public function __construct($liftId = '')
+    {
+        $this->liftId = $liftId;
+        $this->id = uniqid();
 
-		$this->scientificName = new MultiText();
-		$this->anthropologyNote = new MultiText();
-		$this->senseBibliography = new MultiText();
-		$this->discourseNote = new MultiText();
-		$this->encyclopedicNote = new MultiText();
-		$this->generalNote = new MultiText();
-		$this->grammarNote = new MultiText();
-		$this->phonologyNote = new MultiText();
-		$this->senseRestrictions = new MultiText();
-		$this->semanticsNote = new MultiText();
-		$this->sociolinguisticsNote = new MultiText();
-		$this->source = new MultiText();
-		$this->usages = new LexiconMultiValueField();
+        $this->initLazyProperties([
+                'partOfSpeech',
+                'semanticDomain',
+                'examples',
+                'customFields',
+                'authorInfo',
+                'definition',
+                'gloss',
+                'scientificName',
+                'anthropologyNote',
+                'senseBibliography',
+                'discourseNote',
+                'encyclopedicNote',
+                'generalNote',
+                'grammarNote',
+                'phonologyNote',
+                'senseRestrictions',
+                'semanticsNote',
+                'sociolinguisticsNote',
+                'source',
+                'senseImportResidue',
+                'usages',
+                'reversalEntries',
+                'senseType',
+                'academicDomains',
+                'sensePublishIn',
+                'anthropologyCategories',
+                'status'
+        ], false);
 
-		// TODO reversalEntries needs to be a Taglist 07-2014 DDW
-		$this->reversalEntries = new LexiconMultiValueField();
-		$this->senseType = new LexiconField();
-		$this->academicDomains = new LexiconMultiValueField();
-		$this->sensePublishIn = new LexiconMultiValueField();
-		$this->anthropologyCategories = new LexiconMultiValueField();
-		$this->senseImportResidue = new MultiText();
-		$this->status = new LexiconMultiValueField();
+    }
 
+    protected function & createProperty($name) {
+		switch ($name) {
+			case 'partOfSpeech': return new LexiconField();
+            case 'semanticDomain': return new LexiconMultiValueField();
+            case 'examples': return new ArrayOf('\models\languageforge\lexicon\_createExample');
+            case 'customFields': return new ArrayOf('\models\languageforge\lexicon\_createCustomField');
+            case 'authorInfo': return new AuthorInfo();
+            case 'definition':
+            case 'gloss':
+            case 'scientificName':
+            case 'anthropologyNote':
+            case 'senseBibliography':
+            case 'discourseNote':
+            case 'encyclopedicNote':
+            case 'generalNote':
+            case 'grammarNote':
+            case 'phonologyNote':
+            case 'senseRestrictions':
+            case 'semanticsNote':
+            case 'sociolinguisticsNote':
+            case 'source':
+            case 'senseImportResidue':
+                return new MultiText();
 
+			case 'usages': return new LexiconMultiValueField();
 
-	}
+            // TODO reversalEntries needs to be a Taglist 07-2014 DDW
+            case 'reversalEntries': return new LexiconMultiValueField();
+            case 'senseType': return new LexiconField();
+            case 'academicDomains': return new LexiconMultiValueField();
+            case 'sensePublishIn': return new LexiconMultiValueField();
+            case 'anthropologyCategories': return new LexiconMultiValueField();
+            case 'status': return new LexiconMultiValueField();
+        }
+    }
 
-	/**
+    /**
 	 * The id of the sense as specified in the LIFT file
 	 * @var string
 	 */
-	public $liftId;
-	
-	/**
+    public $liftId;
+
+    /**
 	 * uniqid
 	 * @var string
 	 */
-	public $id;
+    public $id;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $definition;
-	
-	/**
+    public $definition;
+
+    /**
 	 * @var MultiText
 	 */
-	public $gloss;
-	
-	/**
+    public $gloss;
+
+    /**
 	 * @var LexiconField
 	 */
-	public $partOfSpeech;
-	
+    public $partOfSpeech;
 
-	/**
+    /**
 	 * @var LexiconMultiValueField
 	 */
-	public $semanticDomain;
+    public $semanticDomain;
 
-	/**
+    /**
 	 * @var ArrayOf<Example>
 	 */
-	public $examples;
+    public $examples;
 
-	/**
+    /**
 	 * @var MapOf <>
 	 */
-	public $customFields;
+    public $customFields;
 
-	/**
+    /**
 	 * @var AuthorInfo
 	 */
-	public $authorInfo;
-	
-	
-	/**
-	 * 
+    public $authorInfo;
+
+    /**
+	 *
 	 * @param string $id
 	 * @return Example
 	 */
-	public function getExample($id) {
-		foreach ($this->examples as $example) {
-			if ($example->id == $id) {
-				return $example;
-			}
-		}
-	}
+    public function getExample($id)
+    {
+        foreach ($this->examples as $example) {
+            if ($example->id == $id) {
+                return $example;
+            }
+        }
+    }
 
-	/**
-	 * 
+    /**
+	 *
 	 * @param string $id
 	 * @param Example $model
 	 */
-	public function setExample($id, $model) {
-		foreach ($this->examples as $key => $example) {
-			if ($example->id == $id) {
-				$this->examples[$key] = $model;
-				break;
-			}
-		}
-	}
+    public function setExample($id, $model)
+    {
+        foreach ($this->examples as $key => $example) {
+            if ($example->id == $id) {
+                $this->examples[$key] = $model;
+                break;
+            }
+        }
+    }
 
+    // less common fields used in FLEx
 
-
-	// less common fields used in FLEx
-
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $scientificName;
+    public $scientificName;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $anthropologyNote;
+    public $anthropologyNote;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $senseBibliography;
+    public $senseBibliography;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $discourseNote;
+    public $discourseNote;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $encyclopedicNote;
+    public $encyclopedicNote;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $generalNote;
+    public $generalNote;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $grammarNote;
+    public $grammarNote;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $phonologyNote;
+    public $phonologyNote;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $senseRestrictions;
+    public $senseRestrictions;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $semanticsNote;
+    public $semanticsNote;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $sociolinguisticsNote;
+    public $sociolinguisticsNote;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $source;
+    public $source;
 
-	/**
+    /**
 	 * @var LexiconMultiValueField
 	 */
-	public $usages;
+    public $usages;
 
-	// TODO 07-2014 DDW make this Taglist
-	/**
+    // TODO 07-2014 DDW make this Taglist
+    /**
 	 * @var Taglist
 	 */
-	public $reversalEntries;
+    public $reversalEntries;
 
-	/**
+    /**
 	 * @var LexiconField
 	 */
-	public $senseType;
+    public $senseType;
 
-	/**
+    /**
 	 * @var LexiconMultiValueField
 	 */
-	public $academicDomains;
+    public $academicDomains;
 
-	/**
+    /**
 	 * @var LexiconMultiValueField
 	 */
-	public $sensePublishIn;
+    public $sensePublishIn;
 
-	/**
+    /**
 	 * @var LexiconMultiValueField
 	 */
-	public $anthropologyCategories;
+    public $anthropologyCategories;
 
-	/**
+    /**
 	 * @var MultiText
 	 */
-	public $senseImportResidue;
+    public $senseImportResidue;
 
-	/**
+    /**
 	 * @var LexiconMultiValueField
 	 */
-	public $status;
-
+    public $status;
 
 }
-
-?>

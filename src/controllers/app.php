@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 use models\ProjectModel;
 
@@ -6,40 +6,41 @@ use models\commands\SessionCommands;
 
 require_once 'secure_base.php';
 
-class App extends Secure_base {
-	
-	public function view($app = 'main', $projectId = '') {
+class app extends Secure_base
+{
+	public function view($app = 'main', $projectId = '')
+	{
 		$appFolder = "angular-app/" . $this->website->base . "/$app";
 		if (!file_exists($appFolder)) {
 			$appFolder = "angular-app/bellows/apps/$app";
 			if (!file_exists($appFolder)) {
 				show_404($this->website->base); // this terminates PHP
-			}
+            }
 		}
 		if ($projectId == 'favicon.ico') { $projectId = ''; }
-	
+
 		$data = array();
 		$data['appName'] = $app;
 		$data['baseSite'] = $this->website->base; // used to add the right minified JS file
-		$data['appFolder'] = $appFolder;
-		
+        $data['appFolder'] = $appFolder;
+
 		// update the projectId in the session if it is not empty
-		$projectModel = new ProjectModel();
+        $projectModel = new ProjectModel();
 		if ($projectId && $projectModel->exists($projectId)) {
 			$this->session->set_userdata('projectId', $projectId);
 		} else {
-			$projectId = (string)$this->session->userdata('projectId');
+			$projectId = (string) $this->session->userdata('projectId');
 		}
 
 		// Verify user has rights to the project
-		$projectModel = $projectModel->getById($projectId);
-		if (!$projectModel->userIsMember((string)$this->session->userdata('user_id'))) {
+        $projectModel = $projectModel->getById($projectId);
+		if (!$projectModel->userIsMember((string) $this->session->userdata('user_id'))) {
 			$error_msg = 'Uh oh, you are not an authorized member of this ' . $this->website->domain . ' project.  Please contact the Project Manager to be added to the project';
 			show_error($error_msg, 403, '403 Forbidden: User not authorized');
 		}
 
 		// Other session data
-		$sessionData = SessionCommands::getSessionData($projectId, (string)$this->session->userdata('user_id'), $this->website);
+        $sessionData = SessionCommands::getSessionData($projectId, (string) $this->session->userdata('user_id'), $this->website);
 		$jsonSessionData = json_encode($sessionData);
 		$data['jsonSession'] = $jsonSessionData;
 
@@ -47,62 +48,68 @@ class App extends Secure_base {
 		self::addJavascriptFiles("angular-app/bellows/js", $data['jsFiles'], array('vendor/', 'assets/'));
 		self::addJavascriptFiles ( "angular-app/bellows/directive", $data ['jsFiles'] );
 		self::addJavascriptFiles($appFolder, $data['jsFiles'], array('vendor/', 'assets/'));
-		
+
 		// remove asset js files
-		$data['jsNotMinifiedFiles'] = array();
+        $data['jsNotMinifiedFiles'] = array();
 		self::addJavascriptFiles("angular-app/bellows/js/vendor", $data['jsNotMinifiedFiles']);
 		self::addJavascriptFiles("angular-app/bellows/js/assets", $data['jsNotMinifiedFiles']);
 		self::addJavascriptFiles($appFolder . "/js/vendor", $data['jsNotMinifiedFiles']);
 		self::addJavascriptFiles($appFolder . "/js/assets", $data['jsNotMinifiedFiles']);
-			
+
 		$data['cssFiles'] = array();
 		self::addCssFiles("angular-app/bellows/css", $data['cssFiles']);
 		self::addCssFiles($appFolder, $data['cssFiles']);
 
 		$data['title'] = $this->website->name;
-		
+
 		$this->renderPage("angular-app", $data);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param string $val
 	 * @return int
 	 */
-	private static function fromValueWithSuffix($val) {
+	private static function fromValueWithSuffix($val)
+	{
 		$val = trim($val);
-		$result = (int)$val;
+		$result = (int) $val;
 		$last = strtolower($val[strlen($val)-1]);
-		switch($last) {
+		switch ($last) {
 			// The 'G' modifier is available since PHP 5.1.0
-			case 'g':
+            case 'g':
 				$result *= 1024;
 			case 'm':
 				$result *= 1024;
 			case 'k':
 				$result *= 1024;
 		}
-	
+
 		return $result;
 	}
-	
-	private static function ext($filename) {
+
+	private static function ext($filename)
+	{
 		return pathinfo($filename, PATHINFO_EXTENSION);
 	}
 
-	private static function basename($filename) {
+	private static function basename($filename)
+	{
 		return pathinfo($filename, PATHINFO_BASENAME);
 	}
-	
-	private static function addJavascriptFiles($dir, &$result, $exclude = array()) {
+
+	private static function addJavascriptFiles($dir, &$result, $exclude = array())
+	{
 		self::addFiles('js', $dir, $result, $exclude);
 	}
 
-	private static function addCssFiles($dir, &$result) {
+	private static function addCssFiles($dir, &$result)
+	{
 		self::addFiles('css', $dir, $result, array());
 	}
 
-	private static function addFiles($ext, $dir, &$result, $exclude) {
+	private static function addFiles($ext, $dir, &$result, $exclude)
+	{
 		if (is_dir($dir) && ($handle = opendir($dir))) {
 			while ($file = readdir($handle)) {
 				$filepath = $dir . '/' . $file;
@@ -116,7 +123,7 @@ class App extends Secure_base {
 						/* For Javascript, check that file is not minified */
 						$base = self::basename($file);
 						//$isMin = (strpos($base, '-min') !== false) || (strpos($base, '.min') !== false);
-						$isMin = FALSE;
+                        $isMin = false;
 						if (!$isMin && self::ext($file) == $ext) {
 							$result[] = $filepath;
 						}
@@ -133,5 +140,3 @@ class App extends Secure_base {
 		}
 	}
 }
-
-?>
