@@ -2,11 +2,6 @@
 
 class Api extends CI_Controller {
 
-	public function __construct()
-	{
-		parent::__construct();
-	}
-	
 	public function service($api) {
 		$serviceFileName = strtolower($api) . '.php';
 		$serviceClassName = str_replace(' ', '', ucwords(preg_replace('/[\s_]+/', ' ', $api)));

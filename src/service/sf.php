@@ -17,6 +17,7 @@ use models\languageforge\lexicon\dto\LexDbeDto;
 use models\languageforge\lexicon\dto\LexManageUsersDto;
 use models\languageforge\lexicon\dto\LexProjectDto;
 use models\scriptureforge\sfchecks\commands\SfchecksProjectCommands;
+use models\scriptureforge\sfchecks\commands\SfchecksUploadCommands;
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\ActivityListDto;
 use models\shared\dto\ProjectListDto;
@@ -45,7 +46,6 @@ use models\QuestionModel;
 use models\UnreadMessageModel;
 use models\UserModel;
 use models\UserProfileModel;
-use models\scriptureforge\sfchecks\commands\SfchecksUploadCommands;
 
 require_once(APPPATH . 'vendor/autoload.php');
 require_once(APPPATH . 'config/sf_config.php');
@@ -498,8 +498,8 @@ class Sf
 	// Upload API
 	//---------------------------------------------------------------
 	
-	public function sfChecks_uploadFile($fileType) {
-		return SfchecksUploadCommands::uploadFile($this->_projectId, $fileType);	
+	public function sfChecks_uploadFile($uploadType) {
+		return SfchecksUploadCommands::uploadFile($this->_projectId, $uploadType);
 	}
 	
 	
