@@ -27,16 +27,14 @@ class app extends Secure_base
         // update the projectId in the session if it is not empty
         $projectModel = new ProjectModel();
         if ($projectId && $projectModel->exists($projectId)) {
+            $projectModel = $projectModel->getById($projectId);
+            if (!$projectModel->userIsMember((string) $this->session->userdata('user_id'))) {
+                $error_msg = 'Uh oh, you are not an authorized member of this ' . $this->website->domain . ' project.  Please contact the Project Manager to be added to the project';
+                show_error($error_msg, 403, '403 Forbidden: User not authorized');
+            }
             $this->session->set_userdata('projectId', $projectId);
         } else {
             $projectId = (string) $this->session->userdata('projectId');
-        }
-
-        // Verify user has rights to the project
-        $projectModel = $projectModel->getById($projectId);
-        if (!$projectModel->userIsMember((string) $this->session->userdata('user_id'))) {
-            $error_msg = 'Uh oh, you are not an authorized member of this ' . $this->website->domain . ' project.  Please contact the Project Manager to be added to the project';
-            show_error($error_msg, 403, '403 Forbidden: User not authorized');
         }
 
         // Other session data
