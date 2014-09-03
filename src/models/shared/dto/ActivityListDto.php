@@ -40,6 +40,12 @@ class ActivityListDtoEncoder extends JsonEncoder
             } else {
                 return '';
             }
+        } elseif ($key == 'projectRef') {
+            $project = new ProjectModel($model->asString());
+            return array(
+                'id' => $project->id->asString(),
+                'type' => $project->appName,
+            );
         } elseif ($key == 'textRef') {
             $text = new TextModel($this->_project);
             if ($text->exists($model->asString())) {
