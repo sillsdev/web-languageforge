@@ -32,15 +32,40 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
 
         $this->assertEqual(true, $response->result);
+        $this->assertPattern("/$projectId/", $response->data->path);
+        $this->assertPattern("/$textId/", $response->data->fileName);
+        $this->assertPattern("/$fileName/", $response->data->fileName);
 
         $file['type'] = 'audio/mpeg';
 
         $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
 
         $this->assertEqual(true, $response->result);
-        $this->assertPattern("/$projectId/", $response->data->path);
-        $this->assertPattern("/$textId/", $response->data->fileName);
-        $this->assertPattern("/$fileName/", $response->data->fileName);
+    }
+
+    function testUploadAudio_mp3FileUpperCaseExt_uploadAllowed()
+    {
+        $e = new MongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $text = new TextModel($project);
+        $text->title = "Some Title";
+        $textId = $text->write();
+
+        $fileType = 'audio';
+        $file = array();
+        $fileName = 'fileName.MP3';
+        $file['name'] = $fileName;
+        $file['type'] = 'AUDIO/MP3';
+        $file['tmp_name'] = '';
+        $_FILES['file'] = $file;
+        $_POST['textId'] = $textId;
+
+        $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
+
+        $this->assertEqual(true, $response->result);
     }
 
     function testUploadAudio_mp4File_uploadDisallowed()
