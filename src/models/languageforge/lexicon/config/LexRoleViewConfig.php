@@ -20,15 +20,15 @@ class LexRoleViewConfig
     }
 
     /**
-	 * key is LexiconConfigObj field const
-	 * @var MapOf <LexViewFieldConfig>
-	 */
+     * key is LexiconConfigObj field const
+     * @var MapOf <LexViewFieldConfig>
+     */
     public $fields;
 
     /**
-	 * key is LexiconTask const
-	 * @var MapOf <bool>
-	 */
+     * key is LexiconTask const
+     * @var MapOf <bool>
+     */
     public $showTasks;
 
 }
@@ -42,13 +42,13 @@ class LexViewFieldConfig
     }
 
     /**
-	 * @var bool
-	 */
+     * @var bool
+     */
     public $show;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $type;
 
 }
@@ -64,13 +64,13 @@ class LexViewMultiTextFieldConfig extends LexViewFieldConfig
     }
 
     /**
-	 * @var bool
-	 */
+     * @var bool
+     */
     public $overrideInputSystems;
 
     /**
-	 * @var ArrayOf
-	 */
+     * @var ArrayOf
+     */
     public $inputSystems;
 
 }

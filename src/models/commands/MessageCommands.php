@@ -16,14 +16,14 @@ class MessageCommands
     }
 
     /**
-	 *
-	 * @param string $projectId
-	 * @param array $userIds
-	 * @param string $subject
-	 * @param string $emailTemplate
-	 * @param string $smsTemplate
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
-	 */
+     *
+     * @param string $projectId
+     * @param array $userIds
+     * @param string $subject
+     * @param string $emailTemplate
+     * @param string $smsTemplate
+     * @param string $authUserId - the admin user's id performing the update (for auth purposes)
+     */
     // TODO this needs to be tested!  cjh 2014-02
     public static function sendMessage($projectId, $userIds, $subject, $emailTemplate, $smsTemplate)
     {

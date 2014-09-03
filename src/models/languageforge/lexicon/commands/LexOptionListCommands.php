@@ -10,10 +10,10 @@ use models\mapper\JsonDecoder;
 class LexOptionListCommands
 {
     /**
-	 * Update the optionlist with params
-	 * @param $projectId
-	 * @param LexOptionListModel $params
-	 */
+     * Update the optionlist with params
+     * @param $projectId
+     * @param LexOptionListModel $params
+     */
     public static function updateList($projectId, $params)
     {
         CodeGuard::checkTypeAndThrow($params, 'array');

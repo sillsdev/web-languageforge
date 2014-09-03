@@ -8,13 +8,13 @@ use models\mapper\ArrayOf;
 class PickItem
 {
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $key;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $value;
 
 }
@@ -32,22 +32,22 @@ class PickList
     }
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $id;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $name;
 
     /**
-	 * @var ArrayOf ArrayOf<PickItem>
-	 */
+     * @var ArrayOf ArrayOf<PickItem>
+     */
     public $items;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $defaultKey;
 }

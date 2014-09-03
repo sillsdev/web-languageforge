@@ -40,11 +40,11 @@ class SiteRoles extends RolesBase
     private static $_rights;
 
     /**
-	 *
-	 * @param MapOf $roleMap
-	 * @param Website $website
-	 * @return array
-	 */
+     *
+     * @param MapOf $roleMap
+     * @param Website $website
+     * @return array
+     */
     public static function getRightsArray($roleMap, $website)
     {
         if ($roleMap->offsetExists($website->domain)) {

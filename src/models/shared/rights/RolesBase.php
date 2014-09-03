@@ -6,9 +6,9 @@ use libraries\shared\palaso\CodeGuard;
 class RolesBase
 {
     /**
-	 * @param array $rights
-	 * @param int $domain
-	 */
+     * @param array $rights
+     * @param int $domain
+     */
     protected static function grantAllOnDomain(&$rights, $domain)
     {
         foreach (Operation::$operations as $operation) {
@@ -17,11 +17,11 @@ class RolesBase
     }
 
     /**
-	 * Returns true if the given $role has the $right in the $realm
-	 * @param string $role
-	 * @param int $right
-	 * @return bool
-	 */
+     * Returns true if the given $role has the $right in the $realm
+     * @param string $role
+     * @param int $right
+     * @return bool
+     */
     protected static function _hasRight($rightsArray, $role, $right)
     {
         CodeGuard::checkNotFalseAndThrow($role, 'role');
@@ -34,10 +34,10 @@ class RolesBase
     }
 
     /**
-	 * Returns the array of rights for this $role in the given $realm
-	 * @param string $role
-	 * @return array
-	 */
+     * Returns the array of rights for this $role in the given $realm
+     * @param string $role
+     * @return array
+     */
     protected static function _getRightsArray($rightsArray, $role)
     {
         CodeGuard::checkNotFalseAndThrow($role, 'role');

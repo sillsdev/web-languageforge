@@ -14,14 +14,14 @@ use models\mapper\MapOf;
 class ActivityModelMongoMapper extends \models\mapper\MongoMapper
 {
     /**
-	 * @var ActivityModelMongoMapper[]
-	 */
+     * @var ActivityModelMongoMapper[]
+     */
     private static $_pool = array();
 
     /**
-	 * @param string $databaseName
-	 * @return ActivityModelMongoMapper
-	 */
+     * @param string $databaseName
+     * @return ActivityModelMongoMapper
+     */
     public static function connect($databaseName)
     {
         if (!isset(static::$_pool[$databaseName])) {
@@ -61,10 +61,10 @@ class ActivityModel extends \models\mapper\MapperModel
     const ENTRY = 'entry';
 
     /**
-	 *
-	 * @param ProjectModel $projectModel
-	 * @param string $id
-	 */
+     *
+     * @param ProjectModel $projectModel
+     * @param string $id
+     */
     public function __construct($projectModel, $id = '')
     {
         $this->id = new Id();
@@ -82,10 +82,10 @@ class ActivityModel extends \models\mapper\MapperModel
     }
 
     /**
-	 *
-	 * @param string $type - this is one of
-	 * @param string $content
-	 */
+     *
+     * @param string $type - this is one of
+     * @param string $content
+     */
     public function addContent($type, $content)
     {
         $this->actionContent[$type] = $content;
@@ -94,57 +94,57 @@ class ActivityModel extends \models\mapper\MapperModel
     // TODO add a userFilter ArrayOf type that we can use to query Mongo for activities that only apply to specific users
 
     /**
-	 * @var Id
-	 */
+     * @var Id
+     */
     public $id;
 
     /**
-	 *
-	 * @var IdReference
-	 */
+     *
+     * @var IdReference
+     */
     public $projectRef;
 
     /**
-	 *
-	 * @var IdReference
-	 */
+     *
+     * @var IdReference
+     */
     public $textRef;
 
     /**
-	 *
-	 * @var IdReference
-	 */
+     *
+     * @var IdReference
+     */
     public $questionRef;
 
     /**
-	 *
-	 * @var IdReference
-	 */
+     *
+     * @var IdReference
+     */
     public $userRef;
 
     /**
-	 *
-	 * @var IdReference
-	 */
+     *
+     * @var IdReference
+     */
     public $userRef2;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     // TODO add broadcast_message as an action on a GlobalActivityModel class cjh 2013-08
     public $action;
 
     /**
-	 *
-	 * @var MapOf
-	 * MapOf<string>
-	 */
+     *
+     * @var MapOf
+     * MapOf<string>
+     */
     public $actionContent;
 
     /**
-	 * @var \DateTime
-	 */
+     * @var \DateTime
+     */
     public $date;
 
 }

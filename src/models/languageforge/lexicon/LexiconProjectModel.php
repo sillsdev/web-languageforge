@@ -30,29 +30,29 @@ class LexiconProjectModel extends LfProjectModel
     }
 
     /**
-	 *
-	 * @var MapOf <InputSystem>
-	 */
+     *
+     * @var MapOf <InputSystem>
+     */
     public $inputSystems;
 
     /**
-	 *
-	 * @var LexConfiguration
-	 */
+     *
+     * @var LexConfiguration
+     */
     public $config;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $liftFilePath;
 
     /**
-	 * Adds an input system if it doesn't already exist
-	 * @param string $tag
-	 * @param string $abbr
-	 * @param string $name
-	 */
+     * Adds an input system if it doesn't already exist
+     * @param string $tag
+     * @param string $abbr
+     * @param string $name
+     */
     public function addInputSystem($tag, $abbr = '', $name = '')
     {
         static $languages = null;
@@ -83,8 +83,8 @@ class LexiconProjectModel extends LfProjectModel
     }
 
     /**
-	 * Initialize the optionlists in a project
-	 */
+     * Initialize the optionlists in a project
+     */
     public function initializeNewProject()
     {
         // setup default option lists

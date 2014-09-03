@@ -36,47 +36,47 @@ class Example extends ObjectForEncoding
     }
 
     /**
-	 * The id of the example as specified in the LIFT file
-	 * @var string
-	 */
+     * The id of the example as specified in the LIFT file
+     * @var string
+     */
     public $liftId;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $sentence;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $translation;
 
     /**
-	 * @var MapOf <>
-	 */
+     * @var MapOf <>
+     */
     public $customFields;
 
     /**
-	 * @var AuthorInfo
-	 */
+     * @var AuthorInfo
+     */
     public $authorInfo;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $id;
 
     // less common fields used in FLEx
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $reference;
 
     /**
-	 * @var LexiconMultiValueField
-	 */
+     * @var LexiconMultiValueField
+     */
     public $examplePublishIn;
 
 }

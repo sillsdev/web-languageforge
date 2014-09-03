@@ -9,11 +9,11 @@ use libraries\shared\Website;
 class SessionCommands
 {
     /**
-	 * @param string $projectId
-	 * @param string $userId
-	 * @param Website $website
-	 * @return array
-	 */
+     * @param string $projectId
+     * @param string $userId
+     * @param Website $website
+     * @return array
+     */
     public static function getSessionData($projectId, $userId, $website)
     {
         $sessionData = array();
@@ -45,10 +45,10 @@ class SessionCommands
     }
 
     /**
-	 * Convert a human-readable size value (5M, 1G) into bytes
-	 * @param string $val
-	 * @return int
-	 */
+     * Convert a human-readable size value (5M, 1G) into bytes
+     * @param string $val
+     * @return int
+     */
     private static function fromValueWithSuffix($val)
     {
         $val = trim($val);

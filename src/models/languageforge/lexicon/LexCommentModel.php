@@ -70,27 +70,27 @@ class LexCommentModel extends \models\mapper\MapperModel
     public $entryRef;
 
     /**
-	 *
-	 * @var LexCommentFieldReference
-	 */
+     *
+     * @var LexCommentFieldReference
+     */
     public $regarding;
 
     /**
-	 *
-	 * @var int
-	 */
+     *
+     * @var int
+     */
     public $score;
 
     /**
-	 *
-	 * @var ArrayOf<LexCommentReply>
-	 */
+     *
+     * @var ArrayOf<LexCommentReply>
+     */
     public $replies;
 
     /**
-	 *
-	 * @var string - see status constants above
-	 */
+     *
+     * @var string - see status constants above
+     */
     public $status;
 
     /**
@@ -104,10 +104,10 @@ class LexCommentModel extends \models\mapper\MapperModel
     public $content;
 
     /**
-	 *
-	 * @param string $id
-	 * @return LexCommentReply
-	 */
+     *
+     * @param string $id
+     * @return LexCommentReply
+     */
     public function getReply($id)
     {
         foreach ($this->replies as $reply) {

@@ -21,15 +21,15 @@ class LexiconSemdomTask extends LexiconTask
     }
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $language;
 
     /**
-	 *
-	 * @var MapOf<boolean>
-	 */
+     *
+     * @var MapOf<boolean>
+     */
     public $visibleFields;
 
 }

@@ -25,13 +25,13 @@ class LexiconTask
     }
 
     /**
-	 *
-	 * @var boolean
-	 */
+     *
+     * @var boolean
+     */
     public $visible;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $type;
 }

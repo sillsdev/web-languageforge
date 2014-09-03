@@ -19,14 +19,14 @@ class LexCommentReply extends ObjectForEncoding
     public $authorInfo;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $content;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $id;
 }

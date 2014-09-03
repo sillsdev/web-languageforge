@@ -18,12 +18,12 @@ use models\UserVoteModel;
 class QuestionCommentDto
 {
     /**
-	 * Encodes a QuestionModel and related data for $questionId
-	 * @param string $projectId
-	 * @param string $questionId
-	 * @param string $userId
-	 * @return array - The DTO.
-	 */
+     * Encodes a QuestionModel and related data for $questionId
+     * @param string $projectId
+     * @param string $questionId
+     * @param string $userId
+     * @return array - The DTO.
+     */
     public static function encode($projectId, $questionId, $userId)
     {
         $user = new UserModel($userId);
@@ -72,10 +72,10 @@ class QuestionCommentDto
     }
 
     /**
-	 * Encodes a $answerModel in the same method as returned by the
-	 * @param AnswerModel $answerModel
-	 * @return array - The DTO.
-	 */
+     * Encodes a $answerModel in the same method as returned by the
+     * @param AnswerModel $answerModel
+     * @return array - The DTO.
+     */
     public static function encodeAnswer($answerModel)
     {
         $dto = QuestionCommentDtoEncoder::encode($answerModel);
@@ -84,10 +84,10 @@ class QuestionCommentDto
     }
 
     /**
-	 * Encodes a $commentModel in the same method as returned by the
-	 * @param CommentModel $commentModel
-	 * @return array - The DTO.
-	 */
+     * Encodes a $commentModel in the same method as returned by the
+     * @param CommentModel $commentModel
+     * @return array - The DTO.
+     */
     public static function encodeComment($commentModel)
     {
         $dto = QuestionCommentDtoEncoder::encode($commentModel);

@@ -22,13 +22,13 @@ class ActivityCommands
 {
 
     /**
-	 *
-	 * @param ProjectModel $projectModel
-	 * @param string $questionId
-	 * @param string $answerId
-	 * @param CommentModel $commentModel
-	 * @return string activity id
-	 */
+     *
+     * @param ProjectModel $projectModel
+     * @param string $questionId
+     * @param string $answerId
+     * @param CommentModel $commentModel
+     * @return string activity id
+     */
     public static function updateComment($projectModel, $questionId, $answerId, $commentModel, $mode = "update")
     {
         $activity = new ActivityModel($projectModel);
@@ -61,13 +61,13 @@ class ActivityCommands
     }
 
     /**
-	 *
-	 * @param ProjectModel $projectModel
-	 * @param string $questionId
-	 * @param string $answerId
-	 * @param AnswerModel $answerModel
-	 * @return string activity id
-	 */
+     *
+     * @param ProjectModel $projectModel
+     * @param string $questionId
+     * @param string $answerId
+     * @param AnswerModel $answerModel
+     * @return string activity id
+     */
     public static function updateAnswer($projectModel, $questionId, $answerModel, $mode = "update")
     {
         $activity = new ActivityModel($projectModel);
@@ -96,11 +96,11 @@ class ActivityCommands
     }
 
     /**
-	 *
-	 * @param ProjectModel $projectModel
-	 * @param TextModel $textModel
-	 * @return string activity id
-	 */
+     *
+     * @param ProjectModel $projectModel
+     * @param TextModel $textModel
+     * @return string activity id
+     */
     public static function addText($projectModel, $textId, $textModel)
     {
         $activity = new ActivityModel($projectModel);
@@ -115,11 +115,11 @@ class ActivityCommands
     }
 
     /**
-	 * @param ProjectModel $projectModel
-	 * @param string $questionId
-	 * @param QuestionModel $questionModel
-	 * @return string activity id
-	 */
+     * @param ProjectModel $projectModel
+     * @param string $questionId
+     * @param QuestionModel $questionModel
+     * @return string activity id
+     */
     public static function addQuestion($projectModel, $questionId, $questionModel)
     {
         $activity = new ActivityModel($projectModel);
@@ -137,11 +137,11 @@ class ActivityCommands
     }
 
     /**
-	 *
-	 * @param ProjectModel $projectModel
-	 * @param string $userId
-	 * @return string activity id
-	 */
+     *
+     * @param ProjectModel $projectModel
+     * @param string $userId
+     * @return string activity id
+     */
     public static function addUserToProject($projectModel, $userId)
     {
         $activity = new ActivityModel($projectModel);
@@ -158,14 +158,14 @@ class ActivityCommands
     // this may only be useful to log this activity for answers on which the user has commented on or has answered him/herself
     // TODO: how do we implement this?
     /**
-	 *
-	 * @param ProjectModel $projectModel
-	 * @param string $questionId
-	 * @param string $answerId
-	 * @param string $userId
-	 * @param string $mode
-	 * @return string activity id
-	 */
+     *
+     * @param ProjectModel $projectModel
+     * @param string $questionId
+     * @param string $answerId
+     * @param string $userId
+     * @param string $mode
+     * @return string activity id
+     */
     public static function updateScore($projectModel, $questionId, $answerId, $userId, $mode = 'increase')
     {
         $activity = new ActivityModel($projectModel);
@@ -191,13 +191,13 @@ class ActivityCommands
     }
 
     /**
-	 *
-	 * @param ProjectModel $projectModel
-	 * @param string $userId
-	 * @param LexEntryModel $entry
-	 * @param Action $action
-	 * @return string activity id
-	 */
+     *
+     * @param ProjectModel $projectModel
+     * @param string $userId
+     * @param LexEntryModel $entry
+     * @param Action $action
+     * @return string activity id
+     */
     public static function writeEntry($projectModel, $userId, $entry, $action)
     {
         $activity = new ActivityModel($projectModel);
@@ -214,12 +214,12 @@ class ActivityCommands
     }
 
     /**
-	 *
-	 * @param ProjectModel $projectModel
-	 * @param string $userId
-	 * @param string entry id
-	 * @return string activity id
-	 */
+     *
+     * @param ProjectModel $projectModel
+     * @param string $userId
+     * @param string entry id
+     * @return string activity id
+     */
     public static function deleteEntry($projectModel, $userId, $id)
     {
         $activity = new ActivityModel($projectModel);
@@ -233,10 +233,10 @@ class ActivityCommands
     }
 
     /**
-	 * @param string $projectId
-	 * @param string entry id
-	 * @return LexEntryModel
-	 */
+     * @param string $projectId
+     * @param string entry id
+     * @return LexEntryModel
+     */
     public static function getEntry($projectId, $id)
     {
         $project = new ProjectModel($projectId);

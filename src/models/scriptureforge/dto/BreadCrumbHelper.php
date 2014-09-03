@@ -5,13 +5,13 @@ namespace models\scriptureforge\dto;
 class BreadCrumbHelper
 {
     /**
-	 *
-	 * @param string $operation
-	 * @param ProjectModel $project
-	 * @param TextModel $text
-	 * @param QuestionModel $question
-	 * @return array
-	 */
+     *
+     * @param string $operation
+     * @param ProjectModel $project
+     * @param TextModel $text
+     * @param QuestionModel $question
+     * @return array
+     */
     public static function encode($operation, $project, $text, $question)
     {
         $result = array();

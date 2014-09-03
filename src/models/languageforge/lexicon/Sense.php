@@ -65,8 +65,8 @@ class Sense
     }
 
     protected function & createProperty($name) {
-		switch ($name) {
-			case 'partOfSpeech': return new LexiconField();
+        switch ($name) {
+            case 'partOfSpeech': return new LexiconField();
             case 'semanticDomain': return new LexiconMultiValueField();
             case 'examples': return new ArrayOf('\models\languageforge\lexicon\_createExample');
             case 'customFields': return new ArrayOf('\models\languageforge\lexicon\_createCustomField');
@@ -88,7 +88,7 @@ class Sense
             case 'senseImportResidue':
                 return new MultiText();
 
-			case 'usages': return new LexiconMultiValueField();
+            case 'usages': return new LexiconMultiValueField();
 
             // TODO reversalEntries needs to be a Taglist 07-2014 DDW
             case 'reversalEntries': return new LexiconMultiValueField();
@@ -101,57 +101,57 @@ class Sense
     }
 
     /**
-	 * The id of the sense as specified in the LIFT file
-	 * @var string
-	 */
+     * The id of the sense as specified in the LIFT file
+     * @var string
+     */
     public $liftId;
 
     /**
-	 * uniqid
-	 * @var string
-	 */
+     * uniqid
+     * @var string
+     */
     public $id;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $definition;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $gloss;
 
     /**
-	 * @var LexiconField
-	 */
+     * @var LexiconField
+     */
     public $partOfSpeech;
 
     /**
-	 * @var LexiconMultiValueField
-	 */
+     * @var LexiconMultiValueField
+     */
     public $semanticDomain;
 
     /**
-	 * @var ArrayOf<Example>
-	 */
+     * @var ArrayOf<Example>
+     */
     public $examples;
 
     /**
-	 * @var MapOf <>
-	 */
+     * @var MapOf <>
+     */
     public $customFields;
 
     /**
-	 * @var AuthorInfo
-	 */
+     * @var AuthorInfo
+     */
     public $authorInfo;
 
     /**
-	 *
-	 * @param string $id
-	 * @return Example
-	 */
+     *
+     * @param string $id
+     * @return Example
+     */
     public function getExample($id)
     {
         foreach ($this->examples as $example) {
@@ -162,10 +162,10 @@ class Sense
     }
 
     /**
-	 *
-	 * @param string $id
-	 * @param Example $model
-	 */
+     *
+     * @param string $id
+     * @param Example $model
+     */
     public function setExample($id, $model)
     {
         foreach ($this->examples as $key => $example) {
@@ -179,104 +179,104 @@ class Sense
     // less common fields used in FLEx
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $scientificName;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $anthropologyNote;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $senseBibliography;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $discourseNote;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $encyclopedicNote;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $generalNote;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $grammarNote;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $phonologyNote;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $senseRestrictions;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $semanticsNote;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $sociolinguisticsNote;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $source;
 
     /**
-	 * @var LexiconMultiValueField
-	 */
+     * @var LexiconMultiValueField
+     */
     public $usages;
 
     // TODO 07-2014 DDW make this Taglist
     /**
-	 * @var Taglist
-	 */
+     * @var Taglist
+     */
     public $reversalEntries;
 
     /**
-	 * @var LexiconField
-	 */
+     * @var LexiconField
+     */
     public $senseType;
 
     /**
-	 * @var LexiconMultiValueField
-	 */
+     * @var LexiconMultiValueField
+     */
     public $academicDomains;
 
     /**
-	 * @var LexiconMultiValueField
-	 */
+     * @var LexiconMultiValueField
+     */
     public $sensePublishIn;
 
     /**
-	 * @var LexiconMultiValueField
-	 */
+     * @var LexiconMultiValueField
+     */
     public $anthropologyCategories;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $senseImportResidue;
 
     /**
-	 * @var LexiconMultiValueField
-	 */
+     * @var LexiconMultiValueField
+     */
     public $status;
 
 }
