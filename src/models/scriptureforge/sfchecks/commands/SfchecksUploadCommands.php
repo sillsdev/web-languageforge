@@ -53,7 +53,7 @@ class SfchecksUploadCommands
             ".mp3"
         );
 
-        if (in_array($fileType, $allowedTypes) && in_array($fileExt, $allowedExtensions)) {
+        if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folder if it doesn't exist
             $path = 'assets/' . $projectId;
