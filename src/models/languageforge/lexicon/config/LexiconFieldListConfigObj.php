@@ -30,8 +30,8 @@ class LexiconFieldListConfigObj extends LexiconConfigObj
     public $fieldOrder;
 
     /**
-	 * @var MapOf<LexiconConfigObj>
-	 */
+     * @var MapOf<LexiconConfigObj>
+     */
     public $fields;
 
 }

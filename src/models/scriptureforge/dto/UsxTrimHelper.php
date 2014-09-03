@@ -79,8 +79,8 @@ class UsxTrimHelper
                 $this->onChapter($attrs);
                 break;
             default:
-// 				echo 'to:';
-// 				var_dump($tag, $attrs);
+//                 echo 'to:';
+//                 var_dump($tag, $attrs);
 
         }
         if (!$this->_stateDrop) {
@@ -98,8 +98,8 @@ class UsxTrimHelper
             case 'VERSE':
                 break;
             default:
-// 				echo 'tc:';
-// 				var_dump($tag);
+//                 echo 'tc:';
+//                 var_dump($tag);
 
         }
         $originalAttrs = array_pop($this->_tagStack);
@@ -111,8 +111,8 @@ class UsxTrimHelper
 
     private function onCData($parser, $cdata)
     {
-// 		echo 'cd:';
-// 		var_dump($cdata);
+//         echo 'cd:';
+//         var_dump($cdata);
         if (!$this->_stateDrop) {
             $this->_out .= $cdata;
         }

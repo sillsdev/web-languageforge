@@ -4,13 +4,13 @@ namespace models\mapper;
 class ObjectForEncoding
 {
     /**
-	 * @var array
-	 */
+     * @var array
+     */
     private $_privateProperties;
 
     /**
-	 * @var array
-	 */
+     * @var array
+     */
     private $_readOnlyProperties;
 
     protected function setReadOnlyProp($propertyName)

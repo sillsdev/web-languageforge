@@ -23,15 +23,15 @@ class LexEntryCommands
     }
 
     /*
-	public static function addEntry($projectId, $params)
-	{
-		CodeGuard::checkTypeAndThrow($params, 'array');
-		$project = new LexiconProjectModel($projectId);
-		$entry = new LexEntryModel($project);
-		JsonDecoder::decode($entry, $params);
-		return $entry->write();
-	}
-	*/
+    public static function addEntry($projectId, $params)
+    {
+        CodeGuard::checkTypeAndThrow($params, 'array');
+        $project = new LexiconProjectModel($projectId);
+        $entry = new LexEntryModel($project);
+        JsonDecoder::decode($entry, $params);
+        return $entry->write();
+    }
+    */
 
     public static function updateEntry($projectId, $params, $userId)
     {
@@ -82,11 +82,11 @@ class LexEntryCommands
     }
 
     /**
-	 *
-	 * @param string $projectId
-	 * @param string $missingInfo - if empty, returns all entries.
-	 * 								if matches one of LexiconConfigObj constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
-	 */
+     *
+     * @param string $projectId
+     * @param string $missingInfo - if empty, returns all entries.
+     *                                 if matches one of LexiconConfigObj constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
+     */
     public static function listEntries($projectId, $missingInfo = '')
     {
         $project = new LexiconProjectModel($projectId);

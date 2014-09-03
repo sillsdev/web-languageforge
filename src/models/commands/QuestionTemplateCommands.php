@@ -13,9 +13,9 @@ use models\scriptureforge\sfchecks\QuestionTemplateListModel;
 class QuestionTemplateCommands
 {
     /**
-	 * @param array $questionTemplateIds
-	 * @return int Total number of questionTemplate questions removed.
-	 */
+     * @param array $questionTemplateIds
+     * @return int Total number of questionTemplate questions removed.
+     */
     public static function deleteQuestionTemplates($projectId, $questionTemplateIds)
     {
         CodeGuard::checkTypeAndThrow($questionTemplateIds, 'array');

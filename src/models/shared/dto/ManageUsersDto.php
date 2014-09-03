@@ -7,10 +7,10 @@ use models\ProjectModel;
 class ManageUsersDto
 {
     /**
-	 * @param string $projectId
-	 * @param string $userId
-	 * @returns array - the DTO array
-	 */
+     * @param string $projectId
+     * @param string $userId
+     * @returns array - the DTO array
+     */
     public static function encode($projectId)
     {
         $projectModel = new ProjectModel($projectId);

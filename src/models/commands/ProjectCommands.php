@@ -21,14 +21,14 @@ use models\sms\SmsSettings;
 class ProjectCommands
 {
     /**
-	 * Create a project, checking permissions as necessary
-	 * @param string $projectName
-	 * @param string $projectCode
-	 * @param string $appName
-	 * @param string $userId
-	 * @param Website $website
-	 * @return string - projectId
-	 */
+     * Create a project, checking permissions as necessary
+     * @param string $projectName
+     * @param string $projectCode
+     * @param string $appName
+     * @param string $userId
+     * @param Website $website
+     * @return string - projectId
+     */
     public static function createProject($projectName, $projectCode, $appName, $userId, $website)
     {
         // Check for unique project code
@@ -55,9 +55,9 @@ class ProjectCommands
     }
 
     /**
-	 *
-	 * @param string $id
-	 */
+     *
+     * @param string $id
+     */
     public static function readProject($id)
     {
         $project = new \models\ProjectModel($id);
@@ -66,9 +66,9 @@ class ProjectCommands
     }
 
     /**
-	 * @param array $projectIds
-	 * @return int Total number of projects removed.
-	 */
+     * @param array $projectIds
+     * @return int Total number of projects removed.
+     */
     public static function deleteProjects($projectIds)
     {
         CodeGuard::checkTypeAndThrow($projectIds, 'array');
@@ -87,9 +87,9 @@ class ProjectCommands
     }
 
     /**
-	 * @param array $projectIds
-	 * @return int Total number of projects archived.
-	 */
+     * @param array $projectIds
+     * @return int Total number of projects archived.
+     */
     public static function archiveProjects($projectIds)
     {
         CodeGuard::checkTypeAndThrow($projectIds, 'array');
@@ -106,9 +106,9 @@ class ProjectCommands
     }
 
     /**
-	 * @param array $projectIds
-	 * @return int Total number of projects published.
-	 */
+     * @param array $projectIds
+     * @return int Total number of projects published.
+     */
     public static function publishProjects($projectIds)
     {
         CodeGuard::checkTypeAndThrow($projectIds, 'array');
@@ -125,9 +125,9 @@ class ProjectCommands
     }
 
     /**
-	 *
-	 * @return \models\ProjectListModel
-	 */
+     *
+     * @return \models\ProjectListModel
+     */
     public static function listProjects()
     {
         $list = new \models\ProjectListModel();
@@ -137,10 +137,10 @@ class ProjectCommands
     }
 
     /**
-	 * List users in the project
-	 * @param string $projectId
-	 * @return array - the DTO array
-	 */
+     * List users in the project
+     * @param string $projectId
+     * @return array - the DTO array
+     */
     public static function usersDto($projectId)
     {
         CodeGuard::checkTypeAndThrow($projectId, 'string');
@@ -152,12 +152,12 @@ class ProjectCommands
     }
 
     /**
-	 * Update the user project role in the project
-	 * @param string $projectId
-	 * @param string $userId
-	 * @param string $projectRole
-	 * @return string - userId
-	 */
+     * Update the user project role in the project
+     * @param string $projectId
+     * @param string $userId
+     * @param string $projectRole
+     * @return string - userId
+     */
     public static function updateUserRole($projectId, $userId, $projectRole = ProjectRoles::CONTRIBUTOR)
     {
         CodeGuard::checkNotFalseAndThrow($projectId, '$projectId');
@@ -187,10 +187,10 @@ class ProjectCommands
     }
 
     /**
-	 * Removes users from the project (two-way unlink)
-	 * @param Id $projectId
-	 * @param array $userIds array<string>
-	 */
+     * Removes users from the project (two-way unlink)
+     * @param Id $projectId
+     * @param array $userIds array<string>
+     */
     public static function removeUsers($projectId, $userIds)
     {
         $project = new ProjectModel($projectId);
@@ -238,11 +238,11 @@ class ProjectCommands
     }
 
     /**
-	 *
-	 * @param Website $website
-	 * @param string $code
-	 * @return bool
-	 */
+     *
+     * @param Website $website
+     * @param string $code
+     * @return bool
+     */
     public static function projectCodeExists($code)
     {
         $project = new ProjectModel();

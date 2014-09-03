@@ -13,12 +13,12 @@ require_once APPPATH . 'libraries/lfdictionary/Config.php';
 class EntryDto
 {
     /**
-	 *
-	 * @param string $projectId
-	 * @param string $textId
-	 * @param string $userId
-	 * @returns array - the DTO array
-	 */
+     *
+     * @param string $projectId
+     * @param string $textId
+     * @param string $userId
+     * @returns array - the DTO array
+     */
     public static function encode($projectId, $entryGuid)
     {
         $projectModel = new ProjectModel ( $projectId );

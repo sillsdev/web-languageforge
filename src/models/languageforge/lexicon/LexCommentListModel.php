@@ -17,10 +17,10 @@ class LexCommentListModel extends \models\mapper\MapperListModel
     }
 
     /**
-	 *
-	 * @param ProjectModel $projectModel
+     *
+     * @param ProjectModel $projectModel
      * @param int $newerThanTimestamp
-	 */
+     */
     public function __construct($projectModel, $newerThanTimestamp = null)
     {
         $this->entries = new ArrayOf(function ($data) use ($projectModel) { return new LexCommentModel($projectModel); });
