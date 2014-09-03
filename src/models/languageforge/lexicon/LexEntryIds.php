@@ -6,13 +6,13 @@ use models\mapper\ArrayOf;
 class LexEntryId
 {
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $id;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $mercurialSha;
 
 }

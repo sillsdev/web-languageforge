@@ -25,10 +25,10 @@ class UserGenericVoteModel extends \models\UserRelationModel
     public $namespace;
 
     /**
-	 * @param string $userId
-	 * @param string $projectId
+     * @param string $userId
+     * @param string $projectId
      * @param string $namespace - an arbitrary string representing a namespace for this vote model within the project
-	 */
+     */
     public function __construct($userId, $projectId, $namespace)
     {
         $this->votes = new ArrayOf(function ($data) { return new Vote(); } );
@@ -49,9 +49,9 @@ class UserGenericVoteModel extends \models\UserRelationModel
     }
 
     /**
-	 * Adds $answerId to the votes array.
-	 * @param string $id
-	 */
+     * Adds $answerId to the votes array.
+     * @param string $id
+     */
     public function addVote($id)
     {
         $vote = new Vote();
@@ -63,9 +63,9 @@ class UserGenericVoteModel extends \models\UserRelationModel
     }
 
     /**
-	 * Removes $answerId from the votes array.
-	 * @param string $id
-	 */
+     * Removes $answerId from the votes array.
+     * @param string $id
+     */
     public function removeVote($id)
     {
         foreach ($this->votes as $key => $value) {
@@ -77,10 +77,10 @@ class UserGenericVoteModel extends \models\UserRelationModel
     }
 
     /**
-	 * Returns true if the $answerId exists in the votes array.
-	 * @param string $id
-	 * @return bool
-	 */
+     * Returns true if the $answerId exists in the votes array.
+     * @param string $id
+     * @return bool
+     */
     public function hasVote($id)
     {
         $vote = new Vote();
@@ -93,8 +93,8 @@ class UserGenericVoteModel extends \models\UserRelationModel
     }
 
     /**
-	 * @var ArrayOf IdReference
-	 */
+     * @var ArrayOf IdReference
+     */
     public $votes;
 
 }

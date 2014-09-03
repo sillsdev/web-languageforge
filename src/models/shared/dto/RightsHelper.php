@@ -16,40 +16,40 @@ use libraries\shared\Website;
 class RightsHelper
 {
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     private $_userId;
 
     /**
-	 *
-	 * @var ProjectModel
-	 */
+     *
+     * @var ProjectModel
+     */
     private $_projectModel;
 
     /**
-	 *
-	 * @var Website
-	 */
+     *
+     * @var Website
+     */
     private $_website;
 
     /**
-	 *
-	 * @param UserModel $userModel
-	 * @param ProjectModel $projectModel
-	 * @return multitype:
-	 */
+     *
+     * @param UserModel $userModel
+     * @param ProjectModel $projectModel
+     * @return multitype:
+     */
     public static function encode($userModel, $projectModel)
     {
         return $projectModel->getRightsArray($userModel->id->asString());
     }
 
     /**
-	 *
-	 * @param string $userId
-	 * @param int $right
-	 * @return boolean
-	 */
+     *
+     * @param string $userId
+     * @param int $right
+     * @return boolean
+     */
     // Note: there is a bug/annoyance in PHP5 whereby you cannot have an object method and a static method named the same
     // I named this static function slightly different from userHasSiteRight to avoid this naming conflict
     // @see http://stackoverflow.com/questions/11331616/php-is-it-possible-to-declare-a-method-static-and-nonstatic
@@ -62,11 +62,11 @@ class RightsHelper
     }
 
     /**
-	 *
-	 * @param string $userId
-	 * @param ProjectModel $projectModel
-	 * @param Website $website
-	 */
+     *
+     * @param string $userId
+     * @param ProjectModel $projectModel
+     * @param Website $website
+     */
     public function __construct($userId, $projectModel, $website)
     {
         $this->_userId = $userId;
@@ -75,10 +75,10 @@ class RightsHelper
     }
 
     /**
-	 *
-	 * @param int $right
-	 * @return bool
-	 */
+     *
+     * @param int $right
+     * @return bool
+     */
     public function userHasSystemRight($right)
     {
         $userModel = new UserModel($this->_userId);
@@ -87,10 +87,10 @@ class RightsHelper
     }
 
     /**
-	 *
-	 * @param int $right
-	 * @return bool
-	 */
+     *
+     * @param int $right
+     * @return bool
+     */
     public function userHasSiteRight($right)
     {
         $userModel = new UserModel($this->_userId);
@@ -100,21 +100,21 @@ class RightsHelper
     }
 
     /**
-	 *
-	 * @param int $right
-	 * @return bool
-	 */
+     *
+     * @param int $right
+     * @return bool
+     */
     public function userHasProjectRight($right)
     {
         return $this->_projectModel->hasRight($this->_userId, $right);
     }
 
     /**
-	 *
-	 * @param string $methodName
-	 * @param array $params - parameters passed to the method
-	 * @return boolean
-	 */
+     *
+     * @param string $methodName
+     * @param array $params - parameters passed to the method
+     * @return boolean
+     */
     public function userCanAccessMethod($methodName, $params)
     {
         switch ($methodName) {

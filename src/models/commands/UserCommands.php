@@ -28,9 +28,9 @@ use models\UserProfileModel;
 class UserCommands
 {
     /**
-	 * @param string $id
-	 * @return array
-	 */
+     * @param string $id
+     * @return array
+     */
     public static function readUser($id)
     {
         $user = new UserModel($id);
@@ -39,9 +39,9 @@ class UserCommands
     }
 
     /**
-	 * User Create/Update
-	 * @param array $params - user model fields to update
-	 */
+     * User Create/Update
+     * @param array $params - user model fields to update
+     */
     public static function updateUser($params)
     {
         $user = new UserModel();
@@ -56,11 +56,11 @@ class UserCommands
     }
 
     /**
-	 * User Profile Update
-	 * @param array $params - user model fields to update
-	 * @param string $userId
-	 * @return string $userId
-	 */
+     * User Profile Update
+     * @param array $params - user model fields to update
+     * @param string $userId
+     * @return string $userId
+     */
     public static function updateUserProfile($params, $userId)
     {
         $params['id'] = $userId;
@@ -84,9 +84,9 @@ class UserCommands
     }
 
     /**
-	 * @param array $userIds
-	 * @return int Total number of users removed.
-	 */
+     * @param array $userIds
+     * @return int Total number of users removed.
+     */
     public static function deleteUsers($userIds)
     {
         CodeGuard::checkTypeAndThrow($userIds, 'array');
@@ -102,9 +102,9 @@ class UserCommands
     }
 
     /**
-	 *
-	 * @return \models\UserListModel
-	 */
+     *
+     * @return \models\UserListModel
+     */
     public static function listUsers()
     {
         $list = new \models\UserListModel();
@@ -126,12 +126,12 @@ class UserCommands
     }
 
     /**
-	 *
-	 * @param string $term
-	 * @param string $projectIdToExclude
-	 * @param Website website
-	 * @return \models\UserTypeaheadModel
-	 */
+     *
+     * @param string $term
+     * @param string $projectIdToExclude
+     * @param Website website
+     * @return \models\UserTypeaheadModel
+     */
     public static function userTypeaheadList($term, $projectIdToExclude = '', $website)
     {
         $list = new \models\UserTypeaheadModel($term, $projectIdToExclude, $website);
@@ -141,12 +141,12 @@ class UserCommands
     }
 
     /**
-	 *
-	 * @param string $userId
-	 * @param string $newPassword
-	 * @param string $currentUserId
-	 * @throws \Exception
-	 */
+     *
+     * @param string $userId
+     * @param string $newPassword
+     * @param string $currentUserId
+     * @throws \Exception
+     */
     public static function changePassword($userId, $newPassword, $currentUserId)
     {
         if ($userId != $currentUserId) {
@@ -163,12 +163,12 @@ class UserCommands
     }
 
     /**
-	 * Utility to check if user is updating to a unique set of username and email.
-	 * @param UserModel $user
-	 * @param string $updatedUsername
-	 * @param string $updatedEmail
-	 * @return IdentityCheck
-	 */
+     * Utility to check if user is updating to a unique set of username and email.
+     * @param UserModel $user
+     * @param string $updatedUsername
+     * @param string $updatedEmail
+     * @return IdentityCheck
+     */
     public static function checkUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '', $website = '')
     {
         $identityCheck = self::checkIdentity($updatedUsername, $updatedEmail, $website);
@@ -176,11 +176,11 @@ class UserCommands
         // Check for new username or unique non-blank updated username
         /*if ((!$identityCheck->usernameExists) ||
 
-			(($identityCheck->usernameExists) &&
-			($updatedUsername) &&
-			($user->username != $updatedUsername))) {
-			$identityCheck->usernameMatchesAccount = false;
-		}*/
+            (($identityCheck->usernameExists) &&
+            ($updatedUsername) &&
+            ($user->username != $updatedUsername))) {
+            $identityCheck->usernameMatchesAccount = false;
+        }*/
         if ($user->username == $updatedUsername) {
             $identityCheck->usernameMatchesAccount = true;
         } else {
@@ -199,12 +199,12 @@ class UserCommands
     }
 
     /**
-	 * Utility to assert user is updating to a unique set of username and email
-	 * @param UserModel $user
-	 * @param string $updatedUsername
-	 * @param string $updatedEmail
-	 * @throws \Exception
-	 */
+     * Utility to assert user is updating to a unique set of username and email
+     * @param UserModel $user
+     * @param string $updatedUsername
+     * @param string $updatedEmail
+     * @throws \Exception
+     */
     private static function assertUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '', $website = '')
     {
         $identityCheck = self::checkUniqueIdentity($user, $updatedUsername, $updatedEmail, $website);
@@ -223,12 +223,12 @@ class UserCommands
     }
 
     /**
-	 * Utility to check if a username already exists and if an email address matches the account
-	 * @param string $username
-	 * @param string $email
-	 * @param Website $website
-	 * @return IdentityCheck
-	 */
+     * Utility to check if a username already exists and if an email address matches the account
+     * @param string $username
+     * @param string $email
+     * @param Website $website
+     * @return IdentityCheck
+     */
     public static function checkIdentity($username, $email = '', $website = null)
     {
         $identityCheck = new IdentityCheck();
@@ -255,14 +255,14 @@ class UserCommands
     }
 
     /**
-	 * Activate a user on the specified site and validate email if it was empty, otherwise login
-	 * @param string $username
-	 * @param string $password
-	 * @param Website $website
-	 * @param CI_Controller $controller
-	 * @param IDelivery $delivery
-	 * @return string|boolean $userId|false otherwise
-	 */
+     * Activate a user on the specified site and validate email if it was empty, otherwise login
+     * @param string $username
+     * @param string $password
+     * @param Website $website
+     * @param CI_Controller $controller
+     * @param IDelivery $delivery
+     * @return string|boolean $userId|false otherwise
+     */
     public static function activate($username, $password, $email, $website, $controller, IDelivery $delivery = null)
     {
         CodeGuard::checkEmptyAndThrow($username, 'username');
@@ -313,11 +313,11 @@ class UserCommands
     }
 
     /**
-	 * Create a user with only username and default site role.
-	 * @param string $params
-	 * @param Website $website
-	 * @return boolean|string
-	 */
+     * Create a user with only username and default site role.
+     * @param string $params
+     * @param Website $website
+     * @return boolean|string
+     */
     public static function createUser($params, $website)
     {
         $user = new \models\UserModelWithPassword();
@@ -330,13 +330,13 @@ class UserCommands
     }
 
     /**
-	 * Create a user with only username, add user to project if in context, creating user gets email of new user credentials
-	 * @param string $userName
-	 * @param string $projectId
-	 * @param string $currentUserId
-	 * @param Website $website
-	 * @return CreateSimpleDto
-	 */
+     * Create a user with only username, add user to project if in context, creating user gets email of new user credentials
+     * @param string $userName
+     * @param string $projectId
+     * @param string $currentUserId
+     * @param Website $website
+     * @return CreateSimpleDto
+     */
     public static function createSimple($userName, $projectId, $currentUserId, $website)
     {
         $user = new UserModel();
@@ -368,14 +368,14 @@ class UserCommands
     }
 
     /**
-	 * Register a new user
-	 * @param array $params
-	 * @param string $captcha_info
-	 * @param Website $website
-	 * @param IDelivery $delivery
-	 * @throws \Exception
-	 * @return string $userId
-	 */
+     * Register a new user
+     * @param array $params
+     * @param string $captcha_info
+     * @param Website $website
+     * @param IDelivery $delivery
+     * @throws \Exception
+     * @return string $userId
+     */
     public static function register($params, $captcha_info, $website, IDelivery $delivery = null)
     {
         if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
@@ -431,15 +431,15 @@ class UserCommands
     }
 
     /**
-	* Sends an email to invite emailee to join the project
-	* @param string $projectId
-	* @param string $inviterUserId
-	* @param Website $website
-	* @param string $toEmail
-	* @param IDelivery $delivery
-	* @throws \Exception
-	* @return string $userId
-	*/
+    * Sends an email to invite emailee to join the project
+    * @param string $projectId
+    * @param string $inviterUserId
+    * @param Website $website
+    * @param string $toEmail
+    * @param IDelivery $delivery
+    * @throws \Exception
+    * @return string $userId
+    */
     public static function sendInvite($projectId, $inviterUserId, $website, $toEmail, IDelivery $delivery = null)
     {
         $newUser = new UserModel();
@@ -499,11 +499,11 @@ class UserCommands
     }
 
     /**
-	*
-	* @param string $validationKey
-	* @param array $params
-	* @param Website $website
-	*/
+    *
+    * @param string $validationKey
+    * @param array $params
+    * @param Website $website
+    */
     public static function updateFromRegistration($validationKey, $params, $website)
     {
         $user = new \models\UserModelWithPassword();
@@ -539,38 +539,38 @@ class IdentityCheck
     }
 
     /**
-	 * @var bool true if the username exists, false otherwise
-	 */
+     * @var bool true if the username exists, false otherwise
+     */
     public $usernameExists;
 
     /**
-	 * @var bool true if username exists on the supplied website
-	 */
+     * @var bool true if username exists on the supplied website
+     */
     public $usernameExistsOnThisSite;
 
     /**
-	 * @var bool true if the username matches the account username
-	 */
+     * @var bool true if the username matches the account username
+     */
     public $usernameMatchesAccount;
 
     /**
-	 * @var bool true if the supplied website allows signup from other sites
-	 */
+     * @var bool true if the supplied website allows signup from other sites
+     */
     public $allowSignupFromOtherSites;
 
     /**
-	 * @var bool true if account email exists
-	 */
+     * @var bool true if account email exists
+     */
     public $emailExists;
 
     /**
-	 * @var bool true if account email is empty
-	 */
+     * @var bool true if account email is empty
+     */
     public $emailIsEmpty;
 
     /**
-	 * @var bool true if email matches the account email
-	 */
+     * @var bool true if email matches the account email
+     */
     public $emailMatchesAccount;
 
 }

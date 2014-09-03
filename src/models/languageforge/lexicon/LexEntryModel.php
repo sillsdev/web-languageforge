@@ -40,9 +40,9 @@ class LexEntryModel extends \models\mapper\MapperModel
     }
 
     /**
-	 * @param ProjectModel $projectModel
-	 * @param string $id
-	 */
+     * @param ProjectModel $projectModel
+     * @param string $id
+     */
     public function __construct($projectModel, $id = '')
     {
         $this->setPrivateProp('guid');
@@ -117,8 +117,8 @@ class LexEntryModel extends \models\mapper\MapperModel
     }
 
     /**
-	 * @var IdReference
-	 */
+     * @var IdReference
+     */
     public $id;
 
     /**
@@ -127,46 +127,46 @@ class LexEntryModel extends \models\mapper\MapperModel
     public $isDeleted;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $guid;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $mercurialSha;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     // TODO Renamed $_entry to $lexeme.  References to $_entry may still exist
     public $lexeme;
 
     /**
-	 * @var ArrayOf ArrayOf<Sense>
-	 */
+     * @var ArrayOf ArrayOf<Sense>
+     */
     public $senses;
 
     /**
-	 * @var MapOf <>
-	 */
+     * @var MapOf <>
+     */
     public $customFields;
 
     /**
-	 *
-	 * @var AuthorInfo
-	 */
+     *
+     * @var AuthorInfo
+     */
      // TODO Renamed $_metadata to $authorInfo, remove this comment when stitched in IJH 2013-11
     public $authorInfo;
 
     /**
-	 * If the $value of $propertyName exists in senses return the index
-	 * @param string $senseId
-	 * @param array $senses
-	 * @return array <$index or -1 if not found>
-	 */
+     * If the $value of $propertyName exists in senses return the index
+     * @param string $senseId
+     * @param array $senses
+     * @return array <$index or -1 if not found>
+     */
     public function searchSensesFor($propertyName, $value)
     {
         foreach ($this->senses as $index => $sense) {
@@ -179,10 +179,10 @@ class LexEntryModel extends \models\mapper\MapperModel
     }
 
     /**
-	 *
-	 * @param string $id
-	 * @return Sense
-	 */
+     *
+     * @param string $id
+     * @return Sense
+     */
     public function getSense($id)
     {
         foreach ($this->senses as $sense) {
@@ -193,10 +193,10 @@ class LexEntryModel extends \models\mapper\MapperModel
     }
 
     /**
-	 *
-	 * @param string $id
-	 * @param Sense $model
-	 */
+     *
+     * @param string $id
+     * @param Sense $model
+     */
     public function setSense($id, $model)
     {
         foreach ($this->senses as $key => $sense) {
@@ -208,10 +208,10 @@ class LexEntryModel extends \models\mapper\MapperModel
     }
 
     /**
-	 * Remove this LexEntry from the collection
-	 * @param ProjectModel $projectModel
-	 * @param string $id
-	 */
+     * Remove this LexEntry from the collection
+     * @param ProjectModel $projectModel
+     * @param string $id
+     */
     public static function remove($projectModel, $id)
     {
         $databaseName = $projectModel->databaseName();
@@ -221,83 +221,83 @@ class LexEntryModel extends \models\mapper\MapperModel
     // Less common fields used in FLEx
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $citationForm;
 
     /**
-	 * @var LexiconMultiValueField
-	 */
+     * @var LexiconMultiValueField
+     */
     public $environments;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $pronunciation;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $cvPattern;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $tone;
 
     /**
-	 * @var LexiconField
-	 */
+     * @var LexiconField
+     */
     public $location;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $etymology;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $etymologyGloss;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $etymologyComment;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $etymologySource;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $note;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $literalMeaning;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $entryBibliography;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $entryRestrictions;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $summaryDefinition;
 
     /**
-	 * @var MultiText
-	 */
+     * @var MultiText
+     */
     public $entryImportResidue;
 
 }

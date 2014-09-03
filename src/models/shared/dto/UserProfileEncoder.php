@@ -10,9 +10,9 @@ use libraries\shared\Website;
 class UserProfileEncoder extends JsonEncoder
 {
     /**
-	 *
-	 * @var Website
-	 */
+     *
+     * @var Website
+     */
     private $_website;
 
     public function __construct($website)
@@ -21,10 +21,10 @@ class UserProfileEncoder extends JsonEncoder
     }
 
     /**
-	 * @param string $key
-	 * @param ReferenceList $model
-	 * @return array
-	 */
+     * @param string $key
+     * @param ReferenceList $model
+     * @return array
+     */
     public function encodeReferenceList($key, $model)
     {
         if ($key != 'projects') {

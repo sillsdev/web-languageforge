@@ -4,8 +4,8 @@ namespace models\shared\rights;
 class ProjectRoleModel
 {
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $role;
 
 }

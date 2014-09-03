@@ -28,47 +28,47 @@ class DepotProjectModel extends \models\mapper\MapperModel
     }
 
     /**
-	 * @var IdReference
-	 */
+     * @var IdReference
+     */
     public $id;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $projectlanguagecode;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $projectname;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $projectcode;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $projectusername;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $projectpassword;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $captcha_challenge;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $captcha_response;
 
 }

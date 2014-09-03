@@ -9,15 +9,15 @@ use models\languageforge\lexicon\config\LexiconConfigObj;
 class LiftImport
 {
     /**
-	 * @param string $xml
-	 * @param LexiconProjectModel $projectModel
-	 * @param LiftMergeRule $mergeRule
-	 * @param boolean $skipSameModTime
-	 * @throws \Exception
-	 */
+     * @param string $xml
+     * @param LexiconProjectModel $projectModel
+     * @param LiftMergeRule $mergeRule
+     * @param boolean $skipSameModTime
+     * @throws \Exception
+     */
     public static function merge($xml, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
     {
-// 		self::validate($xml);	// TODO Fix. The XML Reader validator doesn't work with <optional> in the RelaxNG schema. IJH 2014-03
+//         self::validate($xml);    // TODO Fix. The XML Reader validator doesn't work with <optional> in the RelaxNG schema. IJH 2014-03
 
         $entryList = new LexEntryListModel($projectModel);
         $entryList->read();
@@ -106,11 +106,11 @@ class LiftImport
     }
 
     /**
-	 * validate the lift data
-	 * @param string $xml
-	 * @throws \Exception
-	 * @return boolean
-	 */
+     * validate the lift data
+     * @param string $xml
+     * @throws \Exception
+     * @return boolean
+     */
     public static function validate($xml)
     {
         $reader = new \XMLReader();
@@ -139,10 +139,10 @@ class LiftImport
     }
 
     /**
-	 * @param string $importDateModified
-	 * @param DateTime $entryDateModified
-	 * @return boolean
-	 */
+     * @param string $importDateModified
+     * @param DateTime $entryDateModified
+     * @return boolean
+     */
     private static function differentModTime($importDateModified, $entryDateModified)
     {
         $dateModified = new \DateTime($importDateModified);

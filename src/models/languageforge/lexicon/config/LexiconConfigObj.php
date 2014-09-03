@@ -79,13 +79,13 @@ class LexiconConfigObj extends ObjectForEncoding
     const REPLIES_LIST = 'replies';
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $type;
 
     /**
-	 * @var boolean
-	 */
+     * @var boolean
+     */
     public $hideIfEmpty;
 
 }

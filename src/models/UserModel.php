@@ -15,8 +15,8 @@ class UserModel extends \models\UserModelBase
 {
 
     /**
-	 * @param string $id
-	 */
+     * @param string $id
+     */
     public function __construct($id = '')
     {
         $this->projects = new ReferenceList();
@@ -25,9 +25,9 @@ class UserModel extends \models\UserModelBase
     }
 
     /**
-	 *	Removes a user from the collection
-	 *  Project references to this user are also removed
-	 */
+     *    Removes a user from the collection
+     *  Project references to this user are also removed
+     */
     public function remove()
     {
         foreach ($this->projects->refs as $id) {
@@ -50,10 +50,10 @@ class UserModel extends \models\UserModelBase
     }
 
     /**
-	 *
-	 * @param string $site
-	 * @return string - projectId
-	 */
+     *
+     * @param string $site
+     * @return string - projectId
+     */
     public function getDefaultProjectId($site)
     {
         // note: this method could be refactored to use an actual "default project" value on the user model
@@ -66,10 +66,10 @@ class UserModel extends \models\UserModelBase
     }
 
     /**
-	 *	Adds the user as a member of $projectId
-	 *  You must call write() on both the user model and the project model!!!
-	 * @param string $projectId
-	 */
+     *    Adds the user as a member of $projectId
+     *  You must call write() on both the user model and the project model!!!
+     * @param string $projectId
+     */
     public function addProject($projectId)
     {
         //$projectModel = new ProjectModel($projectId);
@@ -78,10 +78,10 @@ class UserModel extends \models\UserModelBase
     }
 
     /**
-	 *	Removes the user as a member of $projectId
-	 *  You must call write() on both the user model and the project model!!!
-	 * @param string $projectId
-	 */
+     *    Removes the user as a member of $projectId
+     *  You must call write() on both the user model and the project model!!!
+     * @param string $projectId
+     */
     public function removeProject($projectId)
     {
         //$projectModel = new ProjectModel($projectId);
@@ -98,8 +98,8 @@ class UserModel extends \models\UserModelBase
     }
 
     /**
-	 * @var ReferenceList
-	 */
+     * @var ReferenceList
+     */
     public $projects;
 
 }
@@ -121,11 +121,11 @@ class UserListModel extends \models\mapper\MapperListModel
 class UserTypeaheadModel extends \models\mapper\MapperListModel
 {
     /**
-	 * @param MongoMapper $term
-	 * @param string or array $projectIdOrIds
-	 * @param Website $website
-	 * @param bool $include
-	 */
+     * @param MongoMapper $term
+     * @param string or array $projectIdOrIds
+     * @param Website $website
+     * @param bool $include
+     */
     public function __construct($term, $projectIdOrIds = '', $website, $include = false)
     {
         $query = array('$or' => array(

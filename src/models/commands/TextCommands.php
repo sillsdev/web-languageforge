@@ -44,10 +44,10 @@ class TextCommands
     }
 
     /**
-	 * @param string $projectId
-	 * @param JSON $object
-	 * @return ID of text updated/added
-	 */
+     * @param string $projectId
+     * @param JSON $object
+     * @return ID of text updated/added
+     */
     public static function updateText($projectId, $object)
     {
         $projectModel = new \models\ProjectModel($projectId);
@@ -77,10 +77,10 @@ class TextCommands
     }
 
     /**
-	 *
-	 * @param string $projectId
-	 * @param string $textId
-	 */
+     *
+     * @param string $projectId
+     * @param string $textId
+     */
     public static function readText($projectId, $textId)
     {
         $projectModel = new \models\ProjectModel($projectId);
@@ -90,10 +90,10 @@ class TextCommands
     }
 
     /**
-	 * @param string $projectId
-	 * @param array $textIds
-	 * @return int Total number of texts archived.
-	 */
+     * @param string $projectId
+     * @param array $textIds
+     * @return int Total number of texts archived.
+     */
     public static function archiveTexts($projectId, $textIds)
     {
         $project = new ProjectModel($projectId);
@@ -109,10 +109,10 @@ class TextCommands
     }
 
     /**
-	 * @param string $projectId
-	 * @param array $textIds
-	 * @return int Total number of texts published.
-	 */
+     * @param string $projectId
+     * @param array $textIds
+     * @return int Total number of texts published.
+     */
     public static function publishTexts($projectId, $textIds)
     {
         $project = new ProjectModel($projectId);
@@ -128,10 +128,10 @@ class TextCommands
     }
 
     /**
-	 * @param string $projectId
-	 * @param array $textIds
-	 * @return int Total number of texts removed.
-	 */
+     * @param string $projectId
+     * @param array $textIds
+     * @return int Total number of texts removed.
+     */
     public static function deleteTexts($projectId, $textIds)
     {
         $projectModel = new ProjectModel($projectId);

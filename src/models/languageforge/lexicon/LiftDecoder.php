@@ -13,17 +13,17 @@ class LiftDecoder
     }
 
     /**
-	 *
-	 * @var LexiconProjectModel
-	 */
+     *
+     * @var LexiconProjectModel
+     */
     private $_projectModel;
 
     /**
-	 * @param SimpleXMLElement $sxeNode
-	 * @param LexEntryModel $entry
-	 * @param LiftMergeRule $mergeRule
-	 * @throws \Exception
-	 */
+     * @param SimpleXMLElement $sxeNode
+     * @param LexEntryModel $entry
+     * @param LiftMergeRule $mergeRule
+     * @throws \Exception
+     */
     public function decode($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES)
     {
         $lexicalForms = $sxeNode->{'lexical-unit'};
@@ -66,11 +66,11 @@ class LiftDecoder
     }
 
     /**
-	 * Reads a Sense from the XmlNode $sxeNode
-	 * @param SimpleXMLElement $sxeNode
-	 * @param Sense $sense
-	 * @return Sense
-	 */
+     * Reads a Sense from the XmlNode $sxeNode
+     * @param SimpleXMLElement $sxeNode
+     * @param Sense $sense
+     * @return Sense
+     */
     public function readSense($sxeNode, $sense)
     {
         // Definition
@@ -120,10 +120,10 @@ class LiftDecoder
     }
 
     /**
-	 * Reads an Example from the XmlNode $sxeNode
-	 * @param SimpleXMLElement $sxeNode
-	 * @return Example
-	 */
+     * Reads an Example from the XmlNode $sxeNode
+     * @param SimpleXMLElement $sxeNode
+     * @return Example
+     */
     public function readExample($sxeNode)
     {
         $example = new Example($sxeNode['id']);
@@ -141,11 +141,11 @@ class LiftDecoder
     }
 
     /**
-	 * Reads a MultiText from the XmlNode $sxeNode
-	 * @param SimpleXMLElement $sxeNode
-	 * @param ArrayOf $inputSystems
-	 * @return MultiText
-	 */
+     * Reads a MultiText from the XmlNode $sxeNode
+     * @param SimpleXMLElement $sxeNode
+     * @param ArrayOf $inputSystems
+     * @return MultiText
+     */
     public function readMultiText($sxeNode, $inputSystems = null)
     {
         $multiText = new MultiText();

@@ -9,12 +9,12 @@ class EmailSettings
     }
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $fromAddress;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $fromName;
 }
