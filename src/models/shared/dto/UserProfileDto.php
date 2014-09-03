@@ -7,11 +7,11 @@ use models\UserProfileModel;
 class UserProfileDto
 {
     /**
-	 *
-	 * @param string $userId
-	 * @param Website $website
-	 * @returns array - the DTO array
-	 */
+     *
+     * @param string $userId
+     * @param Website $website
+     * @returns array - the DTO array
+     */
     public static function encode($userId, $website)
     {
         $dto = array();

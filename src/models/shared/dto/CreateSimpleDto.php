@@ -7,9 +7,9 @@ use models\mapper\JsonEncoder;
 class CreateSimpleDto
 {
     /**
-	 * @param string $id
-	 * @param string $password
-	 */
+     * @param string $id
+     * @param string $password
+     */
     public function __construct($id, $password)
     {
         $this->id = new Id($id);
@@ -22,13 +22,13 @@ class CreateSimpleDto
     }
 
     /**
-	 * @var Id
-	 */
+     * @var Id
+     */
     public $id;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $password;
 
 }

@@ -6,7 +6,7 @@ use models\mapper\MapOf;
 
 function _createLexiconField($data)
 {
-	return new LexiconField();
+    return new LexiconField();
 }
 
 class MultiText extends MapOf
@@ -26,10 +26,10 @@ class MultiText extends MapOf
     }
 
     /**
-	 *
-	 * @param string $inputSystem
-	 * @return boolean
-	 */
+     *
+     * @param string $inputSystem
+     * @return boolean
+     */
     public function hasForm($inputSystem)
     {
         return array_key_exists($inputSystem, $this);

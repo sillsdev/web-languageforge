@@ -6,18 +6,18 @@ use libraries\palaso\CodeGuard;
 class ProjectModelFixer
 {
     /**
-	 * @var ProjectModel
-	 */
+     * @var ProjectModel
+     */
     public $projectModel;
 
     /**
-	 * @var bool
-	 */
+     * @var bool
+     */
     public $wasFixed;
 
     /**
-	 * @param ProjectModel $projectModel
-	 */
+     * @param ProjectModel $projectModel
+     */
     public function __construct($projectModel)
     {
         CodeGuard::checkTypeAndThrow($projectModel, 'models\ProjectModel');

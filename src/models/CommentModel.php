@@ -18,28 +18,28 @@ class CommentModel
     }
 
     /**
-	 * @var Id
-	 */
+     * @var Id
+     */
     public $id;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $content;
 
     /**
-	 * @var \DateTime
-	 */
+     * @var \DateTime
+     */
     public $dateCreated;
 
     /**
-	 * @var \DateTime
-	 */
+     * @var \DateTime
+     */
     public $dateEdited;
 
     /**
-	 * @var IdReference
-	 */
+     * @var IdReference
+     */
     public $userRef;
 
 }

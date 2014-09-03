@@ -13,11 +13,11 @@ use models\UserModel;
 class TextSettingsDto
 {
     /**
-	 * @param string $projectId
-	 * @param string $textId
-	 * @param string $userId
-	 * @returns array - the DTO array
-	 */
+     * @param string $projectId
+     * @param string $textId
+     * @param string $userId
+     * @returns array - the DTO array
+     */
     public static function encode($projectId, $textId, $userId)
     {
         $user = new UserModel($userId);

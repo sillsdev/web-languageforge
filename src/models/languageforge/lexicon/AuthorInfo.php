@@ -24,27 +24,27 @@ class AuthorInfo extends ObjectForEncoding
     }
 
     /**
-	 * user's Id as string
-	 * @var IdReference
-	 */
+     * user's Id as string
+     * @var IdReference
+     */
     public $createdByUserRef;
 
     /**
-	 *	datetime
-	 * @var DateTime
-	 */
+     *    datetime
+     * @var DateTime
+     */
     public $createdDate;
 
     /**
-	 * user's Id as string
-	 * @var IdReference
-	 */
+     * user's Id as string
+     * @var IdReference
+     */
     public $modifiedByUserRef;
 
     /**
-	 * datetime
-	 * @var DateTime
-	 */
+     * datetime
+     * @var DateTime
+     */
     public $modifiedDate;
 
 }

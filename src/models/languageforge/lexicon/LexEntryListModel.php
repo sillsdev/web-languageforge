@@ -8,9 +8,9 @@ use models\ProjectModel;
 class LexEntryListModel extends \models\mapper\MapperListModel
 {
     /**
-	 *
-	 * @var LexConfiguration
-	 */
+     *
+     * @var LexConfiguration
+     */
     private $_config;
 
     public static function mapper($databaseName)
@@ -24,10 +24,10 @@ class LexEntryListModel extends \models\mapper\MapperListModel
     }
 
     /**
-	 *
-	 * @param ProjectModel $projectModel
+     *
+     * @param ProjectModel $projectModel
      * @param int $newerThanTimestamp
-	 */
+     */
     public function __construct($projectModel, $newerThanTimestamp = null)
     {
         $lexProject = new LexiconProjectModel($projectModel->id->asString());
@@ -42,44 +42,44 @@ class LexEntryListModel extends \models\mapper\MapperListModel
     }
 
     /*
-	private function getDefinition($entry)
-	{
-		$senses = $entry['senses'];
-		if (count($senses) > 0 && array_key_exists('definition', $senses[0]) && count($senses[0]['definition']) > 0) {
-			$ws = $this->_config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems[0];
-			$definition = $senses[0][LexiconConfigObj::DEFINITION];
-			if (isset($definition[$ws])) {
-				return $definition[$ws]['value'];
-			}
-		}
-		return '';
-	}
+    private function getDefinition($entry)
+    {
+        $senses = $entry['senses'];
+        if (count($senses) > 0 && array_key_exists('definition', $senses[0]) && count($senses[0]['definition']) > 0) {
+            $ws = $this->_config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems[0];
+            $definition = $senses[0][LexiconConfigObj::DEFINITION];
+            if (isset($definition[$ws])) {
+                return $definition[$ws]['value'];
+            }
+        }
+        return '';
+    }
 
-	private function getGloss($entry)
-	{
-		$senses = $entry['senses'];
-		if (count($senses) > 0 && array_key_exists('gloss', $senses[0]) && count($senses[0]['gloss']) > 0) {
-			$ws = $this->_config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems[0];
-			$gloss = $senses[0][LexiconConfigObj::GLOSS];
-			if (isset($gloss[$ws])) {
-				return $gloss[$ws]['value'];
-			}
-		}
-		return '';
-	}
+    private function getGloss($entry)
+    {
+        $senses = $entry['senses'];
+        if (count($senses) > 0 && array_key_exists('gloss', $senses[0]) && count($senses[0]['gloss']) > 0) {
+            $ws = $this->_config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems[0];
+            $gloss = $senses[0][LexiconConfigObj::GLOSS];
+            if (isset($gloss[$ws])) {
+                return $gloss[$ws]['value'];
+            }
+        }
+        return '';
+    }
 
-	private function getLexeme($entry)
-	{
-		$lexeme = $entry['lexeme'];
-		if (count($lexeme) > 0) {
-			$ws = $this->_config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[0];
-			// TODO: actually figure out the preferred writing system for display and use that
-			if (isset($lexeme[$ws])) {
-				return $lexeme[$ws]['value'];
-			}
-		}
-		return '';
-	}
+    private function getLexeme($entry)
+    {
+        $lexeme = $entry['lexeme'];
+        if (count($lexeme) > 0) {
+            $ws = $this->_config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[0];
+            // TODO: actually figure out the preferred writing system for display and use that
+            if (isset($lexeme[$ws])) {
+                return $lexeme[$ws]['value'];
+            }
+        }
+        return '';
+    }
     */
 
     public function readForDto($missingInfo = '')
@@ -168,11 +168,11 @@ class LexEntryListModel extends \models\mapper\MapperListModel
     }
 
     /**
-	 * If the $value of $propertyName exists in entries return the entry
-	 * @param string $propertyName
-	 * @param unknown $value
-	 * @return array|boolean $entry or false if not found
-	 */
+     * If the $value of $propertyName exists in entries return the entry
+     * @param string $propertyName
+     * @param unknown $value
+     * @return array|boolean $entry or false if not found
+     */
     public function searchEntriesFor($propertyName, $value)
     {
         foreach ($this->entries as $entry) {

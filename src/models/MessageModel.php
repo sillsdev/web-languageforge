@@ -7,14 +7,14 @@ use models\mapper\Id;
 class MessageModelMongoMapper extends \models\mapper\MongoMapper
 {
     /**
-	 * @var TextModelMongoMapper[]
-	 */
+     * @var TextModelMongoMapper[]
+     */
     private static $_pool = array();
 
     /**
-	 * @param string $databaseName
-	 * @return TextModelMongoMapper
-	 */
+     * @param string $databaseName
+     * @return TextModelMongoMapper
+     */
     public static function connect($databaseName)
     {
         if (!isset(static::$_pool[$databaseName])) {
@@ -29,8 +29,8 @@ class MessageModelMongoMapper extends \models\mapper\MongoMapper
 class MessageModel extends \models\mapper\MapperModel
 {
     /**
-	 * @var ProjectModel;
-	 */
+     * @var ProjectModel;
+     */
     private $_projectModel;
 
     public function __construct($projectModel, $id = '')

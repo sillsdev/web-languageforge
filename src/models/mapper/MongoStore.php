@@ -5,19 +5,19 @@ namespace models\mapper;
 class MongoStore
 {
     /**
-	 * @var MongoDB[]
-	 */
+     * @var MongoDB[]
+     */
     private static $_pool = array();
 
     /**
-	 * @var Mongo
-	 */
+     * @var Mongo
+     */
     private static $_mongo;
 
     /**
-	 * @param string $databaseName
-	 * @return MongoDB
-	 */
+     * @param string $databaseName
+     * @return MongoDB
+     */
     public static function connect($databaseName)
     {
         if (!isset(static::$_pool[$databaseName])) {
@@ -28,9 +28,9 @@ class MongoStore
     }
 
     /**
-	 * @param string $databaseName
-	 * @return MongoDB
-	 */
+     * @param string $databaseName
+     * @return MongoDB
+     */
     private static function connectMongo($databaseName)
     {
         if (static::$_mongo == null) {
@@ -49,10 +49,10 @@ class MongoStore
     }
 
     /**
-	 * @param string $sourceName
-	 * @param string $destName
-	 * @return MongoDB
-	 */
+     * @param string $sourceName
+     * @param string $destName
+     * @return MongoDB
+     */
     public static function copyDB($sourceName, $destName)
     {
         $response = static::$_mongo->admin->command(array(
@@ -66,9 +66,9 @@ class MongoStore
     }
 
     /**
-	 * @param string $databaseName
-	 * @return MongoDB
-	 */
+     * @param string $databaseName
+     * @return MongoDB
+     */
     public static function dropDB($databaseName)
     {
         $oldDB = MongoStore::connectMongo($databaseName);
@@ -78,10 +78,10 @@ class MongoStore
     }
 
     /**
-	 * @param string $oldName
-	 * @param string $newName
-	 * @return MongoDB
-	 */
+     * @param string $oldName
+     * @param string $newName
+     * @return MongoDB
+     */
     public static function renameDB($oldName, $newName)
     {
         // See http://stackoverflow.com/questions/14701418/rename-mongo-database

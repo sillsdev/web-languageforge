@@ -37,17 +37,17 @@ class QuestionTemplateModel extends \models\mapper\MapperModel
     }
 
     /**
-	 * @var IdReference
-	 */
+     * @var IdReference
+     */
     public $id;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $title;
 
     /**
-	 * @var string A content description/explanation of the question being asked
-	 */
+     * @var string A content description/explanation of the question being asked
+     */
     public $description;
 }

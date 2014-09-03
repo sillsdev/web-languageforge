@@ -5,41 +5,41 @@ namespace models\mapper;
 class MapperListModel
 {
     /**
-	 * @var int
-	 */
+     * @var int
+     */
     public $count;
 
     /**
-	 * @var array
-	 */
+     * @var array
+     */
     public $entries;
 
     /**
-	 * @var MongoMapper
-	 */
+     * @var MongoMapper
+     */
     protected $_mapper;
 
     /**
-	 * @var array
-	 */
+     * @var array
+     */
     protected $_query;
 
     /**
-	 * @var array
-	 */
+     * @var array
+     */
     protected $_fields;
 
     /**
-	 * @var array
-	 */
+     * @var array
+     */
     protected $_sortFields;
 
     /**
-	 * @param MongoMapper $mapper
-	 * @param array $query
-	 * @param array $fields
-	 * @param array $sortFields
-	 */
+     * @param MongoMapper $mapper
+     * @param array $query
+     * @param array $fields
+     * @param array $sortFields
+     */
     protected function __construct($mapper, $query = array(), $fields = array(), $sortFields = array())
     {
         $this->_mapper = $mapper;

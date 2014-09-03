@@ -16,10 +16,10 @@ class LexDeletedEntryListModel extends \models\mapper\MapperListModel
     }
 
     /**
-	 *
-	 * @param ProjectModel $projectModel
+     *
+     * @param ProjectModel $projectModel
      * @param int $newerThanTimestamp
-	 */
+     */
     public function __construct($projectModel, $newerThanTimestamp = null)
     {
         if (!is_null($newerThanTimestamp)) {

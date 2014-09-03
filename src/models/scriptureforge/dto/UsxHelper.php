@@ -20,9 +20,9 @@ class UsxHelper
     private $_footnotes;
 
     /**
-	 *
-	 * @var array
-	 */
+     *
+     * @var array
+     */
     private $_info;
 
     // States
@@ -95,8 +95,8 @@ class UsxHelper
                 $this->onNote($attributes['CALLER'], $attributes['STYLE']);
                 break;
             default:
-// 				echo 'to:';
-// 				var_dump($tag, $attributes);
+//                 echo 'to:';
+//                 var_dump($tag, $attributes);
 
         }
     }
@@ -120,8 +120,8 @@ class UsxHelper
                 $this->onUsxClose();
                 break;
             default:
-// 				echo 'tc:';
-// 				var_dump($tag);
+//                 echo 'tc:';
+//                 var_dump($tag);
 
         }
         array_pop($this->_tagStack);
@@ -151,8 +151,8 @@ class UsxHelper
 
     private function onCData($parser, $cdata)
     {
-// 		echo 'cd:';
-// 		var_dump($cdata);
+//         echo 'cd:';
+//         var_dump($cdata);
         if ($this->_stateCData) {
             $this->outputText($cdata);
         }

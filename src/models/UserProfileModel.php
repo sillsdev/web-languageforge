@@ -20,53 +20,53 @@ class UserProfileModel extends \models\UserModel
     }
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $avatar_shape;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $avatar_color;
 
     /**
-	 * @var int
-	 */
+     * @var int
+     */
     public $created_on;
 
     public $last_login; // read only field
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $mobile_phone;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $age;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $gender;
 
     /**
-	 * Users preferred interface language code
-	 * @var string
-	 */
+     * Users preferred interface language code
+     * @var string
+     */
     public $interfaceLanguageCode;
 
     /**
-	 * TODO Review. This was added but is not used in favour of language set per user rather than per user per project. IJH 2014-03
-	 * @var MapOf <UserProjectProperties>
-	 */
+     * TODO Review. This was added but is not used in favour of language set per user rather than per user per project. IJH 2014-03
+     * @var MapOf <UserProjectProperties>
+     */
     public $projectsProperties;
 
     /**
-	 * TODO Deprecate. Migrate to $this->projectsProperties[<projectId>]->sfchecksUserProfile IJH 2014-03
-	 * @var MapOf <SfchecksUserProfile>
-	 */
+     * TODO Deprecate. Migrate to $this->projectsProperties[<projectId>]->sfchecksUserProfile IJH 2014-03
+     * @var MapOf <SfchecksUserProfile>
+     */
     public $projectUserProfiles;
 
 }
@@ -79,15 +79,15 @@ class ProjectProperties
     }
 
     /**
-	 * Users preferred interface language code
-	 * @var string
-	 */
+     * Users preferred interface language code
+     * @var string
+     */
     public $interfaceLanguageCode;
 
     /**
-	 *
-	 * @var SfchecksUserProfile
-	 */
+     *
+     * @var SfchecksUserProfile
+     */
     public $sfchecksUserProfile;
 
 }
@@ -95,28 +95,28 @@ class ProjectProperties
 class SfchecksUserProfile
 {
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $city;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $preferredBibleVersion;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $religiousAffiliation;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $studyGroup;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $feedbackGroup;
 
 }

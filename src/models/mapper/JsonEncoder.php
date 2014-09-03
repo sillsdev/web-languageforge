@@ -6,10 +6,10 @@ use libraries\shared\palaso\CodeGuard;
 class JsonEncoder
 {
     /**
-	 * Sets key/values in the array from the public properties of $model
-	 * @param object $model
-	 * @return array
-	 */
+     * Sets key/values in the array from the public properties of $model
+     * @param object $model
+     * @return array
+     */
     public static function encode($model)
     {
         $encoder = new JsonEncoder();
@@ -18,10 +18,10 @@ class JsonEncoder
     }
 
     /**
-	 * Sets key/values in the array from the public properties of $model
-	 * @param object $model
-	 * @return array
-	 */
+     * Sets key/values in the array from the public properties of $model
+     * @param object $model
+     * @return array
+     */
     protected function _encode($model)
     {
         $data = array();
@@ -72,10 +72,10 @@ class JsonEncoder
     }
 
     /**
-	 * @param string $key
-	 * @param IdReference $model
-	 * @return string
-	 */
+     * @param string $key
+     * @param IdReference $model
+     * @return string
+     */
     public function encodeIdReference($key, $model)
     {
         // Note: $key may be used in derived methods
@@ -85,10 +85,10 @@ class JsonEncoder
     }
 
     /**
-	 * @param string $key
-	 * @param Id $model
-	 * @return string
-	 */
+     * @param string $key
+     * @param Id $model
+     * @return string
+     */
     public function encodeId($key, $model)
     {
         // Note: $key may be used in derived methods
@@ -98,11 +98,11 @@ class JsonEncoder
     }
 
     /**
-	 * @param string $key
-	 * @param ArrayOf $model
-	 * @return array
-	 * @throws \Exception
-	 */
+     * @param string $key
+     * @param ArrayOf $model
+     * @return array
+     * @throws \Exception
+     */
     public function encodeArrayOf($key, $model)
     {
         // Note: $key may be used in derived methods
@@ -124,11 +124,11 @@ class JsonEncoder
     }
 
     /**
-	 * @param string $key
-	 * @param MapOf $model
-	 * @return array
-	 * @throws \Exception
-	 */
+     * @param string $key
+     * @param MapOf $model
+     * @return array
+     * @throws \Exception
+     */
     public function encodeMapOf($key, $model)
     {
         $result = array();
@@ -151,10 +151,10 @@ class JsonEncoder
     }
 
     /**
-	 * @param string $key
-	 * @param ReferenceList $model
-	 * @return array
-	 */
+     * @param string $key
+     * @param ReferenceList $model
+     * @return array
+     */
     public function encodeReferenceList($key, $model)
     {
         // Note: $key may be used in derived methods
@@ -171,10 +171,10 @@ class JsonEncoder
     }
 
     /**
-	 * @param string $key
-	 * @param DateTime $model
-	 * @return string;
-	 */
+     * @param string $key
+     * @param DateTime $model
+     * @return string;
+     */
     public function encodeDateTime($key, $model)
     {
         return $model->format(\DateTime::ISO8601);

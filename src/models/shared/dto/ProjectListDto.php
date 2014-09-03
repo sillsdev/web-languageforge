@@ -12,11 +12,11 @@ use models\UserModel;
 class ProjectListDto
 {
     /**
-	 * @param string $userId
-	 * @param Website $website
-	 * @param boolean $isArchivedList - set true to list archived projects
-	 * @return array - the DTO array
-	 */
+     * @param string $userId
+     * @param Website $website
+     * @param boolean $isArchivedList - set true to list archived projects
+     * @return array - the DTO array
+     */
     public static function encode($userId, $website, $isArchivedList = false)
     {
         $user = new UserModel($userId);
