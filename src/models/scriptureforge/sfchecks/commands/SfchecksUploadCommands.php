@@ -1,7 +1,6 @@
 <?php
 namespace models\scriptureforge\sfchecks\commands;
 
-use models\mapper\JsonEncoder;
 use models\ProjectModel;
 use models\TextModel;
 
@@ -13,6 +12,8 @@ class SfchecksUploadCommands
      *
      * @param string $projectId
      * @param string $uploadType
+     * @throws \Exception
+     * @return \models\scriptureforge\sfchecks\commands\Response
      */
     public static function uploadFile($projectId, $uploadType)
     {
@@ -92,19 +93,20 @@ class SfchecksUploadCommands
             $allowedExtensionsStr = implode(", ", $allowedExtensions);
             // Ummm ditch the echos below and make them part of the result structure.
             $data = new ErrorResult();
+            $data->errorType = 'UserMessage';
             if (count($allowedExtensions) < 1) {
-                $data->error = "$fileName is not an allowed audio file. No audio file formats are currently enabled.";
+                $data->errorMessage = "$fileName is not an allowed audio file. No audio file formats are currently enabled.";
             } elseif (count($allowedExtensions) == 1) {
-                $data->error = "$fileName is not an allowed audio file. Ensure the file is an $allowedExtensionsStr.";
+                $data->errorMessage = "$fileName is not an allowed audio file. Ensure the file is an $allowedExtensionsStr.";
             } else {
-                $data->error = "$fileName is not an allowed audio file. Ensure the file is one of the following types: $allowedExtensionsStr.";
+                $data->errorMessage = "$fileName is not an allowed audio file. Ensure the file is one of the following types: $allowedExtensionsStr.";
             }
             $response = new Response();
             $response->result = false;
             $response->data = $data;
         }
 
-        return JsonEncoder::encode($response);
+        return $response;
     }
 }
 
@@ -134,11 +136,16 @@ class ErrorResult
 {
 
     /**
-     * Error message
      *
      * @var string
      */
-    public $error;
+    public $errorType;
+
+    /**
+     *
+     * @var string
+     */
+    public $errorMessage;
 }
 
 class Response

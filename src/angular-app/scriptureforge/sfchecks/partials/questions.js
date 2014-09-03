@@ -367,8 +367,10 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
             $scope.uploadResult = 'File uploaded successfully.';
             notice.push(notice.SUCCESS, $scope.uploadResult);
           } else {
-            $scope.uploadResult = data.data.error;
-            notice.push(notice.ERROR, data.data.error);
+            notice.push(notice.ERROR, data.data.errorMessage);
+            if (data.data.errorType == 'UserMessage') {
+              $scope.uploadResult = data.data.errorMessage;
+            }
           }
           
           // to fix IE not updating the dom

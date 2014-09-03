@@ -9,7 +9,7 @@ require_once (TestPath . 'common/MongoTestEnvironment.php');
 class TestSfchecksUploadCommands extends UnitTestCase
 {
 
-    function testUploadAudio_NoThrow()
+    function testUploadAudio_mp3File_uploadAllowed()
     {
         $e = new MongoTestEnvironment();
         $e->clean();
@@ -28,11 +28,9 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $_FILES['file'] = $file;
         $_POST['textId'] = $textId;
 
-        $result = SfchecksUploadCommands::uploadFile($projectId, $fileType);
+        $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
 
-//         echo "<pre>";
-//         var_dump($result);
-//         echo "</pre>";
+        $this->assertEqual($response->result, true);
     }
 }
 
