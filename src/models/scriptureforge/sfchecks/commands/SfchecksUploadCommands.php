@@ -86,7 +86,7 @@ class SfchecksUploadCommands
             $data->url = $url;
             $data->path = $path;
             $data->fileName = $fileName;
-            $response = new Response();
+            $response = new UploadResponse();
             $response->result = true;
             $response->data = $data;
         } else {
@@ -101,67 +101,13 @@ class SfchecksUploadCommands
             } else {
                 $data->errorMessage = "$fileName is not an allowed audio file. Ensure the file is one of the following types: $allowedExtensionsStr.";
             }
-            $response = new Response();
+            $response = new UploadResponse();
             $response->result = false;
             $response->data = $data;
         }
 
         return $response;
     }
-}
-
-class MediaResult
-{
-
-    /**
-     *
-     * @var string
-     */
-    public $url;
-
-    /**
-     *
-     * @var string
-     */
-    public $path;
-
-    /**
-     *
-     * @var string
-     */
-    public $fileName;
-}
-
-class ErrorResult
-{
-
-    /**
-     *
-     * @var string
-     */
-    public $errorType;
-
-    /**
-     *
-     * @var string
-     */
-    public $errorMessage;
-}
-
-class Response
-{
-
-    /**
-     *
-     * @var bool
-     */
-    public $result;
-
-    /**
-     *
-     * @var MediaResult or ErrorResult
-     */
-    public $data;
 }
 
 ?>
