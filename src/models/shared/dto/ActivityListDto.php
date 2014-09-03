@@ -19,9 +19,9 @@ class ActivityListDtoEncoder extends JsonEncoder
     private $_project;
 
     /**
-	 *
-	 * @param ProjectModel $projectModel
-	 */
+     *
+     * @param ProjectModel $projectModel
+     */
     public function __construct($projectModel)
     {
         $this->_project = $projectModel;
@@ -60,17 +60,17 @@ class ActivityListDtoEncoder extends JsonEncoder
     }
 
     /**
-	 *
-	 * @param Object $model - the model to encode
-	 * @param ProjectModel $projectModel
-	 * @return array
-	 */
+     *
+     * @param Object $model - the model to encode
+     * @param ProjectModel $projectModel
+     * @return array
+     */
     public static function encodeModel($model, $projectModel)
     {
         /* Note: I had to change the name of this static method to something else besides 'encode' because
-		 * PHP complained about the signature not being the same as the parent class JsonEncoder
-		 * cjh 2013-08
-		 */
+         * PHP complained about the signature not being the same as the parent class JsonEncoder
+         * cjh 2013-08
+         */
         $e = new ActivityListDtoEncoder($projectModel);
 
         return $e->_encode($model);
@@ -80,10 +80,10 @@ class ActivityListDtoEncoder extends JsonEncoder
 class ActivityListDto
 {
     /**
-	 * @param string $projectModel
-	 * @param string $questionId
-	 * @return array - the DTO array
-	 */
+     * @param string $projectModel
+     * @param string $questionId
+     * @return array - the DTO array
+     */
     public static function getActivityForProject($projectModel)
     {
         $activityList = new ActivityListModel($projectModel);
@@ -116,10 +116,10 @@ class ActivityListDto
     }
 
     /**
-	 * @param string $site
-	 * @param string $userId
-	 * @return array - the DTO array
-	*/
+     * @param string $site
+     * @param string $userId
+     * @return array - the DTO array
+    */
     public static function getActivityForUser($site, $userId)
     {
         $projectList = new ProjectList_UserModel($site);

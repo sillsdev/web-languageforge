@@ -27,32 +27,32 @@ class UserRelationModel extends \models\mapper\MapperModel
     }
 
     /**
-	 * Removes a relation from the collection
-	 * @param string $id
-	 */
+     * Removes a relation from the collection
+     * @param string $id
+     */
     public static function remove($id)
     {
         UserRelationModelMongoMapper::instance()->remove($id);
     }
 
     /**
-	 * @var Id
-	 */
+     * @var Id
+     */
     public $id;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $type;
 
     /**
-	 * @var IdReference
-	 */
+     * @var IdReference
+     */
     public $userRef;
 
     /**
-	 * @var IdReference
-	 */
+     * @var IdReference
+     */
     public $projectRef;
 
 }

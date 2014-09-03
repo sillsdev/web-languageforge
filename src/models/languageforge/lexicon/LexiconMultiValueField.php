@@ -7,9 +7,9 @@ use models\mapper\ArrayOf;
 class LexiconMultiValueField
 {
     /**
-	 *
-	 * @var ArrayOf
-	 */
+     *
+     * @var ArrayOf
+     */
     public $values;
 
     public function __construct($values = array())

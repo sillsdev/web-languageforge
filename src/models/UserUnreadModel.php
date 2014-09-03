@@ -15,43 +15,43 @@ class UnreadItem
     }
 
     /**
-	 * @var IdReference
-	 */
+     * @var IdReference
+     */
     public $itemRef;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $type;
 }
 
 class UserUnreadModel extends UserRelationModel
 {
     /**
-	 * The type of Unread item e.g. activity, text, question, answer, comment
-	 * @var string
-	 */
+     * The type of Unread item e.g. activity, text, question, answer, comment
+     * @var string
+     */
     private $_type;
 
     /**
-	 * @var ArrayOf ArrayOf<UnreadItem>
-	 */
+     * @var ArrayOf ArrayOf<UnreadItem>
+     */
     public $unread;
 
     /**
-	 *
-	 * @var IdReference
-	 */
+     *
+     * @var IdReference
+     */
     public $questionRef;
 
     /**
-	 *
-	 * @param string $itemType
-	 * @param string $userId
-	 * @param string $projectId
-	 * @param string $questionId
-	 */
+     *
+     * @param string $itemType
+     * @param string $userId
+     * @param string $projectId
+     * @param string $questionId
+     */
     public function __construct($itemType, $userId, $projectId, $questionId = '')
     {
         $this->unread = new ArrayOf(
@@ -86,9 +86,9 @@ class UserUnreadModel extends UserRelationModel
     }
 
     /**
-	 *
-	 * @param string $itemId
-	 */
+     *
+     * @param string $itemId
+     */
     public function markUnread($itemId)
     {
         $item = new UnreadItem();
@@ -101,9 +101,9 @@ class UserUnreadModel extends UserRelationModel
     }
 
     /**
-	 *
-	 * @param string $itemId
-	 */
+     *
+     * @param string $itemId
+     */
     public function markRead($itemId)
     {
         $item = new UnreadItem();
@@ -113,7 +113,7 @@ class UserUnreadModel extends UserRelationModel
         for ($i = $c - 1; $i >= 0; $i--) {
             if ($this->unread[$i] == $item) {
                 unset($this->unread[$i]);
-//				break; // The lack of a break here is consistent with the previous implementation, and currently isn't a performance issue. CP 2013-12
+//                break; // The lack of a break here is consistent with the previous implementation, and currently isn't a performance issue. CP 2013-12
             }
         }
     }
@@ -129,10 +129,10 @@ class UserUnreadModel extends UserRelationModel
     }
 
     /**
-	 *
-	 * @param string $itemId
-	 * @return boolean
-	 */
+     *
+     * @param string $itemId
+     * @return boolean
+     */
     public function isUnread($itemId)
     {
         $item = new UnreadItem();
@@ -143,9 +143,9 @@ class UserUnreadModel extends UserRelationModel
     }
 
     /**
-	 *
-	 * @return models\UnreadItem
-	 */
+     *
+     * @return models\UnreadItem
+     */
     public function unreadItems()
     {
         $items = array();
@@ -159,11 +159,11 @@ class UserUnreadModel extends UserRelationModel
     }
 
     /**
-	 * markUnreadForProjectMembers() is only intended to be called from a child class such as UnreadActivityModel
-	 * @param string $itemId
-	 * @param ProjectModel $project
-	 * @throws Exception
-	 */
+     * markUnreadForProjectMembers() is only intended to be called from a child class such as UnreadActivityModel
+     * @param string $itemId
+     * @param ProjectModel $project
+     * @throws Exception
+     */
     public static function markUnreadForProjectMembers($itemId, $project, $questionId = '', $exceptThisUserId = '')
     {
         $className = get_called_class();

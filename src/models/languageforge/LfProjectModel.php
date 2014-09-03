@@ -15,8 +15,8 @@ class LfProjectModel extends ProjectModel
     }
 
     /**
-	 * The ISO 639 language code
-	 * @var string
-	 */
+     * The ISO 639 language code
+     * @var string
+     */
     public $languageCode;
 }

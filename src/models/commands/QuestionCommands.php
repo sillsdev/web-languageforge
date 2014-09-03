@@ -42,10 +42,10 @@ class QuestionCommands
     }
 
     /**
-	 * @param string $projectId
-	 * @param array $questionIds
-	 * @return int Total number of questions archived.
-	 */
+     * @param string $projectId
+     * @param array $questionIds
+     * @return int Total number of questions archived.
+     */
     public static function archiveQuestions($projectId, $questionIds)
     {
         $project = new ProjectModel($projectId);
@@ -61,10 +61,10 @@ class QuestionCommands
     }
 
     /**
-	 * @param string $projectId
-	 * @param array $questionIds
-	 * @return int Total number of questions published.
-	 */
+     * @param string $projectId
+     * @param array $questionIds
+     * @return int Total number of questions published.
+     */
     public static function publishQuestions($projectId, $questionIds)
     {
         $project = new ProjectModel($projectId);
@@ -80,10 +80,10 @@ class QuestionCommands
     }
 
     /**
-	 * @param string $projectId
-	 * @param array $questionIds
-	 * @return int Total number of questions removed.
-	 */
+     * @param string $projectId
+     * @param array $questionIds
+     * @return int Total number of questions removed.
+     */
     public static function deleteQuestions($projectId, $questionIds)
     {
         $projectModel = new ProjectModel($projectId);
@@ -97,28 +97,28 @@ class QuestionCommands
     }
 
     /* deprecated - cjh - use dto instead
-	public static function listQuestions($projectId, $textId, $authUserId)
-	{
-		// TODO: validate $authUserId as authorized to perform this action
-		$projectModel = new \models\ProjectModel($projectId);
-		$questionListModel = new \models\QuestionListModel($projectModel, $textId);
-		$questionListModel->read();
-		return $questionListModel;
-	}
-	*/
+    public static function listQuestions($projectId, $textId, $authUserId)
+    {
+        // TODO: validate $authUserId as authorized to perform this action
+        $projectModel = new \models\ProjectModel($projectId);
+        $questionListModel = new \models\QuestionListModel($projectModel, $textId);
+        $questionListModel->read();
+        return $questionListModel;
+    }
+    */
 
     /**
-	 * Creates or updates an answer for the given $questionId.
-	 * @param string $projectId
-	 * @param string $questionId
-	 * @param array $answerJson	is decoded into an AnswerModel
-	 * @param string $userId
-	 * @return array Returns an encoded QuestionDTO fragment for the Answer
-	 * @see AnswerModel
-	 */
+     * Creates or updates an answer for the given $questionId.
+     * @param string $projectId
+     * @param string $questionId
+     * @param array $answerJson    is decoded into an AnswerModel
+     * @param string $userId
+     * @return array Returns an encoded QuestionDTO fragment for the Answer
+     * @see AnswerModel
+     */
     public static function updateAnswer($projectId, $questionId, $answerJson, $userId)
     {
-		CodeGuard::assertKeyExistsOrThrow('id', $answerJson, "answerJson");
+        CodeGuard::assertKeyExistsOrThrow('id', $answerJson, "answerJson");
         CodeGuard::checkNotFalseAndThrow($answerJson['content'], "answerJson['content']");
         $project = new ProjectModel($projectId);
         $question = new QuestionModel($project, $questionId);
@@ -131,7 +131,7 @@ class QuestionCommands
         } else {
             // create new answer
             $answer = new AnswerModel();
-			JsonDecoder::decode($answer, array('id' => '', 'content' => $answerJson['content']));
+            JsonDecoder::decode($answer, array('id' => '', 'content' => $answerJson['content']));
             $answer->userRef->id = $userId;
         }
         if (array_key_exists('textHighlight', $answerJson)) {
@@ -145,20 +145,20 @@ class QuestionCommands
         if ($answerJson['id'] != '') {
             // TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
             ActivityCommands::updateAnswer($project, $questionId, $newAnswer);
-		} else {
+        } else {
             ActivityCommands::addAnswer($project, $questionId, $newAnswer);
-		}
+        }
 
         return self::encodeAnswer($newAnswer);
     }
 
     /**
-	 *
-	 * @param string $projectId
-	 * @param string $questionId
-	 * @param string $answerId
-	 * @return object $result
-	 */
+     *
+     * @param string $projectId
+     * @param string $questionId
+     * @param string $answerId
+     * @return object $result
+     */
     public static function removeAnswer($projectId, $questionId, $answerId)
     {
         $projectModel = new \models\ProjectModel($projectId);
@@ -166,14 +166,14 @@ class QuestionCommands
         return QuestionModel::removeAnswer($projectModel->databaseName(), $questionId, $answerId);
     }
 
-	/**
-	 * Updates an answer's isToBeExported flag.
-	 * @param string $projectId
-	 * @param string $questionId
-	 * @param string $answerId
-	 * @param Boolean $isToBeExported
-	 * @return array Returns an encoded QuestionDTO fragment for the Answer
-	 */
+    /**
+     * Updates an answer's isToBeExported flag.
+     * @param string $projectId
+     * @param string $questionId
+     * @param string $answerId
+     * @param Boolean $isToBeExported
+     * @return array Returns an encoded QuestionDTO fragment for the Answer
+     */
     public static function updateAnswerExportFlag($projectId, $questionId, $answerId, $isToBeExported)
     {
         CodeGuard::checkNotFalseAndThrow($answerId, 'answerId');
@@ -187,13 +187,13 @@ class QuestionCommands
     }
 
     /**
-	 * Updates an answer's tags.
-	 * @param string $projectId
-	 * @param string $questionId
-	 * @param string $answerId
-	 * @param array $tagsArray
-	 * @return array Returns an encoded QuestionDTO fragment for the Answer
-	 */
+     * Updates an answer's tags.
+     * @param string $projectId
+     * @param string $questionId
+     * @param string $answerId
+     * @param array $tagsArray
+     * @return array Returns an encoded QuestionDTO fragment for the Answer
+     */
     public static function updateAnswerTags($projectId, $questionId, $answerId, $tagsArray)
     {
         CodeGuard::checkNotFalseAndThrow($answerId, 'answerId');
@@ -210,17 +210,17 @@ class QuestionCommands
     }
 
     /**
-	 * Creates / Updates a comment on the given answer.
-	 * @param string $projectId
-	 * @param string $questionId
-	 * @param string $answerId
-	 * @param array $comment
-	 * @param string $userId
-	 * @return array Dto
-	 */
-	public static function updateComment($projectId, $questionId, $answerId, $comment, $userId)
-	{
-		$projectModel = new ProjectModel($projectId);
+     * Creates / Updates a comment on the given answer.
+     * @param string $projectId
+     * @param string $questionId
+     * @param string $answerId
+     * @param array $comment
+     * @param string $userId
+     * @return array Dto
+     */
+    public static function updateComment($projectId, $questionId, $answerId, $comment, $userId)
+    {
+        $projectModel = new ProjectModel($projectId);
         $questionModel = new QuestionModel($projectModel, $questionId);
         $authorId = $userId;
         if ($comment['id'] != '') {
@@ -233,15 +233,15 @@ class QuestionCommands
         $commentModel->userRef->id = $authorId;
         $commentId = QuestionModel::writeComment($projectModel->databaseName(), $questionId, $answerId, $commentModel);
         $questionModel->read($questionId);
-		$newComment = $questionModel->readComment($answerId, $commentId);
+        $newComment = $questionModel->readComment($answerId, $commentId);
         $commentDTO = QuestionCommentDto::encodeComment($newComment);
 
         if ($comment['id'] != '') {
             // TODO log the activity after we confirm that the comment was successfully updated ; cjh 2013-08
             ActivityCommands::updateComment($projectModel, $questionId, $answerId, $newComment);
-		} else {
+        } else {
             ActivityCommands::addComment($projectModel, $questionId, $answerId, $newComment);
-		}
+        }
 
         $dto = array();
         $dto[$commentId] = $commentDTO;
@@ -257,26 +257,26 @@ class QuestionCommands
     }
 
     /**
-	 * Returns the AnswerModel as an AnswerDTO, a part of the QuestionDTO.
-	 * @param AnswerModel $answerModel
-	 * @return array
-	 */
+     * Returns the AnswerModel as an AnswerDTO, a part of the QuestionDTO.
+     * @param AnswerModel $answerModel
+     * @return array
+     */
     private static function encodeAnswer($answerModel)
     {
         $answerDTO = QuestionCommentDto::encodeAnswer($answerModel);
         $answerId = $answerModel->id->asString();
-		$dto = array();
-		$dto[$answerId] = $answerDTO;
-		return $dto;
-	}
+        $dto = array();
+        $dto[$answerId] = $answerDTO;
+        return $dto;
+    }
 
     /**
-	 * Up votes the given answer, if permitted for the given $userId
-	 * @param string $userId
-	 * @param string $projectId
-	 * @param string $questionId
-	 * @param string $answerId
-	 */
+     * Up votes the given answer, if permitted for the given $userId
+     * @param string $userId
+     * @param string $projectId
+     * @param string $questionId
+     * @param string $answerId
+     */
     public static function voteUp($userId, $projectId, $questionId, $answerId)
     {
         $projectModel = new ProjectModel($projectId);

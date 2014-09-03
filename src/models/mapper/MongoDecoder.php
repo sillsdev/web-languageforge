@@ -13,10 +13,10 @@ class MongoDecoder extends JsonDecoder
     }
 
     /**
-	 * Sets the public properties of $model to values from $values[propertyName]
-	 * @param object $model
-	 * @param array $values A mixed array of JSON (like) data.
-	 */
+     * Sets the public properties of $model to values from $values[propertyName]
+     * @param object $model
+     * @param array $values A mixed array of JSON (like) data.
+     */
     public static function decode($model, $values, $id = '')
     {
         $decoder = new MongoDecoder();
@@ -24,22 +24,22 @@ class MongoDecoder extends JsonDecoder
     }
 
     /**
-	 * @param string $key
-	 * @param object $model
-	 * @param array $values
-	 */
+     * @param string $key
+     * @param object $model
+     * @param array $values
+     */
     public function decodeIdReference($key, $model, $values)
     {
         $model->$key->id = (string) $values[$key];
     }
 
     /**
-	 * @param string $key
-	 * @param object $model
-	 * @param array $values
-	 * @param string $id
-	 * @throws \Exception
-	 */
+     * @param string $key
+     * @param object $model
+     * @param array $values
+     * @param string $id
+     * @throws \Exception
+     */
     public function decodeId($key, $model, $values, $id)
     {
         if (!empty($id)) {
@@ -54,11 +54,11 @@ class MongoDecoder extends JsonDecoder
     }
 
     /**
-	 * Decodes the mongo array into the ReferenceList $model
-	 * @param ReferenceList $model
-	 * @param array $data
-	 * @throws \Exception
-	 */
+     * Decodes the mongo array into the ReferenceList $model
+     * @param ReferenceList $model
+     * @param array $data
+     * @throws \Exception
+     */
     public function decodeReferenceList($model, $data)
     {
         $model->refs = array();
@@ -78,10 +78,10 @@ class MongoDecoder extends JsonDecoder
     }
 
     /**
-	 * @param string $key
-	 * @param object $model
-	 * @param MongoDate $data
-	 */
+     * @param string $key
+     * @param object $model
+     * @param MongoDate $data
+     */
     public function decodeDateTime($key, $model, $data)
     {
         CodeGuard::checkTypeAndThrow($data, 'MongoDate', CodeGuard::CHECK_NULL_OK);
@@ -91,12 +91,12 @@ class MongoDecoder extends JsonDecoder
     }
 
     /**
-	 * Mongo can't handle '.' or '$' on array keys.
-	 * Replace '___DOLLAR___' with '$'
-	 * Replace '___DOT___' with '.'
-	 * @param string $key
-	 * @param MongoDate $data
-	 */
+     * Mongo can't handle '.' or '$' on array keys.
+     * Replace '___DOLLAR___' with '$'
+     * Replace '___DOT___' with '.'
+     * @param string $key
+     * @param MongoDate $data
+     */
     public function decodeDollarDot($key, &$data)
     {
         if (strpos($key, '___DOLLAR___') > -1) {
@@ -112,10 +112,10 @@ class MongoDecoder extends JsonDecoder
     }
 
     /**
-	 * @param string $key
-	 * @param object $model
-	 * @param MongoDate $data
-	 */
+     * @param string $key
+     * @param object $model
+     * @param MongoDate $data
+     */
     public function decodeMapOf($key, $model, $data)
     {
         foreach ($data as $k => $item) {

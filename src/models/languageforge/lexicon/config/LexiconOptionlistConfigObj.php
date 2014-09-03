@@ -19,8 +19,8 @@ class LexiconOptionlistConfigObj extends LexiconConfigObj
     }
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $label;
 
     /**

@@ -27,14 +27,14 @@ class LexProjectCommands
     }
 
     /**
-	 * Create or update project
-	 * @param string $projectId
-	 * @param string $userId
-	 * @param array<projectModel> $object
-	 * @throws UserUnauthorizedException
-	 * @throws \Exception
-	 * @return string projectId
-	 */
+     * Create or update project
+     * @param string $projectId
+     * @param string $userId
+     * @param array<projectModel> $object
+     * @throws UserUnauthorizedException
+     * @throws \Exception
+     * @return string projectId
+     */
     public static function updateProject($projectId, $userId, $object)
     {
         $project = new LexiconProjectModel($projectId);
@@ -58,9 +58,9 @@ class LexProjectCommands
     }
 
     /**
-	 * @param string $id
-	 * @param string $authUserId - the admin user's id performing the update (for auth purposes)
-	 */
+     * @param string $id
+     * @param string $authUserId - the admin user's id performing the update (for auth purposes)
+     */
     public static function readProject($id)
     {
         $project = new LexiconProjectModel($id);
