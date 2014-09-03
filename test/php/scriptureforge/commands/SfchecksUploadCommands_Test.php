@@ -31,19 +31,19 @@ class TestSfchecksUploadCommands extends UnitTestCase
 
         $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
 
-        $this->assertEqual($response->result, true);
+        $this->assertEqual(true, $response->result);
 
         $file['type'] = 'audio/mpeg';
 
         $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
 
-        $this->assertEqual($response->result, true);
+        $this->assertEqual(true, $response->result);
         $this->assertPattern("/$projectId/", $response->data->path);
         $this->assertPattern("/$textId/", $response->data->fileName);
         $this->assertPattern("/$fileName/", $response->data->fileName);
     }
 
-    function testUploadAudio_notMp3File_uploadDisallowed()
+    function testUploadAudio_mp4File_uploadDisallowed()
     {
         $e = new MongoTestEnvironment();
         $e->clean();
@@ -57,15 +57,15 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $fileType = 'audio';
         $file = array();
         $file['name'] = 'fileName.mp3';
-        $file['type'] = 'audio/mp4';
+        $file['type'] = 'video/mp4';
         $file['tmp_name'] = '';
         $_FILES['file'] = $file;
         $_POST['textId'] = $textId;
 
         $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
 
-        $this->assertEqual($response->result, false);
-        $this->assertEqual($response->data->errorType, 'UserMessage');
+        $this->assertEqual(false, $response->result);
+        $this->assertEqual('UserMessage', $response->data->errorType);
         $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage);
 
         $file['type'] = 'audio/mp3';
@@ -73,8 +73,8 @@ class TestSfchecksUploadCommands extends UnitTestCase
 
         $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
 
-        $this->assertEqual($response->result, false);
-        $this->assertEqual($response->data->errorType, 'UserMessage');
+        $this->assertEqual(false, $response->result);
+        $this->assertEqual('UserMessage', $response->data->errorType);
         $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage);
     }
 }
