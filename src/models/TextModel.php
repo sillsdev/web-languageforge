@@ -9,29 +9,29 @@ require_once APPPATH . 'models/ProjectModel.php';
 class TextModelMongoMapper extends \models\mapper\MongoMapper
 {
     /**
-	 * @var TextModelMongoMapper[]
-	 */
-	private static $_pool = array();
+     * @var TextModelMongoMapper[]
+     */
+    private static $_pool = array();
 
-	/**
-	 * @param string $databaseName
-	 * @return TextModelMongoMapper
-	 */
-	public static function connect($databaseName)
-	{
-		if (!isset(static::$_pool[$databaseName])) {
-			static::$_pool[$databaseName] = new TextModelMongoMapper($databaseName, 'texts');
-		}
-		return static::$_pool[$databaseName];
-	}
+    /**
+     * @param string $databaseName
+     * @return TextModelMongoMapper
+     */
+    public static function connect($databaseName)
+    {
+        if (!isset(static::$_pool[$databaseName])) {
+            static::$_pool[$databaseName] = new TextModelMongoMapper($databaseName, 'texts');
+        }
+        return static::$_pool[$databaseName];
+    }
 
 }
 
 class TextModel extends \models\mapper\MapperModel
 {
     /**
-	 * @var ProjectModel;
-	 */
+     * @var ProjectModel;
+     */
     private $_projectModel;
 
     public function __construct($projectModel, $id = '')

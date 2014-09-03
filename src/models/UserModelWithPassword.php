@@ -13,7 +13,7 @@ class UserModelWithPassword extends \models\UserModelBase
     }
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $password;
 }

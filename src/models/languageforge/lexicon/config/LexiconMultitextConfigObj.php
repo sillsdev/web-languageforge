@@ -18,23 +18,23 @@ class LexiconMultitextConfigObj extends LexiconConfigObj
     }
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $label;
 
     /**
-	 * @var int
-	 */
+     * @var int
+     */
     public $width;
 
     /**
-	 * @var ArrayOf
-	 */
+     * @var ArrayOf
+     */
     public $inputSystems;
 
     /**
-	 * @var bool
-	 */
+     * @var bool
+     */
     public $displayMultiline;
 
 }

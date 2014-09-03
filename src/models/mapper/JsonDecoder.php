@@ -6,20 +6,20 @@ use libraries\shared\palaso\CodeGuard;
 class JsonDecoder
 {
     /**
-	 * @param array $array
-`	 * @return bool
-	 */
+     * @param array $array
+`     * @return bool
+     */
     public static function is_assoc($array)
     {
         return (bool) count(array_filter(array_keys($array), 'is_string'));
     }
 
     /**
-	 * Sets the public properties of $model to values from $values[propertyName]
-	 * @param object $model
-	 * @param array $values A mixed array of JSON (like) data.
-	 * @param string $id
-	 */
+     * Sets the public properties of $model to values from $values[propertyName]
+     * @param object $model
+     * @param array $values A mixed array of JSON (like) data.
+     * @param string $id
+     */
     public static function decode($model, $values, $id = '')
     {
         $decoder = new JsonDecoder();
@@ -28,11 +28,11 @@ class JsonDecoder
     }
 
     /**
-	 * Sets the public properties of $model to values from $values[propertyName]
-	 * @param object $model
-	 * @param array $values A mixed array of JSON (like) data.
-	 * @param bool $isRootDocument true if this is the root document, false if a sub-document. Defaults to true
-	 */
+     * Sets the public properties of $model to values from $values[propertyName]
+     * @param object $model
+     * @param array $values A mixed array of JSON (like) data.
+     * @param bool $isRootDocument true if this is the root document, false if a sub-document. Defaults to true
+     */
     protected function _decode($model, $values, $id)
     {
         CodeGuard::checkTypeAndThrow($values, 'array');
@@ -98,32 +98,32 @@ class JsonDecoder
     }
 
     /**
-	 * @param string $key
-	 * @param object $model
-	 * @param array $values
-	 */
+     * @param string $key
+     * @param object $model
+     * @param array $values
+     */
     public function decodeIdReference($key, $model, $values)
     {
         $model->$key = new IdReference($values[$key]);
     }
 
     /**
-	 * @param string $key
-	 * @param object $model
-	 * @param array $values
-	 * @param string $id
-	 */
+     * @param string $key
+     * @param object $model
+     * @param array $values
+     * @param string $id
+     */
     public function decodeId($key, $model, $values, $id)
     {
         $model->$key = new Id($values[$key]);
     }
 
     /**
-	 * @param string $key
-	 * @param ArrayOf $model
-	 * @param array $data
-	 * @throws \Exception
-	 */
+     * @param string $key
+     * @param ArrayOf $model
+     * @param array $data
+     * @throws \Exception
+     */
     public function decodeArrayOf($key, $model, $data)
     {
         if ($data == null) {
@@ -146,11 +146,11 @@ class JsonDecoder
     }
 
     /**
-	 * @param string $key
-	 * @param MapOf $model
-	 * @param array $data
-	 * @throws \Exception
-	 */
+     * @param string $key
+     * @param MapOf $model
+     * @param array $data
+     * @throws \Exception
+     */
     public function decodeMapOf($key, $model, $data)
     {
         if (is_null($data)) {
@@ -173,11 +173,11 @@ class JsonDecoder
     }
 
     /**
-	 * Decodes the mongo array into the ReferenceList $model
-	 * @param ReferenceList $model
-	 * @param array $data
-	 * @throws \Exception
-	 */
+     * Decodes the mongo array into the ReferenceList $model
+     * @param ReferenceList $model
+     * @param array $data
+     * @throws \Exception
+     */
     public function decodeReferenceList($model, $data)
     {
         $model->refs = array();
@@ -193,10 +193,10 @@ class JsonDecoder
     }
 
     /**
-	 * @param string $key
-	 * @param object $model
-	 * @param string $data
-	 */
+     * @param string $key
+     * @param object $model
+     * @param string $data
+     */
     public function decodeDateTime($key, $model, $data)
     {
         $model = new \DateTime($data);

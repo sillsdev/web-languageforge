@@ -8,27 +8,27 @@ use models\mapper\MapOf;
 class LexConfiguration
 {
     /**
-	 *
-	 * @var MapOf <LexiconTask>
-	 */
+     *
+     * @var MapOf <LexiconTask>
+     */
     public $tasks;
 
     /**
-	 *
-	 * @var LexiconFieldConfigObj
-	 */
+     *
+     * @var LexiconFieldConfigObj
+     */
     public $entry;
 
     /**
-	 * key is LexiconRoles const
-	 * @var MapOf <LexRoleViewConfig>
-	 */
+     * key is LexiconRoles const
+     * @var MapOf <LexRoleViewConfig>
+     */
     public $roleViews;
 
     /**
-	 * key is userId
-	 * @var MapOf <LexUserViewConfig>
-	 */
+     * key is userId
+     * @var MapOf <LexUserViewConfig>
+     */
     public $userViews;
 
     public function __construct()

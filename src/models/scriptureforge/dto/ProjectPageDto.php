@@ -17,11 +17,11 @@ use models\UserModel;
 class ProjectPageDto
 {
     /**
-	 *
-	 * @param string $projectId
-	 * @param string $userId
-	 * @returns array - the DTO array
-	 */
+     *
+     * @param string $projectId
+     * @param string $userId
+     * @returns array - the DTO array
+     */
     public static function encode($projectId, $userId)
     {
         $user = new UserModel($userId);
