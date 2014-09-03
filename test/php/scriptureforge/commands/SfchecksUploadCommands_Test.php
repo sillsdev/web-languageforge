@@ -13,25 +13,26 @@ class TestSfchecksUploadCommands extends UnitTestCase
     {
         $e = new MongoTestEnvironment();
         $e->clean();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $text = new TextModel($project);
         $text->title = "Some Title";
         $textId = $text->write();
-        
+
         $fileType = 'audio';
         $file = array();
         $file['name'] = 'fileName.mp3';
         $file['type'] = 'audio/mp3';
+        $file['tmp_name'] = '';
         $_FILES['file'] = $file;
         $_POST['textId'] = $textId;
-        
+
         $result = SfchecksUploadCommands::uploadFile($projectId, $fileType);
-        
-        echo "<pre>";
-        var_dump($result);
-        echo "</pre>";
+
+//         echo "<pre>";
+//         var_dump($result);
+//         echo "</pre>";
     }
 }
 

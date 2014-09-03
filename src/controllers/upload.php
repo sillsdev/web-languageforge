@@ -4,13 +4,12 @@ require_once 'secure_base.php';
 class Upload extends Secure_base
 {
 
-    public function receive($app, $uploadType)
-    { // e.g. 'lf', 'entry-audio'
-
+    public function receive($app, $uploadType) // e.g. 'lf', 'entry-audio'
+    {
         // Need to require this after the autoloader is loaded, hence it is here.
         require_once 'service/sf.php';
 
-        $result = array();
+        $response = array();
 
         $file = $_FILES['file'];
 
@@ -21,21 +20,25 @@ class Upload extends Secure_base
                 $api = new Sf($this);
 
                 // Do whatever permissions / rights check that should be done.
+                // $api->checkPermissions('sfChecks_uploadFile', $uploadType);
 
-                $result = $api->sfChecks_uploadFile($uploadType);
-            } else
-                if ($app == 'lf-lexicon') {
-                    $api = new Sf($this);
+                $response = $api->sfChecks_uploadFile($uploadType);
+            } elseif ($app == 'lf-lexicon') {
+                $api = new Sf($this);
 
-                    // Do whatever permissions / rights check that should be done.
+                // Do whatever permissions / rights check that should be done.
+                // $api->checkPermissions('lex_uploadFile', $uploadType);
 
-                    $result = $api->lex_uploadFile($uploadType);
-                } else {
-                    // Return some kind of programmer isn't that clever error.
-                }
+                $response = $api->lex_uploadFile($uploadType);
+            } else {
+                // Return some kind of programmer isn't that clever error.
+                throw new \Exception("Unsupported upload app.");
+            }
         }
-        // header("Content-type: text/javascript");
-        return json_encode($result); // Might need to set the header to get the content type ?
+
+        $output = $this->output;
+        $output->set_content_type('text/javascript');
+        $output->set_output(json_encode($response));
     }
 }
 
