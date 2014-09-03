@@ -542,7 +542,8 @@ EOD;
     // ---------------------------------------------------------------
     public function sfChecks_uploadFile($uploadType)
     {
-        return SfchecksUploadCommands::uploadFile($this->_projectId, $uploadType);
+        $response = SfchecksUploadCommands::uploadFile($this->_projectId, $uploadType);
+        return JsonEncoder::encode($response);
     }
 
     const _languageforge = <<<EOD

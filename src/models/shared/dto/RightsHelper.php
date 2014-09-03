@@ -192,6 +192,9 @@ class RightsHelper
             case 'text_publish':
                 return $this->userHasProjectRight(Domain::TEXTS + Operation::ARCHIVE);
 
+            case 'sfChecks_uploadFile':
+                return $this->userHasProjectRight(Domain::TEXTS + Operation::EDIT);
+
             case 'question_update':
             case 'question_read':
                 return $this->userHasProjectRight(Domain::QUESTIONS + Operation::EDIT);
