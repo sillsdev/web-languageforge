@@ -362,8 +362,14 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
             $scope.$apply();
           }
         }).success(function(data, status, headers, config) {
-          $scope.uploadResult = data.toString();
-          $scope.progress = 100.0;
+          if (data.result) {
+            $scope.progress = 100.0;
+            $scope.uploadResult = 'File uploaded successfully.';
+            notice.push(notice.SUCCESS, $scope.uploadResult);
+          } else {
+            $scope.uploadResult = data.data.error;
+            notice.push(notice.ERROR, data.data.error);
+          }
           
           // to fix IE not updating the dom
           if (!$scope.$$phase) {
