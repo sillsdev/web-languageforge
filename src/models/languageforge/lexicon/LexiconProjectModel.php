@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon;
 
 use libraries\shared\LanguageData;
 use models\languageforge\lexicon\config\LexConfiguration;
+use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\languageforge\LfProjectModel;
 use models\mapper\MapOf;
@@ -25,6 +26,7 @@ class LexiconProjectModel extends LfProjectModel
         // default values
         $this->inputSystems['en'] = new InputSystem('en', 'English', 'en');
         $this->inputSystems['th'] = new InputSystem('th', 'Thai', 'th');
+        $this->languageCode = $this->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[0];
 
         parent::__construct($id);
     }
