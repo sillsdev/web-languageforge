@@ -100,7 +100,12 @@ class MongoMapper
                 $data['entries'][(string) $item['_id']] = $item;
             }
         }
-        MongoDecoder::decode($model, $data);
+        try {
+            MongoDecoder::decode($model, $data);
+        } catch (\Exception $ex) {
+            CodeGuard::exception("Exception thrown while decoding '" . print_r($data, true) . "'", $ex->getCode(), $ex);
+        }
+
     }
 
     public function readList($model, $query, $fields = array(), $sortFields = array(),
@@ -165,7 +170,7 @@ class MongoMapper
         $data = $this->_collection->findOne(array("_id" => self::mongoID($id)));
         if ($data === NULL) {
             $collection = (string) $this->_collection;
-            throw new \Exception("Could not find id '$id'in '$collection'");
+            throw new \Exception("Could not find id '$id' in '$collection'");
         }
         try {
             MongoDecoder::decode($model, $data, $id);
