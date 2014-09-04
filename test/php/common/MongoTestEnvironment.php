@@ -1,12 +1,11 @@
 <?php
 
-use models\ProjectModel;
-
 use libraries\shared\Website;
-
-use models\shared\rights\SystemRoles;
-
+use models\ProjectModel;
+use models\UserModel;
 use models\languageforge\lexicon\LexiconProjectModel;
+use models\shared\rights\ProjectRoles;
+use models\shared\rights\SystemRoles;
 
 require_once TestPath . 'common/MockProjectModel.php';
 
@@ -190,5 +189,21 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
 
         return $projectModel;
     }
+    
+    public function getProjectMember($projectId, $userName)
+    {
+        new UserModel();
+        
+        $userId = $this->createUser($userName, $userName, 'user@example.com');
+        $user = new UserModel($userId);
+        $user->addProject($projectId);
+        $user->write();
+        $project = new ProjectModel($projectId);
+        $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
+        $project->write();
+    
+        return $userId;
+    }
+    
 
 }
