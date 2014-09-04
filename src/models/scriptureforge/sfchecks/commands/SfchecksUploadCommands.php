@@ -12,13 +12,17 @@ class SfchecksUploadCommands
      *
      * @param string $projectId
      * @param string $uploadType
+     * @param string $tmpFilePath
      * @throws \Exception
-     * @return \models\scriptureforge\sfchecks\commands\Response
+     * @return \models\scriptureforge\sfchecks\commands\UploadResponse
      */
-    public static function uploadFile($projectId, $uploadType)
+    public static function uploadFile($projectId, $uploadType, $tmpFilePath)
     {
         if ($uploadType != 'audio') {
             throw new \Exception("Unsupported upload type.");
+        }
+        if (! $tmpFilePath) {
+            throw new \Exception("Upload controller did not move the uploaded file.");
         }
 
         $textId = $_POST['textId'];
@@ -41,7 +45,6 @@ class SfchecksUploadCommands
         );
         $fileName = str_replace($search, '_', $fileName);
 
-        $fileName = $textId . '_' . $fileName;
         $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
 
         // allowed types: documented, observed
@@ -53,6 +56,7 @@ class SfchecksUploadCommands
             ".mp3"
         );
 
+        $response = new UploadResponse();
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folder if it doesn't exist
@@ -69,43 +73,46 @@ class SfchecksUploadCommands
             }
 
             // move uploaded file from tmp location to assets
-            $filePath = $folderPath . '/' . $fileName;
-            $moveOk = move_uploaded_file($file['tmp_name'], $filePath);
+            $filePath = $folderPath . '/' . $textId . '_' . $fileName;
+            $moveOk = rename($tmpFilePath, $filePath);
 
             // update database with file location
-            $url = '';
-            if ($moveOk) {
-                $url = "$path/$fileName";
-            }
             $project = new ProjectModel($projectId);
             $text = new TextModel($project, $textId);
-            $text->audioUrl = $url;
+            $text->audioFileName = '';
+            if ($moveOk) {
+                $text->audioFileName = $fileName;
+            }
             $text->write();
 
-            $data = new MediaResult();
-            $data->url = $url;
-            $data->path = $path;
-            $data->fileName = $fileName;
-            $response = new UploadResponse();
-            $response->result = true;
-            $response->data = $data;
+            // construct server response
+            if ($moveOk) {
+                $data = new MediaResult();
+                $data->url = '';
+                $data->path = $path;
+                $data->fileName = $fileName;
+                $response->result = true;
+            } else {
+                $data = new ErrorResult();
+                $data->errorType = 'UserMessage';
+                $data->errorMessage = "$fileName could not be saved to the right location. Contact your Site Administrator.";
+                $response->result = false;
+            }
         } else {
             $allowedExtensionsStr = implode(", ", $allowedExtensions);
-            // Ummm ditch the echos below and make them part of the result structure.
             $data = new ErrorResult();
             $data->errorType = 'UserMessage';
             if (count($allowedExtensions) < 1) {
-                $data->errorMessage = "$fileName is not an allowed audio file. No audio file formats are currently enabled.";
+                $data->errorMessage = "$fileName is not an allowed audio file. No audio file formats are currently enabled, contact your Site Administrator.";
             } elseif (count($allowedExtensions) == 1) {
                 $data->errorMessage = "$fileName is not an allowed audio file. Ensure the file is an $allowedExtensionsStr.";
             } else {
                 $data->errorMessage = "$fileName is not an allowed audio file. Ensure the file is one of the following types: $allowedExtensionsStr.";
             }
-            $response = new UploadResponse();
             $response->result = false;
-            $response->data = $data;
         }
 
+        $response->data = $data;
         return $response;
     }
 }
