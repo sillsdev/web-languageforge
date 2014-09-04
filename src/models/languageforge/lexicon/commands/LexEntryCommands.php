@@ -33,6 +33,13 @@ class LexEntryCommands
     }
     */
 
+    /**
+     * Updates the given LexEntry in $projectId
+     * @param string $projectId
+     * @param array $params
+     * @param string $userId
+     * @return LexEntryModel
+     */
     public static function updateEntry($projectId, $params, $userId)
     {
         CodeGuard::checkTypeAndThrow($params, 'array');
@@ -102,6 +109,7 @@ class LexEntryCommands
         $entry = new LexEntryModel($project, $entryId);
         $entry->isDeleted = true;
         $entry->write();
+        return true;
     }
 
     /*
