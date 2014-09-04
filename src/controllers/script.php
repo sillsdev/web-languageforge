@@ -23,11 +23,11 @@ class script extends Secure_base
                     $data = array();
                     $classname = "libraries\shared\scripts\\$folder\\$script";
 
-                    $script = new $classname();
                     $data['output'] = '';
-                    if ($runtype != 'run') {
+                    if ($runtype != 'run' && strtolower($folder) != 'control' && strtolower($script) != 'panel') {
                         $data['output'] .= "--------------- THIS IS A TEST RUN - The database should not be modified ----------------\n\n";
                     }
+                    $script = new $classname();
                     $data['output'] .= $script->run($runtype);
                     $data['scriptname'] = $classname . "->run()";
                     $this->renderPage("textoutput", $data);
