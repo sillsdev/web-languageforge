@@ -613,7 +613,7 @@ class sf
 
 	public function lex_entry_remove($entryId)
 	{
-		return LexEntryCommands::removeEntry($this->_projectId, $entryId);
+		return LexEntryCommands::removeEntry($this->_projectId, $entryId, $this->_userId);
 	}
 
 	public function lex_comment_update($data)
