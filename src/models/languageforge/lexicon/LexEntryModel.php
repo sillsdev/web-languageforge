@@ -7,6 +7,7 @@ use models\mapper\Id;
 use models\mapper\ArrayOf;
 use models\mapper\MapOf;
 use models\ProjectModel;
+use models\mapper\IdReference;
 
 function _createSense($data)
 {
