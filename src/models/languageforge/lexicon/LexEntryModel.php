@@ -80,7 +80,7 @@ class LexEntryModel extends \models\mapper\MapperModel
         parent::__construct(self::mapper($databaseName), $id);
     }
 
-    protected function & createProperty($name) {
+    protected function createProperty($name) {
         switch ($name) {
             case 'senses':
                 return new ArrayOf('models\languageforge\lexicon\_createSense');
