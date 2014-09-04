@@ -11,6 +11,7 @@ use models\languageforge\lexicon\LexiconProjectModel;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
 use models\ProjectModel;
+// use models\ProjectModelFixer;
 
 class LexEntryCommands
 {
@@ -18,6 +19,7 @@ class LexEntryCommands
     public static function readEntry($projectId, $entryId)
     {
         $project = new LexiconProjectModel($projectId);
+//         ProjectModelFixer::ensureVLatest($project);
         $entry = new LexEntryModel($project, $entryId);
 
         return JsonEncoder::encode($entry);
@@ -38,6 +40,7 @@ class LexEntryCommands
     {
         CodeGuard::checkTypeAndThrow($params, 'array');
         $project = new LexiconProjectModel($projectId);
+//         ProjectModelFixer::ensureVLatest($project);
         if (array_key_exists('id', $params) && $params['id'] != '') {
             $entry = new LexEntryModel($project, $params['id']);
             $action = 'update';
@@ -96,6 +99,7 @@ class LexEntryCommands
     public static function listEntries($projectId, $missingInfo = '')
     {
         $project = new LexiconProjectModel($projectId);
+//         ProjectModelFixer::ensureVLatest($project);
         $lexEntries = new LexEntryListModel($project);
         $lexEntries->readForDto($missingInfo);
 
@@ -105,6 +109,7 @@ class LexEntryCommands
     public static function removeEntry($projectId, $entryId, $userId)
     {
         $project = new ProjectModel($projectId);
+//         ProjectModelFixer::ensureVLatest($project);
         $entry = new LexEntryModel($project, $entryId);
         $entry->isDeleted = true;
         $entry->write();
@@ -118,7 +123,7 @@ class LexEntryCommands
      */
     public static function getEntryLexeme($projectId, $entryId) {
         $project = new LexiconProjectModel($projectId);
-        ProjectModelFixer::ensureVLatest($project);
+//         ProjectModelFixer::ensureVLatest($project);
         $entry = new LexEntryModel($project, $entryId);
         $inputSystems = $project->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems;
         foreach ($inputSystems as $inputSystem) {

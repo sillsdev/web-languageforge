@@ -1,7 +1,8 @@
 <?php
 namespace models;
 
-use libraries\palaso\CodeGuard;
+use libraries\shared\palaso\CodeGuard;
+
 
 class ProjectModelFixer
 {
@@ -38,10 +39,11 @@ class ProjectModelFixer
     private function ensureV01()
     {
         $model = $this->projectModel;
-        $this->ensureHasProjectSlug();
+        // Disabled all but projectName until we can implement them properly. 2014-09-04 RM
+        //$this->ensureHasProjectSlug();
         $this->ensureHasProjectName();
-        $this->ensureHasLanguageCode();
-        $this->ensureHasProjectType();
+        //$this->ensureHasLanguageCode();
+        //$this->ensureHasProjectType();
     }
 
     private function ensureHasProjectSlug()
@@ -75,7 +77,11 @@ class ProjectModelFixer
         if (!empty($model->languageCode)) {
             return;
         }
-        $model->languageCode = 'qaa';
+//         if (!empty($model->config)) {
+//             $model->languageCode = $model->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[0];
+//         } else {
+            $model->languageCode = 'qaa';
+//         }
         error_log(sprintf("Fixed ProjectModel::languageCode %s = %s", $model->id->asString(), $model->languageCode));
         $this->wasFixed = true;
     }
