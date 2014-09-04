@@ -3,7 +3,7 @@
         <ul class="topNav">
             <li><a href="/app/projects">My Projects</a></li>
             <li class="here"><a href="/app/activity">Activity<span ng-hide="unread.length == 0" style="margin-left:10px" class="badge badge-important">{{unread.length}}</span></a></li>
-            
+
         </ul>
         <ul id="top" class="topCrumbs" breadcrumbs></ul>
     </div>
@@ -13,10 +13,10 @@
     </div> -->
     <div >
         <div ng-show="activities.length > 0" style="margin-top:20px"><button class="btn" ng-disabled="showAllActivity" ng-click="filterAllActivity()">All Activity</button> <button class="btn" ng-disabled="!showAllActivity" ng-click="filterMyActivity()">Show Only My Activity</button></div>
-        
+
         <div ng-show="filteredActivities.length > 0" ng-repeat="item in filteredActivities">
             <ng-switch on="item.action + '-' + item.type">
-            
+
                 <div ng-switch-when="add_comment-project" class="span12 activity-row">
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
@@ -33,9 +33,9 @@
                         <p class="indented">{{item.content.comment}} - {{item.userRef.username}}</p>
                     </div>
                     </div>
-                </div> 
-                
-                
+                </div>
+
+
                 <div ng-switch-when="update_comment-project" class="span12 activity-row">
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
@@ -52,9 +52,9 @@
                         <p class="indented">{{item.content.comment}} - {{item.userRef.username}}</p>
                     </div>
                     </div>
-                </div> 
-                
-                
+                </div>
+
+
                 <div ng-switch-when="message-global" class="span12 activity-row">
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
@@ -68,9 +68,9 @@
                         <span>{{item.content.message}}</span>
                     </div>
                     </div>
-                </div> 
-                
-                
+                </div>
+
+
                 <div ng-switch-when="add_question-project" class="span12 activity-row">
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
@@ -85,9 +85,9 @@
                         <p class="indented">&ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;</p>
                     </div>
                     </div>
-                </div> 
-                
-                
+                </div>
+
+
                 <div ng-switch-when="add_user_to_project-project" class="span12 activity-row">
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
@@ -101,9 +101,9 @@
                         <span>{{item.content.user}} is now a member of <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                     </div>
                     </div>
-                </div> 
-                
-                
+                </div>
+
+
                 <div ng-switch-when="add_text-project" class="span12 activity-row">
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
@@ -117,9 +117,9 @@
                         <span>The <a href="{{item.projectHref}}">{{item.content.project}}</a> project has added <a href="{{item.textHref}}">{{item.content.text}}</a> for checking</span>
                     </div>
                     </div>
-                </div> 
-                
-                
+                </div>
+
+
                 <div ng-switch-when="add_answer-project" class="span12 activity-row">
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
@@ -134,9 +134,9 @@
                         <p class="indented" ng-bind-html="item.content.answer"></p>
                     </div>
                     </div>
-                </div> 
-                
-                
+                </div>
+
+
                 <div ng-switch-when="update_answer-project" class="span12 activity-row">
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
@@ -151,9 +151,9 @@
                         <div ng-bind-html="item.content.answer"></div>
                     </div>
                     </div>
-                </div> 
-                
-                
+                </div>
+
+
                 <div ng-switch-when="increase_score-project" class="span12 activity-row">
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
@@ -167,8 +167,8 @@
                         <span>{{item.userRef.username}} +1'd your answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                     </div>
                     </div>
-                </div> 
-                
+                </div>
+
                 <div ng-switch-when="add_entry-project" class="span12 activity-row">
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
@@ -182,8 +182,8 @@
                         <span>{{item.userRef.username}} created the entry &ldquo;<a href="{{item.entryHref}}">{{item.content.entry}}</a>&rdquo; in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                     </div>
                     </div>
-                </div> 
-                
+                </div>
+
                 <div ng-switch-when="update_entry-project" class="span12 activity-row">
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
@@ -197,13 +197,28 @@
                         <span>{{item.userRef.username}} updated the entry for &ldquo;<a href="{{item.entryHref}}">{{item.content.entry}}</a>&rdquo; in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                     </div>
                     </div>
-                </div> 
-                
+                </div>
+
+                <div ng-switch-when="delete_entry-project" class="span12 activity-row">
+                    <hr>
+                    <div class="span12" ng-class="{unread: isUnread(item.id)}">
+                    <div class="span1 activity-icon">
+                        <img width="50px" height="50px" ng-src="{{item.userRef.avatar_ref}}" />
+                    </div>
+                    <div class="span1 activity-date">
+                        {{item.date|relativetime}}
+                    </div>
+                    <div class="span8 activity-content">
+                        <span>{{item.userRef.username}} deleted the entry &ldquo;{{item.content.entry}}&rdquo; in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+                    </div>
+                    </div>
+                </div>
+
                 <div class="span12 activity-row" ng-switch-default>
                     <hr>
                     The {{item.action + '-' + item.type}} activity type is unimplemented
                 </div>
-                
+
             </ng-switch>
         </div>
             <div class="span12"><hr /></div>
