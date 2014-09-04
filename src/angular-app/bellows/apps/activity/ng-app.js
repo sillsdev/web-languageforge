@@ -41,6 +41,9 @@ angular.module('activity',
         if ('questionRef' in items[i]) {
           items[i].questionHref = sfchecksLinkService.question(items[i].textRef, items[i].questionRef, items[i].projectRef.id);
         }
+        if ('entryRef' in items[i]) {
+          items[i].entryHref = sfchecksLinkService.entry(items[i].entryRef, items[i].projectRef.id);
+        }
         if ('content' in items[i]) {
           if ('answer' in items[i]['content']) {
             items[i]['content']['answer'] = $sce.trustAsHtml(items[i]['content']['answer']);

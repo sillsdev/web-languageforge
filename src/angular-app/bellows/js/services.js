@@ -249,7 +249,8 @@ angular.module('bellows.services', ['jsonRpc'])
 
   this.entry = function(entryId, projectId) {
     if (angular.isDefined(projectId)) {
-      return this.project(projectId) + '/#/dbe/' + entryId;
+      // TODO: Replace hardcoded 'lexicon' below
+      return this.project(projectId, 'lexicon') + '/dbe/' + entryId;
     } else {
       return '#/dbe/' + entryId;
     };

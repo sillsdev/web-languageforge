@@ -126,7 +126,7 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public function userIsMember($userId)
     {
-        return    key_exists($userId, $this->users);
+        return key_exists($userId, $this->users);
     }
 
     public function listUsers()
