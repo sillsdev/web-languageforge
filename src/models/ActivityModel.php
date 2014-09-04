@@ -10,6 +10,7 @@ use models\mapper\IdReference;
 
 use models\mapper\Id;
 use models\mapper\MapOf;
+use libraries\shared\palaso\CodeGuard;
 
 class ActivityModelMongoMapper extends \models\mapper\MongoMapper
 {
@@ -89,6 +90,7 @@ class ActivityModel extends \models\mapper\MapperModel
      */
     public function addContent($type, $content)
     {
+        CodeGuard::checkTypeAndThrow($content, 'string');
         $this->actionContent[$type] = $content;
     }
 
