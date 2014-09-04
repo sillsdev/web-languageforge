@@ -20,27 +20,40 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $text->title = "Some Title";
         $textId = $text->write();
 
-        $fileType = 'audio';
+        // put a copy of the test file in tmp
+        $tmpName = 'CopyOfTestAudio.mp3';
+        $tmpFilePath = sys_get_temp_dir() . '/' . $tmpName;
+        copy(TestPath . 'common/TestAudio.mp3', $tmpFilePath);
+
+        $uploadType = 'audio';
         $file = array();
-        $fileName = 'fileName.mp3';
+        $fileName = 'TestAudio.mp3';
         $file['name'] = $fileName;
         $file['type'] = 'audio/mp3';
-        $file['tmp_name'] = '';
         $_FILES['file'] = $file;
         $_POST['textId'] = $textId;
 
-        $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
+        $response = SfchecksUploadCommands::uploadFile($projectId, $uploadType, $tmpFilePath);
 
+        $text->read($textId);
         $this->assertEqual(true, $response->result);
         $this->assertPattern("/$projectId/", $response->data->path);
-        $this->assertPattern("/$textId/", $response->data->fileName);
-        $this->assertPattern("/$fileName/", $response->data->fileName);
+        $this->assertEqual($fileName, $response->data->fileName);
+        $this->assertEqual($fileName, $text->audioFileName);
 
-        $file['type'] = 'audio/mpeg';
-
-        $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
-
-        $this->assertEqual(true, $response->result);
+        // cleanup test files and folders
+        $path = 'assets/' . $projectId;
+        $folderPath = APPPATH . $path;
+        $filePath = $folderPath . '/' . $textId . '_' . $fileName;
+        if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
+            @unlink($tmpFilePath);
+        }
+        if (file_exists($filePath) and ! is_dir($filePath)) {
+            @unlink($filePath);
+        }
+        if (file_exists($folderPath) and is_dir($folderPath)) {
+            @rmdir($folderPath);
+        }
     }
 
     function testUploadAudio_mp3FileUpperCaseExt_uploadAllowed()
@@ -54,18 +67,37 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $text->title = "Some Title";
         $textId = $text->write();
 
-        $fileType = 'audio';
+        // put a copy of the test file in tmp
+        $tmpName = 'CopyOfTestAudio.mp3';
+        $tmpFilePath = sys_get_temp_dir() . '/' . $tmpName;
+        copy(TestPath . 'common/TestAudio.mp3', $tmpFilePath);
+
+        $uploadType = 'audio';
         $file = array();
-        $fileName = 'fileName.MP3';
+        $fileName = 'TestAudio.MP3';
         $file['name'] = $fileName;
         $file['type'] = 'AUDIO/MP3';
-        $file['tmp_name'] = '';
         $_FILES['file'] = $file;
         $_POST['textId'] = $textId;
 
-        $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
+        $response = SfchecksUploadCommands::uploadFile($projectId, $uploadType, $tmpFilePath);
 
         $this->assertEqual(true, $response->result);
+        $this->assertEqual($fileName, $response->data->fileName);
+
+        // cleanup test files and folders
+        $path = 'assets/' . $projectId;
+        $folderPath = APPPATH . $path;
+        $filePath = $folderPath . '/' . $textId . '_' . $fileName;
+        if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
+            @unlink($tmpFilePath);
+        }
+        if (file_exists($filePath) and ! is_dir($filePath)) {
+            @unlink($filePath);
+        }
+        if (file_exists($folderPath) and is_dir($folderPath)) {
+            @rmdir($folderPath);
+        }
     }
 
     function testUploadAudio_mp4File_uploadDisallowed()
@@ -79,28 +111,50 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $text->title = "Some Title";
         $textId = $text->write();
 
-        $fileType = 'audio';
+        // put a copy of the test file in tmp
+        $tmpName = 'CopyOfTestAudio.mp3';
+        $tmpFilePath = sys_get_temp_dir() . '/' . $tmpName;
+        copy(TestPath . 'common/TestAudio.mp3', $tmpFilePath);
+
+        $uploadType = 'audio';
         $file = array();
-        $file['name'] = 'fileName.mp3';
+        $fileName = 'TestAudio.mp3';
+        $file['name'] = $fileName;
         $file['type'] = 'video/mp4';
-        $file['tmp_name'] = '';
         $_FILES['file'] = $file;
         $_POST['textId'] = $textId;
 
-        $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
+        $response = SfchecksUploadCommands::uploadFile($projectId, $uploadType, $tmpFilePath);
 
         $this->assertEqual(false, $response->result);
         $this->assertEqual('UserMessage', $response->data->errorType);
         $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage);
 
         $file['type'] = 'audio/mp3';
-        $file['name'] = 'fileName.mp4';
+        $fileName = 'TestAudio.mp4';
+        $file['name'] = $fileName;
+        $_FILES['file'] = $file;
+        copy(TestPath . 'common/TestAudio.mp3', $tmpFilePath);
 
-        $response = SfchecksUploadCommands::uploadFile($projectId, $fileType);
+        $response = SfchecksUploadCommands::uploadFile($projectId, $uploadType, $tmpFilePath);
 
         $this->assertEqual(false, $response->result);
         $this->assertEqual('UserMessage', $response->data->errorType);
         $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage);
+
+        // cleanup test files and folders
+        $path = 'assets/' . $projectId;
+        $folderPath = APPPATH . $path;
+        $filePath = $folderPath . '/' . $textId . '_' . $fileName;
+        if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
+            @unlink($tmpFilePath);
+        }
+        if (file_exists($filePath) and ! is_dir($filePath)) {
+            @unlink($filePath);
+        }
+        if (file_exists($folderPath) and is_dir($folderPath)) {
+            @rmdir($folderPath);
+        }
     }
 }
 

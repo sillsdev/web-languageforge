@@ -26,17 +26,17 @@ class Upload extends Secure_base
 
             try {
 
-                // Call the api here
                 if ($app == 'sf-checks') {
+                    $tmpFilePath = $this->moveUploadedFile();
                     $api = new Sf($this);
-                    $api->checkPermissions('sfChecks_uploadFile', $uploadType);
-                    $response = $api->sfChecks_uploadFile($uploadType);
+                    $api->checkPermissions('sfChecks_uploadFile', array($uploadType, $tmpFilePath));
+                    $response = $api->sfChecks_uploadFile($uploadType, $tmpFilePath);
                 } elseif ($app == 'lf-lexicon') {
+                    $tmpFilePath = $this->moveUploadedFile();
                     $api = new Sf($this);
-                    $api->checkPermissions('lex_uploadFile', $uploadType);
-                    $response = $api->lex_uploadFile($uploadType);
+                    $api->checkPermissions('lex_uploadFile', array($uploadType, $tmpFilePath));
+                    $response = $api->lex_uploadFile($uploadType, $tmpFilePath);
                 } else {
-                    // Return some kind of programmer isn't that clever error.
                     throw new \Exception("Unsupported upload app.");
                 }
             } catch (\Exception $e) {
@@ -67,6 +67,20 @@ class Upload extends Secure_base
         $output = $this->output;
         $output->set_content_type('text/javascript');
         $output->set_output(json_encode($response));
+    }
+
+    /**
+     * Move the uploaded file here in the controller so the upload command can be unit tested
+     *
+     * @return string|boolean returns the moved file path on success or false otherwise
+     */
+    protected function moveUploadedFile() {
+        $filename = uniqid('upload_', true);
+        $filePath = sys_get_temp_dir() . '/' . $filename;
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $filePath)) {
+            return $filePath;
+        }
+        return false;
     }
 }
 
