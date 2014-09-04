@@ -64,7 +64,7 @@ class Sense
 
     }
 
-    protected function & createProperty($name) {
+    protected function createProperty($name) {
         switch ($name) {
             case 'partOfSpeech': return new LexiconField();
             case 'semanticDomain': return new LexiconMultiValueField();
