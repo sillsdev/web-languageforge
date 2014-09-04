@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cambell-prince/LazyProperty.git",
-                "reference": "f737cd125f2fca567b92dd2bb84738b904b391ce"
+                "reference": "4597cdb02fd1060fcd1f0f10a0de75f35ae7a7f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cambell-prince/LazyProperty/zipball/f737cd125f2fca567b92dd2bb84738b904b391ce",
-                "reference": "f737cd125f2fca567b92dd2bb84738b904b391ce",
+                "url": "https://api.github.com/repos/cambell-prince/LazyProperty/zipball/4597cdb02fd1060fcd1f0f10a0de75f35ae7a7f7",
+                "reference": "4597cdb02fd1060fcd1f0f10a0de75f35ae7a7f7",
                 "shasum": ""
             },
             "require": {
@@ -60,7 +60,7 @@
             "support": {
                 "source": "https://github.com/cambell-prince/LazyProperty/tree/feature/factory"
             },
-            "time": "2014-08-05 14:55:54"
+            "time": "2014-09-04 02:37:37"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -97,7 +97,9 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Chris Corbyn"
@@ -117,21 +119,27 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig-extensions.git",
-                "reference": "3604161a4aa2e5c535cbc708810123fd3258b2dc"
+                "reference": "b092fb785ef82eb99132deadaf8ca1823a4d75dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/3604161a4aa2e5c535cbc708810123fd3258b2dc",
-                "reference": "3604161a4aa2e5c535cbc708810123fd3258b2dc",
+                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/b092fb785ef82eb99132deadaf8ca1823a4d75dd",
+                "reference": "b092fb785ef82eb99132deadaf8ca1823a4d75dd",
                 "shasum": ""
             },
             "require": {
-                "twig/twig": "~1.0"
+                "twig/twig": "~1.12"
+            },
+            "require-dev": {
+                "symfony/translation": "~2.3"
+            },
+            "suggest": {
+                "symfony/translation": "Allow the time_diff output to be translated"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
@@ -152,11 +160,10 @@
             "description": "Common additional features for Twig that do not directly belong in core",
             "homepage": "https://github.com/fabpot/Twig-extensions",
             "keywords": [
-                "debug",
                 "i18n",
                 "text"
             ],
-            "time": "2013-09-27 20:07:42"
+            "time": "2014-08-08 06:16:10"
         },
         {
             "name": "twig/twig",
@@ -193,11 +200,14 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Armin Ronacher",
-                    "email": "armin.ronacher@active-4.com"
+                    "email": "armin.ronacher@active-4.com",
+                    "role": "Project Founder"
                 }
             ],
             "description": "Twig, the flexible, fast, and secure template language for PHP",
@@ -213,12 +223,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php.git",
-                "reference": "f676f16d48fc2aad54c093c0d04a860c29f44f40"
+                "reference": "a876df2cd5bc873beb450a56e6e410680a5b4e4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/f676f16d48fc2aad54c093c0d04a860c29f44f40",
-                "reference": "f676f16d48fc2aad54c093c0d04a860c29f44f40",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/a876df2cd5bc873beb450a56e6e410680a5b4e4c",
+                "reference": "a876df2cd5bc873beb450a56e6e410680a5b4e4c",
                 "shasum": ""
             },
             "require": {
@@ -255,7 +265,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2013-09-28 18:56:04"
+            "time": "2014-07-15 17:50:20"
         }
     ],
     "packages-dev": [
