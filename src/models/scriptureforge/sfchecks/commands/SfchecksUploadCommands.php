@@ -86,7 +86,7 @@ class SfchecksUploadCommands
             $text->write();
 
             // construct server response
-            if ($moveOk) {
+            if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
                 $data->url = '';
                 $data->path = $path;

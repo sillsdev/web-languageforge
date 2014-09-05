@@ -530,9 +530,9 @@ class sf
     // ---------------------------------------------------------------
     // Upload API
     // ---------------------------------------------------------------
-    public function sfChecks_uploadFile($uploadType)
+    public function sfChecks_uploadFile($uploadType, $tmpFilePath)
     {
-        $response = SfchecksUploadCommands::uploadFile($this->_projectId, $uploadType);
+        $response = SfchecksUploadCommands::uploadFile($this->_projectId, $uploadType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
