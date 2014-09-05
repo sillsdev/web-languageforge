@@ -87,6 +87,13 @@ class MongoTestEnvironment
         $projectModel->projectCode = $code;
         $projectModel->isArchived = false;
         $projectModel->siteName = $this->website->domain;
+        if ($this->website->base == Website::SCRIPTUREFORGE) {
+            $projectModel->appName = 'sfchecks';
+        } else if ($this->website->base == Website::LANGUAGEFORGE) {
+            $projectModel->appName = 'lexicon';
+        } else {
+            $projectModel->appName = 'rapuma';
+        }
         $this->cleanProjectEnvironment($projectModel);
         $projectModel->write();
 
@@ -189,11 +196,11 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
 
         return $projectModel;
     }
-    
+
     public function getProjectMember($projectId, $userName)
     {
         new UserModel();
-        
+
         $userId = $this->createUser($userName, $userName, 'user@example.com');
         $user = new UserModel($userId);
         $user->addProject($projectId);
@@ -201,9 +208,9 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         $project = new ProjectModel($projectId);
         $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
         $project->write();
-    
+
         return $userId;
     }
-    
+
 
 }
