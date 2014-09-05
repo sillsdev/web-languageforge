@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b42ec3e1bb44fc610a12f50dbf549d1e",
+    "hash": "b894b5ff37566e7b419553b6e64f5285",
     "packages": [
         {
             "name": "ocramius/lazy-property",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cambell-prince/LazyProperty.git",
-                "reference": "4597cdb02fd1060fcd1f0f10a0de75f35ae7a7f7"
+                "reference": "f737cd125f2fca567b92dd2bb84738b904b391ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cambell-prince/LazyProperty/zipball/4597cdb02fd1060fcd1f0f10a0de75f35ae7a7f7",
-                "reference": "4597cdb02fd1060fcd1f0f10a0de75f35ae7a7f7",
+                "url": "https://api.github.com/repos/cambell-prince/LazyProperty/zipball/f737cd125f2fca567b92dd2bb84738b904b391ce",
+                "reference": "f737cd125f2fca567b92dd2bb84738b904b391ce",
                 "shasum": ""
             },
             "require": {
@@ -60,7 +60,7 @@
             "support": {
                 "source": "https://github.com/cambell-prince/LazyProperty/tree/feature/factory"
             },
-            "time": "2014-09-04 02:37:37"
+            "time": "2014-08-05 14:55:54"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -97,9 +97,7 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
+                    "email": "fabien@symfony.com"
                 },
                 {
                     "name": "Chris Corbyn"
@@ -200,14 +198,11 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
+                    "email": "fabien@symfony.com"
                 },
                 {
                     "name": "Armin Ronacher",
-                    "email": "armin.ronacher@active-4.com",
-                    "role": "Project Founder"
+                    "email": "armin.ronacher@active-4.com"
                 }
             ],
             "description": "Twig, the flexible, fast, and secure template language for PHP",
@@ -223,12 +218,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php.git",
-                "reference": "a876df2cd5bc873beb450a56e6e410680a5b4e4c"
+                "reference": "f676f16d48fc2aad54c093c0d04a860c29f44f40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/a876df2cd5bc873beb450a56e6e410680a5b4e4c",
-                "reference": "a876df2cd5bc873beb450a56e6e410680a5b4e4c",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/f676f16d48fc2aad54c093c0d04a860c29f44f40",
+                "reference": "f676f16d48fc2aad54c093c0d04a860c29f44f40",
                 "shasum": ""
             },
             "require": {
@@ -265,11 +260,88 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2014-07-15 17:50:20"
+            "time": "2013-09-28 18:56:04"
         }
     ],
     "packages-dev": [
-
+        {
+            "name": "simpletest/simpletest",
+            "version": "dev-master-sil",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sillsdev/simpletest.git",
+                "reference": "9084dc924a3d76a518e8c1cde3651ddeef7c6220"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sillsdev/simpletest/zipball/9084dc924a3d76a518e8c1cde3651ddeef7c6220",
+                "reference": "9084dc924a3d76a518e8c1cde3651ddeef7c6220",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.0.5"
+            },
+            "replace": {
+                "lastcraft/simpletest": "self.version",
+                "vierbergenlars/simpletest": "self.version"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "."
+                ]
+            },
+            "license": [
+                "LGPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Marcus Baker",
+                    "email": "marcus@lastcraft.com",
+                    "role": "Original project lead"
+                },
+                {
+                    "name": "Jason Sweat",
+                    "role": "Original developer"
+                },
+                {
+                    "name": "Travis Swicegood",
+                    "role": "Original developer"
+                },
+                {
+                    "name": "Perrick Penet",
+                    "role": "Original developer"
+                },
+                {
+                    "name": "Edward Z. Yang",
+                    "role": "Original developer"
+                },
+                {
+                    "name": "Lachlan Donald",
+                    "email": "lachlan@ljd.cc"
+                },
+                {
+                    "name": "Lars Vierbergen",
+                    "email": "vierbergenlars@gmail.com"
+                }
+            ],
+            "description": "Unit testing, mock objects and web testing framework for PHP built around test cases.",
+            "homepage": "http://simpletest.org/",
+            "keywords": [
+                "code-coverage",
+                "junit",
+                "php",
+                "selenium",
+                "simpletest",
+                "testing",
+                "unit-test",
+                "xunit"
+            ],
+            "support": {
+                "source": "https://github.com/sillsdev/simpletest/tree/master"
+            },
+            "time": "2013-09-21 20:58:43"
+        }
     ],
     "aliases": [
 
@@ -278,7 +350,8 @@
     "stability-flags": {
         "twig/extensions": 20,
         "twilio/sdk": 20,
-        "ocramius/lazy-property": 20
+        "ocramius/lazy-property": 20,
+        "simpletest/simpletest": 20
     },
     "prefer-stable": false,
     "platform": [
