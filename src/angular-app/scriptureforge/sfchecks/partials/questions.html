@@ -54,8 +54,8 @@
     <hr />
     <div class="row">
         <div class="span5" oncopy="return false;">
-            <h2 class="pull-left" data-ng-show="text.audioUrl && audioReady">
-                <a data-sgw-sound-player data-state="state" href="text.audioUrl">
+            <h2 class="pull-left" data-ng-show="text.audioFileName && audioReady">
+                <a data-sgw-sound-player data-state="state" href="audioPlayUrl">
                     <i data-ng-class="$parent.audioIcon()"
                         data-tooltip="Play audio"></i></a>
                 <a data-ng-show="project.allowAudioDownload"
