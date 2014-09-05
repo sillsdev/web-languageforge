@@ -270,12 +270,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sillsdev/simpletest.git",
-                "reference": "9084dc924a3d76a518e8c1cde3651ddeef7c6220"
+                "reference": "42c5620065a48fb53e6c1e6a57997b4dc0583790"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sillsdev/simpletest/zipball/9084dc924a3d76a518e8c1cde3651ddeef7c6220",
-                "reference": "9084dc924a3d76a518e8c1cde3651ddeef7c6220",
+                "url": "https://api.github.com/repos/sillsdev/simpletest/zipball/42c5620065a48fb53e6c1e6a57997b4dc0583790",
+                "reference": "42c5620065a48fb53e6c1e6a57997b4dc0583790",
                 "shasum": ""
             },
             "require": {
@@ -338,9 +338,9 @@
                 "xunit"
             ],
             "support": {
-                "source": "https://github.com/sillsdev/simpletest/tree/master"
+                "source": "https://github.com/sillsdev/simpletest/tree/master-sil"
             },
-            "time": "2013-09-21 20:58:43"
+            "time": "2014-09-05 06:30:06"
         }
     ],
     "aliases": [
