@@ -69,7 +69,7 @@ class Sense
             case 'partOfSpeech': return new LexiconField();
             case 'semanticDomain': return new LexiconMultiValueField();
             case 'examples': return new ArrayOf('\models\languageforge\lexicon\_createExample');
-            case 'customFields': return new ArrayOf('\models\languageforge\lexicon\_createCustomField');
+            case 'customFields': return new ArrayOf('\models\languageforge\lexicon\_createCustomField'); // REVIEW This should be MapOf should it not? CP 2014-09
             case 'authorInfo': return new AuthorInfo();
             case 'definition':
             case 'gloss':
