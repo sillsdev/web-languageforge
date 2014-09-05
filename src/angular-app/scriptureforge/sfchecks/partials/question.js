@@ -50,14 +50,14 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 
     questionService.read(questionId, function(result) {
       if (result.ok) {
+        $scope.project = result.data.project;
         $scope.text = result.data.text;
-        if ($scope.text.audioUrl != '') {
-          $scope.audioDownloadUrl = '/download/' + $scope.text.audioUrl;
-          $scope.text.audioUrl = '/' + $scope.text.audioUrl;
+        if ($scope.text.audioFileName != '') {
+          $scope.audioPlayUrl = '/assets/' + $scope.project.id + '/' + $scope.text.id + '_' + $scope.text.audioFileName;
+          $scope.audioDownloadUrl = '/download' + $scope.audioPlayUrl;
         }
         $scope.question = result.data.question;
         $scope.votes = result.data.votes;
-        $scope.project = result.data.project;
         $scope.unreadComments = result.data.unreadComments;
         $scope.unreadAnswers = result.data.unreadAnswers;
         // console.log(result.data);

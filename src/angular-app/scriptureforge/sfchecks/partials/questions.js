@@ -102,12 +102,12 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
           $scope.questionsCount = result.data.count;
           
           $scope.enhanceDto($scope.questions);
-          $scope.text = result.data.text;
-          if ($scope.text.audioUrl != '') {
-            $scope.audioDownloadUrl = '/download/' + $scope.text.audioUrl;
-            $scope.text.audioUrl = '/' + $scope.text.audioUrl;
-          } 
           $scope.project = result.data.project;
+          $scope.text = result.data.text;
+          if ($scope.text.audioFileName != '') {
+            $scope.audioPlayUrl = '/assets/' + $scope.project.id + '/' + $scope.text.id + '_' + $scope.text.audioFileName;
+            $scope.audioDownloadUrl = '/download' + $scope.audioPlayUrl;
+          }
           $scope.text.url = sfchecksLinkService.text(textId);
           //console.log($scope.project.name);
           //console.log($scope.text.title);
