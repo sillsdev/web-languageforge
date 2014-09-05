@@ -48,3 +48,8 @@ exports.config = {
     }
   }
 };
+
+if (process.env.TEAMCITY_VERSION) {
+  exports.config.jasmineNodeOpts.showColors = false;
+  exports.config.jasmineNodeOpts.silent = true;
+}
