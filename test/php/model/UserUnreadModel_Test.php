@@ -2,22 +2,15 @@
 
 
 use models\scriptureforge\dto\QuestionCommentDto;
-
-use models\UnreadAnswerModel;
-
-use models\commands\QuestionCommands;
-
-use models\UnreadQuestionModel;
-
-use models\QuestionModel;
-
-use models\UserModel;
-
-use models\commands\ActivityCommands;
-
-use models\UnreadActivityModel;
-
 use models\ProjectModel;
+use models\QuestionModel;
+use models\TextModel;
+use models\UserModel;
+use models\UnreadActivityModel;
+use models\UnreadAnswerModel;
+use models\UnreadQuestionModel;
+use models\commands\ActivityCommands;
+use models\commands\QuestionCommands;
 
 require_once dirname(__FILE__) . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -222,8 +215,15 @@ class TestUserUnreadModel extends UnitTestCase
 
         $answer = array('content' => "test answer", 'id' => '');
 
+        $text = new TextModel($project);
+        $text->title = "Text 1";
+        $usx = MongoTestEnvironment::usxSample();
+        $text->content = $usx;
+        $textId = $text->write();
+
         $question = new QuestionModel($project);
         $question->title = "test question";
+        $question->textRef->id = $textId;
         $questionId = $question->write();
         $answerDto = QuestionCommands::updateAnswer($projectId, $questionId, $answer, $userId1);
         $answer = array_pop($answerDto);
@@ -265,8 +265,15 @@ class TestUserUnreadModel extends UnitTestCase
         $answer1 = array('content' => "test answer 1", 'id' => '');
         $answer2 = array('content' => "test answer 2", 'id' => '');
 
+        $text = new TextModel($project);
+        $text->title = "Text 1";
+        $usx = MongoTestEnvironment::usxSample();
+        $text->content = $usx;
+        $textId = $text->write();
+
         $question = new QuestionModel($project);
         $question->title = "test question";
+        $question->textRef->id = $textId;
         $questionId = $question->write();
         $answer1Dto = QuestionCommands::updateAnswer($projectId, $questionId, $answer1, $userId1);
         $answer2Dto = QuestionCommands::updateAnswer($projectId, $questionId, $answer2, $userId2);
