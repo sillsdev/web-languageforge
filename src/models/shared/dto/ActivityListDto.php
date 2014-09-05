@@ -10,6 +10,7 @@ use models\UnreadActivityModel;
 use models\ProjectList_UserModel;
 use models\ProjectModel;
 use models\UserModel;
+use models\languageforge\lexicon\LexEntryModel;
 use models\mapper\JsonEncoder;
 
 require_once APPPATH . 'models/ActivityModel.php';
@@ -28,18 +29,28 @@ class ActivityListDtoEncoder extends JsonEncoder
     }
     public function encodeIdReference($key, $model)
     {
+        if ($model->asString() == '') {
+            return '';
+        }
         if ($key == 'userRef' || $key == 'userRef2') {
             $user = new UserModel();
             if ($user->exists($model->asString())) {
                 $user->read($model->asString());
 
                 return array(
-                        'id' => $user->id->asString(),
-                        'avatar_ref' => $user->avatar_ref,
-                        'username' => $user->username);
+                    'id' => $user->id->asString(),
+                    'avatar_ref' => $user->avatar_ref,
+                    'username' => $user->username
+                );
             } else {
                 return '';
             }
+        } elseif ($key == 'projectRef') {
+            $project = new ProjectModel($model->asString());
+            return array(
+                'id' => $project->id->asString(),
+                'type' => $project->appName,
+            );
         } elseif ($key == 'textRef') {
             $text = new TextModel($this->_project);
             if ($text->exists($model->asString())) {
@@ -50,6 +61,13 @@ class ActivityListDtoEncoder extends JsonEncoder
         } elseif ($key == 'questionRef') {
             $question = new QuestionModel($this->_project);
             if ($question->exists($model->asString())) {
+                return $model->asString();
+            } else {
+                return '';
+            }
+        } elseif ($key == 'entryRef') {
+            $entry = new LexEntryModel($this->_project);
+            if ($entry->exists($model->asString())) {
                 return $model->asString();
             } else {
                 return '';
