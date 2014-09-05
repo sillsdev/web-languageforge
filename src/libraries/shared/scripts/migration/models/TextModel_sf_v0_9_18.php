@@ -1,28 +1,28 @@
 <?php
-namespace models;
+namespace libraries\shared\scripts\migration\models;
 
 use models\mapper\Id;
 
 require_once APPPATH . 'models/ProjectModel.php';
 
-class TextModelMongoMapper extends \models\mapper\MongoMapper
+class TextModelMongoMapper_sf_v0_9_18 extends \models\mapper\MongoMapper
 {
 
     /**
      *
-     * @var TextModelMongoMapper[]
+     * @var TextModelMongoMapper_sf_v0_9_18[]
      */
     private static $_pool = array();
 
     /**
      *
      * @param string $databaseName
-     * @return TextModelMongoMapper
+     * @return TextModelMongoMapper_sf_v0_9_18
      */
     public static function connect($databaseName)
     {
         if (! isset(static::$_pool[$databaseName])) {
-            static::$_pool[$databaseName] = new TextModelMongoMapper($databaseName, 'texts');
+            static::$_pool[$databaseName] = new TextModelMongoMapper_sf_v0_9_18($databaseName, 'texts');
         }
         return static::$_pool[$databaseName];
     }
@@ -43,12 +43,16 @@ class TextModel_sf_v0_9_18 extends \models\mapper\MapperModel
         $this->_projectModel = $projectModel;
         $this->isArchived = false;
         $databaseName = $projectModel->databaseName();
-        parent::__construct(TextModelMongoMapper::connect($databaseName), $id);
+        parent::__construct(TextModelMongoMapper_sf_v0_9_18::connect($databaseName), $id);
     }
 
     public static function remove($databaseName, $id)
     {
-        TextModelMongoMapper::connect($databaseName)->remove($id);
+        TextModelMongoMapper_sf_v0_9_18::connect($databaseName)->remove($id);
+    }
+
+    public static function removeAudioProperty($databaseName) {
+        TextModelMongoMapper_sf_v0_9_18::connect($databaseName)->removeProperty('audioUrl');
     }
 
     public function listQuestions()
@@ -78,13 +82,13 @@ class TextModel_sf_v0_9_18 extends \models\mapper\MapperModel
     public $isArchived;
 }
 
-class TextListModel extends \models\mapper\MapperListModel
+class TextListModel_sf_v0_9_18 extends \models\mapper\MapperListModel
 {
 
     public function __construct($projectModel)
     {
         parent::__construct(
-            TextModelMongoMapper::connect($projectModel->databaseName()),
+            TextModelMongoMapper_sf_v0_9_18::connect($projectModel->databaseName()),
             array('title' => array('$regex' => '')),
             array('title')
         );
