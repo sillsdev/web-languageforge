@@ -116,5 +116,3 @@ class SfchecksUploadCommands
         return $response;
     }
 }
-
-?>
