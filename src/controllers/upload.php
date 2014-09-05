@@ -23,18 +23,22 @@ class Upload extends Secure_base
         $file = $_FILES['file'];
 
         if ($file['error'] == UPLOAD_ERR_OK) {
-
             try {
-
                 if ($app == 'sf-checks') {
                     $tmpFilePath = $this->moveUploadedFile();
                     $api = new Sf($this);
-                    $api->checkPermissions('sfChecks_uploadFile', array($uploadType, $tmpFilePath));
+                    $api->checkPermissions('sfChecks_uploadFile', array(
+                        $uploadType,
+                        $tmpFilePath
+                    ));
                     $response = $api->sfChecks_uploadFile($uploadType, $tmpFilePath);
                 } elseif ($app == 'lf-lexicon') {
                     $tmpFilePath = $this->moveUploadedFile();
                     $api = new Sf($this);
-                    $api->checkPermissions('lex_uploadFile', array($uploadType, $tmpFilePath));
+                    $api->checkPermissions('lex_uploadFile', array(
+                        $uploadType,
+                        $tmpFilePath
+                    ));
                     $response = $api->lex_uploadFile($uploadType, $tmpFilePath);
                 } else {
                     throw new \Exception("Unsupported upload app.");
@@ -47,16 +51,16 @@ class Upload extends Secure_base
                         'errorMessage' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " . CodeGuard::getStackTrace($e->getTrace())
                     )
                 );
-//                 if ($e instanceof ResourceNotAvailableException) {
-//                     $response['data']['errorType'] = 'ResourceNotAvailableException';
-//                     $response['data']['errorMessage'] = $e->getMessage();
-//                 } elseif ($e instanceof UserNotAuthenticatedException) {
-//                     $response['data']['errorType'] = 'UserNotAuthenticatedException';
-//                     $response['data']['errorMessage'] = $e->getMessage();
-//                 } elseif ($e instanceof UserUnauthorizedException) {
-//                     $response['data']['errorType'] = 'UserUnauthorizedException';
-//                     $response['data']['errorMessage'] = $e->getMessage();
-//                 }
+                // if ($e instanceof ResourceNotAvailableException) {
+                //      $response['data']['errorType'] = 'ResourceNotAvailableException';
+                //      $response['data']['errorMessage'] = $e->getMessage();
+                // } elseif ($e instanceof UserNotAuthenticatedException) {
+                //      $response['data']['errorType'] = 'UserNotAuthenticatedException';
+                //      $response['data']['errorMessage'] = $e->getMessage();
+                // } elseif ($e instanceof UserUnauthorizedException) {
+                //      $response['data']['errorType'] = 'UserUnauthorizedException';
+                //      $response['data']['errorMessage'] = $e->getMessage();
+                // }
                 $message = '';
                 $message .= $e->getMessage() . "\n";
                 $message .= $e->getTraceAsString() . "\n";
@@ -74,7 +78,8 @@ class Upload extends Secure_base
      *
      * @return string|boolean returns the moved file path on success or false otherwise
      */
-    protected function moveUploadedFile() {
+    protected function moveUploadedFile()
+    {
         $filename = uniqid('upload_', true);
         $filePath = sys_get_temp_dir() . '/' . $filename;
         if (move_uploaded_file($_FILES['file']['tmp_name'], $filePath)) {
@@ -83,5 +88,3 @@ class Upload extends Secure_base
         return false;
     }
 }
-
-?>
