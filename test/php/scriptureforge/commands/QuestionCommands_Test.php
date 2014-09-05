@@ -364,12 +364,13 @@ class TestQuestionCommands extends UnitTestCase
         $question->textRef->id = $textId;
         $questionId = $question->write();
 
-        $answer = new AnswerModel();
-        $answer->content = "the answer";
-        $answerId = $question->writeAnswer($answer);
-
         $user1Id = $e->createUser("user1", "user1", "user1");
         $user2Id = $e->createUser("user2", "user2", "user2");
+
+        $answer = new AnswerModel();
+        $answer->content = "the answer";
+        $answer->userRef->id = $user2Id;
+        $answerId = $question->writeAnswer($answer);
 
         $comment = new CommentModel();
         $comment->userRef->id = $user1Id;
