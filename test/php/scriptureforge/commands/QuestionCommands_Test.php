@@ -4,6 +4,7 @@ use models\commands\QuestionCommands;
 use models\AnswerModel;
 use models\CommentModel;
 use models\QuestionModel;
+use models\TextModel;
 
 require_once dirname(__FILE__) . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -20,6 +21,11 @@ class UserVoteTestEnvironment
 	 * @var string
 	 */
     public $projectId;
+
+    /**
+     * @var TextModel
+     */
+    public $text;
 
     /**
 	 * @var QuestionModel
@@ -42,7 +48,15 @@ class UserVoteTestEnvironment
         $e->clean();
 
         $this->project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        $this->text = new TextModel($this->project);
+        $this->text->title = "Text 1";
+        $usx = MongoTestEnvironment::usxSample();
+        $this->text->content = $usx;
+        $textId = $this->text->write();
+
         $this->question = new QuestionModel($this->project);
+        $this->question->textRef->id = $textId;
         $this->question->write();
 
         $this->userId = $e->createUser('test_user', 'Test User', 'test_user@example.com');
@@ -72,7 +86,13 @@ class TestQuestionCommands extends UnitTestCase
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
+        $text = new TextModel($project);
+        $text->title = "Text 1";
+        $usx = MongoTestEnvironment::usxSample();
+        $text->content = $usx;
+        $textId = $text->write();
         $question = new QuestionModel($project);
+        $question->textRef->id = $textId;
         $question->write();
 
         $questionId = $question->id->asString();
@@ -204,7 +224,13 @@ class TestQuestionCommands extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $text = new TextModel($project);
+        $text->title = "Text 1";
+        $usx = MongoTestEnvironment::usxSample();
+        $text->content = $usx;
+        $textId = $text->write();
         $question = new QuestionModel($project);
+        $question->textRef->id = $textId;
         $questionId = $question->write();
 
         $answer = new AnswerModel();
@@ -231,7 +257,13 @@ class TestQuestionCommands extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $text = new TextModel($project);
+        $text->title = "Text 1";
+        $usx = MongoTestEnvironment::usxSample();
+        $text->content = $usx;
+        $textId = $text->write();
         $question = new QuestionModel($project);
+        $question->textRef->id = $textId;
         $questionId = $question->write();
 
         $answer = new AnswerModel();
@@ -264,7 +296,13 @@ class TestQuestionCommands extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $text = new TextModel($project);
+        $text->title = "Text 1";
+        $usx = MongoTestEnvironment::usxSample();
+        $text->content = $usx;
+        $textId = $text->write();
         $question = new QuestionModel($project);
+        $question->textRef->id = $textId;
         $questionId = $question->write();
 
         $answer = new AnswerModel();
@@ -287,7 +325,13 @@ class TestQuestionCommands extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $text = new TextModel($project);
+        $text->title = "Text 1";
+        $usx = MongoTestEnvironment::usxSample();
+        $text->content = $usx;
+        $textId = $text->write();
         $question = new QuestionModel($project);
+        $question->textRef->id = $textId;
         $questionId = $question->write();
 
         $answer = new AnswerModel();
@@ -311,15 +355,22 @@ class TestQuestionCommands extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $text = new TextModel($project);
+        $text->title = "Text 1";
+        $usx = MongoTestEnvironment::usxSample();
+        $text->content = $usx;
+        $textId = $text->write();
         $question = new QuestionModel($project);
+        $question->textRef->id = $textId;
         $questionId = $question->write();
-
-        $answer = new AnswerModel();
-        $answer->content = "the answer";
-        $answerId = $question->writeAnswer($answer);
 
         $user1Id = $e->createUser("user1", "user1", "user1");
         $user2Id = $e->createUser("user2", "user2", "user2");
+
+        $answer = new AnswerModel();
+        $answer->content = "the answer";
+        $answer->userRef->id = $user2Id;
+        $answerId = $question->writeAnswer($answer);
 
         $comment = new CommentModel();
         $comment->userRef->id = $user1Id;

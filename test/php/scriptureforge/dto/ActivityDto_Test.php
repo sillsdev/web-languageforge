@@ -55,7 +55,10 @@ class TestActivityDto extends UnitTestCase
         $dto = ActivityListDto::getActivityForProject($project);
 
         $this->assertEqual($dto[$activityid]['action'], 'add_answer');
-        $this->assertEqual($dto[$activityid]['projectRef'], $project->id->asString());
+        $this->assertEqual($dto[$activityid]['projectRef'], array(
+            'id' => $project->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$activityid]['content']['project'], $project->projectName);
         $this->assertEqual($dto[$activityid]['textRef'], $textId);
         $this->assertEqual($dto[$activityid]['content']['text'], $text->title);
@@ -97,13 +100,19 @@ class TestActivityDto extends UnitTestCase
         $dto = $dto['activity'];
 
         $this->assertEqual($dto[$a1]['action'], 'add_text');
-        $this->assertEqual($dto[$a1]['projectRef'], $project1->id->asString());
+        $this->assertEqual($dto[$a1]['projectRef'], array(
+            'id' => $project1->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$a1]['content']['project'], $project1->projectName);
         $this->assertEqual($dto[$a1]['textRef'], $text1Id);
         $this->assertEqual($dto[$a1]['content']['text'], $text1->title);
 
         $this->assertEqual($dto[$a2]['action'], 'add_text');
-        $this->assertEqual($dto[$a2]['projectRef'], $project2->id->asString());
+        $this->assertEqual($dto[$a2]['projectRef'], array(
+            'id' => $project2->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$a2]['content']['project'], $project2->projectName);
         $this->assertEqual($dto[$a2]['textRef'], $text2Id);
         $this->assertEqual($dto[$a2]['content']['text'], $text2->title);
@@ -254,13 +263,19 @@ class TestActivityDto extends UnitTestCase
         $dto = ActivityListDto::getActivityForProject($project);
 
         $this->assertEqual($dto[$a1]['action'], 'add_text');
-        $this->assertEqual($dto[$a1]['projectRef'], $project->id->asString());
+        $this->assertEqual($dto[$a1]['projectRef'], array(
+            'id' => $project->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$a1]['content']['project'], $project->projectName);
         $this->assertEqual($dto[$a1]['textRef'], $textId);
         $this->assertEqual($dto[$a1]['content']['text'], $text->title);
 
         $this->assertEqual($dto[$a2]['action'], 'add_user_to_project');
-        $this->assertEqual($dto[$a2]['projectRef'], $project->id->asString());
+        $this->assertEqual($dto[$a2]['projectRef'], array(
+            'id' => $project->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$a2]['content']['project'], $project->projectName);
         $this->assertEqual($dto[$a2]['userRef']['id'], $user1Id);
         $this->assertEqual($dto[$a2]['userRef']['username'], 'user1');
@@ -268,7 +283,10 @@ class TestActivityDto extends UnitTestCase
         $this->assertEqual($dto[$a2]['content']['user'], 'user1');
 
         $this->assertEqual($dto[$a3]['action'], 'add_user_to_project');
-        $this->assertEqual($dto[$a3]['projectRef'], $project->id->asString());
+        $this->assertEqual($dto[$a3]['projectRef'], array(
+            'id' => $project->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$a3]['content']['project'], $project->projectName);
         $this->assertEqual($dto[$a3]['userRef']['id'], $user2Id);
         $this->assertEqual($dto[$a3]['userRef']['username'], 'user2');
@@ -276,7 +294,10 @@ class TestActivityDto extends UnitTestCase
         $this->assertEqual($dto[$a3]['content']['user'], 'user2');
 
         $this->assertEqual($dto[$a4]['action'], 'add_user_to_project');
-        $this->assertEqual($dto[$a4]['projectRef'], $project->id->asString());
+        $this->assertEqual($dto[$a4]['projectRef'], array(
+            'id' => $project->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$a4]['content']['project'], $project->projectName);
         $this->assertEqual($dto[$a4]['userRef']['id'], $user3Id);
         $this->assertEqual($dto[$a4]['userRef']['username'], 'user3');
@@ -284,7 +305,10 @@ class TestActivityDto extends UnitTestCase
         $this->assertEqual($dto[$a4]['content']['user'], 'user3');
 
         $this->assertEqual($dto[$a5]['action'], 'add_question');
-        $this->assertEqual($dto[$a5]['projectRef'], $project->id->asString());
+        $this->assertEqual($dto[$a5]['projectRef'], array(
+            'id' => $project->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$a5]['content']['project'], $project->projectName);
         $this->assertEqual($dto[$a5]['textRef'], $textId);
         $this->assertEqual($dto[$a5]['content']['text'], $text->title);
@@ -292,7 +316,10 @@ class TestActivityDto extends UnitTestCase
         $this->assertEqual($dto[$a5]['content']['question'], $question->title);
 
         $this->assertEqual($dto[$a6]['action'], 'add_answer');
-        $this->assertEqual($dto[$a6]['projectRef'], $project->id->asString());
+        $this->assertEqual($dto[$a6]['projectRef'], array(
+            'id' => $project->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$a6]['content']['project'], $project->projectName);
         $this->assertEqual($dto[$a6]['textRef'], $textId);
         $this->assertEqual($dto[$a6]['content']['text'], $text->title);
@@ -305,7 +332,10 @@ class TestActivityDto extends UnitTestCase
         $this->assertEqual($dto[$a6]['content']['user'], 'user3');
 
         $this->assertEqual($dto[$a7]['action'], 'add_comment');
-        $this->assertEqual($dto[$a7]['projectRef'], $project->id->asString());
+        $this->assertEqual($dto[$a7]['projectRef'], array(
+            'id' => $project->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$a7]['content']['project'], $project->projectName);
         $this->assertEqual($dto[$a7]['textRef'], $textId);
         $this->assertEqual($dto[$a7]['content']['text'], $text->title);
@@ -323,7 +353,10 @@ class TestActivityDto extends UnitTestCase
         $this->assertEqual($dto[$a7]['content']['comment'], $comment1->content);
 
         $this->assertEqual($dto[$a8]['action'], 'add_comment');
-        $this->assertEqual($dto[$a8]['projectRef'], $project->id->asString());
+        $this->assertEqual($dto[$a8]['projectRef'], array(
+            'id' => $project->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$a8]['content']['project'], $project->projectName);
         $this->assertEqual($dto[$a8]['textRef'], $textId);
         $this->assertEqual($dto[$a8]['content']['text'], $text->title);
@@ -341,7 +374,10 @@ class TestActivityDto extends UnitTestCase
         $this->assertEqual($dto[$a8]['content']['comment'], $comment2->content);
 
         $this->assertEqual($dto[$a9]['action'], 'update_answer');
-        $this->assertEqual($dto[$a9]['projectRef'], $project->id->asString());
+        $this->assertEqual($dto[$a9]['projectRef'], array(
+            'id' => $project->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$a9]['content']['project'], $project->projectName);
         $this->assertEqual($dto[$a9]['textRef'], $textId);
         $this->assertEqual($dto[$a9]['content']['text'], $text->title);
@@ -354,7 +390,10 @@ class TestActivityDto extends UnitTestCase
         $this->assertEqual($dto[$a9]['content']['answer'], $answer_updated->content);
 
         $this->assertEqual($dto[$a10]['action'], 'update_comment');
-        $this->assertEqual($dto[$a10]['projectRef'], $project->id->asString());
+        $this->assertEqual($dto[$a10]['projectRef'], array(
+            'id' => $project->id->asString(),
+            'type' => 'sfchecks'
+        ));
         $this->assertEqual($dto[$a10]['content']['project'], $project->projectName);
         $this->assertEqual($dto[$a10]['textRef'], $textId);
         $this->assertEqual($dto[$a10]['content']['text'], $text->title);

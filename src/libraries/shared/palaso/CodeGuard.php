@@ -16,7 +16,7 @@ class CodeGuard
         if ($type == $expectedType) {
             return;
         }
-        if ($type == 'object' && get_class($var) == $expectedType) {
+        if ($type == 'object' && is_a($var, $expectedType)) {
             return;
         }
         if ($type == 'object') {
