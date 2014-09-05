@@ -39,5 +39,12 @@ exports.config = {
     showColors: true,
     defaultTimeoutInterval: 70000,
     //isVerbose: true,
+  },
+
+  onPrepare: function() {
+    if (process.env.TEAMCITY_VERSION) {
+      require('jasmine-reporters');
+      jasmine.getEnv().addReporter(new jasmine.TeamcityReporter());
+    }
   }
 };
