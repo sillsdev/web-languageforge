@@ -60,20 +60,17 @@ class SfchecksUploadCommands
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folder if it doesn't exist
-            $path = 'assets/' . $projectId;
-            $folderPath = APPPATH . $path;
+            $path = self::relativePath($projectId);
+            $folderPath = self::folderPath($projectId);
             if (! file_exists($folderPath) and ! is_dir($folderPath)) {
                 mkdir($folderPath);
             }
 
             // cleanup previous files of any allowed extension
-            $cleanupFiles = glob($folderPath . '/' . $textId . '*[' . implode(', ', $allowedExtensions) . ']');
-            foreach ($cleanupFiles as $cleanupFile) {
-                @unlink($cleanupFile);
-            }
+            self::cleanupFiles($folderPath, $textId, $allowedExtensions);
 
             // move uploaded file from tmp location to assets
-            $filePath = $folderPath . '/' . $textId . '_' . $fileName;
+            $filePath = self::filePath($projectId, $textId, $fileName);
             $moveOk = rename($tmpFilePath, $filePath);
 
             // update database with file location
@@ -114,5 +111,54 @@ class SfchecksUploadCommands
 
         $response->data = $data;
         return $response;
+    }
+
+    /**
+     *
+     * @param string $projectId
+     * @return string
+     */
+    public static function relativePath($projectId)
+    {
+        return 'assets/' . $projectId;
+    }
+
+    /**
+     *
+     * @param string $projectId
+     * @return string
+     */
+    public static function folderPath($projectId)
+    {
+        $path = self::relativePath($projectId);
+        return APPPATH . $path;
+    }
+
+    /**
+     *
+     * @param string $projectId
+     * @param string $textId
+     * @param string $fileName
+     * @return string
+     */
+    public static function filePath($projectId, $textId, $fileName)
+    {
+        $folderPath = self::folderPath($projectId);
+        return $folderPath . '/' . $textId . '_' . $fileName;
+    }
+
+    /**
+     * cleanup (remove) previous files of any allowed extension for files with the given filename prefix in the given folder
+     *
+     * @param string $folderPath
+     * @param string $fileNamePrefix
+     * @param array $allowedExtensions
+     */
+    public static function cleanupFiles($folderPath, $fileNamePrefix, $allowedExtensions)
+    {
+        $cleanupFiles = glob($folderPath . '/' . $fileNamePrefix . '*[' . implode(', ', $allowedExtensions) . ']');
+        foreach ($cleanupFiles as $cleanupFile) {
+            @unlink($cleanupFile);
+        }
     }
 }
