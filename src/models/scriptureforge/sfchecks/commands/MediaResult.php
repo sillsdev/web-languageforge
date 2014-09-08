@@ -8,12 +8,6 @@ class MediaResult
      *
      * @var string
      */
-    public $url;
-
-    /**
-     *
-     * @var string
-     */
     public $path;
 
     /**

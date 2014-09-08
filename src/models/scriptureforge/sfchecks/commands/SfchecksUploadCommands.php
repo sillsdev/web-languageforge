@@ -1,7 +1,7 @@
 <?php
 namespace models\scriptureforge\sfchecks\commands;
 
-use models\ProjectModel;
+use models\scriptureforge\SfchecksProjectModel;
 use models\TextModel;
 
 class SfchecksUploadCommands
@@ -59,22 +59,20 @@ class SfchecksUploadCommands
         $response = new UploadResponse();
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
-            // make the folder if it doesn't exist
-            $path = self::relativePath($projectId);
-            $folderPath = self::folderPath($projectId);
-            if (! file_exists($folderPath) and ! is_dir($folderPath)) {
-                mkdir($folderPath);
-            }
+            // make the folders if they don't exist
+            $project = new SfchecksProjectModel($projectId);
+            $path = $project->getAssetsPath();
+            $folderPath = $project->getAssetsFolderPath();
+            self::createFolders($path, $folderPath);
 
             // cleanup previous files of any allowed extension
             self::cleanupFiles($folderPath, $textId, $allowedExtensions);
 
             // move uploaded file from tmp location to assets
-            $filePath = self::filePath($projectId, $textId, $fileName);
+            $filePath = self::mediaFilePath($folderPath, $textId, $fileName);
             $moveOk = rename($tmpFilePath, $filePath);
 
             // update database with file location
-            $project = new ProjectModel($projectId);
             $text = new TextModel($project, $textId);
             $text->audioFileName = '';
             if ($moveOk) {
@@ -85,7 +83,6 @@ class SfchecksUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
-                $data->url = '';
                 $data->path = $path;
                 $data->fileName = $fileName;
                 $response->result = true;
@@ -115,40 +112,35 @@ class SfchecksUploadCommands
 
     /**
      *
-     * @param string $projectFolderName
-     * @return string
-     */
-    public static function relativePath($projectFolderName)
-    {
-        return 'assets/' . $projectFolderName;
-    }
-
-    /**
-     *
-     * @param string $projectFolderName
-     * @return string
-     */
-    public static function folderPath($projectFolderName)
-    {
-        $path = self::relativePath($projectFolderName);
-        return APPPATH . $path;
-    }
-
-    /**
-     *
-     * @param string $projectFolderName
+     * @param string $folderPath
      * @param string $fileNamePrefix
      * @param string $fileName
      * @return string
      */
-    public static function filePath($projectFolderName, $fileNamePrefix, $fileName)
+    public static function mediaFilePath($folderPath, $fileNamePrefix, $fileName)
     {
-        $folderPath = self::folderPath($projectFolderName);
         return $folderPath . '/' . $fileNamePrefix . '_' . $fileName;
     }
 
     /**
-     * cleanup (remove) previous files of any allowed extension for files with the given filename prefix in the given folder
+     * create all the folders in $path, $path must be a realtive path of $folderPath
+     *
+     * @param string $path
+     * @param string $folderPath
+     */
+    public static function createFolders($path, $folderPath)
+    {
+        $folderNames = explode('/', $path);
+        foreach ($folderNames as $folderName) {
+            $newFolderPath = substr($folderPath, 0, strpos($folderPath, $folderName) + strlen($folderName));
+            if (! file_exists($newFolderPath) and ! is_dir($newFolderPath)) {
+                mkdir($newFolderPath);
+            }
+        }
+    }
+
+    /**
+     * cleanup (remove) previous files of any allowed extension for files with the given filename prefix in the given folder path
      *
      * @param string $folderPath
      * @param string $fileNamePrefix

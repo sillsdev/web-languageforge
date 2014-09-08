@@ -10,11 +10,10 @@ require_once (TestPath . 'common/MongoTestEnvironment.php');
 class TestSfchecksUploadCommands extends UnitTestCase
 {
 
-    function cleanupTestFiles($projectId, $textId, $fileName, $tmpFilePath)
+    function cleanupTestFiles($folderPath, $textId, $fileName, $tmpFilePath)
     {
         // cleanup test files and folders
-        $folderPath = SfchecksUploadCommands::folderPath($projectId);
-        $filePath = SfchecksUploadCommands::filePath($projectId, $textId, $fileName);
+        $filePath = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName);
         if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
             @unlink($tmpFilePath);
         }
@@ -32,7 +31,8 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $projectId = $project->id->asString();
+        $project->appName = 'sfchecks';
+        $projectId = $project->write();
         $text = new TextModel($project);
         $text->title = "Some Title";
         $textId = $text->write();
@@ -51,15 +51,17 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
         $text->read($textId);
-        $filePath = SfchecksUploadCommands::filePath($projectId, $textId, $fileName);
+        $folderPath = $project->getAssetsFolderPath();
+        $filePath = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName);
+        $projectSlug = $project->databaseName();
 
         $this->assertTrue($response->result);
-        $this->assertPattern("/$projectId/", $response->data->path);
+        $this->assertPattern("/sfchecks\/$projectSlug/", $response->data->path);
         $this->assertEqual($fileName, $response->data->fileName);
         $this->assertEqual($fileName, $text->audioFileName);
         $this->assertTrue(file_exists($filePath));
 
-        $this->cleanupTestFiles($projectId, $textId, $fileName, $tmpFilePath);
+        $this->cleanupTestFiles($folderPath, $textId, $fileName, $tmpFilePath);
     }
 
     function testUploadAudio_mp3FileUpperCaseExt_uploadAllowed()
@@ -68,7 +70,8 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $projectId = $project->id->asString();
+        $project->appName = 'sfchecks';
+        $projectId = $project->write();
         $text = new TextModel($project);
         $text->title = "Some Title";
         $textId = $text->write();
@@ -89,7 +92,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $this->assertTrue($response->result);
         $this->assertEqual($fileName, $response->data->fileName);
 
-        $this->cleanupTestFiles($projectId, $textId, $fileName, $tmpFilePath);
+        $this->cleanupTestFiles($project->getAssetsFolderPath(), $textId, $fileName, $tmpFilePath);
     }
 
     function testUploadAudio_mp4File_uploadDisallowed()
@@ -98,7 +101,8 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $projectId = $project->id->asString();
+        $project->appName = 'sfchecks';
+        $projectId = $project->write();
         $text = new TextModel($project);
         $text->title = "Some Title";
         $textId = $text->write();
@@ -132,7 +136,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $this->assertEqual('UserMessage', $response->data->errorType);
         $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage);
 
-        $this->cleanupTestFiles($projectId, $textId, $fileName, $tmpFilePath);
+        $this->cleanupTestFiles($project->getAssetsFolderPath(), $textId, $fileName, $tmpFilePath);
     }
 
     function testUploadAudio_SpecialCharInFileName_SpecialCharReplaced()
@@ -141,7 +145,8 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $projectId = $project->id->asString();
+        $project->appName = 'sfchecks';
+        $projectId = $project->write();
         $text = new TextModel($project);
         $text->title = "Some Title";
         $textId = $text->write();
@@ -164,7 +169,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $this->assertTrue($response->result);
         $this->assertEqual($fileName, $text->audioFileName);
 
-        $this->cleanupTestFiles($projectId, $textId, $fileName, $tmpFilePath);
+        $this->cleanupTestFiles($project->getAssetsFolderPath(), $textId, $fileName, $tmpFilePath);
     }
 
     function testCleanupFiles_4Files2Allowed_2Removed()
@@ -173,16 +178,16 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $projectId = $project->id->asString();
+        $project->appName = 'sfchecks';
+        $projectId = $project->write();
         $text = new TextModel($project);
         $text->title = "Some Title";
         $textId = $text->write();
         $fakeId  = new Id();
         $fakeTextId = $fakeId->asString();
 
-
-        $folderPath = SfchecksUploadCommands::folderPath($projectId);
-        mkdir($folderPath);
+        $folderPath = $project->getAssetsFolderPath();
+        SfchecksUploadCommands::createFolders($project->getAssetsPath(), $folderPath);
         $allowedExtensions = array(
             ".mp2",
             ".mp3"
@@ -190,16 +195,16 @@ class TestSfchecksUploadCommands extends UnitTestCase
 
         // put a copy of the test files in the folderPath
         $fileName1 = 'TestAudio1.mp1';
-        $filePath1 = SfchecksUploadCommands::filePath($projectId, $textId, $fileName1);
+        $filePath1 = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName1);
         copy(TestPath . 'common/TestAudio.mp3', $filePath1);
         $fileName2 = 'TestAudio2.mp2';
-        $filePath2 = SfchecksUploadCommands::filePath($projectId, $textId, $fileName2);
+        $filePath2 = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName2);
         copy(TestPath . 'common/TestAudio.mp3', $filePath2);
         $fileName3 = 'TestAudio3.mp3';
-        $filePath3 = SfchecksUploadCommands::filePath($projectId, $textId, $fileName3);
+        $filePath3 = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName3);
         copy(TestPath . 'common/TestAudio.mp3', $filePath3);
         $fileName4 = 'TestAudio4.mp3';
-        $filePath4 = SfchecksUploadCommands::filePath($projectId, $fakeTextId, $fileName4);
+        $filePath4 = SfchecksUploadCommands::mediaFilePath($folderPath, $fakeTextId, $fileName4);
         copy(TestPath . 'common/TestAudio.mp3', $filePath4);
 
         $this->assertTrue(file_exists($filePath1));
@@ -214,9 +219,9 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $this->assertFalse(file_exists($filePath3));
         $this->assertTrue(file_exists($filePath4));
 
-        $this->cleanupTestFiles($projectId, $textId, $fileName1, '');
-        $this->cleanupTestFiles($projectId, $textId, $fileName2, '');
-        $this->cleanupTestFiles($projectId, $textId, $fileName3, '');
-        $this->cleanupTestFiles($projectId, $fakeTextId, $fileName4, '');
+        $this->cleanupTestFiles($folderPath, $textId, $fileName1, '');
+        $this->cleanupTestFiles($folderPath, $textId, $fileName2, '');
+        $this->cleanupTestFiles($folderPath, $textId, $fileName3, '');
+        $this->cleanupTestFiles($folderPath, $fakeTextId, $fileName4, '');
     }
 }

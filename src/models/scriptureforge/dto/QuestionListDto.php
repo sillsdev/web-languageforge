@@ -1,5 +1,4 @@
 <?php
-
 namespace models\scriptureforge\dto;
 
 use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
@@ -14,12 +13,13 @@ use models\UserModel;
 
 class QuestionListDto
 {
+
     /**
      *
      * @param string $projectId
      * @param string $textId
      * @param string $userId
-     * @returns array - the DTO array
+     * @return array - the DTO array
      */
     public static function encode($projectId, $textId, $userId)
     {
@@ -36,9 +36,11 @@ class QuestionListDto
         $data['rights'] = RightsHelper::encode($user, $project);
         $data['entries'] = array();
         $data['project'] = array(
+            'id' => $projectId,
             'name' => $project->projectName,
-            'allowAudioDownload' => $project->allowAudioDownload,
-            'id' => $projectId);
+            'slug' => $project->databaseName(),
+            'allowAudioDownload' => $project->allowAudioDownload
+        );
         $data['text'] = JsonEncoder::encode($text);
         $usxHelper = new UsxHelper($text->content);
         $data['text']['content'] = $usxHelper->toHtml();
@@ -50,7 +52,7 @@ class QuestionListDto
                 $responseCount = 0; // "Reponses" = answers + comments
                 foreach ($questionData['answers'] as $a) {
                     $commentCount = count($a['comments']);
-                    $responseCount += $commentCount+1; // +1 for this answer
+                    $responseCount += $commentCount + 1; // +1 for this answer
                 }
                 $questionData['responseCount'] = $responseCount;
                 unset($questionData['answers']);
@@ -61,7 +63,8 @@ class QuestionListDto
         }
 
         // sort Questions with newest at the top
-        usort($data['entries'], function ($a, $b) {
+        usort($data['entries'], function ($a, $b)
+        {
             $sortOn = 'dateCreated';
             if (array_key_exists($sortOn, $a) && array_key_exists($sortOn, $b)) {
                 return (strtotime($a[$sortOn]) < strtotime($b[$sortOn])) ? 1 : -1;

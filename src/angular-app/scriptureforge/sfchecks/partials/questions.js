@@ -105,7 +105,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
           $scope.project = result.data.project;
           $scope.text = result.data.text;
           if ($scope.text.audioFileName != '') {
-            $scope.audioPlayUrl = '/assets/' + $scope.project.id + '/' + $scope.text.id + '_' + $scope.text.audioFileName;
+            $scope.audioPlayUrl = '/assets/sfchecks/' + $scope.project.slug + '/' + $scope.text.id + '_' + $scope.text.audioFileName;
             $scope.audioDownloadUrl = '/download' + $scope.audioPlayUrl;
           }
           $scope.text.url = sfchecksLinkService.text(textId);

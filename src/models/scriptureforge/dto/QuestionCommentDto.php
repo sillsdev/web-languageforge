@@ -63,6 +63,7 @@ class QuestionCommentDto
         $dto['text'] = JsonEncoder::encode($text);
         $dto['text']['content'] = $usxHelper->toHtml();
         $dto['project'] = JsonEncoder::encode($project);
+        $dto['project']['slug'] = $project->databaseName();
         $dto['rights'] = RightsHelper::encode($user, $project);
         $dto['unreadAnswers'] = $unreadAnswers;
         $dto['unreadComments'] = $unreadComments;
