@@ -1,6 +1,7 @@
 <?php
 use models\scriptureforge\sfchecks\commands\SfchecksUploadCommands;
 use models\TextModel;
+use models\mapper\Id;
 
 require_once (dirname(__FILE__) . '/../../TestConfig.php');
 require_once (SimpleTestPath . 'autorun.php');
@@ -166,7 +167,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $this->cleanupTestFiles($projectId, $textId, $fileName, $tmpFilePath);
     }
 
-    function testCleanupFiles_3Files2Allowed_2Removed()
+    function testCleanupFiles_4Files2Allowed_2Removed()
     {
         $e = new MongoTestEnvironment();
         $e->clean();
@@ -176,6 +177,9 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $text = new TextModel($project);
         $text->title = "Some Title";
         $textId = $text->write();
+        $fakeId  = new Id();
+        $fakeTextId = $fakeId->asString();
+
 
         $folderPath = SfchecksUploadCommands::folderPath($projectId);
         mkdir($folderPath);
@@ -194,19 +198,25 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $fileName3 = 'TestAudio3.mp3';
         $filePath3 = SfchecksUploadCommands::filePath($projectId, $textId, $fileName3);
         copy(TestPath . 'common/TestAudio.mp3', $filePath3);
+        $fileName4 = 'TestAudio4.mp3';
+        $filePath4 = SfchecksUploadCommands::filePath($projectId, $fakeTextId, $fileName4);
+        copy(TestPath . 'common/TestAudio.mp3', $filePath4);
 
         $this->assertTrue(file_exists($filePath1));
         $this->assertTrue(file_exists($filePath2));
         $this->assertTrue(file_exists($filePath3));
+        $this->assertTrue(file_exists($filePath4));
 
         SfchecksUploadCommands::cleanupFiles($folderPath, $textId, $allowedExtensions);
 
         $this->assertTrue(file_exists($filePath1));
         $this->assertFalse(file_exists($filePath2));
         $this->assertFalse(file_exists($filePath3));
+        $this->assertTrue(file_exists($filePath4));
 
         $this->cleanupTestFiles($projectId, $textId, $fileName1, '');
         $this->cleanupTestFiles($projectId, $textId, $fileName2, '');
         $this->cleanupTestFiles($projectId, $textId, $fileName3, '');
+        $this->cleanupTestFiles($projectId, $fakeTextId, $fileName4, '');
     }
 }
