@@ -1,8 +1,8 @@
 <?php
-// use libraries\shared\palaso\exceptions\ErrorHandler;
-// use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
-// use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
-// use libraries\shared\palaso\exceptions\UserUnauthorizedException;
+use libraries\shared\palaso\exceptions\ErrorHandler;
+use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
+use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
+use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\shared\palaso\CodeGuard;
 
 require_once 'secure_base.php';
@@ -16,16 +16,17 @@ class Upload extends Secure_base
         require_once 'service/sf.php';
 
         // user-defined error handler to catch annoying php errors and throw them as exceptions
-        // set_error_handler(function ($errno, $errstr, $errfile, $errline) { throw new ErrorHandler($errstr, 0, $errno, $errfile, $errline); } , E_ALL);
+        ini_set('xdebug.show_exception_trace', 0);
+        set_error_handler(function ($errno, $errstr, $errfile, $errline) { throw new ErrorHandler($errstr, 0, $errno, $errfile, $errline); } , E_ALL);
 
         $response = array();
 
         $file = $_FILES['file'];
 
         if ($file['error'] == UPLOAD_ERR_OK) {
+            $tmpFilePath = $this->moveUploadedFile();
             try {
                 if ($app == 'sf-checks') {
-                    $tmpFilePath = $this->moveUploadedFile();
                     $api = new Sf($this);
                     $api->checkPermissions('sfChecks_uploadFile', array(
                         $uploadType,
@@ -33,7 +34,6 @@ class Upload extends Secure_base
                     ));
                     $response = $api->sfChecks_uploadFile($uploadType, $tmpFilePath);
                 } elseif ($app == 'lf-lexicon') {
-                    $tmpFilePath = $this->moveUploadedFile();
                     $api = new Sf($this);
                     $api->checkPermissions('lex_uploadFile', array(
                         $uploadType,
@@ -51,16 +51,16 @@ class Upload extends Secure_base
                         'errorMessage' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " . CodeGuard::getStackTrace($e->getTrace())
                     )
                 );
-                // if ($e instanceof ResourceNotAvailableException) {
-                //      $response['data']['errorType'] = 'ResourceNotAvailableException';
-                //      $response['data']['errorMessage'] = $e->getMessage();
-                // } elseif ($e instanceof UserNotAuthenticatedException) {
-                //      $response['data']['errorType'] = 'UserNotAuthenticatedException';
-                //      $response['data']['errorMessage'] = $e->getMessage();
-                // } elseif ($e instanceof UserUnauthorizedException) {
-                //      $response['data']['errorType'] = 'UserUnauthorizedException';
-                //      $response['data']['errorMessage'] = $e->getMessage();
-                // }
+                if ($e instanceof ResourceNotAvailableException) {
+                     $response['data']['errorType'] = 'ResourceNotAvailableException';
+                     $response['data']['errorMessage'] = $e->getMessage();
+                } elseif ($e instanceof UserNotAuthenticatedException) {
+                     $response['data']['errorType'] = 'UserNotAuthenticatedException';
+                     $response['data']['errorMessage'] = $e->getMessage();
+                } elseif ($e instanceof UserUnauthorizedException) {
+                     $response['data']['errorType'] = 'UserUnauthorizedException';
+                     $response['data']['errorMessage'] = $e->getMessage();
+                }
                 $message = '';
                 $message .= $e->getMessage() . "\n";
                 $message .= $e->getTraceAsString() . "\n";
