@@ -6,7 +6,6 @@ use models\ProjectListModel;
 use models\TextListModel;
 use models\TextModel;
 use libraries\shared\scripts\migration\models\TextModel_sf_v0_9_18;
-
 require_once APPPATH . 'models/TextModel.php';
 
 class FixTextAudio
@@ -63,6 +62,67 @@ class FixTextAudio
             $message .= "\n\nNo legacy text audio were found/changed. $textsExamined texts examined.\n\n";
         }
 
+        // re-arrange assets folder
+        // - remove <siteName> from path for LF
+        // - add <appName> to path for SF and change <projectId> in path to <projectSlug (databaseName)>
+        $project = new SfchecksProjectModel();
+        $assetsFolderPath = APPPATH . "assets";
+        $assetsSubfolders = glob($assetsFolderPath . '/*');
+        @mkdir($assetsFolderPath . '/lexicon');
+        @mkdir($assetsFolderPath . '/sfchecks');
+        foreach ($assetsSubfolders as $assetsSubfolder) {
+            if (file_exists($assetsSubfolder) && is_dir($assetsSubfolder)) {
+                $assetsSubfolderName = basename($assetsSubfolder);
+                if (strpos($assetsSubfolderName, 'languageforge') !== false) {
+                    $message .= "Move into lexicon: $assetsSubfolderName\n";
+                    $oldFolderPath = $assetsSubfolder . '/lexicon';
+                    $newFolderPath = $assetsFolderPath . '/lexicon';
+                } elseif ($assetsSubfolderName == 'lexicon' || $assetsSubfolderName == 'sfchecks') {
+                    $message .= "No change: $assetsSubfolderName\n";
+                    $oldFolderPath = '';
+                    $newFolderPath = '';
+                    $assetsSubfolder = '';
+                } elseif ($project->exists($assetsSubfolderName)) {
+                    $message .= "Move into sfchecks: $assetsSubfolderName\n";
+                    $oldFolderPath = $assetsSubfolder;
+                    $project->read($assetsSubfolderName);
+                    $projectSlug = $project->databaseName();
+                    $newFolderPath = $assetsFolderPath . "/sfchecks/$projectSlug";
+                    if (! $testMode) {}
+                } else {
+                    $message .= "Delete: $assetsSubfolderName\n";
+                    $oldFolderPath = '';
+                    $newFolderPath = '';
+                }
+                if (! $testMode) {
+                    if (file_exists($oldFolderPath) && is_dir($oldFolderPath)) {
+                        if (! @rename($oldFolderPath, $newFolderPath)) {
+                            $oldFiles = glob($oldFolderPath . '/*');
+                            foreach ($oldFiles as $oldFile) {
+                                $newFile = $newFolderPath . '/' . basename($oldFile);
+                                rename($oldFile, $newFile);
+                            }
+                        }
+                    }
+                    if (file_exists($assetsSubfolder) && is_dir($assetsSubfolder)) {
+                        $this->recursiveRemoveFolder($assetsSubfolder);
+                    }
+                }
+            }
+        }
+
         return $message;
+    }
+
+    protected function recursiveRemoveFolder($folder)
+    {
+        foreach (glob("{$folder}/*") as $file) {
+            if (is_dir($file)) {
+                $this->recursiveRemoveFolder($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($folder);
     }
 }
