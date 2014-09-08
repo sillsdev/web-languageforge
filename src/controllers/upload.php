@@ -66,6 +66,11 @@ class Upload extends Secure_base
                 $message .= $e->getTraceAsString() . "\n";
                 error_log($message);
             }
+
+            // cleanup uploaded file if it hasn't been moved
+            if ($tmpFilePath && file_exists($tmpFilePath)) {
+                @unlink($tmpFilePath);
+            }
         }
 
         $output = $this->output;
