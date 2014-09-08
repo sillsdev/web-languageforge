@@ -61,9 +61,10 @@ class SfchecksUploadCommands
 
             // make the folders if they don't exist
             $project = new SfchecksProjectModel($projectId);
-            $path = $project->getAssetsPath();
             $folderPath = $project->getAssetsFolderPath();
-            self::createFolders($path, $folderPath);
+            if (! file_exists($folderPath) and ! is_dir($folderPath)) {
+                mkdir($folderPath, 0777, true);
+            }
 
             // cleanup previous files of any allowed extension
             self::cleanupFiles($folderPath, $textId, $allowedExtensions);
@@ -83,7 +84,7 @@ class SfchecksUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
-                $data->path = $path;
+                $data->path = $project->getAssetsPath();
                 $data->fileName = $fileName;
                 $response->result = true;
             } else {
@@ -120,23 +121,6 @@ class SfchecksUploadCommands
     public static function mediaFilePath($folderPath, $fileNamePrefix, $fileName)
     {
         return $folderPath . '/' . $fileNamePrefix . '_' . $fileName;
-    }
-
-    /**
-     * create all the folders in $path, $path must be a realtive path of $folderPath
-     *
-     * @param string $path
-     * @param string $folderPath
-     */
-    public static function createFolders($path, $folderPath)
-    {
-        $folderNames = explode('/', $path);
-        foreach ($folderNames as $folderName) {
-            $newFolderPath = substr($folderPath, 0, strpos($folderPath, $folderName) + strlen($folderName));
-            if (! file_exists($newFolderPath) and ! is_dir($newFolderPath)) {
-                mkdir($newFolderPath);
-            }
-        }
     }
 
     /**

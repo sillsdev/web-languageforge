@@ -187,7 +187,9 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $fakeTextId = $fakeId->asString();
 
         $folderPath = $project->getAssetsFolderPath();
-        SfchecksUploadCommands::createFolders($project->getAssetsPath(), $folderPath);
+        if (! file_exists($folderPath) and ! is_dir($folderPath)) {
+            mkdir($folderPath, 0777, true);
+        }
         $allowedExtensions = array(
             ".mp2",
             ".mp3"
