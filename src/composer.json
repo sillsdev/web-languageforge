@@ -17,6 +17,7 @@
         "ocramius/lazy-property": "dev-feature/factory"
     },
     "require-dev": {
-        "simpletest/simpletest": "dev-master-sil"
+        "simpletest/simpletest": "dev-master-sil",
+        "phpunit/phpunit": "~4.2.5"
     }
 }
