@@ -42,9 +42,9 @@ class FixTextAudio
                         if (! $text->audioFileName) {
 
                             // legacy audioUrl format "assets/<projectId>/<textId>_<fileName>"
-                            $fileNameTextSlug = $textId . '_';
-                            $pos = strpos($legacyText->audioUrl, $fileNameTextSlug);
-                            $text->audioFileName = substr($legacyText->audioUrl, $pos + strlen($fileNameTextSlug));
+                            $fileNamePrefix = $textId . '_';
+                            $pos = strpos($legacyText->audioUrl, $fileNamePrefix);
+                            $text->audioFileName = substr($legacyText->audioUrl, $pos + strlen($fileNamePrefix));
                         }
                         $text->write();
                     }

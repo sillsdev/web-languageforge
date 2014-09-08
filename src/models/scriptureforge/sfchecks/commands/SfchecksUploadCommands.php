@@ -115,36 +115,36 @@ class SfchecksUploadCommands
 
     /**
      *
-     * @param string $projectId
+     * @param string $projectFolderName
      * @return string
      */
-    public static function relativePath($projectId)
+    public static function relativePath($projectFolderName)
     {
-        return 'assets/' . $projectId;
+        return 'assets/' . $projectFolderName;
     }
 
     /**
      *
-     * @param string $projectId
+     * @param string $projectFolderName
      * @return string
      */
-    public static function folderPath($projectId)
+    public static function folderPath($projectFolderName)
     {
-        $path = self::relativePath($projectId);
+        $path = self::relativePath($projectFolderName);
         return APPPATH . $path;
     }
 
     /**
      *
-     * @param string $projectId
-     * @param string $textId
+     * @param string $projectFolderName
+     * @param string $fileNamePrefix
      * @param string $fileName
      * @return string
      */
-    public static function filePath($projectId, $textId, $fileName)
+    public static function filePath($projectFolderName, $fileNamePrefix, $fileName)
     {
-        $folderPath = self::folderPath($projectId);
-        return $folderPath . '/' . $textId . '_' . $fileName;
+        $folderPath = self::folderPath($projectFolderName);
+        return $folderPath . '/' . $fileNamePrefix . '_' . $fileName;
     }
 
     /**
