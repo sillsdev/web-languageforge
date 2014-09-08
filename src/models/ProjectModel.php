@@ -223,9 +223,17 @@ class ProjectModel extends \models\mapper\MapperModel
     /**
      * @return string
      */
+    public function getAssetsPath()
+    {
+        return 'assets/' . $this->appName. '/' . $this->databaseName();
+    }
+
+    /**
+     * @return string
+     */
     public function getAssetsFolderPath()
     {
-        return APPPATH . 'assets/' . $this->siteName . '/' . $this->appName. '/' . $this->databaseName();
+        return APPPATH . $this->getAssetsPath();
     }
 
     /**
