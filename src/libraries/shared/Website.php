@@ -5,60 +5,60 @@ namespace libraries\shared;
 use models\ProjectModel;
 
 class Website {
-	
+
 	const SCRIPTUREFORGE = 'scriptureforge';
 	const LANGUAGEFORGE = 'languageforge';
-	
+
 	/**
-	 * 
+	 *
 	 * @var string - the domain / hostname of the website
 	 */
 	public $domain;
-	
+
 	/**
-	 * 
+	 *
 	 * @var string
 	 */
 	public $name;
-	
+
 	/**
-	 * 
+	 *
 	 * @var string - the theme name of this website
 	 */
 	public $theme;
-	
+
 	/**
-	 * 
+	 *
 	 * @var bool - whether or not to force HTTPS for this website
 	 */
 	public $ssl;
-	
+
 	/**
-	 * 
+	 *
 	 * @var string - the base site for this website: either scriptureforge or languageforge
 	 */
 	public $base;
-	
+
 	/**
-	 * 
+	 *
 	 * @var string - the name of the default project for this site, if any
 	 */
 	public $defaultProjectCode;
-	
+
 	/**
-	 * 
+	 *
 	 * @var array<Website>
 	 */
 	private static $_sites;
 	/**
-	 * 
+	 *
 	 * @var array
 	 */
 	private static $_redirect;
 	public static function init() {
 		$sites = array();
 		$redirect = array();
-		
+
 		// SCRIPTUREFORGE WEBSITES
 		$sites['scriptureforge.local'] = new Website('scriptureforge.local', 'Scripture Forge', self::SCRIPTUREFORGE, 'default', true);
 		$sites['jamaicanpsalms.scriptureforge.local'] = new Website('jamaicanpsalms.scriptureforge.local', 'Jamaican Psalms', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
@@ -68,9 +68,10 @@ class Website {
 		$sites['dev.scriptureforge.org'] = new Website('dev.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE, 'default', true);
 		$sites['demo.dev.scriptureforge.org'] = new Website('demo.dev.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE, 'simple', true);
 		$sites['jamaicanpsalms.dev.scriptureforge.org'] = new Website('jamaicanpsalms.dev.scriptureforge.org', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
-		
+
 		$sites['www.scriptureforge.org'] = new Website('www.scriptureforge.org', 'Scripture Forge', self::SCRIPTUREFORGE);
 		$sites['jamaicanpsalms.com'] = new Website('jamaicanpsalms.com', 'The Jamaican Psalms Project', self::SCRIPTUREFORGE, 'jamaicanpsalms', true, 'jamaicanpsalms');
+		$sites['waaqwiinaagiwritings.org'] = new Website('waaqwiinaagiwritings.org', 'Waaqwiinaagi Writings', self::SCRIPTUREFORGE, 'simple', true, 'waaqwiinaagiwritings');
 
 		// SCRIPTUREFORGE REDIRECTS
 		$redirect['scriptureforge.org'] = 'www.scriptureforge.org';
@@ -82,13 +83,13 @@ class Website {
 		$sites['languageforge.local'] = new Website('languageforge.local', 'Language Forge', self::LANGUAGEFORGE);
 		$sites['www.languageforge.org'] = new Website('www.languageforge.org', 'Language Forge', self::LANGUAGEFORGE);
 		$sites['dev.languageforge.org'] = new Website('dev.languageforge.org', 'Language Forge', self::LANGUAGEFORGE);
-		
+
 		self::$_sites = $sites;
 		self::$_redirect = $redirect;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param string $domain - domain / hostname of the website
 	 * @param string $name - display name of the website
 	 * @param string $base - either 'scriptureforge' or 'languageforge'
@@ -103,7 +104,7 @@ class Website {
 		$this->ssl = $ssl;
 		$this->defaultProjectCode = $defaultProjectCode;
 	}
-	
+
 	/**
 	 * @param string $hostname
 	 * @return Website
@@ -118,7 +119,7 @@ class Website {
 			return null;
 		}
 	}
-	
+
 	private static function getHostname() {
 		if (key_exists('HTTP_X_FORWARDED_SERVER', $_SERVER) && key_exists('HTTP_X_FORWARDED_HOST', $_SERVER)) {
 			// special exception for reverse proxy on dev.scriptureforge.org
@@ -130,7 +131,7 @@ class Website {
 		}
 		return $_SERVER['HTTP_HOST'];
 	}
-	
+
 	/**
 	 * @param string $hostname
 	 * @return string
@@ -155,7 +156,7 @@ class Website {
 			return '';
 		}
 	}
-	
+
 	/**
 	 * Convenience function to get the website object or redirect based upon ssl setting or a redirect list
 	 * FYI Not testable  because of the inclusion of the header() method : test get() and getRedirect() instead
@@ -177,18 +178,18 @@ class Website {
 		} else {
 			$url = self::getRedirect($hostname);
 			if ($url) {
-				header("Location: $url", true, 302); 
+				header("Location: $url", true, 302);
 			} else {
-				header("Location: http://" . substr($hostname, strpos($hostname, '.')+1), true, 302); 
+				header("Location: http://" . substr($hostname, strpos($hostname, '.')+1), true, 302);
 			}
 		}
 	}
-	
+
 	public function baseUrl() {
 		$protocol = ($this->ssl) ? "https" : "http";
 		return $protocol . "://" . $this->domain;
 	}
-	
+
 	public function templatePath($templateFile) {
 		$path = APPPATH . "views/" . $this->base . '/' . $this->theme . "/$templateFile";
 		if (!file_exists($path)) {
@@ -196,7 +197,7 @@ class Website {
 		}
 		return $path;
 	}
-	
+
 	/**
 	 * get an array of available project themes for a base site (scriptureforge or languageforge)
 	 * @param string $baseSite
@@ -213,11 +214,11 @@ class Website {
 			}
 			$themeNames = $folders;
 		}
-		
-		return $themeNames;	
+
+		return $themeNames;
 	}
 	*/
-	
+
 }
 Website::init();
 
