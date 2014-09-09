@@ -1,6 +1,9 @@
 <?php
 namespace models\scriptureforge\sfchecks\commands;
 
+use models\shared\commands\UploadResponse;
+use models\shared\commands\MediaResult;
+use models\shared\commands\ErrorResult;
 use models\scriptureforge\SfchecksProjectModel;
 use models\TextModel;
 
@@ -14,7 +17,7 @@ class SfchecksUploadCommands
      * @param string $uploadType
      * @param string $tmpFilePath
      * @throws \Exception
-     * @return \models\scriptureforge\sfchecks\commands\UploadResponse
+     * @return \models\shared\commands\UploadResponse
      */
     public static function uploadFile($projectId, $uploadType, $tmpFilePath)
     {
