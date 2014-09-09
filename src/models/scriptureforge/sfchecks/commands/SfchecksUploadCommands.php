@@ -30,8 +30,11 @@ class SfchecksUploadCommands
 
         $textId = $_POST['textId'];
         $file = $_FILES['file'];
-        $fileType = $file['type'];
         $fileName = $file['name'];
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $fileType = finfo_file($finfo, $tmpFilePath);
+        finfo_close($finfo);
 
         // replace special characters with _
         $search = array(
