@@ -36,7 +36,9 @@
 							<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 								data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
 								data-ng-click="selectField(fieldName, roleTab.view)">
-								{{fieldConfig[fieldName].label}}</span>
+								{{fieldConfig[fieldName].label}}
+								<i class="{{interfaceConfig.pullToSide}}" ng-class="{'icon-eye-open': roleTab.view.fields[fieldName].show}"></i>
+							</span>
 						</div>
 					</div></dd>
 					<dt>{{'Meaning Level Fields' | translate}}
@@ -50,7 +52,9 @@
 							<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 								data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
 								data-ng-click="selectField(fieldName, roleTab.view)">
-								{{fieldConfig[fieldName].label}}</span>
+								{{fieldConfig[fieldName].label}}
+								<i class="{{interfaceConfig.pullToSide}}" ng-class="{'icon-eye-open': roleTab.view.fields[fieldName].show}"></i>
+								</span>
 						</div>
 					</div></dd>
 					<dt translate="Example Level Fields"></dt>
@@ -60,7 +64,9 @@
 							<span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
 								data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
 								data-ng-click="selectField(fieldName, roleTab.view)">
-								{{fieldConfig[fieldName].label}}</span>
+								{{fieldConfig[fieldName].label}}
+								<i class="{{interfaceConfig.pullToSide}}" ng-class="{'icon-eye-open': roleTab.view.fields[fieldName].show}"></i>
+								</span>
 						</div>
 					</div></dd>
 				</dl>
