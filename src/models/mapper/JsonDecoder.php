@@ -153,7 +153,7 @@ class JsonDecoder
      */
     public function decodeMapOf($key, $model, $data)
     {
-        if (is_null($data)) {
+        if (is_null($data) || !is_array($data) && get_class($data) == 'stdClass') {
             $data = array();
         }
         CodeGuard::checkTypeAndThrow($data, 'array');

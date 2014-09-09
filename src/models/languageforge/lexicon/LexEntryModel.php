@@ -7,6 +7,7 @@ use models\mapper\Id;
 use models\mapper\ArrayOf;
 use models\mapper\MapOf;
 use models\ProjectModel;
+use models\mapper\IdReference;
 
 function _createSense($data)
 {
@@ -79,7 +80,7 @@ class LexEntryModel extends \models\mapper\MapperModel
         parent::__construct(self::mapper($databaseName), $id);
     }
 
-    protected function & createProperty($name) {
+    protected function createProperty($name) {
         switch ($name) {
             case 'senses':
                 return new ArrayOf('models\languageforge\lexicon\_createSense');
