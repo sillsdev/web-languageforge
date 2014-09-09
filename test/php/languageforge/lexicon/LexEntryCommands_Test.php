@@ -5,6 +5,8 @@ use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\Example;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\Sense;
+use models\mapper\JsonEncoder;
+use models\commands\ProjectCommands;
 
 require_once dirname(__FILE__) . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -12,6 +14,75 @@ require_once TestPath . 'common/MongoTestEnvironment.php';
 
 class TestLexEntryCommands extends UnitTestCase
 {
+    public function testLexEntryCrud_CreateUpdateDeleteListOk()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        // create an user and add to the project
+        $userId = $e->getProjectMember($projectId, 'user1');
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'SomeEntry');
+
+        $sense = new Sense();
+        $sense->definition->form('en', 'red fruit');
+        $sense->partOfSpeech->value = 'noun';
+
+        $example = new Example();
+        $example->sentence->form('th', 'example1');
+        $example->translation->form('en', 'trans1');
+
+        $sense->examples[] = $example;
+
+        $entry->senses[] = $sense;
+
+        // List
+        $dto = LexEntryCommands::listEntries($projectId);
+        $this->assertEqual($dto->count, 0);
+
+        // Create
+        $params = JsonEncoder::encode($entry);
+        $result1 = LexEntryCommands::updateEntry($projectId, $params, $userId);
+        $entryId = $result1['id'];
+        $this->assertNotNull($entryId);
+        $this->assertEqual(24, strlen($entryId));
+
+        // Read
+        $result2 = LexEntryCommands::readEntry($projectId, $entryId);
+        $this->assertNotNull($result2['id']);
+        $this->assertEqual('SomeEntry', $result2['lexeme']['th']['value']);
+
+        // Update
+        $result2['lexeme']['th']['value'] = 'OtherEntry';
+        $result3 = LexEntryCommands::updateEntry($projectId, $result2, $userId);
+        $this->assertNotNull($result3);
+        $this->assertEqual($result3['id'], $entryId);
+
+        // Read back
+        $result4 = LexEntryCommands::readEntry($projectId, $entryId);
+        $this->assertNotNull($result4['id']);
+        $this->assertEqual('OtherEntry', $result4['lexeme']['th']['value']);
+
+        // List
+        $dto = LexEntryCommands::listEntries($projectId);
+        $this->assertEqual($dto->count, 1);
+
+        // Delete
+        $result5 = LexEntryCommands::removeEntry($projectId, $entryId, $userId);
+        $this->assertTrue($result5);
+
+        // List to confirm delete
+        $dto = LexEntryCommands::listEntries($projectId);
+        $this->assertEqual($dto->count, 0);
+
+        // Clean up after ourselves
+        ProjectCommands::deleteProjects(array($projectId));
+    }
+
     public function testReadEntry_ReadBackOk()
     {
         $e = new LexiconMongoTestEnvironment();

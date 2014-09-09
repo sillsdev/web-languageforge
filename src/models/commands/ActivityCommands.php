@@ -18,6 +18,8 @@ use models\ProjectModel;
 use models\QuestionModel;
 use models\UserModel;
 
+use models\languageforge\lexicon\commands\LexEntryCommands;
+
 class ActivityCommands
 {
 
@@ -201,14 +203,23 @@ class ActivityCommands
     public static function writeEntry($projectModel, $userId, $entry, $action)
     {
         $activity = new ActivityModel($projectModel);
+        $activity->entryRef->id = $entry->id->asString();
+        $user = new UserModel($userId);
         $activity->userRef->id = $userId;
         if ($action == 'update') {
             $activity->action = ActivityModel::UPDATE_ENTRY;
+            $title = LexEntryCommands::getEntryLexeme($projectModel->id->asString(), $entry->id->asString());
         } else {
             $activity->action = ActivityModel::ADD_ENTRY;
+            try {
+                $title = LexEntryCommands::getEntryLexeme($projectModel->id->asString(), $entry->id->asString());
+            } catch (Exception $ex) {
+                $title = '';
+            }
         }
 
-        $activity->addContent(ActivityModel::ENTRY, $entry);
+        $activity->addContent(ActivityModel::ENTRY, $title);
+        $activity->addContent(ActivityModel::USER, $user->username);
 
         return $activity->write();
     }
@@ -226,8 +237,9 @@ class ActivityCommands
         $activity->userRef->id = $userId;
         $activity->action = ActivityModel::DELETE_ENTRY;
 
-        $entry = self::getEntry($projectModel->id->asString(), $id);
-        $activity->addContent(ActivityModel::ENTRY, $entry->lexeme[$projectModel->languageCode]);
+        //$entry = self::getEntry($projectModel->id->asString(), $id);
+        $lexeme = LexEntryCommands::getEntryLexeme($projectModel->id->asString(), $id);
+        $activity->addContent(ActivityModel::ENTRY, $lexeme);
 
         return $activity->write();
     }
