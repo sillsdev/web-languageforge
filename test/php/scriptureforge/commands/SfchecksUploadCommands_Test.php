@@ -44,7 +44,6 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $fileName = 'TestAudio.mp3';
         $file = array();
         $file['name'] = $fileName;
-        $file['type'] = 'audio/mp3';
         $_FILES['file'] = $file;
         $_POST['textId'] = $textId;
 
@@ -83,7 +82,6 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $fileName = 'TestAudio.MP3';
         $file = array();
         $file['name'] = $fileName;
-        $file['type'] = 'AUDIO/MP3';
         $_FILES['file'] = $file;
         $_POST['textId'] = $textId;
 
@@ -95,7 +93,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $this->cleanupTestFiles($project->getAssetsFolderPath(), $textId, $fileName, $tmpFilePath);
     }
 
-    function testUploadAudio_mp4File_uploadDisallowed()
+    function testUploadAudio_WavFile_uploadDisallowed()
     {
         $e = new MongoTestEnvironment();
         $e->clean();
@@ -109,12 +107,11 @@ class TestSfchecksUploadCommands extends UnitTestCase
 
         // put a copy of the test file in tmp
         $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestAudio.mp3';
-        copy(TestPath . 'common/TestAudio.mp3', $tmpFilePath);
+        copy(TestPath . 'common/TestAudio.wav', $tmpFilePath);
 
         $fileName = 'TestAudio.mp3';
         $file = array();
         $file['name'] = $fileName;
-        $file['type'] = 'video/mp4';
         $_FILES['file'] = $file;
         $_POST['textId'] = $textId;
 
@@ -124,8 +121,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $this->assertEqual('UserMessage', $response->data->errorType);
         $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage);
 
-        $file['type'] = 'audio/mp3';
-        $fileName = 'TestAudio.mp4';
+        $fileName = 'TestAudio.wav';
         $file['name'] = $fileName;
         $_FILES['file'] = $file;
         copy(TestPath . 'common/TestAudio.mp3', $tmpFilePath);
@@ -158,7 +154,6 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $fileName = '/\\?%*:|"<>.mp3';
         $file = array();
         $file['name'] = $fileName;
-        $file['type'] = 'audio/mp3';
         $_FILES['file'] = $file;
         $_POST['textId'] = $textId;
 
