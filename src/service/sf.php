@@ -8,6 +8,7 @@ use models\languageforge\lexicon\commands\LexCommentCommands;
 use models\languageforge\lexicon\commands\LexEntryCommands;
 use models\languageforge\lexicon\commands\LexOptionListCommands;
 use models\languageforge\lexicon\commands\LexProjectCommands;
+use models\languageforge\lexicon\commands\LexUploadCommands;
 use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\languageforge\lexicon\dto\LexDbeDto;
 use models\languageforge\lexicon\dto\LexProjectDto;
@@ -644,6 +645,12 @@ class sf
     public function lex_optionlists_update($params)
     {
         return LexOptionListCommands::updateList($this->_projectId, $params);
+    }
+
+    public function lex_uploadFile($uploadType, $tmpFilePath)
+    {
+        $response = LexUploadCommands::uploadFile($this->_projectId, $uploadType, $tmpFilePath);
+        return JsonEncoder::encode($response);
     }
 
     // ---------------------------------------------------------------
