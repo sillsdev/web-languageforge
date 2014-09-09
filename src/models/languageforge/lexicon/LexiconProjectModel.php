@@ -28,6 +28,7 @@ class LexiconProjectModel extends LfProjectModel
         $this->inputSystems['th'] = new InputSystem('th', 'Thai', 'th');
         $this->languageCode = $this->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[0];
 
+        // This must be last, the constructor reads data in from the database which must overwrite the defaults above.
         parent::__construct($id);
     }
 
