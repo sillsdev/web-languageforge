@@ -53,7 +53,7 @@ class FixTextAudio
             }
             if (! $testMode) {
                 TextModel_sf_v0_9_18::removeAudioProperty($project->databaseName());
-                $message .= "Removed 'audioUrl' property from project: $project->projectName\n\n";
+                $message .= "Removed 'audioUrl' property from project: $project->projectName\n";
             }
         }
         if ($textsUpdated > 0) {
@@ -65,6 +65,7 @@ class FixTextAudio
         // re-arrange assets folder
         // - remove <siteName> from path for LF
         // - add <appName> to path for SF and change <projectId> in path to <projectSlug (databaseName)>
+        $message .= "\n\nRe-arrange assets folder\n~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
         $project = new SfchecksProjectModel();
         $assetsFolderPath = APPPATH . "assets";
         $assetsSubfolders = glob($assetsFolderPath . '/*');
