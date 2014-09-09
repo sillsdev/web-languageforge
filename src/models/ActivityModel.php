@@ -10,6 +10,7 @@ use models\mapper\IdReference;
 
 use models\mapper\Id;
 use models\mapper\MapOf;
+use libraries\shared\palaso\CodeGuard;
 
 class ActivityModelMongoMapper extends \models\mapper\MongoMapper
 {
@@ -73,6 +74,7 @@ class ActivityModel extends \models\mapper\MapperModel
         $this->questionRef = new IdReference();
         $this->userRef = new IdReference();
         $this->userRef2 = new IdReference();
+        $this->entryRef = new IdReference();
         $this->action = $this::UNKNOWN;
         $this->date = new \DateTime(); // set the timestamp to now
         $this->actionContent = new MapOf(); // strings
@@ -88,6 +90,7 @@ class ActivityModel extends \models\mapper\MapperModel
      */
     public function addContent($type, $content)
     {
+        CodeGuard::checkTypeAndThrow($content, 'string');
         $this->actionContent[$type] = $content;
     }
 
@@ -127,6 +130,12 @@ class ActivityModel extends \models\mapper\MapperModel
      * @var IdReference
      */
     public $userRef2;
+
+    /**
+     *
+     * @var IdReference
+     */
+    public $entryRef;
 
     /**
      *
