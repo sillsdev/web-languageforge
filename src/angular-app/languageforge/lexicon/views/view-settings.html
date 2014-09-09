@@ -4,7 +4,7 @@
 <fieldset data-ng-disabled="isSaving">
 <button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="settingsApply()"  
 	data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense() || !allUsersHaveAtLeastOneSense() || isSaving">
-	<i class="icon-ok"></i> {{'Apply' | translate}}</button>
+	<i ng-class="{'icon-ok': !isSaving, 'icon-spinner': isSaving, 'icon-spin': isSaving}"></i> {{'Apply' | translate}}</button>
 <tabset>
 	<tab data-ng-repeat="roleTab in roleTabs" class="{{interfaceConfig.pullNormal}}" active="roleTab.active"
 		data-ng-click="selectField(currentField.name, roleTab.view)">
