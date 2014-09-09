@@ -65,7 +65,7 @@ class CodeGuard
         if (is_null($trace)) {
             $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 20);
         }
-        $trace = array_slice($trace, 2, count($trace) - 11);
+//         $trace = array_slice($trace, 2, count($trace) - 11);
         $getString = function ($val) {
             if (is_string($val)) {
                 return $val;
@@ -79,10 +79,16 @@ class CodeGuard
         };
         $out = "<pre style='font-weight:bold'>";
         try {
+            $rootPath = realpath(APPPATH . '/..');
+            $l = strlen($rootPath);
             foreach ($trace as $item) {
                 $file = ''; $line = ''; $function = ''; $type = ''; $class = '';
                 if (array_key_exists('file', $item)) {
-                    $file = substr($item['file'], strrpos($item['file'], '/')+1);
+                    if (strpos($item['file'], $rootPath) !== false) {
+                        $file = substr($item['file'], $l);
+                    } else {
+                        $file = $item['file'];
+                    }
                 }
                 if (array_key_exists('line', $item)) {
                     $line = $item['line'];
@@ -94,10 +100,15 @@ class CodeGuard
                     $type = $item['type'];
                 }
                 if (array_key_exists('class', $item)) {
-                    $class = substr($item['class'], strrpos($item['class'], '\\')+1);
+//                     $class = substr($item['class'], strrpos($item['class'], '\\')+1);
+                    $class = $item['class'];
                 }
                 $args = implode(', ', array_map($getString, $item['args']));
-                $out .= "<p>$file line $line, $class$type$function($args)</p>";
+                $out .= "$file ";
+                if (array_key_exists('line', $item)) {
+                    $out .= "line $line, ";
+                }
+                $out .= "$class$type$function($args)\n";
             }
         } catch (\Exception $e) {
             $out .= "Exception: " . $e->getMessage();

@@ -4,9 +4,9 @@ require_once 'base.php';
 
 class download extends Base
 {
-    public function assets($id, $file)
+    public function assets($appName, $projectSlug, $file)
     {
-        $filePath = APPPATH .  "assets/$id/" . urldecode($file);
+        $filePath = APPPATH .  "assets/$appName/$projectSlug/" . urldecode($file);
         if (!file_exists($filePath)) {
             show_404($this->site);
 
