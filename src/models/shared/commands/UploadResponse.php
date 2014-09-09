@@ -1,5 +1,5 @@
 <?php
-namespace models\scriptureforge\sfchecks\commands;
+namespace models\shared\commands;
 
 class UploadResponse
 {
