@@ -75,10 +75,7 @@ class Website
 	 */
     private static $_redirect;
     /**
-	 *
-	 * @param string $domain - domain / hostname of the website
-	 * @param string $base - either 'scriptureforge' or 'languageforge'
-	 */
+    */
     public function __construct($domain, $base)
     {
         if ($base != self::SCRIPTUREFORGE && $base != self::LANGUAGEFORGE) { throw new \Exception('website->base must be either scriptureforge or languageforge'); }
@@ -150,6 +147,7 @@ class Website
     }
 
     /**
+
 	 * Convenience function to get the website object or redirect based upon ssl setting or a redirect list
 	 * FYI Not testable  because of the inclusion of the header() method : test get() and getRedirect() instead
 	 * @param string $hostname
@@ -338,4 +336,5 @@ class Website
     }
 
 }
+
 Website::init();
