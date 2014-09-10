@@ -23,6 +23,11 @@ function _createCustomField($data)
     }
 }
 
+function _createPicture($data)
+{
+    return new Picture();
+}
+
 class Sense
 {
     use \LazyProperty\LazyPropertiesTrait;
@@ -40,6 +45,7 @@ class Sense
                 'authorInfo',
                 'definition',
                 'gloss',
+                'pictures',
                 'scientificName',
                 'anthropologyNote',
                 'senseBibliography',
@@ -59,8 +65,7 @@ class Sense
                 'academicDomains',
                 'sensePublishIn',
                 'anthropologyCategories',
-                'status',
-                'pictures'
+                'status'
         ], false);
 
     }
@@ -72,6 +77,7 @@ class Sense
             case 'examples': return new ArrayOf('\models\languageforge\lexicon\_createExample');
             case 'customFields': return new ArrayOf('\models\languageforge\lexicon\_createCustomField'); // REVIEW This should be MapOf should it not? CP 2014-09
             case 'authorInfo': return new AuthorInfo();
+            case 'pictures': return new ArrayOf('\models\languageforge\lexicon\_createPicture');
             case 'definition':
             case 'gloss':
             case 'scientificName':
@@ -98,7 +104,6 @@ class Sense
             case 'sensePublishIn': return new LexiconMultiValueField();
             case 'anthropologyCategories': return new LexiconMultiValueField();
             case 'status': return new LexiconMultiValueField();
-            case 'pictures': return new Pictures();
         }
     }
 
@@ -123,6 +128,11 @@ class Sense
      * @var MultiText
      */
     public $gloss;
+
+    /**
+     * @var ArrayOf<Picture>
+     */
+    public $pictures;
 
     /**
      * @var LexiconField
@@ -280,10 +290,5 @@ class Sense
      * @var LexiconMultiValueField
      */
     public $status;
-
-    /**
-     * @var Pictures
-     */
-    public $pictures;
 
 }
