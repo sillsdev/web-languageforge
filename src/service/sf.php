@@ -647,9 +647,9 @@ class sf
         return LexOptionListCommands::updateList($this->_projectId, $params);
     }
 
-    public function lex_uploadFile($uploadType, $tmpFilePath)
+    public function lex_uploadImageFile($uploadType, $tmpFilePath)
     {
-        $response = LexUploadCommands::uploadFile($this->_projectId, $uploadType, $tmpFilePath);
+        $response = LexUploadCommands::uploadImageFile($this->_projectId, $uploadType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
