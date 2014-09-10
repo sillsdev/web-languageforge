@@ -22,7 +22,7 @@ class SfchecksUploadCommands
     public static function uploadFile($projectId, $uploadType, $tmpFilePath)
     {
         if ($uploadType != 'audio') {
-            throw new \Exception("Unsupported upload type.");
+            throw new \Exception("Unsupported upload type: $uploadType");
         }
         if (! $tmpFilePath) {
             throw new \Exception("Upload controller did not move the uploaded file.");

@@ -296,8 +296,8 @@ class RightsHelper
             case 'lex_optionlist_update':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
-            case 'lex_uploadFile':
-                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+            case 'lex_uploadImageFile':
+                return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 
             default:
                 throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");
