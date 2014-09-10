@@ -97,6 +97,7 @@ class LexConfiguration
         $this->entry->fields[LexiconConfigObj::SENSES_LIST] = new LexiconFieldListConfigObj();
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::DEFINITION;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::GLOSS;
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::PICTURES;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::POS;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SEMDOM;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SCIENTIFICNAME;
@@ -119,7 +120,6 @@ class LexConfiguration
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::ANTHROPOLOGYCATEGORIES;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SENSEIMPORTRESIDUE;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::STATUS;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::PICTURES;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::EXAMPLES_LIST;
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION] = new LexiconMultitextConfigObj();
@@ -237,6 +237,11 @@ class LexConfiguration
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->hideIfEmpty = true;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems[] = 'en';
 
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES] = new LexPicturesConfigObj();
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->label = 'Pictures';
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->hideIfEmpty = true;
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems[] = 'en';
+
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME] = new LexiconMultitextConfigObj();
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME]->label = 'Scientific Name';
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME]->hideIfEmpty = true;
@@ -331,11 +336,6 @@ class LexConfiguration
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS]->label = 'Status';
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS]->hideIfEmpty = true;
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES] = new LexPicturesConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->label = 'Pictures';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems[] = 'en';
-
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::REFERENCE] = new LexiconMultitextConfigObj();
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::REFERENCE]->label = 'Reference';
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::REFERENCE]->hideIfEmpty = true;
@@ -360,6 +360,7 @@ class LexConfiguration
 
         // Less common fields are disabled by default
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::GLOSS] = new LexViewMultiTextFieldConfig();
+        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::PICTURES] = new LexViewMultiTextFieldConfig();
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::CITATIONFORM] = new LexViewMultiTextFieldConfig();
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ENVIRONMENTS] = new LexViewFieldConfig();
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::PRONUNCIATION] = new LexViewMultiTextFieldConfig();
@@ -396,7 +397,6 @@ class LexConfiguration
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES] = new LexViewFieldConfig();
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SENSEIMPORTRESIDUE] = new LexViewMultiTextFieldConfig();
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::STATUS] = new LexViewFieldConfig();
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::PICTURES] = new LexViewMultiTextFieldConfig();
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::REFERENCE] = new LexViewMultiTextFieldConfig();
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::EXAMPLEPUBLISHIN] = new LexViewFieldConfig();
 
