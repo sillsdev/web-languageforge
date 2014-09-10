@@ -14,20 +14,12 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
       control: "="
     },
     controller: ['$scope', 'lexConfigService', function($scope, lexConfigService) {
+      $scope.fieldContainsData = lexConfigService.fieldContainsData;
+
       $scope.addExample = function addExample() {
         var newExample = {};
         $scope.control.makeValidModelRecursive($scope.config.fields.examples, newExample);
         $scope.model.examples.push(newExample);
-      };
-      
-      $scope.addPicture = function addPicture() {
-        var newPicture = {};
-        $scope.control.makeValidModelRecursive($scope.config.fields.pictures, newPicture);
-        $scope.model.pictures.push(newPicture);
-      };
-      
-      $scope.pictureUrl = function pictureUrl(fileName) {
-        return '/assets/lexicon/' + $scope.control.project.slug + '/' + fileName;
       };
 
       $scope.deleteExample = function deleteExample(index) {
@@ -37,7 +29,22 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
         });
       };
 
-      $scope.fieldContainsData = lexConfigService.fieldContainsData;
+      $scope.addPicture = function addPicture() {
+        var newPicture = {};
+        $scope.control.makeValidModelRecursive($scope.config.fields.pictures, newPicture);
+        $scope.model.pictures.push(newPicture);
+      };
+
+      $scope.pictureUrl = function pictureUrl(fileName) {
+        return '/assets/lexicon/' + $scope.control.project.slug + '/' + fileName;
+      };
+
+      $scope.deletePicture = function deletePicture(index) {
+        var deletemsg = "Are you sure you want to delete the picture <b>'" + $scope.model.pictures[index].fileName + "'</b>";
+        modal.showModalSimple('Delete Picture', deletemsg, 'Cancel', 'Delete Picture').then(function() {
+          $scope.model.pictures.splice(index, 1);
+        });
+      };
     }],
     link: function(scope, element, attrs, controller) {
       scope.optionlists = scope.control.config.optionlists;

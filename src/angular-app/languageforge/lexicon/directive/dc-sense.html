@@ -38,6 +38,11 @@
                     <div data-ng-repeat="picture in model[fieldName]">
                         <img src="{{pictureUrl(picture.fileName)}}"
                             style="width: 150px; height: 150px">
+                        <span data-ng-if="control.rights.canEditEntry() && control.state == 'edit'"
+                            class="deleteX">
+                            <i data-ng-click="deletePicture($index)" title="Delete Picture"
+                                class="icon-remove"></i>
+                        </span>
                         <dc-multitext control="control"
                             config="config.fields[fieldName]"
                             model="picture.caption"></dc-multitext>
