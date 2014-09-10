@@ -59,7 +59,8 @@ class Sense
                 'academicDomains',
                 'sensePublishIn',
                 'anthropologyCategories',
-                'status'
+                'status',
+                'pictures'
         ], false);
 
     }
@@ -97,6 +98,7 @@ class Sense
             case 'sensePublishIn': return new LexiconMultiValueField();
             case 'anthropologyCategories': return new LexiconMultiValueField();
             case 'status': return new LexiconMultiValueField();
+            case 'pictures': return new Pictures();
         }
     }
 
@@ -278,5 +280,10 @@ class Sense
      * @var LexiconMultiValueField
      */
     public $status;
+
+    /**
+     * @var Pictures
+     */
+    public $pictures;
 
 }

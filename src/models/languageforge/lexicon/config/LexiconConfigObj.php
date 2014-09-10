@@ -64,6 +64,8 @@ class LexiconConfigObj extends ObjectForEncoding
     const ANTHROPOLOGYCATEGORIES = 'anthropologyCategories';
     const SENSEIMPORTRESIDUE = 'senseImportResidue';
     const STATUS = 'status';
+    const PICTURES = 'pictures';
+
 
     const REFERENCE = 'reference';
     const EXAMPLEPUBLISHIN = 'examplePublishIn';
