@@ -35,13 +35,17 @@ class Upload extends Secure_base
                     $response = $api->sfChecks_uploadFile($uploadType, $tmpFilePath);
                 } elseif ($app == 'lf-lexicon') {
                     $api = new Sf($this);
-                    $api->checkPermissions('lex_uploadFile', array(
-                        $uploadType,
-                        $tmpFilePath
-                    ));
-                    $response = $api->lex_uploadFile($uploadType, $tmpFilePath);
+                    if ($uploadType === 'sense-image') {
+                        $api->checkPermissions('lex_uploadImageFile', array(
+                            $uploadType,
+                            $tmpFilePath
+                        ));
+                        $response = $api->lex_uploadImageFile($uploadType, $tmpFilePath);
+                    } else {
+                        throw new Exception("Unsupported upload type: $uploadType");
+                    }
                 } else {
-                    throw new \Exception("Unsupported upload app.");
+                    throw new Exception("Unsupported upload app: $app");
                 }
             } catch (\Exception $e) {
                 $response = array(

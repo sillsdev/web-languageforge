@@ -127,7 +127,7 @@ class LexUploadCommands
      */
     public static function uploadImageFile($projectId, $uploadType, $tmpFilePath)
     {
-        if ($uploadType != 'entry-image') {
+        if ($uploadType != 'sense-image') {
             throw new \Exception("Unsupported upload type.");
         }
         if (! $tmpFilePath) {
