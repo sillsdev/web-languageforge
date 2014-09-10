@@ -119,6 +119,7 @@ class LexConfiguration
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::ANTHROPOLOGYCATEGORIES;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SENSEIMPORTRESIDUE;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::STATUS;
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::PICTURES;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::EXAMPLES_LIST;
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION] = new LexiconMultitextConfigObj();
@@ -330,6 +331,11 @@ class LexConfiguration
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS]->label = 'Status';
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS]->hideIfEmpty = true;
 
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES] = new LexPicturesConfigObj();
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->label = 'Pictures';
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->hideIfEmpty = true;
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems[] = 'en';
+
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::REFERENCE] = new LexiconMultitextConfigObj();
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::REFERENCE]->label = 'Reference';
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::REFERENCE]->hideIfEmpty = true;
@@ -390,6 +396,7 @@ class LexConfiguration
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES] = new LexViewFieldConfig();
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SENSEIMPORTRESIDUE] = new LexViewMultiTextFieldConfig();
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::STATUS] = new LexViewFieldConfig();
+        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::PICTURES] = new LexViewMultiTextFieldConfig();
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::REFERENCE] = new LexViewMultiTextFieldConfig();
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::EXAMPLEPUBLISHIN] = new LexViewFieldConfig();
 
