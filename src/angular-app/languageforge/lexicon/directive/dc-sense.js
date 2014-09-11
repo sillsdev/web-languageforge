@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.optionlist', 'palaso.ui.dc.multioptionlist', 'palaso.ui.dc.example', 'ngAnimate', 'bellows.services', 'lexicon.services'])
+angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.optionlist', 'palaso.ui.dc.multioptionlist', 'palaso.ui.dc.example', 'palaso.ui.dc.picture', 'ngAnimate', 'bellows.services', 'lexicon.services'])
 // Palaso UI Dictionary Control: Sense
 .directive('dcSense', ['lexUtils', 'modalService', function(utils, modal) {
   return {
@@ -26,23 +26,6 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.multitext', 'palaso.ui.dc.op
         var deletemsg = "Are you sure you want to delete the example <b>' " + utils.getExampleSentence($scope.config.fields.examples, $scope.model.examples[index]) + " '</b>";
         modal.showModalSimple('Delete Example', deletemsg, 'Cancel', 'Delete Example').then(function() {
           $scope.model.examples.splice(index, 1);
-        });
-      };
-
-      $scope.addPicture = function addPicture() {
-        var newPicture = {};
-        $scope.control.makeValidModelRecursive($scope.config.fields.pictures, newPicture);
-        $scope.model.pictures.push(newPicture);
-      };
-
-      $scope.pictureUrl = function pictureUrl(fileName) {
-        return '/assets/lexicon/' + $scope.control.project.slug + '/' + fileName;
-      };
-
-      $scope.deletePicture = function deletePicture(index) {
-        var deletemsg = "Are you sure you want to delete the picture <b>'" + $scope.model.pictures[index].fileName + "'</b>";
-        modal.showModalSimple('Delete Picture', deletemsg, 'Cancel', 'Delete Picture').then(function() {
-          $scope.model.pictures.splice(index, 1);
         });
       };
     }],

@@ -1,0 +1,45 @@
+<div class="dc-pictures">
+    <label class="control-label">{{config.label}}</label>
+    <div data-ng-repeat="picture in pictures">
+        <div class="dc-picture">
+            <div class="dc-image">
+                <img data-ng-show="picture.fileName" src="{{pictureUrl(picture.fileName)}}">
+                <div data-ng-hide="picture.fileName">
+                    <div class="drop-box" data-ng-file-drop="onFileSelect($files, $index);"
+                        data-ng-file-drop-available="dropSupported=true">
+                        <h4>Drop an image file here</h4>
+                        <p>or if you prefer...</p>
+                        <input type="button" class="btn" value="Browse..."
+                            onclick="javascript:document.getElementById('imagefile').click();">
+                        <input id="imagefile" type="file" style="display: none;"
+                            data-ng-file-select="onFileSelect($files)">
+                    </div>
+                    <div data-ng-show="!dropSupported">
+                        HTML5 Drop File is not supported on this browser</div>
+                    <div data-ng-show="file != null">
+                        <p><strong>{{file.name}}</strong> {{file.size | bytes }}</p>
+                        <div class="span4">
+                            <progressbar data-value="progress" data-max="100.0"></progressbar>
+                        </div>
+                        &nbsp;
+                    </div>
+                    <label>&nbsp;</label>
+                    <div data-ng-bind-html="uploadResult"></div>
+                </div>
+                <span data-ng-if="control.rights.canEditEntry() && control.state == 'edit'"
+                    class="deleteX">
+                    <i data-ng-click="deletePicture($index)" title="Delete Picture"
+                        class="icon-remove"></i>
+                </span>
+            </div>
+            <dc-multitext data-ng-show="picture.fileName" 
+                control="control"
+                config="config.caption"
+                model="picture.caption"></dc-multitext>
+        </div>
+    </div>
+    <div data-ng-if="control.rights.canEditEntry() && control.state == 'edit'"
+        class="addItem">
+        <a data-ng-click="addPicture()">Add Picture</a>
+    </div>
+</div>
