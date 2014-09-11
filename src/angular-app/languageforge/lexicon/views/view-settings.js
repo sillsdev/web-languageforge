@@ -4,18 +4,73 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
   .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService',
   function ViewSettingsCtrl($scope, notice, userService, lexProjectService, ss, $filter, $modal, lexConfigService) {
     lexProjectService.setBreadcrumbs('viewSettings', $filter('translate')('View Settings'));
-    
+
+    $scope.selectUser = function selectUser(userId) {
+      $scope.currentUserId = userId;
+      $scope.state = 'userSettings';
+    };
+
     $scope.configDirty = angular.copy($scope.projectSettings.config);
-    $scope.roleTabs = [
-      {name: $filter('translate')('Observer'), role: 'observer', view: $scope.configDirty.roleViews['observer'], active: true},
-      {name: $filter('translate')('Commenter'), role: 'observer_with_comment', view: $scope.configDirty.roleViews['observer_with_comment']},
-      {name: $filter('translate')('Contributor'), role: 'contributor', view: $scope.configDirty.roleViews['contributor']},
-      {name: $filter('translate')('Manager'), role: 'project_manager', view: $scope.configDirty.roleViews['project_manager']}
+//    console.log("Original config:", $scope.projectSettings.config);
+//    console.log("Modified config:", $scope.configDirty);
+
+    // Typeahead for user selection
+    $scope.typeahead = {};
+    $scope.typeahead.users = [];
+    $scope.typeahead.userName = '';
+    $scope.typeahead.searchUsers = function searchUsers(query) {
+      $scope.typeahead.users = $filter('filter')($scope.usersWithoutSettings, query);
+    };
+
+    $scope.typeahead.selectUser = function selectuser(user) {
+      $scope.typeahead.user = user;
+      $scope.typeahead.userName = user.name;
+    };
+
+    $scope.addUser = function addUser() {
+      if ($scope.typeahead.user) {
+        var user = $scope.typeahead.user,
+            userView = angular.copy($scope.configDirty.roleViews[user.role]);
+        $scope.forWhom = user.name + ' (' + user.username + ')';
+        deleteFromArray(user, 'id', $scope.usersWithoutSettings);
+        $scope.usersWithSettings[user.id] = user;
+        $scope.configDirty.userViews[user.id] = userView;
+        $scope.currentView = $scope.configDirty.userViews[user.id];
+        $scope.typeahead.userName = '';
+        $scope.viewSettingForm.$setDirty();
+      }
+    };
+
+    $scope.tabs = [
+      {byRole: true, byUser: false, name: $filter('translate')('Observer'), role: 'observer', view: $scope.configDirty.roleViews['observer'], active: true},
+      {byRole: true, byUser: false, name: $filter('translate')('Commenter'), role: 'observer_with_comment', view: $scope.configDirty.roleViews['observer_with_comment']},
+      {byRole: true, byUser: false, name: $filter('translate')('Contributor'), role: 'contributor', view: $scope.configDirty.roleViews['contributor']},
+      {byRole: true, byUser: false, name: $filter('translate')('Manager'), role: 'project_manager', view: $scope.configDirty.roleViews['project_manager']},
+      {byRole: false, byUser: true, name: $filter('translate')('Member Specific'), role: undefined, view: undefined}
     ];
     $scope.state = 'userSelectList';
-	$scope.isSaving = false;
+    $scope.isSaving = false;
     $scope.list = {};
-    
+
+    $scope.selectTab = function(idx) {
+      console.log('Selecting role', idx);
+      $scope.currentTab = $scope.tabs[idx];
+      if ($scope.currentTab.byRole) {
+        $scope.forWhom = $scope.currentTab.name;
+        $scope.currentView = $scope.currentTab.view;
+      } else {
+        var user = $scope.typeahead.user;
+        if (user) {
+          // Existing user, so there was already a view
+          $scope.forWhom = user.name;
+          $scope.currentView = $scope.configDirty.userViews[user.id];
+        } else {
+          // View will be created when addUser() is called
+          $scope.forWhom = $filter('translate')("(choose a user)"); // Should be hidden, but just in case
+          $scope.currentView = {};
+        }
+      }
+    };
     lexProjectService.users(function(result) {
       if (result.ok) {
         $scope.users = result.data.users;
@@ -32,58 +87,53 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
 
     $scope.isCustomField = lexConfigService.isCustomField;
 
-    $scope.fieldConfig = {};
-    angular.forEach($scope.configDirty.entry.fieldOrder, function(fieldName) {
-      if (angular.isDefined($scope.configDirty.entry.fields[fieldName])) {
-        if ($scope.configDirty.entry.fields[fieldName].type !== 'fields') {
-          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields[fieldName];
+    // $scope.fieldConfig, fieldOrder, and customFieldOrder will be read-only copies
+    // of the config, so the view doesn't need to dig too deeply into config.entry.foo.bar.baz.quux
+    $scope.getFieldConfig = function getFieldConfig(config) {
+      $scope.fieldConfig = {};
+      function getFields(section, isCustom) {
+        // Sanity check
+        if (angular.isUndefined(section) || angular.isUndefined(section.fieldOrder) || angular.isUndefined(section.fields)) {
+          return;
         }
-//      } else {
-//        if ($scope.configDirty.entry.fields.customFields.fields[fieldName].type !== 'fields') {
-//          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.customFields.fields[fieldName];
-//        }
-      }
-    });
-    angular.forEach($scope.configDirty.entry.fields.senses.fieldOrder, function(fieldName) {
-      if (angular.isDefined($scope.configDirty.entry.fields.senses.fields[fieldName])) {
-        if ($scope.configDirty.entry.fields.senses.fields[fieldName].type !== 'fields') {
-          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields[fieldName];
-        }
-//      } else {
-//        if ($scope.configDirty.entry.fields.senses.fields.customFields.fields[fieldName].type !== 'fields') {
-//          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.customFields.fields[fieldName];
-//        }
-      }
-    });
-    angular.forEach($scope.configDirty.entry.fields.senses.fields.examples.fieldOrder, function(fieldName) {
-      if (angular.isDefined($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName])) {
-        if ($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName].type !== 'fields') {
-          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName];
-        }
-//      } else {
-//        if ($scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[fieldName].type !== 'fields') {
-//          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields.customFields.fields[fieldName];
-//        }
-      }
-    });
+        angular.forEach(section.fieldOrder, function(fieldName) {
+          var field = section.fields[fieldName];
+          if (angular.isDefined(field) && field.type !== 'fields') {
+            $scope.fieldConfig[fieldName] = field;
+          }
+        });
+      };
+      getFields(config.entry);
+      getFields(config.entry.fields.senses);
+      getFields(config.entry.fields.senses.fields.examples);
+      getFields(config.entry.fields.customFields);
+      getFields(config.entry.fields.senses.customFields);
+      getFields(config.entry.fields.senses.fields.examples.customFields);
+      $scope.fieldOrder = {
+          entry: config.entry.fieldOrder,
+          senses: config.entry.fields.senses.fieldOrder,
+          examples: config.entry.fields.senses.fields.examples.fieldOrder,
+      };
+    };
+    $scope.getFieldConfig($scope.configDirty);
 
     $scope.settingsApply = function settingsApply() {
-		$scope.isSaving = true;
+      $scope.isSaving = true;
       lexProjectService.updateConfiguration($scope.configDirty, [], function(result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, $filter('translate')('View settings updated successfully'));
           $scope.viewSettingForm.$setPristine();
           $scope.projectSettings.config = angular.copy($scope.configDirty);
         }
-		  $scope.isSaving = false;
+        $scope.isSaving = false;
       });
     };
-    
+
     function createCurrentInputSystems(inputSystems) {
       angular.forEach(inputSystems, function(tag) {
         $scope.currentField.inputSystems.selecteds[tag] = true;
       });
-      
+
       // if the field uses input systems, add the selected systems first then the unselected systems
       if (inputSystems) {
         $scope.currentField.inputSystems.fieldOrder = inputSystems;
@@ -95,7 +145,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         });
       }
     }
-  
+
     $scope.currentField = {
       'name': '',
       'inputSystems': {
@@ -117,8 +167,8 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         createCurrentInputSystems(view.fields[fieldName].inputSystems);
       }
     };
-    $scope.selectField('lexeme', $scope.roleTabs[0].view);
-    
+    $scope.selectField('lexeme', $scope.tabs[0].view);
+
     $scope.moveUp = function moveUp(currentTag, view) {
       var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
       $scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1];
@@ -143,14 +193,14 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       });
       $scope.viewSettingForm.$setDirty();
     };
-    
+
     $scope.fieldIsHidden= function fieldIsHidden(fieldName, showAllFields) {
       if (angular.isUndefined($scope.fieldConfig[fieldName]) || ! ('hideIfEmpty' in $scope.fieldConfig[fieldName])) {
         return true;
       }
       return !showAllFields && $scope.fieldConfig[fieldName].hideIfEmpty;
     };
-    
+
     $scope.isAtLeastOneSense = function isAtLeastOneSense(view) {
       var atLeastOne = false;
       if (! view) return false;
@@ -161,15 +211,17 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       });
       return atLeastOne;
     };
-    
+
     $scope.allRolesHaveAtLeastOneSense = function allRolesHaveAtLeastOneSense() {
       var atLeastOne = true;
-      angular.forEach($scope.roleTabs, function(roleTab) {
-        atLeastOne = atLeastOne && $scope.isAtLeastOneSense(roleTab.view);
+      angular.forEach($scope.tabs, function(tab) {
+        if (tab.byRole) {
+          atLeastOne = atLeastOne && $scope.isAtLeastOneSense(tab.view);
+        }
       });
       return atLeastOne;
     };
-    
+
     $scope.allUsersHaveAtLeastOneSense = function allUsersHaveAtLeastOneSense() {
       var atLeastOne = true;
       angular.forEach($scope.configDirty.userViews, function(userView) {
@@ -177,45 +229,16 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       });
       return atLeastOne;
     };
-    
-    $scope.selectUser = function selectUser(userId) {
-      $scope.currentUserId = userId;
-      $scope.state = 'userSettings';
-    };
-    
-    $scope.typeahead = {};
-    $scope.typeahead.users = [];
-    $scope.typeahead.userName = '';
-    $scope.typeahead.searchUsers = function searchUsers(query) {
-      $scope.typeahead.users = $filter('filter')($scope.usersWithoutSettings, query);
-    };
-    
-    $scope.typeahead.selectUser = function selectuser(user) {
-      $scope.typeahead.user = user;
-      $scope.typeahead.userName = user.name;
-    };
-    
-    $scope.addUser = function addUser() {
-      if ($scope.typeahead.user) {
-        var user = $scope.typeahead.user, 
-          userView = angular.copy($scope.configDirty.roleViews[user.role]);
-        deleteFromArray(user, 'id', $scope.usersWithoutSettings);
-        $scope.usersWithSettings[user.id] = user;
-        $scope.configDirty.userViews[user.id] = userView;
-        $scope.typeahead.userName = '';
-        $scope.viewSettingForm.$setDirty();
-      }
-    };
 
     $scope.imageSource = function imageSource(avatarRef) {
       return avatarRef ? '/images/shared/avatar/' + avatarRef : '/images/shared/avatar/anonymous02.png';
     };
-    
+
     $scope.goSelectUser = function goSelectUser() {
       $scope.state = 'userSelectList';
       $scope.currentUserId = '';
     };
-    
+
     $scope.removeSelectedMemberSettings = function removeSelectedMemberSettings() {
       $scope.usersWithoutSettings.push($scope.usersWithSettings[$scope.currentUserId]);
       delete $scope.usersWithSettings[$scope.currentUserId];
@@ -223,7 +246,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       $scope.viewSettingForm.$setDirty();
       $scope.goSelectUser();
     };
-    
+
     function deleteFromArray(deleteItem, key, items) {
       var itemIndex = - 1;
       angular.forEach(items, function(item, i) {
@@ -236,15 +259,15 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         items.splice(itemIndex, 1);
       }
     };
-    
+
     function activeTabRole() {
-      var active = $scope.roleTabs.filter(function(roletab) {
-          return roletab.active;
+      var active = $scope.tabs.filter(function(tab) {
+          return tab.active;
         })[0];
       if (angular.isUndefined(active)) return false;
       return active.role;
     };
-    
+
     $scope.$watchCollection('currentField.inputSystems.selecteds', function watchCurrentSelecteds(newValue) {
       if (angular.isDefined(newValue)) {
         var role = activeTabRole();
@@ -269,6 +292,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         }
       }
     });
-    
+
   }])
   ;
+
