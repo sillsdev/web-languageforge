@@ -5,6 +5,62 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
   function ViewSettingsCtrl($scope, notice, userService, lexProjectService, ss, $filter, $modal, lexConfigService) {
     lexProjectService.setBreadcrumbs('viewSettings', $filter('translate')('View Settings'));
 
+    // ViewModel for input systems selectors
+    var InputSystemsViewModel = function(allTags, selectedTags) {
+      // allTags and selectedTags should be lists of tag names, like ['th', 'en']
+      if (angular.isUndefined(allTags)) { allTags = []; }
+      if (angular.isUndefined(selectedTags)) { selectedTags = []; }
+      if (!angular.isArray(allTags)) { allTags = Object.keys(allTags); }
+      if (!angular.isArray(selectedTags)) { selectedTags = Object.keys(selectedTags); }
+
+      this.selected = {};
+      this.order = [];
+      this.currentTag = '';
+
+      angular.forEach(selectedTags, this.select, this);
+      // Order presented to user should be all selected tags first, then unselected ones
+      this.order = angular.copy(selectedTags);
+      angular.forEach(allTags, function(tag) {
+        if (!this.selected[tag]) {
+          this.order.push(tag);
+        }
+      }, this);
+    };
+
+    InputSystemsViewModel.prototype.getSelectedTags = function getSelectedTags() {
+      return this.order.filter(function(tag) { return this.selected[tag]; }, this);
+    };
+
+    InputSystemsViewModel.prototype.select = function select(tag) {
+      this.selected[tag] = true;
+    };
+    InputSystemsViewModel.prototype.deselect = function deselect(tag) {
+      this.selected[tag] = false;
+    };
+    InputSystemsViewModel.prototype.toggle = function toggle(tag) {
+      // Will set selected[tag] to true if it was undefined
+      this.selected[tag] = !this.selected[tag];
+    };
+
+    InputSystemsViewModel.prototype._swapTagIndices = function _swapTagIndices(idx1, idx2) {
+      // Used internally by moveTagUp() and moveTagDown(). Does NO bounds checking.
+      var tmp = this.order[idx1];
+      this.order[idx1] = this.order[idx2];
+      this.order[idx2] = tmp;
+    };
+    InputSystemsViewModel.prototype.moveTagUp = function moveTagUp(tag) {
+      var idx = this.order.indexOf(tag);
+      if (idx > 0 && idx < this.order.length) {
+        this._swapTagIndices(idx, idx-1);
+      }
+    };
+    InputSystemsViewModel.prototype.moveTagDown = function moveTagDown(tag) {
+      var idx = this.order.indexOf(tag);
+      if (idx >= 0 && idx < this.order.length-1) {
+        this._swapTagIndices(idx, idx+1);
+      }
+    };
+
     $scope.selectUser = function selectUser(userId) {
       $scope.currentUserId = userId;
       $scope.state = 'userSettings';
@@ -38,7 +94,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         $scope.currentView = $scope.configDirty.userViews[user.id];
         $scope.typeahead.userName = '';
         $scope.viewSettingForm.$setDirty();
-      }
+      }$scope.currentField.inputSystems = {};
     };
 
     $scope.tabs = [
@@ -110,9 +166,9 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       getFields(config.entry.fields.senses.customFields);
       getFields(config.entry.fields.senses.fields.examples.customFields);
       $scope.fieldOrder = {
-          entry: config.entry.fieldOrder,
-          senses: config.entry.fields.senses.fieldOrder,
-          examples: config.entry.fields.senses.fields.examples.fieldOrder,
+          entry: config.entry.fieldOrder.filter(function(field) { return field.type !== 'fields'; }),
+          senses: config.entry.fields.senses.fieldOrder.filter(function(field) { return field.type !== 'fields'; }),
+          examples: config.entry.fields.senses.fields.examples.fieldOrder.filter(function(field) { return field.type !== 'fields'; }),
       };
     };
     $scope.getFieldConfig($scope.configDirty);
@@ -129,23 +185,6 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       });
     };
 
-    function createCurrentInputSystems(inputSystems) {
-      angular.forEach(inputSystems, function(tag) {
-        $scope.currentField.inputSystems.selecteds[tag] = true;
-      });
-
-      // if the field uses input systems, add the selected systems first then the unselected systems
-      if (inputSystems) {
-        $scope.currentField.inputSystems.fieldOrder = inputSystems;
-        angular.forEach($scope.configDirty.inputSystems, function(inputSystem, tag) {
-          if (! (tag in $scope.currentField.inputSystems.selecteds) &&
-              $scope.currentField.inputSystems.fieldOrder.indexOf(tag) == -1) {
-            $scope.currentField.inputSystems.fieldOrder.push(tag);
-          }
-        });
-      }
-    }
-
     $scope.currentField = {
       'name': '',
       'inputSystems': {
@@ -155,42 +194,32 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     };
     $scope.selectField = function selectField(fieldName, view) {
       $scope.currentField.name = fieldName;
-      $scope.currentField.inputSystems.selecteds = {};
       if (angular.isDefined(view) && angular.isDefined(view.fields[fieldName].overrideInputSystems)) {
-        if (angular.isDefined(view.fields[fieldName].inputSystems)) {
-          if (view.fields[fieldName].inputSystems.length <= 0) {
-            view.fields[fieldName].inputSystems = $scope.fieldConfig[fieldName].inputSystems;
-          }
+        if (angular.isDefined(view.fields[fieldName].inputSystems) &&
+            view.fields[fieldName].inputSystems.length > 0) {
+          // Do nothing; use existing value of inputSystems for this field
         } else {
+          // Default input systems for any field is all available (found in config)
           view.fields[fieldName].inputSystems = $scope.fieldConfig[fieldName].inputSystems;
         }
-        createCurrentInputSystems(view.fields[fieldName].inputSystems);
+        $scope.currentField.inputSystems = new InputSystemsViewModel(
+            $scope.configDirty.inputSystems,
+            view.fields[fieldName].inputSystems
+        );
+      } else {
+        $scope.currentField.inputSystems = new InputSystemsViewModel();
       }
     };
     $scope.selectField('lexeme', $scope.tabs[0].view);
 
     $scope.moveUp = function moveUp(currentTag, view) {
-      var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
-      $scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1];
-      $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1] = currentTag;
-      view.fields[$scope.currentField.name].inputSystems = [];
-      angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
-        if ($scope.currentField.inputSystems.selecteds[tag]) {
-          view.fields[$scope.currentField.name].inputSystems.push(tag);
-        }
-      });
+      $scope.currentField.inputSystems.moveTagUp(currentTag);
+      view.fields[$scope.currentField.name].inputSystems = $scope.currentField.inputSystems.getSelectedTags();
       $scope.viewSettingForm.$setDirty();
     };
     $scope.moveDown = function moveDown(currentTag, view) {
-      var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
-      $scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1];
-      $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1] = currentTag;
-      view.fields[$scope.currentField.name].inputSystems = [];
-      angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
-        if ($scope.currentField.inputSystems.selecteds[tag]) {
-          view.fields[$scope.currentField.name].inputSystems.push(tag);
-        }
-      });
+      $scope.currentField.inputSystems.moveTagDown(currentTag);
+      view.fields[$scope.currentField.name].inputSystems = $scope.currentField.inputSystems.getSelectedTags();
       $scope.viewSettingForm.$setDirty();
     };
 
@@ -203,7 +232,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
 
     $scope.isAtLeastOneSense = function isAtLeastOneSense(view) {
       var atLeastOne = false;
-      if (! view) return false;
+      if (!view || !view.fields) return false;
       angular.forEach($scope.configDirty.entry.fields.senses.fieldOrder, function(fieldName) {
         if (fieldName in view.fields) {
           atLeastOne = atLeastOne || view.fields[fieldName].show;
@@ -268,27 +297,12 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       return active.role;
     };
 
-    $scope.$watchCollection('currentField.inputSystems.selecteds', function watchCurrentSelecteds(newValue) {
+    $scope.$watchCollection('currentField.inputSystems.selected', function watchCurrentInputSystems(newValue) {
       if (angular.isDefined(newValue)) {
-        var role = activeTabRole();
-        if (role) {
-          if (angular.isDefined($scope.configDirty.roleViews[role].fields[$scope.currentField.name].inputSystems)) {
-            $scope.configDirty.roleViews[role].fields[$scope.currentField.name].inputSystems = [];
-            angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
-              if ($scope.currentField.inputSystems.selecteds[tag]) {
-                $scope.configDirty.roleViews[role].fields[$scope.currentField.name].inputSystems.push(tag);
-              }
-            });
-          }
-        } else {
-          if ($scope.currentUserId && angular.isDefined($scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems)) {
-            $scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems = [];
-            angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
-              if ($scope.currentField.inputSystems.selecteds[tag]) {
-                $scope.configDirty.userViews[$scope.currentUserId].fields[$scope.currentField.name].inputSystems.push(tag);
-              }
-            });
-          }
+        var view = $scope.currentView,
+            field = $scope.currentField;
+        if (angular.isDefined(view) && angular.isDefined(field)) {
+          view.fields[field.name].inputSystems = field.inputSystems.getSelectedTags();
         }
       }
     });

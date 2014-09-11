@@ -83,7 +83,7 @@
                 <dl class="picklists" style="height: 200px; overflow: auto;">
                     <dt translate="Entry Level Fields"></dt>
                     <dd><div class="controls">
-                        <div data-ng-repeat="fieldName in configDirty.entry.fieldOrder"
+                        <div data-ng-repeat="fieldName in fieldOrder.entry"
                             data-ng-class="{selected:currentField.name == fieldName}">
                             <span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
                                 data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
@@ -99,7 +99,7 @@
                             title="{{'At least one Meaning field must be enabled!' | translate}}"
                             style="position: absolute; padding-left: 5px;"/></span></dt>
                     <dd><div class="controls">
-                        <div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder"
+                        <div data-ng-repeat="fieldName in fieldOrder.senses"
                             data-ng-class="{selected:currentField.name == fieldName}">
                             <span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
                                 data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
@@ -111,7 +111,7 @@
                     </div></dd>
                     <dt translate="Example Level Fields"></dt>
                     <dd><div class="controls">
-                        <div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder"
+                        <div data-ng-repeat="fieldName in fieldOrder.examples"
                             data-ng-class="{selected:currentField.name == fieldName}">
                             <span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
                                 data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
@@ -157,20 +157,20 @@
                                 <div class="span3 picklists">
                                     <label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
                                     <ul class="unstyled indent1"  id="inputSystem">
-                                        <li data-ng-click="currentField.inputSystems.tag = inputSystemTag" 
-                                            data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder" 
-                                            data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
-                                            <div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
+                                        <li data-ng-click="currentField.inputSystems.currentTag = inputSystemTag"
+                                            data-ng-repeat="inputSystemTag in currentField.inputSystems.order"
+                                            data-ng-class="{selected:currentField.inputSystems.currentTag == inputSystemTag}">
+                                            <div class="checkbox"><input data-ng-model="currentField.inputSystems.selected[inputSystemTag]" type="checkbox"/>
                                                 {{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="span1 btn-group btn-group-vertical">
-                                    <button class="btn" data-ng-click="moveUp(currentField.inputSystems.tag, currentView)" 
-                                        data-ng-disabled="currentField.inputSystems.fieldOrder[0] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
+                                    <button class="btn" data-ng-click="moveUp(currentField.inputSystems.currentTag, currentView)"
+                                        data-ng-disabled="currentField.inputSystems.order[0] == currentField.inputSystems.currentTag || !currentField.inputSystems.currentTag">
                                         &nbsp;&nbsp;<i class="icon-arrow-up"></i></button>
-                                    <button class="btn" data-ng-click="moveDown(currentField.inputSystems.tag, currentView)" 
-                                        data-ng-disabled="currentField.inputSystems.fieldOrder[currentField.inputSystems.fieldOrder.length - 1] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
+                                    <button class="btn" data-ng-click="moveDown(currentField.inputSystems.currentTag, currentView)"
+                                        data-ng-disabled="currentField.inputSystems.order[currentField.inputSystems.order.length - 1] == currentField.inputSystems.currentTag || !currentField.inputSystems.currentTag">
                                         &nbsp;&nbsp;<i class="icon-arrow-down"></i></button>
                                 </div>
                             </div>
