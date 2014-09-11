@@ -134,9 +134,9 @@ class LexUploadCommands
             throw new \Exception("Upload controller did not move the uploaded file.");
         }
 
-        $entryId = $_POST['entryId'];
         $file = $_FILES['file'];
         $fileName = $file['name'];
+        $fileNamePrefix = 'timestamp';  // TODO use timestamp iso without punctuation IJH 2014-09
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileType = finfo_file($finfo, $tmpFilePath);
@@ -175,31 +175,20 @@ class LexUploadCommands
 
             // make the folders if they don't exist
             $project = new LfProjectModel($projectId);
-            $folderPath = $project->getAssetsFolderPath() . '/pictures';
+            $folderPath = self::mediaFolderPath($project->getAssetsFolderPath());
             if (! file_exists($folderPath) and ! is_dir($folderPath)) {
                 mkdir($folderPath, 0777, true);
             }
 
-            // cleanup previous files of any allowed extension
-            self::cleanupFiles($folderPath, $entryId, $allowedExtensions);
-
             // move uploaded file from tmp location to assets
-            $filePath = self::mediaFilePath($folderPath, $entryId, $fileName);
+            $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
             $moveOk = rename($tmpFilePath, $filePath);
-
-            // update database with file location
-            $entry = new LexEntryModel($project, $entryId);
-            $entry->audioFileName = '';
-            if ($moveOk) {
-                $entry->audioFileName = $fileName;
-            }
-            $entry->write();
 
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
-                $data->path = $project->getAssetsPath();
-                $data->fileName = $fileName;
+                $data->path = self::mediaFolderPath($project->getAssetsPath());
+                $data->fileName = $fileNamePrefix . '_' . $fileName;
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
@@ -223,6 +212,16 @@ class LexUploadCommands
 
         $response->data = $data;
         return $response;
+    }
+
+    /**
+     *
+     * @param string $assetsFolderPath
+     * @return string
+     */
+    public static function mediaFolderPath($assetsFolderPath)
+    {
+        return $assetsFolderPath . '/pictures';
     }
 
     /**
