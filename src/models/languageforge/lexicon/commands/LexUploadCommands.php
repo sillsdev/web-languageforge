@@ -136,7 +136,7 @@ class LexUploadCommands
 
         $file = $_FILES['file'];
         $fileName = $file['name'];
-        $fileNamePrefix = 'timestamp';  // TODO use timestamp iso without punctuation IJH 2014-09
+        $fileNamePrefix = date("YmdHis");
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileType = finfo_file($finfo, $tmpFilePath);

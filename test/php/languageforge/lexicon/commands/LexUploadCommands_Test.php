@@ -86,6 +86,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         $this->assertTrue($response->result);
         $this->assertPattern("/$fileName/", $response->data->fileName);
+        $this->assertPattern("/(?<!\d)\d{14}(?!\d)/", $response->data->fileName);
         $this->assertTrue(file_exists($filePath));
 
         $this->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath, $tmpFilePath);
