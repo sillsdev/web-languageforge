@@ -1,0 +1,32 @@
+.dc-pictures {
+    display: flex;
+}
+
+.dc-pictures label {
+    font-weight:bold;
+    cursor: default;
+}
+
+
+.dc-picture {
+    display: block;
+}
+
+.dc-image {
+    display: inline;
+}
+
+.dc-image img {
+    width: 150px;
+    height: 150px;
+}
+
+.drop-box {
+    width: 142px;
+    height: 142px;
+    padding-top: 0px;
+    /*
+    border: 4px dashed #0088cc;
+    background-color: white;
+    text-align: center;*/
+}

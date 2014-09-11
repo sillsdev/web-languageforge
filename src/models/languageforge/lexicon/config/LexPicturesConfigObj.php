@@ -9,7 +9,8 @@ class LexPicturesConfigObj extends LexiconConfigObj
     public function __construct()
     {
         $this->type = LexiconConfigObj::PICTURES;
-        $this->label = '';
+        $this->label = 'Pictures';
+        $this->captionLabel = 'Captions';
         $this->inputSystems = new ArrayOf();
     }
 
@@ -17,6 +18,11 @@ class LexPicturesConfigObj extends LexiconConfigObj
      * @var string
      */
     public $label;
+
+    /**
+     * @var string
+     */
+    public $captionLabel;
 
     /**
      * @var ArrayOf
