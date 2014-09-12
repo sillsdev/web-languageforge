@@ -23,7 +23,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'ngAnimate', '
       };
 
       $scope.pictureUrl = function pictureUrl(fileName) {
-        return '/assets/lexicon/' + $scope.control.project.slug + '/' + fileName;
+        return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + fileName;
       };
 
       $scope.deletePicture = function deletePicture(index) {
