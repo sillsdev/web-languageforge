@@ -11,9 +11,9 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'ngAnimate', '
       pictures: "=",
       control: "="
     },
-    controller: ['$scope', 'sessionService', 'silNoticeService', 'modalService', function($scope, ss, notice, modalService) {
+    controller: ['$scope', 'sessionService', 'lexProjectService', 'silNoticeService', 'modalService', function($scope, ss, lexProjectService, notice, modalService) {
       $scope.config.caption = angular.copy($scope.config);
-      $scope.config.caption.label = '';
+      $scope.config.caption.label = $scope.config.caption.captionLabel;
       delete $scope.config.caption.captionLabel;
 
       $scope.addPicture = function addPicture() {
@@ -32,6 +32,15 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'ngAnimate', '
           var deletemsg = "Are you sure you want to delete the picture <b>'" + originalFileName(fileName) + "'</b>";
           modalService.showModalSimple('Delete Picture', deletemsg, 'Cancel', 'Delete Picture').then(function() {
             $scope.pictures.splice(index, 1);
+            lexProjectService.removeMediaFile('sense-image', fileName, function(result) {
+              if (result.ok) {
+                if (result.data.result) {
+                  notice.push(notice.SUCCESS, "The picture was removed successfully");
+                } else {
+                  notice.push(notice.ERROR, result.data.errorMessage);
+                }
+              }
+            });
           });
         } else {
           $scope.pictures.splice(index, 1);

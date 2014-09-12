@@ -531,9 +531,9 @@ class sf
     // ---------------------------------------------------------------
     // Upload API
     // ---------------------------------------------------------------
-    public function sfChecks_uploadFile($uploadType, $tmpFilePath)
+    public function sfChecks_uploadFile($mediaType, $tmpFilePath)
     {
-        $response = SfchecksUploadCommands::uploadFile($this->_projectId, $uploadType, $tmpFilePath);
+        $response = SfchecksUploadCommands::uploadFile($this->_projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
@@ -597,6 +597,11 @@ class sf
         return LexProjectCommands::updateProject($this->_projectId, $this->_userId, $settings);
     }
 
+    public function lex_project_removeMediaFile($mediaType, $fileName)
+    {
+        return LexUploadCommands::deleteMediaFile($this->_projectId, $mediaType, $fileName);
+    }
+
     public function lex_entry_read($entryId)
     {
         return LexEntryCommands::readEntry($this->_projectId, $entryId);
@@ -647,9 +652,9 @@ class sf
         return LexOptionListCommands::updateList($this->_projectId, $params);
     }
 
-    public function lex_uploadImageFile($uploadType, $tmpFilePath)
+    public function lex_uploadImageFile($mediaType, $tmpFilePath)
     {
-        $response = LexUploadCommands::uploadImageFile($this->_projectId, $uploadType, $tmpFilePath);
+        $response = LexUploadCommands::uploadImageFile($this->_projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
