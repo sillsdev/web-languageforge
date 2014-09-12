@@ -196,16 +196,16 @@ angularFileUpload.directive('ngFileSelect', [ '$parse', '$http', function($parse
 	};
 } ]);
 
-angularFileUpload.directive('ngFileDropAvailable', [ '$parse', '$http', function($parse, $http) {
+angularFileUpload.directive('ngFileDropAvailable', [ '$parse', '$http', '$rootScope', function($parse, $http, $rootScope) {
 	return function(scope, elem, attr) {
 		if ('draggable' in document.createElement('span')) {
 			var fn = $parse(attr['ngFileDropAvailable']);
-			if(!scope.$$phase) {
+			if(!$rootScope.$$phase) {
 				scope.$apply(function() {
 					fn(scope);
 				});
 			} else {
-				fn(scope)
+				fn(scope);
 			}
 		}
 	};

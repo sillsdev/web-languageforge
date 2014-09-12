@@ -1,8 +1,8 @@
 "use strict";
 
-angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'ngAnimate', 'bellows.services', 'angularFileUpload', 'lexicon.services'])
+angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.notice', 'ngAnimate', 'bellows.services', 'angularFileUpload', 'lexicon.services'])
 // Palaso UI Dictionary Control: Picture
-.directive('dcPicture', ['$http', function($http) {
+.directive('dcPicture', [ function() {
   return {
     restrict: 'E',
     templateUrl: '/angular-app/languageforge/lexicon/directive/dc-picture.html',
@@ -11,15 +11,20 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'ngAnimate', '
       pictures: "=",
       control: "="
     },
-    controller: ['$scope', 'sessionService', 'lexProjectService', 'silNoticeService', 'modalService', function($scope, ss, lexProjectService, notice, modalService) {
+    controller: ['$scope', '$http', 'sessionService', 'lexProjectService', 'silNoticeService', 'modalService', '$rootScope', 
+    function($scope, $http, ss, lexProjectService, notice, modalService, $rootScope) {
       $scope.config.caption = angular.copy($scope.config);
-      $scope.config.caption.label = $scope.config.caption.captionLabel;
+      $scope.config.caption.label = '';
       delete $scope.config.caption.captionLabel;
 
+      $scope.model = {};
+      
       $scope.addPicture = function addPicture() {
         var newPicture = {};
         $scope.control.makeValidModelRecursive($scope.config, newPicture);
         $scope.pictures.push(newPicture);
+        $scope.model.progress = 0;
+        $scope.model.file = null;
       };
 
       $scope.pictureUrl = function pictureUrl(fileName) {
@@ -34,9 +39,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'ngAnimate', '
             $scope.pictures.splice(index, 1);
             lexProjectService.removeMediaFile('sense-image', fileName, function(result) {
               if (result.ok) {
-                if (result.data.result) {
-                  notice.push(notice.SUCCESS, "The picture was removed successfully");
-                } else {
+                if (! result.data.result) {
                   notice.push(notice.ERROR, result.data.errorMessage);
                 }
               }
@@ -52,13 +55,12 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'ngAnimate', '
         return fileName.substr(fileName.indexOf('_') + 1); 
       };
 
-      $scope.progress = 0;
-      $scope.uploadResult = '';
+      $scope.model.progress = 0;
       $scope.onFileSelect = function onFileSelect(files, index) {
 
         // take the first file only
         var file = files[0];
-        $scope.file = file;
+        $scope.model.file = file;
         if (file['size'] <= ss.fileSizeMax()) {
           $http.uploadFile({
 
@@ -68,35 +70,31 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'ngAnimate', '
             // data: {'entryId': ''},
             file: file
           }).progress(function(evt) {
-            $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
-            if (!$scope.$$phase) {
+            $scope.model.progress = parseInt(100.0 * evt.loaded / evt.total);
+            if (! $rootScope.$$phase) {
               $scope.$apply();
             }
           }).success(function(data, status, headers, config) {
             if (data.result) {
-              $scope.progress = 100.0;
-              $scope.uploadResult = 'File uploaded successfully.';
-              notice.push(notice.SUCCESS, $scope.uploadResult);
+              $scope.model.progress = 100.0;
+              if (! $rootScope.$$phase) {
+                $scope.$apply();
+              }
               $scope.pictures[index].fileName = data.data.fileName;
             } else {
               notice.push(notice.ERROR, data.data.errorMessage);
-              if (data.data.errorType == 'UserMessage') {
-                $scope.uploadResult = data.data.errorMessage;
-              }
             }
 
             // to fix IE not updating the dom
-            if (! $scope.$$phase) {
+            if (! $rootScope.$$phase) {
               $scope.$apply();
             }
           });
         } else {
-          $scope.uploadResult = file['name'] + " is too large.";
+          notice.push(notice.ERROR, file['name'] + " is too large.");
         }
       };
       
-    }],
-    link: function(scope, element, attrs, controller) {
-    }
+    }]
   };
 }]);

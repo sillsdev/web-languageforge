@@ -1,14 +1,18 @@
-.dc-pictures {
+.dc-pictures-captions {
+    display: block;
+}
+
+.dc-pictures, .dc-captions {
     display: flex;
 }
 
-.dc-pictures label {
+.dc-pictures label, .dc-captions label {
     font-weight:bold;
     cursor: default;
 }
 
 
-.dc-picture {
+.dc-picture, .dc-caption {
     display: block;
 }
 
@@ -29,4 +33,9 @@
     /*
     background-color: white;
     text-align: center;*/
+}
+
+.progress {
+    width: 150px;
+    
 }
