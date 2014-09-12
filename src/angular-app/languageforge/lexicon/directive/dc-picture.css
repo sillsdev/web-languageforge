@@ -25,8 +25,8 @@
     width: 142px;
     height: 142px;
     padding-top: 0px;
+    border: 4px dashed #e67345;
     /*
-    border: 4px dashed #0088cc;
     background-color: white;
     text-align: center;*/
 }

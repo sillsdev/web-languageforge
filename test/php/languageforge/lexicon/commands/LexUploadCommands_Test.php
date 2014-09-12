@@ -47,7 +47,7 @@ class TestLexUploadCommands extends UnitTestCase
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
         $assetsFolderPath = $project->getAssetsFolderPath();
-        $folderPath = LexUploadCommands::mediaFolderPath($assetsFolderPath);
+        $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
         $filePath = $folderPath . '/' . $response->data->fileName;
         $projectSlug = $project->databaseName();
 
@@ -80,7 +80,7 @@ class TestLexUploadCommands extends UnitTestCase
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
         $assetsFolderPath = $project->getAssetsFolderPath();
-        $folderPath = LexUploadCommands::mediaFolderPath($assetsFolderPath);
+        $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
         $filePath = $folderPath . '/' . $response->data->fileName;
         $projectSlug = $project->databaseName();
 
@@ -113,7 +113,7 @@ class TestLexUploadCommands extends UnitTestCase
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
         $assetsFolderPath = $project->getAssetsFolderPath();
-        $folderPath = LexUploadCommands::mediaFolderPath($assetsFolderPath);
+        $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
         $projectSlug = $project->databaseName();
 
         $this->assertFalse($response->result);
@@ -155,7 +155,7 @@ class TestLexUploadCommands extends UnitTestCase
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
         $assetsFolderPath = $project->getAssetsFolderPath();
-        $folderPath = LexUploadCommands::mediaFolderPath($assetsFolderPath);
+        $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
         $filePath = $folderPath . '/' . $response->data->fileName;
         $projectSlug = $project->databaseName();
         $fileName = '__________.jpg';
@@ -164,5 +164,50 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertPattern("/$fileName/", $response->data->fileName);
 
         $this->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath, $tmpFilePath);
+    }
+
+    function testDeleteImageFile_JpgFile_FileDeleted()
+    {
+        $e = new MongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->appName = 'lexicon';
+        $projectId = $project->write();
+
+        // make the folders if they don't exist
+        $assetsFolderPath = $project->getAssetsFolderPath();
+        $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
+        if (! file_exists($folderPath) and ! is_dir($folderPath)) {
+            mkdir($folderPath, 0777, true);
+        }
+
+        // put a copy of the test file in picture folder
+        $fileName = 'TestImage.jpg';
+        $filePath = $folderPath . '/' . $fileName;
+        copy(TestPath . 'common/TestImage.jpg', $filePath);
+
+        $this->assertTrue(file_exists($filePath));
+
+        $response = LexUploadCommands::deleteMediaFile($projectId, 'sense-image', $fileName);
+
+        $this->assertTrue($response->result);
+        $this->assertFalse(file_exists($filePath));
+
+        $this->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath, '');
+    }
+
+    function testDeleteImageFile_UnsupportedMediaType_Throw() {
+        $e = new MongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->appName = 'lexicon';
+        $projectId = $project->write();
+
+        $e->inhibitErrorDisplay();
+        $this->expectException();
+        $response = LexUploadCommands::deleteMediaFile($projectId, 'bogusMediaType', '');
+        $e->restoreErrorDisplay();
     }
 }

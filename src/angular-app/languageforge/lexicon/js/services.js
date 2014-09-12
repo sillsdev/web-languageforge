@@ -69,6 +69,10 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
       jsonRpc.call('user_updateProfile', [user], callback);
     };
     
+    this.removeMediaFile = function(mediaType, fileName, callback) {
+      jsonRpc.call('lex_project_removeMediaFile', [mediaType, fileName], callback);
+    };
+    
     this.getProjectId = function() {
       return ss.session.project.id;
   //    var parts = $location.path().split('/');
@@ -76,8 +80,8 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
   //    return parts[2];
     };
   }])
-.service('lexCommentService', ['jsonRpc',
-function(jsonRpc) {
+  .service('lexCommentService', ['jsonRpc',
+  function(jsonRpc) {
     jsonRpc.connect('/api/sf');
 
     this.update = function update(comment, callback) {
@@ -103,9 +107,9 @@ function(jsonRpc) {
     this.updateStatus = function updateStatus(commentId, status, callback) {
         jsonRpc.call('lex_comment_updateStatus', [commentId, status], callback);
     };
-}])
-.service('lexConfigService', ['sessionService',
-function(ss) {
+  }])
+  .service('lexConfigService', ['sessionService',
+  function(ss) {
 
     this.isTaskEnabled = function(taskName) {
         var config = ss.session.projectSettings.config;
@@ -283,8 +287,8 @@ function(ss) {
     };
 
      */
-}])
-
+    
+  }])
   .service('lexEntryService', ['jsonRpc', 'sessionService', 'lexProjectService', 'breadcrumbService', 'lexLinkService', 
   function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
     jsonRpc.connect('/api/sf');
