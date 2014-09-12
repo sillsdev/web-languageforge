@@ -14,14 +14,14 @@ class LexUploadCommands
      * Upload an audio file
      *
      * @param string $projectId
-     * @param string $uploadType
+     * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
      * @return \models\shared\commands\UploadResponse
      */
-    public static function uploadAudioFile($projectId, $uploadType, $tmpFilePath)
+    public static function uploadAudioFile($projectId, $mediaType, $tmpFilePath)
     {
-        if ($uploadType != 'entry-audio') {
+        if ($mediaType != 'entry-audio') {
             throw new \Exception("Unsupported upload type.");
         }
         if (! $tmpFilePath) {
@@ -120,14 +120,14 @@ class LexUploadCommands
      * Upload an image file
      *
      * @param string $projectId
-     * @param string $uploadType
+     * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
      * @return \models\shared\commands\UploadResponse
      */
-    public static function uploadImageFile($projectId, $uploadType, $tmpFilePath)
+    public static function uploadImageFile($projectId, $mediaType, $tmpFilePath)
     {
-        if ($uploadType != 'sense-image') {
+        if ($mediaType != 'sense-image') {
             throw new \Exception("Unsupported upload type.");
         }
         if (! $tmpFilePath) {
@@ -175,7 +175,7 @@ class LexUploadCommands
 
             // make the folders if they don't exist
             $project = new LfProjectModel($projectId);
-            $folderPath = self::mediaFolderPath($project->getAssetsFolderPath());
+            $folderPath = self::imageFolderPath($project->getAssetsFolderPath());
             if (! file_exists($folderPath) and ! is_dir($folderPath)) {
                 mkdir($folderPath, 0777, true);
             }
@@ -187,7 +187,7 @@ class LexUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
-                $data->path = self::mediaFolderPath($project->getAssetsPath());
+                $data->path = self::imageFolderPath($project->getAssetsPath());
                 $data->fileName = $fileNamePrefix . '_' . $fileName;
                 $response->result = true;
             } else {
@@ -216,10 +216,54 @@ class LexUploadCommands
 
     /**
      *
+     * @param string $projectId
+     * @param string $mediaType, options are 'image'.
+     * @param string $fileName
+     * @throws \Exception
+     * @return \models\shared\commands\UploadResponse
+     */
+    public static function deleteMediaFile($projectId, $mediaType, $fileName) {
+        $response = new UploadResponse();
+        $response->result = false;
+        $project = new LfProjectModel($projectId);
+        switch ($mediaType) {
+        	case 'sense-image':
+                $folderPath = self::imageFolderPath($project->getAssetsFolderPath());
+        	    break;
+        	default:
+        	    $errorMsg = "Error in function deleteImageFile, unsupported mediaType: $mediaType";
+        	    throw new \Exception($errorMsg) ;
+                $data = new ErrorResult();
+                $data->errorType = 'Exception';
+                $data->errorMessage = $errorMsg;
+        	    return $response;
+        }
+        $filePath = $folderPath . '/' . $fileName;
+        if (file_exists($filePath) and ! is_dir($filePath)) {
+            if (unlink($filePath)) {
+                $data = new MediaResult();
+                $data->path = self::imageFolderPath($project->getAssetsPath());
+                $data->fileName = $fileName;
+                $response->result = true;
+            } else {
+                $data = new ErrorResult();
+                $data->errorType = 'UserMessage';
+                $data->errorMessage = "$fileName could not be deleted. Contact your Site Administrator.";
+            }
+            return $response;
+        }
+        $data = new ErrorResult();
+        $data->errorType = 'UserMessage';
+        $data->errorMessage = "$fileName does not exist in this project. Contact your Site Administrator.";
+        return $response;
+    }
+
+    /**
+     *
      * @param string $assetsFolderPath
      * @return string
      */
-    public static function mediaFolderPath($assetsFolderPath)
+    public static function imageFolderPath($assetsFolderPath)
     {
         return $assetsFolderPath . '/pictures';
     }
@@ -228,12 +272,12 @@ class LexUploadCommands
      *
      * @param string $folderPath
      * @param string $fileNamePrefix
-     * @param string $fileName
+     * @param string $originalFileName
      * @return string
      */
-    public static function mediaFilePath($folderPath, $fileNamePrefix, $fileName)
+    public static function mediaFilePath($folderPath, $fileNamePrefix, $originalFileName)
     {
-        return $folderPath . '/' . $fileNamePrefix . '_' . $fileName;
+        return $folderPath . '/' . $fileNamePrefix . '_' . $originalFileName;
     }
 
     /**
