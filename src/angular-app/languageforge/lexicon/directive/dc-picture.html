@@ -11,11 +11,11 @@
                 </span>
             </div>
         </div>
-        <div data-ng-if="control.rights.canEditEntry() && control.state == 'edit'"
+        <div data-ng-show="control.rights.canEditEntry() && control.state == 'edit' && ! upload.showAddPicture"
             class="addItem">
-            <a data-ng-click="showAddPicture = true">Add Picture</a>
+            <a data-ng-click="upload.showAddPicture = true">Add Picture</a>
         </div>
-        <div data-ng-show="showAddPicture">
+        <div data-ng-show="upload.showAddPicture">
             <div class="drop-box" data-ng-file-drop="onFileSelect($files)"
                 data-ng-file-drop-available="dropSupported = true">
                 <h4>Drop an image file here</h4>
@@ -27,14 +27,14 @@
             </div>
             <div data-ng-show="! dropSupported">
                 HTML5 Drop File is not supported on this browser</div>
-            <div data-ng-show="model.file != null">
-                <p><strong>{{model.file.name}}</strong> {{model.file.size | bytes }}</p>
-                <progressbar value="model.progress" data-max="100.0"></progressbar>
+            <div data-ng-show="upload.file != null">
+                <p><strong>{{upload.file.name}}</strong> {{upload.file.size | bytes }}</p>
+                <progressbar value="upload.progress" data-max="100.0"></progressbar>
             </div>
         </div>
-        <span data-ng-show="showAddPicture"
+        <span data-ng-show="upload.showAddPicture"
             class="deleteX">
-            <i data-ng-click="showAddPicture = false" title="Delete Picture"
+            <i data-ng-click="upload.showAddPicture = false" title="Cancel Adding Picture"
                 class="icon-remove"></i>
         </span>
     </div>
