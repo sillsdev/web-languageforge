@@ -2,25 +2,8 @@
     <div class="dc-pictures">
         <label class="control-label">{{config.label}}</label>
         <div class="dc-picture" data-ng-repeat="picture in pictures">
-            <div class="dc-image">
-                <img data-ng-if="picture.fileName" data-ng-src="{{pictureUrl(picture.fileName)}}">
-                <div data-ng-if="! picture.fileName">
-                    <div class="drop-box" data-ng-file-drop="onFileSelect($files, $index)"
-                        data-ng-file-drop-available="dropSupported = true">
-                        <h4>Drop an image file here</h4>
-                        <p>or if you prefer...</p>
-                        <input type="button" class="btn" value="Browse..."
-                            onclick="javascript:document.getElementById('imagefile').click();">
-                        <input id="imagefile" type="file" style="display: none;"
-                            data-ng-file-select="onFileSelect($files)">
-                    </div>
-                    <div data-ng-show="!dropSupported">
-                        HTML5 Drop File is not supported on this browser</div>
-                    <div data-ng-show="model.file != null">
-                        <p><strong>{{model.file.name}}</strong> {{model.file.size | bytes }}</p>
-                        <progressbar value="model.progress" data-max="100.0"></progressbar>
-                    </div>
-                </div>
+            <div class="dc-image" data-ng-if="picture.fileName">
+                <img data-ng-src="{{pictureUrl(picture.fileName)}}">
                 <span data-ng-if="control.rights.canEditEntry() && control.state == 'edit'"
                     class="deleteX">
                     <i data-ng-click="deletePicture($index)" title="Delete Picture"
@@ -30,8 +13,30 @@
         </div>
         <div data-ng-if="control.rights.canEditEntry() && control.state == 'edit'"
             class="addItem">
-            <a data-ng-click="addPicture()">Add Picture</a>
+            <a data-ng-click="showAddPicture = true">Add Picture</a>
         </div>
+        <div data-ng-show="showAddPicture">
+            <div class="drop-box" data-ng-file-drop="onFileSelect($files)"
+                data-ng-file-drop-available="dropSupported = true">
+                <h4>Drop an image file here</h4>
+                <p>or if you prefer...</p>
+                <input type="button" class="btn" value="Browse..."
+                    onclick="javascript:document.getElementById('imagefile').click();">
+                <input id="imagefile" type="file" style="display: none;"
+                    data-ng-file-select="onFileSelect($files)">
+            </div>
+            <div data-ng-show="! dropSupported">
+                HTML5 Drop File is not supported on this browser</div>
+            <div data-ng-show="model.file != null">
+                <p><strong>{{model.file.name}}</strong> {{model.file.size | bytes }}</p>
+                <progressbar value="model.progress" data-max="100.0"></progressbar>
+            </div>
+        </div>
+        <span data-ng-show="showAddPicture"
+            class="deleteX">
+            <i data-ng-click="showAddPicture = false" title="Delete Picture"
+                class="icon-remove"></i>
+        </span>
     </div>
     <div class="dc-captions">
         <label class="control-label" data-ng-show="pictures.length > 0">{{config.captionLabel}}</label>
