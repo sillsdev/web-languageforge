@@ -17,14 +17,14 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       $scope.config.caption.label = '';
       delete $scope.config.caption.captionLabel;
 
-      $scope.model = {};
+      $scope.upload = {};
+      $scope.upload.progress = 0;
       
-      $scope.addPicture = function addPicture() {
+      function addPicture(fileName) {
         var newPicture = {};
         $scope.control.makeValidModelRecursive($scope.config, newPicture);
+        newPicture.fileName = fileName;
         $scope.pictures.push(newPicture);
-        $scope.model.progress = 0;
-        $scope.model.file = null;
       };
 
       $scope.pictureUrl = function pictureUrl(fileName) {
@@ -55,12 +55,11 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         return fileName.substr(fileName.indexOf('_') + 1); 
       };
 
-      $scope.model.progress = 0;
       $scope.onFileSelect = function onFileSelect(files, index) {
 
         // take the first file only
         var file = files[0];
-        $scope.model.file = file;
+        $scope.upload.file = file;
         if (file['size'] <= ss.fileSizeMax()) {
           $http.uploadFile({
 
@@ -70,17 +69,20 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
             // data: {'entryId': ''},
             file: file
           }).progress(function(evt) {
-            $scope.model.progress = parseInt(100.0 * evt.loaded / evt.total);
+            $scope.upload.progress = parseInt(100.0 * evt.loaded / evt.total);
             if (! $rootScope.$$phase) {
               $scope.$apply();
             }
           }).success(function(data, status, headers, config) {
             if (data.result) {
-              $scope.model.progress = 100.0;
+              $scope.upload.progress = 100.0;
               if (! $rootScope.$$phase) {
                 $scope.$apply();
               }
-              $scope.pictures[index].fileName = data.data.fileName;
+              addPicture(data.data.fileName);
+              $scope.upload.showAddPicture = false;
+              $scope.upload.progress = 0;
+              $scope.upload.file = null;
             } else {
               notice.push(notice.ERROR, data.data.errorMessage);
             }
