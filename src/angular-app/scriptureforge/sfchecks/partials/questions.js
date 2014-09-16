@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'angularFileUpload', 'ngSanitize', 'ngRoute'])
-  .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService', 'modalService',
-  function($scope, questionService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice, modalService) {
+  .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService', 'modalService', '$rootScope',
+  function($scope, questionService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice, modalService, $rootScope) {
     var Q_TITLE_LIMIT = 50;
     var textId = $routeParams.textId;
     $scope.textId = textId;
@@ -15,7 +15,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
       //preferFlash : false,
       onready : function() {
         $scope.audioReady = true;
-        if(!$scope.$$phase) {
+        if(! $rootScope.$$phase) {
           $scope.$apply();
         }
         // Ready to use; soundManager.createSound() etc. can now be called.
@@ -224,8 +224,8 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
     };
     
   }])
-  .controller('QuestionsSettingsCtrl', ['$scope', '$http', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService', 'modalService',
-  function($scope, $http, ss, $routeParams, breadcrumbService, notice, textService, questionService, sfchecksLinkService, modalService) {
+  .controller('QuestionsSettingsCtrl', ['$scope', '$http', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService', 'modalService', '$rootScope',
+  function($scope, $http, ss, $routeParams, breadcrumbService, notice, textService, questionService, sfchecksLinkService, modalService, $rootScope) {
     var Q_TITLE_LIMIT = 50;
     var textId = $routeParams.textId;
     $scope.textId = textId;
@@ -358,7 +358,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
           file: file
         }).progress(function(evt) {
           $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
-          if (!$scope.$$phase) {
+          if (! $rootScope.$$phase) {
             $scope.$apply();
           }
         }).success(function(data, status, headers, config) {
@@ -374,7 +374,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
           }
           
           // to fix IE not updating the dom
-          if (!$scope.$$phase) {
+          if (! $rootScope.$$phase) {
             $scope.$apply();
           }
         });
