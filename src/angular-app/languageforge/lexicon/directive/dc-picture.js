@@ -78,9 +78,6 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
           }).success(function(data, status, headers, config) {
             if (data.result) {
               $scope.upload.progress = 100.0;
-              if (! $rootScope.$$phase) {
-                $scope.$apply();
-              }
               addPicture(data.data.fileName);
               $scope.upload.showAddPicture = false;
               $scope.upload.progress = 0;
