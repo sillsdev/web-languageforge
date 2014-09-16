@@ -3,7 +3,7 @@
         <label class="control-label">{{config.label}}</label>
         <div class="dc-picture" data-ng-repeat="picture in pictures">
             <div class="dc-image" data-ng-if="picture.fileName">
-                <img data-ng-src="{{pictureUrl(picture.fileName)}}">
+                <img data-ng-src="{{getPictureUrl(picture.fileName)}}">
                 <span data-ng-if="control.rights.canEditEntry() && control.state == 'edit'"
                     class="deleteX">
                     <i data-ng-click="deletePicture($index)" title="Delete Picture"
