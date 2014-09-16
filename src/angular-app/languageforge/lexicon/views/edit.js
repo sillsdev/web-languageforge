@@ -411,22 +411,9 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
         }
         break;
       case 'pictures':
-        if (angular.isUndefined(data.fileName)) {
-          data.fileName = '';
+        if (angular.isUndefined(data)) {
+          data = [];
         }
-        if (angular.isUndefined(data.caption)) {
-          data.caption = {};
-        }
-        if (angular.isArray(data.caption)) {
-          data = {};
-        }
-        angular.forEach(config.inputSystems, function(ws) {
-          if (angular.isUndefined(data.caption[ws])) {
-            data.caption[ws] = {
-              value: ''
-            };
-          }
-        });
         break;
     }
     // console.log('end data: ', data);

@@ -22,8 +22,10 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       
       function addPicture(fileName) {
         var newPicture = {};
-        $scope.control.makeValidModelRecursive($scope.config, newPicture);
         newPicture.fileName = fileName;
+        if (angular.isUndefined($scope.pictures)) {
+          $scope.pictures = []; 
+        }
         $scope.pictures.push(newPicture);
       };
 
