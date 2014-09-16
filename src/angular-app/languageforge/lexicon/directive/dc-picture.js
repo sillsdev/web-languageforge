@@ -20,7 +20,17 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       $scope.upload = {};
       $scope.upload.progress = 0;
       
+      function Picture(fileName, caption) {
+        this.fileName = fileName || '';
+        this.caption = caption || '';
+      };
+      
+//      Picture.prototype.getUrl = function pictureGetUrl() {
+//        return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + this.fileName;
+//      };
+      
       function addPicture(fileName) {
+//        var newPicture = new Picture(fileName);
         var newPicture = {};
         newPicture.fileName = fileName;
         if (angular.isUndefined($scope.pictures)) {
@@ -29,7 +39,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         $scope.pictures.push(newPicture);
       };
 
-      $scope.pictureUrl = function pictureUrl(fileName) {
+      $scope.getPictureUrl = function getPictureUrl(fileName) {
         return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + fileName;
       };
 
@@ -57,7 +67,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         return fileName.substr(fileName.indexOf('_') + 1); 
       };
 
-      $scope.onFileSelect = function onFileSelect(files, index) {
+      $scope.onFileSelect = function onFileSelect(files) {
 
         // take the first file only
         var file = files[0];
