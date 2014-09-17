@@ -9,8 +9,16 @@
 .dc-pictures label, .dc-captions label {
     font-weight:bold;
     cursor: default;
+    margin-right: 20px;
 }
 
+.dc-picture > dc-multitext label {
+    width: 0px;
+} 
+
+.dc-picture > dc-multitext > controls {
+    margin-left: 0px;
+} 
 
 .dc-picture, .dc-caption {
     display: block;
