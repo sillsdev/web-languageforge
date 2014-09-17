@@ -12,16 +12,16 @@
     margin-right: 20px;
 }
 
-.dc-picture > dc-multitext label {
+.dc-picture, .dc-caption {
+    display: block;
+}
+
+.dc-picture .dc-multitext label {
     width: 0px;
 } 
 
-.dc-picture > dc-multitext > controls {
+.dc-picture .dc-multitext .controls {
     margin-left: 0px;
-} 
-
-.dc-picture, .dc-caption {
-    display: block;
 }
 
 .dc-image {
@@ -33,17 +33,22 @@
     height: 150px;
 }
 
+form.dc-pictures-captions form.dc-multitext .controls input[type="text"] {
+    width: 95px;
+}
+
+form.dc-pictures-captions .form-horizontal .controls {
+    margin-left: 0px;
+    width: 185px;
+}
+
 .drop-box {
     width: 142px;
     height: 142px;
     padding-top: 0px;
     border: 4px dashed #e67345;
-    /*
-    background-color: white;
-    text-align: center;*/
 }
 
 .progress {
     width: 150px;
-    
 }
