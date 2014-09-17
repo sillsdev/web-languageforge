@@ -15,6 +15,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
     function($scope, $http, ss, lexProjectService, notice, modalService, $rootScope) {
       $scope.config.caption = angular.copy($scope.config);
       $scope.config.caption.label = '';
+      $scope.config.caption.type = 'multitext';
       delete $scope.config.caption.captionLabel;
 
       $scope.upload = {};
@@ -22,25 +23,26 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       
       function Picture(fileName, caption) {
         this.fileName = fileName || '';
-        this.caption = caption || '';
+        this.caption = caption || {};
       };
       
 //      Picture.prototype.getUrl = function pictureGetUrl() {
 //        return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + this.fileName;
 //      };
       
+      $scope.getPictureUrl = function getPictureUrl(fileName) {
+        return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + fileName;
+      };
+
       function addPicture(fileName) {
 //        var newPicture = new Picture(fileName);
         var newPicture = {};
         newPicture.fileName = fileName;
+        newPicture.caption = $scope.control.makeValidModelRecursive($scope.config.caption, {});
         if (angular.isUndefined($scope.pictures)) {
           $scope.pictures = []; 
         }
         $scope.pictures.push(newPicture);
-      };
-
-      $scope.getPictureUrl = function getPictureUrl(fileName) {
-        return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + fileName;
       };
 
       $scope.deletePicture = function deletePicture(index) {
