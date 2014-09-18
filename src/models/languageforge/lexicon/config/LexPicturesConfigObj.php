@@ -2,16 +2,13 @@
 
 namespace models\languageforge\lexicon\config;
 
-use models\mapper\ArrayOf;
-
 class LexPicturesConfigObj extends LexiconConfigObj
 {
     public function __construct()
     {
         $this->type = LexiconConfigObj::PICTURES;
         $this->label = 'Pictures';
-        $this->captionLabel = 'Captions';
-        $this->inputSystems = new ArrayOf();
+        $this->caption = new LexCaptionsConfigObj();
     }
 
     /**
@@ -20,13 +17,9 @@ class LexPicturesConfigObj extends LexiconConfigObj
     public $label;
 
     /**
-     * @var string
+     *
+     * @var LexCaptionsConfigObj
      */
-    public $captionLabel;
-
-    /**
-     * @var ArrayOf
-     */
-    public $inputSystems;
+    public $caption;
 
 }
