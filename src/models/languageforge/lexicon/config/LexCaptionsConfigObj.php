@@ -9,7 +9,7 @@ class LexCaptionsConfigObj extends LexiconMultitextConfigObj
     public function __construct()
     {
         parent::__construct();
-//         $this->type = LexiconConfigObj::CAPTIONS;
+        $this->type = LexiconConfigObj::CAPTIONS;
         $this->label = 'Captions';
     }
 
