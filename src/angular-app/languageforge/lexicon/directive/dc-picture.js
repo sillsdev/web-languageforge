@@ -13,11 +13,6 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
     },
     controller: ['$scope', '$http', 'sessionService', 'lexProjectService', 'silNoticeService', 'modalService', '$rootScope', 
     function($scope, $http, ss, lexProjectService, notice, modalService, $rootScope) {
-//      $scope.config.caption = angular.copy($scope.config);
-//      $scope.config.caption.label = '';
-//      $scope.config.caption.type = 'multitext';
-//      delete $scope.config.caption.captionLabel;
-
       $scope.upload = {};
       $scope.upload.progress = 0;
       

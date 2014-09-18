@@ -481,6 +481,10 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 			return itemName in $scope.fieldConfig[$scope.currentField.name];
 		};
 
+        $scope.fieldConfigSubItemExists = function fieldConfigSubItemExists(subConfig, itemName) {
+          return itemName in $scope.fieldConfig[$scope.currentField.name][subConfig];
+        };
+
 		$scope.openNewCustomFieldModal = function openNewCustomFieldModal() {
 			var modalInstance = $modal.open({
 				scope: $scope,
