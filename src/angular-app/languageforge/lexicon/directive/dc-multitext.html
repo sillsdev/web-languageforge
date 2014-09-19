@@ -1,6 +1,6 @@
 <form class="form-horizontal dc-multitext">
 	<div data-ng-repeat="tag in config.inputSystems" class="control-group">
-		<label ng-show="$first && config.type != 'captions'" class="control-label">{{config.label}}</label>
+		<label ng-show="$first && config.type != 'pictures'" class="control-label">{{config.label}}</label>
 		<div class="controls">
             <div class="input-prepend" ng-click="selectInputSystem(tag)" ng-class="{selectableInputSystemFieldForComment: control.state == 'comment' && control.rights.canComment()}">
                 <span class="add-on wsid" title="{{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>

@@ -2,13 +2,15 @@
 
 namespace models\languageforge\lexicon\config;
 
-class LexPicturesConfigObj extends LexiconConfigObj
+class LexPicturesConfigObj extends LexiconMultitextConfigObj
 {
     public function __construct()
     {
+        parent::__construct();
         $this->type = LexiconConfigObj::PICTURES;
         $this->label = 'Pictures';
-        $this->caption = new LexCaptionsConfigObj();
+        $this->captionLabel = 'Captions';
+        $this->captionHideIfEmpty = true;
     }
 
     /**
@@ -18,8 +20,13 @@ class LexPicturesConfigObj extends LexiconConfigObj
 
     /**
      *
-     * @var LexCaptionsConfigObj
+     * @var string
      */
-    public $caption;
+    public $captionLabel;
+
+    /**
+     * @var boolean
+     */
+    public $captionHideIfEmpty;
 
 }

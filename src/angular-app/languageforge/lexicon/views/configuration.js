@@ -473,10 +473,6 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
     return itemName in $scope.fieldConfig[$scope.currentField.name];
   };
 
-  $scope.fieldConfigSubItemExists = function fieldConfigSubItemExists(subConfig, itemName) {
-    return itemName in $scope.fieldConfig[$scope.currentField.name][subConfig];
-  };
-
   $scope.openNewCustomFieldModal = function openNewCustomFieldModal() {
     var modalInstance = $modal.open({
       scope: $scope,
