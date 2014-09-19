@@ -411,9 +411,17 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
         }
         break;
       case 'pictures':
+        var captionConfig = angular.copy(config);
+        captionConfig.type = 'multitext';
         if (angular.isUndefined(data)) {
           data = [];
         }
+        angular.forEach(data, function(picture) {
+          if (angular.isUndefined(picture.caption)) {
+            picture.caption = {};
+          }
+          picture.caption = $scope.makeValidModelRecursive(captionConfig, picture.caption);
+        });
         break;
     }
     // console.log('end data: ', data);

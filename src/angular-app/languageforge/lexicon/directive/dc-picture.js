@@ -21,9 +21,9 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         this.caption = caption || {};
       };
       
-//      Picture.prototype.getUrl = function pictureGetUrl() {
-//        return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + this.fileName;
-//      };
+      Picture.prototype.getUrl = function pictureGetUrl() {
+        return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + this.fileName;
+      };
       
       $scope.getPictureUrl = function getPictureUrl(fileName) {
         return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + fileName;
@@ -32,8 +32,8 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       function addPicture(fileName) {
 //        var newPicture = new Picture(fileName);
         var newPicture = {};
+        newPicture = $scope.control.makeValidModelRecursive($scope.config, {});
         newPicture.fileName = fileName;
-        newPicture.caption = $scope.control.makeValidModelRecursive($scope.config, {});
         if (angular.isUndefined($scope.pictures)) {
           $scope.pictures = []; 
         }
