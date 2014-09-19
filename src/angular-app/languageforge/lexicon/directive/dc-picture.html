@@ -39,11 +39,11 @@
         </span>
     </div>
     <div class="dc-captions">
-        <label class="control-label" data-ng-show="pictures.length > 0">{{config.caption.label}}</label>
+        <label class="control-label" data-ng-show="pictures.length > 0">{{config.captionLabel}}</label>
         <div class="dc-caption" data-ng-repeat="picture in pictures">
             <dc-multitext data-ng-show="picture.fileName" 
                 control="control"
-                config="config.caption"
+                config="config"
                 model="picture.caption"></dc-multitext>
         </div>
     </div>

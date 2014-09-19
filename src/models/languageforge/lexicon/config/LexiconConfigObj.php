@@ -23,7 +23,6 @@ class LexiconConfigObj extends ObjectForEncoding
     const GLOSS = 'gloss';
     const POS = 'partOfSpeech';
     const PICTURES = 'pictures';
-    const CAPTIONS = 'captions';
     const SEMDOM = 'semanticDomain';
     const EXAMPLE_SENTENCE = 'sentence';
     const EXAMPLE_TRANSLATION = 'translation';
