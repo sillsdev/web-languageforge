@@ -10,7 +10,7 @@
             data-ng-click="control.selectFieldForComment(fieldName, model[fieldName])">
             <div data-ng-switch data-on="config.fields[fieldName].type">
                 <div class="flex100" data-ng-switch-when="optionlist">
-                    <dc-optionlist control="control"
+                    <dc-optionlist class="dc-item" control="control"
                         config="config.fields[fieldName]"
                         model="model[fieldName]"
                         items="optionlists[fieldName].items"></dc-optionlist>
@@ -18,7 +18,7 @@
                         count="control.getFieldCommentCount(fieldName)"></comment-bubble>
                 </div>
                 <div class="flex100" data-ng-switch-when="multioptionlist">
-                    <dc-multioptionlist control="control"
+                    <dc-multioptionlist class="dc-item" control="control"
                         config="config.fields[fieldName]"
                         model="model[fieldName]"
                         items="optionlists[fieldName].items"></dc-multioptionlist>
@@ -26,7 +26,7 @@
                         count="control.getFieldCommentCount(fieldName)"></comment-bubble>
                 </div>
                 <div class="flex100" data-ng-switch-when="multitext">
-                    <dc-multitext control="control"
+                    <dc-multitext class="dc-item" control="control"
                         config="config.fields[fieldName]"
                         model="model[fieldName]"
                         select-field="control.selectFieldForComment(fieldName, model[fieldName], inputSystem)"></dc-multitext>
@@ -34,7 +34,7 @@
                         count="control.getFieldCommentCount(fieldName)"></comment-bubble>
                 </div>
                 <div class="flex100" data-ng-switch-when="pictures">
-                    <dc-picture control="control"
+                    <dc-picture class="dc-item" control="control"
                         config="config.fields[fieldName]"
                         pictures="model[fieldName]"></dc-picture>
                 </div>
