@@ -31,7 +31,7 @@ dc-picture .addItem {
 
 .dc-picture img {
     height: 150px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .dc-picture .deleteX {
