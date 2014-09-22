@@ -39,7 +39,7 @@
             <div class="row outer-flex">
             
                 <!-- Left column: user select list -->
-                <div class="span3 control-group picklists">
+                <div class="span3 control-group picklists" id="userSelectList">
                         <ul class="unstyled">
                             <li data-ng-click="selectUser(userId)" data-ng-repeat="(userId, userView) in configDirty.userViews" 
                                 data-ng-class="{selected:currentUserId == userId}"> 

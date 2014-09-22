@@ -64,6 +64,14 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     $scope.selectUser = function selectUser(userId) {
       $scope.currentUserId = userId;
       $scope.state = 'userSettings';
+      $scope.currentView = $scope.configDirty.userViews[userId];
+      var user = $scope.usersWithSettings[userId];
+      if (user) {
+        $scope.forWhom = user.name + ' (' + user.username + ')';;
+      } else {
+        $scope.forWhom = '(unknown user)';
+      }
+//      $scope.viewSettingForm.$setDirty(); // TODO: Determine if this is really needed - I think not. 2014-09-22 RM
     };
 
     $scope.configDirty = angular.copy($scope.projectSettings.config);
@@ -118,7 +126,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         var user = $scope.typeahead.user;
         if (user) {
           // Existing user, so there was already a view
-          $scope.forWhom = user.name;
+          $scope.forWhom = user.name + ' (' + user.username + ')';
           $scope.currentView = $scope.configDirty.userViews[user.id];
         } else {
           // View will be created when addUser() is called
