@@ -1,45 +1,46 @@
-.dc-pictures-captions {
-    display: block;
+.dc-pictures {
+    margin-bottom: 0px;
 }
 
-.dc-pictures, .dc-captions {
-    display: flex;
+.dc-pictures > div {
+    margin-left: 180px;
 }
 
-.dc-pictures label, .dc-captions label {
+.dc-pictures label {
     font-weight:bold;
     cursor: default;
     margin-right: 20px;
 }
 
-.dc-picture, .dc-caption {
-    display: block;
+.dc-pictures label label {
+    margin-top: 145px;
 }
 
-.dc-picture .dc-multitext label {
-    width: 0px;
-} 
+dc-picture .addItem {
+    margin-bottom: 20px;
+}
+
+.dc-picture {
+    display: inline-block;
+    vertical-align: top;
+}
 
 .dc-picture .dc-multitext .controls {
     margin-left: 0px;
 }
 
-.dc-image {
-    display: inline;
-}
-
-.dc-image img {
-    width: 150px;
+.dc-picture img {
     height: 150px;
+    margin-bottom: 20px;
 }
 
-form.dc-pictures-captions form.dc-multitext .controls input[type="text"] {
+.dc-picture .deleteX {
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+form.dc-pictures form.dc-multitext .controls input[type="text"] {
     width: 95px;
-}
-
-form.dc-pictures-captions .form-horizontal .controls {
-    margin-left: 0px;
-    width: 185px;
 }
 
 .drop-box {
@@ -47,6 +48,8 @@ form.dc-pictures-captions .form-horizontal .controls {
     height: 142px;
     padding-top: 0px;
     border: 4px dashed #e67345;
+    margin-right: 25px;
+    margin-bottom: 20px;
 }
 
 .progress {

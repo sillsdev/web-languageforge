@@ -14,6 +14,7 @@
                 <input
                     ng-show="!config.displayMultiline && control.state == 'edit' && control.rights.canEditEntry()"
                     dir="{{inputSystemDirection(tag)}}" width="{{config.width}}"
+                    placeholder="{{(config.type == 'pictures' ? 'caption' : '')}}"
                     type="text" data-ng-model="model[tag].value" />
                 <span class="uneditable-input"
                     ng-hide="control.state == 'edit' && control.rights.canEditEntry()"
