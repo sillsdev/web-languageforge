@@ -159,3 +159,8 @@ var clickModalButton = function(btnText) {
   btn.click();
 };
 module.exports.clickModalButton = clickModalButton;
+
+var clickBreadcrumb = function clickBreadcrumb(breadcrumbText) {
+  element(by.elemMatches("ul.topCrumbs > li", breadcrumbText)).click();
+};
+module.exports.clickBreadcrumb = clickBreadcrumb;
