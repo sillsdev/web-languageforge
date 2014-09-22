@@ -29,11 +29,17 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + fileName;
       };
 
+      // strips the timestamp file prefix (returns everything after the '_')
+      function originalFileName(fileName) {
+        return fileName.substr(fileName.indexOf('_') + 1); 
+      };
+
       function addPicture(fileName) {
 //        var newPicture = new Picture(fileName);
-        var newPicture = {};
-        newPicture = $scope.control.makeValidModelRecursive($scope.config, {});
+        var newPicture = {}, captionConfig = angular.copy($scope.config);
+        captionConfig.type = 'multitext';
         newPicture.fileName = fileName;
+        newPicture.caption = $scope.control.makeValidModelRecursive(captionConfig, {});
         if (angular.isUndefined($scope.pictures)) {
           $scope.pictures = []; 
         }
@@ -57,11 +63,6 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         } else {
           $scope.pictures.splice(index, 1);
         }
-      };
-
-      // strips the timestamp file prefix (returns everything after the '_')
-      function originalFileName(fileName) {
-        return fileName.substr(fileName.indexOf('_') + 1); 
       };
 
       $scope.onFileSelect = function onFileSelect(files) {
