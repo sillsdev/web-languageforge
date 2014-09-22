@@ -8,10 +8,12 @@
                     class="icon-remove"></i>
             </div>
             <img data-ng-src="{{getPictureUrl(picture.fileName)}}" />
-            <dc-multitext control="control"
-                config="config"
-                model="picture.caption">
-            </dc-multitext>
+            <div data-ng-if="!config.captionHideIfEmpty || control.show.emptyFields || (config.captionHideIfEmpty && fieldContainsData('multitext', picture.caption))">
+                <dc-multitext control="control"
+                    config="config"
+                    model="picture.caption">
+                </dc-multitext>
+            </div>
         </div>
         <div class="dc-picture" data-ng-show="upload.showAddPicture">
             <div class="deleteX pull-right">
