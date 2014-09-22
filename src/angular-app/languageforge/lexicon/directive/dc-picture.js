@@ -11,10 +11,12 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       pictures: "=",
       control: "="
     },
-    controller: ['$scope', '$http', 'sessionService', 'lexProjectService', 'silNoticeService', 'modalService', '$rootScope', 
-    function($scope, $http, ss, lexProjectService, notice, modalService, $rootScope) {
+    controller: ['$scope', '$http', 'sessionService', 'lexProjectService', 'lexConfigService', 'silNoticeService', 'modalService', '$rootScope', 
+    function($scope, $http, ss, lexProjectService, lexConfigService, notice, modalService, $rootScope) {
       $scope.upload = {};
       $scope.upload.progress = 0;
+      
+      $scope.fieldContainsData = lexConfigService.fieldContainsData;
       
       function Picture(fileName, caption) {
         this.fileName = fileName || '';

@@ -152,11 +152,12 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
     };
 
     this.fieldContainsData = function fieldContainsData(type, model) {
+        if (angular.isUndefined(model)) return false;
         if (type == 'fields') return true;
         var containsData = false;
         switch (type) {
             case 'multitext':
-                angular.forEach(model, function(ws) {
+                angular.forEach(model, function(value, ws) {
                     if (model[ws].value != '') {
                         containsData = true;
                     }
