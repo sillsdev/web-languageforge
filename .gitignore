@@ -2,6 +2,7 @@
 .settings
 .externalToolBuilders
 /output
+/node_modules/
 src/vendor/*
 src/vendor/*/
 !src/vendor/lift/
