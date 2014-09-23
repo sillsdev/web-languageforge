@@ -19,6 +19,7 @@ use models\languageforge\LfProjectModel;
 use models\ProjectModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\commands\LexEntryCommands;
+use models\languageforge\lexicon\commands\LexUploadCommands;
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use libraries\shared\Website;
 
@@ -34,7 +35,7 @@ foreach ($db->listCollections() as $collection) { $collection->drop(); }
 
 // Also empty out databases for the test projects
 $projectArrays = array(
-	$constants['testProjectName']  => $constants['testProjectCode'], 
+	$constants['testProjectName']  => $constants['testProjectCode'],
 	$constants['otherProjectName'] => $constants['otherProjectCode']);
 
 foreach ($projectArrays as $projectName => $projectCode) {
@@ -153,32 +154,47 @@ if ($constants['siteType'] == 'scriptureforge') {
 			));
 
 	$answer1 = QuestionCommands::updateAnswer($testProject, $question1, array(
-		'id' => '', 
+		'id' => '',
 		'content' => $constants['testText1Question1Answer']),
 		$managerUser);
 	$answer1Id = array_keys($answer1)[0];
 	$answer2 = QuestionCommands::updateAnswer($testProject, $question2, array(
-		'id' => '', 
+		'id' => '',
 		'content' => $constants['testText1Question2Answer']),
 		$managerUser);
 	$answer2Id = array_keys($answer2)[0];
 
 	$comment1 = QuestionCommands::updateComment($testProject, $question1, $answer1Id, array(
-		'id' => '', 
+		'id' => '',
 		'content' => $constants['testText1Question1Answer1Comment']),
 		$managerUser);
 	$comment2 = QuestionCommands::updateComment($testProject, $question2, $answer2Id, array(
-		'id' => '', 
+		'id' => '',
 		'content' => $constants['testText1Question2Answer2Comment']),
 		$managerUser);
-} else if ($constants['siteType'] == 'languageforge') {
+} elseif ($constants['siteType'] == 'languageforge') {
 	// Set up LanguageForge E2E test envrionment here
     $testProjectModel = new LexiconProjectModel($testProject);
     $testProjectModel->addInputSystem("th-fonipa", "thipa", "Thai IPA");
     $testProjectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[] = 'th-fonipa';
-    $testProjectModel->write();
+    $testProjectId = $testProjectModel->write();
 
-	$entry1 = LexEntryCommands::updateEntry($testProject,
+    // setup to mimic file upload
+    $fileName = 'FriedRiceWithPork.jpg';
+    $file = array();
+    $file['name'] = $fileName;
+    $_FILES['file'] = $file;
+
+	// put a copy of the test file in tmp
+    $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
+    copy(TestPath . "common/$fileName", $tmpFilePath);
+
+    $response = LexUploadCommands::uploadImageFile($testProjectId, 'sense-image', $tmpFilePath);
+
+    // put uploaded file into entry1
+    $constants['testEntry1']['senses']['pictures'][0]['fileName'] = $response->data->fileName;
+
+    $entry1 = LexEntryCommands::updateEntry($testProject,
 		array(
 			'id' => '',
 			'lexeme' => $constants['testEntry1']['lexeme'],
