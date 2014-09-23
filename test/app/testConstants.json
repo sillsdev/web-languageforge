@@ -70,6 +70,8 @@
     "lexeme": {"th":        {"value": "ข้าวผัดหมู"},
                "th-fonipa": {"value": "khâaw phàt mǔu"}},
     "senses": [{"definition": {"en": {"value": "fried rice with pork"}},
+                "pictures": [{"fileName": "noSuchFile",
+                              "caption": {"en": {"value": "fried rice with pork"}}}],
                 "partOfSpeech": {"value": "n"}}]
   },
   "testEntry2" : {
