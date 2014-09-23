@@ -11,10 +11,11 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       pictures: "=",
       control: "="
     },
-    controller: ['$scope', '$http', 'sessionService', 'lexProjectService', 'lexConfigService', 'silNoticeService', 'modalService', '$rootScope', 
-    function($scope, $http, ss, lexProjectService, lexConfigService, notice, modalService, $rootScope) {
+    controller: ['$scope', '$upload', 'sessionService', 'lexProjectService', 'lexConfigService', 'silNoticeService', 'modalService', '$rootScope', 
+    function($scope, $upload, ss, lexProjectService, lexConfigService, notice, modalService, $rootScope) {
       $scope.upload = {};
       $scope.upload.progress = 0;
+      $scope.upload.file = null;
       
       $scope.fieldContainsData = lexConfigService.fieldContainsData;
       
@@ -73,35 +74,30 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         var file = files[0];
         $scope.upload.file = file;
         if (file['size'] <= ss.fileSizeMax()) {
-          $http.uploadFile({
+          $upload.upload({
 
             // upload.php script
             url: '/upload/lf-lexicon/sense-image',
+            // method: 'POST',
             // headers: {'myHeaderKey': 'myHeaderVal'},
             // data: {'entryId': ''},
             file: file
           }).progress(function(evt) {
             $scope.upload.progress = parseInt(100.0 * evt.loaded / evt.total);
-            if (! $rootScope.$$phase) {
-              $scope.$apply();
-            }
           }).success(function(data, status, headers, config) {
             if (data.result) {
               $scope.upload.progress = 100.0;
               addPicture(data.data.fileName);
               $scope.upload.showAddPicture = false;
-              $scope.upload.progress = 0;
-              $scope.upload.file = null;
             } else {
+              $scope.upload.progress = 0;
               notice.push(notice.ERROR, data.data.errorMessage);
             }
-
-            // to fix IE not updating the dom
-            if (! $rootScope.$$phase) {
-              $scope.$apply();
-            }
+            $scope.upload.file = null;
           });
         } else {
+          $scope.upload.progress = 0;
+          $scope.upload.file = null;
           notice.push(notice.ERROR, file['name'] + " is too large.");
         }
       };
