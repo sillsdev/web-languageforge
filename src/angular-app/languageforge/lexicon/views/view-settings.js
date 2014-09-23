@@ -117,7 +117,6 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     $scope.list = {};
 
     $scope.selectTab = function(idx) {
-      console.log('Selecting role', idx);
       $scope.currentTab = $scope.tabs[idx];
       if ($scope.currentTab.byRole) {
         $scope.forWhom = $scope.currentTab.name;
