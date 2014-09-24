@@ -187,9 +187,15 @@ if ($constants['siteType'] == 'scriptureforge') {
 
     // put a copy of the test file in tmp
     $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
-    copy(TestPath . "common/$fileName", $tmpFilePath);
+    copy(dirname(TestPath) . "/php/common/$fileName", $tmpFilePath);
 
     $response = LexUploadCommands::uploadImageFile($testProjectId, 'sense-image', $tmpFilePath);
+    var_dump($response);
+
+    // cleanup tmp file if it still exists
+    if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
+        @unlink($tmpFilePath);
+    }
 
     // put uploaded file into entry1
     $constants['testEntry1']['senses']['pictures'][0]['fileName'] = $response->data->fileName;
