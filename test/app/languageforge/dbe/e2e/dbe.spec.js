@@ -36,11 +36,26 @@ describe('Browse and edit page (DBE)', function() {
 
   it('word 1: edit page has correct meaning, part of speech', function() {
     expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
-      {'en': constants.testEntry1.senses[0].definition.en.value},
+      {'en': constants.testEntry1.senses[0].definition.en.value}
     ]);
     expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
-      dbeUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value),
+      dbeUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value)
     ]);
+  });
+
+  it('while Show All Fields has not been clicked, Pictures field is hidden', function() {
+    expect(dbePage.edit.getOneField('Pictures').isPresent()).toBe(false);
+    dbePage.edit.showUncommonFields();
+    expect(dbePage.edit.getOneField('Pictures').isPresent()).toBe(true);
+  });
+
+  it('one picture and caption is present', function() {
+    
+  });
+
+  it('caption is hidden when empty', function() {
+    
+    dbePage.edit.hideUncommonFields();
   });
 
   it('click on second word (found by definition)', function() {
@@ -56,6 +71,10 @@ describe('Browse and edit page (DBE)', function() {
     ]);
   });
 
+  it('DEBUG: pause to check picture', function() {
+//    browser.sleep(20000);
+  });
+/*
   it('setup: click on word with multiple meanings (found by lexeme)', function() {
     dbePage.edit.clickEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value);
   });
@@ -299,5 +318,5 @@ describe('View settings page', function() {
     vsp.clickFieldByName('Semantic Domain');
     util.setCheckbox(vsp.showField, true);
     vsp.applyBtn.click();
-  });
+  });*/
 });

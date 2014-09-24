@@ -190,7 +190,6 @@ if ($constants['siteType'] == 'scriptureforge') {
     copy(dirname(TestPath) . "/php/common/$fileName", $tmpFilePath);
 
     $response = LexUploadCommands::uploadImageFile($testProjectId, 'sense-image', $tmpFilePath);
-    var_dump($response);
 
     // cleanup tmp file if it still exists
     if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
@@ -198,7 +197,7 @@ if ($constants['siteType'] == 'scriptureforge') {
     }
 
     // put uploaded file into entry1
-    $constants['testEntry1']['senses']['pictures'][0]['fileName'] = $response->data->fileName;
+    $constants['testEntry1']['senses'][0]['pictures'][0]['fileName'] = $response->data->fileName;
 
     $entry1 = LexEntryCommands::updateEntry($testProject,
         array(
