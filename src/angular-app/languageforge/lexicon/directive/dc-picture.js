@@ -74,11 +74,11 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         var file = files[0];
         $scope.upload.file = file;
         if (file['size'] <= ss.fileSizeMax()) {
+          $scope.upload.progress = 0;
           $upload.upload({
 
             // upload.php script
             url: '/upload/lf-lexicon/sense-image',
-            // method: 'POST',
             // headers: {'myHeaderKey': 'myHeaderVal'},
             // data: {'entryId': ''},
             file: file
