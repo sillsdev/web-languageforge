@@ -50,10 +50,19 @@ describe('Browse and edit page (DBE)', function() {
   });
 
   it('one picture and caption is present', function() {
-    
+    expect(dbePage.edit.getFieldValues('Pictures')).toEqual([
+      {'en': constants.testEntry1.senses[0].pictures[0].fileName},
+    ]);
+//    expect(dbePage.edit.getFieldValues('Pictures')).toEqual([
+//      {'en': constants.testEntry1.senses[0].pictures[0].en.value},
+//    ]);
   });
 
   it('caption is hidden when empty', function() {
+    
+  });
+
+  it('when caption is empty it is not hidden if "Hide if empty" config is cleared', function() {
     
     dbePage.edit.hideUncommonFields();
   });
