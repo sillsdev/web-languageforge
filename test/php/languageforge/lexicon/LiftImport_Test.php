@@ -18,17 +18,17 @@ class TestLiftImport extends UnitTestCase
         }
         return $index;
     }
-    
+
     // 2x Validation tests, removed until validation is working IJH 2014-03
 /*
     function testLiftImportMerge_XmlOldVer_Exception()
     {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = LexTestData::liftOneEntryV0_12;
-        
+
         $e->inhibitErrorDisplay();
         $this->expectException();
         LiftImport::merge($liftXml, $project);
@@ -39,10 +39,10 @@ class TestLiftImport extends UnitTestCase
     {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = LexTestData::liftInvalidAttribute;
-        
+
         $e->inhibitErrorDisplay();
         $this->expectException();
         LiftImport::merge($liftXml, $project);
@@ -53,14 +53,14 @@ class TestLiftImport extends UnitTestCase
     {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = LexTestData::liftTwoEntriesV0_13;
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
-        
+
         LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -90,16 +90,16 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndImportWins_MergeOk()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = LexTestData::liftTwoEntriesV0_13;
         LiftImport::merge($liftXml, $project); // create existing data
         $liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
-        
+
         LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -115,16 +115,16 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkip_NoMerge()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = LexTestData::liftTwoEntriesV0_13;
         LiftImport::merge($liftXml, $project); // create existing data
         $liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = true;
-        
+
         LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -144,16 +144,16 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkip_MergeOk()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = LexTestData::liftTwoEntriesV0_13;
         LiftImport::merge($liftXml, $project); // create existing data
         $liftXml = LexTestData::liftTwoEntriesModifiedV0_13;
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = true;
-        
+
         LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -175,7 +175,7 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndImportWinsAndDeleteMatchingEntry_EntryDeleted()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = LexTestData::liftTwoEntriesV0_13;
         LiftImport::merge($liftXml, $project); // create existing data
@@ -183,9 +183,9 @@ class TestLiftImport extends UnitTestCase
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
         $deleteMatchingEntry = true;
-        
+
         LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
-        
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -199,7 +199,7 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkipSameModTimeAndDeleteMatchingEntry_EntryDeletedAndOtherEntryNotCorrected()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = LexTestData::liftTwoEntriesV0_13;
         LiftImport::merge($liftXml, $project); // create existing data
@@ -207,9 +207,9 @@ class TestLiftImport extends UnitTestCase
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = true;
         $deleteMatchingEntry = true;
-        
+
         LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
-        
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -223,7 +223,7 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndImportWins_EntryNotDeleted()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = LexTestData::liftTwoEntriesV0_13;
         LiftImport::merge($liftXml, $project); // create existing data
@@ -231,9 +231,9 @@ class TestLiftImport extends UnitTestCase
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
         $deleteMatchingEntry = false;
-        
+
         LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
-        
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -248,16 +248,16 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndImportLoses_NoMerge()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = LexTestData::liftTwoEntriesV0_13;
         LiftImport::merge($liftXml, $project); // create existing data
         $liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
         $mergeRule = LiftMergeRule::IMPORT_LOSES;
         $skipSameModTime = false;
-        
+
         LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -277,16 +277,16 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndCreateDuplicates_DuplicatesCreated()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = LexTestData::liftTwoEntriesV0_13;
         LiftImport::merge($liftXml, $project); // create existing data
         $liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
         $mergeRule = LiftMergeRule::CREATE_DUPLICATES;
         $skipSameModTime = false;
-        
+
         LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -313,16 +313,16 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndCreateDuplicatesAndSkip_NoMerge()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = LexTestData::liftTwoEntriesV0_13;
         LiftImport::merge($liftXml, $project); // create existing data
         $liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
         $mergeRule = LiftMergeRule::CREATE_DUPLICATES;
         $skipSameModTime = true;
-        
+
         LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -337,5 +337,35 @@ class TestLiftImport extends UnitTestCase
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Adjective");
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
+    }
+
+    public function testLiftImportMerge_NoExistingDataAndXmlHasSpans_NoExceptionAndMergeOk()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftXml = LexTestData::liftTwoEntriesWithSpanV0_13;
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+
+        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
+
+        $entryList = new LexEntryListModel($project);
+        $entryList->read();
+        $entries = $entryList->entries;
+        $this->assertEqual($entryList->count, 2);
+        $index = self::indexByGuid($entries);
+        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
+        $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
+        $this->assertEqual($entry0['lexeme']['th']['value'], "ฉู่ฉี่หมูกรอบ");
+        $this->assertEqual(count($entry0['senses']), 1);
+        $this->assertEqual($entry0['senses'][0]['definition']['en']['value'], "<span lang=\"th\">ฉู่ฉี่หมูกรอบ</span> is a kind of curry fried with crispy pork");
+        $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Noun");
+        $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
+        $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
+        $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
     }
 }
