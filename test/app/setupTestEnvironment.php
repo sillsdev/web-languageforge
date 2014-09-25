@@ -180,7 +180,7 @@ if ($constants['siteType'] == 'scriptureforge') {
     $testProjectId = $testProjectModel->write();
 
     // setup to mimic file upload
-    $fileName = 'FriedRiceWithPork.jpg';
+    $fileName = $constants['testEntry1']['senses'][0]['pictures'][0]['fileName'];
     $file = array();
     $file['name'] = $fileName;
     $_FILES['file'] = $file;
