@@ -14,8 +14,8 @@ var dbeUtil = function() {
   this.dcMultitextToArray = function(elem) {
     var inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
     return inputSystemDivs.map(function(div) {
-      var wsidSpan = div.$('.controls span.wsid');
-      var wordElem = div.$('.controls input');
+      var wsidSpan = div.$('.controls span.wsid'), 
+        wordElem = div.$('.controls input');
       return wsidSpan.getText().then(function(wsid) {
         return wordElem.getAttribute('value').then(function(word) {
           return {
@@ -59,16 +59,31 @@ var dbeUtil = function() {
   this.dcMultiOptionListToValue = function(elem) {
     return _this.dcOptionListToValue(elem);
   };
+  
+  this.dcPicturesToObject = function(elem) {
+    var pictures = elem.all(by.repeater('picture in pictures'));
+    return pictures.map(function(div) {
+      var img = div.$('img'),
+        caption = div.$('dc-multitext');
+      return img.getAttribute('src').then(function(src) {
+        return {
+          'fileName': src.replace(/^.*[\\\/]/, ''),
+          'caption': _this.dcMultitextToObject(caption)
+        };
+      });
+    });
+  };
 
   this.dcParsingFuncs = {
     'multitext': {
       'multitext_as_object': _this.dcMultitextToObject,
       'multitext_as_array': _this.dcMultitextToArray,
       'multitext_as_first_value': _this.dcMultitextToFirstValue,
-      'default_strategy': 'multitext_as_object',
+      'default_strategy': 'multitext_as_object'
     },
     'optionlist': _this.dcOptionListToValue,
     'multioptionlist': _this.dcMultiOptionListToValue,
+    'pictures': _this.dcPicturesToObject
   };
 
   this.getParser = function(elem, multitext_strategy) {
