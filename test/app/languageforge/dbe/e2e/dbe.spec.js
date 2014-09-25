@@ -50,19 +50,18 @@ describe('Browse and edit page (DBE)', function() {
   });
 
   it('one picture and caption is present', function() {
-    expect(dbePage.edit.getFieldValues('Pictures')).toEqual([
-      {'en': constants.testEntry1.senses[0].pictures[0].fileName},
-    ]);
-//    expect(dbePage.edit.getFieldValues('Pictures')).toEqual([
-//      {'en': constants.testEntry1.senses[0].pictures[0].en.value},
-//    ]);
+    var pictures = dbePage.edit.getFieldValues('Pictures');
+    expect(pictures).toEqual([{
+      'fileName': constants.testEntry1.senses[0].pictures[0].fileName,
+      'caption': [{'en': constants.testEntry1.senses[0].pictures[0].caption.en.value}]
+    }]);
   });
 
   it('caption is hidden when empty', function() {
     
   });
 
-  it('when caption is empty it is not hidden if "Hide if empty" config is cleared', function() {
+  it('when caption is empty, it is visible if "Hidden if empty" config is cleared', function() {
     
     dbePage.edit.hideUncommonFields();
   });
