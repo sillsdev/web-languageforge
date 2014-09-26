@@ -86,7 +86,7 @@
                 <div class="control-group">
                     <div class="controls">
                         <label class="checkbox {{interfaceConfig.pullNormal}}">
-                            <input type="checkbox" 
+                            <input type="checkbox" id="hideIfEmpty"
                                 data-ng-model="fieldConfig[currentField.name].hideIfEmpty"/>
                             {{'Hidden if empty' | translate}}</label>
                     </div>
@@ -119,7 +119,7 @@
                     data-ng-if="fieldConfigItemExists('captionHideIfEmpty')">
                     <div class="controls">
                         <label class="checkbox {{interfaceConfig.pullNormal}}">
-                            <input type="checkbox" 
+                            <input type="checkbox" id="captionHideIfEmpty"
                                 data-ng-model="fieldConfig[currentField.name].captionHideIfEmpty"/>
                             {{'Hidden if empty' | translate}}</label>
                     </div>

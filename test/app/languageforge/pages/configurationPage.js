@@ -42,8 +42,10 @@ var ConfigurationPage = function() {
     return this.getFieldByName(fieldName, treatAsRegex).then(function(elem) { elem.click(); });
   };
 
-  this.hiddenIfEmpty = this.activePane.element(by.model('fieldConfig[currentField.name].hideIfEmpty'));
-  this.captionHiddenIfEmpty = this.activePane.element(by.model('fieldConfig[currentField.name].captionHideIfEmpty'));
+  this.hiddenIfEmpty = this.activePane.element(by.id('hideIfEmpty'));
+  this.captionHiddenIfEmpty = function() {
+    return this.activePane.element(by.id('captionHideIfEmpty'));
+  }; 
 
   this.usersWithViewSettings = this.activePane.$('#userSelectList');
   this.addViewSettingsForMember = function addViewSettingsForMember(memberName) {
