@@ -169,6 +169,26 @@ var LfDbePage = function() {
         return lexemes[searchWsid];
       });
     },
+    
+    pictures: {
+      list: dbeUtil.getOneField('Pictures'),
+      images: dbeUtil.getOneField('Pictures').all(by.css('img')),
+      captions: dbeUtil.getOneField('Pictures').all(by.css('input')),
+      removeImages: dbeUtil.getOneField('Pictures').all(by.css('.icon-remove')),
+      getFileName: function(index) {
+        return dbeUtil.getOneFieldValue('Pictures').then(function(pictures) {
+          return pictures[index].fileName;
+        });
+      },
+      getCaption: function(index) {
+        return dbeUtil.getOneFieldValue('Pictures').then(function(pictures) {
+          return pictures[index].caption;
+        });
+      },
+      addPictureLink: element(by.linkText('Add Picture')),
+      addDropBox: dbeUtil.getOneField('Pictures').$('.drop-box'),
+      addCancelButton: element(by.id('addCancel'))
+    },
 
     getFields: dbeUtil.getFields,
     getOneField: dbeUtil.getOneField,

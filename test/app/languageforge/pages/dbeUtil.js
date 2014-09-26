@@ -27,7 +27,7 @@ var dbeUtil = function() {
     });
   };
   
-  // Return the multitext's values as [{en: 'word', de: 'Wort'}]
+  // Return the multitext's values as {en: 'word', de: 'Wort'}
   // NOTE: Returns a promise. Use .then() to access the actual data.
   this.dcMultitextToObject = function(elem) {
     return _this.dcMultitextToArray(elem).then(function(values) {

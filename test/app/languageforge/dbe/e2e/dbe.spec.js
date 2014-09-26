@@ -7,13 +7,14 @@ describe('Browse and edit page (DBE)', function() {
   var util         = require('../../../bellows/pages/util.js');
   var dbePage      = require('../../pages/dbePage.js');
   var dbeUtil      = require('../../pages/dbeUtil.js');
+  var configPage   = require('../../pages/configurationPage.js');
 
   it('setup: login, click on test project', function() {
     loginPage.loginAsManager();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
   });
-
+/*
   it('browse page has correct word count', function() {
     expect(dbePage.browse.entriesList.count()).toEqual(dbePage.browse.getEntryCount());
     expect(dbePage.browse.getEntryCount()).toBe(3);
@@ -24,11 +25,11 @@ describe('Browse and edit page (DBE)', function() {
     expect(dbePage.browse.search.getMatchCount()).toBe(1);
     dbePage.browse.search.clearBtn.click();
   });
-
+*/
   it('click on first word', function() {
     dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
   });
-
+/*
   it('edit page has correct word count', function() {
     expect(dbePage.edit.entriesList.count()).toEqual(dbePage.edit.getEntryCount());
     expect(dbePage.edit.getEntryCount()).toBe(3);
@@ -42,30 +43,71 @@ describe('Browse and edit page (DBE)', function() {
       dbeUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value)
     ]);
   });
-
+*/
   it('while Show All Fields has not been clicked, Pictures field is hidden', function() {
-    expect(dbePage.edit.getOneField('Pictures').isPresent()).toBe(false);
+    expect(dbePage.edit.pictures.list.isPresent()).toBe(false);
     dbePage.edit.showUncommonFields();
-    expect(dbePage.edit.getOneField('Pictures').isPresent()).toBe(true);
+    expect(dbePage.edit.pictures.list.isPresent()).toBe(true);
   });
 
   it('one picture and caption is present', function() {
-    var pictures = dbePage.edit.getFieldValues('Pictures');
-    expect(pictures).toEqual([{
-      'fileName': constants.testEntry1.senses[0].pictures[0].fileName,
-      'caption': [{'en': constants.testEntry1.senses[0].pictures[0].caption.en.value}]
-    }]);
+    expect(dbePage.edit.pictures.getFileName(0)).toContain('_' + constants.testEntry1.senses[0].pictures[0].fileName);
+    expect(dbePage.edit.pictures.getCaption(0)).toEqual({'en': constants.testEntry1.senses[0].pictures[0].caption.en.value});
+  });
+
+  it('file upload drop box is displayed when Add Picture is clicked', function() {
+    expect(dbePage.edit.pictures.addPictureLink.isPresent()).toBe(true);
+    expect(dbePage.edit.pictures.addDropBox.isDisplayed()).toBe(false);
+    expect(dbePage.edit.pictures.addCancelButton.isDisplayed()).toBe(false);
+    dbePage.edit.pictures.addPictureLink.click();
+    expect(dbePage.edit.pictures.addPictureLink.isPresent()).toBe(false);
+    expect(dbePage.edit.pictures.addDropBox.isDisplayed()).toBe(true);
+  });
+
+  it('file upload drop box is not displayed when Cancel Adding Picture is clicked', function() {
+    expect(dbePage.edit.pictures.addCancelButton.isDisplayed()).toBe(true);
+    dbePage.edit.pictures.addCancelButton.click();
+    expect(dbePage.edit.pictures.addPictureLink.isPresent()).toBe(true);
+    expect(dbePage.edit.pictures.addDropBox.isDisplayed()).toBe(false);
+    expect(dbePage.edit.pictures.addCancelButton.isDisplayed()).toBe(false);
   });
 
   it('caption is hidden when empty', function() {
+//    dbePage.edit.hideUncommonFields();
+
+    // TODO change config: pictures.hiddenIfEmpty = false, pictures.captionHiddenIfEmpty = true
+    configPage.get();
+    configPage.clickTabByName('Fields');
+    configPage.showAllFieldsButton.click();
+    configPage.clickFieldByName('Pictures');
+    util.setCheckbox(configPage.hiddenIfEmpty, false);
+    util.setCheckbox(configPage.captionHiddenIfEmpty, true);
+    configPage.applyButton.click();
     
+    expect(dbePage.edit.pictures.captions.first().isDisplayed()).toBe(true);
+    dbePage.edit.pictures.captions.first().clear();    
+    expect(dbePage.edit.pictures.captions.first().isDisplayed()).toBe(false);
   });
 
   it('when caption is empty, it is visible if "Hidden if empty" config is cleared', function() {
     
-    dbePage.edit.hideUncommonFields();
   });
 
+  it('picture is removed when Delete is clicked', function() {
+    dbePage.edit.showUncommonFields();  // TODO remove when other tests are complete. IJH 2014-09
+    
+    expect(dbePage.edit.pictures.images.first().isPresent()).toBe(true);
+    expect(dbePage.edit.pictures.removeImages.first().isPresent()).toBe(true);
+    dbePage.edit.pictures.removeImages.first().click();
+    util.clickModalButton('Delete Picture');
+    expect(dbePage.edit.pictures.images.first().isPresent()).toBe(false);
+  });
+
+  it('DEBUG: pause to check picture', function() {
+//  browser.sleep(20000);
+//    browser.debugger();
+  });
+/*
   it('click on second word (found by definition)', function() {
     dbePage.edit.clickEntryByDefinition(constants.testEntry2.senses[0].definition.en.value);
   });
@@ -79,10 +121,6 @@ describe('Browse and edit page (DBE)', function() {
     ]);
   });
 
-  it('DEBUG: pause to check picture', function() {
-//    browser.sleep(20000);
-  });
-/*
   it('setup: click on word with multiple meanings (found by lexeme)', function() {
     dbePage.edit.clickEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value);
   });
