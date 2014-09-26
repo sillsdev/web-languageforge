@@ -368,4 +368,65 @@ class TestLiftImport extends UnitTestCase
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
     }
+
+    public function testLiftImportMerge_NoExistingDataAndNoSpansInNoteFields_NoExceptionAndMergeOk()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftXml = LexTestData::liftNotesWithoutSpansV0_13;
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+
+        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
+
+        $entryList = new LexEntryListModel($project);
+        $entryList->read();
+        $entries = $entryList->entries;
+        $this->assertEqual($entryList->count, 2);
+        $index = self::indexByGuid($entries);
+        $entry0 = $index['57a90e40-fdb4-47f8-89a0-c64bf947723d'];
+        $entry1 = $index['8db0bd91-9120-4417-b6ff-d0bb35f552fc'];
+        $this->assertEqual($entry0['guid'], "57a90e40-fdb4-47f8-89a0-c64bf947723d");
+        $this->assertEqual($entry0['lexeme']['qaa-x-qaa']['value'], "brown bear");
+        $this->assertEqual(count($entry0['senses']), 1);
+        $this->assertEqual($entry0['senses'][0]['note']['en']['value'], "This is not a black bear.");
+        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][0], "1.6.1.1.2 Carnivore");
+        $this->assertEqual($entry1['guid'], "8db0bd91-9120-4417-b6ff-d0bb35f552fc");
+        $this->assertEqual($entry1['lexeme']['qaa-x-qaa']['value'], "black bear");
+        $this->assertEqual($entry1['senses'][0]['note']['en']['value'], "This is not a brown bear.");
+        $this->assertEqual($entry1['senses'][0]['semanticDomain']['values'][0], "1.6.1.1.2 Carnivore");
+    }
+
+    public function testLiftImportMerge_NoExistingDataAndSpansInNoteFields_NoExceptionAndMergeOk()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftXml = LexTestData::liftNotesWithSpansV0_13;
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+
+        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
+
+        $entryList = new LexEntryListModel($project);
+        $entryList->read();
+        $entries = $entryList->entries;
+        $this->assertEqual($entryList->count, 2);
+        $index = self::indexByGuid($entries);
+        $entry0 = $index['57a90e40-fdb4-47f8-89a0-c64bf947723d'];
+        $entry1 = $index['8db0bd91-9120-4417-b6ff-d0bb35f552fc'];
+        $this->assertEqual($entry0['guid'], "57a90e40-fdb4-47f8-89a0-c64bf947723d");
+        $this->assertEqual($entry0['lexeme']['qaa-x-qaa']['value'], "brown bear");
+        $this->assertEqual(count($entry0['senses']), 1);
+        $this->assertEqual($entry0['senses'][0]['note']['en']['value'], "This is not a black bear, and <span lang=\"fr\">ceci n'est pas une pipe</span>.");
+        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][0], "1.6.1.1.2 Carnivore");
+        $this->assertEqual($entry1['guid'], "8db0bd91-9120-4417-b6ff-d0bb35f552fc");
+        $this->assertEqual($entry1['lexeme']['qaa-x-qaa']['value'], "black bear");
+        $this->assertEqual($entry1['senses'][0]['note']['en']['value'], "This is not a brown bear.");
+        $this->assertEqual($entry1['senses'][0]['semanticDomain']['values'][0], "1.6.1.1.2 Carnivore");
+    }
+
 }
