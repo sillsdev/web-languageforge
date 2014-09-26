@@ -157,7 +157,7 @@ class LiftDecoder
         if (isset($sxeNode->form)) {
             foreach ($sxeNode->form as $form) {
                 $inputSystemTag = (string) $form['lang'];
-                $multiText->form($inputSystemTag, (string) $form->text);
+                $multiText->form($inputSystemTag, $this->convertSpans($form->text));
 
                 $this->_projectModel->addInputSystem($inputSystemTag);
                 if (isset($inputSystems)) {
@@ -167,6 +167,23 @@ class LiftDecoder
         }
 
         return $multiText;
+    }
+
+    /**
+     * Converts <span> elements inside an XmlNode $textNode to strings
+     * @param SimpleXMLElement $textNode
+     * @return string
+     */
+    public function convertSpans($textNode)
+    {
+        if ($textNode->count()) {
+            // Keep it simple for now: just treat $textNode->asXML() as a string,
+            // and strip <text> from the front and </text> from the back of that string.
+            $textStr = $textNode->asXML();
+            return substr($textStr, 6, -7);
+        } else {
+            return (string) $textNode;
+        }
     }
 
 }
