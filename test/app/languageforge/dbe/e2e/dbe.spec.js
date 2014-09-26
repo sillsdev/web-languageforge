@@ -72,17 +72,23 @@ describe('Browse and edit page (DBE)', function() {
     expect(dbePage.edit.pictures.addCancelButton.isDisplayed()).toBe(false);
   });
 
-  it('caption is hidden when empty', function() {
-//    dbePage.edit.hideUncommonFields();
-
+  it('change config to show Pictures', function() {
     // TODO change config: pictures.hiddenIfEmpty = false, pictures.captionHiddenIfEmpty = true
     configPage.get();
     configPage.clickTabByName('Fields');
     configPage.showAllFieldsButton.click();
     configPage.clickFieldByName('Pictures');
     util.setCheckbox(configPage.hiddenIfEmpty, false);
-    util.setCheckbox(configPage.captionHiddenIfEmpty, true);
+//    util.setCheckbox(configPage.captionHiddenIfEmpty(), true);
     configPage.applyButton.click();
+  });
+
+  it('caption is hidden when empty', function() {
+//  projectsPage.get();
+//  projectsPage.clickOnProject(constants.testProjectName);
+    util.clickBreadcrumb(constants.testProjectName);
+    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+//  dbePage.edit.hideUncommonFields();
     
     expect(dbePage.edit.pictures.captions.first().isDisplayed()).toBe(true);
     dbePage.edit.pictures.captions.first().clear();    
