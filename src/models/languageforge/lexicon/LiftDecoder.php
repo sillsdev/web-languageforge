@@ -93,6 +93,20 @@ class LiftDecoder
             $sense->gloss = $multiText;
         }
 
+        // Note
+        if (isset($sxeNode->note)) {
+            $multiText = new MultiText();
+            $noteInputSystems = $this->_projectModel->config->entry->fields[LexiconConfigObj::NOTE]->inputSystems;
+            foreach ($sxeNode->note->form as $formNode) {
+                $inputSystemTag = (string) $formNode->attributes()->lang;
+                $multiText->form($inputSystemTag, (string) $formNode->text);
+
+                $this->_projectModel->addInputSystem($inputSystemTag);
+                $noteInputSystems->value($inputSystemTag);
+            }
+            $sense->note = $multiText;
+        }
+
         // Part Of Speech
         if (isset($sxeNode->{'grammatical-info'})) {
             $partOfSpeech = (string) $sxeNode->{'grammatical-info'}->attributes()->value;
