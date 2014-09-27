@@ -173,6 +173,11 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
                     containsData = true;
                 }
                 break;
+            case 'pictures':
+              if (model.length > 0) {
+                  containsData = true;
+              }
+              break;
         }
         return containsData;
     };
