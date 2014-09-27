@@ -20,9 +20,9 @@ var LfDbePage = function() {
     browser.get(browser.baseUrl + page.url + extra);
   };
 
-  this.browseDiv = $('#lexAppListView');
-  this.editDiv = $('#lexAppEditView');
-  this.commentDiv = $('#lexAppCommentView');
+  this.browseDiv = element(by.css('#lexAppListView'));
+  this.editDiv = element(by.css('#lexAppEditView'));
+  this.commentDiv = element(by.css('#lexAppCommentView'));
 
   // --- Browse view ---
   this.browse = {
@@ -38,10 +38,10 @@ var LfDbePage = function() {
 
     // Search typeahead
     search: {
-      input: page.browseDiv.$('div.typeahead').$('input'),
-      clearBtn: page.browseDiv.$('div.typeahead').$('i.icon-remove'),
-      results: page.browseDiv.$('div.typeahead').all(by.repeater('e in typeahead.searchResults')),
-      matchCountElem: page.browseDiv.$('div.typeahead').element(by.binding('typeahead.searchResults.length')),
+      input: page.browseDiv.element(by.css('div.typeahead')).element(by.css('input')),
+      clearBtn: page.browseDiv.element(by.css('div.typeahead')).element(by.css('i.icon-remove')),
+      results: page.browseDiv.element(by.css('div.typeahead')).all(by.repeater('e in typeahead.searchResults')),
+      matchCountElem: page.browseDiv.element(by.css('div.typeahead')).element(by.binding('typeahead.searchResults.length')),
       getMatchCount: function() {
 
         // Inside this function, "this" == page.browse.search
@@ -70,11 +70,11 @@ var LfDbePage = function() {
   // --- Edit view ---
   this.edit = {
     fields: page.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
-    toListLink: $('#toListLink'),
-    toCommentsLink: $('#toCommentsLink'),
+    toListLink: element(by.css('#toListLink')),
+    toCommentsLink: element(by.css('#toCommentsLink')),
 
     // Show/Hide fields button and associated functions
-    toggleUncommonFieldsBtn: page.editDiv.$('#toggleUncommonFieldsBtn'),
+    toggleUncommonFieldsBtn: page.editDiv.element(by.css('#toggleUncommonFieldsBtn')),
     toggleUncommonFieldsBtnText: {
       'show': 'Show All Fields',
       'hide': 'Hide Uncommon Fields',
@@ -99,7 +99,7 @@ var LfDbePage = function() {
     },
 
     // Left sidebar UI elements
-    newWordBtn: page.editDiv.$('button[data-ng-click="newEntry()'),
+    newWordBtn: page.editDiv.element(by.css('button[data-ng-click="newEntry()')),
     entryCountElem: page.editDiv.element(by.binding('entries.length')),
     getEntryCount: function() {
       return this.entryCountElem.getText().then(function(s) {
@@ -108,7 +108,7 @@ var LfDbePage = function() {
     },
     entriesList: page.editDiv.all(by.repeater('entry in show.entries')),
     findEntryByLexeme: function(lexeme) {
-      var div = page.editDiv.$('#compactEntryListContainer');
+      var div = page.editDiv.element(by.css('#compactEntryListContainer'));
       return div.element(by.cssContainingText('[ng-bind-html="getWordForDisplay(entry)"', lexeme));
     },
     clickEntryByLexeme: function(lexeme) {
@@ -117,7 +117,7 @@ var LfDbePage = function() {
       });
     },
     findEntryByDefinition: function(definition) {
-      var div = page.editDiv.$('#compactEntryListContainer');
+      var div = page.editDiv.element(by.css('#compactEntryListContainer'));
       return div.element(by.cssContainingText('[ng-bind-html="getMeaningForDisplay(entry)"', definition));
     },
     clickEntryByDefinition: function(definition) {
@@ -126,10 +126,10 @@ var LfDbePage = function() {
       });
     },
     search: {
-      input: page.editDiv.$('div.typeahead').$('input'),
-      clearBtn: page.editDiv.$('div.typeahead').$('i.icon-remove'),
-      results: page.editDiv.$('div.typeahead').all(by.repeater('e in typeahead.searchResults')),
-      matchCountElem: page.editDiv.$('div.typeahead').element(by.binding('typeahead.searchResults.length')),
+      input: page.editDiv.element(by.css('div.typeahead')).element(by.css('input')),
+      clearBtn: page.editDiv.element(by.css('div.typeahead')).element(by.css('i.icon-remove')),
+      results: page.editDiv.element(by.css('div.typeahead')).all(by.repeater('e in typeahead.searchResults')),
+      matchCountElem: page.editDiv.element(by.css('div.typeahead')).element(by.binding('typeahead.searchResults.length')),
       getMatchCount: function() {
         // Inside this function, "this" == page.edit.search
         return this.matchCountElem.getText().then(function(s) {
@@ -139,9 +139,9 @@ var LfDbePage = function() {
     },
 
     // Top-row UI elements
-    renderedDiv: page.editDiv.$('dc-rendered'),
-    deleteBtn: page.editDiv.$('button[data-ng-click="deleteEntry(currentEntry)"]'),
-    saveBtn: page.editDiv.$('button[data-ng-click="saveCurrentEntry(true)"]'),
+    renderedDiv: page.editDiv.element(by.css('dc-rendered')),
+    deleteBtn: page.editDiv.element(by.css('button[data-ng-click="deleteEntry(currentEntry)"]')),
+    saveBtn: page.editDiv.element(by.css('button[data-ng-click="saveCurrentEntry(true)"]')),
 
     // Helper functions for retrieving various field values
     getLexemes: function() {
@@ -186,7 +186,7 @@ var LfDbePage = function() {
         });
       },
       addPictureLink: element(by.linkText('Add Picture')),
-      addDropBox: dbeUtil.getOneField('Pictures').$('.drop-box'),
+      addDropBox: dbeUtil.getOneField('Pictures').element(by.css('.drop-box')),
       addCancelButton: element(by.id('addCancel'))
     },
 
@@ -198,14 +198,14 @@ var LfDbePage = function() {
 
   // --- Comment view ---
   this.comment = {
-    toEditLink: $('#toEditLink'),
+    toEditLink: element(by.css('#toEditLink')),
 
     // Top-row UI elements
-    renderedDiv: page.commentDiv.$('dc-rendered'),
+    renderedDiv: page.commentDiv.element(by.css('dc-rendered')),
     filter: {
       byTextElem: page.commentDiv.element(by.model('commentFilter.text')),
       byStatusElem: page.commentDiv.element(by.model('commentFilter.status')),
-      clearElem: page.commentDiv.$('[title="Clear Filter] > i.icon-remove'),
+      clearElem: page.commentDiv.element(by.css('[title="Clear Filter] > i.icon-remove')),
       byText: function(textToFilterBy) {
         this.byTextElem.sendKeys(textToFilterBy);
       },
@@ -229,7 +229,7 @@ var LfDbePage = function() {
     // Left half of page: entry (with clickable elements)
     entry: {
       // We can just reuse the functions from dbeUtil, since they default to
-      // using $('dc-entry') as their root element.
+      // using element(by.css('dc-entry')) as their root element.
       getFields: dbeUtil.getFields,
       getOneField: dbeUtil.getOneField,
       getFieldValues: dbeUtil.getFieldValues,
@@ -238,14 +238,14 @@ var LfDbePage = function() {
 
     // Right half of page: comments
     newComment: {
-      textarea: page.commentDiv.$('.newCommentForm').$('textarea'),
-      postBtn: page.commentDiv.$('.newCommentForm').element(by.buttonText('Post')),
-      regardingDiv: page.commentDiv.$('.newCommentForm').$('.commentRegarding'),
+      textarea: page.commentDiv.element(by.css('.newCommentForm')).element(by.css('textarea')),
+      postBtn: page.commentDiv.element(by.css('.newCommentForm')).element(by.buttonText('Post')),
+      regardingDiv: page.commentDiv.element(by.css('.newCommentForm')).element(by.css('.commentRegarding')),
       regarding: {
-        clearBtn: page.commentDiv.$('.newCommentForm').$('.commentRegarding').$('i.icon-remove'),
-        fieldLabel: page.commentDiv.$('.newCommentForm').$('.commentRegarding').$('.regardingFieldName'),
-        fieldWsid: page.commentDiv.$('.newCommentForm').$('.commentRegarding').$('.regardingInputSystem'),
-        fieldValue: page.commentDiv.$('.newCommentForm').$('.commentRegarding').$('.regardingFieldValue'),
+        clearBtn: page.commentDiv.element(by.css('.newCommentForm')).element(by.css('.commentRegarding')).element(by.css('i.icon-remove')),
+        fieldLabel: page.commentDiv.element(by.css('.newCommentForm')).element(by.css('.commentRegarding')).element(by.css('.regardingFieldName')),
+        fieldWsid: page.commentDiv.element(by.css('.newCommentForm')).element(by.css('.commentRegarding')).element(by.css('.regardingInputSystem')),
+        fieldValue: page.commentDiv.element(by.css('.newCommentForm')).element(by.css('.commentRegarding')).element(by.css('.regardingFieldValue')),
       },
     },
     commentsList: page.commentDiv.all(by.repeater('comment in currentEntryCommentsFiltered')),
@@ -297,11 +297,11 @@ var LfDbePage = function() {
       // Left side controls
       // avatar:
       // div.element(by.binding('model.authorInfo.createdByUserRef.avatar_ref')),
-      avatar: div.$('.commentLeftSide img'),
+      avatar: div.element(by.css('.commentLeftSide img')),
       author: div.element(by.binding('model.authorInfo.createdByUserRef.name')),
       date: div.element(by.binding('model.authorInfo.createdDate | relativetime')),
       score: div.element(by.binding('model.score')),
-      plusOne: div.$('.commentLeftSide i.icon-thumbs-up-alt:not(.ng-hide)'),
+      plusOne: div.element(by.css('.commentLeftSide i.icon-thumbs-up-alt:not(.ng-hide)')),
 
       // Right side content
       content: div.element(by.binding('model.content')),
@@ -327,9 +327,9 @@ var LfDbePage = function() {
       },
 
       // Bottom controls (below replies)
-      markOpenLink: div.$('.commentBottomBar i.icon-chevron-sign-up'),
-      markResolvedLink: div.$('.commentBottomBar i.icon-ok'),
-      markTodoLink: div.$('.commentBottomBar i.icon-edit'),
+      markOpenLink: div.element(by.css('.commentBottomBar i.icon-chevron-sign-up')),
+      markResolvedLink: div.element(by.css('.commentBottomBar i.icon-ok')),
+      markTodoLink: div.element(by.css('.commentBottomBar i.icon-edit')),
       editBtn: div.element(by.buttonText('Edit')),
       replyBtn: div.element(by.buttonText('Reply')),
     };
@@ -343,12 +343,12 @@ var LfDbePage = function() {
       content: div.element(by.model('reply.content')),
       author: div.element(by.model('reply.authorInfo.createdByUserRef.name')),
       date: div.element(by.model('reply.authorInfo.createdDate | relativetime')),
-      editLink: div.$('editReplyLink i.icon-chevron-sign-up'),
-      deleteLink: div.$('deleteReplyLink i.icon-remove'),
+      editLink: div.element(by.css('editReplyLink i.icon-chevron-sign-up')),
+      deleteLink: div.element(by.css('deleteReplyLink i.icon-remove')),
       edit: {
-        input: div.$('form input'),
-        submit: div.$('form button[type="submit"]'),
-        cancel: div.$('form a i.icon-remove'),
+        input: div.element(by.css('form input')),
+        submit: div.element(by.css('form button[type="submit"]')),
+        cancel: div.element(by.css('form a i.icon-remove')),
       },
     };
   };
