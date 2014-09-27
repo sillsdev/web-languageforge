@@ -14,7 +14,7 @@ describe('Browse and edit page (DBE)', function() {
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
   });
-/*
+
   it('browse page has correct word count', function() {
     expect(dbePage.browse.entriesList.count()).toEqual(dbePage.browse.getEntryCount());
     expect(dbePage.browse.getEntryCount()).toBe(3);
@@ -25,11 +25,11 @@ describe('Browse and edit page (DBE)', function() {
     expect(dbePage.browse.search.getMatchCount()).toBe(1);
     dbePage.browse.search.clearBtn.click();
   });
-*/
+
   it('click on first word', function() {
     dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
   });
-/*
+
   it('edit page has correct word count', function() {
     expect(dbePage.edit.entriesList.count()).toEqual(dbePage.edit.getEntryCount());
     expect(dbePage.edit.getEntryCount()).toBe(3);
@@ -42,12 +42,6 @@ describe('Browse and edit page (DBE)', function() {
     expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
       dbeUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value)
     ]);
-  });
-*/
-  it('while Show All Fields has not been clicked, Pictures field is hidden', function() {
-    expect(dbePage.edit.pictures.list.isPresent()).toBe(false);
-    dbePage.edit.showUncommonFields();
-    expect(dbePage.edit.pictures.list.isPresent()).toBe(true);
   });
 
   it('one picture and caption is present', function() {
@@ -72,36 +66,42 @@ describe('Browse and edit page (DBE)', function() {
     expect(dbePage.edit.pictures.addCancelButton.isDisplayed()).toBe(false);
   });
 
-  it('change config to show Pictures', function() {
-    // TODO change config: pictures.hiddenIfEmpty = false, pictures.captionHiddenIfEmpty = true
+  it('change config to show Pictures and hide captions', function() {
     configPage.get();
-    configPage.clickTabByName('Fields');
+    configPage.getTabByName('Fields').click();
     configPage.showAllFieldsButton.click();
-    configPage.clickFieldByName('Pictures');
+    configPage.getFieldByName('Pictures').click();
     util.setCheckbox(configPage.hiddenIfEmpty, false);
-//    util.setCheckbox(configPage.captionHiddenIfEmpty(), true);
+    util.setCheckbox(configPage.captionHiddenIfEmpty(), true);
     configPage.applyButton.click();
   });
 
-  it('caption is hidden when empty', function() {
-//  projectsPage.get();
-//  projectsPage.clickOnProject(constants.testProjectName);
+  it('caption is hidden when empty if "Hidden if empty" is set in config', function() {
     util.clickBreadcrumb(constants.testProjectName);
     dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-//  dbePage.edit.hideUncommonFields();
-    
+    dbePage.edit.hideUncommonFields();
     expect(dbePage.edit.pictures.captions.first().isDisplayed()).toBe(true);
     dbePage.edit.pictures.captions.first().clear();    
     expect(dbePage.edit.pictures.captions.first().isDisplayed()).toBe(false);
   });
 
-  it('when caption is empty, it is visible if "Hidden if empty" config is cleared', function() {
-    
+  it('change config to show Pictures and show captions', function() {
+    configPage.get();
+    configPage.getTabByName('Fields').click();
+    configPage.showAllFieldsButton.click();
+    configPage.getFieldByName('Pictures').click();
+    util.setCheckbox(configPage.hiddenIfEmpty, false);
+    util.setCheckbox(configPage.captionHiddenIfEmpty(), false);
+    configPage.applyButton.click();
+  });
+
+  it('when caption is empty, it is visible if "Hidden if empty" is cleared in config', function() {
+    util.clickBreadcrumb(constants.testProjectName);
+    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    expect(dbePage.edit.pictures.captions.first().isDisplayed()).toBe(true);
   });
 
   it('picture is removed when Delete is clicked', function() {
-    dbePage.edit.showUncommonFields();  // TODO remove when other tests are complete. IJH 2014-09
-    
     expect(dbePage.edit.pictures.images.first().isPresent()).toBe(true);
     expect(dbePage.edit.pictures.removeImages.first().isPresent()).toBe(true);
     dbePage.edit.pictures.removeImages.first().click();
@@ -109,11 +109,26 @@ describe('Browse and edit page (DBE)', function() {
     expect(dbePage.edit.pictures.images.first().isPresent()).toBe(false);
   });
 
-  it('DEBUG: pause to check picture', function() {
-//  browser.sleep(20000);
-//    browser.debugger();
+  it('change config to hide Pictures and hide captions', function() {
+    configPage.get();
+    configPage.getTabByName('Fields').click();
+    configPage.showAllFieldsButton.click();
+    configPage.getFieldByName('Pictures').click();
+    util.setCheckbox(configPage.hiddenIfEmpty, true);
+    util.setCheckbox(configPage.captionHiddenIfEmpty(), true);
+    configPage.applyButton.click();
   });
-/*
+
+  it('while Show All Fields has not been clicked, Pictures field is hidden', function() {
+    util.clickBreadcrumb(constants.testProjectName);
+    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    expect(dbePage.edit.pictures.list.isPresent()).toBe(false);
+    dbePage.edit.showUncommonFields();
+    expect(dbePage.edit.pictures.list.isPresent()).toBe(true);
+    dbePage.edit.hideUncommonFields();
+    expect(dbePage.edit.pictures.list.isPresent()).toBe(false);
+  });
+
   it('click on second word (found by definition)', function() {
     dbePage.edit.clickEntryByDefinition(constants.testEntry2.senses[0].definition.en.value);
   });
@@ -372,5 +387,5 @@ describe('View settings page', function() {
     vsp.clickFieldByName('Semantic Domain');
     util.setCheckbox(vsp.showField, true);
     vsp.applyBtn.click();
-  });*/
+  });
 });
