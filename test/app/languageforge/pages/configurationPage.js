@@ -30,7 +30,7 @@ var ConfigurationPage = function() {
   this.exampleFields = this.activePane.all(by.repeater('fieldName in fieldOrder.examples'));
 
   this.getFieldByName = function getFieldByName(fieldName) {
-    return element(by.css('div.tab-pane.active dl.picklists')).element(by.cssContainingText('div[data-ng-repeat] span', fieldName));
+    return element(by.css('div.tab-pane.active > div > div > div.span3 dl.picklists')).element(by.cssContainingText('div[data-ng-repeat] span', fieldName));
   };
 
   this.hiddenIfEmpty = this.activePane.element(by.id('hideIfEmpty'));
