@@ -157,9 +157,11 @@ describe('Browse and edit page (DBE)', function() {
     ]);
   });
 
-  it('while Show All Fields has not been clicked, uncommon fields are hidden', function() {
-    expect(dbePage.edit.getOneField('General Note').isPresent()).toBe(false);
+  it('while Show All Fields has not been clicked, uncommon fields are hidden if they are empty', function() {
+    expect(dbePage.edit.getOneField('Semantics Note').isPresent()).toBe(false);
+    expect(dbePage.edit.getOneField('General Note').isPresent()).toBe(true);
     dbePage.edit.showUncommonFields();
+    expect(dbePage.edit.getOneField('Semantics Note').isPresent()).toBe(true);
     expect(dbePage.edit.getOneField('General Note').isPresent()).toBe(true);
   });
 
