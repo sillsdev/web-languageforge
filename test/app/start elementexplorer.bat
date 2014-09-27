@@ -1,0 +1,1 @@
+node ./node_modules/protractor/bin/elementexplorer.js https://languageforge.local
