@@ -5,11 +5,11 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
     this.project = function () {
       return '/app/lexicon/' + this.getProjectId();
     };
-    
+
     this.projectView = function (view) {
       return this.project() + '/' + view;
     };
-    
+
     this.getProjectId = function() {
       return ss.session.project.id;
     };
@@ -17,7 +17,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
   .service('lexProjectService', ['jsonRpc', 'sessionService', 'breadcrumbService', 'lexLinkService', '$location',
   function(jsonRpc, ss, breadcrumbService, linkService, $location) {
     jsonRpc.connect('/api/sf');
-    
+
     this.setBreadcrumbs = function(view, label) {
       breadcrumbService.set('top', [
         {href: '/app/projects', label: 'My Projects'},
@@ -25,7 +25,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
         {href: linkService.projectView(view), label: label}
       ]);
     };
-    
+
     this.baseViewDto = function(view, label, callback) {
       var setBreadcrumbs = this.setBreadcrumbs;
       jsonRpc.call('lex_baseViewDto', [], function(result) {
@@ -35,23 +35,23 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
         callback(result);
       });
     };
-    
+
     this.updateConfiguration = function(config, optionlist, callback) {
       jsonRpc.call('lex_configuration_update', [config, optionlist], callback);
     };
-    
+
     this.updateOptionList = function(optionList, callback) {
         jsonRpc.call('lex_optionlist_update', [optionList], callback);
     };
-    
+
     this.importLift = function(importData, callback) {
       jsonRpc.call('lex_import_lift', [importData], callback);
     };
-    
+
     this.readProject = function(callback) {
       jsonRpc.call('lex_projectDto', [], callback);
     };
-    
+
     this.updateProject = function(project, callback) {
       jsonRpc.call('lex_project_update', [project], callback);
     };
@@ -64,11 +64,11 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
     this.users = function(callback) {
       jsonRpc.call('project_usersDto', [], callback);
     };
-    
+
     this.updateUserProfile = function(user, callback) {
       jsonRpc.call('user_updateProfile', [user], callback);
     };
-    
+
     this.removeMediaFile = function(mediaType, fileName, callback) {
       jsonRpc.call('lex_project_removeMediaFile', [mediaType, fileName], callback);
     };
@@ -157,15 +157,19 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
         var containsData = false;
         switch (type) {
             case 'multitext':
-                angular.forEach(model, function(value, ws) {
-                    if (model[ws].value != '') {
+                angular.forEach(model, function(field) {
+                    if (field.value != '') {
                         containsData = true;
                     }
                 });
                 break;
             case 'optionlist':
-            case 'multioptionlist':
                 if (model.value != '') {
+                    containsData = true;
+                }
+                break;
+            case 'multioptionlist':
+                if (model.values.length > 0) {
                     containsData = true;
                 }
                 break;
@@ -290,24 +294,24 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
      */
     
   }])
-  .service('lexEntryService', ['jsonRpc', 'sessionService', 'lexProjectService', 'breadcrumbService', 'lexLinkService', 
+  .service('lexEntryService', ['jsonRpc', 'sessionService', 'lexProjectService', 'breadcrumbService', 'lexLinkService',
   function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
     jsonRpc.connect('/api/sf');
-    
+
     /* not currently used
     this.read = function(id, callback) {
         jsonRpc.call('lex_entry_read', [id], callback);
     };
     */
-    
+
     this.update = function(entry, callback) {
       jsonRpc.call('lex_entry_update', [entry], callback);
     };
-    
+
     this.remove = function(id, callback) {
       jsonRpc.call('lex_entry_remove', [id], callback);
     };
-    
+
     this.dbeDto = function(browserId, fullRefresh, callback) {
       if (fullRefresh) {
         jsonRpc.call('lex_dbeDtoFull', [browserId], function(result) {
@@ -327,14 +331,14 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
         jsonRpc.call('lex_dbeDtoUpdatesOnly', [browserId], callback);
       }
     };
-    
+
     this.updateComment = function(comment, callback) {
       jsonRpc.call('lex_entry_updateComment', [comment], callback);
     };
-    
+
   }])
   .service('lexUtils', [function() {
-    
+
     var _getFirstField = function _getFirstField(config, node, fieldName) {
         var ws, field, result = '';
         if (node[fieldName] && config && config.fields && config.fields[fieldName] && config.fields[fieldName].inputSystems) {
@@ -349,9 +353,9 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
         }
         return result;
     };
-    
-    
-    
+
+
+
     /**
      *
      * @param config - entry config obj
@@ -373,7 +377,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
     this.getExampleSentence = function getExampleSentence(config, example) {
         return _getFirstField(config, example, 'sentence');
     };
-    
+
     this.getMeaning = function getMeaning(config, sense) {
         var meaning = '';
         meaning = this.getDefinition(config, sense);
@@ -382,7 +386,7 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
         }
         return meaning;
     };
-    
+
     this.getPartOfSpeechAbbreviation = function getPartOfSpeechAbbreviation(posModel) {
         var match, myRegexp = /\((.*)\)/; // capture text inside parens
         if (posModel && angular.isDefined) {
@@ -395,7 +399,6 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
         }
         return '';
     };
-    
+
   }])
   ;
-  
