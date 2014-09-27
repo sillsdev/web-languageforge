@@ -22,6 +22,7 @@ class LexiconConfigObj extends ObjectForEncoding
     const DEFINITION = 'definition';
     const GLOSS = 'gloss';
     const POS = 'partOfSpeech';
+    const PICTURES = 'pictures';
     const SEMDOM = 'semanticDomain';
     const EXAMPLE_SENTENCE = 'sentence';
     const EXAMPLE_TRANSLATION = 'translation';
@@ -64,6 +65,7 @@ class LexiconConfigObj extends ObjectForEncoding
     const ANTHROPOLOGYCATEGORIES = 'anthropologyCategories';
     const SENSEIMPORTRESIDUE = 'senseImportResidue';
     const STATUS = 'status';
+
 
     const REFERENCE = 'reference';
     const EXAMPLEPUBLISHIN = 'examplePublishIn';

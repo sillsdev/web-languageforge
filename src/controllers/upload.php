@@ -10,7 +10,7 @@ require_once 'secure_base.php';
 class Upload extends Secure_base
 {
 
-    public function receive($app, $uploadType) // e.g. 'lf', 'entry-audio'
+    public function receive($app, $mediaType) // e.g. 'lf', 'entry-audio'
     {
         // Need to require this after the autoloader is loaded, hence it is here.
         require_once 'service/sf.php';
@@ -29,19 +29,23 @@ class Upload extends Secure_base
                 if ($app == 'sf-checks') {
                     $api = new Sf($this);
                     $api->checkPermissions('sfChecks_uploadFile', array(
-                        $uploadType,
+                        $mediaType,
                         $tmpFilePath
                     ));
-                    $response = $api->sfChecks_uploadFile($uploadType, $tmpFilePath);
+                    $response = $api->sfChecks_uploadFile($mediaType, $tmpFilePath);
                 } elseif ($app == 'lf-lexicon') {
                     $api = new Sf($this);
-                    $api->checkPermissions('lex_uploadFile', array(
-                        $uploadType,
-                        $tmpFilePath
-                    ));
-                    $response = $api->lex_uploadFile($uploadType, $tmpFilePath);
+                    if ($mediaType === 'sense-image') {
+                        $api->checkPermissions('lex_uploadImageFile', array(
+                            $mediaType,
+                            $tmpFilePath
+                        ));
+                        $response = $api->lex_uploadImageFile($mediaType, $tmpFilePath);
+                    } else {
+                        throw new Exception("Unsupported upload type: $mediaType");
+                    }
                 } else {
-                    throw new \Exception("Unsupported upload app.");
+                    throw new Exception("Unsupported upload app: $app");
                 }
             } catch (\Exception $e) {
                 $response = array(

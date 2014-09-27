@@ -19,6 +19,7 @@ use models\languageforge\LfProjectModel;
 use models\ProjectModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\commands\LexEntryCommands;
+use models\languageforge\lexicon\commands\LexUploadCommands;
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use libraries\shared\Website;
 
@@ -34,15 +35,15 @@ foreach ($db->listCollections() as $collection) { $collection->drop(); }
 
 // Also empty out databases for the test projects
 $projectArrays = array(
-	$constants['testProjectName']  => $constants['testProjectCode'], 
-	$constants['otherProjectName'] => $constants['otherProjectCode']);
+    $constants['testProjectName']  => $constants['testProjectCode'],
+    $constants['otherProjectName'] => $constants['otherProjectCode']);
 
 foreach ($projectArrays as $projectName => $projectCode) {
-	$projectModel = new ProjectModel();
-	$projectModel->projectName = $projectName;
-	$projectModel->projectCode = $projectCode;
-	$db = \models\mapper\MongoStore::connect($projectModel->databaseName());
-	foreach ($db->listCollections() as $collection) { $collection->drop(); }
+    $projectModel = new ProjectModel();
+    $projectModel->projectName = $projectName;
+    $projectModel->projectCode = $projectCode;
+    $db = \models\mapper\MongoStore::connect($projectModel->databaseName());
+    foreach ($db->listCollections() as $collection) { $collection->drop(); }
 }
 
 // drop the third database because it is used in a rename test
@@ -52,47 +53,47 @@ $projectModel->projectCode = $constants['thirdProjectCode'];
 $db = \models\mapper\MongoStore::dropDB($projectModel->databaseName());
 
 $adminUser = UserCommands::createUser(array(
-	'id' => '',
-	'name' => $constants['adminName'],
-	'email' => $constants['adminEmail'],
-	'username' => $constants['adminUsername'],
-	'password' => $constants['adminPassword'],
-	'active' => true,
-	'role' => SystemRoles::SYSTEM_ADMIN),
-	$website
+    'id' => '',
+    'name' => $constants['adminName'],
+    'email' => $constants['adminEmail'],
+    'username' => $constants['adminUsername'],
+    'password' => $constants['adminPassword'],
+    'active' => true,
+    'role' => SystemRoles::SYSTEM_ADMIN),
+    $website
 );
 $managerUser = UserCommands::createUser(array(
-	'id' => '',
-	'name' => $constants['managerName'],
-	'email' => $constants['managerEmail'],
-	'username' => $constants['managerUsername'],
-	'password' => $constants['managerPassword'],
-	'active' => true,
-	'role' => SystemRoles::USER),
-	$website
+    'id' => '',
+    'name' => $constants['managerName'],
+    'email' => $constants['managerEmail'],
+    'username' => $constants['managerUsername'],
+    'password' => $constants['managerPassword'],
+    'active' => true,
+    'role' => SystemRoles::USER),
+    $website
 );
 $memberUser = UserCommands::createUser(array(
-	'id' => '',
-	'name' => $constants['memberName'],
-	'email' => $constants['memberEmail'],
-	'username' => $constants['memberUsername'],
-	'password' => $constants['memberPassword'],
-	'active' => true,
-	'role' => SystemRoles::USER),
-	$website
+    'id' => '',
+    'name' => $constants['memberName'],
+    'email' => $constants['memberEmail'],
+    'username' => $constants['memberUsername'],
+    'password' => $constants['memberPassword'],
+    'active' => true,
+    'role' => SystemRoles::USER),
+    $website
 );
 
 if ($constants['siteType'] == 'scriptureforge') {
-	$projectType = SfProjectModel::SFCHECKS_APP;
+    $projectType = SfProjectModel::SFCHECKS_APP;
 } else if ($constants['siteType'] == 'languageforge') {
-	$projectType = LfProjectModel::LEXICON_APP;
+    $projectType = LfProjectModel::LEXICON_APP;
 }
 $testProject = ProjectCommands::createProject(
-	$constants['testProjectName'],
-	$constants['testProjectCode'],
-	$projectType,
-	$adminUser,
-	$website
+    $constants['testProjectName'],
+    $constants['testProjectCode'],
+    $projectType,
+    $adminUser,
+    $website
 );
 $testProjectModel = new ProjectModel($testProject);
 $testProjectModel->projectCode = $constants['testProjectCode'];
@@ -100,11 +101,11 @@ $testProjectModel->allowInviteAFriend = $constants['testProjectAllowInvites'];
 $testProjectModel->write();
 
 $otherProject = ProjectCommands::createProject(
-	$constants['otherProjectName'],
-	$constants['otherProjectCode'],
-	$projectType,
-	$managerUser,
-	$website
+    $constants['otherProjectName'],
+    $constants['otherProjectCode'],
+    $projectType,
+    $managerUser,
+    $website
 );
 $otherProjectModel = new ProjectModel($otherProject);
 $otherProjectModel->projectCode = $constants['otherProjectCode'];
@@ -116,86 +117,104 @@ ProjectCommands::updateUserRole($testProject, $memberUser, ProjectRoles::CONTRIB
 ProjectCommands::updateUserRole($otherProject, $adminUser, ProjectRoles::MANAGER);
 
 if ($constants['siteType'] == 'scriptureforge') {
-	$text1 = TextCommands::updateText($testProject, array(
-		'id' => '',
-		'title' => $constants['testText1Title'],
-		'content' => $constants['testText1Content']
-	));
-	$text2 = TextCommands::updateText($testProject, array(
-		'id' => '',
-		'title' => $constants['testText2Title'],
-		'content' => $constants['testText2Content']
-	));
+    $text1 = TextCommands::updateText($testProject, array(
+        'id' => '',
+        'title' => $constants['testText1Title'],
+        'content' => $constants['testText1Content']
+    ));
+    $text2 = TextCommands::updateText($testProject, array(
+        'id' => '',
+        'title' => $constants['testText2Title'],
+        'content' => $constants['testText2Content']
+    ));
 
-	$question1 = QuestionCommands::updateQuestion($testProject, array(
-		'id' => '',
-		'textRef' => $text1,
-		'title' => $constants['testText1Question1Title'],
-		'description' => $constants['testText1Question1Content']
-	));
-	$question2 = QuestionCommands::updateQuestion($testProject, array(
-		'id' => '',
-		'textRef' => $text1,
-		'title' => $constants['testText1Question2Title'],
-		'description' => $constants['testText1Question2Content']
-	));
+    $question1 = QuestionCommands::updateQuestion($testProject, array(
+        'id' => '',
+        'textRef' => $text1,
+        'title' => $constants['testText1Question1Title'],
+        'description' => $constants['testText1Question1Content']
+    ));
+    $question2 = QuestionCommands::updateQuestion($testProject, array(
+        'id' => '',
+        'textRef' => $text1,
+        'title' => $constants['testText1Question2Title'],
+        'description' => $constants['testText1Question2Content']
+    ));
 
-	$template1 = QuestionTemplateCommands::updateTemplate($testProject, array(
-		'id' => '',
-		'title' => 'first template',
-		'description' => 'not particularly interesting'
-			));
+    $template1 = QuestionTemplateCommands::updateTemplate($testProject, array(
+        'id' => '',
+        'title' => 'first template',
+        'description' => 'not particularly interesting'
+            ));
 
-	$template2 = QuestionTemplateCommands::updateTemplate($testProject, array(
-		'id' => '',
-		'title' => 'second template',
-		'description' => 'not entirely interesting'
-			));
+    $template2 = QuestionTemplateCommands::updateTemplate($testProject, array(
+        'id' => '',
+        'title' => 'second template',
+        'description' => 'not entirely interesting'
+            ));
 
-	$answer1 = QuestionCommands::updateAnswer($testProject, $question1, array(
-		'id' => '', 
-		'content' => $constants['testText1Question1Answer']),
-		$managerUser);
-	$answer1Id = array_keys($answer1)[0];
-	$answer2 = QuestionCommands::updateAnswer($testProject, $question2, array(
-		'id' => '', 
-		'content' => $constants['testText1Question2Answer']),
-		$managerUser);
-	$answer2Id = array_keys($answer2)[0];
+    $answer1 = QuestionCommands::updateAnswer($testProject, $question1, array(
+        'id' => '',
+        'content' => $constants['testText1Question1Answer']),
+        $managerUser);
+    $answer1Id = array_keys($answer1)[0];
+    $answer2 = QuestionCommands::updateAnswer($testProject, $question2, array(
+        'id' => '',
+        'content' => $constants['testText1Question2Answer']),
+        $managerUser);
+    $answer2Id = array_keys($answer2)[0];
 
-	$comment1 = QuestionCommands::updateComment($testProject, $question1, $answer1Id, array(
-		'id' => '', 
-		'content' => $constants['testText1Question1Answer1Comment']),
-		$managerUser);
-	$comment2 = QuestionCommands::updateComment($testProject, $question2, $answer2Id, array(
-		'id' => '', 
-		'content' => $constants['testText1Question2Answer2Comment']),
-		$managerUser);
-} else if ($constants['siteType'] == 'languageforge') {
-	// Set up LanguageForge E2E test envrionment here
+    $comment1 = QuestionCommands::updateComment($testProject, $question1, $answer1Id, array(
+        'id' => '',
+        'content' => $constants['testText1Question1Answer1Comment']),
+        $managerUser);
+    $comment2 = QuestionCommands::updateComment($testProject, $question2, $answer2Id, array(
+        'id' => '',
+        'content' => $constants['testText1Question2Answer2Comment']),
+        $managerUser);
+} elseif ($constants['siteType'] == 'languageforge') {
+    // Set up LanguageForge E2E test envrionment here
     $testProjectModel = new LexiconProjectModel($testProject);
     $testProjectModel->addInputSystem("th-fonipa", "thipa", "Thai IPA");
     $testProjectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[] = 'th-fonipa';
-    $testProjectModel->write();
+    $testProjectId = $testProjectModel->write();
 
-	$entry1 = LexEntryCommands::updateEntry($testProject,
-		array(
-			'id' => '',
-			'lexeme' => $constants['testEntry1']['lexeme'],
-			'senses' => $constants['testEntry1']['senses']
-		), $managerUser);
-	$entry2 = LexEntryCommands::updateEntry($testProject,
-		array(
-			'id' => '',
-			'lexeme' => $constants['testEntry2']['lexeme'],
-			'senses' => $constants['testEntry2']['senses']
-		), $managerUser);
-	$multipleMeaningEntry1 = LexEntryCommands::updateEntry($testProject,
-		array(
-			'id' => '',
-			'lexeme' => $constants['testMultipleMeaningEntry1']['lexeme'],
-			'senses' => $constants['testMultipleMeaningEntry1']['senses']
-		), $managerUser);
+    // setup to mimic file upload
+    $fileName = $constants['testEntry1']['senses'][0]['pictures'][0]['fileName'];
+    $file = array();
+    $file['name'] = $fileName;
+    $_FILES['file'] = $file;
+
+    // put a copy of the test file in tmp
+    $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
+    copy(dirname(TestPath) . "/php/common/$fileName", $tmpFilePath);
+
+    $response = LexUploadCommands::uploadImageFile($testProjectId, 'sense-image', $tmpFilePath);
+
+    // cleanup tmp file if it still exists
+    if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
+        @unlink($tmpFilePath);
+    }
+
+    // put uploaded file into entry1
+    $constants['testEntry1']['senses'][0]['pictures'][0]['fileName'] = $response->data->fileName;
+
+    $entry1 = LexEntryCommands::updateEntry($testProject,
+        array(
+            'id' => '',
+            'lexeme' => $constants['testEntry1']['lexeme'],
+            'senses' => $constants['testEntry1']['senses']
+        ), $managerUser);
+    $entry2 = LexEntryCommands::updateEntry($testProject,
+        array(
+            'id' => '',
+            'lexeme' => $constants['testEntry2']['lexeme'],
+            'senses' => $constants['testEntry2']['senses']
+        ), $managerUser);
+    $multipleMeaningEntry1 = LexEntryCommands::updateEntry($testProject,
+        array(
+            'id' => '',
+            'lexeme' => $constants['testMultipleMeaningEntry1']['lexeme'],
+            'senses' => $constants['testMultipleMeaningEntry1']['senses']
+        ), $managerUser);
 }
-
-?>
