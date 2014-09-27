@@ -10,7 +10,7 @@ var ViewSettingsPage = function() {
   this.get = function get() {
     this.settingsMenuLink.click();
     this.viewSettingsLink.click();
-  }
+  };
 
   this.tabDivs = element.all(by.repeater('tab in tabs'));
   this.applyBtn = element(by.buttonText('Apply'));

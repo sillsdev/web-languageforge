@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'sgw.soundmanager', 'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice'])
-  .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService', 'modalService', 
-  function($scope, $routeParams, questionService, ss, breadcrumbService, notice, linkService, modalService) {
+  .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService', 'modalService', '$rootScope',
+  function($scope, $routeParams, questionService, ss, breadcrumbService, notice, linkService, modalService, $rootScope) {
     var Q_TITLE_LIMIT = 30;
     $scope.finishedLoading = false;
     $scope.state = 'stop';
@@ -14,7 +14,7 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
       // preferFlash : false,
       onready: function() {
         $scope.audioReady = true;
-        if (!$scope.$$phase) {
+        if (! $rootScope.$$phase) {
           $scope.$apply();
         }
         // Ready to use; soundManager.createSound() etc. can now be called.
