@@ -14,8 +14,8 @@ var dbeUtil = function() {
   this.dcMultitextToArray = function(elem) {
     var inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
     return inputSystemDivs.map(function(div) {
-      var wsidSpan = div.$('.controls span.wsid'), 
-        wordElem = div.$('.controls input');
+      var wsidSpan = div.element(by.css('.controls span.wsid')), 
+        wordElem = div.element(by.css('.controls input'));
       return wsidSpan.getText().then(function(wsid) {
         return wordElem.getAttribute('value').then(function(word) {
           return {
@@ -48,8 +48,8 @@ var dbeUtil = function() {
   };
 
   this.dcOptionListToValue = function(elem) {
-    var select = elem.$('.controls select');
-    return select.$('option:checked').getText().then(function(text) {
+    var select = elem.element(by.css('.controls select'));
+    return select.element(by.css('option:checked')).getText().then(function(text) {
       return text;
     });
   };
@@ -63,8 +63,8 @@ var dbeUtil = function() {
   this.dcPicturesToObject = function(elem) {
     var pictures = elem.all(by.repeater('picture in pictures'));
     return pictures.map(function(div) {
-      var img = div.$('img'),
-        caption = div.$('dc-multitext');
+      var img = div.element(by.css('img')),
+        caption = div.element(by.css('dc-multitext'));
       return img.getAttribute('src').then(function(src) {
         return {
           'fileName': src.replace(/^.*[\\\/]/, ''),
@@ -88,7 +88,7 @@ var dbeUtil = function() {
 
   this.getParser = function(elem, multitext_strategy) {
     multitext_strategy = multitext_strategy || _this.dcParsingFuncs.multitext.default_strategy;
-    var switchDiv = elem.$('[data-on="config.fields[fieldName].type"] > div');
+    var switchDiv = elem.element(by.css('[data-on="config.fields[fieldName].type"] > div'));
     return switchDiv.getAttribute('data-ng-switch-when').then(function(fieldType) {
       var parser;
       if (fieldType == 'multitext') {
@@ -108,7 +108,7 @@ var dbeUtil = function() {
 
   this.getFields = function(searchLabel, rootElem) {
     if (typeof (rootElem) === "undefined") {
-      rootElem = $('dc-entry');
+      rootElem = element(by.css('dc-entry'));
     }
     return rootElem.all(by.cssContainingText('div[data-ng-repeat="fieldName in config.fieldOrder"]', searchLabel));
   };
