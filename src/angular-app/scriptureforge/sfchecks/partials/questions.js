@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'angularFileUpload', 'ngSanitize', 'ngRoute'])
-  .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService', 'modalService',
-  function($scope, questionService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice, modalService) {
+  .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService', '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService', 'modalService', '$rootScope',
+  function($scope, questionService, qts, $routeParams, ss, sfchecksLinkService, breadcrumbService, notice, modalService, $rootScope) {
     var Q_TITLE_LIMIT = 50;
     var textId = $routeParams.textId;
     $scope.textId = textId;
@@ -15,7 +15,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
       //preferFlash : false,
       onready : function() {
         $scope.audioReady = true;
-        if(!$scope.$$phase) {
+        if(! $rootScope.$$phase) {
           $scope.$apply();
         }
         // Ready to use; soundManager.createSound() etc. can now be called.
@@ -224,8 +224,8 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
     };
     
   }])
-  .controller('QuestionsSettingsCtrl', ['$scope', '$http', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService', 'modalService',
-  function($scope, $http, ss, $routeParams, breadcrumbService, notice, textService, questionService, sfchecksLinkService, modalService) {
+  .controller('QuestionsSettingsCtrl', ['$scope', '$upload', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService', 'modalService', '$rootScope',
+  function($scope, $upload, ss, $routeParams, breadcrumbService, notice, textService, questionService, sfchecksLinkService, modalService, $rootScope) {
     var Q_TITLE_LIMIT = 50;
     var textId = $routeParams.textId;
     $scope.textId = textId;
@@ -235,6 +235,10 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
     $scope.rangeSelectorCollapsed = true;
     $scope.settings = {};
     $scope.settings.archivedQuestions = [];
+
+    $scope.progress = 0;
+    $scope.file = null;
+    $scope.uploadResult = '';
     
     // Get name from text service. This really should be in the DTO, but this will work for now.
     // TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08. Appears to be in the DTO now. IJH 2014-06
@@ -339,15 +343,13 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
       reader.readAsText(file);
     };
     
-    $scope.progress = 0;
-    $scope.uploadResult = '';
     $scope.onFileSelect = function($files) {
       
       // take the first file only
       var file = $files[0];
       $scope.file = file;
       if (file['size'] <= ss.fileSizeMax()) {
-        $http.uploadFile({
+        $upload.upload({
           
           // upload.php script
           url: '/upload/sf-checks/audio',
@@ -358,27 +360,23 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
           file: file
         }).progress(function(evt) {
           $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
-          if (!$scope.$$phase) {
-            $scope.$apply();
-          }
         }).success(function(data, status, headers, config) {
           if (data.result) {
             $scope.progress = 100.0;
             $scope.uploadResult = 'File uploaded successfully.';
             notice.push(notice.SUCCESS, $scope.uploadResult);
           } else {
+            $scope.progress = 0;
             notice.push(notice.ERROR, data.data.errorMessage);
             if (data.data.errorType == 'UserMessage') {
               $scope.uploadResult = data.data.errorMessage;
             }
           }
-          
-          // to fix IE not updating the dom
-          if (!$scope.$$phase) {
-            $scope.$apply();
-          }
+          $scope.file = null;
         });
       } else {
+        $scope.progress = 0;
+        $scope.file = null;
         $scope.uploadResult = file['name'] + " is too large.";
       }
     };

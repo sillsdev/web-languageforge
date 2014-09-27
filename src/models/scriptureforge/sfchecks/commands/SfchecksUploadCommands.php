@@ -14,15 +14,15 @@ class SfchecksUploadCommands
      * Upload a file
      *
      * @param string $projectId
-     * @param string $uploadType
+     * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
      * @return \models\shared\commands\UploadResponse
      */
-    public static function uploadFile($projectId, $uploadType, $tmpFilePath)
+    public static function uploadFile($projectId, $mediaType, $tmpFilePath)
     {
-        if ($uploadType != 'audio') {
-            throw new \Exception("Unsupported upload type.");
+        if ($mediaType != 'audio') {
+            throw new \Exception("Unsupported upload type: $mediaType");
         }
         if (! $tmpFilePath) {
             throw new \Exception("Upload controller did not move the uploaded file.");
