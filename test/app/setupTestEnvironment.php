@@ -2,9 +2,6 @@
 
 require_once('e2eTestConfig.php');
 
-// put the test config into place
-system(TestPath . '/useTestConfig.sh');
-
 // use commands go here (after the e2eTestConfig)
 use models\commands\ProjectCommands;
 use models\commands\UserCommands;

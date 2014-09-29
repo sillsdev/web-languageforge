@@ -17,23 +17,20 @@
 	<property name="e2etest.webserver.host" value="e2etest.${application.name}.local" />
 	<property name="e2etest.protractor.conf" value="protractorConf.js" />  <!-- Filename with base dir test/app/ -->
 
-	<target name="clean" depends="cleanLibs">
+	<target name="clean">
 		<delete dir="${build.output}" quiet="true" />
 	</target>
 		
-	<target name="cleanLibs">
-	</target>
-
-	<target name="cleanInstall" depends="">
+	<target name="install-clean" depends="">
 		<delete dir="${build.installPath}" quiet="true" />
 	</target>
 	
-	<target name="cleanInstallForE2eTest" depends="">
+	<target name="test-e2e-install-clean" depends="">
 		<delete dir="${build.installForTestPath}" quiet="true" />
 		<mkdir dir="${build.installForTestPath}" />
 	</target>
 
-	<target name="cleanUpload" depends="">
+	<target name="upload-clean" depends="">
 		<delete dir="${build.uploadPath}" quiet="true" />
 	</target>
 
@@ -42,13 +39,13 @@
 		<echo>${version}</echo>
 	</target>
 	
-	<target name="prepare">
+	<target name="build-prepare">
 		<mkdir dir="${build.output}" />
 	</target>
 
 	<target name="build" />
 
-	<target name="test-js-unit" depends="composer">
+	<target name="test-js-unit" depends="build-composer">
 		<exec dir="test/app" executable="node">
 			<arg value="node_modules/karma/bin/karma" />
 			<arg value="start" />
@@ -59,7 +56,7 @@
 		</exec>
 	</target>
 
-	<target name="test-php" depends="prepare,composer">
+	<target name="test-php" depends="build-prepare,build-composer">
 		<echo>##teamcity[importData type='junit' path='${build.output}/AllTests.xml']</echo>
 		<exec executable="php" dir="test/php" output="${build.output}/AllTests.xml"  error="${build.output}/error.log" failonerror="true">
 			<arg line="AllTests.php" />
@@ -73,16 +70,16 @@
 		<antcall target="test-js-unit" />
 		-->
 		<antcall target="test-php" />
-		<antcall target="test-js-e2e" />
+		<antcall target="test-e2e" />
 	</target>
 	
-	<target name="composer">
+	<target name="build-composer">
 		<exec executable="composer" dir="src" failonerror="true">
 			<arg line="install" />
 		</exec>
 	</target>
 
-	<target name="minify" depends="prepare">
+	<target name="build-minify" depends="build-prepare">
 		<concat destfile="${build.libJsFile}" overwrite="yes" fixlastline="yes">
 			<fileset dir="src/angular-app"
 				includes="**/*.js"
@@ -100,7 +97,7 @@
 		</exec>
 	</target>
 
-	<target name="copyWeb" depends="prepare,composer,minify,version">
+	<target name="package-copyWeb" depends="build-prepare,build-composer,build-minify,version">
 		<copy todir="${build.output}/package/htdocs">
 			<fileset dir="src"/>
 		</copy>
@@ -132,19 +129,7 @@
 		</chmod>
 	</target>
 	
-	<target name="copyForE2ETest" depends="copyWeb">
-		<copy todir="${build.output}/package/test">
-			<fileset dir="test"/>
-		</copy>
-		<chgrp type="both" group="www-data">
-			<dirset dir="${build.output}/package/test/" />
-			<fileset dir="${build.output}/package/test/">
-			    <include name="**/*"/>
-			</fileset>
-		</chgrp>
-	</target>
-	
-	<target name="package" depends="clean,prepare,copyWeb" >
+	<target name="package" depends="clean,build-prepare,package-copyWeb" >
 		<tar 
 			destfile="${build.packageFile}"
 			basedir="${build.output}/package"
@@ -153,16 +138,7 @@
 			compression="gzip" />
 	</target>
 	
-	<target name="packageForE2ETest" depends="clean,prepare,copyForE2ETest" >
-		<tar 
-			destfile="${build.packageFileForTest}"
-			basedir="${build.output}/package"
-			excludes="${build.packageFile},${build.packageFileForTest}"
-			longfile="gnu"
-			compression="gzip" />
-	</target>
-	
-	<target name="install" depends="package,cleanInstall">
+	<target name="install" depends="package,install-clean">
 		<untar src="${build.packageFile}" dest="${build.installPath}" compression="gzip" />
 		<chgrp type="both" group="www-data">
 			<dirset dir="${build.installPath}/htdocs/" />
@@ -178,38 +154,11 @@
 			<dirset dir="${build.installPath}/htdocs/cache/" />
 			<dirset dir="${build.installPath}/htdocs/assets/" />
 		</chmod>
-		<!--
-		<chown type="both" owner="www-data">
-			<dirset dir="${build.installPath}/htdocs/cache/" />
-		</chown>
-		<chmod type="both" perm="g+w">
-			<dirset dir="${build.installPath}/web/sites/default/files/" />
-			<fileset dir="${build.installPath}/web/sites/default/files/">
-			    <include name="**/*"/>
-			</fileset>
-		</chmod>
-		-->
 		<antcall target="restartWebServer" /> 
 	</target>
 	
-	<target name="installForE2ETest" depends="packageForE2ETest, cleanInstallForE2eTest">
-		<untar src="${build.packageFileForTest}" dest="${build.installForTestPath}" compression="gzip" />
-		<!--
-		<replace file="${build.installForTestPath}/htdocs/config/mongodb.php">
-		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
-		</replace>
-		<replace file="${build.installForTestPath}/htdocs/config/sf_config.php">
-		    <replacefilter token="scriptureforge" value="scriptureforge_e2etest" />
-		</replace>
-		-->
-		<replace dir="${build.installForTestPath}/test/app">
-			<include name="setupTestEnvironment.php" />
-			<include name="teardownTestEnvironment.php" />
-			<include name="e2eTestConfig.php" />
-			<include name="useTestConfig.sh" />
-			<include name="useLiveConfig.sh" />
-			<replacefilter token="src/" value="htdocs/" />
-		</replace>
+	<target name="test-e2e-install" depends="package, test-e2e-install-clean">
+		<untar src="${build.packageFile}" dest="${build.installForTestPath}" compression="gzip" />
 		<chgrp type="both" group="www-data">
 			<dirset dir="${build.installForTestPath}/htdocs/" />
 			<fileset dir="${build.installForTestPath}/htdocs/">
@@ -219,25 +168,59 @@
 			<fileset dir="${build.installForTestPath}/lib/">
 			    <include name="**/*"/>
 			</fileset>
-			<dirset dir="${build.installForTestPath}/test/" />
-			<fileset dir="${build.installForTestPath}/test/">
-			    <include name="**/*"/>
-			</fileset>
 		</chgrp>
 		<chmod type="both" perm="g+w">
 			<dirset dir="${build.installForTestPath}/htdocs/cache/" />
 			<dirset dir="${build.installForTestPath}/htdocs/assets/" />
-			<dirset dir="${build.installForTestPath}/htdocs/config/" />
-		</chmod>
-		<chmod type="both" perm="ug+x">
-			<fileset dir="${build.installForTestPath}/test/app">
-			    <include name="use*Config.sh"/>
-			</fileset>
 		</chmod>
 		<antcall target="restartWebServer" /> 
 	</target>
 	
-	<target name="test-js-e2e" depends="composer,installForE2ETest">
+	<target name="test-e2e-copyTest" depends="">
+		<copy todir="${build.installForTestPath}/test">
+			<fileset dir="test"/>
+		</copy>
+	</target>
+
+	<target name="test-e2e-env" depends="test-e2e-install,test-e2e-copyTest">
+		<replaceregexp
+			file="${build.installForTestPath}/htdocs/config/mongodb.php"
+			match="\$config\['default'\]\['mongo_database'\] = '([^']*)';"
+			replace="$config['default']['mongo_database'] = 'scriptureforge_test';"
+			byline="true"
+		/>
+		<replaceregexp
+			file="${build.installForTestPath}/htdocs/config/sf_config.php"
+			match="\$config\['db'\] = '([^']*)'"
+			replace="$config['db'] = 'scriptureforge_test'"
+			byline="true"
+		/>
+		<replaceregexp
+			file="${build.installForTestPath}/test/app/testConstants.json"
+			match='(\s*)"siteType"(\s*):(\s*)"([^"]*)",'
+			replace='\1"siteType"\2:\3"${application.name}",'
+		/>
+		<replaceregexp
+			file="${build.installForTestPath}/test/app/testConstants.json"
+			match='(\s*)"siteHostname"(\s*):(\s*)"([^"]*)",'
+			replace='\1"siteHostname"\2:\3"${e2etest.webserver.host}",'
+		/>
+		<replaceregexp
+			file="${build.installForTestPath}/test/app/testConstants.json"
+			match='(\s*)"baseUrl"(\s*):(\s*)"([^"]*)",'
+			replace='\1"baseUrl"\2:\3"http://${e2etest.webserver.host}",'
+		/>
+		<replace dir="${build.installForTestPath}/test/app">
+			<include name="setupTestEnvironment.php" />
+			<include name="teardownTestEnvironment.php" />
+			<include name="e2eTestConfig.php" />
+			<include name="useTestConfig.sh" />
+			<include name="useLiveConfig.sh" />
+			<replacefilter token="src/" value="htdocs/" />
+		</replace>
+	</target>
+
+	<target name="test-e2e" depends="test-e2e-env">
 		<!-- TODO: Consider another design where multiple protractor.conf files can be selected -->
 		<!-- TODO: Figure out how to connect to the Windows build agent and start the Selenium server -->
 		<waitfor maxwait="3" maxwaitunit="second" timeoutproperty="selenium.server.notfound">
@@ -245,10 +228,9 @@
 		</waitfor>
 		<antcall target="echoServerNotFound" />
 		<antcall target="echoServerFound" />
-		<antcall target="replaceBaseUrl" />
-		<antcall target="setupE2ETestEnvironment"/>
+		<antcall target="test-e2e-setup"/>
 		<antcall target="runE2ETests"/>
-		<antcall target="teardownE2ETestEnvironment"/>
+		<antcall target="test-e2e-teardown"/>
 	</target>
 	
 	<target name="echoServerNotFound" if="selenium.server.notfound">
@@ -259,26 +241,9 @@
 		<echo message="Selenium server found. E2E Tests will be run." />
 	</target>
 	
-	<target name="replaceBaseUrl" unless="selenium.server.notfound">
-		<replaceregexp
-			file="${build.installForTestPath}/test/app/testConstants.json"
-			match='(\s*)"siteType"(\s*):(\s*)"([^"]*)",'
-			replace='\1"siteType"\2:\3"${application.name}",'
-			/>
-		<replaceregexp
-			file="${build.installForTestPath}/test/app/testConstants.json"
-			match='(\s*)"siteHostname"(\s*):(\s*)"([^"]*)",'
-			replace='\1"siteHostname"\2:\3"${e2etest.webserver.host}",'
-			/>
-		<replaceregexp
-			file="${build.installForTestPath}/test/app/testConstants.json"
-			match='(\s*)"baseUrl"(\s*):(\s*)"([^"]*)",'
-			replace='\1"baseUrl"\2:\3"http://${e2etest.webserver.host}",'
-			/>
-	</target>
-	
-	<target name="setupE2ETestEnvironment" unless="selenium.server.notfound">
-		<exec dir="${build.installForTestPath}/test/app/" executable="php">
+	<target name="test-e2e-setup" unless="selenium.server.notfound">
+		<exec dir="${build.installForTestPath}/test/app/" executable="sudo">
+			<arg line="-u www-data php" />
 			<arg value="setupTestEnvironment.php" />
 		</exec>
 	</target>
@@ -292,8 +257,9 @@
 		</exec>
 	</target>
 	
-    <target name="teardownE2ETestEnvironment" unless="selenium.server.notfound">
-		<exec dir="${build.installForTestPath}/test/app/" executable="php">
+	<target name="test-e2e-teardown" unless="selenium.server.notfound">
+		<exec dir="${build.installForTestPath}/test/app/" executable="sudo">
+			<arg line="-u www-data php" />
 			<arg value="teardownTestEnvironment.php" />
 		</exec>
 	</target>
@@ -304,7 +270,7 @@
 		</exec>
 	</target>
 	
-	<target name="upload" depends="package,cleanUpload">
+	<target name="upload" depends="package,upload-clean">
 		<untar src="${build.packageFile}" dest="${build.uploadPath}" compression="gzip" />
 		<chgrp type="both" group="www-data">
 			<dirset dir="${build.uploadPath}/htdocs/" />
