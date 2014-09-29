@@ -294,4 +294,114 @@ class LexUploadCommands
             @unlink($cleanupFile);
         }
     }
+
+    /**
+     * Import a LIFT file
+     *
+     * @param string $projectId
+     * @param string $mediaType
+     * @param string $tmpFilePath
+     * @throws \Exception
+     * @return \models\shared\commands\UploadResponse
+     */
+    public static function importLiftFile($projectId, $mediaType, $tmpFilePath)
+    {
+        if ($mediaType != 'import-lift') {
+            throw new \Exception("Unsupported upload type.");
+        }
+        if (! $tmpFilePath) {
+            throw new \Exception("Upload controller did not move the uploaded file.");
+        }
+
+        $file = $_FILES['file'];
+        $fileName = $file['name'];
+        $fileNamePrefix = date("YmdHis");
+        $settings = $_FILES['data']['settings'];
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $fileType = finfo_file($finfo, $tmpFilePath);
+        finfo_close($finfo);
+
+        // replace special characters with _
+        $search = array(
+            '/',
+            '\\',
+            '?',
+            '%',
+            '*',
+            ':',
+            '|',
+            '"',
+            '<',
+            '>'
+        );
+        $fileName = str_replace($search, '_', $fileName);
+
+        $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
+        $allowedTypes = array(
+            "text/xml"
+        );
+        $allowedExtensions = array(
+            ".lift"
+        );
+
+        $response = new UploadResponse();
+        if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
+
+            // make the folders if they don't exist
+            $project = new LfProjectModel($projectId);
+            $folderPath = $project->getAssetsFolderPath();
+            if (! file_exists($folderPath) and ! is_dir($folderPath)) {
+                mkdir($folderPath, 0777, true);
+            }
+
+            LiftImport::merge($tmpFilePath, $project, $settings['mergeRule'], $settings['skipSameModTime'], $settings['deleteMatchingEntry']);
+            $project->write();
+
+            $moveOk = true;
+            if (! $project->liftFilePath || $settings['mergeRule'] != LiftMergeRule::IMPORT_LOSES) {
+
+                // cleanup previous files of any allowed extension
+                $cleanupFiles = glob($folderPath . '/*[' . implode(', ', $allowedExtensions) . ']');
+                foreach ($cleanupFiles as $cleanupFile) {
+                    @unlink($cleanupFile);
+                }
+
+                // move uploaded LIFT file from tmp location to assets
+                $filePath =  $folderPath . '/' . $fileName;
+                $project->liftFilePath = $filePath;
+                $project->write();
+                $moveOk = rename($tmpFilePath, $filePath);
+            }
+
+
+            // construct server response
+            if ($moveOk && $tmpFilePath) {
+                $data = new MediaResult();
+                $data->path = $project->getAssetsPath();
+                $data->fileName = $fileName;
+                $response->result = true;
+            } else {
+                $data = new ErrorResult();
+                $data->errorType = 'UserMessage';
+                $data->errorMessage = "$fileName could not be saved to the right location. Contact your Site Administrator.";
+                $response->result = false;
+            }
+        } else {
+            $allowedExtensionsStr = implode(", ", $allowedExtensions);
+            $data = new ErrorResult();
+            $data->errorType = 'UserMessage';
+            if (count($allowedExtensions) < 1) {
+                $data->errorMessage = "$fileName is not an allowed LIFT file. No LIFT file formats are currently enabled, contact your Site Administrator.";
+            } elseif (count($allowedExtensions) == 1) {
+                $data->errorMessage = "$fileName is not an allowed LIFT file. Ensure the file is an $allowedExtensionsStr.";
+            } else {
+                $data->errorMessage = "$fileName is not an allowed LIFT file. Ensure the file is one of the following types: $allowedExtensionsStr.";
+            }
+            $response->result = false;
+        }
+
+        $response->data = $data;
+        return $response;
+    }
 }

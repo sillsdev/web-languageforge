@@ -221,7 +221,7 @@ class ProjectModel extends \models\mapper\MapperModel
     }
 
     /**
-     * @return string
+     * @return string Relative path of the projects assets folder
      */
     public function getAssetsPath()
     {
@@ -229,7 +229,7 @@ class ProjectModel extends \models\mapper\MapperModel
     }
 
     /**
-     * @return string
+     * @return string Full path of the projects assets folder
      */
     public function getAssetsFolderPath()
     {
