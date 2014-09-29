@@ -39,6 +39,6 @@
 </form>
 <div data-ng-show="control.rights.canEditEntry() && control.state == 'edit' && ! upload.showAddPicture"
     class="addItem">
-    <a data-ng-click="upload.showAddPicture = true">Add Picture</a>
+    <a data-ng-click="upload.showAddPicture = true; upload.progress = 0">Add Picture</a>
 </div>
     
