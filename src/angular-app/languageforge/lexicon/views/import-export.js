@@ -6,30 +6,31 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'pa
 function($scope, notice, fileReader, lexProjectService, $filter, $location, ss) {
   lexProjectService.setBreadcrumbs('importExport', 'Import/export');
 
-  $scope.mergeRule = 'createDuplicates';
-  $scope.skipSameModTime = true;
-  $scope.deleteMatchingEntry = false;
+  $scope.upload = {};
+  $scope.upload.mergeRule = 'createDuplicates';
+  $scope.upload.skipSameModTime = true;
+  $scope.upload.deleteMatchingEntry = false;
 
   $scope.onFileSelect = function($files) {
     
     // take the first file only
-    $scope.file = $files[0];
-    fileReader.readAsDataUrl($scope.file, $scope).then(function(result) {
-      $scope.file.data = result;
+    $scope.upload.file = $files[0];
+    fileReader.readAsDataUrl($scope.upload.file, $scope).then(function(result) {
+      $scope.upload.file.data = result;
     });
   };
 
-  $scope.importLift = function() {
+  $scope.importLift = function importLift() {
     var importData = {
-      file: $scope.file,
+      file: $scope.upload.file,
       settings: {
-        mergeRule: $scope.mergeRule,
-        skipSameModTime: $scope.skipSameModTime,
-        deleteMatchingEntry: $scope.deleteMatchingEntry
+        mergeRule: $scope.upload.mergeRule,
+        skipSameModTime: $scope.upload.skipSameModTime,
+        deleteMatchingEntry: $scope.upload.deleteMatchingEntry
       }
     };
     notice.setLoading('Importing LIFT file...');
-    $scope.importStarted = true;
+    $scope.upload.importStarted = true;
     lexProjectService.importLift(importData, function(result) {
       if (result.ok) {
 
