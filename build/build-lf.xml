@@ -195,17 +195,21 @@
 			replace="$config['db'] = 'scriptureforge_test'"
 			byline="true"
 		/>
+		<!-- Note the UTF-8 below. This ensures that the filter copy doesn't mangle the Thai used in the examples. CP 2014-09 -->
 		<replaceregexp
+			encoding="UTF-8"
 			file="${build.installForTestPath}/test/app/testConstants.json"
 			match='(\s*)"siteType"(\s*):(\s*)"([^"]*)",'
 			replace='\1"siteType"\2:\3"${application.name}",'
 		/>
 		<replaceregexp
+            encoding="UTF-8"
 			file="${build.installForTestPath}/test/app/testConstants.json"
 			match='(\s*)"siteHostname"(\s*):(\s*)"([^"]*)",'
 			replace='\1"siteHostname"\2:\3"${e2etest.webserver.host}",'
 		/>
 		<replaceregexp
+            encoding="UTF-8"
 			file="${build.installForTestPath}/test/app/testConstants.json"
 			match='(\s*)"baseUrl"(\s*):(\s*)"([^"]*)",'
 			replace='\1"baseUrl"\2:\3"http://${e2etest.webserver.host}",'
