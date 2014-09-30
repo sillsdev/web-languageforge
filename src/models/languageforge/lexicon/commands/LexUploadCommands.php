@@ -240,7 +240,7 @@ class LexUploadCommands
         }
         $filePath = $folderPath . '/' . $fileName;
         if (file_exists($filePath) and ! is_dir($filePath)) {
-            if (unlink($filePath)) {
+            if (@unlink($filePath)) {
                 $data = new MediaResult();
                 $data->path = self::imageFolderPath($project->getAssetsPath());
                 $data->fileName = $fileName;
