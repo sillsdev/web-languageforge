@@ -17,9 +17,6 @@ if ($constants['siteType'] == 'languageforge') {
     recursiveRemoveFolder($assetsFolderPath);
 }
 
-// put the live config back into place
-system(TestPath . '/useLiveConfig.sh');
-
 function recursiveRemoveFolder($folder)
 {
     foreach (glob("{$folder}/*") as $file) {
