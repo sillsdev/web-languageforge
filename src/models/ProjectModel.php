@@ -3,6 +3,7 @@
 namespace models;
 
 use libraries\shared\Website;
+use models\languageforge\SemDomTransProjectModel;
 use models\scriptureforge\RapumaProjectModel;
 
 use models\languageforge\lexicon\LexiconProjectModel;
@@ -215,6 +216,8 @@ class ProjectModel extends \models\mapper\MapperModel
                 return new RapumaProjectModel($projectId);
             case 'lexicon':
                 return new LexiconProjectModel($projectId);
+            case 'semdomtrans':
+                return new SemDomTransProjectModel($projectId);
             default:
                 return new ProjectModel($projectId);
         }
