@@ -1,5 +1,4 @@
 <?php
-
 use libraries\shared\Website;
 use models\ProjectModel;
 use models\UserModel;
@@ -12,55 +11,59 @@ require_once TestPath . 'common/MockProjectModel.php';
 class MongoTestEnvironment
 {
 
-    /**
-	 * @var MongoDB
-	 */
-    private $_db;
-
-    /**
-	 * @var Website
-	 */
-    public $website;
-
     public function __construct($domain = 'www.scriptureforge.org')
     {
-        $this->_db = \models\mapper\MongoStore::connect(SF_DATABASE);
+        $this->db = \models\mapper\MongoStore::connect(SF_DATABASE);
         $this->website = Website::get($domain);
     }
 
     /**
-	 * Removes all the collections from the mongo database.
-	 * Hopefully this is only ever called on the scriptureforge_test database.
-	 */
+     *
+     * @var MongoDB
+     */
+    private $db;
+
+    /**
+     *
+     * @var Website
+     */
+    public $website;
+
+    /**
+     * Removes all the collections from the mongo database.
+     * Hopefully this is only ever called on the scriptureforge_test database.
+     */
     public function clean()
     {
-        foreach ($this->_db->listCollections() as $collection) {
+        foreach ($this->db->listCollections() as $collection) {
             $collection->drop();
         }
     }
 
     /**
-	 * Querys the given $collection and returns a MongoCursor.
-	 * @param string $collection
-	 * @param array $query
-	 * @param array $fields
-	 * @return MongoCursor
-	 */
+     * Querys the given $collection and returns a MongoCursor.
+     *
+     * @param string $collection
+     * @param array $query
+     * @param array $fields
+     * @return MongoCursor
+     */
     public function find($collection, $query, $fields = array())
     {
-        $collection = $this->_db->$collection;
+        $collection = $this->db->$collection;
 
         return $collection->find($query, $fields);
     }
 
     /**
-	 * Writes a user to the users collection.
-	 * @param string $username
-	 * @param string $name
-	 * @param string $email
-	 * @param string $role
-	 * @return string id
-	 */
+     * Writes a user to the users collection.
+     *
+     * @param string $username
+     * @param string $name
+     * @param string $email
+     * @param string $role
+     * @return string id
+     */
     public function createUser($username, $name, $email, $role = SystemRoles::USER)
     {
         $userModel = new models\UserModel();
@@ -75,11 +78,12 @@ class MongoTestEnvironment
     }
 
     /**
-	 * Writes a project to the projects collection.
-	 * @param string $name
-	 * @param string $code
-	 * @return ProjectModel
-	 */
+     * Writes a project to the projects collection.
+     *
+     * @param string $name
+     * @param string $code
+     * @return ProjectModel
+     */
     public function createProject($name, $code)
     {
         $projectModel = new ProjectModel();
@@ -89,7 +93,7 @@ class MongoTestEnvironment
         $projectModel->siteName = $this->website->domain;
         if ($this->website->base == Website::SCRIPTUREFORGE) {
             $projectModel->appName = 'sfchecks';
-        } else if ($this->website->base == Website::LANGUAGEFORGE) {
+        } elseif ($this->website->base == Website::LANGUAGEFORGE) {
             $projectModel->appName = 'lexicon';
         } else {
             $projectModel->appName = 'rapuma';
@@ -128,9 +132,10 @@ class MongoTestEnvironment
     }
 
     /**
-	 * Returns a string very much like those used for MongoIds
-	 * @return string
-	 */
+     * Returns a string very much like those used for MongoIds
+     *
+     * @return string
+     */
     public static function mockId()
     {
         $id = new MongoId();
@@ -139,9 +144,10 @@ class MongoTestEnvironment
     }
 
     /**
-	 * Returns a string of utf-8 usx xml
-	 * @return string
-	 */
+     * Returns a string of utf-8 usx xml
+     *
+     * @return string
+     */
     public static function usxSample()
     {
         global $rootPath;
@@ -175,15 +181,25 @@ class MongoTestEnvironment
     {
         return json_decode(json_encode($input), true);
     }
-
 }
 
 class LexiconMongoTestEnvironment extends MongoTestEnvironment
 {
+
     public function __construct()
     {
+        if (! isset($this->liftFilePaths)) {
+            $this->liftFilePaths = array();
+        }
         parent::__construct('languageforge.org');
     }
+
+    /**
+     * Local store of created lift filepaths
+     *
+     * @var array
+     */
+    private $liftFilePaths;
 
     public function createProject($name, $code)
     {
@@ -212,5 +228,55 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         return $userId;
     }
 
+    /**
+     * Simulate the upload of a LIFT file
+     *
+     * @param unknown $liftXml
+     * @param unknown $fileName
+     * @param unknown $mergeRule
+     * @param string $skipSameModTime
+     * @param string $deleteMatchingEntry
+     * @return string
+     */
+    public function uploadLiftFile($liftXml, $fileName, $mergeRule, $skipSameModTime = false, $deleteMatchingEntry = false)
+    {
+        $_FILES['file'] = array();
+        $_FILES['file']['name'] = $fileName;
+        $_POST['mergeRule'] = $mergeRule;
+        $_POST['skipSameModTime'] = $skipSameModTime;
+        $_POST['deleteMatchingEntry'] = $deleteMatchingEntry;
 
+        return $this->createTestLiftFile($liftXml, $fileName);
+    }
+
+    /**
+     * Put a copy of the test lift file in system tmp folder
+     *
+     * @param string $liftXml
+     * @param string $fileName
+     * @return string $liftFilePath
+     */
+    public function createTestLiftFile($liftXml, $fileName)
+    {
+        $liftFilePath = sys_get_temp_dir() . '/' . $fileName;
+        file_put_contents($liftFilePath, $liftXml);
+        if (! array_key_exists($liftFilePath, $this->liftFilePaths)) {
+            $this->liftFilePaths[] = $liftFilePath;
+        }
+
+        return $liftFilePath;
+    }
+
+    /**
+     * Cleanup test lift files
+     */
+    public function cleanupTestLiftFiles()
+    {
+        foreach ($this->liftFilePaths as $liftFilePath) {
+            if (file_exists($liftFilePath) and ! is_dir($liftFilePath)) {
+                @unlink($liftFilePath);
+            }
+        }
+        $this->liftFilePaths = array();
+    }
 }
