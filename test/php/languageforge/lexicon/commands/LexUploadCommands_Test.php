@@ -28,12 +28,11 @@ class TestLexUploadCommands extends UnitTestCase
 
     function testUploadImageFile_JpgFile_UploadAllowed()
     {
-        $e = new MongoTestEnvironment();
+        $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->appName = 'lexicon';
-        $projectId = $project->write();
+        $projectId = $project->id->asString();
 
         // put a copy of the test file in tmp
         $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestImage.jpg';
@@ -61,12 +60,11 @@ class TestLexUploadCommands extends UnitTestCase
 
     function testUploadImageFile_JpgFileUpperCaseExt_UploadAllowed()
     {
-        $e = new MongoTestEnvironment();
+        $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->appName = 'lexicon';
-        $projectId = $project->write();
+        $projectId = $project->id->asString();
 
         // put a copy of the test file in tmp
         $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestImage.jpg';
@@ -94,12 +92,11 @@ class TestLexUploadCommands extends UnitTestCase
 
     function testUploadImageFile_TifFile_UploadDisallowed()
     {
-        $e = new MongoTestEnvironment();
+        $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->appName = 'lexicon';
-        $projectId = $project->write();
+        $projectId = $project->id->asString();
 
         // put a copy of the test file in tmp
         $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestImage.jpg';
@@ -136,12 +133,11 @@ class TestLexUploadCommands extends UnitTestCase
 
     function testUploadAudio_SpecialCharInFileName_SpecialCharReplaced()
     {
-        $e = new MongoTestEnvironment();
+        $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->appName = 'lexicon';
-        $projectId = $project->write();
+        $projectId = $project->id->asString();
 
         // put a copy of the test file in tmp
         $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestImage.jpg';
@@ -168,12 +164,11 @@ class TestLexUploadCommands extends UnitTestCase
 
     function testDeleteImageFile_JpgFile_FileDeleted()
     {
-        $e = new MongoTestEnvironment();
+        $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->appName = 'lexicon';
-        $projectId = $project->write();
+        $projectId = $project->id->asString();
 
         // make the folders if they don't exist
         $assetsFolderPath = $project->getAssetsFolderPath();
@@ -197,13 +192,13 @@ class TestLexUploadCommands extends UnitTestCase
         $this->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath, '');
     }
 
-    function testDeleteImageFile_UnsupportedMediaType_Throw() {
-        $e = new MongoTestEnvironment();
+    function testDeleteImageFile_UnsupportedMediaType_Throw()
+    {
+        $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->appName = 'lexicon';
-        $projectId = $project->write();
+        $projectId = $project->id->asString();
 
         $e->inhibitErrorDisplay();
         $this->expectException();
