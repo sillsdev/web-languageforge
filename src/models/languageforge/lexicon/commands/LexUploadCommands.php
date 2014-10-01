@@ -318,7 +318,9 @@ class LexUploadCommands
 
         $file = $_FILES['file'];
         $fileName = $file['name'];
-        $settings = $_FILES['data']['settings'];
+        $mergeRule = $_POST['mergeRule'];
+        $skipSameModTime = $_POST['skipSameModTime'];
+        $deleteMatchingEntry = $_POST['deleteMatchingEntry'];
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileType = finfo_file($finfo, $tmpFilePath);
@@ -358,11 +360,11 @@ class LexUploadCommands
                 mkdir($folderPath, 0777, true);
             }
 
-            LiftImport::merge($tmpFilePath, $project, $settings['mergeRule'], $settings['skipSameModTime'], $settings['deleteMatchingEntry']);
+            LiftImport::merge($tmpFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
             $project->write();
 
             $moveOk = true;
-            if (! $project->liftFilePath || $settings['mergeRule'] != LiftMergeRule::IMPORT_LOSES) {
+            if (! $project->liftFilePath || $mergeRule != LiftMergeRule::IMPORT_LOSES) {
 
                 // cleanup previous files of any allowed extension
                 $cleanupFiles = glob($folderPath . '/*[' . implode(', ', $allowedExtensions) . ']');
