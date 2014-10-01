@@ -9,49 +9,6 @@ require_once (TestPath . 'common/MongoTestEnvironment.php');
 
 class TestLexUploadCommands extends UnitTestCase
 {
-    public function __construct() {
-        $this->liftFilePaths = array();
-        parent::__construct();
-    }
-
-    /**
-     * Local store of created lift filepaths
-     *
-     * @var array
-     */
-    private $liftFilePaths;
-
-    /**
-     * Put a copy of the test lift file in system tmp folder
-     *
-     * @param string $liftXml
-     * @param string $fileName
-     * @return string $liftFilePath
-     */
-    private function createTestLiftFile($liftXml, $fileName)
-    {
-        $liftFilePath = sys_get_temp_dir() . '/' . $fileName;
-        file_put_contents($liftFilePath, $liftXml);
-        if (! array_key_exists($liftFilePath, $this->liftFilePaths)) {
-            $this->liftFilePaths[] = $liftFilePath;
-        }
-
-        return $liftFilePath;
-    }
-
-    /**
-     * Cleanup test lift files
-     */
-    private function cleanupTestLiftFiles()
-    {
-        foreach ($this->liftFilePaths as $liftFilePath) {
-            if (file_exists($liftFilePath) and ! is_dir($liftFilePath)) {
-                @unlink($liftFilePath);
-            }
-        }
-        $this->liftFilePaths = array();
-    }
-
     private function cleanupTestFiles($assetsFolderPath, $folderPath, $filePath, $tmpFilePath)
     {
         // cleanup test files and folders
@@ -278,22 +235,14 @@ EOD;
         $projectId = $project->id->asString();
         $projectSlug = $project->databaseName();
 
-        $fileName = 'OneEntryV0_12.lift';
-        $tmpFilePath =  $this->createTestLiftFile(self::liftOneEntryV0_13, $fileName);
-
-        $_FILES['file'] = array();
-        $_FILES['file']['name'] = $fileName;
-        $_FILES['data'] = array();
-        $_FILES['data']['settings'] = array();
-        $_FILES['data']['settings']['mergeRule'] = LiftMergeRule::IMPORT_LOSES;
-        $_FILES['data']['settings']['skipSameModTime'] = false;
-        $_FILES['data']['settings']['deleteMatchingEntry'] = false;
+        $fileName = 'OneEntryV0_13.lift';
 
         // no LIFT file initially
         $filePath = $project->getAssetsFolderPath() . '/' . $fileName;
         $this->assertFalse(file_exists($filePath), 'Imported LIFT file should not exist');
 
         // importLoses: LIFT file added
+        $tmpFilePath =  $e->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_LOSES);
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
         $this->assertTrue($response->result, 'Import should succeed');
         $this->assertPattern("/lexicon\/$projectSlug/", $response->data->path);
@@ -307,15 +256,14 @@ EOD;
         $this->assertFalse(file_exists($filePath), 'Imported LIFT file should not exist');
 
         // importLoses: LIFT file not added, other still exists
-        $tmpFilePath =  $this->createTestLiftFile(self::liftOneEntryV0_13, $fileName);
+        $tmpFilePath =  $e->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_LOSES);
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
         $this->assertTrue($response->result, 'Import should succeed');
         $this->assertTrue(file_exists($filePathOther), 'Other LIFT file should exist');
         $this->assertFalse(file_exists($filePath), 'Imported LIFT file should not exist');
 
         // importWins: LIFT file added, other removed
-        $_FILES['data']['settings']['mergeRule'] = LiftMergeRule::IMPORT_WINS;
-        $tmpFilePath =  $this->createTestLiftFile(self::liftOneEntryV0_13, $fileName);
+        $tmpFilePath =  $e->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_WINS);
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
         $this->assertFalse(file_exists($filePathOther), 'Other LIFT file should not exist');
         $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
@@ -327,12 +275,11 @@ EOD;
         $this->assertFalse(file_exists($filePath), 'Imported LIFT file should not exist');
 
         // createDuplicates: LIFT file added, other removed
-        $_FILES['data']['settings']['mergeRule'] = LiftMergeRule::CREATE_DUPLICATES;
-        $tmpFilePath =  $this->createTestLiftFile(self::liftOneEntryV0_13, $fileName);
+        $tmpFilePath =  $e->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::CREATE_DUPLICATES);
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
         $this->assertFalse(file_exists($filePathOther), 'Other LIFT file should not exist');
         $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
 
-        $this->cleanupTestLiftFiles();
+        $e->cleanupTestLiftFiles();
     }
 }
