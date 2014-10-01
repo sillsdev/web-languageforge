@@ -6,7 +6,6 @@ use models\languageforge\lexicon\LexOptionListListModel;
 require_once dirname(__FILE__) . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
-require_once dirname(__FILE__) . '/LexTestData.php';
 
 class TestLexOptionListCommands extends UnitTestCase
 {

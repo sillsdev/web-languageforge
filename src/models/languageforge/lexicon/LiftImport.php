@@ -87,6 +87,8 @@ class LiftImport
             }
         }
 
+        $reader->close();
+
         if ($initialImport) {
             // replace part of speech option list with values from imported data
             // todo: remove this functionality when we have a way to import lift ranges (option lists) - cjh 2014-08

@@ -6,10 +6,21 @@ use models\languageforge\lexicon\LiftMergeRule;
 require_once dirname(__FILE__) . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
-require_once dirname(__FILE__) . '/LexTestData.php';
 
 class TestLiftImport extends UnitTestCase
 {
+    public function __construct() {
+        $this->liftFilePaths = array();
+        parent::__construct();
+    }
+
+    /**
+     * Local store of created lift filepaths
+     *
+     * @var array
+     */
+    private $liftFilePaths;
+
     private static function indexByGuid($entries)
     {
         $index = array();
@@ -18,49 +29,240 @@ class TestLiftImport extends UnitTestCase
         }
         return $index;
     }
-    
+
+    /**
+     * Put a copy of the test lift file in system tmp folder
+     *
+     * @param string $liftXml
+     * @param string $fileName
+     * @return string $liftFilePath
+     */
+    private function createTestLiftFile($liftXml, $fileName)
+    {
+        $liftFilePath = sys_get_temp_dir() . '/' . $fileName;
+        file_put_contents($liftFilePath, $liftXml);
+        if (! array_key_exists($liftFilePath, $this->liftFilePaths)) {
+            $this->liftFilePaths[] = $liftFilePath;
+        }
+
+        return $liftFilePath;
+    }
+
+    /**
+     * Cleanup test lift files
+     */
+    public function tearDown()
+    {
+        foreach ($this->liftFilePaths as $liftFilePath) {
+            if (file_exists($liftFilePath) and ! is_dir($liftFilePath)) {
+                @unlink($liftFilePath);
+            }
+        }
+        $this->liftFilePaths = array();
+    }
+
     // 2x Validation tests, removed until validation is working IJH 2014-03
 /*
+    const liftOneEntryV0_12 = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.12"
+	producer="WeSay 1.0.0.0">
+	<entry
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		dateCreated="2008-11-03T06:17:24Z"
+		dateModified="2011-10-26T01:41:19Z"
+		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>chùuchìi mǔu krɔ̂ɔp</text>
+			</form>
+		</lexical-unit>
+	</entry>
+</lift>
+EOD;
+
     function testLiftImportMerge_XmlOldVer_Exception()
     {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftOneEntryV0_12;
-        
+        $liftXml = self::liftOneEntryV0_12;
+
         $e->inhibitErrorDisplay();
         $this->expectException();
         LiftImport::merge($liftXml, $project);
         $e->restoreErrorDisplay();
     }
 
+    const liftInvalidAttribute = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.13"
+	producer="WeSay 1.0.0.0">
+	<entry
+		xXxXx = "invalidAttribute"
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		dateCreated="2008-11-03T06:17:24Z"
+		dateModified="2011-10-26T01:41:19Z"
+		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>chùuchìi mǔu krɔ̂ɔp</text>
+			</form>
+		</lexical-unit>
+	</entry>
+</lift>
+EOD;
+
     function testLiftImportMerge_XmlInvalidAttribute_Exception()
     {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
-        
+
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftInvalidAttribute;
-        
+        $liftXml = self::liftInvalidAttribute;
+
         $e->inhibitErrorDisplay();
         $this->expectException();
         LiftImport::merge($liftXml, $project);
         $e->restoreErrorDisplay();
     }
 */
+
+    // has incorrect th-fonipa form in each entry
+    // has incorrect sense in first entry
+    const liftTwoEntriesV0_13 = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.13"
+	producer="WeSay 1.0.0.0">
+	<entry
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		dateCreated="2008-11-03T06:17:24Z"
+		dateModified="2011-10-26T01:41:19Z"
+		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>chùuchìi mǔu krɔ̂ɔp</text>
+			</form>
+			<form
+				lang="th">
+				<text>ฉู่ฉี่หมูกรอบ</text>
+			</form>
+		</lexical-unit>
+		<field
+			type="literal-meaning">
+			<form
+				lang="en">
+				<text>Chuchi curry pork crispy</text>
+			</form>
+		</field>
+		<sense
+			id="9d50e072-0206-4776-9ee6-bddf89b96aed">
+			<definition>
+				<form
+					lang="en">
+					<text>incorrect definition</text>
+				</form>
+			</definition>
+			<gloss
+				lang="en">
+				<text>incorrect gloss</text>
+			</gloss>
+			<gloss
+				lang="th">
+				<text>th incorrect gloss</text>
+			</gloss>
+			<grammatical-info
+				value="Adjective" />
+			<example>
+				<form
+					lang="th-fonipa">
+					<text>sentence 1</text>
+				</form>
+				<translation>
+					<form
+						lang="en">
+						<text>translation 1</text>
+					</form>
+				</translation>
+			</example>
+			<example>
+				<form
+					lang="th-fonipa">
+					<text>sentence 2</text>
+				</form>
+				<translation>
+					<form
+						lang="en">
+						<text>translation 2</text>
+					</form>
+				</translation>
+			</example>
+			<illustration
+				href="IMG_0214.JPG" />
+			<trait
+				name="semantic-domain-ddp4"
+				value="5.2 Food" />
+			<trait
+				name="semantic-domain-ddp4"
+				value="1 Universe, creation" />
+		</sense>
+	</entry>
+	<entry
+		id="Id'dPrematurely_05473cb0-4165-4923-8d81-02f8b8ed3f26"
+		dateCreated="2008-10-09T02:15:23Z"
+		dateModified="2008-10-17T06:16:11Z"
+		guid="05473cb0-4165-4923-8d81-02f8b8ed3f26">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>khâaw kài thɔ̀ɔt</text>
+			</form>
+			<form
+				lang="th">
+				<text>ข้าวไก่ทอด</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="f60ba047-df0c-47cc-aba1-af4ea1030e31">
+			<definition>
+				<form
+					lang="en">
+					<text>pieces of fried chicken served over rice, usually with a sweet and spicy sauce on the side</text>
+				</form>
+			</definition>
+			<illustration
+				href="IMG_0187.JPG" />
+		</sense>
+		<field
+			type="literal-meaning">
+			<form
+				lang="en">
+				<text>rice chicken fried</text>
+			</form>
+		</field>
+	</entry>
+</lift>
+EOD;
+
     public function testLiftImportMerge_XmlValidAndNoExistingData_NoExceptionAndMergeOk()
     {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
-        
+
+        $liftFilePath = $this->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftTwoEntriesV0_13;
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
-        
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -87,19 +289,74 @@ class TestLiftImport extends UnitTestCase
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
     }
 
+    // has correct th-fonipa form in each entry
+    // has correct sense in first entry (same id)
+    const liftTwoEntriesCorrectedV0_13 = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.13"
+	producer="WeSay 1.0.0.0">
+	<entry
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		dateCreated="2008-11-03T06:17:24Z"
+		dateModified="2011-10-26T01:41:19Z"
+		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>chùuchìi mǔu krɔ̀ɔp</text>
+			</form>
+			<form
+				lang="th">
+				<text>ฉู่ฉี่หมูกรอบ</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="9d50e072-0206-4776-9ee6-bddf89b96aed">
+			<grammatical-info
+				value="Noun" />
+			<definition>
+				<form
+					lang="en">
+					<text>A kind of curry fried with crispy pork</text>
+				</form>
+			</definition>
+		</sense>
+	</entry>
+	<entry
+		id="Id'dPrematurely_05473cb0-4165-4923-8d81-02f8b8ed3f26"
+		dateCreated="2008-10-09T02:15:23Z"
+		dateModified="2008-10-17T06:16:11Z"
+		guid="05473cb0-4165-4923-8d81-02f8b8ed3f26">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>khâaw kài thɔ̂ɔt</text>
+			</form>
+			<form
+				lang="th">
+				<text>ข้าวไก่ทอด</text>
+			</form>
+		</lexical-unit>
+	</entry>
+</lift>
+EOD;
+
     public function testLiftImportMerge_ExistingDataAndImportWins_MergeOk()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
+        // create existing data
+        $liftFilePath = $this->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftTwoEntriesV0_13;
-        LiftImport::merge($liftXml, $project); // create existing data
-        $liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
+        LiftImport::merge($liftFilePath, $project);
+
+        $liftFilePath = self::createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
-        
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -115,16 +372,18 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkip_NoMerge()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
+        // create existing data
+        $liftFilePath = $this->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftTwoEntriesV0_13;
-        LiftImport::merge($liftXml, $project); // create existing data
-        $liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
+        LiftImport::merge($liftFilePath, $project);
+
+        $liftFilePath = self::createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = true;
-        
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -141,19 +400,74 @@ class TestLiftImport extends UnitTestCase
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
     }
 
+    // has correct th-fonipa form in each entry and mod date changed
+    // has correct sense in first entry (different id)
+    const liftTwoEntriesModifiedV0_13 = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.13"
+	producer="WeSay 1.0.0.0">
+	<entry
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		dateCreated="2008-11-03T06:17:24Z"
+		dateModified="2013-10-26T01:41:19Z"
+		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>chùuchìi mǔu krɔ̀ɔp</text>
+			</form>
+			<form
+				lang="th">
+				<text>ฉู่ฉี่หมูกรอบ</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="df801833-d55b-4492-b501-650da7bc7b73">
+			<grammatical-info
+				value="Noun" />
+			<definition>
+				<form
+					lang="en">
+					<text>A kind of curry fried with crispy pork</text>
+				</form>
+			</definition>
+		</sense>
+	</entry>
+	<entry
+		id="Id'dPrematurely_05473cb0-4165-4923-8d81-02f8b8ed3f26"
+		dateCreated="2008-10-09T02:15:23Z"
+		dateModified="2013-10-17T06:16:11Z"
+		guid="05473cb0-4165-4923-8d81-02f8b8ed3f26">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>khâaw kài thɔ̂ɔt</text>
+			</form>
+			<form
+				lang="th">
+				<text>ข้าวไก่ทอด</text>
+			</form>
+		</lexical-unit>
+	</entry>
+</lift>
+EOD;
+
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkip_MergeOk()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
+        // create existing data
+        $liftFilePath = $this->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftTwoEntriesV0_13;
-        LiftImport::merge($liftXml, $project); // create existing data
-        $liftXml = LexTestData::liftTwoEntriesModifiedV0_13;
+        LiftImport::merge($liftFilePath, $project);
+
+        $liftFilePath = self::createTestLiftFile(self::liftTwoEntriesModifiedV0_13, 'TwoEntriesModifiedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = true;
-        
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -172,20 +486,65 @@ class TestLiftImport extends UnitTestCase
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
     }
 
+    // has correct th-fonipa form in first entry
+    // has deleted second entry (same guid)
+    const liftTwoEntriesOneCorrectedOneDeletedV0_13 = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.13"
+	producer="WeSay 1.0.0.0">
+	<entry
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		dateCreated="2008-11-03T06:17:24Z"
+		dateModified="2011-10-26T01:41:19Z"
+		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>chùuchìi mǔu krɔ̀ɔp</text>
+			</form>
+			<form
+				lang="th">
+				<text>ฉู่ฉี่หมูกรอบ</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="9d50e072-0206-4776-9ee6-bddf89b96aed">
+			<grammatical-info
+				value="Noun" />
+			<definition>
+				<form
+					lang="en">
+					<text>A kind of curry fried with crispy pork</text>
+				</form>
+			</definition>
+		</sense>
+	</entry>
+	<entry
+		id="Id'dPrematurely_05473cb0-4165-4923-8d81-02f8b8ed3f26"
+		dateCreated="2008-10-09T02:15:23Z"
+		dateModified="2008-10-17T06:16:11Z"
+		guid="05473cb0-4165-4923-8d81-02f8b8ed3f26"
+		dateDeleted="2013-11-03T06:11:39Z" />
+</lift>
+EOD;
+
     public function testLiftImportMerge_ExistingDataAndImportWinsAndDeleteMatchingEntry_EntryDeleted()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
+        // create existing data
+        $liftFilePath = $this->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftTwoEntriesV0_13;
-        LiftImport::merge($liftXml, $project); // create existing data
-        $liftXml = LexTestData::liftTwoEntriesOneCorrectedOneDeletedV0_13;
+        LiftImport::merge($liftFilePath, $project);
+
+        $liftFilePath = self::createTestLiftFile(self::liftTwoEntriesOneCorrectedOneDeletedV0_13, 'TwoEntriesOneCorrectedOneDeletedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
         $deleteMatchingEntry = true;
-        
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
-        
+
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -199,17 +558,19 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkipSameModTimeAndDeleteMatchingEntry_EntryDeletedAndOtherEntryNotCorrected()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
+        // create existing data
+        $liftFilePath = $this->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftTwoEntriesV0_13;
-        LiftImport::merge($liftXml, $project); // create existing data
-        $liftXml = LexTestData::liftTwoEntriesOneCorrectedOneDeletedV0_13;
+        LiftImport::merge($liftFilePath, $project);
+
+        $liftFilePath = self::createTestLiftFile(self::liftTwoEntriesOneCorrectedOneDeletedV0_13, 'TwoEntriesOneCorrectedOneDeletedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = true;
         $deleteMatchingEntry = true;
-        
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
-        
+
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -223,17 +584,19 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndImportWins_EntryNotDeleted()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
+        // create existing data
+        $liftFilePath = $this->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftTwoEntriesV0_13;
-        LiftImport::merge($liftXml, $project); // create existing data
-        $liftXml = LexTestData::liftTwoEntriesOneCorrectedOneDeletedV0_13;
+        LiftImport::merge($liftFilePath, $project);
+
+        $liftFilePath = self::createTestLiftFile(self::liftTwoEntriesOneCorrectedOneDeletedV0_13, 'TwoEntriesOneCorrectedOneDeletedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
         $deleteMatchingEntry = false;
-        
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
-        
+
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -248,16 +611,18 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndImportLoses_NoMerge()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
+        // create existing data
+        $liftFilePath = $this->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftTwoEntriesV0_13;
-        LiftImport::merge($liftXml, $project); // create existing data
-        $liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
+        LiftImport::merge($liftFilePath, $project);
+
+        $liftFilePath = self::createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_LOSES;
         $skipSameModTime = false;
-        
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -277,16 +642,18 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndCreateDuplicates_DuplicatesCreated()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
+        // create existing data
+        $liftFilePath = $this->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftTwoEntriesV0_13;
-        LiftImport::merge($liftXml, $project); // create existing data
-        $liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
+        LiftImport::merge($liftFilePath, $project);
+
+        $liftFilePath = self::createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::CREATE_DUPLICATES;
         $skipSameModTime = false;
-        
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
@@ -313,16 +680,18 @@ class TestLiftImport extends UnitTestCase
     public function testLiftImportMerge_ExistingDataAndCreateDuplicatesAndSkip_NoMerge()
     {
         $e = new LexiconMongoTestEnvironment();
-        
+
+        // create existing data
+        $liftFilePath = $this->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftTwoEntriesV0_13;
-        LiftImport::merge($liftXml, $project); // create existing data
-        $liftXml = LexTestData::liftTwoEntriesCorrectedV0_13;
+        LiftImport::merge($liftFilePath, $project);
+
+        $liftFilePath = self::createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::CREATE_DUPLICATES;
         $skipSameModTime = true;
-        
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-        
+
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
