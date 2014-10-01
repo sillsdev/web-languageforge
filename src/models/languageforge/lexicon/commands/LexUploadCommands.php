@@ -5,6 +5,9 @@ use models\shared\commands\UploadResponse;
 use models\shared\commands\MediaResult;
 use models\shared\commands\ErrorResult;
 use models\languageforge\lexicon\LexEntryModel;
+use models\languageforge\lexicon\LexiconProjectModel;
+use models\languageforge\lexicon\LiftImport;
+use models\languageforge\lexicon\LiftMergeRule;
 use models\languageforge\LfProjectModel;
 
 class LexUploadCommands
@@ -315,7 +318,6 @@ class LexUploadCommands
 
         $file = $_FILES['file'];
         $fileName = $file['name'];
-        $fileNamePrefix = date("YmdHis");
         $settings = $_FILES['data']['settings'];
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -339,7 +341,8 @@ class LexUploadCommands
 
         $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
         $allowedTypes = array(
-            "text/xml"
+            "text/xml",
+            "application/xml"
         );
         $allowedExtensions = array(
             ".lift"
@@ -349,7 +352,7 @@ class LexUploadCommands
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folders if they don't exist
-            $project = new LfProjectModel($projectId);
+            $project = new LexiconProjectModel($projectId);
             $folderPath = $project->getAssetsFolderPath();
             if (! file_exists($folderPath) and ! is_dir($folderPath)) {
                 mkdir($folderPath, 0777, true);
@@ -392,11 +395,11 @@ class LexUploadCommands
             $data = new ErrorResult();
             $data->errorType = 'UserMessage';
             if (count($allowedExtensions) < 1) {
-                $data->errorMessage = "$fileName is not an allowed LIFT file. No LIFT file formats are currently enabled, contact your Site Administrator.";
+                $data->errorMessage = "$fileName of type: $fileType is not an allowed LIFT file. No LIFT file formats are currently enabled, contact your Site Administrator.";
             } elseif (count($allowedExtensions) == 1) {
-                $data->errorMessage = "$fileName is not an allowed LIFT file. Ensure the file is an $allowedExtensionsStr.";
+                $data->errorMessage = "$fileName of type: $fileType is not an allowed LIFT file. Ensure the file is an $allowedExtensionsStr.";
             } else {
-                $data->errorMessage = "$fileName is not an allowed LIFT file. Ensure the file is one of the following types: $allowedExtensionsStr.";
+                $data->errorMessage = "$fileName of type: $fileType is not an allowed LIFT file. Ensure the file is one of the following types: $allowedExtensionsStr.";
             }
             $response->result = false;
         }
