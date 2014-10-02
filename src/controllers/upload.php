@@ -3,7 +3,7 @@ use libraries\shared\palaso\exceptions\ErrorHandler;
 use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 
 require_once 'secure_base.php';
 
