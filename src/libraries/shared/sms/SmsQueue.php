@@ -1,7 +1,7 @@
 <?php
 namespace libraries\shared\sms;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 
 use models\mapper\Id;
 

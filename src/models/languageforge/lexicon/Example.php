@@ -2,7 +2,7 @@
 
 namespace models\languageforge\lexicon;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 use models\mapper\MapOf;
 use models\mapper\ObjectForEncoding;
 

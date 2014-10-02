@@ -10,7 +10,7 @@ use models\CommentModel;
 use models\ProjectModel;
 use models\QuestionModel;
 use models\UserVoteModel;
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 use models\mapper\ArrayOf;
 
 class QuestionCommands
