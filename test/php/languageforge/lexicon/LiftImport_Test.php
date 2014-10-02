@@ -10,18 +10,17 @@ require_once TestPath . 'common/MongoTestEnvironment.php';
 class TestLiftImport extends UnitTestCase
 {
     public function __construct() {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-        $this->e = $e;
+        $this->environ = new LexiconMongoTestEnvironment();
+        $this->environ->clean();
         parent::__construct();
     }
 
     /**
-     * Local store of created lift filepaths
+     * Local store of mock test environment
      *
      * @var LexiconMongoTestEnvironment
      */
-    private $e;
+    private $environ;
 
     private static function indexByGuid($entries)
     {
@@ -37,8 +36,8 @@ class TestLiftImport extends UnitTestCase
      */
     public function tearDown()
     {
-        $this->e->cleanupTestLiftFiles();
-        $this->e->clean();
+        $this->environ->cleanupTestUploadFiles();
+        $this->environ->clean();
     }
 
     // 2x Validation tests, removed until validation is working IJH 2014-03
@@ -65,13 +64,13 @@ EOD;
 
     function testLiftImportMerge_XmlOldVer_Exception()
     {
-        $project = $this->e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = self::liftOneEntryV0_12;
 
-        $this->e->inhibitErrorDisplay();
+        $this->environ->inhibitErrorDisplay();
         $this->expectException();
         LiftImport::merge($liftXml, $project);
-        $this->e->restoreErrorDisplay();
+        $this->environ->restoreErrorDisplay();
     }
 
     const liftInvalidAttribute = <<<EOD
@@ -97,13 +96,13 @@ EOD;
 
     function testLiftImportMerge_XmlInvalidAttribute_Exception()
     {
-        $project = $this->e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $liftXml = self::liftInvalidAttribute;
 
-        $this->e->inhibitErrorDisplay();
+        $this->environ->inhibitErrorDisplay();
         $this->expectException();
         LiftImport::merge($liftXml, $project);
-        $this->e->restoreErrorDisplay();
+        $this->environ->restoreErrorDisplay();
     }
 */
 
@@ -227,8 +226,8 @@ EOD;
 
     public function testLiftImportMerge_XmlValidAndNoExistingData_NoExceptionAndMergeOk()
     {
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
-        $project = $this->e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
@@ -316,11 +315,11 @@ EOD;
     public function testLiftImportMerge_ExistingDataAndImportWins_MergeOk()
     {
         // create existing data
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
-        $project = $this->e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         LiftImport::merge($liftFilePath, $project);
 
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
@@ -341,11 +340,11 @@ EOD;
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkip_NoMerge()
     {
         // create existing data
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
-        $project = $this->e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         LiftImport::merge($liftFilePath, $project);
 
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = true;
 
@@ -423,11 +422,11 @@ EOD;
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkip_MergeOk()
     {
         // create existing data
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
-        $project = $this->e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         LiftImport::merge($liftFilePath, $project);
 
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesModifiedV0_13, 'TwoEntriesModifiedV0_13.lift');
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesModifiedV0_13, 'TwoEntriesModifiedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = true;
 
@@ -497,11 +496,11 @@ EOD;
     public function testLiftImportMerge_ExistingDataAndImportWinsAndDeleteMatchingEntry_EntryDeleted()
     {
         // create existing data
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
-        $project = $this->e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         LiftImport::merge($liftFilePath, $project);
 
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesOneCorrectedOneDeletedV0_13, 'TwoEntriesOneCorrectedOneDeletedV0_13.lift');
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesOneCorrectedOneDeletedV0_13, 'TwoEntriesOneCorrectedOneDeletedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
         $deleteMatchingEntry = true;
@@ -521,11 +520,11 @@ EOD;
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkipSameModTimeAndDeleteMatchingEntry_EntryDeletedAndOtherEntryNotCorrected()
     {
         // create existing data
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
-        $project = $this->e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         LiftImport::merge($liftFilePath, $project);
 
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesOneCorrectedOneDeletedV0_13, 'TwoEntriesOneCorrectedOneDeletedV0_13.lift');
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesOneCorrectedOneDeletedV0_13, 'TwoEntriesOneCorrectedOneDeletedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = true;
         $deleteMatchingEntry = true;
@@ -545,11 +544,11 @@ EOD;
     public function testLiftImportMerge_ExistingDataAndImportWins_EntryNotDeleted()
     {
         // create existing data
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
-        $project = $this->e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         LiftImport::merge($liftFilePath, $project);
 
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesOneCorrectedOneDeletedV0_13, 'TwoEntriesOneCorrectedOneDeletedV0_13.lift');
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesOneCorrectedOneDeletedV0_13, 'TwoEntriesOneCorrectedOneDeletedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
         $deleteMatchingEntry = false;
@@ -570,11 +569,11 @@ EOD;
     public function testLiftImportMerge_ExistingDataAndImportLoses_NoMerge()
     {
         // create existing data
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
-        $project = $this->e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         LiftImport::merge($liftFilePath, $project);
 
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_LOSES;
         $skipSameModTime = false;
 
@@ -599,11 +598,11 @@ EOD;
     public function testLiftImportMerge_ExistingDataAndCreateDuplicates_DuplicatesCreated()
     {
         // create existing data
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
-        $project = $this->e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         LiftImport::merge($liftFilePath, $project);
 
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::CREATE_DUPLICATES;
         $skipSameModTime = false;
 
@@ -635,11 +634,11 @@ EOD;
     public function testLiftImportMerge_ExistingDataAndCreateDuplicatesAndSkip_NoMerge()
     {
         // create existing data
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
-        $project = $this->e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         LiftImport::merge($liftFilePath, $project);
 
-        $liftFilePath = $this->e->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::CREATE_DUPLICATES;
         $skipSameModTime = true;
 
