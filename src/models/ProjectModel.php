@@ -9,7 +9,7 @@ use models\languageforge\lexicon\LexiconProjectModel;
 
 use models\scriptureforge\SfchecksProjectModel;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 
 use models\shared\rights\ProjectRoleModel;
 use models\mapper\MapOf;

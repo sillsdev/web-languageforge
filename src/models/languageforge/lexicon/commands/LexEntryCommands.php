@@ -2,7 +2,7 @@
 
 namespace models\languageforge\lexicon\commands;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 use models\commands\ActivityCommands;
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\LexEntryModel;
