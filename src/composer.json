@@ -1,15 +1,20 @@
 {
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/cambell-prince/LazyProperty"
-		}
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/cambell-prince/LazyProperty"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/sillsdev/web-php-utilities"
+        }
     ],
     "require": {
-		"swiftmailer/swiftmailer": "v5.0.2",
-		"twig/twig": "v1.14.0",
-		"twig/extensions": "dev-master",
-		"twilio/sdk": "dev-master",
-		"ocramius/lazy-property": "dev-feature/factory"
-	}
+        "swiftmailer/swiftmailer": "v5.0.2",
+        "twig/twig": "v1.14.0",
+        "twig/extensions": "dev-master",
+        "twilio/sdk": "dev-master",
+        "ocramius/lazy-property": "dev-feature/factory",
+        "sillsdev/web-php-utilities": "dev-master"
+    }
 }

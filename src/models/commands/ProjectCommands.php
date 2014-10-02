@@ -4,7 +4,7 @@ namespace models\commands;
 
 use libraries\shared\Website;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 use libraries\scriptureforge\sfchecks\Email;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
