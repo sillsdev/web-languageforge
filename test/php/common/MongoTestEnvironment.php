@@ -15,6 +15,9 @@ class MongoTestEnvironment
     {
         $this->db = \models\mapper\MongoStore::connect(SF_DATABASE);
         $this->website = Website::get($domain);
+        if (! isset($this->uploadFilePaths)) {
+            $this->uploadFilePaths = array();
+        }
     }
 
     /**
@@ -22,6 +25,13 @@ class MongoTestEnvironment
      * @var MongoDB
      */
     private $db;
+
+    /**
+     * Local store of 'uploaded' filepaths
+     *
+     * @var array
+     */
+    protected $uploadFilePaths;
 
     /**
      *
@@ -166,6 +176,91 @@ class MongoTestEnvironment
         return $usx;
     }
 
+    /**
+     * Simulate the upload of a file
+     *
+     * @param string $filePathToCopy
+     * @param string $fileName
+     * @return string $tmpFilePath
+     */
+    public function uploadFile($filePathToCopy, $fileName)
+    {
+        $_FILES['file'] = array();
+        $_FILES['file']['name'] = $fileName;
+
+        return $this->copyTestUploadFile($filePathToCopy);
+    }
+
+    /**
+     * Put a copy of the test file in system tmp folder
+     *
+     * @param string $filePath
+     * @return string $tmpFilePath
+     */
+    public function copyTestUploadFile($filePath)
+    {
+        $fileName = basename($filePath);
+        $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
+        copy($filePath, $tmpFilePath);
+        if (! array_key_exists($tmpFilePath, $this->uploadFilePaths)) {
+            $this->uploadFilePaths[] = $tmpFilePath;
+        }
+
+        return $tmpFilePath;
+    }
+
+    /**
+     * Cleanup test files and folders
+     *
+     * @param string $assetsFolderPath
+     * @param string $folderPath
+     * @param string $filePath
+     */
+    public function cleanupTestFiles($assetsFolderPath, $folderPath, $filePath)
+    {
+        $this->cleanupTestUploadFiles();
+//         $this->recursiveRemoveFolder($assetsFolderPath);
+
+        if (file_exists($filePath) and ! is_dir($filePath)) {
+            @unlink($filePath);
+        }
+        if (file_exists($folderPath) and is_dir($folderPath)) {
+            @rmdir($folderPath);
+        }
+        if (file_exists($assetsFolderPath) and is_dir($assetsFolderPath)) {
+            @rmdir($assetsFolderPath);
+        }
+    }
+
+    /**
+     *
+     * @param string $folderPath
+     */
+    public function recursiveRemoveFolder($folderPath)
+    {
+        foreach (glob("{$folderPath}/*") as $file) {
+            if (is_dir($file)) {
+                $this->recursiveRemoveFolder($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($folderPath);
+    }
+
+    /**
+     * Cleanup test upload files
+     */
+    public function cleanupTestUploadFiles()
+    {
+        foreach ($this->uploadFilePaths as $uploadFilePath) {
+            if (file_exists($uploadFilePath) and ! is_dir($uploadFilePath)) {
+                @unlink($uploadFilePath);
+            }
+        }
+        $this->uploadFilePaths = array();
+    }
+
     public function inhibitErrorDisplay()
     {
         $this->_display = ini_get('display_errors');
@@ -185,21 +280,10 @@ class MongoTestEnvironment
 
 class LexiconMongoTestEnvironment extends MongoTestEnvironment
 {
-
     public function __construct()
     {
-        if (! isset($this->liftFilePaths)) {
-            $this->liftFilePaths = array();
-        }
         parent::__construct('languageforge.org');
     }
-
-    /**
-     * Local store of created lift filepaths
-     *
-     * @var array
-     */
-    private $liftFilePaths;
 
     public function createProject($name, $code)
     {
@@ -231,9 +315,9 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
     /**
      * Simulate the upload of a LIFT file
      *
-     * @param unknown $liftXml
-     * @param unknown $fileName
-     * @param unknown $mergeRule
+     * @param string $liftXml
+     * @param string $fileName
+     * @param LiftMergeRule $mergeRule
      * @param string $skipSameModTime
      * @param string $deleteMatchingEntry
      * @return string
@@ -260,23 +344,10 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
     {
         $liftFilePath = sys_get_temp_dir() . '/' . $fileName;
         file_put_contents($liftFilePath, $liftXml);
-        if (! array_key_exists($liftFilePath, $this->liftFilePaths)) {
-            $this->liftFilePaths[] = $liftFilePath;
+        if (! array_key_exists($liftFilePath, $this->uploadFilePaths)) {
+            $this->uploadFilePaths[] = $liftFilePath;
         }
 
         return $liftFilePath;
-    }
-
-    /**
-     * Cleanup test lift files
-     */
-    public function cleanupTestLiftFiles()
-    {
-        foreach ($this->liftFilePaths as $liftFilePath) {
-            if (file_exists($liftFilePath) and ! is_dir($liftFilePath)) {
-                @unlink($liftFilePath);
-            }
-        }
-        $this->liftFilePaths = array();
     }
 }
