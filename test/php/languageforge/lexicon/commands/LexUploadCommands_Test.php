@@ -9,39 +9,15 @@ require_once (TestPath . 'common/MongoTestEnvironment.php');
 
 class TestLexUploadCommands extends UnitTestCase
 {
-    private function cleanupTestFiles($assetsFolderPath, $folderPath, $filePath, $tmpFilePath)
-    {
-        // cleanup test files and folders
-        if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
-            @unlink($tmpFilePath);
-        }
-        if (file_exists($filePath) and ! is_dir($filePath)) {
-            @unlink($filePath);
-        }
-        if (file_exists($folderPath) and is_dir($folderPath)) {
-            @rmdir($folderPath);
-        }
-        if (file_exists($assetsFolderPath) and is_dir($assetsFolderPath)) {
-            @rmdir($assetsFolderPath);
-        }
-    }
-
     public function testUploadImageFile_JpgFile_UploadAllowed()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-
-        // put a copy of the test file in tmp
-        $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestImage.jpg';
-        copy(TestPath . 'common/TestImage.jpg', $tmpFilePath);
-
         $fileName = 'TestImage.jpg';
-        $file = array();
-        $file['name'] = $fileName;
-        $_FILES['file'] = $file;
+        $tmpFilePath = $environ->uploadFile(TestPath . "common/$fileName", $fileName);
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -55,25 +31,18 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertPattern("/$fileName/", $response->data->fileName);
         $this->assertTrue(file_exists($filePath));
 
-        $this->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath, $tmpFilePath);
+        $environ->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath);
     }
 
     public function testUploadImageFile_JpgFileUpperCaseExt_UploadAllowed()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-
-        // put a copy of the test file in tmp
-        $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestImage.jpg';
-        copy(TestPath . 'common/TestImage.jpg', $tmpFilePath);
-
         $fileName = 'TestImage.JPG';
-        $file = array();
-        $file['name'] = $fileName;
-        $_FILES['file'] = $file;
+        $tmpFilePath = $environ->uploadFile(TestPath . "common/$fileName", $fileName);
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -87,25 +56,18 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertPattern("/(?<!\d)\d{14}(?!\d)/", $response->data->fileName);
         $this->assertTrue(file_exists($filePath));
 
-        $this->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath, $tmpFilePath);
+        $environ->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath);
     }
 
     public function testUploadImageFile_TifFile_UploadDisallowed()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-
-        // put a copy of the test file in tmp
-        $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestImage.jpg';
-        copy(TestPath . 'common/TestImage.tif', $tmpFilePath);
-
         $fileName = 'TestImage.jpg';
-        $file = array();
-        $file['name'] = $fileName;
-        $_FILES['file'] = $file;
+        $tmpFilePath = $environ->uploadFile(TestPath . "common/TestImage.tif", $fileName);
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -118,9 +80,7 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertPattern('/not an allowed image file/', $response->data->errorMessage);
 
         $fileName = 'TestImage.tif';
-        $file['name'] = $fileName;
-        $_FILES['file'] = $file;
-        copy(TestPath . 'common/TestImage.jpg', $tmpFilePath);
+        $tmpFilePath = $environ->uploadFile(TestPath . "common/TestImage.jpg", $fileName);
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -128,25 +88,18 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertEqual('UserMessage', $response->data->errorType);
         $this->assertPattern('/not an allowed image file/', $response->data->errorMessage);
 
-        $this->cleanupTestFiles($assetsFolderPath, $folderPath, '', $tmpFilePath);
+        $environ->cleanupTestFiles($assetsFolderPath, $folderPath, '');
     }
 
     public function testUploadAudio_SpecialCharInFileName_SpecialCharReplaced()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-
-        // put a copy of the test file in tmp
-        $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestImage.jpg';
-        copy(TestPath . 'common/TestImage.jpg', $tmpFilePath);
-
         $fileName = '/\\?%*:|"<>.jpg';
-        $file = array();
-        $file['name'] = $fileName;
-        $_FILES['file'] = $file;
+        $tmpFilePath = $environ->uploadFile(TestPath . "common/TestImage.jpg", $fileName);
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -159,28 +112,27 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertTrue($response->result);
         $this->assertPattern("/$fileName/", $response->data->fileName);
 
-        $this->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath, $tmpFilePath);
+        $environ->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath);
     }
 
     public function testDeleteImageFile_JpgFile_FileDeleted()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
+        $fileName = 'TestImage.jpg';
+        $tmpFilePath = $environ->uploadFile(TestPath . "common/$fileName", $fileName);
 
-        // make the folders if they don't exist
+        $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
+
+        $this->assertTrue($response->result);
+
         $assetsFolderPath = $project->getAssetsFolderPath();
         $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
-        if (! file_exists($folderPath) and ! is_dir($folderPath)) {
-            mkdir($folderPath, 0777, true);
-        }
-
-        // put a copy of the test file in picture folder
-        $fileName = 'TestImage.jpg';
+        $fileName = $response->data->fileName;
         $filePath = $folderPath . '/' . $fileName;
-        copy(TestPath . 'common/TestImage.jpg', $filePath);
 
         $this->assertTrue(file_exists($filePath));
 
@@ -189,21 +141,21 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertTrue($response->result);
         $this->assertFalse(file_exists($filePath));
 
-        $this->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath, '');
+        $environ->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath);
     }
 
     public function testDeleteImageFile_UnsupportedMediaType_Throw()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
 
-        $e->inhibitErrorDisplay();
+        $environ->inhibitErrorDisplay();
         $this->expectException();
         $response = LexUploadCommands::deleteMediaFile($projectId, 'bogusMediaType', '');
-        $e->restoreErrorDisplay();
+        $environ->restoreErrorDisplay();
     }
 
     const liftOneEntryV0_13 = <<<EOD
@@ -228,10 +180,10 @@ EOD;
 
     public function testImportLift_EachDuplicateSetting_LiftFileAddedOk()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $projectSlug = $project->databaseName();
 
@@ -242,7 +194,7 @@ EOD;
         $this->assertFalse(file_exists($filePath), 'Imported LIFT file should not exist');
 
         // importLoses: LIFT file added
-        $tmpFilePath =  $e->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_LOSES);
+        $tmpFilePath =  $environ->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_LOSES);
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
         $this->assertTrue($response->result, 'Import should succeed');
         $this->assertPattern("/lexicon\/$projectSlug/", $response->data->path);
@@ -256,14 +208,14 @@ EOD;
         $this->assertFalse(file_exists($filePath), 'Imported LIFT file should not exist');
 
         // importLoses: LIFT file not added, other still exists
-        $tmpFilePath =  $e->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_LOSES);
+        $tmpFilePath =  $environ->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_LOSES);
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
         $this->assertTrue($response->result, 'Import should succeed');
         $this->assertTrue(file_exists($filePathOther), 'Other LIFT file should exist');
         $this->assertFalse(file_exists($filePath), 'Imported LIFT file should not exist');
 
         // importWins: LIFT file added, other removed
-        $tmpFilePath =  $e->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_WINS);
+        $tmpFilePath =  $environ->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_WINS);
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
         $this->assertFalse(file_exists($filePathOther), 'Other LIFT file should not exist');
         $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
@@ -275,11 +227,11 @@ EOD;
         $this->assertFalse(file_exists($filePath), 'Imported LIFT file should not exist');
 
         // createDuplicates: LIFT file added, other removed
-        $tmpFilePath =  $e->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::CREATE_DUPLICATES);
+        $tmpFilePath =  $environ->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::CREATE_DUPLICATES);
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
         $this->assertFalse(file_exists($filePathOther), 'Other LIFT file should not exist');
         $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
 
-        $e->cleanupTestLiftFiles();
+        $environ->cleanupTestUploadFiles();
     }
 }
