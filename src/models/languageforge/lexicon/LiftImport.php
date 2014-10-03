@@ -17,6 +17,7 @@ class LiftImport
      */
     public static function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
     {
+        ini_set('max_execution_time', 90); // Sufficient time to import webster.  TODO Make this async CP 2014-10
 //         self::validate($xml);    // TODO Fix. The XML Reader validator doesn't work with <optional> in the RelaxNG schema. IJH 2014-03
 
         $entryList = new LexEntryListModel($projectModel);
