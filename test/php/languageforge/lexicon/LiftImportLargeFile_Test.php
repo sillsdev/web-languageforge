@@ -51,14 +51,14 @@ class TestLiftImport extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftFilePath = '/var/www/host/forge/TestData/Gilaki/Gilaki.lift';
-// 		$liftFilePath = '/var/www/host/forge/TestData/Webster/Webster.lift';
+//         $liftFilePath = '/home/cambell/src/Forge/TestData/Gilaki/Gilaki.lift';
+        $liftFilePath = '/home/cambell/src/Forge/TestData/Webster/Webster.lift';
         $mergeRule =  LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
         LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
-        $testInfo->display();
+        $testInfo->add('post merge');
 
     }
 
