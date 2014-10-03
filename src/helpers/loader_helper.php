@@ -1,6 +1,8 @@
 <?php
 // Do not give the loader a namespace, it shold always in root.
 
+require_once(APPPATH . 'vendor/autoload.php');
+
 class Loader
 {
     // here we store the already-initialized namespaces
