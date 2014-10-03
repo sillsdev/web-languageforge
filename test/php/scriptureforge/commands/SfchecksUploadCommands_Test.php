@@ -9,174 +9,110 @@ require_once (TestPath . 'common/MongoTestEnvironment.php');
 
 class TestSfchecksUploadCommands extends UnitTestCase
 {
-
-    function cleanupTestFiles($folderPath, $textId, $fileName, $tmpFilePath)
-    {
-        // cleanup test files and folders
-        $filePath = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName);
-        if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
-            @unlink($tmpFilePath);
-        }
-        if (file_exists($filePath) and ! is_dir($filePath)) {
-            @unlink($filePath);
-        }
-        if (file_exists($folderPath) and is_dir($folderPath)) {
-            @rmdir($folderPath);
-        }
-    }
-
     function testUploadAudio_mp3File_uploadAllowed()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->appName = 'sfchecks';
-        $projectId = $project->write();
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
         $text = new TextModel($project);
-        $text->title = "Some Title";
         $textId = $text->write();
-
-        // put a copy of the test file in tmp
-        $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestAudio.mp3';
-        copy(TestPath . 'common/TestAudio.mp3', $tmpFilePath);
-
         $fileName = 'TestAudio.mp3';
-        $file = array();
-        $file['name'] = $fileName;
-        $_FILES['file'] = $file;
-        $_POST['textId'] = $textId;
+        $tmpFilePath = $environ->uploadTextAudioFile(TestPath . "common/$fileName", $fileName, $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
         $text->read($textId);
-        $folderPath = $project->getAssetsFolderPath();
-        $filePath = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName);
+        $assetsFolderPath = $project->getAssetsFolderPath();
+        $filePath = SfchecksUploadCommands::mediaFilePath($assetsFolderPath, $textId, $fileName);
         $projectSlug = $project->databaseName();
 
-        $this->assertTrue($response->result);
-        $this->assertPattern("/sfchecks\/$projectSlug/", $response->data->path);
-        $this->assertEqual($fileName, $response->data->fileName);
-        $this->assertEqual($fileName, $text->audioFileName);
-        $this->assertTrue(file_exists($filePath));
+        $this->assertTrue($response->result, 'Import should succeed');
+        $this->assertPattern("/sfchecks\/$projectSlug/", $response->data->path, 'Imported audio file path should be in the right location');
+        $this->assertEqual($fileName, $response->data->fileName, 'Imported audio fileName should have the original fileName');
+        $this->assertEqual($fileName, $text->audioFileName, 'Imported audio fileName should be stored in the Text');
+        $this->assertTrue(file_exists($filePath), 'Imported audio file should exist');
 
-        $this->cleanupTestFiles($folderPath, $textId, $fileName, $tmpFilePath);
+        $environ->cleanupTestFiles($assetsFolderPath);
     }
 
     function testUploadAudio_mp3FileUpperCaseExt_uploadAllowed()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->appName = 'sfchecks';
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->write();
         $text = new TextModel($project);
-        $text->title = "Some Title";
         $textId = $text->write();
-
-        // put a copy of the test file in tmp
-        $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestAudio.mp3';
-        copy(TestPath . 'common/TestAudio.mp3', $tmpFilePath);
-
         $fileName = 'TestAudio.MP3';
-        $file = array();
-        $file['name'] = $fileName;
-        $_FILES['file'] = $file;
-        $_POST['textId'] = $textId;
+        $tmpFilePath = $environ->uploadTextAudioFile(TestPath . 'common/TestAudio.mp3', $fileName, $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
-        $this->assertTrue($response->result);
-        $this->assertEqual($fileName, $response->data->fileName);
+        $this->assertTrue($response->result, 'Import should succeed');
+        $this->assertEqual($fileName, $response->data->fileName, 'Imported audio fileName should have the original fileName');
 
-        $this->cleanupTestFiles($project->getAssetsFolderPath(), $textId, $fileName, $tmpFilePath);
+        $environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 
     function testUploadAudio_WavFile_uploadDisallowed()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->appName = 'sfchecks';
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->write();
         $text = new TextModel($project);
-        $text->title = "Some Title";
         $textId = $text->write();
-
-        // put a copy of the test file in tmp
-        $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestAudio.mp3';
-        copy(TestPath . 'common/TestAudio.wav', $tmpFilePath);
-
-        $fileName = 'TestAudio.mp3';
-        $file = array();
-        $file['name'] = $fileName;
-        $_FILES['file'] = $file;
-        $_POST['textId'] = $textId;
+        $tmpFilePath = $environ->uploadTextAudioFile(TestPath . 'common/TestAudio.wav', 'TestAudio.mp3', $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
-        $this->assertFalse($response->result);
-        $this->assertEqual('UserMessage', $response->data->errorType);
-        $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage);
+        $this->assertFalse($response->result, 'Import should fail');
+        $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
+        $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage, 'Error message should match the error');
 
-        $fileName = 'TestAudio.wav';
-        $file['name'] = $fileName;
-        $_FILES['file'] = $file;
-        copy(TestPath . 'common/TestAudio.mp3', $tmpFilePath);
+        $tmpFilePath = $environ->uploadTextAudioFile(TestPath . 'common/TestAudio.mp3', 'TestAudio.wav', $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
-        $this->assertFalse($response->result);
-        $this->assertEqual('UserMessage', $response->data->errorType);
-        $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage);
+        $this->assertFalse($response->result, 'Import should fail');
+        $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
+        $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage, 'Error message should match the error');
 
-        $this->cleanupTestFiles($project->getAssetsFolderPath(), $textId, $fileName, $tmpFilePath);
+        $environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 
     function testUploadAudio_SpecialCharInFileName_SpecialCharReplaced()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->appName = 'sfchecks';
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->write();
         $text = new TextModel($project);
-        $text->title = "Some Title";
         $textId = $text->write();
-
-        // put a copy of the test file in tmp
-        $tmpFilePath = sys_get_temp_dir() . '/CopyOfTestAudio.mp3';
-        copy(TestPath . 'common/TestAudio.mp3', $tmpFilePath);
-
-        $fileName = '/\\?%*:|"<>.mp3';
-        $file = array();
-        $file['name'] = $fileName;
-        $_FILES['file'] = $file;
-        $_POST['textId'] = $textId;
+        $tmpFilePath = $environ->uploadTextAudioFile(TestPath . 'common/TestAudio.mp3', '/\\?%*:|"<>.mp3', $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
         $text->read($textId);
-        $fileName = '__________.mp3';
-        $this->assertTrue($response->result);
-        $this->assertEqual($fileName, $text->audioFileName);
+        $this->assertTrue($response->result, 'Import should succeed');
+        $this->assertEqual('__________.mp3', $text->audioFileName);
 
-        $this->cleanupTestFiles($project->getAssetsFolderPath(), $textId, $fileName, $tmpFilePath);
+        $environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 
     function testCleanupFiles_4Files2Allowed_2Removed()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->appName = 'sfchecks';
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->write();
         $text = new TextModel($project);
-        $text->title = "Some Title";
         $textId = $text->write();
         $fakeId  = new Id();
         $fakeTextId = $fakeId->asString();
@@ -204,21 +140,18 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $filePath4 = SfchecksUploadCommands::mediaFilePath($folderPath, $fakeTextId, $fileName4);
         copy(TestPath . 'common/TestAudio.mp3', $filePath4);
 
-        $this->assertTrue(file_exists($filePath1));
-        $this->assertTrue(file_exists($filePath2));
-        $this->assertTrue(file_exists($filePath3));
-        $this->assertTrue(file_exists($filePath4));
+        $this->assertTrue(file_exists($filePath1), 'File should exist before cleanup');
+        $this->assertTrue(file_exists($filePath2), 'File should exist before cleanup');
+        $this->assertTrue(file_exists($filePath3), 'File should exist before cleanup');
+        $this->assertTrue(file_exists($filePath4), 'File should exist before cleanup');
 
         SfchecksUploadCommands::cleanupFiles($folderPath, $textId, $allowedExtensions);
 
-        $this->assertTrue(file_exists($filePath1));
-        $this->assertFalse(file_exists($filePath2));
-        $this->assertFalse(file_exists($filePath3));
-        $this->assertTrue(file_exists($filePath4));
+        $this->assertTrue(file_exists($filePath1), 'File should exist after cleanup');
+        $this->assertFalse(file_exists($filePath2), 'File should not exist after cleanup');
+        $this->assertFalse(file_exists($filePath3), 'File should not exist after cleanup');
+        $this->assertTrue(file_exists($filePath4), 'File should exist after cleanup');
 
-        $this->cleanupTestFiles($folderPath, $textId, $fileName1, '');
-        $this->cleanupTestFiles($folderPath, $textId, $fileName2, '');
-        $this->cleanupTestFiles($folderPath, $textId, $fileName3, '');
-        $this->cleanupTestFiles($folderPath, $fakeTextId, $fileName4, '');
+        $environ->cleanupTestFiles($folderPath);
     }
 }
