@@ -2,7 +2,7 @@
 
 namespace models\mapper;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 
 class MongoMapper
 {
@@ -285,6 +285,17 @@ class MongoMapper
         );
         // TODO Have a closer look at $result and throw if things go wrong CP 2013-07
 
+        return $result['ok'] ? $result['n'] : 0;
+    }
+
+    public function removeProperty($property)
+    {
+        CodeGuard::checkTypeAndThrow($property, 'string');
+        $result = $this->_collection->update(
+            array($property => array('$exists' => true)),
+            array('$unset' => array($property => true)),
+            array('multiple' => true)
+        );
         return $result['ok'] ? $result['n'] : 0;
     }
 

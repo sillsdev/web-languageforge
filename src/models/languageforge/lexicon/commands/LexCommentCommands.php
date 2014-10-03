@@ -2,7 +2,7 @@
 
 namespace models\languageforge\lexicon\commands;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 use models\languageforge\lexicon\LexCommentModel;
 use models\languageforge\lexicon\LexCommentReply;
 use models\languageforge\lexicon\LexiconProjectModel;
