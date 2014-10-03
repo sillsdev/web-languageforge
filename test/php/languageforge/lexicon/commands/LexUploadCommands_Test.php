@@ -26,10 +26,10 @@ class TestLexUploadCommands extends UnitTestCase
         $filePath = $folderPath . '/' . $response->data->fileName;
         $projectSlug = $project->databaseName();
 
-        $this->assertTrue($response->result);
-        $this->assertPattern("/lexicon\/$projectSlug\/pictures/", $response->data->path);
-        $this->assertPattern("/$fileName/", $response->data->fileName);
-        $this->assertTrue(file_exists($filePath));
+        $this->assertTrue($response->result, 'Import should succeed');
+        $this->assertPattern("/lexicon\/$projectSlug\/pictures/", $response->data->path, 'Imported LIFT file path should be in the right location');
+        $this->assertPattern("/$fileName/", $response->data->fileName, 'Imported LIFT fileName should contain the original fileName');
+        $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
 
         $environ->cleanupTestFiles($assetsFolderPath);
     }
@@ -49,12 +49,11 @@ class TestLexUploadCommands extends UnitTestCase
         $assetsFolderPath = $project->getAssetsFolderPath();
         $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
         $filePath = $folderPath . '/' . $response->data->fileName;
-        $projectSlug = $project->databaseName();
 
-        $this->assertTrue($response->result);
-        $this->assertPattern("/$fileName/", $response->data->fileName);
-        $this->assertPattern("/(?<!\d)\d{14}(?!\d)/", $response->data->fileName);
-        $this->assertTrue(file_exists($filePath));
+        $this->assertTrue($response->result, 'Import should succeed');
+        $this->assertPattern("/$fileName/", $response->data->fileName, 'Imported LIFT fileName should contain the original fileName');
+        $this->assertPattern("/(?<!\d)\d{14}(?!\d)/", $response->data->fileName, 'Imported LIFT fileName should have a timestamp fileName prefix');
+        $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
 
         $environ->cleanupTestFiles($assetsFolderPath);
     }
@@ -66,29 +65,23 @@ class TestLexUploadCommands extends UnitTestCase
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $fileName = 'TestImage.jpg';
-        $tmpFilePath = $environ->uploadFile(TestPath . "common/TestImage.tif", $fileName);
+        $tmpFilePath = $environ->uploadFile(TestPath . 'common/TestImage.tif', 'TestImage.jpg');
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $assetsFolderPath = $project->getAssetsFolderPath();
-        $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
-        $projectSlug = $project->databaseName();
+        $this->assertFalse($response->result, 'Import should not succeed');
+        $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
+        $this->assertPattern('/not an allowed image file/', $response->data->errorMessage, 'Error message should match the error');
 
-        $this->assertFalse($response->result);
-        $this->assertEqual('UserMessage', $response->data->errorType);
-        $this->assertPattern('/not an allowed image file/', $response->data->errorMessage);
-
-        $fileName = 'TestImage.tif';
-        $tmpFilePath = $environ->uploadFile(TestPath . "common/TestImage.jpg", $fileName);
+        $tmpFilePath = $environ->uploadFile(TestPath . 'common/TestImage.jpg', 'TestImage.tif');
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $this->assertFalse($response->result);
-        $this->assertEqual('UserMessage', $response->data->errorType);
-        $this->assertPattern('/not an allowed image file/', $response->data->errorMessage);
+        $this->assertFalse($response->result, 'Import should not succeed');
+        $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
+        $this->assertPattern('/not an allowed image file/', $response->data->errorMessage, 'Error message should match the error');
 
-        $environ->cleanupTestFiles($assetsFolderPath);
+        $environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 
     public function testUploadAudio_SpecialCharInFileName_SpecialCharReplaced()
@@ -98,21 +91,14 @@ class TestLexUploadCommands extends UnitTestCase
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $fileName = '/\\?%*:|"<>.jpg';
-        $tmpFilePath = $environ->uploadFile(TestPath . "common/TestImage.jpg", $fileName);
+        $tmpFilePath = $environ->uploadFile(TestPath . "common/TestImage.jpg", '/\\?%*:|"<>.jpg');
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $assetsFolderPath = $project->getAssetsFolderPath();
-        $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
-        $filePath = $folderPath . '/' . $response->data->fileName;
-        $projectSlug = $project->databaseName();
-        $fileName = '__________.jpg';
+        $this->assertTrue($response->result, 'Import should succeed');
+        $this->assertPattern('/__________.jpg/', $response->data->fileName, 'fileName should have all its special characters replaced with underscores');
 
-        $this->assertTrue($response->result);
-        $this->assertPattern("/$fileName/", $response->data->fileName);
-
-        $environ->cleanupTestFiles($assetsFolderPath);
+        $environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 
     public function testDeleteImageFile_JpgFile_FileDeleted()
@@ -127,19 +113,19 @@ class TestLexUploadCommands extends UnitTestCase
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $this->assertTrue($response->result);
+        $this->assertTrue($response->result, 'Import should succeed');
 
         $assetsFolderPath = $project->getAssetsFolderPath();
         $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
         $fileName = $response->data->fileName;
         $filePath = $folderPath . '/' . $fileName;
 
-        $this->assertTrue(file_exists($filePath));
+        $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
 
         $response = LexUploadCommands::deleteMediaFile($projectId, 'sense-image', $fileName);
 
-        $this->assertTrue($response->result);
-        $this->assertFalse(file_exists($filePath));
+        $this->assertTrue($response->result, 'Import should succeed');
+        $this->assertFalse(file_exists($filePath), 'Imported LIFT file should be deleted');
 
         $environ->cleanupTestFiles($assetsFolderPath);
     }
@@ -233,5 +219,48 @@ EOD;
         $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
 
         $environ->cleanupTestUploadFiles();
+    }
+
+    public function testImportLift_JpgFile_UploadDisallowed()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
+
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $tmpFilePath =  $environ->uploadLiftFile(self::liftOneEntryV0_13, 'OneEntryV0_13.jpg', LiftMergeRule::IMPORT_LOSES);
+
+        $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
+
+        $this->assertFalse($response->result, 'Import should not succeed');
+        $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
+        $this->assertPattern('/not an allowed LIFT file/', $response->data->errorMessage, 'Error message should match the error');
+
+        $tmpFilePath = $environ->uploadFile(TestPath . 'common/TestImage.jpg', 'TestImage.lift');
+
+        $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
+
+        $this->assertFalse($response->result, 'Import should not succeed');
+        $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
+        $this->assertPattern('/not an allowed LIFT file/', $response->data->errorMessage, 'Error message should match the error');
+
+        $environ->cleanupTestFiles($project->getAssetsFolderPath());
+    }
+
+    public function testImportLift_SpecialCharInFileName_SpecialCharReplaced()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
+
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $tmpFilePath =  $environ->uploadLiftFile(self::liftOneEntryV0_13, '/\\?%*:|"<>.lift', LiftMergeRule::IMPORT_LOSES);
+
+        $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
+
+        $this->assertTrue($response->result, 'Import should succeed');
+        $this->assertPattern('/__________.lift/', $response->data->fileName, 'fileName should have all its special characters replaced with underscores');
+
+        $environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 }
