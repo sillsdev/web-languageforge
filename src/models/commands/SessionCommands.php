@@ -30,6 +30,7 @@ class SessionCommands
             $sessionData['project']['id'] = (string) $projectId;
             $sessionData['project']['projectName'] = $project->projectName;
             $sessionData['project']['ownerRef'] = $project->ownerRef->asString();
+            $sessionData['project']['slug'] = $project->databaseName();
             $sessionData['userProjectRights'] = $project->getRightsArray($userId);
             $sessionData['projectSettings'] = $project->getPublicSettings($userId);
         }

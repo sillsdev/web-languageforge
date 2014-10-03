@@ -2,7 +2,7 @@
 
 namespace models\mapper;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 
 class MapperModel
 {

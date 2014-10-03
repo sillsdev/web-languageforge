@@ -6,6 +6,10 @@
         },
         {
             "type": "vcs",
+            "url": "https://github.com/sillsdev/web-php-utilities"
+        },
+        {
+            "type": "vcs",
             "url": "https://github.com/sillsdev/simpletest"
         }
     ],
@@ -18,6 +22,7 @@
     },
     "require-dev": {
         "simpletest/simpletest": "dev-master-sil",
-        "phpunit/phpunit": "~4.2.5"
+        "phpunit/phpunit": "~4.2.5",
+        "sillsdev/web-php-utilities": "dev-master"
     }
 }

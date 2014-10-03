@@ -1,20 +1,17 @@
 <?php
-
 namespace models\shared\dto;
 
-use models\shared\rights\Operation;
-
+use libraries\shared\Website;
 use models\shared\rights\Domain;
-
+use models\shared\rights\Operation;
+use models\shared\rights\SiteRoles;
+use models\shared\rights\SystemRoles;
 use models\ProjectModel;
 use models\UserModel;
 
-use models\shared\rights\SiteRoles;
-use models\shared\rights\SystemRoles;
-use libraries\shared\Website;
-
 class RightsHelper
 {
+
     /**
      *
      * @var string
@@ -58,7 +55,7 @@ class RightsHelper
     {
         $userModel = new UserModel($userId);
 
-        return SiteRoles::hasRight($userModel->siteRole, $right);
+        return (SiteRoles::hasRight($userModel->siteRole, $right) || SystemRoles::hasRight($userModel->role, $right));
     }
 
     /**
@@ -95,8 +92,7 @@ class RightsHelper
     {
         $userModel = new UserModel($this->_userId);
 
-        return (SiteRoles::hasRight($userModel->siteRole, $right) ||
-                SystemRoles::hasRight($userModel->role, $right));
+        return (SiteRoles::hasRight($userModel->siteRole, $right) || SystemRoles::hasRight($userModel->role, $right));
     }
 
     /**
@@ -112,7 +108,8 @@ class RightsHelper
     /**
      *
      * @param string $methodName
-     * @param array $params - parameters passed to the method
+     * @param array $params
+     *            - parameters passed to the method
      * @return boolean
      */
     public function userCanAccessMethod($methodName, $params)
@@ -191,6 +188,9 @@ class RightsHelper
             case 'text_archive':
             case 'text_publish':
                 return $this->userHasProjectRight(Domain::TEXTS + Operation::ARCHIVE);
+
+            case 'sfChecks_uploadFile':
+                return $this->userHasProjectRight(Domain::TEXTS + Operation::EDIT);
 
             case 'question_update':
             case 'question_read':
@@ -272,7 +272,7 @@ class RightsHelper
             case 'lex_dbeDtoUpdatesOnly':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
 
-            //case 'lex_entry_read':
+            // case 'lex_entry_read':
             case 'lex_entry_update':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 
@@ -295,6 +295,10 @@ class RightsHelper
 
             case 'lex_optionlist_update':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+
+            case 'lex_uploadImageFile':
+            case 'lex_project_removeMediaFile':
+                return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 
             default:
                 throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");

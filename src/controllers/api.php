@@ -2,12 +2,6 @@
 
 class api extends CI_Controller
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    // TODO add in security controller when that's available CP 2013-06
     public function service($api)
     {
         $serviceFileName = strtolower($api) . '.php';
