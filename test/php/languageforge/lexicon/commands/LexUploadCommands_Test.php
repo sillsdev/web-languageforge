@@ -31,7 +31,7 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertPattern("/$fileName/", $response->data->fileName);
         $this->assertTrue(file_exists($filePath));
 
-        $environ->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath);
+        $environ->cleanupTestFiles($assetsFolderPath);
     }
 
     public function testUploadImageFile_JpgFileUpperCaseExt_UploadAllowed()
@@ -56,7 +56,7 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertPattern("/(?<!\d)\d{14}(?!\d)/", $response->data->fileName);
         $this->assertTrue(file_exists($filePath));
 
-        $environ->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath);
+        $environ->cleanupTestFiles($assetsFolderPath);
     }
 
     public function testUploadImageFile_TifFile_UploadDisallowed()
@@ -88,7 +88,7 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertEqual('UserMessage', $response->data->errorType);
         $this->assertPattern('/not an allowed image file/', $response->data->errorMessage);
 
-        $environ->cleanupTestFiles($assetsFolderPath, $folderPath, '');
+        $environ->cleanupTestFiles($assetsFolderPath);
     }
 
     public function testUploadAudio_SpecialCharInFileName_SpecialCharReplaced()
@@ -112,7 +112,7 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertTrue($response->result);
         $this->assertPattern("/$fileName/", $response->data->fileName);
 
-        $environ->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath);
+        $environ->cleanupTestFiles($assetsFolderPath);
     }
 
     public function testDeleteImageFile_JpgFile_FileDeleted()
@@ -141,7 +141,7 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertTrue($response->result);
         $this->assertFalse(file_exists($filePath));
 
-        $environ->cleanupTestFiles($assetsFolderPath, $folderPath, $filePath);
+        $environ->cleanupTestFiles($assetsFolderPath);
     }
 
     public function testDeleteImageFile_UnsupportedMediaType_Throw()

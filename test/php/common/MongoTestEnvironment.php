@@ -5,6 +5,7 @@ use models\UserModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\shared\rights\ProjectRoles;
 use models\shared\rights\SystemRoles;
+use Palaso\Utilities\FileUtilities;
 
 require_once TestPath . 'common/MockProjectModel.php';
 
@@ -213,43 +214,15 @@ class MongoTestEnvironment
      * Cleanup test files and folders
      *
      * @param string $assetsFolderPath
-     * @param string $folderPath
-     * @param string $filePath
      */
-    public function cleanupTestFiles($assetsFolderPath, $folderPath, $filePath)
+    public function cleanupTestFiles($assetsFolderPath)
     {
         $this->cleanupTestUploadFiles();
-//         $this->recursiveRemoveFolder($assetsFolderPath);
-
-        if (file_exists($filePath) and ! is_dir($filePath)) {
-            @unlink($filePath);
-        }
-        if (file_exists($folderPath) and is_dir($folderPath)) {
-            @rmdir($folderPath);
-        }
-        if (file_exists($assetsFolderPath) and is_dir($assetsFolderPath)) {
-            @rmdir($assetsFolderPath);
-        }
+        FileUtilities::removeFolderAndAllContents($assetsFolderPath);
     }
 
     /**
-     *
-     * @param string $folderPath
-     */
-    public function recursiveRemoveFolder($folderPath)
-    {
-        foreach (glob("{$folderPath}/*") as $file) {
-            if (is_dir($file)) {
-                $this->recursiveRemoveFolder($file);
-            } else {
-                unlink($file);
-            }
-        }
-        rmdir($folderPath);
-    }
-
-    /**
-     * Cleanup test upload files
+     * Cleanup test (simulated) uploaded files
      */
     public function cleanupTestUploadFiles()
     {
