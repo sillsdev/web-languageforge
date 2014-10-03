@@ -69,7 +69,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $this->assertFalse($response->result, 'Import should not succeed');
+        $this->assertFalse($response->result, 'Import should fail');
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertPattern('/not an allowed image file/', $response->data->errorMessage, 'Error message should match the error');
 
@@ -77,7 +77,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $this->assertFalse($response->result, 'Import should not succeed');
+        $this->assertFalse($response->result, 'Import should fail');
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertPattern('/not an allowed image file/', $response->data->errorMessage, 'Error message should match the error');
 
@@ -232,7 +232,7 @@ EOD;
 
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
 
-        $this->assertFalse($response->result, 'Import should not succeed');
+        $this->assertFalse($response->result, 'Import should fail');
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertPattern('/not an allowed LIFT file/', $response->data->errorMessage, 'Error message should match the error');
 
@@ -240,7 +240,7 @@ EOD;
 
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
 
-        $this->assertFalse($response->result, 'Import should not succeed');
+        $this->assertFalse($response->result, 'Import should fail');
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertPattern('/not an allowed LIFT file/', $response->data->errorMessage, 'Error message should match the error');
 

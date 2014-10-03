@@ -178,6 +178,23 @@ class MongoTestEnvironment
     }
 
     /**
+     * Simulate the upload of a Text audio file
+     *
+     * @param string $filePathToCopy
+     * @param string $fileName
+     * @param string $textId
+     * @return string $tmpFilePath
+     */
+    public function uploadTextAudioFile($filePathToCopy, $fileName, $textId)
+    {
+        $_FILES['file'] = array();
+        $_FILES['file']['name'] = $fileName;
+        $_POST['textId'] = $textId;
+
+        return $this->copyTestUploadFile($filePathToCopy);
+    }
+
+    /**
      * Simulate the upload of a file
      *
      * @param string $filePathToCopy
@@ -293,7 +310,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
      * @param LiftMergeRule $mergeRule
      * @param string $skipSameModTime
      * @param string $deleteMatchingEntry
-     * @return string
+     * @return string $tmpFilePath
      */
     public function uploadLiftFile($liftXml, $fileName, $mergeRule, $skipSameModTime = false, $deleteMatchingEntry = false)
     {
