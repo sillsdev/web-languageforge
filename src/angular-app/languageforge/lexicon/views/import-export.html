@@ -47,12 +47,12 @@
                             {{'Delete matching entry if deleted in import.' | translate}}</label>
                     </div>
                 </div>
-                <button ng-disabled="upload.importStarted" class="btn btn-primary" data-ng-click="importLift()">
+                <button data-ng-disabled="upload.importStarted" class="btn btn-primary" data-ng-click="importLift()">
                     <i class="icon-upload"></i>{{'Import' | translate}}</button>
                 <strong> {{upload.file.name}}</strong> ({{upload.file.size | bytes}})
                 <div data-ng-show="upload.importStarted">
                     <br />
-                    <progressbar value="upload.progress" data-max="100.0"></progressbar>
+                    <progressbar class="span4" value="upload.progress" max="100.0">{{upload.progress}}%</progressbar>
                 </div>
             </form>
         </div>

@@ -43,11 +43,7 @@ form.dc-pictures form.dc-multitext .controls input[type="text"] {
     width: 95px;
 }
 
-.drop-box {
-    border: 4px dashed #e67345;
-}
-
-.upload.drop-box {
+form.dc-pictures .drop-box {
     width: 142px;
     height: 142px;
     padding-top: 0px;
@@ -55,6 +51,6 @@ form.dc-pictures form.dc-multitext .controls input[type="text"] {
     margin-bottom: 20px;
 }
 
-.progress {
+form.dc-pictures .progress {
     width: 150px;
 }
