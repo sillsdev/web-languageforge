@@ -53,7 +53,8 @@ function LiftImportCtrl($scope, $upload, notice, lexProjectService, $filter, $lo
         $scope.upload.file = null;
       });
     } else {
-      notice.push(notice.ERROR, $scope.upload.file['name'] + " is too large.");
+      notice.push(notice.ERROR, "<b>" + $scope.upload.file.name + "</b> (" + $filter('bytes')($scope.upload.file.size) + 
+          ") is too large. It must be smaller than " + $filter('bytes')(ss.fileSizeMax()) + ".");
       $scope.upload.progress = 0;
       $scope.upload.file = null;
     }
