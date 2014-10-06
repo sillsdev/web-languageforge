@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <lift
 	version="0.13"
 	producer="WeSay 1.0.0.0">
@@ -9,11 +9,7 @@
 		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>chùuchìi mǔu krɔ̂ɔp</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>chùuchìi mǔu krɔ̂ɔp</text>
 			</form>
 			<form
@@ -47,11 +43,7 @@
 		guid="05473cb0-4165-4923-8d81-02f8b8ed3f26">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>khâaw kài thɔ̂ɔt</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>khâaw kài thɔ̂ɔt</text>
 			</form>
 			<form
@@ -85,11 +77,7 @@
 		guid="0a830d20-04cf-43ae-8690-d99363f314b1">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>krapâw mǔu</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>krapâw mǔu</text>
 			</form>
 			<form
@@ -114,13 +102,13 @@
 			</definition>
 			<example>
 				<form
-					lang="qaa-x-v">
+					lang="th">
 					<text>la</text>
 				</form>
 			</example>
 			<example>
 				<form
-					lang="x-v">
+					lang="th">
 					<text>la</text>
 				</form>
 			</example>
@@ -142,11 +130,7 @@
 		guid="118bce18-a6c5-49d2-a5e0-a74cb1365169">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>phàt siiʔ ǐw mǔu</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>phàt siiʔ ǐw mǔu</text>
 			</form>
 			<form
@@ -178,11 +162,7 @@
 		guid="4319d395-e0bb-40dd-981c-95f8059ef85f">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>kài phàt métmàmùaŋ</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>kài phàt métmàmùaŋ</text>
 			</form>
 			<form
@@ -207,13 +187,13 @@
 			</definition>
 			<example>
 				<form
-					lang="qaa-x-v">
+					lang="th">
 					<text>la</text>
 				</form>
 			</example>
 			<example>
 				<form
-					lang="x-v">
+					lang="th">
 					<text>la</text>
 				</form>
 			</example>
@@ -231,11 +211,7 @@
 		guid="7ccf400b-733a-4774-ada8-fe3308e406d8">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>cèt khǔnsʉ̀k phàt phrìk phǎw</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>cèt khǔnsʉ̀k phàt phrìk phǎw</text>
 			</form>
 			<form
