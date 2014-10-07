@@ -8,7 +8,7 @@ use models\languageforge\lexicon\Sense;
 use models\mapper\JsonEncoder;
 use models\commands\ProjectCommands;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once dirname(__FILE__) . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 
