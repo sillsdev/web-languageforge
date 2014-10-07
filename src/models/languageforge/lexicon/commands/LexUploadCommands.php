@@ -79,7 +79,8 @@ class LexUploadCommands
 
             // move uploaded file from tmp location to assets
             $filePath = self::mediaFilePath($folderPath, $entryId, $fileName);
-            $moveOk = rename($tmpFilePath, $filePath);
+            $moveOk = copy($tmpFilePath, $filePath);
+            @unlink($tmpFilePath);
 
             // update database with file location
             $entry = new LexEntryModel($project, $entryId);
@@ -185,7 +186,8 @@ class LexUploadCommands
 
             // move uploaded file from tmp location to assets
             $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
-            $moveOk = rename($tmpFilePath, $filePath);
+            $moveOk = copy($tmpFilePath, $filePath);
+            @unlink($tmpFilePath);
 
             // construct server response
             if ($moveOk && $tmpFilePath) {
@@ -376,7 +378,8 @@ class LexUploadCommands
                 $filePath =  $folderPath . '/' . $fileName;
                 $project->liftFilePath = $filePath;
                 $project->write();
-                $moveOk = rename($tmpFilePath, $filePath);
+                $moveOk = copy($tmpFilePath, $filePath);
+                @unlink($tmpFilePath);
             }
 
 

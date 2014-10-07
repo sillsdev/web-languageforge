@@ -77,7 +77,8 @@ class SfchecksUploadCommands
 
             // move uploaded file from tmp location to assets
             $filePath = self::mediaFilePath($folderPath, $textId, $fileName);
-            $moveOk = rename($tmpFilePath, $filePath);
+            $moveOk = copy($tmpFilePath, $filePath);
+            @unlink($tmpFilePath);
 
             // update database with file location
             $text = new TextModel($project, $textId);

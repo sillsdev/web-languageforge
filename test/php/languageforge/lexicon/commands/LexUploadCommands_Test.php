@@ -41,7 +41,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $fileName = 'TestImage.JPG';
+        $fileName = 'TestImage.jpg';
         $tmpFilePath = $environ->uploadFile(TestPath . "common/$fileName", $fileName);
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
