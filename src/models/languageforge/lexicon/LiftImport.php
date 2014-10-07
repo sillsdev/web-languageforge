@@ -9,14 +9,15 @@ use models\languageforge\lexicon\config\LexiconConfigObj;
 class LiftImport
 {
     /**
-     * @param string $xml
+     * @param string $liftFilePath
      * @param LexiconProjectModel $projectModel
      * @param LiftMergeRule $mergeRule
      * @param boolean $skipSameModTime
      * @throws \Exception
      */
-    public static function merge($xml, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
+    public static function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
     {
+        ini_set('max_execution_time', 90); // Sufficient time to import webster.  TODO Make this async CP 2014-10
 //         self::validate($xml);    // TODO Fix. The XML Reader validator doesn't work with <optional> in the RelaxNG schema. IJH 2014-03
 
         $entryList = new LexEntryListModel($projectModel);
@@ -39,7 +40,7 @@ class LiftImport
         }
 
         $reader = new \XMLReader();
-        $reader->XML($xml);
+        $reader->open($liftFilePath);
 
         $liftDecoder = new LiftDecoder($projectModel);
 
@@ -86,6 +87,8 @@ class LiftImport
                 }
             }
         }
+
+        $reader->close();
 
         if ($initialImport) {
             // replace part of speech option list with values from imported data

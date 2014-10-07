@@ -4,7 +4,7 @@ use models\languageforge\lexicon\commands\LexCommentCommands;
 use models\languageforge\lexicon\LexCommentModel;
 use models\languageforge\lexicon\LexCommentListModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once dirname(__FILE__) . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

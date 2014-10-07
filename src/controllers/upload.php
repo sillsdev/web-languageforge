@@ -41,6 +41,12 @@ class Upload extends Secure_base
                             $tmpFilePath
                         ));
                         $response = $api->lex_uploadImageFile($mediaType, $tmpFilePath);
+                    } elseif ($mediaType === 'import-lift') {
+                        $api->checkPermissions('lex_upload_importLift', array(
+                            $mediaType,
+                            $tmpFilePath
+                        ));
+                        $response = $api->lex_upload_importLift($mediaType, $tmpFilePath);
                     } else {
                         throw new Exception("Unsupported upload type: $mediaType");
                     }
