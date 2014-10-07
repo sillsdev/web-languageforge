@@ -1029,13 +1029,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sillsdev/web-php-utilities.git",
-                "reference": "74277ba91c9019707f64a9af303908f98f609837"
+                "reference": "8b314d78cbea5eabc525e34c585c70c80a3819e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/74277ba91c9019707f64a9af303908f98f609837",
-                "reference": "74277ba91c9019707f64a9af303908f98f609837",
+                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/8b314d78cbea5eabc525e34c585c70c80a3819e5",
+                "reference": "8b314d78cbea5eabc525e34c585c70c80a3819e5",
                 "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.2.5"
             },
             "type": "library",
             "autoload": {
@@ -1048,7 +1051,7 @@
                 "source": "https://github.com/sillsdev/web-php-utilities/tree/master",
                 "issues": "https://github.com/sillsdev/web-php-utilities/issues"
             },
-            "time": "2014-10-03 01:45:09"
+            "time": "2014-10-06 03:58:17"
         },
         {
             "name": "simpletest/simpletest",
