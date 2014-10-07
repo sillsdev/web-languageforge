@@ -7,11 +7,11 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 
 	// Rights
 	$scope.rights = {};
-	$scope.rights.edit = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT); 
-	$scope.rights.archive = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE); 
+	$scope.rights.edit = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
+	$scope.rights.archive = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE);
 	$scope.rights.create = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.CREATE);
 	$scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create;
-	$scope.newProject = {};
+	$scope.newProject = {wizardStep: 1, maxWizardSteps: 2};
 
 
 	// Listview Selection
@@ -29,7 +29,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 	$scope.isSelected = function(item) {
 		return item != null && $scope.selected.indexOf(item) >= 0;
 	};
-	
+
 	// Listview Data
 	$scope.projects = [];
 	$scope.queryProjectsForUser = function() {
@@ -41,7 +41,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 			}
 		});
 	};
-	
+
 	// Archive projects
 	$scope.archiveProjects = function() {
 		var projectIds = [];
@@ -74,17 +74,44 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 			});
 		});
 	};
-	
-	// Add new project
+
+	// Add new project wizard
+	$scope.newProjectWizardForward = function() {
+      if ($scope.currentStepIsValid()) {
+        $scope.newProject.wizardStep = Math.min($scope.newProject.wizardStep + 1, $scope.newProject.maxWizardSteps);
+      }
+	};
+	$scope.newProjectWizardBack = function() {
+      if ($scope.currentStepIsValid()) {
+        $scope.newProject.wizardStep = Math.max($scope.newProject.wizardStep - 1, 1);
+      }
+	};
+	$scope.currentStepIsValid = function() {
+	  switch ($scope.newProject.wizardStep) {
+	  case 1:
+	    return $scope.projectCodeState == 'ok';
+	  case 2:
+	    return true;
+	  default:
+	    return false;
+	  }
+	}
 	$scope.addProject = function() {
 		projectService.create($scope.newProject.projectName, $scope.newProject.projectCode, $scope.newProject.appName, function(result) {
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "The " + $scope.newProject.projectName + " project was created successfully");
 				$scope.queryProjectsForUser();
-				$scope.newProject = {};
+				$scope.newProject = {wizardStep: 1, maxWizardSteps: 2};
 			}
 		});
 	};
+	$scope.$watch('newProject.projectName', function(newval, oldval) {
+	  if (angular.isUndefined(newval)) {
+	    $scope.newProject.calculatedProjectCode = '';
+	  } else if (newval != oldval) {
+	    $scope.newProject.calculatedProjectCode = newval.toLowerCase().replace(RegExp(' ', 'g'), '_');
+	  }
+	});
 
 	$scope.isInProject = function(project) {
 			if (project.role != 'none') {
@@ -128,19 +155,24 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
  	/*
 	// State of the projectCode being validated:
 	// 'empty'   : no project code entered
+	// 'auto'    : project code automatically calculated from name
 	// 'loading' : project code entered, being validated
 	// 'exist'   : project code already exists
-	// 'invalid' : project code does not meet the criteria of starting with a letter 
+	// 'invalid' : project code does not meet the criteria of starting with a letter
 	//				and only containing lower-case letters, numbers, or dashes
 	// 'ok'      : project code valid and unique
 	*/
 	$scope.projectCodeState = 'empty';
-	
+
 	// Check projectCode is unique and valid
 	$scope.checkProjectCode = function() {
-		// valid pattern start with a letter and only containing lower-case letters, numbers, or dashes 
+		// valid pattern start with a letter and only containing lower-case letters, numbers, or dashes
 		var patt = /^[a-z][a-z0-9\-_]*$/;
-		
+		if ($scope.projectCodeState == 'empty') {
+		  $scope.newProject.projectCode = $scope.newProject.calculatedProjectCode;
+		  $scope.projectCodeState = 'auto';
+		}
+
 		if (patt.test($scope.newProject.projectCode)) {
 			$scope.projectCodeState = 'loading';
 			projectService.projectCodeExists($scope.newProject.projectCode, function(result) {
@@ -156,7 +188,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 			$scope.projectCodeState = 'invalid';
 		}
 	};
-	
+
 	$scope.projectTypeNames = projectService.data.projectTypeNames;
 	$scope.projectTypesBySite = projectService.data.projectTypesBySite;
 
