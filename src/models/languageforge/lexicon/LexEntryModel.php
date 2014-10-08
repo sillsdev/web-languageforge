@@ -96,7 +96,7 @@ class LexEntryModel extends \models\mapper\MapperModel
             case 'etymologyGloss':
             case 'etymologyComment':
             case 'etymologySource':
-            case 'note':
+            case 'note':  // TODO Notes need to be an array, and more capable than a multi-text. Notes have types. CP 2014-10
             case 'literalMeaning':
             case 'entryBibliography':
             case 'entryRestrictions':

@@ -11,4 +11,8 @@ class LexiconField
 
     public $value;
 
+    public function __toString() {
+        return $this->value;
+    }
+
 }

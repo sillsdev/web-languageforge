@@ -52,6 +52,17 @@ gulp.task('test-php', function(cb) {
   });
 });
 
+gulp.task('test-local', function(cb) {
+  execute('php test/php/languageforge/lexicon/LiftImportFlex_Test.php', function(err) {
+    cb(null);
+  });
+  
+});
+
+gulp.task('test-local-watch', function() {
+  gulp.watch(["./src/**/*.php", "./test/php/languageforge/lexicon/**/*.php", "!./src/vendor/"], ['test-local']);
+})
+
 var coverageFolder = 'src/vendor/simpletest/simpletest/extensions/coverage/';
 gulp.task('coverage-open', function(cb) {
   var options = {
