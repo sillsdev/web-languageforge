@@ -9,6 +9,7 @@ use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LiftImport;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\languageforge\LfProjectModel;
+use Palaso\Utilities\FileUtilities;
 
 class LexUploadCommands
 {
@@ -39,20 +40,7 @@ class LexUploadCommands
         $fileType = finfo_file($finfo, $tmpFilePath);
         finfo_close($finfo);
 
-        // replace special characters with _
-        $search = array(
-            '/',
-            '\\',
-            '?',
-            '%',
-            '*',
-            ':',
-            '|',
-            '"',
-            '<',
-            '>'
-        );
-        $fileName = str_replace($search, '_', $fileName);
+        $fileName = FileUtilities::replaceSpecialCharacters($fileName);
 
         $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
 
@@ -70,9 +58,7 @@ class LexUploadCommands
             // make the folders if they don't exist
             $project = new LfProjectModel($projectId);
             $folderPath = $project->getAssetsFolderPath() . '/audio';
-            if (! file_exists($folderPath) and ! is_dir($folderPath)) {
-                mkdir($folderPath, 0777, true);
-            }
+            FileUtilities::createAllFolders($folderPath);
 
             // cleanup previous files of any allowed extension
             self::cleanupFiles($folderPath, $entryId, $allowedExtensions);
@@ -146,20 +132,7 @@ class LexUploadCommands
         $fileType = finfo_file($finfo, $tmpFilePath);
         finfo_close($finfo);
 
-        // replace special characters with _
-        $search = array(
-            '/',
-            '\\',
-            '?',
-            '%',
-            '*',
-            ':',
-            '|',
-            '"',
-            '<',
-            '>'
-        );
-        $fileName = str_replace($search, '_', $fileName);
+        $fileName = FileUtilities::replaceSpecialCharacters($fileName);
 
         $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
 
@@ -180,9 +153,7 @@ class LexUploadCommands
             // make the folders if they don't exist
             $project = new LfProjectModel($projectId);
             $folderPath = self::imageFolderPath($project->getAssetsFolderPath());
-            if (! file_exists($folderPath) and ! is_dir($folderPath)) {
-                mkdir($folderPath, 0777, true);
-            }
+            FileUtilities::createAllFolders($folderPath);
 
             // move uploaded file from tmp location to assets
             $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
@@ -328,20 +299,7 @@ class LexUploadCommands
         $fileType = finfo_file($finfo, $tmpFilePath);
         finfo_close($finfo);
 
-        // replace special characters with _
-        $search = array(
-            '/',
-            '\\',
-            '?',
-            '%',
-            '*',
-            ':',
-            '|',
-            '"',
-            '<',
-            '>'
-        );
-        $fileName = str_replace($search, '_', $fileName);
+        $fileName = FileUtilities::replaceSpecialCharacters($fileName);
 
         $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
         $allowedTypes = array(
@@ -358,9 +316,7 @@ class LexUploadCommands
             // make the folders if they don't exist
             $project = new LexiconProjectModel($projectId);
             $folderPath = $project->getAssetsFolderPath();
-            if (! file_exists($folderPath) and ! is_dir($folderPath)) {
-                mkdir($folderPath, 0777, true);
-            }
+            FileUtilities::createAllFolders($folderPath);
 
             LiftImport::merge($tmpFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
             $project->write();
