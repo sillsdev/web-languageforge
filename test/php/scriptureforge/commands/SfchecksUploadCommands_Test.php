@@ -2,6 +2,7 @@
 use models\scriptureforge\sfchecks\commands\SfchecksUploadCommands;
 use models\TextModel;
 use models\mapper\Id;
+use Palaso\Utilities\FileUtilities;
 
 require_once (dirname(__FILE__) . '/../../TestConfig.php');
 require_once (SimpleTestPath . 'autorun.php');
@@ -72,7 +73,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
 
         $this->assertFalse($response->result, 'Import should fail');
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
-        $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage, 'Error message should match the error');
+        $this->assertPattern('/Ensure the file is a .mp3/', $response->data->errorMessage, 'Error message should match the error');
 
         $tmpFilePath = $environ->uploadTextAudioFile(TestPath . 'common/TestAudio.mp3', 'TestAudio.wav', $textId);
 
@@ -80,27 +81,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
 
         $this->assertFalse($response->result, 'Import should fail');
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
-        $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage, 'Error message should match the error');
-
-        $environ->cleanupTestFiles($project->getAssetsFolderPath());
-    }
-
-    function testUploadAudio_SpecialCharInFileName_SpecialCharReplaced()
-    {
-        $environ = new MongoTestEnvironment();
-        $environ->clean();
-
-        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $projectId = $project->write();
-        $text = new TextModel($project);
-        $textId = $text->write();
-        $tmpFilePath = $environ->uploadTextAudioFile(TestPath . 'common/TestAudio.mp3', '/\\?%*:|"<>.mp3', $textId);
-
-        $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
-
-        $text->read($textId);
-        $this->assertTrue($response->result, 'Import should succeed');
-        $this->assertEqual('__________.mp3', $text->audioFileName);
+        $this->assertPattern('/Ensure the file is a .mp3/', $response->data->errorMessage, 'Error message should match the error');
 
         $environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
@@ -118,9 +99,8 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $fakeTextId = $fakeId->asString();
 
         $folderPath = $project->getAssetsFolderPath();
-        if (! file_exists($folderPath) and ! is_dir($folderPath)) {
-            mkdir($folderPath, 0777, true);
-        }
+        FileUtilities::createAllFolders($folderPath);
+
         $allowedExtensions = array(
             ".mp2",
             ".mp3"
