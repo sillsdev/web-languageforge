@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice', 'palaso.ui.utils', 'wc.Directives'])
-.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', 'modalService', '$window',
-                             function($scope, projectService, ss, notice, modalService, $window) {
+angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice', 'palaso.ui.utils', 'palaso.ui.language', 'wc.Directives', 'pascalprecht.translate'])
+.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', 'modalService', '$modal', '$window',
+                             function($scope, projectService, ss, notice, modalService, $modal, $window) {
 	$scope.finishedLoading = false;
 
 	// Rights
@@ -11,8 +11,8 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 	$scope.rights.archive = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE);
 	$scope.rights.create = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.CREATE);
 	$scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create;
-	$scope.newProject = {wizardStep: 1, maxWizardSteps: 2};
-
+	$scope.newProject = {};
+    $scope.newProjectWizard = {step: 1, maxSteps: 3};
 
 	// Listview Selection
 	$scope.newProjectCollapsed = true;
@@ -78,20 +78,22 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 	// Add new project wizard
 	$scope.newProjectWizardForward = function() {
       if ($scope.currentStepIsValid()) {
-        $scope.newProject.wizardStep = Math.min($scope.newProject.wizardStep + 1, $scope.newProject.maxWizardSteps);
+        $scope.newProjectWizard.step = Math.min($scope.newProjectWizard.step + 1, $scope.newProjectWizard.maxSteps);
       }
 	};
 	$scope.newProjectWizardBack = function() {
       if ($scope.currentStepIsValid()) {
-        $scope.newProject.wizardStep = Math.max($scope.newProject.wizardStep - 1, 1);
+        $scope.newProjectWizard.step = Math.max($scope.newProjectWizard.step - 1, 1);
       }
 	};
 	$scope.currentStepIsValid = function() {
-	  switch ($scope.newProject.wizardStep) {
+	  switch ($scope.newProjectWizard.step) {
 	  case 1:
 	    return $scope.projectCodeState == 'ok';
 	  case 2:
 	    return true;
+      case 3:
+        return true;
 	  default:
 	    return false;
 	  }
@@ -101,15 +103,48 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 			if (result.ok) {
 				notice.push(notice.SUCCESS, "The " + $scope.newProject.projectName + " project was created successfully");
 				$scope.queryProjectsForUser();
-				$scope.newProject = {wizardStep: 1, maxWizardSteps: 2};
+				$scope.newProject = {};
+				$scope.newProjectWizard.step = 1;
 			}
 		});
 	};
+	$scope.setLanguage = function(languageCode, language) {
+	  $scope.newProject.languageCode = languageCode;
+	  $scope.newProject.languageName = language.name;
+	};
+	  $scope.openNewLanguageModal = function openNewLanguageModal() {
+	    // TODO: Rewrite this to use our modalService, passing in $scope.selected variable. 2014-10 RM
+	    var modalInstance = $modal.open({
+	      templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
+	      controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+	        $scope.selected = {
+	          code: '',
+	          language: {}
+	        };
+	        $scope.add = function() {
+	          $modalInstance.close($scope.selected);
+	        };
+	      }]
+	    });
+	    modalInstance.result.then(function(selected) {
+	      console.log('Modal result:', selected);
+	      $scope.setLanguage(selected.code, selected.language);
+	    });
+	    /* Rewritten version should look something like:
+        modalService.showModal({
+          templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
+        }).then(function(result) {
+          console.log('Modal result:', result);
+          $scope.setLanguage(result.code, result.language);
+        });
+        */
+	  };
+
 	$scope.$watch('newProject.projectName', function(newval, oldval) {
 	  if (angular.isUndefined(newval)) {
 	    $scope.newProject.calculatedProjectCode = '';
 	  } else if (newval != oldval) {
-	    $scope.newProject.calculatedProjectCode = newval.toLowerCase().replace(RegExp(' ', 'g'), '_');
+	    $scope.newProject.calculatedProjectCode = newval.toLowerCase().replace(/ /g, '_');
 	  }
 	});
 
@@ -147,12 +182,11 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 		});
 	};
 
- $scope.resetValidateProjectForm = function resetValidateProjectForm() {
+  $scope.resetValidateProjectForm = function resetValidateProjectForm() {
+    $scope.projectCodeState = 'empty';
+  };
 
-	 $scope.projectCodeState = 'empty';
- };
-
- 	/*
+	/*
 	// State of the projectCode being validated:
 	// 'empty'   : no project code entered
 	// 'auto'    : project code automatically calculated from name
