@@ -80,7 +80,7 @@ class LiftImport
                 } else {
                     if (isset($sxeNode->{'lexical-unit'})) {
                         $entry = new LexEntryModel($projectModel);
-                        $liftDecoder->decode($sxeNode, $entry, $mergeRule);
+                        $liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
                         $entry->write();
                         self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
                     }
