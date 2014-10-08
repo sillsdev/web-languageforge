@@ -20,8 +20,8 @@
         </form>
         <div class="new-item" data-collapse="newProjectCollapsed">
             <form class="well" class="form-horizontal" name="newProjectForm">
-            <div data-ng-switch on="newProject.wizardStep">
-            <span>Currently on step {{newProject.wizardStep}}</span>
+            <div data-ng-switch on="newProjectWizard.step">
+            <span>Currently on step {{newProjectWizard.step}}</span>
             <div data-ng-switch-when="1">
                 <div class="control-group">
                    <input type="text" data-ng-model="newProject.projectName" set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name" idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
@@ -36,6 +36,11 @@
                     </span>
                 </div>
                 <div class="control-group">
+                    <span translate="Primary language:"></span>
+                    <span data-ng-show="newProject.languageCode"> {{newProject.languageName}} ({{newProject.languageCode}})</span>
+                    <a class="btn" data-ng-click="openNewLanguageModal()">Select</a>
+                </div>
+                <div class="control-group">
                     <select ng-hide="projectTypesBySite().length == 1" required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
                         <option value="">-- Select Type --</option>
                     </select>
@@ -43,6 +48,11 @@
             </div>
 
             <div data-ng-switch-when="2">
+                <span>Step 2: upload initial data</span>
+                <span>(not yet implemented)</span>
+            </div>
+
+            <div data-ng-switch-when="3">
                 <div class="control-group">
                     <button type="submit" class="btn" data-ng-disabled="!(newProject.projectName && newProject.projectCode && (projectCodeState == 'ok') && newProject.appName)" data-ng-click="addProject(); newProjectCollapsed = true; checkProjectCode()"><i class="icon-ok"></i>Save</button>
                 </div>
