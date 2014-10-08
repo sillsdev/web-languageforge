@@ -84,23 +84,6 @@ class TestLexUploadCommands extends UnitTestCase
         $environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 
-    public function testUploadAudio_SpecialCharInFileName_SpecialCharReplaced()
-    {
-        $environ = new LexiconMongoTestEnvironment();
-        $environ->clean();
-
-        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $projectId = $project->id->asString();
-        $tmpFilePath = $environ->uploadFile(TestPath . "common/TestImage.jpg", '/\\?%*:|"<>.jpg');
-
-        $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
-
-        $this->assertTrue($response->result, 'Import should succeed');
-        $this->assertPattern('/__________.jpg/', $response->data->fileName, 'fileName should have all its special characters replaced with underscores');
-
-        $environ->cleanupTestFiles($project->getAssetsFolderPath());
-    }
-
     public function testDeleteImageFile_JpgFile_FileDeleted()
     {
         $environ = new LexiconMongoTestEnvironment();
@@ -243,23 +226,6 @@ EOD;
         $this->assertFalse($response->result, 'Import should fail');
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertPattern('/not an allowed LIFT file/', $response->data->errorMessage, 'Error message should match the error');
-
-        $environ->cleanupTestFiles($project->getAssetsFolderPath());
-    }
-
-    public function testImportLift_SpecialCharInFileName_SpecialCharReplaced()
-    {
-        $environ = new LexiconMongoTestEnvironment();
-        $environ->clean();
-
-        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $projectId = $project->id->asString();
-        $tmpFilePath =  $environ->uploadLiftFile(self::liftOneEntryV0_13, '/\\?%*:|"<>.lift', LiftMergeRule::IMPORT_LOSES);
-
-        $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
-
-        $this->assertTrue($response->result, 'Import should succeed');
-        $this->assertPattern('/__________.lift/', $response->data->fileName, 'fileName should have all its special characters replaced with underscores');
 
         $environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
