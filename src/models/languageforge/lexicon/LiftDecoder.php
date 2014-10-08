@@ -24,11 +24,11 @@ class LiftDecoder
      * @param LiftMergeRule $mergeRule
      * @throws \Exception
      */
-    public function decode($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES)
+    public function decode($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $entryExists = true)
     {
         $lexicalForms = $sxeNode->{'lexical-unit'};
         if ($lexicalForms) {
-            if ($mergeRule != LiftMergeRule::IMPORT_LOSES) {
+            if ($mergeRule != LiftMergeRule::IMPORT_LOSES || ! $entryExists) {
                 $entry->guid = (string) $sxeNode['guid'];
                 $entry->authorInfo->createdDate = new \DateTime((string) $sxeNode['dateCreated']);
                 $entry->authorInfo->modifiedDate = new \DateTime((string) $sxeNode['dateModified']);
