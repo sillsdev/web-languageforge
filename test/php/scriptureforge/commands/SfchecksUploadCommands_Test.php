@@ -72,7 +72,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
 
         $this->assertFalse($response->result, 'Import should fail');
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
-        $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage, 'Error message should match the error');
+        $this->assertPattern('/Ensure the file is a .mp3/', $response->data->errorMessage, 'Error message should match the error');
 
         $tmpFilePath = $environ->uploadTextAudioFile(TestPath . 'common/TestAudio.mp3', 'TestAudio.wav', $textId);
 
@@ -80,7 +80,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
 
         $this->assertFalse($response->result, 'Import should fail');
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
-        $this->assertPattern('/Ensure the file is an .mp3/', $response->data->errorMessage, 'Error message should match the error');
+        $this->assertPattern('/Ensure the file is a .mp3/', $response->data->errorMessage, 'Error message should match the error');
 
         $environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
