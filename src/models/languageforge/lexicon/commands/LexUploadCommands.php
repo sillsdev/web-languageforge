@@ -272,6 +272,89 @@ class LexUploadCommands
     }
 
     /**
+     * Upload an initial project zip file
+     *
+     * @param string $projectId
+     * @param string $mediaType
+     * @param string $tmpFilePath
+     * @throws \Exception
+     * @return \models\shared\commands\UploadResponse
+     */
+    public static function uploadProjectZip($projectId, $mediaType, $tmpFilePath)
+    {
+        if ($mediaType != 'lex-project') {
+            throw new \Exception("Unsupported upload type.");
+        }
+        if (! $tmpFilePath) {
+            throw new \Exception("Upload controller did not move the uploaded file.");
+        }
+
+        $file = $_FILES['file'];
+        $fileName = $file['name'];
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $fileType = finfo_file($finfo, $tmpFilePath);
+        finfo_close($finfo);
+
+        $fileName = FileUtilities::replaceSpecialCharacters($fileName);
+
+        $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
+
+        $allowedTypes = array(
+            "application/zip",
+            "application/octet-stream",
+            "application/x-7z-compressed"
+        );
+        $allowedExtensions = array(
+            ".zip",
+            ".zipx",
+            ".7z"
+        );
+
+        $response = new UploadResponse();
+        if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
+
+            // make the folders if they don't exist
+            $project = new LfProjectModel($projectId);
+            $folderPath = $project->getAssetsFolderPath();
+            FileUtilities::createAllFolders($folderPath);
+
+            // move uploaded file from tmp location to assets
+            $filePath =  $folderPath . '/' . $fileName;
+            $moveOk = copy($tmpFilePath, $filePath);
+            @unlink($tmpFilePath);
+
+            // construct server response
+            if ($moveOk && $tmpFilePath) {
+                $data = new MediaResult();
+                $data->path = $project->getAssetsPath();
+                $data->fileName = $fileName;
+                $response->result = true;
+            } else {
+                $data = new ErrorResult();
+                $data->errorType = 'UserMessage';
+                $data->errorMessage = "$fileName could not be saved to the right location. Contact your Site Administrator.";
+                $response->result = false;
+            }
+        } else {
+            $allowedExtensionsStr = implode(", ", $allowedExtensions);
+            $data = new ErrorResult();
+            $data->errorType = 'UserMessage';
+            if (count($allowedExtensions) < 1) {
+                $data->errorMessage = "$fileName is not an allowed compressed file. No compressed file formats are currently enabled, contact your Site Administrator.";
+            } elseif (count($allowedExtensions) == 1) {
+                $data->errorMessage = "$fileName is not an allowed compressed file. Ensure the file is a $allowedExtensionsStr.";
+            } else {
+                $data->errorMessage = "$fileName is not an allowed compressed file. Ensure the file is one of the following types: $allowedExtensionsStr.";
+            }
+            $response->result = false;
+        }
+
+        $response->data = $data;
+        return $response;
+    }
+
+    /**
      * Import a LIFT file
      *
      * @param string $projectId
