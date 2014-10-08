@@ -655,7 +655,8 @@ class sf
 
     public function lex_upload_importLift($mediaType, $tmpFilePath)
     {
-        return LexUploadCommands::importLiftFile($this->_projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::importLiftFile($this->_projectId, $mediaType, $tmpFilePath);
+        return JsonEncoder::encode($response);
     }
 
     // ---------------------------------------------------------------
