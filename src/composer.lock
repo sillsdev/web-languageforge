@@ -1029,12 +1029,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sillsdev/web-php-utilities.git",
-                "reference": "8b314d78cbea5eabc525e34c585c70c80a3819e5"
+                "reference": "1ddc6669ebfce55106b52692204bd90f74a20f15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/8b314d78cbea5eabc525e34c585c70c80a3819e5",
-                "reference": "8b314d78cbea5eabc525e34c585c70c80a3819e5",
+                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/1ddc6669ebfce55106b52692204bd90f74a20f15",
+                "reference": "1ddc6669ebfce55106b52692204bd90f74a20f15",
                 "shasum": ""
             },
             "require-dev": {
@@ -1051,7 +1051,7 @@
                 "source": "https://github.com/sillsdev/web-php-utilities/tree/master",
                 "issues": "https://github.com/sillsdev/web-php-utilities/issues"
             },
-            "time": "2014-10-06 03:58:17"
+            "time": "2014-10-08 07:01:43"
         },
         {
             "name": "simpletest/simpletest",
@@ -1179,9 +1179,7 @@
             "time": "2014-09-22 09:14:18"
         }
     ],
-    "aliases": [
-
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "twig/extensions": 20,
@@ -1191,10 +1189,6 @@
         "sillsdev/web-php-utilities": 20
     },
     "prefer-stable": false,
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "platform": [],
+    "platform-dev": []
 }
