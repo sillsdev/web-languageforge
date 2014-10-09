@@ -4,6 +4,8 @@
 angular.module('lexicon', 
   [
     'ngRoute',
+    'ngSanitize',
+    'textAngular',
     'dbe',
     'meaning',
     'examples',
