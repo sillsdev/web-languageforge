@@ -18,6 +18,17 @@ form.dc-multitext .wsid {
     text-align: right;
 }
 
+.ta-editor {
+    min-height: 300px;
+    height: auto;
+    overflow: auto;
+    font-family: inherit;
+    font-size: 100%;
+    margin:20px 0;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+}
+
 /*
 input[type="text"] {
     -webkit-box-sizing: border-box;‌​
