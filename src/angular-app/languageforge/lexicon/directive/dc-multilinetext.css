@@ -37,3 +37,11 @@ div.dc-multilinetext .ta-editor span:hover {
     padding-left: 5px;
     padding-right: 5px;
 }
+
+/* auto hide the toolbar when not selected (focussed) */
+.ta-root .ta-toolbar {
+    display: none; 
+}
+.ta-root.focussed .ta-toolbar {
+    display: block;
+}
