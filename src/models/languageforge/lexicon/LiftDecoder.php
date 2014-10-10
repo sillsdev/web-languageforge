@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon;
 
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\mapper\ArrayOf;
+use Palaso\Utilities\CodeGuard;
 
 class LiftDecoder
 {
@@ -50,7 +51,7 @@ class LiftDecoder
                 case 'etymology':
                    $entry->etymology = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGY]->inputSystems);
                     if ($element->{'gloss'}) {
-                        $entry->etymologyGloss = $this->readMultiTextGloss($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGYGLOSS]->inputSystems);
+                        $this->readMultiTextGloss($element->gloss, $entry->etymologyGloss, $this->_projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGYGLOSS]->inputSystems);
                     }
                     foreach ($element->{'field'} as $field) {
                         if ($field['type'] == 'comment') {
@@ -62,13 +63,32 @@ class LiftDecoder
                     break;
                 case 'pronunciation':
                     $entry->pronunciation = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::PRONUNCIATION]->inputSystems);
-                    // TODO Medeia (i.e. audio) is not yet implememnted in LanguageForge. There is a media element in the pronunciation element that would have an audio file name. CP 2014-10
+                    if ($element->{'media'}) {
+                        $report->addUnhandledMedia($element->{'media'}['href'], 'pronunciation');
+                    }
                     break;
                 case 'field':
-                    $report->addUnhandledField($element['type']);
+                    switch ($element['type']) {
+                        case 'literal-meaning':
+                            $entry->literalMeaning = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::LITERALMEANING]->inputSystems);
+                            break;
+                        case 'summary-definition':
+                            $entry->summaryDefinition = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::SUMMARYDEFINITION]->inputSystems);
+                            break;
+                        case 'import-residue': // Currently ignored in LanguageForge
+                            break;
+                        default:
+                            $report->addUnhandledField($element['type']);
+                    }
                     break;
                 case 'trait':
-                    $report->addUnhandledTrait($element['name']);
+                    switch ($element['name']) {
+                        case 'morph-type':
+                            $entry->morphologyType = (string)$element['value'];
+                            break;
+                        default:
+                            $report->addUnhandledTrait($element['name']);
+                    }
                     break;
                 case 'sense':
                     $liftId = '';
@@ -121,7 +141,7 @@ class LiftDecoder
                     $sense->definition = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems);
                     break;
                 case 'gloss':
-                    $sense->gloss = $this->readMultiTextGloss($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems);
+                    $this->readMultiTextGloss($element, $sense->gloss, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems);
                     break;
 
                 case 'note':
@@ -142,12 +162,20 @@ class LiftDecoder
                         case 'semantic-domain-ddp4':
                             $sense->semanticDomain->value((string) $element['value']);
                             break;
+//                         case 'anthro-code':
+//                             $sense->anthropologyCategories
+
                         default:
                             $report->addUnhandledTrait($element['name']);
                     }
                     break;
                 case 'field':
                     switch ($element['type']) {
+                        case 'import-residue': // Currently ignored by LanguageForge
+                            break;
+                        case 'scientific-name':
+                            $sense->scientificName = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME]->inputSystems);
+                            break;
                         default:
                             $report->addUnhandledField($element['type']);
                     }
@@ -218,26 +246,24 @@ class LiftDecoder
     /**
      * Reads a MultiText from the XmlNode $sxeNode given by the element 'gloss'
      * @param SimpleXMLElement $sxeNode
+     * @param MultiText $multiText
      * @param ArrayOf $inputSystems
      * @return MultiText
      */
-    public function readMultiTextGloss($sxeNode, $inputSystems = null)
+    public function readMultiTextGloss($sxeNode, $multiText, $inputSystems = null)
     {
-        $multiText = new MultiText();
-        if (isset($sxeNode->gloss)) {
-            foreach ($sxeNode->gloss as $form) {
-                $inputSystemTag = (string) $form['lang'];
-                $multiText->form($inputSystemTag, (string) $form->text);
-
-                $this->_projectModel->addInputSystem($inputSystemTag);
-                // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
-                if (isset($inputSystems)) {
-                    // i.e. $inputSystems->ensureFieldHasInputSystem($inputSystemTag);
-                    $inputSystems->value($inputSystemTag);
-                }
-            }
+        CodeGuard::checkTypeAndThrow($multiText, 'models\languageforge\lexicon\MultiText');
+        if ($sxeNode->getName() != 'gloss') {
+            throw new \Exception("'" . $sxeNode->getName() . "' is not a gloss");
         }
+        $inputSystemTag = (string) $sxeNode['lang'];
+        $multiText->form($inputSystemTag, (string) $sxeNode->text);
 
-        return $multiText;
+        $this->_projectModel->addInputSystem($inputSystemTag);
+        // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
+        if (isset($inputSystems)) {
+            // i.e. $inputSystems->ensureFieldHasInputSystem($inputSystemTag);
+            $inputSystems->value($inputSystemTag);
+        }
     }
 }

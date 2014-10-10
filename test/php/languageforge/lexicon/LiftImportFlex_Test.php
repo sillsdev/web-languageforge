@@ -4,6 +4,9 @@ use models\languageforge\lexicon\LiftImport;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\Sense;
+use models\languageforge\lexicon\Example;
+use models\mapper\ArrayOf;
+use models\languageforge\lexicon\LexiconMultiValueField;
 
 require_once dirname(__FILE__) . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -154,7 +157,7 @@ class TestLiftImportFlex extends UnitTestCase
 <example>
 <form lang="th"><text>ใหท่ มี</text></form>
 <translation type="Free translation">
-<form lang="en"><text>A Tranalstion</text></form>
+<form lang="en"><text>A Translation</text></form>
 </translation>
 </example>
 <trait name ="semantic-domain-ddp4" value="9.1.3.1 Physical, non-physical"/>
@@ -261,9 +264,31 @@ EOD;
         $this->assertEqual($entry0->etymologyGloss['en'], 'A Etymology Gloss');
         $this->assertEqual($entry0->etymologyComment['en'], 'A Etymology Comment');
         $this->assertEqual($entry0->pronunciation['th'], 'คาม');
+        $this->assertEqual($entry0->morphologyType, 'stem');
+        $this->assertEqual($entry0->literalMeaning['en'], 'A Literal Meaning');
+
+        /* @var $sense00 Sense */
         $sense00 = $entry0->senses[0];
-//         var_dump($sense00);
+
+        $this->assertEqual($sense00->partOfSpeech->value, 'Noun');
+        $this->assertEqual($sense00->gloss['en']->value, 'A Word');
         $this->assertEqual($sense00->definition['en']->value, 'A Word Defn');
+
+        /* @var $example000 Example */
+        $example000 = $sense00->examples[0];
+//         var_dump($example000);
+        $this->assertEqual($example000->sentence['th'], 'ใหท่ มี');
+        $this->assertEqual($example000->translation['en']->value, 'A Translation');
+
+        $expected = LexiconMultiValueField::createFromArray(array('9.1.3.1 Physical, non-physical'));
+        $this->assertEqual($sense00->semanticDomain, $expected);
+
+        $expected = LexiconMultiValueField::createFromArray(array('901'));
+        $this->assertEqual($sense00->anthropologyCategories, $expected);
+
+//         $this->assertEqual($example000->, $second)
+
+//         $this->assertEqual($sense00->scientificName, 'Noun');
 
 //         var_dump($entry0->senses);
 

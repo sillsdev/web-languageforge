@@ -60,7 +60,7 @@ gulp.task('test-local', function(cb) {
 });
 
 gulp.task('test-local-watch', function() {
-  gulp.watch(["./src/**/*.php", "./test/php/languageforge/lexicon/**/*.php", "!./src/vendor/"], ['test-local']);
+  gulp.watch(["./src/models/**/*.php", "./src/libraries/**/*.php", "./test/php/languageforge/lexicon/**/*.php", "!./src/vendor/"], ['test-local']);
 })
 
 var coverageFolder = 'src/vendor/simpletest/simpletest/extensions/coverage/';
