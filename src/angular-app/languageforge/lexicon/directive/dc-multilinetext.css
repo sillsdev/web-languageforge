@@ -1,0 +1,17 @@
+.ta-editor {
+    min-height: 300px;
+    height: auto;
+    overflow: auto;
+    font-family: inherit;
+    font-size: 100%;
+    margin:20px 0;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+}
+
+.ta-editor span:hover {
+    border: 1px solid #3DDDDD;
+    border-radius: 9px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
