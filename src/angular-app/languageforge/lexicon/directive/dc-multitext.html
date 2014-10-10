@@ -3,15 +3,10 @@
         <label data-ng-show="$first && config.type != 'pictures'"
             class="control-label">{{config.label}}</label>
         <div class="controls">
-            <div data-ng-show="config.displayMultiline">
-                <div data-text-angular
-                    ta-disabled="! (control.state == 'edit' && control.rights.canEditEntry())"
-                    dir="{{inputSystemDirection(tag)}}" width="{{config.width}}"
-                    placeholder="click here to create this note"
-                    data-ng-model="model[tag].value"></div>
-                <!-- DEBUG <input dir="{{inputSystemDirection(tag)}}" style="width: 400px;"
-                    type="text" data-ng-model="model[tag].value" /> -->
-            </div>
+            <dc-multilinetext data-ng-show="config.displayMultiline"
+                mlt-disabled="! (control.state == 'edit' && control.rights.canEditEntry())"
+                mlt-dir="inputSystemDirection(tag)"
+                mlt-model="model[tag].value"></dc-multilinetext>
             <div class="input-prepend" data-ng-click="selectInputSystem(tag)"
                 data-ng-show="! config.displayMultiline"
                 data-ng-class="{selectableInputSystemFieldForComment: control.state == 'comment' && control.rights.canComment()}">
