@@ -8,15 +8,17 @@ angular.module('palaso.ui.dc.multilinetext', ['textAngular'])
 
     // $delegate is the taOptions we are decorating
     // register the tool with textAngular
-    taRegisterTool('colourRed', {
-      iconclass: "fa fa-square red",
-      action: function() {
-        this.$editor().wrapSelection('forecolor', 'red');
-      }
+    taRegisterTool('languageSpan', {
+      iconclass: 'fa fa-language fa-lg',
+      tooltiptext: 'Language span',
+      action: function(){
+        return this.$editor().wrapSelection("formatBlock", "<SPAN>");
+      },
+      activeState: function(){ return this.$editor().queryFormatBlockState('span'); }
     });
 
     // add the button to the default toolbar definition
-    taOptions.toolbar[0].push('colourRed');
+    taOptions.toolbar[0].push('languageSpan');
     return taOptions;
   }]);
 })
