@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('palaso.ui.dc.multitext', ['bellows.services'])
+angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.dc.multilinetext'])
+
 // Dictionary Control Multitext
 .directive('dcMultitext', [function() {
   return {
@@ -28,8 +29,6 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services'])
         });
       };
 
-    }],
-    link: function(scope, element, attrs, controller) {
-    }
+    }]
   };
 }]);
