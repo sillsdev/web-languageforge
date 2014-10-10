@@ -1,5 +1,10 @@
-div.dc-multilinetext, div.dc-multilinetext .ta-root {
+div.dc-multilinetext, 
+div.dc-multilinetext .ta-root {
     display: inline-block;
+}
+
+div.dc-multilinetext .input-prepend {
+    line-height: normal;
 }
 
 div.dc-multilinetext .add-on.wsid {
@@ -23,23 +28,30 @@ div.dc-multilinetext .ta-editor {
     margin: 0;
 }
 
-div.dc-multilinetext .ta-editor, div.dc-multilinetext .ta-scroll-window > .ta-bind {
+div.dc-multilinetext .ta-editor, 
+div.dc-multilinetext .ta-scroll-window > .ta-bind {
     min-height: 60px;
 }
 
-div.dc-multilinetext .ta-scroll-window > .ta-bind {
+div.dc-multilinetext .ta-root textarea {
+    width: 164px;
+}
+
+div.dc-multilinetext .ta-scroll-window > .ta-bind,
+div.dc-multilinetext .ta-root textarea {
     padding: 4px 6px;
 }
 
 div.dc-multilinetext .ta-editor span {
-    border: 1px solid transparent;
+    /*border: 1px solid transparent;*/
+    border-radius: 9px;
     padding-left: 5px;
     padding-right: 5px;
 }
 
 div.dc-multilinetext .ta-editor span:hover {
-    border: 1px solid #3DDDDD;
-    border-radius: 9px;
+    /*border: 1px solid #ADDDDD;*/
+    background-color: #ADDDDD;
 }
 
 /* auto hide the toolbar when not selected (focussed) */
