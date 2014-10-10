@@ -31,11 +31,15 @@ div.dc-multilinetext .ta-scroll-window > .ta-bind {
     padding: 4px 6px;
 }
 
+div.dc-multilinetext .ta-editor span {
+    border: 1px solid transparent;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
 div.dc-multilinetext .ta-editor span:hover {
     border: 1px solid #3DDDDD;
     border-radius: 9px;
-    padding-left: 5px;
-    padding-right: 5px;
 }
 
 /* auto hide the toolbar when not selected (focussed) */
