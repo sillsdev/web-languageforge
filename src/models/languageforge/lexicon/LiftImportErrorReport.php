@@ -61,6 +61,15 @@ class LiftImportErrorReport
         );
     }
 
+    public function addUnhandledMedia($url, $context)
+    {
+        $this->errors[] = array(
+            'error' => 'UnhandledMedia',
+            'url' => $url,
+            'context' => $context
+        );
+    }
+
     public function addUnhandledNote($noteType)
     {
         $this->errors[] = array(
@@ -85,6 +94,9 @@ class LiftImportErrorReport
                     break;
                 case 'UnhandledNote':
                     $msg .= ", unhandled note '" . $error['type'] . "'";
+                    break;
+                case 'UnhandledMedia':
+                    $msg .= ", unhandled media '" . $error['url'] . "' in " . $error['context'];
                     break;
                 default:
                     throw new \Exception("Unknown error type '" . $error['error'] . "' while processing guid '" . $this->guid . "'");
