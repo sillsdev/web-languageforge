@@ -6,16 +6,23 @@ use models\mapper\ArrayOf;
 
 class LexiconMultiValueField
 {
+
+    public static function createFromArray($values) {
+        $field = new LexiconMultiValueField();
+        $field->values = new ArrayOf();
+        $field->values->exchangeArray($values);
+        return $field;
+    }
+
     /**
      *
      * @var ArrayOf
      */
     public $values;
 
-    public function __construct($values = array())
+    public function __construct()
     {
         $this->values = new ArrayOf();
-        $this->values->exchangeArray($values);
     }
 
     public function value($value)
