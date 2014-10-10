@@ -17,6 +17,7 @@
         <link rel="stylesheet" href="/css/languageforge/default/lf.css" />
         <link rel="stylesheet" href="/css/languageforge/default/lexiquepro.css" />
         <link rel="icon" href="/images/languageforge/default/favicon.ico" type="image/x-icon" />
+        <link data-require="font-awesome@*" data-semver="4.2.0" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
         <link href="/css/shared/font-awesome.css" rel="stylesheet">
         <!--
         <link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700" rel="stylesheet" type="text/css">
