@@ -1,11 +1,12 @@
 <div class="dc-multilinetext">
-    <div data-text-angular
-        ta-disabled="mltDisabled"
-        dir="{{mltDir}}"
-        placeholder="click here to create content"
-        data-ng-model="mltModel"></div>
     <div class="input-prepend">
         <span class="add-on wsid"
             title="{{mltLanguageName}}">{{mltAbbreviation}}</span>
+        <div data-text-angular
+            data-ta-disabled="mltDisabled"
+            data-ta-toolbar="[['insertLink', 'languageSpan'], ['html']]"
+            dir="{{mltDir}}"
+            placeholder="click here to create content"
+            data-ng-model="mltModel"></div>
     </div>
 </div>

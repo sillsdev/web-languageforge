@@ -3,12 +3,6 @@
         <label data-ng-show="$first && config.type != 'pictures'"
             class="control-label">{{config.label}}</label>
         <div class="controls">
-            <dc-multilinetext data-ng-show="config.displayMultiline"
-                mlt-disabled="! (control.state == 'edit' && control.rights.canEditEntry())"
-                mlt-model="model[tag].value"
-                mlt-dir="inputSystemDirection(tag)"
-                mlt-language-name="inputSystems[tag].languageName"
-                mlt-abbreviation="inputSystems[tag].abbreviation"></dc-multilinetext>
             <div class="input-prepend" data-ng-click="selectInputSystem(tag)"
                 data-ng-show="! config.displayMultiline"
                 data-ng-class="{selectableInputSystemFieldForComment: control.state == 'comment' && control.rights.canComment()}">
@@ -27,6 +21,12 @@
                     data-ng-hide="control.state == 'edit' && control.rights.canEditEntry()"
                     data-ng-bind="model[tag].value"></span>
             </div>
+            <dc-multilinetext data-ng-show="config.displayMultiline"
+                mlt-disabled="! (control.state == 'edit' && control.rights.canEditEntry())"
+                mlt-model="model[tag].value"
+                mlt-dir="inputSystemDirection(tag)"
+                mlt-language-name="inputSystems[tag].languageName"
+                mlt-abbreviation="inputSystems[tag].abbreviation"></dc-multilinetext>
         </div>
     </div>
 </form>
