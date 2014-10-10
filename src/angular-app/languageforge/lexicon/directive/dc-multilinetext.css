@@ -1,12 +1,34 @@
+div.dc-multilinetext, div.dc-multilinetext .ta-root {
+    display: inline-block;
+}
+
+div.dc-multilinetext .add-on.wsid {
+    height: 60px;
+}
+
+div.dc-multilinetext .ta-toolbar {
+    float: right;
+    margin: 0 5px;
+}
+
 div.dc-multilinetext .ta-editor {
-    min-height: 300px;
+    width: 176px;
     height: auto;
     overflow: auto;
     font-family: inherit;
-    font-size: 100%;
-    margin:20px 0;
+    font-size: 14px;
+    white-space: normal;
     border: 1px solid #CCCCCC;
-    border-radius: 4px 4px 4px 0;
+    border-radius: 0 4px 4px 0;
+    margin: 0;
+}
+
+div.dc-multilinetext .ta-editor, div.dc-multilinetext .ta-scroll-window > .ta-bind {
+    min-height: 60px;
+}
+
+div.dc-multilinetext .ta-scroll-window > .ta-bind {
+    padding: 4px 6px;
 }
 
 div.dc-multilinetext .ta-editor span:hover {
@@ -14,14 +36,4 @@ div.dc-multilinetext .ta-editor span:hover {
     border-radius: 9px;
     padding-left: 5px;
     padding-right: 5px;
-}
-
-div.dc-multilinetext .ta-editor {
-    margin: 0px;
-}
-
-div.dc-multilinetext .add-on.wsid {
-    text-align: left;
-    border-radius: 0 0 4px 4px;
-    margin-top: -1px;
 }
