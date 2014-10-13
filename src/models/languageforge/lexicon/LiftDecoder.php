@@ -140,34 +140,8 @@ class LiftDecoder
                 case 'definition':
                     $sense->definition = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems);
                     break;
-                case 'gloss':
-                    $this->readMultiTextGloss($element, $sense->gloss, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems);
-                    break;
-
-                case 'note':
-                    switch($element['type']) {
-                        case '':
-                            $report->addUnhandledNote($element['type']);
-                            break;
-                        default:
-                            $report->addUnhandledNote($element['type']);
-                    }
-                    break;
-                case 'grammatical-info':
-                    // Part Of Speech
-                    $sense->partOfSpeech->value = (string)$element['value'];
-                    break;
-                case 'trait':
-                    switch ($element['name']) {
-                        case 'semantic-domain-ddp4':
-                            $sense->semanticDomain->value((string) $element['value']);
-                            break;
-//                         case 'anthro-code':
-//                             $sense->anthropologyCategories
-
-                        default:
-                            $report->addUnhandledTrait($element['name']);
-                    }
+                case 'example':
+                    $sense->examples[] = $this->readExample($element);
                     break;
                 case 'field':
                     switch ($element['type']) {
@@ -180,9 +154,52 @@ class LiftDecoder
                             $report->addUnhandledField($element['type']);
                     }
                     break;
-
-                case 'example':
-                    $sense->examples[] = $this->readExample($element);
+                case 'gloss':
+                    $this->readMultiTextGloss($element, $sense->gloss, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems);
+                    break;
+                case 'grammatical-info':
+                    // Part Of Speech
+                    $sense->partOfSpeech->value = (string)$element['value'];
+                    break;
+                case 'illustration':
+                    $picture = new Picture();
+                    $picture->fileName = (string) $element['href'];
+                    $picture->caption = $this->readMultiText($element->{'label'}, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems);
+                    $sense->pictures[] =  $picture;
+//                     $report->addUnhandledMedia($element['href'], 'illustration');
+                    break;
+                case 'note':
+                    switch($element['type']) {
+                        case '':
+                            $report->addUnhandledNote($element['type']);
+                            break;
+                        default:
+                            $report->addUnhandledNote($element['type']);
+                    }
+                    break;
+                case 'trait':
+                    switch ($element['name']) {
+                        case 'semantic-domain-ddp4':
+                            $sense->semanticDomain->value((string) $element['value']);
+                            break;
+                        case 'anthro-code':
+                            $sense->anthropologyCategories->value((string) $element['value']);
+                            break;
+                        case 'domain-type':
+                            $sense->academicDomains->value((string) $element['value']);
+                            break;
+                        case 'sense-type':
+                            $sense->senseType->value((string) $element['value']);
+                            break;
+                        case 'status':
+                            $sense->status->value((string) $element['value']);
+                            break;
+                        case 'usage-type':
+                            $sense->usages->value((string) $element['value']);
+                            break;
+                        default:
+                            $report->addUnhandledTrait($element['name']);
+                    }
                     break;
 
                 default:
