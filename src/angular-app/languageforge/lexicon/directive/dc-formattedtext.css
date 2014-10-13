@@ -1,13 +1,30 @@
-div.dc-formattedtext, 
-div.dc-formattedtext .ta-root {
+.dc-formattedtext {
+    display: block;
+}
+
+.dc-formattedtext .ta-root {
     display: inline-block;
+    background-color: white;
+    border: 1px solid white;
+    border-left: 1px solid #CCC;
+    margin-top: -1px;
+    margin-bottom: -1px;
+    margin-left: 1px;
+    margin-right: -1px;
 }
 
-div.dc-formattedtext .input-prepend {
+.dc-formattedtext .input-prepend {
     line-height: normal;
+    background-color: #EEE;
+    border: 1px solid #CCC;
+    border-radius: 4px 0 0 4px;
 }
 
-div.dc-formattedtext .ta-toolbar {
+.dc-formattedtext .add-on.wsid {
+    border: 0;
+}
+
+.dc-formattedtext .ta-toolbar {
     float: right;
     margin-top: 0;
     margin-bottom: 0;
@@ -15,30 +32,33 @@ div.dc-formattedtext .ta-toolbar {
     margin-right: 5px;
 }
 
-div.dc-formattedtext .ta-editor {
+.dc-formattedtext .ta-editor {
     width: 176px;
     height: auto;
     overflow: auto;
     font-family: inherit;
     font-size: 14px;
     white-space: normal;
-    border: 1px solid #CCCCCC;
+    border: 1px solid #CCC;
+    border-left: 0;
     border-radius: 0 4px 4px 0;
-    margin: 0;
+    margin-top: -1px;
+    margin-bottom: -1px;
+    margin-left: 0;
+    margin-right: 0;
 }
 
-div.dc-formattedtext .add-on.wsid,
-div.dc-formattedtext .ta-editor, 
-div.dc-formattedtext .ta-scroll-window > .ta-bind {
+.dc-formattedtext .ta-editor, 
+.dc-formattedtext .ta-scroll-window > .ta-bind {
     min-height: 60px;
 }
 
-div.dc-formattedtext .ta-root textarea {
+.dc-formattedtext .ta-root textarea {
     width: 165px;
 }
 
-div.dc-formattedtext .ta-scroll-window > .ta-bind,
-div.dc-formattedtext .ta-root textarea {
+.dc-formattedtext .ta-scroll-window > .ta-bind,
+.dc-formattedtext .ta-root textarea {
     padding-top: 4px;
     padding-bottom: 4px;
     padding-left: 6px;
@@ -46,13 +66,13 @@ div.dc-formattedtext .ta-root textarea {
 }
 
 /* language span highlight */
-div.dc-formattedtext .ta-editor span {
+.dc-formattedtext .ta-editor span {
     /*border: 1px solid transparent;*/
     border-radius: 9px;
     padding-left: 5px;
     padding-right: 5px;
 }
-div.dc-formattedtext .ta-editor span:hover {
+.dc-formattedtext .ta-editor span:hover {
     /*border: 1px solid #ADDDDD;*/
     background-color: #ADDDDD;
 }
