@@ -7,6 +7,9 @@ use models\languageforge\lexicon\Sense;
 use models\languageforge\lexicon\Example;
 use models\mapper\ArrayOf;
 use models\languageforge\lexicon\LexiconMultiValueField;
+use models\languageforge\lexicon\LexiconField;
+use models\languageforge\lexicon\Picture;
+use models\languageforge\lexicon\MultiText;
 
 require_once dirname(__FILE__) . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -209,9 +212,9 @@ class TestLiftImportFlex extends UnitTestCase
 <trait  name="usage-type" value="colloquial"/>
 <illustration href="Desert.jpg">
 <label>
-<form lang="th"><text></text></form>
-<form lang="en"><text></text></form>
-<form lang="fr"><text></text></form>
+<form lang="th"><text>รูป</text></form>
+<form lang="en"><text>image</text></form>
+<form lang="fr"><text>photo</text></form>
 </label>
 </illustration></sense>
 </entry>
@@ -274,47 +277,36 @@ EOD;
         $this->assertEqual($sense00->gloss['en']->value, 'A Word');
         $this->assertEqual($sense00->definition['en']->value, 'A Word Defn');
 
-        /* @var $example000 Example */
-        $example000 = $sense00->examples[0];
-//         var_dump($example000);
-        $this->assertEqual($example000->sentence['th'], 'ใหท่ มี');
-        $this->assertEqual($example000->translation['en']->value, 'A Translation');
-
         $expected = LexiconMultiValueField::createFromArray(array('9.1.3.1 Physical, non-physical'));
         $this->assertEqual($sense00->semanticDomain, $expected);
 
         $expected = LexiconMultiValueField::createFromArray(array('901'));
         $this->assertEqual($sense00->anthropologyCategories, $expected);
 
-//         $this->assertEqual($example000->, $second)
+        $expected = LexiconMultiValueField::createFromArray(array('applied linguistics'));
+        $this->assertEqual($sense00->academicDomains, $expected);
 
-//         $this->assertEqual($sense00->scientificName, 'Noun');
+        $expected = new LexiconField('primary');
+        $this->assertEqual($sense00->senseType, $expected);
 
-//         var_dump($entry0->senses);
+        $expected = LexiconMultiValueField::createFromArray(array('Tentative'));
+        $this->assertEqual($sense00->status, $expected);
 
-//         $this->assertEqual($entry0)
+        $expected = LexiconMultiValueField::createFromArray(array('colloquial'));
+        $this->assertEqual($sense00->usages, $expected);
 
+        $expected = new Picture();
+        $expected->fileName = 'Desert.jpg';
+        $expected->caption['th'] = 'รูป';
+        $expected->caption['en'] = 'image';
+        $expected->caption['fr'] = 'photo';
+        $this->assertEqual($sense00->pictures[0], $expected);
 
+        /* @var $example000 Example */
+        $example000 = $sense00->examples[0];
+        $this->assertEqual($example000->sentence['th'], 'ใหท่ มี');
+        $this->assertEqual($example000->translation['en']->value, 'A Translation');
 
-        /*
-        $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
-        $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp");
-        $this->assertEqual($entry0['lexeme']['th']['value'], "ฉู่ฉี่หมูกรอบ");
-        $this->assertEqual(count($entry0['senses']), 1);
-        $this->assertEqual($entry0['senses'][0]['definition']['en']['value'], "incorrect definition");
-        $this->assertEqual($entry0['senses'][0]['gloss']['en']['value'], "incorrect gloss");
-        $this->assertEqual($entry0['senses'][0]['gloss']['th']['value'], "th incorrect gloss");
-        $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Adjective");
-        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][0], "5.2 Food");
-        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][1], "1 Universe, creation");
-        $this->assertEqual($entry0['senses'][0]['examples'][0]['sentence']['th-fonipa']['value'], "sentence 1");
-        $this->assertEqual($entry0['senses'][0]['examples'][0]['translation']['en']['value'], "translation 1");
-        $this->assertEqual($entry0['senses'][0]['examples'][1]['sentence']['th-fonipa']['value'], "sentence 2");
-        $this->assertEqual($entry0['senses'][0]['examples'][1]['translation']['en']['value'], "translation 2");
-        $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
-        $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
-        $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
-        */
     }
 
 }

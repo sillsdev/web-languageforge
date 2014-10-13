@@ -25,6 +25,10 @@ class LexiconMultiValueField
         $this->values = new ArrayOf();
     }
 
+    /**
+     * Ensures that the value $value is set
+     * @param string $value
+     */
     public function value($value)
     {
         if ($this->values->array_search($value) === FALSE) {

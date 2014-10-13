@@ -59,12 +59,12 @@ class LiftImport
                     if (self::differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
                         if ($mergeRule == LiftMergeRule::CREATE_DUPLICATES) {
                             $entry = new LexEntryModel($projectModel);
-                            $liftDecoder->decode($sxeNode, $entry, $mergeRule);
+                            $liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
                             $entry->guid = '';
                             $entry->write();
                         } else {
                             if (isset($sxeNode->{'lexical-unit'})) {
-                                $liftDecoder->decode($sxeNode, $entry, $mergeRule);
+                                $liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
                                 $entry->write();
                             } elseif (isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
                                 LexEntryModel::remove($projectModel, $existingEntry['id']);
