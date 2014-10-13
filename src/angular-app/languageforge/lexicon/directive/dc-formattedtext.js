@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.multilinetext', ['textAngular'])
+angular.module('palaso.ui.dc.formattedtext', ['textAngular'])
 
 // Custom textAngular tool for language spans
 .config(function($provide) {
@@ -23,17 +23,17 @@ angular.module('palaso.ui.dc.multilinetext', ['textAngular'])
   }]);
 })
 
-// Dictionary Control Multi-Line Text Editor
-.directive('dcMultilinetext', [function() {
+// Dictionary Control Formatted Text Editor
+.directive('dcFormattedtext', [function() {
   return {
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/directive/dc-multilinetext.html',
+    templateUrl: '/angular-app/languageforge/lexicon/directive/dc-formattedtext.html',
     scope: {
-      mltModel: "=",
-      mltLanguageName: "=",
-      mltAbbreviation: "=",
-      mltDisabled: "=",
-      mltDir: "="
+      fteModel: "=",
+      fteLanguageName: "=",
+      fteAbbreviation: "=",
+      fteDisabled: "=",
+      fteDir: "="
     },
     controller: ['$scope', function($scope) {
 
