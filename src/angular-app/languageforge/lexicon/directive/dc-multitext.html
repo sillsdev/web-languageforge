@@ -21,12 +21,12 @@
                     data-ng-hide="control.state == 'edit' && control.rights.canEditEntry()"
                     data-ng-bind="model[tag].value"></span>
             </div>
-            <dc-multilinetext data-ng-show="config.displayMultiline"
-                mlt-disabled="! (control.state == 'edit' && control.rights.canEditEntry())"
-                mlt-model="model[tag].value"
-                mlt-dir="inputSystemDirection(tag)"
-                mlt-language-name="inputSystems[tag].languageName"
-                mlt-abbreviation="inputSystems[tag].abbreviation"></dc-multilinetext>
+            <dc-formattedtext data-ng-show="config.displayMultiline"
+                fte-disabled="! (control.state == 'edit' && control.rights.canEditEntry())"
+                fte-model="model[tag].value"
+                fte-dir="inputSystemDirection(tag)"
+                fte-language-name="inputSystems[tag].languageName"
+                fte-abbreviation="inputSystems[tag].abbreviation"></dc-formattedtext>
         </div>
     </div>
 </form>

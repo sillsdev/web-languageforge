@@ -1,0 +1,66 @@
+div.dc-formattedtext, 
+div.dc-formattedtext .ta-root {
+    display: inline-block;
+}
+
+div.dc-formattedtext .input-prepend {
+    line-height: normal;
+}
+
+div.dc-formattedtext .ta-toolbar {
+    float: right;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+div.dc-formattedtext .ta-editor {
+    width: 176px;
+    height: auto;
+    overflow: auto;
+    font-family: inherit;
+    font-size: 14px;
+    white-space: normal;
+    border: 1px solid #CCCCCC;
+    border-radius: 0 4px 4px 0;
+    margin: 0;
+}
+
+div.dc-formattedtext .add-on.wsid,
+div.dc-formattedtext .ta-editor, 
+div.dc-formattedtext .ta-scroll-window > .ta-bind {
+    min-height: 60px;
+}
+
+div.dc-formattedtext .ta-root textarea {
+    width: 165px;
+}
+
+div.dc-formattedtext .ta-scroll-window > .ta-bind,
+div.dc-formattedtext .ta-root textarea {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+/* language span highlight */
+div.dc-formattedtext .ta-editor span {
+    /*border: 1px solid transparent;*/
+    border-radius: 9px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+div.dc-formattedtext .ta-editor span:hover {
+    /*border: 1px solid #ADDDDD;*/
+    background-color: #ADDDDD;
+}
+
+/* auto hide the toolbar when not selected (focussed) */
+.ta-root .ta-toolbar {
+    display: none; 
+}
+.ta-root.focussed .ta-toolbar {
+    display: block;
+}
