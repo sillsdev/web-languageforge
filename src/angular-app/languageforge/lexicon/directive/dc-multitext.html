@@ -21,7 +21,7 @@
                     data-ng-hide="control.state == 'edit' && control.rights.canEditEntry()"
                     data-ng-bind="model[tag].value"></span>
             </div>
-            <dc-formattedtext data-ng-show="config.displayMultiline"
+            <dc-formattedtext class="dc-formattedtext" data-ng-show="config.displayMultiline"
                 fte-disabled="! (control.state == 'edit' && control.rights.canEditEntry())"
                 fte-model="model[tag].value"
                 fte-dir="inputSystemDirection(tag)"
