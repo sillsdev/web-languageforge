@@ -103,16 +103,19 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       }
       return html;
     }
+    
+    function getLanguageTag() {
+      return 'test';
+    }
 
     taRegisterTool('languageSpan', {
-      tooltiptext: 'Language span',
+      tooltiptext: 'Create language span',
       iconclass: 'fa fa-language fa-lg',
-      action: function() {
+      action: function createLanguageSpan() {
         var selectedHtml = getSelectionHtml(),
-            languageTag = 'test',
-            languageSpan;
+            languageTag = getLanguageTag();
         if (languageTag && languageTag !== '' && selectedHtml && selectedHtml !== '') {
-          languageSpan = '<span lang="' + languageTag + '">' + selectedHtml + '</span>';
+          var languageSpan = '<span lang="' + languageTag + '">' + selectedHtml + '</span>';
           return this.$editor().wrapSelection('insertHTML', languageSpan, false);
         }
       },
@@ -122,7 +125,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       onElementSelect: {
         element: 'span',
         action: function(event, $element, editorScope) {
-          console.log('select lang span');
+          console.log('select language span');
         }
       }
     });
@@ -147,6 +150,8 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       fteDir: "="
     },
     controller: ['$scope', 'sessionService', function($scope, ss) {
+      var inputSystems = ss.session.projectSettings.config.inputSystems;
+      
       $scope.fte = {};
       if (angular.isDefined($scope.fteToolbar)) {
         $scope.fte.toolbar = $scope.fteToolbar;
@@ -155,6 +160,19 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       } else {
         $scope.fte.toolbar = "[['insert_link', 'languageSpan']]";
       }
+      
+      $scope.selects = {};
+      $scope.selects.language = {};
+      $scope.selects.language.optionsOrder = [];
+      $scope.selects.language.options = {};
+      angular.forEach(inputSystems, function (language, tag) {
+        var languageName = language.languageName;
+        if (languageName === 'Unlisted Language') {
+          languageName = language.languageName + ' (' + tag + ')';
+        }
+        $scope.selects.language.options[tag] = languageName;
+        $scope.selects.language.optionsOrder.push(tag);
+      });
     }]
   };
 }]);
