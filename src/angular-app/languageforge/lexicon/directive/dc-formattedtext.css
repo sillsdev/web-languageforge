@@ -34,7 +34,7 @@
 
 .dc-formattedtext .ta-editor {
     width: 176px;
-    height: auto;
+    height: 72px;
     overflow: auto;
     font-family: inherit;
     font-size: 14px;
@@ -50,7 +50,7 @@
 
 .dc-formattedtext .ta-editor, 
 .dc-formattedtext .ta-scroll-window > .ta-bind {
-    min-height: 60px;
+    min-height: 14px;
 }
 
 .dc-formattedtext .ta-root textarea {
