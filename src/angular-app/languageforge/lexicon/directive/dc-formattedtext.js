@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.formattedtext', ['textAngular'])
+angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular'])
 
 // Custom textAngular tool for language spans
 .config(function($provide) {
@@ -27,9 +27,9 @@ angular.module('palaso.ui.dc.formattedtext', ['textAngular'])
       onElementSelect: {
         element: 'a',
         action: function(event, $element, editorScope) {
+
           // setup the editor toolbar
-          // Credit to the work at http://hackerwins.github.io/summernote/ for
-          // this editbar logic
+          // Credit to the work at http://hackerwins.github.io/summernote/ for this editbar logic
           event.preventDefault();
           editorScope.displayElements.popover.css('width', '435px');
           var container = editorScope.displayElements.popoverContainer;
@@ -45,8 +45,8 @@ angular.module('palaso.ui.dc.formattedtext', ['textAngular'])
             'vertical-align': 'middle'
           });
           container.append(link);
-          var buttonGroup = angular.element('<div class="btn-group pull-right">');
-          var reLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-edit icon-edit"></i></button>');
+          var buttonGroup = angular.element('<div class="btn-group pull-right">'),
+              reLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-edit icon-edit"></i></button>');
           reLinkButton.on('click', function(event) {
             event.preventDefault();
             var urlLink = $window.prompt(taTranslations.insertLink.dialogPrompt, $element.attr('href'));
@@ -58,8 +58,8 @@ angular.module('palaso.ui.dc.formattedtext', ['textAngular'])
           });
           buttonGroup.append(reLinkButton);
           var unLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-unlink icon-unlink"></i></button>');
-          // directly before this click event is fired a digest is fired off
-          // whereby the reference to $element is orphaned off
+
+          // directly before this click event is fired a digest is fired off whereby the reference to $element is orphaned off
           unLinkButton.on('click', function(event) {
             event.preventDefault();
             $element.replaceWith($element.contents());
@@ -86,42 +86,41 @@ angular.module('palaso.ui.dc.formattedtext', ['textAngular'])
 
     // Written by the author of Rangy, see http://stackoverflow.com/questions/4652734/return-html-from-a-user-selected-text
     function getSelectionHtml() {
-      var html = "";
-      if (typeof window.getSelection != "undefined") {
+      var html = '';
+      if (typeof window.getSelection != 'undefined') {
           var sel = window.getSelection();
           if (sel.rangeCount) {
-              var container = document.createElement("div");
+              var container = document.createElement('div');
               for (var i = 0, len = sel.rangeCount; i < len; ++i) {
                   container.appendChild(sel.getRangeAt(i).cloneContents());
               }
               html = container.innerHTML;
           }
-      } else if (typeof document.selection != "undefined") {
-          if (document.selection.type == "Text") {
+      } else if (typeof document.selection != 'undefined') {
+          if (document.selection.type == 'Text') {
               html = document.selection.createRange().htmlText;
           }
       }
       return html;
-  }
+    }
 
     taRegisterTool('languageSpan', {
       tooltiptext: 'Language span',
       iconclass: 'fa fa-language fa-lg',
       action: function() {
-        var langSpan, 
-          languageTag = 'test',
-          selectedHtml = getSelectionHtml();
+        var selectedHtml = getSelectionHtml(),
+            languageTag = 'test',
+            languageSpan;
         if (languageTag && languageTag !== '' && selectedHtml && selectedHtml !== '') {
-          langSpan = "<span lang='" + languageTag + "'>" + selectedHtml + "</span>";
-          return this.$editor().wrapSelection("insertHTML", langSpan, false);
-       }
+          languageSpan = '<span lang="' + languageTag + '">' + selectedHtml + '</span>';
+          return this.$editor().wrapSelection('insertHTML', languageSpan, false);
+        }
       },
 //      activeState: function() {
 //        return this.$editor().queryCommandState('insertHTML');
 //      },
       onElementSelect: {
         element: 'span',
-//        onlyWithAttrs: ['lang'],
         action: function(event, $element, editorScope) {
           console.log('select lang span');
         }
@@ -143,11 +142,19 @@ angular.module('palaso.ui.dc.formattedtext', ['textAngular'])
       fteModel: "=",
       fteLanguageName: "=",
       fteAbbreviation: "=",
+      fteToolbar: "=",
       fteDisabled: "=",
       fteDir: "="
     },
-    controller: ['$scope', function($scope) {
-
+    controller: ['$scope', 'sessionService', function($scope, ss) {
+      $scope.fte = {};
+      if (angular.isDefined($scope.fteToolbar)) {
+        $scope.fte.toolbar = $scope.fteToolbar;
+      } else if (ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT)) {
+        $scope.fte.toolbar = "[['insert_link', 'languageSpan'], ['html']]";
+      } else {
+        $scope.fte.toolbar = "[['insert_link', 'languageSpan']]";
+      }
     }]
   };
 }]);
