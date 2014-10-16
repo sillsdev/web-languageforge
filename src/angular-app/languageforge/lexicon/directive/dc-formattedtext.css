@@ -50,7 +50,7 @@
 
 .dc-formattedtext .ta-editor, 
 .dc-formattedtext .ta-scroll-window > .ta-bind {
-    min-height: 14px;
+    min-height: 60px;
 }
 
 .dc-formattedtext .ta-root textarea {
