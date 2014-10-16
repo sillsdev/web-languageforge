@@ -4,8 +4,8 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
 
 // Custom textAngular tool for language spans
 .config(function($provide) {
-  $provide.decorator('taOptions', ['taRegisterTool', '$delegate',  '$window', 'taTranslations', 
-  function(taRegisterTool, taOptions, $window, taTranslations) {
+  $provide.decorator('taOptions', ['taRegisterTool', '$delegate',  '$window', 'taTranslations', 'sessionService', 
+  function(taRegisterTool, taOptions, $window, taTranslations, ss) {
 
     // $delegate is the taOptions we are decorating
     // register the tool with textAngular
@@ -129,7 +129,56 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       onElementSelect: {
         element: 'span',
         action: function(event, $element, editorScope) {
-          console.log('select language span');
+          var languageTag = $element.attr('lang'),
+              inputSystems = ss.session.projectSettings.config.inputSystems;
+          editorScope.selects = {};
+          editorScope.selects.languageTag = $element.attr('lang');
+          editorScope.selects.language = {};
+          editorScope.selects.language.optionsOrder = [];
+          editorScope.selects.language.options = {};
+          angular.forEach(inputSystems, function (language, tag) {
+            var languageName = language.languageName;
+            if (languageName === 'Unlisted Language') {
+              languageName += ' (' + tag + ')';
+            }
+            editorScope.selects.language.options[tag] = languageName;
+            editorScope.selects.language.optionsOrder.push(tag);
+          });
+          
+          console.log('select language span', $element, editorScope, languageTag);
+
+          editorScope.displayElements.popover.css('width', '300px');
+          var container = editorScope.displayElements.popoverContainer;
+          container.empty();
+          container.css('line-height', '28px');
+          var langSelect = angular.element(
+                '<select ng-model="selects.languageTag"' +
+                  'ng-options="selects.language.options[tag] for tag in selects.language.optionsOrder">' +
+                  '<option value="">-- choose a language --</option></select>'
+              );
+
+          langSelect.css({
+            'display': 'inline-block',
+//            'max-width': '200px',
+            'overflow': 'hidden',
+            'text-overflow': 'ellipsis',
+            'white-space': 'nowrap',
+            'vertical-align': 'middle'
+          });
+          container.append(langSelect);
+          var buttonGroup = angular.element('<div class="btn-group pull-right">'),
+              unLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-unlink icon-unlink"></i></button>');
+
+          // directly before this click event is fired a digest is fired off whereby the reference to $element is orphaned off
+          unLinkButton.on('click', function(event) {
+            event.preventDefault();
+            $element.replaceWith($element.contents());
+            editorScope.updateTaBindtaTextElement();
+            editorScope.hidePopover();
+          });
+          buttonGroup.append(unLinkButton);
+          container.append(buttonGroup);
+          editorScope.showPopover($element);
         }
       }
     });
@@ -177,7 +226,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       angular.forEach(inputSystems, function (language, tag) {
         var languageName = language.languageName;
         if (languageName === 'Unlisted Language') {
-          languageName = language.languageName + ' (' + tag + ')';
+          languageName += ' (' + tag + ')';
         }
         $scope.selects.language.options[tag] = languageName;
         $scope.selects.language.optionsOrder.push(tag);
