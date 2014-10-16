@@ -4,7 +4,8 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
 
 // Custom textAngular tool for language spans
 .config(function($provide) {
-  $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, taOptions) {
+  $provide.decorator('taOptions', ['taRegisterTool', '$delegate',  '$window', 'taTranslations', 
+  function(taRegisterTool, taOptions, $window, taTranslations) {
 
     // $delegate is the taOptions we are decorating
     // register the tool with textAngular
@@ -20,8 +21,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
         }
       },
       activeState: function(commonElement) {
-        if (commonElement)
-          return commonElement[0].tagName === 'A';
+        if (commonElement) return commonElement[0].tagName === 'A';
         return false;
       },
       onElementSelect: {
@@ -119,9 +119,13 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
           return this.$editor().wrapSelection('insertHTML', languageSpan, false);
         }
       },
-//      activeState: function() {
-//        return this.$editor().queryCommandState('insertHTML');
-//      },
+      activeState: function(commonElement){
+        if(commonElement) {
+          if (commonElement[0].parentElement.tagName === 'SPAN') return true;
+          return commonElement[0].tagName === 'SPAN';
+        }
+        return false;
+      },
       onElementSelect: {
         element: 'span',
         action: function(event, $element, editorScope) {
@@ -133,6 +137,11 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
     // add the button to the default toolbar definition
     taOptions.toolbar[0].push('languageSpan');
     return taOptions;
+  }]);
+  
+  $provide.decorator('taSelectableElements', ['$delegate', function(taSelectableElements) {
+    taSelectableElements.push('span');
+    return taSelectableElements;
   }]);
 })
 
