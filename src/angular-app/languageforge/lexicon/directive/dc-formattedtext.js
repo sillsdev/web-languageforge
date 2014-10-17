@@ -4,12 +4,17 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
 
 // Custom textAngular tool for language spans
 .config(function($provide) {
-  $provide.decorator('taOptions', ['taRegisterTool', '$delegate',  '$window', 'taTranslations', 'sessionService', 
-  function(taRegisterTool, taOptions, $window, taTranslations, ss) {
+  
+  // add custom tools
+  $provide.decorator('taOptions', ['taRegisterTool', '$delegate',  'taTranslations', 'taTools', 'sessionService', '$window', '$compile',
+  function(taRegisterTool, taOptions, taTranslations, taTools, ss, $window, $compile) {
+
+    // remove the built-in insertLink tool
+    delete taTools.insertLink;
 
     // $delegate is the taOptions we are decorating
     // register the tool with textAngular
-    taRegisterTool('insert_link', {
+    taRegisterTool('insertLink', {
 //      tooltiptext: taTranslations.insertLink.tooltip,
       tooltiptext: 'Insert/edit link',
       iconclass: 'fa fa-link',
@@ -132,8 +137,8 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
           var languageTag = $element.attr('lang'),
               inputSystems = ss.session.projectSettings.config.inputSystems;
           editorScope.selects = {};
-          editorScope.selects.languageTag = $element.attr('lang');
           editorScope.selects.language = {};
+          editorScope.selects.language.tag = $element.attr('lang');
           editorScope.selects.language.optionsOrder = [];
           editorScope.selects.language.options = {};
           angular.forEach(inputSystems, function (language, tag) {
@@ -145,25 +150,33 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
             editorScope.selects.language.optionsOrder.push(tag);
           });
           
-          console.log('select language span', $element, editorScope, languageTag);
+//          console.log('select language span', $element, editorScope, languageTag);
 
           editorScope.displayElements.popover.css('width', '300px');
           var container = editorScope.displayElements.popoverContainer;
           container.empty();
           container.css('line-height', '28px');
           var langSelect = angular.element(
-                '<select ng-model="selects.languageTag"' +
-                  'ng-options="selects.language.options[tag] for tag in selects.language.optionsOrder">' +
+                '<select data-ng-model="selects.language.tag"' +
+                  'data-ng-options="selects.language.options[tag] for tag in selects.language.optionsOrder">' +
                   '<option value="">-- choose a language --</option></select>'
               );
-
           langSelect.css({
             'display': 'inline-block',
-//            'max-width': '200px',
             'overflow': 'hidden',
-            'text-overflow': 'ellipsis',
-            'white-space': 'nowrap',
             'vertical-align': 'middle'
+          });
+          langSelect.on('click', function(event) {
+            event.preventDefault();
+            console.log('langSelect click');
+            $element.attr('lang', editorScope.selects.language.tag);
+            editorScope.updateTaBindtaTextElement();
+          });
+          langSelect.on('select', function(event) {
+            event.preventDefault();
+            console.log('langSelect select');
+//            editorScope.updateTaBindtaTextElement();
+//            editorScope.hidePopover();
           });
           container.append(langSelect);
           var buttonGroup = angular.element('<div class="btn-group pull-right">'),
@@ -178,6 +191,8 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
           });
           buttonGroup.append(unLinkButton);
           container.append(buttonGroup);
+          $compile(langSelect)(editorScope);
+          editorScope.$apply();
           editorScope.showPopover($element);
         }
       }
@@ -188,6 +203,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
     return taOptions;
   }]);
   
+  // add element selector strings that are used to catch click events within a taBind
   $provide.decorator('taSelectableElements', ['$delegate', function(taSelectableElements) {
     taSelectableElements.push('span');
     return taSelectableElements;
@@ -214,9 +230,9 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       if (angular.isDefined($scope.fteToolbar)) {
         $scope.fte.toolbar = $scope.fteToolbar;
       } else if (ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT)) {
-        $scope.fte.toolbar = "[['insert_link', 'languageSpan'], ['html']]";
+        $scope.fte.toolbar = "[['insertLink', 'languageSpan'], ['html']]";
       } else {
-        $scope.fte.toolbar = "[['insert_link', 'languageSpan']]";
+        $scope.fte.toolbar = "[['insertLink', 'languageSpan']]";
       }
       
       $scope.selects = {};

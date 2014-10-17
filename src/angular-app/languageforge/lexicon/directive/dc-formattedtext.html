@@ -1,12 +1,8 @@
 <div class="input-prepend">
     <div class="fte-language-select control-group pull-right" data-ng-show="true">
-        <!-- <label class="control-label" for="langSelect" translate="Choose the language for the selection"></label> -->
-        <div class="controls">
-            <select class="form-control" id="langSelect" 
-                data-ng-model="fte.languageTag" 
-                data-ng-options="selects.language.options[tag] for tag in selects.language.optionsOrder">
-                <option value="">-- {{'choose a language' | translate}} --</option></select>
-        </div>
+        <select data-ng-model="fte.languageTag" 
+            data-ng-options="selects.language.options[tag] for tag in selects.language.optionsOrder">
+            <option value="">-- {{'choose a language' | translate}} --</option></select>
     </div>
     <span class="add-on wsid"
         title="{{fteLanguageName}}">{{fteAbbreviation}}
