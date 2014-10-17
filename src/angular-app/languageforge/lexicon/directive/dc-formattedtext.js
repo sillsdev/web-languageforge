@@ -6,8 +6,8 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
 .config(function($provide) {
   
   // add custom tools
-  $provide.decorator('taOptions', ['taRegisterTool', '$delegate',  'taTranslations', 'taTools', 'sessionService', '$window', '$compile',
-  function(taRegisterTool, taOptions, taTranslations, taTools, ss, $window, $compile) {
+  $provide.decorator('taOptions', ['taRegisterTool', '$delegate',  'taTranslations', 'taTools', 'sessionService', '$window', '$compile', '$animate',
+  function(taRegisterTool, taOptions, taTranslations, taTools, ss, $window, $compile, $animate) {
 
     // remove the built-in insertLink tool
     delete taTools.insertLink;
@@ -134,8 +134,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       onElementSelect: {
         element: 'span',
         action: function(event, $element, editorScope) {
-          var languageTag = $element.attr('lang'),
-              inputSystems = ss.session.projectSettings.config.inputSystems;
+          var inputSystems = ss.session.projectSettings.config.inputSystems;
           editorScope.selects = {};
           editorScope.selects.language = {};
           editorScope.selects.language.tag = $element.attr('lang');
@@ -150,9 +149,8 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
             editorScope.selects.language.optionsOrder.push(tag);
           });
           
-//          console.log('select language span', $element, editorScope, languageTag);
-
           editorScope.displayElements.popover.css('width', '300px');
+          editorScope.displayElements.popover.attr('data-container', 'body');
           var container = editorScope.displayElements.popoverContainer;
           container.empty();
           container.css('line-height', '28px');
@@ -161,23 +159,13 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
                   'data-ng-options="selects.language.options[tag] for tag in selects.language.optionsOrder">' +
                   '<option value="">-- choose a language --</option></select>'
               );
-          langSelect.css({
-            'display': 'inline-block',
-            'overflow': 'hidden',
-            'vertical-align': 'middle'
-          });
-          langSelect.on('click', function(event) {
-            event.preventDefault();
-            console.log('langSelect click');
-            $element.attr('lang', editorScope.selects.language.tag);
-            editorScope.updateTaBindtaTextElement();
-          });
-          langSelect.on('select', function(event) {
-            event.preventDefault();
-            console.log('langSelect select');
+//          langSelect.on('click', function(event) {
+//            event.preventDefault();
+//            console.log('langSelect click');
+//            $element.attr('lang', editorScope.selects.language.tag);
 //            editorScope.updateTaBindtaTextElement();
 //            editorScope.hidePopover();
-          });
+//          });
           container.append(langSelect);
           var buttonGroup = angular.element('<div class="btn-group pull-right">'),
               unLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-unlink icon-unlink"></i></button>');
@@ -192,8 +180,13 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
           buttonGroup.append(unLinkButton);
           container.append(buttonGroup);
           $compile(langSelect)(editorScope);
+          $compile(editorScope.displayElements.popover)(editorScope);
           editorScope.$apply();
-          editorScope.showPopover($element);
+          
+          // use code below (removes close event) instead of editorScope.showPopover($element);
+          editorScope.displayElements.popover.css('display', 'block');
+          editorScope.reflowPopover($element);
+          $animate.addClass(editorScope.displayElements.popover, 'in');
         }
       }
     });
