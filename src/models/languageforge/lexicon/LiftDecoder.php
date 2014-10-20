@@ -4,6 +4,8 @@ namespace models\languageforge\lexicon;
 
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\mapper\ArrayOf;
+use Palaso\Utilities\CodeGuard;
+use models\mapper\Id;
 
 class LiftDecoder
 {
@@ -24,32 +26,86 @@ class LiftDecoder
      * @param LiftMergeRule $mergeRule
      * @throws \Exception
      */
-    public function decode($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $entryExists = true)
+    public function readEntry($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES)
     {
-        $lexicalForms = $sxeNode->{'lexical-unit'};
-        if ($lexicalForms) {
-            if ($mergeRule != LiftMergeRule::IMPORT_LOSES || ! $entryExists) {
-                $entry->guid = (string) $sxeNode['guid'];
-                $entry->authorInfo->createdDate = new \DateTime((string) $sxeNode['dateCreated']);
-                $entry->authorInfo->modifiedDate = new \DateTime((string) $sxeNode['dateModified']);
-                $entry->lexeme = $this->readMultiText($lexicalForms, $this->_projectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems);
-            }
-            if (isset($sxeNode->sense)) {
-                foreach ($sxeNode->sense as $senseNode) {
+        $report = new LiftImportErrorReport(LiftImportErrorReport::ENTRY, $sxeNode['guid']);
+        foreach ($sxeNode as $element) {
+            switch ($element->getName()) {
+                case 'lexical-unit':
+                    if ($mergeRule != LiftMergeRule::IMPORT_LOSES || Id::isEmpty($entry->id)) {
+                        $entry->guid = (string) $sxeNode['guid'];
+                        $entry->authorInfo->createdDate = new \DateTime((string) $sxeNode['dateCreated']);
+                        $entry->authorInfo->modifiedDate = new \DateTime((string) $sxeNode['dateModified']);
+                        $entry->lexeme = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems);
+                    }
+                    break;
+                case 'citation':
+                    $entry->citationForm = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::CITATIONFORM]->inputSystems);
+                    break;
+                case 'note':
+                    if ($element['type'] == '') {
+                        $entry->note = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::NOTE]->inputSystems);
+                    } else {
+                        $report->addUnhandledNote($element['type']);
+                    }
+                    break;
+                case 'etymology':
+                   $entry->etymology = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGY]->inputSystems);
+                    if ($element->{'gloss'}) {
+                        $this->readMultiTextGloss($element->gloss, $entry->etymologyGloss, $this->_projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGYGLOSS]->inputSystems);
+                    }
+                    foreach ($element->{'field'} as $field) {
+                        if ($field['type'] == 'comment') {
+                            $entry->etymologyComment = $this->readMultiText($field, $this->_projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGYCOMMENT]->inputSystems);
+                        } else {
+                            $report->addUnhandledField($field['type'], 'etymology');
+                        }
+                    }
+                    break;
+                case 'pronunciation':
+                    $entry->pronunciation = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::PRONUNCIATION]->inputSystems);
+                    if ($element->{'media'}) {
+                        $report->addUnhandledMedia($element->{'media'}['href'], 'pronunciation');
+                    }
+                    break;
+                case 'field':
+                    switch ($element['type']) {
+                        case 'literal-meaning':
+                            $entry->literalMeaning = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::LITERALMEANING]->inputSystems);
+                            break;
+                        case 'summary-definition':
+                            $entry->summaryDefinition = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::SUMMARYDEFINITION]->inputSystems);
+                            break;
+                        case 'import-residue': // Currently ignored in LanguageForge
+                            break;
+                        default:
+                            $report->addUnhandledField($element['type']);
+                    }
+                    break;
+                case 'trait':
+                    switch ($element['name']) {
+                        case 'morph-type':
+                            $entry->morphologyType = (string)$element['value'];
+                            break;
+                        default:
+                            $report->addUnhandledTrait($element['name']);
+                    }
+                    break;
+                case 'sense':
                     $liftId = '';
-                    if (isset($senseNode['id'])) {
-                        $liftId = (string) $senseNode['id'];
+                    if (isset($element['id'])) {
+                        $liftId = (string) $element['id'];
                     }
                     $existingSenseIndex = $entry->searchSensesFor('liftId', $liftId);
                     if ($existingSenseIndex >= 0) {
                         switch ($mergeRule) {
                             case LiftMergeRule::CREATE_DUPLICATES:
                                 $sense = new Sense('');
-                                $entry->senses[] = $this->readSense($senseNode, $sense);
+                                $entry->senses[] = $this->readSense($element, $sense);
                                 break;
                             case LiftMergeRule::IMPORT_WINS:
                                 $sense = $entry->senses[$existingSenseIndex];
-                                $entry->senses[$existingSenseIndex] = $this->readSense($senseNode, $sense);
+                                $entry->senses[$existingSenseIndex] = $this->readSense($element, $sense);
                                 break;
                             case LiftMergeRule::IMPORT_LOSES:
                                 break;
@@ -58,10 +114,16 @@ class LiftDecoder
                         }
                     } else {
                         $sense = new Sense($liftId);
-                        $entry->senses[] = $this->readSense($senseNode, $sense);
+                        $entry->senses[] = $this->readSense($element, $sense);
                     }
-                }
+                    break;
+                case 'relation':
+                default:
+                    $report->addUnhandledElement($element->getName());
             }
+        }
+        if ($report->hasError()) {
+            error_log($report->toString() . "\n");
         }
     }
 
@@ -73,47 +135,80 @@ class LiftDecoder
      */
     public function readSense($sxeNode, $sense)
     {
-        // Definition
-        if (isset($sxeNode->definition)) {
-            $definition = $sxeNode->definition;
-            $sense->definition = $this->readMultiText($definition, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems);
-        }
+        $report = new LiftImportErrorReport(LiftImportErrorReport::SENSE, $sxeNode['id']);
+        foreach ($sxeNode as $element) {
+            switch ($element->getName()) {
+                case 'definition':
+                    $sense->definition = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems);
+                    break;
+                case 'example':
+                    $sense->examples[] = $this->readExample($element);
+                    break;
+                case 'field':
+                    switch ($element['type']) {
+                        case 'import-residue': // Currently ignored by LanguageForge
+                            break;
+                        case 'scientific-name':
+                            $sense->scientificName = $this->readMultiText($element, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME]->inputSystems);
+                            break;
+                        default:
+                            $report->addUnhandledField($element['type']);
+                    }
+                    break;
+                case 'gloss':
+                    $this->readMultiTextGloss($element, $sense->gloss, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems);
+                    break;
+                case 'grammatical-info':
+                    // Part Of Speech
+                    $sense->partOfSpeech->value = (string)$element['value'];
+                    break;
+                case 'illustration':
+                    $picture = new Picture();
+                    $picture->fileName = (string) $element['href'];
+                    $picture->caption = $this->readMultiText($element->{'label'}, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems);
+                    $sense->pictures[] =  $picture;
+//                     $report->addUnhandledMedia($element['href'], 'illustration');
+                    break;
+                case 'note':
+                    switch($element['type']) {
+                        case '':
+                            $report->addUnhandledNote($element['type']);
+                            break;
+                        default:
+                            $report->addUnhandledNote($element['type']);
+                    }
+                    break;
+                case 'trait':
+                    switch ($element['name']) {
+                        case 'semantic-domain-ddp4':
+                            $sense->semanticDomain->value((string) $element['value']);
+                            break;
+                        case 'anthro-code':
+                            $sense->anthropologyCategories->value((string) $element['value']);
+                            break;
+                        case 'domain-type':
+                            $sense->academicDomains->value((string) $element['value']);
+                            break;
+                        case 'sense-type':
+                            $sense->senseType->value((string) $element['value']);
+                            break;
+                        case 'status':
+                            $sense->status->value((string) $element['value']);
+                            break;
+                        case 'usage-type':
+                            $sense->usages->value((string) $element['value']);
+                            break;
+                        default:
+                            $report->addUnhandledTrait($element['name']);
+                    }
+                    break;
 
-        // Gloss
-        if (isset($sxeNode->gloss)) {
-            $multiText = new MultiText();
-            $glossInputSystems = $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems;
-            foreach ($sxeNode->gloss as $glossNode) {
-                $inputSystemTag = (string) $glossNode->attributes()->lang;
-                $multiText->form($inputSystemTag, (string) $glossNode->text);
-
-                $this->_projectModel->addInputSystem($inputSystemTag);
-                $glossInputSystems->value($inputSystemTag);
+                default:
+                    $report->addUnhandledElement($element->getName());
             }
-            $sense->gloss = $multiText;
         }
-
-        // Part Of Speech
-        if (isset($sxeNode->{'grammatical-info'})) {
-            $partOfSpeech = (string) $sxeNode->{'grammatical-info'}->attributes()->value;
-            $sense->partOfSpeech->value = $partOfSpeech;
-        }
-
-        // Semantic Domain
-        if (isset($sxeNode->trait)) {
-            foreach ($sxeNode->trait as $traitNode) {
-                $semanticDomainName = (string) $traitNode->attributes()->name;
-                $semanticDomainValue = (string) $traitNode->attributes()->value;
-                $sense->semanticDomain->value($semanticDomainValue);
-            }
-        }
-
-        // Examples
-        $examples = $sxeNode->example;
-        if ($examples) {
-            foreach ($examples as $example) {
-                $sense->examples[] = $this->readExample($example);
-            }
+        if ($report->hasError()) {
+            error_log($report->toString() . "\n");
         }
 
         return $sense;
@@ -130,7 +225,7 @@ class LiftDecoder
 
         // Sentence multitext
         $exampleXml = $sxeNode;
-        $example->sentence = $this->readMultiText($exampleXml, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems);
+        $example->sentence = $this->readMultiText($sxeNode, $this->_projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems);
         // Translation multitext
         $translationXml = $sxeNode->translation;
         if (! empty($translationXml)) {
@@ -141,7 +236,7 @@ class LiftDecoder
     }
 
     /**
-     * Reads a MultiText from the XmlNode $sxeNode
+     * Reads a MultiText from the XmlNode $sxeNode given by the elemetn 'form'
      * @param SimpleXMLElement $sxeNode
      * @param ArrayOf $inputSystems
      * @return MultiText
@@ -155,7 +250,9 @@ class LiftDecoder
                 $multiText->form($inputSystemTag, (string) $form->text);
 
                 $this->_projectModel->addInputSystem($inputSystemTag);
+                // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
                 if (isset($inputSystems)) {
+                    // i.e. $inputSystems->ensureFieldHasInputSystem($inputSystemTag);
                     $inputSystems->value($inputSystemTag);
                 }
             }
@@ -164,4 +261,27 @@ class LiftDecoder
         return $multiText;
     }
 
+    /**
+     * Reads a MultiText from the XmlNode $sxeNode given by the element 'gloss'
+     * @param SimpleXMLElement $sxeNode
+     * @param MultiText $multiText
+     * @param ArrayOf $inputSystems
+     * @return MultiText
+     */
+    public function readMultiTextGloss($sxeNode, $multiText, $inputSystems = null)
+    {
+        CodeGuard::checkTypeAndThrow($multiText, 'models\languageforge\lexicon\MultiText');
+        if ($sxeNode->getName() != 'gloss') {
+            throw new \Exception("'" . $sxeNode->getName() . "' is not a gloss");
+        }
+        $inputSystemTag = (string) $sxeNode['lang'];
+        $multiText->form($inputSystemTag, (string) $sxeNode->text);
+
+        $this->_projectModel->addInputSystem($inputSystemTag);
+        // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
+        if (isset($inputSystems)) {
+            // i.e. $inputSystems->ensureFieldHasInputSystem($inputSystemTag);
+            $inputSystems->value($inputSystemTag);
+        }
+    }
 }
