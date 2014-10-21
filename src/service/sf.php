@@ -647,9 +647,12 @@ class sf
         return LexOptionListCommands::updateList($this->_projectId, $params);
     }
 
-    public function lex_uploadProjectZip($mediaType, $tmpFilePath)
+    public function lex_uploadProjectZip($mediaType, $tmpFilePath, $projectId = '')
     {
-        $response = LexUploadCommands::uploadProjectZip($this->_projectId, $mediaType, $tmpFilePath);
+        // Sometimes we need to upload to a newly-created project ID, which is not yet in the session cookie.
+        // In those cases, the optional $projectId parameter will be set to a non-empty value.
+        if (empty($projectId)) { $projectId = $this->_projectId; }
+        $response = LexUploadCommands::uploadProjectZip($projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 

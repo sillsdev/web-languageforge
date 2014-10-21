@@ -315,7 +315,7 @@ class LexUploadCommands
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folders if they don't exist
-            $project = new LfProjectModel($projectId);
+            $project = new LexiconProjectModel($projectId);
             $folderPath = $project->getAssetsFolderPath();
             FileUtilities::createAllFolders($folderPath);
 
@@ -326,9 +326,11 @@ class LexUploadCommands
 
             // construct server response
             if ($moveOk && $tmpFilePath) {
+                $importErrors = LiftImport::importZip($filePath, $project);
                 $data = new MediaResult();
                 $data->path = $project->getAssetsPath();
                 $data->fileName = $fileName;
+                $data->importErrors = $importErrors;
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
