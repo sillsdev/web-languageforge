@@ -327,8 +327,6 @@ class LiftImport
             $zipTopLevel = $diff[0];
             if (is_dir($destDir . "/" . $zipTopLevel)) {
                 FileUtilities::promoteDirContents($destDir . "/" . $zipTopLevel);
-                var_dump($destFilesAfterUnpacking);
-                var_dump(scandir($destDir));
             }
         }
 
