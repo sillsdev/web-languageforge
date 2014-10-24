@@ -971,12 +971,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sillsdev/web-php-utilities.git",
-                "reference": "cfc66e79272b8dc32b2532367c56f477912ebd0f"
+                "reference": "b3af48667dc42cdf45ec86170d02956b3fd75cd9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/cfc66e79272b8dc32b2532367c56f477912ebd0f",
-                "reference": "cfc66e79272b8dc32b2532367c56f477912ebd0f",
+                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/b3af48667dc42cdf45ec86170d02956b3fd75cd9",
+                "reference": "b3af48667dc42cdf45ec86170d02956b3fd75cd9",
                 "shasum": ""
             },
             "require-dev": {
@@ -993,7 +993,7 @@
                 "source": "https://github.com/sillsdev/web-php-utilities/tree/master",
                 "issues": "https://github.com/sillsdev/web-php-utilities/issues"
             },
-            "time": "2014-10-24 02:03:53"
+            "time": "2014-10-24 04:55:14"
         },
         {
             "name": "simpletest/simpletest",
