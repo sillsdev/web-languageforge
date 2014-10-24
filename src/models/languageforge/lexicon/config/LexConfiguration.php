@@ -161,6 +161,7 @@ class LexConfiguration
 
         $this->entry->fields[LexiconConfigObj::ENVIRONMENTS] = new LexiconMultiOptionlistConfigObj();
         $this->entry->fields[LexiconConfigObj::ENVIRONMENTS]->label = 'Environments';
+        $this->entry->fields[LexiconConfigObj::ENVIRONMENTS]->listCode = LexiconConfigObj::ENVIRONMENTS;
         $this->entry->fields[LexiconConfigObj::ENVIRONMENTS]->hideIfEmpty = true;
 
         $this->entry->fields[LexiconConfigObj::PRONUNCIATION] = new LexiconMultitextConfigObj();
@@ -180,6 +181,7 @@ class LexConfiguration
 
         $this->entry->fields[LexiconConfigObj::LOCATION] = new LexiconOptionlistConfigObj();
         $this->entry->fields[LexiconConfigObj::LOCATION]->label = 'Location';
+        $this->entry->fields[LexiconConfigObj::LOCATION]->listCode = LexiconConfigObj::LOCATION;
         $this->entry->fields[LexiconConfigObj::LOCATION]->hideIfEmpty = true;
 
         $this->entry->fields[LexiconConfigObj::ETYMOLOGY] = new LexiconMultitextConfigObj();
@@ -306,27 +308,33 @@ class LexConfiguration
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES] = new LexiconMultiOptionlistConfigObj();
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES]->label = 'Usages';
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES]->listCode = LexiconConfigObj::USAGES;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES]->hideIfEmpty = true;
 
         // TODO This needs to be a taglist DDW 2014-07
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::REVERSALENTRIES] = new LexiconMultiOptionlistConfigObj();
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::REVERSALENTRIES]->label = 'Reversal Entries';
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::REVERSALENTRIES]->listCode = LexiconConfigObj::REVERSALENTRIES;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::REVERSALENTRIES]->hideIfEmpty = true;
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSETYPE] = new LexiconOptionlistConfigObj();
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSETYPE]->label = 'Type';
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSETYPE]->listCode = LexiconConfigObj::SENSETYPE;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSETYPE]->hideIfEmpty = true;
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS] = new LexiconMultiOptionlistConfigObj();
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS]->label = 'Academic Domains';
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS]->listCode = LexiconConfigObj::ACADEMICDOMAINS;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS]->hideIfEmpty = true;
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEPUBLISHIN] = new LexiconMultiOptionlistConfigObj();
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEPUBLISHIN]->label = 'Publish In';
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEPUBLISHIN]->listCode = LexiconConfigObj::SENSEPUBLISHIN;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEPUBLISHIN]->hideIfEmpty = true;
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES] = new LexiconMultiOptionlistConfigObj();
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES]->label = 'Anthropology Categories';
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES]->listCode = LexiconConfigObj::ANTHROPOLOGYCATEGORIES;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES]->hideIfEmpty = true;
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEIMPORTRESIDUE] = new LexiconMultitextConfigObj();
@@ -336,6 +344,7 @@ class LexConfiguration
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS] = new LexiconMultiOptionlistConfigObj();
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS]->label = 'Status';
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS]->listCode = LexiconConfigObj::STATUS;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS]->hideIfEmpty = true;
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::REFERENCE] = new LexiconMultitextConfigObj();
@@ -345,6 +354,7 @@ class LexConfiguration
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLEPUBLISHIN] = new LexiconMultiOptionlistConfigObj();
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLEPUBLISHIN]->label = 'Publish In';
+        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLEPUBLISHIN]->listCode = LexiconConfigObj::EXAMPLEPUBLISHIN;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLEPUBLISHIN]->hideIfEmpty = true;
 
         // default role views values
