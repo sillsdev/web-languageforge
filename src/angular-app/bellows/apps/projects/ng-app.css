@@ -1,0 +1,21 @@
+.wizard-navigation {
+	text-align: center;
+}
+
+.wizard-error-message {
+	text-align: center;
+	font-weight: bold;
+	font-size: 120%;
+	border: 1px solid red;
+	padding: 5px;
+}
+
+.wizard-step-title {
+	text-align: center;
+	font-weight: bold;
+	font-size: 120%;
+}
+
+.float-container {
+	position: relative;
+}

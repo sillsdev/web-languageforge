@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice', 'palaso.ui.utils', 'palaso.ui.language', 'wc.Directives', 'pascalprecht.translate'])
-.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', 'modalService', '$modal', '$window',
-                             function($scope, projectService, ss, notice, modalService, $modal, $window) {
+angular.module('projects', ['bellows.services', 'bellows.filters', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice', 'palaso.ui.utils', 'palaso.ui.language', 'wc.Directives', 'angularFileUpload', 'pascalprecht.translate'])
+.controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', 'modalService', '$modal', '$window', '$upload', '$filter',
+                             function($scope, projectService, ss, notice, modalService, $modal, $window, $upload, $filter) {
   $scope.finishedLoading = false;
 
   // Rights
@@ -11,8 +11,11 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
   $scope.rights.archive = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE);
   $scope.rights.create = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.CREATE);
   $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create;
-  $scope.newProject = {};
-  $scope.newProjectWizard = {step: 1, maxSteps: 3};
+
+  // New project and related variables
+  $scope.newProject = {emptyProjectDesired: false};
+  $scope.newProjectWizard = {step: 1, maxSteps: 4};
+  $scope.datafile = null;
 
   // Listview Selection
   $scope.newProjectCollapsed = true;
@@ -77,23 +80,79 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
 
   // Add new project wizard
   $scope.newProjectWizardForward = function() {
-    if ($scope.currentStepIsValid()) {
-      $scope.newProjectWizard.step = Math.min($scope.newProjectWizard.step + 1, $scope.newProjectWizard.maxSteps);
-    }
-  };
+    $scope.newProjectWizard.step = Math.min($scope.newProjectWizard.step + 1, $scope.newProjectWizard.maxSteps);
+  }
   $scope.newProjectWizardBack = function() {
-    if ($scope.currentStepIsValid()) {
-      $scope.newProjectWizard.step = Math.max($scope.newProjectWizard.step - 1, 1);
+    $scope.newProjectWizard.step = Math.max($scope.newProjectWizard.step - 1, 1);
+  }
+
+  $scope.newProjectWizardCheckAndMoveForward = function() {
+    var valid = $scope.currentStepValidity($scope.newProjectWizardForward);
+    if (valid.canAdvance) {
+      $scope.newProjectWizard.toolTipError = '';
+      $scope.newProjectWizardForward();
+    } else {
+      $scope.newProjectWizard.toolTipError = valid.errorMsg;
     }
   };
-  $scope.currentStepIsValid = function() {
+
+  $scope.newProjectWizardCheckAndMoveBack = function() {
+    var valid = $scope.currentStepValidity($scope.newProjectWizardBack);
+    if (valid.canAdvance) {
+      $scope.newProjectWizard.toolTipError = '';
+      $scope.newProjectWizardBack();
+    } else {
+      $scope.newProjectWizard.toolTipError = valid.errorMsg;
+    }
+  };
+  $scope.currentStepValidity = function(forwardOrBack) {
+    // Param forwardOrBack only used if project code was still loading, to apply user's click
+    // after project code has been validated (and so user doesn't have to click twice)
+    var ok = {canAdvance: true, errorMsg: ''};
     switch ($scope.newProjectWizard.step) {
     case 1:
-      return $scope.projectCodeState == 'ok';
+      if ($scope.projectCodeState == 'ok') {
+        return ok;
+      } else if ($scope.projectCodeState == 'loading') {
+        $scope.afterProjectCodeValid = forwardOrBack;
+        return {
+          canAdvance: false,
+          errorMsg: "Please wait...",
+        };
+      } else {
+        return {
+          canAdvance: false,
+          errorMsg: "Can't proceed until project code is OK",
+        };
+      }
+      break;
+      // TODO: After step 1, also need to call the server to create the newly-requested project.
+      // This provides a projectId, and a place for the step 2 .zip file to land. (Right now it lands
+      // in "whatever project the user visited last", which is badly wrong).
     case 2:
-      return true;
+      if ($scope.uploadSuccess || $scope.newProject.emptyProjectDesired) {
+        return ok;
+        // TODO: Also check for successful unpacking of .zip file here.
+        // UI should show "Upload complete. Processing... (spinner)". Then give
+        // either a success or failure message. To implement this, the
+        // LexUploadCommands::uploadProjectZip function will need to return
+        // something to indicate success in unzipping and finding valid data
+        // (a .lift file) inside. Actually processing that data should be a
+        // second API call, which would return success or failure based on how
+        // many entries were imported.
+      } else {
+        return {
+          canAdvance: false,
+          errorMsg: "Either upload initial data or check the \"Don't upload data\" checkbox.",
+        }
+      }
+      break;
     case 3:
-      return true;
+      return ok;
+      break;
+    case 4:
+      return ok;
+      break;
     default:
       return false;
     }
@@ -103,11 +162,26 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
       if (result.ok) {
         notice.push(notice.SUCCESS, "The " + $scope.newProject.projectName + " project was created successfully");
         $scope.queryProjectsForUser();
-        $scope.newProject = {};
+        $scope.newProject = {emptyProjectDesired: false};
         $scope.newProjectWizard.step = 1;
       }
     });
   };
+  $scope.createProjectBeforeStep2 = function() {
+    projectService.create($scope.newProject.projectName, $scope.newProject.projectCode, $scope.newProject.appName, function(result) {
+      if (result.ok) {
+        // No notification yet; project wizard is where user's attention should remain for now
+        $scope.newProject.id = result.data;
+      } else {
+        notice.push(notice.ERROR, "The " + $scope.newProject.projectName + " project could not be created. Please try again.");
+      }
+    });
+  };
+  $scope.$watch('newProjectWizard.step', function(newval, oldval) {
+    if (oldval == 1 && newval == 2) {
+      $scope.createProjectBeforeStep2();
+    }
+  });
   $scope.setLanguage = function(languageCode, language) {
     $scope.newProject.languageCode = languageCode;
     $scope.newProject.languageName = language.name;
@@ -213,14 +287,57 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
         if (result.ok) {
           if (result.data) {
             $scope.projectCodeState = 'exists';
+            $scope.afterProjectCodeValid = undefined;
           } else {
             $scope.projectCodeState = 'ok';
+            if (angular.isDefined($scope.afterProjectCodeValid)) {
+              $scope.afterProjectCodeValid();
+              $scope.afterProjectCodeValid = undefined;
+            }
           }
         }
       });
     } else {
       $scope.projectCodeState = 'invalid';
     }
+  };
+  $scope.checkProjectCodeIfNotOk = function() {
+    // Useful for ng-blur, so code won't be re-checked if idle validation already checked it
+    if ($scope.projectCodeState != 'ok') {
+      $scope.checkProjectCode();
+    }
+  }
+
+  $scope.onFileSelect = function onFileSelect(files) {
+    // First, cope with multiple files if the user selected multiple.
+    if (files.length > 1) { // Really >1
+      $scope.uploadErrorMsg = "Please select a single file. If you need to upload multiple files, zip them first with a utility like 7-zip.";
+      return;
+    }
+    $scope.datafile = files[0];
+    console.log(files[0]);
+    notice.setLoading('Importing ' + $scope.datafile.name + '...');
+    $scope.upload = $upload.upload({
+      url: '/upload/lf-lexicon/lex-project',
+      file: $scope.datafile,
+      data: {projectId: ($scope.newProject.id || '')}, // Which project to upload new data to
+    }).progress(function(evt) {
+      $scope.uploadProgress = 100.0 * evt.loaded / evt.total;
+    }).success(function(data, status, headers, config) {
+      notice.cancelLoading();
+      $scope.uploadSuccess = data.result;
+      if ($scope.uploadSuccess) {
+        notice.push(notice.SUCCESS, $filter('translate')("Successfully imported") + " " + $scope.datafile.name);
+      } else {
+        notice.push(notice.ERROR, $filter('translate')("Sorry, something went wrong in the import process."));
+        // Should really have a more specific error message.
+        // TODO: Update the PHP API to provide specific error messages regarding failure reasons.
+      }
+      console.log('Upload complete. Data:', data);
+      console.log('Status:', status);
+      console.log('Headers:', headers('date'));
+      console.log('Config:', config);
+    });
   };
 
   $scope.projectTypeNames = projectService.data.projectTypeNames;

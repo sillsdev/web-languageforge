@@ -21,10 +21,20 @@
         <div class="new-item" data-collapse="newProjectCollapsed">
             <form class="well" class="form-horizontal" name="newProjectForm">
             <div data-ng-switch on="newProjectWizard.step">
-            <span>Currently on step {{newProjectWizard.step}}</span>
+            <div class="wizard-navigation">
+                <button data-ng-click="newProjectWizardCheckAndMoveBack()">Back</button>
+                <span class="wizard-step-indicator">Step {{newProjectWizard.step}} of {{newProjectWizard.maxSteps}}</span>
+                <button data-ng-click="newProjectWizardCheckAndMoveForward()">Forward</button>
+            </div>
+            <div class="wizard-error-message" data-ng-show="newProjectWizard.toolTipError">
+                {{newProjectWizard.toolTipError}}
+            </div>
+
             <div data-ng-switch-when="1">
+                <div class="wizard-step-title">Step 1: Project name</div>
+
                 <div class="control-group">
-                   <input type="text" data-ng-model="newProject.projectName" set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name" idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
+                   <input type="text" data-ng-model="newProject.projectName" set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name" data-ng-blur="checkProjectCodeIfNotOk()" idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
                 </div>
                 <div class="control-group">
                     <input type="text" data-ng-model="newProject.projectCode" data-ng-trim="false" maxlength="50" required placeholder="Project Code" idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
@@ -36,11 +46,6 @@
                     </span>
                 </div>
                 <div class="control-group">
-                    <span translate="Primary language:"></span>
-                    <span data-ng-show="newProject.languageCode"> {{newProject.languageName}} ({{newProject.languageCode}})</span>
-                    <a class="btn" data-ng-click="openNewLanguageModal()">Select</a>
-                </div>
-                <div class="control-group">
                     <select ng-hide="projectTypesBySite().length == 1" required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
                         <option value="">-- Select Type --</option>
                     </select>
@@ -48,21 +53,63 @@
             </div>
 
             <div data-ng-switch-when="2">
-                <span>Step 2: upload initial data</span>
-                <span>(not yet implemented)</span>
+                <div class="wizard-step-title">Step 2: Upload initial data</div>
+
+                <div class="drop-box" data-ng-file-drop="onFileSelect($files)" data-ng-file-drop-available="dropSupported=true">
+                    <h4>Upload initial data</h4>
+                    <br/>
+                    <p>Drag files here, or click Browse button</p>
+                    <input type="button" class="btn" value="Browse..." onclick="javascript:document.getElementById('datafile').click();">
+                    <input id="datafile" type="file" style="display:none;" data-ng-file-select="onFileSelect($files)">
+                    <div data-ng-show="uploadErrorMsg"><span style="color: red" data-ng-bind="uploadErrorMsg"></span></div>
+                </div>
+                <div data-ng-show="uploadProgress">Upload progress: {{uploadProgress}}%</div>
+                <div data-ng-show="datafile != null">
+                    <p><strong>{{datafile.name}}</strong> {{datafile.size | bytes }}</p>
+                    <div class="span4">
+                        <progressbar data-value="uploadProgress" data-max="100.0"></progressbar>
+                    </div>
+                    &nbsp;
+                </div>
+                <div data-ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+                <div class="control-group">
+                    <input type="checkbox" data-ng-model="newProject.emptyProjectDesired">Don't upload any data: create an empty project</input>
+                </div>
             </div>
 
             <div data-ng-switch-when="3">
+            <div ng-show="newProject.initialData">
+                <div class="wizard-step-title">Step 3: Import report</div>
+
+                <span>(how many entries imported, how many fields not processed, etc.)</span>
+                <span>(not yet implemented)</span>
+            </div>
+            <div ng-hide="newProject.initialData">
+                <div class="wizard-step-title">Step 3: Pick primary language</div>
+
                 <div class="control-group">
+                    <span translate="Primary language:"></span>
+                    <span data-ng-show="newProject.languageCode"> {{newProject.languageName}} ({{newProject.languageCode}})</span>
+                    <a class="btn" data-ng-click="openNewLanguageModal()">Select</a>
+                </div>
+            </div>
+            </div>
+
+            <div data-ng-switch-when="4">
+                <div class="control-group">
+                    <div class="wizard-step-title">Step 4: Ready to create project</div>
+
+                    <span>Please review the information below</span>
                     <button type="submit" class="btn" data-ng-disabled="!(newProject.projectName && newProject.projectCode && (projectCodeState == 'ok') && newProject.appName)" data-ng-click="addProject(); newProjectCollapsed = true; checkProjectCode()"><i class="icon-ok"></i>Save</button>
                 </div>
             </div>
 
+            <div class="wizard-navigation">
+                <button data-ng-click="newProjectWizardCheckAndMoveBack()">Back</button>
+                <span class="wizard-step-indicator">Step {{newProjectWizard.step}} of {{newProjectWizard.maxSteps}}</span>
+                <button data-ng-click="newProjectWizardCheckAndMoveForward()">Forward</button>
             </div>
-            <hr />
-            <div class="btn-group">
-                <button data-ng-click="newProjectWizardBack()">Back</button>
-                <button data-ng-click="newProjectWizardForward()">Forward</button>
+
             </div>
             </form>
         </div>
