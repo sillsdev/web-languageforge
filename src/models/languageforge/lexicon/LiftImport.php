@@ -6,6 +6,7 @@ use models\languageforge\lexicon\config\LexiconOptionListItem;
 use models\mapper\ArrayOf;
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\ZipImportErrorReport;
+use Palaso\Utilities\FileUtilities;
 
 class LiftImport
 {
@@ -274,7 +275,7 @@ class LiftImport
      * @throws \Exception
      */
     public static function extractZip($zipFilePath, $destDir) {
-        // extractarchive.sh script needs absolute path for archive file
+        // Use absolute path for archive file
         $realpathResult = realpath($zipFilePath);
         if ($realpathResult) {
             $zipFilePath = $realpathResult;
@@ -282,23 +283,53 @@ class LiftImport
             throw new \Exception("Error receiving uploaded file");
         }
 
-        // Ensure zip file doesn't expand into too much data
-        // TODO: Implement this if needed. For now, comment out and don't check max size. 2014-10 RM
-//         $output = array();
-//         $retcode = 0;
-//         $size = (int)exec("scripts/getarchivesize.sh " . escapeshellarg($zipFilePath), $output, $retcode);
-//         if ($retcode) {
-//             throw new \Exception("Uploaded file appears to be invalid");
-//         }
-//         $maxSize = 100*1024*1024; // TODO: Get this from a config somewhere. (E.g., config/server.php)
-//         if ($size > $maxSize) {
-//             throw new \Exception("Uploaded file is too large");
-//         }
+        $basename = basename($zipFilePath);
+        $pathinfo = pathinfo($basename);
+        $extension_1 = isset($pathinfo['extension']) ? $pathinfo['extension'] : 'NOEXT';
+        // Handle .tar.gz, .tar.bz2, etc. by checking if there's another extension "inside" the first one
+        $basename_without_ext = $pathinfo['filename'];
+        $pathinfo = pathinfo($basename_without_ext);
+        $extension_2 = isset($pathinfo['extension']) ? $pathinfo['extension'] : 'NOEXT';
+        // $extension_2 will be 'tar' if the file was a .tar.gz, .tar.bz2, etc.
+        if ($extension_2 == "tar") {
+            // We don't handle tarball formats... yet.
+            throw new \Exception("Sorry, the ." . $extension_2 . "." . $extension_1 . " format isn't allowed");
+        }
+        switch ($extension_1) {
+            case "zip":
+                $cmd = 'unzip ' . escapeshellarg($zipFilePath) . " -d " . escapeshellarg($destDir);
+                break;
+            case "7z":
+                $cmd = '7z x ' . escapeshellarg($zipFilePath) . " -o" . escapeshellarg($destDir);
+                break;
+            default:
+                throw new \Exception("Sorry, the ." . $extension_1 . " format isn't allowed");
+                break;
+        }
 
-        // We're fine, extract the zip file
+        FileUtilities::createAllFolders($destDir);
+        $destFilesBeforeUnpacking = scandir($destDir);
+
         $output = array();
         $retcode = 0;
-        exec("scripts/extractarchive.sh " . escapeshellarg($zipFilePath) . " " . escapeshellarg($destDir), $output, $retcode);
+        exec($cmd, $output, $retcode);
+        if ($retcode) {
+            throw new \Exception("Uncompressing archive file failed: " . print_r($output, true));
+        }
+
+        // If the .zip contained just one top-level folder with all contents below that folder,
+        // "promote" the contents up one level so that $destDir contains all the .zip's contents.
+        $destFilesAfterUnpacking = scandir($destDir);
+        if (count($destFilesAfterUnpacking) == count($destFilesBeforeUnpacking)+1) {
+            $diff = array_values(array_diff($destFilesAfterUnpacking, $destFilesBeforeUnpacking));
+            $zipTopLevel = $diff[0];
+            if (is_dir($destDir . "/" . $zipTopLevel)) {
+                FileUtilities::promoteDirContents($destDir . "/" . $zipTopLevel);
+                var_dump($destFilesAfterUnpacking);
+                var_dump(scandir($destDir));
+            }
+        }
+
         return $retcode;
     }
 
