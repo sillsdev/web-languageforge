@@ -255,6 +255,15 @@ class LiftImport
             }
         }
 
+        // Import assets: pictures, audio, and other files
+        foreach (array("pictures", "audio", "others") as $dirName) {
+            $assetPath = $assetDir . "/" . $dirName;
+            $importPath = $extractDest . "/" . $dirName;
+            if (file_exists($importPath) && is_dir($importPath)) {
+                FileUtilities::copyDirTree($importPath, $assetPath);
+            }
+        }
+
         // Import first .lift file (only).
         $liftFilePath = $liftFilenames[0];
         $mergeRule = LiftMergeRule::IMPORT_WINS;
