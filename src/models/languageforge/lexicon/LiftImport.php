@@ -84,9 +84,11 @@ class LiftImport
                 } else {
                     // Haven't parsed the .lift-ranges file yet. We'll assume it is alongside the .lift file.
                     $rangePath = $liftFileDir . "/" . $rangeFilename;
-                    $sxeNode = simplexml_load_file($rangePath);
-                    $parsedRanges = $liftRangeDecoder->decode($sxeNode);
-                    $liftRanges = array_merge($liftRanges, $parsedRanges);
+                    if (file_exists($rangePath)) {
+                        $sxeNode = simplexml_load_file($rangePath);
+                        $parsedRanges = $liftRangeDecoder->decode($sxeNode);
+                        $liftRanges = array_merge($liftRanges, $parsedRanges);
+                    }
                     if (isset($liftRanges[$rangeId])) {
                         $range = $liftRanges[$rangeId];
                     } else {
