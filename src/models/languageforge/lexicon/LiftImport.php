@@ -301,6 +301,7 @@ class LiftImport
             case "zip":
                 $cmd = 'unzip ' . escapeshellarg($zipFilePath) . " -d " . escapeshellarg($destDir);
                 break;
+            case "zipx":
             case "7z":
                 $cmd = '7z x ' . escapeshellarg($zipFilePath) . " -o" . escapeshellarg($destDir);
                 break;
