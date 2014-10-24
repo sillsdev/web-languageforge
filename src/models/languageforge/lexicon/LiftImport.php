@@ -159,55 +159,48 @@ class LiftImport
         $reader->close();
 
         if ($initialImport) {
-            // replace part of speech option list with values from imported data
-            // todo: remove this functionality when we have a way to import lift ranges (option lists) - cjh 2014-08
             if (array_key_exists('grammatical-info', $liftRanges)) {
-                LiftImport::rangeToOptionList($projectModel, 'partOfSpeech', $liftRanges['grammatical-info']);
+                $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS];
+                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['grammatical-info']);
             }
-            /*
-            if (count($partOfSpeechValues) > 0) {
-                $partOfSpeechOptionList = new LexOptionListModel($projectModel);
-                $partOfSpeechOptionList->readByProperty('code', 'partOfSpeech');
-
-                // start with an empty list
-                $partOfSpeechOptionList->items->exchangeArray(array());
-
-                foreach ($partOfSpeechValues as $value) {
-                    $partOfSpeechOptionList->items->append(new LexiconOptionListItem($value));
-                }
-                $partOfSpeechOptionList->write();
-            }
-            */
             if (array_key_exists('anthro-code', $liftRanges)) {
-                LiftImport::rangeToOptionList($projectModel, 'anthropologyCategories', $liftRanges['anthro-code']);
+                $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES];
+                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['anthro-code']);
             }
             if (array_key_exists('domain-type', $liftRanges)) {
-                LiftImport::rangeToOptionList($projectModel, 'academicDomains', $liftRanges['domain-type']);
+                $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS];
+                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['domain-type']);
             }
             if (array_key_exists('semantic-domain-ddp4', $liftRanges)) {
-                LiftImport::rangeToOptionList($projectModel, 'semanticDomain', $liftRanges['semantic-domain-ddp4']);
+                $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM];
+                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['semantic-domain-ddp4']);
             }
             if (array_key_exists('status', $liftRanges)) {
-                LiftImport::rangeToOptionList($projectModel, 'status', $liftRanges['status']);
+                $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS];
+                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['status']);
             }
+            // TODO: Add any other LIFT range imports that make sense. 2014-10 RM
         }
     }
 
     /**
      * Convert a LIFT range to an option list of the right code
-     * Usage example: rangeToOptionList($projectModel, 'partOfSpeech', $liftRanges['grammatical-info'])
+     * Usage example: rangeToOptionList($projectModel, 'partOfSpeech', 'Part of Speech', $liftRanges['grammatical-info'])
      * @param unknown $projectModel
      * @param unknown $optionListCode
      * @param unknown $liftRange
      * @param string $interfaceLang
      */
-    public static function rangeToOptionList($projectModel, $optionListCode, $liftRange, $interfaceLang = 'en')
+    public static function rangeToOptionList($projectModel, $optionListCode, $optionListName, $liftRange, $interfaceLang = 'en')
     {
-        $partOfSpeechOptionList = new LexOptionListModel($projectModel);
-        $partOfSpeechOptionList->readByProperty('code', $optionListCode);
+        $optionList = new LexOptionListModel($projectModel);
+        $optionList->readByProperty('code', $optionListCode);
+        $optionList->code = $optionListCode;
+        $optionList->name = $optionListName;
+        $optionList->canDelete = false;
 
         // start with an empty list
-        $partOfSpeechOptionList->items->exchangeArray(array());
+        $optionList->items->exchangeArray(array());
 
         foreach ($liftRange->rangeElements as $id => $elem) {
             $label = $elem->label[$interfaceLang]->value;
@@ -216,9 +209,9 @@ class LiftImport
             } else {
                 $abbrev = null;
             }
-            $partOfSpeechOptionList->items->append(new LexiconOptionListItem($label, $abbrev));
+            $optionList->items->append(new LexiconOptionListItem($label, $abbrev));
         }
-        $partOfSpeechOptionList->write();
+        $optionList->write();
     }
 
     /**
