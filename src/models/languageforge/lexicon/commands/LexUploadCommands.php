@@ -5,6 +5,7 @@ use models\shared\commands\UploadResponse;
 use models\shared\commands\MediaResult;
 use models\shared\commands\ErrorResult;
 use models\languageforge\lexicon\LexEntryModel;
+use models\languageforge\lexicon\LexEntryListModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LiftImport;
 use models\languageforge\lexicon\LiftMergeRule;
@@ -327,10 +328,14 @@ class LexUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $importErrors = LiftImport::importZip($filePath, $project);
+                $entryList = new LexEntryListModel($project);
+                $entryList->read();
+                $entriesImported = $entryList->count;
                 $data = new MediaResult();
                 $data->path = $project->getAssetsPath();
                 $data->fileName = $fileName;
                 $data->importErrors = $importErrors;
+                $data->entriesImported = $entriesImported;
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
