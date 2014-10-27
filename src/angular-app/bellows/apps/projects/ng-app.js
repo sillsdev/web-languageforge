@@ -328,8 +328,10 @@ angular.module('projects', ['bellows.services', 'bellows.filters', 'palaso.ui.li
       $scope.uploadSuccess = data.result;
       if ($scope.uploadSuccess) {
         notice.push(notice.SUCCESS, $filter('translate')("Successfully imported") + " " + $scope.datafile.name);
+        $scope.newProjectWizard.entriesImported = data.data.entriesImported;
       } else {
         notice.push(notice.ERROR, $filter('translate')("Sorry, something went wrong in the import process."));
+        $scope.newProjectWizard.entriesImported = 0;
         // Should really have a more specific error message.
         // TODO: Update the PHP API to provide specific error messages regarding failure reasons.
       }

@@ -78,13 +78,12 @@
             </div>
 
             <div data-ng-switch-when="3">
-            <div ng-show="newProject.initialData">
+            <div ng-show="newProjectWizard.entriesImported">
                 <div class="wizard-step-title">Step 3: Import report</div>
 
-                <span>(how many entries imported, how many fields not processed, etc.)</span>
-                <span>(not yet implemented)</span>
+                <span>{{newProjectWizard.entriesImported}} entries imported</span>
             </div>
-            <div ng-hide="newProject.initialData">
+            <div ng-hide="newProjectWizard.entriesImported">
                 <div class="wizard-step-title">Step 3: Pick primary language</div>
 
                 <div class="control-group">
