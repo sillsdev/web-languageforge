@@ -5,14 +5,13 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
 // Custom textAngular tool for language spans
 .config(function($provide) {
   
-  // add custom tools
+  // add custom tools. Note: $delegate is the taOptions we are decorating
   $provide.decorator('taOptions', ['taRegisterTool', '$delegate',  'taTranslations', 'taTools', 'sessionService', '$window', '$compile', '$animate',
   function(taRegisterTool, taOptions, taTranslations, taTools, ss, $window, $compile, $animate) {
 
     // remove the built-in insertLink tool
     delete taTools.insertLink;
 
-    // $delegate is the taOptions we are decorating
     // register the tool with textAngular
     taRegisterTool('insertLink', {
 //      tooltiptext: taTranslations.insertLink.tooltip,
@@ -110,7 +109,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
     }
     
     function getLanguageTag() {
-      return 'test';
+      return '';
     }
 
     taRegisterTool('languageSpan', {
@@ -119,7 +118,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       action: function createLanguageSpan() {
         var selectedHtml = getSelectionHtml(),
             languageTag = getLanguageTag();
-        if (languageTag && languageTag !== '' && selectedHtml && selectedHtml !== '') {
+        if (selectedHtml && selectedHtml !== '') {
           var languageSpan = '<span lang="' + languageTag + '">' + selectedHtml + '</span>';
           return this.$editor().wrapSelection('insertHTML', languageSpan, false);
         }
@@ -151,6 +150,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
           
           editorScope.displayElements.popover.css('width', '300px');
           editorScope.displayElements.popover.attr('data-container', 'body');
+          editorScope.displayElements.popover.off('mousedown');
           var container = editorScope.displayElements.popoverContainer;
           container.empty();
           container.css('line-height', '28px');
@@ -159,13 +159,6 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
                   'data-ng-options="selects.language.options[tag] for tag in selects.language.optionsOrder">' +
                   '<option value="">-- choose a language --</option></select>'
               );
-//          langSelect.on('click', function(event) {
-//            event.preventDefault();
-//            console.log('langSelect click');
-//            $element.attr('lang', editorScope.selects.language.tag);
-//            editorScope.updateTaBindtaTextElement();
-//            editorScope.hidePopover();
-//          });
           container.append(langSelect);
           var buttonGroup = angular.element('<div class="btn-group pull-right">'),
               unLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-unlink icon-unlink"></i></button>');
@@ -179,8 +172,18 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
           });
           buttonGroup.append(unLinkButton);
           container.append(buttonGroup);
-          $compile(langSelect)(editorScope);
           $compile(editorScope.displayElements.popover)(editorScope);
+          
+          // change event comes after $compile so that the bindings are in place
+          langSelect.on('change', function(event) {
+            event.preventDefault();
+            $element.attr('lang', editorScope.selects.language.tag);
+            editorScope.updateTaBindtaTextElement();
+            editorScope.hidePopover();
+            
+            console.log('langSelect change: ', $element.attr('lang'));
+          });
+          
           editorScope.$apply();
           
           // use code below (removes close event) instead of editorScope.showPopover($element);
@@ -217,8 +220,6 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       fteDir: "="
     },
     controller: ['$scope', 'sessionService', function($scope, ss) {
-      var inputSystems = ss.session.projectSettings.config.inputSystems;
-      
       $scope.fte = {};
       if (angular.isDefined($scope.fteToolbar)) {
         $scope.fte.toolbar = $scope.fteToolbar;
@@ -227,19 +228,6 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       } else {
         $scope.fte.toolbar = "[['insertLink', 'languageSpan']]";
       }
-      
-      $scope.selects = {};
-      $scope.selects.language = {};
-      $scope.selects.language.optionsOrder = [];
-      $scope.selects.language.options = {};
-      angular.forEach(inputSystems, function (language, tag) {
-        var languageName = language.languageName;
-        if (languageName === 'Unlisted Language') {
-          languageName += ' (' + tag + ')';
-        }
-        $scope.selects.language.options[tag] = languageName;
-        $scope.selects.language.optionsOrder.push(tag);
-      });
     }]
   };
 }]);
