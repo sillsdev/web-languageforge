@@ -1,1 +1,8 @@
 <h2>Final step</h2>
+
+<div class="control-group">
+    <div class="wizard-step-title">Step 4: Ready to create project</div>
+
+    <span>Please review the information below</span>
+    <button type="submit" class="btn" data-ng-disabled="!(newProject.projectName && newProject.projectCode && (projectCodeState == 'ok') && newProject.appName)" data-ng-click="addProject(); newProjectCollapsed = true; checkProjectCode()"><i class="icon-ok"></i>Save</button>
+</div>

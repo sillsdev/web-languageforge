@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('new-lex-project',
   [
     'ngRoute',
@@ -45,6 +47,12 @@ angular.module('new-lex-project',
           step: 3,
         },
       })
+      .state('newProject.selectPrimaryLanguage', {
+        templateUrl: '/angular-app/languageforge/new-lex-project/views/new-project-select-primary-language.html',
+        data: {
+          step: 3, // This is not a typo. There are two possible step 3 templates.
+        },
+      })
       .state('newProject.createProject', {
         templateUrl: '/angular-app/languageforge/new-lex-project/views/new-project-create.html',
         data: {
@@ -85,10 +93,13 @@ angular.module('new-lex-project',
     $scope.$watch('formValidated', function(validated) {
       $scope.forwardBtnClass = validated ? 'btn-success' : '';
       $scope.formStatus = validated ? "Form validates" : "There's an error somewhere in the form";
-      if ($scope.newLexProjectForm.$pristine) {
+      if (angular.isDefined($scope.newLexProjectForm) && $scope.newLexProjectForm.$pristine) {
         $scope.formStatus = '';
       }
     });
+
+    $scope.newProject = {}; // This is where form data will live
+
     $scope.nextStep = function() {
 //      $state.current.data.step += 1;
       $scope.formValidated = false;
@@ -100,7 +111,7 @@ angular.module('new-lex-project',
       $scope.newLexProjectForm.$setDirty();
     }
     $scope.iconForStep = function(step) {
-      classes = [];
+      var classes = [];
       if ($state.current.data.step > step) {
         classes.push('icon-check-sign');
       } else {
@@ -118,9 +129,14 @@ angular.module('new-lex-project',
         $state.go('newProject.initialData');
         break;
       case 'newProject.initialData':
+        // TODO: Check if .zip file uploaded. If none, go to newProject.selectPrimaryLanguage step instead.
         $state.go('newProject.verifyData');
+//        $state.go('newProject.selectPrimaryLanguage');
         break;
       case 'newProject.verifyData':
+        $state.go('newProject.createProject');
+        break;
+      case 'newProject.selectPrimaryLanguage':
         $state.go('newProject.createProject');
         break;
       case 'newProject.createProject':
@@ -138,6 +154,19 @@ angular.module('new-lex-project',
         console.log('Verify that the uploaded data works');
         break;
       // etc...
+      }
+    });
+
+    $scope.$watch('newProject.projectName', function(newval) {
+      if (angular.isDefined(newval) && !$scope.newProject.editProjectCode) {
+        // Don't set project code if user wants to edit it
+        $scope.newProject.projectCode = $scope.newProject.projectName;
+      }
+    });
+    $scope.$watch('newProject.editProjectCode', function(newval, oldval) {
+      if (oldval && !newval) {
+        // When user unchecks the "edit project code" box, go back to setting it from project name
+        $scope.newProject.projectCode = $scope.newProject.projectName;
       }
     });
 
