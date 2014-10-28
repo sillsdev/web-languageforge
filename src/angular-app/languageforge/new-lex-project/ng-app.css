@@ -5,7 +5,7 @@
 	min-height: 80px;
 }
 
-/* Progess indicator */
+/* Progress indicator */
 #progress-indicator {
 }
 #progress-indicator i {
@@ -21,3 +21,17 @@
 	text-decoration: none;
 }
 
+#form-status {
+	/* See http://css-tricks.com/box-sizing/ */
+	box-sizing: border-box;
+}
+#form-status.neutral {
+	border: none;
+	padding: 1px; /* Replace 1px border so div is same size */
+}
+#form-status.bad {
+	border: 1px solid red;
+}
+#form-status.good {
+	border: 1px solid green;
+}

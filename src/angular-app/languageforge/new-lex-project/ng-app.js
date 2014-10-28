@@ -84,6 +84,10 @@ angular.module('new-lex-project',
     $scope.formValidated = false;
     $scope.$watch('formValidated', function(validated) {
       $scope.forwardBtnClass = validated ? 'btn-success' : '';
+      $scope.formStatus = validated ? "Form validates" : "There's an error somewhere in the form";
+      if ($scope.newLexProjectForm.$pristine) {
+        $scope.formStatus = '';
+      }
     });
     $scope.nextStep = function() {
 //      $state.current.data.step += 1;
@@ -93,6 +97,7 @@ angular.module('new-lex-project',
     }
     $scope.prevStep = function() {
       $scope.formValidated = !$scope.formValidated;
+      $scope.newLexProjectForm.$setDirty();
     }
     $scope.iconForStep = function(step) {
       classes = [];
