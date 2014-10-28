@@ -1,0 +1,23 @@
+.logo-spacer {
+	float: left;
+	width: 110px;
+	margin-left: 20px;
+	min-height: 80px;
+}
+
+/* Progess indicator */
+#progress-indicator {
+}
+#progress-indicator i {
+	display: block;
+	font-size: 55px;
+}
+#progress-indicator i.icon-check-sign {
+	color: green;
+	font-size: 50px;
+	height: 56px;
+}
+#progress-indicator a:hover {
+	text-decoration: none;
+}
+
