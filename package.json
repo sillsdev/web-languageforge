@@ -1,0 +1,23 @@
+{
+  "name": "scriptureforge",
+  "version": "0.1.0",
+  "description": "ScriptureForge",
+  "main": "src/index.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sillsdev/sfchecks.git"
+  },
+  "devDependencies": {
+    "gulp-util": "~2.2.14",
+    "gulp": "~3.8",
+    "gulp-exec": "~1.0",
+    "gulp-livereload": "~1.2",
+    "tiny-lr": "0.0.5",
+    "async": "~0.9.0"
+  }
+}
