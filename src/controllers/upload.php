@@ -51,6 +51,18 @@ class Upload extends Secure_base
                             }
                             $response = $api->lex_uploadProjectZip($mediaType, $tmpFilePath, $projectId);
                             break;
+                        case 'mock-lex-project':
+                            $api->checkPermissions('lex_uploadProjectZip', array(
+                                $mediaType,
+                                $tmpFilePath
+                            ));
+                            if (isset($_POST['projectId'])) {
+                                $projectId = $_POST['projectId'];
+                            } else {
+                                $projectId = '';
+                            }
+                            $response = $api->lex_mockUploadProjectZip($mediaType, $tmpFilePath, $projectId);
+                            break;
                         case 'sense-image':
                             $api->checkPermissions('lex_uploadImageFile', array(
                                 $mediaType,
