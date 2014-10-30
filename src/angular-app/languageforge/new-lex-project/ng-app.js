@@ -74,8 +74,8 @@ angular.module('new-lex-project',
       ;
 
   }])
-  .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$modal', 'sessionService', 'silNoticeService', 'projectService', '$translate', '$state', '$upload',
-  function($scope, $q, $filter, $modal, ss, notice, projectService, $translate, $state, $upload) {
+  .controller('NewLexProjectCtrl', ['$scope', '$rootScope', '$q', '$filter', '$modal', 'sessionService', 'silNoticeService', 'projectService', '$translate', '$state', '$upload',
+  function($scope, $rootScope, $q, $filter, $modal, ss, notice, projectService, $translate, $state, $upload) {
     $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
     if (InputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
 //    if (true) { // Override direction and force rtl, for testing purposes
@@ -217,7 +217,7 @@ angular.module('new-lex-project',
           return ok("You've chosen to create an empty project with no initial data.");
         }
         if ($scope.uploadSuccess) {
-          return ok("Everything looks good; ready to proceed.");
+          return ok($scope.newProject.entriesImported + " entries imported. Everything looks good; ready to proceed.");
         } else {
           return error("No initial data uploaded yet.");
         }
@@ -265,6 +265,12 @@ angular.module('new-lex-project',
         break;
       };
     }
+
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+      if (fromState.name == "newProject.name" && toState.name == "newProject.initialData") {
+        $scope.createProjectBeforeUpload();
+      }
+    });
 
     $scope.projectNameToCode = function(name) {
       if (angular.isUndefined(name)) { return undefined; }
@@ -337,6 +343,20 @@ angular.module('new-lex-project',
       }
     });
 
+    $scope.createProjectBeforeUpload = function createProjectBeforeUpload() {
+      if (!$scope.newProject.projectName || !$scope.newProject.projectCode || !$scope.newProject.appName) {
+        // This function sometimes gets called during setup, when $scope.newProject is still empty.
+        return;
+      }
+      projectService.create($scope.newProject.projectName, $scope.newProject.projectCode, $scope.newProject.appName, function(result) {
+        if (result.ok) {
+          $scope.newProject.id = result.data;
+        } else {
+          notice.push(notice.ERROR, "The " + $scope.newProject.projectName + " project could not be created. Please try again.");
+        }
+      });
+    };
+
 
     // ----- Step 2: Initial data upload -----
 
@@ -355,10 +375,10 @@ angular.module('new-lex-project',
       }
       $scope.datafile = files[0];
       notice.setLoading('Importing ' + $scope.datafile.name + '...');
+      $scope.makeFormInvalid("Please wait while " + $scope.datafile.name + " is imported...");
       console.log('About to upload', $scope.datafile);
       $scope.upload = $upload.upload({
-        //url: '/upload/lf-lexicon/lex-project',
-        url: '/upload/lf-lexicon/mock-lex-project',
+        url: '/upload/lf-lexicon/lex-project',
         file: $scope.datafile,
         data: {projectId: ($scope.newProject.id || '')}, // Which project to upload new data to
       }).progress(function(evt) {
@@ -417,6 +437,14 @@ angular.module('new-lex-project',
       $scope.validateForm();
     });
 
+
+    // ----- Step 4: Final project creation -----
+
+    $scope.addProject = function() {
+      // Actually, the project has already been created; we just need to return the user to /app/projects
+      $scope.makeFormValid('Project created.');
+      // TODO: Set url to /app/projects -- or maybe to the newly-created project.
+    };
 
 
   }])
