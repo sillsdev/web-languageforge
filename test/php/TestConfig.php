@@ -6,7 +6,7 @@ define('TestMode', true);
 
 define('TestPath', $rootPath . 'test/php/');
 define('TestLibPath', $rootPath . 'test/lib/');
-define('SimpleTestPath', $rootPath . 'test/lib/simpletest/');
+define('SimpleTestPath', $rootPath . 'src/vendor/simpletest/simpletest/');
 define('SourcePath', $rootPath . 'src/');
 
 // Fake some CodeIgniter path defines

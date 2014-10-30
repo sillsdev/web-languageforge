@@ -27,6 +27,7 @@ use libraries\shared\palaso\exceptions\ErrorHandler;
 use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
+use Palaso\Utilities\CodeGuard;
 
 /**
  * This class build a json-RPC Server 1.0

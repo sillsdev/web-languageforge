@@ -581,11 +581,6 @@ class sf
         return;
     }
 
-    public function lex_import_lift($import)
-    {
-        return LexProjectCommands::importLift($this->_projectId, $import);
-    }
-
     /**
      * Create/Update a Project
      *
@@ -655,6 +650,12 @@ class sf
     public function lex_uploadImageFile($mediaType, $tmpFilePath)
     {
         $response = LexUploadCommands::uploadImageFile($this->_projectId, $mediaType, $tmpFilePath);
+        return JsonEncoder::encode($response);
+    }
+
+    public function lex_upload_importLift($mediaType, $tmpFilePath)
+    {
+        $response = LexUploadCommands::importLiftFile($this->_projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 

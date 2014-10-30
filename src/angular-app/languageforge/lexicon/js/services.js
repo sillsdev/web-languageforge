@@ -44,10 +44,6 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
         jsonRpc.call('lex_optionlist_update', [optionList], callback);
     };
 
-    this.importLift = function(importData, callback) {
-      jsonRpc.call('lex_import_lift', [importData], callback);
-    };
-
     this.readProject = function(callback) {
       jsonRpc.call('lex_projectDto', [], callback);
     };
