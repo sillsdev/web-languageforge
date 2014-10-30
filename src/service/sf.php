@@ -655,6 +655,13 @@ class sf
         $response = LexUploadCommands::uploadProjectZip($projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
+    public function lex_mockUploadProjectZip($mediaType, $tmpFilePath, $projectId = '')
+    {
+        // Used for testing zip upload UI without actually importing data
+        if (empty($projectId)) { $projectId = $this->_projectId; }
+        $response = LexUploadCommands::mockUploadProjectZip($projectId, $mediaType, $tmpFilePath);
+        return JsonEncoder::encode($response);
+    }
 
     public function lex_uploadImageFile($mediaType, $tmpFilePath)
     {
