@@ -10,6 +10,7 @@ angular.module('new-lex-project',
     'ngAnimate',
     'ui.router',
     'palaso.ui.utils',
+    'palaso.ui.language',
     'palaso.util.model.transform',
     'pascalprecht.translate',
     'angularFileUpload'
@@ -73,8 +74,8 @@ angular.module('new-lex-project',
       ;
 
   }])
-  .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', 'sessionService', 'silNoticeService', 'projectService', '$translate', '$state', '$upload',
-  function($scope, $q, $filter, ss, notice, projectService, $translate, $state, $upload) {
+  .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$modal', 'sessionService', 'silNoticeService', 'projectService', '$translate', '$state', '$upload',
+  function($scope, $q, $filter, $modal, ss, notice, projectService, $translate, $state, $upload) {
     $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
     if (InputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
 //    if (true) { // Override direction and force rtl, for testing purposes
@@ -222,10 +223,15 @@ angular.module('new-lex-project',
         }
         break;
       case 'newProject.verifyData':
-        return error("Validation not yet implemented for step " + currentState);
+        // TODO: Check if user has clicked button
+        return ok("Everything looks good; ready to proceed.");
         break;
       case 'newProject.selectPrimaryLanguage':
-        return error("Validation not yet implemented for step " + currentState);
+        if ($scope.newProject.languageCode) {
+          return ok("Everything looks good; ready to proceed.");
+        } else {
+          return error("Please select a primary language for the project.");
+        }
         break;
       case 'newProject.createProject':
         return error("Validation not yet implemented for step " + currentState);
@@ -376,6 +382,41 @@ angular.module('new-lex-project',
         $scope.validateForm();
       });
     };
+
+    // ----- Step 3: Verify initial data -OR- select primary language -----
+
+    $scope.initialDataLooksGood = function() {
+      $scope.makeFormValid();
+    }
+
+    $scope.setLanguage = function(languageCode, language) {
+      $scope.newProject.languageCode = languageCode;
+      $scope.newProject.languageName = language.name;
+    };
+    $scope.openNewLanguageModal = function openNewLanguageModal() {
+      var modalInstance = $modal.open({
+        templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.selected = {
+            code: '',
+            language: {}
+          };
+          $scope.add = function() {
+            $modalInstance.close($scope.selected);
+          };
+        }]
+      });
+      modalInstance.result.then(function(selected) {
+        console.log('Modal result:', selected);
+        $scope.setLanguage(selected.code, selected.language);
+      });
+    };
+
+    $scope.$watch('newProject.languageCode', function(newval) {
+      if (angular.isUndefined(newval)) { return; }
+      $scope.validateForm();
+    });
+
 
 
   }])
