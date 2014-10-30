@@ -29,9 +29,9 @@
         </div>
 
         <!-- use ng-submit to catch the form submission and use our Angular function -->
-        <form class="form-horizontal" data-ng-submit="processForm()" id="newLexProjectForm" name="newLexProjectForm" novalidate>
+        <form class="form-horizontal" data-ng-submit="nextStep()" id="newLexProjectForm" name="newLexProjectForm" novalidate>
         <div class="row" align="center">
-            <div class="span8" id="form-status" ng-class="{good: formValidated && !newLexProjectForm.$pristine, neutral: newLexProjectForm.$pristine, bad: !formValidated && !newLexProjectForm.$pristine}"><span>{{formStatus | translate}} &nbsp;</span></div>
+            <div class="span8" id="form-status" ng-class="formStatusClass"><span>{{formStatus | translate}} &nbsp;</span></div>
         </div>
 
             <!-- our nested state views will be injected here -->
