@@ -1,3 +1,6 @@
+<input type="checkbox" data-ng-model="newProject.emptyProjectDesired"> Skip this step and create an empty project.</input>
+
+<div  collapse="newProject.emptyProjectDesired">
 <h2>Initial data</h2>
 
 <div class="drop-box" data-ng-file-drop="onFileSelect($files)" data-ng-file-drop-available="dropSupported=true">
@@ -17,6 +20,4 @@
     &nbsp;
 </div>
 <div data-ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
-<div class="control-group">
-    <input type="checkbox" data-ng-model="newProject.emptyProjectDesired">Don't upload any data: create an empty project</input>
 </div>
