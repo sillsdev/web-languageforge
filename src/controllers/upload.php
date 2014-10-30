@@ -3,7 +3,7 @@ use libraries\shared\palaso\exceptions\ErrorHandler;
 use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 
 require_once 'secure_base.php';
 
@@ -41,6 +41,12 @@ class Upload extends Secure_base
                             $tmpFilePath
                         ));
                         $response = $api->lex_uploadImageFile($mediaType, $tmpFilePath);
+                    } elseif ($mediaType === 'import-lift') {
+                        $api->checkPermissions('lex_upload_importLift', array(
+                            $mediaType,
+                            $tmpFilePath
+                        ));
+                        $response = $api->lex_upload_importLift($mediaType, $tmpFilePath);
                     } else {
                         throw new Exception("Unsupported upload type: $mediaType");
                     }

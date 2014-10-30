@@ -10,7 +10,7 @@ use models\languageforge\lexicon\LexiconProjectModel;
 
 use models\scriptureforge\SfchecksProjectModel;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 
 use models\shared\rights\ProjectRoleModel;
 use models\mapper\MapOf;
@@ -224,7 +224,7 @@ class ProjectModel extends \models\mapper\MapperModel
     }
 
     /**
-     * @return string
+     * @return string Relative path of the projects assets folder
      */
     public function getAssetsPath()
     {
@@ -232,7 +232,7 @@ class ProjectModel extends \models\mapper\MapperModel
     }
 
     /**
-     * @return string
+     * @return string Full path of the projects assets folder
      */
     public function getAssetsFolderPath()
     {
@@ -338,7 +338,7 @@ class ProjectModel extends \models\mapper\MapperModel
             $objects = scandir($dir);
             foreach ($objects as $object) {
                 if ($object != "." && $object != "..") {
-                    if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object);
+                    if (filetype($dir."/".$object) == "dir") $this->rrmdir($dir."/".$object); else unlink($dir."/".$object);
                 }
             }
             reset($objects);

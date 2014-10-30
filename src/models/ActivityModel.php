@@ -10,7 +10,7 @@ use models\mapper\IdReference;
 
 use models\mapper\Id;
 use models\mapper\MapOf;
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 
 class ActivityModelMongoMapper extends \models\mapper\MongoMapper
 {

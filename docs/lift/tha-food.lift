@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <lift
 	version="0.13"
 	producer="WeSay 1.0.0.0">
@@ -9,11 +9,7 @@
 		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>chùuchìi mǔu krɔ̂ɔp</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>chùuchìi mǔu krɔ̂ɔp</text>
 			</form>
 			<form
@@ -47,11 +43,7 @@
 		guid="05473cb0-4165-4923-8d81-02f8b8ed3f26">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>khâaw kài thɔ̂ɔt</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>khâaw kài thɔ̂ɔt</text>
 			</form>
 			<form
@@ -85,11 +77,7 @@
 		guid="0a830d20-04cf-43ae-8690-d99363f314b1">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>krapâw mǔu</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>krapâw mǔu</text>
 			</form>
 			<form
@@ -114,13 +102,13 @@
 			</definition>
 			<example>
 				<form
-					lang="qaa-x-v">
+					lang="th">
 					<text>la</text>
 				</form>
 			</example>
 			<example>
 				<form
-					lang="x-v">
+					lang="th">
 					<text>la</text>
 				</form>
 			</example>
@@ -142,11 +130,7 @@
 		guid="118bce18-a6c5-49d2-a5e0-a74cb1365169">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>phàt siiʔ ǐw mǔu</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>phàt siiʔ ǐw mǔu</text>
 			</form>
 			<form
@@ -178,11 +162,7 @@
 		guid="4319d395-e0bb-40dd-981c-95f8059ef85f">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>kài phàt métmàmùaŋ</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>kài phàt métmàmùaŋ</text>
 			</form>
 			<form
@@ -207,13 +187,13 @@
 			</definition>
 			<example>
 				<form
-					lang="qaa-x-v">
+					lang="th">
 					<text>la</text>
 				</form>
 			</example>
 			<example>
 				<form
-					lang="x-v">
+					lang="th">
 					<text>la</text>
 				</form>
 			</example>
@@ -231,11 +211,7 @@
 		guid="7ccf400b-733a-4774-ada8-fe3308e406d8">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>cèt khǔnsʉ̀k phàt phrìk phǎw</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>cèt khǔnsʉ̀k phàt phrìk phǎw</text>
 			</form>
 			<form
@@ -274,11 +250,7 @@
 		guid="92e0d0e7-920e-4206-8cf5-86168c4ed559">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>phàt prîaw wǎan kài</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>phàt prîaw wǎan kài</text>
 			</form>
 			<form
@@ -323,11 +295,7 @@
 		guid="9ff76d3b-561d-4ab8-ad43-fc7b5923fdb2">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>phàt thai kûŋ</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>phàt thai kûŋ</text>
 			</form>
 			<form
@@ -368,11 +336,7 @@
 		guid="ac8cc6cf-22d8-43fc-82a6-c01a8bdf61d1">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>khâaw khài ciaw mǔu yɔ̂ɔ</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>khâaw khài ciaw mǔu yɔ̂ɔ</text>
 			</form>
 			<form
@@ -399,11 +363,7 @@
 		guid="b334a6da-5bf2-4c08-beb1-8687234703e7">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>khâaw phàt mǔu</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>khâaw phàt mǔu</text>
 			</form>
 			<form
@@ -444,11 +404,7 @@
 		guid="bec97897-05a4-4bd5-bc76-f4fcbe31bdfb">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>nɔ̀máay fàràŋ phàt kûŋ</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>nɔ̀máay fàràŋ phàt kûŋ</text>
 			</form>
 			<form
@@ -482,11 +438,7 @@
 		guid="cada5244-8040-40d3-bfc6-8e846a14f4dc">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>kài sòt kràthiam</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>kài sòt kràthiam</text>
 			</form>
 			<form
@@ -504,13 +456,13 @@
 			</definition>
 			<example>
 				<form
-					lang="qaa-x-v">
+					lang="th">
 					<text>ไก่สกกระ</text>
 				</form>
 			</example>
 			<example>
 				<form
-					lang="x-v">
+					lang="th">
 					<text>ไก่สกกระ</text>
 				</form>
 			</example>
@@ -538,11 +490,11 @@
 		guid="f592e667-ed2d-476e-ab20-d123de614b82">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
+				lang="th-fonipa">
 				<text>khâaw khai rábə̀ət</text>
 			</form>
 			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>khâaw khâi rábə̀ət</text>
 			</form>
 			<form
@@ -576,11 +528,7 @@
 		guid="f9075a99-e7d3-4f9f-a020-19f21640ed18">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>phàt maamâa kài</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>phàt maamâa kài</text>
 			</form>
 			<form
@@ -623,11 +571,7 @@
 		guid="f9f8e659-d686-4fd8-9d92-e0e06c3fef5f">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>panɛɛŋ mǔu</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>panɛɛŋ mǔu</text>
 			</form>
 			<form
@@ -661,11 +605,7 @@
 		guid="ab75849b-0927-48c9-be1d-bb7fa5ae957b">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>khâaw mǔu dɛɛŋ</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>khâaw mǔu dɛɛŋ</text>
 			</form>
 			<form
@@ -699,11 +639,7 @@
 		guid="525f017c-65a6-4d6f-ba08-cafa3c417ee7">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>khánáa mǔu krɔ̀ɔp</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>khánáa mǔu krɔ̀ɔp</text>
 			</form>
 			<form
@@ -740,11 +676,7 @@
 		guid="48591b77-f4c6-4354-b55b-638e6b12d19f">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>phàt kàlàam mǔu</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>phàt kàlàam mǔu</text>
 			</form>
 			<form
@@ -781,11 +713,7 @@
 		guid="2570ef2b-aa7a-4094-a4ab-e5ad2a0a6a3a">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>phàt phèt mǔu</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>phàt phèt mǔu</text>
 			</form>
 			<form
@@ -825,11 +753,7 @@
 		guid="71f64608-0ed6-4f7d-9e95-3f6ac6a3289a">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>râat nâa mǔu</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>râat nâa mǔu</text>
 			</form>
 			<form
@@ -856,11 +780,7 @@
 		guid="99fd574d-74b7-4ec5-90fb-c6b8a5a08d12">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>krapâw thalee</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>krapâw thalee</text>
 			</form>
 			<form
@@ -885,13 +805,13 @@
 			</definition>
 			<example>
 				<form
-					lang="x-v">
+					lang="th">
 					<text>la</text>
 				</form>
 			</example>
 			<example>
 				<form
-					lang="qaa-x-v">
+					lang="th">
 					<text>la</text>
 				</form>
 			</example>
@@ -919,11 +839,7 @@
 		guid="03ea6dec-c3df-44e0-a2bc-e4816de8c3d0">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>khâaw man gài</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>khâaw man gài</text>
 			</form>
 			<form
@@ -1060,11 +976,7 @@
 		guid="571b4705-24cd-48a6-a8e8-cf52f7a8e292">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>khánáa mǔu</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>khánáa mǔu</text>
 			</form>
 			<form
@@ -1091,11 +1003,7 @@
 		guid="23e038ff-acc3-4171-802f-b149a69d524a">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>khâw plaa thɔ̂ɔt phàt phǒŋ kàrìi</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>khâw plaa thɔ̂ɔt phàt phǒŋ kàrìi</text>
 			</form>
 			<form
@@ -1138,11 +1046,7 @@
 		guid="43839c8d-0916-48f0-ba6f-aa47a8eb2803">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>kài phàt phrík thài dam</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>kài phàt phrík thài dam</text>
 			</form>
 			<form
@@ -1185,11 +1089,7 @@
 		guid="f83aba82-8245-42ef-99cb-a07353a10359">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>phàt phrík kɛɛŋ kài</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>phàt phrík kɛɛŋ kài</text>
 			</form>
 			<form
@@ -1226,11 +1126,7 @@
 		guid="7854f5ab-601a-45af-93d1-b7d6fce7ad04">
 		<lexical-unit>
 			<form
-				lang="qaa-x-IPA">
-				<text>kǔay tǐaw tôm yam mǔu</text>
-			</form>
-			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>kǔay tǐaw tôm yam mǔu</text>
 			</form>
 			<form
@@ -1301,7 +1197,7 @@
 				<text>แกงเขียวหวานไก่</text>
 			</form>
 			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>kɛɛŋkhǐawwǎankày</text>
 			</form>
 		</lexical-unit>
@@ -1335,7 +1231,7 @@
 				<text>ลาบ</text>
 			</form>
 			<form
-				lang="x-IPA">
+				lang="th-fonipa">
 				<text>lâap</text>
 			</form>
 		</lexical-unit>
