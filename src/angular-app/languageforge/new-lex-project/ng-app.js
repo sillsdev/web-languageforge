@@ -6,11 +6,13 @@ angular.module('new-lex-project',
     'bellows.services',
     'bellows.filters',
     'ui.bootstrap',
+    'ui.bootstrap.collapse',
     'ngAnimate',
     'ui.router',
     'palaso.ui.utils',
     'palaso.util.model.transform',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'angularFileUpload'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
   function($stateProvider, $urlRouterProvider, $translateProvider) {
@@ -71,8 +73,8 @@ angular.module('new-lex-project',
       ;
 
   }])
-  .controller('NewLexProjectCtrl', ['$scope', '$q', 'sessionService', 'silNoticeService', 'projectService', '$translate', '$state',
-  function($scope, $q, ss, notice, projectService, $translate, $state) {
+  .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', 'sessionService', 'silNoticeService', 'projectService', '$translate', '$state', '$upload',
+  function($scope, $q, $filter, ss, notice, projectService, $translate, $state, $upload) {
     $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
     if (InputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
 //    if (true) { // Override direction and force rtl, for testing purposes
@@ -98,6 +100,30 @@ angular.module('new-lex-project',
     $scope.formValidated = false;
     $scope.formStatus = '';
     $scope.formValidationDefer = $q.defer();
+
+    $scope.makeFormValid = function(msg) {
+      if (!msg) { msg = ''; }
+      $scope.formValidated = true;
+      $scope.formStatus = msg;
+      $scope.formStatusClass = 'good';
+      $scope.formValidationDefer.resolve(true);
+      return $scope.formValidationDefer.promise;
+    };
+    $scope.makeFormNeutral = function(msg) {
+      if (!msg) { msg = ''; }
+      $scope.formValidated = false;
+      $scope.formStatus = msg;
+      $scope.formStatusClass = 'neutral';
+      $scope.formValidationDefer = $q.defer();
+      return $scope.formValidationDefer.promise;
+    };
+    $scope.makeFormInvalid = function(msg) {
+      $scope.formValidated = false;
+      $scope.formStatus = msg;
+      $scope.formStatusClass = 'bad';
+      $scope.formValidationDefer.resolve(false);
+      return $scope.formValidationDefer.promise;
+    };
 
     $scope.$watch('formValidated', function(validated) {
       $scope.forwardBtnClass = validated ? 'btn-success' : '';
@@ -128,10 +154,7 @@ angular.module('new-lex-project',
       // If form is still validating, wait for it
       $scope.formValidationDefer.promise.then(function(valid) {
         if (valid) {
-          $scope.formStatusClass = 'neutral';
-          $scope.formStatus = '';
-          $scope.formValidated = false;
-          $scope.formValidationDefer = $q.defer();
+          $scope.makeFormNeutral();
           $scope.processForm();
         }
       });
@@ -147,22 +170,10 @@ angular.module('new-lex-project',
         currentState = $state.current.name;
       }
       $scope.formValidationDefer = $q.defer();
-      var ok = function(status) {
-        if (!status) { status = ''; }
-        $scope.formStatus = status;
-        $scope.formStatusClass = 'good';
-        $scope.formValidated = true;
-        $scope.formValidationDefer.resolve(true);
-        return $scope.formValidationDefer.promise;
-      };
-      var error = function(msg) {
-        if (!status) { status = ''; }
-        $scope.formStatus = msg;
-        $scope.formStatusClass = 'bad';
-        $scope.formValidated = false;
-        $scope.formValidationDefer.resolve(false);
-        return $scope.formValidationDefer.promise;
-      }
+
+      // Shorthand to make things look a touch nicer
+      var ok = $scope.makeFormValid;
+      var error = $scope.makeFormInvalid;
       // TODO: This switch is becoming unwieldy. Separate each case into a separate function. 2014-10 RM
       switch (currentState) {
       case 'newProject.name':
@@ -201,23 +212,27 @@ angular.module('new-lex-project',
         });
         break;
       case 'newProject.initialData':
-        // TODO: Check if .zip file uploaded. If none, go to newProject.selectPrimaryLanguage step instead.
-        $state.go('newProject.verifyData');
-//        $state.go('newProject.selectPrimaryLanguage');
+        if ($scope.newProject.emptyProjectDesired) {
+          return ok("You've chosen to create an empty project with no initial data.");
+        }
+        if ($scope.uploadSuccess) {
+          return ok("Everything looks good; ready to proceed.");
+        } else {
+          return error("No initial data uploaded yet.");
+        }
         break;
       case 'newProject.verifyData':
-        $state.go('newProject.createProject');
+        return error("Validation not yet implemented for step " + currentState);
         break;
       case 'newProject.selectPrimaryLanguage':
-        $state.go('newProject.createProject');
+        return error("Validation not yet implemented for step " + currentState);
         break;
       case 'newProject.createProject':
-        console.log('Would create project here');
+        return error("Validation not yet implemented for step " + currentState);
         break;
       };
-      $scope.formValidationDefer.resolve("No verification was really done");
       console.log("Not really verified");
-      return $scope.formValidationDefer.promise;
+      return ok("No verification was really done");
     };
 
     $scope.processForm = function processForm() {
@@ -227,9 +242,11 @@ angular.module('new-lex-project',
         $state.go('newProject.initialData');
         break;
       case 'newProject.initialData':
-        // TODO: Check if .zip file uploaded. If none, go to newProject.selectPrimaryLanguage step instead.
-        $state.go('newProject.verifyData');
-//        $state.go('newProject.selectPrimaryLanguage');
+        if ($scope.newProject.emptyProjectDesired) {
+          $state.go('newProject.selectPrimaryLanguage');
+        } else {
+          $state.go('newProject.verifyData');
+        }
         break;
       case 'newProject.verifyData':
         $state.go('newProject.createProject');
@@ -279,10 +296,7 @@ angular.module('new-lex-project',
       return $scope.projectCodeStateDefer.promise;
     };
     $scope.resetValidateProjectForm = function resetValidateProjectForm() {
-      $scope.formValidated = false;
-      $scope.formStatus = '';
-      $scope.formStatusClass = 'neutral';
-      $scope.formValidationDefer = $q.defer();
+      $scope.makeFormNeutral();
       $scope.projectCodeState = 'unchecked';
       $scope.projectCodeStateDefer = $q.defer();
       $scope.projectCodeStateDefer.resolve('unchecked');
@@ -316,6 +330,53 @@ angular.module('new-lex-project',
         $scope.newProject.projectCode = newval.toLowerCase().replace(/ /g, '_');
       }
     });
+
+
+    // ----- Step 2: Initial data upload -----
+
+    $scope.$watch('newProject.emptyProjectDesired', function(newval) {
+      if (angular.isUndefined(newval)) { return; }
+      $scope.validateForm();
+    });
+
+    $scope.onFileSelect = function onFileSelect(files) {
+      // First, cope with multiple files if the user selected multiple.
+      if (files.length > 1) {
+        $scope.uploadErrorMsg = "Please select a single file. If you need to upload multiple files, zip them first with a utility like 7-zip.";
+        return;
+      } else {
+        $scope.uploadErrorMsg = '';
+      }
+      $scope.datafile = files[0];
+      notice.setLoading('Importing ' + $scope.datafile.name + '...');
+      console.log('About to upload', $scope.datafile);
+      $scope.upload = $upload.upload({
+        //url: '/upload/lf-lexicon/lex-project',
+        url: '/upload/lf-lexicon/mock-lex-project',
+        file: $scope.datafile,
+        data: {projectId: ($scope.newProject.id || '')}, // Which project to upload new data to
+      }).progress(function(evt) {
+        $scope.uploadProgress = 100.0 * evt.loaded / evt.total;
+      }).success(function(data, status, headers, config) {
+        notice.cancelLoading();
+        $scope.uploadSuccess = data.result;
+        if ($scope.uploadSuccess) {
+          notice.push(notice.SUCCESS, $filter('translate')("Successfully imported") + " " + $scope.datafile.name);
+          $scope.newProject.entriesImported = data.data.entriesImported;
+        } else {
+          notice.push(notice.ERROR, $filter('translate')("Sorry, something went wrong in the import process."));
+          $scope.newProject.entriesImported = 0;
+          // Should really have a more specific error message.
+          // TODO: Update the PHP API to provide specific error messages regarding failure reasons.
+        }
+        console.log('Upload complete. Data:', data);
+        console.log('Status:', status);
+        console.log('Headers:', headers('date'));
+        console.log('Config:', config);
+        $scope.validateForm();
+      });
+    };
+
 
   }])
 ;
