@@ -92,38 +92,39 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
     function getSelectionHtml() {
       var html = '';
       if (typeof window.getSelection != 'undefined') {
-          var sel = window.getSelection();
-          if (sel.rangeCount) {
-              var container = document.createElement('div');
-              for (var i = 0, len = sel.rangeCount; i < len; ++i) {
-                  container.appendChild(sel.getRangeAt(i).cloneContents());
-              }
-              html = container.innerHTML;
+        var sel = window.getSelection();
+        if (sel.rangeCount) {
+          var container = document.createElement('div');
+          for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+            container.appendChild(sel.getRangeAt(i).cloneContents());
           }
+          html = container.innerHTML;
+        }
       } else if (typeof document.selection != 'undefined') {
-          if (document.selection.type == 'Text') {
-              html = document.selection.createRange().htmlText;
-          }
+        if (document.selection.type == 'Text') {
+          html = document.selection.createRange().htmlText;
+        }
       }
       return html;
     }
     
-    function getLanguageTag() {
-      return '';
-    }
-
     taRegisterTool('languageSpan', {
       tooltiptext: 'Create language span',
       iconclass: 'fa fa-language fa-lg',
       action: function createLanguageSpan() {
-        var selectedHtml = getSelectionHtml(),
-            languageTag = getLanguageTag();
+        var selectedHtml = getSelectionHtml();
         if (selectedHtml && selectedHtml !== '') {
-          var languageSpan = '<span lang="' + languageTag + '">' + selectedHtml + '</span>';
-          return this.$editor().wrapSelection('insertHTML', languageSpan, false);
+          var languageSpan = '<span lang="">' + selectedHtml + '</span>',
+            element = angular.element(languageSpan),
+            result = this.$editor().wrapSelection('insertHTML', languageSpan, false);
+          this.onElementSelect.action(null, element, this.$editor());
+          return result;
         }
+        return false;
       },
       activeState: function(commonElement){
+        
+        // only works if span is inside another element
         if(commonElement) {
           if (commonElement[0].parentElement.tagName === 'SPAN') return true;
           return commonElement[0].tagName === 'SPAN';
@@ -174,7 +175,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
           container.append(buttonGroup);
           $compile(editorScope.displayElements.popover)(editorScope);
           
-          // change event comes after $compile so that the bindings are in place
+          // change event declared after $compile so that the bindings are in place
           langSelect.on('change', function(event) {
             event.preventDefault();
             $element.attr('lang', editorScope.selects.language.tag);
@@ -184,7 +185,9 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
             console.log('langSelect change: ', $element.attr('lang'));
           });
           
-          editorScope.$apply();
+          if (event) {
+            editorScope.$apply();
+          }
           
           // use code below (removes close event) instead of editorScope.showPopover($element);
           editorScope.displayElements.popover.css('display', 'block');
