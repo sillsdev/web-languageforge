@@ -1,4 +1,4 @@
-<h2>Name project</h2>
+<h2 translate="Choose project name"></h2>
 
 <div class="control-group">
     <input type="text" data-ng-model="newProject.projectName" set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name" data-ng-blur="checkProjectCodeIfNotOk()" idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
@@ -8,18 +8,17 @@
     <span  data-ng-show="projectCodeState == 'invalid'"><img id="projectCodeAlphanumeric" src="/images/shared/exclamation.png" title="Project Code must begin with a letter, and only contain lower-case letters, numbers and dashes!" style="position: absolute; padding-left: 5px; padding-tyop: 8px;"/></span>
     <span  data-ng-show="projectCodeState == 'ok'"><img id="projectCodeOk" src="/images/shared/tick.png" title="Project Code is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
 </div>
-<!-- TODO: Make this not an <input> at first, but allow clicking a button to set project code manually -->
+<div class="control-group">
+    <select ng-hide="projectTypesBySite().length == 1" required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
+        <option value="">-- Select Type --</option>
+    </select>
+</div>
 <div class="control-group">
     <div data-ng-show="newProject.editProjectCode">
     <input type="text" data-ng-show="newProject.editProjectCode" data-ng-model="newProject.projectCode" data-ng-trim="false" maxlength="50" required placeholder="Project Code" idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
     </div>
     <p data-ng-hide="newProject.editProjectCode">{{'Project code:' | translate}} {{newProject.projectCode}}</p>
-    <input type="checkbox" data-ng-model="newProject.editProjectCode">Edit project code</input>
+    <input type="checkbox" data-ng-model="newProject.editProjectCode"> Edit project code</input>
     <p>(You'll almost never need to check this)</p>
     </div>
-</div>
-<div class="control-group">
-    <select ng-hide="projectTypesBySite().length == 1" required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
-        <option value="">-- Select Type --</option>
-    </select>
 </div>
