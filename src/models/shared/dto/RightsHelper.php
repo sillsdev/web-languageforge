@@ -263,6 +263,7 @@ class RightsHelper
             // LanguageForge (lexicon)
             case 'lex_configuration_update':
             case 'lex_upload_importLift':
+            case 'lex_uploadProjectZip':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             case 'lex_baseViewDto':
