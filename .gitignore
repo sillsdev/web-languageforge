@@ -12,3 +12,5 @@ src/assets/
 .idea/*
 test/app/node_modules/protractor/selenium/
 
+
+src/vendor_bower/
