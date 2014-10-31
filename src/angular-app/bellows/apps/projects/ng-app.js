@@ -159,8 +159,22 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
   $scope.projectTypeNames = projectService.data.projectTypeNames;
   $scope.projectTypesBySite = projectService.data.projectTypesBySite;
 
+  $scope.projectTypesWithDedicatedNewProjectApp = [
+    'lexicon',
+    // Uncomment the lines below to test layout of icons
+//    'lexicon2',
+//    'lexicon3',
+//    'lexicon4',
+//    'lexicon5',
+//    'lexicon6',
+  ];
+
   if (projectService.data.projectTypesBySite().length == 1) {
     $scope.newProject.appName = $scope.projectTypesBySite()[0];
+    if ($scope.projectTypesWithDedicatedNewProjectApp.indexOf($scope.newProject.appName) > -1) {
+      $scope.showDedicatedNewProjectLinks = true;
+    }
   }
+
 }])
 ;
