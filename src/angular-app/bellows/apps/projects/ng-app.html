@@ -24,7 +24,7 @@
                     <div ng-repeat="appName in projectTypesWithDedicatedNewProjectApp" class="span3">
                         <a ng-href="/app/new-{{appName}}-project/"><figure>
                             <img src="/images/shared/placeholder.png" />
-                            <figcaption>New {{appName}} project</figcaption>
+                            <figcaption>New {{projectTypeNames[appName]}} project</figcaption>
                         </figure></a>
                     </div>
                     <div class="clearfix"></div>
