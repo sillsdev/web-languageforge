@@ -215,46 +215,47 @@ describe('Activity Page E2E Test', function() {
       it ('Verify filters work on the activity page', function() {
         
         // Additional tests to verify activity page filtering
-        var activityText = '';
-        
         activityPage.get();
         
-        // Expect the last activity to be performed by admin or manager
-        activityPage.getLength().then(function(len) {
-          activityText = activityPage.getActivityText(len - 1);
-          if (expectedUsername == constants.memberUsername) {
-            expect(activityText).toContain(constants.adminUsername);
-          } else if (expectedUsername == constants.managerUsername) {
-            expect(activityText).toContain(constants.managerUsername);
-          };
+        activityPage.activitiesList.filter(function(item) {
+          
+          // Look for activity items that do not contain our username
+          return (item.getText().then(function(text) {
+            return text.indexOf(expectedUsername) == -1;
+          }));
+        }).then(function(activityItems) {
+          // Currently in "All Activity" mode, so should see items without our username
+          expect(activityItems.length).toBeGreaterThan(0);
         });
         
         // Show only my activity
         activityPage.clickOnShowOnlyMyActivity();
         
-        // Expect the last activity to be performed by current username
-        // If scope isn't texts
-        activityPage.getLength().then(function(len) {
-          activityText = activityPage.getActivityText(len - 1);
-          if (script[script.length - 1].scope != 'texts') {
-            expect(activityText).toContain(expectedUsername);
-          };
+        activityPage.activitiesList.filter(function(item) {
+          
+          // Look for activity items that do not contain our username
+          return (item.getText().then(function(text) {
+            return text.indexOf(expectedUsername) == -1;
+          }));
+        }).then(function(activityItems) {
+          
+          // Currently in "Only My Activity" mode, so should see NO items without our username
+          expect(activityItems.length).toEqual(0);
         });
         
         // Show all activity
         activityPage.clickOnAllActivity();
         
-        // cjh note: maybe we need to put a waitForAngular() at this point to ensure that this test does not fail prematurely
-        
-        // Expect the last activity to be performed by admin or manager
-        activityPage.getLength().then(function(len) {
-          activityText = activityPage.getActivityText(len - 1);
+        activityPage.activitiesList.filter(function(item) {
           
-          if (expectedUsername == constants.memberUsername) {
-            expect(activityText).toContain(constants.adminUsername);
-          } else if (expectedUsername == constants.managerUsername) {
-            expect(activityText).toContain(constants.managerUsername);
-          };
+          // Look for activity items that do not contain our username
+          return (item.getText().then(function(text) {
+            return text.indexOf(expectedUsername) == -1;
+          }));
+        }).then(function(activityItems) {
+          
+          // Currently in "All Activity" mode, so should see items without our username
+          expect(activityItems.length).toBeGreaterThan(0);
         });
         
         //browser.debugger();

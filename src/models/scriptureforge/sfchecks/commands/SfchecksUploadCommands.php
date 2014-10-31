@@ -6,6 +6,7 @@ use models\shared\commands\MediaResult;
 use models\shared\commands\ErrorResult;
 use models\scriptureforge\SfchecksProjectModel;
 use models\TextModel;
+use Palaso\Utilities\FileUtilities;
 
 class SfchecksUploadCommands
 {
@@ -14,15 +15,15 @@ class SfchecksUploadCommands
      * Upload a file
      *
      * @param string $projectId
-     * @param string $uploadType
+     * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
      * @return \models\shared\commands\UploadResponse
      */
-    public static function uploadFile($projectId, $uploadType, $tmpFilePath)
+    public static function uploadFile($projectId, $mediaType, $tmpFilePath)
     {
-        if ($uploadType != 'audio') {
-            throw new \Exception("Unsupported upload type.");
+        if ($mediaType != 'audio') {
+            throw new \Exception("Unsupported upload type: $mediaType");
         }
         if (! $tmpFilePath) {
             throw new \Exception("Upload controller did not move the uploaded file.");
@@ -36,20 +37,7 @@ class SfchecksUploadCommands
         $fileType = finfo_file($finfo, $tmpFilePath);
         finfo_close($finfo);
 
-        // replace special characters with _
-        $search = array(
-            '/',
-            '\\',
-            '?',
-            '%',
-            '*',
-            ':',
-            '|',
-            '"',
-            '<',
-            '>'
-        );
-        $fileName = str_replace($search, '_', $fileName);
+        $fileName = FileUtilities::replaceSpecialCharacters($fileName);
 
         $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
 
@@ -68,16 +56,15 @@ class SfchecksUploadCommands
             // make the folders if they don't exist
             $project = new SfchecksProjectModel($projectId);
             $folderPath = $project->getAssetsFolderPath();
-            if (! file_exists($folderPath) and ! is_dir($folderPath)) {
-                mkdir($folderPath, 0777, true);
-            }
+            FileUtilities::createAllFolders($folderPath);
 
             // cleanup previous files of any allowed extension
             self::cleanupFiles($folderPath, $textId, $allowedExtensions);
 
             // move uploaded file from tmp location to assets
             $filePath = self::mediaFilePath($folderPath, $textId, $fileName);
-            $moveOk = rename($tmpFilePath, $filePath);
+            $moveOk = copy($tmpFilePath, $filePath);
+            @unlink($tmpFilePath);
 
             // update database with file location
             $text = new TextModel($project, $textId);
@@ -106,7 +93,7 @@ class SfchecksUploadCommands
             if (count($allowedExtensions) < 1) {
                 $data->errorMessage = "$fileName is not an allowed audio file. No audio file formats are currently enabled, contact your Site Administrator.";
             } elseif (count($allowedExtensions) == 1) {
-                $data->errorMessage = "$fileName is not an allowed audio file. Ensure the file is an $allowedExtensionsStr.";
+                $data->errorMessage = "$fileName is not an allowed audio file. Ensure the file is a $allowedExtensionsStr.";
             } else {
                 $data->errorMessage = "$fileName is not an allowed audio file. Ensure the file is one of the following types: $allowedExtensionsStr.";
             }

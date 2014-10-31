@@ -22,6 +22,11 @@ class LexiconFieldListConfigObj extends LexiconConfigObj
                         return new LexiconOptionlistConfigObj();
                     case LexiconConfigObj::MULTIOPTIONLIST:
                         return new LexiconMultiOptionlistConfigObj();
+                    case LexiconConfigObj::PICTURES:
+                        return new LexPicturesConfigObj();
+                    default:
+                        $type = $data['type'];
+                        throw new \Exception("Unknown field list config type: $type");
                 }
             }
         );

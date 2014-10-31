@@ -2,7 +2,7 @@
 
 namespace models\languageforge\lexicon\commands;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 use models\languageforge\lexicon\LexOptionListModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\mapper\JsonDecoder;
