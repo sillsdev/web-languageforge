@@ -7,7 +7,8 @@ angular.module('semdomtrans',
     'bellows.filters'
   ])
   .config(['$routeProvider', function($routeProvider) {
-    
+
+        // TODO: refactor to use ui-router instead of ngRoute
     
     // the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
     $routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } });
