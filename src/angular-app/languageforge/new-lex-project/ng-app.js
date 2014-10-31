@@ -193,7 +193,7 @@ angular.module('new-lex-project',
             return ok("Everything looks good; ready to proceed.");
           }
           if ($scope.projectCodeState == 'exists') {
-            return error("Another project with code '" + $scope.newProject.projectCode + "' already exists. Either change the project name, or check the \"Edit project code\" box and choose a new code.");
+            return error("Another project with code '" + $scope.newProject.projectCode + "' already exists.");
           }
           if ($scope.projectCodeState == 'invalid') {
             return error("Project code '" + $scope.newProject.projectCode + "' contains invalid characters. It should contain only lower-case letters, numbers, and dashes.");
