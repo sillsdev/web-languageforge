@@ -237,8 +237,7 @@ angular.module('new-lexicon-project',
         return error("Validation not yet implemented for step " + currentState);
         break;
       };
-      console.log("Not really verified");
-      return ok("No verification was really done");
+      return ok();
     };
 
     $scope.processForm = function processForm() {
@@ -377,7 +376,6 @@ angular.module('new-lexicon-project',
       $scope.datafile = files[0];
       notice.setLoading('Importing ' + $scope.datafile.name + '...');
       $scope.makeFormInvalid("Please wait while " + $scope.datafile.name + " is imported...");
-      console.log('About to upload', $scope.datafile);
       $scope.upload = $upload.upload({
         url: '/upload/lf-lexicon/lex-project',
         file: $scope.datafile,
@@ -396,10 +394,6 @@ angular.module('new-lexicon-project',
           // Should really have a more specific error message.
           // TODO: Update the PHP API to provide specific error messages regarding failure reasons.
         }
-        console.log('Upload complete. Data:', data);
-        console.log('Status:', status);
-        console.log('Headers:', headers('date'));
-        console.log('Config:', config);
         $scope.validateForm();
       });
     };
@@ -428,7 +422,6 @@ angular.module('new-lexicon-project',
         }]
       });
       modalInstance.result.then(function(selected) {
-        console.log('Modal result:', selected);
         $scope.setLanguage(selected.code, selected.language);
       });
     };
