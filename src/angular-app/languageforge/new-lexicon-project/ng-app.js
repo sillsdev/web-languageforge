@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('new-lex-project',
+angular.module('new-lexicon-project',
   [
     'ngRoute',
     'bellows.services',
@@ -19,7 +19,7 @@ angular.module('new-lex-project',
   function($stateProvider, $urlRouterProvider, $translateProvider) {
     // configure interface language filepath
     $translateProvider.useStaticFilesLoader({
-      prefix: '/angular-app/languageforge/new-lex-project/lang/',
+      prefix: '/angular-app/languageforge/new-lexicon-project/lang/',
       suffix: '.json',
     });
     $translateProvider.preferredLanguage('en');
@@ -30,35 +30,35 @@ angular.module('new-lex-project',
         // Need quotes around Javascript keywords like 'abstract' so YUI compressor won't complain
         'abstract': true,
         // TODO: Can we make the following URL relative?
-        templateUrl: '/angular-app/languageforge/new-lex-project/views/new-project.html',
+        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project.html',
         controller: 'NewLexProjectCtrl',
       })
       .state('newProject.name', {
-        templateUrl: '/angular-app/languageforge/new-lex-project/views/new-project-name.html',
+        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-name.html',
         data: {
           step: 1,
         },
       })
       .state('newProject.initialData', {
-        templateUrl: '/angular-app/languageforge/new-lex-project/views/new-project-initial-data.html',
+        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-initial-data.html',
         data: {
           step: 2,
         },
       })
       .state('newProject.verifyData', {
-        templateUrl: '/angular-app/languageforge/new-lex-project/views/new-project-verify-data.html',
+        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-verify-data.html',
         data: {
           step: 3,
         },
       })
       .state('newProject.selectPrimaryLanguage', {
-        templateUrl: '/angular-app/languageforge/new-lex-project/views/new-project-select-primary-language.html',
+        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-select-primary-language.html',
         data: {
           step: 3, // This is not a typo. There are two possible step 3 templates.
         },
       })
       .state('newProject.createProject', {
-        templateUrl: '/angular-app/languageforge/new-lex-project/views/new-project-create.html',
+        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-create.html',
         data: {
           step: 4,
         },
