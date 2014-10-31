@@ -710,17 +710,66 @@ EOD;
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
     }
 
+    // has <span> in sense of first entry
+    const liftTwoEntriesWithSpanV0_13 = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.13"
+	producer="WeSay 1.0.0.0">
+	<entry
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		dateCreated="2008-11-03T06:17:24Z"
+		dateModified="2011-10-26T01:41:19Z"
+		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>chùuchìi mǔu krɔ̀ɔp</text>
+			</form>
+			<form
+				lang="th">
+				<text>ฉู่ฉี่หมูกรอบ</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="9d50e072-0206-4776-9ee6-bddf89b96aed">
+			<grammatical-info
+				value="Noun" />
+			<definition>
+				<form
+					lang="en">
+					<text><span lang="th">ฉู่ฉี่หมูกรอบ</span> is a kind of curry fried with crispy pork</text>
+				</form>
+			</definition>
+		</sense>
+	</entry>
+	<entry
+		id="Id'dPrematurely_05473cb0-4165-4923-8d81-02f8b8ed3f26"
+		dateCreated="2008-10-09T02:15:23Z"
+		dateModified="2008-10-17T06:16:11Z"
+		guid="05473cb0-4165-4923-8d81-02f8b8ed3f26">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>khâaw kài thɔ̂ɔt</text>
+			</form>
+			<form
+				lang="th">
+				<text>ข้าวไก่ทอด</text>
+			</form>
+		</lexical-unit>
+	</entry>
+</lift>
+EOD;
+
     public function testLiftImportMerge_NoExistingDataAndXmlHasSpans_NoExceptionAndMergeOk()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftTwoEntriesWithSpanV0_13;
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesWithSpanV0_13, 'TwoEntriesWithSpanV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
@@ -740,17 +789,70 @@ EOD;
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
     }
 
+    const liftNotesWithoutSpansV0_13 = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.13"
+	producer="Palaso.DictionaryServices.LiftWriter 2.1.27.0">
+	<entry
+		id="brown bear_57a90e40-fdb4-47f8-89a0-c64bf947723d"
+		dateCreated="2014-07-03T09:22:35Z"
+		dateModified="2014-09-26T03:23:24Z"
+		guid="57a90e40-fdb4-47f8-89a0-c64bf947723d">
+		<lexical-unit>
+			<form
+				lang="qaa-x-qaa">
+				<text>brown bear</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="7e6786c1-2c4c-44aa-8358-150636eac292">
+			<trait
+				name="semantic-domain-ddp4"
+				value="1.6.1.1.2 Carnivore" />
+		</sense>
+		<note>
+			<form
+				lang="en">
+				<text>This is not a black bear.</text>
+			</form>
+		</note>
+	</entry>
+	<entry
+		id="black bear_8db0bd91-9120-4417-b6ff-d0bb35f552fc"
+		dateCreated="2014-07-03T09:22:37Z"
+		dateModified="2014-09-26T03:23:18Z"
+		guid="8db0bd91-9120-4417-b6ff-d0bb35f552fc">
+		<lexical-unit>
+			<form
+				lang="qaa-x-qaa">
+				<text>black bear</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="7d8dc539-d623-499b-90e1-5fafcf5d48bd">
+			<trait
+				name="semantic-domain-ddp4"
+				value="1.6.1.1.2 Carnivore" />
+		</sense>
+		<note>
+			<form
+				lang="en">
+				<text>This is not a brown bear.</text>
+			</form>
+		</note>
+	</entry>
+</lift>
+EOD;
+
     public function testLiftImportMerge_NoExistingDataAndNoSpansInNoteFields_NoExceptionAndMergeOk()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftNotesWithoutSpansV0_13;
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftNotesWithoutSpansV0_13, 'NotesWithoutSpansV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
@@ -761,26 +863,76 @@ EOD;
         $entry1 = $index['8db0bd91-9120-4417-b6ff-d0bb35f552fc'];
         $this->assertEqual($entry0['guid'], "57a90e40-fdb4-47f8-89a0-c64bf947723d");
         $this->assertEqual($entry0['lexeme']['qaa-x-qaa']['value'], "brown bear");
-        $this->assertEqual(count($entry0['senses']), 1);
-        $this->assertEqual($entry0['senses'][0]['note']['en']['value'], "This is not a black bear.");
-        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][0], "1.6.1.1.2 Carnivore");
+        $this->assertEqual($entry0['note']['en']['value'], "This is not a black bear.");
         $this->assertEqual($entry1['guid'], "8db0bd91-9120-4417-b6ff-d0bb35f552fc");
         $this->assertEqual($entry1['lexeme']['qaa-x-qaa']['value'], "black bear");
-        $this->assertEqual($entry1['senses'][0]['note']['en']['value'], "This is not a brown bear.");
-        $this->assertEqual($entry1['senses'][0]['semanticDomain']['values'][0], "1.6.1.1.2 Carnivore");
+        $this->assertEqual($entry1['note']['en']['value'], "This is not a brown bear.");
     }
+
+    const liftNotesWithSpansV0_13 = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.13"
+	producer="Palaso.DictionaryServices.LiftWriter 2.1.27.0">
+	<entry
+		id="brown bear_57a90e40-fdb4-47f8-89a0-c64bf947723d"
+		dateCreated="2014-07-03T09:22:35Z"
+		dateModified="2014-09-26T03:23:24Z"
+		guid="57a90e40-fdb4-47f8-89a0-c64bf947723d">
+		<lexical-unit>
+			<form
+				lang="qaa-x-qaa">
+				<text>brown bear</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="7e6786c1-2c4c-44aa-8358-150636eac292">
+			<trait
+				name="semantic-domain-ddp4"
+				value="1.6.1.1.2 Carnivore" />
+		</sense>
+		<note>
+			<form
+				lang="en">
+				<text>This is not a black bear, and <span lang="fr">ceci n'est pas une pipe</span>.</text>
+			</form>
+		</note>
+	</entry>
+	<entry
+		id="black bear_8db0bd91-9120-4417-b6ff-d0bb35f552fc"
+		dateCreated="2014-07-03T09:22:37Z"
+		dateModified="2014-09-26T03:23:18Z"
+		guid="8db0bd91-9120-4417-b6ff-d0bb35f552fc">
+		<lexical-unit>
+			<form
+				lang="qaa-x-qaa">
+				<text>black bear</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="7d8dc539-d623-499b-90e1-5fafcf5d48bd">
+			<trait
+				name="semantic-domain-ddp4"
+				value="1.6.1.1.2 Carnivore" />
+		</sense>
+		<note>
+			<form
+				lang="en">
+				<text>This is not a brown bear.</text>
+			</form>
+		</note>
+	</entry>
+</lift>
+EOD;
 
     public function testLiftImportMerge_NoExistingDataAndSpansInNoteFields_NoExceptionAndMergeOk()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = LexTestData::liftNotesWithSpansV0_13;
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftNotesWithSpansV0_13, 'NotesWithSpansV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
+        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
@@ -791,13 +943,9 @@ EOD;
         $entry1 = $index['8db0bd91-9120-4417-b6ff-d0bb35f552fc'];
         $this->assertEqual($entry0['guid'], "57a90e40-fdb4-47f8-89a0-c64bf947723d");
         $this->assertEqual($entry0['lexeme']['qaa-x-qaa']['value'], "brown bear");
-        $this->assertEqual(count($entry0['senses']), 1);
-        $this->assertEqual($entry0['senses'][0]['note']['en']['value'], "This is not a black bear, and <span lang=\"fr\">ceci n'est pas une pipe</span>.");
-        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][0], "1.6.1.1.2 Carnivore");
+        $this->assertEqual($entry0['note']['en']['value'], "This is not a black bear, and <span lang=\"fr\">ceci n'est pas une pipe</span>.");
         $this->assertEqual($entry1['guid'], "8db0bd91-9120-4417-b6ff-d0bb35f552fc");
         $this->assertEqual($entry1['lexeme']['qaa-x-qaa']['value'], "black bear");
-        $this->assertEqual($entry1['senses'][0]['note']['en']['value'], "This is not a brown bear.");
-        $this->assertEqual($entry1['senses'][0]['semanticDomain']['values'][0], "1.6.1.1.2 Carnivore");
+        $this->assertEqual($entry1['note']['en']['value'], "This is not a brown bear.");
     }
-
 }
