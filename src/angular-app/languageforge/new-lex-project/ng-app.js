@@ -74,8 +74,8 @@ angular.module('new-lex-project',
       ;
 
   }])
-  .controller('NewLexProjectCtrl', ['$scope', '$rootScope', '$q', '$filter', '$modal', 'sessionService', 'silNoticeService', 'projectService', '$translate', '$state', '$upload',
-  function($scope, $rootScope, $q, $filter, $modal, ss, notice, projectService, $translate, $state, $upload) {
+  .controller('NewLexProjectCtrl', ['$scope', '$rootScope', '$q', '$filter', '$modal', '$window', 'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate', '$state', '$upload',
+  function($scope, $rootScope, $q, $filter, $modal, $window, ss, notice, projectService, linkService, $translate, $state, $upload) {
     $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
     if (InputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
 //    if (true) { // Override direction and force rtl, for testing purposes
@@ -261,7 +261,8 @@ angular.module('new-lex-project',
         $state.go('newProject.createProject');
         break;
       case 'newProject.createProject':
-        console.log('Would create project here');
+        var url = linkService.project($scope.newProject.id, $scope.newProject.appName);
+        $window.location.href = url;
         break;
       };
     }
