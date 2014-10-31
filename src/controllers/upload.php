@@ -17,7 +17,10 @@ class Upload extends Secure_base
 
         // user-defined error handler to catch annoying php errors and throw them as exceptions
         ini_set('xdebug.show_exception_trace', 0);
-        set_error_handler(function ($errno, $errstr, $errfile, $errline) { throw new ErrorHandler($errstr, 0, $errno, $errfile, $errline); } , E_ALL);
+        set_error_handler(function ($errno, $errstr, $errfile, $errline)
+        {
+            throw new ErrorHandler($errstr, 0, $errno, $errfile, $errline);
+        }, E_ALL);
 
         $response = array();
 
@@ -35,20 +38,47 @@ class Upload extends Secure_base
                     $response = $api->sfChecks_uploadFile($mediaType, $tmpFilePath);
                 } elseif ($app == 'lf-lexicon') {
                     $api = new Sf($this);
-                    if ($mediaType === 'sense-image') {
-                        $api->checkPermissions('lex_uploadImageFile', array(
-                            $mediaType,
-                            $tmpFilePath
-                        ));
-                        $response = $api->lex_uploadImageFile($mediaType, $tmpFilePath);
-                    } elseif ($mediaType === 'import-lift') {
-                        $api->checkPermissions('lex_upload_importLift', array(
-                            $mediaType,
-                            $tmpFilePath
-                        ));
-                        $response = $api->lex_upload_importLift($mediaType, $tmpFilePath);
-                    } else {
-                        throw new Exception("Unsupported upload type: $mediaType");
+                    switch ($mediaType) {
+                        case 'lex-project':
+                            $api->checkPermissions('lex_uploadProjectZip', array(
+                                $mediaType,
+                                $tmpFilePath
+                            ));
+                            if (isset($_POST['projectId'])) {
+                                $projectId = $_POST['projectId'];
+                            } else {
+                                $projectId = '';
+                            }
+                            $response = $api->lex_uploadProjectZip($mediaType, $tmpFilePath, $projectId);
+                            break;
+                        case 'mock-lex-project':
+                            $api->checkPermissions('lex_uploadProjectZip', array(
+                                $mediaType,
+                                $tmpFilePath
+                            ));
+                            if (isset($_POST['projectId'])) {
+                                $projectId = $_POST['projectId'];
+                            } else {
+                                $projectId = '';
+                            }
+                            $response = $api->lex_mockUploadProjectZip($mediaType, $tmpFilePath, $projectId);
+                            break;
+                        case 'sense-image':
+                            $api->checkPermissions('lex_uploadImageFile', array(
+                                $mediaType,
+                                $tmpFilePath
+                            ));
+                            $response = $api->lex_uploadImageFile($mediaType, $tmpFilePath);
+                            break;
+                        case 'import-lift':
+                            $api->checkPermissions('lex_upload_importLift', array(
+                                $mediaType,
+                                $tmpFilePath
+                            ));
+                            $response = $api->lex_upload_importLift($mediaType, $tmpFilePath);
+                            break;
+                        default:
+                            throw new Exception("Unsupported upload type: $mediaType");
                     }
                 } else {
                     throw new Exception("Unsupported upload app: $app");
@@ -62,14 +92,14 @@ class Upload extends Secure_base
                     )
                 );
                 if ($e instanceof ResourceNotAvailableException) {
-                     $response['data']['errorType'] = 'ResourceNotAvailableException';
-                     $response['data']['errorMessage'] = $e->getMessage();
+                    $response['data']['errorType'] = 'ResourceNotAvailableException';
+                    $response['data']['errorMessage'] = $e->getMessage();
                 } elseif ($e instanceof UserNotAuthenticatedException) {
-                     $response['data']['errorType'] = 'UserNotAuthenticatedException';
-                     $response['data']['errorMessage'] = $e->getMessage();
+                    $response['data']['errorType'] = 'UserNotAuthenticatedException';
+                    $response['data']['errorMessage'] = $e->getMessage();
                 } elseif ($e instanceof UserUnauthorizedException) {
-                     $response['data']['errorType'] = 'UserUnauthorizedException';
-                     $response['data']['errorMessage'] = $e->getMessage();
+                    $response['data']['errorType'] = 'UserUnauthorizedException';
+                    $response['data']['errorMessage'] = $e->getMessage();
                 }
                 $message = '';
                 $message .= $e->getMessage() . "\n";
@@ -91,7 +121,7 @@ class Upload extends Secure_base
     /**
      * Move the uploaded file here in the controller so the upload command can be unit tested
      *
-     * @return string|boolean returns the moved file path on success or false otherwise
+     * @return string|boolean Returns the moved file path on success or false otherwise
      */
     protected function moveUploadedFile()
     {

@@ -127,6 +127,56 @@ class TestLexUploadCommands extends UnitTestCase
         $environ->restoreErrorDisplay();
     }
 
+    public function testUploadProjectZip_ZipFile_UploadAllowed()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
+
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $fileName = 'TestLexProject.zip';
+        $tmpFilePath = $environ->uploadFile(TestPath . "common/$fileName", $fileName);
+
+        $response = LexUploadCommands::uploadProjectZip($projectId, 'lex-project', $tmpFilePath);
+
+        $assetsFolderPath = $project->getAssetsFolderPath();
+        $filePath = $assetsFolderPath . '/' . $response->data->fileName;
+        $projectSlug = $project->databaseName();
+
+        $this->assertTrue($response->result, 'Import should succeed');
+        $this->assertPattern("/lexicon\/$projectSlug/", $response->data->path, 'Uploaded zip file path should be in the right location');
+        $this->assertEqual($fileName, $response->data->fileName, 'Uploaded zip fileName should have the original fileName');
+        $this->assertTrue(file_exists($filePath), 'Uploaded zip file should exist');
+
+        $environ->cleanupTestFiles($assetsFolderPath);
+    }
+
+    public function testUploadProjectZip_JpgFile_UploadDisallowed()
+    {
+        $environ = new LexiconMongoTestEnvironment();
+        $environ->clean();
+
+        $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $tmpFilePath = $environ->uploadFile(TestPath . 'common/TestImage.jpg', 'TestLexProject.zip');
+
+        $response = LexUploadCommands::uploadProjectZip($projectId, 'lex-project', $tmpFilePath);
+
+        $this->assertFalse($response->result, 'Import should fail');
+        $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
+        $this->assertPattern('/not an allowed compressed file/', $response->data->errorMessage, 'Error message should match the error');
+
+        $tmpFilePath = $environ->uploadFile(TestPath . 'common/TestLexProject.zip', 'TestImage.jpg');
+
+        $response = LexUploadCommands::uploadProjectZip($projectId, 'lex-project', $tmpFilePath);
+
+        $this->assertFalse($response->result, 'Import should fail');
+        $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
+        $this->assertPattern('/not an allowed compressed file/', $response->data->errorMessage, 'Error message should match the error');
+
+        $environ->cleanupTestFiles($project->getAssetsFolderPath());
+    }
+
     const liftOneEntryV0_13 = <<<EOD
 <?xml version="1.0" encoding="utf-8"?>
 <lift
