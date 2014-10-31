@@ -29,7 +29,8 @@ class TestLexEntryModel extends UnitTestCase
         $this->assertIsA($model->entryBibliography, 'models\languageforge\lexicon\MultiText');
         $this->assertIsA($model->entryRestrictions, 'models\languageforge\lexicon\MultiText');
         $this->assertIsA($model->summaryDefinition, 'models\languageforge\lexicon\MultiText');
-        $this->assertIsA($model->entryImportResidue, 'models\languageforge\lexicon\MultiText');
+        // Removed import residue. Its no longer a field we import CP 2014-10
+        // $this->assertIsA($model->entryImportResidue, 'models\languageforge\lexicon\MultiText');
         $this->assertIsA($model->tone, 'models\languageforge\lexicon\MultiText');
         $this->assertIsA($model->environments, 'models\languageforge\lexicon\LexiconMultiValueField');
         $this->assertIsA($model->location, 'models\languageforge\lexicon\LexiconField');

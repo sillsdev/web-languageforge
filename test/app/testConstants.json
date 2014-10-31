@@ -3,7 +3,7 @@
   
   "siteType"        : "languageforge",
   "siteHostname"    : "languageforge.local",
-  "baseUrl"         : "http://languageforge.local",
+  "baseUrl"         : "https://languageforge.local",
 
   "adminUsername"   : "test_runner_admin",
   "adminPassword"   : "hammertime",
@@ -70,6 +70,8 @@
     "lexeme": {"th":        {"value": "ข้าวผัดหมู"},
                "th-fonipa": {"value": "khâaw phàt mǔu"}},
     "senses": [{"definition": {"en": {"value": "fried rice with pork"}},
+                "pictures": [{"fileName": "FriedRiceWithPork.jpg",
+                              "caption": {"en": {"value": "fried rice with pork"}}}],
                 "partOfSpeech": {"value": "n"}}]
   },
   "testEntry2" : {
