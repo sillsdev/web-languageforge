@@ -14,7 +14,7 @@
 <div data-ng-show="uploadProgress">Upload progress: {{uploadProgress}}%</div>
 <div data-ng-show="datafile != null">
     <p><strong>{{datafile.name}}</strong> {{datafile.size | bytes }}</p>
-    <div class="span4">
+    <div class="span4" ng-class="interfaceConfig.pullNormal">
         <progressbar data-value="uploadProgress" data-max="100.0"></progressbar>
     </div>
     &nbsp;
