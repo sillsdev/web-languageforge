@@ -8,3 +8,9 @@ div.lexnav {
 .lexnav a {
 	color: #3F7CA4;
 }
+
+/* Import/Export view */
+
+.drop-box {
+    border: 4px dashed #e67345;
+}

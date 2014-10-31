@@ -156,6 +156,9 @@ module.exports.checkModalTextMatches = checkModalTextMatches;
 var clickModalButton = function(btnText) {
   var modalFooter = $('.modal-footer');
   var btn = modalFooter.element(by.partialButtonText(btnText));
+  
+  // Some tests weren't passing without the waitForAngular, presummably because the animation is still moving the dialog into place.
+  browser.waitForAngular();
   btn.click();
 };
 module.exports.clickModalButton = clickModalButton;

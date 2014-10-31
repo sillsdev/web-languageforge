@@ -4,7 +4,7 @@ namespace models\commands;
 
 use models\ProjectModel;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 use models\scriptureforge\sfchecks\QuestionTemplateModel;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;

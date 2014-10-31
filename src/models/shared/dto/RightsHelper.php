@@ -262,7 +262,7 @@ class RightsHelper
 
             // LanguageForge (lexicon)
             case 'lex_configuration_update':
-            case 'lex_import_lift':
+            case 'lex_upload_importLift':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             case 'lex_baseViewDto':
@@ -295,6 +295,10 @@ class RightsHelper
 
             case 'lex_optionlist_update':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+
+            case 'lex_uploadImageFile':
+            case 'lex_project_removeMediaFile':
+                return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 
             default:
                 throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");
