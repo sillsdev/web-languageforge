@@ -29,7 +29,7 @@ class LiftImport
         $partOfSpeechValues = array();
 
         if ($initialImport) {
-            // Do the following on first import (number of entries == 0
+            // Do the following on first import (number of entries == 0)
 
             // clear entry field input systems config if their are no entries (only use imported input systems)
             $projectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems = new ArrayOf();
@@ -43,6 +43,7 @@ class LiftImport
         $reader->open($liftFilePath);
 
         $liftDecoder = new LiftDecoder($projectModel);
+        $report = new LiftImportErrorReport();
 
         while ($reader->read()) {
             if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
@@ -59,12 +60,12 @@ class LiftImport
                     if (self::differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
                         if ($mergeRule == LiftMergeRule::CREATE_DUPLICATES) {
                             $entry = new LexEntryModel($projectModel);
-                            $liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
+                            self::readEntryWithErrorReport($report, $liftDecoder, $sxeNode, $entry, $mergeRule);
                             $entry->guid = '';
                             $entry->write();
                         } else {
                             if (isset($sxeNode->{'lexical-unit'})) {
-                                $liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
+                                self::readEntryWithErrorReport($report, $liftDecoder, $sxeNode, $entry, $mergeRule);
                                 $entry->write();
                             } elseif (isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
                                 LexEntryModel::remove($projectModel, $existingEntry['id']);
@@ -80,7 +81,7 @@ class LiftImport
                 } else {
                     if (isset($sxeNode->{'lexical-unit'})) {
                         $entry = new LexEntryModel($projectModel);
-                        $liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
+                        self::readEntryWithErrorReport($report, $liftDecoder, $sxeNode, $entry, $mergeRule);
                         $entry->write();
                         self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
                     }
@@ -104,6 +105,58 @@ class LiftImport
                     $partOfSpeechOptionList->items->append(new LexiconOptionListItem($value));
                 }
                 $partOfSpeechOptionList->write();
+            }
+        }
+
+        if ($report->hasError()) {
+            error_log($report->toString() . "\n");
+        }
+    }
+
+    /**
+     * @param string $importDateModified
+     * @param DateTime $entryDateModified
+     * @return boolean
+     */
+    private static function differentModTime($importDateModified, $entryDateModified)
+    {
+        $dateModified = new \DateTime($importDateModified);
+
+        return ($dateModified->getTimestamp() != $entryDateModified->getTimestamp());
+    }
+
+    /**
+     * Read LIFT entry with error reporting
+     *
+     * @param LiftImportErrorReport $report
+     * @param LiftDecoder $liftDecoder
+     * @param SimpleXMLElement $sxeNode
+     * @param LexEntryModel $entry
+     * @param LiftMergeRule $mergeRule
+     */
+    private static function readEntryWithErrorReport($report, $liftDecoder, $sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
+        try {
+            $liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
+            $report->nodeErrors[] = $liftDecoder->getImportNodeError();
+        } catch (Exception $e) {
+            $report->nodeErrors[] = $liftDecoder->getImportNodeError();
+            if ($report->hasError()) {
+                error_log($report->toString() . "\n");
+            }
+            throw new \Exception($e);
+        }
+    }
+
+    /**
+     * @param $arr array - list to append to
+     * @param $entryModel LexEntryModel
+     */
+    private static function addPartOfSpeechValuesToList(&$arr, $entryModel)
+    {
+        foreach ($entryModel->senses as $sense) {
+            $pos = $sense->partOfSpeech->value;
+            if (!in_array($pos, $arr)) {
+                array_push($arr, $pos);
             }
         }
     }
@@ -139,31 +192,5 @@ class LiftImport
         restore_error_handler();
 
         return true;
-    }
-
-    /**
-     * @param string $importDateModified
-     * @param DateTime $entryDateModified
-     * @return boolean
-     */
-    private static function differentModTime($importDateModified, $entryDateModified)
-    {
-        $dateModified = new \DateTime($importDateModified);
-
-        return ($dateModified->getTimestamp() != $entryDateModified->getTimestamp());
-    }
-
-    /**
-     * @param $arr array - list to append to
-     * @param $entryModel LexEntryModel
-     */
-    private static function addPartOfSpeechValuesToList(&$arr, $entryModel)
-    {
-        foreach ($entryModel->senses as $sense) {
-            $pos = $sense->partOfSpeech->value;
-            if (!in_array($pos, $arr)) {
-                array_push($arr, $pos);
-            }
-        }
     }
 }
