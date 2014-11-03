@@ -958,3 +958,8 @@ label {
 	font-size: 0.9em;
 	line-height: 1.4em;
 }
+
+.dropdown:hover .dropdown-menu {
+	display: block;
+	margin-top: 0px;
+}
