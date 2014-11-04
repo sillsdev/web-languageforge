@@ -35,24 +35,10 @@ class LiftImport
      * @param LexiconProjectModel $projectModel
      * @param LiftMergeRule $mergeRule
      * @param boolean $skipSameModTime
-     * @deprecated
-     * @throws \Exception
+     * @param string $deleteMatchingEntry
+     * @return \models\languageforge\lexicon\LiftImport
      */
-    public static function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
-    {
-        $importer = LiftImport::get();
-        $importer->_merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
-        return $importer;
-    }
-
-    /**
-     * @param string $liftFilePath
-     * @param LexiconProjectModel $projectModel
-     * @param LiftMergeRule $mergeRule
-     * @param boolean $skipSameModTime
-     * @throws \Exception
-     */
-    public function _merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
+    public function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
     {
         ini_set('max_execution_time', 90); // Sufficient time to import webster.  TODO Make this async CP 2014-10
 //         self::validate($xml);    // TODO Fix. The XML Reader validator doesn't work with <optional> in the RelaxNG schema. IJH 2014-03
@@ -148,6 +134,8 @@ class LiftImport
         if ($this->report->hasError()) {
             error_log($this->report->toString() . "\n");
         }
+
+        return $this;
     }
 
     /**
