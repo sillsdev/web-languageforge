@@ -8,6 +8,43 @@ use models\languageforge\lexicon\config\LexiconConfigObj;
 
 class LiftImport
 {
+
+    /**
+     *
+     * @var LiftImportErrorReport
+     */
+    private $report;
+
+    /**
+     *
+     * @var LiftDecoder
+     */
+    private $liftDecoder;
+
+    public static function get()
+    {
+        static $instance = null;
+        if ($instance == null) {
+            $instance = new LiftImport();
+        }
+        return $instance;
+    }
+
+    /**
+     * @param string $liftFilePath
+     * @param LexiconProjectModel $projectModel
+     * @param LiftMergeRule $mergeRule
+     * @param boolean $skipSameModTime
+     * @deprecated
+     * @throws \Exception
+     */
+    public static function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
+    {
+        $importer = LiftImport::get();
+        $importer->_merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+        return $importer;
+    }
+
     /**
      * @param string $liftFilePath
      * @param LexiconProjectModel $projectModel
@@ -15,7 +52,7 @@ class LiftImport
      * @param boolean $skipSameModTime
      * @throws \Exception
      */
-    public static function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
+    public function _merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
     {
         ini_set('max_execution_time', 90); // Sufficient time to import webster.  TODO Make this async CP 2014-10
 //         self::validate($xml);    // TODO Fix. The XML Reader validator doesn't work with <optional> in the RelaxNG schema. IJH 2014-03
@@ -42,8 +79,8 @@ class LiftImport
         $reader = new \XMLReader();
         $reader->open($liftFilePath);
 
-        $liftDecoder = new LiftDecoder($projectModel);
-        $report = new LiftImportErrorReport();
+        $this->liftDecoder = new LiftDecoder($projectModel);
+        $this->report = new LiftImportErrorReport();
 
         while ($reader->read()) {
             if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
@@ -60,12 +97,12 @@ class LiftImport
                     if (self::differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
                         if ($mergeRule == LiftMergeRule::CREATE_DUPLICATES) {
                             $entry = new LexEntryModel($projectModel);
-                            self::readEntryWithErrorReport($report, $liftDecoder, $sxeNode, $entry, $mergeRule);
+                            $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
                             $entry->guid = '';
                             $entry->write();
                         } else {
                             if (isset($sxeNode->{'lexical-unit'})) {
-                                self::readEntryWithErrorReport($report, $liftDecoder, $sxeNode, $entry, $mergeRule);
+                                $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
                                 $entry->write();
                             } elseif (isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
                                 LexEntryModel::remove($projectModel, $existingEntry['id']);
@@ -81,7 +118,7 @@ class LiftImport
                 } else {
                     if (isset($sxeNode->{'lexical-unit'})) {
                         $entry = new LexEntryModel($projectModel);
-                        self::readEntryWithErrorReport($report, $liftDecoder, $sxeNode, $entry, $mergeRule);
+                        $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
                         $entry->write();
                         self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
                     }
@@ -108,8 +145,8 @@ class LiftImport
             }
         }
 
-        if ($report->hasError()) {
-            error_log($report->toString() . "\n");
+        if ($this->report->hasError()) {
+            error_log($this->report->toString() . "\n");
         }
     }
 
@@ -134,17 +171,27 @@ class LiftImport
      * @param LexEntryModel $entry
      * @param LiftMergeRule $mergeRule
      */
-    private static function readEntryWithErrorReport($report, $liftDecoder, $sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
+    private function readEntryWithErrorReport($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
         try {
-            $liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
-            $report->nodeErrors[] = $liftDecoder->getImportNodeError();
+            $this->liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
+            $this->report->nodeErrors[] = $this->liftDecoder->getImportNodeError();
         } catch (Exception $e) {
-            $report->nodeErrors[] = $liftDecoder->getImportNodeError();
-            if ($report->hasError()) {
-                error_log($report->toString() . "\n");
+            $this->report->nodeErrors[] = $this->liftDecoder->getImportNodeError();
+            if ($this->report->hasError()) {
+                error_log($this->report->toString() . "\n");
             }
             throw new \Exception($e);
         }
+    }
+
+    /**
+     * Get LIFT import error report
+     *
+     * @return \models\languageforge\lexicon\LiftImportErrorReport
+     */
+    public function getReport()
+    {
+        return  $this->report;
     }
 
     /**
