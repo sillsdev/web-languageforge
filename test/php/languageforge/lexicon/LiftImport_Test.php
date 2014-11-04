@@ -69,7 +69,7 @@ EOD;
 
         $this->environ->inhibitErrorDisplay();
         $this->expectException();
-        LiftImport::merge($liftXml, $project);
+        LiftImport::get()->merge($liftXml, $project);
         $this->environ->restoreErrorDisplay();
     }
 
@@ -101,7 +101,7 @@ EOD;
 
         $this->environ->inhibitErrorDisplay();
         $this->expectException();
-        LiftImport::merge($liftXml, $project);
+        LiftImport::get()->merge($liftXml, $project);
         $this->environ->restoreErrorDisplay();
     }
 */
@@ -231,15 +231,16 @@ EOD;
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 2);
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+
+        $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp");
         $this->assertEqual($entry0['lexeme']['th']['value'], "ฉู่ฉี่หมูกรอบ");
@@ -257,6 +258,7 @@ EOD;
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     // has correct th-fonipa form in each entry
@@ -317,24 +319,26 @@ EOD;
         // create existing data
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        LiftImport::merge($liftFilePath, $project);
+        LiftImport::get()->merge($liftFilePath, $project);
 
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 2);
         $index = self::indexByGuid($entries);
+
+        $this->assertEqual($entryList->count, 2);
         $this->assertEqual($index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
         $this->assertEqual(count($index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses']), 1);
         $this->assertEqual($index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['definition']['en']['value'], "A kind of curry fried with crispy pork");
         $this->assertEqual($index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['partOfSpeech']['value'], "Noun");
         $this->assertEqual($index['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkip_NoMerge()
@@ -342,21 +346,22 @@ EOD;
         // create existing data
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        LiftImport::merge($liftFilePath, $project);
+        LiftImport::get()->merge($liftFilePath, $project);
 
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = true;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 2);
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+
+        $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp");
         $this->assertEqual(count($entry0['senses']), 1);
@@ -364,6 +369,7 @@ EOD;
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Adjective");
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     // has correct th-fonipa form in each entry and mod date changed
@@ -424,21 +430,22 @@ EOD;
         // create existing data
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        LiftImport::merge($liftFilePath, $project);
+        LiftImport::get()->merge($liftFilePath, $project);
 
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesModifiedV0_13, 'TwoEntriesModifiedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = true;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 2);
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+
+        $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
         $this->assertEqual(count($entry0['senses']), 2);
@@ -448,9 +455,10 @@ EOD;
         $this->assertEqual($entry0['senses'][1]['partOfSpeech']['value'], "Noun");
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
-    // has correct th-fonipa form in first entry
+    // has co$importer->getReport()->hasError()m in first entry
     // has deleted second entry (same guid)
     const liftTwoEntriesOneCorrectedOneDeletedV0_13 = <<<EOD
 <?xml version="1.0" encoding="utf-8"?>
@@ -498,23 +506,25 @@ EOD;
         // create existing data
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        LiftImport::merge($liftFilePath, $project);
+        LiftImport::get()->merge($liftFilePath, $project);
 
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesOneCorrectedOneDeletedV0_13, 'TwoEntriesOneCorrectedOneDeletedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
         $deleteMatchingEntry = true;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 1);
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+
+        $this->assertEqual($entryList->count, 1);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkipSameModTimeAndDeleteMatchingEntry_EntryDeletedAndOtherEntryNotCorrected()
@@ -522,23 +532,25 @@ EOD;
         // create existing data
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        LiftImport::merge($liftFilePath, $project);
+        LiftImport::get()->merge($liftFilePath, $project);
 
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesOneCorrectedOneDeletedV0_13, 'TwoEntriesOneCorrectedOneDeletedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = true;
         $deleteMatchingEntry = true;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 1);
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+
+        $this->assertEqual($entryList->count, 1);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     public function testLiftImportMerge_ExistingDataAndImportWins_EntryNotDeleted()
@@ -546,24 +558,26 @@ EOD;
         // create existing data
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        LiftImport::merge($liftFilePath, $project);
+        LiftImport::get()->merge($liftFilePath, $project);
 
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesOneCorrectedOneDeletedV0_13, 'TwoEntriesOneCorrectedOneDeletedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
         $deleteMatchingEntry = false;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 2);
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+
+        $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     public function testLiftImportMerge_NoExistingDataAndImportLoses_MergeOk()
@@ -573,15 +587,16 @@ EOD;
         $mergeRule = LiftMergeRule::IMPORT_LOSES;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 2);
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+
+        $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
         $this->assertEqual(count($entry0['senses']), 1);
@@ -589,6 +604,7 @@ EOD;
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Noun");
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     public function testLiftImportMerge_ExistingDataAndImportLoses_NoMerge()
@@ -596,21 +612,22 @@ EOD;
         // create existing data
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        LiftImport::merge($liftFilePath, $project);
+        LiftImport::get()->merge($liftFilePath, $project);
 
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::IMPORT_LOSES;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 2);
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+
+        $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp");
         $this->assertEqual(count($entry0['senses']), 1);
@@ -618,6 +635,7 @@ EOD;
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Adjective");
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     public function testLiftImportMerge_NoExistingDataAndCreateDuplicates_MergeOk()
@@ -627,15 +645,16 @@ EOD;
         $mergeRule = LiftMergeRule::CREATE_DUPLICATES;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 2);
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+
+        $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
         $this->assertEqual(count($entry0['senses']), 1);
@@ -643,6 +662,7 @@ EOD;
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Noun");
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     public function testLiftImportMerge_ExistingDataAndCreateDuplicates_DuplicatesCreated()
@@ -650,21 +670,22 @@ EOD;
         // create existing data
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        LiftImport::merge($liftFilePath, $project);
+        LiftImport::get()->merge($liftFilePath, $project);
 
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::CREATE_DUPLICATES;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 4);
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+
+        $this->assertEqual($entryList->count, 4);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp");
         $this->assertEqual(count($entry0['senses']), 1);
@@ -679,6 +700,7 @@ EOD;
         $this->assertEqual($entries[2]['senses'][0]['partOfSpeech']['value'], "Noun");
         $this->assertEqual($entries[3]['guid'], "");
         $this->assertEqual($entries[3]['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     public function testLiftImportMerge_ExistingDataAndCreateDuplicatesAndSkip_NoMerge()
@@ -686,21 +708,22 @@ EOD;
         // create existing data
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        LiftImport::merge($liftFilePath, $project);
+        LiftImport::get()->merge($liftFilePath, $project);
 
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
         $mergeRule = LiftMergeRule::CREATE_DUPLICATES;
         $skipSameModTime = true;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 2);
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+
+        $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp");
         $this->assertEqual(count($entry0['senses']), 1);
@@ -708,6 +731,7 @@ EOD;
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Adjective");
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     // has <span> in sense of first entry
@@ -762,31 +786,33 @@ EOD;
 </lift>
 EOD;
 
-    public function testLiftImportMerge_NoExistingDataAndXmlHasSpans_NoExceptionAndMergeOk()
+    public function testLiftImportMerge_SpanInDefinition_MergeIncludesSpan()
     {
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesWithSpanV0_13, 'TwoEntriesWithSpanV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 2);
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+
+        $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
         $this->assertEqual($entry0['lexeme']['th']['value'], "ฉู่ฉี่หมูกรอบ");
         $this->assertEqual(count($entry0['senses']), 1);
-        $this->assertEqual($entry0['senses'][0]['definition']['en']['value'], "<span lang=\"th\">ฉู่ฉี่หมูกรอบ</span> is a kind of curry fried with crispy pork");
+        $this->assertEqual($entry0['senses'][0]['definition']['en']['value'], '<span lang="th">ฉู่ฉี่หมูกรอบ</span> is a kind of curry fried with crispy pork');
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Noun");
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     const liftNotesWithoutSpansV0_13 = <<<EOD
@@ -845,28 +871,30 @@ EOD;
 </lift>
 EOD;
 
-    public function testLiftImportMerge_NoExistingDataAndNoSpansInNoteFields_NoExceptionAndMergeOk()
+    public function testLiftImportMerge_NoSpanInNoteFields_MergeOk()
     {
         $liftFilePath = $this->environ->createTestLiftFile(self::liftNotesWithoutSpansV0_13, 'NotesWithoutSpansV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 2);
         $index = self::indexByGuid($entries);
         $entry0 = $index['57a90e40-fdb4-47f8-89a0-c64bf947723d'];
         $entry1 = $index['8db0bd91-9120-4417-b6ff-d0bb35f552fc'];
+
+        $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "57a90e40-fdb4-47f8-89a0-c64bf947723d");
         $this->assertEqual($entry0['lexeme']['qaa-x-qaa']['value'], "brown bear");
         $this->assertEqual($entry0['note']['en']['value'], "This is not a black bear.");
         $this->assertEqual($entry1['guid'], "8db0bd91-9120-4417-b6ff-d0bb35f552fc");
         $this->assertEqual($entry1['lexeme']['qaa-x-qaa']['value'], "black bear");
         $this->assertEqual($entry1['note']['en']['value'], "This is not a brown bear.");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     const liftNotesWithSpansV0_13 = <<<EOD
@@ -895,6 +923,10 @@ EOD;
 			<form
 				lang="en">
 				<text>This is not a black bear, and <span lang="fr">ceci n'est pas une pipe</span>.</text>
+			</form>
+			<form
+				lang="fr">
+				<text>ceci n'est pas une pipe; <span lang="en">This is <b>not</b> a black bear</span>.</text>
 			</form>
 		</note>
 	</entry>
@@ -925,28 +957,30 @@ EOD;
 </lift>
 EOD;
 
-    public function testLiftImportMerge_NoExistingDataAndSpansInNoteFields_NoExceptionAndMergeOk()
+    public function testLiftImportMerge_SpanInNoteFields_MergeIncludesSpan()
     {
         $liftFilePath = $this->environ->createTestLiftFile(self::liftNotesWithSpansV0_13, 'NotesWithSpansV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $this->assertEqual($entryList->count, 2);
         $index = self::indexByGuid($entries);
         $entry0 = $index['57a90e40-fdb4-47f8-89a0-c64bf947723d'];
         $entry1 = $index['8db0bd91-9120-4417-b6ff-d0bb35f552fc'];
+
+        $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "57a90e40-fdb4-47f8-89a0-c64bf947723d");
         $this->assertEqual($entry0['lexeme']['qaa-x-qaa']['value'], "brown bear");
-        $this->assertEqual($entry0['note']['en']['value'], "This is not a black bear, and <span lang=\"fr\">ceci n'est pas une pipe</span>.");
+        $this->assertEqual($entry0['note']['en']['value'], 'This is not a black bear, and <span lang="fr">ceci n\'est pas une pipe</span>.');
         $this->assertEqual($entry1['guid'], "8db0bd91-9120-4417-b6ff-d0bb35f552fc");
         $this->assertEqual($entry1['lexeme']['qaa-x-qaa']['value'], "black bear");
         $this->assertEqual($entry1['note']['en']['value'], "This is not a brown bear.");
+        $this->assertFalse($importer->getReport()->hasError());
     }
 
     // has correct th-fonipa form in each entry
@@ -1045,7 +1079,7 @@ EOD;
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        $importer = LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
