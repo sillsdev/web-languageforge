@@ -286,6 +286,14 @@ class Website
         $w->defaultProjectCode = 'jamaicanpsalms';
         $sites['jamaicanpsalms.com'] = $w;
 
+        // waaqwiinaagiwritings.org
+        $w = new Website('waaqwiinaagiwritings.org', self::SCRIPTUREFORGE);
+        $w->name = 'Waaqwiinaagi Writings';
+        $w->ssl = true;
+        $w->theme = 'simple';
+        $w->defaultProjectCode = 'waaqwiinaagiwritings';
+        $sites['waaqwiinaagiwritings.org'] = $w;
+        
         /*
 		 * **************************
 		 * LANGUAGE FORGE WEBSITES
