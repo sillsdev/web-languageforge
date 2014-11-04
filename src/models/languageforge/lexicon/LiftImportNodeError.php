@@ -16,12 +16,6 @@ class LiftImportNodeError
 
     /**
      *
-     * @var LiftImportNodeError
-     */
-    public $subNodeError;
-
-    /**
-     *
      * @var array of errors
      */
     private $errors;
@@ -30,7 +24,7 @@ class LiftImportNodeError
      *
      * @var array <LiftImportNodeError>
      */
-    private $subNodes;
+    private $subnodeErrors;
 
     /**
      * @var string
@@ -42,17 +36,14 @@ class LiftImportNodeError
         $this->type = $type;
         $this->guid = $guid;
         $this->errors = array();
-        $this->subNodes = array();
+        $this->subnodeErrors = array();
     }
 
     public function hasError()
     {
         $hasError = count($this->errors) > 0 ;
-        if (isset($this->subNodeError)) {
-            $hasError |= $this->subNodeError->hasError();
-        }
-        foreach ($this->subNodes as $subNodeError) {
-            $hasError |= $subNodeError->hasError();
+        foreach ($this->subnodeErrors as $subnodeError) {
+            $hasError |= $subnodeError->hasError();
         }
         return $hasError;
     }
@@ -98,18 +89,17 @@ class LiftImportNodeError
         );
     }
 
-    public function addCurrentSubNodeError() {
-        $this->subNodes[] = $this->subNodeError;
-        unset($this->subNodeError);
+    public function addSubnodeError($subnodeError) {
+        $this->subnodeErrors[] = $subnodeError;
     }
 
-    public function currentSubNodeError() {
-        return end($this->subNodes);
+    public function currentSubnodeError() {
+        return end($this->subnodeErrors);
     }
 
     public function toString()
     {
-        $msg = "While processing $this->type '$this->guid'";
+        $msg = "processing $this->type '$this->guid'";
         foreach ($this->errors as $error) {
             switch ($error['error']) {
                 case 'UnhandledElement':
@@ -131,11 +121,10 @@ class LiftImportNodeError
                     throw new \Exception("Unknown error type '" . $error['error'] . "' while processing guid '" . $this->guid . "'");
             }
         }
-        foreach ($this->subNodes as $subNodeError) {
-            $msg .= $subNodeError->toString();
-        }
-        if (isset($this->subNodeError)) {
-            $msg .= $this->subNodeError->toString();
+        foreach ($this->subnodeErrors as $subnodeError) {
+            if ($subnodeError->hasError()) {
+                $msg .= ', ' . $subnodeError->toString();
+            }
         }
         return $msg;
     }

@@ -39,7 +39,7 @@ class LiftDecoder
      */
     public function readEntry($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES)
     {
-        $this->nodeError = new LiftImportNodeError(LiftImportNodeError::ENTRY, $sxeNode['guid']);
+        $this->nodeError = new LiftImportNodeError(LiftImportNodeError::ENTRY, (string) $sxeNode['guid']);
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'lexical-unit':
@@ -143,7 +143,7 @@ class LiftDecoder
      */
     public function readSense($sxeNode, $sense)
     {
-        $this->nodeError->subNodeError = new LiftImportNodeError(LiftImportNodeError::SENSE, $sxeNode['id']);
+        $this->nodeError->addSubnodeError(new LiftImportNodeError(LiftImportNodeError::SENSE, (string) $sxeNode['id']));
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'definition':
@@ -160,7 +160,7 @@ class LiftDecoder
                             $sense->scientificName = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME]->inputSystems);
                             break;
                         default:
-                            $this->nodeError->subNodeError->addUnhandledField($element['type']);
+                            $this->nodeError->currentSubnodeError()->addUnhandledField($element['type']);
                     }
                     break;
                 case 'gloss':
@@ -175,15 +175,15 @@ class LiftDecoder
                     $picture->fileName = (string) $element['href'];
                     $picture->caption = $this->readMultiText($element->{'label'}, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems);
                     $sense->pictures[] =  $picture;
-//                     $this->nodeError->addUnhandledMedia($element['href'], 'illustration');
+//                     $this->nodeError->currentSubnodeError()->addUnhandledMedia($element['href'], 'illustration');
                     break;
                 case 'note':
                     switch($element['type']) {
                         case '':
-                            $this->nodeError->subNodeError->addUnhandledNote($element['type']);
+                            $this->nodeError->currentSubnodeError()->addUnhandledNote($element['type']);
                             break;
                         default:
-                            $this->nodeError->subNodeError->addUnhandledNote($element['type']);
+                            $this->nodeError->currentSubnodeError()->addUnhandledNote($element['type']);
                     }
                     break;
                 case 'trait':
@@ -207,15 +207,14 @@ class LiftDecoder
                             $sense->usages->value((string) $element['value']);
                             break;
                         default:
-                            $this->nodeError->subNodeError->addUnhandledTrait($element['name']);
+                            $this->nodeError->currentSubnodeError()->addUnhandledTrait($element['name']);
                     }
                     break;
 
                 default:
-                    $this->nodeError->subNodeError->addUnhandledElement($element->getName());
+                    $this->nodeError->currentSubnodeError()->addUnhandledElement($element->getName());
             }
         }
-        $this->nodeError->addCurrentSubNodeError();
 
         return $sense;
     }
@@ -228,7 +227,7 @@ class LiftDecoder
     public function readExample($sxeNode)
     {
         $example = new Example($sxeNode['id']);
-        $this->nodeError->subNodeError->subNodeError = new LiftImportNodeError(LiftImportNodeError::EXAMPLE, $sxeNode['id']);
+        $this->nodeError->currentSubnodeError()->addSubnodeError(new LiftImportNodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['id']));
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
             	case 'form':
@@ -238,10 +237,9 @@ class LiftDecoder
                     $example->translation = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems);
             	    break;
         	    default:
-        	        $this->nodeError->subNodeError->subNodeError->addUnhandledElement($element->getName());
+        	        $this->nodeError->currentSubnodeError()->currentSubnodeError()->addUnhandledElement($element->getName());
             }
         }
-        $this->nodeError->subNodeError->addCurrentSubNodeError();
 
         return $example;
     }
