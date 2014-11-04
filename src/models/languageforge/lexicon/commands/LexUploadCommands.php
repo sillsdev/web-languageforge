@@ -318,7 +318,7 @@ class LexUploadCommands
             $folderPath = $project->getAssetsFolderPath();
             FileUtilities::createAllFolders($folderPath);
 
-            LiftImport::merge($tmpFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+            LiftImport::get()->merge($tmpFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
             $project->write();
 
             $moveOk = true;
