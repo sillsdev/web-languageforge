@@ -272,11 +272,11 @@ class Website
         $sites['jamaicanpsalms.dev.scriptureforge.org'] = $w;
 
         // scriptureforge.org
-        $w = new Website('www.scriptureforge.org', self::SCRIPTUREFORGE);
+        $w = new Website('scriptureforge.org', self::SCRIPTUREFORGE);
         $w->name = 'Scripture Forge';
         $w->ssl = true;
         $w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
-        $sites['www.scriptureforge.org'] = $w;
+        $sites['scriptureforge.org'] = $w;
 
         // jamaicanpsalms.com
         $w = new Website('jamaicanpsalms.com', self::SCRIPTUREFORGE);
@@ -325,8 +325,8 @@ class Website
 		 * **************************
 		 */
 
-        $redirect['scriptureforge.org'] = 'www.scriptureforge.org';
-        $redirect['languageforge.org'] = 'www.languageforge.org';
+        $redirect['www.scriptureforge.org'] = 'scriptureforge.org';
+        $redirect['www.languageforge.org'] = 'languageforge.org';
         $redirect['www.jamaicanpsalms.com'] = 'jamaicanpsalms.com';
         $redirect['www.jamaicanpsalms.org'] = 'jamaicanpsalms.com';
         $redirect['jamaicanpsalms.org'] = 'jamaicanpsalms.com';
