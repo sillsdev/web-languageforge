@@ -145,6 +145,13 @@ class Website
             return '';
         }
     }
+    
+    public static function getRawRedirect($hostname) {
+    	if (array_key_exists($hostname, self::$_redirect)) {
+    		return self::$_redirect[$hostname];
+    	}
+    	return '';
+    }
 
     /**
 
