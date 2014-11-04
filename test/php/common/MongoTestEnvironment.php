@@ -12,7 +12,7 @@ require_once TestPath . 'common/MockProjectModel.php';
 class MongoTestEnvironment
 {
 
-    public function __construct($domain = 'www.scriptureforge.org')
+    public function __construct($domain = 'scriptureforge.org')
     {
         $this->db = \models\mapper\MongoStore::connect(SF_DATABASE);
         $this->website = Website::get($domain);
