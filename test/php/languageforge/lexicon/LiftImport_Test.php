@@ -948,4 +948,120 @@ EOD;
         $this->assertEqual($entry1['lexeme']['qaa-x-qaa']['value'], "black bear");
         $this->assertEqual($entry1['note']['en']['value'], "This is not a brown bear.");
     }
+
+    // has correct th-fonipa form in each entry
+    // has correct sense in first entry (same id)
+    // has rubbish (fake) tag inside Example
+    const liftTwoEntriesCorrectedExampleRubbishTagV0_13 = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+	version="0.13"
+	producer="WeSay 1.0.0.0">
+	<entry
+		id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+		dateCreated="2008-11-03T06:17:24Z"
+		dateModified="2011-10-26T01:41:19Z"
+		guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>chùuchìi mǔu krɔ̀ɔp</text>
+			</form>
+			<form
+				lang="th">
+				<text>ฉู่ฉี่หมูกรอบ</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="9d50e072-0206-4776-9ee6-bddf89b96aed">
+			<grammatical-info
+				value="Noun" />
+			<definition>
+				<form
+					lang="en">
+					<text>A kind of curry fried with crispy pork</text>
+				</form>
+			</definition>
+			<example>
+				<form
+					lang="th-fonipa">
+					<text>sentence 1</text>
+				</form>
+				<rubbish>
+				</rubbish>
+				<translation>
+					<form
+						lang="en">
+						<text>translation 1</text>
+					</form>
+				</translation>
+			</example>
+		</sense>
+	</entry>
+	<entry
+		id="Id'dPrematurely_05473cb0-4165-4923-8d81-02f8b8ed3f26"
+		dateCreated="2008-10-09T02:15:23Z"
+		dateModified="2008-10-17T06:16:11Z"
+		guid="05473cb0-4165-4923-8d81-02f8b8ed3f26">
+		<lexical-unit>
+			<form
+				lang="th-fonipa">
+				<text>khâaw kài thɔ̂ɔt</text>
+			</form>
+			<form
+				lang="th">
+				<text>ข้าวไก่ทอด</text>
+			</form>
+		</lexical-unit>
+		<sense
+			id="f60ba047-df0c-47cc-aba1-af4ea1030e31">
+			<definition>
+				<form
+					lang="en">
+					<text>pieces of fried chicken served over rice, usually with a sweet and spicy sauce on the side</text>
+				</form>
+			</definition>
+			<example>
+				<form
+					lang="th-fonipa">
+					<text>sentence 2</text>
+				</form>
+				<translation>
+					<form
+						lang="en">
+						<text>translation 2</text>
+					</form>
+				</translation>
+			</example>
+		</sense>
+	</entry>
+</lift>
+EOD;
+
+    public function testLiftImportMerge_ExampleRubbishTag_ReportOk()
+    {
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedExampleRubbishTagV0_13, 'TwoEntriesCorrectedExampleRubbishTagV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+
+        $importer = LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
+        $entryList = new LexEntryListModel($project);
+        $entryList->read();
+        $entries = $entryList->entries;
+        $index = self::indexByGuid($entries);
+        $report = $importer->getReport();
+
+        $this->assertEqual(2, $entryList->count);
+        $this->assertEqual("chùuchìi mǔu krɔ̀ɔp", $index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['lexeme']['th-fonipa']['value']);
+        $this->assertEqual(1, count($index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses']));
+        $this->assertEqual("A kind of curry fried with crispy pork", $index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['definition']['en']['value']);
+        $this->assertEqual("Noun", $index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['partOfSpeech']['value']);
+        $this->assertEqual("khâaw kài thɔ̂ɔt", $index['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value']);
+        $this->assertEqual(2, count($report->nodeErrors));
+        $this->assertTrue($report->nodeErrors[0]->currentSubnodeError()->currentSubnodeError()->hasError());
+        $this->assertPattern("/unhandled element 'rubbish'/", $report->nodeErrors[0]->currentSubnodeError()->currentSubnodeError()->toString());
+        $this->assertFalse($report->nodeErrors[1]->hasError());
+    }
 }
