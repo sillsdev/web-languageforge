@@ -28,6 +28,7 @@ class SiteRoles extends RolesBase
         // Project Creator (User plus ability to create projects)
         $rights = self::$_rights[self::USER];
         $rights[] = Domain::PROJECTS + Operation::CREATE;
+        $rights[] = Domain::PROJECTS + Operation::ARCHIVE_OWN;
         self::$_rights[self::PROJECT_CREATOR] = $rights;
 
         // Site Manager (all rights on projects)
