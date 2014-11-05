@@ -256,7 +256,7 @@ class LiftDecoder
         if (isset($sxeNode->form)) {
             foreach ($sxeNode->form as $form) {
                 $inputSystemTag = (string) $form['lang'];
-                $multiText->form($inputSystemTag, $this->convertSpans($form->text));
+                $multiText->form($inputSystemTag, $this->sanitizeText($form->text));
 
                 $this->projectModel->addInputSystem($inputSystemTag);
                 // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
@@ -271,20 +271,45 @@ class LiftDecoder
     }
 
     /**
-     * Converts <span> elements inside an XmlNode $textNode to strings
+     * Sanitizes the text element only allowing <span> elements through; coverts everthing else to text
      * @param SimpleXMLElement $textNode
      * @return string
      */
-    public function convertSpans($textNode)
+    public function sanitizeText($textNode)
     {
-        if ($textNode->count()) {
-            // Keep it simple for now: just treat $textNode->asXML() as a string,
-            // and strip <text> from the front and </text> from the back of that string.
-            $textStr = $textNode->asXML();
-            return substr($textStr, 6, -7);
-        } else {
-            return (string) $textNode;
+        $textDom = new \DOMDocument('1.0', 'utf-8');
+        $textDom->loadXML($textNode->asXML());
+        return $this->sanitizeSpans($textDom);
+    }
+
+    /**
+     * Recursively sanitizes the element only allowing <span> elements through; coverts everthing else to text
+     * @param DOMDocument $textDom
+     * @return string
+     */
+    public function sanitizeSpans($textDom)
+    {
+        $textStr = '';
+        foreach ($textDom->childNodes as $child) {
+            if ($child->nodeType == XML_TEXT_NODE) {
+                $childTextStr = $child->textContent;
+            } else {
+
+                // recurse to sanitize child node
+                $childTextStr = $this->{__FUNCTION__}($child);
+            }
+            if ($child->nodeName == 'span') {
+                $spanTag = '<span';
+                foreach ($child->attributes as $attribute) {
+                    $spanTag .= ' ' . $attribute->name . '="' . $attribute->value . '"';
+                }
+                $spanTag .= '>';
+                $textStr .= $spanTag . $childTextStr . '</span>';
+            } else {
+                $textStr .= $childTextStr;
+            }
         }
+        return $textStr;
     }
 
     /**

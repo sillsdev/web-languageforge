@@ -762,9 +762,13 @@ EOD;
 			<definition>
 				<form
 					lang="en">
-					<text><span lang="th">ฉู่ฉี่หมูกรอบ</span> is a kind of curry fried with crispy pork</text>
+					<text>text before <span lang="th">ฉู่ฉี่หมูกรอบ</span> is a kind of curry fried with crispy pork</text>
 				</form>
-			</definition>
+				<form
+					lang="th">
+					<text>ฉู่ฉี่หมูกรอบ<span lang="en"> is a kind of <i>curry <b>fried</b> with</i> crispy pork</span> text <i>to <b>test</b> after</i> the span</text>
+				</form>
+        </definition>
 		</sense>
 	</entry>
 	<entry
@@ -807,7 +811,8 @@ EOD;
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
         $this->assertEqual($entry0['lexeme']['th']['value'], "ฉู่ฉี่หมูกรอบ");
         $this->assertEqual(count($entry0['senses']), 1);
-        $this->assertEqual($entry0['senses'][0]['definition']['en']['value'], '<span lang="th">ฉู่ฉี่หมูกรอบ</span> is a kind of curry fried with crispy pork');
+        $this->assertEqual($entry0['senses'][0]['definition']['en']['value'], 'text before <span lang="th">ฉู่ฉี่หมูกรอบ</span> is a kind of curry fried with crispy pork');
+        $this->assertEqual($entry0['senses'][0]['definition']['th']['value'], 'ฉู่ฉี่หมูกรอบ<span lang="en"> is a kind of curry fried with crispy pork</span> text to test after the span');
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Noun");
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
@@ -926,7 +931,7 @@ EOD;
 			</form>
 			<form
 				lang="fr">
-				<text>ceci n'est pas une pipe; <span lang="en">This is <b>not</b> a black bear</span>.</text>
+				<text>ceci <b>n'est</b> pas une pipe; <span lang="en">This is <b>not</b> a black bear</span>.</text>
 			</form>
 		</note>
 	</entry>
@@ -977,6 +982,7 @@ EOD;
         $this->assertEqual($entry0['guid'], "57a90e40-fdb4-47f8-89a0-c64bf947723d");
         $this->assertEqual($entry0['lexeme']['qaa-x-qaa']['value'], "brown bear");
         $this->assertEqual($entry0['note']['en']['value'], 'This is not a black bear, and <span lang="fr">ceci n\'est pas une pipe</span>.');
+        $this->assertEqual($entry0['note']['fr']['value'], 'ceci n\'est pas une pipe; <span lang="en">This is not a black bear</span>.');
         $this->assertEqual($entry1['guid'], "8db0bd91-9120-4417-b6ff-d0bb35f552fc");
         $this->assertEqual($entry1['lexeme']['qaa-x-qaa']['value'], "black bear");
         $this->assertEqual($entry1['note']['en']['value'], "This is not a brown bear.");
