@@ -5,5 +5,5 @@
 	<buildpathentry excluding="simpletest/" kind="src" path="test/lib"/>
 	<buildpathentry kind="src" path="lib/CodeIgniter_2.1.3"/>
 	<buildpathentry excluding="test/|docs/|extensions/" kind="src" path="test/lib/simpletest"/>
-	<buildpathentry kind="src" path="src/vendor"/>
+	<buildpathentry excluding="phpunit/" kind="src" path="src/vendor"/>
 </buildpath>

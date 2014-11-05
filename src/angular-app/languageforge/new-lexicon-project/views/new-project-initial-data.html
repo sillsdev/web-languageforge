@@ -1,0 +1,23 @@
+<input type="checkbox" data-ng-model="newProject.emptyProjectDesired"> Skip this step and create an empty project.</input>
+
+<div  collapse="newProject.emptyProjectDesired">
+<h2>Initial data</h2>
+
+<div class="drop-box" data-ng-file-drop="onFileSelect($files)" data-ng-file-drop-available="dropSupported=true">
+    <h4>Upload initial data</h4>
+    <br/>
+    <p>Drag files here, or click Browse button</p>
+    <input type="button" class="btn" value="Browse..." onclick="javascript:document.getElementById('datafile').click();">
+    <input id="datafile" type="file" style="display:none;" data-ng-file-select="onFileSelect($files)">
+    <div data-ng-show="uploadErrorMsg"><span style="color: red" data-ng-bind="uploadErrorMsg"></span></div>
+</div>
+<div data-ng-show="uploadProgress">Upload progress: {{uploadProgress}}%</div>
+<div data-ng-show="datafile != null">
+    <p><strong>{{datafile.name}}</strong> {{datafile.size | bytes }}</p>
+    <div class="span4" ng-class="interfaceConfig.pullNormal">
+        <progressbar data-value="uploadProgress" data-max="100.0"></progressbar>
+    </div>
+    &nbsp;
+</div>
+<div data-ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+</div>

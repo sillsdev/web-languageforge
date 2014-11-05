@@ -1,0 +1,24 @@
+<h2 translate="Choose project name"></h2>
+
+<div class="control-group">
+    <input type="text" data-ng-model="newProject.projectName" set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name" data-ng-blur="checkProjectCodeIfNotOk()" idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
+    <span  data-ng-show="newProject.projectCode.length > 0">
+    <span  data-ng-show="projectCodeState == 'loading'"><img id="projectCodeLoading" src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-right: 5px; padding-top: 8px;" /></span>
+    <span  data-ng-show="projectCodeState == 'exists'"><img id="projectCodeExists" src="/images/shared/exclamation.png" title="Project Code already exists!" style="position: absolute; padding-left: 5px; padding-right: 5px; padding-top: 8px;"/></span>
+    <span  data-ng-show="projectCodeState == 'invalid'"><img id="projectCodeAlphanumeric" src="/images/shared/exclamation.png" title="Project Code must begin with a letter, and only contain lower-case letters, numbers and dashes!" style="position: absolute; padding-left: 5px; padding-tyop: 8px;"/></span>
+    <span  data-ng-show="projectCodeState == 'ok'"><img id="projectCodeOk" src="/images/shared/tick.png" title="Project Code is available!" style="position: absolute; padding-left: 5px; padding-right: 5px; padding-top: 8px;"/></span>
+</div>
+<div class="control-group">
+    <select ng-hide="projectTypesBySite().length == 1" required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
+        <option value="">-- Select Type --</option>
+    </select>
+</div>
+<div class="control-group">
+    <div data-ng-show="newProject.editProjectCode">
+    <input type="text" data-ng-show="newProject.editProjectCode" data-ng-model="newProject.projectCode" data-ng-trim="false" maxlength="50" required placeholder="Project Code" idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
+    </div>
+    <p data-ng-hide="newProject.editProjectCode">{{'Project code:' | translate}} {{newProject.projectCode}}</p>
+    <input type="checkbox" data-ng-model="newProject.editProjectCode"> Edit project code</input>
+    <p>(You'll almost never need to check this)</p>
+    </div>
+</div>
