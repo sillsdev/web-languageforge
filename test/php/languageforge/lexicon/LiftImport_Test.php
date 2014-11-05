@@ -1066,6 +1066,8 @@ EOD;
 					lang="th-fonipa">
 					<text>sentence 2</text>
 				</form>
+				<fake>
+				</fake>
 				<translation>
 					<form
 						lang="en">
@@ -1102,6 +1104,7 @@ EOD;
         $this->assertEqual(2, count($report->nodeErrors));
         $this->assertTrue($report->nodeErrors[0]->currentSubnodeError()->currentSubnodeError()->hasError());
         $this->assertPattern("/unhandled element 'rubbish'/", $report->nodeErrors[0]->currentSubnodeError()->currentSubnodeError()->toString());
-        $this->assertFalse($report->nodeErrors[1]->hasError());
+        $this->assertTrue($report->nodeErrors[1]->currentSubnodeError()->currentSubnodeError()->hasError());
+        $this->assertPattern("/unhandled element 'fake'/", $report->nodeErrors[1]->currentSubnodeError()->currentSubnodeError()->toString());
     }
 }

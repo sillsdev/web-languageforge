@@ -17,6 +17,7 @@ class LiftDecoder
     public function __construct($projectModel)
     {
         $this->projectModel = $projectModel;
+        $this->nodeErrors = array();
     }
 
     /**
@@ -26,10 +27,11 @@ class LiftDecoder
     private $projectModel;
 
     /**
+     * node error stack
      *
-     * @var LiftImportNodeError
+     * @var array <LiftImportNodeError>
      */
-    private $nodeError;
+    private $nodeErrors;
 
     /**
      * @param SimpleXMLElement $sxeNode
@@ -39,7 +41,8 @@ class LiftDecoder
      */
     public function readEntry($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES)
     {
-        $this->nodeError = new LiftImportNodeError(LiftImportNodeError::ENTRY, (string) $sxeNode['guid']);
+        $this->nodeErrors = array();
+        $this->nodeErrors[] = new LiftImportNodeError(LiftImportNodeError::ENTRY, (string) $sxeNode['guid']);
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'lexical-unit':
@@ -57,7 +60,7 @@ class LiftDecoder
                     if ($element['type'] == '') {
                         $entry->note = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::NOTE]->inputSystems);
                     } else {
-                        $this->nodeError->addUnhandledNote($element['type']);
+                        $this->currentNodeError()->addUnhandledNote($element['type']);
                     }
                     break;
                 case 'etymology':
@@ -69,14 +72,14 @@ class LiftDecoder
                         if ($field['type'] == 'comment') {
                             $entry->etymologyComment = $this->readMultiText($field, $this->projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGYCOMMENT]->inputSystems);
                         } else {
-                            $this->nodeError->addUnhandledField($field['type'], 'etymology');
+                            $this->currentNodeError()->addUnhandledField($field['type'], 'etymology');
                         }
                     }
                     break;
                 case 'pronunciation':
                     $entry->pronunciation = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::PRONUNCIATION]->inputSystems);
                     if ($element->{'media'}) {
-                        $this->nodeError->addUnhandledMedia($element->{'media'}['href'], 'pronunciation');
+                        $this->currentNodeError()->addUnhandledMedia($element->{'media'}['href'], 'pronunciation');
                     }
                     break;
                 case 'field':
@@ -90,7 +93,7 @@ class LiftDecoder
                         case 'import-residue': // Currently ignored in LanguageForge
                             break;
                         default:
-                            $this->nodeError->addUnhandledField($element['type']);
+                            $this->currentNodeError()->addUnhandledField($element['type']);
                     }
                     break;
                 case 'trait':
@@ -99,7 +102,7 @@ class LiftDecoder
                             $entry->morphologyType = (string)$element['value'];
                             break;
                         default:
-                            $this->nodeError->addUnhandledTrait($element['name']);
+                            $this->currentNodeError()->addUnhandledTrait($element['name']);
                     }
                     break;
                 case 'sense':
@@ -130,7 +133,7 @@ class LiftDecoder
                     break;
                 case 'relation':
                 default:
-                    $this->nodeError->addUnhandledElement($element->getName());
+                    $this->currentNodeError()->addUnhandledElement($element->getName());
             }
         }
     }
@@ -143,7 +146,7 @@ class LiftDecoder
      */
     public function readSense($sxeNode, $sense)
     {
-        $this->nodeError->addSubnodeError(new LiftImportNodeError(LiftImportNodeError::SENSE, (string) $sxeNode['id']));
+        $this->pushSubnodeError(new LiftImportNodeError(LiftImportNodeError::SENSE, (string) $sxeNode['id']));
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'definition':
@@ -160,7 +163,7 @@ class LiftDecoder
                             $sense->scientificName = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME]->inputSystems);
                             break;
                         default:
-                            $this->nodeError->currentSubnodeError()->addUnhandledField($element['type']);
+                            $this->currentNodeError()->addUnhandledField($element['type']);
                     }
                     break;
                 case 'gloss':
@@ -175,15 +178,15 @@ class LiftDecoder
                     $picture->fileName = (string) $element['href'];
                     $picture->caption = $this->readMultiText($element->{'label'}, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems);
                     $sense->pictures[] =  $picture;
-//                     $this->nodeError->currentSubnodeError()->addUnhandledMedia($element['href'], 'illustration');
+//                     $this->currentNodeError()->addUnhandledMedia($element['href'], 'illustration');
                     break;
                 case 'note':
                     switch($element['type']) {
                         case '':
-                            $this->nodeError->currentSubnodeError()->addUnhandledNote($element['type']);
+                            $this->currentNodeError()->addUnhandledNote($element['type']);
                             break;
                         default:
-                            $this->nodeError->currentSubnodeError()->addUnhandledNote($element['type']);
+                            $this->currentNodeError()->addUnhandledNote($element['type']);
                     }
                     break;
                 case 'trait':
@@ -207,14 +210,15 @@ class LiftDecoder
                             $sense->usages->value((string) $element['value']);
                             break;
                         default:
-                            $this->nodeError->currentSubnodeError()->addUnhandledTrait($element['name']);
+                            $this->currentNodeError()->addUnhandledTrait($element['name']);
                     }
                     break;
 
                 default:
-                    $this->nodeError->currentSubnodeError()->addUnhandledElement($element->getName());
+                    $this->currentNodeError()->addUnhandledElement($element->getName());
             }
         }
+        array_pop($this->nodeErrors);
 
         return $sense;
     }
@@ -227,7 +231,7 @@ class LiftDecoder
     public function readExample($sxeNode)
     {
         $example = new Example($sxeNode['id']);
-        $this->nodeError->currentSubnodeError()->addSubnodeError(new LiftImportNodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['id']));
+        $this->pushSubnodeError(new LiftImportNodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['id']));
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
             	case 'form':
@@ -237,9 +241,10 @@ class LiftDecoder
                     $example->translation = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems);
             	    break;
         	    default:
-        	        $this->nodeError->currentSubnodeError()->currentSubnodeError()->addUnhandledElement($element->getName());
+        	        $this->currentNodeError()->addUnhandledElement($element->getName());
             }
         }
+        array_pop($this->nodeErrors);
 
         return $example;
     }
@@ -336,7 +341,36 @@ class LiftDecoder
         }
     }
 
+    /**
+     * Returns the current node error
+     *
+     * @return \models\languageforge\lexicon\LiftImportNodeError
+     */
+    public function currentNodeError() {
+        return end($this->nodeErrors);
+    }
+
+    /**
+     * Add and push the new subnode error
+     *
+     * @param LiftImportNodeError $subnodeError
+     * @return \models\languageforge\lexicon\LiftImportNodeError
+     */
+    public function pushSubnodeError($subnodeError) {
+        $this->currentNodeError()->addSubnodeError($subnodeError);
+        $this->nodeErrors[] = $subnodeError;
+        return $this->currentNodeError();
+    }
+
+    /**
+     * Returns the import node error. If import is in progress it returns an empty node error.
+     *
+     * @return \models\languageforge\lexicon\LiftImportNodeError
+     */
     public function getImportNodeError() {
-        return $this->nodeError;
+        if (count($this->nodeErrors) == 1) {
+            return $this->currentNodeError();
+        }
+        return new LiftImportNodeError('', '');
     }
 }
