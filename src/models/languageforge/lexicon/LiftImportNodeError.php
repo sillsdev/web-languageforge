@@ -7,12 +7,13 @@ class LiftImportNodeError
     const ENTRY = 'entry';
     const SENSE = 'sense';
     const EXAMPLE = 'example';
+    const MULTITEXT = 'multitext';
 
     /**
      *
-     * @var string guid of lift entry
+     * @var string guid of lift entry, sense lift id, or attribute name
      */
-    public $guid;
+    private $identifier;
 
     /**
      *
@@ -31,10 +32,10 @@ class LiftImportNodeError
      */
     private $type;
 
-    public function __construct($type, $guid)
+    public function __construct($type, $identifier)
     {
         $this->type = $type;
-        $this->guid = $guid;
+        $this->identifier = $identifier;
         $this->errors = array();
         $this->subnodeErrors = array();
     }
@@ -99,7 +100,7 @@ class LiftImportNodeError
 
     public function toString()
     {
-        $msg = "processing $this->type '$this->guid'";
+        $msg = "processing $this->type '$this->identifier'";
         foreach ($this->errors as $error) {
             switch ($error['error']) {
                 case 'UnhandledElement':
@@ -118,7 +119,7 @@ class LiftImportNodeError
                     $msg .= ", unhandled media '" . $error['url'] . "' in " . $error['context'];
                     break;
                 default:
-                    throw new \Exception("Unknown error type '" . $error['error'] . "' while processing guid '" . $this->guid . "'");
+                    throw new \Exception("Unknown error type '" . $error['error'] . "' while processing identifier '" . $this->identifier . "'");
             }
         }
         foreach ($this->subnodeErrors as $subnodeError) {

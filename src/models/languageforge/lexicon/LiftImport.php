@@ -132,7 +132,7 @@ class LiftImport
         }
 
         if ($this->report->hasError()) {
-            error_log($this->report->toString() . "\n");
+            error_log($this->report->toString());
         }
 
         return $this;
@@ -166,7 +166,7 @@ class LiftImport
         } catch (Exception $e) {
             $this->report->nodeErrors[] = $this->liftDecoder->getImportNodeError();
             if ($this->report->hasError()) {
-                error_log($this->report->toString() . "\n");
+                error_log($this->report->toString());
             }
             throw new \Exception($e);
         }
