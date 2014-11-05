@@ -1,7 +1,7 @@
 <?php
 namespace models\shared\rights;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 
 class RolesBase
 {
