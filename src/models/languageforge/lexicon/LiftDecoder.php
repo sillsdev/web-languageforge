@@ -146,7 +146,7 @@ class LiftDecoder
      */
     public function readSense($sxeNode, $sense)
     {
-        $this->pushSubnodeError(new LiftImportNodeError(LiftImportNodeError::SENSE, (string) $sxeNode['id']));
+        $this->pushSubnodeError(LiftImportNodeError::SENSE, (string) $sxeNode['id']);
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'definition':
@@ -231,7 +231,7 @@ class LiftDecoder
     public function readExample($sxeNode)
     {
         $example = new Example($sxeNode['id']);
-        $this->pushSubnodeError(new LiftImportNodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['id']));
+        $this->pushSubnodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['id']);
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
             	case 'form':
@@ -258,10 +258,11 @@ class LiftDecoder
     public function readMultiText($sxeNode, $inputSystems = null)
     {
         $multiText = new MultiText();
+        $this->pushSubnodeError(LiftImportNodeError::MULTITEXT, '');
         if (isset($sxeNode->form)) {
             foreach ($sxeNode->form as $form) {
                 $inputSystemTag = (string) $form['lang'];
-                $multiText->form($inputSystemTag, $this->sanitizeText($form->text));
+                $multiText->form($inputSystemTag, $this->sanitizeSpans(dom_import_simplexml($form->text)));
 
                 $this->projectModel->addInputSystem($inputSystemTag);
                 // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
@@ -271,20 +272,9 @@ class LiftDecoder
                 }
             }
         }
+        array_pop($this->nodeErrors);
 
         return $multiText;
-    }
-
-    /**
-     * Sanitizes the text element only allowing <span> elements through; coverts everthing else to text
-     * @param SimpleXMLElement $textNode
-     * @return string
-     */
-    public function sanitizeText($textNode)
-    {
-        $textDom = new \DOMDocument('1.0', 'utf-8');
-        $textDom->loadXML($textNode->asXML());
-        return $this->sanitizeSpans($textDom);
     }
 
     /**
@@ -299,6 +289,9 @@ class LiftDecoder
             if ($child->nodeType == XML_TEXT_NODE) {
                 $childTextStr = $child->textContent;
             } else {
+                if ($child->nodeName != 'span') {
+                    $this->currentNodeError()->addUnhandledElement($child->nodeName);
+                }
 
                 // recurse to sanitize child node
                 $childTextStr = $this->{__FUNCTION__}($child);
@@ -353,10 +346,12 @@ class LiftDecoder
     /**
      * Add and push the new subnode error
      *
-     * @param LiftImportNodeError $subnodeError
+     * @param string $type
+     * @param string $identifier
      * @return \models\languageforge\lexicon\LiftImportNodeError
      */
-    public function pushSubnodeError($subnodeError) {
+    public function pushSubnodeError($type, $identifier) {
+        $subnodeError = new LiftImportNodeError($type, $identifier);
         $this->currentNodeError()->addSubnodeError($subnodeError);
         $this->nodeErrors[] = $subnodeError;
         return $this->currentNodeError();
