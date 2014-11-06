@@ -42,11 +42,16 @@ class LiftImportNodeError
 
     public function hasError()
     {
-        $hasError = count($this->errors) > 0 ;
+        return count($this->errors) > 0 ;
+    }
+
+    public function hasErrors()
+    {
+        $hasErrors = $this->hasError();
         foreach ($this->subnodeErrors as $subnodeError) {
-            $hasError |= $subnodeError->hasError();
+            $hasErrors |= $subnodeError->hasErrors();
         }
-        return $hasError;
+        return $hasErrors;
     }
 
     public function addUnhandledElement($elementName)
@@ -123,7 +128,7 @@ class LiftImportNodeError
             }
         }
         foreach ($this->subnodeErrors as $subnodeError) {
-            if ($subnodeError->hasError()) {
+            if ($subnodeError->hasErrors()) {
                 $msg .= ', ' . $subnodeError->toString();
             }
         }

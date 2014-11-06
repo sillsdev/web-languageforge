@@ -19,7 +19,7 @@ class LiftImportErrorReport
     {
         $hasError = false;
         foreach ($this->nodeErrors as $nodeError) {
-            $hasError |= $nodeError->hasError();
+            $hasError |= $nodeError->hasErrors();
         }
         return $hasError;
     }
@@ -28,7 +28,7 @@ class LiftImportErrorReport
     {
         $msg = '';
         foreach ($this->nodeErrors as $nodeError) {
-            if ($nodeError->hasError()) {
+            if ($nodeError->hasErrors()) {
                 $msg .= 'While ' . $nodeError->toString() . "\n";
             }
         }

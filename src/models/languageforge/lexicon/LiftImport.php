@@ -70,10 +70,11 @@ class LiftImport
 
         while ($reader->read()) {
             if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
-                $node = $reader->expand();
+                $element = $reader->expand();
                 $dom = new \DomDocument();
-                $n = $dom->importNode($node, true); // expands the node for that particular guid
-                $sxeNode = simplexml_import_dom($n);
+                $node = $dom->importNode($element, true);
+                $dom->appendChild($node);
+                $sxeNode = simplexml_import_dom($node);
 
                 $guid = $reader->getAttribute('guid');
                 $existingEntry = $entryList->searchEntriesFor('guid', $guid);

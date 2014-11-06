@@ -805,6 +805,8 @@ EOD;
         $index = self::indexByGuid($entries);
         $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $report = $importer->getReport();
+        $reportStr = $report->toString();
 
         $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
@@ -817,7 +819,8 @@ EOD;
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
-        $this->assertFalse($importer->getReport()->hasError());
+        $this->assertTrue($report->hasError());
+        $this->assertPattern("/processing multitext '', unhandled element 'i', unhandled element 'b', unhandled element 'i', unhandled element 'b'/", $reportStr);
     }
 
     const liftNotesWithoutSpansV0_13 = <<<EOD
@@ -977,6 +980,8 @@ EOD;
         $index = self::indexByGuid($entries);
         $entry0 = $index['57a90e40-fdb4-47f8-89a0-c64bf947723d'];
         $entry1 = $index['8db0bd91-9120-4417-b6ff-d0bb35f552fc'];
+        $report = $importer->getReport();
+        $reportStr = $report->toString();
 
         $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "57a90e40-fdb4-47f8-89a0-c64bf947723d");
@@ -986,13 +991,14 @@ EOD;
         $this->assertEqual($entry1['guid'], "8db0bd91-9120-4417-b6ff-d0bb35f552fc");
         $this->assertEqual($entry1['lexeme']['qaa-x-qaa']['value'], "black bear");
         $this->assertEqual($entry1['note']['en']['value'], "This is not a brown bear.");
-        $this->assertFalse($importer->getReport()->hasError());
+        $this->assertTrue($report->hasError());
+        $this->assertPattern("/processing multitext '', unhandled element 'b', unhandled element 'b'/", $reportStr);
     }
 
     // has correct th-fonipa form in each entry
     // has correct sense in first entry (same id)
-    // has rubbish (fake) tag inside Example
-    const liftTwoEntriesCorrectedExampleRubbishTagV0_13 = <<<EOD
+    // has bogus (phony, rubbish, fake) tags inside Entry and Example
+    const liftTwoEntriesCorrectedBogusTagsV0_13 = <<<EOD
 <?xml version="1.0" encoding="utf-8"?>
 <lift
 	version="0.13"
@@ -1007,11 +1013,15 @@ EOD;
 				lang="th-fonipa">
 				<text>chùuchìi mǔu krɔ̀ɔp</text>
 			</form>
+			<phony>
+			</phony>
 			<form
 				lang="th">
 				<text>ฉู่ฉี่หมูกรอบ</text>
 			</form>
 		</lexical-unit>
+		<bogus>
+		</bogus>
 		<sense
 			id="9d50e072-0206-4776-9ee6-bddf89b96aed">
 			<grammatical-info
@@ -1080,9 +1090,9 @@ EOD;
 </lift>
 EOD;
 
-    public function testLiftImportMerge_ExampleRubbishTag_ReportOk()
+    public function testLiftImportMerge_BogusTags_ReportOk()
     {
-        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedExampleRubbishTagV0_13, 'TwoEntriesCorrectedExampleRubbishTagV0_13.lift');
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedBogusTagsV0_13, 'TwoEntriesCorrectedBogusTagsV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
@@ -1094,6 +1104,7 @@ EOD;
         $entries = $entryList->entries;
         $index = self::indexByGuid($entries);
         $report = $importer->getReport();
+        $reportStr = $report->toString();
 
         $this->assertEqual(2, $entryList->count);
         $this->assertEqual("chùuchìi mǔu krɔ̀ɔp", $index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['lexeme']['th-fonipa']['value']);
@@ -1102,9 +1113,13 @@ EOD;
         $this->assertEqual("Noun", $index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['partOfSpeech']['value']);
         $this->assertEqual("khâaw kài thɔ̂ɔt", $index['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value']);
         $this->assertEqual(2, count($report->nodeErrors));
-        $this->assertTrue($report->nodeErrors[0]->currentSubnodeError()->currentSubnodeError()->hasError());
+        $this->assertTrue($report->nodeErrors[0]->hasError(), 'should have bogus tag entry error');
+        $this->assertPattern("/unhandled element 'bogus'/", $reportStr);
+        $this->assertTrue($report->nodeErrors[0]->currentSubnodeError()->currentSubnodeError()->hasError(), 'should have rubbish tag example error');
         $this->assertPattern("/unhandled element 'rubbish'/", $report->nodeErrors[0]->currentSubnodeError()->currentSubnodeError()->toString());
-        $this->assertTrue($report->nodeErrors[1]->currentSubnodeError()->currentSubnodeError()->hasError());
+        $this->assertPattern("/unhandled element 'rubbish'/", $reportStr);
+        $this->assertTrue($report->nodeErrors[1]->currentSubnodeError()->currentSubnodeError()->hasError(), 'should have fake tag example error');
         $this->assertPattern("/unhandled element 'fake'/", $report->nodeErrors[1]->currentSubnodeError()->currentSubnodeError()->toString());
+        $this->assertPattern("/unhandled element 'fake'/", $reportStr);
     }
 }
