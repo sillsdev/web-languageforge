@@ -176,9 +176,16 @@ class LiftDecoder
                 case 'illustration':
                     $picture = new Picture();
                     $picture->fileName = (string) $element['href'];
-                    $picture->caption = $this->readMultiText($element->{'label'}, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems);
+                    foreach ($element as $child) {
+                        switch($child->getName()) {
+                        	case 'label':
+                    	        $picture->caption = $this->readMultiText($child, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems);
+                        	    break;
+                        	default:
+                        	    $this->currentNodeError()->addUnhandledElement($child->getName());
+                        }
+                    }
                     $sense->pictures[] =  $picture;
-//                     $this->currentNodeError()->addUnhandledMedia($element['href'], 'illustration');
                     break;
                 case 'note':
                     switch($element['type']) {
