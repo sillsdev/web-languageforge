@@ -249,6 +249,7 @@
 		<exec dir="${build.installForTestPath}/test/app/" executable="sudo">
 			<arg line="-u www-data php" />
 			<arg value="setupTestEnvironment.php" />
+			<arg value="${e2etest.webserver.host}" />
 		</exec>
 	</target>
 	

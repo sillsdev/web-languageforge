@@ -23,8 +23,17 @@ use libraries\shared\Website;
 $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
 
 // Fake some $_SERVER variables like HTTP_HOST for the sake of the code that needs it
-$_SERVER['HTTP_HOST'] = $constants['siteHostname'];
-$website = Website::get($constants['siteHostname']);
+$hostname = "languageforge.local";
+if (count($argv) > 1) {
+	// hostname is passed in on command line
+	$hostname = $argv[1];
+}
+$_SERVER['HTTP_HOST'] = $hostname;
+$website = Website::get($hostname);
+if (is_null($website)) {
+	exit("Error: $hostname is not a registered website hostname!\n\n");
+}
+$site = $website->base;
 
 // start with a fresh database
 $db = \models\mapper\MongoStore::connect(SF_DATABASE);
@@ -80,9 +89,9 @@ $memberUser = UserCommands::createUser(array(
     $website
 );
 
-if ($constants['siteType'] == 'scriptureforge') {
+if ($site == 'scriptureforge') {
     $projectType = SfProjectModel::SFCHECKS_APP;
-} else if ($constants['siteType'] == 'languageforge') {
+} else if ($site == 'languageforge') {
     $projectType = LfProjectModel::LEXICON_APP;
 }
 $testProject = ProjectCommands::createProject(
@@ -113,7 +122,7 @@ ProjectCommands::updateUserRole($testProject, $managerUser, ProjectRoles::MANAGE
 ProjectCommands::updateUserRole($testProject, $memberUser, ProjectRoles::CONTRIBUTOR);
 ProjectCommands::updateUserRole($otherProject, $adminUser, ProjectRoles::MANAGER);
 
-if ($constants['siteType'] == 'scriptureforge') {
+if ($site == 'scriptureforge') {
     $text1 = TextCommands::updateText($testProject, array(
         'id' => '',
         'title' => $constants['testText1Title'],
@@ -169,7 +178,7 @@ if ($constants['siteType'] == 'scriptureforge') {
         'id' => '',
         'content' => $constants['testText1Question2Answer2Comment']),
         $managerUser);
-} elseif ($constants['siteType'] == 'languageforge') {
+} elseif ($site == 'languageforge') {
     // Set up LanguageForge E2E test envrionment here
     $testProjectModel = new LexiconProjectModel($testProject);
     $testProjectModel->addInputSystem("th-fonipa", "thipa", "Thai IPA");
