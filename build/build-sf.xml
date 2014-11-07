@@ -15,7 +15,7 @@
 	<property name="e2etest.selenium.server.host" value="ba-wxp32c.psonet" />
 	<property name="e2etest.selenium.server.port" value="4444" />
 	<property name="e2etest.webserver.host" value="${application.name}.local" />
-	<property name="e2etest.protractor.conf" value="protractorConf.js" />  <!-- Filename with base dir test/app/ -->
+	<property name="e2etest.protractor.conf" value="protractorConfSF.js" />  <!-- Filename with base dir test/app/ -->
 
 	<target name="clean" depends="cleanLibs">
 		<delete dir="${build.output}" quiet="true" />
@@ -245,6 +245,7 @@
 	<target name="setupE2ETestEnvironment" unless="selenium.server.notfound">
 		<exec dir="${build.installForTestPath}/test/app/" executable="php">
 			<arg value="setupTestEnvironment.php" />
+			<arg value="${e2etest.webserver.host}" />
 		</exec>
 	</target>
 

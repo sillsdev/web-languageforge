@@ -19,12 +19,15 @@ if ($constants['siteType'] == 'languageforge') {
 
 function recursiveRemoveFolder($folder)
 {
-    foreach (glob("{$folder}/*") as $file) {
-        if (is_dir($file)) {
-            recursiveRemoveFolder($file);
-        } else {
-            unlink($file);
-        }
-    }
-    rmdir($folder);
+	if (is_dir($folder)) {
+	    foreach (glob("{$folder}/*") as $file) {
+	        if (is_dir($file)) {
+	            recursiveRemoveFolder($file);
+	        } else {
+	        	if (is_file($file)) {
+	            	unlink($file);
+	        	}
+	        }
+	    }
+	}
 }
