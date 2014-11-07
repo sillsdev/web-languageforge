@@ -820,7 +820,7 @@ EOD;
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
         $this->assertTrue($report->hasError());
-        $this->assertPattern("/processing multitext '', unhandled element 'i', unhandled element 'b', unhandled element 'i', unhandled element 'b'/", $reportStr);
+        $this->assertPattern("/processing multitext 'definition', unhandled element 'i', unhandled element 'b', unhandled element 'i', unhandled element 'b'/", $reportStr);
     }
 
     const liftNotesWithoutSpansV0_13 = <<<EOD
@@ -992,7 +992,7 @@ EOD;
         $this->assertEqual($entry1['lexeme']['qaa-x-qaa']['value'], "black bear");
         $this->assertEqual($entry1['note']['en']['value'], "This is not a brown bear.");
         $this->assertTrue($report->hasError());
-        $this->assertPattern("/processing multitext '', unhandled element 'b', unhandled element 'b'/", $reportStr);
+        $this->assertPattern("/processing multitext 'note', unhandled element 'b', unhandled element 'b'/", $reportStr);
     }
 
     // has correct th-fonipa form in each entry
@@ -1113,8 +1113,10 @@ EOD;
         $this->assertEqual("Noun", $index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['partOfSpeech']['value']);
         $this->assertEqual("khâaw kài thɔ̂ɔt", $index['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value']);
         $this->assertEqual(2, count($report->nodeErrors));
-        $this->assertTrue($report->nodeErrors[0]->hasError(), 'should have bogus tag entry error');
+        $this->assertTrue($report->nodeErrors[0]->hasError(), 'should have phony and bogus tag entry errors');
         $this->assertPattern("/unhandled element 'bogus'/", $reportStr);
+        $this->assertPattern("/processing multitext 'lexical-unit', unhandled element 'phony'/", $reportStr);
+        $this->assertNoPattern("/unhandled element 'translation'/", $reportStr);
         $this->assertTrue($report->nodeErrors[0]->currentSubnodeError()->currentSubnodeError()->hasError(), 'should have rubbish tag example error');
         $this->assertPattern("/unhandled element 'rubbish'/", $report->nodeErrors[0]->currentSubnodeError()->currentSubnodeError()->toString());
         $this->assertPattern("/unhandled element 'rubbish'/", $reportStr);
