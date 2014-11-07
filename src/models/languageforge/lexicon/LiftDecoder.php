@@ -232,10 +232,25 @@ class LiftDecoder
     {
         $example = new Example($sxeNode['id']);
         $this->pushSubnodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['id']);
+
+        // create copy with only form elements to use with readMultiText as unhandled elements are reported here
+        $formsSxeNode = clone $sxeNode;
+        $formsDomNode = dom_import_simplexml($formsSxeNode);
+        $nodesToRemove = array();
+        foreach ($formsDomNode->childNodes as $child) {
+            if ($child->nodeType === XML_ELEMENT_NODE and $child->nodeName !== 'form') {
+                    $nodesToRemove[] = $child;
+            }
+        }
+        foreach ($nodesToRemove as $node) {
+            $formsDomNode->removeChild($node);
+        }
+        unset($nodesToRemove); // so nodes can be garbage-collected
+
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
             	case 'form':
-                    $example->sentence = $this->readMultiText($sxeNode, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems);
+                    $example->sentence = $this->readMultiText($formsSxeNode, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems);
             	    break;
                 case 'translation':
                     $example->translation = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems);
@@ -258,18 +273,22 @@ class LiftDecoder
     public function readMultiText($sxeNode, $inputSystems = null)
     {
         $multiText = new MultiText();
-        $this->pushSubnodeError(LiftImportNodeError::MULTITEXT, '');
-        if (isset($sxeNode->form)) {
-            foreach ($sxeNode->form as $form) {
-                $inputSystemTag = (string) $form['lang'];
-                $multiText->form($inputSystemTag, $this->sanitizeSpans(dom_import_simplexml($form->text)));
+        $this->pushSubnodeError(LiftImportNodeError::MULTITEXT, $sxeNode->getName());
+        foreach ($sxeNode as $element) {
+            switch ($element->getName()) {
+            	case 'form':
+            	    $inputSystemTag = (string) $element['lang'];
+            	    $multiText->form($inputSystemTag, $this->sanitizeSpans(dom_import_simplexml($element->text)));
 
-                $this->projectModel->addInputSystem($inputSystemTag);
-                // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
-                if (isset($inputSystems)) {
-                    // i.e. $inputSystems->ensureFieldHasInputSystem($inputSystemTag);
-                    $inputSystems->value($inputSystemTag);
-                }
+            	    $this->projectModel->addInputSystem($inputSystemTag);
+            	    // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
+            	    if (isset($inputSystems)) {
+            	        // i.e. $inputSystems->ensureFieldHasInputSystem($inputSystemTag);
+            	        $inputSystems->value($inputSystemTag);
+            	    }
+            	    break;
+        	    default:
+        	        $this->currentNodeError()->addUnhandledElement($element->getName());
             }
         }
         array_pop($this->nodeErrors);
