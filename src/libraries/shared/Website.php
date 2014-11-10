@@ -243,6 +243,12 @@ class Website
         $w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
         $sites['scriptureforge.local'] = $w;
 
+        $w = new Website('e2etest.scriptureforge.local', self::SCRIPTUREFORGE);
+        $w->name = 'Scripture Forge';
+        $w->ssl = true;
+        $w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
+        $sites['e2etest.scriptureforge.local'] = $w;
+
         $w = new Website('jamaicanpsalms.scriptureforge.local', self::SCRIPTUREFORGE);
         $w->name = 'The Jamaican Psalms Project';
         $w->ssl = true;
