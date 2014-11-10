@@ -245,7 +245,7 @@ class Website
 
         $w = new Website('e2etest.scriptureforge.local', self::SCRIPTUREFORGE);
         $w->name = 'Scripture Forge';
-        $w->ssl = true;
+        $w->ssl = false;
         $w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
         $sites['e2etest.scriptureforge.local'] = $w;
 
