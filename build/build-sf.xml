@@ -258,7 +258,7 @@
 			<arg value="node_modules/protractor/bin/protractor" />
 			<arg value="${e2etest.protractor.conf}" />
 			<arg value="--baseUrl" />
-			<arg value="${e2etest.webserver.host}" />
+			<arg value="http://${e2etest.webserver.host}" />
 			<arg value="--seleniumAddress" />
 			<arg value="http://${e2etest.selenium.server.host}:${e2etest.selenium.server.port}/wd/hub" />
 		</exec>
