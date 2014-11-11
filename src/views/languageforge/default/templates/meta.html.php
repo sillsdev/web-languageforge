@@ -2,6 +2,7 @@
 		<title><?php echo $controller->website->name; ?></title>
 
 		<link rel="stylesheet" href="/css/shared/bootstrap.css" />
+		<link rel="stylesheet" href="/css/shared/bootstrap-theme.css" />
 		<link rel="stylesheet" href="/css/shared/animate.css" />
 		<?php if (isset($cssFiles)): ?>
 		<?php foreach($cssFiles as $filename): ?>
