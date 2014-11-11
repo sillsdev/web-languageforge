@@ -1,12 +1,34 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="semDomAppContainer">
-
-    <div style="margin-top:100px">
-        <p>Hello "semdomtrans" world!</p>
-		<ul>
-	    <li ng-repeat="term in terms">
-	      <span>{{term.source}}</span>
-	      <p>{{term.translation}}</p>
-	    </li>
-	  </ul>
-  </div>
+	<div style="margin-top:100px; height: 500px" class="container-fluid">
+	    <div class="row" style="border-bottom:solid black 1px">
+		    <div class="span8" style="width: 200px; height: 50px; margin:0 auto">  
+				<ul class="nav nav-pills">  
+					<li class="active"> <a href="#">Terms</a>   </li>     
+					<li><a href="#">Question</a></li>
+				</ul>  
+			</div>  
+		</div>
+		<div class="row">
+		  <div class="col-md-2" style="border-right:solid black 1px">
+		    <!--Sidebar content-->
+		    Search: <input ng-model="query">
+		    Sort by:
+		    <div style="overflow:scroll; height:400px">
+			    <ul>
+			      <li ng-repeat="term in terms| filter:query" class="thumbnail">
+			        <p> {{term.source}} </p>
+			      </li>
+			    </ul>
+		    </div>
+		
+		  </div>
+		  <div style="height:400px" class="col-md-10">
+		    Source: <input ng-model="currentTerm.source">
+		    <br />
+			Translation: <input ng-model="currentTerm.translation">
+			<br />
+			Comments: <input ng-model="currentTerm.comments">		
+		  </div>
+		</div>
+	</div>
 </div>
