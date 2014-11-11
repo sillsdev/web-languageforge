@@ -1,15 +1,38 @@
 'use strict';
 
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.comment', 'ngAnimate', 'palaso.ui.notice'])
+angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice'])
 // DBE controller
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'modalService', 'silNoticeService',
 function($scope, userService, sessionService, modal, notice) {
 	$scope.terms = [
 	                 {'source': 'Planet',
-	                  'translation': ''},
+	                  'translation': 'Planeta',
+	                  'comments': 'This translation may not be true in every context'},
 	                 {'source': 'Earth',
-	                  'translation': ''},
-	                 {'source': 'Moon™',
-	                  'translation': ''}
+	                  'translation': '',
+	                  'comments': 'Please double check'},
+	                 {'source': 'Moon',
+	                  'translation': '',
+	                  'comments': ''},
+	                  {'source': 'Planet',
+	                  'translation': 'Planeta',
+	                  'comments': 'This translation may not be true in every context'},
+	                 {'source': 'Earth',
+	                  'translation': '',
+	                  'comments': 'Please double check'},
+	                 {'source': 'Moon',
+	                  'translation': '',
+	                  'comments': ''},
+	                  {'source': 'Planet',
+	                  'translation': 'Planeta',
+	                  'comments': 'This translation may not be true in every context'},
+	                 {'source': 'Earth',
+	                  'translation': '',
+	                  'comments': 'Please double check'},
+	                 {'source': 'Moon',
+	                  'translation': '',
+	                  'comments': ''},
+	                  
 	               ];
+	$scope.currentTerm = {'source': 'Planet',  'translation': 'Planeta', 'comments': 'This translation may not be true in every context'}
 }]);

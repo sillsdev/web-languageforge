@@ -4,7 +4,8 @@ angular.module('semdomtrans',
   [
     'ngRoute',
     'bellows.services',
-    'bellows.filters'
+    'bellows.filters',
+    'dbe'
   ])
   .config(['$routeProvider', function($routeProvider) {
 
@@ -18,7 +19,8 @@ angular.module('semdomtrans',
 	$routeProvider.when(
         '/edit',
             {
-                templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html'
+                templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html',
+                controller: 'editCtrl'
 	    }
 	);
     $routeProvider.when(
