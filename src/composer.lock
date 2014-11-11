@@ -1,10 +1,9 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
-        "This file is @generated automatically"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "50be0e6413ff8f1d64e2b37a0599361f",
+    "hash": "fd4f26744c06b89b4fadb4fcaba36edc",
     "packages": [
         {
             "name": "ocramius/lazy-property",
@@ -119,12 +118,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig-extensions.git",
-                "reference": "b06ba18ad98c012a0015cd63cc5b8b00480fc198"
+                "reference": "8cf4b9fe04077bd54fc73f4fde83347040c3b8cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/b06ba18ad98c012a0015cd63cc5b8b00480fc198",
-                "reference": "b06ba18ad98c012a0015cd63cc5b8b00480fc198",
+                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/8cf4b9fe04077bd54fc73f4fde83347040c3b8cd",
+                "reference": "8cf4b9fe04077bd54fc73f4fde83347040c3b8cd",
                 "shasum": ""
             },
             "require": {
@@ -139,7 +138,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1.x-dev"
+                    "dev-master": "1.2.x-dev"
                 }
             },
             "autoload": {
@@ -163,7 +162,7 @@
                 "i18n",
                 "text"
             ],
-            "time": "2014-10-22 06:01:14"
+            "time": "2014-10-30 14:30:03"
         },
         {
             "name": "twig/twig",
@@ -223,12 +222,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php.git",
-                "reference": "a876df2cd5bc873beb450a56e6e410680a5b4e4c"
+                "reference": "2ec5b2398128f8d38d23168d0c199c5679402edf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/a876df2cd5bc873beb450a56e6e410680a5b4e4c",
-                "reference": "a876df2cd5bc873beb450a56e6e410680a5b4e4c",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/2ec5b2398128f8d38d23168d0c199c5679402edf",
+                "reference": "2ec5b2398128f8d38d23168d0c199c5679402edf",
                 "shasum": ""
             },
             "require": {
@@ -265,7 +264,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2014-07-15 17:50:20"
+            "time": "2014-10-31 21:39:21"
         }
     ],
     "packages-dev": [
@@ -1121,7 +1120,9 @@
             "time": "2014-10-01 05:50:18"
         }
     ],
-    "aliases": [],
+    "aliases": [
+
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "twig/extensions": 20,
@@ -1130,7 +1131,10 @@
         "simpletest/simpletest": 20,
         "sillsdev/web-php-utilities": 20
     },
-    "prefer-stable": false,
-    "platform": [],
-    "platform-dev": []
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
 }
