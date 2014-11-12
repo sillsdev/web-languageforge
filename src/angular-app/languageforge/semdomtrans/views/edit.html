@@ -12,22 +12,33 @@
 		  <div class="col-md-2" style="border-right:solid black 1px">
 		    <!--Sidebar content-->
 		    Search: <input ng-model="query">
-		    Sort by:
-		    <div style="overflow:scroll; height:400px">
+		    <div style="overflow-y:scroll; height:400px">
 			    <ul>
-			      <li ng-repeat="term in terms| filter:query" class="thumbnail">
-			        <p> {{term.source}} </p>
+			      <li ng-repeat="term in terms| filter:query" ng-click="changeTerm(term.key)" class="thumbnail">
+			        <p> {{term.key}}: {{term.source}} </p>
 			      </li>
 			    </ul>
 		    </div>
 		
 		  </div>
-		  <div style="height:400px" class="col-md-10">
-		    Source: <input ng-model="currentTerm.source">
-		    <br />
-			Translation: <input ng-model="currentTerm.translation">
-			<br />
-			Comments: <input ng-model="currentTerm.comments">		
+		  <div style="height:400px; text-align: center;" class="col-md-10">
+		  	<div style="vertical-align: middle; display:inline-block">
+			    <table>
+			    <tr>
+				    <td> Source: </td>
+				    <td> <input ng-model="currentTerm.source"> </td>
+			    </tr>
+			     <tr>
+				    <td> Translation: </td>
+				    <td> <input ng-model="currentTerm.translation"> </td>
+				    
+			    </tr>
+			    <tr> 
+			    	<td> Comments: </td>
+			    	<td> <input ng-model="currentTerm.comments">	</td>
+			    </tr> 
+				</table>	
+			</div>
 		  </div>
 		</div>
 	</div>
