@@ -11,6 +11,27 @@ require_once TestPath . 'common/MongoTestEnvironment.php';
 class TestLiftImportZip extends UnitTestCase
 {
 
+    public function __construct() {
+        $this->environ = new LexiconMongoTestEnvironment();
+        $this->environ->clean();
+        parent::__construct();
+    }
+
+    /**
+     * Local store of mock test environment
+     *
+     * @var LexiconMongoTestEnvironment
+     */
+    private $environ;
+
+    /**
+     * Cleanup test lift files
+     */
+    public function tearDown()
+    {
+        $this->environ->clean();
+    }
+
     private static function indexByGuid($entries)
     {
         $index = array();
@@ -22,12 +43,9 @@ class TestLiftImportZip extends UnitTestCase
 
     public function testLiftImportMerge_ZipFile_NoException()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $zipFilePath = dirname(__FILE__) . '/../../common/TestLexProject.zip';
-        $uploadPath = $e->uploadFile($zipFilePath, 'TestLexProject.zip');
+        $zipFilePath = TestPath .  'common/TestLexProject.zip';
+        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLexProject.zip');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         LiftImport::importZip($uploadPath, $project);
 
@@ -35,39 +53,37 @@ class TestLiftImportZip extends UnitTestCase
         $entryList->read();
         $entries = $entryList->entries;
         $this->assertEqual($entryList->count, 2);
+
+        $this->environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 
     public function testLiftImportMerge_ZipFile_WrongFormat_Exception()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $zipFilePath = dirname(__FILE__) . '/../../common/TestLexProject.zip';
-        $uploadPath = $e->uploadFile($zipFilePath, 'TestLexProject.tar.gz');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $zipFilePath = TestPath . 'common/TestLexProject.zip';
+        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLexProject.tar.gz');
         $otherFile = str_replace('.zip', '.tar.gz', $uploadPath);
         copy($uploadPath, $otherFile);
 
         $this->expectException(new \Exception("Sorry, the .tar.gz format isn't allowed"));
-        $e->inhibitErrorDisplay();
+        $this->environ->inhibitErrorDisplay();
         LiftImport::importZip($otherFile, $project);
-        $e->restoreErrorDisplay();
+        $this->environ->restoreErrorDisplay();
         unlink($otherFile);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
         $this->assertEqual($entryList->count, 0);
+
+        $this->environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 
     public function testLiftImportMerge_ZipFile_CorrectValues()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $zipFilePath = dirname(__FILE__) . '/../../common/TestLexProject.zip';
-        $uploadPath = $e->uploadFile($zipFilePath, 'TestLexProject.zip');
+        $zipFilePath = TestPath . 'common/TestLexProject.zip';
+        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLexProject.zip');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         LiftImport::importZip($uploadPath, $project);
 
@@ -95,16 +111,15 @@ class TestLiftImportZip extends UnitTestCase
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
+
+        $this->environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 
     public function testLiftImportMerge_ZipFileWithDir_CorrectValues()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $zipFilePath = dirname(__FILE__) . '/../../common/TestLexProjectWithDir.zip';
-        $uploadPath = $e->uploadFile($zipFilePath, 'TestLexProjectWithDir.zip');
+        $zipFilePath = TestPath . 'common/TestLexProjectWithDir.zip';
+        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLexProjectWithDir.zip');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         LiftImport::importZip($uploadPath, $project);
 
@@ -132,6 +147,8 @@ class TestLiftImportZip extends UnitTestCase
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
+
+        $this->environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 
 }
