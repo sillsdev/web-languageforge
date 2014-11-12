@@ -294,7 +294,7 @@ class LiftImport
      */
     public static function importZip($zipFilePath, $projectModel)
     {
-        $assetDir = $projectModel->getAssetsPath();
+        $assetDir = $projectModel->getAssetsFolderPath();
         $extractDest = $assetDir . '/initialUpload_' . mt_rand();
         $retCode = LiftImport::extractZip($zipFilePath, $extractDest);
         if ($retCode) {
