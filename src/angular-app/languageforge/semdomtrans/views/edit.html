@@ -4,7 +4,7 @@
 		    <div class="span8" style="width: 200px; height: 50px; margin:0 auto">  
 				<ul class="nav nav-pills">  
 					<li class="active"> <a href="#">Terms</a>   </li>     
-					<li><a href="#">Question</a></li>
+					<li><a href="#">Questions</a></li>
 				</ul>  
 			</div>  
 		</div>
@@ -15,7 +15,7 @@
 		    <div style="overflow-y:scroll; height:400px">
 			    <ul>
 			      <li ng-repeat="term in terms| filter:query:strict" ng-click="changeTerm(term.key)" class="thumbnail">
-			        <p> {{term.key}}: {{term.source}} </p>
+			        <p ng-class="{selected: (term.key == currentTerm.key)}"> {{term.key}}: {{term.source}} </p>
 			      </li>
 			    </ul>
 		    </div>
