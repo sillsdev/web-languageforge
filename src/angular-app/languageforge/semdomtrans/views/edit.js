@@ -5,34 +5,54 @@ angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimat
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'modalService', 'silNoticeService',
 function($scope, userService, sessionService, modal, notice) {
 	$scope.terms = [
-	                 {'source': 'Planet',
+	                 {
+	                   'key': '1.1',
+	                   'source': 'Planet',
 	                  'translation': 'Planeta',
-	                  'comments': 'This translation may not be true in every context'},
-	                 {'source': 'Earth',
+	                  'comments': 'This translation may not be true in every context'
+	                 },
+	                 {
+	                  'key': '1.2',
+	                  'source': 'Earth',
 	                  'translation': '',
-	                  'comments': 'Please double check'},
-	                 {'source': 'Moon',
+	                  'comments': 'Please double check'
+	                 },
+	                 {
+                	  'key': '1.3',
+	                  'source': 'Moon',
 	                  'translation': '',
-	                  'comments': ''},
-	                  {'source': 'Planet',
-	                  'translation': 'Planeta',
-	                  'comments': 'This translation may not be true in every context'},
-	                 {'source': 'Earth',
-	                  'translation': '',
-	                  'comments': 'Please double check'},
-	                 {'source': 'Moon',
-	                  'translation': '',
-	                  'comments': ''},
-	                  {'source': 'Planet',
-	                  'translation': 'Planeta',
-	                  'comments': 'This translation may not be true in every context'},
-	                 {'source': 'Earth',
-	                  'translation': '',
-	                  'comments': 'Please double check'},
-	                 {'source': 'Moon',
-	                  'translation': '',
-	                  'comments': ''},
+	                  'comments': ''
+	                 }
 	                  
 	               ];
-	$scope.currentTerm = {'source': 'Planet',  'translation': 'Planeta', 'comments': 'This translation may not be true in every context'}
+	$scope.currentTerm = {'source': 'Earth',  'translation': 'Ziemia', 'comments': 'This translation may not be true in every context'}
+
+	$scope.currentQuestion = {
+		   "source": "What are some words associated with this planet?",
+     	   "translation": "",
+    	   "comments": ""
+    }
+	$scope.setOfQuestions = [
+	                           {
+	                        	   "source": "What are some words associated with this planet?",
+	                        	   "translation": "",
+	                        	   "comments": ""
+	                           },
+	                           {
+	                        	   "source": "What are some words associated with the world we live on?",
+	                        	   "translation": "",
+	                        	   "comments": ""
+	                           }
+  ]
+	
+	
+ $scope.changeTerm = function(key) {
+		for (var i = 0; i < $scope.terms.length; i++) {
+			var term = $scope.terms[i];
+		    if (term["key"] == key) {
+		    	$scope.currentTerm = term;
+		    }
+		}
+    }
+	
 }]);
