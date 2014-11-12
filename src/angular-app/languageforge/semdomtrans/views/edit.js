@@ -25,8 +25,7 @@ function($scope, userService, sessionService, modal, notice) {
 	                 }
 	                  
 	               ];
-	$scope.currentTerm = {'source': 'Earth',  'translation': 'Ziemia', 'comments': 'This translation may not be true in every context'}
-
+	$scope.currentTerm = $scope.terms[0]; 
 	$scope.currentQuestion = {
 		   "source": "What are some words associated with this planet?",
      	   "translation": "",
