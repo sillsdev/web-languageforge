@@ -8,6 +8,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     this.editorDto = function(callback) {
     	// jsonRpc.call('semdom_editor_dto', [], callback);
     	var result = {ok: true, data:[]};
+    	result.data = {terms: [], questions: [], config: {}};
     	result.data = [
 	                 {
 	                   'key': '1.1',
