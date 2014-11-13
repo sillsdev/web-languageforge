@@ -15,17 +15,24 @@ function LiftImportCtrl($scope, $upload, notice, lexProjectService, $filter, $lo
     
     // take the first file only
     $scope.upload.file = $files[0];
+    $scope.upload.isLift = (fileExtension($scope.upload.file.name) === 'lift');
   };
 
   $scope.importLift = function importLift() {
-    if ($scope.upload.file['size'] <= ss.fileSizeMax()) {
-      notice.setLoading('Importing LIFT file...');
+    if ($scope.upload.file.size <= ss.fileSizeMax()) {
+      var uploadUrl = '/upload/lf-lexicon/import-lift';
+      if ($scope.upload.isLift) {
+        notice.setLoading('Importing LIFT file...');
+      } else {
+        notice.setLoading('Importing zipped file...');
+        uploadUrl = '/upload/lf-lexicon/import-zip';
+      }
       $scope.upload.importStarted = true;
       $scope.upload.progress = 0;
       $upload.upload({
 
         // upload.php script
-        'url': '/upload/lf-lexicon/import-lift',
+        'url': uploadUrl,
         // 'headers': {'myHeaderKey': 'myHeaderVal'},
         'data': {
           'mergeRule': $scope.upload.mergeRule,
@@ -42,7 +49,7 @@ function LiftImportCtrl($scope, $upload, notice, lexProjectService, $filter, $lo
 
           // reload the config after the import is complete
           ss.refresh(function() {
-            notice.push(notice.SUCCESS, $filter('translate')("LIFT import completed successfully"));
+            notice.push(notice.SUCCESS, $filter('translate')("Import completed successfully"));
             notice.push(notice.INFO, $filter('translate')('Your project was successfully imported.  Carefully review the dictionary configuration below before continuing, especially the input systems and fields tabs'));
             $location.path('/configuration');
           });
@@ -58,10 +65,15 @@ function LiftImportCtrl($scope, $upload, notice, lexProjectService, $filter, $lo
       $scope.upload.progress = 0;
       $scope.upload.file = null;
     }
-
   };
-
-}]).controller('LiftExportCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService', 
-function($scope, userService, ss, notice) {
+  
+  // see http://stackoverflow.com/questions/190852/how-can-i-get-file-extensions-with-javascript
+  function fileExtension(filename) {
+    var a = filename.split('.');
+    if (a.length === 1 || (a[0] === '' && a.length === 2)) {
+      return '';
+    }
+    return a.pop().toLowerCase();
+  };
 
 }]);
