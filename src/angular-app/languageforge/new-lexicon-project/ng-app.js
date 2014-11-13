@@ -377,7 +377,7 @@ angular.module('new-lexicon-project',
       notice.setLoading('Importing ' + $scope.datafile.name + '...');
       $scope.makeFormInvalid("Please wait while " + $scope.datafile.name + " is imported...");
       $scope.upload = $upload.upload({
-        url: '/upload/lf-lexicon/lex-project',
+        url: '/upload/lf-lexicon/import-zip',
         file: $scope.datafile,
         data: {projectId: ($scope.newProject.id || '')}, // Which project to upload new data to
       }).progress(function(evt) {

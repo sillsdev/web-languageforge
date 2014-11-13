@@ -11,19 +11,6 @@ class LiftImport
 {
 
     /**
-     * Convert a DOMNode to an SXE node -- simplexml_import_node() won't actually work
-     * @param unknown $node
-     * @return unknown
-     */
-    public static function domNode_to_sxeNode($node)
-    {
-        $dom = new \DomDocument();
-        $n = $dom->importNode($node, true); // expands the node for that particular guid
-        $sxeNode = simplexml_import_dom($n);
-        return $sxeNode;
-    }
-
-    /**
      *
      * @var LiftImportErrorReport
      */
@@ -49,7 +36,7 @@ class LiftImport
      * @param LexiconProjectModel $projectModel
      * @param LiftMergeRule $mergeRule
      * @param boolean $skipSameModTime
-     * @param string $deleteMatchingEntry
+     * @param boolean $deleteMatchingEntry
      * @return \models\languageforge\lexicon\LiftImport
      */
     public function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
@@ -116,9 +103,6 @@ class LiftImport
                         $range = $liftRanges[$rangeId];
                     } else {
                         // Range was NOT found in referenced .lift-ranges file after parsing it
-//                         $dom = new \DomDocument();
-//                         $n = $dom->importNode($node, true);
-//                         $rangeNode = simplexml_import_dom($n);
                         $rangeNode = LiftImport::domNode_to_sxeNode($node);
                         $range = $liftRangeDecoder->readRange($rangeNode);
                         error_log("Range id '$rangeId' was not found in referenced .lift-ranges file");
@@ -127,20 +111,14 @@ class LiftImport
                 }
                 if ($node->hasChildNodes()) {
                     // Range elements defined in LIFT file override any values defined in .lift-ranges file.
-//                     $dom = new \DomDocument();
-//                     $n = $dom->importNode($node, true);
-//                     $sxeNode = simplexml_import_dom($n);
                     $sxeNode = LiftImport::domNode_to_sxeNode($node);
                     $range = $liftRangeDecoder->readRange($sxeNode, $range);
                     $liftRanges[$rangeId] = $range;
                 }
             }
             if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
-                $element = $reader->expand();
-                $dom = new \DomDocument();
-                $node = $dom->importNode($element, true);
-                $dom->appendChild($node);
-                $sxeNode = simplexml_import_dom($node);
+                $node = $reader->expand();
+                $sxeNode = LiftImport::domNode_to_sxeNode($node);
 
                 $guid = $reader->getAttribute('guid');
                 $existingEntry = $entryList->searchEntriesFor('guid', $guid);
@@ -288,11 +266,16 @@ class LiftImport
     }
 
     /**
+     *
      * @param string $zipFilePath
      * @param LexiconProjectModel $projectModel
+     * @param LiftMergeRule $mergeRule
+     * @param boolean $skipSameModTime
+     * @param boolean $deleteMatchingEntry
      * @throws \Exception
+     * @return string
      */
-    public static function importZip($zipFilePath, $projectModel)
+    public static function importZip($zipFilePath, $projectModel, $mergeRule = LiftMergeRule::IMPORT_WINS, $skipSameModTime = true, $deleteMatchingEntry = false)
     {
         $assetDir = $projectModel->getAssetsFolderPath();
         $extractDest = $assetDir . '/initialUpload_' . mt_rand();
@@ -332,10 +315,7 @@ class LiftImport
 
         // Import first .lift file (only).
         $liftFilePath = $liftFilenames[0];
-        $mergeRule = LiftMergeRule::IMPORT_WINS;
-        $skipSameModTime = true;
-        $deleteMatchingEntry = true;
-        LiftImport::get()->merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+        $importer = LiftImport::get()->merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
         if ($report->hasError()) {
             error_log($report->toString() . "\n");
             return $report->toString();
@@ -408,6 +388,34 @@ class LiftImport
     }
 
     /**
+     * Convert a DOMNode to an SXE node -- simplexml_import_node() won't actually work
+     * @param DOMNode $node
+     * @return SimpleXMLElement
+     */
+    public static function domNode_to_sxeNode($node)
+    {
+        $dom = new \DomDocument();
+        $n = $dom->importNode($node, true);
+        $sxeNode = simplexml_import_dom($n);
+        $dom->appendChild($n);
+        return $sxeNode;
+    }
+
+    /**
+     * @param $arr array - list to append to
+     * @param $entryModel LexEntryModel
+     */
+    private static function addPartOfSpeechValuesToList(&$arr, $entryModel)
+    {
+        foreach ($entryModel->senses as $sense) {
+            $pos = $sense->partOfSpeech->value;
+            if (!in_array($pos, $arr)) {
+                array_push($arr, $pos);
+            }
+        }
+    }
+
+    /**
      * validate the lift data
      * @param string $xml
      * @throws \Exception
@@ -438,19 +446,5 @@ class LiftImport
         restore_error_handler();
 
         return true;
-    }
-
-    /**
-     * @param $arr array - list to append to
-     * @param $entryModel LexEntryModel
-     */
-    private static function addPartOfSpeechValuesToList(&$arr, $entryModel)
-    {
-        foreach ($entryModel->senses as $sense) {
-            $pos = $sense->partOfSpeech->value;
-            if (!in_array($pos, $arr)) {
-                array_push($arr, $pos);
-            }
-        }
     }
 }

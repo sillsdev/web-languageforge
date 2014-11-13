@@ -283,7 +283,7 @@ class LexUploadCommands
      */
     public static function uploadProjectZip($projectId, $mediaType, $tmpFilePath)
     {
-        if ($mediaType != 'lex-project') {
+        if ($mediaType != 'import-zip') {
             throw new \Exception("Unsupported upload type.");
         }
         if (! $tmpFilePath) {
@@ -292,6 +292,18 @@ class LexUploadCommands
 
         $file = $_FILES['file'];
         $fileName = $file['name'];
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        if (array_key_exists('mergeRule', $_POST)) {
+            $mergeRule = $_POST['mergeRule'];
+        }
+        $skipSameModTime = true;
+        if (array_key_exists('skipSameModTime', $_POST)) {
+            $skipSameModTime = $_POST['skipSameModTime'];
+        }
+        $deleteMatchingEntry = false;
+        if (array_key_exists('deleteMatchingEntry', $_POST)) {
+            $deleteMatchingEntry = $_POST['deleteMatchingEntry'];
+        }
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileType = finfo_file($finfo, $tmpFilePath);
