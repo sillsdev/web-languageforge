@@ -674,6 +674,15 @@ class sf
         $response = LexUploadCommands::importLiftFile($this->_projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
+    
+    
+    /*
+     * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
+     */
+    public function semdom_editor_dto() {
+    	
+    }
+    
 
     // ---------------------------------------------------------------
     // Private Utility Functions
