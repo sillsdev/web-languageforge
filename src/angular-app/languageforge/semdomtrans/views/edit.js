@@ -1,30 +1,15 @@
 'use strict';
 
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice'])
+angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services'])
 // DBE controller
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'modalService', 'silNoticeService',
-function($scope, userService, sessionService, modal, notice) {
-	$scope.terms = [
-	                 {
-	                   'key': '1.1',
-	                   'source': 'Planet',
-	                  'translation': 'Planeta',
-	                  'comments': 'This translation may not be true in every context'
-	                 },
-	                 {
-	                  'key': '1.2',
-	                  'source': 'Earth',
-	                  'translation': '',
-	                  'comments': 'Please double check'
-	                 },
-	                 {
-                	  'key': '1.3',
-	                  'source': 'Moon',
-	                  'translation': '',
-	                  'comments': ''
-	                 }
-	                  
-	               ];
+.controller('editCtrl', ['$scope', 'semdomtransService', 'sessionService', 'modalService', 'silNoticeService',
+function($scope, semdomApi, sessionService, modal, notice) {
+	$scope.terms = [];
+	semdomApi.editorDto(function(result) {
+		if (result.ok) {
+			$scope.terms = result.data;
+		}
+	});
 	$scope.currentTerm = $scope.terms[0]; 
 	$scope.currentQuestion = {
 		   "source": "What are some words associated with this planet?",
