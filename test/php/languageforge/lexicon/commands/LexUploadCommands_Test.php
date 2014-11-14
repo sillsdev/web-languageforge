@@ -127,7 +127,7 @@ class TestLexUploadCommands extends UnitTestCase
         $environ->restoreErrorDisplay();
     }
 
-    public function testUploadProjectZip_ZipFile_UploadAllowed()
+    public function testImportProjectZip_ZipFile_UploadAllowed()
     {
         $environ = new LexiconMongoTestEnvironment();
         $environ->clean();
@@ -137,7 +137,7 @@ class TestLexUploadCommands extends UnitTestCase
         $fileName = 'TestLexProject.zip';
         $tmpFilePath = $environ->uploadFile(TestPath . "common/$fileName", $fileName);
 
-        $response = LexUploadCommands::uploadProjectZip($projectId, 'import-zip', $tmpFilePath);
+        $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
 
         $assetsFolderPath = $project->getAssetsFolderPath();
         $filePath = $assetsFolderPath . '/' . $response->data->fileName;
@@ -151,7 +151,7 @@ class TestLexUploadCommands extends UnitTestCase
         $environ->cleanupTestFiles($assetsFolderPath);
     }
 
-    public function testUploadProjectZip_JpgFile_UploadDisallowed()
+    public function testImportProjectZip_JpgFile_UploadDisallowed()
     {
         $environ = new LexiconMongoTestEnvironment();
         $environ->clean();
@@ -160,7 +160,7 @@ class TestLexUploadCommands extends UnitTestCase
         $projectId = $project->id->asString();
         $tmpFilePath = $environ->uploadFile(TestPath . 'common/TestImage.jpg', 'TestLexProject.zip');
 
-        $response = LexUploadCommands::uploadProjectZip($projectId, 'import-zip', $tmpFilePath);
+        $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
 
         $this->assertFalse($response->result, 'Import should fail');
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
@@ -168,7 +168,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         $tmpFilePath = $environ->uploadFile(TestPath . 'common/TestLexProject.zip', 'TestImage.jpg');
 
-        $response = LexUploadCommands::uploadProjectZip($projectId, 'import-zip', $tmpFilePath);
+        $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
 
         $this->assertFalse($response->result, 'Import should fail');
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');

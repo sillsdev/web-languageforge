@@ -86,7 +86,7 @@ class LiftImport
                         $range = $liftRanges[$rangeId];
                     } else {
                         // Range was NOT found in referenced .lift-ranges file
-                        $rangeNode = LiftImport::domNode_to_sxeNode($node);
+                        $rangeNode = self::domNode_to_sxeNode($node);
                         $range = $liftRangeDecoder->readRange($rangeNode);
                         error_log("Range id '$rangeId' was not found in referenced .lift-ranges file");
                         // TODO: Record an error for later reporting, instead of just error_log()ging it
@@ -103,7 +103,7 @@ class LiftImport
                         $range = $liftRanges[$rangeId];
                     } else {
                         // Range was NOT found in referenced .lift-ranges file after parsing it
-                        $rangeNode = LiftImport::domNode_to_sxeNode($node);
+                        $rangeNode = self::domNode_to_sxeNode($node);
                         $range = $liftRangeDecoder->readRange($rangeNode);
                         error_log("Range id '$rangeId' was not found in referenced .lift-ranges file");
                         // TODO: Record an error for later reporting, instead of just error_log()ging it
@@ -111,14 +111,14 @@ class LiftImport
                 }
                 if ($node->hasChildNodes()) {
                     // Range elements defined in LIFT file override any values defined in .lift-ranges file.
-                    $sxeNode = LiftImport::domNode_to_sxeNode($node);
+                    $sxeNode = self::domNode_to_sxeNode($node);
                     $range = $liftRangeDecoder->readRange($sxeNode, $range);
                     $liftRanges[$rangeId] = $range;
                 }
             }
             if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
                 $node = $reader->expand();
-                $sxeNode = LiftImport::domNode_to_sxeNode($node);
+                $sxeNode = self::domNode_to_sxeNode($node);
 
                 $guid = $reader->getAttribute('guid');
                 $existingEntry = $entryList->searchEntriesFor('guid', $guid);
@@ -162,23 +162,23 @@ class LiftImport
         if ($initialImport) {
             if (array_key_exists('grammatical-info', $liftRanges)) {
                 $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS];
-                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['grammatical-info']);
+                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['grammatical-info']);
             }
             if (array_key_exists('anthro-code', $liftRanges)) {
                 $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES];
-                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['anthro-code']);
+                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['anthro-code']);
             }
             if (array_key_exists('domain-type', $liftRanges)) {
                 $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS];
-                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['domain-type']);
+                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['domain-type']);
             }
             if (array_key_exists('semantic-domain-ddp4', $liftRanges)) {
                 $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM];
-                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['semantic-domain-ddp4']);
+                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['semantic-domain-ddp4']);
             }
             if (array_key_exists('status', $liftRanges)) {
                 $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS];
-                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['status']);
+                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['status']);
             }
             // TODO: Add any other LIFT range imports that make sense. 2014-10 RM
         }
@@ -275,11 +275,11 @@ class LiftImport
      * @throws \Exception
      * @return string
      */
-    public static function importZip($zipFilePath, $projectModel, $mergeRule = LiftMergeRule::IMPORT_WINS, $skipSameModTime = true, $deleteMatchingEntry = false)
+    public static function importZip($zipFilePath, $projectModel, $mergeRule = LiftMergeRule::IMPORT_WINS, $skipSameModTime = false, $deleteMatchingEntry = false)
     {
         $assetDir = $projectModel->getAssetsFolderPath();
         $extractDest = $assetDir . '/initialUpload_' . mt_rand();
-        $retCode = LiftImport::extractZip($zipFilePath, $extractDest);
+        $retCode = self::extractZip($zipFilePath, $extractDest);
         if ($retCode) {
             throw new \Exception("Error extracting uploaded file");
             // TODO: Capture output from extractarchive.sh if retcode != 0
@@ -315,7 +315,7 @@ class LiftImport
 
         // Import first .lift file (only).
         $liftFilePath = $liftFilenames[0];
-        $importer = LiftImport::get()->merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+        $importer = self::get()->merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
         if ($report->hasError()) {
             error_log($report->toString() . "\n");
             return $report->toString();
@@ -389,10 +389,11 @@ class LiftImport
 
     /**
      * Convert a DOMNode to an SXE node -- simplexml_import_node() won't actually work
+     *
      * @param DOMNode $node
      * @return SimpleXMLElement
      */
-    public static function domNode_to_sxeNode($node)
+    private static function domNode_to_sxeNode($node)
     {
         $dom = new \DomDocument();
         $n = $dom->importNode($node, true);
