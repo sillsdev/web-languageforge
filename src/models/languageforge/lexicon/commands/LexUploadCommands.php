@@ -273,7 +273,7 @@ class LexUploadCommands
     }
 
     /**
-     * Upload an initial project zip file
+     * Import a project zip file
      *
      * @param string $projectId
      * @param string $mediaType
@@ -281,7 +281,7 @@ class LexUploadCommands
      * @throws \Exception
      * @return \models\shared\commands\UploadResponse
      */
-    public static function uploadProjectZip($projectId, $mediaType, $tmpFilePath)
+    public static function importProjectZip($projectId, $mediaType, $tmpFilePath)
     {
         if ($mediaType != 'import-zip') {
             throw new \Exception("Unsupported upload type.");
@@ -296,7 +296,7 @@ class LexUploadCommands
         if (array_key_exists('mergeRule', $_POST)) {
             $mergeRule = $_POST['mergeRule'];
         }
-        $skipSameModTime = true;
+        $skipSameModTime = false;
         if (array_key_exists('skipSameModTime', $_POST)) {
             $skipSameModTime = $_POST['skipSameModTime'];
         }
@@ -379,7 +379,7 @@ class LexUploadCommands
      * @param string $mediaType
      * @param string $tmpFilePath
      */
-    public static function mockUploadProjectZip($projectId, $mediaType, $tmpFilePath)
+    public static function mockImportProjectZip($projectId, $mediaType, $tmpFilePath)
     {
         $file = $_FILES['file'];
         $fileName = $file['name'];
