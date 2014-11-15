@@ -1,16 +1,17 @@
 <?php
 namespace models\languageforge\lexicon\commands;
 
-use models\shared\commands\UploadResponse;
-use models\shared\commands\MediaResult;
+use Palaso\Utilities\FileUtilities;
 use models\shared\commands\ErrorResult;
+use models\shared\commands\ImportResult;
+use models\shared\commands\MediaResult;
+use models\shared\commands\UploadResponse;
 use models\languageforge\lexicon\LexEntryModel;
 use models\languageforge\lexicon\LexEntryListModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LiftImport;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\languageforge\LfProjectModel;
-use Palaso\Utilities\FileUtilities;
 
 class LexUploadCommands
 {
@@ -339,14 +340,14 @@ class LexUploadCommands
 
             // construct server response
             if ($moveOk && $tmpFilePath) {
-                $importErrors = LiftImport::importZip($filePath, $project);
+                $importer = LiftImport::get()->importZip($filePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
                 $entryList = new LexEntryListModel($project);
                 $entryList->read();
                 $entriesImported = $entryList->count;
-                $data = new MediaResult();
+                $data = new ImportResult();
                 $data->path = $project->getAssetsPath();
                 $data->fileName = $fileName;
-                $data->importErrors = $importErrors;
+                $data->importErrors = $importer->getReport()->toString();
                 $data->entriesImported = $entriesImported;
                 $response->result = true;
             } else {
@@ -385,7 +386,7 @@ class LexUploadCommands
         $fileName = $file['name'];
 
         $response = new UploadResponse();
-        $data = new MediaResult();
+        $data = new ImportResult();
         $data->path = $tmpFilePath;
         $data->fileName = $fileName;
         $data->importErrors = '';

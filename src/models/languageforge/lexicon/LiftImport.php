@@ -12,7 +12,7 @@ class LiftImport
 
     /**
      *
-     * @var LiftImportErrorReport
+     * @var ImportErrorReport
      */
     private $report;
 
@@ -68,7 +68,7 @@ class LiftImport
         $liftFileDir = dirname($liftFilePath);
 
         $this->liftDecoder = new LiftDecoder($projectModel);
-        $this->report = new LiftImportErrorReport();
+        $this->report = new ImportErrorReport();
         $liftRangeDecoder = new LiftRangeDecoder($projectModel);
         $liftRangeFiles = array(); // Keys: filenames. Values: parsed files.
         $liftRanges = array(); // Keys: @id attributes of <range> elements. Values: parsed <range> elements.
@@ -205,7 +205,7 @@ class LiftImport
     /**
      * Read LIFT entry with error reporting
      *
-     * @param LiftImportErrorReport $report
+     * @param ImportErrorReport $report
      * @param LiftDecoder $liftDecoder
      * @param SimpleXMLElement $sxeNode
      * @param LexEntryModel $entry
@@ -227,7 +227,7 @@ class LiftImport
     /**
      * Get LIFT import error report
      *
-     * @return \models\languageforge\lexicon\LiftImportErrorReport
+     * @return \models\languageforge\lexicon\ImportErrorReport
      */
     public function getReport()
     {
@@ -275,11 +275,11 @@ class LiftImport
      * @throws \Exception
      * @return string
      */
-    public static function importZip($zipFilePath, $projectModel, $mergeRule = LiftMergeRule::IMPORT_WINS, $skipSameModTime = false, $deleteMatchingEntry = false)
+    public function importZip($zipFilePath, $projectModel, $mergeRule = LiftMergeRule::IMPORT_WINS, $skipSameModTime = false, $deleteMatchingEntry = false)
     {
-        $assetDir = $projectModel->getAssetsFolderPath();
-        $extractDest = $assetDir . '/initialUpload_' . mt_rand();
-        $retCode = self::extractZip($zipFilePath, $extractDest);
+        $assetsFolderPath = $projectModel->getAssetsFolderPath();
+        $extractFolderPath = $assetsFolderPath . '/initialUpload_' . mt_rand();
+        $retCode = self::extractZip($zipFilePath, $extractFolderPath);
         if ($retCode) {
             throw new \Exception("Error extracting uploaded file");
             // TODO: Capture output from extractarchive.sh if retcode != 0
@@ -288,7 +288,7 @@ class LiftImport
         $report = new ZipImportErrorReport(ZipImportErrorReport::FILE, basename($zipFilePath));
 
         // Now find the .lift file in the uploaded zip
-        $dirIter = new \RecursiveDirectoryIterator($extractDest);
+        $dirIter = new \RecursiveDirectoryIterator($extractFolderPath);
         $iterIter = new \RecursiveIteratorIterator($dirIter);
         $liftIter = new \RegexIterator($iterIter, '/\.lift$/', \RegexIterator::MATCH);
         $liftFilenames = array();
@@ -305,23 +305,25 @@ class LiftImport
         }
 
         // Import assets: pictures, audio, and other files
-        foreach (array("pictures", "audio", "others") as $dirName) {
-            $assetPath = $assetDir . "/" . $dirName;
-            $importPath = $extractDest . "/" . $dirName;
+        foreach (array("pictures", "audio", "others") as $folderName) {
+            $assetsPath = $assetsFolderPath . "/" . $folderName;
+            $importPath = $extractFolderPath . "/" . $folderName;
             if (file_exists($importPath) && is_dir($importPath)) {
-                FileUtilities::copyDirTree($importPath, $assetPath);
+                FileUtilities::copyDirTree($importPath, $assetsPath);
             }
         }
 
         // Import first .lift file (only).
         $liftFilePath = $liftFilenames[0];
-        $importer = self::get()->merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+        $this->merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+
         if ($report->hasError()) {
             error_log($report->toString() . "\n");
-            return $report->toString();
-        } else {
-            return '';
         }
+        $report->liftImportErrorReport = $this->report;
+        $this->report = $report;
+
+        return $this;
     }
 
     /**
