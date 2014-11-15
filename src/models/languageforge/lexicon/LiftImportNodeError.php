@@ -1,7 +1,7 @@
 <?php
 namespace models\languageforge\lexicon;
 
-class LiftImportNodeError
+class LiftImportNodeError extends ImportNodeError
 {
 
     const ENTRY = 'entry';
@@ -11,56 +11,9 @@ class LiftImportNodeError
 
     /**
      *
-     * @var string guid of lift entry, sense lift id, or attribute name
-     */
-    private $identifier;
-
-    /**
-     *
-     * @var array of errors
-     */
-    private $errors;
-
-    /**
-     *
      * @var array <LiftImportNodeError>
      */
-    private $subnodeErrors;
-
-    /**
-     * @var string
-     */
-    private $type;
-
-    public function __construct($type, $identifier)
-    {
-        $this->type = $type;
-        $this->identifier = $identifier;
-        $this->errors = array();
-        $this->subnodeErrors = array();
-    }
-
-    public function hasError()
-    {
-        return count($this->errors) > 0 ;
-    }
-
-    public function hasErrors()
-    {
-        $hasErrors = $this->hasError();
-        foreach ($this->subnodeErrors as $subnodeError) {
-            $hasErrors |= $subnodeError->hasErrors();
-        }
-        return $hasErrors;
-    }
-
-    public function addUnhandledElement($elementName)
-    {
-        $this->errors[] = array(
-            'error' => 'UnhandledElement',
-            'element' => $elementName
-        );
-    }
+    protected $subnodeErrors;
 
     public function addUnhandledField($typeName)
     {
@@ -95,15 +48,7 @@ class LiftImportNodeError
         );
     }
 
-    public function addSubnodeError($subnodeError) {
-        $this->subnodeErrors[] = $subnodeError;
-    }
-
-    public function currentSubnodeError() {
-        return end($this->subnodeErrors);
-    }
-
-    public function toString()
+    protected function toErrorString()
     {
         $msg = "processing $this->type '$this->identifier'";
         foreach ($this->errors as $error) {
@@ -125,11 +70,6 @@ class LiftImportNodeError
                     break;
                 default:
                     throw new \Exception("Unknown error type '" . $error['error'] . "' while processing identifier '" . $this->identifier . "'");
-            }
-        }
-        foreach ($this->subnodeErrors as $subnodeError) {
-            if ($subnodeError->hasErrors()) {
-                $msg .= ', ' . $subnodeError->toString();
             }
         }
         return $msg;
