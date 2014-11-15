@@ -134,4 +134,32 @@ class TestLiftImportZip extends UnitTestCase
 
         $this->environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
+
+    public function testLiftImportMerge_ZipFileNoLift_Exception()
+    {
+        $zipFilePath = TestPath . 'common/TestLexNoProject.zip';
+        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLexNoProject.zip');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        $this->environ->inhibitErrorDisplay();
+        $this->expectException(new \Exception("Uploaded file does not contain any LIFT data"));
+        $importer = LiftImport::get()->importZip($uploadPath, $project);
+    }
+
+    public function testLiftImportMerge_ZipFile2Lift_Error()
+    {
+        $zipFilePath = TestPath . 'common/TestLex2Projects.zip';
+        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLex2Projects.zip');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        $importer = LiftImport::get()->importZip($uploadPath, $project);
+
+        $report = $importer->getReport();
+        $reportStr = $report->toString();
+
+        $this->assertTrue($report->hasError(), 'should have NodeError');
+        $this->assertPattern("/unhandled LIFT file/", $reportStr);
+
+        $this->environ->cleanupTestFiles($project->getAssetsFolderPath());
+    }
 }

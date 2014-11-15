@@ -11,7 +11,7 @@ class ImportErrorReport
 
     /**
      *
-     * @var array <LiftImportNodeError>
+     * @var array <ImportNodeError>
      */
     public $nodeErrors;
 
