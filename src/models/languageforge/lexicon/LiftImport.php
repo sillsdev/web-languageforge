@@ -205,8 +205,6 @@ class LiftImport
     /**
      * Read LIFT entry with error reporting
      *
-     * @param ImportErrorReport $report
-     * @param LiftDecoder $liftDecoder
      * @param SimpleXMLElement $sxeNode
      * @param LexEntryModel $entry
      * @param LiftMergeRule $mergeRule
@@ -273,7 +271,7 @@ class LiftImport
      * @param boolean $skipSameModTime
      * @param boolean $deleteMatchingEntry
      * @throws \Exception
-     * @return string
+     * @return \models\languageforge\lexicon\LiftImport
      */
     public function importZip($zipFilePath, $projectModel, $mergeRule = LiftMergeRule::IMPORT_WINS, $skipSameModTime = false, $deleteMatchingEntry = false)
     {
@@ -285,7 +283,7 @@ class LiftImport
             // TODO: Capture output from extractarchive.sh if retcode != 0
         }
 
-        $report = new ZipImportErrorReport(ZipImportErrorReport::FILE, basename($zipFilePath));
+        $zipNodeError = new ZipImportNodeError(ZipImportNodeError::FILE, basename($zipFilePath));
 
         // Now find the .lift file in the uploaded zip
         $dirIter = new \RecursiveDirectoryIterator($extractFolderPath);
@@ -299,8 +297,8 @@ class LiftImport
             throw new \Exception("Uploaded file does not contain any LIFT data");
         }
         if (count($liftFilenames) > 1) {
-            foreach (array_slice($liftFilenames, 1) as $fileName) {
-                $report->addUnhandledLiftFile($fileName);
+            foreach (array_slice($liftFilenames, 1) as $filename) {
+                $zipNodeError->addUnhandledLiftFile(basename($filename));
             }
         }
 
@@ -317,11 +315,15 @@ class LiftImport
         $liftFilePath = $liftFilenames[0];
         $this->merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
 
-        if ($report->hasError()) {
-            error_log($report->toString() . "\n");
+        if ($zipNodeError->hasError()) {
+            error_log($zipNodeError->toString() . "\n");
         }
-        $report->liftImportErrorReport = $this->report;
-        $this->report = $report;
+
+        foreach ($this->report->nodeErrors as $subnodeError) {
+            $zipNodeError->addSubnodeError($subnodeError);
+        }
+        $this->report->nodeErrors = array();
+        $this->report->nodeErrors[] = $zipNodeError;
 
         return $this;
     }
