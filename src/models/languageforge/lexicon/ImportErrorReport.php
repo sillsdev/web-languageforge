@@ -1,7 +1,7 @@
 <?php
 namespace models\languageforge\lexicon;
 
-class LiftImportErrorReport
+class ImportErrorReport
 {
 
     public function __construct()

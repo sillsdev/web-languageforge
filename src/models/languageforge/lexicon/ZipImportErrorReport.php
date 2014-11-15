@@ -12,6 +12,12 @@ class ZipImportErrorReport
     public $name;
 
     /**
+     *
+     * @var ImportErrorReport
+     */
+    public $liftImportErrorReport;
+
+    /**
      * @var array of errors
      */
     private $errors;
