@@ -198,6 +198,12 @@ EOD;
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
         $this->assertTrue(array_key_exists('th-fonipa', $project->inputSystems));
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 0);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 2);
+        $this->assertEqual($importer->stats->entriesMerged, 0);
+        $this->assertEqual($importer->stats->entriesDuplicated, 0);
+        $this->assertEqual($importer->stats->entriesDeleted, 0);
     }
 
     // has correct th-fonipa form in each entry
@@ -278,6 +284,12 @@ EOD;
         $this->assertEqual($index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['partOfSpeech']['value'], "Noun");
         $this->assertEqual($index['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 2);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 0);
+        $this->assertEqual($importer->stats->entriesMerged, 2);
+        $this->assertEqual($importer->stats->entriesDuplicated, 0);
+        $this->assertEqual($importer->stats->entriesDeleted, 0);
     }
 
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkip_NoMerge()
@@ -309,6 +321,12 @@ EOD;
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 2);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 0);
+        $this->assertEqual($importer->stats->entriesMerged, 0);
+        $this->assertEqual($importer->stats->entriesDuplicated, 0);
+        $this->assertEqual($importer->stats->entriesDeleted, 0);
     }
 
     // has correct th-fonipa form in each entry and mod date changed
@@ -395,6 +413,12 @@ EOD;
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 2);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 0);
+        $this->assertEqual($importer->stats->entriesMerged, 2);
+        $this->assertEqual($importer->stats->entriesDuplicated, 0);
+        $this->assertEqual($importer->stats->entriesDeleted, 0);
     }
 
     // has co$importer->getReport()->hasError()m in first entry
@@ -464,6 +488,12 @@ EOD;
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 2);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 0);
+        $this->assertEqual($importer->stats->entriesMerged, 1);
+        $this->assertEqual($importer->stats->entriesDuplicated, 0);
+        $this->assertEqual($importer->stats->entriesDeleted, 1);
     }
 
     public function testLiftImportMerge_ExistingDataAndImportWinsAndSkipSameModTimeAndDeleteMatchingEntry_EntryDeletedAndOtherEntryNotCorrected()
@@ -490,6 +520,12 @@ EOD;
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp");
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 2);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 0);
+        $this->assertEqual($importer->stats->entriesMerged, 0);
+        $this->assertEqual($importer->stats->entriesDuplicated, 0);
+        $this->assertEqual($importer->stats->entriesDeleted, 1);
     }
 
     public function testLiftImportMerge_ExistingDataAndImportWins_EntryNotDeleted()
@@ -517,6 +553,12 @@ EOD;
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 2);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 0);
+        $this->assertEqual($importer->stats->entriesMerged, 1);
+        $this->assertEqual($importer->stats->entriesDuplicated, 0);
+        $this->assertEqual($importer->stats->entriesDeleted, 0);
     }
 
     public function testLiftImportMerge_NoExistingDataAndImportLoses_MergeOk()
@@ -544,6 +586,12 @@ EOD;
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 0);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 2);
+        $this->assertEqual($importer->stats->entriesMerged, 0);
+        $this->assertEqual($importer->stats->entriesDuplicated, 0);
+        $this->assertEqual($importer->stats->entriesDeleted, 0);
     }
 
     public function testLiftImportMerge_ExistingDataAndImportLoses_NoMerge()
@@ -575,6 +623,12 @@ EOD;
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 2);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 0);
+        $this->assertEqual($importer->stats->entriesMerged, 2);
+        $this->assertEqual($importer->stats->entriesDuplicated, 0);
+        $this->assertEqual($importer->stats->entriesDeleted, 0);
     }
 
     public function testLiftImportMerge_NoExistingDataAndCreateDuplicates_MergeOk()
@@ -602,6 +656,12 @@ EOD;
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 0);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 2);
+        $this->assertEqual($importer->stats->entriesMerged, 0);
+        $this->assertEqual($importer->stats->entriesDuplicated, 0);
+        $this->assertEqual($importer->stats->entriesDeleted, 0);
     }
 
     public function testLiftImportMerge_ExistingDataAndCreateDuplicates_DuplicatesCreated()
@@ -640,6 +700,12 @@ EOD;
         $this->assertEqual($entries[3]['guid'], "");
         $this->assertEqual($entries[3]['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 2);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 0);
+        $this->assertEqual($importer->stats->entriesMerged, 0);
+        $this->assertEqual($importer->stats->entriesDuplicated, 2);
+        $this->assertEqual($importer->stats->entriesDeleted, 0);
     }
 
     public function testLiftImportMerge_ExistingDataAndCreateDuplicatesAndSkip_NoMerge()
@@ -671,6 +737,12 @@ EOD;
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 2);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 0);
+        $this->assertEqual($importer->stats->entriesMerged, 0);
+        $this->assertEqual($importer->stats->entriesDuplicated, 0);
+        $this->assertEqual($importer->stats->entriesDeleted, 0);
     }
 
     // has <span> in sense of first entry

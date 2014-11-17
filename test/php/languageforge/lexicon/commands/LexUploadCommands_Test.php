@@ -145,6 +145,12 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertPattern("/lexicon\/$projectSlug/", $response->data->path, 'Uploaded zip file path should be in the right location');
         $this->assertEqual($fileName, $response->data->fileName, 'Uploaded zip fileName should have the original fileName');
         $this->assertTrue(file_exists($filePath), 'Uploaded zip file should exist');
+        $this->assertEqual($response->data->stats->existingEntries, 0);
+        $this->assertEqual($response->data->stats->importEntries, 2);
+        $this->assertEqual($response->data->stats->newEntries, 2);
+        $this->assertEqual($response->data->stats->entriesMerged, 0);
+        $this->assertEqual($response->data->stats->entriesDuplicated, 0);
+        $this->assertEqual($response->data->stats->entriesDeleted, 0);
     }
 
     public function testImportProjectZip_JpgFile_UploadDisallowed()
@@ -207,6 +213,12 @@ EOD;
         $this->assertPattern("/lexicon\/$projectSlug/", $response->data->path);
         $this->assertPattern("/$fileName/", $response->data->fileName);
         $this->assertTrue(file_exists($filePath), 'Imported LIFT file should be in expected location');
+        $this->assertEqual($response->data->stats->existingEntries, 0);
+        $this->assertEqual($response->data->stats->importEntries, 1);
+        $this->assertEqual($response->data->stats->newEntries, 1);
+        $this->assertEqual($response->data->stats->entriesMerged, 0);
+        $this->assertEqual($response->data->stats->entriesDuplicated, 0);
+        $this->assertEqual($response->data->stats->entriesDeleted, 0);
 
         // create another LIFT file
         $filePathOther = $project->getAssetsFolderPath() . '/other-' . $fileName;
@@ -220,12 +232,24 @@ EOD;
         $this->assertTrue($response->result, 'Import should succeed');
         $this->assertTrue(file_exists($filePathOther), 'Other LIFT file should exist');
         $this->assertFalse(file_exists($filePath), 'Imported LIFT file should not exist');
+        $this->assertEqual($response->data->stats->existingEntries, 1);
+        $this->assertEqual($response->data->stats->importEntries, 1);
+        $this->assertEqual($response->data->stats->newEntries, 0);
+        $this->assertEqual($response->data->stats->entriesMerged, 1);
+        $this->assertEqual($response->data->stats->entriesDuplicated, 0);
+        $this->assertEqual($response->data->stats->entriesDeleted, 0);
 
         // importWins: LIFT file added, other removed
         $tmpFilePath =  $this->environ->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_WINS);
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
         $this->assertFalse(file_exists($filePathOther), 'Other LIFT file should not exist');
         $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
+        $this->assertEqual($response->data->stats->existingEntries, 1);
+        $this->assertEqual($response->data->stats->importEntries, 1);
+        $this->assertEqual($response->data->stats->newEntries, 0);
+        $this->assertEqual($response->data->stats->entriesMerged, 1);
+        $this->assertEqual($response->data->stats->entriesDuplicated, 0);
+        $this->assertEqual($response->data->stats->entriesDeleted, 0);
 
         // create another LIFT file
         $filePathOther = $project->getAssetsFolderPath() . '/other-' . $fileName;
@@ -238,6 +262,12 @@ EOD;
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
         $this->assertFalse(file_exists($filePathOther), 'Other LIFT file should not exist');
         $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
+        $this->assertEqual($response->data->stats->existingEntries, 1);
+        $this->assertEqual($response->data->stats->importEntries, 1);
+        $this->assertEqual($response->data->stats->newEntries, 0);
+        $this->assertEqual($response->data->stats->entriesMerged, 0);
+        $this->assertEqual($response->data->stats->entriesDuplicated, 1);
+        $this->assertEqual($response->data->stats->entriesDeleted, 0);
     }
 
     public function testImportLift_JpgFile_UploadDisallowed()
