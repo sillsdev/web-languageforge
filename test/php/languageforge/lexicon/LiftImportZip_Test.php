@@ -79,6 +79,12 @@ class TestLiftImportZip extends UnitTestCase
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
         $this->assertTrue(array_key_exists('th-fonipa', $project->inputSystems));
         $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->stats->existingEntries, 0);
+        $this->assertEqual($importer->stats->importEntries, 2);
+        $this->assertEqual($importer->stats->newEntries, 2);
+        $this->assertEqual($importer->stats->entriesMerged, 0);
+        $this->assertEqual($importer->stats->entriesDuplicated, 0);
+        $this->assertEqual($importer->stats->entriesDeleted, 0);
     }
 
     public function testLiftImportMerge_ZipFileWrongFormat_Exception()

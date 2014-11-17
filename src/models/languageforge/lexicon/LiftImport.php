@@ -12,6 +12,12 @@ class LiftImport
 
     /**
      *
+     * @var LiftImportStats
+     */
+    public $stats;
+
+    /**
+     *
      * @var ImportErrorReport
      */
     private $report;
@@ -46,7 +52,6 @@ class LiftImport
 
         $entryList = new LexEntryListModel($projectModel);
         $entryList->read();
-
         $initialImport = $entryList->count == 0;
 
         // I consider this to be a stopgap to support importing of part of speech until we have a way to import lift ranges - cjh 2014-08
@@ -68,6 +73,7 @@ class LiftImport
         $liftFileDir = dirname($liftFilePath);
 
         $this->liftDecoder = new LiftDecoder($projectModel);
+        $this->stats = new LiftImportStats($entryList->count);
         $this->report = new ImportErrorReport();
         $liftRangeDecoder = new LiftRangeDecoder($projectModel);
         $liftRangeFiles = array(); // Keys: filenames. Values: parsed files.
@@ -117,6 +123,7 @@ class LiftImport
                 }
             }
             if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
+                $this->stats->importEntries++;
                 $node = $reader->expand();
                 $sxeNode = self::domNode_to_sxeNode($node);
 
@@ -131,18 +138,22 @@ class LiftImport
                             $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
                             $entry->guid = '';
                             $entry->write();
+                            $this->stats->entriesDuplicated++;
                         } else {
                             if (isset($sxeNode->{'lexical-unit'})) {
                                 $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
                                 $entry->write();
+                                $this->stats->entriesMerged++;
                             } elseif (isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
                                 LexEntryModel::remove($projectModel, $existingEntry['id']);
+                                $this->stats->entriesDeleted++;
                             }
                         }
                     } else {
                         // skip because same mod time and skip enabled
                         if (! isset($sxeNode->{'lexical-unit'}) && isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
                             LexEntryModel::remove($projectModel, $existingEntry['id']);
+                            $this->stats->entriesDeleted++;
                         }
                     }
                     self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
@@ -151,6 +162,7 @@ class LiftImport
                         $entry = new LexEntryModel($projectModel);
                         $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
                         $entry->write();
+                        $this->stats->newEntries++;
                         self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
                     }
                 }

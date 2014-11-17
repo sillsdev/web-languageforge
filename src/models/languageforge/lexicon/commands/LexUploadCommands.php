@@ -12,6 +12,7 @@ use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\LiftImport;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\languageforge\LfProjectModel;
+use models\languageforge\lexicon\LiftImportStats;
 
 class LexUploadCommands
 {
@@ -341,14 +342,11 @@ class LexUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $importer = LiftImport::get()->importZip($filePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
-                $entryList = new LexEntryListModel($project);
-                $entryList->read();
-                $entriesImported = $entryList->count;
                 $data = new ImportResult();
                 $data->path = $project->getAssetsPath();
                 $data->fileName = $fileName;
+                $data->stats = $importer->stats;
                 $data->importErrors = $importer->getReport()->toString();
-                $data->entriesImported = $entriesImported;
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
@@ -390,7 +388,8 @@ class LexUploadCommands
         $data->path = $tmpFilePath;
         $data->fileName = $fileName;
         $data->importErrors = '';
-        $data->entriesImported = 27;
+        $data->stats = new LiftImportStats();
+        $data->stats->importEntries = 27;
         $response->result = true;
         $response->data = $data;
         return $response;
@@ -443,7 +442,7 @@ class LexUploadCommands
             $folderPath = $project->getAssetsFolderPath();
             FileUtilities::createAllFolders($folderPath);
 
-            LiftImport::get()->merge($tmpFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+            $importer = LiftImport::get()->merge($tmpFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
             $project->write();
 
             $moveOk = true;
@@ -466,9 +465,11 @@ class LexUploadCommands
 
             // construct server response
             if ($moveOk && $tmpFilePath) {
-                $data = new MediaResult();
+                $data = new ImportResult();
                 $data->path = $project->getAssetsPath();
                 $data->fileName = $fileName;
+                $data->stats = $importer->stats;
+                $data->importErrors = $importer->getReport()->toString();
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
