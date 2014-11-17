@@ -18,9 +18,9 @@ class ImportResult
 
     /**
      *
-     * @var integer
+     * @var LiftImportStats
      */
-    public $entriesImported;
+    public $stats;
 
     /**
      *
