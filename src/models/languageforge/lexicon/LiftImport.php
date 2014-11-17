@@ -277,53 +277,73 @@ class LiftImport
     {
         $assetsFolderPath = $projectModel->getAssetsFolderPath();
         $extractFolderPath = $assetsFolderPath . '/initialUpload_' . mt_rand();
-        $retCode = self::extractZip($zipFilePath, $extractFolderPath);
-        if ($retCode) {
-            throw new \Exception("Error extracting uploaded file");
-            // TODO: Capture output from extractarchive.sh if retcode != 0
-        }
-
+        $this->report = new ImportErrorReport();
         $zipNodeError = new ZipImportNodeError(ZipImportNodeError::FILE, basename($zipFilePath));
-
-        // Now find the .lift file in the uploaded zip
-        $dirIter = new \RecursiveDirectoryIterator($extractFolderPath);
-        $iterIter = new \RecursiveIteratorIterator($dirIter);
-        $liftIter = new \RegexIterator($iterIter, '/\.lift$/', \RegexIterator::MATCH);
-        $liftFilenames = array();
-        foreach ($liftIter as $file) {
-            $liftFilenames[] = $file->getPathname();
-        }
-        if (empty($liftFilenames)) {
-            throw new \Exception("Uploaded file does not contain any LIFT data");
-        }
-        if (count($liftFilenames) > 1) {
-            foreach (array_slice($liftFilenames, 1) as $filename) {
-                $zipNodeError->addUnhandledLiftFile(basename($filename));
+        try {
+            $retCode = self::extractZip($zipFilePath, $extractFolderPath);
+            if ($retCode) {
+                throw new \Exception("Error extracting uploaded file");
+                // TODO: Capture output from extractarchive.sh if retcode != 0
             }
-        }
 
-        // Import assets: pictures, audio, and other files
-        foreach (array("pictures", "audio", "others") as $folderName) {
-            $assetsPath = $assetsFolderPath . "/" . $folderName;
-            $importPath = $extractFolderPath . "/" . $folderName;
-            if (file_exists($importPath) && is_dir($importPath)) {
-                FileUtilities::copyDirTree($importPath, $assetsPath);
+            // Now find the .lift file in the uploaded zip
+            $dirIter = new \RecursiveDirectoryIterator($extractFolderPath);
+            $iterIter = new \RecursiveIteratorIterator($dirIter);
+            $liftIter = new \RegexIterator($iterIter, '/\.lift$/', \RegexIterator::MATCH);
+            $liftFilenames = array();
+            foreach ($liftIter as $file) {
+                $liftFilenames[] = $file->getPathname();
             }
-        }
+            if (empty($liftFilenames)) {
+                throw new \Exception("Uploaded file does not contain any LIFT data");
+            }
+            if (count($liftFilenames) > 1) {
+                foreach (array_slice($liftFilenames, 1) as $filename) {
+                    $zipNodeError->addUnhandledLiftFile(basename($filename));
+                }
+            }
 
-        // Import first .lift file (only).
-        $liftFilePath = $liftFilenames[0];
-        $this->merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+            // Import subfolders
+            foreach (glob($extractFolderPath . '/*', GLOB_ONLYDIR) as $folderPath) {
+                $folderName = basename($folderPath);
+                switch ($folderName) {
+                	case 'pictures':
+                	case 'audio':
+                	case 'others':
+                	case 'WritingSystems':
+                	    $assetsPath = $assetsFolderPath . "/" . $folderName;
+                	    if (file_exists($folderPath) && is_dir($folderPath)) {
+                            FileUtilities::copyDirTree($folderPath, $assetsPath);
+                        }
+                        break;
+                	default:
+                	    $zipNodeError->addUnhandledSubfolder($folderName);
+                }
+            }
 
-        if ($zipNodeError->hasError()) {
-            error_log($zipNodeError->toString() . "\n");
-        }
+            // Import first .lift file (only).
+            $liftFilePath = $liftFilenames[0];
+            $this->merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
 
-        foreach ($this->report->nodeErrors as $subnodeError) {
-            $zipNodeError->addSubnodeError($subnodeError);
+            if ($zipNodeError->hasError()) {
+                error_log($zipNodeError->toString() . "\n");
+            }
+            foreach ($this->report->nodeErrors as $subnodeError) {
+                $zipNodeError->addSubnodeError($subnodeError);
+            }
+            $this->report = new ImportErrorReport();
+            $this->report->nodeErrors[] = $zipNodeError;
+        } catch (Exception $e) {
+            if ($zipNodeError->hasError()) {
+                error_log($zipNodeError->toString() . "\n");
+            }
+            foreach ($this->report->nodeErrors as $subnodeError) {
+                $zipNodeError->addSubnodeError($subnodeError);
+            }
+            $this->report = new ImportErrorReport();
+            $this->report->nodeErrors[] = $zipNodeError;
+            throw new \Exception($e);
         }
-        $this->report->nodeErrors = array();
-        $this->report->nodeErrors[] = $zipNodeError;
 
         return $this;
     }

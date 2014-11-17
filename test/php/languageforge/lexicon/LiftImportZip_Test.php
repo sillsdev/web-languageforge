@@ -146,10 +146,10 @@ class TestLiftImportZip extends UnitTestCase
         $importer = LiftImport::get()->importZip($uploadPath, $project);
     }
 
-    public function testLiftImportMerge_ZipFile2Lift_Error()
+    public function testLiftImportMerge_ZipFile2LiftAndOddFolder_Error()
     {
-        $zipFilePath = TestPath . 'common/TestLex2Projects.zip';
-        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLex2Projects.zip');
+        $zipFilePath = TestPath . 'common/TestLex2ProjectsOddFolder.zip';
+        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLex2ProjectsOddFolder.zip');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         $importer = LiftImport::get()->importZip($uploadPath, $project);
@@ -159,6 +159,7 @@ class TestLiftImportZip extends UnitTestCase
 
         $this->assertTrue($report->hasError(), 'should have NodeError');
         $this->assertPattern("/unhandled LIFT file/", $reportStr);
+        $this->assertPattern("/unhandled subfolder 'OddFolder'/", $reportStr);
 
         $this->environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
