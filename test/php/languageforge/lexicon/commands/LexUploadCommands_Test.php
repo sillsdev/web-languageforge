@@ -41,8 +41,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $assetsFolderPath = $project->getAssetsFolderPath();
-        $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
+        $folderPath = LexUploadCommands::imageFolderPath($project->getAssetsFolderPath());
         $filePath = $folderPath . '/' . $response->data->fileName;
         $projectSlug = $project->databaseName();
 
@@ -61,8 +60,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $assetsFolderPath = $project->getAssetsFolderPath();
-        $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
+        $folderPath = LexUploadCommands::imageFolderPath($project->getAssetsFolderPath());
         $filePath = $folderPath . '/' . $response->data->fileName;
 
         $this->assertTrue($response->result, 'Import should succeed');
@@ -103,8 +101,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         $this->assertTrue($response->result, 'Import should succeed');
 
-        $assetsFolderPath = $project->getAssetsFolderPath();
-        $folderPath = LexUploadCommands::imageFolderPath($assetsFolderPath);
+        $folderPath = LexUploadCommands::imageFolderPath($project->getAssetsFolderPath());
         $fileName = $response->data->fileName;
         $filePath = $folderPath . '/' . $fileName;
 
@@ -128,17 +125,21 @@ class TestLexUploadCommands extends UnitTestCase
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
 
-    public function testImportProjectZip_ZipFile_UploadAllowed()
+    public function testImportProjectZip_ZipFile_StatsOkInputSystemsImported()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestLexProject.zip';
         $tmpFilePath = $this->environ->uploadFile(TestPath . "common/$fileName", $fileName);
 
+        $this->assertTrue(array_key_exists('en', $project->inputSystems));
+        $this->assertTrue(array_key_exists('th', $project->inputSystems));
+        $this->assertFalse(array_key_exists('th-fonipa', $project->inputSystems));
+
         $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
 
-        $assetsFolderPath = $project->getAssetsFolderPath();
-        $filePath = $assetsFolderPath . '/' . $response->data->fileName;
+        $project->read($project->id->asString());
+        $filePath = $project->getAssetsFolderPath() . '/' . $response->data->fileName;
         $projectSlug = $project->databaseName();
 
         $this->assertTrue($response->result, 'Import should succeed');
@@ -151,6 +152,7 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertEqual($response->data->stats->entriesMerged, 0);
         $this->assertEqual($response->data->stats->entriesDuplicated, 0);
         $this->assertEqual($response->data->stats->entriesDeleted, 0);
+        $this->assertTrue(array_key_exists('th-fonipa', $project->inputSystems));
     }
 
     public function testImportProjectZip_JpgFile_UploadDisallowed()
@@ -194,12 +196,35 @@ class TestLexUploadCommands extends UnitTestCase
 </lift>
 EOD;
 
+    public function testImportLift_LiftFile_InputSystemsImported()
+    {
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $fileName = 'OneEntryV0_13.lift';
+        $tmpFilePath =  $this->environ->uploadLiftFile(self::liftOneEntryV0_13, $fileName, LiftMergeRule::IMPORT_LOSES);
+
+        $this->assertTrue(array_key_exists('en', $project->inputSystems));
+        $this->assertTrue(array_key_exists('th', $project->inputSystems));
+        $this->assertFalse(array_key_exists('th-fonipa', $project->inputSystems));
+
+        $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
+
+        $project->read($project->id->asString());
+        $filePath = $project->getAssetsFolderPath() . '/' . $response->data->fileName;
+        $projectSlug = $project->databaseName();
+
+        $this->assertTrue($response->result, 'Import should succeed');
+        $this->assertPattern("/lexicon\/$projectSlug/", $response->data->path, 'Uploaded zip file path should be in the right location');
+        $this->assertPattern("/$fileName/", $response->data->fileName, 'Imported LIFT fileName should contain the original fileName');
+        $this->assertTrue(file_exists($filePath), 'Uploaded zip file should exist');
+        $this->assertTrue(array_key_exists('th-fonipa', $project->inputSystems));
+    }
+
     public function testImportLift_EachDuplicateSetting_LiftFileAddedOk()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $projectSlug = $project->databaseName();
-
         $fileName = 'OneEntryV0_13.lift';
 
         // no LIFT file initially
@@ -211,7 +236,7 @@ EOD;
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
         $this->assertTrue($response->result, 'Import should succeed');
         $this->assertPattern("/lexicon\/$projectSlug/", $response->data->path);
-        $this->assertPattern("/$fileName/", $response->data->fileName);
+        $this->assertPattern("/$fileName/", $response->data->fileName, 'Imported LIFT fileName should contain the original fileName');
         $this->assertTrue(file_exists($filePath), 'Imported LIFT file should be in expected location');
         $this->assertEqual($response->data->stats->existingEntries, 0);
         $this->assertEqual($response->data->stats->importEntries, 1);
