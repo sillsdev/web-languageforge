@@ -342,6 +342,8 @@ class LexUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $importer = LiftImport::get()->importZip($filePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+                $project->write();
+
                 $data = new ImportResult();
                 $data->path = $project->getAssetsPath();
                 $data->fileName = $fileName;
