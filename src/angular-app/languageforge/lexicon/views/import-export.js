@@ -58,6 +58,7 @@ function LiftImportCtrl($scope, $upload, notice, lexProjectService, $filter, $lo
           notice.push(notice.ERROR, data.data.errorMessage);
         }
         $scope.upload.file = null;
+        $scope.upload.importStarted = false;
       });
     } else {
       notice.push(notice.ERROR, "<b>" + $scope.upload.file.name + "</b> (" + $filter('bytes')($scope.upload.file.size) + 
