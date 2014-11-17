@@ -30,6 +30,7 @@ class TestLiftImportZip extends UnitTestCase
     public function tearDown()
     {
         $this->environ->clean();
+        $this->environ->cleanupTestFiles($this->environ->project->getAssetsFolderPath());
     }
 
     private static function indexByGuid($entries)
@@ -43,15 +44,14 @@ class TestLiftImportZip extends UnitTestCase
 
     public function testLiftImportMerge_ZipFile_CorrectValues()
     {
-        $zipFilePath = TestPath . 'common/TestLexProject.zip';
-        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLexProject.zip');
+        $zipFilePath = $this->environ->copyTestUploadFile(TestPath . 'common/TestLexProject.zip');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         $this->assertTrue(array_key_exists('en', $project->inputSystems));
         $this->assertTrue(array_key_exists('th', $project->inputSystems));
         $this->assertFalse(array_key_exists('th-fonipa', $project->inputSystems));
 
-        $importer = LiftImport::get()->importZip($uploadPath, $project);
+        $importer = LiftImport::get()->importZip($zipFilePath, $project);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
@@ -79,32 +79,28 @@ class TestLiftImportZip extends UnitTestCase
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
         $this->assertTrue(array_key_exists('th-fonipa', $project->inputSystems));
         $this->assertFalse($importer->getReport()->hasError());
-
-        $this->environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 
-    public function testLiftImportMerge_ZipFile_WrongFormat_Exception()
+    public function testLiftImportMerge_ZipFileWrongFormat_Exception()
     {
+        copy(TestPath . 'common/TestLexProject.zip', TestPath . 'common/TestLexProject.tar.gz');
+        $zipFilePath = $this->environ->copyTestUploadFile(TestPath . 'common/TestLexProject.tar.gz');
+        unlink(TestPath . 'common/TestLexProject.tar.gz');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $zipFilePath = TestPath . 'common/TestLexProject.zip';
-        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLexProject.tar.gz');
-        $otherFile = str_replace('.zip', '.tar.gz', $uploadPath);
-        copy($uploadPath, $otherFile);
 
-        $this->environ->inhibitErrorDisplay();
         $this->expectException(new \Exception("Sorry, the .tar.gz format isn't allowed"));
-        $importer = LiftImport::get()->importZip($otherFile, $project);
-        $this->environ->restoreErrorDisplay();
-        unlink($otherFile);
+        $this->environ->inhibitErrorDisplay();
+        $importer = LiftImport::get()->importZip($zipFilePath, $project);
+
+        // nothing runs in the current test function after an exception. IJH 2014-11
     }
 
     public function testLiftImportMerge_ZipFileWithDir_CorrectValues()
     {
-        $zipFilePath = TestPath . 'common/TestLexProjectWithDir.zip';
-        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLexProjectWithDir.zip');
+        $zipFilePath = $this->environ->copyTestUploadFile(TestPath . 'common/TestLexProjectWithDir.zip');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
-        $importer = LiftImport::get()->importZip($uploadPath, $project);
+        $importer = LiftImport::get()->importZip($zipFilePath, $project);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
@@ -131,28 +127,26 @@ class TestLiftImportZip extends UnitTestCase
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
         $this->assertFalse($importer->getReport()->hasError());
-
-        $this->environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 
     public function testLiftImportMerge_ZipFileNoLift_Exception()
     {
-        $zipFilePath = TestPath . 'common/TestLexNoProject.zip';
-        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLexNoProject.zip');
+        $zipFilePath = $this->environ->copyTestUploadFile(TestPath . 'common/TestLexNoProject.zip');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         $this->environ->inhibitErrorDisplay();
         $this->expectException(new \Exception("Uploaded file does not contain any LIFT data"));
-        $importer = LiftImport::get()->importZip($uploadPath, $project);
+        $importer = LiftImport::get()->importZip($zipFilePath, $project);
+
+        // nothing runs in the current test function after an exception. IJH 2014-11
     }
 
     public function testLiftImportMerge_ZipFile2LiftAndOddFolder_Error()
     {
-        $zipFilePath = TestPath . 'common/TestLex2ProjectsOddFolder.zip';
-        $uploadPath = $this->environ->uploadFile($zipFilePath, 'TestLex2ProjectsOddFolder.zip');
+        $zipFilePath = $this->environ->copyTestUploadFile(TestPath . 'common/TestLex2ProjectsOddFolder.zip');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
-        $importer = LiftImport::get()->importZip($uploadPath, $project);
+        $importer = LiftImport::get()->importZip($zipFilePath, $project);
 
         $report = $importer->getReport();
         $reportStr = $report->toString();
@@ -160,7 +154,5 @@ class TestLiftImportZip extends UnitTestCase
         $this->assertTrue($report->hasError(), 'should have NodeError');
         $this->assertPattern("/unhandled LIFT file/", $reportStr);
         $this->assertPattern("/unhandled subfolder 'OddFolder'/", $reportStr);
-
-        $this->environ->cleanupTestFiles($project->getAssetsFolderPath());
     }
 }
