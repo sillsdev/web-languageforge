@@ -12,6 +12,7 @@
 		  <div class="col-md-2" style="border-right:solid black 1px">
 		    <!--Sidebar content-->
 		    Search: <input ng-model="query.name">
+		    <br> </br>
 		    <div style="overflow-y:scroll; height:400px">
 			    <ul>
 			      <li ng-class="{selected: (term.key == currentTerm.key)}" ng-repeat="term in terms| filter:query:strict" ng-click="changeTerm(term.key)" class="thumbnail">
