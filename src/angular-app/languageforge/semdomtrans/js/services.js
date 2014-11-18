@@ -32,7 +32,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     		     result.data.questions.push({'key': term.abbreviation, 'termQuestions': questionObjects, 'position': 0});
     		  }
     		  i++;
-    		  if (i > 100)
+    		  if (i > 1000)
     			  break;
     	}    	
     	
@@ -41,7 +41,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     }; 
     
     this.updateTerm = function(term, callback) {
-    	// don't do anything
+    	// don't do anything6
     	var result = {ok: true};
     	callback(result);
     };
@@ -57,9 +57,10 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     	callback(result);
     }; 
     
-    this.saveConfigurationData = function(showTerms, showQuestions) {
-    	sessionStorage.config = angular.toJson({ showTerms: showTerms, showQuestions: showQuestions});
+    this.saveConfigurationData = function(showTerms, showQuestions, terms) {
+    	sessionStorage.config = angular.toJson({ showTerms: showTerms, showQuestions: showQuestions, terms: terms});
     }; 
+    
 
   }])
   

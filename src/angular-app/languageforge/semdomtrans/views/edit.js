@@ -19,8 +19,7 @@ function($scope, semdomEditApi, sessionService, semdomConfigApi, modal, notice) 
 	
 	semdomEditApi.editorDto(function(result) {
 		if (result.ok) {
-			$scope.terms = result.data.terms;
-			$scope.currentTerm = $scope.terms[0];
+			$scope.currentTerm = $scope.config.terms[0];
 			$scope.allQuestions = result.data.questions;
 			for (var i = 0; i < $scope.allQuestions.length; i++) {
 				var question = $scope.allQuestions[i];
@@ -53,8 +52,8 @@ function($scope, semdomEditApi, sessionService, semdomConfigApi, modal, notice) 
 	}
 	
 	$scope.changeTerm = function(key) {
-			for (var i = 0; i < $scope.terms.length; i++) {
-				var term = $scope.terms[i];
+			for (var i = 0; i < $scope.config.terms.length; i++) {
+				var term = $scope.config.terms[i];
 			    if (term["key"] == key) {
 			    	$scope.currentTerm = term;
 			    	break;
