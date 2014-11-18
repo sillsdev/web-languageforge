@@ -1,7 +1,11 @@
 <?php
+use models\languageforge\lexicon\config\LexiconConfigObj;
+use models\languageforge\lexicon\config\LexiconOptionListItem;
 use models\languageforge\lexicon\LexEntryListModel;
+use models\languageforge\lexicon\LexOptionListModel;
 use models\languageforge\lexicon\LiftImport;
 use models\languageforge\lexicon\LiftMergeRule;
+use models\languageforge\lexicon\LexOptionListListModel;
 
 require_once dirname(__FILE__) . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -1134,6 +1138,202 @@ EOD;
         $this->assertTrue($report->nodeErrors[1]->currentSubnodeError()->currentSubnodeError()->hasError(), 'should have fake tag example error');
         $this->assertPattern("/unhandled element 'fake'/", $report->nodeErrors[1]->currentSubnodeError()->currentSubnodeError()->toString());
         $this->assertPattern("/unhandled element 'fake'/", $reportStr);
+    }
+
+    // lift range
+    const liftRangeV0_13 = <<<EOD
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- See http://code.google.com/p/lift-standard for more information on the format used here. -->
+<lift producer="SIL.FLEx 8.1.1.41891" version="0.13">
+<header>
+<ranges>
+<range id="grammatical-info" href="file://C:/Users/zook/Desktop/TestLangProj/TestLangProj.lift-ranges"/>
+<range id="semantic-domain-ddp4" href="file://C:/Users/zook/Desktop/TestLangProj/TestLangProj.lift-ranges"/>
+<range id="status" href="file://C:/Users/zook/Desktop/TestLangProj/TestLangProj.lift-ranges"/>
+<!-- The following ranges are produced by FieldWorks Language Explorer, and are not part of the LIFT standard. -->
+<range id="anthro-code" href="file://C:/Users/zook/Desktop/TestLangProj/TestLangProj.lift-ranges"/>
+<range id="domain-type" href="file://C:/Users/zook/Desktop/TestLangProj/TestLangProj.lift-ranges">
+<range-element id="anatomy" guid="d7f713a1-e8cf-11d3-9764-00c04f186933">
+<label>
+<form lang="en"><text>anatomy</text></form>
+<form lang="es"><text>anatomía</text></form>
+<form lang="fr"><text>anatomie</text></form>
+</label>
+<abbrev>
+<form lang="en"><text>Anat</text></form>
+<form lang="es"><text>Anat</text></form>
+<form lang="fr"><text>Anat</text></form>
+</abbrev>
+</range-element>
+<range-element id="anthropology" guid="d7f713a2-e8cf-11d3-9764-00c04f186933">
+<label>
+<form lang="en"><text>anthropology</text></form>
+<form lang="es"><text>antropología</text></form>
+<form lang="fr"><text>anthropologie</text></form>
+</label>
+<abbrev>
+<form lang="en"><text>Anthro</text></form>
+<form lang="es"><text>Antro</text></form>
+<form lang="fr"><text>Anthro</text></form>
+</abbrev>
+</range-element>
+</range>
+</ranges>
+</header>
+</lift>
+EOD;
+
+    // lift range lift-ranges
+    const liftRangeLiftRangesV0_13 = <<<EOD
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- See http://code.google.com/p/lift-standard for more information on the format used here. -->
+<lift-ranges>
+<range id="grammatical-info">
+<!-- These are all the parts of speech in the FLEx db, used or unused.  These are used as the basic grammatical-info values. -->
+<range-element id="article" guid="d7f7150e-e8cf-11d3-9764-00c04f186933">
+<label>
+<form lang="en"><text>article</text></form>
+<form lang="es"><text>artículo</text></form>
+<form lang="fr"><text>article</text></form>
+</label>
+<abbrev>
+<form lang="en"><text>art</text></form>
+<form lang="es"><text>art</text></form>
+<form lang="fr"><text>art</text></form>
+</abbrev>
+<trait name="catalog-source-id" value="Article"/>
+</range-element>
+<range-element id="definite article" guid="d7f7150f-e8cf-11d3-9764-00c04f186933" parent="article">
+<label>
+<form lang="en"><text>definite article</text></form>
+<form lang="es"><text>artículo definido</text></form>
+<form lang="fr"><text>article défini</text></form>
+</label>
+<abbrev>
+<form lang="en"><text>def</text></form>
+<form lang="es"><text>def</text></form>
+<form lang="fr"><text>déf</text></form>
+</abbrev>
+<trait name="catalog-source-id" value="DefiniteArticle"/>
+</range-element>
+<range-element id="indefinite article" guid="d7f71510-e8cf-11d3-9764-00c04f186933" parent="article">
+<label>
+<form lang="en"><text>indefinite article</text></form>
+<form lang="es"><text>artículo indefinido</text></form>
+<form lang="fr"><text>article indéfini</text></form>
+</label>
+<abbrev>
+<form lang="en"><text>indef</text></form>
+<form lang="es"><text>indef</text></form>
+<form lang="fr"><text>indéf</text></form>
+</abbrev>
+<trait name="catalog-source-id" value="IndefiniteArticle"/>
+</range-element>
+</range>
+<range id="status">
+<range-element id="Confirmed" guid="2bdd10e4-f9b2-11d3-977b-00c04f186933">
+<label>
+<form lang="ar-IQ"><text>لا شك أن</text></form>
+<form lang="en"><text>Confirmed</text></form>
+<form lang="es"><text>sConfirmed</text></form>
+<form lang="fr"><text>fConfirmed</text></form>
+</label>
+<abbrev>
+<form lang="en"><text>Conf</text></form>
+<form lang="es"><text>sConf</text></form>
+<form lang="fr"><text>fConf</text></form>
+</abbrev>
+</range-element>
+<range-element id="Disproved" guid="2bdd10eb-f9b2-11d3-977b-00c04f186933">
+<label>
+<form lang="en"><text>Disproved</text></form>
+<form lang="es"><text>sDisproved</text></form>
+<form lang="fr"><text>fDisproved</text></form>
+</label>
+<abbrev>
+<form lang="en"><text>Dis</text></form>
+<form lang="es"><text>sDis</text></form>
+<form lang="fr"><text>fDis</text></form>
+</abbrev>
+</range-element>
+<range-element id="Pending" guid="2bdd10f2-f9b2-11d3-977b-00c04f186933">
+<label>
+<form lang="en"><text>Pending</text></form>
+<form lang="es"><text>sPending</text></form>
+<form lang="fr"><text>fPending</text></form>
+</label>
+<abbrev>
+<form lang="en"><text>Pend</text></form>
+<form lang="es"><text>sPend</text></form>
+<form lang="fr"><text>fPend</text></form>
+</abbrev>
+</range-element>
+<range-element id="Tentative" guid="33bff305-6de5-4946-b983-4dbffeddfc28">
+<label>
+<form lang="en"><text>Tentative</text></form>
+</label>
+<abbrev>
+<form lang="en"><text>Tent</text></form>
+</abbrev>
+</range-element>
+</range>
+<!-- This is a custom list or other list which is not output by default but if referenced in the data of a field.  -->
+<range id="domain-type" guid="d7f713a0-e8cf-11d3-9764-00c04f186933">
+<range-element id="anatomy" guid="d7f713a1-e8cf-11d3-9764-00c04f186933">
+<label>
+<form lang="en"><text>anatomy</text></form>
+<form lang="es"><text>anatomía</text></form>
+<form lang="fr"><text>anatomie</text></form>
+</label>
+<abbrev>
+<form lang="en"><text>Anat</text></form>
+<form lang="es"><text>Anat</text></form>
+<form lang="fr"><text>Anat</text></form>
+</abbrev>
+</range-element>
+</range>
+</lift-ranges>
+EOD;
+
+    public function testLiftImportMerge_LiftRanges_ImportOk()
+    {
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftRangeV0_13, 'LiftRangeV0_13.lift');
+        $liftRangesFilePath = $this->environ->createTestLiftFile(self::liftRangeLiftRangesV0_13, 'TestLangProj.lift-ranges');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
+        $this->assertFalse($importer->getReport()->hasError());
+
+        $optionList = new LexOptionListModel($project);
+        $optionList->readByProperty('code', LexiconConfigObj::ANTHROPOLOGYCATEGORIES);
+        $this->assertEqual($optionList->items->count(), 0);
+
+        $optionList->readByProperty('code', LexiconConfigObj::POS);
+        $this->assertEqual($optionList->items[0]->key, 'art');
+        $this->assertEqual($optionList->items[0]->value, 'article');
+        $this->assertEqual($optionList->items[1]->key, 'def');
+        $this->assertEqual($optionList->items[1]->value, 'definite article');
+        $this->assertEqual($optionList->items[2]->key, 'indef');
+        $this->assertEqual($optionList->items[2]->value, 'indefinite article');
+
+        $optionList->readByProperty('code', LexiconConfigObj::STATUS);
+        $this->assertEqual($optionList->items[0]->key, 'Conf');
+        $this->assertEqual($optionList->items[0]->value, 'Confirmed');
+        $this->assertEqual($optionList->items[1]->key, 'Dis');
+        $this->assertEqual($optionList->items[1]->value, 'Disproved');
+        $this->assertEqual($optionList->items[2]->key, 'Pend');
+        $this->assertEqual($optionList->items[2]->value, 'Pending');
+        $this->assertEqual($optionList->items[3]->key, 'Tent');
+        $this->assertEqual($optionList->items[3]->value, 'Tentative');
+
+        $optionList->readByProperty('code', LexiconConfigObj::ACADEMICDOMAINS);
+        $this->assertEqual($optionList->items[0]->key, 'Anat');
+        $this->assertEqual($optionList->items[0]->value, 'anatomy');
+        $this->assertEqual($optionList->items[1]->key, 'Anthro');
+        $this->assertEqual($optionList->items[1]->value, 'anthropology');
     }
 
     // 2x Validation tests, removed until validation is working IJH 2014-03
