@@ -5,7 +5,8 @@ angular.module('semdomtrans',
     'ngRoute',
     'bellows.services',
     'bellows.filters',
-    'semdomtrans.edit'
+    'semdomtrans.edit',
+    'semdomtrans.setupConfig'
   ])
   .config(['$routeProvider', function($routeProvider) {
 
@@ -23,6 +24,13 @@ angular.module('semdomtrans',
                 controller: 'editCtrl'
 	    }
 	);
+	$routeProvider.when(
+	        '/setupConfig',
+	            {
+	                templateUrl: '/angular-app/languageforge/semdomtrans/views/setupConfig.html',
+	                controller: 'setupConfigCtrl'
+		    }
+		);
     $routeProvider.when(
         '/settings',
         {

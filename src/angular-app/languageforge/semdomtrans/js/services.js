@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('semdomtrans.services', ['jsonRpc'])
-  .service('semdomtransService', ['jsonRpc',
+  .service('semdomtransEditService', ['jsonRpc',
   function(jsonRpc) {
     jsonRpc.connect('/api/sf');
     
@@ -47,4 +47,21 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     };
 
   }])
-  ;
+  .service('semdomtransConfigService', ['jsonRpc',
+  function(jsonRpc) {
+    jsonRpc.connect('/api/sf');
+
+	var config = { showTerms: true, showQuestions: true}
+	
+    this.getConfigurationData = function(callback) {
+		var result = {ok: true, data: config};
+    	callback(result);
+    }; 
+    
+    this.saveConfigurationData = function(showTerms, showQuestions) {
+		config.showTerms = showTerms;
+		config.showQuestions = showQuestions;
+    }; 
+
+  }])
+  

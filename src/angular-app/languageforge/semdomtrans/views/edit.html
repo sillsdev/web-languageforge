@@ -3,8 +3,8 @@
 	    <div class="row" style="border-bottom:solid black 1px">
 		    <div class="span8" style="width: 200px; height: 50px; margin:0 auto">  
 				 <tabset class="pull-center">
-					    <tab heading="Terms"  ng-click="showTerms()"> </tab>     
-						<tab heading="Questions" ng-click="showQuestions()"></tab>
+					    <tab heading="Terms" ng-show="(config.showTerms)"  ng-click="showTerms()"> </tab>     
+						<tab heading="Questions" ng-show="(config.showQuestions)" ng-click="showQuestions()"></tab>
 				</tabset>  
 			</div>  
 		</div>
