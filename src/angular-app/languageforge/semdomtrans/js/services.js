@@ -9,27 +9,34 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     	// jsonRpc.call('semdom_editor_dto', [], callback);
     	var result = {ok: true, data:[]};
     	result.data = {terms: [], questions: [], config: {}};
-    	result.data = [
-	                 {
-	                   'key': '1.1',
-	                   'source': 'Planet',
-	                  'translation': 'Planeta',
-	                  'comments': 'This translation may not be true in every context'
-	                 },
-	                 {
-	                  'key': '1.2',
-	                  'source': 'Earth',
-	                  'translation': '',
-	                  'comments': 'Please double check'
-	                 },
-	                 {
-                	  'key': '1.3',
-	                  'source': 'Moon',
-	                  'translation': '',
-	                  'comments': ''
-	                 }
-	                  
-	               ];
+    	var i = 0;
+    	for (var key in semanticDomains_en) {
+    		  if (semanticDomains_en.hasOwnProperty(key)) {
+    			var term = semanticDomains_en[key];
+                var questions = semanticDomainQuestions_en[key];
+      		  
+    		    result.data.terms.push(
+		    	    {
+		    	    'key': term.abbreviation,
+    		    	'name': term.name,
+    		    	'nameTrans': "",
+    		    	'description': term.description,
+    		    	'descriptionTrans': "",
+    		    	'comments': ""})
+    		    	
+    		     var questionObjects = [];
+    		     for (var j = 0; j < questions.length; j++) {
+    		    	 questionObjects.push({'question': questions[j], 'translation':'', 'terms':''})
+    		     }
+    		     
+    		     result.data.questions.push({'key': term.abbreviation, 'termQuestions': questionObjects, 'currentQuestion': 0});
+    		  }
+    		  i++;
+    		  if (i > 100)
+    			  break;
+    	}    	
+    	
+    	
     	callback(result);
     }; 
     
