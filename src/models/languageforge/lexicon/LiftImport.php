@@ -60,7 +60,7 @@ class LiftImport
         if ($initialImport) {
             // Do the following on first import (number of entries == 0)
 
-            // clear entry field input systems config if their are no entries (only use imported input systems)
+            // clear entry field input systems config if there are no entries (only use imported input systems)
             $projectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems = new ArrayOf();
             $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems = new ArrayOf();
             $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems = new ArrayOf();
@@ -70,7 +70,6 @@ class LiftImport
 
         $reader = new \XMLReader();
         $reader->open($liftFilePath);
-        $liftFileDir = dirname($liftFilePath);
 
         $this->liftDecoder = new LiftDecoder($projectModel);
         $this->stats = new LiftImportStats($entryList->count);
@@ -78,6 +77,7 @@ class LiftImport
         $liftRangeDecoder = new LiftRangeDecoder($projectModel);
         $liftRangeFiles = array(); // Keys: filenames. Values: parsed files.
         $liftRanges = array(); // Keys: @id attributes of <range> elements. Values: parsed <range> elements.
+        $liftFolderPath = dirname($liftFilePath);
 
         while ($reader->read()) {
             if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'range') {
@@ -86,37 +86,28 @@ class LiftImport
                 $rangeHref = $node->attributes->getNamedItem('href')->textContent;
                 $hrefPath = parse_url($rangeHref, PHP_URL_PATH);
                 $rangeFilename = basename($hrefPath);
-                if (array_key_exists($rangeFilename, $liftRangeFiles)) {
-                    // We've parsed this file already, so just pull out the referenced range
-                    if (isset($liftRanges[$rangeId])) {
-                        $range = $liftRanges[$rangeId];
-                    } else {
-                        // Range was NOT found in referenced .lift-ranges file
-                        $rangeNode = self::domNode_to_sxeNode($node);
-                        $range = $liftRangeDecoder->readRange($rangeNode);
-                        error_log("Range id '$rangeId' was not found in referenced .lift-ranges file");
-                        // TODO: Record an error for later reporting, instead of just error_log()ging it
-                    }
-                } else {
+                if (! array_key_exists($rangeFilename, $liftRangeFiles)) {
                     // Haven't parsed the .lift-ranges file yet. We'll assume it is alongside the .lift file.
-                    $rangePath = $liftFileDir . "/" . $rangeFilename;
-                    if (file_exists($rangePath)) {
-                        $sxeNode = simplexml_load_file($rangePath);
+                    $rangeFilePath = $liftFolderPath . "/" . $rangeFilename;
+                    if (file_exists($rangeFilePath)) {
+                        $sxeNode = simplexml_load_file($rangeFilePath);
                         $parsedRanges = $liftRangeDecoder->decode($sxeNode);
                         $liftRanges = array_merge($liftRanges, $parsedRanges);
                     }
-                    if (isset($liftRanges[$rangeId])) {
-                        $range = $liftRanges[$rangeId];
-                    } else {
-                        // Range was NOT found in referenced .lift-ranges file after parsing it
-                        $rangeNode = self::domNode_to_sxeNode($node);
-                        $range = $liftRangeDecoder->readRange($rangeNode);
-                        error_log("Range id '$rangeId' was not found in referenced .lift-ranges file");
-                        // TODO: Record an error for later reporting, instead of just error_log()ging it
-                    }
                 }
+
+                // pull out the referenced range
+                if (isset($liftRanges[$rangeId])) {
+                    $range = $liftRanges[$rangeId];
+                } else {
+                    // Range was NOT found in referenced .lift-ranges file after parsing it
+                    $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::RANGE, $rangeId);
+                    $rangeImportNodeError->addRangeNotFound($rangeFilename);
+                    $this->report->nodeErrors[] = $rangeImportNodeError;
+                }
+
+                // Range elements defined in LIFT file override any values defined in .lift-ranges file.
                 if ($node->hasChildNodes()) {
-                    // Range elements defined in LIFT file override any values defined in .lift-ranges file.
                     $sxeNode = self::domNode_to_sxeNode($node);
                     $range = $liftRangeDecoder->readRange($sxeNode, $range);
                     $liftRanges[$rangeId] = $range;
