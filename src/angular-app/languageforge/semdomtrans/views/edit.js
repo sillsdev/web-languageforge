@@ -51,6 +51,15 @@ function($scope, semdomEditApi, sessionService, semdomConfigApi, modal, notice) 
 		$scope.currentTermQuestions.position++;
 	}
 	
+	$scope.getTermValues = function() {
+		var terms = [];
+		for (var key in $scope.config.terms) {
+			terms.push($scope.config.terms[key]);
+		}
+		
+		return terms;
+	}
+	
 	$scope.changeTerm = function(key) {
 			$scope.currentTerm = $scope.config.terms[key]
 			
