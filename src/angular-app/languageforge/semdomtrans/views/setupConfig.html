@@ -1,0 +1,9 @@
+<div data-ng-cloak data-ng-controller="setupConfigCtrl" id="semDomAppContainer">
+	<div style="margin-top:100px; height: 500px" class="container-fluid">
+		Show Terms: <input ng-model="config.showTerms" ng-checked="config.showTerms" type="checkbox"/>
+		<br />
+		Show Questions: <input ng-model="config.showQuestions" ng-checked="config.showQuestions" type="checkbox"/>
+		<br> <br/>
+		<button  ng-click="saveConfig(config.showTerms, config.showQuestions)" class="pull-left btn btn-success">Save</button>
+	</div>
+</div>
