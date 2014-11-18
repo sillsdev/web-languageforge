@@ -4,6 +4,15 @@
 		<br />
 		Show Questions: <input ng-model="config.showQuestions" ng-checked="config.showQuestions" type="checkbox"/>
 		<br> <br/>
-		<button  ng-click="saveConfig(config.showTerms, config.showQuestions)" class="pull-left btn btn-success">Save</button>
+		
+		<div style="overflow-y:scroll; height:400px; width:200px">
+			    <ul>
+			      <li ng-class="{selected: (term.selected)}" ng-repeat="term in terms"  ng-click="selectSubdomain(term.key)" class="thumbnail">
+			        <p> {{term.key}}: {{term.name}} </p>
+			      </li>
+			    </ul>
+		    </div>
+	    <button  ng-click="saveConfig(config.showTerms, config.showQuestions, terms)" class="pull-left btn btn-success">Save</button>
+		
 	</div>
 </div>

@@ -15,7 +15,7 @@ angular.module('semdomtrans',
     // the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
     $routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } });
     
-    $routeProvider.when( '/', { redirectTo: '/edit' });
+    $routeProvider.when( '/', { redirectTo: '/setupConfig' });
     
 	$routeProvider.when(
         '/edit',
