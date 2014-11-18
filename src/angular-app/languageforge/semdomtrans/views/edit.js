@@ -2,12 +2,22 @@
 
 angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services'])
 // DBE controller
-.controller('editCtrl', ['$scope', 'semdomtransService', 'sessionService', 'modalService', 'silNoticeService',
-function($scope, semdomApi, sessionService, modal, notice) {
+.controller('editCtrl', ['$scope', 'semdomtransEditService',  'sessionService', 'semdomtransConfigService', 'modalService', 'silNoticeService',
+function($scope, semdomEditApi, sessionService, semdomConfigApi, modal, notice) {
 	$scope.terms = [];
 	$scope.questions = [];
 	$scope.showingTerms = true;
-	semdomApi.editorDto(function(result) {
+	
+	semdomConfigApi.getConfigurationData(function(result) { 
+			if(result.ok) {
+				$scope.config = result.data;
+				if (!$scope.config.showTerms) 
+					$scope.showingTerms = false;
+			}
+		}
+	);
+	
+	semdomEditApi.editorDto(function(result) {
 		if (result.ok) {
 			$scope.terms = result.data.terms;
 			$scope.currentTerm = $scope.terms[0];
