@@ -15,8 +15,7 @@ function($scope, semdomApi, sessionService, modal, notice) {
 			for (var i = 0; i < $scope.allQuestions.length; i++) {
 				var question = $scope.allQuestions[i];
 			    if (question.key == $scope.currentTerm.key) {
-			    	$scope.termQuestions = question.termQuestions;
-			    	$scope.currentQuestion = question.currentQuestion;
+			    	$scope.currentTermQuestions = question;
 			    	break;
 			    }
 			}
@@ -35,6 +34,14 @@ function($scope, semdomApi, sessionService, modal, notice) {
 		return;
 	}
 	
+	$scope.getPreviousQuestion = function() {
+		$scope.currentTermQuestions.position--;
+	}
+	
+	$scope.getNextQuestion = function() {
+		$scope.currentTermQuestions.position++;
+	}
+	
 	$scope.changeTerm = function(key) {
 			for (var i = 0; i < $scope.terms.length; i++) {
 				var term = $scope.terms[i];
@@ -47,8 +54,7 @@ function($scope, semdomApi, sessionService, modal, notice) {
 			for (var i = 0; i < $scope.allQuestions.length; i++) {
 				var question = $scope.allQuestions[i];
 			    if (question.key == $scope.currentTerm.key) {
-			    	$scope.termQuestions = question.termQuestions;
-			    	$scope.currentQuestion = question.currentQuestion;
+			    	$scope.currentTermQuestions = question;
 			    	break;
 			    }
 			}

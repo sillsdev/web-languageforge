@@ -29,7 +29,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     		    	 questionObjects.push({'question': questions[j], 'translation':'', 'terms':''})
     		     }
     		     
-    		     result.data.questions.push({'key': term.abbreviation, 'termQuestions': questionObjects, 'currentQuestion': 0});
+    		     result.data.questions.push({'key': term.abbreviation, 'termQuestions': questionObjects, 'position': 0});
     		  }
     		  i++;
     		  if (i > 100)
