@@ -2,20 +2,20 @@
 	<div style="margin-top:100px; height: 500px" class="container-fluid">
 	    <div class="row" style="border-bottom:solid black 1px">
 		    <div class="span8" style="width: 200px; height: 50px; margin:0 auto">  
-				<ul class="nav nav-pills">  
-					<li class="active"> <a href="#">Terms</a>   </li>     
-					<li><a href="#">Questions</a></li>
-				</ul>  
+				 <tabset class="pull-center">
+					    <tab heading="Terms"  ng-click="showTerms()"> </tab>     
+						<tab heading="Questions" ng-click="showQuestions()"></tab>
+				</tabset>  
 			</div>  
 		</div>
 		<div class="row">
 		  <div class="col-md-2" style="border-right:solid black 1px">
 		    <!--Sidebar content-->
-		    Search: <input ng-model="query.source">
+		    Search: <input ng-model="query.name">
 		    <div style="overflow-y:scroll; height:400px">
 			    <ul>
 			      <li ng-repeat="term in terms| filter:query:strict" ng-click="changeTerm(term.key)" class="thumbnail">
-			        <p ng-class="{selected: (term.key == currentTerm.key)}"> {{term.key}}: {{term.source}} </p>
+			        <p ng-class="{selected: (term.key == currentTerm.key)}"> {{term.key}}: {{term.name}} </p>
 			      </li>
 			    </ul>
 		    </div>
@@ -23,21 +23,52 @@
 		  </div>
 		  <div style="height:400px; text-align: center;" class="col-md-10">
 		  	<div style="vertical-align: middle; display:inline-block">
-			    <table>
-			    <tr>
-				    <td> Source: </td>
-				    <td> <input ng-model="currentTerm.source"> </td>
-			    </tr>
-			     <tr>
-				    <td> Translation: </td>
-				    <td> <input ng-model="currentTerm.translation"> </td>
-				    
-			    </tr>
-			    <tr> 
-			    	<td> Comments: </td>
-			    	<td> <input ng-model="currentTerm.comments">	</td>
-			    </tr> 
-				</table>	
+		  	<span ng-show="showingTerms">
+		    	<table>
+				    <tr>
+					    <td> Name: </td>
+					    <td> <input ng-model="currentTerm.name"> </td>
+				    </tr>
+				     <tr>
+					    <td> Translation: </td>
+					    <td> <input ng-model="currentTerm.nameTrans"> </td>
+					    
+				    </tr>
+				     <tr>
+					    <td> Description: </td>
+					    <td> <input type="text" ng-model="currentTerm.description"> </td>
+				    </tr>
+				     <tr>
+					    <td> Translation: </td>
+					    <td> <input type="text" ng-model="currentTerm.translation"> </td>
+					    
+				    </tr>
+				    <tr> 
+				    	<td> Comments: </td>
+				    	<td> <input ng-model="currentTerm.comments">	</td>
+				    </tr> 
+				</table>
+				</span>	
+				
+				<span ng-show="!showingTerms">
+		    	<table>
+				    <tr>
+					    <td> Question: </td>
+					    <td> <input ng-model="termQuestions[currentQuestion].question"> </td>
+				    </tr>
+				     <tr>
+					    <td> Translation: </td>
+					    <td> <input ng-model="termQuestions[currentQuestion].translation"> </td>
+					    
+				    </tr>				    
+				    <tr> 
+				    	<td> Comments: </td>
+				    	<td> <input ng-model="termQuestions[currentQuestion].comments">	</td>
+				    </tr> 
+				</table>
+				<button class="pull-left">Previous Question</button>
+				<button class="pull-right">Next Question</button>
+				</span>	
 			</div>
 		  </div>
 		</div>
