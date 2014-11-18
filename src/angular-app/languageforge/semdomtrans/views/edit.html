@@ -14,8 +14,8 @@
 		    Search: <input ng-model="query.name">
 		    <div style="overflow-y:scroll; height:400px">
 			    <ul>
-			      <li ng-repeat="term in terms| filter:query:strict" ng-click="changeTerm(term.key)" class="thumbnail">
-			        <p ng-class="{selected: (term.key == currentTerm.key)}"> {{term.key}}: {{term.name}} </p>
+			      <li ng-class="{selected: (term.key == currentTerm.key)}" ng-repeat="term in terms| filter:query:strict" ng-click="changeTerm(term.key)" class="thumbnail">
+			        <p> {{term.key}}: {{term.name}} </p>
 			      </li>
 			    </ul>
 		    </div>
@@ -51,23 +51,24 @@
 				</span>	
 				
 				<span ng-show="!showingTerms">
+		    	<h2> Question {{currentTermQuestions.position + 1}}/{{currentTermQuestions.termQuestions.length}} </h2>
 		    	<table>
 				    <tr>
 					    <td> Question: </td>
-					    <td> <input ng-model="termQuestions[currentQuestion].question"> </td>
+					    <td> <input ng-model="currentTermQuestions.termQuestions[currentTermQuestions.position].question"> </td>
 				    </tr>
 				     <tr>
 					    <td> Translation: </td>
-					    <td> <input ng-model="termQuestions[currentQuestion].translation"> </td>
+					    <td> <input ng-model="currentTermQuestions.termQuestions[currentTermQuestions.position].translation"> </td>
 					    
 				    </tr>				    
 				    <tr> 
 				    	<td> Comments: </td>
-				    	<td> <input ng-model="termQuestions[currentQuestion].comments">	</td>
+				    	<td> <input ng-model="currentTermQuestions.termQuestions[currentTermQuestions.position].comments">	</td>
 				    </tr> 
 				</table>
-				<button class="pull-left">Previous Question</button>
-				<button class="pull-right">Next Question</button>
+				<button ng-show="(currentTermQuestions.position > 0)" ng-click="getPreviousQuestion()" class="pull-left btn btn-success">Previous Question</button>
+				<button ng-show="(currentTermQuestions.position < currentTermQuestions.termQuestions.length - 1)" ng-click="getNextQuestion()" class="pull-right btn btn-success">Next Question</button>
 				</span>	
 			</div>
 		  </div>
