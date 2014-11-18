@@ -1148,7 +1148,6 @@ EOD;
 <header>
 <ranges>
 <range id="grammatical-info" href="file://C:/Users/zook/Desktop/TestLangProj/TestLangProj.lift-ranges"/>
-<range id="semantic-domain-ddp4" href="file://C:/Users/zook/Desktop/TestLangProj/TestLangProj.lift-ranges"/>
 <range id="status" href="file://C:/Users/zook/Desktop/TestLangProj/TestLangProj.lift-ranges"/>
 <!-- The following ranges are produced by FieldWorks Language Explorer, and are not part of the LIFT standard. -->
 <range id="anthro-code" href="file://C:/Users/zook/Desktop/TestLangProj/TestLangProj.lift-ranges"/>
@@ -1305,7 +1304,10 @@ EOD;
 
         $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
-        $this->assertFalse($importer->getReport()->hasError());
+        $report = $importer->getReport();
+        $reportStr = $report->toString();
+        $this->assertTrue($report->hasError());
+        $this->assertPattern("/range id 'anthro-code' was not found in referenced 'TestLangProj.lift-ranges' file/", $reportStr);
 
         $optionList = new LexOptionListModel($project);
         $optionList->readByProperty('code', LexiconConfigObj::ANTHROPOLOGYCATEGORIES);
