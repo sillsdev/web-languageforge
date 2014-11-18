@@ -32,11 +32,11 @@ function($scope, $location, semdomEditApi, semdomConfigApi, sessionService, moda
 	});
 	
 	$scope.saveConfig = function(showTerms, showQuestions, terms) {
-		var selectedTerms = []
+		var selectedTerms = {}
 		
 		for (var i = 0; i < terms.length; i++) {
 			if (terms[i].selected) {
-				selectedTerms.push(terms[i]);
+				selectedTerms[terms[i].key] = terms[i];
 			}
 		}
 		alert(selectedTerms.length);
