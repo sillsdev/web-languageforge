@@ -50,17 +50,15 @@ angular.module('semdomtrans.services', ['jsonRpc'])
   .service('semdomtransConfigService', ['jsonRpc',
   function(jsonRpc) {
     jsonRpc.connect('/api/sf');
-
-	var config = { showTerms: true, showQuestions: true}
+    
 	
     this.getConfigurationData = function(callback) {
-		var result = {ok: true, data: config};
+		var result = {ok: true, data: angular.fromJson(sessionStorage.config)};
     	callback(result);
     }; 
     
     this.saveConfigurationData = function(showTerms, showQuestions) {
-		config.showTerms = showTerms;
-		config.showQuestions = showQuestions;
+    	sessionStorage.config = angular.toJson({ showTerms: showTerms, showQuestions: showQuestions});
     }; 
 
   }])
