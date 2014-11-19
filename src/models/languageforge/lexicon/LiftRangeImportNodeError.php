@@ -33,25 +33,30 @@ class LiftRangeImportNodeError extends ImportNodeError
      * Creates the specific string for each of $errors
      * This should be overwritten by each parent class
      *
+     * @param string $termEnd
+     * @param string $dataStart
+     * @param string $dataEnd
      * @throws \Exception
      * @return string
      */
-    protected function toErrorString() {
-        $msg = "processing $this->type '$this->identifier'";
+    protected function toErrorString($termEnd = '', $dataStart = ', ', $dataEnd = '') {
+        $msg = "processing $this->type '$this->identifier'" .$termEnd;
         foreach ($this->errors as $error) {
+    	    $msg .= $dataStart;
             switch ($error['error']) {
             	case 'UnhandledElement':
-            	    $msg .= ", unhandled element '" . $error['element'] . "'";
+            	    $msg .= "unhandled element '" . $error['element'] . "'";
             	    break;
         	    case 'RangeFileNotFound':
-        	        $msg .= ", range file '" . $this->identifier . "' was not found alongside the '" . $error['liftFilename'] . "' file";
+        	        $msg .= "range file '" . $this->identifier . "' was not found alongside the '" . $error['liftFilename'] . "' file";
         	        break;
             	case 'RangeNotFound':
-            	    $msg .= ", range id '" . $this->identifier . "' was not found in referenced '" . $error['rangeFilename'] . "' file";
+            	    $msg .= "the lift range was not found in the referenced '" . $error['rangeFilename'] . "' file";
             	    break;
             	default:
             	    throw new \Exception("Unknown error type '" . $error['error'] . "' while processing identifier '" . $this->identifier . "'");
             }
+            $msg .= $dataEnd;
         }
         return $msg;
     }

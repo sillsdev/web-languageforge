@@ -34,4 +34,26 @@ class ImportErrorReport
         }
         return $msg;
     }
+
+    public function toFormattedString()
+    {
+        $msg = '';
+        foreach ($this->nodeErrors as $nodeError) {
+            if ($nodeError->hasErrors()) {
+                $msg .= 'While ' . $nodeError->toFormattedString();
+            }
+        }
+        return $msg . "\n";
+    }
+
+    public function toHtml()
+    {
+        $html = '<dl>';
+        foreach ($this->nodeErrors as $nodeError) {
+            if ($nodeError->hasErrors()) {
+                $html .= '<dt>While ' . $nodeError->toHtml();
+            }
+        }
+        return $html . '</dl>';
+    }
 }
