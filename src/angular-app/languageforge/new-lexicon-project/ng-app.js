@@ -6,7 +6,6 @@ angular.module('new-lexicon-project',
     'bellows.services',
     'bellows.filters',
     'ui.bootstrap',
-    'ui.bootstrap.collapse',
     'ngAnimate',
     'ui.router',
     'palaso.ui.utils',
@@ -360,6 +359,9 @@ angular.module('new-lexicon-project',
 
     // ----- Step 2: Initial data upload -----
 
+    $scope.show = {};
+    $scope.show.importErrors = false;
+
     $scope.$watch('newProject.emptyProjectDesired', function(newval) {
       if (angular.isUndefined(newval)) { return; }
       $scope.validateForm();
@@ -388,14 +390,27 @@ angular.module('new-lexicon-project',
         if ($scope.uploadSuccess) {
           notice.push(notice.SUCCESS, $filter('translate')("Successfully imported") + " " + $scope.datafile.name);
           $scope.newProject.entriesImported = data.data.stats.importEntries;
+          $scope.newProject.importErrors = data.data.importErrors;
+          $scope.validateForm();
+          $scope.nextStep();
         } else {
-          notice.push(notice.ERROR, $filter('translate')("Sorry, something went wrong in the import process."));
+          $scope.uploadProgress = 0;
           $scope.newProject.entriesImported = 0;
-          // Should really have a more specific error message.
-          // TODO: Update the PHP API to provide specific error messages regarding failure reasons.
+          notice.push(notice.ERROR, data.data.errorMessage);
+          $scope.validateForm();
         }
-        $scope.validateForm();
       });
+    };
+    
+    $scope.hasImportErrors = function hasImportErrorrs() {
+      return ($scope.newProject.importErrors !== '');
+    };
+    
+    $scope.showImportErrorsButtonLabel = function showImportErrorsButtonLabel() {
+      if ($scope.show.importErrors) {
+        return $filter('translate')("Hide non-critical import errors");
+      }
+      return $filter('translate')("Show non-critical import errors");
     };
 
     // ----- Step 3: Verify initial data -OR- select primary language -----
