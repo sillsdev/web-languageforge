@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon;
 class LiftRangeImportNodeError extends ImportNodeError
 {
 
+    const FILE = 'file';
     const RANGE = 'lift range';
 
     /**
@@ -11,6 +12,14 @@ class LiftRangeImportNodeError extends ImportNodeError
      * @var array <LiftRangeImportNodeError>
      */
     protected $subnodeErrors;
+
+    public function addRangeFileNotFound($liftFilename)
+    {
+        $this->errors[] = array(
+            'error' => 'RangeFileNotFound',
+            'liftFilename' => $liftFilename
+        );
+    }
 
     public function addRangeNotFound($rangeFilename)
     {
@@ -34,6 +43,9 @@ class LiftRangeImportNodeError extends ImportNodeError
             	case 'UnhandledElement':
             	    $msg .= ", unhandled element '" . $error['element'] . "'";
             	    break;
+        	    case 'RangeFileNotFound':
+        	        $msg .= ", range file '" . $this->identifier . "' was not found alongside the '" . $error['liftFilename'] . "' file";
+        	        break;
             	case 'RangeNotFound':
             	    $msg .= ", range id '" . $this->identifier . "' was not found in referenced '" . $error['rangeFilename'] . "' file";
             	    break;
