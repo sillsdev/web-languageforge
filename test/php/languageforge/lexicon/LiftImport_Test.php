@@ -1140,8 +1140,8 @@ EOD;
         $this->assertPattern("/unhandled element 'fake'/", $reportStr);
     }
 
-    // lift range
-    const liftRangeV0_13 = <<<EOD
+    // lift with ranges referencing lift-ranges file
+    const liftWithRangesV0_13 = <<<EOD
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- See http://code.google.com/p/lift-standard for more information on the format used here. -->
 <lift producer="SIL.FLEx 8.1.1.41891" version="0.13">
@@ -1182,8 +1182,8 @@ EOD;
 </lift>
 EOD;
 
-    // lift range lift-ranges
-    const liftRangeLiftRangesV0_13 = <<<EOD
+    // lift-ranges
+    const liftRangesV0_13 = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- See http://code.google.com/p/lift-standard for more information on the format used here. -->
 <lift-ranges>
@@ -1296,8 +1296,8 @@ EOD;
 
     public function testLiftImportMerge_LiftRanges_ImportOk()
     {
-        $liftFilePath = $this->environ->createTestLiftFile(self::liftRangeV0_13, 'LiftRangeV0_13.lift');
-        $liftRangesFilePath = $this->environ->createTestLiftFile(self::liftRangeLiftRangesV0_13, 'TestLangProj.lift-ranges');
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftWithRangesV0_13, 'LiftWithRangesV0_13.lift');
+        $liftRangesFilePath = $this->environ->createTestLiftFile(self::liftRangesV0_13, 'TestLangProj.lift-ranges');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
@@ -1336,6 +1336,22 @@ EOD;
         $this->assertEqual($optionList->items[0]->value, 'anatomy');
         $this->assertEqual($optionList->items[1]->key, 'Anthro');
         $this->assertEqual($optionList->items[1]->value, 'anthropology');
+    }
+
+    public function testLiftImportMerge_NoLiftRanges_Error()
+    {
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftWithRangesV0_13, 'LiftWithRangesV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
+        $report = $importer->getReport();
+        $reportStr = $report->toString();
+        $this->assertTrue($report->hasError());
+        $this->assertPattern("/range file 'TestLangProj.lift-ranges' was not found alongside the 'LiftWithRangesV0_13.lift' file/", $reportStr);
+        $this->assertNoPattern("/range id 'anthro-code' was not found in referenced 'TestLangProj.lift-ranges' file/", $reportStr);
     }
 
     // 2x Validation tests, removed until validation is working IJH 2014-03

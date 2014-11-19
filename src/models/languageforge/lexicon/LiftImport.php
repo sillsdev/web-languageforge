@@ -93,6 +93,11 @@ class LiftImport
                         $sxeNode = simplexml_load_file($rangeFilePath);
                         $parsedRanges = $liftRangeDecoder->decode($sxeNode);
                         $liftRanges = array_merge($liftRanges, $parsedRanges);
+                    } else {
+                        // Range file was NOT found in alongside the .lift file
+                        $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::FILE, $rangeFilename);
+                        $rangeImportNodeError->addRangeFileNotFound(basename($liftFilePath));
+                        $this->report->nodeErrors[] = $rangeImportNodeError;
                     }
                 }
 
@@ -100,16 +105,19 @@ class LiftImport
                 if (isset($liftRanges[$rangeId])) {
                     $range = $liftRanges[$rangeId];
                 } else {
-                    // Range was NOT found in referenced .lift-ranges file after parsing it
-                    $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::RANGE, $rangeId);
-                    $rangeImportNodeError->addRangeNotFound($rangeFilename);
-                    $this->report->nodeErrors[] = $rangeImportNodeError;
+                    $range = null;
+                    if (file_exists($rangeFilePath)) {
+                        // Range was NOT found in referenced .lift-ranges file after parsing it
+                        $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::RANGE, $rangeId);
+                        $rangeImportNodeError->addRangeNotFound($rangeFilename);
+                        $this->report->nodeErrors[] = $rangeImportNodeError;
+                    }
                 }
 
                 // Range elements defined in LIFT file override any values defined in .lift-ranges file.
                 if ($node->hasChildNodes()) {
-                    $sxeNode = self::domNode_to_sxeNode($node);
-                    $range = $liftRangeDecoder->readRange($sxeNode, $range);
+                    $rangeNode = self::domNode_to_sxeNode($node);
+                    $range = $liftRangeDecoder->readRange($rangeNode, $range);
                     $liftRanges[$rangeId] = $range;
                 }
             }
