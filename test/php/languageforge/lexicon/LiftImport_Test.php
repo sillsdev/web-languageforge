@@ -1307,7 +1307,7 @@ EOD;
         $report = $importer->getReport();
         $reportStr = $report->toString();
         $this->assertTrue($report->hasError());
-        $this->assertPattern("/range id 'anthro-code' was not found in referenced 'TestLangProj.lift-ranges' file/", $reportStr);
+        $this->assertPattern("/the lift range was not found in the referenced 'TestLangProj.lift-ranges' file/", $reportStr);
 
         $optionList = new LexOptionListModel($project);
         $optionList->readByProperty('code', LexiconConfigObj::ANTHROPOLOGYCATEGORIES);
@@ -1351,7 +1351,7 @@ EOD;
         $reportStr = $report->toString();
         $this->assertTrue($report->hasError());
         $this->assertPattern("/range file 'TestLangProj.lift-ranges' was not found alongside the 'LiftWithRangesV0_13.lift' file/", $reportStr);
-        $this->assertNoPattern("/range id 'anthro-code' was not found in referenced 'TestLangProj.lift-ranges' file/", $reportStr);
+        $this->assertNoPattern("/the lift range was not found in the referenced 'TestLangProj.lift-ranges' file/", $reportStr);
     }
 
     // 2x Validation tests, removed until validation is working IJH 2014-03
