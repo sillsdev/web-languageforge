@@ -69,19 +69,24 @@ class ImportNodeError
      * Creates the specific string for each of $errors
      * This should be overwritten by each parent class
      *
+     * @param string $termEnd
+     * @param string $dataStart
+     * @param string $dataEnd
      * @throws \Exception
      * @return string
      */
-    protected function toErrorString() {
-        $msg = "processing $this->type '$this->identifier'";
+    protected function toErrorString($termEnd = '', $dataStart = ', ', $dataEnd = '') {
+        $msg = "processing $this->type '$this->identifier'" . $termEnd;
         foreach ($this->errors as $error) {
+    	    $msg .= $dataStart;
             switch ($error['error']) {
             	case 'UnhandledElement':
-            	    $msg .= ", unhandled element '" . $error['element'] . "'";
+            	    $msg .= "unhandled element '" . $error['element'] . "'";
             	    break;
             	default:
             	    throw new \Exception("Unknown error type '" . $error['error'] . "' while processing identifier '" . $this->identifier . "'");
             }
+            $msg .= $dataEnd;
         }
         return $msg;
     }
@@ -95,5 +100,27 @@ class ImportNodeError
             }
         }
         return $msg;
+    }
+
+    public function toFormattedString()
+    {
+        $html = $this->toErrorString("\n", "\t", "\n");
+        foreach ($this->subnodeErrors as $subnodeError) {
+            if ($subnodeError->hasErrors()) {
+                $html .= "\t" . $subnodeError->toFormattedString() . "\n";
+            }
+        }
+        return $html;
+    }
+
+    public function toHtml()
+    {
+        $html = $this->toErrorString('</dt>', '<dd>', '</dd>');
+        foreach ($this->subnodeErrors as $subnodeError) {
+            if ($subnodeError->hasErrors()) {
+                $html .= '<dd><dl><dt>' . $subnodeError->toHtml() . '</dl></dd>';
+            }
+        }
+        return $html;
     }
 }
