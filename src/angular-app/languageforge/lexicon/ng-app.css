@@ -14,3 +14,8 @@ div.lexnav {
 .drop-box {
     border: 4px dashed #e67345;
 }
+
+#importErrors {
+    max-height: 160px;
+    overflow-y: scroll;
+}

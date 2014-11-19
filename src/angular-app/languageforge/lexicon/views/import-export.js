@@ -2,8 +2,8 @@
 
 angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'angularFileUpload', 'lexicon.upload'])
 // Lift Import Controller
-.controller('LiftImportCtrl', ['$scope', '$upload', 'silNoticeService', 'lexProjectService', '$filter', '$location', 'sessionService', 
-function LiftImportCtrl($scope, $upload, notice, lexProjectService, $filter, $location, ss) {
+.controller('LiftImportCtrl', ['$scope', '$upload', '$modal', 'silNoticeService', 'lexProjectService', '$filter', '$location', 'sessionService', 
+function LiftImportCtrl($scope, $upload, $modal, notice, lexProjectService, $filter, $location, ss) {
   lexProjectService.setBreadcrumbs('importExport', 'Import/export');
 
   $scope.upload = {};
@@ -46,12 +46,37 @@ function LiftImportCtrl($scope, $upload, notice, lexProjectService, $filter, $lo
         notice.cancelLoading();
         if (data.result) {
           $scope.upload.progress = 100.0;
+          var modalInstance = $modal.open({
+            templateUrl: '/angular-app/languageforge/lexicon/views/import-results.html',
+            controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.show = {};
+              $scope.show.importErrors = false;
+              $scope.result = {
+                'stats': data.data.stats,
+                'importErrors': data.data.importErrors
+              };
+              $scope.ok = function() {
+                $modalInstance.close();
+              };
+              $scope.hasImportErrors = function hasImportErrorrs() {
+                return ($scope.result.importErrors !== '');
+              };
+              $scope.showImportErrorsButtonLabel = function showImportErrorsButtonLabel() {
+                if ($scope.show.importErrors) {
+                  return $filter('translate')("Hide non-critical import errors");
+                }
+                return $filter('translate')("Show non-critical import errors");
+              };
+            }]
+          });
 
           // reload the config after the import is complete
-          ss.refresh(function() {
-            notice.push(notice.SUCCESS, $filter('translate')("Import completed successfully"));
-            notice.push(notice.INFO, $filter('translate')('Your project was successfully imported.  Carefully review the dictionary configuration below before continuing, especially the input systems and fields tabs'));
-            $location.path('/configuration');
+          modalInstance.result.then()['finally'](function() {
+            ss.refresh(function() {
+              notice.push(notice.SUCCESS, $filter('translate')("Import completed successfully"));
+              notice.push(notice.INFO, $filter('translate')('Your project was successfully imported.  Carefully review the dictionary configuration below before continuing, especially the input systems and fields tabs'));
+              $location.path('/configuration');
+            });
           });
         } else {
           $scope.upload.progress = 0;
