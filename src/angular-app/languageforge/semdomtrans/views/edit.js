@@ -19,6 +19,7 @@ function($scope, semdomEditApi, sessionService, semdomConfigApi, modal, notice) 
 	
 	semdomEditApi.editorDto(function(result) {
 		if (result.ok) {
+			$scope.terms = result.data.terms;
 			$scope.currentTerm = $scope.config.terms["1"];
 			$scope.allQuestions = result.data.questions;
 			for (var i = 0; i < $scope.allQuestions.length; i++) {
