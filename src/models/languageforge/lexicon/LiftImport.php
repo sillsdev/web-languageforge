@@ -18,6 +18,12 @@ class LiftImport
 
     /**
      *
+     * @var string
+     */
+    public $liftFilePath;
+
+    /**
+     *
      * @var ImportErrorReport
      */
     private $report;
@@ -305,15 +311,15 @@ class LiftImport
             $dirIter = new \RecursiveDirectoryIterator($extractFolderPath);
             $iterIter = new \RecursiveIteratorIterator($dirIter);
             $liftIter = new \RegexIterator($iterIter, '/\.lift$/', \RegexIterator::MATCH);
-            $liftFilenames = array();
+            $liftFilePaths = array();
             foreach ($liftIter as $file) {
-                $liftFilenames[] = $file->getPathname();
+                $liftFilePaths[] = $file->getPathname();
             }
-            if (empty($liftFilenames)) {
+            if (empty($liftFilePaths)) {
                 throw new \Exception("Uploaded file does not contain any LIFT data");
             }
-            if (count($liftFilenames) > 1) {
-                foreach (array_slice($liftFilenames, 1) as $filename) {
+            if (count($liftFilePaths) > 1) {
+                foreach (array_slice($liftFilePaths, 1) as $filename) {
                     $zipNodeError->addUnhandledLiftFile(basename($filename));
                 }
             }
@@ -337,8 +343,8 @@ class LiftImport
             }
 
             // Import first .lift file (only).
-            $liftFilePath = $liftFilenames[0];
-            $this->merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+            $this->liftFilePath = $liftFilePaths[0];
+            $this->merge($this->liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
 
             if ($zipNodeError->hasError()) {
                 error_log($zipNodeError->toString() . "\n");
