@@ -6,7 +6,6 @@ angular.module('semdomtrans',
     'bellows.services',
     'bellows.filters',
     'semdomtrans.edit',
-    'semdomtrans.setupConfig'
   ])
   .config(['$routeProvider', function($routeProvider) {
 
