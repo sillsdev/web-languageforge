@@ -93,6 +93,7 @@ class LiftImport
                         $sxeNode = simplexml_load_file($rangeFilePath);
                         $parsedRanges = $liftRangeDecoder->decode($sxeNode);
                         $liftRanges = array_merge($liftRanges, $parsedRanges);
+                        $liftRangeFiles[] = $rangeFilename;
                     } else {
                         // Range file was NOT found in alongside the .lift file
                         $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::FILE, $rangeFilename);
@@ -269,7 +270,10 @@ class LiftImport
             } else {
                 $abbrev = null;
             }
-            $optionList->items->append(new LexiconOptionListItem($label, $abbrev));
+            $optionListItem = new LexiconOptionListItem($label);
+            $optionListItem->abbreviation = $abbrev;
+            $optionList->items->append($optionListItem);
+
         }
         $optionList->write();
     }
