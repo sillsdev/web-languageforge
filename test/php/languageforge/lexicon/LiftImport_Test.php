@@ -1127,16 +1127,16 @@ EOD;
         $this->assertEqual("A kind of curry fried with crispy pork", $index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['definition']['en']['value']);
         $this->assertEqual("Noun", $index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['partOfSpeech']['value']);
         $this->assertEqual("khâaw kài thɔ̂ɔt", $index['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value']);
-        $this->assertEqual(2, count($report->nodeErrors));
-        $this->assertTrue($report->nodeErrors[0]->hasError(), 'should have phony and bogus tag entry errors');
+        $this->assertEqual(1, count($report->nodeErrors));
+        $this->assertTrue($report->nodeErrors[0]->getSubnodeError(0)->hasError(), 'should have phony and bogus tag entry errors');
         $this->assertPattern("/unhandled element 'bogus'/", $reportStr);
         $this->assertPattern("/processing multitext 'lexical-unit', unhandled element 'phony'/", $reportStr);
         $this->assertNoPattern("/unhandled element 'translation'/", $reportStr);
-        $this->assertTrue($report->nodeErrors[0]->currentSubnodeError()->currentSubnodeError()->hasError(), 'should have rubbish tag example error');
-        $this->assertPattern("/unhandled element 'rubbish'/", $report->nodeErrors[0]->currentSubnodeError()->currentSubnodeError()->toString());
+        $this->assertTrue($report->nodeErrors[0]->getSubnodeError(0)->currentSubnodeError()->currentSubnodeError()->hasError(), 'should have rubbish tag example error');
+        $this->assertPattern("/unhandled element 'rubbish'/", $report->nodeErrors[0]->getSubnodeError(0)->currentSubnodeError()->currentSubnodeError()->toString());
         $this->assertPattern("/unhandled element 'rubbish'/", $reportStr);
-        $this->assertTrue($report->nodeErrors[1]->currentSubnodeError()->currentSubnodeError()->hasError(), 'should have fake tag example error');
-        $this->assertPattern("/unhandled element 'fake'/", $report->nodeErrors[1]->currentSubnodeError()->currentSubnodeError()->toString());
+        $this->assertTrue($report->nodeErrors[0]->getSubnodeError(1)->currentSubnodeError()->currentSubnodeError()->hasError(), 'should have fake tag example error');
+        $this->assertPattern("/unhandled element 'fake'/", $report->nodeErrors[0]->getSubnodeError(1)->currentSubnodeError()->currentSubnodeError()->toString());
         $this->assertPattern("/unhandled element 'fake'/", $reportStr);
     }
 
@@ -1313,7 +1313,7 @@ EOD;
         $report = $importer->getReport();
         $reportStr = $report->toString();
         $this->assertTrue($report->hasError());
-        $this->assertPattern("/the lift range was not found in the referenced 'TestLangProj.lift-ranges' file/", $reportStr);
+        $this->assertPattern("/the lift range 'anthro-code' was not found in the current file/", $reportStr);
         $this->assertEqual($importer->stats->newEntries, 1);
 
         $optionList = new LexOptionListModel($project);
@@ -1389,7 +1389,7 @@ EOD;
         $report = $importer->getReport();
         $reportStr = $report->toString();
         $this->assertTrue($report->hasError());
-        $this->assertPattern("/the lift range was not found in the referenced 'TestLangProj.lift-ranges' file/", $reportStr);
+        $this->assertPattern("/the lift range 'anthro-code' was not found in the current file/", $reportStr);
         $this->assertEqual($importer->stats->existingEntries, 1);
 
         $optionList = new LexOptionListModel($project);
@@ -1398,12 +1398,6 @@ EOD;
 
         $optionList->readByProperty('code', LexiconConfigObj::POS);
         $this->assertEqual($optionList->items->count(), 3);
-        $this->assertEqual($optionList->items[0]->abbreviation, 'art');
-        $this->assertEqual($optionList->items[0]->value, 'article');
-        $this->assertEqual($optionList->items[1]->abbreviation, 'def');
-        $this->assertEqual($optionList->items[1]->value, 'definite article');
-        $this->assertEqual($optionList->items[2]->abbreviation, 'indef');
-        $this->assertEqual($optionList->items[2]->value, 'indefinite article');
 
         $optionList->readByProperty('code', LexiconConfigObj::STATUS);
         $this->assertEqual($optionList->items->count(), 4);
@@ -1425,7 +1419,7 @@ EOD;
         $reportStr = $report->toString();
         $this->assertTrue($report->hasError());
         $this->assertPattern("/range file 'TestLangProj.lift-ranges' was not found alongside the 'LiftWithRangesV0_13.lift' file/", $reportStr);
-        $this->assertNoPattern("/the lift range was not found in the referenced 'TestLangProj.lift-ranges' file/", $reportStr);
+        $this->assertNoPattern("/the lift range 'anthro-code' was not found in the current file/", $reportStr);
     }
 
     // 2x Validation tests, removed until validation is working IJH 2014-03

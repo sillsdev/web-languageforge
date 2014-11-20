@@ -120,9 +120,15 @@ class TestLexUploadCommands extends UnitTestCase
 
         $this->environ->inhibitErrorDisplay();
         $this->expectException();
-        $response = LexUploadCommands::deleteMediaFile($projectId, 'bogusMediaType', '');
+        LexUploadCommands::deleteMediaFile($projectId, 'bogusMediaType', '');
 
         // nothing runs in the current test function after an exception. IJH 2014-11
+    }
+
+    public function testDeleteImageFile_UnsupportedMediaType_RestoreErrorDisplay()
+    {
+        // restore error display after last test
+        $this->environ->restoreErrorDisplay();
     }
 
     public function testImportProjectZip_ZipFile_StatsOkInputSystemsImported()

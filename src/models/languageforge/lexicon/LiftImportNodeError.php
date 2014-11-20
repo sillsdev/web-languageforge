@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon;
 class LiftImportNodeError extends ImportNodeError
 {
 
+    const FILE = 'file';
     const ENTRY = 'entry';
     const SENSE = 'sense';
     const EXAMPLE = 'example';

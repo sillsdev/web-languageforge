@@ -370,7 +370,7 @@ class LexUploadCommands
                     $data->path = $project->getAssetsPath();
                     $data->fileName = $fileName;
                     $data->stats = $importer->stats;
-                    $data->importErrors = $importer->getReport()->toString();
+                    $data->importErrors = $importer->getReport()->toFormattedString();
                     $response->result = true;
                 } else {
                     $data = new ErrorResult();
@@ -495,7 +495,7 @@ class LexUploadCommands
                 $data->path = $project->getAssetsPath();
                 $data->fileName = $fileName;
                 $data->stats = $importer->stats;
-                $data->importErrors = $importer->getReport()->toString();
+                $data->importErrors = $importer->getReport()->toFormattedString();
                 $response->result = true;
             } else {
                 $data = new ErrorResult();
