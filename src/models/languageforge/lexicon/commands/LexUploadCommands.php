@@ -17,6 +17,10 @@ use models\languageforge\lexicon\LiftImportStats;
 class LexUploadCommands
 {
 
+    private static $allowedLiftExtensions = array(
+        ".lift"
+    );
+
     /**
      * Upload an audio file
      *
@@ -339,17 +343,41 @@ class LexUploadCommands
             $moveOk = copy($tmpFilePath, $filePath);
             @unlink($tmpFilePath);
 
-            // construct server response
-            if ($moveOk && $tmpFilePath) {
+            // import zip
+            if ($moveOk) {
                 $importer = LiftImport::get()->importZip($filePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
                 $project->write();
 
-                $data = new ImportResult();
-                $data->path = $project->getAssetsPath();
-                $data->fileName = $fileName;
-                $data->stats = $importer->stats;
-                $data->importErrors = $importer->getReport()->toString();
-                $response->result = true;
+                $liftFilename = basename($importer->liftFilePath);
+                if (! $project->liftFilePath || $mergeRule != LiftMergeRule::IMPORT_LOSES) {
+
+                    // cleanup previous files of any allowed extension
+                    $cleanupFiles = glob($folderPath . '/*[' . implode(', ', self::$allowedLiftExtensions) . ']');
+                    foreach ($cleanupFiles as $cleanupFile) {
+                        @unlink($cleanupFile);
+                    }
+
+                    // copy uploaded LIFT file from extract location to assets
+                    $filePath =  $folderPath . '/' . $liftFilename;
+                    $project->liftFilePath = $filePath;
+                    $project->write();
+                    $moveOk = copy($importer->liftFilePath, $filePath);
+                }
+
+                // construct server response
+                if ($moveOk) {
+                    $data = new ImportResult();
+                    $data->path = $project->getAssetsPath();
+                    $data->fileName = $fileName;
+                    $data->stats = $importer->stats;
+                    $data->importErrors = $importer->getReport()->toString();
+                    $response->result = true;
+                } else {
+                    $data = new ErrorResult();
+                    $data->errorType = 'UserMessage';
+                    $data->errorMessage = "$liftFilename could not be saved to the right location. Contact your Site Administrator.";
+                    $response->result = false;
+                }
             } else {
                 $data = new ErrorResult();
                 $data->errorType = 'UserMessage';
@@ -432,12 +460,9 @@ class LexUploadCommands
             "text/xml",
             "application/xml"
         );
-        $allowedExtensions = array(
-            ".lift"
-        );
 
         $response = new UploadResponse();
-        if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
+        if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), self::$allowedLiftExtensions)) {
 
             // make the folders if they don't exist
             $project = new LexiconProjectModel($projectId);
@@ -451,7 +476,7 @@ class LexUploadCommands
             if (! $project->liftFilePath || $mergeRule != LiftMergeRule::IMPORT_LOSES) {
 
                 // cleanup previous files of any allowed extension
-                $cleanupFiles = glob($folderPath . '/*[' . implode(', ', $allowedExtensions) . ']');
+                $cleanupFiles = glob($folderPath . '/*[' . implode(', ', self::$allowedLiftExtensions) . ']');
                 foreach ($cleanupFiles as $cleanupFile) {
                     @unlink($cleanupFile);
                 }
@@ -463,7 +488,6 @@ class LexUploadCommands
                 $moveOk = copy($tmpFilePath, $filePath);
                 @unlink($tmpFilePath);
             }
-
 
             // construct server response
             if ($moveOk && $tmpFilePath) {
@@ -480,12 +504,12 @@ class LexUploadCommands
                 $response->result = false;
             }
         } else {
-            $allowedExtensionsStr = implode(", ", $allowedExtensions);
+            $allowedExtensionsStr = implode(", ", self::$allowedLiftExtensions);
             $data = new ErrorResult();
             $data->errorType = 'UserMessage';
-            if (count($allowedExtensions) < 1) {
+            if (count(self::$allowedLiftExtensions) < 1) {
                 $data->errorMessage = "$fileName of type: $fileType is not an allowed LIFT file. No LIFT file formats are currently enabled, contact your Site Administrator.";
-            } elseif (count($allowedExtensions) == 1) {
+            } elseif (count(self::$allowedLiftExtensions) == 1) {
                 $data->errorMessage = "$fileName of type: $fileType is not an allowed LIFT file. Ensure the file is a $allowedExtensionsStr.";
             } else {
                 $data->errorMessage = "$fileName of type: $fileType is not an allowed LIFT file. Ensure the file is one of the following types: $allowedExtensionsStr.";
