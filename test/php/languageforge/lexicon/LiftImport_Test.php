@@ -1179,6 +1179,12 @@ EOD;
 </range>
 </ranges>
 </header>
+<entry dateCreated="2003-08-07T13:42:42Z" dateModified="2007-01-17T19:16:55Z" id="*hindoksa_016f2759-ed12-42a5-abcb-7fe3f53d05b0" guid="016f2759-ed12-42a5-abcb-7fe3f53d05b0">
+<lexical-unit>
+<form lang="qaa-fonipa-x-kal"><text>*dok</text></form>
+<form lang="qaa-x-kal"><text>*dok</text></form>
+</lexical-unit>
+</entry>
 </lift>
 EOD;
 
@@ -1308,34 +1314,102 @@ EOD;
         $reportStr = $report->toString();
         $this->assertTrue($report->hasError());
         $this->assertPattern("/the lift range was not found in the referenced 'TestLangProj.lift-ranges' file/", $reportStr);
+        $this->assertEqual($importer->stats->newEntries, 1);
 
         $optionList = new LexOptionListModel($project);
         $optionList->readByProperty('code', LexiconConfigObj::ANTHROPOLOGYCATEGORIES);
         $this->assertEqual($optionList->items->count(), 0);
 
         $optionList->readByProperty('code', LexiconConfigObj::POS);
-        $this->assertEqual($optionList->items[0]->key, 'art');
+        $this->assertEqual($optionList->items->count(), 3);
+        $this->assertEqual($optionList->items[0]->abbreviation, 'art');
         $this->assertEqual($optionList->items[0]->value, 'article');
-        $this->assertEqual($optionList->items[1]->key, 'def');
+        $this->assertEqual($optionList->items[1]->abbreviation, 'def');
         $this->assertEqual($optionList->items[1]->value, 'definite article');
-        $this->assertEqual($optionList->items[2]->key, 'indef');
+        $this->assertEqual($optionList->items[2]->abbreviation, 'indef');
         $this->assertEqual($optionList->items[2]->value, 'indefinite article');
 
         $optionList->readByProperty('code', LexiconConfigObj::STATUS);
-        $this->assertEqual($optionList->items[0]->key, 'Conf');
+        $this->assertEqual($optionList->items->count(), 4);
+        $this->assertEqual($optionList->items[0]->abbreviation, 'Conf');
         $this->assertEqual($optionList->items[0]->value, 'Confirmed');
-        $this->assertEqual($optionList->items[1]->key, 'Dis');
+        $this->assertEqual($optionList->items[1]->abbreviation, 'Dis');
         $this->assertEqual($optionList->items[1]->value, 'Disproved');
-        $this->assertEqual($optionList->items[2]->key, 'Pend');
+        $this->assertEqual($optionList->items[2]->abbreviation, 'Pend');
         $this->assertEqual($optionList->items[2]->value, 'Pending');
-        $this->assertEqual($optionList->items[3]->key, 'Tent');
+        $this->assertEqual($optionList->items[3]->abbreviation, 'Tent');
         $this->assertEqual($optionList->items[3]->value, 'Tentative');
 
         $optionList->readByProperty('code', LexiconConfigObj::ACADEMICDOMAINS);
-        $this->assertEqual($optionList->items[0]->key, 'Anat');
+        $this->assertEqual($optionList->items->count(), 2);
+        $this->assertEqual($optionList->items[0]->abbreviation, 'Anat');
         $this->assertEqual($optionList->items[0]->value, 'anatomy');
-        $this->assertEqual($optionList->items[1]->key, 'Anthro');
+        $this->assertEqual($optionList->items[1]->abbreviation, 'Anthro');
         $this->assertEqual($optionList->items[1]->value, 'anthropology');
+    }
+
+
+    // lift-ranges another POS
+    const liftRangesAnotherPosV0_13 = <<<EOD
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- See http://code.google.com/p/lift-standard for more information on the format used here. -->
+<lift-ranges>
+<range id="grammatical-info">
+<!-- These are all the parts of speech in the FLEx db, used or unused.  These are used as the basic grammatical-info values. -->
+<range-element id="adjunct" guid="d7f7150d-e8cf-11d3-9764-00c04f186933">
+<label>
+<form lang="en"><text>adjunct</text></form>
+<form lang="es"><text>adjunto</text></form>
+<form lang="fr"><text>accessoire</text></form>
+</label>
+<abbrev>
+<form lang="en"><text>adjunct</text></form>
+<form lang="es"><text>adjunto</text></form>
+<form lang="fr"><text>accessoire</text></form>
+</abbrev>
+<trait name="catalog-source-id" value=""/>
+</range-element>
+</range>
+</lift-ranges>
+EOD;
+
+    public function testLiftImportMerge_ExistingData_RangesUnchanged()
+    {
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftWithRangesV0_13, 'LiftWithRangesV0_13.lift');
+        $liftRangesFilePath = $this->environ->createTestLiftFile(self::liftRangesV0_13, 'TestLangProj.lift-ranges');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+        LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
+        $liftRangesFilePath = $this->environ->createTestLiftFile(self::liftRangesAnotherPosV0_13, 'TestLangProj.lift-ranges');
+
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
+        $report = $importer->getReport();
+        $reportStr = $report->toString();
+        $this->assertTrue($report->hasError());
+        $this->assertPattern("/the lift range was not found in the referenced 'TestLangProj.lift-ranges' file/", $reportStr);
+        $this->assertEqual($importer->stats->existingEntries, 1);
+
+        $optionList = new LexOptionListModel($project);
+        $optionList->readByProperty('code', LexiconConfigObj::ANTHROPOLOGYCATEGORIES);
+        $this->assertEqual($optionList->items->count(), 0);
+
+        $optionList->readByProperty('code', LexiconConfigObj::POS);
+        $this->assertEqual($optionList->items->count(), 3);
+        $this->assertEqual($optionList->items[0]->abbreviation, 'art');
+        $this->assertEqual($optionList->items[0]->value, 'article');
+        $this->assertEqual($optionList->items[1]->abbreviation, 'def');
+        $this->assertEqual($optionList->items[1]->value, 'definite article');
+        $this->assertEqual($optionList->items[2]->abbreviation, 'indef');
+        $this->assertEqual($optionList->items[2]->value, 'indefinite article');
+
+        $optionList->readByProperty('code', LexiconConfigObj::STATUS);
+        $this->assertEqual($optionList->items->count(), 4);
+
+        $optionList->readByProperty('code', LexiconConfigObj::ACADEMICDOMAINS);
+        $this->assertEqual($optionList->items->count(), 2);
     }
 
     public function testLiftImportMerge_NoLiftRanges_Error()
