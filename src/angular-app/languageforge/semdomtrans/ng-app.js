@@ -2,49 +2,22 @@
 
 angular.module('semdomtrans', 
   [
-    'ngRoute',
+    'ui.router',
     'bellows.services',
     'bellows.filters',
     'semdomtrans.edit',
   ])
-  .config(['$routeProvider', function($routeProvider) {
-
-        // TODO: refactor to use ui-router instead of ngRoute
+  .config(function($stateProvider, $urlRouterProvider) {
     
-    // the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
-    $routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } });
+    $urlRouterProvider.otherwise('/edit');
     
-    $routeProvider.when( '/', { redirectTo: '/setupConfig' });
-    
-	$routeProvider.when(
-        '/edit',
-            {
-                templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html',
-                controller: 'editCtrl'
-	    }
-	);
-	$routeProvider.when(
-	        '/setupConfig',
-	            {
-	                templateUrl: '/angular-app/languageforge/semdomtrans/views/setupConfig.html',
-	                controller: 'setupConfigCtrl'
-		    }
-		);
-    $routeProvider.when(
-        '/settings',
-        {
-          templateUrl: '/angular-app/languageforge/semdomtrans/views/settings.html'
-        }
-      );
-    $routeProvider.when(
-        '/users',
-        {
-          templateUrl: '/angular-app/languageforge/semdomtrans/views/manage-users.html'
-        }
-      );
-    $routeProvider.otherwise({redirectTo: '/projects'});
-  }])
-
+    $stateProvider        
+        .state('edit', {
+            url: '/edit',
+            templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html',
+            controller: 'editCtrl'
+        });
+  })
   .controller('MainCtrl', ['$scope', 'sessionService',
   function($scope, ss) {
     
