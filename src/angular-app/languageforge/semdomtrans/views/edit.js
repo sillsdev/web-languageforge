@@ -2,25 +2,18 @@
 
 angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services'])
 // DBE controller
-.controller('editCtrl', ['$scope', 'semdomtransEditService',  'sessionService', 'semdomtransConfigService', 'modalService', 'silNoticeService',
-function($scope, semdomEditApi, sessionService, semdomConfigApi, modal, notice) {
+.controller('editCtrl', ['$scope', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService',
+function($scope, semdomEditApi, sessionService, modal, notice) {
 	$scope.terms = [];
 	$scope.questions = [];
-	$scope.showingTerms = true;
-	
-	semdomConfigApi.getConfigurationData(function(result) { 
-			if(result.ok) {
-				$scope.config = result.data;
-				if (!$scope.config.showTerms) 
-					$scope.showingTerms = false;
-			}
-		}
-	);
+	$scope.selectedTab = 0;
+	$scope.showTerms = true;
+	$scope.showQuestions = true;
 	
 	semdomEditApi.editorDto(function(result) {
 		if (result.ok) {
 			$scope.terms = result.data.terms;
-			$scope.currentTerm = $scope.config.terms["1"];
+			$scope.currentTerm = $scope.terms["1"]
 			$scope.allQuestions = result.data.questions;
 			for (var i = 0; i < $scope.allQuestions.length; i++) {
 				var question = $scope.allQuestions[i];
@@ -35,13 +28,11 @@ function($scope, semdomEditApi, sessionService, semdomConfigApi, modal, notice) 
 	
 	
 	$scope.showTerms = function() {
-		$scope.showingTerms = true;
-		return;
+		$scope.selectedTab = 0;
 	}
 	
 	$scope.showQuestions = function() {
-		$scope.showingTerms = false;
-		return;
+		$scope.selectedTab = 1;
 	}
 	
 	$scope.getPreviousQuestion = function() {
@@ -54,15 +45,15 @@ function($scope, semdomEditApi, sessionService, semdomConfigApi, modal, notice) 
 	
 	$scope.getTermValues = function() {
 		var terms = [];
-		for (var key in $scope.config.terms) {
-			terms.push($scope.config.terms[key]);
+		for (var key in $scope.terms) {
+			terms.push($scope.terms[key]);
 		}
 		
 		return terms;
 	}
 	
 	$scope.changeTerm = function(key) {
-			$scope.currentTerm = $scope.config.terms[key]
+			$scope.currentTerm = $scope.terms[key]
 			
 			for (var i = 0; i < $scope.allQuestions.length; i++) {
 				var question = $scope.allQuestions[i];
