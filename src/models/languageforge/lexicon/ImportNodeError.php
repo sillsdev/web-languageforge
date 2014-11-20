@@ -65,6 +65,13 @@ class ImportNodeError
         return end($this->subnodeErrors);
     }
 
+    public function getSubnodeError($index) {
+        if ($index >= 0 && $index < count($this->subnodeErrors)) {
+            return $this->subnodeErrors[$index];
+        }
+        return false;
+    }
+
     /**
      * Creates the specific string for each of $errors
      * This should be overwritten by each parent class
@@ -102,15 +109,20 @@ class ImportNodeError
         return $msg;
     }
 
-    public function toFormattedString()
+    public function toFormattedString($level = 1)
     {
-        $html = $this->toErrorString("\n", "\t", "\n");
+        $dataStart ="";
+        for ($i = 1; $i <= $level; $i++) {
+            $dataStart .= "\t";
+        }
+        $msg = $this->toErrorString("\n", $dataStart, "\n");
+        $level++;
         foreach ($this->subnodeErrors as $subnodeError) {
             if ($subnodeError->hasErrors()) {
-                $html .= "\t" . $subnodeError->toFormattedString() . "\n";
+                $msg .= $dataStart . $subnodeError->toFormattedString($level);
             }
         }
-        return $html;
+        return $msg;
     }
 
     public function toHtml()

@@ -30,6 +30,12 @@ class LiftImport
 
     /**
      *
+     * @var LiftImportNodeError
+     */
+    private $liftImportNodeError;
+
+    /**
+     *
      * @var LiftDecoder
      */
     private $liftDecoder;
@@ -80,6 +86,7 @@ class LiftImport
         $this->liftDecoder = new LiftDecoder($projectModel);
         $this->stats = new LiftImportStats($entryList->count);
         $this->report = new ImportErrorReport();
+        $this->liftImportNodeError = new LiftImportNodeError(LiftImportNodeError::FILE, basename($liftFilePath));
         $liftRangeDecoder = new LiftRangeDecoder($projectModel);
         $liftRangeFiles = array(); // Keys: filenames. Values: parsed files.
         $liftRanges = array(); // Keys: @id attributes of <range> elements. Values: parsed <range> elements.
@@ -92,6 +99,7 @@ class LiftImport
                 $rangeHref = $node->attributes->getNamedItem('href')->textContent;
                 $hrefPath = parse_url($rangeHref, PHP_URL_PATH);
                 $rangeFilename = basename($hrefPath);
+                $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::FILE, $rangeFilename);
                 if (! array_key_exists($rangeFilename, $liftRangeFiles)) {
                     // Haven't parsed the .lift-ranges file yet. We'll assume it is alongside the .lift file.
                     $rangeFilePath = $liftFolderPath . "/" . $rangeFilename;
@@ -102,9 +110,7 @@ class LiftImport
                         $liftRangeFiles[] = $rangeFilename;
                     } else {
                         // Range file was NOT found in alongside the .lift file
-                        $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::FILE, $rangeFilename);
                         $rangeImportNodeError->addRangeFileNotFound(basename($liftFilePath));
-                        $this->report->nodeErrors[] = $rangeImportNodeError;
                     }
                 }
 
@@ -115,9 +121,7 @@ class LiftImport
                     $range = null;
                     if (file_exists($rangeFilePath)) {
                         // Range was NOT found in referenced .lift-ranges file after parsing it
-                        $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::RANGE, $rangeId);
-                        $rangeImportNodeError->addRangeNotFound($rangeFilename);
-                        $this->report->nodeErrors[] = $rangeImportNodeError;
+                        $rangeImportNodeError->addRangeNotFound($rangeId);
                     }
                 }
 
@@ -127,6 +131,8 @@ class LiftImport
                     $range = $liftRangeDecoder->readRange($rangeNode, $range);
                     $liftRanges[$rangeId] = $range;
                 }
+
+                $this->liftImportNodeError->addSubnodeError($rangeImportNodeError);
             }
             if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
                 $this->stats->importEntries++;
@@ -201,6 +207,7 @@ class LiftImport
             // TODO: Add any other LIFT range imports that make sense. 2014-10 RM
         }
 
+        $this->report->nodeErrors[] = $this->liftImportNodeError;
         if ($this->report->hasError()) {
             error_log($this->report->toString());
         }
@@ -230,9 +237,10 @@ class LiftImport
     private function readEntryWithErrorReport($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
         try {
             $this->liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
-            $this->report->nodeErrors[] = $this->liftDecoder->getImportNodeError();
+            $this->liftImportNodeError->addSubnodeError($this->liftDecoder->getImportNodeError());
         } catch (Exception $e) {
-            $this->report->nodeErrors[] = $this->liftDecoder->getImportNodeError();
+            $this->liftImportNodeError->addSubnodeError($this->liftDecoder->getImportNodeError());
+            $this->report->nodeErrors[] = $this->liftImportNodeError;
             if ($this->report->hasError()) {
                 error_log($this->report->toString());
             }

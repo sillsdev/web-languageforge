@@ -21,11 +21,11 @@ class LiftRangeImportNodeError extends ImportNodeError
         );
     }
 
-    public function addRangeNotFound($rangeFilename)
+    public function addRangeNotFound($rangeId)
     {
         $this->errors[] = array(
             'error' => 'RangeNotFound',
-            'rangeFilename' => $rangeFilename
+            'rangeId' => $rangeId
         );
     }
 
@@ -51,7 +51,7 @@ class LiftRangeImportNodeError extends ImportNodeError
         	        $msg .= "range file '" . $this->identifier . "' was not found alongside the '" . $error['liftFilename'] . "' file";
         	        break;
             	case 'RangeNotFound':
-            	    $msg .= "the lift range was not found in the referenced '" . $error['rangeFilename'] . "' file";
+            	    $msg .= "the lift range '" . $error['rangeId'] . "' was not found in the current file";
             	    break;
             	default:
             	    throw new \Exception("Unknown error type '" . $error['error'] . "' while processing identifier '" . $this->identifier . "'");

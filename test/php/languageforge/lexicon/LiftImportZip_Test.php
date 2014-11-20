@@ -3,6 +3,10 @@
 use models\languageforge\lexicon\LiftImport;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\languageforge\lexicon\LexEntryListModel;
+use models\languageforge\lexicon\ImportErrorReport;
+use models\languageforge\lexicon\ZipImportNodeError;
+use models\languageforge\lexicon\LiftRangeImportNodeError;
+use models\languageforge\lexicon\LiftImportNodeError;
 
 require_once dirname(__FILE__) . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -101,6 +105,12 @@ class TestLiftImportZip extends UnitTestCase
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
 
+    public function testLiftImportMerge_ZipFileWrongFormat_RestoreErrorDisplay()
+    {
+        // restore error display after last test
+        $this->environ->restoreErrorDisplay();
+    }
+
     public function testLiftImportMerge_ZipFileWithDir_CorrectValues()
     {
         $zipFilePath = $this->environ->copyTestUploadFile(TestPath . 'common/TestLexProjectWithDir.zip');
@@ -147,6 +157,12 @@ class TestLiftImportZip extends UnitTestCase
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
 
+    public function testLiftImportMerge_ZipFileNoLift_RestoreErrorDisplay()
+    {
+        // restore error display after last test
+        $this->environ->restoreErrorDisplay();
+    }
+
     public function testLiftImportMerge_ZipFile2LiftAndOddFolder_Error()
     {
         $zipFilePath = $this->environ->copyTestUploadFile(TestPath . 'common/TestLex2ProjectsOddFolder.zip');
@@ -160,5 +176,55 @@ class TestLiftImportZip extends UnitTestCase
         $this->assertTrue($report->hasError(), 'should have NodeError');
         $this->assertPattern("/unhandled LIFT file/", $reportStr);
         $this->assertPattern("/unhandled subfolder 'OddFolder'/", $reportStr);
+    }
+
+    const zipImportReport = <<<EOD
+While processing file 'Test.zip'
+	processing file 'Test.lift'
+		processing file 'Test.lift-ranges'
+			the lift range 'rangeId_01' was not found in the current file
+			the lift range 'rangeId_02' was not found in the current file
+		processing entry '00000-00001'
+			unhandled note 'noteType01'
+			unhandled trait 'traitName01'
+			processing sense '00001-00001'
+				unhandled field 'typeName01'
+				unhandled media 'url01' in context01
+				processing example ''
+					unhandled element 'elementName01'
+EOD;
+
+    public function testZipImport_ImportReport_FormatOk() {
+        $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::FILE, 'Test.lift-ranges');
+        $rangeImportNodeError->addRangeNotFound('rangeId_01');
+        $rangeImportNodeError->addRangeNotFound('rangeId_02');
+
+        $exampleImportNodeError = new LiftImportNodeError(LiftImportNodeError::EXAMPLE, '');
+        $exampleImportNodeError->addUnhandledElement('elementName01');
+
+        $senseImportNodeError = new LiftImportNodeError(LiftImportNodeError::SENSE, '00001-00001');
+        $senseImportNodeError->addUnhandledField('typeName01');
+        $senseImportNodeError->addUnhandledMedia('url01', 'context01');
+        $senseImportNodeError->addSubnodeError($exampleImportNodeError);
+
+        $entryImportNodeError = new LiftImportNodeError(LiftImportNodeError::ENTRY, '00000-00001');
+        $entryImportNodeError->addUnhandledNote('noteType01');
+        $entryImportNodeError->addUnhandledTrait('traitName01');
+        $entryImportNodeError->addSubnodeError($senseImportNodeError);
+
+        $liftImportNodeError = new LiftImportNodeError(LiftImportNodeError::FILE, 'Test.lift');
+        $liftImportNodeError->addSubnodeError($rangeImportNodeError);
+        $liftImportNodeError->addSubnodeError($entryImportNodeError);
+
+        $zipNodeError = new ZipImportNodeError(ZipImportNodeError::FILE, 'Test.zip');
+        $zipNodeError->addSubnodeError($liftImportNodeError);
+        $report = new ImportErrorReport();
+        $report->nodeErrors[] = $zipNodeError;
+
+//         echo "<pre>";
+//         echo $report->toFormattedString();
+//         echo "</pre>";
+
+        $this->assertPattern("/" . self::zipImportReport . "/", $report->toFormattedString());
     }
 }
