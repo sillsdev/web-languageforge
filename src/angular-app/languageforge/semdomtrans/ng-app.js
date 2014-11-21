@@ -15,13 +15,18 @@ angular.module('semdomtrans',
         .state('edit', {
             url: '/edit',
             views: {
-            	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html', controller: 'editCtrl'},
+            	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html',
+            		controller: 'editCtrl'},
             	'editQuestions@edit': {
-            		templateUrl: '/angular-app/languageforge/semdomtrans/views/editQuestions.html',
+            		templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editQuestions.html',
             		controller: 'editCtrl'
             	},
             	'editTerm@edit': {
-            		templateUrl: '/angular-app/languageforge/semdomtrans/views/editTerm.html',
+            		templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editTerm.html',
+            		controller: 'editCtrl'
+            	},
+            	'editSettings@edit': {
+            		templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editSettings.html',
             		controller: 'editCtrl'
             	}
             }
