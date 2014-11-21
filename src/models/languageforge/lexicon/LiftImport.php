@@ -69,8 +69,11 @@ class LiftImport
         // I consider this to be a stopgap to support importing of part of speech until we have a way to import lift ranges - cjh 2014-08
         $partOfSpeechValues = array();
 
+        // Do the following on first import (number of entries == 0)
         if ($initialImport) {
-            // Do the following on first import (number of entries == 0)
+            // save and clear input systems
+            $inputSystems = $projectModel->inputSystems->getArrayCopy();
+            $projectModel->inputSystems->exchangeArray(array());
 
             // clear entry field input systems config if there are no entries (only use imported input systems)
             $projectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems = new ArrayOf();
@@ -184,6 +187,12 @@ class LiftImport
         $reader->close();
 
         if ($initialImport) {
+            // put back saved input systems if none found in the imported data
+            if ($projectModel->inputSystems->count() <= 0) {
+                $projectModel->inputSystems->exchangeArray($inputSystems);
+            }
+
+            // add lift ranges
             if (array_key_exists('grammatical-info', $liftRanges)) {
                 $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS];
                 self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['grammatical-info']);
