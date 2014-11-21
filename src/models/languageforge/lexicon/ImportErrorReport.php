@@ -43,7 +43,7 @@ class ImportErrorReport
                 $msg .= 'While ' . $nodeError->toFormattedString();
             }
         }
-        return $msg . "\n";
+        return $msg;
     }
 
     public function toHtml()
