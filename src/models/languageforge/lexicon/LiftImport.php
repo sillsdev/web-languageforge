@@ -93,7 +93,7 @@ class LiftImport
         $liftFolderPath = dirname($liftFilePath);
 
         while ($reader->read()) {
-            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'range') {
+            if ($initialImport && $reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'range') {
                 $node = $reader->expand();
                 $rangeId = $node->attributes->getNamedItem('id')->textContent;
                 $rangeHref = $node->attributes->getNamedItem('href')->textContent;
