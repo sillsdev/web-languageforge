@@ -10,6 +10,19 @@ require_once TestPath . 'common/MongoTestEnvironment.php';
 
 class TestLexCommentCommands extends UnitTestCase
 {
+
+    public function __construct() {
+        $this->save = array();
+        parent::__construct();
+    }
+
+    /**
+     * Data storage between tests
+     *
+     * @var array <unknown>
+     */
+    private $save;
+
     public function testUpdateComment_NewComment_CommentAdded()
     {
         $e = new LexiconMongoTestEnvironment();
@@ -86,7 +99,6 @@ class TestLexCommentCommands extends UnitTestCase
         $this->assertEqual($comment->content, $newCommentContent);
         $this->assertEqual($comment->score, 0);
         $this->assertEqual($comment->status, 'open');
-
     }
 
     public function testUpdateReply_NewReply_ReplyAdded()
@@ -286,7 +298,7 @@ class TestLexCommentCommands extends UnitTestCase
         $this->assertEqual($comment->status, LexCommentModel::STATUS_RESOLVED);
     }
 
-    public function testUpdateCommentStatus_InvalidStatus_Throws()
+    public function testUpdateCommentStatus_InvalidStatus_Exception()
     {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
@@ -311,15 +323,25 @@ class TestLexCommentCommands extends UnitTestCase
 
         $this->assertEqual($comment->status, LexCommentModel::STATUS_OPEN);
 
+        // save data for rest of this test
+        $this->save['e'] = $e;
+        $this->save['commentId'] = $commentId;
+        $this->save['comment'] = $comment;
+
         $this->expectException();
         $e->inhibitErrorDisplay();
         LexCommentCommands::updateCommentStatus($project->id->asString(), $commentId, 'malicious code; rm -rf');
-        $e->restoreErrorDisplay();
 
-        $comment->read($commentId);
+        // nothing runs in the current test function after an exception. IJH 2014-11
+    }
+    // this test is designed to finish testUpdateCommentStatus_InvalidStatus_Exception
+    public function testUpdateCommentStatus_InvalidStatus_RestoreErrorDisplay()
+    {
+        // restore error display after last test
+        $this->save['e']->restoreErrorDisplay();
+        $this->save['comment']->read($this->save['commentId']);
 
-        $this->assertEqual($comment->status, LexCommentModel::STATUS_OPEN);
-
+        $this->assertEqual($this->save['comment']->status, LexCommentModel::STATUS_OPEN);
     }
 
     public function testPlusOneComment_UserFirstTime_IncreasedScore()
@@ -383,7 +405,5 @@ class TestLexCommentCommands extends UnitTestCase
 
         $comment->read($commentId);
         $this->assertEqual($comment->score, 1);
-
     }
-
 }
