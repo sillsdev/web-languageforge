@@ -6,7 +6,6 @@ angular.module('new-lexicon-project',
     'bellows.services',
     'bellows.filters',
     'ui.bootstrap',
-    'ui.bootstrap.collapse',
     'ngAnimate',
     'ui.router',
     'palaso.ui.utils',
@@ -149,7 +148,7 @@ angular.module('new-lexicon-project',
         classes.push('muted');
       }
       return classes;
-    }
+    };
 
     $scope.nextStep = function() {
       // If form is still validating, wait for it
@@ -159,11 +158,11 @@ angular.module('new-lexicon-project',
           $scope.processForm();
         }
       });
-    }
+    };
     $scope.prevStep = function() {
       // To implement, decide how we could go "back" to the first step: delete the newly-created (but still empty) project?
       console.log("Tried to go back... but that's not yet implemented");
-    }
+    };
 
     // Form validation requires API calls, so it return a promise rather than a value.
     $scope.validateForm = function validateForm(currentState) {
@@ -264,7 +263,7 @@ angular.module('new-lexicon-project',
         $window.location.href = url;
         break;
       };
-    }
+    };
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
       if (fromState.name == "newProject.name" && toState.name == "newProject.initialData") {
@@ -275,12 +274,12 @@ angular.module('new-lexicon-project',
     $scope.projectNameToCode = function(name) {
       if (angular.isUndefined(name)) { return undefined; }
       return name.toLowerCase().replace(/ /g, '_');
-    }
+    };
     $scope.isValidProjectCode = function(code) {
       // Valid project codes start with a letter and only contain lower-case letters, numbers, or dashes
       var patt = /^[a-z][a-z0-9\-_]*$/;
       return patt.test(code);
-    }
+    };
 
     $scope.checkProjectCode = function() {
       $scope.projectCodeStateDefer = $q.defer();
@@ -360,6 +359,9 @@ angular.module('new-lexicon-project',
 
     // ----- Step 2: Initial data upload -----
 
+    $scope.show = {};
+    $scope.show.importErrors = false;
+
     $scope.$watch('newProject.emptyProjectDesired', function(newval) {
       if (angular.isUndefined(newval)) { return; }
       $scope.validateForm();
@@ -377,7 +379,7 @@ angular.module('new-lexicon-project',
       notice.setLoading('Importing ' + $scope.datafile.name + '...');
       $scope.makeFormInvalid("Please wait while " + $scope.datafile.name + " is imported...");
       $scope.upload = $upload.upload({
-        url: '/upload/lf-lexicon/lex-project',
+        url: '/upload/lf-lexicon/import-zip',
         file: $scope.datafile,
         data: {projectId: ($scope.newProject.id || '')}, // Which project to upload new data to
       }).progress(function(evt) {
@@ -387,22 +389,35 @@ angular.module('new-lexicon-project',
         $scope.uploadSuccess = data.result;
         if ($scope.uploadSuccess) {
           notice.push(notice.SUCCESS, $filter('translate')("Successfully imported") + " " + $scope.datafile.name);
-          $scope.newProject.entriesImported = data.data.entriesImported;
+          $scope.newProject.entriesImported = data.data.stats.importEntries;
+          $scope.newProject.importErrors = data.data.importErrors;
+          $scope.validateForm();
+          $scope.nextStep();
         } else {
-          notice.push(notice.ERROR, $filter('translate')("Sorry, something went wrong in the import process."));
+          $scope.uploadProgress = 0;
           $scope.newProject.entriesImported = 0;
-          // Should really have a more specific error message.
-          // TODO: Update the PHP API to provide specific error messages regarding failure reasons.
+          notice.push(notice.ERROR, data.data.errorMessage);
+          $scope.validateForm();
         }
-        $scope.validateForm();
       });
+    };
+    
+    $scope.hasImportErrors = function hasImportErrorrs() {
+      return ($scope.newProject.importErrors !== '');
+    };
+    
+    $scope.showImportErrorsButtonLabel = function showImportErrorsButtonLabel() {
+      if ($scope.show.importErrors) {
+        return $filter('translate')("Hide non-critical import errors");
+      }
+      return $filter('translate')("Show non-critical import errors");
     };
 
     // ----- Step 3: Verify initial data -OR- select primary language -----
 
     $scope.initialDataLooksGood = function() {
       $scope.makeFormValid();
-    }
+    };
 
     $scope.setLanguage = function(languageCode, language) {
       $scope.newProject.languageCode = languageCode;

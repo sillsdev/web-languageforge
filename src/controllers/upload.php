@@ -39,8 +39,8 @@ class Upload extends Secure_base
                 } elseif ($app == 'lf-lexicon') {
                     $api = new Sf($this);
                     switch ($mediaType) {
-                        case 'lex-project':
-                            $api->checkPermissions('lex_uploadProjectZip', array(
+                        case 'import-zip':
+                            $api->checkPermissions('lex_upload_importProjectZip', array(
                                 $mediaType,
                                 $tmpFilePath
                             ));
@@ -49,10 +49,10 @@ class Upload extends Secure_base
                             } else {
                                 $projectId = '';
                             }
-                            $response = $api->lex_uploadProjectZip($mediaType, $tmpFilePath, $projectId);
+                            $response = $api->lex_upload_importProjectZip($mediaType, $tmpFilePath, $projectId);
                             break;
-                        case 'mock-lex-project':
-                            $api->checkPermissions('lex_uploadProjectZip', array(
+                        case 'mock-import-zip':
+                            $api->checkPermissions('lex_upload_importProjectZip', array(
                                 $mediaType,
                                 $tmpFilePath
                             ));
@@ -61,7 +61,7 @@ class Upload extends Secure_base
                             } else {
                                 $projectId = '';
                             }
-                            $response = $api->lex_mockUploadProjectZip($mediaType, $tmpFilePath, $projectId);
+                            $response = $api->lex_mockImportProjectZip($mediaType, $tmpFilePath, $projectId);
                             break;
                         case 'sense-image':
                             $api->checkPermissions('lex_uploadImageFile', array(

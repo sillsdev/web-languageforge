@@ -35,3 +35,13 @@
 #form-status.good {
 	border: 1px solid green;
 }
+
+/* Initial Data */
+.drop-box {
+    border: 4px dashed #e67345;
+}
+
+#importErrors {
+    height: 300px;
+    overflow-y: scroll;
+}
