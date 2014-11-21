@@ -388,17 +388,32 @@ angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.bread
         return meaning;
     };
 
-    this.getPartOfSpeechAbbreviation = function getPartOfSpeechAbbreviation(posModel) {
-        var match, myRegexp = /\((.*)\)/; // capture text inside parens
-        if (posModel && angular.isDefined) {
-            match = myRegexp.exec(posModel.value);
-            if (match && match.length > 1) {
-                return match[1];
-            } else {
-                return posModel.value.toLowerCase().substring(0,5);
+    this.getPartOfSpeechAbbreviation = function getPartOfSpeechAbbreviation(posModel, optionlists) {
+      if (angular.isDefined(posModel)) {
+        if (angular.isDefined(optionlists)) {
+          var abbreviation = '';
+          angular.forEach(optionlists, function(optionlist) {
+            if (optionlist.code == 'partOfSpeech') {
+              angular.forEach(optionlist.items, function(item) {
+                if (item.value == posModel.value) {
+                  abbreviation = item.abbreviation;
+                }
+              });
             }
+          });
+          if (abbreviation) return abbreviation;
         }
-        return '';
+        
+        // capture text inside parentheses  
+        var myRegexp = /\((.*)\)/, match;
+        match = myRegexp.exec(posModel.value);
+        if (match && match.length > 1) {
+          return match[1];
+        } else {
+          return posModel.value.toLowerCase().substring(0,5);
+        }
+      }
+      return '';
     };
 
   }])
