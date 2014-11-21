@@ -23,54 +23,9 @@
 		
 		  </div>
 		  <div style="height:400px; text-align: center;" class="col-md-10">
-		  	<div style="vertical-align: middle; display:inline-block">
-		  	<span ng-show="(selectedTab == 0)">
-		    	<table>
-				    <tr>
-					    <td> Name: </td>
-					    <td> <input ng-model="currentTerm.name"> </td>
-				    </tr>
-				     <tr>
-					    <td> Translation: </td>
-					    <td> <input ng-model="currentTerm.nameTrans"> </td>
-					    
-				    </tr>
-				     <tr>
-					    <td> Description: </td>
-					    <td> <input type="text" ng-model="currentTerm.description"> </td>
-				    </tr>
-				     <tr>
-					    <td> Translation: </td>
-					    <td> <input type="text" ng-model="currentTerm.translation"> </td>
-					    
-				    </tr>
-				    <tr> 
-				    	<td> Comments: </td>
-				    	<td> <input ng-model="currentTerm.comments">	</td>
-				    </tr> 
-				</table>
-				</span>	
-				
-				<span ng-show="(selectedTab == 1)">
-		    	<h2> Question {{currentTermQuestions.position + 1}}/{{currentTermQuestions.termQuestions.length}} </h2>
-		    	<table>
-				    <tr>
-					    <td> Question: </td>
-					    <td> <input ng-model="currentTermQuestions.termQuestions[currentTermQuestions.position].question"> </td>
-				    </tr>
-				     <tr>
-					    <td> Translation: </td>
-					    <td> <input ng-model="currentTermQuestions.termQuestions[currentTermQuestions.position].translation"> </td>
-					    
-				    </tr>				    
-				    <tr> 
-				    	<td> Comments: </td>
-				    	<td> <input ng-model="currentTermQuestions.termQuestions[currentTermQuestions.position].comments">	</td>
-				    </tr> 
-				</table>
-				<button ng-show="(currentTermQuestions.position > 0)" ng-click="getPreviousQuestion()" class="pull-left btn btn-success">Previous Question</button>
-				<button ng-show="(currentTermQuestions.position < currentTermQuestions.termQuestions.length - 1)" ng-click="getNextQuestion()" class="pull-right btn btn-success">Next Question</button>
-				</span>	
+		  	<div style="vertical-align: middle; display:inline-block" >
+		  		<div data-ui-view="editTerm"></div>
+				<div data-ui-view="editQuestions"></div>	
 			</div>
 		  </div>
 		</div>
