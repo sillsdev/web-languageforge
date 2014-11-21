@@ -1,11 +1,12 @@
 <?php
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\config\LexiconOptionListItem;
+use models\languageforge\lexicon\InputSystem;
 use models\languageforge\lexicon\LexEntryListModel;
 use models\languageforge\lexicon\LexOptionListModel;
+use models\languageforge\lexicon\LexOptionListListModel;
 use models\languageforge\lexicon\LiftImport;
 use models\languageforge\lexicon\LiftMergeRule;
-use models\languageforge\lexicon\LexOptionListListModel;
 
 require_once dirname(__FILE__) . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -1419,6 +1420,62 @@ EOD;
         $this->assertTrue($report->hasError());
         $this->assertPattern("/range file 'TestLangProj.lift-ranges' was not found alongside the 'LiftWithRangesV0_13.lift' file/", $reportStr);
         $this->assertNoPattern("/the lift range 'anthro-code' was not found in the current file/", $reportStr);
+    }
+
+    public function testLiftImportMerge_NoExistingDataFrenchInputSystem_OnlyImportedInputSystems()
+    {
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesCorrectedV0_13, 'TwoEntriesCorrectedV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+
+        $project->inputSystems->exchangeArray(array());
+        $project->inputSystems['fr'] = new InputSystem('fr', 'French', 'fr');
+
+        $this->assertTrue(array_key_exists('fr', $project->inputSystems));
+        $this->assertFalse(array_key_exists('en', $project->inputSystems));
+        $this->assertFalse(array_key_exists('th', $project->inputSystems));
+        $this->assertFalse(array_key_exists('th-fonipa', $project->inputSystems));
+
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
+        $entryList = new LexEntryListModel($project);
+        $entryList->read();
+
+        $this->assertEqual($entryList->count, 2);
+        $this->assertEqual($project->inputSystems->count(), 3);
+        $this->assertFalse(array_key_exists('fr', $project->inputSystems));
+        $this->assertTrue(array_key_exists('en', $project->inputSystems));
+        $this->assertTrue(array_key_exists('th', $project->inputSystems));
+        $this->assertTrue(array_key_exists('th-fonipa', $project->inputSystems));
+    }
+
+    // lift with no entries
+    const liftNoEntriesV0_13 = <<<EOD
+<?xml version="1.0" encoding="UTF-8" ?>
+<lift producer="SIL.FLEx 8.1.1.41891" version="0.13">
+</lift>
+EOD;
+
+    public function testLiftImportMerge_NoExistingDataNoImportEntries_DefaultInputSystemsUnchanged()
+    {
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftNoEntriesV0_13, 'LiftNoEntriesV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+
+        $this->assertTrue(array_key_exists('en', $project->inputSystems));
+        $this->assertTrue(array_key_exists('th', $project->inputSystems));
+
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
+        $entryList = new LexEntryListModel($project);
+        $entryList->read();
+
+        $this->assertEqual($entryList->count, 0);
+        $this->assertEqual($project->inputSystems->count(), 2);
+        $this->assertTrue(array_key_exists('en', $project->inputSystems));
+        $this->assertTrue(array_key_exists('th', $project->inputSystems));
     }
 
     // 2x Validation tests, removed until validation is working IJH 2014-03
