@@ -7,8 +7,7 @@ function($scope, semdomEditApi, sessionService, modal, notice) {
 	$scope.terms = [];
 	$scope.questions = [];
 	$scope.selectedTab = 0;
-	$scope.showTerms = true;
-	$scope.showQuestions = true;
+	$scope.tabDisplay = 0;
 	
 	semdomEditApi.editorDto(function(result) {
 		if (result.ok) {
@@ -27,12 +26,8 @@ function($scope, semdomEditApi, sessionService, modal, notice) {
 	});
 	
 	
-	$scope.showTerms = function() {
-		$scope.selectedTab = 0;
-	}
-	
-	$scope.showQuestions = function() {
-		$scope.selectedTab = 1;
+	$scope.setTab = function(val) {
+		$scope.selectedTab = val;
 	}
 	
 	$scope.getPreviousQuestion = function() {
