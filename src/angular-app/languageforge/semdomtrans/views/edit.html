@@ -1,10 +1,11 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="semDomAppContainer">
 	<div style="margin-top:100px; height: 500px" class="container-fluid">
 	    <div class="row" style="border-bottom:solid black 1px">
-		    <div class="span8" style="width: 200px; height: 50px; margin:0 auto">  
+		    <div class="span8" style="width: 300px; height: 50px; margin:0 auto">  
 				 <tabset class="pull-center">
-					    <tab heading="Terms" ng-show="(showTerms)"  ng-click="showTerms()"> </tab>     
-						<tab heading="Questions" ng-show="(showQuestions)" ng-click="showQuestions()"></tab>
+					    <tab heading="Terms" ng-show="(tabDisplay == 0 || tabDisplay == 1)"  ng-click="setTab(0)"> </tab>     
+						<tab heading="Questions" ng-show="(tabDisplay == 0 || tabDisplay == 2)" ng-click="setTab(1)"></tab>
+						<tab heading="Edit Settings" ng-click="setTab(2)"></tab>
 				</tabset>  
 			</div>  
 		</div>
@@ -25,7 +26,8 @@
 		  <div style="height:400px; text-align: center;" class="col-md-10">
 		  	<div style="vertical-align: middle; display:inline-block" >
 		  		<div data-ui-view="editTerm"></div>
-				<div data-ui-view="editQuestions"></div>	
+				<div data-ui-view="editQuestions"></div>
+				<div data-ui-view="editSettings"></div>	
 			</div>
 		  </div>
 		</div>
