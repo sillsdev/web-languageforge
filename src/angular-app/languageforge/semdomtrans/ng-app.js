@@ -6,6 +6,7 @@ angular.module('semdomtrans',
     'bellows.services',
     'bellows.filters',
     'semdomtrans.edit',
+    'semdomtrans.editSettings'
   ])
   .config(function($stateProvider, $urlRouterProvider) {
     
@@ -27,7 +28,7 @@ angular.module('semdomtrans',
             	},
             	'editSettings@edit': {
             		templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editSettings.html',
-            		controller: 'editCtrl'
+            		controller: 'editSettingsCtrl'
             	}
             }
         });

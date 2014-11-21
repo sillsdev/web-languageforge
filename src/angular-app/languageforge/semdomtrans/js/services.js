@@ -22,6 +22,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     		    	'nameTrans': "",
     		    	'description': term.description,
     		    	'descriptionTrans': "",
+    		    	'display': true,
     		    	'comments': ""
 	    		}
     		    	

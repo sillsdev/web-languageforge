@@ -7,11 +7,18 @@ function($scope, semdomEditApi, sessionService, modal, notice) {
 	$scope.terms = [];
 	$scope.questions = [];
 	$scope.selectedTab = 0;
-	$scope.tabDisplay = 0;
+	$scope.tabDisplay = {"val": '0'};
+	$scope.domainsFiltered = [];
 	
 	semdomEditApi.editorDto(function(result) {
 		if (result.ok) {
 			$scope.terms = result.data.terms;
+			for (var key in $scope.terms) {
+				if (key.length == 1) {
+					$scope.domainsFiltered.push($scope.terms[key]);
+				}
+			}
+			
 			$scope.currentTerm = $scope.terms["1"]
 			$scope.allQuestions = result.data.questions;
 			for (var i = 0; i < $scope.allQuestions.length; i++) {
@@ -45,6 +52,17 @@ function($scope, semdomEditApi, sessionService, modal, notice) {
 		}
 		
 		return terms;
+	}
+	
+	$scope.updateDisplay = function(domainKey) {
+		var termChanged = $scope.terms[domainKey];
+		var display = termChanged.display;
+		
+		for (var key in $scope.terms) {
+			if (key.substring(0, domainKey.length) == domainKey) {
+				$scope.terms[key].display = false;
+			}
+		}
 	}
 	
 	$scope.changeTerm = function(key) {

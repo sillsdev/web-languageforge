@@ -1,10 +1,10 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="semDomAppContainer">
 	<div style="margin-top:100px; height: 500px" class="container-fluid">
 	    <div class="row" style="border-bottom:solid black 1px">
-		    <div class="span8" style="width: 300px; height: 50px; margin:0 auto">  
+		    <div class="span8" style="width: 350px; height: 50px; margin:0 auto">  
 				 <tabset class="pull-center">
-					    <tab heading="Terms" ng-show="(tabDisplay == 0 || tabDisplay == 1)"  ng-click="setTab(0)"> </tab>     
-						<tab heading="Questions" ng-show="(tabDisplay == 0 || tabDisplay == 2)" ng-click="setTab(1)"></tab>
+					    <tab heading="Terms" ng-show="(tabDisplay.val == '0' || tabDisplay.val ==  '1')"  ng-click="setTab(0)"> </tab>     
+						<tab heading="Questions" ng-show="(tabDisplay.val == '0' || tabDisplay.val ==  '2')" ng-click="setTab(1)"></tab>
 						<tab heading="Edit Settings" ng-click="setTab(2)"></tab>
 				</tabset>  
 			</div>  
@@ -16,7 +16,7 @@
 		    <br> </br>
 		    <div style="overflow-y:scroll; height:400px">
 			    <ul>
-			      <li ng-class="{selected: (term.key == currentTerm.key)}" ng-repeat="(key, term) in getTermValues()| filter:query:strict" ng-click="changeTerm(term.key)" class="thumbnail">
+			      <li ng-repeat="(key, term) in getTermValues()| filter:query:strict" ng-show="(term.display)" ng-class="{selected: (term.key == currentTerm.key)}"  ng-click="changeTerm(term.key)" class="thumbnail">
 			        <p> {{term.key}}: {{term.name}} </p>
 			      </li>
 			    </ul>
