@@ -14,8 +14,17 @@ angular.module('semdomtrans',
     $stateProvider        
         .state('edit', {
             url: '/edit',
-            templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html',
-            controller: 'editCtrl'
+            views: {
+            	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html', controller: 'editCtrl'},
+            	'editQuestions@edit': {
+            		templateUrl: '/angular-app/languageforge/semdomtrans/views/editQuestions.html',
+            		controller: 'editCtrl'
+            	},
+            	'editTerm@edit': {
+            		templateUrl: '/angular-app/languageforge/semdomtrans/views/editTerm.html',
+            		controller: 'editCtrl'
+            	}
+            }
         });
   })
   .controller('MainCtrl', ['$scope', 'sessionService',
