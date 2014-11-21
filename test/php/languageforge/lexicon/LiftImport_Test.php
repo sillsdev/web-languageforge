@@ -1388,8 +1388,7 @@ EOD;
 
         $report = $importer->getReport();
         $reportStr = $report->toString();
-        $this->assertTrue($report->hasError());
-        $this->assertPattern("/the lift range 'anthro-code' was not found in the current file/", $reportStr);
+        $this->assertFalse($report->hasError());
         $this->assertEqual($importer->stats->existingEntries, 1);
 
         $optionList = new LexOptionListModel($project);
