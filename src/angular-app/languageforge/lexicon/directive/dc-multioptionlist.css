@@ -1,0 +1,21 @@
+form.dc-optionlist .list-values {
+    margin-right: 0px;
+    line-height: 30px;
+    position: relative; 
+}
+
+form.dc-optionlist .list-values > span {
+     padding-right: 4px;
+}
+
+form.dc-optionlist .list-value {
+    border: 2px solid gray;
+    padding: 3px; 
+}
+
+form.dc-optionlist img.closeicon {
+    position: absolute;
+    top: -12px;
+    right: 0px; 
+    padding-right: 2px;
+}
