@@ -18,7 +18,7 @@ angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
           word: '',
           senses: []
         };
-        $scope.entry.word = utils.getWord($scope.config, $scope.model);
+        $scope.entry.word = utils.getWords($scope.config, $scope.model);
         angular.forEach($scope.model.senses, function(senseModel) {
           pos = utils.getPartOfSpeechAbbreviation(senseModel.partOfSpeech, optionlists);
 
@@ -29,7 +29,7 @@ angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
             lastPos = pos;
           }
           sense = {
-            meaning: utils.getMeaning($scope.config.fields.senses, senseModel),
+            meaning: utils.getMeanings($scope.config.fields.senses, senseModel),
             partOfSpeech: pos,
             examples: []
           };

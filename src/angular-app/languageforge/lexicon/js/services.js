@@ -336,6 +336,24 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
     return result;
   };
 
+  function getFields(config, node, fieldName, delimiter) {
+    var result = '';
+    if (typeof(delimiter) === 'undefined') delimiter = ' '; 
+    if (node[fieldName] && config && config.fields && config.fields[fieldName] && config.fields[fieldName].inputSystems) {
+      angular.forEach(config.fields[fieldName].inputSystems, function (inputSystem) {
+        var field = node[fieldName][inputSystem];
+        if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '') {
+          if (result) {
+            result += delimiter + field.value;
+          } else {
+            result = field.value;
+          }
+        }
+      });
+    }
+    return result;
+  };
+
   /**
    * 
    * @param config - entry config obj
@@ -345,19 +363,16 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
   this.getLexeme = function getLexeme(config, entry) {
     return getFirstField(config, entry, 'lexeme');
   };
+  this.getWords = function getWords(config, entry) {
+    return getFields(config, entry, 'lexeme');
+  };
+  
   this.getDefinition = function getDefinition(config, sense) {
     return getFirstField(config, sense, 'definition');
   };
   this.getGloss = function getGloss(config, sense) {
     return getFirstField(config, sense, 'gloss');
   };
-  this.getWord = function getWord(config, entry) {
-    return this.getLexeme(config, entry);
-  };
-  this.getExampleSentence = function getExampleSentence(config, example) {
-    return getFirstField(config, example, 'sentence');
-  };
-
   this.getMeaning = function getMeaning(config, sense) {
     var meaning = '';
     meaning = this.getDefinition(config, sense);
@@ -365,6 +380,18 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
       meaning = this.getGloss(config, sense);
     }
     return meaning;
+  };
+  this.getMeanings = function getMeanings(config, sense) {
+    var meaning = '';
+    meaning = getFields(config, sense, 'definition');
+    if (!meaning) {
+      meaning = getFields(config, sense, 'gloss');
+    }
+    return meaning;
+  };
+
+  this.getExampleSentence = function getExampleSentence(config, example) {
+    return getFields(config, example, 'sentence');
   };
 
   this.getPartOfSpeechAbbreviation = function getPartOfSpeechAbbreviation(posModel, optionlists) {
