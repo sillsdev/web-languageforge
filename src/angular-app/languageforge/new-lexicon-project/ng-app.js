@@ -368,38 +368,46 @@ angular.module('new-lexicon-project',
     });
 
     $scope.onFileSelect = function onFileSelect(files) {
+      $scope.uploadErrorMsg = '';
+      
       // First, cope with multiple files if the user selected multiple.
       if (files.length > 1) {
         $scope.uploadErrorMsg = "Please select a single file. If you need to upload multiple files, zip them first with a utility like 7-zip.";
         return;
-      } else {
-        $scope.uploadErrorMsg = '';
       }
+
       $scope.datafile = files[0];
-      notice.setLoading('Importing ' + $scope.datafile.name + '...');
-      $scope.makeFormInvalid("Please wait while " + $scope.datafile.name + " is imported...");
-      $scope.upload = $upload.upload({
-        url: '/upload/lf-lexicon/import-zip',
-        file: $scope.datafile,
-        data: {projectId: ($scope.newProject.id || '')}, // Which project to upload new data to
-      }).progress(function(evt) {
-        $scope.uploadProgress = 100.0 * evt.loaded / evt.total;
-      }).success(function(data, status, headers, config) {
-        notice.cancelLoading();
-        $scope.uploadSuccess = data.result;
-        if ($scope.uploadSuccess) {
-          notice.push(notice.SUCCESS, $filter('translate')("Successfully imported") + " " + $scope.datafile.name);
-          $scope.newProject.entriesImported = data.data.stats.importEntries;
-          $scope.newProject.importErrors = data.data.importErrors;
-          $scope.validateForm();
-          $scope.nextStep();
-        } else {
-          $scope.uploadProgress = 0;
-          $scope.newProject.entriesImported = 0;
-          notice.push(notice.ERROR, data.data.errorMessage);
-          $scope.validateForm();
-        }
-      });
+      if ($scope.datafile.size <= ss.fileSizeMax()) {
+        notice.setLoading('Importing ' + $scope.datafile.name + '...');
+        $scope.makeFormInvalid("Please wait while " + $scope.datafile.name + " is imported...");
+        $scope.upload = $upload.upload({
+          url: '/upload/lf-lexicon/import-zip',
+          file: $scope.datafile,
+          data: {projectId: ($scope.newProject.id || '')}, // Which project to upload new data to
+        }).progress(function(evt) {
+          $scope.uploadProgress = 100.0 * evt.loaded / evt.total;
+        }).success(function(data, status, headers, config) {
+          notice.cancelLoading();
+          $scope.uploadSuccess = data.result;
+          if ($scope.uploadSuccess) {
+            notice.push(notice.SUCCESS, $filter('translate')("Successfully imported") + " " + $scope.datafile.name);
+            $scope.newProject.entriesImported = data.data.stats.importEntries;
+            $scope.newProject.importErrors = data.data.importErrors;
+            $scope.validateForm();
+            $scope.nextStep();
+          } else {
+            $scope.uploadProgress = 0;
+            $scope.newProject.entriesImported = 0;
+            notice.push(notice.ERROR, data.data.errorMessage);
+            $scope.validateForm();
+          }
+        });
+      } else {
+        notice.push(notice.ERROR, "<b>" + $scope.datafile.name + "</b> (" + $filter('bytes')($scope.datafile.size) + 
+            ") is too large. It must be smaller than " + $filter('bytes')(ss.fileSizeMax()) + ".");
+        $scope.uploadProgress = 0;
+        $scope.datafile = null;
+      }
     };
     
     $scope.hasImportErrors = function hasImportErrorrs() {
