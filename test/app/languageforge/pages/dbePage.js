@@ -56,7 +56,7 @@ var LfDbePage = function() {
     findEntryByLexeme: function(lexeme) {
       return this.entriesList.filter(function(row) {
         return row.element(by.binding('entry.word')).getText().then(function(word) {
-          return (word == lexeme);
+          return (word.indexOf(lexeme) > -1);
         });
       });
     },
