@@ -1,21 +1,42 @@
-form.dc-optionlist .list-values {
-    margin-right: 0px;
-    line-height: 30px;
-    position: relative; 
+form.dc-multioptionlist {
+    margin: 0;
+    margin-right: -4px;
 }
 
-form.dc-optionlist .list-values > span {
-     padding-right: 4px;
+form.dc-multioptionlist .controls div {
+    display: inline-block;
 }
 
-form.dc-optionlist .list-value {
+form.dc-multioptionlist .controls > div {
+    margin-bottom: 10px;
+}
+
+.dc-multioptionlist-values {
+    position: relative;
+}
+
+.dc-multioptionlist-values > div {
+    padding-right: 9px;
+}
+
+.dc-multioptionlist-value {
+    line-height: normal;
     border: 2px solid gray;
-    padding: 3px; 
+    padding: 3px;
 }
 
-form.dc-optionlist img.closeicon {
+form.dc-multioptionlist img.closeicon {
     position: absolute;
-    top: -12px;
-    right: 0px; 
+    top: -6px;
+    right: 0;
     padding-right: 2px;
+}
+
+.dc-multioptionlist-value select, dc-multioptionlist .addItem {
+    margin-bottom: 20px;
+}
+
+dc-multioptionlist .spacing-after {
+    line-height: 0;
+    margin-bottom: 10px;
 }
