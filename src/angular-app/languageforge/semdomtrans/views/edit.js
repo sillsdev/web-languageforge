@@ -59,7 +59,7 @@ function($scope, semdomEditApi, sessionService, modal, notice) {
 	$scope.changeTerm = function(key) {
 			for (var i = 0; i < $scope.terms.length; i++) {
 				if ($scope.terms[i].key == key) {
-					$scope.currentTerm = $scope.terms[key];
+					$scope.currentTerm = $scope.terms[i];
 					break;
 				}
 			}
