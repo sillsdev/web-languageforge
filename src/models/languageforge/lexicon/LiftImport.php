@@ -318,11 +318,7 @@ class LiftImport
         $this->report = new ImportErrorReport();
         $zipNodeError = new ZipImportNodeError(ZipImportNodeError::FILE, basename($zipFilePath));
         try {
-            $retCode = self::extractZip($zipFilePath, $extractFolderPath);
-            if ($retCode) {
-                throw new \Exception("Error extracting uploaded file");
-                // TODO: Capture output from extractarchive.sh if retcode != 0
-            }
+            self::extractZip($zipFilePath, $extractFolderPath);
 
             // Now find the .lift file in the uploaded zip
             $dirIter = new \RecursiveDirectoryIterator($extractFolderPath);
@@ -399,6 +395,9 @@ class LiftImport
         } else {
             throw new \Exception("Error receiving uploaded file");
         }
+        if (!file_exists($realpathResult)) {
+            throw new \Exception("Error file '$zipFilePath' does not exist.");
+        }
 
         $basename = basename($zipFilePath);
         $pathinfo = pathinfo($basename);
@@ -432,7 +431,9 @@ class LiftImport
         $retcode = 0;
         exec($cmd, $output, $retcode);
         if ($retcode) {
-            throw new \Exception("Uncompressing archive file failed: " . print_r($output, true));
+            if (($retcode != 1) || ($retcode == 1 && strstr(end($output), 'failed setting times/attribs') == false)) {
+                throw new \Exception("Uncompressing archive file failed: " . print_r($output, true));
+            }
         }
 
         // If the .zip contained just one top-level folder with all contents below that folder,
@@ -446,7 +447,6 @@ class LiftImport
             }
         }
 
-        return $retcode;
     }
 
     /**
