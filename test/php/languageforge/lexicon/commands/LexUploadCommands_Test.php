@@ -113,7 +113,7 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertFalse(file_exists($filePath), 'Imported LIFT file should be deleted');
     }
 
-    public function testDeleteImageFile_UnsupportedMediaType_Throw()
+    public function testDeleteImageFile_UnsupportedMediaType_Exception()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
@@ -124,7 +124,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
-
+    // this test is designed to finish testDeleteImageFile_UnsupportedMediaType_Exception
     public function testDeleteImageFile_UnsupportedMediaType_RestoreErrorDisplay()
     {
         // restore error display after last test
@@ -159,6 +159,35 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertEqual($response->data->stats->entriesDuplicated, 0);
         $this->assertEqual($response->data->stats->entriesDeleted, 0);
         $this->assertTrue(array_key_exists('th-fonipa', $project->inputSystems));
+    }
+
+    public function testImportProjectZip_7zFile_StatsOk()
+    {
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $fileName = 'TestLangProj.7z';  // Ken Zook's test data
+        $tmpFilePath = $this->environ->uploadFile(TestPath . "common/$fileName", $fileName);
+
+        $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
+
+        $project->read($project->id->asString());
+        $filePath = $project->getAssetsFolderPath() . '/' . $response->data->fileName;
+        $projectSlug = $project->databaseName();
+
+        $this->assertTrue($response->result, 'Import should succeed');
+        $this->assertPattern("/lexicon\/$projectSlug/", $response->data->path, 'Uploaded zip file path should be in the right location');
+        $this->assertEqual($fileName, $response->data->fileName, 'Uploaded zip fileName should have the original fileName');
+        $this->assertTrue(file_exists($filePath), 'Uploaded zip file should exist');
+        $this->assertEqual($response->data->stats->existingEntries, 0);
+        $this->assertEqual($response->data->stats->importEntries, 64);
+        $this->assertEqual($response->data->stats->newEntries, 64);
+        $this->assertEqual($response->data->stats->entriesMerged, 0);
+        $this->assertEqual($response->data->stats->entriesDuplicated, 0);
+        $this->assertEqual($response->data->stats->entriesDeleted, 0);
+
+        echo '<pre style="height:500px; overflow:auto">';
+        echo $response->data->importErrors;
+        echo '</pre>';
     }
 
     public function testImportProjectZip_JpgFile_UploadDisallowed()
