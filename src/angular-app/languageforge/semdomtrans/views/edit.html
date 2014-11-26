@@ -16,7 +16,7 @@
 		    <br> </br>
 		    <div style="overflow-y:scroll; height:400px">
 			    <ul>
-			      <li ng-repeat="(key, term) in getTermValues()| filter:query:strict" ng-show="(term.display)" ng-class="{selected: (term.key == currentTerm.key)}"  ng-click="changeTerm(term.key)" class="thumbnail">
+			      <li ng-repeat="term in terms| filter:query" ng-show="(term.display)" ng-class="{selected: (term.key == currentTerm.key)}"  ng-click="changeTerm(term.key)" class="thumbnail">
 			        <p> {{term.key}}: {{term.name}} </p>
 			      </li>
 			    </ul>
