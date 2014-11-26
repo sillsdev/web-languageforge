@@ -15,7 +15,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     			var term = semanticDomains_en[key];
                 var questions = semanticDomainQuestions_en[key];
       		  
-    		    result.data.terms[term.abbreviation] = 
+    		    result.data.terms.push( 
     	 	    {
 		    	    'key': term.abbreviation,
     		    	'name': term.name,
@@ -24,7 +24,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     		    	'descriptionTrans': "",
     		    	'display': true,
     		    	'comments': ""
-	    		}
+	    		});
     		    	
     		     var questionObjects = [];
     		     for (var j = 0; j < questions.length; j++) {

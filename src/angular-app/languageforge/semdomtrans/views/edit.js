@@ -13,13 +13,13 @@ function($scope, semdomEditApi, sessionService, modal, notice) {
 	semdomEditApi.editorDto(function(result) {
 		if (result.ok) {
 			$scope.terms = result.data.terms;
-			for (var key in $scope.terms) {
-				if (key.length == 1) {
-					$scope.domainsFiltered.push($scope.terms[key]);
+			for (var i = 0; i < $scope.terms.length; i++) {
+				if ($scope.terms[i].key.length == 1) {
+					$scope.domainsFiltered.push($scope.terms[i]);
 				}
 			}
 			
-			$scope.currentTerm = $scope.terms["1"]
+			$scope.currentTerm = $scope.terms[0];
 			$scope.allQuestions = result.data.questions;
 			for (var i = 0; i < $scope.allQuestions.length; i++) {
 				var question = $scope.allQuestions[i];
@@ -44,29 +44,26 @@ function($scope, semdomEditApi, sessionService, modal, notice) {
 	$scope.getNextQuestion = function() {
 		$scope.currentTermQuestions.position++;
 	}
-	
-	$scope.getTermValues = function() {
-		var terms = [];
-		for (var key in $scope.terms) {
-			terms.push($scope.terms[key]);
-		}
 		
-		return terms;
-	}
-	
 	$scope.updateDisplay = function(domainKey) {
 		var termChanged = $scope.terms[domainKey];
 		var display = termChanged.display;
 		
-		for (var key in $scope.terms) {
-			if (key.substring(0, domainKey.length) == domainKey) {
-				$scope.terms[key].display = false;
+		for (var i = 0; i < $scope.terms.length; i++) {
+			if ($scope.terms[i].key.substring(0, domainKey.length) == domainKey) {
+				$scope.terms[i].display = false;
 			}
 		}
 	}
 	
 	$scope.changeTerm = function(key) {
-			$scope.currentTerm = $scope.terms[key];
+			for (var i = 0; i < $scope.terms.length; i++) {
+				if ($scope.terms[i].key == key) {
+					$scope.currentTerm = $scope.terms[key];
+					break;
+				}
+			}
+			
 			for (var i = 0; i < $scope.allQuestions.length; i++) {
 				var question = $scope.allQuestions[i];
 			    if (question.key == $scope.currentTerm.key) {
