@@ -2,15 +2,15 @@
 
 angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services'])
 // DBE controller
-.controller('editCtrl', ['$scope', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService',
-function($scope, semdomEditApi, sessionService, modal, notice) {
+.controller('editCtrl', ['$scope', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService',
+function($scope, $stateParams, semdomEditApi, sessionService, modal, notice) {
 	$scope.terms = [];
 	$scope.questions = [];
 	$scope.selectedTab = 0;
 	$scope.tabDisplay = {"val": '0'};
 	$scope.domainsFiltered = [];
 	
-	semdomEditApi.editorDto(function(result) {
+	semdomEditApi.editorDto($stateParams.source, $stateParams.target, function(result) {
 		if (result.ok) {
 			$scope.terms = result.data.terms;
 			for (var i = 0; i < $scope.terms.length; i++) {
