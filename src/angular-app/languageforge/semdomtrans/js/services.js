@@ -5,7 +5,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
   function(jsonRpc) {
     jsonRpc.connect('/api/sf');
     
-    this.editorDto = function(callback) {
+    this.editorDto = function(source, target, callback) {
     	// jsonRpc.call('semdom_editor_dto', [], callback);
     	var result = {ok: true, data:[]};
     	result.data = {terms: [], questions: [], config: {}};
@@ -34,7 +34,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     		     result.data.questions.push({'key': term.abbreviation, 'termQuestions': questionObjects, 'position': 0});
     		  }
     		  i++;
-    		  if (i > 1000)
+    		  if (i > 500)
     			  break;
     	}    	
     	
@@ -49,19 +49,44 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     };
 
   }])
-  .service('semdomtransConfigService', ['jsonRpc',
+  .service('semdomtransSetupService', ['jsonRpc',
   function(jsonRpc) {
     jsonRpc.connect('/api/sf');
     
 	
-    this.getConfigurationData = function(callback) {
-		var result = {ok: true, data: angular.fromJson(sessionStorage.config)};
-    	callback(result);
+    this.getSourceLanguages = function(callback) {
+    	// replace with php call to get available languages
+		var result = {ok:true, data: [
+		                              {'id':1, 'name' :'English'}, 
+		                              {'id':2, 'name' :'French'},
+		                              {'id':3, 'name' :'Thai'},
+		                              {'id':4, 'name' :'Chinese'},
+		                              {'id':5, 'name' :'Indonesian'}
+		                             ]
+
+					  };
+		callback(result);
     }; 
     
-    this.saveConfigurationData = function(showTerms, showQuestions, terms) {
-    	sessionStorage.config = angular.toJson({ showTerms: showTerms, showQuestions: showQuestions, terms: terms});
-    }; 
+    this.getTargetLanguages = function(callback) {
+    	// replace with php call to get available languages
+		var result = {ok:true, data: [
+		                              {'id':1, 'name' :'English'}, 
+		                              {'id':2, 'name' :'French'},
+		                              {'id':3, 'name' :'Thai'},
+		                              {'id':4, 'name' :'Chinese'},
+		                              {'id':5, 'name' :'Indonesian'}
+		                             ]
+
+					};
+    	callback(result);
+    };
+    
+    
+    this.createProject = function(source, target, creatorID, callback) {
+    	callback({ok:true, success: true});
+    }
+    
     
 
   }])
