@@ -45,3 +45,16 @@
     height: 300px;
     overflow-y: scroll;
 }
+
+/* new project name page */
+#newLexProjectForm .uneditable-input {
+    width: 170px;
+    background-color: inherit;
+}
+
+.validator {
+     position: absolute;
+     padding-left: 5px;
+     padding-right: 5px;
+     padding-top: 8px;
+}
