@@ -49,6 +49,12 @@ $projectModel->projectName = $constants['thirdProjectName'];
 $projectModel->projectCode = $constants['thirdProjectCode'];
 $db = \models\mapper\MongoStore::dropDB($projectModel->databaseName());
 
+// drop the and 'new' database because it is used in a 'create new project' test
+$projectModel = new ProjectModel();
+$projectModel->projectName = $constants['newProjectName'];
+$projectModel->projectCode = $constants['newProjectCode'];
+$db = \models\mapper\MongoStore::dropDB($projectModel->databaseName());
+
 $adminUser = UserCommands::createUser(array(
     'id' => '',
     'name' => $constants['adminName'],

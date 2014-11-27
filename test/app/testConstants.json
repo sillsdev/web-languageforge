@@ -29,13 +29,15 @@
   "avatar"           : "/images/shared/avatar/anonymoose.png",
   
   "testProjectName"  : "Test Project",
-  "testProjectCode"  : "testproject",
+  "testProjectCode"  : "test_project",
   "testProjectAllowInvites" : false,
   "otherProjectName" : "Other Project for Testing",
   "otherProjectCode" : "otherproject",
   "otherProjectAllowInvites": true,
   "thirdProjectName" : "new kid on the block",
   "thirdProjectCode" : "nkotb",
+  "newProjectName" : "New Project",
+  "newProjectCode" : "new_project",
 
 
 

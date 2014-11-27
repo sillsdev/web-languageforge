@@ -94,6 +94,7 @@ angular.module('new-lexicon-project',
     $scope.state = $state;
 
     $scope.newProject = {}; // This is where form data will live
+    $scope.newProject.appName = 'lexicon';
     $scope.projectCodeState = 'empty';
     $scope.projectCodeStateDefer = $q.defer();
     $scope.projectCodeStateDefer.resolve('empty');
@@ -128,14 +129,6 @@ angular.module('new-lexicon-project',
     $scope.$watch('formValidated', function(validated) {
       $scope.forwardBtnClass = validated ? 'btn-success' : '';
     });
-
-    // For most uses of this form, there will only be one project type ("Web Dictionary").
-    // If that's the case, we set it up here and will hide the project type selector in the form.
-    $scope.projectTypeNames = projectService.data.projectTypeNames;
-    $scope.projectTypesBySite = projectService.data.projectTypesBySite;
-    if (projectService.data.projectTypesBySite().length == 1) {
-      $scope.newProject.appName = $scope.projectTypesBySite()[0];
-    }
 
     $scope.iconForStep = function(step) {
       var classes = [];
@@ -271,19 +264,21 @@ angular.module('new-lexicon-project',
       }
     });
 
-    $scope.projectNameToCode = function(name) {
-      if (angular.isUndefined(name)) { return undefined; }
+    function projectNameToCode(name) {
+      if (angular.isUndefined(name)) return undefined;
       return name.toLowerCase().replace(/ /g, '_');
     };
-    $scope.isValidProjectCode = function(code) {
+    function isValidProjectCode(code) {
+      if (angular.isUndefined(code)) return false;
+      
       // Valid project codes start with a letter and only contain lower-case letters, numbers, or dashes
-      var patt = /^[a-z][a-z0-9\-_]*$/;
-      return patt.test(code);
+      var pattern = /^[a-z][a-z0-9\-_]*$/;
+      return pattern.test(code);
     };
 
-    $scope.checkProjectCode = function() {
+    $scope.checkProjectCode = function checkProjectCode() {
       $scope.projectCodeStateDefer = $q.defer();
-      if (!$scope.isValidProjectCode($scope.newProject.projectCode)) {
+      if (! isValidProjectCode($scope.newProject.projectCode)) {
         $scope.projectCodeState = 'invalid';
         $scope.projectCodeStateDefer.resolve('invalid');
       } else {
@@ -328,7 +323,8 @@ angular.module('new-lexicon-project',
     $scope.$watch('newProject.editProjectCode', function(newval, oldval) {
       if (oldval && !newval) {
         // When user unchecks the "edit project code" box, go back to setting it from project name
-        $scope.newProject.projectCode = $scope.projectNameToCode($scope.newProject.projectName);
+        $scope.newProject.projectCode = projectNameToCode($scope.newProject.projectName);
+        $scope.checkProjectCode();
       }
     });
 
