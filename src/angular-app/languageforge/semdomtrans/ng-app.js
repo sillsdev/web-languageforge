@@ -6,15 +6,16 @@ angular.module('semdomtrans',
     'bellows.services',
     'bellows.filters',
     'semdomtrans.edit',
-    'semdomtrans.editSettings'
+    'semdomtrans.editSettings',
+    'semdomtrans.projectSetup'
   ])
   .config(function($stateProvider, $urlRouterProvider) {
     
-    $urlRouterProvider.otherwise('/edit');
+    $urlRouterProvider.otherwise('/setup');
     
     $stateProvider        
         .state('edit', {
-            url: '/edit',
+            url: '/edit/:source:target',
             views: {
             	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html',
             		controller: 'editCtrl'},
@@ -31,7 +32,15 @@ angular.module('semdomtrans',
             		controller: 'editSettingsCtrl'
             	}
             }
-        });
+        })
+    .state('setupProject', {
+        url: '/setup',
+        views: {
+        	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/projectSetup.html',
+        		controller: 'projectSetupCtrl'}
+        }
+    });
+    
   })
   .controller('MainCtrl', ['$scope', 'sessionService',
   function($scope, ss) {
