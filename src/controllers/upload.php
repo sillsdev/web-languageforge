@@ -24,11 +24,25 @@ class Upload extends Secure_base
 
         $response = array();
 
-        $file = $_FILES['file'];
+        try {
+            // check for mocked E2E upload
+            $filePath = sys_get_temp_dir() . '/' . $_POST['filename'];
+            if (file_exists($filePath) && ! is_dir($filePath)) {
+                $file = array(
+                    'name' => $_POST['filename'],
+                    'error' => UPLOAD_ERR_OK
+                );
+                $tmpFilePath = $filePath;
+                $_FILES['file'] = $file;
+            } else {
+                $file = $_FILES['file'];
+            }
 
-        if ($file['error'] == UPLOAD_ERR_OK) {
-            $tmpFilePath = $this->moveUploadedFile();
-            try {
+            if ($file['error'] == UPLOAD_ERR_OK) {
+                if (! isset($tmpFilePath)) {
+                    $tmpFilePath = $this->moveUploadedFile();
+                }
+
                 if ($app == 'sf-checks') {
                     $api = new Sf($this);
                     $api->checkPermissions('sfChecks_uploadFile', array(
@@ -51,18 +65,6 @@ class Upload extends Secure_base
                             }
                             $response = $api->lex_upload_importProjectZip($mediaType, $tmpFilePath, $projectId);
                             break;
-                        case 'mock-import-zip':
-                            $api->checkPermissions('lex_upload_importProjectZip', array(
-                                $mediaType,
-                                $tmpFilePath
-                            ));
-                            if (isset($_POST['projectId'])) {
-                                $projectId = $_POST['projectId'];
-                            } else {
-                                $projectId = '';
-                            }
-                            $response = $api->lex_mockImportProjectZip($mediaType, $tmpFilePath, $projectId);
-                            break;
                         case 'sense-image':
                             $api->checkPermissions('lex_uploadImageFile', array(
                                 $mediaType,
@@ -83,34 +85,34 @@ class Upload extends Secure_base
                 } else {
                     throw new Exception("Unsupported upload app: $app");
                 }
-            } catch (\Exception $e) {
-                $response = array(
-                    'result' => false,
-                    'data' => array(
-                        'errorType' => get_class($e),
-                        'errorMessage' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " . CodeGuard::getStackTrace($e->getTrace())
-                    )
-                );
-                if ($e instanceof ResourceNotAvailableException) {
-                    $response['data']['errorType'] = 'ResourceNotAvailableException';
-                    $response['data']['errorMessage'] = $e->getMessage();
-                } elseif ($e instanceof UserNotAuthenticatedException) {
-                    $response['data']['errorType'] = 'UserNotAuthenticatedException';
-                    $response['data']['errorMessage'] = $e->getMessage();
-                } elseif ($e instanceof UserUnauthorizedException) {
-                    $response['data']['errorType'] = 'UserUnauthorizedException';
-                    $response['data']['errorMessage'] = $e->getMessage();
-                }
-                $message = '';
-                $message .= $e->getMessage() . "\n";
-                $message .= $e->getTraceAsString() . "\n";
-                error_log($message);
-            }
 
-            // cleanup uploaded file if it hasn't been moved
-            if ($tmpFilePath && file_exists($tmpFilePath)) {
-                @unlink($tmpFilePath);
+                // cleanup uploaded file if it hasn't been moved
+                if ($tmpFilePath && file_exists($tmpFilePath)) {
+                    @unlink($tmpFilePath);
+                }
             }
+        } catch (\Exception $e) {
+            $response = array(
+                'result' => false,
+                'data' => array(
+                    'errorType' => get_class($e),
+                    'errorMessage' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " . CodeGuard::getStackTrace($e->getTrace())
+                )
+            );
+            if ($e instanceof ResourceNotAvailableException) {
+                $response['data']['errorType'] = 'ResourceNotAvailableException';
+                $response['data']['errorMessage'] = $e->getMessage();
+            } elseif ($e instanceof UserNotAuthenticatedException) {
+                $response['data']['errorType'] = 'UserNotAuthenticatedException';
+                $response['data']['errorMessage'] = $e->getMessage();
+            } elseif ($e instanceof UserUnauthorizedException) {
+                $response['data']['errorType'] = 'UserUnauthorizedException';
+                $response['data']['errorMessage'] = $e->getMessage();
+            }
+            $message = '';
+            $message .= $e->getMessage() . "\n";
+            $message .= $e->getTraceAsString() . "\n";
+            error_log($message);
         }
 
         $output = $this->output;

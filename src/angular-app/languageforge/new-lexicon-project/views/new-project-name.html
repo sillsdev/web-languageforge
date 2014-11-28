@@ -20,6 +20,7 @@
         </span>
     </div>
 </div>
+<br />
 <div class="control-group">
     <label class="control-label muted" translate="Project Code"></label>
     <div class="controls" data-ng-show="newProject.editProjectCode">
@@ -33,7 +34,10 @@
             data-ng-bind="newProject.projectCode"></div>
     </div>
     <div class="controls">
-        <input type="checkbox" data-ng-model="newProject.editProjectCode"> Edit project code</input>
-        <p class="muted">(You'll almost never need to check this)</p>
+        <label class="checkbox">
+            <input type="checkbox" data-ng-model="newProject.editProjectCode"/>
+            {{'Edit project code' | translate}}
+            <p class="muted">(You'll almost never need to check this)</p>
+        </label>
     </div>
 </div>

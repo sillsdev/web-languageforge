@@ -126,6 +126,14 @@
               }]
   },
   
+  "testMockZipImportFile" : {
+    "lastModified" : 1416986856000,
+    "name" : "TestLexProject.zip",
+    "size" : 28999,
+    "type" : "",
+    "webkitRelativePath": ""
+  },
+  
   "End_of_constants" : ""
 
 }

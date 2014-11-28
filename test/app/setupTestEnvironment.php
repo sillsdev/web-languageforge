@@ -220,4 +220,9 @@ if ($constants['siteType'] == 'scriptureforge') {
             'lexeme' => $constants['testMultipleMeaningEntry1']['lexeme'],
             'senses' => $constants['testMultipleMeaningEntry1']['senses']
         ), $managerUser);
+
+    // put mocked uploaded zip import
+    $fileName = $constants['testMockZipImportFile']['name'];
+    $tmpFilePath = sys_get_temp_dir() . '/' . $fileName;
+    copy(dirname(TestPath) . "/php/common/$fileName", $tmpFilePath);
 }
