@@ -33,6 +33,18 @@ var NewLexProjectPage = function() {
   // step 3: verify data
   this.verifyDataPage = {};
   this.verifyDataPage.lexiconButton = element(by.id('lexiconButton'));
+  this.verifyDataPage.entriesImported = element(by.binding('newProject.entriesImported'));
+  
+  // step 3 alternate: primary language
+  this.primaryLanguagePage = {};
+  this.primaryLanguagePage.selectButton = element(by.id('selectLanguageButton'));
+  
+  // select language modal
+  this.selectLanguageModal = {};
+  this.selectLanguageModal.searchLanguageInput = element(by.model('searchText'));
+  this.selectLanguageModal.firstLanguageRow = element(by.repeater('language in languages').row(0));
+  this.selectLanguageModal.addButton = element(by.partialButtonText('Add'));
+  
 };
 
 module.exports = new NewLexProjectPage();
