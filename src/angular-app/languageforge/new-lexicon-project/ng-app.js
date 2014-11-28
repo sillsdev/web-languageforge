@@ -379,7 +379,10 @@ angular.module('new-lexicon-project',
         $scope.upload = $upload.upload({
           url: '/upload/lf-lexicon/import-zip',
           file: $scope.datafile,
-          data: {projectId: ($scope.newProject.id || '')}, // Which project to upload new data to
+          data: {
+              projectId: ($scope.newProject.id || ''),   // Which project to upload new data to
+              filename: $scope.datafile.name
+            },
         }).progress(function(evt) {
           $scope.uploadProgress = 100.0 * evt.loaded / evt.total;
         }).success(function(data, status, headers, config) {

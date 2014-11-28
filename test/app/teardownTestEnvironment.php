@@ -3,6 +3,7 @@ require_once ('e2eTestConfig.php');
 
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\languageforge\lexicon\commands\LexUploadCommands;
+use Palaso\Utilities\FileUtilities;
 
 $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
 
@@ -14,17 +15,9 @@ if ($constants['siteType'] == 'languageforge') {
         'projectCode' => $constants['testProjectCode']
     ));
     $assetsFolderPath = $testProject->getAssetsFolderPath();
-    recursiveRemoveFolder($assetsFolderPath);
-}
+    FileUtilities::removeFolderAndAllContents($assetsFolderPath);
 
-function recursiveRemoveFolder($folder)
-{
-    foreach (glob("{$folder}/*") as $file) {
-        if (is_dir($file)) {
-            recursiveRemoveFolder($file);
-        } else {
-            unlink($file);
-        }
-    }
-    rmdir($folder);
+    // cleanup mocked uploaded zip import
+    $tmpFilePath = sys_get_temp_dir() . '/' . $constants['testMockZipImportFile']['name'];
+    @unlink($tmpFilePath);
 }

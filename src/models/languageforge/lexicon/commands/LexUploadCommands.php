@@ -403,29 +403,6 @@ class LexUploadCommands
     }
 
     /**
-     * Do nothing, and just return a success response.
-     * @param string $projectId
-     * @param string $mediaType
-     * @param string $tmpFilePath
-     */
-    public static function mockImportProjectZip($projectId, $mediaType, $tmpFilePath)
-    {
-        $file = $_FILES['file'];
-        $fileName = $file['name'];
-
-        $response = new UploadResponse();
-        $data = new ImportResult();
-        $data->path = $tmpFilePath;
-        $data->fileName = $fileName;
-        $data->importErrors = '';
-        $data->stats = new LiftImportStats();
-        $data->stats->importEntries = 27;
-        $response->result = true;
-        $response->data = $data;
-        return $response;
-    }
-
-    /**
      * Import a LIFT file
      *
      * @param string $projectId
