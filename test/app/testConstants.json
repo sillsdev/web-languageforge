@@ -36,8 +36,10 @@
   "otherProjectAllowInvites": true,
   "thirdProjectName" : "new kid on the block",
   "thirdProjectCode" : "nkotb",
-  "newProjectName" : "New Project",
-  "newProjectCode" : "new_project",
+  "newProjectName"   : "New Project",
+  "newProjectCode"   : "new_project",
+  "emptyProjectName" : "Empty Project",
+  "emptyProjectCode" : "empty_project",
 
 
 
