@@ -55,12 +55,12 @@ angular.module('new-lexicon-project',
         data: {
           step: 3, // This is not a typo. There are two possible step 3 templates.
         },
-      })
-      .state('newProject.createProject', {
-        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-create.html',
-        data: {
-          step: 4,
-        },
+//      })
+//      .state('newProject.createProject', {
+//        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-create.html',
+//        data: {
+//          step: 4,
+//        },
       });
 
       $urlRouterProvider
@@ -246,10 +246,14 @@ angular.module('new-lexicon-project',
         }
         break;
       case 'newProject.verifyData':
-        $state.go('newProject.createProject');
+//        $state.go('newProject.createProject');
+        var url = linkService.project($scope.newProject.id, $scope.newProject.appName);
+        $window.location.href = url;
         break;
       case 'newProject.selectPrimaryLanguage':
-        $state.go('newProject.createProject');
+//        $state.go('newProject.createProject');
+        var url = linkService.project($scope.newProject.id, $scope.newProject.appName);
+        $window.location.href = url;
         break;
       case 'newProject.createProject':
         var url = linkService.project($scope.newProject.id, $scope.newProject.appName);

@@ -4,6 +4,7 @@ describe('E2E testing: New Lex Project app', function() {
   var constants = require('../../../testConstants.json'),
       loginPage = require('../../../bellows/pages/loginPage.js'),
       body      = require('../../../bellows/pages/pageBody.js'),
+      dbePage   = require('../../pages/dbePage.js'),
       page      = require('../../pages/newLexProjectPage.js');
   
   afterEach(function() {
@@ -135,15 +136,6 @@ describe('E2E testing: New Lex Project app', function() {
       expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
     });
   
-    it('can skip uploading data', function() {
-      expect(page.initialDataPage.emptyProjectCheckbox.isDisplayed()).toBe(true);
-      page.initialDataPage.emptyProjectCheckbox.click();
-      expect(page.initialDataPage.browseButton.isDisplayed()).toBe(false);
-      
-      page.initialDataPage.emptyProjectCheckbox.click();
-      expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
-    });
-    
     it('can mock file upload', function() {
       page.initialDataPage.useMockUploadButton.click();
       expect(page.initialDataPage.mockFileNameInput.isPresent()).toBe(true);
@@ -156,4 +148,81 @@ describe('E2E testing: New Lex Project app', function() {
   
   });
   
+  describe('Verify Data page', function() {
+    
+    it('displays stats', function() {
+      expect(page.verifyDataPage.entriesImported.getText()).toEqual('2 entries were found in the initial data.');
+    });
+    
+    it('can go to lexicon', function() {
+      page.verifyDataPage.lexiconButton.click();
+      expect(dbePage.browse.getEntryCount()).toBe(2);
+    });
+    
+  });
+  
+  describe('Project Name page', function() {
+    
+    it('create: new empty project', function() {
+      page.get();
+      page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + protractor.Key.TAB);
+      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.click();
+      expect(page.namePage.projectNameInput.isPresent()).toBe(false);
+      expect(page.initialDataPage.browseButton.isPresent()).toBe(true);
+    });
+    
+  });
+  
+  describe('Initial Data page skipping upload', function() {
+    
+    it('can skip uploading data', function() {
+      expect(page.initialDataPage.emptyProjectCheckbox.isDisplayed()).toBe(true);
+      page.initialDataPage.emptyProjectCheckbox.click();
+      expect(page.initialDataPage.browseButton.isDisplayed()).toBe(false);
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.click();
+      expect(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
+    });
+  
+  });
+  
+  describe('Primary Language page', function() {
+    
+    it('can select language', function() {
+      expect(page.primaryLanguagePage.selectButton.isEnabled()).toBe(true);
+      page.primaryLanguagePage.selectButton.click();
+      expect(page.selectLanguageModal.searchLanguageInput.isPresent()).toBe(true);
+    });
+    
+    describe('Select Language modal', function() {
+      
+      it('can search, select and add language', function() {
+        var language = 'French';
+        
+        page.selectLanguageModal.searchLanguageInput.sendKeys(language + protractor.Key.ENTER);
+        expect(page.selectLanguageModal.firstLanguageRow.isPresent()).toBe(true);
+        
+        expect(page.selectLanguageModal.addButton.isPresent()).toBe(true);
+        expect(page.selectLanguageModal.addButton.isEnabled()).toBe(false);
+        page.selectLanguageModal.firstLanguageRow.click();
+        expect(page.selectLanguageModal.addButton.isEnabled()).toBe(true);
+        expect(page.selectLanguageModal.addButton.getText()).toEqual('Add ' + language);
+        
+        page.selectLanguageModal.addButton.click();
+        expect(page.selectLanguageModal.searchLanguageInput.isPresent()).toBe(false);
+      });
+      
+    });
+    
+    it('can go to lexicon', function() {
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.click();
+      expect(dbePage.browse.getEntryCount()).toBe(0);
+    });
+    
+  });
 });
