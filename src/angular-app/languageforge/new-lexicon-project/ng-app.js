@@ -10,6 +10,7 @@ angular.module('new-lexicon-project',
     'ui.router',
     'palaso.ui.utils',
     'palaso.ui.language',
+    'palaso.ui.mockUpload',
     'palaso.util.model.transform',
     'pascalprecht.translate',
     'angularFileUpload'
