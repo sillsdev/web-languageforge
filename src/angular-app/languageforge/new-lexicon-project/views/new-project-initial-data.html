@@ -34,12 +34,5 @@
 <!--
 Used to mock file upload. Assumes file is already in the right location.
 TODO: This should be removed from production code! IJH 2014-11
-<pui-mockupload data-ng-show="showMockUpload" data-ng-click="showMockUpload = ! showMockUpload" data-do-upload="onFileSelect(filesArray)" />
-for directive function call see http://stackoverflow.com/questions/23477859/angularjs-call-function-on-directive-parent-scope-with-directive-scope-argumen
  -->
-<a id="useMockUploadButton" data-ng-click="showMockUpload = ! showMockUpload; mockFiles =[{}]">&nbsp;</a>
-<div data-ng-show="showMockUpload">
-    <input type="text" id="mockFileName" data-ng-model="mockFiles[0].name" />
-    <input type="text" id="mockFileSize" data-ng-model="mockFiles[0].size" />
-    <a class="btn" id="mockUploadButton" data-ng-click="onFileSelect(mockFiles)"></a>
-</div>
+<pui-mock-upload data-pui-do-upload="onFileSelect(filesArray)" />

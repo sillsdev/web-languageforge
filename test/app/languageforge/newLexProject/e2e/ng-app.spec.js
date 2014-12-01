@@ -137,12 +137,12 @@ describe('E2E testing: New Lex Project app', function() {
     });
   
     it('can mock file upload', function() {
-      page.initialDataPage.useMockUploadButton.click();
-      expect(page.initialDataPage.mockFileNameInput.isPresent()).toBe(true);
-      expect(page.initialDataPage.mockFileNameInput.isDisplayed()).toBe(true);
-      page.initialDataPage.mockFileNameInput.sendKeys(constants.testMockZipImportFile.name);
-      page.initialDataPage.mockFileSizeInput.sendKeys(constants.testMockZipImportFile.size);
-      page.initialDataPage.mockUploadButton.click();
+      page.initialDataPage.mockUpload.enableButton.click();
+      expect(page.initialDataPage.mockUpload.fileNameInput.isPresent()).toBe(true);
+      expect(page.initialDataPage.mockUpload.fileNameInput.isDisplayed()).toBe(true);
+      page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockZipImportFile.name);
+      page.initialDataPage.mockUpload.fileSizeInput.sendKeys(constants.testMockZipImportFile.size);
+      page.initialDataPage.mockUpload.uploadButton.click();
       expect(page.verifyDataPage.lexiconButton.isDisplayed()).toBe(true);
     });
   
@@ -195,7 +195,7 @@ describe('E2E testing: New Lex Project app', function() {
     it('can select language', function() {
       expect(page.primaryLanguagePage.selectButton.isEnabled()).toBe(true);
       page.primaryLanguagePage.selectButton.click();
-      expect(page.selectLanguageModal.searchLanguageInput.isPresent()).toBe(true);
+      expect(page.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(true);
     });
     
     describe('Select Language modal', function() {
@@ -203,17 +203,17 @@ describe('E2E testing: New Lex Project app', function() {
       it('can search, select and add language', function() {
         var language = 'French';
         
-        page.selectLanguageModal.searchLanguageInput.sendKeys(language + protractor.Key.ENTER);
-        expect(page.selectLanguageModal.firstLanguageRow.isPresent()).toBe(true);
+        page.modal.selectLanguage.searchLanguageInput.sendKeys(language + protractor.Key.ENTER);
+        expect(page.modal.selectLanguage.firstLanguageRow.isPresent()).toBe(true);
         
-        expect(page.selectLanguageModal.addButton.isPresent()).toBe(true);
-        expect(page.selectLanguageModal.addButton.isEnabled()).toBe(false);
-        page.selectLanguageModal.firstLanguageRow.click();
-        expect(page.selectLanguageModal.addButton.isEnabled()).toBe(true);
-        expect(page.selectLanguageModal.addButton.getText()).toEqual('Add ' + language);
+        expect(page.modal.selectLanguage.addButton.isPresent()).toBe(true);
+        expect(page.modal.selectLanguage.addButton.isEnabled()).toBe(false);
+        page.modal.selectLanguage.firstLanguageRow.click();
+        expect(page.modal.selectLanguage.addButton.isEnabled()).toBe(true);
+        expect(page.modal.selectLanguage.addButton.getText()).toEqual('Add ' + language);
         
-        page.selectLanguageModal.addButton.click();
-        expect(page.selectLanguageModal.searchLanguageInput.isPresent()).toBe(false);
+        page.modal.selectLanguage.addButton.click();
+        expect(page.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(false);
       });
       
     });

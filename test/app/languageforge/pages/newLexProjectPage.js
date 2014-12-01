@@ -1,6 +1,9 @@
 'use strict';
 
 var NewLexProjectPage = function() {
+  var mockUpload = require('../../bellows/pages/mockUploadElement.js'),
+      modal      = require('./lexModals.js');
+  
   this.get = function() {
     browser.get('/app/new-lexicon-project');
   };
@@ -24,11 +27,7 @@ var NewLexProjectPage = function() {
   this.initialDataPage = {};
   this.initialDataPage.emptyProjectCheckbox = element(by.model('newProject.emptyProjectDesired'));
   this.initialDataPage.browseButton = element(by.id('browseButton'));
-  
-  this.initialDataPage.useMockUploadButton = element(by.id('useMockUploadButton'));
-  this.initialDataPage.mockFileNameInput = element(by.id('mockFileName'));
-  this.initialDataPage.mockFileSizeInput = element(by.id('mockFileSize'));
-  this.initialDataPage.mockUploadButton = element(by.id('mockUploadButton'));
+  this.initialDataPage.mockUpload = mockUpload;
   
   // step 3: verify data
   this.verifyDataPage = {};
@@ -40,10 +39,7 @@ var NewLexProjectPage = function() {
   this.primaryLanguagePage.selectButton = element(by.id('selectLanguageButton'));
   
   // select language modal
-  this.selectLanguageModal = {};
-  this.selectLanguageModal.searchLanguageInput = element(by.model('searchText'));
-  this.selectLanguageModal.firstLanguageRow = element(by.repeater('language in languages').row(0));
-  this.selectLanguageModal.addButton = element(by.partialButtonText('Add'));
+  this.modal = modal;
   
 };
 
