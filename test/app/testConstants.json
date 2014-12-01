@@ -135,6 +135,13 @@
     "type" : "",
     "webkitRelativePath": ""
   },
+  "testMockJpgImportFile" : {
+    "lastModified" : 1416986856000,
+    "name" : "TestImage.jpg",
+    "size" : 2753,
+    "type" : "",
+    "webkitRelativePath": ""
+  },
   
   "End_of_constants" : ""
 

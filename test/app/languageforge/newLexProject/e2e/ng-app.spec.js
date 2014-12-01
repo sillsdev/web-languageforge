@@ -4,6 +4,7 @@ describe('E2E testing: New Lex Project app', function() {
   var constants = require('../../../testConstants.json'),
       loginPage = require('../../../bellows/pages/loginPage.js'),
       body      = require('../../../bellows/pages/pageBody.js'),
+      util      = require('../../../bellows/pages/util.js'),
       dbePage   = require('../../pages/dbePage.js'),
       page      = require('../../pages/newLexProjectPage.js');
   
@@ -59,7 +60,7 @@ describe('E2E testing: New Lex Project app', function() {
   
     it('can edit project code when enabled', function() {
       expect(page.namePage.editProjectCodeCheckbox.isDisplayed()).toBe(true);
-      page.namePage.editProjectCodeCheckbox.click();
+      util.setCheckbox(page.namePage.editProjectCodeCheckbox, true);
       expect(page.namePage.projectCodeInput.isDisplayed()).toBe(true);
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('changed_new_project' + protractor.Key.TAB);
@@ -116,7 +117,7 @@ describe('E2E testing: New Lex Project app', function() {
   
     it('project code reverts to default when Edit-project-code is disabled', function() {
       expect(page.namePage.editProjectCodeCheckbox.isDisplayed()).toBe(true);
-      page.namePage.editProjectCodeCheckbox.click();
+      util.setCheckbox(page.namePage.editProjectCodeCheckbox, false);
       expect(page.namePage.projectCodeInput.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.newProjectCode);
     });
@@ -136,14 +137,47 @@ describe('E2E testing: New Lex Project app', function() {
       expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
     });
   
-    it('can mock file upload', function() {
-      page.initialDataPage.mockUpload.enableButton.click();
-      expect(page.initialDataPage.mockUpload.fileNameInput.isPresent()).toBe(true);
-      expect(page.initialDataPage.mockUpload.fileNameInput.isDisplayed()).toBe(true);
-      page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockZipImportFile.name);
-      page.initialDataPage.mockUpload.fileSizeInput.sendKeys(constants.testMockZipImportFile.size);
-      page.initialDataPage.mockUpload.uploadButton.click();
-      expect(page.verifyDataPage.lexiconButton.isDisplayed()).toBe(true);
+    describe('Mock file upload', function() {
+      
+      it('cannot upload large file', function() {
+        page.initialDataPage.mockUpload.enableButton.click();
+        expect(page.initialDataPage.mockUpload.fileNameInput.isPresent()).toBe(true);
+        expect(page.initialDataPage.mockUpload.fileNameInput.isDisplayed()).toBe(true);
+        page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockZipImportFile.name);
+        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(134217728);
+        expect(page.noticeList.count()).toBe(0);
+        page.initialDataPage.mockUpload.uploadButton.click();
+        expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
+        expect(page.verifyDataPage.lexiconButton.isPresent()).toBe(false);
+        expect(page.noticeList.count()).toBe(1);
+        expect(page.noticeList.get(0).getText()).toContain('is too large. It must be smaller than');
+        page.initialDataPage.mockUpload.fileNameInput.clear();
+        page.initialDataPage.mockUpload.fileSizeInput.clear();
+      });
+    
+      it('cannot upload jpg', function() {
+        page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockJpgImportFile.name);
+        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(constants.testMockJpgImportFile.size);
+        expect(page.noticeList.count()).toBe(1);
+        page.initialDataPage.mockUpload.uploadButton.click();
+        expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
+        expect(page.verifyDataPage.lexiconButton.isPresent()).toBe(false);
+        expect(page.noticeList.count()).toBe(2);
+        expect(page.noticeList.get(1).getText()).toContain(constants.testMockJpgImportFile.name + ' is not an allowed compressed file. Ensure the file is');
+        page.initialDataPage.mockUpload.fileNameInput.clear();
+        page.initialDataPage.mockUpload.fileSizeInput.clear();
+      });
+
+      it('can upload zip file', function() {
+        page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockZipImportFile.name);
+        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(constants.testMockZipImportFile.size);
+        expect(page.noticeList.count()).toBe(2);
+        page.initialDataPage.mockUpload.uploadButton.click();
+        expect(page.verifyDataPage.lexiconButton.isDisplayed()).toBe(true);
+        expect(page.noticeList.count()).toBe(3);
+        expect(page.noticeList.get(2).getText()).toContain('Successfully imported ' + constants.testMockZipImportFile.name);
+      });
+    
     });
   
   });
@@ -181,7 +215,7 @@ describe('E2E testing: New Lex Project app', function() {
     
     it('can skip uploading data', function() {
       expect(page.initialDataPage.emptyProjectCheckbox.isDisplayed()).toBe(true);
-      page.initialDataPage.emptyProjectCheckbox.click();
+      util.setCheckbox(page.initialDataPage.emptyProjectCheckbox, true);
       expect(page.initialDataPage.browseButton.isDisplayed()).toBe(false);
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
