@@ -17,7 +17,11 @@ if ($constants['siteType'] == 'languageforge') {
     $assetsFolderPath = $testProject->getAssetsFolderPath();
     FileUtilities::removeFolderAndAllContents($assetsFolderPath);
 
-    // cleanup mocked uploaded zip import
+    // cleanup mocked uploaded zip import (jpg file)
+    $tmpFilePath = sys_get_temp_dir() . '/' . $constants['testMockJpgImportFile']['name'];
+    @unlink($tmpFilePath);
+
+    // cleanup mocked uploaded zip import (zip file)
     $tmpFilePath = sys_get_temp_dir() . '/' . $constants['testMockZipImportFile']['name'];
     @unlink($tmpFilePath);
 }
