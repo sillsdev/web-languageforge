@@ -17,6 +17,7 @@ angular.module('new-lexicon-project',
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
   function($stateProvider, $urlRouterProvider, $translateProvider) {
+    
     // configure interface language filepath
     $translateProvider.useStaticFilesLoader({
       prefix: '/angular-app/languageforge/new-lexicon-project/lang/',
@@ -27,9 +28,9 @@ angular.module('new-lexicon-project',
     // State machine from ui.router
     $stateProvider
       .state('newProject', {
+        
         // Need quotes around Javascript keywords like 'abstract' so YUI compressor won't complain
         'abstract': true,
-        // TODO: Can we make the following URL relative?
         templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project.html',
         controller: 'NewLexProjectCtrl',
       })
@@ -55,23 +56,15 @@ angular.module('new-lexicon-project',
         templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-select-primary-language.html',
         data: {
           step: 3, // This is not a typo. There are two possible step 3 templates.
-        },
-//      })
-//      .state('newProject.createProject', {
-//        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-create.html',
-//        data: {
-//          step: 4,
-//        },
+        }
       });
 
-      $urlRouterProvider
+    $urlRouterProvider
       .when('', ['$state', function ($state) {
         if (! $state.$current.navigable) {
           $state.go('newProject.name');
         }
-      }])
-//      .otherwise('/form')
-      ;
+      }]);
 
   }])
   .controller('NewLexProjectCtrl', ['$scope', '$rootScope', '$q', '$filter', '$modal', '$window', 'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate', '$state', '$upload',
@@ -94,7 +87,8 @@ angular.module('new-lexicon-project',
 
     $scope.state = $state;
 
-    $scope.newProject = {}; // This is where form data will live
+    // This is where form data will live
+    $scope.newProject = {};
     $scope.newProject.appName = 'lexicon';
     $scope.projectCodeState = 'empty';
     $scope.projectCodeStateDefer = $q.defer();
@@ -131,7 +125,7 @@ angular.module('new-lexicon-project',
       $scope.forwardBtnClass = validated ? 'btn-success' : '';
     });
 
-    $scope.iconForStep = function(step) {
+    $scope.iconForStep = function iconForStep(step) {
       var classes = [];
       if ($state.current.data.step > step) {
         classes.push('icon-check-sign');
@@ -144,7 +138,8 @@ angular.module('new-lexicon-project',
       return classes;
     };
 
-    $scope.nextStep = function() {
+    $scope.nextStep = function nextStep() {
+      
       // If form is still validating, wait for it
       $scope.formValidationDefer.promise.then(function(valid) {
         if (valid) {
@@ -170,65 +165,62 @@ angular.module('new-lexicon-project',
       var error = $scope.makeFormInvalid;
       // TODO: This switch is becoming unwieldy. Separate each case into a separate function. 2014-10 RM
       switch (currentState) {
-      case 'newProject.name':
-        // Project should have a name, should have a unique code, and should have a type
-        if (!$scope.newProject.projectName) {
-          return error("Project name should not be empty. Please provide a project name.");
-        }
-        if (!$scope.newProject.appName) {
-          return error("Please select a project type.");
-        }
-        if ($scope.projectCodeState == 'unchecked') {
-          $scope.checkProjectCode();
-        }
-        return $scope.projectCodeStateDefer.promise.then(function(state) {
-          if ($scope.projectCodeState == 'ok') {
-            return ok("Everything looks good; ready to proceed.");
+        case 'newProject.name':
+          // Project should have a name, should have a unique code, and should have a type
+          if (!$scope.newProject.projectName) {
+            return error("Project name should not be empty. Please provide a project name.");
           }
-          if ($scope.projectCodeState == 'exists') {
-            return error("Another project with code '" + $scope.newProject.projectCode + "' already exists.");
+          if (!$scope.newProject.appName) {
+            return error("Please select a project type.");
           }
-          if ($scope.projectCodeState == 'invalid') {
-            return error("Project code '" + $scope.newProject.projectCode + "' contains invalid characters. It should contain only lower-case letters, numbers, and dashes.");
+          if ($scope.projectCodeState == 'unchecked') {
+            $scope.checkProjectCode();
           }
-          if ($scope.projectCodeState == 'loading') {
-            return error("Please wait while we check whether another project with code '" + $scope.newProject.projectCode + "' already exists.");
+          return $scope.projectCodeStateDefer.promise.then(function(state) {
+            if ($scope.projectCodeState == 'ok') {
+              return ok("Everything looks good; ready to proceed.");
+            }
+            if ($scope.projectCodeState == 'exists') {
+              return error("Another project with code '" + $scope.newProject.projectCode + "' already exists.");
+            }
+            if ($scope.projectCodeState == 'invalid') {
+              return error("Project code '" + $scope.newProject.projectCode + "' contains invalid characters. It should contain only lower-case letters, numbers, and dashes.");
+            }
+            if ($scope.projectCodeState == 'loading') {
+              return error("Please wait while we check whether another project with code '" + $scope.newProject.projectCode + "' already exists.");
+            }
+            if ($scope.projectCodeState == 'empty' || !$scope.newProject.projectCode) {
+              return error("Project code should not be empty.");
+            }
+            // Project code was invalid, but we don't know why. Give a generic message, adapted based on whether the user checked "Edit project code" or not.
+            if ($scope.newProject.editProjectCode) {
+              return error("Project code '" + $scope.newProject.projectCode + "' cannot be used. Please choose a new project code.");
+            } else {
+              return error("Project code '" + $scope.newProject.projectCode + "' cannot be used. Either change the project name, or check the \"Edit project code\" box and choose a new code.");
+            }
+          });
+          break;
+        case 'newProject.initialData':
+          if ($scope.newProject.emptyProjectDesired) {
+            return ok("You've chosen to create an empty project with no initial data.");
           }
-          if ($scope.projectCodeState == 'empty' || !$scope.newProject.projectCode) {
-            return error("Project code should not be empty.");
-          }
-          // Project code was invalid, but we don't know why. Give a generic message, adapted based on whether the user checked "Edit project code" or not.
-          if ($scope.newProject.editProjectCode) {
-            return error("Project code '" + $scope.newProject.projectCode + "' cannot be used. Please choose a new project code.");
+          if ($scope.uploadSuccess) {
+            return ok($scope.newProject.entriesImported + " entries imported. Everything looks good; ready to proceed.");
           } else {
-            return error("Project code '" + $scope.newProject.projectCode + "' cannot be used. Either change the project name, or check the \"Edit project code\" box and choose a new code.");
+            return error("No initial data uploaded yet.");
           }
-        });
-        break;
-      case 'newProject.initialData':
-        if ($scope.newProject.emptyProjectDesired) {
-          return ok("You've chosen to create an empty project with no initial data.");
-        }
-        if ($scope.uploadSuccess) {
-          return ok($scope.newProject.entriesImported + " entries imported. Everything looks good; ready to proceed.");
-        } else {
-          return error("No initial data uploaded yet.");
-        }
-        break;
-      case 'newProject.verifyData':
-        // TODO: Check if user has clicked button
-        return ok("Everything looks good; ready to proceed.");
-        break;
-      case 'newProject.selectPrimaryLanguage':
-        if ($scope.newProject.languageCode) {
+          break;
+        case 'newProject.verifyData':
+          // TODO: Check if user has clicked button
           return ok("Everything looks good; ready to proceed.");
-        } else {
-          return error("Please select a primary language for the project.");
-        }
-        break;
-      case 'newProject.createProject':
-        return error("Validation not yet implemented for step " + currentState);
-        break;
+          break;
+        case 'newProject.selectPrimaryLanguage':
+          if ($scope.newProject.languageCode) {
+            return ok("Everything looks good; ready to proceed.");
+          } else {
+            return error("Please select a primary language for the project.");
+          }
+          break;
       };
       return ok();
     };
@@ -236,30 +228,21 @@ angular.module('new-lexicon-project',
     $scope.processForm = function processForm() {
       // Don't need to validate in this function since it's already been taken care of for us by this point
       switch ($state.current.name) {
-      case 'newProject.name':
-        $state.go('newProject.initialData');
-        break;
-      case 'newProject.initialData':
-        if ($scope.newProject.emptyProjectDesired) {
-          $state.go('newProject.selectPrimaryLanguage');
-        } else {
-          $state.go('newProject.verifyData');
-        }
-        break;
-      case 'newProject.verifyData':
-//        $state.go('newProject.createProject');
-        var url = linkService.project($scope.newProject.id, $scope.newProject.appName);
-        $window.location.href = url;
-        break;
-      case 'newProject.selectPrimaryLanguage':
-//        $state.go('newProject.createProject');
-        var url = linkService.project($scope.newProject.id, $scope.newProject.appName);
-        $window.location.href = url;
-        break;
-      case 'newProject.createProject':
-        var url = linkService.project($scope.newProject.id, $scope.newProject.appName);
-        $window.location.href = url;
-        break;
+        case 'newProject.name':
+          $state.go('newProject.initialData');
+          break;
+        case 'newProject.initialData':
+          if ($scope.newProject.emptyProjectDesired) {
+            $state.go('newProject.selectPrimaryLanguage');
+          } else {
+            $state.go('newProject.verifyData');
+          }
+          break;
+        case 'newProject.verifyData':
+        case 'newProject.selectPrimaryLanguage':
+          var url = linkService.project($scope.newProject.id, $scope.newProject.appName);
+          $window.location.href = url;
+          break;
       };
     };
 
@@ -362,9 +345,11 @@ angular.module('new-lexicon-project',
 
     $scope.show = {};
     $scope.show.importErrors = false;
+    $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
 
     $scope.$watch('newProject.emptyProjectDesired', function(newval) {
       if (angular.isUndefined(newval)) { return; }
+      $scope.progressIndicatorStep3Label = $filter('translate')((newval) ? 'Language' : 'Verify');
       $scope.validateForm();
     });
 
@@ -457,16 +442,6 @@ angular.module('new-lexicon-project',
       if (angular.isUndefined(newval)) { return; }
       $scope.validateForm();
     });
-
-
-    // ----- Step 4: Final project creation -----
-
-    $scope.addProject = function() {
-      // Actually, the project has already been created; we just need to return the user to /app/projects
-      $scope.makeFormValid('Project created.');
-      // TODO: Set url to /app/projects -- or maybe to the newly-created project.
-    };
-
 
   }])
 ;

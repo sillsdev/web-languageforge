@@ -10,8 +10,9 @@ var NewLexProjectPage = function() {
   
   // form controls
   this.newLexProjectForm = element('form#newLexProjectForm');
+  this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
   this.nextButton = element(by.id('nextButton'));
-  this.noticeList  = element.all(by.repeater('notice in notices()'));
+  this.noticeList = element.all(by.repeater('notice in notices()'));
   
   // step 1: project name
   this.namePage = {};

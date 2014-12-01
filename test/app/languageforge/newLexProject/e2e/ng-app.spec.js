@@ -135,6 +135,7 @@ describe('E2E testing: New Lex Project app', function() {
     
     it('defaults to uploading data', function() {
       expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
+      expect(page.progressIndicatorStep3Label.getText()).toEqual('Verify');
     });
   
     describe('Mock file upload', function() {
@@ -215,8 +216,10 @@ describe('E2E testing: New Lex Project app', function() {
     
     it('can skip uploading data', function() {
       expect(page.initialDataPage.emptyProjectCheckbox.isDisplayed()).toBe(true);
+      expect(page.progressIndicatorStep3Label.getText()).toEqual('Verify');
       util.setCheckbox(page.initialDataPage.emptyProjectCheckbox, true);
       expect(page.initialDataPage.browseButton.isDisplayed()).toBe(false);
+      expect(page.progressIndicatorStep3Label.getText()).toEqual('Language');
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
@@ -259,4 +262,5 @@ describe('E2E testing: New Lex Project app', function() {
     });
     
   });
+
 });
