@@ -1,0 +1,26 @@
+<span ng-show="($parent.selectedTab == 0)">
+	    	<table style="width:400px">
+			    <tr>
+				    <td> Name: </td>
+				    <td><input ng-model="$parent.currentTerm.name"></td>
+			    </tr>
+			     <tr>
+				    <td> Translation: </td>
+				    <td> <input ng-model="$parent.currentTerm.nameTrans"> </td>
+				    
+			    </tr>
+			     <tr>
+				    <td> Description: </td>
+				    <td> {{$parent.currentTerm.description}}</td>
+			    </tr>
+			     <tr>
+				    <td> Translation: </td>
+				    <td> <textarea rows="4" ng-model="$parent.currentTerm.translation"> </textarea></td>
+				    
+			    </tr>
+			    <tr> 
+			    	<td> Comments: </td>
+			    	<td> <input ng-model="$parent.currentTerm.comments">	</td>
+			    </tr> 
+			</table>
+</span>	

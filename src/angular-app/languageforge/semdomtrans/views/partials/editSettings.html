@@ -1,0 +1,25 @@
+<span style="overflow-y:scroll" data-ng-controller="editSettingsCtrl" ng-show="($parent.selectedTab == 2)">
+	<div style="text-align:left">
+	  What do you want to translate?
+	  <br />
+	  <input type="radio" ng-model="tabDisplay.val" value="0">  Both <br/>
+  	  <input type="radio" ng-model="tabDisplay.val" value="1"> Only Terms <br/>
+  	  <input type="radio" ng-model="tabDisplay.val" value="2"> Only Questions <br/>
+	</div>
+	
+	<br />
+	Select domains to be displayed for translation:
+	<table>
+	<tr>
+		<th> Domain </th>
+		<th> Display </th>
+	</tr>
+	<tr ng-repeat="term in domainsFiltered">
+		<td ng-click="drillDown(term.key)"> {{term.key}}: {{term.name}} </td>
+		<td> <input type='checkbox'  ng-model="term.display" ng-change="updateDisplay(term.key)" /> </td>
+	</tr>
+	</table>
+	
+	<button class="pull-left btn btn-success" ng-click="drillUp()" ng-show="(domainsFiltered[0].key.length > 1)">Back</button>
+	
+</span>

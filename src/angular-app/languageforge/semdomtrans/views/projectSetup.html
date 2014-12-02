@@ -1,0 +1,32 @@
+<div data-ng-cloak data-ng-controller="projectSetupCtrl" style="text-align: center;">
+	<div style="margin-top:100px; height: 500px; vertical-align: middle; display:inline-block"" class="container-fluid">
+		<table>
+			<tbody>
+				<tr> 
+					<th style="max-width: 250px;"> Click on language below to join existing project: </th>
+					<th style="max-width: 250px;"> Click on language below to create new project: </th>
+				</tr>
+				<tr> 				
+					 <td>
+						<div style="overflow-y:scroll; height:400px">
+							<ul>
+				      			<li ng-repeat="project in startedProjects"  ng-click="clickJoin(project)" class="thumbnail">
+				        			<a href="#"> {{project.language}} ({{project.pctComplete}}% complete) </a>
+				      			</li>
+				    		</ul>
+						</div>
+					 </td>
+					 <td>
+						<div style="overflow-y:scroll; height:400px">
+						<ul>
+				      		<li ng-repeat="project in unstartedProjects" ng-click="clickCreate(project)" class="thumbnail">
+				        		<a href="#"> {{project.language}} </a>
+				      		</li>
+				    	</ul>
+						</div>
+					 </td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
