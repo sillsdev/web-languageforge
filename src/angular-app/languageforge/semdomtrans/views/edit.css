@@ -5,3 +5,7 @@
 .selected {
 	background-color: #5cb85c;
 }
+
+.translated {
+	background-color: gray;
+}
