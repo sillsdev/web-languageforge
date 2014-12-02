@@ -8,30 +8,39 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     this.editorDto = function(source, target, callback) {
     	// jsonRpc.call('semdom_editor_dto', [], callback);
     	var result = {ok: true, data:[]};
-    	result.data = {terms: [], questions: [], config: {}};
+    	result.data = {items: [], config: {}};
     	var i = 0;
     	for (var key in semanticDomains_en) {
     		  if (semanticDomains_en.hasOwnProperty(key)) {
-    			var term = semanticDomains_en[key];
+
                 var questions = semanticDomainQuestions_en[key];
+    			 var questionObjects = [];
+     		     for (var j = 0; j < questions.length; j++) {
+     		    	 questionObjects.push({'question': questions[j], 'translation':'', 'terms':''})
+     		     }
+    			 var term = semanticDomains_en[key];
+    			
       		  
-    		    result.data.terms.push( 
+    		    result.data.items.push( 
     	 	    {
-		    	    'key': term.abbreviation,
-    		    	'name': term.name,
-    		    	'nameTrans': "",
-    		    	'description': term.description,
-    		    	'descriptionTrans': "",
-    		    	'display': true,
-    		    	'comments': ""
+    	 	    	'key': term.abbreviation,
+    	 	    	'display': term.abbreviation + " " + term.name,
+    		    	'included': true,
+    	 	    	'term' : {			    	    
+	    		    	'name': term.name,
+	    		    	'nameTrans': "",
+	    		    	'description': term.description,
+	    		    	'descriptionTrans': "",
+	    		    	'comments': "",
+	    		    	'translated': false
+    	 	    	},
+    	 	    	'questions': {
+    	 	    		'termQuestions': questionObjects,
+    	 	    		'position': 0,
+    	 	    		'translated': false
+    	 	    	}
+    	 	    
 	    		});
-    		    	
-    		     var questionObjects = [];
-    		     for (var j = 0; j < questions.length; j++) {
-    		    	 questionObjects.push({'question': questions[j], 'translation':'', 'terms':''})
-    		     }
-    		     
-    		     result.data.questions.push({'key': term.abbreviation, 'termQuestions': questionObjects, 'position': 0});
     		  }
     		  i++;
     		  if (i > 500)
@@ -76,7 +85,6 @@ angular.module('semdomtrans.services', ['jsonRpc'])
 		                              {'id':3, 'language' :'Persian'},
 		                              {'id':4, 'language' :'Incan'},
 		                              {'id':5, 'language' :'Arabic'},
-		                              {'id':6, 'language' :'Tibetan'},
 		                              {'id':7, 'language' :'Japanese'}
 		                             ]
 

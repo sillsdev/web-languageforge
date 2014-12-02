@@ -4,34 +4,34 @@ angular.module('semdomtrans.editSettings', ['jsonRpc', 'ui.bootstrap', 'bellows.
 // DBE controller
 .controller('editSettingsCtrl', ['$scope', 'sessionService', 'modalService', 'silNoticeService',
 function($scope, sessionService, modal, notice) {	
-	$scope.tabDisplay = $scope.$parent.tabDisplay;
+	$scope.tabDisplayed = $scope.$parent.tabDisplay;
 	$scope.domainsFiltered = $scope.$parent.domainsFiltered;
-	$scope.updateDisplay = function(domainKey) {
-		var display = false;
+	$scope.updateIncluded = function(domainKey) {
+		var included = false;
 		
-		for (var i = 0; i < $scope.$parent.terms.length; i++) {
-			var key = $scope.$parent.terms[i].key;
+		for (var i = 0; i < $scope.$parent.items.length; i++) {
+			var key = $scope.$parent.items[i].key;
 			if (key == domainKey) {
-				display = $scope.$parent.terms[i].display;
+				included = $scope.$parent.items[i].included;
 				break;
 			}
 		}
 	
 		
-		for (var i = 0; i < $scope.$parent.terms.length; i++) {
-			var key = $scope.$parent.terms[i].key;
+		for (var i = 0; i < $scope.$parent.items.length; i++) {
+			var key = $scope.$parent.items[i].key;
 			if (key != domainKey && key.substring(0, domainKey.length) == domainKey) {
-				$scope.$parent.terms[i].display = display;
+				$scope.$parent.items[i].included = included;
 			}
 		}
 	}
 	
 	$scope.drillDown = function(domainKey) {
 		var newDomainFiltered = []
-		for (var i = 0; i < $scope.$parent.terms.length; i++) {
-			var key = $scope.$parent.terms[i].key;
+		for (var i = 0; i < $scope.$parent.items.length; i++) {
+			var key = $scope.$parent.items[i].key;
 			if (key.substring(0, domainKey.length) == domainKey && key.length == domainKey.length + 2 ) {
-				newDomainFiltered.push($scope.$parent.terms[i])
+				newDomainFiltered.push($scope.$parent.items[i])
 			}
 		}
 		
@@ -42,13 +42,13 @@ function($scope, sessionService, modal, notice) {
 	}
 	
 	$scope.drillUp = function() {
-		var term = $scope.domainsFiltered[0];
-		var termKey = term.key.substring(0, term.key.length - 2);
+		var termKey = $scope.domainsFiltered[0].key;
+		termKey = termKey.substring(0, termKey.length - 2);
 		$scope.domainsFiltered = [];
-		for (var i = 0; i < $scope.$parent.terms.length; i++) {
-			var key = $scope.$parent.terms[i].key;
+		for (var i = 0; i < $scope.$parent.items.length; i++) {
+			var key = $scope.$parent.items[i].key;
 			if (termKey.substring(0, termKey.length - 1) == key.substring(0, key.length - 1)) {
-				$scope.domainsFiltered.push($scope.$parent.terms[i])
+				$scope.domainsFiltered.push($scope.$parent.items[i])
 			}
 		}
 	}

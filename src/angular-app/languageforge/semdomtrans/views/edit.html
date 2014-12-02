@@ -12,12 +12,12 @@
 		<div class="row">
 		  <div class="col-md-2" style="border-right:solid black 1px">
 		    <!--Sidebar content-->
-		    Search: <input ng-model="query.name">
+		    Search: <input ng-model="query.display">
 		    <br> </br>
 		    <div style="overflow-y:scroll; height:400px">
 			    <ul>
-			      <li ng-repeat="term in terms| filter:query" ng-show="(term.display)" ng-class="{selected: (term.key == currentTerm.key)}"  ng-click="changeTerm(term.key)" class="thumbnail">
-			        <p> {{term.key}}: {{term.name}} </p>
+			      <li ng-repeat="item in items| filter:query" ng-show="(item.included)" ng-class="{selected: (item.key == currentItem.key)}"  ng-click="changeTerm(item.key)" class="thumbnail">
+			        <p> {{item.display}}</p>
 			      </li>
 			    </ul>
 		    </div>
