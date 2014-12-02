@@ -19,7 +19,13 @@ angular.module('semdomtrans.services', ['jsonRpc'])
      		    	 questionObjects.push({'question': questions[j], 'translation':'', 'terms':''})
      		     }
     			 var term = semanticDomains_en[key];
-    			
+    			 var searchKeys = [];
+    			 for (var j = 0; j < semanticDomains_en[key].searchKeys.length; j++) {
+    				 searchKeys.push({
+    							 'searchKey': semanticDomains_en[key].searchKeys[j],
+    							 'translation': ""
+					 });
+    			 }
       		  
     		    result.data.items.push( 
     	 	    {
@@ -32,7 +38,8 @@ angular.module('semdomtrans.services', ['jsonRpc'])
 	    		    	'description': term.description,
 	    		    	'descriptionTrans': "",
 	    		    	'comments': "",
-	    		    	'translated': false
+	    		    	'translated': false,
+	    		    	'searchKeys': searchKeys
     	 	    	},
     	 	    	'questions': {
     	 	    		'termQuestions': questionObjects,

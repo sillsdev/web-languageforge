@@ -1,5 +1,5 @@
-<span ng-show="($parent.selectedTab == 0)">
-	    	<table style="width:400px">
+<div style="overflow-y:scroll;  height:800px" ng-show="($parent.selectedTab == 0)">
+	    	<table style="width:600px">
 			    <tr>
 				    <td> Name: </td>
 				    <td><input ng-model="$parent.currentItem.term.name"></td>
@@ -21,11 +21,23 @@
 			    <tr> 
 			    	<td> Comments: </td>
 			    	<td> <input ng-model="$parent.currentItem.term.comments">	</td>
-			    </tr> 
-			    
-			    <tr>
-			    	<td> Translated: </td>
-			    	<td> <input type='checkbox'  ng-model="$parent.currentItem.term.translated" /> </td>
-		    	</tr>
+			    </tr>			   
 			</table>
-</span>	
+			<br />
+			<br />
+			<table style="width:600px">
+		    	<caption><h4> Search Keys </h4></caption>
+		    	<tr>
+		    		<th> Source </th>
+		    		<th> Translation </th>
+		    	<tr ng-repeat="searchKey in $parent.currentItem.term.searchKeys">
+		    		<td>{{searchKey.searchKey}}</td>
+		    		<td><textarea rows="2" ng-model="searchKey.translation"> </textarea></td>
+		    	</tr>
+		    	
+		    </table>
+		    
+		    <br />
+		    <br />
+    		Translated: <input type='checkbox'  ng-model="$parent.currentItem.term.translated" /> 
+</div>	
