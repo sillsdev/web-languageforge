@@ -16,7 +16,7 @@
 		    <br> </br>
 		    <div style="overflow-y:scroll; height:400px">
 			    <ul>
-			      <li ng-repeat="item in items| filter:query" ng-show="(item.included)" ng-class="{selected: (item.key == currentItem.key)}"  ng-click="changeTerm(item.key)" class="thumbnail">
+			      <li ng-repeat="item in items| filter:query" ng-show="(item.included)" ng-class="{selected: (item.key == currentItem.key), translated: (item.term.translated && item.questions.translated)}"  ng-click="changeTerm(item.key)" class="thumbnail">
 			        <p> {{item.display}}</p>
 			      </li>
 			    </ul>
