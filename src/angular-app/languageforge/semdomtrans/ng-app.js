@@ -39,8 +39,14 @@ angular.module('semdomtrans',
         	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/projectSetup.html',
         		controller: 'projectSetupCtrl'}
         }
+    })
+    .state('joinProject', {
+        url: '/join',
+        views: {
+        	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/joinProject.html',
+        		controller: 'joinProjectCtrl'}
+        }
     });
-    
   })
   .controller('MainCtrl', ['$scope', 'sessionService',
   function($scope, ss) {

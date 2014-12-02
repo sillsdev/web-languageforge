@@ -54,28 +54,30 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     jsonRpc.connect('/api/sf');
     
 	
-    this.getSourceLanguages = function(callback) {
+    this.getStartedProjects = function(callback) {
     	// replace with php call to get available languages
 		var result = {ok:true, data: [
-		                              {'id':1, 'name' :'English'}, 
-		                              {'id':2, 'name' :'French'},
-		                              {'id':3, 'name' :'Thai'},
-		                              {'id':4, 'name' :'Chinese'},
-		                              {'id':5, 'name' :'Indonesian'}
+		                              {'id':1, 'language' :'Thai', 'pctComplete': 20}, 
+		                              {'id':2, 'language' :'French', 'pctComplete': 30},
+		                              {'id':3, 'language' :'Togalo', 'pctComplete': 10 },
+		                              {'id':4, 'language' :'Chinese', 'pctComplete': 50},
+		                              {'id':5, 'language' :'Indonesian', 'pctComplete': 5}
 		                             ]
 
 					  };
 		callback(result);
     }; 
     
-    this.getTargetLanguages = function(callback) {
+    this.getUnstartedProject = function(callback) {
     	// replace with php call to get available languages
 		var result = {ok:true, data: [
-		                              {'id':1, 'name' :'English'}, 
-		                              {'id':2, 'name' :'French'},
-		                              {'id':3, 'name' :'Thai'},
-		                              {'id':4, 'name' :'Chinese'},
-		                              {'id':5, 'name' :'Indonesian'}
+		                              {'id':1, 'language' :'Korean'}, 
+		                              {'id':2, 'language' :'Tibetan'},
+		                              {'id':3, 'language' :'Persian'},
+		                              {'id':4, 'language' :'Incan'},
+		                              {'id':5, 'language' :'Arabic'},
+		                              {'id':6, 'language' :'Tibetan'},
+		                              {'id':7, 'language' :'Japanese'}
 		                             ]
 
 					};
@@ -84,6 +86,10 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     
     
     this.createProject = function(source, target, creatorID, callback) {
+    	callback({ok:true, success: true});
+    }
+    
+    this.sendJoinRequest = function(source, target, creatorID, callback) {
     	callback({ok:true, success: true});
     }
     
