@@ -1,23 +1,23 @@
 <div class="container" data-ng-cloak>
 <br><h2 style="font-weight:normal" translate="Import/Export"></h2>
 <tabset>
-    <tab heading="{{'LIFT Import' | translate}}" data-ng-controller="LiftImportCtrl">
+    <tab heading="{{'LIFT or zip Import' | translate}}" data-ng-controller="LiftImportCtrl">
         <div class="well">
-            <label translate="Import a LIFT File"></label>
+            <label translate="Import a LIFT file or a compressed (zipped) folder of the whole project"></label>
             <div class="drop-box" data-ng-file-drop="onFileSelect($files);" 
                 data-ng-file-drop-available="dropSupported=true" data-ng-show="dropSupported">
-                <h4 translate="Drop a LIFT file here"></h4>
+                <h4 translate="Drop a LIFT file here<br/> or drop a zipped folder here"></h4>
                 <br/>
                 <p translate="or if you prefer..."></p>
                 <input type="button" class="btn" value="{{'Browse...' | translate}}" 
-                    onclick="javascript:document.getElementById('liftFile').click();">
-                <input id="liftFile" type="file" style="display:none" 
+                    onclick="javascript:document.getElementById('importFile').click();">
+                <input id="importFile" type="file" style="display:none" 
                     data-ng-file-select="onFileSelect($files)">
             </div>
             <div data-ng-show="! dropSupported"> <!-- HTML5 Drop File is not supported on this browser -->
                 <input type="button" class="btn" value="{{'Browse...' | translate}}" 
-                    onclick="javascript:document.getElementById('liftFile').click();">
-                <input id="liftFile" type="file" style="display:none" 
+                    onclick="javascript:document.getElementById('importFile').click();">
+                <input id="importFile" type="file" style="display:none" 
                     data-ng-file-select="onFileSelect($files)">
             </div>
             <br />
@@ -55,22 +55,6 @@
                     <progressbar class="span4" value="upload.progress" max="100.0">{{upload.progress}}%</progressbar>
                 </div>
             </form>
-        </div>
-    </tab>
-    <tab heading="{{ 'Settings Import' | translate }}">
-        <div class="row">
-        
-            <!-- Left column: task list -->
-            <div class="span3 control-group">
-            </div>
-            
-            <!-- Right column: task setup -->
-            <div class="span9">
-                <div class="well">
-                    <h4>Hang in there, this feature is coming</h4>
-                </div>
-            </div>
-        
         </div>
     </tab>
 </tabset>

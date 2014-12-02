@@ -2,26 +2,51 @@
 
 namespace models\languageforge\lexicon;
 
-use models\languageforge\lexicon\config\LexiconOptionListItem;
-use models\mapper\ArrayOf;
-use models\languageforge\lexicon\config\LexiconConfigObj;
-use models\languageforge\lexicon\ZipImportErrorReport;
 use Palaso\Utilities\FileUtilities;
+use models\mapper\ArrayOf;
+use models\languageforge\lexicon\config\LexiconOptionListItem;
+use models\languageforge\lexicon\config\LexiconConfigObj;
 
 class LiftImport
 {
 
     /**
-     * Convert a DOMNode to an SXE node -- simplexml_import_node() won't actually work
-     * @param unknown $node
-     * @return unknown
+     *
+     * @var LiftImportStats
      */
-    public static function domNode_to_sxeNode($node)
+    public $stats;
+
+    /**
+     *
+     * @var string
+     */
+    public $liftFilePath;
+
+    /**
+     *
+     * @var ImportErrorReport
+     */
+    private $report;
+
+    /**
+     *
+     * @var LiftImportNodeError
+     */
+    private $liftImportNodeError;
+
+    /**
+     *
+     * @var LiftDecoder
+     */
+    private $liftDecoder;
+
+    public static function get()
     {
-        $dom = new \DomDocument();
-        $n = $dom->importNode($node, true); // expands the node for that particular guid
-        $sxeNode = simplexml_import_dom($n);
-        return $sxeNode;
+        static $instance = null;
+        if ($instance == null) {
+            $instance = new LiftImport();
+        }
+        return $instance;
     }
 
     /**
@@ -29,25 +54,28 @@ class LiftImport
      * @param LexiconProjectModel $projectModel
      * @param LiftMergeRule $mergeRule
      * @param boolean $skipSameModTime
-     * @throws \Exception
+     * @param boolean $deleteMatchingEntry
+     * @return \models\languageforge\lexicon\LiftImport
      */
-    public static function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
+    public function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
     {
         ini_set('max_execution_time', 90); // Sufficient time to import webster.  TODO Make this async CP 2014-10
 //         self::validate($xml);    // TODO Fix. The XML Reader validator doesn't work with <optional> in the RelaxNG schema. IJH 2014-03
 
         $entryList = new LexEntryListModel($projectModel);
         $entryList->read();
-
         $initialImport = $entryList->count == 0;
 
         // I consider this to be a stopgap to support importing of part of speech until we have a way to import lift ranges - cjh 2014-08
         $partOfSpeechValues = array();
 
+        // Do the following on first import (number of entries == 0)
         if ($initialImport) {
-            // Do the following on first import (number of entries == 0
+            // save and clear input systems
+            $inputSystems = $projectModel->inputSystems->getArrayCopy();
+            $projectModel->inputSystems->exchangeArray(array());
 
-            // clear entry field input systems config if their are no entries (only use imported input systems)
+            // clear entry field input systems config if there are no entries (only use imported input systems)
             $projectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems = new ArrayOf();
             $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems = new ArrayOf();
             $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems = new ArrayOf();
@@ -57,67 +85,62 @@ class LiftImport
 
         $reader = new \XMLReader();
         $reader->open($liftFilePath);
-        $liftFileDir = dirname($liftFilePath);
 
-        $liftDecoder = new LiftDecoder($projectModel);
+        $this->liftDecoder = new LiftDecoder($projectModel);
+        $this->stats = new LiftImportStats($entryList->count);
+        $this->report = new ImportErrorReport();
+        $this->liftImportNodeError = new LiftImportNodeError(LiftImportNodeError::FILE, basename($liftFilePath));
         $liftRangeDecoder = new LiftRangeDecoder($projectModel);
         $liftRangeFiles = array(); // Keys: filenames. Values: parsed files.
         $liftRanges = array(); // Keys: @id attributes of <range> elements. Values: parsed <range> elements.
+        $liftFolderPath = dirname($liftFilePath);
 
         while ($reader->read()) {
-            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'range') {
+            if ($initialImport && $reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'range') {
                 $node = $reader->expand();
                 $rangeId = $node->attributes->getNamedItem('id')->textContent;
                 $rangeHref = $node->attributes->getNamedItem('href')->textContent;
                 $hrefPath = parse_url($rangeHref, PHP_URL_PATH);
                 $rangeFilename = basename($hrefPath);
-                if (array_key_exists($rangeFilename, $liftRangeFiles)) {
-                    // We've parsed this file already, so just pull out the referenced range
-                    if (isset($liftRanges[$rangeId])) {
-                        $range = $liftRanges[$rangeId];
-                    } else {
-                        // Range was NOT found in referenced .lift-ranges file
-                        $rangeNode = LiftImport::domNode_to_sxeNode($node);
-                        $range = $liftRangeDecoder->readRange($rangeNode);
-                        error_log("Range id '$rangeId' was not found in referenced .lift-ranges file");
-                        // TODO: Record an error for later reporting, instead of just error_log()ging it
-                    }
-                } else {
+                $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::FILE, $rangeFilename);
+                if (! array_key_exists($rangeFilename, $liftRangeFiles)) {
                     // Haven't parsed the .lift-ranges file yet. We'll assume it is alongside the .lift file.
-                    $rangePath = $liftFileDir . "/" . $rangeFilename;
-                    if (file_exists($rangePath)) {
-                        $sxeNode = simplexml_load_file($rangePath);
+                    $rangeFilePath = $liftFolderPath . "/" . $rangeFilename;
+                    if (file_exists($rangeFilePath)) {
+                        $sxeNode = simplexml_load_file($rangeFilePath);
                         $parsedRanges = $liftRangeDecoder->decode($sxeNode);
                         $liftRanges = array_merge($liftRanges, $parsedRanges);
-                    }
-                    if (isset($liftRanges[$rangeId])) {
-                        $range = $liftRanges[$rangeId];
+                        $liftRangeFiles[] = $rangeFilename;
                     } else {
-                        // Range was NOT found in referenced .lift-ranges file after parsing it
-//                         $dom = new \DomDocument();
-//                         $n = $dom->importNode($node, true);
-//                         $rangeNode = simplexml_import_dom($n);
-                        $rangeNode = LiftImport::domNode_to_sxeNode($node);
-                        $range = $liftRangeDecoder->readRange($rangeNode);
-                        error_log("Range id '$rangeId' was not found in referenced .lift-ranges file");
-                        // TODO: Record an error for later reporting, instead of just error_log()ging it
+                        // Range file was NOT found in alongside the .lift file
+                        $rangeImportNodeError->addRangeFileNotFound(basename($liftFilePath));
                     }
                 }
+
+                // pull out the referenced range
+                if (isset($liftRanges[$rangeId])) {
+                    $range = $liftRanges[$rangeId];
+                } else {
+                    $range = null;
+                    if (file_exists($rangeFilePath)) {
+                        // Range was NOT found in referenced .lift-ranges file after parsing it
+                        $rangeImportNodeError->addRangeNotFound($rangeId);
+                    }
+                }
+
+                // Range elements defined in LIFT file override any values defined in .lift-ranges file.
                 if ($node->hasChildNodes()) {
-                    // Range elements defined in LIFT file override any values defined in .lift-ranges file.
-//                     $dom = new \DomDocument();
-//                     $n = $dom->importNode($node, true);
-//                     $sxeNode = simplexml_import_dom($n);
-                    $sxeNode = LiftImport::domNode_to_sxeNode($node);
-                    $range = $liftRangeDecoder->readRange($sxeNode, $range);
+                    $rangeNode = self::domNode_to_sxeNode($node);
+                    $range = $liftRangeDecoder->readRange($rangeNode, $range);
                     $liftRanges[$rangeId] = $range;
                 }
+
+                $this->liftImportNodeError->addSubnodeError($rangeImportNodeError);
             }
             if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
+                $this->stats->importEntries++;
                 $node = $reader->expand();
-                $dom = new \DomDocument();
-                $n = $dom->importNode($node, true); // expands the node for that particular guid
-                $sxeNode = simplexml_import_dom($n);
+                $sxeNode = self::domNode_to_sxeNode($node);
 
                 $guid = $reader->getAttribute('guid');
                 $existingEntry = $entryList->searchEntriesFor('guid', $guid);
@@ -127,29 +150,34 @@ class LiftImport
                     if (self::differentModTime($dateModified, $entry->authorInfo->modifiedDate) || ! $skipSameModTime) {
                         if ($mergeRule == LiftMergeRule::CREATE_DUPLICATES) {
                             $entry = new LexEntryModel($projectModel);
-                            $liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
+                            $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
                             $entry->guid = '';
                             $entry->write();
+                            $this->stats->entriesDuplicated++;
                         } else {
                             if (isset($sxeNode->{'lexical-unit'})) {
-                                $liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
+                                $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
                                 $entry->write();
+                                $this->stats->entriesMerged++;
                             } elseif (isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
                                 LexEntryModel::remove($projectModel, $existingEntry['id']);
+                                $this->stats->entriesDeleted++;
                             }
                         }
                     } else {
                         // skip because same mod time and skip enabled
                         if (! isset($sxeNode->{'lexical-unit'}) && isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
                             LexEntryModel::remove($projectModel, $existingEntry['id']);
+                            $this->stats->entriesDeleted++;
                         }
                     }
                     self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
                 } else {
                     if (isset($sxeNode->{'lexical-unit'})) {
                         $entry = new LexEntryModel($projectModel);
-                        $liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
+                        $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
                         $entry->write();
+                        $this->stats->newEntries++;
                         self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
                     }
                 }
@@ -159,28 +187,84 @@ class LiftImport
         $reader->close();
 
         if ($initialImport) {
+            // put back saved input systems if none found in the imported data
+            if ($projectModel->inputSystems->count() <= 0) {
+                $projectModel->inputSystems->exchangeArray($inputSystems);
+            }
+
+            // add lift ranges
             if (array_key_exists('grammatical-info', $liftRanges)) {
                 $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS];
-                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['grammatical-info']);
+                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['grammatical-info']);
             }
             if (array_key_exists('anthro-code', $liftRanges)) {
                 $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES];
-                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['anthro-code']);
+                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['anthro-code']);
             }
             if (array_key_exists('domain-type', $liftRanges)) {
                 $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS];
-                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['domain-type']);
+                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['domain-type']);
             }
             if (array_key_exists('semantic-domain-ddp4', $liftRanges)) {
                 $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM];
-                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['semantic-domain-ddp4']);
+                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['semantic-domain-ddp4']);
             }
             if (array_key_exists('status', $liftRanges)) {
                 $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS];
-                LiftImport::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['status']);
+                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['status']);
             }
             // TODO: Add any other LIFT range imports that make sense. 2014-10 RM
         }
+
+        $this->report->nodeErrors[] = $this->liftImportNodeError;
+        if ($this->report->hasError()) {
+            error_log($this->report->toString());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $importDateModified
+     * @param DateTime $entryDateModified
+     * @return boolean
+     */
+    private static function differentModTime($importDateModified, $entryDateModified)
+    {
+        $dateModified = new \DateTime($importDateModified);
+
+        return ($dateModified->getTimestamp() != $entryDateModified->getTimestamp());
+    }
+
+    /**
+     * Read LIFT entry with error reporting
+     *
+     * @param SimpleXMLElement $sxeNode
+     * @param LexEntryModel $entry
+     * @param LiftMergeRule $mergeRule
+     */
+    private function readEntryWithErrorReport($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
+        try {
+            $this->liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
+            $this->liftImportNodeError->addSubnodeError($this->liftDecoder->getImportNodeError());
+        } catch (Exception $e) {
+            $this->liftImportNodeError->addSubnodeError($this->liftDecoder->getImportNodeError());
+            $this->report->nodeErrors[] = $this->liftImportNodeError;
+            if ($this->report->hasError()) {
+                error_log($this->report->toString());
+            }
+            throw new \Exception($e);
+        }
+    }
+
+    /**
+     * Get LIFT import error report
+     *
+     * @return \models\languageforge\lexicon\ImportErrorReport
+     */
+    public function getReport()
+    {
+        return  $this->report;
     }
 
     /**
@@ -209,66 +293,93 @@ class LiftImport
             } else {
                 $abbrev = null;
             }
-            $optionList->items->append(new LexiconOptionListItem($label, $abbrev));
+            $optionListItem = new LexiconOptionListItem($label);
+            $optionListItem->abbreviation = $abbrev;
+            $optionList->items->append($optionListItem);
+
         }
         $optionList->write();
     }
 
     /**
+     *
      * @param string $zipFilePath
      * @param LexiconProjectModel $projectModel
+     * @param LiftMergeRule $mergeRule
+     * @param boolean $skipSameModTime
+     * @param boolean $deleteMatchingEntry
      * @throws \Exception
+     * @return \models\languageforge\lexicon\LiftImport
      */
-    public static function importZip($zipFilePath, $projectModel)
+    public function importZip($zipFilePath, $projectModel, $mergeRule = LiftMergeRule::IMPORT_WINS, $skipSameModTime = false, $deleteMatchingEntry = false)
     {
-        $assetDir = $projectModel->getAssetsPath();
-        $extractDest = $assetDir . '/initialUpload_' . mt_rand();
-        $retCode = LiftImport::extractZip($zipFilePath, $extractDest);
-        if ($retCode) {
-            throw new \Exception("Error extracting uploaded file");
-            // TODO: Capture output from extractarchive.sh if retcode != 0
-        }
+        $assetsFolderPath = $projectModel->getAssetsFolderPath();
+        $extractFolderPath = $assetsFolderPath . '/initialUpload_' . mt_rand();
+        $this->report = new ImportErrorReport();
+        $zipNodeError = new ZipImportNodeError(ZipImportNodeError::FILE, basename($zipFilePath));
+        try {
+            self::extractZip($zipFilePath, $extractFolderPath);
 
-        $report = new ZipImportErrorReport(ZipImportErrorReport::FILE, basename($zipFilePath));
-
-        // Now find the .lift file in the uploaded zip
-        $dirIter = new \RecursiveDirectoryIterator($extractDest);
-        $iterIter = new \RecursiveIteratorIterator($dirIter);
-        $liftIter = new \RegexIterator($iterIter, '/\.lift$/', \RegexIterator::MATCH);
-        $liftFilenames = array();
-        foreach ($liftIter as $file) {
-            $liftFilenames[] = $file->getPathname();
-        }
-        if (empty($liftFilenames)) {
-            throw new \Exception("Uploaded file does not contain any LIFT data");
-        }
-        if (count($liftFilenames) > 1) {
-            foreach (array_slice($liftFilenames, 1) as $fileName) {
-                $report->addUnhandledLiftFile($fileName);
+            // Now find the .lift file in the uploaded zip
+            $dirIter = new \RecursiveDirectoryIterator($extractFolderPath);
+            $iterIter = new \RecursiveIteratorIterator($dirIter);
+            $liftIter = new \RegexIterator($iterIter, '/\.lift$/', \RegexIterator::MATCH);
+            $liftFilePaths = array();
+            foreach ($liftIter as $file) {
+                $liftFilePaths[] = $file->getPathname();
             }
-        }
-
-        // Import assets: pictures, audio, and other files
-        foreach (array("pictures", "audio", "others") as $dirName) {
-            $assetPath = $assetDir . "/" . $dirName;
-            $importPath = $extractDest . "/" . $dirName;
-            if (file_exists($importPath) && is_dir($importPath)) {
-                FileUtilities::copyDirTree($importPath, $assetPath);
+            if (empty($liftFilePaths)) {
+                throw new \Exception("Uploaded file does not contain any LIFT data");
             }
+            if (count($liftFilePaths) > 1) {
+                foreach (array_slice($liftFilePaths, 1) as $filename) {
+                    $zipNodeError->addUnhandledLiftFile(basename($filename));
+                }
+            }
+
+            // Import subfolders
+            foreach (glob($extractFolderPath . '/*', GLOB_ONLYDIR) as $folderPath) {
+                $folderName = basename($folderPath);
+                switch ($folderName) {
+                	case 'pictures':
+                	case 'audio':
+                	case 'others':
+                	case 'WritingSystems':
+                	    $assetsPath = $assetsFolderPath . "/" . $folderName;
+                	    if (file_exists($folderPath) && is_dir($folderPath)) {
+                            FileUtilities::copyDirTree($folderPath, $assetsPath);
+                        }
+                        break;
+                	default:
+                	    $zipNodeError->addUnhandledSubfolder($folderName);
+                }
+            }
+
+            // Import first .lift file (only).
+            $this->liftFilePath = $liftFilePaths[0];
+            $this->merge($this->liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
+
+            if ($zipNodeError->hasError()) {
+                error_log($zipNodeError->toString() . "\n");
+            }
+            foreach ($this->report->nodeErrors as $subnodeError) {
+                $zipNodeError->addSubnodeError($subnodeError);
+            }
+            $this->report = new ImportErrorReport();
+            $this->report->nodeErrors[] = $zipNodeError;
+        } catch (Exception $e) {
+            if ($zipNodeError->hasError()) {
+                error_log($zipNodeError->toString() . "\n");
+            }
+            foreach ($this->report->nodeErrors as $subnodeError) {
+                $zipNodeError->addSubnodeError($subnodeError);
+            }
+            $this->report = new ImportErrorReport();
+            $this->report->nodeErrors[] = $zipNodeError;
+            throw new \Exception($e);
         }
 
-        // Import first .lift file (only).
-        $liftFilePath = $liftFilenames[0];
-        $mergeRule = LiftMergeRule::IMPORT_WINS;
-        $skipSameModTime = true;
-        $deleteMatchingEntry = true;
-        LiftImport::merge($liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
-        if ($report->hasError()) {
-            error_log($report->toString() . "\n");
-            return $report->toString();
-        } else {
-            return '';
-        }
+        return $this;
     }
 
     /**
@@ -283,6 +394,9 @@ class LiftImport
             $zipFilePath = $realpathResult;
         } else {
             throw new \Exception("Error receiving uploaded file");
+        }
+        if (!file_exists($realpathResult)) {
+            throw new \Exception("Error file '$zipFilePath' does not exist.");
         }
 
         $basename = basename($zipFilePath);
@@ -313,11 +427,15 @@ class LiftImport
         FileUtilities::createAllFolders($destDir);
         $destFilesBeforeUnpacking = scandir($destDir);
 
+        // ensure non-roman filesnames are returned
+        $cmd = 'LANG="en_US.UTF-8" ' . $cmd;
         $output = array();
         $retcode = 0;
         exec($cmd, $output, $retcode);
         if ($retcode) {
-            throw new \Exception("Uncompressing archive file failed: " . print_r($output, true));
+            if (($retcode != 1) || ($retcode == 1 && strstr(end($output), 'failed setting times/attribs') == false)) {
+                throw new \Exception("Uncompressing archive file failed: " . print_r($output, true));
+            }
         }
 
         // If the .zip contained just one top-level folder with all contents below that folder,
@@ -331,7 +449,35 @@ class LiftImport
             }
         }
 
-        return $retcode;
+    }
+
+    /**
+     * Convert a DOMNode to an SXE node -- simplexml_import_node() won't actually work
+     *
+     * @param DOMNode $node
+     * @return SimpleXMLElement
+     */
+    private static function domNode_to_sxeNode($node)
+    {
+        $dom = new \DomDocument();
+        $n = $dom->importNode($node, true);
+        $sxeNode = simplexml_import_dom($n);
+        $dom->appendChild($n);
+        return $sxeNode;
+    }
+
+    /**
+     * @param $arr array - list to append to
+     * @param $entryModel LexEntryModel
+     */
+    private static function addPartOfSpeechValuesToList(&$arr, $entryModel)
+    {
+        foreach ($entryModel->senses as $sense) {
+            $pos = $sense->partOfSpeech->value;
+            if (!in_array($pos, $arr)) {
+                array_push($arr, $pos);
+            }
+        }
     }
 
     /**
@@ -365,31 +511,5 @@ class LiftImport
         restore_error_handler();
 
         return true;
-    }
-
-    /**
-     * @param string $importDateModified
-     * @param DateTime $entryDateModified
-     * @return boolean
-     */
-    private static function differentModTime($importDateModified, $entryDateModified)
-    {
-        $dateModified = new \DateTime($importDateModified);
-
-        return ($dateModified->getTimestamp() != $entryDateModified->getTimestamp());
-    }
-
-    /**
-     * @param $arr array - list to append to
-     * @param $entryModel LexEntryModel
-     */
-    private static function addPartOfSpeechValuesToList(&$arr, $entryModel)
-    {
-        foreach ($entryModel->senses as $sense) {
-            $pos = $sense->partOfSpeech->value;
-            if (!in_array($pos, $arr)) {
-                array_push($arr, $pos);
-            }
-        }
     }
 }

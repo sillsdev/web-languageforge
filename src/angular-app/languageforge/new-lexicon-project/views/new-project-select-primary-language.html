@@ -1,8 +1,8 @@
-<h2>Select primary language</h2>
-<div ng-hide="newProject.initialData">
+<h3>Select primary language</h3>
+<div data-ng-hide="newProject.initialData">
     <div class="control-group">
         <span translate="Primary language:"></span>
         <span data-ng-show="newProject.languageCode"> {{newProject.languageName}} ({{newProject.languageCode}}) </span>
-        <a class="btn" data-ng-click="openNewLanguageModal()">Select</a>
+        <a class="btn" id="selectLanguageButton" data-ng-click="openNewLanguageModal()">Select</a>
     </div>
 </div>

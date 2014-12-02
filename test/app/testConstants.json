@@ -29,13 +29,17 @@
   "avatar"           : "/images/shared/avatar/anonymoose.png",
   
   "testProjectName"  : "Test Project",
-  "testProjectCode"  : "testproject",
+  "testProjectCode"  : "test_project",
   "testProjectAllowInvites" : false,
   "otherProjectName" : "Other Project for Testing",
   "otherProjectCode" : "otherproject",
   "otherProjectAllowInvites": true,
   "thirdProjectName" : "new kid on the block",
   "thirdProjectCode" : "nkotb",
+  "newProjectName"   : "New Project",
+  "newProjectCode"   : "new_project",
+  "emptyProjectName" : "Empty Project",
+  "emptyProjectCode" : "empty_project",
 
 
 
@@ -122,6 +126,21 @@
                               "translation": {"en": {"value": "The pot calls the kettle black."}}}],
                 "source": {"en": {"value": "http://www.thai-language.com/id/131403#def1c"}}
               }]
+  },
+  
+  "testMockZipImportFile" : {
+    "lastModified" : 1416986856000,
+    "name" : "TestLexProject.zip",
+    "size" : 28999,
+    "type" : "",
+    "webkitRelativePath": ""
+  },
+  "testMockJpgImportFile" : {
+    "lastModified" : 1416986856000,
+    "name" : "TestImage.jpg",
+    "size" : 2753,
+    "type" : "",
+    "webkitRelativePath": ""
   },
   
   "End_of_constants" : ""
