@@ -1,4 +1,4 @@
-<span style="overflow-y:scroll" data-ng-controller="editSettingsCtrl" ng-show="($parent.selectedTab == 2)">
+<div ng-show="($parent.selectedTab == 2)" data-ng-controller="editSettingsCtrl">
 	<div style="text-align:left">
 	  What do you want to translate?
 	  <br />
@@ -22,4 +22,4 @@
 	
 	<button class="pull-left btn btn-success" ng-click="drillUp()" ng-show="(domainsFiltered[0].key.length > 1)">Back</button>
 	
-</span>
+</div>
