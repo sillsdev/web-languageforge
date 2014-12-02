@@ -1,25 +1,34 @@
 <div data-collapse="newProject.emptyProjectDesired">
-    <h3>Initial data</h3>
+    <h3>Initial Data</h3>
     
-    <div class="drop-box" data-ng-file-drop="onFileSelect($files)" data-ng-file-drop-available="dropSupported=true">
-        <h4>Upload initial data</h4>
+    <label translate="Import a compressed (zipped) folder of the whole project"></label>
+    <div class="drop-box" data-ng-file-drop="onFileSelect($files);" 
+        data-ng-file-drop-available="dropSupported=true" data-ng-show="dropSupported">
+        <h4 translate="Drop a zipped folder here"></h4>
         <br/>
-        <p>Drag files here, or click Browse button</p>
-        <input type="button" class="btn" id="browseButton" value="Browse..." onclick="javascript:document.getElementById('datafile').click();" />
-        <input id="datafile" type="file" style="display:none;" data-ng-file-select="onFileSelect($files)" />
+        <p translate="or if you prefer..."></p>
+        <input type="button" class="btn" id="browseButton" value="{{'Browse...' | translate}}" 
+            onclick="javascript:document.getElementById('importFile').click();">
+        <input id="importFile" type="file" style="display:none" 
+            data-ng-file-select="onFileSelect($files)">
         <div data-ng-show="uploadErrorMsg">
             <span style="color: red" data-ng-bind="uploadErrorMsg"></span>
         </div>
     </div>
-    <div data-ng-show="uploadProgress">Upload progress: {{uploadProgress}}%</div>
+    <div data-ng-show="! dropSupported"> <!-- HTML5 Drop File is not supported on this browser -->
+        <input type="button" class="btn" id="browseButton" value="{{'Browse...' | translate}}" 
+            onclick="javascript:document.getElementById('importFile').click();">
+        <input id="importFile" type="file" style="display:none" 
+            data-ng-file-select="onFileSelect($files)">
+    </div>
+    <br />
     <div data-ng-show="datafile != null">
-        <p><strong>{{datafile.name}}</strong> {{datafile.size | bytes }}</p>
+        <p><strong>{{datafile.name}}</strong> ({{datafile.size | bytes }})</p>
         <div class="span4" data-ng-class="interfaceConfig.pullNormal">
-            <progressbar data-value="uploadProgress" data-max="100.0"></progressbar>
+            <progressbar data-value="uploadProgress" data-max="100.0">{{uploadProgress}}%</progressbar>
         </div>
         &nbsp;
     </div>
-    <div data-ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
 </div>
 
 <!--
