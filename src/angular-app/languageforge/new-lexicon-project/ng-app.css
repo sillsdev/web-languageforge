@@ -36,6 +36,10 @@
 	border: 1px solid green;
 }
 
+a.btn {
+    font-weight: normal;
+}
+
 /* Initial Data */
 .drop-box {
     border: 4px dashed #e67345;

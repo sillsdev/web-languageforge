@@ -20,6 +20,10 @@ describe('E2E testing: New Lex Project app', function() {
   });
   
   describe('Project Name page', function() {
+
+    it('cannot see back button', function() {
+      expect(page.backButton.isDisplayed()).toBe(false);
+    });
   
     it('cannot move on if name is invalid', function() {
       expect(page.nextButton.isEnabled()).toBe(true);
@@ -133,7 +137,8 @@ describe('E2E testing: New Lex Project app', function() {
   
   describe('Initial Data page with upload', function() {
     
-    it('defaults to uploading data', function() {
+    it('cannot see back button and defaults to uploading data', function() {
+      expect(page.backButton.isDisplayed()).toBe(false);
       expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
       expect(page.progressIndicatorStep3Label.getText()).toEqual('Verify');
     });
@@ -149,7 +154,7 @@ describe('E2E testing: New Lex Project app', function() {
         expect(page.noticeList.count()).toBe(0);
         page.initialDataPage.mockUpload.uploadButton.click();
         expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
-        expect(page.verifyDataPage.lexiconButton.isPresent()).toBe(false);
+        expect(page.verifyDataPage.entriesImported.isPresent()).toBe(false);
         expect(page.noticeList.count()).toBe(1);
         expect(page.noticeList.get(0).getText()).toContain('is too large. It must be smaller than');
         page.initialDataPage.mockUpload.fileNameInput.clear();
@@ -162,7 +167,7 @@ describe('E2E testing: New Lex Project app', function() {
         expect(page.noticeList.count()).toBe(1);
         page.initialDataPage.mockUpload.uploadButton.click();
         expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
-        expect(page.verifyDataPage.lexiconButton.isPresent()).toBe(false);
+        expect(page.verifyDataPage.entriesImported.isPresent()).toBe(false);
         expect(page.noticeList.count()).toBe(2);
         expect(page.noticeList.get(1).getText()).toContain(constants.testMockJpgImportFile.name + ' is not an allowed compressed file. Ensure the file is');
         page.initialDataPage.mockUpload.fileNameInput.clear();
@@ -174,7 +179,7 @@ describe('E2E testing: New Lex Project app', function() {
         page.initialDataPage.mockUpload.fileSizeInput.sendKeys(constants.testMockZipImportFile.size);
         expect(page.noticeList.count()).toBe(2);
         page.initialDataPage.mockUpload.uploadButton.click();
-        expect(page.verifyDataPage.lexiconButton.isDisplayed()).toBe(true);
+        expect(page.verifyDataPage.entriesImported.isDisplayed()).toBe(true);
         expect(page.noticeList.count()).toBe(3);
         expect(page.noticeList.get(2).getText()).toContain('Successfully imported ' + constants.testMockZipImportFile.name);
       });
@@ -190,7 +195,8 @@ describe('E2E testing: New Lex Project app', function() {
     });
     
     it('can go to lexicon', function() {
-      page.verifyDataPage.lexiconButton.click();
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.click();
       expect(dbePage.browse.getEntryCount()).toBe(2);
     });
     
@@ -215,11 +221,6 @@ describe('E2E testing: New Lex Project app', function() {
   describe('Initial Data page skipping upload', function() {
     
     it('can skip uploading data', function() {
-      expect(page.initialDataPage.emptyProjectCheckbox.isDisplayed()).toBe(true);
-      expect(page.progressIndicatorStep3Label.getText()).toEqual('Verify');
-      util.setCheckbox(page.initialDataPage.emptyProjectCheckbox, true);
-      expect(page.initialDataPage.browseButton.isDisplayed()).toBe(false);
-      expect(page.progressIndicatorStep3Label.getText()).toEqual('Language');
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
@@ -229,6 +230,17 @@ describe('E2E testing: New Lex Project app', function() {
   
   describe('Primary Language page', function() {
     
+    it('can go back to initial data page (then forward again)', function() {
+      expect(page.backButton.isDisplayed()).toBe(true);
+      expect(page.backButton.isEnabled()).toBe(true);
+      page.backButton.click();
+      expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.click();
+      expect(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
+      expect(page.backButton.isDisplayed()).toBe(true);
+    });
+  
     it('can select language', function() {
       expect(page.primaryLanguagePage.selectButton.isEnabled()).toBe(true);
       page.primaryLanguagePage.selectButton.click();
