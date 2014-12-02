@@ -435,6 +435,13 @@ angular.module('new-lexicon-project',
 
     // ----- Step 3: Verify initial data -OR- select primary language -----
 
+    $scope.primaryLanguage = function primaryLanguage() {
+      if ($scope.newProject.languageCode) {
+        return $scope.newProject.languageName + ' (' + $scope.newProject.languageCode + ')';
+      }
+      return '';
+    };
+    
     $scope.openNewLanguageModal = function openNewLanguageModal() {
       var modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
