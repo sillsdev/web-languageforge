@@ -16,7 +16,23 @@ angular.module('semdomtrans.services', ['jsonRpc'])
                 var questions = semanticDomainQuestions_en[key];
     			 var questionObjects = [];
      		     for (var j = 0; j < questions.length; j++) {
-     		    	 questionObjects.push({'question': questions[j], 'translation':'', 'terms':''})
+     		    	 var beginTerms = 0;
+     		    	 var endTerms = 0;
+     		    	 var seenPar = false;
+     		    	 
+     		    	 for (var l = 0; l < questions[j].length; l++) {
+     		    		 if (questions[j].charAt(l) == '(') {
+     		    			 seenPar = 0;
+     		    			 beginTerms = l + 1;
+     		    		 }
+     		    		 else if (questions[j].charAt(l) == ')') {
+     		    			 endTerms = l;
+     		    			 break;
+     		    		 }
+     		    	 }
+     		    	 
+     		    	 var questTerms = questions[j].substring(beginTerms, endTerms);
+     		    	 questionObjects.push({'question': questions[j].substring(0, beginTerms - 1), 'questTranslation':'', 'terms': questTerms, 'termsTranslation': ""})
      		     }
     			 var term = semanticDomains_en[key];
     			 var searchKeys = [];

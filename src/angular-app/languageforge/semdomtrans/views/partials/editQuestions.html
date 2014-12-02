@@ -7,7 +7,16 @@
 	    </tr>
 	     <tr>
 		    <td> Translation: </td>
-		    <td> <textarea rows="4" ng-model="$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].translation"></textarea> </td>
+		    <td> <textarea rows="4" ng-model="$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].questTranslation"></textarea> </td>
+		    
+	    </tr>	
+	     <tr>
+		    <td> Question Terms: </td>
+		    <td> {{$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].terms}}</textarea> </td>
+	    </tr>	
+	     <tr>
+		    <td> Translation: </td>
+		    <td> <textarea rows="4" ng-model="$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].termsTranslation"></textarea> </td>
 		    
 	    </tr>				    
 	    <tr> 
