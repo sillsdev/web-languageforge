@@ -16,12 +16,31 @@ require_once SourcePath . "models/QuestionModel.php";
 
 class TestQuestionCommentDto extends UnitTestCase
 {
+
+    public function __construct() {
+        $this->environ = new MongoTestEnvironment();
+        $this->environ->clean();
+        parent::__construct();
+    }
+
+    /**
+     * Local store of mock test environment
+     *
+     * @var MongoTestEnvironment
+     */
+    private $environ;
+
+    /**
+     * Cleanup test environment
+     */
+    public function tearDown()
+    {
+        $this->environ->clean();
+    }
+
     public function testEncode_FullQuestionWithAnswersAndComments_DtoReturnsExpectedData()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         $text = new TextModel($project);
         $text->title = "Text 1";
@@ -29,9 +48,9 @@ class TestQuestionCommentDto extends UnitTestCase
         $text->content = $usx;
         $textId = $text->write();
 
-        $user1Id = $e->createUser("user1", "user1", "user1@email.com");
-        $user2Id = $e->createUser("user2", "user2", "user2@email.com");
-        $user3Id = $e->createUser("user3", "user3", "user3@email.com");
+        $user1Id = $this->environ->createUser("user1", "user1", "user1@email.com");
+        $user2Id = $this->environ->createUser("user2", "user2", "user2@email.com");
+        $user3Id = $this->environ->createUser("user3", "user3", "user3@email.com");
 
         // Workflow is first to create a question
         $question = new QuestionModel($project);
@@ -84,13 +103,10 @@ class TestQuestionCommentDto extends UnitTestCase
 
     public function testEncode_ArchivedQuestion_ManagerCanViewContributorCannot()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-
-        $managerId = $e->createUser("manager", "manager", "manager@email.com");
-        $contributorId = $e->createUser("contributor1", "contributor1", "contributor1@email.com");
+        $managerId = $this->environ->createUser("manager", "manager", "manager@email.com");
+        $contributorId = $this->environ->createUser("contributor1", "contributor1", "contributor1@email.com");
         $project->addUser($managerId, ProjectRoles::MANAGER);
         $project->addUser($contributorId, ProjectRoles::CONTRIBUTOR);
         $project->write();
@@ -113,21 +129,25 @@ class TestQuestionCommentDto extends UnitTestCase
         $this->assertEqual($dto['question']['title'], 'the question');
 
         // Contributor cannot view Question of archived Text, throw Exception
-        $e->inhibitErrorDisplay();
+        $this->environ->inhibitErrorDisplay();
         $this->expectException();
         $dto = QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
-        $e->restoreErrorDisplay();
+
+        // nothing runs in the current test function after an exception. IJH 2014-11
+    }
+    // this test was designed to finish testEncode_ArchivedQuestion_ManagerCanViewContributorCannot
+    public function testEncode_ArchivedQuestion_ManagerCanViewContributorCannot_RestoreErrorDisplay()
+    {
+        // restore error display after last test
+        $this->environ->restoreErrorDisplay();
     }
 
     public function testEncode_ArchivedText_ManagerCanViewContributorCannot()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-
-        $managerId = $e->createUser("manager", "manager", "manager@email.com");
-        $contributorId = $e->createUser("contributor1", "contributor1", "contributor1@email.com");
+        $managerId = $this->environ->createUser("manager", "manager", "manager@email.com");
+        $contributorId = $this->environ->createUser("contributor1", "contributor1", "contributor1@email.com");
         $project->addUser($managerId, ProjectRoles::MANAGER);
         $project->addUser($contributorId, ProjectRoles::CONTRIBUTOR);
         $project->write();
@@ -150,10 +170,16 @@ class TestQuestionCommentDto extends UnitTestCase
         $this->assertEqual($dto['question']['title'], 'the question');
 
         // Contributor cannot view Question of archived Text, throw Exception
-        $e->inhibitErrorDisplay();
+        $this->environ->inhibitErrorDisplay();
         $this->expectException();
         $dto = QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
-        $e->restoreErrorDisplay();
-    }
 
+        // nothing runs in the current test function after an exception. IJH 2014-11
+    }
+    // this test was designed to finish testEncode_ArchivedText_ManagerCanViewContributorCannot
+    public function testEncode_ArchivedText_ManagerCanViewContributorCannot_RestoreErrorDisplay()
+    {
+        // restore error display after last test
+        $this->environ->restoreErrorDisplay();
+    }
 }
