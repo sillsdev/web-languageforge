@@ -344,6 +344,7 @@ angular.module('new-lexicon-project',
 
     $scope.show = {};
     $scope.show.backButton = false;
+    $scope.show.flexHelp = false;
     $scope.nextButtonLabel = 'Next';
     $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
     
