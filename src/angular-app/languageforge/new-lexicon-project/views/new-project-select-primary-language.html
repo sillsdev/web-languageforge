@@ -1,8 +1,9 @@
 <h3>Select Primary Language</h3>
-<div data-ng-hide="newProject.initialData">
-    <div class="control-group">
-        <span translate="Primary language:"></span>
-        <span data-ng-show="newProject.languageCode"> {{newProject.languageName}} ({{newProject.languageCode}}) </span>
+
+<div class="control-group">
+    <label class="control-label" translate="Primary language"></label>
+    <div class="controls">
+        <div class="uneditable-input" data-ng-bind="primaryLanguage()"></div>
         <a class="btn" id="selectLanguageButton" data-ng-click="openNewLanguageModal()" translate="Select"></a>
     </div>
 </div>
