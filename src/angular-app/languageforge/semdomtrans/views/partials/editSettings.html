@@ -14,9 +14,9 @@
 		<th> Domain </th>
 		<th> Display </th>
 	</tr>
-	<tr ng-repeat="term in domainsFiltered">
-		<td ng-click="drillDown(term.key)"> {{term.key}}: {{term.name}} </td>
-		<td> <input type='checkbox'  ng-model="term.display" ng-change="updateDisplay(term.key)" /> </td>
+	<tr ng-repeat="item in domainsFiltered">
+		<td ng-click="drillDown(item.key)"> {{item.display}} </td>
+		<td> <input type='checkbox'  ng-model="item.included" ng-change="updateIncluded(item.key)" /> </td>
 	</tr>
 	</table>
 	
