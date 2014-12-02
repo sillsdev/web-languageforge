@@ -43,6 +43,11 @@ a.btn {
 /* Initial Data */
 .drop-box {
     border: 4px dashed #e67345;
+    width: 290px;
+}
+
+a#flexHelpLink {
+   text-decoration: none; 
 }
 
 #importErrors {
