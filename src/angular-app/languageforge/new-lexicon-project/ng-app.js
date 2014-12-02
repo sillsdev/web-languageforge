@@ -139,6 +139,11 @@ angular.module('new-lexicon-project',
     };
 
     $scope.nextStep = function nextStep() {
+      if ($state.current.name === 'newProject.initialData') {
+        $scope.newProject.emptyProjectDesired = true;
+        $scope.progressIndicatorStep3Label = $filter('translate')('Language');
+        $scope.validateForm();
+      }
       
       // If form is still validating, wait for it
       $scope.formValidationDefer.promise.then(function(valid) {
@@ -148,9 +153,21 @@ angular.module('new-lexicon-project',
         }
       });
     };
-    $scope.prevStep = function() {
-      // To implement, decide how we could go "back" to the first step: delete the newly-created (but still empty) project?
-      console.log("Tried to go back... but that's not yet implemented");
+    
+    $scope.prevStep = function prevStep() {
+      $scope.show.backButton = false;
+      switch ($state.current.name) {
+        case 'newProject.name':
+        case 'newProject.initialData':
+        case 'newProject.verifyData':
+          break;
+        case 'newProject.selectPrimaryLanguage':
+          $state.go('newProject.initialData');
+          $scope.nextButtonLabel = 'Skip';
+          $scope.newProject.emptyProjectDesired = false;
+          $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
+          break;
+      };
     };
 
     // Form validation requires API calls, so it return a promise rather than a value.
@@ -161,8 +178,9 @@ angular.module('new-lexicon-project',
       $scope.formValidationDefer = $q.defer();
 
       // Shorthand to make things look a touch nicer
-      var ok = $scope.makeFormValid;
-      var error = $scope.makeFormInvalid;
+      var ok = $scope.makeFormValid,
+        error = $scope.makeFormInvalid;
+      
       // TODO: This switch is becoming unwieldy. Separate each case into a separate function. 2014-10 RM
       switch (currentState) {
         case 'newProject.name':
@@ -229,18 +247,24 @@ angular.module('new-lexicon-project',
       // Don't need to validate in this function since it's already been taken care of for us by this point
       switch ($state.current.name) {
         case 'newProject.name':
+          $scope.nextButtonLabel = 'Skip';
           $state.go('newProject.initialData');
           break;
         case 'newProject.initialData':
+          $scope.nextButtonLabel = 'Dictionary';
           if ($scope.newProject.emptyProjectDesired) {
             $state.go('newProject.selectPrimaryLanguage');
+            $scope.show.backButton = true;
           } else {
             $state.go('newProject.verifyData');
+            $scope.makeFormValid();
           }
           break;
         case 'newProject.verifyData':
         case 'newProject.selectPrimaryLanguage':
-          var url = linkService.project($scope.newProject.id, $scope.newProject.appName);
+          var url;
+          $scope.makeFormValid();
+          url = linkService.project($scope.newProject.id, $scope.newProject.appName);
           $window.location.href = url;
           break;
       };
@@ -318,6 +342,11 @@ angular.module('new-lexicon-project',
 
     // ----- Step 1: Project name -----
 
+    $scope.show = {};
+    $scope.show.backButton = false;
+    $scope.nextButtonLabel = 'Next';
+    $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
+    
     $scope.$watch('newProject.projectName', function(newval, oldval) {
       if (angular.isUndefined(newval)) {
         $scope.newProject.projectCode = '';
@@ -343,15 +372,7 @@ angular.module('new-lexicon-project',
 
     // ----- Step 2: Initial data upload -----
 
-    $scope.show = {};
     $scope.show.importErrors = false;
-    $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
-
-    $scope.$watch('newProject.emptyProjectDesired', function(newval) {
-      if (angular.isUndefined(newval)) { return; }
-      $scope.progressIndicatorStep3Label = $filter('translate')((newval) ? 'Language' : 'Verify');
-      $scope.validateForm();
-    });
 
     $scope.onFileSelect = function onFileSelect(files) {
       $scope.uploadErrorMsg = '';
@@ -382,8 +403,8 @@ angular.module('new-lexicon-project',
             notice.push(notice.SUCCESS, $filter('translate')("Successfully imported") + " " + $scope.datafile.name);
             $scope.newProject.entriesImported = data.data.stats.importEntries;
             $scope.newProject.importErrors = data.data.importErrors;
-            $scope.validateForm();
-            $scope.nextStep();
+            $scope.makeFormNeutral();
+            $scope.processForm();
           } else {
             $scope.uploadProgress = 0;
             $scope.newProject.entriesImported = 0;
@@ -411,10 +432,6 @@ angular.module('new-lexicon-project',
     };
 
     // ----- Step 3: Verify initial data -OR- select primary language -----
-
-    $scope.initialDataLooksGood = function() {
-      $scope.makeFormValid();
-    };
 
     $scope.setLanguage = function(languageCode, language) {
       $scope.newProject.languageCode = languageCode;

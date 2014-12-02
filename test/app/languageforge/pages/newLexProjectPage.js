@@ -11,6 +11,7 @@ var NewLexProjectPage = function() {
   // form controls
   this.newLexProjectForm = element('form#newLexProjectForm');
   this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
+  this.backButton = element(by.id('backButton'));
   this.nextButton = element(by.id('nextButton'));
   this.noticeList = element.all(by.repeater('notice in notices()'));
   
@@ -26,13 +27,11 @@ var NewLexProjectPage = function() {
   
   // step 2: initial data
   this.initialDataPage = {};
-  this.initialDataPage.emptyProjectCheckbox = element(by.model('newProject.emptyProjectDesired'));
   this.initialDataPage.browseButton = element(by.id('browseButton'));
   this.initialDataPage.mockUpload = mockUpload;
   
   // step 3: verify data
   this.verifyDataPage = {};
-  this.verifyDataPage.lexiconButton = element(by.id('lexiconButton'));
   this.verifyDataPage.entriesImported = element(by.binding('newProject.entriesImported'));
   
   // step 3 alternate: primary language
