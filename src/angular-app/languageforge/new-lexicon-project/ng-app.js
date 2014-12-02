@@ -407,6 +407,7 @@ angular.module('new-lexicon-project',
             $scope.processForm();
           } else {
             $scope.uploadProgress = 0;
+            $scope.datafile = null;
             $scope.newProject.entriesImported = 0;
             notice.push(notice.ERROR, data.data.errorMessage);
             $scope.validateForm();
@@ -433,10 +434,6 @@ angular.module('new-lexicon-project',
 
     // ----- Step 3: Verify initial data -OR- select primary language -----
 
-    $scope.setLanguage = function(languageCode, language) {
-      $scope.newProject.languageCode = languageCode;
-      $scope.newProject.languageName = language.name;
-    };
     $scope.openNewLanguageModal = function openNewLanguageModal() {
       var modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
@@ -451,7 +448,8 @@ angular.module('new-lexicon-project',
         }]
       });
       modalInstance.result.then(function(selected) {
-        $scope.setLanguage(selected.code, selected.language);
+        $scope.newProject.languageCode = selected.code;
+        $scope.newProject.languageName = selected.language.name;
       });
     };
 
