@@ -647,19 +647,12 @@ class sf
         return LexOptionListCommands::updateList($this->_projectId, $params);
     }
 
-    public function lex_uploadProjectZip($mediaType, $tmpFilePath, $projectId = '')
+    public function lex_upload_importProjectZip($mediaType, $tmpFilePath, $projectId = '')
     {
         // Sometimes we need to upload to a newly-created project ID, which is not yet in the session cookie.
         // In those cases, the optional $projectId parameter will be set to a non-empty value.
         if (empty($projectId)) { $projectId = $this->_projectId; }
-        $response = LexUploadCommands::uploadProjectZip($projectId, $mediaType, $tmpFilePath);
-        return JsonEncoder::encode($response);
-    }
-    public function lex_mockUploadProjectZip($mediaType, $tmpFilePath, $projectId = '')
-    {
-        // Used for testing zip upload UI without actually importing data
-        if (empty($projectId)) { $projectId = $this->_projectId; }
-        $response = LexUploadCommands::mockUploadProjectZip($projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::importProjectZip($projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 

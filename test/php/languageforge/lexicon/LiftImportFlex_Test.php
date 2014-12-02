@@ -247,7 +247,7 @@ EOD;
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();

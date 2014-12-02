@@ -49,6 +49,12 @@ $projectModel->projectName = $constants['thirdProjectName'];
 $projectModel->projectCode = $constants['thirdProjectCode'];
 $db = \models\mapper\MongoStore::dropDB($projectModel->databaseName());
 
+// drop the and 'new' database because it is used in a 'create new project' test
+$projectModel = new ProjectModel();
+$projectModel->projectName = $constants['newProjectName'];
+$projectModel->projectCode = $constants['newProjectCode'];
+$db = \models\mapper\MongoStore::dropDB($projectModel->databaseName());
+
 $adminUser = UserCommands::createUser(array(
     'id' => '',
     'name' => $constants['adminName'],
@@ -214,4 +220,14 @@ if ($constants['siteType'] == 'scriptureforge') {
             'lexeme' => $constants['testMultipleMeaningEntry1']['lexeme'],
             'senses' => $constants['testMultipleMeaningEntry1']['senses']
         ), $managerUser);
+
+    // put mock uploaded zip import (jpg file)
+    $fileName = $constants['testMockJpgImportFile']['name'];
+    $tmpFilePath = sys_get_temp_dir() . '/' . $fileName;
+    copy(dirname(TestPath) . "/php/common/$fileName", $tmpFilePath);
+
+    // put mock uploaded zip import (zip file)
+    $fileName = $constants['testMockZipImportFile']['name'];
+    $tmpFilePath = sys_get_temp_dir() . '/' . $fileName;
+    copy(dirname(TestPath) . "/php/common/$fileName", $tmpFilePath);
 }
