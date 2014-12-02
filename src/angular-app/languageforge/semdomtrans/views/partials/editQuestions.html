@@ -1,0 +1,20 @@
+<span  ng-show="($parent.selectedTab == 1)">
+  	<h2> Question {{$parent.currentTermQuestions.position + 1}}/{{$parent.currentTermQuestions.termQuestions.length}} </h2>
+  	<table style="width:400px">
+	    <tr>
+		    <td> Question: </td>
+		    <td> {{$parent.currentTermQuestions.termQuestions[$parent.currentTermQuestions.position].question}} </td>
+	    </tr>
+	     <tr>
+		    <td> Translation: </td>
+		    <td> <textarea rows="4" ng-model="$parent.currentTermQuestions.termQuestions[$parent.currentTermQuestions.position].translation"></textarea> </td>
+		    
+	    </tr>				    
+	    <tr> 
+	    	<td> Comments: </td>
+	    	<td> <input ng-model="$parent.currentTermQuestions.termQuestions[$parent.currentTermQuestions.position].comments">	</td>
+	    </tr> 
+	</table>
+	<button ng-show="($parent.currentTermQuestions.position > 0)" ng-click="$parent.getPreviousQuestion()" class="pull-left btn btn-success">Previous Question</button>
+	<button ng-show="($parent.currentTermQuestions.position < $parent.currentTermQuestions.termQuestions.length - 1)" ng-click="$parent.getNextQuestion()" class="pull-right btn btn-success">Next Question</button>
+</span>
