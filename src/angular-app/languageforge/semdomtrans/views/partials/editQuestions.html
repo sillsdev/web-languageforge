@@ -14,7 +14,11 @@
 	    	<td> Comments: </td>
 	    	<td> <input ng-model="$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].comments">	</td>
 	    </tr> 
+	    
 	</table>
+	<td> 
+	Translated: <input type='checkbox'  ng-model="$parent.currentItem.questions.translated" /> 
+  
 	<button ng-show="($parent.currentItem.questions.position > 0)" ng-click="$parent.getPreviousQuestion()" class="pull-left btn btn-success">Previous Question</button>
 	<button ng-show="($parent.currentItem.questions.position < $parent.currentItem.questions.termQuestions.length - 1)" ng-click="$parent.getNextQuestion()" class="pull-right btn btn-success">Next Question</button>
 </span>
