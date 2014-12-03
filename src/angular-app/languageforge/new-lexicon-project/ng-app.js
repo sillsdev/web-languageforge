@@ -149,13 +149,13 @@ angular.module('new-lexicon-project',
         $scope.newProject.emptyProjectDesired = true;
         $scope.progressIndicatorStep3Label = $filter('translate')('Language');
       }
-      $scope.validateForm();
+      validateForm();
       
       // If form is still validating, wait for it
       $scope.formValidationDefer.promise.then(function(valid) {
         if (valid) {
           makeFormNeutral();
-          $scope.processForm();
+          gotoNextState();
         }
       });
     };
@@ -177,7 +177,7 @@ angular.module('new-lexicon-project',
     };
 
     // Form validation requires API calls, so it return a promise rather than a value.
-    $scope.validateForm = function validateForm(currentState) {
+    function validateForm(currentState) {
       if (angular.isUndefined(currentState)) {
         currentState = $state.current.name;
       }
@@ -235,10 +235,10 @@ angular.module('new-lexicon-project',
       return ok();
     };
 
-    $scope.processForm = function processForm() {
-      // Don't need to validate in this function since it's already been taken care of for us by this point
+    function gotoNextState() {
       switch ($state.current.name) {
         case 'newProject.name':
+          createProject();
           $scope.nextButtonLabel = 'Skip';
           $state.go('newProject.initialData');
           break;
@@ -262,12 +262,14 @@ angular.module('new-lexicon-project',
       };
     };
 
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-      if (fromState.name == "newProject.name" && toState.name == "newProject.initialData") {
-        $scope.createProjectBeforeUpload();
-      }
-    });
+    // ----- Step 1: Project name -----
 
+    $scope.show = {};
+    $scope.show.backButton = false;
+    $scope.show.flexHelp = false;
+    $scope.nextButtonLabel = 'Next';
+    $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
+    
     function projectNameToCode(name) {
       if (angular.isUndefined(name)) return undefined;
       return name.toLowerCase().replace(/ /g, '_');
@@ -320,7 +322,7 @@ angular.module('new-lexicon-project',
       }
       if (oldval == "loading") {
         // Project code state just resolved. Validate rest of form so Forward button can activate.
-        $scope.validateForm();
+        validateForm();
       }
     });
 
@@ -332,14 +334,6 @@ angular.module('new-lexicon-project',
       }
     });
 
-    // ----- Step 1: Project name -----
-
-    $scope.show = {};
-    $scope.show.backButton = false;
-    $scope.show.flexHelp = false;
-    $scope.nextButtonLabel = 'Next';
-    $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
-    
     $scope.$watch('newProject.projectName', function(newval, oldval) {
       if (angular.isUndefined(newval)) {
         $scope.newProject.projectCode = '';
@@ -348,7 +342,7 @@ angular.module('new-lexicon-project',
       }
     });
 
-    $scope.createProjectBeforeUpload = function createProjectBeforeUpload() {
+    function createProject() {
       if (!$scope.newProject.projectName || !$scope.newProject.projectCode || !$scope.newProject.appName) {
         // This function sometimes gets called during setup, when $scope.newProject is still empty.
         return;
@@ -361,7 +355,6 @@ angular.module('new-lexicon-project',
         }
       });
     };
-
 
     // ----- Step 2: Initial data upload -----
 
@@ -397,7 +390,7 @@ angular.module('new-lexicon-project',
             $scope.newProject.entriesImported = data.data.stats.importEntries;
             $scope.newProject.importErrors = data.data.importErrors;
             makeFormNeutral();
-            $scope.processForm();
+            gotoNextState();
           } else {
             $scope.uploadProgress = 0;
             $scope.datafile = null;
@@ -430,7 +423,7 @@ angular.module('new-lexicon-project',
       if ($scope.newProject.languageCode) {
         return $scope.newProject.languageName + ' (' + $scope.newProject.languageCode + ')';
       }
-      return '';
+      return $scope.newProject.languageName;
     };
     
     $scope.openNewLanguageModal = function openNewLanguageModal() {
@@ -453,8 +446,9 @@ angular.module('new-lexicon-project',
     };
 
     $scope.$watch('newProject.languageCode', function(newval) {
-      if (angular.isUndefined(newval)) { return; }
-      $scope.validateForm();
+      if (angular.isDefined(newval)) {
+        validateForm();
+      }
     });
 
   }])
