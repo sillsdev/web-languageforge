@@ -98,16 +98,16 @@ angular.module('new-lexicon-project',
     $scope.formStatus = '';
     $scope.formValidationDefer = $q.defer();
 
-    $scope.makeFormValid = function(msg) {
+    function makeFormValid(msg) {
       if (! msg) msg = '';
       $scope.formValidated = true;
       $scope.formStatus = msg;
-      $scope.formStatusClass = 'good';
+      $scope.formStatusClass = 'alert alert-info';
       if (! msg) $scope.formStatusClass = 'neutral';
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
     };
-    $scope.makeFormNeutral = function(msg) {
+    function makeFormNeutral(msg) {
       if (! msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
@@ -115,13 +115,17 @@ angular.module('new-lexicon-project',
       $scope.formValidationDefer = $q.defer();
       return $scope.formValidationDefer.promise;
     };
-    $scope.makeFormInvalid = function(msg) {
+    function makeFormInvalid(msg) {
+      if (! msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass = 'bad';
+      $scope.formStatusClass = 'alert alert-error';
+      if (! msg) $scope.formStatusClass = 'neutral';
       $scope.formValidationDefer.resolve(false);
       return $scope.formValidationDefer.promise;
     };
+    
+    makeFormNeutral();
 
     $scope.$watch('formValidated', function(validated) {
       $scope.forwardBtnClass = validated ? 'btn-success' : '';
@@ -150,7 +154,7 @@ angular.module('new-lexicon-project',
       // If form is still validating, wait for it
       $scope.formValidationDefer.promise.then(function(valid) {
         if (valid) {
-          $scope.makeFormNeutral();
+          makeFormNeutral();
           $scope.processForm();
         }
       });
@@ -180,15 +184,17 @@ angular.module('new-lexicon-project',
       $scope.formValidationDefer = $q.defer();
 
       // Shorthand to make things look a touch nicer
-      var ok = $scope.makeFormValid,
-        error = $scope.makeFormInvalid;
+      var ok = makeFormValid,
+        error = makeFormInvalid;
       
       // TODO: This switch is becoming unwieldy. Separate each case into a separate function. 2014-10 RM
       switch (currentState) {
         case 'newProject.name':
-          // Project should have a name, should have a unique code, and should have a type
           if (! $scope.newProject.projectName) {
-            return error("Project Name can not be empty. Please provide a project name.");
+            return error("Project Name cannot be empty. Please enter a project name.");
+          }
+          if (! $scope.newProject.projectCode) {
+            return error('Project Code cannot be empty. Please enter a project code or uncheck "Edit project code".');
           }
           if (! $scope.newProject.appName) {
             return error("Please select a project type.");
@@ -204,13 +210,10 @@ angular.module('new-lexicon-project',
               return error("Another project with code '" + $scope.newProject.projectCode + "' already exists.");
             }
             if ($scope.projectCodeState == 'invalid') {
-              return error("Project Code must begin with a letter, and only contain lower-case letters, numbers and dashes.");
+              return error("Project Code must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores.");
             }
             if ($scope.projectCodeState == 'loading') {
-              return error("Please wait while we check whether another project with code '" + $scope.newProject.projectCode + "' already exists.");
-            }
-            if ($scope.projectCodeState == 'empty' || !$scope.newProject.projectCode) {
-              return error("Project code should not be empty.");
+              return error();
             }
             // Project code was invalid, but we don't know why. Give a generic message, adapted based on whether the user checked "Edit project code" or not.
             if ($scope.newProject.editProjectCode) {
@@ -221,13 +224,6 @@ angular.module('new-lexicon-project',
           });
           break;
         case 'newProject.initialData':
-          if ($scope.newProject.emptyProjectDesired) {
-            return ok("You've chosen to create an empty project with no initial data.");
-          }
-          if (! $scope.uploadSuccess) {
-            return error("No initial data uploaded yet.");
-          }
-          break;
         case 'newProject.verifyData':
           break;
         case 'newProject.selectPrimaryLanguage':
@@ -253,13 +249,13 @@ angular.module('new-lexicon-project',
             $scope.show.backButton = true;
           } else {
             $state.go('newProject.verifyData');
-            $scope.makeFormValid();
+            makeFormValid();
           }
           break;
         case 'newProject.verifyData':
         case 'newProject.selectPrimaryLanguage':
           var url;
-          $scope.makeFormValid();
+          makeFormValid();
           url = linkService.project($scope.newProject.id, $scope.newProject.appName);
           $window.location.href = url;
           break;
@@ -279,7 +275,7 @@ angular.module('new-lexicon-project',
     function isValidProjectCode(code) {
       if (angular.isUndefined(code)) return false;
       
-      // Valid project codes start with a letter and only contain lower-case letters, numbers, or dashes
+      // Valid project codes start with a letter and only contain lower-case letters, numbers, dashes and underscores
       var pattern = /^[a-z][a-z0-9\-_]*$/;
       return pattern.test(code);
     };
@@ -310,7 +306,7 @@ angular.module('new-lexicon-project',
       return $scope.projectCodeStateDefer.promise;
     };
     $scope.resetValidateProjectForm = function resetValidateProjectForm() {
-      $scope.makeFormNeutral();
+      makeFormNeutral();
       $scope.projectCodeState = 'unchecked';
       $scope.projectCodeStateDefer = $q.defer();
       $scope.projectCodeStateDefer.resolve('unchecked');
@@ -383,7 +379,7 @@ angular.module('new-lexicon-project',
       $scope.datafile = files[0];
       if ($scope.datafile.size <= ss.fileSizeMax()) {
         notice.setLoading('Importing ' + $scope.datafile.name + '...');
-        $scope.makeFormInvalid("Please wait while " + $scope.datafile.name + " is imported...");
+        makeFormInvalid();
         $scope.upload = $upload.upload({
           url: '/upload/lf-lexicon/import-zip',
           file: $scope.datafile,
@@ -400,14 +396,13 @@ angular.module('new-lexicon-project',
             notice.push(notice.SUCCESS, $filter('translate')("Successfully imported") + " " + $scope.datafile.name);
             $scope.newProject.entriesImported = data.data.stats.importEntries;
             $scope.newProject.importErrors = data.data.importErrors;
-            $scope.makeFormNeutral();
+            makeFormNeutral();
             $scope.processForm();
           } else {
             $scope.uploadProgress = 0;
             $scope.datafile = null;
             $scope.newProject.entriesImported = 0;
             notice.push(notice.ERROR, data.data.errorMessage);
-            $scope.validateForm();
           }
         });
       } else {

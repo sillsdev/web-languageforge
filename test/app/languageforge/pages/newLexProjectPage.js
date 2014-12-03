@@ -2,18 +2,34 @@
 
 var NewLexProjectPage = function() {
   var mockUpload = require('../../bellows/pages/mockUploadElement.js'),
-      modal      = require('./lexModals.js');
+      modal      = require('./lexModals.js'),
+      _this      = this;
   
   this.get = function() {
     browser.get('/app/new-lexicon-project');
   };
   
   // form controls
+  this.noticeList = element.all(by.repeater('notice in notices()'));
   this.newLexProjectForm = element('form#newLexProjectForm');
   this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
   this.backButton = element(by.id('backButton'));
   this.nextButton = element(by.id('nextButton'));
-  this.noticeList = element.all(by.repeater('notice in notices()'));
+  this.nextButton.expectFormIsValid = function expectFormIsValid() {
+    expect(_this.nextButton.getAttribute('class')).toContain('btn-success');
+  };
+  this.nextButton.expectFormIsNotValid = function expectFormIsNotValid() {
+    expect(_this.nextButton.getAttribute('class')).not.toContain('btn-success');
+  };
+  this.formStatus = element(by.id('form-status'));
+  this.formStatus.expectHasNoError = function expectHasNoError() {
+    expect(_this.formStatus.getAttribute('class')).not.toContain('alert');
+  };
+  this.formStatus.expectContainsError = function expectContainsError(partialMsg) {
+    if (! partialMsg) partialMsg = '';
+    expect(_this.formStatus.getAttribute('class')).toContain('alert-error');
+    expect(_this.formStatus.getText()).toContain(partialMsg);
+  };
   
   // step 1: project name
   this.namePage = {};
