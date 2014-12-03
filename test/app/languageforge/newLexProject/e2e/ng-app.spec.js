@@ -23,12 +23,14 @@ describe('E2E testing: New Lex Project app', function() {
 
     it('cannot see back button', function() {
       expect(page.backButton.isDisplayed()).toBe(false);
+      page.formStatus.expectHasNoError();
     });
   
     it('cannot move on if name is invalid', function() {
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+      page.formStatus.expectContainsError('Project Name cannot be empty.');
     });
     
     it('finds the test project already exists', function() {
@@ -37,17 +39,26 @@ describe('E2E testing: New Lex Project app', function() {
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.testProjectCode);
+      page.formStatus.expectContainsError("Another project with code '" + constants.testProjectCode + "' already exists.");
       page.namePage.projectNameInput.clear();
     });
     
     it('with a cleared name does not show an error but is still invalid', function() {
+      
+      // added the following two lines so the test will work (previous error wasn't clearing)
+      // as I couldn't re-produce the problem manually,
+      // however is likely symptomatic of some funkiness with promises. IJH 2014-12
+      page.namePage.projectNameInput.sendKeys('a' + protractor.Key.TAB);
+      page.namePage.projectNameInput.clear();
       page.namePage.projectNameInput.sendKeys(protractor.Key.TAB);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      page.formStatus.expectHasNoError();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+      page.formStatus.expectContainsError('Project Name cannot be empty.');
     });
     
     it('can verify that an unused project name is available', function() {
@@ -56,6 +67,7 @@ describe('E2E testing: New Lex Project app', function() {
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.newProjectCode);
+      page.formStatus.expectHasNoError();
     });
   
     it('can not edit project code by default', function() {
@@ -69,6 +81,7 @@ describe('E2E testing: New Lex Project app', function() {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('changed_new_project' + protractor.Key.TAB);
       expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual('changed_new_project');
+      page.formStatus.expectHasNoError();
     });
   
     it('project code cannot be empty; does not show an error but is still invalid', function() {
@@ -77,9 +90,11 @@ describe('E2E testing: New Lex Project app', function() {
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      page.formStatus.expectHasNoError();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+      page.formStatus.expectContainsError('Project Code cannot be empty.');
     });
   
     it('project code can be one character', function() {
@@ -88,6 +103,7 @@ describe('E2E testing: New Lex Project app', function() {
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
+      page.formStatus.expectHasNoError();
     });
   
     it('project code cannot be uppercase', function() {
@@ -96,11 +112,17 @@ describe('E2E testing: New Lex Project app', function() {
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      page.formStatus.expectHasNoError();
+      page.nextButton.click();
+      page.formStatus.expectContainsError('Project Code must begin with a letter');
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('aB' + protractor.Key.TAB);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      page.formStatus.expectHasNoError();
+      page.nextButton.click();
+      page.formStatus.expectContainsError('Project Code must begin with a letter');
     });
   
     it('project code cannot start with a number', function() {
@@ -109,6 +131,9 @@ describe('E2E testing: New Lex Project app', function() {
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      page.formStatus.expectHasNoError();
+      page.nextButton.click();
+      page.formStatus.expectContainsError('Project Code must begin with a letter');
     });
   
     it('project code cannot use non-alphanumeric', function() {
@@ -117,6 +142,9 @@ describe('E2E testing: New Lex Project app', function() {
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      page.formStatus.expectHasNoError();
+      page.nextButton.click();
+      page.formStatus.expectContainsError('Project Code must begin with a letter');
     });
   
     it('project code reverts to default when Edit-project-code is disabled', function() {
@@ -124,13 +152,16 @@ describe('E2E testing: New Lex Project app', function() {
       util.setCheckbox(page.namePage.editProjectCodeCheckbox, false);
       expect(page.namePage.projectCodeInput.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.newProjectCode);
+      page.formStatus.expectHasNoError();
     });
   
     it('can create project', function() {
       expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.expectFormIsValid();
       page.nextButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(false);
       expect(page.initialDataPage.browseButton.isPresent()).toBe(true);
+      page.formStatus.expectHasNoError();
     });
     
   });
@@ -141,6 +172,8 @@ describe('E2E testing: New Lex Project app', function() {
       expect(page.backButton.isDisplayed()).toBe(false);
       expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
       expect(page.progressIndicatorStep3Label.getText()).toEqual('Verify');
+      page.nextButton.expectFormIsNotValid();
+      page.formStatus.expectHasNoError();
     });
   
     describe('Mock file upload', function() {
@@ -157,6 +190,7 @@ describe('E2E testing: New Lex Project app', function() {
         expect(page.verifyDataPage.entriesImported.isPresent()).toBe(false);
         expect(page.noticeList.count()).toBe(1);
         expect(page.noticeList.get(0).getText()).toContain('is too large. It must be smaller than');
+        page.formStatus.expectHasNoError();
         page.initialDataPage.mockUpload.fileNameInput.clear();
         page.initialDataPage.mockUpload.fileSizeInput.clear();
       });
@@ -170,6 +204,7 @@ describe('E2E testing: New Lex Project app', function() {
         expect(page.verifyDataPage.entriesImported.isPresent()).toBe(false);
         expect(page.noticeList.count()).toBe(2);
         expect(page.noticeList.get(1).getText()).toContain(constants.testMockJpgImportFile.name + ' is not an allowed compressed file. Ensure the file is');
+        page.formStatus.expectHasNoError();
         page.initialDataPage.mockUpload.fileNameInput.clear();
         page.initialDataPage.mockUpload.fileSizeInput.clear();
       });
@@ -182,6 +217,7 @@ describe('E2E testing: New Lex Project app', function() {
         expect(page.verifyDataPage.entriesImported.isDisplayed()).toBe(true);
         expect(page.noticeList.count()).toBe(3);
         expect(page.noticeList.get(2).getText()).toContain('Successfully imported ' + constants.testMockZipImportFile.name);
+        page.formStatus.expectHasNoError();
       });
     
     });
@@ -192,6 +228,7 @@ describe('E2E testing: New Lex Project app', function() {
     
     it('displays stats', function() {
       expect(page.verifyDataPage.entriesImported.getText()).toEqual('2 entries were found in the initial data.');
+      page.formStatus.expectHasNoError();
     });
     
     it('can go to lexicon', function() {
@@ -222,6 +259,7 @@ describe('E2E testing: New Lex Project app', function() {
     
     it('can skip uploading data', function() {
       expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.expectFormIsNotValid();
       page.nextButton.click();
       expect(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
     });
@@ -236,11 +274,20 @@ describe('E2E testing: New Lex Project app', function() {
       page.backButton.click();
       expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
       expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.expectFormIsNotValid();
       page.nextButton.click();
       expect(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
       expect(page.backButton.isDisplayed()).toBe(true);
     });
   
+    it('cannot move on if language is not selected', function() {
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.expectFormIsNotValid();
+      page.nextButton.click();
+      expect(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
+      page.formStatus.expectContainsError('Please select a primary language for the project.');
+    });
+    
     it('can select language', function() {
       expect(page.primaryLanguagePage.selectButton.isEnabled()).toBe(true);
       page.primaryLanguagePage.selectButton.click();
@@ -268,7 +315,9 @@ describe('E2E testing: New Lex Project app', function() {
     });
     
     it('can go to lexicon', function() {
+      page.formStatus.expectHasNoError();
       expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.expectFormIsValid();
       page.nextButton.click();
       expect(dbePage.browse.getEntryCount()).toBe(0);
     });
