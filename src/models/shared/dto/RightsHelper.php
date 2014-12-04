@@ -227,6 +227,7 @@ class RightsHelper
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);
 
             case 'project_create':
+            case 'project_create_switchSession':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
             case 'projectcode_exists':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
