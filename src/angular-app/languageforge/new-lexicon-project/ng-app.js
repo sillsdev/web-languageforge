@@ -13,7 +13,8 @@ angular.module('new-lexicon-project',
     'palaso.ui.mockUpload',
     'palaso.util.model.transform',
     'pascalprecht.translate',
-    'angularFileUpload'
+    'angularFileUpload',
+    'lexicon.services'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
   function($stateProvider, $urlRouterProvider, $translateProvider) {
@@ -67,8 +68,8 @@ angular.module('new-lexicon-project',
       }]);
 
   }])
-  .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$modal', '$window', 'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate', '$state', '$upload',
-  function($scope, $q, $filter, $modal, $window, ss, notice, projectService, linkService, $translate, $state, $upload) {
+  .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$modal', '$window', 'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate', '$state', '$upload', 'lexProjectService', 
+  function($scope, $q, $filter, $modal, $window, ss, notice, projectService, linkService, $translate, $state, $upload, lexProjectService) {
     $scope.interfaceConfig = {};
     $scope.interfaceConfig.userLanguageCode = 'en';
     if (angular.isDefined(ss.session.projectSettings)) {
@@ -254,8 +255,10 @@ angular.module('new-lexicon-project',
             makeFormValid();
           }
           break;
-        case 'newProject.verifyData':
         case 'newProject.selectPrimaryLanguage':
+          savePrimaryLanguage();
+          // no break
+        case 'newProject.verifyData':
           var url;
           makeFormValid();
           url = linkService.project($scope.newProject.id, $scope.newProject.appName);
@@ -352,6 +355,7 @@ angular.module('new-lexicon-project',
       projectService.createSwitchSession($scope.newProject.projectName, $scope.newProject.projectCode, $scope.newProject.appName, function(result) {
         if (result.ok) {
           $scope.newProject.id = result.data;
+          ss.refresh();
         } else {
           notice.push(notice.ERROR, "The " + $scope.newProject.projectName + " project could not be created. Please try again.");
         }
@@ -422,9 +426,9 @@ angular.module('new-lexicon-project',
 
     $scope.primaryLanguage = function primaryLanguage() {
       if ($scope.newProject.languageCode) {
-        return $scope.newProject.languageName + ' (' + $scope.newProject.languageCode + ')';
+        return $scope.newProject.language.name + ' (' + $scope.newProject.languageCode + ')';
       }
-      return $scope.newProject.languageName;
+      return '';
     };
     
     $scope.openNewLanguageModal = function openNewLanguageModal() {
@@ -442,7 +446,28 @@ angular.module('new-lexicon-project',
       });
       modalInstance.result.then(function(selected) {
         $scope.newProject.languageCode = selected.code;
-        $scope.newProject.languageName = selected.language.name;
+        $scope.newProject.language = selected.language;
+      });
+    };
+    
+    function savePrimaryLanguage() {
+      var config = {}, optionlist = {}, inputSystem = {};
+      if (angular.isDefined(ss.session.projectSettings)) {
+        config = ss.session.projectSettings.config;
+        optionlist = ss.session.projectSettings.optionlists;
+      }
+      inputSystem.abbreviation = $scope.newProject.languageCode;
+      inputSystem.tag = $scope.newProject.languageCode;
+      inputSystem.languageName = $scope.newProject.language.name;
+      config.inputSystems[$scope.newProject.languageCode] = inputSystem;
+      // TODO replace all 'th' with $scope.newProject.languageCode in config.entry. IJH 2014-12
+      lexProjectService.updateConfiguration(config, optionlist, function(result) {
+        // TODO fix saving of config; never executes in this callback. IJH 2014-12
+        if (result.ok) {
+          ss.refresh();
+        } else {
+          makeFormInvalid("Could not add " + $scope.newProject.language.name + " to project.");
+        }
       });
     };
 

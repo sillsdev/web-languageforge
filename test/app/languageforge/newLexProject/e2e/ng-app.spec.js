@@ -329,12 +329,15 @@ describe('E2E testing: New Lex Project wizard app', function() {
       
     });
     
-    it('can go to lexicon', function() {
+    it('can go to lexicon and primary language has changed', function() {
       page.formStatus.expectHasNoError();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.expectFormIsValid();
       page.nextButton.click();
       expect(dbePage.browse.getEntryCount()).toBe(0);
+      dbePage.browse.newWordBtn.click();
+      expect(dbePage.edit.getEntryCount()).toBe(1);
+      expect(dbePage.edit.getLexemesAsObject()).toEqual({'fr': ''});
     });
     
   });
