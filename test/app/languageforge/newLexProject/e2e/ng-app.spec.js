@@ -1,6 +1,6 @@
 'use strict';
 
-describe('E2E testing: New Lex Project app', function() {
+describe('E2E testing: New Lex Project wizard app', function() {
   var constants = require('../../../testConstants.json'),
       loginPage = require('../../../bellows/pages/loginPage.js'),
       body      = require('../../../bellows/pages/pageBody.js'),
@@ -12,8 +12,22 @@ describe('E2E testing: New Lex Project app', function() {
     expect(body.phpError.isPresent()).toBe(false);
   });
   
-  it('setup: login and page contains a user form', function() {
+  it('admin can get to wizard', function() {
+    loginPage.loginAsAdmin();
+    page.get();
+    expect(page.newLexProjectForm).toBeDefined();
+    expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+  });
+
+  it('manager can get wizard', function() {
     loginPage.loginAsManager();
+    page.get();
+    expect(page.newLexProjectForm).toBeDefined();
+    expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+  });
+  
+  it('setup: user login and page contains a form', function() {
+    loginPage.loginAsUser();
     page.get();
     expect(page.newLexProjectForm).toBeDefined();
     expect(page.namePage.projectNameInput.isPresent()).toBe(true);
@@ -233,6 +247,7 @@ describe('E2E testing: New Lex Project app', function() {
     
     it('can go to lexicon', function() {
       expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.expectFormIsValid();
       page.nextButton.click();
       expect(dbePage.browse.getEntryCount()).toBe(2);
     });
