@@ -67,22 +67,25 @@ angular.module('new-lexicon-project',
       }]);
 
   }])
-  .controller('NewLexProjectCtrl', ['$scope', '$rootScope', '$q', '$filter', '$modal', '$window', 'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate', '$state', '$upload',
-  function($scope, $rootScope, $q, $filter, $modal, $window, ss, notice, projectService, linkService, $translate, $state, $upload) {
-    $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
+  .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$modal', '$window', 'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate', '$state', '$upload',
+  function($scope, $q, $filter, $modal, $window, ss, notice, projectService, linkService, $translate, $state, $upload) {
+    $scope.interfaceConfig = {};
+    $scope.interfaceConfig.userLanguageCode = 'en';
+    if (angular.isDefined(ss.session.projectSettings)) {
+      $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
+    }
+    $scope.interfaceConfig.direction = 'ltr';
+    $scope.interfaceConfig.pullToSide = 'pull-right';
+    $scope.interfaceConfig.pullNormal = 'pull-left';
+    $scope.interfaceConfig.placementToSide = 'left';
+    $scope.interfaceConfig.placementNormal = 'right';
     if (InputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
-//    if (true) { // Override direction and force rtl, for testing purposes
+//      if (true) { // Override direction and force rtl, for testing purposes
       $scope.interfaceConfig.direction = 'rtl';
       $scope.interfaceConfig.pullToSide = 'pull-left';
       $scope.interfaceConfig.pullNormal = 'pull-right';
       $scope.interfaceConfig.placementToSide = 'right';
       $scope.interfaceConfig.placementNormal = 'left';
-    } else {
-      $scope.interfaceConfig.direction = 'ltr';
-      $scope.interfaceConfig.pullToSide = 'pull-right';
-      $scope.interfaceConfig.pullNormal = 'pull-left';
-      $scope.interfaceConfig.placementToSide = 'left';
-      $scope.interfaceConfig.placementNormal = 'right';
     }
 
     $scope.state = $state;
@@ -104,6 +107,7 @@ angular.module('new-lexicon-project',
       $scope.formStatus = msg;
       $scope.formStatusClass = 'alert alert-info';
       if (! msg) $scope.formStatusClass = 'neutral';
+      $scope.forwardBtnClass = 'btn-success';
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
     };
@@ -112,6 +116,7 @@ angular.module('new-lexicon-project',
       $scope.formValidated = false;
       $scope.formStatus = msg;
       $scope.formStatusClass = 'neutral';
+      $scope.forwardBtnClass = '';
       $scope.formValidationDefer = $q.defer();
       return $scope.formValidationDefer.promise;
     };
@@ -121,15 +126,12 @@ angular.module('new-lexicon-project',
       $scope.formStatus = msg;
       $scope.formStatusClass = 'alert alert-error';
       if (! msg) $scope.formStatusClass = 'neutral';
+      $scope.forwardBtnClass = '';
       $scope.formValidationDefer.resolve(false);
       return $scope.formValidationDefer.promise;
     };
     
     makeFormNeutral();
-
-    $scope.$watch('formValidated', function(validated) {
-      $scope.forwardBtnClass = validated ? 'btn-success' : '';
-    });
 
     $scope.iconForStep = function iconForStep(step) {
       var classes = [];
@@ -347,7 +349,7 @@ angular.module('new-lexicon-project',
         // This function sometimes gets called during setup, when $scope.newProject is still empty.
         return;
       }
-      projectService.create($scope.newProject.projectName, $scope.newProject.projectCode, $scope.newProject.appName, function(result) {
+      projectService.createSwitchSession($scope.newProject.projectName, $scope.newProject.projectCode, $scope.newProject.appName, function(result) {
         if (result.ok) {
           $scope.newProject.id = result.data;
         } else {
@@ -377,7 +379,6 @@ angular.module('new-lexicon-project',
           url: '/upload/lf-lexicon/import-zip',
           file: $scope.datafile,
           data: {
-              projectId: ($scope.newProject.id || ''),   // Which project to upload new data to
               filename: $scope.datafile.name
             },
         }).progress(function(evt) {
