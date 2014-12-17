@@ -190,7 +190,6 @@ angular.module('new-lexicon-project',
       var ok = makeFormValid,
         error = makeFormInvalid;
       
-      // TODO: This switch is becoming unwieldy. Separate each case into a separate function. 2014-10 RM
       switch (currentState) {
         case 'newProject.name':
           if (! $scope.newProject.projectName) {
@@ -255,17 +254,21 @@ angular.module('new-lexicon-project',
             makeFormValid();
           }
           break;
-        case 'newProject.selectPrimaryLanguage':
-          savePrimaryLanguage();
-          // no break
         case 'newProject.verifyData':
-          var url;
-          makeFormValid();
-          url = linkService.project($scope.newProject.id, $scope.newProject.appName);
-          $window.location.href = url;
+          gotoLexicon();
+          break;
+        case 'newProject.selectPrimaryLanguage':
+          savePrimaryLanguage(gotoLexicon);
           break;
       };
     };
+    
+    function gotoLexicon() {
+      var url;
+      makeFormValid();
+      url = linkService.project($scope.newProject.id, $scope.newProject.appName);
+      $window.location.href = url;
+    }
 
     // ----- Step 1: Project name -----
 
@@ -450,8 +453,9 @@ angular.module('new-lexicon-project',
       });
     };
     
-    function savePrimaryLanguage() {
-      var config = {}, optionlist = {}, inputSystem = {};
+    function savePrimaryLanguage(callback) {
+      var config = {inputSystems: []}, optionlist = {}, inputSystem = {};
+      notice.setLoading('Configuring project for first use...');
       if (angular.isDefined(ss.session.projectSettings)) {
         config = ss.session.projectSettings.config;
         optionlist = ss.session.projectSettings.optionlists;
@@ -460,15 +464,34 @@ angular.module('new-lexicon-project',
       inputSystem.tag = $scope.newProject.languageCode;
       inputSystem.languageName = $scope.newProject.language.name;
       config.inputSystems[$scope.newProject.languageCode] = inputSystem;
-      // TODO replace all 'th' with $scope.newProject.languageCode in config.entry. IJH 2014-12
+      if ('th' in config.inputSystems) {
+        delete config.inputSystems['th'];
+        replaceFieldInputSystem(config.entry, 'th', $scope.newProject.languageCode);
+      }
       lexProjectService.updateConfiguration(config, optionlist, function(result) {
-        // TODO fix saving of config; never executes in this callback. IJH 2014-12
+        notice.cancelLoading();
         if (result.ok) {
-          ss.refresh();
+          (callback || angular.noop)();
         } else {
           makeFormInvalid("Could not add " + $scope.newProject.language.name + " to project.");
         }
       });
+    };
+    
+    function replaceFieldInputSystem(item, existingTag, replacementTag) {
+      if (item.type === 'fields') {
+        angular.forEach(item.fields, function(field) {
+          replaceFieldInputSystem(field, existingTag, replacementTag);
+        });
+      } else {
+        if (angular.isDefined(item.inputSystems)) {
+          angular.forEach(item.inputSystems, function(inputSystemTag, index) {
+            if (inputSystemTag === existingTag) {
+              item.inputSystems[index] = replacementTag;
+            }
+          });
+        }
+      }
     };
 
     $scope.$watch('newProject.languageCode', function(newval) {
