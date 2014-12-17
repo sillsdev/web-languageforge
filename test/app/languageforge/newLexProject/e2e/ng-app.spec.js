@@ -246,6 +246,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     });
     
     it('can go to lexicon', function() {
+      expect(page.nextButton.isDisplayed()).toBe(true);
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.expectFormIsValid();
       page.nextButton.click();
