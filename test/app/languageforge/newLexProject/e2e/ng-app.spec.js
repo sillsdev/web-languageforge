@@ -248,7 +248,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('can go to lexicon', function() {
       
       // wait for animation to finish
-      browser.sleep(1000);
+      browser.sleep(2000);
       expect(page.nextButton.isDisplayed()).toBe(true);
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.expectFormIsValid();
