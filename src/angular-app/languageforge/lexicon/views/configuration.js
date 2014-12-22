@@ -2,8 +2,8 @@
 
 angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor', 'lexicon.services', 'palaso.util.model.transform'])
 // Configuation Controller
-.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService', '$location', 'utilService', 
-function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigService, $location, util) {
+.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService', 'utilService', 
+function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigService, util) {
   lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
   $scope.configDirty = angular.copy(ss.session.projectSettings.config);
   $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
@@ -311,10 +311,6 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
       $scope.isSaving = false;
     });
 
-  };
-
-  $scope.backToDictionary = function backToDictionary() {
-    $location.path('/dbe');
   };
 
   $scope.showInputSystems = function() {
