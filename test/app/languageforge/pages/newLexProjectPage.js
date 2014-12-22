@@ -14,12 +14,14 @@ var NewLexProjectPage = function() {
   this.newLexProjectForm = element('form#newLexProjectForm');
   this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
   this.backButton = element(by.id('backButton'));
-  this.nextButton = element(by.id('nextButton'));
-  this.nextButton.expectFormIsValid = function expectFormIsValid() {
-    expect(_this.nextButton.getAttribute('class')).toContain('btn-success');
+  this.nextButton = function nextButton() {
+    return element(by.id('nextButton'));
   };
-  this.nextButton.expectFormIsNotValid = function expectFormIsNotValid() {
-    expect(_this.nextButton.getAttribute('class')).not.toContain('btn-success');
+  this.expectFormIsValid = function expectFormIsValid() {
+    expect(_this.nextButton().getAttribute('class')).toContain('btn-success');
+  };
+  this.expectFormIsNotValid = function expectFormIsNotValid() {
+    expect(_this.nextButton().getAttribute('class')).not.toContain('btn-success');
   };
   this.formStatus = element(by.id('form-status'));
   this.formStatus.expectHasNoError = function expectHasNoError() {

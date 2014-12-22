@@ -41,8 +41,8 @@ describe('E2E testing: New Lex Project wizard app', function() {
     });
   
     it('cannot move on if name is invalid', function() {
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.click();
+      expect(page.nextButton().isEnabled()).toBe(true);
+      page.nextButton().click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(true);
       page.formStatus.expectContainsError('Project Name cannot be empty.');
     });
@@ -69,8 +69,8 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
       page.formStatus.expectHasNoError();
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.click();
+      expect(page.nextButton().isEnabled()).toBe(true);
+      page.nextButton().click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(true);
       page.formStatus.expectContainsError('Project Name cannot be empty.');
     });
@@ -105,8 +105,8 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
       page.formStatus.expectHasNoError();
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.click();
+      expect(page.nextButton().isEnabled()).toBe(true);
+      page.nextButton().click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(true);
       page.formStatus.expectContainsError('Project Code cannot be empty.');
     });
@@ -127,7 +127,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
       page.formStatus.expectHasNoError();
-      page.nextButton.click();
+      page.nextButton().click();
       page.formStatus.expectContainsError('Project Code must begin with a letter');
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('aB' + protractor.Key.TAB);
@@ -135,7 +135,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
       page.formStatus.expectHasNoError();
-      page.nextButton.click();
+      page.nextButton().click();
       page.formStatus.expectContainsError('Project Code must begin with a letter');
     });
   
@@ -146,7 +146,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
       page.formStatus.expectHasNoError();
-      page.nextButton.click();
+      page.nextButton().click();
       page.formStatus.expectContainsError('Project Code must begin with a letter');
     });
   
@@ -157,7 +157,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
       page.formStatus.expectHasNoError();
-      page.nextButton.click();
+      page.nextButton().click();
       page.formStatus.expectContainsError('Project Code must begin with a letter');
     });
   
@@ -170,9 +170,9 @@ describe('E2E testing: New Lex Project wizard app', function() {
     });
   
     it('can create project', function() {
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.expectFormIsValid();
-      page.nextButton.click();
+      expect(page.nextButton().isEnabled()).toBe(true);
+      page.expectFormIsValid();
+      page.nextButton().click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(false);
       expect(page.initialDataPage.browseButton.isPresent()).toBe(true);
       page.formStatus.expectHasNoError();
@@ -186,7 +186,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.backButton.isDisplayed()).toBe(false);
       expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
       expect(page.progressIndicatorStep3Label.getText()).toEqual('Verify');
-      page.nextButton.expectFormIsNotValid();
+      page.expectFormIsNotValid();
       page.formStatus.expectHasNoError();
     });
   
@@ -246,13 +246,10 @@ describe('E2E testing: New Lex Project wizard app', function() {
     });
     
     it('can go to lexicon', function() {
-      
-      // wait for animation to finish
-      browser.sleep(3000);
-      expect(page.nextButton.isDisplayed()).toBe(true);
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.expectFormIsValid();
-      page.nextButton.click();
+      expect(page.nextButton().isDisplayed()).toBe(true);
+      expect(page.nextButton().isEnabled()).toBe(true);
+      page.expectFormIsValid();
+      page.nextButton().click();
       expect(dbePage.browse.getEntryCount()).toBe(2);
     });
     
@@ -266,8 +263,8 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.click();
+      expect(page.nextButton().isEnabled()).toBe(true);
+      page.nextButton().click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(false);
       expect(page.initialDataPage.browseButton.isPresent()).toBe(true);
     });
@@ -277,9 +274,9 @@ describe('E2E testing: New Lex Project wizard app', function() {
   describe('Initial Data page skipping upload', function() {
     
     it('can skip uploading data', function() {
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.expectFormIsNotValid();
-      page.nextButton.click();
+      expect(page.nextButton().isEnabled()).toBe(true);
+      page.expectFormIsNotValid();
+      page.nextButton().click();
       expect(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
     });
   
@@ -292,17 +289,17 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.backButton.isEnabled()).toBe(true);
       page.backButton.click();
       expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.expectFormIsNotValid();
-      page.nextButton.click();
+      expect(page.nextButton().isEnabled()).toBe(true);
+      page.expectFormIsNotValid();
+      page.nextButton().click();
       expect(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
       expect(page.backButton.isDisplayed()).toBe(true);
     });
   
     it('cannot move on if language is not selected', function() {
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.expectFormIsNotValid();
-      page.nextButton.click();
+      expect(page.nextButton().isEnabled()).toBe(true);
+      page.expectFormIsNotValid();
+      page.nextButton().click();
       expect(page.primaryLanguagePage.selectButton.isPresent()).toBe(true);
       page.formStatus.expectContainsError('Please select a primary language for the project.');
     });
@@ -335,9 +332,9 @@ describe('E2E testing: New Lex Project wizard app', function() {
     
     it('can go to lexicon and primary language has changed', function() {
       page.formStatus.expectHasNoError();
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.expectFormIsValid();
-      page.nextButton.click();
+      expect(page.nextButton().isEnabled()).toBe(true);
+      page.expectFormIsValid();
+      page.nextButton().click();
       expect(dbePage.browse.getEntryCount()).toBe(0);
       dbePage.browse.newWordBtn.click();
       expect(dbePage.edit.getEntryCount()).toBe(1);
