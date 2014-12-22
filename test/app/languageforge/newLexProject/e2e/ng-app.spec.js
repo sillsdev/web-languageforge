@@ -19,7 +19,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     expect(page.namePage.projectNameInput.isPresent()).toBe(true);
   });
 
-  it('manager can get wizard', function() {
+  it('manager can get to wizard', function() {
     loginPage.loginAsManager();
     page.get();
     expect(page.newLexProjectForm).toBeDefined();
@@ -252,7 +252,8 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.nextButton().isDisplayed()).toBe(true);
       expect(page.nextButton().isEnabled()).toBe(true);
       page.expectFormIsValid();
-      page.nextButton().click();
+//      page.nextButton().click();
+      page.clickWhenClickable(page.nextButton());
       expect(dbePage.browse.getEntryCount()).toBe(2);
     });
     
