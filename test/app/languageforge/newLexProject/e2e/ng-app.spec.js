@@ -8,11 +8,6 @@ describe('E2E testing: New Lex Project wizard app', function() {
       dbePage   = require('../../pages/dbePage.js'),
       page      = require('../../pages/newLexProjectPage.js');
   
-  beforeEach(function() {
-    // Disable animations
-    element(by.tagName("body")).allowAnimations(false);
-  });
-  
   afterEach(function() {
     expect(body.phpError.isPresent()).toBe(false);
   });
@@ -251,15 +246,14 @@ describe('E2E testing: New Lex Project wizard app', function() {
     });
     
     it('can go to lexicon', function() {
-      expect(page.nextButton().isPresent()).toBe(true);
       expect(page.nextButton().isDisplayed()).toBe(true);
       expect(page.nextButton().isEnabled()).toBe(true);
       page.expectFormIsValid();
       
       // wait for animation to finish
-      browser.sleep(3000);
-//      page.nextButton().click();
-      page.clickWhenClickable(page.nextButton());
+      browser.sleep(4000);
+      page.nextButton().click();
+//      page.clickWhenClickable(page.nextButton());
       expect(dbePage.browse.getEntryCount()).toBe(2);
     });
     
