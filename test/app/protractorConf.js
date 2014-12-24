@@ -1,10 +1,12 @@
-var constants = require('./testConstants.json');
+'use strict';
 
-var specs = ['bellows/**/e2e/*.spec.js'];
+var constants = require('./testConstants.json'),
+  specs = ['bellows/**/e2e/*.spec.js'];
+
 if (constants.siteType == 'languageforge') {
-    specs.push('languageforge/**/e2e/*.spec.js')
+    specs.push('languageforge/**/e2e/*.spec.js');
 } else if (constants.siteType == 'scriptureforge') {
-    specs.push('scriptureforge/**/e2e/*.spec.js')
+    specs.push('scriptureforge/**/e2e/*.spec.js');
 }
 
 exports.config = {
@@ -34,6 +36,8 @@ exports.config = {
   // protractor is called.
   specs: specs,
 
+  framework: 'jasmine',
+
   // Options to be passed to Jasmine-node.
   jasmineNodeOpts: {
     showColors: true,
@@ -42,6 +46,22 @@ exports.config = {
   },
 
   onPrepare: function() {
+    /* global angular: false, browser: false, jasmine: false */
+
+    // Disable animations so e2e tests run more quickly
+    var disableNgAnimate = function() {
+      angular.module('disableNgAnimate', []).run(['$animate', function($animate) {
+        $animate.enabled(false);
+      }]);
+    };
+
+    browser.addMockModule('disableNgAnimate', disableNgAnimate);
+
+    // Store the name of the browser that's currently being used.
+    browser.getCapabilities().then(function(caps) {
+      browser.params.browser = caps.get('browserName');
+    });
+    
     if (process.env.TEAMCITY_VERSION) {
       require('jasmine-reporters');
       jasmine.getEnv().addReporter(new jasmine.TeamcityReporter());
