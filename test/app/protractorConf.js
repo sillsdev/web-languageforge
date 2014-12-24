@@ -1,10 +1,12 @@
-var constants = require('./testConstants.json');
+'use strict';
 
-var specs = ['bellows/**/e2e/*.spec.js'];
+var constants = require('./testConstants.json'),
+  specs = ['bellows/**/e2e/*.spec.js'];
+
 if (constants.siteType == 'languageforge') {
-    specs.push('languageforge/**/e2e/*.spec.js')
+    specs.push('languageforge/**/e2e/*.spec.js');
 } else if (constants.siteType == 'scriptureforge') {
-    specs.push('scriptureforge/**/e2e/*.spec.js')
+    specs.push('scriptureforge/**/e2e/*.spec.js');
 }
 
 exports.config = {
@@ -20,7 +22,7 @@ exports.config = {
     'browserName': 'chrome',
     'chromeOptions': {
         'args': ['--start-maximized'],
-    },
+    }
   },
 
   // To run tests in multiple browsers, uncomment the following
@@ -34,14 +36,28 @@ exports.config = {
   // protractor is called.
   specs: specs,
 
+  framework: 'jasmine',
+
   // Options to be passed to Jasmine-node.
   jasmineNodeOpts: {
     showColors: true,
-    defaultTimeoutInterval: 70000,
+    defaultTimeoutInterval: 70000
     //isVerbose: true,
   },
 
   onPrepare: function() {
+    /* global angular: false, browser: false, jasmine: false */
+
+    // Disable animations so e2e tests run more quickly
+    var disableNgAnimate = function() {
+      angular.module('disableNgAnimate', []).run(['$animate', function($animate) {
+        $animate.enabled(false);
+      }]);
+    };
+
+    // This seemed to make the tests more flaky rather than less. IJH 2014-12
+//    browser.addMockModule('disableNgAnimate', disableNgAnimate);
+
     if (process.env.TEAMCITY_VERSION) {
       require('jasmine-reporters');
       jasmine.getEnv().addReporter(new jasmine.TeamcityReporter());

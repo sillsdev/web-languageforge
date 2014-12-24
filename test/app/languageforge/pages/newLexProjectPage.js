@@ -11,17 +11,16 @@ var NewLexProjectPage = function() {
   
   // form controls
   this.noticeList = element.all(by.repeater('notice in notices()'));
+  this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
   this.newLexProjectForm = element('form#newLexProjectForm');
   this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
   this.backButton = element(by.id('backButton'));
-  this.nextButton = function nextButton() {
-    return element(by.id('nextButton'));
-  };
+  this.nextButton = element(by.id('nextButton'));
   this.expectFormIsValid = function expectFormIsValid() {
-    expect(_this.nextButton().getAttribute('class')).toContain('btn-success');
+    expect(_this.nextButton.getAttribute('class')).toContain('btn-success');
   };
   this.expectFormIsNotValid = function expectFormIsNotValid() {
-    expect(_this.nextButton().getAttribute('class')).not.toContain('btn-success');
+    expect(_this.nextButton.getAttribute('class')).not.toContain('btn-success');
   };
   this.formStatus = element(by.id('form-status'));
   this.formStatus.expectHasNoError = function expectHasNoError() {
@@ -31,25 +30,6 @@ var NewLexProjectPage = function() {
     if (! partialMsg) partialMsg = '';
     expect(_this.formStatus.getAttribute('class')).toContain('alert-error');
     expect(_this.formStatus.getText()).toContain(partialMsg);
-  };
-  
-  /**
-   * Taken from https://github.com/angular/protractor/issues/1555
-   * [clickWhenClickable This function fire click() on an element inside and Angular component, only when the element is really clickable. Should solve error 'Element is not clickable at point (x,y)' when other non-angular elements are overlapped.]
-   * @param  {[ElementFinder]} element [Element to be clicked.]
-   * @return {[!webdriver.promise.Promise.<T>]}         [Promise fulfilled with true when the click on the element has been achieved without errors.]
-   */
-  this.clickWhenClickable = function(element) {
-    return browser.wait(function() {
-      return element.click().then(
-        function() {
-          return true;
-        },
-        function() {
-          console.log('not clickable');
-          return false;
-        });
-    });
   };
   
   // step 1: project name
