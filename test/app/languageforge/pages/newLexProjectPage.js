@@ -11,6 +11,7 @@ var NewLexProjectPage = function() {
   
   // form controls
   this.noticeList = element.all(by.repeater('notice in notices()'));
+  this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
   this.newLexProjectForm = element('form#newLexProjectForm');
   this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
   this.backButton = element(by.id('backButton'));
