@@ -221,16 +221,18 @@ describe('E2E testing: New Lex Project wizard app', function() {
         page.formStatus.expectHasNoError();
         page.initialDataPage.mockUpload.fileNameInput.clear();
         page.initialDataPage.mockUpload.fileSizeInput.clear();
+        page.firstNoticeCloseButton.click();
+        page.firstNoticeCloseButton.click();
       });
 
       it('can upload zip file', function() {
         page.initialDataPage.mockUpload.fileNameInput.sendKeys(constants.testMockZipImportFile.name);
         page.initialDataPage.mockUpload.fileSizeInput.sendKeys(constants.testMockZipImportFile.size);
-        expect(page.noticeList.count()).toBe(2);
+        expect(page.noticeList.count()).toBe(0);
         page.initialDataPage.mockUpload.uploadButton.click();
         expect(page.verifyDataPage.entriesImported.isDisplayed()).toBe(true);
-        expect(page.noticeList.count()).toBe(3);
-        expect(page.noticeList.get(2).getText()).toContain('Successfully imported ' + constants.testMockZipImportFile.name);
+        expect(page.noticeList.count()).toBe(1);
+        expect(page.noticeList.get(0).getText()).toContain('Successfully imported ' + constants.testMockZipImportFile.name);
         page.formStatus.expectHasNoError();
       });
     
@@ -249,10 +251,6 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.nextButton().isDisplayed()).toBe(true);
       expect(page.nextButton().isEnabled()).toBe(true);
       page.expectFormIsValid();
-      
-      // wait for animation to finish
-      browser.sleep(4000);
-      browser.waitForAngular();
       page.nextButton().click();
       expect(dbePage.browse.getEntryCount()).toBe(2);
     });
