@@ -33,25 +33,6 @@ var NewLexProjectPage = function() {
     expect(_this.formStatus.getText()).toContain(partialMsg);
   };
   
-  /**
-   * Taken from https://github.com/angular/protractor/issues/1555
-   * [clickWhenClickable This function fire click() on an element inside and Angular component, only when the element is really clickable. Should solve error 'Element is not clickable at point (x,y)' when other non-angular elements are overlapped.]
-   * @param  {[ElementFinder]} element [Element to be clicked.]
-   * @return {[!webdriver.promise.Promise.<T>]}         [Promise fulfilled with true when the click on the element has been achieved without errors.]
-   */
-  this.clickWhenClickable = function(element) {
-    return browser.wait(function() {
-      return element.click().then(
-        function() {
-          return true;
-        },
-        function() {
-          console.log('not clickable');
-          return false;
-        });
-    });
-  };
-  
   // step 1: project name
   this.namePage = {};
   this.namePage.projectNameInput = element(by.model('newProject.projectName'));
