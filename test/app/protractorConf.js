@@ -57,7 +57,6 @@ exports.config = {
 
     // This seemed to make the tests more flaky rather than less. IJH 2014-12
 //    browser.addMockModule('disableNgAnimate', disableNgAnimate);
-    // Disable animations on a per test basis, see ./languageforge/newLexProject/e2e/ng-app.spec.js
 
     if (process.env.TEAMCITY_VERSION) {
       require('jasmine-reporters');
