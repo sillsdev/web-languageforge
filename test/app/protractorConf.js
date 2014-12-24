@@ -22,7 +22,7 @@ exports.config = {
     'browserName': 'chrome',
     'chromeOptions': {
         'args': ['--start-maximized'],
-    },
+    }
   },
 
   // To run tests in multiple browsers, uncomment the following
@@ -41,7 +41,7 @@ exports.config = {
   // Options to be passed to Jasmine-node.
   jasmineNodeOpts: {
     showColors: true,
-    defaultTimeoutInterval: 70000,
+    defaultTimeoutInterval: 70000
     //isVerbose: true,
   },
 
@@ -55,13 +55,10 @@ exports.config = {
       }]);
     };
 
-    browser.addMockModule('disableNgAnimate', disableNgAnimate);
+    // This seemed to make the tests more flaky rather than less. IJH 2014-12
+//    browser.addMockModule('disableNgAnimate', disableNgAnimate);
+    // Disable animations on a per test basis, see ./languageforge/newLexProject/e2e/ng-app.spec.js
 
-    // Store the name of the browser that's currently being used.
-    browser.getCapabilities().then(function(caps) {
-      browser.params.browser = caps.get('browserName');
-    });
-    
     if (process.env.TEAMCITY_VERSION) {
       require('jasmine-reporters');
       jasmine.getEnv().addReporter(new jasmine.TeamcityReporter());
