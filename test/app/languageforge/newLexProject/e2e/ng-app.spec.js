@@ -252,8 +252,8 @@ describe('E2E testing: New Lex Project wizard app', function() {
       
       // wait for animation to finish
       browser.sleep(4000);
+      browser.waitForAngular();
       page.nextButton().click();
-//      page.clickWhenClickable(page.nextButton());
       expect(dbePage.browse.getEntryCount()).toBe(2);
     });
     
