@@ -38,10 +38,10 @@
 					<li>
 						<a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[currentInputSystemTag].language, inputSystemViewModels[currentInputSystemTag].inputSystem.languageName, selects.special.optionsOrder[3])">
 						<i class="icon-plus"></i> {{'Add a variant of' | translate}} {{inputSystemViewModels[currentInputSystemTag].inputSystem.languageName}}</a></li>
-					<li class="divider" data-ng-show="showInputSystems()"></li>
-					<li data-ng-show="showInputSystems()">
+					<li class="divider" data-ng-show="! isInputSystemInUse()"></li>
+					<li data-ng-show="! isInputSystemInUse()">
 						<a tabindex="-1" data-ng-click="removeInputSystem(currentInputSystemTag)">
-						<i class="icon-remove"></i> {{'Remove' | translate}} {{inputSystemViewModels[currentInputSystemTag].name}}</a></li>
+						<i class="icon-remove"></i> {{'Remove' | translate}} {{inputSystemViewModels[currentInputSystemTag].languageDisplayName()}}</a></li>
 				</ul>
 			</div>
 		</div>
@@ -53,11 +53,12 @@
 				<label class="control-label">{{inputSystemViewModels[currentInputSystemTag].inputSystem.tag}}</label>
 			</div>
 			<!-- listed language name -->
-			<h3 data-ng-show="!isUnlistedLanguage(inputSystemViewModels[currentInputSystemTag].language)">{{inputSystemViewModels[currentInputSystemTag].languageDisplayName()}}</h3>
+			<h3 data-ng-show="!isUnlistedLanguage(inputSystemViewModels[currentInputSystemTag].language)" id="languageDisplayName">
+                {{inputSystemViewModels[currentInputSystemTag].languageDisplayName()}}</h3>
 			<!-- unlisted language name -->
 			<input type="text" id="languageName" style="font-size: 1.35em; color: black; font-weight: 700; border: 0px; height: 32px; width: 365px"
-					data-ng-model="inputSystemViewModels[currentInputSystemTag].inputSystem.languageName"
-					data-ng-show="isUnlistedLanguage(inputSystemViewModels[currentInputSystemTag].language)">
+				data-ng-model="inputSystemViewModels[currentInputSystemTag].inputSystem.languageName"
+				data-ng-show="isUnlistedLanguage(inputSystemViewModels[currentInputSystemTag].language)">
 			<div class="control-group">
 				<label class="control-label" for="abbrev" translate="Display Abbreviation (limited to 4 lowercase characters)"></label>
 				<div class="controls">
@@ -68,15 +69,15 @@
 					{{ 'Right to left language' | translate }} </label>
 			</div>
 			<br />
-			<p class="text-warning" data-ng-show="inputSystemViewModels[currentInputSystemTag].fieldUseCount > 0">
-				<small>Some settings are disabled because {{inputSystemViewModels[currentInputSystemTag].fieldUseCount}} entry field{{(inputSystemViewModels[currentInputSystemTag].fieldUseCount == 1) ? ' is' : 's are'}} using this system.</small>
+			<p class="text-warning" data-ng-show="isInputSystemInUse()">
+				<small translate="Some settings are disabled because the Input System may already be in use."></small>
 			</p>
 			<div class="control-group">
 				<label class="control-label" for="special" translate="Special"></label>
 				<div class="controls">
 					<select class="form-control" id="special" 
 						data-ng-model="inputSystemViewModels[currentInputSystemTag].special"
-						data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount"
+						data-ng-disabled="isInputSystemInUse()"
 						data-ng-options="selects.special.options[key] for key in selects.special.optionsOrder"></select>
 				</div>
 			</div>
@@ -87,7 +88,7 @@
 				<div class="controls">
 					<select class="form-control" id="purpose" 
 						data-ng-model="inputSystemViewModels[currentInputSystemTag].purpose"
-						data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount"
+						data-ng-disabled="isInputSystemInUse()"
 						data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
 						<option value="">unspecified</option></select>
 				</div>
@@ -96,7 +97,7 @@
 					<input type="text" id="ipaVariant" size="25"
 					       model-transform-limit="35" model-transform-no-space data-ng-trim="false"
 					       data-ng-model="inputSystemViewModels[currentInputSystemTag].variantString"
-					       data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount">
+					       data-ng-disabled="isInputSystemInUse()">
 				</div>
 			</div>
 			<div class="control-group" data-ng-show="inputSystemViewModels[currentInputSystemTag].special == selects.special.optionsOrder[2]">	<!-- Voice -->
@@ -105,7 +106,7 @@
 					<input type="text" id="voiceVariant" size="25"
 					       model-transform-limit="35" model-transform-no-space data-ng-trim="false"
 					       data-ng-model="inputSystemViewModels[currentInputSystemTag].variantString"
-					       data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount">
+					       data-ng-disabled="isInputSystemInUse()">
 				</div>
 			</div>
 			<div class="control-group" data-ng-show="inputSystemViewModels[currentInputSystemTag].special == selects.special.optionsOrder[3]">	<!-- Script / Region / Variant -->
@@ -113,7 +114,7 @@
 				<div class="controls">
 					<select class="form-control" id="script" 
 						data-ng-model="inputSystemViewModels[currentInputSystemTag].script"
-						data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount"
+						data-ng-disabled="isInputSystemInUse()"
 						data-ng-options="key as option.join(', ') for (key, option) in selects.script.options">
 						<option value="">-- select a script --</option></select>
 				</div>
@@ -121,7 +122,7 @@
 				<div class="controls">
 					<select class="form-control" id="region" 
 						data-ng-model="inputSystemViewModels[currentInputSystemTag].region"
-						data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount"
+						data-ng-disabled="isInputSystemInUse()"
 						data-ng-options="key as option for (key, option) in selects.region.options">
 						<option value="">-- select a region --</option></select>
 				</div>
@@ -130,7 +131,7 @@
 					<input type="text" id="variant" size="25"
 						model-transform-limit="35" model-transform-no-space data-ng-trim="false"
 						data-ng-model="inputSystemViewModels[currentInputSystemTag].variantString"
-						data-ng-disabled="inputSystemViewModels[currentInputSystemTag].fieldUseCount">
+						data-ng-disabled="isInputSystemInUse()">
 				</div>
 			</div>
 			</div>

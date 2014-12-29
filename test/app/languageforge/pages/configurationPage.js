@@ -4,6 +4,8 @@ var ConfigurationPage = function() {
   var modal = require('./lexModals.js'),
       _this = this;
 
+  this.noticeList = element.all(by.repeater('notice in notices()'));
+  
   this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
   this.configurationLink = element(by.linkText('Dictionary Configuration'));
   this.get = function get() {
@@ -30,14 +32,28 @@ var ConfigurationPage = function() {
   
   this.inputSystemsTab = {
       newButton:    this.tabDivs.first().element(by.partialButtonText('New')),
-      moreButtonGroup: this.tabDivs.first().element(by.css('.btn-group a.btn')),
-      more: {
+      moreButton:   this.tabDivs.first().element(by.css('.btn-group a.btn')),
+      moreButtonGroup: {
         addIpa:     this.tabDivs.first().element(by.partialLinkText('Add IPA')),
         addVoice:   this.tabDivs.first().element(by.partialLinkText('Add Voice')),
-        addVariant: this.tabDivs.first().element(by.partialLinkText('Add a variant'))
+        addVariant: this.tabDivs.first().element(by.partialLinkText('Add a variant')),
+        remove:     this.tabDivs.first().element(by.css('i.icon-remove'))
       },
       getLanguageByName: function getLanguageByName(languageName) {
-        return element(by.css('div.tab-pane.active > div > div > div.span3 dl.picklists')).element(by.cssContainingText('div[data-ng-repeat] span', languageName));
+        return element(by.css('div.tab-pane.active div.span3 dl.picklists')).element(by.cssContainingText('div[data-ng-repeat] span', languageName));
+      },
+      selectedInputSystem: {
+        displayName:    this.tabDivs.first().element(by.id('languageDisplayName')),
+        tag:            this.tabDivs.first().element(by.binding('inputSystemViewModels[currentInputSystemTag].inputSystem.tag')),
+        abbreviationInput: this.tabDivs.first().element(by.model('inputSystemViewModels[currentInputSystemTag].inputSystem.abbreviation')),
+        rightToLeftCheckbox: this.tabDivs.first().element(by.model('inputSystemViewModels[currentInputSystemTag].inputSystem.isRightToLeft')),
+        specialDropdown: this.tabDivs.first().element(by.id('special')),
+        purposeDropdown: this.tabDivs.first().element(by.id('purpose')),
+        ipaVariantInput: this.tabDivs.first().element(by.id('ipaVariant')),
+        voiceVariantInput: this.tabDivs.first().element(by.id('voiceVariant')),
+        scriptDropdown: this.tabDivs.first().element(by.id('script')),
+        regionDropdown: this.tabDivs.first().element(by.id('region')),
+        variantInput:   this.tabDivs.first().element(by.id('variant'))
       }
   };
   
