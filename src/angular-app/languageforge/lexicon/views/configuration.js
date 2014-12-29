@@ -311,9 +311,8 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
   };
 
-  $scope.showInputSystems = function showInputSystems() {
-    return !($scope.inputSystemViewModels[$scope.currentInputSystemTag].inputSystem.tag in $scope.projectSettings.config.inputSystems);
-    // return !($scope.currentInputSystemTag in $scope.projectSettings.config.inputSystems);
+  $scope.isInputSystemInUse = function isInputSystemInUse() {
+    return ($scope.inputSystemViewModels[$scope.currentInputSystemTag].inputSystem.tag in $scope.projectSettings.config.inputSystems);
   };
 
   // InputSystemsConfigCtrl
@@ -341,8 +340,9 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
     // Verify newly created tag doesn't already exist before adding it to the list
     for (var uuid in $scope.inputSystemViewModels) {
-      if ($scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag) {
-        notice.push(notice.ERROR, $filter('translate')('Input system for ' + viewModel.inputSystem.languageName + ' already exists'));
+      if (special != $scope.selects.special.optionsOrder[3] &&
+          $scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag) {
+        notice.push(notice.ERROR, 'Input system for ' + viewModel.inputSystem.languageName + ' already exists');
         return;
       }
     }
