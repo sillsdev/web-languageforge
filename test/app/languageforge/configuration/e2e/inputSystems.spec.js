@@ -8,9 +8,9 @@ describe('Configuration Input Systems', function() {
       dbePage      = require('../../pages/dbePage.js'),
       dbeUtil      = require('../../pages/dbeUtil.js'),
       configPage   = require('../../pages/configurationPage.js'),
-      language = 'Maori';
+      firstLanguage = 'Maori',
+      lastLanguage = 'Rarotongan';
   
-
   it('setup: login as user, select test project, cannot configure', function() {
     loginPage.loginAsUser();
     projectsPage.get();
@@ -34,24 +34,43 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.moreButtonGroup.isDisplayed()).toBe(true);
   });
   
-  it('can select language', function() {
-    expect(configPage.inputSystemsTab.newButton.isEnabled()).toBe(true);
-    configPage.inputSystemsTab.newButton.click();
-    expect(configPage.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(true);
-  });
-  
-  describe('Select Language modal', function() {
+  describe('Select a new Input System Language modal', function() {
     
-    it('can search, select and add language', function() {
-      configPage.modal.selectLanguage.searchLanguageInput.sendKeys(language + protractor.Key.ENTER);
+    it('can open the new language modal', function() {
+      expect(configPage.inputSystemsTab.newButton.isEnabled()).toBe(true);
+      configPage.inputSystemsTab.newButton.click();
+      expect(configPage.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(true);
+    });
+    
+    it('can search for a language', function() {
+      expect(configPage.modal.selectLanguage.firstLanguageRow.isPresent()).toBe(false);
+      configPage.modal.selectLanguage.searchLanguageInput.sendKeys(firstLanguage + protractor.Key.ENTER);
       expect(configPage.modal.selectLanguage.firstLanguageRow.isPresent()).toBe(true);
-      
+      expect(configPage.modal.selectLanguage.firstLanguageName.getText()).toEqual(firstLanguage);
+      expect(configPage.modal.selectLanguage.lastLanguageRow.isPresent()).toBe(true);
+      expect(configPage.modal.selectLanguage.lastLanguageName.getText()).toEqual(lastLanguage);
+    });
+
+    it('can clear language search', function() {
+      expect(configPage.modal.selectLanguage.searchLanguageInput.getAttribute('value')).toEqual(firstLanguage);
+      configPage.modal.selectLanguage.clearSearchButton.click();
+      expect(configPage.modal.selectLanguage.searchLanguageInput.getAttribute('value')).toEqual('');
+      expect(configPage.modal.selectLanguage.firstLanguageRow.isPresent()).toBe(false);
+    });
+
+    it('can select language', function() {
+      configPage.modal.selectLanguage.searchLanguageInput.sendKeys(firstLanguage + protractor.Key.ENTER);
       expect(configPage.modal.selectLanguage.addButton.isPresent()).toBe(true);
       expect(configPage.modal.selectLanguage.addButton.isEnabled()).toBe(false);
+      configPage.modal.selectLanguage.lastLanguageRow.click();
+      expect(configPage.modal.selectLanguage.addButton.isEnabled()).toBe(true);
+      expect(configPage.modal.selectLanguage.addButton.getText()).toEqual('Add ' + lastLanguage);
       configPage.modal.selectLanguage.firstLanguageRow.click();
       expect(configPage.modal.selectLanguage.addButton.isEnabled()).toBe(true);
-      expect(configPage.modal.selectLanguage.addButton.getText()).toEqual('Add ' + language);
-      
+      expect(configPage.modal.selectLanguage.addButton.getText()).toEqual('Add ' + firstLanguage);
+    });
+
+    it('can add language', function() {
       configPage.modal.selectLanguage.addButton.click();
       expect(configPage.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(false);
     });
@@ -60,7 +79,7 @@ describe('Configuration Input Systems', function() {
 /*  
   it('can select new Input System', function() {
     browser.pause();
-    configPage.inputSystemsTab.getLanguageByName(language).click();
+    configPage.inputSystemsTab.getLanguageByName(firstLanguage).click();
 //    util.setCheckbox(configPage.hiddenIfEmpty, false);
 //    configPage.applyButton.click();
   });
