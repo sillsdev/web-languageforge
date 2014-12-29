@@ -8,6 +8,7 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
   $scope.configDirty = angular.copy(ss.session.projectSettings.config);
   $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
   $scope.isSaving = false;
+  $scope.formInitialising = true;
 
   // InputSystemsViewModel based on BCP 47
   // References: http://en.wikipedia.org/wiki/IETF_language_tag
@@ -46,7 +47,7 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
     this.inputSystem = inputSystem;
 
     // Create a language tag based on the view
-    InputSystemsViewModel.prototype.buildTag = function() {
+    InputSystemsViewModel.prototype.buildTag = function buildTag() {
       var newTag = this.language;
       var specialOptions = $scope.selects.special.optionsOrder;
       var scriptOptionsOrder = $scope.selects.script.optionsOrder;
@@ -83,7 +84,7 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
     };
 
     // Parse the language tag to populate InputSystemsViewModel
-    InputSystemsViewModel.prototype.parseTag = function(tag) {
+    InputSystemsViewModel.prototype.parseTag = function parseTag(tag) {
       var tokens = tag.split('-');
       var lookForPrivateUsage = false;
 
@@ -180,7 +181,7 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
     };
 
     // Compute the language name for display
-    InputSystemsViewModel.prototype.languageDisplayName = function() {
+    InputSystemsViewModel.prototype.languageDisplayName = function languageDisplayName() {
       var name = this.inputSystem.languageName;
       var specialOptions = $scope.selects.special.optionsOrder;
 
@@ -203,7 +204,6 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
     }
   };
 
-  $scope.inputSystemViewModels = {};
   $scope.selects = {
     'special': {
       'optionsOrder': ['none', 'ipaTranscription', 'voice', 'scriptRegionVariant'],
@@ -230,7 +230,6 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
   };
 
   $scope.isCustomField = lexConfigService.isCustomField;
-  $scope.currentInputSystemTag = '';
   $scope.selectInputSystem = function selectInputSystem(id) {
     $scope.currentInputSystemTag = id;
   };
@@ -288,10 +287,9 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
     // suggested languages from lexical data
     $scope.suggestedLanguageCodes = [];
-  }
-  ;
+  };
 
-  $scope.configurationApply = function() {
+  $scope.configurationApply = function configurationApply() {
     $scope.isSaving = true;
 
     // Publish updates in configDirty to send to server
@@ -313,13 +311,13 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
   };
 
-  $scope.showInputSystems = function() {
+  $scope.showInputSystems = function showInputSystems() {
     return !($scope.inputSystemViewModels[$scope.currentInputSystemTag].inputSystem.tag in $scope.projectSettings.config.inputSystems);
     // return !($scope.currentInputSystemTag in $scope.projectSettings.config.inputSystems);
   };
 
   // InputSystemsConfigCtrl
-  $scope.newExists = function(special) {
+  $scope.newExists = function newExists(special) {
     var viewModel = new InputSystemsViewModel();
     viewModel.language = $scope.inputSystemViewModels[$scope.currentInputSystemTag].language;
     viewModel.special = special;
@@ -341,9 +339,8 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
     viewModel.special = special;
     viewModel.buildTag();
 
-    // Verify newly created tag doesn't already exist before adding it to the
-    // list
-    for ( var uuid in $scope.inputSystemViewModels) {
+    // Verify newly created tag doesn't already exist before adding it to the list
+    for (var uuid in $scope.inputSystemViewModels) {
       if ($scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag) {
         notice.push(notice.ERROR, $filter('translate')('Input system for ' + viewModel.inputSystem.languageName + ' already exists'));
         return;
@@ -389,6 +386,10 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
   $scope.$watchCollection('inputSystemViewModels[currentInputSystemTag]', function(newValue, oldValue) {
     if (newValue == undefined) {
+      return;
+    }
+    if ($scope.formInitialising) {
+      $scope.formInitialising = false;
       return;
     }
     newValue.buildTag();
