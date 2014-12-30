@@ -50,8 +50,12 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isEnabled()).toBe(false);
   });
   
-  it('cannot remove an existing Input System', function() {
+  it('cannot add another IPA variation', function() {
     configPage.inputSystemsTab.moreButton.click();
+    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addIpa).getAttribute('class')).toContain('disabled');
+  });
+  
+  it('cannot remove an existing Input System', function() {
     expect(configPage.inputSystemsTab.moreButtonGroup.remove.isDisplayed()).toBe(false);
   });
   
@@ -94,6 +98,7 @@ describe('Configuration Input Systems', function() {
     it('can add language', function() {
       configPage.modal.selectLanguage.addButton.click();
       expect(configPage.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(false);
+      expect(configPage.applyButton.isEnabled()).toBe(true);
     });
     
   });
@@ -186,8 +191,12 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa');
   });
   
-  it('can remove IPA variation', function() {
+  it('cannot add another IPA variation', function() {
     configPage.inputSystemsTab.moreButton.click();
+    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addIpa).getAttribute('class')).toContain('disabled');
+  });
+  
+  it('can remove IPA variation', function() {
     expect(configPage.inputSystemsTab.moreButtonGroup.remove.isDisplayed()).toBe(true);
     configPage.inputSystemsTab.moreButtonGroup.remove.click();
     expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('en');
@@ -204,8 +213,12 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Zxxx-x-audio');
   });
   
-  it('can remove Voice variation', function() {
+  it('cannot add another Voice variation', function() {
     configPage.inputSystemsTab.moreButton.click();
+    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVoice).getAttribute('class')).toContain('disabled');
+  });
+  
+  it('can remove Voice variation', function() {
     expect(configPage.inputSystemsTab.moreButtonGroup.remove.isDisplayed()).toBe(true);
     configPage.inputSystemsTab.moreButtonGroup.remove.click();
     expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('en');
@@ -228,8 +241,12 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi');
   });
   
-  it('can remove Variant variation', function() {
+  it('cannot add another Variant variation', function() {
     configPage.inputSystemsTab.moreButton.click();
+    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVariant).getAttribute('class')).toContain('disabled');
+  });
+  
+  it('can remove Variant variation', function() {
     expect(configPage.inputSystemsTab.moreButtonGroup.remove.isDisplayed()).toBe(true);
     configPage.inputSystemsTab.moreButtonGroup.remove.click();
     expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('en');
