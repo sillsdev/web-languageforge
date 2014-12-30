@@ -34,13 +34,20 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.moreButton.isDisplayed()).toBe(true);
   });
   
-  it('can select an Input System', function() {
-    var language =  'English',
-      englishInputSystem = configPage.inputSystemsTab.getLanguageByName(language);
-    expect(englishInputSystem.isDisplayed()).toBe(true);
-    englishInputSystem.click();
+  it('can select an existing Input System', function() {
+    var language =  'Thai (IPA)',
+      inputSystem = configPage.inputSystemsTab.getLanguageByName(language);
+    expect(inputSystem.isDisplayed()).toBe(true);
+    inputSystem.click();
     expect(configPage.inputSystemsTab.selectedInputSystem.displayName.getText()).toEqual(language);
-    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('en');
+  });
+  
+  it('cannot change Special for an existing Input System', function() {
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('th-fonipa');
+    expect(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isEnabled()).toBe(false);
+    expect(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isEnabled()).toBe(false);
   });
   
   it('cannot remove an existing Input System', function() {
@@ -107,6 +114,22 @@ describe('Configuration Input Systems', function() {
     util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.specialDropdown, 'IPA transcription');
     expect(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isDisplayed()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa');
+  });
+  
+  it('can change IPA Purpose to Etic', function() {
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown, 'Etic');
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa-x-etic');
+  });
+  
+  it('can change IPA Purpose to Emic', function() {
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown, 'Emic');
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa-x-emic');
+  });
+  
+  it('can change IPA Purpose to unspecified', function() {
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown, 'unspecified');
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa');
   });
   
   it('can change Special to Voice', function() {
@@ -115,6 +138,7 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isDisplayed()).toBe(false);
     expect(configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.isDisplayed()).toBe(false);
     expect(configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Zxxx-x-audio');
   });
   
   it('can change Special to Script / Region / Variant', function() {
@@ -124,6 +148,22 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.scriptDropdown.isDisplayed()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.regionDropdown.isDisplayed()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.variantInput.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi');
+  });
+  
+  it('can change Script', function() {
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.scriptDropdown, 'Latin$');
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Latn');
+  });
+  
+  it('can change Region', function() {
+    util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.regionDropdown, 'Cook Islands');
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Latn-CK');
+  });
+  
+  it('can change Variant', function() {
+    configPage.inputSystemsTab.selectedInputSystem.variantInput.sendKeys('ngati' + protractor.Key.TAB);
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Latn-CK-x-ngati');
   });
   
   it('can change Special to none', function() {
@@ -132,14 +172,18 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.scriptDropdown.isDisplayed()).toBe(false);
     expect(configPage.inputSystemsTab.selectedInputSystem.regionDropdown.isDisplayed()).toBe(false);
     expect(configPage.inputSystemsTab.selectedInputSystem.variantInput.isDisplayed()).toBe(false);
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi');
   });
   
   it('can add IPA variation', function() {
     configPage.inputSystemsTab.moreButton.click();
     configPage.inputSystemsTab.moreButtonGroup.addIpa.click();
     expect(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isEnabled()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isEnabled()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa');
   });
   
   it('can remove IPA variation', function() {
@@ -155,7 +199,9 @@ describe('Configuration Input Systems', function() {
     configPage.inputSystemsTab.moreButton.click();
     configPage.inputSystemsTab.moreButtonGroup.addVoice.click();
     expect(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isEnabled()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Zxxx-x-audio');
   });
   
   it('can remove Voice variation', function() {
@@ -172,9 +218,14 @@ describe('Configuration Input Systems', function() {
     configPage.inputSystemsTab.moreButtonGroup.addVariant.click();
     expect(configPage.noticeList.count()).toBe(0);
     expect(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isEnabled()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.scriptDropdown.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.scriptDropdown.isEnabled()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.regionDropdown.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.regionDropdown.isEnabled()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.variantInput.isDisplayed()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.variantInput.isEnabled()).toBe(true);
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi');
   });
   
   it('can remove Variant variation', function() {
