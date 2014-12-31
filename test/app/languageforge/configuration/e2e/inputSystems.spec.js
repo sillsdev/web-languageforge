@@ -10,7 +10,7 @@ describe('Configuration Input Systems', function() {
   var configPage    = require('../../pages/configurationPage.js');
   var firstLanguage = 'Maori';
   var lastLanguage  = 'Rarotongan';
-/*  
+  
   it('setup: login as user, select test project, cannot configure', function() {
     loginPage.loginAsUser();
     projectsPage.get();
@@ -40,6 +40,7 @@ describe('Configuration Input Systems', function() {
     expect(inputSystem.isDisplayed()).toBe(true);
     inputSystem.click();
     expect(configPage.inputSystemsTab.selectedInputSystem.displayName.getText()).toEqual(language);
+    expect(configPage.applyButton.isEnabled()).toBe(false);
   });
   
   it('cannot change Special for an existing Input System', function() {
@@ -55,7 +56,7 @@ describe('Configuration Input Systems', function() {
     expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addIpa).getAttribute('class')).toContain('disabled');
     expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVoice).getAttribute('class')).not.toContain('disabled');
     expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVariant).getAttribute('class')).not.toContain('disabled');
-});
+  });
   
   it('cannot remove an existing Input System', function() {
     expect(configPage.inputSystemsTab.moreButtonGroup.remove.isDisplayed()).toBe(false);

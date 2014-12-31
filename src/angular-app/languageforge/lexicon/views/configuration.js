@@ -4,11 +4,11 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 // Configuation Controller
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService', 'utilService', 
 function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigService, util) {
+  var inputSystemSelected = true;
   lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
   $scope.configDirty = angular.copy(ss.session.projectSettings.config);
   $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
   $scope.isSaving = false;
-  $scope.formInitialising = true;
 
   /**
    * InputSystemsViewModel class (based on BCP 47)
@@ -246,7 +246,8 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
   $scope.isCustomField = lexConfigService.isCustomField;
   $scope.selectInputSystem = function selectInputSystem(id) {
-    $scope.currentInputSystemTag = id;
+    $scope.selectedInputSystemId = id;
+    inputSystemSelected = true;
   };
 
   setupView();
@@ -326,14 +327,15 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
   };
 
+  // InputSystemsConfigCtrl
+  
   $scope.isInputSystemInUse = function isInputSystemInUse() {
-    return ($scope.inputSystemViewModels[$scope.currentInputSystemTag].inputSystem.tag in $scope.projectSettings.config.inputSystems);
+    return ($scope.inputSystemViewModels[$scope.selectedInputSystemId].inputSystem.tag in $scope.projectSettings.config.inputSystems);
   };
 
-  // InputSystemsConfigCtrl
   $scope.newExists = function newExists(special) {
     var viewModel = new InputSystemsViewModel();
-    viewModel.language = $scope.inputSystemViewModels[$scope.currentInputSystemTag].language;
+    viewModel.language = $scope.inputSystemViewModels[$scope.selectedInputSystemId].language;
     viewModel.special = special;
     viewModel.buildTag();
     for (var uuid in $scope.inputSystemViewModels) {
@@ -362,11 +364,11 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
       }
     }
     $scope.inputSystemViewModels[viewModel.uuid] = viewModel;
-    $scope.currentInputSystemTag = viewModel.uuid;
+    $scope.selectedInputSystemId = viewModel.uuid;
   };
 
-  $scope.removeInputSystem = function removeInputSystem(currentInputSystemTag) {
-    delete $scope.inputSystemViewModels[currentInputSystemTag];
+  $scope.removeInputSystem = function removeInputSystem(selectedInputSystemId) {
+    delete $scope.inputSystemViewModels[selectedInputSystemId];
     $scope.inputSystemsList = sortInputSystemsList();
     $scope.configForm.$setDirty();
 
@@ -399,12 +401,12 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
   };
 
-  $scope.$watchCollection('inputSystemViewModels[currentInputSystemTag]', function(newValue, oldValue) {
+  $scope.$watchCollection('inputSystemViewModels[selectedInputSystemId]', function(newValue, oldValue) {
     if (newValue == undefined) {
       return;
     }
-    if ($scope.formInitialising) {
-      $scope.formInitialising = false;
+    if (inputSystemSelected) {
+      inputSystemSelected = false;
       return;
     }
     newValue.buildTag();

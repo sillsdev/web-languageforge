@@ -44,9 +44,9 @@ function ConfigurationPage() {
     },
     selectedInputSystem: {
       displayName:    this.tabDivs.first().element(by.id('languageDisplayName')),
-      tag:            this.tabDivs.first().element(by.binding('inputSystemViewModels[currentInputSystemTag].inputSystem.tag')),
-      abbreviationInput: this.tabDivs.first().element(by.model('inputSystemViewModels[currentInputSystemTag].inputSystem.abbreviation')),
-      rightToLeftCheckbox: this.tabDivs.first().element(by.model('inputSystemViewModels[currentInputSystemTag].inputSystem.isRightToLeft')),
+      tag:            this.tabDivs.first().element(by.binding('inputSystemViewModels[selectedInputSystemId].inputSystem.tag')),
+      abbreviationInput: this.tabDivs.first().element(by.model('inputSystemViewModels[selectedInputSystemId].inputSystem.abbreviation')),
+      rightToLeftCheckbox: this.tabDivs.first().element(by.model('inputSystemViewModels[selectedInputSystemId].inputSystem.isRightToLeft')),
       specialDropdown: this.tabDivs.first().element(by.id('special')),
       purposeDropdown: this.tabDivs.first().element(by.id('purpose')),
       ipaVariantInput: this.tabDivs.first().element(by.id('ipaVariant')),
