@@ -35,7 +35,7 @@
 					<li data-ng-class="{disabled: newExists(selects.special.optionsOrder[2])}">
 						<a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[currentInputSystemTag].language, inputSystemViewModels[currentInputSystemTag].inputSystem.languageName, selects.special.optionsOrder[2])">
 						<i class="icon-plus"></i> {{'Add Voice for' | translate}} {{inputSystemViewModels[currentInputSystemTag].inputSystem.languageName}}</a></li>
-                    <li data-ng-class="{disabled: newExists(selects.special.optionsOrder[3])}">
+                    <li>
 						<a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[currentInputSystemTag].language, inputSystemViewModels[currentInputSystemTag].inputSystem.languageName, selects.special.optionsOrder[3])">
 						<i class="icon-plus"></i> {{'Add a variant of' | translate}} {{inputSystemViewModels[currentInputSystemTag].inputSystem.languageName}}</a></li>
 					<li class="divider" data-ng-show="! isInputSystemInUse()"></li>

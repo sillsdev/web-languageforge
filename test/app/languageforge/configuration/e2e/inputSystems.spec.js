@@ -50,10 +50,12 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown.isEnabled()).toBe(false);
   });
   
-  it('cannot add another IPA variation', function() {
+  it('cannot add another IPA variation, but can add Voice and Variant', function() {
     configPage.inputSystemsTab.moreButton.click();
     expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addIpa).getAttribute('class')).toContain('disabled');
-  });
+    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVoice).getAttribute('class')).not.toContain('disabled');
+    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVariant).getAttribute('class')).not.toContain('disabled');
+});
   
   it('cannot remove an existing Input System', function() {
     expect(configPage.inputSystemsTab.moreButtonGroup.remove.isDisplayed()).toBe(false);
@@ -241,9 +243,9 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi');
   });
   
-  it('cannot add another Variant variation', function() {
+  it('can always add another Variant variation', function() {
     configPage.inputSystemsTab.moreButton.click();
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVariant).getAttribute('class')).toContain('disabled');
+    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVariant).getAttribute('class')).not.toContain('disabled');
   });
   
   it('can remove Variant variation', function() {
