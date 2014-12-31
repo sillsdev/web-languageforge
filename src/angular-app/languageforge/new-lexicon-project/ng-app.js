@@ -187,8 +187,8 @@ angular.module('new-lexicon-project',
       $scope.formValidationDefer = $q.defer();
 
       // Shorthand to make things look a touch nicer
-      var ok = makeFormValid,
-        error = makeFormInvalid;
+      var ok = makeFormValid;
+      var error = makeFormInvalid;
       
       switch (currentState) {
         case 'newProject.name':
@@ -454,7 +454,9 @@ angular.module('new-lexicon-project',
     };
     
     function savePrimaryLanguage(callback) {
-      var config = {inputSystems: []}, optionlist = {}, inputSystem = {};
+      var config = {inputSystems: []};
+      var optionlist = {};
+      var inputSystem = {};
       notice.setLoading('Configuring project for first use...');
       if (angular.isDefined(ss.session.projectSettings)) {
         config = ss.session.projectSettings.config;
