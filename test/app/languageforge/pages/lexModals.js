@@ -1,6 +1,6 @@
 'use strict';
 
-var LexModals = function() {
+function LexModals() {
   
   // select language modal
   this.selectLanguage = {};

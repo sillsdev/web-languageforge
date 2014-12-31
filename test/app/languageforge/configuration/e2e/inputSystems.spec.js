@@ -1,16 +1,16 @@
 'use strict';
 
 describe('Configuration Input Systems', function() {
-  var constants    = require('../../../testConstants'),
-      loginPage    = require('../../../bellows/pages/loginPage.js'),
-      projectsPage = require('../../../bellows/pages/projectsPage.js'),
-      util         = require('../../../bellows/pages/util.js'),
-      dbePage      = require('../../pages/dbePage.js'),
-      dbeUtil      = require('../../pages/dbeUtil.js'),
-      configPage   = require('../../pages/configurationPage.js'),
-      firstLanguage = 'Maori',
-      lastLanguage = 'Rarotongan';
-  
+  var constants     = require('../../../testConstants');
+  var loginPage     = require('../../../bellows/pages/loginPage.js');
+  var projectsPage  = require('../../../bellows/pages/projectsPage.js');
+  var util          = require('../../../bellows/pages/util.js');
+  var dbePage       = require('../../pages/dbePage.js');
+  var dbeUtil       = require('../../pages/dbeUtil.js');
+  var configPage    = require('../../pages/configurationPage.js');
+  var firstLanguage = 'Maori';
+  var lastLanguage  = 'Rarotongan';
+/*  
   it('setup: login as user, select test project, cannot configure', function() {
     loginPage.loginAsUser();
     projectsPage.get();
@@ -35,8 +35,8 @@ describe('Configuration Input Systems', function() {
   });
   
   it('can select an existing Input System', function() {
-    var language =  'Thai (IPA)',
-      inputSystem = configPage.inputSystemsTab.getLanguageByName(language);
+    var language = 'Thai (IPA)';
+    var inputSystem = configPage.inputSystemsTab.getLanguageByName(language);
     expect(inputSystem.isDisplayed()).toBe(true);
     inputSystem.click();
     expect(configPage.inputSystemsTab.selectedInputSystem.displayName.getText()).toEqual(language);
