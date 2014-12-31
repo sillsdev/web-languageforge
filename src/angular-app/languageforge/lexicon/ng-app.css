@@ -1,4 +1,8 @@
 /* Top navigation */
+div.hdrnav {
+    clear: both;    
+}
+
 div.lexnav {
 	overflow: visible;
 	padding-left: 115px;	/* Align with topNav and breadcrumbs */
