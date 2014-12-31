@@ -1,9 +1,9 @@
 'use strict';
 
-var NewLexProjectPage = function() {
-  var mockUpload = require('../../bellows/pages/mockUploadElement.js'),
-      modal      = require('./lexModals.js'),
-      _this      = this;
+function NewLexProjectPage() {
+  var mockUpload = require('../../bellows/pages/mockUploadElement.js');
+  var modal      = require('./lexModals.js');
+  var _this = this;
   
   this.get = function() {
     browser.get('/app/new-lexicon-project');
