@@ -178,7 +178,7 @@ if ($constants['siteType'] == 'scriptureforge') {
 } elseif ($constants['siteType'] == 'languageforge') {
     // Set up LanguageForge E2E test envrionment here
     $testProjectModel = new LexiconProjectModel($testProject);
-    $testProjectModel->addInputSystem("th-fonipa", "thipa", "Thai IPA");
+    $testProjectModel->addInputSystem("th-fonipa", "tipa", "Thai");
     $testProjectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[] = 'th-fonipa';
     $testProjectId = $testProjectModel->write();
 
