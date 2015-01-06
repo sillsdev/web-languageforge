@@ -125,14 +125,32 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa');
   });
   
+  it('can change IPA Variant', function() {
+    configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.sendKeys('ngati' + protractor.Key.TAB);
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa-x-ngati');
+    configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.clear();
+  });
+  
   it('can change IPA Purpose to Etic', function() {
     util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown, 'Etic');
     expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa-x-etic');
   });
   
+  it('can change IPA Variant', function() {
+    configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.sendKeys('ngati' + protractor.Key.TAB);
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa-x-etic-ngati');
+    configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.clear();
+  });
+  
   it('can change IPA Purpose to Emic', function() {
     util.clickDropdownByValue(configPage.inputSystemsTab.selectedInputSystem.purposeDropdown, 'Emic');
     expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa-x-emic');
+  });
+  
+  it('can change IPA Variant', function() {
+    configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.sendKeys('ngati' + protractor.Key.TAB);
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-fonipa-x-emic-ngati');
+    configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.clear();
   });
   
   it('can change IPA Purpose to unspecified', function() {
@@ -147,6 +165,12 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.ipaVariantInput.isDisplayed()).toBe(false);
     expect(configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.isDisplayed()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Zxxx-x-audio');
+  });
+  
+  it('can change Voice Variant', function() {
+    configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.sendKeys('ngati' + protractor.Key.TAB);
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-Zxxx-x-audio-ngati');
+    configPage.inputSystemsTab.selectedInputSystem.voiceVariantInput.clear();
   });
   
   it('can change Special to Script / Region / Variant', function() {
