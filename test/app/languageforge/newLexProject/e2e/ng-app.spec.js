@@ -1,12 +1,12 @@
 'use strict';
 
 describe('E2E testing: New Lex Project wizard app', function() {
-  var constants = require('../../../testConstants.json'),
-      loginPage = require('../../../bellows/pages/loginPage.js'),
-      body      = require('../../../bellows/pages/pageBody.js'),
-      util      = require('../../../bellows/pages/util.js'),
-      dbePage   = require('../../pages/dbePage.js'),
-      page      = require('../../pages/newLexProjectPage.js');
+  var constants = require('../../../testConstants.json');
+  var loginPage = require('../../../bellows/pages/loginPage.js');
+  var body      = require('../../../bellows/pages/pageBody.js');
+  var util      = require('../../../bellows/pages/util.js');
+  var dbePage   = require('../../pages/dbePage.js');
+  var page      = require('../../pages/newLexProjectPage.js');
   
   afterEach(function() {
     expect(body.phpError.isPresent()).toBe(false);
@@ -59,9 +59,11 @@ describe('E2E testing: New Lex Project wizard app', function() {
     
     it('with a cleared name does not show an error but is still invalid', function() {
       
-      // added the following two lines so the test will work (previous error wasn't clearing)
-      // as I couldn't re-produce the problem manually,
-      // however is likely symptomatic of some funkiness with promises. IJH 2014-12
+      /**
+       * FIXME: added the following two lines so the test will work (previous error wasn't clearing)
+       * as I couldn't re-produce the problem manually,
+       * however is likely symptomatic of some funkiness with promises. IJH 2014-12
+       */
       page.namePage.projectNameInput.sendKeys('a' + protractor.Key.TAB);
       page.namePage.projectNameInput.clear();
       page.namePage.projectNameInput.sendKeys(protractor.Key.TAB);
