@@ -3,6 +3,8 @@
 namespace models\languageforge;
 
 
+use models\mapper\IdReference;
+
 class SemDomTransProjectModel extends LfProjectModel {
     public function __construct($id = '')
     {
@@ -12,5 +14,29 @@ class SemDomTransProjectModel extends LfProjectModel {
         // This must be last, the constructor reads data in from the database which must overwrite the defaults above.
         parent::__construct($id);
     }
+    
+    /**
+     * 
+     * @var boolean
+     */
+    public $isSourceLanguage;
+    
+    /**
+     * 
+     * @var IdReference
+     */
+    public $sourceLanguageProjectId;
+    
+    /**
+     * 
+     * @var string
+     */
+    public $languageName;
+    
+    /**
+     * 
+     * @var string
+     */
+    public $languageIsoCode;
 
 } 
