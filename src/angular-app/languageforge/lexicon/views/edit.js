@@ -444,6 +444,15 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       if (entry.id != '') {
         lexService.remove(entry.id, angular.noop);
       }
+      
+      
+      
+      
+      
+      
+      
+      
+      
     });
   };
 

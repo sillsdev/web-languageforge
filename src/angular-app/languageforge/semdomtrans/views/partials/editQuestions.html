@@ -1,29 +1,21 @@
 <span ng-show="($parent.selectedTab == 1)">
   	<h2> Question {{$parent.currentItem.questions.position + 1}}/{{$parent.currentItem.questions.termQuestions.length}} </h2>
-  	<table style="width:400px">
+  	<table style="width:600px">
+  		<tr>
+  			<th> </th>
+  			<th> Source </th>
+  			<th> Translation </th>
+  		</tr>
 	    <tr>
 		    <td> Question: </td>
 		    <td> {{$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].question}} </td>
-	    </tr>
-	     <tr>
-		    <td> Translation: </td>
-		    <td> <textarea rows="4" ng-model="$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].questTranslation"></textarea> </td>
-		    
+		    <td> <textarea rows="4" ng-model="$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].questTranslation"></textarea> </td> 
 	    </tr>	
 	     <tr>
 		    <td> Question Terms: </td>
 		    <td> {{$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].terms}}</textarea> </td>
-	    </tr>	
-	     <tr>
-		    <td> Translation: </td>
-		    <td> <textarea rows="4" ng-model="$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].termsTranslation"></textarea> </td>
-		    
+	        <td> <textarea rows="4" ng-model="$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].termsTranslation"></textarea> </td>    
 	    </tr>				    
-	    <tr> 
-	    	<td> Comments: </td>
-	    	<td> <input ng-model="$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].comments">	</td>
-	    </tr> 
-	    
 	</table>
 	<td> 
 	Translated: <input type='checkbox'  ng-model="$parent.currentItem.questions.translated" /> 
