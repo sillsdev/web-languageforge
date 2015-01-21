@@ -1,27 +1,22 @@
-<div style="overflow-y:scroll;  height:600px" ng-show="($parent.selectedTab == 0)">
+<div ng-show="($parent.selectedTab == 0)">
 	    	<table style="width:600px">
+	    		<tr>
+	    			<th> </th>
+	    			<th> Source </th>
+	    			<th> Translation </th>
+	    		</tr>
 			    <tr>
 				    <td> Name: </td>
-				    <td><input ng-model="$parent.currentItem.term.name"></td>
+				    <td> {{$parent.currentItem.term.name}}</td>
+				    <td> <input ng-model="$parent.currentItem.term.nameTrans"> </td>
 			    </tr>
 			     <tr>
-				    <td> Translation: </td>
-				    <td> <input ng-model="$parent.currentItem.term.nameTrans"> </td>
-				    
-			    </tr>
 			     <tr>
 				    <td> Description: </td>
 				    <td> {{$parent.currentItem.term.description}}</td>
+			        <td> <textarea rows="4" ng-model="$parent.currentItem.term.translation"> </textarea></td>    
 			    </tr>
-			     <tr>
-				    <td> Translation: </td>
-				    <td> <textarea rows="4" ng-model="$parent.currentItem.term.translation"> </textarea></td>
-				    
-			    </tr>
-			    <tr> 
-			    	<td> Comments: </td>
-			    	<td> <input ng-model="$parent.currentItem.term.comments">	</td>
-			    </tr>			   
+			   			   
 			</table>
 			<br />
 			<br />

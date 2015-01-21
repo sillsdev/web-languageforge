@@ -1,4 +1,4 @@
-<div ng-show="($parent.selectedTab == 2)" data-ng-controller="editSettingsCtrl">
+<div  ng-show="($parent.selectedTab == 2)" data-ng-controller="editSettingsCtrl">
 	<div style="text-align:left">
 	  What do you want to translate?
 	  <br />
@@ -15,7 +15,7 @@
 		<th> Display </th>
 	</tr>
 	<tr ng-repeat="item in domainsFiltered">
-		<td ng-click="drillDown(item.key)"> {{item.display}} </td>
+		<td ng-click="drillDown(item.key)"> <a> {{item.display}} </a></td>
 		<td> <input type='checkbox'  ng-model="item.included" ng-change="updateIncluded(item.key)" /> </td>
 	</tr>
 	</table>
