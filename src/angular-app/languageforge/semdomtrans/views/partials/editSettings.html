@@ -8,8 +8,10 @@
 	</div>
 	
 	<br />
-	Select domains to be displayed for translation:
-	<table>
+	<div style="float:left">
+		<span ng-repeat="item in breadCrumb" ng-click="drillUp($index)"> <a>{{item}} </a> <span ng-show="$index != breadCrumb.length - 1"> >> </span></span>
+	</div>
+	<table style="width:600px">
 	<tr>
 		<th> Domain </th>
 		<th> Display </th>
@@ -19,7 +21,5 @@
 		<td> <input type='checkbox'  ng-model="item.included" ng-change="updateIncluded(item.key)" /> </td>
 	</tr>
 	</table>
-	
-	<button class="pull-left btn btn-success" ng-click="drillUp()" ng-show="(domainsFiltered[0].key.length > 1)">Back</button>
 	
 </div>

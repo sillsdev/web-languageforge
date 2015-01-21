@@ -6,6 +6,8 @@ angular.module('semdomtrans.editSettings', ['jsonRpc', 'ui.bootstrap', 'bellows.
 function($scope, sessionService, modal, notice) {	
 	$scope.tabDisplayed = $scope.$parent.tabDisplay;
 	$scope.domainsFiltered = $scope.$parent.domainsFiltered;
+	$scope.breadCrumb = ["Root"]
+	
 	$scope.updateIncluded = function(domainKey) {
 		var included = false;
 		
@@ -34,16 +36,29 @@ function($scope, sessionService, modal, notice) {
 				newDomainFiltered.push($scope.$parent.items[i])
 			}
 		}
-		
-		
 		if (newDomainFiltered.length > 0) {
+			
+			for (var i = 0; i < $scope.$parent.items.length; i++) {
+				var key = $scope.$parent.items[i].key;
+				if (key == domainKey ) {
+					$scope.breadCrumb.push($scope.$parent.items[i].term.name);	
+				}
+			}
+			
 			$scope.domainsFiltered = newDomainFiltered;
 		}
 	}
 	
-	$scope.drillUp = function() {
+	$scope.drillUp = function(ln) {
 		var termKey = $scope.domainsFiltered[0].key;
-		termKey = termKey.substring(0, termKey.length - 2);
+		termKey = termKey.substring(0, ln * 2+1);
+		var breadCp = []
+		for (var i = 0; i <= ln; i++) {
+			breadCp.push($scope.breadCrumb[i]);
+		}
+		
+		$scope.breadCrumb = breadCp;
+		
 		$scope.domainsFiltered = [];
 		for (var i = 0; i < $scope.$parent.items.length; i++) {
 			var key = $scope.$parent.items[i].key;
