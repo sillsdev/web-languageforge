@@ -19,7 +19,7 @@ use models\shared\rights\ProjectRoles;
 use models\sms\SmsSettings;
 use models\languageforge\semdomtrans\SemDomTransItemModel;
 use models\languageforge\SemDomTransProjectModel;
-use models\languageforge\semdomtrans\TranslatedForm;
+use models\languageforge\semdomtrans\SemDomTransTranslatedForm;
 
 class ProjectCommands
 {
@@ -29,17 +29,17 @@ class ProjectCommands
 			$semdomItem = new SemDomTransItemModel($projectModel);
 			$semdomItem->key = $k;
 			$semdomItem->name = new TranslationForm($v["name"]);
-			$semdomItem->description = new TranslatedForm($v["description"]);
+			$semdomItem->description = new SemDomTransTranslatedForm($v["description"]);
 			$searchKeys = $v['searchKeys'];
 			foreach ($searchKeys as $searchKey)
 			{
-				array_push($semdomItem->searchKeys, new TranslatedForm($searchKey));
+				array_push($semdomItem->searchKeys, new SemDomTransTranslatedForm($searchKey));
 			}
 			
 			$questionSemdom = $questions[$k];
 			foreach ($questionSemdom as $qst)
 			{
-				array_push($semdomItem->questions, new TranslatedForm($qst));
+				array_push($semdomItem->questions, new SemDomTransTranslatedForm($qst));
 			}			
 			
 			$semdomItem->write();
