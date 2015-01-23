@@ -12,21 +12,24 @@ $projectList->read();
 
 // accept command line flag to actually change the database
 // accept filepath of the import file (xml)
+// accept semdom version number
+// accept language code
 $changeDatabase = false;
 
 // process xml into a php data structure, organized by language
 $xml = simplexml_load_file($argv[1]);
-$possibilities = $xml->SemanticDomainList->CmPossibilityList->Possibilities->children();
-//$echo $possibilities;
-$xmlElements = [];
-foreach($possibilities as $possibility) {
-	echo $possibility->Abbreviation->AUni . ": " . $possibility->Name->AUni;
-	echo "\n";
-	$children = $possibility->SubPossibilities->children();
-	
-	foreach($children as $p) {
-		array_push($possibilities, $p);
+
+function processDomainNode($domainNode) {
+	print $domainNode->Abbreviation->AUni . " " . $domainNode->Name->AUni . "\n";
+	if (property_exists($domainNode, 'SubPossibilities')) {
+		foreach ($domainNode->SubPossibilities->children() as $subDomainNode) {
+			processDomainNode($subDomainNode);
+		}
 	}
+}
+
+foreach($xml->SemanticDomainList->CmPossibilityList->Possibilities->children() as $domainNode) {
+	processDomainNode($domainNode);
 }
 
 
