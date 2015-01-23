@@ -2,6 +2,8 @@
 
 namespace models\languageforge\semdomtrans;
 
+use models\mapper\Id;
+
 use models\mapper\MapOf;
 
 use models\languageforge\SemDomTransProjectModel;
@@ -71,5 +73,7 @@ class SemDomTransItemModel extends \models\mapper\MapperModel
      * @var ArrayOf(SemDomTransTranslatedForm)
      */
     public $questions;
+    
+    public $xmlGuid;
     
  }

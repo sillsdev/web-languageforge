@@ -6,15 +6,10 @@ use models\mapper\Id;
 
 class SemDomTransTranslatedForm
 {
-	public function __construct()
-	{
-		$this->translation = '';
-		$this->status = SemDomTransStatus::Suggested;
-	}
     public function __construct($translation='')
     {
         $this->translation = $translation;
-		$this->status = SemDomTransStatus::Suggested;
+		$this->status = SemDomTransStatus::Approved;
     }
 
     /**
