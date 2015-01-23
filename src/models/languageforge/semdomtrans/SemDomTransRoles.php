@@ -3,6 +3,10 @@
 namespace models\languageforge\semdomtrans;
 
 
+use models\shared\rights\Operation;
+
+use models\shared\rights\Domain;
+
 use models\shared\rights\ProjectRoles;
 
 class SemDomTransRoles extends ProjectRoles {
