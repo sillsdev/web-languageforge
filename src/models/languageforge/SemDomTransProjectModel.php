@@ -38,5 +38,13 @@ class SemDomTransProjectModel extends LfProjectModel {
      * @var string
      */
     public $languageIsoCode;
+    
+    /**
+     * The semantic domain version number of this language set
+     * @var string
+     */
+    public $semdomVersion;
+    
+    
 
 } 
