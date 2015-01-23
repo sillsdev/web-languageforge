@@ -1,4 +1,10 @@
 <?php
+use models\languageforge\SemDomTransProjectModel;
+
+use libraries\scriptureforge\semdomtrans\SemDomXMLImporter;
+
+use models\ProjectModel;
+
 require_once('../scriptConfig.php');
 
 use models\ProjectListModel;
@@ -19,22 +25,22 @@ $changeDatabase = false;
 // process xml into a php data structure, organized by language
 $xml = simplexml_load_file($argv[1]);
 
-function processDomainNode($domainNode) {
-	print $domainNode->Abbreviation->AUni . " " . $domainNode->Name->AUni . "\n";
-	if (property_exists($domainNode, 'SubPossibilities')) {
-		foreach ($domainNode->SubPossibilities->children() as $subDomainNode) {
-			processDomainNode($subDomainNode);
-		}
-	}
-}
+$lang = "en";
+$version = "1";
 
-foreach($xml->SemanticDomainList->CmPossibilityList->Possibilities->children() as $domainNode) {
-	processDomainNode($domainNode);
-}
+$projectModel = new SemDomTransProjectModel();
 
+// todo: check that we are setting the right "language" property
+$projectModel->languageIsoCode = $lang;
+$projectModel->semdomVersion = $version;
+$projectModel->projectCode = "semdom-$lang-$version";
+$projectModel->write();
 
+// todo: check if the project for this language /version already exists
 
-echo "\n";
+$importer = new SemDomXMLImporter($argv[1], $projectModel, false);
+$importer->run();
+
 // loop over the set of languages to import
 
 // verify that no project for that language exists
