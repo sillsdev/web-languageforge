@@ -19,7 +19,7 @@ use models\shared\rights\ProjectRoles;
 use models\sms\SmsSettings;
 use models\languageforge\semdomtrans\SemDomTransItemModel;
 use models\languageforge\SemDomTransProjectModel;
-use models\languageforge\semdomtrans\TranslatedForm;
+use models\languageforge\semdomtrans\SemDomTransTranslatedForm;
 
 class ItemCommands
 {

@@ -6,6 +6,7 @@ use models\mapper\MapOf;
 
 use models\languageforge\SemDomTransProjectModel;
 use models\mapper\ArrayOf;
+use models\ProjectModel;
 
 class SemDomTransItemModel extends \models\mapper\MapperModel
 {
@@ -27,17 +28,15 @@ class SemDomTransItemModel extends \models\mapper\MapperModel
     {
         $this->id = new Id();
         $this->key = "";
-        $this->name = new TranslatedForm();
-        $this->description = new TranslatedForm();
+        $this->name = new SemDomTransTranslatedForm();
+        $this->description = new SemDomTransTranslatedForm();
         $this->searchKeys = new ArrayOf(function ($data) {
-        	return new TranslatedForm();
+        	return new SemDomTransTranslatedForm();
         });
         
         $this->questions = new ArrayOf(function ($data) {
-        	return new TranslatedForm();
+        	return new SemDomTransTranslatedForm();
         });
-        
-        $this->language = "";
         
         $databaseName = $projectModel->databaseName();
         parent::__construct(self::mapper($databaseName), $id);
@@ -54,27 +53,23 @@ class SemDomTransItemModel extends \models\mapper\MapperModel
     public $key;
     
     /**
-     * @var TranslatedForm
+     * @var SemDomTransTranslatedForm
      */
     public $name;
     
     /**
-     * @var TranslatedForm
+     * @var SemDomTransTranslatedForm
      */
     public $description;
     
     /**
-     * @var ArrayOf(TranslatedForm)
+     * @var ArrayOf(SemDomTransTranslatedForm)
      */
     public $searchKeys;
     
     /**
-     * @var ArrayOf(TranslatedForm)
+     * @var ArrayOf(SemDomTransTranslatedForm)
      */
     public $questions;
     
-    /**
-     * @var string
-     */
-    public $language;    
  }
