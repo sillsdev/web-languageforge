@@ -1,7 +1,7 @@
 <?php
 use models\languageforge\SemDomTransProjectModel;
 
-use libraries\scriptureforge\semdomtrans\SemDomXMLImporter;
+use libraries\languageforge\semdomtrans\SemDomXMLImporter;
 
 use models\ProjectModel;
 
