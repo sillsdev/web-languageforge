@@ -1,6 +1,6 @@
 <?php
 
-namespace libraries\scriptureforge\semdomtrans;
+namespace libraries\languageforge\semdomtrans;
 
 use models\languageforge\semdomtrans\SemDomTransTranslatedForm;
 use models\languageforge\SemDomTransProjectModel;
