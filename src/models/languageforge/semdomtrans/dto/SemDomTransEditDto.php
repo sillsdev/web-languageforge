@@ -16,10 +16,44 @@ class SemDomTransEditDto
     {
         $data = array();
         $project = new SemDomTransProjectModel($projectId);
+        $sourceProject = new SemDomTransProjectModel($project->sourceLanguageProjectId->asString());
         $items = new SemDomTransItemListModel($project, $lastFetchTime);
         $items->read();
-        $entries = $items->entries;
-
+        $targetItems = $items->entries;
+        
+        $sourceItemsModel = new SemDomTransItemListModel($sourceProject, $lastFetchTime);
+        $sourceItemsModel->read();
+        $sourceItems = $sourceItemsModel->entries;
+        $sourceItemsByKey = array();
+        foreach ($sourceItems as $item) {
+        	$sourceItemsByKey[$item['key']] = $item;
+        }
+        
+        // suplement the target language data with source language values
+        
+        $sourceLanguageIsIncomplete = false;
+        foreach ($targetItems as $i => $item) {
+        	foreach ($item as $outerProp => $outerValue) {
+				if (key_exists('translation', $outerValue)) {
+        			if ($sourceItemsByKey[$item['key']][$outerProp]['translation'] != '') {
+			        	$targetItems[$i][$outerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp]['translation'];
+        			} else {
+       					$sourceLanguageIsIncomplete = true;
+        			}
+        		};
+        		if ($outerProp == 'searchKeys' || $outerProp == 'questions') {
+        			foreach ($outerValue as $innerProp => $innerValue) {
+        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation']) {
+				        	$targetItems[$i][$outerProp][$innerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'];
+        				} else {
+       						$sourceLanguageIsIncomplete = true;
+        				}
+        			}
+        		}
+        	}
+        }
+        $data['sourceLanguageIsIncomplete'] = $sourceLanguageIsIncomplete;
+        
         $commentsModel = new LexCommentListModel($project, $lastFetchTime);
         $commentsModel->readAsModels();
         $encodedComments = LexDbeDtoCommentsEncoder::encode($commentsModel);
@@ -63,7 +97,7 @@ class SemDomTransEditDto
         });
         */
 
-        $data['items'] = $entries;
+        $data['items'] = $targetItems;
 
         $data['timeOnServer'] = time(); // future use for offline syncing
 

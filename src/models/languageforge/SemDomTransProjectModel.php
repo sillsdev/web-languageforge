@@ -3,6 +3,12 @@
 namespace models\languageforge;
 
 
+use models\languageforge\semdomtrans\SemDomTransItemModel;
+
+use models\languageforge\semdomtrans\SemDomTransItemListModel;
+
+use models\ProjectModel;
+
 use models\mapper\IdReference;
 
 class SemDomTransProjectModel extends LfProjectModel {
@@ -44,6 +50,23 @@ class SemDomTransProjectModel extends LfProjectModel {
      * @var string
      */
     public $semdomVersion;
+    
+    /**
+     * Create a new project pre-loaded with all semantic domain items
+     */
+    public static function createPreFilled() {
+    	$latestSemdomVersion = 4;
+    	$project = new SemDomTransProjectModel();
+    	$englishProject = SemDomTransProjectModel::readByProperties(array('languageIsoCode' => 'en', 'semdomVersion' => $latestSemdomVersion));
+    	$projectId = $project->write();
+    	$englishItems = new SemDomTransItemListModel($englishProject);
+    	$englishItems->read();
+    	foreach ($englishItems->entries as $item) {
+    		$newItem = new SemDomTransItemModel($project);
+    		$newItem->key = $item['key'];
+    		$newItem->write();
+    	}
+    }
     
     
 
