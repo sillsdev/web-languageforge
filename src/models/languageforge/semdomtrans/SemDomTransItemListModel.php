@@ -8,7 +8,7 @@ class SemDomTransItemListModel extends \models\mapper\MapperListModel
     public static function mapper($databaseName)
     {
         static $instance = null;
-        if (null === $instance) {
+        if (null === $instance || $instance->databaseName() != $databaseName) {
             $instance = new \models\mapper\MongoMapper($databaseName, 'semDomTransItems');
         }
 
