@@ -16,14 +16,16 @@ class SemDomTransEditDto
     {
         $data = array();
         $project = new SemDomTransProjectModel($projectId);
-        $sourceProject = new SemDomTransProjectModel($project->sourceLanguageProjectId->asString());
+        $sourceProject = new SemDomTransProjectModel($project->sourceLanguageProjectId);
         $items = new SemDomTransItemListModel($project, $lastFetchTime);
         $items->read();
         $targetItems = $items->entries;
+        //print_r($targetItems);
         
         $sourceItemsModel = new SemDomTransItemListModel($sourceProject, $lastFetchTime);
         $sourceItemsModel->read();
         $sourceItems = $sourceItemsModel->entries;
+        //print_r($sourceItems);
         $sourceItemsByKey = array();
         foreach ($sourceItems as $item) {
         	$sourceItemsByKey[$item['key']] = $item;
@@ -34,7 +36,7 @@ class SemDomTransEditDto
         $sourceLanguageIsIncomplete = false;
         foreach ($targetItems as $i => $item) {
         	foreach ($item as $outerProp => $outerValue) {
-				if (key_exists('translation', $outerValue)) {
+				if (is_array($outerValue) && key_exists('translation', $outerValue)) {
         			if ($sourceItemsByKey[$item['key']][$outerProp]['translation'] != '') {
 			        	$targetItems[$i][$outerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp]['translation'];
         			} else {
@@ -54,10 +56,10 @@ class SemDomTransEditDto
         }
         $data['sourceLanguageIsIncomplete'] = $sourceLanguageIsIncomplete;
         
-        $commentsModel = new LexCommentListModel($project, $lastFetchTime);
-        $commentsModel->readAsModels();
-        $encodedComments = LexDbeDtoCommentsEncoder::encode($commentsModel);
-        $data['comments'] = $encodedComments['entries'];
+        // $commentsModel = new LexCommentListModel($project, $lastFetchTime);
+        // $commentsModel->readAsModels();
+        //$encodedComments = LexDbeDtoCommentsEncoder::encode($commentsModel);
+        //$data['comments'] = $encodedComments['entries'];
 
         if (!is_null($lastFetchTime)) {
         	/* TODO: implement deleted Items list model
