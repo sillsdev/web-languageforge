@@ -34,32 +34,25 @@ $projectModel = new SemDomTransProjectModel();
 $projectModel->languageIsoCode = $lang;
 $projectModel->semdomVersion = $version;
 $projectModel->projectCode = "semdom-$lang-$version";
-$projectModel->write();
-
-// todo: check if the project for this language /version already exists
-
-$importer = new SemDomXMLImporter($argv[1], $projectModel, true);
-$importer->run();
 
 // loop over the set of languages to import
 
-// verify that no project for that language exists
-
 // if a previous project for that language and semantic domain version exists, DO NOT IMPORT
-
-// create a new project for that language
-
-// loop over each semdom item and create a new item model.  Write it to the database
+$previousProject = new SemDomTransProjectModel();
+$previousProject->readByProperties(array("languageIsoCode" => $projectModel->languageIsoCode, "semdomVersion" => $projectModel->semdomVersion));
 
 
-
-
-
-/*foreach ($projectList->entries as $p) {
-	print $p['projectName'] . "\n";
+if ($previousProject->id->asString() == "")
+{
+	//create project
+	$projectModel->write();
+		
+	// loop over each semdom item and create a new item model.  Write it to the database
+	$importer = new SemDomXMLImporter($argv[1], $projectModel, true);
+	$importer->run();
+} else {
+	echo "Project exists already" . "\n";
 }
 
-print "\n";
-*/
 
 ?>
