@@ -38,7 +38,7 @@ $projectModel->write();
 
 // todo: check if the project for this language /version already exists
 
-$importer = new SemDomXMLImporter($argv[1], $projectModel, false);
+$importer = new SemDomXMLImporter($argv[1], $projectModel, true);
 $importer->run();
 
 // loop over the set of languages to import

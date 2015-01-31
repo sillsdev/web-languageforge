@@ -37,7 +37,7 @@ class SemDomTransItemModel extends \models\mapper\MapperModel
         });
         
         $this->questions = new ArrayOf(function ($data) {
-        	return new SemDomTransTranslatedForm();
+        	return new SemDomTransQuestion();
         });
         
         $databaseName = $projectModel->databaseName();
