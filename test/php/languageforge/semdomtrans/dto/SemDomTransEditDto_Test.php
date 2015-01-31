@@ -38,6 +38,7 @@ class TestSemDomTransEditDto extends UnitTestCase
         $targetProject->write();
         
         
+        // insert dummy models
         $sourceItemModel = new SemDomTransItemModel($sourceProject);
         $sourceItemModel->key = "1";
         $sourceItemModel->name = new SemDomTransTranslatedForm("universe");
@@ -46,36 +47,29 @@ class TestSemDomTransEditDto extends UnitTestCase
         $targetItemModel = new SemDomTransItemModel($targetProject);
         $targetItemModel->key = "1";
         $targetItemModel->name = new SemDomTransTranslatedForm("wszechswiat");
-        $targetItemModel->write();
-        
-        // add some dummy items in both source and target
-        $items = new SemDomTransItemListModel($sourceProject, null);
-        $items->read();
-        $sourceItems = $items->entries;
-        print_r($sourceItems);
-        
-       
-        $items2 = new SemDomTransItemListModel($targetProject, null);
-        $items2->read();
-        $targetItems = $items2->entries;
-        print_r($targetItems);
-        
-        
-        
-
-        
+        $targetItemModel->write();           
         
         // call dto
-        
         $prId = $targetProject->id;
         $loadTargetProject = new SemDomTransProjectModel($prId->asString());
         $loadSourceProject = new SemDomTransProjectModel($loadTargetProject->sourceLanguageProjectId);
-         $result = SemDomTransEditDto::encode($prId->asString(), null);
+        $result = SemDomTransEditDto::encode($prId->asString(), null);
         
-        print_r($result);
         // check dto returns expected results
-        
-        $targetProject->remove();
-        $sourceProject->remove();
+         $items = $result["items"];
+         $this->assertTrue($items != null); 
+         $this->assertTrue(count($items) > 0);
+         $firstObject = $items[0];
+         $this->assertTrue($firstObject["key"] != null);
+         $this->assertTrue($firstObject["key"] == "1");
+         $this->assertTrue($firstObject["name"] != null);
+         $this->assertTrue($firstObject["name"]["source"] == "universe");
+         $this->assertTrue($firstObject["name"]["translation"] == "wszechswiat");
+         $this->assertTrue($firstObject["name"]["status"] == 0);
+         
+         // clean-up
+         // TODO: create a custom semdomtrans mongo environment
+         $targetProject->remove();
+         $sourceProject->remove();
     }
 }
