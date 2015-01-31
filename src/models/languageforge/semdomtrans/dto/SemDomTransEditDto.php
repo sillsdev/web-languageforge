@@ -43,12 +43,27 @@ class SemDomTransEditDto
        					$sourceLanguageIsIncomplete = true;
         			}
         		};
-        		if ($outerProp == 'searchKeys' || $outerProp == 'questions') {
+        		if ($outerProp == 'searchKeys') {
         			foreach ($outerValue as $innerProp => $innerValue) {
-        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation']) {
+        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'] != '') {
 				        	$targetItems[$i][$outerProp][$innerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'];
         				} else {
        						$sourceLanguageIsIncomplete = true;
+        				}
+        			}
+        		} else if ($outerProp == 'questions') {
+        			foreach ($outerValue as $innerProp => $innerValue) {
+        				$tmp = $sourceItemsByKey[$item['key']][$outerProp][$innerProp];
+        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'] != '') {
+				        	$targetItems[$i][$outerProp][$innerProp]['question']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'];
+        				} else {
+       						$sourceLanguageIsIncomplete = true;
+        				}
+        				
+        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'] != '') {
+        					$targetItems[$i][$outerProp][$innerProp]['terms']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'];
+        				} else {
+        					$sourceLanguageIsIncomplete = true;
         				}
         			}
         		}
