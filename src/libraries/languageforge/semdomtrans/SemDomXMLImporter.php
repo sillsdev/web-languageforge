@@ -60,12 +60,15 @@ class SemDomXMLImporter {
 		$questions = [];
 		$searchKeys = [];
 	
-		// parse nested questions
-		foreach($questionsXML as $questionXML) {
-			$question = $this->_getPathVal($questionXML->xpath("Question/AUni[@ws='{$this->_lang}']"));
-			$terms = $this->_getPathVal($questionXML->xpath("ExampleWords/AUni[@ws='{$this->_lang}']"));
-			array_push($questions, new SemDomTransQuestion($question, $terms));
-			array_push($searchKeys, new SemDomTransTranslatedForm($terms));
+		if (count($questions))
+		{
+			// parse nested questions
+			foreach($questionsXML as $questionXML) {
+				$question = $this->_getPathVal($questionXML->xpath("Question/AUni[@ws='{$this->_lang}']"));
+				$terms = $this->_getPathVal($questionXML->xpath("ExampleWords/AUni[@ws='{$this->_lang}']"));
+				array_push($questions, new SemDomTransQuestion($question, $terms));
+				array_push($searchKeys, new SemDomTransTranslatedForm($terms));
+			}
 		}				
 		
 		// assume that we are not matching up with guids
