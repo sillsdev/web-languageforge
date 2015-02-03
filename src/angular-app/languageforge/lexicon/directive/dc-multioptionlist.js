@@ -1,4 +1,4 @@
-angular.module('palaso.ui.dc.multioptionlist', ['palaso.ui.dc.comments'])
+angular.module('palaso.ui.dc.multioptionlist', [])
   // Palaso UI Optionlist
   .directive('dcMultioptionlist', [function() {
 		return {
@@ -7,21 +7,19 @@ angular.module('palaso.ui.dc.multioptionlist', ['palaso.ui.dc.comments'])
 			scope : {
 				config : "=",
 				model : "=",
-				control: "="
+				control: "=",
+                items: "="
 			},
-			controller: ['$scope', 'lexEntryService', function($scope, lexService) {
-				$scope.makeValidModel = function() {
-					// if the model doesn't exist, create an object for it based upon the config
-					if (!$scope.model) {
-						$scope.model = {};
-						if (!$scope.model.values) {
-							$scope.model.values = [];
-						}
-					}
-				};
-				
+			controller: ['$scope', function($scope) {
 				$scope.getDisplayName = function(value) {
-					return value;
+                    var displayName = value;
+                    for (var i=0; i< $scope.items.length; i++) {
+                        if ($scope.items[i].key == value) {
+                            displayName = $scope.items[i].value;
+                            break;
+                        }
+                    }
+					return displayName;
 				};
 				
 				$scope.addValue = function() {
@@ -30,14 +28,8 @@ angular.module('palaso.ui.dc.multioptionlist', ['palaso.ui.dc.comments'])
 					}
 				};
 
-				$scope.getAbbreviation = function(inputSystem) {
-					return lexService.getConfig().inputSystems[inputSystem].abbreviation;
-				};
 			}],
 			link : function(scope, element, attrs, controller) {
-				scope.$watch('model', function() {
-					scope.makeValidModel();
-				});
 			}
 		};
   }])

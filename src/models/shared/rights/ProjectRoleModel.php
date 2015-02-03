@@ -1,15 +1,11 @@
 <?php
 namespace models\shared\rights;
 
-class ProjectRoleModel {
+class ProjectRoleModel
+{
+    /**
+     * @var string
+     */
+    public $role;
 
-	/**
-	 * @var string
-	 */
-	public $role;
-
-	
-	
 }
-
-?>

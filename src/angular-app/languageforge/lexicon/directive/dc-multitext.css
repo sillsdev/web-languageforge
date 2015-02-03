@@ -1,0 +1,27 @@
+form.dc-multitext .control-group {
+    margin-bottom: 10px;
+}
+
+/* TODO Review when doing the Bootstrap 3 upgrade. Bootstrap seems to overly constrain input sizes artificially. */
+form.dc-multitext .controls input[type="text"] {
+    width: 165px;
+}
+
+form.dc-multitext label, form.dc-optionlist label {
+    font-weight:bold;
+    cursor: default;
+}
+
+form.dc-multitext .wsid {
+    width: 30px;
+    color: #777;
+    text-align: right;
+}
+
+/*
+input[type="text"] {
+    -webkit-box-sizing: border-box;‌​
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; 
+}
+*/

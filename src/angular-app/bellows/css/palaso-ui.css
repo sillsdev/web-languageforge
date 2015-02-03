@@ -1,7 +1,7 @@
 
 /* Typeahead */
 div.typeahead {
-	z-index: 1051;
+	z-index: 51;
 	margin-top: 0px;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
@@ -119,64 +119,12 @@ ul#strength {
     margin-right:1px;
     width:10px;
 }
-#footer {
-    position:fixed;
-    bottom:5px;
-}
 
 
 
-/* dictionary control */
-form.dc-multitext .control-group {
-	margin-bottom: 10px;
-}
-
-form.dc-multitext label, form.dc-optionlist label {
-	font-weight:bold;
-	cursor: default;
-}
-
-form.dc-multitext .wsid {
-	margin-right:5px;
-	color: #ffffcc;
-	background-color: #4488cc;
-	padding: 6px;
-	border-radius: 5px;
-}
-
-#entryList .selected {
-	background-color: #CCFFDB !important;
-}
-
-#entryList tr:active td {
-	background-color: #CCFFDB;
-}
-
-#entryList tr {
-	cursor: pointer;
-}
-	
 /* Highlighted text in text selection directive */
 .highlighted {
 	background-color: yellow;
-}
-
-#entryList {
-	overflow-y: scroll;
-	height: 400px;
-}
-
-
-#entryItemView {
-	overflow-y: scroll;
-	height: 500px;
-	padding-right:20px;
-	padding-bottom: 20px;
-}
-
-#entryItemView i.icon-remove {
-	cursor: pointer; 
-	color:#CCC;
 }
 
 /* Styles for the two tagging directives (view-tags and add-tags) */
@@ -195,10 +143,6 @@ form.dc-multitext .wsid {
 	display: inline-block;
 }
 
-#entryItemView i.icon-remove:hover {
-	color:red;
-}
-
 .tag-list ul li img.closeicon {
 	position: absolute;
 	top: -10px;
@@ -208,30 +152,10 @@ form.dc-multitext .wsid {
 	cursor: pointer;
 }
 
-#entryList .even {
-	background-color: #eee;
+.entryItemView i.icon-remove:hover {
+    color:red;
 }
 
-#entryList .odd {
-	background-color: #ddd;
-}
-
-.dc-sense {
-	background-color: #ffeedd;
-	border-top: 10px solid #F1F1F1;
-	border-right: 10px solid #E6E6E6;
-	border-radius: 10px;
-	margin-top: 20px;
-	padding-right:10px;
-	clear:both;
-}
-
-.dc-example {
-	border-top: 10px solid #F1F1F1;
-	border-right: 10px solid #E6E6E6;
-	border-radius: 10px;
-	
-}
 
 .deleteX {
 	margin-right: 20px;
@@ -282,3 +206,13 @@ div.notices .alert-success, div.notices .alert-error, div.notices .alert-warn, d
 	background-position: 6px 4px;
 }
 
+/* Select language directive */
+pui-select-language div.scroll-table {
+	max-height: 330px;
+	overflow-y: auto;
+	margin-bottom: 20px;
+}
+
+pui-select-language div.scroll-table table {
+	margin-bottom: 0px;
+}

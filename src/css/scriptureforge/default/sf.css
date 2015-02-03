@@ -496,7 +496,6 @@ table {
 }
 
 table th, table td {
-	border: 1px solid #c9c9cb;
 	vertical-align: middle;
 	padding: 0.5em 0.75em;
 }
@@ -937,7 +936,7 @@ label {
 
 #maincontainer {
 	min-height: 100%;
-	margin-bottom: -239px;
+	margin-bottom: -291px;
 	position: relative;
 	
 }
@@ -949,7 +948,7 @@ label {
 }
 
 .clearfooter {
-	height: 239px;
+	height: 291px;
 	clear: both;
 }
 

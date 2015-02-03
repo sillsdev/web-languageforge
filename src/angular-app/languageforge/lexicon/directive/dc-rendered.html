@@ -1,4 +1,15 @@
-<div class="dc-rendered" ng-hide="hideIfEmpty && !definition.label">
-	<span class="dc-rendered word">{{definition.label}}</span>
-	<span class="dc-rendered definition" ng-repeat="sense in definition.senses"><span class="number">{{sense.num}}</span><span class="partOfSpeech">{{sense.pos}}</span><span class="definition-content">{{sense.defcontent}}</span></span>
+<div class="dc-rendered-entryContainer" ng-hide="hideIfEmpty && !entry.word">
+    <!--
+    Model: {{model|json}}
+    Entry: {{entry|json}}
+    -->
+	<span class="dc-rendered-word" ng-bind-html="entry.word"></span>
+	<span class="dc-rendered-senseContainer" ng-repeat="sense in entry.senses">
+        <span dir="ltr" ng-hide="entry.senses.length == 1" class="dc-rendered-senseNumber">{{$index + 1}})</span>
+        <span class="dc-rendered-partOfSpeech" ng-bind-html="sense.partOfSpeech"></span>
+        <span class="dc-rendered-definition" ng-bind-html="sense.meaning"></span>
+        <span class="dc-rendered-exampleContainer" ng-repeat="example in sense.examples">
+            <span class="dc-rendered-exampleSentence" ng-bind-html="example.sentence"></span>
+        </span>
+    </span>
 </div>

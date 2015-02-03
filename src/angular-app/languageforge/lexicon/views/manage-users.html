@@ -1,24 +1,27 @@
 <div class="container" data-ng-cloak data-ng-controller="manageUsersCtrl">
-	<h2 translate="{projectName} User Management" translate-values="{projectName: project.projectName}"></h2>
+	<br><h2 style="font-weight:normal" >{{project.projectName}} <span translate="User Management"></span></h2>
+	<!-- <h2 translate="{projectName} User Management" translate-values="{projectName: project.projectName}"></h2> -->
 	<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-		<button data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther" class="btn" data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>{{ 'Remove Members' | translate }}</button>
+		<button data-ng-disabled="selected.length == 0" data-ng-show="rights.remove" class="btn" data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>{{ 'Remove Members' | translate }}</button>
 		<button data-ng-show="rights.create" class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>{{ 'Add Members' | translate }}</button>
+		<input type="text" ng-model="userFilter" placeholder="Member List Filter"/> <a ng-show="userFilter != ''" title="Clear Filter" ng-click="userFilter = ''"><i class="icon-remove" style="color:gray"></i></a>
 	</form>
-	<div class="new-item" data-collapse="!newUserCollapsed">
+	<div id="newMembersDiv" class="new-item" data-collapse="!newUserCollapsed">
 		<form class="well form-inline">
 		<typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
 			<ul>
 				<li data-typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
 					<img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
 					<p class="name">{{user.name}}</p>
-					<p class="email">{{user.email}}</p>
+					<p class="email">{{user.username}}</p>
 				</li>
 			</ul>
 		</typeahead>
-		<button data-ng-model="addMode" class="btn" data-ng-disabled="!typeahead.userName" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+		<button data-ng-model="addMode" class="btn" data-ng-disabled="disableAddButton" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+		<span class="warning" data-ng-show="warningText">{{warningText}}</span>
 		</form>
 	</div>
-	<div listview search="queryProjectUsers()" items="list.users" visible-items="list.visibleUsers" select="">
+	<div listview search="queryProjectUsers()" items="list.users" items-filter="userFilter" visible-items="list.visibleUsers" select="">
 		<table class="table" style="width: 100%">
 			<thead>
 			<tr>
@@ -30,10 +33,11 @@
 			</thead>
 			<tbody>
 			<tr data-ng-repeat="user in list.visibleUsers" data-ng-class="{active: isSelected(user)}" >
-				<td width="16px" align="center"><input data-ng-show="rights.deleteOther" type="checkbox" data-ng-checked="isSelected(user)" data-ng-click="updateSelection($event, user)" /></td>
+				<td width="16px" align="center"><input data-ng-show="rights.remove" type="checkbox" data-ng-checked="isSelected(user)" data-ng-click="updateSelection($event, user)" /></td>
 				<td>{{user.username}}</td>
 				<td>{{user.name}}</td>
-				<td><select data-ng-model="user.role" data-ng-change="onRoleChange(user)" data-ng-options="role.key as role.name for role in roles"></select></td>
+				<td ng-show="showProjectOwner(user.id)">Manager and Project Owner</td>
+				<td ng-hide="showProjectOwner(user.id)"><select data-ng-model="user.role" data-ng-change="onRoleChange(user)" data-ng-options="role.key as role.name for role in roles"></select></td>
 			</tr>
 			</tbody>
 		</table>

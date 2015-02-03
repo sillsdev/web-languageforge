@@ -1,358 +1,405 @@
-angular.module('lexicon.services', ['jsonRpc', 'sgw.ui.breadcrumb'])
-.service('lexBaseViewService', [function(jsonRpc, $location) {
-	var _callbacks = [];
-	var _data = {
-		config: {},
-		user: {},
-		project: {},
-		rights: {}
-	};
-	
-	this.setData = function(data) {
-		_data = angular.copy(data);
-		if (angular.isDefined(_data.config.entry)) {
-			angular.forEach(_callbacks, function(callback) {
-				callback();
-			});
-		}
-	};
-	
-	this.getData = function() {
-		return _data;
-	};
-	
-	this.setConfig = function(config) {
-		_data.config = angular.copy(config);
-		if (angular.isDefined(_data.config.entry)) {
-			angular.forEach(_callbacks, function(callback) {
-				callback();
-			});
-		}
-	};
-	
-	this.getConfig = function() {
-		return _data.config;
-	};
-	
-	this.registerListener = function(callback) {
-		_callbacks.push(callback);
-		if (angular.isDefined(_data.config.entry)) {
-			callback();
-		}
-	};
-	
-}])
-.service('lexLinkService', ['$location', function($location) {
-	this.project = function () {
-		return '/app/lexicon/' + this.getProjectId();
-	};
-	
-	this.projectView = function (view) {
-		return this.project() + '/' + view;
-	};
+'use strict';
 
-	this.getProjectId = function() {
-		// todo: make this work - cjh 2014-06
-		return 0;
-	};
-}])
-.service('lexProjectService', ['jsonRpc', 'breadcrumbService', 'lexLinkService', '$location', function(jsonRpc, breadcrumbService, linkService, $location) {
-	jsonRpc.connect('/api/sf');
-	this.baseViewDto = function(view, label, callback) {
-		jsonRpc.call('lex_baseViewDto', [], function(result) {
-			if (result.ok) {
-				breadcrumbService.set('top',
-					[
-					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectName},
-					 {href: linkService.projectView(view), label: label},
-					]
-				);
-				callback(result);
-			}
-		});
-	};
+angular.module('lexicon.services', ['jsonRpc', 'bellows.services', 'sgw.ui.breadcrumb'])
+  .service('lexLinkService', ['$location', 'sessionService', function($location, ss) {
+    this.project = function () {
+      return '/app/lexicon/' + this.getProjectId();
+    };
 
-	this.updateConfiguration = function(config, callback) {
-		jsonRpc.call('lex_configuration_update', [config], callback);
-	};
-	
-	this.importLift = function(importData, callback) {
-		jsonRpc.call('lex_import_lift', [importData], function(result) {
-			if (result.ok) {
-				callback(result);
-			}
-		});
-	};
-	
-	this.readProject = function(callback) {
-		var projectId = this.getProjectId();
-		jsonRpc.call('lex_projectDto', [], function(result) {
-			if (result.ok) {
-				breadcrumbService.set('top',
-					[
-					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectName},
-					 {href: linkService.projectView('settings'), label: 'Project Settings'},
-					]
-				);
-				callback(result);
-			}
-		});
-	};
-	
-	this.updateProject = function(project, callback) {
-		jsonRpc.call('lex_project_update', [project], callback);
-	};
-	
-	this.users = function(callback) {
-		var projectId = this.getProjectId();
-		jsonRpc.call('lex_manageUsersDto', [], function(result) {
-			if (result.ok) {
-				breadcrumbService.set('top',
-					[
-					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectName},
-					 {href: linkService.projectView('users'), label: 'User Management'},
-					]
-				);
-				callback(result);
-			}
-		});
-	};
-	
-	this.updateUserProfile = function(user, callback) {
-		jsonRpc.call('user_updateProfile', [user], callback);
-	};
-	
-	this.getProjectId = function() {
-		var parts = $location.path().split('/');
-		// strip off the "/p/"
-		return parts[2];
-	};
-}])
-.service('lexEntryService', ['jsonRpc', 'lexProjectService', 'breadcrumbService', 'lexLinkService', function(jsonRpc, projectService, breadcrumbService, linkService) {
-	jsonRpc.connect('/api/sf');
-	this.read = function(id, callback) {
-		jsonRpc.call('lex_entry_read', [id], callback);
-	};
-	
-	this.update = function(entry, callback) {
-		jsonRpc.call('lex_entry_update', [entry], callback);
-	};
+    this.projectView = function (view) {
+      return this.project() + '/' + view;
+    };
 
-	this.remove = function(id, callback) {
-		jsonRpc.call('lex_entry_remove', [id], callback);
-	};
+    this.getProjectId = function() {
+      return ss.session.project.id;
+    };
+  }])
+  .service('lexProjectService', ['jsonRpc', 'sessionService', 'breadcrumbService', 'lexLinkService', '$location',
+  function(jsonRpc, ss, breadcrumbService, linkService, $location) {
+    jsonRpc.connect('/api/sf');
 
-	this.dbeDto = function(iEntryStart, numberOfEntries, callback) {
-		jsonRpc.call('lex_dbeDto', [iEntryStart, numberOfEntries], function(result) {
-			if (result.ok) {
-				breadcrumbService.set('top',
-					[
-					 {href: '/app/projects', label: 'My Projects'},
-					 {href: linkService.project(), label: result.data.project.projectName},
-					 {href: linkService.projectView('dbe'), label: 'Browse And Edit'},
-					]
-				);
-				callback(result);
-			}
-		});
-	};
-	
-	this.updateComment = function(comment, callback) {
-		jsonRpc.call('lex_entry_updateComment', [comment], callback);
-	};
-	
-	
-	
-	
-	
-	
-	/*
-	
-	this.addExampleDto = function(callback) {
-		var dtoConfig = angular.copy(_config);
-		// We just want to see the definition and part of speech, but leave rest of config alone
-		angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
-			field.visible = false;
-		});
-		dtoConfig.entry.fields.senses.fields['definition'].visible = true;
-		dtoConfig.entry.fields.senses.fields['examples'].visible = true;
-		// Definition should be read-only
-		dtoConfig.entry.fields.senses.fields.definition.readonly = true;
-		this.setConfig(dtoConfig);
-		(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
-	};
-	this.addGrammarDto = function(callback) {
-		var dtoConfig = angular.copy(_config);
-		// We just want to see the definition and part of speech, but leave rest of config alone
-		angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
-			field.visible = false;
-		});
-		dtoConfig.entry.fields.senses.fields['definition'].visible = true;
-		dtoConfig.entry.fields.senses.fields['partOfSpeech'].visible = true;
-		// Definition should be read-only
-		dtoConfig.entry.fields.senses.fields.definition.readonly = true;
-		this.setConfig(dtoConfig);
-		(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
-	};
-	this.addMeaningsDto = function(callback) {
-		var dtoConfig = angular.copy(_config);
-		// We just want to see the definition and part of speech, but leave rest of config alone
-		angular.forEach(dtoConfig.entry.fields.senses.fields , function(field, fieldName) {
-			field.visible = false;
-		});
-		dtoConfig.entry.fields.senses.fields['definition'].visible = true;
-		this.setConfig(dtoConfig);
-		(callback || angular.noop)({'ok': true, 'data': {'entries': getEntriesList(), 'config': dtoConfig}});
-	};
-	*/
+    this.setBreadcrumbs = function(view, label) {
+      breadcrumbService.set('top', [
+        {href: '/app/projects', label: 'My Projects'},
+        {href: linkService.project(), label: ss.session.project.projectName},
+        {href: linkService.projectView(view), label: label}
+      ]);
+    };
 
-	/*
-	// --- BEGIN TEST CODE ---
-	// Set up sample data when service first created
-	// (This will be removed once a real server is available)
-	for (var _idx = 0; _idx < sampleData.length; _idx++) {
-		var entry = sampleData[_idx];
-		this.update(entry);
-	};
-	this.saveNow();
-	// --- END TEST CODE ---
-	*/
-}])
-;
+    this.baseViewDto = function(view, label, callback) {
+      var setBreadcrumbs = this.setBreadcrumbs;
+      jsonRpc.call('lex_baseViewDto', [], function(result) {
+        if (result.ok) {
+          setBreadcrumbs(view, label);
+        }
+        callback(result);
+      });
+    };
+
+    this.updateConfiguration = function(config, optionlist, callback) {
+      jsonRpc.call('lex_configuration_update', [config, optionlist], callback);
+    };
+
+    this.updateOptionList = function(optionList, callback) {
+        jsonRpc.call('lex_optionlist_update', [optionList], callback);
+    };
+
+    this.readProject = function(callback) {
+      jsonRpc.call('lex_projectDto', [], callback);
+    };
+
+    this.updateProject = function(project, callback) {
+      jsonRpc.call('lex_project_update', [project], callback);
+    };
+    this.updateSettings = function(smsSettings, emailSettings, callback) {
+      jsonRpc.call('project_updateSettings', [smsSettings, emailSettings], callback);
+    };
+     this.readSettings = function(callback) {
+      jsonRpc.call('project_readSettings', [], callback);
+    };
+    this.users = function(callback) {
+      jsonRpc.call('project_usersDto', [], callback);
+    };
+
+    this.updateUserProfile = function(user, callback) {
+      jsonRpc.call('user_updateProfile', [user], callback);
+    };
+
+    this.removeMediaFile = function(mediaType, fileName, callback) {
+      jsonRpc.call('lex_project_removeMediaFile', [mediaType, fileName], callback);
+    };
+    
+    this.getProjectId = function() {
+      return ss.session.project.id;
+  //    var parts = $location.path().split('/');
+  //    // strip off the "/p/"
+  //    return parts[2];
+    };
+  }])
+  .service('lexCommentService', ['jsonRpc',
+  function(jsonRpc) {
+    jsonRpc.connect('/api/sf');
+
+    this.update = function update(comment, callback) {
+        jsonRpc.call('lex_comment_update', [comment], callback);
+    };
+
+    this.updateReply = function updateReply(commentId, reply, callback) {
+        jsonRpc.call('lex_commentReply_update', [commentId, reply], callback);
+    };
+
+    this.remove = function deleteComment(commentId, callback) {
+        jsonRpc.call('lex_comment_delete', [commentId], callback);
+    };
+
+    this.deleteReply = function deleteReply(commentId, replyId, callback) {
+        jsonRpc.call('lex_commentReply_delete', [commentId, replyId], callback);
+    };
+
+    this.plusOne = function plusOne(commentId, callback) {
+        jsonRpc.call('lex_comment_plusOne', [commentId], callback);
+    };
+
+    this.updateStatus = function updateStatus(commentId, status, callback) {
+        jsonRpc.call('lex_comment_updateStatus', [commentId, status], callback);
+    };
+  }])
+  .service('lexConfigService', ['sessionService',
+  function(ss) {
+
+    this.isTaskEnabled = function(taskName) {
+        var config = ss.session.projectSettings.config;
+        var role = ss.session.projectSettings.currentUserRole;
+        var userId = ss.session.userId;
+        if (angular.isDefined(config.userViews[userId])) {
+            return config.userViews[userId].showTasks[taskName];
+        } else {
+            // fallback to role-based field config
+            return config.roleViews[role].showTasks[taskName];
+        }
+    };
+
+    this.getConfigForUser = function() {
+        var config = angular.copy(ss.session.projectSettings.config);
+
+        // copy option lists to config object
+        config.optionlists = {};
+        angular.forEach(ss.session.projectSettings.optionlists, function(optionlist) {
+            config.optionlists[optionlist.code] = optionlist;
+        });
+
+        var userId = ss.session.userId;
+        var role = ss.session.projectSettings.currentUserRole;
+        var fieldsConfig;
+
+        // use an user-based field config if defined
+        if (angular.isDefined(config.userViews[userId])) {
+            fieldsConfig = config.userViews[userId];
+        } else {
+            // fallback to role-based field config
+            fieldsConfig = config.roleViews[role];
+        }
+
+        removeDisabledConfigFields(config.entry, fieldsConfig);
+        removeDisabledConfigFields(config.entry.fields.senses, fieldsConfig);
+        removeDisabledConfigFields(config.entry.fields.senses.fields.examples, fieldsConfig);
+
+        return config;
+    };
+
+    this.fieldContainsData = function fieldContainsData(type, model) {
+        if (angular.isUndefined(model)) return false;
+        if (type == 'fields') return true;
+        var containsData = false;
+        switch (type) {
+            case 'multitext':
+                angular.forEach(model, function(field) {
+                    if (field.value != '') {
+                        containsData = true;
+                    }
+                });
+                break;
+            case 'optionlist':
+                if (model.value != '') {
+                    containsData = true;
+                }
+                break;
+            case 'multioptionlist':
+                if (model.values.length > 0) {
+                    containsData = true;
+                }
+                break;
+            case 'pictures':
+              if (model.length > 0) {
+                  containsData = true;
+              }
+              break;
+        }
+        return containsData;
+    };
+
+    function removeDisabledConfigFields(config, fieldsConfig) {
+        angular.forEach(config.fieldOrder, function(fieldName) {
+            if (fieldName != 'senses' && fieldName != 'examples') {
+                var fieldConfig = fieldsConfig.fields[fieldName];
+
+                if (fieldConfig && fieldConfig.show) {
+                    // field is enabled
+
+                    // override input systems if specified
+                    if (fieldConfig.overrideInputSystems) {
+                        config.fields[fieldName].inputSystems = angular.copy(fieldConfig.inputSystems);
+                    }
+                } else {
+                    // remove config field
+                    delete config.fields[fieldName];
+
+                    // remove field from fieldOrder array
+                    config.fieldOrder.splice(config.fieldOrder.indexOf(fieldName), 1);
+                }
+            }
+        });
+    }
+
+    this.isCustomField = function isCustomField(fieldName) {
+        return fieldName.search('customField_') === 0;
+    };
+
+    this.getFieldConfig = function getFieldConfig(fieldName) {
+        var config = ss.session.projectSettings.config;
+
+        var search = config.entry.fields;
+        if (angular.isDefined(search[fieldName])) {
+            return search[fieldName];
+        }
+
+        search = config.entry.fields.senses.fields;
+        if (angular.isDefined(search[fieldName])) {
+            return search[fieldName];
+        }
+
+        search = config.entry.fields.senses.fields.examples.fields;
+        if (angular.isDefined(search[fieldName])) {
+            return search[fieldName];
+        }
+        return undefined;
+    };
+
+    /*
+    this.isFieldEnabled = function(fieldName, ws) {
+
+        var config = ss.session.projectSettings.config;
+        var userId = ss.session.userId;
+        var role = ss.session.projectSettings.currentUserRole;
+        var fieldConfig;
+
+        // use an user-based field config if defined
+        if (angular.isDefined(config.userViews[userId])) {
+            fieldConfig = config.userViews[userId].fields[fieldName];
+        } else {
+            // fallback to role-based field config
+            fieldConfig = config.roleViews[role].fields[fieldName];
+        }
+
+        if (!fieldConfig) {
+            console.log(fieldName);
+        }
+
+        // field-level visibility
+        var show = fieldConfig.show;
+
+        // input system level visibility
+        if (ws && fieldConfig.show && fieldConfig.overrideInputSystems) {
+            if (fieldConfig.inputSystems.indexOf(ws) != -1) {
+                show = true;
+            } else {
+                show = false;
+            }
+        }
+        return show;
+    };
+
+    this.isUncommonField = function isUncommonField(fieldName) {
+        var fieldConfig = getFieldConfig(fieldName);
+        return fieldConfig.hideIfEmpty;
+    };
 
 
-	/*
-	var _config = {
-		'inputSystems': {
-			'en': {
-				'languageName': 'English',
-				'abbreviation': 'en',
-				'fieldUseCount': 11
-			},
-			'qaa': {
-				'languageName': 'Unlisted Language',
-				'abbreviation': 'qaa',
-				'fieldUseCount': 0
-			},
-			'th': {
-				'languageName': 'Thai',
-				'abbreviation': 'th',
-				'fieldUseCount': 11
-			},
-			'th-fonipa-x-etic': {
-				'languageName': 'Thai',
-				'abbreviation': 'thipa',
-				'fieldUseCount': 11
-			},
-			'mi-Zxxx-x-audio': {
-				'languageName': 'Maori',
-				'abbreviation': 'mi',
-				'fieldUseCount': 0
-			},
-			'mi-Latn-NZ-x-Ngati': {
-				'languageName': 'Maori',
-				'abbreviation': 'miNgati',
-				'fieldUseCount': 0
-			}
-		},
-		'entry': {
-			'type': 'fields',
-			'fieldOrder': ['lexeme', 'senses'],
-			'fields': {
-				'lexeme': {
-					'type': 'multitext',
-					'label': 'Word',
-					'visible': true,
-					'inputSystems': ['th-fonipa-x-etic'],
-					'width': 20
-				},
-				'senses': {
-					'type': 'fields',
-					'fieldOrder': ['definition', 'partOfSpeech', 'semanticDomain', 'examples'],
-					'fields': {
-						'definition': {
-							'type': 'multitext',
-							'label': 'Meaning',
-							'visible': true,
-							'inputSystems': ['th', 'en'],
-							'width': 20
-						},
-						'partOfSpeech': {
-							'type': 'optionlist',
-							'label': 'Part of Speech',
-							'visible': true,
-							'values': {
-								'noun': 'Noun',
-								'verb': 'Verb',
-								'adjective': 'Adjective'
-							},
-							'width': 20
-						},
-						'semanticDomain': {
-							'type': 'optionlist',
-							'label': 'Semantic Domain',
-							'visible': true,
-							'values': {
-								'2.1': '2.1 Body',
-								'2.2': '2.2 Head and Shoulders',
-								'2.3': '2.3 Feet'
-							},
-							'width': 20
-						},
-						'examples': {
-							'type': 'fields',
-							'visible': true,
-							'fieldOrder': ['example', 'translation'],
-							'fields': {
-								'example': {
-									'type': 'multitext',
-									'label': 'Example Sentence',
-									'visible': true,
-									'inputSystems': ['th'],
-									'width': 20
-								},
-								'translation': {
-									'type': 'multitext',
-									'label': 'Example Translation',
-									'visible': true,
-									'inputSystems': ['en'],
-									'width': 20
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		'tasks': {
-			'view': {'visible': true},
-			'dashboard': {
-				'visible': true,
-				'timeRange': '30days',
-				'targetWordCount': 0
-			},
-			'gather-texts': {'visible': true},
-			'semdom': {
-				'visible': true,
-				'language': 'en',
-				'visibleFields': {
-					'definition': true,
-					'partOfSpeech': true,
-					'example': true,
-					'translation': true
-				}
-			},
-			'wordlist': {'visible': true},
-			'dbe': {'visible': true},
-			'add-meanings': {'visible': true},
-			'add-grammar': {'visible': true},
-			'add-examples': {'visible': true},
-			'settings': {'visible': true},
-			'review': {'visible': true}
-		}
-	};
-	*/
+    this.isFieldVisible = function isFieldVisible(showUncommon, fieldName, type, model) {
+        if (type == 'fields') return true;
+        var isVisible = true;
 
+        if (!showUncommon && this.isUncommonField(fieldName)) {
+            isVisible = false;
+            switch (type) {
+                case 'multitext':
+                    angular.forEach(model, function(ws) {
+                        if (model[ws].value != '') {
+                            isVisible = true;
+                        }
+                    });
+                    break;
+                case 'optionlist':
+                case 'multioptionlist':
+                    if (model.value != '') {
+                        isVisible = true;
+                    }
+                    break;
+            }
+        }
+
+        return isVisible;
+
+    };
+
+     */
+    
+  }])
+  .service('lexEntryService', ['jsonRpc', 'sessionService', 'lexProjectService', 'breadcrumbService', 'lexLinkService',
+  function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
+    jsonRpc.connect('/api/sf');
+
+    /* not currently used
+    this.read = function(id, callback) {
+        jsonRpc.call('lex_entry_read', [id], callback);
+    };
+    */
+
+    this.update = function(entry, callback) {
+      jsonRpc.call('lex_entry_update', [entry], callback);
+    };
+
+    this.remove = function(id, callback) {
+      jsonRpc.call('lex_entry_remove', [id], callback);
+    };
+
+    this.dbeDto = function(browserId, fullRefresh, callback) {
+      if (fullRefresh) {
+        jsonRpc.call('lex_dbeDtoFull', [browserId], function(result) {
+          if (result.ok) {
+            // todo move breadcrumbs back to controller - cjh 2014-07
+            breadcrumbService.set('top',
+              [
+                {href: '/app/projects', label: 'My Projects'},
+                {href: linkService.project(), label: ss.session.project.projectName},
+                {href: linkService.projectView('dbe'), label: 'Browse And Edit'}
+              ]
+            );
+          }
+          callback(result);
+        });
+      } else {
+        jsonRpc.call('lex_dbeDtoUpdatesOnly', [browserId], callback);
+      }
+    };
+
+    this.updateComment = function(comment, callback) {
+      jsonRpc.call('lex_entry_updateComment', [comment], callback);
+    };
+
+  }])
+  .service('lexUtils', [function() {
+
+    var _getFirstField = function _getFirstField(config, node, fieldName) {
+        var ws, field, result = '';
+        if (node[fieldName] && config && config.fields && config.fields[fieldName] && config.fields[fieldName].inputSystems) {
+            for (var i=0; i<config.fields[fieldName].inputSystems.length; i++) {
+                ws = config.fields[fieldName].inputSystems[i];
+                field = node[fieldName][ws];
+                if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '') {
+                    result = field.value;
+                    break;
+                }
+            }
+        }
+        return result;
+    };
+
+
+
+    /**
+     *
+     * @param config - entry config obj
+     * @param entry
+     * @returns {string}
+     */
+    this.getLexeme = function getLexeme(config, entry) {
+        return _getFirstField(config, entry, 'lexeme');
+    };
+    this.getDefinition = function getDefinition(config, sense) {
+        return _getFirstField(config, sense, 'definition');
+    };
+    this.getGloss = function getGloss(config, sense) {
+        return _getFirstField(config, sense, 'gloss');
+    };
+    this.getWord = function getWord(config, entry) {
+        return this.getLexeme(config, entry);
+    };
+    this.getExampleSentence = function getExampleSentence(config, example) {
+        return _getFirstField(config, example, 'sentence');
+    };
+
+    this.getMeaning = function getMeaning(config, sense) {
+        var meaning = '';
+        meaning = this.getDefinition(config, sense);
+        if (!meaning) {
+            meaning = this.getGloss(config, sense);
+        }
+        return meaning;
+    };
+
+    this.getPartOfSpeechAbbreviation = function getPartOfSpeechAbbreviation(posModel) {
+        var match, myRegexp = /\((.*)\)/; // capture text inside parens
+        if (posModel && angular.isDefined) {
+            match = myRegexp.exec(posModel.value);
+            if (match && match.length > 1) {
+                return match[1];
+            } else {
+                return posModel.value.toLowerCase().substring(0,5);
+            }
+        }
+        return '';
+    };
+
+  }])
+  ;

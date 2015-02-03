@@ -1,60 +1,80 @@
 <div class="content container" data-ng-cloak data-ng-controller="ProjectsCtrl">
 <div id="sfchecks-hmenu" class="hdrnav">
-	<ul class="topNav">
-		<li class="here"><a href="/app/projects">My Projects</a></li>
-		<li><a href="/app/activity">Activity</a></li>
-	</ul>
-	<br />
+    <ul class="topNav">
+        <li class="here"><a href="/app/projects">My Projects</a></li>
+        <li><a href="/app/activity">Activity</a></li>
+    </ul>
+    <br />
 </div>
 <div style="padding-top:10px">
-	<sil-notices></sil-notices>
-	<!-- <div data-wc-overlay="" data-wc-overlay-delay="6000">
+    <sil-notices></sil-notices>
+    <!-- <div data-wc-overlay="" data-wc-overlay-delay="6000">
     <img src="/images/shared/loading.gif" />&nbsp; Loading...
     </div> -->
-	<div data-ng-show="finishedLoading">
-	    
+    <div data-ng-show="finishedLoading">
+
         <h2 style="font-weight:normal">My Projects</h2>
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-        	<button data-ng-show="rights.archive" data-ng-disabled="selected.length == 0" class="btn" data-ng-click="archiveProjects()"><i class="icon-archive icon-large"></i>Archive Selected Projects</button>
-        	<button data-ng-show="rights.create" class="btn" data-ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Create New Project</button>
+            <button data-ng-show="rights.archive" data-ng-disabled="selected.length == 0" class="btn" data-ng-click="archiveProjects()"><i class="icon-archive icon-large"></i>Archive Selected Projects</button>
+            <button data-ng-show="rights.create" class="btn" data-ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Create New Project</button>
         </form>
         <div class="new-item" data-collapse="newProjectCollapsed">
-        	<form class="well" class="form-horizontal" name="newProjectForm">
-        	    <div class="control-group">
-               	    <input type="text" data-ng-model="newProject.projectName" maxlength="50" required placeholder="Project Name"/>
-               	</div>
-        	    <div class="control-group">
-                    <select required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
-                        <option value="">-- Select Type --</option>
-                    </select>
-               	</div>
-        	    <div class="control-group">
-                	<button type="submit" class="btn" data-ng-disabled="!(newProject.projectName && newProject.appName)" data-ng-click="addProject(); newProjectCollapsed = true"><i class="icon-ok"></i>Save</button>
-               	</div>
-        	</form>
+            <form class="well" class="form-horizontal" name="newProjectForm">
+                <div ng-show="showDedicatedNewProjectLinks">
+                    <div ng-repeat="appName in projectTypesWithDedicatedNewProjectApp" class="span3">
+                        <a ng-href="/app/new-{{appName}}-project/"><figure>
+                            <img src="/images/shared/placeholder.png" />
+                            <figcaption>New {{projectTypeNames[appName]}} project</figcaption>
+                        </figure></a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div ng-hide="showDedicatedNewProjectLinks">
+                    <div class="control-group">
+                       <input type="text" data-ng-model="newProject.projectName" set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name"/>
+                    </div>
+                    <div class="control-group">
+                        <input type="text" data-ng-model="newProject.projectCode" data-ng-trim="false" maxlength="50" required placeholder="Project Code" idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
+                        <span  data-ng-show="newProject.projectCode.length > 0">
+                        <span  data-ng-show="projectCodeState == 'loading'"><img id="projectCodeLoading" src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+                        <span  data-ng-show="projectCodeState == 'exists'"><img id="projectCodeExists" src="/images/shared/exclamation.png" title="Project Code already exists!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                        <span  data-ng-show="projectCodeState == 'invalid'"><img id="projectCodeAlphanumeric" src="/images/shared/exclamation.png" title="Project Code must begin with a letter, and only contain lower-case letters, numbers and dashes!" style="position: absolute; padding-left: 5px; padding-tyop: 8px;"/></span>
+                        <span  data-ng-show="projectCodeState == 'ok'"><img id="projectCodeOk" src="/images/shared/tick.png" title="Project Code is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                        </span>
+                    </div>
+                    <div class="control-group">
+                        <select ng-show="projectTypesBySite.length == 1" required data-ng-model="newProject.appName" data-ng-options="type as projectTypeNames[type] for type in projectTypesBySite()">
+                            <option value="">-- Select Type --</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <button type="submit" class="btn" data-ng-disabled="!(newProject.projectName && newProject.projectCode && (projectCodeState == 'ok') && newProject.appName)" data-ng-click="addProject(); newProjectCollapsed = true; checkProjectCode()"><i class="icon-ok"></i>Save</button>
+                    </div>
+                </form>
+            </div>
         </div>
         <hr />
         <listview hide-if-empty="true" search="queryProjectsForUser()" items="projects" visible-items="visibleProjects" select="">
-        	<div data-ng-repeat="project in visibleProjects" class="details-row">
-        		<ul class="inline" data-ng-class="{active: isSelected(project)}">
-        			<li data-ng-show="rights.archive"><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
-        			<li style="width: 70%">
-        				<a data-ng-show="isInProject(project)" href="/app/{{project.appName}}/{{project.id}}/">
-        					<span class="larger-text">{{project.projectName}}</span>
-        				</a>
-        				<span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectName}}</span>
-        				<br />
-        				<small class="muted">{{projectTypeNames[project.appName]}}</small>
-        			</li>
-        			<li data-ng-show="rights.edit" style="width: 20%">
-        				<button class="btn" data-ng-show="!isManager(project)" data-ng-click="addManagerToProject(project)"><i class="icon-plus"></i>Add me as Manager</button>
-        				<button class="btn" data-ng-show="!isInProject(project)" data-ng-click="addMemberToProject(project)"><i class="icon-plus"></i>Add me as Contributor</button>
-        			</li>
-        		</ul>
-        		<hr />
-        	</div>
+            <div data-ng-repeat="project in visibleProjects" class="details-row">
+                <ul class="inline" data-ng-class="{active: isSelected(project)}">
+                    <li data-ng-show="rights.archive"><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
+                    <li style="width: 70%">
+                        <a data-ng-show="isInProject(project)" href="/app/{{project.appName}}/{{project.id}}/">
+                            <span class="larger-text">{{project.projectName}}</span>
+                        </a>
+                        <span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectName}}</span>
+                        <br />
+                        <small class="muted">{{projectTypeNames[project.appName]}}</small>
+                    </li>
+                    <li data-ng-show="rights.edit" style="width: 20%">
+                        <button class="btn" data-ng-show="!isManager(project)" data-ng-click="addManagerToProject(project)"><i class="icon-plus"></i>Add me as Manager</button>
+                        <button class="btn" data-ng-show="!isInProject(project)" data-ng-click="addMemberToProject(project)"><i class="icon-plus"></i>Add me as Contributor</button>
+                    </li>
+                </ul>
+                <hr />
+            </div>
         </listview>
-	    
-	</div>
+
+    </div>
 </div>
 </div>

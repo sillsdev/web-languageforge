@@ -1,7 +1,7 @@
 'use strict';
 
-var appFrame = require('../../pages/appFrame.js');
-var body = require('../../pages/pageBody.js');
+var appFrame 	= require('../../bellows/pages/appFrame.js');
+var body 		= require('../../bellows/pages/pageBody.js');
 afterEach(function() {
 	//browser.ignoreSyncronization = true;
 	expect(appFrame.errorMessage.isPresent()).toBe(false);

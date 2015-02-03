@@ -1,0 +1,37 @@
+.logo-spacer {
+	float: left;
+	width: 110px;
+	margin-left: 20px;
+	min-height: 80px;
+}
+
+/* Progress indicator */
+#progress-indicator {
+}
+#progress-indicator i {
+	display: block;
+	font-size: 55px;
+}
+#progress-indicator i.icon-check-sign {
+	color: green;
+	font-size: 50px;
+	height: 56px;
+}
+#progress-indicator a:hover {
+	text-decoration: none;
+}
+
+#form-status {
+	/* See http://css-tricks.com/box-sizing/ */
+	box-sizing: border-box;
+}
+#form-status.neutral {
+	border: none;
+	padding: 1px; /* Replace 1px border so div is same size */
+}
+#form-status.bad {
+	border: 1px solid red;
+}
+#form-status.good {
+	border: 1px solid green;
+}

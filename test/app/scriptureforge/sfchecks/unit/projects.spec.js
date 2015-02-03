@@ -39,7 +39,7 @@ describe('Projects page (projects.js)', function() {
 		},
 		data: {
 			projectTypeNames: {},
-			projectTypesBySite: {},
+			projectTypesBySite: function() {return ['sfchecks']; }
 		},
 	};
 

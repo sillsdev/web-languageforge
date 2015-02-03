@@ -30,6 +30,35 @@ legend.override-bootstrap {
 	overflow: inherit;
 }
 
+/*animate*/
+/*
+// TODO: analyze height property: 625px.  This seems to be related to where the footer is.  Too big, and the footer "tears" on animation
+// 2014-08 DDW
+*/
+.animate-switch-container {
+	position:relative;
+}
+
+.animate-switch {
+	padding:10px;
+}
+
+.animate-switch.ng-animate {
+	-webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+	transition: 500ms ease-in all;
+	position:relative;
+	display: block;
+}
+
+.animate-switch.ng-leave.ng-leave-active,
+.animate-switch.ng-enter {
+	right:721px;
+}
+.animate-switch.ng-leave,
+.animate-switch.ng-enter.ng-enter-active {
+	right:0;
+}
+
 .override-bootstrap input[type="checkbox"] {
 	text-align: center;
 	margin-top: 0px;
@@ -130,4 +159,198 @@ legend.override-bootstrap {
 	display: flex;
 	flex-direction: row;
 	align-items: stretch;
+}
+
+
+
+
+
+
+
+
+
+#lexAppContainer {
+}
+
+.lexiconHeaderContainer {
+    width: 100%;
+    display:flex;
+    flex-flow: row;
+    justify-content: space-between;
+}
+
+.lexiconHeaderItem {
+}
+
+.flexColumnContainer {
+}
+
+#lexAppListView .lexiconItemListContainer {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    height: 500px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-bottom: 15px;
+    font-family: "Bookman", Georgia, "Times New Roman", serif;
+}
+
+.lexiconListItem {
+    width: 99%;
+    position:relative;
+    overflow-y: hidden;
+    padding: 2px 2px 2px 10px;
+    min-height: 50px;
+    height: 50px;
+    border-bottom: solid 1px #d3d3d3;
+    display:flex;
+}
+
+.lexiconListItem:hover, .lexiconListItemCompact:hover {
+    background-color: #EDFFE8;
+    cursor:pointer;
+}
+
+#lexAppListView .typeahead input, #lexAppListView .typeahead-item {
+    width:300px;
+    font-family: "Bookman", Georgia, "Times New Roman", serif;
+}
+
+#lexAppEditView {
+    display:flex;
+    flex-direction: row;
+    width:100%;
+}
+
+#lexAppCommentView {
+    display:flex;
+    width:100%;
+}
+
+.uneditable-input {
+    width: 150px;
+    cursor: auto;
+    color: inherit;
+    background-color: white;
+}
+
+
+#lexAppEditView .lexiconItemListContainer {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    height: 560px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    font-family: "Bookman", Georgia, "Times New Roman", serif;
+}
+
+#lexAppEditView .typeahead-item {
+    width:300px;
+    font-family: "Bookman", Georgia, "Times New Roman", serif;
+}
+
+.listItemPrimary {
+    z-index:2;
+    padding-right: 3px;
+    font-size: 1.0em;
+    font-weight:bold;
+    overflow: hidden;
+    height: 25px;
+    line-height: 2.0em;
+    margin: 0 0 2px 2px;
+}
+
+.listItemSecondary {
+    z-index:2;
+    font-size: 0.8em;
+    color: #666666;
+    overflow: hidden;
+    height: 15px;
+    line-height: 1.7em;
+    margin: -9px 0 2px 2px !important;
+}
+.lexiconListItemCompact {
+    position:relative;
+    overflow-y: hidden;
+    min-height: 40px;
+    height: 40px;
+    border-bottom: solid 1px darkgrey;
+    width: 100%;
+}
+
+.lexiconItemListContainer .selected {
+    background-color: #e4e5ff;
+}
+
+.entryItemView {
+/*  TODO: review this in light of animation and the footer staying at the bottom. IJH 2014-09*/    
+    overflow-y: scroll;
+
+    height: 588px;
+    padding-right:5px;
+}
+
+.entryItemView i.icon-remove {
+    cursor: pointer;
+    color:#CCC;
+}
+
+.flex100 {
+    display:flex;
+    width:100%;
+}
+
+#lexAppCommentView .commentCount {
+    color: #faa732;
+    font-weight: bold;
+    padding: 5px;
+    width: 120px;
+    text-align: right;
+}
+
+div.commentListContainer {
+
+}
+
+div.newCommentForm {
+    padding-bottom:10px;
+    border-bottom: 1px solid #d8d8d8;
+}
+
+div.newCommentForm textarea {
+    width: 382px;
+    margin: 0 10px 10px 10px;
+    height:90px;
+
+}
+div.newCommentForm button {
+    width:70px;
+    margin-top:10px
+}
+
+.commentListView {
+    overflow-y: scroll;
+    height: 588px;
+}
+
+.commentListView button {
+    height: 25px;
+}
+
+.selectableFieldForComment:hover {
+    background-color: #eee;
+    border: 1px solid #888;
+}
+.selectableFieldForComment, .selectableInputSystemFieldForComment {
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+.selectableInputSystemFieldForComment:hover {
+    background-color: hsla(80, 100%, 50%, 0.1);
+    border: 1px solid #888;
+}
+.selectableInputSystemFieldForComment .uneditable-input, .selectableFieldForComment .uneditable-input {
+    cursor: pointer;
 }
