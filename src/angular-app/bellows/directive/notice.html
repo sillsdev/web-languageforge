@@ -8,7 +8,7 @@
                     <hr />
                     <pre>{{notice.details}}</pre>
                     <div ng-if="notice.type == 'error'">
-                        <a target="_blank" href="https://github.com/sillsdev/sfwebchecks/issues/new">Report this bug to the developers</a><br /><i>Please copy error above and include screenshot</i>
+                        <a target="_blank" data-ng-href="https://github.com/sillsdev/{{githubRepo}}/issues/new">Report this bug to the developers</a><br /><i>Please copy error above and include screenshot</i>
                         <!-- TODO: automate this via https://developer.github.com/v3/issues/#create-an-issue -->
                     </div>
                 </div>
