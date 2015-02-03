@@ -1,9 +1,8 @@
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title><?php echo $title; ?></title>
-		
+		<title><?php echo $controller->website->name; ?></title>
+
 		<link rel="stylesheet" href="/css/shared/bootstrap.css" />
-		<link rel="stylesheet" href="/css/shared/jquery-te-1.4.0.css" />
+		<link rel="stylesheet" href="/css/shared/animate.css" />
 		<?php if (isset($cssFiles)): ?>
 		<?php foreach($cssFiles as $filename): ?>
 		<link rel=stylesheet href="/<?php echo $filename; ?>" />
@@ -12,7 +11,9 @@
 		<link rel="stylesheet" media="screen" href="/css/languageforge/default/superfish.css" />
 		<link rel="stylesheet" media="screen" href="/css/languageforge/default/slides.css" />
 		<link rel="stylesheet" media="screen" href="/css/shared/jquery.fileupload-ui.css" />
+		<!--
 		<link rel="stylesheet" href="/css/languageforge/default/lf-dictionary.css" />
+  -->
 		<link rel="stylesheet" href="/css/languageforge/default/lf.css" />
 		<link rel="stylesheet" href="/css/languageforge/default/lexiquepro.css" />
 		<link rel="icon" href="/images/languageforge/default/favicon.ico" type="image/x-icon" />

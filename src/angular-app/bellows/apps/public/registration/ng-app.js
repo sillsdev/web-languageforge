@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('registration', [ 'bellows.services', 'ui.bootstrap', 'palaso.ui.notice'])
+angular.module('registration', [ 'bellows.services', 'ui.bootstrap', 'palaso.ui.notice', 'palaso.ui.utils'])
 .controller('UserCtrl', ['$scope', '$location', 'userService', 'sessionService', 'silNoticeService', '$window', 
                          function UserCtrl($scope, $location, userService, sessionService, notice, $window) {
 
@@ -41,16 +41,22 @@ angular.module('registration', [ 'bellows.services', 'ui.bootstrap', 'palaso.ui.
 		});
 		return true;
 	};
-	
+
+	$scope.resetValidateRegistrationForm = function resetValidateRegistrationForm() {
+
+		$scope.userNameOk = false;
+		$scope.userNameExists = false;
+	};
+
 	$scope.checkUserName = function() {
 		$scope.userNameOk = false;
 		$scope.userNameExists = false;
 		if ($scope.record.username) {
 			$scope.userNameLoading = true;
-			userService.userNameExists($scope.record.username, function(result) {
+			userService.identityCheck($scope.record.username, '', function(result) {
 				$scope.userNameLoading = false;
 				if (result.ok) {
-					if (result.data) {
+					if (result.data.usernameExists) {
 						$scope.userNameOk = false;
 						$scope.userNameExists = true;
 					} else {

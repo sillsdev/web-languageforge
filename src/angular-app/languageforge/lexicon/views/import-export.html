@@ -1,83 +1,77 @@
 <div class="container" data-ng-cloak>
-<h2 translate="Import/Export"></h2>
+<br><h2 style="font-weight:normal" translate="Import/Export"></h2>
 <tabset>
-	<tab heading="{{ 'LIFT Import' | translate }}" data-ng-controller="LiftImportCtrl">
-		<div class="well">
-			<label translate="Import a LIFT File"></label>
-			<div class="drop-box" data-ng-file-drop="onFileSelect($files);" 
-				data-ng-file-drop-available="dropSupported=true" data-ng-show="dropSupported">
-				<h4 translate="Drop a LIFT file here"></h4>
-				<br/>
-				<p translate="or if you prefer..."></p>
-			    <input type="button" class="btn" value="{{ 'Browse...' | translate }}" 
-			    	onclick="javascript:document.getElementById('liftFile').click();">
-			    <input id="liftFile" type="file" style="display:none" 
-			    	data-ng-file-select="onFileSelect($files)">
-			</div>
-			<div data-ng-show="!dropSupported"> <!-- HTML5 Drop File is not supported on this browser -->
-				<input type="button" class="btn" value="{{ 'Browse...' | translate }}" 
-					onclick="javascript:document.getElementById('liftFile').click();">
-			    <input id="liftFile" type="file" style="display:none" 
-			    	data-ng-file-select="onFileSelect($files)">
-			</div>
-			<br />
-			<form data-ng-show="file != null">
-				<p translate="Language Forge merges the incoming data with existing entries. 
-					If there is a conflict, Language Forge cannot guess what you would prefer. 
-					Therefore, choose the merge settings to use for this import."></p>
-				<p translate="Whenever there is a conflict:"></p>
-				<div class="control-group">
-					<div class="controls">
-						<label class="radio">
-							<input type="radio" value="importLoses" data-ng-model="mergeRule"/>{{ 'Do not import the conflicting data (keep Language Forge data).' | translate }}</label>
-						<label class="radio">
-							<input type="radio" value="importWins" data-ng-model="mergeRule"/>{{ 'Import the conflicting data and overwrite the current data (the importing data overrules the Language Forge data).' | translate }}</label>
-						<label class="radio">
-							<input type="radio" value="createDuplicates" data-ng-model="mergeRule"/>{{ 'Import the conflicting data into a new lexical entry or sense and I will make decisions myself later.' | translate }}</label>
-					</div>
-					<div class="controls">
-						<label class="checkbox">
-							<input type="checkbox" data-ng-model="skipSameModTime"/>{{ 'Skip importing entries with identical modification times.' | translate }}</label>
-						<label class="checkbox" data-ng-show="mergeRule == 'importWins'">
-							<input type="checkbox" data-ng-model="deleteMatchingEntry"/>{{ 'Delete matching entry if deleted in import.' | translate }}</label>
-					</div>
-				</div>
-				<button class="btn btn-primary" data-ng-click="importLift()">
-					<i class="icon-upload"></i>{{ 'Import' | translate }}</button><strong> {{file.name}}</strong> ({{file.size | bytes }})
-			</form>
-		</div>
-	</tab>
-	<tab heading="{{ 'LIFT Export' | translate }}" data-ng-controller="LiftExportCtrl">
-		<div class="row">
-		
-			<!-- Left column: task list -->
-			<div class="span3 control-group">
-			</div>
-			
-			<!-- Right column: task setup -->
-			<div class="span9">
-				<div class="well">
-					<h4>Hang in there, this feature is coming</h4>
-				</div>
-			</div>
-		
-		</div>
-	</tab>
-	<tab heading="{{ 'Settings Import' | translate }}">
-		<div class="row">
-		
-			<!-- Left column: task list -->
-			<div class="span3 control-group">
-			</div>
-			
-			<!-- Right column: task setup -->
-			<div class="span9">
-				<div class="well">
-					<h4>Hang in there, this feature is coming</h4>
-				</div>
-			</div>
-		
-		</div>
-	</tab>
+    <tab heading="{{'LIFT Import' | translate}}" data-ng-controller="LiftImportCtrl">
+        <div class="well">
+            <label translate="Import a LIFT File"></label>
+            <div class="drop-box" data-ng-file-drop="onFileSelect($files);" 
+                data-ng-file-drop-available="dropSupported=true" data-ng-show="dropSupported">
+                <h4 translate="Drop a LIFT file here"></h4>
+                <br/>
+                <p translate="or if you prefer..."></p>
+                <input type="button" class="btn" value="{{'Browse...' | translate}}" 
+                    onclick="javascript:document.getElementById('liftFile').click();">
+                <input id="liftFile" type="file" style="display:none" 
+                    data-ng-file-select="onFileSelect($files)">
+            </div>
+            <div data-ng-show="! dropSupported"> <!-- HTML5 Drop File is not supported on this browser -->
+                <input type="button" class="btn" value="{{'Browse...' | translate}}" 
+                    onclick="javascript:document.getElementById('liftFile').click();">
+                <input id="liftFile" type="file" style="display:none" 
+                    data-ng-file-select="onFileSelect($files)">
+            </div>
+            <br />
+            <form data-ng-show="upload.file != null">
+                <p translate="Language Forge merges the incoming data with existing entries. 
+                    If there is a conflict, Language Forge cannot guess what you would prefer. 
+                    Therefore, choose the merge settings to use for this import."></p>
+                <p translate="Whenever there is a conflict:"></p>
+                <div class="control-group">
+                    <div class="controls">
+                        <label class="radio">
+                            <input type="radio" value="importLoses" data-ng-model="upload.mergeRule"/>
+                            {{'Do not import the conflicting data (keep Language Forge data).' | translate}}</label>
+                        <label class="radio">
+                            <input type="radio" value="importWins" data-ng-model="upload.mergeRule"/>
+                            {{'Import the conflicting data and overwrite the current data (the importing data overrules the Language Forge data).' | translate}}</label>
+                        <label class="radio">
+                            <input type="radio" value="createDuplicates" data-ng-model="upload.mergeRule"/>
+                            {{'Import the conflicting data into a new lexical entry or meaning and I will make decisions myself later.' | translate}}</label>
+                    </div>
+                    <div class="controls">
+                        <label class="checkbox">
+                            <input type="checkbox" data-ng-model="upload.skipSameModTime"/>
+                            {{'Skip importing entries with identical modification times.' | translate}}</label>
+                        <label class="checkbox" data-ng-show="upload.mergeRule == 'importWins'">
+                            <input type="checkbox" data-ng-model="upload.deleteMatchingEntry"/>
+                            {{'Delete matching entry if deleted in import.' | translate}}</label>
+                    </div>
+                </div>
+                <button data-ng-disabled="upload.importStarted" class="btn btn-primary" data-ng-click="importLift()">
+                    <i class="icon-upload"></i>{{'Import' | translate}}</button>
+                <strong> {{upload.file.name}}</strong> ({{upload.file.size | bytes}})
+                <div data-ng-show="upload.importStarted">
+                    <br />
+                    <progressbar class="span4" value="upload.progress" max="100.0">{{upload.progress}}%</progressbar>
+                </div>
+            </form>
+        </div>
+    </tab>
+    <tab heading="{{ 'Settings Import' | translate }}">
+        <div class="row">
+        
+            <!-- Left column: task list -->
+            <div class="span3 control-group">
+            </div>
+            
+            <!-- Right column: task setup -->
+            <div class="span9">
+                <div class="well">
+                    <h4>Hang in there, this feature is coming</h4>
+                </div>
+            </div>
+        
+        </div>
+    </tab>
 </tabset>
 </div>

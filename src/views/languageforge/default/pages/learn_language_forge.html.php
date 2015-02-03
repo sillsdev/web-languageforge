@@ -1,10 +1,41 @@
-<div class="sfcontainer banner">
-	<img class="left" src="/images/languageforge/default/communityteam.jpg" width="500px" height="375px" alt="Community Engagement" />
-		<div style="margin-left:410pt; sfcontainer">
+<div class="container banner">
+    <div style="margin-top:55px">
+        <iframe width="853" height="480" src="//www.youtube.com/embed/9kP3rMp70Zc?rel=0" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+		<div>
 			<h2>About Language Forge</h2>
-			<p>Take your dictonary project to the next level by involving tens, hundreds or even more contributors in the collection and refinement of lexical data upon which your dictionary will be based.  Engage your language's diaspora speakers on the web or their phone, wherever they are.  Bring new insights and a richer corpus into the lexical development process by engaging remote participants.  While your lexical development team continues to work in <a href="http://wesay.palaso.org/" target="_blank">WeSay</a>, and/or <a href="http://fieldworks.sil.org/flex/" target="_blank">FieldWorks Language Explorer</a>, Language Forge provides a community contribution and feedback mechanisms to help your team grow and evaluate your lexicon as it is under development. Finally, the community engagement results in buyin and ownership of the resultant dictionaries which will increas community awareness and use.
-			</p>
-			<p>When everyone plays their part in developing dictionaries and getting them into the right hands, everyone benefits.  It's the power of collaboration that produces richer and more standardized dictionaries.  Our technology brings lexical development to the masses, in a positive environment that focuses participants on the task and works wherever they are.  On the tablet, phone or web, Language Forge is there.</p>
-			
+
+            <p>Imagine being able to upload your lexicon data to the internet and access it online anytime, anywhere with no extra software.  Now imagine that you could give a colleague secure access to your data just by emailing them a link.  With Language Forge, this is just the beginning!</p>
+
+            <p>It’s easy to get started quickly, just login and create your first project. Start by uploading a LIFT file of your lexicon data.</p>
+
+            <p>Language Forge has fine-grained configuration options. You can choose which fields you want to see and which fields use which input systems.  Add new languages to any field in the Input Systems area.  Support for complex scripts and right-to-left languages is built-in.  Customize the behavior of each field in the “Fields” section.  Specify who can see what fields in the “View Settings”.  Choose what role each member of your project will have: Observer, Commenter, Contributor or Manager.</p>
+
+            <p>It’s easy to add members to your project.  Search by name for existing Language Forge users or invite colleagues to your Language Forge project via email. You choose with whom you share your data and to what extent.</p>
+
+            <p>Not only can you share your data, but you can invite others to give feedback on all aspects of your lexical data.  Commenters can have detailed discussions about any entry and any field in the lexicon.  Field context can optionally be attached to any comment, showing what the value of a field was at the time the comment was made.  Commenters can reply to existing comments inline, or add their own responses.  Managers can organize and search comments.  Comments can be marked TODO or marked as RESOLVED to close a discussion.</p>
+
+            <p>Send/Receive support with other programs such as FLEX and WeSay is not yet available but is coming soon.  Accessing your data offline is also planned for a future release.</p>
+
+            <p>Language Forge can help you share your data online in the way you want to, with the people you want to, using just a web browser.  Give it a try!</p>
+
+
+
+			<h2>Beta Preview Features</h2>
+			<ul>
+				<li>Import your WeSay or FLEx data (LIFT format)</li>
+				<li>View or Edit the dictionary online</li>
+				<li>Invite others to view, collaborate, edit and comment on your lexicon data</li>
+				<li>Dictionary configuration editor: customize input systems, lexicon fields and tasks</li>
+				<li>Supports most FLEx fields</li>
+				<li>Assign project members one of several roles: Observer, Commenter, Collaborator and Manager</li>
+				<li>Customize what each member sees down to the field level</li>
+				<li>Custom field support</li>
+				<li>Right-to-left script support</li>
+				<li>Integrated commenting system allows team members to have discussions about any piece of data in the lexicon</li>
+				<li>Editors receive near real-time updates to the lexicon when there are multiple editors active online.</li>
+				<li>Data protection.  Only those you give access to can view or edit the lexicon.</li>
+			</ul>
 		</div>
 </div>

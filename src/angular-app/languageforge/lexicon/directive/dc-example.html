@@ -1,15 +1,25 @@
 <div class="dc-example">
-	<div ng-show="control.canDeleteExample()" class="deleteX pull-right"><i data-ng-click="remove(index)" title="Delete Example Sentence" class="icon-remove"></i></div>
-	<div data-ng-repeat="fieldName in config.fieldOrder">
-		<div data-ng-if="config.fields[fieldName].visible">
-			<div data-ng-switch data-on="config.fields[fieldName].type">
-				<div data-ng-switch-when="multitext">
-					<dc-multitext config="config.fields[fieldName]" model="model[fieldName]" control="control" comment="submitComment(comment, fieldName)" multiline="true"></dc-multitext>
-				</div>
-				<div data-ng-switch-default>
-					unsupported type {{config.fields[fieldName].type}} for field {{fieldName}}
-				</div>
-			</div>
-		</div>
-	</div>
+    <div ng-show="control.rights.canEditEntry() && control.state == 'edit'"
+        class="deleteX pull-right">
+        <i data-ng-click="remove(index)" title="Delete Example"
+            class="icon-remove"></i>
+    </div>
+    <div data-ng-repeat="fieldName in config.fieldOrder">
+        <div ng-if="!config.fields[fieldName].hideIfEmpty || control.show.emptyFields || (config.fields[fieldName].hideIfEmpty && fieldContainsData(config.fields[fieldName].type, model[fieldName]))"
+            ng-class="{selectableFieldForComment: control.state == 'comment' && control.rights.canComment()}"
+            ng-click="control.selectFieldForComment(fieldName, model[fieldName])">
+            <div data-ng-switch data-on="config.fields[fieldName].type">
+                <div class="flex100" data-ng-switch-when="multitext">
+                    <dc-multitext class="dc-item"
+                        config="config.fields[fieldName]"
+                        model="model[fieldName]" control="control"
+                        select-field="control.selectFieldForComment(fieldName, model[fieldName], inputSystem)"></dc-multitext>
+                    <comment-bubble control="control"
+                        count="control.getFieldCommentCount(fieldName)"></comment-bubble>
+                </div>
+                <div data-ng-switch-default>unsupported type
+                    {{config.fields[fieldName].type}} for field {{fieldName}}</div>
+            </div>
+        </div>
+    </div>
 </div>

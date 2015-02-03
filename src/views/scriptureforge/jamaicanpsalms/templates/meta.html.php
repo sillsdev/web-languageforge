@@ -1,9 +1,9 @@
 		<meta charset="utf-8" />
 		<!--<meta name="viewport" content="width=device-width" />  -->
 		<title>Jamaican Psalms</title>
-		
+
 		<link rel="stylesheet" href="/css/shared/bootstrap.css" />
-		<link rel="stylesheet" href="/css/shared/jquery-te-1.4.0.css" />
+		<link rel="stylesheet" href="/css/shared/animate.css" />
 		<?php if (isset($cssFiles)): ?>
 		<?php foreach($cssFiles as $filename): ?>
 		<link rel=stylesheet href="/<?php echo $filename; ?>" />

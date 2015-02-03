@@ -1,4 +1,4 @@
-angular.module('palaso.ui.dc.optionlist', ['palaso.ui.dc.comments'])
+angular.module('palaso.ui.dc.optionlist', [])
   // Palaso UI Optionlist
   .directive('dcOptionlist', [function() {
 		return {
@@ -7,30 +7,13 @@ angular.module('palaso.ui.dc.optionlist', ['palaso.ui.dc.comments'])
 			scope : {
 				config : "=",
 				model : "=",
-				comment : "&",
-				control : "="
+				control : "=",
+                items : "="
 			},
-			controller: ['$scope', 'lexEntryService', function($scope, lexService) {
-				$scope.makeValidModel = function() {
-					// if the model doesn't exist, create an object for it based upon the config
-					if (!$scope.model) {
-						$scope.model = {};
-						if (!$scope.model.value) {
-							$scope.model.value = "";
-						}
-					}
-				};
-				
-				$scope.submitComment = function(comment) {
-					$scope.comment({comment:comment});
-				};
-				
+			controller: ['$scope', function($scope) {
 
 			}],
 			link : function(scope, element, attrs, controller) {
-				scope.$watch('model', function() {
-					scope.makeValidModel();
-				});
 			}
 		};
   }])

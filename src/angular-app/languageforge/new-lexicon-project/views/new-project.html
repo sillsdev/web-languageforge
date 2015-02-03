@@ -1,0 +1,52 @@
+<div class="row outer-flex">
+<div class="span8 offset2">
+
+    <div id="form-container">
+
+        <div class="page-header" align="center">
+            <h2 translate="New Project"></h2>
+            <ul class="inline" id="progress-indicator">
+                <li><i ng-class="iconForStep(1)"></i>
+                    <span>{{'Name' | translate}}</span></li>
+                <li>&gt;</li>
+                <li><i ng-class="iconForStep(2)"></i>
+                    <span>{{'Initial data' | translate}}</span></li>
+                <li>&gt;</li>
+                <li><i ng-class="iconForStep(3)"></i>
+                    <span>{{'Verify' | translate}}</span></li>
+                <li>&gt;</li>
+                <li><i ng-class="iconForStep(4)"></i>
+                    <span>{{'Done' | translate}}</span></li>
+            </ul>
+
+            <div class="row" align="center">
+            <div class="span8">
+            <!-- Back button disabled by RM on 2014-10. TODO: Re-enable when decisions are made on how to implement. -->
+            <!-- E.g., when moving back to initial-data upload step, delete previous zip file and reset project to empty. -->
+            <!--
+            <button class="btn" ng-click="prevStep()" ng-class="interfaceConfig.pullNormal" translate="&lt; &nbsp; Back"></button>
+            -->
+            <button class="btn" ng-click="nextStep()" ng-class="[interfaceConfig.pullToSide, forwardBtnClass]" translate="Forward &nbsp; &gt;"></button>
+            <span>&nbsp; Step {{state.current.data.step}}, {{interfaceConfig.direction}} direction &nbsp;</span>
+            </div>
+            </div>
+        </div>
+
+        <!-- use ng-submit to catch the form submission and use our Angular function -->
+        <form class="form-horizontal" data-ng-submit="nextStep()" id="newLexProjectForm" name="newLexProjectForm" novalidate>
+        <div class="row" align="center">
+            <div class="span8" id="form-status" ng-class="formStatusClass"><span>{{formStatus | translate}} &nbsp;</span></div>
+        </div>
+
+            <!-- our nested state views will be injected here -->
+            <div id="form-views" data-ui-view></div>
+        </form>
+    </div>
+
+<!-- show our form data as it is being typed
+<pre>
+record = {{record | json}}
+</pre>
+ -->
+</div>
+</div>

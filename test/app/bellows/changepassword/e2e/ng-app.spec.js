@@ -2,10 +2,10 @@
 
 
 describe('E2E testing: Change password', function() {
-	var constants = require('../../../../testConstants');
-	var loginPage = require('../../../pages/loginPage'); 
-	var header = require('../../../pages/pageHeader'); 
-	var page = require('../../../pages/changePasswordPage'); 
+	var constants 	= require('../../../testConstants');
+	var loginPage 	= require('../../pages/loginPage'); 
+	var header 		= require('../../pages/pageHeader'); 
+	var page 		= require('../../pages/changePasswordPage'); 
 	var newPassword = '12345678';
 
 	it('setup: login, go to change password page', function() {

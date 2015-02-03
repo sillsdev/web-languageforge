@@ -1,4 +1,6 @@
-angular.module('palaso.ui.dc.rendered', [])
+'use strict';
+
+angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
   // Palaso UI Rendered Definition
   .directive('dcRendered', [function() {
 		return {
@@ -9,87 +11,53 @@ angular.module('palaso.ui.dc.rendered', [])
 				model: "=",
 				hideIfEmpty: "=?"
 			},
-			controller: ['$scope', function($scope) {
-				$scope.definition = {
-					'label': '',
-					'rendered': ''
-				};
-				if (angular.isUndefined($scope.hideIfEmpty)) { $scope.hideIfEmpty = false; };
+			controller: ['$scope', 'lexUtils', function($scope, utils) {
+				$scope.render = function() {
+                    var sense, lastPos, pos;
+                    $scope.entry = {
+                        word: '',
+                        senses: []
+                    };
+                    $scope.entry.word = utils.getWord($scope.config, $scope.model);
+                    angular.forEach($scope.model.senses, function (senseModel) {
+                        pos = utils.getPartOfSpeechAbbreviation(senseModel.partOfSpeech);
 
-				$scope.getLexemeForm = function(entry) {
-					var result = '';
-					// entry.lexeme has one property, but we don't know its name.
-					// We could look in the config, but this is actually simpler.
-					angular.forEach(entry.lexeme, function(word, wsid) {
-						result = word.value || result; // We're ignoring wsid, but we might use it later
-					});
-					return result;
-				};
-
-				$scope.posAbbrevs = {
-					// This will eventually come from the config
-					'noun': 'N',
-					'verb': 'V',
-					'adjective': 'Adj',
-					'adverb': 'Adv',
-				};
-
-				$scope.render = function(entry) {
-					$scope.definition.label = $scope.getLexemeForm($scope.model);
-					var senses = [];
-					var defParts = {};
-					var useNumbers = (entry.senses && entry.senses.length > 1);
-					var nextNum = 1;
-					angular.forEach(entry.senses, function(sense) {
-						if (useNumbers) {
-							defParts.num = nextNum.toString() + ") ";
-							nextNum++;
-						} else {
-							defParts.num = '';
-						};
-						if (sense.partOfSpeech) {
-							var abbrev = $scope.posAbbrevs[sense.partOfSpeech.value];
-							defParts.pos = (abbrev ? (abbrev + ' ') : '');
-						} else {
-							defParts.pos = '';
-						};
-						defParts.defs = [];
-						// Might be nice to order the definitions in some way, like primary analysis
-						// language first, then other languages after in a consistent order. But until
-						// there's a way to specify primary analysis languages in config, we'll just
-						// go through the definitions in whatever order forEach() produces them.
-						angular.forEach(sense.definition, function(def, wsid) {
-							defParts.defs.push(def.value + ' ');
-						});
-						defParts.defcontent = defParts.defs.join("");
-						senses.push(defParts);
-						defParts = {};
-					});
-					$scope.definition.senses = senses;
-					$scope.definition.rendered = senses.join(" ") || "[No definition exists yet: add one!]";
-				};
+                        // do not repeat parts of speech
+                        if (lastPos == pos) {
+                            pos = '';
+                        } else {
+                            lastPos = pos;
+                        }
+                        sense = {
+                            meaning: utils.getMeaning($scope.config.fields.senses, senseModel),
+                            partOfSpeech: pos,
+                            examples: []
+                        };
+                        angular.forEach(senseModel.examples, function (exampleModel) {
+                            sense.examples.push(
+                                {
+                                    sentence: utils.getExampleSentence($scope.config.fields.senses.fields.examples, exampleModel)
+                                }
+                            );
+                        });
+                        $scope.entry.senses.push(sense);
+                    });
+                };
 
 				$scope.makeValidModel = function() {
 					// if the model doesn't exist, create an object for it based upon the definition
 					if (!$scope.model) {
-						$scope.model = {};
-						if ($scope.definition && $scope.definition.inputSystems) {
-							for (var i=0; i<$scope.definition.inputSystems.length; i++) {
-								if (!$scope.model[$scope.definition.inputSystems[i]]) {
-									$scope.model[$scope.definition.inputSystems[i]] = {};
-								};
-								$scope.model[$scope.definition.inputSystems[i]].value = "";
-							}
-						}
+						$scope.model = {senses:[]};
 					}
 				};
 			}],
 			link: function(scope, element, attrs, controller) {
+                if (angular.isUndefined(scope.hideIfEmpty)) {
+                    scope.hideIfEmpty = false;
+                }
 				scope.$watch('model', function(model) {
 					scope.makeValidModel();
-					scope.render(model);
-				});
-				scope.$watch('definition', function(definition) {
+					scope.render();
 				});
 			}
 		};

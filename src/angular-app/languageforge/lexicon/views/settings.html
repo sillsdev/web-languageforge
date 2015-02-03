@@ -1,5 +1,6 @@
 <div class="container" data-ng-cloak data-ng-controller="SettingsCtrl">
-	<h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2>
+	<br><h2 style="font-weight:normal" >{{project.projectName}} <span translate="Settings"></span></h2>
+	<!-- <h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2> -->
 	<tabset>
 		<tab heading="{{ 'Project Properties' | translate }}">
 			<form class="well" data-ng-submit="updateProject()">
@@ -13,13 +14,12 @@
 						<div class="controls">
 							<select class="form-control" id="language" 
 								data-ng-model="project.interfaceLanguageCode" 
-								data-ng-options="selects.interfaceLanguages.options[code] for code in selects.interfaceLanguages.optionsOrder">
+								data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder">
 								<option value="">-- choose a language --</option></select>
 						</div>
-						<label class="control-label" for="projCode" translate="Project Code"></label>
-						<div class="controls">
-							<input id="projCode" type="text" placeholder="project code" data-ng-model="project.projectCode" />
-						</div>
+						<!--  TODO: DDW add translate to label -->
+						<label class="control-label" for="projCode" ><b>Project Code:</b> {{project.projectCode}}</label>
+						<label class="control-label" for="projOwner" ><b>Project Owner:</b> {{project.ownerRef.username}}</label>
 						<label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> {{ 'Featured On Website' | translate }}</label>
 					</div>
 				</fieldset>

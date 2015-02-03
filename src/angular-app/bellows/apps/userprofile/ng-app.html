@@ -13,11 +13,10 @@
 					<div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{user.avatar_ref}}" title="Use the dropdown selections below to change your avatar's color and shape" /></div>
 					<div><select data-ng-model="user.avatar_color" data-ng-options="c.value as c.label for c in dropdown.avatarColors"><option value="">Select a Color...</option></select></div>
 					<div><select data-ng-model="user.avatar_shape" data-ng-options="s.value as s.label for s in dropdown.avatarShapes"><option value="">Choose an animal...</option></select></div>
-					<label>Email Address</label>
-					<input type="text" placeholder="(email)" data-ng-model="user.email"/>
-					<label>Jamaica Mobile Phone Number</label>
-					<input type="text" placeholder="###-####" data-ng-model="user.mobile_phone"/>
-					<label>I preferred to be contacted via</label>
+					<label>Email Address: <b style="margin-left:10px">{{user.email}}</b></label>
+					<label>Mobile Phone Number</label>
+					<input type="tel" data-pui-intl-tel-input placeholder="###-####" data-ng-model="user.mobile_phone"/>
+					<label style="margin-top:10px" >Receive updates via</label>
 					<div class="btn-group">
 						<button type="button" class="btn" data-ng-model="user.communicate_via" btn-radio="'email'" id="EmailButton">Email</button>
 						<button type="button" class="btn" data-ng-model="user.communicate_via" btn-radio="'sms'"   id="SMSButton">SMS</button>

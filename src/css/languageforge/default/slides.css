@@ -3,9 +3,7 @@
 */
 
 #slides {
-	position:absolute;
-	top: 5px;
-	left:4px;
+	position: relative;
 }
 
 /*
@@ -16,7 +14,7 @@
 */
 
 .slides_container {
-	width: 950px;
+	width: 936px;
 	overflow:hidden;
 	position:relative;
 	display:none;
@@ -32,8 +30,8 @@
 */
 
 .slides_container a, .slides_container div {
-	width: 950px;
-	height: 390px;
+	width: 936px;
+	height: 440px;
 	display:block;
 }
 
@@ -75,9 +73,8 @@
 	position: absolute;
 	display: block;
 	width:50px;
-	bottom: -10px;
-	*bottom: -21px; /* IE6-7 hack */
-	right: -12px;
+	bottom: -18px;
+	right: -11px;
 	z-index: 5;
 }
 
@@ -99,6 +96,7 @@
 	background-position: 0 0;
 	float: left;
 	overflow: hidden;
+	outline: none;
 }
 
 .slide_pagination li.current a {

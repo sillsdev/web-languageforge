@@ -1,5 +1,6 @@
-angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
-  // Palaso UI Multitext
+'use strict';
+
+angular.module('palaso.ui.dc.multitext', ['bellows.services'])
   .directive('dcMultitext', [function() {
 		return {
 			restrict : 'E',
@@ -7,58 +8,25 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.dc.comments'])
 			scope : {
 				config : "=",
 				model : "=",
-				comment : "&",
 				control : "=",
-				multiline : "="
+                selectField : "&"
 			},
-			controller: ['$scope', 'lexBaseViewService', function($scope, baseViewService) {
-				$scope.definitionHelperUsed = false;
-				
-				baseViewService.registerListener(function() {
-					$scope.gConfig = baseViewService.getConfig();
-				});
-				$scope.makeValidModel = function() {
-					// if the model doesn't exist, create an object for it based upon the config
-					if (!$scope.model) {
-						$scope.model = {};
-						if ($scope.config && $scope.config.inputSystems) {
-							for (var i=0; i<$scope.config.inputSystems.length; i++) {
-								$scope.model[$scope.config.inputSystems[i]] = {value: ""};
-							}
-						}
+			controller: ['$scope', 'sessionService', function($scope, ss) {
+                $scope.inputSystems = ss.session.projectSettings.config.inputSystems;
+
+				$scope.inputSystemDirection = function inputSystemDirection(tag) {
+					if (! (tag in $scope.inputSystems)) {
+						return 'ltr';
 					}
+                    return ($scope.inputSystems[tag].isRightToLeft) ? 'rtl' : 'ltr';
 				};
-				
-				$scope.submitComment = function(comment, inputSystemTag) {
-					comment.inputSystem = inputSystemTag;
-					$scope.comment({comment:comment});
-				};
-				
-				$scope.getAbbreviation = function(inputSystemTag) {
-					if (angular.isDefined($scope.gConfig)) {
-						return $scope.gConfig.inputSystems[inputSystemTag].abbreviation;
-					}
-				};
-				
-				$scope.getInputSystemName = function(inputSystemTag) {
-					if (angular.isDefined($scope.gConfig)) {
-						return InputSystems.getName($scope.gConfig.inputSystems[inputSystemTag].languageName, inputSystemTag);
-					}
-				};
-				
-				$scope.getDirection = function(inputSystemTag) {
-					if (angular.isDefined($scope.gConfig)) {
-						return ($scope.gConfig.inputSystems[inputSystemTag].isRightToLeft) ? 'rtl' : 'ltr';
-					} else {
-						return 'auto';
-					}
-				};
+
+                $scope.selectInputSystem = function selectInputSystem(tag) {
+                    $scope.selectField({inputSystem: tag});
+                };
 				
 			}],
 			link : function(scope, element, attrs, controller) {
-				scope.$watch('model', function() {
-					scope.makeValidModel();
-				});
 			}
 		};
   }])

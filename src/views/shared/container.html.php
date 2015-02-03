@@ -2,19 +2,21 @@
 <html lang="en-GB">
 <head>
 <?php
-$this->load->view("$themePath/templates/meta.html.php");
+$this->load->view($controller->template('templates/meta'));
 ?>
 </head>
 <body>
 <div id="maincontainer">
 <?php
-$this->load->view("$themePath/templates/header.html.php");
-$this->load->view($contentTemplate); 
-$this->load->view("$themePath/templates/script.html.php");
+$this->load->view($controller->template('templates/header'));
+$this->load->view($contentTemplate);
+$this->load->view($controller->template('templates/script'));
 ?>
 <div class="clearfooter"></div>
 </div>
-<?php $this->load->view("$themePath/templates/footer.html.php"); ?>
-<?php $this->load->view("$themePath/templates/analytics.html.php"); ?>
+<?php
+$this->load->view($controller->template('templates/footer'));
+$this->load->view($controller->template('templates/analytics'));
+ ?>
 </body>
 </html>
