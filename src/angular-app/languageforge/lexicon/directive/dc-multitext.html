@@ -1,13 +1,25 @@
 <form class="form-horizontal dc-multitext">
-	<div data-ng-repeat="inputSystem in config.inputSystems" class="control-group">
-		<label data-ng-if="$first" class="control-label">{{config.label}}</label>
-		<div class="controls">
-			<span title="{{getInputSystemName(inputSystem)}}" class="wsid">{{getAbbreviation(inputSystem)}}</span>
-			<textarea data-ng-if="multiline" dir="{{getDirection(inputSystem)}}" width="{{config.width}}" type="text" 
-				data-ng-disabled="{{config.readonly}}" data-ng-model="model[inputSystem].value"></textarea>
-			<input data-ng-if="!multiline" dir="{{getDirection(inputSystem)}}" width="{{config.width}}" type="text" 
-				data-ng-disabled="{{config.readonly}}" data-ng-model="model[inputSystem].value" />
-		</div>
-		<dc-comments control="control" config="config" model="model[inputSystem]" submit="submitComment(comment, inputSystem)"></dc-comments>
-	</div>
+    <div data-ng-repeat="tag in config.inputSystems" class="control-group">
+        <label ng-show="$first && config.type != 'pictures'"
+            class="control-label">{{config.label}}</label>
+        <div class="controls">
+            <div class="input-prepend" ng-click="selectInputSystem(tag)"
+                ng-class="{selectableInputSystemFieldForComment: control.state == 'comment' && control.rights.canComment()}">
+                <span class="add-on wsid"
+                    title="{{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
+                <textarea
+                    ng-show="config.displayMultiline && control.state == 'edit' && control.rights.canEditEntry()"
+                    dir="{{inputSystemDirection(tag)}}" width="{{config.width}}"
+                    type="text" data-ng-model="model[tag].value"></textarea>
+                <input
+                    ng-show="!config.displayMultiline && control.state == 'edit' && control.rights.canEditEntry()"
+                    dir="{{inputSystemDirection(tag)}}" width="{{config.width}}"
+                    placeholder="{{(config.type == 'pictures' ? 'caption' : '')}}"
+                    type="text" data-ng-model="model[tag].value" />
+                <span class="uneditable-input"
+                    ng-hide="control.state == 'edit' && control.rights.canEditEntry()"
+                    ng-bind="model[tag].value"></span>
+            </div>
+        </div>
+    </div>
 </form>

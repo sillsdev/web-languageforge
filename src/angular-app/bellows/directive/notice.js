@@ -1,7 +1,10 @@
+'use strict';
+
 angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnimate', 'ngSanitize'])
-.factory('silNoticeService', ['$interval', 'utilService', '$sanitize', function($interval, util, $sanitize) {
+.factory('silNoticeService', ['$interval', 'utilService', '$sce', function($interval, util, $sce) {
 	var notices = [];
 	var timers = {};
+    var loadingMessage, isLoading = false;
 	
 	var getIndexById = function(id) {
 		for (var i=0; i<notices.length; i++) {
@@ -16,7 +19,7 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
 			if (type() == this.SUCCESS()) {
 				// success alert messages will auto-close after 10 seconds
 				var localFactory = this;
-				timers[id] = $interval(function() {localFactory.removeById(id); }, 10 * 1000, 1);
+				timers[id] = $interval(function() {localFactory.removeById(id); }, 4 * 1000, 1);
 			}
 			
 			var obj = {
@@ -24,19 +27,18 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
 					message: message,
 					id: id,
 					details: details,
-					nobind: false,
 					showDetails: false,
-					toggleDetails: function() {this.showDetails = !this.showDetails;},
+					toggleDetails: function() {this.showDetails = !this.showDetails;}
 			};
 
 			if (details) {
-				obj.details = details;
-				// try to fix up html in details
-				details = details.replace(/->/g, '-&gt;');
-				details = details.replace(/<\\\//g, '</');
-			
-				// extra logic to prevent $sanitize from throwing in the template because of improper html
-				try { $sanitize(details); } catch (e) { obj.nobind = true; }
+                details = details.replace(/<p>/gm, "\n");
+                details = details.replace(/<pre>/gm, "\n");
+                details = details.replace(/<\/p>/gm, "\n");
+                details = details.replace(/<\/pre>/gm, "\n");
+                details = details.replace(/<[^>]+>/gm, ''); // remove HTML
+                details = details.replace(/\\\//g, '/');
+                obj.details = details;
 			}
 			
 			notices.push(obj);
@@ -53,10 +55,24 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
 		get: function() {
 			return notices;
 		},
+        getLoadingMessage: function() {
+            return loadingMessage;
+        },
+        setLoading: function(message) {
+            loadingMessage = message;
+            isLoading = true;
+        },
+        cancelLoading: function() {
+            loadingMessage = '';
+            isLoading = false;
+        },
+        isLoading: function() {
+            return isLoading;
+        },
 		ERROR:   function() { return 'error'; },
 		WARN:    function() { return 'warn'; },
 		INFO:    function() { return 'info'; },
-		SUCCESS: function() { return 'success'; },
+		SUCCESS: function() { return 'success'; }
 	};
 }])
 .directive('silNotices', ['silNoticeService', function(noticeService) {
@@ -72,6 +88,8 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
 				$scope.notices = function() {
 					return noticeService.get();
 				};
+                $scope.getLoadingMessage = noticeService.getLoadingMessage;
+                $scope.isLoading = noticeService.isLoading;
 			};
 		}
 	};

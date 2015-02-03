@@ -1,11 +1,19 @@
-<form class="form-horizontal dc-optionlist">
+<form class="form-horizontal dc-optionlist" style="margin-right:-4px">
     <label class="control-label">{{config.label}}</label>
         <div class="controls">
-            <span style="border: 2px solid gray; padding:3px; margin-right:10px;" ng-repeat="val for val in model.values">{{getDisplayName(val)}}</span>
-            <select ng-model="newValue">
-                <option value="">Unknown</option>
-            </select>
-            <button ng-click="addValue()" class="btn btn-small"><i class="icon-plus"></i>Add</button>
+            <div ng-show="control.state == 'edit' && control.rights.canEditEntry()">
+                <span style="border: 2px solid gray; padding:3px; margin-right:10px;" ng-repeat="val in model.values">{{getDisplayName(val)}}</span>
+                <div ng-show="control.state == 'edit'">
+                    <select ng-model="newValue" ng-options="item.key as item.value for item in items">
+                        <option value="">Unknown</option>
+                    </select>
+                    <button ng-click="addValue()" class="btn btn-small"><i class="icon-plus"></i>Add</button>
+                </div>
+            </div>
+            <div ng-hide="control.state == 'edit' && control.rights.canEditEntry()">
+                <span class="uneditable-input">
+                    <span style="border: 2px solid gray; padding:3px; margin-right:10px;" ng-repeat="val in model.values">{{getDisplayName(val)}}</span>
+                </span>
+            </div>
         </div>
-        <dc-comments control="control" config="config" model="model"></dc-comments>
 </form>

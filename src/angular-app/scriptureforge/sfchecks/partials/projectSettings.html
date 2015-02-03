@@ -54,11 +54,12 @@
 				<td width="16px" align="center"><input data-ng-show="rights.deleteOther" type="checkbox" data-ng-checked="isSelected(user)" data-ng-click="updateSelection($event, user)" /></td>
 				<td>{{user.username}}</td>
 				<td>{{user.name}}</td>
-				<td><select data-ng-model="user.role" data-ng-change="onRoleChange(user)" data-ng-options="role.key as role.name for role in roles"></select></td>
+				<td ng-show="user.id == project.ownerRef.id"><select disabled="true"><option>Manager and Project Owner</option></select></td>
+				<td ng-hide="user.id == project.ownerRef.id"><select data-ng-model="user.role" data-ng-change="onRoleChange(user)" data-ng-options="role.key as role.name for role in roles"></select></td>
 			</tr>
 			</tbody>
-		</table>		
-		</listview>
+		</table>
+	</listview>
 	</tab>
 	<tab heading="Question Templates" data-ng-controller="ProjectSettingsQTemplateCtrl" style="overflow:hidden">
 		<form class="control-bar form-inline">
@@ -122,10 +123,10 @@
 	<tab heading="Project Properties" data-ng-controller="ProjectSettingsPropertiesCtrl">
 		<form class="well" data-ng-submit="updateProject()">
 		<fieldset>
-			<label>Project Name</label>
+			<label><B>Project Name</B></label>
 			<input type="text" placeholder="project name" data-ng-model="project.projectName"/>
-			<label>Project Code</label>
-			<input type="text" placeholder="project code" data-ng-model="project.projectCode"/>
+			<label><B>Project Code:</B> {{project.projectCode}}</label>
+			<label><B>Project Owner:</B> {{project.ownerRef.username}}</label>
 			<!-- <label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> Featured on website</label> -->
 			<label class="checkbox"><input type="checkbox" data-ng-model="project.allowAudioDownload"/> Allow downloading audio files</label>
 			<label class="checkbox"><input type="checkbox" data-ng-model="project.allowInviteAFriend"/> Allow contributors to use "Invite a Friend" feature (managers can always use it)</label>

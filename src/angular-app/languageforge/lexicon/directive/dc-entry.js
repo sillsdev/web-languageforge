@@ -1,6 +1,6 @@
-angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multitext', 'ngAnimate'])
+angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multitext', 'ngAnimate', 'lexicon.services', 'bellows.services', 'palaso.ui.commentBubble'])
   // Palaso UI Dictionary Control: Entry
-  .directive('dcEntry', [function() {
+  .directive('dcEntry', ['lexUtils', 'modalService', function(utils, modal) {
 		return {
 			restrict : 'E',
 			templateUrl : '/angular-app/languageforge/lexicon/directive/dc-entry.html',
@@ -9,54 +9,24 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
 				model : "=",
 				control : "="
 			},
-			controller: ["$scope", "$window", function($scope, $window) {
+			controller: ["$scope", 'lexConfigService', function($scope, lexConfigService) {
 				$scope.addSense = function() {
-					$scope.model.senses.unshift({});
+                    var newSense = {};
+                    $scope.control.makeValidModelRecursive($scope.config.fields.senses, newSense, 'examples');
+					$scope.model.senses.unshift(newSense);
 				};
 				
-				
-				$scope.makeValidModel = function() {
-					if (!$scope.model) {
-						$scope.model = {};
-					}
-					if (!$scope.model.senses) {
-						$scope.model.senses = [{}];
-					}
-				};
 				
 				$scope.deleteSense = function(index) {
-					if ($window.confirm("Are you sure you want to delete sense #" + (index+1) + " ? (Comments will also be deleted)")) {
-						$scope.model.senses.splice(index, 1);
-					}
+                    var deletemsg = "Are you sure you want to delete the meaning <b>' " + utils.getMeaning($scope.config.fields.senses, $scope.model.senses[index])  + " '</b>";
+                    modal.showModalSimple('Delete Meaning', deletemsg, 'Cancel', 'Delete Meaning').then(function() {
+                        $scope.model.senses.splice(index, 1);
+					});
 				};
-				
-				$scope.getSenseTitle = function(sense) {
-					var title = "[new meaning]";
-					if (sense && sense.definition && $scope.config.entry) {
-						var definitionInputSystem = $scope.config.entry.fields.senses.fields.definition.inputSystems[0];
-						if (sense.definition[definitionInputSystem]) {
-							title = sense.definition[definitionInputSystem];
-						}
-					}
-					return title;
-				};
-				
-				$scope.submitComment = function(comment, field) {
-					if (angular.isDefined(comment.field)) {
-						comment.field = field + "_" + comment.field;
-					} else {
-						comment.field = field;
-					}
-					comment.entryId = $scope.model.id;
-					// Note: cjh 2014-03: after hours of confusion, I have concluded that there is a bug either in my code (that I cannot get past) or in angularjs that will not allow me to call a method on the parent scope via the normal directive "&" passthrough method.  It is working in child directives up to this point, but it doesn't work in this directive in this case, for some reason.  I instead resort to calling $parent as a hack/workaround
-					// call submitComment() on the parent, which is edit.js
-					$scope.$parent.submitComment(comment);
-				};
+
+                $scope.fieldContainsData = lexConfigService.fieldContainsData;
 			}],
 			link : function(scope, element, attrs, controller) {
-				scope.$watch('model', function() {
-					scope.makeValidModel();
-				});
 			}
 		};
   }])

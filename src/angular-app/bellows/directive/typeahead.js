@@ -1,4 +1,4 @@
-
+'use strict';
 angular.module('palaso.ui.typeahead', [])
   // Typeahead
   .directive('typeahead', ["$timeout", function($timeout) {
@@ -6,7 +6,7 @@ angular.module('palaso.ui.typeahead', [])
 			restrict : 'E',
 			transclude : true,
 			replace : true,
-			template : '<div><input dir="auto" style="margin:0px" placeholder="{{placeholder}}" ng-model="term" ng-change="query()" type="text" autocomplete="off" /><div ng-transclude></div></div>',
+            templateUrl: '/angular-app/bellows/directive/pui-typeahead.html',
 			scope : {
 				search : "=",
 				select : "=",
@@ -50,6 +50,11 @@ angular.module('palaso.ui.typeahead', [])
 						$scope.hide = true;
 					}
 				};
+
+                $scope.clearSearch = function clearSearch() {
+                    $scope.term = '';
+                    $scope.items = [];
+                };
 			}],
 			link : function(scope, element, attrs, controller) {
 				var $input = element.find('> input');

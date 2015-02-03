@@ -1,9 +1,9 @@
-<form class="form-horizontal dc-optionlist">
+<form class="form-horizontal dc-optionlist" style="margin-right:60px">
     <label class="control-label">{{config.label}}</label>
         <div class="controls">
-            <select ng-model="model.value" ng-options="key as label for (key, label) in config.values">
+            <select ng-show="control.state == 'edit' && control.rights.canEditEntry()" ng-model="model.value" ng-options="item.key as item.value for item in items">
                 <option value="">Unknown</option>
             </select>
+            <span class="uneditable-input" ng-hide="control.state == 'edit' && control.rights.canEditEntry()" ng-bind="model.value"></span>
         </div>
-        <dc-comments control="control" config="config" model="model" submit="submitComment(comment)"></dc-comments>
 </form>

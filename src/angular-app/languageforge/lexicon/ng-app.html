@@ -1,63 +1,22 @@
 <div class="content container" data-ng-cloak data-ng-controller="MainCtrl" dir="{{interfaceConfig.direction}}">
-	<div class="hdrnav">
-		<div class="control-group {{interfaceConfig.pullToSide}}">
-			<!-- <label class="control-label" for="language">Interface Language</label> -->
-			<div class="controls">
-				<select class="form-control" id="language" style="width:100%"
-					data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder"
-					data-ng-model="interfaceConfig.userLanguageCode"></select>
-			</div>
+	<div class="hdrnav" style="width:88%;display:flex">
+		<div style="flex:4">
+			<ul id="top" class="topCrumbs" breadcrumbs></ul>
 		</div>
-		<ul class="topNav">
-			<li class="here"><a href="/app/projects">My Projects</a></li>
-			<li><a href="/app/activity">Activity</a></li>
-		</ul>
-		<ul id="top" class="topCrumbs" breadcrumbs></ul>
+		<div style="width:8%" class="dropdown {{interfaceConfig.pullToSide}}" data-ng-show="rights.edit">
+			<a class="btn {{interfaceConfig.pullToSide}}" href="#"><i class="icon-cog icon-large"></i>&nbsp;&nbsp;<span class="caret"></span></a>
+			<ul class="dropdown-menu {{interfaceConfig.pullToSide}}">
+				<li><a href="#/configuration" translate="Dictionary Configuration"></a></li>
+				<li><a href="#/viewSettings" translate="View Settings"></a></li>
+				<li class="divider"></li>
+				<li><a href="#/importExport" translate="Import/Export"></a></li>
+				<li><a href="#/settings" translate="Project Settings"></a></li>
+				<li><a href="#/users" translate="User Management"></a></li>
+			</ul>
+		</div>
 	</div>
-	<div id="lexicon-hmenu" style="clear:both" data-ng-controller="LexiconMenuCtrl">
-		<!-- Don't need breadcrumbs <ul id="top" class="topCrumbs" data-breadcrumbs></ul> -->
-		<div class="control-group">
-		</div>
+	<div id="lexicon-hmenu" style="clear:both">
 		<div class="lexnav control-group">
-			<div class="btn-group {{interfaceConfig.pullToSide}}">
-				<a class="btn dropdown-toggle" data-toggle="dropdown" data-tooltip-placement="{{interfaceConfig.placementToSide}}" data-tooltip="Settings" href="#">
-					<i class="icon-cog icon-2x"></i>&nbsp;&nbsp;<span class="caret"></span></a>
-				<ul class="dropdown-menu {{interfaceConfig.pullToSide}}">
-					<li data-ng-show="isItemVisible('configuration')"><a href="#/p/{{projectId}}/configuration">Dictionary Configuration</a></li>
-					<li class="divider" data-ng-show="isItemVisible('configuration')"></li>
-					<li data-ng-show="isItemVisible('importExport')"><a href="#/p/{{projectId}}/importExport">Import/Export</a></li>
-					<li data-ng-show="true"><a href="#/p/{{projectId}}/settings">Project Settings</a></li>
-					<li data-ng-show="true"><a href="#/p/{{projectId}}/users">User Management</a></li>
-				</ul>
-			</div>
-			<div class="btn-group" data-ng-show="isItemVisible('dashboard')">
-				<a class="btn" href="#/p/{{projectId}}"><i class="icon-bookmark icon-2x"></i> *NYI*  Dashboard</a>
-			</div>
-			<div class="btn-group" data-ng-show="isItemVisible('view')">
-				<a class="btn" href="#/p/{{projectId}}/view"><i class="icon-eye-open icon-2x"></i> *NYI*  View</a>
-			</div>
-			<div class="btn-group">
-				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-					<i class="icon-th icon-2x"></i> Gather Words <span class="caret"></span></a>
-				<ul class="dropdown-menu {{interfaceConfig.pullNormal}}">
-					<li data-ng-show="isItemVisible('dbe')"        ><a href="#/p/{{projectId}}/dbe">Browse and Edit</a></li>
-					<li class="divider" data-ng-show="isItemVisible('dbe')"></li>
-					<li data-ng-show="isItemVisible('gatherTexts')"><a href="#/p/{{projectId}}/gather-texts">*NYI* from Texts</a></li>
-					<li data-ng-show="isItemVisible('semdom')"     ><a href="#/p/{{projectId}}/semdom">*NYI* from Semantic Domains</a></li>
-					<li data-ng-show="isItemVisible('wordlist')"   ><a href="#/p/{{projectId}}/wordlist">*NYI* from a Word List</a></li>
-					<li class="divider" data-ng-show="isItemVisible('review')"></li>
-					<li data-ng-show="isItemVisible('review')"     ><a href="#/p/{{projectId}}/review">*NYI* Review</a></li>
-				</ul>
-			</div>
-			<div class="btn-group">
-				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-					<i class="icon-plus icon-2x"></i> *NYI* Add Information <span class="caret"></span></a>
-				<ul class="dropdown-menu {{interfaceConfig.pullNormal}}">
-						<li data-ng-show="isItemVisible('addMeanings')"><a href="#/p/{{projectId}}/add-meanings">add Meanings</a></li>
-						<li data-ng-show="isItemVisible('addGrammar')" ><a href="#/p/{{projectId}}/add-grammar">add Grammatical Usage</a></li>
-						<li data-ng-show="isItemVisible('addExamples')"><a href="#/p/{{projectId}}/add-examples">add Examples</a></li>
-				</ul>
-			</div>
 		</div>
 	</div>
 	<div data-sil-notices></div>

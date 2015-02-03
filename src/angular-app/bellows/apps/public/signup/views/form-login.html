@@ -1,0 +1,63 @@
+<fieldset>
+	<div align="center">
+		<ul class="inline" id="progress-indicator">
+			<li><i class="icon-check-sign"></i>
+				<span>{{'Register' | translate}}</span></li>
+			<li>&gt;</li>
+			<li><i class="icon-check-sign"></i>
+				<span>{{'Validate' | translate}}</span></li>
+			<li>&gt;</li>
+			<li><i class="icon-check-empty"></i>
+				<span>{{'Login' | translate}}</span></li>
+		</ul>
+		<h3 translate="Login to activate your existing account on this site..."></h3>
+	</div>
+	<p>An account with this <b>User Name</b> and <b>Email</b> already exists on another related site that this site also uses to register accounts.</p>
+	<p translate="If this is your account, you can activate it to use on this site. Simply login to activate it now."></p>
+	<a href="/auth/forgot_password" style="margin-top:20px; color:darkorange">Forgot password?</a>
+	<div class="well">
+		<div class="control-group">
+			<label class="control-label" for="username" translate="User Name"></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<input class="span3" id="username"
+						disabled type="text" name="username"
+						placeholder="{{'pick a username' | translate}}" 
+						data-ng-model="record.username" />
+				</div>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="email" translate="Email"></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<input class="span3" id="email"
+						disabled type="email" name="email"
+						placeholder="{{'your email' | translate}}" data-ng-model="record.email" />
+				</div>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="password" translate="Password"></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<input class="span3" id="password" autofocus
+						required type="password" name="password"
+						data-ng-model="record.password" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div align="center">
+		<a class="btn pull-left" data-ui-sref="form.identify">
+			<i class="icon-circle-arrow-left"></i>
+			{{'Back' | translate}}</a>
+		<button class="btn btn-primary" type="submit" id="login" 
+			data-ng-disabled="submissionInProgress || signupForm.$invalid">
+			{{'Login and Activate' | translate}} <i style="margin-left: 5px" class="icon-thumbs-up"></i>
+		</button>
+		<span data-ng-show="submissionInProgress"><img src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+	</div>
+	<br />
+	<p align="center">If this is NOT your account, click <b>Back</b> to create a different account.</p>
+</fieldset>

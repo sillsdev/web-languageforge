@@ -1,14 +1,14 @@
 'use strict';
 
 describe('the project dashboard AKA text list page', function() {
-	var projectListPage = require('../../../pages/projectsPage.js');
-	var projectPage = require('../../../pages/projectPage.js');
-	var projectSettingsPage = require('../../../pages/projectSettingsPage.js');
-	var questionListPage = require('../../../pages/textPage.js');
-	var loginPage = require('../../../pages/loginPage.js');
-	var appFrame = require('../../../pages/appFrame.js');
-	var util = require('../../../pages/util.js');
-	var constants = require('../../../../testConstants.json');
+	var constants 			= require('../../../testConstants.json');
+	var loginPage 			= require('../../../bellows/pages/loginPage.js');
+	var util 				= require('../../../bellows/pages/util.js');
+	var appFrame 			= require('../../../bellows/pages/appFrame.js');
+	var projectListPage 	= require('../../../bellows/pages/projectsPage.js');
+	var projectPage 		= require('../pages/projectPage.js');
+	var projectSettingsPage = require('../pages/projectSettingsPage.js');
+	var questionListPage 	= require('../pages/textPage.js');
 	
 	describe('project member/user', function() {
 		it('setup: logout, login as project member, go to project dashboard', function() {
@@ -91,13 +91,19 @@ describe('the project dashboard AKA text list page', function() {
 		});
 		
 		it('can archive the text that was just created', function() {
-			var archiveButton = projectPage.archiveTextButton.find();
+			var archiveButton = projectPage.archiveTextButton.getWebElement();
 			expect(archiveButton.isDisplayed()).toBe(true);
 			expect(archiveButton.isEnabled()).toBe(false);
 			util.setCheckbox(projectPage.getFirstCheckbox(), true);
 			expect(archiveButton.isEnabled()).toBe(true);
 			archiveButton.click();
 			util.clickModalButton('Archive');
+			// Wait for archive button to become disabled again
+			browser.wait(function() {
+				return archiveButton.isEnabled().then(function(bool) {
+					return !bool;
+				});
+			}, 1000);
 			expect(archiveButton.isEnabled()).toBe(false);
 			expect(projectPage.textLink(sampleTitle).isPresent()).toBe(false);
 		});
@@ -106,7 +112,7 @@ describe('the project dashboard AKA text list page', function() {
 			projectPage.settingsButton.click();
 			projectSettingsPage.tabs.archiveTexts.click();
 			expect(projectSettingsPage.archivedTextsTab.textLink(sampleTitle).isDisplayed()).toBe(true);
-			var publishButton = projectSettingsPage.archivedTextsTab.publishButton.find();
+			var publishButton = projectSettingsPage.archivedTextsTab.publishButton.getWebElement();
 			expect(publishButton.isDisplayed()).toBe(true);
 			expect(publishButton.isEnabled()).toBe(false);
 			util.setCheckbox(projectSettingsPage.archivedTextsTabGetFirstCheckbox(), true);
@@ -124,9 +130,10 @@ describe('the project dashboard AKA text list page', function() {
 		//it('can create a new text (file dialog)', function() {});
 		
 		it('can use the chapter trimmer to trim the USX when creating a new text', function() {
+			var newTextTitle = sampleTitle + '6789'; // Don't re-use title from an existing text
 			expect(projectPage.newText.showFormButton.isDisplayed()).toBe(true);
 			projectPage.newText.showFormButton.click();
-			projectPage.newText.title.sendKeys(sampleTitle);
+			projectPage.newText.title.sendKeys(newTextTitle);
 			util.sendText(projectPage.newText.usx, projectPage.testData.longUsx1);
 			projectPage.newText.verseRangeLink.click();
 			projectPage.newText.fromChapter.sendKeys('1');
@@ -134,14 +141,14 @@ describe('the project dashboard AKA text list page', function() {
 			projectPage.newText.toChapter.sendKeys('1');
 			projectPage.newText.toVerse.sendKeys('3');
 			projectPage.newText.saveButton.click();
-			expect(projectPage.textLink(sampleTitle).isDisplayed()).toBe(true);
-			projectPage.textLink(sampleTitle).click();
+			expect(projectPage.textLink(newTextTitle).isDisplayed()).toBe(true);
+			projectPage.textLink(newTextTitle).click();
 			expect(questionListPage.textContent.getText()).not.toMatch('/Cana of Galilee/');
 			browser.navigate().back();
 
 			// clean up the text
 			util.setCheckbox(projectPage.getFirstCheckbox(), true);
-			var archiveButton = projectPage.archiveTextButton.find();
+			var archiveButton = projectPage.archiveTextButton.getWebElement();
 			archiveButton.click();
 			util.clickModalButton('Archive');
 		});

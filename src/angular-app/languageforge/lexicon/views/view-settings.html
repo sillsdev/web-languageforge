@@ -1,0 +1,251 @@
+<div class="container" data-ng-cloak data-ng-controller="ViewSettingsCtrl">
+<br><h2 style="font-weight:normal" >{{'View Settings' | translate}}</h2>
+<form name="viewSettingForm" novalidate>
+<fieldset data-ng-disabled="isSaving">
+<button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="settingsApply()"  
+    data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense() || !allUsersHaveAtLeastOneSense() || isSaving">
+    <i ng-class="{'icon-ok': !isSaving, 'icon-spinner': isSaving, 'icon-spin': isSaving}"></i> {{'Apply' | translate}}</button>
+<tabset>
+    <tab data-ng-repeat="tab in tabs" class="{{interfaceConfig.pullNormal}}" active="tab.active"
+        select="selectTab($index)">
+<!--         data-ng-click="selectField(currentField.name, currentView)"> -->
+        <tab-heading>{{tab.name | translate}}
+            <span data-ng-hide="tab.byUser || isAtLeastOneSense(tab.view)">
+                <img src="/images/shared/exclamation.png" 
+                    title="{{'At least one role Meaning field must be enabled!' | translate}}"
+                    style="padding-left: 5px;"/></span>
+            <span data-ng-hide="tab.byRole || allUsersHaveAtLeastOneSense()">
+                <img src="/images/shared/exclamation.png" 
+                    title="{{'At least one user Meaning field must be enabled!' | translate}}"
+                    style="padding-left: 5px;"/></span>
+        </tab-heading>
+        <div data-ng-show="tab.byUser && state === 'userSelectList'">
+
+            <!-- control buttons -->
+            <form class="form-inline">
+                <typeahead class="typeahead" items="typeahead.users" term="typeahead.userName" search="typeahead.searchUsers" select="typeahead.selectUser">
+                    <ul>
+                        <li class="typeahead-item" typeahead-item="user" data-ng-repeat="user in typeahead.users">
+                            <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
+                            <p class="name">{{user.name}}</p>
+                            <p class="email">{{user.email}}</p>
+                        </li>
+                    </ul>
+                </typeahead>
+                <button class="btn btn-success" data-ng-click="addUser()"><i class="icon-plus"></i>{{'Add Member Specific Settings' | translate}}</button>
+                <br /><br />
+            </form>
+        
+            <div class="row outer-flex">
+            
+                <!-- Left column: user select list -->
+                <div class="span3 control-group picklists" id="userSelectList">
+                        <ul class="unstyled">
+                            <li data-ng-click="selectUser(userId)" data-ng-repeat="(userId, userView) in configDirty.userViews" 
+                                data-ng-class="{selected:currentUserId == userId}"> 
+                                {{usersWithSettings[userId].name}} ({{usersWithSettings[userId].username}})
+                                <span data-ng-hide="isAtLeastOneSense(userView)">
+                                    <img src="/images/shared/exclamation.png" 
+                                        title="{{'At least one Meaning field must be enabled!' | translate}}"
+                                        style="padding-left: 5px;"/></span>
+                            </li>
+                        </ul>
+                </div>
+                
+            </div>
+        </div>
+        <div data-ng-hide="tab.byUser && state === 'userSelectList'">
+            <!-- control buttons for member-specific views -->
+            <div class="row outer-flex" data-ng-show="tab.byUser && state === 'userSettings'">
+                <div class="span3 control-group">
+                    <button class="btn" data-ng-click="goSelectUser()"><i class="icon-chevron-left"></i> {{'Select Member' | translate}}</button>
+                </div>
+                <div class="span9 control-group" style="height: 30px">
+                    <button class="btn" data-ng-click="removeSelectedMemberSettings()">
+                        <i class="icon-remove"></i> {{'Remove Member Specific Settings' | translate}} </button>
+                </div>
+            </div>
+        <accordion close-others="true">
+        <accordion-group is-open="true">
+        <accordion-heading><h3>{{'Enabled Fields for' | translate}} {{forWhom | translate}}</h3></accordion-heading>
+            <div class="row outer-flex">
+            
+            <!-- Left column: field view select list -->
+            <div class="span3 control-group">
+                
+            
+                <!-- control buttons -->
+                <div class="control-group">
+                    <button data-ng-click="showAllFields = ! showAllFields" class="btn btn-small">{{showAllFields ? 'Show Only Common Fields' : 'Show All Fields' | translate}}</button>
+                </div>
+
+                <!-- select list -->
+                <dl class="picklists" style="height: 200px; overflow: auto;">
+                    <dt translate="Entry Level Fields"></dt>
+                    <dd><div class="controls">
+                        <div data-ng-repeat="fieldName in fieldOrder.entry"
+                            data-ng-class="{selected:currentField.name == fieldName}">
+                            <span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
+                                data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
+                                data-ng-click="selectField(fieldName, currentView)">
+                                {{fieldConfig[fieldName].label}}
+                                <i class="{{interfaceConfig.pullToSide}}" ng-class="{'icon-eye-open': currentView.fields[fieldName].show}"></i>
+                            </span>
+                        </div>
+                    </div></dd>
+                    <dt>{{'Meaning Level Fields' | translate}}
+                        <span data-ng-hide="isAtLeastOneSense(currentView)">
+                        <img src="/images/shared/exclamation.png" 
+                            title="{{'At least one Meaning field must be enabled!' | translate}}"
+                            style="position: absolute; padding-left: 5px;"/></span></dt>
+                    <dd><div class="controls">
+                        <div data-ng-repeat="fieldName in fieldOrder.senses"
+                            data-ng-class="{selected:currentField.name == fieldName}">
+                            <span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
+                                data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
+                                data-ng-click="selectField(fieldName, currentView)">
+                                {{fieldConfig[fieldName].label}}
+                                <i class="{{interfaceConfig.pullToSide}}" ng-class="{'icon-eye-open': currentView.fields[fieldName].show}"></i>
+                                </span>
+                        </div>
+                    </div></dd>
+                    <dt translate="Example Level Fields"></dt>
+                    <dd><div class="controls">
+                        <div data-ng-repeat="fieldName in fieldOrder.examples"
+                            data-ng-class="{selected:currentField.name == fieldName}">
+                            <span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
+                                data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
+                                data-ng-click="selectField(fieldName, currentView)">
+                                {{fieldConfig[fieldName].label}}
+                                <i class="{{interfaceConfig.pullToSide}}" ng-class="{'icon-eye-open': currentView.fields[fieldName].show}"></i>
+                                </span>
+                        </div>
+                    </div></dd>
+                </dl>
+                <small translate="Custom Fields shown in <i>italics</i>"></small>
+            </div>
+        
+            <!-- Right column: field view settings -->
+            <div class="span9 control-group">
+
+                <!-- settings -->
+                <div class="well">
+                    <h3 style="font-weight:normal">{{fieldConfig[currentField.name].label}} {{'Field View Settings' | translate}}</h3>
+                    <div class="control-group">
+                        <div class="controls">
+                            <label class="checkbox {{interfaceConfig.pullNormal}}">
+                                <input type="checkbox" 
+                                    data-ng-disabled="currentField.name == 'lexeme'" 
+                                    data-ng-model="currentView.fields[currentField.name].show"/>
+                                {{'Show field' | translate}}</label>
+                        </div>
+                        <br />
+                    </div>
+                    <div data-ng-show="currentView.fields[currentField.name].type === 'multitext'">
+                        <div class="control-group">
+                            <div class="controls">
+                                <label class="checkbox {{interfaceConfig.pullNormal}}">
+                                    <input type="checkbox" 
+                                        data-ng-model="currentView.fields[currentField.name].overrideInputSystems"/>
+                                    {{'Override Input Systems' | translate}}</label>
+                                <br />
+                            </div>
+                        </div>
+                        <div data-ng-show="currentView.fields[currentField.name].overrideInputSystems">
+                            <hr />
+                            <div class="row outer-flex control-group">
+                                <div class="span3 picklists">
+                                    <label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
+                                    <ul class="unstyled indent1"  id="inputSystem">
+                                        <li data-ng-click="currentField.inputSystems.currentTag = inputSystemTag"
+                                            data-ng-repeat="inputSystemTag in currentField.inputSystems.order"
+                                            data-ng-class="{selected:currentField.inputSystems.currentTag == inputSystemTag}">
+                                            <div class="checkbox"><input data-ng-model="currentField.inputSystems.selected[inputSystemTag]" type="checkbox"/>
+                                                {{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="span1 btn-group btn-group-vertical">
+                                    <button class="btn" data-ng-click="moveUp(currentField.inputSystems.currentTag, currentView)"
+                                        data-ng-disabled="currentField.inputSystems.order[0] == currentField.inputSystems.currentTag || !currentField.inputSystems.currentTag">
+                                        &nbsp;&nbsp;<i class="icon-arrow-up"></i></button>
+                                    <button class="btn" data-ng-click="moveDown(currentField.inputSystems.currentTag, currentView)"
+                                        data-ng-disabled="currentField.inputSystems.order[currentField.inputSystems.order.length - 1] == currentField.inputSystems.currentTag || !currentField.inputSystems.currentTag">
+                                        &nbsp;&nbsp;<i class="icon-arrow-down"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!-- 
+<pre>
+currentView.fields[currentField.name].inputSystems {{currentView.fields[currentField.name].inputSystems | json}}
+currentField {{currentField | json}}
+</pre>                
+ -->
+            </div>
+        
+            </div>
+        </accordion-group>
+        <accordion-group>
+            <accordion-heading><h3 translate="Enabled Tasks"></h3></accordion-heading>
+            <div class="row outer-flex">
+            
+            <!-- Left column: task view settings -->
+            <div class="span4 control-group">
+                <dl>
+                    <dt translate="Dashboard"></dt>
+                    <dd><div class="controls">
+                        <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['dashboard']">
+                            {{'Dashboard' | translate}}</label>
+                    </div></dd>
+                    <dt translate="Dictionary"></dt>
+                    <dd><div class="controls">
+                        <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['dbe']">
+                            {{'Browse &amp; Edit' | translate}}</label>
+                    </div></dd>
+                    <dt translate="Add Information"></dt>
+                    <dd><div class="controls">
+                        <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['addMeanings']">
+                            {{'add Meanings' | translate}}</label>
+                        <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['addGrammar']">
+                            {{'add Grammatical Usage (Part of Speech)' | translate}}</label>
+                        <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['addExamples']">
+                            {{'add Examples' | translate}}</label>
+                    </div></dd>
+                    <dt translate="Gather Words"></dt>
+                    <dd><div class="controls">
+                        <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['gatherTexts']">
+                            {{'from Texts' | translate}}</label>
+                        <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['wordlist']">
+                            {{'from a Word List' | translate}}</label>
+                        <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['semdom']">
+                            {{'from Semantic Domains' | translate}}</label>
+                    </div></dd>
+                    <dt translate="Review"></dt>
+                    <dd><div class="controls">
+                        <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['review']">
+                            {{'Review' | translate}}</label>
+                    </div></dd>
+                </dl>
+            </div>
+                
+            </div>
+        </accordion-group>
+    </accordion>
+    </div>
+    </tab>
+</tabset>
+</fieldset>
+</form>
+<!-- 
+<pre>
+tabs {{tabs | json}}
+configDirty.roleViews {{configDirty.roleViews | json}}
+currentUserId {{currentUserId | json}}
+currentField {{currentField | json}}
+configDirty.userViews {{configDirty.userViews | json}}
+</pre>
+ -->
+</div>
+

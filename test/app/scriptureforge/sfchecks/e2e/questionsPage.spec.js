@@ -1,13 +1,13 @@
 'use strict';
 
 describe('the questions list page (AKA the text page)', function() {
-	var projectListPage = require('../../../pages/projectsPage.js');
-	var projectPage = require('../../../pages/projectPage.js');
-	var textPage = require('../../../pages/textPage.js');
-	var textSettingsPage = require('../../../pages/textSettingsPage.js');
-	var loginPage = require('../../../pages/loginPage.js');
-	var util = require('../../../pages/util.js');
-	var constants = require('../../../../testConstants.json');
+	var constants 			= require('../../../testConstants.json');
+	var loginPage 			= require('../../../bellows/pages/loginPage.js');
+	var util 				= require('../../../bellows/pages/util.js');
+	var projectListPage 	= require('../../../bellows/pages/projectsPage.js');
+	var projectPage 		= require('../pages/projectPage.js');
+	var textPage 			= require('../pages/textPage.js');
+	var textSettingsPage 	= require('../pages/textSettingsPage.js');
 
 	describe('a normal user', function() {
 
@@ -23,15 +23,15 @@ describe('the questions list page (AKA the text page)', function() {
 			// as that might be modified by other tests that add questions, we'll search for them.
 			util.findRowByText(textPage.questionRows, constants.testText1Question1Title).then(function(row) {
 				expect("undefined" == typeof row).toBeFalsy(); // This seems to be the best way to check that the row exists
-				var answerCount = row.findElement(by.binding('question.answerCount'));
-				var responseCount = row.findElement(by.binding('question.responseCount'));
+				var answerCount = row.element(by.binding('question.answerCount'));
+				var responseCount = row.element(by.binding('question.responseCount'));
 				expect(answerCount.getText()).toBe('1 answers');
 				expect(responseCount.getText()).toBe('2 responses');
 			});
 			util.findRowByText(textPage.questionRows, constants.testText1Question2Title).then(function(row) {
 				expect("undefined" == typeof row).toBeFalsy(); // This seems to be the best way to check that the row exists
-				var answerCount = row.findElement(By.binding('question.answerCount'));
-				var responseCount = row.findElement(By.binding('question.responseCount'));
+				var answerCount = row.element(By.binding('question.answerCount'));
+				var responseCount = row.element(By.binding('question.responseCount'));
 				expect(answerCount.getText()).toBe('1 answers');
 				expect(responseCount.getText()).toBe('2 responses');
 			});
@@ -77,14 +77,19 @@ describe('the questions list page (AKA the text page)', function() {
 		});
 		
 		it('can archive the question that was just created', function() {
-			var archiveButton = textPage.archiveButton.find();
+			var archiveButton = textPage.archiveButton.getWebElement();
 			expect(archiveButton.isDisplayed()).toBe(true);
 			expect(archiveButton.isEnabled()).toBe(false);
 			util.setCheckbox(textPage.getFirstCheckbox(), true);
 			expect(archiveButton.isEnabled()).toBe(true);
 			archiveButton.click();
 			util.clickModalButton('Archive');
-			expect(archiveButton.isEnabled()).toBe(false);
+			// Wait for archive button to become disabled again
+			browser.wait(function() {
+				return archiveButton.isEnabled().then(function(bool) {
+					return !bool;
+				});
+			}, 1000);
 			expect(textPage.questionLink(questionTitle).isPresent()).toBe(false);
 		});
 
@@ -92,7 +97,7 @@ describe('the questions list page (AKA the text page)', function() {
 			textPage.textSettingsBtn.click();
 			textSettingsPage.tabs.archiveQuestions.click();
 			expect(textSettingsPage.archivedQuestionsTab.questionLink(questionTitle).isDisplayed()).toBe(true);
-			var publishButton = textSettingsPage.archivedQuestionsTab.publishButton.find();
+			var publishButton = textSettingsPage.archivedQuestionsTab.publishButton.getWebElement();
 			expect(publishButton.isDisplayed()).toBe(true);
 			expect(publishButton.isEnabled()).toBe(false);
 			util.setCheckbox(textSettingsPage.archivedQuestionsTabGetFirstCheckbox(), true);
@@ -120,7 +125,7 @@ describe('the questions list page (AKA the text page)', function() {
 
 	});
 
-	describe('a site admin', function() {
+	describe('a system admin', function() {
 		it('setup: login as admin', function() {
 			loginPage.loginAsAdmin();
 			projectListPage.get();

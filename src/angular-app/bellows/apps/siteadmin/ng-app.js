@@ -2,7 +2,7 @@
 
 angular.module('siteadmin', [
 	'ngRoute', 'sfAdmin.filters', 'sfAdmin.services', 'sfAdmin.directives',
-	'bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'ui.bootstrap'
+	'bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'ui.bootstrap', 'palaso.ui.utils'
 ])
 /*
 .config(['$routeProvider', function($routeProvider) {
@@ -22,13 +22,6 @@ angular.module('siteadmin', [
 		showPasswordForm: false,
 		state: "add" // can be either "add" or "update"
 	};
-	
-	$scope.resetCheckName = function() {
-		$scope.userNameLoading = false;
-		$scope.userNameExists = false;
-		$scope.userNameOk = false;
-	};
-	$scope.resetCheckName();
 	
 	$scope.focusInput = function() {
 		$scope.vars.inputfocus = true;
@@ -87,7 +80,7 @@ angular.module('siteadmin', [
 		if (newId) {
 			userService.read(newId, function(result) {
 				$scope.record = result.data;
-				$scope.resetCheckName();
+				$scope.uniqueUserState = 'empty';
 			});
 		} else {
 			// Clear data table
@@ -106,6 +99,11 @@ angular.module('siteadmin', [
 		$scope.focusInput();
 	};
 
+    $scope.resetValidateUserForm = function resetValidateUserForm() {
+        $scope.uniqueUserState = 'empty';
+
+    };
+
 	// Roles in list
 	$scope.roles = {
         'user': {name: 'User'},
@@ -118,21 +116,39 @@ angular.module('siteadmin', [
 		}
 		return $scope.roles[role].name;
 	};
-	
-	$scope.checkUserName = function() {
-		$scope.userNameOk = false;
-		$scope.userNameExists = false;
-		if ($scope.record.username && $scope.vars.state == "add") {
-			$scope.userNameLoading = true;
-			userService.userNameExists($scope.record.username, function(result) {
-				$scope.userNameLoading = false;
+
+	/*
+	// State of the username and email address being validated:
+	// 'empty'                  : no username or email entered
+	// 'loading'                : username and email entered, being validated
+	// 'usernameExists'         : username already exists and belongs to another account
+	// 'emailExists'            : email already exists and belongs to another account
+	// 'usernameAndEmailExists' : both username and email already exist and belong to another account
+	// 'ok'                     : username and email address are unique
+	*/
+	$scope.uniqueUserState = 'empty';
+
+	// Check for unique username and email
+	$scope.checkUniqueUser = function() {
+		if (($scope.record.username) &&
+			($scope.record.email)) {
+			$scope.uniqueUserState = 'loading';
+			userService.checkUniqueIdentity($scope.record.id, $scope.record.username, $scope.record.email, function(result) {
 				if (result.ok) {
-					if (result.data) {
-						$scope.userNameOk = false;
-						$scope.userNameExists = true;
+					if (result.data.usernameExists &&
+						!result.data.usernameMatchesAccount) {
+						$scope.uniqueUserState = 'usernameExists';
+
+						if (result.data.emailExists &&
+							!result.data.emailMatchesAccount) {
+
+							$scope.uniqueUserState = 'usernameAndEmailExists';
+						}
+					} else if (result.data.emailExists &&
+						!result.data.emailMatchesAccount) {
+						$scope.uniqueUserState = 'emailExists';
 					} else {
-						$scope.userNameOk = true;
-						$scope.userNameExists = false;
+						$scope.uniqueUserState = 'ok';
 					}
 				}
 			});
@@ -149,7 +165,7 @@ angular.module('siteadmin', [
 					if (result.data) {
 						notice.push(notice.SUCCESS, "The user " + record.username + " was successfully added");
 					} else {
-						notice.push(notice.ERROR, "API Error: the username already exists!  (this should not happen)");
+						notice.push(notice.ERROR, "API Error: the username/email already exists!  (this should not happen)");
 					}
 				}
 				
@@ -172,8 +188,8 @@ angular.module('siteadmin', [
 			}
 			$scope.blurInput();
 		}
-		
-		$scope.resetCheckName();
+
+		$scope.uniqueUserState = 'empty';
 		$scope.queryUsers(true);
 	};
 
@@ -199,6 +215,8 @@ angular.module('siteadmin', [
 			// Whether result was OK or error, wipe selected list and reload data
 			$scope.selected = [];
 			$scope.vars.selectedIndex = -1;
+			$scope.vars.editButtonName= [];
+			$scope.record = {};
 			$scope.queryUsers(true);
 		});
 	};

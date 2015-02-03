@@ -2,26 +2,26 @@
 
 /* This is called globally; it can be un-commented if this test is run individually. IJH 2014-06
 afterEach(function() {
-	var appFrame = require('../../../pages/appFrame.js');
+	var appFrame = require('../../../bellows/pages/appFrame.js');
 	expect(appFrame.errorMessage.isPresent()).toBe(false);
 });
 */
 
 describe('the project settings page - project manager', function() {
-	var projectListPage = require('../../../pages/projectsPage.js');
-	var projectPage = require('../../../pages/projectPage.js');
-	var textPage = require('../../../pages/textPage.js');
-	var page = require('../../../pages/textSettingsPage.js');
-	var header = require('../../../pages/pageHeader.js');
-	var loginPage = require('../../../pages/loginPage.js');
-	var util = require('../../../pages/util.js');
-	var constants = require('../../../../testConstants.json');
+	var constants 		= require('../../../testConstants.json');
+	var loginPage 		= require('../../../bellows/pages/loginPage.js');
+	var util 			= require('../../../bellows/pages/util.js');
+	var projectListPage = require('../../../bellows/pages/projectsPage.js');
+	var header 			= require('../../../bellows/pages/pageHeader.js');
+	var projectPage 	= require('../pages/projectPage.js');
+	var textPage 		= require('../pages/textPage.js');
+	var page 			= require('../pages/textSettingsPage.js');
 	
 	it('setup: logout, login as project manager, go to text settings', function() {
 		loginPage.logout();
 		loginPage.loginAsManager();
-    	projectListPage.get();
-    	projectListPage.clickOnProject(constants.testProjectName);
+		projectListPage.get();
+		projectListPage.clickOnProject(constants.testProjectName);
 		projectPage.textLink(constants.testText1Title).click();
 		textPage.textSettingsBtn.click();
 	});

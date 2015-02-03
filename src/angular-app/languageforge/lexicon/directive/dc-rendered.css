@@ -1,22 +1,35 @@
 @CHARSET "UTF-8";
 
-.dc-rendered.word {
-	font-weight: bold;
+.dc-rendered-entryContainer {
+    font-size:12px;
+    font-family: "Bookman", Georgia, "Times New Roman", serif;
 }
 
-.dc-rendered.definition {
-	margin-left: 10px;
+.dc-rendered-word {
+    font-weight: bold;
+
 }
 
-.dc-rendered.definition .number {
-	font-weight: bold;
+.dc-rendered-senseContainer {
+    margin: 0 3px 0 3px;
 }
 
-.dc-rendered.definition .partOfSpeech {
-	font-style: italic;
+.dc-rendered-partOfSpeech {
+    font-style: italic;
+
 }
 
-.dc-rendered.definition .definition-content {
-	font-weight: normal;
-	font-style: normal;
+.dc-rendered-senseNumber {
+
+}
+.dc-rendered-definition {
+    margin: 0 3px 0 3px;
+
+}
+.dc-rendered-exampleContainer {}
+
+.dc-rendered-exampleSentence {
+    margin: 0 3px 0 3px;
+    font-style: italic;
+
 }

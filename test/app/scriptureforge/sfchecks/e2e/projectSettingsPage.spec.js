@@ -1,18 +1,18 @@
 'use strict';
 
 afterEach(function() {
-	var appFrame = require('../../../pages/appFrame.js');
+	var appFrame = require('../../../bellows/pages/appFrame.js');
 	expect(appFrame.errorMessage.isPresent()).toBe(false);
 });
 
 describe('the project settings page - project manager', function() {
-	var projectListPage = require('../../../pages/projectsPage.js');
-	var projectPage = require('../../../pages/projectPage.js');
-	var page = require('../../../pages/projectSettingsPage.js');
-	var header = require('../../../pages/pageHeader.js');
-	var loginPage = require('../../../pages/loginPage.js');
-	var util = require('../../../pages/util.js');
-	var constants = require('../../../../testConstants.json');
+	var constants 		= require('../../../testConstants.json');
+	var loginPage 		= require('../../../bellows/pages/loginPage.js');
+	var util 			= require('../../../bellows/pages/util.js');
+	var projectListPage = require('../../../bellows/pages/projectsPage.js');
+	var header 			= require('../../../bellows/pages/pageHeader.js');
+	var projectPage 	= require('../pages/projectPage.js');
+	var page 			= require('../pages/projectSettingsPage.js');
 	
 	it('setup: logout, login as project manager, go to project settings', function() {
 		loginPage.logout();
@@ -60,14 +60,14 @@ describe('the project settings page - project manager', function() {
 
 		it('can change the role of a member', function() {
 			page.membersTab.listFilter.sendKeys('dude');
-			util.clickDropdownByValue(page.membersTab.list.first().findElement(by.model('user.role')), 'Manager');
-			expect(page.membersTab.list.first().findElement(by.selectedOption('user.role')).getText()).toEqual('Manager');
+			util.clickDropdownByValue(page.membersTab.list.first().element(by.model('user.role')), 'Manager');
+			expect(page.membersTab.list.first().element(by.model('user.role')).$('option:checked').getText()).toEqual('Manager');
 			page.membersTab.listFilter.clear();
 		});
 
 		it('can remove a member', function() {
 			page.membersTab.listFilter.sendKeys('dude');
-			page.membersTab.list.first().findElement(by.css('input[type="checkbox"]')).click();
+			page.membersTab.list.first().element(by.css('input[type="checkbox"]')).click();
 			page.membersTab.removeButton.click();
 			page.membersTab.listFilter.clear();
 			page.membersTab.listFilter.sendKeys('dude');
@@ -99,17 +99,21 @@ describe('the project settings page - project manager', function() {
 		});
 		
 		it('can update an existing template', function() {
-			page.templatesTab.list.last().findElement(by.linkText('sound check')).click();
-			expect(page.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
+			page.templatesTab.list.last().element(by.linkText('sound check')).click();
+			browser.wait(function() {
+				return page.templatesTab.editor.saveButton.isDisplayed();
+			});
+			expect(page.templatesTab.editor.saveButton.isDisplayed()).toBe(true);
 			page.templatesTab.editor.title.clear();
 			page.templatesTab.editor.title.sendKeys('test12');
 			page.templatesTab.editor.saveButton.click();
+			expect(page.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
 			expect(page.templatesTab.list.count()).toBe(3);
 
 		});
 		
 		it('can delete a template', function() {
-			page.templatesTab.list.last().findElement(by.css('input[type="checkbox"]')).click();
+			page.templatesTab.list.last().element(by.css('input[type="checkbox"]')).click();
 			page.templatesTab.removeButton.click();
 			expect(page.templatesTab.list.count()).toBe(2);
 		});
@@ -182,7 +186,7 @@ describe('the project settings page - project manager', function() {
 			});
 			foo.then(function(elem) {
 				console.log("Found it.");
-				//browser.actions().dragAndDrop(elem.find(), { x: 0, y: 30 } ).perform();
+				//browser.actions().dragAndDrop(elem.getWebElement(), { x: 0, y: 30 } ).perform();
 			});
 			browser.sleep(5000);
 		});
@@ -201,8 +205,8 @@ describe('the project settings page - project manager', function() {
 		it('is not visible for project manager', function() {
 			expect(page.tabs.communication.isPresent()).toBe(false);
 		});
-		describe('as a site admin', function() {
-			it('setup: logout, login as site admin, go to project settings', function() {
+		describe('as a system admin', function() {
+			it('setup: logout, login as system admin, go to project settings', function() {
 				loginPage.logout();
 				loginPage.loginAsAdmin();
 		    	projectListPage.get();
