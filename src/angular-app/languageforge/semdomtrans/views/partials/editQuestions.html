@@ -1,5 +1,5 @@
 <span ng-show="($parent.selectedTab == 1)">
-  	<h2> Question {{$parent.currentItem.questions.position + 1}}/{{$parent.currentItem.questions.termQuestions.length}} </h2>
+  	<h2> Question {{$parent.currentQuestionPos+1}}/{{$parent.currentItem.questions.length}} </h2>
   	<table style="width:600px">
   		<tr>
   			<th> </th>
@@ -8,18 +8,17 @@
   		</tr>
 	    <tr>
 		    <td> Question: </td>
-		    <td> {{$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].question}} </td>
-		    <td> <textarea rows="4" ng-model="$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].questTranslation"></textarea> </td> 
+		    <td> {{$parent.currentItem.questions[$parent.currentQuestionPos].question.source}} </td>
+		    <td> <textarea rows="4" ng-model="$parent.currentItem.questions[$parent.currentQuestionPos].question.translation"></textarea> </td> 
 	    </tr>	
 	     <tr>
-		    <td> Question Terms: </td>
-		    <td> {{$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].terms}}</textarea> </td>
-	        <td> <textarea rows="4" ng-model="$parent.currentItem.questions.termQuestions[$parent.currentItem.questions.position].termsTranslation"></textarea> </td>    
+		    <td> Terms: </td>
+		    <td> {{$parent.currentItem.questions[$parent.currentQuestionPos].terms.source}}</textarea> </td>
+	        <td> <textarea rows="4" ng-model="$parent.currentItem.questions[$parent.currentQuestionPos].terms.translation"></textarea> </td>    
 	    </tr>				    
 	</table>
 	<td> 
-	Translated: <input type='checkbox'  ng-model="$parent.currentItem.questions.translated" /> 
-  
-	<button ng-show="($parent.currentItem.questions.position > 0)" ng-click="$parent.getPreviousQuestion()" class="pull-left btn btn-success">Previous Question</button>
-	<button ng-show="($parent.currentItem.questions.position < $parent.currentItem.questions.termQuestions.length - 1)" ng-click="$parent.getNextQuestion()" class="pull-right btn btn-success">Next Question</button>
+	
+	<button ng-show="($parent.currentQuestionPos > 0)" ng-click="$parent.getPreviousQuestion()" class="pull-left btn btn-success">Previous Question</button>
+	<button ng-show="($parent.currentQuestionPos < $parent.currentItem.questions.length - 1)" ng-click="$parent.getNextQuestion()" class="pull-right btn btn-success">Next Question</button>
 </span>
