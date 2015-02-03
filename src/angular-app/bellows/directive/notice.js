@@ -75,13 +75,18 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
 		SUCCESS: function() { return 'success'; }
 	};
 }])
-.directive('silNotices', ['silNoticeService', function(noticeService) {
+.directive('silNotices', ['silNoticeService', 'sessionService', function(noticeService, sessionService) {
 	return {
 		restrict : 'EA',
 		templateUrl : '/angular-app/bellows/directive/notice.html',
 		replace : true,
 		compile : function(tElement, tAttrs) {
 			return function($scope, $elem, $attr) {
+                $scope.githubRepo = 'sfwebchecks';
+                if (sessionService.baseSite() === 'languageforge') {
+                  $scope.githubRepo = 'lfsite';
+                }
+
 				$scope.closeNotice = function(id) {
 					noticeService.removeById(id);
 				};
