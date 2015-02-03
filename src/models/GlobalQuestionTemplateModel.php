@@ -12,52 +12,56 @@ use models\mapper\IdReference;
 
 class GlobalQuestionTemplateModelMongoMapper extends \models\mapper\MongoMapper
 {
-	public static function instance() {
-		static $instance = null;
-		if (null === $instance) {
-			$instance = new GlobalQuestionTemplateModelMongoMapper(SF_DATABASE, 'questiontemplates');
-		}
-		return $instance;
-	}
+    public static function instance()
+    {
+        static $instance = null;
+        if (null === $instance) {
+            $instance = new GlobalQuestionTemplateModelMongoMapper(SF_DATABASE, 'questiontemplates');
+        }
+
+        return $instance;
+    }
 }
 
 class GlobalQuestionTemplateModel extends \models\mapper\MapperModel
 {
-	public function __construct($id = '') {
-		$this->id = new Id();
-		parent::__construct(GlobalQuestionTemplateModelMongoMapper::instance(), $id);
-	}
+    public function __construct($id = '')
+    {
+        $this->id = new Id();
+        parent::__construct(GlobalQuestionTemplateModelMongoMapper::instance(), $id);
+    }
 
-	public function remove() {
-		$result = GlobalQuestionTemplateModelMongoMapper::instance()->remove($this->id->asString());
-		return $result;
-	}
+    public function remove()
+    {
+        $result = GlobalQuestionTemplateModelMongoMapper::instance()->remove($this->id->asString());
 
-	/**
-	 * @var IdReference
-	 */
-	public $id;
+        return $result;
+    }
 
-	/**
-	 * @var string
-	 */
-	public $title;
+    /**
+     * @var IdReference
+     */
+    public $id;
 
-	/**
-	 * @var string A content description/explanation of the question being asked
-	 */
-	public $description;
+    /**
+     * @var string
+     */
+    public $title;
+
+    /**
+     * @var string A content description/explanation of the question being asked
+     */
+    public $description;
 }
 
 class GlobalQuestionTemplateListModel extends \models\mapper\MapperListModel
 {
-	public function __construct() {
-		parent::__construct(
-			GlobalQuestionTemplateModelMongoMapper::instance(),
-			array(),
-			array('title', 'description')
-		);
-	}
+    public function __construct()
+    {
+        parent::__construct(
+            GlobalQuestionTemplateModelMongoMapper::instance(),
+            array(),
+            array('title', 'description')
+        );
+    }
 }
-
-?>

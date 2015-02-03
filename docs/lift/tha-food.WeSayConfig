@@ -17,7 +17,7 @@
 					<visibility>Visible</visibility>
 					<writingSystems>
 						<id>th</id>
-						<id>x-IPA</id>
+						<id>th-fonipa</id>
 					</writingSystems>
 				</field>
 				<field>
@@ -31,7 +31,7 @@
 					<multiplicity>ZeroOr1</multiplicity>
 					<visibility>NormallyHidden</visibility>
 					<writingSystems>
-						<id>x-v</id>
+						<id>th</id>
 					</writingSystems>
 				</field>
 				<field>
@@ -116,7 +116,7 @@
 					<multiplicity>ZeroOr1</multiplicity>
 					<visibility>Visible</visibility>
 					<writingSystems>
-						<id>x-v</id>
+						<id>th</id>
 					</writingSystems>
 				</field>
 				<field>
@@ -159,7 +159,7 @@
 					<multiplicity>ZeroOr1</multiplicity>
 					<visibility>NormallyHidden</visibility>
 					<writingSystems>
-						<id>x-v</id>
+						<id>th</id>
 					</writingSystems>
 				</field>
 				<field>
@@ -173,7 +173,7 @@
 					<multiplicity>ZeroOrMore</multiplicity>
 					<visibility>NormallyHidden</visibility>
 					<writingSystems>
-						<id>x-v</id>
+						<id>th</id>
 					</writingSystems>
 				</field>
 				<field>
@@ -199,16 +199,11 @@
 					<multiParagraph>False</multiParagraph>
 					<spellCheckingEnabled>False</spellCheckingEnabled>
 					<multiplicity>ZeroOr1</multiplicity>
+					<optionsListFile></optionsListFile>
 					<visibility>NormallyHidden</visibility>
 					<writingSystems>
-						<id>x-v</id>
-						<id>en</id>
-						<id>fr</id>
-						<id>tpi</id>
-						<id>id</id>
 						<id>th</id>
-						<id>es</id>
-						<id>x-IPA</id>
+						<id>en</id>
 					</writingSystems>
 				</field>
 				<field>
@@ -234,6 +229,7 @@
 					<multiParagraph>False</multiParagraph>
 					<spellCheckingEnabled>False</spellCheckingEnabled>
 					<multiplicity>ZeroOr1</multiplicity>
+					<optionsListFile></optionsListFile>
 					<visibility>NormallyHidden</visibility>
 					<writingSystems>
 						<id>en</id>

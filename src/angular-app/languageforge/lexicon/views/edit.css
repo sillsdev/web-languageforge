@@ -30,6 +30,35 @@ legend.override-bootstrap {
 	overflow: inherit;
 }
 
+/*animate*/
+/*
+// TODO: analyze height property: 625px.  This seems to be related to where the footer is.  Too big, and the footer "tears" on animation
+// 2014-08 DDW
+*/
+.animate-switch-container {
+	position:relative;
+}
+
+.animate-switch {
+	padding:10px;
+}
+
+.animate-switch.ng-animate {
+	-webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+	transition: 500ms ease-in all;
+	position:relative;
+	display: block;
+}
+
+.animate-switch.ng-leave.ng-leave-active,
+.animate-switch.ng-enter {
+	right:721px;
+}
+.animate-switch.ng-leave,
+.animate-switch.ng-enter.ng-enter-active {
+	right:0;
+}
+
 .override-bootstrap input[type="checkbox"] {
 	text-align: center;
 	margin-top: 0px;
@@ -256,7 +285,9 @@ legend.override-bootstrap {
 }
 
 .entryItemView {
+/*  TODO: review this in light of animation and the footer staying at the bottom. IJH 2014-09*/    
     overflow-y: scroll;
+
     height: 588px;
     padding-right:5px;
 }

@@ -2,25 +2,21 @@
 
 namespace models\languageforge\lexicon\commands;
 
-use libraries\shared\palaso\CodeGuard;
-use libraries\shared\palaso\exceptions\UserUnauthorizedException;
-use models\languageforge\lexicon\config\LexiconConfigObj;
-use models\languageforge\lexicon\LexEntryModel;
-use models\languageforge\lexicon\LexEntryListModel;
+use Palaso\Utilities\CodeGuard;
 use models\languageforge\lexicon\LexCommentModel;
 use models\languageforge\lexicon\LexCommentReply;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\mapper\JsonDecoder;
-use models\mapper\JsonEncoder;
 use models\shared\dto\RightsHelper;
 use models\shared\rights\Domain;
 use models\shared\rights\Operation;
 use models\shared\UserGenericVoteModel;
-use models\UserVoteModel;
 use models\mapper\Id;
 
-class LexCommentCommands {
-    public static function updateComment($projectId, $userId, $website, $params) {
+class LexCommentCommands
+{
+    public static function updateComment($projectId, $userId, $website, $params)
+    {
         CodeGuard::checkTypeAndThrow($params, 'array');
         $project = new LexiconProjectModel($projectId);
         $rightsHelper = new RightsHelper($userId, $project, $website);
@@ -47,10 +43,12 @@ class LexCommentCommands {
         } else {
             $comment->authorInfo->modifiedDate = new \DateTime();
         }
+
         return $comment->write();
     }
 
-    public static function updateReply($projectId, $userId, $website, $commentId, $params) {
+    public static function updateReply($projectId, $userId, $website, $commentId, $params)
+    {
         CodeGuard::checkTypeAndThrow($params, 'array');
         CodeGuard::checkEmptyAndThrow($commentId, 'commentId in updateReply()');
         $project = new LexiconProjectModel($projectId);
@@ -77,10 +75,12 @@ class LexCommentCommands {
             $replyId = $reply->id;
         }
         $comment->write();
+
         return $replyId;
     }
 
-    public static function plusOneComment($projectId, $userId, $commentId) {
+    public static function plusOneComment($projectId, $userId, $commentId)
+    {
         $project = new LexiconProjectModel($projectId);
         $comment = new LexCommentModel($project, $commentId);
 
@@ -93,7 +93,8 @@ class LexCommentCommands {
         }
     }
 
-    public static function updateCommentStatus($projectId, $commentId, $status) {
+    public static function updateCommentStatus($projectId, $commentId, $status)
+    {
         if (in_array($status, array(LexCommentModel::STATUS_OPEN, LexCommentModel::STATUS_RESOLVED, LexCommentModel::STATUS_TODO))) {
             $project = new LexiconProjectModel($projectId);
             $comment = new LexCommentModel($project, $commentId);
@@ -106,13 +107,14 @@ class LexCommentCommands {
     }
 
     /**
-     * @param string $projectId
-     * @param string $userId
-     * @param \libraries\shared\Website $website
-     * @param string $commentId
+     * @param  string                    $projectId
+     * @param  string                    $userId
+     * @param  \libraries\shared\Website $website
+     * @param  string                    $commentId
      * @throws \Exception
      */
-    public static function deleteComment($projectId, $userId, $website, $commentId) {
+    public static function deleteComment($projectId, $userId, $website, $commentId)
+    {
         // user must have DELETE_OWN privilege just to access this method
 
         $project = new LexiconProjectModel($projectId);
@@ -129,14 +131,15 @@ class LexCommentCommands {
     }
 
     /**
-     * @param string $projectId
-     * @param string $userId
-     * @param \libraries\shared\Website $website
-     * @param string $commentId
-     * @param string $replyId
+     * @param  string                    $projectId
+     * @param  string                    $userId
+     * @param  \libraries\shared\Website $website
+     * @param  string                    $commentId
+     * @param  string                    $replyId
      * @throws \Exception
      */
-    public static function deleteReply($projectId, $userId, $website, $commentId, $replyId) {
+    public static function deleteReply($projectId, $userId, $website, $commentId, $replyId)
+    {
         // if the userId is different from the author, throw if user does not have DELETE privilege
         $project = new LexiconProjectModel($projectId);
         $comment = new LexCommentModel($project, $commentId);
@@ -153,7 +156,4 @@ class LexCommentCommands {
         $comment->write();
     }
 
-
 }
-
-?>
