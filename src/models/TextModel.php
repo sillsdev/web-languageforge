@@ -1,87 +1,92 @@
 <?php
-
 namespace models;
 
 use models\mapper\Id;
 
-require_once(APPPATH . 'models/ProjectModel.php');
+require_once APPPATH . 'models/ProjectModel.php';
 
 class TextModelMongoMapper extends \models\mapper\MongoMapper
 {
-	/**
-	 * @var TextModelMongoMapper[]
-	 */
-	private static $_pool = array();
-	
-	/**
-	 * @param string $databaseName
-	 * @return TextModelMongoMapper
-	 */
-	public static function connect($databaseName) {
-		if (!isset(static::$_pool[$databaseName])) {
-			static::$_pool[$databaseName] = new TextModelMongoMapper($databaseName, 'texts');
-		}
-		return static::$_pool[$databaseName];
-	}
-	
+
+    /**
+     *
+     * @var TextModelMongoMapper[]
+     */
+    private static $_pool = array();
+
+    /**
+     *
+     * @param string $databaseName
+     * @return TextModelMongoMapper
+     */
+    public static function connect($databaseName)
+    {
+        if (! isset(static::$_pool[$databaseName])) {
+            static::$_pool[$databaseName] = new TextModelMongoMapper($databaseName, 'texts');
+        }
+        return static::$_pool[$databaseName];
+    }
 }
 
 class TextModel extends \models\mapper\MapperModel
 {
-	/**
-	 * @var ProjectModel;
-	 */
-	private $_projectModel;
-	
-	public function __construct($projectModel, $id = '')
-	{
-		$this->id = new Id();
-		$this->_projectModel = $projectModel;
-		$this->isArchived = false;
-		$databaseName = $projectModel->databaseName();
-		parent::__construct(TextModelMongoMapper::connect($databaseName), $id);
-	}
 
-	public static function remove($databaseName, $id) {
-		TextModelMongoMapper::connect($databaseName)->remove($id);
-	}
+    /**
+     *
+     * @var ProjectModel;
+     */
+    private $_projectModel;
 
-	public function listQuestions() {
-		$questionList = new QuestionListModel($this->_projectModel, $this->id->asString());
-		$questionList->read();
-		return $questionList;
-	}
+    public function __construct($projectModel, $id = '')
+    {
+        $this->id = new Id();
+        $this->_projectModel = $projectModel;
+        $this->isArchived = false;
+        $databaseName = $projectModel->databaseName();
+        parent::__construct(TextModelMongoMapper::connect($databaseName), $id);
+    }
 
-	public function listQuestionsWithAnswers() {
-		$questionList = new QuestionAnswersListModel($this->_projectModel, $this->id->asString());
-		$questionList->read();
-		return $questionList;
-	}
-	
-	public $id;
-	
-	public $title;
-	
-	public $audioUrl;
-	
-	public $content;
-	
-	public $isArchived;
-	
+    public static function remove($databaseName, $id)
+    {
+        TextModelMongoMapper::connect($databaseName)->remove($id);
+    }
+
+    public function listQuestions()
+    {
+        $questionList = new QuestionListModel($this->_projectModel, $this->id->asString());
+        $questionList->read();
+
+        return $questionList;
+    }
+
+    public function listQuestionsWithAnswers()
+    {
+        $questionList = new QuestionAnswersListModel($this->_projectModel, $this->id->asString());
+        $questionList->read();
+
+        return $questionList;
+    }
+
+    public $id;
+
+    public $title;
+
+    public $audioFileName;
+
+    public $content;
+
+    public $isArchived;
 }
 
 class TextListModel extends \models\mapper\MapperListModel
 {
 
-	public function __construct($projectModel)
-	{
-		parent::__construct(
-			TextModelMongoMapper::connect($projectModel->databaseName()),
-			array('title' => array('$regex' => '')),
-			array('title')
-		);
-	}
-	
+    public function __construct($projectModel)
+    {
+        parent::__construct(
+            TextModelMongoMapper::connect($projectModel->databaseName()),
+            array('title' => array('$regex' => '')),
+            array('title')
+        );
+    }
 }
-
-?>

@@ -28,7 +28,7 @@
 						<li><a href="/discuss">Discuss</a></li>
 					</ul>
 				</div>
-				
+
 				<?php if ($logged_in):?>
 					<div class="pull-right">
 						<ul id="header-nav" class="sf-menu">
@@ -53,12 +53,12 @@
 							</li>
 						</ul>
 					</div>
-				
+
 				<?php else:?>
 					<div id="account" class="pull-right">
 						<input type="button" value="Login" style="position:relative; top:-3px" class="login-btn left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/signup">Create an Account</a>
 					</div>
 				<?php endif;?>
-				
+
 			</div>
 		</div>

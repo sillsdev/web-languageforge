@@ -1,0 +1,44 @@
+<form class="form-horizontal dc-pictures">
+    <label class="control-label">{{config.label}}</label>
+    <div>
+        <div class="dc-picture" data-ng-repeat="picture in pictures">
+            <div data-ng-if="control.rights.canEditEntry() && control.state == 'edit'"
+                class="deleteX pull-right">
+                <i data-ng-click="deletePicture($index)" title="Delete Picture"
+                    class="icon-remove"></i>
+            </div>
+            <img data-ng-src="{{getPictureUrl(picture.fileName)}}" />
+            <div data-ng-if="!config.captionHideIfEmpty || control.show.emptyFields || (config.captionHideIfEmpty && fieldContainsData('multitext', picture.caption))">
+                <dc-multitext control="control"
+                    config="config"
+                    model="picture.caption">
+                </dc-multitext>
+            </div>
+        </div>
+        <div class="dc-picture" data-ng-show="upload.showAddPicture">
+            <div class="deleteX pull-right">
+                <i data-ng-click="upload.showAddPicture = false" title="Cancel Adding Picture" class="icon-remove" id="addCancel"></i>
+            </div>
+            <div class="drop-box" data-ng-file-drop="onFileSelect($files)"
+                data-ng-file-drop-available="dropSupported = true">
+                <h4>Drop an image file here</h4>
+                <p>or if you prefer...</p>
+                <input type="button" class="btn" value="Browse..."
+                    onclick="javascript:document.getElementById('imagefile').click();">
+                <input id="imagefile" type="file" style="display: none;"
+                    data-ng-file-select="onFileSelect($files)">
+            </div>
+            <div data-ng-show="! dropSupported">
+                HTML5 Drop File is not supported on this browser</div>
+            <div data-ng-show="upload.file != null">
+                <p><strong>{{upload.file.name}}</strong> {{upload.file.size | bytes }}</p>
+                <progressbar value="upload.progress" data-max="100.0"></progressbar>
+            </div>
+        </div>
+    </div>
+</form>
+<div data-ng-show="control.rights.canEditEntry() && control.state == 'edit' && ! upload.showAddPicture"
+    class="addItem">
+    <a data-ng-click="upload.showAddPicture = true; upload.progress = 0">Add Picture</a>
+</div>
+    

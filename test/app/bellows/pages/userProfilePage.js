@@ -36,8 +36,8 @@ var SfUserProfilePage = function() {
 	this.goldPigAvatarURL       = browser.baseUrl + '/images/shared/avatar/gold-pig-128x128.png';
 	
 	this.myAccountTab = {
-		avatarColor:      element(by.selectedOption('user.avatar_color')),
-		avatarShape:      element(by.selectedOption('user.avatar_shape')),
+		avatarColor:      element(by.model('user.avatar_color')),
+		avatarShape:      element(by.model('user.avatar_shape')),
 		avatar:           element(by.id('avatarRef')),
 		emailInput:       element(by.model('user.email')),
 		// Jamaican mobile phone number will move to Project scope
@@ -79,7 +79,7 @@ var SfUserProfilePage = function() {
 	this.aboutMeTab = {
 		fullName: element(by.model('user.name')),
 		age:      element(by.model('user.age')),
-		gender:   element(by.selectedOption('user.gender')),
+		gender:   element(by.model('user.gender')),
 		saveBtn:  element(by.partialButtonText('Save'))
 	};
 
