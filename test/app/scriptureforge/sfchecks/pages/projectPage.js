@@ -17,7 +17,7 @@ var SfProjectPage = function() {
 	
 	// getFirstCheckbox has to be a function because the .first() method will actually resolve the finder
 	this.getFirstCheckbox = function() {
-		return this.textList.first().findElement(by.css('input[type="checkbox"]'));
+		return this.textList.first().element(by.css('input[type="checkbox"]'));
 	};
 
 	// Invite-a-friend feature

@@ -2,99 +2,97 @@
 namespace libraries\shared\sms;
 
 use models\mapper\IdReference;
-use models\mapper\MongoMapper;
 use models\mapper\MapperModel;
 use models\mapper\Id;
-use libraries\shared\palaso\CodeGuard;
 
 class SmsModel extends MapperModel
 {
-	
-	const SMS_NEW     = 'new';
-	const SMS_SENDING = 'sending';
-	const SMS_SENT    = 'sent';
-	const SMS_FAIL    = 'fail';
-	
-	const SMS_TWILIO  = 'twilio';
-	
-	/**
+
+    const SMS_NEW     = 'new';
+    const SMS_SENDING = 'sending';
+    const SMS_SENT    = 'sent';
+    const SMS_FAIL    = 'fail';
+
+    const SMS_TWILIO  = 'twilio';
+
+    /**
 	 * @param string $database
 	 * @param string $id
 	 */
-	public function __construct($databaseName, $id = '') {
-		$this->id = new Id();
-		$this->userRef = new IdReference();
-		$this->dateCreated = new \DateTime();
-		$this->dateSent = new \DateTime();
-		$this->provider = self::SMS_TWILIO;
-		$this->state = self::SMS_NEW;
-		parent::__construct(SmsMongoMapper::connect($databaseName), $id);
-	}
-	
-	public static function remove($databaseName, $id) {
-		SmsMongoMapper::connect($databaseName)->remove($id);
-	}
+    public function __construct($databaseName, $id = '')
+    {
+        $this->id = new Id();
+        $this->userRef = new IdReference();
+        $this->dateCreated = new \DateTime();
+        $this->dateSent = new \DateTime();
+        $this->provider = self::SMS_TWILIO;
+        $this->state = self::SMS_NEW;
+        parent::__construct(SmsMongoMapper::connect($databaseName), $id);
+    }
 
-	/**
+    public static function remove($databaseName, $id)
+    {
+        SmsMongoMapper::connect($databaseName)->remove($id);
+    }
+
+    /**
 	 * @var Id
 	 */
-	public $id;
+    public $id;
 
-	/**
+    /**
 	 * @var IdReference
 	 */
-	public $userRef;
+    public $userRef;
 
-	/**
+    /**
 	 * @var string
 	 */
-	public $userName;
-	
-	/**
-	 * @var string
-	 */
-	public $from;
+    public $userName;
 
-	/**
+    /**
 	 * @var string
 	 */
-	public $to;
+    public $from;
 
-	/**
+    /**
 	 * @var string
 	 */
-	public $message;
-	
-	/**
+    public $to;
+
+    /**
 	 * @var string
 	 */
-	public $state;
-	
-	/**
+    public $message;
+
+    /**
 	 * @var string
 	 */
-	public $error;
-	
-	/**
+    public $state;
+
+    /**
+	 * @var string
+	 */
+    public $error;
+
+    /**
 	 * @var \DateTime
 	 */
-	public $dateCreated;
-	
-	/**
+    public $dateCreated;
+
+    /**
 	 * @var \DateTime
 	 */
-	public $dateSent;
-	
-	/**
+    public $dateSent;
+
+    /**
 	 * @var string
 	 */
-	public $provider;
-	
-	/**
+    public $provider;
+
+    /**
 	 * @var string
 	 */
-	public $providerInfo;
-	
+    public $providerInfo;
+
 }
-
-?>

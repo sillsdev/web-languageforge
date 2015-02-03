@@ -33,8 +33,8 @@ describe('User Profile E2E Test', function() {
 				var expectedColor = '';
 				
  				expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(browser.baseUrl + constants.avatar);
-				expect(userProfile.myAccountTab.avatarColor.getText()).toBe('Select a Color...');
-				expect(userProfile.myAccountTab.avatarShape.getText()).toBe('Choose an animal...');
+				expect(userProfile.myAccountTab.avatarColor.$('option:checked').getText()).toBe('Select a Color...');
+				expect(userProfile.myAccountTab.avatarShape.$('option:checked').getText()).toBe('Choose an animal...');
 				expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value')).toEqual('');
 				expect(userProfile.myAccountTab.emailBtn.isSelected());
 			});
@@ -54,7 +54,7 @@ describe('User Profile E2E Test', function() {
 				
 				expect(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(expectedFullname);
 				expect(userProfile.aboutMeTab.age.getAttribute('value')).toEqual(expectedAge);
-				expect(userProfile.aboutMeTab.gender.getText()).toBe(expectedGender);
+				expect(userProfile.aboutMeTab.gender.$('option:checked').getText()).toBe(expectedGender);
 			});
 			
 			it('Update and store "My Account" settings', function() {
@@ -72,7 +72,7 @@ describe('User Profile E2E Test', function() {
 					var expectedAvatar   = userProfile.goldPigAvatarURL;
 				};
 
-				userProfile.myAccountTab.selectColor(newColor);
+				userProfile.myAccountTab.selectColor('^' + newColor + '$'); // Ensure "Blue" won't match "Steel Blue", etc.
 				userProfile.myAccountTab.selectShape(newShape);
 				
 				userProfile.myAccountTab.updateMobilePhone(newMobilePhone);
@@ -90,8 +90,8 @@ describe('User Profile E2E Test', function() {
 
 				// Verify values.
  				expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(expectedAvatar);
-				expect(userProfile.myAccountTab.avatarColor.getText()).toBe(newColor);
-				expect(userProfile.myAccountTab.avatarShape.getText()).toBe(newShape);
+				expect(userProfile.myAccountTab.avatarColor.$('option:checked').getText()).toBe(newColor);
+				expect(userProfile.myAccountTab.avatarShape.$('option:checked').getText()).toBe(newShape);
 				expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value')).toEqual(newMobilePhone);
 				expect(userProfile.myAccountTab.bothBtn.isSelected());
 			});
@@ -100,14 +100,17 @@ describe('User Profile E2E Test', function() {
 				userProfile.getAboutMe();
 
 				// New user profile to put in
+				var newFullName;
+				var newAge;
+				var newGender;
 				if (expectedUsername == constants.memberUsername) {
-					var newFullName = 'abracadabra';
-					var newAge      = '3.1415';
-					var newGender   = 'Female';
+					newFullName = 'abracadabra';
+					newAge      = '3.1415';
+					newGender   = 'Female';
 				} else if (expectedUsername == constants.managerUsername) {
-					var newFullName = 'MrAdmin';
-					var newAge      = '33.33';
-					var newGender   = 'Male';
+					newFullName = 'MrAdmin';
+					newAge      = '33.33';
+					newGender   = 'Male';
 				};
 
 				// Modify About me
@@ -125,7 +128,7 @@ describe('User Profile E2E Test', function() {
 
 				expect(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(newFullName);
 				expect(userProfile.aboutMeTab.age.getAttribute('value')).toEqual(newAge);
-				expect(userProfile.aboutMeTab.gender.getText()).toBe(newGender);
+				expect(userProfile.aboutMeTab.gender.$('option:checked').getText()).toBe(newGender);
 			});
 		});
 	});

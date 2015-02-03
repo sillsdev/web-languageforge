@@ -41,11 +41,11 @@ describe('E2E Projects List App - Normal User', function() {
 
 // Two helper functions to avoid duplicating the same checks in admin test below
 var shouldProjectBeLinked = function(projectName, projectRow, bool) {
-	expect(projectRow.findElement(by.elemMatches('a', projectName)).isDisplayed()).toBe(bool);
+	expect(projectRow.element(by.elemMatches('a', projectName)).isDisplayed()).toBe(bool);
 };
 var shouldProjectHaveButtons = function(projectRow, bool) {
-	var addAsManagerBtn = projectRow.findElement(by.partialButtonText("Add me as Manager"));
-	var addAsMemberBtn = projectRow.findElement(by.partialButtonText("Add me as Contributor"));
+	var addAsManagerBtn = projectRow.element(by.partialButtonText("Add me as Manager"));
+	var addAsMemberBtn = projectRow.element(by.partialButtonText("Add me as Contributor"));
 	expect(addAsManagerBtn.isDisplayed()).toBe(bool);
 	expect(addAsMemberBtn.isDisplayed()).toBe(bool);
 };
@@ -101,7 +101,7 @@ describe('E2E Projects List App - System Admin User', function() {
 			shouldProjectBeLinked(constants.otherProjectName, projectRow, false);
 			shouldProjectHaveButtons(projectRow, true);
 			// Now add the admin back to the project
-			projectRow.findElement(by.partialButtonText("Add me as Manager")).click();
+			projectRow.element(by.partialButtonText("Add me as Manager")).click();
 		});
 		// And the buttons should go away after one of them is clicked
 		projectsPage.findProject(constants.otherProjectName).then(function(projectRow) {

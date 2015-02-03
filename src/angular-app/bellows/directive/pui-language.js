@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('palaso.ui.language', [])
-  
-  // Palaso UI Select Language 
+
+  // Palaso UI Select Language
   .directive('puiSelectLanguage', [function() {
     return {
       restrict : 'E',
@@ -16,13 +16,28 @@ angular.module('palaso.ui.language', [])
         puiShowLinks : "="
       },
       controller: ['$scope', '$filter', function($scope, $filter) {
-        
+
         // TODO Enhance. Could use infinite scrolling since search can return large results. See example here http://jsfiddle.net/W6wJ2/. IJH 2014-02
         $scope.currentCode = '';
         $scope.puiAddDisabled = true;
         $scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
         $scope.allLanguages = InputSystems.languages();
-        $scope.languages = $scope.allLanguages;
+        // Sort languages with two-letter codes first, then three-letter codes
+        $scope.buildLanguageList = function() {
+          var result = [];
+          angular.forEach($scope.allLanguages, function(language) {
+            if (angular.isDefined(language.code.two)) {
+              result.push(language);
+            }
+          });
+          angular.forEach($scope.allLanguages, function(language) {
+            if (angular.isUndefined(language.code.two)) {
+              result.push(language);
+            }
+          });
+          return result;
+        };
+        $scope.languages = $scope.buildLanguageList();
         $scope.suggestedLanguages = [];
         angular.forEach($scope.puiSuggestedLanguageCodes, function(code) {
           angular.forEach($scope.allLanguages, function (language) {
@@ -32,7 +47,7 @@ angular.module('palaso.ui.language', [])
             }
           });
         });
-        
+
         $scope.search = function search() {
           $scope.filterText = $scope.searchText;
           if ($scope.searchText == '*') {
@@ -43,24 +58,24 @@ angular.module('palaso.ui.language', [])
           $scope.searchText = '';
           $scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
           delete $scope.languages;
-          $scope.languages = $scope.allLanguages;
+          $scope.languages = $scope.buildLanguageList();
           $scope.showSuggestions = false;
         };
-        
+
         $scope.selectLanguage = function(language) {
           $scope.currentCode = language.code.three;
           $scope.puiCode = (language.code.two) ? language.code.two : language.code.three;
           $scope.puiLanguage = language;
           $scope.puiAddDisabled = false;
         };
-        
+
         $scope.suggest = function suggest() {
           delete $scope.languages;
-          $scope.languages = $scope.suggestedLanguages;
+          $scope.languages = $scope.buildLanguageList();
           $scope.filterText = '';
           $scope.showSuggestions = true;
         };
-        
+
       }]
     };
   }])

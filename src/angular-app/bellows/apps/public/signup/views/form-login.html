@@ -14,12 +14,12 @@
 	</div>
 	<p>An account with this <b>User Name</b> and <b>Email</b> already exists on another related site that this site also uses to register accounts.</p>
 	<p translate="If this is your account, you can activate it to use on this site. Simply login to activate it now."></p>
+	<a href="/auth/forgot_password" style="margin-top:20px; color:darkorange">Forgot password?</a>
 	<div class="well">
 		<div class="control-group">
 			<label class="control-label" for="username" translate="User Name"></label>
 			<div class="controls">
 				<div class="input-prepend">
-					<span class="add-on">@</span>
 					<input class="span3" id="username"
 						disabled type="text" name="username"
 						placeholder="{{'pick a username' | translate}}" 
@@ -31,7 +31,6 @@
 			<label class="control-label" for="email" translate="Email"></label>
 			<div class="controls">
 				<div class="input-prepend">
-					<span class="add-on"><i class="icon-envelope"></i></span>
 					<input class="span3" id="email"
 						disabled type="email" name="email"
 						placeholder="{{'your email' | translate}}" data-ng-model="record.email" />
@@ -42,7 +41,6 @@
 			<label class="control-label" for="password" translate="Password"></label>
 			<div class="controls">
 				<div class="input-prepend">
-					<span class="add-on"><i class="icon-key"></i></span>
 					<input class="span3" id="password" autofocus
 						required type="password" name="password"
 						data-ng-model="record.password" />

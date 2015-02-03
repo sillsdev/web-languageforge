@@ -3,32 +3,31 @@ namespace models\lex;
 
 use models\mapper\ArrayOf;
 
-class LexEntryId {
+class LexEntryId
+{
+    /**
+     * @var string
+     */
+    public $id;
 
-	/**
-	 * @var string
-	 */
-	public $id;
-	
-	/**
-	 * @var string
-	 */
-	public $mercurialSha;
-	
+    /**
+     * @var string
+     */
+    public $mercurialSha;
+
 }
 
-class LexEntryIds {
+class LexEntryIds
+{
+    public $ids;
 
-	public $ids;
-	
-	public function __construct() {
-		$this->ids = new ArrayOf(
-			function($data) {
-				return new LexEntryId();
-			}
-		);
-	}
-	
+    public function __construct()
+    {
+        $this->ids = new ArrayOf(
+            function ($data) {
+                return new LexEntryId();
+            }
+        );
+    }
+
 }
-
-?>

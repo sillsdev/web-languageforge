@@ -1,60 +1,94 @@
 <div data-ng-show="finishedLoading">
-<h2 style="font-weight:normal">Questions for {{text.title}}</h2>
-<form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-	<button data-ng-show="rights.archive" class="btn" data-ng-disabled="selected.length == 0" data-ng-click="archiveQuestions()"><i class="icon-archive icon-large"></i>Archive Questions</button>
-	<button data-ng-show="rights.createTemplate" data-ng-disabled="selected.length == 0 || selected.length > 1" class="btn" data-ng-click="makeQuestionIntoTemplate()"><i class="icon-pushpin"></i>Make Template</button>
-	<button data-ng-show="rights.create" class="btn" data-ng-click="newQuestionCollapsed = !newQuestionCollapsed"><i class="icon-plus"></i>Add New Question</button>
-	<a id="text_settings_button" data-ng-show="rights.editOther" class="btn pull-right" href="#/{{textId}}/settings"><i class="icon-cog icon-large" data-tooltip="Text Settings"></i></a>
-</form>
-<div class="new-item" data-collapse="newQuestionCollapsed">
-	<form class="well span11" name="newQuestionForm">
-	<fieldset class="span4">
-	<label>Question</label>
-	<textarea required data-ng-model="questionDescription" class="span4" rows="4" placeholder="The Question"></textarea>
-	<label></label>
-	<input type="text" data-ng-model="questionTitle" class="span4" maxlength="35" placeholder="One-line Summary For Title" />
-	<label></label>
-	<label><input title="A summary title is required for templates" data-ng-disabled="!questionTitle" type="checkbox" data-ng-model="saveAsTemplate" data-ng-show="rights.createTemplate" /> Also save as template</label>
-	<a class="pull-right" data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">Cancel</a>
-	<button type="submit" class="btn" data-ng-disabled="newQuestionForm.$invalid" data-ng-click="addQuestion()"><i class="icon-ok"></i>Save</button>
-	</fieldset>
-	<fieldset class="span4">
-		<label>Templates</label>
-		<select data-ng-model="template" data-ng-options="t.title for t in templates"></select>
-	</fieldset>
-	</form>
-</div>
-<hr />
-
-<div class="row">
-	<div class="span5" oncopy="return false;">
-		<h2 class="pull-left" data-ng-show="text.audioUrl && audioReady">
-			<a data-sgw-sound-player data-state="state" href="text.audioUrl"><i data-ng-class="$parent.audioIcon()" data-tooltip="Play audio"></i></a>
-			<a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}"><i class="icon-download" data-tooltip="Download audio"></i></a>
-		</h2>
-		<h2>{{text.title}}</h2>
-		<div id="text" data-ng-bind-html="text.content"> </div>
-	</div>
-	<div class="span7">
-		<listview hide-if-empty="true" search="queryQuestions()" items="questions" visible-items="visibleQuestions" select="">
-		<div data-ng-repeat="question in visibleQuestions" class="details-row">
-			<ul class="inline" data-ng-class="{active: isSelected(question)}">
-				<li data-ng-show="rights.archive"><input type="checkbox" data-ng-click="updateSelection($event, question)" /></li>
-				<li>
-					<a class="span3" href="{{question.url}}">
-						<span class="larger-text">{{question.calculatedTitle}}</span>
-					</a>
-				</li>
-				<li><a href="{{question.url}}">
-					<div class="attention-block">
-						<span class="subtitle">{{question.answerCount}} answers</span>
-					</div>
-				</a></li>
-				<li>{{question.responseCount}} responses</li>
-			</ul>
-			<hr />
-		</div>
-	</listview>
-	</div>
-</div>
+    <h2 style="font-weight: normal">Questions for {{text.title}}</h2>
+    <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+        <button data-ng-show="rights.archive" class="btn"
+            data-ng-disabled="selected.length == 0"
+            data-ng-click="archiveQuestions()">
+            <i class="icon-archive icon-large"></i>Archive Questions
+        </button>
+        <button data-ng-show="rights.createTemplate"
+            data-ng-disabled="selected.length == 0 || selected.length > 1"
+            class="btn" data-ng-click="makeQuestionIntoTemplate()">
+            <i class="icon-pushpin"></i>Make Template
+        </button>
+        <button data-ng-show="rights.create" class="btn"
+            data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">
+            <i class="icon-plus"></i>Add New Question
+        </button>
+        <a id="text_settings_button" data-ng-show="rights.editOther"
+            class="btn pull-right" href="#/{{textId}}/settings">
+            <i class="icon-cog icon-large" data-tooltip="Text Settings"></i></a>
+    </form>
+    <div class="new-item" data-collapse="newQuestionCollapsed">
+        <form class="well span11" name="newQuestionForm">
+            <fieldset class="span4">
+                <label>Question</label>
+                <textarea required data-ng-model="questionDescription"
+                    class="span4" rows="4" placeholder="The Question"></textarea>
+                <label></label>
+                <input type="text" data-ng-model="questionTitle"
+                    class="span4" maxlength="35"
+                    placeholder="One-line Summary For Title" />
+                <label></label>
+                <label>
+                    <input title="A summary title is required for templates"
+                        data-ng-disabled="!questionTitle" type="checkbox"
+                        data-ng-model="saveAsTemplate"
+                        data-ng-show="rights.createTemplate" />
+                    Also save as template</label>
+                <a class="pull-right"
+                    data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">Cancel</a>
+                <button type="submit" class="btn"
+                    data-ng-disabled="newQuestionForm.$invalid"
+                    data-ng-click="addQuestion()">
+                    <i class="icon-ok"></i>Save
+                </button>
+            </fieldset>
+            <fieldset class="span4">
+                <label>Templates</label>
+                <select data-ng-model="template"
+                    data-ng-options="t.title for t in templates"></select>
+            </fieldset>
+        </form>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="span5" oncopy="return false;">
+            <h2 class="pull-left" data-ng-show="text.audioFileName && audioReady">
+                <a data-sgw-sound-player data-state="state" href="audioPlayUrl">
+                    <i data-ng-class="$parent.audioIcon()"
+                        data-tooltip="Play audio"></i></a>
+                <a data-ng-show="project.allowAudioDownload"
+                    data-ng-href="{{audioDownloadUrl}}">
+                    <i class="icon-download" data-tooltip="Download audio"></i></a>
+            </h2>
+            <h2>{{text.title}}</h2>
+            <div id="text" data-ng-bind-html="text.content"></div>
+        </div>
+        <div class="span7">
+            <listview hide-if-empty="true" search="queryQuestions()"
+                items="questions" visible-items="visibleQuestions" select="">
+                <div data-ng-repeat="question in visibleQuestions"
+                    class="details-row">
+                    <ul class="inline"
+                        data-ng-class="{active: isSelected(question)}">
+                        <li data-ng-show="rights.archive">
+                            <input type="checkbox"
+                                data-ng-click="updateSelection($event, question)" /></li>
+                        <li><a class="span3" href="{{question.url}}">
+                             <span class="larger-text">{{question.calculatedTitle}}</span>
+                        </a></li>
+                        <li><a href="{{question.url}}">
+                            <div class="attention-block">
+                                <span class="subtitle">{{question.answerCount}}
+                                    answers</span>
+                            </div>
+                        </a></li>
+                        <li>{{question.responseCount}} responses</li>
+                    </ul>
+                    <hr />
+                </div>
+            </listview>
+        </div>
+    </div>
 </div>

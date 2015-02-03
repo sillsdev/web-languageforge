@@ -2,8 +2,6 @@
 
 namespace models\languageforge\lexicon\config;
 
-class LexUserViewConfig extends LexRoleViewConfig {
-	
+class LexUserViewConfig extends LexRoleViewConfig
+{
 }
-
-?>
