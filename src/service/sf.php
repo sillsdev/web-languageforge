@@ -33,6 +33,8 @@ use models\ProjectModel;
 use models\QuestionModel;
 use models\UserModel;
 use models\UserProfileModel;
+use models\languageforge\SemDomTransProjectModel;
+use models\languageforge\semdomtrans\dto\SemDomTransEditDto;
 
 require_once APPPATH . 'vendor/autoload.php';
 require_once APPPATH . 'config/sf_config.php';
@@ -672,8 +674,12 @@ class sf
     /*
      * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
      */
-    public function semdom_editor_dto() {
-    	
+    public function semdom_editor_dto($projectCode) {
+    	$project = new SemDomTransProjectModel();
+   		$project->readByProperties(array(
+        'projectCode' => $projectCode
+   		 ));
+    	return SemDomTransEditDto::encode($project->id->asString(), null, null);
     }
     
 

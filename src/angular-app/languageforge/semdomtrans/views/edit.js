@@ -6,37 +6,31 @@ angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services
 function($scope, $stateParams, semdomEditApi, sessionService, modal, notice) {
 	$scope.items = [];
 	$scope.selectedTab = 0;
+	$scope.currentQuestionPos = 0;
 	$scope.tabDisplay = {"val": '0'};
 	$scope.domainsFiltered = [];
 	
-	semdomEditApi.editorDto($stateParams.source, $stateParams.target, function(result) {
+	semdomEditApi.editorDto("semdom-es-7", function(result) {
 		if (result.ok) {
 			$scope.items = result.data.items;
-			for (var i = 0; i < $scope.items.length; i++) {
-				if ($scope.items[i].key.length == 1) {
-					$scope.domainsFiltered.push($scope.items[i]);
-				}
-			}
-			
-			$scope.currentItem = $scope.items[0];			
-			
+			$scope.currentItem = $scope.items[0];
 		}
 	});
-	
 	
 	$scope.setTab = function(val) {
 		$scope.selectedTab = val;
 	}
 	
 	$scope.getPreviousQuestion = function() {
-		$scope.currentItem.questions.position--;
+		$scope.currentQuestionPos--;
 	}
 	
 	$scope.getNextQuestion = function() {
-		$scope.currentItem.questions.position++;
+		$scope.currentQuestionPos++;
 	}		
 	
 	$scope.changeTerm = function(key) {
+			$scope.currentQuestionPos = 0;
 			for (var i = 0; i < $scope.items.length; i++) {
 				if ($scope.items[i].key == key) {
 					$scope.currentItem = $scope.items[i];

@@ -26,7 +26,7 @@ $changeDatabase = false;
 $xml = simplexml_load_file($argv[1]);
 
 $lang = "en";
-$version = "1";
+$version = "7";
 
 $projectModel = new SemDomTransProjectModel();
 
@@ -41,14 +41,13 @@ $projectModel->projectCode = "semdom-$lang-$version";
 $previousProject = new SemDomTransProjectModel();
 $previousProject->readByProperties(array("languageIsoCode" => $projectModel->languageIsoCode, "semdomVersion" => $projectModel->semdomVersion));
 
-
 if ($previousProject->id->asString() == "")
 {
 	//create project
 	$projectModel->write();
 		
 	// loop over each semdom item and create a new item model.  Write it to the database
-	$importer = new SemDomXMLImporter($argv[1], $projectModel, true);
+	$importer = new SemDomXMLImporter($argv[1], $projectModel, false);
 	$importer->run();
 } else {
 	echo "Project exists already" . "\n";

@@ -7,14 +7,14 @@
 	    		</tr>
 			    <tr>
 				    <td> Name: </td>
-				    <td> {{$parent.currentItem.term.name}}</td>
-				    <td> <input ng-model="$parent.currentItem.term.nameTrans"> </td>
+				    <td> {{$parent.currentItem.name.source}}</td>
+				    <td> <input ng-model="$parent.currentItem.name.translation"> </td>
 			    </tr>
 			     <tr>
 			     <tr>
 				    <td> Description: </td>
-				    <td> {{$parent.currentItem.term.description}}</td>
-			        <td> <textarea rows="4" ng-model="$parent.currentItem.term.translation"> </textarea></td>    
+				    <td> {{$parent.currentItem.description.source}}</td>
+			        <td> <textarea rows="4" ng-model="$parent.currentItem.description.translation"> </textarea></td>    
 			    </tr>
 			   			   
 			</table>
@@ -25,14 +25,13 @@
 		    	<tr>
 		    		<th> Source </th>
 		    		<th> Translation </th>
-		    	<tr ng-repeat="searchKey in $parent.currentItem.term.searchKeys">
-		    		<td>{{searchKey.searchKey}}</td>
+		    	<tr ng-repeat="searchKey in $parent.currentItem.searchKeys">
+		    		<td>{{searchKey.source}}</td>
 		    		<td><textarea rows="2" ng-model="searchKey.translation"> </textarea></td>
 		    	</tr>
 		    	
 		    </table>
 		    
 		    <br />
-		    <br />
-    		Translated: <input type='checkbox'  ng-model="$parent.currentItem.term.translated" /> 
+		    <br /> 
 </div>	

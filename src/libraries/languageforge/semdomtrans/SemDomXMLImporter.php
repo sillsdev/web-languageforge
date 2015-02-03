@@ -7,7 +7,7 @@ use models\languageforge\SemDomTransProjectModel;
 
 use models\languageforge\semdomtrans\SemDomTransItemModel;
 use models\languageforge\semdomtrans\SemDomTransQuestion;
-
+use models\mapper\ArrayOf;
 class SemDomXMLImporter {
 	
 	private $_projectModel;
@@ -51,23 +51,31 @@ class SemDomXMLImporter {
 		$guid = (string)$domainNode['guid'];
 		$name = $this->_getPathVal($domainNode->xpath("Name/AUni[@ws='{$this->_lang}']"));
 		
-		$abbreviation = (string)$domainNode->xpath("Abbreviation/AUni[@ws='{$this->_lang}']")[0];
+		$abbreviation = $this->_getPathVal($domainNode->xpath("Abbreviation/AUni[@ws='{$this->_lang}']"));
 
-		$description = (string) $domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']")[0];
+		$description = $this->_getPathVal($domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']"));
 		
-		$questionsXML = $domainNode->Questions->children();
 		
-		$questions = [];
-		$searchKeys = [];
+		$questions = new ArrayOf(function ($data) {
+        	return new SemDomTransQuestion();
+        });      
+		$searchKeys = new ArrayOf(function ($data) {
+        	return new SemDomTransTranslatedForm();
+        });      
 	
-		if (count($questions))
+
+		if (property_exists($domainNode, 'Questions'))
 		{
+			$questionsXML = $domainNode->Questions->children();
+			
 			// parse nested questions
 			foreach($questionsXML as $questionXML) {
 				$question = $this->_getPathVal($questionXML->xpath("Question/AUni[@ws='{$this->_lang}']"));
 				$terms = $this->_getPathVal($questionXML->xpath("ExampleWords/AUni[@ws='{$this->_lang}']"));
-				array_push($questions, new SemDomTransQuestion($question, $terms));
-				array_push($searchKeys, new SemDomTransTranslatedForm($terms));
+				$q = new SemDomTransQuestion($question, $terms);
+				$questions[] = $q;
+				$sk = new SemDomTransTranslatedForm($terms);
+				$searchKeys[] = $sk;
 			}
 		}				
 		
@@ -76,10 +84,11 @@ class SemDomXMLImporter {
 		$itemModel->readByProperty('xmlGuid', $guid);
 		
 		$itemModel->name = new SemDomTransTranslatedForm($name);
-		$itemModel->key = new SemDomTransTranslatedForm($abbreviation);
+		$itemModel->key = $abbreviation;
 		$itemModel->description = new SemDomTransTranslatedForm($description);
 		$itemModel->questions = $questions;
 		$itemModel->searchKeys = $searchKeys;
+		//print_r($itemModel->questions);
 		
 		if ($this->_runForReal) {
 			$itemModel->write();

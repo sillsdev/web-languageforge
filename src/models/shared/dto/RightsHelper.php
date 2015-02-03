@@ -118,6 +118,8 @@ class RightsHelper
 
             // User Role (Project Context)
             case 'user_sendInvite':
+            case 'semdom_editor_dto':
+            	return true;
             case 'message_markRead':
             case 'project_pageDto':
             case 'lex_projectDto':
