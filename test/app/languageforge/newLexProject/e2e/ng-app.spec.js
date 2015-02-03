@@ -245,8 +245,25 @@ describe('E2E testing: New Lex Project wizard app', function() {
   describe('Verify Data page', function() {
     
     it('displays stats', function() {
+      expect(page.verifyDataPage.title.getText()).toEqual('Verify Data');
       expect(page.verifyDataPage.entriesImported.getText()).toEqual('2 entries were found in the initial data.');
       page.formStatus.expectHasNoError();
+    });
+    
+    // regression avoidance test - should not redirect when button is clicked 
+    it('displays non-critical errors', function() {
+      expect(page.verifyDataPage.importErrors.isPresent()).toBe(true);
+      expect(page.verifyDataPage.importErrors.isDisplayed()).toBe(false);
+      page.verifyDataPage.nonCriticalErrorsButton.click();
+      expect(page.verifyDataPage.title.getText()).toEqual('Verify Data');
+      page.formStatus.expectHasNoError();
+      expect(page.verifyDataPage.importErrors.isDisplayed()).toBe(true);
+      expect(page.verifyDataPage.importErrors.getText()).toContain("range file 'TestProj.lift-ranges' was not found");
+      page.verifyDataPage.nonCriticalErrorsButton.click();
+      
+      // sleep necessary for slide-up animation to complete - IJH 2015-01
+      browser.sleep(200);
+      expect(page.verifyDataPage.importErrors.isDisplayed()).toBe(false);
     });
     
     it('can go to lexicon', function() {

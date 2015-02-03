@@ -49,7 +49,10 @@ function NewLexProjectPage() {
   
   // step 3: verify data
   this.verifyDataPage = {};
+  this.verifyDataPage.title = element(by.tagName('h3'));
+  this.verifyDataPage.nonCriticalErrorsButton = element(by.id('nonCriticalErrorsButton'));
   this.verifyDataPage.entriesImported = element(by.binding('newProject.entriesImported'));
+  this.verifyDataPage.importErrors = element(by.binding('newProject.importErrors'));
   
   // step 3 alternate: primary language
   this.primaryLanguagePage = {};
