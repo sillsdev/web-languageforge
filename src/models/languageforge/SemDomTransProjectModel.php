@@ -10,6 +10,7 @@ use models\languageforge\semdomtrans\SemDomTransItemListModel;
 use models\ProjectModel;
 
 use models\mapper\IdReference;
+use models\languageforge\semdomtrans\SemDomTransQuestion;
 
 class SemDomTransProjectModel extends LfProjectModel {
     public function __construct($id = '')
@@ -54,18 +55,31 @@ class SemDomTransProjectModel extends LfProjectModel {
     /**
      * Create a new project pre-loaded with all semantic domain items
      */
-    public static function createPreFilled() {
-    	$latestSemdomVersion = 4;
+    public static function createPreFilled($sourceProject, $languageIsoCode, $latestSemdomVersion) {
+   	
     	$project = new SemDomTransProjectModel();
-    	$englishProject = SemDomTransProjectModel::readByProperties(array('languageIsoCode' => 'en', 'semdomVersion' => $latestSemdomVersion));
+    	$project->languageIsoCode = $languageIsoCode;
+    	$project->semdomVersion = $latestSemdomVersion;
+    	$project->sourceLanguageProjectId = $sourceProject->id->asString();
+    	$project->projectCode = "semdom-$languageIsoCode-$latestSemdomVersion";
     	$projectId = $project->write();
-    	$englishItems = new SemDomTransItemListModel($englishProject);
+    	
+    	$englishItems = new SemDomTransItemListModel($sourceProject);
     	$englishItems->read();
     	foreach ($englishItems->entries as $item) {
     		$newItem = new SemDomTransItemModel($project);
     		$newItem->key = $item['key'];
+    		foreach ($item['questions'] as $q) {
+    			$newq = new SemDomTransQuestion(); 
+    			$newItem->questions[] = $newq;
+    		}
+    		foreach ($item['searchKeys'] as $sk) {
+    			$newsk = new SemDomTransQuestion();
+    			$newItem->searchKeys[] = $newsk;
+    		}
     		$newItem->write();
     	}
+    	
     }
     
     
