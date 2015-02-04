@@ -9,13 +9,6 @@ require_once('../scriptConfig.php');
 
 use models\ProjectListModel;
 
-
-$index = 0;
-
-
-$projectList = new ProjectListModel();
-$projectList->read();
-
 // accept command line flag to actually change the database
 // accept filepath of the import file (xml)
 // accept semdom version number
@@ -25,15 +18,16 @@ $changeDatabase = false;
 // process xml into a php data structure, organized by language
 $xml = simplexml_load_file($argv[1]);
 
-$lang = "en";
-$version = "7";
-
+$lang = $argv[2];
+$version = $argv[3];
+$testMode = true;
 $projectModel = new SemDomTransProjectModel();
 
 // todo: check that we are setting the right "language" property
 $projectModel->languageIsoCode = $lang;
 $projectModel->semdomVersion = $version;
 $projectModel->projectCode = "semdom-$lang-$version";
+$projectModel->sourceXMLPath = $argv[1];
 
 // loop over the set of languages to import
 
@@ -44,7 +38,8 @@ $previousProject->readByProperties(array("languageIsoCode" => $projectModel->lan
 if ($previousProject->id->asString() == "")
 {
 	//create project
-	$projectModel->write();
+	if (!$testMode)
+		$projectModel->write();
 		
 	// loop over each semdom item and create a new item model.  Write it to the database
 	$importer = new SemDomXMLImporter($argv[1], $projectModel, false);
