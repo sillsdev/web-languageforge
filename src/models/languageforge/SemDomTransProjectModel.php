@@ -53,6 +53,12 @@ class SemDomTransProjectModel extends LfProjectModel {
     public $semdomVersion;
     
     /**
+     * The path for the source XML file from which the project was imported
+     * @var string
+     */
+    public $sourceXMLPath;
+    
+    /**
      * Create a new project pre-loaded with all semantic domain items
      */
     public static function createPreFilled($sourceProject, $languageIsoCode, $latestSemdomVersion) {

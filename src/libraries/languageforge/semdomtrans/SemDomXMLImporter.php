@@ -33,7 +33,13 @@ class SemDomXMLImporter {
 	}
 	
 	public function run() {
-		foreach($this->_xml->SemanticDomainList->CmPossibilityList->Possibilities->children() as $domainNode) {
+		/*
+		* For English: 
+		* $possibilities = $this->_xml->SemanticDomainList->CmPossibilityList->Possibilities;
+		*/
+		
+		$possibilities = $this->_xml->xpath("List[@field='SemanticDomainList']")[0]->Possibilities;
+		foreach($possibilities->children() as $domainNode) {
 			$this->_processDomainNode($domainNode);
 		}
 	}
@@ -53,8 +59,8 @@ class SemDomXMLImporter {
 		
 		$abbreviation = $this->_getPathVal($domainNode->xpath("Abbreviation/AUni[@ws='{$this->_lang}']"));
 
-		$description = $this->_getPathVal($domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']"));
-		
+		$description = (string) $domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']")[0];
+				
 		
 		$questions = new ArrayOf(function ($data) {
         	return new SemDomTransQuestion();
@@ -85,7 +91,7 @@ class SemDomXMLImporter {
 		
 		$itemModel->name = new SemDomTransTranslatedForm($name);
 		$itemModel->key = $abbreviation;
-		$itemModel->description = new SemDomTransTranslatedForm($description);
+		//$itemModel->description = new SemDomTransTranslatedForm($description);
 		$itemModel->questions = $questions;
 		$itemModel->searchKeys = $searchKeys;
 		//print_r($itemModel->questions);
