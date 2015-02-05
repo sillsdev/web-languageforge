@@ -25,35 +25,37 @@ class FixTextAudio
         // foreach existing project
         foreach ($projectlist->entries as $projectParams) {
             $projectId = $projectParams['id'];
-            $project = new SfchecksProjectModel($projectId);
-            $textlist = new TextListModel($project);
-            $textlist->read();
-
-            // foreach text in project
-            foreach ($textlist->entries as $textParams) {
-                $textsExamined++;
-                $textId = $textParams['id'];
-                $legacyText = new TextModel_sf_v0_9_18($project, $textId);
-                $fileName = '';
-                if ($legacyText->audioUrl) {
-                    $text = new TextModel($project, $textId);
-                    if (! $testMode) {
-                        if (! $text->audioFileName) {
-
-                            // legacy audioUrl format "assets/<projectId>/<textId>_<fileName>"
-                            $fileNamePrefix = $textId . '_';
-                            $pos = strpos($legacyText->audioUrl, $fileNamePrefix);
-                            $text->audioFileName = substr($legacyText->audioUrl, $pos + strlen($fileNamePrefix));
+            if ($projectParams['projectName'] == 'Jamaican Psalms') {
+                $project = new SfchecksProjectModel($projectId);
+                $textlist = new TextListModel($project);
+                $textlist->read();
+    
+                // foreach text in project
+                foreach ($textlist->entries as $textParams) {
+                    $textsExamined++;
+                    $textId = $textParams['id'];
+                    $legacyText = new TextModel_sf_v0_9_18($project, $textId);
+                    $fileName = '';
+                    if ($legacyText->audioUrl) {
+                        $text = new TextModel($project, $textId);
+                        if (! $testMode) {
+                            if (! $text->audioFileName) {
+    
+                                // legacy audioUrl format "assets/<projectId>/<textId>_<fileName>"
+                                $fileNamePrefix = $textId . '_';
+                                $pos = strpos($legacyText->audioUrl, $fileNamePrefix);
+                                $text->audioFileName = substr($legacyText->audioUrl, $pos + strlen($fileNamePrefix));
+                            }
+                            $text->write();
                         }
-                        $text->write();
+                        $message .= "Changed text: $text->title\n";
+                        $textsUpdated++;
                     }
-                    $message .= "Changed text: $text->title\n";
-                    $textsUpdated++;
                 }
-            }
-            if (! $testMode) {
-                TextModel_sf_v0_9_18::removeAudioProperty($project->databaseName());
-                $message .= "Removed 'audioUrl' property from project: $project->projectName\n";
+                if (! $testMode) {
+                    TextModel_sf_v0_9_18::removeAudioProperty($project->databaseName());
+                    $message .= "Removed 'audioUrl' property from project: $project->projectName\n";
+                }
             }
         }
         if ($textsUpdated > 0) {
