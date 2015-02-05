@@ -1,5 +1,5 @@
 var constants = require('./testConstants.json');
-constants.siteType = "languageforge"; //TODO find a better way to dynamically set this variable
+constants.siteType = "languageforge"; //TODO: refactor projectsPage.js so this is not necessary
 
 var specs = ['bellows/**/e2e/*.spec.js'];
 specs.push('languageforge/**/e2e/*.spec.js');
