@@ -2,7 +2,7 @@
 
 /**
  *  TODO: refactor tests so that constants.siteType doesn't need to be specified
- *  in protractorConfSf.js and protractorConfSf.js as used in projectsPage.js.
+ *  in protractorConfSF.js and protractorConfLF.js as used in projectsPage.js.
  *  Perhaps User Management needs to be its own app. IJH 2015-01
  */ 
 var constants 		= require('../../../testConstants.json');
