@@ -16,7 +16,8 @@ use models\ProjectListModel;
 $changeDatabase = false;
 
 // process xml into a php data structure, organized by language
-$xml = simplexml_load_file($argv[1]);
+$xmlFilePath = $argv[1];
+$xml = simplexml_load_file($xmlFilePath);
 
 $lang = $argv[2];
 $version = $argv[3];
@@ -27,7 +28,6 @@ $projectModel = new SemDomTransProjectModel();
 $projectModel->languageIsoCode = $lang;
 $projectModel->semdomVersion = $version;
 $projectModel->projectCode = "semdom-$lang-$version";
-$projectModel->sourceXMLPath = $argv[1];
 
 // loop over the set of languages to import
 
@@ -39,11 +39,22 @@ if ($previousProject->id->asString() == "")
 {
 	//create project
 	if (!$testMode)
+	{
 		$projectModel->write();
+	}
 		
 	// loop over each semdom item and create a new item model.  Write it to the database
 	$importer = new SemDomXMLImporter($argv[1], $projectModel, false);
 	$importer->run();
+	
+	$newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
+	print "copying $xmlFilePath to $newXmlFilePath\n";
+	if (!$testMode) {
+	    copy($xmlFilePath, $newXmlFilePath);
+	    $projectModel->sourceXMLPath = $newXmlFilePath;
+	    $projectModel->write();
+	}
+	
 } else {
 	echo "Project exists already" . "\n";
 }
