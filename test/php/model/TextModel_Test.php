@@ -1,43 +1,30 @@
 <?php
-
-
-use models\TextListModel;
-
 use models\mapper\MongoStore;
 use models\ProjectModel;
+use models\TextListModel;
 use models\TextModel;
 
 require_once dirname(__FILE__) . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-
 require_once TestPath . 'common/MongoTestEnvironment.php';
-require_once TestPath . 'common/MockProjectModel.php';
-
-require_once SourcePath . "models/ProjectModel.php";
 require_once SourcePath . "models/TextModel.php";
 
 class TestTextModel extends UnitTestCase
 {
-    private $_someTextId;
-
-    public function __construct()
-    {
-        $e = new MongoTestEnvironment();
-        $e->clean();
-    }
 
     public function testCRUD_Works()
     {
         $e = new MongoTestEnvironment();
-        $projectModel = new MockProjectModel();
+        $e->clean();
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         // List
-        $list = new TextListModel($projectModel);
+        $list = new TextListModel($project);
         $list->read();
         $this->assertEqual(0, $list->count);
 
         // Create
-        $text = new TextModel($projectModel);
+        $text = new TextModel($project);
         $text->title = "Some Text";
         $usx = MongoTestEnvironment::usxSample();
         $text->content = $usx;
@@ -47,7 +34,7 @@ class TestTextModel extends UnitTestCase
         $this->assertEqual($id, $text->id->asString());
 
         // Read back
-        $otherText = new TextModel($projectModel, $id);
+        $otherText = new TextModel($project, $id);
         $this->assertEqual($id, $otherText->id->asString());
         $this->assertEqual('Some Text', $otherText->title);
         $this->assertEqual($usx, $otherText->content);
@@ -57,7 +44,7 @@ class TestTextModel extends UnitTestCase
         $otherText->write();
 
         // Read back
-        $otherText = new TextModel($projectModel, $id);
+        $otherText = new TextModel($project, $id);
         $this->assertEqual('Other Text', $otherText->title);
 
         // List
@@ -65,12 +52,11 @@ class TestTextModel extends UnitTestCase
         $this->assertEqual(1, $list->count);
 
         // Delete
-        TextModel::remove($projectModel->databaseName(), $id);
+        TextModel::remove($project->databaseName(), $id);
 
         // List
         $list->read();
         $this->assertEqual(0, $list->count);
-
     }
 
     public function testUpdateThenRemove_NewProject_CreatesThenRemovesProjectDatabase()
@@ -78,21 +64,20 @@ class TestTextModel extends UnitTestCase
         $e = new MongoTestEnvironment();
         $e->clean();
 
-        $projectModel = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $databaseName = $projectModel->databaseName();
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $databaseName = $project->databaseName();
 
-        $projectModel->remove();
+        $project->remove();
         $this->assertFalse(MongoStore::hasDB($databaseName));
 
-        $text = new TextModel($projectModel);
+        $text = new TextModel($project);
         $text->title = 'Some Title';
         $text->write();
 
         $this->assertTrue(MongoStore::hasDB($databaseName));
 
-        $projectModel->remove();
+        $project->remove();
 
         $this->assertFalse(MongoStore::hasDB($databaseName));
     }
-
 }
