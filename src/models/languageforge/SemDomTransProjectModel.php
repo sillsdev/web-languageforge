@@ -60,6 +60,7 @@ class SemDomTransProjectModel extends LfProjectModel {
     
     /**
      * Create a new project pre-loaded with all semantic domain items
+     * @return ProjectModel
      */
     public static function createPreFilled($sourceProject, $languageIsoCode, $latestSemdomVersion) {
    	
@@ -85,9 +86,6 @@ class SemDomTransProjectModel extends LfProjectModel {
     		}
     		$newItem->write();
     	}
-    	
+    	return $project;
     }
-    
-    
-
 } 
