@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\mapper\ArrayOf;
+
 use libraries\shared\Website;
 use models\languageforge\SemDomTransProjectModel;
 use models\scriptureforge\RapumaProjectModel;
@@ -332,6 +334,13 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public $appName;
 
+    /**
+     * 
+     * @var ArrayOf
+     */
+    public $usersRequestingAccess;
+    
+    
     private function rrmdir($dir)
     {
         if (is_dir($dir)) {
