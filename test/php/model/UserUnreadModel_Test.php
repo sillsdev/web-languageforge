@@ -1,7 +1,8 @@
 <?php
 
-
 use models\scriptureforge\dto\QuestionCommentDto;
+use models\commands\ActivityCommands;
+use models\commands\QuestionCommands;
 use models\ProjectModel;
 use models\QuestionModel;
 use models\TextModel;
@@ -9,16 +10,10 @@ use models\UserModel;
 use models\UnreadActivityModel;
 use models\UnreadAnswerModel;
 use models\UnreadQuestionModel;
-use models\commands\ActivityCommands;
-use models\commands\QuestionCommands;
 
 require_once dirname(__FILE__) . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-
 require_once TestPath . 'common/MongoTestEnvironment.php';
-require_once TestPath . 'common/MockProjectModel.php';
-
-require_once SourcePath . "models/ProjectModel.php";
 
 class TestUserUnreadModel extends UnitTestCase
 {

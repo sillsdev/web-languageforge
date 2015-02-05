@@ -1,40 +1,30 @@
 <?php
-
-
-use models\QuestionListModel;
-
 use models\ProjectModel;
+use models\QuestionListModel;
 use models\QuestionModel;
 
 require_once dirname(__FILE__) . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-
 require_once TestPath . 'common/MongoTestEnvironment.php';
-
-require_once SourcePath . "models/ProjectModel.php";
 require_once SourcePath . "models/QuestionModel.php";
 
 class TestQuestionModel extends UnitTestCase
 {
-    public function __construct()
-    {
-        $e = new MongoTestEnvironment();
-        $e->clean();
-    }
 
     public function testCRUD_Works()
     {
         $e = new MongoTestEnvironment();
+        $e->clean();
         $textRef = MongoTestEnvironment::mockId();
-        $projectModel = new MockProjectModel();
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         // List
-        $list = new QuestionListModel($projectModel, $textRef);
+        $list = new QuestionListModel($project, $textRef);
         $list->read();
         $this->assertEqual(0, $list->count);
 
         // Create
-        $question = new QuestionModel($projectModel);
+        $question = new QuestionModel($project);
         $question->title = "SomeQuestion";
         $question->description = "SomeQuestion";
         $question->textRef->id = $textRef;
@@ -44,7 +34,7 @@ class TestQuestionModel extends UnitTestCase
         $this->assertEqual($id, $question->id->asString());
 
         // Read back
-        $otherQuestion = new QuestionModel($projectModel, $id);
+        $otherQuestion = new QuestionModel($project, $id);
         $this->assertEqual($id, $otherQuestion->id->asString());
         $this->assertEqual('SomeQuestion', $otherQuestion->title);
         $this->assertEqual($textRef, $otherQuestion->textRef->id);
@@ -54,7 +44,7 @@ class TestQuestionModel extends UnitTestCase
         $otherQuestion->write();
 
         // Read back
-        $otherQuestion = new QuestionModel($projectModel, $id);
+        $otherQuestion = new QuestionModel($project, $id);
         $this->assertEqual('OtherQuestion', $otherQuestion->description);
 
         // List
@@ -62,33 +52,32 @@ class TestQuestionModel extends UnitTestCase
         $this->assertEqual(1, $list->count);
 
         // Delete
-        QuestionModel::remove($projectModel->databaseName(), $id);
+        QuestionModel::remove($project->databaseName(), $id);
 
         // List
         $list->read();
         $this->assertEqual(0, $list->count);
-
     }
 
     public function testTextReference_NullRefValidRef_AllowsNullRef()
     {
-        $projectModel = new MockProjectModel();
+        $e = new MongoTestEnvironment();
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
         $mockTextRef = (string) new \MongoId();
 
         // Test create with null textRef
-        $question = new QuestionModel($projectModel);
+        $question = new QuestionModel($project);
         $id = $question->write();
 
-        $otherQuestion = new QuestionModel($projectModel, $id);
+        $otherQuestion = new QuestionModel($project, $id);
         $this->assertEqual('', $otherQuestion->textRef->id);
 
         // Test update with textRef
         $question->textRef->id = $mockTextRef;
         $question->write();
 
-        $otherQuestion = new QuestionModel($projectModel, $id);
+        $otherQuestion = new QuestionModel($project, $id);
         $this->assertEqual($mockTextRef, $otherQuestion->textRef->id);
-
     }
-
 }
