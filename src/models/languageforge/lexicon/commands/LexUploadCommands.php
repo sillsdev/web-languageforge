@@ -86,7 +86,7 @@ class LexUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
-                $data->path = $project->getAssetsPath();
+                $data->path = $project->getAssetsRelativePath();
                 $data->fileName = $fileName;
                 $response->result = true;
             } else {
@@ -170,7 +170,7 @@ class LexUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
-                $data->path = self::imageFolderPath($project->getAssetsPath());
+                $data->path = self::imageFolderPath($project->getAssetsRelativePath());
                 $data->fileName = $fileNamePrefix . '_' . $fileName;
                 $response->result = true;
             } else {
@@ -225,7 +225,7 @@ class LexUploadCommands
         if (file_exists($filePath) and ! is_dir($filePath)) {
             if (@unlink($filePath)) {
                 $data = new MediaResult();
-                $data->path = self::imageFolderPath($project->getAssetsPath());
+                $data->path = self::imageFolderPath($project->getAssetsRelativePath());
                 $data->fileName = $fileName;
                 $response->result = true;
             } else {
@@ -367,7 +367,7 @@ class LexUploadCommands
                 // construct server response
                 if ($moveOk) {
                     $data = new ImportResult();
-                    $data->path = $project->getAssetsPath();
+                    $data->path = $project->getAssetsRelativePath();
                     $data->fileName = $fileName;
                     $data->stats = $importer->stats;
                     $data->importErrors = $importer->getReport()->toFormattedString();
@@ -469,7 +469,7 @@ class LexUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new ImportResult();
-                $data->path = $project->getAssetsPath();
+                $data->path = $project->getAssetsRelativePath();
                 $data->fileName = $fileName;
                 $data->stats = $importer->stats;
                 $data->importErrors = $importer->getReport()->toFormattedString();
