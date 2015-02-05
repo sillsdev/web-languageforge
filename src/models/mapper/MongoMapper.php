@@ -82,11 +82,14 @@ class MongoMapper
         return new \MongoId();
     }
 
-    public function readListAsModels($model, $query, $fields = array(), $sortFields = array())
+    public function readListAsModels($model, $query, $fields = array(), $sortFields = array(), $limit = 0)
     {
         $cursor = $this->_collection->find($query, $fields);
         if (count($sortFields)>0) {
             $cursor = $cursor->sort($sortFields);
+        }
+        if ($limit>0) {
+            $cursor = $cursor->limit($limit);
         }
 
         $data = array();
@@ -108,8 +111,7 @@ class MongoMapper
 
     }
 
-    public function readList($model, $query, $fields = array(), $sortFields = array(),
-                            $limit = 0)
+    public function readList($model, $query, $fields = array(), $sortFields = array(), $limit = 0)
     {
         $cursor = $this->_collection->find($query, $fields);
 
