@@ -1,33 +1,16 @@
 <?php
 require_once ('e2eTestConfig.php');
 
-use models\languageforge\lexicon\LexiconProjectModel;
-use models\languageforge\lexicon\commands\LexUploadCommands;
+use models\ProjectModel;
+use Palaso\Utilities\FileUtilities;
 
 $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
 
-if ($constants['siteType'] == 'languageforge') {
-
-    // cleanup test assets folder
-    $testProject = new LexiconProjectModel();
-    $testProject->readByProperties(array(
-        'projectCode' => $constants['testProjectCode']
-    ));
-    $assetsFolderPath = $testProject->getAssetsFolderPath();
-    recursiveRemoveFolder($assetsFolderPath);
-}
-
-function recursiveRemoveFolder($folder)
-{
-	if (is_dir($folder)) {
-	    foreach (glob("{$folder}/*") as $file) {
-	        if (is_dir($file)) {
-	            recursiveRemoveFolder($file);
-	        } else {
-	        	if (is_file($file)) {
-	            	unlink($file);
-	        	}
-	        }
-	    }
-	}
-}
+// cleanup test assets folder
+$project = new ProjectModel();
+$project->readByProperties(array(
+    'projectCode' => $constants['testProjectCode']
+));
+$testProject = $project->getById($project->id->asString());
+$assetsFolderPath = $testProject->getAssetsFolderPath();
+FileUtilities::removeFolderAndAllContents($assetsFolderPath);

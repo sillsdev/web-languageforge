@@ -1,6 +1,8 @@
 var constants = require('./testConstants.json');
+constants.siteType = "languageforge"; //TODO find a better way to dynamically set this variable
 
-var specs = ['scriptureforge/**/e2e/*.spec.js'];
+var specs = ['bellows/**/e2e/*.spec.js'];
+specs.push('scriptureforge/**/e2e/*.spec.js');
 
 exports.config = {
   // The address of a running selenium server.
