@@ -246,11 +246,26 @@ class sf
      * @param string $projectName
      * @param string $projectCode
      * @param string $appName
-     * @return string - projectId
+     * @return string | boolean - $projectId on success, false if project code is not unique
      */
     public function project_create($projectName, $projectCode, $appName)
     {
         return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->_userId, $this->_website);
+    }
+
+    /**
+     * Creates project and switches the session to the new project
+     *
+     * @param string $projectName
+     * @param string $projectCode
+     * @param string $appName
+     * @return string | boolean - $projectId on success, false if project code is not unique
+     */
+    public function project_create_switchSession($projectName, $projectCode, $appName)
+    {
+        $projectId = $this->project_create($projectName, $projectCode, $appName);
+        $this->_controller->session->set_userdata('projectId', $projectId);
+        return $projectId;
     }
 
     /**
@@ -647,19 +662,9 @@ class sf
         return LexOptionListCommands::updateList($this->_projectId, $params);
     }
 
-    public function lex_uploadProjectZip($mediaType, $tmpFilePath, $projectId = '')
+    public function lex_upload_importProjectZip($mediaType, $tmpFilePath)
     {
-        // Sometimes we need to upload to a newly-created project ID, which is not yet in the session cookie.
-        // In those cases, the optional $projectId parameter will be set to a non-empty value.
-        if (empty($projectId)) { $projectId = $this->_projectId; }
-        $response = LexUploadCommands::uploadProjectZip($projectId, $mediaType, $tmpFilePath);
-        return JsonEncoder::encode($response);
-    }
-    public function lex_mockUploadProjectZip($mediaType, $tmpFilePath, $projectId = '')
-    {
-        // Used for testing zip upload UI without actually importing data
-        if (empty($projectId)) { $projectId = $this->_projectId; }
-        $response = LexUploadCommands::mockUploadProjectZip($projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::importProjectZip($this->_projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
