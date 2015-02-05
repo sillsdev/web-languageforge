@@ -13,6 +13,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
   $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create;
   $scope.newProject = {};
 
+  $scope.siteName = ss.baseSite();
 
   // Listview Selection
   $scope.newProjectCollapsed = true;

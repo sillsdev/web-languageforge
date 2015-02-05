@@ -12,7 +12,7 @@ class UploadResponse
 
     /**
      *
-     * @var MediaResult|ErrorResult
+     * @var ImportResult|MediaResult|ErrorResult
      */
     public $data;
 }

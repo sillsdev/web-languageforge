@@ -73,6 +73,9 @@ angular.module('bellows.services', ['jsonRpc'])
   this.create = function(projectName, projectCode, appName, callback) {
     jsonRpc.call('project_create', [projectName, projectCode, appName], callback);
   };
+  this.createSwitchSession = function(projectName, projectCode, appName, callback) {
+    jsonRpc.call('project_create_switchSession', [projectName, projectCode, appName], callback);
+  };
   this.archive = function(projectIds, callback) {
     jsonRpc.call('project_archive', [projectIds], callback);
   };

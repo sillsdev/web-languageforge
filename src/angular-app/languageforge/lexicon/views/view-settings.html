@@ -56,7 +56,7 @@
         </div>
         <div data-ng-hide="tab.byUser && state === 'userSelectList'">
             <!-- control buttons for member-specific views -->
-            <div class="row outer-flex" data-ng-show="tab.byUser && state === 'userSettings'">
+            <div class="row-fluid outer-flex" data-ng-show="tab.byUser && state === 'userSettings'">
                 <div class="span3 control-group">
                     <button class="btn" data-ng-click="goSelectUser()"><i class="icon-chevron-left"></i> {{'Select Member' | translate}}</button>
                 </div>
@@ -68,7 +68,7 @@
         <accordion close-others="true">
         <accordion-group is-open="true">
         <accordion-heading><h3>{{'Enabled Fields for' | translate}} {{forWhom | translate}}</h3></accordion-heading>
-            <div class="row outer-flex">
+            <div class="row-fluid outer-flex">
             
             <!-- Left column: field view select list -->
             <div class="span3 control-group">
