@@ -1,6 +1,7 @@
 var constants = require('./testConstants.json');
 
-var specs = ['scriptureforge/**/e2e/*.spec.js'];
+var specs = ['bellows/**/e2e/*.spec.js'];
+specs.push('scriptureforge/**/e2e/*.spec.js');
 
 exports.config = {
   // The address of a running selenium server.
