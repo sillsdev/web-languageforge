@@ -1,19 +1,30 @@
-<form class="form-horizontal dc-optionlist" style="margin-right:-4px">
+<form class="form-horizontal dc-multioptionlist">
     <label class="control-label">{{config.label}}</label>
-        <div class="controls">
-            <div ng-show="control.state == 'edit' && control.rights.canEditEntry()">
-                <span style="border: 2px solid gray; padding:3px; margin-right:10px;" ng-repeat="val in model.values">{{getDisplayName(val)}}</span>
-                <div ng-show="control.state == 'edit'">
-                    <select ng-model="newValue" ng-options="item.key as item.value for item in items">
-                        <option value="">Unknown</option>
-                    </select>
-                    <button ng-click="addValue()" class="btn btn-small"><i class="icon-plus"></i>Add</button>
-                </div>
-            </div>
-            <div ng-hide="control.state == 'edit' && control.rights.canEditEntry()">
-                <span class="uneditable-input">
-                    <span style="border: 2px solid gray; padding:3px; margin-right:10px;" ng-repeat="val in model.values">{{getDisplayName(val)}}</span>
-                </span>
+    <div class="controls">
+        <div class="dc-multioptionlist-values" 
+            data-ng-repeat="value in model.values | orderBy: orderItemsByListOrder">
+            <div data-ng-mouseover="valueToBeDeleted = value" data-ng-mouseleave="valueToBeDeleted = ''">
+                <div class="dc-multioptionlist-value">{{getDisplayName(value)}}</div>
+                <img class="closeicon" src="/images/shared/closeicon.svg" width="15" height="15"
+                    title="Delete {{config.label}}" 
+                    data-ng-show="showDeleteButton(valueToBeDeleted, value)" data-ng-click="deleteValue(value)" />
             </div>
         </div>
+        <div class="dc-multioptionlist-values"
+            data-ng-show="control.state == 'edit' && control.rights.canEditEntry() && isAdding">
+            <select data-ng-change="addValue()" data-ng-model="newValue" 
+                data-ng-options="item.key as item.value for item in items | filter: filterSelectedItems">
+                <option value="">Pick an item</option>
+            </select>
+            <div class="deleteX">
+                <i class="icon-remove" data-ng-click="isAdding = false" title="Cancel adding {{config.label}}"></i>
+            </div>
+        </div>
+    </div>
 </form>
+<div class="addItem" 
+    data-ng-show="control.rights.canEditEntry() && control.state == 'edit' && showAddButton()">
+    <a data-ng-click="isAdding = true">Add {{config.label}}</a>
+</div>
+<div class="spacing-after"
+    data-ng-hide="control.rights.canEditEntry() && control.state == 'edit' && showAddButton()">&nbsp;</div>
