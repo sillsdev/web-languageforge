@@ -223,7 +223,7 @@ class ProjectModel extends \models\mapper\MapperModel
     /**
      * @return string Relative path of the projects assets folder
      */
-    public function getAssetsPath()
+    public function getAssetsRelativePath()
     {
         return 'assets/' . $this->appName. '/' . $this->databaseName();
     }
@@ -233,7 +233,7 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public function getAssetsFolderPath()
     {
-        return APPPATH . $this->getAssetsPath();
+        return APPPATH . $this->getAssetsRelativePath();
     }
 
     /**
