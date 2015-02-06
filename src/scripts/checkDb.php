@@ -1,5 +1,5 @@
 <?php
- require_once('toolsConfig.php');
+ require_once('scriptsConfig.php');
 use models\shared\DbIntegrityHelper;
 use models\ProjectListModel;
 use models\ProjectModel;
