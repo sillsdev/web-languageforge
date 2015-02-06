@@ -1,9 +1,7 @@
 'use strict';
 
-var util = require('../../bellows/pages/util');
-
-var ViewSettingsPage = function() {
-  var page = this;
+function ViewSettingsPage() {
+  var _this = this;
 
   this.settingsMenuLink = $('.hdrnav a.btn i.icon-cog');
   this.viewSettingsLink = element(by.linkText('View Settings'));
@@ -19,7 +17,7 @@ var ViewSettingsPage = function() {
     return $('div.tabbable ul.nav-tabs').element(by.cssContainingText('a', tabName));
   };
   this.clickTabByName = function clickTabByName(tabName) {
-    return page.getTabByName(tabName).then(function(elem) { elem.click(); });
+    return _this.getTabByName(tabName).then(function(elem) { elem.click(); });
   };
 
   this.showAllFieldsBtn = element(by.buttonText('Show All Fields'));
@@ -34,10 +32,12 @@ var ViewSettingsPage = function() {
   this.entryFields = this.activePane.all(by.repeater('fieldName in fieldOrder.entry'));
   this.senseFields = this.activePane.all(by.repeater('fieldName in fieldOrder.senses'));
   this.exampleFields = this.activePane.all(by.repeater('fieldName in fieldOrder.examples'));
+  
+  /** Second parameter is optional, default false. If true, fieldName will be considered
+   * a regular expression that should not be touched. If false or unspecified, fieldName
+   * will be considered an exact match (so "Etymology" should not match "Etymology Comment").
+   */
   this.getFieldByName = function getFieldByName(fieldName, treatAsRegex) {
-    // Second parameter is optional, default false. If true, fieldName will be considered
-    // a regular expression that should not be touched. If false or unspecified, fieldName
-    // will be considered an exact match (so "Etymology" should not match "Etymology Comment").
     var fieldRegex = (treatAsRegex ? fieldName : '^'+fieldName+'$');
     return $('div.tab-pane.active dl.picklists').element(by.elemMatches('div[data-ng-repeat]', fieldRegex));
   };

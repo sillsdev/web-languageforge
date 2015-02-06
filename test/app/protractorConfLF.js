@@ -1,5 +1,5 @@
 var constants = require('./testConstants.json');
-constants.siteType = "languageforge"; //TODO find a better way to dynamically set this variable
+constants.siteType = "languageforge"; //TODO: refactor projectsPage.js so this is not necessary
 
 var specs = ['bellows/**/e2e/*.spec.js'];
 specs.push('languageforge/**/e2e/*.spec.js');
@@ -36,6 +36,18 @@ exports.config = {
   },
 
   onPrepare: function() {
+    /* global angular: false, browser: false, jasmine: false */
+
+    // Disable animations so e2e tests run more quickly
+    var disableNgAnimate = function() {
+      angular.module('disableNgAnimate', []).run(['$animate', function($animate) {
+        $animate.enabled(false);
+      }]);
+    };
+
+    // This seemed to make the tests more flaky rather than less. IJH 2014-12
+//    browser.addMockModule('disableNgAnimate', disableNgAnimate);
+
     if (process.env.TEAMCITY_VERSION) {
       require('jasmine-reporters');
       jasmine.getEnv().addReporter(new jasmine.TeamcityReporter());

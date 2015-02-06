@@ -77,7 +77,7 @@ class SfchecksUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
-                $data->path = $project->getAssetsPath();
+                $data->path = $project->getAssetsRelativePath();
                 $data->fileName = $fileName;
                 $response->result = true;
             } else {
