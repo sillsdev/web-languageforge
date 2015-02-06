@@ -1,8 +1,8 @@
+#!/usr/bin/php -q
 <?php
-
-use models\ProjectListModel;
-
 require_once('toolsConfig.php');
+
+
 
 // use commands go here (after the e2eTestConfig)
 use models\commands\ProjectCommands;
@@ -21,7 +21,9 @@ use models\languageforge\lexicon\commands\LexEntryCommands;
 use models\languageforge\lexicon\commands\LexUploadCommands;
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use libraries\shared\Website;
+use models\ProjectListModel;
 
+if (php_sapi_name() != 'cli') { die('this script must be run on the command-line'); }
 
 $scriptureforgeWebsite = Website::get('scriptureforge.org');
 $languageforgeWebsite = Website::get('languageforge.org');
