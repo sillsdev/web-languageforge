@@ -281,7 +281,7 @@ class Website
         $w->name = 'The Jamaican Psalms Project';
         $w->ssl = true;
         $w->theme = 'jamaicanpsalms';
-        $w->defaultProjectCode = 'jamaicanpsalms';
+        $w->defaultProjectCode = 'jamaican_psalms';
         $sites['jamaicanpsalms.dev.scriptureforge.org'] = $w;
 
         // scriptureforge.org
@@ -296,7 +296,7 @@ class Website
         $w->name = 'The Jamaican Psalms Project';
         $w->ssl = true;
         $w->theme = 'jamaicanpsalms';
-        $w->defaultProjectCode = 'jamaicanpsalms';
+        $w->defaultProjectCode = 'jamaican_psalms';
         $sites['jamaicanpsalms.com'] = $w;
 
         // waaqwiinaagiwritings.org
