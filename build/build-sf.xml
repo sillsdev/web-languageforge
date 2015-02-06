@@ -243,7 +243,6 @@
 		</antcall>
 		<antcall target="test-e2e-teardown"/>
 
-		<!--
 		<echo message="Running Language Forge E2E tests (cross-site tests)" />
 		<antcall target="test-e2e-setup">
 		    <param name="e2etest.webserver.host" value="e2etest.languageforge.local" />
@@ -253,7 +252,6 @@
 		    <param name="e2etest.protractor.conf" value="protractorConfLF.js" />
 		</antcall>
 		<antcall target="test-e2e-teardown"/>
-        -->
 	</target>
 	
 	<target name="echoServerNotFound" if="selenium.server.notfound">
