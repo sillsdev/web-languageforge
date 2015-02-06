@@ -6,7 +6,6 @@ use models\ProjectModel;
 
 
 if (php_sapi_name() != 'cli') { die('this script must be run on the command-line'); }
-xdebug_disable();
 
 $runForReal = false;
 if (count($argv) > 1 && $argv[1] == 'run') {
