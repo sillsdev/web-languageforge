@@ -6,17 +6,19 @@ angular.module('new-lexicon-project',
     'bellows.services',
     'bellows.filters',
     'ui.bootstrap',
-    'ui.bootstrap.collapse',
     'ngAnimate',
     'ui.router',
     'palaso.ui.utils',
     'palaso.ui.language',
+    'palaso.ui.mockUpload',
     'palaso.util.model.transform',
     'pascalprecht.translate',
-    'angularFileUpload'
+    'angularFileUpload',
+    'lexicon.services'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
   function($stateProvider, $urlRouterProvider, $translateProvider) {
+    
     // configure interface language filepath
     $translateProvider.useStaticFilesLoader({
       prefix: '/angular-app/languageforge/new-lexicon-project/lang/',
@@ -27,9 +29,9 @@ angular.module('new-lexicon-project',
     // State machine from ui.router
     $stateProvider
       .state('newProject', {
+        
         // Need quotes around Javascript keywords like 'abstract' so YUI compressor won't complain
         'abstract': true,
-        // TODO: Can we make the following URL relative?
         templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project.html',
         controller: 'NewLexProjectCtrl',
       })
@@ -55,46 +57,44 @@ angular.module('new-lexicon-project',
         templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-select-primary-language.html',
         data: {
           step: 3, // This is not a typo. There are two possible step 3 templates.
-        },
-      })
-      .state('newProject.createProject', {
-        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-create.html',
-        data: {
-          step: 4,
-        },
+        }
       });
 
-      $urlRouterProvider
+    $urlRouterProvider
       .when('', ['$state', function ($state) {
         if (! $state.$current.navigable) {
           $state.go('newProject.name');
         }
-      }])
-//      .otherwise('/form')
-      ;
+      }]);
 
   }])
-  .controller('NewLexProjectCtrl', ['$scope', '$rootScope', '$q', '$filter', '$modal', '$window', 'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate', '$state', '$upload',
-  function($scope, $rootScope, $q, $filter, $modal, $window, ss, notice, projectService, linkService, $translate, $state, $upload) {
-    $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
+  .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$modal', '$window', 'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate', '$state', '$upload', 'lexProjectService', 
+  function($scope, $q, $filter, $modal, $window, ss, notice, projectService, linkService, $translate, $state, $upload, lexProjectService) {
+    $scope.interfaceConfig = {};
+    $scope.interfaceConfig.userLanguageCode = 'en';
+    if (angular.isDefined(ss.session.projectSettings)) {
+      $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
+    }
+    $scope.interfaceConfig.direction = 'ltr';
+    $scope.interfaceConfig.pullToSide = 'pull-right';
+    $scope.interfaceConfig.pullNormal = 'pull-left';
+    $scope.interfaceConfig.placementToSide = 'left';
+    $scope.interfaceConfig.placementNormal = 'right';
     if (InputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
-//    if (true) { // Override direction and force rtl, for testing purposes
+//      if (true) { // Override direction and force rtl, for testing purposes
       $scope.interfaceConfig.direction = 'rtl';
       $scope.interfaceConfig.pullToSide = 'pull-left';
       $scope.interfaceConfig.pullNormal = 'pull-right';
       $scope.interfaceConfig.placementToSide = 'right';
       $scope.interfaceConfig.placementNormal = 'left';
-    } else {
-      $scope.interfaceConfig.direction = 'ltr';
-      $scope.interfaceConfig.pullToSide = 'pull-right';
-      $scope.interfaceConfig.pullNormal = 'pull-left';
-      $scope.interfaceConfig.placementToSide = 'left';
-      $scope.interfaceConfig.placementNormal = 'right';
     }
 
     $scope.state = $state;
 
-    $scope.newProject = {}; // This is where form data will live
+    // This is where form data will live
+    $scope.newProject = {};
+    $scope.newProject.appName = 'lexicon';
+    
     $scope.projectCodeState = 'empty';
     $scope.projectCodeStateDefer = $q.defer();
     $scope.projectCodeStateDefer.resolve('empty');
@@ -102,43 +102,39 @@ angular.module('new-lexicon-project',
     $scope.formStatus = '';
     $scope.formValidationDefer = $q.defer();
 
-    $scope.makeFormValid = function(msg) {
-      if (!msg) { msg = ''; }
+    function makeFormValid(msg) {
+      if (! msg) msg = '';
       $scope.formValidated = true;
       $scope.formStatus = msg;
-      $scope.formStatusClass = 'good';
+      $scope.formStatusClass = 'alert alert-info';
+      if (! msg) $scope.formStatusClass = 'neutral';
+      $scope.forwardBtnClass = 'btn-success';
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
     };
-    $scope.makeFormNeutral = function(msg) {
-      if (!msg) { msg = ''; }
+    function makeFormNeutral(msg) {
+      if (! msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
       $scope.formStatusClass = 'neutral';
+      $scope.forwardBtnClass = '';
       $scope.formValidationDefer = $q.defer();
       return $scope.formValidationDefer.promise;
     };
-    $scope.makeFormInvalid = function(msg) {
+    function makeFormInvalid(msg) {
+      if (! msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass = 'bad';
+      $scope.formStatusClass = 'alert alert-error';
+      if (! msg) $scope.formStatusClass = 'neutral';
+      $scope.forwardBtnClass = '';
       $scope.formValidationDefer.resolve(false);
       return $scope.formValidationDefer.promise;
     };
+    
+    makeFormNeutral();
 
-    $scope.$watch('formValidated', function(validated) {
-      $scope.forwardBtnClass = validated ? 'btn-success' : '';
-    });
-
-    // For most uses of this form, there will only be one project type ("Web Dictionary").
-    // If that's the case, we set it up here and will hide the project type selector in the form.
-    $scope.projectTypeNames = projectService.data.projectTypeNames;
-    $scope.projectTypesBySite = projectService.data.projectTypesBySite;
-    if (projectService.data.projectTypesBySite().length == 1) {
-      $scope.newProject.appName = $scope.projectTypesBySite()[0];
-    }
-
-    $scope.iconForStep = function(step) {
+    $scope.iconForStep = function iconForStep(step) {
       var classes = [];
       if ($state.current.data.step > step) {
         classes.push('icon-check-sign');
@@ -149,142 +145,154 @@ angular.module('new-lexicon-project',
         classes.push('muted');
       }
       return classes;
-    }
+    };
 
-    $scope.nextStep = function() {
+    $scope.nextStep = function nextStep() {
+      if ($state.current.name === 'newProject.initialData') {
+        $scope.newProject.emptyProjectDesired = true;
+        $scope.progressIndicatorStep3Label = $filter('translate')('Language');
+      }
+      validateForm();
+      
       // If form is still validating, wait for it
       $scope.formValidationDefer.promise.then(function(valid) {
         if (valid) {
-          $scope.makeFormNeutral();
-          $scope.processForm();
+          makeFormNeutral();
+          gotoNextState();
         }
       });
-    }
-    $scope.prevStep = function() {
-      // To implement, decide how we could go "back" to the first step: delete the newly-created (but still empty) project?
-      console.log("Tried to go back... but that's not yet implemented");
-    }
+    };
+    
+    $scope.prevStep = function prevStep() {
+      $scope.show.backButton = false;
+      switch ($state.current.name) {
+        case 'newProject.name':
+        case 'newProject.initialData':
+        case 'newProject.verifyData':
+          break;
+        case 'newProject.selectPrimaryLanguage':
+          $state.go('newProject.initialData');
+          $scope.nextButtonLabel = 'Skip';
+          $scope.newProject.emptyProjectDesired = false;
+          $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
+          break;
+      };
+    };
 
     // Form validation requires API calls, so it return a promise rather than a value.
-    $scope.validateForm = function validateForm(currentState) {
+    function validateForm(currentState) {
       if (angular.isUndefined(currentState)) {
         currentState = $state.current.name;
       }
       $scope.formValidationDefer = $q.defer();
 
       // Shorthand to make things look a touch nicer
-      var ok = $scope.makeFormValid;
-      var error = $scope.makeFormInvalid;
-      // TODO: This switch is becoming unwieldy. Separate each case into a separate function. 2014-10 RM
+      var ok = makeFormValid;
+      var error = makeFormInvalid;
+      
       switch (currentState) {
-      case 'newProject.name':
-        // Project should have a name, should have a unique code, and should have a type
-        if (!$scope.newProject.projectName) {
-          return error("Project name should not be empty. Please provide a project name.");
-        }
-        if (!$scope.newProject.appName) {
-          return error("Please select a project type.");
-        }
-        if ($scope.projectCodeState == 'unchecked') {
-          $scope.checkProjectCode();
-        }
-        return $scope.projectCodeStateDefer.promise.then(function(state) {
-          if ($scope.projectCodeState == 'ok') {
-            return ok("Everything looks good; ready to proceed.");
+        case 'newProject.name':
+          if (! $scope.newProject.projectName) {
+            return error("Project Name cannot be empty. Please enter a project name.");
           }
-          if ($scope.projectCodeState == 'exists') {
-            return error("Another project with code '" + $scope.newProject.projectCode + "' already exists.");
+          if (! $scope.newProject.projectCode) {
+            return error('Project Code cannot be empty. Please enter a project code or uncheck "Edit project code".');
           }
-          if ($scope.projectCodeState == 'invalid') {
-            return error("Project code '" + $scope.newProject.projectCode + "' contains invalid characters. It should contain only lower-case letters, numbers, and dashes.");
+          if (! $scope.newProject.appName) {
+            return error("Please select a project type.");
           }
-          if ($scope.projectCodeState == 'loading') {
-            return error("Please wait while we check whether another project with code '" + $scope.newProject.projectCode + "' already exists.");
+          if ($scope.projectCodeState == 'unchecked') {
+            $scope.checkProjectCode();
           }
-          if ($scope.projectCodeState == 'empty' || !$scope.newProject.projectCode) {
-            return error("Project code should not be empty.");
+          return $scope.projectCodeStateDefer.promise.then(function(state) {
+            if ($scope.projectCodeState == 'ok') {
+              return ok();
+            }
+            if ($scope.projectCodeState == 'exists') {
+              return error("Another project with code '" + $scope.newProject.projectCode + "' already exists.");
+            }
+            if ($scope.projectCodeState == 'invalid') {
+              return error("Project Code must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores.");
+            }
+            if ($scope.projectCodeState == 'loading') {
+              return error();
+            }
+            // Project code was invalid, but we don't know why. Give a generic message, adapted based on whether the user checked "Edit project code" or not.
+            if ($scope.newProject.editProjectCode) {
+              return error("Project code '" + $scope.newProject.projectCode + "' cannot be used. Please choose a new project code.");
+            } else {
+              return error("Project code '" + $scope.newProject.projectCode + "' cannot be used. Either change the project name, or check the \"Edit project code\" box and choose a new code.");
+            }
+          });
+          break;
+        case 'newProject.initialData':
+        case 'newProject.verifyData':
+          break;
+        case 'newProject.selectPrimaryLanguage':
+          if (! $scope.newProject.languageCode) {
+            return error("Please select a primary language for the project.");
           }
-          // Project code was invalid, but we don't know why. Give a generic message, adapted based on whether the user checked "Edit project code" or not.
-          if ($scope.newProject.editProjectCode) {
-            return error("Project code '" + $scope.newProject.projectCode + "' cannot be used. Please choose a new project code.");
-          } else {
-            return error("Project code '" + $scope.newProject.projectCode + "' cannot be used. Either change the project name, or check the \"Edit project code\" box and choose a new code.");
-          }
-        });
-        break;
-      case 'newProject.initialData':
-        if ($scope.newProject.emptyProjectDesired) {
-          return ok("You've chosen to create an empty project with no initial data.");
-        }
-        if ($scope.uploadSuccess) {
-          return ok($scope.newProject.entriesImported + " entries imported. Everything looks good; ready to proceed.");
-        } else {
-          return error("No initial data uploaded yet.");
-        }
-        break;
-      case 'newProject.verifyData':
-        // TODO: Check if user has clicked button
-        return ok("Everything looks good; ready to proceed.");
-        break;
-      case 'newProject.selectPrimaryLanguage':
-        if ($scope.newProject.languageCode) {
-          return ok("Everything looks good; ready to proceed.");
-        } else {
-          return error("Please select a primary language for the project.");
-        }
-        break;
-      case 'newProject.createProject':
-        return error("Validation not yet implemented for step " + currentState);
-        break;
+          break;
       };
       return ok();
     };
 
-    $scope.processForm = function processForm() {
-      // Don't need to validate in this function since it's already been taken care of for us by this point
+    function gotoNextState() {
       switch ($state.current.name) {
-      case 'newProject.name':
-        $state.go('newProject.initialData');
-        break;
-      case 'newProject.initialData':
-        if ($scope.newProject.emptyProjectDesired) {
-          $state.go('newProject.selectPrimaryLanguage');
-        } else {
-          $state.go('newProject.verifyData');
-        }
-        break;
-      case 'newProject.verifyData':
-        $state.go('newProject.createProject');
-        break;
-      case 'newProject.selectPrimaryLanguage':
-        $state.go('newProject.createProject');
-        break;
-      case 'newProject.createProject':
-        var url = linkService.project($scope.newProject.id, $scope.newProject.appName);
-        $window.location.href = url;
-        break;
+        case 'newProject.name':
+          createProject();
+          $scope.nextButtonLabel = 'Skip';
+          $state.go('newProject.initialData');
+          break;
+        case 'newProject.initialData':
+          $scope.nextButtonLabel = 'Dictionary';
+          if ($scope.newProject.emptyProjectDesired) {
+            $state.go('newProject.selectPrimaryLanguage');
+            $scope.show.backButton = true;
+          } else {
+            $state.go('newProject.verifyData');
+            makeFormValid();
+          }
+          break;
+        case 'newProject.verifyData':
+          gotoLexicon();
+          break;
+        case 'newProject.selectPrimaryLanguage':
+          savePrimaryLanguage(gotoLexicon);
+          break;
       };
+    };
+    
+    function gotoLexicon() {
+      var url;
+      makeFormValid();
+      url = linkService.project($scope.newProject.id, $scope.newProject.appName);
+      $window.location.href = url;
     }
 
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-      if (fromState.name == "newProject.name" && toState.name == "newProject.initialData") {
-        $scope.createProjectBeforeUpload();
-      }
-    });
+    // ----- Step 1: Project name -----
 
-    $scope.projectNameToCode = function(name) {
-      if (angular.isUndefined(name)) { return undefined; }
+    $scope.show = {};
+    $scope.show.backButton = false;
+    $scope.show.flexHelp = false;
+    $scope.nextButtonLabel = 'Next';
+    $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
+    
+    function projectNameToCode(name) {
+      if (angular.isUndefined(name)) return undefined;
       return name.toLowerCase().replace(/ /g, '_');
-    }
-    $scope.isValidProjectCode = function(code) {
-      // Valid project codes start with a letter and only contain lower-case letters, numbers, or dashes
-      var patt = /^[a-z][a-z0-9\-_]*$/;
-      return patt.test(code);
-    }
+    };
+    function isValidProjectCode(code) {
+      if (angular.isUndefined(code)) return false;
+      
+      // Valid project codes start with a letter and only contain lower-case letters, numbers, dashes and underscores
+      var pattern = /^[a-z][a-z0-9\-_]*$/;
+      return pattern.test(code);
+    };
 
-    $scope.checkProjectCode = function() {
+    $scope.checkProjectCode = function checkProjectCode() {
       $scope.projectCodeStateDefer = $q.defer();
-      if (!$scope.isValidProjectCode($scope.newProject.projectCode)) {
+      if (! isValidProjectCode($scope.newProject.projectCode)) {
         $scope.projectCodeState = 'invalid';
         $scope.projectCodeStateDefer.resolve('invalid');
       } else {
@@ -308,7 +316,7 @@ angular.module('new-lexicon-project',
       return $scope.projectCodeStateDefer.promise;
     };
     $scope.resetValidateProjectForm = function resetValidateProjectForm() {
-      $scope.makeFormNeutral();
+      makeFormNeutral();
       $scope.projectCodeState = 'unchecked';
       $scope.projectCodeStateDefer = $q.defer();
       $scope.projectCodeStateDefer.resolve('unchecked');
@@ -322,18 +330,17 @@ angular.module('new-lexicon-project',
       }
       if (oldval == "loading") {
         // Project code state just resolved. Validate rest of form so Forward button can activate.
-        $scope.validateForm();
+        validateForm();
       }
     });
 
     $scope.$watch('newProject.editProjectCode', function(newval, oldval) {
       if (oldval && !newval) {
         // When user unchecks the "edit project code" box, go back to setting it from project name
-        $scope.newProject.projectCode = $scope.projectNameToCode($scope.newProject.projectName);
+        $scope.newProject.projectCode = projectNameToCode($scope.newProject.projectName);
+        $scope.checkProjectCode();
       }
     });
-
-    // ----- Step 1: Project name -----
 
     $scope.$watch('newProject.projectName', function(newval, oldval) {
       if (angular.isUndefined(newval)) {
@@ -343,71 +350,90 @@ angular.module('new-lexicon-project',
       }
     });
 
-    $scope.createProjectBeforeUpload = function createProjectBeforeUpload() {
+    function createProject() {
       if (!$scope.newProject.projectName || !$scope.newProject.projectCode || !$scope.newProject.appName) {
         // This function sometimes gets called during setup, when $scope.newProject is still empty.
         return;
       }
-      projectService.create($scope.newProject.projectName, $scope.newProject.projectCode, $scope.newProject.appName, function(result) {
+      projectService.createSwitchSession($scope.newProject.projectName, $scope.newProject.projectCode, $scope.newProject.appName, function(result) {
         if (result.ok) {
           $scope.newProject.id = result.data;
+          ss.refresh();
         } else {
           notice.push(notice.ERROR, "The " + $scope.newProject.projectName + " project could not be created. Please try again.");
         }
       });
     };
 
-
     // ----- Step 2: Initial data upload -----
 
-    $scope.$watch('newProject.emptyProjectDesired', function(newval) {
-      if (angular.isUndefined(newval)) { return; }
-      $scope.validateForm();
-    });
+    $scope.show.importErrors = false;
 
     $scope.onFileSelect = function onFileSelect(files) {
+      $scope.uploadErrorMsg = '';
+      
       // First, cope with multiple files if the user selected multiple.
       if (files.length > 1) {
         $scope.uploadErrorMsg = "Please select a single file. If you need to upload multiple files, zip them first with a utility like 7-zip.";
         return;
-      } else {
-        $scope.uploadErrorMsg = '';
       }
+
       $scope.datafile = files[0];
-      notice.setLoading('Importing ' + $scope.datafile.name + '...');
-      $scope.makeFormInvalid("Please wait while " + $scope.datafile.name + " is imported...");
-      $scope.upload = $upload.upload({
-        url: '/upload/lf-lexicon/lex-project',
-        file: $scope.datafile,
-        data: {projectId: ($scope.newProject.id || '')}, // Which project to upload new data to
-      }).progress(function(evt) {
-        $scope.uploadProgress = 100.0 * evt.loaded / evt.total;
-      }).success(function(data, status, headers, config) {
-        notice.cancelLoading();
-        $scope.uploadSuccess = data.result;
-        if ($scope.uploadSuccess) {
-          notice.push(notice.SUCCESS, $filter('translate')("Successfully imported") + " " + $scope.datafile.name);
-          $scope.newProject.entriesImported = data.data.entriesImported;
-        } else {
-          notice.push(notice.ERROR, $filter('translate')("Sorry, something went wrong in the import process."));
-          $scope.newProject.entriesImported = 0;
-          // Should really have a more specific error message.
-          // TODO: Update the PHP API to provide specific error messages regarding failure reasons.
-        }
-        $scope.validateForm();
-      });
+      if ($scope.datafile.size <= ss.fileSizeMax()) {
+        notice.setLoading('Importing ' + $scope.datafile.name + '...');
+        makeFormInvalid();
+        $scope.upload = $upload.upload({
+          url: '/upload/lf-lexicon/import-zip',
+          file: $scope.datafile,
+          data: {
+              filename: $scope.datafile.name
+            },
+        }).progress(function(evt) {
+          $scope.uploadProgress = 100.0 * evt.loaded / evt.total;
+        }).success(function(data, status, headers, config) {
+          notice.cancelLoading();
+          $scope.uploadSuccess = data.result;
+          if ($scope.uploadSuccess) {
+            notice.push(notice.SUCCESS, $filter('translate')("Successfully imported") + " " + $scope.datafile.name);
+            $scope.newProject.entriesImported = data.data.stats.importEntries;
+            $scope.newProject.importErrors = data.data.importErrors;
+            makeFormNeutral();
+            gotoNextState();
+          } else {
+            $scope.uploadProgress = 0;
+            $scope.datafile = null;
+            $scope.newProject.entriesImported = 0;
+            notice.push(notice.ERROR, data.data.errorMessage);
+          }
+        });
+      } else {
+        notice.push(notice.ERROR, "<b>" + $scope.datafile.name + "</b> (" + $filter('bytes')($scope.datafile.size) + 
+            ") is too large. It must be smaller than " + $filter('bytes')(ss.fileSizeMax()) + ".");
+        $scope.uploadProgress = 0;
+        $scope.datafile = null;
+      }
+    };
+    
+    $scope.hasImportErrors = function hasImportErrorrs() {
+      return ($scope.newProject.importErrors !== '');
+    };
+    
+    $scope.showImportErrorsButtonLabel = function showImportErrorsButtonLabel() {
+      if ($scope.show.importErrors) {
+        return $filter('translate')("Hide non-critical import errors");
+      }
+      return $filter('translate')("Show non-critical import errors");
     };
 
     // ----- Step 3: Verify initial data -OR- select primary language -----
 
-    $scope.initialDataLooksGood = function() {
-      $scope.makeFormValid();
-    }
-
-    $scope.setLanguage = function(languageCode, language) {
-      $scope.newProject.languageCode = languageCode;
-      $scope.newProject.languageName = language.name;
+    $scope.primaryLanguage = function primaryLanguage() {
+      if ($scope.newProject.languageCode) {
+        return $scope.newProject.language.name + ' (' + $scope.newProject.languageCode + ')';
+      }
+      return '';
     };
+    
     $scope.openNewLanguageModal = function openNewLanguageModal() {
       var modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
@@ -422,24 +448,59 @@ angular.module('new-lexicon-project',
         }]
       });
       modalInstance.result.then(function(selected) {
-        $scope.setLanguage(selected.code, selected.language);
+        $scope.newProject.languageCode = selected.code;
+        $scope.newProject.language = selected.language;
       });
+    };
+    
+    function savePrimaryLanguage(callback) {
+      var config = {inputSystems: []};
+      var optionlist = {};
+      var inputSystem = {};
+      notice.setLoading('Configuring project for first use...');
+      if (angular.isDefined(ss.session.projectSettings)) {
+        config = ss.session.projectSettings.config;
+        optionlist = ss.session.projectSettings.optionlists;
+      }
+      inputSystem.abbreviation = $scope.newProject.languageCode;
+      inputSystem.tag = $scope.newProject.languageCode;
+      inputSystem.languageName = $scope.newProject.language.name;
+      config.inputSystems[$scope.newProject.languageCode] = inputSystem;
+      if ('th' in config.inputSystems) {
+        delete config.inputSystems['th'];
+        replaceFieldInputSystem(config.entry, 'th', $scope.newProject.languageCode);
+      }
+      lexProjectService.updateConfiguration(config, optionlist, function(result) {
+        notice.cancelLoading();
+        if (result.ok) {
+          (callback || angular.noop)();
+        } else {
+          makeFormInvalid("Could not add " + $scope.newProject.language.name + " to project.");
+        }
+      });
+    };
+    
+    function replaceFieldInputSystem(item, existingTag, replacementTag) {
+      if (item.type === 'fields') {
+        angular.forEach(item.fields, function(field) {
+          replaceFieldInputSystem(field, existingTag, replacementTag);
+        });
+      } else {
+        if (angular.isDefined(item.inputSystems)) {
+          angular.forEach(item.inputSystems, function(inputSystemTag, index) {
+            if (inputSystemTag === existingTag) {
+              item.inputSystems[index] = replacementTag;
+            }
+          });
+        }
+      }
     };
 
     $scope.$watch('newProject.languageCode', function(newval) {
-      if (angular.isUndefined(newval)) { return; }
-      $scope.validateForm();
+      if (angular.isDefined(newval)) {
+        validateForm();
+      }
     });
-
-
-    // ----- Step 4: Final project creation -----
-
-    $scope.addProject = function() {
-      // Actually, the project has already been created; we just need to return the user to /app/projects
-      $scope.makeFormValid('Project created.');
-      // TODO: Set url to /app/projects -- or maybe to the newly-created project.
-    };
-
 
   }])
 ;

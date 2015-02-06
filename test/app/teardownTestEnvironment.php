@@ -1,6 +1,8 @@
 <?php
 require_once ('e2eTestConfig.php');
 
+use models\languageforge\lexicon\LexiconProjectModel;
+use models\languageforge\lexicon\commands\LexUploadCommands;
 use models\ProjectModel;
 use Palaso\Utilities\FileUtilities;
 
@@ -14,3 +16,11 @@ $project->readByProperties(array(
 $testProject = $project->getById($project->id->asString());
 $assetsFolderPath = $testProject->getAssetsFolderPath();
 FileUtilities::removeFolderAndAllContents($assetsFolderPath);
+
+// cleanup mocked uploaded zip import (jpg file)
+$tmpFilePath = sys_get_temp_dir() . '/' . $constants['testMockJpgImportFile']['name'];
+@unlink($tmpFilePath);
+
+// cleanup mocked uploaded zip import (zip file)
+$tmpFilePath = sys_get_temp_dir() . '/' . $constants['testMockZipImportFile']['name'];
+@unlink($tmpFilePath);

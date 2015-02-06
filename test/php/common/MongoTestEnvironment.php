@@ -275,6 +275,12 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         parent::__construct('languageforge.org');
     }
 
+    /**
+     *
+     * @var LexiconProjectModel
+     */
+    public $project;
+
     public function createProject($name, $code)
     {
         $projectModel = new LexiconProjectModel();
@@ -283,6 +289,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         $projectModel->siteName = $this->website->domain;
         $this->cleanProjectEnvironment($projectModel);
         $projectModel->write();
+        $this->project = $projectModel;
 
         return $projectModel;
     }
