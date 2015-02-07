@@ -1,12 +1,14 @@
 <?php
 use libraries\shared\Website;
+use libraries\languageforge\semdomtrans\SemDomXMLImporter;
 use models\ProjectModel;
 use models\UserModel;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\shared\rights\ProjectRoles;
 use models\shared\rights\SystemRoles;
 use Palaso\Utilities\FileUtilities;
-
+use models\languageforge;
+use models\languageforge\SemDomTransProjectModel;
 require_once TestPath . 'common/MockProjectModel.php';
 
 class MongoTestEnvironment
@@ -347,4 +349,62 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
 
         return $liftFilePath;
     }
+}
+
+
+
+class SemDomMongoTestEnvironment extends MongoTestEnvironment
+{
+	public function __construct()
+	{
+		parent::__construct('languageforge.org');
+	}
+
+	/**
+	 *
+	 * @var SemDomProjectModel
+	 */
+	public $englishProject;
+	
+	
+	/**
+	 *
+	 * @var SemDomProjectModel
+	 */
+	public $targetProject;
+	
+	
+	public function importEnglishProject() {
+		$projectModel = new SemDomTransProjectModel();
+		$lang = "en";
+		$version = "1";
+		$projectModel->languageIsoCode = $lang;
+		$projectModel->semdomVersion = $version;
+		$projectModel->projectCode = "semdom-$lang-$version";
+		$this->cleanProjectEnvironment($projectModel);
+		$projectModel->write();
+		$importer = new SemDomXMLImporter("/var/www/host/sil/lfsite/docs/semdom/semdom lists/SemDom_en.xml", $projectModel, false);
+		$importer->run();
+		$this->englishProject = $projectModel;
+		return $projectModel;		
+	}
+	
+	public function createPreFilledTargetProject($languageCode) {
+		$previousProject = new SemDomTransProjectModel();
+		$version = $this->englishProject->semdomVersion;
+		$previousProject->projectCode = "semdom-$languageCode-$version";
+		$previousProject->readByProperty("projectCode", $previousProject->projectCode);
+		$this->cleanProjectEnvironment($previousProject);
+		
+		$projectModel = SemDomTransProjectModel::createPreFilled($this->englishProject, $languageCode, $this->englishProject->semdomVersion);
+		$this->targetProject = $projectModel;
+		return $projectModel;
+	}
+	
+	public function cleanSemdom() 
+	{
+		$this->cleanProjectEnvironment($this->targetProject);
+		$this->cleanProjectEnvironment($this->englishProject);
+		$this->cleanProjectEnvironment($previousProject);
+	}
 }
