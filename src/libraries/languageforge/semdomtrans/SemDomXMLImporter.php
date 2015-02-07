@@ -32,13 +32,12 @@ class SemDomXMLImporter {
 		$this->_lang = $projectModel->languageIsoCode;
 	}
 	
-	public function run() {
-		/*
-		* For English: 
-		* $possibilities = $this->_xml->SemanticDomainList->CmPossibilityList->Possibilities;
-		*/
+	public function run($english=true) {
+
+		$possibilities = $english ? 
+			$this->_xml->SemanticDomainList->CmPossibilityList->Possibilities 
+			: $this->_xml->xpath("List[@field='SemanticDomainList']")[0]->Possibilities;
 		
-		$possibilities = $this->_xml->xpath("List[@field='SemanticDomainList']")[0]->Possibilities;
 		foreach($possibilities->children() as $domainNode) {
 			$this->_processDomainNode($domainNode);
 		}
@@ -91,7 +90,7 @@ class SemDomXMLImporter {
 		
 		$itemModel->name = new SemDomTransTranslatedForm($name);
 		$itemModel->key = $abbreviation;
-		//$itemModel->description = new SemDomTransTranslatedForm($description);
+		$itemModel->description = new SemDomTransTranslatedForm($description);
 		$itemModel->questions = $questions;
 		$itemModel->searchKeys = $searchKeys;
 		//print_r($itemModel->questions);

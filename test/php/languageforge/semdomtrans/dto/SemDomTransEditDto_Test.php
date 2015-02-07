@@ -19,6 +19,21 @@ class TestSemDomTransEditDto extends UnitTestCase
     }
 
 
+    public function testEncode_SourceProjectFromXmlTargetProjectFromCreateStub_DtoAsExpected() 
+    {
+    	$e = new SemDomMongoTestEnvironment(); 
+    	$e->clean();
+    	$englishProject = $e->importEnglishProject();
+    	$targetProject = $e->createPreFilledTargetProject("es");
+    	$result = SemDomTransEditDto::encode($targetProject->id->asString(), null);
+    	$this->assertNotEqual($result["items"], null);
+    	$this->assertEqual($result["items"][0]["name"]["source"], "Universe, creation");
+    	$this->assertEqual($result["items"][10]["name"]["source"], "Cloud");
+    	$this->assertEqual($result["items"][1]["questions"][1]["question"]["source"], "(2) What words refer to the air around the earth?");
+    	$e->clean();
+    	$e->cleanSemdom();
+    }
+    	 
     public function testEncode_SourceProjectAndTargetProjectHaveItems_DtoAsExpected()
     {
         $e = new MongoTestEnvironment();
@@ -69,9 +84,9 @@ class TestSemDomTransEditDto extends UnitTestCase
         $loadSourceProject = new SemDomTransProjectModel($loadTargetProject->sourceLanguageProjectId);
         $result = SemDomTransEditDto::encode($prId->asString(), null);
         
-        print_r($result);
+        // print_r($result);
         // check dto returns expected results
-         /*$items = $result["items"];
+         $items = $result["items"];
          $this->assertTrue($items != null); 
          $this->assertTrue(count($items) > 0);
          
@@ -97,10 +112,10 @@ class TestSemDomTransEditDto extends UnitTestCase
          $this->assertNotEqual($firstObject["questions"][0]["question"], null);
          $this->assertNotEqual($firstObject["questions"][0]["terms"], null);
          $this->assertEqual($firstObject["questions"][0]["question"]["source"], "A universe question");
-         $this->assertEqual($firstObject["questions"][0]["question"]["translation"], "");
-         $this->assertEqual($firstObject["questions"][0]["terms"]["source"], "");
+         $this->assertEqual($firstObject["questions"][0]["question"]["translation"], "Pytanie wszechswiata");
+         $this->assertEqual($firstObject["questions"][0]["terms"]["source"], "A universe question term");
          $this->assertEqual($firstObject["questions"][0]["terms"]["translation"], "Termin zwiazany z wszechswiatem");
-         */
+
          // clean-up
          // TODO: create a custom semdomtrans mongo environment
          $targetProject->remove();
