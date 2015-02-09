@@ -145,6 +145,13 @@ class Website
             return '';
         }
     }
+    
+    public static function getRawRedirect($hostname) {
+    	if (array_key_exists($hostname, self::$_redirect)) {
+    		return self::$_redirect[$hostname];
+    	}
+    	return '';
+    }
 
     /**
 
@@ -236,6 +243,12 @@ class Website
         $w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
         $sites['scriptureforge.local'] = $w;
 
+        $w = new Website('e2etest.scriptureforge.local', self::SCRIPTUREFORGE);
+        $w->name = 'Scripture Forge';
+        $w->ssl = false;
+        $w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
+        $sites['e2etest.scriptureforge.local'] = $w;
+
         $w = new Website('jamaicanpsalms.scriptureforge.local', self::SCRIPTUREFORGE);
         $w->name = 'The Jamaican Psalms Project';
         $w->ssl = true;
@@ -268,24 +281,32 @@ class Website
         $w->name = 'The Jamaican Psalms Project';
         $w->ssl = true;
         $w->theme = 'jamaicanpsalms';
-        $w->defaultProjectCode = 'jamaicanpsalms';
+        $w->defaultProjectCode = 'jamaican_psalms';
         $sites['jamaicanpsalms.dev.scriptureforge.org'] = $w;
 
         // scriptureforge.org
-        $w = new Website('www.scriptureforge.org', self::SCRIPTUREFORGE);
+        $w = new Website('scriptureforge.org', self::SCRIPTUREFORGE);
         $w->name = 'Scripture Forge';
         $w->ssl = true;
         $w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
-        $sites['www.scriptureforge.org'] = $w;
+        $sites['scriptureforge.org'] = $w;
 
         // jamaicanpsalms.com
         $w = new Website('jamaicanpsalms.com', self::SCRIPTUREFORGE);
         $w->name = 'The Jamaican Psalms Project';
         $w->ssl = true;
         $w->theme = 'jamaicanpsalms';
-        $w->defaultProjectCode = 'jamaicanpsalms';
+        $w->defaultProjectCode = 'jamaican_psalms';
         $sites['jamaicanpsalms.com'] = $w;
 
+        // waaqwiinaagiwritings.org
+        $w = new Website('waaqwiinaagiwritings.org', self::SCRIPTUREFORGE);
+        $w->name = 'Waaqwiinaagi Writings';
+        $w->ssl = true;
+        $w->theme = 'simple';
+        $w->defaultProjectCode = 'waaqwiinaagiwritings';
+        $sites['waaqwiinaagiwritings.org'] = $w;
+        
         /*
 		 * **************************
 		 * LANGUAGE FORGE WEBSITES
@@ -325,8 +346,8 @@ class Website
 		 * **************************
 		 */
 
-        $redirect['scriptureforge.org'] = 'www.scriptureforge.org';
-        $redirect['languageforge.org'] = 'www.languageforge.org';
+        $redirect['www.scriptureforge.org'] = 'scriptureforge.org';
+        $redirect['www.languageforge.org'] = 'languageforge.org';
         $redirect['www.jamaicanpsalms.com'] = 'jamaicanpsalms.com';
         $redirect['www.jamaicanpsalms.org'] = 'jamaicanpsalms.com';
         $redirect['jamaicanpsalms.org'] = 'jamaicanpsalms.com';

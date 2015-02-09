@@ -7,7 +7,7 @@ form.dc-multitext .controls input[type="text"] {
     width: 165px;
 }
 
-form.dc-multitext label, form.dc-optionlist label {
+form.dc-multitext label, form.dc-optionlist label, form.dc-multioptionlist label {
     font-weight:bold;
     cursor: default;
 }

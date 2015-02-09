@@ -11,5 +11,6 @@ src/bower_components/
 src/assets/
 .idea/*
 test/app/node_modules/protractor/selenium/
-
-/src/vendor_bower/
+test/app/node_modules/.bin/
+.project
+src/vendor_bower/
