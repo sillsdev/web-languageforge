@@ -86,6 +86,9 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
         newTag += (this.script) ? '-' + this.script : '';
         newTag += (this.region) ? '-' + this.region : '';
         newTag += (this.variantString) ? '-x-' + this.variantString : '';
+        if (! this.script && ! this.region && ! this.variantString) {
+          newTag += '-unspecified';
+        }
         break;
     }
 
@@ -214,7 +217,17 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
       name += (this.variantString) ? '-' + this.variantString : '';
       name += ')';
     } else if (this.special == specialOptions[3]) {
-      name += ' (' + this.variantString + ')';
+      name += ' (';
+      if (this.variantString) {
+        name += this.variantString;
+      } else if (this.region) {
+        name += this.region;
+      } else if (this.script) {
+        name += this.script;
+      } else {
+        name += 'unspecified';
+      }
+      name += ')';
     }
     return name;
   };
@@ -306,13 +319,23 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
   };
 
   $scope.configurationApply = function configurationApply() {
+    var isAnyTagUnspecified = false;
     $scope.isSaving = true;
 
     // Publish updates in configDirty to send to server
     $scope.configDirty.inputSystems = {};
     angular.forEach($scope.inputSystemViewModels, function(viewModel) {
+      if (viewModel.inputSystem.tag.indexOf('-unspecified') > -1) {
+        isAnyTagUnspecified = true;
+        notice.push(notice.ERROR, 'Specify at least one Script, Region or Variant for ' + viewModel.languageDisplayName());
+      }
       $scope.configDirty.inputSystems[viewModel.inputSystem.tag] = viewModel.inputSystem;
     });
+    
+    if (isAnyTagUnspecified) {
+      $scope.isSaving = false;
+      return;
+    };
 
     lexProjectService.updateConfiguration($scope.configDirty, $scope.optionlistDirty, function(result) {
       if (result.ok) {
