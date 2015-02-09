@@ -1,18 +1,16 @@
 <?php
 use libraries\shared\Website;
-use models\ProjectModel;
-use models\UserModel;
+use Palaso\Utilities\FileUtilities;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\shared\rights\ProjectRoles;
 use models\shared\rights\SystemRoles;
-use Palaso\Utilities\FileUtilities;
-
-require_once TestPath . 'common/MockProjectModel.php';
+use models\ProjectModel;
+use models\UserModel;
 
 class MongoTestEnvironment
 {
 
-    public function __construct($domain = 'www.scriptureforge.org')
+    public function __construct($domain = 'scriptureforge.org')
     {
         $this->db = \models\mapper\MongoStore::connect(SF_DATABASE);
         $this->website = Website::get($domain);
@@ -275,6 +273,12 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         parent::__construct('languageforge.org');
     }
 
+    /**
+     *
+     * @var LexiconProjectModel
+     */
+    public $project;
+
     public function createProject($name, $code)
     {
         $projectModel = new LexiconProjectModel();
@@ -283,6 +287,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         $projectModel->siteName = $this->website->domain;
         $this->cleanProjectEnvironment($projectModel);
         $projectModel->write();
+        $this->project = $projectModel;
 
         return $projectModel;
     }

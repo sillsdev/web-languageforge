@@ -38,12 +38,12 @@ angular.module('lexicon',
     $routeProvider.when( '/review', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
     $routeProvider.when( '/wordlist', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
     
-	$routeProvider.when(
+    $routeProvider.when(
             '/dbe',
             {
                 templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
-	    }
-	);
+            }
+        );
         $routeProvider.when(
             '/dbe/:entryId',
             {
@@ -106,8 +106,8 @@ angular.module('lexicon',
       );
     $routeProvider.otherwise({redirectTo: '/projects'});
   }])
-  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate',
-  function($scope, ss, lexConfigService, lexProjectService, $translate) {
+  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate', '$location',
+  function($scope, ss, lexConfigService, lexProjectService, $translate, $location) {
     var pristineLanguageCode;
     
     $scope.rights = {};
@@ -130,6 +130,13 @@ angular.module('lexicon',
     changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
     
     $scope.isTaskEnabled = lexConfigService.isTaskEnabled;
+
+    $scope.gotoDictionary = function gotoDictionary() {
+      $location.path('/dbe');
+    };
+    $scope.showDictionaryButton = function showDictionaryButton() {
+      return ! ($location.path().indexOf('/dbe') == 0);
+    };
 
     function changeInterfaceLanguage(code) {
       $translate.use(code);
