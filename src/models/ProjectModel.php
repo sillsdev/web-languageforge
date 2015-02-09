@@ -116,7 +116,9 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public function removeUser($userId)
     {
-        unset($this->users[$userId]);
+        if (array_key_exists($userId, $this->users)) {
+            unset($this->users[$userId]);
+        }
     }
 
     /**
