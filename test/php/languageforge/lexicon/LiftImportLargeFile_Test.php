@@ -56,7 +56,7 @@ class TestLiftImport extends UnitTestCase
         $mergeRule =  LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        LiftImport::merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $testInfo->add('post merge');
 

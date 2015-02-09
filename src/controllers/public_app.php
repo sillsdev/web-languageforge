@@ -6,7 +6,8 @@ class Public_app extends Base
 {
     public function view($app = 'main')
     {
-        $appFolder = "angular-app/" . $this->website->base . "/public/$app";
+        $siteFolder = "angular-app/" . $this->website->base;
+        $appFolder = $siteFolder . "/public/$app";
         if (!file_exists($appFolder)) {
             $appFolder = "angular-app/bellows/apps/public/$app";
             if (!file_exists($appFolder)) {
@@ -22,6 +23,7 @@ class Public_app extends Base
         $data['jsFiles'] = array();
         self::addJavascriptFiles("angular-app/bellows/js", $data['jsFiles'], array('vendor/', 'assets/'));
         self::addJavascriptFiles ( "angular-app/bellows/directive", $data ['jsFiles'] );
+        self::addJavascriptFiles($siteFolder . '/js', $data['jsFiles']);
         self::addJavascriptFiles($appFolder, $data['jsFiles'], array('vendor/', 'assets/'));
 
         // remove asset js files

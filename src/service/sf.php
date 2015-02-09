@@ -246,11 +246,26 @@ class sf
      * @param string $projectName
      * @param string $projectCode
      * @param string $appName
-     * @return string - projectId
+     * @return string | boolean - $projectId on success, false if project code is not unique
      */
     public function project_create($projectName, $projectCode, $appName)
     {
         return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->_userId, $this->_website);
+    }
+
+    /**
+     * Creates project and switches the session to the new project
+     *
+     * @param string $projectName
+     * @param string $projectCode
+     * @param string $appName
+     * @return string | boolean - $projectId on success, false if project code is not unique
+     */
+    public function project_create_switchSession($projectName, $projectCode, $appName)
+    {
+        $projectId = $this->project_create($projectName, $projectCode, $appName);
+        $this->_controller->session->set_userdata('projectId', $projectId);
+        return $projectId;
     }
 
     /**
@@ -645,6 +660,12 @@ class sf
     public function lex_optionlists_update($params)
     {
         return LexOptionListCommands::updateList($this->_projectId, $params);
+    }
+
+    public function lex_upload_importProjectZip($mediaType, $tmpFilePath)
+    {
+        $response = LexUploadCommands::importProjectZip($this->_projectId, $mediaType, $tmpFilePath);
+        return JsonEncoder::encode($response);
     }
 
     public function lex_uploadImageFile($mediaType, $tmpFilePath)

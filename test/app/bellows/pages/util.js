@@ -167,3 +167,8 @@ var clickBreadcrumb = function clickBreadcrumb(breadcrumbText) {
   element(by.elemMatches("ul.topCrumbs > li", breadcrumbText)).click();
 };
 module.exports.clickBreadcrumb = clickBreadcrumb;
+
+var parent = function parent(child) {
+  return child.element(by.xpath('..'));
+};
+module.exports.parent = parent;

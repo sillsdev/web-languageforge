@@ -9,8 +9,8 @@ class TestWebsite extends UnitTestCase
 {
     public function testGet_Works()
     {
-        $website = Website::get('www.scriptureforge.org');
-        $this->assertEqual($website->domain, 'www.scriptureforge.org');
+        $website = Website::get('scriptureforge.org');
+        $this->assertEqual($website->domain, 'scriptureforge.org');
         $this->assertEqual($website->base, 'scriptureforge');
         $this->assertEqual($website->theme, 'default');
 
@@ -23,11 +23,11 @@ class TestWebsite extends UnitTestCase
         $redirect = Website::getRedirect('randomdomain.com');
         $this->assertEqual($redirect, '');
 
-        $redirect = Website::getRedirect('www.scriptureforge.org');
+        $redirect = Website::getRedirect('scriptureforge.org');
         $this->assertEqual($redirect, '');
 
-        $redirect = Website::getRedirect('scriptureforge.org');
-        $this->assertEqual($redirect, 'https://www.scriptureforge.org');
+        $redirect = Website::getRedirect('www.scriptureforge.org');
+        $this->assertEqual($redirect, 'https://scriptureforge.org');
 
         $redirect = Website::getRedirect('jamaicanpsalms.org');
         $this->assertEqual($redirect, 'https://jamaicanpsalms.com');

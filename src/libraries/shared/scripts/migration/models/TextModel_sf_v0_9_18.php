@@ -42,7 +42,7 @@ class TextModel_sf_v0_9_18 extends \models\mapper\MapperModel
         $this->id = new Id();
         $this->_projectModel = $projectModel;
         $this->isArchived = false;
-        $databaseName = $projectModel->databaseName();
+        $databaseName = 'sf_jamaican_psalms';
         parent::__construct(TextModelMongoMapper_sf_v0_9_18::connect($databaseName), $id);
     }
 
@@ -88,7 +88,7 @@ class TextListModel_sf_v0_9_18 extends \models\mapper\MapperListModel
     public function __construct($projectModel)
     {
         parent::__construct(
-            TextModelMongoMapper_sf_v0_9_18::connect($projectModel->databaseName()),
+            TextModelMongoMapper_sf_v0_9_18::connect('sf_jamaican_psalms'),
             array('title' => array('$regex' => '')),
             array('title')
         );
