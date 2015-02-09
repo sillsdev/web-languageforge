@@ -355,7 +355,8 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
           url: '/upload/sf-checks/audio',
           // headers: {'myHeaderKey': 'myHeaderVal'},
           data: {
-            textId: textId,
+            'filename': file.name,
+            'textId': textId
           },
           file: file
         }).progress(function(evt) {
