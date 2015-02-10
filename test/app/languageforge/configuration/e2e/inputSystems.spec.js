@@ -180,7 +180,15 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.scriptDropdown.isDisplayed()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.regionDropdown.isDisplayed()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.variantInput.isDisplayed()).toBe(true);
-    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi');
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-unspecified');
+  });
+  
+  it('can not add unspecified Variant', function() {
+    expect(configPage.noticeList.count()).toBe(0);
+    configPage.applyButton.click();
+    expect(configPage.noticeList.count()).toBe(1);
+    expect(configPage.noticeList.get(0).getText()).toContain('Specify at least one Script, Region or Variant');
+    configPage.firstNoticeCloseButton.click();
   });
   
   it('can change Script', function() {
@@ -265,7 +273,7 @@ describe('Configuration Input Systems', function() {
     expect(configPage.inputSystemsTab.selectedInputSystem.regionDropdown.isEnabled()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.variantInput.isDisplayed()).toBe(true);
     expect(configPage.inputSystemsTab.selectedInputSystem.variantInput.isEnabled()).toBe(true);
-    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi');
+    expect(configPage.inputSystemsTab.selectedInputSystem.tag.getText()).toEqual('mi-unspecified');
   });
   
   it('can always add another Variant variation', function() {
