@@ -82,7 +82,8 @@ class TestLiftImportZip extends UnitTestCase
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
         $this->assertTrue(array_key_exists('th-fonipa', $project->inputSystems));
-        $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->getReport()->hasError(), 1);
+        $this->assertPattern("/range file 'TestProj.lift-ranges' was not found/", $importer->getReport()->toFormattedString());
         $this->assertEqual($importer->stats->existingEntries, 0);
         $this->assertEqual($importer->stats->importEntries, 2);
         $this->assertEqual($importer->stats->newEntries, 2);
