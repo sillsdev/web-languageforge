@@ -149,8 +149,8 @@ class LiftImport
                         $isInFields = false;
                     } elseif ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'field') {
                         $node = $reader->expand();
-                        $tag = $node->attributes->getNamedItem('tag')->textContent;
                         $sxeNode = self::domNode_to_sxeNode($node);
+                        $tag = (string) $sxeNode['tag'];
                         $liftField = array();
                         foreach ($sxeNode as $element) {
                             if ($element->getName() === 'form') {
