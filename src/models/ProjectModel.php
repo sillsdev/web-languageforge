@@ -119,7 +119,9 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public function removeUser($userId)
     {
-        unset($this->users[$userId]);
+        if (array_key_exists($userId, $this->users)) {
+            unset($this->users[$userId]);
+        }
     }
 
     /**
@@ -228,7 +230,7 @@ class ProjectModel extends \models\mapper\MapperModel
     /**
      * @return string Relative path of the projects assets folder
      */
-    public function getAssetsPath()
+    public function getAssetsRelativePath()
     {
         return 'assets/' . $this->appName. '/' . $this->databaseName();
     }
@@ -238,7 +240,7 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public function getAssetsFolderPath()
     {
-        return APPPATH . $this->getAssetsPath();
+        return APPPATH . $this->getAssetsRelativePath();
     }
 
     /**

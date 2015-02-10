@@ -58,12 +58,7 @@ class Upload extends Secure_base
                                 $mediaType,
                                 $tmpFilePath
                             ));
-                            if (isset($_POST['projectId'])) {
-                                $projectId = $_POST['projectId'];
-                            } else {
-                                $projectId = '';
-                            }
-                            $response = $api->lex_upload_importProjectZip($mediaType, $tmpFilePath, $projectId);
+                            $response = $api->lex_upload_importProjectZip($mediaType, $tmpFilePath);
                             break;
                         case 'sense-image':
                             $api->checkPermissions('lex_uploadImageFile', array(

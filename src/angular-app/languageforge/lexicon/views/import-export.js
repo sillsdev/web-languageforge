@@ -35,6 +35,7 @@ function LiftImportCtrl($scope, $upload, $modal, notice, lexProjectService, $fil
         'url': uploadUrl,
         // 'headers': {'myHeaderKey': 'myHeaderVal'},
         'data': {
+          'filename': $scope.upload.file.name,
           'mergeRule': $scope.upload.mergeRule,
           'skipSameModTime': $scope.upload.skipSameModTime,
           'deleteMatchingEntry': $scope.upload.deleteMatchingEntry

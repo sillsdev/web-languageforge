@@ -10,7 +10,8 @@ class app extends Secure_base
 {
     public function view($app = 'main', $projectId = '')
     {
-        $appFolder = "angular-app/" . $this->website->base . "/$app";
+        $siteFolder = "angular-app/" . $this->website->base;
+        $appFolder = $siteFolder . "/$app";
         if (!file_exists($appFolder)) {
             $appFolder = "angular-app/bellows/apps/$app";
             if (!file_exists($appFolder)) {
@@ -44,7 +45,8 @@ class app extends Secure_base
 
         $data['jsFiles'] = array();
         self::addJavascriptFiles("angular-app/bellows/js", $data['jsFiles'], array('vendor/', 'assets/'));
-        self::addJavascriptFiles ( "angular-app/bellows/directive", $data ['jsFiles'] );
+        self::addJavascriptFiles("angular-app/bellows/directive", $data ['jsFiles']);
+        self::addJavascriptFiles($siteFolder . '/js', $data['jsFiles']);
         self::addJavascriptFiles($appFolder, $data['jsFiles'], array('vendor/', 'assets/'));
 
         // remove asset js files

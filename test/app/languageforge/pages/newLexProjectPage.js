@@ -1,18 +1,36 @@
 'use strict';
 
-var NewLexProjectPage = function() {
-  var mockUpload = require('../../bellows/pages/mockUploadElement.js'),
-      modal      = require('./lexModals.js');
+function NewLexProjectPage() {
+  var mockUpload = require('../../bellows/pages/mockUploadElement.js');
+  var modal      = require('./lexModals.js');
+  var _this = this;
   
   this.get = function() {
     browser.get('/app/new-lexicon-project');
   };
   
   // form controls
+  this.noticeList = element.all(by.repeater('notice in notices()'));
+  this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
   this.newLexProjectForm = element('form#newLexProjectForm');
   this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
+  this.backButton = element(by.id('backButton'));
   this.nextButton = element(by.id('nextButton'));
-  this.noticeList = element.all(by.repeater('notice in notices()'));
+  this.expectFormIsValid = function expectFormIsValid() {
+    expect(_this.nextButton.getAttribute('class')).toContain('btn-success');
+  };
+  this.expectFormIsNotValid = function expectFormIsNotValid() {
+    expect(_this.nextButton.getAttribute('class')).not.toContain('btn-success');
+  };
+  this.formStatus = element(by.id('form-status'));
+  this.formStatus.expectHasNoError = function expectHasNoError() {
+    expect(_this.formStatus.getAttribute('class')).not.toContain('alert');
+  };
+  this.formStatus.expectContainsError = function expectContainsError(partialMsg) {
+    if (! partialMsg) partialMsg = '';
+    expect(_this.formStatus.getAttribute('class')).toContain('alert-error');
+    expect(_this.formStatus.getText()).toContain(partialMsg);
+  };
   
   // step 1: project name
   this.namePage = {};
@@ -26,14 +44,15 @@ var NewLexProjectPage = function() {
   
   // step 2: initial data
   this.initialDataPage = {};
-  this.initialDataPage.emptyProjectCheckbox = element(by.model('newProject.emptyProjectDesired'));
   this.initialDataPage.browseButton = element(by.id('browseButton'));
   this.initialDataPage.mockUpload = mockUpload;
   
   // step 3: verify data
   this.verifyDataPage = {};
-  this.verifyDataPage.lexiconButton = element(by.id('lexiconButton'));
+  this.verifyDataPage.title = element(by.tagName('h3'));
+  this.verifyDataPage.nonCriticalErrorsButton = element(by.id('nonCriticalErrorsButton'));
   this.verifyDataPage.entriesImported = element(by.binding('newProject.entriesImported'));
+  this.verifyDataPage.importErrors = element(by.binding('newProject.importErrors'));
   
   // step 3 alternate: primary language
   this.primaryLanguagePage = {};

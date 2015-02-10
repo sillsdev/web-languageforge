@@ -163,10 +163,11 @@ class ActivityListModel extends \models\mapper\MapperListModel
 
     public function __construct($projectModel)
     {
+        // hardcoded to limit 100.  TODO implement paging
         $this->entries = new MapOf(function ($data) use ($projectModel) { return new ActivityModel($projectModel); });
         parent::__construct(
             ActivityModelMongoMapper::connect($projectModel->databaseName()),
-            array('action' => array('$regex' => ''))
+            array('action' => array('$regex' => '')), array(), array('dateCreated' => -1), 100
         );
     }
 

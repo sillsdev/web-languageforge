@@ -3,7 +3,7 @@
   
   "siteType"        : "languageforge",
   "siteHostname"    : "languageforge.local",
-  "baseUrl"         : "https://languageforge.local",
+  "baseUrl"         : "http://languageforge.local",
 
   "adminUsername"   : "test_runner_admin",
   "adminPassword"   : "hammertime",
