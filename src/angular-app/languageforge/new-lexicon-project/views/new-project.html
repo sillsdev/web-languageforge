@@ -18,24 +18,22 @@
 
         <div class="row" align="center">
         <div class="span8">
-            <!-- Back button disabled by RM on 2014-10. TODO: Re-enable when decisions are made on how to implement. -->
-            <!-- E.g., when moving back to initial-data upload step, delete previous zip file and reset project to empty. -->
-            <!--
-            <button class="btn" data-ng-click="prevStep()" data-ng-class="interfaceConfig.pullNormal" translate="&lt; &nbsp; Back"></button>
-            -->
+            <a class="btn" data-ng-class="interfaceConfig.pullNormal" 
+                id="backButton" data-ng-click="prevStep()" data-ng-show="show.backButton">
+                <i class="icon-circle-arrow-left"></i>
+                {{'Back' | translate}}</a>
             <button class="btn" data-ng-class="[interfaceConfig.pullToSide, forwardBtnClass]"
                 id="nextButton" data-ng-click="nextStep()">
-                {{'Next' | translate}} 
-                <i style="margin-left: 5px" class="icon-circle-arrow-right"></i>
-            </button>
+                {{nextButtonLabel | translate}}&nbsp; 
+                <i class="icon-circle-arrow-right"></i></button>
         </div>
         </div>
     </div>
 
     <!-- use ng-submit to catch the form submission and use our Angular function -->
-    <form class="form-horizontal" data-ng-submit="nextStep()" id="newLexProjectForm" name="newLexProjectForm" novalidate>
+    <form class="form-horizontal" id="newLexProjectForm" name="newLexProjectForm" novalidate>
         <div class="row" align="center">
-            <div class="span8" id="form-status" data-ng-class="formStatusClass"><span>{{formStatus | translate}} &nbsp;</span></div>
+            <div class="span8" id="form-status" data-ng-class="formStatusClass">{{formStatus | translate}}&nbsp;</div>
         </div>
 
         <!-- our nested state views will be injected here -->

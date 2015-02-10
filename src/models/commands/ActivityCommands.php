@@ -2,23 +2,18 @@
 
 namespace models\commands;
 
+use models\languageforge\lexicon\commands\LexEntryCommands;
+use models\ActivityModel;
+use models\CommentModel;
+use models\ProjectModel;
+use models\QuestionModel;
+use models\TextModel;
+use models\UserModel;
 use models\UnreadCommentModel;
 use models\UnreadAnswerModel;
 use models\UnreadTextModel;
 use models\UnreadQuestionModel;
 use models\UnreadActivityModel;
-
-use models\TextModel;
-
-use models\ActivityModel;
-
-use models\CommentModel;
-
-use models\ProjectModel;
-use models\QuestionModel;
-use models\UserModel;
-
-use models\languageforge\lexicon\commands\LexEntryCommands;
 
 class ActivityCommands
 {
@@ -237,26 +232,9 @@ class ActivityCommands
         $activity->userRef->id = $userId;
         $activity->action = ActivityModel::DELETE_ENTRY;
 
-        //$entry = self::getEntry($projectModel->id->asString(), $id);
         $lexeme = LexEntryCommands::getEntryLexeme($projectModel->id->asString(), $id);
         $activity->addContent(ActivityModel::ENTRY, $lexeme);
 
         return $activity->write();
     }
-
-    /**
-     * @param string $projectId
-     * @param string entry id
-     * @return LexEntryModel
-     */
-    public static function getEntry($projectId, $id)
-    {
-        $project = new ProjectModel($projectId);
-        ProjectModelFixer::ensureVLatest($project);
-
-        $entry = new LexEntryModel($project, $id);
-
-        return $entry;
-    }
-
 }

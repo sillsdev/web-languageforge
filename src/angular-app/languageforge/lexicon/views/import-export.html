@@ -52,7 +52,7 @@
                 <strong> {{upload.file.name}}</strong> ({{upload.file.size | bytes}})
                 <div data-ng-show="upload.importStarted">
                     <br />
-                    <progressbar class="span4" value="upload.progress" max="100.0">{{upload.progress}}%</progressbar>
+                    <progressbar class="span4" value="upload.progress" max="100.0">{{upload.progress | number:0}}%</progressbar>
                 </div>
             </form>
         </div>

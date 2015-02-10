@@ -121,7 +121,7 @@ class TestActivityDto extends UnitTestCase
     }
     public function testGetActivityForUser_TwoProjectsTwoDomains_DtoHasOneProject()
     {
-        $e = new MongoTestEnvironment('www.scriptureforge.org');
+        $e = new MongoTestEnvironment('scriptureforge.org');
         $e->clean();
 
         $project1 = $e->createProject(SF_TESTPROJECTCODE, SF_TESTPROJECTCODE);
@@ -160,7 +160,7 @@ class TestActivityDto extends UnitTestCase
 
     public function testGetActivityForUser_TwoProjectsTwoDomains_UnreadHasOneProject()
     {
-        $e = new MongoTestEnvironment('www.scriptureforge.org');
+        $e = new MongoTestEnvironment('scriptureforge.org');
         $e->clean();
 
         $project1 = $e->createProject(SF_TESTPROJECTCODE, SF_TESTPROJECTCODE);
