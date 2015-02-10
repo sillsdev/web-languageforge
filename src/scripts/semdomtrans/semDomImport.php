@@ -21,7 +21,7 @@ $xml = simplexml_load_file($xmlFilePath);
 
 $lang = $argv[2];
 $version = $argv[3];
-$testMode = true;
+$testMode = false;
 $projectModel = new SemDomTransProjectModel();
 
 // todo: check that we are setting the right "language" property
@@ -42,16 +42,19 @@ if ($previousProject->id->asString() == "")
 	{
 		$projectModel->write();
 	}
-		
 	// loop over each semdom item and create a new item model.  Write it to the database
-	$importer = new SemDomXMLImporter($argv[1], $projectModel, false);
+	$importer = new SemDomXMLImporter($argv[1], $projectModel, false,  ($argv[4] == "1"));
 	$importer->run();
 	
 	$newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
-	print "copying $xmlFilePath to $newXmlFilePath\n";
+	if (!file_exists($projectModel->getAssetsFolderPath())) {
+		mkdir($projectModel->getAssetsFolderPath());
+	}
+	
+	print "copying $xmlFilePath to  $newXmlFilePath\n";
 	if (!$testMode) {
 	    copy($xmlFilePath, $newXmlFilePath);
-	    $projectModel->sourceXMLPath = $newXmlFilePath;
+	    $projectModel->newXmlFilePath = $newXmlFilePath;
 	    $projectModel->write();
 	}
 	
