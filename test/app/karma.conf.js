@@ -10,7 +10,7 @@ module.exports = function(config) {
       'src/js/lib/angular_stable_1.2.15/angular-animate.js',
       'src/js/lib/angular_stable_1.2.15/angular-sanitize.js',
       'test/lib/angular/angular-mocks.js',
-      'src/js/lib/angular-file-upload.js',
+      'src/vendor_bower/angularjs-file-upload/angular-file-upload.js',
       'src/js/lib/jquery-1.8.3.min.js',
       'src/js/lib/*ui-bootstrap*.js',
       'src/angular-app/**/*.js',

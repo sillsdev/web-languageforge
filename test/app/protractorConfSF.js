@@ -1,19 +1,13 @@
 var constants = require('./testConstants.json');
+constants.siteType = "scriptureforge"; //TODO: refactor projectsPage.js so this is not necessary
 
 var specs = ['bellows/**/e2e/*.spec.js'];
-if (constants.siteType == 'languageforge') {
-    specs.push('languageforge/**/e2e/*.spec.js')
-} else if (constants.siteType == 'scriptureforge') {
-    specs.push('scriptureforge/**/e2e/*.spec.js')
-}
+specs.push('scriptureforge/**/e2e/*.spec.js');
 
 exports.config = {
   // The address of a running selenium server.
-  // seleniumAddress: 'http://localhost:4444/wd/hub',
   seleniumAddress: 'http://192.168.56.1:4444/wd/hub',
-  // TODO: Re-enable when Test Project can be created with the jamaicanpsalm theme   2014-05 DDW
-  //baseUrl: 'https://scriptureforge.local',
-  baseUrl: constants.baseUrl,
+  baseUrl: 'https://scriptureforge.local',
   
   // To run tests in a single browser, uncomment the following
   capabilities: {

@@ -1,8 +1,12 @@
 /* Top navigation */
+div.hdrnav {
+    clear: both;    
+}
+
 div.lexnav {
 	overflow: visible;
-	padding-left: 0px;
-/*	padding-left: 117px;	Align with topNav and breadcrumbs */
+	padding-left: 115px;	/* Align with topNav and breadcrumbs */
+    padding-bottom: 0;
 }
 
 .lexnav a {
