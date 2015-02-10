@@ -22,6 +22,12 @@ class LiftDecoder
 
     /**
      *
+     * @var array
+     */
+    public $liftFields;
+
+    /**
+     *
      * @var LexiconProjectModel
      */
     private $projectModel;
