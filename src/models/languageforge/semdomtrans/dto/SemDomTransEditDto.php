@@ -16,7 +16,13 @@ class SemDomTransEditDto
     {
         $data = array();
         $project = new SemDomTransProjectModel($projectId);
-        $sourceProject = new SemDomTransProjectModel($project->sourceLanguageProjectId);
+        if ($project->sourceLanguageProjectId == null) {
+       		$sourceProject = new SemDomTransProjectModel();
+       		$sourceProject->projectCode="semdom-en-$project->semdomVersion";
+       		$sourceProject->readByProperty("projectCode", $sourceProject->projectCode);
+        } else {
+        	$sourceProject = new SemDomTransProjectModel($project->sourceLanguageProjectId);
+        }
         $items = new SemDomTransItemListModel($project, $lastFetchTime);
         $items->read();
         $targetItems = $items->entries;
@@ -45,24 +51,31 @@ class SemDomTransEditDto
         		};
         		if ($outerProp == 'searchKeys') {
         			foreach ($outerValue as $innerProp => $innerValue) {
-        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'] != '') {
-				        	$targetItems[$i][$outerProp][$innerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'];
-        				} else {
-       						$sourceLanguageIsIncomplete = true;
+        				if (array_key_exists($innerProp, $sourceItemsByKey[$item['key']][$outerProp]))
+        				{
+	        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'] != '') {
+					        	$targetItems[$i][$outerProp][$innerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'];
+	        				} else {
+	       						$sourceLanguageIsIncomplete = true;
+	        				}
         				}
         			}
         		} else if ($outerProp == 'questions') {
         			foreach ($outerValue as $innerProp => $innerValue) {
-        				$tmp = $sourceItemsByKey[$item['key']][$outerProp][$innerProp];
-        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'] != '') {
-				        	$targetItems[$i][$outerProp][$innerProp]['question']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'];
-        				} else {
-       						$sourceLanguageIsIncomplete = true;
+        				if (array_key_exists($innerProp, $sourceItemsByKey[$item['key']][$outerProp])) {
+	        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'] != '') {
+					        	$targetItems[$i][$outerProp][$innerProp]['question']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'];
+	        				} else {
+	       						$sourceLanguageIsIncomplete = true;
+	        				}
+	        				
+	        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'] != '') {
+	        					$targetItems[$i][$outerProp][$innerProp]['terms']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'];
+	        				} else {
+	        					$sourceLanguageIsIncomplete = true;
+	        				}
         				}
-        				
-        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'] != '') {
-        					$targetItems[$i][$outerProp][$innerProp]['terms']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'];
-        				} else {
+        				else {
         					$sourceLanguageIsIncomplete = true;
         				}
         			}
