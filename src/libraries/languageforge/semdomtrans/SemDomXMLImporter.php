@@ -18,23 +18,25 @@ class SemDomXMLImporter {
 	
 	private $_lang;
 	
+	private $_isEnglish;
+	
 	/**
 	 * 
 	 * @param string $xmlfilepath
 	 * @param SemDomTransProjectModel $projectModel
 	 * @param bool $testMode
 	 */
-	public function __construct($xmlfilepath, $projectModel, $testMode = true) {
+	public function __construct($xmlfilepath, $projectModel, $testMode = true, $isEnglish = true) {
 
 		$this->_xml = simplexml_load_file($xmlfilepath);
 		$this->_projectModel = $projectModel;
 		$this->_runForReal = ! $testMode;
 		$this->_lang = $projectModel->languageIsoCode;
+		$this->_isEnglish = $isEnglish;
 	}
 	
 	public function run($english=true) {
-
-		$possibilities = $english ? 
+		$possibilities = $this->_isEnglish ? 
 			$this->_xml->SemanticDomainList->CmPossibilityList->Possibilities 
 			: $this->_xml->xpath("List[@field='SemanticDomainList']")[0]->Possibilities;
 		
@@ -56,7 +58,7 @@ class SemDomXMLImporter {
 		$guid = (string)$domainNode['guid'];
 		$name = $this->_getPathVal($domainNode->xpath("Name/AUni[@ws='{$this->_lang}']"));
 		
-		$abbreviation = $this->_getPathVal($domainNode->xpath("Abbreviation/AUni[@ws='{$this->_lang}']"));
+		$abbreviation = $this->_getPathVal($domainNode->xpath("Abbreviation/AUni[@ws='en']"));
 
 		$description = (string) $domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']")[0];
 				
@@ -88,6 +90,7 @@ class SemDomXMLImporter {
 		$itemModel = new SemDomTransItemModel($this->_projectModel);
 		$itemModel->readByProperty('xmlGuid', $guid);
 		
+		$itemModel->xmlGuid = $guid;
 		$itemModel->name = new SemDomTransTranslatedForm($name);
 		$itemModel->key = $abbreviation;
 		$itemModel->description = new SemDomTransTranslatedForm($description);
