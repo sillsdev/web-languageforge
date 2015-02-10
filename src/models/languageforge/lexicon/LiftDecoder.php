@@ -3,9 +3,10 @@
 namespace models\languageforge\lexicon;
 
 use models\languageforge\lexicon\config\LexiconConfigObj;
+use models\languageforge\lexicon\config\LexiconMultitextConfigObj;
 use models\mapper\ArrayOf;
-use Palaso\Utilities\CodeGuard;
 use models\mapper\Id;
+use Palaso\Utilities\CodeGuard;
 
 class LiftDecoder
 {
@@ -40,6 +41,7 @@ class LiftDecoder
     private $nodeErrors;
 
     /**
+     *
      * @param SimpleXMLElement $sxeNode
      * @param LexEntryModel $entry
      * @param LiftMergeRule $mergeRule
@@ -99,7 +101,11 @@ class LiftDecoder
                         case 'import-residue': // Currently ignored in LanguageForge
                             break;
                         default:
-                            $this->currentNodeError()->addUnhandledField($element['type']);
+                            if ($this->isCustomEntryField($element)) {
+                                $this->addCustomEntryField($element, $entry);
+                            } else {
+                                $this->currentNodeError()->addUnhandledField($element['type']);
+                            }
                     }
                     break;
                 case 'trait':
@@ -146,6 +152,7 @@ class LiftDecoder
 
     /**
      * Reads a Sense from the XmlNode $sxeNode
+     *
      * @param SimpleXMLElement $sxeNode
      * @param Sense $sense
      * @return Sense
@@ -177,7 +184,7 @@ class LiftDecoder
                     break;
                 case 'grammatical-info':
                     // Part Of Speech
-                    $sense->partOfSpeech->value = (string)$element['value'];
+                    $sense->partOfSpeech->value = (string) $element['value'];
                     break;
                 case 'illustration':
                     $picture = new Picture();
@@ -238,6 +245,7 @@ class LiftDecoder
 
     /**
      * Reads an Example from the XmlNode $sxeNode
+     *
      * @param SimpleXMLElement $sxeNode
      * @return Example
      */
@@ -279,6 +287,7 @@ class LiftDecoder
 
     /**
      * Reads a MultiText from the XmlNode $sxeNode given by the elemetn 'form'
+     *
      * @param SimpleXMLElement $sxeNode
      * @param ArrayOf $inputSystems
      * @return MultiText
@@ -310,7 +319,33 @@ class LiftDecoder
     }
 
     /**
+     * Reads a MultiText from the XmlNode $sxeNode given by the element 'gloss'
+     *
+     * @param SimpleXMLElement $sxeNode
+     * @param MultiText $multiText
+     * @param ArrayOf $inputSystems
+     * @return MultiText
+     */
+    public function readMultiTextGloss($sxeNode, $multiText, $inputSystems = null)
+    {
+        CodeGuard::checkTypeAndThrow($multiText, 'models\languageforge\lexicon\MultiText');
+        if ($sxeNode->getName() != 'gloss') {
+            throw new \Exception("'" . $sxeNode->getName() . "' is not a gloss");
+        }
+        $inputSystemTag = (string) $sxeNode['lang'];
+        $multiText->form($inputSystemTag, (string) $sxeNode->text);
+
+        $this->projectModel->addInputSystem($inputSystemTag);
+        // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
+        if (isset($inputSystems)) {
+            // i.e. $inputSystems->ensureFieldHasInputSystem($inputSystemTag);
+            $inputSystems->value($inputSystemTag);
+        }
+    }
+
+    /**
      * Recursively sanitizes the element only allowing <span> elements through; coverts everthing else to text
+     *
      * @param DOMDocument $textDom
      * @return string
      */
@@ -343,27 +378,34 @@ class LiftDecoder
     }
 
     /**
-     * Reads a MultiText from the XmlNode $sxeNode given by the element 'gloss'
+     * Check if the supplied entry node is listed in the custom LIFT fields
+     *
      * @param SimpleXMLElement $sxeNode
-     * @param MultiText $multiText
-     * @param ArrayOf $inputSystems
-     * @return MultiText
      */
-    public function readMultiTextGloss($sxeNode, $multiText, $inputSystems = null)
-    {
-        CodeGuard::checkTypeAndThrow($multiText, 'models\languageforge\lexicon\MultiText');
-        if ($sxeNode->getName() != 'gloss') {
-            throw new \Exception("'" . $sxeNode->getName() . "' is not a gloss");
+    public function isCustomEntryField($sxeNode) {
+        $nodeType = (string) $sxeNode['type'];
+        if (array_key_exists($nodeType, $this->liftFields) &&
+            array_key_exists('qaa-x-spec', $this->liftFields[$nodeType]) &&
+            strpos($this->liftFields[$nodeType]['qaa-x-spec'], 'Class=LexEntry') !== false) {
+            return true;
         }
-        $inputSystemTag = (string) $sxeNode['lang'];
-        $multiText->form($inputSystemTag, (string) $sxeNode->text);
+        return false;
+    }
 
-        $this->projectModel->addInputSystem($inputSystemTag);
-        // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
-        if (isset($inputSystems)) {
-            // i.e. $inputSystems->ensureFieldHasInputSystem($inputSystemTag);
-            $inputSystems->value($inputSystemTag);
+    /**
+     * Add node as a custom entry field
+     *
+     * @param SimpleXMLElement $sxeNode
+     * @param LexEntryModel $entry
+     */
+    public function addCustomEntryField($sxeNode, $entry) {
+        $nodeType = (string) $sxeNode['type'];
+        $customFieldName = 'customField_entry_' . str_replace(' ', '_', $nodeType);
+        $this->projectModel->config->entry->fieldOrder->value($customFieldName);
+        if (! array_key_exists($customFieldName, $this->projectModel->config->entry->fields)) {
+            $this->projectModel->config->entry->fields[$customFieldName] = new LexiconMultitextConfigObj();
         }
+        $entry->{$customFieldName} = $this->readMultiText($sxeNode, $this->projectModel->config->entry->fields[$customFieldName]->inputSystems);
     }
 
     /**
