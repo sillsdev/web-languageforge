@@ -96,6 +96,8 @@ class LiftImport
         $liftFolderPath = dirname($liftFilePath);
 
         while ($reader->read()) {
+
+            // Read LIFT ranges in the header of the LIFT file
             if ($initialImport && $reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'range') {
                 $node = $reader->expand();
                 $rangeId = $node->attributes->getNamedItem('id')->textContent;
@@ -137,7 +139,32 @@ class LiftImport
 
                 $this->liftImportNodeError->addSubnodeError($rangeImportNodeError);
             }
-            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
+
+            // Read the custom 'fields' spec in the header of the LIFT file
+            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'fields') {
+                $isInFields = true;
+                $this->liftDecoder->liftFields = array();
+                while ($isInFields && $reader->read()) {
+                    if ($reader->nodeType == \XMLReader::END_ELEMENT && $reader->localName == 'fields') {
+                        $isInFields = false;
+                    } elseif ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'field') {
+                        $node = $reader->expand();
+                        $tag = $node->attributes->getNamedItem('tag')->textContent;
+                        $sxeNode = self::domNode_to_sxeNode($node);
+                        $liftField = array();
+                        foreach ($sxeNode as $element) {
+                            if ($element->getName() === 'form') {
+                        	    $inputSystemTag = (string) $element['lang'];
+                        	    $liftField[$inputSystemTag] = (string) $element->text;
+                            }
+                        }
+                        $this->liftDecoder->liftFields[$tag] = $liftField;
+                    }
+                }
+            }
+
+            // Read an entry node
+            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {
                 $this->stats->importEntries++;
                 $node = $reader->expand();
                 $sxeNode = self::domNode_to_sxeNode($node);
