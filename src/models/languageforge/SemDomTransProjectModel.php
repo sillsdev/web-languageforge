@@ -56,7 +56,7 @@ class SemDomTransProjectModel extends LfProjectModel {
      * The path for the source XML file from which the project was imported
      * @var string
      */
-    public $sourceXMLPath;
+    public $newXmlFilePath;
     
     /**
      * Create a new project pre-loaded with all semantic domain items
