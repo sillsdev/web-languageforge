@@ -397,10 +397,4 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
 		$this->targetProject = $projectModel;
 		return $projectModel;
 	}
-
-	public function cleanSemdom()
-	{
-		$this->cleanProjectEnvironment($this->targetProject);
-		$this->cleanProjectEnvironment($this->englishProject);
-	}
 }
