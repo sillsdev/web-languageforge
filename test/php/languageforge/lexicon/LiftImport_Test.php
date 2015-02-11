@@ -1374,7 +1374,7 @@ EOD;
 </lift-ranges>
 EOD;
 
-    public function testLiftImportMerge_ExistingData_RangesUnchanged()
+    public function testLiftImportMerge_ExistingData_RangesChanged()
     {
         $liftFilePath = $this->environ->createTestLiftFile(self::liftWithRangesV0_13, 'LiftWithRangesV0_13.lift');
         $liftRangesFilePath = $this->environ->createTestLiftFile(self::liftRangesV0_13, 'TestLangProj.lift-ranges');
@@ -1383,27 +1383,30 @@ EOD;
         $skipSameModTime = false;
         LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
+        $optionList = new LexOptionListModel($project);
+        $optionList->readByProperty('code', LexiconConfigObj::POS);
+        $this->assertEqual($optionList->items->count(), 3);
+        $this->assertEqual($optionList->items[0]->value, 'article');
+
         $liftRangesFilePath = $this->environ->createTestLiftFile(self::liftRangesAnotherPosV0_13, 'TestLangProj.lift-ranges');
 
         $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
-        $report = $importer->getReport();
-        $reportStr = $report->toString();
-        $this->assertFalse($report->hasError());
         $this->assertEqual($importer->stats->existingEntries, 1);
 
         $optionList = new LexOptionListModel($project);
         $optionList->readByProperty('code', LexiconConfigObj::ANTHROPOLOGYCATEGORIES);
         $this->assertEqual($optionList->items->count(), 0);
 
-        $optionList->readByProperty('code', LexiconConfigObj::POS);
-        $this->assertEqual($optionList->items->count(), 3);
-
         $optionList->readByProperty('code', LexiconConfigObj::STATUS);
         $this->assertEqual($optionList->items->count(), 4);
 
         $optionList->readByProperty('code', LexiconConfigObj::ACADEMICDOMAINS);
         $this->assertEqual($optionList->items->count(), 2);
+
+        $optionList->readByProperty('code', LexiconConfigObj::POS);
+        $this->assertEqual($optionList->items->count(), 1);
+        $this->assertEqual($optionList->items[0]->value, 'adjunct');
     }
 
     public function testLiftImportMerge_NoLiftRanges_Error()
