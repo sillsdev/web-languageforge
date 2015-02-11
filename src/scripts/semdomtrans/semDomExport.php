@@ -21,7 +21,7 @@ $projectModel->readByProperties(array("languageIsoCode" => $projectModel->langua
 
 
 $xml = simplexml_load_file($projectModel->newXmlFilePath);
-$exporter = new SemDomXMLExporter($projectModel, true);
+$exporter = new SemDomXMLExporter($projectModel, $testMode,  ($argv[3] == "1"));
 
 $exporter->run();
 ?>

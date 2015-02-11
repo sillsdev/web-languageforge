@@ -17,23 +17,26 @@ class SemDomXMLExporter {
 	
 	private $_lang;
 	
+	private $_isEnglish;
+	
 	/**
 	 * 
 	 * @param string $xmlfilepath
 	 * @param SemDomTransProjectModel $projectModel
 	 * @param bool $testMode
 	 */
-	public function __construct($projectModel, $testMode = true) {
+	public function __construct($projectModel, $testMode = true, $isEnglish = true) {
 
 		$this->_xml = simplexml_load_file($projectModel->newXmlFilePath);
 		$this->_projectModel = $projectModel;
 		$this->_runForReal = ! $testMode;
 		$this->_lang = $projectModel->languageIsoCode;
+		$this->_isEnglish = $isEnglish;
 	}
 	
-	public function run($english=true) {
+	public function run() {
 
-		$possibilities = $english ? 
+		$possibilities = $this->_isEnglish ? 
 			$this->_xml->SemanticDomainList->CmPossibilityList->Possibilities 
 			: $this->_xml->xpath("List[@field='SemanticDomainList']")[0]->Possibilities;
 		
@@ -41,8 +44,9 @@ class SemDomXMLExporter {
 			$this->_processDomainNode($domainNode);
 		}
 
-		$this->_xml->asXml($this->_projectModel->getAssetsFolderPath() . "/" . "copy.xml");
-		
+		if ($this->_runForReal) {
+			$this->_xml->asXml($this->_projectModel->getAssetsFolderPath() . "/" . $this->_projectModel->projectCode . "Export.xml");
+		}
 	}
 
 	public function _getPathVal($xmlPath) {
