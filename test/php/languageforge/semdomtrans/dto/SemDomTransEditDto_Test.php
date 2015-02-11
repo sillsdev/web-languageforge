@@ -31,7 +31,6 @@ class TestSemDomTransEditDto extends UnitTestCase
     	$this->assertEqual($result["items"][10]["name"]["source"], "Cloud");
     	$this->assertEqual($result["items"][1]["questions"][1]["question"]["source"], "(2) What words refer to the air around the earth?");
     	$e->clean();
-    	$e->cleanSemdom();
     }
     	 
     public function testEncode_SourceProjectAndTargetProjectHaveItems_DtoAsExpected()
