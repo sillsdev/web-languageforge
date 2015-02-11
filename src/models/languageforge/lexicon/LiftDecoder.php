@@ -4,6 +4,8 @@ namespace models\languageforge\lexicon;
 
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\config\LexiconMultitextConfigObj;
+use models\languageforge\lexicon\config\LexiconOptionlistConfigObj;
+use models\languageforge\lexicon\config\LexViewFieldConfig;
 use models\languageforge\lexicon\config\LexViewMultiTextFieldConfig;
 use models\mapper\ArrayOf;
 use models\mapper\Id;
@@ -103,8 +105,8 @@ class LiftDecoder
                         case 'import-residue': // Currently ignored in LanguageForge
                             break;
                         default:
-                            if ($this->isEntryCustomField($element)) {
-                                $this->addEntryCustomField($element, $entry);
+                            if ($this->isEntryCustomField($element['type'])) {
+                                $this->addEntryCustomField($element, $element['type'], $entry);
                             } else {
                                 $this->currentNodeError()->addUnhandledField($element['type']);
                             }
@@ -116,7 +118,11 @@ class LiftDecoder
                             $entry->morphologyType = (string)$element['value'];
                             break;
                         default:
-                            $this->currentNodeError()->addUnhandledTrait($element['name']);
+                            if ($this->isEntryCustomField($element['name'])) {
+                                $this->addEntryCustomField($element, $element['name'], $entry);
+                            } else {
+                                $this->currentNodeError()->addUnhandledTrait($element['name']);
+                            }
                     }
                     break;
                 case 'sense':
@@ -288,7 +294,7 @@ class LiftDecoder
     }
 
     /**
-     * Reads a MultiText from the XmlNode $sxeNode given by the elemetn 'form'
+     * Reads a MultiText from the XmlNode $sxeNode given by the element 'form'
      *
      * @param SimpleXMLElement $sxeNode
      * @param ArrayOf $inputSystems
@@ -382,17 +388,18 @@ class LiftDecoder
     /**
      * Check if the supplied entry node is listed in the custom LIFT fields
      *
-     * @param SimpleXMLElement $sxeNode
+     * @param string $nodeId
      */
-    public function isEntryCustomField($sxeNode) {
-        $fieldType = FileUtilities::replaceSpecialCharacters($sxeNode['type']);
-        if (array_key_exists($fieldType, $this->liftFields) &&
-            array_key_exists('qaa-x-spec', $this->liftFields[$fieldType]) &&
-            (strpos($this->liftFields[$fieldType]['qaa-x-spec'], 'Class=LexEntry') !== false) &&
-            ((strpos($this->liftFields[$fieldType]['qaa-x-spec'], 'Type=MultiUnicode') !== false) ||
-            (strpos($this->liftFields[$fieldType]['qaa-x-spec'], 'Type=String') !== false) ||
-            (strpos($this->liftFields[$fieldType]['qaa-x-spec'], 'Type=OwningAtom') !== false))) {
-                return true;
+    public function isEntryCustomField($nodeId) {
+        $fieldType = FileUtilities::replaceSpecialCharacters($nodeId);
+        $customFieldSpecs = $this->getCustomFieldSpecs($fieldType);
+        if (array_key_exists('Class', $customFieldSpecs) &&
+            $customFieldSpecs['Class'] == 'LexEntry' &&
+            ($customFieldSpecs['Type'] == 'MultiUnicode' ||
+                $customFieldSpecs['Type'] == 'String' ||
+                $customFieldSpecs['Type'] == 'OwningAtom' ||
+                $customFieldSpecs['Type'] == 'ReferenceAtom')) {
+            return true;
         }
         return false;
     }
@@ -401,23 +408,34 @@ class LiftDecoder
      * Add node as a custom entry field
      *
      * @param SimpleXMLElement $sxeNode
+     * @param string $nodeId
      * @param LexEntryModel $entry
      */
-    public function addEntryCustomField($sxeNode, $entry) {
-        $fieldType = FileUtilities::replaceSpecialCharacters($sxeNode['type']);
+    public function addEntryCustomField($sxeNode, $nodeId, $entry) {
+        $fieldType = FileUtilities::replaceSpecialCharacters($nodeId);
+        $customFieldSpecs = $this->getCustomFieldSpecs($fieldType);
         $customFieldName = 'customField_entry_' . str_replace(' ', '_', $fieldType);
         $this->projectModel->config->entry->fieldOrder->value($customFieldName);
         if (! array_key_exists($customFieldName, $this->projectModel->config->entry->fields)) {
-            $this->projectModel->config->entry->fields[$customFieldName] = new LexiconMultitextConfigObj();
+            if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
+                $this->projectModel->config->entry->fields[$customFieldName] = new LexiconOptionlistConfigObj();
+                $this->projectModel->config->entry->fields[$customFieldName]->listCode = str_replace(' ', '_', $customFieldSpecs['range']);
+            } else {
+                $this->projectModel->config->entry->fields[$customFieldName] = new LexiconMultitextConfigObj();
+                if ($customFieldSpecs['Type'] == 'OwningAtom') {
+                    $this->projectModel->config->entry->fields[$customFieldName]->displayMultiline = true;
+                }
+            }
             $this->projectModel->config->entry->fields[$customFieldName]->label = $fieldType;
             $this->projectModel->config->entry->fields[$customFieldName]->hideIfEmpty = false;
-            if (strpos($this->liftFields[$fieldType]['qaa-x-spec'], 'Type=OwningAtom') !== false) {
-                $this->projectModel->config->entry->fields[$customFieldName]->displayMultiline = true;
-            }
         }
         foreach ($this->projectModel->config->roleViews as $role => $roleView) {
             if (! array_key_exists($customFieldName, $roleView->fields)) {
-                $roleView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
+                if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
+                    $roleView->fields[$customFieldName] = new LexViewFieldConfig();
+                } else {
+                    $roleView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
+                }
                 if ($role == LexiconRoles::MANAGER) {
                     $roleView->fields[$customFieldName]->show = true;
                 }
@@ -425,10 +443,46 @@ class LiftDecoder
         }
         foreach ($this->projectModel->config->userViews as $userId => $userView) {
             if (! array_key_exists($customFieldName, $userView->fields)) {
-                $userView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
+                if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
+                    $userView->fields[$customFieldName] = new LexViewFieldConfig();
+                } else {
+                    $userView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
+                }
             }
         }
-        $entry->{$customFieldName} = $this->readMultiText($sxeNode, $this->projectModel->config->entry->fields[$customFieldName]->inputSystems);
+
+        if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
+            $entry->{$customFieldName} = new LexiconField();
+            $entry->{$customFieldName}->value = (string) $sxeNode['value'];
+        } else {
+            $entry->{$customFieldName} = $this->readMultiText($sxeNode, $this->projectModel->config->entry->fields[$customFieldName]->inputSystems);
+        }
+    }
+
+    /**
+     * Parse custom field specs list and return keyed array
+     * Example specs = 'Class=LexEntry; Type=ReferenceAtom; DstCls=CmPossibility; range=domain-type'
+     * Return array(
+     *      'Class' => 'LexEntry',
+     *      'Type' => 'ReferenceAtom',
+     *      'DstCls' => 'CmPossibility',
+     *      'range' => 'domain-type'
+     *  );
+     *
+     * @param string $fieldType
+     * @return array
+     */
+    private function getCustomFieldSpecs($fieldType) {
+        $specs = array();
+        if (array_key_exists($fieldType, $this->liftFields) &&
+            array_key_exists('qaa-x-spec', $this->liftFields[$fieldType])) {
+            $specsList = explode('; ', $this->liftFields[$fieldType]['qaa-x-spec']);
+            foreach ($specsList as $spec) {
+                $items = explode('=', $spec);
+                $specs[$items[0]] = $items[1];
+            }
+        }
+        return $specs;
     }
 
     /**
