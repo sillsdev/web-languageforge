@@ -197,8 +197,9 @@ class TestLexUploadCommands extends UnitTestCase
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexesByGuid($entries);
-        $entry0 = $index['05c54cf0-4e5a-4bf2-99f8-ec787e4113ac'];
+        $indexes = self::indexesByGuid($entries);
+        $entryA = $indexes['05c54cf0-4e5a-4bf2-99f8-ec787e4113ac'];
+        $entryB = $indexes['1a705846-a814-4289-8594-4b874faca6cc'];
 
         // stats OK?
         $this->assertTrue($response->result, 'Import should succeed');
@@ -214,8 +215,8 @@ class TestLexUploadCommands extends UnitTestCase
 
         // custom fields imported?
         $this->assertEqual($entryList->count, 64);
-        $this->assertEqual($entry0['guid'], '05c54cf0-4e5a-4bf2-99f8-ec787e4113ac');
-        $this->assertEqual($entry0['customField_entry_Cust_Single_Line_All']['en']['value'], '635459584141806142kes.wav');
+        $this->assertEqual($entryA['lexeme']['qaa-fonipa-x-kal']['value'], '-kes');
+        $this->assertEqual($entryA['customField_entry_Cust_Single_Line_All']['en']['value'], '635459584141806142kes.wav');
         $this->assertTrue($project->config->entry->fieldOrder->array_search('customField_entry_Cust_Single_Line_All'), "custom field entry config exists");
         $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->entry->fields), "custom field entry config exists");
         $this->assertEqual($project->config->entry->fields['customField_entry_Cust_Single_Line_All']->label, 'Cust Single Line All');
@@ -227,6 +228,8 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertTrue($project->config->roleViews[LexiconRoles::MANAGER]->fields['customField_entry_Cust_Single_Line_All']->show);
         $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->userViews[$userId]->fields), "custom field userView config doesn't yet exist");
         $this->assertFalse($project->config->userViews[$userId]->fields['customField_entry_Cust_Single_Line_All']->show);
+        $this->assertEqual($entryB['lexeme']['qaa-fonipa-x-kal']['value'], 'zitʰɛstmen');
+        $this->assertEqual($entryB['customField_entry_Cust_Single_ListRef']['value'], 'comparative linguistics');
 
         echo '<pre style="height:500px; overflow:auto">';
         echo $response->data->importErrors;
