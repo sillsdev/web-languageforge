@@ -27,20 +27,13 @@
 					 <td>
 						<div style="overflow-y:scroll; height:400px">
 							<ul>
-				      			<li ng-repeat="project in startedProjects"  ng-click="showModal(project, 1)" class="thumbnail">
-				        			<a href="#"> {{project.language}} ({{project.pctComplete}}% complete) </a>
+				      			<li ng-repeat="project in openProjects"  ng-click="showModal(project, 1)" class="thumbnail">
+				        			<a href="#"> {{project.projectCode}} </a>
 				      			</li>
 				    		</ul>
 						</div>
 					 </td>
 					 <td>
-						<div style="overflow-y:scroll; height:400px">
-						<ul>
-				      		<li ng-repeat="project in unstartedProjects" ng-click="showModal(project, 2)" class="thumbnail">
-				        		<a href="#"> {{project.language}} </a>
-				      		</li>
-				    	</ul>
-						</div>
 					 </td>
 				</tr>
 			</tbody>
