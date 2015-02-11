@@ -1,7 +1,6 @@
 <?php
 
 use models\languageforge\semdomtrans\SemDomTransItemModel;
-use models\languageforge\semdomtrans\co
 use models\languageforge\SemDomTransProjectModel;
 
 require_once dirname(__FILE__) . '/../../../TestConfig.php';
