@@ -10,7 +10,7 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice) {
 	$scope.tabDisplay = {"val": '0'};
 	$scope.domainsFiltered = [];
 	
-	semdomEditApi.editorDto("semdom-es-7", function(result) {
+	semdomEditApi.editorDto($stateParams.projectCode, function(result) {
 		if (result.ok) {
 			$scope.items = result.data.items;
 			$scope.currentItem = $scope.items[0];

@@ -35,7 +35,7 @@ use models\UserModel;
 use models\UserProfileModel;
 use models\languageforge\SemDomTransProjectModel;
 use models\languageforge\semdomtrans\dto\SemDomTransEditDto;
-
+use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
 require_once APPPATH . 'vendor/autoload.php';
 require_once APPPATH . 'config/sf_config.php';
 require_once APPPATH . 'models/ProjectModel.php';
@@ -693,6 +693,11 @@ class sf
    		 ));
     	return SemDomTransEditDto::encode($project->id->asString(), null, null);
     }
+    
+    public function semdom_get_open_projects() {
+    	return SemDomTransProjectCommands::getOpenSemdomProjects();
+    }
+    
     
 
     // ---------------------------------------------------------------
