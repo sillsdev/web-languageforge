@@ -142,15 +142,15 @@ class LiftImport
 
             // Read the custom 'fields' spec in the header of the LIFT file
             if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'fields') {
-                $isInFields = true;
+                $isInFieldsSectionOfLift = true;
                 $this->liftDecoder->liftFields = array();
-                while ($isInFields && $reader->read()) {
+                while ($isInFieldsSectionOfLift && $reader->read()) {
                     if ($reader->nodeType == \XMLReader::END_ELEMENT && $reader->localName == 'fields') {
-                        $isInFields = false;
+                        $isInFieldsSectionOfLift = false;
                     } elseif ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'field') {
                         $node = $reader->expand();
                         $sxeNode = self::domNode_to_sxeNode($node);
-                        $tag = (string) $sxeNode['tag'];
+                        $LiftFieldTag = (string) $sxeNode['tag'];
                         $liftField = array();
                         foreach ($sxeNode as $element) {
                             if ($element->getName() === 'form') {
@@ -158,7 +158,7 @@ class LiftImport
                         	    $liftField[$inputSystemTag] = (string) $element->text;
                             }
                         }
-                        $this->liftDecoder->liftFields[$tag] = $liftField;
+                        $this->liftDecoder->liftFields[$LiftFieldTag] = $liftField;
                     }
                 }
             }

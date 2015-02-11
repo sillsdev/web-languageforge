@@ -4,9 +4,11 @@ namespace models\languageforge\lexicon;
 
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\config\LexiconMultitextConfigObj;
+use models\languageforge\lexicon\config\LexViewMultiTextFieldConfig;
 use models\mapper\ArrayOf;
 use models\mapper\Id;
 use Palaso\Utilities\CodeGuard;
+use Palaso\Utilities\FileUtilities;
 
 class LiftDecoder
 {
@@ -101,8 +103,8 @@ class LiftDecoder
                         case 'import-residue': // Currently ignored in LanguageForge
                             break;
                         default:
-                            if ($this->isCustomEntryField($element)) {
-                                $this->addCustomEntryField($element, $entry);
+                            if ($this->isEntryCustomField($element)) {
+                                $this->addEntryCustomField($element, $entry);
                             } else {
                                 $this->currentNodeError()->addUnhandledField($element['type']);
                             }
@@ -382,12 +384,15 @@ class LiftDecoder
      *
      * @param SimpleXMLElement $sxeNode
      */
-    public function isCustomEntryField($sxeNode) {
-        $nodeType = (string) $sxeNode['type'];
-        if (array_key_exists($nodeType, $this->liftFields) &&
-            array_key_exists('qaa-x-spec', $this->liftFields[$nodeType]) &&
-            strpos($this->liftFields[$nodeType]['qaa-x-spec'], 'Class=LexEntry') !== false) {
-            return true;
+    public function isEntryCustomField($sxeNode) {
+        $fieldType = FileUtilities::replaceSpecialCharacters($sxeNode['type']);
+        if (array_key_exists($fieldType, $this->liftFields) &&
+            array_key_exists('qaa-x-spec', $this->liftFields[$fieldType]) &&
+            (strpos($this->liftFields[$fieldType]['qaa-x-spec'], 'Class=LexEntry') !== false) &&
+            ((strpos($this->liftFields[$fieldType]['qaa-x-spec'], 'Type=MultiUnicode') !== false) ||
+            (strpos($this->liftFields[$fieldType]['qaa-x-spec'], 'Type=String') !== false) ||
+            (strpos($this->liftFields[$fieldType]['qaa-x-spec'], 'Type=OwningAtom') !== false))) {
+                return true;
         }
         return false;
     }
@@ -398,12 +403,30 @@ class LiftDecoder
      * @param SimpleXMLElement $sxeNode
      * @param LexEntryModel $entry
      */
-    public function addCustomEntryField($sxeNode, $entry) {
-        $nodeType = (string) $sxeNode['type'];
-        $customFieldName = 'customField_entry_' . str_replace(' ', '_', $nodeType);
+    public function addEntryCustomField($sxeNode, $entry) {
+        $fieldType = FileUtilities::replaceSpecialCharacters($sxeNode['type']);
+        $customFieldName = 'customField_entry_' . str_replace(' ', '_', $fieldType);
         $this->projectModel->config->entry->fieldOrder->value($customFieldName);
         if (! array_key_exists($customFieldName, $this->projectModel->config->entry->fields)) {
             $this->projectModel->config->entry->fields[$customFieldName] = new LexiconMultitextConfigObj();
+            $this->projectModel->config->entry->fields[$customFieldName]->label = $fieldType;
+            $this->projectModel->config->entry->fields[$customFieldName]->hideIfEmpty = false;
+            if (strpos($this->liftFields[$fieldType]['qaa-x-spec'], 'Type=OwningAtom') !== false) {
+                $this->projectModel->config->entry->fields[$customFieldName]->displayMultiline = true;
+            }
+        }
+        foreach ($this->projectModel->config->roleViews as $role => $roleView) {
+            if (! array_key_exists($customFieldName, $roleView->fields)) {
+                $roleView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
+                if ($role == LexiconRoles::MANAGER) {
+                    $roleView->fields[$customFieldName]->show = true;
+                }
+            }
+        }
+        foreach ($this->projectModel->config->userViews as $userId => $userView) {
+            if (! array_key_exists($customFieldName, $userView->fields)) {
+                $userView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
+            }
         }
         $entry->{$customFieldName} = $this->readMultiText($sxeNode, $this->projectModel->config->entry->fields[$customFieldName]->inputSystems);
     }
