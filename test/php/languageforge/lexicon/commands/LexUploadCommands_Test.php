@@ -1,5 +1,7 @@
 <?php
 use models\languageforge\lexicon\commands\LexUploadCommands;
+use models\languageforge\lexicon\LexEntryListModel;
+use models\languageforge\lexicon\LexiconRoles;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\mapper\Id;
 
@@ -30,6 +32,15 @@ class TestLexUploadCommands extends UnitTestCase
     {
         $this->environ->clean();
         $this->environ->cleanupTestFiles($this->environ->project->getAssetsFolderPath());
+    }
+
+    private static function indexesByGuid($entries)
+    {
+        $indexes = array();
+        foreach ($entries as $entry) {
+            $indexes[$entry['guid']] = $entry;
+        }
+        return $indexes;
     }
 
     public function testUploadImageFile_JpgFile_UploadAllowed()
@@ -161,19 +172,35 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertTrue(array_key_exists('th-fonipa', $project->inputSystems));
     }
 
-    public function testImportProjectZip_7zFile_StatsOk()
+    public function testImportProjectZip_7zFile_StatsOkAndCustomFieldsImported()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestLangProj.7z';  // Ken Zook's test data
         $tmpFilePath = $this->environ->uploadFile(TestPath . "common/$fileName", $fileName);
+        $userId = $this->environ->createUser('bob', 'bob', 'bob@example.com');
+        $project->addUser($userId, LexiconRoles::OBSERVER);
+        $project->config->userViews[$userId] = clone $project->config->roleViews[LexiconRoles::OBSERVER];
+        $project->write();
+
+        $this->assertFalse($project->config->entry->fieldOrder->array_search('customField_entry_Cust_Single_Line_All'), "custom field entry config doesn't yet exist");
+        $this->assertFalse(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->entry->fields), "custom field entry config doesn't yet exist");
+        $this->assertFalse(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexiconRoles::OBSERVER]->fields), "custom field roleView config doesn't yet exist");
+        $this->assertFalse(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexiconRoles::MANAGER]->fields), "custom field roleView config doesn't yet exist");
+        $this->assertFalse(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->userViews[$userId]->fields), "custom field userView config doesn't yet exist");
 
         $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
 
         $project->read($project->id->asString());
         $filePath = $project->getAssetsFolderPath() . '/' . $response->data->fileName;
         $projectSlug = $project->databaseName();
+        $entryList = new LexEntryListModel($project);
+        $entryList->read();
+        $entries = $entryList->entries;
+        $index = self::indexesByGuid($entries);
+        $entry0 = $index['05c54cf0-4e5a-4bf2-99f8-ec787e4113ac'];
 
+        // stats OK?
         $this->assertTrue($response->result, 'Import should succeed');
         $this->assertPattern("/lexicon\/$projectSlug/", $response->data->path, 'Uploaded zip file path should be in the right location');
         $this->assertEqual($fileName, $response->data->fileName, 'Uploaded zip fileName should have the original fileName');
@@ -184,6 +211,22 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertEqual($response->data->stats->entriesMerged, 0);
         $this->assertEqual($response->data->stats->entriesDuplicated, 0);
         $this->assertEqual($response->data->stats->entriesDeleted, 0);
+
+        // custom fields imported?
+        $this->assertEqual($entryList->count, 64);
+        $this->assertEqual($entry0['guid'], '05c54cf0-4e5a-4bf2-99f8-ec787e4113ac');
+        $this->assertEqual($entry0['customField_entry_Cust_Single_Line_All']['en']['value'], '635459584141806142kes.wav');
+        $this->assertTrue($project->config->entry->fieldOrder->array_search('customField_entry_Cust_Single_Line_All'), "custom field entry config exists");
+        $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->entry->fields), "custom field entry config exists");
+        $this->assertEqual($project->config->entry->fields['customField_entry_Cust_Single_Line_All']->label, 'Cust Single Line All');
+        $this->assertEqual($project->config->entry->fields['customField_entry_Cust_Single_Line_All']->type, 'multitext');
+        $this->assertTrue($project->config->entry->fields['customField_entry_Cust_Single_Line_All']->inputSystems->array_search('en'));
+        $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexiconRoles::OBSERVER]->fields), "custom field roleView config exists");
+        $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexiconRoles::MANAGER]->fields), "custom field roleView config exists");
+        $this->assertFalse($project->config->roleViews[LexiconRoles::OBSERVER]->fields['customField_entry_Cust_Single_Line_All']->show);
+        $this->assertTrue($project->config->roleViews[LexiconRoles::MANAGER]->fields['customField_entry_Cust_Single_Line_All']->show);
+        $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->userViews[$userId]->fields), "custom field userView config doesn't yet exist");
+        $this->assertFalse($project->config->userViews[$userId]->fields['customField_entry_Cust_Single_Line_All']->show);
 
         echo '<pre style="height:500px; overflow:auto">';
         echo $response->data->importErrors;
