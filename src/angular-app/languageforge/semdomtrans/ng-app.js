@@ -11,11 +11,11 @@ angular.module('semdomtrans',
   ])
   .config(function($stateProvider, $urlRouterProvider) {
     
-    $urlRouterProvider.otherwise('/setup');
+    $urlRouterProvider.otherwise('/edit');
     
     $stateProvider        
         .state('edit', {
-            url: '/edit/:projectCode',
+            url: '/edit',
             views: {
             	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html',
             		controller: 'editCtrl'},
@@ -51,11 +51,11 @@ angular.module('semdomtrans',
   .controller('MainCtrl', ['$scope', 'sessionService',
   function($scope, ss) {
     
-    $scope.rights = {};/*
+    $scope.rights = {};
     $scope.project = ss.session.project;
     $scope.projectSettings = ss.session.projectSettings;
     
-    $scope.currentUserRole = ss.session.projectSettings.currentUserRole;*/
+    $scope.currentUserRole = ss.session.projectSettings.currentUserRole;
     
   }])
 

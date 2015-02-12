@@ -56,13 +56,10 @@ class SemDomXMLImporter {
 	
 	private function _processDomainNode($domainNode) {
 		$guid = (string)$domainNode['guid'];
-		$name = $this->_getPathVal($domainNode->xpath("Name/AUni[@ws='{$this->_lang}']"));
-		
-		$abbreviation = $this->_getPathVal($domainNode->xpath("Abbreviation/AUni[@ws='en']"));
-
-		$description = (string) $domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']")[0];
-				
-		
+		$name = $this->_getPathVal($domainNode->xpath("Name/AUni[@ws='{$this->_lang}']"));		
+		$abbreviation = $this->_getPathVal($domainNode->xpath("Abbreviation/AUni[@ws='en']"));		
+		$description = $this->_getPathVal($domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']"));
+			
 		$questions = new ArrayOf(function ($data) {
         	return new SemDomTransQuestion();
         });      

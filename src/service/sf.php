@@ -686,16 +686,35 @@ class sf
     /*
      * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
      */
-    public function semdom_editor_dto($projectCode) {
-    	$project = new SemDomTransProjectModel();
-   		$project->readByProperties(array(
-        'projectCode' => $projectCode
-   		 ));
-    	return SemDomTransEditDto::encode($project->id->asString(), null, null);
+    public function semdom_editor_dto() {
+    	return SemDomTransEditDto::encode($this->_projectId, null, null);
     }
     
     public function semdom_get_open_projects() {
     	return SemDomTransProjectCommands::getOpenSemdomProjects();
+    }
+    
+
+
+    /**
+     *
+     * @param string $projectName
+     * @param string $projectCode
+     * @param string $appName
+     * @return string | boolean - $projectId on success, false if project code is not unique
+     */
+    public function semdom_create_project($languageIsoCode)
+    {
+    	$appName = "semdom";
+    	$projectID = ProjectCommands::createProject($projectName, $projectCode, $appName, $this->_userId, $this->_website);
+    	
+    	
+    	$project = new SemDomTransProjectModel($projectID->asString());
+    	$project->languageIsoCode = $languageIsoCode;
+    	$project->semdomVersion = 20;
+    	$project->write();
+    	
+    	return $projectID;
     }
     
     

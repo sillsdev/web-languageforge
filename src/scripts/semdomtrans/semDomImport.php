@@ -1,13 +1,20 @@
 <?php
 use models\languageforge\SemDomTransProjectModel;
-
+use libraries\shared\Website;
 use libraries\languageforge\semdomtrans\SemDomXMLImporter;
-
+use models\languageforge\LfProjectModel;
 use models\ProjectModel;
+use models\commands\ProjectCommands;
 
 require_once('../scriptConfig.php');
 
-use models\ProjectListModel;
+
+$xmlFilePath = $argv[1];
+$lang = $argv[2];
+$domain = $argv[3];
+$userId = $argv[4];
+$isEnglish =  ($argv[5] == "1"); 
+$semdomVersion = 20;
 
 // accept command line flag to actually change the database
 // accept filepath of the import file (xml)
@@ -21,43 +28,39 @@ $xml = simplexml_load_file($xmlFilePath);
 
 $lang = $argv[2];
 $version = $argv[3];
-$testMode = false;
-$projectModel = new SemDomTransProjectModel();
+$projectCode = "semdom-$lang-$semdomVersion";
+$projectName = "Semdom $lang Project";
+$appName = LfProjectModel::SEMDOMTRANS_APP;
 
-// todo: check that we are setting the right "language" property
-$projectModel->languageIsoCode = $lang;
-$projectModel->semdomVersion = $version;
-$projectModel->projectCode = "semdom-$lang-$version";
-
-// loop over the set of languages to import
+$website = new Website($domain, Website::LANGUAGEFORGE);
 
 // if a previous project for that language and semantic domain version exists, DO NOT IMPORT
 $previousProject = new SemDomTransProjectModel();
-$previousProject->readByProperties(array("languageIsoCode" => $projectModel->languageIsoCode, "semdomVersion" => $projectModel->semdomVersion));
+$previousProject->readByProperties(array("languageIsoCode" => $lang, "semdomVersion" => $semdomVersion));
 
 if ($previousProject->id->asString() == "")
 {
-	//create project
-	if (!$testMode)
-	{
-		$projectModel->write();
-	}
-	// loop over each semdom item and create a new item model.  Write it to the database
-	$importer = new SemDomXMLImporter($argv[1], $projectModel, false,  ($argv[4] == "1"));
-	$importer->run();
+	echo $projectName . "\n";
+	$projectID = ProjectCommands::createProject($projectName, $projectCode, $appName, $userId, $website);
+	echo $projectID . "\n";
+	$projectModel = new SemDomTransProjectModel($projectID);
 	
+
 	$newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
 	if (!file_exists($projectModel->getAssetsFolderPath())) {
 		mkdir($projectModel->getAssetsFolderPath());
 	}
 	
 	print "copying $xmlFilePath to  $newXmlFilePath\n";
-	if (!$testMode) {
-	    copy($xmlFilePath, $newXmlFilePath);
-	    $projectModel->newXmlFilePath = $newXmlFilePath;
-	    $projectModel->write();
-	}
+	copy($xmlFilePath, $newXmlFilePath);
+	$projectModel->newXmlFilePath = $newXmlFilePath;
+	$projectModel->languageIsoCode = $lang;
+	$projectModel->semdomVersion = $semdomVersion;
+	$projectModel->write();
 	
+	
+	$importer = new SemDomXMLImporter($xmlFilePath, $projectModel, false, $isEnglish);
+	$importer->run();
 } else {
 	echo "Project exists already" . "\n";
 }
