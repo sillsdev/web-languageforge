@@ -4,6 +4,7 @@ use models\languageforge\lexicon\LexEntryListModel;
 use models\languageforge\lexicon\LexiconRoles;
 use models\languageforge\lexicon\LiftMergeRule;
 use models\mapper\Id;
+use models\languageforge\lexicon\LexOptionListListModel;
 
 require_once (dirname(__FILE__) . '/../../../TestConfig.php');
 require_once (SimpleTestPath . 'autorun.php');
@@ -200,6 +201,8 @@ class TestLexUploadCommands extends UnitTestCase
         $indexes = self::indexesByGuid($entries);
         $entryA = $indexes['05c54cf0-4e5a-4bf2-99f8-ec787e4113ac'];
         $entryB = $indexes['1a705846-a814-4289-8594-4b874faca6cc'];
+        $optionListList = new LexOptionListListModel($project);
+        $optionListList->read();
 
         // stats OK?
         $this->assertTrue($response->result, 'Import should succeed');
@@ -230,6 +233,8 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertFalse($project->config->userViews[$userId]->fields['customField_entry_Cust_Single_Line_All']->show);
         $this->assertEqual($entryB['lexeme']['qaa-fonipa-x-kal']['value'], 'zitʰɛstmen');
         $this->assertEqual($entryB['customField_entry_Cust_Single_ListRef']['value'], 'comparative linguistics');
+
+        $this->assertEqual($optionListList->count, 25);
 
         echo '<pre style="height:500px; overflow:auto">';
         echo $response->data->importErrors;
