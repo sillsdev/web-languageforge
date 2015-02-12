@@ -419,7 +419,7 @@ class LiftDecoder
         if (! array_key_exists($customFieldName, $this->projectModel->config->entry->fields)) {
             if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
                 $this->projectModel->config->entry->fields[$customFieldName] = new LexiconOptionlistConfigObj();
-                $this->projectModel->config->entry->fields[$customFieldName]->listCode = str_replace(' ', '_', $customFieldSpecs['range']);
+                $this->projectModel->config->entry->fields[$customFieldName]->listCode = $customFieldSpecs['range'];
             } else {
                 $this->projectModel->config->entry->fields[$customFieldName] = new LexiconMultitextConfigObj();
                 if ($customFieldSpecs['Type'] == 'OwningAtom') {

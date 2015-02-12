@@ -2,10 +2,10 @@
 
 namespace models\languageforge\lexicon;
 
-use Palaso\Utilities\FileUtilities;
-use models\mapper\ArrayOf;
-use models\languageforge\lexicon\config\LexiconOptionListItem;
 use models\languageforge\lexicon\config\LexiconConfigObj;
+use models\languageforge\lexicon\config\LexiconOptionListItem;
+use models\mapper\ArrayOf;
+use Palaso\Utilities\FileUtilities;
 
 class LiftImport
 {
@@ -145,9 +145,7 @@ class LiftImport
                 $isInFieldsSectionOfLift = true;
                 $this->liftDecoder->liftFields = array();
                 while ($isInFieldsSectionOfLift && $reader->read()) {
-                    if ($reader->nodeType == \XMLReader::END_ELEMENT && $reader->localName == 'fields') {
-                        $isInFieldsSectionOfLift = false;
-                    } elseif ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'field') {
+                    if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'field') {
                         $node = $reader->expand();
                         $sxeNode = self::domNode_to_sxeNode($node);
                         $LiftFieldTag = (string) $sxeNode['tag'];
@@ -159,6 +157,15 @@ class LiftImport
                             }
                         }
                         $this->liftDecoder->liftFields[$LiftFieldTag] = $liftField;
+                    } elseif ($reader->nodeType == \XMLReader::END_ELEMENT && $reader->localName == 'fields') {
+                        $isInFieldsSectionOfLift = false;
+
+                        // add lift ranges
+                        if ($mergeRule != LiftMergeRule::IMPORT_LOSES) {
+                            foreach ($liftRanges as $liftRangeCode => $liftRange) {
+                                self::rangeToOptionList($projectModel, $liftRangeCode, LexiconConfigObj::flexOptionlistName($liftRangeCode), $liftRange);
+                            }
+                        }
                     }
                 }
             }
@@ -217,29 +224,6 @@ class LiftImport
         if (! $hasExistingData && $projectModel->inputSystems->count() <= 0) {
             $projectModel->inputSystems->exchangeArray($savedInputSystems);
         }
-
-        // add lift ranges
-        if (array_key_exists('grammatical-info', $liftRanges)) {
-            $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS];
-            self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['grammatical-info']);
-        }
-        if (array_key_exists('anthro-code', $liftRanges)) {
-            $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES];
-            self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['anthro-code']);
-        }
-        if (array_key_exists('domain-type', $liftRanges)) {
-            $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS];
-            self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['domain-type']);
-        }
-        if (array_key_exists('semantic-domain-ddp4', $liftRanges)) {
-            $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM];
-            self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['semantic-domain-ddp4']);
-        }
-        if (array_key_exists('status', $liftRanges)) {
-            $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS];
-            self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['status']);
-        }
-        // TODO: Add any other LIFT range imports that make sense. 2014-10 RM
 
         $this->report->nodeErrors[] = $this->liftImportNodeError;
         if ($this->report->hasError()) {
