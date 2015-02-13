@@ -163,7 +163,10 @@ class LiftImport
                         // add lift ranges
                         if ($mergeRule != LiftMergeRule::IMPORT_LOSES) {
                             foreach ($liftRanges as $liftRangeCode => $liftRange) {
-                                self::rangeToOptionList($projectModel, $liftRangeCode, LexiconConfigObj::flexOptionlistName($liftRangeCode), $liftRange);
+                                // add everything except semantic domains
+                                if (strpos($liftRangeCode, 'semantic-domain') === false) {
+                                    self::rangeToOptionList($projectModel, $liftRangeCode, LexiconConfigObj::flexOptionlistName($liftRangeCode), $liftRange);
+                                }
                             }
                         }
                     }
