@@ -198,15 +198,16 @@ class TestLexUploadCommands extends UnitTestCase
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $indexes = self::indexItemsBy($entries, 'guid');
-        $entryA = $indexes['05c54cf0-4e5a-4bf2-99f8-ec787e4113ac'];
-        $entryB = $indexes['1a705846-a814-4289-8594-4b874faca6cc'];
-        $entryBSenseIndexes = self::indexItemsBy($entryB['senses'], 'liftId');
-        $entryBSenseA = $entryBSenseIndexes['eea9c29f-244f-4891-81db-c8274cd61f0c'];
-        $entryBSenseAExamplesIndexes = self::indexItemsBy($entryBSenseA['examples'], 'liftId');
-        $entryBSenseAExampleA = $entryBSenseAExamplesIndexes['Example reference'];
+        $entriesByGuid = self::indexItemsBy($entries, 'guid');
+        $entryA = $entriesByGuid['05c54cf0-4e5a-4bf2-99f8-ec787e4113ac'];
+        $entryB = $entriesByGuid['1a705846-a814-4289-8594-4b874faca6cc'];
+        $entryBSensesByLiftId = self::indexItemsBy($entryB['senses'], 'liftId');
+        $entryBSenseA = $entryBSensesByLiftId['eea9c29f-244f-4891-81db-c8274cd61f0c'];
+        $entryBSenseAExamplesByLiftId = self::indexItemsBy($entryBSenseA['examples'], 'liftId');
+        $entryBSenseAExampleA = $entryBSenseAExamplesByLiftId['Example reference'];
         $optionListList = new LexOptionListListModel($project);
         $optionListList->read();
+        $optionListByCodes = self::indexItemsBy($optionListList->entries, 'code');
 
         // stats OK?
         $this->assertTrue($response->result, 'Import should succeed');
@@ -222,7 +223,9 @@ class TestLexUploadCommands extends UnitTestCase
 
         // custom fields imported?
         $this->assertEqual($entryList->count, 64);
-        $this->assertEqual($optionListList->count, 25);
+        $this->assertEqual($optionListList->count, 24);
+        $this->assertTrue(array_key_exists('grammatical-info', $optionListByCodes));
+        $this->assertFalse(array_key_exists('semantic-domain-ddp4', $optionListByCodes));
         $this->assertEqual($entryA['lexeme']['qaa-fonipa-x-kal']['value'], '-kes');
         $this->assertEqual($entryA['customField_entry_Cust_Single_Line_All']['en']['value'], '635459584141806142kes.wav');
         $this->assertTrue($project->config->entry->fieldOrder->array_search('customField_entry_Cust_Single_Line_All'), "custom field entry config exists");
