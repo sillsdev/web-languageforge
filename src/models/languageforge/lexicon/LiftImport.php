@@ -159,16 +159,6 @@ class LiftImport
                         $this->liftDecoder->liftFields[$LiftFieldTag] = $liftField;
                     } elseif ($reader->nodeType == \XMLReader::END_ELEMENT && $reader->localName == 'fields') {
                         $isInFieldsSectionOfLift = false;
-
-                        // add lift ranges
-                        if ($mergeRule != LiftMergeRule::IMPORT_LOSES) {
-                            foreach ($liftRanges as $liftRangeCode => $liftRange) {
-                                // add everything except semantic domains
-                                if (strpos($liftRangeCode, 'semantic-domain') === false) {
-                                    self::rangeToOptionList($projectModel, $liftRangeCode, LexiconConfigObj::flexOptionlistName($liftRangeCode), $liftRange);
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -226,6 +216,16 @@ class LiftImport
         // put back saved input systems if none found in the imported data
         if (! $hasExistingData && $projectModel->inputSystems->count() <= 0) {
             $projectModel->inputSystems->exchangeArray($savedInputSystems);
+        }
+
+        // add lift ranges
+        if ($mergeRule != LiftMergeRule::IMPORT_LOSES) {
+            foreach ($liftRanges as $liftRangeCode => $liftRange) {
+                // add everything except semantic domains
+                if (strpos($liftRangeCode, 'semantic-domain') === false) {
+                    self::rangeToOptionList($projectModel, $liftRangeCode, LexiconConfigObj::flexOptionlistName($liftRangeCode), $liftRange);
+                }
+            }
         }
 
         $this->report->nodeErrors[] = $this->liftImportNodeError;
