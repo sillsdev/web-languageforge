@@ -3,6 +3,7 @@
 namespace models\languageforge\lexicon;
 
 use models\languageforge\lexicon\config\LexiconConfigObj;
+use models\languageforge\lexicon\config\LexiconFieldListConfigObj;
 use models\languageforge\lexicon\config\LexiconMultitextConfigObj;
 use models\languageforge\lexicon\config\LexiconOptionlistConfigObj;
 use models\languageforge\lexicon\config\LexViewFieldConfig;
@@ -184,7 +185,11 @@ class LiftDecoder
                             $sense->scientificName = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME]->inputSystems);
                             break;
                         default:
-                            $this->currentNodeError()->addUnhandledField($element['type']);
+                            if ($this->isSenseCustomField($element['type'])) {
+                                $this->addSenseCustomField($element, $element['type'], $sense);
+                            } else {
+                                $this->currentNodeError()->addUnhandledField($element['type']);
+                            }
                     }
                     break;
                 case 'gloss':
@@ -238,7 +243,11 @@ class LiftDecoder
                             $sense->usages->value((string) $element['value']);
                             break;
                         default:
-                            $this->currentNodeError()->addUnhandledTrait($element['name']);
+                            if ($this->isSenseCustomField($element['name'])) {
+                                $this->addSenseCustomField($element, $element['name'], $sense);
+                            } else {
+                                $this->currentNodeError()->addUnhandledTrait($element['name']);
+                            }
                     }
                     break;
 
@@ -259,8 +268,8 @@ class LiftDecoder
      */
     public function readExample($sxeNode)
     {
-        $example = new Example($sxeNode['id']);
-        $this->pushSubnodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['id']);
+        $example = new Example((string) $sxeNode['source']);
+        $this->pushSubnodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['source']);
 
         // create copy with only form elements to use with readMultiText as unhandled elements are reported here
         $formsSxeNode = clone $sxeNode;
@@ -268,7 +277,7 @@ class LiftDecoder
         $nodesToRemove = array();
         foreach ($formsDomNode->childNodes as $child) {
             if ($child->nodeType === XML_ELEMENT_NODE and $child->nodeName !== 'form') {
-                    $nodesToRemove[] = $child;
+                $nodesToRemove[] = $child;
             }
         }
         foreach ($nodesToRemove as $node) {
@@ -284,6 +293,20 @@ class LiftDecoder
                 case 'translation':
                     $example->translation = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems);
             	    break;
+                case 'field':
+                    if ($this->isExampleCustomField($element['type'])) {
+                        $this->addExampleCustomField($element, $element['type'], $example);
+                    } else {
+                        $this->currentNodeError()->addUnhandledField($element['type']);
+                    }
+                    break;
+                case 'trait':
+                    if ($this->isExampleCustomField($element['name'])) {
+                        $this->addExampleCustomField($element, $element['name'], $example);
+                    } else {
+                        $this->currentNodeError()->addUnhandledTrait($element['name']);
+                    }
+                    break;
         	    default:
         	        $this->currentNodeError()->addUnhandledElement($element->getName());
             }
@@ -389,12 +412,58 @@ class LiftDecoder
      * Check if the supplied entry node is listed in the custom LIFT fields
      *
      * @param string $nodeId
+     * @return boolean
      */
     public function isEntryCustomField($nodeId) {
+        return $this->isCustomField($nodeId, 'LexEntry');
+    }
+
+    /**
+     * Check if the supplied sense node is listed in the custom LIFT fields
+     *
+     * @param string $nodeId
+     * @return boolean
+     */
+    public function isSenseCustomField($nodeId) {
+        return $this->isCustomField($nodeId, 'LexSense');
+    }
+
+    /**
+     * Check if the supplied example node is listed in the custom LIFT fields
+     *
+     * @param string $nodeId
+     * @return boolean
+     */
+    public function isExampleCustomField($nodeId) {
+        return $this->isCustomField($nodeId, 'LexExampleSentence');
+    }
+
+    /**
+     * Check if the supplied node is listed in the custom LIFT fields given the Lex level Class
+     *
+     * @param string $nodeId
+     * @param string $levelClass
+     * @return boolean
+     */
+    private function isCustomField($nodeId, $levelClass) {
         $fieldType = FileUtilities::replaceSpecialCharacters($nodeId);
         $customFieldSpecs = $this->getCustomFieldSpecs($fieldType);
         if (array_key_exists('Class', $customFieldSpecs) &&
-            $customFieldSpecs['Class'] == 'LexEntry' &&
+            $customFieldSpecs['Class'] == $levelClass &&
+            $this->isCustomFieldType($customFieldSpecs)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if the supplied node is a supported custom LIFT field type
+     *
+     * @param array<string> $customFieldSpecs
+     * @return boolean
+     */
+    private function isCustomFieldType($customFieldSpecs) {
+        if (array_key_exists('Type', $customFieldSpecs) &&
             ($customFieldSpecs['Type'] == 'MultiUnicode' ||
                 $customFieldSpecs['Type'] == 'String' ||
                 $customFieldSpecs['Type'] == 'OwningAtom' ||
@@ -412,22 +481,79 @@ class LiftDecoder
      * @param LexEntryModel $entry
      */
     public function addEntryCustomField($sxeNode, $nodeId, $entry) {
+        $this->addCustomField($sxeNode, $nodeId, 'customField_entry_', $this->projectModel->config->entry, $entry);
+    }
+
+    /**
+     * Add node as a custom sense field
+     *
+     * @param SimpleXMLElement $sxeNode
+     * @param string $nodeId
+     * @param Sense $sense
+     */
+    public function addSenseCustomField($sxeNode, $nodeId, $sense) {
+        $this->addCustomField($sxeNode, $nodeId, 'customField_senses_', $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST], $sense);
+    }
+
+    /**
+     * Add node as a custom example field
+     *
+     * @param SimpleXMLElement $sxeNode
+     * @param string $nodeId
+     * @param Example $example
+     */
+    public function addExampleCustomField($sxeNode, $nodeId, $example) {
+        $this->addCustomField($sxeNode, $nodeId, 'customField_examples_', $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST], $example);
+    }
+
+    /**
+     * Add node as a custom field
+     *
+     * @param SimpleXMLElement $sxeNode
+     * @param string $nodeId
+     * @param string $customFieldNamePrefix
+     * @param array $customFieldSpecs
+     * @param LexiconFieldListConfigObj $levelConfig
+     * @param LexEntryModel|Sense|Example $item
+     */
+    private function addCustomField($sxeNode, $nodeId, $customFieldNamePrefix, $levelConfig, $item) {
         $fieldType = FileUtilities::replaceSpecialCharacters($nodeId);
         $customFieldSpecs = $this->getCustomFieldSpecs($fieldType);
-        $customFieldName = 'customField_entry_' . str_replace(' ', '_', $fieldType);
-        $this->projectModel->config->entry->fieldOrder->value($customFieldName);
-        if (! array_key_exists($customFieldName, $this->projectModel->config->entry->fields)) {
+        $customFieldName = $this->createCustomField($nodeId, $fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig);
+        if (array_key_exists('Type', $customFieldSpecs) &&
+            $customFieldSpecs['Type'] == 'ReferenceAtom') {
+            $item->{$customFieldName} = new LexiconField();
+            $item->{$customFieldName}->value = (string) $sxeNode['value'];
+        } else {
+            $item->{$customFieldName} = $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
+        }
+    }
+
+    /**
+     * Create custom field config
+     *
+     * @param string $nodeId
+     * @param string $fieldType
+     * @param string $customFieldNamePrefix
+     * @param array $customFieldSpecs
+     * @param LexiconFieldListConfigObj $levelConfig
+     * @return string $customFieldName
+     */
+    private function createCustomField($nodeId, $fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig) {
+        $customFieldName = $customFieldNamePrefix . str_replace(' ', '_', $fieldType);
+        $levelConfig->fieldOrder->value($customFieldName);
+        if (! array_key_exists($customFieldName, $levelConfig->fields)) {
             if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
-                $this->projectModel->config->entry->fields[$customFieldName] = new LexiconOptionlistConfigObj();
-                $this->projectModel->config->entry->fields[$customFieldName]->listCode = $customFieldSpecs['range'];
+                $levelConfig->fields[$customFieldName] = new LexiconOptionlistConfigObj();
+                $levelConfig->fields[$customFieldName]->listCode = $customFieldSpecs['range'];
             } else {
-                $this->projectModel->config->entry->fields[$customFieldName] = new LexiconMultitextConfigObj();
+                $levelConfig->fields[$customFieldName] = new LexiconMultitextConfigObj();
                 if ($customFieldSpecs['Type'] == 'OwningAtom') {
-                    $this->projectModel->config->entry->fields[$customFieldName]->displayMultiline = true;
+                    $levelConfig->fields[$customFieldName]->displayMultiline = true;
                 }
             }
-            $this->projectModel->config->entry->fields[$customFieldName]->label = $fieldType;
-            $this->projectModel->config->entry->fields[$customFieldName]->hideIfEmpty = false;
+            $levelConfig->fields[$customFieldName]->label = $fieldType;
+            $levelConfig->fields[$customFieldName]->hideIfEmpty = false;
         }
         foreach ($this->projectModel->config->roleViews as $role => $roleView) {
             if (! array_key_exists($customFieldName, $roleView->fields)) {
@@ -451,12 +577,7 @@ class LiftDecoder
             }
         }
 
-        if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
-            $entry->{$customFieldName} = new LexiconField();
-            $entry->{$customFieldName}->value = (string) $sxeNode['value'];
-        } else {
-            $entry->{$customFieldName} = $this->readMultiText($sxeNode, $this->projectModel->config->entry->fields[$customFieldName]->inputSystems);
-        }
+        return $customFieldName;
     }
 
     /**
