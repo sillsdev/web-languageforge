@@ -305,7 +305,7 @@ class LiftImport
             } else {
                 $abbrev = null;
             }
-            $optionListItem = new LexiconOptionListItem($label);
+            $optionListItem = new LexiconOptionListItem($label, $id);
             $optionListItem->abbreviation = $abbrev;
             $optionList->items->append($optionListItem);
 
