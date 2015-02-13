@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon;
 
 use models\languageforge\lexicon\config\LexiconConfigObj;
 use models\languageforge\lexicon\config\LexiconFieldListConfigObj;
+use models\languageforge\lexicon\config\LexiconMultiOptionlistConfigObj;
 use models\languageforge\lexicon\config\LexiconMultitextConfigObj;
 use models\languageforge\lexicon\config\LexiconOptionlistConfigObj;
 use models\languageforge\lexicon\config\LexViewFieldConfig;
@@ -467,7 +468,8 @@ class LiftDecoder
             ($customFieldSpecs['Type'] == 'MultiUnicode' ||
                 $customFieldSpecs['Type'] == 'String' ||
                 $customFieldSpecs['Type'] == 'OwningAtom' ||
-                $customFieldSpecs['Type'] == 'ReferenceAtom')) {
+                $customFieldSpecs['Type'] == 'ReferenceAtom' ||
+                $customFieldSpecs['Type'] == 'ReferenceCollection')) {
             return true;
         }
         return false;
@@ -520,10 +522,14 @@ class LiftDecoder
         $fieldType = FileUtilities::replaceSpecialCharacters($nodeId);
         $customFieldSpecs = $this->getCustomFieldSpecs($fieldType);
         $customFieldName = $this->createCustomField($nodeId, $fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig);
-        if (array_key_exists('Type', $customFieldSpecs) &&
-            $customFieldSpecs['Type'] == 'ReferenceAtom') {
+        if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
             $item->{$customFieldName} = new LexiconField();
             $item->{$customFieldName}->value = (string) $sxeNode['value'];
+        } elseif ($customFieldSpecs['Type'] == 'ReferenceCollection') {
+            if (! array_key_exists($customFieldName, $item)) {
+                $item->{$customFieldName} = new LexiconMultiValueField();
+            }
+            $item->{$customFieldName}->value((string) $sxeNode['value']);
         } else {
             $item->{$customFieldName} = $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
         }
@@ -545,6 +551,9 @@ class LiftDecoder
         if (! array_key_exists($customFieldName, $levelConfig->fields)) {
             if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
                 $levelConfig->fields[$customFieldName] = new LexiconOptionlistConfigObj();
+                $levelConfig->fields[$customFieldName]->listCode = $customFieldSpecs['range'];
+            } elseif ($customFieldSpecs['Type'] == 'ReferenceCollection') {
+                $levelConfig->fields[$customFieldName] = new LexiconMultiOptionlistConfigObj();
                 $levelConfig->fields[$customFieldName]->listCode = $customFieldSpecs['range'];
             } else {
                 $levelConfig->fields[$customFieldName] = new LexiconMultitextConfigObj();
