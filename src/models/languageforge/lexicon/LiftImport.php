@@ -66,9 +66,6 @@ class LiftImport
         $entryList->read();
         $hasExistingData = $entryList->count != 0;
 
-        // I consider this to be a stopgap to support importing of part of speech until we have a way to import lift ranges - cjh 2014-08
-        $partOfSpeechValues = array();
-
         // No data yet? (number of entries == 0)
         if (! $hasExistingData) {
             // save and clear input systems
@@ -198,14 +195,12 @@ class LiftImport
                             $this->stats->entriesDeleted++;
                         }
                     }
-                    self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
                 } else {
                     if (isset($sxeNode->{'lexical-unit'})) {
                         $entry = new LexEntryModel($projectModel);
                         $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
                         $entry->write();
                         $this->stats->newEntries++;
-                        self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
                     }
                 }
             }
@@ -281,10 +276,11 @@ class LiftImport
 
     /**
      * Convert a LIFT range to an option list of the right code
-     * Usage example: rangeToOptionList($projectModel, 'partOfSpeech', 'Part of Speech', $liftRanges['grammatical-info'])
-     * @param unknown $projectModel
-     * @param unknown $optionListCode
-     * @param unknown $liftRange
+     * Usage example: rangeToOptionList($projectModel, 'grammatical-info', 'Part of Speech', $liftRanges['grammatical-info'])
+     * @param LexiconProjectModel $projectModel
+     * @param string $optionListCode
+     * @param string $optionListName
+     * @param LiftRange $liftRange
      * @param string $interfaceLang
      */
     public static function rangeToOptionList($projectModel, $optionListCode, $optionListName, $liftRange, $interfaceLang = 'en')
@@ -476,20 +472,6 @@ class LiftImport
         $sxeNode = simplexml_import_dom($n);
         $dom->appendChild($n);
         return $sxeNode;
-    }
-
-    /**
-     * @param $arr array - list to append to
-     * @param $entryModel LexEntryModel
-     */
-    private static function addPartOfSpeechValuesToList(&$arr, $entryModel)
-    {
-        foreach ($entryModel->senses as $sense) {
-            $pos = $sense->partOfSpeech->value;
-            if (!in_array($pos, $arr)) {
-                array_push($arr, $pos);
-            }
-        }
     }
 
     /**
