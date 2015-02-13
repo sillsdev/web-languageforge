@@ -241,8 +241,10 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertFalse($project->config->userViews[$userId]->fields['customField_entry_Cust_Single_Line_All']->show);
         $this->assertEqual($entryB['lexeme']['qaa-fonipa-x-kal']['value'], 'zitʰɛstmen');
         $this->assertEqual($entryB['customField_entry_Cust_Single_ListRef']['value'], 'comparative linguistics');
+        $this->assertEqual(count($entryBSenseA['customField_senses_Cust_Multi_ListRef']['values']), 2);
+        $this->assertEqual($entryBSenseA['customField_senses_Cust_Multi_ListRef']['values'][0], 'First Custom Item');
+        $this->assertEqual($entryBSenseA['customField_senses_Cust_Multi_ListRef']['values'][1], 'Second Custom Item');
         $this->assertEqual($entryBSenseAExampleA['customField_examples_Cust_Example']['qaa-x-kal']['value'], 'Custom example');
-
 
         echo '<pre style="height:500px; overflow:auto">';
         echo $response->data->importErrors;
