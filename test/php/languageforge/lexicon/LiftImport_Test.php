@@ -1318,10 +1318,10 @@ EOD;
         $this->assertEqual($importer->stats->newEntries, 1);
 
         $optionList = new LexOptionListModel($project);
-        $optionList->readByProperty('code', LexiconConfigObj::ANTHROPOLOGYCATEGORIES);
+        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::ANTHROPOLOGYCATEGORIES));
         $this->assertEqual($optionList->items->count(), 0);
 
-        $optionList->readByProperty('code', LexiconConfigObj::POS);
+        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::POS));
         $this->assertEqual($optionList->items->count(), 3);
         $this->assertEqual($optionList->items[0]->abbreviation, 'art');
         $this->assertEqual($optionList->items[0]->value, 'article');
@@ -1330,7 +1330,7 @@ EOD;
         $this->assertEqual($optionList->items[2]->abbreviation, 'indef');
         $this->assertEqual($optionList->items[2]->value, 'indefinite article');
 
-        $optionList->readByProperty('code', LexiconConfigObj::STATUS);
+        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::STATUS));
         $this->assertEqual($optionList->items->count(), 4);
         $this->assertEqual($optionList->items[0]->abbreviation, 'Conf');
         $this->assertEqual($optionList->items[0]->value, 'Confirmed');
@@ -1341,7 +1341,7 @@ EOD;
         $this->assertEqual($optionList->items[3]->abbreviation, 'Tent');
         $this->assertEqual($optionList->items[3]->value, 'Tentative');
 
-        $optionList->readByProperty('code', LexiconConfigObj::ACADEMICDOMAINS);
+        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::ACADEMICDOMAINS));
         $this->assertEqual($optionList->items->count(), 2);
         $this->assertEqual($optionList->items[0]->abbreviation, 'Anat');
         $this->assertEqual($optionList->items[0]->value, 'anatomy');
@@ -1384,7 +1384,7 @@ EOD;
         LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $optionList = new LexOptionListModel($project);
-        $optionList->readByProperty('code', LexiconConfigObj::POS);
+        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::POS));
         $this->assertEqual($optionList->items->count(), 3);
         $this->assertEqual($optionList->items[0]->value, 'article');
 
@@ -1395,16 +1395,16 @@ EOD;
         $this->assertEqual($importer->stats->existingEntries, 1);
 
         $optionList = new LexOptionListModel($project);
-        $optionList->readByProperty('code', LexiconConfigObj::ANTHROPOLOGYCATEGORIES);
+        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::ANTHROPOLOGYCATEGORIES));
         $this->assertEqual($optionList->items->count(), 0);
 
-        $optionList->readByProperty('code', LexiconConfigObj::STATUS);
+        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::STATUS));
         $this->assertEqual($optionList->items->count(), 4);
 
-        $optionList->readByProperty('code', LexiconConfigObj::ACADEMICDOMAINS);
+        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::ACADEMICDOMAINS));
         $this->assertEqual($optionList->items->count(), 2);
 
-        $optionList->readByProperty('code', LexiconConfigObj::POS);
+        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::POS));
         $this->assertEqual($optionList->items->count(), 1);
         $this->assertEqual($optionList->items[0]->value, 'adjunct');
     }
