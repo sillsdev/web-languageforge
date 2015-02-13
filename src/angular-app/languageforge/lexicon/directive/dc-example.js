@@ -16,6 +16,7 @@ angular.module('palaso.ui.dc.example', ['palaso.ui.dc.multitext', 'lexicon.servi
             $scope.isUncommonField = lexConfigService.isUncommonField;
 		}],
 		link : function(scope, element, attrs, controller) {
+		  scope.optionlists = scope.control.config.optionlists;
 		}
 	};
 }])
