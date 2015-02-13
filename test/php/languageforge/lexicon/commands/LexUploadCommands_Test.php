@@ -35,11 +35,11 @@ class TestLexUploadCommands extends UnitTestCase
         $this->environ->cleanupTestFiles($this->environ->project->getAssetsFolderPath());
     }
 
-    private static function indexesByGuid($entries)
+    private static function indexItemsBy($items, $byId = 'guid')
     {
         $indexes = array();
-        foreach ($entries as $entry) {
-            $indexes[$entry['guid']] = $entry;
+        foreach ($items as $item) {
+            $indexes[$item[$byId]] = $item;
         }
         return $indexes;
     }
@@ -198,9 +198,13 @@ class TestLexUploadCommands extends UnitTestCase
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $indexes = self::indexesByGuid($entries);
+        $indexes = self::indexItemsBy($entries, 'guid');
         $entryA = $indexes['05c54cf0-4e5a-4bf2-99f8-ec787e4113ac'];
         $entryB = $indexes['1a705846-a814-4289-8594-4b874faca6cc'];
+        $entryBSenseIndexes = self::indexItemsBy($entryB['senses'], 'liftId');
+        $entryBSenseA = $entryBSenseIndexes['eea9c29f-244f-4891-81db-c8274cd61f0c'];
+        $entryBSenseAExamplesIndexes = self::indexItemsBy($entryBSenseA['examples'], 'liftId');
+        $entryBSenseAExampleA = $entryBSenseAExamplesIndexes['Example reference'];
         $optionListList = new LexOptionListListModel($project);
         $optionListList->read();
 
@@ -218,6 +222,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         // custom fields imported?
         $this->assertEqual($entryList->count, 64);
+        $this->assertEqual($optionListList->count, 25);
         $this->assertEqual($entryA['lexeme']['qaa-fonipa-x-kal']['value'], '-kes');
         $this->assertEqual($entryA['customField_entry_Cust_Single_Line_All']['en']['value'], '635459584141806142kes.wav');
         $this->assertTrue($project->config->entry->fieldOrder->array_search('customField_entry_Cust_Single_Line_All'), "custom field entry config exists");
@@ -233,8 +238,8 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertFalse($project->config->userViews[$userId]->fields['customField_entry_Cust_Single_Line_All']->show);
         $this->assertEqual($entryB['lexeme']['qaa-fonipa-x-kal']['value'], 'zitʰɛstmen');
         $this->assertEqual($entryB['customField_entry_Cust_Single_ListRef']['value'], 'comparative linguistics');
+        $this->assertEqual($entryBSenseAExampleA['customField_examples_Cust_Example']['qaa-x-kal']['value'], 'Custom example');
 
-        $this->assertEqual($optionListList->count, 25);
 
         echo '<pre style="height:500px; overflow:auto">';
         echo $response->data->importErrors;
