@@ -70,7 +70,7 @@ class SemDomTransItemModel extends \models\mapper\MapperModel
     public $searchKeys;
     
     /**
-     * @var ArrayOf(SemDomTransTranslatedForm)
+     * @var ArrayOf(SemDomTransQuestion)
      */
     public $questions;
     

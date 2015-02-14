@@ -1,27 +1,24 @@
 <?php
 use models\languageforge\SemDomTransProjectModel;
 use libraries\languageforge\semdomtrans\SemDomXMLExporter;
-
+use models\ProjectListModel;
+use libraries\languageforge\semdomtrans;
 use models\ProjectModel;
 
 require_once('../scriptConfig.php');
 
-use models\ProjectListModel;
-use libraries\languageforge\semdomtrans;
+
 
 $lang = $argv[1];
-$version = $argv[2];
+$version = (int) $argv[2];
 $testMode = false;
+
+
 $projectModel = new SemDomTransProjectModel();
-
-$projectModel->languageIsoCode = $lang;
-$projectModel->semdomVersion = $version;
-$projectModel->projectCode = "semdom-$lang-$version";
-$projectModel->readByProperties(array("languageIsoCode" => $projectModel->languageIsoCode, "semdomVersion" => $projectModel->semdomVersion));
-
+$projectModel->readByProperties(array("languageIsoCode" => $lang, "semdomVersion" => $version));
 
 $xml = simplexml_load_file($projectModel->newXmlFilePath);
-$exporter = new SemDomXMLExporter($projectModel, $testMode,  ($argv[3] == "1"));
+$exporter = new SemDomXMLExporter($projectModel, $testMode,  ($argv[3] == "1"), true);
 
-$exporter->run();
+$exporter->run(); 
 ?>

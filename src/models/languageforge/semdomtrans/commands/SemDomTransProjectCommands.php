@@ -14,7 +14,7 @@ use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
 use models\shared\rights\Domain;
-
+use models\languageforge\semdomtrans\SemDomTransItemListModel;
 use models\shared\rights\ProjectRoles;
 use models\sms\SmsSettings;
 use models\languageforge\semdomtrans\SemDomTransItemModel;
@@ -22,6 +22,8 @@ use models\languageforge\SemDomTransProjectModel;
 use models\languageforge\semdomtrans\SemDomTransTranslatedForm;
 use models\ProjectListModel;
 use models\languageforge\LfProjectModel;
+use models\commands\ProjectCommands;
+use models\languageforge\semdomtrans\SemDomTransQuestion;
 
 class SemDomTransProjectCommands
 {
@@ -38,5 +40,49 @@ class SemDomTransProjectCommands
 		}
 		
 		return $semdomProjects;
+	}
+	
+	public static function createPreFilledSemdomProject($languageIsoCode, $userId, $website) {	
+		$projectName = "Semdom $languageIsoCode Project";
+		$semdomVersion = 20;
+		$projectCode = "semdom-$languageIsoCode-$semdomVersion";
+		$appName = LfProjectModel::SEMDOMTRANS_APP;
+		$projectId = ProjectCommands::createProject($projectName, $projectCode, $appName, $userId, $website);
+
+		$projectModel = new SemDomTransProjectModel($projectId);
+		$englishProject = new SemDomTransProjectModel();
+		$englishProject->readByProperties(array("languageIsoCode" => "en", "semdomVersion" => $semdomVersion));
+    	$projectModel->languageIsoCode = $languageIsoCode;
+    	$projectModel->semdomVersion = $semdomVersion;
+    	$projectModel->sourceLanguageProjectId = $englishProject->id->asString();
+    	$projectModel->write();
+    	
+    	$xmlFilePath = "/var/www/host/sil/lfsite/docs/semdom/SemDom_en.xml";
+    	$newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
+    	if (!file_exists($projectModel->getAssetsFolderPath())) {
+    		mkdir($projectModel->getAssetsFolderPath());
+    	}
+    	copy($xmlFilePath, $newXmlFilePath);
+    	$projectModel->newXmlFilePath = $newXmlFilePath;
+    	$projectModel->write();
+    	
+    	$englishItems = new SemDomTransItemListModel($englishProject);
+    	$englishItems->read();
+    	foreach ($englishItems->entries as $item) {
+    		$newItem = new SemDomTransItemModel($projectModel);
+    		$newItem->key = $item['key'];
+    		foreach ($item['questions'] as $q) {
+    			$newq = new SemDomTransQuestion("aa", "aa"); 
+    			$newItem->questions[] = $newq;
+    		}
+    		foreach ($item['searchKeys'] as $sk) {
+    			$newsk = new SemDomTransTranslatedForm();
+    			$newItem->searchKeys[] = $newsk;
+    		}
+    		$newItem->xmlGuid = $item['xmlGuid'];
+    		$newItem->write();   			
+    	}
+    	
+    	return $projectModel;
 	}
 }
