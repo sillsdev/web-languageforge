@@ -5,6 +5,7 @@ use libraries\languageforge\semdomtrans\SemDomXMLImporter;
 use models\languageforge\LfProjectModel;
 use models\ProjectModel;
 use models\commands\ProjectCommands;
+use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
 
 require_once('../scriptConfig.php');
 
@@ -40,11 +41,8 @@ $previousProject->readByProperties(array("languageIsoCode" => $lang, "semdomVers
 
 if ($previousProject->id->asString() == "")
 {
-	echo $projectName . "\n";
 	$projectID = ProjectCommands::createProject($projectName, $projectCode, $appName, $userId, $website);
-	echo $projectID . "\n";
 	$projectModel = new SemDomTransProjectModel($projectID);
-	
 
 	$newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
 	if (!file_exists($projectModel->getAssetsFolderPath())) {
