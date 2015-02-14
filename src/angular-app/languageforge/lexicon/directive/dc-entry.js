@@ -27,6 +27,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
                 $scope.fieldContainsData = lexConfigService.fieldContainsData;
 			}],
 			link : function(scope, element, attrs, controller) {
+			  scope.optionlists = scope.control.config.optionlists;
 			}
 		};
   }])

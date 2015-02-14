@@ -13,7 +13,7 @@
                     <dc-optionlist class="dc-item" control="control"
                         config="config.fields[fieldName]"
                         model="model[fieldName]"
-                        items="optionlists[fieldName].items"></dc-optionlist>
+                        items="optionlists[config.fields[fieldName].listCode].items"></dc-optionlist>
                     <comment-bubble control="control"
                         count="control.getFieldCommentCount(fieldName)"></comment-bubble>
                 </div>
@@ -21,7 +21,7 @@
                     <dc-multioptionlist class="dc-item" control="control"
                         config="config.fields[fieldName]"
                         model="model[fieldName]"
-                        items="optionlists[fieldName].items"></dc-multioptionlist>
+                        items="optionlists[config.fields[fieldName].listCode].items"></dc-multioptionlist>
                     <comment-bubble control="control"
                         count="control.getFieldCommentCount(fieldName)"></comment-bubble>
                 </div>
