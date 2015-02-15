@@ -8,6 +8,10 @@ use models\ProjectModel;
 use models\UserModel;
 use libraries\languageforge\semdomtrans\SemDomXMLImporter;
 use models\languageforge\SemDomTransProjectModel;
+use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
+use models\mapper\ArrayOf;
+use models\languageforge\LfProjectModel;
+use models\commands\ProjectCommands;
 
 class MongoTestEnvironment
 {
@@ -95,14 +99,16 @@ class MongoTestEnvironment
      * @param string $code
      * @return ProjectModel
      */
-    public function createProject($name, $code)
+    public function createProject($name, $code, $appName = '')
     {
         $projectModel = new ProjectModel();
         $projectModel->projectName = $name;
         $projectModel->projectCode = $code;
         $projectModel->isArchived = false;
         $projectModel->siteName = $this->website->domain;
-        if ($this->website->base == Website::SCRIPTUREFORGE) {
+        if ($appName != '') {
+        	$projectModel->appName = $appName;	
+        }  else if ($this->website->base == Website::SCRIPTUREFORGE) {
             $projectModel->appName = 'sfchecks';
         } elseif ($this->website->base == Website::LANGUAGEFORGE) {
             $projectModel->appName = 'lexicon';
@@ -356,7 +362,10 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
 	{
 		parent::__construct('languageforge.org');
 	}
-
+	 /** 
+	 * @var UserModel
+	 */
+	public $userId;
 	/**
 	 *
 	 * @var SemDomProjectModel
@@ -372,15 +381,23 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
 
 
 	public function importEnglishProject() {
-		$projectModel = new SemDomTransProjectModel();
-		$lang = "en";
-		$version = "1";
-		$projectModel->languageIsoCode = $lang;
-		$projectModel->semdomVersion = $version;
-		$projectModel->projectCode = "semdom-$lang-$version";
-		$this->cleanProjectEnvironment($projectModel);
+		$semdomVersion = 1000;
+		$languageCode = "en";
+		$projectCode = "semdom-$languageCode-$semdomVersion";
+		
+		$projectModel = $this->createSemDomProject($languageCode, $semdomVersion);
+		
+		$xmlFilePath = "/var/www/host/sil/lfsite/docs/semdom/semdom lists/SemDom_en.xml";
+		$newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
+		if (!file_exists($projectModel->getAssetsFolderPath())) {
+			mkdir($projectModel->getAssetsFolderPath());
+		}
+		
+		copy($xmlFilePath, $newXmlFilePath);
+		$projectModel->newXmlFilePath = $newXmlFilePath;
 		$projectModel->write();
-		$importer = new SemDomXMLImporter("/var/www/host/sil/lfsite/docs/semdom/semdom lists/SemDom_en.xml", $projectModel, false);
+		
+		$importer = new SemDomXMLImporter($xmlFilePath, $projectModel, false, true);
 		$importer->run();
 		$this->englishProject = $projectModel;
 		return $projectModel;
@@ -388,13 +405,26 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
 
 	public function createPreFilledTargetProject($languageCode) {
 		$previousProject = new SemDomTransProjectModel();
-		$version = $this->englishProject->semdomVersion;
-		$previousProject->projectCode = "semdom-$languageCode-$version";
-		$previousProject->readByProperty("projectCode", $previousProject->projectCode);
+		$semdomVersion = $this->englishProject->semdomVersion;
+		$projectCode = "semdom-$languageCode-$semdomVersion";
+		$previousProject->readByProperty("projectCode", $projectCode);
+		$previousProject->projectCode = $projectCode;
 		$this->cleanProjectEnvironment($previousProject);
-
-		$projectModel = SemDomTransProjectModel::createPreFilled($this->englishProject, $languageCode, $this->englishProject->semdomVersion);
+		
+		$projectModel = $this->createSemDomProject($languageCode, $semdomVersion);		
+		SemDomTransProjectCommands::preFillProject($projectModel->id->asString());
 		$this->targetProject = $projectModel;
+		return $projectModel;
+	}
+	
+	public function createSemDomProject($languageCode, $semdomVersion) {
+		$projectName = "Semdom $languageCode Project";
+		$projectCode = "semdom-$languageCode-$semdomVersion";
+		$projectModel = $this->createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP);
+		$projectModel = new SemDomTransProjectModel($projectModel->id->asString());
+		$projectModel->languageIsoCode = $languageCode;
+		$projectModel->semdomVersion = $semdomVersion;
+		$projectModel->write();
 		return $projectModel;
 	}
 }

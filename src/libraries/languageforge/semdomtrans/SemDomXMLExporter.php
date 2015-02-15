@@ -80,7 +80,7 @@ class SemDomXMLExporter {
 		More details: http://stackoverflow.com/questions/4778865/php-simplexml-addchild-with-another-simplexmlelement
 		
 		Alternatives: use other library than SimpleXML. This is feasible but SimpleXML is very nice for all the other things we are doing, so this work around is probably best at this point
-	  */
+	 */
 	public static function _addChild($to, $from) {
 		$toDom = dom_import_simplexml($to);
 		$fromDom = dom_import_simplexml($from);
@@ -135,7 +135,7 @@ class SemDomXMLExporter {
 					$question = $this->_getNodeOrNull ( $questionXML->xpath ( "Question/AUni[@ws='{$this->_lang}']" ) );
 					$terms = $this->_getNodeOrNull ( $questionXML->xpath ( "ExampleWords/AUni[@ws='{$this->_lang}']"));
 					if($question != null) {
-						$question[0] = $s->questions[$index]->question->translation . "AAAAA";
+						$question[0] = $s->questions[$index]->question->translation;
 					}
 					if($terms != null) {
 						$terms[0] = $s->questions[$index]->terms->translation;
