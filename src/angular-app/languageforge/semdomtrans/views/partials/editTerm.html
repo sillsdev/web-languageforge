@@ -8,13 +8,13 @@
 			    <tr>
 				    <td> Name: </td>
 				    <td> {{$parent.currentItem.name.source}}</td>
-				    <td> <input ng-model="$parent.currentItem.name.translation"> </td>
+				    <td> <input ng-model="$parent.currentItem.name.translation"  ng-keypress="$parent.updateItem($event.which)" ng-blur="$parent.updateItem()" > </td>
 			    </tr>
 			     <tr>
 			     <tr>
 				    <td> Description: </td>
 				    <td> {{$parent.currentItem.description.source}}</td>
-			        <td> <textarea rows="4" ng-model="$parent.currentItem.description.translation"> </textarea></td>    
+			        <td> <textarea rows="4" ng-model="$parent.currentItem.description.translation" ng-keypress="$parent.updateItem($event.which)" ng-blur="$parent.updateItem()"> </textarea></td>    
 			    </tr>
 			   			   
 			</table>
@@ -27,7 +27,7 @@
 		    		<th> Translation </th>
 		    	<tr ng-repeat="searchKey in $parent.currentItem.searchKeys">
 		    		<td>{{searchKey.source}}</td>
-		    		<td><textarea rows="2" ng-model="searchKey.translation"> </textarea></td>
+		    		<td><textarea rows="2" ng-model="searchKey.translation" ng-keypress="$parent.updateItem($event.which)" ng-blur="$parent.updateItem()"> </textarea></td>
 		    	</tr>
 		    	
 		    </table>
