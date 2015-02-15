@@ -9,8 +9,9 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice) {
 	$scope.currentQuestionPos = 0;
 	$scope.tabDisplay = {"val": '0'};
 	$scope.domainsFiltered = [];
+	var api = semdomEditApi;
 	
-	semdomEditApi.editorDto(function(result) {
+	api.editorDto(function(result) {
 		if (result.ok) {
 			$scope.items = result.data.items;
 			$scope.currentItem = $scope.items[0];
@@ -38,5 +39,14 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice) {
 				}
 			}			
     }
+	
+	$scope.updateItem = function updateItem(v) {
+		v = (v === undefined) ? 13 : v;
+		if (v == 13) {
+			api.updateTerm($scope.currentItem, function(result) {
+				;
+			});
+		}
+	}
 	
 }]);
