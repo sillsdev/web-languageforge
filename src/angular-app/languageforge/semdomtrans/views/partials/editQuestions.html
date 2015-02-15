@@ -9,12 +9,12 @@
 	    <tr>
 		    <td> Question: </td>
 		    <td> {{$parent.currentItem.questions[$parent.currentQuestionPos].question.source}} </td>
-		    <td> <textarea rows="4" ng-model="$parent.currentItem.questions[$parent.currentQuestionPos].question.translation"></textarea> </td> 
+		    <td> <textarea rows="4" ng-model="$parent.currentItem.questions[$parent.currentQuestionPos].question.translation" ng-keypress="$parent.updateItem($event.which)" ng-blur="$parent.updateItem()"></textarea> </td> 
 	    </tr>	
 	     <tr>
 		    <td> Terms: </td>
 		    <td> {{$parent.currentItem.questions[$parent.currentQuestionPos].terms.source}}</textarea> </td>
-	        <td> <textarea rows="4" ng-model="$parent.currentItem.questions[$parent.currentQuestionPos].terms.translation"></textarea> </td>    
+	        <td> <textarea rows="4" ng-model="$parent.currentItem.questions[$parent.currentQuestionPos].terms.translation" ng-keypress="$parent.updateItem($event.which)" ng-blur="$parent.updateItem()"></textarea> </td>    
 	    </tr>				    
 	</table>
 	<td> 

@@ -11,9 +11,9 @@ angular.module('semdomtrans.services', ['jsonRpc'])
   };
         
     this.updateTerm = function(term, callback) {
-    	// don't do anything6
-    	var result = {ok: true};
-    	callback(result);
+    	jsonRpc.call('semdom_item_update', [term], function(result) {
+    		callback(result);
+    	});
     };
 
   }])
