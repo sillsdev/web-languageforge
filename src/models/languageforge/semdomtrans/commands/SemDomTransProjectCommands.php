@@ -42,18 +42,10 @@ class SemDomTransProjectCommands
 		return $semdomProjects;
 	}
 	
-	public static function createPreFilledSemdomProject($languageIsoCode, $userId, $website) {	
-		$projectName = "Semdom $languageIsoCode Project";
-		$semdomVersion = 20;
-		$projectCode = "semdom-$languageIsoCode-$semdomVersion";
-		$appName = LfProjectModel::SEMDOMTRANS_APP;
-		$projectId = ProjectCommands::createProject($projectName, $projectCode, $appName, $userId, $website);
-
+	public static function preFillProject($projectId) {			
 		$projectModel = new SemDomTransProjectModel($projectId);
 		$englishProject = new SemDomTransProjectModel();
-		$englishProject->readByProperties(array("languageIsoCode" => "en", "semdomVersion" => $semdomVersion));
-    	$projectModel->languageIsoCode = $languageIsoCode;
-    	$projectModel->semdomVersion = $semdomVersion;
+		$englishProject->readByProperties(array("languageIsoCode" => "en", "semdomVersion" => $projectModel->semdomVersion));
     	$projectModel->sourceLanguageProjectId = $englishProject->id->asString();
     	$projectModel->write();
     	

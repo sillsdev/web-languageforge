@@ -19,7 +19,7 @@ class TestSemDomTransEditDto extends UnitTestCase
     }
 
 
-    public function testEncode_SourceProjectFromXmlTargetProjectFromCreateStub_DtoAsExpected() 
+    public function testEncode_SourceProjectFromXmlTargetProjectPreFilled_DtoAsExpected() 
     {
     	$e = new SemDomMongoTestEnvironment(); 
     	$e->clean();
