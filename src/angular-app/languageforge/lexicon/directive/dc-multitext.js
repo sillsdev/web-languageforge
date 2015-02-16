@@ -24,6 +24,13 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services'])
                 $scope.selectInputSystem = function selectInputSystem(tag) {
                     $scope.selectField({inputSystem: tag});
                 };
+                
+                $scope.modelContainsSpan = function modelContainsSpan(tag) {
+                  if (! (tag in $scope.model)) {
+                    return false;
+                  }
+                  return $scope.model[tag].value.indexOf('</span>') > -1;
+                };
 				
 			}],
 			link : function(scope, element, attrs, controller) {
