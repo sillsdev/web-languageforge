@@ -332,7 +332,7 @@ class LiftDecoder
             switch ($element->getName()) {
             	case 'form':
             	    $inputSystemTag = (string) $element['lang'];
-            	    $multiText->form($inputSystemTag, $this->sanitizeSpans(dom_import_simplexml($element->text)));
+            	    $multiText->form($inputSystemTag, $this->sanitizeSpans(dom_import_simplexml($element->text), $inputSystemTag));
 
             	    $this->projectModel->addInputSystem($inputSystemTag);
             	    // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
@@ -377,11 +377,13 @@ class LiftDecoder
 
     /**
      * Recursively sanitizes the element only allowing <span> elements through; coverts everthing else to text
+     *  - also removes native language spans, i.e those that match the input system tag
      *
      * @param DOMDocument $textDom
+     * @param string $inputSystemTag
      * @return string
      */
-    public function sanitizeSpans($textDom)
+    public function sanitizeSpans($textDom, $inputSystemTag)
     {
         $textStr = '';
         foreach ($textDom->childNodes as $child) {
@@ -393,15 +395,24 @@ class LiftDecoder
                 }
 
                 // recurse to sanitize child node
-                $childTextStr = $this->{__FUNCTION__}($child);
+                $childTextStr = $this->{__FUNCTION__}($child, $inputSystemTag);
             }
             if ($child->nodeName == 'span') {
                 $spanTag = '<span';
+                $isNativeSpan = false;
                 foreach ($child->attributes as $attribute) {
                     $spanTag .= ' ' . $attribute->name . '="' . $attribute->value . '"';
+                    if ($attribute->name == 'lang' && $attribute->value == $inputSystemTag) {
+                        $isNativeSpan = true;
+                    }
                 }
                 $spanTag .= '>';
-                $textStr .= $spanTag . $childTextStr . '</span>';
+                if ($isNativeSpan) {
+                    $textStr .= $childTextStr;
+                } else {
+                    $textStr .= $spanTag . $childTextStr . '</span>';
+
+                }
             } else {
                 $textStr .= $childTextStr;
             }
@@ -530,6 +541,9 @@ class LiftDecoder
                 $item->{$customFieldName} = new LexiconMultiValueField();
             }
             $item->{$customFieldName}->value((string) $sxeNode['value']);
+        } elseif ($customFieldSpecs['Type'] == 'OwningAtom') {
+            $multiText = $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
+            $item->{$customFieldName} = self::convertMultiParaMultiText($multiText);
         } else {
             $item->{$customFieldName} = $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
         }
@@ -613,6 +627,22 @@ class LiftDecoder
             }
         }
         return $specs;
+    }
+
+    /**
+     * Convert MuiltPara fields from FLEx by adding paragraph markup
+     *
+     * @param MultiText $multiText
+     * @return MultiText
+     */
+    public static function convertMultiParaMultiText($multiText) {
+        $paraSeparator = mb_convert_encoding('&#x2029;', 'UTF-8', 'HTML-ENTITIES');
+        foreach ($multiText as $tag => $text) {
+            // replace paragraph separator character U+2029 with paragraph markup
+            $text->value = "<p>" . $text->value . "</p>";
+            $text->value = str_replace($paraSeparator, "</p><p>", $text->value);
+        }
+        return $multiText;
     }
 
     /**
