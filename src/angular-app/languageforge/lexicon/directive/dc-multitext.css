@@ -29,8 +29,8 @@ form.dc-multitext .uneditable-input.multiline, form.dc-multitext textarea {
     height: 60px;
 }
 
-form.dc-multitext .uneditable-input {
-    background-color: #EEE;
+form.dc-multitext .uneditable-input:hover {
+    cursor: not-allowed;
 }
 
 form.dc-multitext textarea {

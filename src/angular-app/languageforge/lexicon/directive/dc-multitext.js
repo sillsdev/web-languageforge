@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.multitext', ['bellows.services'])
+angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOverflow'])
   .directive('dcMultitext', [function() {
 		return {
 			restrict : 'E',

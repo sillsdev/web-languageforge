@@ -10,20 +10,24 @@
                 <textarea
                     data-ng-show="config.displayMultiline && !modelContainsSpan(tag) && control.state == 'edit' && control.rights.canEditEntry()"
                     dir="{{inputSystemDirection(tag)}}"
+                    data-pui-show-overflow
                     data-ng-model="model[tag].value"></textarea>
                 <div class="uneditable-input multiline"
                     data-ng-show="config.displayMultiline && modelContainsSpan(tag) && control.state == 'edit' && control.rights.canEditEntry()"
                     dir="{{inputSystemDirection(tag)}}"
+                    data-pui-show-overflow
                     data-ng-bind-html="model[tag].value"></div>
                 <input
                     data-ng-show="!config.displayMultiline && !modelContainsSpan(tag) && control.state == 'edit' && control.rights.canEditEntry()"
                     dir="{{inputSystemDirection(tag)}}" width="{{config.width}}"
+                    data-pui-show-overflow
                     placeholder="{{(config.type == 'pictures' ? 'caption' : '')}}"
                     type="text" data-ng-model="model[tag].value" />
                 <div class="uneditable-input"
                     data-ng-show="(!config.displayMultiline && modelContainsSpan(tag) && control.state == 'edit' && control.rights.canEditEntry())
                         || !(control.state == 'edit' && control.rights.canEditEntry())"
                     dir="{{inputSystemDirection(tag)}}"
+                    data-pui-show-overflow
                     data-ng-bind-html="model[tag].value"></div>
             </div>
         </div>
