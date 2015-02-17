@@ -354,6 +354,7 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
     return result;
   };
 
+
   /**
    * 
    * @param config - entry config obj
@@ -365,6 +366,38 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
   };
   this.getWords = function getWords(config, entry) {
     return getFields(config, entry, 'lexeme');
+  };
+
+  this.getCitationForms = function(config, entry) {
+    var citation = '';
+    var citationFormByInputSystem = {};
+    if (angular.isDefined(config.fields.citationForm)) {
+      angular.forEach(config.fields.citationForm.inputSystems, function(inputSystem) {
+        if (angular.isDefined(entry.citationForm)) {
+          var field = entry.citationForm[inputSystem];
+          if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '') {
+            citationFormByInputSystem[inputSystem] = field.value;
+          }
+        }
+      });
+    }
+    angular.forEach(config.fields.lexeme.inputSystems, function(inputSystem) {
+      var field = entry.lexeme[inputSystem];
+      var valueToAppend = '';
+      if (angular.isDefined(citationFormByInputSystem[inputSystem])) {
+        valueToAppend = citationFormByInputSystem[inputSystem]
+      } else if (angular.isDefined(field) && angular.isDefined(field.value)) {
+        valueToAppend = field.value;
+      }
+      if (valueToAppend) {
+        if (citation) {
+          citation += ' ' + valueToAppend;
+        } else {
+          citation += valueToAppend;
+        }
+      }
+    });
+    return citation;
   };
   
   this.getDefinition = function getDefinition(config, sense) {

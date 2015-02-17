@@ -9,7 +9,7 @@ var projectTypes = {
   'lf': 'Web Dictionary',
 };
 
-var util = require('../../bellows/pages/util'); // TODO: Remove if not used once page implemented
+var util = require('../../../bellows/pages/util'); // TODO: Remove if not used once page implemented
 var dbeUtil = require('./dbeUtil');
 
 var LfDbePage = function() {
