@@ -12,9 +12,6 @@ angular.module('palaso.ui.showOverflow', [])
       link: function (scope, element, attrs) {
         
         var updateTitle = function updateTitle(newValue) {
-          console.log(newValue, 
-              element[0].offsetHeight, element[0].scrollHeight,
-              element[0].offsetWidth, element[0].scrollWidth);
           if (element[0].offsetHeight < element[0].scrollHeight ||
               element[0].offsetWidth < element[0].scrollWidth) {
             // make multiline and strip html tags
