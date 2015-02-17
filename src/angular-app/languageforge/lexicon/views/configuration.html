@@ -25,10 +25,9 @@
                 <dt translate="Entry Level Fields"></dt>
                 <dd><div class="controls">
                     <div data-ng-repeat="fieldName in configDirty.entry.fieldOrder" 
-                        data-ng-class="{selected:currentField.name == fieldName}">
+                        data-ng-class="{selected:currentField.name == fieldName}" data-ng-click="selectField(fieldName)">
                         <span data-ng-hide="fieldIsHidden(fieldName)"
-                            data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-                            data-ng-click="selectField(fieldName)">
+                            data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}">
                             {{fieldConfig[fieldName].label}}
                         </span>
                     </div>
@@ -36,10 +35,9 @@
                 <dt translate="Meaning Level Fields"></dt>
                 <dd><div class="controls">
                     <div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder" 
-                        data-ng-class="{selected:currentField.name == fieldName}">
+                        data-ng-class="{selected:currentField.name == fieldName}" data-ng-click="selectField(fieldName)">
                         <span data-ng-hide="fieldIsHidden(fieldName)"
-                            data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-                            data-ng-click="selectField(fieldName)">
+                            data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}">
                             {{fieldConfig[fieldName].label}}
                         </span>
                     </div>
@@ -47,10 +45,9 @@
                 <dt translate="Example Level Fields"></dt>
                 <dd><div class="controls">
                     <div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder" 
-                        data-ng-class="{selected:currentField.name == fieldName}">
+                        data-ng-class="{selected:currentField.name == fieldName}" data-ng-click="selectField(fieldName)">
                         <span data-ng-hide="fieldIsHidden(fieldName)"
-                            data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-                            data-ng-click="selectField(fieldName)">
+                            data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}">
                             {{fieldConfig[fieldName].label}}
                         </span>
                     </div>

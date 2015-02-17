@@ -1,10 +1,10 @@
 'use strict';
 
 describe('Configuration Input Systems', function() {
-  var constants     = require('../../../testConstants');
-  var loginPage     = require('../../../bellows/pages/loginPage.js');
-  var projectsPage  = require('../../../bellows/pages/projectsPage.js');
-  var util          = require('../../../bellows/pages/util.js');
+  var constants     = require('../../../../testConstants');
+  var loginPage     = require('../../../../bellows/pages/loginPage.js');
+  var projectsPage  = require('../../../../bellows/pages/projectsPage.js');
+  var util          = require('../../../../bellows/pages/util.js');
   var dbePage       = require('../../pages/dbePage.js');
   var dbeUtil       = require('../../pages/dbeUtil.js');
   var configPage    = require('../../pages/configurationPage.js');
