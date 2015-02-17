@@ -1481,6 +1481,63 @@ EOD;
         $this->assertTrue(array_key_exists('th', $project->inputSystems));
     }
 
+    // has correct th-fonipa form in entry and mod date changed
+    // has custom field with MultiPara
+    const liftOneEntryMultiParaV0_13 = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<lift
+    version="0.13"
+    producer="WeSay 1.0.0.0">
+    <header>
+        <fields>
+            <field tag="Cust MultiPara">
+                <form lang="en"><text></text></form>
+                <form lang="qaa-x-spec"><text>Class=LexEntry; Type=OwningAtom; WsSelector=kwsAnal; DstCls=StText</text></form>
+            </field>
+        </fields>
+    </header>
+    <entry
+        id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
+        dateCreated="2008-11-03T06:17:24Z"
+        dateModified="2013-10-26T01:41:19Z"
+        guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
+        <lexical-unit>
+            <form
+                lang="th-fonipa">
+                <text>chùuchìi mǔu krɔ̀ɔp</text>
+            </form>
+            <form
+                lang="th">
+                <text>ฉู่ฉี่หมูกรอบ</text>
+            </form>
+        </lexical-unit>
+        <field type="Cust MultiPara">
+            <form lang="en"><text><span lang="en">First paragraph with </span><span lang="th">ไทย</span> <span lang="en">Second Paragraph</span></text></form>
+        </field>
+    </entry>
+</lift>
+EOD;
+
+    public function testLiftImportMerge_MultiPara_ParagraphMarkerFound()
+    {
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftOneEntryMultiParaV0_13, 'LiftOneEntryMultiParaV0_13.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
+        $entryList = new LexEntryListModel($project);
+        $entryList->read();
+        $entry0 = $entryList->entries[0];
+
+        $this->assertEqual($entryList->count, 1);
+        $this->assertTrue(array_key_exists('customField_entry_Cust_MultiPara', $entry0), 'custom field MultiPara exists');
+        $this->assertEqual($entry0['customField_entry_Cust_MultiPara']['en']['value'],
+            '<p>First paragraph with <span lang="th">ไทย</span></p><p>Second Paragraph</p>',
+            'custom field MultiPara has paragraph separator character U+2029 replaced by paragraph markup and native language spans removed');
+    }
+
     // 2x Validation tests, removed until validation is working IJH 2014-03
 /*
     const liftOneEntryV0_12 = <<<EOD
