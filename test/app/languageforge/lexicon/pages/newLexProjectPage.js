@@ -1,7 +1,7 @@
 'use strict';
 
 function NewLexProjectPage() {
-  var mockUpload = require('../../bellows/pages/mockUploadElement.js');
+  var mockUpload = require('../../../bellows/pages/mockUploadElement.js');
   var modal      = require('./lexModals.js');
   var _this = this;
   

@@ -1,10 +1,10 @@
 'use strict';
 
 describe('E2E testing: New Lex Project wizard app', function() {
-  var constants = require('../../../testConstants.json');
-  var loginPage = require('../../../bellows/pages/loginPage.js');
-  var body      = require('../../../bellows/pages/pageBody.js');
-  var util      = require('../../../bellows/pages/util.js');
+  var constants = require('../../../../testConstants.json');
+  var loginPage = require('../../../../bellows/pages/loginPage.js');
+  var body      = require('../../../../bellows/pages/pageBody.js');
+  var util      = require('../../../../bellows/pages/util.js');
   var dbePage   = require('../../pages/dbePage.js');
   var page      = require('../../pages/newLexProjectPage.js');
   

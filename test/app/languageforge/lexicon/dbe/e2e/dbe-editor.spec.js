@@ -1,13 +1,14 @@
 'use strict';
 
-describe('Browse and edit page (DBE)', function() {
-  var constants    = require('../../../testConstants');
-  var loginPage    = require('../../../bellows/pages/loginPage.js');
-  var projectsPage = require('../../../bellows/pages/projectsPage.js');
-  var util         = require('../../../bellows/pages/util.js');
+describe('Browse and edit page (DBE) Editor', function() {
+  var constants    = require('../../../../testConstants');
+  var loginPage    = require('../../../../bellows/pages/loginPage.js');
+  var projectsPage = require('../../../../bellows/pages/projectsPage.js');
+  var util         = require('../../../../bellows/pages/util.js');
   var dbePage      = require('../../pages/dbePage.js');
   var dbeUtil      = require('../../pages/dbeUtil.js');
   var configPage   = require('../../pages/configurationPage.js');
+  var viewSettingsPage = require('../../pages/viewSettingsPage.js');
 
   it('setup: login, click on test project', function() {
     loginPage.loginAsManager();
@@ -47,6 +48,40 @@ describe('Browse and edit page (DBE)', function() {
   it('one picture and caption is present', function() {
     expect(dbePage.edit.pictures.getFileName(0)).toContain('_' + constants.testEntry1.senses[0].pictures[0].fileName);
     expect(dbePage.edit.pictures.getCaption(0)).toEqual({'en': constants.testEntry1.senses[0].pictures[0].caption.en.value});
+  });
+  
+  it('dictionary citation reflects lexeme form', function() {
+	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
+	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
+	  expect(dbePage.edit.renderedDiv.getText()).not.toContain('citation form');
+  });
+  
+  it('add citation form as visible field', function() {
+    viewSettingsPage.get();
+    viewSettingsPage.tabs.manager.go();
+    viewSettingsPage.tabs.manager.showAllFieldsBtn.click();
+    viewSettingsPage.clickFieldByName('Citation Form');
+    util.setCheckbox(viewSettingsPage.showField, true);
+    viewSettingsPage.applyBtn.click();
+    configPage.get();
+    configPage.getTabByName('Fields').click();
+    configPage.showAllFieldsButton.click();
+    configPage.getFieldByName('Citation Form').click();
+    util.setCheckbox(configPage.hiddenIfEmpty, false);
+    configPage.applyButton.click();
+    util.clickBreadcrumb(constants.testProjectName);
+    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+  });
+  
+  it('citation form field overrides lexeme form in dictionary citation view', function() {
+	  dbePage.edit.getOneField('Citation Form').$$('input').first().sendKeys('citation form');
+	  expect(dbePage.edit.renderedDiv.getText()).toContain('citation form');
+	  expect(dbePage.edit.renderedDiv.getText()).not.toContain(constants.testEntry1.lexeme.th.value);
+	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
+	  dbePage.edit.getOneField('Citation Form').$$('input').first().clear();
+	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
+	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
+	  dbePage.edit.saveBtn.click();
   });
 
   it('file upload drop box is displayed when Add Picture is clicked', function() {
@@ -186,78 +221,12 @@ describe('Browse and edit page (DBE)', function() {
       {'en': constants.testMultipleMeaningEntry1.senses[1].generalNote.en.value},
     ]);
     expect(dbePage.edit.getFieldValues('Source')).toEqual([
-      {'en': ''}, // Searching for "Source" also matches "Etymology Source", which is empty
       {'en': constants.testMultipleMeaningEntry1.senses[0].source.en.value},
       {'en': constants.testMultipleMeaningEntry1.senses[1].source.en.value},
     ]);
   });
 
-  it('switch to comments page, add one comment', function() {
-    dbePage.edit.toCommentsLink.click();
-    dbePage.comment.newComment.textarea.sendKeys('First comment on this word.');
-    dbePage.comment.newComment.postBtn.click();
-  });
-
-  it('comments page: check that comment shows up', function() {
-    var comment = dbePage.comment.getComment(0);
-    expect(comment.wholeComment.isPresent()).toBe(true);
-    // Earlier tests modify the avatar and name of the manager user; don't check those
-    //expect(comment.avatar.getAttribute('src')).toContain(constants.avatar);
-    //expect(comment.author.getText()).toEqual(constants.managerName);
-    expect(comment.date.getText()).toContain('ago');
-    expect(comment.score.getText()).toEqual('0');
-    expect(comment.plusOne.isPresent()).toBe(true);
-    expect(comment.content.getText()).toEqual('First comment on this word.');
-    // This comment should have no "regarding" section
-    expect(comment.regarding.fieldLabel.isDisplayed()).toBe(false);
-  });
-
-  it('comments page: add comment about a specific part of the entry', function() {
-    dbePage.comment.newComment.textarea.clear();
-    dbePage.comment.newComment.textarea.sendKeys('Second comment.');
-    dbePage.comment.entry.getOneField('Word').then(function(elem) {
-      elem.$$('span.wsid').first().click();
-    });
-    dbePage.comment.newComment.postBtn.click();
-  });
-
-  it('comments page: check that second comment shows up', function() {
-    var comment = dbePage.comment.getComment(-1);
-    expect(comment.wholeComment.isPresent()).toBe(true);
-    // Earlier tests modify the avatar and name of the manager user; don't check those
-    //expect(comment.avatar.getAttribute('src')).toContain(constants.avatar);
-    //expect(comment.author.getText()).toEqual(constants.managerName);
-    expect(comment.date.getText()).toContain('ago');
-    expect(comment.score.getText()).toEqual('0');
-    expect(comment.plusOne.isPresent()).toBe(true);
-    expect(comment.content.getText()).toEqual('Second comment.');
-    // This comment should have a "regarding" section
-    expect(comment.regarding.fieldLabel.isDisplayed()).toBe(true);
-    var word    = constants.testMultipleMeaningEntry1.lexeme.th.value;
-    var meaning = constants.testMultipleMeaningEntry1.senses[0].definition.en.value;
-    expect(comment.regarding.word.getText()).toEqual(word);
-    expect(comment.regarding.meaning.getText()).toEqual(meaning);
-    expect(comment.regarding.fieldLabel.getText()).toEqual('Word');
-    expect(comment.regarding.fieldWsid .getText()).toEqual('th');
-    expect(comment.regarding.fieldValue.getText()).toEqual(word);
-  });
-
-  it('comments page: click +1 button on first comment', function() {
-    var comment = dbePage.comment.getComment(0);
-    expect(comment.plusOne.getAttribute('ng-click')).not.toBe(null); // Should be clickable
-    comment.plusOne.click();
-    expect(comment.score.getText()).toEqual('1');
-  });
-
-  it('comments page: +1 button disabled after clicking', function() {
-    var comment = dbePage.comment.getComment(0);
-    expect(comment.plusOne.getAttribute('ng-click')).toBe(null); // Should NOT be clickable
-    comment.plusOne.click();
-    expect(comment.score.getText()).toEqual('1'); // Should not change from previous test
-  });
-
   it('back to browse page, create new word', function() {
-    dbePage.comment.toEditLink.click();
     dbePage.edit.toListLink.click();
     dbePage.browse.newWordBtn.click();
   });
@@ -301,91 +270,3 @@ describe('Browse and edit page (DBE)', function() {
 
 });
 
-describe('View settings page', function() {
-  var constants    = require('../../../testConstants');
-  var loginPage    = require('../../../bellows/pages/loginPage.js');
-  var projectsPage = require('../../../bellows/pages/projectsPage.js');
-  var util         = require('../../../bellows/pages/util.js');
-  var dbePage      = require('../../pages/dbePage.js');
-  var dbeUtil      = require('../../pages/dbeUtil.js');
-  var viewSettingsPage = require('../../pages/viewSettingsPage.js');
-  it('setup: check that DBE tests have just been run', function() {
-    expect(dbePage.browse.getEntryCount()).toBe(4);
-  });
-
-  it('setup: go to the View Settings page', function() {
-    viewSettingsPage.get();
-  });
-
-  it('setup: click Manager tab', function() {
-    viewSettingsPage.clickTabByName('Manager');
-  });
-
-  it('Hide Semantic Domain field for Manager', function() {
-    var vsp = viewSettingsPage;
-    // Eye icon should be present iff "Show field" is checked for that field
-    vsp.getFieldByName('Semantic Domain').then(function(elem) {
-      var icon = elem.$('i');
-      expect(icon.getAttribute('class')).toMatch('icon-eye-open');
-    });
-    vsp.clickFieldByName('Semantic Domain');
-    util.setCheckbox(vsp.showField, false);
-    vsp.getFieldByName('Semantic Domain').then(function(elem) {
-      var icon = elem.$('i');
-      expect(icon.getAttribute('class')).not.toMatch('icon-eye-open');
-    });
-    vsp.applyBtn.click();
-  });
-
-  it('Hide Semantic Domain field for specific username of admin user', function() {
-    var vsp = viewSettingsPage;
-    vsp.clickTabByName('Member Specific');
-    vsp.addViewSettingsForMember(constants.adminUsername);
-    vsp.pickMemberWithViewSettings(constants.adminUsername);
-    expect(vsp.accordionEnabledFields.getText()).toEqual(
-        'Enabled Fields for ' + constants.adminName + ' (' + constants.adminUsername + ')'
-    );
-    vsp.clickFieldByName('Semantic Domain');
-    util.setCheckbox(vsp.showField, false);
-    vsp.applyBtn.click();
-  });
-
-  it('Semantic Domain field is hidden for Manager', function() {
-    util.clickBreadcrumb(constants.testProjectName);
-    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.getOneField('Semantic Domain').isPresent()).toBeFalsy();
-  });
-
-  it('Semantic Domain field is visible for Member', function() {
-    loginPage.loginAsMember();
-    projectsPage.get();
-    projectsPage.clickOnProject(constants.testProjectName);
-    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
-  });
-
-  it('Semantic Domain field is hidden for admin user', function() {
-    loginPage.loginAsAdmin();
-    projectsPage.get();
-    projectsPage.clickOnProject(constants.testProjectName);
-    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.getOneField('Semantic Domain').isPresent()).toBeFalsy();
-  });
-
-  it('Return view settings to normal before next test', function() {
-    var vsp = viewSettingsPage;
-    vsp.get();
-    vsp.clickTabByName('Member Specific');
-    vsp.pickMemberWithViewSettings(constants.adminUsername);
-    expect(vsp.accordionEnabledFields.getText()).toEqual(
-        'Enabled Fields for ' + constants.adminName + ' (' + constants.adminUsername + ')'
-    );
-    vsp.clickFieldByName('Semantic Domain');
-    util.setCheckbox(vsp.showField, true);
-    vsp.applyBtn.click();
-    vsp.clickTabByName('Manager');
-    vsp.clickFieldByName('Semantic Domain');
-    util.setCheckbox(vsp.showField, true);
-    vsp.applyBtn.click();
-  });
-});

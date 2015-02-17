@@ -9,6 +9,7 @@ function ViewSettingsPage() {
     this.settingsMenuLink.click();
     this.viewSettingsLink.click();
   };
+  this.backToDictionaryBtn = element(by.buttonText('Dictionary'));
 
   this.tabDivs = element.all(by.repeater('tab in tabs'));
   this.applyBtn = element(by.buttonText('Apply'));
@@ -19,7 +20,33 @@ function ViewSettingsPage() {
   this.clickTabByName = function clickTabByName(tabName) {
     return _this.getTabByName(tabName).then(function(elem) { elem.click(); });
   };
-
+  
+  this.tabs = {
+      observer: {
+        go: function() {
+          _this.getTabByName('Observer').click();
+        }
+      },
+      contributor: {
+        go: function() {
+          _this.getTabByName('Contributor').click();
+        }
+      },
+      manager: {
+        go: function() {
+          _this.getTabByName('Manager').click();
+        },
+        showAllFieldsBtn: this.tabDivs.get(3).element(by.buttonText('Show All Fields'))
+      },
+  };
+  
+  this.observerTab = {
+      showAllFieldsBtn: this.tabDivs.get(0).element(by.buttonText('Show All Fields'))
+  };
+  
+  this.managerTab = {
+  };
+  
   this.showAllFieldsBtn = element(by.buttonText('Show All Fields'));
   this.showCommonFieldsBtn = element(by.buttonText('Show Only Common Fields'));
 
