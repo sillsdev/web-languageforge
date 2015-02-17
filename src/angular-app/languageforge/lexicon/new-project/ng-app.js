@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('new-lexicon-project',
+angular.module('lexicon-new-project',
   [
     'ngRoute',
     'bellows.services',
@@ -21,7 +21,7 @@ angular.module('new-lexicon-project',
     
     // configure interface language filepath
     $translateProvider.useStaticFilesLoader({
-      prefix: '/angular-app/languageforge/new-lexicon-project/lang/',
+      prefix: '/angular-app/languageforge/lexicon/new-project/lang/',
       suffix: '.json',
     });
     $translateProvider.preferredLanguage('en');
@@ -32,29 +32,29 @@ angular.module('new-lexicon-project',
         
         // Need quotes around Javascript keywords like 'abstract' so YUI compressor won't complain
         'abstract': true,
-        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project.html',
+        templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project.html',
         controller: 'NewLexProjectCtrl',
       })
       .state('newProject.name', {
-        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-name.html',
+        templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-name.html',
         data: {
           step: 1,
         },
       })
       .state('newProject.initialData', {
-        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-initial-data.html',
+        templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-initial-data.html',
         data: {
           step: 2,
         },
       })
       .state('newProject.verifyData', {
-        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-verify-data.html',
+        templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-verify-data.html',
         data: {
           step: 3,
         },
       })
       .state('newProject.selectPrimaryLanguage', {
-        templateUrl: '/angular-app/languageforge/new-lexicon-project/views/new-project-select-primary-language.html',
+        templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-select-primary-language.html',
         data: {
           step: 3, // This is not a typo. There are two possible step 3 templates.
         }
