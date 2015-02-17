@@ -310,6 +310,15 @@ legend.override-bootstrap {
     text-align: right;
 }
 
+#lexAppCommentView form.dc-multitext .uneditable-input {
+    height: 20px;
+    overflow: hidden;
+}
+
+#lexAppCommentView form.dc-multitext .uneditable-input:hover {
+    cursor: pointer;
+}
+
 div.commentListContainer {
 
 }
