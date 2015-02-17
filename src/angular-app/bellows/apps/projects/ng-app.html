@@ -22,7 +22,7 @@
             <form class="well" class="form-horizontal" name="newProjectForm">
                 <div ng-show="showDedicatedNewProjectLinks">
                     <div ng-repeat="appName in projectTypesWithDedicatedNewProjectApp" class="span3">
-                        <a ng-href="/app/new-{{appName}}-project/">
+                        <a ng-href="/app/{{appName}}/new">
                             <figure>
                                 <img ng-src="/images/{{siteName}}/shared/{{appName}}-newProjectBadge.png" />
                                 <figcaption>{{projectTypeNames[appName]}}</figcaption>
