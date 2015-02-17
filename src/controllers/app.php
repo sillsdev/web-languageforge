@@ -11,7 +11,14 @@ class app extends Secure_base
     public function view($app = 'main', $projectId = '')
     {
         $siteFolder = "angular-app/" . $this->website->base;
+        
         $appFolder = $siteFolder . "/$app";
+        if ($projectId == 'new') {
+            $appFolder .= "/new-project";
+            $projectId = '';
+            $app = $app . "-new-project";
+        }
+        
         if (!file_exists($appFolder)) {
             $appFolder = "angular-app/bellows/apps/$app";
             if (!file_exists($appFolder)) {
