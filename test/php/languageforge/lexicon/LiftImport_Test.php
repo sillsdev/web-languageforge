@@ -204,6 +204,7 @@ EOD;
 
     // has correct th-fonipa form in each entry
     // has correct sense in first entry (same id)
+    // has translation 1 changed, example 2 removed
     const liftTwoEntriesCorrectedV0_13 = <<<EOD
 <?xml version="1.0" encoding="utf-8"?>
 <lift
@@ -228,6 +229,19 @@ EOD;
 			id="9d50e072-0206-4776-9ee6-bddf89b96aed">
 			<grammatical-info
 				value="Noun" />
+				value="Adjective" />
+			<example>
+				<form
+					lang="th-fonipa">
+					<text>sentence 1</text>
+				</form>
+				<translation>
+					<form
+						lang="en">
+						<text>translation 1 changed</text>
+					</form>
+				</translation>
+			</example>
 			<definition>
 				<form
 					lang="en">
@@ -272,13 +286,19 @@ EOD;
         $entryList->read();
         $entries = $entryList->entries;
         $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
 
         $this->assertEqual($entryList->count, 2);
-        $this->assertEqual($entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
-        $this->assertEqual(count($entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses']), 1);
-        $this->assertEqual($entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['definition']['en']['value'], "A kind of curry fried with crispy pork");
-        $this->assertEqual($entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['partOfSpeech']['value'], "Noun");
-        $this->assertEqual($entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
+        $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
+        $this->assertEqual(count($entry0['senses']), 1);
+        $this->assertEqual($entry0['senses'][0]['definition']['en']['value'], "A kind of curry fried with crispy pork");
+        $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Noun");
+        $this->assertEqual(count($entry0['senses'][0]['examples']), 2);
+        $this->assertEqual($entry0['senses'][0]['examples'][0]['sentence']['th-fonipa']['value'], "sentence 1");
+        $this->assertEqual($entry0['senses'][0]['examples'][0]['translation']['en']['value'], "translation 1 changed");
+        $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
+
         $this->assertFalse($importer->getReport()->hasError());
         $this->assertEqual($importer->stats->existingEntries, 2);
         $this->assertEqual($importer->stats->importEntries, 2);
@@ -1478,7 +1498,7 @@ EOD;
 <?xml version="1.0" encoding="utf-8"?>
 <lift
     version="0.13"
-    producer="WeSay 1.0.0.0">
+    producer="SIL.FLEx 8.0.9.41689">
     <header>
         <fields>
             <field tag="Cust MultiPara">

@@ -35,6 +35,12 @@ class LiftDecoder
 
     /**
      *
+     * @var LiftMergeRule
+     */
+    private $mergeRule;
+
+    /**
+     *
      * @var LexiconProjectModel
      */
     private $projectModel;
@@ -55,6 +61,7 @@ class LiftDecoder
      */
     public function readEntry($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES)
     {
+        $this->mergeRule = $mergeRule;
         $this->nodeErrors = array();
         $this->nodeErrors[] = new LiftImportNodeError(LiftImportNodeError::ENTRY, (string) $sxeNode['guid']);
         foreach ($sxeNode as $element) {
@@ -175,9 +182,6 @@ class LiftDecoder
                 case 'definition':
                     $sense->definition = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems);
                     break;
-                case 'example':
-                    $sense->examples[] = $this->readExample($element);
-                    break;
                 case 'field':
                     switch ($element['type']) {
                         case 'import-residue': // Currently ignored by LanguageForge
@@ -251,7 +255,30 @@ class LiftDecoder
                             }
                     }
                     break;
-
+                case 'example':
+                    $tag = (string) $element->form['lang'];
+                    $text = (string) $element->form->text;
+                    $existingExampleIndex = $sense->searchExamplesMultiTextFor('sentence', $tag, $text);
+                    if ($existingExampleIndex >= 0) {
+                        switch ($this->mergeRule) {
+                            case LiftMergeRule::CREATE_DUPLICATES:
+                                $example = new Example();
+                                $sense->examples[] = $this->readExample($element, $example);
+                                break;
+                            case LiftMergeRule::IMPORT_WINS:
+                                $example = $sense->examples[$existingExampleIndex];
+                                $sense->examples[$existingExampleIndex] = $this->readExample($element, $example);
+                                break;
+                            case LiftMergeRule::IMPORT_LOSES:
+                                break;
+                            default:
+                                throw new \Exception("unknown LiftMergeRule " . $mergeRule);
+                        }
+                    } else {
+                        $example = new Example();
+                        $sense->examples[] = $this->readExample($element, $example);
+                    }
+                    break;
                 default:
                     $this->currentNodeError()->addUnhandledElement($element->getName());
             }
@@ -265,12 +292,12 @@ class LiftDecoder
      * Reads an Example from the XmlNode $sxeNode
      *
      * @param SimpleXMLElement $sxeNode
+     * @param Example $example
      * @return Example
      */
-    public function readExample($sxeNode)
+    public function readExample($sxeNode, $example)
     {
-        $example = new Example((string) $sxeNode['source']);
-        $this->pushSubnodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['source']);
+        $this->pushSubnodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode->form['lang'] . ': ' . (string) $sxeNode->form->text);
 
         // create copy with only form elements to use with readMultiText as unhandled elements are reported here
         $formsSxeNode = clone $sxeNode;
