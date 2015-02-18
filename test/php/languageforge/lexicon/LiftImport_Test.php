@@ -27,15 +27,6 @@ class TestLiftImport extends UnitTestCase
      */
     private $environ;
 
-    private static function indexByGuid($entries)
-    {
-        $index = array();
-        foreach ($entries as $entry) {
-            $index[$entry['guid']] = $entry;
-        }
-        return $index;
-    }
-
     /**
      * Cleanup test lift files
      */
@@ -179,9 +170,9 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
-        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
 
         $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
@@ -280,14 +271,14 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
 
         $this->assertEqual($entryList->count, 2);
-        $this->assertEqual($index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
-        $this->assertEqual(count($index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses']), 1);
-        $this->assertEqual($index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['definition']['en']['value'], "A kind of curry fried with crispy pork");
-        $this->assertEqual($index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['partOfSpeech']['value'], "Noun");
-        $this->assertEqual($index['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
+        $this->assertEqual($entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
+        $this->assertEqual(count($entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses']), 1);
+        $this->assertEqual($entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['definition']['en']['value'], "A kind of curry fried with crispy pork");
+        $this->assertEqual($entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['partOfSpeech']['value'], "Noun");
+        $this->assertEqual($entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
         $this->assertFalse($importer->getReport()->hasError());
         $this->assertEqual($importer->stats->existingEntries, 2);
         $this->assertEqual($importer->stats->importEntries, 2);
@@ -313,9 +304,9 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
-        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
 
         $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
@@ -403,9 +394,9 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
-        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
 
         $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
@@ -486,8 +477,8 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
 
         $this->assertEqual($entryList->count, 1);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
@@ -518,8 +509,8 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
 
         $this->assertEqual($entryList->count, 1);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
@@ -550,9 +541,9 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
-        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
 
         $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
@@ -578,9 +569,9 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
-        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
 
         $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
@@ -615,9 +606,9 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
-        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
 
         $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
@@ -648,9 +639,9 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
-        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
 
         $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
@@ -685,9 +676,9 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
-        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
 
         $this->assertEqual($entryList->count, 4);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
@@ -729,9 +720,9 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
-        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
 
         $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
@@ -818,9 +809,9 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
-        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
         $report = $importer->getReport();
         $reportStr = $report->toString();
 
@@ -907,9 +898,9 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['57a90e40-fdb4-47f8-89a0-c64bf947723d'];
-        $entry1 = $index['8db0bd91-9120-4417-b6ff-d0bb35f552fc'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['57a90e40-fdb4-47f8-89a0-c64bf947723d'];
+        $entry1 = $entriesByGuid['8db0bd91-9120-4417-b6ff-d0bb35f552fc'];
 
         $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['guid'], "57a90e40-fdb4-47f8-89a0-c64bf947723d");
@@ -993,9 +984,9 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['57a90e40-fdb4-47f8-89a0-c64bf947723d'];
-        $entry1 = $index['8db0bd91-9120-4417-b6ff-d0bb35f552fc'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['57a90e40-fdb4-47f8-89a0-c64bf947723d'];
+        $entry1 = $entriesByGuid['8db0bd91-9120-4417-b6ff-d0bb35f552fc'];
         $report = $importer->getReport();
         $reportStr = $report->toString();
 
@@ -1118,16 +1109,16 @@ EOD;
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $index = self::indexByGuid($entries);
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
         $report = $importer->getReport();
         $reportStr = $report->toString();
 
         $this->assertEqual(2, $entryList->count);
-        $this->assertEqual("chùuchìi mǔu krɔ̀ɔp", $index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['lexeme']['th-fonipa']['value']);
-        $this->assertEqual(1, count($index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses']));
-        $this->assertEqual("A kind of curry fried with crispy pork", $index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['definition']['en']['value']);
-        $this->assertEqual("Noun", $index['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['partOfSpeech']['value']);
-        $this->assertEqual("khâaw kài thɔ̂ɔt", $index['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value']);
+        $this->assertEqual("chùuchìi mǔu krɔ̀ɔp", $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['lexeme']['th-fonipa']['value']);
+        $this->assertEqual(1, count($entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses']));
+        $this->assertEqual("A kind of curry fried with crispy pork", $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['definition']['en']['value']);
+        $this->assertEqual("Noun", $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['partOfSpeech']['value']);
+        $this->assertEqual("khâaw kài thɔ̂ɔt", $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value']);
         $this->assertEqual(1, count($report->nodeErrors));
         $this->assertTrue($report->nodeErrors[0]->getSubnodeError(0)->hasError(), 'should have phony and bogus tag entry errors');
         $this->assertPattern("/unhandled element 'bogus'/", $reportStr);
