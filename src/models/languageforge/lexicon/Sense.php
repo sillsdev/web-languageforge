@@ -160,6 +160,23 @@ class Sense
     public $authorInfo;
 
     /**
+     * If the $value of $propertyName exists in pictures return the index
+     *
+     * @param string $propertyName
+     * @param string $value
+     * @return number $index or -1 if not found
+     */
+    public function searchPicturesFor($propertyName, $value)
+    {
+        foreach ($this->pictures as $index => $picture) {
+            if (isset($picture->{$propertyName}) && (trim($picture->{$propertyName}) !== '') && ($picture->{$propertyName} == $value)) {
+                return $index;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * If the $value of $propertyName exists in examples return the index
      *
      * @param string $propertyName
