@@ -27,6 +27,7 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
         $scope.selectField({
           inputSystem: tag
         });
+      };
                 
       $scope.modelContainsSpan = function modelContainsSpan(tag) {
         if (! (tag in $scope.model)) {

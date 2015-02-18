@@ -216,8 +216,6 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
     templateUrl: '/angular-app/languageforge/lexicon/directive/dc-formattedtext.html',
     scope: {
       fteModel: "=",
-      fteLanguageName: "=",
-      fteAbbreviation: "=",
       fteToolbar: "=",
       fteDisabled: "=",
       fteDir: "="
@@ -227,9 +225,15 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       if (angular.isDefined($scope.fteToolbar)) {
         $scope.fte.toolbar = $scope.fteToolbar;
       } else if (ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT)) {
-        $scope.fte.toolbar = "[['insertLink', 'languageSpan'], ['html']]";
-      } else {
+        
+        // if site administrator enable development controls
+//        $scope.fte.toolbar = "[['insertLink', 'languageSpan'], ['html']]";
+        // html toggle for development only
         $scope.fte.toolbar = "[['insertLink', 'languageSpan']]";
+      } else {
+//        $scope.fte.toolbar = "[['insertLink', 'languageSpan']]";
+        // disable unfinished link and language span controls
+        $scope.fte.toolbar = "[[]]";
       }
     }]
   };
