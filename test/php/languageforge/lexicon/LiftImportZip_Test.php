@@ -37,15 +37,6 @@ class TestLiftImportZip extends UnitTestCase
         $this->environ->cleanupTestFiles($this->environ->project->getAssetsFolderPath());
     }
 
-    private static function indexByGuid($entries)
-    {
-        $index = array();
-        foreach ($entries as $entry) {
-            $index[$entry['guid']] = $entry;
-        }
-        return $index;
-    }
-
     public function testLiftImportMerge_ZipFile_CorrectValues()
     {
         $zipFilePath = $this->environ->copyTestUploadFile(TestPath . 'common/TestLexProject.zip');
@@ -61,9 +52,9 @@ class TestLiftImportZip extends UnitTestCase
         $entryList->read();
         $entries = $entryList->entries;
         $this->assertEqual($entryList->count, 2);
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
-        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp");
         $this->assertEqual($entry0['lexeme']['th']['value'], "ฉู่ฉี่หมูกรอบ");
@@ -82,7 +73,8 @@ class TestLiftImportZip extends UnitTestCase
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̀ɔt");
         $this->assertEqual($entry1['lexeme']['th']['value'], "ข้าวไก่ทอด");
         $this->assertTrue(array_key_exists('th-fonipa', $project->inputSystems));
-        $this->assertFalse($importer->getReport()->hasError());
+        $this->assertEqual($importer->getReport()->hasError(), 1);
+        $this->assertPattern("/range file 'TestProj.lift-ranges' was not found/", $importer->getReport()->toFormattedString());
         $this->assertEqual($importer->stats->existingEntries, 0);
         $this->assertEqual($importer->stats->importEntries, 2);
         $this->assertEqual($importer->stats->newEntries, 2);
@@ -122,9 +114,9 @@ class TestLiftImportZip extends UnitTestCase
         $entryList->read();
         $entries = $entryList->entries;
         $this->assertEqual($entryList->count, 2);
-        $index = self::indexByGuid($entries);
-        $entry0 = $index['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
-        $entry1 = $index['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
+        $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
+        $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp");
         $this->assertEqual($entry0['lexeme']['th']['value'], "ฉู่ฉี่หมูกรอบ");

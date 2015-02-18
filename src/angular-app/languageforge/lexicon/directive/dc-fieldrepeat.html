@@ -1,0 +1,40 @@
+    <div data-ng-repeat="fieldName in config.fieldOrder">
+        <div data-ng-if="!config.fields[fieldName].hideIfEmpty || control.show.emptyFields || (config.fields[fieldName].hideIfEmpty && fieldContainsData(config.fields[fieldName].type, model[fieldName]))"
+            data-ng-class="{selectableFieldForComment: control.state == 'comment' && control.rights.canComment()}"
+            data-ng-click="control.selectFieldForComment(fieldName, model[fieldName])">
+            <div data-ng-switch data-on="config.fields[fieldName].type">
+                <div class="flex100" data-ng-switch-when="optionlist">
+                    <dc-optionlist class="dc-item" control="control"
+                        config="config.fields[fieldName]"
+                        model="model[fieldName]"
+                        items="optionlists[config.fields[fieldName].listCode].items"></dc-optionlist>
+                    <comment-bubble control="control"
+                        count="control.getFieldCommentCount(fieldName)"></comment-bubble>
+                </div>
+                <div class="flex100" data-ng-switch-when="multioptionlist">
+                    <dc-multioptionlist class="dc-item" control="control"
+                        config="config.fields[fieldName]"
+                        model="model[fieldName]"
+                        items="optionlists[config.fields[fieldName].listCode].items"></dc-multioptionlist>
+                    <comment-bubble control="control"
+                        count="control.getFieldCommentCount(fieldName)"></comment-bubble>
+                </div>
+                <div class="flex100" data-ng-switch-when="multitext">
+                    <dc-multitext class="dc-item" control="control"
+                        config="config.fields[fieldName]"
+                        model="model[fieldName]"
+                        select-field="control.selectFieldForComment(fieldName, model[fieldName], inputSystem)"></dc-multitext>
+                    <comment-bubble control="control"
+                        count="control.getFieldCommentCount(fieldName)"></comment-bubble>
+                </div>
+                <div class="flex100" data-ng-switch-when="pictures">
+                    <dc-picture class="dc-item" control="control"
+                        config="config.fields[fieldName]"
+                        pictures="model[fieldName]"></dc-picture>
+                </div>
+                <div data-ng-switch-when="fields"></div>
+                <div data-ng-switch-default>unsupported type
+                    {{config.fields[fieldName].type}} for field {{fieldName}}</div>
+            </div>
+        </div>
+    </div>
