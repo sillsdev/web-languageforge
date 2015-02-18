@@ -204,20 +204,6 @@ class LiftDecoder
                     // Part Of Speech
                     $sense->partOfSpeech->value = (string) $element['value'];
                     break;
-                case 'illustration':
-                    $picture = new Picture();
-                    $picture->fileName = (string) $element['href'];
-                    foreach ($element as $child) {
-                        switch($child->getName()) {
-                        	case 'label':
-                    	        $picture->caption = $this->readMultiText($child, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems);
-                        	    break;
-                        	default:
-                        	    $this->currentNodeError()->addUnhandledElement($child->getName());
-                        }
-                    }
-                    $sense->pictures[] =  $picture;
-                    break;
                 case 'note':
                     switch($element['type']) {
                         case '':
@@ -253,6 +239,27 @@ class LiftDecoder
                             } else {
                                 $this->currentNodeError()->addUnhandledTrait($element['name']);
                             }
+                    }
+                    break;
+                case 'illustration':
+                    $fileName = (string) $element['href'];
+                    $existingPictureIndex = $sense->searchPicturesFor('fileName', $fileName);
+                    if ($existingPictureIndex >= 0) {
+                        switch ($this->mergeRule) {
+                            case LiftMergeRule::CREATE_DUPLICATES:
+                                // intentional fall thru, current system doesn't allow for duplicate pictures
+                            case LiftMergeRule::IMPORT_WINS:
+                                $picture = $sense->pictures[$existingPictureIndex];
+                                $sense->pictures[$existingPictureIndex] = $this->readPicture($element, $picture);
+                                break;
+                            case LiftMergeRule::IMPORT_LOSES:
+                                break;
+                            default:
+                                throw new \Exception("unknown LiftMergeRule " . $mergeRule);
+                        }
+                    } else {
+                        $picture = new Picture();
+                        $sense->pictures[] = $this->readPicture($element, $picture);
                     }
                     break;
                 case 'example':
@@ -445,6 +452,28 @@ class LiftDecoder
             }
         }
         return $textStr;
+    }
+
+    /**
+     * Reads a Picture from the XmlNode $sxeNode
+     *
+     * @param SimpleXMLElement $sxeNode
+     * @param Picture $picture
+     * @return Picture
+     */
+    public function readPicture($sxeNode, $picture)
+    {
+        $picture->fileName = (string) $sxeNode['href'];
+        foreach ($sxeNode as $child) {
+            switch($child->getName()) {
+                case 'label':
+                    $picture->caption = $this->readMultiText($child, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems);
+                    break;
+                default:
+                    $this->currentNodeError()->addUnhandledElement($child->getName());
+            }
+        }
+        return $picture;
     }
 
     /**
