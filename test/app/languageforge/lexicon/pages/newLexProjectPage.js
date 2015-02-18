@@ -6,7 +6,7 @@ function NewLexProjectPage() {
   var _this = this;
   
   this.get = function() {
-    browser.get('/app/new-lexicon-project');
+    browser.get('/app/lexicon/new');
   };
   
   // form controls
