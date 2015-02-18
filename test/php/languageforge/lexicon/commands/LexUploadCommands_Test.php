@@ -35,15 +35,6 @@ class TestLexUploadCommands extends UnitTestCase
         $this->environ->cleanupTestFiles($this->environ->project->getAssetsFolderPath());
     }
 
-    private static function indexItemsBy($items, $byId = 'guid')
-    {
-        $indexes = array();
-        foreach ($items as $item) {
-            $indexes[$item[$byId]] = $item;
-        }
-        return $indexes;
-    }
-
     public function testUploadImageFile_JpgFile_UploadAllowed()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -198,16 +189,16 @@ class TestLexUploadCommands extends UnitTestCase
         $entryList = new LexEntryListModel($project);
         $entryList->read();
         $entries = $entryList->entries;
-        $entriesByGuid = self::indexItemsBy($entries, 'guid');
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
         $entryA = $entriesByGuid['05c54cf0-4e5a-4bf2-99f8-ec787e4113ac'];
         $entryB = $entriesByGuid['1a705846-a814-4289-8594-4b874faca6cc'];
-        $entryBSensesByLiftId = self::indexItemsBy($entryB['senses'], 'liftId');
+        $entryBSensesByLiftId = $this->environ->indexItemsBy($entryB['senses'], 'liftId');
         $entryBSenseA = $entryBSensesByLiftId['eea9c29f-244f-4891-81db-c8274cd61f0c'];
-        $entryBSenseAExamplesByLiftId = self::indexItemsBy($entryBSenseA['examples'], 'liftId');
+        $entryBSenseAExamplesByLiftId = $this->environ->indexItemsBy($entryBSenseA['examples'], 'liftId');
         $entryBSenseAExampleA = $entryBSenseAExamplesByLiftId['Example reference'];
         $optionListList = new LexOptionListListModel($project);
         $optionListList->read();
-        $optionListByCodes = self::indexItemsBy($optionListList->entries, 'code');
+        $optionListByCodes = $this->environ->indexItemsBy($optionListList->entries, 'code');
 
         // stats OK?
         $this->assertTrue($response->result, 'Import should succeed');
