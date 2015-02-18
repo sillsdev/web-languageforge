@@ -194,8 +194,6 @@ class TestLexUploadCommands extends UnitTestCase
         $entryB = $entriesByGuid['1a705846-a814-4289-8594-4b874faca6cc'];
         $entryBSensesByLiftId = $this->environ->indexItemsBy($entryB['senses'], 'liftId');
         $entryBSenseA = $entryBSensesByLiftId['eea9c29f-244f-4891-81db-c8274cd61f0c'];
-        $entryBSenseAExamplesByLiftId = $this->environ->indexItemsBy($entryBSenseA['examples'], 'liftId');
-        $entryBSenseAExampleA = $entryBSenseAExamplesByLiftId['Example reference'];
         $optionListList = new LexOptionListListModel($project);
         $optionListList->read();
         $optionListByCodes = $this->environ->indexItemsBy($optionListList->entries, 'code');
@@ -235,7 +233,7 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertEqual(count($entryBSenseA['customField_senses_Cust_Multi_ListRef']['values']), 2);
         $this->assertEqual($entryBSenseA['customField_senses_Cust_Multi_ListRef']['values'][0], 'First Custom Item');
         $this->assertEqual($entryBSenseA['customField_senses_Cust_Multi_ListRef']['values'][1], 'Second Custom Item');
-        $this->assertEqual($entryBSenseAExampleA['customField_examples_Cust_Example']['qaa-x-kal']['value'], 'Custom example');
+        $this->assertEqual($entryBSenseA['examples'][0]['customField_examples_Cust_Example']['qaa-x-kal']['value'], 'Custom example');
 
         echo '<pre style="height:500px; overflow:auto">';
         echo $response->data->importErrors;
