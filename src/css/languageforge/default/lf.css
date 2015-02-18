@@ -310,7 +310,7 @@ hr {
 input, textarea {
 	width: auto;
 	height: auto;
-	font-size: 0.9em;
+	/* font-size: 0.9em; was killing dislay of text in multitext text area. IJH 2015-02 */
 	font-weight: normal;
 	border: 1px solid #c9c9c9;
 	padding: .6em .7em;
