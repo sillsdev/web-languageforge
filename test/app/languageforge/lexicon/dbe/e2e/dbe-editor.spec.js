@@ -51,9 +51,9 @@ describe('Browse and edit page (DBE) Editor', function() {
   });
   
   it('dictionary citation reflects lexeme form', function() {
-	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
-	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-	  expect(dbePage.edit.renderedDiv.getText()).not.toContain('citation form');
+    expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
+    expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
+    expect(dbePage.edit.renderedDiv.getText()).not.toContain('citation form');
   });
   
   it('add citation form as visible field', function() {
@@ -74,14 +74,14 @@ describe('Browse and edit page (DBE) Editor', function() {
   });
   
   it('citation form field overrides lexeme form in dictionary citation view', function() {
-	  dbePage.edit.getOneField('Citation Form').$$('input').first().sendKeys('citation form');
-	  expect(dbePage.edit.renderedDiv.getText()).toContain('citation form');
-	  expect(dbePage.edit.renderedDiv.getText()).not.toContain(constants.testEntry1.lexeme.th.value);
-	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-	  dbePage.edit.getOneField('Citation Form').$$('input').first().clear();
-	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
-	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-	  dbePage.edit.saveBtn.click();
+    dbePage.edit.getOneField('Citation Form').$$('input').first().sendKeys('citation form');
+    expect(dbePage.edit.renderedDiv.getText()).toContain('citation form');
+    expect(dbePage.edit.renderedDiv.getText()).not.toContain(constants.testEntry1.lexeme.th.value);
+    expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
+    dbePage.edit.getOneField('Citation Form').$$('input').first().clear();
+    expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
+    expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
+    dbePage.edit.saveBtn.click();
   });
 
   it('file upload drop box is displayed when Add Picture is clicked', function() {
