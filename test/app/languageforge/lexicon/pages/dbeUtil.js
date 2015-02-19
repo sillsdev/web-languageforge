@@ -14,8 +14,8 @@ var dbeUtil = function() {
   this.dcMultitextToArray = function(elem) {
     var inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
     return inputSystemDivs.map(function(div) {
-      var wsidSpan = div.element(by.css('.controls span.wsid')), 
-        wordElem = div.element(by.css('.controls input'));
+      var wsidSpan = div.element(by.css('.input-prepend > span.wsid')), 
+        wordElem = div.element(by.css('.input-prepend > input'));
       return wsidSpan.getText().then(function(wsid) {
         return wordElem.getAttribute('value').then(function(word) {
           return {
