@@ -1,6 +1,9 @@
 {
-	"name": "ScriptureForge",
-	"dependencies": {
-		"angularjs-file-upload": "1.6.*"
-	}
+  "name": "ScriptureForge",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "angularjs-file-upload": "1.6.7",
+    "textAngular": "~1.2.2"
+  }
 }

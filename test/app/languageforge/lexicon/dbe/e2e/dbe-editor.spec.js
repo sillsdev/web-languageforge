@@ -51,9 +51,9 @@ describe('Browse and edit page (DBE) Editor', function() {
   });
   
   it('dictionary citation reflects lexeme form', function() {
-	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
-	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-	  expect(dbePage.edit.renderedDiv.getText()).not.toContain('citation form');
+    expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
+    expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
+    expect(dbePage.edit.renderedDiv.getText()).not.toContain('citation form');
   });
   
   it('add citation form as visible field', function() {
@@ -74,14 +74,14 @@ describe('Browse and edit page (DBE) Editor', function() {
   });
   
   it('citation form field overrides lexeme form in dictionary citation view', function() {
-	  dbePage.edit.getOneField('Citation Form').$$('input').first().sendKeys('citation form');
-	  expect(dbePage.edit.renderedDiv.getText()).toContain('citation form');
-	  expect(dbePage.edit.renderedDiv.getText()).not.toContain(constants.testEntry1.lexeme.th.value);
-	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-	  dbePage.edit.getOneField('Citation Form').$$('input').first().clear();
-	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
-	  expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-	  dbePage.edit.saveBtn.click();
+    dbePage.edit.getMultiTextInputs('Citation Form').first().sendKeys('citation form');
+    expect(dbePage.edit.renderedDiv.getText()).toContain('citation form');
+    expect(dbePage.edit.renderedDiv.getText()).not.toContain(constants.testEntry1.lexeme.th.value);
+    expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
+    dbePage.edit.getMultiTextInputs('Citation Form').first().clear();
+    expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
+    expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
+    dbePage.edit.saveBtn.click();
   });
 
   it('file upload drop box is displayed when Add Picture is clicked', function() {
@@ -116,8 +116,8 @@ describe('Browse and edit page (DBE) Editor', function() {
     dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     dbePage.edit.hideUncommonFields();
     expect(dbePage.edit.pictures.captions.first().isDisplayed()).toBe(true);
-    dbePage.edit.pictures.captions.first().clear();    
-    expect(dbePage.edit.pictures.captions.first().isDisplayed()).toBe(false);
+    dbePage.edit.pictures.captions.first().clear();
+    expect(dbePage.edit.pictures.captions.first().isPresent()).toBe(false);
   });
 
   it('change config to show Pictures and show captions', function() {
@@ -239,9 +239,8 @@ describe('Browse and edit page (DBE) Editor', function() {
   it('create new word', function() {
     var word    = constants.testEntry3.lexeme.th.value;
     var meaning = constants.testEntry3.senses[0].definition.en.value;
-    // TODO: Figure out a good page-object API for entering values in these fields; this is a bit clunky.
-    dbePage.edit.getOneField('Word').$$('input').first().sendKeys(word);
-    dbePage.edit.getOneField('Meaning').$('input').sendKeys(meaning);
+    dbePage.edit.getMultiTextInputs('Word').first().sendKeys(word);
+    dbePage.edit.getMultiTextInputs('Meaning').first().sendKeys(meaning);
     util.clickDropdownByValue(dbePage.edit.getOneField('Part of Speech').$('select'), 'Noun \\(n\\)');
     dbePage.edit.saveBtn.click();
   });
