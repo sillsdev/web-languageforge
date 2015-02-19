@@ -30,7 +30,7 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
       };
                 
       $scope.modelContainsSpan = function modelContainsSpan(tag) {
-        if (! (tag in $scope.model)) {
+        if (angular.isUndefined($scope.model) || ! (tag in $scope.model)) {
           return false;
         }
         return $scope.model[tag].value.indexOf('</span>') > -1;
