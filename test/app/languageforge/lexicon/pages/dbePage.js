@@ -173,7 +173,7 @@ var LfDbePage = function() {
     pictures: {
       list: dbeUtil.getOneField('Pictures'),
       images: dbeUtil.getOneField('Pictures').all(by.css('img')),
-      captions: dbeUtil.getOneField('Pictures').all(by.css('input')),
+      captions: dbeUtil.getOneField('Pictures').all(by.css('.input-prepend > input')),
       removeImages: dbeUtil.getOneField('Pictures').all(by.css('.icon-remove')),
       getFileName: function(index) {
         return dbeUtil.getOneFieldValue('Pictures').then(function(pictures) {
@@ -190,6 +190,10 @@ var LfDbePage = function() {
       addCancelButton: element(by.id('addCancel'))
     },
 
+    getMultiTextInputs: function getMultiTextInputs(searchLabel) {
+      return dbeUtil.getOneField(searchLabel).all(by.css('.input-prepend > input'));
+    }, 
+      
     getFields: dbeUtil.getFields,
     getOneField: dbeUtil.getOneField,
     getFieldValues: dbeUtil.getFieldValues,
