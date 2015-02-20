@@ -24,11 +24,8 @@ angular.module('palaso.ui.showOverflow', [])
           }
         };
         
-        if (angular.isDefined(scope.ngBindHtml)) {
-          scope.$watch('ngBindHtml', updateTitle);
-        } else if (angular.isDefined(scope.ngModel)) {
-          scope.$watch('ngModel', updateTitle);
-        }
+        scope.$watch('ngBindHtml', updateTitle);
+        scope.$watch('ngModel', updateTitle);
       } 
     };
   }])
