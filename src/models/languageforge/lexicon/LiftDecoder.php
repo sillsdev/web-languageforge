@@ -140,7 +140,7 @@ class LiftDecoder
                                 $entry->senses[] = $this->readSense($element, $sense);
                                 break;
                             case LiftMergeRule::IMPORT_WINS:
-                                $sense = $entry->senses[$existingSenseIndex];
+                                $sense = new Sense($liftId);
                                 $entry->senses[$existingSenseIndex] = $this->readSense($element, $sense);
                                 break;
                             case LiftMergeRule::IMPORT_LOSES:

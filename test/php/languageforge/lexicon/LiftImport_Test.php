@@ -294,7 +294,7 @@ EOD;
         $this->assertEqual(count($entry0['senses']), 1);
         $this->assertEqual($entry0['senses'][0]['definition']['en']['value'], "A kind of curry fried with crispy pork");
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Noun");
-        $this->assertEqual(count($entry0['senses'][0]['examples']), 2);
+        $this->assertEqual(count($entry0['senses'][0]['examples']), 1);
         $this->assertEqual($entry0['senses'][0]['examples'][0]['sentence']['th-fonipa']['value'], "sentence 1");
         $this->assertEqual($entry0['senses'][0]['examples'][0]['translation']['en']['value'], "translation 1 changed");
         $this->assertEqual($entry1['lexeme']['th-fonipa']['value'], "khâaw kài thɔ̂ɔt");
