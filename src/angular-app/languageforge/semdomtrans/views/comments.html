@@ -18,11 +18,13 @@
 				<div class="col-md-5" style="text-align: center;" >
 					Comments
 					<br/>
-					<textarea rows="10" cols="30"></textarea>
+					<textarea rows="10" cols="30" ng-model="newComment.content"></textarea>
 					<br/>
 					<i>Comment regarding: </i>
 					<br/>
 					{{newComment.regarding.fieldName}}
+					
+					<button class="btn btn-primary" style="float:right" ng-click="createComment()"> Post </button>
 				</div>
 			</div>
 				
