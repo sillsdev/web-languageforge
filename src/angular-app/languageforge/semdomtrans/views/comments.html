@@ -1,0 +1,30 @@
+<div data-ng-cloak data-ng-controller="commentsCtrl" id="semDomAppContainer">
+	<div style="margin-top:100px; height: 500px" class="container-fluid" >
+			 <div class="row">		
+		    	<div class="col-md-6" >
+		    		<a style="float: left"  ui-sref="edit({position:$parent.itemIndex})">  &#8592; Back to Edit</a>
+		    	</div>	 
+			</div>
+			<div class="row menu" style="border-bottom:solid black 1px">		
+		    	<div class="col-md-6" >
+		    		<b>{{currentItem.name.source}}</b>
+		    	</div>	 
+			</div>
+			<div class="row">
+				<div class="col-md-7"  style="height: 500px; overflow-y: scroll" >
+					<sd-term control="control" model="currentItem" state="comments"></sd-term>
+					<sd-questions control="control" model="currentItem" state="comments"></sd-questions>
+				</div>	
+				<div class="col-md-5" style="text-align: center;" >
+					Comments
+					<br/>
+					<textarea rows="10" cols="30"></textarea>
+					<br/>
+					<i>Comment regarding: </i>
+					<br/>
+					{{newComment.regarding.fieldName}}
+				</div>
+			</div>
+				
+		</div>
+</div>
