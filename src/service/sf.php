@@ -37,12 +37,15 @@ use models\languageforge\SemDomTransProjectModel;
 use models\languageforge\semdomtrans\dto\SemDomTransEditDto;
 use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
 use models\languageforge\semdomtrans\commands\SemDomTransItemCommands;
+use models\languageforge\semdomtrans\commands\SemDomTransCommentsCommands;
+
 require_once APPPATH . 'vendor/autoload.php';
 require_once APPPATH . 'config/sf_config.php';
 require_once APPPATH . 'models/ProjectModel.php';
 require_once APPPATH . 'models/QuestionModel.php';
 require_once APPPATH . 'models/TextModel.php';
 require_once APPPATH . 'models/UserModel.php';
+
 
 class sf
 {
@@ -699,6 +702,9 @@ class sf
     	return SemDomTransItemCommands::update($data, $this->_projectId);
     }
     
+    public function semdom_comment_update($data) {
+    	return SemDomTransCommentsCommands::update($data, $this->_projectId);
+    }
 
 
     /**
