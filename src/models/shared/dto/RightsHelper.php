@@ -126,6 +126,8 @@ class RightsHelper
             	return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
             case 'semdom_item_update':
             	return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
+            case 'semdom_comment_update':
+            	return $this->userHasProjectRight(Domain::COMMENTS + Operation::CREATE);
             case 'message_markRead':
             case 'project_pageDto':
             case 'lex_projectDto':
