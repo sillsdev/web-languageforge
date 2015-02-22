@@ -6,51 +6,45 @@ angular.module('semdomtrans',
     'bellows.services',
     'bellows.filters',
     'semdomtrans.edit',
-    'semdomtrans.editSettings',
-    'semdomtrans.projectSetup'
+    'semdomtrans.projectSetup',
+    'semdomtrans.comments'
   ])
   .config(function($stateProvider, $urlRouterProvider) {
     
-    $urlRouterProvider.otherwise('/edit');
+    $urlRouterProvider.otherwise('/edit/0');
     
     $stateProvider        
         .state('edit', {
-            url: '/edit',
+            url: '/edit/:position',
             views: {
-            	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html',
+            	'@': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html',
             		controller: 'editCtrl'},
-            	'editQuestions@edit': {
-            		templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editQuestions.html',
-            		controller: 'editCtrl'
-            	},
-            	'editTerm@edit': {
-            		templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editTerm.html',
-            		controller: 'editCtrl'
-            	},
-            	'editSettings@edit': {
-            		templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editSettings.html',
-            		controller: 'editSettingsCtrl'
-            	}
+            	'editItem@edit': {
+            		templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editItem.html'
+            	}	
             }
         })
-    .state('setupProject', {
-        url: '/setup',
-        views: {
-        	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/projectSetup.html',
-        		controller: 'projectSetupCtrl'}
-        }
-    })
-    .state('joinProject', {
-        url: '/join',
-        views: {
-        	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/joinProject.html',
-        		controller: 'joinProjectCtrl'}
-        }
-    });
+        
+        .state('comments', {
+            url: '/comments/:position',
+            views: {
+            	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/comments.html',
+            		controller: 'commentsCtrl'}
+            }
+        })
   })
-  .controller('MainCtrl', ['$scope', 'sessionService',
-  function($scope, ss) {
+  .controller('MainCtrl', ['$scope', 'semdomtransEditService', 'sessionService',
+  function($scope, $semdomApi, ss) {
     
+   $scope.items = [];
+   $scope.itemIndex  = 0;
+   $semdomApi.editorDto(function(result) {
+		if (result.ok) {
+			$scope.items = result.data.items;		
+			$scope.currentItem = $scope.items[$scope.itemIndex ];
+		}
+	});
+   
     $scope.rights = {};
     $scope.project = ss.session.project;
     $scope.projectSettings = ss.session.projectSettings;

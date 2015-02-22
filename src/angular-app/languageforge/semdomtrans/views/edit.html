@@ -1,34 +1,31 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="semDomAppContainer">
-	<div style="margin-top:100px; height: 500px" class="container-fluid">
-	    <div class="row" style="border-bottom:solid black 1px">
-		    <div class="span8" style="width: 350px; height: 50px; margin:0 auto">  
-				<tabset class="pull-center">
-				    <tab heading="Terms" ng-show="(tabDisplay.val == '0' || tabDisplay.val ==  '1')"  ng-click="setTab(0)"> </tab>     
-					<tab heading="Questions" ng-show="(tabDisplay.val == '0' || tabDisplay.val ==  '2')" ng-click="setTab(1)"></tab>
-				</tabset>  
-			</div>  
-		</div>
-		<div class="row">
-		  <div class="col-md-4" style="border-right:solid black 1px">
-		    <!--Sidebar content-->
-		    <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%">
-                 <div ng-repeat="item in items" ng-class="{selected: (item.key == currentItem.key)}"  ng-click="changeTerm(item.key)"
-                 	ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }">
-			        <a> {{item.key}} {{item.name.source}}</a>
-			      </div>
-		    </div>
-			
-		  </div>
-		  <div style="text-align: center;" class="col-md-4">
-		  	<div style="vertical-align: middle; display:inline-block" >
-		  		<div data-ui-view="editTerm"></div>
-				<div data-ui-view="editQuestions"></div>
+		<div style="margin-top:100px; height: 500px" class="container-fluid">
+		    <div class="row" style="border-bottom:solid black 1px">		
+		    	<div class="col-md-4" ></div>	    
+		    	<div class="col-md-4" >
+					<tabset class="pull-center">
+					    <tab heading="Terms"  ng-click="setTab(0)"> </tab>     
+						<tab heading="Questions" ng-click="setTab(1)"></tab>
+					</tabset>  
+				</div>
+				<div class="col-md-4" >
+					<a ui-sref="comments({position:$parent.itemIndex})"  style="float: right; margin-top:5px"> Comments &#8594;</a>
+				</div>
 			</div>
-		  </div>
-		</div>
-	</div>
-	
-	
+			<div class="row">
+			  <div class="col-md-4" style="border-right:solid black 1px">
+			    <!--Sidebar content-->
+			    <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%">
+	                 <div ng-repeat="item in items" ng-class="{selected: (item.key == currentItem.key)}"  ng-click="changeTerm(item.key)"
+	                 	ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }">
+				        <a> {{item.key}} {{item.name.source}}</a>
+				      </div>
+			    </div>
+				
+			  </div>
+			  <div style="text-align: center;" class="col-md-4">
+			  	   <div ui-view="editItem"></div>
+			  </div>
+			</div>
+		</div>	
   </div>
-</div>
-</div>
