@@ -10,8 +10,14 @@ angular.module('semdomtrans.services', ['jsonRpc'])
         });
   };
         
-    this.updateTerm = function(term, callback) {
+    this.updateTerm = function updateTerm(term, callback) {
     	jsonRpc.call('semdom_item_update', [term], function(result) {
+    		callback(result);
+    	});
+    };
+    
+    this.updateComment = function updateComment(comment, callback) {
+    	jsonRpc.call('semdom_comment_update', [comment], function(result) {
     		callback(result);
     	});
     };
