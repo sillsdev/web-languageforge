@@ -1,0 +1,58 @@
+<div>
+    	<table style="width:600px">
+    		<tr>
+    			<th> </th>
+    			<th> Source </th>
+    			<th> Translation </th>
+    		</tr>
+		    <tr ng-click="isInCommentMode() ? $parent.setSelectedField('name', model.name) : '' ">
+			    <td > Name: </td>
+			    <td> {{model.name.source}}</td>
+			    <td> 
+			    	<input 
+			    		   ng-disabled="isInCommentMode()"
+			    		   ng-model="model.name.translation"
+						   ng-keypress="$parent.updateItem($event.which)"
+						   ng-blur="$parent.updateItem()">
+			    </td>
+		    </tr>
+		     <tr>
+		     <tr ng-click="isInCommentMode() ? $parent.setSelectedField('description', model.description) : '' ">
+			    <td> Description: </td>
+			    <td> {{model.description.source}}</td>
+		        <td> 
+		        	<textarea rows="4"
+		        		ng-disabled="isInCommentMode()"
+		        		ng-model="model.description.translation"
+		         		ng-keypress="$parent.updateItem($event.which)"
+		         		ng-blur="$parent.updateItem()" 
+		         		>
+		         	</textarea>
+	         	</td>    
+		    </tr>
+		   			   
+		</table>
+		<br />
+		<br />
+		<table style="width:600px">
+	    	<caption><h4> Search Keys </h4></caption>
+	    	<tr>
+	    		<th> Source </th>
+	    		<th> Translation </th>
+	    	<tr ng-repeat="searchKey in model.searchKeys" 
+	    		ng-click="isInCommentMode() ? $parent.$parent.setSelectedField('search key ' + $index, searchKey) : '' ">
+	    		<td>{{searchKey.source}}</td>
+	    		<td>
+	    			<textarea 
+	    				ng-disabled="isInCommentMode()"
+	    				rows="2" 
+	    				ng-model="searchKey.translation"
+	    				ng-keypress="$parent.updateItem($event.which)"
+	    				ng-blur="$parent.updateItem()"
+	    				> 
+	    			</textarea>
+    			</td>
+	    	</tr>
+	    	
+	    </table>	    
+</div>	
