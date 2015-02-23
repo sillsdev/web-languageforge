@@ -2,7 +2,6 @@
 
 var constants       = require('../../../testConstants');
 var loginPage       = require('../../pages/loginPage');
-var projectListPage = require('../../pages/projectsPage.js');
 var userProfile     = require('../../pages/userProfilePage');
 
 // Array of test usernames to test Activity page with different roles
@@ -58,6 +57,7 @@ describe('User Profile E2E Test', function() {
       });
       
       it('Update and store "My Account" settings', function() {
+        browser.waitForAngular();
         userProfile.getMyAccount();
 
         if (expectedUsername == constants.memberUsername) {
@@ -83,10 +83,9 @@ describe('User Profile E2E Test', function() {
         // Change Password tested in changepassword e2e
         // Submit updated profile
         userProfile.myAccountTab.saveBtn.click();
+        expect(userProfile.myAccountTab.bothBtn.isSelected());
 
-        // Browse to different URL first to force new page load
-        projectListPage.get();
-        userProfile.getMyAccount();
+        browser.refresh();
 
         // Verify values.
          expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(expectedAvatar);
@@ -121,9 +120,10 @@ describe('User Profile E2E Test', function() {
         
         // Submit updated profile
         userProfile.aboutMeTab.saveBtn.click();
+        expect(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(newFullName);
 
         // Verify values.  Browse to different URL first to force new page load
-        projectListPage.get();
+        browser.refresh();
         userProfile.getAboutMe();
 
         expect(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(newFullName);
