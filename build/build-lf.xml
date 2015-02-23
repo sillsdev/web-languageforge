@@ -305,6 +305,7 @@
 			<arg value="-vazHAX" />
 			<arg value="--delete-during" />
             <arg value="--exclude=htdocs/assets" />
+            <arg value="--exclude=htdocs/cache" />
 			<arg value='--rsh=ssh -i ${upload.credentials}' />
 			<arg value="${build.uploadPath}/" />
 			<arg value="${upload.destination}" />
