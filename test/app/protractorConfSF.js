@@ -1,7 +1,7 @@
 var constants = require('./testConstants.json');
 constants.siteType = "scriptureforge"; //TODO: refactor projectsPage.js so this is not necessary
 
-var specs = ['bellows/**/e2e/*.spec.js'];
+var specs = ['allspecs/e2e/*.spec.js', 'bellows/**/e2e/*.spec.js'];
 specs.push('scriptureforge/**/e2e/*.spec.js');
 
 exports.config = {
