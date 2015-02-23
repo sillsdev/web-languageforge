@@ -1,33 +1,33 @@
 fieldset.comment-filter {
-	margin: 20px;
-	border: 2px groove threedface;
+    margin: 20px;
+    border: 2px groove threedface;
 }
 
 legend.override-bootstrap {
-	width: auto;
-	margin: inherit;
-	margin-left: 20px;
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-top: inherit;
-	padding-bottom: inherit;
-	border: 0px;
-	font-size: inherit;
-	line-height: inherit;
+    width: auto;
+    margin: inherit;
+    margin-left: 20px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: inherit;
+    padding-bottom: inherit;
+    border: 0px;
+    font-size: inherit;
+    line-height: inherit;
 }
 
 .override-bootstrap.filter-controls {
-	margin-bottom: 5px;
+    margin-bottom: 5px;
 }
 
 .filter-controls-inner {
-	margin: 0px 5px 5px 5px;
+    margin: 0px 5px 5px 5px;
 }
 
 .filter-controls-inner.collapse.in {
-	/* When div is not collapsed, and ONLY when it is not collapsed, override "overflow: hidden".
-	This is required so that the date picker popup can be shown. */
-	overflow: inherit;
+    /* When div is not collapsed, and ONLY when it is not collapsed, override "overflow: hidden".
+    This is required so that the date picker popup can be shown. */
+    overflow: inherit;
 }
 
 /*animate*/
@@ -36,129 +36,129 @@ legend.override-bootstrap {
 // 2014-08 DDW
 */
 .animate-switch-container {
-	position:relative;
+    position:relative;
 }
 
 .animate-switch {
-	padding:10px;
+    padding:10px;
 }
 
 .animate-switch.ng-animate {
-	-webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-	transition: 500ms ease-in all;
-	position:relative;
-	display: block;
+    -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+    transition: 500ms ease-in all;
+    position:relative;
+    display: block;
 }
 
 .animate-switch.ng-leave.ng-leave-active,
 .animate-switch.ng-enter {
-	right:721px;
+    right:721px;
 }
 .animate-switch.ng-leave,
 .animate-switch.ng-enter.ng-enter-active {
-	right:0;
+    right:0;
 }
 
 .override-bootstrap input[type="checkbox"] {
-	text-align: center;
-	margin-top: 0px;
-	margin-right: 4px;
+    text-align: center;
+    margin-top: 0px;
+    margin-right: 4px;
 }
 
 .datepicker input {
-	text-align: center;
-	margin-bottom: 0px;
+    text-align: center;
+    margin-bottom: 0px;
 }
 
 .datepicker label {
-	display: inline;
+    display: inline;
 }
 
 .text-center {
-	/* Date picker uses this class for its week numbers */
-	text-align: center;
+    /* Date picker uses this class for its week numbers */
+    text-align: center;
 }
 
 .datepicker table th, .datepicker table td {
-	/* Override lf.css */
-	padding: 1px;
+    /* Override lf.css */
+    padding: 1px;
 }
 
 .datepicker table th button.pull-left, .datepicker table th button.pull-right {
-	padding: 2px 13px;
+    padding: 2px 13px;
 }
 
 .datepicker button i {
-	/* Override ls.css */
-	margin-right: 0px;
+    /* Override ls.css */
+    margin-right: 0px;
 }
 
 .datepicker table tbody tr:hover, .datepicker table tbody tr.altrow:hover {
-	/* Override lf.css */
-	background-color: inherit;
+    /* Override lf.css */
+    background-color: inherit;
 }
 
 .datepicker th button, .datepicker td button {
-	/* Override bootstrap.css */
-	background: #fff;
+    /* Override bootstrap.css */
+    background: #fff;
 }
 
 .datepicker th button.btn-info, .datepicker td button.btn-info {
-	/* Un-override bootstrap.css for btn-info */
-	background-color: #49afcd;
+    /* Un-override bootstrap.css for btn-info */
+    background-color: #49afcd;
 }
 
 .filter-controls button i {
-	/* Override lf.css */
-	margin-right: 0px;
+    /* Override lf.css */
+    margin-right: 0px;
 }
 
 .filter-controls .horiz-controls {
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: flex-start; /* Or try space-between */
-	margin-bottom: 10px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start; /* Or try space-between */
+    margin-bottom: 10px;
 }
 
 .filter-controls .horiz-controls.flex-center {
-	justify-content: center; /* Or try space-between */
+    justify-content: center; /* Or try space-between */
 }
 
 .filter-controls .horiz-controls .horiz-flex-element {
-	margin: 0px 10px;
+    margin: 0px 10px;
 }
 
 .filter-controls .horiz-controls {
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: flex-start; /* Or try space-between */
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start; /* Or try space-between */
 }
 
 .filter-controls .horiz-controls .self-flex-end {
-	align-self: flex-end;
+    align-self: flex-end;
 }
 
 .filter-controls .top-right-corner {
-	position: absolute;
-	top: 0px; /* Might need to increase this once the "For the demo, these do NOT work" text goes away */
-	right: 10px;
+    position: absolute;
+    top: 0px; /* Might need to increase this once the "For the demo, these do NOT work" text goes away */
+    right: 10px;
 }
 
 #entryList {
-	/* Override palaso-ui.css */
-/*	height: auto !important;*/
-	height: 550px;
-	margin-bottom: 20px;
+    /* Override palaso-ui.css */
+/*    height: auto !important;*/
+    height: 550px;
+    margin-bottom: 20px;
 }
 
 #entryList .table  {
-	margin-bottom: 0px;
+    margin-bottom: 0px;
 }
 
 .outer-flex {
-	display: flex;
-	flex-direction: row;
-	align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
 }
 
 

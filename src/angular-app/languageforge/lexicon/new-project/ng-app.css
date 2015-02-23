@@ -1,8 +1,8 @@
 .logo-spacer {
-	float: left;
-	width: 110px;
-	margin-left: 20px;
-	min-height: 80px;
+    float: left;
+    width: 110px;
+    margin-left: 20px;
+    min-height: 80px;
 }
 
 /* form styling */
@@ -11,8 +11,8 @@
 }
 
 #form-status {
-	/* See http://css-tricks.com/box-sizing/ */
-	box-sizing: border-box;
+    /* See http://css-tricks.com/box-sizing/ */
+    box-sizing: border-box;
 }
 #form-status.neutral {
     margin-top: 0;
