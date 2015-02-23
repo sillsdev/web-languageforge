@@ -8,9 +8,9 @@ class Email
     {
         // Create the Transport
         $transport = \Swift_SmtpTransport::newInstance('localhost', 25);
-        // 			->setUsername('your username')
-        // 			->setPassword('your password')
-        // 			;
+        //             ->setUsername('your username')
+        //             ->setPassword('your password')
+        //             ;
 
         // Create the Mailer using your created Transport
         $mailer = \Swift_Mailer::newInstance($transport);
