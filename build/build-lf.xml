@@ -102,7 +102,7 @@
         </exec>
     </target>
     <target name="build-nocompress-js" if="build.doNoCompression">
-        <copy file="${build.minJsFile}" tofile="${build.libJsFile}" />
+        <copy file="${build.libJsFile}" tofile="${build.minJsFile}" />
     </target>
 
 	<target name="package-copyWeb" depends="build-prepare,build-composer,build-minify,version">
