@@ -91,21 +91,20 @@
 				excludes="ng-ui-*.min.js"
 			/>
 		</concat>
-
-        <if>
-            <equals arg1="build.doCompression" arg2="true" />
-            <then>
-                <exec executable="/usr/bin/yui-compressor">
-                    <arg value="-o" />
-                    <arg value="${build.minJsFile}" />
-                    <arg value="${build.libJsFile}" />
-                </exec>
-            </then>
-            <else>
-                <copy file="${build.minJsFile}" tofile="${build.libJsFile}" />
-            </else>
-        </if>
+        <antcall target="build-compress-js" />
+        <antcall target="build-nocompress-js" />
 	</target>
+
+    <target name="build-compress-js" if="build.doCompression">
+        <exec executable="/usr/bin/yui-compressor">
+            <arg value="-o" />
+            <arg value="${build.minJsFile}" />
+            <arg value="${build.libJsFile}" />
+        </exec>
+    </target>
+    <target name="build-nocompress-js" unless="build.doCompression">
+        <copy file="${build.minJsFile}" tofile="${build.libJsFile}" />
+    </target>
 
 	<target name="package-copyWeb" depends="build-prepare,build-composer,build-minify,version">
 		<copy todir="${build.output}/package/htdocs">
