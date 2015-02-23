@@ -2,12 +2,12 @@
 
 // ScriptureForge Error Service
 angular.module('sf.error', ['palaso.ui.notice'])
-	.service('error', ['$log', 'silNoticeService', function($log, noticeService) {
+  .service('error', ['$log', 'silNoticeService', function($log, noticeService) {
 
-		this.error = function(title, message) {
-			$log.error('Error: ' + title + ' - ' + message);
-			var errorMessage = '<b>Oh. ' + title + "</b>";
-			noticeService.push(noticeService.ERROR, errorMessage, message);
-		};
-	}])
-	;
+    this.error = function(title, message) {
+      $log.error('Error: ' + title + ' - ' + message);
+      var errorMessage = '<b>Oh. ' + title + "</b>";
+      noticeService.push(noticeService.ERROR, errorMessage, message);
+    };
+  }])
+  ;

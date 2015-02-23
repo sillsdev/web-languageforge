@@ -2,14 +2,14 @@
 angular.module('palaso.ui.dc.comment', ['palaso.ui.utils'])
 // Palaso UI Dictionary Control: Comments
 .directive('dcComment', [function() {
-	return {
-		restrict: 'E',
-		templateUrl: '/angular-app/languageforge/lexicon/directive/dc-comment.html',
-		scope: {
-			model : "=",
-			control: "="
-		},
-		controller: ['$scope', function($scope) {
+  return {
+    restrict: 'E',
+    templateUrl: '/angular-app/languageforge/lexicon/directive/dc-comment.html',
+    scope: {
+      model : "=",
+      control: "="
+    },
+    controller: ['$scope', function($scope) {
 
             $scope.hover = { comment: false };
 
@@ -62,9 +62,9 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils'])
                 $scope.model.editing = false;
             }
 
-		}],
-		link: function(scope, element, attrs, controller) {
-		}
-	};
+    }],
+    link: function(scope, element, attrs, controller) {
+    }
+  };
 }])
 ;

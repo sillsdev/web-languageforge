@@ -35,11 +35,11 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO ||
-	// LOG_DEBUG
+  // LOG_DEBUG
     logLevel: config.LOG_WARN,
 
     // enable / disable watching file and executing tests whenever any file
-	// changes
+  // changes
     autoWatch: false,
 
     // Start these browsers, currently available:
