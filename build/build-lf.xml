@@ -12,7 +12,6 @@
 	<property name="build.installPath" value="/var/www/${application.name}.org_dev" />
 	<property name="build.installForTestPath" value="/var/www/${application.name}.org_e2etest" />
 	<property name="build.uploadPath" value="/var/www/${application.name}.org" />
-    <property name="build.doCompression" value="true" />
 	<property name="e2etest.selenium.server.host" value="ba-wxp32c.psonet" />
 	<property name="e2etest.selenium.server.port" value="4444" />
 	<property name="e2etest.webserver.host" value="e2etest.${application.name}.local" />
@@ -95,14 +94,14 @@
         <antcall target="build-nocompress-js" />
 	</target>
 
-    <target name="build-compress-js" if="build.doCompression">
+    <target name="build-compress-js" unless="build.doNoCompression">
         <exec executable="/usr/bin/yui-compressor">
             <arg value="-o" />
             <arg value="${build.minJsFile}" />
             <arg value="${build.libJsFile}" />
         </exec>
     </target>
-    <target name="build-nocompress-js" unless="build.doCompression">
+    <target name="build-nocompress-js" if="build.doNoCompression">
         <copy file="${build.minJsFile}" tofile="${build.libJsFile}" />
     </target>
 
