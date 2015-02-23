@@ -12,6 +12,7 @@
 	<property name="build.installPath" value="/var/www/${application.name}.org_dev" />
 	<property name="build.installForTestPath" value="/var/www/${application.name}.org_e2etest" />
 	<property name="build.uploadPath" value="/var/www/${application.name}.org" />
+    <property name="build.doCompression" value="true" />
 	<property name="e2etest.selenium.server.host" value="ba-wxp32c.psonet" />
 	<property name="e2etest.selenium.server.port" value="4444" />
 	<property name="e2etest.webserver.host" value="e2etest.${application.name}.local" />
@@ -90,11 +91,13 @@
 				excludes="ng-ui-*.min.js"
 			/>
 		</concat>
-		<exec executable="/usr/bin/yui-compressor">
+		<exec executable="/usr/bin/yui-compressor" if="build.doCompression">
 			<arg value="-o" />
 			<arg value="${build.minJsFile}" />
 			<arg value="${build.libJsFile}" />
 		</exec>
+        <copy file="${build.minJsFile}" tofile="${build.libJsFile}" unless="build.doCompression"/>
+
 	</target>
 
 	<target name="package-copyWeb" depends="build-prepare,build-composer,build-minify,version">
