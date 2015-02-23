@@ -3,7 +3,7 @@
 angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular'])
 
 // Custom textAngular tool for language spans
-.config(function($provide) {
+.config(['$provide', function($provide) {
   
   // add custom tools. Note: $delegate is the taOptions we are decorating
   $provide.decorator('taOptions', ['taRegisterTool', '$delegate',  'taTranslations', 'taTools', 'sessionService', '$window', '$compile', '$animate',
@@ -207,7 +207,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
     taSelectableElements.push('span');
     return taSelectableElements;
   }]);
-})
+}])
 
 // Dictionary Control Formatted Text Editor
 .directive('dcFormattedtext', [function() {
