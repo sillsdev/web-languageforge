@@ -4,13 +4,13 @@ div.hdrnav {
 }
 
 div.lexnav {
-	overflow: visible;
-	padding-left: 115px;	/* Align with topNav and breadcrumbs */
+    overflow: visible;
+    padding-left: 115px;    /* Align with topNav and breadcrumbs */
     padding-bottom: 0;
 }
 
 .lexnav a {
-	color: #3F7CA4;
+    color: #3F7CA4;
 }
 
 /* Import/Export view */
