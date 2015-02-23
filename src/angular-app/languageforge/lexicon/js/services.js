@@ -432,7 +432,7 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
       if (angular.isDefined(optionlists)) {
         var abbreviation = '';
         angular.forEach(optionlists, function(optionlist) {
-          if (optionlist.code == 'partOfSpeech') {
+          if (optionlist.code == 'partOfSpeech' || optionlist.code == 'grammatical-info') {
             angular.forEach(optionlist.items, function(item) {
               if (item.value == posModel.value) {
                 abbreviation = item.abbreviation;
