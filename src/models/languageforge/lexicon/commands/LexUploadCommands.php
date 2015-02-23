@@ -210,16 +210,16 @@ class LexUploadCommands
         $response->result = false;
         $project = new LfProjectModel($projectId);
         switch ($mediaType) {
-        	case 'sense-image':
+            case 'sense-image':
                 $folderPath = self::imageFolderPath($project->getAssetsFolderPath());
-        	    break;
-        	default:
-        	    $errorMsg = "Error in function deleteImageFile, unsupported mediaType: $mediaType";
-        	    throw new \Exception($errorMsg) ;
+                break;
+            default:
+                $errorMsg = "Error in function deleteImageFile, unsupported mediaType: $mediaType";
+                throw new \Exception($errorMsg) ;
                 $data = new ErrorResult();
                 $data->errorType = 'Exception';
                 $data->errorMessage = $errorMsg;
-        	    return $response;
+                return $response;
         }
         $filePath = $folderPath . '/' . $fileName;
         if (file_exists($filePath) and ! is_dir($filePath)) {

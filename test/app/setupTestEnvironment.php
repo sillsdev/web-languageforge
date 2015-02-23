@@ -25,13 +25,13 @@ $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), tr
 // Fake some $_SERVER variables like HTTP_HOST for the sake of the code that needs it
 $hostname = "languageforge.local";
 if (count($argv) > 1) {
-	// hostname is passed in on command line
-	$hostname = $argv[1];
+    // hostname is passed in on command line
+    $hostname = $argv[1];
 }
 $_SERVER['HTTP_HOST'] = $hostname;
 $website = Website::get($hostname);
 if (is_null($website)) {
-	exit("Error: $hostname is not a registered website hostname!\n\n");
+    exit("Error: $hostname is not a registered website hostname!\n\n");
 }
 $site = $website->base;
 

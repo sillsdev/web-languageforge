@@ -53,17 +53,17 @@ $data['columns'] = array(
 $this->load->view("$themePath/templates/3column.html.php", $data);
 ?>
 
-			<div class="container">
-				<div class="sub-promotion">
-				<div class="row row-padded">
-					<div class="span4">
-						<img src="/images/languageforge/default/girlsmiling.jpg" alt="girl smiling" width="299" height="182" class="left">
-					</div>
-					<div class="span8">
-						<h3>The Power of Collaboration</h3>
-						<p>When everyone plays their part in producing a dictionary in your language, everyone benefits.  It's the power of collaboration that provides richer and more accurate dictionaries.  Our technology brings dictionary development to the masses, in a positive environment that focuses participants on the task and works wherever they are.  On the tablet, phone or web, Language Forge is there.</p>
-						<p><a href="/signup" class="arrowed">Get Involved Today</a></p>
-					</div>
-				</div>
-				</div>
-			</div>
+            <div class="container">
+                <div class="sub-promotion">
+                <div class="row row-padded">
+                    <div class="span4">
+                        <img src="/images/languageforge/default/girlsmiling.jpg" alt="girl smiling" width="299" height="182" class="left">
+                    </div>
+                    <div class="span8">
+                        <h3>The Power of Collaboration</h3>
+                        <p>When everyone plays their part in producing a dictionary in your language, everyone benefits.  It's the power of collaboration that provides richer and more accurate dictionaries.  Our technology brings dictionary development to the masses, in a positive environment that focuses participants on the task and works wherever they are.  On the tablet, phone or web, Language Forge is there.</p>
+                        <p><a href="/signup" class="arrowed">Get Involved Today</a></p>
+                    </div>
+                </div>
+                </div>
+            </div>
