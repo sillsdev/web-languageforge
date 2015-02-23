@@ -401,7 +401,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
         });
         break;
       case 'optionlist':
-        if (angular.isUndefined(data['value'])) {
+        if (angular.isUndefined(data['value']) || data['value'] == null) {
           data['value'] = '';
         }
         break;
