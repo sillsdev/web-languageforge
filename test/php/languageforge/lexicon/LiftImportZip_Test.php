@@ -170,20 +170,21 @@ class TestLiftImportZip extends UnitTestCase
         $this->assertPattern("/unhandled subfolder 'OddFolder'/", $reportStr);
     }
 
+    // the following EOD must retain the embedded tabs. IJH 2015-02
     const zipImportReport = <<<EOD
 While processing file 'Test.zip'
-    processing file 'Test.lift'
-        processing file 'Test.lift-ranges'
-            the lift range 'rangeId_01' was not found in the current file
-            the lift range 'rangeId_02' was not found in the current file
-        processing entry '00000-00001'
-            unhandled note 'noteType01'
-            unhandled trait 'traitName01'
-            processing sense '00001-00001'
-                unhandled field 'typeName01'
-                unhandled media 'url01' in context01
-                processing example ''
-                    unhandled element 'elementName01'
+	processing file 'Test.lift'
+		processing file 'Test.lift-ranges'
+			the lift range 'rangeId_01' was not found in the current file
+			the lift range 'rangeId_02' was not found in the current file
+		processing entry '00000-00001'
+			unhandled note 'noteType01'
+			unhandled trait 'traitName01'
+			processing sense '00001-00001'
+				unhandled field 'typeName01'
+				unhandled media 'url01' in context01
+				processing example ''
+					unhandled element 'elementName01'
 EOD;
 
     public function testZipImport_ImportReport_FormatOk() {
