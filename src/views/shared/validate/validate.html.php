@@ -1,6 +1,6 @@
 <div class="content container">
     <div class="row span9" style="font-size:16px" ng-show="submissionComplete">
-		<h1>You're Almost There...</h1>
+        <h1>You're Almost There...</h1>
         <div class="row">
             <div class="span2"><i style="font-size:100px; color: green" class="icon-check-sign"></i></div>
             <div class="span7"><h2>Register</h2><div>Great!  You're already registered!</div></div>

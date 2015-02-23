@@ -13,28 +13,28 @@ require_once TestPath . 'common/MongoTestEnvironment.php';
 class SessionTestEnvironment
 {
     /**
-	 * @var ProjectModel
-	 */
+     * @var ProjectModel
+     */
     public $project;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $projectId;
 
     /**
-	 * @var QuestionModel
-	 */
+     * @var QuestionModel
+     */
     public $question;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $questionId;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $userId;
 
     public $website;
