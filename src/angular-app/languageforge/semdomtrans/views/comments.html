@@ -16,25 +16,8 @@
 					<sd-questions control="control" model="currentItem" state="comments"></sd-questions>
 				</div>	
 				<div class="col-md-5" style="text-align: center;" >
-					Comments
-					<br/>
-					<textarea rows="10" cols="30" ng-model="newComment.content"></textarea>
-					<br/>
-					<i>Comment regarding: </i>
-					<br/>
-					{{newComment.regarding.field}}
 					
-					<button class="btn btn-primary" style="float:right" ng-click="createComment()"> Post </button>
-					 <div class="commentListContainer">
-                        <div ng-repeat="comment in currentEntryCommentsFiltered">
-                            <dc-comment control="control" model="comment"></dc-comment>
-                        </div>
-                        <!--
-                        <pre>{{currentEntryComments|json}}</pre>
-                        <pre>{{comments|json}}</pre>
-                        -->
-
-                    </div>
+                    <comments-right-panel model="currentEntryCommentsFiltered" control="control"></comments-right-panel>
 				</div>
 				
 				

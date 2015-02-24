@@ -87,8 +87,9 @@ class SemDomTransEditDto
         $data['sourceLanguageIsIncomplete'] = $sourceLanguageIsIncomplete;
         
         $commentsModel = new LexCommentListModel($project, $lastFetchTime);
-        $commentsModel->read();
-        $data['comments'] = $commentsModel->entries;
+        $commentsModel->readAsModels();
+        $encodedModels = LexDbeDtoCommentsEncoder::encode($commentsModel);
+        $data['comments'] = $encodedModels["entries"];
 
         if (!is_null($lastFetchTime)) {
         	/* TODO: implement deleted Items list model

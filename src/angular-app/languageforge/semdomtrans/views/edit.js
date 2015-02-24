@@ -4,6 +4,10 @@ angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services
 // DBE controller
 .controller('editCtrl', ['$scope', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService',
 function($scope, $stateParams, semdomEditApi, sessionService, modal, notice) {
+	// refresh the data and go to state
+    if ($scope.items.length == 0 && !$scope.loadingDto) {
+    	$scope.refreshData(true);
+    } 
 	$scope.$parent.itemIndex = $stateParams.position;
 	$scope.selectedTab = 0;
 	 $scope.control = $scope;
@@ -36,6 +40,10 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice) {
 			});
 		}
 	}
+	
+	$scope.refreshData = function refreshData(state) {
+        $scope.$parent.refreshData(state, function() { });
+    };
 	
 	// permissions stuff
 	  $scope.rights = {

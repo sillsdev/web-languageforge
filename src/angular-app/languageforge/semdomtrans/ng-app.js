@@ -39,13 +39,20 @@ angular.module('semdomtrans',
    $scope.items = [];
    $scope.comments = [];
    $scope.itemIndex  = 0;
-   $semdomApi.editorDto(function(result) {
-		if (result.ok) {
-			$scope.items = result.data.items;	
-			$scope.comments = result.data.comments;		
-			$scope.currentItem = $scope.items[$scope.itemIndex ];
-		}
-	});
+   $scope.loadingDto = false;
+   $scope.refreshData = function refreshData(v, callback) {
+	   $scope.loadingDto = true;
+	   $semdomApi.editorDto(function(result) {
+			if (result.ok) {
+				$scope.items = result.data.items;	
+				$scope.comments = result.data.comments;		
+				$scope.currentItem = $scope.items[$scope.itemIndex ];
+				$scope.loadingDto = false;
+				//callback();
+			}
+		});
+   }
+  
    
     $scope.rights = {};
     $scope.project = ss.session.project;
