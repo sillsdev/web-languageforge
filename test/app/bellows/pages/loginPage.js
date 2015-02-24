@@ -46,7 +46,6 @@ var SfLoginPageWithoutAstrolabe = function() {
   };
   this.logout = function() {
     browser.driver.get(this.baseUrl + '/auth/logout');
-    browser.waitForAngular();
   };
 };
 
