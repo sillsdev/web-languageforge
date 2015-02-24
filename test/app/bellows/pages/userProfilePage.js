@@ -13,7 +13,6 @@ var SfUserProfilePage = function() {
 
   // Navigate to the MyProfile page (defaults to My Account tab)
   this.get = function() {
-    browser.waitForAngular();
     browser.get(browser.baseUrl + this.userProfileURL);
     browser.waitForAngular();
   };

@@ -83,6 +83,8 @@ describe('User Profile E2E Test', function() {
         // Change Password tested in changepassword e2e
         // Submit updated profile
         userProfile.myAccountTab.saveBtn.click();
+
+        // we must have an expectation following the button click so that angular is not interrupted by the browser.refresh() below, causing a JS console error
         expect(userProfile.myAccountTab.bothBtn.isSelected());
 
         browser.refresh();
