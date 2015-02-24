@@ -37,10 +37,12 @@ angular.module('semdomtrans',
   function($scope, $semdomApi, ss) {
     
    $scope.items = [];
+   $scope.comments = [];
    $scope.itemIndex  = 0;
    $semdomApi.editorDto(function(result) {
 		if (result.ok) {
-			$scope.items = result.data.items;		
+			$scope.items = result.data.items;	
+			$scope.comments = result.data.comments;		
 			$scope.currentItem = $scope.items[$scope.itemIndex ];
 		}
 	});
