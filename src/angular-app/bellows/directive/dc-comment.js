@@ -37,7 +37,7 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils'])
                 hideInputFields();
                 reply.content = angular.copy(reply.editingContent);
                 delete reply.editingContent;
-                $scope.control.updateReply($scope.model.id, reply);
+                $scope.$parent.updateReply($scope.model.id, reply);
                 $scope.newReply = {id:'', editingContent:''};
             };
 
@@ -50,7 +50,7 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils'])
             $scope.updateComment = function updateComment() {
                 hideInputFields();
                 $scope.model.content = angular.copy($scope.editingCommentContent);
-                $scope.control.updateComment($scope.model);
+                $scope.$parent.updateComment($scope.model);
                 $scope.editingCommentContent = '';
             };
             
@@ -61,6 +61,8 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils'])
                 $scope.showNewReplyForm = false;
                 $scope.model.editing = false;
             }
+            
+            
 
 		}],
 		link: function(scope, element, attrs, controller) {
