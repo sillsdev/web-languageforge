@@ -3,7 +3,7 @@ angular.module('palaso.ui.commentBubble', [])
 .directive('commentBubble', [function() {
 	return {
 		restrict : 'E',
-		templateUrl : '/angular-app/languageforge/lexicon/directive/comment-bubble.html',
+		templateUrl : '/angular-app/bellows/directive/comment-bubble.html',
 		scope : {
             count : "=",
             control : "="

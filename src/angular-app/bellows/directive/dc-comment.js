@@ -4,7 +4,7 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils'])
 .directive('dcComment', [function() {
 	return {
 		restrict: 'E',
-		templateUrl: '/angular-app/languageforge/lexicon/directive/dc-comment.html',
+		templateUrl: '/angular-app/bellows/directive/dc-comment.html',
 		scope: {
 			model : "=",
 			control: "="
@@ -53,7 +53,7 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils'])
                 $scope.control.updateComment($scope.model);
                 $scope.editingCommentContent = '';
             };
-
+            
             function hideInputFields() {
                 for (var i=0; i< $scope.model.replies.length; i++) {
                     $scope.model.replies[i].editing = false;

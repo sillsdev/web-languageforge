@@ -9,6 +9,8 @@ use models\languageforge\semdomtrans\SemDomTransItemModel;
 use models\languageforge\SemDomTransProjectModel;
 
 use models\mapper\JsonEncoder;
+use models\languageforge\lexicon\LexCommentListModel;
+use models\languageforge\lexicon\dto\LexDbeDtoCommentsEncoder;
 
 class SemDomTransEditDto
 {
@@ -84,10 +86,9 @@ class SemDomTransEditDto
         }
         $data['sourceLanguageIsIncomplete'] = $sourceLanguageIsIncomplete;
         
-        // $commentsModel = new LexCommentListModel($project, $lastFetchTime);
-        // $commentsModel->readAsModels();
-        //$encodedComments = LexDbeDtoCommentsEncoder::encode($commentsModel);
-        //$data['comments'] = $encodedComments['entries'];
+        $commentsModel = new LexCommentListModel($project, $lastFetchTime);
+        $commentsModel->read();
+        $data['comments'] = $commentsModel->entries;
 
         if (!is_null($lastFetchTime)) {
         	/* TODO: implement deleted Items list model
