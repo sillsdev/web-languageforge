@@ -22,10 +22,22 @@
 					<br/>
 					<i>Comment regarding: </i>
 					<br/>
-					{{newComment.regarding.fieldName}}
+					{{newComment.regarding.field}}
 					
 					<button class="btn btn-primary" style="float:right" ng-click="createComment()"> Post </button>
+					 <div class="commentListContainer">
+                        <div ng-repeat="comment in currentEntryCommentsFiltered">
+                            <dc-comment control="control" model="comment"></dc-comment>
+                        </div>
+                        <!--
+                        <pre>{{currentEntryComments|json}}</pre>
+                        <pre>{{comments|json}}</pre>
+                        -->
+
+                    </div>
 				</div>
+				
+				
 			</div>
 				
 		</div>

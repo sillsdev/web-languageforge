@@ -6,7 +6,7 @@ angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services
 function($scope, $stateParams, semdomEditApi, sessionService, modal, notice) {
 	$scope.$parent.itemIndex = $stateParams.position;
 	$scope.selectedTab = 0;
-	
+	 $scope.control = $scope;
 	$scope.currentQuestionPos = 0;
 	$scope.tabDisplay = {"val": '0'};
 	$scope.domainsFiltered = [];
@@ -36,4 +36,37 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice) {
 			});
 		}
 	}
+	
+	// permissions stuff
+	  $scope.rights = {
+	    canEditProject: function canEditProject() {
+	      return sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
+	    },
+	    canEditEntry: function canEditEntry() {
+	      return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.EDIT);
+	    },
+	    canDeleteEntry: function canDeleteEntry() {
+	      return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.DELETE);
+	    },
+	    canComment: function canComment() {
+	      return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.CREATE);
+	    },
+	    canDeleteComment: function canDeleteComment(commentAuthorId) {
+	      if (sessionService.session.userId == commentAuthorId) {
+	        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE_OWN);
+	      } else {
+	        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE);
+	      }
+	    },
+	    canEditComment: function canEditComment(commentAuthorId) {
+	      if (sessionService.session.userId == commentAuthorId) {
+	        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT_OWN);
+	      } else {
+	        return false;
+	      }
+	    },
+	    canUpdateCommentStatus: function canUpdateCommentStatus() {
+	      return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT);
+	    }
+	  };
 }]);
