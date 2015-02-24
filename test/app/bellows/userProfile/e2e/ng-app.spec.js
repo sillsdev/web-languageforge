@@ -57,7 +57,6 @@ describe('User Profile E2E Test', function() {
       });
       
       it('Update and store "My Account" settings', function() {
-        browser.waitForAngular();
         userProfile.getMyAccount();
 
         if (expectedUsername == constants.memberUsername) {
@@ -90,7 +89,7 @@ describe('User Profile E2E Test', function() {
         browser.refresh();
 
         // Verify values.
-         expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(expectedAvatar);
+        expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(expectedAvatar);
         expect(userProfile.myAccountTab.avatarColor.$('option:checked').getText()).toBe(newColor);
         expect(userProfile.myAccountTab.avatarShape.$('option:checked').getText()).toBe(newShape);
         expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value')).toEqual(newMobilePhone);
@@ -125,7 +124,6 @@ describe('User Profile E2E Test', function() {
         expect(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(newFullName);
 
         // Verify values.  Browse to different URL first to force new page load
-        browser.refresh();
         userProfile.getAboutMe();
 
         expect(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(newFullName);
