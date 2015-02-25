@@ -7,7 +7,8 @@ angular.module('semdomtrans',
     'bellows.filters',
     'semdomtrans.edit',
     'semdomtrans.projectSetup',
-    'semdomtrans.comments'
+    'semdomtrans.comments',
+    'pascalprecht.translate' 
   ])
   .config(function($stateProvider, $urlRouterProvider) {
     
@@ -46,7 +47,7 @@ angular.module('semdomtrans',
 			if (result.ok) {
 				$scope.items = result.data.items;	
 				$scope.comments = result.data.comments;		
-				$scope.currentItem = $scope.items[$scope.itemIndex ];
+				$scope.currentEntry = $scope.items[$scope.itemIndex ];
 				$scope.loadingDto = false;
 				//callback();
 			}

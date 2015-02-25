@@ -21,26 +21,18 @@ function($scope, $stateParams, comms, sessionService, modal, notice) {
     	$scope.refreshData(true);
     } 
 	
-	$scope.currentEntryCommentsFiltered = [];
-	
-	for (var i = 0; i < $scope.$parent.comments.length; i++) {
-		if ($scope.currentItem.id == $scope.$parent.comments[i].entryRef) {
-			$scope.currentEntryCommentsFiltered.push($scope.$parent.comments[i]);
-		}
-	}
-	
 
 	$scope.setSelectedField = function setSelectedField(fieldName, model) {
 		$scope.newComment.regarding.field = fieldName;
 		$scope.newComment.regarding.fieldNameForDisplay = fieldName;
 		$scope.newComment.regarding.fieldValue = model.source + "#" + model.source;	
-		$scope.newComment.entryRef = $scope.$parent.currentItem.id;
+		$scope.newComment.entryRef = $scope.$parent.currentEntry.id;
 	}
 	  
 	  $scope.getComment = function getComment(comment) {
 		  comment = $scope.newComment;
 		  // TODO - check if it is a new comment
-		  isNewComment = true;
+		  var isNewComment = true;
 		  if (isNewComment) { // reset newComment
 	          $scope.control.newComment = {
 	            id: '',
@@ -49,23 +41,7 @@ function($scope, $stateParams, comms, sessionService, modal, notice) {
 	          }; // model for new comment content
 		  }
 		  return comment;
-	  }
-	  
-	  $scope.getNewCommentPlaceholderText = function getNewCommentPlaceholderText() {
-		  return "Join the conversation, enter a comment here";
-	  }
-	  
-	  $scope.loadEntryComments = function loadEntryComments() {
-	    	 ;
-	  }
-	  
-	  $scope.refreshData = function refreshData(state) {
-          $scope.$parent.refreshData(state, function() {
-        	  $scope.loadEntryComments();
-          	});	
-      }
-
-  
+	  }  
 	
 	// permissions stuff
 	  $scope.rights = {
