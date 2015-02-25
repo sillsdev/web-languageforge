@@ -2,8 +2,8 @@
 
 angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions'])
 // DBE controller
-.controller('editCtrl', ['$scope', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService',
-function($scope, $stateParams, semdomEditApi, sessionService, modal, notice) {
+.controller('editCtrl', ['$scope', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter',
+function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope) {
 	// refresh the data and go to state
     if ($scope.items.length == 0 && !$scope.loadingDto) {
     	$scope.refreshData(true);
@@ -26,7 +26,7 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice) {
 			
 			for (var i = 0; i < $scope.items.length; i++) {
 				if ($scope.items[i].key == key) {
-					$scope.currentItem = $scope.items[i];
+					$scope.currentEntry = $scope.items[i];
 					break;
 				}
 			}			
@@ -35,7 +35,7 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice) {
 	$scope.updateItem = function updateItem(v) {
 		v = (v === undefined) ? 13 : v;
 		if (v == 13) {
-			api.updateTerm($scope.currentItem, function(result) {
+			api.updateTerm($scope.currentEntry, function(result) {
 				;
 			});
 		}
