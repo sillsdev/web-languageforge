@@ -49,7 +49,9 @@ angular.module('semdomtrans',
 				$scope.comments = result.data.comments;		
 				$scope.currentEntry = $scope.items[$scope.itemIndex ];
 				$scope.loadingDto = false;
-				//callback();
+				if (!angular.isUndefined(callback)) {
+					callback();
+				}
 			}
 		});
    }
