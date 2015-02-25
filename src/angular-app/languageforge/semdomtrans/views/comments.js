@@ -21,16 +21,20 @@ function($scope, $stateParams, comms, sessionService, modal, notice) {
     	$scope.refreshData(true);
     } 
 	
+ 	$scope.refreshData = function refreshData(fullRefresh, callback) {
+ 		$scope.$parent.refreshData(fullRefresh, callback);
+ 	} 
 
 	$scope.setSelectedField = function setSelectedField(fieldName, model) {
 		$scope.newComment.regarding.field = fieldName;
 		$scope.newComment.regarding.fieldNameForDisplay = fieldName;
 		$scope.newComment.regarding.fieldValue = model.source + "#" + model.source;	
-		$scope.newComment.entryRef = $scope.$parent.currentEntry.id;
 	}
 	  
 	  $scope.getComment = function getComment(comment) {
+			$scope.newComment.entryRef = $scope.$parent.currentEntry.id; 
 		  comment = $scope.newComment;
+		  
 		  // TODO - check if it is a new comment
 		  var isNewComment = true;
 		  if (isNewComment) { // reset newComment
