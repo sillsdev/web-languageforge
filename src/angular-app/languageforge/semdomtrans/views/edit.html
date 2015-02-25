@@ -16,7 +16,7 @@
 			  <div class="col-md-4" style="border-right:solid black 1px">
 			    <!--Sidebar content-->
 			    <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%">
-	                 <div ng-repeat="item in items" ng-class="{selected: (item.key == currentItem.key)}"  ng-click="changeTerm(item.key)"
+	                 <div ng-repeat="item in items" ng-class="{selected: (item.key == currentEntry.key)}"  ng-click="changeTerm(item.key)"
 	                 	ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }">
 				        <a> {{item.key}} {{item.name.source}}</a>
 				      </div>

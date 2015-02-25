@@ -7,16 +7,16 @@
             </span>
         </div>
         <div><select ng-show="control.rights.canUpdateCommentStatus()" style="width:110px" ng-model="commentFilter.status"><option value="all">Show All</option><option value="unresolved">Unresolved</option><option ng-if="control.rights.canUpdateCommentStatus()" value="todo">Todo</option></select></div>
-       <!--  <div>
+        <div>
             <div class="commentCount">
-                <span ng-if="currentEntryCommentCounts.total !== 1">
-                    {{currentEntryCommentCounts.total}} {{'Comments'|translate}}
+                <span ng-if="control.currentEntryCommentCounts.total !== 1">
+                    {{control.currentEntryCommentCounts.total}} {{'Comments'|translate}}
                 </span>
-                <span ng-if="currentEntryCommentCounts.total === 1">
-                    {{currentEntryCommentCounts.total}} {{'Comment'|translate}}
+                <span ng-if="control.currentEntryCommentCounts.total === 1">
+                    {{control.currentEntryCommentCounts.total}} {{'Comment'|translate}}
                 </span>
             </div>
-        </div> -->
+        </div> 
     </div>  
     <div class="commentListView">
         <div ng-show="control.rights.canComment()" class="newCommentForm">
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="commentListContainer">
-            <div ng-repeat="comment in model">
+            <div ng-repeat="comment in currentEntryCommentsFiltered">
                 <dc-comment control="control" model="comment"></dc-comment>
             </div>
         </div>
