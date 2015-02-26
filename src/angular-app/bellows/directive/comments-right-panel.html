@@ -26,10 +26,8 @@
                     <i class="icon-remove" style="float:right; color:#808080; cursor: pointer" ng-click="control.newComment.regarding = {}" ng-show="control.newComment.regarding.field"></i>
 
                     <span class="muted"><em>This comment is regarding</em></span>
-                    <div ng-show="control.newComment.regarding.field">
-                      <!--
-                       <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>  
-                      -->  
+                    <div ng-show="control.newComment.regarding.field">                
+                       <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div> 
                         <span class="regardingFieldName">{{control.newComment.regarding.fieldNameForDisplay}}</span>
                         <div class="input-prepend">
                             <span ng-if="control.newComment.regarding.inputSystem" class="add-on wsid regardingInputSystem" title="{{control.newComment.regarding.inputSystem}}">{{control.newComment.regarding.inputSystemAbbreviation}}</span>

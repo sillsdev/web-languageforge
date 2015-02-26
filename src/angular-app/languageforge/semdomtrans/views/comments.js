@@ -7,6 +7,7 @@ function($scope, $stateParams, comms, sessionService, modal, notice) {
 	var commentService = comms;
 	$scope.$parent.itemIndex = $stateParams.position;
 	$scope.control = $scope;
+	$scope.currentEntryComments = [];
 	$scope.newComment = {
 		id: '',
 		content: '',
@@ -16,15 +17,30 @@ function($scope, $stateParams, comms, sessionService, modal, notice) {
 			'fieldValue': ''
 		}
 	}
-	
-	 if ($scope.items.length == 0 && !$scope.loadingDto) {
-    	$scope.refreshData(true);
-    } 
-	
- 	$scope.refreshData = function refreshData(fullRefresh, callback) {
- 		$scope.$parent.refreshData(fullRefresh, callback);
- 	} 
+ 	
+ 	$scope.loadEntryComments = function loadEntryComments() {
+ 	    var comments = [];
+ 	   
+ 	    for (var i = 0; i < $scope.comments.length; i++) {
+ 	      var comment = $scope.comments[i];
+ 	      if (comment.entryRef == $scope.control.currentEntry.id) { 	       
+ 	        // add comment to the correct 'field' container
+ 	        comments.push(comment);
+ 	    } 	    
+ 	  }
+ 	  
+	   $scope.currentEntryComments = comments;
+ 	}
+ 	
 
+	if ($scope.items.length == 0 && !$scope.loadingDto) {
+		$scope.refreshData(true, function() {
+ 			return $scope.loadEntryComments();
+ 		});
+    } else {
+    	$scope.loadEntryComments();
+    }
+	
 	$scope.setSelectedField = function setSelectedField(fieldName, model) {
 		$scope.newComment.regarding.field = fieldName;
 		$scope.newComment.regarding.fieldNameForDisplay = fieldName;
