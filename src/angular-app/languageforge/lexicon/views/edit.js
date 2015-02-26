@@ -707,21 +707,20 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     if ($scope.state == 'comment' && $scope.rights.canComment()) {
       var fieldConfig = configService.getFieldConfig(fieldName);
       $scope.newComment.regarding.field = fieldName;
+      $scope.newComment.regarding.fieldType = fieldConfig.type;
       $scope.newComment.regarding.fieldNameForDisplay = fieldConfig.label;
-      $scope.newComment.regarding.displayClass = '';
       delete $scope.newComment.regarding.inputSystem;
       delete $scope.newComment.regarding.inputSystemAbbreviation;
-      $scope.newComment.regarding.isPicture = false;
+      $scope.newCommentRegardingIsPicture = false;
       if (inputSystem) {
         $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
         $scope.newComment.regarding.inputSystem = $scope.config.inputSystems[inputSystem].languageName;
         $scope.newComment.regarding.inputSystemAbbreviation = $scope.config.inputSystems[inputSystem].abbreviation;
       } else if (multioptionValue) {
         $scope.newComment.regarding.fieldValue = multioptionValue;
-        $scope.newComment.regarding.displayClass = 'dc-multioptionlist-value';
       } else if (pictureFilePath) {
         $scope.newComment.regarding.fieldValue = pictureFilePath;
-        $scope.newComment.regarding.isPicture = true;
+        $scope.newCommentRegardingIsPicture = true;
       } else {
         $scope.newComment.regarding.fieldValue = getFieldValue(model);
       }
