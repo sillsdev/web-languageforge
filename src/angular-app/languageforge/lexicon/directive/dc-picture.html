@@ -7,11 +7,13 @@
                 <i data-ng-click="deletePicture($index)" title="Delete Picture"
                     class="icon-remove"></i>
             </div>
-            <img data-ng-src="{{getPictureUrl(picture.fileName)}}" />
+            <img data-ng-src="{{getPictureUrl(picture.fileName)}}" 
+                data-ng-click="control.selectFieldForComment('pictures', picture, '', '', getPictureUrl(picture.fileName))" />
             <div data-ng-if="!config.captionHideIfEmpty || control.show.emptyFields || (config.captionHideIfEmpty && fieldContainsData('multitext', picture.caption))">
                 <dc-multitext control="control"
                     config="config"
-                    model="picture.caption">
+                    model="picture.caption"
+                    select-field="control.selectFieldForComment('pictures', picture.caption, inputSystem)">
                 </dc-multitext>
             </div>
         </div>

@@ -321,6 +321,11 @@ legend.override-bootstrap {
 
 #lexAppCommentView .dc-multioptionlist-value {
     background-color: inherit;
+    width: inherit;
+}
+
+#lexAppCommentView .commentListView img {
+    width: 50px;
 }
 
 div.commentListContainer {
