@@ -293,7 +293,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     if ($scope.currentEntry.id != id) {
       $scope.saveCurrentEntry();
       setCurrentEntry($scope.entries[getIndexInList(id, $scope.entries)]);
-      //loadEntryComments();
+      $scope.loadEntryComments();
     }
     $scope.state = 'edit';
     // $location.path('/dbe/' + id, false);
@@ -309,7 +309,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     $scope.show.initial();
     scrollListToEntry('', 'top');
     $scope.state = 'edit';
-    //loadEntryComments();
+    $scope.loadEntryComments();
     // $location.path('/dbe', false);
   };
 
@@ -320,7 +320,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   $scope.returnToList = function returnToList() {
     $scope.saveCurrentEntry();
     setCurrentEntry();
-    //loadEntryComments();
+    $scope.loadEntryComments();
     $scope.state = 'list';
     // $location.path('/dbe', false);
   };
@@ -700,6 +700,50 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     }
   };
 
+
+
+  $scope.loadEntryComments = function loadEntryComments() {
+    var comments = [];
+    var count = {
+      total: 0,
+      fields: {}
+    };
+    var entryCommentsCounts = {};
+    for (var i = 0; i < $scope.comments.length; i++) {
+      var comment = $scope.comments[i];
+
+      // add counts to global entry comment counts
+      if (angular.isUndefined(entryCommentsCounts[comment.entryRef])) {
+        entryCommentsCounts[comment.entryRef] = 0;
+      }
+      if (comment.status != 'resolved') {
+        entryCommentsCounts[comment.entryRef]++;
+      }
+
+      var fieldName = comment.regarding.field;
+      if (comment.entryRef == $scope.control.currentEntry.id) {
+        if (fieldName && angular.isUndefined(count.fields[fieldName])) {
+          count.fields[fieldName] = 0;
+        }
+
+        // add comment to the correct 'field' container
+        comments.push(comment);
+
+        // update the appropriate count for this field and update the total count
+        if (comment.status != 'resolved') {
+          if (fieldName) {
+            count.fields[fieldName]++;
+          }
+          count.total++;
+        }
+      }
+    }
+    
+    $scope.currentEntryCommentCounts = count;
+    $scope.entryCommentCounts = entryCommentsCounts;
+    $scope.currentEntryComments = comments;
+  }
+  
   $scope.getComment = function getComment(comment) {
     var isNewComment = angular.isUndefined(comment);
     if (isNewComment) {
