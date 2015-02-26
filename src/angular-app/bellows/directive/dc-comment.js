@@ -1,5 +1,5 @@
 "use strict";
-angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'lexicon.services', 'bellows.services'])
+angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
 // Palaso UI Dictionary Control: Comments
 .directive('dcComment', [function() {
   return {
