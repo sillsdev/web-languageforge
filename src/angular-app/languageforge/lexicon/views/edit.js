@@ -703,24 +703,23 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     return valueToReturn;
   }
 
-  $scope.selectFieldForComment = function selectFieldForComment(fieldName, model, inputSystem) {
+  $scope.selectFieldForComment = function selectFieldForComment(fieldName, model, inputSystem, multioptionValue) {
     if ($scope.state == 'comment' && $scope.rights.canComment()) {
       var fieldConfig = configService.getFieldConfig(fieldName);
       $scope.newComment.regarding.field = fieldName;
       $scope.newComment.regarding.fieldNameForDisplay = fieldConfig.label;
+      $scope.newComment.regarding.displayClass = '';
+      delete $scope.newComment.regarding.inputSystem;
+      delete $scope.newComment.regarding.inputSystemAbbreviation;
       if (inputSystem) {
-
-        // I set the inputsystem abbreviation values delayed by 10ms to deal with a double ng-click fire (nested divs, each with ng-click)
-        $interval(function() {
-          $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
-          $scope.newComment.regarding.inputSystem = $scope.config.inputSystems[inputSystem].languageName;
-          $scope.newComment.regarding.inputSystemAbbreviation = $scope.config.inputSystems[inputSystem].abbreviation;
-        }, 10, 1);
+        $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
+        $scope.newComment.regarding.inputSystem = $scope.config.inputSystems[inputSystem].languageName;
+        $scope.newComment.regarding.inputSystemAbbreviation = $scope.config.inputSystems[inputSystem].abbreviation;
+      } else if (multioptionValue) {
+        $scope.newComment.regarding.fieldValue = multioptionValue;
+        $scope.newComment.regarding.displayClass = 'dc-multioptionlist-value';
       } else {
         $scope.newComment.regarding.fieldValue = getFieldValue(model);
-        delete $scope.newComment.regarding.inputSystem;
-        delete $scope.newComment.regarding.languageName;
-        delete $scope.newComment.regarding.inputSystemAbbreviation;
       }
     }
   };

@@ -11,7 +11,8 @@ angular.module('palaso.ui.dc.multioptionlist', [])
       config: "=",
       model: "=",
       control: "=",
-      items: "="
+      items: "=",
+      selectField: "&"
     },
     controller: ['$scope', function($scope) {
       $scope.isAdding = false;
@@ -68,6 +69,13 @@ angular.module('palaso.ui.dc.multioptionlist', [])
         $scope.model.values.splice(index, 1);
       };
 
+      $scope.selectValue = function selectValue(value) {
+        $scope.selectField({
+          'inputSystem': '',
+          'multioptionValue': $scope.getDisplayName(value)
+        });
+      };
+      
     }]
   };
 }]);
