@@ -32,15 +32,15 @@ class FixSiteRolesIntegrity
             $projectUserRefs = array_keys($project->users->getArrayCopy());
             $message .= "-------------  " . $project->projectName . "\n";
             foreach ($projectUserRefs as $userId) { // foreach user that is a member of this project
-            	$user = new UserModel($userId);
-            	if (!array_key_exists($hostname, $user->siteRole) && $user->username != '') {
-            		$message .= "Fixed user '" . $user->username . "' who did not have a site role on " . $hostname . "\n";
-            		$fixCount[$hostname]++;
-            		$user->siteRole[$hostname] = $website->userDefaultSiteRole;
-            		if (!$testMode) {
-            			$user->write();
-            		}
-            	}
+                $user = new UserModel($userId);
+                if (!array_key_exists($hostname, $user->siteRole) && $user->username != '') {
+                    $message .= "Fixed user '" . $user->username . "' who did not have a site role on " . $hostname . "\n";
+                    $fixCount[$hostname]++;
+                    $user->siteRole[$hostname] = $website->userDefaultSiteRole;
+                    if (!$testMode) {
+                        $user->write();
+                    }
+                }
             }
         }
         
@@ -56,11 +56,11 @@ class FixSiteRolesIntegrity
         }
         
         foreach ($fixCount as $site => $count) {
-        	if ($count > 0) {
-	            $message .= "\n\n$site : Fixed $count non-existent site roles \n\n";
-	        } else {
-	            $message .= "\n\n$site : Nothing to do \n\n";
-	        }
+            if ($count > 0) {
+                $message .= "\n\n$site : Fixed $count non-existent site roles \n\n";
+            } else {
+                $message .= "\n\n$site : Nothing to do \n\n";
+            }
         }
 
 
@@ -74,6 +74,6 @@ class FixSiteRolesIntegrity
      * @param string $role
      */
     public function giveUserSiteRole($user, $site, $role = SiteRoles::USER) {
-    	$user->siteRole[$site] = $role;
+        $user->siteRole[$site] = $role;
     }
 }

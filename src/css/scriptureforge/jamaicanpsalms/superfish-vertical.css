@@ -12,8 +12,8 @@
   */
 }
 .sf-vertical ul {
-	left:	100%;
-	top: 0;
+    left:    100%;
+    top: 0;
 }
 .sf-vertical > li {
   float: none;

@@ -90,12 +90,20 @@
 				excludes="ng-ui-*.min.js"
 			/>
 		</concat>
-		<exec executable="/usr/bin/yui-compressor">
-			<arg value="-o" />
-			<arg value="${build.minJsFile}" />
-			<arg value="${build.libJsFile}" />
-		</exec>
+        <antcall target="build-compress-js" />
+        <antcall target="build-nocompress-js" />
 	</target>
+
+    <target name="build-compress-js" unless="build.doNoCompression">
+        <exec executable="/usr/bin/yui-compressor">
+            <arg value="-o" />
+            <arg value="${build.minJsFile}" />
+            <arg value="${build.libJsFile}" />
+        </exec>
+    </target>
+    <target name="build-nocompress-js" if="build.doNoCompression">
+        <copy file="${build.libJsFile}" tofile="${build.minJsFile}" />
+    </target>
 
 	<target name="package-copyWeb" depends="build-prepare,build-composer,build-minify,version">
 		<copy todir="${build.output}/package/htdocs">
@@ -296,6 +304,8 @@
 		<exec dir="${build.uploadPath}" executable="rsync" failonerror="true">
 			<arg value="-vazHAX" />
 			<arg value="--delete-during" />
+            <arg value="--exclude=htdocs/assets" />
+            <arg value="--exclude=htdocs/cache" />
 			<arg value='--rsh=ssh -i ${upload.credentials}' />
 			<arg value="${build.uploadPath}/" />
 			<arg value="${upload.destination}" />

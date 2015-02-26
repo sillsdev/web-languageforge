@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>SFWeb(LanguageForge)</name>
+	<name>SFWeb</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -39,7 +39,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>0</id>
+			<id>1411638559964</id>
 			<name></name>
 			<type>30</type>
 			<matcher>

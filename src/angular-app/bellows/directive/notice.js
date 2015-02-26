@@ -82,9 +82,9 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
     replace : true,
     compile : function(tElement, tAttrs) {
       return function($scope, $elem, $attr) {
-                $scope.githubRepo = 'sfwebchecks';
+                $scope.githubRepo = 'web-scriptureforge';
                 if (sessionService.baseSite() === 'languageforge') {
-                  $scope.githubRepo = 'lfsite';
+                  $scope.githubRepo = 'web-languageforge';
                 }
 
         $scope.closeNotice = function(id) {
