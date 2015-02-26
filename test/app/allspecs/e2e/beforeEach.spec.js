@@ -8,7 +8,7 @@ afterEach(function() {
     if (isPresent) {
       appFrame.errorMessage.getText().then(function(message) {
         if (message.indexOf('Oh. Exception') != -1) {
-          console.log(message);
+          console.log("Browser Console JS Error: " + message);
           expect(true).toBe(false); // fail the test
         }
       });
