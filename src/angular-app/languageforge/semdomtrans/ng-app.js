@@ -18,8 +18,7 @@ angular.module('semdomtrans',
         .state('edit', {
             url: '/edit/:position',
             views: {
-            	'@': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html',
-            		controller: 'editCtrl'},
+            	'@': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html' },
             	'editItem@edit': {
             		templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editItem.html'
             	}	
@@ -29,8 +28,7 @@ angular.module('semdomtrans',
         .state('comments', {
             url: '/comments/:position',
             views: {
-            	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/comments.html',
-            		controller: 'commentsCtrl'}
+            	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/comments.html'}
             }
         })
   })
