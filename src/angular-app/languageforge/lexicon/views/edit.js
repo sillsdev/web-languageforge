@@ -703,7 +703,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     return valueToReturn;
   }
 
-  $scope.selectFieldForComment = function selectFieldForComment(fieldName, model, inputSystem, multioptionValue) {
+  $scope.selectFieldForComment = function selectFieldForComment(fieldName, model, inputSystem, multioptionValue, pictureFilePath) {
     if ($scope.state == 'comment' && $scope.rights.canComment()) {
       var fieldConfig = configService.getFieldConfig(fieldName);
       $scope.newComment.regarding.field = fieldName;
@@ -711,6 +711,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       $scope.newComment.regarding.displayClass = '';
       delete $scope.newComment.regarding.inputSystem;
       delete $scope.newComment.regarding.inputSystemAbbreviation;
+      $scope.newComment.regarding.isPicture = false;
       if (inputSystem) {
         $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
         $scope.newComment.regarding.inputSystem = $scope.config.inputSystems[inputSystem].languageName;
@@ -718,6 +719,9 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       } else if (multioptionValue) {
         $scope.newComment.regarding.fieldValue = multioptionValue;
         $scope.newComment.regarding.displayClass = 'dc-multioptionlist-value';
+      } else if (pictureFilePath) {
+        $scope.newComment.regarding.fieldValue = pictureFilePath;
+        $scope.newComment.regarding.isPicture = true;
       } else {
         $scope.newComment.regarding.fieldValue = getFieldValue(model);
       }
