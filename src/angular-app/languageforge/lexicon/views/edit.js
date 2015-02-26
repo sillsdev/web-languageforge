@@ -27,7 +27,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   };
   
   $scope.getEntryCommentCount = function(id) {
-	  return 1;
+    return 1;
   }
 
   // Reviewed CP 2014-08: Um, shouldn't these two be mutually exclusive.
@@ -346,8 +346,8 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
   
   $scope.currentEntryCommentCounts = {
-	    total: 0,
-	    fields: {}
+      total: 0,
+      fields: {}
   };
   
   $scope.entryCommentCounts = {};
