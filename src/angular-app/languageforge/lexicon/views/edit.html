@@ -159,8 +159,9 @@
                                     <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
                                     <span class="regardingFieldName">{{newComment.regarding.fieldNameForDisplay}}</span>
                                     <div data-ng-class="(newComment.regarding.inputSystem) ? 'input-prepend' : ''">
-                                        <span ng-if="newComment.regarding.inputSystem" class="add-on wsid regardingInputSystem" title="{{newComment.regarding.inputSystem}}">{{newComment.regarding.inputSystemAbbreviation}}</span>
+                                        <span data-ng-show="newComment.regarding.inputSystem" class="add-on wsid regardingInputSystem" title="{{newComment.regarding.inputSystem}}">{{newComment.regarding.inputSystemAbbreviation}}</span>
                                         <div class="uneditable-input regardingFieldValue" 
+                                            data-ng-class="newComment.regarding.displayClass"
                                             data-ng-bind-html="newComment.regarding.fieldValue" 
                                             data-pui-show-overflow></div>
                                     </div>

@@ -319,6 +319,10 @@ legend.override-bootstrap {
     cursor: pointer;
 }
 
+#lexAppCommentView .dc-multioptionlist-value {
+    background-color: inherit;
+}
+
 div.commentListContainer {
 
 }
