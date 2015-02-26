@@ -8,17 +8,18 @@ afterEach(function() {
     if (isPresent) {
       appFrame.errorMessage.getText().then(function(message) {
         if (message.indexOf('Oh. Exception') != -1) {
-          console.log("PHP API error on this page");
-          console.log(message);
-          expect(true).toBe(false); // fail the test
+          message = "PHP API error on this page: " + message;
+          expect(message).toEqual(''); // fail the test
         }
       });
     }
   });
   body.phpError.isPresent().then(function(isPresent) {
     if (isPresent) {
-      console.log("PHP Error present on this page");
-      expect(true).toBe(false); // fail the test
+      body.phpError.getText().then(function(message) {
+        message = "PHP Error present on this page:" + message;
+        expect(message).toEqual(''); // fail the test
+      });
     }
   });
 
@@ -34,9 +35,8 @@ afterEach(function() {
           // we ignore errors of this type caused by Angular being unloaded prematurely on page refreshes (since it's not a real error)
 
         } else {
-          console.log("Browser Console JS Error: " + message);
-          console.log('');
-          expect(true).toBe(false); // fail the test
+          message = "Browser Console JS Error: " + message;
+          expect(message).toEqual(''); // fail the test
         }
 
       }
