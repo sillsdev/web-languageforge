@@ -80,7 +80,9 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
             // upload.php script
             url: '/upload/lf-lexicon/sense-image',
             // headers: {'myHeaderKey': 'myHeaderVal'},
-            // data: {'entryId': ''},
+            data: {
+              'filename': file.name
+            },
             file: file
           }).progress(function(evt) {
             $scope.upload.progress = parseInt(100.0 * evt.loaded / evt.total);
