@@ -13,6 +13,7 @@ var SfProjectsPage = function() {
   this.url = "/app/projects";
   this.get = function() {
     browser.get(browser.baseUrl + this.url);
+    browser.waitForAngular();
   };
 
   this.testProjectName = 'Test Project';

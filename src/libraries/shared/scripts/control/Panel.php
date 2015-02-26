@@ -28,12 +28,12 @@ class Panel
     {
         $folderPath = APPPATH . 'libraries/shared/scripts/migration';
         $baseNames = glob($folderPath . '/*.php');
-    	$file_count = count($baseNames);
-		for ($i = 0; $i < $file_count; $i++)
-		{
-			$baseNames[$i] = basename($baseNames[$i], '.php');
-		}
+        $file_count = count($baseNames);
+        for ($i = 0; $i < $file_count; $i++)
+        {
+            $baseNames[$i] = basename($baseNames[$i], '.php');
+        }
 
-		return $baseNames;
+        return $baseNames;
     }
 }

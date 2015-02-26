@@ -41,7 +41,7 @@ class ZipImportNodeError extends ImportNodeError
     protected function toErrorString($termEnd = '', $dataStart = ', ', $dataEnd = '') {
         $msg = "processing $this->type '$this->identifier'" . $termEnd;
         foreach ($this->errors as $error) {
-    	    $msg .= $dataStart;
+            $msg .= $dataStart;
             switch ($error['error']) {
                 case 'UnhandledLiftFile':
                     $msg .= "unhandled LIFT file '" . $error['filename'] . "'";

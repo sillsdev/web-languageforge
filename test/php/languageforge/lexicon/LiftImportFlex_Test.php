@@ -19,32 +19,23 @@ class TestLiftImportFlex extends UnitTestCase
 {
 
     public function __construct() {
-        $this->environment = new LexiconMongoTestEnvironment();
-        $this->environment->clean();
+        $this->environ = new LexiconMongoTestEnvironment();
+        $this->environ->clean();
         parent::__construct();
     }
 
     /**
      * @var LexiconMongoTestEnvironment
      */
-    private $environment;
-
-    private static function indexByGuid($entries)
-    {
-        $index = array();
-        foreach ($entries as $entry) {
-            $index[$entry['guid']] = $entry;
-        }
-        return $index;
-    }
+    private $environ;
 
     /**
      * Cleanup test lift files
      */
     public function tearDown()
     {
-        $this->environment->cleanupTestUploadFiles();
-        $this->environment->clean();
+        $this->environ->cleanupTestUploadFiles();
+        $this->environ->clean();
     }
 
     const liftAllFlexFields = <<<EOD
@@ -242,8 +233,8 @@ EOD;
 
     public function testLiftImportMerge_FlexAllFields_HasAllFields()
     {
-        $liftFilePath = $this->environment->createTestLiftFile(self::liftAllFlexFields, 'LiftAllFlexFields.lift');
-        $project = $this->environment->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftAllFlexFields, 'LiftAllFlexFields.lift');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
@@ -254,10 +245,10 @@ EOD;
 
         $entries = $entryList->entries;
         $this->assertEqual($entryList->count, 2);
-        $index = self::indexByGuid($entries);
+        $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
 
-        $entry0 = new LexEntryModel($project, $index['0a18bb95-0eb2-422e-bf7e-c1fd90274670']['id']);
-        $entry1 = new LexEntryModel($project, $index['dc4106ac-13fd-4ae0-a32b-b737f413d515']['id']);
+        $entry0 = new LexEntryModel($project, $entriesByGuid['0a18bb95-0eb2-422e-bf7e-c1fd90274670']['id']);
+        $entry1 = new LexEntryModel($project, $entriesByGuid['dc4106ac-13fd-4ae0-a32b-b737f413d515']['id']);
 
         $this->assertEqual($entry0->guid, '0a18bb95-0eb2-422e-bf7e-c1fd90274670');
         $this->assertEqual($entry0->lexeme['th'], 'คาม');

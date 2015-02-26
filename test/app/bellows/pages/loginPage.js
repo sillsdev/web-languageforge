@@ -32,6 +32,8 @@ var SfLoginPageWithoutAstrolabe = function() {
     browser.driver.findElement(page.username).sendKeys(username);
     browser.driver.findElement(page.password).sendKeys(password);
     browser.driver.findElement(page.submit).click();
+
+    browser.waitForAngular();
   };
   this.loginAsAdmin = function() {
     this.login(constants.adminUsername, constants.adminPassword);

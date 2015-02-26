@@ -1,4 +1,4 @@
-angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multitext', 'ngAnimate', 'lexicon.services', 'bellows.services', 'palaso.ui.commentBubble'])
+angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.sense', 'ngAnimate', 'lexicon.services', 'bellows.services'])
   // Palaso UI Dictionary Control: Entry
   .directive('dcEntry', ['lexUtils', 'modalService', function(utils, modal) {
     return {
@@ -24,7 +24,6 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.sense', 'palaso.ui.dc.multit
           });
         };
 
-                $scope.fieldContainsData = lexConfigService.fieldContainsData;
       }],
       link : function(scope, element, attrs, controller) {
       }

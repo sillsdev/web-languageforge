@@ -14,15 +14,15 @@ class LanguageCode
     }
 
     /**
-	 * three letter language code
-	 * @var string
-	 */
+     * three letter language code
+     * @var string
+     */
     public $three;
 
     /**
-	 * two letter language code
-	 * @var string
-	 */
+     * two letter language code
+     * @var string
+     */
     public $two;
 
 }
@@ -38,23 +38,23 @@ class Language
     }
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $name;
 
     /**
-	 * @var LanguageCode
-	 */
+     * @var LanguageCode
+     */
     public $code;
 
     /**
-	 * @var ArrayOf <string>
-	 */
+     * @var ArrayOf <string>
+     */
     public $country;
 
     /**
-	 * @var ArrayOf <string>
-	 */
+     * @var ArrayOf <string>
+     */
     public $altNames;
 
 }
@@ -112,10 +112,10 @@ class LanguageData extends MapOf
     }
 
     /**
-	 * Extracts the language code from the tag
-	 * @param string $tag
-	 * @return string
-	 */
+     * Extracts the language code from the tag
+     * @param string $tag
+     * @return string
+     */
     public function getCode($tag)
     {
         $tokens = explode('-', $tag);

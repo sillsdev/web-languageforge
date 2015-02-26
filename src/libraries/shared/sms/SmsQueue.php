@@ -12,9 +12,9 @@ class SmsQueue
 {
 
     /**
-	 * Attempts to deliver a single sms message.
-	 * @param SmsModel $smsModel
-	 */
+     * Attempts to deliver a single sms message.
+     * @param SmsModel $smsModel
+     */
     public static function deliver($smsModel)
     {
         CodeGuard::checkTypeAndThrow($smsModel, 'libraries\shared\sms\SmsModel');
@@ -38,10 +38,10 @@ class SmsQueue
         );
 
         /* Not exactly sure as to what constitutes the various failure modes.  For now dump the message response to the log.
-		 * As we know more we can 'white list' the codes and handle them gracefully here.
-		 */
+         * As we know more we can 'white list' the codes and handle them gracefully here.
+         */
         error_log(var_export($message, true));
-// 		var_dump($message);
+//         var_dump($message);
 
         // Update the state
         $smsModel->state = SmsModel::SMS_SENT;
@@ -50,9 +50,9 @@ class SmsQueue
     }
 
     /**
-	 * Attempts to deliver any sms messages in the queue.
-	 * @param string $databaseName
-	 */
+     * Attempts to deliver any sms messages in the queue.
+     * @param string $databaseName
+     */
     public static function processQueue($databaseName)
     {
         // TODO Async
@@ -65,8 +65,8 @@ class SmsQueue
     }
 
     /**
-	 * @param SmsModel $smsModel
-	 */
+     * @param SmsModel $smsModel
+     */
     public static function queue($smsModel)
     {
         CodeGuard::checkTypeAndThrow($smsModel, 'libraries\shared\sms\SmsModel');
