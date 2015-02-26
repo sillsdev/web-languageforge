@@ -1,5 +1,5 @@
 "use strict";
-angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.dc.comment', 'lexicon.services',  'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.comment', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
+angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.dc.comment',  'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.comment', 'ngAnimate', 'truncate', 'palaso.ui.scroll', 'palaso.ui.notice'])
 // Palaso UI Dictionary Control: Comments
 .directive('commentsRightPanel', [function() {
   return {
