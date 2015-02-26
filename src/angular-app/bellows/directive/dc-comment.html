@@ -4,7 +4,7 @@
     </div>
     <div ng-class="{resolvedComment: model.status == 'resolved'}" >
         <div class="commentContentContainer">
-            <div style="width:20px; height:20px; text-align:center; position:absolute; right:5px; cursor: pointer" tooltip="Delete Comment" tooltip-placement="left" ng-show="control.rights.canDeleteComment(model.authorInfo.createdByUserRef.id) && hover.comment && !model.editing" ng-click="control.deleteComment(model)"><i class="icon-remove" ></i></div>
+            <div style="width:20px; height:20px; text-align:center; position:absolute; right:5px; cursor: pointer" tooltip="Delete Comment" tooltip-placement="left" ng-show="control.rights.canDeleteComment(model.authorInfo.createdByUserRef.id) && hover.comment && !model.editing" ng-click="deleteComment(model)"><i class="icon-remove" ></i></div>
             <div class="commentLeftSide">
                 <div ng-show="model.status == 'resolved'" style="height:20px" >
                 </div>
