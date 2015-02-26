@@ -319,12 +319,14 @@ legend.override-bootstrap {
     cursor: pointer;
 }
 
-#lexAppCommentView .dc-multioptionlist-value {
+#lexAppCommentView .dc-multioptionlist-value,
+.commentRegarding .dc-multioptionlist-value {
     background-color: inherit;
     width: inherit;
 }
 
-#lexAppCommentView .commentListView img {
+#lexAppCommentView .commentListView img,
+.commentRegarding img {
     width: 50px;
 }
 
