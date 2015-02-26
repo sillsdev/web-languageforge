@@ -250,9 +250,10 @@ class LexEntryModel extends \models\mapper\MapperModel
 
     /**
      * If the $value of $propertyName exists in senses return the index
-     * @param string $senseId
-     * @param array $senses
-     * @return array <$index or -1 if not found>
+     *
+     * @param string $propertyName
+     * @param string $value
+     * @return number $index or -1 if not found
      */
     public function searchSensesFor($propertyName, $value)
     {
@@ -261,7 +262,6 @@ class LexEntryModel extends \models\mapper\MapperModel
                 return $index;
             }
         }
-
         return -1;
     }
 

@@ -1,57 +1,57 @@
 <div ng-controller="UserCtrl" class="content container" ng-cloak>
-	<h1>Thanks for joining</h1>
-	<sil-notices></sil-notices>
-	<div class="well" ng-hide="showForm || errorState">
-		<img id="userJoinedLoading" src="/images/shared/loading-small.gif" /> Loading...
-	</div>
-	<div ng-show="showForm">
-	<div class="row">
-	<div class="span4">
-		<form ng-submit="registerUser(record)" id="userForm" name="registrationForm" novalidate>
-			<p>We just need a few more details. Please fill out the details below, and click Join when you're done.</p>
-			<fieldset>
-			<div class="well">
-				<h5>{{record.email}}</h5>
-				<label>User Name</label>
-				<input required type="text"
-					placeholder="pick a user name" ng-model="record.username"
-					name="username" id="username" idle-validate="checkUserName()" idle-validate-keypress="resetValidateRegistrationForm()" />
-					<span  ng-show="userNameLoading"><img id="userNameLoading" src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
-					<span  ng-show="userNameOk"><img id="userNameOk" src="/images/shared/tick.png" title="User name is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
-					<span  ng-show="userNameExists"><img id="userNameExists" src="/images/shared/exclamation.png" title="User name already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
-				<label>Name</label>
-				<input required type="text" placeholder="your real name" ng-model="record.name" />
-				<div data-ng-show="showPassword">
-					<label>Password</label> 
-					<input required type="text" 
-						data-ng-model="record.password" name="password" id="visiblePassword" 
-						title="Passwords must be at least 7 characters" />
-					<span data-ng-show='record.password && record.password.length < 7'><img src="/images/shared/exclamation.png" title="Passwords must be at least 7 characters!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
-					<label>Confirm password</label>
-					<input type="text" disabled />
-				</div>
-				<div data-ng-hide="showPassword">
-					<label>Password</label>
-					<input required type="password"  
-						data-ng-model="record.password" name="password" id="password" 
-						title="Passwords must be at least 7 characters" />
-					<span data-ng-show='record.password && record.password.length < 7'><img src="/images/shared/exclamation.png" title="Passwords must be at least 7 characters!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
-					<label>Confirm password</label>
-					<input data-ng-required="!showPassword" type="password" data-ng-disabled="showPassword"  
-						data-ng-model="confirmPassword" name="confirmPassword"
-						title="Passwords must be at least 7 characters" />
-					<span data-ng-show='record.password && record.password != confirmPassword'><img src="/images/shared/exclamation.png" title="Passwords do not match!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
-					<span data-ng-show='record.password && record.password == confirmPassword'><img src="/images/shared/tick.png" title="Passwords match" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
-				</div>
-				<label class="checkbox"><input type="checkbox" data-ng-model="showPassword"/> Show password</label>
-				<button id="submit" class="btn btn-primary" type="submit" data-ng-disabled="userNameExists || registrationForm.$invalid || requestInProgress || (!showPassword && record.password != confirmPassword) || record.password.length < 7">
-				Join
-				</button>
-			</div>
-			</fieldset>
-		</form>
-	</div>
-	</div>
-	</div>
-	<div class="well" ng-show="errorState">We cannot complete the registration process for you at this time.  Please <a href='/signup'>sign up here</a> instead.</div>
+    <h1>Thanks for joining</h1>
+    <sil-notices></sil-notices>
+    <div class="well" ng-hide="showForm || errorState">
+        <img id="userJoinedLoading" src="/images/shared/loading-small.gif" /> Loading...
+    </div>
+    <div ng-show="showForm">
+    <div class="row">
+    <div class="span4">
+        <form ng-submit="registerUser(record)" id="userForm" name="registrationForm" novalidate>
+            <p>We just need a few more details. Please fill out the details below, and click Join when you're done.</p>
+            <fieldset>
+            <div class="well">
+                <h5>{{record.email}}</h5>
+                <label>User Name</label>
+                <input required type="text"
+                    placeholder="pick a user name" ng-model="record.username"
+                    name="username" id="username" idle-validate="checkUserName()" idle-validate-keypress="resetValidateRegistrationForm()" />
+                    <span  ng-show="userNameLoading"><img id="userNameLoading" src="/images/shared/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+                    <span  ng-show="userNameOk"><img id="userNameOk" src="/images/shared/tick.png" title="User name is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                    <span  ng-show="userNameExists"><img id="userNameExists" src="/images/shared/exclamation.png" title="User name already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                <label>Name</label>
+                <input required type="text" placeholder="your real name" ng-model="record.name" />
+                <div data-ng-show="showPassword">
+                    <label>Password</label> 
+                    <input required type="text" 
+                        data-ng-model="record.password" name="password" id="visiblePassword" 
+                        title="Passwords must be at least 7 characters" />
+                    <span data-ng-show='record.password && record.password.length < 7'><img src="/images/shared/exclamation.png" title="Passwords must be at least 7 characters!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                    <label>Confirm password</label>
+                    <input type="text" disabled />
+                </div>
+                <div data-ng-hide="showPassword">
+                    <label>Password</label>
+                    <input required type="password"  
+                        data-ng-model="record.password" name="password" id="password" 
+                        title="Passwords must be at least 7 characters" />
+                    <span data-ng-show='record.password && record.password.length < 7'><img src="/images/shared/exclamation.png" title="Passwords must be at least 7 characters!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                    <label>Confirm password</label>
+                    <input data-ng-required="!showPassword" type="password" data-ng-disabled="showPassword"  
+                        data-ng-model="confirmPassword" name="confirmPassword"
+                        title="Passwords must be at least 7 characters" />
+                    <span data-ng-show='record.password && record.password != confirmPassword'><img src="/images/shared/exclamation.png" title="Passwords do not match!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                    <span data-ng-show='record.password && record.password == confirmPassword'><img src="/images/shared/tick.png" title="Passwords match" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                </div>
+                <label class="checkbox"><input type="checkbox" data-ng-model="showPassword"/> Show password</label>
+                <button id="submit" class="btn btn-primary" type="submit" data-ng-disabled="userNameExists || registrationForm.$invalid || requestInProgress || (!showPassword && record.password != confirmPassword) || record.password.length < 7">
+                Join
+                </button>
+            </div>
+            </fieldset>
+        </form>
+    </div>
+    </div>
+    </div>
+    <div class="well" ng-show="errorState">We cannot complete the registration process for you at this time.  Please <a href='/signup'>sign up here</a> instead.</div>
 </div>

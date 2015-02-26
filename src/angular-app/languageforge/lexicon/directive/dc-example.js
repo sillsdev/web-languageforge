@@ -1,4 +1,4 @@
-angular.module('palaso.ui.dc.example', ['palaso.ui.dc.multitext', 'lexicon.services'])
+angular.module('palaso.ui.dc.example', ['palaso.ui.dc.fieldrepeat'])
 // Palaso UI Dictionary Control: Example Sentence
 .directive('dcExample', [function() {
   return {
@@ -11,9 +11,7 @@ angular.module('palaso.ui.dc.example', ['palaso.ui.dc.multitext', 'lexicon.servi
       remove : "=",
       control : "="
     },
-    controller: ['$scope', 'lexConfigService', function($scope, lexConfigService) {
-            $scope.isFieldEnabled = lexConfigService.isFieldEnabled;
-            $scope.isUncommonField = lexConfigService.isUncommonField;
+    controller: ['$scope', function($scope) {
     }],
     link : function(scope, element, attrs, controller) {
     }

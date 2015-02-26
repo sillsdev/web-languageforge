@@ -2,7 +2,6 @@
 
 var constants       = require('../../../testConstants');
 var loginPage       = require('../../pages/loginPage');
-var projectListPage = require('../../pages/projectsPage.js');
 var userProfile     = require('../../pages/userProfilePage');
 
 // Array of test usernames to test Activity page with different roles
@@ -84,12 +83,13 @@ describe('User Profile E2E Test', function() {
         // Submit updated profile
         userProfile.myAccountTab.saveBtn.click();
 
-        // Browse to different URL first to force new page load
-        projectListPage.get();
-        userProfile.getMyAccount();
+        // we must have an expectation following the button click so that angular is not interrupted by the browser.refresh() below, causing a JS console error
+        expect(userProfile.myAccountTab.bothBtn.isSelected());
+
+        browser.refresh();
 
         // Verify values.
-         expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(expectedAvatar);
+        expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(expectedAvatar);
         expect(userProfile.myAccountTab.avatarColor.$('option:checked').getText()).toBe(newColor);
         expect(userProfile.myAccountTab.avatarShape.$('option:checked').getText()).toBe(newShape);
         expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value')).toEqual(newMobilePhone);
@@ -121,9 +121,9 @@ describe('User Profile E2E Test', function() {
         
         // Submit updated profile
         userProfile.aboutMeTab.saveBtn.click();
+        expect(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(newFullName);
 
         // Verify values.  Browse to different URL first to force new page load
-        projectListPage.get();
         userProfile.getAboutMe();
 
         expect(userProfile.aboutMeTab.fullName.getAttribute('value')).toEqual(newFullName);

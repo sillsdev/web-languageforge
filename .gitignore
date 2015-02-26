@@ -12,7 +12,6 @@ src/assets/
 .idea/*
 test/app/node_modules/protractor/selenium/
 test/app/node_modules/.bin/
-.project
 src/vendor_bower/
 
 docs/semdom/*.xml

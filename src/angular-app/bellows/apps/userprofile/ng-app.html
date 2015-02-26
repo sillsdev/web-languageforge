@@ -1,70 +1,70 @@
 <div class="content container" data-ng-cloak>
-	<div data-ng-controller="userProfileCtrl">
-		<h1>{{user.name}}'s User Profile</h1>
-		<sil-notices></sil-notices>
-		<form data-ng-submit="updateUser()">
-		<fieldset>
-			<div data-ng-show="notify.error" class="notification errorMessage">Error: {{notify.error}}</div>
-			<div data-ng-show="notify.message" class="notification informationMessage">{{notify.message}}</div>
-			<tabset>
-				<tab heading="My Account" id="MyAccountTab">
-					<label>Username: <b style="margin-left:10px">{{user.username}}</b></label>
-					<label>Picture</label>
-					<div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{user.avatar_ref}}" title="Use the dropdown selections below to change your avatar's color and shape" /></div>
-					<div><select data-ng-model="user.avatar_color" data-ng-options="c.value as c.label for c in dropdown.avatarColors"><option value="">Select a Color...</option></select></div>
-					<div><select data-ng-model="user.avatar_shape" data-ng-options="s.value as s.label for s in dropdown.avatarShapes"><option value="">Choose an animal...</option></select></div>
-					<label>Email Address: <b style="margin-left:10px">{{user.email}}</b></label>
-					<label>Mobile Phone Number</label>
-					<input type="tel" data-pui-intl-tel-input placeholder="###-####" data-ng-model="user.mobile_phone"/>
-					<label style="margin-top:10px" >Receive updates via</label>
-					<div class="btn-group">
-						<button type="button" class="btn" data-ng-model="user.communicate_via" btn-radio="'email'" id="EmailButton">Email</button>
-						<button type="button" class="btn" data-ng-model="user.communicate_via" btn-radio="'sms'"   id="SMSButton">SMS</button>
-						<button type="button" class="btn" data-ng-model="user.communicate_via" btn-radio="'both'"  id="BothButton">Both</button>
-					</div>
-					
-					<label style="margin-top:20px"><a href="/app/changepassword">Change Password</a></label>
-				</tab>
-				<tab heading="About Me" id="AboutMeTab">
-					<h5>Tell us about yourself...</h5>
-					<label>Full Name</label>
-					<input type="text" placeholder="(full name)" data-ng-model="user.name"/>
-					<label>Age</label>
-					<input type="text" placeholder="(age)" data-ng-model="user.age"/>
-					<label>Gender</label>
-					<select data-ng-model="user.gender">
-						<option>Male</option>
-						<option>Female</option>
-					</select>
-				</tab>
-				<tab data-ng-repeat="project in projectsSettings" heading="{{project.name}}" disabled="project.userProperties.userProfilePropertiesEnabled.length == 0">
-					<div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('city') >= 0">
-						<label>{{project.userProperties.userProfilePickLists['city'].name}}</label>
-						<select data-ng-class="" data-ng-model="project.userProperties.userProfilePickLists['city'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['city'].items"></select>
-					</div>
-					<div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('preferredBibleVersion') >= 0">
-						<label>{{project.userProperties.userProfilePickLists['preferredBibleVersion'].name}}</label>
-						<select data-ng-model="project.userProperties.userProfilePickLists['preferredBibleVersion'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['preferredBibleVersion'].items"></select>
-					</div>
-					<div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('religiousAffiliation') >= 0">
-						<label>{{project.userProperties.userProfilePickLists['religiousAffiliation'].name}}</label>
-						<select data-ng-model="project.userProperties.userProfilePickLists['religiousAffiliation'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['religiousAffiliation'].items"></select>
-					</div>
-					<div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('studyGroup') >= 0">
-						<label>{{project.userProperties.userProfilePickLists['studyGroup'].name}}</label>
-						<select data-ng-model="project.userProperties.userProfilePickLists['studyGroup'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['studyGroup'].items"></select>
-					</div>
-					<div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('feedbackGroup') >= 0">
-						<label>{{project.userProperties.userProfilePickLists['feedbackGroup'].name}}</label>
-						<select data-ng-model="project.userProperties.userProfilePickLists['feedbackGroup'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['feedbackGroup'].items"></select>
-					</div>
-				</tab>
-			</tabset>
-			<button style="margin-top:20px" type="submit" class="btn" id="saveBtn"><i class="icon-ok"></i>Save</button>
-			<div style="margin-top:20px" class="well">
-				<label>Last Login:  {{user.last_login * 1000 | date:shortDate}}</label>
-			</div>
-		</fieldset>
-		</form>
-	</div>
+    <div data-ng-controller="userProfileCtrl">
+        <h1>{{user.name}}'s User Profile</h1>
+        <sil-notices></sil-notices>
+        <form data-ng-submit="updateUser()">
+        <fieldset>
+            <div data-ng-show="notify.error" class="notification errorMessage">Error: {{notify.error}}</div>
+            <div data-ng-show="notify.message" class="notification informationMessage">{{notify.message}}</div>
+            <tabset>
+                <tab heading="My Account" id="MyAccountTab">
+                    <label>Username: <b style="margin-left:10px">{{user.username}}</b></label>
+                    <label>Picture</label>
+                    <div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{user.avatar_ref}}" title="Use the dropdown selections below to change your avatar's color and shape" /></div>
+                    <div><select data-ng-model="user.avatar_color" data-ng-options="c.value as c.label for c in dropdown.avatarColors"><option value="">Select a Color...</option></select></div>
+                    <div><select data-ng-model="user.avatar_shape" data-ng-options="s.value as s.label for s in dropdown.avatarShapes"><option value="">Choose an animal...</option></select></div>
+                    <label>Email Address: <b style="margin-left:10px">{{user.email}}</b></label>
+                    <label>Mobile Phone Number</label>
+                    <input type="tel" data-pui-intl-tel-input placeholder="###-####" data-ng-model="user.mobile_phone"/>
+                    <label style="margin-top:10px" >Receive updates via</label>
+                    <div class="btn-group">
+                        <button type="button" class="btn" data-ng-model="user.communicate_via" btn-radio="'email'" id="EmailButton">Email</button>
+                        <button type="button" class="btn" data-ng-model="user.communicate_via" btn-radio="'sms'"   id="SMSButton">SMS</button>
+                        <button type="button" class="btn" data-ng-model="user.communicate_via" btn-radio="'both'"  id="BothButton">Both</button>
+                    </div>
+                    
+                    <label style="margin-top:20px"><a href="/app/changepassword">Change Password</a></label>
+                </tab>
+                <tab heading="About Me" id="AboutMeTab">
+                    <h5>Tell us about yourself...</h5>
+                    <label>Full Name</label>
+                    <input type="text" placeholder="(full name)" data-ng-model="user.name"/>
+                    <label>Age</label>
+                    <input type="text" placeholder="(age)" data-ng-model="user.age"/>
+                    <label>Gender</label>
+                    <select data-ng-model="user.gender">
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+                </tab>
+                <tab data-ng-repeat="project in projectsSettings" heading="{{project.name}}" disabled="project.userProperties.userProfilePropertiesEnabled.length == 0">
+                    <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('city') >= 0">
+                        <label>{{project.userProperties.userProfilePickLists['city'].name}}</label>
+                        <select data-ng-class="" data-ng-model="project.userProperties.userProfilePickLists['city'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['city'].items"></select>
+                    </div>
+                    <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('preferredBibleVersion') >= 0">
+                        <label>{{project.userProperties.userProfilePickLists['preferredBibleVersion'].name}}</label>
+                        <select data-ng-model="project.userProperties.userProfilePickLists['preferredBibleVersion'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['preferredBibleVersion'].items"></select>
+                    </div>
+                    <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('religiousAffiliation') >= 0">
+                        <label>{{project.userProperties.userProfilePickLists['religiousAffiliation'].name}}</label>
+                        <select data-ng-model="project.userProperties.userProfilePickLists['religiousAffiliation'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['religiousAffiliation'].items"></select>
+                    </div>
+                    <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('studyGroup') >= 0">
+                        <label>{{project.userProperties.userProfilePickLists['studyGroup'].name}}</label>
+                        <select data-ng-model="project.userProperties.userProfilePickLists['studyGroup'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['studyGroup'].items"></select>
+                    </div>
+                    <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('feedbackGroup') >= 0">
+                        <label>{{project.userProperties.userProfilePickLists['feedbackGroup'].name}}</label>
+                        <select data-ng-model="project.userProperties.userProfilePickLists['feedbackGroup'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['feedbackGroup'].items"></select>
+                    </div>
+                </tab>
+            </tabset>
+            <button style="margin-top:20px" type="submit" class="btn" id="saveBtn"><i class="icon-ok"></i>Save</button>
+            <div style="margin-top:20px" class="well">
+                <label>Last Login:  {{user.last_login * 1000 | date:shortDate}}</label>
+            </div>
+        </fieldset>
+        </form>
+    </div>
 </div>
