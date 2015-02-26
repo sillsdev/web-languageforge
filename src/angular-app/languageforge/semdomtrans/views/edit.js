@@ -8,6 +8,9 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $ro
     if ($scope.items.length == 0 && !$scope.loadingDto) {
       $scope.refreshData(true);
     } 
+    
+  $scope.maxDepth = 10;
+  $scope.selectedDepth = $scope.maxDepth;
   $scope.$parent.itemIndex = $stateParams.position;
   $scope.selectedTab = 0;
    $scope.control = $scope;
@@ -17,6 +20,12 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $ro
   $scope.state = "edit";
   var api = semdomEditApi;
   
+  $scope.checkDepth = function checkDepth(key) {
+    if ((key.length + 1) / 2 <= $scope.selectedDepth) {
+      return true;
+    }
+    return false;
+  }
   $scope.setTab = function(val) {
     $scope.selectedTab = val;
   }  
