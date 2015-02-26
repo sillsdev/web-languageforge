@@ -18,17 +18,17 @@ angular.module('semdomtrans',
         .state('edit', {
             url: '/edit/:position',
             views: {
-            	'@': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html' },
-            	'editItem@edit': {
-            		templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editItem.html'
-            	}	
+              '@': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html' },
+              'editItem@edit': {
+                templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editItem.html'
+              }  
             }
         })
         
         .state('comments', {
             url: '/comments/:position',
             views: {
-            	'': {templateUrl: '/angular-app/languageforge/semdomtrans/views/comments.html'}
+              '': {templateUrl: '/angular-app/languageforge/semdomtrans/views/comments.html'}
             }
         })
   })
@@ -40,18 +40,18 @@ angular.module('semdomtrans',
    $scope.itemIndex  = 0;
    $scope.loadingDto = false;
    $scope.refreshData = function refreshData(v, callback) {
-	   $scope.loadingDto = true;
-	   $semdomApi.editorDto(function(result) {
-			if (result.ok) {
-				$scope.items = result.data.items;	
-				$scope.comments = result.data.comments;		
-				$scope.currentEntry = $scope.items[$scope.itemIndex ];
-				$scope.loadingDto = false;
-				if (!angular.isUndefined(callback)) {
-					callback();
-				}
-			}
-		});
+     $scope.loadingDto = true;
+     $semdomApi.editorDto(function(result) {
+      if (result.ok) {
+        $scope.items = result.data.items;  
+        $scope.comments = result.data.comments;    
+        $scope.currentEntry = $scope.items[$scope.itemIndex ];
+        $scope.loadingDto = false;
+        if (!angular.isUndefined(callback)) {
+          callback();
+        }
+      }
+    });
    }
   
    
