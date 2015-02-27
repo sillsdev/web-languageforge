@@ -159,14 +159,14 @@
                                     <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
                                     <span class="regardingFieldName">{{newComment.regarding.fieldNameForDisplay}}</span>
                                     <div data-ng-class="(newComment.regarding.inputSystem) ? 'input-prepend' : ''"
-                                        data-ng-hide="newCommentRegardingIsPicture">
+                                        data-ng-hide="isNewCommentRegardingPicture">
                                         <span data-ng-show="newComment.regarding.inputSystem" class="add-on wsid regardingInputSystem" title="{{newComment.regarding.inputSystem}}">{{newComment.regarding.inputSystemAbbreviation}}</span>
                                         <div class="uneditable-input regardingFieldValue" 
-                                            data-ng-class="{'dc-multioptionlist-value': (newComment.regarding.fieldType == 'multioptionlist')}"
+                                            data-ng-class="{'dc-multioptionlist-value': (newCommentRegardingFieldConfig.type == 'multioptionlist')}"
                                             data-ng-bind-html="newComment.regarding.fieldValue" 
                                             data-pui-show-overflow></div>
                                     </div>
-                                    <div data-ng-if="newCommentRegardingIsPicture">
+                                    <div data-ng-if="isNewCommentRegardingPicture">
                                         <img data-ng-src="{{newComment.regarding.fieldValue}}" />
                                     </div>
                                 </div>
