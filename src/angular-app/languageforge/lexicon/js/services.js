@@ -445,10 +445,12 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
       }
 
       // capture text inside parentheses
-      var myRegexp = /\((.*)\)/, 
-        match = myRegexp.exec(posModel.value);
+      var myRegexp = /\((.*)\)/; 
+      var match = myRegexp.exec(posModel.value);
       if (match && match.length > 1) {
         return match[1];
+      } else if (! posModel.value) {
+        return '';
       } else {
         return posModel.value.toLowerCase().substring(0, 5);
       }
