@@ -337,7 +337,7 @@ class Website
         $w = new Website('languageforge.org', self::LANGUAGEFORGE);
         $w->name = 'Language Forge';
         $w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
-        $w->ssl = false;
+        $w->ssl = true;
         $sites['languageforge.org'] = $w;
 
         /*
