@@ -11,6 +11,10 @@ class SfchecksRoles extends ProjectRoles
     // idea: role for an user who can add questions?
     // const QUESTION_CONTRIBUTOR = 'question_contributor';
 
+    public static function getRolesList() {
+        return ProjectRoles::getRolesList();
+    }
+
     public static function init()
     {
         // Project Contributor

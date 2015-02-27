@@ -11,6 +11,13 @@ class LexiconRoles extends ProjectRoles
     const OBSERVER = 'observer';
     const OBSERVER_WITH_COMMENT = 'observer_with_comment';
 
+    public static function getRolesList() {
+        $roles = ProjectRoles::getRolesList();
+        $roles[self::OBSERVER] = 'Observer';
+        $roles[self::OBSERVER_WITH_COMMENT] = 'Observer with comment';
+        return $roles;
+    }
+
     public static function init()
     {
         // Observer
