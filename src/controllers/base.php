@@ -204,8 +204,9 @@ class base extends CI_Controller
 
     private static function addFiles($ext, $dir, &$result, $exclude)
     {
-        if (is_dir($dir) && ($handle = opendir($dir))) {
-            while ($file = readdir($handle)) {
+        if (is_dir($dir)) {
+            $files = scandir($dir);
+            foreach ($files as $file) {
                 $filepath = $dir . '/' . $file;
                 foreach ($exclude as $ex) {
                     if (strpos($filepath, $ex)) {
@@ -230,7 +231,6 @@ class base extends CI_Controller
                     self::addFiles($ext, $filepath, $result, $exclude);
                 }
             }
-            closedir($handle);
         }
     }
 

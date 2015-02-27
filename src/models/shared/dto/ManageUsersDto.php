@@ -13,12 +13,18 @@ class ManageUsersDto
      */
     public static function encode($projectId)
     {
-        $projectModel = new ProjectModel($projectId);
+        $projectModel = ProjectModel::getById($projectId);
 
         $list = $projectModel->listUsers();
         $data = array();
         $data['userCount'] = $list->count;
         $data['users'] = $list->entries;
+        $data['project'] = array(
+            'roles' => $projectModel->getRolesList(),
+            'ownerRef' => $projectModel->ownerRef,
+            'name' => $projectModel->projectName,
+            'appLink' => "/app/{$projectModel->appName}/$projectId/"
+        );
 
         return $data;
     }
