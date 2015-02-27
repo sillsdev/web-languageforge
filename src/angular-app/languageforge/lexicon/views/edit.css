@@ -330,8 +330,8 @@ legend.override-bootstrap {
     width: 50px;
 }
 
-div.commentListContainer {
-
+form.submitted .ng-invalid {
+  border:1px solid #f00;
 }
 
 div.newCommentForm {

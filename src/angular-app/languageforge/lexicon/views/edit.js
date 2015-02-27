@@ -815,8 +815,9 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       comment = angular.copy($scope.newComment);
 
       // dont submit empty comments
-      if (comment.content == '')
+      if (angular.isUndefined(comment.content) || ! comment.content.trim()) {
         return;
+      }
 
       // comment.content is already set in the form
       comment.entryRef = $scope.currentEntry.id;
