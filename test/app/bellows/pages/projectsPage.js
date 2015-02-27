@@ -90,6 +90,7 @@ var SfProjectsPage = function() {
       var link = projectRow.$('a');
       link.getAttribute('href').then(function(url) {
         browser.get(url);
+        browser.waitForAngular();
       });
     });
   };
@@ -107,6 +108,7 @@ var SfProjectsPage = function() {
           extraUrlPart = '#/users';
         }
         browser.get(url + extraUrlPart);
+        browser.waitForAngular();
         // Users tab is selected by default, so the following check might not be needed
 //        var usersTab = element(by.xpath('//li[@heading="Users"]'));
 //        expect(usersTab.isElementPresent()).toBeTruthy();
@@ -166,6 +168,7 @@ var SfProjectsPage = function() {
           extraUrlPart = '#/users';
         }
         browser.get(url + extraUrlPart);
+        browser.waitForAngular();
         var userFilter = element(by.model('userFilter'));
         userFilter.sendKeys(userName);
         var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
