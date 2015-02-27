@@ -19,9 +19,11 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils'])
 
             $scope.editingCommentContent = '';
             
-            $scope.commentRegardingFieldConfig = configService.getFieldConfig($scope.model.regarding.field);
-            $scope.isCommentRegardingPicture = (($scope.commentRegardingFieldConfig.type == 'pictures') && 
-                ! ($scope.model.regarding.inputSystem));
+            if ($scope.model.regarding.field) {
+              $scope.commentRegardingFieldConfig = configService.getFieldConfig($scope.model.regarding.field);
+              $scope.isCommentRegardingPicture = (($scope.commentRegardingFieldConfig.type == 'pictures') && 
+                  ! ($scope.model.regarding.inputSystem));
+            }
 
             // I don't necessarily like this, but we keep the comment methods on edit.js so
             // that the view can be refreshed after an update or delete - cjh 2014-08
