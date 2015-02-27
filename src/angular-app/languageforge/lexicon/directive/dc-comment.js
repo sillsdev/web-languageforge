@@ -9,7 +9,7 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils'])
       model : "=",
       control: "="
     },
-    controller: ['$scope', function($scope) {
+    controller: ['$scope', 'lexConfigService', function($scope, configService) {
 
             $scope.hover = { comment: false };
 
@@ -19,7 +19,8 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils'])
 
             $scope.editingCommentContent = '';
             
-            $scope.isPicture = (($scope.model.regarding.field == 'pictures') && 
+            $scope.commentRegardingFieldConfig = configService.getFieldConfig($scope.model.regarding.field);
+            $scope.isCommentRegardingPicture = (($scope.commentRegardingFieldConfig.type == 'pictures') && 
                 ! ($scope.model.regarding.inputSystem));
 
             // I don't necessarily like this, but we keep the comment methods on edit.js so
