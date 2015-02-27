@@ -148,9 +148,9 @@
                     </div>
                 </div>
                 <div class="commentListView">
-                    <form ng-show="control.rights.canComment()" class="newCommentForm" id="newCommentForm"
-                        data-ng-class="{submitted: isNewCommentSubmitted}" novalidate>
-                        <div style="display:flex; flex-direction: column">
+                    <div ng-show="control.rights.canComment()" class="newCommentForm">
+                        <form style="display:flex; flex-direction: column" id="newCommentForm"
+                            data-ng-class="{submitted: isNewCommentSubmitted}" novalidate>
                             <textarea data-ng-model="newComment.content" 
                                 required 
                                 data-ng-change="isNewCommentSubmitted = false"
@@ -181,8 +181,8 @@
                             <div style="text-align: right; margin-right:10px">
                                 <button class="btn-sm" ng-click="isNewCommentSubmitted = true; updateComment()">Post</button>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                     <div class="commentListContainer">
                         <div ng-repeat="comment in currentEntryCommentsFiltered">
                             <dc-comment control="control" model="comment"></dc-comment>
