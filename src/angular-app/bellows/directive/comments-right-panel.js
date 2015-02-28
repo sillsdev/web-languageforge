@@ -9,7 +9,7 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
       model : "=",
       control: "="
     },
-    controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService', function($scope, $filter, commentService, sessionService, modal) {
+    controller: ['$scope', '$filter', 'commentService', 'sessionService', 'modalService', function($scope, $filter, commentService, sessionService, modal) {
        var commentService = commentService;    
         $scope.currentEntryComments = [];
         $scope.commentsUserPlusOne = [];
