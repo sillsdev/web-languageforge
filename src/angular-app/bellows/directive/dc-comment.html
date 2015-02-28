@@ -1,10 +1,10 @@
 <div class="commentContainer" ng-mouseenter="hover.comment = true" ng-mouseleave="hover.comment = false">
-    <div ng-show="model.status == 'resolved'" style="width:70px; height:20px; font-weight:bold; font-size: x-small; position:absolute; left:-2px; z-index: 10; cursor:pointer;" tooltip-placement="right" tooltip="Click to reopen comment" ng-click="control.updateCommentStatus(model.id, 'open')">
+    <div ng-show="model.status == 'resolved'" style="width:70px; height:20px; font-weight:bold; font-size: x-small; position:absolute; left:-2px; z-index: 10; cursor:pointer;" tooltip-placement="right" tooltip="Click to reopen comment" ng-click="updateCommentStatus(model.id, 'open')">
         <i style="color: #8be25c;" class="icon-ok icon-2x"></i>Resolved
     </div>
     <div ng-class="{resolvedComment: model.status == 'resolved'}" >
         <div class="commentContentContainer">
-            <div style="width:20px; height:20px; text-align:center; position:absolute; right:5px; cursor: pointer" tooltip="Delete Comment" tooltip-placement="left" ng-show="control.rights.canDeleteComment(model.authorInfo.createdByUserRef.id) && hover.comment && !model.editing" ng-click="control.deleteComment(model)"><i class="icon-remove" ></i></div>
+            <div style="width:20px; height:20px; text-align:center; position:absolute; right:5px; cursor: pointer" tooltip="Delete Comment" tooltip-placement="left" ng-show="control.rights.canDeleteComment(model.authorInfo.createdByUserRef.id) && hover.comment && !model.editing" ng-click="deleteComment(model)"><i class="icon-remove" ></i></div>
             <div class="commentLeftSide">
                 <div ng-show="model.status == 'resolved'" style="height:20px" >
                 </div>
@@ -15,8 +15,8 @@
                 <div class="commentAuthor">{{model.authorInfo.createdByUserRef.name}}</div>
                 <div class="commentDate">{{model.authorInfo.createdDate | relativetime}}</div>
                 <div class="commentPlusOne">{{model.score}}
-                    <i ng-show="control.canPlusOneComment(model.id) && control.rights.canComment() && model.status != 'resolved'" style="cursor: pointer" ng-click="control.plusOneComment(model.id)" tooltip="Like comment" class="icon-thumbs-up-alt"></i>
-                    <i ng-hide="control.canPlusOneComment(model.id) && control.rights.canComment() && model.status != 'resolved'" style="opacity: 0.5" class="icon-thumbs-up-alt"></i>
+                    <i ng-show="$parent.canPlusOneComment(model.id) && control.rights.canComment() && model.status != 'resolved'" style="cursor: pointer" ng-click="plusOneComment(model.id)" tooltip="Like comment" class="icon-thumbs-up-alt"></i>
+                    <i ng-hide="$parent.canPlusOneComment(model.id) && control.rights.canComment() && model.status != 'resolved'" style="opacity: 0.5" class="icon-thumbs-up-alt"></i>
                 </div>
             </div>
             <div class="commentRightSide">
@@ -54,7 +54,7 @@
                     </div>
                     <div style="flex:1;" ng-show="reply.hover && model.status != 'resolved'">
                         <span tooltip="Edit reply" data-tooltip-placement="left" ng-show="control.rights.canEditComment(reply.authorInfo.createdByUserRef.id)" class="editReplyLink" ng-click="editReply(reply)"><i class="icon-chevron-sign-up"></i></span>
-                        <span tooltip="Delete reply" data-tooltip-placement="left" ng-show="control.rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)" class="deleteReplyLink" ng-click="control.deleteCommentReply(model.id, reply)"><i class="icon-remove"></i></span>
+                        <span tooltip="Delete reply" data-tooltip-placement="left" ng-show="control.rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)" class="deleteReplyLink" ng-click="deleteCommentReply(model.id, reply)"><i class="icon-remove"></i></span>
                     </div>
                 </div>
                 <form ng-show="reply.editing" ng-submit="submitReply(reply)">
@@ -69,9 +69,9 @@
             <div class="commentBottomBar" ng-show="hover.comment && control.rights.canComment() && model.status != 'resolved'">
                 <div>
                     <span style="font-size: small; font-weight: bold">Status:</span>
-                    <i class="icon-chevron-sign-up" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'open'" tooltip="Mark as Open" ng-click="control.updateCommentStatus(model.id, 'open')"></i>
-                    <i class="icon-ok" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'resolved'" tooltip="Mark as Resolved" ng-click="control.updateCommentStatus(model.id, 'resolved')"></i>
-                    <i class="icon-edit" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'todo'" tooltip="Mark as Todo" ng-click="control.updateCommentStatus(model.id, 'todo')"></i>
+                    <i class="icon-chevron-sign-up" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'open'" tooltip="Mark as Open" ng-click="updateCommentStatus(model.id, 'open')"></i>
+                    <i class="icon-ok" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'resolved'" tooltip="Mark as Resolved" ng-click="updateCommentStatus(model.id, 'resolved')"></i>
+                    <i class="icon-edit" ng-show="control.rights.canUpdateCommentStatus() && model.status != 'todo'" tooltip="Mark as Todo" ng-click="updateCommentStatus(model.id, 'todo')"></i>
                 </div>
                 <div>
                     <button class="btn-sm" tooltip="Edit this comment" ng-show="control.rights.canEditComment(model.authorInfo.createdByUserRef.id)" ng-click="editComment()"><i class="icon-chevron-sign-up"></i> Edit</button>
