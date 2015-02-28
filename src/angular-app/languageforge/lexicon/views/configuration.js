@@ -703,15 +703,19 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 }])
 // Option List Configuration Controller
 .controller('OptionListCtrl', ['$scope', function($scope) {
+  var oldListIndex = 0;
   $scope.currentListIndex = 0;
 
   $scope.selectList = function($index) {
     $scope.currentListIndex = $index;
   };
 
-  $scope.$watch('optionLists.pos.items', function(newval, oldval) {
+  $scope.$watch('optionlistDirty[currentListIndex].items', function(newval, oldval) {
     if (angular.isDefined(newval) && newval != oldval) {
-      $scope.configForm.$setDirty();
+      if ($scope.currentListIndex == oldListIndex) {
+        $scope.configForm.$setDirty();
+      }
+      oldListIndex = $scope.currentListIndex;
     }
   }, true);
 
