@@ -703,18 +703,10 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 }])
 // Option List Configuration Controller
 .controller('OptionListCtrl', ['$scope', function($scope) {
-  $scope.optionLists = {
-    pos: {
-      id: 'pos',
-      name: 'Part of Speech',
-      items: $scope.optionlistDirty[0].items,
-      defaultKey: 'noun'
-    }
-  };
-  $scope.currentListId = 'pos';
+  $scope.currentListIndex = 0;
 
-  $scope.selectList = function(listId) {
-    $scope.currentListId = listId;
+  $scope.selectList = function($index) {
+    $scope.currentListIndex = $index;
   };
 
   $scope.$watch('optionLists.pos.items', function(newval, oldval) {
