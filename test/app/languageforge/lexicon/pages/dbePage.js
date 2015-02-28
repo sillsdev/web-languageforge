@@ -18,6 +18,7 @@ var LfDbePage = function() {
   this.get = function(projectId) {
     var extra = projectId ? ("/" + projectId) : "";
     browser.get(browser.baseUrl + page.url + extra);
+    browser.waitForAngular();
   };
 
   this.browseDiv = element(by.css('#lexAppListView'));

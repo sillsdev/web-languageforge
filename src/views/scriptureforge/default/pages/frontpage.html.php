@@ -24,7 +24,7 @@
                     "target_url" => "/learn_scripture_forge"
                     )
             );
-            $this->load->view($controller->template('templates/slideshow'), $data);
+            $controller->loadTemplate('templates/slideshow', $data);
 
             $data['columns'] = array(
                 array(
@@ -43,7 +43,7 @@
                     "target_url" => "/learn_scripture_forge"
                     )
             );
-            $this->load->view($controller->template('templates/3column'), $data);
+            $controller->loadTemplate('templates/3column', $data);
             ?>
 
             <div class="container">

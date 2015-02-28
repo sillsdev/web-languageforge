@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
 <project name="SFWeb" default="build" basedir="..">
 
-	<property name="application.name" value="scriptureforge" />
+	<property name="application.name" value="languageforge" />
 
 	<property name="build.number" value="0.0.0.0" />
 	<property name="build.output" value="output" />
@@ -15,7 +15,7 @@
 	<property name="e2etest.selenium.server.host" value="ba-wxp32c.psonet" />
 	<property name="e2etest.selenium.server.port" value="4444" />
 	<property name="e2etest.webserver.host" value="e2etest.${application.name}.local" />
-	<property name="e2etest.protractor.conf" value="protractorConfSF.js" />  <!-- Filename with base dir test/app/ -->
+	<property name="e2etest.protractor.conf" value="protractorConf.${application.name}.js" />  <!-- Filename with base dir test/app/ -->
 
 	<target name="clean">
 		<delete dir="${build.output}" quiet="true" />
@@ -90,12 +90,20 @@
 				excludes="ng-ui-*.min.js"
 			/>
 		</concat>
-		<exec executable="/usr/bin/yui-compressor">
-			<arg value="-o" />
-			<arg value="${build.minJsFile}" />
-			<arg value="${build.libJsFile}" />
-		</exec>
+        <antcall target="build-compress-js" />
+        <antcall target="build-nocompress-js" />
 	</target>
+
+    <target name="build-compress-js" unless="build.doNoCompression">
+        <exec executable="/usr/bin/yui-compressor">
+            <arg value="-o" />
+            <arg value="${build.minJsFile}" />
+            <arg value="${build.libJsFile}" />
+        </exec>
+    </target>
+    <target name="build-nocompress-js" if="build.doNoCompression">
+        <copy file="${build.libJsFile}" tofile="${build.minJsFile}" />
+    </target>
 
 	<target name="package-copyWeb" depends="build-prepare,build-composer,build-minify,version">
 		<copy todir="${build.output}/package/htdocs">
@@ -232,25 +240,8 @@
 		</waitfor>
 		<antcall target="echoServerNotFound" />
 		<antcall target="echoServerFound" />
-		
-		<echo message="Running Scripture Forge E2E tests" />
-		<antcall target="test-e2e-setup">
-		    <param name="e2etest.webserver.host" value="e2etest.scriptureforge.local" />
-		</antcall>
-		<antcall target="runE2ETests">
-		    <param name="e2etest.webserver.host" value="e2etest.scriptureforge.local" />
-		    <param name="e2etest.protractor.conf" value="protractorConfSF.js" />
-		</antcall>
-		<antcall target="test-e2e-teardown"/>
-
-		<echo message="Running Language Forge E2E tests (cross-site tests)" />
-		<antcall target="test-e2e-setup">
-		    <param name="e2etest.webserver.host" value="e2etest.languageforge.local" />
-		</antcall>
-		<antcall target="runE2ETests">
-		    <param name="e2etest.webserver.host" value="e2etest.languageforge.local" />
-		    <param name="e2etest.protractor.conf" value="protractorConfLF.js" />
-		</antcall>
+		<antcall target="test-e2e-setup"/>
+		<antcall target="runE2ETests"/>
 		<antcall target="test-e2e-teardown"/>
 	</target>
 	
@@ -274,8 +265,8 @@
 		<exec dir="${build.installForTestPath}/test/app/" executable="node">
 			<arg value="node_modules/protractor/bin/protractor" />
 			<arg value="${e2etest.protractor.conf}" />
-			<arg value="--baseUrl" />
-			<arg value="http://${e2etest.webserver.host}" />
+            <arg value="--baseUrl" />
+            <arg value="http://${e2etest.webserver.host}" />
 			<arg value="--seleniumAddress" />
 			<arg value="http://${e2etest.selenium.server.host}:${e2etest.selenium.server.port}/wd/hub" />
 		</exec>
@@ -313,6 +304,8 @@
 		<exec dir="${build.uploadPath}" executable="rsync" failonerror="true">
 			<arg value="-vazHAX" />
 			<arg value="--delete-during" />
+            <arg value="--exclude=htdocs/assets" />
+            <arg value="--exclude=htdocs/cache" />
 			<arg value='--rsh=ssh -i ${upload.credentials}' />
 			<arg value="${build.uploadPath}/" />
 			<arg value="${upload.destination}" />

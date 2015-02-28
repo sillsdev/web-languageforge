@@ -130,6 +130,7 @@ describe('Activity Page E2E Test', function() {
                 
                 // Return back to Question Page for rest of test.
                 browser.get(questionPageURL);
+                browser.waitForAngular();
                 break;
               default :
                 

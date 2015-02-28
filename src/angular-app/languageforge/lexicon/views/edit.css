@@ -319,8 +319,19 @@ legend.override-bootstrap {
     cursor: pointer;
 }
 
-div.commentListContainer {
+#lexAppCommentView .dc-multioptionlist-value,
+.commentRegarding .dc-multioptionlist-value {
+    background-color: inherit;
+    width: inherit;
+}
 
+#lexAppCommentView .commentListView img,
+.commentRegarding img {
+    width: 50px;
+}
+
+form.submitted .ng-invalid {
+  border:1px solid #f00;
 }
 
 div.newCommentForm {

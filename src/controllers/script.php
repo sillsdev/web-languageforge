@@ -20,17 +20,16 @@ class script extends Secure_base
                 show_error("You have insufficient privileges to run scripts", 403, 'Insufficient Privileges');
             } else {
                 try {
-                    $data = array();
                     $classname = "libraries\shared\scripts\\$folder\\$script";
 
-                    $data['output'] = '';
+                    $this->data['output'] = '';
                     if ($runtype != 'run' && strtolower($folder) != 'control' && strtolower($script) != 'panel') {
-                        $data['output'] .= "--------------- THIS IS A TEST RUN - The database should not be modified ----------------\n\n";
+                        $this->data['output'] .= "--------------- THIS IS A TEST RUN - The database should not be modified ----------------\n\n";
                     }
                     $script = new $classname();
-                    $data['output'] .= $script->run($runtype);
-                    $data['scriptname'] = $classname . "->run()";
-                    $this->renderPage("textoutput", $data);
+                    $this->data['output'] .= $script->run($runtype);
+                    $this->data['scriptname'] = $classname . "->run()";
+                    $this->renderPage("textoutput");
                 } catch (\Exception $e) {
                     show_error("Looks like there was a problem with the script $classname", 500, 'Script Error');
                 }

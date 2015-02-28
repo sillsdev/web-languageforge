@@ -5,6 +5,7 @@ var SiteAdminPage = function() {
   this.url = browser.baseUrl + '/app/siteadmin';
   this.get = function() {
     browser.get(this.url);
+    browser.waitForAngular();
   };
   this.go = this.get; // Alternate name
   this.addBtn = element(by.partialButtonText('Add New'));
