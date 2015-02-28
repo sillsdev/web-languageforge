@@ -13,6 +13,20 @@ angular.module('palaso.ui.picklistEditor', ['angular-sortable-view'])
     });
   };
 })
+// see http://stackoverflow.com/questions/17089090/prevent-input-from-setting-form-dirty-angularjs
+.directive('noDirtyCheck', function() {
+  // Interacting with input elements having this directive won't cause the
+  // form to be marked dirty.
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function(scope, elm, attrs, ctrl) {
+      elm.focus(function() {
+          ctrl.$pristine = false;
+      });
+    }  
+  }
+})
 .directive('picklistEditor', function() {
   return {
     restrict: 'AE',
