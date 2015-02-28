@@ -295,16 +295,17 @@ class LiftImport
         $optionList->items->exchangeArray(array());
 
         foreach ($liftRange->rangeElements as $id => $elem) {
-            $label = $elem->label[$interfaceLang]->value;
-            if (isset($elem->abbrev)) {
-                $abbrev = $elem->abbrev[$interfaceLang]->value;
-            } else {
-                $abbrev = null;
+            if ($elem->label && array_key_exists($interfaceLang, $elem->label)) {
+                $label = $elem->label[$interfaceLang]->value;
+                if (isset($elem->abbrev)) {
+                    $abbrev = $elem->abbrev[$interfaceLang]->value;
+                } else {
+                    $abbrev = null;
+                }
+                $optionListItem = new LexiconOptionListItem($label, $id);
+                $optionListItem->abbreviation = $abbrev;
+                $optionList->items->append($optionListItem);
             }
-            $optionListItem = new LexiconOptionListItem($label, $id);
-            $optionListItem->abbreviation = $abbrev;
-            $optionList->items->append($optionListItem);
-
         }
         $optionList->write();
     }
