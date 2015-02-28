@@ -9,7 +9,7 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
       model : "=",
       control: "="
     },
-    controller: ['$scope', 'lexCommentService', 'sessionService', 'modalService', function($scope, commentService, sessionService, modal) {
+    controller: ['$scope', 'lexCommentService', 'lexConfigService', 'sessionService', 'modalService', function($scope, commentService, configService, sessionService, modal) {
 
             $scope.hover = { comment: false };
 
@@ -18,7 +18,15 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
             $scope.newReply = {id:'', editingContent:''};
 
             $scope.editingCommentContent = '';
+            
+            
+            if ($scope.model.regarding.field) {
+              $scope.commentRegardingFieldConfig = configService.getFieldConfig($scope.model.regarding.field);
+              $scope.isCommentRegardingPicture = (($scope.commentRegardingFieldConfig.type == 'pictures') && 
+                  ! ($scope.model.regarding.inputSystem));
+            }
 
+            
             // I don't necessarily like this, but we keep the comment methods on edit.js so
             // that the view can be refreshed after an update or delete - cjh 2014-08
 
@@ -42,15 +50,15 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
             };
             
             
-       function updateReply(commentId, reply) {
-          commentService.updateReply(commentId, reply, function(result) {
-              if (result.ok) {
-                $scope.control.refreshData(false, function() {
-                  $scope.control.loadEntryComments();
+           function updateReply(commentId, reply) {
+              commentService.updateReply(commentId, reply, function(result) {
+                  if (result.ok) {
+                    $scope.control.refreshData(false, function() {
+                      $scope.control.loadEntryComments();
+                    });
+                  }
                 });
-              }
-            });
-        };
+            };
 
         $scope.updateCommentStatus = function updateCommentStatus(commentId, status) {
           commentService.updateStatus(commentId, status, function(result) {

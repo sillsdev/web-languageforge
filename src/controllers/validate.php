@@ -21,7 +21,7 @@ class validate extends Base
         }
 
         if ($userActivated) {
-            $this->renderPage("validate/validate", array());
+            $this->renderPage("validate/validate");
         } else {
             $this->load->helper('url');
             // if the validation has expired, chances are they have already validated.  Redirect to login

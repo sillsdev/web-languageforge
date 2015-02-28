@@ -23,6 +23,7 @@ form.dc-multioptionlist .controls > div {
     line-height: normal;
     border: 2px solid gray;
     padding: 3px;
+    border-radius: 0;
 }
 
 form.dc-multioptionlist img.closeicon {

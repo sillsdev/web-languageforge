@@ -7,6 +7,7 @@ function NewLexProjectPage() {
   
   this.get = function() {
     browser.get('/app/lexicon/new');
+    browser.waitForAngular();
   };
   
   // form controls
