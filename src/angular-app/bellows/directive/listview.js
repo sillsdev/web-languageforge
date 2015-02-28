@@ -6,7 +6,7 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
       restrict : 'EA',
       transclude : true,
       replace : true,
-      template : '<div class="listview" ng-hide="hideIfEmpty && items.length == 0"><div ng-transclude></div><div class="paginationblock"><pagination boundary-links="true" total-items="filteredItems.length" page="currentPage" items-per-page="itemsPerPage" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination><div class="right pagination">Items per page: <select ng-model="itemsPerPage"><option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></div></div></div>',
+      templateUrl : '/angular-app/bellows/directive/listview.html',
       scope : {
         search : "&",
         select : "&",
@@ -92,9 +92,11 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
         scope.$watch('items', function() {
           controller.updateFilteredItems();
         }, true);
-        scope.$watch('filteredItems', function() {
-          controller.updatePages();
-          controller.updateVisibleItems();
+        scope.$watch('filteredItems', function(items) {
+          if (items) {
+            controller.updatePages();
+            controller.updateVisibleItems();
+          }
         }, true);
         scope.$watch('itemsFilter', function() {
           controller.updateFilteredItems();
