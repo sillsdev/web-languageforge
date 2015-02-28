@@ -120,7 +120,15 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
         $scope.updateComment = function updateComment() {
             hideInputFields();
             $scope.model.content = angular.copy($scope.editingCommentContent);
-            updateComment($scope.model);
+            var comment = $scope.control.getComment($scope.model);
+
+            commentService.update(comment, function(result) {
+              if (result.ok) {
+                  $scope.control.refreshData(false, function() {
+                      $scope.control.loadEntryComments();
+                  });
+              }
+            });
             $scope.editingCommentContent = '';
         };
             
