@@ -3,8 +3,7 @@
 angular.module('semdomtrans.comments', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.scroll', 'palaso.ui.dc.comment', 'palaso.ui.comments-right-panel'])
 // DBE controller
 .controller('commentsCtrl', ['$scope', '$stateParams', 'sessionService', 'modalService', 'silNoticeService', 
-function($scope, $stateParams, comms, sessionService, modal, notice) {
-  var commentService = comms;
+function($scope, $stateParams, sessionService, modal, notice) {
   $scope.$parent.itemIndex = $stateParams.position;
   $scope.control = $scope;
   $scope.currentEntryComments = [];

@@ -9,7 +9,7 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
       model : "=",
       control: "="
     },
-    controller: ['$scope', 'lexCommentService', 'lexConfigService', 'sessionService', 'modalService', function($scope, commentService, configService, sessionService, modal) {
+    controller: ['$scope', 'commentService', 'sessionService', 'modalService', function($scope, commentService, sessionService, modal) {
 
             $scope.hover = { comment: false };
 
@@ -20,8 +20,8 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
             $scope.editingCommentContent = '';
             
             
-            if ($scope.model.regarding.field) {
-              $scope.commentRegardingFieldConfig = configService.getFieldConfig($scope.model.regarding.field);
+            if ($scope.model.regarding.field && !angular.isUndefined($scope.control.configService)) {
+              $scope.commentRegardingFieldConfig = $scope.control.configService.getFieldConfig($scope.model.regarding.field);
               $scope.isCommentRegardingPicture = (($scope.commentRegardingFieldConfig.type == 'pictures') && 
                   ! ($scope.model.regarding.inputSystem));
             }
@@ -120,7 +120,15 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
         $scope.updateComment = function updateComment() {
             hideInputFields();
             $scope.model.content = angular.copy($scope.editingCommentContent);
-            updateComment($scope.model);
+            var comment = $scope.control.getComment($scope.model);
+
+            commentService.update(comment, function(result) {
+              if (result.ok) {
+                  $scope.control.refreshData(false, function() {
+                      $scope.control.loadEntryComments();
+                  });
+              }
+            });
             $scope.editingCommentContent = '';
         };
             
@@ -138,5 +146,4 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
     link: function(scope, element, attrs, controller) {
     }
   };
-}])
-;
+}]);

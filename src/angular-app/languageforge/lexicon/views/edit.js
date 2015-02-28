@@ -12,7 +12,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   $scope.config = configService.getConfigForUser();
   $scope.lastSavedDate = new Date();
   $scope.currentEntry = {};
-
+  $scope.configService = configService;
   // default state. State is one of 'list', 'edit', or 'comment'
   $scope.state = 'list';
 
