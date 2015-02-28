@@ -3,7 +3,7 @@
 // module definition
 angular.module('bellows.services', ['jsonRpc'])
 //Lexicon Comment Service
-.service('lexCommentService', ['jsonRpc', function(jsonRpc) {
+.service('commentService', ['jsonRpc', function(jsonRpc) {
   jsonRpc.connect('/api/sf');
 
   this.update = function updateComment(comment, callback) {
