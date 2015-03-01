@@ -41,7 +41,6 @@ class SemDomTransProjectCommands
 		
 		return $semdomProjects;
 	}
-	
 	public static function preFillProject($projectId) {			
 		$projectModel = new SemDomTransProjectModel($projectId);
 		$englishProject = new SemDomTransProjectModel();
@@ -76,5 +75,15 @@ class SemDomTransProjectCommands
     	}
     	
     	return $projectModel;
+	}
+	
+	public static function checkProjectExists($languageCode, $semdomVersion) {
+	    $project = new SemDomTransProjectModel();
+	    $project->readByProperties(array("languageIsoCode" => $languageCode, "semdomVersion" => $semdomVersion));
+	    if (Id::isEmpty($project->id)) {
+	        return true;
+	    } else {
+	        return false;
+	    }
 	}
 }
