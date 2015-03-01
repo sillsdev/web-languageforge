@@ -38,6 +38,7 @@ use models\languageforge\semdomtrans\dto\SemDomTransEditDto;
 use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
 use models\languageforge\semdomtrans\commands\SemDomTransItemCommands;
 use models\languageforge\semdomtrans\commands\SemDomTransCommentsCommands;
+use models\languageforge\LfProjectModel;
 
 require_once APPPATH . 'vendor/autoload.php';
 require_once APPPATH . 'config/sf_config.php';
@@ -705,8 +706,11 @@ class sf
     public function semdom_comment_update($data) {
     	return SemDomTransCommentsCommands::update($data, $this->_projectId);
     }
-
-
+    
+    public function semdom_project_exists($languageIsoCode) {
+        return SemDomTransProjectCommands::checkProjectExists($languageIsoCode, 20);
+    }
+    
     /**
      *
      * @param string $projectName
@@ -715,16 +719,17 @@ class sf
      * @return string | boolean - $projectId on success, false if project code is not unique
      */
     public function semdom_create_project($languageIsoCode)
-    {
-    	$appName = "semdom";
-    	$projectID = ProjectCommands::createProject($projectName, $projectCode, $appName, $this->_userId, $this->_website);
+    {    	
+        $projectName = "Semdom $languageIsoCode Project";
+        $projectCode = "semdom-$languageIsoCode-20";
+    	$projectID = ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $this->_userId, $this->_website);	
     	
-    	
-    	$project = new SemDomTransProjectModel($projectID->asString());
+    	$project = new SemDomTransProjectModel($projectID);
     	$project->languageIsoCode = $languageIsoCode;
     	$project->semdomVersion = 20;
     	$project->write();
     	
+    	SemDomTransProjectCommands::preFillProject($projectID);
     	return $projectID;
     }
     

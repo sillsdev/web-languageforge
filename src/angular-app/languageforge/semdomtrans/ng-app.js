@@ -6,7 +6,6 @@ angular.module('semdomtrans',
     'bellows.services',
     'bellows.filters',
     'semdomtrans.edit',
-    'semdomtrans.projectSetup',
     'semdomtrans.comments',
     'pascalprecht.translate' 
   ])

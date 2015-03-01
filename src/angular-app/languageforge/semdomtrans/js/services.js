@@ -40,7 +40,16 @@ angular.module('semdomtrans.services', ['jsonRpc'])
           });
     }
     
-    
-
+    this.doesProjectExist = function doesProjectExist(languageCode, callback) {
+      jsonRpc.call('semdom_project_exists', [languageCode], function(result) {
+            callback(result);
+      });
+      
+      this.createProject = function createProject(languageCode, callback) {
+        jsonRpc.call('semdom_create_project', [languageCode], function(result) {
+          callback(result);
+        })
+      }
+    }
   }]);
   
