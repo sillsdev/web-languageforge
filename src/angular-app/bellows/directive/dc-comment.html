@@ -34,10 +34,10 @@
                     <div data-ng-class="(model.regarding.inputSystem) ? 'input-prepend' : ''"
                         data-ng-hide="isCommentRegardingPicture">
                         <span data-ng-show="model.regarding.inputSystem" class="add-on wsid regardingInputSystem" title="{{model.regarding.inputSystem}}">{{model.regarding.inputSystemAbbreviation}}</span>
-                        <div class="uneditable-input regardingFieldValue" 
+                        <span class="uneditable-input regardingFieldValue" 
                             data-ng-class="{'dc-multioptionlist-value': (commentRegardingFieldConfig.type == 'multioptionlist')}"
                             data-ng-bind-html="model.regarding.fieldValue" 
-                            data-pui-show-overflow></div>
+                            data-pui-show-overflow></span>
                     </div>
                     <div data-ng-if="isCommentRegardingPicture">
                         <img data-ng-src="{{model.regarding.fieldValue}}" />
