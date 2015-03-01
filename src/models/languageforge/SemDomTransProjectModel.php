@@ -58,4 +58,14 @@ class SemDomTransProjectModel extends LfProjectModel {
      * @var string
      */
     public $newXmlFilePath;
+    
+    public static function createProject($languageCode, $semdomVersion) {
+        $project = new SemDomTransProjectModel();
+        $project->languageIsoCode = $languageCode;
+        $project->projectName = "Semdom $languageCode Project";
+        $project->projectCode = "semdom-$languageCode-$semdomVersion";
+        $project->semdomVersion = $semdomVersion;
+        $project->write();
+        return $project;
+    }
 } 
