@@ -20,10 +20,13 @@
                     max="{{maxDepth}}" data-ng-model="selectedDepth">
                 </div>
 			    <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%">
-	                 <div ng-repeat="item in items" ng-class="{selected: (item.key == currentEntry.key)}"  ng-click="changeTerm(item.key)"
-	                 	ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }" ng-show="checkDepth(item.key)">
+	                 <div ng-repeat="item in displayedItems" ng-class="{selected: (item.key == currentEntry.key)}"  ng-click="changeTerm(item.key)"
+	                 	ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }">
 				        <a> {{item.key}} {{item.name.source}}</a>
 				      </div>
+                      <div ng-show='areItemsReloading'>
+                        <h1> Loading </h1>
+                      </div>
 			    </div>
 				
 			  </div>

@@ -2,15 +2,14 @@
 
 angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions'])
 // DBE controller
-.controller('editCtrl', ['$scope', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter',
-function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope) {
+.controller('editCtrl', ['$scope', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
+function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
   // refresh the data and go to state
     if ($scope.items.length == 0 && !$scope.loadingDto) {
       $scope.refreshData(true);
     } 
-    
   $scope.maxDepth = 10;
-  $scope.selectedDepth = $scope.maxDepth;
+  $scope.selectedDepth = 0;
   $scope.$parent.itemIndex = $stateParams.position;
   $scope.selectedTab = 0;
    $scope.control = $scope;
@@ -18,9 +17,36 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $ro
   $scope.tabDisplay = {"val": '0'};
   $scope.domainsFiltered = [];
   $scope.state = "edit";
+  $scope.areItemsReloading = false;
   var api = semdomEditApi;
   
-  $scope.checkDepth = function checkDepth(key) {
+  $scope.reloadItems = function reloadItems(depth) {
+    var depth = $scope.selectedDepth;
+    $timeout(function() {
+     if (depth == $scope.selectedDepth) {
+        $scope.displayedItems = [];
+        $scope.areItemsReloading = true;
+        for (var i in $scope.items) {
+          var item = $scope.items[i];
+          if (checkDepth(item.key)) {
+            $scope.displayedItems.push(item);
+          }
+          
+        }
+        $scope.$apply() 
+        $scope.areItemsReloading = false;
+     }
+    }, 500);
+    
+  }
+  
+  $scope.$watch('selectedDepth', function(oldVal, newVal) {
+    if (oldVal != newVal) {
+      $scope.reloadItems(newVal);
+    }
+  });
+  
+  function checkDepth(key) {
     if ((key.length + 1) / 2 <= $scope.selectedDepth) {
       return true;
     }
