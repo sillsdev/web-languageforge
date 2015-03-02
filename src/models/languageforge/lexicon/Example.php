@@ -9,13 +9,13 @@ use models\mapper\ObjectForEncoding;
 class Example extends ObjectForEncoding
 {
     use \LazyProperty\LazyPropertiesTrait;
-    
+
     public function __construct($liftId = '')
     {
         $this->setPrivateProp('liftId');
         $this->setReadOnlyProp('authorInfo');
         $this->liftId = $liftId;
-        
+
         $this->initLazyProperties([
             'authorInfo',
             'sentence',
@@ -24,7 +24,7 @@ class Example extends ObjectForEncoding
             'customFields',
             'examplePublishIn'
         ], false);
-        
+
         $this->id = uniqid();
     }
 
@@ -37,12 +37,12 @@ class Example extends ObjectForEncoding
             case 'reference':
                 return new MultiText();
             case 'examplePublishIn':
-                return new LexiconMultiValueField(); 
+                return new LexiconMultiValueField();
             case 'customFields':
                 return new MapOf('\models\languageforge\lexicon\_createCustomField');
         }
     }
-    
+
     /**
      * The id of the example as specified in the LIFT file
      * @var string
@@ -60,7 +60,7 @@ class Example extends ObjectForEncoding
     public $translation;
 
     /**
-     * @var MapOf <>
+     * @var MapOf<MultiText|LexiconField|LexiconMultiValueField>
      */
     public $customFields;
 

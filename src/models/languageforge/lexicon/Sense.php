@@ -11,18 +11,6 @@ function _createExample($data)
     return new Example();
 }
 
-function _createCustomField($data)
-{
-    CodeGuard::checkTypeAndThrow($data, 'array');
-    if (array_key_exists('value', $data)) {
-        return new LexiconField();
-    } elseif (array_key_exists('values', $data)) {
-        return new LexiconMultiValueField();
-    } else {
-        return new MultiText();
-    }
-}
-
 function _createPicture($data)
 {
     return new Picture();
@@ -75,9 +63,10 @@ class Sense
             case 'partOfSpeech': return new LexiconField();
             case 'semanticDomain': return new LexiconMultiValueField();
             case 'examples': return new ArrayOf('\models\languageforge\lexicon\_createExample');
-            case 'customFields': return new ArrayOf('\models\languageforge\lexicon\_createCustomField'); // REVIEW This should be MapOf should it not? CP 2014-09
+            case 'customFields': return new MapOf('\models\languageforge\lexicon\_createCustomField');
             case 'authorInfo': return new AuthorInfo();
             case 'pictures': return new ArrayOf('\models\languageforge\lexicon\_createPicture');
+
             case 'definition':
             case 'gloss':
             case 'scientificName':
@@ -150,7 +139,7 @@ class Sense
     public $examples;
 
     /**
-     * @var MapOf <>
+     * @var MapOf<MultiText|LexiconField|LexiconMultiValueField>
      */
     public $customFields;
 
