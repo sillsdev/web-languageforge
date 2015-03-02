@@ -14,7 +14,7 @@ function _createSense($data)
     return new Sense();
 }
 
-function _createCustomFieldOnEntry($data)
+function _createCustomField($data)
 {
     CodeGuard::checkTypeAndThrow($data, 'array');
     if (array_key_exists('value', $data)) {
@@ -50,7 +50,6 @@ class LexEntryModel extends \models\mapper\MapperModel
     /**
      * @var MultiText
      */
-    // TODO Renamed $_entry to $lexeme.  References to $_entry may still exist
     public $lexeme;
 
     /**
@@ -72,7 +71,7 @@ class LexEntryModel extends \models\mapper\MapperModel
     public $citationForm;
 
     /**
-     * @var MapOf <>
+     * @var MapOf<MultiText|LexiconField|LexiconMultiValueField>
      */
     public $customFields;
 
@@ -215,9 +214,10 @@ class LexEntryModel extends \models\mapper\MapperModel
             case 'senses':
                 return new ArrayOf('models\languageforge\lexicon\_createSense');
             case 'customFields':
-                return new ArrayOf('models\languageforge\lexicon\_createCustomField');
+                return new MapOf('models\languageforge\lexicon\_createCustomField');
             case 'authorInfo':
                 return new AuthorInfo();
+
             case 'lexeme':
             case 'citationForm':
             case 'entryBibliography':
@@ -246,7 +246,6 @@ class LexEntryModel extends \models\mapper\MapperModel
     {
         return isset($this->senses);
     }
-
 
     /**
      * If the $value of $propertyName exists in senses return the index
