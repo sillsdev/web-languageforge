@@ -1543,8 +1543,8 @@ EOD;
         $entry0 = $entryList->entries[0];
 
         $this->assertEqual($entryList->count, 1);
-        $this->assertTrue(array_key_exists('customField_entry_Cust_MultiPara', $entry0), 'custom field MultiPara exists');
-        $this->assertEqual($entry0['customField_entry_Cust_MultiPara']['en']['value'],
+        $this->assertTrue(array_key_exists('customField_entry_Cust_MultiPara', $entry0['customFields']), 'custom field MultiPara exists');
+        $this->assertEqual($entry0['customFields']['customField_entry_Cust_MultiPara']['en']['value'],
             '<p>First paragraph with <span lang="th">ไทย</span></p><p>Second Paragraph</p>',
             'custom field MultiPara has paragraph separator character U+2029 replaced by paragraph markup and native language spans removed');
     }

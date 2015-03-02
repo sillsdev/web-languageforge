@@ -534,18 +534,18 @@ class LiftDecoder
         $customFieldSpecs = $this->getCustomFieldSpecs($fieldType);
         $customFieldName = $this->createCustomField($nodeId, $fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig);
         if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
-            $item->{$customFieldName} = new LexiconField();
-            $item->{$customFieldName}->value = (string) $sxeNode['value'];
+            $item->customFields[$customFieldName] = new LexiconField();
+            $item->customFields[$customFieldName]->value = (string) $sxeNode['value'];
         } elseif ($customFieldSpecs['Type'] == 'ReferenceCollection') {
-            if (! array_key_exists($customFieldName, $item)) {
-                $item->{$customFieldName} = new LexiconMultiValueField();
+            if (! array_key_exists($customFieldName, $item->customFields)) {
+                $item->customFields[$customFieldName] = new LexiconMultiValueField();
             }
-            $item->{$customFieldName}->value((string) $sxeNode['value']);
+            $item->customFields[$customFieldName]->value((string) $sxeNode['value']);
         } elseif ($customFieldSpecs['Type'] == 'OwningAtom') {
             $multiText = $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
-            $item->{$customFieldName} = self::convertMultiParaMultiText($multiText);
+            $item->customFields[$customFieldName] = self::convertMultiParaMultiText($multiText);
         } else {
-            $item->{$customFieldName} = $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
+            $item->customFields[$customFieldName] = $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
         }
     }
 
