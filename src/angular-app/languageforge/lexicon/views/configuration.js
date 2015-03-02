@@ -8,6 +8,7 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
   lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
   $scope.configDirty = angular.copy(ss.session.projectSettings.config);
   $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
+  $scope.optionlistPristine = angular.copy(ss.session.projectSettings.optionlists);
   $scope.isSaving = false;
 
   /**
