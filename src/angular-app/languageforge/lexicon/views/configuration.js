@@ -536,6 +536,15 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
             'number': $filter('translate')('Number')
           }
         };
+        $scope.selects.listCode = {
+            'optionsOrder': [],
+            'options': {}
+        };
+        angular.forEach($scope.optionlistDirty, function(optionList, index) {
+          $scope.selects.listCode.optionsOrder.push(optionList.code);
+          $scope.selects.listCode.options[optionList.code] = optionList.name;
+        });
+        
         $scope.newCustomData = {
           'name': ''
         };
@@ -567,13 +576,19 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
       customField.hideIfEmpty = false;
       customViewField.type = 'basic';
       customViewField.show = false;
-      if (newCustomData.type === 'multitext') {
-        customField.displayMultiline = false;
-        customField.width = 20;
-        customField.inputSystems = [$scope.inputSystemsList[0].tag];
-        customViewField.type = 'multitext';
-        customViewField.overrideInputSystems = false;
-        customViewField.inputSystems = [];
+      switch (newCustomData.type) {
+        case 'multitext':
+          customField.displayMultiline = false;
+          customField.width = 20;
+          customField.inputSystems = [$scope.inputSystemsList[0].tag];
+          customViewField.type = 'multitext';
+          customViewField.overrideInputSystems = false;
+          customViewField.inputSystems = [];
+          break;
+        case 'optionlist':
+        case 'multioptionlist':
+          customField.listCode = newCustomData.listCode;
+          break;
       }
 
       switch (newCustomData.level) {
