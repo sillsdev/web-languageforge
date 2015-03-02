@@ -331,7 +331,9 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
             <div class="well" id="picklistEditorFieldset">
                 <h3 class="control-label">{{optionlistDirty[currentListIndex].name}}</h3>
                 <div class="controls">
-                    <picklist-editor items="optionlistDirty[currentListIndex].items" default-key="optionlistDirty[currentListIndex].defaultItemKey"></picklist-editor>
+                    <picklist-editor items="optionlistDirty[currentListIndex].items" 
+                        default-key="optionlistDirty[currentListIndex].defaultItemKey"
+                        pristine-items="optionlistPristine[currentListIndex].items"></picklist-editor>
                 </div>
             </div>
 
