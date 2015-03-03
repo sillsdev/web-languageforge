@@ -96,7 +96,7 @@ class LiftDecoder
                 case 'pronunciation':
                     $entry->pronunciation = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::PRONUNCIATION]->inputSystems, true);
                     if ($element->{'media'}) {
-                        $this->addKnownUnhandledElement('pronunciation ' . $element->{'media'}['href']);
+                        $this->addKnownUnhandledElement('media in pronunciation');
                     }
                     break;
                 case 'field':
