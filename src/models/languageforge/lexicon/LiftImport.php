@@ -59,7 +59,7 @@ class LiftImport
      */
     public function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
     {
-        ini_set('max_execution_time', 90); // Sufficient time to import webster.  TODO Make this async CP 2014-10
+        ini_set('max_execution_time', 180); // Sufficient time to import webster.  TODO Make this async CP 2014-10
 //         self::validate($xml);    // TODO Fix. The XML Reader validator doesn't work with <optional> in the RelaxNG schema. IJH 2014-03
 
         $entryList = new LexEntryListModel($projectModel);
@@ -134,7 +134,9 @@ class LiftImport
                     $liftRanges[$rangeId] = $range;
                 }
 
-                $this->liftImportNodeError->addSubnodeError($rangeImportNodeError);
+                if ($rangeImportNodeError->hasErrors()) {
+                    $this->liftImportNodeError->addSubnodeError($rangeImportNodeError);
+                }
             }
 
             // Read the custom 'fields' spec in the header of the LIFT file
