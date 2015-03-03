@@ -401,13 +401,18 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
         });
         break;
       case 'optionlist':
-        if (angular.isUndefined(data['value']) || data['value'] == null) {
-          data['value'] = '';
+        if (angular.isUndefined(data.value) || data.value == null) {
+          data.value = '';
+          if (angular.isDefined($scope.config.optionlists) && angular.isDefined(config.listCode) &&
+              (config.listCode in $scope.config.optionlists) && 
+              angular.isDefined($scope.config.optionlists[config.listCode].defaultItemKey)) {
+            data.value = $scope.config.optionlists[config.listCode].defaultItemKey;
+          }
         }
         break;
       case 'multioptionlist':
-        if (angular.isUndefined(data['values'])) {
-          data['values'] = [];
+        if (angular.isUndefined(data.values)) {
+          data.values = [];
         }
         break;
       case 'pictures':
