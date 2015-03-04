@@ -168,13 +168,13 @@ function(jsonRpc, ss, breadcrumbService, linkService, $location) {
     switch (type) {
       case 'multitext':
         angular.forEach(model, function(field) {
-          if (field.value != '') {
+          if (field.value && field.value != '') {
             containsData = true;
           }
         });
         break;
       case 'optionlist':
-        if (model.value != '') {
+        if (model.value && model.value != '') {
           containsData = true;
         }
         break;
