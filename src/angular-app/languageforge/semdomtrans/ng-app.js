@@ -39,6 +39,7 @@ angular.module('semdomtrans',
   function($scope, $semdomApi, ss) {
     
    $scope.items = [];
+   $scope.includedItems = {};
    $scope.comments = [];
    $scope.loadingDto = false;
    $scope.refreshData = function refreshData(v, callback) {
