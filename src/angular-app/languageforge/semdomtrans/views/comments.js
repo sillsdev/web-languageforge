@@ -4,8 +4,9 @@ angular.module('semdomtrans.comments', ['jsonRpc', 'ui.bootstrap', 'bellows.serv
 // DBE controller
 .controller('commentsCtrl', ['$scope', '$stateParams', 'sessionService', 'modalService', 'silNoticeService', 
 function($scope, $stateParams, sessionService, modal, notice) {
-  $scope.$parent.itemIndex = $stateParams.position;
   $scope.control = $scope;
+  $scope.currentEntryIndex = $stateParams.position;
+  $scope.currentEntry = $scope.items[$stateParams.position];
   $scope.currentEntryComments = [];
   $scope.newComment = {
     id: '',
@@ -47,7 +48,7 @@ function($scope, $stateParams, sessionService, modal, notice) {
   }
     
     $scope.getComment = function getComment(comment) {
-      $scope.newComment.entryRef = $scope.$parent.currentEntry.id; 
+      $scope.newComment.entryRef = $scope.currentEntry.id; 
       comment = $scope.newComment;
       
       // TODO - check if it is a new comment
@@ -61,6 +62,12 @@ function($scope, $stateParams, sessionService, modal, notice) {
       }
       return comment;
     }  
+    
+    $scope.$watch('items', function(oldVal, newVal) {
+      if (oldVal != newVal) {      
+          $scope.currentEntry = $scope.items[$stateParams.position];
+      }
+    });
   
   // permissions stuff
     $scope.rights = {

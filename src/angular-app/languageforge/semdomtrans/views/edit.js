@@ -2,12 +2,12 @@
 
 angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.scroll'])
 // DBE controller
-.controller('editCtrl', ['$scope', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
-function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
+.controller('editCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
+function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
   // refresh the data and go to state
-    if ($scope.items.length == 0 && !$scope.loadingDto) {
+  if ($scope.items.length == 0 && !$scope.loadingDto) {
       $scope.refreshData(true);
-    } 
+  }
   $scope.maxDepth = 10;
   $scope.selectedDepth = 1;
   $scope.selectedTab = 0;
@@ -49,6 +49,12 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $ro
     }
   }
   
+  $scope.$watch('items', function(oldVal, newVal) {
+    if (oldVal != newVal) {      
+        $scope.currentEntry = $scope.items[$scope.currentEntryIndex];
+    }
+  });
+  
   $scope.$watch('selectedDepth', function(oldVal, newVal) {
     if (oldVal != newVal) {
       $scope.reloadItems(newVal);
@@ -67,13 +73,14 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $ro
   
   $scope.changeTerm = function(key) {
       $scope.currentQuestionPos = 0;
-      
       for (var i = 0; i < $scope.items.length; i++) {
         if ($scope.items[i].key == key) {
           $scope.currentEntry = $scope.items[i];
+          $scope.currentEntryIndex = i;
           break;
         }
       }      
+      $state.go("editor.editItem", { position: $scope.currentEntryIndex});
     }
   
   $scope.updateItem = function updateItem(v) {
@@ -86,8 +93,8 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $ro
   }
   
   $scope.refreshData = function refreshData(state) {
-        $scope.$parent.refreshData(state, function() { });
-    };
+      $scope.$parent.refreshData(state, function() { });
+  };
     
   $scope.$watch('items', function(oldVal, newVal) {
     var maxDepth = 0;
@@ -99,7 +106,8 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $ro
     }
     $scope.maxDepth = maxDepth;
     $scope.reloadItems(1);
-    $scope.currentEntry = $scope.items[$stateParams.position];
+    $scope.currentEntryIndex = angular.isUndefined($stateParams.position) ? 0 : $stateParams.position;
+    $scope.currentEntry = $scope.items[$scope.currentEntryIndex];
   });
   
   // permissions stuff

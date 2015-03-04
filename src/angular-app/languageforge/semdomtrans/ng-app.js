@@ -11,17 +11,21 @@ angular.module('semdomtrans',
   ])
   .config(function($stateProvider, $urlRouterProvider) {
     
-    $urlRouterProvider.otherwise('/edit/0');
+    $urlRouterProvider.otherwise('/edit');
     
     $stateProvider        
-        .state('edit', {
-            url: '/edit/:position',
+        .state('editor', {
+            url: '/edit',
             views: {
               '@': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html' },
-              'editItem@edit': {
+              'editItem@editor': {
                 templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editItem.html'
               }  
             }
+        })
+        
+        .state('editor.editItem', {
+            url: '/:position'
         })
         
         .state('comments', {
@@ -36,7 +40,6 @@ angular.module('semdomtrans',
     
    $scope.items = [];
    $scope.comments = [];
-   $scope.itemIndex  = 0;
    $scope.loadingDto = false;
    $scope.refreshData = function refreshData(v, callback) {
      $scope.loadingDto = true;
@@ -44,7 +47,6 @@ angular.module('semdomtrans',
       if (result.ok) {
         $scope.items = result.data.items;  
         $scope.comments = result.data.comments;    
-        $scope.currentEntry = $scope.items[$scope.itemIndex ];
         $scope.loadingDto = false;
         if (!angular.isUndefined(callback)) {
           callback();

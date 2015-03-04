@@ -2,12 +2,12 @@
 	<div style="margin-top:100px; height: 500px" class="container-fluid" >
 			 <div class="row">		
 		    	<div class="col-md-6" >
-		    		<a style="float: left"  ui-sref="edit({position:$parent.itemIndex})">  &#8592; Back to Edit</a>
+		    		<a style="float: left"  ui-sref="editor.editItem({position:currentEntryIndex})">  &#8592; Back to Edit</a>
 		    	</div>	 
 			</div>
 			<div class="row menu" style="border-bottom:solid black 1px">		
 		    	<div class="col-md-6" >
-		    		<b>{{currentItem.name.source}}</b>
+		    		<b>{{currentEntry.name.source}}</b>
 		    	</div>	 
 			</div>
 			<div class="row">
