@@ -43,7 +43,7 @@ function($scope, $stateParams, sessionService, modal, notice) {
   $scope.setSelectedField = function setSelectedField(fieldName, model) {
     $scope.newComment.regarding.field = fieldName;
     $scope.newComment.regarding.fieldNameForDisplay = fieldName;
-    $scope.newComment.regarding.fieldValue = model.source + "#" + model.source;  
+    $scope.newComment.regarding.fieldValue = model.source + "#" + model.translation;  
   }
     
     $scope.getComment = function getComment(comment) {
