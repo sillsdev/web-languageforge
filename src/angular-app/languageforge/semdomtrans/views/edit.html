@@ -3,6 +3,20 @@
 		    <div class="row" style="border-bottom:solid black 1px">		
 		    	<div class="col-md-4" >
                     <b>{{currentEntry.name.source}}</b>
+                    <br />
+                     <typeahead style="margin:0px; width:162px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
+                        <ul style="width: 300px" ng-if="typeahead.searchResults.length > 0">
+                            <li data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
+                                <div class='listItemPrimary'>{{e.key}} {{e.name.source}} 
+                                <input style="float: right" type="checkbox" ng-model="$parent.includedItems[e.key]" ng-change="reloadItems(selectedDepth)"> </div>
+                            </li>
+                            
+                           
+                           <button class="btn btn-primary" ng-click="setInclusion(typeahead.searchResults, true)"> Include All </button>
+                           <button class="btn btn-primary" ng-click="setInclusion(typeahead.searchResults, false)"> Exclude All </button>
+                            <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
+                        </ul>
+                    </typeahead>
                 </div>	    
 		    	<div class="col-md-4" >
 					<tabset class="pull-center">
@@ -23,7 +37,7 @@
                 </div>
 			    <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%"  data-pui-when-scrolled="loadMore()">
 	                 <div ng-repeat="item in displayedItems track by item.key" ng-class="{selected: (item.key == currentEntry.key)}"  ng-click="changeTerm(item.key)"
-	                 	ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }">
+	                 	ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }" ng-show="isIncluded(item.key)">
 				        <a> {{item.key}} {{item.name.source}}</a>
 				      </div>
 			    </div>

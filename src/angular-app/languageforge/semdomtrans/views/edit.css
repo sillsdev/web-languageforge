@@ -2,6 +2,17 @@
 
 }
 
+.listItemPrimary {
+    z-index:2;
+    padding-right: 3px;
+    font-size: 1.0em;
+    font-weight:bold;
+    overflow: hidden;
+    height: 25px;
+    line-height: 2.0em;
+    margin: 0 0 2px 2px;
+}
+
 .selected {
 	background-color: #5cb85c;
 }
