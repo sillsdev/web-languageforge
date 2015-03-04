@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions'])
+angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.scroll'])
 // DBE controller
 .controller('editCtrl', ['$scope', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
 function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
@@ -9,35 +9,46 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $ro
       $scope.refreshData(true);
     } 
   $scope.maxDepth = 10;
-  $scope.selectedDepth = 0;
+  $scope.selectedDepth = 1;
   $scope.$parent.itemIndex = $stateParams.position;
   $scope.selectedTab = 0;
-   $scope.control = $scope;
+  $scope.control = $scope;
   $scope.currentQuestionPos = 0;
   $scope.tabDisplay = {"val": '0'};
   $scope.domainsFiltered = [];
   $scope.state = "edit";
-  $scope.areItemsReloading = false;
   var api = semdomEditApi;
+  $scope.filteredByDepthItems = [];
+  $scope.displayedItems = [];
   
   $scope.reloadItems = function reloadItems(depth) {
     var depth = $scope.selectedDepth;
     $timeout(function() {
      if (depth == $scope.selectedDepth) {
-        $scope.displayedItems = [];
-        $scope.areItemsReloading = true;
+        $scope.filteredByDepthItems = [];
         for (var i in $scope.items) {
           var item = $scope.items[i];
           if (checkDepth(item.key)) {
-            $scope.displayedItems.push(item);
+            $scope.filteredByDepthItems.push(item);
           }
           
         }
+        $scope.displayedItems = $scope.filteredByDepthItems.slice(0, 25);
         $scope.$apply() 
-        $scope.areItemsReloading = false;
      }
     }, 500);
     
+  }
+  
+  $scope.loadMore = function loadMore() {
+    var mx = $scope.filteredByDepthItems.length;
+    if ($scope.displayedItems.length + 25 < mx) {
+      mx = $scope.displayedItems.length + 25;
+    }
+    
+    for (var i = $scope.displayedItems.length; i < mx; i++) {
+      $scope.displayedItems.push($scope.filteredByDepthItems[i]);
+    }
   }
   
   $scope.$watch('selectedDepth', function(oldVal, newVal) {
