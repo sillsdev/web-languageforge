@@ -10,12 +10,10 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $ro
     } 
   $scope.maxDepth = 10;
   $scope.selectedDepth = 1;
-  $scope.$parent.itemIndex = $stateParams.position;
   $scope.selectedTab = 0;
   $scope.control = $scope;
   $scope.currentQuestionPos = 0;
   $scope.tabDisplay = {"val": '0'};
-  $scope.domainsFiltered = [];
   $scope.state = "edit";
   var api = semdomEditApi;
   $scope.filteredByDepthItems = [];
@@ -33,7 +31,7 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $ro
           }
           
         }
-        $scope.displayedItems = $scope.filteredByDepthItems.slice(0, 25);
+        $scope.displayedItems = $scope.filteredByDepthItems.slice(0, 50);
         $scope.$apply() 
      }
     }, 500);
@@ -42,8 +40,8 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $ro
   
   $scope.loadMore = function loadMore() {
     var mx = $scope.filteredByDepthItems.length;
-    if ($scope.displayedItems.length + 25 < mx) {
-      mx = $scope.displayedItems.length + 25;
+    if ($scope.displayedItems.length + 50 < mx) {
+      mx = $scope.displayedItems.length + 50;
     }
     
     for (var i = $scope.displayedItems.length; i < mx; i++) {
@@ -90,6 +88,19 @@ function($scope, $stateParams, semdomEditApi, sessionService, modal, notice, $ro
   $scope.refreshData = function refreshData(state) {
         $scope.$parent.refreshData(state, function() { });
     };
+    
+  $scope.$watch('items', function(oldVal, newVal) {
+    var maxDepth = 0;
+    for (var i in $scope.items) {
+      var depth = ($scope.items[i].key.length + 1)/2;
+      if (depth > maxDepth) {
+        maxDepth = depth;
+      }
+    }
+    $scope.maxDepth = maxDepth;
+    $scope.reloadItems(1);
+    $scope.currentEntry = $scope.items[$stateParams.position];
+  });
   
   // permissions stuff
     $scope.rights = {
