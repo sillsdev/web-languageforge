@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.scroll'])
+angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.scroll', 'palaso.ui.typeahead'])
 // DBE controller
 .controller('editCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
 function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
@@ -9,33 +9,29 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
       $scope.refreshData(true);
   }
   $scope.maxDepth = 10;
-  $scope.selectedDepth = 1;
   $scope.selectedTab = 0;
   $scope.control = $scope;
   $scope.currentQuestionPos = 0;
   $scope.tabDisplay = {"val": '0'};
   $scope.state = "edit";
-  var api = semdomEditApi;
   $scope.filteredByDepthItems = [];
   $scope.displayedItems = [];
+  $scope.selectedDepth = 1;
+  var api = semdomEditApi;
   
-  $scope.reloadItems = function reloadItems(depth) {
-    var depth = $scope.selectedDepth;
-    $timeout(function() {
-     if (depth == $scope.selectedDepth) {
-        $scope.filteredByDepthItems = [];
-        for (var i in $scope.items) {
-          var item = $scope.items[i];
-          if (checkDepth(item.key)) {
-            $scope.filteredByDepthItems.push(item);
-          }
-          
+  $scope.reloadItems = function reloadItems(depth) {   
+      $scope.filteredByDepthItems = [];
+      for (var i in $scope.items) {
+        var item = $scope.items[i];
+        if (checkDepth(item.key) && $scope.isIncluded(item.key)) {
+          $scope.filteredByDepthItems.push(item);
         }
-        $scope.displayedItems = $scope.filteredByDepthItems.slice(0, 50);
-        $scope.$apply() 
-     }
-    }, 500);
-    
+        
+      }
+      $scope.displayedItems = $scope.filteredByDepthItems.slice(0, 50);
+      if (!$scope.$$phase) {
+        $scope.$apply()      
+      }
   }
   
   $scope.loadMore = function loadMore() {
@@ -49,15 +45,20 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     }
   }
   
-  $scope.$watch('items', function(oldVal, newVal) {
+  $scope.$watch('items', function(newVal, oldVal) {
     if (oldVal != newVal) {      
         $scope.currentEntry = $scope.items[$scope.currentEntryIndex];
     }
   });
   
-  $scope.$watch('selectedDepth', function(oldVal, newVal) {
+  $scope.$watch('selectedDepth', function(newVal, oldVal) {
     if (oldVal != newVal) {
-      $scope.reloadItems(newVal);
+      var depth = newVal;
+      $timeout(function() {
+        if (depth == $scope.selectedDepth) {
+            $scope.reloadItems(newVal);
+        }
+      }, 500);
     }
   });
   
@@ -110,6 +111,31 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     $scope.currentEntry = $scope.items[$scope.currentEntryIndex];
   });
   
+//search typeahead
+  $scope.typeahead = {
+    term: '',
+    searchResults: []
+  };
+  $scope.typeahead.searchEntries = function searchEntries(query) {
+    $scope.typeahead.searchResults = $filter('filter')($scope.items, query);
+  };
+
+  $scope.typeahead.searchSelect = function searchSelect(entry) {
+   
+  };
+ 
+  
+  $scope.isIncluded = function isIncluded(key) {
+    return !angular.isUndefined($scope.includedItems[key]) && $scope.includedItems[key] ;
+  }
+  
+  $scope.setInclusion = function includeAll(itemsToInclude, v) {
+    for (var i in itemsToInclude) {
+      $scope.includedItems[itemsToInclude[i].key] = v;
+    }
+    
+    $scope.reloadItems($scope.selectedDepth);
+  }
   // permissions stuff
     $scope.rights = {
       canEditProject: function canEditProject() {
