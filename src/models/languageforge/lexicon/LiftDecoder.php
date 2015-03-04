@@ -166,7 +166,7 @@ class LiftDecoder
                     break;
                 case 'variant':
                 case 'relation':
-                    $this->addKnownUnhandledElement('Element: ' . $element['name']);
+                    $this->addKnownUnhandledElement('Element: ' . $element->getName());
                     break;
                 default:
                     $this->currentNodeError()->addUnhandledElement($element->getName());
