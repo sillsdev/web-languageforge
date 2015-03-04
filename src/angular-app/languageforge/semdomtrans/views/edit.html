@@ -1,7 +1,9 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="semDomAppContainer">
 		<div style="margin-top:100px; height: 500px" class="container-fluid">
 		    <div class="row" style="border-bottom:solid black 1px">		
-		    	<div class="col-md-4" ></div>	    
+		    	<div class="col-md-4" >
+                    <b>{{currentEntry.name.source}}</b>
+                </div>	    
 		    	<div class="col-md-4" >
 					<tabset class="pull-center">
 					    <tab heading="Terms"  ng-click="setTab(0)"> </tab>     
@@ -9,7 +11,7 @@
 					</tabset>  
 				</div>
 				<div class="col-md-4" >
-					<a ui-sref="comments({position:$parent.itemIndex})"  style="float: right; margin-top:5px"> Comments &#8594;</a>
+					<a ui-sref="comments({position:currentEntryIndex})"  style="float: right; margin-top:5px"> Comments &#8594;</a>
 				</div>
 			</div>
 			<div class="row">
