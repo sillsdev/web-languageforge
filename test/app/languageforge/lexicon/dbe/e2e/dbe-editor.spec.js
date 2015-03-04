@@ -45,17 +45,13 @@ describe('Browse and edit page (DBE) Editor', function() {
     ]);
   });
 
-  it('one picture and caption is present', function() {
-    expect(dbePage.edit.pictures.getFileName(0)).toContain('_' + constants.testEntry1.senses[0].pictures[0].fileName);
-    expect(dbePage.edit.pictures.getCaption(0)).toEqual({'en': constants.testEntry1.senses[0].pictures[0].caption.en.value});
-  });
-  
   it('dictionary citation reflects lexeme form', function() {
     expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
     expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
     expect(dbePage.edit.renderedDiv.getText()).not.toContain('citation form');
   });
   
+/* not needed now that View Settings all default to visible. IJH 2015-03
   it('add citation form as visible field', function() {
     viewSettingsPage.get();
     viewSettingsPage.tabs.manager.go();
@@ -72,18 +68,26 @@ describe('Browse and edit page (DBE) Editor', function() {
     util.clickBreadcrumb(constants.testProjectName);
     dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
   });
+*/
   
   it('citation form field overrides lexeme form in dictionary citation view', function() {
+    dbePage.edit.showUncommonFields();
     dbePage.edit.getMultiTextInputs('Citation Form').first().sendKeys('citation form');
     expect(dbePage.edit.renderedDiv.getText()).toContain('citation form');
     expect(dbePage.edit.renderedDiv.getText()).not.toContain(constants.testEntry1.lexeme.th.value);
     expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
     dbePage.edit.getMultiTextInputs('Citation Form').first().clear();
+    expect(dbePage.edit.renderedDiv.getText()).not.toContain('citation form');
     expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
     expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-    dbePage.edit.saveBtn.click();
+    dbePage.edit.hideUncommonFields();
   });
 
+  it('one picture and caption is present', function() {
+    expect(dbePage.edit.pictures.getFileName(0)).toContain('_' + constants.testEntry1.senses[0].pictures[0].fileName);
+    expect(dbePage.edit.pictures.getCaption(0)).toEqual({'en': constants.testEntry1.senses[0].pictures[0].caption.en.value});
+  });
+  
   it('file upload drop box is displayed when Add Picture is clicked', function() {
     expect(dbePage.edit.pictures.addPictureLink.isPresent()).toBe(true);
     expect(dbePage.edit.pictures.addDropBox.isDisplayed()).toBe(false);
@@ -220,7 +224,9 @@ describe('Browse and edit page (DBE) Editor', function() {
       {'en': constants.testMultipleMeaningEntry1.senses[0].generalNote.en.value},
       {'en': constants.testMultipleMeaningEntry1.senses[1].generalNote.en.value},
     ]);
+    // first item is empty Etymology Source, now that View Settings all default to visible. IJH 2015-03
     expect(dbePage.edit.getFieldValues('Source')).toEqual([
+      {'en': ''},
       {'en': constants.testMultipleMeaningEntry1.senses[0].source.en.value},
       {'en': constants.testMultipleMeaningEntry1.senses[1].source.en.value},
     ]);
