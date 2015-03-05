@@ -141,7 +141,21 @@ class LexiconConfigObj extends ObjectForEncoding
         'sense-type' => 'Type',
         'anthro-code' => 'Anthropology Categories',
         'do-not-publish-in' => 'Publish In',
-        'status' => 'Status'
+        'status' => 'Status',
+
+        'etymology' => 'Etymology',
+        'lexical-relation' => 'Lexical Relation',
+        'note-type' => 'Note Type',
+        'paradigm' => 'Paradigm',
+        'users' => 'Users',
+        'translation-type' => 'Translation Type',
+        'from-part-of-speech' => 'From Part of Speech',
+        'morph-type' => 'Morph Type',
+        'noun-slot' => 'Noun Slot',
+        'verb-slot' => 'Verb Slot',
+        'stative-slot' => 'Stative Slot',
+        'noun-infl-class' => 'Noun Inflection Class',
+        'verb-infl-class' => 'Verb Inflection Class'
     );
 
     /**

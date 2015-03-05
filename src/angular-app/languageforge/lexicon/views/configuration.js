@@ -344,6 +344,7 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
         $scope.configForm.$setPristine();
         $scope.projectSettings.config = angular.copy($scope.configDirty);
         $scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
+        $scope.optionlistPristine = angular.copy($scope.optionlistDirty);
         // setupView();
       }
       $scope.isSaving = false;
