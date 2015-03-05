@@ -42,6 +42,8 @@ angular.module('palaso.ui.picklistEditor', ['angular-sortable-view'])
         return value.replace(/ /gi, '_');
       };
       
+      $scope.showDefault = angular.isDefined($scope.defaultKey);
+      
       $scope.pickAddItem = function() {
         if ($scope.newValue) {
           var keyFunc = $scope.keyFunc || $scope.defaultKeyFunc;
