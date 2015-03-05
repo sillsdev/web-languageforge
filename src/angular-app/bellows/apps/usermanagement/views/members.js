@@ -11,7 +11,7 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
       $scope.roles = {};
       $scope.userFilter = '';
 
-      $scope.queryUserList = function() {
+      $scope.queryUserList = function queryUserList() {
         projectService.listUsers(function(result) {
           if (result.ok) {
             $scope.list.users = result.data.users;
@@ -28,11 +28,11 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
       $scope.rights.changeRole = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
       $scope.rights.showControlBar = $scope.rights.add || $scope.rights.remove || $scope.rights.changeRole;
 
-      // ----------------------------------------------------------
-      // List
-      // ----------------------------------------------------------
+      /* ----------------------------------------------------------
+       * List
+       * ---------------------------------------------------------- */
       $scope.selected = [];
-      $scope.updateSelection = function(event, item) {
+      $scope.updateSelection = function updateSelection(event, item) {
         var selectedIndex = $scope.selected.indexOf(item);
         var checkbox = event.target;
         if (checkbox.checked && selectedIndex == -1) {
@@ -41,13 +41,13 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
           $scope.selected.splice(selectedIndex, 1);
         }
       };
-      $scope.isSelected = function(item) {
+      $scope.isSelected = function isSelected(item) {
         return item != null && $scope.selected.indexOf(item) >= 0;
       };
 
-      $scope.removeProjectUsers = function() {
+      $scope.removeProjectUsers = function removeProjectUsers() {
         var userIds = [];
-        for(var i = 0, l = $scope.selected.length; i < l; i++) {
+        for (var i = 0, l = $scope.selected.length; i < l; i++) {
 
           // Guard against project owner being removed
           if ($scope.selected[i].id != $scope.project.ownerRef.id) {
@@ -75,7 +75,7 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
         });
       };
 
-      $scope.onRoleChange = function(user) {
+      $scope.onRoleChange = function onRoleChange(user) {
         projectService.updateUserRole(user.id, user.role, function(result) {
           if (result.ok) {
             notice.push(notice.SUCCESS, user.username + "'s role was changed to " + user.role);
@@ -83,9 +83,9 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
         });
       };
 
-      // ----------------------------------------------------------
-      // Typeahead
-      // ----------------------------------------------------------
+      /* ----------------------------------------------------------
+       * Typeahead
+       * ---------------------------------------------------------- */
       $scope.users = [];
       $scope.addModes = {
         'addNew': { 'en': 'Create New User', 'icon': 'icon-user'},
@@ -97,8 +97,9 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
       $scope.typeahead = {};
       $scope.typeahead.userName = '';
 
-      $scope.queryUser = function(userName) {
+      $scope.queryUser = function queryUser(userName) {
         userService.typeaheadExclusive(userName, $scope.project.id, function(result) {
+          
           // TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
           if (result.ok) {
             $scope.users = result.data.entries;
@@ -111,27 +112,28 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
           }
         });
       };
-      $scope.addModeText = function(addMode) {
+      $scope.addModeText = function addModeText(addMode) {
         return $scope.addModes[addMode].en;
       };
-      $scope.addModeIcon = function(addMode) {
+      $scope.addModeIcon = function addModeIcon(addMode) {
         return $scope.addModes[addMode].icon;
       };
-      $scope.updateAddMode = function(newMode) {
+      $scope.updateAddMode = function updateAddMode(newMode) {
         if (newMode in $scope.addModes) {
           $scope.addMode = newMode;
         } else {
+          
           // This also covers the case where newMode is undefined
           $scope.calculateAddMode();
         }
       };
 
-      $scope.isExcludedUser = function(userName) {
-        // Is this userName in the "excluded users" list? (I.e., users already in current project)
-        // Note that it's not enough to check whether the "excluded users" list is non-empty,
-        // as the "excluded users" list might include some users that had a partial match on
-        // the given username. E.g. when creating a new user Bob Jones with username "bjones",
-        // after typing "bjo" the "excluded users" list will include Bob Johnson (bjohnson).
+      /* Is this userName in the "excluded users" list? (I.e., users already in current project)
+       * Note that it's not enough to check whether the "excluded users" list is non-empty,
+       * as the "excluded users" list might include some users that had a partial match on
+       * the given username. E.g. when creating a new user Bob Jones with username "bjones",
+       * after typing "bjo" the "excluded users" list will include Bob Johnson (bjohnson). */
+      $scope.isExcludedUser = function isExcludedUser(userName) {
         if (!$scope.excludedUsers) { return false; }
         for (var i=0, l=$scope.excludedUsers.length; i<l; i++) {
           if (userName == $scope.excludedUsers[i].username ||
@@ -143,7 +145,8 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
         return false;
       };
 
-      $scope.calculateAddMode = function() {
+      $scope.calculateAddMode = function calculateAddMode() {
+        
         // TODO This isn't adequate.  Need to watch the 'typeahead.userName' and 'selection' also. CP 2013-07
         if (!$scope.typeahead.userName) {
           $scope.addMode = 'addNew';
@@ -154,9 +157,9 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
           $scope.addMode = 'addExisting';
           $scope.disableAddButton = true;
           $scope.warningText = excludedUser.name +
-          " (username '" + excludedUser.username +
-          "', email " + excludedUser.email +
-          ") is already a member.";
+            " (username '" + excludedUser.username +
+            "', email " + excludedUser.email +
+            ") is already a member.";
         } else if ($scope.typeahead.userName.indexOf('@') != -1) {
           $scope.addMode = 'invite';
           $scope.disableAddButton = false;
@@ -172,7 +175,7 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
         }
       };
 
-      $scope.addProjectUser = function() {
+      $scope.addProjectUser = function addProjectUser() {
         if ($scope.addMode == 'addNew') {
           userService.createSimple($scope.typeahead.userName, function(result) {
             if (result.ok) {
@@ -183,13 +186,15 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
         } else if ($scope.addMode == 'addExisting') {
           var model = {};
           model.id = $scope.user.id;
+          
           // Check existing users to see if we're adding someone that already exists in the project
           projectService.users(function(result) {
             if (result.ok) {
               for (var i=0, l=result.data.users.length; i<l; i++) {
-                // This approach works, but is unnecessarily slow. We should have an "is user in project?" API,
-                // rather than returning all users then searching through them in O(N) time.
-                // TODO: Make an "is user in project?" query API. 2014-06 RM
+                
+                /* This approach works, but is unnecessarily slow. We should have an "is user in project?" API,
+                 * rather than returning all users then searching through them in O(N) time.
+                 * TODO: Make an "is user in project?" query API. 2014-06 RM */
                 var thisUser = result.data.users[i];
                 if (thisUser.id == model.id) {
                   notice.push(notice.WARN, "'" + $scope.user.name + "' is already a member of " + $scope.project.projectName + ".");
@@ -199,7 +204,7 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
               projectService.updateUserRole($scope.user.id, 'contributor', function(result) {
                 if (result.ok) {
                   notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectName + " successfully");
-                  $scope.queryProjectSettings();
+                  $scope.queryUserList();
                 }
               });
             }
@@ -208,21 +213,22 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
           userService.sendInvite($scope.typeahead.userName, function(result) {
             if (result.ok) {
               notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.projectName);
-              $scope.queryProjectSettings();
+              $scope.queryUserList();
             }
           });
         }
       };
 
-      $scope.selectUser = function(item) {
+      $scope.selectUser = function selectUser(item) {
         $scope.user = item;
         $scope.typeahead.userName = item.name;
         $scope.updateAddMode('addExisting');
       };
 
-      $scope.imageSource = function(avatarRef) {
+      $scope.imageSource = function imageSource(avatarRef) {
         return avatarRef ? '/images/shared/avatar/' + avatarRef : '/images/shared/avatar/anonymous02.png';
       };
 
-    }])
+    }
+  ])
 ;
