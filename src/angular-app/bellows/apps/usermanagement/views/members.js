@@ -204,7 +204,7 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
               projectService.updateUserRole($scope.user.id, 'contributor', function(result) {
                 if (result.ok) {
                   notice.push(notice.SUCCESS, "'" + $scope.user.name + "' was added to " + $scope.project.projectName + " successfully");
-                  $scope.queryProjectSettings();
+                  $scope.queryUserList();
                 }
               });
             }
@@ -213,7 +213,7 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
           userService.sendInvite($scope.typeahead.userName, function(result) {
             if (result.ok) {
               notice.push(notice.SUCCESS, "'" + $scope.typeahead.userName + "' was invited to join the project " + $scope.project.projectName);
-              $scope.queryProjectSettings();
+              $scope.queryUserList();
             }
           });
         }
