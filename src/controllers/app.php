@@ -38,15 +38,19 @@ class app extends Secure_base
         if ($projectId && $projectModel->exists($projectId)) {
             $projectModel = $projectModel->getById($projectId);
             if (!$projectModel->userIsMember((string) $this->session->userdata('user_id'))) {
-                $error_msg = 'Uh oh, you are not an authorized member of this ' . $this->website->domain . ' project.  Please contact the Project Manager to be added to the project';
-                show_error($error_msg, 403, '403 Forbidden: User not authorized');
+                $projectId = '';
             }
             $this->session->set_userdata('projectId', $projectId);
         } else {
-            $projectId = (string) $this->session->userdata('projectId');
+            if (!$projectModel->userIsMember((string) $this->session->userdata('user_id'))) {
+                $projectId = '';
+            } else {
+                $projectId = (string) $this->session->userdata('projectId');
+            }
         }
 
         // Other session data
+
         $sessionData = SessionCommands::getSessionData($projectId, (string) $this->session->userdata('user_id'), $this->website);
         $this->data['jsonSession'] = json_encode($sessionData);
 

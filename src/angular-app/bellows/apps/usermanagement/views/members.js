@@ -2,8 +2,8 @@
 
 angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'palaso.ui.notice', 'ngRoute'])
 
-  .controller('MembersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService',
-    function($scope, userService, projectService, ss, notice) {
+  .controller('MembersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', '$window',
+    function($scope, userService, projectService, ss, notice, $window) {
       $scope.list = {
         visibleUsers: [],
         users: []
@@ -52,8 +52,7 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
           // Guard against project owner being removed
           if ($scope.selected[i].id != $scope.project.ownerRef.id) {
             userIds.push($scope.selected[i].id);
-          }
-          else {
+          } else {
             notice.push(notice.WARN, "Project owner cannot be removed");
           }
         }
@@ -64,12 +63,18 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
         }
         projectService.removeUsers(userIds, function(result) {
           if (result.ok) {
-            $scope.queryUserList();
-            $scope.selected = [];
-            if (userIds.length == 1) {
-              notice.push(notice.SUCCESS, "The user was removed from this project");
+            if (userIds.indexOf(ss.currentUserId()) != -1) {
+              // redirect if you just removed yourself from the project
+              notice.push(notice.SUCCESS, "You have been removed from this project");
+              $window.location.href = '/app/projects';
             } else {
-              notice.push(notice.SUCCESS, userIds.length + " users were removed from this project");
+              $scope.queryUserList();
+              $scope.selected = [];
+              if (userIds.length == 1) {
+                notice.push(notice.SUCCESS, "The user was removed from this project");
+              } else {
+                notice.push(notice.SUCCESS, userIds.length + " users were removed from this project");
+              }
             }
           }
         });
