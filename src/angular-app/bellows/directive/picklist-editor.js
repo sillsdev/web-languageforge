@@ -34,7 +34,7 @@ angular.module('palaso.ui.picklistEditor', ['angular-sortable-view'])
     scope: {
       items: '=',
       defaultKey: '=?',
-      pristineItems: '='
+      pristineItems: '=?'
       //keyFunc: '&',  // TODO: Figure out how to let the user *optionally* specify a key function. 2014-06 RM
     },
     controller: ['$scope', function($scope) {
@@ -60,6 +60,9 @@ angular.module('palaso.ui.picklistEditor', ['angular-sortable-view'])
       // only unsaved items can be removed
       // TODO: implement search and replace to allow remove on any item. IJH 2015-03
       $scope.showRemove = function showRemove(index) {
+        if (angular.isUndefined($scope.pristineItems)) {
+          return true;
+        }
         return !(index in  $scope.pristineItems);
       };
       
