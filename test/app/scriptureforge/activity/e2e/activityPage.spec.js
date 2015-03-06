@@ -66,8 +66,8 @@ describe('Activity Page E2E Test', function() {
     // Perform activity E2E tests according to the different roles
     describe('Running as: ' + expectedUsername, function() {
       
+      // Login before test to ensure proper role
       it('Logging in', function() {
-        // Login before test to ensure proper role
         if (expectedUsername == constants.memberUsername) {
           loginPage.loginAsUser();
         } else if (expectedUsername == constants.managerUsername) {
@@ -75,37 +75,39 @@ describe('Activity Page E2E Test', function() {
         };
       });
       
-      it('Performing a script of actions', function() {
-        
-        // Navigate to the Test Project -> Text -> Question
-        // Save off the Question page URL so we can quickly navigate as needed for different actions
+      it('Navigate to the first test Question page', function() {
         projectListPage.get();
         projectListPage.clickOnProject(constants.testProjectName);
         projectPage.textLink(constants.testText1Title).click();
         textPage.clickOnQuestion(constants.testText1Question1Title);
-        browser.getCurrentUrl().then(function(questionPageURL) {
+      });
+      
+      // Evaluate the script actions
+      for (var i = 0; i < script.length; i++) {
+        
+        // Append timestamp for answer/comment add/edit actions
+        if ( ((script[i].scope == 'answers') || (script[i].scope == 'comments')) && 
+           ((script[i].action == 'add') || (script[i].action == 'edit')) ) {
+          script[i].value = script[i].value + Math.floor(new Date().getTime() / 1000);
+        };
+        
+        // Skip if user doesn't have role permissions for the scope/action
+        if (! isAllowed(script[i].scope, expectedUsername)) {
+          continue;
+        };
+            
+        // see http://stackoverflow.com/questions/21634558/looping-on-a-protractor-test-with-parameters
+        (function(currentScript) {
           
-          // Evaluate the script actions
-          for (var i=0; i<script.length; i++) {
-            
-            // Append timestamp for answer/comment add/edit actions
-            if ( ((script[i].scope == 'answers') || (script[i].scope == 'comments')) && 
-               ((script[i].action == 'add') || (script[i].action == 'edit')) ) {
-              script[i].value = script[i].value + Math.floor(new Date().getTime() / 1000);
-            };
-            
-            // Skip if user doesn't have role permissions for the scope/action
-            if (!isAllowed(script[i].scope, expectedUsername)) {
-              continue;
-            };
-            
-            switch (script[i].scope) {
+          it("Performing action '" + currentScript.action + "' on '" + currentScript.scope + "'" , function() {
+          
+            switch (currentScript.scope) {
               case 'texts' :
                 
                 // Navigate back to Project Page
                 browser.navigate().back();
                 browser.navigate().back();
-                projectPage.addNewText(script[i].value, projectPage.testData);
+                projectPage.addNewText(currentScript.value, projectPage.testData);
                 
                 // Return back to Question Page for rest of test
                 browser.navigate().forward();
@@ -113,7 +115,7 @@ describe('Activity Page E2E Test', function() {
                 break;
               case 'questions' :
                 browser.navigate().back();
-                textPage.addNewQuestion(constants.testText1Question3Title, script[i].value);
+                textPage.addNewQuestion(constants.testText1Question3Title, currentScript.value);
                 browser.navigate().forward();
                 break;
               case 'users' :
@@ -124,22 +126,25 @@ describe('Activity Page E2E Test', function() {
                 
                 // Click on Project Settings
                 projectPage.settingsButton.click();
-                projectSettingsPage.addNewMember(script[i].value);
+                projectSettingsPage.addNewMember(currentScript.value);
                 
                 // Return back to Question Page for rest of test.
-                browser.get(questionPageURL);
-                browser.waitForAngular();
+                projectListPage.get();
+                projectListPage.clickOnProject(constants.testProjectName);
+                projectPage.textLink(constants.testText1Title).click();
+                textPage.clickOnQuestion(constants.testText1Question1Title);
                 break;
               default :
                 
                 // Default page is Question page, so perform action
-                questionPage[script[i].scope][script[i].action](script[i].value);
+                questionPage[currentScript.scope][currentScript.action](currentScript.value);
             };
-          };
-        });
-      });
-      
-      it('goto Activity Page to verfy actions', function() {
+          });
+        })(script[i]);
+            
+      };
+          
+      it('Navigate to Activity Page to verfy actions', function() {
         
         activityPage.get();
         
