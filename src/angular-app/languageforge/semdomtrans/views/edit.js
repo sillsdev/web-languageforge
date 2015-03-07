@@ -104,6 +104,8 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
       if (depth > maxDepth) {
         maxDepth = depth;
       }
+      
+      $scope.includedItems[$scope.items[i].key] = true;
     }
     $scope.maxDepth = maxDepth;
     $scope.reloadItems(1);
@@ -111,6 +113,8 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
       $scope.currentEntry = $scope.items[$scope.currentEntryIndex];
       $scope.currentEntryIndex = angular.isUndefined($stateParams.position) ? 0 : $stateParams.position;
     }
+    
+    
   });
   
 //search typeahead
