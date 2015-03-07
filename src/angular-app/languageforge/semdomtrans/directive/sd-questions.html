@@ -1,10 +1,10 @@
 <span>
   	<h2> Question {{currentQuestionPos+1}}/{{model.questions.length}} </h2>
-  	<table style="width:600px">
+  	<table style="width:100%">
   		<tr>
-  			<th> </th>
-  			<th> Source </th>
-  			<th> Translation </th>
+  			<th style="width:30%"> </th>
+  			<th style="width:35%"> Source </th>
+  			<th style="width:35%"> Translation </th>
   		</tr>
 	    <tr ng-click="isInCommentMode() ? $parent.setSelectedField('question ' + currentQuestionPos, model.questions[currentQuestionPos].question) : '' ">
 		    <td> Questions: </td>
