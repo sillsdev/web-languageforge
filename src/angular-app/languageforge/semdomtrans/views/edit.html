@@ -1,7 +1,7 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="semDomAppContainer">
 		<div style="margin-top:100px; height: 500px" class="container-fluid">
 		    <div class="row" style="border-bottom:solid black 1px">		
-		    	<div class="col-md-4" >
+		    	<div class="col-md-3" >
                     <b>{{currentEntry.name.source}}</b>
                     <br />
                      <typeahead style="margin:0px; width:162px" class="typeahead" placeholder="'Select Domains to Display'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
@@ -18,7 +18,7 @@
                         </ul>
                     </typeahead>
                 </div>	    
-		    	<div class="col-md-4" >
+		    	<div class="col-md-5" >
 					<tabset class="pull-center">
 					    <tab heading="Terms"  ng-click="setTab(0)"> </tab>     
 						<tab heading="Questions" ng-click="setTab(1)"></tab>
@@ -29,10 +29,10 @@
 				</div>
 			</div>
 			<div class="row">
-			  <div class="col-md-4" style="border-right:solid black 1px">
+			  <div class="col-md-3" style="border-right:solid black 1px">
 			    <div>
-                    <label style="float:left; margin-top:20px">Tree Depth: {{selectedDepth}}</label>
-                    <input style="width:70%; float:right" class="progress-slider" type="range" min="1"
+                    <label style="float:left; margin-top:20px; width:30%">Tree Depth: {{selectedDepth}}</label>
+                    <input style="width:65%; float:right" class="progress-slider" type="range" min="1"
                     max="{{maxDepth}}" data-ng-model="selectedDepth">
                 </div>
 			    <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%"  data-pui-when-scrolled="loadMore()">
@@ -43,7 +43,7 @@
 			    </div>
 				
 			  </div>
-			  <div style="text-align: center;" class="col-md-4">
+			  <div style="text-align: center;" class="col-md-9">
 			  	   <div ui-view="editItem"></div>
 			  </div>
 			</div>
