@@ -396,8 +396,9 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
 	public $targetProject;
 
 
-	public function importEnglishProject() {
-		$semdomVersion = 1000;
+	public function importEnglishProject($semdomVersion) {
+
+	    $this->cleanPreviousProject("en", $semdomVersion);
 		$languageCode = "en";
 		$projectCode = "semdom-$languageCode-$semdomVersion";
 		
@@ -418,14 +419,17 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
 		$this->englishProject = $projectModel;
 		return $projectModel;
 	}
+	
+	public function cleanPreviousProject($languageCode, $semdomVersion) {
+	    $previousProject = new SemDomTransProjectModel();
+	    $projectCode = "semdom-$languageCode-$semdomVersion";
+	    $previousProject->readByProperty("projectCode", $projectCode);
+	    $previousProject->projectCode = $projectCode;
+	    $this->cleanProjectEnvironment($previousProject);
+	}
 
-	public function createPreFilledTargetProject($languageCode) {
-		$previousProject = new SemDomTransProjectModel();
-		$semdomVersion = $this->englishProject->semdomVersion;
-		$projectCode = "semdom-$languageCode-$semdomVersion";
-		$previousProject->readByProperty("projectCode", $projectCode);
-		$previousProject->projectCode = $projectCode;
-		$this->cleanProjectEnvironment($previousProject);
+	public function createPreFilledTargetProject($languageCode, $semdomVersion) {
+	    $this->cleanPreviousProject($languageCode, $semdomVersion);
 		
 		$projectModel = $this->createSemDomProject($languageCode, $semdomVersion);		
 		SemDomTransProjectCommands::preFillProject($projectModel->id->asString());
@@ -434,8 +438,10 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
 	}
 	
 	public function createSemDomProject($languageCode, $semdomVersion) {
+	    $this->cleanPreviousProject($languageCode, $semdomVersion);
+	    
+	    $projectCode = "semdom-$languageCode-$semdomVersion";
 		$projectName = "Semdom $languageCode Project";
-		$projectCode = "semdom-$languageCode-$semdomVersion";
 		$projectModel = $this->createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP);
 		$projectModel = new SemDomTransProjectModel($projectModel->id->asString());
 		$projectModel->languageIsoCode = $languageCode;

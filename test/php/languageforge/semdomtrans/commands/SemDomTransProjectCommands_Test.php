@@ -15,7 +15,7 @@ class SemDomTransProjectCommands_Test extends UnitTestCase {
 	public function testSemDomImportExport_ImportExportPreserveXMLFile() {
 		$e = new SemDomMongoTestEnvironment();
 		$e->clean();
-		$englishProject = $e->importEnglishProject();
+		$englishProject = $e->importEnglishProject(20);
 		$exporter = new SemDomXMLExporter($englishProject, false,  true, false);
 		$exporter->run();
 		$sourcePath = "/var/www/host/sil/lfsite/docs/semdom/semdom lists/SemDom_en.xml";
