@@ -145,7 +145,19 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     searchResults: []
   };
   $scope.typeahead.searchEntries = function searchEntries(query) {
-    $scope.typeahead.searchResults = $filter('filter')($scope.items, query);
+    if (!isNaN(parseInt(query[0]))) {
+      $scope.typeahead.searchResults = []
+      var results = [];
+      var ln = query.length;
+      for (var i in $scope.items) {
+        if ($scope.items[i].key.substring(0, ln) === query) {
+          results.push($scope.items[i]);
+        }
+      }
+      $scope.typeahead.searchResults = results; 
+    } else {
+      $scope.typeahead.searchResults = $filter('filter')($scope.items, query);
+    }
   };
 
   $scope.typeahead.searchSelect = function searchSelect(entry) {

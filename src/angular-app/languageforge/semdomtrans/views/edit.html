@@ -2,8 +2,6 @@
 		<div style="margin-top:100px; height: 500px" class="container-fluid">
 		    <div class="row" style="border-bottom:solid black 1px">		
 		    	<div class="col-md-3" >
-                    <b>{{currentEntry.name.source}}</b>
-                    <br />
                      <typeahead style="margin:0px; width:162px" class="typeahead" placeholder="'Select Domains to Display'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
                         <ul style="width: 300px" ng-if="typeahead.searchResults.length > 0">
                             <li data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
