@@ -8,7 +8,6 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
   if ($scope.items.length == 0 && !$scope.loadingDto) {
       $scope.refreshData(true);
   }
-  $scope.maxDepth = 10;
   $scope.selectedTab = 0;
   $scope.control = $scope;
   $scope.currentQuestionPos = 0;
@@ -18,42 +17,71 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
   $scope.filteredByDepthItemsDict = {};
   $scope.displayedItems = [];
   $scope.selectedDepth = 1;
+  $scope.searchText = "";
   var api = semdomEditApi;
   
-  $scope.reloadItems = function reloadItems(depth) {   
-      $scope.filteredByDepthItems = [];
-      var addedToFiltered = {};
-      for (var i in $scope.itemsTree) {
-        var node = $scope.itemsTree[i];
-        var item = node.content;
-        if (isIncluded(item.key)) {
-          if (checkDepth(item.key)) {
-            $scope.filteredByDepthItems.push(item);
-            addedToFiltered[item.key] = true;
-          }
-          while(node.parent != '') {
-            if (checkDepth(node.parent) && (angular.isUndefined(addedToFiltered[node.parent]) || !addedToFiltered[node.parent])) {
-              $scope.filteredByDepthItems.push($scope.itemsTree[node.parent].content);
-              addedToFiltered[node.parent] = true;
+  $scope.reloadItems = function reloadItems(depth, delay) {
+     if (delay == undefined) {
+       delay = 0;
+     }
+      var query = $scope.selectedText;
+      $timeout(function() {
+            if (query != $scope.selectedText)
+              return;
+            
+            $scope.filteredByDepthItems = [];
+            var addedToFiltered = {};
+            
+            // get all actually included items in
+            for (var i in $scope.itemsTree) {
+              var node = $scope.itemsTree[i];
+              var item = node.content;
+              if (isIncluded(item.key)) {
+                if (checkDepth(item.key)) {
+                  $scope.filteredByDepthItems.push(item);
+                }
+              }              
             }
             
-            node = $scope.itemsTree[node.parent];
-          }
-        }              
-      }
-      
-      $scope.filteredByDepthItems.sort(function(a, b) {
-        if (a.key < b.key) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
-      
-      $scope.displayedItems = $scope.filteredByDepthItems.slice(0, 50);
-      if (!$scope.$$phase) {
-        $scope.$apply()      
-      }
+            // apply filter       
+            $scope.filteredByDepthItems = $filter('filter')($scope.filteredByDepthItems, $scope.searchText);
+            
+            // check off that items have been added (to avoid duplicates in next step)
+            for (var i in $scope.filteredByDepthItems) {
+              var item = $scope.filteredByDepthItems[i];
+              addedToFiltered[item.key] = true;
+            }
+            
+            // add ancestors of included items
+            for (var i in $scope.filteredByDepthItems) {
+              var node = $scope.itemsTree[$scope.filteredByDepthItems[i].key];
+              var item = node.content;        
+              while(node.parent != '') {
+                if (checkDepth(node.parent) && (angular.isUndefined(addedToFiltered[node.parent]) || !addedToFiltered[node.parent])) {
+                  $scope.filteredByDepthItems.push($scope.itemsTree[node.parent].content);
+                  addedToFiltered[node.parent] = true;
+                }
+                
+                node = $scope.itemsTree[node.parent];
+              }
+            }
+            
+            
+            $scope.filteredByDepthItems.sort(function(a, b) {
+              if (a.key < b.key) {
+                return -1;
+              } else {
+                return 1;
+              }
+            });
+            
+          
+            
+            $scope.displayedItems = $scope.filteredByDepthItems.slice(0, 50);
+            if (!$scope.$$phase) {
+              $scope.$apply()      
+            }
+          }, delay);
   }
   
   $scope.loadMore = function loadMore() {
@@ -139,7 +167,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     
   });
   
-//search typeahead
+  //search typeahead
   $scope.typeahead = {
     term: '',
     searchResults: []
@@ -162,8 +190,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
 
   $scope.typeahead.searchSelect = function searchSelect(entry) {
    
-  };
- 
+  }; 
   
   function isIncluded(key) {
     return !angular.isUndefined($scope.includedItems[key]) && $scope.includedItems[key] ;
