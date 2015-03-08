@@ -31,8 +31,11 @@ class SemDomTransItemCommands
 		$projectModel = new SemDomTransProjectModel($projectId);
 		$guid = $data["xmlGuid"];
 		$s = new SemDomTransItemModel($projectModel);
+		$s->xmlGuid = $guid;
 		$s->readByProperty("xmlGuid", $guid);
 		
+	
+		$s->key = $data["key"];
 		$s->name->translation = $data["name"]["translation"];
 		$s->description->translation = $data["description"]["translation"];
 		
@@ -46,5 +49,6 @@ class SemDomTransItemCommands
 		}
 		
 		$s->write();
+		return $s->id->asString();
 	}
 }
