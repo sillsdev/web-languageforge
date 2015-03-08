@@ -23,8 +23,8 @@ class TestSemDomTransEditDto extends UnitTestCase
     {
     	$e = new SemDomMongoTestEnvironment(); 
     	$e->clean();
-    	$englishProject = $e->importEnglishProject(20);
-    	$targetProject = $e->createPreFilledTargetProject("es", 20);
+    	$englishProject = $e->importEnglishProject();
+    	$targetProject = $e->createPreFilledTargetProject("es");
     	$result = SemDomTransEditDto::encode($targetProject->id->asString(), null);
     	$this->assertNotEqual($result["items"], null);
     	$this->assertEqual($result["items"][0]["name"]["source"], "Universe, creation");
@@ -39,9 +39,9 @@ class TestSemDomTransEditDto extends UnitTestCase
         $e->clean();
         
         // create a new semdom project (source)
-        $sourceProject = $e->createSemDomProject("en", 20);
+        $sourceProject = $e->createSemDomProject("en");
         // create a new semdom project (target)
-        $targetProject = $e->createSemDomProject("es", 20);
+        $targetProject = $e->createSemDomProject("es");
         
         
         // insert dummy models
