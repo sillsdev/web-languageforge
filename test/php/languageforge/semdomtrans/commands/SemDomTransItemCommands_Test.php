@@ -23,7 +23,7 @@ class SemdomTransItemCommands_Test extends UnitTestCase
         $e = new SemDomMongoTestEnvironment();
         $e->clean();
         
-        $projectModel = $e->createSemDomProject("en", "20");
+        $projectModel = $e->createSemDomProject("en");
         // insert dummy models
         $sourceItemModel = new SemDomTransItemModel($projectModel);
 
