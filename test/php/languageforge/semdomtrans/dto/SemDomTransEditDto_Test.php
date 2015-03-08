@@ -23,8 +23,8 @@ class TestSemDomTransEditDto extends UnitTestCase
     {
     	$e = new SemDomMongoTestEnvironment(); 
     	$e->clean();
-    	$englishProject = $e->importEnglishProject();
-    	$targetProject = $e->createPreFilledTargetProject("es");
+    	$englishProject = $e->importEnglishProject(20);
+    	$targetProject = $e->createPreFilledTargetProject("es", 20);
     	$result = SemDomTransEditDto::encode($targetProject->id->asString(), null);
     	$this->assertNotEqual($result["items"], null);
     	$this->assertEqual($result["items"][0]["name"]["source"], "Universe, creation");
@@ -35,23 +35,13 @@ class TestSemDomTransEditDto extends UnitTestCase
     	 
     public function testEncode_SourceProjectAndTargetProjectHaveItems_DtoAsExpected()
     {
-        $e = new MongoTestEnvironment();
+        $e = new SemDomMongoTestEnvironment();
         $e->clean();
         
         // create a new semdom project (source)
-        $sourceProject = new SemDomTransProjectModel();
-        $sourceProject->languageIsoCode = "en";
-        $sourceProject->semdomVersion = "1";
-        $sourceProject->projectCode = "semdonen";
-        $sourceProject->write();
-        
+        $sourceProject = $e->createSemDomProject("en", 20);
         // create a new semdom project (target)
-        $targetProject = new SemDomTransProjectModel();
-        $targetProject->languageIsoCode = "pl";
-        $targetProject->semdomVersion = "1";
-        $targetProject->projectCode = "semdonpl";
-        $targetProject->sourceLanguageProjectId = $sourceProject->id->asString();
-        $targetProject->write();
+        $targetProject = $e->createSemDomProject("es", 20);
         
         
         // insert dummy models
@@ -114,10 +104,5 @@ class TestSemDomTransEditDto extends UnitTestCase
          $this->assertEqual($firstObject["questions"][0]["question"]["translation"], "Pytanie wszechswiata");
          $this->assertEqual($firstObject["questions"][0]["terms"]["source"], "A universe question term");
          $this->assertEqual($firstObject["questions"][0]["terms"]["translation"], "Termin zwiazany z wszechswiatem");
-
-         // clean-up
-         // TODO: create a custom semdomtrans mongo environment
-         $targetProject->remove();
-         $sourceProject->remove();
     }
 }
