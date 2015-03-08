@@ -15,19 +15,41 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
   $scope.tabDisplay = {"val": '0'};
   $scope.state = "edit";
   $scope.filteredByDepthItems = [];
+  $scope.filteredByDepthItemsDict = {};
   $scope.displayedItems = [];
   $scope.selectedDepth = 1;
   var api = semdomEditApi;
   
   $scope.reloadItems = function reloadItems(depth) {   
       $scope.filteredByDepthItems = [];
-      for (var i in $scope.items) {
-        var item = $scope.items[i];
-        if (checkDepth(item.key) && $scope.isIncluded(item.key)) {
-          $scope.filteredByDepthItems.push(item);
-        }
-        
+      var addedToFiltered = {};
+      for (var i in $scope.itemsTree) {
+        var node = $scope.itemsTree[i];
+        var item = node.content;
+        if (isIncluded(item.key)) {
+          if (checkDepth(item.key)) {
+            $scope.filteredByDepthItems.push(item);
+            addedToFiltered[item.key] = true;
+          }
+          while(node.parent != '') {
+            if (checkDepth(node.parent) && (angular.isUndefined(addedToFiltered[node.parent]) || !addedToFiltered[node.parent])) {
+              $scope.filteredByDepthItems.push($scope.itemsTree[node.parent].content);
+              addedToFiltered[node.parent] = true;
+            }
+            
+            node = $scope.itemsTree[node.parent];
+          }
+        }              
       }
+      
+      $scope.filteredByDepthItems.sort(function(a, b) {
+        if (a.key < b.key) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+      
       $scope.displayedItems = $scope.filteredByDepthItems.slice(0, 50);
       if (!$scope.$$phase) {
         $scope.$apply()      
@@ -131,7 +153,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
   };
  
   
-  $scope.isIncluded = function isIncluded(key) {
+  function isIncluded(key) {
     return !angular.isUndefined($scope.includedItems[key]) && $scope.includedItems[key] ;
   }
   
@@ -140,8 +162,10 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
       $scope.includedItems[itemsToInclude[i].key] = v;
     }
     
-    $scope.reloadItems($scope.selectedDepth);
+    $scope.reloadItems($scope.selectedDepth);    
   }
+  
+  
   // permissions stuff
     $scope.rights = {
       canEditProject: function canEditProject() {
