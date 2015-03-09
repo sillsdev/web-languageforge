@@ -8,7 +8,12 @@ exports.config = {
   // The address of a running selenium server.
   seleniumAddress: 'http://192.168.56.1:4444/wd/hub',
   baseUrl: 'http://languageforge.local',
-  
+
+  // The timeout in milliseconds for each script run on the browser. This should
+  // be longer than the maximum time your application needs to stabilize between
+  // tasks.
+  allScriptsTimeout: 12000,
+
   // To run tests in a single browser, uncomment the following
   capabilities: {
     'browserName': 'chrome',
