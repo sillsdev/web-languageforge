@@ -1,7 +1,7 @@
 'use strict';
 
 // module definition
-angular.module('bellows.services', ['jsonRpc'])
+angular.module('bellows.services')
 //Lexicon Comment Service
 .service('lexCommentService', ['jsonRpc', function(jsonRpc) {
   jsonRpc.connect('/api/sf');
