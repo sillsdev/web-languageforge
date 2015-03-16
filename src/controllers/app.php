@@ -67,7 +67,7 @@ class app extends Secure_base
         $this->addJavascriptNotMinifiedFiles($appFolder . "/js/vendor");
         $this->addJavascriptNotMinifiedFiles($appFolder . "/js/assets");
 
-        $this->addCssFiles("angular-app/bellows/css");
+        $this->addCssFiles("angular-app/bellows");
         $this->addCssFiles($appFolder);
 
         $this->renderPage('angular-app');
