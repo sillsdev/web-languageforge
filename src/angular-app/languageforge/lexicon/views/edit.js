@@ -12,6 +12,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   $scope.config = configService.getConfigForUser();
   $scope.lastSavedDate = new Date();
   $scope.currentEntry = {};
+  $scope.commentService = commentService; // tie service into the edit.html template
 
   // default state. State is one of 'list', 'edit', or 'comment'
   $scope.state = 'list';
@@ -289,7 +290,6 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     if ($scope.currentEntry.id != id) {
       $scope.saveCurrentEntry();
       setCurrentEntry($scope.entries[getIndexInList(id, $scope.entries)]);
-      $scope.loadEntryComments();
     }
     $scope.state = 'edit';
     // $location.path('/dbe/' + id, false);
@@ -305,7 +305,6 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     $scope.show.initial();
     scrollListToEntry('', 'top');
     $scope.state = 'edit';
-    $scope.loadEntryComments();
     // $location.path('/dbe', false);
   };
 
@@ -316,7 +315,6 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   $scope.returnToList = function returnToList() {
     $scope.saveCurrentEntry();
     setCurrentEntry();
-    $scope.loadEntryComments();
     $scope.state = 'list';
     // $location.path('/dbe', false);
   };
@@ -339,13 +337,6 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   function addEntryToEntryList(entry) {
     $scope.entries.unshift(entry);
   }
-
-  $scope.getEntryCommentCount = function getEntryCommentCount(entryId) {
-    if (angular.isDefined($scope.entryCommentCounts[entryId])) {
-      return $scope.entryCommentCounts[entryId];
-    }
-    return 0;
-  };
 
   $scope.makeValidModelRecursive = function makeValidModelRecursive(config, data, stopAtNodes) {
     if (angular.isString(stopAtNodes)) {
@@ -499,10 +490,10 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       notice.cancelLoading();
       $scope.fullRefreshInProgress = false;
       if (result.ok) {
-        $scope.commentsUserPlusOne = result.data.commentsUserPlusOne;
+        commentService.commentsUserPlusOne = result.data.commentsUserPlusOne;
         if (fullRefresh) {
           $scope.entries = result.data.entries;
-          $scope.comments = result.data.comments;
+          commentService.allComments = result.data.comments;
 
           $scope.show.initial();
         } else {
@@ -530,11 +521,11 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
           // splice comment updates into comments list
           angular.forEach(result.data.comments, function(c) {
-            var i = getIndexInList(c.id, $scope.comments);
+            var i = getIndexInList(c.id, commentService.allComments);
             if (angular.isDefined(i)) {
-              $scope.comments[i] = c;
+              commentService.allComments[i] = c;
             } else {
-              $scope.comments.push(c);
+              commentService.allComments.push(c);
             }
           });
 
@@ -543,9 +534,9 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
           // todo remove deleted comments according to deleted ids
           angular.forEach(result.data.deletedCommentIds, function(id) {
-            var i = getIndexInList(id, $scope.comments);
+            var i = getIndexInList(id, commentService.allComments);
             if (angular.isDefined(i)) {
-              $scope.comments.splice(i, 1);
+              commentService.allComments.splice(i, 1);
             }
           });
 
@@ -607,12 +598,16 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
   // Comments View
 
+  /*
   $scope.currentEntryComments = [];
   $scope.commentsUserPlusOne = [];
   $scope.currentEntryCommentCounts = {
     total: 0,
     fields: {}
   };
+  */
+
+  // todo: would be nice to have this newComment logic in the directive - cjh 2015-03
 //model for new comment content
   $scope.newComment = {
     id: '',
@@ -657,6 +652,9 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     return valueToReturn;
   }
 
+
+
+  // todo: is there a way to move this logic into the comments directive? cjh 2015-03
   $scope.selectFieldForComment = function selectFieldForComment(fieldName, model, inputSystem, multioptionValue, pictureFilePath) {
     if ($scope.state == 'comment' && $scope.rights.canComment()) {
       $scope.newCommentRegardingFieldConfig = configService.getFieldConfig(fieldName);
@@ -680,48 +678,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     }
   };
 
-  $scope.loadEntryComments = function loadEntryComments() {
-    var comments = [];
-    var count = {
-      total: 0,
-      fields: {}
-    };
-    var entryCommentsCounts = {};
-    for (var i = 0; i < $scope.comments.length; i++) {
-      var comment = $scope.comments[i];
 
-      // add counts to global entry comment counts
-      if (angular.isUndefined(entryCommentsCounts[comment.entryRef])) {
-        entryCommentsCounts[comment.entryRef] = 0;
-      }
-      if (comment.status != 'resolved') {
-        entryCommentsCounts[comment.entryRef]++;
-      }
-
-      var fieldName = comment.regarding.field;
-      if (comment.entryRef == $scope.currentEntry.id) {
-        if (fieldName && angular.isUndefined(count.fields[fieldName])) {
-          count.fields[fieldName] = 0;
-        }
-
-        // add comment to the correct 'field' container
-        comments.push(comment);
-
-        // update the appropriate count for this field and update the total count
-        if (comment.status != 'resolved') {
-          if (fieldName) {
-            count.fields[fieldName]++;
-          }
-          count.total++;
-        }
-      }
-    }
-    $scope.currentEntryComments = comments;
-    $scope.currentEntryCommentCounts = count;
-    $scope.entryCommentCounts = entryCommentsCounts;
-  }
-
-  
   $scope.getComment = function getComment(comment) {
     var isNewComment = angular.isUndefined(comment);
     if (isNewComment) {
@@ -752,20 +709,6 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     return comment;
   };
 
-
-  /*
-   * currentEntryCommentCounts has the following structure: { 'total': int total
-   * count 'fields': { 'lexeme': int count of comments for lexeme field,
-   * 'definition': int count of comments for definition field, } }
-   */
-
-  $scope.getFieldCommentCount = function getFieldCommentCount(fieldName) {
-    var count = 0;
-    if (angular.isDefined($scope.currentEntryCommentCounts.fields[fieldName])) {
-      count = $scope.currentEntryCommentCounts.fields[fieldName];
-    }
-    return count;
-  };
 
   // only refresh the full view if we have not yet loaded the dictionary for the first time
   evaluateState();
@@ -818,26 +761,6 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     },
     canDeleteEntry: function canDeleteEntry() {
       return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.DELETE);
-    },
-    canComment: function canComment() {
-      return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.CREATE);
-    },
-    canDeleteComment: function canDeleteComment(commentAuthorId) {
-      if (sessionService.session.userId == commentAuthorId) {
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE_OWN);
-      } else {
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE);
-      }
-    },
-    canEditComment: function canEditComment(commentAuthorId) {
-      if (sessionService.session.userId == commentAuthorId) {
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT_OWN);
-      } else {
-        return false;
-      }
-    },
-    canUpdateCommentStatus: function canUpdateCommentStatus() {
-      return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT);
     }
   };
 

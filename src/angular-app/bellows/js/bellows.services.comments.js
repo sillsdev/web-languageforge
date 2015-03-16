@@ -3,30 +3,61 @@
 // module definition
 angular.module('bellows.services')
 //Lexicon Comment Service
-.service('lexCommentService', ['jsonRpc', function(jsonRpc) {
-  jsonRpc.connect('/api/sf');
+  .service('lexCommentService', ['jsonRpc', function(jsonRpc) {
 
-  this.update = function updateComment(comment, callback) {
-    jsonRpc.call('lex_comment_update', [comment], callback);
-  };
+    this.entryCommentCounts = {};
+    this.allComments = [];
+    this.commentsUserPlusOne = [];
 
-  this.updateReply = function updateReply(commentId, reply, callback) {
-    jsonRpc.call('lex_commentReply_update', [commentId, reply], callback);
-  };
 
-  this.remove = function deleteComment(commentId, callback) {
-    jsonRpc.call('lex_comment_delete', [commentId], callback);
-  };
+    /**
+     * this should be called whenever new data is received
+     */
+    this.updateGlobalCommentCounts = function updateGlobalCommentCounts() {
+      for (var i = 0; i < this.allComments.length; i++) {
+        var comment = this.allComments[i];
 
-  this.deleteReply = function deleteReply(commentId, replyId, callback) {
-    jsonRpc.call('lex_commentReply_delete', [commentId, replyId], callback);
-  };
+        // add counts to global entry comment counts
+        if (angular.isUndefined(this.entryCommentCounts[comment.entryRef])) {
+          this.entryCommentCounts[comment.entryRef] = 0;
+        }
+        if (comment.status != 'resolved') {
+          this.entryCommentCounts[comment.entryRef]++;
+        }
+      }
+    };
 
-  this.plusOne = function plusOne(commentId, callback) {
-    jsonRpc.call('lex_comment_plusOne', [commentId], callback);
-  };
 
-  this.updateStatus = function updateStatus(commentId, status, callback) {
-    jsonRpc.call('lex_comment_updateStatus', [commentId, status], callback);
-  };
-}])
+
+
+
+
+    jsonRpc.connect('/api/sf');
+
+
+
+    this.update = function updateComment(comment, callback) {
+      jsonRpc.call('lex_comment_update', [comment], callback);
+    };
+
+    this.updateReply = function updateReply(commentId, reply, callback) {
+      jsonRpc.call('lex_commentReply_update', [commentId, reply], callback);
+    };
+
+    this.remove = function deleteComment(commentId, callback) {
+      jsonRpc.call('lex_comment_delete', [commentId], callback);
+    };
+
+    this.deleteReply = function deleteReply(commentId, replyId, callback) {
+      jsonRpc.call('lex_commentReply_delete', [commentId, replyId], callback);
+    };
+
+    this.plusOne = function plusOne(commentId, callback) {
+      jsonRpc.call('lex_comment_plusOne', [commentId], callback);
+    };
+
+    this.updateStatus = function updateStatus(commentId, status, callback) {
+      jsonRpc.call('lex_comment_updateStatus', [commentId, status], callback);
+    };
+
+  }])
