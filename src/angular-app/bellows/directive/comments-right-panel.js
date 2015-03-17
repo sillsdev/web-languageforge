@@ -80,14 +80,18 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
         };
 
         $scope.currentEntryCommentsFiltered = getFilteredComments();
+
+        $scope.loadComments = function loadComments() {
+          commentService.loadEntryComments($scope.entryId);
+          $scope.currentEntryCommentsFiltered = getFilteredComments();
+        };
         $scope.updateComment = function updateComment(comment) {
           var comment = $scope.control.getComment(comment);
 
           commentService.update(comment, function(result) {
             if (result.ok) {
               $scope.control.refreshData(false, function() {
-                commentService.loadEntryComments($scope.entryId);
-                $scope.currentEntryCommentsFiltered = getFilteredComments();
+                $scope.loadComments();
               });
             }
           });
@@ -97,7 +101,7 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
           commentService.plusOne(commentId, function(result) {
             if (result.ok) {
               $scope.control.refreshData(false, function() {
-                commentService.loadEntryComments($scope.entryId);
+                $scope.loadComments();
               });
             }
           });
@@ -126,8 +130,7 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
 
         $scope.$watch('entryId', function(newVal, oldVal) {
           if (newVal) {
-            commentService.loadEntryComments(newVal);
-            $scope.currentEntryCommentsFiltered = getFilteredComments();
+            $scope.loadComments();
           }
         });
 

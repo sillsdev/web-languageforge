@@ -5,10 +5,6 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
   return {
     restrict: 'E',
     templateUrl: '/angular-app/bellows/directive/dc-comment.html',
-    scope: {
-      model : "=",
-      control: "="
-    },
     controller: ['$scope', 'lexCommentService', 'lexConfigService', 'sessionService', 'modalService', function($scope, commentService, configService, sessionService, modal) {
 
             $scope.hover = { comment: false };
@@ -20,10 +16,10 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
             $scope.editingCommentContent = '';
             
             
-            if ($scope.model.regarding.field) {
-              $scope.commentRegardingFieldConfig = configService.getFieldConfig($scope.model.regarding.field);
+            if ($scope.comment.regarding.field) {
+              $scope.commentRegardingFieldConfig = configService.getFieldConfig($scope.comment.regarding.field);
               $scope.isCommentRegardingPicture = (($scope.commentRegardingFieldConfig.type == 'pictures') && 
-                  ! ($scope.model.regarding.inputSystem));
+                  ! ($scope.comment.regarding.inputSystem));
             }
 
             
@@ -45,7 +41,7 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
                 hideInputFields();
                 reply.content = angular.copy(reply.editingContent);
                 delete reply.editingContent;
-                updateReply($scope.model.id, reply);
+                updateReply($scope.comment.id, reply);
                 $scope.newReply = {id:'', editingContent:''};
             };
             
@@ -64,7 +60,7 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
           commentService.updateStatus(commentId, status, function(result) {
             if (result.ok) {
               $scope.control.refreshData(false, function() {
-                $scope.control.loadEntryComments();
+                $scope.loadComments();
               });
             }
           });
@@ -82,7 +78,7 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
             commentService.remove(comment.id, function(result) {
               if (result.ok) {
                 $scope.control.refreshData(false, function() {
-                  $scope.control.loadEntryComments();
+                  $scope.loadComments();
                 });
               }
             });
@@ -103,7 +99,7 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
             commentService.deleteReply(commentId, reply.id, function(result) {
               if (result.ok) {
                 $scope.control.refreshData(false, function() {
-                 $scope.control.loadEntryComments();
+                 $scope.loadComments();
                 });
               }
             });
@@ -113,19 +109,19 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
 
         $scope.editComment = function editComment() {
             hideInputFields();
-            $scope.model.editing = true;
-            $scope.editingCommentContent = angular.copy($scope.model.content);
+            $scope.comment.editing = true;
+            $scope.editingCommentContent = angular.copy($scope.comment.content);
         };
 
         $scope.updateComment = function updateComment() {
             hideInputFields();
-            $scope.model.content = angular.copy($scope.editingCommentContent);
-            var comment = $scope.control.getComment($scope.model);
+            $scope.comment.content = angular.copy($scope.editingCommentContent);
+            var comment = $scope.control.getComment($scope.comment);
 
             commentService.update(comment, function(result) {
               if (result.ok) {
                   $scope.control.refreshData(false, function() {
-                      $scope.control.loadEntryComments();
+                      $scope.loadComments();
                   });
               }
             });
@@ -133,11 +129,11 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
         };
             
             function hideInputFields() {
-                for (var i=0; i< $scope.model.replies.length; i++) {
-                    $scope.model.replies[i].editing = false;
+                for (var i=0; i< $scope.comment.replies.length; i++) {
+                    $scope.comment.replies[i].editing = false;
                 }
                 $scope.showNewReplyForm = false;
-                $scope.model.editing = false;
+                $scope.comment.editing = false;
             }
             
             
