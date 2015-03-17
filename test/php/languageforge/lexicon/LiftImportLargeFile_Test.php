@@ -36,7 +36,6 @@ class TestLiftImportInfo
     public function displayPoint($point)
     {
         echo $point['name'] . ' pk '. $point['mem'] / 1024 . 'K cur '  . $point['current'] / 1024 . 'K<br/>';
-        flush();
     }
 
 }
@@ -53,14 +52,11 @@ class TestLiftImport extends UnitTestCase
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 //         $liftFilePath = '/home/cambell/src/Forge/TestData/Gilaki/Gilaki.lift';
-        $liftFilePath = '/var/www/host/sil/LanguageData/Dailey/Part 2.lift';
+        $liftFilePath = '/home/cambell/src/Forge/TestData/Webster/Webster.lift';
         $mergeRule =  LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
-        echo "<pre>";
-        echo $importer->getReport()->toFormattedString();
-        echo "</pre>";
+        LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $testInfo->add('post merge');
 
