@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comment', 'palaso.ui.showOverflow', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice', 'palaso.ui.comments-right-panel'])
+angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comment', 'palaso.ui.showOverflow', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
 // DBE controller
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService', 'lexCommentService', 
 function($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location, configService, commentService) {
@@ -602,107 +602,16 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   // Comments View
 
 
-  // todo: would be nice to have this newComment logic in the directive - cjh 2015-03
-//model for new comment content
-  $scope.newComment = {
-    id: '',
-    content: '',
-    regarding: {}
-  };
-  
   $scope.showComments = function showComments() {
     $scope.saveCurrentEntry(true);
     $scope.state = 'comment';
     // $location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);
   };
   
-  function getFieldValue(model, inputSystem) {
-
-    // get value of option list
-    if (angular.isDefined(model.value)) {
-
-      // todo return display value
-      return model.value;
-    }
-
-    // get value of multi-option list
-    if (angular.isDefined(model.values)) {
-
-      // todo return display values
-      return model.values.join(' ');
-    }
-
-    // get value of multi-text with specified inputSystem
-    if (angular.isDefined(inputSystem) && angular.isDefined(model[inputSystem])) {
-      return model[inputSystem].value;
-    }
-
-    // get first inputSystem of a multi-text (no inputSystem specified)
-    var valueToReturn = undefined;
-    angular.forEach(model, function(prop) {
-      if (angular.isUndefined(valueToReturn)) {
-        valueToReturn = prop.value;
-      }
-    });
-    return valueToReturn;
-  }
 
 
 
-  // todo: is there a way to move this logic into the comments directive? cjh 2015-03
-  $scope.selectFieldForComment = function selectFieldForComment(fieldName, model, inputSystem, multioptionValue, pictureFilePath) {
-    if ($scope.state == 'comment' && $scope.rights.canComment()) {
-      $scope.newCommentRegardingFieldConfig = configService.getFieldConfig(fieldName);
-      $scope.newComment.regarding.field = fieldName;
-      $scope.newComment.regarding.fieldNameForDisplay = $scope.newCommentRegardingFieldConfig.label;
-      delete $scope.newComment.regarding.inputSystem;
-      delete $scope.newComment.regarding.inputSystemAbbreviation;
-      $scope.isNewCommentRegardingPicture = false;
-      if (inputSystem) {
-        $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
-        $scope.newComment.regarding.inputSystem = $scope.config.inputSystems[inputSystem].languageName;
-        $scope.newComment.regarding.inputSystemAbbreviation = $scope.config.inputSystems[inputSystem].abbreviation;
-      } else if (multioptionValue) {
-        $scope.newComment.regarding.fieldValue = multioptionValue;
-      } else if (pictureFilePath) {
-        $scope.newComment.regarding.fieldValue = pictureFilePath;
-        $scope.isNewCommentRegardingPicture = true;
-      } else {
-        $scope.newComment.regarding.fieldValue = getFieldValue(model);
-      }
-    }
-  };
 
-
-  $scope.getComment = function getComment(comment) {
-    var isNewComment = angular.isUndefined(comment);
-    if (isNewComment) {
-      comment = angular.copy($scope.newComment);
-
-      // dont submit empty comments
-      if (angular.isUndefined(comment.content) || ! comment.content.trim()) {
-        return;
-      }
-
-      // comment.content is already set in the form
-      comment.entryRef = $scope.currentEntry.id;
-      comment.regarding.meaning = $scope.getMeaningForDisplay($scope.currentEntry);
-      comment.regarding.word = $scope.getWordForDisplay($scope.currentEntry);
-
-      // other comment.regarding fields are set via the click selection of which field to select
-    }
-
-
-    if (isNewComment) { // reset newComment
-      $scope.newComment = {
-        id: '',
-        content: '',
-        regarding: {}
-      };
-    }
-      
-    return comment;
-  };
 
 
   // only refresh the full view if we have not yet loaded the dictionary for the first time
