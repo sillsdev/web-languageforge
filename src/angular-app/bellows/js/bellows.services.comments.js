@@ -5,26 +5,90 @@ angular.module('bellows.services')
 //Lexicon Comment Service
   .service('lexCommentService', ['jsonRpc', function(jsonRpc) {
 
-    this.entryCommentCounts = {};
-    this.allComments = [];
-    this.commentsUserPlusOne = [];
+    this.comments = {
+      items: {
+        currentEntry: [],
+        all: []
+      },
+      counts: {
+        currentEntry: {
+          total: 0,
+          fields: {}
+        },
+        byEntry: {},
+        userPlusOne: []
+      }
+    };
+
+
+    /*
+     * currentEntryCommentCounts has the following structure: { 'total': int total
+     * count 'fields': { 'lexeme': int count of comments for lexeme field,
+     * 'definition': int count of comments for definition field, } }
+     */
+    this.comments.counts.currentEntry = { total: 0, fields: {}};
+
+
+    /**
+     * This should be called whenever the entry context changes (to update the comments and comment counts)
+     * @param allComments
+     * @param currentEntryId
+     */
+    this.loadEntryComments = function loadEntryComments(entryId) {
+      this.comments.counts.currentEntry.total = 0;
+      this.comments.counts.currentEntry.fields = {};
+      this.comments.items.currentEntry.length = 0;
+      for (var i = 0; i < this.comments.all.length; i++) {
+        var comment = this.comments.all[i];
+        var fieldName = comment.regarding.field;
+        if (comment.entryRef == entryId) {
+          if (fieldName && angular.isUndefined(this.comments.counts.currentEntry.fields[fieldName])) {
+            this.comments.counts.currentEntry.fields[fieldName] = 0;
+          }
+          this.comments.items.currentEntry.push(comment);
+
+          // update the appropriate count for this field and update the total count
+          if (comment.status != 'resolved') {
+            if (fieldName) {
+              this.comments.counts.currentEntry.fields[fieldName]++;
+            }
+            this.comments.counts.currentEntry.total++;
+          }
+        }
+      }
+    };
 
 
     /**
      * this should be called whenever new data is received
      */
     this.updateGlobalCommentCounts = function updateGlobalCommentCounts() {
-      for (var i = 0; i < this.allComments.length; i++) {
-        var comment = this.allComments[i];
+      for (var i = 0; i < this.comments.all.length; i++) {
+        var comment = this.comments.all[i];
 
         // add counts to global entry comment counts
-        if (angular.isUndefined(this.entryCommentCounts[comment.entryRef])) {
-          this.entryCommentCounts[comment.entryRef] = 0;
+        if (angular.isUndefined(this.comments.counts.byEntry[comment.entryRef])) {
+          this.comments.counts.byEntry[comment.entryRef] = 0;
         }
         if (comment.status != 'resolved') {
-          this.entryCommentCounts[comment.entryRef]++;
+          this.comments.counts.byEntry[comment.entryRef]++;
         }
       }
+    };
+
+
+    this.getFieldCommentCount = function getFieldCommentCount(fieldName) {
+      if (angular.isDefined(this.comments.counts.currentEntry.fields[fieldName])) {
+        return this.comments.counts.currentEntry.fields[fieldName];
+      }
+      return 0;
+    };
+
+    this.getEntryCommentCount = function getEntryCommentCount(entryId) {
+      if (angular.isDefined(this.comments.counts.byEntry[entryId])) {
+        return this.comments.counts.byEntry[entryId];
+      }
+      return 0;
     };
 
 

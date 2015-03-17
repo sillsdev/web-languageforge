@@ -286,10 +286,6 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
     }
   };
 
-  this.updateComment = function updateComment(comment, callback) {
-    jsonRpc.call('lex_entry_updateComment', [comment], callback);
-  };
-
 }]).service('lexUtils', [function() {
 
   function getFirstField(config, node, fieldName) {
