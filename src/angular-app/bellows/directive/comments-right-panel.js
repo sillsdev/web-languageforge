@@ -6,9 +6,10 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
     return {
       restrict: 'E',
       templateUrl: '/angular-app/bellows/directive/current-entry-comment-count.html',
-      require: 'commentsRightPanel',
-      link: function(scope, element, attrs, commentsRightPanelController) {
-        scope.count = commentsRightPanelController.currentEntryCommentCounts;
+      controller: ['$scope', 'lexCommentService', function($scope, commentService) {
+        $scope.count = commentService.comments.counts.currentEntry;
+      }],
+      link: function(scope, element, attrs, controller) {
       }
     };
   }])
@@ -22,13 +23,9 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
         control: "="
       },
       controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService', function($scope, $filter, commentService, sessionService, modal) {
-        $scope.currentEntryComments = [];
-        $scope.currentEntryCommentCounts = { total: 0, fields: {}};
-
-        // publish as an API on the controller
-        this.currentEntryCommentCounts = $scope.currentEntryCommentCounts;
 
         $scope.currentEntryCommentsFiltered = [];
+        $scope.numberOfComments = commentService.comments.counts.currentEntry.total;
         $scope.commentFilter = {
           text: '',
           status: 'all',
@@ -89,7 +86,8 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
           commentService.update(comment, function(result) {
             if (result.ok) {
               $scope.control.refreshData(false, function() {
-                loadEntryComments();
+                commentService.loadEntryComments($scope.entryId);
+                $scope.currentEntryCommentsFiltered = getFilteredComments();
               });
             }
           });
@@ -99,14 +97,14 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
           commentService.plusOne(commentId, function(result) {
             if (result.ok) {
               $scope.control.refreshData(false, function() {
-                loadEntryComments();
+                commentService.loadEntryComments($scope.entryId);
               });
             }
           });
         };
 
         $scope.canPlusOneComment = function canPlusOneComment(commentId) {
-          if (angular.isDefined(commentService.commentsUserPlusOne[commentId])) {
+          if (angular.isDefined(commentService.comments.counts.userPlusOne[commentId])) {
             return false;
           }
           return true;
@@ -114,9 +112,9 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
 
         $scope.getNewCommentPlaceholderText = function getNewCommentPlaceholderText() {
           var label;
-          if ($scope.currentEntryComments.length == 0) {
+          if (commentService.comments.items.currentEntry.length == 0) {
             label = $filter('translate')("Your comment goes here.  Be the first to share!");
-          } else if ($scope.currentEntryComments.length < 3) {
+          } else if (commentService.comments.items.currentEntry.length < 3) {
             label = $filter('translate')("Start a conversation.  Enter your comment here.");
           } else {
             label = $filter('translate')("Join the discussion and type your comment here.");
@@ -125,63 +123,20 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
         };
 
 
-        /**
-         * This should be called whenever the entry context changes (to update the comments and comment counts)
-         * @param allComments
-         * @param currentEntryId
-         */
-        function loadEntryComments() {
-          for (var i = 0; i < commentService.allComments.length; i++) {
-            var comment = commentService.allComments[i];
-            var fieldName = comment.regarding.field;
-            if (comment.entryRef == $scope.entryId) {
-              if (fieldName && angular.isUndefined($scope.currentEntryCommentCounts.fields[fieldName])) {
-                $scope.currentEntryCommentCounts.fields[fieldName] = 0;
-              }
-              $scope.currentEntryComments.push(comment);
-
-              // update the appropriate count for this field and update the total count
-              if (comment.status != 'resolved') {
-                if (fieldName) {
-                  $scope.currentEntryCommentCounts.fields[fieldName]++;
-                }
-                $scope.currentEntryCommentCounts.total++;
-              }
-            }
-          }
-        };
 
         $scope.$watch('entryId', function(newVal, oldVal) {
           if (newVal) {
-            loadEntryComments();
+            commentService.loadEntryComments(newVal);
             $scope.currentEntryCommentsFiltered = getFilteredComments();
           }
         });
 
 
 
-        /*
-         * currentEntryCommentCounts has the following structure: { 'total': int total
-         * count 'fields': { 'lexeme': int count of comments for lexeme field,
-         * 'definition': int count of comments for definition field, } }
-         */
-        this.getFieldCommentCount = function getFieldCommentCount(fieldName) {
-          if (angular.isDefined($scope.currentEntryCommentCounts.fields[fieldName])) {
-            return $scope.currentEntryCommentCounts.fields[fieldName];
-          }
-          return 0;
-        };
-
-        this.getEntryCommentCount = function getEntryCommentCount(entryId) {
-          if (angular.isDefined($scope.entryCommentCounts[entryId])) {
-            return $scope.entryCommentCounts[entryId];
-          }
-          return 0;
-        };
 
 
         function getFilteredComments() {
-          var comments = $filter('filter')($scope.currentEntryComments, $scope.commentFilter.byText);
+          var comments = $filter('filter')(commentService.comments.items.currentEntry, $scope.commentFilter.byText);
           return $filter('filter')(comments, $scope.commentFilter.byStatus);
         }
 
@@ -226,8 +181,8 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
         }
 
         function removeCommentFromLists(commentId, replyId) {
-          _deleteCommentInList(commentId, replyId, commentService.allComments);
-          _deleteCommentInList(commentId, replyId, commentService.currentEntryComments);
+          _deleteCommentInList(commentId, replyId, commentServicecomments.all);
+          _deleteCommentInList(commentId, replyId, commentService.comments.items.currentEntry);
         }
 
 

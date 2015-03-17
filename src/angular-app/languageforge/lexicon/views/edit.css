@@ -284,6 +284,11 @@ legend.override-bootstrap {
     background-color: #e4e5ff;
 }
 
+.lexiconItemListContainer .listItemHasComment {
+    border-right: solid 3px #faa732;
+}
+
+
 .entryItemView {
 /*  TODO: review this in light of animation and the footer staying at the bottom. IJH 2014-09*/    
     overflow-y: scroll;
