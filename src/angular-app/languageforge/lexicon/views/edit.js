@@ -290,6 +290,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     if ($scope.currentEntry.id != id) {
       $scope.saveCurrentEntry();
       setCurrentEntry($scope.entries[getIndexInList(id, $scope.entries)]);
+      commentService.loadEntryComments(id);
     }
     $scope.state = 'edit';
     // $location.path('/dbe/' + id, false);
@@ -301,6 +302,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       id: ''
     };
     setCurrentEntry(newEntry);
+    commentService.loadEntryComments(id);
     addEntryToEntryList(newEntry);
     $scope.show.initial();
     scrollListToEntry('', 'top');
@@ -490,10 +492,10 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       notice.cancelLoading();
       $scope.fullRefreshInProgress = false;
       if (result.ok) {
-        commentService.commentsUserPlusOne = result.data.commentsUserPlusOne;
+        commentService.comments.counts.userPlusOne = result.data.commentsUserPlusOne;
         if (fullRefresh) {
           $scope.entries = result.data.entries;
-          commentService.allComments = result.data.comments;
+          commentService.comments.all = result.data.comments;
 
           $scope.show.initial();
         } else {
@@ -521,11 +523,11 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
           // splice comment updates into comments list
           angular.forEach(result.data.comments, function(c) {
-            var i = getIndexInList(c.id, commentService.allComments);
+            var i = getIndexInList(c.id, commentService.comments.all);
             if (angular.isDefined(i)) {
-              commentService.allComments[i] = c;
+              commentService.comments.all[i] = c;
             } else {
-              commentService.allComments.push(c);
+              commentService.comments.all.push(c);
             }
           });
 
@@ -534,9 +536,9 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
           // todo remove deleted comments according to deleted ids
           angular.forEach(result.data.deletedCommentIds, function(id) {
-            var i = getIndexInList(id, commentService.allComments);
+            var i = getIndexInList(id, commentService.comments.all);
             if (angular.isDefined(i)) {
-              commentService.allComments.splice(i, 1);
+              commentService.comments.all.splice(i, 1);
             }
           });
 
@@ -545,6 +547,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
           // todo: probably update currentEntryCommentsList?
 
         }
+        commentService.updateGlobalCommentCounts();
       }
       callback();
     };
@@ -598,14 +601,6 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
   // Comments View
 
-  /*
-  $scope.currentEntryComments = [];
-  $scope.commentsUserPlusOne = [];
-  $scope.currentEntryCommentCounts = {
-    total: 0,
-    fields: {}
-  };
-  */
 
   // todo: would be nice to have this newComment logic in the directive - cjh 2015-03
 //model for new comment content
