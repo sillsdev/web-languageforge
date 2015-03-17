@@ -1,18 +1,6 @@
 "use strict";
-angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.dc.comment',  'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.comment', 'ngAnimate', 'truncate', 'palaso.ui.scroll', 'palaso.ui.notice', 'pascalprecht.translate'])
+angular.module('palaso.ui.dc.comment')
 // Palaso UI Dictionary Control: Comments
-
-  .directive('currentEntryCommentCount', [function() {
-    return {
-      restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/current-entry-comment-count.html',
-      controller: ['$scope', 'lexCommentService', function($scope, commentService) {
-        $scope.count = commentService.comments.counts.currentEntry;
-      }],
-      link: function(scope, element, attrs, controller) {
-      }
-    };
-  }])
 
   .directive('commentsRightPanel', [function() {
     return {
@@ -20,9 +8,19 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
       templateUrl: '/angular-app/bellows/directive/comments-right-panel.html',
       scope: {
         entryId: "=",
-        control: "="
+        control: "=",
+        newComment: "="
       },
       controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService', function($scope, $filter, commentService, sessionService, modal) {
+
+
+        /*  $scope.newComment has the following initial structure
+        {
+          id: '',
+          content: '',
+          regarding: {}
+        };
+        */
 
         $scope.currentEntryCommentsFiltered = [];
         $scope.numberOfComments = commentService.comments.counts.currentEntry.total;
@@ -85,10 +83,9 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
           commentService.loadEntryComments($scope.entryId);
           $scope.currentEntryCommentsFiltered = getFilteredComments();
         };
-        $scope.updateComment = function updateComment(comment) {
-          var comment = $scope.control.getComment(comment);
 
-          commentService.update(comment, function(result) {
+        $scope.postNewComment = function postNewComment() {
+          commentService.update($scope.newComment, function(result) {
             if (result.ok) {
               $scope.control.refreshData(false, function() {
                 $scope.loadComments();
@@ -128,7 +125,7 @@ angular.module('palaso.ui.comments-right-panel', ['palaso.ui.utils', 'palaso.ui.
 
 
 
-        $scope.$watch('entryId', function(newVal, oldVal) {
+        $scope.$watch('entryId', function(newVal) {
           if (newVal) {
             $scope.loadComments();
           }

@@ -87,46 +87,11 @@
             </div>
         </div>
 
-        <!--
-        <div class="row">
-            <div class="span10">
-                <pre>{{currentEntryCommentCounts|json}}</pre>
-            </div>
-        </div>
-        <div class="row">
-            <div class="span10">
-                <pre>currentEntry {{currentEntry|json}}</pre>
-            </div>
-        </div>
-        <div class="row">
-            <div class="span10">
-                <pre>config {{config|json}}</pre>
-            </div>
-        </div>
-        -->
 
 
-        <!-- comment view -->
         <div id="lexAppCommentView" class="animate-switch" data-ng-switch-when="comment">
-            <div style="flex: 10;padding:5px;display: flex; flex-direction: column">
-                <div style="margin: 20px 0 5px; border-bottom: solid black 1px">
-                    <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
-                </div>
-                <div style="margin-top:5px">
-                    <div class="entryItemView" data-ng-if="entryLoaded()">
-                        <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
-                    </div>
-                </div>
-            </div>
-             <comments-right-panel entry-id="currentEntry.id" control="control"></comments-right-panel>
+            <lex-comments-view entry-config="config.entry" entry="currentEntry" control="control"></lex-comments-view>
         </div>
 
     </div>
-    <!--
-    <div class="row">
-        <div class="span10">
-            <pre>currentEntry {{currentEntry|json}}</pre>
-        </div>
-    </div>
-    -->
 </div>

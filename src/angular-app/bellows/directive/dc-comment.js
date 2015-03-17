@@ -1,5 +1,5 @@
 "use strict";
-angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
+angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services', 'palaso.ui.notice', 'pascalprecht.translate'])
 // Palaso UI Dictionary Control: Comments
 .directive('dcComment', [function() {
   return {
@@ -116,9 +116,8 @@ angular.module('palaso.ui.dc.comment', ['palaso.ui.utils', 'bellows.services'])
         $scope.updateComment = function updateComment() {
             hideInputFields();
             $scope.comment.content = angular.copy($scope.editingCommentContent);
-            var comment = $scope.control.getComment($scope.comment);
 
-            commentService.update(comment, function(result) {
+            commentService.update($scope.comment, function(result) {
               if (result.ok) {
                   $scope.control.refreshData(false, function() {
                       $scope.loadComments();
