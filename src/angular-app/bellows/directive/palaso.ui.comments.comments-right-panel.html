@@ -10,10 +10,10 @@
         <div>
             <div class="commentCount">
                 <span ng-if="numberOfComments !== 1">
-                    {{numberOfComments}} {{'Comments'|translate}}
+                    {{numberOfComments()}} {{'Comments'|translate}}
                 </span>
                 <span ng-if="numberOfComments === 1">
-                    {{numberOfComments}} {{'Comment'|translate}}
+                    {{numberOfComments()}} {{'Comment'|translate}}
                 </span>
             </div>
         </div> 
@@ -22,7 +22,6 @@
         <div ng-show="rights.canComment()" class="newCommentForm">
             <div style="display:flex; flex-direction: column">
                 <form ng-submit="postNewComment()">
-                    <textarea required data-ng-model="newComment.content"  placeholder="{{getNewCommentPlaceholderText()}}"  ></textarea>
                     <div class="commentRegarding">
                         <i class="icon-remove" style="float:right; color:#808080; cursor: pointer" ng-click="newComment.regarding.field = ''" ng-show="newComment.regarding.field"></i>
 
@@ -37,6 +36,7 @@
                         </div>
                         <div ng-hide="newComment.regarding.field" style="text-align:center; color: #e67345;margin-bottom: 8px"><em translate="Click on a field to the left and give context to your comment"></em></div>
                     </div>
+                    <textarea required data-ng-model="newComment.content"  placeholder="{{getNewCommentPlaceholderText()}}"  ></textarea>
                     <div style="text-align: right; margin-right:10px">
                         <input type="submit" class="btn btn-sm" value="Post" />
                     </div>

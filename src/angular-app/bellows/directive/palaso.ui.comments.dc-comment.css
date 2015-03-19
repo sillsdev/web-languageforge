@@ -163,7 +163,7 @@ div.newCommentForm {
 
 div.newCommentForm textarea {
     width: 382px;
-    margin: 0 10px 10px 10px;
+    margin: 10px;
     height:90px;
 
 }

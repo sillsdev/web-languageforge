@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comment', 'palaso.ui.showOverflow', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
+angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.comments', 'palaso.ui.showOverflow', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
 // DBE controller
 .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService', 'lexCommentService', 
 function($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location, configService, commentService) {
@@ -495,7 +495,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
         commentService.comments.counts.userPlusOne = result.data.commentsUserPlusOne;
         if (fullRefresh) {
           $scope.entries = result.data.entries;
-          commentService.comments.all = result.data.comments;
+          commentService.comments.items.all = result.data.comments;
 
           $scope.show.initial();
         } else {
@@ -523,11 +523,11 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
           // splice comment updates into comments list
           angular.forEach(result.data.comments, function(c) {
-            var i = getIndexInList(c.id, commentService.comments.all);
+            var i = getIndexInList(c.id, commentService.comments.items.all);
             if (angular.isDefined(i)) {
-              commentService.comments.all[i] = c;
+              commentService.comments.items.all[i] = c;
             } else {
-              commentService.comments.all.push(c);
+              commentService.comments.items.all.push(c);
             }
           });
 
@@ -536,9 +536,9 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
           // todo remove deleted comments according to deleted ids
           angular.forEach(result.data.deletedCommentIds, function(id) {
-            var i = getIndexInList(id, commentService.comments.all);
+            var i = getIndexInList(id, commentService.comments.items.all);
             if (angular.isDefined(i)) {
-              commentService.comments.all.splice(i, 1);
+              commentService.comments.items.all.splice(i, 1);
             }
           });
 

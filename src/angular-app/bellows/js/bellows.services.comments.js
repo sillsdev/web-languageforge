@@ -38,8 +38,8 @@ angular.module('bellows.services')
       this.comments.counts.currentEntry.total = 0;
       this.comments.counts.currentEntry.fields = {};
       this.comments.items.currentEntry.length = 0;
-      for (var i = 0; i < this.comments.all.length; i++) {
-        var comment = this.comments.all[i];
+      for (var i = 0; i < this.comments.items.all.length; i++) {
+        var comment = this.comments.items.all[i];
         var fieldName = comment.regarding.field;
         if (comment.entryRef == entryId) {
           if (fieldName && angular.isUndefined(this.comments.counts.currentEntry.fields[fieldName])) {
@@ -63,8 +63,8 @@ angular.module('bellows.services')
      * this should be called whenever new data is received
      */
     this.updateGlobalCommentCounts = function updateGlobalCommentCounts() {
-      for (var i = 0; i < this.comments.all.length; i++) {
-        var comment = this.comments.all[i];
+      for (var i = 0; i < this.comments.items.all.length; i++) {
+        var comment = this.comments.items.all[i];
 
         // add counts to global entry comment counts
         if (angular.isUndefined(this.comments.counts.byEntry[comment.entryRef])) {

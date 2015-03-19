@@ -292,6 +292,7 @@ legend.override-bootstrap {
 .entryItemView {
 /*  TODO: review this in light of animation and the footer staying at the bottom. IJH 2014-09*/    
     overflow-y: scroll;
+    overflow-x: hidden;
 
     height: 588px;
     padding-right:5px;
