@@ -1,13 +1,13 @@
 "use strict";
-angular.module('palaso.ui.dc.comment')
+angular.module('palaso.ui.comments')
 // Palaso UI Dictionary Control: Comments
 
   .directive('commentsRightPanel', [function() {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/comments-right-panel.html',
+      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.comments-right-panel.html',
       scope: {
-        entryId: "=",
+        entry: "=",
         control: "=",
         newComment: "="
       },
@@ -21,9 +21,24 @@ angular.module('palaso.ui.dc.comment')
           regarding: {}
         };
         */
+        $scope.initializeNewComment = function initializeNewComment() {
+          $scope.newComment =  {
+            id: '',
+            content: '',
+            entryRef: $scope.entry.id,
+            regarding: {
+              meaning: $scope.control.getMeaningForDisplay($scope.entry),
+              word: $scope.control.getWordForDisplay($scope.entry)
+            }
+          };
+        };
+
 
         $scope.currentEntryCommentsFiltered = [];
-        $scope.numberOfComments = commentService.comments.counts.currentEntry.total;
+
+        $scope.numberOfComments = function numberOfComments() {
+          return commentService.comments.counts.currentEntry.total;
+        };
         $scope.commentFilter = {
           text: '',
           status: 'all',
@@ -80,7 +95,7 @@ angular.module('palaso.ui.dc.comment')
         $scope.currentEntryCommentsFiltered = getFilteredComments();
 
         $scope.loadComments = function loadComments() {
-          commentService.loadEntryComments($scope.entryId);
+          commentService.loadEntryComments($scope.entry.id);
           $scope.currentEntryCommentsFiltered = getFilteredComments();
         };
 
@@ -89,6 +104,7 @@ angular.module('palaso.ui.dc.comment')
             if (result.ok) {
               $scope.control.refreshData(false, function() {
                 $scope.loadComments();
+                $scope.initializeNewComment();
               });
             }
           });
@@ -125,9 +141,10 @@ angular.module('palaso.ui.dc.comment')
 
 
 
-        $scope.$watch('entryId', function(newVal) {
+        $scope.$watch('entry', function(newVal) {
           if (newVal) {
             $scope.loadComments();
+            $scope.initializeNewComment();
           }
         });
 
@@ -154,36 +171,6 @@ angular.module('palaso.ui.dc.comment')
 
         });
 
-
-
-        function _deleteCommentInList(commentId, replyId, list) {
-          var deleteComment = true;
-          if (angular.isDefined(replyId)) {
-            deleteComment = false;
-          }
-          for (var i = list.length - 1; i >= 0; i--) {
-            var c = list[i];
-            if (deleteComment) {
-              if (c.id == commentId) {
-                list.splice(i, 1);
-              }
-            } else {
-
-              // delete Reply
-              for (var j = c.replies.length - 1; j >= 0; j--) {
-                var r = c.replies[j];
-                if (r.id == replyId) {
-                  c.replies.splice(j, 1);
-                }
-              }
-            }
-          }
-        }
-
-        function removeCommentFromLists(commentId, replyId) {
-          _deleteCommentInList(commentId, replyId, commentServicecomments.all);
-          _deleteCommentInList(commentId, replyId, commentService.comments.items.currentEntry);
-        }
 
 
       }],

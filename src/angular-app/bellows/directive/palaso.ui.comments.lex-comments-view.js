@@ -1,45 +1,31 @@
 "use strict";
-angular.module('palaso.ui.dc.comment')
+angular.module('palaso.ui.comments')
 // Palaso UI Dictionary Control: Comments
 
   .directive('lexCommentsView', [function() {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/lex-comments-view.html',
+      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.lex-comments-view.html',
       scope: {
         entry: "=",
         entryConfig: "=",
         control: "="
       },
-      controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService', function($scope, $filter, commentService, sessionService, modal) {
+      controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService', 'lexConfigService', function($scope, $filter, commentService, sessionService, modal, configService) {
+
+        $scope.config = configService.getConfigForUser();
 
         function canComment() {
           return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.CREATE);
         }
 
-        function initializeNewComment() {
-          $scope.newComment =  {
-            id: '',
-            content: '',
-            regarding: {}
-          };
-        }
-        initializeNewComment();
-
-        $scope.$watch('entry', function(newVal, oldVal) {
-          if (newVal != oldVal) {
-            $scope.newComment.entryRef = $scope.entry.id;
-            $scope.newComment.regarding.meaning = $scope.control.getMeaningForDisplay($scope.entry);
-            $scope.newComment.regarding.word = $scope.control.getWordForDisplay($scope.entry);
-          }
-        });
 
 
         // notes by cjh 2015-03
         // define this method on the control (which happens to be an ancestor scope) because it is used by a sibling directive (dc-entry)
         // an alternative implementation to this would be to use the commentService to contain this method (but then the comment service would become lex specific which is a downside
         $scope.control.selectFieldForComment = function selectFieldForComment(fieldName, model, inputSystem, multioptionValue, pictureFilePath) {
-          if ($scope.state == 'comment' && canComment()) {
+          if (canComment()) {
             $scope.newCommentRegardingFieldConfig = configService.getFieldConfig(fieldName);
             $scope.newComment.regarding.field = fieldName;
             $scope.newComment.regarding.fieldNameForDisplay = $scope.newCommentRegardingFieldConfig.label;
