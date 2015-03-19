@@ -5,7 +5,7 @@ angular.module('lexicon',
   [
     'ngRoute',
     'ngSanitize',
-    'dbe',
+    'lexicon.edit',
     'meaning',
     'examples',
     'bellows.services',

@@ -20,27 +20,27 @@
                 </div>
             </div>
             <div class="commentRightSide">
+                <div class="commentRegarding" ng-show="comment.regarding.field">
+                    <div class="regardingContext"><b>{{comment.regarding.word}}</b> <em>{{comment.regarding.meaning}}</em></div>
+                    <span class="regardingFieldName">{{comment.regarding.fieldNameForDisplay}}</span>
+                    <div data-ng-class="(comment.regarding.inputSystem) ? 'input-prepend' : ''"
+                         data-ng-hide="isCommentRegardingPicture">
+                        <span data-ng-show="comment.regarding.inputSystem" class="add-on wsid regardingInputSystem" title="{{comment.regarding.inputSystem}}">{{comment.regarding.inputSystemAbbreviation}}</span>
+                        <div class="uneditable-input regardingFieldValue"
+                             data-ng-class="{'dc-multioptionlist-value': (commentRegardingFieldConfig.type == 'multioptionlist')}"
+                             data-ng-bind-html="comment.regarding.fieldValue"
+                             data-pui-show-overflow></div>
+                    </div>
+                    <div data-ng-if="isCommentRegardingPicture">
+                        <img data-ng-src="{{comment.regarding.fieldValue}}" />
+                    </div>
+                </div>
                 <div class="commentContent" ng-hide="comment.editing" ng-bind="comment.content"></div>
                 <div ng-show="comment.editing" class="flex100" style="justify-content: space-around">
                     <textarea style="width:250px" data-ng-model="editingCommentContent"></textarea>
                     <div>
                         <button ng-disabled="!comment.content" class="btn-sm" ng-click="updateComment(comment)">Update</button> <a style="display:block" ng-click="comment.editing = false">Cancel</a>
 
-                    </div>
-                </div>
-                <div class="commentRegarding" ng-show="comment.regarding.field">
-                    <div class="regardingContext"><b>{{comment.regarding.word}}</b> <em>{{comment.regarding.meaning}}</em></div>
-                    <span class="regardingFieldName">{{comment.regarding.fieldNameForDisplay}}</span>
-                    <div data-ng-class="(comment.regarding.inputSystem) ? 'input-prepend' : ''"
-                        data-ng-hide="isCommentRegardingPicture">
-                        <span data-ng-show="comment.regarding.inputSystem" class="add-on wsid regardingInputSystem" title="{{comment.regarding.inputSystem}}">{{comment.regarding.inputSystemAbbreviation}}</span>
-                        <div class="uneditable-input regardingFieldValue" 
-                            data-ng-class="{'dc-multioptionlist-value': (commentRegardingFieldConfig.type == 'multioptionlist')}"
-                            data-ng-bind-html="comment.regarding.fieldValue" 
-                            data-pui-show-overflow></div>
-                    </div>
-                    <div data-ng-if="isCommentRegardingPicture">
-                        <img data-ng-src="{{comment.regarding.fieldValue}}" />
                     </div>
                 </div>
             </div>
