@@ -4,6 +4,7 @@
 angular.module('bellows.services')
 //Lexicon Comment Service
   .service('lexCommentService', ['jsonRpc', function(jsonRpc) {
+    var _this = this;
 
     this.comments = {
       items: {
@@ -92,19 +93,28 @@ angular.module('bellows.services')
     };
 
 
-
-
-
+    function getCurrentEntryComment(id) {
+      var comments = _this.comments.items.currentEntry;
+      for (var i=0; i<comments.length; i++) {
+        var comment = comments[i];
+        if (comment.id == id) {
+          return comment;
+        }
+      }
+    }
 
     jsonRpc.connect('/api/sf');
 
 
 
     this.update = function updateComment(comment, callback) {
+      this.comments.items.currentEntry.push(comment);
       jsonRpc.call('lex_comment_update', [comment], callback);
     };
 
     this.updateReply = function updateReply(commentId, reply, callback) {
+      var comment = getCurrentEntryComment(commentId);
+      comment.replies.push(reply);
       jsonRpc.call('lex_commentReply_update', [commentId, reply], callback);
     };
 
@@ -117,10 +127,15 @@ angular.module('bellows.services')
     };
 
     this.plusOne = function plusOne(commentId, callback) {
+      var comment = getCurrentEntryComment(commentId);
+      comment.score++;
+      this.comments.counts.userPlusOne[commentId] = 1;
       jsonRpc.call('lex_comment_plusOne', [commentId], callback);
     };
 
     this.updateStatus = function updateStatus(commentId, status, callback) {
+      var comment = getCurrentEntryComment(commentId);
+      comment.status = status;
       jsonRpc.call('lex_comment_updateStatus', [commentId, status], callback);
     };
 
