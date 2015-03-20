@@ -48,7 +48,6 @@ class LexDbeDto
      * @param $userId
      * @param  null       $lastFetchTime
      * @throws \Exception
-     * @internal param bool $returnOnlyUpdates
      * @return array
      */
     public static function encode($projectId, $userId, $lastFetchTime = null)
@@ -113,7 +112,7 @@ class LexDbeDto
 
         $data['entries'] = $entries;
 
-        $data['timeOnServer'] = time(); // future use for offline syncing
+        $data['timeOnServer'] = time(); // for offline syncing
 
         return $data;
     }
