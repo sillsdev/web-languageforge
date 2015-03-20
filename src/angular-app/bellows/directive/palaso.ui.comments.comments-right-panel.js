@@ -15,12 +15,12 @@ angular.module('palaso.ui.comments')
 
 
         /*  $scope.newComment has the following initial structure
-        {
-          id: '',
-          content: '',
-          regarding: {}
-        };
-        */
+         {
+         id: '',
+         content: '',
+         regarding: {}
+         };
+         */
         $scope.initializeNewComment = function initializeNewComment() {
           $scope.newComment =  {
             id: '',
@@ -102,7 +102,7 @@ angular.module('palaso.ui.comments')
         $scope.postNewComment = function postNewComment() {
           commentService.update($scope.newComment, function(result) {
             if (result.ok) {
-              $scope.control.refreshData(false, function() {
+              $scope.control.refreshDbeData().then(function() {
                 $scope.loadComments();
                 $scope.initializeNewComment();
               });
@@ -113,7 +113,7 @@ angular.module('palaso.ui.comments')
         $scope.plusOneComment = function plusOneComment(commentId) {
           commentService.plusOne(commentId, function(result) {
             if (result.ok) {
-              $scope.control.refreshData(false, function() {
+              $scope.control.refreshDbeData().then(function() {
                 $scope.loadComments();
               });
             }

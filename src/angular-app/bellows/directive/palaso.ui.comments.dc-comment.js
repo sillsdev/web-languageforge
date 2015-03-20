@@ -45,7 +45,7 @@ angular.module('palaso.ui.comments')
         function updateReply(commentId, reply) {
           commentService.updateReply(commentId, reply, function(result) {
             if (result.ok) {
-              $scope.control.refreshData(false, function() {
+              $scope.control.refreshDbeData().then(function() {
                 $scope.control.loadEntryComments();
               });
             }
@@ -55,7 +55,7 @@ angular.module('palaso.ui.comments')
         $scope.updateCommentStatus = function updateCommentStatus(commentId, status) {
           commentService.updateStatus(commentId, status, function(result) {
             if (result.ok) {
-              $scope.control.refreshData(false, function() {
+              $scope.control.refreshDbeData().then(function() {
                 $scope.loadComments();
               });
             }
@@ -73,7 +73,7 @@ angular.module('palaso.ui.comments')
           modal.showModalSimple('Delete Comment', deletemsg, 'Cancel', 'Delete Comment').then(function() {
             commentService.remove(comment.id, function(result) {
               if (result.ok) {
-                $scope.control.refreshData(false, function() {
+                $scope.control.refreshDbeData().then(function() {
                   $scope.loadComments();
                 });
               }
@@ -94,7 +94,7 @@ angular.module('palaso.ui.comments')
           modal.showModalSimple('Delete Reply', deletemsg, 'Cancel', 'Delete Reply').then(function() {
             commentService.deleteReply(commentId, reply.id, function(result) {
               if (result.ok) {
-                $scope.control.refreshData(false, function() {
+                $scope.control.refreshDbeData().then(function() {
                   $scope.loadComments();
                 });
               }
@@ -115,7 +115,7 @@ angular.module('palaso.ui.comments')
 
           commentService.update($scope.comment, function(result) {
             if (result.ok) {
-              $scope.control.refreshData(false, function() {
+              $scope.control.refreshDbeData().then(function() {
                 $scope.loadComments();
               });
             }
