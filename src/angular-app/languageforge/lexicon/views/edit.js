@@ -22,9 +22,27 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
   $scope.currentEntryIsDirty = function() {
     if ($scope.entryLoaded()) {
+      if (entryIsNew($scope.currentEntry)) {
+        return true;
+      }
       return !angular.equals($scope.currentEntry, pristineEntry);
     }
     return false;
+  };
+
+  function entryIsNew(entry) {
+    if (entry.id && entry.id.indexOf('_new_') == 0) {
+      return true;
+    }
+    return false;
+  }
+
+
+  // for test purposes only
+  $scope.getIds = function() {
+    var ids = [];
+    angular.forEach($scope.show.entries, function(e) { ids.push(e.id); })
+    return ids;
   };
 
   // Reviewed CP 2014-08: Um, shouldn't these two be mutually exclusive.
@@ -49,7 +67,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   };
 
   $scope.saveCurrentEntry = function saveCurrentEntry(doSetEntry, successCallback, failCallback) {
-    var isNewEntry = false;
+    var isNewEntry = false, newEntryTempId;
     if (angular.isUndefined(doSetEntry)) {
       // doSetEntry is mainly used for when the save button is pressed,
       // that is when the user is saving the current entry and is NOT going to a
@@ -59,11 +77,13 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
       cancelAutoSaveTimer();
       saving = true;
-      isNewEntry = ($scope.currentEntry.id == '');
-      if (isNewEntry) {
-        removeEntryFromLists('');
+      var entryToSave = angular.copy($scope.currentEntry);
+      if (entryIsNew(entryToSave)) {
+        isNewEntry = true;
+        newEntryTempId = entryToSave.id;
+        entryToSave.id = ''; // send empty id which indicated "create new"
       }
-      lexService.update(prepEntryForUpdate($scope.currentEntry), function(result) {
+      lexService.update(prepEntryForUpdate(entryToSave), function(result) {
         if (result.ok) {
           var entry = result.data;
           if (isNewEntry) {
@@ -83,16 +103,24 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
            * One day we hope to send deltas which will fix this problem and give
            * a better real time experience.
            */
-          // if (doSetEntry) {
-          // setCurrentEntry(entry);
-          // }
-          pristineEntry = angular.copy($scope.currentEntry);
+
+          /* Reviewed CJH 2015-03: setCurrentEntry is useful in the case when the entry being saved is a new entry.
+             In this case the new entry is replaced entirely by the one returned from the server (with a proper id, etc).
+             I'm currently unclear on whether the doSetEntry parameter is still necessary
+           *
+           */
+
+          pristineEntry = angular.copy(entryToSave);
           $scope.lastSavedDate = new Date();
 
           // refresh data will add the new entry to the entries list
           $scope.refreshData(false, function() {
-            if (isNewEntry && doSetEntry) {
-              scrollListToEntry(entry.id, 'top');
+            if (isNewEntry) {
+              setCurrentEntry($scope.entries[getIndexInList(entry.id, $scope.entries)]);
+              removeEntryFromLists(newEntryTempId);
+              if (doSetEntry) {
+                scrollListToEntry(entry.id, 'top');
+              }
             }
           });
           saved = true;
@@ -297,15 +325,18 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   };
 
   $scope.newEntry = function newEntry() {
+    // TODO: saveCurrentEntry should return a promise that we can then add a new word after the current one has been saved - cjh 2015-03
     $scope.saveCurrentEntry();
+    var d = new Date();
+    var uniqueId = '_new_' + d.getSeconds() + d.getMilliseconds();
     var newEntry = {
-      id: ''
+      id: uniqueId
     };
     setCurrentEntry(newEntry);
-    commentService.loadEntryComments('');
+    commentService.loadEntryComments(uniqueId);
     addEntryToEntryList(newEntry);
     $scope.show.initial();
-    scrollListToEntry('', 'top');
+    scrollListToEntry(uniqueId, 'top');
     $scope.state = 'edit';
     // $location.path('/dbe', false);
   };
@@ -437,9 +468,9 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
           iShowList--;
         setCurrentEntry($scope.show.entries[iShowList]);
       } else {
-        setCurrentEntry();
+        $scope.returnToList();
       }
-      if (entry.id != '') {
+      if (!entryIsNew(entry)) {
         lexService.remove(entry.id, angular.noop);
       }
     });
