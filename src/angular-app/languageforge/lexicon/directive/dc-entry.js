@@ -11,16 +11,16 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
       },
       controller: ["$scope", 'lexConfigService', function($scope, lexConfigService) {
         $scope.addSense = function() {
-                    var newSense = {};
-                    $scope.control.makeValidModelRecursive($scope.config.fields.senses, newSense, 'examples');
+          var newSense = {};
+          $scope.control.makeValidModelRecursive($scope.config.fields.senses, newSense, 'examples');
           $scope.model.senses.unshift(newSense);
         };
-        
-        
+
+
         $scope.deleteSense = function(index) {
-                    var deletemsg = "Are you sure you want to delete the meaning <b>' " + utils.getMeaning($scope.config.fields.senses, $scope.model.senses[index])  + " '</b>";
-                    modal.showModalSimple('Delete Meaning', deletemsg, 'Cancel', 'Delete Meaning').then(function() {
-                        $scope.model.senses.splice(index, 1);
+          var deletemsg = "Are you sure you want to delete the meaning <b>' " + utils.getMeaning($scope.config.fields.senses, $scope.model.senses[index])  + " '</b>";
+          modal.showModalSimple('Delete Meaning', deletemsg, 'Cancel', 'Delete Meaning').then(function() {
+            $scope.model.senses.splice(index, 1);
           });
         };
 
@@ -29,4 +29,4 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
       }
     };
   }])
-  ;
+;
