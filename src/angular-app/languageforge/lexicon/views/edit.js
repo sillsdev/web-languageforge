@@ -302,7 +302,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       id: ''
     };
     setCurrentEntry(newEntry);
-    commentService.loadEntryComments(id);
+    commentService.loadEntryComments('');
     addEntryToEntryList(newEntry);
     $scope.show.initial();
     scrollListToEntry('', 'top');
@@ -355,7 +355,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       case 'fields':
         angular.forEach(config.fieldOrder, function(f) {
           if (angular.isUndefined(data[f])) {
-            if (config.fields[f].type == 'fields') {
+            if (config.fields[f].type == 'fields' || config.fields[f].type == 'pictures') {
               data[f] = [];
             } else {
               data[f] = {};

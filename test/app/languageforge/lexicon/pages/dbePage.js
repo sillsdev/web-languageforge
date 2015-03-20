@@ -303,13 +303,13 @@ var LfDbePage = function() {
       // avatar:
       // div.element(by.binding('model.authorInfo.createdByUserRef.avatar_ref')),
       avatar: div.element(by.css('.commentLeftSide img')),
-      author: div.element(by.binding('model.authorInfo.createdByUserRef.name')),
-      date: div.element(by.binding('model.authorInfo.createdDate | relativetime')),
-      score: div.element(by.binding('model.score')),
+      author: div.element(by.binding('comment.authorInfo.createdByUserRef.name')),
+      date: div.element(by.binding('comment.authorInfo.createdDate | relativetime')),
+      score: div.element(by.binding('comment.score')),
       plusOne: div.element(by.css('.commentLeftSide i.icon-thumbs-up-alt:not(.ng-hide)')),
 
       // Right side content
-      content: div.element(by.binding('model.content')),
+      content: div.element(by.binding('comment.content')),
       edit: {
         textarea: div.element(by.model('editingCommentContent')),
         updateBtn: div.element(by.buttonText('Update')),
@@ -318,11 +318,11 @@ var LfDbePage = function() {
       regarding: {
         // NOTE: Any or all of these may be absent in a given comment. Use
         // isPresent() before calling expect().
-        word: div.element(by.binding('model.regarding.word')),
-        meaning: div.element(by.binding('model.regarding.meaning')),
-        fieldLabel: div.element(by.binding('model.regarding.fieldNameForDisplay')),
-        fieldWsid: div.element(by.binding('model.regarding.inputSystem')),
-        fieldValue: div.element(by.binding('model.regarding.fieldValue')),
+        word: div.element(by.binding('comment.regarding.word')),
+        meaning: div.element(by.binding('comment.regarding.meaning')),
+        fieldLabel: div.element(by.binding('comment.regarding.fieldNameForDisplay')),
+        fieldWsid: div.element(by.binding('comment.regarding.inputSystem')),
+        fieldValue: div.element(by.binding('comment.regarding.fieldValue')),
       },
 
       // Replies (below content but above bottom controls)
