@@ -92,11 +92,11 @@ angular.module('palaso.ui.comments')
           }
         };
 
-        $scope.currentEntryCommentsFiltered = getFilteredComments();
+        refreshFilteredComments();
 
         $scope.loadComments = function loadComments() {
           commentService.loadEntryComments($scope.entry.id);
-          $scope.currentEntryCommentsFiltered = getFilteredComments();
+          refreshFilteredComments();
         };
 
         $scope.postNewComment = function postNewComment() {
@@ -108,6 +108,7 @@ angular.module('palaso.ui.comments')
               });
             }
           });
+          refreshFilteredComments(); // for instant feedback
         }
 
         $scope.plusOneComment = function plusOneComment(commentId) {
@@ -152,21 +153,21 @@ angular.module('palaso.ui.comments')
 
 
 
-        function getFilteredComments() {
+        function refreshFilteredComments() {
           var comments = $filter('filter')(commentService.comments.items.currentEntry, $scope.commentFilter.byText);
-          return $filter('filter')(comments, $scope.commentFilter.byStatus);
+          $scope.currentEntryCommentsFiltered = $filter('filter')(comments, $scope.commentFilter.byStatus);
         }
 
         $scope.$watch('commentFilter.text', function(newVal, oldVal) {
           if (newVal != oldVal) {
-            $scope.currentEntryCommentsFiltered = getFilteredComments();
+            refreshFilteredComments();
           }
 
         });
 
         $scope.$watch('commentFilter.status', function(newVal, oldVal) {
           if (newVal != oldVal) {
-            $scope.currentEntryCommentsFiltered = getFilteredComments();
+            refreshFilteredComments();
           }
 
         });
