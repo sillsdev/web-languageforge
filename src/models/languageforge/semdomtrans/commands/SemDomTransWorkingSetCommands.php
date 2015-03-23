@@ -2,6 +2,8 @@
 
 namespace models\languageforge\semdomtrans\commands;
 
+use libraries\shared\Website;
+
 use Palaso\Utilities\CodeGuard;
 use libraries\scriptureforge\sfchecks\Email;
 use models\ProjectModel;
@@ -22,28 +24,16 @@ use models\ProjectListModel;
 use models\languageforge\LfProjectModel;
 use models\commands\ProjectCommands;
 use models\languageforge\semdomtrans\SemDomTransQuestion;
-use models\languageforge\semdomtrans\SemDomTransFieldReference;
-use models\languageforge\semdomtrans\SemDomTransCommentModel;
+use models\languageforge\semdomtrans\SemDomTransWorkingSetModel;
 
-class SemDomTransCommentsCommands
+class SemDomTransWorkingSetCommands
 {
 	public static function update($data, $projectId) {
 		$projectModel = new SemDomTransProjectModel($projectId);
 		
-		$comment = new SemDomTransCommentModel($projectModel);
-		//$comment->read($data["id"]);
-		$comment->content = $data["content"];
-		$comment->entryRef = $data["regarding"]["semDomItemRef"];
-		
-		$fldn = $data["regarding"]["fieldName"];
-		$srcv = $data["regarding"]["fieldValue"]["source"];
-		$transv = $data["regarding"]["fieldValue"]["translation"];
-		$status = $data["regarding"]["fieldValue"]["status"];
-		
-		$comment->entryRef = new SemDomTransFieldReference($fldn, $srcv, $transv, $status);
-		
-		$comment->write();
-		return $comment->id;
+		$s = new SemDomTransWorkingSetModel($projectModel);
+		JsonDecoder::decode($s, $data);
+		$s->write();
+		return $s->id->asString();
 	}
-	
 }

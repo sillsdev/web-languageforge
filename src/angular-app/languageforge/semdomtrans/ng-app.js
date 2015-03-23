@@ -20,7 +20,10 @@ angular.module('semdomtrans',
               '@': {templateUrl: '/angular-app/languageforge/semdomtrans/views/edit.html' },
               'editItem@editor': {
                 templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editItem.html'
-              }  
+              }  ,
+              'editFilter@editor': {
+                templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editFilter.html'
+              }
             }
         })
         
@@ -46,8 +49,20 @@ angular.module('semdomtrans',
      $scope.loadingDto = true;
      $semdomApi.editorDto(function(result) {
       if (result.ok) {
-        $scope.items = result.data.items;  
+        $scope.items = result.data.items;
+        
+        $scope.itemsTree = {};
+        for (var i in result.data.items) {
+          var item = result.data.items[i];
+          $scope.itemsTree[item.key] = { 'content': item, 'children': [], 'parent': ''};
+          if (item.key.length >= 3) {
+            $scope.itemsTree[item.key.substring(0, item.key.length - 2)].children.push(item.key);
+            $scope.itemsTree[item.key].parent = item.key.substring(0, item.key.length - 2);
+          }
+        }
+        
         $scope.comments = result.data.comments;    
+        $scope.workingSets = result.data.workingSets;
         $scope.loadingDto = false;
         if (!angular.isUndefined(callback)) {
           callback();

@@ -21,7 +21,12 @@ angular.module('semdomtrans.services', ['jsonRpc'])
         callback(result);
       });
     };
-
+    
+    this.updateWorkingSet = function updateWorkingSet(workingSet, callback) {
+      jsonRpc.call('semdom_workingset_update', [workingSet], function(result) {
+        callback(result);
+      })
+    }
   }])
   .service('semdomtransSetupService', ['jsonRpc',
   function(jsonRpc) {
