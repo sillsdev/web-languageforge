@@ -39,10 +39,9 @@ class LexCommentCommands
         if ($isNew) {
             $comment->authorInfo->createdByUserRef->id = $userId;
             $comment->authorInfo->createdDate = new \DateTime();
-            $comment->authorInfo->modifiedByUserRef->id = $userId;
-        } else {
-            $comment->authorInfo->modifiedDate = new \DateTime();
         }
+        $comment->authorInfo->modifiedByUserRef->id = $userId;
+        $comment->authorInfo->modifiedDate = new \DateTime();
 
         return $comment->write();
     }

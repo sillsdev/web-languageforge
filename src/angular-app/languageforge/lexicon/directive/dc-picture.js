@@ -43,9 +43,6 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         captionConfig.type = 'multitext';
         newPicture.fileName = fileName;
         newPicture.caption = $scope.control.makeValidModelRecursive(captionConfig, {});
-        if (angular.isUndefined($scope.pictures)) {
-          $scope.pictures = []; 
-        }
         $scope.pictures.push(newPicture);
       };
 

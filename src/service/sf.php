@@ -582,10 +582,12 @@ class sf
         return LexDbeDto::encode($this->_projectId, $this->_userId);
     }
 
-    public function lex_dbeDtoUpdatesOnly($browserId)
+    public function lex_dbeDtoUpdatesOnly($browserId, $lastFetchTime = null)
     {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
-        $lastFetchTime = $this->_controller->session->userdata($sessionLabel);
+        if ($lastFetchTime == null) {
+            $lastFetchTime = $this->_controller->session->userdata($sessionLabel);
+        }
         $this->_controller->session->set_userdata($sessionLabel, time());
         if ($lastFetchTime) {
             $lastFetchTime = $lastFetchTime - 5; // 5 second buffer

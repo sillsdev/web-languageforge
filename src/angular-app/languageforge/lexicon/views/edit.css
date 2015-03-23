@@ -284,9 +284,15 @@ legend.override-bootstrap {
     background-color: #e4e5ff;
 }
 
+.lexiconItemListContainer .listItemHasComment {
+    border-right: solid 5px #faa732;
+}
+
+
 .entryItemView {
 /*  TODO: review this in light of animation and the footer staying at the bottom. IJH 2014-09*/    
     overflow-y: scroll;
+    overflow-x: hidden;
 
     height: 588px;
     padding-right:5px;
@@ -334,43 +340,3 @@ form.submitted .ng-invalid {
   border:1px solid #f00;
 }
 
-div.newCommentForm {
-    padding-bottom:10px;
-    border-bottom: 1px solid #d8d8d8;
-}
-
-div.newCommentForm textarea {
-    width: 382px;
-    margin: 0 10px 10px 10px;
-    height:90px;
-
-}
-div.newCommentForm button {
-    width:70px;
-    margin-top:10px
-}
-
-.commentListView {
-    overflow-y: scroll;
-    height: 588px;
-}
-
-.commentListView button {
-    height: 25px;
-}
-
-.selectableFieldForComment:hover {
-    background-color: #eee;
-    border: 1px solid #888;
-}
-.selectableFieldForComment, .selectableInputSystemFieldForComment {
-    cursor: pointer;
-    border: 1px solid transparent;
-}
-.selectableInputSystemFieldForComment:hover {
-    background-color: hsla(80, 100%, 50%, 0.1);
-    border: 1px solid #888;
-}
-.selectableInputSystemFieldForComment .uneditable-input, .selectableFieldForComment .uneditable-input {
-    cursor: pointer;
-}

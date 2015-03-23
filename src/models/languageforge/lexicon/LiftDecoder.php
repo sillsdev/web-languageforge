@@ -25,6 +25,7 @@ class LiftDecoder
     {
         $this->projectModel = $projectModel;
         $this->nodeErrors = array();
+        $this->knownUnhandledNodes = array();
     }
 
     /**
@@ -45,6 +46,12 @@ class LiftDecoder
      * @var array <LiftImportNodeError>
      */
     private $nodeErrors;
+
+    /**
+     *
+     * @var array <string => boolean> key is node identifier
+     */
+    private $knownUnhandledNodes;
 
     /**
      *
@@ -74,11 +81,11 @@ class LiftDecoder
                     if ($element['type'] == '') {
                         $entry->note = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::NOTE]->inputSystems);
                     } else {
-                        $this->currentNodeError()->addUnhandledNote($element['type']);
+                        $this->addKnownUnhandledElement('Note: ' . $element['type']);
                     }
                     break;
                 case 'etymology':
-                   $entry->etymology = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGY]->inputSystems);
+                   $entry->etymology = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGY]->inputSystems, true);
                     if ($element->{'gloss'}) {
                         $this->readMultiTextGloss($element->gloss, $entry->etymologyGloss, $this->projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGYGLOSS]->inputSystems);
                     }
@@ -91,9 +98,9 @@ class LiftDecoder
                     }
                     break;
                 case 'pronunciation':
-                    $entry->pronunciation = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::PRONUNCIATION]->inputSystems);
+                    $entry->pronunciation = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::PRONUNCIATION]->inputSystems, true);
                     if ($element->{'media'}) {
-                        $this->currentNodeError()->addUnhandledMedia($element->{'media'}['href'], 'pronunciation');
+                        $this->addKnownUnhandledElement('pronunciation: media');
                     }
                     break;
                 case 'field':
@@ -118,6 +125,10 @@ class LiftDecoder
                     switch ($element['name']) {
                         case 'morph-type':
                             $entry->morphologyType = (string)$element['value'];
+                            break;
+                        case 'do-not-publish-in':
+                        case 'DoNotUseForParsing':
+                            $this->addKnownUnhandledElement('trait: ' . $element['name']);
                             break;
                         default:
                             if ($this->isEntryCustomField($element['name'])) {
@@ -153,10 +164,16 @@ class LiftDecoder
                         $entry->senses[] = $this->readSense($element, $sense);
                     }
                     break;
+                case 'variant':
                 case 'relation':
+                    $this->addKnownUnhandledElement('Element: ' . $element->getName());
+                    break;
                 default:
                     $this->currentNodeError()->addUnhandledElement($element->getName());
             }
+        }
+        if (!$this->currentNodeError()->hasErrors()) {
+            unset($this->nodeErrors[count($this->nodeErrors)-1]);
         }
     }
 
@@ -169,7 +186,7 @@ class LiftDecoder
      */
     public function readSense($sxeNode, $sense)
     {
-        $this->pushSubnodeError(LiftImportNodeError::SENSE, (string) $sxeNode['id']);
+        $this->addAndPushSubnodeError(LiftImportNodeError::SENSE, (string) $sxeNode['id']);
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'definition':
@@ -214,15 +231,6 @@ class LiftDecoder
                     }
                     $sense->pictures[] =  $picture;
                     break;
-                case 'note':
-                    switch($element['type']) {
-                        case '':
-                            $this->currentNodeError()->addUnhandledNote($element['type']);
-                            break;
-                        default:
-                            $this->currentNodeError()->addUnhandledNote($element['type']);
-                    }
-                    break;
                 case 'trait':
                     switch ($element['name']) {
                         case 'semantic-domain-ddp4':
@@ -243,6 +251,10 @@ class LiftDecoder
                         case 'usage-type':
                             $sense->usages->value((string) $element['value']);
                             break;
+                        case 'do-not-publish-in':
+                        case 'DoNotUseForParsing':
+                            $this->addKnownUnhandledElement('trait: ' . $element['name']);
+                            break;
                         default:
                             if ($this->isSenseCustomField($element['name'])) {
                                 $this->addSenseCustomField($element, $element['name'], $sense);
@@ -251,7 +263,13 @@ class LiftDecoder
                             }
                     }
                     break;
-
+                case 'relation':
+                case 'reversal':
+                    $this->addKnownUnhandledElement('Element: ' . $element->getName());
+                    break;
+                case 'note':
+                    $this->addKnownUnhandledElement('Note: ' . $element['type']);
+                    break;
                 default:
                     $this->currentNodeError()->addUnhandledElement($element->getName());
             }
@@ -270,26 +288,13 @@ class LiftDecoder
     public function readExample($sxeNode)
     {
         $example = new Example((string) $sxeNode['source']);
-        $this->pushSubnodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['source']);
+        $this->addAndPushSubnodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['source']);
 
-        // create copy with only form elements to use with readMultiText as unhandled elements are reported here
-        $formsSxeNode = clone $sxeNode;
-        $formsDomNode = dom_import_simplexml($formsSxeNode);
-        $nodesToRemove = array();
-        foreach ($formsDomNode->childNodes as $child) {
-            if ($child->nodeType === XML_ELEMENT_NODE and $child->nodeName !== 'form') {
-                $nodesToRemove[] = $child;
-            }
-        }
-        foreach ($nodesToRemove as $node) {
-            $formsDomNode->removeChild($node);
-        }
-        unset($nodesToRemove); // so nodes can be garbage-collected
-
+        $example->sentence = $this->readMultiText($sxeNode, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems, true);
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'form':
-                    $example->sentence = $this->readMultiText($formsSxeNode, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems);
+                    // this is handled above when reading Example Sentence MultiText
                     break;
                 case 'translation':
                     $example->translation = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems);
@@ -308,6 +313,9 @@ class LiftDecoder
                         $this->currentNodeError()->addUnhandledTrait($element['name']);
                     }
                     break;
+                case 'note':
+                    $this->addKnownUnhandledElement('Note: ' . $element['type']);
+                    break;
                 default:
                     $this->currentNodeError()->addUnhandledElement($element->getName());
             }
@@ -322,12 +330,13 @@ class LiftDecoder
      *
      * @param SimpleXMLElement $sxeNode
      * @param ArrayOf $inputSystems
+     * @param bool $ignoreErrors
      * @return MultiText
      */
-    public function readMultiText($sxeNode, $inputSystems = null)
+    public function readMultiText($sxeNode, $inputSystems = null, $ignoreErrors = false)
     {
         $multiText = new MultiText();
-        $this->pushSubnodeError(LiftImportNodeError::MULTITEXT, $sxeNode->getName());
+        $this->addAndPushSubnodeError(LiftImportNodeError::MULTITEXT, $sxeNode->getName());
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'form':
@@ -342,7 +351,9 @@ class LiftDecoder
                     }
                     break;
                 default:
-                    $this->currentNodeError()->addUnhandledElement($element->getName());
+                    if (!$ignoreErrors) {
+                        $this->currentNodeError()->addUnhandledElement($element->getName());
+                    }
             }
         }
         array_pop($this->nodeErrors);
@@ -534,18 +545,18 @@ class LiftDecoder
         $customFieldSpecs = $this->getCustomFieldSpecs($fieldType);
         $customFieldName = $this->createCustomField($nodeId, $fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig);
         if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
-            $item->{$customFieldName} = new LexiconField();
-            $item->{$customFieldName}->value = (string) $sxeNode['value'];
+            $item->customFields[$customFieldName] = new LexiconField();
+            $item->customFields[$customFieldName]->value = (string) $sxeNode['value'];
         } elseif ($customFieldSpecs['Type'] == 'ReferenceCollection') {
-            if (! array_key_exists($customFieldName, $item)) {
-                $item->{$customFieldName} = new LexiconMultiValueField();
+            if (! array_key_exists($customFieldName, $item->customFields)) {
+                $item->customFields[$customFieldName] = new LexiconMultiValueField();
             }
-            $item->{$customFieldName}->value((string) $sxeNode['value']);
+            $item->customFields[$customFieldName]->value((string) $sxeNode['value']);
         } elseif ($customFieldSpecs['Type'] == 'OwningAtom') {
             $multiText = $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
-            $item->{$customFieldName} = self::convertMultiParaMultiText($multiText);
+            $item->customFields[$customFieldName] = self::convertMultiParaMultiText($multiText);
         } else {
-            $item->{$customFieldName} = $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
+            $item->customFields[$customFieldName] = $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
         }
     }
 
@@ -661,7 +672,7 @@ class LiftDecoder
      * @param string $identifier
      * @return \models\languageforge\lexicon\LiftImportNodeError
      */
-    public function pushSubnodeError($type, $identifier) {
+    public function addAndPushSubnodeError($type, $identifier) {
         $subnodeError = new LiftImportNodeError($type, $identifier);
         $this->currentNodeError()->addSubnodeError($subnodeError);
         $this->nodeErrors[] = $subnodeError;
@@ -678,5 +689,13 @@ class LiftDecoder
             return $this->currentNodeError();
         }
         return new LiftImportNodeError('', '');
+    }
+
+    public function addKnownUnhandledElement($name) {
+        $index = (string)$name;
+        if (!array_key_exists($index, $this->knownUnhandledNodes)) {
+            $this->knownUnhandledNodes[$index] = true;
+            $this->currentNodeError()->addUnhandledElement($index);
+        }
     }
 }
