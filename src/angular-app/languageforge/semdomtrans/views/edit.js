@@ -53,16 +53,18 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
             }
             
             // add ancestors of included items
-            for (var i in $scope.filteredByDepthItems) {
-              var node = $scope.itemsTree[$scope.filteredByDepthItems[i].key];
-              var item = node.content;        
-              while(node.parent != '') {
-                if (checkDepth(node.parent) && (angular.isUndefined(addedToFiltered[node.parent]) || !addedToFiltered[node.parent])) {
-                  $scope.filteredByDepthItems.push($scope.itemsTree[node.parent].content);
-                  addedToFiltered[node.parent] = true;
+            for (var i in $scope.itemsTree) {
+              var node = $scope.itemsTree[i];
+              var item = node.content;      
+              if (isIncluded(item.key)) {
+                while(node.parent != '') {
+                  if (checkDepth(node.parent) && (angular.isUndefined(addedToFiltered[node.parent]) || !addedToFiltered[node.parent])) {
+                    $scope.filteredByDepthItems.push($scope.itemsTree[node.parent].content);
+                    addedToFiltered[node.parent] = true;
+                  }
+                  
+                  node = $scope.itemsTree[node.parent];
                 }
-                
-                node = $scope.itemsTree[node.parent];
               }
             }
             
@@ -204,6 +206,51 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     $scope.reloadItems($scope.selectedDepth);    
   }
   
+  
+  $scope.selectedWorkingSet = null;
+  
+  $scope.$watch("selectedWorkingSet", function(newVal, oldVal) {
+    if (oldVal != newVal) {
+      $scope.includedItems = {};
+      for (var i = 0; i < $scope.workingSets[newVal].itemKeys.length; i++) {
+        $scope.includedItems[$scope.workingSets[newVal].itemKeys[i]] = true;
+      }
+      
+      $scope.reloadItems($scope.selectedDepth);    
+    }
+  })
+  $scope.newWorkingSet = {
+      id: '',
+      name: '',
+      isShared : false,
+      itemKeys : []
+  }
+
+  $scope.saveWorkingSet = function saveWorkingSet() {
+    var ik = [];
+    for (var i in $scope.includedItems) {
+      if ($scope.includedItems[i]) {
+        ik.push(i);
+      }
+    }
+    
+    $scope.newWorkingSet.itemKeys = ik;
+    api.updateWorkingSet($scope.newWorkingSet, function(result) {
+      if (result.ok) {
+        
+      }
+    })
+    
+    $scope.newWorkingSet = {
+      id: '',
+      name: '',
+      isShared : false,
+      itemKeys : []
+    } 
+
+    $scope.refreshData();
+
+  }
   
   // permissions stuff
     $scope.rights = {

@@ -39,6 +39,8 @@ use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
 use models\languageforge\semdomtrans\commands\SemDomTransItemCommands;
 use models\languageforge\semdomtrans\commands\SemDomTransCommentsCommands;
 use models\languageforge\LfProjectModel;
+use models\languageforge\semdomtrans\SemDomTransWorkingSetModel;
+use models\languageforge\semdomtrans\commands\SemDomTransWorkingSetCommands;
 
 require_once APPPATH . 'vendor/autoload.php';
 require_once APPPATH . 'config/sf_config.php';
@@ -709,6 +711,10 @@ class sf
     
     public function semdom_project_exists($languageIsoCode) {
         return SemDomTransProjectCommands::checkProjectExists($languageIsoCode, 20);
+    }
+    
+    public function semdom_workingset_update($data) {
+        return SemDomTransWorkingSetCommands::update($data, $this->_projectId);
     }
     
     /**

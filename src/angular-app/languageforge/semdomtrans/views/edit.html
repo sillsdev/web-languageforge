@@ -1,27 +1,20 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="semDomAppContainer">
 		<div style="margin-top:100px; height: 500px" class="container-fluid">
 		    <div class="row" style="border-bottom:solid black 1px">		
-		    	<div class="col-md-3" >
-                     <typeahead style="margin:0px; width:162px" class="typeahead" placeholder="'Select Domains to Display'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
-                        <ul style="width: 300px" ng-if="typeahead.searchResults.length > 0">
-                            <li data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
-                                <div class='listItemPrimary'>{{e.key}} {{e.name.source}} 
-                                <input style="float: right" type="checkbox" ng-model="$parent.includedItems[e.key]" ng-change="reloadItems(selectedDepth)"> </div>
-                            </li>
-                            
-                           
-                           <button class="btn btn-primary" ng-click="setInclusion(typeahead.searchResults, true)"> Include All </button>
-                           <button class="btn btn-primary" ng-click="setInclusion(typeahead.searchResults, false)"> Exclude All </button>
-                            <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
-                        </ul>
-                    </typeahead>
-                    <input ng-model="searchText" ng-change="reloadItems(selectedDepth, 100)" />
+		    	<div class="col-md-3" >                    
+                    <input placeholder="Filter semantic domain items" style="margin-bottom:10px" ng-model="searchText" ng-change="reloadItems(selectedDepth, 100)" />
+                    <br />
+                    Choose Working Set: 
+                    <select style="margin-bottom:10px" ng-model="selectedWorkingSet">
+                        <option ng-repeat="ws in workingSets track by $index"  value="{{$index}}">{{ws.name}}</option>
+                    </select>
                 </div>	   
                  
 		    	<div class="col-md-5" >
 					<tabset class="pull-center">
 					    <tab heading="Terms"  ng-click="setTab(0)"> </tab>     
 						<tab heading="Questions" ng-click="setTab(1)"></tab>
+                        <tab heading="Filter" ng-click="setTab(2)"></tab>
 					</tabset>  
 				</div>
 				<div class="col-md-4" >
@@ -45,6 +38,7 @@
 			  </div>
 			  <div style="text-align: center;" class="col-md-9">
 			  	   <div ui-view="editItem"></div>
+                   <div ng-if="(selectedTab == 2)" ui-view="editFilter"></div>
 			  </div>
 			</div>
 		</div>	
