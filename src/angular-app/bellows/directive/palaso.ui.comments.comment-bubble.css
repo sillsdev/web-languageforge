@@ -11,6 +11,6 @@ a.commentBubble {
 a.commentBubble .commentCount {
     color:white;
     position:relative;
-    right:22px;
+    right:32px;
     bottom:5px;
 }

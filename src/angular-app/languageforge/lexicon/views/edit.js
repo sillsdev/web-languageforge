@@ -1,18 +1,20 @@
 'use strict';
 
-angular.module('dbe', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.dc.comment', 'palaso.ui.showOverflow', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice', 'palaso.ui.comments-right-panel'])
+angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.comments', 'palaso.ui.showOverflow', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
 // DBE controller
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService',  
-function($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location, configService) {
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService', 'lexCommentService', 'offlineCache', '$q',
+function($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location, configService, commentService, offlineCache, $q) {
 
   // TODO use ui-router for this instead!
 
   var pristineEntry = {};
   var browserInstanceId = Math.floor(Math.random() * 1000);
+  var offlineCacheKey = sessionService.session.baseSite + "_" + sessionService.session.project.id;
   $scope.config = configService.getConfigForUser();
   $scope.lastSavedDate = new Date();
   $scope.currentEntry = {};
-  $scope.configService = configService;
+  $scope.commentService = commentService; // tie service into the edit.html template
+
   // default state. State is one of 'list', 'edit', or 'comment'
   $scope.state = 'list';
 
@@ -21,9 +23,27 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
   $scope.currentEntryIsDirty = function() {
     if ($scope.entryLoaded()) {
+      if (entryIsNew($scope.currentEntry)) {
+        return true;
+      }
       return !angular.equals($scope.currentEntry, pristineEntry);
     }
     return false;
+  };
+
+  function entryIsNew(entry) {
+    if (entry.id && entry.id.indexOf('_new_') == 0) {
+      return true;
+    }
+    return false;
+  }
+
+
+  // for test purposes only
+  $scope.getIds = function() {
+    var ids = [];
+    angular.forEach($scope.show.entries, function(e) { ids.push(e.id); })
+    return ids;
   };
 
   // Reviewed CP 2014-08: Um, shouldn't these two be mutually exclusive.
@@ -48,7 +68,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   };
 
   $scope.saveCurrentEntry = function saveCurrentEntry(doSetEntry, successCallback, failCallback) {
-    var isNewEntry = false;
+    var isNewEntry = false, newEntryTempId;
     if (angular.isUndefined(doSetEntry)) {
       // doSetEntry is mainly used for when the save button is pressed,
       // that is when the user is saving the current entry and is NOT going to a
@@ -58,11 +78,13 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
       cancelAutoSaveTimer();
       saving = true;
-      isNewEntry = ($scope.currentEntry.id == '');
-      if (isNewEntry) {
-        removeEntryFromLists('');
+      var entryToSave = angular.copy($scope.currentEntry);
+      if (entryIsNew(entryToSave)) {
+        isNewEntry = true;
+        newEntryTempId = entryToSave.id;
+        entryToSave.id = ''; // send empty id which indicated "create new"
       }
-      lexService.update(prepEntryForUpdate($scope.currentEntry), function(result) {
+      lexService.update(prepEntryForUpdate(entryToSave), function(result) {
         if (result.ok) {
           var entry = result.data;
           if (isNewEntry) {
@@ -82,16 +104,24 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
            * One day we hope to send deltas which will fix this problem and give
            * a better real time experience.
            */
-          // if (doSetEntry) {
-          // setCurrentEntry(entry);
-          // }
-          pristineEntry = angular.copy($scope.currentEntry);
+
+          /* Reviewed CJH 2015-03: setCurrentEntry is useful in the case when the entry being saved is a new entry.
+             In this case the new entry is replaced entirely by the one returned from the server (with a proper id, etc).
+             I'm currently unclear on whether the doSetEntry parameter is still necessary
+           *
+           */
+
+          pristineEntry = angular.copy(entryToSave);
           $scope.lastSavedDate = new Date();
 
           // refresh data will add the new entry to the entries list
-          $scope.refreshData(false, function() {
-            if (isNewEntry && doSetEntry) {
-              scrollListToEntry(entry.id, 'top');
+          $scope.refreshDbeData().then(function() {
+            if (isNewEntry) {
+              setCurrentEntry($scope.entries[getIndexInList(entry.id, $scope.entries)]);
+              removeEntryFromLists(newEntryTempId);
+              if (doSetEntry) {
+                scrollListToEntry(entry.id, 'top');
+              }
             }
           });
           saved = true;
@@ -289,23 +319,26 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     if ($scope.currentEntry.id != id) {
       $scope.saveCurrentEntry();
       setCurrentEntry($scope.entries[getIndexInList(id, $scope.entries)]);
-      $scope.loadEntryComments();
+      commentService.loadEntryComments(id);
     }
     $scope.state = 'edit';
     // $location.path('/dbe/' + id, false);
   };
 
   $scope.newEntry = function newEntry() {
+    // TODO: saveCurrentEntry should return a promise that we can then add a new word after the current one has been saved - cjh 2015-03
     $scope.saveCurrentEntry();
+    var d = new Date();
+    var uniqueId = '_new_' + d.getSeconds() + d.getMilliseconds();
     var newEntry = {
-      id: ''
+      id: uniqueId
     };
     setCurrentEntry(newEntry);
+    commentService.loadEntryComments(uniqueId);
     addEntryToEntryList(newEntry);
     $scope.show.initial();
-    scrollListToEntry('', 'top');
+    scrollListToEntry(uniqueId, 'top');
     $scope.state = 'edit';
-    $scope.loadEntryComments();
     // $location.path('/dbe', false);
   };
 
@@ -316,7 +349,6 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   $scope.returnToList = function returnToList() {
     $scope.saveCurrentEntry();
     setCurrentEntry();
-    $scope.loadEntryComments();
     $scope.state = 'list';
     // $location.path('/dbe', false);
   };
@@ -340,13 +372,6 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     $scope.entries.unshift(entry);
   }
 
-  $scope.getEntryCommentCount = function getEntryCommentCount(entryId) {
-    if (angular.isDefined($scope.entryCommentCounts[entryId])) {
-      return $scope.entryCommentCounts[entryId];
-    }
-    return 0;
-  };
-
   $scope.makeValidModelRecursive = function makeValidModelRecursive(config, data, stopAtNodes) {
     if (angular.isString(stopAtNodes)) {
       var node = stopAtNodes;
@@ -362,7 +387,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       case 'fields':
         angular.forEach(config.fieldOrder, function(f) {
           if (angular.isUndefined(data[f])) {
-            if (config.fields[f].type == 'fields') {
+            if (config.fields[f].type == 'fields' || config.fields[f].type == 'pictures') {
               data[f] = [];
             } else {
               data[f] = {};
@@ -401,13 +426,18 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
         });
         break;
       case 'optionlist':
-        if (angular.isUndefined(data['value']) || data['value'] == null) {
-          data['value'] = '';
+        if (angular.isUndefined(data.value) || data.value == null) {
+          data.value = '';
+          if (angular.isDefined($scope.config.optionlists) && angular.isDefined(config.listCode) &&
+              (config.listCode in $scope.config.optionlists) && 
+              angular.isDefined($scope.config.optionlists[config.listCode].defaultItemKey)) {
+            data.value = $scope.config.optionlists[config.listCode].defaultItemKey;
+          }
         }
         break;
       case 'multioptionlist':
-        if (angular.isUndefined(data['values'])) {
-          data['values'] = [];
+        if (angular.isUndefined(data.values)) {
+          data.values = [];
         }
         break;
       case 'pictures':
@@ -439,9 +469,9 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
           iShowList--;
         setCurrentEntry($scope.show.entries[iShowList]);
       } else {
-        setCurrentEntry();
+        $scope.returnToList();
       }
-      if (entry.id != '') {
+      if (!entryIsNew(entry)) {
         lexService.remove(entry.id, angular.noop);
       }
     });
@@ -476,98 +506,164 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     }
   };
 
-  /*
-   * // for debugging var assertNoDuplicateIds = function
-   * assertNoDuplicateIds(arr) { // check for duplicate ids??? var ids = []; for
-   * (var i=0; i<arr.length; i++) { var e = arr[i]; if (ids.indexOf(e.id) > -1) {
-   * console.log('Ouch! Somehow we got a duplicate id in the entries array! id = ' +
-   * e.id); console.log(e); //throw 'duplicate id in array!'; }; ids.push(e.id); } };
+  /**
+   * Called when loading the controller
+   * @param callback
+   * @return promise
    */
+  function loadDbeData() {
+    var deferred = $q.defer();
+    if ($scope.entries.length == 0) { // first page load
+      if (offlineCache.canCache()) {
+        loadDataFromOfflineCache().then(function(timestamp) {
+          // data found in cache
+          console.log("data successfully loaded from the cache, now performing refresh");
 
-  $scope.refreshData = function refreshData(fullRefresh, callback) {
-    callback = callback || angular.noop;
-    if (fullRefresh) {
-      notice.setLoading('Loading Dictionary');
-      $scope.fullRefreshInProgress = true;
-    }
-    var processDbeDto = function(result) {
-      notice.cancelLoading();
-      $scope.fullRefreshInProgress = false;
-      if (result.ok) {
-        $scope.commentsUserPlusOne = result.data.commentsUserPlusOne;
-        if (fullRefresh) {
-          $scope.entries = result.data.entries;
-          $scope.comments = result.data.comments;
-
+          // should we ever not trust the cache?
+          // should there be an option to force a full reload of the data (like shift-R or something?)
           $scope.show.initial();
-        } else {
 
-          // splice updates into entry lists
-          angular.forEach(result.data.entries, function(e) {
-            var i;
-
-            // splice into $scope.entries
-            i = getIndexInList(e.id, $scope.entries);
-            if (angular.isDefined(i)) {
-              $scope.entries[i] = e;
-            } else {
-              addEntryToEntryList(e);
-            }
-
-            // splice into $scope.show.entries
-            i = getIndexInList(e.id, $scope.show.entries);
-            if (angular.isDefined(i)) {
-              $scope.show.entries[i] = e;
-            } else {
-              // don't do anything. The entry is not in view so we don't need to update it
-            }
+          $scope.refreshDbeData(timestamp).then(function() {
+            deferred.resolve();
           });
 
-          // splice comment updates into comments list
-          angular.forEach(result.data.comments, function(c) {
-            var i = getIndexInList(c.id, $scope.comments);
-            if (angular.isDefined(i)) {
-              $scope.comments[i] = c;
-            } else {
-              $scope.comments.push(c);
-            }
+        }, function() {
+          // no data found in cache
+          console.log("no data found in cache. now doing full refresh");
+          notice.setLoading('Loading Dictionary');
+          lexService.dbeDtoFull(browserInstanceId, function(result) {
+            notice.cancelLoading();
+            processDbeDto(result, false);
+            $scope.show.initial();
+            deferred.resolve();
           });
 
-          // remove deleted entries according to deleted ids
-          angular.forEach(result.data.deletedEntryIds, removeEntryFromLists);
-
-          // todo remove deleted comments according to deleted ids
-          angular.forEach(result.data.deletedCommentIds, function(id) {
-            var i = getIndexInList(id, $scope.comments);
-            if (angular.isDefined(i)) {
-              $scope.comments.splice(i, 1);
-            }
-          });
-
-          // todo: maybe sort both lists after splicing in updates ???
-
-          // todo: probably update currentEntryCommentsList?
-
-        }
+        });
+      } else {
+        console.log("caching not enabled. now doing full refresh");
+        notice.setLoading('Loading Dictionary');
+        lexService.dbeDtoFull(browserInstanceId, function(result) {
+          notice.cancelLoading();
+          processDbeDto(result, false);
+          $scope.show.initial();
+          deferred.resolve();
+        });
       }
-      callback();
-    };
-    var view = 'dbe';
-    switch (view) {
-      case 'dbe':
-        lexService.dbeDto(browserInstanceId, fullRefresh, processDbeDto);
-        break;
-      case 'add-grammar':
-        break;
-      case 'add-examples':
-        break;
-      case 'add-meanings':
-        break;
-      case 'add-pos':
-        break;
+    } else {
+      $scope.refreshDbeData().then(function() {
+        deferred.resolve();
+      });
+    }
+
+    return deferred.promise;
+  }
+
+  /**
+   * Call this after every action that requires a pull from the server
+   * @param timestamp
+   * @return promise
+   */
+  $scope.refreshDbeData = function refreshDbeData(timestamp) {
+    var deferred = $q.defer();
+    // get data from the server
+    lexService.dbeDtoUpdatesOnly(browserInstanceId, timestamp, function(result) {
+      processDbeDto(result, true);
+      deferred.resolve();
+    });
+    return deferred.promise;
+  }
+
+
+  /**
+   * Persists the Lexical data in the offline cache store
+   */
+  function storeDataInOfflineCache(timestamp) {
+    if (timestamp && offlineCache.canCache()) {
+      var dataObj = {
+        entries: $scope.entries,
+        comments: $scope.comments,
+        entryCommentCounts: $scope.entryCommentCounts
+      };
+      offlineCache.setObject(offlineCacheKey, timestamp, dataObj);
     }
   }
-  ;
+
+  /**
+   *
+   * @returns {promise} which resolves to an epoch cache timestamp
+   */
+  function loadDataFromOfflineCache() {
+    var deferred = $q.defer();
+    offlineCache.getObject(offlineCacheKey).then(function(result) {
+      $scope.comments = result.data.comments;
+      $scope.entries = result.data.entries;
+      $scope.entryCommentCounts = result.data.entryCommentCounts;
+      deferred.resolve(result.timestamp);
+    }, function() { deferred.reject(); });
+    return deferred.promise;
+  }
+
+
+  function processDbeDto(result, updateOnly) {
+    if (result.ok) {
+        commentService.comments.counts.userPlusOne = result.data.commentsUserPlusOne;
+      if (!updateOnly) {
+        $scope.entries = result.data.entries;
+          commentService.comments.items.all = result.data.comments;
+
+      } else {
+
+        // splice updates into entry lists
+        angular.forEach(result.data.entries, function(e) {
+          var i;
+
+          // splice into $scope.entries
+          i = getIndexInList(e.id, $scope.entries);
+          if (angular.isDefined(i)) {
+            $scope.entries[i] = e;
+          } else {
+            addEntryToEntryList(e);
+          }
+
+          // splice into $scope.show.entries
+          i = getIndexInList(e.id, $scope.show.entries);
+          if (angular.isDefined(i)) {
+            $scope.show.entries[i] = e;
+          } else {
+            // don't do anything. The entry is not in view so we don't need to update it
+          }
+        });
+
+        // splice comment updates into comments list
+        angular.forEach(result.data.comments, function(c) {
+            var i = getIndexInList(c.id, commentService.comments.items.all);
+          if (angular.isDefined(i)) {
+              commentService.comments.items.all[i] = c;
+          } else {
+              commentService.comments.items.all.push(c);
+          }
+        });
+
+        // remove deleted entries according to deleted ids
+        angular.forEach(result.data.deletedEntryIds, removeEntryFromLists);
+
+        // todo remove deleted comments according to deleted ids
+        angular.forEach(result.data.deletedCommentIds, function(id) {
+            var i = getIndexInList(id, commentService.comments.items.all);
+          if (angular.isDefined(i)) {
+              commentService.comments.items.all.splice(i, 1);
+          }
+        });
+
+        // todo: maybe sort both lists after splicing in updates ???
+
+        // todo: probably update currentEntryCommentsList?
+
+      }
+        commentService.updateGlobalCommentCounts();
+      storeDataInOfflineCache(result.data.timeOnServer);
+    }
+  }
 
   function evaluateState() {
     var match, path = $location.path();
@@ -592,175 +688,25 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       $scope.returnToList();
     };
 
-    // refresh the data and go to state
-    if ($scope.entries.length == 0) {
-      $scope.refreshData(true, goToState);
-    } else {
-      $scope.refreshData(false, goToState);
-    }
+    loadDbeData().then(function() {
+      goToState();
+    });
   }
 
   // Comments View
 
-  $scope.currentEntryComments = [];
-  $scope.commentsUserPlusOne = [];
-  $scope.currentEntryCommentCounts = {
-    total: 0,
-    fields: {}
-  };
-//model for new comment content
-  $scope.newComment = {
-    id: '',
-    content: '',
-    regarding: {}
-  };
-  
+
   $scope.showComments = function showComments() {
     $scope.saveCurrentEntry(true);
     $scope.state = 'comment';
     // $location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);
   };
   
-  function getFieldValue(model, inputSystem) {
-
-    // get value of option list
-    if (angular.isDefined(model.value)) {
-
-      // todo return display value
-      return model.value;
-    }
-
-    // get value of multi-option list
-    if (angular.isDefined(model.values)) {
-
-      // todo return display values
-      return model.values.join(' ');
-    }
-
-    // get value of multi-text with specified inputSystem
-    if (angular.isDefined(inputSystem) && angular.isDefined(model[inputSystem])) {
-      return model[inputSystem].value;
-    }
-
-    // get first inputSystem of a multi-text (no inputSystem specified)
-    var valueToReturn = undefined;
-    angular.forEach(model, function(prop) {
-      if (angular.isUndefined(valueToReturn)) {
-        valueToReturn = prop.value;
-      }
-    });
-    return valueToReturn;
-  }
-
-  $scope.selectFieldForComment = function selectFieldForComment(fieldName, model, inputSystem, multioptionValue, pictureFilePath) {
-    if ($scope.state == 'comment' && $scope.rights.canComment()) {
-      $scope.newCommentRegardingFieldConfig = configService.getFieldConfig(fieldName);
-      $scope.newComment.regarding.field = fieldName;
-      $scope.newComment.regarding.fieldNameForDisplay = $scope.newCommentRegardingFieldConfig.label;
-      delete $scope.newComment.regarding.inputSystem;
-      delete $scope.newComment.regarding.inputSystemAbbreviation;
-      $scope.isNewCommentRegardingPicture = false;
-      if (inputSystem) {
-        $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
-        $scope.newComment.regarding.inputSystem = $scope.config.inputSystems[inputSystem].languageName;
-        $scope.newComment.regarding.inputSystemAbbreviation = $scope.config.inputSystems[inputSystem].abbreviation;
-      } else if (multioptionValue) {
-        $scope.newComment.regarding.fieldValue = multioptionValue;
-      } else if (pictureFilePath) {
-        $scope.newComment.regarding.fieldValue = pictureFilePath;
-        $scope.isNewCommentRegardingPicture = true;
-      } else {
-        $scope.newComment.regarding.fieldValue = getFieldValue(model);
-      }
-    }
-  };
-
-  $scope.loadEntryComments = function loadEntryComments() {
-    var comments = [];
-    var count = {
-      total: 0,
-      fields: {}
-    };
-    var entryCommentsCounts = {};
-    for (var i = 0; i < $scope.comments.length; i++) {
-      var comment = $scope.comments[i];
-
-      // add counts to global entry comment counts
-      if (angular.isUndefined(entryCommentsCounts[comment.entryRef])) {
-        entryCommentsCounts[comment.entryRef] = 0;
-      }
-      if (comment.status != 'resolved') {
-        entryCommentsCounts[comment.entryRef]++;
-      }
-
-      var fieldName = comment.regarding.field;
-      if (comment.entryRef == $scope.currentEntry.id) {
-        if (fieldName && angular.isUndefined(count.fields[fieldName])) {
-          count.fields[fieldName] = 0;
-        }
-
-        // add comment to the correct 'field' container
-        comments.push(comment);
-
-        // update the appropriate count for this field and update the total count
-        if (comment.status != 'resolved') {
-          if (fieldName) {
-            count.fields[fieldName]++;
-          }
-          count.total++;
-        }
-      }
-    }
-    $scope.currentEntryComments = comments;
-    $scope.currentEntryCommentCounts = count;
-    $scope.entryCommentCounts = entryCommentsCounts;
-  }
-
-  
-  $scope.getComment = function getComment(comment) {
-    var isNewComment = angular.isUndefined(comment);
-    if (isNewComment) {
-      comment = angular.copy($scope.newComment);
-
-      // dont submit empty comments
-      if (angular.isUndefined(comment.content) || ! comment.content.trim()) {
-        return;
-      }
-
-      // comment.content is already set in the form
-      comment.entryRef = $scope.currentEntry.id;
-      comment.regarding.meaning = $scope.getMeaningForDisplay($scope.currentEntry);
-      comment.regarding.word = $scope.getWordForDisplay($scope.currentEntry);
-
-      // other comment.regarding fields are set via the click selection of which field to select
-    }
 
 
-    if (isNewComment) { // reset newComment
-      $scope.newComment = {
-        id: '',
-        content: '',
-        regarding: {}
-      };
-    }
-      
-    return comment;
-  };
 
 
-  /*
-   * currentEntryCommentCounts has the following structure: { 'total': int total
-   * count 'fields': { 'lexeme': int count of comments for lexeme field,
-   * 'definition': int count of comments for definition field, } }
-   */
 
-  $scope.getFieldCommentCount = function getFieldCommentCount(fieldName) {
-    var count = 0;
-    if (angular.isDefined($scope.currentEntryCommentCounts.fields[fieldName])) {
-      count = $scope.currentEntryCommentCounts.fields[fieldName];
-    }
-    return count;
-  };
 
   // only refresh the full view if we have not yet loaded the dictionary for the first time
   evaluateState();
@@ -813,26 +759,6 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     },
     canDeleteEntry: function canDeleteEntry() {
       return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.DELETE);
-    },
-    canComment: function canComment() {
-      return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.CREATE);
-    },
-    canDeleteComment: function canDeleteComment(commentAuthorId) {
-      if (sessionService.session.userId == commentAuthorId) {
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE_OWN);
-      } else {
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE);
-      }
-    },
-    canEditComment: function canEditComment(commentAuthorId) {
-      if (sessionService.session.userId == commentAuthorId) {
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT_OWN);
-      } else {
-        return false;
-      }
-    },
-    canUpdateCommentStatus: function canUpdateCommentStatus() {
-      return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT);
     }
   };
 

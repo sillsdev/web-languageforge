@@ -216,7 +216,7 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertTrue(array_key_exists('grammatical-info', $optionListByCodes));
         $this->assertFalse(array_key_exists('semantic-domain-ddp4', $optionListByCodes));
         $this->assertEqual($entryA['lexeme']['qaa-fonipa-x-kal']['value'], '-kes');
-        $this->assertEqual($entryA['customField_entry_Cust_Single_Line_All']['en']['value'], '635459584141806142kes.wav');
+        $this->assertEqual($entryA['customFields']['customField_entry_Cust_Single_Line_All']['en']['value'], '635459584141806142kes.wav');
         $this->assertTrue($project->config->entry->fieldOrder->array_search('customField_entry_Cust_Single_Line_All'), "custom field entry config exists");
         $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->entry->fields), "custom field entry config exists");
         $this->assertEqual($project->config->entry->fields['customField_entry_Cust_Single_Line_All']->label, 'Cust Single Line All');
@@ -224,16 +224,16 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertTrue($project->config->entry->fields['customField_entry_Cust_Single_Line_All']->inputSystems->array_search('en'));
         $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexiconRoles::OBSERVER]->fields), "custom field roleView config exists");
         $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexiconRoles::MANAGER]->fields), "custom field roleView config exists");
-        $this->assertFalse($project->config->roleViews[LexiconRoles::OBSERVER]->fields['customField_entry_Cust_Single_Line_All']->show);
+        $this->assertTrue($project->config->roleViews[LexiconRoles::OBSERVER]->fields['customField_entry_Cust_Single_Line_All']->show);
         $this->assertTrue($project->config->roleViews[LexiconRoles::MANAGER]->fields['customField_entry_Cust_Single_Line_All']->show);
         $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->userViews[$userId]->fields), "custom field userView config doesn't yet exist");
-        $this->assertFalse($project->config->userViews[$userId]->fields['customField_entry_Cust_Single_Line_All']->show);
+        $this->assertTrue($project->config->userViews[$userId]->fields['customField_entry_Cust_Single_Line_All']->show);
         $this->assertEqual($entryB['lexeme']['qaa-fonipa-x-kal']['value'], 'zitʰɛstmen');
-        $this->assertEqual($entryB['customField_entry_Cust_Single_ListRef']['value'], 'comparative linguistics');
-        $this->assertEqual(count($entryBSenseA['customField_senses_Cust_Multi_ListRef']['values']), 2);
-        $this->assertEqual($entryBSenseA['customField_senses_Cust_Multi_ListRef']['values'][0], 'First Custom Item');
-        $this->assertEqual($entryBSenseA['customField_senses_Cust_Multi_ListRef']['values'][1], 'Second Custom Item');
-        $this->assertEqual($entryBSenseA['examples'][0]['customField_examples_Cust_Example']['qaa-x-kal']['value'], 'Custom example');
+        $this->assertEqual($entryB['customFields']['customField_entry_Cust_Single_ListRef']['value'], 'comparative linguistics');
+        $this->assertEqual(count($entryBSenseA['customFields']['customField_senses_Cust_Multi_ListRef']['values']), 2);
+        $this->assertEqual($entryBSenseA['customFields']['customField_senses_Cust_Multi_ListRef']['values'][0], 'First Custom Item');
+        $this->assertEqual($entryBSenseA['customFields']['customField_senses_Cust_Multi_ListRef']['values'][1], 'Second Custom Item');
+        $this->assertEqual($entryBSenseA['examples'][0]['customFields']['customField_examples_Cust_Example']['qaa-x-kal']['value'], 'Custom example');
 
         echo '<pre style="height:500px; overflow:auto">';
         echo $response->data->importErrors;

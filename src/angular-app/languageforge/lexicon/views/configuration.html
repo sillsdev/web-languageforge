@@ -316,12 +316,12 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
         <div class="span3 control-group">
             <dl class="picklists">
                 <dt translate="Select a list" id="editListValuesFieldset"></dt>
-                <dd><div class="controls">
-                    <div data-ng-click="selectList('pos')"
-                         data-ng-class="{selected:currentListId == 'pos'}"
-                            translate="Part of Speech">
+                <dd>
+                    <div data-ng-repeat="optionList in optionlistDirty" 
+                        data-ng-class="{selected:currentListIndex == $index}" data-ng-click="selectList($index)">
+                        {{optionList.name}}
                     </div>
-                </div></dd>
+                </dd>
                 <!-- future lists go here -->
             </dl>
         </div>
@@ -329,9 +329,10 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
         <!-- Right column: task setup -->
         <div class="span9">
             <div class="well" id="picklistEditorFieldset">
-                <h3 class="control-label" translate="{{optionLists[currentListId].name}}"></h3>
+                <h3 class="control-label">{{optionlistDirty[currentListIndex].name}}</h3>
                 <div class="controls">
-                    <picklist-editor items="optionlistDirty[0].items" default-key="optionLists[currentListId].defaultKey"></picklist-editor>
+                    <picklist-editor items="optionlistDirty[currentListIndex].items" 
+                        pristine-items="optionlistPristine[currentListIndex].items"></picklist-editor>
                 </div>
             </div>
 
