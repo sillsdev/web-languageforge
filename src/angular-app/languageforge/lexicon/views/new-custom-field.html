@@ -43,6 +43,15 @@
                     <option value="">-- {{'choose a field type' | translate }} --</option></select>
             </div>
         </div>
+        <div class="control-group" data-ng-if="(newCustomData.type == 'optionlist') || (newCustomData.type == 'multioptionlist')">
+            <label class="control-label" for="optionlistCode" translate="Option List"></label>
+            <div class="controls">
+                <select class="form-control" id="optionlistCode" name="optionlistCode" required 
+                    data-ng-model="newCustomData.listCode" 
+                    data-ng-options="selects.listCode.options[code] for code in selects.listCode.optionsOrder">
+                    <option value="">-- {{'choose an option list' | translate }} --</option></select>
+            </div>
+        </div>
     </form>
 </div>
 <div class="modal-footer">

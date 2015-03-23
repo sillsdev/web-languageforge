@@ -139,13 +139,13 @@ function(jsonRpc, ss, breadcrumbService, linkService, $location) {
     switch (type) {
       case 'multitext':
         angular.forEach(model, function(field) {
-          if (field.value != '') {
+          if (field.value && field.value != '') {
             containsData = true;
           }
         });
         break;
       case 'optionlist':
-        if (model.value != '') {
+        if (model.value && model.value != '') {
           containsData = true;
         }
         break;
@@ -263,34 +263,43 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
     jsonRpc.call('lex_entry_remove', [id], callback);
   };
 
-  this.dbeDto = function dbeDto(browserId, fullRefresh, callback) {
-    if (fullRefresh) {
-      jsonRpc.call('lex_dbeDtoFull', [browserId], function(result) {
-        if (result.ok) {
-          // todo move breadcrumbs back to controller - cjh 2014-07
-          breadcrumbService.set('top', [{
-            href: '/app/projects',
-            label: 'My Projects'
-          }, {
-            href: linkService.project(),
-            label: ss.session.project.projectName
-          }, {
-            href: linkService.projectView('dbe'),
-            label: 'Browse And Edit'
-          }]);
-        }
-        callback(result);
-      });
+  this.dbeDtoFull = function dbeDtoFull(browserId, callback) {
+    jsonRpc.call('lex_dbeDtoFull', [browserId], function (result) {
+      if (result.ok) {
+        // todo move breadcrumbs back to controller - cjh 2014-07
+        breadcrumbService.set('top', [{
+          href: '/app/projects',
+          label: 'My Projects'
+        }, {
+          href: linkService.project(),
+          label: ss.session.project.projectName
+        }, {
+          href: linkService.projectView('dbe'),
+          label: 'Browse And Edit'
+        }]);
+      }
+      callback(result);
+    });
+  };
+
+  this.dbeDtoUpdatesOnly = function dbeDtoUpdatesOnly(browserId, timestamp, callback) {
+    if (timestamp) {
+      jsonRpc.call('lex_dbeDtoUpdatesOnly', [browserId, timestamp], callback);
     } else {
       jsonRpc.call('lex_dbeDtoUpdatesOnly', [browserId], callback);
     }
   };
 
-  this.updateComment = function updateComment(comment, callback) {
-    jsonRpc.call('lex_entry_updateComment', [comment], callback);
-  };
+}])
 
-}]).service('lexUtils', [function() {
+  .service('lexDataService', [function() {
+
+    this.processDbeDto = function() {};
+
+  }])
+
+
+  .service('lexUtils', [function() {
 
   function getFirstField(config, node, fieldName) {
     var result = '', ws, field;

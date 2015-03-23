@@ -5,7 +5,7 @@ angular.module('lexicon',
   [
     'ngRoute',
     'ngSanitize',
-    'dbe',
+    'lexicon.edit',
     'meaning',
     'examples',
     'bellows.services',
@@ -121,9 +121,7 @@ angular.module('lexicon',
     
     // persist the entries and comments array across all controllers
     $scope.entries = [];
-    $scope.comments = [];
-    $scope.entryCommentCounts = {};
-    
+
     $scope.currentUserRole = ss.session.projectSettings.currentUserRole;
     $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
     pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);

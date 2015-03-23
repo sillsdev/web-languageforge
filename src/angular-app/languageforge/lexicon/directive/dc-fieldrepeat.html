@@ -8,8 +8,7 @@
                         config="config.fields[fieldName]"
                         model="model[fieldName]"
                         items="optionlists[config.fields[fieldName].listCode].items"></dc-optionlist>
-                    <comment-bubble control="control"
-                        count="control.getFieldCommentCount(fieldName)"></comment-bubble>
+                    <comment-bubble control="control" field="fieldName"></comment-bubble>
                 </div>
                 <div class="flex100" data-ng-switch-when="multioptionlist">
                     <dc-multioptionlist class="dc-item" control="control"
@@ -17,21 +16,20 @@
                         model="model[fieldName]"
                         items="optionlists[config.fields[fieldName].listCode].items"
                         select-field="control.selectFieldForComment(fieldName, model[fieldName], inputSystem, multioptionValue)"></dc-multioptionlist>
-                    <comment-bubble control="control"
-                        count="control.getFieldCommentCount(fieldName)"></comment-bubble>
+                    <comment-bubble control="control" field="fieldName"></comment-bubble>
                 </div>
                 <div class="flex100" data-ng-switch-when="multitext">
                     <dc-multitext class="dc-item" control="control"
                         config="config.fields[fieldName]"
                         model="model[fieldName]"
                         select-field="control.selectFieldForComment(fieldName, model[fieldName], inputSystem)"></dc-multitext>
-                    <comment-bubble control="control"
-                        count="control.getFieldCommentCount(fieldName)"></comment-bubble>
+                    <comment-bubble control="control" field="fieldName"></comment-bubble>
                 </div>
                 <div class="flex100" data-ng-switch-when="pictures">
                     <dc-picture class="dc-item" control="control"
                         config="config.fields[fieldName]"
                         pictures="model[fieldName]"></dc-picture>
+                    <comment-bubble control="control" field="fieldName"></comment-bubble>
                 </div>
                 <div data-ng-switch-when="fields"></div>
                 <div data-ng-switch-default>unsupported type

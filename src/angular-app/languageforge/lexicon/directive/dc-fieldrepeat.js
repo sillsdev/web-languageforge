@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('palaso.ui.dc.fieldrepeat', ['palaso.ui.dc.multitext', 'palaso.ui.dc.optionlist', 'palaso.ui.dc.multioptionlist', 'palaso.ui.dc.example', 'palaso.ui.dc.picture', 'palaso.ui.commentBubble', 'bellows.services', 'lexicon.services'])
+angular.module('palaso.ui.dc.fieldrepeat', ['palaso.ui.dc.multitext', 'palaso.ui.dc.optionlist', 'palaso.ui.dc.multioptionlist', 'palaso.ui.dc.example', 'palaso.ui.dc.picture', 'palaso.ui.comments', 'bellows.services', 'lexicon.services'])
 // Palaso UI Dictionary Control: Sense
 .directive('dcFieldrepeat', [function() {
   return {
