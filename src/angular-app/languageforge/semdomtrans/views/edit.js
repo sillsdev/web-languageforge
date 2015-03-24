@@ -6,7 +6,7 @@ angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services
 function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
   // refresh the data and go to state
   if ($scope.items.length == 0 && !$scope.loadingDto) {
-      $scope.refreshData(true);
+      $scope.refreshDbeData(true);
   }
   $scope.selectedTab = 0;
   $scope.control = $scope;
@@ -19,6 +19,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
   $scope.selectedDepth = 1;
   $scope.searchText = "";
   var api = semdomEditApi;
+  
   
   $scope.reloadItems = function reloadItems(depth, delay) {
      if (delay == undefined) {
