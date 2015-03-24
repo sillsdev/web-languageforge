@@ -1,74 +1,43 @@
 'use strict';
 
-angular.module('semdomtrans.comments', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.scroll', 'palaso.ui.dc.comment', 'palaso.ui.comments-right-panel'])
+angular.module('semdomtrans.comments', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.scroll', 'palaso.ui.comments'])
 // DBE controller
-.controller('commentsCtrl', ['$scope', '$stateParams', 'sessionService', 'modalService', 'silNoticeService', 
-function($scope, $stateParams, sessionService, modal, notice) {
+.controller('commentsCtrl', ['$scope', '$stateParams', 'sessionService', 'modalService', 'silNoticeService', 'lexCommentService',
+function($scope, $stateParams, sessionService, modal, notice, commentService) {
   $scope.control = $scope;
-  $scope.currentEntryIndex = $stateParams.position;
-  $scope.currentEntry = $scope.items[$stateParams.position];
-  $scope.currentEntryComments = [];
-  $scope.newComment = {
-    id: '',
-    content: '',
-    entryRef: '',
-    regarding: {
-      'field': '',
-      'fieldValue': ''
-    }
-  }
-   
+
+  
    $scope.loadEntryComments = function loadEntryComments() {
-       var comments = [];
-      
-       for (var i = 0; i < $scope.comments.length; i++) {
-         var comment = $scope.comments[i];
-         if (comment.entryRef == $scope.control.currentEntry.id) {          
-           // add comment to the correct 'field' container
-           comments.push(comment);
-       }       
-     }
-     
-     $scope.currentEntryComments = comments;
+      commentService.loadEntryComments($scope.items[$stateParams.position].id);
+   }
+   
+   $scope.refreshDbeData = function refreshDbeData() {
+     return $scope.$parent.refreshDbeData();
    }
    
 
   if ($scope.items.length == 0 && !$scope.loadingDto) {
-    $scope.refreshData(true, function() {
+    $scope.$parent.refreshDbeData(true).then(function() {
        return $scope.loadEntryComments();
      });
     } else {
+      $scope.currentEntry = $scope.items[$stateParams.position];
       $scope.loadEntryComments();
     }
   
-  $scope.setSelectedField = function setSelectedField(fieldName, model) {
-    $scope.newComment.regarding.field = fieldName;
-    $scope.newComment.regarding.fieldNameForDisplay = fieldName;
-    $scope.newComment.regarding.fieldValue = model.source + "#" + model.translation;  
-  }
-    
-    $scope.getComment = function getComment(comment) {
-      $scope.newComment.entryRef = $scope.currentEntry.id; 
-      comment = $scope.newComment;
-      
-      // TODO - check if it is a new comment
-      var isNewComment = true;
-      if (isNewComment) { // reset newComment
-            $scope.control.newComment = {
-              id: '',
-              content: '',
-              regarding: {}
-            }; // model for new comment content
-      }
-      return comment;
-    }  
+ 
     
     $scope.$watch('items', function(oldVal, newVal) {
       if (oldVal != newVal) {      
           $scope.currentEntry = $scope.items[$stateParams.position];
       }
     });
-  
+    $scope.getMeaningForDisplay = function(entry) {
+      return undefined;
+    }
+    $scope.getWordForDisplay = function(entry) {
+      return undefined;
+    }
   // permissions stuff
     $scope.rights = {
       canEditProject: function canEditProject() {

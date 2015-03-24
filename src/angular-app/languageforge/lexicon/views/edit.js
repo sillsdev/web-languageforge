@@ -15,6 +15,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   $scope.currentEntry = {};
   $scope.commentService = commentService; // tie service into the edit.html template
 
+  $scope.configService = configService;
   // default state. State is one of 'list', 'edit', or 'comment'
   $scope.state = 'list';
 
