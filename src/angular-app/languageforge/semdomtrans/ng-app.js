@@ -38,14 +38,15 @@ angular.module('semdomtrans',
             }
         })
   })
-  .controller('MainCtrl', ['$scope', 'semdomtransEditService', 'sessionService',
-  function($scope, $semdomApi, ss) {
+  .controller('MainCtrl', ['$scope', 'semdomtransEditService', 'sessionService', 'lexCommentService', '$q',
+  function($scope, $semdomApi, ss, commentsSerivce, $q) {
     
    $scope.items = [];
    $scope.includedItems = {};
    $scope.comments = [];
    $scope.loadingDto = false;
-   $scope.refreshData = function refreshData(v, callback) {
+   $scope.refreshDbeData = function refreshDbeData(v) {
+     var deferred = $q.defer();
      $scope.loadingDto = true;
      $semdomApi.editorDto(function(result) {
       if (result.ok) {
@@ -64,11 +65,15 @@ angular.module('semdomtrans',
         $scope.comments = result.data.comments;    
         $scope.workingSets = result.data.workingSets;
         $scope.loadingDto = false;
-        if (!angular.isUndefined(callback)) {
-          callback();
-        }
+        
+
+        commentsSerivce.updateGlobalCommentCounts();
+        commentsSerivce.comments.items.all = $scope.comments;
+
+        deferred.resolve();
       }
     });
+   return deferred.promise;
    }
   
    

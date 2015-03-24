@@ -6,7 +6,7 @@
   			<th style="width:35%"> Source </th>
   			<th style="width:35%"> Translation </th>
   		</tr>
-	    <tr ng-click="isInCommentMode() ? $parent.setSelectedField('question ' + currentQuestionPos, model.questions[currentQuestionPos].question) : '' ">
+	    <tr ng-click="isInCommentMode() ? control.setSelectedField('question ' + currentQuestionPos, model.questions[currentQuestionPos].question) : '' ">
 		    <td> Questions: </td>
 		    <td> {{model.questions[currentQuestionPos].question.source}} </td>
 		    <td>
@@ -14,12 +14,12 @@
 			    	rows="4"
 			    	ng-disabled="isInCommentMode()"
 			    	ng-model="model.questions[$scope.currentQuestionPos].question.translation"
-			    	ng-keypress="$parent.updateItem($event.which)"
-			    	ng-blur="$parent.updateItem()">
+			    	ng-keypress="control.updateItem($event.which)"
+			    	ng-blur="control.updateItem()">
 		    	</textarea>
 		    </td> 
 	    </tr>	
-        <tr ng-click="isInCommentMode() ? $parent.setSelectedField('question terms ' + currentQuestionPos, model.questions[currentQuestionPos].terms) : '' ">
+        <tr ng-click="isInCommentMode() ? control.setSelectedField('question terms ' + currentQuestionPos, model.questions[currentQuestionPos].terms) : '' ">
 		    <td> Terms: </td>
 		    <td> {{model.questions[currentQuestionPos].terms.source}}</td>
 	        <td> 
@@ -27,8 +27,8 @@
 	        		rows="4"
 	        		ng-disabled="isInCommentMode()"
 	        		ng-model="model.questions[$scopecurrentQuestionPos].terms.translation"
-	        		ng-keypress="$parent.updateItem($event.which)"
-	        		ng-blur="$parent.updateItem()">
+	        		ng-keypress="control.updateItem($event.which)"
+	        		ng-blur="control.updateItem()">
         		</textarea>
        		</td>    
 	    </tr>				    

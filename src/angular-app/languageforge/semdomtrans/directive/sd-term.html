@@ -5,27 +5,27 @@
     			<th style="width:35%"> Source </th>
     			<th style="width:35%"> Translation </th>
     		</tr>
-		    <tr ng-click="isInCommentMode() ? $parent.setSelectedField('name', model.name) : '' ">
+		    <tr ng-click="isInCommentMode() ? control.setSelectedField('name', model.name) : '' ">
 			    <td > Name: </td>
 			    <td> {{model.name.source}}</td>
 			    <td> 
 			    	<input 
 			    		   ng-disabled="isInCommentMode()"
 			    		   ng-model="model.name.translation"
-						   ng-keypress="$parent.updateItem($event.which)"
-						   ng-blur="$parent.updateItem()">
+						   ng-keypress="control.updateItem($event.which)"
+						   ng-blur="control.updateItem()">
 			    </td>
 		    </tr>
 		     <tr>
-		     <tr ng-click="isInCommentMode() ? $parent.setSelectedField('description', model.description) : '' ">
+		     <tr ng-click="isInCommentMode() ? control.setSelectedField('description', model.description) : '' ">
 			    <td> Description: </td>
 			    <td> {{model.description.source}}</td>
 		        <td> 
 		        	<textarea rows="4"
 		        		ng-disabled="isInCommentMode()"
 		        		ng-model="model.description.translation"
-		         		ng-keypress="$parent.updateItem($event.which)"
-		         		ng-blur="$parent.updateItem()" 
+		         		ng-keypress="control.updateItem($event.which)"
+		         		ng-blur="control.updateItem()" 
 		         		>
 		         	</textarea>
 	         	</td>    
@@ -40,15 +40,15 @@
 	    		<th style="width:50%"> Source </th>
 	    		<th style="width:50%"> Translation </th>
 	    	<tr ng-repeat="searchKey in model.searchKeys" 
-	    		ng-click="isInCommentMode() ? $parent.$parent.setSelectedField('search key ' + $index, searchKey) : '' ">
+	    		ng-click="isInCommentMode() ? control.setSelectedField('search key ' + $index, searchKey) : '' ">
 	    		<td>{{searchKey.source}}</td>
 	    		<td>
 	    			<textarea 
 	    				ng-disabled="isInCommentMode()"
 	    				rows="4" 
 	    				ng-model="searchKey.translation"
-	    				ng-keypress="$parent.updateItem($event.which)"
-	    				ng-blur="$parent.updateItem()"
+	    				ng-keypress="control.updateItem($event.which)"
+	    				ng-blur="control.updateItem()"
 	    				> 
 	    			</textarea>
     			</td>
