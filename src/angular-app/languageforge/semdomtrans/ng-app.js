@@ -62,8 +62,15 @@ angular.module('semdomtrans',
           }
         }
         
+        var allItemsWS = { id: '',  name: 'Show All', isShared : false, itemKeys : [] }
+        
+        for (i in result.data.items) {
+          allItemsWS.itemKeys.push(result.data.items[i].key);
+        }
+        
         $scope.comments = result.data.comments;    
-        $scope.workingSets = result.data.workingSets;
+        $scope.workingSets = [allItemsWS].concat(result.data.workingSets);
+        
         $scope.loadingDto = false;
         
 
