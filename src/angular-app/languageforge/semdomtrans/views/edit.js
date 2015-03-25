@@ -150,25 +150,33 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
       $scope.$parent.refreshData(state, function() { });
   };
     
-  $scope.$watch('items', function(oldVal, newVal) {
-    var maxDepth = 0;
-    for (var i in $scope.items) {
-      var depth = ($scope.items[i].key.length + 1)/2;
-      if (depth > maxDepth) {
-        maxDepth = depth;
+  $scope.$watch('items', function(newVal) {
+    if (newVal && newVal.length > 0) {
+      var maxDepth = 0;
+      for (var i in $scope.items) {
+        var depth = ($scope.items[i].key.length + 1)/2;
+        if (depth > maxDepth) {
+          maxDepth = depth;
+        }
+        
+        $scope.includedItems[$scope.items[i].key] = true;
       }
-      
-      $scope.includedItems[$scope.items[i].key] = true;
-    }
-    $scope.maxDepth = maxDepth;
-    $scope.reloadItems(1);
-    if ($scope.includedItems[$scope.items[$stateParams.position].key]) {      
-      $scope.currentEntry = $scope.items[$stateParams.position];
-      $scope.currentEntryIndex = angular.isUndefined($stateParams.position) ? 0 : $stateParams.position;
-      $scope.changeTerm($scope.currentEntry.key);
+      $scope.maxDepth = maxDepth;
+      $scope.reloadItems(1);
+      if ($scope.includedItems[$scope.items[$stateParams.position].key]) {      
+        $scope.currentEntry = $scope.items[$stateParams.position];
+        $scope.currentEntryIndex = angular.isUndefined($stateParams.position) ? 0 : $stateParams.position;
+        $scope.changeTerm($scope.currentEntry.key);
+      }
     }
     
     
+  });
+  
+  $scope.$watch('workingSets', function(newVal) {
+    if (newVal && angular.isUndefined($scope.selectedWorkingSet)) {
+      $scope.selectedWorkingSet = 0;
+    }  
   });
   
   //search typeahead
@@ -208,8 +216,6 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     $scope.reloadItems($scope.selectedDepth);    
   }
   
-  
-  $scope.selectedWorkingSet = null;
   
   $scope.$watch("selectedWorkingSet", function(newVal, oldVal) {
     if (oldVal != newVal) {
