@@ -5,7 +5,7 @@ angular.module('semdomtrans.comments', ['jsonRpc', 'ui.bootstrap', 'bellows.serv
 .controller('commentsCtrl', ['$scope', '$stateParams', 'sessionService', 'modalService', 'silNoticeService', 'lexCommentService',
 function($scope, $stateParams, sessionService, modal, notice, commentService) {
   $scope.control = $scope;
-
+  $scope.currentEntryIndex = $stateParams.position;
   
    $scope.loadEntryComments = function loadEntryComments() {
       commentService.loadEntryComments($scope.items[$stateParams.position].id);
