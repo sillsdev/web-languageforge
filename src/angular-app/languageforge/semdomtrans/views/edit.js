@@ -162,9 +162,10 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     }
     $scope.maxDepth = maxDepth;
     $scope.reloadItems(1);
-    if ($scope.includedItems[$scope.items[$scope.currentEntryIndex].key]) {      
-      $scope.currentEntry = $scope.items[$scope.currentEntryIndex];
+    if ($scope.includedItems[$scope.items[$stateParams.position].key]) {      
+      $scope.currentEntry = $scope.items[$stateParams.position];
       $scope.currentEntryIndex = angular.isUndefined($stateParams.position) ? 0 : $stateParams.position;
+      $scope.changeTerm($scope.currentEntry.key);
     }
     
     
@@ -251,6 +252,10 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
 
     $scope.refreshData();
 
+  }
+  
+  $scope.isItemSelected = function isItemSelected() {
+    return !angular.isUndefined($scope.currentEntryIndex);
   }
   
   // permissions stuff
