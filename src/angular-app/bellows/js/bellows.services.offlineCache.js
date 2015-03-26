@@ -125,7 +125,8 @@ angular.module('bellows.services')
           var cursor = e.target.result;
           if (cursor) {
             entries.push(cursor.value);
-            cursor.continue();
+            // should be  cursor.continue(); but needed a work around to work with the yui compressor - cjh 2015-03
+            cursor["continue"]();
           } else {
             if (entries.length == 0) {
               //console.log("offline cache getAll" + storeName + " MISS for project = " + projectId);
