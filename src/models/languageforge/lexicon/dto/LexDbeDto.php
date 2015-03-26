@@ -41,6 +41,7 @@ class LexDbeDtoCommentsEncoder extends JsonEncoder
         return $e->_encode($model);
     }
 }
+
 class LexDbeDto
 {
     /**
@@ -50,12 +51,27 @@ class LexDbeDto
      * @throws \Exception
      * @return array
      */
-    public static function encode($projectId, $userId, $lastFetchTime = null)
+
+    const MAX_ENTRIES_PER_REQUEST = 5000;
+
+    public static function encode($projectId, $userId, $lastFetchTime = null, $offset = 0)
     {
         $data = array();
         $project = new LexiconProjectModel($projectId);
-        $entriesModel = new LexEntryListModel($project, $lastFetchTime);
-        $entriesModel->readForDto();
+        if ($lastFetchTime) {
+            $entryCountModel = new LexEntryListModel($project);
+            $entryCountModel->readCounts();
+            $data['entryTotalCount'] = $entryCountModel->totalCount;
+            $entriesModel = new LexEntryListModel($project, $lastFetchTime);
+            $entriesModel->readForDto();
+        } else {
+            $entriesModel = new LexEntryListModel($project, null, self::MAX_ENTRIES_PER_REQUEST, $offset);
+            $entriesModel->readForDto();
+            $data['entryTotalCount'] = $entriesModel->totalCount;
+            $data['entryCount'] = $entriesModel->count;
+            $data['entryOffset'] = $offset;
+
+        }
         $entries = $entriesModel->entries;
 
         $commentsModel = new LexCommentListModel($project, $lastFetchTime);

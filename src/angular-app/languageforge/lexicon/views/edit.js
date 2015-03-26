@@ -9,7 +9,6 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
   var pristineEntry = {};
   var browserInstanceId = Math.floor(Math.random() * 1000);
-  var offlineCacheKey = sessionService.session.baseSite + "_" + sessionService.session.project.id;
   $scope.config = configService.getConfigForUser();
   $scope.lastSavedDate = new Date();
   $scope.currentEntry = {};
@@ -515,46 +514,80 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     var deferred = $q.defer();
     if ($scope.entries.length == 0) { // first page load
       if (offlineCache.canCache()) {
-        loadDataFromOfflineCache().then(function(timestamp) {
-          // data found in cache
-          console.log("data successfully loaded from the cache, now performing refresh");
+        notice.setLoading("Loading Dictionary");
+        loadDataFromOfflineCache().then(function(projectObj) {
+          if (projectObj.isComplete) {
+            // data found in cache
+            console.log("data successfully loaded from the cache.  Downloading updates...");
+            notice.setLoading('Downloading Updates to Dictionary.');
+            $scope.show.initial();
+            $scope.refreshDbeData(projectObj.timestamp).then(function() {
+              deferred.resolve();
+              notice.cancelLoading();
+            });
 
-          // should we ever not trust the cache?
-          // should there be an option to force a full reload of the data (like shift-R or something?)
-          $scope.show.initial();
+          } else {
+            $scope.entries = [];
+            console.log("cached data was found to be incomplete. Full download started...");
+            notice.setLoading('Downloading Full Dictionary.');
+            notice.setPercentComplete(0);
+            doFullRefresh().then(function() {
+              deferred.resolve();
+              notice.setPercentComplete(100);
+              notice.cancelLoading();
+            });
+          }
 
-          $scope.refreshDbeData(timestamp).then(function() {
-            deferred.resolve();
-          });
 
         }, function() {
           // no data found in cache
-          console.log("no data found in cache. now doing full refresh");
-          notice.setLoading('Loading Dictionary');
-          lexService.dbeDtoFull(browserInstanceId, function(result) {
-            notice.cancelLoading();
-            processDbeDto(result, false);
-            $scope.show.initial();
+          console.log("no data found in cache. Full download started...");
+          notice.setLoading('Downloading Full Dictionary.');
+          notice.setPercentComplete(0);
+          doFullRefresh().then(function() {
             deferred.resolve();
+            notice.setPercentComplete(100);
+            notice.cancelLoading();
           });
-
         });
       } else {
-        console.log("caching not enabled. now doing full refresh");
-        notice.setLoading('Loading Dictionary');
-        lexService.dbeDtoFull(browserInstanceId, function(result) {
-          notice.cancelLoading();
-          processDbeDto(result, false);
-          $scope.show.initial();
+        console.log("caching not enabled. Full download started...");
+        notice.setLoading('Downloading Full Dictionary.');
+        notice.setPercentComplete(0);
+        doFullRefresh().then(function() {
           deferred.resolve();
+          notice.setPercentComplete(100);
+          notice.cancelLoading();
         });
       }
     } else {
+      // intentionally not showing any loading message here
       $scope.refreshDbeData().then(function() {
         deferred.resolve();
       });
     }
+    return deferred.promise;
+  }
 
+  function doFullRefresh(offset) {
+    offset = offset || 0;
+    var deferred = $q.defer();
+    lexService.dbeDtoFull(browserInstanceId, offset, function(result) {
+      var newOffset = offset + result.data.entryCount, totalCount = result.data.entryTotalCount;
+      notice.setPercentComplete(parseInt(newOffset * 100 / totalCount));
+      processDbeDto(result, false).then(function() {
+        if (offset == 0) {
+          $scope.show.initial();
+        }
+        if (newOffset < totalCount) {
+          doFullRefresh(newOffset).then(function() {
+            deferred.resolve();
+          });
+        } else {
+          deferred.resolve();
+        }
+      });
+    });
     return deferred.promise;
   }
 
@@ -567,8 +600,9 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     var deferred = $q.defer();
     // get data from the server
     lexService.dbeDtoUpdatesOnly(browserInstanceId, timestamp, function(result) {
-      processDbeDto(result, true);
-      deferred.resolve();
+      processDbeDto(result, true).then(function() {
+        deferred.resolve();
+      });
     });
     return deferred.promise;
   }
@@ -577,39 +611,64 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   /**
    * Persists the Lexical data in the offline cache store
    */
-  function storeDataInOfflineCache(timestamp) {
-    if (timestamp && offlineCache.canCache()) {
-      var dataObj = {
-        entries: $scope.entries,
-        comments: $scope.comments,
-        entryCommentCounts: $scope.entryCommentCounts
-      };
-      offlineCache.setObject(offlineCacheKey, timestamp, dataObj);
+  function storeDataInOfflineCache(data, isComplete) {
+    var deferred = $q.defer();
+    if (data.timeOnServer && offlineCache.canCache()) {
+      offlineCache.updateProjectData(data.timeOnServer, data.commentsUserPlusOne, isComplete).then(function() {
+        offlineCache.updateEntries(data.entries).then(function() {
+          offlineCache.updateComments(data.comments).then(function() {
+            deferred.resolve();
+          });
+        });
+      });
+    } else {
+      deferred.reject();
     }
+    return deferred.promise;
   }
 
   /**
    *
-   * @returns {promise} which resolves to an epoch cache timestamp
+   * @returns {promise} which resolves to an project object containing the epoch cache timestamp
    */
   function loadDataFromOfflineCache() {
+    var startTime = performance.now(), endTime;
     var deferred = $q.defer();
-    offlineCache.getObject(offlineCacheKey).then(function(result) {
-      $scope.comments = result.data.comments;
-      $scope.entries = result.data.entries;
-      $scope.entryCommentCounts = result.data.entryCommentCounts;
-      deferred.resolve(result.timestamp);
+    var numOfEntries;
+    offlineCache.getAllEntries().then(function(result) {
+      $scope.entries = result;
+      numOfEntries = result.length;
+
+      if (result.length > 0) {
+        offlineCache.getAllComments().then(function(result) {
+          commentService.comments.items.all = result;
+
+          offlineCache.getProjectData().then(function(result) {
+            commentService.comments.counts.userPlusOne = result.commentsUserPlusOne;
+            endTime = performance.now();
+            console.log("Loaded " + numOfEntries + " entries from the cache in " + ((endTime - startTime) / 1000).toFixed(2) + " seconds");
+            deferred.resolve(result);
+
+          }, function() { deferred.reject(); });
+        }, function() { deferred.reject(); });
+      } else {
+        // we got zero entries
+        deferred.reject();
+      }
+
     }, function() { deferred.reject(); });
     return deferred.promise;
   }
 
 
   function processDbeDto(result, updateOnly) {
+    var deferred = $q.defer();
+    var isLastRequest = true;
     if (result.ok) {
-        commentService.comments.counts.userPlusOne = result.data.commentsUserPlusOne;
+      commentService.comments.counts.userPlusOne = result.data.commentsUserPlusOne;
       if (!updateOnly) {
-        $scope.entries = result.data.entries;
-          commentService.comments.items.all = result.data.comments;
+        $scope.entries.push.apply($scope.entries, result.data.entries); // proper way to extend the array
+        commentService.comments.items.all = result.data.comments;
 
       } else {
 
@@ -636,11 +695,11 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
         // splice comment updates into comments list
         angular.forEach(result.data.comments, function(c) {
-            var i = getIndexInList(c.id, commentService.comments.items.all);
+          var i = getIndexInList(c.id, commentService.comments.items.all);
           if (angular.isDefined(i)) {
-              commentService.comments.items.all[i] = c;
+            commentService.comments.items.all[i] = c;
           } else {
-              commentService.comments.items.all.push(c);
+            commentService.comments.items.all.push(c);
           }
         });
 
@@ -649,19 +708,24 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
         // todo remove deleted comments according to deleted ids
         angular.forEach(result.data.deletedCommentIds, function(id) {
-            var i = getIndexInList(id, commentService.comments.items.all);
+          var i = getIndexInList(id, commentService.comments.items.all);
           if (angular.isDefined(i)) {
-              commentService.comments.items.all.splice(i, 1);
+            commentService.comments.items.all.splice(i, 1);
           }
         });
 
         // todo: maybe sort both lists after splicing in updates ???
-
-        // todo: probably update currentEntryCommentsList?
-
       }
-        commentService.updateGlobalCommentCounts();
-      storeDataInOfflineCache(result.data.timeOnServer);
+
+
+      if (result.data.entryCount && result.data.entryCount + result.data.entryOffset < result.data.entryTotalCount) {
+        isLastRequest = false;
+      }
+
+
+      storeDataInOfflineCache(result.data, isLastRequest).then(function() { deferred.resolve(); });
+      commentService.updateGlobalCommentCounts();
+      return deferred.promise;
     }
   }
 
@@ -689,6 +753,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     };
 
     loadDbeData().then(function() {
+      $scope.finishedLoading = true;
       goToState();
     });
   }
