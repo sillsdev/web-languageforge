@@ -565,12 +565,12 @@ class sf
         return LexProjectDto::encode($this->_projectId, $this->_userId);
     }
 
-    public function lex_dbeDtoFull($browserId)
+    public function lex_dbeDtoFull($browserId, $offset)
     {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
         $this->_controller->session->set_userdata($sessionLabel, time());
 
-        return LexDbeDto::encode($this->_projectId, $this->_userId);
+        return LexDbeDto::encode($this->_projectId, $this->_userId, null, $offset);
     }
 
     public function lex_dbeDtoUpdatesOnly($browserId, $lastFetchTime = null)
