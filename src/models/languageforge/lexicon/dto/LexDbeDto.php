@@ -59,23 +59,21 @@ class LexDbeDto
         $data = array();
         $project = new LexiconProjectModel($projectId);
         if ($lastFetchTime) {
-            $entryCountModel = new LexEntryListModel($project);
-            $entryCountModel->readCounts();
-            $data['entryTotalCount'] = $entryCountModel->totalCount;
             $entriesModel = new LexEntryListModel($project, $lastFetchTime);
             $entriesModel->readForDto();
+            $commentsModel = new LexCommentListModel($project, $lastFetchTime);
+            $commentsModel->readAsModels();
         } else {
             $entriesModel = new LexEntryListModel($project, null, self::MAX_ENTRIES_PER_REQUEST, $offset);
             $entriesModel->readForDto();
-            $data['entryTotalCount'] = $entriesModel->totalCount;
-            $data['entryCount'] = $entriesModel->count;
-            $data['entryOffset'] = $offset;
+            $commentsModel = new LexCommentListModel($project, null, self::MAX_ENTRIES_PER_REQUEST, $offset);
+            $commentsModel->readAsModels();
 
+            $data['itemTotalCount'] = ($entriesModel->totalCount > $commentsModel->totalCount) ? $entriesModel->totalCount : $commentsModel->totalCount;
+            $data['itemCount'] = ($entriesModel->count > $commentsModel->count) ? $entriesModel->count : $commentsModel->count;
+            $data['offset'] = $offset;
         }
         $entries = $entriesModel->entries;
-
-        $commentsModel = new LexCommentListModel($project, $lastFetchTime);
-        $commentsModel->readAsModels();
         $encodedComments = LexDbeDtoCommentsEncoder::encode($commentsModel);
         $data['comments'] = $encodedComments['entries'];
         /*
