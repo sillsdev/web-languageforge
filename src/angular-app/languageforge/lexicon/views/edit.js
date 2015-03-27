@@ -2,8 +2,8 @@
 
 angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.comments', 'palaso.ui.showOverflow', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
 // DBE controller
-.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService', 'lexCommentService', 'offlineCache', '$q',
-function($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location, configService, commentService, offlineCache, $q) {
+.controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryService', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService', 'lexCommentService', 'offlineCache', '$q', 'lexProjectService',
+function($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location, configService, commentService, offlineCache, $q, lexProjectService) {
 
   // TODO use ui-router for this instead!
 
@@ -16,6 +16,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
 
   // default state. State is one of 'list', 'edit', or 'comment'
   $scope.state = 'list';
+  lexProjectService.setBreadcrumbs('dbe', 'Edit');
 
   // Note: $scope.entries is declared on the MainCtrl so that each view refresh
   // will not cause a full dictionary reload
@@ -573,7 +574,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     offset = offset || 0;
     var deferred = $q.defer();
     lexService.dbeDtoFull(browserInstanceId, offset, function(result) {
-      var newOffset = offset + result.data.entryCount, totalCount = result.data.entryTotalCount;
+      var newOffset = offset + result.data.itemCount, totalCount = result.data.itemTotalCount;
       notice.setPercentComplete(parseInt(newOffset * 100 / totalCount));
       processDbeDto(result, false).then(function() {
         if (offset == 0) {
@@ -668,8 +669,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       commentService.comments.counts.userPlusOne = result.data.commentsUserPlusOne;
       if (!updateOnly) {
         $scope.entries.push.apply($scope.entries, result.data.entries); // proper way to extend the array
-        commentService.comments.items.all = result.data.comments;
-
+        commentService.comments.items.all.push.apply(commentService.comments.items.all, result.data.comments);
       } else {
 
         // splice updates into entry lists
@@ -718,7 +718,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       }
 
 
-      if (result.data.entryCount && result.data.entryCount + result.data.entryOffset < result.data.entryTotalCount) {
+      if (result.data.itemCount && result.data.itemCount + result.data.offset < result.data.itemTotalCount) {
         isLastRequest = false;
       }
 
