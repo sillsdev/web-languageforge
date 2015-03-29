@@ -1,43 +1,25 @@
-<div > 
-    <h1> Create Working Set</h1>
-    <table style="display: inline-block;">
-        <tr>
-            <td>
-                <label> Choose Domains in Set: </label>
-            </td>
-            <td>
-                <typeahead style="margin:0px; width:162px" class="typeahead" placeholder="'Select Domains to Display'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
-                    <ul style="width: 300px" ng-if="typeahead.searchResults.length > 0">
-                        <li data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
-                            <div class='listItemPrimary'>{{e.key}} {{e.name.source}} 
-                            <input style="float: right" type="checkbox" ng-model="$parent.includedItems[e.key]" ng-change="reloadItems(selectedDepth)"> </div>
-                        </li>
-                        
-                       
-                       <button class="btn btn-primary" ng-click="setInclusion(typeahead.searchResults, true)"> Include All </button>
-                       <button class="btn btn-primary" ng-click="setInclusion(typeahead.searchResults, false)"> Exclude All </button>
-                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
-                    </ul>
-                </typeahead>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label> Working Set Name: </label>
-            </td>
-            <td>
-                <input style="margin-right:10px" ng-model="newWorkingSet.name" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label> Is Shared</label>
-            </td>
-            <td>
-                <input type="checkbox" ng-model="newWorkingSet.isShared" />
-            </td>
-        </tr>
-    </table>
+<div ng-if="(!$parent.isEditingWorkingSet)">
+    <h3> Working Sets - Select To Edit</h3>
+    <div style="overflow-y:scroll; height:300px; width:400px; border: 1px solid black; display: inline-block;"">
+        <ul style="padding: 5px">
+            <li ng-repeat="ws in $parent.workingSets track by $index"class="thumbnail">
+                <a ng-click="$parent.editWorkingSet(ws.id)"> {{ws.name}} </a>
+            </li>
+        </ul>
+    </div>     
     <br />
-    <button class="btn btn-primary" ng-click="saveWorkingSet()"> Save As New Working Set</button>
+    
+    <div>
+        <button class="btn btn-primary" ng-click="createNewWorkingSet()" ng-disabled="($parent.newWorkingSet != undefined)"> Create New Working Set</button>  
+    </div>
+</div>
+<div ng-if="($parent.isEditingWorkingSet)">    
+    <span ng-if="$parent.newWs == undefined">
+        <h3> Edit Working Set</h3>
+        <working-set control="$parent" model="$parent.workingSets[$parent.selectedWorkingSet]"></working-set>
+    </span>
+     <span ng-if="$parent.newWs != undefined">
+        <h3> Create New Set</h3>
+        <working-set control="$parent" model="$parent.newWs"></working-set>
+    </span>
 </div>

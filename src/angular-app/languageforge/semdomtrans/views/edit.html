@@ -8,6 +8,7 @@
                     <select style="margin-bottom:10px" ng-model="selectedWorkingSet">
                         <option ng-repeat="ws in workingSets track by $index"  value="{{$index}}">{{ws.name}}</option>
                     </select>
+                    <label> Hide Translated</label> <input ng-model="hideTranslated" type="checkbox" />
                 </div>	   
                  
 		    	<div class="col-md-5" >
@@ -28,12 +29,18 @@
                     <input style="width:65%; float:right" class="progress-slider" type="range" min="1"
                     max="{{maxDepth}}" data-ng-model="selectedDepth">
                 </div>
-			    <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%"  data-pui-when-scrolled="loadMore()">
-	                 <div ng-repeat="item in displayedItems track by item.key" ng-class="{selected: (item.key == currentEntry.key)}"  ng-click="changeTerm(item.key)"
-	                 	ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }"   >
-				        <a> {{item.key}} {{item.name.source}}</a>
-				      </div>
-			    </div>
+                <div>
+    			    <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%" >
+    	                 <div ng-if="(!hideTranslated || !translatedItems[item.key])"
+                            ng-repeat="item in displayedItems track by item.key" ng-class="{selected: (item.key == currentEntry.key)}"  ng-click="changeTerm(item.key)"
+    	                 	ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }"   >
+    				        <a> {{item.key}} {{item.name.source}}</a>
+    				      </div>
+    			    </div>
+                    <div>
+                        <button ng-repeat="i in ['1','2','3','4','5','6','7','8','9']" ng-click="selectSubDomain(i)" ng-class="{selected: (i == subDomain)}">{{i}}</button>
+                    </div>
+                </div>
 				
 			  </div>
 			  <div style="text-align: center;" class="col-md-9">
