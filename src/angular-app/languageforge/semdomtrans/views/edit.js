@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.scroll', 'palaso.ui.typeahead'])
+angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.scroll', 'palaso.ui.typeahead', 'palaso.ui.sd.ws'])
 // DBE controller
 .controller('editCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
 function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
@@ -18,8 +18,19 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
   $scope.displayedItems = [];
   $scope.selectedDepth = 1;
   $scope.searchText = "";
+  $scope.isEditingWorkingSet = false;
+  $scope.subDomain = "1";
+  $scope.hideTranslated = false;
   var api = semdomEditApi;
+ 
   
+  $scope.$watch("subDomain", function(newVal) {
+    $scope.reloadItems($scope.selectedDepth);
+  });
+  
+  $scope.selectSubDomain = function(subDomain) {
+    $scope.subDomain = subDomain;
+  }
   
   $scope.reloadItems = function reloadItems(depth, delay) {
      if (delay == undefined) {
@@ -37,7 +48,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
             for (var i in $scope.itemsTree) {
               var node = $scope.itemsTree[i];
               var item = node.content;
-              if (isIncluded(item.key)) {
+              if (isIncluded(item.key) && item.key[0] == $scope.subDomain) {
                 if (checkDepth(item.key)) {
                   $scope.filteredByDepthItems.push(item);
                 }
@@ -57,7 +68,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
             for (var i in $scope.itemsTree) {
               var node = $scope.itemsTree[i];
               var item = node.content;      
-              if (isIncluded(item.key)) {
+              if (isIncluded(item.key) && item.key[0] == $scope.subDomain) {
                 while(node.parent != '') {
                   if (checkDepth(node.parent) && (angular.isUndefined(addedToFiltered[node.parent]) || !addedToFiltered[node.parent])) {
                     $scope.filteredByDepthItems.push($scope.itemsTree[node.parent].content);
@@ -80,29 +91,42 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
             
           
             
-            $scope.displayedItems = $scope.filteredByDepthItems.slice(0, 50);
+            $scope.displayedItems = $scope.filteredByDepthItems;
             if (!$scope.$$phase) {
               $scope.$apply()      
             }
           }, delay);
   }
   
-  $scope.loadMore = function loadMore() {
-    var mx = $scope.filteredByDepthItems.length;
-    if ($scope.displayedItems.length + 50 < mx) {
-      mx = $scope.displayedItems.length + 50;
-    }
-    
-    for (var i = $scope.displayedItems.length; i < mx; i++) {
-      $scope.displayedItems.push($scope.filteredByDepthItems[i]);
-    }
-  }
-  
   $scope.$watch('items', function(newVal, oldVal) {
     if (oldVal != newVal) {      
         $scope.currentEntry = $scope.items[$scope.currentEntryIndex];
+        $scope.translatedItems = {};
+        for (var i = 0; i < $scope.items.length; i++) {
+          if (isTranslatedCompletely($scope.items[i])) {
+            $scope.translatedItems[$scope.items[i].key] = true;
+          } else {
+            $scope.translatedItems[$scope.items[i].key] = false;
+          }
+        }
     }
   });
+  
+  function isTranslatedCompletely(item) {
+    var translated = true;
+    translated &= (item.name.translation.status == 0);
+    translated &= (item.description.translation.status == 0);
+    for (var i = 0; i < item.searchKeys.length; i++) {
+      translated &= (item.searchKeys[i].translation.status == 0);
+    }
+    
+    for (var i = 0; i < item.questions.length; i++) {
+      translated &= (item.questions[i].question.status == 0);
+      translated &= (item.questions[i].terms.status == 0);
+    }
+    
+    return translated;
+  }
   
   $scope.$watch('selectedDepth', function(newVal, oldVal) {
     if (oldVal != newVal) {
@@ -146,8 +170,8 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     }
   }
   
-  $scope.refreshData = function refreshData(state) {
-      $scope.$parent.refreshData(state, function() { });
+  $scope.refreshDbeData = function refreshDbeData(state) {
+      $scope.$parent.refreshDbeData(state, function() { });
   };
     
   $scope.$watch('items', function(newVal) {
@@ -208,7 +232,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     return !angular.isUndefined($scope.includedItems[key]) && $scope.includedItems[key] ;
   }
   
-  $scope.setInclusion = function includeAll(itemsToInclude, v) {
+  $scope.setInclusion = function setInclusion(itemsToInclude, v) {
     for (var i in itemsToInclude) {
       $scope.includedItems[itemsToInclude[i].key] = v;
     }
@@ -216,25 +240,54 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     $scope.reloadItems($scope.selectedDepth);    
   }
   
+  $scope.editWorkingSet = function editWorkingSet(wsID) {
+    for (var i = 0; i < $scope.workingSets.length; i++) {
+      if ($scope.workingSets[i].id == wsID) {
+        $scope.selectedWorkingSet = i;
+        $scope.isEditingWorkingSet = true;
+        break;
+      }
+    }
+  }
+  
+  $scope.cancelEditingWorkingSet = function cancelEditingWorkingSet(wsOriginal) {
+    loadWorkingSet($scope.workingSets[$scope.selectedWorkingSet]);
+    $scope.isEditingWorkingSet = false;
+    if (!angular.isUndefined($scope.newWs)) {
+      $scope.newWs = undefined;
+    }
+  }
+
+  $scope.createNewWorkingSet = function createNewWorkingSet() {
+    
+    $scope.newWs = { id: '',  name: '', isShared : false, itemKeys : [] }
+    
+    for (var i = 0; i < $scope.items.length; i++) {
+      $scope.newWs.itemKeys.push($scope.items[i].key);
+    }
+   
+    $scope.isEditingWorkingSet = true;
+    loadWorkingSet($scope.newWs)
+  }
   
   $scope.$watch("selectedWorkingSet", function(newVal, oldVal) {
     if (oldVal != newVal) {
-      $scope.includedItems = {};
-      for (var i = 0; i < $scope.workingSets[newVal].itemKeys.length; i++) {
-        $scope.includedItems[$scope.workingSets[newVal].itemKeys[i]] = true;
-      }
-      
-      $scope.reloadItems($scope.selectedDepth);    
+      loadWorkingSet($scope.workingSets[$scope.selectedWorkingSet]);
     }
   })
-  $scope.newWorkingSet = {
-      id: '',
-      name: '',
-      isShared : false,
-      itemKeys : []
+  
+  function loadWorkingSet(ws) {
+    $scope.includedItems = {};
+    for (var i = 0; i < ws.itemKeys.length; i++) {
+      $scope.includedItems[ws.itemKeys[i]] = true;
+    }
+    
+    $scope.reloadItems($scope.selectedDepth);    
   }
-
-  $scope.saveWorkingSet = function saveWorkingSet() {
+  
+  
+  
+  $scope.saveWorkingSet = function saveWorkingSet(ws) {
     var ik = [];
     for (var i in $scope.includedItems) {
       if ($scope.includedItems[i]) {
@@ -242,21 +295,14 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
       }
     }
     
-    $scope.newWorkingSet.itemKeys = ik;
-    api.updateWorkingSet($scope.newWorkingSet, function(result) {
+    ws.itemKeys = ik;
+    api.updateWorkingSet(ws, function(result) {
       if (result.ok) {
         
       }
     })
-    
-    $scope.newWorkingSet = {
-      id: '',
-      name: '',
-      isShared : false,
-      itemKeys : []
-    } 
-
-    $scope.refreshData();
+    $scope.isEditingWorkingSet = false;
+    $scope.refreshDbeData();
 
   }
   
