@@ -8,6 +8,7 @@ use models\languageforge\SemDomTransProjectModel;
 use models\languageforge\semdomtrans\SemDomTransItemModel;
 use models\languageforge\semdomtrans\SemDomTransQuestion;
 use models\mapper\ArrayOf;
+use models\languageforge\semdomtrans\SemDomTransStatus;
 class SemDomXMLImporter {
 	
 	private $_projectModel;
@@ -77,6 +78,13 @@ class SemDomXMLImporter {
 				$question = $this->_getPathVal($questionXML->xpath("Question/AUni[@ws='{$this->_lang}']"));
 				$terms = $this->_getPathVal($questionXML->xpath("ExampleWords/AUni[@ws='{$this->_lang}']"));
 				$q = new SemDomTransQuestion($question, $terms);
+				if ($question != '') {
+				    $q->question->status = SemDomTransStatus::Approved;
+				}
+				if ($terms != '') {
+				    $q->terms->status = SemDomTransStatus::Approved;
+				}
+				
 				$questions[] = $q;
 				$sk = new SemDomTransTranslatedForm($terms);
 				$searchKeys[] = $sk;
@@ -89,8 +97,20 @@ class SemDomXMLImporter {
 		
 		$itemModel->xmlGuid = $guid;
 		$itemModel->name = new SemDomTransTranslatedForm($name);
+		
+		if ($name != '') {
+		    $itemModel->name->status = SemDomTransStatus::Approved;
+		}
+		
 		$itemModel->key = $abbreviation;
+		
+		
 		$itemModel->description = new SemDomTransTranslatedForm($description);
+
+		if ($name != '') {
+		    $itemModel->description->status = SemDomTransStatus::Approved;
+		}
+		
 		$itemModel->questions = $questions;
 		$itemModel->searchKeys = $searchKeys;
 		//print_r($itemModel->questions);
