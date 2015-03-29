@@ -65,8 +65,8 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
             }
             
             // add ancestors of included items
-            for (var i in $scope.itemsTree) {
-              var node = $scope.itemsTree[i];
+            for (var i in $scope.filteredByDepthItems) {
+              var node = $scope.itemsTree[$scope.filteredByDepthItems[i].key];
               var item = node.content;      
               if (isIncluded(item.key) && item.key[0] == $scope.subDomain) {
                 while(node.parent != '') {
