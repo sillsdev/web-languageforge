@@ -46,7 +46,7 @@ angular.module('palaso.ui.comments')
           commentService.updateReply(commentId, reply, function(result) {
             if (result.ok) {
               $scope.control.refreshDbeData().then(function() {
-                $scope.control.loadEntryComments();
+                $scope.loadComments();
               });
             }
           });
