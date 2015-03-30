@@ -33,7 +33,7 @@ afterEach(function() {
           // place CR between lines
           message = message.split('\n').join("\n");
         }
-        if (/angular\.js .* TypeError: undefined is not a function/.test(message)) {
+        if (/angular\.js .* TypeError: undefined is not a function/.test(message) || /next_id/.test(message)) {
           // we ignore errors of this type caused by Angular being unloaded prematurely on page refreshes (since it's not a real error)
 
         } else if (/rangy-1\.3alpha\.772/.test(message)) {

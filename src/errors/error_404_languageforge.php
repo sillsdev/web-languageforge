@@ -65,8 +65,8 @@ p {
 <body>
     <div id="container">
         <h1>404 Language Not Found</h1>
-        <img src="" />
-        <h3>Every week a language dies. (Is this really true? - better check the facts)  <a href="/">LanguageForge.org</a> technology accelerates the task of language development and documentation with the aim of increasing language vitality among minority languages.</h3>
+        <img src="/images/shared/extinct_stamp.png" />
+        <h3>Every two weeks a language dies. <a href="/">LanguageForge.org</a> technology accelerates the task of language development and documentation with the aim of increasing language vitality among minority languages.</h3>
         
         <div style="margin-top:50px">
             <h4>Incidentally, you probably arrived here because of a broken link on our site.  Sorry about that.</h4>

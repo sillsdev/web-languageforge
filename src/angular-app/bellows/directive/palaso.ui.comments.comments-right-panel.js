@@ -11,7 +11,7 @@ angular.module('palaso.ui.comments')
         control: "=",
         newComment: "="
       },
-      controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService', function($scope, $filter, commentService, sessionService, modal) {
+      controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService', 'lexEditorDataService', function($scope, $filter, commentService, sessionService, modal, editorService) {
 
 
         /*  $scope.newComment has the following initial structure
@@ -34,7 +34,7 @@ angular.module('palaso.ui.comments')
         };
 
 
-        $scope.currentEntryCommentsFiltered = [];
+        $scope.currentEntryCommentsFiltered = commentService.comments.items.currentEntryFiltered;
 
         $scope.numberOfComments = function numberOfComments() {
           return commentService.comments.counts.currentEntry.total;
@@ -92,29 +92,29 @@ angular.module('palaso.ui.comments')
           }
         };
 
-        refreshFilteredComments();
+        commentService.refreshFilteredComments($scope.commentFilter);
 
         $scope.loadComments = function loadComments() {
           commentService.loadEntryComments($scope.entry.id);
-          refreshFilteredComments();
+          commentService.refreshFilteredComments($scope.commentFilter);
         };
 
         $scope.postNewComment = function postNewComment() {
           commentService.update($scope.newComment, function(result) {
             if (result.ok) {
-              $scope.control.refreshDbeData().then(function() {
+              editorService.refreshEditorData().then(function() {
                 $scope.loadComments();
                 $scope.initializeNewComment();
               });
             }
           });
-          refreshFilteredComments(); // for instant feedback
+          commentService.refreshFilteredComments($scope.commentFilter); // for instant feedback
         }
 
         $scope.plusOneComment = function plusOneComment(commentId) {
           commentService.plusOne(commentId, function(result) {
             if (result.ok) {
-              $scope.control.refreshDbeData().then(function() {
+              editorService.refreshEditorData().then(function() {
                 $scope.loadComments();
               });
             }
@@ -153,21 +153,17 @@ angular.module('palaso.ui.comments')
 
 
 
-        function refreshFilteredComments() {
-          var comments = $filter('filter')(commentService.comments.items.currentEntry, $scope.commentFilter.byText);
-          $scope.currentEntryCommentsFiltered = $filter('filter')(comments, $scope.commentFilter.byStatus);
-        }
 
         $scope.$watch('commentFilter.text', function(newVal, oldVal) {
           if (newVal != oldVal) {
-            refreshFilteredComments();
+            commentService.refreshFilteredComments($scope.commentFilter);
           }
 
         });
 
         $scope.$watch('commentFilter.status', function(newVal, oldVal) {
           if (newVal != oldVal) {
-            refreshFilteredComments();
+            commentService.refreshFilteredComments($scope.commentFilter);
           }
 
         });
