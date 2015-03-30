@@ -12,6 +12,7 @@ use models\mapper\JsonEncoder;
 use models\shared\UserGenericVoteModel;
 use models\UserModel;
 
+
 class LexDbeDto
 {
     /**
@@ -21,16 +22,29 @@ class LexDbeDto
      * @throws \Exception
      * @return array
      */
-    public static function encode($projectId, $userId, $lastFetchTime = null)
+
+    const MAX_ENTRIES_PER_REQUEST = 5000;
+
+    public static function encode($projectId, $userId, $lastFetchTime = null, $offset = 0)
     {
         $data = array();
         $project = new LexiconProjectModel($projectId);
-        $entriesModel = new LexEntryListModel($project, $lastFetchTime);
-        $entriesModel->readForDto();
-        $entries = $entriesModel->entries;
+        if ($lastFetchTime) {
+            $entriesModel = new LexEntryListModel($project, $lastFetchTime);
+            $entriesModel->readForDto();
+            $commentsModel = new LexCommentListModel($project, $lastFetchTime);
+            $commentsModel->readAsModels();
+        } else {
+            $entriesModel = new LexEntryListModel($project, null, self::MAX_ENTRIES_PER_REQUEST, $offset);
+            $entriesModel->readForDto();
+            $commentsModel = new LexCommentListModel($project, null, self::MAX_ENTRIES_PER_REQUEST, $offset);
+            $commentsModel->readAsModels();
 
-        $commentsModel = new LexCommentListModel($project, $lastFetchTime);
-        $commentsModel->readAsModels();
+            $data['itemTotalCount'] = ($entriesModel->totalCount > $commentsModel->totalCount) ? $entriesModel->totalCount : $commentsModel->totalCount;
+            $data['itemCount'] = ($entriesModel->count > $commentsModel->count) ? $entriesModel->count : $commentsModel->count;
+            $data['offset'] = $offset;
+        }
+        $entries = $entriesModel->entries;
         $encodedComments = LexDbeDtoCommentsEncoder::encode($commentsModel);
         $data['comments'] = $encodedComments['entries'];
         /*

@@ -263,8 +263,8 @@ function(jsonRpc, ss, projectService, breadcrumbService, linkService) {
     jsonRpc.call('lex_entry_remove', [id], callback);
   };
 
-  this.dbeDtoFull = function dbeDtoFull(browserId, callback) {
-    jsonRpc.call('lex_dbeDtoFull', [browserId], function (result) {
+  this.dbeDtoFull = function dbeDtoFull(browserId, offset, callback) {
+    jsonRpc.call('lex_dbeDtoFull', [browserId, offset], function (result) {
       if (result.ok) {
         // todo move breadcrumbs back to controller - cjh 2014-07
         breadcrumbService.set('top', [{
