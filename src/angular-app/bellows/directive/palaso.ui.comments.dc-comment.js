@@ -5,7 +5,7 @@ angular.module('palaso.ui.comments')
     return {
       restrict: 'E',
       templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.dc-comment.html',
-      controller: ['$scope', 'lexCommentService', 'lexConfigService', 'sessionService', 'modalService', function($scope, commentService, configService, sessionService, modal) {
+      controller: ['$scope', 'lexCommentService', 'lexConfigService', 'sessionService', 'modalService', 'lexEditorDataService', function($scope, commentService, configService, sessionService, modal, editorService) {
 
         $scope.hover = { comment: false };
 
@@ -45,7 +45,7 @@ angular.module('palaso.ui.comments')
         function updateReply(commentId, reply) {
           commentService.updateReply(commentId, reply, function(result) {
             if (result.ok) {
-              $scope.control.refreshDbeData().then(function() {
+              editorService.refreshEditorData().then(function() {
                 $scope.loadComments();
               });
             }
@@ -55,7 +55,7 @@ angular.module('palaso.ui.comments')
         $scope.updateCommentStatus = function updateCommentStatus(commentId, status) {
           commentService.updateStatus(commentId, status, function(result) {
             if (result.ok) {
-              $scope.control.refreshDbeData().then(function() {
+              editorService.refreshEditorData().then(function() {
                 $scope.loadComments();
               });
             }
@@ -73,12 +73,12 @@ angular.module('palaso.ui.comments')
           modal.showModalSimple('Delete Comment', deletemsg, 'Cancel', 'Delete Comment').then(function() {
             commentService.remove(comment.id, function(result) {
               if (result.ok) {
-                $scope.control.refreshDbeData().then(function() {
+                editorService.refreshEditorData().then(function() {
                   $scope.loadComments();
                 });
               }
             });
-            removeCommentFromLists(comment.id);
+            commentService.removeCommentFromLists(comment.id);
           });
         };
 
@@ -94,12 +94,12 @@ angular.module('palaso.ui.comments')
           modal.showModalSimple('Delete Reply', deletemsg, 'Cancel', 'Delete Reply').then(function() {
             commentService.deleteReply(commentId, reply.id, function(result) {
               if (result.ok) {
-                $scope.control.refreshDbeData().then(function() {
+                editorService.refreshEditorData().then(function() {
                   $scope.loadComments();
                 });
               }
             });
-            removeCommentFromLists(commentId, reply.id);
+            commentService.removeCommentFromLists(commentId, reply.id);
           });
         };
 
@@ -115,7 +115,7 @@ angular.module('palaso.ui.comments')
 
           commentService.update($scope.comment, function(result) {
             if (result.ok) {
-              $scope.control.refreshDbeData().then(function() {
+              editorService.refreshEditorData().then(function() {
                 $scope.loadComments();
               });
             }
@@ -131,35 +131,6 @@ angular.module('palaso.ui.comments')
           $scope.comment.editing = false;
         }
 
-        function removeCommentFromLists(commentId, replyId) {
-          _deleteCommentInList(commentId, replyId, commentService.comments.items.all);
-          _deleteCommentInList(commentId, replyId, commentService.comments.items.currentEntry);
-          $scope.loadComments();
-        }
-
-        function _deleteCommentInList(commentId, replyId, list) {
-          var deleteComment = true;
-          if (angular.isDefined(replyId)) {
-            deleteComment = false;
-          }
-          for (var i = list.length - 1; i >= 0; i--) {
-            var c = list[i];
-            if (deleteComment) {
-              if (c.id == commentId) {
-                list.splice(i, 1);
-              }
-            } else {
-
-              // delete Reply
-              for (var j = c.replies.length - 1; j >= 0; j--) {
-                var r = c.replies[j];
-                if (r.id == replyId) {
-                  c.replies.splice(j, 1);
-                }
-              }
-            }
-          }
-        }
 
 
 
