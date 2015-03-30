@@ -15,7 +15,7 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
       }
     };
     return {
-      push: function(type, message, details) {
+      push: function(type, message, details, cannotClose) {
         var id = util.uuid();
         if (type() == this.SUCCESS()) {
           // success alert messages will auto-close after 10 seconds
@@ -42,7 +42,12 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
           obj.details = details;
         }
 
+        if (cannotClose) {
+          obj.cannotClose = true;
+        }
+
         notices.push(obj);
+        return id;
       },
       removeById: function(id) {
         this.remove(getIndexById(id));
@@ -51,7 +56,9 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
         }
       },
       remove: function(index) {
-        notices.splice(index, 1);
+        if (!angular.isUndefined(index)) {
+          notices.splice(index, 1);
+        }
       },
       get: function() {
         return notices;
