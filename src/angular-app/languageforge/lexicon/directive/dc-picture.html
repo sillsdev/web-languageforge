@@ -9,7 +9,7 @@
             </div>
             <img data-ng-src="{{getPictureUrl(picture.fileName)}}" 
                 data-ng-click="control.selectFieldForComment('pictures', picture, '', '', getPictureUrl(picture.fileName))" />
-            <div data-ng-if="!config.captionHideIfEmpty || control.show.emptyFields || (config.captionHideIfEmpty && fieldContainsData('multitext', picture.caption))">
+            <div data-ng-if="!config.captionHideIfEmpty || control.showEmptyFields || (config.captionHideIfEmpty && fieldContainsData('multitext', picture.caption))">
                 <dc-multitext control="control"
                     config="config"
                     model="picture.caption"
