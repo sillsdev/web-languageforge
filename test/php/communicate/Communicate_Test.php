@@ -103,7 +103,7 @@ class TestCommunicate extends UnitTestCase
         $userId = $e->createUser("User", "Name", "name@example.com");
         $user = new UserModel($userId);
         $delivery = new MockCommunicateDelivery();
-        $website = Website::get('www.scriptureforge.org');
+        $website = Website::get('scriptureforge.org');
 
         Communicate::sendSignup($user, $website, $delivery);
 
@@ -129,7 +129,7 @@ class TestCommunicate extends UnitTestCase
         $project->projectCode = 'test_project';
         $project->write();
         $delivery = new MockCommunicateDelivery();
-        $website = Website::get('www.scriptureforge.org');
+        $website = Website::get('scriptureforge.org');
         $website->defaultProjectCode = 'test_project';
 
         Communicate::sendSignup($user, $website, $delivery);

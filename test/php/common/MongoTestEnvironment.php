@@ -1,66 +1,84 @@
 <?php
-
 use libraries\shared\Website;
-use models\ProjectModel;
-use models\UserModel;
+use Palaso\Utilities\FileUtilities;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\shared\rights\ProjectRoles;
 use models\shared\rights\SystemRoles;
-
-require_once TestPath . 'common/MockProjectModel.php';
+use models\ProjectModel;
+use models\UserModel;
+use libraries\languageforge\semdomtrans\SemDomXMLImporter;
+use models\languageforge\SemDomTransProjectModel;
+use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
+use models\mapper\ArrayOf;
+use models\languageforge\LfProjectModel;
+use models\commands\ProjectCommands;
 
 class MongoTestEnvironment
 {
 
-    /**
-	 * @var MongoDB
-	 */
-    private $_db;
-
-    /**
-	 * @var Website
-	 */
-    public $website;
-
-    public function __construct($domain = 'www.scriptureforge.org')
+    public function __construct($domain = 'scriptureforge.org')
     {
-        $this->_db = \models\mapper\MongoStore::connect(SF_DATABASE);
+        $this->db = \models\mapper\MongoStore::connect(SF_DATABASE);
         $this->website = Website::get($domain);
+        if (! isset($this->uploadFilePaths)) {
+            $this->uploadFilePaths = array();
+        }
     }
 
     /**
-	 * Removes all the collections from the mongo database.
-	 * Hopefully this is only ever called on the scriptureforge_test database.
-	 */
+     *
+     * @var MongoDB
+     */
+    private $db;
+
+    /**
+     * Local store of 'uploaded' filepaths
+     *
+     * @var array
+     */
+    protected $uploadFilePaths;
+
+    /**
+     *
+     * @var Website
+     */
+    public $website;
+
+    /**
+     * Removes all the collections from the mongo database.
+     * Hopefully this is only ever called on the scriptureforge_test database.
+     */
     public function clean()
     {
-        foreach ($this->_db->listCollections() as $collection) {
+        foreach ($this->db->listCollections() as $collection) {
             $collection->drop();
         }
     }
 
     /**
-	 * Querys the given $collection and returns a MongoCursor.
-	 * @param string $collection
-	 * @param array $query
-	 * @param array $fields
-	 * @return MongoCursor
-	 */
+     * Querys the given $collection and returns a MongoCursor.
+     *
+     * @param string $collection
+     * @param array $query
+     * @param array $fields
+     * @return MongoCursor
+     */
     public function find($collection, $query, $fields = array())
     {
-        $collection = $this->_db->$collection;
+        $collection = $this->db->$collection;
 
         return $collection->find($query, $fields);
     }
 
     /**
-	 * Writes a user to the users collection.
-	 * @param string $username
-	 * @param string $name
-	 * @param string $email
-	 * @param string $role
-	 * @return string id
-	 */
+     * Writes a user to the users collection.
+     *
+     * @param string $username
+     * @param string $name
+     * @param string $email
+     * @param string $role
+     * @return string id
+     */
     public function createUser($username, $name, $email, $role = SystemRoles::USER)
     {
         $userModel = new models\UserModel();
@@ -75,21 +93,24 @@ class MongoTestEnvironment
     }
 
     /**
-	 * Writes a project to the projects collection.
-	 * @param string $name
-	 * @param string $code
-	 * @return ProjectModel
-	 */
-    public function createProject($name, $code)
+     * Writes a project to the projects collection.
+     *
+     * @param string $name
+     * @param string $code
+     * @return ProjectModel
+     */
+    public function createProject($name, $code, $appName = '')
     {
         $projectModel = new ProjectModel();
         $projectModel->projectName = $name;
         $projectModel->projectCode = $code;
         $projectModel->isArchived = false;
         $projectModel->siteName = $this->website->domain;
-        if ($this->website->base == Website::SCRIPTUREFORGE) {
+        if ($appName != '') {
+        	$projectModel->appName = $appName;	
+        }  else if ($this->website->base == Website::SCRIPTUREFORGE) {
             $projectModel->appName = 'sfchecks';
-        } else if ($this->website->base == Website::LANGUAGEFORGE) {
+        } elseif ($this->website->base == Website::LANGUAGEFORGE) {
             $projectModel->appName = 'lexicon';
         } else {
             $projectModel->appName = 'rapuma';
@@ -128,9 +149,10 @@ class MongoTestEnvironment
     }
 
     /**
-	 * Returns a string very much like those used for MongoIds
-	 * @return string
-	 */
+     * Returns a string very much like those used for MongoIds
+     *
+     * @return string
+     */
     public static function mockId()
     {
         $id = new MongoId();
@@ -139,9 +161,10 @@ class MongoTestEnvironment
     }
 
     /**
-	 * Returns a string of utf-8 usx xml
-	 * @return string
-	 */
+     * Returns a string of utf-8 usx xml
+     *
+     * @return string
+     */
     public static function usxSample()
     {
         global $rootPath;
@@ -160,6 +183,96 @@ class MongoTestEnvironment
         return $usx;
     }
 
+    /**
+     * Index items by given key
+     *
+     * @param unknown $items
+     * @param string $byKey
+     * @return array<unknown>
+     */
+    public static function indexItemsBy($items, $byKey = 'guid')
+    {
+        $indexes = array();
+        foreach ($items as $item) {
+            $indexes[$item[$byKey]] = $item;
+        }
+        return $indexes;
+    }
+
+    /**
+     * Simulate the upload of a Text audio file
+     *
+     * @param string $filePathToCopy
+     * @param string $fileName
+     * @param string $textId
+     * @return string $tmpFilePath
+     */
+    public function uploadTextAudioFile($filePathToCopy, $fileName, $textId)
+    {
+        $_FILES['file'] = array();
+        $_FILES['file']['name'] = $fileName;
+        $_POST['textId'] = $textId;
+
+        return $this->copyTestUploadFile($filePathToCopy);
+    }
+
+    /**
+     * Simulate the upload of a file
+     *
+     * @param string $filePathToCopy
+     * @param string $fileName
+     * @return string $tmpFilePath
+     */
+    public function uploadFile($filePathToCopy, $fileName)
+    {
+        $_FILES['file'] = array();
+        $_FILES['file']['name'] = $fileName;
+
+        return $this->copyTestUploadFile($filePathToCopy);
+    }
+
+    /**
+     * Put a copy of the test file in system tmp folder
+     *
+     * @param string $filePath
+     * @return string $tmpFilePath
+     */
+    public function copyTestUploadFile($filePath)
+    {
+        $fileName = basename($filePath);
+        $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
+        copy($filePath, $tmpFilePath);
+        if (! array_key_exists($tmpFilePath, $this->uploadFilePaths)) {
+            $this->uploadFilePaths[] = $tmpFilePath;
+        }
+
+        return $tmpFilePath;
+    }
+
+    /**
+     * Cleanup test files and folders
+     *
+     * @param string $assetsFolderPath
+     */
+    public function cleanupTestFiles($assetsFolderPath)
+    {
+        $this->cleanupTestUploadFiles();
+        FileUtilities::removeFolderAndAllContents($assetsFolderPath);
+    }
+
+    /**
+     * Cleanup test (simulated) uploaded files
+     */
+    public function cleanupTestUploadFiles()
+    {
+        foreach ($this->uploadFilePaths as $uploadFilePath) {
+            if (file_exists($uploadFilePath) and ! is_dir($uploadFilePath)) {
+                @unlink($uploadFilePath);
+            }
+        }
+        $this->uploadFilePaths = array();
+    }
+
     public function inhibitErrorDisplay()
     {
         $this->_display = ini_get('display_errors');
@@ -175,7 +288,6 @@ class MongoTestEnvironment
     {
         return json_decode(json_encode($input), true);
     }
-
 }
 
 class LexiconMongoTestEnvironment extends MongoTestEnvironment
@@ -185,6 +297,12 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         parent::__construct('languageforge.org');
     }
 
+    /**
+     *
+     * @var LexiconProjectModel
+     */
+    public $project;
+
     public function createProject($name, $code)
     {
         $projectModel = new LexiconProjectModel();
@@ -193,6 +311,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         $projectModel->siteName = $this->website->domain;
         $this->cleanProjectEnvironment($projectModel);
         $projectModel->write();
+        $this->project = $projectModel;
 
         return $projectModel;
     }
@@ -212,5 +331,128 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         return $userId;
     }
 
+    /**
+     * Simulate the upload of a LIFT file
+     *
+     * @param string $liftXml
+     * @param string $fileName
+     * @param LiftMergeRule $mergeRule
+     * @param string $skipSameModTime
+     * @param string $deleteMatchingEntry
+     * @return string $tmpFilePath
+     */
+    public function uploadLiftFile($liftXml, $fileName, $mergeRule, $skipSameModTime = false, $deleteMatchingEntry = false)
+    {
+        $_FILES['file'] = array();
+        $_FILES['file']['name'] = $fileName;
+        $_POST['mergeRule'] = $mergeRule;
+        $_POST['skipSameModTime'] = $skipSameModTime;
+        $_POST['deleteMatchingEntry'] = $deleteMatchingEntry;
 
+        return $this->createTestLiftFile($liftXml, $fileName);
+    }
+
+    /**
+     * Put a copy of the test lift file in system tmp folder
+     *
+     * @param string $liftXml
+     * @param string $fileName
+     * @return string $liftFilePath
+     */
+    public function createTestLiftFile($liftXml, $fileName)
+    {
+        $liftFilePath = sys_get_temp_dir() . '/' . $fileName;
+        file_put_contents($liftFilePath, $liftXml);
+        if (! array_key_exists($liftFilePath, $this->uploadFilePaths)) {
+            $this->uploadFilePaths[] = $liftFilePath;
+        }
+
+        return $liftFilePath;
+    }
+}
+
+
+class SemDomMongoTestEnvironment extends MongoTestEnvironment
+{
+	public function __construct()
+	{
+		parent::__construct('languageforge.org');
+	}
+	
+	/**
+	 *  @var int
+	 */
+	public $semdomVersion = 1000;
+	
+	 /** 
+	 * @var UserModel
+	 */
+	public $userId;
+	/**
+	 *
+	 * @var SemDomProjectModel
+	 */
+	public $englishProject;
+
+
+	/**
+	 *
+	 * @var SemDomProjectModel
+	 */
+	public $targetProject;
+
+
+	public function importEnglishProject() {
+
+	    $this->cleanPreviousProject("en", $this->semdomVersion);
+		$languageCode = "en";
+		$projectCode = "semdom-$languageCode-$this->semdomVersion";
+		
+		$projectModel = $this->createSemDomProject($languageCode, $this->semdomVersion);
+		
+		$xmlFilePath = "/var/www/host/sil/lfsite/docs/semdom/semdom lists/SemDom_en.xml";
+		$newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
+		if (!file_exists($projectModel->getAssetsFolderPath())) {
+			mkdir($projectModel->getAssetsFolderPath());
+		}
+		
+		copy($xmlFilePath, $newXmlFilePath);
+		$projectModel->newXmlFilePath = $newXmlFilePath;
+		$projectModel->write();
+		
+		$importer = new SemDomXMLImporter($xmlFilePath, $projectModel, false, true);
+		$importer->run();
+		$this->englishProject = $projectModel;
+		return $projectModel;
+	}
+	
+	public function cleanPreviousProject($languageCode) {
+	    $previousProject = new SemDomTransProjectModel();
+	    $projectCode = "semdom-$languageCode-$this->semdomVersion";
+	    $previousProject->readByProperty("projectCode", $projectCode);
+	    $previousProject->projectCode = $projectCode;
+	    $this->cleanProjectEnvironment($previousProject);
+	}
+
+	public function createPreFilledTargetProject($languageCode) {
+	    $this->cleanPreviousProject($languageCode, $this->semdomVersion);
+		
+		$projectModel = $this->createSemDomProject($languageCode, $this->semdomVersion);		
+		SemDomTransProjectCommands::preFillProject($projectModel->id->asString());
+		$this->targetProject = $projectModel;
+		return $projectModel;
+	}
+	
+	public function createSemDomProject($languageCode) {
+	    $this->cleanPreviousProject($languageCode, $this->semdomVersion);
+	    
+	    $projectCode = "semdom-$languageCode-$this->semdomVersion";
+		$projectName = "Semdom $languageCode Project";
+		$projectModel = $this->createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP);
+		$projectModel = new SemDomTransProjectModel($projectModel->id->asString());
+		$projectModel->languageIsoCode = $languageCode;
+		$projectModel->semdomVersion = $this->semdomVersion;
+		$projectModel->write();
+		return $projectModel;
+	}
 }

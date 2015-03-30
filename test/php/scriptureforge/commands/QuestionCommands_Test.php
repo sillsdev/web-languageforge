@@ -13,13 +13,13 @@ require_once TestPath . 'common/MongoTestEnvironment.php';
 class UserVoteTestEnvironment
 {
     /**
-	 * @var ProjectModel
-	 */
+     * @var ProjectModel
+     */
     public $project;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $projectId;
 
     /**
@@ -28,18 +28,18 @@ class UserVoteTestEnvironment
     public $text;
 
     /**
-	 * @var QuestionModel
-	 */
+     * @var QuestionModel
+     */
     public $question;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $answerId;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $questionId;
 
     public function create()
@@ -159,19 +159,19 @@ class TestQuestionCommands extends UnitTestCase
         $e->create();
 
         $dto = $e->addAnswer('Some answer');
-// 		var_dump($dto, $e->answerId);
+//         var_dump($dto, $e->answerId);
 
         $answer0 = $dto[$e->answerId];
         $this->assertEqual(0, $answer0['score']);
 
         $dto = QuestionCommands::voteUp($e->userId, $e->projectId, $e->questionId, $e->answerId);
-// 		var_dump($dto, $e->answerId);
+//         var_dump($dto, $e->answerId);
 
         $answer1 = $dto[$e->answerId];
         $this->assertEqual(1, $answer1['score']);
 
         $dto = QuestionCommands::voteDown($e->userId, $e->projectId, $e->questionId, $e->answerId);
-// 		var_dump($dto, $e->answerId);
+//         var_dump($dto, $e->answerId);
 
         $answer2 = $dto[$e->answerId];
         $this->assertEqual(0, $answer2['score']);
@@ -184,16 +184,16 @@ class TestQuestionCommands extends UnitTestCase
         $e->create();
 
         $dto = $e->addAnswer('Some answer');
-// 		var_dump($dto, $e->answerId);
+//         var_dump($dto, $e->answerId);
 
         $answer0 = $dto[$e->answerId];
         $this->assertEqual(0, $answer0['score']);
 
         $dto = QuestionCommands::voteUp($e->userId, $e->projectId, $e->questionId, $e->answerId);
-// 		var_dump($dto, $e->answerId);
+//         var_dump($dto, $e->answerId);
 
         $dto = QuestionCommands::voteUp($e->userId, $e->projectId, $e->questionId, $e->answerId);
-// 		var_dump($dto, $e->answerId);
+//         var_dump($dto, $e->answerId);
 
         $answer1 = $dto[$e->answerId];
         $this->assertEqual(1, $answer1['score']);
@@ -205,13 +205,13 @@ class TestQuestionCommands extends UnitTestCase
         $e->create();
 
         $dto = $e->addAnswer('Some answer');
-// 		var_dump($dto, $e->answerId);
+//         var_dump($dto, $e->answerId);
 
         $answer0 = $dto[$e->answerId];
         $this->assertEqual(0, $answer0['score']);
 
         $dto = QuestionCommands::voteDown($e->userId, $e->projectId, $e->questionId, $e->answerId);
-// 	 	var_dump($dto, $e->answerId);
+//          var_dump($dto, $e->answerId);
         $this->assertIsA($dto, 'array');
 
         $answer1 = $dto[$e->answerId];

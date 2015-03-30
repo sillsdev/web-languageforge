@@ -1,24 +1,35 @@
-<div class="content container" data-ng-cloak data-ng-controller="MainCtrl" dir="{{interfaceConfig.direction}}">
-	<div class="hdrnav" style="width:88%;display:flex">
-		<div style="flex:4">
-			<ul id="top" class="topCrumbs" breadcrumbs></ul>
-		</div>
-		<div style="width:8%" class="dropdown {{interfaceConfig.pullToSide}}" data-ng-show="rights.edit">
-			<a class="btn {{interfaceConfig.pullToSide}}" href="#"><i class="icon-cog icon-large"></i>&nbsp;&nbsp;<span class="caret"></span></a>
-			<ul class="dropdown-menu {{interfaceConfig.pullToSide}}">
-				<li><a href="#/configuration" translate="Dictionary Configuration"></a></li>
-				<li><a href="#/viewSettings" translate="View Settings"></a></li>
-				<li class="divider"></li>
-				<li><a href="#/importExport" translate="Import/Export"></a></li>
-				<li><a href="#/settings" translate="Project Settings"></a></li>
-				<li><a href="#/users" translate="User Management"></a></li>
-			</ul>
-		</div>
-	</div>
-	<div id="lexicon-hmenu" style="clear:both">
-		<div class="lexnav control-group">
-		</div>
-	</div>
-	<div data-sil-notices></div>
-	<div data-ng-view></div>
+<div class="content container" 
+    data-ng-cloak data-ng-controller="MainCtrl" dir="{{interfaceConfig.direction}}">
+    <div class="hdrnav">
+        <div class="btn-group" data-ng-class="interfaceConfig.pullToSide" data-ng-show="rights.edit">
+            <a class="btn dropdown-toggle" data-ng-class="interfaceConfig.pullToSide"
+                data-toggle="dropdown"
+                data-tooltip-placement="{{interfaceConfig.placementToSide}}"
+                data-tooltip="Settings" href="#">
+                <i class="icon-cog icon-large"></i>
+                <span class="caret"></span></a>
+            <ul class="dropdown-menu" data-ng-class="interfaceConfig.pullToSide">
+                <li><a href="#/configuration" translate="Dictionary Configuration"></a></li>
+                <li><a href="#/viewSettings" translate="View Settings"></a></li>
+                <li class="divider"></li>
+                <li><a href="#/importExport" translate="Import/Export"></a></li>
+                <li><a href="#/settings" translate="Project Settings"></a></li>
+                <li><a ng-href="/app/usermanagement/{{project.id}}" translate="User Management"></a></li>
+            </ul>
+        </div>
+        <div>
+            <button class="btn" data-tooltip="View the dictionary"
+                data-tooltip-placement="{{interfaceConfig.placementNormal}}"
+                data-ng-show="showDictionaryButton()"
+                data-ng-click="gotoDictionary()">
+                <i class="icon-reply"></i>{{'Dictionary' | translate}}
+            </button>
+            <ul id="top" class="topCrumbs" breadcrumbs></ul>
+        </div>
+    </div>
+    <div id="lexicon-hmenu" style="clear: both">
+        <div class="lexnav control-group"></div>
+    </div>
+    <div data-sil-notices></div>
+    <div data-ng-view></div>
 </div>

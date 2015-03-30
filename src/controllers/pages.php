@@ -6,15 +6,14 @@ class pages extends Base
 {
     public function view($page = 'frontpage')
     {
-        $data = array();
-        $data['title'] = $this->website->name;
-        $data['website'] = $this->website;
-        $data['is_static_page'] = true;
+        $this->data['title'] = $this->website->name;
+        $this->data['website'] = $this->website;
+        $this->data['is_static_page'] = true;
         $templatePath = $this->getContentTemplatePath("pages/$page");
         if (empty($templatePath)) {
             show_404($this->website->base);
         } else {
-            $this->renderPage("pages/$page", $data);
+            $this->renderPage("pages/$page");
         }
     }
 }

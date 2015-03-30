@@ -13,12 +13,31 @@ require_once TestPath . 'common/MongoTestEnvironment.php';
 
 class TestQuestionListDto extends UnitTestCase
 {
+
+    public function __construct() {
+        $this->environ = new MongoTestEnvironment();
+        $this->environ->clean();
+        parent::__construct();
+    }
+
+    /**
+     * Local store of mock test environment
+     *
+     * @var MongoTestEnvironment
+     */
+    private $environ;
+
+    /**
+     * Cleanup test environment
+     */
+    public function tearDown()
+    {
+        $this->environ->clean();
+    }
+
     public function testEncode_QuestionWithAnswers_DtoReturnsExpectedData()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
 
         $text = new TextModel($project);
@@ -27,8 +46,8 @@ class TestQuestionListDto extends UnitTestCase
         $textId = $text->write();
 
         // Answers are tied to specific users, so let's create some sample users
-        $user1Id = $e->createUser("jcarter", "John Carter", "johncarter@example.com");
-        $user2Id = $e->createUser("dthoris", "Dejah Thoris", "princess@example.com");
+        $user1Id = $this->environ->createUser("jcarter", "John Carter", "johncarter@example.com");
+        $user2Id = $this->environ->createUser("dthoris", "Dejah Thoris", "princess@example.com");
 
         // Two questions, with different numbers of answers and different create dates
         $question1 = new QuestionModel($project);
@@ -106,10 +125,7 @@ class TestQuestionListDto extends UnitTestCase
 
     public function testEncode_ArchivedText_ManagerCanViewContributorCannot()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
 
         // archived Text
@@ -119,8 +135,8 @@ class TestQuestionListDto extends UnitTestCase
         $textId = $text->write();
 
         // Answers are tied to specific users, so let's create some sample users
-        $managerId = $e->createUser("jcarter", "John Carter", "johncarter@example.com");
-        $contributorId = $e->createUser("dthoris", "Dejah Thoris", "princess@example.com");
+        $managerId = $this->environ->createUser("jcarter", "John Carter", "johncarter@example.com");
+        $contributorId = $this->environ->createUser("dthoris", "Dejah Thoris", "princess@example.com");
         $project->addUser($managerId, ProjectRoles::MANAGER);
         $project->addUser($contributorId, ProjectRoles::CONTRIBUTOR);
         $project->write();
@@ -131,10 +147,16 @@ class TestQuestionListDto extends UnitTestCase
         $this->assertEqual($dto['text']['title'], "Chapter 3");
 
         // Contributor cannot view archived Text, throw Exception
-        $e->inhibitErrorDisplay();
+        $this->environ->inhibitErrorDisplay();
         $this->expectException();
         $dto = QuestionListDto::encode($projectId, $textId, $contributorId);
-        $e->restoreErrorDisplay();
-    }
 
+        // nothing runs in the current test function after an exception. IJH 2014-11
+    }
+    // this test was designed to finish testEncode_ArchivedText_ManagerCanViewContributorCannot
+    public function testEncode_ArchivedText_ManagerCanViewContributorCannot_RestoreErrorDisplay()
+    {
+        // restore error display after last test
+        $this->environ->restoreErrorDisplay();
+    }
 }

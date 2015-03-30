@@ -20,10 +20,10 @@
             <?php echo form_input($password_confirm);?>
       </p>
 
-	 <h3><?php echo lang('edit_user_groups_heading');?></h3>
-	<?php foreach ($groups as $group):?>
-	<label class="checkbox">
-	<?php
+     <h3><?php echo lang('edit_user_groups_heading');?></h3>
+    <?php foreach ($groups as $group):?>
+    <label class="checkbox">
+    <?php
         $gID=$group['id'];
         $checked = null;
         $item = null;
@@ -34,10 +34,10 @@
             }
         }
     ?>
-	<input type="checkbox" name="groups[]" value="<?php echo $group['id'];?>"<?php echo $checked;?>>
-	<?php echo $group['name'];?>
-	</label>
-	<?php endforeach?>
+    <input type="checkbox" name="groups[]" value="<?php echo $group['id'];?>"<?php echo $checked;?>>
+    <?php echo $group['name'];?>
+    </label>
+    <?php endforeach?>
 
       <?php echo form_hidden('id', $user->id);?>
       <?php echo form_hidden($csrf); ?>

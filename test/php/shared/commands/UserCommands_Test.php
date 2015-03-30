@@ -39,23 +39,43 @@ class MockUserCommandsDelivery implements IDelivery
 
 class TestUserCommands extends UnitTestCase
 {
+
+    public function __construct() {
+        $this->environ = new MongoTestEnvironment();
+        $this->environ->clean();
+        $this->save = array();
+        parent::__construct();
+    }
+
+    /**
+     * Local store of mock test environment
+     *
+     * @var MongoTestEnvironment
+     */
+    private $environ;
+
+    /**
+     * Data storage between tests
+     *
+     * @var array <unknown>
+     */
+    private $save;
+
     public function testDeleteUsers_NoThrow()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
-        $userId = $e->createUser('somename', 'Some Name', 'somename@example.com');
+        $userId = $this->environ->createUser('somename', 'Some Name', 'somename@example.com');
 
         UserCommands::deleteUsers(array($userId), 'bogus auth userid');
     }
 
     public function testUpdateUserProfile_SetLangCode_LangCodeSet()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
         // setup parameters
-        $userId = $e->createUser('username', 'name', 'name@example.com');
+        $userId = $this->environ->createUser('username', 'name', 'name@example.com');
         $params = array(
             'id' => '',
             'interfaceLanguageCode' => 'th'
@@ -84,13 +104,12 @@ class TestUserCommands extends UnitTestCase
 
     public function testCheckUniqueIdentity_userExistsNoEmail_UsernameExistsEmailEmpty()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
-        $userId = $e->createUser('jsmith', 'joe smith','');
+        $userId = $this->environ->createUser('jsmith', 'joe smith','');
         $joeUser = new UserModel($userId);
 
-        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'jsmith', '', $e->website);
+        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'jsmith', '', $this->environ->website);
 
         $this->assertTrue($identityCheck->usernameExists);
         $this->assertTrue($identityCheck->usernameExistsOnThisSite);
@@ -103,10 +122,9 @@ class TestUserCommands extends UnitTestCase
 
     public function testCheckUniqueIdentity_userExistsWithEmail_UsernameExistsEmailMatches()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
-        $userId = $e->createUser('jsmith', 'joe smith','joe@smith.com');
+        $userId = $this->environ->createUser('jsmith', 'joe smith','joe@smith.com');
         $joeUser = new UserModel($userId);
 
         $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'jsmith', 'joe@smith.com', null);
@@ -121,14 +139,13 @@ class TestUserCommands extends UnitTestCase
 
     public function testCheckUniqueIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatch()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
-        $user1Id = $e->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = $this->environ->createUser('zedUser', 'zed user','zed@example.com');
         $zedUser = new UserModel($user1Id);
-        $originalWebsite = clone $e->website;
-        $e->website->domain = 'default.local';
-        $user2Id = $e->createUser('jsmith', 'joe smith','joe@smith.com');
+        $originalWebsite = clone $this->environ->website;
+        $this->environ->website->domain = 'default.local';
+        $user2Id = $this->environ->createUser('jsmith', 'joe smith','joe@smith.com');
 
         $identityCheck = UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'zed@example.com', $originalWebsite);
 
@@ -140,18 +157,17 @@ class TestUserCommands extends UnitTestCase
         $this->assertTrue($identityCheck->emailMatchesAccount);
 
         // cleanup so following tests are OK
-        $e->website->domain = $originalWebsite->domain;
+        $this->environ->website->domain = $originalWebsite->domain;
     }
 
     public function testCheckUniqueIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatchEmpty()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
-        $userId = $e->createUser('jsmith', 'joe smith','joe@smith.com');
+        $userId = $this->environ->createUser('jsmith', 'joe smith','joe@smith.com');
         $joeUser = new UserModel($userId);
 
-        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'jsmith', '', $e->website);
+        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'jsmith', '', $this->environ->website);
 
         $this->assertTrue($identityCheck->usernameExists);
         $this->assertTrue($identityCheck->usernameExistsOnThisSite);
@@ -163,13 +179,12 @@ class TestUserCommands extends UnitTestCase
 
     public function testCheckUniqueIdentity_doesNotExist_UsernameDoesNotExist()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
-        $userId = $e->createUser('jsmith', 'joe smith','joe@smith.com');
+        $userId = $this->environ->createUser('jsmith', 'joe smith','joe@smith.com');
         $joeUser = new UserModel($userId);
 
-        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'zedUser', 'zed@example.com', $e->website);
+        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'zedUser', 'zed@example.com', $this->environ->website);
         $this->assertFalse($identityCheck->usernameExists);
         $this->assertFalse($identityCheck->usernameExistsOnThisSite);
         $this->assertFalse($identityCheck->usernameMatchesAccount);
@@ -180,13 +195,12 @@ class TestUserCommands extends UnitTestCase
 
     public function testCheckUniqueIdentity_emailExist_UsernameDoesNotExist()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
-        $userId = $e->createUser('jsmith', 'joe smith','joe@smith.com');
+        $userId = $this->environ->createUser('jsmith', 'joe smith','joe@smith.com');
         $joeUser = new UserModel($userId);
 
-        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'zedUser', 'joe@smith.com', $e->website);
+        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'zedUser', 'joe@smith.com', $this->environ->website);
 
         $this->assertFalse($identityCheck->usernameExists);
         $this->assertFalse($identityCheck->usernameExistsOnThisSite);
@@ -198,15 +212,14 @@ class TestUserCommands extends UnitTestCase
 
     public function testCheckUniqueIdentity_userExist()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
-        $user1Id = $e->createUser('jsmith', 'joe smith','joe@smith.com');
+        $user1Id = $this->environ->createUser('jsmith', 'joe smith','joe@smith.com');
         $joeUser = new UserModel($user1Id);
-        $user2Id = $e->createUser('zedUser', 'zed user','zed@example.com');
+        $user2Id = $this->environ->createUser('zedUser', 'zed user','zed@example.com');
         $zedUser = new UserModel($user2Id);
 
-        $identityCheck = UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'joe@smith.com', $e->website);
+        $identityCheck = UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'joe@smith.com', $this->environ->website);
 
         $this->assertTrue($identityCheck->usernameExists);
         $this->assertTrue($identityCheck->usernameExistsOnThisSite);
@@ -218,18 +231,17 @@ class TestUserCommands extends UnitTestCase
 
     public function testCreateSimple_CreateUser_PasswordAndJoinProject()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
         // setup parameters: username and project
         $userName = 'username';
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
 
-        $currentUserId = $e->createUser('test1', 'test1', 'test@test.com');
+        $currentUserId = $this->environ->createUser('test1', 'test1', 'test@test.com');
 
         // create user
-        $dto = UserCommands::createSimple($userName, $projectId, $currentUserId, $e->website);
+        $dto = UserCommands::createSimple($userName, $projectId, $currentUserId, $this->environ->website);
 
         // read from disk
         $user = new UserModel($dto['id']);
@@ -240,7 +252,7 @@ class TestUserCommands extends UnitTestCase
         $this->assertEqual(strlen($dto['password']), 4);
         $projectUser = $sameProject->listUsers()->entries[0];
         $this->assertEqual($projectUser['username'], "username");
-        $userProject = $user->listProjects($e->website->domain)->entries[0];
+        $userProject = $user->listProjects($this->environ->website->domain)->entries[0];
         $this->assertEqual($userProject['projectName'], SF_TESTPROJECT);
     }
 
@@ -251,8 +263,7 @@ class TestUserCommands extends UnitTestCase
 
     public function testRegister_NoProjectCode_UserInNoProjects()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
         $validCode = 'validCode';
         $params = array(
@@ -266,17 +277,16 @@ class TestUserCommands extends UnitTestCase
         $captcha_info = array('code' => $validCode);
         $delivery = new MockUserCommandsDelivery();
 
-        $userId = UserCommands::register($params, $captcha_info, $e->website, $delivery);
+        $userId = UserCommands::register($params, $captcha_info, $this->environ->website, $delivery);
 
         $user = new UserModel($userId);
         $this->assertEqual($user->username, $params['username']);
-        $this->assertEqual($user->listProjects($e->website->domain)->count, 0);
+        $this->assertEqual($user->listProjects($this->environ->website->domain)->count, 0);
     }
 
     public function testReadForRegistration_ValidKey_ValidUserModel()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
         $user = new UserModel();
         $user->emailPending = 'user@user.com';
@@ -286,10 +296,9 @@ class TestUserCommands extends UnitTestCase
         $this->assertEqual($params['email'], 'user@user.com');
     }
 
-    public function testReadForRegistration_KeyExpired_Throws()
+    public function testReadForRegistration_KeyExpired_Exception()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
         $user = new UserModel();
         $user->emailPending = 'user@user.com';
@@ -299,22 +308,29 @@ class TestUserCommands extends UnitTestCase
         $user->validationExpirationDate = $date;
         $user->write();
         $this->expectException();
-        $e->inhibitErrorDisplay();
+        $this->environ->inhibitErrorDisplay();
         $params = UserCommands::readForRegistration($key);
+
+        // nothing runs in the current test function after an exception. IJH 2014-11
+    }
+    // this test was designed to finish testReadForRegistration_KeyExpired_Exception
+    public function testReadForRegistration_KeyExpired_RestoreErrorDisplay()
+    {
+        // restore error display after last test
+        $this->environ->restoreErrorDisplay();
     }
 
     public function testReadForRegistration_invalidKey_noValidUser()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
+
         $params = UserCommands::readForRegistration('bogus key');
         $this->assertEqual($params, array());
     }
 
     public function testUpdateFromRegistration_ValidKey_UserUpdatedAndKeyConsumed()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
         $user = new UserModel();
         $user->emailPending = 'user@user.com';
@@ -327,7 +343,7 @@ class TestUserCommands extends UnitTestCase
             'name'     => 'joe user',
             'password' => 'password'
         );
-        UserCommands::updateFromRegistration($key, $userArray, $e->website);
+        UserCommands::updateFromRegistration($key, $userArray, $this->environ->website);
 
         $user = new UserModel($userId);
 
@@ -339,8 +355,7 @@ class TestUserCommands extends UnitTestCase
 
     public function testUpdateFromRegistration_InvalidKey_UserNotUpdatedAndKeyNotConsumed()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
         $user = new UserModel();
         $user->emailPending = 'user@user.com';
@@ -353,7 +368,7 @@ class TestUserCommands extends UnitTestCase
             'name'     => 'joe user',
             'password' => 'password'
         );
-        UserCommands::updateFromRegistration('bogus key', $userArray, $e->website);
+        UserCommands::updateFromRegistration('bogus key', $userArray, $this->environ->website);
 
         $user = new UserModel($userId);
 
@@ -363,8 +378,7 @@ class TestUserCommands extends UnitTestCase
 
     public function testUpdateFromRegistration_ExpiredKey_UserNotUpdatedAndKeyConsumed()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
         $user = new UserModel();
         $user->emailPending = 'user@user.com';
@@ -374,41 +388,50 @@ class TestUserCommands extends UnitTestCase
         $user->validationExpirationDate = $date;
         $userId = $user->write();
 
+        // save data for rest of this test
+        $this->save['userId'] = $userId;
+
         $userArray = array(
             'id'       => '',
             'username' => 'joe',
             'name'     => 'joe user',
             'password' => 'password'
         );
-        $e->inhibitErrorDisplay();
+        $this->environ->inhibitErrorDisplay();
         $this->expectException();
-        UserCommands::updateFromRegistration($key, $userArray, $e->website);
+        UserCommands::updateFromRegistration($key, $userArray, $this->environ->website);
 
-        $user = new UserModel($userId);
+        // nothing runs in the current test function after an exception. IJH 2014-11
+    }
+    // this test was designed to finish testUpdateFromRegistration_ExpiredKey_UserNotUpdatedAndKeyConsumed
+    public function testUpdateFromRegistration_ExpiredKey_UserNotUpdatedAndKeyConsumed_RestoreErrorDisplay()
+    {
+        // restore error display after last test
+        $this->environ->restoreErrorDisplay();
+
+        $user = new UserModel($this->save['userId']);
 
         $this->assertEqual($user->username, '');
-        $this->assertEqual($user->validationKey, '');
     }
 
     public function testSendInvite_SendInvite_PropertiesFromToBodyOk()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
-        $inviterUserId = $e->createUser("inviteruser", "Inviter Name", "inviter@example.com");
+        $inviterUserId = $this->environ->createUser("inviteruser", "Inviter Name", "inviter@example.com");
         $toEmail = 'someone@example.com';
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
-        $toUserId = UserCommands::sendInvite($project->id->asString(), $inviterUserId, $e->website, $toEmail, $delivery);
+        $toUserId = UserCommands::sendInvite($project->id->asString(), $inviterUserId, $this->environ->website, $toEmail, $delivery);
 
         // What's in the delivery?
         $toUser = new UserModel($toUserId);
 
-        $senderEmail = 'no-reply@' . $e->website->domain;
-        $expectedFrom = array($senderEmail => $e->website->name);
+        $senderEmail = 'no-reply@' . $this->environ->website->domain;
+        $expectedFrom = array($senderEmail => $this->environ->website->name);
         $expectedTo = array($toUser->emailPending => $toUser->name);
         $this->assertEqual($expectedFrom, $delivery->from);
         $this->assertEqual($expectedTo, $delivery->to);
@@ -419,8 +442,7 @@ class TestUserCommands extends UnitTestCase
 
     public function testChangePassword_SystemAdminChangeOtherUser_Succeeds()
     {
-        $e = new MongoTestEnvironment();
-        $e->clean();
+        $this->environ->clean();
 
         $adminModel = new models\UserModel();
         $adminModel->username = 'admin';

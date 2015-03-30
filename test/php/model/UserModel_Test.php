@@ -206,39 +206,39 @@ class TestUserModel extends UnitTestCase
 
     }
 /*
-	function testWriteRemove_ListCorrect()
-	{
-		$e = new MongoTestEnvironment();
-		$e->clean();
+    function testWriteRemove_ListCorrect()
+    {
+        $e = new MongoTestEnvironment();
+        $e->clean();
 
-		$list = new UserListModel();
-		$list->read();
-		$this->assertEqual(0, $list->count);
-		$this->assertEqual(null, $list->entries);
+        $list = new UserListModel();
+        $list->read();
+        $this->assertEqual(0, $list->count);
+        $this->assertEqual(null, $list->entries);
 
-		$user = new UserModel();
-		$user->name = "Some Name";
-		$id = $user->write();
+        $user = new UserModel();
+        $user->name = "Some Name";
+        $id = $user->write();
 
-		$list = new UserListModel();
-		$list->read();
-		$this->assertEqual(1, $list->count);
-		$this->assertEqual(
-			array(array(
-				'avatar_ref' => null,
-				'email' => null,
-				'name' => 'Some Name',
-				'username' => null,
-				'id' => $id
-			)),
-			$list->entries
-		);
-		$user->remove();
+        $list = new UserListModel();
+        $list->read();
+        $this->assertEqual(1, $list->count);
+        $this->assertEqual(
+            array(array(
+                'avatar_ref' => null,
+                'email' => null,
+                'name' => 'Some Name',
+                'username' => null,
+                'id' => $id
+            )),
+            $list->entries
+        );
+        $user->remove();
 
-		$list = new UserListModel();
-		$list->read();
-		$this->assertEqual(0, $list->count);
-		$this->assertEqual(null, $list->entries);
-	}
-	*/
+        $list = new UserListModel();
+        $list->read();
+        $this->assertEqual(0, $list->count);
+        $this->assertEqual(null, $list->entries);
+    }
+    */
 }

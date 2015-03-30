@@ -49,44 +49,44 @@
 .yoyo.ng-enter { 
     animation: yoyoenter 600ms cubic-bezier(0.445, 0.050, 0.550, 0.950);
     -webkit-animation: yoyoenter 600ms cubic-bezier(0.445, 0.050, 0.550, 0.950);
-	display: block;
+    display: block;
     position: relative;
 } 
 @keyframes yoyoenter {
-	from {
-	    opacity: 0;
-    	height: 0px;
-    	left: -70px;
+    from {
+        opacity: 0;
+        height: 0px;
+        left: -70px;
     }
     75% {
-    	left: 15px;
+        left: 15px;
     }
     to {
         opacity: 1;
-    	height: 30px;
-    	left: 0px;
+        height: 30px;
+        left: 0px;
     }
 }
 
 .yoyo.ng-leave { 
     animation: yoyoleave 600ms cubic-bezier(0.445, 0.050, 0.550, 0.950);
     -webkit-animation: yoyoleave 600ms cubic-bezier(0.445, 0.050, 0.550, 0.950);
-	display: block;
+    display: block;
     position: relative;
 } 
 @keyframes yoyoleave {
-	to {
-	    opacity: 0;
-    	height: 0px;
-    	left: -70px;
+    to {
+        opacity: 0;
+        height: 0px;
+        left: -70px;
     }
     25% {
-    	left: 15px;
+        left: 15px;
     }
     from {
         opacity: 1;
-    	height: 30px;
-    	left: 0px;
+        height: 30px;
+        left: 0px;
     }
 }
 
@@ -97,74 +97,74 @@
 .animate-enter { 
     -webkit-animation: enter 600ms cubic-bezier(0.445, 0.050, 0.550, 0.950);
     animation: enter 600ms cubic-bezier(0.445, 0.050, 0.550, 0.950);
-	display: block;
+    display: block;
     position: relative;
 } 
 @-webkit-keyframes enter {
-	from {
-	    opacity: 0;
-    	height: 0px;
-    	left: -70px;
+    from {
+        opacity: 0;
+        height: 0px;
+        left: -70px;
     }
     75% {
-    	left: 15px;
+        left: 15px;
     }
     to {
         opacity: 1;
-    	height: 30px;
-    	left: 0px;
+        height: 30px;
+        left: 0px;
     }
 }
 @keyframes enter {
-	from {
-	    opacity: 0;
-    	height: 0px;
-    	left: -70px;
+    from {
+        opacity: 0;
+        height: 0px;
+        left: -70px;
     }
     75% {
-    	left: 15px;
+        left: 15px;
     }
     to {
         opacity: 1;
-    	height: 30px;
-    	left: 0px;
+        height: 30px;
+        left: 0px;
     }
 }
 
 .animate-leave { 
     -webkit-animation: leave 600ms cubic-bezier(0.445, 0.050, 0.550, 0.950);
     animation: leave 600ms cubic-bezier(0.445, 0.050, 0.550, 0.950);
-	display: block;
+    display: block;
     position: relative;
 } 
 @-webkit-keyframes leave {
-	to {
-	    opacity: 0;
-    	height: 0px;
-    	left: -70px;
+    to {
+        opacity: 0;
+        height: 0px;
+        left: -70px;
     }
     25% {
-    	left: 15px;
+        left: 15px;
     }
     from {
         opacity: 1;
-    	height: 30px;
-    	left: 0px;
+        height: 30px;
+        left: 0px;
     }
 }
 @keyframes leave {
-	to {
-	    opacity: 0;
-    	height: 0px;
-    	left: -70px;
+    to {
+        opacity: 0;
+        height: 0px;
+        left: -70px;
     }
     25% {
-    	left: 15px;
+        left: 15px;
     }
     from {
         opacity: 1;
-    	height: 30px;
-    	left: 0px;
+        height: 30px;
+        left: 0px;
     }
 }
 */

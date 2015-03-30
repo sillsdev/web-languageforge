@@ -7,6 +7,12 @@ class LexiconOptionListItem
     public $key;
     public $value;
 
+    /**
+     *
+     * @var string
+     */
+    public $abbreviation;
+
     public function __construct($value = '', $key = null)
     {
         $this->value = $value;

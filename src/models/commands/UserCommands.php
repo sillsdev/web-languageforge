@@ -8,7 +8,7 @@ use libraries\scriptureforge\sfchecks\Communicate;
 use libraries\scriptureforge\sfchecks\Email;
 use libraries\scriptureforge\sfchecks\IDelivery;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 use libraries\shared\AuthHelper;
 use libraries\shared\Website;
 use models\shared\dto\CreateSimpleDto;
