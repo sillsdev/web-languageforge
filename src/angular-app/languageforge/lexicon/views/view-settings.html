@@ -56,7 +56,7 @@
         </div>
         <div data-ng-hide="tab.byUser && state === 'userSelectList'">
             <!-- control buttons for member-specific views -->
-            <div class="row outer-flex" data-ng-show="tab.byUser && state === 'userSettings'">
+            <div class="row-fluid outer-flex" data-ng-show="tab.byUser && state === 'userSettings'">
                 <div class="span3 control-group">
                     <button class="btn" data-ng-click="goSelectUser()"><i class="icon-chevron-left"></i> {{'Select Member' | translate}}</button>
                 </div>
@@ -68,7 +68,7 @@
         <accordion close-others="true">
         <accordion-group is-open="true">
         <accordion-heading><h3>{{'Enabled Fields for' | translate}} {{forWhom | translate}}</h3></accordion-heading>
-            <div class="row outer-flex">
+            <div class="row-fluid outer-flex">
             
             <!-- Left column: field view select list -->
             <div class="span3 control-group">
@@ -84,10 +84,10 @@
                     <dt translate="Entry Level Fields"></dt>
                     <dd><div class="controls">
                         <div data-ng-repeat="fieldName in fieldOrder.entry"
-                            data-ng-class="{selected:currentField.name == fieldName}">
+                            data-ng-class="{selected:currentField.name == fieldName}"
+                            data-ng-click="selectField(fieldName, currentView)">
                             <span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
-                                data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-                                data-ng-click="selectField(fieldName, currentView)">
+                                data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}">
                                 {{fieldConfig[fieldName].label}}
                                 <i class="{{interfaceConfig.pullToSide}}" ng-class="{'icon-eye-open': currentView.fields[fieldName].show}"></i>
                             </span>
@@ -100,10 +100,10 @@
                             style="position: absolute; padding-left: 5px;"/></span></dt>
                     <dd><div class="controls">
                         <div data-ng-repeat="fieldName in fieldOrder.senses"
-                            data-ng-class="{selected:currentField.name == fieldName}">
-                            <span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
-                                data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
+                            data-ng-class="{selected:currentField.name == fieldName}"
                                 data-ng-click="selectField(fieldName, currentView)">
+                            <span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
+                                data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}">
                                 {{fieldConfig[fieldName].label}}
                                 <i class="{{interfaceConfig.pullToSide}}" ng-class="{'icon-eye-open': currentView.fields[fieldName].show}"></i>
                                 </span>
@@ -112,10 +112,10 @@
                     <dt translate="Example Level Fields"></dt>
                     <dd><div class="controls">
                         <div data-ng-repeat="fieldName in fieldOrder.examples"
-                            data-ng-class="{selected:currentField.name == fieldName}">
-                            <span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
-                                data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
+                            data-ng-class="{selected:currentField.name == fieldName}"
                                 data-ng-click="selectField(fieldName, currentView)">
+                            <span data-ng-hide="fieldIsHidden(fieldName, showAllFields)"
+                                data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}">
                                 {{fieldConfig[fieldName].label}}
                                 <i class="{{interfaceConfig.pullToSide}}" ng-class="{'icon-eye-open': currentView.fields[fieldName].show}"></i>
                                 </span>

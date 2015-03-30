@@ -118,6 +118,21 @@ class RightsHelper
 
             // User Role (Project Context)
             case 'user_sendInvite':
+            case 'semdom_editor_dto':
+            	  return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
+            case 'semdom_get_open_projects':
+            	return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+            case 'semdom_item_update':
+            	return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
+            case 'semdom_comment_update':
+            	return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT);
+            case 'semdom_project_exists':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+            case 'semdom_create_project':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+            case 'semdom_workingset_update':
+                return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
+                
             case 'message_markRead':
             case 'project_pageDto':
             case 'lex_projectDto':
@@ -227,6 +242,7 @@ class RightsHelper
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW);
 
             case 'project_create':
+            case 'project_create_switchSession':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
             case 'projectcode_exists':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
@@ -262,7 +278,8 @@ class RightsHelper
 
             // LanguageForge (lexicon)
             case 'lex_configuration_update':
-            case 'lex_import_lift':
+            case 'lex_upload_importLift':
+            case 'lex_upload_importProjectZip':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             case 'lex_baseViewDto':

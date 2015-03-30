@@ -4,7 +4,7 @@ namespace models\commands;
 
 use libraries\shared\Website;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 use libraries\scriptureforge\sfchecks\Email;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
@@ -207,6 +207,24 @@ class ProjectCommands
             }
         }
     }
+    
+    public static function listUserRequestsForAccess($projectId) {
+        
+    }
+    
+    public static function grantAccessForUserRequest($projectId, $userId, $projectRole) {
+        // check if userId exists in request queue on project model
+        self::updateUserRole($projectId, $userId, $projectRole);
+        // remove userId from request queue
+        // send email notifying of acceptance
+    }
+    
+    public static function requestAccessForProject($projectId, $userId) {
+        // add userId to request queue
+        // send email to project owner and all managers
+    }
+    
+    
 
     public static function renameProject($projectId, $oldName, $newName)
     {

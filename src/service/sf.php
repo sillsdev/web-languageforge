@@ -33,6 +33,14 @@ use models\ProjectModel;
 use models\QuestionModel;
 use models\UserModel;
 use models\UserProfileModel;
+use models\languageforge\SemDomTransProjectModel;
+use models\languageforge\semdomtrans\dto\SemDomTransEditDto;
+use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
+use models\languageforge\semdomtrans\commands\SemDomTransItemCommands;
+use models\languageforge\semdomtrans\commands\SemDomTransCommentsCommands;
+use models\languageforge\LfProjectModel;
+use models\languageforge\semdomtrans\SemDomTransWorkingSetModel;
+use models\languageforge\semdomtrans\commands\SemDomTransWorkingSetCommands;
 
 require_once APPPATH . 'vendor/autoload.php';
 require_once APPPATH . 'config/sf_config.php';
@@ -40,6 +48,7 @@ require_once APPPATH . 'models/ProjectModel.php';
 require_once APPPATH . 'models/QuestionModel.php';
 require_once APPPATH . 'models/TextModel.php';
 require_once APPPATH . 'models/UserModel.php';
+
 
 class sf
 {
@@ -246,11 +255,26 @@ class sf
      * @param string $projectName
      * @param string $projectCode
      * @param string $appName
-     * @return string - projectId
+     * @return string | boolean - $projectId on success, false if project code is not unique
      */
     public function project_create($projectName, $projectCode, $appName)
     {
         return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->_userId, $this->_website);
+    }
+
+    /**
+     * Creates project and switches the session to the new project
+     *
+     * @param string $projectName
+     * @param string $projectCode
+     * @param string $appName
+     * @return string | boolean - $projectId on success, false if project code is not unique
+     */
+    public function project_create_switchSession($projectName, $projectCode, $appName)
+    {
+        $projectId = $this->project_create($projectName, $projectCode, $appName);
+        $this->_controller->session->set_userdata('projectId', $projectId);
+        return $projectId;
     }
 
     /**
@@ -558,10 +582,12 @@ class sf
         return LexDbeDto::encode($this->_projectId, $this->_userId);
     }
 
-    public function lex_dbeDtoUpdatesOnly($browserId)
+    public function lex_dbeDtoUpdatesOnly($browserId, $lastFetchTime = null)
     {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
-        $lastFetchTime = $this->_controller->session->userdata($sessionLabel);
+        if ($lastFetchTime == null) {
+            $lastFetchTime = $this->_controller->session->userdata($sessionLabel);
+        }
         $this->_controller->session->set_userdata($sessionLabel, time());
         if ($lastFetchTime) {
             $lastFetchTime = $lastFetchTime - 5; // 5 second buffer
@@ -579,11 +605,6 @@ class sf
             LexOptionListCommands::updateList($this->_projectId, $optionlist);
         }
         return;
-    }
-
-    public function lex_import_lift($import)
-    {
-        return LexProjectCommands::importLift($this->_projectId, $import);
     }
 
     /**
@@ -652,11 +673,75 @@ class sf
         return LexOptionListCommands::updateList($this->_projectId, $params);
     }
 
+    public function lex_upload_importProjectZip($mediaType, $tmpFilePath)
+    {
+        $response = LexUploadCommands::importProjectZip($this->_projectId, $mediaType, $tmpFilePath);
+        return JsonEncoder::encode($response);
+    }
+
     public function lex_uploadImageFile($mediaType, $tmpFilePath)
     {
         $response = LexUploadCommands::uploadImageFile($this->_projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
+
+    public function lex_upload_importLift($mediaType, $tmpFilePath)
+    {
+        $response = LexUploadCommands::importLiftFile($this->_projectId, $mediaType, $tmpFilePath);
+        return JsonEncoder::encode($response);
+    }
+    
+    
+    /*
+     * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
+     */
+    public function semdom_editor_dto() {
+    	return SemDomTransEditDto::encode($this->_projectId, null, null);
+    }
+    
+    public function semdom_get_open_projects() {
+    	return SemDomTransProjectCommands::getOpenSemdomProjects();
+    }
+    
+    public function semdom_item_update($data) {
+    	return SemDomTransItemCommands::update($data, $this->_projectId);
+    }
+    
+    public function semdom_comment_update($data) {
+    	return SemDomTransCommentsCommands::update($data, $this->_projectId);
+    }
+    
+    public function semdom_project_exists($languageIsoCode) {
+        return SemDomTransProjectCommands::checkProjectExists($languageIsoCode, 20);
+    }
+    
+    public function semdom_workingset_update($data) {
+        return SemDomTransWorkingSetCommands::update($data, $this->_projectId);
+    }
+    
+    /**
+     *
+     * @param string $projectName
+     * @param string $projectCode
+     * @param string $appName
+     * @return string | boolean - $projectId on success, false if project code is not unique
+     */
+    public function semdom_create_project($languageIsoCode)
+    {    	
+        $projectName = "Semdom $languageIsoCode Project";
+        $projectCode = "semdom-$languageIsoCode-20";
+    	$projectID = ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $this->_userId, $this->_website);	
+    	
+    	$project = new SemDomTransProjectModel($projectID);
+    	$project->languageIsoCode = $languageIsoCode;
+    	$project->semdomVersion = 20;
+    	$project->write();
+    	
+    	SemDomTransProjectCommands::preFillProject($projectID);
+    	return $projectID;
+    }
+    
+    
 
     // ---------------------------------------------------------------
     // Private Utility Functions

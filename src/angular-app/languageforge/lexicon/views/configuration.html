@@ -1,7 +1,6 @@
 <div class="container" data-ng-cloak data-ng-controller="ConfigCtrl">
 <br><h2 style="font-weight:normal">{{'Dictionary Configuration' | translate}}</h2>
 <form name="configForm" novalidate>
-<button style="margin-left:15px" tooltip="View the dictionary" class="btn {{interfaceConfig.pullToSide}}" data-ng-click="backToDictionary()"><i class="icon-reply"></i>{{'Dictionary' | translate}}</button>
 <fieldset data-ng-disabled="isSaving">
 <button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="configurationApply()"
     data-ng-disabled="configForm.$pristine || isSaving">
@@ -26,10 +25,9 @@
                 <dt translate="Entry Level Fields"></dt>
                 <dd><div class="controls">
                     <div data-ng-repeat="fieldName in configDirty.entry.fieldOrder" 
-                        data-ng-class="{selected:currentField.name == fieldName}">
+                        data-ng-class="{selected:currentField.name == fieldName}" data-ng-click="selectField(fieldName)">
                         <span data-ng-hide="fieldIsHidden(fieldName)"
-                            data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-                            data-ng-click="selectField(fieldName)">
+                            data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}">
                             {{fieldConfig[fieldName].label}}
                         </span>
                     </div>
@@ -37,10 +35,9 @@
                 <dt translate="Meaning Level Fields"></dt>
                 <dd><div class="controls">
                     <div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder" 
-                        data-ng-class="{selected:currentField.name == fieldName}">
+                        data-ng-class="{selected:currentField.name == fieldName}" data-ng-click="selectField(fieldName)">
                         <span data-ng-hide="fieldIsHidden(fieldName)"
-                            data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-                            data-ng-click="selectField(fieldName)">
+                            data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}">
                             {{fieldConfig[fieldName].label}}
                         </span>
                     </div>
@@ -48,10 +45,9 @@
                 <dt translate="Example Level Fields"></dt>
                 <dd><div class="controls">
                     <div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder" 
-                        data-ng-class="{selected:currentField.name == fieldName}">
+                        data-ng-class="{selected:currentField.name == fieldName}" data-ng-click="selectField(fieldName)">
                         <span data-ng-hide="fieldIsHidden(fieldName)"
-                            data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}"
-                            data-ng-click="selectField(fieldName)">
+                            data-ng-style="{'font-style': isCustomField(fieldName) ? 'italic' : 'normal'}">
                             {{fieldConfig[fieldName].label}}
                         </span>
                     </div>
@@ -320,12 +316,12 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
         <div class="span3 control-group">
             <dl class="picklists">
                 <dt translate="Select a list" id="editListValuesFieldset"></dt>
-                <dd><div class="controls">
-                    <div data-ng-click="selectList('pos')"
-                         data-ng-class="{selected:currentListId == 'pos'}"
-                            translate="Part of Speech">
+                <dd>
+                    <div data-ng-repeat="optionList in optionlistDirty" 
+                        data-ng-class="{selected:currentListIndex == $index}" data-ng-click="selectList($index)">
+                        {{optionList.name}}
                     </div>
-                </div></dd>
+                </dd>
                 <!-- future lists go here -->
             </dl>
         </div>
@@ -333,9 +329,10 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
         <!-- Right column: task setup -->
         <div class="span9">
             <div class="well" id="picklistEditorFieldset">
-                <h3 class="control-label" translate="{{optionLists[currentListId].name}}"></h3>
+                <h3 class="control-label">{{optionlistDirty[currentListIndex].name}}</h3>
                 <div class="controls">
-                    <picklist-editor items="optionlistDirty[0].items" default-key="optionLists[currentListId].defaultKey"></picklist-editor>
+                    <picklist-editor items="optionlistDirty[currentListIndex].items" 
+                        pristine-items="optionlistPristine[currentListIndex].items"></picklist-editor>
                 </div>
             </div>
 

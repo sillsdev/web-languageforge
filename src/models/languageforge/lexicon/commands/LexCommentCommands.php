@@ -2,7 +2,7 @@
 
 namespace models\languageforge\lexicon\commands;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 use models\languageforge\lexicon\LexCommentModel;
 use models\languageforge\lexicon\LexCommentReply;
 use models\languageforge\lexicon\LexiconProjectModel;
@@ -39,10 +39,9 @@ class LexCommentCommands
         if ($isNew) {
             $comment->authorInfo->createdByUserRef->id = $userId;
             $comment->authorInfo->createdDate = new \DateTime();
-            $comment->authorInfo->modifiedByUserRef->id = $userId;
-        } else {
-            $comment->authorInfo->modifiedDate = new \DateTime();
         }
+        $comment->authorInfo->modifiedByUserRef->id = $userId;
+        $comment->authorInfo->modifiedDate = new \DateTime();
 
         return $comment->write();
     }

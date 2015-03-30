@@ -35,7 +35,7 @@ class LexRoleViewConfig
 
 class LexViewFieldConfig
 {
-    public function __construct($show = false)
+    public function __construct($show = true)
     {
         $this->show = $show;
         $this->type = 'basic';
@@ -55,7 +55,7 @@ class LexViewFieldConfig
 
 class LexViewMultiTextFieldConfig extends LexViewFieldConfig
 {
-    public function __construct($show = false)
+    public function __construct($show = true)
     {
         parent::__construct($show);
         $this->type = 'multitext';

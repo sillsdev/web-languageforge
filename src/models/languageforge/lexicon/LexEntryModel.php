@@ -2,7 +2,7 @@
 
 namespace models\languageforge\lexicon;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 use models\mapper\Id;
 use models\mapper\ArrayOf;
 use models\mapper\MapOf;
@@ -14,7 +14,7 @@ function _createSense($data)
     return new Sense();
 }
 
-function _createCustomFieldOnEntry($data)
+function _createCustomField($data)
 {
     CodeGuard::checkTypeAndThrow($data, 'array');
     if (array_key_exists('value', $data)) {
@@ -29,6 +29,133 @@ function _createCustomFieldOnEntry($data)
 class LexEntryModel extends \models\mapper\MapperModel
 {
     use \LazyProperty\LazyPropertiesTrait;
+
+    /**
+     * @var bool
+     */
+    public $isDeleted;
+
+    /**
+     * @var IdReference
+     */
+    public $id;
+
+    /**
+     * @var string
+     */
+    public $guid;
+
+    // PUBLIC PROPERTIES
+
+    /**
+     * @var MultiText
+     */
+    public $lexeme;
+
+    /**
+     * @var ArrayOf ArrayOf<Sense>
+     */
+    public $senses;
+
+    // REMAINING PUBLIC PROPERTIES IN ALPHABETIC ORDER
+
+    // TODO Renamed $_metadata to $authorInfo, remove this comment when stitched in IJH 2013-11
+    /**
+     * @var AuthorInfo
+     */
+    public $authorInfo;
+
+    /**
+     * @var MultiText
+     */
+    public $citationForm;
+
+    /**
+     * @var MapOf<MultiText|LexiconField|LexiconMultiValueField>
+     */
+    public $customFields;
+
+    /**
+     * @var MultiText
+     */
+    public $entryBibliography;
+
+    /**
+     * @var MultiText
+     */
+    public $entryRestrictions;
+
+    /**
+     * @var LexiconMultiValueField
+     */
+    public $environments;
+
+    /**
+     * @var MultiText
+     */
+    public $etymology;
+
+    /**
+     * @var MultiText
+     */
+    public $etymologyGloss;
+
+    /**
+     * @var MultiText
+     */
+    public $etymologyComment;
+
+    /**
+     * @var MultiText
+     */
+    public $etymologySource;
+
+    /**
+     * @var MultiText
+     */
+    public $literalMeaning;
+
+    /**
+     * @var LexiconField
+     */
+    public $location;
+
+    /**
+     * @var string
+     */
+    public $mercurialSha;
+
+    /**
+     * @var string
+     */
+    public $morphologyType;
+
+    /**
+     * @var MultiText
+     */
+    public $note;
+
+    /**
+     * @var MultiText
+     */
+    public $pronunciation;
+
+    /**
+     * cvPattern is part of pronunciation, but is under LexEntry in the LanguageForge model. REVIEW CP 2014-10
+     * @var MultiText
+     */
+    public $cvPattern;
+
+    /**
+     * tone is part of pronunciation, but is under LexEntry in the LanguageForge model. REVIEW CP 2014-10
+     * @var MultiText
+     */
+    public $tone;
+
+    /**
+     * @var MultiText
+     */
+    public $summaryDefinition;
 
     public static function mapper($databaseName)
     {
@@ -51,26 +178,27 @@ class LexEntryModel extends \models\mapper\MapperModel
         $this->setReadOnlyProp('authorInfo');
 
         $this->initLazyProperties([
-                'senses',
-                'customFields',
-                'authorInfo',
-                'lexeme',
-                'pronunciation',
-                'cvPattern',
-                'citationForm',
-                'etymology',
+            'lexeme',
+            'senses',
+            'authorInfo',
+            'citationForm',
+            'customFields',
+            'entryBibliography',
+            'entryRestrictions',
+            'environments',
+            'etymology',
                 'etymologyGloss',
                 'etymologyComment',
                 'etymologySource',
-                'note',
-                'literalMeaning',
-                'entryBibliography',
-                'entryRestrictions',
-                'summaryDefinition',
-                'entryImportResidue',
+            'literalMeaning',
+            'location',
+            'morphologyType',
+            'note',
+            'morphType',
+            'pronunciation',
+                'cvPattern',
                 'tone',
-                'environments',
-                'location'
+            'summaryDefinition'
         ], false);
 
         $this->isDeleted = false;
@@ -80,35 +208,37 @@ class LexEntryModel extends \models\mapper\MapperModel
         parent::__construct(self::mapper($databaseName), $id);
     }
 
-    protected function createProperty($name) {
+    protected function createProperty($name)
+    {
         switch ($name) {
             case 'senses':
                 return new ArrayOf('models\languageforge\lexicon\_createSense');
             case 'customFields':
-                return new ArrayOf('models\languageforge\lexicon\_createCustomField');
+                return new MapOf('models\languageforge\lexicon\_createCustomField');
             case 'authorInfo':
                 return new AuthorInfo();
+
             case 'lexeme':
+            case 'citationForm':
+            case 'entryBibliography':
+            case 'entryRestrictions':
             case 'pronunciation':
             case 'cvPattern':
-            case 'citationForm':
+            case 'tone':
             case 'etymology':
             case 'etymologyGloss':
             case 'etymologyComment':
             case 'etymologySource':
-            case 'note':
             case 'literalMeaning':
-            case 'entryBibliography':
-            case 'entryRestrictions':
+            case 'note':  // TODO Notes need to be an array, and more capable than a multi-text. Notes have types. CP 2014-10
             case 'summaryDefinition':
-            case 'entryImportResidue':
-            case 'tone':
                 return new MultiText();
             case 'environments':
                 return new LexiconMultiValueField();
             case 'location':
                 return new LexiconField();
-
+            case 'morphologyType':
+                return '';
         }
     }
 
@@ -118,55 +248,11 @@ class LexEntryModel extends \models\mapper\MapperModel
     }
 
     /**
-     * @var IdReference
-     */
-    public $id;
-
-    /**
-     * @var bool
-     */
-    public $isDeleted;
-
-    /**
-     *
-     * @var string
-     */
-    public $guid;
-
-    /**
-     *
-     * @var string
-     */
-    public $mercurialSha;
-
-    /**
-     * @var MultiText
-     */
-    // TODO Renamed $_entry to $lexeme.  References to $_entry may still exist
-    public $lexeme;
-
-    /**
-     * @var ArrayOf ArrayOf<Sense>
-     */
-    public $senses;
-
-    /**
-     * @var MapOf <>
-     */
-    public $customFields;
-
-    /**
-     *
-     * @var AuthorInfo
-     */
-     // TODO Renamed $_metadata to $authorInfo, remove this comment when stitched in IJH 2013-11
-    public $authorInfo;
-
-    /**
      * If the $value of $propertyName exists in senses return the index
-     * @param string $senseId
-     * @param array $senses
-     * @return array <$index or -1 if not found>
+     *
+     * @param string $propertyName
+     * @param string $value
+     * @return number $index or -1 if not found
      */
     public function searchSensesFor($propertyName, $value)
     {
@@ -175,7 +261,6 @@ class LexEntryModel extends \models\mapper\MapperModel
                 return $index;
             }
         }
-
         return -1;
     }
 
@@ -218,87 +303,5 @@ class LexEntryModel extends \models\mapper\MapperModel
         $databaseName = $projectModel->databaseName();
         self::mapper($databaseName)->remove($id);
     }
-
-    // Less common fields used in FLEx
-
-    /**
-     * @var MultiText
-     */
-    public $citationForm;
-
-    /**
-     * @var LexiconMultiValueField
-     */
-    public $environments;
-
-    /**
-     * @var MultiText
-     */
-    public $pronunciation;
-
-    /**
-     * @var MultiText
-     */
-    public $cvPattern;
-
-    /**
-     * @var MultiText
-     */
-    public $tone;
-
-    /**
-     * @var LexiconField
-     */
-    public $location;
-
-    /**
-     * @var MultiText
-     */
-    public $etymology;
-
-    /**
-     * @var MultiText
-     */
-    public $etymologyGloss;
-
-    /**
-     * @var MultiText
-     */
-    public $etymologyComment;
-
-    /**
-     * @var MultiText
-     */
-    public $etymologySource;
-
-    /**
-     * @var MultiText
-     */
-    public $note;
-
-    /**
-     * @var MultiText
-     */
-    public $literalMeaning;
-
-    /**
-     * @var MultiText
-     */
-    public $entryBibliography;
-
-    /**
-     * @var MultiText
-     */
-    public $entryRestrictions;
-
-    /**
-     * @var MultiText
-     */
-    public $summaryDefinition;
-
-    /**
-     * @var MultiText
-     */
-    public $entryImportResidue;
 
 }
