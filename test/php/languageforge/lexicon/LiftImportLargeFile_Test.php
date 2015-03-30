@@ -6,7 +6,6 @@ use models\languageforge\lexicon\LiftMergeRule;
 require_once dirname(__FILE__) . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
-require_once dirname(__FILE__) . '/LexTestData.php';
 
 class TestLiftImportInfo
 {
@@ -52,17 +51,14 @@ class TestLiftImport extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftTestFilePath = '/var/www/host/forge/TestData/Gilaki/Gilaki.lift';
-// 		$liftTestFilePath = '/var/www/host/forge/TestData/Webster/Webster.lift';
+//         $liftFilePath = '/home/cambell/src/Forge/TestData/Gilaki/Gilaki.lift';
+        $liftFilePath = '/home/cambell/src/Forge/TestData/Webster/Webster.lift';
         $mergeRule =  LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        $liftXml = file_get_contents($liftTestFilePath);
-        $testInfo->add('file');
+        LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
-        LiftImport::merge($liftXml, $project, $mergeRule, $skipSameModTime);
-
-        $testInfo->display();
+        $testInfo->add('post merge');
 
     }
 

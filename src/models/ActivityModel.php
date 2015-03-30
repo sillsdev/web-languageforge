@@ -10,7 +10,7 @@ use models\mapper\IdReference;
 
 use models\mapper\Id;
 use models\mapper\MapOf;
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 
 class ActivityModelMongoMapper extends \models\mapper\MongoMapper
 {
@@ -163,10 +163,11 @@ class ActivityListModel extends \models\mapper\MapperListModel
 
     public function __construct($projectModel)
     {
+        // hardcoded to limit 100.  TODO implement paging
         $this->entries = new MapOf(function ($data) use ($projectModel) { return new ActivityModel($projectModel); });
         parent::__construct(
             ActivityModelMongoMapper::connect($projectModel->databaseName()),
-            array('action' => array('$regex' => ''))
+            array('action' => array('$regex' => '')), array(), array('dateCreated' => -1), 100
         );
     }
 

@@ -4,7 +4,8 @@
 angular.module('lexicon', 
   [
     'ngRoute',
-    'dbe',
+    'ngSanitize',
+    'lexicon.edit',
     'meaning',
     'examples',
     'bellows.services',
@@ -37,12 +38,12 @@ angular.module('lexicon',
     $routeProvider.when( '/review', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
     $routeProvider.when( '/wordlist', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
     
-	$routeProvider.when(
+    $routeProvider.when(
             '/dbe',
             {
                 templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
-	    }
-	);
+            }
+        );
         $routeProvider.when(
             '/dbe/:entryId',
             {
@@ -105,8 +106,8 @@ angular.module('lexicon',
       );
     $routeProvider.otherwise({redirectTo: '/projects'});
   }])
-  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate',
-  function($scope, ss, lexConfigService, lexProjectService, $translate) {
+  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate', '$location',
+  function($scope, ss, lexConfigService, lexProjectService, $translate, $location) {
     var pristineLanguageCode;
     
     $scope.rights = {};
@@ -120,15 +121,20 @@ angular.module('lexicon',
     
     // persist the entries and comments array across all controllers
     $scope.entries = [];
-    $scope.comments = [];
-    $scope.entryCommentCounts = {};
-    
+
     $scope.currentUserRole = ss.session.projectSettings.currentUserRole;
     $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
     pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
     changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
     
     $scope.isTaskEnabled = lexConfigService.isTaskEnabled;
+
+    $scope.gotoDictionary = function gotoDictionary() {
+      $location.path('/dbe');
+    };
+    $scope.showDictionaryButton = function showDictionaryButton() {
+      return ! ($location.path().indexOf('/dbe') == 0);
+    };
 
     function changeInterfaceLanguage(code) {
       $translate.use(code);

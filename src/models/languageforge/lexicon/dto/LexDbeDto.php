@@ -12,35 +12,6 @@ use models\mapper\JsonEncoder;
 use models\shared\UserGenericVoteModel;
 use models\UserModel;
 
-class LexDbeDtoCommentsEncoder extends JsonEncoder
-{
-    public function encodeIdReference($key, $model)
-    {
-        if ($key == 'createdByUserRef' || $key == 'modifiedByUserRef') {
-            $user = new UserModel();
-            if ($user->exists($model->asString())) {
-                $user->read($model->asString());
-
-                return array(
-                    'id' => $user->id->asString(),
-                    'avatar_ref' => $user->avatar_ref,
-                    'name' => $user->name,
-                    'username' => $user->username);
-            } else {
-                return '';
-            }
-        } else {
-            return $model->asString();
-        }
-    }
-
-    public static function encode($model)
-    {
-        $e = new LexDbeDtoCommentsEncoder();
-
-        return $e->_encode($model);
-    }
-}
 class LexDbeDto
 {
     /**
@@ -48,7 +19,6 @@ class LexDbeDto
      * @param $userId
      * @param  null       $lastFetchTime
      * @throws \Exception
-     * @internal param bool $returnOnlyUpdates
      * @return array
      */
     public static function encode($projectId, $userId, $lastFetchTime = null)
@@ -113,7 +83,7 @@ class LexDbeDto
 
         $data['entries'] = $entries;
 
-        $data['timeOnServer'] = time(); // future use for offline syncing
+        $data['timeOnServer'] = time(); // for offline syncing
 
         return $data;
     }

@@ -92,8 +92,9 @@ class LexiconProjectModel extends LfProjectModel
     {
         // setup default option lists
         $optionList = new LexOptionListModel($this);
-        $optionList->name = 'Part Of Speech';
-        $optionList->code = 'partOfSpeech';
+        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::POS);
+        $optionList->name = LexiconConfigObj::flexOptionlistName($listCode);
+        $optionList->code = $listCode;
         $optionList->canDelete = false;
         $optionList->readFromJson(APPPATH . 'json/languageforge/lexicon/partOfSpeech.json');
         $optionList->write();

@@ -1,47 +1,47 @@
 <div class="container" data-ng-cloak data-ng-controller="SettingsCtrl">
-	<br><h2 style="font-weight:normal" >{{project.projectName}} <span translate="Settings"></span></h2>
-	<!-- <h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2> -->
-	<tabset>
-		<tab heading="{{ 'Project Properties' | translate }}">
-			<form class="well" data-ng-submit="updateProject()">
-				<fieldset>
-					<div class="control-group">
-						<label class="control-label" for="projName" translate="Project Name"></label>
-						<div class="controls">
-							<input id="projName" type="text" placeholder="project name" data-ng-model="project.projectName" />
-						</div>
-						<label class="control-label" for="language" translate="Default Interface Language"></label>
-						<div class="controls">
-							<select class="form-control" id="language" 
-								data-ng-model="project.interfaceLanguageCode" 
-								data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder">
-								<option value="">-- choose a language --</option></select>
-						</div>
-						<!--  TODO: DDW add translate to label -->
-						<label class="control-label" for="projCode" ><b>Project Code:</b> {{project.projectCode}}</label>
-						<label class="control-label" for="projOwner" ><b>Project Owner:</b> {{project.ownerRef.username}}</label>
-						<label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> {{ 'Featured On Website' | translate }}</label>
-					</div>
-				</fieldset>
-				<button type="submit" class="btn"><i class="icon-ok"></i>{{ 'Save' | translate }}</button>
-			</form>
-		</tab>
-		<tab heading="Communication Settings" select="readCommunicationSettings()" data-ng-show="true" disabled="rights.canEditCommunicationSettings">
-			<form class="well" data-ng-submit="updateCommunicationSettings()">
-				<fieldset>
-					<label translate="Twilio Account Username"></label>
-					<input type="text" placeholder="(Twilio SID)" data-ng-model="settings.sms.accountId"/>
-					<label translate="Twillio Auth Token"></label>
-					<input type="text" placeholder="(Twilio Auth Token)" data-ng-model="settings.sms.authToken"/>
-					<label translate="SMS From Number"></label>
-					<input type="text" placeholder="(From Number)" data-ng-model="settings.sms.fromNumber"/>
-					<label translate="Email From (reply-to) Address"></label>
-					<input type="email" placeholder="(From Email)" data-ng-model="settings.email.fromAddress"/>
-					<label translate="Email Name"></label>
-					<input type="text" placeholder="(From Name)" data-ng-model="settings.email.fromName"/>
-				</fieldset>
-				<button type="submit" class="btn"><i class="icon-ok"></i>{{ 'Save' | translate }}</button>
-			</form>
-		</tab>
-	</tabset>
+    <br><h2 style="font-weight:normal" >{{project.projectName}} <span translate="Settings"></span></h2>
+    <!-- <h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2> -->
+    <tabset>
+        <tab heading="{{ 'Project Properties' | translate }}">
+            <form class="well" data-ng-submit="updateProject()">
+                <fieldset>
+                    <div class="control-group">
+                        <label class="control-label" for="projName" translate="Project Name"></label>
+                        <div class="controls">
+                            <input id="projName" type="text" placeholder="project name" data-ng-model="project.projectName" />
+                        </div>
+                        <label class="control-label" for="language" translate="Default Interface Language"></label>
+                        <div class="controls">
+                            <select class="form-control" id="language" 
+                                data-ng-model="project.interfaceLanguageCode" 
+                                data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder">
+                                <option value="">-- choose a language --</option></select>
+                        </div>
+                        <!--  TODO: DDW add translate to label -->
+                        <label class="control-label" for="projCode" ><b>Project Code:</b> {{project.projectCode}}</label>
+                        <label class="control-label" for="projOwner" ><b>Project Owner:</b> {{project.ownerRef.username}}</label>
+                        <label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> {{ 'Featured On Website' | translate }}</label>
+                    </div>
+                </fieldset>
+                <button type="submit" class="btn"><i class="icon-ok"></i>{{ 'Save' | translate }}</button>
+            </form>
+        </tab>
+        <tab heading="Communication Settings" select="readCommunicationSettings()" data-ng-show="true" disabled="rights.canEditCommunicationSettings">
+            <form class="well" data-ng-submit="updateCommunicationSettings()">
+                <fieldset>
+                    <label translate="Twilio Account Username"></label>
+                    <input type="text" placeholder="(Twilio SID)" data-ng-model="settings.sms.accountId"/>
+                    <label translate="Twillio Auth Token"></label>
+                    <input type="text" placeholder="(Twilio Auth Token)" data-ng-model="settings.sms.authToken"/>
+                    <label translate="SMS From Number"></label>
+                    <input type="text" placeholder="(From Number)" data-ng-model="settings.sms.fromNumber"/>
+                    <label translate="Email From (reply-to) Address"></label>
+                    <input type="email" placeholder="(From Email)" data-ng-model="settings.email.fromAddress"/>
+                    <label translate="Email Name"></label>
+                    <input type="text" placeholder="(From Name)" data-ng-model="settings.email.fromName"/>
+                </fieldset>
+                <button type="submit" class="btn"><i class="icon-ok"></i>{{ 'Save' | translate }}</button>
+            </form>
+        </tab>
+    </tabset>
 </div>

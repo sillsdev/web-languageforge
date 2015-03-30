@@ -27,6 +27,7 @@ use libraries\shared\palaso\exceptions\ErrorHandler;
 use libraries\shared\palaso\exceptions\ResourceNotAvailableException;
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
+use Palaso\Utilities\CodeGuard;
 
 /**
  * This class build a json-RPC Server 1.0
@@ -38,12 +39,12 @@ use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 class JsonRpcServer
 {
     /**
-	 * This function handle a request binding it to a given object
-	 *
-	 * @param object $object
-	 * @param Output $output The CI Output class
-	 * @return boolean
-	 */
+     * This function handle a request binding it to a given object
+     *
+     * @param object $object
+     * @param Output $output The CI Output class
+     * @return boolean
+     */
     public static function handle($object, $output)
     {
         // user-defined error handler to catch annoying php errors and throw them as exceptions

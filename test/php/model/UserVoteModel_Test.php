@@ -1,23 +1,13 @@
 <?php
-
-
 use models\ProjectModel;
 use models\UserVoteModel;
 
 require_once dirname(__FILE__) . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-
 require_once TestPath . 'common/MongoTestEnvironment.php';
-require_once TestPath . 'common/MockProjectModel.php';
-
-require_once SourcePath . "models/ProjectModel.php";
-require_once SourcePath . "models/UserVoteModel.php";
 
 class TestUserUserVoteModel extends UnitTestCase
 {
-    public function __construct()
-    {
-    }
 
     public function testCRUD_Works()
     {
@@ -72,8 +62,6 @@ class TestUserUserVoteModel extends UnitTestCase
         $result = $vote->hasVote($answerId);
         $this->assertFalse($result);
 
-// 		UserVoteModel::remove($projectModel->databaseName(), $id);
-
+        // UserVoteModel::remove($projectModel->databaseName(), $id);
     }
-
 }

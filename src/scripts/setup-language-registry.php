@@ -1,5 +1,8 @@
 #!/usr/bin/php -q
 <?php
+
+if (php_sapi_name() != 'cli') { die('this script must be run on the command-line'); }
+
     function usage($cmdname)
     {
         echo "Usage: $cmdname dbname [collection]\n";

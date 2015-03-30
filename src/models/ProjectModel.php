@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\mapper\ArrayOf;
+
 use libraries\shared\Website;
 use models\languageforge\SemDomTransProjectModel;
 use models\scriptureforge\RapumaProjectModel;
@@ -10,7 +12,7 @@ use models\languageforge\lexicon\LexiconProjectModel;
 
 use models\scriptureforge\SfchecksProjectModel;
 
-use libraries\shared\palaso\CodeGuard;
+use Palaso\Utilities\CodeGuard;
 
 use models\shared\rights\ProjectRoleModel;
 use models\mapper\MapOf;
@@ -117,7 +119,9 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public function removeUser($userId)
     {
-        unset($this->users[$userId]);
+        if (array_key_exists($userId, $this->users)) {
+            unset($this->users[$userId]);
+        }
     }
 
     /**
@@ -136,9 +140,7 @@ class ProjectModel extends \models\mapper\MapperModel
         $userList->read();
         for ($i = 0, $l = count($userList->entries); $i < $l; $i++) {
             $userId = $userList->entries[$i]['id'];
-            if (!key_exists($userId, $this->users)) {
-                $projectId = $this->id->asString();
-                //error_log("User $userId is not a member of project $projectId");
+            if (!array_key_exists($userId, $this->users)) {
                 continue;
             }
             $userList->entries[$i]['role'] = $this->users[$userId]->role;
@@ -163,6 +165,19 @@ class ProjectModel extends \models\mapper\MapperModel
             $hasRight = $rolesClass::hasRight($this->users[$userId]->role, $right);
         }
         return $hasRight;
+    }
+
+    /**
+     * Returns an array of key/value Roles that this project supports
+     * @throws \Exception
+     * @return array
+     */
+    public function getRolesList() {
+        if (!method_exists($this->rolesClass, 'hasRight')) {
+            throw new \Exception('hasRight method cannot be called directly from ProjectModel');
+        }
+        $rolesClass = $this->rolesClass;
+        return $rolesClass::getRolesList();
     }
 
     /**
@@ -204,7 +219,7 @@ class ProjectModel extends \models\mapper\MapperModel
     /**
      *
      * @param string $projectId
-     * @return appropriate project model for the type
+     * @return ProjectModel
      */
     public static function getById($projectId)
     {
@@ -224,19 +239,19 @@ class ProjectModel extends \models\mapper\MapperModel
     }
 
     /**
-     * @return string
+     * @return string Relative path of the projects assets folder
      */
-    public function getAssetsPath()
+    public function getAssetsRelativePath()
     {
         return 'assets/' . $this->appName. '/' . $this->databaseName();
     }
 
     /**
-     * @return string
+     * @return string Full path of the projects assets folder
      */
     public function getAssetsFolderPath()
     {
-        return APPPATH . $this->getAssetsPath();
+        return APPPATH . $this->getAssetsRelativePath();
     }
 
     /**
@@ -332,13 +347,20 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public $appName;
 
+    /**
+     * 
+     * @var ArrayOf
+     */
+    public $usersRequestingAccess;
+    
+    
     private function rrmdir($dir)
     {
         if (is_dir($dir)) {
             $objects = scandir($dir);
             foreach ($objects as $object) {
                 if ($object != "." && $object != "..") {
-                    if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object);
+                    if (filetype($dir."/".$object) == "dir") $this->rrmdir($dir."/".$object); else unlink($dir."/".$object);
                 }
             }
             reset($objects);

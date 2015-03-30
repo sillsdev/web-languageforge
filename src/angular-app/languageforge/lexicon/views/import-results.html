@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h3 translate="Import Results"></h3>
+</div>
+<div class="modal-body">
+    <ul>
+        <li>Existing entries before import: {{result.stats.existingEntries}}</li>
+        <li>Imported data entries: {{result.stats.importEntries}}</li>
+        <li>New entries added from the imported data: {{result.stats.newEntries}}</li>
+        <li>Existing entries merged with the imported data: {{result.stats.entriesMerged}}</li>
+        <li>Existing entries duplicated by the imported data: {{result.stats.entriesDuplicated}}</li>
+        <li>Existing entries deleted by the imported data: {{result.stats.entriesDeleted}}</li>
+    </ul>
+    <br/>
+    <div data-ng-hide="hasImportErrors()" translate="There were no non-critical import errors."></div>
+    <div data-ng-show="hasImportErrors()">
+        <button class="btn" data-ng-click="show.importErrors = !show.importErrors">{{showImportErrorsButtonLabel()}}</button>
+        <div data-collapse="! show.importErrors">
+            <pre id="importErrors">{{result.importErrors}}</pre>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" 
+        data-ng-click="ok()" 
+        data-ng-disabled="addDisabled">
+        <i class="icon-ok"></i> {{'Ok' | translate}}</button>
+</div>
