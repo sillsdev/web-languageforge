@@ -17,7 +17,7 @@ $testMode = false;
 $projectModel = new SemDomTransProjectModel();
 $projectModel->readByProperties(array("languageIsoCode" => $lang, "semdomVersion" => $version));
 
-$xml = simplexml_load_file($projectModel->newXmlFilePath);
+$xml = simplexml_load_file($projectModel->xmlFilePath);
 $exporter = new SemDomXMLExporter($projectModel, $testMode,  ($argv[3] == "1"), true);
 
 $exporter->run(); 
