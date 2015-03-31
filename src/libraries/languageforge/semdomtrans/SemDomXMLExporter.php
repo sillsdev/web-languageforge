@@ -30,7 +30,7 @@ class SemDomXMLExporter {
 	 */
 	public function __construct($projectModel, $testMode = true, $isEnglish = true, $useTemplateXML = false) {
 
-		$this->_xml = simplexml_load_file($projectModel->newXmlFilePath);
+		$this->_xml = simplexml_load_file($projectModel->xmlFilePath);
 		$this->_projectModel = $projectModel;
 		$this->_runForReal = ! $testMode;
 		$this->_lang = $projectModel->languageIsoCode;
@@ -162,7 +162,7 @@ class SemDomXMLExporter {
 		
 		
 		
-		print "Processed $abbreviation \n";
+		//print "Processed $abbreviation \n";
 		
 		// recurse on sub-domains
 		if (property_exists($domainNode, 'SubPossibilities')) {

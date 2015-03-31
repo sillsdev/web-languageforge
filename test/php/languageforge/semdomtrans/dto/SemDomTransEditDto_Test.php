@@ -7,6 +7,7 @@ use models\languageforge\semdomtrans\dto\SemDomTransEditDto;
 use models\languageforge\semdomtrans\SemDomTransItemListModel;
 use models\languageforge\semdomtrans\SemDomTransQuestion;
 use models\mapper\ArrayOf;
+use models\languageforge\semdomtrans\SemDomTransStatus;
 
 require_once dirname(__FILE__) . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -39,9 +40,10 @@ class TestSemDomTransEditDto extends UnitTestCase
         $e->clean();
         
         // create a new semdom project (source)
-        $sourceProject = $e->createSemDomProject("en");
+        $sourceProject = $e->importEnglishProject();
         // create a new semdom project (target)
         $targetProject = $e->createSemDomProject("es");
+        $targetProject->sourceLanguageProjectId = $sourceProject->id->asString();
         
         
         // insert dummy models
@@ -69,8 +71,8 @@ class TestSemDomTransEditDto extends UnitTestCase
         
         // call dto
         $prId = $targetProject->id;
-        $loadTargetProject = new SemDomTransProjectModel($prId->asString());
-        $loadSourceProject = new SemDomTransProjectModel($loadTargetProject->sourceLanguageProjectId);
+        //$loadTargetProject = new SemDomTransProjectModel($prId->asString());
+        //$loadSourceProject = new SemDomTransProjectModel($loadTargetProject->sourceLanguageProjectId);
         $result = SemDomTransEditDto::encode($prId->asString(), null);
         
         // print_r($result);
@@ -88,12 +90,12 @@ class TestSemDomTransEditDto extends UnitTestCase
          $this->assertNotEqual($firstObject["name"], null);
          $this->assertEqual($firstObject["name"]["source"], "universe");
          $this->assertEqual($firstObject["name"]["translation"], "wszechswiat");
-         $this->assertEqual($firstObject["name"]["status"], 0);
+         $this->assertEqual($firstObject["name"]["status"], SemDomTransStatus::Draft);
          
          $this->assertNotEqual($firstObject["description"], null);
          $this->assertEqual($firstObject["description"]["source"], "Universe description");
          $this->assertEqual($firstObject["description"]["translation"], "Opis wszechswiata");
-         $this->assertEqual($firstObject["description"]["status"], 0);
+         $this->assertEqual($firstObject["description"]["status"], SemDomTransStatus::Draft);
          
          
          $this->assertNotEqual($firstObject["questions"], null);

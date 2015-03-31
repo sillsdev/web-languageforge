@@ -48,13 +48,13 @@ class SemDomTransProjectCommands
     	$projectModel->sourceLanguageProjectId = $englishProject->id->asString();
     	$projectModel->write();
     	
-    	$xmlFilePath = "/var/www/host/sil/lfsite/docs/semdom/SemDom_en.xml";
+        $xmlFilePath = $englishProject->xmlFilePath;
     	$newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
     	if (!file_exists($projectModel->getAssetsFolderPath())) {
     		mkdir($projectModel->getAssetsFolderPath());
     	}
     	copy($xmlFilePath, $newXmlFilePath);
-    	$projectModel->newXmlFilePath = $newXmlFilePath;
+    	$projectModel->xmlFilePath = $newXmlFilePath;
     	$projectModel->write();
     	
     	$englishItems = new SemDomTransItemListModel($englishProject);
