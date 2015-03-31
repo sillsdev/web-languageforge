@@ -127,6 +127,11 @@ function($q, api, ss, cache, notice, commentService) {
     return deferred.promise;
   };
 
+  var addEntryToEntryList = function addEntryToEntryList(entry) {
+    entries.unshift(entry);
+  };
+
+
   var removeEntryFromLists = function removeEntryFromLists(id) {
     // todo: make this method async, returning a promise
 
@@ -272,6 +277,7 @@ function($q, api, ss, cache, notice, commentService) {
     loadEditorData: loadEditorData,
     refreshEditorData: refreshEditorData,
     removeEntryFromLists: removeEntryFromLists,
+    addEntryToEntryList: addEntryToEntryList,
     entries: entries,
     visibleEntries: visibleEntries,
     showInitialEntries: showInitialEntries,
