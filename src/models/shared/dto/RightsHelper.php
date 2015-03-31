@@ -118,6 +118,21 @@ class RightsHelper
 
             // User Role (Project Context)
             case 'user_sendInvite':
+            case 'semdom_editor_dto':
+            	  return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
+            case 'semdom_get_open_projects':
+            	return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+            case 'semdom_item_update':
+            	return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
+            case 'semdom_comment_update':
+            	return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT);
+            case 'semdom_project_exists':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+            case 'semdom_create_project':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+            case 'semdom_workingset_update':
+                return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
+                
             case 'message_markRead':
             case 'project_pageDto':
             case 'lex_projectDto':
