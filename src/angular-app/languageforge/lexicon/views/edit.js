@@ -137,6 +137,8 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
         }
         saving = false;
       });
+    } else {
+      (successCallback || angular.noop)();
     }
   };
 
@@ -339,7 +341,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       };
       setCurrentEntry(newEntry);
       commentService.loadEntryComments(uniqueId);
-      addEntryToEntryList(newEntry);
+      editorService.addEntryToEntryList(newEntry);
       editorService.showInitialEntries();
       scrollListToEntry(uniqueId, 'top');
       $scope.state = 'edit';
@@ -358,10 +360,6 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     // $location.path('/dbe', false);
   };
 
-
-  function addEntryToEntryList(entry) {
-    $scope.entries.unshift(entry);
-  }
 
   $scope.makeValidModelRecursive = function makeValidModelRecursive(config, data, stopAtNodes) {
     if (angular.isString(stopAtNodes)) {
@@ -470,7 +468,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
     });
   };
 
-  $scope.showEmptyFields = false;
+  $scope.show = {emptyFields: false};
 
   $scope.getCompactItemListOverlay = function getCompactItemListOverlay(entry) {
     var title, subtitle;
