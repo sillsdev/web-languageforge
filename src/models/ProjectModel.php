@@ -2,7 +2,10 @@
 
 namespace models;
 
+use models\mapper\ArrayOf;
+
 use libraries\shared\Website;
+use models\languageforge\SemDomTransProjectModel;
 use models\scriptureforge\RapumaProjectModel;
 
 use models\languageforge\lexicon\LexiconProjectModel;
@@ -228,6 +231,8 @@ class ProjectModel extends \models\mapper\MapperModel
                 return new RapumaProjectModel($projectId);
             case 'lexicon':
                 return new LexiconProjectModel($projectId);
+            case 'semdomtrans':
+                return new SemDomTransProjectModel($projectId);
             default:
                 return new ProjectModel($projectId);
         }
@@ -342,6 +347,13 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public $appName;
 
+    /**
+     * 
+     * @var ArrayOf
+     */
+    public $usersRequestingAccess;
+    
+    
     private function rrmdir($dir)
     {
         if (is_dir($dir)) {

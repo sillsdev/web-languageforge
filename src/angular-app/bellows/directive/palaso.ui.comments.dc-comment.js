@@ -5,7 +5,7 @@ angular.module('palaso.ui.comments')
     return {
       restrict: 'E',
       templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.dc-comment.html',
-      controller: ['$scope', 'lexCommentService', 'lexConfigService', 'sessionService', 'modalService', 'lexEditorDataService', function($scope, commentService, configService, sessionService, modal, editorService) {
+      controller: ['$scope', 'lexCommentService', 'sessionService', 'modalService', 'lexEditorDataService', function($scope, commentService, sessionService, modal, editorService) {
 
         $scope.hover = { comment: false };
 
@@ -16,8 +16,8 @@ angular.module('palaso.ui.comments')
         $scope.editingCommentContent = '';
 
 
-        if ($scope.comment.regarding.field) {
-          $scope.commentRegardingFieldConfig = configService.getFieldConfig($scope.comment.regarding.field);
+        if ($scope.comment.regarding.field && $scope.control.configService != undefined) {
+          $scope.commentRegardingFieldConfig = $scope.control.configService.getFieldConfig($scope.comment.regarding.field);
           $scope.isCommentRegardingPicture = (($scope.commentRegardingFieldConfig.type == 'pictures') &&
           ! ($scope.comment.regarding.inputSystem));
         }
