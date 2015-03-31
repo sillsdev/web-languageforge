@@ -126,7 +126,8 @@ angular.module('bellows.services')
       // http://www.w3.org/TR/IndexedDB/#dfn-steps-for-deleting-records-from-an-object-store
       var deferred = $q.defer();
       openDbIfNecessary().then(function() {
-        var request = db.transaction(storeName, "readwrite").objectStore(storeName).delete(key);
+        // we write ['delete'] to satisfy the yui compressor - arg! - time to get a new compressor - cjh 2015-03
+        var request = db.transaction(storeName, "readwrite").objectStore(storeName)['delete'](key);
         request.onsuccess = function(e) {
           deferred.resolve(true);
         };
