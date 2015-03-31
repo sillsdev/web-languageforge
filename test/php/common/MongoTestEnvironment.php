@@ -303,7 +303,13 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
      */
     public $project;
 
-    public function createProject($name, $code)
+    /**
+     * @param string $name
+     * @param string $code
+     * @param string $appName - included only to make the signature the same as the parent
+     * @return LexiconProjectModel
+     */
+    public function createProject($name, $code , $appName = '')
     {
         $projectModel = new LexiconProjectModel();
         $projectModel->projectName = $name;
@@ -410,14 +416,14 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
 		
 		$projectModel = $this->createSemDomProject($languageCode, $this->semdomVersion);
 		
-		$xmlFilePath = "/var/www/host/sil/lfsite/docs/semdom/semdom lists/SemDom_en.xml";
+		$xmlFilePath = TestPath . "/languageforge/semdomtrans/assets/SemDom_en.xml";
 		$newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
 		if (!file_exists($projectModel->getAssetsFolderPath())) {
 			mkdir($projectModel->getAssetsFolderPath());
 		}
 		
 		copy($xmlFilePath, $newXmlFilePath);
-		$projectModel->newXmlFilePath = $newXmlFilePath;
+		$projectModel->xmlFilePath = $newXmlFilePath;
 		$projectModel->write();
 		
 		$importer = new SemDomXMLImporter($xmlFilePath, $projectModel, false, true);

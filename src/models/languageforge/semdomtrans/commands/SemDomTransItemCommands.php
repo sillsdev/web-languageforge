@@ -48,7 +48,6 @@ class SemDomTransItemCommands
 			$s->searchKeys[$i]->translation = $data["searchKeys"][$i]["translation"];
 		}
 		
-		$s->write();
-		return $s->id->asString();
+		return $s->write();
 	}
 }

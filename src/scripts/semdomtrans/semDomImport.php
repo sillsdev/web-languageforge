@@ -51,7 +51,7 @@ if ($previousProject->id->asString() == "")
 	
 	print "copying $xmlFilePath to  $newXmlFilePath\n";
 	copy($xmlFilePath, $newXmlFilePath);
-	$projectModel->newXmlFilePath = $newXmlFilePath;
+	$projectModel->xmlFilePath = $newXmlFilePath;
 	$projectModel->languageIsoCode = $lang;
 	$projectModel->semdomVersion = $semdomVersion;
 	$projectModel->write();
