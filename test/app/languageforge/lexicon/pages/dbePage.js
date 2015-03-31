@@ -322,7 +322,7 @@ var LfDbePage = function() {
         meaning: div.element(by.binding('comment.regarding.meaning')),
         fieldLabel: div.element(by.binding('comment.regarding.fieldNameForDisplay')),
         fieldWsid: div.element(by.binding('comment.regarding.inputSystem')),
-        fieldValue: div.element(by.binding('comment.regarding.fieldValue')),
+        fieldValue: div.element(by.css('.regardingFieldValue'))
       },
 
       // Replies (below content but above bottom controls)
@@ -336,7 +336,7 @@ var LfDbePage = function() {
       markResolvedLink: div.element(by.css('.commentBottomBar i.icon-ok')),
       markTodoLink: div.element(by.css('.commentBottomBar i.icon-edit')),
       editBtn: div.element(by.buttonText('Edit')),
-      replyBtn: div.element(by.buttonText('Reply')),
+      replyBtn: div.element(by.buttonText('Reply'))
     };
   };
 
