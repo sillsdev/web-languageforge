@@ -33,6 +33,14 @@ use models\ProjectModel;
 use models\QuestionModel;
 use models\UserModel;
 use models\UserProfileModel;
+use models\languageforge\SemDomTransProjectModel;
+use models\languageforge\semdomtrans\dto\SemDomTransEditDto;
+use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
+use models\languageforge\semdomtrans\commands\SemDomTransItemCommands;
+use models\languageforge\semdomtrans\commands\SemDomTransCommentsCommands;
+use models\languageforge\LfProjectModel;
+use models\languageforge\semdomtrans\SemDomTransWorkingSetModel;
+use models\languageforge\semdomtrans\commands\SemDomTransWorkingSetCommands;
 
 require_once APPPATH . 'vendor/autoload.php';
 require_once APPPATH . 'config/sf_config.php';
@@ -40,6 +48,7 @@ require_once APPPATH . 'models/ProjectModel.php';
 require_once APPPATH . 'models/QuestionModel.php';
 require_once APPPATH . 'models/TextModel.php';
 require_once APPPATH . 'models/UserModel.php';
+
 
 class sf
 {
@@ -681,6 +690,58 @@ class sf
         $response = LexUploadCommands::importLiftFile($this->_projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
+    
+    
+    /*
+     * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
+     */
+    public function semdom_editor_dto() {
+    	return SemDomTransEditDto::encode($this->_projectId, null, null);
+    }
+    
+    public function semdom_get_open_projects() {
+    	return SemDomTransProjectCommands::getOpenSemdomProjects();
+    }
+    
+    public function semdom_item_update($data) {
+    	return SemDomTransItemCommands::update($data, $this->_projectId);
+    }
+    
+    public function semdom_comment_update($data) {
+    	return SemDomTransCommentsCommands::update($data, $this->_projectId);
+    }
+    
+    public function semdom_project_exists($languageIsoCode) {
+        return SemDomTransProjectCommands::checkProjectExists($languageIsoCode, 20);
+    }
+    
+    public function semdom_workingset_update($data) {
+        return SemDomTransWorkingSetCommands::update($data, $this->_projectId);
+    }
+    
+    /**
+     *
+     * @param string $projectName
+     * @param string $projectCode
+     * @param string $appName
+     * @return string | boolean - $projectId on success, false if project code is not unique
+     */
+    public function semdom_create_project($languageIsoCode)
+    {    	
+        $projectName = "Semdom $languageIsoCode Project";
+        $projectCode = "semdom-$languageIsoCode-20";
+    	$projectID = ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $this->_userId, $this->_website);	
+    	
+    	$project = new SemDomTransProjectModel($projectID);
+    	$project->languageIsoCode = $languageIsoCode;
+    	$project->semdomVersion = 20;
+    	$project->write();
+    	
+    	SemDomTransProjectCommands::preFillProject($projectID);
+    	return $projectID;
+    }
+    
+    
 
     // ---------------------------------------------------------------
     // Private Utility Functions
