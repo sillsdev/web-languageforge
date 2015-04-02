@@ -58,6 +58,19 @@ function ConfigurationPage() {
     }
   };
   
+  this.fieldsTab = {
+    newCustomFieldButton: this.activePane.element(by.buttonText('New Custom Field')),
+    fieldSetupLabel: this.activePane.element(by.id('fieldSetupLabel')),
+    hiddenIfEmptyCheckbox: this.activePane.element(by.model('fieldConfig[currentField.name].hideIfEmpty')),
+    displayMultilineCheckbox: this.activePane.element(by.model('fieldConfig[currentField.name].displayMultiline')),
+    widthInput: this.activePane.element(by.model('fieldConfig[currentField.name].width')),
+    captionHiddenIfEmptyCheckbox: this.activePane.element(by.model('fieldConfig[currentField.name].captionHideIfEmpty')), 
+    inputSystemTags: this.activePane.all(by.repeater('inputSystemTag in currentField.inputSystems.fieldOrder')),
+    inputSystemCheckboxes: this.activePane.all(by.model('currentField.inputSystems.selecteds[inputSystemTag]')),
+    inputSystemUpButton: this.activePane.element(by.id('upButton')),
+    inputSystemDownButton: this.activePane.element(by.id('downButton'))
+  };
+  
   this.showAllFieldsButton = element(by.buttonText('Show All Fields'));
   this.showCommonFieldsButton = element(by.buttonText('Show Only Common Fields'));
 
@@ -66,7 +79,7 @@ function ConfigurationPage() {
   this.exampleFields = this.activePane.all(by.repeater('fieldName in fieldOrder.examples'));
 
   this.getFieldByName = function getFieldByName(fieldName) {
-    return element(by.css('div.tab-pane.active > div > div > div.span3 dl.picklists')).element(by.cssContainingText('div[data-ng-repeat] span', fieldName));
+    return element(by.css('div.tab-pane.active > div > div > div.span3 dl.picklists')).element(by.cssContainingText('div[data-ng-repeat] > span', fieldName));
   };
 
   this.hiddenIfEmpty = this.activePane.element(by.id('hideIfEmpty'));
