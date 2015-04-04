@@ -59,7 +59,6 @@ function ConfigurationPage() {
   };
   
   this.fieldsTab = {
-    newCustomFieldButton: this.activePane.element(by.buttonText('New Custom Field')),
     fieldSetupLabel: this.activePane.element(by.id('fieldSetupLabel')),
     hiddenIfEmptyCheckbox: this.activePane.element(by.model('fieldConfig[currentField.name].hideIfEmpty')),
     displayMultilineCheckbox: this.activePane.element(by.model('fieldConfig[currentField.name].displayMultiline')),
@@ -68,7 +67,8 @@ function ConfigurationPage() {
     inputSystemTags: this.activePane.all(by.repeater('inputSystemTag in currentField.inputSystems.fieldOrder')),
     inputSystemCheckboxes: this.activePane.all(by.model('currentField.inputSystems.selecteds[inputSystemTag]')),
     inputSystemUpButton: this.activePane.element(by.id('upButton')),
-    inputSystemDownButton: this.activePane.element(by.id('downButton'))
+    inputSystemDownButton: this.activePane.element(by.id('downButton')),
+    newCustomFieldButton: this.activePane.element(by.buttonText('New Custom Field'))
   };
   
   this.showAllFieldsButton = element(by.buttonText('Show All Fields'));
@@ -87,7 +87,7 @@ function ConfigurationPage() {
     return this.activePane.element(by.id('captionHideIfEmpty'));
   }; 
 
-  // select language modal
+  // select language and custom field modals
   this.modal = modal;
   
 };
