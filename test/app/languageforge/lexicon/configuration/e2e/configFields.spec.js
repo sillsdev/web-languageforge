@@ -4,6 +4,7 @@ describe('Configuration Fields', function() {
   var constants     = require('../../../../testConstants');
   var loginPage     = require('../../../../bellows/pages/loginPage.js');
   var projectsPage  = require('../../../../bellows/pages/projectsPage.js');
+  var util          = require('../../../../bellows/pages/util.js');
   var configPage    = require('../../pages/configurationPage.js');
   
   it('setup: login as manager, select test project, goto configuration', function() {
@@ -89,6 +90,92 @@ describe('Configuration Fields', function() {
     configPage.applyButton.click();
     expect(configPage.noticeList.count()).toBe(1);
     expect(configPage.noticeList.get(0).getText()).toContain('configuration updated successfully');
+  });
+  
+  describe('Add a new Custom Field modal', function() {
+    var displayName = 'cust_name';
+    
+    it('can open the new custom field modal', function() {
+      expect(configPage.fieldsTab.newCustomFieldButton.isEnabled()).toBe(true);
+      configPage.fieldsTab.newCustomFieldButton.click();
+      expect(configPage.modal.customField.displayNameInput.isDisplayed()).toBe(true);
+      expect(configPage.modal.customField.levelDropdown.isDisplayed()).toBe(true);
+      expect(configPage.modal.customField.typeDropdown.isDisplayed()).toBe(true);
+      expect(configPage.modal.customField.listCodeDropdown.isPresent()).toBe(false);
+      expect(configPage.modal.customField.addButton.isPresent()).toBe(true);
+      expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
+    });
+    
+    it('can enter a field name', function() {
+      expect(configPage.modal.customField.fieldCodeExists.isPresent()).toBe(true);
+      expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
+      configPage.modal.customField.displayNameInput.sendKeys(displayName + protractor.Key.ENTER);
+      expect(configPage.modal.customField.addButton.getText()).toEqual('Add ' + displayName);
+      expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
+      expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
+    });
+    
+    it('can enter a field level', function() {
+      util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Entry Level');
+      expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
+      expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
+    });
+    
+    it('can enter a field type', function() {
+      util.clickDropdownByValue(configPage.modal.customField.typeDropdown, 'Multi-input-system Text');
+      expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
+      expect(configPage.modal.customField.addButton.isEnabled()).toBe(true);
+    });
+
+    it('can add custom field', function() {
+      configPage.modal.customField.addButton.click();
+      expect(configPage.modal.customField.displayNameInput.isPresent()).toBe(false);
+      expect(configPage.applyButton.isEnabled()).toBe(true);
+    });
+    
+    it('can re-open the new custom field modal', function() {
+      configPage.fieldsTab.newCustomFieldButton.click();
+    });
+    
+    it('cannot add a duplicate field name', function() {
+      expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
+      configPage.modal.customField.displayNameInput.sendKeys(displayName + protractor.Key.ENTER);
+      expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
+      expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
+      util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Entry Level');
+      expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(true);
+      expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
+    });
+    
+    it('can add a duplicate field name at a different level', function() {
+      util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Meaning Level');
+      expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
+      expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
+    });
+    
+    it('list code only shows when a list type is selected', function() {
+      util.clickDropdownByValue(configPage.modal.customField.typeDropdown, 'Multi-input-system Text');
+      expect(configPage.modal.customField.listCodeDropdown.isPresent()).toBe(false);
+      expect(configPage.modal.customField.addButton.isEnabled()).toBe(true);
+      util.clickDropdownByValue(configPage.modal.customField.typeDropdown, 'Multi-option List');
+      expect(configPage.modal.customField.listCodeDropdown.isDisplayed()).toBe(true);
+      expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
+      util.clickDropdownByValue(configPage.modal.customField.typeDropdown, 'Option List');
+      expect(configPage.modal.customField.listCodeDropdown.isDisplayed()).toBe(true);
+      expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
+    });
+    
+    it('can enter a list code', function() {
+      util.clickDropdownByValue(configPage.modal.customField.listCodeDropdown, 'Part of Speech');
+      expect(configPage.modal.customField.addButton.isEnabled()).toBe(true);
+    });
+
+    it('can cancel custom field modal', function() {
+      configPage.modal.customField.displayNameInput.sendKeys(protractor.Key.ESCAPE);
+      expect(configPage.modal.customField.displayNameInput.isPresent()).toBe(false);
+      expect(configPage.applyButton.isEnabled()).toBe(true);
+    });
+    
   });
   
 });
