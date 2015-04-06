@@ -41,26 +41,26 @@ $previousProject->readByProperties(array("languageIsoCode" => $lang, "semdomVers
 
 if ($previousProject->id->asString() == "")
 {
-	$projectID = ProjectCommands::createProject($projectName, $projectCode, $appName, $userId, $website);
-	$projectModel = new SemDomTransProjectModel($projectID);
+    $projectID = ProjectCommands::createProject($projectName, $projectCode, $appName, $userId, $website);
+    $projectModel = new SemDomTransProjectModel($projectID);
 
-	$newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
-	if (!file_exists($projectModel->getAssetsFolderPath())) {
-		mkdir($projectModel->getAssetsFolderPath());
-	}
-	
-	print "copying $xmlFilePath to  $newXmlFilePath\n";
-	copy($xmlFilePath, $newXmlFilePath);
-	$projectModel->xmlFilePath = $newXmlFilePath;
-	$projectModel->languageIsoCode = $lang;
-	$projectModel->semdomVersion = $semdomVersion;
-	$projectModel->write();
-	
-	
-	$importer = new SemDomXMLImporter($xmlFilePath, $projectModel, false, $isEnglish);
-	$importer->run();
+    $newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
+    if (!file_exists($projectModel->getAssetsFolderPath())) {
+        mkdir($projectModel->getAssetsFolderPath());
+    }
+    
+    print "copying $xmlFilePath to  $newXmlFilePath\n";
+    copy($xmlFilePath, $newXmlFilePath);
+    $projectModel->xmlFilePath = $newXmlFilePath;
+    $projectModel->languageIsoCode = $lang;
+    $projectModel->semdomVersion = $semdomVersion;
+    $projectModel->write();
+    
+    
+    $importer = new SemDomXMLImporter($xmlFilePath, $projectModel, false, $isEnglish);
+    $importer->run();
 } else {
-	echo "Project exists already" . "\n";
+    echo "Project exists already" . "\n";
 }
 
 

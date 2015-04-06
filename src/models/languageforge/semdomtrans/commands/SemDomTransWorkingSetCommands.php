@@ -28,12 +28,12 @@ use models\languageforge\semdomtrans\SemDomTransWorkingSetModel;
 
 class SemDomTransWorkingSetCommands
 {
-	public static function update($data, $projectId) {
-		$projectModel = new SemDomTransProjectModel($projectId);
-		
-		$s = new SemDomTransWorkingSetModel($projectModel);
-		JsonDecoder::decode($s, $data);
-		$s->write();
-		return $s->id->asString();
-	}
+    public static function update($data, $projectId) {
+        $projectModel = new SemDomTransProjectModel($projectId);
+        
+        $s = new SemDomTransWorkingSetModel($projectModel);
+        JsonDecoder::decode($s, $data);
+        $s->write();
+        return $s->id->asString();
+    }
 }
