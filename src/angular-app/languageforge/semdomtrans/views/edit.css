@@ -14,11 +14,11 @@
 }
 
 .selected {
-	background-color: #5cb85c;
+    background-color: #5cb85c;
 }
 
 .translated {
-	background-color: gray;
+    background-color: gray;
 }
 
 input[type=range] {
