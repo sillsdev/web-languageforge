@@ -6,6 +6,7 @@ describe('Configuration Fields', function() {
   var projectsPage  = require('../../../../bellows/pages/projectsPage.js');
   var util          = require('../../../../bellows/pages/util.js');
   var configPage    = require('../../pages/configurationPage.js');
+  var displayName = 'cust_name';
   
   it('setup: login as manager, select test project, goto configuration', function() {
     loginPage.loginAsManager();
@@ -93,9 +94,9 @@ describe('Configuration Fields', function() {
   });
   
   describe('Add a new Custom Field modal', function() {
-    var displayName = 'cust_name';
     
     it('can open the new custom field modal', function() {
+      expect(configPage.fieldsTab.removeCustomFieldButton.isDisplayed()).toBe(false);
       expect(configPage.fieldsTab.newCustomFieldButton.isEnabled()).toBe(true);
       configPage.fieldsTab.newCustomFieldButton.click();
       expect(configPage.modal.customField.displayNameInput.isDisplayed()).toBe(true);
@@ -130,11 +131,14 @@ describe('Configuration Fields', function() {
     it('can add custom field', function() {
       configPage.modal.customField.addButton.click();
       expect(configPage.modal.customField.displayNameInput.isPresent()).toBe(false);
+      expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual(displayName + ' Field Setup');
+      expect(configPage.fieldsTab.removeCustomFieldButton.isDisplayed()).toBe(true);
       expect(configPage.applyButton.isEnabled()).toBe(true);
     });
     
     it('can re-open the new custom field modal', function() {
       configPage.fieldsTab.newCustomFieldButton.click();
+      expect(configPage.modal.customField.displayNameInput.isDisplayed()).toBe(true);
     });
     
     it('cannot add a duplicate field name', function() {
@@ -176,6 +180,25 @@ describe('Configuration Fields', function() {
       expect(configPage.applyButton.isEnabled()).toBe(true);
     });
     
+  });
+  
+  it('can delete a newly created custom field', function() {
+    configPage.fieldsTab.removeCustomFieldButton.click();
+    expect(configPage.fieldsTab.removeCustomFieldButton.isDisplayed()).toBe(false);
+  });
+  
+  it('can re-create custom field and save configuration', function() {
+    configPage.fieldsTab.newCustomFieldButton.click();
+    configPage.modal.customField.displayNameInput.sendKeys(displayName + protractor.Key.ENTER);
+    util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Entry Level');
+    util.clickDropdownByValue(configPage.modal.customField.typeDropdown, 'Multi-input-system Text');
+    configPage.modal.customField.addButton.click();
+    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual(displayName + ' Field Setup');
+    configPage.applyButton.click();
+  });
+  
+  it('cannot delete a newly saved custom field', function() {
+    expect(configPage.fieldsTab.removeCustomFieldButton.isDisplayed()).toBe(false);
   });
   
 });
