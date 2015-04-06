@@ -12,25 +12,25 @@ require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 
 class SemDomTransProjectCommands_Test extends UnitTestCase {
-	public function testSemDomImportExport_ImportExportPreserveXMLFile() {
-		$e = new SemDomMongoTestEnvironment();
-		$e->clean();
-		$englishProject = $e->importEnglishProject();
-		$exporter = new SemDomXMLExporter($englishProject, false,  true, false);
-		$exporter->run();
-		$sourcePath = $englishProject->xmlFilePath;
-		$destinationPath = $englishProject->getAssetsFolderPath() . "/" . $englishProject->projectCode . "Export.xml";
-		
-		$sourceStr = trim(file_get_contents($sourcePath), "\n");
-		$sourceArr = explode("\n", $sourceStr);
-		$destStr = trim(file_get_contents($destinationPath), "\n");
-		$destArr = explode("\n", $destStr);
-		for ($i = 0; $i < count($destArr); $i++) {
+    public function testSemDomImportExport_ImportExportPreserveXMLFile() {
+        $e = new SemDomMongoTestEnvironment();
+        $e->clean();
+        $englishProject = $e->importEnglishProject();
+        $exporter = new SemDomXMLExporter($englishProject, false,  true, false);
+        $exporter->run();
+        $sourcePath = $englishProject->xmlFilePath;
+        $destinationPath = $englishProject->getAssetsFolderPath() . "/" . $englishProject->projectCode . "Export.xml";
+        
+        $sourceStr = trim(file_get_contents($sourcePath), "\n");
+        $sourceArr = explode("\n", $sourceStr);
+        $destStr = trim(file_get_contents($destinationPath), "\n");
+        $destArr = explode("\n", $destStr);
+        for ($i = 0; $i < count($destArr); $i++) {
             if ($i % 5000 == 0) {
                 $this->assertEqual(substr($sourceArr[$i], 0, -1), $destArr[$i]);
             }
-		}
-		
-		$e->clean();
-	}
+        }
+        
+        $e->clean();
+    }
 }

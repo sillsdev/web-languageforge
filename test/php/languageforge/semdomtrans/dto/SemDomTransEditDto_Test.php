@@ -22,18 +22,18 @@ class TestSemDomTransEditDto extends UnitTestCase
 
     public function testEncode_SourceProjectFromXmlTargetProjectPreFilled_DtoAsExpected() 
     {
-    	$e = new SemDomMongoTestEnvironment(); 
-    	$e->clean();
-    	$englishProject = $e->importEnglishProject();
-    	$targetProject = $e->createPreFilledTargetProject("es");
-    	$result = SemDomTransEditDto::encode($targetProject->id->asString(), null);
-    	$this->assertNotEqual($result["items"], null);
-    	$this->assertEqual($result["items"][0]["name"]["source"], "Universe, creation");
-    	$this->assertEqual($result["items"][10]["name"]["source"], "Cloud");
-    	$this->assertEqual($result["items"][1]["questions"][1]["question"]["source"], "(2) What words refer to the air around the earth?");
-    	$e->clean();
+        $e = new SemDomMongoTestEnvironment(); 
+        $e->clean();
+        $englishProject = $e->importEnglishProject();
+        $targetProject = $e->createPreFilledTargetProject("es");
+        $result = SemDomTransEditDto::encode($targetProject->id->asString(), null);
+        $this->assertNotEqual($result["items"], null);
+        $this->assertEqual($result["items"][0]["name"]["source"], "Universe, creation");
+        $this->assertEqual($result["items"][10]["name"]["source"], "Cloud");
+        $this->assertEqual($result["items"][1]["questions"][1]["question"]["source"], "(2) What words refer to the air around the earth?");
+        $e->clean();
     }
-    	 
+         
     public function testEncode_SourceProjectAndTargetProjectHaveItems_DtoAsExpected()
     {
         $e = new SemDomMongoTestEnvironment();
@@ -53,7 +53,7 @@ class TestSemDomTransEditDto extends UnitTestCase
         $sourceItemModel->description = new SemDomTransTranslatedForm("Universe description");
         $sq = new SemDomTransQuestion("A universe question", "A universe question term");
         $sourceItemModel->questions = new ArrayOf(function ($data) {
-        	return new SemDomTransQuestion();
+            return new SemDomTransQuestion();
         });      
         $sourceItemModel->questions[] = $sq;
         $sourceItemModel->write();       
@@ -64,7 +64,7 @@ class TestSemDomTransEditDto extends UnitTestCase
         $targetItemModel->description = new SemDomTransTranslatedForm("Opis wszechswiata");
         $tq = new SemDomTransQuestion("Pytanie wszechswiata", "Termin zwiazany z wszechswiatem");
         $targetItemModel->questions = new ArrayOf(function ($data) {
-        	return new SemDomTransQuestion();
+            return new SemDomTransQuestion();
         });
         $targetItemModel->questions[] = $tq;
         $targetItemModel->write();           

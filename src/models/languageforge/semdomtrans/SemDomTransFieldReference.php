@@ -2,7 +2,7 @@
 namespace models\languageforge\semdomtrans;
 
 class SemDomTransFieldReference {
-	public function __construct($fieldName = '', $sourceVal = '', $translationVal = '', $status = 0) { 
+    public function __construct($fieldName = '', $sourceVal = '', $translationVal = '', $status = 0) { 
         $this->fieldName = $fieldName;
         $this->sourceVal = $sourceVal;
         $this->translationVal = $translationVal;

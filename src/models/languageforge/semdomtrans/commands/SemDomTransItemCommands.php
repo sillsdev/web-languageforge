@@ -27,27 +27,27 @@ use models\languageforge\semdomtrans\SemDomTransQuestion;
 
 class SemDomTransItemCommands
 {
-	public static function update($data, $projectId) {
-		$projectModel = new SemDomTransProjectModel($projectId);
-		$guid = $data["xmlGuid"];
-		$s = new SemDomTransItemModel($projectModel);
-		$s->xmlGuid = $guid;
-		$s->readByProperty("xmlGuid", $guid);
-		
-	
-		$s->key = $data["key"];
-		$s->name->translation = $data["name"]["translation"];
-		$s->description->translation = $data["description"]["translation"];
-		
-		for ($i = 0; $i < count($s->questions); $i++ ) {
-			$s->questions[$i]->question->translation = $data["questions"][$i]["question"]["translation"];
-			$s->questions[$i]->terms->translation = $data["questions"][$i]["terms"]["translation"];
-		}
-		
-		for ($i = 0; $i < count($s->searchKeys); $i++ ) {
-			$s->searchKeys[$i]->translation = $data["searchKeys"][$i]["translation"];
-		}
-		
-		return $s->write();
-	}
+    public static function update($data, $projectId) {
+        $projectModel = new SemDomTransProjectModel($projectId);
+        $guid = $data["xmlGuid"];
+        $s = new SemDomTransItemModel($projectModel);
+        $s->xmlGuid = $guid;
+        $s->readByProperty("xmlGuid", $guid);
+        
+    
+        $s->key = $data["key"];
+        $s->name->translation = $data["name"]["translation"];
+        $s->description->translation = $data["description"]["translation"];
+        
+        for ($i = 0; $i < count($s->questions); $i++ ) {
+            $s->questions[$i]->question->translation = $data["questions"][$i]["question"]["translation"];
+            $s->questions[$i]->terms->translation = $data["questions"][$i]["terms"]["translation"];
+        }
+        
+        for ($i = 0; $i < count($s->searchKeys); $i++ ) {
+            $s->searchKeys[$i]->translation = $data["searchKeys"][$i]["translation"];
+        }
+        
+        return $s->write();
+    }
 }

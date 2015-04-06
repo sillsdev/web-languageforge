@@ -20,11 +20,11 @@ class SemDomTransEditDto
         $data = array();
         $project = new SemDomTransProjectModel($projectId);
         if ($project->sourceLanguageProjectId == null) {
-       		$sourceProject = new SemDomTransProjectModel();
-       		$sourceProject->projectCode="semdom-en-$project->semdomVersion";
-       		$sourceProject->readByProperty("projectCode", $sourceProject->projectCode);
+               $sourceProject = new SemDomTransProjectModel();
+               $sourceProject->projectCode="semdom-en-$project->semdomVersion";
+               $sourceProject->readByProperty("projectCode", $sourceProject->projectCode);
         } else {
-        	$sourceProject = new SemDomTransProjectModel($project->sourceLanguageProjectId);
+            $sourceProject = new SemDomTransProjectModel($project->sourceLanguageProjectId);
         }
         $items = new SemDomTransItemListModel($project, $lastFetchTime);
         $items->read();
@@ -37,53 +37,53 @@ class SemDomTransEditDto
         //print_r($sourceItems);
         $sourceItemsByKey = array();
         foreach ($sourceItems as $item) {
-        	$sourceItemsByKey[$item['key']] = $item;
+            $sourceItemsByKey[$item['key']] = $item;
         }
         
         // suplement the target language data with source language values
         
         $sourceLanguageIsIncomplete = false;
         foreach ($targetItems as $i => $item) {
-        	foreach ($item as $outerProp => $outerValue) {
-				if (is_array($outerValue) && key_exists('translation', $outerValue)) {
-        			if ($sourceItemsByKey[$item['key']][$outerProp]['translation'] != '') {
-			        	$targetItems[$i][$outerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp]['translation'];
-        			} else {
-       					$sourceLanguageIsIncomplete = true;
-        			}
-        		};
-        		if ($outerProp == 'searchKeys') {
-        			foreach ($outerValue as $innerProp => $innerValue) {
-        				if (array_key_exists($innerProp, $sourceItemsByKey[$item['key']][$outerProp]))
-        				{
-	        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'] != '') {
-					        	$targetItems[$i][$outerProp][$innerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'];
-	        				} else {
-	       						$sourceLanguageIsIncomplete = true;
-	        				}
-        				}
-        			}
-        		} else if ($outerProp == 'questions') {
-        			foreach ($outerValue as $innerProp => $innerValue) {
-        				if (array_key_exists($innerProp, $sourceItemsByKey[$item['key']][$outerProp])) {
-	        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'] != '') {
-					        	$targetItems[$i][$outerProp][$innerProp]['question']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'];
-	        				} else {
-	       						$sourceLanguageIsIncomplete = true;
-	        				}
-	        				
-	        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'] != '') {
-	        					$targetItems[$i][$outerProp][$innerProp]['terms']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'];
-	        				} else {
-	        					$sourceLanguageIsIncomplete = true;
-	        				}
-        				}
-        				else {
-        					$sourceLanguageIsIncomplete = true;
-        				}
-        			}
-        		}
-        	}
+            foreach ($item as $outerProp => $outerValue) {
+                if (is_array($outerValue) && key_exists('translation', $outerValue)) {
+                    if ($sourceItemsByKey[$item['key']][$outerProp]['translation'] != '') {
+                        $targetItems[$i][$outerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp]['translation'];
+                    } else {
+                           $sourceLanguageIsIncomplete = true;
+                    }
+                };
+                if ($outerProp == 'searchKeys') {
+                    foreach ($outerValue as $innerProp => $innerValue) {
+                        if (array_key_exists($innerProp, $sourceItemsByKey[$item['key']][$outerProp]))
+                        {
+                            if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'] != '') {
+                                $targetItems[$i][$outerProp][$innerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'];
+                            } else {
+                                   $sourceLanguageIsIncomplete = true;
+                            }
+                        }
+                    }
+                } else if ($outerProp == 'questions') {
+                    foreach ($outerValue as $innerProp => $innerValue) {
+                        if (array_key_exists($innerProp, $sourceItemsByKey[$item['key']][$outerProp])) {
+                            if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'] != '') {
+                                $targetItems[$i][$outerProp][$innerProp]['question']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'];
+                            } else {
+                                   $sourceLanguageIsIncomplete = true;
+                            }
+                            
+                            if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'] != '') {
+                                $targetItems[$i][$outerProp][$innerProp]['terms']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'];
+                            } else {
+                                $sourceLanguageIsIncomplete = true;
+                            }
+                        }
+                        else {
+                            $sourceLanguageIsIncomplete = true;
+                        }
+                    }
+                }
+            }
         }
         $data['sourceLanguageIsIncomplete'] = $sourceLanguageIsIncomplete;
         
@@ -97,7 +97,7 @@ class SemDomTransEditDto
         $data["workingSets"] = $workingSets->entries;
         
         if (!is_null($lastFetchTime)) {
-        	/* TODO: implement deleted Items list model
+            /* TODO: implement deleted Items list model
             $deletedEntriesModel = new LexDeletedEntryListModel($project, $lastFetchTime);
             $deletedEntriesModel->read();
             $data['deletedEntryIds'] = array_map(function ($e) {return $e['id']; }, $deletedEntriesModel->entries);
