@@ -68,7 +68,8 @@ function ConfigurationPage() {
     inputSystemCheckboxes: this.activePane.all(by.model('currentField.inputSystems.selecteds[inputSystemTag]')),
     inputSystemUpButton: this.activePane.element(by.id('upButton')),
     inputSystemDownButton: this.activePane.element(by.id('downButton')),
-    newCustomFieldButton: this.activePane.element(by.buttonText('New Custom Field'))
+    newCustomFieldButton: this.activePane.element(by.buttonText('New Custom Field')),
+    removeCustomFieldButton: this.activePane.element(by.buttonText('Remove Custom Field'))
   };
   
   this.showAllFieldsButton = element(by.buttonText('Show All Fields'));
