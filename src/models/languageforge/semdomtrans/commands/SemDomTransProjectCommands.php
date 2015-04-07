@@ -24,6 +24,7 @@ use models\ProjectListModel;
 use models\languageforge\LfProjectModel;
 use models\commands\ProjectCommands;
 use models\languageforge\semdomtrans\SemDomTransQuestion;
+use Palaso\Utilities\FileUtilities;
 
 class SemDomTransProjectCommands
 {
@@ -38,32 +39,30 @@ class SemDomTransProjectCommands
                 $semdomProjects[] = $sp;
             }
         }
-        
+
         return $semdomProjects;
     }
-    public static function preFillProject($projectId) {            
+    public static function preFillProject($projectId) {
         $projectModel = new SemDomTransProjectModel($projectId);
         $englishProject = new SemDomTransProjectModel();
         $englishProject->readByProperties(array("languageIsoCode" => "en", "semdomVersion" => $projectModel->semdomVersion));
         $projectModel->sourceLanguageProjectId = $englishProject->id->asString();
         $projectModel->write();
-        
+
         $xmlFilePath = $englishProject->xmlFilePath;
         $newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
-        if (!file_exists($projectModel->getAssetsFolderPath())) {
-            mkdir($projectModel->getAssetsFolderPath());
-        }
+        FileUtilities::createAllFolders($projectModel->getAssetsFolderPath());
         copy($xmlFilePath, $newXmlFilePath);
         $projectModel->xmlFilePath = $newXmlFilePath;
         $projectModel->write();
-        
+
         $englishItems = new SemDomTransItemListModel($englishProject);
         $englishItems->read();
         foreach ($englishItems->entries as $item) {
             $newItem = new SemDomTransItemModel($projectModel);
             $newItem->key = $item['key'];
             foreach ($item['questions'] as $q) {
-                $newq = new SemDomTransQuestion("aa", "aa"); 
+                $newq = new SemDomTransQuestion("aa", "aa");
                 $newItem->questions[] = $newq;
             }
             foreach ($item['searchKeys'] as $sk) {
@@ -71,12 +70,12 @@ class SemDomTransProjectCommands
                 $newItem->searchKeys[] = $newsk;
             }
             $newItem->xmlGuid = $item['xmlGuid'];
-            $newItem->write();               
+            $newItem->write();
         }
-        
+
         return $projectModel;
     }
-    
+
     public static function checkProjectExists($languageCode, $semdomVersion) {
         $project = new SemDomTransProjectModel();
         $project->readByProperties(array("languageIsoCode" => $languageCode, "semdomVersion" => $semdomVersion));
