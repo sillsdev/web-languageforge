@@ -4,8 +4,8 @@ angular.module('semdomtrans.services', ['jsonRpc'])
   .service('semdomtransEditService', ['jsonRpc',
   function(jsonRpc) {
     jsonRpc.connect('/api/sf');
-    this.editorDto = function editorDto(callback) {
-        jsonRpc.call('semdom_editor_dto', [], function(result) {
+    this.editorDto = function editorDto(timestamp, callback) {
+        jsonRpc.call('semdom_editor_dto', [timestamp], function(result) {
           callback(result);
         });
   };
