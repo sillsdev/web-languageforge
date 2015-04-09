@@ -1,4 +1,15 @@
 <div class="content container" data-ng-cloak data-ng-controller="MainCtrl">
 	<div data-sil-notices></div>
+    <div class="btn-group pull-right" style="margin-top:25px">
+            <a class="btn dropdown-toggle"
+                data-toggle="dropdown"
+                data-tooltip-placement="{{interfaceConfig.placementToSide}}"
+                data-tooltip="Settings" href="#">
+                <i class="icon-cog icon-large"></i>
+                <span class="caret"></span></a>
+            <ul class="dropdown-menu" data-ng-class="interfaceConfig.pullToSide">
+                <li><a ng-href="/app/usermanagement/{{project.id}}" translate="User Management"></a></li>
+            </ul>
+    </div>
     <div ui-view></div> <!-- todo: use ui-router instead -->
 </div>
