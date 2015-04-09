@@ -6,7 +6,7 @@ angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services
 function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
   // refresh the data and go to state
   if ($scope.items.length == 0 && !$scope.loadingDto) {
-      $scope.refreshDbeData(true);
+      $scope.loadDbeData();
   }
   $scope.selectedTab = 0;
   $scope.control = $scope;
@@ -102,6 +102,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     if (oldVal != newVal) {      
         $scope.currentEntry = $scope.items[$scope.currentEntryIndex];
         $scope.translatedItems = {};
+        // find all items that are completely translated
         for (var i = 0; i < $scope.items.length; i++) {
           if (isTranslatedCompletely($scope.items[i])) {
             $scope.translatedItems[$scope.items[i].key] = true;
@@ -111,6 +112,10 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
         }
     }
   });
+  
+  /*
+   * Determines if a semdom item is completely translated
+   */
   
   function isTranslatedCompletely(item) {
     var translated = true;
@@ -145,6 +150,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     }
     return false;
   }
+  
   $scope.setTab = function(val) {
     $scope.selectedTab = val;
   }  
@@ -162,6 +168,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     }
   
   $scope.updateItem = function updateItem(v) {
+    // update item if we hit the enter key
     v = (v === undefined) ? 13 : v;
     if (v == 13) {
       api.updateTerm($scope.currentEntry, function(result) {
@@ -176,6 +183,8 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     
   $scope.$watch('items', function(newVal) {
     if (newVal && newVal.length > 0) {
+      
+      // reload all items up to appropriate tre depth
       var maxDepth = 0;
       for (var i in $scope.items) {
         var depth = ($scope.items[i].key.length + 1)/2;
@@ -185,16 +194,17 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
         
         $scope.includedItems[$scope.items[i].key] = true;
       }
+      
       $scope.maxDepth = maxDepth;
       $scope.reloadItems(1);
+      
+      // reload current entry if it is included in lsit
       if ($scope.includedItems[$scope.items[$stateParams.position].key]) {      
         $scope.currentEntry = $scope.items[$stateParams.position];
         $scope.currentEntryIndex = angular.isUndefined($stateParams.position) ? 0 : $stateParams.position;
         $scope.changeTerm($scope.currentEntry.key);
       }
-    }
-    
-    
+    }   
   });
   
   $scope.$watch('workingSets', function(newVal) {
@@ -208,7 +218,10 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     term: '',
     searchResults: []
   };
+  
+  
   $scope.typeahead.searchEntries = function searchEntries(query) {
+    // if query starts with number, include all items whose key begin with that number
     if (!isNaN(parseInt(query[0]))) {
       $scope.typeahead.searchResults = []
       var results = [];

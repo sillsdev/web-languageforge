@@ -31,7 +31,7 @@ class SemDomTransEditDto
         $targetItems = $items->entries;
         //print_r($targetItems);
         
-        $sourceItemsModel = new SemDomTransItemListModel($sourceProject, $lastFetchTime);
+        $sourceItemsModel = new SemDomTransItemListModel($sourceProject);
         $sourceItemsModel->read();
         $sourceItems = $sourceItemsModel->entries;
         //print_r($sourceItems);
@@ -96,18 +96,13 @@ class SemDomTransEditDto
         $workingSets->read();
         $data["workingSets"] = $workingSets->entries;
         
-        if (!is_null($lastFetchTime)) {
-        	/* TODO: implement deleted Items list model
-            $deletedEntriesModel = new LexDeletedEntryListModel($project, $lastFetchTime);
-            $deletedEntriesModel->read();
-            $data['deletedEntryIds'] = array_map(function ($e) {return $e['id']; }, $deletedEntriesModel->entries);
-            */
-
+       /*  if (!is_null($lastFetchTime)) {
+        	
             $deletedCommentsModel = new LexDeletedCommentListModel($project, $lastFetchTime);
             $deletedCommentsModel->read();
             $data['deletedCommentIds'] = array_map(function ($c) {return $c['id']; }, $deletedCommentsModel->entries);
         }
-
+ */
 
         $data['items'] = $targetItems;
 

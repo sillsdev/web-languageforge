@@ -713,9 +713,16 @@ class sf
     
     /*
      * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
-     */
-    public function semdom_editor_dto() {
-    	return SemDomTransEditDto::encode($this->_projectId, null, null);
+     */    
+    public function semdom_editor_dto($lastFetchTime = null)
+    {
+        if ($lastFetchTime) {
+            $lastFetchTime = $lastFetchTime - 5; // 5 second buffer
+    
+            return SemDomTransEditDto::encode($this->_projectId, $this->_userId, $lastFetchTime);
+        } else {
+            return SemDomTransEditDto::encode($this->_projectId, $this->_userId);
+        }
     }
     
     public function semdom_get_open_projects() {
