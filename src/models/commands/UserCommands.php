@@ -440,23 +440,12 @@ class UserCommands
     * @throws \Exception
     * @return string $userId
     */
-    public static function sendInvite($projectId, $inviterUserId, $website, $toEmail, IDelivery $delivery = null)
+    public static function sendInvite($projectId, $inviterUserId, $website, $inviteeUserId, IDelivery $delivery = null)
     {
         $newUser = new UserModel();
         $inviterUser = new UserModel($inviterUserId);
         $project = new ProjectModel($projectId);
-        $newUser->emailPending = $toEmail;
-
-        // Check if email already exists in an account
-        $identityCheck = UserCommands::checkIdentity('', $toEmail, $website);
-        if ($identityCheck->emailExists) {
-            $newUser->readByProperty('email', $toEmail);
-        }
-
-        // Make sure the user exists on the site
-        if (!$newUser->hasRoleOnSite($website)) {
-            $newUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
-        }
+        $newUser->id = new Id($inviteeUserId);
 
         // Determine if user is already a member of the project
         if ($project->userIsMember($newUser->id->asString())) {
@@ -477,6 +466,40 @@ class UserCommands
             Communicate::sendAddedToProject($inviterUser, $newUser, $project, $website, $delivery);
         }
 
+        return $userId;
+    }
+    
+    
+    /**
+     * Sends an email to request joining of the project
+     * @param string $projectId
+     * @param string $inviterUserId
+     * @param Website $website
+     * @param string $toEmail
+     * @param IDelivery $delivery
+     * @throws \Exception
+     * @return string $userId
+     */
+    public static function sendJoinRequest($projectId, $userId, $website, IDelivery $delivery = null)
+    {
+        $newUser = new UserModel($userId);
+        $project = new ProjectModel();
+        $project->read($projectId['id']);
+        
+        // Make sure the user exists on the site
+        if (!$newUser->hasRoleOnSite($website)) {
+            $newUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
+        }
+        
+        // Determine if user is already a member of the project
+        if ($project->userIsMember($newUser->id->asString())) {
+            return $newUser->id;
+        }
+        
+        // Add the user to the project
+        $project->createUserJoinRequest($userId, ProjectRoles::CONTRIBUTOR);
+        $project->write();
+        
         return $userId;
     }
 

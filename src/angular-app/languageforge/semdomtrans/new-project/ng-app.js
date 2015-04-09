@@ -29,8 +29,8 @@ angular.module('semdomtrans-new-project',
       })
 
   }])
-.controller('projectSetupCtrl', ['$scope', '$state', '$location', '$window', 'semdomtransSetupService',  'sessionService', 'modalService', 'silNoticeService',
-function($scope, $state, $location, $window, semdomSetupApi, sessionService, modal, notice) {
+.controller('projectSetupCtrl', ['$scope', '$state', '$location', '$window', 'semdomtransSetupService', 'projectService',  'sessionService', 'modalService', 'silNoticeService',
+function($scope, $state, $location, $window, semdomSetupApi, projectService, sessionService, modal, notice) {
   $scope.languageCode = "";
   $scope.canCreate = true;
   var checksBeingMade = 0;
@@ -50,6 +50,14 @@ function($scope, $state, $location, $window, semdomSetupApi, sessionService, mod
       }
       });
     }
+  $scope.requestProjectJoin = function requestProjectJoin(project) {
+    var request = "Are you sure you want to send a join request to <b>' " + project.projectName + " '</b>";
+    modal.showModalSimple('Request Project Join', request, 'Cancel', 'Request Project Join').then(function() {
+      projectService.sendJoinRequest(project.id, function(result) {
+        ;
+      });
+    });
+  };
   
   $scope.createProject = function createProject() {
     semdomSetupApi.createProject($scope.languageCode, function(result) {

@@ -245,11 +245,17 @@ class sf
     {
         return UserCommands::sendInvite($this->_projectId, $this->_userId, $this->_website, $toEmail);
     }
-
+    
     // ---------------------------------------------------------------
     // GENERAL PROJECT API
     // ---------------------------------------------------------------
 
+    public function project_sendJoinRequest($projectID)
+    {
+        return UserCommands::sendJoinRequest($projectID, $this->_userId, $this->_website);
+    }
+    
+    
     /**
      *
      * @param string $projectName
@@ -315,15 +321,17 @@ class sf
         return ProjectListDto::encode($this->_userId, $this->_website);
     }
 
-    public function project_joinProject($projectId, $role)
-    {
-        return ProjectCommands::updateUserRole($projectId, $this->_userId, $role);
-    }
-
     public function project_usersDto()
     {
         return ProjectCommands::usersDto($this->_projectId);
     }
+    
+    public function project_getJoinRequests()
+    {
+        return ProjectCommands::getJoinRequests($this->_projectId);
+    }
+    
+    
 
     // ---------------------------------------------------------------
     // SESSION API
@@ -367,6 +375,17 @@ class sf
     public function project_updateUserRole($userId, $role)
     {
         return ProjectCommands::updateUserRole($this->_projectId, $userId, $role);
+    }
+    
+    public function project_acceptJoinRequest($userId, $role) 
+    {
+         $id = ProjectCommands::updateUserRole($this->_projectId, $userId, $role);
+         ProjectCommands::removeJoinRequest($this->_projectId, $userId);
+    }
+    
+    public function project_denyJoinRequest($userId) 
+    {
+        ProjectCommands::removeJoinRequest($this->_projectId, $userId);
     }
 
     // REVIEW: should this be part of the general project API ?

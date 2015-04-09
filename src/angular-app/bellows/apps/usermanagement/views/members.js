@@ -10,7 +10,7 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
       };
       $scope.roles = {};
       $scope.userFilter = '';
-
+      $scope.project = {};
       $scope.queryUserList = function queryUserList() {
         projectService.listUsers(function(result) {
           if (result.ok) {

@@ -30,6 +30,12 @@ angular.module('bellows.services')
     this.updateUserRole = function(userId, role, callback) {
       jsonRpc.call('project_updateUserRole', [userId, role], callback);
     };
+    this.acceptJoinRequest = function(userId, role, callback) {
+      jsonRpc.call('project_acceptJoinRequest', [userId, role], callback);
+    }
+    this.denyJoinRequest = function(userId, callback) {
+      jsonRpc.call('project_denyJoinRequest', [userId], callback);
+    }   
     this.getOwner = function(projectId, callback) {
       jsonRpc.call('project_getOwner', [projectId], callback);
     };
@@ -45,6 +51,14 @@ angular.module('bellows.services')
     this.listUsers = function users(callback) {
       jsonRpc.call('project_usersDto', [], callback);
     };
+    this.sendJoinRequest = function user_sendJoinRequest(projectId, callback) {
+      jsonRpc.call('project_sendJoinRequest', [projectId], callback);
+    }
+    this.getJoinRequests = function getJoinRequests(callback) {
+      jsonRpc.call('project_getJoinRequests', [], callback);
+    };
+    
+    
 
 
 
