@@ -39,8 +39,12 @@ angular.module('semdomtrans',
         })
   })
   .controller('MainCtrl', ['$scope', 'semdomtransEditService', 'sessionService', 'lexCommentService', '$q',
-  function($scope, $semdomApi, ss, commentsSerivce, $q) {
-    
+  function($scope, $semdomApi, ss, commentsSerivce, $q) {    
+   $scope.rights = {};
+   $scope.rights.remove = ss.hasProjectRight(ss.domain.USERS, ss.operation.DELETE); 
+   $scope.rights.create = ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE); 
+   $scope.rights.edit = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
+
    $scope.items = [];
    $scope.includedItems = {};
    $scope.comments = [];

@@ -128,6 +128,7 @@ class RightsHelper
             	return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT);
             case 'semdom_project_exists':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+                
             case 'semdom_create_project':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
             case 'semdom_workingset_update':
@@ -175,9 +176,14 @@ class RightsHelper
             case 'project_read':
             case 'project_settings':
             case 'project_updateSettings':
+            case 'project_denyJoinRequest':
+                    return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+            case 'project_acceptJoinRequest':
+                    return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
             case 'project_readSettings':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
-
+            case 'project_getJoinRequests':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
             case 'project_update':
             case 'lex_project_update':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
@@ -187,10 +193,13 @@ class RightsHelper
 
             case 'project_joinProject':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
-
+         
+            case 'project_getJoinRequests':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+                
             case 'project_usersDto':
                 return $this->userHasProjectRight(Domain::USERS + Operation::VIEW);
-
+            
             case 'project_removeUsers':
                 return $this->userHasProjectRight(Domain::USERS + Operation::DELETE);
 
@@ -232,7 +241,9 @@ class RightsHelper
 
             case 'user_delete':
                 return $this->userHasSiteRight(Domain::USERS + Operation::DELETE);
-
+            case 'project_sendJoinRequest':
+                return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
+                
             case 'project_archive':
             case 'project_archivedList':
             case 'project_publish':
