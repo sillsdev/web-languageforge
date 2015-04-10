@@ -4,10 +4,6 @@ angular.module('usermanagement.joinRequests', ['bellows.services', 'palaso.ui.li
 
   .controller('JoinRequestsCtrl', ['$scope', 'userService', 'projectService', 'sessionService',
     function($scope, userService, projectService, ss) {
-      $scope.joinRequests = [];
-      projectService.getJoinRequests(function(result) {
-        $scope.joinRequests = result.data;
-      })
       
       $scope.acceptJoinRequest = function acceptJoinRequest(userId, role) {
         projectService.acceptJoinRequest(userId, role, function(result) {
