@@ -30,7 +30,7 @@ angular.module('usermanagement',
     })
   .controller('MainCtrl', ['$scope', 'projectService', 'silNoticeService', '$route', '$routeParams', '$location',
                function($scope, projectService, noticeService, $route, $routeParams, $location) {
-
+    $scope.roles = {};
     $scope.project = {};
     $scope.route = $route;
     $scope.location = $location;
