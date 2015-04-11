@@ -12,6 +12,7 @@ use models\mapper\JsonEncoder;
 use models\languageforge\lexicon\LexCommentListModel;
 use models\languageforge\lexicon\dto\LexDbeDtoCommentsEncoder;
 use models\languageforge\semdomtrans\SemDomTransWorkingSetListModel;
+use models\languageforge\semdomtrans\SemDomTransStatus;
 
 class SemDomTransEditDto
 {
@@ -107,6 +108,8 @@ class SemDomTransEditDto
         $data['items'] = $targetItems;
 
         $data['timeOnServer'] = time(); // future use for offline syncing
+        
+        $data["statuses"] = SemDomTransStatus::getSemdomStatuses();
 
         return $data;
     }
