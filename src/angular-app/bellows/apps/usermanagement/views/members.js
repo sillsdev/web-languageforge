@@ -4,9 +4,7 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
 
   .controller('MembersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', '$window',
     function($scope, userService, projectService, ss, notice, $window) {
-      $scope.roles = {};
-      $scope.userFilter = '';
-      
+      $scope.userFilter = '';      
 
       $scope.rights = {};
       $scope.rights.remove = ss.hasProjectRight(ss.domain.USERS, ss.operation.DELETE);
