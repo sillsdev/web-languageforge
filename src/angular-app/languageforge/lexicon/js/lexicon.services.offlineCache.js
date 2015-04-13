@@ -6,22 +6,15 @@ angular.module('lexicon.services')
  *
  *
  */
-  .factory('lexiconOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache', function($window, $q, sessionService, offlineCache) {
+  .factory('lexiconOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache', 'offlineCacheUtils', function($window, $q, sessionService, offlineCache, offlineCacheUtils) {
     var projectId = sessionService.session.project.id;
 
     var getAllEntries = function getAllEntries() {
       return offlineCache.getAllFromStore('entries', projectId);
     };
 
-    var getAllComments = function getAllComments() {
-      return offlineCache.getAllFromStore('comments', projectId);
-    };
-
     var deleteEntry = function deleteEntry(id) {
       return offlineCache.deleteObjectInStore('entries', id);
-    };
-    var deleteComment = function deleteComment(id) {
-      return offlineCache.deleteObjectInStore('comments', id);
     };
 
     /**
@@ -33,33 +26,12 @@ angular.module('lexicon.services')
       return offlineCache.setObjectsInStore('entries', projectId, entries);
     };
 
-    var updateComments = function updateComments(comments) {
-      return offlineCache.setObjectsInStore('comments', projectId, comments);
-    };
-
-    var updateProjectData = function updateProject(timestamp, commentsUserPlusOne, isComplete) {
-      var obj = {
-        id: projectId,
-        commentsUserPlusOne: commentsUserPlusOne,
-        timestamp: timestamp,
-        isComplete: isComplete
-      };
-      return offlineCache.setObjectsInStore('projects', projectId, [obj]);
-    };
-
-    var getProjectData = function getProjectData() {
-      return offlineCache.getOneFromStore('projects', projectId);
-    };
-
     return {
       getAllEntries: getAllEntries,
-      getAllComments: getAllComments,
-      getProjectData: getProjectData,
+      getProjectData: offlineCacheUtils.getProjectData,
       updateEntries: updateEntries,
-      updateComments: updateComments,
-      updateProjectData: updateProjectData,
+      updateProjectData: offlineCacheUtils.updateProjectData,
       deleteEntry: deleteEntry,
-      deleteComment: deleteComment,
       canCache: offlineCache.canCache
     };
   }]);

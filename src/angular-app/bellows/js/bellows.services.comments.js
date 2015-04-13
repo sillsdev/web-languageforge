@@ -1,9 +1,9 @@
 'use strict';
 
 // module definition
-angular.module('bellows.services')
+angular.module('bellows.services.comments')
 //Lexicon Comment Service
-  .service('lexCommentService', ['jsonRpc', 'lexiconOfflineCache', '$filter', function(jsonRpc, offlineCache, $filter) {
+  .service('lexCommentService', ['jsonRpc', 'commentsOfflineCache', '$filter', function(jsonRpc, offlineCache, $filter) {
     var _this = this;
 
     this.comments = {
