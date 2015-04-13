@@ -3,8 +3,8 @@
 angular.module('lexicon.services')
 
 // Lexicon Entry Service
-.factory('lexEditorDataService', ['$q', 'lexEntryApiService', 'sessionService', 'lexiconOfflineCache', 'silNoticeService', 'lexCommentService',
-function($q, api, ss, cache, notice, commentService) {
+.factory('lexEditorDataService', ['$q', 'lexEntryApiService', 'sessionService', 'lexiconOfflineCache', 'commentsOfflineCache', 'silNoticeService', 'lexCommentService',
+function($q, api, ss, lexCache, commentsCache, notice, commentService) {
 
   var entries = [];
   var visibleEntries = [];
@@ -33,7 +33,7 @@ function($q, api, ss, cache, notice, commentService) {
   var loadEditorData = function loadEditorData() {
     var deferred = $q.defer();
     if (entries.length == 0) { // first page load
-      if (cache.canCache()) {
+      if (lexCache.canCache()) {
         notice.setLoading("Loading Dictionary");
         loadDataFromOfflineCache().then(function(projectObj) {
           if (projectObj.isComplete) {
@@ -135,7 +135,7 @@ function($q, api, ss, cache, notice, commentService) {
   var removeEntryFromLists = function removeEntryFromLists(id) {
     // todo: make this method async, returning a promise
 
-    cache.deleteEntry(id).then(function() {
+    lexCache.deleteEntry(id).then(function() {
       var iFullList = getIndexInList(id, entries);
       if (angular.isDefined(iFullList)) {
         entries.splice(iFullList, 1);
@@ -152,10 +152,10 @@ function($q, api, ss, cache, notice, commentService) {
    */
   function storeDataInOfflineCache(data, isComplete) {
     var deferred = $q.defer();
-    if (data.timeOnServer && cache.canCache()) {
-      cache.updateProjectData(data.timeOnServer, data.commentsUserPlusOne, isComplete).then(function() {
-        cache.updateEntries(data.entries).then(function() {
-          cache.updateComments(data.comments).then(function() {
+    if (data.timeOnServer && lexCache.canCache()) {
+      lexCache.updateProjectData(data.timeOnServer, data.commentsUserPlusOne, isComplete).then(function() {
+        lexCache.updateEntries(data.entries).then(function() {
+          commentsCache.updateComments(data.comments).then(function() {
             deferred.resolve();
           });
         });
@@ -174,15 +174,15 @@ function($q, api, ss, cache, notice, commentService) {
     var startTime = performance.now(), endTime;
     var deferred = $q.defer();
     var numOfEntries;
-    cache.getAllEntries().then(function(result) {
+    lexCache.getAllEntries().then(function(result) {
       entries.push.apply(entries, result); // proper way to extend the array
       numOfEntries = result.length;
 
       if (result.length > 0) {
-        cache.getAllComments().then(function(result) {
+        commentsCache.getAllComments().then(function(result) {
           commentService.comments.items.all.push.apply(commentService.comments.items.all, result);
 
-          cache.getProjectData().then(function(result) {
+          lexCache.getProjectData().then(function(result) {
             commentService.comments.counts.userPlusOne = result.commentsUserPlusOne;
             endTime = performance.now();
             console.log("Loaded " + numOfEntries + " entries from the cache in " + ((endTime - startTime) / 1000).toFixed(2) + " seconds");
