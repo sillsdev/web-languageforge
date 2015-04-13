@@ -62,6 +62,12 @@ class app extends Secure_base
         }
         $this->addJavascriptFiles($appFolder, array('vendor/', 'assets/'));
 
+        if ($app == 'semdomtrans' || $app == 'semdomtrans-new-project') {
+            // special case for semdomtrans app
+            // add lexicon JS files since the semdomtrans app depends upon these JS files
+            $this->addJavascriptFiles("$siteFolder/lexicon", array('vendor/', 'assets/'));
+        }
+
         $this->addJavascriptNotMinifiedFiles("angular-app/bellows/js/vendor");
         $this->addJavascriptNotMinifiedFiles("angular-app/bellows/js/assets");
         $this->addJavascriptNotMinifiedFiles($appFolder . "/js/vendor");
