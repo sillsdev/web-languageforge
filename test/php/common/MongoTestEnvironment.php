@@ -416,7 +416,7 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
 
         $projectModel = $this->createSemDomProject($languageCode, $this->semdomVersion);
 
-        $xmlFilePath = TestPath . "/languageforge/semdomtrans/assets/SemDom_en.xml";
+        $xmlFilePath = APPPATH . "resources/languageforge/semdomtrans/SemDom_en.xml";
         $newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
         FileUtilities::createAllFolders($projectModel->getAssetsFolderPath());
 
