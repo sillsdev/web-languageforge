@@ -15,8 +15,8 @@ $xmlFilePath = $argv[1];
 $lang = $argv[2];
 $domain = $argv[3];
 $userId = $argv[4];
-$isEnglish =  ($argv[5] == "1");
-$semdomVersion = 20;
+$isEnglish =  ($lang == "en");
+$semdomVersion = 4;
 
 // accept command line flag to actually change the database
 // accept filepath of the import file (xml)
@@ -25,7 +25,6 @@ $semdomVersion = 20;
 $changeDatabase = false;
 
 // process xml into a php data structure, organized by language
-$xmlFilePath = $argv[1];
 $xml = simplexml_load_file($xmlFilePath);
 
 $lang = $argv[2];
