@@ -1,0 +1,19 @@
+<span class="row" ng-mouseenter="showButtons = true" ng-mouseleave="showButtons = false">
+    <table style="width:100%">
+        <caption><b>{{name}}</b></caption>
+            <tr>
+                <th style="width:50%"> Source </th>
+                <th style="width:50%"> Translation </th>
+            </tr>
+            <tr ng-click="isInCommentMode() ? control.setSelectedField('name', model.name) : '' ">
+                <td> {{model.source}}</td>
+                <td> 
+                     {{model.translation}}
+                </td>
+            </tr>                       
+    </table>
+    <div ng-if="showButtons">
+        <button class="btn btn-primary" ng-click="markAsApproved()"> Approve</button>
+        <button class="btn btn-warning" ng-click="markAsNeedsRevision()"> Needs Revision</button>
+    </div>
+</span>

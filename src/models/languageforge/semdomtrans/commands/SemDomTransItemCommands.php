@@ -37,15 +37,22 @@ class SemDomTransItemCommands
 	
 		$s->key = $data["key"];
 		$s->name->translation = $data["name"]["translation"];
+		$s->name->status = $data["name"]["status"];
+		
 		$s->description->translation = $data["description"]["translation"];
+		$s->description->status = $data["description"]["status"];
 		
 		for ($i = 0; $i < count($s->questions); $i++ ) {
 			$s->questions[$i]->question->translation = $data["questions"][$i]["question"]["translation"];
+			$s->questions[$i]->question->status = $data["questions"][$i]["question"]["status"];
+			
 			$s->questions[$i]->terms->translation = $data["questions"][$i]["terms"]["translation"];
+			$s->questions[$i]->terms->status = $data["questions"][$i]["terms"]["status"];
 		}
 		
 		for ($i = 0; $i < count($s->searchKeys); $i++ ) {
 			$s->searchKeys[$i]->translation = $data["searchKeys"][$i]["translation"];
+			$s->searchKeys[$i]->status = $data["searchKeys"][$i]["status"];
 		}
 		
 		$s->write();

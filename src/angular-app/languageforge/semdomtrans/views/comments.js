@@ -17,7 +17,7 @@ function($scope, $stateParams, sessionService, modal, notice, commentService) {
    
 
   if ($scope.items.length == 0 && !$scope.loadingDto) {
-    $scope.$parent.refreshDbeData(true).then(function() {
+    $scope.$parent.loadDbeData().then(function() {
        return $scope.loadEntryComments();
      });
     } else {
