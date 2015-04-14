@@ -7,6 +7,7 @@ angular.module('semdomtrans',
     'bellows.filters',
     'semdomtrans.edit',
     'semdomtrans.comments',
+    'semdomtrans.review',
     'pascalprecht.translate' 
   ])
   .config(function($stateProvider, $urlRouterProvider) {
@@ -25,16 +26,21 @@ angular.module('semdomtrans',
                 templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editFilter.html'
               }
             }
-        })
-        
+        })        
         .state('editor.editItem', {
             url: '/:position'
-        })
-        
+        })        
         .state('comments', {
             url: '/comments/:position',
             views: {
               '': {templateUrl: '/angular-app/languageforge/semdomtrans/views/comments.html'}
+            }
+        })
+        
+        .state('review',  {
+            url: '/review',
+            views: {
+              '': {templateUrl: '/angular-app/languageforge/semdomtrans/views/review.html'}
             }
         })
   })
@@ -57,14 +63,18 @@ angular.module('semdomtrans',
     * Persists the Lexical data in the offline cache store
     */
    function storeDataInOfflineCache(timestamp) {
+     var deferred = $q.defer();
      if (timestamp && offlineCache.canCache()) {
        var dataObj = {
          items: $scope.items,
          comments: $scope.comments,
          workingSets: $scope.workingSets
        };
-       offlineCache.setObject(offlineCacheKey, timestamp, dataObj);
+       offlineCache.setObject(offlineCacheKey, timestamp, dataObj).then(function() {
+         deferred.resolve();
+       })
      }
+     return deferred.promise;
    }
 
    /**
@@ -153,7 +163,6 @@ angular.module('semdomtrans',
      $semdomApi.editorDto(timestamp, function(result) {
         if (result.ok) {
           processDbeData(result, true);
-  
           deferred.resolve();
         }
      });
@@ -175,6 +184,8 @@ angular.module('semdomtrans',
          
          $scope.workingSets = [allItemsWS].concat(result.data.workingSets);
          $scope.loadingDto = false;
+         
+         $scope.statuses = result.data.statuses;
          
          commentsSerivce.updateGlobalCommentCounts();
          commentsSerivce.comments.items.all = $scope.comments;

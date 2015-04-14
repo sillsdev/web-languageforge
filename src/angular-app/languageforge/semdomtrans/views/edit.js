@@ -104,7 +104,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
         $scope.translatedItems = {};
         // find all items that are completely translated
         for (var i = 0; i < $scope.items.length; i++) {
-          if (isTranslatedCompletely($scope.items[i])) {
+          if (isItemTranslatedCompletely($scope.items[i])) {
             $scope.translatedItems[$scope.items[i].key] = true;
           } else {
             $scope.translatedItems[$scope.items[i].key] = false;
@@ -117,17 +117,17 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
    * Determines if a semdom item is completely translated
    */
   
-  function isTranslatedCompletely(item) {
+  function isItemTranslatedCompletely(item) {
     var translated = true;
-    translated &= (item.name.translation.status == 0);
-    translated &= (item.description.translation.status == 0);
+    translated = translated && (item.name.status == 0);
+    translated = translated && (item.description.status == 0);
     for (var i = 0; i < item.searchKeys.length; i++) {
-      translated &= (item.searchKeys[i].translation.status == 0);
+      translated = translated && (item.searchKeys[i].status == 0);
     }
     
     for (var i = 0; i < item.questions.length; i++) {
-      translated &= (item.questions[i].question.status == 0);
-      translated &= (item.questions[i].terms.status == 0);
+      translated = translated && (item.questions[i].question.status == 0);
+      translated = translated && (item.questions[i].terms.status == 0);
     }
     
     return translated;
@@ -178,10 +178,10 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
   }
   
   $scope.refreshDbeData = function refreshDbeData(state) {
-      $scope.$parent.refreshDbeData(state, function() { });
+     return $scope.$parent.refreshDbeData(state, function() { });
   };
     
-  $scope.$watch('items', function(newVal) {
+  $scope.$watchCollection('items', function(newVal) {
     if (newVal && newVal.length > 0) {
       
       // reload all items up to appropriate tre depth
