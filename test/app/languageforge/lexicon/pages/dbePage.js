@@ -53,7 +53,7 @@ var LfDbePage = function() {
     },
 
     // Entries list (main body of view)
-    entriesList: page.browseDiv.all(by.repeater('entry in show.entries')),
+    entriesList: page.browseDiv.all(by.repeater('entry in visibleEntries')),
     findEntryByLexeme: function(lexeme) {
       return this.entriesList.filter(function(row) {
         return row.element(by.binding('entry.word')).getText().then(function(word) {
@@ -107,7 +107,7 @@ var LfDbePage = function() {
         return parseInt(s, 10);
       });
     },
-    entriesList: page.editDiv.all(by.repeater('entry in show.entries')),
+    entriesList: page.editDiv.all(by.repeater('entry in visibleEntries')),
     findEntryByLexeme: function(lexeme) {
       var div = page.editDiv.element(by.css('#compactEntryListContainer'));
       return div.element(by.cssContainingText('[ng-bind-html="getWordForDisplay(entry)"', lexeme));
@@ -322,7 +322,7 @@ var LfDbePage = function() {
         meaning: div.element(by.binding('comment.regarding.meaning')),
         fieldLabel: div.element(by.binding('comment.regarding.fieldNameForDisplay')),
         fieldWsid: div.element(by.binding('comment.regarding.inputSystem')),
-        fieldValue: div.element(by.binding('comment.regarding.fieldValue')),
+        fieldValue: div.element(by.css('.regardingFieldValue'))
       },
 
       // Replies (below content but above bottom controls)
@@ -336,7 +336,7 @@ var LfDbePage = function() {
       markResolvedLink: div.element(by.css('.commentBottomBar i.icon-ok')),
       markTodoLink: div.element(by.css('.commentBottomBar i.icon-edit')),
       editBtn: div.element(by.buttonText('Edit')),
-      replyBtn: div.element(by.buttonText('Reply')),
+      replyBtn: div.element(by.buttonText('Reply'))
     };
   };
 

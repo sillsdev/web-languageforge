@@ -26,8 +26,8 @@ class SemDomTransCommentModel extends \models\mapper\MapperModel
      */
     public function __construct($projectModel, $id = '')
     {
-    	$this->id = new Id();
-    	$this->content = '';
+        $this->id = new Id();
+        $this->content = '';
         $this->regarding = new SemDomTransFieldReference();
         $this->entryRef = new Id();
         $databaseName = $projectModel->databaseName();
