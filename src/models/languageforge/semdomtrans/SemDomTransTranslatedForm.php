@@ -9,7 +9,7 @@ class SemDomTransTranslatedForm
     public function __construct($translation='')
     {
         $this->translation = $translation;
-		$this->status = SemDomTransStatus::Draft;
+        $this->status = SemDomTransStatus::Draft;
     }
 
     /**

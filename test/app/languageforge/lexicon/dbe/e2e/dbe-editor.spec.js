@@ -51,14 +51,7 @@ describe('Browse and edit page (DBE) Editor', function() {
     expect(dbePage.edit.renderedDiv.getText()).not.toContain('citation form');
   });
   
-/* not needed now that View Settings all default to visible. IJH 2015-03
   it('add citation form as visible field', function() {
-    viewSettingsPage.get();
-    viewSettingsPage.tabs.manager.go();
-    viewSettingsPage.tabs.manager.showAllFieldsBtn.click();
-    viewSettingsPage.clickFieldByName('Citation Form');
-    util.setCheckbox(viewSettingsPage.showField, true);
-    viewSettingsPage.applyBtn.click();
     configPage.get();
     configPage.getTabByName('Fields').click();
     configPage.showAllFieldsButton.click();
@@ -68,8 +61,7 @@ describe('Browse and edit page (DBE) Editor', function() {
     util.clickBreadcrumb(constants.testProjectName);
     dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
   });
-*/
-  
+
   it('citation form field overrides lexeme form in dictionary citation view', function() {
     dbePage.edit.showUncommonFields();
     dbePage.edit.getMultiTextInputs('Citation Form').first().sendKeys('citation form');
@@ -231,7 +223,7 @@ describe('Browse and edit page (DBE) Editor', function() {
       {'en': constants.testMultipleMeaningEntry1.senses[1].source.en.value},
     ]);
   });
-
+  
   it('back to browse page, create new word', function() {
     dbePage.edit.toListLink.click();
     dbePage.browse.newWordBtn.click();

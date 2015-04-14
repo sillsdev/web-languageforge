@@ -57,7 +57,7 @@ class SemDomTransProjectModel extends LfProjectModel {
      * The path for the source XML file from which the project was imported
      * @var string
      */
-    public $newXmlFilePath;
+    public $xmlFilePath;
     
     public static function createProject($languageCode, $semdomVersion) {
         $project = new SemDomTransProjectModel();

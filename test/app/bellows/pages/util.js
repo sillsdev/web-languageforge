@@ -159,6 +159,9 @@ var clickModalButton = function(btnText) {
   
   // Some tests weren't passing without the waitForAngular, presummably because the animation is still moving the dialog into place.
   browser.waitForAngular();
+  browser.driver.sleep(300); // wait an extra 300ms for the animation to finish
+
+
   btn.click();
 };
 module.exports.clickModalButton = clickModalButton;

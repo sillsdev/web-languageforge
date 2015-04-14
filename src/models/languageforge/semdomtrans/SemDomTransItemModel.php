@@ -33,11 +33,11 @@ class SemDomTransItemModel extends \models\mapper\MapperModel
         $this->name = new SemDomTransTranslatedForm();
         $this->description = new SemDomTransTranslatedForm();
         $this->searchKeys = new ArrayOf(function ($data) {
-        	return new SemDomTransTranslatedForm();
+            return new SemDomTransTranslatedForm();
         });
         
         $this->questions = new ArrayOf(function ($data) {
-        	return new SemDomTransQuestion();
+            return new SemDomTransQuestion();
         });
         
         $databaseName = $projectModel->databaseName();

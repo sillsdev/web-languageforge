@@ -7,6 +7,7 @@ use models\languageforge\semdomtrans\commands\SemDomTransItemCommands;
 use models\languageforge\semdomtrans\SemDomTransTranslatedForm;
 use models\languageforge\semdomtrans\SemDomTransQuestion;
 use models\mapper\ArrayOf;
+use models\languageforge\semdomtrans\SemDomTransStatus;
 
 require_once dirname(__FILE__) . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -22,56 +23,57 @@ class SemdomTransItemCommands_Test extends UnitTestCase
     {
         $e = new SemDomMongoTestEnvironment();
         $e->clean();
-        
-        $projectModel = $e->createSemDomProject("en");
-        // insert dummy models
-        $sourceItemModel = new SemDomTransItemModel($projectModel);
 
-        $sourceItemModel->xmlGuid = "asdf123";
-        $sourceItemModel->key = "1";
-        $sourceItemModel->name = new SemDomTransTranslatedForm("universe");
-        $sourceItemModel->description = new SemDomTransTranslatedForm("Universe description");
+        $sourceProject = $e->importEnglishProject();
+        
+        $targetProject = $e->createSemDomProject("en2");
+        $targetProject->sourceLanguageProjectId = $sourceProject->id->asString();
+        // insert dummy models
+        $targetItemModel = new SemDomTransItemModel($sourceProject);
+
+        $targetItemModel->xmlGuid = "asdf123";
+        $targetItemModel->key = "1";
+        $targetItemModel->name = new SemDomTransTranslatedForm("universe");
+        $targetItemModel->description = new SemDomTransTranslatedForm("Universe description");
         $sq = new SemDomTransQuestion("A universe question", "A universe question term");
-        $sourceItemModel->questions = new ArrayOf(function ($data) {
+        $targetItemModel->questions = new ArrayOf(function ($data) {
             return new SemDomTransQuestion();
         });
-        $sourceItemModel->questions[] = $sq;
+        $targetItemModel->questions[] = $sq;
         
-        $data = JsonEncoder::encode($sourceItemModel);
+        $data = JsonEncoder::encode($targetItemModel);
         
-        $itemId = SemDomTransItemCommands::update($data, $projectModel->id->asString());      
-        $readItem = new SemDomTransItemModel($projectModel);
-        $readItem->read($itemId);
-        
+        $itemId = SemDomTransItemCommands::update($data, $targetProject->id->asString());
+        $readItem = new SemDomTransItemModel($targetProject, $itemId);
+
         $this->assertNotEqual($readItem->key, null);
         $this->assertEqual($readItem->key, "1");         
          
         $this->assertNotEqual($readItem->name, null);
         $this->assertEqual($readItem->name->translation, "universe");
-        $this->assertEqual($readItem->name->status, 0);
-         
+        $this->assertEqual($readItem->name->status, SemDomTransStatus::Draft);
+
         $this->assertNotEqual($readItem->description->translation, null);
         $this->assertEqual($readItem->description->translation, "Universe description");
-        $this->assertEqual($readItem->description->translation, 0);
+        $this->assertEqual($readItem->description->status, SemDomTransStatus::Draft);
         
-        $sourceItemModel->name = new SemDomTransTranslatedForm("universe-edited");
-        $data = JsonEncoder::encode($sourceItemModel);
-        SemDomTransItemCommands::update($data, $projectModel->id->asString());
+        $readItem->name = new SemDomTransTranslatedForm("universe-edited");
+        $data = JsonEncoder::encode($readItem);
+        SemDomTransItemCommands::update($data, $targetProject->id->asString());
         
-        $readItem = new SemDomTransItemModel($projectModel);
-        $readItem->read($itemId);
+        $readItemAgain = new SemDomTransItemModel($targetProject, $itemId);
+
         
-        
-        $this->assertNotEqual($readItem->key, null);
-        $this->assertEqual($readItem->key, "1");
+        $this->assertNotEqual($readItemAgain->key, null);
+        $this->assertEqual($readItemAgain->key, "1");
          
-        $this->assertNotEqual($readItem->name, null);
-        $this->assertEqual($readItem->name->translation, "universe-edited");
-        $this->assertEqual($readItem->name->status, 0);
+        $this->assertNotEqual($readItemAgain->name, null);
+        $this->assertEqual($readItemAgain->name->translation, "universe-edited");
+        $this->assertEqual($readItemAgain->name->status, SemDomTransStatus::Draft);
          
-        $this->assertNotEqual($readItem->description->translation, null);
-        $this->assertEqual($readItem->description->translation, "Universe description");
-        $this->assertEqual($readItem->description->translation, 0);
+        $this->assertNotEqual($readItemAgain->description->translation, null);
+        $this->assertEqual($readItemAgain->description->translation, "Universe description");
+        $this->assertEqual($readItemAgain->description->status, SemDomTransStatus::Draft);
         
         
     }

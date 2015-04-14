@@ -6,6 +6,7 @@ use models\languageforge\LfProjectModel;
 use models\ProjectModel;
 use models\commands\ProjectCommands;
 use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
+use Palaso\Utilities\FileUtilities;
 
 require_once('../scriptConfig.php');
 
@@ -14,8 +15,8 @@ $xmlFilePath = $argv[1];
 $lang = $argv[2];
 $domain = $argv[3];
 $userId = $argv[4];
-$isEnglish =  ($argv[5] == "1"); 
-$semdomVersion = 20;
+$isEnglish =  ($lang == "en");
+$semdomVersion = 4;
 
 // accept command line flag to actually change the database
 // accept filepath of the import file (xml)
@@ -24,7 +25,6 @@ $semdomVersion = 20;
 $changeDatabase = false;
 
 // process xml into a php data structure, organized by language
-$xmlFilePath = $argv[1];
 $xml = simplexml_load_file($xmlFilePath);
 
 $lang = $argv[2];
@@ -41,26 +41,24 @@ $previousProject->readByProperties(array("languageIsoCode" => $lang, "semdomVers
 
 if ($previousProject->id->asString() == "")
 {
-	$projectID = ProjectCommands::createProject($projectName, $projectCode, $appName, $userId, $website);
-	$projectModel = new SemDomTransProjectModel($projectID);
+    $projectID = ProjectCommands::createProject($projectName, $projectCode, $appName, $userId, $website);
+    $projectModel = new SemDomTransProjectModel($projectID);
 
-	$newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
-	if (!file_exists($projectModel->getAssetsFolderPath())) {
-		mkdir($projectModel->getAssetsFolderPath());
-	}
-	
-	print "copying $xmlFilePath to  $newXmlFilePath\n";
-	copy($xmlFilePath, $newXmlFilePath);
-	$projectModel->newXmlFilePath = $newXmlFilePath;
-	$projectModel->languageIsoCode = $lang;
-	$projectModel->semdomVersion = $semdomVersion;
-	$projectModel->write();
-	
-	
-	$importer = new SemDomXMLImporter($xmlFilePath, $projectModel, false, $isEnglish);
-	$importer->run();
+    $newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
+    FileUtilities::createAllFolders($projectModel->getAssetsFolderPath());
+
+    print "copying $xmlFilePath to  $newXmlFilePath\n";
+    copy($xmlFilePath, $newXmlFilePath);
+    $projectModel->xmlFilePath = $newXmlFilePath;
+    $projectModel->languageIsoCode = $lang;
+    $projectModel->semdomVersion = $semdomVersion;
+    $projectModel->write();
+
+
+    $importer = new SemDomXMLImporter($xmlFilePath, $projectModel, false, $isEnglish);
+    $importer->run();
 } else {
-	echo "Project exists already" . "\n";
+    echo "Project exists already" . "\n";
 }
 
 

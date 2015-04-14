@@ -8,6 +8,7 @@ class AllLanguageForgeTests extends TestSuite
     {
         parent::__construct();
         $this->addFile(TestPath . 'languageforge/lexicon/AllTests.php');
+        $this->addFile(TestPath . 'languageforge/semdomtrans/AllTests.php');
     }
 
 }
