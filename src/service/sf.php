@@ -593,12 +593,12 @@ class sf
         return LexProjectDto::encode($this->_projectId, $this->_userId);
     }
 
-    public function lex_dbeDtoFull($browserId)
+    public function lex_dbeDtoFull($browserId, $offset)
     {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
         $this->_controller->session->set_userdata($sessionLabel, time());
 
-        return LexDbeDto::encode($this->_projectId, $this->_userId);
+        return LexDbeDto::encode($this->_projectId, $this->_userId, null, $offset);
     }
 
     public function lex_dbeDtoUpdatesOnly($browserId, $lastFetchTime = null)
@@ -726,15 +726,15 @@ class sf
     }
     
     public function semdom_get_open_projects() {
-    	return SemDomTransProjectCommands::getOpenSemdomProjects();
+        return SemDomTransProjectCommands::getOpenSemdomProjects();
     }
     
     public function semdom_item_update($data) {
-    	return SemDomTransItemCommands::update($data, $this->_projectId);
+        return SemDomTransItemCommands::update($data, $this->_projectId);
     }
     
     public function semdom_comment_update($data) {
-    	return SemDomTransCommentsCommands::update($data, $this->_projectId);
+        return SemDomTransCommentsCommands::update($data, $this->_projectId);
     }
     
     public function semdom_project_exists($languageIsoCode) {
@@ -753,18 +753,18 @@ class sf
      * @return string | boolean - $projectId on success, false if project code is not unique
      */
     public function semdom_create_project($languageIsoCode)
-    {    	
+    {        
         $projectName = "Semdom $languageIsoCode Project";
         $projectCode = "semdom-$languageIsoCode-20";
-    	$projectID = ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $this->_userId, $this->_website);	
-    	
-    	$project = new SemDomTransProjectModel($projectID);
-    	$project->languageIsoCode = $languageIsoCode;
-    	$project->semdomVersion = 20;
-    	$project->write();
-    	
-    	SemDomTransProjectCommands::preFillProject($projectID);
-    	return $projectID;
+        $projectID = ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $this->_userId, $this->_website);    
+        
+        $project = new SemDomTransProjectModel($projectID);
+        $project->languageIsoCode = $languageIsoCode;
+        $project->semdomVersion = 20;
+        $project->write();
+        
+        SemDomTransProjectCommands::preFillProject($projectID);
+        return $projectID;
     }
     
     

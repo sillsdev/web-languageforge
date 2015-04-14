@@ -311,7 +311,7 @@ class LexConfiguration
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SOURCE]->inputSystems[] = 'en';
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES] = new LexiconMultiOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::POS);
+        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::USAGES);
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES]->label = LexiconConfigObj::flexOptionlistName($listCode);
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES]->listCode = $listCode;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES]->hideIfEmpty = true;

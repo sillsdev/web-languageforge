@@ -20,7 +20,7 @@
                 <small style="color: grey">{{entries.length}} {{'entries' | translate}}</small>
                 <button class="btn btn-success btn-small pull-right" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
             </div>
-            <div ng-hide="show.entries.length === 0" style="width:340px; margin:0 auto;" >
+            <div ng-hide="visibleEntries.length === 0" style="width:340px; margin:0 auto;" >
                 <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
                     <ul ng-if="typeahead.searchResults.length > 0">
                         <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
@@ -33,8 +33,8 @@
             </div>
             <div style="border-bottom: 1px solid darkgray; width:100%;margin-top:15px"></div>
             <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-                <div ng-show="entries.length == 0 && rights.canEditProject() && !fullRefreshInProgress" style="text-align: center;margin-top:50px"><h4>Looks like there are no entries yet.</h4><button class="btn btn-primary" ng-click="navigateToLiftImport()">Import entries from LIFT</button></div>
-                <div class="lexiconListItem" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntryAndScroll(entry.id)">
+                <div ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading" style="text-align: center;margin-top:50px"><h4>Looks like there are no entries yet.</h4><button class="btn btn-primary" ng-click="navigateToLiftImport()">Import entries from LIFT</button></div>
+                <div class="lexiconListItem" data-ng-repeat="entry in visibleEntries track by entry.id" data-ng-click="editEntryAndScroll(entry.id)">
                     <dc-rendered config="config.entry" model="entry"></dc-rendered>
                     <div ng-show="commentService.getEntryCommentCount(entry.id) > 0" style="position:absolute; right:5px;top:3px"><i style="color: #faa732;" class="icon-comment"></i></div>
                 </div>
@@ -61,7 +61,7 @@
                 </div>
                 <div style="margin-right: 10px; display:flex; flex-direction: column">
                     <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-                        <div id="entryId_{{entry.id}}" ng-class="{selected: entry.id == currentEntry.id, listItemHasComment: commentService.getEntryCommentCount(entry.id) > 0}" title="{{getCompactItemListOverlay(entry)}}" class="lexiconListItemCompact" data-ng-repeat="entry in show.entries track by entry.id" data-ng-click="editEntry(entry.id)">
+                        <div id="entryId_{{entry.id}}" ng-class="{selected: entry.id == currentEntry.id, listItemHasComment: commentService.getEntryCommentCount(entry.id) > 0}" title="{{getCompactItemListOverlay(entry)}}" class="lexiconListItemCompact" data-ng-repeat="entry in visibleEntries track by entry.id" data-ng-click="editEntry(entry.id)">
                             <div dir="auto" class="listItemPrimary" ng-bind-html="getWordForDisplay(entry)"></div>
                             <div dir="auto" class="listItemSecondary" ng-bind-html="getMeaningForDisplay(entry)"></div>
                         </div>
