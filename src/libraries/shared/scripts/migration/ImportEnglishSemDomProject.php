@@ -18,10 +18,18 @@ class ImportEnglishSemDomProject
         $englishProject = new SemDomTransProjectModel();
         $englishProject->readByProperties(array("projectCode" => $projectCode));
 
+        // TODO: if the english project exists, empty it out entirely and re-import
+        if ($englishProject->id->asString() != "") {
+
+        } else {
+
+        }
+
+
         if ($englishProject->id->asString() == "") {
             $projectModel = new SemDomTransProjectModel();
             $projectModel->projectCode = $projectCode;
-            $projectModel->projectName = "English Semantic Domain Project";
+            $projectModel->projectName = "English (en) Semantic Domain Project";
             $projectModel->languageIsoCode = 'en';
             $projectModel->semdomVersion = $semdomVersion;
 
