@@ -11,7 +11,7 @@ angular.module('palaso.ui.comments')
         control: "=",
         newComment: "="
       },
-      controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService', 'lexEditorDataService', function($scope, $filter, commentService, sessionService, modal, editorService) {
+      controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService', function($scope, $filter, commentService, sessionService, modal) {
 
 
         /*  $scope.newComment has the following initial structure
@@ -102,7 +102,7 @@ angular.module('palaso.ui.comments')
         $scope.postNewComment = function postNewComment() {
           commentService.update($scope.newComment, function(result) {
             if (result.ok) {
-              editorService.refreshEditorData().then(function() {
+              $scope.control.editorService.refreshEditorData().then(function() {
                 $scope.loadComments();
                 $scope.initializeNewComment();
               });
@@ -114,7 +114,7 @@ angular.module('palaso.ui.comments')
         $scope.plusOneComment = function plusOneComment(commentId) {
           commentService.plusOne(commentId, function(result) {
             if (result.ok) {
-              editorService.refreshEditorData().then(function() {
+              $scope.control.editorService.refreshEditorData().then(function() {
                 $scope.loadComments();
               });
             }
@@ -122,7 +122,8 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.canPlusOneComment = function canPlusOneComment(commentId) {
-          if (angular.isDefined(commentService.comments.counts.userPlusOne[commentId])) {
+          if (angular.isDefined(commentService.comments.counts.userPlusOne) &&
+              angular.isDefined(commentService.comments.counts.userPlusOne[commentId])) {
             return false;
           }
           return true;

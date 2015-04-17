@@ -2,12 +2,9 @@
 
 angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.scroll', 'palaso.ui.typeahead', 'palaso.ui.sd.ws'])
 // DBE controller
-.controller('editCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
-function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
-  // refresh the data and go to state
-  if ($scope.items.length == 0 && !$scope.loadingDto) {
-      $scope.loadDbeData();
-  }
+.controller('editCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditService', 'semdomtransEditorDataService', 'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
+function($scope, $state, $stateParams, semdomEditApi, editorDataService, sessionService, modal, notice, $rootScope, $filter, $timeout) {
+
   $scope.selectedTab = 0;
   $scope.control = $scope;
   $scope.currentQuestionPos = 0;
@@ -21,6 +18,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
   $scope.isEditingWorkingSet = false;
   $scope.subDomain = "1";
   $scope.hideTranslated = false;
+  
   var api = semdomEditApi;
  
   
@@ -97,22 +95,6 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
             }
           }, delay);
   }
-  
-  $scope.$watch('items', function(newVal, oldVal) {
-    if (oldVal != newVal) {      
-        $scope.currentEntry = $scope.items[$scope.currentEntryIndex];
-        $scope.translatedItems = {};
-        // find all items that are completely translated
-        for (var i = 0; i < $scope.items.length; i++) {
-          if (isItemTranslatedCompletely($scope.items[i])) {
-            $scope.translatedItems[$scope.items[i].key] = true;
-          } else {
-            $scope.translatedItems[$scope.items[i].key] = false;
-          }
-        }
-    }
-  });
-  
   /*
    * Determines if a semdom item is completely translated
    */
@@ -178,7 +160,11 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
   }
   
   $scope.refreshDbeData = function refreshDbeData(state) {
-     return $scope.$parent.refreshDbeData(state, function() { });
+     return editorDataService.refreshEditorData().then(function(result) { 
+       editorDataService.processEditorDto(result).then(function(resut) {
+         ;
+       })
+     });
   };
     
   $scope.$watchCollection('items', function(newVal) {
@@ -203,6 +189,17 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
         $scope.currentEntry = $scope.items[$stateParams.position];
         $scope.currentEntryIndex = angular.isUndefined($stateParams.position) ? 0 : $stateParams.position;
         $scope.changeTerm($scope.currentEntry.key);
+      }
+      
+      $scope.currentEntry = $scope.items[$scope.currentEntryIndex];
+      $scope.translatedItems = {};
+      // find all items that are completely translated
+      for (var i = 0; i < $scope.items.length; i++) {
+        if (isItemTranslatedCompletely($scope.items[i])) {
+          $scope.translatedItems[$scope.items[i].key] = true;
+        } else {
+          $scope.translatedItems[$scope.items[i].key] = false;
+        }
       }
     }   
   });
