@@ -711,11 +711,15 @@ class sf
     }
     
     
+    
+    
     /*
      * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
      */    
-    public function semdom_editor_dto($lastFetchTime = null)
+    public function semdom_editor_dto($browserId, $lastFetchTime = null)
     {
+        $sessionLabel = 'lexDbeFetch_' . $browserId;
+        $this->_controller->session->set_userdata($sessionLabel, time());
         if ($lastFetchTime) {
             $lastFetchTime = $lastFetchTime - 5; // 5 second buffer
     
@@ -724,6 +728,8 @@ class sf
             return SemDomTransEditDto::encode($this->_projectId, $this->_userId);
         }
     }
+    
+    
     
     public function semdom_get_open_projects() {
         return SemDomTransProjectCommands::getOpenSemdomProjects();
