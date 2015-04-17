@@ -5,7 +5,7 @@ angular.module('palaso.ui.comments')
     return {
       restrict: 'E',
       templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.dc-comment.html',
-      controller: ['$scope', 'lexCommentService', 'sessionService', 'modalService', 'lexEditorDataService', function($scope, commentService, sessionService, modal, editorService) {
+      controller: ['$scope', 'lexCommentService', 'sessionService', 'modalService', function($scope, commentService, sessionService, modal) {
 
         $scope.hover = { comment: false };
 
@@ -45,7 +45,7 @@ angular.module('palaso.ui.comments')
         function updateReply(commentId, reply) {
           commentService.updateReply(commentId, reply, function(result) {
             if (result.ok) {
-              editorService.refreshEditorData().then(function() {
+              $scope.control.editorDataService.refreshEditorData().then(function() {
                 $scope.loadComments();
               });
             }
@@ -55,7 +55,7 @@ angular.module('palaso.ui.comments')
         $scope.updateCommentStatus = function updateCommentStatus(commentId, status) {
           commentService.updateStatus(commentId, status, function(result) {
             if (result.ok) {
-              editorService.refreshEditorData().then(function() {
+              $scope.control.editorDataService.refreshEditorData().then(function() {
                 $scope.loadComments();
               });
             }
@@ -73,7 +73,7 @@ angular.module('palaso.ui.comments')
           modal.showModalSimple('Delete Comment', deletemsg, 'Cancel', 'Delete Comment').then(function() {
             commentService.remove(comment.id, function(result) {
               if (result.ok) {
-                editorService.refreshEditorData().then(function() {
+                $scope.control.editorDataService.refreshEditorData().then(function() {
                   $scope.loadComments();
                 });
               }
@@ -94,7 +94,7 @@ angular.module('palaso.ui.comments')
           modal.showModalSimple('Delete Reply', deletemsg, 'Cancel', 'Delete Reply').then(function() {
             commentService.deleteReply(commentId, reply.id, function(result) {
               if (result.ok) {
-                editorService.refreshEditorData().then(function() {
+                $scope.control.editorDataService.refreshEditorData().then(function() {
                   $scope.loadComments();
                 });
               }
@@ -115,7 +115,7 @@ angular.module('palaso.ui.comments')
 
           commentService.update($scope.comment, function(result) {
             if (result.ok) {
-              editorService.refreshEditorData().then(function() {
+              $scope.control.editorDataService.refreshEditorData().then(function() {
                 $scope.loadComments();
               });
             }

@@ -16,7 +16,9 @@ use models\languageforge\semdomtrans\SemDomTransStatus;
 
 class SemDomTransEditDto
 {
-    public static function encode($projectId, $userId, $lastFetchTime = null)
+    const MAX_ENTRIES_PER_REQUEST = 5000;
+    
+    public static function encode($projectId, $userId, $lastFetchTime = null, $offset = 0)
     {
         $data = array();
         $project = new SemDomTransProjectModel($projectId);
@@ -90,6 +92,7 @@ class SemDomTransEditDto
         
         $commentsModel = new LexCommentListModel($project, $lastFetchTime);
         $commentsModel->readAsModels();
+        
         $encodedModels = LexDbeDtoCommentsEncoder::encode($commentsModel);
         $data['comments'] = $encodedModels["entries"];
         
@@ -105,7 +108,7 @@ class SemDomTransEditDto
         }
  */
 
-        $data['items'] = $targetItems;
+        $data['entries'] = $targetItems;
 
         $data['timeOnServer'] = time(); // future use for offline syncing
         

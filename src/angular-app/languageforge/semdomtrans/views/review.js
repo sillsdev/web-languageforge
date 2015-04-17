@@ -2,19 +2,13 @@
 
 angular.module('semdomtrans.review', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.fieldReview', 'palaso.ui.scroll', 'palaso.ui.typeahead'])
 // DBE controller
-.controller('reviewCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
-function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
+.controller('reviewCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditorDataService', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
+function($scope, $state, $stateParams, editorService, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
     $scope.control = $scope;
     if ($scope.displayedItems == undefined) {
-      if ($scope.items.length == 0) {
-        $scope.$parent.loadDbeData().then(function() {
-          calculateDisplayedItems(); 
-        });
-      } else {
-        $scope.$parent.refreshDbeData().then(function() {
-          calculateDisplayedItems();
-        });
-      }
+      editorService.refreshEditorData().then(function(result) {
+        calculateDisplayedItems();
+      });      
     }
     
     $scope.refreshDbeData = function refreshDbeData(state) {
