@@ -119,7 +119,6 @@ class RightsHelper
         switch ($methodName) {
 
             // User Role (Project Context)
-            case 'user_sendInvite':
             case 'semdom_editor_dto':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
             case 'semdom_get_open_projects':
@@ -135,6 +134,7 @@ class RightsHelper
             case 'semdom_workingset_update':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 
+            case 'user_sendInvite':
             case 'message_markRead':
             case 'project_pageDto':
             case 'lex_projectDto':
