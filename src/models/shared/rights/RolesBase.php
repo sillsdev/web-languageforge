@@ -26,9 +26,10 @@ class RolesBase
     {
         CodeGuard::checkNotFalseAndThrow($role, 'role');
         if (!array_key_exists($role, $rightsArray)) {
-            throw new \Exception("Role '$role' does not exist");
+            $result = false;
+        } else {
+            $result = in_array($right, $rightsArray[$role]);
         }
-        $result = in_array($right, $rightsArray[$role]);
 
         return $result;
     }
