@@ -9,8 +9,8 @@ angular.module('bellows.services')
     this.createSwitchSession = function(projectName, projectCode, appName, callback) {
       jsonRpc.call('project_create_switchSession', [projectName, projectCode, appName], callback);
     };
-    this.archive = function(projectIds, callback) {
-      jsonRpc.call('project_archive', [projectIds], callback);
+    this.archiveAsAdmin = function(callback) {
+      jsonRpc.call('project_archive_asAdmin', [], callback);
     };
     this.archivedList = function(callback) {
       jsonRpc.call('project_archivedList', [], callback);

@@ -1,0 +1,1 @@
+Leave this file here.  It is used by offline.js to check for the existence of an internet connection.
