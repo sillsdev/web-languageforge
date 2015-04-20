@@ -12,16 +12,17 @@ describe('the project settings page - project manager', function() {
   var projectListPage = require('../../../bellows/pages/projectsPage.js');
   var header       = require('../../../bellows/pages/pageHeader.js');
   var projectPage   = require('../pages/projectPage.js');
+  var projectSettingsPage = require('../pages/projectSettingsPage.js');
   var page       = require('../pages/projectSettingsPage.js');
-  
+
   it('setup: logout, login as project manager, go to project settings', function() {
     loginPage.logout();
     loginPage.loginAsManager();
-      projectListPage.get();
-      projectListPage.clickOnProject(constants.testProjectName);
-      projectPage.settingsButton.click();
+    projectListPage.get();
+    projectListPage.clickOnProject(constants.testProjectName);
+    projectSettingsPage.get();
   });
-  
+
 
   describe('members tab', function() {
     var memberCount = 0;
@@ -78,17 +79,17 @@ describe('the project settings page - project manager', function() {
     //it('can message selected user', function() {});  // how can we test this? - cjh
 
   });
-  
+
   describe('question templates tab', function() {
     it('setup: click on tab', function() {
       expect(page.tabs.templates.isPresent()).toBe(true);
       page.tabs.templates.click();
     });
-    
+
     it('can list templates', function() {
       expect(page.templatesTab.list.count()).toBe(2);
     });
-    
+
     it('can add a template', function() {
       page.templatesTab.addButton.click();
       page.templatesTab.editor.title.sendKeys('sound check');
@@ -97,7 +98,7 @@ describe('the project settings page - project manager', function() {
       expect(page.templatesTab.list.count()).toBe(3);
       expect(page.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
     });
-    
+
     it('can update an existing template', function() {
       page.templatesTab.list.last().element(by.linkText('sound check')).click();
       browser.wait(function() {
@@ -111,18 +112,18 @@ describe('the project settings page - project manager', function() {
       expect(page.templatesTab.list.count()).toBe(3);
 
     });
-    
+
     it('can delete a template', function() {
       page.templatesTab.list.last().element(by.css('input[type="checkbox"]')).click();
       page.templatesTab.removeButton.click();
       expect(page.templatesTab.list.count()).toBe(2);
     });
-    
-    
+
+
   });
-  
+
   // The Archived Texts tab is tested as part of a process in the Project page tests. IJH 2014-06
-  
+
   describe('project properties tab', function() {
     var newName = constants.thirdProjectName;
 
@@ -130,7 +131,7 @@ describe('the project settings page - project manager', function() {
       expect(page.tabs.projectProperties.isPresent()).toBe(true);
       page.tabs.projectProperties.click();
     });
-    
+
     it('can read properties', function() {
       expect(page.propertiesTab.name.getAttribute('value')).toBe(constants.testProjectName);
       //expect(page.propertiesTab.featured.getAttribute('checked')).toBeFalsy();
@@ -149,9 +150,9 @@ describe('the project settings page - project manager', function() {
       //expect(page.propertiesTab.featured.getAttribute('checked')).toBeTruthy();
       expect(page.propertiesTab.allowAudioDownload.getAttribute('checked')).toBeFalsy();
       page.propertiesTab.button.click();
-        projectListPage.get();
-        projectListPage.clickOnProject(newName);
-        projectPage.settingsButton.click();
+      projectListPage.get();
+      projectListPage.clickOnProject(newName);
+      projectSettingsPage.get();
       page.tabs.projectProperties.click();
       page.propertiesTab.name.clear();
       page.propertiesTab.name.sendKeys(constants.testProjectName);
@@ -178,20 +179,20 @@ describe('the project settings page - project manager', function() {
       expect(page.optionlistsTab.editContentsList.count()).toBe(2);
     });
     /* Skipping this test because testing the drag-and-drop is proving much harder than expected. 2013-06 RM
-    it('can rearrange the values', function() {
-      var foo = util.findRowByText(page.optionlistsTab.editContentsList, "foo");
-      var bar = util.findRowByText(page.optionlistsTab.editContentsList, "bar");
-      util.findRowByFunc(page.optionlistsTab.editContentsList, console.log).then(function() {
-        console.log("That's all, folks.");
-      });
-      foo.then(function(elem) {
-        console.log("Found it.");
-        //browser.actions().dragAndDrop(elem.getWebElement(), { x: 0, y: 30 } ).perform();
-      });
-      browser.sleep(5000);
-    });
-    */
-     
+     it('can rearrange the values', function() {
+     var foo = util.findRowByText(page.optionlistsTab.editContentsList, "foo");
+     var bar = util.findRowByText(page.optionlistsTab.editContentsList, "bar");
+     util.findRowByFunc(page.optionlistsTab.editContentsList, console.log).then(function() {
+     console.log("That's all, folks.");
+     });
+     foo.then(function(elem) {
+     console.log("Found it.");
+     //browser.actions().dragAndDrop(elem.getWebElement(), { x: 0, y: 30 } ).perform();
+     });
+     browser.sleep(5000);
+     });
+     */
+
     it('can delete values from the list', function() {
       expect(page.optionlistsTab.editContentsList.count()).toBe(2);
       page.optionlistsTab.editContentsList.first().then(function(elem) { page.optionlistsTab.deleteButton(elem).click(); });
@@ -209,9 +210,9 @@ describe('the project settings page - project manager', function() {
       it('setup: logout, login as system admin, go to project settings', function() {
         loginPage.logout();
         loginPage.loginAsAdmin();
-          projectListPage.get();
-          projectListPage.clickOnProject(constants.testProjectName);
-          projectPage.settingsButton.click();
+        projectListPage.get();
+        projectListPage.clickOnProject(constants.testProjectName);
+        projectSettingsPage.get();
       });
       it('the communication settings tab is visible', function() {
         expect(page.tabs.communication.isPresent()).toBe(true);

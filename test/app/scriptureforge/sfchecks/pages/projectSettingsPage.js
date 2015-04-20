@@ -24,7 +24,14 @@ var SfProjectSettingsPage = function() {
               results:  $('.typeahead').$('ul li')
             }
   };
-  
+
+  this.settingsDropdownLink = element(by.css('#settingsDropdownButton a.btn i.icon-cog'));
+  this.projectSettingsLink = element(by.linkText('Project Settings'));
+  this.get = function get() {
+    this.settingsDropdownLink.click();
+    this.projectSettingsLink.click();
+  };
+
   this.addNewMember = function(name) {
     this.tabs.members.click();
     this.membersTab.addButton.click();

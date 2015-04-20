@@ -62,7 +62,7 @@ describe('the project dashboard AKA text list page', function() {
 
     it('can click on settings button', function() {
       expect(projectPage.settingsButton.isDisplayed()).toBe(true);
-      projectPage.settingsButton.click();
+      projectSettingsPage.get();
       browser.navigate().back();
     });
 
@@ -109,7 +109,7 @@ describe('the project dashboard AKA text list page', function() {
     });
 
     it('can re-publish the text that was just archived (Project Settings)', function() {
-      projectPage.settingsButton.click();
+      projectSettingsPage.get();
       projectSettingsPage.tabs.archiveTexts.click();
       expect(projectSettingsPage.archivedTextsTab.textLink(sampleTitle).isDisplayed()).toBe(true);
       var publishButton = projectSettingsPage.archivedTextsTab.publishButton.getWebElement();
