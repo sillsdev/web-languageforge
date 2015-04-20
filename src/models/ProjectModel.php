@@ -2,7 +2,10 @@
 
 namespace models;
 
+use models\mapper\ArrayOf;
+
 use libraries\shared\Website;
+use models\languageforge\SemDomTransProjectModel;
 use models\scriptureforge\RapumaProjectModel;
 
 use models\languageforge\lexicon\LexiconProjectModel;
@@ -137,9 +140,7 @@ class ProjectModel extends \models\mapper\MapperModel
         $userList->read();
         for ($i = 0, $l = count($userList->entries); $i < $l; $i++) {
             $userId = $userList->entries[$i]['id'];
-            if (!key_exists($userId, $this->users)) {
-                $projectId = $this->id->asString();
-                //error_log("User $userId is not a member of project $projectId");
+            if (!array_key_exists($userId, $this->users)) {
                 continue;
             }
             $userList->entries[$i]['role'] = $this->users[$userId]->role;
@@ -164,6 +165,19 @@ class ProjectModel extends \models\mapper\MapperModel
             $hasRight = $rolesClass::hasRight($this->users[$userId]->role, $right);
         }
         return $hasRight;
+    }
+
+    /**
+     * Returns an array of key/value Roles that this project supports
+     * @throws \Exception
+     * @return array
+     */
+    public function getRolesList() {
+        if (!method_exists($this->rolesClass, 'hasRight')) {
+            throw new \Exception('hasRight method cannot be called directly from ProjectModel');
+        }
+        $rolesClass = $this->rolesClass;
+        return $rolesClass::getRolesList();
     }
 
     /**
@@ -205,7 +219,7 @@ class ProjectModel extends \models\mapper\MapperModel
     /**
      *
      * @param string $projectId
-     * @return appropriate project model for the type
+     * @return ProjectModel
      */
     public static function getById($projectId)
     {
@@ -217,6 +231,8 @@ class ProjectModel extends \models\mapper\MapperModel
                 return new RapumaProjectModel($projectId);
             case 'lexicon':
                 return new LexiconProjectModel($projectId);
+            case 'semdomtrans':
+                return new SemDomTransProjectModel($projectId);
             default:
                 return new ProjectModel($projectId);
         }
@@ -331,6 +347,13 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public $appName;
 
+    /**
+     * 
+     * @var ArrayOf
+     */
+    public $usersRequestingAccess;
+    
+    
     private function rrmdir($dir)
     {
         if (is_dir($dir)) {

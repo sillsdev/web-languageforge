@@ -1,24 +1,40 @@
 <form class="form-horizontal dc-multitext">
     <div data-ng-repeat="tag in config.inputSystems" class="control-group">
-        <label ng-show="$first && config.type != 'pictures'"
+        <label data-ng-show="$first && config.type != 'pictures'"
             class="control-label">{{config.label}}</label>
         <div class="controls">
-            <div class="input-prepend" ng-click="selectInputSystem(tag)"
-                ng-class="{selectableInputSystemFieldForComment: control.state == 'comment' && control.rights.canComment()}">
+            <div class="input-prepend" data-ng-click="selectInputSystem(tag)"
+                data-ng-class="{selectableInputSystemFieldForComment: control.state == 'comment' && control.rights.canComment()}">
                 <span class="add-on wsid"
                     title="{{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
-                <textarea
-                    ng-show="config.displayMultiline && control.state == 'edit' && control.rights.canEditEntry()"
-                    dir="{{inputSystemDirection(tag)}}" width="{{config.width}}"
-                    type="text" data-ng-model="model[tag].value"></textarea>
+                <!-- <textarea
+                    data-ng-show="config.displayMultiline && !modelContainsSpan(tag) && control.state == 'edit' && control.rights.canEditEntry()"
+                    dir="{{inputSystemDirection(tag)}}"
+                    data-pui-show-overflow
+                    data-ng-model="model[tag].value"></textarea>
+                <div class="uneditable-input multiline"
+                    data-ng-show="config.displayMultiline && modelContainsSpan(tag) && control.state == 'edit' && control.rights.canEditEntry()"
+                    dir="{{inputSystemDirection(tag)}}"
+                    data-pui-show-overflow
+                    data-ng-bind-html="model[tag].value"></div>
+                     -->
+                <dc-formattedtext class="dc-formattedtext" 
+                    data-ng-if="config.displayMultiline && control.state == 'edit' && control.rights.canEditEntry()"
+                    fte-disabled="! (control.state == 'edit' && control.rights.canEditEntry()) || modelContainsSpan(tag)"
+                    fte-model="model[tag].value"
+                    fte-dir="inputSystemDirection(tag)"></dc-formattedtext>
                 <input
-                    ng-show="!config.displayMultiline && control.state == 'edit' && control.rights.canEditEntry()"
+                    data-ng-show="!config.displayMultiline && !modelContainsSpan(tag) && control.state == 'edit' && control.rights.canEditEntry()"
                     dir="{{inputSystemDirection(tag)}}" width="{{config.width}}"
+                    data-pui-show-overflow
                     placeholder="{{(config.type == 'pictures' ? 'caption' : '')}}"
                     type="text" data-ng-model="model[tag].value" />
-                <span class="uneditable-input"
-                    ng-hide="control.state == 'edit' && control.rights.canEditEntry()"
-                    ng-bind="model[tag].value"></span>
+                <div class="uneditable-input"
+                    data-ng-show="(!config.displayMultiline && modelContainsSpan(tag) && control.state == 'edit' && control.rights.canEditEntry())
+                        || !(control.state == 'edit' && control.rights.canEditEntry())"
+                    dir="{{inputSystemDirection(tag)}}"
+                    data-pui-show-overflow
+                    data-ng-bind-html="model[tag].value"></div>
             </div>
         </div>
     </div>

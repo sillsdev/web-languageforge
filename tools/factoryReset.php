@@ -5,21 +5,9 @@ require_once('toolsConfig.php');
 
 
 // use commands go here (after the e2eTestConfig)
-use models\commands\ProjectCommands;
 use models\commands\UserCommands;
-use models\commands\TextCommands;
-use models\commands\QuestionCommands;
-use models\commands\QuestionTemplateCommands;
-use models\shared\rights\ProjectRoles;
-use models\shared\rights\SiteRoles;
 use models\shared\rights\SystemRoles;
-use models\scriptureforge\SfProjectModel;
-use models\languageforge\LfProjectModel;
 use models\ProjectModel;
-use models\languageforge\lexicon\LexiconProjectModel;
-use models\languageforge\lexicon\commands\LexEntryCommands;
-use models\languageforge\lexicon\commands\LexUploadCommands;
-use models\languageforge\lexicon\config\LexiconConfigObj;
 use libraries\shared\Website;
 use models\ProjectListModel;
 

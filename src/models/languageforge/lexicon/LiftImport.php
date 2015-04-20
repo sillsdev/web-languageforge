@@ -2,10 +2,10 @@
 
 namespace models\languageforge\lexicon;
 
-use Palaso\Utilities\FileUtilities;
-use models\mapper\ArrayOf;
-use models\languageforge\lexicon\config\LexiconOptionListItem;
 use models\languageforge\lexicon\config\LexiconConfigObj;
+use models\languageforge\lexicon\config\LexiconOptionListItem;
+use models\mapper\ArrayOf;
+use Palaso\Utilities\FileUtilities;
 
 class LiftImport
 {
@@ -59,20 +59,17 @@ class LiftImport
      */
     public function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
     {
-        ini_set('max_execution_time', 90); // Sufficient time to import webster.  TODO Make this async CP 2014-10
+        ini_set('max_execution_time', 180); // Sufficient time to import webster.  TODO Make this async CP 2014-10
 //         self::validate($xml);    // TODO Fix. The XML Reader validator doesn't work with <optional> in the RelaxNG schema. IJH 2014-03
 
         $entryList = new LexEntryListModel($projectModel);
         $entryList->read();
-        $initialImport = $entryList->count == 0;
+        $hasExistingData = $entryList->count != 0;
 
-        // I consider this to be a stopgap to support importing of part of speech until we have a way to import lift ranges - cjh 2014-08
-        $partOfSpeechValues = array();
-
-        // Do the following on first import (number of entries == 0)
-        if ($initialImport) {
+        // No data yet? (number of entries == 0)
+        if (! $hasExistingData) {
             // save and clear input systems
-            $inputSystems = $projectModel->inputSystems->getArrayCopy();
+            $savedInputSystems = $projectModel->inputSystems->getArrayCopy();
             $projectModel->inputSystems->exchangeArray(array());
 
             // clear entry field input systems config if there are no entries (only use imported input systems)
@@ -96,7 +93,9 @@ class LiftImport
         $liftFolderPath = dirname($liftFilePath);
 
         while ($reader->read()) {
-            if ($initialImport && $reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'range') {
+
+            // Read LIFT ranges in the header of the LIFT file
+            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'range') {
                 $node = $reader->expand();
                 $rangeId = $node->attributes->getNamedItem('id')->textContent;
                 $rangeHref = $node->attributes->getNamedItem('href')->textContent;
@@ -135,9 +134,36 @@ class LiftImport
                     $liftRanges[$rangeId] = $range;
                 }
 
-                $this->liftImportNodeError->addSubnodeError($rangeImportNodeError);
+                if ($rangeImportNodeError->hasErrors()) {
+                    $this->liftImportNodeError->addSubnodeError($rangeImportNodeError);
+                }
             }
-            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {   // Reads the LIFT file and searches for the entry node
+
+            // Read the custom 'fields' spec in the header of the LIFT file
+            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'fields') {
+                $isInFieldsSectionOfLift = true;
+                $this->liftDecoder->liftFields = array();
+                while ($isInFieldsSectionOfLift && $reader->read()) {
+                    if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'field') {
+                        $node = $reader->expand();
+                        $sxeNode = self::domNode_to_sxeNode($node);
+                        $LiftFieldTag = (string) $sxeNode['tag'];
+                        $liftField = array();
+                        foreach ($sxeNode as $element) {
+                            if ($element->getName() === 'form') {
+                                $inputSystemTag = (string) $element['lang'];
+                                $liftField[$inputSystemTag] = (string) $element->text;
+                            }
+                        }
+                        $this->liftDecoder->liftFields[$LiftFieldTag] = $liftField;
+                    } elseif ($reader->nodeType == \XMLReader::END_ELEMENT && $reader->localName == 'fields') {
+                        $isInFieldsSectionOfLift = false;
+                    }
+                }
+            }
+
+            // Read an entry node
+            if ($reader->nodeType == \XMLReader::ELEMENT && $reader->localName == 'entry') {
                 $this->stats->importEntries++;
                 $node = $reader->expand();
                 $sxeNode = self::domNode_to_sxeNode($node);
@@ -171,14 +197,12 @@ class LiftImport
                             $this->stats->entriesDeleted++;
                         }
                     }
-                    self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
                 } else {
                     if (isset($sxeNode->{'lexical-unit'})) {
                         $entry = new LexEntryModel($projectModel);
                         $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
                         $entry->write();
                         $this->stats->newEntries++;
-                        self::addPartOfSpeechValuesToList($partOfSpeechValues, $entry);
                     }
                 }
             }
@@ -186,34 +210,19 @@ class LiftImport
 
         $reader->close();
 
-        if ($initialImport) {
-            // put back saved input systems if none found in the imported data
-            if ($projectModel->inputSystems->count() <= 0) {
-                $projectModel->inputSystems->exchangeArray($inputSystems);
-            }
+        // put back saved input systems if none found in the imported data
+        if (! $hasExistingData && $projectModel->inputSystems->count() <= 0) {
+            $projectModel->inputSystems->exchangeArray($savedInputSystems);
+        }
 
-            // add lift ranges
-            if (array_key_exists('grammatical-info', $liftRanges)) {
-                $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS];
-                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['grammatical-info']);
+        // add lift ranges
+        if ($mergeRule != LiftMergeRule::IMPORT_LOSES) {
+            foreach ($liftRanges as $liftRangeCode => $liftRange) {
+                // add everything except semantic domains
+                if (strpos($liftRangeCode, 'semantic-domain') === false) {
+                    self::rangeToOptionList($projectModel, $liftRangeCode, LexiconConfigObj::flexOptionlistName($liftRangeCode), $liftRange);
+                }
             }
-            if (array_key_exists('anthro-code', $liftRanges)) {
-                $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES];
-                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['anthro-code']);
-            }
-            if (array_key_exists('domain-type', $liftRanges)) {
-                $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS];
-                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['domain-type']);
-            }
-            if (array_key_exists('semantic-domain-ddp4', $liftRanges)) {
-                $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM];
-                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['semantic-domain-ddp4']);
-            }
-            if (array_key_exists('status', $liftRanges)) {
-                $field = $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS];
-                self::rangeToOptionList($projectModel, $field->listCode, $field->label, $liftRanges['status']);
-            }
-            // TODO: Add any other LIFT range imports that make sense. 2014-10 RM
         }
 
         $this->report->nodeErrors[] = $this->liftImportNodeError;
@@ -269,10 +278,11 @@ class LiftImport
 
     /**
      * Convert a LIFT range to an option list of the right code
-     * Usage example: rangeToOptionList($projectModel, 'partOfSpeech', 'Part of Speech', $liftRanges['grammatical-info'])
-     * @param unknown $projectModel
-     * @param unknown $optionListCode
-     * @param unknown $liftRange
+     * Usage example: rangeToOptionList($projectModel, 'grammatical-info', 'Part of Speech', $liftRanges['grammatical-info'])
+     * @param LexiconProjectModel $projectModel
+     * @param string $optionListCode
+     * @param string $optionListName
+     * @param LiftRange $liftRange
      * @param string $interfaceLang
      */
     public static function rangeToOptionList($projectModel, $optionListCode, $optionListName, $liftRange, $interfaceLang = 'en')
@@ -287,16 +297,17 @@ class LiftImport
         $optionList->items->exchangeArray(array());
 
         foreach ($liftRange->rangeElements as $id => $elem) {
-            $label = $elem->label[$interfaceLang]->value;
-            if (isset($elem->abbrev)) {
-                $abbrev = $elem->abbrev[$interfaceLang]->value;
-            } else {
-                $abbrev = null;
+            if ($elem->label && array_key_exists($interfaceLang, $elem->label)) {
+                $label = $elem->label[$interfaceLang]->value;
+                if (isset($elem->abbrev)) {
+                    $abbrev = $elem->abbrev[$interfaceLang]->value;
+                } else {
+                    $abbrev = null;
+                }
+                $optionListItem = new LexiconOptionListItem($label, $id);
+                $optionListItem->abbreviation = $abbrev;
+                $optionList->items->append($optionListItem);
             }
-            $optionListItem = new LexiconOptionListItem($label);
-            $optionListItem->abbreviation = $abbrev;
-            $optionList->items->append($optionListItem);
-
         }
         $optionList->write();
     }
@@ -341,17 +352,17 @@ class LiftImport
             foreach (glob($extractFolderPath . '/*', GLOB_ONLYDIR) as $folderPath) {
                 $folderName = basename($folderPath);
                 switch ($folderName) {
-                	case 'pictures':
-                	case 'audio':
-                	case 'others':
-                	case 'WritingSystems':
-                	    $assetsPath = $assetsFolderPath . "/" . $folderName;
-                	    if (file_exists($folderPath) && is_dir($folderPath)) {
+                    case 'pictures':
+                    case 'audio':
+                    case 'others':
+                    case 'WritingSystems':
+                        $assetsPath = $assetsFolderPath . "/" . $folderName;
+                        if (file_exists($folderPath) && is_dir($folderPath)) {
                             FileUtilities::copyDirTree($folderPath, $assetsPath);
                         }
                         break;
-                	default:
-                	    $zipNodeError->addUnhandledSubfolder($folderName);
+                    default:
+                        $zipNodeError->addUnhandledSubfolder($folderName);
                 }
             }
 
@@ -464,20 +475,6 @@ class LiftImport
         $sxeNode = simplexml_import_dom($n);
         $dom->appendChild($n);
         return $sxeNode;
-    }
-
-    /**
-     * @param $arr array - list to append to
-     * @param $entryModel LexEntryModel
-     */
-    private static function addPartOfSpeechValuesToList(&$arr, $entryModel)
-    {
-        foreach ($entryModel->senses as $sense) {
-            $pos = $sense->partOfSpeech->value;
-            if (!in_array($pos, $arr)) {
-                array_push($arr, $pos);
-            }
-        }
     }
 
     /**

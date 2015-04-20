@@ -8,6 +8,7 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
   lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
   $scope.configDirty = angular.copy(ss.session.projectSettings.config);
   $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
+  $scope.optionlistPristine = angular.copy(ss.session.projectSettings.optionlists);
   $scope.isSaving = false;
 
   /**
@@ -343,6 +344,7 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
         $scope.configForm.$setPristine();
         $scope.projectSettings.config = angular.copy($scope.configDirty);
         $scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
+        $scope.optionlistPristine = angular.copy($scope.optionlistDirty);
         // setupView();
       }
       $scope.isSaving = false;
@@ -536,6 +538,15 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
             'number': $filter('translate')('Number')
           }
         };
+        $scope.selects.listCode = {
+            'optionsOrder': [],
+            'options': {}
+        };
+        angular.forEach($scope.optionlistDirty, function(optionList, index) {
+          $scope.selects.listCode.optionsOrder.push(optionList.code);
+          $scope.selects.listCode.options[optionList.code] = optionList.name;
+        });
+        
         $scope.newCustomData = {
           'name': ''
         };
@@ -567,13 +578,19 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
       customField.hideIfEmpty = false;
       customViewField.type = 'basic';
       customViewField.show = false;
-      if (newCustomData.type === 'multitext') {
-        customField.displayMultiline = false;
-        customField.width = 20;
-        customField.inputSystems = [$scope.inputSystemsList[0].tag];
-        customViewField.type = 'multitext';
-        customViewField.overrideInputSystems = false;
-        customViewField.inputSystems = [];
+      switch (newCustomData.type) {
+        case 'multitext':
+          customField.displayMultiline = false;
+          customField.width = 20;
+          customField.inputSystems = [$scope.inputSystemsList[0].tag];
+          customViewField.type = 'multitext';
+          customViewField.overrideInputSystems = false;
+          customViewField.inputSystems = [];
+          break;
+        case 'optionlist':
+        case 'multioptionlist':
+          customField.listCode = newCustomData.listCode;
+          break;
       }
 
       switch (newCustomData.level) {
@@ -703,23 +720,19 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 }])
 // Option List Configuration Controller
 .controller('OptionListCtrl', ['$scope', function($scope) {
-  $scope.optionLists = {
-    pos: {
-      id: 'pos',
-      name: 'Part of Speech',
-      items: $scope.optionlistDirty[0].items,
-      defaultKey: 'noun'
-    }
-  };
-  $scope.currentListId = 'pos';
+  var oldListIndex = 0;
+  $scope.currentListIndex = 0;
 
-  $scope.selectList = function(listId) {
-    $scope.currentListId = listId;
+  $scope.selectList = function($index) {
+    $scope.currentListIndex = $index;
   };
 
-  $scope.$watch('optionLists.pos.items', function(newval, oldval) {
+  $scope.$watch('optionlistDirty[currentListIndex].items', function(newval, oldval) {
     if (angular.isDefined(newval) && newval != oldval) {
-      $scope.configForm.$setDirty();
+      if ($scope.currentListIndex == oldListIndex) {
+        $scope.configForm.$setDirty();
+      }
+      oldListIndex = $scope.currentListIndex;
     }
   }, true);
 

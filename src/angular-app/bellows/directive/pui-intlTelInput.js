@@ -6,11 +6,11 @@ angular.module('palaso.ui.intlTelInput', [])
     return {
         restrict: 'A',
         link: function(scope, element, attrs) {
-        	// Create the mobile phone field
+          // Create the mobile phone field
             $(element).intlTelInput();
             // Watch the phone number to refresh the country flag 
             scope.$watch(attrs.ngModel, function (value) {
-            	$(element).intlTelInput("setNumber", value);
+              $(element).intlTelInput("setNumber", value);
             });
             
             

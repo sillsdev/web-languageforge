@@ -50,7 +50,7 @@ class auth extends Base
                 $this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
             }
 
-            $this->renderPage('auth/index', $this->data);
+            $this->renderPage('auth/index');
         }
     }
 
@@ -134,8 +134,8 @@ class auth extends Base
             );
 
             //$this->data["page"] = "login";
-            //$this->load->view("auth/container", $this->data);
-            $this->renderPage('auth/login', $this->data);
+            //$this->load->view("auth/container");
+            $this->renderPage('auth/login');
         }
     }
 
@@ -197,7 +197,7 @@ class auth extends Base
             );
 
             //render
-            $this->renderPage('auth/change_password', $this->data);
+            $this->renderPage('auth/change_password');
         } else {
             $identity = $this->session->userdata($this->config->item('identity', 'ion_auth'));
 
@@ -232,7 +232,7 @@ class auth extends Base
 
             //set any errors and display the form
             $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
-            $this->renderPage('auth/forgot_password', $this->data);
+            $this->renderPage('auth/forgot_password');
         } else {
             // get identity from username or email
             $config_tables = $this->config->item('tables', 'ion_auth');
@@ -310,7 +310,7 @@ class auth extends Base
                 $this->data['code'] = $code;
 
                 //render
-                $this->renderPage('auth/reset_password', $this->data);
+                $this->renderPage('auth/reset_password');
             } else {
                 // do we have a valid request?
                 if (/*$this->_valid_csrf_nonce() === FALSE ||*/$user->id != $this->input->post('user_id')) {
@@ -377,7 +377,7 @@ class auth extends Base
             $this->data['csrf'] = $this->_get_csrf_nonce();
             $this->data['user'] = $this->ion_auth->user($id)->row();
 
-            $this->renderPage('auth/deactivate_user', $this->data);
+            $this->renderPage('auth/deactivate_user');
         } else {
             // do we really want to deactivate?
             if ($this->input->post('confirm') == 'yes') {
@@ -457,7 +457,7 @@ class auth extends Base
                 'value' => $this->form_validation->set_value('password_confirm'),
             );
 
-            $this->renderPage('auth/create_user', $this->data);
+            $this->renderPage('auth/create_user');
         }
     }
 
@@ -547,7 +547,7 @@ class auth extends Base
             'type' => 'password'
         );
 
-        $this->renderPage('auth/edit_user', $this->data);
+        $this->renderPage('auth/edit_user');
     }
 
     // create a new group
@@ -589,7 +589,7 @@ class auth extends Base
                 'value' => $this->form_validation->set_value('description'),
             );
 
-            $this->renderPage('auth/create_group', $this->data);
+            $this->renderPage('auth/create_group');
         }
     }
 
@@ -645,7 +645,7 @@ class auth extends Base
             'value' => $this->form_validation->set_value('group_description', $group->description),
         );
 
-        $this->renderPage('auth/edit_group', $this->data);
+        $this->renderPage('auth/edit_group');
     }
 
     public function _get_csrf_nonce()

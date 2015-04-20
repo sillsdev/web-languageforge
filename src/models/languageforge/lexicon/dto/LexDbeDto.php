@@ -12,35 +12,7 @@ use models\mapper\JsonEncoder;
 use models\shared\UserGenericVoteModel;
 use models\UserModel;
 
-class LexDbeDtoCommentsEncoder extends JsonEncoder
-{
-    public function encodeIdReference($key, $model)
-    {
-        if ($key == 'createdByUserRef' || $key == 'modifiedByUserRef') {
-            $user = new UserModel();
-            if ($user->exists($model->asString())) {
-                $user->read($model->asString());
 
-                return array(
-                    'id' => $user->id->asString(),
-                    'avatar_ref' => $user->avatar_ref,
-                    'name' => $user->name,
-                    'username' => $user->username);
-            } else {
-                return '';
-            }
-        } else {
-            return $model->asString();
-        }
-    }
-
-    public static function encode($model)
-    {
-        $e = new LexDbeDtoCommentsEncoder();
-
-        return $e->_encode($model);
-    }
-}
 class LexDbeDto
 {
     /**
@@ -48,19 +20,31 @@ class LexDbeDto
      * @param $userId
      * @param  null       $lastFetchTime
      * @throws \Exception
-     * @internal param bool $returnOnlyUpdates
      * @return array
      */
-    public static function encode($projectId, $userId, $lastFetchTime = null)
+
+    const MAX_ENTRIES_PER_REQUEST = 5000;
+
+    public static function encode($projectId, $userId, $lastFetchTime = null, $offset = 0)
     {
         $data = array();
         $project = new LexiconProjectModel($projectId);
-        $entriesModel = new LexEntryListModel($project, $lastFetchTime);
-        $entriesModel->readForDto();
-        $entries = $entriesModel->entries;
+        if ($lastFetchTime) {
+            $entriesModel = new LexEntryListModel($project, $lastFetchTime);
+            $entriesModel->readForDto();
+            $commentsModel = new LexCommentListModel($project, $lastFetchTime);
+            $commentsModel->readAsModels();
+        } else {
+            $entriesModel = new LexEntryListModel($project, null, self::MAX_ENTRIES_PER_REQUEST, $offset);
+            $entriesModel->readForDto();
+            $commentsModel = new LexCommentListModel($project, null, self::MAX_ENTRIES_PER_REQUEST, $offset);
+            $commentsModel->readAsModels();
 
-        $commentsModel = new LexCommentListModel($project, $lastFetchTime);
-        $commentsModel->readAsModels();
+            $data['itemTotalCount'] = ($entriesModel->totalCount > $commentsModel->totalCount) ? $entriesModel->totalCount : $commentsModel->totalCount;
+            $data['itemCount'] = ($entriesModel->count > $commentsModel->count) ? $entriesModel->count : $commentsModel->count;
+            $data['offset'] = $offset;
+        }
+        $entries = $entriesModel->entries;
         $encodedComments = LexDbeDtoCommentsEncoder::encode($commentsModel);
         $data['comments'] = $encodedComments['entries'];
         /*
@@ -113,7 +97,7 @@ class LexDbeDto
 
         $data['entries'] = $entries;
 
-        $data['timeOnServer'] = time(); // future use for offline syncing
+        $data['timeOnServer'] = time(); // for offline syncing
 
         return $data;
     }

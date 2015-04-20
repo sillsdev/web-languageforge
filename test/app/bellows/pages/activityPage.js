@@ -12,7 +12,7 @@ var SfActivityPage = function() {
   // Navigate to the Activity page
   this.get = function() {
     browser.get(browser.baseUrl + this.activityURL);
-    
+    browser.waitForAngular();
   };
   
   this.clickOnAllActivity = function() {

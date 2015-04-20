@@ -3,7 +3,7 @@
 * Name:  Ion Auth
 *
 * Author: Ben Edmunds
-*		  ben.edmunds@gmail.com
+*          ben.edmunds@gmail.com
 *         @benedmunds
 *
 * Added Awesomeness: Phil Sturgeon
@@ -22,39 +22,39 @@
 class Ion_auth
 {
     /**
-	 * account status ('not_activated', etc ...)
-	 *
-	 * @var string
-	 **/
+     * account status ('not_activated', etc ...)
+     *
+     * @var string
+     **/
     protected $status;
 
     /**
-	 * extra where
-	 *
-	 * @var array
-	 **/
+     * extra where
+     *
+     * @var array
+     **/
     public $_extra_where = array();
 
     /**
-	 * extra set
-	 *
-	 * @var array
-	 **/
+     * extra set
+     *
+     * @var array
+     **/
     public $_extra_set = array();
 
     /**
-	 * caching of users and their groups
-	 *
-	 * @var array
-	 **/
+     * caching of users and their groups
+     *
+     * @var array
+     **/
     public $_cache_user_in_group;
 
     /**
-	 * __construct
-	 *
-	 * @return void
-	 * @author Ben
-	 **/
+     * __construct
+     *
+     * @return void
+     * @author Ben
+     **/
     public function __construct()
     {
         $this->load->config('ion_auth', true);
@@ -92,11 +92,11 @@ class Ion_auth
     }
 
     /**
-	 * __call
-	 *
-	 * Acts as a simple way to call model methods without loads of stupid alias'
-	 *
-	 **/
+     * __call
+     *
+     * Acts as a simple way to call model methods without loads of stupid alias'
+     *
+     **/
     public function __call($method, $arguments)
     {
         if (!method_exists( $this->ion_auth_model, $method) ) {
@@ -107,27 +107,27 @@ class Ion_auth
     }
 
     /**
-	 * __get
-	 *
-	 * Enables the use of CI super-global without having to define an extra variable.
-	 *
-	 * I can't remember where I first saw this, so thank you if you are the original author. -Militis
-	 *
-	 * @access	public
-	 * @param	$var
-	 * @return	mixed
-	 */
+     * __get
+     *
+     * Enables the use of CI super-global without having to define an extra variable.
+     *
+     * I can't remember where I first saw this, so thank you if you are the original author. -Militis
+     *
+     * @access    public
+     * @param    $var
+     * @return    mixed
+     */
     public function __get($var)
     {
         return get_instance()->$var;
     }
 
     /**
-	 * forgotten password feature
-	 *
-	 * @return mixed  boolian / array
-	 * @author Mathew
-	 **/
+     * forgotten password feature
+     *
+     * @return mixed  boolian / array
+     * @author Mathew
+     **/
     public function forgotten_password($identity)    //changed $email to $identity
     {
         if ( $this->ion_auth_model->forgotten_password($identity) ) {   //changed
@@ -175,11 +175,11 @@ class Ion_auth
     }
 
     /**
-	 * forgotten_password_complete
-	 *
-	 * @return void
-	 * @author Mathew
-	 **/
+     * forgotten_password_complete
+     *
+     * @return void
+     * @author Mathew
+     **/
     public function forgotten_password_complete($code)
     {
         $this->ion_auth_model->trigger_events('pre_password_change');
@@ -236,11 +236,11 @@ class Ion_auth
     }
 
     /**
-	 * forgotten_password_check
-	 *
-	 * @return void
-	 * @author Michael
-	 **/
+     * forgotten_password_check
+     *
+     * @return void
+     * @author Michael
+     **/
     public function forgotten_password_check($code)
     {
         $profile = $this->where('forgotten_password_code', $code)->users()->row(); //pass the code to profile
@@ -267,11 +267,11 @@ class Ion_auth
     }
 
     /**
-	 * register
-	 *
-	 * @return void
-	 * @author Mathew
-	 **/
+     * register
+     *
+     * @return void
+     * @author Mathew
+     **/
     public function register($username, $password, $email, $additional_data = array(), $group_ids = array()) //need to test email activation
     {
         $this->ion_auth_model->trigger_events('pre_account_creation');
@@ -349,11 +349,11 @@ class Ion_auth
     }
 
     /**
-	 * logout
-	 *
-	 * @return void
-	 * @author Mathew
-	 **/
+     * logout
+     *
+     * @return void
+     * @author Mathew
+     **/
     public function logout()
     {
         $this->ion_auth_model->trigger_events('logout');
@@ -383,11 +383,11 @@ class Ion_auth
     }
 
     /**
-	 * logged_in
-	 *
-	 * @return bool
-	 * @author Mathew
-	 **/
+     * logged_in
+     *
+     * @return bool
+     * @author Mathew
+     **/
     public function logged_in()
     {
         $this->ion_auth_model->trigger_events('logged_in');
@@ -396,11 +396,11 @@ class Ion_auth
     }
 
     /**
-	 * logged_in
-	 *
-	 * @return integer
-	 * @author jrmadsen67
-	 **/
+     * logged_in
+     *
+     * @return integer
+     * @author jrmadsen67
+     **/
     public function get_user_id()
     {
         $user_id = $this->session->userdata('user_id');
@@ -412,11 +412,11 @@ class Ion_auth
     }
 
     /**
-	 * is_admin
-	 *
-	 * @return bool
-	 * @author Ben Edmunds
-	 **/
+     * is_admin
+     *
+     * @return bool
+     * @author Ben Edmunds
+     **/
     public function is_admin($id=false)
     {
         $this->ion_auth_model->trigger_events('is_admin');
@@ -427,15 +427,15 @@ class Ion_auth
     }
 
     /**
-	 * in_group
-	 *
-	 * @param mixed group(s) to check
-	 * @param bool user id
-	 * @param bool check if all groups is present, or any of the groups
-	 *
-	 * @return bool
-	 * @author Phil Sturgeon
-	 **/
+     * in_group
+     *
+     * @param mixed group(s) to check
+     * @param bool user id
+     * @param bool check if all groups is present, or any of the groups
+     *
+     * @return bool
+     * @author Phil Sturgeon
+     **/
     public function in_group($check_group, $id=false, $check_all = false)
     {
         $this->ion_auth_model->trigger_events('in_group');
@@ -462,33 +462,33 @@ class Ion_auth
             $groups = (is_string($value)) ? $groups_array : array_keys($groups_array);
 
             /**
-			 * if !all (default), in_array
-			 * if all, !in_array
-			 */
+             * if !all (default), in_array
+             * if all, !in_array
+             */
             if (in_array($value, $groups) xor $check_all) {
                 /**
-				 * if !all (default), true
-				 * if all, false
-				 */
+                 * if !all (default), true
+                 * if all, false
+                 */
 
                 return !$check_all;
             }
         }
 
         /**
-		 * if !all (default), false
-		 * if all, true
-		 */
+         * if !all (default), false
+         * if all, true
+         */
 
         return $check_all;
     }
 
     /**
-	 * Get either a Gravatar URL or return an empty string if not logged in
-	 *
-	 * @param string $size Size in pixels, defaults to 80px [ 1 - 2048 ]
-	 * @return String containing either a gravatar image URL or an empty string if the user is not logged in
-	 */
+     * Get either a Gravatar URL or return an empty string if not logged in
+     *
+     * @param string $size Size in pixels, defaults to 80px [ 1 - 2048 ]
+     * @return String containing either a gravatar image URL or an empty string if the user is not logged in
+     */
     public function get_gravatar($size = 80)
     {
         if (!$this->ion_auth->logged_in()) {

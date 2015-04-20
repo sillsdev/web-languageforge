@@ -60,14 +60,8 @@ class ProjectSettingsDto
         $textList->read();
 
         $list = $projectModel->listUsers();
-        // remove unvalidated entries, e.g. unvalidated "Invite a friend"
-        foreach ($list->entries as $key => $entry) {
-            if (!array_key_exists('username', $entry) || !$entry['username']) {
-                unset($list->entries[$key]);
-            }
-        }
-
         $data = array();
+
         $data['count'] = count($list->entries);
         $data['entries'] = array_values($list->entries);    // re-index array
         $data['project'] = ProjectSettingsDtoEncoder::encode($projectModel);

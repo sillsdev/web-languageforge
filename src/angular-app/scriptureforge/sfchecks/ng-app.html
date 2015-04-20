@@ -1,29 +1,29 @@
 <div class="content container" ng-cloak>
-	<div id="sfchecks-hmenu" class="hdrnav">
-		<div ng-controller="inviteAFriend" id="inviteAFriend" class="pull-right" ng-show="showInviteDiv">
-		<div class="overlay" ng-show="showInviteForm">
-		<div class="overlay-bg">
-			<form ng-submit="sendInvite();showInviteForm=false">
-				<input required type="email" ng-model="email" placeholder="email@address"/>
-				<label></label>
-				<button class="btn" type="submit">Send Now</button>
-				<a ng-click="showInviteForm=false">Cancel</a>
-			</form>
-		</div>
-		</div>
-		<button class="btn" ng-click="showInviteForm = !showInviteForm"><i class="icon-envelope"></i>Invite a Friend</button>
-		</div>
-		<ul class="topNav">
-			<li class="here"><a href="/app/projects">My Projects</a></li>
-			<li><a href="/app/activity">Activity</a></li>
-		</ul>
-		<ul id="top" class="topCrumbs" breadcrumbs></ul>
-	</div>
-	<div style="padding-top:10px" ng-controller="MainCtrl">
-	<sil-notices></sil-notices>
-	<!-- <div data-wc-overlay="" data-wc-overlay-delay="6000">
+    <div id="sfchecks-hmenu" class="hdrnav">
+        <div ng-controller="inviteAFriend" id="inviteAFriend" class="pull-right" ng-show="showInviteDiv">
+        <div class="overlay" ng-show="showInviteForm">
+        <div class="overlay-bg">
+            <form ng-submit="sendInvite();showInviteForm=false">
+                <input required type="email" ng-model="email" placeholder="email@address"/>
+                <label></label>
+                <button class="btn" type="submit">Send Now</button>
+                <a ng-click="showInviteForm=false">Cancel</a>
+            </form>
+        </div>
+        </div>
+        <button class="btn" ng-click="showInviteForm = !showInviteForm"><i class="icon-envelope"></i>Invite a Friend</button>
+        </div>
+        <ul class="topNav">
+            <li class="here"><a href="/app/projects">My Projects</a></li>
+            <li><a href="/app/activity">Activity</a></li>
+        </ul>
+        <ul id="top" class="topCrumbs" breadcrumbs></ul>
+    </div>
+    <div style="padding-top:10px" ng-controller="MainCtrl">
+    <sil-notices></sil-notices>
+    <!-- <div data-wc-overlay="" data-wc-overlay-delay="6000">
     <img src="/images/shared/loading.gif" />&nbsp; Loading...
     </div>-->
-	<div ng-view></div>
-	</div>
+    <div ng-view></div>
+    </div>
 </div>

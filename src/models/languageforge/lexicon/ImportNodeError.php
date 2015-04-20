@@ -85,13 +85,13 @@ class ImportNodeError
     protected function toErrorString($termEnd = '', $dataStart = ', ', $dataEnd = '') {
         $msg = "processing $this->type '$this->identifier'" . $termEnd;
         foreach ($this->errors as $error) {
-    	    $msg .= $dataStart;
+            $msg .= $dataStart;
             switch ($error['error']) {
-            	case 'UnhandledElement':
-            	    $msg .= "unhandled element '" . $error['element'] . "'";
-            	    break;
-            	default:
-            	    throw new \Exception("Unknown error type '" . $error['error'] . "' while processing identifier '" . $this->identifier . "'");
+                case 'UnhandledElement':
+                    $msg .= "unhandled element '" . $error['element'] . "'";
+                    break;
+                default:
+                    throw new \Exception("Unknown error type '" . $error['error'] . "' while processing identifier '" . $this->identifier . "'");
             }
             $msg .= $dataEnd;
         }

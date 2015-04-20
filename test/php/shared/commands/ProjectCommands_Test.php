@@ -6,6 +6,7 @@ use models\commands\ProjectCommands;
 use models\mapper\Id;
 use models\ProjectModel;
 use models\ProjectSettingsModel;
+use models\shared\rights\SiteRoles;
 use models\UserModel;
 
 require_once dirname(__FILE__) . '/../../TestConfig.php';
@@ -55,10 +56,9 @@ class TestProjectCommands extends UnitTestCase
 
         $this->assertFalse($project->isArchived);
 
-        $count = ProjectCommands::archiveProjects(array($projectId));
+        ProjectCommands::archiveProject($projectId);
 
         $project->read($projectId);
-        $this->assertEqual($count, 1);
         $this->assertTrue($project->isArchived);
     }
 

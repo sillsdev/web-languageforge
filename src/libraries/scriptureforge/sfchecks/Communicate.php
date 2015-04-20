@@ -13,18 +13,18 @@ use libraries\shared\sms\SmsQueue;
 class CommunicateDelivery implements IDelivery
 {
     /**
-	 * (non-PHPdoc)
-	 * @see libraries\scriptureforge\sfchecks.IDelivery::sendEmail()
-	 */
+     * (non-PHPdoc)
+     * @see libraries\scriptureforge\sfchecks.IDelivery::sendEmail()
+     */
     public function sendEmail($from, $to, $subject, $content)
     {
         Email::send($from, $to, $subject, $content);
     }
 
     /**
-	 * (non-PHPdoc)
-	 * @see libraries\scriptureforge\sfchecks.IDelivery::sendSms()
-	 */
+     * (non-PHPdoc)
+     * @see libraries\scriptureforge\sfchecks.IDelivery::sendSms()
+     */
     public function sendSms($smsModel)
     {
         SmsQueue::queue($smsModel);
@@ -36,10 +36,10 @@ class CommunicateHelper
 {
 
     /**
-	 *
-	 * @param string $fileName
-	 * @return \Twig_Template
-	 */
+     *
+     * @param string $fileName
+     * @return \Twig_Template
+     */
     public static function templateFromFile($fileName)
     {
         if (defined('TestMode')) {
@@ -57,10 +57,10 @@ class CommunicateHelper
     }
 
     /**
-	 *
-	 * @param string $fileName
-	 * @return \Twig_Template
-	 */
+     *
+     * @param string $fileName
+     * @return \Twig_Template
+     */
     public static function templateFromString($templateCode)
     {
         if (defined('TestMode')) {
@@ -78,10 +78,10 @@ class CommunicateHelper
     }
 
     /**
-	 *
-	 * @param SmsModel $smsModel
-	 * @param IDelivery $delivery
-	 */
+     *
+     * @param SmsModel $smsModel
+     * @param IDelivery $delivery
+     */
     public static function deliverSMS($smsModel, IDelivery $delivery = null)
     {
         // Create our default delivery mechanism if one is not passed in.
@@ -94,13 +94,13 @@ class CommunicateHelper
     }
 
     /**
-	 *
-	 * @param mixed $from
-	 * @param mixed $to
-	 * @param string $subject
-	 * @param string $content
-	 * @param IDelivery $delivery
-	 */
+     *
+     * @param mixed $from
+     * @param mixed $to
+     * @param string $subject
+     * @param string $content
+     * @param IDelivery $delivery
+     */
     public static function deliverEmail($from, $to, $subject, $content, IDelivery $delivery = null)
     {
         // Create our default delivery mechanism if one is not passed in.
@@ -117,14 +117,14 @@ class CommunicateHelper
 class Communicate
 {
     /**
-	 *
-	 * @param array $users array<UserModel>
-	 * @param ProjectSettingsModel $project
-	 * @param string $subject
-	 * @param string $smsTemplate
-	 * @param string $emailTemplate
-	 * @param IDelivery $delivery
-	 */
+     *
+     * @param array $users array<UserModel>
+     * @param ProjectSettingsModel $project
+     * @param string $subject
+     * @param string $smsTemplate
+     * @param string $emailTemplate
+     * @param IDelivery $delivery
+     */
     public static function communicateToUsers($users, $project, $subject, $smsTemplate, $emailTemplate, IDelivery $delivery = null)
     {
         // store message in database
@@ -145,14 +145,14 @@ class Communicate
     }
 
     /**
-	 *
-	 * @param UserModel $user
-	 * @param ProjectSettingsModel $project
-	 * @param string $subject
-	 * @param string $smsTemplate
-	 * @param string $emailTemplate
-	 * @param IDelivery $delivery
-	 */
+     *
+     * @param UserModel $user
+     * @param ProjectSettingsModel $project
+     * @param string $subject
+     * @param string $smsTemplate
+     * @param string $emailTemplate
+     * @param IDelivery $delivery
+     */
     public static function communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, IDelivery $delivery = null)
     {
         $broadcastMessageContent = "";
@@ -194,11 +194,11 @@ class Communicate
     }
 
     /**
-	 * Send an email to validate a user when they sign up.
-	 * @param UserModelBase $userModel
-	 * @param Website $website
-	 * @param IDelivery $delivery
-	 */
+     * Send an email to validate a user when they sign up.
+     * @param UserModelBase $userModel
+     * @param Website $website
+     * @param IDelivery $delivery
+     */
     public static function sendSignup($userModel, $website, IDelivery $delivery = null)
     {
         $userModel->setValidation(7);
@@ -230,13 +230,13 @@ class Communicate
     }
 
     /**
-	 *
-	 * @param UserModelBase $inviterUserModel
-	 * @param UserModelBase $toUserModel
-	 * @param ProjectModel $projectModel
-	 * @param Website $website
-	 * @param IDelivery $delivery
-	 */
+     *
+     * @param UserModelBase $inviterUserModel
+     * @param UserModelBase $toUserModel
+     * @param ProjectModel $projectModel
+     * @param Website $website
+     * @param IDelivery $delivery
+     */
     public static function sendInvite($inviterUserModel, $toUserModel, $projectModel, $website, IDelivery $delivery = null)
     {
         $toUserModel->setValidation(7);
@@ -268,14 +268,14 @@ class Communicate
     }
 
     /**
-	 *
-	 * @param UserModel $toUserModel
-	 * @param string $newUserName
-	 * @param string $newUserPassword
-	 * @param ProjectModel $project
-	 * @param Website $website
-	 * @param IDelivery $delivery
-	 */
+     *
+     * @param UserModel $toUserModel
+     * @param string $newUserName
+     * @param string $newUserPassword
+     * @param ProjectModel $project
+     * @param Website $website
+     * @param IDelivery $delivery
+     */
     public static function sendNewUserInProject($toUserModel, $newUserName, $newUserPassword, $project, $website, IDelivery $delivery = null)
     {
         $vars = array(
@@ -306,13 +306,13 @@ class Communicate
     }
 
     /**
-	 * Notify existing user they've been added to a project
-	 * @param UserModel $inviterUserModel
-	 * @param UserModel $toUserModel
-	 * @param ProjectModel $projectModel
-	 * @param Website $website
-	 * @param IDelivery $delivery
-	 */
+     * Notify existing user they've been added to a project
+     * @param UserModel $inviterUserModel
+     * @param UserModel $toUserModel
+     * @param ProjectModel $projectModel
+     * @param Website $website
+     * @param IDelivery $delivery
+     */
     public static function sendAddedToProject($inviterUserModel, $toUserModel, $projectModel, $website, IDelivery $delivery = null)
     {
         $senderEmail = 'no-reply@' . $website->domain;

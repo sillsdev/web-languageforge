@@ -39,12 +39,12 @@ use Palaso\Utilities\CodeGuard;
 class JsonRpcServer
 {
     /**
-	 * This function handle a request binding it to a given object
-	 *
-	 * @param object $object
-	 * @param Output $output The CI Output class
-	 * @return boolean
-	 */
+     * This function handle a request binding it to a given object
+     *
+     * @param object $object
+     * @param Output $output The CI Output class
+     * @return boolean
+     */
     public static function handle($object, $output)
     {
         // user-defined error handler to catch annoying php errors and throw them as exceptions

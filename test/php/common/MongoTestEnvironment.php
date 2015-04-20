@@ -6,6 +6,12 @@ use models\shared\rights\ProjectRoles;
 use models\shared\rights\SystemRoles;
 use models\ProjectModel;
 use models\UserModel;
+use libraries\languageforge\semdomtrans\SemDomXMLImporter;
+use models\languageforge\SemDomTransProjectModel;
+use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
+use models\mapper\ArrayOf;
+use models\languageforge\LfProjectModel;
+use models\commands\ProjectCommands;
 
 class MongoTestEnvironment
 {
@@ -81,6 +87,7 @@ class MongoTestEnvironment
         $userModel->email = $email;
         $userModel->avatar_ref = $username . ".png";
         $userModel->role = $role;
+        $userModel->active = true;
         $userModel->siteRole[$this->website->domain] = $this->website->userDefaultSiteRole;
 
         return $userModel->write();
@@ -93,14 +100,16 @@ class MongoTestEnvironment
      * @param string $code
      * @return ProjectModel
      */
-    public function createProject($name, $code)
+    public function createProject($name, $code, $appName = '')
     {
         $projectModel = new ProjectModel();
         $projectModel->projectName = $name;
         $projectModel->projectCode = $code;
         $projectModel->isArchived = false;
         $projectModel->siteName = $this->website->domain;
-        if ($this->website->base == Website::SCRIPTUREFORGE) {
+        if ($appName != '') {
+            $projectModel->appName = $appName;
+        }  else if ($this->website->base == Website::SCRIPTUREFORGE) {
             $projectModel->appName = 'sfchecks';
         } elseif ($this->website->base == Website::LANGUAGEFORGE) {
             $projectModel->appName = 'lexicon';
@@ -173,6 +182,22 @@ class MongoTestEnvironment
         $usx = file_get_contents($testFilePath);
 
         return $usx;
+    }
+
+    /**
+     * Index items by given key
+     *
+     * @param unknown $items
+     * @param string $byKey
+     * @return array<unknown>
+     */
+    public static function indexItemsBy($items, $byKey = 'guid')
+    {
+        $indexes = array();
+        foreach ($items as $item) {
+            $indexes[$item[$byKey]] = $item;
+        }
+        return $indexes;
     }
 
     /**
@@ -279,7 +304,13 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
      */
     public $project;
 
-    public function createProject($name, $code)
+    /**
+     * @param string $name
+     * @param string $code
+     * @param string $appName - included only to make the signature the same as the parent
+     * @return LexiconProjectModel
+     */
+    public function createProject($name, $code , $appName = '')
     {
         $projectModel = new LexiconProjectModel();
         $projectModel->projectName = $name;
@@ -344,5 +375,89 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         }
 
         return $liftFilePath;
+    }
+}
+
+
+class SemDomMongoTestEnvironment extends MongoTestEnvironment
+{
+    public function __construct()
+    {
+        parent::__construct('languageforge.org');
+    }
+
+    /**
+     *  @var int
+     */
+    public $semdomVersion = 1000;
+
+     /**
+     * @var UserModel
+     */
+    public $userId;
+    /**
+     *
+     * @var SemDomProjectModel
+     */
+    public $englishProject;
+
+
+    /**
+     *
+     * @var SemDomProjectModel
+     */
+    public $targetProject;
+
+
+    public function importEnglishProject() {
+
+        $this->cleanPreviousProject("en", $this->semdomVersion);
+        $languageCode = "en";
+        $projectCode = "semdom-$languageCode-$this->semdomVersion";
+
+        $projectModel = $this->createSemDomProject($languageCode, $this->semdomVersion);
+
+        $xmlFilePath = APPPATH . "resources/languageforge/semdomtrans/SemDom_en.xml";
+        $newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
+        FileUtilities::createAllFolders($projectModel->getAssetsFolderPath());
+
+        copy($xmlFilePath, $newXmlFilePath);
+        $projectModel->xmlFilePath = $newXmlFilePath;
+        $projectModel->write();
+
+        $importer = new SemDomXMLImporter($xmlFilePath, $projectModel, false, true);
+        $importer->run();
+        $this->englishProject = $projectModel;
+        return $projectModel;
+    }
+
+    public function cleanPreviousProject($languageCode) {
+        $previousProject = new SemDomTransProjectModel();
+        $projectCode = "semdom-$languageCode-$this->semdomVersion";
+        $previousProject->readByProperty("projectCode", $projectCode);
+        $previousProject->projectCode = $projectCode;
+        $this->cleanProjectEnvironment($previousProject);
+    }
+
+    public function createPreFilledTargetProject($languageCode) {
+        $this->cleanPreviousProject($languageCode, $this->semdomVersion);
+
+        $projectModel = $this->createSemDomProject($languageCode, $this->semdomVersion);
+        SemDomTransProjectCommands::preFillProject($projectModel->id->asString());
+        $this->targetProject = $projectModel;
+        return $projectModel;
+    }
+
+    public function createSemDomProject($languageCode) {
+        $this->cleanPreviousProject($languageCode, $this->semdomVersion);
+
+        $projectCode = "semdom-$languageCode-$this->semdomVersion";
+        $projectName = "Semdom $languageCode Project";
+        $projectModel = $this->createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP);
+        $projectModel = new SemDomTransProjectModel($projectModel->id->asString());
+        $projectModel->languageIsoCode = $languageCode;
+        $projectModel->semdomVersion = $this->semdomVersion;
+        $projectModel->write();
+        return $projectModel;
     }
 }

@@ -11,7 +11,16 @@ class app extends Secure_base
     public function view($app = 'main', $projectId = '')
     {
         $siteFolder = "angular-app/" . $this->website->base;
+        $parentAppFolder = '';
+        
         $appFolder = $siteFolder . "/$app";
+        if ($projectId == 'new') {
+            $parentAppFolder = $appFolder;
+            $appFolder .= "/new-project";
+            $projectId = '';
+            $app = $app . "-new-project";
+        }
+        
         if (!file_exists($appFolder)) {
             $appFolder = "angular-app/bellows/apps/$app";
             if (!file_exists($appFolder)) {
@@ -20,123 +29,53 @@ class app extends Secure_base
         }
         if ($projectId == 'favicon.ico') { $projectId = ''; }
 
-        $data = array();
-        $data['appName'] = $app;
-        $data['baseSite'] = $this->website->base; // used to add the right minified JS file
-        $data['appFolder'] = $appFolder;
+        $this->data['appName'] = $app;
+        $this->data['baseSite'] = $this->website->base; // used to add the right minified JS file
+        $this->data['appFolder'] = $appFolder;
 
         // update the projectId in the session if it is not empty
         $projectModel = new ProjectModel();
         if ($projectId && $projectModel->exists($projectId)) {
             $projectModel = $projectModel->getById($projectId);
             if (!$projectModel->userIsMember((string) $this->session->userdata('user_id'))) {
-                $error_msg = 'Uh oh, you are not an authorized member of this ' . $this->website->domain . ' project.  Please contact the Project Manager to be added to the project';
-                show_error($error_msg, 403, '403 Forbidden: User not authorized');
+                $projectId = '';
             }
             $this->session->set_userdata('projectId', $projectId);
         } else {
-            $projectId = (string) $this->session->userdata('projectId');
+            if (!$projectModel->userIsMember((string) $this->session->userdata('user_id'))) {
+                $projectId = '';
+            } else {
+                $projectId = (string) $this->session->userdata('projectId');
+            }
         }
 
         // Other session data
+
         $sessionData = SessionCommands::getSessionData($projectId, (string) $this->session->userdata('user_id'), $this->website);
-        $jsonSessionData = json_encode($sessionData);
-        $data['jsonSession'] = $jsonSessionData;
+        $this->data['jsonSession'] = json_encode($sessionData);
 
-        $data['jsFiles'] = array();
-        self::addJavascriptFiles("angular-app/bellows/js", $data['jsFiles'], array('vendor/', 'assets/'));
-        self::addJavascriptFiles("angular-app/bellows/directive", $data ['jsFiles']);
-        self::addJavascriptFiles($siteFolder . '/js', $data['jsFiles']);
-        self::addJavascriptFiles($appFolder, $data['jsFiles'], array('vendor/', 'assets/'));
+        $this->addJavascriptFiles("angular-app/bellows/js", array('vendor/', 'assets/'));
+        $this->addJavascriptFiles("angular-app/bellows/directive");
+        $this->addJavascriptFiles($siteFolder . '/js');
+        if ($parentAppFolder) {
+            $this->addJavascriptFiles($parentAppFolder, array('vendor/', 'assets/'));
+        }
+        $this->addJavascriptFiles($appFolder, array('vendor/', 'assets/'));
 
-        // remove asset js files
-        $data['jsNotMinifiedFiles'] = array();
-        self::addJavascriptFiles("angular-app/bellows/js/vendor", $data['jsNotMinifiedFiles']);
-        self::addJavascriptFiles("angular-app/bellows/js/assets", $data['jsNotMinifiedFiles']);
-        self::addJavascriptFiles($appFolder . "/js/vendor", $data['jsNotMinifiedFiles']);
-        self::addJavascriptFiles($appFolder . "/js/assets", $data['jsNotMinifiedFiles']);
-
-        $data['cssFiles'] = array();
-        self::addCssFiles("angular-app/bellows/css", $data['cssFiles']);
-        self::addCssFiles($appFolder, $data['cssFiles']);
-
-        $data['title'] = $this->website->name;
-
-        $this->renderPage("angular-app", $data);
-    }
-
-    /**
-     *
-     * @param string $val
-     * @return int
-     */
-    private static function fromValueWithSuffix($val)
-    {
-        $val = trim($val);
-        $result = (int) $val;
-        $last = strtolower($val[strlen($val)-1]);
-        switch ($last) {
-            // The 'G' modifier is available since PHP 5.1.0
-            case 'g':
-                $result *= 1024;
-            case 'm':
-                $result *= 1024;
-            case 'k':
-                $result *= 1024;
+        if ($app == 'semdomtrans' || $app == 'semdomtrans-new-project') {
+            // special case for semdomtrans app
+            // add lexicon JS files since the semdomtrans app depends upon these JS files
+            $this->addJavascriptFiles("$siteFolder/lexicon", array('vendor/', 'assets/'));
         }
 
-        return $result;
-    }
+        $this->addJavascriptNotMinifiedFiles("angular-app/bellows/js/vendor");
+        $this->addJavascriptNotMinifiedFiles("angular-app/bellows/js/assets");
+        $this->addJavascriptNotMinifiedFiles($appFolder . "/js/vendor");
+        $this->addJavascriptNotMinifiedFiles($appFolder . "/js/assets");
 
-    private static function ext($filename)
-    {
-        return pathinfo($filename, PATHINFO_EXTENSION);
-    }
+        $this->addCssFiles("angular-app/bellows");
+        $this->addCssFiles($appFolder);
 
-    private static function basename($filename)
-    {
-        return pathinfo($filename, PATHINFO_BASENAME);
-    }
-
-    private static function addJavascriptFiles($dir, &$result, $exclude = array())
-    {
-        self::addFiles('js', $dir, $result, $exclude);
-    }
-
-    private static function addCssFiles($dir, &$result)
-    {
-        self::addFiles('css', $dir, $result, array());
-    }
-
-    private static function addFiles($ext, $dir, &$result, $exclude)
-    {
-        if (is_dir($dir) && ($handle = opendir($dir))) {
-            while ($file = readdir($handle)) {
-                $filepath = $dir . '/' . $file;
-                foreach ($exclude as $ex) {
-                    if (strpos($filepath, $ex)) {
-                        continue 2;
-                    }
-                }
-                if (is_file($filepath)) {
-                    if ($ext == 'js') {
-                        /* For Javascript, check that file is not minified */
-                        $base = self::basename($file);
-                        //$isMin = (strpos($base, '-min') !== false) || (strpos($base, '.min') !== false);
-                        $isMin = false;
-                        if (!$isMin && self::ext($file) == $ext) {
-                            $result[] = $filepath;
-                        }
-                    } else {
-                        if (self::ext($file) == $ext) {
-                            $result[] = $filepath;
-                        }
-                    }
-                } elseif ($file != '..' && $file != '.') {
-                    self::addFiles($ext, $filepath, $result, $exclude);
-                }
-            }
-            closedir($handle);
-        }
+        $this->renderPage('angular-app');
     }
 }

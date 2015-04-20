@@ -4,7 +4,9 @@
         <div class="dc-multioptionlist-values" 
             data-ng-repeat="value in model.values | orderBy: orderItemsByListOrder">
             <div data-ng-mouseover="valueToBeDeleted = value" data-ng-mouseleave="valueToBeDeleted = ''">
-                <div class="dc-multioptionlist-value">{{getDisplayName(value)}}</div>
+                <div class="dc-multioptionlist-value"
+                    data-ng-click="selectValue(value)">
+                    {{getDisplayName(value)}}</div>
                 <img class="closeicon" src="/images/shared/closeicon.svg" width="15" height="15"
                     title="Delete {{config.label}}" 
                     data-ng-show="showDeleteButton(valueToBeDeleted, value)" data-ng-click="deleteValue(value)" />

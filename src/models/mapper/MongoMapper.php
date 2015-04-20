@@ -82,7 +82,7 @@ class MongoMapper
         return new \MongoId();
     }
 
-    public function readListAsModels($model, $query, $fields = array(), $sortFields = array(), $limit = 0)
+    public function readListAsModels($model, $query, $fields = array(), $sortFields = array(), $limit = 0, $skip = 0)
     {
         $cursor = $this->_collection->find($query, $fields);
         if (count($sortFields)>0) {
@@ -91,9 +91,13 @@ class MongoMapper
         if ($limit>0) {
             $cursor = $cursor->limit($limit);
         }
+        if ($skip > 0) {
+            $cursor = $cursor->skip($skip);
+        }
 
         $data = array();
-        $data['count'] = $cursor->count();
+        $data['count'] = $cursor->count(true);
+        $data['totalCount'] = $cursor->count();
         $data['entries'] = array();
         foreach ($cursor as $item) {
             if (get_class($model->entries) == 'models\mapper\ArrayOf') {
@@ -106,12 +110,12 @@ class MongoMapper
         try {
             MongoDecoder::decode($model, $data);
         } catch (\Exception $ex) {
-            CodeGuard::exception("Exception thrown while decoding '" . print_r($data, true) . "'", $ex->getCode(), $ex);
+            CodeGuard::exception('Exception thrown in readListAsModels.  Note: use of this method assumes that you have redefined $this->entries to be of type MapOf or ArrayOf.  Exception thrown while decoding \'' . print_r($data, true) . "'", $ex->getCode(), $ex);
         }
 
     }
 
-    public function readList($model, $query, $fields = array(), $sortFields = array(), $limit = 0)
+    public function readList($model, $query, $fields = array(), $sortFields = array(), $limit = 0, $skip = 0)
     {
         $cursor = $this->_collection->find($query, $fields);
 
@@ -123,6 +127,13 @@ class MongoMapper
             $cursor = $cursor->limit($limit);
         }
 
+        if ($skip > 0) {
+            $cursor = $cursor->skip($skip);
+        }
+
+        $model->count = $cursor->count(true);
+        $model->totalCount = $cursor->count();
+
         $model->entries = array();
         foreach ($cursor as $item) {
             $id = strval($item['_id']);
@@ -130,7 +141,28 @@ class MongoMapper
             unset($item['_id']);
             $model->entries[] = $item;
         }
-        $model->count= count($model->entries);
+    }
+
+    public function readCounts($model, $query, $fields = array(), $sortFields = array(), $limit = 0, $skip = 0)
+    {
+        $cursor = $this->_collection->find($query, $fields);
+
+        if (count($sortFields)>0) {
+            $cursor = $cursor->sort($sortFields);
+        }
+
+        if ($limit>0) {
+            $cursor = $cursor->limit($limit);
+        }
+
+        if ($skip > 0) {
+            $cursor = $cursor->skip($skip);
+        }
+
+        $model->count = $cursor->count(true);
+        $model->totalCount = $cursor->count();
+
+        $model->entries = array();
     }
 
     public function findOneByQuery($model, $query, $fields = array())

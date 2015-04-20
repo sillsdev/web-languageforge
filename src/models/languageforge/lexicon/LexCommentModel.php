@@ -99,6 +99,11 @@ class LexCommentModel extends \models\mapper\MapperModel
     public $isDeleted;
 
     /**
+     * @var AuthorInfo
+     */
+    public $authorInfo;
+
+    /**
      * @var string
      */
     public $content;

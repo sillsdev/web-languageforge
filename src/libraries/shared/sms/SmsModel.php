@@ -16,9 +16,9 @@ class SmsModel extends MapperModel
     const SMS_TWILIO  = 'twilio';
 
     /**
-	 * @param string $database
-	 * @param string $id
-	 */
+     * @param string $database
+     * @param string $id
+     */
     public function __construct($databaseName, $id = '')
     {
         $this->id = new Id();
@@ -36,63 +36,63 @@ class SmsModel extends MapperModel
     }
 
     /**
-	 * @var Id
-	 */
+     * @var Id
+     */
     public $id;
 
     /**
-	 * @var IdReference
-	 */
+     * @var IdReference
+     */
     public $userRef;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $userName;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $from;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $to;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $message;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $state;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $error;
 
     /**
-	 * @var \DateTime
-	 */
+     * @var \DateTime
+     */
     public $dateCreated;
 
     /**
-	 * @var \DateTime
-	 */
+     * @var \DateTime
+     */
     public $dateSent;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $provider;
 
     /**
-	 * @var string
-	 */
+     * @var string
+     */
     public $providerInfo;
 
 }

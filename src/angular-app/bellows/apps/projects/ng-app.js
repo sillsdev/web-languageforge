@@ -8,10 +8,8 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
   // Rights
   $scope.rights = {};
   $scope.rights.edit = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-  $scope.rights.archive = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE);
   $scope.rights.create = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.CREATE);
-  $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create;
-  $scope.newProject = {};
+  $scope.rights.showControlBar = $scope.rights.create;
 
   $scope.siteName = ss.baseSite();
 
@@ -44,6 +42,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
   };
 
   // Archive projects
+                               /*
   $scope.archiveProjects = function() {
     var projectIds = [];
     var message = '';
@@ -75,17 +74,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
       });
     });
   };
-
-  // Add new project
-  $scope.addProject = function() {
-    projectService.create($scope.newProject.projectName, $scope.newProject.projectCode, $scope.newProject.appName, function(result) {
-        if (result.ok) {
-            notice.push(notice.SUCCESS, "The " + $scope.newProject.projectName + " project was created successfully");
-            $scope.queryProjectsForUser();
-            $scope.newProject = {};
-        }
-    });
-  };
+  */
 
   $scope.isInProject = function(project) {
     if (project.role != 'none') {
@@ -121,61 +110,8 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
     });
   };
 
-  $scope.resetValidateProjectForm = function resetValidateProjectForm() {
-    $scope.projectCodeState = 'empty';
-  };
-
-  /*
-  // State of the projectCode being validated:
-  // 'empty'   : no project code entered
-  // 'loading' : project code entered, being validated
-  // 'exist'   : project code already exists
-  // 'invalid' : project code does not meet the criteria of starting with a letter
-  //        and only containing lower-case letters, numbers, or dashes
-  // 'ok'      : project code valid and unique
-  */
-  $scope.projectCodeState = 'empty';
-
-  // Check projectCode is unique and valid
-  $scope.checkProjectCode = function() {
-    // valid pattern start with a letter and only containing lower-case letters, numbers, or dashes
-    var patt = /^[a-z][a-z0-9\-_]*$/;
-
-    if (patt.test($scope.newProject.projectCode)) {
-        $scope.projectCodeState = 'loading';
-        projectService.projectCodeExists($scope.newProject.projectCode, function(result) {
-            if (result.ok) {
-                if (result.data) {
-                    $scope.projectCodeState = 'exists';
-                } else {
-                    $scope.projectCodeState = 'ok';
-                }
-            }
-        });
-    } else {
-        $scope.projectCodeState = 'invalid';
-    }
-  };
-
   $scope.projectTypeNames = projectService.data.projectTypeNames;
   $scope.projectTypesBySite = projectService.data.projectTypesBySite;
-
-  $scope.projectTypesWithDedicatedNewProjectApp = [
-    'lexicon',
-    // Uncomment the lines below to test layout of icons
-//    'lexicon2',
-//    'lexicon3',
-//    'lexicon4',
-//    'lexicon5',
-//    'lexicon6',
-  ];
-
-  if (projectService.data.projectTypesBySite().length == 1) {
-    $scope.newProject.appName = $scope.projectTypesBySite()[0];
-    if ($scope.projectTypesWithDedicatedNewProjectApp.indexOf($scope.newProject.appName) > -1) {
-      $scope.showDedicatedNewProjectLinks = true;
-    }
-  }
 
 }])
 ;

@@ -1,0 +1,47 @@
+<h3 translate="Choose a project name"></h3>
+
+<form ng-submit="addProject()">
+<div class="control-group">
+    <div class="controls">
+        <input type="text" data-ng-model="newProject.projectName"
+            set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name"
+            idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
+    </div>
+</div>
+<br />
+<div class="control-group">
+    <label class="control-label muted" translate="Project Code"></label>
+    <div class="controls" >
+        <input type="text" data-ng-model="newProject.projectCode" data-ng-show="newProject.editProjectCode"
+               data-ng-trim="false" maxlength="50" required
+               idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
+        <div class="uneditable-input" data-ng-hide="newProject.editProjectCode"
+            data-ng-hide="newProject.editProjectCode"
+            data-ng-bind="newProject.projectCode"></div>
+        <span  data-ng-show="newProject.projectCode.length > 0">
+            <span  data-ng-show="projectCodeState == 'loading'">
+                <img id="projectCodeLoading" class="validator" src="/images/shared/loading-small.gif" /></span>
+            <span  data-ng-show="projectCodeState == 'exists'">
+                <img id="projectCodeExists" class="validator" src="/images/shared/exclamation.png"
+                     title="Project Code already exists!" /></span>
+            <span  data-ng-show="projectCodeState == 'invalid'">
+                <img id="projectCodeAlphanumeric" class="validator" src="/images/shared/exclamation.png"
+                     title="" /></span>
+            <span  data-ng-show="projectCodeState == 'ok'">
+                <img id="projectCodeOk" class="validator" src="/images/shared/tick.png"
+                     title="Project Code is available!" /></span>
+        </span>
+    </div>
+    <div class="controls">
+        <label class="checkbox">
+            <input type="checkbox" data-ng-model="newProject.editProjectCode"/>
+            {{'Edit project code' | translate}}
+            <p class="muted">(Not usually necessary)</p>
+        </label>
+    </div>
+</div>
+<button type="submit" class="btn btn-primary" data-ng-disabled="isSubmitting">Create Project</button>
+<div class="alert alert-error" ng-show="projectCodeState == 'invalid'">Project Code must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores!</div>
+<div class="alert alert-error" ng-show="projectCodeState == 'exists'">Project Code already exists!</div>
+    <div class="alert alert-error" ng-show="projectCodeState == 'empty'">The Project Code cannot be empty</div>
+</form>

@@ -56,10 +56,10 @@ class ParatextExport
     }
 
     /**
-	 *
-	 * @param string $xml
-	 * @return string sanitized XML
-	 */
+     *
+     * @param string $xml
+     * @return string sanitized XML
+     */
     private static function sanitizeComment($xml)
     {
         $search = array('&nbsp;', '<br>', '<b>', '</b>', '<i>', '</i>');
@@ -69,13 +69,13 @@ class ParatextExport
     }
 
     /**
-	 *
-	 * @param array $tags
-	 * @param int $votes
-	 * @param array $textInfo
-	 * @param string $commentId
-	 * @param array $comment
-	 */
+     *
+     * @param array $tags
+     * @param int $votes
+     * @param array $textInfo
+     * @param string $commentId
+     * @param array $comment
+     */
     private static function makeCommentXml($tags, $votes, $textInfo, $commentId, $comment)
     {
         $user = new UserModel((string) $comment['userRef']);
@@ -95,20 +95,20 @@ class ParatextExport
         }
 
         return "\t<Comment>
-		<Thread>" . $commentId . "</Thread>
-		<User>SF-$username</User>
-		<Date>" . date(\DateTime::ISO8601, $comment['dateEdited']->sec) . "</Date>
-		<VerseRef>" . $textInfo['bookCode'] . " " . $textInfo['startChapter'] . ":" . $textInfo['startVerse'] . "</VerseRef>
-		<SelectedText />
-		<StartPosition>" . $textInfo['startVerse'] . "</StartPosition>
-		<ContextBefore>\\v " . $textInfo['startVerse'] . "</ContextBefore>
-		<ContextAfter/>
-		<Status>todo</Status>
-		<Type/>
-		<Language/>
-		<Verse>\\v " . $textInfo['startVerse'] . "</Verse>
-		<Field Name=\"assigned\"></Field>
-		<Contents>$content</Contents>
-	</Comment>\n";
+        <Thread>" . $commentId . "</Thread>
+        <User>SF-$username</User>
+        <Date>" . date(\DateTime::ISO8601, $comment['dateEdited']->sec) . "</Date>
+        <VerseRef>" . $textInfo['bookCode'] . " " . $textInfo['startChapter'] . ":" . $textInfo['startVerse'] . "</VerseRef>
+        <SelectedText />
+        <StartPosition>" . $textInfo['startVerse'] . "</StartPosition>
+        <ContextBefore>\\v " . $textInfo['startVerse'] . "</ContextBefore>
+        <ContextAfter/>
+        <Status>todo</Status>
+        <Type/>
+        <Language/>
+        <Verse>\\v " . $textInfo['startVerse'] . "</Verse>
+        <Field Name=\"assigned\"></Field>
+        <Contents>$content</Contents>
+    </Comment>\n";
     }
 }

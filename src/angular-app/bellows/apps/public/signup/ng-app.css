@@ -1,64 +1,64 @@
 /* form styling */
 #form-container { 
-	margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 #form-container .page-header { 
-	margin: 0; 
-	border-bottom: none;
+    margin: 0; 
+    border-bottom: none;
 }
 #form-container .page-header h1 { 
-	margin-left: 0; 
-	margin-bottom: 10px;
+    margin-left: 0; 
+    margin-bottom: 10px;
 }
 
 /* progess indicator */
 #progress-indicator {
-	padding-bottom: 30px;
-	border-bottom: 1px solid #eeeeee;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #eeeeee;
 }
 #progress-indicator i {
-	display: block; 
-	font-size: 55px; 
+    display: block; 
+    font-size: 55px; 
 }
 #progress-indicator i.icon-check-sign {
-	color: green;
-	font-size: 50px;
-	height: 56px; 
+    color: green;
+    font-size: 50px;
+    height: 56px; 
 }
 #progress-indicator a:hover { 
-	text-decoration: none; 
+    text-decoration: none; 
 }
 
 /* numbered buttons */
 #status-buttons {
 }
 #status-buttons a { 
-	/* color: #FFF;*/ 
-	display: inline-block; 
-	font-size: 12px; 
-	margin-right: 10px; 
-	text-align: center; 
-	/* text-transform: uppercase;*/ 
+    /* color: #FFF;*/ 
+    display: inline-block; 
+    font-size: 12px; 
+    margin-right: 10px; 
+    text-align: center; 
+    /* text-transform: uppercase;*/ 
 }
 #status-buttons a:hover { 
-	text-decoration: none; 
+    text-decoration: none; 
 }
 
 /* we will style the span as the circled number */
 #status-buttons span { 
-	/* background: #080808; 
-	color: #FFF;*/
-	display: block; 
-	/* height: 25px;*/ 
-	margin: 0 auto 10px; 
-	padding-top: 5px; 
-	width: 10px;
+    /* background: #080808; 
+    color: #FFF;*/
+    display: block; 
+    /* height: 25px;*/ 
+    margin: 0 auto 10px; 
+    padding-top: 5px; 
+    width: 10px;
     border-radius: 50%; 
 }
 
 /* active buttons turn light green-blue*/
 #status-buttons a.active span { 
-	background: #080808; 
-	color: #FFF;
-	/* background: #00BC8C;*/ 
+    background: #080808; 
+    color: #FFF;
+    /* background: #00BC8C;*/ 
 }

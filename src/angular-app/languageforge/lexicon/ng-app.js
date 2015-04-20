@@ -4,7 +4,8 @@
 angular.module('lexicon', 
   [
     'ngRoute',
-    'dbe',
+    'ngSanitize',
+    'lexicon.edit',
     'meaning',
     'examples',
     'bellows.services',
@@ -31,16 +32,16 @@ angular.module('lexicon',
     // the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
     $routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } });
     
-    $routeProvider.when( '/', { redirectTo: '/dbe', });
-    $routeProvider.when( '/view', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
-    $routeProvider.when( '/gatherTexts', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
-    $routeProvider.when( '/review', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
-    $routeProvider.when( '/wordlist', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html', });
+    $routeProvider.when( '/', { redirectTo: '/dbe' });
+    $routeProvider.when( '/view', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
+    $routeProvider.when( '/gatherTexts', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
+    $routeProvider.when( '/review', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
+    $routeProvider.when( '/wordlist', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
     
     $routeProvider.when(
             '/dbe',
             {
-                templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
+                templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
             }
         );
         $routeProvider.when(
@@ -58,55 +59,55 @@ angular.module('lexicon',
     $routeProvider.when(
         '/add-grammar',
         {
-          templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
+          templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
         }
       );
     $routeProvider.when(
         '/add-examples',
         {
-          templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
+          templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
         }
       );
     $routeProvider.when(
         '/add-meanings',
         {
-          templateUrl: '/angular-app/languageforge/lexicon/views/edit.html',
+          templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
         }
       );
     $routeProvider.when(
         '/configuration',
         {
-          templateUrl: '/angular-app/languageforge/lexicon/views/configuration.html',
+          templateUrl: '/angular-app/languageforge/lexicon/views/configuration.html'
         }
       );
     $routeProvider.when(
         '/viewSettings',
         {
-          templateUrl: '/angular-app/languageforge/lexicon/views/view-settings.html',
+          templateUrl: '/angular-app/languageforge/lexicon/views/view-settings.html'
         }
       );
     $routeProvider.when(
         '/importExport',
         {
-          templateUrl: '/angular-app/languageforge/lexicon/views/import-export.html',
+          templateUrl: '/angular-app/languageforge/lexicon/views/import-export.html'
         }
       );
     $routeProvider.when(
         '/settings',
         {
-          templateUrl: '/angular-app/languageforge/lexicon/views/settings.html',
+          templateUrl: '/angular-app/languageforge/lexicon/views/settings.html'
         }
       );
     $routeProvider.when(
         '/users',
         {
-          templateUrl: '/angular-app/languageforge/lexicon/views/manage-users.html',
+          templateUrl: '/angular-app/languageforge/lexicon/views/manage-users.html'
         }
       );
     $routeProvider.otherwise({redirectTo: '/projects'});
   }])
-  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate', '$location',
-  function($scope, ss, lexConfigService, lexProjectService, $translate, $location) {
+  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate', '$location', 'silNoticeService', 'lexEditorDataService', 'lexCommentService',
+  function($scope, ss, lexConfigService, lexProjectService, $translate, $location, noticeService, editorService, commentService) {
     var pristineLanguageCode;
     
     $scope.rights = {};
@@ -114,15 +115,17 @@ angular.module('lexicon',
     $scope.rights.create = ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE); 
     $scope.rights.edit = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
     $scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create || $scope.rights.edit;
-        $scope.comments = [];
     $scope.project = ss.session.project;
     $scope.projectSettings = ss.session.projectSettings;
     
     // persist the entries and comments array across all controllers
-    $scope.entries = [];
-    $scope.comments = [];
-    $scope.entryCommentCounts = {};
-    
+
+    $scope.finishedLoading = false;
+    editorService.loadEditorData().then(function() {
+      $scope.finishedLoading = true;
+    });
+
+
     $scope.currentUserRole = ss.session.projectSettings.currentUserRole;
     $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
     pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
@@ -169,7 +172,34 @@ angular.module('lexicon',
         changeInterfaceLanguage(newVal);
       }
     });
-    
+
+    // setup offline.js options
+    // see https://github.com/hubspot/offline for all options
+    // we tell offline.js to NOT store and remake requests while the connection is down
+    Offline.options.requests = false;
+    Offline.options.checkOnLoad = true;
+    Offline.options.checks = {xhr: {url: '/offlineCheck.txt'}};
+
+    var offlineMessageId;
+    Offline.on('up', function() {
+      if ($scope.online == false) {
+        noticeService.removeById(offlineMessageId);
+        noticeService.push(noticeService.SUCCESS, "You are back online!");
+      }
+      $scope.online = true;
+      $scope.$digest();
+    });
+    Offline.on('down', function() {
+      offlineMessageId = noticeService.push(noticeService.ERROR, "You are offline.  Some features are not available", null, true);
+      $scope.online = false;
+      if (!/^dbe/.test($location.path())) {
+        // redirect to the dbe
+        $location.path('/dbe');
+        noticeService.push(noticeService.SUCCESS, "The dictionary editor is available offline.  Settings are not.");
+      }
+      $scope.$digest();
+    });
+
   }])
   .controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService', function($scope, $rootScope, breadcrumbService) {
     $scope.idmap = breadcrumbService.idmap;

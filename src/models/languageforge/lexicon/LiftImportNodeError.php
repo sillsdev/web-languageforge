@@ -62,11 +62,11 @@ class LiftImportNodeError extends ImportNodeError
     protected function toErrorString($termEnd = '', $dataStart = ', ', $dataEnd = '') {
         $msg = "processing $this->type '$this->identifier'" . $termEnd;
         foreach ($this->errors as $error) {
-    	    $msg .= $dataStart;
+            $msg .= $dataStart;
             switch ($error['error']) {
-            	case 'UnhandledElement':
-            	    $msg .= "unhandled element '" . $error['element'] . "'";
-            	    break;
+                case 'UnhandledElement':
+                    $msg .= "unhandled element '" . $error['element'] . "'";
+                    break;
                 case 'UnhandledField':
                     $msg .= "unhandled field '" . $error['type'] . "'";
                     break;

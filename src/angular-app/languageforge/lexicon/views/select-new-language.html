@@ -1,23 +1,23 @@
 <div class="modal-header">
-	<h3 translate="Select a New Input System Language"></h3>
+    <h3 translate="Select a New Input System Language"></h3>
 </div>
 <div class="modal-body">
-	<pui-select-language pui-code="selected.code" pui-language="selected.language" 
-		pui-add-disabled="addDisabled"
-		pui-suggested-language-codes="suggestedLanguageCodes">
-	</pui-select-language>
+    <pui-select-language pui-code="selected.code" pui-language="selected.language" 
+        pui-add-disabled="addDisabled"
+        pui-suggested-language-codes="suggestedLanguageCodes">
+    </pui-select-language>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-primary" 
-		data-ng-click="add()" 
-		data-ng-disabled="addDisabled">
-		<i class="icon-plus"></i> {{'Add' | translate}} {{selected.language.name}}</button>
+    <button class="btn btn-primary" 
+        data-ng-click="add()" 
+        data-ng-disabled="addDisabled">
+        <i class="icon-plus"></i> {{'Add' | translate}} {{selected.language.name}}</button>
     <div class="pull-left">
-		<a href="http://www.infoterm.info/standardization/iso_639_1_2002.php" target="_blank">
-			<small><i class="icon-globe"></i> {{'About Language 639-1 Codes' | translate}}</small></a>
-	</div>
-	<div class="pull-left" style="clear:both">
-		<a href="http://www.sil.org/iso639-3/" target="_blank">
-			<small><i class="icon-globe"></i> {{'About Language 639-3 Codes' | translate}}</small></a>
-	</div>
+        <a href="http://www.infoterm.info/standardization/iso_639_1_2002.php" target="_blank">
+            <small><i class="icon-globe"></i> {{'About Language 639-1 Codes' | translate}}</small></a>
+    </div>
+    <div class="pull-left" style="clear:both">
+        <a href="http://www.sil.org/iso639-3/" target="_blank">
+            <small><i class="icon-globe"></i> {{'About Language 639-3 Codes' | translate}}</small></a>
+    </div>
 </div>

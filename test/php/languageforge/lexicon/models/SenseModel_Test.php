@@ -16,7 +16,7 @@ class TestSenseModel extends UnitTestCase
         $this->assertIsA($model->partOfSpeech, 'models\languageforge\lexicon\LexiconField');
         $this->assertIsA($model->semanticDomain, 'models\languageforge\lexicon\LexiconMultiValueField');
         $this->assertIsA($model->examples, 'models\mapper\ArrayOf');
-        $this->assertIsA($model->customFields, 'models\mapper\ArrayOf');
+        $this->assertIsA($model->customFields, 'models\mapper\MapOf');
         $this->assertIsA($model->authorInfo, 'models\languageforge\lexicon\AuthorInfo');
         $this->assertIsA($model->definition, 'models\languageforge\lexicon\MultiText');
         $this->assertIsA($model->gloss, 'models\languageforge\lexicon\MultiText');

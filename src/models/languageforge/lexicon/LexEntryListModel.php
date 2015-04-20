@@ -27,64 +27,25 @@ class LexEntryListModel extends \models\mapper\MapperListModel
      *
      * @param ProjectModel $projectModel
      * @param int $newerThanTimestamp
+     * @param int $limit
+     * @param int $skip
      */
-    public function __construct($projectModel, $newerThanTimestamp = null)
+    public function __construct($projectModel, $newerThanTimestamp = null, $limit = 0, $skip = 0)
     {
         $lexProject = new LexiconProjectModel($projectModel->id->asString());
         $this->_config = $lexProject->config;
 
         if (!is_null($newerThanTimestamp)) {
             $startDate = new \MongoDate($newerThanTimestamp);
-            parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate), 'isDeleted' => false), array());
+            parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate), 'isDeleted' => false), array(), array(), $limit, $skip);
         } else {
-            parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false), array());
+            parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false), array(), array(), $limit, $skip);
         }
     }
-
-    /*
-    private function getDefinition($entry)
-    {
-        $senses = $entry['senses'];
-        if (count($senses) > 0 && array_key_exists('definition', $senses[0]) && count($senses[0]['definition']) > 0) {
-            $ws = $this->_config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems[0];
-            $definition = $senses[0][LexiconConfigObj::DEFINITION];
-            if (isset($definition[$ws])) {
-                return $definition[$ws]['value'];
-            }
-        }
-        return '';
-    }
-
-    private function getGloss($entry)
-    {
-        $senses = $entry['senses'];
-        if (count($senses) > 0 && array_key_exists('gloss', $senses[0]) && count($senses[0]['gloss']) > 0) {
-            $ws = $this->_config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems[0];
-            $gloss = $senses[0][LexiconConfigObj::GLOSS];
-            if (isset($gloss[$ws])) {
-                return $gloss[$ws]['value'];
-            }
-        }
-        return '';
-    }
-
-    private function getLexeme($entry)
-    {
-        $lexeme = $entry['lexeme'];
-        if (count($lexeme) > 0) {
-            $ws = $this->_config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[0];
-            // TODO: actually figure out the preferred writing system for display and use that
-            if (isset($lexeme[$ws])) {
-                return $lexeme[$ws]['value'];
-            }
-        }
-        return '';
-    }
-    */
 
     public function readForDto($missingInfo = '')
     {
-        // TODO This can be refactored to perform missing info based on the data type, rather than the property name. There is much repitition in the code below CP 2014-08
+        // TODO This can be refactored to perform missing info based on the data type, rather than the property name. There is much repetition in the code below CP 2014-08
         parent::read();
         $entriesToReturn = array();
 

@@ -42,43 +42,60 @@ class base extends CI_Controller
             }
         }
         $this->website = $website;
+        $this->data['jsFiles'] = array();
+        $this->data['jsNotMinifiedFiles'] = array();
+        $this->data['cssFiles'] = array();
+
+        $this->addCssFiles("css/shared");
+        $cssThemePath = "css/" . $this->getThemePath();
+        $this->addCssFiles($cssThemePath);
     }
 
     // all child classes should use this method to render their pages
-    protected function renderPage($view, $data=array(), $render=true)
+    protected function renderPage($viewName, $render=true)
     {
-        $this->viewdata = $data;
-        $this->viewdata['controller'] = $this;
-        $this->viewdata['contentTemplate'] = $this->getContentTemplatePath($view);
-        $this->viewdata['themePath'] = $this->getThemePath();
+        $this->data['controller'] = $this;
+        $this->data['contentTemplate'] = $this->getContentTemplatePath($viewName);
+        $this->data['themePath'] = $this->getThemePath();
 
         $this->populateHeaderMenuViewdata();
 
         $containerTemplatePath = $this->getSharedTemplatePath("container");
 
-        return $this->load->view($containerTemplatePath, $this->viewdata, !$render);
+        return $this->load->view($containerTemplatePath, $this->data, !$render);
+    }
+
+    public function loadTemplate($templateName, $data = array()) {
+        $templatePath = $this->getContentTemplatePath($templateName);
+        if (file_exists(APPPATH . "views/" . $templatePath)) {
+            if (empty($data)) {
+                return $this->load->view($templatePath);
+            } else {
+                return $this->load->view($templatePath, $data);
+            }
+        }
     }
 
     protected function populateHeaderMenuViewdata()
     {
-        $this->viewdata['is_admin'] = false;
+        $this->data['is_admin'] = false;
 
         // setup specific variables for header
-        $this->viewdata['logged_in'] = $this->_isLoggedIn;
+        $this->data['logged_in'] = $this->_isLoggedIn;
 
         $featuredProjectList = new FeaturedProjectListModel();
         $featuredProjectList->read();
-        $this->viewdata['featuredProjects'] = $featuredProjectList->entries;
+        $this->data['featuredProjects'] = $featuredProjectList->entries;
 
         if ($this->_isLoggedIn) {
             $isAdmin = SystemRoles::hasRight($this->_user->role, Domain::USERS + Operation::CREATE);
-            $this->viewdata['is_admin'] = $isAdmin;
-            $this->viewdata['user_name'] = $this->_user->username;
-            $this->viewdata['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
-            $this->viewdata['small_avatar_url'] = $this->_user->avatar_ref;
+            $this->data['is_admin'] = $isAdmin;
+            $this->data['user_name'] = $this->_user->username;
+            $this->data['small_gravatar_url'] = $this->ion_auth->get_gravatar("30");
+            $this->data['small_avatar_url'] = $this->_user->avatar_ref;
             $projects = $this->_user->listProjects($this->website->domain);
-            $this->viewdata['projects_count'] = $projects->count;
-            $this->viewdata['projects'] = $projects->entries;
+            $this->data['projects_count'] = $projects->count;
+            $this->data['projects'] = $projects->entries;
         }
     }
 
@@ -94,11 +111,17 @@ class base extends CI_Controller
 
     protected function getThemePath($theme = "")
     {
+        $themePath = $this->website->base;
         if (!$theme) {
             $theme = $this->website->theme;
         }
 
-        return $this->website->base . "/" . $theme;
+        if (file_exists($themePath . "/$theme")) {
+            $themePath .= "/$theme";
+        } else {
+            $themePath .= "/default";
+        }
+        return $themePath;
     }
 
     protected function getContentTemplatePath($templateName)
@@ -109,11 +132,6 @@ class base extends CI_Controller
         } else {
             return $this->getProjectTemplatePath($templateName);
         }
-    }
-
-    public function template($templateName)
-    {
-        return $this->getContentTemplatePath($templateName);
     }
 
     protected function getProjectTemplatePath($templateName, $project = "")
@@ -130,6 +148,90 @@ class base extends CI_Controller
         }
 
         return '';
+    }
+
+
+    protected function addJavascriptFiles($dir, $exclude = array())
+    {
+        self::addFiles('js', $dir, $this->data['jsFiles'], $exclude);
+    }
+
+    protected function addJavascriptNotMinifiedFiles($dir, $exclude = array())
+    {
+        self::addFiles('js', $dir, $this->data['jsNotMinifiedFiles'], $exclude);
+    }
+
+    protected function addCssFiles($dir)
+    {
+        self::addFiles('css', $dir, $this->data['cssFiles'], array());
+    }
+
+
+
+
+    /**
+     *
+     * @param string $val
+     * @return int
+     */
+    private static function fromValueWithSuffix($val)
+    {
+        $val = trim($val);
+        $result = (int) $val;
+        $last = strtolower($val[strlen($val)-1]);
+        switch ($last) {
+            // The 'G' modifier is available since PHP 5.1.0
+            case 'g':
+                $result *= 1024;
+            case 'm':
+                $result *= 1024;
+            case 'k':
+                $result *= 1024;
+        }
+
+        return $result;
+    }
+
+    private static function ext($filename)
+    {
+        return pathinfo($filename, PATHINFO_EXTENSION);
+    }
+
+    private static function basename($filename)
+    {
+        return pathinfo($filename, PATHINFO_BASENAME);
+    }
+
+    private static function addFiles($ext, $dir, &$result, $exclude)
+    {
+        if (is_dir($dir)) {
+            $files = scandir($dir);
+            foreach ($files as $file) {
+                $filepath = $dir . '/' . $file;
+                foreach ($exclude as $ex) {
+                    if (strpos($filepath, $ex)) {
+                        continue 2;
+                    }
+                }
+                if (is_file($filepath)) {
+                    if ($ext == 'js') {
+                        /* For Javascript, check that file is not minified */
+                        $base = self::basename($file);
+                        //$isMin = (strpos($base, '-min') !== false) || (strpos($base, '.min') !== false);
+                        $isMin = false;
+                        if (!$isMin && self::ext($file) == $ext) {
+                            $result[] = $filepath;
+                        }
+                    } else {
+                        if (self::ext($file) == $ext) {
+                            $result[] = $filepath;
+                        }
+                    }
+                } elseif ($file != '..' && $file != '.') {
+                    self::addFiles($ext, $filepath, $result, $exclude);
+                }
+            }
+        }
     }
 
 }

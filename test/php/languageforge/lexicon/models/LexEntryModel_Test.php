@@ -15,7 +15,7 @@ class TestLexEntryModel extends UnitTestCase
         $entry = new LexEntryModel($project);
 
         $this->assertIsA($entry->senses, 'models\mapper\ArrayOf');
-        $this->assertIsA($entry->customFields, 'models\mapper\ArrayOf');
+        $this->assertIsA($entry->customFields, 'models\mapper\MapOf');
         $this->assertIsA($entry->authorInfo, 'models\languageforge\lexicon\AuthorInfo');
         $this->assertIsA($entry->lexeme, 'models\languageforge\lexicon\MultiText');
         $this->assertIsA($entry->pronunciation, 'models\languageforge\lexicon\MultiText');

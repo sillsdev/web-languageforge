@@ -23,12 +23,12 @@
  *   "application/config/mongodb_session.php" file.
  *
  *
- * @package		CodeIgniter
- * @author		Sepehr Lajevardi <me@sepehr.ws>
- * @copyright	Copyright (c) 2012 Sepehr Lajevardi.
- * @license		http://codeigniter.com/user_guide/license.html
- * @link		https://github.com/sepehr/ci-mongodb-session
- * @version 	Version 1.0
+ * @package        CodeIgniter
+ * @author        Sepehr Lajevardi <me@sepehr.ws>
+ * @copyright    Copyright (c) 2012 Sepehr Lajevardi.
+ * @license        http://codeigniter.com/user_guide/license.html
+ * @link        https://github.com/sepehr/ci-mongodb-session
+ * @version     Version 1.0
  * @filesource
  */
 
@@ -46,48 +46,48 @@
  * - sess_destroy()
  * - _sess_gc()
  *
- * @package 	CodeIgniter
- * @subpackage	Libraries
- * @category	Sessions
- * @author		Sepehr Lajevardi <me@sepehr.ws>
- * @link		http://codeigniter.com/user_guide/libraries/sessions.html
+ * @package     CodeIgniter
+ * @subpackage    Libraries
+ * @category    Sessions
+ * @author        Sepehr Lajevardi <me@sepehr.ws>
+ * @link        http://codeigniter.com/user_guide/libraries/sessions.html
  */
 class MY_Session extends CI_Session
 {
     /**
-	 * Config directives array.
-	 *
-	 * @var array
-	 * @access private
-	 */
+     * Config directives array.
+     *
+     * @var array
+     * @access private
+     */
     private $_config = array();
 
     /**
-	 * Config filename.
-	 *
-	 * @var string
-	 * @access private
-	 */
+     * Config filename.
+     *
+     * @var string
+     * @access private
+     */
     private $_config_file = 'mongodb_session';
 
     /**
-	 * Indicates whether to use mongodb as session database backend.
-	 *
-	 * @var boolean
-	 * @access private
-	 */
+     * Indicates whether to use mongodb as session database backend.
+     *
+     * @var boolean
+     * @access private
+     */
     private $_use_mongodb;
 
     // --------------------------------------------------------------------
 
     /**
-	 * Session Constructor
-	 *
-	 * The constructor runs the session routines automatically
-	 * whenever the class is instantiated.
-	 *
-	 * For MongoDB, this loads custom config and MongoDB active record lib
-	 */
+     * Session Constructor
+     *
+     * The constructor runs the session routines automatically
+     * whenever the class is instantiated.
+     *
+     * For MongoDB, this loads custom config and MongoDB active record lib
+     */
     public function __construct($params = array())
     {
         log_message('debug', "Session Class Initialized");
@@ -168,11 +168,11 @@ class MY_Session extends CI_Session
     // --------------------------------------------------------------------
 
     /**
-	 * Fetches the current session data if it exists
-	 *
-	 * @access	public
-	 * @return	bool
-	 */
+     * Fetches the current session data if it exists
+     *
+     * @access    public
+     * @return    bool
+     */
     public function sess_read()
     {
         // Fetch the cookie
@@ -315,11 +315,11 @@ class MY_Session extends CI_Session
     // --------------------------------------------------------------------
 
     /**
-	 * Writes the session data
-	 *
-	 * @access	public
-	 * @return	void
-	 */
+     * Writes the session data
+     *
+     * @access    public
+     * @return    void
+     */
     public function sess_write()
     {
         // Are we saving custom data to the DB?  If not, all we do is update the cookie
@@ -376,11 +376,11 @@ class MY_Session extends CI_Session
     // --------------------------------------------------------------------
 
     /**
-	 * Creates a new session
-	 *
-	 * @access	public
-	 * @return	void
-	 */
+     * Creates a new session
+     *
+     * @access    public
+     * @return    void
+     */
     public function sess_create()
     {
         $sessid = '';
@@ -424,11 +424,11 @@ class MY_Session extends CI_Session
     // --------------------------------------------------------------------
 
     /**
-	 * Updates an existing session
-	 *
-	 * @access	public
-	 * @return	void
-	 */
+     * Updates an existing session
+     *
+     * @access    public
+     * @return    void
+     */
     public function sess_update()
     {
         // We only update the session every "sess_time_to_update" seconds by default
@@ -499,11 +499,11 @@ class MY_Session extends CI_Session
     // --------------------------------------------------------------------
 
     /**
-	 * Destroys the current session
-	 *
-	 * @access	public
-	 * @return	void
-	 */
+     * Destroys the current session
+     *
+     * @access    public
+     * @return    void
+     */
     public function sess_destroy()
     {
         // Kill the session DB row/document
@@ -535,14 +535,14 @@ class MY_Session extends CI_Session
     // --------------------------------------------------------------------
 
     /**
-	 * Garbage collection helper
-	 *
-	 * This deletes expired session rows from database
-	 * if the probability percentage is met
-	 *
-	 * @access	public
-	 * @return	void
-	 */
+     * Garbage collection helper
+     *
+     * This deletes expired session rows from database
+     * if the probability percentage is met
+     *
+     * @access    public
+     * @return    void
+     */
     public function _sess_gc()
     {
         if ($this->sess_use_database != TRUE) {

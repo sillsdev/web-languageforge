@@ -18,7 +18,7 @@ angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
           word: '',
           senses: []
         };
-        $scope.entry.word = utils.getWords($scope.config, $scope.model);
+        $scope.entry.word = utils.getCitationForms($scope.config, $scope.model);
         angular.forEach($scope.model.senses, function(senseModel) {
           pos = utils.getPartOfSpeechAbbreviation(senseModel.partOfSpeech, optionlists);
 
@@ -59,7 +59,7 @@ angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
       scope.$watch('model', function(model) {
         scope.makeValidModel();
         scope.render();
-      });
+      }, true); // deep watch
     }
   };
 }]);

@@ -1,6 +1,10 @@
 <?php
+
+namespace service;
+
 use libraries\scriptureforge\sfchecks\Email;
 use libraries\scriptureforge\sfchecks\ParatextExport;
+use libraries\scriptureforge\sfchecks\SfchecksReports;
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\shared\Website;
@@ -17,6 +21,7 @@ use models\scriptureforge\sfchecks\commands\SfchecksUploadCommands;
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\ActivityListDto;
 use models\shared\dto\ProjectListDto;
+use models\shared\dto\ProjectManagementDto;
 use models\shared\dto\RightsHelper;
 use models\shared\dto\UserProfileDto;
 use models\shared\rights\Domain;
@@ -33,6 +38,14 @@ use models\ProjectModel;
 use models\QuestionModel;
 use models\UserModel;
 use models\UserProfileModel;
+use models\languageforge\SemDomTransProjectModel;
+use models\languageforge\semdomtrans\dto\SemDomTransEditDto;
+use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
+use models\languageforge\semdomtrans\commands\SemDomTransItemCommands;
+use models\languageforge\semdomtrans\commands\SemDomTransCommentsCommands;
+use models\languageforge\LfProjectModel;
+use models\languageforge\semdomtrans\SemDomTransWorkingSetModel;
+use models\languageforge\semdomtrans\commands\SemDomTransWorkingSetCommands;
 
 require_once APPPATH . 'vendor/autoload.php';
 require_once APPPATH . 'config/sf_config.php';
@@ -40,6 +53,7 @@ require_once APPPATH . 'models/ProjectModel.php';
 require_once APPPATH . 'models/QuestionModel.php';
 require_once APPPATH . 'models/TextModel.php';
 require_once APPPATH . 'models/UserModel.php';
+
 
 class sf
 {
@@ -271,12 +285,21 @@ class sf
     /**
      * Archive projects
      *
-     * @param array<string> $projectIds
-     * @return int Count of archived projects
+     * @param string
+     * @return string
      */
-    public function project_archive($projectIds)
+    public function project_archive_asAdmin()
     {
-        return ProjectCommands::archiveProjects($projectIds);
+        return ProjectCommands::archiveProject($this->_projectId);
+    }
+
+    public function project_archive_asOwner()
+    {
+        $project = new ProjectModel($this->_projectId);
+        if ($project->ownerRef->asString() != $this->_userId) {
+            throw new UserUnauthorizedException('You are not authorized to archive this project');
+        }
+        return ProjectCommands::archiveProject($this->_projectId);
     }
 
     public function project_archivedList()
@@ -565,18 +588,20 @@ class sf
         return LexProjectDto::encode($this->_projectId, $this->_userId);
     }
 
-    public function lex_dbeDtoFull($browserId)
+    public function lex_dbeDtoFull($browserId, $offset)
     {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
         $this->_controller->session->set_userdata($sessionLabel, time());
 
-        return LexDbeDto::encode($this->_projectId, $this->_userId);
+        return LexDbeDto::encode($this->_projectId, $this->_userId, null, $offset);
     }
 
-    public function lex_dbeDtoUpdatesOnly($browserId)
+    public function lex_dbeDtoUpdatesOnly($browserId, $lastFetchTime = null)
     {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
-        $lastFetchTime = $this->_controller->session->userdata($sessionLabel);
+        if ($lastFetchTime == null) {
+            $lastFetchTime = $this->_controller->session->userdata($sessionLabel);
+        }
         $this->_controller->session->set_userdata($sessionLabel, time());
         if ($lastFetchTime) {
             $lastFetchTime = $lastFetchTime - 5; // 5 second buffer
@@ -678,6 +703,72 @@ class sf
     {
         $response = LexUploadCommands::importLiftFile($this->_projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
+    }
+    
+    
+    /*
+     * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
+     */
+    public function semdom_editor_dto() {
+        return SemDomTransEditDto::encode($this->_projectId, null, null);
+    }
+    
+    public function semdom_get_open_projects() {
+        return SemDomTransProjectCommands::getOpenSemdomProjects();
+    }
+    
+    public function semdom_item_update($data) {
+        return SemDomTransItemCommands::update($data, $this->_projectId);
+    }
+    
+    public function semdom_comment_update($data) {
+        return SemDomTransCommentsCommands::update($data, $this->_projectId);
+    }
+    
+    public function semdom_project_exists($languageIsoCode) {
+        return SemDomTransProjectCommands::checkProjectExists($languageIsoCode, 20);
+    }
+    
+    public function semdom_workingset_update($data) {
+        return SemDomTransWorkingSetCommands::update($data, $this->_projectId);
+    }
+    
+    /**
+     *
+     * @param string $projectName
+     * @param string $projectCode
+     * @param string $appName
+     * @return string | boolean - $projectId on success, false if project code is not unique
+     */
+
+    // 2015-04 CJH REVIEW: this method should be moved to the semdom project commands (and a test should be written around it).  This method should also assert that a project with that code does not already exist
+    public function semdom_create_project($languageIsoCode)
+    {
+        $semdomVersion = 4;
+        $projectName = "($languageIsoCode) Semantic Domain Translation";
+        $projectCode = "semdom-$languageIsoCode-$semdomVersion";
+        $projectID = ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $this->_userId, $this->_website);    
+        
+        $project = new SemDomTransProjectModel($projectID);
+        $project->languageIsoCode = $languageIsoCode;
+        $project->semdomVersion = $semdomVersion;
+        $project->write();
+        
+        SemDomTransProjectCommands::preFillProject($projectID);
+        return $projectID;
+    }
+    
+    
+
+
+    // -------------------------------- Project Management App Api ----------------------------------
+    public function project_management_dto() {
+        return ProjectManagementDto::encode($this->_projectId);
+    }
+
+    public function project_management_report_sfchecks_userEngagementReport() {
+        return SfchecksReports::UserEngagementReport($this->_projectId);
+
     }
 
     // ---------------------------------------------------------------

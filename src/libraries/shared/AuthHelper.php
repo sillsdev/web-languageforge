@@ -25,12 +25,12 @@ class AuthHelper
     }
 
     /**
-	 *
-	 * @param string $identity
-	 * @param string $password
-	 * @param Website $website
-	 * @param bool $remember
-	 */
+     *
+     * @param string $identity
+     * @param string $password
+     * @param Website $website
+     * @param bool $remember
+     */
     public function login($website, $identity, $password, $remember = false)
     {
         if ($this->_ion_auth->login($identity, $password, $remember)) {
@@ -86,10 +86,10 @@ class AuthHelper
     }
 
     /**
-	 * @param string $status
-	 * @param string $uri
-	 * @param string $method
-	 */
+     * @param string $status
+     * @param string $uri
+     * @param string $method
+     */
     public static function result($status, $uri, $method = 'location')
     {
         return array(

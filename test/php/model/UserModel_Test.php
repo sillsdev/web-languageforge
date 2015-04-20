@@ -111,16 +111,20 @@ class TestUserModel extends UnitTestCase
         $e = new MongoTestEnvironment();
         $e->clean();
 
+        $userId = $e->createUser('jsmith', 'joe smith', 'joe@smith.com');
+
         $p1m = $e->createProject('p1', 'p1Code');
         $p1m->appName = 'sfchecks';
+        $p1m->ownerRef->id = $userId;
+
         $p1m->write();
         $p1 = $p1m->id->asString();
         $p2m = $e->createProject('p2', 'p2Code');
         $p2 = $p2m->id->asString();
         $p2m->appName = 'sfchecks';
+        $p2m->ownerRef->id = $userId;
         $p2m->write();
 
-        $userId = $e->createUser('jsmith', 'joe smith', 'joe@smith.com');
         $userModel = new UserModel($userId);
 
         // Check that list projects is empty
@@ -129,9 +133,9 @@ class TestUserModel extends UnitTestCase
         $this->assertEqual(array(), $result->entries);
 
         // Add our two projects
-        $p1m->addUser($userModel->id->asString(), ProjectRoles::CONTRIBUTOR);
+        $p1m->addUser($userModel->id->asString(), ProjectRoles::MANAGER);
         $userModel->addProject($p1m->id->asString());
-        $p2m->addUser($userModel->id->asString(), ProjectRoles::CONTRIBUTOR);
+        $p2m->addUser($userModel->id->asString(), ProjectRoles::MANAGER);
         $userModel->addProject($p2m->id->asString());
         $p1m->write();
         $p2m->write();
@@ -142,16 +146,18 @@ class TestUserModel extends UnitTestCase
         $this->assertEqual(
             array(
                 array(
-                  'projectName' => 'p1',
-                  'id' => $p1,
-                  'appName' => 'sfchecks',
-                  'siteName' => $e->website->domain
+                    'projectName' => 'p1',
+                    'ownerRef' => $userId,
+                    'id' => $p1,
+                    'appName' => 'sfchecks',
+                    'siteName' => $e->website->domain
                 ),
                 array(
-                  'projectName' => 'p2',
-                  'id' => $p2,
-                  'appName' => 'sfchecks',
-                  'siteName' => $e->website->domain
+                    'projectName' => 'p2',
+                    'ownerRef' => $userId,
+                    'id' => $p2,
+                    'appName' => 'sfchecks',
+                    'siteName' => $e->website->domain
                 )
             ), $result->entries
         );
@@ -206,39 +212,39 @@ class TestUserModel extends UnitTestCase
 
     }
 /*
-	function testWriteRemove_ListCorrect()
-	{
-		$e = new MongoTestEnvironment();
-		$e->clean();
+    function testWriteRemove_ListCorrect()
+    {
+        $e = new MongoTestEnvironment();
+        $e->clean();
 
-		$list = new UserListModel();
-		$list->read();
-		$this->assertEqual(0, $list->count);
-		$this->assertEqual(null, $list->entries);
+        $list = new UserListModel();
+        $list->read();
+        $this->assertEqual(0, $list->count);
+        $this->assertEqual(null, $list->entries);
 
-		$user = new UserModel();
-		$user->name = "Some Name";
-		$id = $user->write();
+        $user = new UserModel();
+        $user->name = "Some Name";
+        $id = $user->write();
 
-		$list = new UserListModel();
-		$list->read();
-		$this->assertEqual(1, $list->count);
-		$this->assertEqual(
-			array(array(
-				'avatar_ref' => null,
-				'email' => null,
-				'name' => 'Some Name',
-				'username' => null,
-				'id' => $id
-			)),
-			$list->entries
-		);
-		$user->remove();
+        $list = new UserListModel();
+        $list->read();
+        $this->assertEqual(1, $list->count);
+        $this->assertEqual(
+            array(array(
+                'avatar_ref' => null,
+                'email' => null,
+                'name' => 'Some Name',
+                'username' => null,
+                'id' => $id
+            )),
+            $list->entries
+        );
+        $user->remove();
 
-		$list = new UserListModel();
-		$list->read();
-		$this->assertEqual(0, $list->count);
-		$this->assertEqual(null, $list->entries);
-	}
-	*/
+        $list = new UserListModel();
+        $list->read();
+        $this->assertEqual(0, $list->count);
+        $this->assertEqual(null, $list->entries);
+    }
+    */
 }

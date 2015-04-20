@@ -5,46 +5,46 @@
         </div>
     </div>
 
-	<div class="row">
-		<!-- Left column: search widget, word list -->
-		<div class="span4">
-			<div class="row">
-				<div style="margin-bottom:10px">
-					<input width="4" placeholder="search filter" type="text" class="input-medium search-query" ng-model="searchText" />
-					<span style="margin-left:10px" title="Clear Filter" ng-click="searchText = ''" ng-show="searchText && searchText != ''">
-						<i class="icon-remove" style="color:black; cursor: pointer"></i>
-					</span>
-				</div>
-			</div>
-			<div id="entryList">
-				<div lf-listview search="getPageDto()" items="items" items-display-name="Words" visible-items="visibleItems" select="">
-					<table class="table table-condensed ">
-						<tbody>
-							<tr ng-class="{selected: itemIsSelected(item), even: $even, odd: $odd}"
-							    class="animate-repeat" ng-repeat="item in visibleItems | filter:searchText">
-								<td ng-click="saveEntry(); selectItem(item)">{{getEntryName(item)}}</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
+    <div class="row">
+        <!-- Left column: search widget, word list -->
+        <div class="span4">
+            <div class="row">
+                <div style="margin-bottom:10px">
+                    <input width="4" placeholder="search filter" type="text" class="input-medium search-query" ng-model="searchText" />
+                    <span style="margin-left:10px" title="Clear Filter" ng-click="searchText = ''" ng-show="searchText && searchText != ''">
+                        <i class="icon-remove" style="color:black; cursor: pointer"></i>
+                    </span>
+                </div>
+            </div>
+            <div id="entryList">
+                <div lf-listview search="getPageDto()" items="items" items-display-name="Words" visible-items="visibleItems" select="">
+                    <table class="table table-condensed ">
+                        <tbody>
+                            <tr ng-class="{selected: itemIsSelected(item), even: $even, odd: $odd}"
+                                class="animate-repeat" ng-repeat="item in visibleItems | filter:searchText">
+                                <td ng-click="saveEntry(); selectItem(item)">{{getEntryName(item)}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-		<!-- Right column: buttons, word-editing controls -->
-		<div class="span8">
-			<div class="row" style="margin-left: 0px"> <!-- Override Bootstrap's margin-left: -30px on div.row -->
-				<div class="control-group">
-					<button class="left btn btn-primary" ng-click="saveEntry()">Save</button>
-					<button class="right btn" ng-click="saveEntry(); selectItem(nextItem())"
-					        style="margin-left: 10px; padding-right: 5px"><i class="icon-arrow-right"></i></button>
-					<button class="right btn" ng-click="saveEntry(); selectItem(prevItem())"
-					        style="padding-right: 5px"><i class="icon-arrow-left"></i></button>
-				</div>
-			</div>
-			<dc-rendered config="config" model="pageData.currentEntry">Definition will go here... eventually.</dc-rendered>
-			<div ng-show="true" id="entryItemView">
-				<dc-entry config="config" model="pageData.currentEntry"></dc-entry>
-			</div>
-		</div>
-	</div>
+        <!-- Right column: buttons, word-editing controls -->
+        <div class="span8">
+            <div class="row" style="margin-left: 0px"> <!-- Override Bootstrap's margin-left: -30px on div.row -->
+                <div class="control-group">
+                    <button class="left btn btn-primary" ng-click="saveEntry()">Save</button>
+                    <button class="right btn" ng-click="saveEntry(); selectItem(nextItem())"
+                            style="margin-left: 10px; padding-right: 5px"><i class="icon-arrow-right"></i></button>
+                    <button class="right btn" ng-click="saveEntry(); selectItem(prevItem())"
+                            style="padding-right: 5px"><i class="icon-arrow-left"></i></button>
+                </div>
+            </div>
+            <dc-rendered config="config" model="pageData.currentEntry">Definition will go here... eventually.</dc-rendered>
+            <div ng-show="true" id="entryItemView">
+                <dc-entry config="config" model="pageData.currentEntry"></dc-entry>
+            </div>
+        </div>
+    </div>
 </div>

@@ -25,9 +25,15 @@ class LexOptionListModel extends \models\mapper\MapperModel
     public $code;
 
     /**
-     * @var ArrayOf
+     * @var ArrayOf<LexiconOptionListItem>
      */
     public $items;
+
+    /**
+     *
+     * @var string
+     */
+    public $defaultItemKey;
 
     /**
      * @var bool

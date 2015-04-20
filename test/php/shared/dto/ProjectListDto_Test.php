@@ -24,6 +24,8 @@ class TestProjectListDto extends UnitTestCase
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
+        $project->ownerRef->id = $userId;
+        $project->write();
 
         $text1 = new TextModel($project);
         $text1->title = "Chapter 3";
@@ -57,9 +59,12 @@ class TestProjectListDto extends UnitTestCase
         $project1 = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId1 = $project1->id->asString();
         $project1->addUser($userId, ProjectRoles::MANAGER);
+        $project1->ownerRef->id = $userId;
         $project1->write();
 
         $project2 = $e->createProject(SF_TESTPROJECT2, SF_TESTPROJECTCODE2);
+        $project2->ownerRef->id = $userId;
+        $project2->write();
         $projectId2 = $project2->id->asString();
 
         $dto = ProjectListDto::encode($userId, $e->website);
@@ -88,10 +93,12 @@ class TestProjectListDto extends UnitTestCase
         $projectId1 = $project1->id->asString();
         $project1->addUser($userId, ProjectRoles::MANAGER);
         $project1->isArchived = true;
+        $project1->ownerRef->id = $userId;
         $project1->write();
 
         $project2 = $e->createProject(SF_TESTPROJECT2, SF_TESTPROJECTCODE2);
-        $projectId2 = $project2->id->asString();
+        $project2->ownerRef->id = $userId;
+        $projectId2 = $project2->write();
 
         $dto = ProjectListDto::encode($userId, $e->website);
 
@@ -123,10 +130,12 @@ class TestProjectListDto extends UnitTestCase
         $project1 = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId1 = $project1->id->asString();
         $project1->addUser($userId, ProjectRoles::CONTRIBUTOR);
+        $project1->ownerRef->id = $userId;
         $project1->write();
 
         $project2 = $e->createProject(SF_TESTPROJECT2, SF_TESTPROJECTCODE2);
-        $projectId2 = $project2->id->asString();
+        $project2->ownerRef->id = $userId;
+        $project2->write();
 
         $dto = ProjectListDto::encode($userId, $e->website);
 

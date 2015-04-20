@@ -17,62 +17,62 @@ class Website
     const SITEROLE_SITE_MANAGER = 'site_manager';
 
     /**
-	 *
-	 * @var string - the domain / hostname of the website
-	 */
+     *
+     * @var string - the domain / hostname of the website
+     */
     public $domain;
 
     /**
-	 *
-	 * @var string
-	 */
+     *
+     * @var string
+     */
     public $name;
 
     /**
-	 *
-	 * @var string - the theme name of this website
-	 */
+     *
+     * @var string - the theme name of this website
+     */
     public $theme;
 
     /**
-	 *
-	 * @var bool - whether or not to force HTTPS for this website
-	 */
+     *
+     * @var bool - whether or not to force HTTPS for this website
+     */
     public $ssl;
 
     /**
-	 *
-	 * @var string - the base site for this website: either scriptureforge or languageforge
-	 */
+     *
+     * @var string - the base site for this website: either scriptureforge or languageforge
+     */
     public $base;
 
     /**
-	 *
-	 * @var string - the name of the default project for this site, if any
-	 */
+     *
+     * @var string - the name of the default project for this site, if any
+     */
     public $defaultProjectCode;
 
     /**
-	 *
-	 * @var string - a role constant from SiteRoles
-	 */
+     *
+     * @var string - a role constant from SiteRoles
+     */
     public $userDefaultSiteRole;
 
     /**
-	 *
-	 * @var bool
-	 */
+     *
+     * @var bool
+     */
     public $allowSignupFromOtherSites;
 
     /**
-	 *
-	 * @var array<Website>
-	 */
+     *
+     * @var array<Website>
+     */
     private static $_sites;
     /**
-	 *
-	 * @var array
-	 */
+     *
+     * @var array
+     */
     private static $_redirect;
     /**
     */
@@ -90,9 +90,9 @@ class Website
     }
 
     /**
-	 * @param string $hostname
-	 * @return Website
-	 */
+     * @param string $hostname
+     * @return Website
+     */
     public static function get($hostname = '')
     {
         if (!$hostname) {
@@ -120,9 +120,9 @@ class Website
     }
 
     /**
-	 * @param string $hostname
-	 * @return string
-	 */
+     * @param string $hostname
+     * @return string
+     */
     public static function getRedirect($hostname = '')
     {
         if (!$hostname) {
@@ -147,19 +147,19 @@ class Website
     }
     
     public static function getRawRedirect($hostname) {
-    	if (array_key_exists($hostname, self::$_redirect)) {
-    		return self::$_redirect[$hostname];
-    	}
-    	return '';
+        if (array_key_exists($hostname, self::$_redirect)) {
+            return self::$_redirect[$hostname];
+        }
+        return '';
     }
 
     /**
 
-	 * Convenience function to get the website object or redirect based upon ssl setting or a redirect list
-	 * FYI Not testable  because of the inclusion of the header() method : test get() and getRedirect() instead
-	 * @param string $hostname
-	 * @return Website
-	 */
+     * Convenience function to get the website object or redirect based upon ssl setting or a redirect list
+     * FYI Not testable  because of the inclusion of the header() method : test get() and getRedirect() instead
+     * @param string $hostname
+     * @return Website
+     */
     public static function getOrRedirect($hostname = '')
     {
         if (!$hostname) {
@@ -201,40 +201,40 @@ class Website
     }
 
     /**
-	 * get an array of available project themes for a base site (scriptureforge or languageforge)
-	 * @param string $baseSite
-	 * @return array
-	 */
+     * get an array of available project themes for a base site (scriptureforge or languageforge)
+     * @param string $baseSite
+     * @return array
+     */
     /* note: not currently used
-	public static function getProjectThemeNamesForSite($baseSite = self::SCRIPTUREFORGE)
-	{
-		$themeNames = array();
-		$sitePath = APPPATH . 'views/' . $baseSite;
-		if (is_dir($sitePath)) {
-			$folders = glob($sitePath . '/*' , GLOB_ONLYDIR);
-			foreach ($folders as &$folder) {
-				$folder = pathinfo($folder, PATHINFO_BASENAME);
-			}
-			$themeNames = $folders;
-		}
+    public static function getProjectThemeNamesForSite($baseSite = self::SCRIPTUREFORGE)
+    {
+        $themeNames = array();
+        $sitePath = APPPATH . 'views/' . $baseSite;
+        if (is_dir($sitePath)) {
+            $folders = glob($sitePath . '/*' , GLOB_ONLYDIR);
+            foreach ($folders as &$folder) {
+                $folder = pathinfo($folder, PATHINFO_BASENAME);
+            }
+            $themeNames = $folders;
+        }
 
-		return $themeNames;
-	}
-	*/
+        return $themeNames;
+    }
+    */
 
     /**
-	 * This function contains the "definitions" for each website/domain
-	 */
+     * This function contains the "definitions" for each website/domain
+     */
     public static function init()
     {
         $sites = array();
         $redirect = array();
 
         /*
-		 * **************************
-		 * SCRIPTURE FORGE WEBSITES
-		 * **************************
-		 */
+         * **************************
+         * SCRIPTURE FORGE WEBSITES
+         * **************************
+         */
 
         // scriptureforge.local sites
         $w = new Website('scriptureforge.local', self::SCRIPTUREFORGE);
@@ -308,10 +308,10 @@ class Website
         $sites['waaqwiinaagiwritings.org'] = $w;
         
         /*
-		 * **************************
-		 * LANGUAGE FORGE WEBSITES
-		 * **************************
-		 */
+         * **************************
+         * LANGUAGE FORGE WEBSITES
+         * **************************
+         */
 
         // languageforge.local sites
         $w = new Website('languageforge.local', self::LANGUAGEFORGE);
@@ -337,14 +337,14 @@ class Website
         $w = new Website('languageforge.org', self::LANGUAGEFORGE);
         $w->name = 'Language Forge';
         $w->userDefaultSiteRole = self::SITEROLE_PROJECT_CREATOR;
-        $w->ssl = false;
+        $w->ssl = true;
         $sites['languageforge.org'] = $w;
 
         /*
-		 * **************************
-		 * REDIRECTS
-		 * **************************
-		 */
+         * **************************
+         * REDIRECTS
+         * **************************
+         */
 
         $redirect['www.scriptureforge.org'] = 'scriptureforge.org';
         $redirect['www.languageforge.org'] = 'languageforge.org';

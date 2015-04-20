@@ -1,4 +1,4 @@
-			<?php
+            <?php
             // perhaps this data array should be put into the controller?
 
             $data['slides'] = array(
@@ -19,21 +19,21 @@
             ?>
 
 
-			<div class="container">
-				<div class="row">
-					<div class="span7">
-						<h2 class="lifted-text">Welcome to the <span class="sf-jamaican-green">Jamaican Psalms Project</span></h2>
-						<p>Oudi! Wa'a gwaan?</p>
-						<p>Imagine hundreds, maybe thousands, of Jamaicans from all over the world (male and female, all ages, all churches and job backgrounds), helping to translate their favourite Psalms into Jamaican. We do this face-to-face in our home and church groups using this Jamaican Psalms translation website. This is a translation of the Psalms by Jamaicans for Jamaicans. Gad wod iina fi wi langwij! Join the cause by creating a user account now. It frii!</p>
-					</div>
-					<div class="span5">
-						<iframe width="380" height="285" src="//www.youtube.com/embed/hYlECJ35Wos" frameborder="0" allowfullscreen></iframe>
-					</div>
-					</div>
-			</div>
+            <div class="container">
+                <div class="row">
+                    <div class="span7">
+                        <h2 class="lifted-text">Welcome to the <span class="sf-jamaican-green">Jamaican Psalms Project</span></h2>
+                        <p>Oudi! Wa'a gwaan?</p>
+                        <p>Imagine hundreds, maybe thousands, of Jamaicans from all over the world (male and female, all ages, all churches and job backgrounds), helping to translate their favourite Psalms into Jamaican. We do this face-to-face in our home and church groups using this Jamaican Psalms translation website. This is a translation of the Psalms by Jamaicans for Jamaicans. Gad wod iina fi wi langwij! Join the cause by creating a user account now. It frii!</p>
+                    </div>
+                    <div class="span5">
+                        <iframe width="380" height="285" src="//www.youtube.com/embed/hYlECJ35Wos" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    </div>
+            </div>
 
 
-			<?php
+            <?php
 
             $data['columns'] = array(
                 array(
@@ -60,24 +60,24 @@
 
 
 
-			<div class="sub-foot-detailing"></div>
-			<div id="sub-foot">
-				<div class="container">
-					<div class="row">
-						<div class="span3"><img src="/images/scriptureforge/jamaicanpsalms/sf-sub-footer-pic.png" alt="Israel's Story" style="width:146px;height:150px;margin-top:72px; margin-left:60px" /></div>
-						<div class="span9">
-							<h3>The Impact of the Bible</h3>
-							<p>Many Jamaicans have been touched by the Jamaican New Testament! Take Israel, for example, a young British-Jamaican young man living in England. He talks to us regularly on our Facebook page. Ever so often he reads for his family members from the Jamaican New Testament (JNT). One day, he read to his grandmother from the JNT. His grandmother then told her pastor about the JNT. The pastor was curious, so Israel was asked to take his JNT to church and read from it during worship! Israel messaged us after the service, this was what he said:</p>
+            <div class="sub-foot-detailing"></div>
+            <div id="sub-foot">
+                <div class="container">
+                    <div class="row">
+                        <div class="span3"><img src="/images/scriptureforge/jamaicanpsalms/sf-sub-footer-pic.png" alt="Israel's Story" style="width:146px;height:150px;margin-top:72px; margin-left:60px" /></div>
+                        <div class="span9">
+                            <h3>The Impact of the Bible</h3>
+                            <p>Many Jamaicans have been touched by the Jamaican New Testament! Take Israel, for example, a young British-Jamaican young man living in England. He talks to us regularly on our Facebook page. Ever so often he reads for his family members from the Jamaican New Testament (JNT). One day, he read to his grandmother from the JNT. His grandmother then told her pastor about the JNT. The pastor was curious, so Israel was asked to take his JNT to church and read from it during worship! Israel messaged us after the service, this was what he said:</p>
 
-							<p>"I've just got home from church. Believe me when I tell you that they LOVE the JNT! Thank you for my copy of the JNT in my own language. I've come to realise that when you listen to the Bible in your language, it is more meaningful to you."</p>
-<!-- 							<p><a href="/create_account" class="arrowed">Get Involved Today</a></p> -->
-							<p>
-								<a href="/signup">
-									<button class="btn sf-btnJ sf-btnJ3" href="/signup">Get Started Now</button>
-								</a>
-							</p>
-							</div>
-					</div>
-				</div>
-			</div>
-			<div class="sub-foot-detailing"></div>
+                            <p>"I've just got home from church. Believe me when I tell you that they LOVE the JNT! Thank you for my copy of the JNT in my own language. I've come to realise that when you listen to the Bible in your language, it is more meaningful to you."</p>
+<!--                             <p><a href="/create_account" class="arrowed">Get Involved Today</a></p> -->
+                            <p>
+                                <a href="/signup">
+                                    <button class="btn sf-btnJ sf-btnJ3" href="/signup">Get Started Now</button>
+                                </a>
+                            </p>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-foot-detailing"></div>

@@ -7,8 +7,8 @@
 
 <form method="post" accept-charset="utf-8">
       <p>
-      	<label for="email"><?php echo sprintf(lang('forgot_password_email_label'), $identity_label);?></label> <br />
-      	<?php echo form_input($email);?>
+          <label for="email"><?php echo sprintf(lang('forgot_password_email_label'), $identity_label);?></label> <br />
+          <?php echo form_input($email);?>
       </p>
 
       <p><?php echo form_submit('submit', lang('forgot_password_submit_btn'));?></p>

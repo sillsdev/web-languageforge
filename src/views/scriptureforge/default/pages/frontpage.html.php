@@ -1,4 +1,4 @@
-			<?php
+            <?php
             // perhaps this data array should be put into the controller?
 
             $data['slides'] = array(
@@ -24,7 +24,7 @@
                     "target_url" => "/learn_scripture_forge"
                     )
             );
-            $this->load->view($controller->template('templates/slideshow'), $data);
+            $controller->loadTemplate('templates/slideshow', $data);
 
             $data['columns'] = array(
                 array(
@@ -43,20 +43,20 @@
                     "target_url" => "/learn_scripture_forge"
                     )
             );
-            $this->load->view($controller->template('templates/3column'), $data);
+            $controller->loadTemplate('templates/3column', $data);
             ?>
 
-			<div class="container">
-				<div class="sub-promotion">
-				<div class="row row-padded">
-					<div class="span4">
-						<img src="/images/scriptureforge/default/girlsmiling.jpg" alt="girl smiling" width="299" height="182" class="left">
-					</div>
-					<div class="span8">
-						<h3>The Power of Collaboration</h3>
-						<p>When everyone plays their part in getting Scripture translated and into the right hands, everyone benefits.  It&rsquo;s the power of collaboration that gets Scripture checking done faster and better. Our technology brings Scripture checking to the masses, in a positive environment that focuses participants on the task and works wherever they are. On the tablet, phone or web, Scripture Forge is there.</p>
-						<p><a href="/signup" class="arrowed">Get Involved Today</a></p>
-					</div>
-				</div>
-				</div>
-			</div>
+            <div class="container">
+                <div class="sub-promotion">
+                <div class="row row-padded">
+                    <div class="span4">
+                        <img src="/images/scriptureforge/default/girlsmiling.jpg" alt="girl smiling" width="299" height="182" class="left">
+                    </div>
+                    <div class="span8">
+                        <h3>The Power of Collaboration</h3>
+                        <p>When everyone plays their part in getting Scripture translated and into the right hands, everyone benefits.  It&rsquo;s the power of collaboration that gets Scripture checking done faster and better. Our technology brings Scripture checking to the masses, in a positive environment that focuses participants on the task and works wherever they are. On the tablet, phone or web, Scripture Forge is there.</p>
+                        <p><a href="/signup" class="arrowed">Get Involved Today</a></p>
+                    </div>
+                </div>
+                </div>
+            </div>

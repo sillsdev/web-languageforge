@@ -3,8 +3,8 @@
         <iframe width="853" height="480" src="//www.youtube.com/embed/9kP3rMp70Zc?rel=0" frameborder="0" allowfullscreen></iframe>
     </div>
 
-		<div>
-			<h2>About Language Forge</h2>
+        <div>
+            <h2>About Language Forge</h2>
 
             <p>Imagine being able to upload your lexicon data to the internet and access it online anytime, anywhere with no extra software.  Now imagine that you could give a colleague secure access to your data just by emailing them a link.  With Language Forge, this is just the beginning!</p>
 
@@ -22,20 +22,20 @@
 
 
 
-			<h2>Beta Preview Features</h2>
-			<ul>
-				<li>Import your WeSay or FLEx data (LIFT format)</li>
-				<li>View or Edit the dictionary online</li>
-				<li>Invite others to view, collaborate, edit and comment on your lexicon data</li>
-				<li>Dictionary configuration editor: customize input systems, lexicon fields and tasks</li>
-				<li>Supports most FLEx fields</li>
-				<li>Assign project members one of several roles: Observer, Commenter, Collaborator and Manager</li>
-				<li>Customize what each member sees down to the field level</li>
-				<li>Custom field support</li>
-				<li>Right-to-left script support</li>
-				<li>Integrated commenting system allows team members to have discussions about any piece of data in the lexicon</li>
-				<li>Editors receive near real-time updates to the lexicon when there are multiple editors active online.</li>
-				<li>Data protection.  Only those you give access to can view or edit the lexicon.</li>
-			</ul>
-		</div>
+            <h2>Beta Preview Features</h2>
+            <ul>
+                <li>Import your WeSay or FLEx data (LIFT format)</li>
+                <li>View or Edit the dictionary online</li>
+                <li>Invite others to view, collaborate, edit and comment on your lexicon data</li>
+                <li>Dictionary configuration editor: customize input systems, lexicon fields and tasks</li>
+                <li>Supports most FLEx fields</li>
+                <li>Assign project members one of several roles: Observer, Commenter, Collaborator and Manager</li>
+                <li>Customize what each member sees down to the field level</li>
+                <li>Custom field support</li>
+                <li>Right-to-left script support</li>
+                <li>Integrated commenting system allows team members to have discussions about any piece of data in the lexicon</li>
+                <li>Editors receive near real-time updates to the lexicon when there are multiple editors active online.</li>
+                <li>Data protection.  Only those you give access to can view or edit the lexicon.</li>
+            </ul>
+        </div>
 </div>

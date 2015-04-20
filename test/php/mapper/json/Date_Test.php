@@ -27,14 +27,14 @@ class TestJsonDateMapper extends UnitTestCase
         $model = new TestJsonDateModel();
         $encoded = JsonEncoder::encode($model);
         $this->assertIsA($encoded['date'], 'string');
-// 		var_dump($encoded);
+//         var_dump($encoded);
 
         $otherModel = new TestJsonDateModel();
         JsonDecoder::decode($otherModel, $encoded);
         $iso8601 = $otherModel->date->format(DateTime::ISO8601);
         $this->assertEqual($encoded['date'], $iso8601);
 
-// 		var_dump($iso8601);
+//         var_dump($iso8601);
 
     }
 
