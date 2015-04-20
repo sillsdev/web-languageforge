@@ -1,6 +1,10 @@
 <?php
+
+namespace service;
+
 use libraries\scriptureforge\sfchecks\Email;
 use libraries\scriptureforge\sfchecks\ParatextExport;
+use libraries\scriptureforge\sfchecks\SfchecksReports;
 use libraries\shared\palaso\exceptions\UserNotAuthenticatedException;
 use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 use libraries\shared\Website;
@@ -17,6 +21,7 @@ use models\scriptureforge\sfchecks\commands\SfchecksUploadCommands;
 use models\scriptureforge\dto\ProjectSettingsDto;
 use models\shared\dto\ActivityListDto;
 use models\shared\dto\ProjectListDto;
+use models\shared\dto\ProjectManagementDto;
 use models\shared\dto\RightsHelper;
 use models\shared\dto\UserProfileDto;
 use models\shared\rights\Domain;
@@ -280,12 +285,21 @@ class sf
     /**
      * Archive projects
      *
-     * @param array<string> $projectIds
-     * @return int Count of archived projects
+     * @param string
+     * @return string
      */
-    public function project_archive($projectIds)
+    public function project_archive_asAdmin()
     {
-        return ProjectCommands::archiveProjects($projectIds);
+        return ProjectCommands::archiveProject($this->_projectId);
+    }
+
+    public function project_archive_asOwner()
+    {
+        $project = new ProjectModel($this->_projectId);
+        if ($project->ownerRef->asString() != $this->_userId) {
+            throw new UserUnauthorizedException('You are not authorized to archive this project');
+        }
+        return ProjectCommands::archiveProject($this->_projectId);
     }
 
     public function project_archivedList()
@@ -745,6 +759,17 @@ class sf
     }
     
     
+
+
+    // -------------------------------- Project Management App Api ----------------------------------
+    public function project_management_dto() {
+        return ProjectManagementDto::encode($this->_projectId);
+    }
+
+    public function project_management_report_sfchecks_userEngagementReport() {
+        return SfchecksReports::UserEngagementReport($this->_projectId);
+
+    }
 
     // ---------------------------------------------------------------
     // Private Utility Functions
