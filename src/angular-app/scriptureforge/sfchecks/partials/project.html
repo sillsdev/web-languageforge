@@ -3,7 +3,7 @@
     <div class="notices">
         <alert data-ng-repeat="message in messages" type="info" close="markMessageRead(message.id)"><b>{{message.subject}}</b><br /><span data-ng-bind-html="message.content"></span></alert>
     </div>
-    <div class="btn-group pull-right" data-ng-show="rights.edit">
+    <div id="settingsDropdownButton" class="btn-group pull-right" data-ng-show="rights.edit">
         <a class="btn dropdown-toggle"
            data-toggle="dropdown"
            data-tooltip-placement="right"
