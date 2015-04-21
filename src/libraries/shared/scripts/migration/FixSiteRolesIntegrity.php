@@ -13,7 +13,7 @@ use models\UserListModel;
 
 class FixSiteRolesIntegrity
 {
-    public function run($mode = 'test')
+    public function run($userId, $mode = 'test')
     {
         $testMode = ($mode != 'run');
         $message = "Fix site roles integrity\n\n";
