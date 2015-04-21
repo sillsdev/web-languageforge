@@ -742,20 +742,8 @@ class sf
      */
 
     // 2015-04 CJH REVIEW: this method should be moved to the semdom project commands (and a test should be written around it).  This method should also assert that a project with that code does not already exist
-    public function semdom_create_project($languageIsoCode)
-    {
-        $semdomVersion = 4;
-        $projectName = "($languageIsoCode) Semantic Domain Translation";
-        $projectCode = "semdom-$languageIsoCode-$semdomVersion";
-        $projectID = ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $this->_userId, $this->_website);    
-        
-        $project = new SemDomTransProjectModel($projectID);
-        $project->languageIsoCode = $languageIsoCode;
-        $project->semdomVersion = $semdomVersion;
-        $project->write();
-        
-        SemDomTransProjectCommands::preFillProject($projectID);
-        return $projectID;
+    public function semdom_create_project($languageIsoCode) {
+        return SemDomTransProjectCommands::createProject($languageIsoCode, $this->_userId);
     }
     
     

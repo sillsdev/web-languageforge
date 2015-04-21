@@ -42,6 +42,8 @@ class SemDomTransProjectCommands
 
         return $semdomProjects;
     }
+
+    /*
     public static function preFillProject($projectId) {
         $projectModel = new SemDomTransProjectModel($projectId);
         $englishProject = new SemDomTransProjectModel();
@@ -75,14 +77,21 @@ class SemDomTransProjectCommands
 
         return $projectModel;
     }
+    */
 
-    public static function checkProjectExists($languageCode, $semdomVersion) {
+    public static function checkProjectExists($languageCode) {
         $project = new SemDomTransProjectModel();
-        $project->readByProperties(array("languageIsoCode" => $languageCode, "semdomVersion" => $semdomVersion));
+        $project->readByCode($languageCode);
         if (Id::isEmpty($project->id)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public static function createProject($languageCode, $userId) {
+        $project = SemDomTransProjectModel::createProject($languageCode, $userId);
+        $project->preFillFromSourceLanguage();
+        return $project->id->asString();
     }
 }
