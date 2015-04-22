@@ -27,10 +27,10 @@ class TestSemDomTransEditDto extends UnitTestCase
         $englishProject = $e->importEnglishProject();
         $targetProject = $e->createPreFilledTargetProject("es");
         $result = SemDomTransEditDto::encode($targetProject->id->asString(), null);
-        $this->assertNotEqual($result["items"], null);
-        $this->assertEqual($result["items"][0]["name"]["source"], "Universe, creation");
-        $this->assertEqual($result["items"][10]["name"]["source"], "Cloud");
-        $this->assertEqual($result["items"][1]["questions"][1]["question"]["source"], "(2) What words refer to the air around the earth?");
+        $this->assertNotEqual($result["entries"], null);
+        $this->assertEqual($result["entries"][0]["name"]["source"], "Universe, creation");
+        $this->assertEqual($result["entries"][10]["name"]["source"], "Cloud");
+        $this->assertEqual($result["entries"][1]["questions"][1]["question"]["source"], "(2) What words refer to the air around the earth?");
         $e->clean();
     }
          
@@ -77,11 +77,11 @@ class TestSemDomTransEditDto extends UnitTestCase
         
         // print_r($result);
         // check dto returns expected results
-         $items = $result["items"];
-         $this->assertTrue($items != null); 
-         $this->assertTrue(count($items) > 0);
+         $entries = $result["entries"];
+         $this->assertTrue($entries != null); 
+         $this->assertTrue(count($entries) > 0);
          
-         $firstObject = $items[0];
+         $firstObject = $entries[0];
          
          $this->assertNotEqual($firstObject["key"], null);
          $this->assertEqual($firstObject["key"], "1");
