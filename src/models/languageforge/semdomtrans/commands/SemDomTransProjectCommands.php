@@ -28,6 +28,22 @@ use Palaso\Utilities\FileUtilities;
 
 class SemDomTransProjectCommands
 {
+    
+    public static function createProject($languageIsoCode) {
+        $version = SemDomTransProjectModel::SEMDOMVERSION;
+        $projectCode = "semdom-$languageIsoCode-$version";
+        $projectID = ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $this->_userId, $this->_website);
+        
+        $project = new SemDomTransProjectModel($projectID);
+        $project->languageIsoCode = $languageIsoCode;
+        $project->semdomVersion = $version;
+        $project->write();
+        
+        SemDomTransProjectCommands::preFillProject($projectID);
+        
+        return $project->id;
+    }
+    
     public static function getOpenSemdomProjects($userId) {
         $projects = new ProjectListModel();
         $projects->read();
