@@ -27,7 +27,7 @@ class SemDomTransEditDto
        		$sourceProject->projectCode="semdom-en-$project->semdomVersion";
        		$sourceProject->readByProperty("projectCode", $sourceProject->projectCode);
         } else {
-        	$sourceProject = new SemDomTransProjectModel($project->sourceLanguageProjectId);
+            $sourceProject = new SemDomTransProjectModel($project->sourceLanguageProjectId->asString());
         }
         $items = new SemDomTransItemListModel($project, $lastFetchTime);
         $items->read();
