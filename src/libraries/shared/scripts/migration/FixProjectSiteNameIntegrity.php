@@ -13,7 +13,7 @@ use models\UserListModel;
 
 class FixProjectSiteNameIntegrity
 {
-    public function run($mode = 'test')
+    public function run($userId, $mode = 'test')
     {
         $testMode = ($mode != 'run');
         $message = "Fix project site name integrity\n\n";

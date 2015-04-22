@@ -27,7 +27,7 @@ class script extends Secure_base
                         $this->data['output'] .= "--------------- THIS IS A TEST RUN - The database should not be modified ----------------\n\n";
                     }
                     $script = new $classname();
-                    $this->data['output'] .= $script->run($runtype);
+                    $this->data['output'] .= $script->run($userId, $runtype);
                     $this->data['scriptname'] = $classname . "->run()";
                     $this->renderPage("textoutput");
                 } catch (\Exception $e) {
