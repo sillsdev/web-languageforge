@@ -53,8 +53,21 @@ class RightsHelper
     // @see https://bugs.php.net/bug.php?id=40837
     public static function hasSiteRight($userId, $right)
     {
-        $userModel = new UserModel($userId);
+        return self::_hasSiteRight($userId, $right);
+    }
 
+    /**
+     *
+     * @param int $right
+     * @return bool
+     */
+    public function userHasSiteRight($right)
+    {
+        return self::_hasSiteRight($this->_userId, $right);
+    }
+
+    private function _hasSiteRight($userId, $right) {
+        $userModel = new UserModel($userId);
         return (SiteRoles::hasRight($userModel->siteRole, $right) || SystemRoles::hasRight($userModel->role, $right));
     }
 
@@ -83,17 +96,6 @@ class RightsHelper
         return SystemRoles::hasRight($userModel->role, $right);
     }
 
-    /**
-     *
-     * @param int $right
-     * @return bool
-     */
-    public function userHasSiteRight($right)
-    {
-        $userModel = new UserModel($this->_userId);
-
-        return (SiteRoles::hasRight($userModel->siteRole, $right) || SystemRoles::hasRight($userModel->role, $right));
-    }
 
     /**
      *
@@ -117,23 +119,22 @@ class RightsHelper
         switch ($methodName) {
 
             // User Role (Project Context)
-            case 'user_sendInvite':
             case 'semdom_editor_dto':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
             case 'semdom_get_open_projects':
-               return true;
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
             case 'semdom_item_update':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
             case 'semdom_comment_update':
                 return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT);
             case 'semdom_project_exists':
-                return true;
-                
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
             case 'semdom_create_project':
-                return true;
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
             case 'semdom_workingset_update':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 
+            case 'user_sendInvite':
             case 'message_markRead':
             case 'project_pageDto':
             case 'lex_projectDto':
@@ -176,14 +177,9 @@ class RightsHelper
             case 'project_read':
             case 'project_settings':
             case 'project_updateSettings':
-            case 'project_denyJoinRequest':
-                    return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
-            case 'project_acceptJoinRequest':
-                    return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
             case 'project_readSettings':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
-            case 'project_getJoinRequests':
-                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+
             case 'project_update':
             case 'lex_project_update':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
@@ -193,13 +189,10 @@ class RightsHelper
 
             case 'project_joinProject':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
-         
-            case 'project_getJoinRequests':
-                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
-                
+
             case 'project_usersDto':
                 return $this->userHasProjectRight(Domain::USERS + Operation::VIEW);
-            
+
             case 'project_removeUsers':
                 return $this->userHasProjectRight(Domain::USERS + Operation::DELETE);
 
@@ -241,10 +234,13 @@ class RightsHelper
 
             case 'user_delete':
                 return $this->userHasSiteRight(Domain::USERS + Operation::DELETE);
-            case 'project_sendJoinRequest':
-                return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
-                
-            case 'project_archive':
+
+            case 'project_archive_asAdmin':
+                return $this->userHasSiteRight(Domain::PROJECTS + Operation::ARCHIVE);
+
+            case 'project_archive_asOwner':
+                return $this->userHasSiteRight(Domain::PROJECTS + Operation::ARCHIVE_OWN);
+
             case 'project_archivedList':
             case 'project_publish':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::ARCHIVE);
@@ -327,6 +323,15 @@ class RightsHelper
             case 'lex_uploadImageFile':
             case 'lex_project_removeMediaFile':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
+
+
+
+
+            // project management app
+            case 'project_management_dto':
+            case 'project_management_report_sfchecks_userEngagementReport':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+
 
             default:
                 throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");

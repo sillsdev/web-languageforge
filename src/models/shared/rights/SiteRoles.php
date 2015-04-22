@@ -31,11 +31,10 @@ class SiteRoles extends RolesBase
         $rights[] = Domain::PROJECTS + Operation::ARCHIVE_OWN;
         self::$_rights[self::PROJECT_CREATOR] = $rights;
 
-        // Site Manager (all rights on projects)
-        $rights = self::$_rights[self::USER];
+        // Site Manager (Project creator plus all rights on projects)
+        $rights = self::$_rights[self::PROJECT_CREATOR];
         self::grantAllOnDomain($rights, Domain::PROJECTS);
         self::$_rights[self::SITE_MANAGER] = $rights;
-
     }
 
     private static $_rights;
@@ -60,7 +59,6 @@ class SiteRoles extends RolesBase
      * @param  MapOf      $roleMap
      * @param  int        $right
      * @throws \Exception
-     * @internal param Website $website
      * @return bool
      */
     public static function hasRight($roleMap, $right)

@@ -4,6 +4,7 @@ angular.module('semdomtrans',
   [
     'ui.router',
     'bellows.services',
+    'bellows.services.comments',
     'bellows.filters',
     'semdomtrans.edit',
     'semdomtrans.comments',

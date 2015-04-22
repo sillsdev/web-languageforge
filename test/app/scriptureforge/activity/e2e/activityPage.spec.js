@@ -125,7 +125,7 @@ describe('Activity Page E2E Test', function() {
                 browser.navigate().back();
                 
                 // Click on Project Settings
-                projectPage.settingsButton.click();
+                projectSettingsPage.get();
                 projectSettingsPage.addNewMember(currentScript.value);
                 
                 // Return back to Question Page for rest of test.

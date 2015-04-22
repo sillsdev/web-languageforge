@@ -5,7 +5,7 @@ class api extends CI_Controller
     public function service($api)
     {
         $serviceFileName = strtolower($api) . '.php';
-        $serviceClassName = str_replace(' ', '', ucwords(preg_replace('/[\s_]+/', ' ', $api)));
+        $serviceClassName = '\\service\\' . str_replace(' ', '', ucwords(preg_replace('/[\s_]+/', ' ', $api)));
         $filePath = 'service/' . $serviceFileName;
         if (!file_exists($filePath)) {
             throw new Exception(sprintf("File not found '%s' for api '%s'", $filePath, $api));

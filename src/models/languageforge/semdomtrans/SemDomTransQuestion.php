@@ -2,7 +2,7 @@
 
 namespace models\languageforge\semdomtrans;
 
-use models\mapper\Id;
+
 
 class SemDomTransQuestion
 {

@@ -87,6 +87,7 @@ class MongoTestEnvironment
         $userModel->email = $email;
         $userModel->avatar_ref = $username . ".png";
         $userModel->role = $role;
+        $userModel->active = true;
         $userModel->siteRole[$this->website->domain] = $this->website->userDefaultSiteRole;
 
         return $userModel->write();
