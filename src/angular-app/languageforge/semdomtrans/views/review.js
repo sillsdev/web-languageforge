@@ -12,7 +12,7 @@ function($scope, $state, $stateParams, editorService, semdomEditApi, sessionServ
     }
     
     $scope.refreshDbeData = function refreshDbeData(state) {
-      return $scope.$parent.refreshDbeData(state, function() { });
+      return editorService.refreshEditorData(state, function() { });
     };
     
     function calculateDisplayedItems() {
