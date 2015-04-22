@@ -732,7 +732,7 @@ class sf
     
     
     public function semdom_get_open_projects() {
-        return SemDomTransProjectCommands::getOpenSemdomProjects();
+        return SemDomTransProjectCommands::getOpenSemdomProjects($this->_userId);
     }
     
     public function semdom_item_update($data) {
@@ -761,12 +761,13 @@ class sf
     public function semdom_create_project($languageIsoCode)
     {        
         $projectName = "Semdom $languageIsoCode Project";
-        $projectCode = "semdom-$languageIsoCode-20";
+        $version = SemDomTransProjectModel::SEMDOMVERSION;
+        $projectCode = "semdom-$languageIsoCode-$version";
         $projectID = ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $this->_userId, $this->_website);    
         
         $project = new SemDomTransProjectModel($projectID);
         $project->languageIsoCode = $languageIsoCode;
-        $project->semdomVersion = 20;
+        $project->semdomVersion = $version;
         $project->write();
         
         SemDomTransProjectCommands::preFillProject($projectID);
