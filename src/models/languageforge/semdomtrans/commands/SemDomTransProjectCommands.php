@@ -28,24 +28,33 @@ use Palaso\Utilities\FileUtilities;
 
 class SemDomTransProjectCommands
 {
-    public static function getOpenSemdomProjects() {
+    public static function getOpenSemdomProjects($userId) {
         $projects = new ProjectListModel();
         $projects->read();
         $semdomProjects = [];
         foreach($projects->entries as $p) {
             $project = new ProjectModel($p["id"]);
-            if ($project->appName == LfProjectModel::SEMDOMTRANS_APP) {
-                $sp = new SemDomTransProjectModel($p["id"]);
-                $semdomProjects[] = $sp;
+            if ($project->appName == LfProjectModel::SEMDOMTRANS_APP
+                && !array_key_exists($userId, $project->users)
+                && !array_key_exists($userId, $project->userJoinRequests))
+                { 
+                    $sp = new SemDomTransProjectModel($p["id"]);
+                    if ($sp->languageIsoCode != "en") {
+                        $semdomProjects[] = $sp;
+                }
             }
         }
 
         return $semdomProjects;
     }
-    public static function preFillProject($projectId) {
+    
+    
+    public static function preFillProject($projectId, $version = SemDomTransProjectModel::SEMDOMVERSION) {
         $projectModel = new SemDomTransProjectModel($projectId);
         $englishProject = new SemDomTransProjectModel();
-        $englishProject->readByProperties(array("languageIsoCode" => "en", "semdomVersion" => $projectModel->semdomVersion));
+        $englishProject->projectCode = "semdom-en-$version";
+        $englishProject->readByProperty("projectCode", $englishProject->projectCode); 
+
         $projectModel->sourceLanguageProjectId = $englishProject->id->asString();
         $projectModel->write();
 
@@ -62,7 +71,7 @@ class SemDomTransProjectCommands
             $newItem = new SemDomTransItemModel($projectModel);
             $newItem->key = $item['key'];
             foreach ($item['questions'] as $q) {
-                $newq = new SemDomTransQuestion("aa", "aa");
+                $newq = new SemDomTransQuestion();
                 $newItem->questions[] = $newq;
             }
             foreach ($item['searchKeys'] as $sk) {
