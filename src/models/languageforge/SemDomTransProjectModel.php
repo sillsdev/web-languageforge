@@ -23,6 +23,12 @@ class SemDomTransProjectModel extends LfProjectModel {
         parent::__construct($id);
     }
     
+    
+    /**
+     * 
+     */
+    const SEMDOMVERSION = 4;
+    
     /**
      * 
      * @var boolean
