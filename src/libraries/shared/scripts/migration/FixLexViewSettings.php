@@ -8,7 +8,7 @@ use models\ProjectModel;
 
 class FixLexViewSettings
 {
-    public function run($mode = 'test')
+    public function run($userId, $mode = 'test')
     {
         $testMode = ($mode != 'run');
         $message = "Fix Lexicon View Settings to default to visible\n\n";

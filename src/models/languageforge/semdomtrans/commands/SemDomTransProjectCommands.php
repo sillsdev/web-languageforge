@@ -28,49 +28,26 @@ use Palaso\Utilities\FileUtilities;
 
 class SemDomTransProjectCommands
 {
-    
-    public static function createProject($languageIsoCode) {
-        $version = SemDomTransProjectModel::SEMDOMVERSION;
-        $projectCode = "semdom-$languageIsoCode-$version";
-        $projectID = ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $this->_userId, $this->_website);
-        
-        $project = new SemDomTransProjectModel($projectID);
-        $project->languageIsoCode = $languageIsoCode;
-        $project->semdomVersion = $version;
-        $project->write();
-        
-        SemDomTransProjectCommands::preFillProject($projectID);
-        
-        return $project->id;
-    }
-    
-    public static function getOpenSemdomProjects($userId) {
+    public static function getOpenSemdomProjects() {
         $projects = new ProjectListModel();
         $projects->read();
         $semdomProjects = [];
         foreach($projects->entries as $p) {
             $project = new ProjectModel($p["id"]);
-            if ($project->appName == LfProjectModel::SEMDOMTRANS_APP
-                && !array_key_exists($userId, $project->users)
-                && !array_key_exists($userId, $project->userJoinRequests))
-                { 
-                    $sp = new SemDomTransProjectModel($p["id"]);
-                    if ($sp->languageIsoCode != "en") {
-                        $semdomProjects[] = $sp;
-                }
+            if ($project->appName == LfProjectModel::SEMDOMTRANS_APP) {
+                $sp = new SemDomTransProjectModel($p["id"]);
+                $semdomProjects[] = $sp;
             }
         }
 
         return $semdomProjects;
     }
-    
-    
-    public static function preFillProject($projectId, $version = SemDomTransProjectModel::SEMDOMVERSION) {
+
+    /*
+    public static function preFillProject($projectId) {
         $projectModel = new SemDomTransProjectModel($projectId);
         $englishProject = new SemDomTransProjectModel();
-        $englishProject->projectCode = "semdom-en-$version";
-        $englishProject->readByProperty("projectCode", $englishProject->projectCode); 
-
+        $englishProject->readByProperties(array("languageIsoCode" => "en", "semdomVersion" => $projectModel->semdomVersion));
         $projectModel->sourceLanguageProjectId = $englishProject->id->asString();
         $projectModel->write();
 
@@ -87,7 +64,7 @@ class SemDomTransProjectCommands
             $newItem = new SemDomTransItemModel($projectModel);
             $newItem->key = $item['key'];
             foreach ($item['questions'] as $q) {
-                $newq = new SemDomTransQuestion();
+                $newq = new SemDomTransQuestion("aa", "aa");
                 $newItem->questions[] = $newq;
             }
             foreach ($item['searchKeys'] as $sk) {
@@ -100,14 +77,21 @@ class SemDomTransProjectCommands
 
         return $projectModel;
     }
+    */
 
-    public static function checkProjectExists($languageCode, $semdomVersion) {
+    public static function checkProjectExists($languageCode) {
         $project = new SemDomTransProjectModel();
-        $project->readByProperties(array("languageIsoCode" => $languageCode, "semdomVersion" => $semdomVersion));
+        $project->readByCode($languageCode);
         if (Id::isEmpty($project->id)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public static function createProject($languageCode, $userId) {
+        $project = SemDomTransProjectModel::createProject($languageCode, $userId);
+        $project->preFillFromSourceLanguage();
+        return $project->id->asString();
     }
 }
