@@ -13,7 +13,7 @@
 		    	<textarea 
 			    	rows="4"
 			    	ng-disabled="isInCommentMode() || model.questions[currentQuestionPos].question.status == 4"
-			    	ng-model="model.questions[$scope.currentQuestionPos].question.translation"
+			    	ng-model="model.questions[currentQuestionPos].question.translation"
 			    	ng-keypress="control.updateItem($event.which)"
 			    	ng-blur="control.updateItem()">
 		    	</textarea>
@@ -26,7 +26,7 @@
 	        	<textarea
 	        		rows="4"
 	        		ng-disabled="isInCommentMode() || model.questions[currentQuestionPos].terms.status == 4""
-	        		ng-model="model.questions[$scopecurrentQuestionPos].terms.translation"
+	        		ng-model="model.questions[currentQuestionPos].terms.translation"
 	        		ng-keypress="control.updateItem($event.which)"
 	        		ng-blur="control.updateItem()">
         		</textarea>
