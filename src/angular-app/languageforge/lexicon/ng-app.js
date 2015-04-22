@@ -178,6 +178,7 @@ angular.module('lexicon',
     // we tell offline.js to NOT store and remake requests while the connection is down
     Offline.options.requests = false;
     Offline.options.checkOnLoad = true;
+    Offline.options.checks = {xhr: {url: '/offlineCheck.txt'}};
 
     var offlineMessageId;
     Offline.on('up', function() {
