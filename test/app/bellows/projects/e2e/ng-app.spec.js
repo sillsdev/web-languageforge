@@ -71,21 +71,9 @@ describe('E2E Projects List App - System Admin User', function() {
 //    projectsPage.createBtn.getOuterHtml().then(console.log);
 //    projectsPage.archiveButton.getOuterHtml().then(console.log);
     expect(projectsPage.createBtn.isDisplayed()).toBeTruthy();
-    expect(projectsPage.archiveButton.isDisplayed()).toBeTruthy();
+    //expect(projectsPage.archiveButton.isDisplayed()).toBeTruthy();
   });
 
-  it('should disable the delete button when no projects are selected', function() {
-    expect(projectsPage.archiveButton.isEnabled()).toBeFalsy();
-  });
-
-  it('should enable the delete button when at least one project is selected', function() {
-    projectsPage.findProject(constants.testProjectName).then(function(projectRow) {
-      var checkbox = projectRow.$('input[type="checkbox"]');
-      util.setCheckbox(checkbox, true);
-      expect(projectsPage.archiveButton.isEnabled()).toBeTruthy();
-      util.setCheckbox(checkbox, false); // Just in case, let's be on the safe side
-    });
-  });
 
   it('should allow the admin to add themselves to the project as member or manager', function() {
     // First remove the admin from the project (must be a project admin is not the owner of)

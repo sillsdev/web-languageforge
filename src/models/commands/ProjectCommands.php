@@ -14,6 +14,9 @@ use models\mapper\Id;
 use models\mapper\JsonDecoder;
 use models\mapper\JsonEncoder;
 use models\shared\rights\Domain;
+use models\shared\dto\RightsHelper;
+use models\shared\rights\Operation;
+use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 
 use models\shared\rights\ProjectRoles;
 use models\sms\SmsSettings;
@@ -89,22 +92,16 @@ class ProjectCommands
     }
 
     /**
-     * @param array $projectIds
+     * @param $projectId
      * @return int Total number of projects archived.
+     * @throws UserUnauthorizedException
      */
-    public static function archiveProjects($projectIds)
+    public static function archiveProject($projectId)
     {
-        CodeGuard::checkTypeAndThrow($projectIds, 'array');
-        $count = 0;
-        foreach ($projectIds as $projectId) {
-            CodeGuard::checkTypeAndThrow($projectId, 'string');
-            $project = new \models\ProjectModel($projectId);
-            $project->isArchived = true;
-            $project->write();
-            $count++;
-        }
-
-        return $count;
+        CodeGuard::checkTypeAndThrow($projectId, 'string');
+        $project = new \models\ProjectModel($projectId);
+        $project->isArchived = true;
+        return $project->write();
     }
 
     /**
