@@ -442,7 +442,7 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
         $this->cleanPreviousProject($languageCode, $this->semdomVersion);
 
         $projectModel = $this->createSemDomProject($languageCode, $this->semdomVersion);
-        SemDomTransProjectCommands::preFillProject($projectModel->id->asString());
+        SemDomTransProjectCommands::preFillProject($projectModel->id->asString(), $this->englishProject->semdomVersion);
         $this->targetProject = $projectModel;
         return $projectModel;
     }
