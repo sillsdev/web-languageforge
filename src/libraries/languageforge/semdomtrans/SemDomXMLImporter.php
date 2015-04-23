@@ -121,7 +121,7 @@ class SemDomXMLImporter {
 		if ($this->_runForReal) {
 			$itemModel->write();
 		}
-		print "Processed $abbreviation $name\n";
+		//print "Processed $abbreviation $name\n";
 		
 		// recurse on sub-domains
 		if (property_exists($domainNode, 'SubPossibilities')) {

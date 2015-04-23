@@ -48,42 +48,6 @@ class SemDomTransProjectCommands
         return $semdomProjects;
     }
 
-    /*
-    public static function preFillProject($projectId) {
-        $projectModel = new SemDomTransProjectModel($projectId);
-        $englishProject = new SemDomTransProjectModel();
-        $englishProject->readByProperties(array("languageIsoCode" => "en", "semdomVersion" => $projectModel->semdomVersion));
-        $projectModel->sourceLanguageProjectId = $englishProject->id->asString();
-        $projectModel->write();
-
-        $xmlFilePath = $englishProject->xmlFilePath;
-        $newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
-        FileUtilities::createAllFolders($projectModel->getAssetsFolderPath());
-        copy($xmlFilePath, $newXmlFilePath);
-        $projectModel->xmlFilePath = $newXmlFilePath;
-        $projectModel->write();
-
-        $englishItems = new SemDomTransItemListModel($englishProject);
-        $englishItems->read();
-        foreach ($englishItems->entries as $item) {
-            $newItem = new SemDomTransItemModel($projectModel);
-            $newItem->key = $item['key'];
-            foreach ($item['questions'] as $q) {
-                $newq = new SemDomTransQuestion("aa", "aa");
-                $newItem->questions[] = $newq;
-            }
-            foreach ($item['searchKeys'] as $sk) {
-                $newsk = new SemDomTransTranslatedForm();
-                $newItem->searchKeys[] = $newsk;
-            }
-            $newItem->xmlGuid = $item['xmlGuid'];
-            $newItem->write();
-        }
-
-        return $projectModel;
-    }
-    */
-
     public static function checkProjectExists($languageCode) {
         $project = new SemDomTransProjectModel();
         $project->readByCode($languageCode);
@@ -94,9 +58,23 @@ class SemDomTransProjectCommands
         }
     }
 
-    public static function createProject($languageCode, $userId, $website) {
-        $project = SemDomTransProjectModel::createProject($languageCode, $userId, $website);
+    public static function createProject($languageCode, $userId, $website, $semdomVersion = SemDomTransProjectModel::SEMDOM_VERSION) {
+
+        $projectCode = SemDomTransProjectModel::projectCode($languageCode, $semdomVersion);
+        $projectName = "Semantic Domain $languageCode Translation";
+        $projectID =  ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $userId, $website);
+
+        $project = new SemDomTransProjectModel($projectID);
+        $project->languageIsoCode = $languageCode;
+        $project->isSourceLanguage = false;
+        $project->semdomVersion = $semdomVersion;
+
+        // by default all created projects have English as their source.  A future feature would allow creating projects off of other source languages
+        $englishProject = SemDomTransProjectModel::getEnglishProject($semdomVersion);
+        $project->sourceLanguageProjectId->id = $englishProject->id->asString();
+
         $project->preFillFromSourceLanguage();
-        return $project->id->asString();
+        return $project->write();
     }
+
 }
