@@ -22,17 +22,6 @@ class TestSemDomTransProjectModel extends UnitTestCase
     }
 
 
-    public function testCreateProject_englishProjectExists_newProjectCreated()
-    {
-        $e = new SemDomMongoTestEnvironment();
-        $e->cleanPreviousProject('es');
-        $user1Id = $e->createUser('u', 'u', 'u');
-        $englishProject = $e->getEnglishProjectAndCreateIfNecessary();
-        $newProject = SemDomTransProjectModel::createProject('test_es', $user1Id);
-
-        $this->assertEqual($newProject->sourceLanguageProjectId->asString(), $englishProject->id->asString());
-        $this->assertEqual($newProject->isSourceLanguage, false);
-    }
 
     public function testPreFillFromSourceLanguage_englishProjectExists_newProjectPrefilled()
     {
@@ -42,12 +31,6 @@ class TestSemDomTransProjectModel extends UnitTestCase
         $e->getEnglishProjectAndCreateIfNecessary();
         $project = $e->createSemDomProject('es', $user1Id);
 
-        $listModel = new SemDomTransItemListModel($project);
-        $listModel->read();
-        $this->assertEqual($listModel->count, 0);
-        $project->preFillFromSourceLanguage();
-        $listModel->read();
-        $this->assertEqual($listModel->count, 1792);
     }
 
     public function testImportFromFile_nonEnglishProject_importsOk() {
