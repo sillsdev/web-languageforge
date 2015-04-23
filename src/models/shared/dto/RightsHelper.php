@@ -122,15 +122,15 @@ class RightsHelper
             case 'semdom_editor_dto':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
             case 'semdom_get_open_projects':
-                return true;
+                return $this->userHasSiteRight(DOMAIN::PROJECTS + Operation::VIEW);
             case 'semdom_item_update':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
             case 'semdom_comment_update':
                 return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT);
             case 'semdom_project_exists':
-                return true;
+                return $this->userHasSiteRight(DOMAIN::PROJECTS + Operation::VIEW);
             case 'semdom_create_project':
-                return true;
+                return $this->userHasSiteRight(DOMAIN::PROJECTS + Operation::CREATE);
             case 'semdom_workingset_update':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
             case 'project_getJoinRequests':
