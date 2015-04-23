@@ -133,6 +133,8 @@ class RightsHelper
                 return true;
             case 'semdom_workingset_update':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
+            case 'project_getJoinRequests':
+                return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
 
             case 'user_sendInvite':
             case 'message_markRead':
