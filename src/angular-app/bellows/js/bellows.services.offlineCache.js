@@ -55,6 +55,12 @@ angular.module('bellows.services')
           var commentsStore = db.createObjectStore('comments', {keyPath: "id"});
           commentsStore.createIndex('projectId', 'projectId', { unique: false });
 
+          if (db.objectStoreNames.contains('workingsets')) {
+            db.deleteObjectStore('workingsets');
+          }
+          var workingsetStore = db.createObjectStore('workingsets', {keyPath: "id"});
+          workingsetStore.createIndex('projectId', 'projectId', { unique: false });
+          
           if (db.objectStoreNames.contains('projects')) {
             db.deleteObjectStore('projects');
           }

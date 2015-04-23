@@ -16,7 +16,7 @@ $lang = $argv[2];
 $domain = $argv[3];
 $userId = $argv[4];
 $isEnglish =  ($lang == "en");
-$semdomVersion = 4;
+$semdomVersion = SemDomTransProjectModel::SEMDOMVERSION;
 
 // accept command line flag to actually change the database
 // accept filepath of the import file (xml)

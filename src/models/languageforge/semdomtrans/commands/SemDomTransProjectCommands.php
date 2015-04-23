@@ -28,20 +28,27 @@ use Palaso\Utilities\FileUtilities;
 
 class SemDomTransProjectCommands
 {
-    public static function getOpenSemdomProjects() {
+    public static function getOpenSemdomProjects($userId) {
         $projects = new ProjectListModel();
         $projects->read();
         $semdomProjects = [];
         foreach($projects->entries as $p) {
             $project = new ProjectModel($p["id"]);
-            if ($project->appName == LfProjectModel::SEMDOMTRANS_APP) {
+            if ($project->appName == LfProjectModel::SEMDOMTRANS_APP 
+                 && !array_key_exists($userId, $project->users)
+                 && !array_key_exists($userId, $project->userJoinRequests)) {
+                     
                 $sp = new SemDomTransProjectModel($p["id"]);
-                $semdomProjects[] = $sp;
+                if ($sp->languageIsoCode != "en") {
+                        $semdomProjects[] = $sp;
+                }
             }
         }
 
         return $semdomProjects;
     }
+
+    /*
     public static function preFillProject($projectId) {
         $projectModel = new SemDomTransProjectModel($projectId);
         $englishProject = new SemDomTransProjectModel();
@@ -75,14 +82,21 @@ class SemDomTransProjectCommands
 
         return $projectModel;
     }
+    */
 
-    public static function checkProjectExists($languageCode, $semdomVersion) {
+    public static function checkProjectExists($languageCode) {
         $project = new SemDomTransProjectModel();
-        $project->readByProperties(array("languageIsoCode" => $languageCode, "semdomVersion" => $semdomVersion));
+        $project->readByCode($languageCode);
         if (Id::isEmpty($project->id)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public static function createProject($languageCode, $userId, $website) {
+        $project = SemDomTransProjectModel::createProject($languageCode, $userId, $website);
+        $project->preFillFromSourceLanguage();
+        return $project->id->asString();
     }
 }
