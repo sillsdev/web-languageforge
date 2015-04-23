@@ -94,8 +94,8 @@ class SemDomTransProjectCommands
         }
     }
 
-    public static function createProject($languageCode, $userId) {
-        $project = SemDomTransProjectModel::createProject($languageCode, $userId);
+    public static function createProject($languageCode, $userId, $website) {
+        $project = SemDomTransProjectModel::createProject($languageCode, $userId, $website);
         $project->preFillFromSourceLanguage();
         return $project->id->asString();
     }
