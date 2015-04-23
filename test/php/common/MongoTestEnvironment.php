@@ -459,27 +459,9 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
         parent::clean();
     }
 
-    /*
-    public function createPreFilledTargetProject($languageCode) {
-        $this->cleanPreviousProject($languageCode);
-
-        $projectModel = $this->createSemDomProject($languageCode, $this->semdomVersion);
-        SemDomTransProjectCommands::preFillProject($projectModel->id->asString(), $this->englishProject->semdomVersion);
-        $this->targetProject = $projectModel;
-        return $projectModel;
+    public function createSemDomProject($languageCode, $userId) {
+        $projectId = SemDomTransProjectCommands::createProject($languageCode, $userId, $this->website, self::TESTVERSION);
+        return new SemDomTransProjectModel($projectId);
     }
 
-    public function createSemDomProject($languageCode) {
-        $this->cleanPreviousProject($languageCode, $this->semdomVersion);
-
-        $projectCode = "semdom-$languageCode-$this->semdomVersion";
-        $projectName = "Semdom $languageCode Project";
-        $projectModel = $this->createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP);
-        $projectModel = new SemDomTransProjectModel($projectModel->id->asString());
-        $projectModel->languageIsoCode = $languageCode;
-        $projectModel->semdomVersion = $this->semdomVersion;
-        $projectModel->write();
-        return $projectModel;
-    }
-    */
 }
