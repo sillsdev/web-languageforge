@@ -204,10 +204,15 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
     }   
   });
   
-  $scope.$watch('workingSets', function(newVal) {
-    if (newVal && angular.isUndefined($scope.selectedWorkingSet)) {
-      $scope.selectedWorkingSet = 0;
-    }  
+  $scope.$watchCollection('workingSets', function(newVal) {
+    if (newVal) {
+      if (angular.isUndefined($scope.selectedWorkingSet)) {
+        $scope.selectedWorkingSet = 0;
+      }
+      else {
+        loadWorkingSet($scope.workingSets[$scope.selectedWorkingSet]);
+      }
+    }
   });
   
   //search typeahead
@@ -240,14 +245,6 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
   
   function isIncluded(key) {
     return !angular.isUndefined($scope.includedItems[key]) && $scope.includedItems[key] ;
-  }
-  
-  $scope.setInclusion = function setInclusion(itemsToInclude, v) {
-    for (var i in itemsToInclude) {
-      $scope.includedItems[itemsToInclude[i].key] = v;
-    }
-    
-    $scope.reloadItems($scope.selectedDepth);    
   }
   
   $scope.editWorkingSet = function editWorkingSet(wsID) {
