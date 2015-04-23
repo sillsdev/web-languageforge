@@ -8,6 +8,8 @@ use models\languageforge\semdomtrans\SemDomTransItemModel;
 use models\languageforge\semdomtrans\SemDomTransQuestion;
 use models\languageforge\semdomtrans\SemDomTransTranslatedForm;
 use models\mapper\IdReference;
+use models\commands\ProjectCommands;
+use models\mapper\Id;
 
 
 class SemDomTransProjectModel extends LfProjectModel {
@@ -19,7 +21,6 @@ class SemDomTransProjectModel extends LfProjectModel {
         $this->rolesClass = 'models\languageforge\semdomtrans\SemDomTransRoles';
         $this->appName = LfProjectModel::SEMDOMTRANS_APP;
         $this->sourceLanguageProjectId = new IdReference();
-
         // This must be last, the constructor reads data in from the database which must overwrite the defaults above.
         parent::__construct($id);
     }
@@ -38,7 +39,7 @@ class SemDomTransProjectModel extends LfProjectModel {
     
     /**
      * 
-     * @var IdReference
+     * @var Id
      */
     public $sourceLanguageProjectId;
     
@@ -66,18 +67,23 @@ class SemDomTransProjectModel extends LfProjectModel {
      */
     public $xmlFilePath;
     
-    public static function createProject($languageCode, $userId) {
+    public static function createProject($languageCode, $userId, $website) {
         $englishProject = self::getEnglishProject();
 
-        $project = new SemDomTransProjectModel();
-        $project->sourceLanguageProjectId->id = $englishProject->id->asString();
-        $project->isSourceLanguage = false;
+        $version = SemDomTransProjectModel::SEMDOMVERSION;
+        $projectCode = self::projectCode($languageCode, self::SEMDOM_VERSION);
+        $projectName = "Semdom $languageCode Project";
+        $projectID =  ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $userId, $website);
+        
+        $project = new SemDomTransProjectModel($projectID);
+        $project->projectCode = $projectCode;
+        $project->projectName = $projectName;
         $project->languageIsoCode = $languageCode;
-        $project->projectName = "Semdom $languageCode Project";
-        $project->projectCode = self::projectCode($languageCode, self::SEMDOM_VERSION);
-        $project->semdomVersion = self::SEMDOM_VERSION;
-        $project->ownerRef->id = $userId;
+        $project->semdomVersion = $version;
+        $project->isSourceLanguage = false;
+        $project->sourceLanguageProjectId->id = $englishProject->id->asString();
         $project->write();
+        
         return $project;
     }
 
