@@ -29,7 +29,7 @@ class ImportEnglishSemDomProject
 
         $projectModel = new SemDomTransProjectModel();
         $projectModel->projectCode = $projectCode;
-        $projectModel->projectName = "English (en) Semantic Domain Project";
+        $projectModel->projectName = "English (en) Semantic Domain Base Project";
         $projectModel->languageIsoCode = 'en';
         $projectModel->isSourceLanguage = true;
         $projectModel->semdomVersion = SemDomTransProjectModel::SEMDOM_VERSION;

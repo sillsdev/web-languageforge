@@ -48,6 +48,12 @@ if ($runForReal) {
     foreach ($db->listCollections() as $collection) { $collection->drop(); }
 }
 
+print "\nDropping other dbs on the server (like test dbs)\n";
+if ($runForReal) {
+    $cmd = "mongo --quiet --eval 'db.getMongo().getDBNames().forEach(function(i){  if (i.indexOf(\"sf_\") == 0 || i.indexOf(\"scriptureforge\") == 0) { print(\"Dropping \" + i); db.getSiblingDB(i).dropDatabase()}})'";
+    system($cmd);
+}
+
 
 print "\nCreating user: admin password: password\n";
 if ($runForReal) {
