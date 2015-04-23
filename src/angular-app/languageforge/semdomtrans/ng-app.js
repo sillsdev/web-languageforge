@@ -8,6 +8,8 @@ angular.module('semdomtrans',
     'bellows.filters',
     'semdomtrans.edit',
     'semdomtrans.comments',
+    'semdomtrans.services',
+    'semdomtrans.review',
     'pascalprecht.translate' 
   ])
   .config(function($stateProvider, $urlRouterProvider) {
@@ -26,64 +28,44 @@ angular.module('semdomtrans',
                 templateUrl: '/angular-app/languageforge/semdomtrans/views/partials/editFilter.html'
               }
             }
-        })
-        
+        })        
         .state('editor.editItem', {
             url: '/:position'
-        })
-        
+        })        
         .state('comments', {
             url: '/comments/:position',
             views: {
               '': {templateUrl: '/angular-app/languageforge/semdomtrans/views/comments.html'}
             }
         })
+        
+        .state('review',  {
+            url: '/review',
+            views: {
+              '': {templateUrl: '/angular-app/languageforge/semdomtrans/views/review.html'}
+            }
+        })
   })
-  .controller('MainCtrl', ['$scope', 'semdomtransEditService', 'sessionService', 'lexCommentService', '$q',
-  function($scope, $semdomApi, ss, commentsSerivce, $q) {
-    
-   $scope.items = [];
-   $scope.includedItems = {};
-   $scope.comments = [];
-   $scope.loadingDto = false;
-   $scope.refreshDbeData = function refreshDbeData(v) {
-     var deferred = $q.defer();
-     $scope.loadingDto = true;
-     $semdomApi.editorDto(function(result) {
-      if (result.ok) {
-        $scope.items = result.data.items;
-        
-        $scope.itemsTree = {};
-        for (var i in result.data.items) {
-          var item = result.data.items[i];
-          $scope.itemsTree[item.key] = { 'content': item, 'children': [], 'parent': ''};
-          if (item.key.length >= 3) {
-            $scope.itemsTree[item.key.substring(0, item.key.length - 2)].children.push(item.key);
-            $scope.itemsTree[item.key].parent = item.key.substring(0, item.key.length - 2);
-          }
-        }
-        
-        var allItemsWS = { id: '',  name: 'Show All', isShared : false, itemKeys : [] }
-        
-        for (i in result.data.items) {
-          allItemsWS.itemKeys.push(result.data.items[i].key);
-        }
-        
-        $scope.comments = result.data.comments;    
-        $scope.workingSets = [allItemsWS].concat(result.data.workingSets);
-        
-        $scope.loadingDto = false;
-        
-
-        commentsSerivce.updateGlobalCommentCounts();
-        commentsSerivce.comments.items.all = $scope.comments;
-
-        deferred.resolve();
-      }
-    });
-   return deferred.promise;
+  .controller('MainCtrl', ['$scope', 'semdomtransEditorDataService', 'sessionService', 'lexCommentService', 'offlineCache', '$q',
+  function($scope, editorDataService, ss, commentsSerivce, offlineCache, $q) {    
+   $scope.rights = {};
+   $scope.rights.remove = ss.hasProjectRight(ss.domain.USERS, ss.operation.DELETE); 
+   $scope.rights.create = ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE); 
+   $scope.rights.edit = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
+   
+   $scope.items = editorDataService.entries;
+   $scope.workingSets = editorDataService.workingSets;
+   $scope.itemsTree = editorDataService.itemsTree;
+   
+   if ($scope.items.length == 0 && !$scope.loadingDto) {
+     editorDataService.loadEditorData().then(function(result) {
+       editorDataService.processEditorDto(result);
+     });
    }
-  
+   
+   
+   $scope.includedItems = {};
+   $scope.loadingDto = false;  
    
     $scope.rights = {};
     $scope.project = ss.session.project;

@@ -4,23 +4,7 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
 
   .controller('MembersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', '$window',
     function($scope, userService, projectService, ss, notice, $window) {
-      $scope.list = {
-        visibleUsers: [],
-        users: []
-      };
-      $scope.roles = {};
-      $scope.userFilter = '';
-
-      $scope.queryUserList = function queryUserList() {
-        projectService.listUsers(function(result) {
-          if (result.ok) {
-            $scope.list.users = result.data.users;
-            $scope.list.userCount = result.data.userCount;
-            $scope.project = result.data.project;
-            $scope.roles = $scope.project.roles;
-          }
-        });
-      };
+      $scope.userFilter = '';      
 
       $scope.rights = {};
       $scope.rights.remove = ss.hasProjectRight(ss.domain.USERS, ss.operation.DELETE);

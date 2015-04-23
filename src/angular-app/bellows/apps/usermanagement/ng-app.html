@@ -7,6 +7,29 @@
     </div>
     <div style="padding-top:10px" ng-controller="MainCtrl">
     <sil-notices></sil-notices>
-    <div ng-view></div>
+    
+    <div style="margin-top:30px">
+    
+        <a class="btn" ng-href="{{project.appLink}}" data-tooltip="Back to the project"
+                data-tooltip-placement="{{interfaceConfig.placementNormal}}">
+            <i class="icon-reply"></i>Back
+        </a>
+    </div>
+    <h2 style="font-weight:normal">{{project.name}} User Management</h2>
+    
+    <!-- this is a hack - for some reason active can only bind to a variable,
+     so we create this variable using ng-init -->
+    <span ng-init="isMembers = isActive('/members')"></span>
+    <span ng-init="isJoinRequests = isActive('/joinRequests')"></span>
+    
+    <tabset>
+        <tab  active="isMembers" heading="Members" ui-sref="members">
+             <div ng-if="isActive('/members')" ui-view></div>
+        </tab>
+        <tab  active="isJoinRequests" heading="Join Requests" ui-sref="joinRequests">     
+            <div ng-if="(isActive('/joinRequests'))" ui-view></div>
+        </tab>  
+    </tabset>
+    
     </div>
 </div>

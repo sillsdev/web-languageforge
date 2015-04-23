@@ -16,20 +16,21 @@ require_once TestPath . 'common/MongoTestEnvironment.php';
 class SemdomTransItemCommands_Test extends UnitTestCase
 {
     public function __construct() {
-        parent::__construct();
+        $e = new SemDomMongoTestEnvironment();
+        $e->clean();
     }
 
     public function testSemdomItemCommand_UpdateSemDomItem_AddItemUpdateItem()
     {
         $e = new SemDomMongoTestEnvironment();
-        $e->clean();
+        $e->cleanPreviousProject('en2');
 
-        $sourceProject = $e->importEnglishProject();
-        
-        $targetProject = $e->createSemDomProject("en2");
-        $targetProject->sourceLanguageProjectId = $sourceProject->id->asString();
+        $e->getEnglishProjectAndCreateIfNecessary();
+        $user1Id = $e->createUser('u', 'u', 'u');
+        $targetProject = $e->createSemDomProject('en2', $user1Id);
+
         // insert dummy models
-        $targetItemModel = new SemDomTransItemModel($sourceProject);
+        $targetItemModel = new SemDomTransItemModel($targetProject);
 
         $targetItemModel->xmlGuid = "asdf123";
         $targetItemModel->key = "1";
