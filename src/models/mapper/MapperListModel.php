@@ -88,6 +88,10 @@ class MapperListModel
         return $this->_mapper->readCounts($this, $this->_query, $this->_fields, $this->_sortFields, $this->_limit, $this->_skip);
     }
 
+    public function deleteAll() {
+       return $this->_mapper->dropCollection();
+    }
+
     // TODO Would be nice to deprecate this or at least have it protected not public. Derived models can run their own specific query. CP 2013-11
     public function readByQuery($query, $fields = array(), $sortFields = array(), $limit = 0)
     {

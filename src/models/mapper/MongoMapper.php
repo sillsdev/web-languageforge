@@ -308,6 +308,10 @@ class MongoMapper
         return $result['n'];
     }
 
+    public function dropCollection() {
+        $this->_collection->drop();
+    }
+
     public function removeSubDocument($rootId, $property, $id)
     {
         CodeGuard::checkTypeAndThrow($rootId, 'string');

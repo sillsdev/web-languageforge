@@ -1,5 +1,6 @@
 <?php
 
+use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
 use models\languageforge\semdomtrans\SemDomTransItemModel;
 use models\languageforge\SemDomTransProjectModel;
 use models\mapper\JsonEncoder;
@@ -16,18 +17,17 @@ require_once TestPath . 'common/MongoTestEnvironment.php';
 class SemdomTransItemCommands_Test extends UnitTestCase
 {
     public function __construct() {
-        $e = new SemDomMongoTestEnvironment();
-        $e->clean();
     }
 
     public function testSemdomItemCommand_UpdateSemDomItem_AddItemUpdateItem()
     {
         $e = new SemDomMongoTestEnvironment();
-        $e->cleanPreviousProject('en2');
+        $lang = 'en2';
+        $e->cleanPreviousProject($lang);
 
         $e->getEnglishProjectAndCreateIfNecessary();
         $user1Id = $e->createUser('u', 'u', 'u');
-        $targetProject = $e->createSemDomProject('en2', $user1Id);
+        $targetProject = $e->createSemDomProject($lang, $user1Id);
 
         // insert dummy models
         $targetItemModel = new SemDomTransItemModel($targetProject);
@@ -37,9 +37,6 @@ class SemdomTransItemCommands_Test extends UnitTestCase
         $targetItemModel->name = new SemDomTransTranslatedForm("universe");
         $targetItemModel->description = new SemDomTransTranslatedForm("Universe description");
         $sq = new SemDomTransQuestion("A universe question", "A universe question term");
-        $targetItemModel->questions = new ArrayOf(function ($data) {
-            return new SemDomTransQuestion();
-        });
         $targetItemModel->questions[] = $sq;
         
         $data = JsonEncoder::encode($targetItemModel);
