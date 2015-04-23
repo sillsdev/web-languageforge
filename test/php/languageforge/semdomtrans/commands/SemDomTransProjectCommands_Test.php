@@ -15,7 +15,7 @@ class SemDomTransProjectCommands_Test extends UnitTestCase {
     public function testSemDomImportExport_ImportExportPreserveXMLFile() {
         $e = new SemDomMongoTestEnvironment();
         $e->clean();
-        $englishProject = $e->importEnglishProject();
+        $englishProject = $e->getEnglishProjectAndCreateIfNecessary();
         $exporter = new SemDomXMLExporter($englishProject, false,  true, false);
         $exporter->run();
         $sourcePath = $englishProject->xmlFilePath;
@@ -27,7 +27,7 @@ class SemDomTransProjectCommands_Test extends UnitTestCase {
         $destArr = explode("\n", $destStr);
         for ($i = 0; $i < count($destArr); $i++) {
             if ($i % 5000 == 0) {
-                $this->assertEqual($sourceArr[$i], $destArr[$i]);
+                $this->assertEqual(substr($sourceArr[$i], 0, -1), $destArr[$i]);
             }
         }
 

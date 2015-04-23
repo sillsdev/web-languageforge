@@ -1,58 +1,58 @@
 <div style="width:100%">
-        <table style="width:100%">
-            <tr>
-                <th style="width:30%"> </th>
-                <th style="width:35%"> Source </th>
-                <th style="width:35%"> Translation </th>
-            </tr>
-            <tr ng-click="isInCommentMode() ? control.setSelectedField('name', model.name) : '' ">
-                <td > Name: </td>
-                <td> {{model.name.source}}</td>
-                <td> 
-                    <input 
-                           ng-disabled="isInCommentMode()"
-                           ng-model="model.name.translation"
-                           ng-keypress="control.updateItem($event.which)"
-                           ng-blur="control.updateItem()">
-                </td>
-            </tr>
-             <tr>
-             <tr ng-click="isInCommentMode() ? control.setSelectedField('description', model.description) : '' ">
-                <td> Description: </td>
-                <td> {{model.description.source}}</td>
-                <td> 
-                    <textarea rows="4"
-                        ng-disabled="isInCommentMode()"
-                        ng-model="model.description.translation"
-                         ng-keypress="control.updateItem($event.which)"
-                         ng-blur="control.updateItem()" 
-                         >
-                     </textarea>
-                 </td>    
-            </tr>
-                          
-        </table>
-        <br />
-        <br />
-        <table style="width:100%">
-            <caption><h4> Search Keys </h4></caption>
-            <tr>
-                <th style="width:50%"> Source </th>
-                <th style="width:50%"> Translation </th>
-            <tr ng-repeat="searchKey in model.searchKeys" 
-                ng-click="isInCommentMode() ? control.setSelectedField('search key ' + $index, searchKey) : '' ">
-                <td>{{searchKey.source}}</td>
-                <td>
-                    <textarea 
-                        ng-disabled="isInCommentMode()"
-                        rows="4" 
-                        ng-model="searchKey.translation"
-                        ng-keypress="control.updateItem($event.which)"
-                        ng-blur="control.updateItem()"
-                        > 
-                    </textarea>
-                </td>
-            </tr>
-            
-        </table>        
-</div>    
+    	<table style="width:100%">
+    		<tr>
+    			<th style="width:30%"> </th>
+    			<th style="width:35%"> Source </th>
+    			<th style="width:35%"> Translation </th>
+    		</tr>
+		    <tr ng-click="isInCommentMode() ? control.setSelectedField('name', model.name) : '' ">
+			    <td > Name: </td>
+			    <td> {{model.name.source}}</td>
+			    <td> 
+			    	<input 
+			    		   ng-disabled="isInCommentMode() || model.name.status == 4"
+			    		   ng-model="model.name.translation"
+						   ng-keypress="control.updateItem($event.which)"
+						   ng-blur="control.updateItem()">
+			    </td>
+		    </tr>
+		     <tr>
+		     <tr ng-click="isInCommentMode() ? control.setSelectedField('description', model.description) : '' ">
+			    <td> Description: </td>
+			    <td> {{model.description.source}}</td>
+		        <td> 
+		        	<textarea rows="4"
+		        		ng-disabled="isInCommentMode() || model.description.status == 4"
+		        		ng-model="model.description.translation"
+		         		ng-keypress="control.updateItem($event.which)"
+		         		ng-blur="control.updateItem()" 
+		         		>
+		         	</textarea>
+	         	</td>    
+		    </tr>
+		   			   
+		</table>
+		<br />
+		<br />
+		<table style="width:100%">
+	    	<caption><h4> Search Keys </h4></caption>
+	    	<tr>
+	    		<th style="width:50%"> Source </th>
+	    		<th style="width:50%"> Translation </th>
+	    	<tr ng-repeat="searchKey in model.searchKeys" 
+	    		ng-click="isInCommentMode() ? control.setSelectedField('search key ' + $index, searchKey) : '' ">
+	    		<td>{{searchKey.source}}</td>
+	    		<td>
+	    			<textarea 
+	    				ng-disabled="isInCommentMode() || searchKey.status == 4"
+	    				rows="4" 
+	    				ng-model="searchKey.translation"
+	    				ng-keypress="control.updateItem($event.which)"
+	    				ng-blur="control.updateItem()"
+	    				> 
+	    			</textarea>
+    			</td>
+	    	</tr>
+	    	
+	    </table>	    
+</div>	
