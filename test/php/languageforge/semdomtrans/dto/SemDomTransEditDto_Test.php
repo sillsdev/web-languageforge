@@ -30,7 +30,6 @@ class TestSemDomTransEditDto extends UnitTestCase
         $e->cleanPreviousProject('es');
         $user1Id = $e->createUser('u', 'u', 'u');
         $targetProject = $e->createSemDomProject('es', $user1Id);
-        $targetProject->preFillFromSourceLanguage();
         $result = SemDomTransEditDto::encode($targetProject->id->asString(), null);
         $this->assertNotEqual($result["entries"], null);
         $this->assertEqual($result["entries"][0]["name"]["source"], "Universe, creation");
@@ -49,6 +48,7 @@ class TestSemDomTransEditDto extends UnitTestCase
         $targetProject = $e->createSemDomProject('es', $user1Id);
 
 
+        /*
         // insert dummy models
         $sourceItemModel = new SemDomTransItemModel($sourceProject);
         $sourceItemModel->key = "1";
@@ -60,6 +60,7 @@ class TestSemDomTransEditDto extends UnitTestCase
         });
         $sourceItemModel->questions[] = $sq;
         $sourceItemModel->write();
+        */
 
         $targetItemModel = new SemDomTransItemModel($targetProject);
         $targetItemModel->key = "1";
@@ -91,12 +92,11 @@ class TestSemDomTransEditDto extends UnitTestCase
 
 
         $this->assertNotEqual($firstObject["name"], null);
-        $this->assertEqual($firstObject["name"]["source"], "universe");
+        $this->assertEqual($firstObject["name"]["source"], "Universe, creation");
         $this->assertEqual($firstObject["name"]["translation"], "wszechswiat");
         $this->assertEqual($firstObject["name"]["status"], SemDomTransStatus::Draft);
 
         $this->assertNotEqual($firstObject["description"], null);
-        $this->assertEqual($firstObject["description"]["source"], "Universe description");
         $this->assertEqual($firstObject["description"]["translation"], "Opis wszechswiata");
         $this->assertEqual($firstObject["description"]["status"], SemDomTransStatus::Draft);
 
@@ -105,9 +105,9 @@ class TestSemDomTransEditDto extends UnitTestCase
         $this->assertNotEqual($firstObject["questions"][0], null);
         $this->assertNotEqual($firstObject["questions"][0]["question"], null);
         $this->assertNotEqual($firstObject["questions"][0]["terms"], null);
-        $this->assertEqual($firstObject["questions"][0]["question"]["source"], "A universe question");
+        $this->assertEqual($firstObject["questions"][0]["question"]["source"], "(1) What words refer to everything we can see?");
         $this->assertEqual($firstObject["questions"][0]["question"]["translation"], "Pytanie wszechswiata");
-        $this->assertEqual($firstObject["questions"][0]["terms"]["source"], "A universe question term");
+        $this->assertEqual($firstObject["questions"][0]["terms"]["source"], "universe, creation, cosmos, heaven and earth, macrocosm, everything that exists");
         $this->assertEqual($firstObject["questions"][0]["terms"]["translation"], "Termin zwiazany z wszechswiatem");
 
         // this test messes with the English source project

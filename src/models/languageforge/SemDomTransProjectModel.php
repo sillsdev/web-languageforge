@@ -20,17 +20,12 @@ class SemDomTransProjectModel extends LfProjectModel {
     {
         $this->rolesClass = 'models\languageforge\semdomtrans\SemDomTransRoles';
         $this->appName = LfProjectModel::SEMDOMTRANS_APP;
+        $this->semdomVersion = self::SEMDOM_VERSION;
         $this->sourceLanguageProjectId = new IdReference();
         // This must be last, the constructor reads data in from the database which must overwrite the defaults above.
         parent::__construct($id);
     }
-    
-    
-    /**
-     * 
-     */
-    const SEMDOMVERSION = 4;
-    
+
     /**
      * 
      * @var boolean
@@ -67,26 +62,6 @@ class SemDomTransProjectModel extends LfProjectModel {
      */
     public $xmlFilePath;
     
-    public static function createProject($languageCode, $userId, $website) {
-        $englishProject = self::getEnglishProject();
-
-        $version = SemDomTransProjectModel::SEMDOMVERSION;
-        $projectCode = self::projectCode($languageCode, self::SEMDOM_VERSION);
-        $projectName = "Semdom $languageCode Project";
-        $projectID =  ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $userId, $website);
-        
-        $project = new SemDomTransProjectModel($projectID);
-        $project->projectCode = $projectCode;
-        $project->projectName = $projectName;
-        $project->languageIsoCode = $languageCode;
-        $project->semdomVersion = $version;
-        $project->isSourceLanguage = false;
-        $project->sourceLanguageProjectId->id = $englishProject->id->asString();
-        $project->write();
-        
-        return $project;
-    }
-
     private function _copyXmlToAssets($xmlFilePath) {
         $newXmlFilePath = $this->getAssetsFolderPath() . '/' . basename($xmlFilePath);
         if (!file_exists($this->getAssetsFolderPath())) {
@@ -99,6 +74,9 @@ class SemDomTransProjectModel extends LfProjectModel {
     }
 
     public function importFromFile($xmlFilePath, $isEnglish = false) {
+        $existingItems = new SemDomTransItemListModel($this);
+        $existingItems->deleteAll();
+
         $this->_copyXmlToAssets($xmlFilePath);
 
         $importer = new SemDomXMLImporter($this->xmlFilePath, $this, false, $isEnglish);
@@ -106,6 +84,7 @@ class SemDomTransProjectModel extends LfProjectModel {
     }
 
     public function preFillFromSourceLanguage() {
+        // cjh review: we may actually want to only prefill from English, if in the future we allow creating projects from incomplete source projects
         $sourceProject = new SemDomTransProjectModel($this->sourceLanguageProjectId->asString());
 
         $this->_copyXmlToAssets($sourceProject->xmlFilePath);
@@ -115,30 +94,28 @@ class SemDomTransProjectModel extends LfProjectModel {
         foreach ($sourceItems->entries as $item) {
             $newItem = new SemDomTransItemModel($this);
             $newItem->key = $item['key'];
-            foreach ($item['questions'] as $q) {
-                $newq = new SemDomTransQuestion("aa", "aa");
-                $newItem->questions[] = $newq;
+            for($x=0; $x<count($item['questions']); $x++) {
+                $newItem->questions[] = new SemDomTransQuestion();
             }
-            foreach ($item['searchKeys'] as $sk) {
-                $newsk = new SemDomTransTranslatedForm();
-                $newItem->searchKeys[] = $newsk;
+            for($x=0; $x<count($item['searchKeys']); $x++) {
+                $newItem->questions[] = new SemDomTransTranslatedForm();
             }
             $newItem->xmlGuid = $item['xmlGuid'];
             $newItem->write();
         }
     }
 
-    public static function projectCode($languageCode) {
-        return "semdom-$languageCode-" . self::SEMDOM_VERSION;
+    public static function projectCode($languageCode, $semdomVersion = self::SEMDOM_VERSION) {
+        return "semdom-$languageCode-$semdomVersion";
     }
 
-    public function readByCode($languageCode) {
-        $this->readByProperties(array("projectCode" => self::projectCode($languageCode, self::SEMDOM_VERSION)));
+    public function readByCode($languageCode, $semdomVersion = self::SEMDOM_VERSION) {
+        $this->readByProperties(array("projectCode" => self::projectCode($languageCode, $semdomVersion)));
     }
 
-    public static function getEnglishProject() {
+    public static function getEnglishProject($semdomVersion = self::SEMDOM_VERSION) {
         $englishProject = new SemDomTransProjectModel();
-        $englishProject->readByCode('en');
+        $englishProject->readByCode('en', $semdomVersion);
         if ($englishProject->id->asString() != '') {
             return $englishProject;
         } else {
