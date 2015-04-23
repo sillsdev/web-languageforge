@@ -20,17 +20,12 @@ class SemDomTransProjectModel extends LfProjectModel {
     {
         $this->rolesClass = 'models\languageforge\semdomtrans\SemDomTransRoles';
         $this->appName = LfProjectModel::SEMDOMTRANS_APP;
+        $this->semdomVersion = self::SEMDOM_VERSION;
         $this->sourceLanguageProjectId = new IdReference();
         // This must be last, the constructor reads data in from the database which must overwrite the defaults above.
         parent::__construct($id);
     }
-    
-    
-    /**
-     * 
-     */
-    const SEMDOMVERSION = 4;
-    
+
     /**
      * 
      * @var boolean
@@ -67,26 +62,6 @@ class SemDomTransProjectModel extends LfProjectModel {
      */
     public $xmlFilePath;
     
-    public static function createProject($languageCode, $userId, $website) {
-        $englishProject = self::getEnglishProject();
-
-        $version = SemDomTransProjectModel::SEMDOMVERSION;
-        $projectCode = self::projectCode($languageCode, self::SEMDOM_VERSION);
-        $projectName = "Semdom $languageCode Project";
-        $projectID =  ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $userId, $website);
-        
-        $project = new SemDomTransProjectModel($projectID);
-        $project->projectCode = $projectCode;
-        $project->projectName = $projectName;
-        $project->languageIsoCode = $languageCode;
-        $project->semdomVersion = $version;
-        $project->isSourceLanguage = false;
-        $project->sourceLanguageProjectId->id = $englishProject->id->asString();
-        $project->write();
-        
-        return $project;
-    }
-
     private function _copyXmlToAssets($xmlFilePath) {
         $newXmlFilePath = $this->getAssetsFolderPath() . '/' . basename($xmlFilePath);
         if (!file_exists($this->getAssetsFolderPath())) {
@@ -128,17 +103,17 @@ class SemDomTransProjectModel extends LfProjectModel {
         }
     }
 
-    public static function projectCode($languageCode) {
-        return "semdom-$languageCode-" . self::SEMDOM_VERSION;
+    public static function projectCode($languageCode, $semdomVersion = self::SEMDOM_VERSION) {
+        return "semdom-$languageCode-$semdomVersion";
     }
 
-    public function readByCode($languageCode) {
-        $this->readByProperties(array("projectCode" => self::projectCode($languageCode, self::SEMDOM_VERSION)));
+    public function readByCode($languageCode, $semdomVersion = self::SEMDOM_VERSION) {
+        $this->readByProperties(array("projectCode" => self::projectCode($languageCode, $semdomVersion)));
     }
 
-    public static function getEnglishProject() {
+    public static function getEnglishProject($semdomVersion = self::SEMDOM_VERSION) {
         $englishProject = new SemDomTransProjectModel();
-        $englishProject->readByCode('en');
+        $englishProject->readByCode('en', $semdomVersion);
         if ($englishProject->id->asString() != '') {
             return $englishProject;
         } else {
