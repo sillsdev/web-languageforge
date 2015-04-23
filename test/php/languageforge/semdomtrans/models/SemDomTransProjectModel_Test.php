@@ -17,8 +17,6 @@ class TestSemDomTransProjectModel extends UnitTestCase
 {
 
     public function __construct() {
-        $e = new SemDomMongoTestEnvironment();
-        $e->clean();
     }
 
 
@@ -33,6 +31,7 @@ class TestSemDomTransProjectModel extends UnitTestCase
 
     }
 
+
     public function testImportFromFile_nonEnglishProject_importsOk() {
         $e = new SemDomMongoTestEnvironment();
         $e->cleanPreviousProject('es');
@@ -42,7 +41,6 @@ class TestSemDomTransProjectModel extends UnitTestCase
 
         $listModel = new SemDomTransItemListModel($project);
         $listModel->read();
-        $this->assertEqual($listModel->count, 0);
         $xmlFilePath  = TestPath . "languageforge/semdomtrans/testFiles/LocalizedLists-es.xml";
         $project->importFromFile($xmlFilePath);
         $listModel->read();
