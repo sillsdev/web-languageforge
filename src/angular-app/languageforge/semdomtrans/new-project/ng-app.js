@@ -8,9 +8,10 @@ angular.module('semdomtrans-new-project',
     'ui.bootstrap',
     'ngAnimate',
     'semdomtrans.services',
+    'palaso.ui.language',
     'pascalprecht.translate' 
   ])
-  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
+  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', 
   function($stateProvider, $urlRouterProvider, $translateProvider) {
     
     $urlRouterProvider
@@ -29,8 +30,8 @@ angular.module('semdomtrans-new-project',
       })
 
   }])
-.controller('projectSetupCtrl', ['$scope', '$state', '$location', '$window', 'semdomtransSetupService', 'projectService',  'sessionService', 'modalService', 'silNoticeService',
-function($scope, $state, $location, $window, semdomSetupApi, projectService, sessionService, modal, notice) {
+.controller('projectSetupCtrl', ['$scope', '$state', '$location', '$window', 'semdomtransSetupService', 'projectService',  'sessionService', '$modal', 'silNoticeService',
+function($scope, $state, $location, $window, semdomSetupApi, projectService, sessionService, $modal, notice) {
   $scope.languageCode = "";
   $scope.canCreate = true;
   var checksBeingMade = 0;
@@ -39,6 +40,25 @@ function($scope, $state, $location, $window, semdomSetupApi, projectService, ses
       $scope.openProjects = result.data;
     }
   });
+  
+  $scope.openNewLanguageModal = function openNewLanguageModal() {
+    var modalInstance = $modal.open({
+      templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
+      controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        $scope.selected = {
+          code: '',
+          language: {}
+        };
+        $scope.add = function() {
+          $modalInstance.close($scope.selected);
+        };
+      }]
+    });
+    modalInstance.result.then(function(selected) {
+      $scope.languageCode = selected.code;
+      $scope.language = selected.language;
+    });
+  };
   
   $scope.checkLanguageAvailability = function checkLanguageAvailability() {
     $scope.canCreate = false;
