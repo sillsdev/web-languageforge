@@ -74,6 +74,9 @@ class SemDomTransProjectModel extends LfProjectModel {
     }
 
     public function importFromFile($xmlFilePath, $isEnglish = false) {
+        $existingItems = new SemDomTransItemListModel($this);
+        $existingItems->deleteAll();
+
         $this->_copyXmlToAssets($xmlFilePath);
 
         $importer = new SemDomXMLImporter($this->xmlFilePath, $this, false, $isEnglish);
@@ -81,6 +84,7 @@ class SemDomTransProjectModel extends LfProjectModel {
     }
 
     public function preFillFromSourceLanguage() {
+        // cjh review: we may actually want to only prefill from English, if in the future we allow creating projects from incomplete source projects
         $sourceProject = new SemDomTransProjectModel($this->sourceLanguageProjectId->asString());
 
         $this->_copyXmlToAssets($sourceProject->xmlFilePath);
@@ -90,13 +94,11 @@ class SemDomTransProjectModel extends LfProjectModel {
         foreach ($sourceItems->entries as $item) {
             $newItem = new SemDomTransItemModel($this);
             $newItem->key = $item['key'];
-            foreach ($item['questions'] as $q) {
-                $newq = new SemDomTransQuestion("aa", "aa");
-                $newItem->questions[] = $newq;
+            for($x=0; $x<count($item['questions']); $x++) {
+                $newItem->questions[] = new SemDomTransQuestion();
             }
-            foreach ($item['searchKeys'] as $sk) {
-                $newsk = new SemDomTransTranslatedForm();
-                $newItem->searchKeys[] = $newsk;
+            for($x=0; $x<count($item['searchKeys']); $x++) {
+                $newItem->questions[] = new SemDomTransTranslatedForm();
             }
             $newItem->xmlGuid = $item['xmlGuid'];
             $newItem->write();
