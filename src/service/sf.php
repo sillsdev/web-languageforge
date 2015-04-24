@@ -774,6 +774,10 @@ class sf
         return SfchecksReports::TopContributorsWithTextReport($this->_projectId);
     }
 
+    public function project_management_report_sfchecks_responsesOverTimeReport() {
+        return SfchecksReports::ResponsesOverTimeReport($this->_projectId);
+    }
+
     // ---------------------------------------------------------------
     // Private Utility Functions
     // ---------------------------------------------------------------

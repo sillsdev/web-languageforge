@@ -225,6 +225,88 @@ class SfchecksReports {
 
 
 
+    private static function _addResponseOnEpoch(&$responses, $epochTime) {
+        $dateObj = new \DateTime("@$epochTime");
+        $dateString = $dateObj->format('M d, Y');
+        if (array_key_exists($dateString, $responses)) {
+            $responses[$dateString]++;
+        } else {
+            $responses[$dateString] = 1;
+        }
+    }
+
+
+    public static function ResponsesOverTimeReport($projectId) {
+        $project = ProjectModel::getById($projectId);
+        $output = str_pad('**** Responses Over Time Report ****', 120, " ", STR_PAD_BOTH) . "\n";
+        $output .= str_pad(date(DATE_RFC2822), 120, " ", STR_PAD_BOTH) . "\n\n";
+        $data = array();
+        $startDate = $project->dateCreated;
+        $endDate = new \DateTime();
+        $iv = $endDate->diff($startDate);
+
+        $responses = array();
+
+
+        for($x=0; $x<$iv->days; $x++) {
+            $startDate->add(new \DateInterval('P1D'));
+            $dateString = $startDate->format('M d, Y');
+            $responses[$dateString] = 0;
+        }
+
+        $textListModel = new TextListModel($project);
+        $textListModel->read();
+        $answerCtr = 0;
+        $commentCtr = 0;
+        $responseCtr = 0;
+        $questionCtr = 0;
+        foreach ($textListModel->entries as $text) {
+            $questionListModel = new QuestionAnswersListModel($project, $text['id']);
+            $questionListModel->read();
+            $questionCtr += $questionListModel->count;
+            foreach ($questionListModel->entries as $question) {
+                foreach ($question['answers'] as $answer) {
+                    if ($answer['content']) {
+                        $answerCtr++;
+                        $responseCtr++;
+                        self::_addResponseOnEpoch($responses, $answer['dateCreated']->sec);
+                    }
+                    foreach ($answer['comments'] as $comment) {
+                        if ($comment['content']) {
+                            $commentCtr++;
+                            $responseCtr++;
+                            self::_addResponseOnEpoch($responses, $answer['dateCreated']->sec);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        $output .= "The " . $project->projectName . " project was created " . $iv->days . " days ago\n\n";
+        $output .= "Texts (T's) in Project: " . $textListModel->count . "\n";
+        $output .= "Questions (Q's) in Project: " . $questionCtr . "\n";
+        $output .= "Responses (R's) in Project (Answers + Comments): " . ($answerCtr + $commentCtr) . "\n";
+        $output .= "Answers (A's) in Project: " . $answerCtr . "\n";
+        $output .= "Comments (C's) in Project: " . $commentCtr . "\n";
+
+
+        $output .= "\n\n" . str_pad('Date', 20) . str_pad("Responses", 10) . "\n";
+        foreach($responses as $date => $count) {
+            $output .= str_pad($date, 20) . $count . "\n";
+        }
+
+        $data['output'] = $output;
+        $data['result'] = array('responses' => $responses);
+        return $data;
+
+
+
+    }
+
+
+
+
 
 
     public static function UserEngagementReport($projectId) {
