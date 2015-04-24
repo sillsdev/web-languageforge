@@ -768,7 +768,10 @@ class sf
 
     public function project_management_report_sfchecks_userEngagementReport() {
         return SfchecksReports::UserEngagementReport($this->_projectId);
+    }
 
+    public function project_management_report_sfchecks_topContributorsWithTextReport() {
+        return SfchecksReports::TopContributorsWithTextReport($this->_projectId);
     }
 
     // ---------------------------------------------------------------
