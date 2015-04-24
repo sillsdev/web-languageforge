@@ -330,6 +330,8 @@ class RightsHelper
             // project management app
             case 'project_management_dto':
             case 'project_management_report_sfchecks_userEngagementReport':
+            case 'project_management_report_sfchecks_topContributorsWithTextReport':
+            case 'project_management_report_sfchecks_responsesOverTimeReport':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
 
