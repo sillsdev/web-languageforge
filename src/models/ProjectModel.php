@@ -20,6 +20,7 @@ use models\mapper\Id;
 use models\sms\SmsSettings;
 use models\mapper\IdReference;
 use models\commands\UserCommands;
+use Palaso\Utilities\FileUtilities;
 
 class ProjectModel extends \models\mapper\MapperModel
 {
@@ -298,7 +299,9 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public function getAssetsFolderPath()
     {
-        return APPPATH . $this->getAssetsRelativePath();
+        $folderPath = APPPATH . $this->getAssetsRelativePath();
+        FileUtilities::createAllFolders($folderPath);
+        return $folderPath;
     }
 
     /**
