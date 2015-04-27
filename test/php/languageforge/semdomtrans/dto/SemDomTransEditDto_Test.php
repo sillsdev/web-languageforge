@@ -8,6 +8,7 @@ use models\languageforge\semdomtrans\SemDomTransItemListModel;
 use models\languageforge\semdomtrans\SemDomTransQuestion;
 use models\mapper\ArrayOf;
 use models\languageforge\semdomtrans\SemDomTransStatus;
+use models\languageforge\semdomtrans\commands\SemDomTransItemCommands;
 
 require_once dirname(__FILE__) . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -61,8 +62,12 @@ class TestSemDomTransEditDto extends UnitTestCase
         $sourceItemModel->questions[] = $sq;
         $sourceItemModel->write();
         */
-
+        $targetItemsModel = new SemDomTransItemListModel($targetProject);
+        $targetItemsModel->read();
+        $targetItems = $targetItemsModel->entries;
+        
         $targetItemModel = new SemDomTransItemModel($targetProject);
+        $targetItemModel->readByProperty('xmlGuid', $targetItems[0]['xmlGuid']);
         $targetItemModel->key = "1";
         $targetItemModel->name = new SemDomTransTranslatedForm("wszechswiat");
         $targetItemModel->description = new SemDomTransTranslatedForm("Opis wszechswiata");
@@ -72,11 +77,12 @@ class TestSemDomTransEditDto extends UnitTestCase
         });
         $targetItemModel->questions[] = $tq;
         $targetItemModel->write();
-
+        
         // call dto
-        $prId = $targetProject->id;
         //$loadTargetProject = new SemDomTransProjectModel($prId->asString());
         //$loadSourceProject = new SemDomTransProjectModel($loadTargetProject->sourceLanguageProjectId);
+
+        $prId = $targetProject->id;
         $result = SemDomTransEditDto::encode($prId->asString(), null);
 
         // print_r($result);
