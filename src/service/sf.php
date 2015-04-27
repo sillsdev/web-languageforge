@@ -393,7 +393,7 @@ class sf
     
     public function project_acceptJoinRequest($userId, $role) 
     {
-         $id = ProjectCommands::updateUserRole($this->_projectId, $userId, $role);
+         UserCommands::acceptJoinRequest($this->_projectId, $userId, $this->_website, $role);
          ProjectCommands::removeJoinRequest($this->_projectId, $userId);
     }
     
