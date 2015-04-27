@@ -122,20 +122,26 @@ class RightsHelper
             case 'semdom_editor_dto':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
             case 'semdom_get_open_projects':
-                return $this->userHasSiteRight(DOMAIN::PROJECTS + Operation::VIEW);
+                return true;
             case 'semdom_item_update':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
             case 'semdom_comment_update':
                 return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT);
             case 'semdom_project_exists':
-                return $this->userHasSiteRight(DOMAIN::PROJECTS + Operation::VIEW);
+                return true;
             case 'semdom_create_project':
-                return $this->userHasSiteRight(DOMAIN::PROJECTS + Operation::CREATE);
+                return true;
             case 'semdom_workingset_update':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
             case 'project_getJoinRequests':
                 return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
-
+            case 'project_sendJoinRequest':
+                return true;
+            case 'project_acceptJoinRequest':
+                returN $this->userHasProjectRight(Domain::USERS + OPERATION::EDIT);
+            case 'project_denyJoinRequest':
+                return $this->userHasProjectRight(Domain::USERS + OPERATION::EDIT);
+                
             case 'user_sendInvite':
             case 'message_markRead':
             case 'project_pageDto':
