@@ -235,9 +235,11 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertEqual($entryBSenseA['customFields']['customField_senses_Cust_Multi_ListRef']['values'][1], 'Second Custom Item');
         $this->assertEqual($entryBSenseA['examples'][0]['customFields']['customField_examples_Cust_Example']['qaa-x-kal']['value'], 'Custom example');
 
+        /*
         echo '<pre style="height:500px; overflow:auto">';
         echo $response->data->importErrors;
         echo '</pre>';
+        */
     }
 
     public function testImportProjectZip_JpgFile_UploadDisallowed()
