@@ -98,7 +98,7 @@ class SemDomTransProjectModel extends LfProjectModel {
                 $newItem->questions[] = new SemDomTransQuestion();
             }
             for($x=0; $x<count($item['searchKeys']); $x++) {
-                $newItem->questions[] = new SemDomTransTranslatedForm();
+                $newItem->searchKeys[] = new SemDomTransTranslatedForm();
             }
             $newItem->xmlGuid = $item['xmlGuid'];
             $newItem->write();
