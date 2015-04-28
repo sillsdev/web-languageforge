@@ -68,16 +68,18 @@ class TestTextModel extends UnitTestCase
         $databaseName = $project->databaseName();
 
         $project->remove();
-        $this->assertFalse(MongoStore::hasDB($databaseName));
+        $db = MongoStore::connect($databaseName);
+        $this->assertEqual(count($db->listCollections()), 0);
 
         $text = new TextModel($project);
         $text->title = 'Some Title';
         $text->write();
 
         $this->assertTrue(MongoStore::hasDB($databaseName));
+        $this->assertEqual(count($db->listCollections()), 1);
 
         $project->remove();
 
-        $this->assertFalse(MongoStore::hasDB($databaseName));
+        $this->assertEqual(count($db->listCollections()), 0);
     }
 }
