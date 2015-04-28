@@ -96,7 +96,20 @@ class MapperModel
      */
     public function read($id)
     {
-        return $this->_mapper->read($this, $id);
+        if ($this->_mapper->exists($id)) {
+            return $this->_mapper->read($this, $id);
+        } else {
+            throw new \Exception(get_called_class() . "($id) doesn't exist");
+        }
+    }
+
+    public function readIfExists($id) {
+        if ($this->_mapper->exists($id)) {
+            $this->_mapper->read($this, $id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

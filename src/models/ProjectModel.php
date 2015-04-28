@@ -6,6 +6,7 @@ use models\mapper\ArrayOf;
 
 use libraries\shared\Website;
 use models\languageforge\SemDomTransProjectModel;
+use models\mapper\MapperUtils;
 use models\scriptureforge\RapumaProjectModel;
 
 use models\languageforge\lexicon\LexiconProjectModel;
@@ -101,7 +102,7 @@ class ProjectModel extends \models\mapper\MapperModel
         }
         $this->rrmdir($this->getAssetsFolderPath());
 
-        ProjectModelMongoMapper::instance()->drop($this->databaseName());
+        MapperUtils::dropAllCollections($this->databaseName());
         ProjectModelMongoMapper::instance()->remove($this->id->asString());
     }
 
