@@ -8,9 +8,10 @@ angular.module('semdomtrans-new-project',
     'ui.bootstrap',
     'ngAnimate',
     'semdomtrans.services',
+    'palaso.ui.language',
     'pascalprecht.translate' 
   ])
-  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
+  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', 
   function($stateProvider, $urlRouterProvider, $translateProvider) {
     
     $urlRouterProvider
@@ -29,8 +30,8 @@ angular.module('semdomtrans-new-project',
       })
 
   }])
-.controller('projectSetupCtrl', ['$scope', '$state', '$location', '$window', 'semdomtransSetupService',  'sessionService', 'modalService', 'silNoticeService',
-function($scope, $state, $location, $window, semdomSetupApi, sessionService, modal, notice) {
+.controller('projectSetupCtrl', ['$scope', '$state', '$location', '$window', 'semdomtransSetupService', 'projectService',  'sessionService', '$modal', 'modalService', 'silNoticeService',
+function($scope, $state, $location, $window, semdomSetupApi, projectService, sessionService, $modal, modalService, notice) {
   $scope.languageCode = "";
   $scope.canCreate = true;
   var checksBeingMade = 0;
@@ -39,6 +40,25 @@ function($scope, $state, $location, $window, semdomSetupApi, sessionService, mod
       $scope.openProjects = result.data;
     }
   });
+  
+  $scope.openNewLanguageModal = function openNewLanguageModal() {
+    var modalInstance = $modal.open({
+      templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
+      controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        $scope.selected = {
+          code: '',
+          language: {}
+        };
+        $scope.add = function() {
+          $modalInstance.close($scope.selected);
+        };
+      }]
+    });
+    modalInstance.result.then(function(selected) {
+      $scope.languageCode = selected.code;
+      $scope.language = selected.language;
+    });
+  };
   
   $scope.checkLanguageAvailability = function checkLanguageAvailability() {
     $scope.canCreate = false;
@@ -50,6 +70,14 @@ function($scope, $state, $location, $window, semdomSetupApi, sessionService, mod
       }
       });
     }
+  $scope.requestProjectJoin = function requestProjectJoin(project) {
+    var request = "Are you sure you want to send a join request to <b>' " + project.projectName + " '</b>";
+    modalService.showModalSimple('Request Project Join', request, 'Cancel', 'Request Project Join').then(function() {
+      projectService.sendJoinRequest(project.id, function(result) {
+        ;
+      });
+    });
+  };
   
   $scope.createProject = function createProject() {
     semdomSetupApi.createProject($scope.languageCode, function(result) {

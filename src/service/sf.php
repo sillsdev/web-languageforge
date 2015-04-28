@@ -250,11 +250,17 @@ class sf
     {
         return UserCommands::sendInvite($this->_projectId, $this->_userId, $this->_website, $toEmail);
     }
-
+    
     // ---------------------------------------------------------------
     // GENERAL PROJECT API
     // ---------------------------------------------------------------
 
+    public function project_sendJoinRequest($projectID)
+    {
+        return UserCommands::sendJoinRequest($projectID, $this->_userId, $this->_website);
+    }
+    
+    
     /**
      *
      * @param string $projectName
@@ -329,15 +335,17 @@ class sf
         return ProjectListDto::encode($this->_userId, $this->_website);
     }
 
-    public function project_joinProject($projectId, $role)
-    {
-        return ProjectCommands::updateUserRole($projectId, $this->_userId, $role);
-    }
-
     public function project_usersDto()
     {
         return ProjectCommands::usersDto($this->_projectId);
     }
+    
+    public function project_getJoinRequests()
+    {
+        return ProjectCommands::getJoinRequests($this->_projectId);
+    }
+    
+    
 
     // ---------------------------------------------------------------
     // SESSION API
@@ -381,6 +389,17 @@ class sf
     public function project_updateUserRole($userId, $role)
     {
         return ProjectCommands::updateUserRole($this->_projectId, $userId, $role);
+    }
+    
+    public function project_acceptJoinRequest($userId, $role) 
+    {
+         UserCommands::acceptJoinRequest($this->_projectId, $userId, $this->_website, $role);
+         ProjectCommands::removeJoinRequest($this->_projectId, $userId);
+    }
+    
+    public function project_denyJoinRequest($userId) 
+    {
+        ProjectCommands::removeJoinRequest($this->_projectId, $userId);
     }
 
     // REVIEW: should this be part of the general project API ?
@@ -706,15 +725,28 @@ class sf
     }
     
     
+    
+    
     /*
      * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
-     */
-    public function semdom_editor_dto() {
-        return SemDomTransEditDto::encode($this->_projectId, null, null);
+     */    
+    public function semdom_editor_dto($browserId, $lastFetchTime = null)
+    {
+        $sessionLabel = 'lexDbeFetch_' . $browserId;
+        $this->_controller->session->set_userdata($sessionLabel, time());
+        if ($lastFetchTime) {
+            $lastFetchTime = $lastFetchTime - 5; // 5 second buffer
+    
+            return SemDomTransEditDto::encode($this->_projectId, $this->_userId, $lastFetchTime);
+        } else {
+            return SemDomTransEditDto::encode($this->_projectId, $this->_userId);
+        }
     }
     
+    
+    
     public function semdom_get_open_projects() {
-        return SemDomTransProjectCommands::getOpenSemdomProjects();
+        return SemDomTransProjectCommands::getOpenSemdomProjects($this->_userId);
     }
     
     public function semdom_item_update($data) {
@@ -742,25 +774,9 @@ class sf
      */
 
     // 2015-04 CJH REVIEW: this method should be moved to the semdom project commands (and a test should be written around it).  This method should also assert that a project with that code does not already exist
-    public function semdom_create_project($languageIsoCode)
-    {
-        $semdomVersion = 4;
-        $projectName = "($languageIsoCode) Semantic Domain Translation";
-        $projectCode = "semdom-$languageIsoCode-$semdomVersion";
-        $projectID = ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $this->_userId, $this->_website);    
-        
-        $project = new SemDomTransProjectModel($projectID);
-        $project->languageIsoCode = $languageIsoCode;
-        $project->semdomVersion = $semdomVersion;
-        $project->write();
-        
-        SemDomTransProjectCommands::preFillProject($projectID);
-        return $projectID;
+    public function semdom_create_project($languageIsoCode) {        
+        return SemDomTransProjectCommands::createProject($languageIsoCode, $this->_userId, $this->_website);
     }
-    
-    
-
-
     // -------------------------------- Project Management App Api ----------------------------------
     public function project_management_dto() {
         return ProjectManagementDto::encode($this->_projectId);

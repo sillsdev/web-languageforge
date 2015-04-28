@@ -13,6 +13,7 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
   $scope.currentEntry = {};
   $scope.commentService = commentService; // tie service into the edit.html template
 
+  $scope.editorService = editorService;
   $scope.configService = configService;
   $scope.entries = editorService.entries;
   $scope.visibleEntries = editorService.visibleEntries;

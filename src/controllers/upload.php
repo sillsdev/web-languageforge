@@ -7,13 +7,15 @@ use Palaso\Utilities\CodeGuard;
 
 require_once 'secure_base.php';
 
+use service\sf;
+
 class Upload extends Secure_base
 {
 
     public function receive($app, $mediaType) // e.g. 'lf', 'entry-audio'
     {
         // Need to require this after the autoloader is loaded, hence it is here.
-        require_once 'service/sf.php';
+        //require_once 'service/sf.php';
 
         // user-defined error handler to catch annoying php errors and throw them as exceptions
         ini_set('xdebug.show_exception_trace', 0);
@@ -44,14 +46,14 @@ class Upload extends Secure_base
                 }
 
                 if ($app == 'sf-checks') {
-                    $api = new Sf($this);
+                    $api = new sf($this);
                     $api->checkPermissions('sfChecks_uploadFile', array(
                         $mediaType,
                         $tmpFilePath
                     ));
                     $response = $api->sfChecks_uploadFile($mediaType, $tmpFilePath);
                 } elseif ($app == 'lf-lexicon') {
-                    $api = new Sf($this);
+                    $api = new sf($this);
                     switch ($mediaType) {
                         case 'import-zip':
                             $api->checkPermissions('lex_upload_importProjectZip', array(

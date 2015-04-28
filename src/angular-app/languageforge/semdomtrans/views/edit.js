@@ -2,12 +2,9 @@
 
 angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.scroll', 'palaso.ui.typeahead', 'palaso.ui.sd.ws'])
 // DBE controller
-.controller('editCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
-function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
-  // refresh the data and go to state
-  if ($scope.items.length == 0 && !$scope.loadingDto) {
-      $scope.refreshDbeData(true);
-  }
+.controller('editCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditService', 'semdomtransEditorDataService', 'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
+function($scope, $state, $stateParams, semdomEditApi, editorDataService, sessionService, modal, notice, $rootScope, $filter, $timeout) {
+
   $scope.selectedTab = 0;
   $scope.control = $scope;
   $scope.currentQuestionPos = 0;
@@ -21,6 +18,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
   $scope.isEditingWorkingSet = false;
   $scope.subDomain = "1";
   $scope.hideTranslated = false;
+  
   var api = semdomEditApi;
  
   
@@ -97,32 +95,21 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
             }
           }, delay);
   }
+  /*
+   * Determines if a semdom item is completely translated
+   */
   
-  $scope.$watch('items', function(newVal, oldVal) {
-    if (oldVal != newVal) {      
-        $scope.currentEntry = $scope.items[$scope.currentEntryIndex];
-        $scope.translatedItems = {};
-        for (var i = 0; i < $scope.items.length; i++) {
-          if (isTranslatedCompletely($scope.items[i])) {
-            $scope.translatedItems[$scope.items[i].key] = true;
-          } else {
-            $scope.translatedItems[$scope.items[i].key] = false;
-          }
-        }
-    }
-  });
-  
-  function isTranslatedCompletely(item) {
+  function isItemTranslatedCompletely(item) {
     var translated = true;
-    translated &= (item.name.translation.status == 0);
-    translated &= (item.description.translation.status == 0);
+    translated = translated && (item.name.status == 0);
+    translated = translated && (item.description.status == 0);
     for (var i = 0; i < item.searchKeys.length; i++) {
-      translated &= (item.searchKeys[i].translation.status == 0);
+      translated = translated && (item.searchKeys[i].status == 0);
     }
     
     for (var i = 0; i < item.questions.length; i++) {
-      translated &= (item.questions[i].question.status == 0);
-      translated &= (item.questions[i].terms.status == 0);
+      translated = translated && (item.questions[i].question.status == 0);
+      translated = translated && (item.questions[i].terms.status == 0);
     }
     
     return translated;
@@ -145,6 +132,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     }
     return false;
   }
+  
   $scope.setTab = function(val) {
     $scope.selectedTab = val;
   }  
@@ -162,6 +150,7 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     }
   
   $scope.updateItem = function updateItem(v) {
+    // update item if we hit the enter key
     v = (v === undefined) ? 13 : v;
     if (v == 13) {
       api.updateTerm($scope.currentEntry, function(result) {
@@ -171,11 +160,17 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
   }
   
   $scope.refreshDbeData = function refreshDbeData(state) {
-      $scope.$parent.refreshDbeData(state, function() { });
+     return editorDataService.refreshEditorData().then(function(result) { 
+       editorDataService.processEditorDto(result).then(function(resut) {
+         ;
+       })
+     });
   };
     
-  $scope.$watch('items', function(newVal) {
+  $scope.$watchCollection('items', function(newVal) {
     if (newVal && newVal.length > 0) {
+      
+      // reload all items up to appropriate tre depth
       var maxDepth = 0;
       for (var i in $scope.items) {
         var depth = ($scope.items[i].key.length + 1)/2;
@@ -185,22 +180,39 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
         
         $scope.includedItems[$scope.items[i].key] = true;
       }
+      
       $scope.maxDepth = maxDepth;
       $scope.reloadItems(1);
+      
+      // reload current entry if it is included in lsit
       if ($scope.includedItems[$scope.items[$stateParams.position].key]) {      
         $scope.currentEntry = $scope.items[$stateParams.position];
         $scope.currentEntryIndex = angular.isUndefined($stateParams.position) ? 0 : $stateParams.position;
         $scope.changeTerm($scope.currentEntry.key);
       }
-    }
-    
-    
+      
+      $scope.currentEntry = $scope.items[$scope.currentEntryIndex];
+      $scope.translatedItems = {};
+      // find all items that are completely translated
+      for (var i = 0; i < $scope.items.length; i++) {
+        if (isItemTranslatedCompletely($scope.items[i])) {
+          $scope.translatedItems[$scope.items[i].key] = true;
+        } else {
+          $scope.translatedItems[$scope.items[i].key] = false;
+        }
+      }
+    }   
   });
   
-  $scope.$watch('workingSets', function(newVal) {
-    if (newVal && angular.isUndefined($scope.selectedWorkingSet)) {
-      $scope.selectedWorkingSet = 0;
-    }  
+  $scope.$watchCollection('workingSets', function(newVal) {
+    if (newVal) {
+      if (angular.isUndefined($scope.selectedWorkingSet)) {
+        $scope.selectedWorkingSet = 0;
+      }
+      else {
+        loadWorkingSet($scope.workingSets[$scope.selectedWorkingSet]);
+      }
+    }
   });
   
   //search typeahead
@@ -208,7 +220,10 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
     term: '',
     searchResults: []
   };
+  
+  
   $scope.typeahead.searchEntries = function searchEntries(query) {
+    // if query starts with number, include all items whose key begin with that number
     if (!isNaN(parseInt(query[0]))) {
       $scope.typeahead.searchResults = []
       var results = [];
@@ -230,14 +245,6 @@ function($scope, $state, $stateParams, semdomEditApi, sessionService, modal, not
   
   function isIncluded(key) {
     return !angular.isUndefined($scope.includedItems[key]) && $scope.includedItems[key] ;
-  }
-  
-  $scope.setInclusion = function setInclusion(itemsToInclude, v) {
-    for (var i in itemsToInclude) {
-      $scope.includedItems[itemsToInclude[i].key] = v;
-    }
-    
-    $scope.reloadItems($scope.selectedDepth);    
   }
   
   $scope.editWorkingSet = function editWorkingSet(wsID) {

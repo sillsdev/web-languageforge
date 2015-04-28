@@ -1,79 +1,56 @@
 <div data-ng-cloak data-ng-controller="editCtrl" id="semDomAppContainer">
-    <div class="container-fluid"
-        style="margin-top: 100px; height: 500px; width: 100%; margin-right: 0px; margin-left: 0px">
-        <div class="row"
-            style="border-bottom: solid black 1px; width: 100%; margin-right: 0px; margin-left: 0px">
-            <div class="span3" style="margin-left: 0px; margin-right: 0px">
-                <input placeholder="Filter semantic domain items"
-                    style="margin-bottom: 10px" ng-model="searchText"
-                    ng-change="reloadItems(selectedDepth, 100)" /> <br />
-                <div>
-                    <select ng-model="selectedWorkingSet"
-                        style="margin-bottom: 10px; margin-top: 0px; float: left; width:">
-                        <option style="font-size: small"
-                            ng-repeat="ws in workingSets track by $index"
-                            value="{{$index}}">
-                            {{ws.name}}</option>
-                    </select>
-                </div>
-                <div style="white-space: nowrap;">
-                    <span style="width: 80%; float: left"> Hide Translated</span>
-                    <input ng-model="hideTranslated" type="checkbox"
-                        style="width: 10%; float: left; margin-top: 0px; 1" />
-                </div>
-            </div>
-
-            <div class="span5">
-                <tabset class="pull-center"> <tab heading="Terms"
-                    ng-click="setTab(0)"> </tab> <tab heading="Questions"
-                    ng-click="setTab(1)"></tab> <tab
-                    ng-if="rights.canEditProject()" heading="Filter"
-                    ng-click="setTab(2)"></tab> </tabset>
-            </div>
-            <div class="span4" style="margin-left: 0px; margin-right: 0px"
-                ng-if="isItemSelected()">
-                <a ui-sref="comments({position:currentEntryIndex})"
-                    style="float: right; margin-top: 5px"> Comments &#8594;</a>
-            </div>
-        </div>
-        <div class="row"
-            style='width: 100%; margin-right: 0px; margin-left: 0px'>
-            <div class="span3"
-                style="border-right: solid black 1px; float: left; margin-left: -1px; margin-right: 0px">
-                <div>
-                    <label style="float: left; margin-top: 20px; width: 30%">Tree
-                        Depth: {{selectedDepth}}</label>
-                    <input data-ng-model="selectedDepth"
-                        style="width: 60%; float: right" class="progress-slider"
-                        type="range" min="1" max="{{maxDepth}}">
-                </div>
-                <div>
-                    <div
-                        style="overflow-y: scroll; overflow-x: hidden; height: 400px; width: 100%; margin-left: 0px; margin-right: 0px">
-                        <div
-                            ng-if="(!hideTranslated || !translatedItems[item.key])"
-                            ng-repeat="item in displayedItems track by item.key"
-                            ng-class="{selected: (item.key == currentEntry.key)}"
-                            ng-click="changeTerm(item.key)"
-                            ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }">
-                            <a> {{item.key}} {{item.name.source}}</a>
-                        </div>
-                    </div>
+		<div style="margin-top:100px; height: 500px;  width:100%; margin-right:0px; margin-left:0px" class="container-fluid">
+		    <div class="row" style="border-bottom:solid black 1px; width:100%; margin-right:0px; margin-left:0px" >		
+		    	<div class="span3" style="margin-left:0px; margin-right:0px"  >                    
+                    <input placeholder="Filter semantic domain items" style="margin-bottom:10px" ng-model="searchText" ng-change="reloadItems(selectedDepth, 100)" />
+                    <br />
                     <div>
-                        <button
-                            ng-repeat="i in ['1','2','3','4','5','6','7','8','9']"
-                            ng-click="selectSubDomain(i)"
-                            ng-class="{selected: (i == subDomain)}">
-                            {{i}}</button>
+                        <select style="margin-bottom:10px; margin-top:0px; float:left; width:" ng-model="selectedWorkingSet">
+                            <option style="font-size:small" ng-repeat="ws in workingSets track by $index"  value="{{$index}}">{{ws.name}}</option>
+                        </select>
+                    </div>
+                    <div style="white-space: nowrap;">
+                        <span style="width:80%; float:left"> Hide Translated</span>
+                        <input style="width:10%; float:left; margin-top:0px; 1" ng-model="hideTranslated" type="checkbox" />
+                    </div>
+                </div>	   
+                 
+		    	<div class="span5" >
+					<tabset class="pull-center">
+					    <tab heading="Terms"  ng-click="setTab(0)"> </tab>     
+						<tab heading="Questions" ng-click="setTab(1)"></tab>
+                        <tab ng-if="rights.canEditProject()" heading="Filter" ng-click="setTab(2)"></tab>
+					</tabset>  
+				</div>
+				<div class="span4" style="margin-left:0px; margin-right:0px" ng-if="isItemSelected()">
+					<a ui-sref="comments({position:currentEntryIndex})"  style="float: right; margin-top:5px"> Comments &#8594;</a>                    
+				</div>
+			</div>
+			<div class="row" style='width:100%; margin-right:0px; margin-left:0px'>
+			  <div class="span3" style="border-right:solid black 1px; float:left; margin-left:-1px; margin-right:0px">
+			    <div>
+                    <label style="float:left; margin-top:20px; width:30%">Tree Depth: {{selectedDepth}}</label>
+                    <input style="width:60%; float:right" class="progress-slider" type="range" min="1"
+                    max="{{maxDepth}}" data-ng-model="selectedDepth">
+                </div>
+                <div>
+    			    <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%; margin-left:0px; margin-right:0px" >
+    	                 <div ng-if="(!hideTranslated || !translatedItems[item.key])"
+                            ng-repeat="item in displayedItems track by item.key" ng-class="{selected: (item.key == currentEntry.key)}"  ng-click="changeTerm(item.key)"
+    	                 	ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }"   >
+    				        <a> {{item.key}} {{item.name.source}}</a>
+    				      </div>
+    			    </div>
+                    <div>
+                        <button ng-repeat="i in ['1','2','3','4','5','6','7','8','9']" ng-click="selectSubDomain(i)" ng-class="{selected: (i == subDomain)}">{{i}}</button>
                     </div>
                 </div>
-
-            </div>
-            <div class="span9"
-                style="text-align: center; float: right; margin-left: 0px; margin-right: 0px">
-                <div ui-view="editItem"></div>
-                <div ng-if="(selectedTab == 2)" ui-view="editFilter"></div>
-            </div>
-        </div>
-    </div>
-</div>
+				
+			  </div>
+			  <div style="text-align: center; float:right; margin-left:0px; margin-right:0px" class="span9">
+			  	   <div ui-view="editItem"></div>
+                   <div ng-if="(selectedTab == 2)" ui-view="editFilter"></div>
+			  </div>
+			</div>
+		</div>	
+  </div>

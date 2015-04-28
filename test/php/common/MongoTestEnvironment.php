@@ -1,5 +1,6 @@
 <?php
 use libraries\shared\Website;
+use models\mapper\Id;
 use Palaso\Utilities\FileUtilities;
 use models\languageforge\lexicon\LexiconProjectModel;
 use models\shared\rights\ProjectRoles;
@@ -383,24 +384,24 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
 {
     public function __construct()
     {
+        $this->semdomVersion = self::TESTVERSION;
         parent::__construct('languageforge.org');
     }
 
-    /**
-     *  @var int
-     */
-    public $semdomVersion = 1000;
+    const TESTVERSION = 1000;
 
      /**
      * @var UserModel
      */
     public $userId;
+
+    public $semdomVersion;
+
     /**
      *
      * @var SemDomProjectModel
      */
-    public $englishProject;
-
+    public static $englishProject;
 
     /**
      *
@@ -408,56 +409,59 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
      */
     public $targetProject;
 
+    private static function _englishProjectExists() {
+        if (self::$englishProject) {
+            $englishProject = new SemDomTransProjectModel();
+            $englishProject->readByCode('en', self::TESTVERSION);
+            if ($englishProject->id->asString() != '') {
+                return true;
+            }
+        }
+        return false;
+    }
 
-    public function importEnglishProject() {
+    public function getEnglishProjectAndCreateIfNecessary() {
+        if (!self::_englishProjectExists()) {
+            $lang = 'en';
+            $this->cleanPreviousProject($lang);
+            $projectCode = SemDomTransProjectModel::projectCode($lang, self::TESTVERSION);
+            $project = $this->createProject("English ($lang) Semantic Domain Base Project", $projectCode, LfProjectModel::SEMDOMTRANS_APP);
+            $projectModel = new SemDomTransProjectModel($project->id->asString());
+            $projectModel->languageIsoCode = $lang;
+            $projectModel->isSourceLanguage = true;
+            $projectModel->semdomVersion = self::TESTVERSION;
 
-        $this->cleanPreviousProject("en", $this->semdomVersion);
-        $languageCode = "en";
-        $projectCode = "semdom-$languageCode-$this->semdomVersion";
-
-        $projectModel = $this->createSemDomProject($languageCode, $this->semdomVersion);
-
-        $xmlFilePath = APPPATH . "resources/languageforge/semdomtrans/SemDom_en.xml";
-        $newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($xmlFilePath);
-        FileUtilities::createAllFolders($projectModel->getAssetsFolderPath());
-
-        copy($xmlFilePath, $newXmlFilePath);
-        $projectModel->xmlFilePath = $newXmlFilePath;
-        $projectModel->write();
-
-        $importer = new SemDomXMLImporter($xmlFilePath, $projectModel, false, true);
-        $importer->run();
-        $this->englishProject = $projectModel;
-        return $projectModel;
+            $englishXmlFilePath = TestPath . "languageforge/semdomtrans/testFiles/SemDom_en_sample.xml";
+            $projectModel->importFromFile($englishXmlFilePath, true);
+            $projectModel->write();
+            self::$englishProject = $projectModel;
+        }
+        return self::$englishProject;
     }
 
     public function cleanPreviousProject($languageCode) {
-        $previousProject = new SemDomTransProjectModel();
-        $projectCode = "semdom-$languageCode-$this->semdomVersion";
-        $previousProject->readByProperty("projectCode", $projectCode);
-        $previousProject->projectCode = $projectCode;
-        $this->cleanProjectEnvironment($previousProject);
+        $p = new SemDomTransProjectModel();
+        $p->readByCode($languageCode, self::TESTVERSION);
+        if (!Id::isEmpty($p->id)) {
+            $this->cleanProjectEnvironment($p);
+        } else {
+            // create the project and then clean the project environment
+            $p = new SemDomTransProjectModel();
+            $p->projectCode = SemDomTransProjectModel::projectCode($languageCode, self::TESTVERSION);
+            $p->write();
+            $this->cleanProjectEnvironment($p);
+        }
+        $p->remove();
     }
 
-    public function createPreFilledTargetProject($languageCode) {
-        $this->cleanPreviousProject($languageCode, $this->semdomVersion);
-
-        $projectModel = $this->createSemDomProject($languageCode, $this->semdomVersion);
-        SemDomTransProjectCommands::preFillProject($projectModel->id->asString());
-        $this->targetProject = $projectModel;
-        return $projectModel;
+    public function clean() {
+        self::$englishProject = null;
+        parent::clean();
     }
 
-    public function createSemDomProject($languageCode) {
-        $this->cleanPreviousProject($languageCode, $this->semdomVersion);
-
-        $projectCode = "semdom-$languageCode-$this->semdomVersion";
-        $projectName = "Semdom $languageCode Project";
-        $projectModel = $this->createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP);
-        $projectModel = new SemDomTransProjectModel($projectModel->id->asString());
-        $projectModel->languageIsoCode = $languageCode;
-        $projectModel->semdomVersion = $this->semdomVersion;
-        $projectModel->write();
-        return $projectModel;
+    public function createSemDomProject($languageCode, $userId) {
+        $projectId = SemDomTransProjectCommands::createProject($languageCode, $userId, $this->website, self::TESTVERSION);
+        return new SemDomTransProjectModel($projectId);
     }
+
 }

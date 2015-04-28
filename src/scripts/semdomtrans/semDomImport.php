@@ -16,7 +16,7 @@ $lang = $argv[2];
 $domain = $argv[3];
 $userId = $argv[4];
 $isEnglish =  ($lang == "en");
-$semdomVersion = 4;
+$semdomVersion = SemDomTransProjectModel::SEMDOM_VERSION;
 
 // accept command line flag to actually change the database
 // accept filepath of the import file (xml)
@@ -41,6 +41,9 @@ $previousProject->readByProperties(array("languageIsoCode" => $lang, "semdomVers
 
 if ($previousProject->id->asString() == "")
 {
+    
+    $sourceProject = new SemDomTransProjectModel();
+    $sourceProject->readByCode("en");
     $projectID = ProjectCommands::createProject($projectName, $projectCode, $appName, $userId, $website);
     $projectModel = new SemDomTransProjectModel($projectID);
 
@@ -52,6 +55,7 @@ if ($previousProject->id->asString() == "")
     $projectModel->xmlFilePath = $newXmlFilePath;
     $projectModel->languageIsoCode = $lang;
     $projectModel->semdomVersion = $semdomVersion;
+    $projectModel->sourceLanguageProjectId = $sourceProject->id->asString();
     $projectModel->write();
 
 

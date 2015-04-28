@@ -479,6 +479,81 @@ class UserCommands
 
         return $userId;
     }
+    
+    
+    /**
+     * Sends an email to request joining of the project
+     * @param string $projectId
+     * @param string $inviterUserId
+     * @param Website $website
+     * @param string $toEmail
+     * @param IDelivery $delivery
+     * @throws \Exception
+     * @return string $userId
+     */
+    public static function sendJoinRequest($projectId, $userId, $website, IDelivery $delivery = null)
+    {
+        $newUser = new UserModel($userId);
+        $project = new ProjectModel();
+        $project->read($projectId['id']);
+        
+        // Make sure the user exists on the site
+        if (!$newUser->hasRoleOnSite($website)) {
+            $newUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
+        }
+        
+        // Determine if user is already a member of the project
+        if ($project->userIsMember($newUser->id->asString())) {
+            return $newUser->id;
+        }
+        
+        // Add the user to the project
+        $project->createUserJoinRequest($userId, ProjectRoles::CONTRIBUTOR);
+        $project->write();
+        
+        $admin = new UserModel($project->ownerRef->asString());
+        if ($admin->email != '') {
+            Communicate::sendJoinRequest($newUser, $admin, $project, $website, $delivery);
+            Communicate::sendJoinRequestConfirmation($newUser, $project, $website, $delivery);
+        }
+        
+        return $admin;
+    }
+    
+    /**
+     * 
+     * @param string $projectId
+     * @param string $userId
+     * @param string $website
+     * @param role $role
+     * @param IDelivery $delivery
+     * @return \models\mapper\IdReference|\models\UserModel
+     */
+    public static function acceptJoinRequest($projectId, $userId, $website, $role, IDelivery $delivery = null)
+    {
+        $newUser = new UserModel($userId);
+        $project = new ProjectModel();
+        $project->read($projectId);
+
+        ProjectCommands::updateUserRole($projectId, $userId, $role);
+                
+        // Make sure the user exists on the site
+        if (!$newUser->hasRoleOnSite($website)) {
+            $newUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
+        }
+    
+        // Determine if user is already a member of the project
+        if ($project->userIsMember($newUser->id->asString())) {
+            return $newUser->id;
+        }
+    
+        $admin = new UserModel($project->ownerRef->asString());
+        if ($admin->email != '') {
+            Communicate::sendJoinRequestAccepted($newUser, $project, $website, $delivery);
+        }
+    
+        return $admin;
+    }
 
     /**
      *

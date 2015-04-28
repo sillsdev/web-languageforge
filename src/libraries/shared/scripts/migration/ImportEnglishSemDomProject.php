@@ -4,54 +4,41 @@ namespace libraries\shared\scripts\migration;
 
 use libraries\languageforge\semdomtrans\SemDomXMLImporter;
 use models\languageforge\SemDomTransProjectModel;
+use models\ProjectModel;
 
 class ImportEnglishSemDomProject
 {
-    public function run($mode = 'test')
+    public function run($userId, $mode = 'test')
     {
         $testMode = ($mode != 'run');
         $message = "Import English Semantic Domain Project\n\n";
-        $semdomVersion = 4;
-        $projectCode = "semdom-en-$semdomVersion";
+        $projectCode = SemDomTransProjectModel::projectCode('en');
         $englishXmlFilePath = APPPATH . 'resources/languageforge/semdomtrans/SemDom_en.xml';
 
         $englishProject = new SemDomTransProjectModel();
-        $englishProject->readByProperties(array("projectCode" => $projectCode));
+        $englishProject->readByCode('en');
 
-        // TODO: if the english project exists, empty it out entirely and re-import
         if ($englishProject->id->asString() != "") {
-
-        } else {
-
-        }
-
-
-        if ($englishProject->id->asString() == "") {
-            $projectModel = new SemDomTransProjectModel();
-            $projectModel->projectCode = $projectCode;
-            $projectModel->projectName = "English (en) Semantic Domain Project";
-            $projectModel->languageIsoCode = 'en';
-            $projectModel->semdomVersion = $semdomVersion;
-
-            $newXmlFilePath = $projectModel->getAssetsFolderPath() . '/' . basename($englishXmlFilePath);
-            if (!file_exists($projectModel->getAssetsFolderPath())) {
-                mkdir($projectModel->getAssetsFolderPath());
-            }
-
-            $message .= "copying $englishXmlFilePath to $newXmlFilePath\n";
-            copy($englishXmlFilePath, $newXmlFilePath);
-            $projectModel->xmlFilePath = $newXmlFilePath;
+            $message .= "Note: English Project already exists.\n";
+            $message .= "Deleting English Project...\n";
+            $message .= "If other semdomtrans projects already exist their source project reference id will be messed up!...\n";
             if (!$testMode) {
-                $projectModel->write();
+                $englishProject->remove();
             }
-
-            $importer = new SemDomXMLImporter($newXmlFilePath, $projectModel, $testMode, true);
-            $importer->run();
-            $message .= "Finished Importing the English project";
-
-        } else {
-            $message .= "Stopping import: English project already exists!";
         }
+
+        $projectModel = new SemDomTransProjectModel();
+        $projectModel->projectCode = $projectCode;
+        $projectModel->projectName = "English (en) Semantic Domain Base Project";
+        $projectModel->languageIsoCode = 'en';
+        $projectModel->isSourceLanguage = true;
+        $projectModel->semdomVersion = SemDomTransProjectModel::SEMDOM_VERSION;
+        $projectModel->ownerRef->id = $userId;
+
+        if (!$testMode) {
+            $projectModel->importFromFile($englishXmlFilePath, true);
+        }
+        $message .= "Import complete!\n";
 
         return $message;
     }

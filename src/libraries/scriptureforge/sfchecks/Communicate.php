@@ -339,4 +339,119 @@ class Communicate
             $delivery
         );
     }
+    
+    /**
+     *
+     * @param UserModelBase $inviterUserModel
+     * @param UserModelBase $toUserModel
+     * @param ProjectModel $projectModel
+     * @param Website $website
+     * @param IDelivery $delivery
+     */
+    public static function sendJoinRequestConfirmation($user, $projectModel, $website, IDelivery $delivery = null)
+    {
+        $user->setValidation(7);
+        $user->write();
+    
+        $senderEmail = 'no-reply@' . $website->domain;
+        $from = array($senderEmail => $website->name);
+        $subject = 'You\'ve submitted a join request to the project ' . $projectModel->projectName . ' on ' . $website->name;        
+    
+        $vars = array(
+            'user' => $user,
+            'project' => $projectModel,
+        );
+    
+        $templateFile = $website->base . "/" . $website->theme . "/email/en/JoinRequestConfirmation.html";
+        if (!file_exists($templateFile)) {
+            $templateFile = $website->base . "/default/email/en/JoinRequestConfirmation.html";
+        }
+        $t = CommunicateHelper::templateFromFile($templateFile);
+        $html = $t->render($vars);
+    
+        CommunicateHelper::deliverEmail(
+            $from,
+            array($user->email => $user->name),
+            $subject,
+            $html,
+            $delivery
+        );
+    }
+    /**
+     *
+     * @param UserModelBase $inviterUserModel
+     * @param UserModelBase $toUserModel
+     * @param ProjectModel $projectModel
+     * @param Website $website
+     * @param IDelivery $delivery
+     */
+    public static function sendJoinRequest($user, $admin, $projectModel, $website, IDelivery $delivery = null)
+    {
+        $u = new UserModel();
+        $user->setValidation(7);
+        $user->write();
+    
+        $senderEmail = $user->email;
+        $from = array($senderEmail => $user->name);
+        $subject = $user->name . ' join request';
+    
+        $vars = array(
+            'user' => $user,
+            'admin' => $admin,
+            'project' => $projectModel,
+            'link' => $website->baseUrl() . "/app/usermanagement/" . $projectModel->id->asString() . "#/joinRequests",
+        );
+        $templateFile = $website->base . "/" . $website->theme . "/email/en/JoinRequest.html";
+    
+        if (!file_exists($templateFile)) {
+            $templateFile = $website->base . "/default/email/en/JoinRequest.html";
+        }
+        $t = CommunicateHelper::templateFromFile($templateFile);
+        $html = $t->render($vars);
+    
+        CommunicateHelper::deliverEmail(
+        $from,
+        array($admin->email => $admin->name),
+        $subject,
+        $html,
+        $delivery
+        );
+    } 
+    
+    /**
+     *
+     * @param UserModelBase $inviterUserModel
+     * @param UserModelBase $toUserModel
+     * @param ProjectModel $projectModel
+     * @param Website $website
+     * @param IDelivery $delivery
+     */
+    public static function sendJoinRequestAccepted($user, $projectModel, $website, IDelivery $delivery = null)
+    {
+        $senderEmail = 'no-reply@' . $website->domain;
+        $from = array($senderEmail => $website->name);
+        $subject = 'You\'ve submitted a join request to the project ' . $projectModel->projectName . ' on ' . $website->name;        
+    
+        $vars = array(
+            'user' => $user,
+            'project' => $projectModel,
+            'link' => $website->baseUrl() . "/app/semdomtrans/" . $projectModel->id->asString() . "#/edit",
+        );
+        $templateFile = $website->base . "/" . $website->theme . "/email/en/JoinRequestAccepted.html";
+    
+        if (!file_exists($templateFile)) {
+            $templateFile = $website->base . "/default/email/en/JoinRequestAccepted.html";
+        }
+        
+        $t = CommunicateHelper::templateFromFile($templateFile);
+        $html = $t->render($vars);
+    
+        CommunicateHelper::deliverEmail(
+            $from,
+            array($user->email => $user->name),
+            $subject,
+            $html,
+            $delivery
+        );
+    }
 }

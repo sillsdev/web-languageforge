@@ -1,40 +1,40 @@
 <span>
-      <h2> Question {{currentQuestionPos+1}}/{{model.questions.length}} </h2>
-      <table style="width:100%">
-          <tr>
-              <th style="width:30%"> </th>
-              <th style="width:35%"> Source </th>
-              <th style="width:35%"> Translation </th>
-          </tr>
-        <tr ng-click="isInCommentMode() ? control.setSelectedField('question ' + currentQuestionPos, model.questions[currentQuestionPos].question) : '' ">
-            <td> Questions: </td>
-            <td> {{model.questions[currentQuestionPos].question.source}} </td>
-            <td>
-                <textarea 
-                    rows="4"
-                    ng-disabled="isInCommentMode()"
-                    ng-model="model.questions[$scope.currentQuestionPos].question.translation"
-                    ng-keypress="control.updateItem($event.which)"
-                    ng-blur="control.updateItem()">
-                </textarea>
-            </td> 
-        </tr>    
+  	<h2> Question {{currentQuestionPos+1}}/{{model.questions.length}} </h2>
+  	<table style="width:100%">
+  		<tr>
+  			<th style="width:30%"> </th>
+  			<th style="width:35%"> Source </th>
+  			<th style="width:35%"> Translation </th>
+  		</tr>
+	    <tr ng-click="isInCommentMode() ? control.setSelectedField('question ' + currentQuestionPos, model.questions[currentQuestionPos].question) : '' ">
+		    <td> Questions: </td>
+		    <td> {{model.questions[currentQuestionPos].question.source}} </td>
+		    <td>
+		    	<textarea 
+			    	rows="4"
+			    	ng-disabled="isInCommentMode() || model.questions[currentQuestionPos].question.status == 4"
+			    	ng-model="model.questions[currentQuestionPos].question.translation"
+			    	ng-keypress="control.updateItem($event.which)"
+			    	ng-blur="control.updateItem()">
+		    	</textarea>
+		    </td> 
+	    </tr>	
         <tr ng-click="isInCommentMode() ? control.setSelectedField('question terms ' + currentQuestionPos, model.questions[currentQuestionPos].terms) : '' ">
-            <td> Terms: </td>
-            <td> {{model.questions[currentQuestionPos].terms.source}}</td>
-            <td> 
-                <textarea
-                    rows="4"
-                    ng-disabled="isInCommentMode()"
-                    ng-model="model.questions[$scopecurrentQuestionPos].terms.translation"
-                    ng-keypress="control.updateItem($event.which)"
-                    ng-blur="control.updateItem()">
-                </textarea>
-               </td>    
-        </tr>                    
-    </table>
-    <td> 
-    
-    <button ng-show="(currentQuestionPos > 0)" ng-click="getPreviousQuestion()" class="pull-left btn btn-success">Previous Question</button>
-    <button ng-show="(currentQuestionPos < model.questions.length - 1)" ng-click="getNextQuestion()" class="pull-right btn btn-success">Next Question</button>
+		    <td> Terms: </td>
+		    <td> {{model.questions[currentQuestionPos].terms.source}}</td>
+	        <td> 
+	        	<textarea
+	        		rows="4"
+	        		ng-disabled="isInCommentMode() || model.questions[currentQuestionPos].terms.status == 4""
+	        		ng-model="model.questions[currentQuestionPos].terms.translation"
+	        		ng-keypress="control.updateItem($event.which)"
+	        		ng-blur="control.updateItem()">
+        		</textarea>
+       		</td>    
+	    </tr>				    
+	</table>
+	<td> 
+	
+	<button ng-show="(currentQuestionPos > 0)" ng-click="getPreviousQuestion()" class="pull-left btn btn-success">Previous Question</button>
+	<button ng-show="(currentQuestionPos < model.questions.length - 1)" ng-click="getNextQuestion()" class="pull-right btn btn-success">Next Question</button>
 </span>

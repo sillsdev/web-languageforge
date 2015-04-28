@@ -20,6 +20,8 @@ use libraries\shared\palaso\exceptions\UserUnauthorizedException;
 
 use models\shared\rights\ProjectRoles;
 use models\sms\SmsSettings;
+use models\JoinRequests_ProjectModel;
+use models\UserList_ProjectModel;
 
 class ProjectCommands
 {
@@ -149,6 +151,18 @@ class ProjectCommands
     }
 
     /**
+     * Gets list of user requests
+     * @param string $projectId
+     * @return array of users join requests
+     */
+    public static function getJoinRequests($projectId) 
+    {        
+        $projectModel = ProjectModel::getById($projectId);        
+        $list = $projectModel->listRequests();
+        return $list;
+    }
+    
+    /**
      * Update the user project role in the project
      * @param string $projectId
      * @param string $userId
@@ -205,8 +219,16 @@ class ProjectCommands
         }
     }
     
-    public static function listUserRequestsForAccess($projectId) {
-        
+    /**
+     * Removes users from the project (two-way unlink)
+     * @param Id $projectId
+     * @param array $userIds array<string>
+     */
+    public static function removeJoinRequest($projectId, $joinRequestId)
+    {
+        $project = new ProjectModel($projectId);
+        $project->removeUserJoinRequest($joinRequestId);
+        $project->write();
     }
     
     public static function grantAccessForUserRequest($projectId, $userId, $projectRole) {

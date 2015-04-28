@@ -4,7 +4,7 @@
         <div style="overflow-y:scroll; height:300px; border: 1px solid black">
             <ul style="padding: 5px">
                 <li ng-repeat="project in openProjects"  ng-click="showModal(project, 1)" class="thumbnail">
-                    <a href="/app/semdomtrans/{{project.id.id}}"> {{project.projectName}} </a>
+                    <a ng-click="requestProjectJoin(project)"> {{project.projectName}} </a>
                 </li>
             </ul>
         </div>     
@@ -15,6 +15,7 @@
             
                ng-model="languageCode"
                ng-change="checkLanguageAvailability()" />
+             <button ng-click="openNewLanguageModal()" class="btn btn-primary"> Select Langauge</button>
              <button ng-disabled="!canCreate" ng-click="createProject()" class="btn btn-primary"> Create</button>
          </div>  
     </div>

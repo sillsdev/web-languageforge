@@ -19,6 +19,8 @@ use models\mapper\MapOf;
 use models\mapper\Id;
 use models\sms\SmsSettings;
 use models\mapper\IdReference;
+use models\commands\UserCommands;
+use Palaso\Utilities\FileUtilities;
 
 class ProjectModel extends \models\mapper\MapperModel
 {
@@ -32,6 +34,11 @@ class ProjectModel extends \models\mapper\MapperModel
         $this->users = new MapOf(function ($data) {
             return new ProjectRoleModel();
         });
+        
+        $this->userJoinRequests = new MapOf(function ($data) {
+            return new ProjectRoleModel();
+        });
+        
         $this->isArchived = false;
         $this->userProperties = new ProjectUserPropertiesSettings();
         $this->allowAudioDownload = true;
@@ -114,6 +121,19 @@ class ProjectModel extends \models\mapper\MapperModel
     }
 
     /**
+     * Creates a user join request by adding the $userID to the join request array on the project
+     * @param string $userId
+     * @param string $role the system role the user has
+     * @see roles
+     */
+    public function createUserJoinRequest($userId, $role) {
+        $mapper = ProjectModelMongoMapper::instance();
+        $model = new ProjectRoleModel();
+        $model->role = $role;
+        $this->userJoinRequests[$userId] = $model;
+    }
+    
+    /**
      * Removes the $userId from this project.
      * @param string $userId
      */
@@ -121,6 +141,17 @@ class ProjectModel extends \models\mapper\MapperModel
     {
         if (array_key_exists($userId, $this->users)) {
             unset($this->users[$userId]);
+        }
+    }
+    
+    /**
+     * Removes the $userId from this project.
+     * @param string $userId
+     */
+    public function removeUserJoinRequest($userId)
+    {
+        if (array_key_exists($userId, $this->userJoinRequests)) {
+            unset($this->userJoinRequests[$userId]);
         }
     }
 
@@ -147,6 +178,23 @@ class ProjectModel extends \models\mapper\MapperModel
         }
          return $userList;
     }
+    
+    public function listRequests()
+    {
+        $allUserList = UserCommands::listUsers();
+        $userList = [];
+        for ($i = 0, $l = count($allUserList->entries); $i < $l; $i++) {
+            $userId = $allUserList->entries[$i]['id'];
+            if (array_key_exists($userId, $this->userJoinRequests)) {
+                $userList[$i] = array(
+                                      "user"=> $allUserList->entries[$i],
+                                      "role"=> $this->userJoinRequests[$userId]
+                                     );
+            }
+        }
+        return $userList;
+    }
+    
 
     /**
      * Returns true if the given $userId has the $right in this project.
@@ -251,7 +299,9 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public function getAssetsFolderPath()
     {
-        return APPPATH . $this->getAssetsRelativePath();
+        $folderPath = APPPATH . $this->getAssetsRelativePath();
+        FileUtilities::createAllFolders($folderPath);
+        return $folderPath;
     }
 
     /**
@@ -299,6 +349,11 @@ class ProjectModel extends \models\mapper\MapperModel
      * @var MapOf<ProjectRoleModel>
      */
     public $users;
+    
+    /**
+     * @var MapOf<ProjectRoleModel>
+     */
+    public $userJoinRequests;
 
     /**
      * A string representing exactly this project from external sources. Typically some part of the URL.
