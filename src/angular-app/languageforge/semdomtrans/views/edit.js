@@ -85,9 +85,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
               } else {
                 return 1;
               }
-            });
-            
-          
+            });           
             
             $scope.displayedItems = $scope.filteredByDepthItems;
             if (!$scope.$$phase) {
@@ -101,15 +99,15 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
   
   function isItemTranslatedCompletely(item) {
     var translated = true;
-    translated = translated && (item.name.status == 0);
-    translated = translated && (item.description.status == 0);
+    translated = translated && (item.name.status == 4);
+    translated = translated && (item.description.status == 4);
     for (var i = 0; i < item.searchKeys.length; i++) {
-      translated = translated && (item.searchKeys[i].status == 0);
+      translated = translated && (item.searchKeys[i].status == 4);
     }
     
     for (var i = 0; i < item.questions.length; i++) {
-      translated = translated && (item.questions[i].question.status == 0);
-      translated = translated && (item.questions[i].terms.status == 0);
+      translated = translated && (item.questions[i].question.status == 4);
+      translated = translated && (item.questions[i].terms.status == 4);
     }
     
     return translated;
