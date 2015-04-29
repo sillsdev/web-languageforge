@@ -23,17 +23,17 @@ def translate(listOfWordsToTranslate, key, to_language="auto", language="en"):
 '''
 Gets list of target languages for English language
 '''	
-def getTargetLanguages():
-	link = "https://www.googleapis.com/language/translate/v2/languages?key=AIzaSyBGMFB9ciYojgOvgO-NRDkeS66CcGNTOpg&target=en"  
+def getTargetLanguages(key):
+	link = "https://www.googleapis.com/language/translate/v2/languages?key=%s&target=en" % (key)  
 	request = urllib2.Request(link)
 	result = urllib2.urlopen(request).read()
 	return json.loads(result)['data']['languages']
 	
 if __name__ == '__main__':
-	languages = [langObj['language'] for langObj in getTargetLanguages() if langObj['language'] != "en"]
+	languages = [langObj['language'] for langObj in getTargetLanguages(sys.argv[2]) if langObj['language'] != "en"]
 	inputFile = open(sys.argv[1])
 	lines = [word.strip() for word in inputFile.readlines()]
-	for language in languages:
+	for language in languages:		
 		dirname = os.path.dirname(inputFile.name)
 		outputPath = dirname + "/semdom-google-translate-" + language + ".txt"
 		processedLines = []
@@ -41,7 +41,7 @@ if __name__ == '__main__':
 		# by excluding them from list of items to be translated
 		if os.path.isfile(outputPath): 
 			prevF = open(outputPath)
-			prevTranslated = [line.strip() for line in prevF.readlines()]
+			prevTranslated = [line.strip() for line in prevF.readlines()]				
 			prevF.close()
 			prevTranslatedDict = {}
 			for line in prevTranslated:
@@ -52,11 +52,11 @@ if __name__ == '__main__':
 				if line not in prevTranslatedDict:
 					processedLines.append(line)
 		else:
-			processedLines = lines
+			processedLines = lines			
 		
-		f = open(outputPath,'w+')
+		f = open(outputPath,'a')
 		# translate and print out using proper utf-8 encoding
-		for i in xrange(0, len(lines), 100):
-			translatedItems = translate(lines[i:i+100], sys.argv[2], language)
-			for j in range(i, min(len(lines), i+100)):
-				f.write(lines[j].encode('utf-8') + "|" + translatedItems[j]['translatedText'].encode('utf-8'))
+		for i in xrange(0, len(processedLines), 100):				
+			translatedItems = translate(processedLines[i:i+100], sys.argv[2], language)
+			for j in range(i, min(len(processedLines), i+100)):
+				f.write(processedLines[j].encode('utf-8') + "|" + translatedItems[j]['translatedText'].encode('utf-8') + "\n")
