@@ -6,6 +6,7 @@ use models\mapper\ArrayOf;
 
 use libraries\shared\Website;
 use models\languageforge\SemDomTransProjectModel;
+use models\mapper\MapperUtils;
 use models\scriptureforge\RapumaProjectModel;
 
 use models\languageforge\lexicon\LexiconProjectModel;
@@ -20,6 +21,7 @@ use models\mapper\Id;
 use models\sms\SmsSettings;
 use models\mapper\IdReference;
 use models\commands\UserCommands;
+use Palaso\Utilities\FileUtilities;
 
 class ProjectModel extends \models\mapper\MapperModel
 {
@@ -100,7 +102,7 @@ class ProjectModel extends \models\mapper\MapperModel
         }
         $this->rrmdir($this->getAssetsFolderPath());
 
-        ProjectModelMongoMapper::instance()->drop($this->databaseName());
+        MapperUtils::dropAllCollections($this->databaseName());
         ProjectModelMongoMapper::instance()->remove($this->id->asString());
     }
 
@@ -298,7 +300,9 @@ class ProjectModel extends \models\mapper\MapperModel
      */
     public function getAssetsFolderPath()
     {
-        return APPPATH . $this->getAssetsRelativePath();
+        $folderPath = APPPATH . $this->getAssetsRelativePath();
+        FileUtilities::createAllFolders($folderPath);
+        return $folderPath;
     }
 
     /**

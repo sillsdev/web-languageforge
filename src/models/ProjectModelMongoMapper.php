@@ -18,12 +18,4 @@ class ProjectModelMongoMapper extends \models\mapper\MongoMapper
 
         return $instance;
     }
-
-    public function drop($databaseName)
-    {
-        if (MongoStore::hasDB($databaseName)) {
-            $db = MongoStore::connect($databaseName);
-            $db->drop();
-        }
-    }
 }
