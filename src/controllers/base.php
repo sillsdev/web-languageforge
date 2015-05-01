@@ -116,7 +116,7 @@ class base extends CI_Controller
             $theme = $this->website->theme;
         }
 
-        if (file_exists($themePath . "/$theme")) {
+        if (file_exists("views/$themePath/$theme")) {
             $themePath .= "/$theme";
         } else {
             $themePath .= "/default";
