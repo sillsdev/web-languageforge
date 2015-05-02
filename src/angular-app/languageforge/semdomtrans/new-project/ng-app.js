@@ -33,7 +33,7 @@ angular.module('semdomtrans-new-project',
 .controller('projectSetupCtrl', ['$scope', '$state', '$location', '$window', 'semdomtransSetupService', 'projectService',  'sessionService', '$modal', 'modalService', 'silNoticeService',
 function($scope, $state, $location, $window, semdomSetupApi, projectService, sessionService, $modal, modalService, notice) {
   $scope.languageCode = "";
-  $scope.canCreate = true;
+  $scope.canCreate = false;
   var checksBeingMade = 0;
   semdomSetupApi.getOpenProjects(function(result) {
     if (result.ok) {
@@ -61,14 +61,19 @@ function($scope, $state, $location, $window, semdomSetupApi, projectService, ses
   };
   
   $scope.checkLanguageAvailability = function checkLanguageAvailability() {
-    $scope.canCreate = false;
-    checksBeingMade++;
-    semdomSetupApi.doesProjectExist($scope.languageCode, function(result) {
-      checksBeingMade--;
-      if (result.ok && checksBeingMade == 0) {
-        $scope.canCreate = result.data;
+    if ($scope.languageCode == '') {
+      $scope.canCreate = false;
+    } else {
+      
+      $scope.canCreate = false;
+      checksBeingMade++;
+      semdomSetupApi.doesProjectExist($scope.languageCode, function(result) {
+        checksBeingMade--;
+        if (result.ok && checksBeingMade == 0) {
+          $scope.canCreate = result.data;
+        }
+        });
       }
-      });
     }
   $scope.requestProjectJoin = function requestProjectJoin(project) {
     var request = "Are you sure you want to send a join request to <b>' " + project.projectName + " '</b>";
