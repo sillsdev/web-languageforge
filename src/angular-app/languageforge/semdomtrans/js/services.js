@@ -124,6 +124,7 @@ function($q, editorDataService, api, ss, semdomCache, commentsCache, notice, com
         });
     } else {
       spliceInDto(dtoResult);
+      deferred.resolve();
     }
     
     return deferred.promise;
