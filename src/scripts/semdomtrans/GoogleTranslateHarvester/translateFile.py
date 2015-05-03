@@ -12,13 +12,14 @@ params:
 '''
 def translate(listOfWordsToTranslate, key, to_language="auto", language="en"):
 	link = "https://www.googleapis.com/language/translate/v2?key=%s&source=%s&target=%s" % (key, language, to_language)
+	link = link.encode('utf-8')
 	for word in listOfWordsToTranslate:
 		link = link + "&q=" + word
 	link = link.replace(" ", "+")
-	print link + "\n"
+	print link + '\n'
 	request = urllib2.Request(link)
 	result = urllib2.urlopen(request).read()
-	return json.loads(result)['data']['translations']
+	return json.loads(result.decode('utf-8'))['data']['translations']
 
 '''
 Gets list of target languages for English language
@@ -55,8 +56,9 @@ if __name__ == '__main__':
 			processedLines = lines			
 		
 		f = open(outputPath,'a')
+		print (len(processedLines))
 		# translate and print out using proper utf-8 encoding
-		for i in xrange(0, len(processedLines), 100):				
-			translatedItems = translate(processedLines[i:i+100], sys.argv[2], language)
-			for j in range(i, min(len(processedLines), i+100)):
-				f.write(processedLines[j].encode('utf-8') + "|" + translatedItems[j]['translatedText'].encode('utf-8') + "\n")
+		for i in xrange(0, len(processedLines), 10):			
+			translatedItems = translate(processedLines[i:i+10], sys.argv[2], language)
+			for j in range(i, min(len(processedLines), i+10)):
+				f.write(processedLines[j] + "|" + translatedItems[j%10]['translatedText'].encode('utf-8') + "\n")
