@@ -7,8 +7,8 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     
 
     
-    this.createProject = function createProject(languageCode, callback) {
-      jsonRpc.call('semdom_create_project', [languageCode], function(result) {
+    this.createProject = function createProject(languageCode, languageName, callback) {
+      jsonRpc.call('semdom_create_project', [languageCode, languageName], function(result) {
         callback(result);
       })
     }
@@ -165,11 +165,7 @@ function($q, editorDataService, api, ss, semdomCache, commentsCache, notice, com
     }
     
     return -1;
-  }
-   
-    
-    
- 
+  }  
 
   return {
     itemsTree: itemsTree,

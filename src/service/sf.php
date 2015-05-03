@@ -774,8 +774,8 @@ class sf
      */
 
     // 2015-04 CJH REVIEW: this method should be moved to the semdom project commands (and a test should be written around it).  This method should also assert that a project with that code does not already exist
-    public function semdom_create_project($languageIsoCode) {        
-        return SemDomTransProjectCommands::createProject($languageIsoCode, $this->_userId, $this->_website);
+    public function semdom_create_project($languageIsoCode, $languageName) {        
+        return SemDomTransProjectCommands::createProject($languageIsoCode, $languageName, $this->_userId, $this->_website);
     }
     // -------------------------------- Project Management App Api ----------------------------------
     public function project_management_dto() {
