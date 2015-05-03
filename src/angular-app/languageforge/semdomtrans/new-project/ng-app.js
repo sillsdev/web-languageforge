@@ -56,7 +56,8 @@ function($scope, $state, $location, $window, semdomSetupApi, projectService, ses
     });
     modalInstance.result.then(function(selected) {
       $scope.languageCode = selected.code;
-      $scope.language = selected.language;
+      $scope.languageName = selected.language.name;
+      $scope.checkLanguageAvailability();
     });
   };
   
@@ -85,7 +86,7 @@ function($scope, $state, $location, $window, semdomSetupApi, projectService, ses
   };
   
   $scope.createProject = function createProject() {
-    semdomSetupApi.createProject($scope.languageCode, function(result) {
+    semdomSetupApi.createProject($scope.languageCode, $scope.languageName, function(result) {
         if (result.ok) {
           $window.location = result.data;
         }

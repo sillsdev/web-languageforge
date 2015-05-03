@@ -86,18 +86,17 @@ class SemDomTransProjectModel extends LfProjectModel {
 
     public function preFillFromSourceLanguage() {
         
-        // try and load google translate data (that was harvested by custom script earlier)
-        try {
-            $lines = file(APPPATH . "resources/languageforge/semdomtrans/GoogleTranslateHarvester/semdom-google-translate-$this->languageIsoCode.txt");
-            $googleTranslateData = [];
+        $path = APPPATH . "resources/languageforge/semdomtrans/GoogleTranslateHarvester/semdom-google-translate-$this->languageIsoCode.txt";
+
+        $googleTranslateData = [];
+        if(file_exists($path)) {
+            $lines = file($path);
             foreach ($lines as $line) {
                 $splitLine = explode("|", $line);
                 $googleTranslateData[$splitLine[0]] = $splitLine[1];
             }
-        } catch(Exception $e) {
-            ;
         }
-        
+       
         // cjh review: we may actually want to only prefill from English, if in the future we allow creating projects from incomplete source projects        
         $sourceProject = new SemDomTransProjectModel($this->sourceLanguageProjectId->asString());
 
@@ -150,6 +149,10 @@ class SemDomTransProjectModel extends LfProjectModel {
 
     public static function projectCode($languageCode, $semdomVersion = self::SEMDOM_VERSION) {
         return "semdom-$languageCode-$semdomVersion";
+    }
+    
+    public static function projectName($languageCode, $languageName, $semdomVersion = self::SEMDOM_VERSION) {
+        return "Semantic Domain $languageName ($languageCode) Translation";
     }
 
     public function readByCode($languageCode, $semdomVersion = self::SEMDOM_VERSION) {
