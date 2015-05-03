@@ -4,25 +4,26 @@ angular.module('semdomtrans.review', ['jsonRpc', 'ui.bootstrap', 'bellows.servic
 // DBE controller
 .controller('reviewCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditorDataService', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
 function($scope, $state, $stateParams, editorService, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
-    $scope.control = $scope;
-    if ($scope.displayedItems == undefined) {
-      editorService.refreshEditorData().then(function(result) {
-        calculateDisplayedItems();
-      });      
+    $scope.control = $scope;    
+    
+    $scope.refreshDbeData = function refreshDbeData() {
+      return editorService.refreshEditorData().then(function (result) {
+          editorService.processEditorDto(result).then(function (result) {
+            calculateDisplayedItems();
+          });
+        });
     }
     
-    $scope.refreshDbeData = function refreshDbeData(state) {
-      return editorService.refreshEditorData().then(function (result) {
-        calculateDisplayedItems();
-      })
-    };
+    if ($scope.displayedItems == undefined) {
+      $scope.refreshDbeData();
+    }
     
     function calculateDisplayedItems() {
       $scope.displayedItems = [];
       
       var isCurrentEntryStillInList = false;
       for (var i in $scope.items) {
-        if(doesItemNeedReview($scope.items[i])) {
+        if (doesItemNeedReview($scope.items[i])) {
           $scope.displayedItems.push($scope.items[i]);
           if ($scope.currentEntry != undefined && $scope.currentEntry.id == $scope.items[i].id) {
             isCurrentEntryStillInList = true;
