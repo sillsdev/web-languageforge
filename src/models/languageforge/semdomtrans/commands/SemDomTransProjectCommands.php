@@ -58,10 +58,10 @@ class SemDomTransProjectCommands
         }
     }
 
-    public static function createProject($languageCode, $userId, $website, $semdomVersion = SemDomTransProjectModel::SEMDOM_VERSION) {
+    public static function createProject($languageCode, $languageName, $userId, $website, $semdomVersion = SemDomTransProjectModel::SEMDOM_VERSION) {
 
         $projectCode = SemDomTransProjectModel::projectCode($languageCode, $semdomVersion);
-        $projectName = "Semantic Domain $languageCode Translation";
+        $projectName = SemDomTransProjectModel::projectName($languageCode, $languageName, $semdomVersion);
         $projectID =  ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $userId, $website);
 
         $project = new SemDomTransProjectModel($projectID);
