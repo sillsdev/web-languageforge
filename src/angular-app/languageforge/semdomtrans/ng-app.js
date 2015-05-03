@@ -67,7 +67,38 @@ angular.module('semdomtrans',
    $scope.includedItems = {};
    $scope.loadingDto = false;  
    
-    $scope.rights = {};
+   // permissions stuff
+   $scope.rights = {
+     canEditProject: function canEditProject() {
+       return ss.hasProjectRight(ss.domain.PROJECTS, ss.operation.EDIT);
+     },
+     canEditEntry: function canEditEntry() {
+       return ss.hasProjectRight(ss.domain.ENTRIES, ss.operation.EDIT);
+     },
+     canDeleteEntry: function canDeleteEntry() {
+       return ss.hasProjectRight(ss.domain.ENTRIES, ss.operation.DELETE);
+     },
+     canComment: function canComment() {
+       return ss.hasProjectRight(ss.domain.COMMENTS, ss.operation.CREATE);
+     },
+     canDeleteComment: function canDeleteComment(commentAuthorId) {
+       if (ss.session.userId == commentAuthorId) {
+         return ss.hasProjectRight(ss.domain.COMMENTS, ss.operation.DELETE_OWN);
+       } else {
+         return ss.hasProjectRight(ss.domain.COMMENTS, ss.operation.DELETE);
+       }
+     },
+     canEditComment: function canEditComment(commentAuthorId) {
+       if (ss.session.userId == commentAuthorId) {
+         return ss.hasProjectRight(ss.domain.COMMENTS, ss.operation.EDIT_OWN);
+       } else {
+         return false;
+       }
+     },
+     canUpdateCommentStatus: function canUpdateCommentStatus() {
+       return ss.hasProjectRight(ss.domain.COMMENTS, ss.operation.EDIT);
+     }
+   };
     $scope.project = ss.session.project;
     $scope.projectSettings = ss.session.projectSettings;
     

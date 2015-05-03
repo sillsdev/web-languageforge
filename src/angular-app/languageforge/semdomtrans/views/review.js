@@ -95,39 +95,6 @@ function($scope, $state, $stateParams, editorService, semdomEditApi, sessionServ
       }
     });
     function doesFieldNeedReview(field) {
-      return field.translation != '' && field.status == 1;
+      return field.translation != '' && (field.status == 1 || field.status == 2);
     }
-  
-  // permissions stuff
-    $scope.rights = {
-      canEditProject: function canEditProject() {
-        return sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
-      },
-      canEditEntry: function canEditEntry() {
-        return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.EDIT);
-      },
-      canDeleteEntry: function canDeleteEntry() {
-        return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.DELETE);
-      },
-      canComment: function canComment() {
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.CREATE);
-      },
-      canDeleteComment: function canDeleteComment(commentAuthorId) {
-        if (sessionService.session.userId == commentAuthorId) {
-          return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE_OWN);
-        } else {
-          return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE);
-        }
-      },
-      canEditComment: function canEditComment(commentAuthorId) {
-        if (sessionService.session.userId == commentAuthorId) {
-          return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT_OWN);
-        } else {
-          return false;
-        }
-      },
-      canUpdateCommentStatus: function canUpdateCommentStatus() {
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT);
-      }
-    };
 }]);
