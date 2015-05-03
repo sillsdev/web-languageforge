@@ -8,6 +8,7 @@ use models\languageforge\semdomtrans\SemDomTransItemModel;
 use models\languageforge\semdomtrans\SemDomTransQuestion;
 use models\mapper\ArrayOf;
 use models\mapper\JsonEncoder;
+use models\languageforge\semdomtrans\SemDomTransStatus;
 class SemDomXMLExporter {
     
     private $_projectModel;
@@ -20,7 +21,7 @@ class SemDomXMLExporter {
     
     private $_isEnglish;
     
-    private $_useTemplateXML;
+    private $_recreateXMLFile;
     
     /**
      * 
@@ -28,14 +29,14 @@ class SemDomXMLExporter {
      * @param SemDomTransProjectModel $projectModel
      * @param bool $testMode
      */
-    public function __construct($projectModel, $testMode = true, $isEnglish = true, $useTemplateXML = false) {
+    public function __construct($projectModel, $testMode = true, $isEnglish = true, $recreateXMLFile = false) {
 
         $this->_xml = simplexml_load_file($projectModel->xmlFilePath);
         $this->_projectModel = $projectModel;
         $this->_runForReal = ! $testMode;
         $this->_lang = $projectModel->languageIsoCode;
         $this->_isEnglish = $isEnglish;
-        $this->_useTemplateXML = $useTemplateXML;
+        $this->_recreateXMLFile = $recreateXMLFile;
     }
     
     public function run() {
@@ -93,7 +94,9 @@ class SemDomXMLExporter {
         $s = new SemDomTransItemModel($this->_projectModel);
         $s->readByProperty("xmlGuid", $guid);        
         $abbreviation = $this->_getPathVal($domainNode->xpath("Abbreviation/AUni[@ws='en']"));
-        if (!$this->_useTemplateXML) {
+        // if XML file does not have to be recreated, just assign to appropriate fields
+        // if XML has to be recreated, then add appropriate children nodes to XML file
+        if (!$this->_recreateXMLFile) {
             $name = $domainNode->xpath("Name/AUni[@ws='{$this->_lang}']")[0];
             $description =  $domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']")[0];
             
@@ -130,14 +133,17 @@ class SemDomXMLExporter {
 
             foreach ( $questionsXML->children() as $questionXML ) {
                 
-
-                if (!$this->_useTemplateXML) {        
+                // if XML file does not have to be recreated, just assign to appropriate fields
+                // if XML has to be recreated, then add appropriate children nodes to XML file
+                if (!$this->_recreateXMLFile) {        
                     $question = $this->_getNodeOrNull ( $questionXML->xpath ( "Question/AUni[@ws='{$this->_lang}']" ) );
                     $terms = $this->_getNodeOrNull ( $questionXML->xpath ( "ExampleWords/AUni[@ws='{$this->_lang}']"));
-                    if($question != null) {
+                    if($question != null &&  $s->questions[$index]->question->status) {
                         $question[0] = $s->questions[$index]->question->translation;
+                    } else {
+                        $question[0] = '';
                     }
-                    if($terms != null) {
+                    if($terms != null && $s->questions[$index]->question->status) {
                         $terms[0] = $s->questions[$index]->terms->translation;
                     }
                 } else {
@@ -146,12 +152,21 @@ class SemDomXMLExporter {
                         if (!empty($question)) {
                             $questionChild = clone($question->AUni);                            
                             $questionChild["ws"] = $this->_lang;
-                            $questionChild[0] = $s->questions[$index]->question->translation;
+                            if ($s->questions[$index]->question->status == SemDomTransStatus::Approved) {
+                                $questionChild[0] = $s->questions[$index]->question->translation;
+                            } else {
+                                $questionsChild[0] = '';
+                            }
                             SemDomXMLExporter::_addChild($question, $questionChild);
                         }
                          if (!empty($terms)) {
                             $termsChild = clone($terms->AUni);
                             $termsChild["ws"] = $this->_lang;
+                            if ($s->questions[$index]->terms->status == SemDomTransStatus::Approved) {
+                                $termsChild[0] = $s->questions[$index]->question->translation;
+                            } else  {
+                                $termsChild[0] = '';
+                            }
                             $termsChild[0] = $s->questions[$index]->terms->translation;
                             SemDomXMLExporter::_addChild($terms, $termsChild);
                         }
