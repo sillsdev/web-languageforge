@@ -34,6 +34,7 @@ angular.module('semdomtrans-new-project',
 function($scope, $state, $location, $window, semdomSetupApi, projectService, sessionService, $modal, modalService, notice) {
   $scope.languageCode = "";
   $scope.canCreate = false;
+  $scope.languageHasGoogleTranslateData = false;
   var checksBeingMade = 0;
   semdomSetupApi.getOpenProjects(function(result) {
     if (result.ok) {
@@ -75,6 +76,11 @@ function($scope, $state, $location, $window, semdomSetupApi, projectService, ses
         }
         });
       }
+
+    semdomSetupApi.doesGoogleTranslateDataExist($scope.languageCode, function(result) {
+      $scope.languageHasGoogleTranslateData = result.data;
+     });
+    
     }
   $scope.requestProjectJoin = function requestProjectJoin(project) {
     var request = "Are you sure you want to send a join request to <b>' " + project.projectName + " '</b>";
@@ -85,8 +91,8 @@ function($scope, $state, $location, $window, semdomSetupApi, projectService, ses
     });
   };
   
-  $scope.createProject = function createProject() {
-    semdomSetupApi.createProject($scope.languageCode, $scope.languageName, function(result) {
+  $scope.createProject = function createProject(useGoogleTranslateData) {
+    semdomSetupApi.createProject($scope.languageCode, $scope.languageName, useGoogleTranslateData,  function(result) {
         if (result.ok) {
           $window.location = result.data;
         }

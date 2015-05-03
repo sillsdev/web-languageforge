@@ -7,8 +7,8 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     
 
     
-    this.createProject = function createProject(languageCode, languageName, callback) {
-      jsonRpc.call('semdom_create_project', [languageCode, languageName], function(result) {
+    this.createProject = function createProject(languageCode, languageName, useGoogleTranslateData, callback) {
+      jsonRpc.call('semdom_create_project', [languageCode, languageName, useGoogleTranslateData], function(result) {
         callback(result);
       })
     }
@@ -24,6 +24,12 @@ angular.module('semdomtrans.services', ['jsonRpc'])
             callback(result);
       });
     }
+    this.doesGoogleTranslateDataExist = function doesGoogleTranslateDataExist(languageCode, callback) {
+      jsonRpc.call('semdom_does_googletranslatedata_exist', [languageCode], function(result) {
+            callback(result);
+      });
+    }
+    
   }])
   .service('semdomtransEditService', ['jsonRpc',
   function(jsonRpc) {
@@ -108,9 +114,7 @@ function($q, editorDataService, api, ss, semdomCache, commentsCache, notice, com
         deferred.resolve(result);
     });
     return deferred.promise;
-  }
-  
-  
+  }  
 
   function processEditorDto(dtoResult) {
     var deferred = $q.defer();
