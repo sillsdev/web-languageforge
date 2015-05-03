@@ -84,12 +84,12 @@ class SemDomTransProjectModel extends LfProjectModel {
         $importer->run();
     }
 
-    public function preFillFromSourceLanguage() {
+    public function preFillFromSourceLanguage($useGoogleTranslateData = true) {
         
         $path = APPPATH . "resources/languageforge/semdomtrans/GoogleTranslateHarvester/semdom-google-translate-$this->languageIsoCode.txt";
 
         $googleTranslateData = [];
-        if(file_exists($path)) {
+        if($useGoogleTranslateData && file_exists($path)) {
             $lines = file($path);
             foreach ($lines as $line) {
                 $splitLine = explode("|", $line);

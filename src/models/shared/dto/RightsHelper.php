@@ -137,6 +137,8 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
             case 'project_sendJoinRequest':
                 return true;
+            case 'semdom_does_googletranslatedata_exist':
+                return true;
             case 'project_acceptJoinRequest':
                 returN $this->userHasProjectRight(Domain::USERS + OPERATION::EDIT);
             case 'project_denyJoinRequest':
