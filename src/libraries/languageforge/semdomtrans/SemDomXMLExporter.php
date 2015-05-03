@@ -100,20 +100,20 @@ class SemDomXMLExporter {
             $name = $domainNode->xpath("Name/AUni[@ws='{$this->_lang}']")[0];
             $description =  $domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']")[0];
             
-            $name[0] = $s->name->translation;
-            $description[0] = $s->description->translation;
+            $name[0] = SemDomTransStatus::isApproved($s->name->status) ? $s->name->translation : '';
+            $description[0] = SemDomTransStatus::isApproved($s->description->status) ? $s->description->translation : '';
         } else {
             $name = $domainNode->Name;
             $nameChild = clone($domainNode->Name->AUni);
             $nameChild["ws"] = $this->_lang;
-            $nameChild[0] = $s->name->translation;
+            $nameChild[0] = SemDomTransStatus::isApproved($s->name->status) ? $s->name->translation : '';
             SemDomXMLExporter::_addChild($name, $nameChild);
             
             $description = $domainNode->Description;
             $descriptionChild = clone($domainNode->Description->AStr);
             $descriptionChild["ws"] = $this->_lang;
             $descriptionChild->Run["ws"] = $this->_lang;
-            $descriptionChild->Run[0] = $s->description->translation;
+            $descriptionChild->Run[0] = SemDomTransStatus::isApproved($s->description->status) ? $s->description->translation : '';
             SemDomXMLExporter::_addChild($description, $descriptionChild);
         }
         
@@ -138,12 +138,12 @@ class SemDomXMLExporter {
                 if (!$this->_recreateXMLFile) {        
                     $question = $this->_getNodeOrNull ( $questionXML->xpath ( "Question/AUni[@ws='{$this->_lang}']" ) );
                     $terms = $this->_getNodeOrNull ( $questionXML->xpath ( "ExampleWords/AUni[@ws='{$this->_lang}']"));
-                    if($question != null &&  $s->questions[$index]->question->status) {
+                    if($question != null &&  SemDomTransStatus::isApproved($s->questions[$index]->question->status)) {
                         $question[0] = $s->questions[$index]->question->translation;
                     } else {
                         $question[0] = '';
                     }
-                    if($terms != null && $s->questions[$index]->question->status) {
+                    if($terms != null && SemDomTransStatus::isApproved($s->questions[$index]->question->status)) {
                         $terms[0] = $s->questions[$index]->terms->translation;
                     }
                 } else {
@@ -152,7 +152,7 @@ class SemDomXMLExporter {
                         if (!empty($question)) {
                             $questionChild = clone($question->AUni);                            
                             $questionChild["ws"] = $this->_lang;
-                            if ($s->questions[$index]->question->status == SemDomTransStatus::Approved) {
+                            if (SemDomTransStatus::isApproved($s->questions[$index]->question->status)) {
                                 $questionChild[0] = $s->questions[$index]->question->translation;
                             } else {
                                 $questionsChild[0] = '';
@@ -162,7 +162,7 @@ class SemDomXMLExporter {
                          if (!empty($terms)) {
                             $termsChild = clone($terms->AUni);
                             $termsChild["ws"] = $this->_lang;
-                            if ($s->questions[$index]->terms->status == SemDomTransStatus::Approved) {
+                            if (SemDomTransStatus::isApproved($s->questions[$index]->terms->status)) {
                                 $termsChild[0] = $s->questions[$index]->question->translation;
                             } else  {
                                 $termsChild[0] = '';
