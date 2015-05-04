@@ -1,0 +1,28 @@
+Universe, creation|ਸ੍ਰਿਸ਼ਟੀ, ਸ੍ਰਿਸ਼ਟੀ
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|ਬ੍ਰਹਿਮੰਡ ਦੀ ਗੱਲ ਜਨਰਲ ਸ਼ਬਦ ਇਸ ਡੋਮੇਨ ਵਰਤੋ. ਕੁਝ ਭਾਸ਼ਾ ਬ੍ਰਹਿਮੰਡ ਦੇ ਲਈ ਇਕ ਵੀ ਸ਼ਬਦ ਦਾ ਹੈ, ਨਾ ਹੋ ਸਕਦਾ ਹੈ ਅਤੇ ਅਜਿਹੇ ਅਜਿਹੇ ਤੁਹਾਨੂੰ ਹੋ ਸਕਦਾ ਹੈ &#39;&#39; ਹਰ ਚੀਜ਼ ਦੇ ਤੌਰ &#39;&#39; ਬਾਰਿਸ਼, ਮਿੱਟੀ, ਅਤੇ ਅਸਮਾਨ ਦੇ ਕੁਝ &#39;ਜ&#39; ਅਸਮਾਨ, ਜ਼ਮੀਨ, ਅਤੇ ਪਾਣੀ &#39;ਜ ਜਾਣਕਾਰੀ ਵਾਕੰਸ਼ ਦੇ ਤੌਰ ਤੇ ਇੱਕ ਸ਼ਬਦ ਵਰਤਣ ਲਈ ਹੋ ਸਕਦਾ ਹੈ ਮੌਜੂਦ ਹੈ, ਜੋ ਕਿ &#39;ਜ&#39; ਸਭ ਕੁਝ &#39;ਵੇਖੋ.
+(1) What words refer to everything we can see?|(1) ਸਾਨੂੰ ਸਭ ਕੁਝ ਕਰਨ ਲਈ ਕਿਹੜੇ ਸ਼ਬਦ ਦੀ ਜਸਿਾਰਸ਼ ਦੇਖ ਸਕਦਾ ਹੈ?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|ਮੌਜੂਦ ਹੈ, ਜੋ ਕਿ ਬ੍ਰਹਿਮੰਡ, ਸ੍ਰਿਸ਼ਟੀ, ਬ੍ਰਹਿਮੰਡ, ਸਵਰਗ ਅਤੇ ਧਰਤੀ ਦੇ, macrocosm, ਹਰ ਚੀਜ਼
+Sky|Sky
+Use this domain for words related to the sky.|ਅਸਮਾਨ ਸਬੰਧਤ ਸ਼ਬਦ ਲਈ ਇਸ ਡੋਮੇਨ ਵਰਤੋ.
+(1) What words are used to refer to the sky?|(1) ਕੀ ਸ਼ਬਦ ਅਸਮਾਨ ਨੂੰ ਦਰਸਾਉਣ ਲਈ ਵਰਤੇ ਗਏ ਹਨ?
+sky, firmament, canopy, vault|ਅਸਮਾਨ, firmament, ਗੱਡਣੀ, ਵਾਲਟ
+(2) What words refer to the air around the earth?|(2) ਕਿਹੜੇ ਸ਼ਬਦ ਨੂੰ ਧਰਤੀ ਦੇ ਆਲੇ-ਦੁਆਲੇ ਹਵਾ ਵੇਖੋ?
+air, atmosphere, airspace, stratosphere, ozone layer|ਹਵਾ, ਮਾਹੌਲ, ਹਵਾਈ ਖੇਤਰ, stratosphere, ਓਜ਼ੋਨ ਪਰਤ
+(3) What words are used to refer to the place or area beyond the sky?|(3) ਕਿਹੜੇ ਸ਼ਬਦ ਅਸਮਾਨ ਪਰੇ ਜਗ੍ਹਾ ਜ ਖੇਤਰ ਨੂੰ ਦਰਸਾਉਣ ਲਈ ਵਰਤਿਆ ਗਿਆ ਹੈ?
+heaven, space, outer space, ether, void, solar system|ਸਵਰਗ, ਸਪੇਸ, ਬਾਹਰੀ ਜਗ੍ਹਾ, ਅਸਮਾਨ, ਬੇਕਾਰ, ਸੂਰਜੀ ਸਿਸਟਮ
+(4) What words describe something in the sky or something that happens in the sky?|(4) ਕਿਹੜੇ ਸ਼ਬਦ ਅਕਾਸ਼ ਵਿੱਚ ਵਾਪਰਦਾ ਹੈ, ਜੋ ਕਿ ਅਸਮਾਨ ਜ ਕੋਈ ਚੀਜ਼ ਵਿਚ ਕੋਈ ਚੀਜ਼ ਦਾ ਵਰਣਨ?
+aerial, heavenly, atmospheric, stratospheric, celestial,|, ਸਵਰਗੀ,, ਏਰੀਅਲ ਸਵਰਗੀ, ਹਵਾ, stratospheric
+(5) What words describe the appearance of the sky?|(5) ਕਿਹੜੇ ਸ਼ਬਦ ਅਕਾਸ਼ ਦੇ ਦਿੱਖ ਦਾ ਵਰਣਨ?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|ਨੀਲਾ, ਸਾਫ, ਕਾਲੇ (ਰਾਤ ਨੂੰ), ਬੱਦਲ, ਬੱਦਲ ਭਰਿਆ, ਸ਼ਾਨਦਾਰ, ਹਨੇਰਾ, ਰਾਤ ​​ਨੂੰ ਅਸਮਾਨ, ਦਹਿਲਾਉਣ, ਮੁਸ਼ਕਲ, ਹਨੇਰਾ, ਸਟਾਰ ਜੜੇ
+(6) What words refer to the edge of the sky where it meets the ground?|(6) ਕਿਹੜੇ ਸ਼ਬਦ ਜ਼ਮੀਨ ਨੂੰ ਇਸ ਨੂੰ ਪੂਰਾ ਕਰਦਾ ਹੈ, ਜਿੱਥੇ ਅਕਾਸ਼ ਦੇ ਕਿਨਾਰੇ ਵੇਖੋ?
+horizon, skyline|ਰੁਖ, ਦਿੱਖ
+(7) What words refer to something in the sky?|(7) ਕਿਹੜੇ ਸ਼ਬਦ ਅਸਮਾਨ ਵਿਚ ਕਿਸੇ ਚੀਜ਼ ਨੂੰ ਵੇਖੋ?
+heavenly body, celestial body, luminary|ਸਵਰਗੀ ਸਰੀਰ ਨੂੰ, ਸਵਰਗੀ ਸਰੀਰ ਨੂੰ, ਉਜਾਲੇ
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) ਕਿਹੜੇ ਸ਼ਬਦ ਉੱਤਰੀ (ਜ ਦੱਖਣੀ) ਅਕਾਸ਼ ਵਿੱਚ ਵਿਖਾਈ ਹੈ, ਜੋ ਕਿ ਰੌਸ਼ਨੀ ਵੇਖੋ?
+aurora borealis, northern lights|Aurora borealis, ਉੱਤਰੀ ਰੌਸ਼ਨੀ
+(9) What words refer to something being in the sky?|(9) ਕਿਹੜੇ ਸ਼ਬਦ ਅਕਾਸ਼ ਵਿੱਚ ਹੋਣ ਨੂੰ ਕੁਝ ਕਰਨ ਲਈ ਵੇਖੋ?
+aloft, up in the sky, up in the air,|Aloft, ਨੂੰ ਅਸਮਾਨ ਵਿੱਚ, ਹਵਾ ਵਿਚ,
+Sun|Sun
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|ਸੂਰਜ ਦੀ ਸਬੰਧਤ ਸ਼ਬਦ ਲਈ ਇਸ ਡੋਮੇਨ ਵਰਤੋ. ਸੂਰਜ ਦੀ ਤਿੰਨ ਬੁਨਿਆਦੀ ਕੁਝ ਕਰਦਾ ਹੈ. ਇਹ ਇਸ ਨੂੰ ਚਾਨਣ ਨੂੰ ਦਿੰਦਾ ਹੈ, ਭੇਜਦੀ ਹੈ, ਅਤੇ ਇਸ ਨੂੰ ਗਰਮੀ ਦਿੰਦਾ ਹੈ. ਇਹ ਤਿੰਨ ਕਾਰਵਾਈ ਇਸ ਡੋਮੇਨ ਵਿੱਚ ਸ਼ਬਦ ਦੀ ਸਭ ਦੇ ਮਤਲਬ ਵਿਚ ਸ਼ਾਮਲ ਕਰ ਰਹੇ ਹਨ. ਸੂਰਜ ਦੀ ਦੁਮੇਲ ਹੇਠ ਭੇਜਦੀ ਹੈ, ਇਸ ਲਈ, ਬਹੁਤ ਸਾਰੇ ਸ਼ਬਦ ਇਸ ਨੂੰ ਸੈੱਟ ਕਰਨ ਜ ਵਧ ਵੇਖੋ. ਸੂਰਜ ਦੀ ਉਤੇਜਿਤ ਉਪਰ ਹੈ, ਇਸ ਲਈ, ਬਹੁਤ ਸਾਰੇ ਸ਼ਬਦ ਉਤੇਜਿਤ ਹੈ ਅਤੇ ਇਸ ਦੇ ਚਾਨਣ ਨੂੰ ਰੋਕ ਉਤੇਜਿਤ ਪਿੱਛੇ ਵਧਣਾ ਇਸ ਨੂੰ ਕਰਨ ਲਈ ਵੇਖੋ. ਸੂਰਜ ਦੀ ਰੌਸ਼ਨੀ ਅਤੇ ਗਰਮੀ ਨੂੰ ਵੀ ਸੈਕੰਡਰੀ ਪ੍ਰਭਾਵ ਪੈਦਾ. ਸੂਰਜ ਦੀ ਪੌਦੇ ਵਾਧਾ ਕਰਨ ਲਈ ਕਾਰਨ ਬਣਦੀ ਹੈ, ਅਤੇ ਇਸ ਨੂੰ ਕੁਝ ਕਰਨ ਲਈ ਨੁਕਸਾਨ ਦਾ ਕਾਰਨ ਬਣਦੀ ਹੈ.
+(1) What words refer to the sun?|(1) ਕਿਹੜੇ ਸ਼ਬਦ ਨੂੰ ਸੂਰਜ ਵੇਖੋ?
+sun, solar, sol, daystar, our star|ਸੂਰਜ, ਸੋਲਰ, Sol, ਦਾ ਤਾਰਾ, ਸਾਡੇ ਸਟਾਰ

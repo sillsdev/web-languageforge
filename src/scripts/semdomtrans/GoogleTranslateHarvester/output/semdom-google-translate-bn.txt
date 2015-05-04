@@ -1,0 +1,28 @@
+Universe, creation|ইউনিভার্স, সৃষ্টি
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|শারীরিক মহাবিশ্বের উল্লেখ সাধারণ শব্দের জন্য এই ডোমেইন ব্যবহার করুন. কিছু ভাষায় মহাবিশ্ব জন্য একটি একক শব্দ নাও থাকতে পারে এবং যেমন আপনি যা করতে পারেন &#39;সবকিছু&#39; বৃষ্টি, মাটি, আকাশের কিছু &#39;বা&#39; আকাশ, জমি, এবং জল &#39;বা একটি বর্ণনামূলক ফ্রেজ হিসাবে শব্দবন্ধের ব্যবহার করতে হতে পারে বিদ্যমান &#39;বা&#39; সবকিছু &#39;দেখতে.
+(1) What words refer to everything we can see?|(1) আমরা সবকিছু কি শব্দ পড়ুন দেখতে পারেন?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|বিদ্যমান মহাবিশ্বের সৃষ্টি, নিসর্গ, আকাশ ও পৃথিবীর প্রতিলক্ষ্য, বিশ্বাব্রক্ষ্মাণ্ড, সবকিছু
+Sky|আকাশ
+Use this domain for words related to the sky.|আকাশ সম্পর্কিত শব্দ জন্য এই ডোমেইন ব্যবহার করুন.
+(1) What words are used to refer to the sky?|(1) কি শব্দ আকাশ নির্দেশ করতে ব্যবহার করা হয়?
+sky, firmament, canopy, vault|আকাশ, মহাকাশ, শামিয়ানা, ভল্টের
+(2) What words refer to the air around the earth?|(2) কি শব্দ পৃথিবীর চারপাশে বায়ু পড়ুন?
+air, atmosphere, airspace, stratosphere, ozone layer|এয়ার, বায়ুমণ্ডল, আকাশসীমা, স্ট্রাটস্ফিয়ারে, ওজোন স্তর
+(3) What words are used to refer to the place or area beyond the sky?|(3) কোন কথাগুলো আকাশ অতিক্রম জায়গা বা এলাকায় পড়ুন ব্যবহার করা হয়?
+heaven, space, outer space, ether, void, solar system|স্বর্গ, স্থান, মহাকাশ, থার, অকার্যকর, সৌর সিস্টেম
+(4) What words describe something in the sky or something that happens in the sky?|(4) শব্দ আকাশে যে এরকম আকাশ বা কিছু কিছু বর্ণনা?
+aerial, heavenly, atmospheric, stratospheric, celestial,|, স্বর্গীয়, বায়বীয় স্বর্গীয়, বায়ুমণ্ডলীয়, স্ট্রাটস্ফিয়ারিক
+(5) What words describe the appearance of the sky?|(5) কোন কথাগুলো আকাশের অবস্থা বর্ণনা?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|নীল, পরিষ্কার, কালো (নাইট), মেঘলা, মেঘ ভরা, উজ্জ্বল, অন্ধকার, রাতের আকাশে, পূর্বলক্ষণ, দুর্যোগপূর্ণ, অন্ধকার, তারকা খচিত
+(6) What words refer to the edge of the sky where it meets the ground?|(6) কোন কথাগুলো স্থল এটা পূরণ যেখানে আকাশ প্রান্ত পড়ুন?
+horizon, skyline|দিগন্ত, দিগন্ত
+(7) What words refer to something in the sky?|(7) আপনি কি শব্দ আকাশে কিছু পড়ুন?
+heavenly body, celestial body, luminary|জ্যোতিষ্ক, স্বর্গীয় শরীরের, জ্যোতিষ্ক
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) কোন কথাগুলো উত্তর (বা দক্ষিণ) আকাশে প্রদর্শিত লাইট পড়ুন?
+aurora borealis, northern lights|অররা বোরিয়ালিস, সুমেরু প্রভা
+(9) What words refer to something being in the sky?|(9) কি শব্দ আকাশে হচ্ছে কিছু পড়ুন?
+aloft, up in the sky, up in the air,|শূন্যে, আপ আকাশে, বাতাসে আপ,
+Sun|সূর্য
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|সূর্য সম্পর্কিত শব্দ জন্য এই ডোমেইন ব্যবহার করুন. সূর্য তিনটি মৌলিক জিনিস আছে. এটা আলো দেয়, চলে আসে, এবং এটি তাপ দেয়. এই তিনটি কর্ম এই ডোমেইন শব্দের সবচেয়ে অর্থ জড়িত হয়. সূর্য দিগন্ত নীচের চলে আসে যেহেতু, অনেক শব্দ এটি সেট বা ক্রমবর্ধমান পড়ুন. সূর্য মেঘের উপরে যেহেতু, অনেক শব্দ মেঘ এবং তার হালকা ব্লক মেঘ পিছনে চলন্ত এটি পড়ুন. সূর্যের আলো এবং তাপ মাধ্যমিক প্রভাব উত্পাদন. সূর্য গাছপালা হত্তয়া কারণ, এবং এটা কিছু ক্ষতির কারণ.
+(1) What words refer to the sun?|(1) কি শব্দ সূর্য পড়ুন?
+sun, solar, sol, daystar, our star|সূর্য, সৌর, Sol, নক্ষত্র, আমাদের তারকা

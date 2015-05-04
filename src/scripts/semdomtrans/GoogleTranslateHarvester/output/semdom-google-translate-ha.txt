@@ -1,0 +1,28 @@
+Universe, creation|Sararin duniya, halittar
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Amfani da wannan yanki ga general kalmomi nufin jiki sararin samaniya. Wasu harsuna iya ba su da guda Kalmar da sararin samaniya da kuma na iya yi amfani da kalmar kamar &#39;ruwan sama, ƙasa, da kuma abubuwa na sama&#39; ko &#39;sama, ƙasa, da ruwa&#39; ko siffatawa magana kamar &#39;abin da kuke iya ganin &#39;ko&#39; duk abin da ta wanzu &#39;.
+(1) What words refer to everything we can see?|(1) Abin da kalmomi koma zuwa duk abin da za mu iya gani?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|sararin duniya, halittar, halittu, sama da ƙasa, macrocosm, duk abin da ta wanzu
+Sky|Sky
+Use this domain for words related to the sky.|Amfani da wannan yanki ga kalmomi alaka da sama.
+(1) What words are used to refer to the sky?|(1) Abin da kalmomi da ake amfani da su koma zuwa sama?
+sky, firmament, canopy, vault|sama, sararin, alfarwa, vault
+(2) What words refer to the air around the earth?|(2) Abin da kalmomi koma zuwa sararin sama a kusa da ƙasa?
+air, atmosphere, airspace, stratosphere, ozone layer|air, yanayi, sararin samaniyar, stratosphere, lemar sararin samaniya Layer
+(3) What words are used to refer to the place or area beyond the sky?|(3) Abin da kalmomi da ake amfani da su koma zuwa wuri ko yankin bayan sama?
+heaven, space, outer space, ether, void, solar system|Sama, sarari, m sarari, ether, wõfintattu, hasken rana da tsarin
+(4) What words describe something in the sky or something that happens in the sky?|(4) Me kalmomi bayyana wani abu a cikin sama ko wani abu da ya faru a sama?
+aerial, heavenly, atmospheric, stratospheric, celestial,|m, na sama, na yanayi, stratospheric, wani sarari suKe,
+(5) What words describe the appearance of the sky?|(5) Abin da kalmomi bayyana bayyanar sama?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|blue, bayyanannu, baki (dare), m, girgije cika, m, m, dare sama, foreboding, m, m, star studded
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Abin da kalmomi koma zuwa gefen sama inda ya gana da ƙasa?
+horizon, skyline|sararin sama, Skyline
+(7) What words refer to something in the sky?|(7) Abin da kalmomi koma zuwa wani abu a cikin sama?
+heavenly body, celestial body, luminary|samaniya jiki, wani sarari suKe jiki, luminary
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) Abin da kalmomi koma zuwa hasken wuta da ya bayyana a arewacin (ko kudancin) sama?
+aurora borealis, northern lights|Aurora borealis, arewacin hasken wuta
+(9) What words refer to something being in the sky?|(9) Abin da kalmomi koma zuwa wani abu kasancewa a cikin sama?
+aloft, up in the sky, up in the air,|aloft, har a sama, har a cikin iska,
+Sun|Sun
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Amfani da wannan yanki ga kalmomi alaka da rãnã. Rãnã ya aikata uku na asali abubuwa. Shi motsa, shi ya ba da haske, sai ta bãyar da zafin rana. Wadannan ayyuka guda uku da ake da hannu a cikin ma&#39;ana da mafi yawan kalmomi a cikin wannan yanki. Tun da rana motsa kasa da sararin sama, da yawa kalmomi koma zuwa ta kafa ko tanã fita. Tun da rana yana Sama da girgije, da yawa kalmomi koma zuwa shi motsi a baya da girgije da girgije tarewa da haske. Rãnã ta haske da zafin rana ma samar da sakandare effects. Rãnã sa shuke-shuke da girma, kuma shi yana sa lalacewar abubuwa.
+(1) What words refer to the sun?|(1) Abin da kalmomi koma zuwa da rana?
+sun, solar, sol, daystar, our star|rãnã, hasken rana, Sol, daystar, mu star

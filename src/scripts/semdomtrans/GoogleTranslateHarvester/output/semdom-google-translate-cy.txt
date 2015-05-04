@@ -1,0 +1,28 @@
+Universe, creation|Bydysawd, creu
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Defnyddiwch y parth hwn am eiriau cyffredinol yn cyfeirio at y bydysawd corfforol. Efallai na fydd rhai ieithoedd gael gair sengl ar gyfer y bydysawd ac efallai y bydd rhaid defnyddio ymadrodd fel &#39;glaw, pridd, a phethau o&#39;r awyr&#39; neu &#39;awyr, tir a dŵr&#39; neu ymadrodd disgrifiadol megis &#39;popeth y gallwch gweler &#39;neu&#39; popeth sy&#39;n bodoli &#39;.
+(1) What words refer to everything we can see?|(1) Pa eiriau yn cyfeirio at bopeth y gallwn ei weld?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|bydysawd, creu, cosmos, nef a daear, macrocosm, popeth sy&#39;n bodoli
+Sky|Sky
+Use this domain for words related to the sky.|Defnyddiwch y parth hwn am eiriau yn ymwneud â&#39;r awyr.
+(1) What words are used to refer to the sky?|(1) Pa eiriau a ddefnyddir i gyfeirio at yr awyr?
+sky, firmament, canopy, vault|awyr, ffurfafen, canopi, gladdgell
+(2) What words refer to the air around the earth?|(2) Pa eiriau yn cyfeirio at yr awyr o amgylch y ddaear?
+air, atmosphere, airspace, stratosphere, ozone layer|aer, atmosffer, gofod awyr, stratosffer, haen oson
+(3) What words are used to refer to the place or area beyond the sky?|(3) Pa eiriau yn cael eu defnyddio i gyfeirio at y lle neu&#39;r ardal y tu hwnt i&#39;r awyr?
+heaven, space, outer space, ether, void, solar system|y nef, gofod, gofod allanol, ether, system ddi-rym, yr haul
+(4) What words describe something in the sky or something that happens in the sky?|(4) Pa eiriau ddisgrifio rhywbeth yn yr awyr neu rywbeth sy&#39;n digwydd yn yr awyr?
+aerial, heavenly, atmospheric, stratospheric, celestial,|o&#39;r awyr, nefol, atmosfferig, stratosfferig, nefol,
+(5) What words describe the appearance of the sky?|(5) Pa eiriau yn disgrifio ymddangosiad yr awyr?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|glas, yn glir du (nos),, cymylog, cwmwl llenwi, gwych tywyll, awyr, y nos, lwm, stormus, tywyll, seren serennog
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Pa eiriau yn cyfeirio at ymyl yr awyr lle mae&#39;n cwrdd â&#39;r llawr?
+horizon, skyline|gorwel, nenlinell
+(7) What words refer to something in the sky?|(7) Pa eiriau yn cyfeirio at rywbeth yn yr awyr?
+heavenly body, celestial body, luminary|corff nefol, corff nefol, luminary
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) Pa eiriau yn cyfeirio at y goleuadau sy&#39;n ymddangos yn y gogledd (neu&#39;r deheuol) awyr?
+aurora borealis, northern lights|Aurora Borealis, goleuadau gogleddol
+(9) What words refer to something being in the sky?|(9) Pa eiriau yn cyfeirio at rywbeth fod yn yr awyr?
+aloft, up in the sky, up in the air,|aloft, i fyny yn yr awyr, i fyny yn yr awyr,
+Sun|Sun
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Defnyddiwch y parth hwn am eiriau yn ymwneud â&#39;r haul. Mae&#39;r haul yn gwneud tri pheth sylfaenol. Mae&#39;n symud, mae&#39;n rhoi golau, ac mae&#39;n rhoi gwres. Mae&#39;r tri camau gweithredu yn cael eu cymryd rhan yn y ystyron y rhan fwyaf o&#39;r geiriau yn y parth hwn. Ers yr haul yn symud o dan y gorwel, mae llawer o eiriau yn cyfeirio ato gosod neu&#39;n cynyddu. Gan fod yr haul yn uwch na&#39;r cymylau, mae llawer o eiriau yn cyfeirio ato yn symud y tu ôl i&#39;r cymylau a&#39;r cymylau blocio ei goleuni. Golau a gwres yr haul hefyd yn cynhyrchu effeithiau eilaidd. Mae&#39;r haul yn achosi planhigion i dyfu, ac mae&#39;n achosi difrod i bethau.
+(1) What words refer to the sun?|(1) Pa eiriau yn cyfeirio at yr haul?
+sun, solar, sol, daystar, our star|haul, solar, sol, Daystar, mae ein seren

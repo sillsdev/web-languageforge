@@ -1,0 +1,28 @@
+Universe, creation|Visata kūrimas
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Naudokite šį domeną bendrųjų žodžių, žyminčių fizinės visatos. Kai kurios kalbos negali turėti vieną žodį visatos ir gali tekti naudoti frazę, kaip antai &quot;lietus, dirvoje, ir ką dangaus&quot; arba &quot;dangus, žemė ir vanduo&quot; arba aprašomajame formuluotė: &quot;Viskas, ką gali pamatyti &quot;arba&quot; viską, kas egzistuoja &quot;.
+(1) What words refer to everything we can see?|(1) Kokiais žodžiais kreiptis į ką mes matome?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|Visata, kūrimas, kosmosas, dangus ir žemė, Visata, viskas, kas egzistuoja
+Sky|Dangus
+Use this domain for words related to the sky.|Naudokite šį domeną žodžių, susijusių su dangumi.
+(1) What words are used to refer to the sky?|(1) Kas žodžiai vartojamas į dangų?
+sky, firmament, canopy, vault|dangus, skliautas, baldakimu, skliautas
+(2) What words refer to the air around the earth?|(2) Kokiais žodžiais kreiptis į aplink Žemę oro?
+air, atmosphere, airspace, stratosphere, ozone layer|oras, atmosfera, oro erdvės, stratosferos ozono sluoksnio
+(3) What words are used to refer to the place or area beyond the sky?|(3) Kas žodžiai vartojamas vietoje ar teritorijoje už dangų?
+heaven, space, outer space, ether, void, solar system|dangus, erdvė, kosmoso, eteris, tuščia, Saulės sistema
+(4) What words describe something in the sky or something that happens in the sky?|(4) Kokiais žodžiais apibūdinti kažką danguje ar kažką, kas vyksta danguje?
+aerial, heavenly, atmospheric, stratospheric, celestial,|anteną, dangaus, atmosferos, stratosferos, dangaus,
+(5) What words describe the appearance of the sky?|(5) Kokiais žodžiais apibūdinti dangaus veidą?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|mėlyna, skaidrus, juodas (naktį), debesuota, debesis pripildė, ryškus, tamsus, naktinis dangus, nuojauta, audringa, tamsi, žvaigždė dygliuotos
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Kokiais žodžiais kreiptis į dangaus, kuriame jis pasiekia žemę krašto?
+horizon, skyline|horizontas, Skyline
+(7) What words refer to something in the sky?|(7) Kokiais žodžiais kreiptis į ką nors į dangų?
+heavenly body, celestial body, luminary|dangiškasis kūnas, dangaus kūnas, šviesulys
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) Kokiais žodžiais kreiptis į šviesą, kad atrodo šiaurinėje (ar pietų) dangų?
+aurora borealis, northern lights|Aurora Borealis, Šiaurės pašvaistė
+(9) What words refer to something being in the sky?|(9) Kokiais žodžiais kreiptis į ką nors būtybė danguje?
+aloft, up in the sky, up in the air,|Aloft, į dangų, į orą,
+Sun|Saulė
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Naudokite šį domeną žodžių, susijusių su saulėje. Saulė veikia tris pagrindinius dalykus. Jis juda, tai suteikia šviesos, ir tai suteikia šilumą. Šie trys veiksmai dalyvauja daugumos žodžiais reikšmių šioje srityje. Nuo saulės juda žemiau horizonto, daug žodžių skaitykite tai nustatant ar auga. Nuo saulė virš debesų, daug žodžių kreiptis į jį perkelti už debesų ir debesų blokuoja jo šviesą. Saulės šviesa ir šiluma taip pat gamina antrinį poveikį. Saulė sukelia augalams augti, ir tai sukelia žalą dalykų.
+(1) What words refer to the sun?|(1) Kokiais žodžiais kreiptis į saulę?
+sun, solar, sol, daystar, our star|saulė, saulės, Sol, Ryto žvaigždė, mūsų žvaigždė

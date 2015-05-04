@@ -1,0 +1,28 @@
+Universe, creation|Chilengedwe chonse, chilengedwe
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Gwiritsani ntchito ulamuliro mwawamba mawu kunena za chilengedwe. M&#39;zinenero zina mulibe liwu limodzi kwa chilengedwe ndi mwina ntchito Mau monga &#39;mvula, dothi, ndi zinthu za kumwamba&#39; kapena &#39;thambo, dziko ndi madzi&#39; kapena lofotokoza akuti monga &#39;chirichonse chimene inu mungathe onani &#39;kapena&#39; zonse zimene alipo.
+(1) What words refer to everything we can see?|(1) Kodi mawu akunena zonse tikuona?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|chilengedwe chonse, chilengedwe, chilengedwe, kumwamba ndi dziko lapansi, macrocosm, chirichonse chimene chimapezeka
+Sky|Mlengalenga
+Use this domain for words related to the sky.|Gwiritsani ntchito ulamuliro mawu zokhudzana ndi kumwamba.
+(1) What words are used to refer to the sky?|(1) Kodi mawu ntchito za kumwamba?
+sky, firmament, canopy, vault|kumwamba, thambo, mitengo, chotetezeka
+(2) What words refer to the air around the earth?|(2) Kodi ankanena za mlengalenga padziko lapansi?
+air, atmosphere, airspace, stratosphere, ozone layer|mpweya, mlengalenga airspace, stratosphere, ozoni
+(3) What words are used to refer to the place or area beyond the sky?|(3) Kodi mawu ntchito za malo kapena dera kuseri kwa thambo?
+heaven, space, outer space, ether, void, solar system|kumwamba, malo, m&#39;mlengalenga, efa, opanda, dzuwa dongosolo
+(4) What words describe something in the sky or something that happens in the sky?|(4) Kodi akufotokoza chinachake mu mlengalenga kapena chinthu chimene chimachitika kumwamba?
+aerial, heavenly, atmospheric, stratospheric, celestial,|mlengalenga, kumwamba, ndi mumlengalenga, stratospheric, lakumwamba,
+(5) What words describe the appearance of the sky?|(5) Kodi akufotokoza za kaonekedwe ka kumwamba?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|buluu, momveka, wakuda (usiku), mitambo, mtambo unadzaza, anzeru, mdima, usiku, mantha, mafunde, mdima, nyenyezi tizinthu
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Kodi amenewa amanena za m&#39;mphepete mwa kumwamba kumene akukumana pansi?
+horizon, skyline|yatsala pang&#39;ono skyline
+(7) What words refer to something in the sky?|(7) Kodi mawu akunena chinachake mu mlengalenga?
+heavenly body, celestial body, luminary|wakumwamba thupi, thupi lakumwamba, ounikira
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) Kodi ankanena za magetsi amene amapezeka kumpoto (kapena kum&#39;mwera) kumwamba?
+aurora borealis, northern lights|Aurora borealis, kumpoto nyali
+(9) What words refer to something being in the sky?|(9) Kodi mawu akunena chinachake kukhala mu mlengalenga?
+aloft, up in the sky, up in the air,|mmwamba, mu mlengalenga, mu mlengalenga,
+Sun|Sun
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Gwiritsani ntchito ulamuliro mawu zokhudzana ndi dzuwa. Dzuwa amachita zitatu zofunika kwambiri. Limayenda, apase, ndipo amapereka kutentha. Zinthu zitatu zochita PALI matanthauzo ambiri ku mawu mu ulamuliro. Popeza dzuwa chimachititsa pansi yatsala pang&#39;ono mawu ambiri amanena kuti wakhala kapena kukwera. Popeza dzuwa ndi pamwamba pa mitambo, mawu ambiri amanena kuti akusuntha kuseri kwa mitambo ndi mitambo kutchinga kuwala kwake. Dzuwa kuunika ndi kutentha komanso kubala yachiwiri mavuto. Dzuwa kumachititsa zomera kukula, ndipo amachititsa kuwonongeka kwa zinthu.
+(1) What words refer to the sun?|(1) Kodi mawu akunena kwa dzuwa?
+sun, solar, sol, daystar, our star|dzuwa, dzuwa, Sol, nthanda, wathu nyenyezi

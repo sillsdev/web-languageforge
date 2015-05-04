@@ -1,0 +1,28 @@
+Universe, creation|Ntug, creation
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Siv no sau rau kev lus xa mus rau lub cev ntug. Ib txhia lus tej zaum yuav tsis muaj ib lo lus rau ntawm ntug thiab tej zaum yuav tau siv ib co lus xws li &#39;los nag, av, thiab tej yam uas ntawm lub ntuj&#39; los yog &#39;ntuj, av, thiab dej&#39; los yog ib tug uas piav txog kab lus xws li &#39;txhua yam koj ua tau saib &#39;los yog&#39; txhua yam uas tshwm sim.
+(1) What words refer to everything we can see?|(1) Yuav ua li cas lus xa mus rau txhua yam peb yuav tau saib?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|ntug, creation, cosmos, saum ntuj ceeb tsheej thiab lub ntiaj teb, macrocosm, txhua yam uas tshwm sim
+Sky|Ntuj
+Use this domain for words related to the sky.|Siv no sau rau cov lus hais txog lub ntuj.
+(1) What words are used to refer to the sky?|(1) Yuav ua li cas lus yog siv los xa mus rau lub ntuj?
+sky, firmament, canopy, vault|ntuj, ua firmament, toj, tsev ceev nyiaj
+(2) What words refer to the air around the earth?|(2) Yuav ua li cas lus xa mus rau hauv cov huab cua ib ncig ntawm lub ntiaj teb?
+air, atmosphere, airspace, stratosphere, ozone layer|huab cua, cua, airspace, stratosphere, ozone layer
+(3) What words are used to refer to the place or area beyond the sky?|(3) Cov lus yog siv rau xa mus rau qhov chaw los yog hauv cheeb tsam tshaj lub ntuj?
+heaven, space, outer space, ether, void, solar system|saum ntuj ceeb tsheej, qhov chaw, txheej chaw, ether, tsis yog, hnub ci zog
+(4) What words describe something in the sky or something that happens in the sky?|(4) Cov lus piav qhia txog ib yam dab tsi nyob rau hauv lub ntuj los yog ib yam dab tsi uas tshwm sim nyob rau hauv lub ntuj?
+aerial, heavenly, atmospheric, stratospheric, celestial,|sim saum nruab ntug, saum ntuj ceeb tsheej, atmospheric, stratospheric, xilethi-aus,
+(5) What words describe the appearance of the sky?|(5) Yuav ua li cas lus piav qhia txog cov tsos ntawm cov saum ntuj?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|xiav, ntshiab, dub (hmo ntuj), pos huab, huab puv, ci ntsa iab, tsaus ntuj nti, hmo ntuj, foreboding, dag, tsaus ntuj nti, lub hnub qub studded
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Yuav ua li cas lus xa mus rau ntawm ntug ntawm lub ntuj uas nws muaj raws li hauv av?
+horizon, skyline|qab ntug, skyline
+(7) What words refer to something in the sky?|(7) Yuav ua li cas lus xa mus rau ib yam dab tsi nyob rau hauv lub ntuj?
+heavenly body, celestial body, luminary|saum ntuj ceeb tsheej lub cev, xilethi-aus lub cev, luminary
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) Yuav ua li cas lus xa mus rau lub teeb uas yuav tshwm sim nyob rau hauv sab qaum teb (los yog yav qab teb) ntuj?
+aurora borealis, northern lights|Aurora borealis, sab qaum teb teeb
+(9) What words refer to something being in the sky?|(9) Yuav ua li cas lus xa mus rau ib yam dab tsi ua nyob rau hauv lub ntuj?
+aloft, up in the sky, up in the air,|aloft, nyob rau hauv lub ntuj, nyob rau hauv cov huab cua,
+Sun|Tshav
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Siv no sau rau cov lus hais txog lub hnub. Lub hnub tsis yooj yim tej yam peb. Nws txav, nws muab lub teeb, thiab nws muab tshav kub. Cov peb kev ua yog muab kev koom tes nyob rau hauv lub ntsiab ntawm feem ntau ntawm cov lus nyob rau hauv no sau. Txij thaum lub hnub tsiv hauv qab no rau lub qab ntug, ntau lo lus xa mus rau nws qhov chaw kawm los yog microscopic. Txij thaum lub hnub yog saum cov huab, ntau lo lus xa mus rau nws tsiv qab cov huab thiab cov huab thaiv cov hlab nws lub teeb. Lub hnub txoj kev kaj thiab tshav kub kuj tsim secondary los. Lub hnub ua cov nroj tsuag kom loj hlob, thiab nws ua rau kev puas tsuaj rau tej yam uas.
+(1) What words refer to the sun?|(1) Yuav ua li cas lus xa mus rau lub hnub?
+sun, solar, sol, daystar, our star|hnub, hnub ci, huab, daystar, peb lub hnub qub

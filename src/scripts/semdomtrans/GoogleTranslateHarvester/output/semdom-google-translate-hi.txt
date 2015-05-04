@@ -1,0 +1,28 @@
+Universe, creation|यूनिवर्स, रचना
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|भौतिक जगत की चर्चा करते हुए सामान्य शब्दों के लिए इस डोमेन का प्रयोग करें। कुछ भाषाओं में ब्रह्मांड के लिए एक भी शब्द नहीं हो सकता है और इस तरह इस तरह आप कर सकते हैं &#39;सब कुछ&#39; के रूप में बारिश, मिट्टी, और आकाश की बातें &#39;या&#39; आकाश, जमीन और पानी &#39;या एक वर्णनात्मक वाक्यांश के रूप में एक वाक्यांश का उपयोग करना पड़ सकता है मौजूद है कि &#39;या&#39; सब कुछ &#39;देखते हैं।
+(1) What words refer to everything we can see?|(1) हम सब कुछ करने के लिए क्या शब्द का उल्लेख देख सकते हैं?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|मौजूद है कि ब्रह्मांड, सृष्टि, ब्रह्मांड, स्वर्ग और पृथ्वी, जहान, सब कुछ
+Sky|आकाश
+Use this domain for words related to the sky.|आकाश से संबंधित शब्दों के लिए इस डोमेन का प्रयोग करें।
+(1) What words are used to refer to the sky?|(1) क्या शब्द आकाश का उल्लेख करने के लिए किया जाता है?
+sky, firmament, canopy, vault|आकाश, आकाश, चंदवा, तिजोरी
+(2) What words refer to the air around the earth?|(2) क्या शब्द पृथ्वी के चारों ओर हवा का संदर्भ लें?
+air, atmosphere, airspace, stratosphere, ozone layer|हवा, वातावरण, हवाई क्षेत्र, समताप मंडल, ओजोन परत
+(3) What words are used to refer to the place or area beyond the sky?|(3) क्या शब्द आकाश से परे जगह या क्षेत्र के लिए उल्लेख किया जाता है?
+heaven, space, outer space, ether, void, solar system|स्वर्ग, अंतरिक्ष, बाह्य अंतरिक्ष, आकाश, शून्य, सौर प्रणाली
+(4) What words describe something in the sky or something that happens in the sky?|(4) क्या शब्द आकाश में होता है कि आसमान या कुछ में कुछ का वर्णन है?
+aerial, heavenly, atmospheric, stratospheric, celestial,|खगोलीय, हवाई स्वर्गीय, वायुमंडलीय, समताप मंडल
+(5) What words describe the appearance of the sky?|(5) क्या शब्द आकाश के रूप का वर्णन?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|नीले, स्पष्ट, काले (रात), बादल, बादल भरा है, प्रतिभाशाली, काले, रात आकाश, पूर्वाभास, तूफानी, काले, सितारा जड़ित
+(6) What words refer to the edge of the sky where it meets the ground?|(6) क्या शब्द जमीन यह मिलता है, जहां आकाश की बढ़त को देखें?
+horizon, skyline|क्षितिज, क्षितिज
+(7) What words refer to something in the sky?|(7) क्या शब्द आकाश में कुछ करने के लिए देखें?
+heavenly body, celestial body, luminary|स्वर्गीय शरीर, दिव्य शरीर, चन्द्रमा
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) क्या शब्द उत्तरी (या दक्षिण) आकाश में दिखाई देने वाली रोशनी को देखें?
+aurora borealis, northern lights|औरोरा बोरेलिस, उत्तरी लाइट्स
+(9) What words refer to something being in the sky?|(9) क्या शब्द आकाश में जा रहा है कुछ करने का उल्लेख?
+aloft, up in the sky, up in the air,|ऊपर, आकाश में, हवा में,
+Sun|सूर्य
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|सूर्य से संबंधित शब्दों के लिए इस डोमेन का प्रयोग करें। सूरज के तीन बुनियादी बातें करता है। ऐसा लगता है कि प्रकाश देता है, चलता है, और यह गर्मी देता है। इन तीन कार्यों के इस क्षेत्र में शब्दों के अधिकांश के अर्थ में शामिल रहे हैं। सूरज क्षितिज के नीचे चलता है के बाद से, कई शब्दों में इसे स्थापित करने या बढ़ती करने के लिए देखें। सूरज बादलों के ऊपर है, कई शब्दों के बादल और अपने प्रकाश को अवरुद्ध बादलों के पीछे चलती इसे देखें। सूरज की रोशनी और गर्मी भी माध्यमिक प्रभाव पैदा करते हैं। सूरज पौधों को विकसित करने के लिए कारण बनता है, और यह चीजों को नुकसान पहुंचाता है।
+(1) What words refer to the sun?|(1) क्या शब्द सूरज को देखें?
+sun, solar, sol, daystar, our star|सूर्य, सौर, सोल, सूरज, हमारे स्टार

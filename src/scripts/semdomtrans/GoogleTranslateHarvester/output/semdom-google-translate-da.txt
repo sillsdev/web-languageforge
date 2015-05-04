@@ -1,0 +1,28 @@
+Universe, creation|Univers, skabelse
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Brug dette domæne for generelle ord, der henviser til det fysiske univers. Nogle sprog har måske ikke et eneste ord for universet og kan have til at bruge en sætning som &#39;regn, jord, og ting af himlen&#39; eller &#39;sky, jord og vand «eller en beskrivende sætning som&quot; alt, hvad du kan se &quot;eller&quot; alt, der eksisterer &quot;.
+(1) What words refer to everything we can see?|(1) Hvilke ord overlad til alt, hvad vi kan se?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|univers, skabelse, kosmos, himmel og jord, makrokosmos, alt, der eksisterer
+Sky|Sky
+Use this domain for words related to the sky.|Brug dette domæne for ord relateret til himlen.
+(1) What words are used to refer to the sky?|(1) Hvilke ord bruges til at henvise til himlen?
+sky, firmament, canopy, vault|himmel, firmament, baldakin, hvælving
+(2) What words refer to the air around the earth?|(2) Hvilke ord refererer til luften omkring Jorden?
+air, atmosphere, airspace, stratosphere, ozone layer|luft, atmosfære, luftrum, stratosfære, ozonlaget
+(3) What words are used to refer to the place or area beyond the sky?|(3) Hvad ord bruges til at henvise til det sted eller område beliggende efter himlen?
+heaven, space, outer space, ether, void, solar system|himlen, plads, ydre rum, ether, ugyldig, solsystemet
+(4) What words describe something in the sky or something that happens in the sky?|(4) Hvilke ord beskrive noget på himlen eller noget, der sker i himlen?
+aerial, heavenly, atmospheric, stratospheric, celestial,|antenne, himmelske, atmosfæriske, stratosfærisk, himmelske,
+(5) What words describe the appearance of the sky?|(5) Hvilke ord beskriver udseendet af himlen?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|blå, klar, sort (nat), overskyet, sky fyldt, strålende, mørke, nattehimmel, forudanelse, stormfulde, mørke, stjerne besat
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Hvilke ord refererer til kanten af ​​himlen, hvor den møder jorden?
+horizon, skyline|horisonten, skyline
+(7) What words refer to something in the sky?|(7) Hvilke ord refererer til noget i himlen?
+heavenly body, celestial body, luminary|himmellegeme, himmellegeme, luminary
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) Hvilke ord refererer til lysene, der vises i den nordlige (eller det sydlige) himlen?
+aurora borealis, northern lights|aurora borealis, nordlys
+(9) What words refer to something being in the sky?|(9) Hvilke ord refererer til noget at være i himlen?
+aloft, up in the sky, up in the air,|vejrs, op i himlen, op i luften,
+Sun|Sol
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Brug dette domæne efter ord relateret til solen. Solen gør tre grundlæggende ting. Det bevæger sig, det giver lys, og det giver varme. Disse tre tiltag er involveret i de betydninger af de fleste af ordene i dette domæne. Da solen bevæger sig under horisonten, mange ord henvise til det indstilling eller stigende. Da solen er over skyerne, mange ord refererer til det at bevæge sig bag skyerne og skyerne blokerer dens lys. Solens lys og varme også fremkalde sekundære virkninger. Solen forårsager planter til at vokse, og det forårsager skader på ting.
+(1) What words refer to the sun?|(1) Hvilke ord refererer til solen?
+sun, solar, sol, daystar, our star|sol, sol, sol, daystar, vores stjerne
