@@ -34,9 +34,11 @@ if __name__ == '__main__':
 	languages = [langObj['language'] for langObj in getTargetLanguages(sys.argv[2]) if langObj['language'] != "en"]
 	inputFile = open(sys.argv[1])
 	lines = [word.strip() for word in inputFile.readlines()]
-	for language in languages:		
-		dirname = os.path.dirname(inputFile.name)
-		outputPath = dirname + "/semdom-google-translate-" + language + ".txt"
+	for language in languages:
+		print "\nProcessing language %s" % language
+		skippedCtr = 0
+		#dirname = os.path.dirname(inputFile.name)
+		outputPath = "output/semdom-google-translate-" + language + ".txt"
 		processedLines = []
 		# check if there are previous translations, if so do not repeat translations for them 
 		# by excluding them from list of items to be translated
@@ -52,13 +54,19 @@ if __name__ == '__main__':
 			for line in lines:
 				if line not in prevTranslatedDict:
 					processedLines.append(line)
+				else:
+					skippedCtr += 1
 		else:
 			processedLines = lines			
 		
+		if (skippedCtr > 0):
+			print "Found %d translations in an existing output file, so skipping those..." % skippedCtr
+		
 		f = open(outputPath,'a')
-		print (len(processedLines))
+		print "There are %d translations left to process" % len(processedLines)
 		# translate and print out using proper utf-8 encoding
-		for i in xrange(0, len(processedLines), 10):			
-			translatedItems = translate(processedLines[i:i+10], sys.argv[2], language)
-			for j in range(i, min(len(processedLines), i+10)):
-				f.write(processedLines[j] + "|" + translatedItems[j%10]['translatedText'].encode('utf-8') + "\n")
+		for i in xrange(0, len(processedLines)):
+			print "processing %s language line %d" % (language, i)
+			translatedItems = translate([processedLines[i]], sys.argv[2], language)
+			f.write(processedLines[i] + "|" + translatedItems[0]['translatedText'].encode('utf-8') + "\n")
+				
